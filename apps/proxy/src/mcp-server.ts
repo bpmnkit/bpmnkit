@@ -17,7 +17,6 @@
 
 import { readFileSync, renameSync, rmSync, writeFileSync } from "node:fs"
 import { createInterface } from "node:readline"
-import vm from "node:vm"
 import {
 	Bpmn,
 	type BpmnDefinitions,
@@ -49,6 +48,7 @@ import {
 } from "@bpmnkit/core"
 import type { BpmnElementType, CompactDmn, CompactForm } from "@bpmnkit/core"
 import { elementTypeDescription } from "./element-vocabulary.js"
+import { runSandboxedSync } from "./sandbox.js"
 import { handleSdkExecute, handleSdkSearch } from "./sdk-code-mode.js"
 
 // ── CLI args ──────────────────────────────────────────────────────────────────
@@ -137,7 +137,7 @@ function buildBpmnDiagram(proc: BpmnProcess): BpmnDiagram {
  * tool call instead of quietly replacing the user's file, and every kind is
  * written atomically, as `writeBpmn` does. It cannot call
  * `writeBpmn` itself: the code-mode bridge invokes tools synchronously inside a
- * `vm` context, and that function is async. Adopting it here means giving the
+ * sandbox, and that function is async. Adopting it here means giving the
  * bridge an async path first.
  */
 /**
@@ -696,10 +696,19 @@ function callTool(name: string, args: Record<string, unknown>): string {
 			const code = args.code as string
 
 			// Build Bridge object that mirrors bridge.ts API, extended for DMN/Form types.
+			// The code is the model's, so it runs in a separate isolate that sees
+			// only copies: under node:vm the Bridge functions themselves led back
+			// to the host's `process`.
 			const bridge = buildBridge()
-			const ctx = vm.createContext({ Bridge: bridge })
+			const functions: Record<string, (...args: unknown[]) => unknown> = {}
+			for (const [name, fn] of Object.entries(bridge)) {
+				functions[`__bridge_${name}`] = fn as (...args: unknown[]) => unknown
+			}
+			const bootstrap = `const Bridge = { ${Object.keys(bridge)
+				.map((name) => `${name}: __bridge_${name}`)
+				.join(", ")} }`
 			try {
-				const result = vm.runInContext(`(function(){\n${code}\n})()`, ctx, { timeout: 5000 })
+				const result = runSandboxedSync(code, { functions, bootstrap }, 5000)
 				return typeof result === "string" ? result : JSON.stringify(result ?? null)
 			} catch (err) {
 				throw new Error(

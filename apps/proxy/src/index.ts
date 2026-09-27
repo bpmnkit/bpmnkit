@@ -60,6 +60,7 @@ import {
 	buildOperateChatSystemPrompt,
 	buildSearchSystemPrompt,
 	buildSystemPrompt,
+	withDiagramContext,
 } from "./prompt.js"
 import { handleElementTemplates } from "./routes/element-templates.js"
 import {
@@ -76,6 +77,7 @@ import { startWorkerDaemon, workerState } from "./worker.js"
 import { WorkspaceRoots } from "./workspace.js"
 
 export type { ProxyServerOptions } from "./access.js"
+export { type AiCli, askText } from "./adapters/text.js"
 
 const PORT = process.env.AI_SERVER_PORT ? Number(process.env.AI_SERVER_PORT) : 3033
 
@@ -409,8 +411,7 @@ const handleRequest: http.RequestListener = async (req, res) => {
 
 		// ── create-form ───────────────────────────────────────────────────────────
 		if (action === "create-form") {
-			const taskDescription = messages[0]?.content ?? ""
-			const systemPrompt = buildFormCreateSystemPrompt("", taskDescription)
+			const systemPrompt = buildFormCreateSystemPrompt()
 			res.writeHead(200, {
 				"Content-Type": "text/event-stream",
 				"Cache-Control": "no-cache",
@@ -446,8 +447,7 @@ const handleRequest: http.RequestListener = async (req, res) => {
 
 		// ── create-dmn ────────────────────────────────────────────────────────────
 		if (action === "create-dmn") {
-			const taskDescription = messages[0]?.content ?? ""
-			const systemPrompt = buildDmnCreateSystemPrompt("", taskDescription)
+			const systemPrompt = buildDmnCreateSystemPrompt()
 			res.writeHead(200, {
 				"Content-Type": "text/event-stream",
 				"Cache-Control": "no-cache",
@@ -531,8 +531,10 @@ const handleRequest: http.RequestListener = async (req, res) => {
 						? buildMcpExplainPrompt()
 						: buildMcpSystemPrompt()
 		} else {
-			// Fallback for non-MCP adapters: full prompt with format instructions
-			systemPrompt = buildSystemPrompt(context)
+			// Fallback for non-MCP adapters: full prompt with format instructions;
+			// the diagram rides in the (fenced) user turn.
+			systemPrompt = buildSystemPrompt()
+			messages = withDiagramContext(messages, context)
 		}
 
 		// ── Set up MCP temp files (MCP-capable adapters only) ────────────────────
