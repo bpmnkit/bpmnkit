@@ -2095,8 +2095,12 @@ Tools: `get_diagram`, `add_elements`, `remove_elements`, `update_element`, `set_
 
 Adapters supported:
 - **Claude** (`claude -p --mcp-config --allowedTools --strict-mcp-config`) — full MCP
-- **Copilot** (`copilot -p --additional-mcp-config --allow-all-tools`, new `@github/copilot` GA Feb 2026) — full MCP
-- **Gemini** (`gemini -p --yolo`) — fallback to system-prompt approach (no per-invocation MCP)
+- **Copilot** (`copilot -p --additional-mcp-config`) — full MCP
+- **Gemini** (`gemini -p`) — fallback to system-prompt approach (no per-invocation MCP)
+
+Since 2026-09-27 every adapter runs without built-in tools or permission bypass: only the
+`mcp__bpmn__` diagram tools are allowed, each run starts in an empty folder, and model code in
+`compose_diagram` runs in an isolated-vm isolate (see `doc/progress.md`).
 
 All diagram changes go through `expand()` + `Bpmn.export()` in core; the client receives validated XML via `{ type: "xml" }` SSE and never manipulates BPMN directly.
 

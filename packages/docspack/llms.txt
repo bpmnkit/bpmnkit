@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.0.0. 336 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.0.0. 340 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -20,7 +20,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [casen CLI — BPMN generation pipeline](.llms/chunks/cli.casen.bpmn-generation-pipeline.md) — 341 tokens
 - [casen CLI — AIKit Skills](.llms/chunks/cli.casen.aikit-skills.md) — 196 tokens
 - [casen CLI — Worker commands](.llms/chunks/cli.casen.worker-commands.md) — 342 tokens
-- [casen CLI — Local proxy](.llms/chunks/cli.casen.local-proxy.md) — 721 tokens
+- [casen CLI — Local proxy](.llms/chunks/cli.casen.local-proxy.md) — 305 tokens
+- [casen CLI — Local proxy — Who can use the proxy](.llms/chunks/cli.casen.local-proxy-who-can-use-the-proxy.md) — 769 tokens
 - [casen CLI — MCP Server Mode](.llms/chunks/cli.casen.mcp-server-mode.md) — 204 tokens
 - [casen connector](.llms/chunks/cli.connector.md) — 166 tokens
 - [casen connector — Browse the bundled OOTB catalog](.llms/chunks/cli.connector.browse-the-bundled-ootb-catalog.md) — 213 tokens
@@ -117,7 +118,10 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [AI Integration — Minimal Empty Diagram](.llms/chunks/guides.ai.minimal-empty-diagram.md) — 247 tokens
 - [AI Integration — Claude API Example](.llms/chunks/guides.ai.claude-api-example.md) — 226 tokens
 - [AI Integration — OpenAI Function Calling](.llms/chunks/guides.ai.openai-function-calling.md) — 192 tokens
-- [AI Integration — Previewing While the Model Writes](.llms/chunks/guides.ai.previewing-while-the-model-writes.md) — 687 tokens
+- [AI Integration — Previewing While the Model Writes](.llms/chunks/guides.ai.previewing-while-the-model-writes.md) — 356 tokens
+- [AI Integration — Previewing While the Model Writes — Frames are advisory](.llms/chunks/guides.ai.previewing-while-the-model-writes-frames-are-advisory.md) — 112 tokens
+- [AI Integration — Previewing While the Model Writes — Where the frames come from](.llms/chunks/guides.ai.previewing-while-the-model-writes-where-the-frames-come-from.md) — 257 tokens
+- [AI Integration — Previewing While the Model Writes — What the model can do](.llms/chunks/guides.ai.previewing-while-the-model-writes-what-the-model-can-do.md) — 290 tokens
 - [AI Integration — MCP Server](.llms/chunks/guides.ai.mcp-server.md) — 322 tokens
 - [BPMN Diagrams in Markdown](.llms/chunks/guides.bpmn-in-markdown.md) — 660 tokens
 - [BPMN Diagrams in Markdown — What goes in a block](.llms/chunks/guides.bpmn-in-markdown.what-goes-in-a-block.md) — 247 tokens

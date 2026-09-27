@@ -1,5 +1,16 @@
 # Progress
 
+## 2026-09-27 — Security hardening: AI CLIs run without tools or permission bypass
+
+- The proxy's AI routes (`/chat`, `/improve`, `/operate/chat`, `/operate/incident-assist`, `/operate/ai-search`), the `io.bpmnkit:llm:1` worker and `casen ask` no longer start `claude` with its permission checks bypassed, or `copilot` / `gemini` in their approve-everything modes; the desktop app's `proxy-rs` gets the same change.
+- `claude` runs with no built-in tools, no user MCP servers or settings, a non-bypass permission mode and the conversation on stdin; `/chat` edits allow only the eight `mcp__bpmn__` diagram tools. `copilot` denies shell/write/url and approves only `bpmn(<tool>)`; `gemini` loads a deny-all tool policy with extensions off.
+- Each run starts in a fresh empty temp folder, so no project instructions, settings or MCP servers load.
+- `compose_diagram`, `sdk_search` and `sdk_execute` run model code in an isolated-vm isolate (`runSandboxedSync`); under `node:vm` a Bridge function's `constructor` reached `process` and a shell — a second code-execution path, also reachable through the MCP server.
+- Chat text, diagrams, findings, incident details and variables reach the model inside `<untrusted-input>` fences the system prompt marks as data.
+- New `askText` export in `@bpmnkit/proxy`; `casen ask` uses it.
+- Tests: exact argv per adapter (Vitest and Rust), mocked-spawn route tests, MCP sandbox-escape tests; verified live against `claude` 2.1.283 with an injected "run Bash" instruction that the model could not act on.
+- Residual: copilot has no strict-MCP flag, so a user's own copilot MCP servers still load (their tools need approval, refused in `-p` mode); older CLI versions without the new flags exit with a flag error; Bedrock/Vertex set up through Claude `settings.json` must move to the proxy's environment.
+
 ## 2026-09-25 — Lock the local proxy down (loopback, trusted origins, workspace roots)
 
 - **Security fix, default behaviour changes.** `@bpmnkit/proxy` listened on all interfaces, sent `Access-Control-Allow-Origin: *`, and its `/fs/*` routes read, wrote, moved and deleted any absolute path — so any web page or LAN host could read local files, use Camunda profiles via `/api/*`, read secrets via `/secrets/*`, relay through `/http-request` and start AI CLIs via `/chat`. The desktop app's Rust server (`apps/proxy-rs`) had the same open bind and CORS.
