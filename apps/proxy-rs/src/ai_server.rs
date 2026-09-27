@@ -161,7 +161,7 @@ async fn handle_chat(
             prompt::build_mcp_system_prompt()
         }
     } else {
-        prompt::build_system_prompt(req.context.as_ref())
+        prompt::build_system_prompt()
     };
 
     // ── Set up MCP temp files ──────────────────────────────────────────────────
@@ -212,11 +212,16 @@ async fn handle_chat(
     let (sse_tx, sse_rx) = mpsc::unbounded_channel::<Value>();
     let accumulated = Arc::new(Mutex::new(String::new()));
 
-    let messages: Vec<Message> = req
+    let mut messages: Vec<Message> = req
         .messages
         .into_iter()
         .map(|m| Message { role: m.role, content: m.content })
         .collect();
+    if !supports_mcp {
+        // Without MCP the model sees the diagram in the prompt: in the fenced
+        // user turn, not the system prompt.
+        prompt::with_diagram_context(&mut messages, req.context.as_ref());
+    }
     let bridge = state.bridge.clone();
 
     tokio::spawn(async move {

@@ -2587,6 +2587,12 @@ CLIs, so it is locked down by default:
   filesystem root, your home directory or a hidden folder on a client's say-so, and only
   touches \`.bpmn\`, \`.dmn\`, \`.form\` and \`.md\` files. \`..\` and symlinks out of a root
   are refused.
+- **AI CLIs without tools.** \`claude\`, \`copilot\` and \`gemini\` run with permission checks
+  on, no built-in tools (no shell, file or web access), in an empty temporary folder, and
+  without your own MCP servers, settings or extensions. A \`/chat\` diagram edit may call only
+  the proxy's diagram MCP tools, and \`compose_diagram\` runs the model's code in an
+  \`isolated-vm\` isolate. Request data reaches the model fenced as untrusted input.
+  \`askText\` gives other callers, such as \`casen ask\`, the same lockdown.
 
 Programs that send no \`Origin\` header — the CLI, the MCP server, \`curl\` — are served as
 before.

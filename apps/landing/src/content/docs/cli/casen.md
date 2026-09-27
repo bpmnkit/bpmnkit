@@ -382,6 +382,23 @@ your browser can send requests to `localhost`, so the proxy checks every request
   `.bpmn`, `.dmn`, `.form` and `.md` files (and their `.bpmnkit` metadata) can be read,
   written, moved or deleted. Paths with `..`, and symlinks that lead out of the root, are
   refused.
+- **AI CLIs.** The AI routes (`/chat`, `/improve`, `/operate/chat`,
+  `/operate/incident-assist`, `/operate/ai-search`), the `io.bpmnkit:llm:1` worker and
+  `casen ask` start `claude`, `copilot` or `gemini` with permission checks on and no
+  built-in tools: the model cannot run commands, read or write files, or open URLs. Each run
+  starts in an empty temporary folder and loads none of your own MCP servers, settings,
+  plugins or extensions. A `/chat` run that edits a diagram gets only the proxy's diagram
+  tools (`get_diagram`, `compose_diagram`, `add_elements`, `remove_elements`,
+  `update_element`, `set_condition`, `add_http_call`, `replace_diagram`); they change the
+  diagram in the MCP server's memory, and `compose_diagram` runs the model's code in an
+  isolated V8 isolate. Chat text, diagrams, incident details and variable values reach the
+  model fenced as untrusted data.
+
+| CLI | Flags the proxy passes |
+|---|---|
+| `claude` | `-p --system-prompt … --tools "" --strict-mcp-config --setting-sources "" --permission-mode dontAsk --disable-slash-commands --no-session-persistence`, plus `--mcp-config <run config> --allowedTools mcp__bpmn__…` for diagram edits. The conversation goes on stdin. |
+| `copilot` | `-p … --deny-tool=shell --deny-tool=write --deny-tool=url --disable-builtin-mcps --no-custom-instructions --no-ask-user --disallow-temp-dir`, plus `--additional-mcp-config @<run config> --allow-tool=bpmn(<tool>)` per diagram tool. |
+| `gemini` | `--prompt … --approval-mode default --admin-policy <deny-all> --policy <deny-all> --extensions none --skip-trust`, where the policy denies every tool and trust covers only the empty run folder. |
 
 To use the proxy from your own web app, allow its origin:
 
