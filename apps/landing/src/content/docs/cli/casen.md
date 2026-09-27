@@ -367,7 +367,7 @@ The proxy acts with your Camunda credentials and reads and writes files. Any web
 your browser can send requests to `localhost`, so the proxy checks every request:
 
 - **Origin.** A browser request must come from `https://bpmnkit.com`,
-  `https://studio.bpmnkit.com`, `https://bpmnkit-studio.pages.dev`, the desktop app
+  `https://bpmnkit-studio.pages.dev`, the desktop app
   (`tauri://localhost`, `http(s)://tauri.localhost`), any `localhost`, `127.0.0.1` or
   `[::1]` origin on any port, or an origin you allow with `--allow-origin`. Other origins get
   `403` and no CORS headers. Cross-site browser requests without an `Origin` header, such as

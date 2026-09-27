@@ -36,7 +36,6 @@ import { delimiter } from "node:path"
  */
 export const FIRST_PARTY_ORIGINS: readonly string[] = [
 	"https://bpmnkit.com",
-	"https://studio.bpmnkit.com",
 	"https://bpmnkit-studio.pages.dev",
 	"tauri://localhost",
 	"http://tauri.localhost",

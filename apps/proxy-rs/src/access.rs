@@ -19,7 +19,6 @@ use axum::response::{IntoResponse, Response};
 /// bpmnkit.com, hosted Studio, and the desktop app's webview.
 pub const FIRST_PARTY_ORIGINS: &[&str] = &[
     "https://bpmnkit.com",
-    "https://studio.bpmnkit.com",
     "https://bpmnkit-studio.pages.dev",
     "tauri://localhost",
     "http://tauri.localhost",

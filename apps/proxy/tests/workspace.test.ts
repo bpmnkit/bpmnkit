@@ -96,7 +96,7 @@ describe("WorkspaceRoots", () => {
 
 describe("/fs routes", () => {
 	let server: http.Server
-	const studio = { origin: "https://studio.bpmnkit.com" }
+	const studio = { origin: "https://bpmnkit-studio.pages.dev" }
 	const q = (p: string) => encodeURIComponent(p)
 
 	beforeAll(async () => {

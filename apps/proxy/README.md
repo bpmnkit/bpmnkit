@@ -100,7 +100,7 @@ CLIs, so it is locked down by default:
 - **Loopback only.** It listens on `127.0.0.1` and `::1`. `--host` (or
   `BPMNKIT_PROXY_HOST`) listens elsewhere and prints a warning.
 - **Allowed origins only.** Browser requests must come from `https://bpmnkit.com`,
-  `https://studio.bpmnkit.com`, `https://bpmnkit-studio.pages.dev`, the desktop app
+  `https://bpmnkit-studio.pages.dev`, the desktop app
   (`tauri://localhost`, `http(s)://tauri.localhost`) or a `localhost` / `127.0.0.1` /
   `[::1]` origin on any port. Any other origin gets `403` and no CORS headers; the allowed
   origin is reflected, never `*`. Add origins with `--allow-origin` or

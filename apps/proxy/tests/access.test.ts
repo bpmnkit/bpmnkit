@@ -225,13 +225,13 @@ describe("the proxy's front door", () => {
 
 	it("answers an allowed preflight with the CORS and private-network grants", async () => {
 		const r = await send(server, "OPTIONS", "/fs/write", {
-			origin: "https://studio.bpmnkit.com",
+			origin: "https://bpmnkit-studio.pages.dev",
 			"access-control-request-method": "POST",
 			"access-control-request-headers": "content-type",
 			"access-control-request-private-network": "true",
 		})
 		expect(r.status).toBe(204)
-		expect(r.headers["access-control-allow-origin"]).toBe("https://studio.bpmnkit.com")
+		expect(r.headers["access-control-allow-origin"]).toBe("https://bpmnkit-studio.pages.dev")
 		expect(r.headers["access-control-allow-methods"]).toContain("POST")
 		expect(r.headers["access-control-allow-headers"]).toMatch(/content-type/i)
 		expect(r.headers["access-control-allow-private-network"]).toBe("true")
