@@ -208,6 +208,9 @@ type the golden set expects.
 - **Reasoning models are out.** gpt-oss cannot turn reasoning off, and qwen3 has no documented
   switch. Their reasoning is 5–15× longer than the diagram. Several gpt-oss-20b and qwen3 runs used
   their whole 2,048-token cap on reasoning and returned a two-element diagram.
+  gpt-oss-120b also leaked its raw harmony channels into the answer text in some runs
+  (`analysis: … <|end|><|start|>assistantfinal`, with no separate reasoning delta). That is where its
+  7.3 problems per run come from.
 - **gemma-4 wrote the best diagrams, but it queues.** Its generation time is comparable to glm's.
   But its first byte took 3.2 s, 4.0 s, 4.2 s, 10.5 s and 52.9 s in 5 of 12 runs, which is
   Workers AI capacity rather than the model. glm's first byte was under 0.7 s in every run, and its
