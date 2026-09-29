@@ -3145,7 +3145,7 @@ The engine holds the run state, not your process: an instance survives a crash o
 
 ## Features
 
-- **Four step kinds** — \`.run()\` (a handler in your worker), \`.agent()\` (a coding agent from the \`casen agent\` workforce), \`.waitFor()\` (a durable message wait), \`.approve()\` (a Camunda user task)
+- **Five step kinds** — \`.run()\` (a handler in your worker), \`.agent()\` (a coding agent from the \`casen agent\` workforce), \`.waitFor()\` (a durable message wait), \`.approve()\` (a Camunda user task), \`.loop()\` (repeat until a FEEL condition holds, at most \`max\` rounds, then ask a person)
 - **Typed data flow** — each step's output joins the variables later steps see; reading a variable no earlier step provides, naming it as a correlation key, or using it in an agent prompt is a compile error
 - **One source of truth** — \`toXml()\` for deployment, \`jobTypes\` / \`agentJobTypes\` for wiring, \`worker()\` to serve the handlers
 - **At-least-once delivery** — handlers get the job key for idempotency; a throw fails the job and the engine retries it
@@ -3191,6 +3191,7 @@ Starts a flow. Chain steps, then call \`build()\`. Every method returns a new bu
 | \`.agent(id, { role, rank?, prompt, result? })\` | service task, job type \`agent:<role>\` or \`agent:<rank>:<role>\` | \`{ [result]: string }\` (default \`result\`) |
 | \`.waitFor<P>(id, { correlationKey, message? })\` | message catch event correlated on \`=<correlationKey>\` | \`P\` |
 | \`.approve<P>(id, { name?, assignee?, candidateGroups? })\` | Camunda user task | \`P\` |
+| \`.loop(id, body, { until, max, between?, counter?, escalate? })\` | counter script tasks + gateways; a user task after \`max\` rounds | what the body adds, and the counter (default \`round\`) |
 
 ### \`Flow\`
 
@@ -3200,6 +3201,7 @@ Starts a flow. Chain steps, then call \`build()\`. Every method returns a new bu
 | \`jobTypes\` | Job types of the \`.run()\` steps |
 | \`agentJobTypes\` | Job types the workforce must serve |
 | \`steps\` | The steps, in order |
+| \`runSteps\` | Every \`.run()\` step, loop bodies included |
 | \`worker(options?)\` | Polls the \`.run()\` job types; returns \`{ done, stop() }\`. Options: worker-client options, \`maxJobs\` (default 1), \`timeout\`, \`onError\`, \`signal\`, \`client\` |
 
 ### Agent contract

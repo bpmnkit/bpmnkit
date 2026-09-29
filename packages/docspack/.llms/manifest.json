@@ -2201,7 +2201,7 @@
 		{
 			"id": "guides.durable-agent-flows.1.-write-the-flow",
 			"file": "chunks/guides.durable-agent-flows.1.-write-the-flow.md",
-			"tokens": 251,
+			"tokens": 423,
 			"tags": [
 				"guides",
 				"durable-agent-flows",
@@ -4966,7 +4966,7 @@
 		{
 			"id": "packages.flow.steps",
 			"file": "chunks/packages.flow.steps.md",
-			"tokens": 544,
+			"tokens": 592,
 			"tags": [
 				"packages",
 				"flow",
@@ -4978,9 +4978,20 @@
 			]
 		},
 		{
+			"id": "packages.flow.loops",
+			"file": "chunks/packages.flow.loops.md",
+			"tokens": 665,
+			"tags": [
+				"packages",
+				"flow",
+				"loops"
+			],
+			"entities": []
+		},
+		{
 			"id": "packages.flow.flow",
 			"file": "chunks/packages.flow.flow.md",
-			"tokens": 327,
+			"tokens": 362,
 			"tags": [
 				"packages",
 				"flow"
@@ -4991,18 +5002,19 @@
 				"BpmnDefinitions",
 				"jobTypes",
 				"agentJobTypes",
+				"runSteps",
+				"jobType",
 				"stop()",
 				"clientId",
 				"@bpmnkit/worker-client",
 				"maxJobs",
-				"onError",
-				"WorkerClient"
+				"onError"
 			]
 		},
 		{
 			"id": "packages.flow.testing-a-flow-on-the-simulator",
 			"file": "chunks/packages.flow.testing-a-flow-on-the-simulator.md",
-			"tokens": 143,
+			"tokens": 328,
 			"tags": [
 				"packages",
 				"flow",
@@ -5011,20 +5023,8 @@
 			],
 			"entities": [
 				"definitions()",
-				"@bpmnkit/engine"
-			]
-		},
-		{
-			"id": "packages.flow.the-agent-contract",
-			"file": "chunks/packages.flow.the-agent-contract.md",
-			"tokens": 203,
-			"tags": [
-				"packages",
-				"flow",
-				"agent",
-				"contract"
-			],
-			"entities": [
+				"@bpmnkit/engine",
+				"runSteps",
 				"resultVariable"
 			]
 		},

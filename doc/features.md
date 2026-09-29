@@ -5,6 +5,8 @@
 - `@bpmnkit/flow`: write a workflow as typed TypeScript steps — handlers, coding-agent steps,
   correlated message waits and human approvals — and get the BPMN, the job types and the worker
   from the one definition.
+- `.loop()` in `@bpmnkit/flow`: bounded review/fix convergence loops that hand over to a person
+  after `max` rounds.
 - `casen agent hire|list|fire|work`: hire coding-agent CLIs (Claude Code, Copilot, …) by role
   and rank, and run them as a workforce of durable job workers against any Camunda 8 engine.
 

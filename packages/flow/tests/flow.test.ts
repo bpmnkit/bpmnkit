@@ -107,8 +107,7 @@ describe("defineFlow — running on the simulator", () => {
 		const flow = review()
 		const engine = new Engine()
 		engine.deploy({ bpmn: flow.definitions() })
-		for (const step of flow.steps) {
-			if (step.kind !== "run") continue
+		for (const step of flow.runSteps) {
 			const handler = step.handler
 			engine.registerJobWorker(step.jobType, async (job) => {
 				const output = await handler(job.variables, {

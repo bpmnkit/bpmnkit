@@ -54,9 +54,11 @@ returns a new builder, so a builder you keep a reference to never changes.
 | `.agent(id, { role, rank?, prompt, result? })` | service task, job type `agent:<role>` or `agent:<rank>:<role>` | `{ [result]: string }` — default `result` |
 | `.waitFor<P>(id, { correlationKey, message? })` | message catch event, correlated on `=<correlationKey>` | `P` |
 | `.approve<P>(id, { name?, assignee?, candidateGroups? })` | Camunda user task | `P` |
+| `.loop(id, body, { until, max, counter?, name?, escalate? })` | a bounded repeat — see [Loops](#loops) | what the body adds, and the counter |
 
-Step ids must be unique in the flow and must not be `start` or `end`, which the flow uses for
-its own events. `retries` defaults to 3. A wait's `message` defaults to its id.
+Step ids must be unique in the whole flow, loop bodies included, and must not be `start` or
+`end`, which the flow uses for its own events. `retries` defaults to 3. A wait's `message`
+defaults to its id.
 
 ### Typed data flow
 
@@ -89,6 +91,57 @@ engine heard about it, the handler runs again. Use `jobKey` (or a business key) 
 side effect idempotent. A handler that throws fails the job; the engine retries it until the
 step's retries run out and then raises an incident.
 
+## Loops
+
+`.loop()` repeats its body until a FEEL condition holds, at most `max` times. Agent work is
+mostly loops — review, fix, review again until the reviewer approves — and a loop with a bound
+cannot burn tokens forever:
+
+```typescript
+defineFlow("pr")
+  .input<{ pr: string }>()
+  .loop(
+    "review-loop",
+    (b) => b.agent("review", { role: "pr-review", prompt: "Review {{pr}}. Start with APPROVE or REJECT.", result: "verdict" }),
+    {
+      until: 'starts with(verdict, "APPROVE")',
+      max: 3,
+      between: (b) => b.agent("fix", { role: "feature", prompt: "Address this review of {{pr}}:\n{{verdict}}" }),
+      escalate: { candidateGroups: "leads" },
+    },
+  )
+  .run("merge", async ({ pr, round }) => ({ merged: await gh.merge(pr, `approved in round ${round}`) }))
+  .build()
+```
+
+The body and `between` are builders of their own. The body sees the variables from before the
+loop plus the counter; `between` also sees what the body added; the flow after the loop sees
+what the body added. Each round:
+
+1. runs the body,
+2. adds 1 to the counter (`round` unless you name another; it is 0 when the loop starts),
+3. ends the loop if `until` holds — otherwise, if `max` rounds are done, gives a person the
+   `escalate` user task and ends the loop after it; otherwise runs `between` and another round.
+
+So a PR approved on the first review is never "fixed", and after the third rejection the next
+step is a person, not a fourth agent run.
+
+| Option | Default | Description |
+|---|---|---|
+| `until` | — (required) | FEEL condition, with or without a leading `=`. It must evaluate to `true` or `false` |
+| `max` | — (required) | Rounds before a person is asked. A whole number, at least 1 |
+| `counter` | `"round"` | Variable counting the rounds done. A loop inside another needs its own |
+| `name` | the id | Label on the loop's gateway |
+| `between` | — | `(b) => b…` — steps run only when another round follows |
+| `escalate` | — | `{ name?, assignee?, candidateGroups? }` for the user task at `max` |
+
+In BPMN a loop is ordinary elements, so it opens in any modeler: a script task `<id>-start`
+sets the counter to 0, the exclusive gateway `<id>` joins the first round and the repeats,
+the body follows, the script task `<id>-next` counts the round, and the exclusive gateway
+`<id>-check` leaves to `<id>-end` (done), to the user task `<id>-escalate` (gave up), or —
+its default flow — through the `between` steps back to `<id>`. Those ids are taken, like step
+ids.
+
 ## `Flow`
 
 | Member | Description |
@@ -97,7 +150,8 @@ step's retries run out and then raises an incident.
 | `definitions()` | The same process as a `BpmnDefinitions` object |
 | `jobTypes` | Job types of the `.run()` steps |
 | `agentJobTypes` | Job types the agent workforce must serve |
-| `steps` | The steps, in order |
+| `steps` | The steps, in order; a loop's steps are in its `body` |
+| `runSteps` | Every `.run()` step, loop bodies included, with its `jobType` and `handler` |
 | `worker(options?)` | Starts polling the `.run()` job types |
 
 ### `flow.worker(options?)`
@@ -117,16 +171,15 @@ credentials. `stop()` resolves once the jobs in progress are settled.
 
 ## Testing a flow on the simulator
 
-`definitions()` deploys straight into [`@bpmnkit/engine`](/docs/packages/engine), and each
-`run` step exposes its job type and handler:
+`definitions()` deploys straight into [`@bpmnkit/engine`](/docs/packages/engine), and
+`runSteps` lists each handler step's job type and handler:
 
 ```typescript
 import { Engine } from "@bpmnkit/engine"
 
 const engine = new Engine()
 engine.deploy({ bpmn: review.definitions() })
-for (const step of review.steps) {
-  if (step.kind !== "run") continue
+for (const step of review.runSteps) {
   engine.registerJobWorker(step.jobType, async (job) => {
     job.complete({ ...(await step.handler(job.variables, { jobKey: job.id, processInstanceKey: "1", retries: 3 })) })
   })

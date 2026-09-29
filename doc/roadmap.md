@@ -232,8 +232,10 @@ Supersedes Phase 1-4 of "AIKit — Intent-Driven Process Automation" above: the 
       `agent:<rank>:<role>`, renders the task's `prompt` header with the job's variables,
       runs the CLI, and completes the job with its output. A crash forfeits only the job
       lock, so the engine hands the job out again when the workforce restarts
-- [ ] **Convergence loops**: `.loop(id, body, { until, max })` in `@bpmnkit/flow` — a bounded
-      repeat (exclusive gateway + round counter) that escalates to a user task at `max`
+- [x] **Convergence loops**: `.loop(id, body, { until, max, between?, counter?, escalate? })`
+      in `@bpmnkit/flow` — a bounded repeat (script-task round counter + exclusive gateways)
+      whose `between` steps run only when another round follows, and which escalates to a
+      user task at `max`
 - [ ] **Agent SDLC pattern + Claude Code skill**: plan fan-out, per-PR review convergence,
       CI-aware merge and human escalation, as a `packages/patterns` entry and a
       `bpmnkit-claude` skill that keeps Claude Code's plan on the engine

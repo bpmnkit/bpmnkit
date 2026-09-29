@@ -10,9 +10,11 @@ returns a new builder, so a builder you keep a reference to never changes.
 | `.agent(id, { role, rank?, prompt, result? })` | service task, job type `agent:<role>` or `agent:<rank>:<role>` | `{ [result]: string }` — default `result` |
 | `.waitFor<P>(id, { correlationKey, message? })` | message catch event, correlated on `=<correlationKey>` | `P` |
 | `.approve<P>(id, { name?, assignee?, candidateGroups? })` | Camunda user task | `P` |
+| `.loop(id, body, { until, max, counter?, name?, escalate? })` | a bounded repeat — see [Loops](#loops) | what the body adds, and the counter |
 
-Step ids must be unique in the flow and must not be `start` or `end`, which the flow uses for
-its own events. `retries` defaults to 3. A wait's `message` defaults to its id.
+Step ids must be unique in the whole flow, loop bodies included, and must not be `start` or
+`end`, which the flow uses for its own events. `retries` defaults to 3. A wait's `message`
+defaults to its id.
 
 ### Typed data flow
 

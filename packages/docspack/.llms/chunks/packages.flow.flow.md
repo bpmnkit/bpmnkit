@@ -6,7 +6,8 @@
 | `definitions()` | The same process as a `BpmnDefinitions` object |
 | `jobTypes` | Job types of the `.run()` steps |
 | `agentJobTypes` | Job types the agent workforce must serve |
-| `steps` | The steps, in order |
+| `steps` | The steps, in order; a loop's steps are in its `body` |
+| `runSteps` | Every `.run()` step, loop bodies included, with its `jobType` and `handler` |
 | `worker(options?)` | Starts polling the `.run()` job types |
 
 ### `flow.worker(options?)`

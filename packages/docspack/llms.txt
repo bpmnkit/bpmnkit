@@ -168,7 +168,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Drop — Share & Co-edit — Running your own](.llms/chunks/guides.drop.running-your-own.md) — 200 tokens
 - [Drop — Share & Co-edit — What Drop is not](.llms/chunks/guides.drop.what-drop-is-not.md) — 180 tokens
 - [Durable Agent Flows](.llms/chunks/guides.durable-agent-flows.md) — 213 tokens
-- [Durable Agent Flows — 1. Write the flow](.llms/chunks/guides.durable-agent-flows.1.-write-the-flow.md) — 251 tokens
+- [Durable Agent Flows — 1. Write the flow](.llms/chunks/guides.durable-agent-flows.1.-write-the-flow.md) — 423 tokens
 - [Durable Agent Flows — 2. Start an engine and deploy](.llms/chunks/guides.durable-agent-flows.2.-start-an-engine-and-deploy.md) — 487 tokens
 - [Durable Agent Flows — 4. Run it](.llms/chunks/guides.durable-agent-flows.4.-run-it.md) — 276 tokens
 - [Durable Agent Flows — Durable waits](.llms/chunks/guides.durable-agent-flows.durable-waits.md) — 239 tokens
@@ -351,10 +351,10 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/feel — Stability](.llms/chunks/packages.feel.stability.md) — 39 tokens
 - [@bpmnkit/flow](.llms/chunks/packages.flow.md) — 175 tokens
 - [@bpmnkit/flow — Installation](.llms/chunks/packages.flow.installation.md) — 192 tokens
-- [@bpmnkit/flow — Steps](.llms/chunks/packages.flow.steps.md) — 544 tokens
-- [@bpmnkit/flow — `Flow`](.llms/chunks/packages.flow.flow.md) — 327 tokens
-- [@bpmnkit/flow — Testing a flow on the simulator](.llms/chunks/packages.flow.testing-a-flow-on-the-simulator.md) — 143 tokens
-- [@bpmnkit/flow — The agent contract](.llms/chunks/packages.flow.the-agent-contract.md) — 203 tokens
+- [@bpmnkit/flow — Steps](.llms/chunks/packages.flow.steps.md) — 592 tokens
+- [@bpmnkit/flow — Loops](.llms/chunks/packages.flow.loops.md) — 665 tokens
+- [@bpmnkit/flow — `Flow`](.llms/chunks/packages.flow.flow.md) — 362 tokens
+- [@bpmnkit/flow — Testing a flow on the simulator](.llms/chunks/packages.flow.testing-a-flow-on-the-simulator.md) — 328 tokens
 - [@bpmnkit/operate](.llms/chunks/packages.operate.md) — 186 tokens
 - [@bpmnkit/operate — What it does, and what it does not do](.llms/chunks/packages.operate.what-it-does-and-what-it-does-not-do.md) — 484 tokens
 - [@bpmnkit/operate — Installation](.llms/chunks/packages.operate.installation.md) — 488 tokens

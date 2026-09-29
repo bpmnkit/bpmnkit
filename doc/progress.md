@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-09-29 — `@bpmnkit/flow`: convergence loops
+
+- `.loop(id, body, { until, max, between?, counter?, name?, escalate? })` repeats `body` until the FEEL condition `until` holds, at most `max` rounds. `between` steps run only when another round follows, so review → (fix → review)* needs no wasted fix after an approval. At `max` a person gets a user task (`escalate`) and the flow continues after it.
+- BPMN is ordinary elements: script task `<id>-start` (counter = 0), exclusive gateway `<id>` (join), the body, script task `<id>-next` (counter + 1), exclusive gateway `<id>-check` with a `done` exit, a `gave up` exit guarded by `not(until)` so no evaluation order can pick it over `done`, and a default flow through `between` back to `<id>`. The counter (default `round`) is typed into the body, `between` and the rest of the flow; nested loops must use distinct counters. Step ids are unique across the whole flow, loop elements included.
+- `Flow.runSteps` lists every `.run()` step including those in loops; `jobTypes`, `agentJobTypes` and the worker use it.
+- Fixed while testing: an `.agent()` inside a callback widened its `result` name to `string` (an index signature instead of `{ verdict: string }`); `R` is now a `const` type parameter.
+- Tests: model shape, simulator runs (converges, first-round exit without `between`, escalation at `max`, nested loops), id/counter/max validation, type-level checks; verified on reebe (Postgres) — approval in round 2, and escalation after 3 rounds with 2 fixes. Docs: `packages/flow.md` "Loops", the guide's example now loops review/fix.
+
 ## 2026-09-29 — Durable agent flows: `@bpmnkit/flow` and the `casen agent` workforce
 
 Prompted by a study of [nanobpm.io](https://nanobpm.io/): its argument is that an agent should design the graph and a durable engine should run it, because a plan held in an LLM's context is lost on the first compaction or reboot. bpmnkit already had the engine, the builder and the worker client; these two items join them up (`doc/roadmap.md` → "Durable Agent Flows").

@@ -4,7 +4,7 @@ import {
 	type WorkerClientOptions,
 	createWorkerClient,
 } from "@bpmnkit/worker-client"
-import type { FlowStep } from "./flow.js"
+import type { RunStep } from "./flow.js"
 
 export interface FlowWorkerOptions extends WorkerClientOptions {
 	/** Use this client instead of creating one from the other options. */
@@ -33,11 +33,8 @@ export interface FlowWorker {
 	stop(): Promise<void>
 }
 
-/** Polls every `run` step's job type and settles each job with its handler's outcome. */
-export function startFlowWorker(
-	steps: readonly FlowStep[],
-	options: FlowWorkerOptions,
-): FlowWorker {
+/** Polls each `run` step's job type and settles each job with its handler's outcome. */
+export function startFlowWorker(steps: readonly RunStep[], options: FlowWorkerOptions): FlowWorker {
 	const client = options.client ?? createWorkerClient({ workerName: "bpmnkit-flow", ...options })
 	const controller = new AbortController()
 	options.signal?.addEventListener("abort", () => controller.abort(), { once: true })
@@ -45,22 +42,19 @@ export function startFlowWorker(
 	const onError =
 		options.onError ?? ((error: Error) => console.warn(`[flow-worker] ${error.message}`))
 
-	const loops = steps.flatMap((step) => {
-		if (step.kind !== "run") return []
-		return [
-			(async () => {
-				const jobs = client.poll(step.jobType, {
-					maxJobs: options.maxJobs ?? 1,
-					timeout: options.timeout,
-					onError,
-					signal: controller.signal,
-				})
-				for await (const job of jobs) {
-					await settle(job, step.handler, onError)
-				}
-			})(),
-		]
-	})
+	const loops = steps.map((step) =>
+		(async () => {
+			const jobs = client.poll(step.jobType, {
+				maxJobs: options.maxJobs ?? 1,
+				timeout: options.timeout,
+				onError,
+				signal: controller.signal,
+			})
+			for await (const job of jobs) {
+				await settle(job, step.handler, onError)
+			}
+		})(),
+	)
 	const done = Promise.all(loops).then(() => undefined)
 	// A rejected `done` nobody awaits must not crash the process before the caller looks.
 	done.catch(() => {})
@@ -76,7 +70,7 @@ export function startFlowWorker(
 
 async function settle(
 	job: ActivatedJob,
-	handler: Extract<FlowStep, { kind: "run" }>["handler"],
+	handler: RunStep["handler"],
 	onError: (error: Error) => void,
 ): Promise<void> {
 	let output: unknown
