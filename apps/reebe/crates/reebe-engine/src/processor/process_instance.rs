@@ -44,7 +44,7 @@ impl RecordProcessor for ProcessInstanceCreationProcessor {
             }
         } else {
             return Err(EngineError::InvalidState(
-                "Either processDefinitionKey or bpmnProcessId is required".to_string(),
+                "Either processDefinitionKey or processDefinitionId (bpmnProcessId) is required".to_string(),
             ));
         };
 

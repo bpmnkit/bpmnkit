@@ -67,13 +67,15 @@ else, so a crash in round 2 resumes in round 2.
 ## 2. Start an engine and deploy
 
 ```sh
-casen reebe start --port 26500            # local engine, SQLite-backed
+casen reebe start --port 26500 --grpc-port 26501   # local engine, SQLite-backed
 casen profile create local --base-url http://localhost:26500/v2 --auth-type none
 casen profile use local
 casen deploy deploy pr-review.bpmn
 ```
 
-Any Camunda 8 cluster works the same way — point the profile at it instead.
+REST goes on 26500 because that is where `casen deploy` and the flow worker look by default
+(`ZEEBE_ADDRESS`); Reebe's gRPC gateway, which also defaults to 26500, moves to 26501. Any
+Camunda 8 cluster works the same way — point the profile and `ZEEBE_ADDRESS` at it instead.
 
 ## 3. Hire the workforce
 

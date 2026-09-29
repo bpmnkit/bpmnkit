@@ -67,6 +67,10 @@ jobs:
       - name: Test
         run: cargo test --manifest-path apps/reebe/Cargo.toml --workspace --locked
 
-      # Nothing tests the SQLite backend; at least keep the embedded build compiling.
+      # The integration suites run on PostgreSQL only; this runs the storage
+      # layer's SQLite tests and keeps the embedded server build compiling.
+      - name: Test SQLite storage
+        run: cargo test --manifest-path apps/reebe/Cargo.toml -p reebe-db --no-default-features --features sqlite --locked
+
       - name: Check embedded (SQLite) build
         run: cargo check --manifest-path apps/reebe/Cargo.toml -p reebe-server --no-default-features --features embedded --locked

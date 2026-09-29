@@ -668,7 +668,7 @@ whose condition can never hold still counts as reachable).
 
 ### What is not supported
 
-- **gRPC API** — the gateway on port 26500 implements the Zeebe `Gateway` service's
+- **gRPC API** — the gateway on port 26500 (`--grpc-port` / `REEBE_GRPC_PORT` to move it) implements the Zeebe `Gateway` service's
   job, instance (including modification), message, signal, variable, incident, decision
   and deployment calls; the REST API is the better-tested surface
 - **Elasticsearch / OpenSearch exporters** — no exporter framework yet

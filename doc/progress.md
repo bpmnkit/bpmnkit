@@ -1,5 +1,15 @@
 # Progress
 
+## 2026-09-29 — Reebe: Camunda 8 v2 field names, working SQLite mode, configurable gRPC port
+
+Found while running the Durable Agent Flows guide end to end on a local engine.
+
+- `POST /v2/process-instances` accepts `processDefinitionId` (Camunda 8 v2) as well as `bpmnProcessId`; `POST /v2/messages/publication` and `/correlation` accept `name` as well as `messageName` — so `casen process-instance create` and `casen message publish` work against Reebe.
+- Embedded (SQLite) mode: a new migration drops the `message_subscriptions.element_id` column the Postgres schema never had and the insert never filled, so message catch events open again; user tasks without candidate groups or users are stored with the column default `[]` (a bound NULL broke the NOT NULL column) and read back as none, as on Postgres; message lookup and expiry, incident resolution and batch-operation completion bind the current time instead of calling `NOW()`, which SQLite does not have.
+- `reebe-server --grpc-port` / `REEBE_GRPC_PORT` (default 26500) moves the gRPC gateway, and REST and gRPC on the same port is refused up front. `casen reebe start --grpc-port` passes it through; `--port 26500 --grpc-port 26501` puts REST where `ZEEBE_ADDRESS` points by default. The guide and `cli/casen.md` said `casen reebe start --port 26500`, which could not start; both are corrected, and the missing-binary hint now builds the embedded server.
+- Tests: `reebe-db/tests/sqlite.rs` (the first tests of the SQLite backend; each failed before its fix), serde alias tests in `reebe-api`, `casen reebe` argument test; the reebe workflow runs the SQLite tests. Verified by following the guide on a fresh embedded Reebe: instance created with `processDefinitionId`, agent step, message published with `name`, user task, instance COMPLETED, no engine errors.
+- Still open: task retries fixed at 3, no task headers on ad-hoc sub-process and user-task jobs, instance search ignores `processInstanceKey`, no user-task `name`, jobs report `processDefinitionVersion` 0.
+
 ## 2026-09-29 — `@bpmnkit/flow`: convergence loops
 
 - `.loop(id, body, { until, max, between?, counter?, name?, escalate? })` repeats `body` until the FEEL condition `until` holds, at most `max` rounds. `between` steps run only when another round follows, so review → (fix → review)* needs no wasted fix after an approval. At `max` a person gets a user task (`escalate`) and the flow continues after it.

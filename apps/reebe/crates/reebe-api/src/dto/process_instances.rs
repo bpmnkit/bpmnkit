@@ -5,6 +5,8 @@ use crate::pagination::PageRequest;
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CreateProcessInstanceRequest {
+    /// Camunda 8 v2 calls it `processDefinitionId`; `bpmnProcessId` is the older name.
+    #[serde(alias = "processDefinitionId")]
     pub bpmn_process_id: Option<String>,
     pub process_definition_key: Option<String>,
     pub version: Option<i32>,
@@ -65,6 +67,20 @@ impl From<reebe_db::state::process_instances::ProcessInstance> for ProcessInstan
             start_date: pi.start_date.to_rfc3339(),
             end_date: pi.end_date.map(|d| d.to_rfc3339()),
             tenant_id: pi.tenant_id,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn create_accepts_the_camunda_8_v2_process_definition_id() {
+        for field in ["processDefinitionId", "bpmnProcessId"] {
+            let req: CreateProcessInstanceRequest =
+                serde_json::from_value(serde_json::json!({ field: "order" })).unwrap();
+            assert_eq!(req.bpmn_process_id.as_deref(), Some("order"), "{field}");
         }
     }
 }

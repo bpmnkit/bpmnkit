@@ -227,9 +227,21 @@ impl<'a> UserTaskRepository<'a> {
     }
 }
 
+/// A list column as SQLite stores it. The columns are `NOT NULL DEFAULT '[]'`, and a
+/// bound NULL does not fall back to the default, so no list is stored as `[]`.
 #[cfg(feature = "sqlite")]
-fn serialize_string_vec(v: &Option<Vec<String>>) -> Option<String> {
-    v.as_ref().map(|arr| serde_json::to_string(arr).unwrap_or_else(|_| "[]".to_string()))
+fn serialize_string_vec(v: &Option<Vec<String>>) -> String {
+    v.as_ref()
+        .and_then(|arr| serde_json::to_string(arr).ok())
+        .unwrap_or_else(|| "[]".to_string())
+}
+
+/// Reads a list column written by [`serialize_string_vec`]; `[]` reads as no list, as
+/// PostgreSQL's NULL does.
+#[cfg(feature = "sqlite")]
+fn deserialize_string_vec(s: Option<String>) -> Option<Vec<String>> {
+    s.and_then(|s| serde_json::from_str::<Vec<String>>(&s).ok())
+        .filter(|v| !v.is_empty())
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
@@ -261,12 +273,8 @@ fn row_to_user_task(r: crate::DbRow) -> UserTask {
 
     #[cfg(feature = "sqlite")]
     {
-        let candidate_groups: Option<Vec<String>> = r
-            .get::<Option<String>, _>("candidate_groups")
-            .and_then(|s| serde_json::from_str(&s).ok());
-        let candidate_users: Option<Vec<String>> = r
-            .get::<Option<String>, _>("candidate_users")
-            .and_then(|s| serde_json::from_str(&s).ok());
+        let candidate_groups = deserialize_string_vec(r.get("candidate_groups"));
+        let candidate_users = deserialize_string_vec(r.get("candidate_users"));
         let due_date: Option<DateTime<Utc>> = r
             .get::<Option<String>, _>("due_date")
             .and_then(|s| s.parse().ok());
