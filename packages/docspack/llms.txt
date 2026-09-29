@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.0.0. 340 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.0.1. 352 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -19,7 +19,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [casen CLI — Plugins](.llms/chunks/cli.casen.plugins.md) — 270 tokens
 - [casen CLI — BPMN generation pipeline](.llms/chunks/cli.casen.bpmn-generation-pipeline.md) — 341 tokens
 - [casen CLI — AIKit Skills](.llms/chunks/cli.casen.aikit-skills.md) — 196 tokens
-- [casen CLI — Worker commands](.llms/chunks/cli.casen.worker-commands.md) — 342 tokens
+- [casen CLI — Worker commands](.llms/chunks/cli.casen.worker-commands.md) — 233 tokens
+- [casen CLI — Local engine (Reebe)](.llms/chunks/cli.casen.local-engine-reebe.md) — 291 tokens
 - [casen CLI — Local proxy](.llms/chunks/cli.casen.local-proxy.md) — 305 tokens
 - [casen CLI — Local proxy — Who can use the proxy](.llms/chunks/cli.casen.local-proxy-who-can-use-the-proxy.md) — 769 tokens
 - [casen CLI — MCP Server Mode](.llms/chunks/cli.casen.mcp-server-mode.md) — 204 tokens
@@ -166,6 +167,11 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Drop — Share & Co-edit — Reviewing it together — Rate limiting the edit baton](.llms/chunks/guides.drop.reviewing-it-together-rate-limiting-the-edit-baton.md) — 139 tokens
 - [Drop — Share & Co-edit — Running your own](.llms/chunks/guides.drop.running-your-own.md) — 200 tokens
 - [Drop — Share & Co-edit — What Drop is not](.llms/chunks/guides.drop.what-drop-is-not.md) — 180 tokens
+- [Durable Agent Flows](.llms/chunks/guides.durable-agent-flows.md) — 213 tokens
+- [Durable Agent Flows — 1. Write the flow](.llms/chunks/guides.durable-agent-flows.1.-write-the-flow.md) — 251 tokens
+- [Durable Agent Flows — 2. Start an engine and deploy](.llms/chunks/guides.durable-agent-flows.2.-start-an-engine-and-deploy.md) — 487 tokens
+- [Durable Agent Flows — 4. Run it](.llms/chunks/guides.durable-agent-flows.4.-run-it.md) — 276 tokens
+- [Durable Agent Flows — Durable waits](.llms/chunks/guides.durable-agent-flows.durable-waits.md) — 239 tokens
 - [Gateways & Branching — Exclusive Gateway (XOR)](.llms/chunks/guides.gateways.exclusive-gateway-xor.md) — 218 tokens
 - [Gateways & Branching — Parallel Gateway (AND)](.llms/chunks/guides.gateways.parallel-gateway-and.md) — 143 tokens
 - [Gateways & Branching — Inclusive Gateway (OR)](.llms/chunks/guides.gateways.inclusive-gateway-or.md) — 208 tokens
@@ -343,6 +349,12 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/feel — Formatting and highlighting](.llms/chunks/packages.feel.formatting-and-highlighting.md) — 151 tokens
 - [@bpmnkit/feel — API Reference](.llms/chunks/packages.feel.api-reference.md) — 356 tokens
 - [@bpmnkit/feel — Stability](.llms/chunks/packages.feel.stability.md) — 39 tokens
+- [@bpmnkit/flow](.llms/chunks/packages.flow.md) — 175 tokens
+- [@bpmnkit/flow — Installation](.llms/chunks/packages.flow.installation.md) — 192 tokens
+- [@bpmnkit/flow — Steps](.llms/chunks/packages.flow.steps.md) — 544 tokens
+- [@bpmnkit/flow — `Flow`](.llms/chunks/packages.flow.flow.md) — 327 tokens
+- [@bpmnkit/flow — Testing a flow on the simulator](.llms/chunks/packages.flow.testing-a-flow-on-the-simulator.md) — 143 tokens
+- [@bpmnkit/flow — The agent contract](.llms/chunks/packages.flow.the-agent-contract.md) — 203 tokens
 - [@bpmnkit/operate](.llms/chunks/packages.operate.md) — 186 tokens
 - [@bpmnkit/operate — What it does, and what it does not do](.llms/chunks/packages.operate.what-it-does-and-what-it-does-not-do.md) — 484 tokens
 - [@bpmnkit/operate — Installation](.llms/chunks/packages.operate.installation.md) — 488 tokens
@@ -355,7 +367,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/plugins — Styles](.llms/chunks/packages.plugins.styles.md) — 247 tokens
 - [@bpmnkit/worker-client](.llms/chunks/packages.worker-client.md) — 141 tokens
 - [@bpmnkit/worker-client — `createWorkerClient(options?)`](.llms/chunks/packages.worker-client.createworkerclient-options.md) — 267 tokens
-- [@bpmnkit/worker-client — `client.poll(jobType, options?)`](.llms/chunks/packages.worker-client.client.poll-jobtype-options.md) — 462 tokens
+- [@bpmnkit/worker-client — `client.poll(jobType, options?)`](.llms/chunks/packages.worker-client.client.poll-jobtype-options.md) — 494 tokens
 - [@bpmnkit/worker-client — `job.complete(variables?)`](.llms/chunks/packages.worker-client.job.complete-variables.md) — 159 tokens
 - [@bpmnkit/worker-client — `job.throwError(errorCode, message, variables?)`](.llms/chunks/packages.worker-client.job.throwerror-errorcode-message-variables.md) — 213 tokens
 - [@bpmnkit/worker-client — OAuth2 (Camunda SaaS)](.llms/chunks/packages.worker-client.oauth2-camunda-saas.md) — 150 tokens

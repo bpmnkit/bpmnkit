@@ -96,6 +96,21 @@ export interface PollOptions {
 	 * retried: they end the `poll()` loop by throwing.
 	 */
 	onError?: (error: Error) => void
+	/** Stops the poll: the generator returns once the signal aborts, even mid-request or mid-pause. */
+	signal?: AbortSignal
+}
+
+/** Resolves after `ms`, or as soon as `signal` aborts. */
+function sleep(ms: number, signal: AbortSignal | undefined): Promise<void> {
+	return new Promise((resolve) => {
+		const timer = setTimeout(done, ms)
+		signal?.addEventListener("abort", done, { once: true })
+		function done(): void {
+			clearTimeout(timer)
+			signal?.removeEventListener("abort", done)
+			resolve()
+		}
+	})
 }
 
 /** A failure that retrying cannot fix, such as rejected credentials. */
@@ -181,7 +196,7 @@ export function createWorkerClient<J extends JobContractMap<J> = UntypedJobs>(
 		return `Bearer ${tokenCache.token}`
 	}
 
-	async function zeebePost(path: string, body: unknown): Promise<Response> {
+	async function zeebePost(path: string, body: unknown, signal?: AbortSignal): Promise<Response> {
 		const auth = await getAuthHeader()
 		const headers: Record<string, string> = { "Content-Type": "application/json" }
 		if (auth) headers.authorization = auth
@@ -189,6 +204,7 @@ export function createWorkerClient<J extends JobContractMap<J> = UntypedJobs>(
 			method: "POST",
 			headers,
 			body: JSON.stringify(body),
+			signal,
 		})
 	}
 
@@ -216,17 +232,23 @@ export function createWorkerClient<J extends JobContractMap<J> = UntypedJobs>(
 				console.warn(`[worker-client] ${error.message}; retrying`)
 			})
 
-		for (;;) {
+		const signal = pollOptions?.signal
+
+		while (!signal?.aborted) {
 			const startedAt = Date.now()
 			let rawJobs: Array<Record<string, unknown>> = []
 			try {
-				const res = await zeebePost("/v2/jobs/activation", {
-					type: jobType,
-					maxJobsToActivate: maxJobs,
-					timeout,
-					worker: workerName,
-					requestTimeout,
-				})
+				const res = await zeebePost(
+					"/v2/jobs/activation",
+					{
+						type: jobType,
+						maxJobsToActivate: maxJobs,
+						timeout,
+						worker: workerName,
+						requestTimeout,
+					},
+					signal,
+				)
 				if (res.ok) {
 					const data = (await res.json()) as { jobs?: Array<Record<string, unknown>> }
 					rawJobs = data.jobs ?? []
@@ -237,11 +259,13 @@ export function createWorkerClient<J extends JobContractMap<J> = UntypedJobs>(
 					onError(new Error(message))
 				}
 			} catch (err) {
+				if (signal?.aborted) return
 				if (err instanceof NonRetryableError) throw err
 				onError(err instanceof Error ? err : new Error(String(err)))
 			}
 
 			for (const raw of rawJobs) {
+				if (signal?.aborted) return
 				const key = String(raw.key ?? raw.jobKey ?? "")
 				const job: ActivatedJob = {
 					key,
@@ -269,7 +293,7 @@ export function createWorkerClient<J extends JobContractMap<J> = UntypedJobs>(
 			if (rawJobs.length === 0) {
 				// A long poll that already waited its time needs no extra pause.
 				const pause = IDLE_POLL_MS - (Date.now() - startedAt)
-				if (pause > 0) await new Promise((r) => setTimeout(r, pause))
+				if (pause > 0) await sleep(pause, signal)
 			}
 		}
 	}

@@ -1,0 +1,41 @@
+{
+	"name": "@bpmnkit/flow",
+	"version": "0.1.0",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"files": ["LICENSE", "README.md", "dist/**/*.js", "dist/**/*.d.ts"],
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"build": "tsc",
+		"typecheck": "tsc --noEmit && tsc -p tsconfig.test.json",
+		"test": "vitest run",
+		"check": "biome check ."
+	},
+	"dependencies": {
+		"@bpmnkit/core": "workspace:^",
+		"@bpmnkit/worker-client": "workspace:^"
+	},
+	"description": "Code-first durable flows — one TypeScript definition yields the BPMN, the job types, the message correlation and the worker",
+	"keywords": ["bpmn", "camunda", "zeebe", "workflow", "durable-execution", "agents", "typescript"],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bpmnkit/monorepo"
+	},
+	"homepage": "https://bpmnkit.com",
+	"bugs": {
+		"url": "https://github.com/bpmnkit/monorepo/issues"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

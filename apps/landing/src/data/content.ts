@@ -92,6 +92,7 @@ const ROLES: Readonly<Record<string, string>> = {
 	"@bpmnkit/connectors": "The Camunda 8 out-of-the-box connector catalog",
 	"@bpmnkit/patterns": "Domain process patterns for the AI pipeline",
 	"@bpmnkit/worker-client": "Thin Zeebe client for standalone workers",
+	"@bpmnkit/flow": "Code-first durable flows — BPMN, job types and worker from one definition",
 	"@bpmnkit/proxy": "Local AI bridge and Camunda API proxy",
 	"@bpmnkit/reebe-wasm": "The Reebe dev/test engine, compiled to WebAssembly",
 	"@bpmnkit/casen-report": "casen plugin — HTML incident and SLA reports",

@@ -12,35 +12,22 @@ casen worker start send-invoice
 ```
 
 
-## Local engine (Reebe)
+## Agent workforce
 
-Reebe is a **dev/test** workflow engine (~50 MB) that serves the Zeebe API locally, so you
-can deploy and run processes on your machine or in CI without a Camunda 8 cluster. It is
-[Experimental](/docs/getting-started/stability#product-tiers) and single-node: do not run it
-in production. Reebe is a clean-room implementation written from Camunda's public
-documentation, and is not affiliated with or endorsed by Camunda. "Zeebe" and "Camunda" are
-trademarks of Camunda Services GmbH.
+Hire coding-agent CLIs as durable job workers. They serve the `.agent()` steps of
+[`@bpmnkit/flow`](/docs/packages/flow) flows — any service task with job type `agent:<role>` or
+`agent:<rank>:<role>` and a `prompt` task header. See
+[Durable Agent Flows](/docs/guides/durable-agent-flows).
 
 ```sh
-# Embedded SQLite, no external database
-casen reebe start
+# Hire: everything after -- is the command; the prompt goes on stdin unless an argument has {prompt}
+casen agent hire claude --roles plan,pr-review --rank senior -- claude -p
+casen agent hire copilot --roles feature --instances 3 -- copilot -p "{prompt}"
 
-# Custom port — match ZEEBE_ADDRESS, which defaults to http://localhost:26500
-casen reebe start --port 26500
-
-# PostgreSQL instead of the embedded database
-casen reebe start --database-url postgres://user:pass@localhost/reebe
+casen agent list            # hired agents and the job types they serve
+casen agent fire copilot    # remove one
+casen agent work            # run the workforce against the active profile until Ctrl+C
 ```
-
-| Flag | Default | Description |
-|---|---|---|
-| `--port` | `8080` | HTTP port to listen on |
-| `--database-url` | embedded SQLite | PostgreSQL connection URL |
-| `--config` | `config.toml` | Path to the engine config file |
-
-`casen reebe` on its own is shorthand for `casen reebe start`. The command runs the
-`reebe-server` binary; build it with
-`cargo install --path apps/reebe/crates/reebe-server` if it is not on your `PATH`.
 
 ---
 Source: https://bpmnkit.com/docs/cli/casen

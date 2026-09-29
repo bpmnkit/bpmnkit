@@ -265,6 +265,50 @@ describe("idle and failing polls", () => {
 	})
 })
 
+describe("stopping a poll", () => {
+	it("returns while idle once the signal aborts", async () => {
+		vi.useFakeTimers()
+		const calls = stubFetch(() => jobsReply([]))
+		const controller = new AbortController()
+		const next = createWorkerClient().poll("send-email", { signal: controller.signal }).next()
+		await vi.advanceTimersByTimeAsync(1_000)
+		controller.abort()
+		expect(await next).toEqual({ done: true, value: undefined })
+		expect(calls).toHaveLength(1)
+	})
+
+	it("returns when the abort cancels an activation request in flight", async () => {
+		const controller = new AbortController()
+		let requested: () => void = () => {}
+		const inFlight = new Promise<void>((resolve) => {
+			requested = resolve
+		})
+		vi.stubGlobal("fetch", (_url: string, init: RequestInit) => {
+			requested()
+			return new Promise((_resolve, reject) => {
+				init.signal?.addEventListener("abort", () =>
+					reject(new DOMException("aborted", "AbortError")),
+				)
+			})
+		})
+		const onError = vi.fn()
+		const next = createWorkerClient()
+			.poll("send-email", { signal: controller.signal, onError })
+			.next()
+		await inFlight
+		controller.abort()
+		expect(await next).toEqual({ done: true, value: undefined })
+		expect(onError).not.toHaveBeenCalled()
+	})
+
+	it("does not poll when the signal has already aborted", async () => {
+		const calls = stubFetch(() => jobsReply([rawJob()]))
+		const gen = createWorkerClient().poll("send-email", { signal: AbortSignal.abort() })
+		expect(await gen.next()).toEqual({ done: true, value: undefined })
+		expect(calls).toHaveLength(0)
+	})
+})
+
 describe("settling a job", () => {
 	async function activate(settle: Handler = ok) {
 		const calls = zeebeWith([rawJob()], settle)

@@ -8,6 +8,7 @@ import {
 	userTaskGroup,
 } from "../generated/commands.js"
 import type { CommandGroup } from "../types.js"
+import { agentGroup } from "./agent.js"
 import { askGroup } from "./ask.js"
 import {
 	getDmnReqsXmlCmd,
@@ -85,6 +86,7 @@ const workerGroup: CommandGroup = {
 
 /** Pinned groups shown above the separator in the main TUI menu. */
 export const pinnedGroups: CommandGroup[] = [
+	agentGroup,
 	askGroup,
 	deployGroup,
 	devGroup,

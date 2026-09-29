@@ -28,6 +28,7 @@ export const PUBLISHED = [
 	"packages/connectors",
 	"packages/patterns",
 	"packages/worker-client",
+	"packages/flow",
 	"packages/user-tasks",
 	"apps/cli",
 	"packages/cli-sdk",
@@ -148,6 +149,7 @@ export const TIER = {
 
 	"packages/operate": "experimental",
 	"packages/user-tasks": "experimental",
+	"packages/flow": "experimental",
 	"apps/reebe-wasm": "experimental",
 }
 
