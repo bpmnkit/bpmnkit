@@ -1,5 +1,16 @@
 # Progress
 
+## 2026-09-29 — `parseProcessText`: conditions in prose become branch labels
+
+- Each branch condition is checked with `parseExpression` from `@bpmnkit/feel`, the check the `feel-syntax` lint rule uses. If it is not FEEL, the text moves into the branch label (`Yes: applicant is eligible`), the condition is dropped, and a problem is reported with its line. When its sibling keeps a FEEL condition, the lone-branch rule makes it the default.
+- Replayed on glm-4.7-flash's 12 recorded answers:
+  - invalid-FEEL lint errors (which fail at deploy time): 7 → 0
+  - `feel/empty-condition`: 3 → 9
+  - total errors per run: unchanged at 1.5
+- The guide shows two FEEL examples in the branch line. This is unmeasured and changes the generation cache key.
+- Size: `landing.js` grows from 297.6 to 316.4 kB minified, for the FEEL parser.
+- Tests: prose conditions from golden prompt 12, a prose branch beside a FEEL one becoming the default, and a compound FEEL condition kept.
+
 ## 2026-09-29 — Drop describe-to-diagram: model chosen from the benchmark
 
 - `AI_GENERATE_MODEL` is `@cf/zai-org/glm-4.7-flash` (thinking off). On the 12 golden prompts its medians were 238 ms to first byte, 0.8 s to first shape and 2.0 s total, at about 5 neurons per generation. Its first byte never exceeded 0.7 s. gemma-4 passed more assertions (7/12 vs 5/12) but waited 3–53 s for its first byte in 5 of 12 runs. gpt-oss and qwen3 reason for 500–1,250 tokens and take 5–20 s. Full table and reasoning in `doc/drop-ai-generate-analysis.md` §8; the raw results are committed under `apps/drop/bench-results/`.

@@ -27,6 +27,8 @@ in `fixes`:
 
 - flow ids are generated
 - branches that meet at a task or event are joined by an exclusive gateway first
+- a condition that is not FEEL (`applicant is eligible`) moves into the branch label and is
+  reported, so it cannot fail at deploy time
 - the only unconditioned branch of an xor/or split becomes its default
 - a missing start event is added
 - an end event is added after every path that stops elsewhere

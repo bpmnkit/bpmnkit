@@ -162,6 +162,42 @@ describe("parseProcessText", () => {
 		expect(elements(text).find((e) => e.id === "w")?.eventType).toBe("message")
 	})
 
+	it("keeps a condition written in prose as the branch label, not as FEEL", () => {
+		// glm-4.7-flash, golden prompt 12.
+		const text = [
+			"s[start] > check[xor Eligible?]",
+			"check >(Yes: applicant is eligible) review[user Review application] > a[end]",
+			"check >(No: applicant not eligible) reject[user Reject application] > b[end]",
+			"s2[start] > g[xor Big?]",
+			"g >(Yes: amount > 1000) big[end]",
+			"g >(No: amount is small) small[end]",
+		].join("\n")
+		const { problems } = parseProcessText(text)
+		expect(problems).toEqual([
+			{
+				line: 2,
+				message: 'condition "applicant is eligible" is not FEEL; kept as the branch label',
+			},
+			{
+				line: 3,
+				message: 'condition "applicant not eligible" is not FEEL; kept as the branch label',
+			},
+			{ line: 6, message: 'condition "amount is small" is not FEEL; kept as the branch label' },
+		])
+		const byTarget = new Map(flows(text).map((f) => [f.to, f]))
+		expect(byTarget.get("review")).toMatchObject({ name: "Yes: applicant is eligible" })
+		expect(byTarget.get("review")?.condition).toBeUndefined()
+		// With its FEEL sibling kept, the prose branch becomes the default.
+		expect(byTarget.get("big")).toMatchObject({ condition: "= amount > 1000" })
+		expect(byTarget.get("small")).toMatchObject({ name: "No: amount is small", isDefault: true })
+	})
+
+	it("keeps a condition that is FEEL", () => {
+		const text =
+			's[start] > g[xor Ok?]\ng >(Yes: status = "ok" and count(items) > 0) a[end]\ng >(No) b[end]'
+		expect(parseProcessText(text).problems).toEqual([])
+	})
+
 	it("keeps only one default per gateway, and none off a parallel gateway", () => {
 		const text = [
 			"s[start] > g[xor]",

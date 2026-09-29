@@ -229,10 +229,18 @@ type the golden set expects.
   prompt change is not yet measured.
 - **Failures no model can fix in v1:** 06 needs a multi-instance sub-process, which the format
   cannot express. 11 expects an error boundary that the prompt never asks for.
-- **Next cheap win: conditions in prose.** 7 of glm's 18 lint errors are conditions written as
-  prose (`is not approved`) instead of FEEL. The parser could keep such a condition as the branch
-  label and leave the expression empty. The lone-branch default rule and the lint warning would
-  then point the reader at it, instead of an expression that fails at deploy time.
+- **Conditions in prose** (done). 7 of glm's 18 lint errors were conditions written as prose
+  (`applicant is eligible`) instead of FEEL. The parser now checks each condition with the same
+  FEEL parser the linter uses. If it is not FEEL, the text becomes the branch label
+  (`Yes: applicant is eligible`) and the condition is left empty. When the other branch keeps its
+  FEEL condition, the lone-branch rule makes the prose branch the default.
+
+  Replayed on glm's answers, the total error count is unchanged (1.5 per run). But the invalid-FEEL
+  errors, which fail at deploy time, go from 7 to 0, and `feel/empty-condition` goes from 3 to 9.
+  Every remaining error is now a condition to fill in, with the intent written next to it.
+
+  The guide also shows two FEEL examples (`amount > 1000`, `status = "ok"`). That prompt change is
+  unmeasured. Parsing FEEL in the browser adds 19 kB to `landing.js` (297.6 → 316.4 kB minified).
 
 ## 9. Issues found along the way
 

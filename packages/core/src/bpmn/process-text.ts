@@ -21,6 +21,7 @@
  * @packageDocumentation
  */
 
+import { parseExpression } from "@bpmnkit/feel"
 import { slugify, uniqueId } from "../plan/slug.js"
 import type { BpmnDefinitions, BpmnElementType } from "./bpmn-model.js"
 import { expand } from "./compact.js"
@@ -36,7 +37,7 @@ export const PROCESS_TEXT_GUIDE = `Format — one path per line, nothing else:
 # Process name            (first line)
 a > b > c                 sequence flow
 id[kind Name]             declare a node the first time it appears; afterwards write only id
-gw >(Label: condition) x  conditional branch, condition in FEEL
+gw >(Label: condition) x  conditional branch, condition in FEEL (amount > 1000, status = "ok")
 gw >(Label: default) y    branch taken when no condition holds
 Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate link cancel)
@@ -222,10 +223,34 @@ class Reader {
 		for (let k = 0; k < labels.length; k++) {
 			const from = refs[k]?.id
 			const to = refs[k + 1]?.id
-			if (from !== undefined && to !== undefined)
-				this.edges.push({ from, to, line: n, ...edgeLabel(labels[k]) })
+			if (from !== undefined && to !== undefined) {
+				this.edges.push({ from, to, line: n, ...this.feelOrLabel(edgeLabel(labels[k]), n) })
+			}
 		}
 		return true
+	}
+
+	/**
+	 * Keeps a condition only if it is FEEL.
+	 *
+	 * Models write the branch they mean in prose as often as in FEEL
+	 * (`No: is not approved`). As an expression that fails at deploy time; as the
+	 * branch's label it still says what was meant, and the missing condition is
+	 * one the lint names and a reader can fill in.
+	 */
+	private feelOrLabel(
+		edge: Pick<CompactFlow, "name" | "condition" | "isDefault">,
+		n: number,
+	): Pick<CompactFlow, "name" | "condition" | "isDefault"> {
+		if (edge.condition === undefined) return edge
+		const prose = edge.condition.slice(1).trim()
+		if (parseExpression(prose).errors.length === 0) return edge
+		this.problems.push({
+			line: n,
+			message: `condition "${prose}" is not FEEL; kept as the branch label`,
+		})
+		const { condition: _dropped, ...rest } = edge
+		return { ...rest, name: edge.name ? `${edge.name}: ${prose}` : prose }
 	}
 
 	private fail(n: number, message: string): false {
