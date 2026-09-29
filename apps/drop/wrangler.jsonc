@@ -15,6 +15,8 @@
 		"TOS_VERSION": "2026-09-24",
 		// AI process review. AI_PASSCODE is a secret (wrangler secret put) — unset = feature off.
 		"AI_MODEL": "@cf/openai/gpt-oss-120b",
+		// Describe-to-diagram. Pick from MODEL_PROFILES in src/lib/generate.ts, by the bench.
+		"AI_GENERATE_MODEL": "@cf/openai/gpt-oss-120b",
 		"AI_DAILY_BUDGET": "8000",
 		"TURNSTILE_SITE_KEY": "0x4AAAAAAExoiG_f6MSVcEiN"
 		// Turnstile on the edit claim. Add TURNSTILE_SITE_KEY here (it is public and

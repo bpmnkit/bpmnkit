@@ -1,5 +1,8 @@
 import { BpmnCanvas } from "@bpmnkit/canvas"
 import { DEMO_SHARE_ID } from "../shared/constants.js"
+import { mountGenerator } from "./generate.js"
+
+mountGenerator()
 
 // Renders the live hero preview: the demo BPMN, fetched from the in-memory demo
 // drop and drawn in with a subtle animation (CSS, prefers-reduced-motion-gated).

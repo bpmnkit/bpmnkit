@@ -3,20 +3,16 @@ import type { Env } from "../env.js"
 import {
 	type AiLike,
 	addBudget,
-	countFailedUnlocks,
+	checkAiPasscode,
 	getBudgetSpent,
 	getCachedReview,
 	putCachedReview,
-	recordFailedUnlock,
 	runLlmReview,
 } from "../lib/ai.js"
 import { getCurrentBody } from "../lib/db.js"
 import { demoFileBody, isDemo } from "../lib/demo.js"
-import { clientIp, json, timingSafeEqual } from "../lib/http.js"
-import { hashIp } from "../lib/ids.js"
+import { json } from "../lib/http.js"
 import { type ReviewResult, deterministicSuggestions } from "../lib/review.js"
-
-const MAX_UNLOCK_ATTEMPTS = 5
 
 /**
  * POST /drop/api/ai-review/:shareId/:filename — closed-beta AI process review.
@@ -44,18 +40,8 @@ export async function handleAiReview(
 	}
 
 	// Passcode gate — before the cache, because closed means closed.
-	const code = request.headers.get("X-Drop-AI-Code") ?? ""
-	const ipHash = env.REPORT_IP_SALT
-		? await hashIp(clientIp(request), env.REPORT_IP_SALT)
-		: clientIp(request)
-	const hour = Math.floor(now / 3_600_000)
-	if (!timingSafeEqual(code, env.AI_PASSCODE)) {
-		if ((await countFailedUnlocks(env.DB, ipHash, hour)) >= MAX_UNLOCK_ATTEMPTS) {
-			return json({ error: "too many attempts — try again later" }, { status: 429 })
-		}
-		await recordFailedUnlock(env.DB, ipHash, hour)
-		return json({ error: "invalid access code" }, { status: 401 })
-	}
+	const denied = await checkAiPasscode(request, env, env.AI_PASSCODE, now)
+	if (denied) return denied
 
 	// Deterministic pass always runs — the feature degrades to it, never breaks.
 	let deterministic: ReviewResult["deterministic"]

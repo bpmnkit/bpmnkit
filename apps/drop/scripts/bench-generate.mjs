@@ -15,7 +15,7 @@
  *   --only 02,13      prompt directory prefixes to run
  *   --all             include the prompts skipped by default
  *   --no-extra        send no model-specific options (reasoning effort, thinking toggle)
- *   --max-tokens N    output cap (default 2048)
+ *   --max-tokens N    output cap (default GENERATE_MAX_TOKENS, as the Worker)
  *   --out DIR         where to write results (default bench-results/<timestamp>)
  *
  * CLOUDFLARE_API_BASE overrides https://api.cloudflare.com/client/v4, e.g. for
@@ -29,30 +29,17 @@ import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { parseArgs } from "node:util"
 import { Bpmn, createProcessTextStream, expand, optimize } from "@bpmnkit/core"
-import { createSseReader, generateMessages, readAiEvent } from "../src/lib/generate.ts"
+import {
+	GENERATE_MAX_TOKENS,
+	MODEL_PROFILES,
+	createSseReader,
+	generateMessages,
+	neuronsFor,
+	readAiEvent,
+} from "../src/lib/generate.ts"
 
 const here = dirname(fileURLToPath(import.meta.url))
 const PROMPTS_DIR = resolve(here, "../../../scripts/eval-generation/prompts")
-
-/**
- * Candidate models, with the options that keep reasoning short, and neuron
- * rates per million tokens (in, out) from the Workers AI pricing page as of
- * 2026-09. Edit freely; an unknown model simply reports no neuron estimate.
- */
-const MODELS = {
-	"@cf/openai/gpt-oss-120b": { extra: { reasoning: { effort: "low" } }, rates: [31818, 68182] },
-	"@cf/openai/gpt-oss-20b": { extra: { reasoning: { effort: "low" } }, rates: [18182, 27273] },
-	"@cf/google/gemma-4-26b-a4b-it": {
-		extra: { chat_template_kwargs: { enable_thinking: false } },
-		rates: [9091, 27273],
-	},
-	"@cf/zai-org/glm-4.7-flash": {
-		extra: { chat_template_kwargs: { enable_thinking: false } },
-		rates: [5500, 36400],
-	},
-	"@cf/qwen/qwen3-30b-a3b-fp8": { extra: {}, rates: [4625, 30475] },
-	"@cf/ibm-granite/granite-4.0-h-micro": { extra: {}, rates: [1542, 10158] },
-}
 
 /**
  * Not what describe-to-diagram does: 03 needs an AI-agent sub-process, 04 edits
@@ -67,7 +54,7 @@ const { values: args } = parseArgs({
 		only: { type: "string" },
 		all: { type: "boolean", default: false },
 		"no-extra": { type: "boolean", default: false },
-		"max-tokens": { type: "string", default: "2048" },
+		"max-tokens": { type: "string" },
 		out: { type: "string" },
 	},
 })
@@ -83,9 +70,11 @@ const apiBase = (process.env.CLOUDFLARE_API_BASE ?? "https://api.cloudflare.com/
 	/\/$/,
 	"",
 )
-const models = args.models ? args.models.split(",").map((m) => m.trim()) : Object.keys(MODELS)
+const models = args.models
+	? args.models.split(",").map((m) => m.trim())
+	: Object.keys(MODEL_PROFILES)
 const runs = Number.parseInt(args.runs, 10)
-const maxTokens = Number.parseInt(args["max-tokens"], 10)
+const maxTokens = args["max-tokens"] ? Number.parseInt(args["max-tokens"], 10) : GENERATE_MAX_TOKENS
 const only = args.only?.split(",").map((p) => p.trim())
 const outDir = resolve(
 	args.out ?? `bench-results/${new Date().toISOString().replace(/[:.]/g, "-")}`,
@@ -119,12 +108,11 @@ function score(defs, assertions) {
 }
 
 async function runOne(model, prompt) {
-	const config = MODELS[model] ?? { extra: {}, rates: undefined }
 	const body = {
 		messages: generateMessages(prompt.text),
 		stream: true,
 		max_tokens: maxTokens,
-		...(args["no-extra"] ? {} : config.extra),
+		...(args["no-extra"] ? {} : (MODEL_PROFILES[model]?.options ?? {})),
 	}
 	const url = `${apiBase}/accounts/${accountId}/ai/run/${model}`
 	const t0 = performance.now()
@@ -178,12 +166,7 @@ async function runOne(model, prompt) {
 	result.text = text
 	result.reasoningChars = reasoningChars
 	result.usage = usage
-	if (usage && config.rates) {
-		const [inRate, outRate] = config.rates
-		result.neurons = Math.round(
-			(usage.promptTokens * inRate + usage.completionTokens * outRate) / 1_000_000,
-		)
-	}
+	if (usage) result.neurons = neuronsFor(model, usage)
 
 	const parsed = stream.end()
 	result.problems = parsed.problems

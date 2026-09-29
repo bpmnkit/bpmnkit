@@ -24,18 +24,20 @@ src/
   room.ts          Durable Object — hibernating-WebSocket viewer count, and the
                    batched view/retention write it flushes to D1 on an alarm
   env.ts           Binding types
-  routes/          upload, share pages, raw/json download, reports, admin, ai-review,
+  routes/          upload, share pages, raw/json download, reports, admin, ai-review, generate,
                    versions (history + restore), feel (saving an edited statement),
                    comments (review threads, @mentions, author tokens)
   lib/             ids, validate, meta, db (D1), versions (the milestone ring), http,
                    pages (HTML), demo (in-memory demo drop), review (deterministic
-                   optimizer pass), ai (Workers AI + cache)
+                   optimizer pass), ai (Workers AI + cache), generate (describe-to-diagram
+                   prompt, model profiles, stream reader)
   client/          browser bundles: drop, viewer, admin, landing (built to public/drop/assets),
                    plus the FEEL view, editor and composer, and the comments panel
   shared/          constants, and the FEEL document (shape, parse, evaluate) — used by
                    both Worker and client
 migrations/        D1 schema (0001 core, 0002 AI review, 0003 version log,
-                   0004 report state, 0005 the FEEL kind, 0006 comments)
+                   0004 report state, 0005 the FEEL kind, 0006 comments,
+                   0007 describe-to-diagram cache)
 ```
 
 ## Develop
@@ -81,6 +83,12 @@ D1 caching, budget guard, and deterministic findings all work offline; the LLM n
 itself needs a real Cloudflare account for the `AI` binding, so locally it gracefully
 degrades to "automated checks only" with a note. Run `wrangler d1 migrations apply
 bpmnkit-drop --local` after pulling to pick up the `0002_ai_review` tables.
+
+The same passcode turns on **describe-to-diagram** (`POST /drop/api/generate`, the "Describe a
+process" section on `/drop`). It streams the model's answer in the line format read by
+`parseProcessText` from `@bpmnkit/core`, and the page draws each finished line. Locally the `AI`
+binding needs a Cloudflare account. `pnpm --filter @bpmnkit/drop bench:generate` compares models
+on the golden prompts; see `doc/drop-ai-generate-analysis.md` §7.
 
 Quick API smoke test:
 
@@ -151,6 +159,12 @@ share the code privately. Rotate the secret to lock everyone out; delete it to t
 feature off. `AI_MODEL` and `AI_DAILY_BUDGET` (neurons/day) are tunable vars. Before
 enabling in production, do one manual live run against the real `AI` binding to confirm
 the model returns schema-valid JSON.
+
+**Describe-to-diagram** sits behind the same `AI_PASSCODE` and spends the same `AI_DAILY_BUDGET`.
+`AI_GENERATE_MODEL` picks its model, separately from the review's. Any model in `MODEL_PROFILES`
+(`src/lib/generate.ts`) gets its reasoning settings and neuron rates. An unlisted model is charged
+at the highest rate in the table. Answers are cached in D1 by model, prompt and description, and
+nothing becomes a drop until the reader shares it.
 
 CI (`.github/workflows/deploy-drop.yml`) runs `d1 migrations apply` then `wrangler deploy`
 on pushes to `main` that touch this app or its rendering dependencies.

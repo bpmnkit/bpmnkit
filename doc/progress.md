@@ -1,5 +1,21 @@
 # Progress
 
+## 2026-09-29 — Drop: describe a process, get a diagram
+
+The feature itself, on top of the line format and benchmark (`doc/drop-ai-generate-analysis.md`).
+
+- `POST /drop/api/generate` (`routes/generate.ts`) runs its checks in the same order as the AI review: feature flag, passcode gate (now shared as `checkAiPasscode` in `lib/ai.ts`), description length (10–2000 characters), D1 cache, daily neuron budget, model call.
+- The Worker re-streams only content deltas as its own SSE events (`{text}` / `{done, cached}` / `{error}`), so reasoning never reaches the browser. After the stream it records neurons from `usage`, or estimates them from characters when there is none. Usable answers are cached; an answer with no process in it is reported as an error and not cached.
+- The model comes from `AI_GENERATE_MODEL`, separate from the review's `AI_MODEL`. Options and neuron rates come from `MODEL_PROFILES`, which the bench now shares. Migration `0007_ai_generations`.
+- Page (`client/generate.ts`, mounted by `landing.ts`): the description sits beside a live canvas; each finished line is drawn in the next animation frame and never enlarged past 1:1. Other controls:
+  - three example descriptions
+  - an access-code prompt, sharing the review's stored code
+  - "Get a share link", which posts the BPMN through `/drop/api/drops`
+
+  Sections are now numbered in page order, so they stay sequential with or without the new section.
+- Tests: `drop/tests/generate-route.test.ts` runs against the real migrations. It covers the gate, input checks, streaming without reasoning, budget from usage, cache hit and per-model keys, budget stop, unusable answers and a broken stream, plus the page's section numbering.
+- Verified in Chromium against the real Worker handler, run in Node with a fake streaming model. The steps covered: access-code prompt, wrong code, first shape at ~0.3 s after the model's first token, finished diagram, share link and manifest, cached re-run, and the 390 px layout.
+
 ## 2026-09-29 — Line format for AI-generated processes, and the Drop generation benchmark
 
 Second step of Drop's describe-to-diagram feature (`doc/drop-ai-generate-analysis.md`).

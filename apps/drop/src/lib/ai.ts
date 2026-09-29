@@ -1,3 +1,6 @@
+import type { Env } from "../env.js"
+import { clientIp, json, timingSafeEqual } from "./http.js"
+import { hashIp } from "./ids.js"
 import type { Suggestion } from "./review.js"
 
 /** Minimal shape of the Workers AI binding we use — keeps the LLM call mockable. */
@@ -86,6 +89,66 @@ export async function recordFailedUnlock(
 			"INSERT INTO ai_unlock_attempts (ip_hash, hour, count) VALUES (?, ?, 1) ON CONFLICT(ip_hash, hour) DO UPDATE SET count = count + 1",
 		)
 		.bind(ipHash, hour)
+		.run()
+}
+
+/** Failed passcode attempts allowed per IP per hour. */
+const MAX_UNLOCK_ATTEMPTS = 5
+
+/**
+ * The closed-beta gate every AI route passes first: the `X-Drop-AI-Code`
+ * header against `AI_PASSCODE`, with failed attempts counted per IP-hash and
+ * hour.
+ *
+ * @param passcode - `env.AI_PASSCODE`, already known to be set: an unset
+ * passcode means the feature is off, which the caller answers with a 404.
+ * @returns `null` when the request may proceed, otherwise the response to send.
+ */
+export async function checkAiPasscode(
+	request: Request,
+	env: Env,
+	passcode: string,
+	now: number,
+): Promise<Response | null> {
+	const code = request.headers.get("X-Drop-AI-Code") ?? ""
+	if (timingSafeEqual(code, passcode)) return null
+	const ipHash = env.REPORT_IP_SALT
+		? await hashIp(clientIp(request), env.REPORT_IP_SALT)
+		: clientIp(request)
+	const hour = Math.floor(now / 3_600_000)
+	if ((await countFailedUnlocks(env.DB, ipHash, hour)) >= MAX_UNLOCK_ATTEMPTS) {
+		return json({ error: "too many attempts — try again later" }, { status: 429 })
+	}
+	await recordFailedUnlock(env.DB, ipHash, hour)
+	return json({ error: "invalid access code" }, { status: 401 })
+}
+
+// ── Generation cache ─────────────────────────────────────────────────────────
+
+export async function getCachedGeneration(
+	db: D1Database,
+	requestHash: string,
+): Promise<string | null> {
+	const row = await db
+		.prepare("SELECT text FROM ai_generations WHERE request_hash = ?")
+		.bind(requestHash)
+		.first<{ text: string }>()
+	return row?.text ?? null
+}
+
+export async function putCachedGeneration(
+	db: D1Database,
+	requestHash: string,
+	model: string,
+	text: string,
+	neurons: number,
+	now: number,
+): Promise<void> {
+	await db
+		.prepare(
+			"INSERT OR REPLACE INTO ai_generations (request_hash, model, text, neurons_est, created_at) VALUES (?, ?, ?, ?, ?)",
+		)
+		.bind(requestHash, model, text, neurons, now)
 		.run()
 }
 

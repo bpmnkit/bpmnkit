@@ -1,6 +1,6 @@
 # Drop: generate a process from a description — speed and token analysis
 
-Status: research, before implementation (2026-09-29).
+Status: implemented (2026-09-29). The line format is in `@bpmnkit/core` (`process-text.ts`). The route, page and bench are in `apps/drop`. The v1 model choice is pending the bench results.
 Related: `doc/ai-bpmn-generation-analysis.md` (the repo-wide generation pipeline), `doc/drop-v2-spec.md` §2.6 (the AI review this builds on).
 
 Goal: a Drop user types what a process should do, and a diagram appears. The generation must use very few tokens and must run fast. This document measures where the time and tokens go today and recommends a design. It does not implement the feature.
