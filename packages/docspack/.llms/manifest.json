@@ -4331,7 +4331,7 @@
 		{
 			"id": "packages.core.installation-expand-compact",
 			"file": "chunks/packages.core.installation-expand-compact.md",
-			"tokens": 164,
+			"tokens": 301,
 			"tags": [
 				"packages",
 				"core",
@@ -4345,7 +4345,8 @@
 				"BpmnElementType",
 				"dataObject",
 				"dataObjectReference",
-				"dataStoreReference"
+				"dataStoreReference",
+				"eventType"
 			]
 		},
 		{

@@ -1,5 +1,19 @@
 # Progress
 
+## 2026-09-29 — `expand()` rejects compact diagrams that cannot be valid BPMN
+
+First step of Drop's describe-to-diagram feature (`doc/drop-ai-generate-analysis.md` §8).
+
+- `expand()` used to build XML from anything. Now it throws one error that lists every problem. It checks for:
+  - a flow that names an element outside its scope (sub-process flows are checked against their own children)
+  - a boundary event without a host
+  - a duplicate id across elements, flows and processes
+  - a missing element or flow id
+  - an unknown `eventType`, which it used to drop
+- Tests: `core/tests/compact-expand-validation.test.ts`. `element-catalog.test.ts` now gives its boundary event a host.
+- Downstream suites pass: plugins, editor, drop, demo, markdown.
+- Docs: `packages/core.md` documents the throw. `guides/ai.md` said `taskType` where the field is `jobType`.
+
 ## 2026-09-29 — Drop: research for generating a process from a description
 
 Analysis only, no feature code: `doc/drop-ai-generate-analysis.md`.

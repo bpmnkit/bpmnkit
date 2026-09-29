@@ -302,6 +302,86 @@ export function compactify(defs: BpmnDefinitions): CompactDiagram {
 
 // ── Expand ───────────────────────────────────────────────────────────────────
 
+const EVENT_TYPES = new Set([
+	"timer",
+	"error",
+	"message",
+	"signal",
+	"escalation",
+	"cancel",
+	"terminate",
+	"conditional",
+	"link",
+	"compensate",
+])
+
+/**
+ * Every reason `compact` cannot become valid BPMN, as sentences naming the ids
+ * involved.
+ *
+ * `expand` used to build whatever it was given: an edge to an element that was
+ * never written came out as a `targetRef` pointing at nothing, a repeated id
+ * came out twice, a flow without an id came out without one, and an unknown
+ * `eventType` was dropped. Each is XML a modeler or an engine rejects later,
+ * with no trace back to here. A model writing the diagram makes all four
+ * mistakes, so the check is total and reports them together — one error that
+ * lists every problem is what a caller can hand back for a repair.
+ */
+function compactProblems(compact: CompactDiagram): string[] {
+	const problems: string[] = []
+	const seen = new Set<string>()
+	const claim = (id: string, what: string): void => {
+		if (seen.has(id)) problems.push(`duplicate id "${id}" (${what})`)
+		seen.add(id)
+	}
+
+	const checkScope = (
+		elements: readonly CompactElement[],
+		flows: readonly CompactFlow[],
+		scope: string,
+	): void => {
+		const ids = new Set<string>()
+		for (const el of elements) {
+			if (typeof el.id !== "string" || el.id === "") {
+				problems.push(`a ${el.type} in ${scope} has no id`)
+				continue
+			}
+			claim(el.id, el.type)
+			ids.add(el.id)
+			if (el.eventType !== undefined && !EVENT_TYPES.has(el.eventType)) {
+				problems.push(
+					`element "${el.id}" has unknown eventType "${el.eventType}" (expected one of ${[...EVENT_TYPES].join(", ")})`,
+				)
+			}
+		}
+		for (const el of elements) {
+			if (el.type === "boundaryEvent" && (el.attachedTo === undefined || !ids.has(el.attachedTo))) {
+				problems.push(
+					el.attachedTo === undefined
+						? `boundary event "${el.id}" has no attachedTo`
+						: `boundary event "${el.id}" is attached to "${el.attachedTo}", which is not an element in ${scope}`,
+				)
+			}
+			if (el.children) checkScope(el.children.elements, el.children.flows, `"${el.id}"`)
+		}
+		for (const flow of flows) {
+			const label = `flow ${flow.id ? `"${flow.id}"` : `from "${flow.from}" to "${flow.to}"`}`
+			if (typeof flow.id !== "string" || flow.id === "") problems.push(`${label} has no id`)
+			else claim(flow.id, "sequence flow")
+			for (const end of [flow.from, flow.to]) {
+				if (!ids.has(end))
+					problems.push(`${label} references "${end}", which is not an element in ${scope}`)
+			}
+		}
+	}
+
+	for (const process of compact.processes) {
+		claim(process.id, "process")
+		checkScope(process.elements, process.flows, `process "${process.id}"`)
+	}
+	return problems
+}
+
 export function makeEventDef(eventType: string): BpmnEventDefinition | undefined {
 	switch (eventType) {
 		case "timer":
@@ -615,6 +695,10 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
  * Restores a {@link CompactDiagram} (produced by {@link compactify} or an AI
  * model) back to a full {@link BpmnDefinitions} with auto-generated layout.
  *
+ * @throws {Error} When the diagram cannot be valid BPMN — a flow or boundary
+ * event naming an element that is not in its scope, a duplicate or missing id,
+ * or an unknown `eventType`. The message lists every problem at once.
+ *
  * @example
  * ```typescript
  * const compact = await askAI(prompt)   // AI returns CompactDiagram JSON
@@ -625,6 +709,10 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
  */
 export function expand(compact: CompactDiagram): BpmnDefinitions {
 	assertCompactDiagram(compact, "expand")
+	const problems = compactProblems(compact)
+	if (problems.length > 0) {
+		throw new Error(`expand: invalid CompactDiagram — ${problems.join("; ")}`)
+	}
 	const processes: BpmnProcess[] = []
 	const diagrams: BpmnDiagram[] = []
 	for (const cp of compact.processes) {

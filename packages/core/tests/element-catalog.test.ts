@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { BpmnElementType } from "../src/bpmn/bpmn-model.js"
-import { compactify, expand } from "../src/bpmn/compact.js"
+import { type CompactElement, compactify, expand } from "../src/bpmn/compact.js"
 import {
 	ELEMENT_GROUP_ORDER,
 	ELEMENT_TYPE_GROUPS,
@@ -208,10 +208,16 @@ describe("the compact path keeps data elements", () => {
 		// expand() used to end in `default: type: "task"`. Its switch is now
 		// exhaustive, and this proves no type takes a wrong branch on the way.
 		for (const type of allElementTypes()) {
-			const restored = expand({
-				id: "d",
-				processes: [{ id: "p", elements: [{ id: "x", type }], flows: [] }],
-			})
+			// A boundary event needs a host to be valid; the host comes second so
+			// `flowElements[0]` is still the element under test.
+			const elements: CompactElement[] =
+				type === "boundaryEvent"
+					? [
+							{ id: "x", type, attachedTo: "host" },
+							{ id: "host", type: "task" },
+						]
+					: [{ id: "x", type }]
+			const restored = expand({ id: "d", processes: [{ id: "p", elements, flows: [] }] })
 			expect(restored.processes[0]?.flowElements[0]?.type, `${type} expanded wrongly`).toBe(type)
 		}
 	})
