@@ -399,6 +399,16 @@ export { compactify, expand } from "./bpmn/compact.js"
 export { createCompactStream } from "./bpmn/compact-stream.js"
 export type { CompactStream, CompactStreamOptions } from "./bpmn/compact-stream.js"
 export {
+	PROCESS_TEXT_GUIDE,
+	createProcessTextStream,
+	parseProcessText,
+} from "./bpmn/process-text.js"
+export type {
+	ProcessTextProblem,
+	ProcessTextResult,
+	ProcessTextStream,
+} from "./bpmn/process-text.js"
+export {
 	ELEMENT_GROUP_ORDER,
 	ELEMENT_TYPE_GROUPS,
 	allElementTypes,

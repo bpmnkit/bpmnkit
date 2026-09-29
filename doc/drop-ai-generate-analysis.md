@@ -139,26 +139,59 @@ description ──► cache? ──► Workers AI (stream, DSL) ──► SSE �
    - Compute cost from the `usage` chunk, not from character counts. The usage chunk includes reasoning tokens.
 6. **v1 scope.** Plain task types, gateways, timer/message/error events, boundaries and sub-processes. Service tasks get a `job=` type. Connector templates are out of v1, because of the bundle size.
 
-## 7. Before building: a benchmark harness
+## 7. Benchmark harness
 
-The model choice and the prompt cannot be settled on paper. The first work package is a small script, `apps/drop/scripts/bench-generate.mjs`:
+The model and prompt choice cannot be settled on paper, so they are measured with
+`apps/drop/scripts/bench-generate.mjs`. The benchmark uses the same pieces the Worker will use:
 
-- It runs the 15 prompts in `scripts/eval-generation/prompts` against each candidate model over the Workers AI REST API.
-- It records TTFT, total time, input, output and reasoning tokens, and neurons.
-- It records parse and normalisation fixes, lint errors after auto-fix, and a structural score against `expected.json`.
-- It covers gpt-oss-120b (effort low), gpt-oss-20b (low), gemma-4 (thinking off) and glm-4.7-flash (thinking off).
-- It compares compact JSON against the DSL for each model, so the format decision rests on measurement.
+- `GENERATE_SYSTEM_PROMPT` (`apps/drop/src/lib/generate.ts`, ~330 tokens including the guide)
+- the SSE reader
+- `createProcessTextStream` from core
+
+It runs the golden prompts in `scripts/eval-generation/prompts` against each candidate model
+through the Workers AI REST API. Three prompts are skipped by default: 03 (AI agent), 04 (edits an
+existing file) and 09 (expects a clarifying question).
+
+It records, for each model:
+
+- time to first byte, first reasoning token, first content token and first drawable shape
+- total time
+- input, output, reasoning and cached tokens, from the model's `usage` chunk
+- estimated neurons
+- parser problems and fixes
+- `optimize()` errors and warnings
+- the `minElements` and `mustContainElementTypes` assertions (connector job types are out of v1)
+
+It writes each model's raw text and BPMN, `results.json` and a `summary.md` table.
+
+```sh
+pnpm --filter @bpmnkit/core build          # the bench imports core's dist
+CLOUDFLARE_ACCOUNT_ID=… CLOUDFLARE_API_TOKEN=… pnpm --filter @bpmnkit/drop bench:generate
+# options: --models a,b  --runs 3  --only 02,13  --all  --no-extra  --max-tokens N  --out DIR
+```
+
+The token is a Cloudflare **API token**, not the Global API Key. It needs the account permissions
+**Workers AI – Read** and **Workers AI – Edit**. The quickest way to get one:
+
+1. In the dashboard, open *AI → Workers AI → Use REST API*.
+2. Choose *Create a Workers AI API Token*.
+3. Review the prefilled permissions and create it.
+
+The same page shows the Account ID.
+
+One sweep (6 models × 12 prompts × 1 run) should cost roughly 2–4k neurons. That fits in the
+10k/day free allowance.
 
 Success criteria for v1:
 
-- Median time to first shape under 1.5 s.
-- Median total time under 5 s.
-- Under 1k total tokens per generation.
-- At least 90% of the golden prompts produce a diagram with no `error` finding after auto-fix.
+- median time to first shape under 1.5 s
+- median total time under 5 s
+- under 1k total tokens per generation
+- at least 90% of the golden prompts produce a diagram with no `error` finding after auto-fix
 
 ## 8. Issues found along the way
 
-- **`expand()` emits invalid BPMN without complaint** in the cases in §6.2. A regression test and `normaliseCompact()` belong in core, whether or not this feature ships.
+- **`expand()` emitted invalid BPMN without complaint** in the cases in §6.2. Fixed: it now throws one error listing every problem. The lenient repair described in §6.2 lives in `parseProcessText`, which only ever produces diagrams `expand` accepts.
 - **`estimateNeurons()` in `apps/drop/src/lib/ai.ts` ignores reasoning tokens.** It also uses gpt-oss-120b rates whatever `AI_MODEL` says, so the daily budget undercounts. The fix is to read `usage` from the response.
-- **`apps/landing/src/content/docs/guides/ai.md` has two errors.** It tells models to write `taskType`, but the field is `jobType`. It also references a `compactDiagramJsonSchema` export that does not exist.
+- **`apps/landing/src/content/docs/guides/ai.md` had two errors.** It told models to write `taskType`, but the field is `jobType` (fixed). It also references a `compactDiagramJsonSchema` export that does not exist (still open).
 - **The demo DSL parser is in `apps/demo`, not in core.** The proxy's non-MCP fallback still asks for compact JSON in a code fence.

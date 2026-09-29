@@ -4368,6 +4368,24 @@
 			]
 		},
 		{
+			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream",
+			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md",
+			"tokens": 433,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"parseprocesstext",
+				"text",
+				"createprocesstextstream"
+			],
+			"entities": [
+				"parseProcessText",
+				"createProcessTextStream()",
+				"end()"
+			]
+		},
+		{
 			"id": "packages.core.installation-retypeelement-element-type",
 			"file": "chunks/packages.core.installation-retypeelement-element-type.md",
 			"tokens": 189,

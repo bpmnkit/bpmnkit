@@ -2,3 +2,4 @@ dist/
 public/drop/assets/
 .wrangler/
 public/drop/fonts/
+bench-results/

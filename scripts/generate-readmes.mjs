@@ -461,6 +461,8 @@ const { semanticHash, changes } = await writeBpmn(defs, { output: "flow.bpmn" })
 | \`compactify(defs)\` | Convert to compact \`CompactDiagram\` |
 | \`expand(compact)\` | Restore full \`BpmnDefinitions\` |
 | \`createCompactStream(opts?)\` | Read a diagram out of a model's token stream, frame by frame |
+| \`parseProcessText(text)\` | Read a process a model wrote in the line format (\`PROCESS_TEXT_GUIDE\`); never throws |
+| \`createProcessTextStream()\` | Read the line format while it streams, one finished line at a time |
 | \`generateId(prefix)\` | Generate a unique short ID |
 
 ### Process documentation

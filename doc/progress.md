@@ -1,5 +1,19 @@
 # Progress
 
+## 2026-09-29 — Line format for AI-generated processes, and the Drop generation benchmark
+
+Second step of Drop's describe-to-diagram feature (`doc/drop-ai-generate-analysis.md`).
+
+- **`@bpmnkit/core`** adds `parseProcessText`, `createProcessTextStream` and `PROCESS_TEXT_GUIDE`. It is a Mermaid-like line format (`a[start Placed] > b[user Check] > c[end Done]`). Branches are written as `gw >(Label: FEEL) x`, and boundaries as `b[boundary:error … | on=task]`.
+  - Cost: about a quarter of the output tokens of minified compact JSON. The guide is 254 tokens, example included.
+  - The parser never throws, and its diagram always expands. It reports unusable lines with their numbers.
+  - It adds the structure a model skips: flow ids, xor joins before tasks, the lone unconditioned branch as default, a missing start event, and end events after open paths.
+  - The stream reads only finished lines, for live preview.
+- **`apps/drop`** adds `src/lib/generate.ts`: the system prompt, a cache-friendly message order, and a reader for both Workers AI stream shapes (`response` and `choices[].delta`, including reasoning and `usage`).
+- **`scripts/bench-generate.mjs`** (`pnpm --filter @bpmnkit/drop bench:generate`) measures candidate models on the golden prompts: time to first shape and total time, tokens, neurons, parser problems and fixes, lint errors and assertions.
+- Tests: `core/tests/process-text.test.ts` covers the guide's example, every repair rule, problem reporting and stream/parse equivalence. `drop/tests/generate.test.ts` covers the prompt, event shapes and chunk splitting.
+- The bench was run end-to-end against a local mock serving both stream shapes and an HTTP 400. It has not yet been run against Workers AI.
+
 ## 2026-09-29 — `expand()` rejects compact diagrams that cannot be valid BPMN
 
 First step of Drop's describe-to-diagram feature (`doc/drop-ai-generate-analysis.md` §8).
