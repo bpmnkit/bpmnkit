@@ -92,12 +92,14 @@ impl<'a> MessageRepository<'a> {
                       state, tenant_id, created_at
                FROM messages
                WHERE name = $1 AND correlation_key = $2 AND tenant_id = $3
-                 AND state = 'PUBLISHED' AND expires_at > NOW()
+                 AND state = 'PUBLISHED' AND expires_at > $4
                ORDER BY created_at"#,
         )
         .bind(name)
         .bind(correlation_key)
         .bind(tenant_id)
+        // Bound rather than NOW(), which SQLite does not have.
+        .bind(chrono::Utc::now())
         .fetch_all(self.pool)
         .await?;
 
@@ -106,8 +108,9 @@ impl<'a> MessageRepository<'a> {
 
     pub async fn expire_old(&self) -> Result<u64> {
         let result = sqlx::query(
-            "UPDATE messages SET state = 'EXPIRED' WHERE state = 'PUBLISHED' AND expires_at <= NOW()",
+            "UPDATE messages SET state = 'EXPIRED' WHERE state = 'PUBLISHED' AND expires_at <= $1",
         )
+        .bind(chrono::Utc::now())
         .execute(self.pool)
         .await?;
         Ok(result.rows_affected())

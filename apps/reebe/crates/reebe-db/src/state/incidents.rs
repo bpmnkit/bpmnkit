@@ -59,9 +59,10 @@ impl<'a> IncidentRepository<'a> {
 
     pub async fn resolve(&self, key: i64) -> Result<()> {
         sqlx::query(
-            "UPDATE incidents SET state = 'RESOLVED', resolved_at = NOW() WHERE key = $1",
+            "UPDATE incidents SET state = 'RESOLVED', resolved_at = $2 WHERE key = $1",
         )
         .bind(key)
+        .bind(chrono::Utc::now())
         .execute(self.pool)
         .await?;
         Ok(())

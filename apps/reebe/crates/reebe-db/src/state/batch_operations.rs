@@ -85,9 +85,10 @@ impl<'a> BatchOperationRepository<'a> {
 
     pub async fn mark_completed(&self, key: i64) -> Result<()> {
         sqlx::query(
-            "UPDATE batch_operations SET state = 'COMPLETED', completed_at = NOW() WHERE key = $1",
+            "UPDATE batch_operations SET state = 'COMPLETED', completed_at = $2 WHERE key = $1",
         )
         .bind(key)
+        .bind(chrono::Utc::now())
         .execute(self.pool)
         .await?;
         Ok(())

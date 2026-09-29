@@ -1,5 +1,40 @@
 # Progress
 
+## 2026-09-29 — Reebe: Camunda 8 v2 field names, working SQLite mode, configurable gRPC port
+
+Found while running the Durable Agent Flows guide end to end on a local engine.
+
+- `POST /v2/process-instances` accepts `processDefinitionId` (Camunda 8 v2) as well as `bpmnProcessId`; `POST /v2/messages/publication` and `/correlation` accept `name` as well as `messageName` — so `casen process-instance create` and `casen message publish` work against Reebe.
+- Embedded (SQLite) mode: a new migration drops the `message_subscriptions.element_id` column the Postgres schema never had and the insert never filled, so message catch events open again; user tasks without candidate groups or users are stored with the column default `[]` (a bound NULL broke the NOT NULL column) and read back as none, as on Postgres; message lookup and expiry, incident resolution and batch-operation completion bind the current time instead of calling `NOW()`, which SQLite does not have.
+- `reebe-server --grpc-port` / `REEBE_GRPC_PORT` (default 26500) moves the gRPC gateway, and REST and gRPC on the same port is refused up front. `casen reebe start --grpc-port` passes it through; `--port 26500 --grpc-port 26501` puts REST where `ZEEBE_ADDRESS` points by default. The guide and `cli/casen.md` said `casen reebe start --port 26500`, which could not start; both are corrected, and the missing-binary hint now builds the embedded server.
+- Tests: `reebe-db/tests/sqlite.rs` (the first tests of the SQLite backend; each failed before its fix), serde alias tests in `reebe-api`, `casen reebe` argument test; the reebe workflow runs the SQLite tests. Verified by following the guide on a fresh embedded Reebe: instance created with `processDefinitionId`, agent step, message published with `name`, user task, instance COMPLETED, no engine errors.
+- Still open: task retries fixed at 3, no task headers on ad-hoc sub-process and user-task jobs, instance search ignores `processInstanceKey`, no user-task `name`, jobs report `processDefinitionVersion` 0.
+
+## 2026-09-29 — `@bpmnkit/flow`: convergence loops
+
+- `.loop(id, body, { until, max, between?, counter?, name?, escalate? })` repeats `body` until the FEEL condition `until` holds, at most `max` rounds. `between` steps run only when another round follows, so review → (fix → review)* needs no wasted fix after an approval. At `max` a person gets a user task (`escalate`) and the flow continues after it.
+- BPMN is ordinary elements: script task `<id>-start` (counter = 0), exclusive gateway `<id>` (join), the body, script task `<id>-next` (counter + 1), exclusive gateway `<id>-check` with a `done` exit, a `gave up` exit guarded by `not(until)` so no evaluation order can pick it over `done`, and a default flow through `between` back to `<id>`. The counter (default `round`) is typed into the body, `between` and the rest of the flow; nested loops must use distinct counters. Step ids are unique across the whole flow, loop elements included.
+- `Flow.runSteps` lists every `.run()` step including those in loops; `jobTypes`, `agentJobTypes` and the worker use it.
+- Fixed while testing: an `.agent()` inside a callback widened its `result` name to `string` (an index signature instead of `{ verdict: string }`); `R` is now a `const` type parameter.
+- Tests: model shape, simulator runs (converges, first-round exit without `between`, escalation at `max`, nested loops), id/counter/max validation, type-level checks; verified on reebe (Postgres) — approval in round 2, and escalation after 3 rounds with 2 fixes. Docs: `packages/flow.md` "Loops", the guide's example now loops review/fix.
+
+## 2026-09-29 — Durable agent flows: `@bpmnkit/flow` and the `casen agent` workforce
+
+Prompted by a study of [nanobpm.io](https://nanobpm.io/): its argument is that an agent should design the graph and a durable engine should run it, because a plan held in an LLM's context is lost on the first compaction or reboot. bpmnkit already had the engine, the builder and the worker client; these two items join them up (`doc/roadmap.md` → "Durable Agent Flows").
+
+- **`@bpmnkit/flow`** (new, Experimental): `defineFlow(id)` chains `.run()` (a typed handler), `.agent()` (a step for the workforce), `.waitFor()` (a message catch correlated on a variable) and `.approve()` (a Camunda user task). One definition yields the BPMN (`toXml()` / `definitions()`, laid out), the job types (`<flowId>.<stepId>`, `agent:<role>`, `agent:<rank>:<role>`), the message correlation and `flow.worker()`. Each step's output type joins the variables later steps see, so an unknown variable in a handler, a correlation key or a `{{prompt}}` placeholder is a compile error. The agent contract (`agentJobType(s)`, `renderPrompt`, the `prompt` / `resultVariable` headers) is exported for the CLI and for other agent workers.
+- **`casen agent hire|list|fire|work`**: profiles (command after `--`, roles, rank, instances, timeout, cwd) are saved in `workforce.json` next to casen's config. `work` runs every instance against the active profile's engine, one job at a time, taking its job types in turn; the prompt goes on stdin unless an argument contains `{prompt}`. Output (the last 64 KiB) completes the job under the step's result variable; a non-zero exit or timeout fails it with one retry fewer; a missing prompt header or variable fails it without retries; Ctrl+C hands running jobs back with their retries unchanged.
+- **`@bpmnkit/worker-client`**: `poll()` takes an `AbortSignal` (`signal`) and returns once it aborts, even mid-request or mid-pause.
+- Tests: flow model structure, a full run on `@bpmnkit/engine` (handlers, agent, correlated message, user task), the worker against a fake client, type-level checks with `@ts-expect-error`; workforce store/validation, real child processes for the harness (stdin, `{prompt}`, exit codes, timeout, abort, missing binary), and the serving loop against a fake engine. Docs: `packages/flow.md`, `guides/durable-agent-flows.md`, `cli/casen.md` "Agent workforce", worker-client `signal` option.
+
+### Proposal — what to do next from the nanobpm comparison
+
+1. **Convergence loops in `@bpmnkit/flow`** (next): `.loop(id, body, { until, max })` — a bounded repeat with an exclusive gateway and a round counter, escalating to a user task when `max` is hit. Plan → implement → review-until-approved is a loop; without it the agent flows above are straight lines.
+2. **Agent SDLC pattern + Claude Code skill**: a `packages/patterns` entry and a `bpmnkit-claude` skill built on 1 — plan fan-out (parallel multi-instance), per-PR review convergence parking on `waitFor` between rounds, CI-aware merge, human escalation. The skill lets Claude Code put its multi-step plan on the engine instead of in its context.
+3. **Trace capture → regression scenarios**: record an instance's start variables and job/message inputs, and replay them as a `packages/engine` scenario (`casen test`), so a failed run becomes a test.
+4. **`--auto` job types for the workforce**: read deployed processes and serve every `agent:*` type they use, so hiring needs no `--roles` for a single app.
+5. Smaller: `/llms.txt` and an `/agent` brief from reebe/proxy; persisting reebe-wasm state to IndexedDB.
+
 ## 2026-09-28 — Fix: `@bpmnkit/proxy` declarations compile without the consumer's Node types
 
 - The release job's `pnpm check:consumable` failed: `dist/index.d.ts` and `dist/access.d.ts` import `node:http` and use `NodeJS.ProcessEnv` (from the new `createProxyServer` / `listenProxy` / `optionsFromEnv` API), but nothing gave a consumer Node's types.

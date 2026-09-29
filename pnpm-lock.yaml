@@ -322,6 +322,9 @@ importers:
       '@bpmnkit/engine':
         specifier: workspace:^
         version: link:../../packages/engine
+      '@bpmnkit/flow':
+        specifier: workspace:^
+        version: link:../../packages/flow
       '@bpmnkit/patterns':
         specifier: workspace:^
         version: link:../../packages/patterns
@@ -719,6 +722,15 @@ importers:
         version: link:../../apps/reebe-wasm
 
   packages/feel: {}
+
+  packages/flow:
+    dependencies:
+      '@bpmnkit/core':
+        specifier: workspace:^
+        version: link:../core
+      '@bpmnkit/worker-client':
+        specifier: workspace:^
+        version: link:../worker-client
 
   packages/markdown:
     dependencies:

@@ -208,6 +208,29 @@ mod tests {
     }
 
     #[test]
+    fn test_parse_task_headers() {
+        let xml = simple_service_task_process().replace(
+            r#"<zeebe:taskDefinition type="process-order" retries="3"/>"#,
+            r#"<zeebe:taskDefinition type="process-order" retries="3"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="prompt" value="review {{diff}}"/>
+          <zeebe:header key="resultVariable" value="verdict"/>
+        </zeebe:taskHeaders>"#,
+        );
+        let processes = parse_bpmn(&xml).unwrap();
+        let Some(FlowElement::ServiceTask(task)) = processes[0].elements.get("task1") else {
+            panic!("Expected service task at task1");
+        };
+        assert_eq!(
+            task.task_headers,
+            vec![
+                ("prompt".to_string(), "review {{diff}}".to_string()),
+                ("resultVariable".to_string(), "verdict".to_string()),
+            ]
+        );
+    }
+
+    #[test]
     fn test_parse_exclusive_gateway() {
         let processes = parse_bpmn(exclusive_gateway_process()).unwrap();
         let process = &processes[0];

@@ -420,6 +420,9 @@ pub struct ServiceTask {
     pub incoming: Vec<String>,
     pub outgoing: Vec<String>,
     pub task_definition: Option<ZeebeTaskDefinition>,
+    /// `zeebe:taskHeaders`: `(key, value)`, in document order — the job's `customHeaders`.
+    #[serde(default)]
+    pub task_headers: Vec<(String, String)>,
     pub input_mappings: Vec<ZeebeIoMapping>,
     pub output_mappings: Vec<ZeebeIoMapping>,
     pub execution_listeners: Vec<ZeebeExecutionListener>,
@@ -437,6 +440,7 @@ impl ServiceTask {
             incoming: Vec::new(),
             outgoing: Vec::new(),
             task_definition: None,
+            task_headers: Vec::new(),
             input_mappings: Vec::new(),
             output_mappings: Vec::new(),
             execution_listeners: Vec::new(),
@@ -606,6 +610,9 @@ pub struct SendTask {
     pub incoming: Vec<String>,
     pub outgoing: Vec<String>,
     pub task_definition: Option<ZeebeTaskDefinition>,
+    /// `zeebe:taskHeaders`: `(key, value)`, in document order — the job's `customHeaders`.
+    #[serde(default)]
+    pub task_headers: Vec<(String, String)>,
     pub input_mappings: Vec<ZeebeIoMapping>,
     pub output_mappings: Vec<ZeebeIoMapping>,
     pub multi_instance: Option<MultiInstanceLoopCharacteristics>,
@@ -622,6 +629,7 @@ impl SendTask {
             incoming: Vec::new(),
             outgoing: Vec::new(),
             task_definition: None,
+            task_headers: Vec::new(),
             input_mappings: Vec::new(),
             output_mappings: Vec::new(),
             multi_instance: None,

@@ -770,6 +770,11 @@ impl ParserState {
                 let def = ZeebeTaskDefinition { job_type, retries, timeout };
                 self.apply_task_definition(def);
             }
+            "header" => {
+                if let (Some(key), Some(value)) = (get_attr(e, "key"), get_attr(e, "value")) {
+                    self.apply_task_header(key, value);
+                }
+            }
             "input" => {
                 let source = get_attr(e, "source").unwrap_or_default();
                 let target = get_attr(e, "target").unwrap_or_default();
@@ -1320,6 +1325,18 @@ impl ParserState {
                 ParseContext::SendTask(t) => { t.task_definition = Some(def); return; }
                 ParseContext::SubProcess(sp) if sp.ad_hoc => { sp.task_definition = Some(def); return; }
                 _ => {}
+            }
+        }
+    }
+
+    /// Record a `zeebe:header` on the job-worker task it is in; elsewhere it is ignored.
+    fn apply_task_header(&mut self, key: String, value: String) {
+        for ctx in self.stack.iter_mut().rev() {
+            match ctx {
+                ParseContext::ServiceTask(t) => { t.task_headers.push((key, value)); return; }
+                ParseContext::SendTask(t) => { t.task_headers.push((key, value)); return; }
+                ParseContext::ExtensionElements => {}
+                _ => return,
             }
         }
     }

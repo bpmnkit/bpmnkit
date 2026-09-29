@@ -332,6 +332,32 @@ async fn test_job_lifecycle_create_activate_complete() {
     );
 }
 
+/// `zeebe:taskHeaders` reach the job as its `customHeaders`.
+#[tokio::test]
+async fn test_job_carries_task_headers() {
+    let Some(pool) = setup_db().await else {
+        eprintln!("REEBE_DATABASE__URL not set — skipping integration test");
+        return;
+    };
+    let handle = start_engine(pool.clone());
+    let bpmn = SIMPLE_SERVICE_TASK_BPMN.replace(
+        r#"<zeebe:taskDefinition type="do-work" retries="3"/>"#,
+        r#"<zeebe:taskDefinition type="do-work" retries="3"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="prompt" value="review {{diff}}"/>
+          <zeebe:header key="resultVariable" value="verdict"/>
+        </zeebe:taskHeaders>"#,
+    );
+    deploy(&handle, &bpmn, "headers.bpmn").await;
+    create_instance(&handle, "simple-service", serde_json::json!({})).await;
+
+    let jobs = wait_for_jobs(&pool, "do-work", 60).await;
+    assert_eq!(
+        jobs.first().map(|j| j.custom_headers.clone()),
+        Some(serde_json::json!({ "prompt": "review {{diff}}", "resultVariable": "verdict" }))
+    );
+}
+
 // ---------------------------------------------------------------------------
 // Test 2 — Exclusive gateway with FEEL conditions
 // ---------------------------------------------------------------------------

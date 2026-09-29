@@ -87,6 +87,7 @@ for await (const job of client.poll("my-job-type", { maxJobs: 10, timeout: 60_00
 | `timeout` | `number` | `300_000` | Activation lock timeout in milliseconds |
 | `requestTimeout` | `number` | `20_000` | How long the engine may hold an activation request open (long polling), in ms; `0` uses the engine default |
 | `onError` | `(error: Error) => void` | warning on stderr | Called with each transient error before the poll is retried |
+| `signal` | `AbortSignal` | — | Stops the poll: the generator returns once it aborts, even mid-request or mid-pause |
 
 ### Yields `ActivatedJob`
 

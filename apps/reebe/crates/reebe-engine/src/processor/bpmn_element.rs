@@ -511,7 +511,7 @@ impl BpmnElementProcessor {
                         "bpmnProcessId": bpmn_process_id,
                         "elementId": element_id,
                         "retries": 3,
-                        "customHeaders": {},
+                        "customHeaders": task_headers_json(&st.task_headers),
                         "tenantId": tenant_id,
                     }),
                 });
@@ -826,7 +826,7 @@ impl BpmnElementProcessor {
                         "bpmnProcessId": bpmn_process_id,
                         "elementId": element_id,
                         "retries": 3,
-                        "customHeaders": {},
+                        "customHeaders": task_headers_json(&st.task_headers),
                         "tenantId": tenant_id,
                     }),
                 });
@@ -1796,4 +1796,14 @@ fn element_type_string(element: &reebe_bpmn::FlowElement) -> String {
         reebe_bpmn::FlowElement::IntermediateThrowEvent(_) => "INTERMEDIATE_THROW_EVENT".to_string(),
         reebe_bpmn::FlowElement::BoundaryEvent(_) => "BOUNDARY_EVENT".to_string(),
     }
+}
+
+/// A task's `zeebe:taskHeaders` as the job's `customHeaders` object; a repeated key keeps its last value.
+fn task_headers_json(headers: &[(String, String)]) -> serde_json::Value {
+    serde_json::Value::Object(
+        headers
+            .iter()
+            .map(|(k, v)| (k.clone(), serde_json::Value::String(v.clone())))
+            .collect(),
+    )
 }

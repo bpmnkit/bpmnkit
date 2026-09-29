@@ -309,6 +309,23 @@ casen worker start
 casen worker start send-invoice
 ```
 
+## Agent workforce
+
+Hire coding-agent CLIs as durable job workers. They serve the `.agent()` steps of
+[`@bpmnkit/flow`](/docs/packages/flow) flows — any service task with job type `agent:<role>` or
+`agent:<rank>:<role>` and a `prompt` task header. See
+[Durable Agent Flows](/docs/guides/durable-agent-flows).
+
+```sh
+# Hire: everything after -- is the command; the prompt goes on stdin unless an argument has {prompt}
+casen agent hire claude --roles plan,pr-review --rank senior -- claude -p
+casen agent hire copilot --roles feature --instances 3 -- copilot -p "{prompt}"
+
+casen agent list            # hired agents and the job types they serve
+casen agent fire copilot    # remove one
+casen agent work            # run the workforce against the active profile until Ctrl+C
+```
+
 ## Local engine (Reebe)
 
 Reebe is a **dev/test** workflow engine (~50 MB) that serves the Zeebe API locally, so you
@@ -322,8 +339,9 @@ trademarks of Camunda Services GmbH.
 # Embedded SQLite, no external database
 casen reebe start
 
-# Custom port — match ZEEBE_ADDRESS, which defaults to http://localhost:26500
-casen reebe start --port 26500
+# REST on 26500, where ZEEBE_ADDRESS points by default. The gRPC gateway uses 26500
+# unless told otherwise, so move it out of the way.
+casen reebe start --port 26500 --grpc-port 26501
 
 # PostgreSQL instead of the embedded database
 casen reebe start --database-url postgres://user:pass@localhost/reebe
@@ -331,13 +349,15 @@ casen reebe start --database-url postgres://user:pass@localhost/reebe
 
 | Flag | Default | Description |
 |---|---|---|
-| `--port` | `8080` | HTTP port to listen on |
+| `--port` | `8080` | HTTP (REST) port to listen on |
+| `--grpc-port` | `26500` | Zeebe gRPC gateway port; must differ from `--port` |
 | `--database-url` | embedded SQLite | PostgreSQL connection URL |
 | `--config` | `config.toml` | Path to the engine config file |
 
 `casen reebe` on its own is shorthand for `casen reebe start`. The command runs the
-`reebe-server` binary; build it with
-`cargo install --path apps/reebe/crates/reebe-server` if it is not on your `PATH`.
+`reebe-server` binary. If it is not on your `PATH`, build the embedded (SQLite) server with
+`cargo install --path apps/reebe/crates/reebe-server --no-default-features --features embedded`,
+or the PostgreSQL one — which needs `--database-url` — without the two feature flags.
 
 ## Local proxy
 

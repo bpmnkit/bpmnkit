@@ -1,7 +1,7 @@
 {
 	"$schema": "https://docspack.dev/schema/v1.json",
 	"name": "@bpmnkit/docspack",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"documents": [
 		"@bpmnkit/core",
 		"@bpmnkit/canvas",
@@ -122,12 +122,27 @@
 		{
 			"id": "cli.casen.worker-commands",
 			"file": "chunks/cli.casen.worker-commands.md",
-			"tokens": 342,
+			"tokens": 233,
 			"tags": [
 				"cli",
 				"casen",
 				"worker",
 				"commands"
+			],
+			"entities": [
+				"@bpmnkit/flow"
+			]
+		},
+		{
+			"id": "cli.casen.local-engine-reebe",
+			"file": "chunks/cli.casen.local-engine-reebe.md",
+			"tokens": 369,
+			"tags": [
+				"cli",
+				"casen",
+				"local",
+				"engine",
+				"reebe"
 			],
 			"entities": [
 				"config.toml"
@@ -2168,6 +2183,70 @@
 				"guides",
 				"drop",
 				"not"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.durable-agent-flows",
+			"file": "chunks/guides.durable-agent-flows.md",
+			"tokens": 213,
+			"tags": [
+				"guides",
+				"durable-agent-flows"
+			],
+			"entities": [
+				"@bpmnkit/flow"
+			]
+		},
+		{
+			"id": "guides.durable-agent-flows.1.-write-the-flow",
+			"file": "chunks/guides.durable-agent-flows.1.-write-the-flow.md",
+			"tokens": 423,
+			"tags": [
+				"guides",
+				"durable-agent-flows",
+				"write",
+				"flow"
+			],
+			"entities": [
+				"prKey"
+			]
+		},
+		{
+			"id": "guides.durable-agent-flows.2.-start-an-engine-and-deploy",
+			"file": "chunks/guides.durable-agent-flows.2.-start-an-engine-and-deploy.md",
+			"tokens": 534,
+			"tags": [
+				"guides",
+				"durable-agent-flows",
+				"start",
+				"engine",
+				"deploy"
+			],
+			"entities": [
+				"workforce.json"
+			]
+		},
+		{
+			"id": "guides.durable-agent-flows.4.-run-it",
+			"file": "chunks/guides.durable-agent-flows.4.-run-it.md",
+			"tokens": 276,
+			"tags": [
+				"guides",
+				"durable-agent-flows",
+				"run"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.durable-agent-flows.durable-waits",
+			"file": "chunks/guides.durable-agent-flows.durable-waits.md",
+			"tokens": 239,
+			"tags": [
+				"guides",
+				"durable-agent-flows",
+				"durable",
+				"waits"
 			],
 			"entities": []
 		},
@@ -4862,6 +4941,94 @@
 			]
 		},
 		{
+			"id": "packages.flow",
+			"file": "chunks/packages.flow.md",
+			"tokens": 175,
+			"tags": [
+				"packages",
+				"flow"
+			],
+			"entities": [
+				"@bpmnkit/flow"
+			]
+		},
+		{
+			"id": "packages.flow.installation",
+			"file": "chunks/packages.flow.installation.md",
+			"tokens": 192,
+			"tags": [
+				"packages",
+				"flow",
+				"installation"
+			],
+			"entities": []
+		},
+		{
+			"id": "packages.flow.steps",
+			"file": "chunks/packages.flow.steps.md",
+			"tokens": 592,
+			"tags": [
+				"packages",
+				"flow",
+				"steps"
+			],
+			"entities": [
+				"build()",
+				"jobKey"
+			]
+		},
+		{
+			"id": "packages.flow.loops",
+			"file": "chunks/packages.flow.loops.md",
+			"tokens": 665,
+			"tags": [
+				"packages",
+				"flow",
+				"loops"
+			],
+			"entities": []
+		},
+		{
+			"id": "packages.flow.flow",
+			"file": "chunks/packages.flow.flow.md",
+			"tokens": 362,
+			"tags": [
+				"packages",
+				"flow"
+			],
+			"entities": [
+				"toXml()",
+				"definitions()",
+				"BpmnDefinitions",
+				"jobTypes",
+				"agentJobTypes",
+				"runSteps",
+				"jobType",
+				"stop()",
+				"clientId",
+				"@bpmnkit/worker-client",
+				"maxJobs",
+				"onError"
+			]
+		},
+		{
+			"id": "packages.flow.testing-a-flow-on-the-simulator",
+			"file": "chunks/packages.flow.testing-a-flow-on-the-simulator.md",
+			"tokens": 328,
+			"tags": [
+				"packages",
+				"flow",
+				"testing",
+				"simulator"
+			],
+			"entities": [
+				"definitions()",
+				"@bpmnkit/engine",
+				"runSteps",
+				"resultVariable"
+			]
+		},
+		{
 			"id": "packages.operate",
 			"file": "chunks/packages.operate.md",
 			"tokens": 186,
@@ -5055,7 +5222,7 @@
 		{
 			"id": "packages.worker-client.client.poll-jobtype-options",
 			"file": "chunks/packages.worker-client.client.poll-jobtype-options.md",
-			"tokens": 462,
+			"tokens": 494,
 			"tags": [
 				"packages",
 				"worker-client",
@@ -5067,6 +5234,7 @@
 				"requestTimeout",
 				"onError",
 				"maxJobs",
+				"AbortSignal",
 				"ActivatedJob"
 			]
 		},

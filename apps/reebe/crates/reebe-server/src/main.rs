@@ -23,6 +23,9 @@ struct Cli {
     config: String,
     #[arg(short, long, env = "REEBE_PORT", default_value = "8080")]
     port: u16,
+    /// Port of the Zeebe gRPC gateway. Must differ from `--port`.
+    #[arg(long, env = "REEBE_GRPC_PORT", default_value = "26500")]
+    grpc_port: u16,
     #[arg(long, env = "REEBE_DATABASE_URL")]
     database_url: Option<String>,
     /// Use a built-in SQLite database stored in the OS app-data directory.
@@ -57,6 +60,12 @@ async fn main() -> anyhow::Result<()> {
 
     // Override with CLI/env
     cfg.server.port = cli.port;
+    if cli.grpc_port == cli.port {
+        anyhow::bail!(
+            "REST and gRPC cannot share port {}: pass a different --port or --grpc-port",
+            cli.port
+        );
+    }
 
     #[cfg(feature = "embedded")]
     if cli.embedded && cli.database_url.is_none() {
@@ -142,15 +151,16 @@ async fn main() -> anyhow::Result<()> {
         cfg.auth,
     ).await;
 
-    // Start gRPC server on port 26500 (Zeebe standard gRPC port)
+    // Start the gRPC gateway (26500, the Zeebe standard, unless --grpc-port says otherwise)
     let grpc_state = reebe_grpc::GatewayState {
         engine: primary_engine,
         pool,
         partition_count,
     };
     let grpc_host = cfg.server.host.clone();
+    let grpc_port = cli.grpc_port;
     tokio::spawn(async move {
-        let grpc_addr: std::net::SocketAddr = format!("{}:26500", grpc_host)
+        let grpc_addr: std::net::SocketAddr = format!("{}:{}", grpc_host, grpc_port)
             .parse()
             .expect("invalid gRPC address");
         info!(addr = %grpc_addr, "gRPC gateway listening");

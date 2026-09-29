@@ -213,6 +213,38 @@ Supersedes Phase 1-4 of "AIKit — Intent-Driven Process Automation" above: the 
 
 ---
 
+## Durable Agent Flows
+
+> Motivation: [nanobpm.io](https://nanobpm.io/)'s argument that an agent should design the
+> graph and a durable engine should run it — holding a plan in an LLM's context loses it on
+> the first compaction or reboot. bpmnkit already has the engine (reebe, SQL-backed), the
+> builder and the worker client; these items join them up.
+
+- [x] **Code-first flows — `@bpmnkit/flow`**: `defineFlow(id)` chains `.run()` (a typed
+      handler step), `.agent()` (a step served by the workforce), `.waitFor()` (a durable
+      message wait correlated on a variable) and `.approve()` (a Camunda user task). One
+      definition yields the BPMN (`toXml()`), the job types, the message correlation and a
+      worker (`flow.worker()`) that serves every handler step. Each step's output type is
+      added to the variables the next step sees, so a misspelt variable is a compile error
+- [x] **Agent workforce — `casen agent`**: `hire` saves a profile (a coding-agent CLI
+      command, optional rank, roles, instance count), `list`/`fire` manage them, `work` runs
+      the fleet against the active profile's engine. A worker serves `agent:<role>` and
+      `agent:<rank>:<role>`, renders the task's `prompt` header with the job's variables,
+      runs the CLI, and completes the job with its output. A crash forfeits only the job
+      lock, so the engine hands the job out again when the workforce restarts
+- [x] **Convergence loops**: `.loop(id, body, { until, max, between?, counter?, escalate? })`
+      in `@bpmnkit/flow` — a bounded repeat (script-task round counter + exclusive gateways)
+      whose `between` steps run only when another round follows, and which escalates to a
+      user task at `max`
+- [ ] **Agent SDLC pattern + Claude Code skill**: plan fan-out, per-PR review convergence,
+      CI-aware merge and human escalation, as a `packages/patterns` entry and a
+      `bpmnkit-claude` skill that keeps Claude Code's plan on the engine
+- [ ] **Trace capture → regression scenarios**: replay a recorded instance's inputs as a
+      `casen test` scenario
+- [ ] **Workforce `--auto`**: serve every `agent:*` job type the deployed processes use
+
+---
+
 ## Documentation on the Landing Site
 
 > Implemented 2026-08-29 — see [`doc/progress.md`](progress.md).
