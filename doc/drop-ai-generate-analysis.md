@@ -1,6 +1,6 @@
 # Drop: generate a process from a description — speed and token analysis
 
-Status: implemented (2026-09-29). The line format is in `@bpmnkit/core` (`process-text.ts`). The route, page and bench are in `apps/drop`. The v1 model choice is pending the bench results.
+Status: implemented (2026-09-29). The line format is in `@bpmnkit/core` (`process-text.ts`). The route, page and bench are in `apps/drop`. The model is `@cf/zai-org/glm-4.7-flash`, chosen from the benchmark in §8.
 Related: `doc/ai-bpmn-generation-analysis.md` (the repo-wide generation pipeline), `doc/drop-v2-spec.md` §2.6 (the AI review this builds on).
 
 Goal: a Drop user types what a process should do, and a diagram appears. The generation must use very few tokens and must run fast. This document measures where the time and tokens go today and recommends a design. It does not implement the feature.
@@ -189,7 +189,49 @@ Success criteria for v1:
 - under 1k total tokens per generation
 - at least 90% of the golden prompts produce a diagram with no `error` finding after auto-fix
 
-## 8. Issues found along the way
+## 8. Benchmark results and the model choice (2026-09-29)
+
+This is one run of 12 golden prompts per model, against Workers AI
+(`apps/drop/bench-results/2026-09-29T17-26-27-508Z/`). The figures are medians, except neurons and the
+lint column, which are means. "Assertions" is how many of the 12 prompts produced every element
+type the golden set expects.
+
+| Model | First byte | First shape | Total | Out tokens | Reasoning | Neurons | Assertions | Lint errors |
+|---|---|---|---|---|---|---|---|---|
+| gpt-oss-120b (effort low) | 327 ms | 12.4 s | 10.6 s | 635 | 525 | 67.7 | 4/12 | 0.3 |
+| gpt-oss-20b (effort low) | 230 ms | 19.2 s | 12.1 s | 1215 | 1257 | 41.8 | 4/12 | 0.0 |
+| gemma-4-26b-a4b (thinking off) | 531 ms | 2.1 s | 2.4 s | 72 | 0 | 5.9 | 7/12 | 0.3 |
+| **glm-4.7-flash (thinking off)** | **238 ms** | **0.8 s** | **2.0 s** | 80 | 0 | 5.0 | 5/12 → 6/12 | 1.5 |
+| qwen3-30b-a3b | 142 ms | 5.5 s | 7.3 s | 1052 | 1130 | 33.8 | 3/12 | 0.3 |
+| granite-4.0-h-micro | 383 ms | 1.1 s | 1.7 s | 51 | 0 | 1.2 | 2/12 → 3/12 | 1.3 |
+
+- **Reasoning models are out.** gpt-oss cannot turn reasoning off, and qwen3 has no documented
+  switch. Their reasoning is 5–15× longer than the diagram. Several gpt-oss-20b and qwen3 runs used
+  their whole 2,048-token cap on reasoning and returned a two-element diagram.
+- **gemma-4 wrote the best diagrams, but it queues.** Its generation time is comparable to glm's.
+  But its first byte took 3.2 s, 4.0 s, 4.2 s, 10.5 s and 52.9 s in 5 of 12 runs, which is
+  Workers AI capacity rather than the model. glm's first byte was under 0.7 s in every run, and its
+  total time was under 3.7 s.
+- **glm-4.7-flash is the v1 model**, because the feature is judged on speed. At about 5 neurons a
+  generation, the 10k-neuron free allowance covers roughly 2,000 a day. `AI_GENERATE_MODEL` switches
+  back to gemma-4 if Workers AI's capacity for it improves. It needs no code change.
+- **The parser now accepts the most common grammar drift** found in the recorded answers:
+  - a missing kind (`start[Order placed]`, typed from the id)
+  - a name written where the trigger goes (`start:order received`)
+  - synonyms such as `event`, `parallel` and `decision`
+
+  Replaying all 72 recorded answers through the new parser moves glm from 5/12 to 6/12 and granite
+  from 2/12 to 3/12, with no new model calls. The guide also says `rule (DMN decision)` and
+  `catch (wait for message or timer)`, because every model wrote the DMN step as `service`. That
+  prompt change is not yet measured.
+- **Failures no model can fix in v1:** 06 needs a multi-instance sub-process, which the format
+  cannot express. 11 expects an error boundary that the prompt never asks for.
+- **Next cheap win: conditions in prose.** 7 of glm's 18 lint errors are conditions written as
+  prose (`is not approved`) instead of FEEL. The parser could keep such a condition as the branch
+  label and leave the expression empty. The lone-branch default rule and the lint warning would
+  then point the reader at it, instead of an expression that fails at deploy time.
+
+## 9. Issues found along the way
 
 - **`expand()` emitted invalid BPMN without complaint** in the cases in §6.2. Fixed: it now throws one error listing every problem. The lenient repair described in §6.2 lives in `parseProcessText`, which only ever produces diagrams `expand` accepts.
 - **`estimateNeurons()` in `apps/drop/src/lib/ai.ts` ignores reasoning tokens.** It also uses gpt-oss-120b rates whatever `AI_MODEL` says, so the daily budget undercounts. The fix is to read `usage` from the response.

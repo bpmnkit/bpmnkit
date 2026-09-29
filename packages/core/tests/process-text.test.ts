@@ -121,12 +121,45 @@ describe("parseProcessText", () => {
 			{ line: 1, message: '"ghost" is never declared; flow a > ghost left out' },
 			{ line: 2, message: '"a" is already declared on line 1; the first declaration is kept' },
 			{ line: 3, message: 'unknown kind "frobnicate" for "x"; used task' },
-			{ line: 3, message: 'unknown trigger "email" for "e"; ignored' },
+			{ line: 3, message: 'unknown trigger "email" for "e"; read as part of the name' },
 			{ line: 4, message: 'boundary "b" has no on=<task id>; left out' },
 			{ line: 4, message: '"b" was left out; flow b > a left out' },
 			{ line: 5, message: "an end event has no outgoing flow; flow e > s left out" },
 			{ line: 6, message: 'expected ">" at "is prose, not a path"' },
 		])
+	})
+
+	// Each line below is from a recorded model answer in the Drop benchmark.
+	it("reads the kind a model leaves out, from the id", () => {
+		const els = elements("start[order placed] > review[Check it] > done[Order shipped]")
+		expect(els.map((e) => [e.id, e.type, e.name])).toEqual([
+			["start", "startEvent", "order placed"],
+			["review", "task", "Check it"],
+			["done", "endEvent", "Order shipped"],
+		])
+	})
+
+	it("reads a name written where the trigger goes", () => {
+		const els = elements("start[start:order received] > end[end:success Charge completed]")
+		expect(els.map((e) => [e.type, e.name, e.eventType])).toEqual([
+			["startEvent", "order received", undefined],
+			["endEvent", "success Charge completed", undefined],
+		])
+	})
+
+	it("accepts the synonyms models use for a kind, without a problem", () => {
+		const text =
+			"s[start] > p[parallel] > w[event:message Report received] > d[decision Check credit] > e[end]"
+		const { problems } = parseProcessText(text)
+		expect(problems).toEqual([])
+		expect(elements(text).map((e) => e.type)).toEqual([
+			"startEvent",
+			"parallelGateway",
+			"intermediateCatchEvent",
+			"businessRuleTask",
+			"endEvent",
+		])
+		expect(elements(text).find((e) => e.id === "w")?.eventType).toBe("message")
 	})
 
 	it("keeps only one default per gateway, and none off a parallel gateway", () => {

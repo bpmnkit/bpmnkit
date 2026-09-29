@@ -1,5 +1,17 @@
 # Progress
 
+## 2026-09-29 — Drop describe-to-diagram: model chosen from the benchmark
+
+- `AI_GENERATE_MODEL` is `@cf/zai-org/glm-4.7-flash` (thinking off). On the 12 golden prompts its medians were 238 ms to first byte, 0.8 s to first shape and 2.0 s total, at about 5 neurons per generation. Its first byte never exceeded 0.7 s. gemma-4 passed more assertions (7/12 vs 5/12) but waited 3–53 s for its first byte in 5 of 12 runs. gpt-oss and qwen3 reason for 500–1,250 tokens and take 5–20 s. Full table and reasoning in `doc/drop-ai-generate-analysis.md` §8; the raw results are committed under `apps/drop/bench-results/`.
+- `parseProcessText` now recovers three kinds of drift found in the recorded answers, still reporting the first two as problems:
+  - a missing kind: the whole head becomes the name, and the id suggests start or end
+  - a name written where the trigger goes
+  - common synonyms for a kind (`event`, `parallel`, `exclusive`, `gateway`, `inclusive`, `decision`, `dmn`, `human`)
+
+  Replaying the 72 recorded answers: glm 5 → 6/12, granite 2 → 3/12.
+- The guide spells out `rule (DMN decision)` and `catch (wait for message or timer)`, because every model wrote the DMN step as `service`. Not yet measured.
+- Tests: three regressions in `core/tests/process-text.test.ts`, built from recorded model lines.
+
 ## 2026-09-29 — Drop: describe a process, get a diagram
 
 The feature itself, on top of the line format and benchmark (`doc/drop-ai-generate-analysis.md`).

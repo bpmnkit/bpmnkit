@@ -38,7 +38,7 @@ a > b > c                 sequence flow
 id[kind Name]             declare a node the first time it appears; afterwards write only id
 gw >(Label: condition) x  conditional branch, condition in FEEL
 gw >(Label: default) y    branch taken when no condition holds
-Kinds: start end task user service rule send receive script manual call xor and or eventgw catch throw boundary
+Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate link cancel)
 Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>
 Branches that meet again are joined automatically; join parallel branches with an and node.
@@ -86,6 +86,22 @@ const KINDS: Record<string, BpmnElementType> = {
 	catch: "intermediateCatchEvent",
 	throw: "intermediateThrowEvent",
 	boundary: "boundaryEvent",
+}
+
+/**
+ * Words models write for a kind instead of the one the guide teaches, taken
+ * from the Drop benchmark's recorded answers. Accepted without a problem: the
+ * meaning is plain, and teaching them would only lengthen the prompt.
+ */
+const ALIASES: Record<string, BpmnElementType> = {
+	event: "intermediateCatchEvent",
+	parallel: "parallelGateway",
+	exclusive: "exclusiveGateway",
+	gateway: "exclusiveGateway",
+	inclusive: "inclusiveGateway",
+	decision: "businessRuleTask",
+	dmn: "businessRuleTask",
+	human: "userTask",
 }
 
 const TRIGGERS = new Set([
@@ -234,13 +250,20 @@ class Reader {
 		const name = space < 0 ? undefined : head.slice(space + 1).trim() || undefined
 		const [kind = "", trigger] = kindWord.toLowerCase().split(":")
 
-		let type = KINDS[kind]
+		let type = KINDS[kind] ?? ALIASES[kind]
+		let label = name
 		if (type === undefined) {
-			this.problems.push({ line: n, message: `unknown kind "${kind}" for "${id}"; used task` })
-			type = "task"
+			// Most often the kind was left out (`start[Order placed]`): the whole
+			// head is the name, and the id is the best remaining hint at the type.
+			type = /^start/i.test(id)
+				? "startEvent"
+				: /^(end|done|finish)/i.test(id)
+					? "endEvent"
+					: "task"
+			label = head || undefined
+			this.problems.push({ line: n, message: `unknown kind "${kind}" for "${id}"; used ${type}` })
 		}
 		const element: CompactElement = { id, type }
-		if (name) element.name = name
 		if (trigger !== undefined) {
 			if (!EVENTS.has(type)) {
 				this.problems.push({
@@ -248,14 +271,17 @@ class Reader {
 					message: `"${kind}" takes no trigger; ignored ":${trigger}"`,
 				})
 			} else if (!TRIGGERS.has(trigger)) {
+				// `start:order received` — a name written where the trigger goes.
+				label = [kindWord.slice(kindWord.indexOf(":") + 1), label].filter(Boolean).join(" ")
 				this.problems.push({
 					line: n,
-					message: `unknown trigger "${trigger}" for "${id}"; ignored`,
+					message: `unknown trigger "${trigger}" for "${id}"; read as part of the name`,
 				})
 			} else {
 				element.eventType = trigger
 			}
 		}
+		if (label) element.name = label
 
 		const node: Node = { element, line: n }
 		for (const attr of attrs.split(/[\s,]+/).filter(Boolean)) {
