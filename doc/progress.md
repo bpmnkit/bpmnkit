@@ -1,5 +1,17 @@
 # Progress
 
+## 2026-09-29 — Drop: research for generating a process from a description
+
+Analysis only, no feature code: `doc/drop-ai-generate-analysis.md`.
+
+- Measured on repo fixtures with the gpt-oss tokenizer. Relative to minified compact JSON, BPMN XML costs ~6.7×, ProcessPlan JSON ~0.6×, and a chained-edge line DSL ~0.25×. `expand()` + layout + export takes under 1 ms, so the wait is almost entirely output and reasoning tokens.
+- Workers AI JSON mode cannot stream and does not guarantee its schema. The recommendation is therefore a streamed line DSL, parsed per line for a live preview, followed by deterministic normalisation and `optimize()` auto-fix instead of an LLM repair round-trip.
+- Candidate models to benchmark against the 15 golden prompts, with reasoning off or low: gpt-oss-120b/20b, gemma-4-26b-a4b and glm-4.7-flash.
+- Found:
+  - `expand()` silently emits invalid BPMN for dangling edges, duplicate ids and missing flow ids.
+  - Drop's `estimateNeurons()` ignores reasoning tokens.
+  - `guides/ai.md` says `taskType` (should be `jobType`) and cites a non-existent `compactDiagramJsonSchema`.
+
 ## 2026-09-29 — Reebe: Camunda 8 v2 field names, working SQLite mode, configurable gRPC port
 
 Found while running the Durable Agent Flows guide end to end on a local engine.
