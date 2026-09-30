@@ -40,7 +40,7 @@ id[kind Name]             declare a node the first time it appears; afterwards w
 gw >(Label: condition) x  conditional branch, condition in FEEL (amount > 1000, status = "ok")
 gw >(Label: default) y    branch taken when no condition holds
 Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary
-Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate link cancel)
+Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate cancel)
 Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>
 Rules:
 - One start event. Every node is on a path from it to an end event: never a node nothing leads to.
@@ -386,6 +386,14 @@ class Reader {
 					line: n,
 					message: `unknown trigger "${trigger}" for "${id}"; ${said ? "ignored, the name already says it" : "read as part of the name"}`,
 				})
+			} else if (trigger === "link") {
+				// A link event needs a link name and a partner, which this format cannot
+				// write; in a path a model means a milestone by it.
+				if (type === "intermediateCatchEvent") element.type = "intermediateThrowEvent"
+				this.problems.push({
+					line: n,
+					message: `"${id}" cannot be a link event here; made it a plain event`,
+				})
 			} else {
 				element.eventType = trigger
 			}
@@ -674,18 +682,24 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		edges = edges.filter((edge) => reached.has(edge.from) && reached.has(edge.to))
 
 		// Ends: every path that stops elsewhere, including a boundary with nowhere to go.
-		for (const node of [...nodes.values()]) {
-			const { id, type } = node.element
-			if (type === "endEvent" || outOf(id).length > 0) continue
-			const end = uniqueId(`${id}_end`, taken)
-			const name = EVENTS.has(type) ? node.element.name : undefined
-			add(end, "endEvent", node.line, name ?? "Process completed")
-			edges.push({ from: id, to: end, line: node.line })
-			fixes.push(`added end event "${end}" after "${id}"`)
+		const addEnds = () => {
+			for (const node of [...nodes.values()]) {
+				const { id, type } = node.element
+				if (type === "endEvent" || outOf(id).length > 0) continue
+				const end = uniqueId(`${id}_end`, taken)
+				const name = EVENTS.has(type) ? node.element.name : undefined
+				add(end, "endEvent", node.line, name ?? "Process completed")
+				edges.push({ from: id, to: end, line: node.line })
+				fixes.push(`added end event "${end}" after "${id}"`)
+			}
 		}
+		addEnds()
 
 		// Exits: a loop with no way out never ends. Its last decision gets a branch
-		// to an end event; the condition rules below give it a condition.
+		// to an end event; the condition rules below give it a condition. A loop
+		// with no decision in it (`and > it[task IT] > and`, parallel branches
+		// drawn back into their own split) is not a loop anyone meant: its flows
+		// back go, and each path then ends.
 		for (;;) {
 			const ends = new Set<string>()
 			const queue = [...nodes.values()]
@@ -703,6 +717,33 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 				.filter((node) => CONDITIONAL.has(node.element.type))
 				.sort((a, b) => b.line - a.line)[0]
 			if (decision === undefined) {
+				if (stuck.length === 0) break
+				const inStuck = new Set(stuck.map((node) => node.element.id))
+				const backs = new Set<Edge>()
+				const done = new Set<string>()
+				const onPath = new Set<string>()
+				const visit = (id: string) => {
+					onPath.add(id)
+					for (const edge of outOf(id)) {
+						if (onPath.has(edge.to)) {
+							if (inStuck.has(edge.to)) backs.add(edge)
+						} else if (!done.has(edge.to)) visit(edge.to)
+					}
+					onPath.delete(id)
+					done.add(id)
+				}
+				for (const node of nodes.values()) {
+					if (node.element.type === "startEvent") visit(node.element.id)
+				}
+				for (const edge of backs) {
+					problems.push({
+						line: edge.line,
+						message: `flow ${edge.from} > ${edge.to} loops with no way out; left out`,
+					})
+				}
+				edges = edges.filter((edge) => !backs.has(edge))
+				addEnds()
+				if (backs.size > 0) continue
 				for (const node of stuck) {
 					problems.push({
 						line: node.line,
@@ -759,22 +800,40 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		})
 
 		// Implicit splits: a task or event with several ways out forks the token
-		// without saying so. Labelled branches are a decision; unlabelled ones run
-		// in parallel, which is what the flows mean in BPMN.
+		// without saying so. Labelled branches are a decision. Unlabelled ones that
+		// all wait, at least one on a catch event (`poll > timeout[catch:timer 5m]`,
+		// `poll > get[receive Report]`), are a race: whichever happens first. Other
+		// unlabelled ones run in parallel, which is what the flows mean in BPMN.
 		for (const node of [...nodes.values()]) {
 			const { id, type } = node.element
 			const out = outOf(id)
 			if (GATEWAYS.has(type) || out.length < 2) continue
 			const decides = out.some((edge) => edge.condition !== undefined || edge.name !== undefined)
+			const targets = out.map((edge) => nodes.get(edge.to)?.element)
+			const races =
+				!decides &&
+				targets.every((t) => t?.type === "intermediateCatchEvent" || t?.type === "receiveTask") &&
+				targets.some((t) => t?.type === "intermediateCatchEvent")
 			const split = uniqueId(`${id}_split`, taken)
-			const gatewayType = decides ? "exclusiveGateway" : "parallelGateway"
+			const gatewayType = decides
+				? "exclusiveGateway"
+				: races
+					? "eventBasedGateway"
+					: "parallelGateway"
 			const name = decides ? `${node.element.name ?? nameFromId(id)} outcome?` : undefined
 			add(split, gatewayType, node.line, name)
 			for (const edge of out) edge.from = split
 			edges.push({ from: id, to: split, line: node.line })
-			fixes.push(
-				`split the flows out of "${id}" with ${decides ? "xor" : "and"} gateway "${split}"`,
-			)
+			if (races) {
+				// Camunda 8 waits on catch events only after an event-based gateway.
+				for (const target of targets) {
+					if (!target) continue
+					if (target.type === "receiveTask") target.type = "intermediateCatchEvent"
+					target.eventType ??= "message"
+				}
+			}
+			const kind = decides ? "xor" : races ? "event" : "and"
+			fixes.push(`split the flows out of "${id}" with ${kind} gateway "${split}"`)
 		}
 	}
 

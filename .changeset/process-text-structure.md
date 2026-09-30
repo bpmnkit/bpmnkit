@@ -13,5 +13,7 @@
 - Unnamed elements are named.
 - Only the first blank start event is kept. An event-based gateway with one way out becomes a catch event. A flow from a node to itself is refused, and a loop with no way out gets an exit.
 - A branch drawn into a boundary event continues to the path that boundary leads to.
+- A loop with no decision loses the flows that close it, so every path ends. A link event in a path becomes a plain event.
+- Unlabelled flows from one node that all wait, at least one on a catch event, become a race behind an event-based gateway.
 
 `PROCESS_TEXT_GUIDE` teaches these rules. `pattern/gateway-single-outgoing` no longer flags join gateways.

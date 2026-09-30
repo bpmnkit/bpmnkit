@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: reworded rules measured; loops, link events, races
+
+- glm-4.7-flash × 36 with the reworded guide rules: 19/36 assertions, against 18 on the old prompt and 14 with the first rules. No error is swallowed, and one-branch gateways are back at 2. Speed and cost are unchanged. Details: `doc/drop-ai-generate-analysis.md` §14.
+- `parseProcessText`:
+  - a loop with no decision drops the flows that close it, so every path ends
+  - a link event in a path becomes a plain event
+  - unlabelled waits that leave the same node become a race behind an event-based gateway, and receive tasks among them become message catch events
+- `PROCESS_TEXT_GUIDE` no longer offers the `link` trigger.
+
 ## 2026-09-30 — Describe-to-diagram: analysis of the benchmark runs with the new prompt
 
 - Analysed the two new benchmark runs: 6 models × 12 prompts, and glm-4.7-flash × 36. All four runs were re-scored with the current parser. The new prompt raised assertions for gpt-oss-120b (4 → 7/12), gpt-oss-20b (4 → 7), qwen3 (4 → 6) and gemma (8 → 9). glm stayed at 6/12 and went 18 → 14/36, mostly on prompt 05, where it now uses a receive task. Swallowed errors in glm went 4 → 0, but it misuses boundaries more. Details: `doc/drop-ai-generate-analysis.md` §13.

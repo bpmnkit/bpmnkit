@@ -465,3 +465,46 @@ condition", and "a boundary starts its own line … never draw an arrow into a b
 unmeasured. The next glm × 36 run (`--models @cf/zai-org/glm-4.7-flash --runs 3`) is the check
 against this section's table.
 
+## 14. Fifth run: the reworded rules (2026-09-30)
+
+`2026-09-30T10-10-20-177Z`: glm-4.7-flash × 3 runs × 12 prompts with the §13 wording. All three
+glm × 36 runs were re-scored with the current parser:
+
+| glm-4.7-flash × 36 | §9, old prompt | §13, first rules | reworded rules |
+|---|---|---|---|
+| assertions | 18/36 | 14/36 | **19/36** |
+| answers needing no repair except joins | 12 | 8 | 9 |
+| gateways left with one branch | 2 | 11 | 2 |
+| conditions the parser had to generate | 11 | 22 | 8 |
+| error boundary straight to an end | 4 | 0 | 0 |
+| answers with an arrow into a boundary | 0 | 5 | 2 |
+| answers marking both branches `default` | 1 | 4 | 4 |
+| TTFB / first shape / total (median) | 167 / 638 / 1232 ms | 161 / 524 / 1335 ms | 189 / 671 / 1315 ms |
+| input / output tokens (median) | 389 / 67 | 469 / 77 | 480 / 62 |
+| neurons (mean) | 7.1 | 6.3 | 5.8 |
+
+The rewording recovered glm and kept the gain from the first rules: no error is swallowed any
+more. By prompt, 05 (message wait) went 0 → 2/3 against §13, 07 (error boundary) 0 → 2/3 and 12
+(DMN) 2 → 3/3. 15 (timer boundary) stays at 0/3. glm models the timeout as a decision
+(`xor No response within 5 minutes?`) or as a race between a timer and a receive task, not as a
+boundary. Double `default` did not move. The parser keeps only the first default, and it now
+decides the other branch through a generated condition. Speed and cost are unchanged within noise.
+
+Parser changes from this run. The Drop replay test found two answers that broke a rule, and one
+answer with wrong semantics:
+
+- **Parallel branches drawn back into their own split** (08: `and >(item1) it > and`) made a loop
+  with no decision and no end. When a loop has no decision to add an exit to, the flows that close
+  it are left out, and each path then ends.
+- **A link event in a path** (11: `event:link Address received`) becomes a plain intermediate
+  event. The format cannot give a link event its name or partner. `link` is no longer in the
+  guide's trigger list.
+- **A race was drawn as a parallel split** (15: `poll > timeout[catch:timer …]` and
+  `poll > get[receive …]`), which ran both branches. Unlabelled flows that all wait, with at least
+  one on a catch event, now get an event-based gateway. Receive tasks among them become message
+  catch events, since Camunda 8 accepts only intermediate catch events after an event-based gateway.
+
+Two gaps remain open. The linter accepts a catch event or boundary written without a trigger,
+though Camunda 8 would likely refuse to deploy one. And prompt 15's assertion wants a timer
+boundary where a race with an event gateway also answers the description.
+

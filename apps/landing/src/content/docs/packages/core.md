@@ -424,11 +424,13 @@ number. What it adds or changes is listed in `fixes`:
   out one arrow. What still cannot be reached, such as a boundary on a task that was never
   declared, is left out and reported; it is never drawn as a loose node
 - an end event is added after every path that stops elsewhere, and a loop with no way out gets
-  an exit branch from its decision
+  an exit branch from its decision; a loop with no decision loses the flows that close it
+- a link event in a path becomes a plain event, since the format cannot name its partner
 - a gateway with one way in and one way out — a question answered only one way — is removed;
   an event-based gateway waiting for one event becomes a catch event
 - a task or event with several ways out gets a split gateway: exclusive when the branches are
-  labelled, parallel when they are not
+  labelled, event-based when they all wait (at least one on a catch event, and receive tasks
+  among them become message catch events), and parallel otherwise
 - branches that meet at a task, an event or a gateway that also splits are joined first, by a
   gateway of the type they were split with: parallel branches get a parallel join
 - a condition that is not FEEL (`applicant is eligible`) moves into the branch label and is

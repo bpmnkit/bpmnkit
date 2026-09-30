@@ -531,6 +531,53 @@ describe("parseProcessText", () => {
 		expect(flows(loop).find((f) => f.to === "g_end")).toMatchObject({ from: "g" })
 	})
 
+	it("drops the flows back when parallel branches loop into their own split", () => {
+		// glm-4.7-flash, golden prompt 08.
+		const text = [
+			"start[start Offer signed] > account[task Create account] > and[and Parallel tasks]",
+			"and >(item1) it[task Set up IT] > and",
+			"and >(item2) facilities[task Set up facilities] > and",
+		].join("\n")
+		const { diagram, problems } = parseProcessText(text)
+		const process = diagram.processes[0]
+		expect(problems.map((p) => p.message)).toContain(
+			"flow it > and loops with no way out; left out",
+		)
+		// Every node now reaches an end event.
+		for (const id of ["it", "facilities"]) {
+			const next = process?.flows.find((f) => f.from === id)?.to ?? ""
+			expect(process?.elements.find((e) => e.id === next)?.type).toBe("endEvent")
+		}
+	})
+
+	it("makes waits that leave the same task a race, with an event gateway", () => {
+		// glm-4.7-flash, golden prompt 15.
+		const text = [
+			"start[start Poll started] > poll[send Poll external system]",
+			"poll > timeout[catch:timer 0:PT5M] > fail[end Poll failed]",
+			"poll > get[receive Report from external system] > done[end Poll successful]",
+		].join("\n")
+		const { diagram, fixes } = parseProcessText(text)
+		const els = new Map(diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(fixes).toContain('split the flows out of "poll" with event gateway "poll_split"')
+		expect(els.get("poll_split")?.type).toBe("eventBasedGateway")
+		expect(els.get("get")).toMatchObject({ type: "intermediateCatchEvent", eventType: "message" })
+		expect(els.get("timeout")).toMatchObject({ eventType: "timer" })
+	})
+
+	it("makes a link event in a path a plain event", () => {
+		// glm-4.7-flash, golden prompt 11.
+		const text =
+			"s[start Order] > got[event:link Address received] > ship[service Ship order] > e[end Shipped]"
+		const { diagram, problems } = parseProcessText(text)
+		const got = diagram.processes[0]?.elements.find((e) => e.id === "got")
+		expect(got).toMatchObject({ type: "intermediateThrowEvent", name: "Address received" })
+		expect(got?.eventType).toBeUndefined()
+		expect(problems.map((p) => p.message)).toEqual([
+			'"got" cannot be a link event here; made it a plain event',
+		])
+	})
+
 	it("keeps the rules lintDiagram checks, whatever the model wrote", () => {
 		const recommended = resolveBpmnlintConfig({ extends: "bpmnlint:recommended" })
 		const answers = [
