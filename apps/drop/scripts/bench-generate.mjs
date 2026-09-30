@@ -15,7 +15,7 @@
  *   --only 02,13      prompt directory prefixes to run
  *   --all             include the prompts skipped by default
  *   --no-extra        send no model-specific options (reasoning effort, thinking toggle)
- *   --max-tokens N    output cap (default GENERATE_MAX_TOKENS, as the Worker)
+ *   --max-tokens N    output cap (default: the model's, as the Worker sends)
  *   --out DIR         where to write results (default bench-results/<timestamp>)
  *
  * CLOUDFLARE_API_BASE overrides https://api.cloudflare.com/client/v4, e.g. for
@@ -30,10 +30,10 @@ import { fileURLToPath } from "node:url"
 import { parseArgs } from "node:util"
 import { Bpmn, createProcessTextStream, expand, optimize } from "@bpmnkit/core"
 import {
-	GENERATE_MAX_TOKENS,
 	MODEL_PROFILES,
 	createSseReader,
 	generateMessages,
+	maxTokensFor,
 	neuronsFor,
 	readAiEvent,
 } from "../src/lib/generate.ts"
@@ -74,7 +74,7 @@ const models = args.models
 	? args.models.split(",").map((m) => m.trim())
 	: Object.keys(MODEL_PROFILES)
 const runs = Number.parseInt(args.runs, 10)
-const maxTokens = args["max-tokens"] ? Number.parseInt(args["max-tokens"], 10) : GENERATE_MAX_TOKENS
+const maxTokens = args["max-tokens"] ? Number.parseInt(args["max-tokens"], 10) : undefined
 const only = args.only?.split(",").map((p) => p.trim())
 const outDir = resolve(
 	args.out ?? `bench-results/${new Date().toISOString().replace(/[:.]/g, "-")}`,
@@ -111,7 +111,7 @@ async function runOne(model, prompt) {
 	const body = {
 		messages: generateMessages(prompt.text),
 		stream: true,
-		max_tokens: maxTokens,
+		max_tokens: maxTokens ?? maxTokensFor(model),
 		...(args["no-extra"] ? {} : (MODEL_PROFILES[model]?.options ?? {})),
 	}
 	const url = `${apiBase}/accounts/${accountId}/ai/run/${model}`

@@ -142,6 +142,8 @@ const JOB_TASKS = new Set<BpmnElementType>(["serviceTask", "sendTask"])
 interface Node {
 	element: CompactElement
 	line: number
+	/** The bracket text it was declared with, to tell a restatement from a new node. */
+	spec: string
 	/** Boundary host id, from `on=`. */
 	on?: string
 }
@@ -169,8 +171,34 @@ function matching(text: string, start: number, open: string, close: string): num
 	return -1
 }
 
+/** The type a bare id suggests, for a node written without a kind or never declared. */
+function typeFromId(id: string): BpmnElementType {
+	if (/^start/i.test(id)) return "startEvent"
+	if (/^(end|done|finish)/i.test(id)) return "endEvent"
+	return "task"
+}
+
+/** `send_email` / `sendEmail` → "Send email": a readable name for a node the model never named. */
+function nameFromId(id: string): string {
+	const words = id
+		.replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+		.replace(/[_.-]+/g, " ")
+		.trim()
+		.toLowerCase()
+	return words.charAt(0).toUpperCase() + words.slice(1)
+}
+
 class Reader {
 	readonly nodes = new Map<string, Node>()
+	/**
+	 * The node each written id means now. Models reuse an id for a second node
+	 * (`done[end Approved]`, later `done[end Rejected]`); the second becomes
+	 * `done_2`, and a bare `done` after it means the latest one.
+	 */
+	private readonly current = new Map<string, string>()
+	/** Every node declared under each written id, oldest first. */
+	private readonly declared = new Map<string, string[]>()
+	private readonly taken = new Set<string>()
 	readonly edges: Edge[] = []
 	readonly problems: ProcessTextProblem[] = []
 	title: string | undefined
@@ -194,6 +222,9 @@ class Reader {
 			if (id === undefined) return this.fail(n, `expected a node id at "${text.slice(i, i + 20)}"`)
 			i += id.length
 			let spec: string | undefined
+			// `done-end [end Done]`: a space before the bracket still declares.
+			const gap = /^ +\[/.exec(text.slice(i))
+			if (gap) i += gap[0].length - 1
 			if (text[i] === "[") {
 				const end = matching(text, i, "[", "]")
 				if (end < 0) return this.fail(n, `"${id}[" is not closed`)
@@ -217,12 +248,23 @@ class Reader {
 			}
 			labels.push(label)
 			while (text[i] === " ") i++
+			// `gw >(No: default) > next`: a second arrow after the label.
+			if (label !== undefined && text[i] === ">") {
+				i++
+				while (text[i] === " ") i++
+			}
 		}
 
-		for (const ref of refs) if (ref.spec !== undefined) this.declare(ref.id, ref.spec, n)
+		// Declarations and references resolve left to right, so a chain that
+		// reuses an id (`task[A] > task[B]`) links the nodes in the order written.
+		const ids = refs.map((ref, k) =>
+			ref.spec !== undefined
+				? this.declare(ref.id, ref.spec, n, k > 0)
+				: (this.current.get(ref.id) ?? ref.id),
+		)
 		for (let k = 0; k < labels.length; k++) {
-			const from = refs[k]?.id
-			const to = refs[k + 1]?.id
+			const from = ids[k]
+			const to = ids[k + 1]
 			if (from !== undefined && to !== undefined) {
 				this.edges.push({ from, to, line: n, ...this.feelOrLabel(edgeLabel(labels[k]), n) })
 			}
@@ -258,14 +300,53 @@ class Reader {
 		return false
 	}
 
-	private declare(id: string, spec: string, n: number): void {
-		const earlier = this.nodes.get(id)
+	/**
+	 * Declares a node and returns the id it was stored under.
+	 *
+	 * @param afterArrow - Whether it follows a `>` on its line. A reused id there
+	 * is the next step of a path (`check > done[end Rejected]`); at the start of a
+	 * line it is the model revising a node it has already written.
+	 */
+	private declare(written: string, spec: string, n: number, afterArrow: boolean): string {
+		const before = this.declared.get(written) ?? []
+		// Restating a node is harmless; the same id for something else is a new node.
+		const same = before.find((id) => this.nodes.get(id)?.spec.toLowerCase() === spec.toLowerCase())
+		if (same !== undefined) {
+			this.current.set(written, same)
+			return same
+		}
+		const earlierId = before.at(-1)
+		const earlier = earlierId === undefined ? undefined : this.nodes.get(earlierId)
+		if (earlierId !== undefined && earlier) {
+			// Only a real kind after an arrow, or a boundary, makes a second node.
+			// `and[kind and]` or `ord[id=ord kind=start]` annotate the node already
+			// there, and `validate[xor …] > …` restarts from it.
+			const word = spec.split(/[\s|]/, 1)[0]?.toLowerCase().split(":")[0] ?? ""
+			const kind = KINDS[word] ?? ALIASES[word]
+			// A boundary is always new: it cannot be a revision of the task it sits on.
+			if (kind === undefined || (!afterArrow && kind !== "boundaryEvent")) {
+				this.problems.push({
+					line: n,
+					message: `"${written}" is already declared on line ${earlier.line}; ignored "${spec}"`,
+				})
+				return earlierId
+			}
+		}
+		// Read before the id is remapped: in `pay[boundary:error … | on=pay]` the
+		// host is the earlier `pay`.
+		const meant = (ref: string) => this.current.get(ref) ?? ref
+		const hostOf = new Map<string, string>()
+		for (const match of spec.matchAll(/\bon=([\w.-]+)/g)) {
+			if (match[1]) hostOf.set(match[1], meant(match[1]))
+		}
+		const id = uniqueId(written, this.taken)
+		this.current.set(written, id)
+		this.declared.set(written, [...before, id])
 		if (earlier) {
 			this.problems.push({
 				line: n,
-				message: `"${id}" is already declared on line ${earlier.line}; the first declaration is kept`,
+				message: `"${written}" on line ${earlier.line} is a different node; this one is "${id}"`,
 			})
-			return
 		}
 		const bar = spec.indexOf("|")
 		const head = (bar < 0 ? spec : spec.slice(0, bar)).trim()
@@ -280,11 +361,7 @@ class Reader {
 		if (type === undefined) {
 			// Most often the kind was left out (`start[Order placed]`): the whole
 			// head is the name, and the id is the best remaining hint at the type.
-			type = /^start/i.test(id)
-				? "startEvent"
-				: /^(end|done|finish)/i.test(id)
-					? "endEvent"
-					: "task"
+			type = typeFromId(id)
 			label = head || undefined
 			this.problems.push({ line: n, message: `unknown kind "${kind}" for "${id}"; used ${type}` })
 		}
@@ -308,16 +385,17 @@ class Reader {
 		}
 		if (label) element.name = label
 
-		const node: Node = { element, line: n }
+		const node: Node = { element, line: n, spec }
 		for (const attr of attrs.split(/[\s,]+/).filter(Boolean)) {
 			const [key, value] = attr.split("=", 2)
-			if (key === "on" && value) node.on = value
+			if (key === "on" && value) node.on = hostOf.get(value) ?? value
 			else if (key === "job" && value) element.jobType = value
 			else if (key === "nonint" && value === undefined) element.interrupting = false
 			else
 				this.problems.push({ line: n, message: `unknown attribute "${attr}" on "${id}"; ignored` })
 		}
 		this.nodes.set(id, node)
+		return id
 	}
 }
 
@@ -351,6 +429,28 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		nodes.set(id, { ...node, element: { ...node.element } })
 	}
 	const taken = new Set(nodes.keys())
+
+	// An id used but never declared (`review > pay`, `on=pay`) would take every
+	// flow and boundary on it down with it. Once the text is complete, it becomes
+	// a task named from its id instead — while streaming it may yet be declared.
+	if (final) {
+		const used = [
+			...reader.edges.flatMap((edge) => [
+				[edge.from, edge.line],
+				[edge.to, edge.line],
+			]),
+			...[...reader.nodes.values()].flatMap((node) =>
+				node.on === undefined ? [] : [[node.on, node.line]],
+			),
+		] as [string, number][]
+		for (const [id, line] of used) {
+			if (nodes.has(id)) continue
+			const type = typeFromId(id)
+			nodes.set(id, { element: { id, type, name: nameFromId(id) }, line, spec: "" })
+			taken.add(id)
+			problems.push({ line, message: `"${id}" is never declared; added as a ${type}` })
+		}
+	}
 
 	// Boundary events: a host that is an activity, in this process.
 	for (const [id, node] of nodes) {
@@ -441,7 +541,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		if (into.length < 2 || type === undefined || GATEWAYS.has(type)) continue
 		const join = uniqueId(`${target}_join`, taken)
 		const after = nodes.get(target)?.line ?? 0
-		nodes.set(join, { element: { id: join, type: "exclusiveGateway" }, line: after })
+		nodes.set(join, { element: { id: join, type: "exclusiveGateway" }, line: after, spec: "" })
 		for (const edge of into) edge.to = join
 		edges.push({ from: join, to: target, line: after })
 		fixes.push(`joined ${into.length} flows into "${target}" with xor gateway "${join}"`)
@@ -467,7 +567,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 				(node) => node.element.type !== "boundaryEvent" && !hasIncoming.has(node.element.id),
 			)
 			const start = uniqueId("start", taken)
-			nodes.set(start, { element: { id: start, type: "startEvent" }, line: 0 })
+			nodes.set(start, { element: { id: start, type: "startEvent" }, line: 0, spec: "" })
 			if (first) {
 				edges.unshift({ from: start, to: first.element.id, line: 0 })
 				hasOutgoing.add(start)
@@ -478,7 +578,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			const { id, type } = node.element
 			if (type === "endEvent" || hasOutgoing.has(id)) continue
 			const end = uniqueId(`${id}_end`, taken)
-			nodes.set(end, { element: { id: end, type: "endEvent" }, line: node.line })
+			nodes.set(end, { element: { id: end, type: "endEvent" }, line: node.line, spec: "" })
 			edges.push({ from: id, to: end, line: node.line })
 			fixes.push(`added end event "${end}" after "${id}"`)
 		}
@@ -487,6 +587,14 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	for (const node of nodes.values()) {
 		if (JOB_TASKS.has(node.element.type) && node.element.jobType === undefined) {
 			node.element.jobType = node.element.id
+		}
+		// A DMN task needs a decision to deploy; the id stands in, as it does for a job type.
+		if (
+			node.element.type === "businessRuleTask" &&
+			node.element.jobType === undefined &&
+			node.element.decisionId === undefined
+		) {
+			node.element.decisionId = node.element.id
 		}
 	}
 
@@ -532,7 +640,8 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
  * - a conditional split with one unconditioned branch makes it the default;
  * - a missing start event is added before the first node without an incoming
  *   flow, and an end event after every path that stops elsewhere;
- * - a service or send task without `job=` uses its id as its job type.
+ * - a service or send task without `job=` uses its id as its job type, and a
+ *   rule task its id as its decision id.
  *
  * @example
  * ```typescript

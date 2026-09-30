@@ -242,7 +242,65 @@ type the golden set expects.
   The guide also shows two FEEL examples (`amount > 1000`, `status = "ok"`). That prompt change is
   unmeasured. Parsing FEEL in the browser adds 19 kB to `landing.js` (297.6 → 316.4 kB minified).
 
-## 9. Issues found along the way
+## 9. Second run: glm-4.7-flash, 3 runs × 12 prompts (2026-09-30)
+
+`apps/drop/bench-results/2026-09-30T05-05-15-556Z/`. This run used the parser and prompt changes
+from §8.
+
+| | Run 1 (12) | Run 2 (36) |
+|---|---|---|
+| First byte (median) | 238 ms | 167 ms |
+| First shape (median) | 824 ms | 638 ms |
+| Total (median) | 2.0 s | 1.2 s |
+| Neurons (mean) | 5.0 | 7.1 (5.1 without the runaway) |
+| Assertions | 5/12 (42%) | 15/36 (42%) |
+| Lint errors per run | 1.5 | 0.9 |
+
+- **The prompt hints did not move the pass rate.** Prompt 12 (DMN) went from 0/1 to 1/3 and
+  prompt 05 (message wait) stayed at 3/3. Both are too few runs to tell.
+- **One runaway.** With thinking off, one answer still "thought aloud" in the output, in Chinese.
+  It rewrote a finished diagram for 175 lines, until the 2,048-token cap stopped it at 37 s and
+  78 neurons. The longest real diagram was 191 tokens. Non-reasoning models now send
+  `maxTokens: 600` (`MODEL_PROFILES`), which bounds a runaway at roughly 11 s and 23 neurons. The
+  diagram that one produces is still poor, capped or not.
+- **glm queues too, but less.** 4 of 36 first bytes took 2.0, 4.9, 7.6 and 11.5 s; the median is
+  167 ms. See §10 for a proposal.
+- **The prompt cache never hit.** `cached_tokens` was 0 on all 36 runs, even with
+  `x-session-affinity`. Workers AI publishes cached rates only for its newer models, so glm-4.7
+  probably has no prefix cache. The header is harmless, so it stays.
+- **Parser rules from this run's answers.** Each was replayed on all three recorded sets before it
+  was kept:
+  - an id that is used but never declared becomes a task named from the id, instead of losing every
+    flow and boundary on it
+  - an id reused *after an arrow* for a different node (`check > done[end Rejected]`,
+    `task[A] > task[B]`) becomes a new node (`done_2`), and a bare reference means the latest
+  - at the start of a line, a reused id is the model revising or continuing from the node already
+    there, so the earlier node is kept, as it is for a kind that is not a kind (`and[kind and]`)
+  - a boundary is always new; `pay[boundary:error … | on=pay]` attaches to the earlier `pay`
+  - `>(label) > x`, and `id [spec]` with a space, both parse
+  - a rule task without a decision takes its id as decision id, so it passes the deploy lint
+
+  A first version of the reused-id rule also split nodes at the start of a line. It lost gemma's
+  boundary and added 10 unreachable elements to its answers, so it was narrowed to the version
+  above.
+
+| Replayed | Assertions | Problems/run | Lint errors/run | Unreachable |
+|---|---|---|---|---|
+| glm, run 1 (12) | 5 → 6 | 2.58 → 2.58 | 1.50 → 1.42 | 5 → 5 |
+| glm, run 2 (36) | 15 → 18 | 5.83 → 2.53 | 0.92 → 0.83 | 17 → 16 |
+| gemma, run 1 (12) | 7 → 8 | 1.83 → 1.33 | 0.33 → 0.33 | 0 → 0 |
+
+The run-2 figures include the one runaway, cut at the simulated 600-token cap. It adds 12
+unreachable elements, so on the other 35 answers unreachable went from 16 to 3.
+
+## 10. Proposal: a hedged request for the queueing tail
+
+About 1 in 10 requests waits 2–12 s for Workers AI capacity before the first token. It could
+be hidden: if no content arrives within ~1.5 s, send the same request to a second model (gemma-4)
+and stream whichever answers first. The cost is a second call only in the tail cases, roughly 10%
+more neurons. It is not built.
+
+## 11. Issues found along the way
 
 - **`expand()` emitted invalid BPMN without complaint** in the cases in §6.2. Fixed: it now throws one error listing every problem. The lenient repair described in §6.2 lives in `parseProcessText`, which only ever produces diagrams `expand` accepts.
 - **`estimateNeurons()` in `apps/drop/src/lib/ai.ts` ignores reasoning tokens.** It also uses gpt-oss-120b rates whatever `AI_MODEL` says, so the daily budget undercounts. The fix is to read `usage` from the response.

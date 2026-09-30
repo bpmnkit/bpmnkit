@@ -1,5 +1,22 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: second benchmark run, token cap, parser rules
+
+Second run: glm-4.7-flash, 3 runs per golden prompt. Medians were 167 ms to first byte, 638 ms to first shape and 1.2 s total. The pass rate stayed at 42%, and lint errors fell from 1.5 to 0.9 per run. Details in `doc/drop-ai-generate-analysis.md` §9.
+
+- **Token cap.** `MODEL_PROFILES` gains `maxTokens`, and `maxTokensFor(model)` is what the Worker and the bench send. glm-4.7-flash, gemma-4 and granite use 600; reasoning models keep 2,048. The trigger was one glm answer that "thought aloud" in the output until the 2,048 cap (37 s, 78 neurons); the longest real diagram was 191 tokens.
+- **Parser rules** from the recorded answers, each replayed on all three recorded sets:
+  - an id that is never declared becomes a task
+  - an id reused after an arrow becomes a new node (`done_2`); at the start of a line it means the existing node
+  - a boundary is always new, and attaches to what `on=` meant before it
+  - `>(label) >` and `id [spec]` both parse
+  - a rule task gets its id as decision id
+
+  Replayed results: glm run 1 went from 5 to 6/12, glm run 2 from 15 to 18/36 (problems per run 5.8 → 2.5), and gemma from 7 to 8/12.
+- **A regression caught by the replay.** A first version also split reused ids at the start of a line. On gemma's answers it lost a boundary and added 10 unreachable elements, so it was narrowed before commit.
+- **Not built:** a hedged second request for the ~10% of calls that queue 2–12 s (§10). The prompt cache never hit with glm-4.7.
+- **Tests:** `core/tests/process-text.test.ts` gains eight cases built from recorded answers. `drop/tests/generate.test.ts` covers `maxTokensFor`.
+
 ## 2026-09-29 — `parseProcessText`: conditions in prose become branch labels
 
 - Each branch condition is checked with `parseExpression` from `@bpmnkit/feel`, the check the `feel-syntax` lint rule uses. If it is not FEEL, the text moves into the branch label (`Yes: applicant is eligible`), the condition is dropped, and a problem is reported with its line. When its sibling keeps a FEEL condition, the lone-branch rule makes it the default.

@@ -410,13 +410,18 @@ in `problems` with its line number, and it does not appear in the diagram. What 
 in `fixes`:
 
 - flow ids are generated
+- an id used but never declared becomes a task named from it
+- an id declared again after an arrow, with a different kind or name, is a new node (`done_2`),
+  and later bare references mean the newest; restated at the start of a line, it is the node
+  already there
 - branches that meet at a task or event are joined by an exclusive gateway first
 - a condition that is not FEEL (`applicant is eligible`) moves into the branch label and is
   reported, so it cannot fail at deploy time
 - the only unconditioned branch of an xor/or split becomes its default
 - a missing start event is added
 - an end event is added after every path that stops elsewhere
-- a service or send task without `job=` takes its id as job type
+- a service or send task without `job=` takes its id as job type, and a rule task its id as
+  decision id
 
 `createProcessTextStream()` reads the same format while it arrives. It reads each finished line
 as it arrives, so every frame is built from whole facts. `push(chunk)` returns a laid-out frame,

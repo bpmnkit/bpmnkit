@@ -9,7 +9,6 @@ import {
 } from "../lib/ai.js"
 import {
 	type AiUsage,
-	GENERATE_MAX_TOKENS,
 	GENERATE_SYSTEM_PROMPT,
 	type GenerateEvent,
 	MAX_DESCRIPTION_CHARS,
@@ -17,6 +16,7 @@ import {
 	MODEL_PROFILES,
 	createSseReader,
 	generateMessages,
+	maxTokensFor,
 	neuronsFor,
 	normaliseDescription,
 	readAiEvent,
@@ -111,7 +111,7 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 			{
 				messages: generateMessages(description),
 				stream: true,
-				max_tokens: GENERATE_MAX_TOKENS,
+				max_tokens: maxTokensFor(model),
 				...(MODEL_PROFILES[model]?.options ?? {}),
 			},
 			// One instance for every generation, so the fixed system prompt stays in its prefix cache.

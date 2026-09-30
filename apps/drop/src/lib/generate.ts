@@ -19,7 +19,10 @@ export const MIN_DESCRIPTION_CHARS = 10
 /** Longest description accepted — a paragraph, not a specification. */
 export const MAX_DESCRIPTION_CHARS = 2000
 
-/** Output cap per generation, reasoning included: a runaway answer stops here. */
+/**
+ * Output cap for a model without its own `maxTokens`, reasoning included: a
+ * reasoning model can spend over a thousand tokens before its first line.
+ */
 export const GENERATE_MAX_TOKENS = 2048
 
 /** Trims and collapses whitespace, so trivially different requests share a cache entry. */
@@ -36,7 +39,18 @@ export interface ModelProfile {
 	options: Record<string, unknown>
 	/** Neurons per million tokens, input then output, from the Workers AI pricing page (2026-09). */
 	neuronsPerMillion: readonly [number, number]
+	/**
+	 * Output cap, when tighter than {@link GENERATE_MAX_TOKENS}. For a model that
+	 * does not reason, this bounds a runaway answer. In the 2026-09-30 benchmark,
+	 * glm-4.7-flash's longest real diagram was 191 tokens, and one answer "thought
+	 * aloud" in the output until it reached the 2,048 cap: 37 s and 11× the usual
+	 * neurons.
+	 */
+	maxTokens?: number
 }
+
+/** Output cap for non-reasoning models: three times the longest diagram measured. */
+const DIRECT_MAX_TOKENS = 600
 
 /** Candidate models. The Worker and `scripts/bench-generate.mjs` both read this table. */
 export const MODEL_PROFILES: Readonly<Record<string, ModelProfile>> = {
@@ -51,13 +65,24 @@ export const MODEL_PROFILES: Readonly<Record<string, ModelProfile>> = {
 	"@cf/google/gemma-4-26b-a4b-it": {
 		options: { chat_template_kwargs: { enable_thinking: false } },
 		neuronsPerMillion: [9091, 27273],
+		maxTokens: DIRECT_MAX_TOKENS,
 	},
 	"@cf/zai-org/glm-4.7-flash": {
 		options: { chat_template_kwargs: { enable_thinking: false } },
 		neuronsPerMillion: [5500, 36400],
+		maxTokens: DIRECT_MAX_TOKENS,
 	},
 	"@cf/qwen/qwen3-30b-a3b-fp8": { options: {}, neuronsPerMillion: [4625, 30475] },
-	"@cf/ibm-granite/granite-4.0-h-micro": { options: {}, neuronsPerMillion: [1542, 10158] },
+	"@cf/ibm-granite/granite-4.0-h-micro": {
+		options: {},
+		neuronsPerMillion: [1542, 10158],
+		maxTokens: DIRECT_MAX_TOKENS,
+	},
+}
+
+/** The output cap to send with `model`. */
+export function maxTokensFor(model: string): number {
+	return MODEL_PROFILES[model]?.maxTokens ?? GENERATE_MAX_TOKENS
 }
 
 /**

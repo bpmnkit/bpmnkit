@@ -1,9 +1,11 @@
 import { PROCESS_TEXT_GUIDE, expand, parseProcessText } from "@bpmnkit/core"
 import { describe, expect, it } from "vitest"
 import {
+	GENERATE_MAX_TOKENS,
 	GENERATE_SYSTEM_PROMPT,
 	createSseReader,
 	generateMessages,
+	maxTokensFor,
 	readAiEvent,
 } from "../src/lib/generate.js"
 
@@ -30,6 +32,14 @@ describe("generate prompt", () => {
 		const { diagram, problems } = parseProcessText(answer)
 		expect(problems).toEqual([])
 		expect(() => expand(diagram)).not.toThrow()
+	})
+})
+
+describe("maxTokensFor", () => {
+	it("caps a model that does not reason far below one that does", () => {
+		expect(maxTokensFor("@cf/zai-org/glm-4.7-flash")).toBe(600)
+		expect(maxTokensFor("@cf/openai/gpt-oss-120b")).toBe(GENERATE_MAX_TOKENS)
+		expect(maxTokensFor("@cf/unknown/model")).toBe(GENERATE_MAX_TOKENS)
 	})
 })
 

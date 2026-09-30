@@ -118,8 +118,8 @@ describe("parseProcessText", () => {
 		].join("\n")
 		const { problems } = parseProcessText(text)
 		expect(problems).toEqual([
-			{ line: 1, message: '"ghost" is never declared; flow a > ghost left out' },
-			{ line: 2, message: '"a" is already declared on line 1; the first declaration is kept' },
+			{ line: 1, message: '"ghost" is never declared; added as a task' },
+			{ line: 2, message: '"a" is already declared on line 1; ignored "user Again"' },
 			{ line: 3, message: 'unknown kind "frobnicate" for "x"; used task' },
 			{ line: 3, message: 'unknown trigger "email" for "e"; read as part of the name' },
 			{ line: 4, message: 'boundary "b" has no on=<task id>; left out' },
@@ -196,6 +196,106 @@ describe("parseProcessText", () => {
 		const text =
 			's[start] > g[xor Ok?]\ng >(Yes: status = "ok" and count(items) > 0) a[end]\ng >(No) b[end]'
 		expect(parseProcessText(text).problems).toEqual([])
+	})
+
+	it("declares a node written with a space before its bracket", () => {
+		// glm-4.7-flash, golden prompt 01.
+		const text = "s[start] > notify[service Notify ops] > done-end [end Done]"
+		expect(parseProcessText(text).problems).toEqual([])
+		expect(elements(text).find((e) => e.id === "done-end")).toMatchObject({
+			type: "endEvent",
+			name: "Done",
+		})
+	})
+
+	it("gives a rule task its id as decision id, so it deploys", () => {
+		const els = elements("s[start] > credit[rule Check credit] > e[end]")
+		expect(els.find((e) => e.id === "credit")?.decisionId).toBe("credit")
+	})
+
+	it("adds an id that is used but never declared as a task named from it", () => {
+		// glm-4.7-flash, golden prompt 02: \`pay\` is only ever referenced.
+		const text = [
+			"start[start Expense submitted] > check[xor Amount over 1000?]",
+			"check >(Yes: amount > 1000) review[user Review expense] > pay",
+			"check >(No: default) auto[manual Approve] > pay",
+			"failed[boundary:error Payment failed | on=pay] > notice[end:error Failure notified]",
+			"pay > done[end Expense paid]",
+		].join("\n")
+		const { diagram, problems } = parseProcessText(text)
+		expect(problems).toEqual([{ line: 2, message: '"pay" is never declared; added as a task' }])
+		const els = diagram.processes[0]?.elements ?? []
+		expect(els.find((e) => e.id === "pay")).toMatchObject({ type: "task", name: "Pay" })
+		expect(els.find((e) => e.id === "failed")).toMatchObject({ attachedTo: "pay" })
+		expect(flows(text).some((f) => f.from === "pay" && f.to === "done")).toBe(true)
+	})
+
+	it("makes a reused id a new node, and restating a node keeps it", () => {
+		// glm-4.7-flash, golden prompts 08 and 12.
+		const text = [
+			"s[start] > task[task Record offer] > and[and] > task[task Order laptop] > j[and]",
+			"and > task[task Grant access] > j",
+			"j > check[xor Ok?]",
+			"check >(Yes: ok) done[end Approved]",
+			"check >(No: default) done[end Rejected]",
+			"check >(Yes: ok) done[end Approved]",
+		].join("\n")
+		const { diagram, problems } = parseProcessText(text)
+		const els = diagram.processes[0]?.elements ?? []
+		expect(els.filter((e) => e.type === "task").map((e) => [e.id, e.name])).toEqual([
+			["task", "Record offer"],
+			["task_2", "Order laptop"],
+			["task_3", "Grant access"],
+		])
+		expect(els.filter((e) => e.type === "endEvent").map((e) => [e.id, e.name])).toEqual([
+			["done", "Approved"],
+			["done_2", "Rejected"],
+		])
+		expect(problems.map((p) => p.message)).toContain(
+			'"task" on line 1 is a different node; this one is "task_2"',
+		)
+		// Restated exactly, a node is the same node, without a problem.
+		expect(parseProcessText("s[start] > a[task A]\na[task A] > e[end]").problems).toEqual([])
+	})
+
+	it("attaches a boundary that reuses its host's id to that host", () => {
+		// gemma-4, golden prompt 02.
+		const text = [
+			"s[start] > pay[service Process payment] > done[end Paid]",
+			"pay[boundary:error Payment failed | on=pay] > failed[end:error Failure notified]",
+		].join("\n")
+		const els = elements(text)
+		expect(els.find((e) => e.id === "pay_2")).toMatchObject({
+			type: "boundaryEvent",
+			attachedTo: "pay",
+		})
+		expect(flows(text).some((f) => f.from === "pay_2" && f.to === "failed")).toBe(true)
+	})
+
+	it("keeps the earlier node when a line starts by restating it differently", () => {
+		// glm-4.7-flash, golden prompt 01: the model revised \`validate\` into a gateway.
+		const text = [
+			"start[start Order created] > validate[user Validate order]",
+			"validate[xor Failed validation?] > notify[service Notify ops] > done[end Done]",
+		].join("\n")
+		const els = elements(text)
+		expect(els.find((e) => e.id === "validate")?.type).toBe("userTask")
+		expect(els.some((e) => e.id === "validate_2")).toBe(false)
+		expect(flows(text).some((f) => f.from === "validate" && f.to === "notify")).toBe(true)
+	})
+
+	it("ignores a restatement whose kind is not a kind", () => {
+		// gemma-4, golden prompts 10 and 13.
+		const text = "s[start] > and[and] > t[task T] > e[end]\nand[kind and]\ns[id=s kind=start]"
+		const { diagram, problems } = parseProcessText(text)
+		expect(diagram.processes[0]?.elements.map((e) => e.id)).toEqual(["s", "and", "t", "e"])
+		expect(problems.map((p) => p.line)).toEqual([2, 3])
+	})
+
+	it("accepts a second arrow after an edge label", () => {
+		const text = "s[start] > g[xor Ok?]\ng >(No: default) > b[task B] > e[end]\ng >(Yes: ok) e"
+		expect(parseProcessText(text).problems).toEqual([])
+		expect(flows(text).find((f) => f.to === "b")).toMatchObject({ from: "g", isDefault: true })
 	})
 
 	it("keeps only one default per gateway, and none off a parallel gateway", () => {
