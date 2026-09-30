@@ -34,11 +34,13 @@ const REFINE_RULES = {
 }
 
 /**
- * Which change rules the prompt carries. `all` is what the route sends. `text`
- * leaves out the two rules that show a diagram pattern (boundary, parallel),
- * which may invite the pattern where it was not asked for; `none` is the
- * prompt of the first change run. The benchmark compares them
- * (`--refine-rules`, `doc/drop-ai-generate-analysis.md` §18).
+ * Which change rules the prompt carries. `text` is what the route sends: the
+ * rules without a diagram pattern. `all` adds the boundary and parallel
+ * examples, which glm copied where they were not asked for (a timer boundary
+ * in place of a loop's decision); on the loop and retype cases, 10 runs each,
+ * `text` passed 20/20 and `all` 15/20. `none` is the prompt of the first change
+ * run. The benchmark compares them (`--refine-rules`,
+ * `doc/drop-ai-generate-analysis.md` §19).
  */
 export type RefineRules = "none" | "text" | "all"
 
@@ -60,12 +62,12 @@ export const REFINE_RULE_SETS: Readonly<Record<RefineRules, readonly string[]>> 
  * {@link GENERATE_SYSTEM_PROMPT} rather than replacing it, so a first draft is
  * written exactly as before and both share one prefix.
  */
-export function refineSystemPrompt(rules: RefineRules = "all"): string {
+export function refineSystemPrompt(rules: RefineRules = "text"): string {
 	return `${GENERATE_SYSTEM_PROMPT}\n\n${[REFINE_BASE, ...REFINE_RULE_SETS[rules]].join("\n")}`
 }
 
 /** The change prompt the route sends. */
-export const REFINE_SYSTEM_PROMPT = refineSystemPrompt("all")
+export const REFINE_SYSTEM_PROMPT = refineSystemPrompt("text")
 
 /** Shortest description worth a model call. */
 export const MIN_DESCRIPTION_CHARS = 10
@@ -200,7 +202,7 @@ export function refineMessages(
 	description: string,
 	diagram: string,
 	change: string,
-	rules: RefineRules = "all",
+	rules: RefineRules = "text",
 ): { role: "system" | "user" | "assistant"; content: string }[] {
 	return [
 		{ role: "system", content: refineSystemPrompt(rules) },

@@ -851,3 +851,47 @@ for rules in all text none; do
     --models @cf/zai-org/glm-4.7-flash --refine-rules $rules
 done
 ```
+
+## 19. The rule sets compared, 10 runs each (2026-09-30)
+
+`2026-09-30T12-43-10-479Z` (all), `…12-47-12-322Z` (text), `…12-49-04-064Z` (none):
+glm-4.7-flash × 10 runs × cases 08 (change a task's type) and 10 (add a loop), per rule set.
+
+| rule set | 08 change type | 10 add loop | total | input tokens (median) | neurons (mean) |
+|---|---|---|---|---|---|
+| all (boundary and parallel examples) | 8/10 | 7/10 | 15/20 | 792 | 8.2 |
+| **text** (no pattern examples) | **10/10** | **10/10** | **20/20** | 698 | 7.8 |
+| none (the §16 prompt) | 8/10 | 7/10 | 15/20 | 629 | 7.3 |
+
+20/20 against 15/20 has a one-sided Fisher p of about 0.024. For 20 answers a set, that is as
+clear as this benchmark gets.
+
+**What the failures show:**
+
+- **`all`: the boundary example leaks.** Two of the three loop failures (#1, #5) answer "send
+  it back if it cannot be reproduced" with `reproduce[boundary:timer 3 days | on=engineer]` or
+  `unrep[boundary:timer 24h | on=engineer]`. That is the rule's own form, used where a decision
+  was needed. The §18 suspicion was right.
+- **`none`: no guidance.** The failures are loops with prose conditions, a decision declared
+  on an existing id, and branches written inside a label. The text rules (FEEL conditions, add a
+  line from the gateway) are the ones that prevent those.
+- **08 fails the same way under `all` and `none`.** The rule task replaces the decision
+  (`check[user Amount over 1000?]`, `review[rule …]` on the gateway's line). Under `text` it never
+  did in 10 runs. The rename-in-place and FEEL rules seem to keep glm from touching the gateway.
+
+**Change: the route now sends `text`.** `REFINE_SYSTEM_PROMPT` is `refineSystemPrompt("text")`:
+
+- the two base lines
+- always make the change
+- rename in place
+- a new branch from the existing gateway
+- FEEL conditions for what decides a gateway
+
+It is 94 input tokens shorter than `all`, and the benchmark's default follows it. `all` stays
+selectable with `--refine-rules all`.
+
+**What this gives up.** The parallel example turned 05's answers into real and-splits (§18, 3/3
+by structure). The boundary example brought 02 to 2/3 once. Without them, those cases fall back
+towards §16 (05: 1/3, 02: 1/3). That is the trade: the two pattern rules help the one change
+they describe, and hurt the changes that could be mistaken for it. A full-suite run with `text`
+(`--edits --runs 3`, the default now) gives the new baseline for all ten cases.

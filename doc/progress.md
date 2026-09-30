@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: the route sends the text-only change rules
+
+- On cases 08 and 10, 10 runs each: `text` rules 20/20, `all` 15/20, `none` 15/20. Under `all`, two of the three loop failures copy the boundary example (`boundary:timer … | on=engineer`) where a decision was needed. `REFINE_SYSTEM_PROMPT` is now `refineSystemPrompt("text")`, 94 input tokens shorter, and the benchmark defaults to it. The parallel and boundary examples stay available as `--refine-rules all`. Details: `doc/drop-ai-generate-analysis.md` §19.
+
 ## 2026-09-30 — Describe-to-diagram: benchmark flag for the change rule sets
 
 - `bench-generate.mjs --refine-rules none|text|all` picks the change prompt: `all` is the route's, `text` drops the boundary and parallel pattern rules, and `none` is the first run's. `refineSystemPrompt(rules)` builds them; `REFINE_SYSTEM_PROMPT` is unchanged. The summary adds a per-case pass table. For the 10-run comparison in `doc/drop-ai-generate-analysis.md` §18.

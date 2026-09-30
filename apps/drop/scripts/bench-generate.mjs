@@ -17,7 +17,7 @@
  * Options:
  *   --edits           run the change cases instead of the golden prompts
  *   --refine-rules R  with --edits: the change rules to send, none | text | all
- *                     (default all, what the route sends; see RefineRules)
+ *                     (default text, what the route sends; see RefineRules)
  *   --models a,b      model ids (default: the candidates below)
  *   --runs N          runs per model and prompt (default 1)
  *   --only 02,13      prompt directory (or edit case) prefixes to run
@@ -69,7 +69,7 @@ const { values: args } = parseArgs({
 		only: { type: "string" },
 		all: { type: "boolean", default: false },
 		edits: { type: "boolean", default: false },
-		"refine-rules": { type: "string", default: "all" },
+		"refine-rules": { type: "string", default: "text" },
 		"no-extra": { type: "boolean", default: false },
 		"max-tokens": { type: "string" },
 		out: { type: "string" },

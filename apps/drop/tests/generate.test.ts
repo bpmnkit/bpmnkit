@@ -40,7 +40,8 @@ describe("generate prompt", () => {
 	})
 
 	it("teaches only change patterns the parser reads without a problem", () => {
-		const rules = REFINE_SYSTEM_PROMPT.slice(GENERATE_SYSTEM_PROMPT.length)
+		// The pattern rules are in the `all` set only, which the benchmark can still send.
+		const rules = refineSystemPrompt("all").slice(GENERATE_SYSTEM_PROMPT.length)
 		expect(rules).toContain("late[boundary:timer 24h | on=pay] > handler")
 		const parallel = [
 			"before > fork[and]",
@@ -67,7 +68,7 @@ describe("generate prompt", () => {
 	})
 
 	it("builds each change rule set on the same prefix, the route's being all of them", () => {
-		expect(REFINE_SYSTEM_PROMPT).toBe(refineSystemPrompt("all"))
+		expect(REFINE_SYSTEM_PROMPT).toBe(refineSystemPrompt("text"))
 		const none = refineSystemPrompt("none")
 		const text = refineSystemPrompt("text")
 		expect(none.startsWith(GENERATE_SYSTEM_PROMPT)).toBe(true)
@@ -77,7 +78,7 @@ describe("generate prompt", () => {
 		expect(text).toContain("FEEL conditions")
 		expect(text).not.toContain("boundary:timer")
 		expect(text).not.toContain("fork[and]")
-		expect(refineMessages("d", "a > b", "c", "text")[0]?.content).toBe(text)
+		expect(refineMessages("d", "a > b", "c")[0]?.content).toBe(text)
 	})
 
 	it("sends a draft back without blank lines or trailing spaces", () => {
