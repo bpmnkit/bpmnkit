@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: the reworded parallel rule measured
+
+- glm-4.7-flash × 30 changes: 22/30 (21 with the first rules, 20 without). Every answer to the parallel case now splits and joins with `and` gateways (none did before). Strictly 1/3 pass, because glm reuses a step's id for the gateway. The question cases stay at 3/3, and no answer comes back unchanged. The loop case went 3 → 2 → 1 across the three runs, and one answer drew a boundary where none was asked for. That is possibly a cost of the pattern rules, but it cannot be told from noise at 3 runs. Details: `doc/drop-ai-generate-analysis.md` §18.
+
 ## 2026-09-30 — Describe-to-diagram: the change rules measured
 
 - glm-4.7-flash × 30 changes with the change rules: 21/30, against 20/30 without them. No answer comes back unchanged (was 2). The made-up-variable question is applied in 3/3 runs (was 1/3), and a rename in 3/3 (was 2/3). The parallel rule does not work (0/3): glm packs the fork into one line. It is now reworded to show the fork one path per line; not yet measured. A change costs 6.9 neurons (was 6.1). Details: `doc/drop-ai-generate-analysis.md` §17.

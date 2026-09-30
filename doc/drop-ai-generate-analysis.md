@@ -781,3 +781,60 @@ example:
 
 It adds about 25 input tokens. The next `--edits` run is the check against this section's
 table: 05 should rise from 0/3, and 08 and 10 should show whether their drop to 2/3 was noise.
+
+## 18. Third run of the change cases: the parallel rule reworded (2026-09-30)
+
+`2026-09-30T12-19-40-493Z`: glm-4.7-flash × 3 runs × 10 change cases, with the reworded parallel
+rule. All three runs are scored with the same parser and cases.
+
+| Case | §16 no rules | §17 rules | §18 parallel reworded |
+|---|---|---|---|
+| 01 add a step | 2 | 2 | 3 |
+| 02 add a timer boundary | 1 | 2 | 1 |
+| 03 remove a step | 3 | 3 | 3 |
+| 04 add a branch | 1 | 1 | 2 |
+| 05 make steps parallel | 1 | 0 | 1 |
+| 06 answer the default question | 3 | 3 | 3 |
+| 07 answer the made-up-variable question | 1 | 3 | 3 |
+| 08 change a task's type | 3 | 2 | 2 |
+| 09 rename a step | 2 | 3 | 3 |
+| 10 add a loop | 3 | 2 | 1 |
+| **total** | **20/30** | **21/30** | **22/30** |
+| unchanged answers | 2 | 0 | 0 |
+| neurons (mean) | 6.1 | 6.9 | 7.1 |
+| total time (median) | 2.1 s | 2.9 s | 1.7 s |
+
+No call queued in this run: the slowest first byte was 1.7 s. That is why the median total fell.
+
+**The reworded rule gives parallel structure.** All three answers to 05 now split with an `and`
+gateway and join with one. Before, none did. Only #1 passes, though. #2 is a correct diagram:
+glm used the step's id for the gateway (`pack[and]`) and renamed the step to `box`, and
+`keepIds` counts that as losing `pack`. #3 did the same and then joined into a second gateway
+named `label`, which made a mess. So 05 is 1/3 strictly and 2/3 by structure. Reusing a step's
+id for the gateway is new, and it probably comes from the rule's placeholder `fork` being more
+abstract than the step names around it.
+
+**What each rule bought, over three runs:**
+
+- Stable: 06 and 07 at 3/3 (07 was 1/3 before the FEEL rule), 09 at 3/3, and no unchanged
+  answers. These are the cases the questions depend on.
+- Moving within noise: 01, 02 and 04 swing by one run from run to run.
+- **Falling: 10 went 3 → 2 → 1, and 08 went 3 → 2 → 2.** In 10#1, glm drew an error boundary
+  onto itself (`rep[boundary:error … | on=rep]`), which is the boundary rule's form applied where
+  no boundary was asked for. In 08#3, it rewrote most of the diagram. Three runs cannot separate
+  a real cost of the rules from noise. But a rule that shows a pattern (a boundary, a fork) seems
+  to invite the model to use that pattern when it is not asked for.
+- In 02, glm dropped "Ship order" while adding the boundary in 3 of the 9 answers across the
+  runs, with and without the rule.
+
+**Where this leaves the change feature.** Removing, renaming, retyping and answering the parser's
+questions are reliable at 3/3, or 2–3/3 for retyping. Changes that add structure (a boundary,
+a parallel split, a loop, a branch beside others) succeed about half the time. Each prompt rule
+that fixes one of those seems to cost another. More prompt iterations at 3 runs a case will not
+settle it. Two ways to decide:
+
+- **Accept the current rules** and rely on Undo and the "+N −M" status line for the structural
+  changes that go wrong.
+- **Measure the suspected cost**: run `--only 08,10 --runs 10` with the current prompt, then the
+  same with the rules removed. If 10 stays near 1/3 with the rules and near 3/3 without them,
+  drop the boundary and parallel examples and keep the four text-only rules.
