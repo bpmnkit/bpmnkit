@@ -715,3 +715,52 @@ A test checks that the examples parse without a problem. The first draft's promp
 and the cache key includes the prompt, so no answer written for the old rules is served.
 The next `--edits` run (`--models @cf/zai-org/glm-4.7-flash --runs 3`) is the check against this
 section's 20/30. It should also check that the cases already at 3/3 stay there.
+
+## 17. Second run of the change cases: the change rules (2026-09-30)
+
+`2026-09-30T11-42-51-567Z`: glm-4.7-flash × 3 runs × 10 change cases with the §16 change rules.
+Both runs are scored with the same parser and cases.
+
+| glm-4.7-flash × 30 changes | §16, no rules | with rules |
+|---|---|---|
+| assertions | 20/30 | **21/30** |
+| answers written back unchanged | 2 | **0** |
+| draft kept under the same ids (mean) | 92.6% | 88.0% |
+| input / output tokens (median) | 590 / 64 | 719 / 64 |
+| neurons (mean) | 6.1 | 6.9 |
+| TTFB / first shape / total (median) | 417 / 1185 / 2135 ms | 396 / 868 / 2906 ms |
+
+The total time rose because of queueing: 5 of 30 first bytes took 6.9–23.4 s. The input grew by
+the 129 tokens the rules add.
+
+| Case | §16 | with rules | Rule aimed at it |
+|---|---|---|---|
+| 07 answer the made-up-variable question | 1/3 | **3/3** | FEEL conditions, not a new task |
+| 09 rename a step | 2/3 | **3/3** | rename in place |
+| 02 add a timer boundary | 1/3 | 2/3 | a boundary on its own line |
+| 01 add a step | 2/3 | 2/3 | always make the change |
+| 04 add a branch | 1/3 | 1/3 | keep the other branches |
+| 05 make steps parallel | 1/3 | **0/3** | fork and join |
+| 08 change a task's type | 3/3 | 2/3 | — |
+| 10 add a loop | 3/3 | 2/3 | — |
+| 03, 06 | 3/3 each | 3/3 each | — |
+
+Three runs per case is not much, so a move of one run could be noise. Four results are clear
+enough to act on:
+
+- **Rules that name the exact form work.** The FEEL rule gives `ok >(Yes: score > 80)` in all
+  three runs of 07, and rename-in-place holds in all of 09. No answer came back unchanged.
+- **The parallel rule does not work.** glm packs the fork into one line: `pack / label`, and
+  `pack_and_label[and Pack box, Print shipping label]`. The rule's example is itself written on
+  one line (`fork[and] > a, fork > b, then …`), which may be what it copies. It also dropped
+  a step in all three runs.
+- **The two new failures do not look like the rules' doing.** 08 made the decision the rule
+  task instead of the review. 10 lost its start line and wrote a flow inside a branch label.
+  Neither follows a rule. Both cases passed 3/3 before, so the next run will tell.
+- **01's miss is a pattern the parser could repair.** `sendemail[service Send confirmation
+  email] > done` inserts a step before `done` without redirecting the flow into `done`, so the
+  new step is left out. This is 1 answer in 60, which is too few to justify a rule yet.
+
+**Keep the rules.** They fix unchanged answers and the two question cases, which are the cases
+the product relies on (a clicked answer must be applied). They cost about 0.8 neurons per
+change.

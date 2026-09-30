@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: the change rules measured
+
+- glm-4.7-flash × 30 changes with the change rules: 21/30, against 20/30 without them. No answer comes back unchanged (was 2). The made-up-variable question is applied in 3/3 runs (was 1/3), and a rename in 3/3 (was 2/3). The parallel rule does not work (0/3): glm packs the fork into one line. A change costs 6.9 neurons (was 6.1). Details: `doc/drop-ai-generate-analysis.md` §17.
+
 ## 2026-09-30 — Describe-to-diagram: change rules in the refine prompt
 
 - `REFINE_SYSTEM_PROMPT` gets one rule for each kind of miss in the first change run: always make the change, rename in place, add a branch next to the existing ones, a timeout as a boundary line, a parallel fork and join, and a gateway decided by FEEL conditions. It adds about 130 input tokens, and a test checks that its examples parse. Not yet measured: `doc/drop-ai-generate-analysis.md` §16.
