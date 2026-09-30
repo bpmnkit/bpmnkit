@@ -1,26 +1,36 @@
 import { parseProcessText } from "@bpmnkit/core"
 import type { Env } from "../env.js"
+import { checkAiChallenge } from "../lib/ai-pass.js"
 import {
 	addBudget,
 	checkAiPasscode,
 	getBudgetSpent,
 	getCachedGeneration,
 	putCachedGeneration,
+	takeGenerateCall,
 } from "../lib/ai.js"
 import {
 	GENERATE_SYSTEM_PROMPT,
 	type GenerateEvent,
+	MAX_CHANGE_CHARS,
 	MAX_DESCRIPTION_CHARS,
+	MAX_DIAGRAM_CHARS,
+	MIN_CHANGE_CHARS,
 	MIN_DESCRIPTION_CHARS,
 	MODEL_PROFILES,
+	REFINE_SYSTEM_PROMPT,
+	createDiagramLineFilter,
 	generateMessages,
 	maxTokensFor,
 	neuronsFor,
 	normaliseDescription,
+	normaliseDiagram,
+	refineMessages,
 } from "../lib/generate.js"
 import { ModelStream, hedge } from "../lib/hedge.js"
 import { json } from "../lib/http.js"
 import { sha256Hex } from "../lib/ids.js"
+import { AI_PASS_HEADER } from "../shared/constants.js"
 
 /** The slice of the Workers AI binding this route uses — a stream in, so it is mockable. */
 export interface AiStreamLike {
@@ -56,14 +66,21 @@ function isUsable(text: string): boolean {
 /**
  * POST /drop/api/generate — closed-beta describe-to-diagram.
  *
- * Body `{ description }`. Answers with a server-sent-event stream of
+ * Body `{ description }` for a first draft, or `{ description, diagram, change }`
+ * to change a draft: `diagram` is the text the last answer streamed, and the
+ * model writes the whole diagram again with the change made. The Worker keeps
+ * no conversation; the client sends the state it has. Answers with a
+ * server-sent-event stream of
  * {@link GenerateEvent}s: the model's text as it is written, in the line format
  * `parseProcessText` reads, then `done` or `error`. The client draws the
  * diagram from the text; nothing is stored as a drop until the reader chooses
  * to share it, through the ordinary upload endpoint.
  *
- * Order, as the review: feature flag → passcode gate → input check → cache →
- * daily budget → model call. See `doc/drop-ai-generate-analysis.md` §6.
+ * Order, as the review: feature flag → passcode gate → Turnstile (when
+ * `TURNSTILE_SECRET` is set; a solved challenge earns a pass sent back in
+ * `X-Drop-AI-Pass`) → input check → cache → daily budget → per-IP hourly cap →
+ * model call. Only lines in the diagram
+ * format are streamed back. See `doc/drop-ai-generate-analysis.md` §6 and §21.
  */
 export async function handleGenerate(request: Request, env: Env, now: number): Promise<Response> {
 	if (env.AI_PASSCODE === undefined) return json({ error: "not found" }, { status: 404 })
@@ -71,12 +88,43 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 	if (denied) return denied
 
 	let description: string
+	let refine: { diagram: string; change: string } | undefined
+	let token: string | undefined
 	try {
-		const body = (await request.json()) as { description?: unknown }
+		const body = (await request.json()) as {
+			description?: unknown
+			diagram?: unknown
+			change?: unknown
+			token?: unknown
+		}
+		if (typeof body.token === "string") token = body.token
 		description = typeof body.description === "string" ? normaliseDescription(body.description) : ""
+		if (body.diagram !== undefined || body.change !== undefined) {
+			refine = {
+				diagram: typeof body.diagram === "string" ? normaliseDiagram(body.diagram) : "",
+				change: typeof body.change === "string" ? normaliseDescription(body.change) : "",
+			}
+		}
 	} catch {
 		return json({ error: 'expected JSON: { "description": "…" }' }, { status: 400 })
 	}
+
+	const { denied: unverified, pass } = await checkAiChallenge(request, env, token, now)
+	if (unverified) return unverified
+	const res = await answer(request, env, now, description, refine)
+	// A solved challenge earns a pass, whatever the answer; the page keeps it for the next call.
+	if (pass) res.headers.set(AI_PASS_HEADER, pass)
+	return res
+}
+
+/** Everything after the gates: input check, cache, budget, hourly cap, model call. */
+async function answer(
+	request: Request,
+	env: Env,
+	now: number,
+	description: string,
+	refine: { diagram: string; change: string } | undefined,
+): Promise<Response> {
 	if (description.length < MIN_DESCRIPTION_CHARS || description.length > MAX_DESCRIPTION_CHARS) {
 		return json(
 			{
@@ -85,10 +133,30 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 			{ status: 400 },
 		)
 	}
+	if (refine && (refine.diagram === "" || refine.diagram.length > MAX_DIAGRAM_CHARS)) {
+		return json({ error: "the diagram to change is missing or too long" }, { status: 400 })
+	}
+	if (
+		refine &&
+		(refine.change.length < MIN_CHANGE_CHARS || refine.change.length > MAX_CHANGE_CHARS)
+	) {
+		return json(
+			{ error: `describe the change in ${MIN_CHANGE_CHARS}–${MAX_CHANGE_CHARS} characters` },
+			{ status: 400 },
+		)
+	}
 
 	const model = env.AI_GENERATE_MODEL
+	const messages = refine
+		? refineMessages(description, refine.diagram, refine.change)
+		: generateMessages(description)
+	const promptChars = messages.reduce((sum, m) => sum + m.content.length, 0)
 	// The prompt is part of the key: changing it must not serve answers written for the old one.
-	const requestHash = await sha256Hex(`${model}\n${GENERATE_SYSTEM_PROMPT}\n${description}`)
+	const requestHash = await sha256Hex(
+		refine
+			? `${model}\n${REFINE_SYSTEM_PROMPT}\n${description}\n${refine.diagram}\n${refine.change}`
+			: `${model}\n${GENERATE_SYSTEM_PROMPT}\n${description}`,
+	)
 	const cached = await getCachedGeneration(env.DB, requestHash)
 	if (cached !== null) {
 		return new Response(
@@ -108,6 +176,8 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 	if ((await getBudgetSpent(env.DB, day)) >= budget) {
 		return json({ error: "AI generation is busy today — try again tomorrow." }, { status: 503 })
 	}
+	const limited = await takeGenerateCall(request, env, now)
+	if (limited) return limited
 
 	const ai = env.AI as unknown as AiStreamLike
 	const call = (name: string) =>
@@ -115,7 +185,7 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 			ai.run(
 				name,
 				{
-					messages: generateMessages(description),
+					messages,
 					stream: true,
 					max_tokens: maxTokensFor(name),
 					...(MODEL_PROFILES[name]?.options ?? {}),
@@ -135,8 +205,17 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 					fallbackModel && fallbackModel !== model ? () => call(fallbackModel) : null,
 					Number.isFinite(hedgeMs) ? hedgeMs : DEFAULT_HEDGE_MS,
 				)
+				// Only diagram lines leave the Worker, and only they are judged and cached.
+				const filter = createDiagramLineFilter()
+				let text = ""
+				const send = (lines: string) => {
+					if (lines === "") return
+					text += lines
+					controller.enqueue(sse({ text: lines }))
+				}
 				if (winner) {
-					for await (const text of winner.rest()) controller.enqueue(sse({ text }))
+					for await (const chunk of winner.rest()) send(filter.push(chunk))
+					send(filter.end())
 				}
 
 				// Every call is charged, the cancelled one included: its neurons were
@@ -147,27 +226,36 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 					neurons += neuronsFor(
 						stream.model,
 						stream.usage ?? {
-							promptTokens: Math.ceil((GENERATE_SYSTEM_PROMPT.length + description.length) / 4),
+							promptTokens: Math.ceil(promptChars / 4),
 							completionTokens: Math.ceil((stream.text.length + stream.reasoningChars) / 4),
 						},
 					)
 				}
 				await addBudget(env.DB, day, neurons)
 
-				const text = winner?.text ?? ""
 				const usable = winner !== null && !winner.failed && isUsable(text)
+				// A small model sometimes writes the draft back as it was (2 of 30 changes
+				// in the §16 run). Not cached, so asking again gets a fresh answer.
+				const unchanged =
+					usable && refine !== undefined && normaliseDiagram(text) === refine.diagram
 				console.log(
 					JSON.stringify({
 						msg: "drop.generate",
 						primary: model,
+						refine: refine !== undefined,
 						winner: winner?.model ?? null,
 						hedged: started.length > 1,
 						firstContentMs: winner?.firstContentMs ?? null,
 						neurons,
 						usable,
+						unchanged,
 					}),
 				)
-				if (!usable) {
+				if (unchanged) {
+					controller.enqueue(
+						sse({ error: "The diagram came back unchanged. Try saying the change another way." }),
+					)
+				} else if (!usable) {
 					controller.enqueue(
 						sse({
 							error: !winner

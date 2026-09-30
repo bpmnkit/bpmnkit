@@ -8,7 +8,7 @@ import {
 	REPORT_REASONS,
 } from "../shared/constants.js"
 import type { DropRow, FileInfo } from "./db.js"
-import { MAX_DESCRIPTION_CHARS } from "./generate.js"
+import { MAX_CHANGE_CHARS, MAX_DESCRIPTION_CHARS } from "./generate.js"
 import { escapeHtml, jsonForScript } from "./http.js"
 
 // Square, flat, one accent — the favicon is an image asset, so it carries the
@@ -363,7 +363,19 @@ select.ed-select{height:28px;border:1px solid var(--bpmnkit-ds-line);background:
 .gen-side{border-left:1px solid var(--bpmnkit-ds-line-soft);min-width:0}
 .gen-canvas{height:340px;background:var(--bpmnkit-ds-canvas);position:relative;overflow:hidden}
 #genStatus.busy{color:var(--bpmnkit-ds-accent)}
+.gen-canvas.busy::after{content:"";position:absolute;top:0;left:0;z-index:2;width:30%;height:2px;background:var(--bpmnkit-ds-accent);animation:gen-busy 1.2s linear infinite;pointer-events:none}
+@keyframes gen-busy{from{transform:translateX(-100%)}to{transform:translateX(340%)}}
+@media (prefers-reduced-motion:reduce){.gen-canvas.busy::after{width:100%;animation:none;opacity:.6}}
 .gen .btn-ghost[hidden],.fc-actions .btn-ghost[hidden]{display:none}
+.gen-refine{border-top:1px solid var(--bpmnkit-ds-line-soft)}
+.gen-refine[hidden]{display:none}
+.gen-questions{list-style:none;margin:0;padding:0}
+.gen-questions li{padding:10px 12px;border-bottom:1px solid var(--bpmnkit-ds-line-soft);font-size:var(--bpmnkit-ds-t-body-sm);color:var(--bpmnkit-ds-ink-2)}
+.gen-questions .fc-examples{margin-top:8px}
+.gen-change{display:flex}
+.gen-change input{flex:1;min-width:0;border:none;background:var(--bpmnkit-ds-surface);color:var(--bpmnkit-ds-ink);font-family:var(--bpmnkit-ds-font-sans);font-size:14px;padding:10px 12px}
+.gen-change input:focus-visible{outline-offset:-2px}
+.gen-change .btn-ghost{border:none;border-left:1px solid var(--bpmnkit-ds-line)}
 #genPasscode{max-width:360px;margin-top:14px}
 #genPasscode[hidden]{display:none}
 
@@ -481,8 +493,12 @@ function pageFooter(): string {
 }
 
 /** The upload landing page. */
-/** The landing and drop page. `aiEnabled` (AI_PASSCODE set) adds the describe-to-diagram section. */
-export function dropPage(tosVersion: string, aiEnabled = false): string {
+/**
+ * The landing and drop page. `aiEnabled` (AI_PASSCODE set) adds the
+ * describe-to-diagram section; `turnstileKey` adds its challenge, which the
+ * Worker's content policy must then allow.
+ */
+export function dropPage(tosVersion: string, aiEnabled = false, turnstileKey?: string): string {
 	const accept = ACCEPTED_EXTENSIONS.join(",")
 	// Sections are numbered in page order, and the generator is only sometimes there.
 	let section = 0
@@ -490,9 +506,9 @@ export function dropPage(tosVersion: string, aiEnabled = false): string {
 	// A function, not a string: it must take its number where it sits in the page.
 	const generate = () =>
 		aiEnabled
-			? `<section class="section" id="describe"><div class="section-inner">
+			? `<section class="section" id="describe"${turnstileKey ? ` data-turnstile-key="${escapeHtml(turnstileKey)}"` : ""}><div class="section-inner">
 	<div class="section-head"><span class="section-num">${num()}</span><h2 class="section-h2">Describe a process, get a diagram</h2></div>
-	<p class="section-lead section-indent" style="margin-bottom:26px">Say what should happen, in your own words. AI drafts the BPMN and draws it as it goes. Review it, then share it like any drop. Closed beta: it needs an access code.</p>
+	<p class="section-lead section-indent" style="margin-bottom:26px">Say what should happen, in your own words. AI drafts the BPMN and draws it as it goes. Ask for changes until it fits, then share it like any drop. Closed beta: it needs an access code.</p>
 	<div class="gen">
 		<div class="gen-main">
 			<div class="panel-bar"><span>description</span><span class="grow"></span><span id="genCount">0 / ${MAX_DESCRIPTION_CHARS}</span></div>
@@ -501,6 +517,10 @@ export function dropPage(tosVersion: string, aiEnabled = false): string {
 		<div class="gen-side">
 			<div class="panel-bar"><span id="genName">process.bpmn</span><span class="grow"></span><span id="genStatus">draft</span></div>
 			<div id="genCanvas" class="gen-canvas"><div class="hero-canvas-msg">The diagram appears here as it is written.</div></div>
+			<div id="genRefine" class="gen-refine" hidden>
+				<ul id="genQuestions" class="gen-questions"></ul>
+				<div class="gen-change"><input id="genChange" maxlength="${MAX_CHANGE_CHARS}" autocomplete="off" aria-label="Change the diagram" placeholder="Change something, e.g. a manager approves anything over 5000"><button id="genApply" class="btn-ghost" type="button">Apply</button><button id="genUndo" class="btn-ghost" type="button" hidden>Undo</button></div>
+			</div>
 		</div>
 	</div>
 	<div class="fc-actions">
@@ -516,6 +536,17 @@ export function dropPage(tosVersion: string, aiEnabled = false): string {
 		<div class="link-row"><input id="genUrl" readonly aria-label="Share link"><button id="genCopy" class="btn-ghost" type="button">Copy</button><a id="genOpen" class="btn-ghost" href="#">Open &#8599;</a></div>
 	</div>
 	<div id="genErrors" class="errors hidden"></div>
+	${
+		turnstileKey
+			? `<dialog id="genTurnstile" class="ts-dialog">
+		<div class="ts-title">One check before AI drafts</div>
+		<div id="genTurnstileWidget"></div>
+		<div id="genTurnstileError" class="ts-error" hidden>That did not go through — close this and try again.</div>
+		<button id="genTurnstileCancel" class="ts-cancel" type="button">Cancel</button>
+	</dialog>
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>`
+			: ""
+	}
 	<p class="legal">Your description is sent to Cloudflare Workers AI to draft the diagram. Sharing it follows the <a href="/drop/terms">Terms of Use</a>, like any upload.</p>
 </div></section>
 `

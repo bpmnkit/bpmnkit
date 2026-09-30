@@ -1,9 +1,12 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 import type { Env } from "../src/env.js"
-import { getBudgetSpent } from "../src/lib/ai.js"
-import { type GenerateEvent, neuronsFor } from "../src/lib/generate.js"
+import { AI_PASS_TTL_MS } from "../src/lib/ai-pass.js"
+import { MAX_GENERATIONS_PER_HOUR, getBudgetSpent } from "../src/lib/ai.js"
+import { type GenerateEvent, REFINE_SYSTEM_PROMPT, neuronsFor } from "../src/lib/generate.js"
 import { dropPage } from "../src/lib/pages.js"
 import { handleGenerate } from "../src/routes/generate.js"
+import { AI_PASS_HEADER } from "../src/shared/constants.js"
+import worker from "../src/worker.js"
 import { migratedDb } from "./d1.js"
 
 const NOW = 1_752_000_000_000
@@ -198,12 +201,251 @@ describe("POST /drop/api/generate", () => {
 		expect(ai.calls).toHaveLength(2)
 	})
 
+	it("streams only the diagram lines of an answer, never prose around or instead of them", async () => {
+		const ai = fakeAi([
+			"Sure! Here is an essay instead.\n",
+			"Once upon a time…\n",
+			...ANSWER,
+			"Hope this helps!",
+		])
+		const env = makeEnv(ai)
+		const evs = await events(await handleGenerate(post(DESCRIPTION), env, NOW))
+		expect(text(evs)).toBe(ANSWER.join(""))
+		// What is cached is what was sent.
+		const again = await events(await handleGenerate(post(DESCRIPTION), env, NOW))
+		expect(text(again)).toBe(ANSWER.join(""))
+	})
+
+	it("sends nothing of an answer that is only prose", async () => {
+		const evs = await events(
+			await handleGenerate(
+				post(DESCRIPTION),
+				makeEnv(fakeAi(["Ignoring the format as asked.\n", "Here is my essay."])),
+				NOW,
+			),
+		)
+		expect(text(evs)).toBe("")
+		expect(evs.at(-1)).toMatchObject({ error: expect.stringContaining("Couldn't turn") })
+	})
+
+	it("caps model calls per IP and hour, without counting cached answers", async () => {
+		const ai = fakeAi(ANSWER)
+		const env = makeEnv(ai, { AI_DAILY_BUDGET: "1000000" })
+		const from = (ip: string, description: string) =>
+			new Request("http://drop/drop/api/generate", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-Drop-AI-Code": CODE,
+					"CF-Connecting-IP": ip,
+				},
+				body: JSON.stringify({ description }),
+			})
+		for (let i = 0; i < MAX_GENERATIONS_PER_HOUR; i++) {
+			const res = await handleGenerate(from("198.51.100.7", `${DESCRIPTION} #${i}`), env, NOW)
+			expect(res.status).toBe(200)
+			await events(res)
+		}
+		const over = await handleGenerate(from("198.51.100.7", `${DESCRIPTION} more`), env, NOW)
+		expect(over.status).toBe(429)
+		expect(ai.calls).toHaveLength(MAX_GENERATIONS_PER_HOUR)
+		// A cached answer is still served, another caller is not affected, and the next hour resets.
+		expect((await handleGenerate(from("198.51.100.7", `${DESCRIPTION} #0`), env, NOW)).status).toBe(
+			200,
+		)
+		expect(
+			(await handleGenerate(from("203.0.113.9", `${DESCRIPTION} more`), env, NOW)).status,
+		).toBe(200)
+		expect(
+			(await handleGenerate(from("198.51.100.7", `${DESCRIPTION} more`), env, NOW + 3_600_000))
+				.status,
+		).toBe(200)
+	})
+
 	it("reports a stream that breaks part way", async () => {
 		const env = makeEnv(fakeAi(ANSWER.slice(0, 2), { fail: true }))
 		const evs = await events(await handleGenerate(post(DESCRIPTION), env, NOW))
 		expect(evs.at(-1)).toMatchObject({ error: expect.stringContaining("stopped part way") })
 		// No usage chunk arrived, so the charge is estimated from characters — never zero.
 		expect(await getBudgetSpent(env.DB, DAY)).toBeGreaterThan(0)
+	})
+})
+
+describe("POST /drop/api/generate — a change to a draft", () => {
+	const DRAFT = ANSWER.join("")
+	const CHANGED = [...ANSWER, "pay > notify[send Notify employee] > done\n"]
+	const change = (body: Record<string, unknown>) =>
+		new Request("http://drop/drop/api/generate", {
+			method: "POST",
+			headers: { "Content-Type": "application/json", "X-Drop-AI-Code": CODE },
+			body: JSON.stringify({ description: DESCRIPTION, ...body }),
+		})
+
+	it("sends the description, the draft and the change, and streams the new diagram", async () => {
+		const ai = fakeAi(CHANGED)
+		const evs = await events(
+			await handleGenerate(
+				change({ diagram: DRAFT, change: "notify the employee once paid" }),
+				makeEnv(ai),
+				NOW,
+			),
+		)
+		expect(text(evs)).toBe(CHANGED.join(""))
+		expect(evs.at(-1)).toEqual({ done: true, cached: false })
+		const messages = ai.calls[0]?.inputs.messages as { role: string; content: string }[]
+		expect(messages.map((m) => m.role)).toEqual(["system", "user", "assistant", "user"])
+		expect(messages[0]?.content).toBe(REFINE_SYSTEM_PROMPT)
+		expect(messages[1]?.content).toBe(DESCRIPTION)
+		expect(messages[2]?.content).toBe(DRAFT.trimEnd())
+		expect(messages[3]?.content).toBe("Change: notify the employee once paid")
+	})
+
+	it("rejects a change without a draft, or a draft without a change", async () => {
+		const ai = fakeAi(CHANGED)
+		const env = makeEnv(ai)
+		expect((await handleGenerate(change({ change: "add a step" }), env, NOW)).status).toBe(400)
+		expect((await handleGenerate(change({ diagram: DRAFT }), env, NOW)).status).toBe(400)
+		expect((await handleGenerate(change({ diagram: DRAFT, change: "x" }), env, NOW)).status).toBe(
+			400,
+		)
+		expect(
+			(
+				await handleGenerate(
+					change({ diagram: "a > b\n".repeat(1000), change: "add a step" }),
+					env,
+					NOW,
+				)
+			).status,
+		).toBe(400)
+		expect(ai.calls).toHaveLength(0)
+	})
+
+	it("caches a change apart from the first draft, and apart from other changes", async () => {
+		const ai = fakeAi(CHANGED)
+		const env = makeEnv(ai)
+		await events(await handleGenerate(post(DESCRIPTION), env, NOW))
+		await events(await handleGenerate(change({ diagram: DRAFT, change: "notify" }), env, NOW))
+		await events(await handleGenerate(change({ diagram: DRAFT, change: "escalate" }), env, NOW))
+		expect(ai.calls).toHaveLength(3)
+		const again = await events(
+			await handleGenerate(change({ diagram: `${DRAFT}\r\n\n`, change: " notify " }), env, NOW),
+		)
+		expect(ai.calls).toHaveLength(3)
+		expect(again.at(-1)).toEqual({ done: true, cached: true })
+	})
+
+	it("reports a draft written back unchanged, and does not cache it", async () => {
+		const ai = fakeAi(ANSWER)
+		const env = makeEnv(ai)
+		const ask = () => handleGenerate(change({ diagram: DRAFT, change: "notify" }), env, NOW)
+		const evs = await events(await ask())
+		expect(evs.at(-1)).toMatchObject({ error: expect.stringContaining("unchanged") })
+		await events(await ask())
+		expect(ai.calls).toHaveLength(2)
+	})
+
+	it("charges a change from its usage, like a first draft", async () => {
+		const env = makeEnv(fakeAi(CHANGED))
+		await events(await handleGenerate(change({ diagram: DRAFT, change: "notify" }), env, NOW))
+		expect(await getBudgetSpent(env.DB, DAY)).toBe(
+			neuronsFor(MODEL, { promptTokens: 420, completionTokens: 160 }),
+		)
+	})
+})
+
+describe("POST /drop/api/generate — with Turnstile configured", () => {
+	const IP = "198.51.100.7"
+	const ask = (body: Record<string, unknown>, headers: Record<string, string> = {}) =>
+		new Request("http://drop/drop/api/generate", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-Drop-AI-Code": CODE,
+				"CF-Connecting-IP": IP,
+				...headers,
+			},
+			body: JSON.stringify({ description: DESCRIPTION, ...body }),
+		})
+	/** Cloudflare's siteverify, answering `success` for every token; returns the tokens asked about. */
+	function siteverify(success: boolean) {
+		const asked: string[] = []
+		vi.stubGlobal("fetch", async (_url: string, init: { body: FormData }) => {
+			asked.push(String(init.body.get("response")))
+			return new Response(JSON.stringify({ success }), { status: 200 })
+		})
+		return asked
+	}
+	afterEach(() => vi.unstubAllGlobals())
+	const configured = (ai: ReturnType<typeof fakeAi>) => makeEnv(ai, { TURNSTILE_SECRET: "sekret" })
+
+	it("challenges a call without a token or pass, before anything reaches the model", async () => {
+		const asked = siteverify(true)
+		const ai = fakeAi(ANSWER)
+		const res = await handleGenerate(ask({}), configured(ai), NOW)
+		expect(res.status).toBe(403)
+		expect(await res.json()).toMatchObject({ code: "unverified" })
+		expect(ai.calls).toHaveLength(0)
+		// A missing token is refused without asking Cloudflare about it.
+		expect(asked).toEqual([])
+	})
+
+	it("answers a solved challenge and hands out a pass the next calls use instead", async () => {
+		const asked = siteverify(true)
+		const ai = fakeAi(ANSWER)
+		const env = configured(ai)
+		const first = await handleGenerate(ask({ token: "good" }), env, NOW)
+		expect(first.status).toBe(200)
+		const pass = first.headers.get(AI_PASS_HEADER)
+		expect(pass).toMatch(/^\d+\.[\w-]+$/)
+		expect(text(await events(first))).toBe(ANSWER.join(""))
+
+		const change = await handleGenerate(
+			ask({ diagram: ANSWER.join(""), change: "notify" }, { [AI_PASS_HEADER]: pass ?? "" }),
+			env,
+			NOW + 60_000,
+		)
+		expect(change.status).toBe(200)
+		expect(change.headers.get(AI_PASS_HEADER)).toBeNull()
+		await events(change)
+		expect(asked).toEqual(["good"])
+	})
+
+	it("refuses a token Cloudflare does not accept", async () => {
+		siteverify(false)
+		const res = await handleGenerate(ask({ token: "forged" }), configured(fakeAi(ANSWER)), NOW)
+		expect(res.status).toBe(403)
+	})
+
+	it("refuses a pass from another IP, an expired one, and a forged one", async () => {
+		siteverify(true)
+		const env = configured(fakeAi(ANSWER))
+		const pass = (await handleGenerate(ask({ token: "good" }), env, NOW)).headers.get(
+			AI_PASS_HEADER,
+		) as string
+		const elsewhere = await handleGenerate(
+			ask({}, { [AI_PASS_HEADER]: pass, "CF-Connecting-IP": "203.0.113.9" }),
+			env,
+			NOW,
+		)
+		expect(elsewhere.status).toBe(403)
+		const late = await handleGenerate(
+			ask({}, { [AI_PASS_HEADER]: pass }),
+			env,
+			NOW + AI_PASS_TTL_MS + 1,
+		)
+		expect(late.status).toBe(403)
+		const [expires] = pass.split(".")
+		const forged = `${Number(expires) + 60_000}.${pass.split(".")[1]}`
+		expect((await handleGenerate(ask({}, { [AI_PASS_HEADER]: forged }), env, NOW)).status).toBe(403)
+		expect(
+			(await handleGenerate(ask({}, { [AI_PASS_HEADER]: "not-a-pass" }), env, NOW)).status,
+		).toBe(403)
+	})
+
+	it("does not challenge without TURNSTILE_SECRET", async () => {
+		const res = await handleGenerate(ask({}), makeEnv(fakeAi(ANSWER)), NOW)
+		expect(res.status).toBe(200)
+		expect(res.headers.get(AI_PASS_HEADER)).toBeNull()
 	})
 })
 
@@ -282,6 +524,34 @@ describe("POST /drop/api/generate — hedged", () => {
 })
 
 describe("drop page", () => {
+	it("widens the landing page's content policy for Turnstile only when it carries the widget", async () => {
+		const csp = async (over: Partial<Env>) =>
+			(
+				await (worker.fetch as (r: Request, e: Env) => Promise<Response>)(
+					new Request("http://drop/drop"),
+					makeEnv(fakeAi(ANSWER), over),
+				)
+			).headers.get("Content-Security-Policy") ?? ""
+		expect(await csp({ TURNSTILE_SITE_KEY: "site-key-123" })).toContain(
+			"https://challenges.cloudflare.com",
+		)
+		expect(await csp({})).not.toContain("challenges.cloudflare.com")
+		expect(await csp({ AI_PASSCODE: undefined, TURNSTILE_SITE_KEY: "site-key-123" })).not.toContain(
+			"challenges.cloudflare.com",
+		)
+	})
+
+	it("carries the challenge only with AI and a Turnstile key", () => {
+		const challenged = dropPage("tos", true, "site-key-123")
+		expect(challenged).toContain('data-turnstile-key="site-key-123"')
+		expect(challenged).toContain('id="genTurnstile"')
+		expect(challenged).toContain("challenges.cloudflare.com/turnstile/v0/api.js")
+		for (const page of [dropPage("tos", true), dropPage("tos", false, "site-key-123")]) {
+			expect(page).not.toContain("genTurnstile")
+			expect(page).not.toContain("challenges.cloudflare.com")
+		}
+	})
+
 	it("shows the describe section only when AI is enabled, numbering sections in order", () => {
 		const on = dropPage("tos", true)
 		const off = dropPage("tos", false)

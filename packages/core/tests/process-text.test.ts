@@ -615,6 +615,60 @@ describe("parseProcessText", () => {
 		}
 	})
 
+	it("reads a path wrapped onto the next line after its arrow (glm, edit 10)", () => {
+		const text = [
+			"s[start Go] > a[user Fix issue] >",
+			"",
+			"r[xor Reproducible?]",
+			"r >(Yes: default) e[end Done]",
+			"r >(No: reproduced = false)",
+			"a",
+		].join("\n")
+		const { problems } = parseProcessText(text)
+		expect(problems).toEqual([])
+		expect(flows(text).map((f) => `${f.from}>${f.to}`)).toEqual(
+			expect.arrayContaining(["a>r", "r>e", "r>a_join"]),
+		)
+	})
+
+	it("reads a last line that ends in an arrow without it", () => {
+		const { problems } = parseProcessText("s[start Go] > a[task A] > e[end Done] >")
+		expect(problems).toEqual([
+			{ line: 1, message: 'the line ends with ">" and nothing follows; read without it' },
+		])
+		expect(elements("s[start Go] > a[task A] > e[end Done] >").map((e) => e.id)).toEqual([
+			"s",
+			"a",
+			"e",
+		])
+	})
+
+	it("ignores a note after the last node of a line (glm, edit 10)", () => {
+		const text =
+			"s[start Go] > r[xor Reproducible?]      (ADDED)\nr >(Yes: ok) e[end Done]\nr >(No) x[end Dropped]"
+		const { problems } = parseProcessText(text)
+		expect(problems).toEqual([{ line: 1, message: 'ignored the note "(ADDED)"' }])
+		expect(elements(text).find((e) => e.id === "r")?.type).toBe("exclusiveGateway")
+	})
+
+	it("reads a second bar in the attributes as a separator (glm, edit 02)", () => {
+		const text =
+			"s[start Go] > pay[service Pay] > e[end Done]\nt[boundary:timer Late | on=pay | nonint] > l[end Late]"
+		expect(parseProcessText(text).problems).toEqual([])
+		expect(elements(text).find((e) => e.id === "t")).toMatchObject({
+			attachedTo: "pay",
+			interrupting: false,
+		})
+	})
+
+	it("makes a gateway kind used as an id, never declared, that gateway (glm, edit 05)", () => {
+		const text =
+			"s[start Go] > pick[user Pick] > and\nand > pack[user Pack] > dispatch[user Dispatch]\nand > label[service Label] > dispatch\ndispatch > e[end Done]"
+		const and = elements(text).find((e) => e.id === "and")
+		expect(and?.type).toBe("parallelGateway")
+		expect(and?.name).toBeUndefined()
+	})
+
 	it("never produces a diagram expand rejects", () => {
 		const nasty = [
 			"Flow_1[start] > Process_1[task] > start[task]",
@@ -624,6 +678,93 @@ describe("parseProcessText", () => {
 		].join("\n")
 		const { diagram } = parseProcessText(nasty)
 		expect(() => expand(diagram)).not.toThrow()
+	})
+})
+
+describe("parseProcessText questions", () => {
+	const questions = (text: string) => parseProcessText(text).questions
+
+	it("asks nothing about the guide's own example", () => {
+		expect(questions(EXAMPLE)).toEqual([])
+	})
+
+	it("asks what decides a branch whose condition it made up", () => {
+		const [q, ...rest] = questions(
+			"s[start Go] > ok[xor Status approved?]\nok >(Yes: it is fine) a[task Ship]\nok >(No) b[task Cancel]",
+		)
+		expect(rest).toEqual([])
+		expect(q).toEqual({
+			elementId: "ok",
+			text: '"Status approved?" decides on "statusApproved", a variable the diagram made up. What data decides it?',
+			options: [],
+			draft: 'At "Status approved?", decide on ',
+		})
+	})
+
+	it("asks about a default it had to pick, offering the other branches", () => {
+		const [q] = questions(
+			's[start Go] > c[xor Channel?]\nc >(Mail: channel = "mail") m[task Send letter]\nc >(Phone: channel = "phone") p[task Call]',
+		)
+		expect(q?.text).toBe(
+			'When no condition at "Channel?" holds, it takes "Phone". Is that the right fallback?',
+		)
+		expect(q?.options).toEqual([
+			{ label: "Mail", change: 'At "Channel?", make "Mail" the default branch.' },
+		])
+	})
+
+	it("does not ask about a default that reads as otherwise", () => {
+		expect(
+			questions("s[start Go] > c[xor Big?]\nc >(Yes: amount > 5) a[task A]\nc >(No) b[task B]"),
+		).toEqual([])
+	})
+
+	it("asks whether branches it split in parallel are meant to run together", () => {
+		const [q] = questions(
+			"s[start Go] > a[task Pack]\na > b[task Print label]\na > c[task Invoice]",
+		)
+		expect(q?.text).toBe(
+			'After "Pack", "Print label" and "Invoice" run at the same time. Is that right?',
+		)
+		expect(q?.options.map((o) => o.label)).toEqual(["Only one of them", "One after the other"])
+		expect(q?.options[0]?.change).toBe(
+			'After "Pack", only one of "Print label" and "Invoice" happens: decide which with an xor gateway.',
+		)
+	})
+
+	it("asks what happens otherwise at a question answered one way only", () => {
+		const [q] = questions("s[start Go] > ok[xor In stock?] > ship[task Ship] > e[end Done]")
+		expect(q).toMatchObject({
+			elementId: "ok",
+			text: '"In stock?" had only one way to go, so it was removed. What happens otherwise?',
+			draft: 'At "In stock?", otherwise ',
+		})
+	})
+
+	it("asks where a task it left out belongs", () => {
+		const [q] = questions(
+			"s[start Go] > a[task A] > e[end Done]\nt[catch:timer Wait] > x[task Remind]",
+		)
+		expect(q).toMatchObject({ elementId: "x", draft: 'Put "Remind" after ' })
+	})
+
+	it("asks when a loop it had to end should end", () => {
+		const q = questions("s[start Go] > a[task Try] > r[xor Retry?]\nr >(Yes) a").find(
+			(x) => x.elementId === "r",
+		)
+		expect(q?.draft).toBe('Leave the loop at "Retry?" when ')
+	})
+
+	it("asks what an event written without a trigger waits for", () => {
+		const [q] = questions("s[start Go] > w[catch Payment in] > e[end Done]")
+		expect(q?.options.map((o) => o.label)).toEqual(["A timer", "A signal", "Nothing"])
+		expect(q?.options[0]?.change).toBe('"Payment in" waits for a timer, not a message.')
+	})
+
+	it("asks the same at the end of a stream", () => {
+		const stream = createProcessTextStream()
+		stream.push("s[start Go] > a[task Pack]\na > b[task Print]\na > c[task Bill]\n")
+		expect(stream.end().questions).toHaveLength(1)
 	})
 })
 

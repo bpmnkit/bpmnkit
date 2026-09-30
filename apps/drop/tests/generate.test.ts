@@ -10,10 +10,15 @@ import { describe, expect, it } from "vitest"
 import {
 	GENERATE_MAX_TOKENS,
 	GENERATE_SYSTEM_PROMPT,
+	REFINE_SYSTEM_PROMPT,
+	createDiagramLineFilter,
 	createSseReader,
 	generateMessages,
 	maxTokensFor,
+	normaliseDiagram,
 	readAiEvent,
+	refineMessages,
+	refineSystemPrompt,
 } from "../src/lib/generate.js"
 
 describe("generate prompt", () => {
@@ -26,6 +31,59 @@ describe("generate prompt", () => {
 
 	it("is the same prefix for every description, so it can be cached", () => {
 		expect(generateMessages("a")[0]).toEqual(generateMessages("b")[0])
+	})
+
+	it("sends a change with the draft as the model's own answer, on the same prefix", () => {
+		expect(REFINE_SYSTEM_PROMPT.startsWith(GENERATE_SYSTEM_PROMPT)).toBe(true)
+		const messages = refineMessages("Approve expenses", "a > b", "add a review")
+		expect(messages.map((m) => m.role)).toEqual(["system", "user", "assistant", "user"])
+		expect(messages[3]?.content).toBe("Change: add a review")
+	})
+
+	it("teaches only change patterns the parser reads without a problem", () => {
+		// The pattern rules are in the `all` set only, which the benchmark can still send.
+		const rules = refineSystemPrompt("all").slice(GENERATE_SYSTEM_PROMPT.length)
+		expect(rules).toContain("late[boundary:timer 24h | on=pay] > handler")
+		const parallel = [
+			"before > fork[and]",
+			"fork > a",
+			"fork > b",
+			"a > joined[and]",
+			"b > joined",
+			"joined > after",
+		]
+		expect(rules).toContain(parallel.map((line) => `  ${line}`).join("\n"))
+		// In a change the steps already exist; here they are declared where first used.
+		const declared: Record<string, string> = {
+			"fork > a": "fork > a[task A]",
+			"fork > b": "fork > b[task B]",
+			"joined > after": "joined > after[task After]",
+		}
+		const answer = [
+			"s[start Go] > pay[service Pay] > before[task Before]",
+			...parallel.map((line) => declared[line] ?? line),
+			"after > e[end Done]",
+			"late[boundary:timer 24h | on=pay] > handler[task Handle] > h[end Handled]",
+		].join("\n")
+		expect(parseProcessText(answer).problems).toEqual([])
+	})
+
+	it("builds each change rule set on the same prefix, the route's being all of them", () => {
+		expect(REFINE_SYSTEM_PROMPT).toBe(refineSystemPrompt("text"))
+		const none = refineSystemPrompt("none")
+		const text = refineSystemPrompt("text")
+		expect(none.startsWith(GENERATE_SYSTEM_PROMPT)).toBe(true)
+		// `none` is the prompt of the first change run: the two base lines only.
+		expect(none.slice(GENERATE_SYSTEM_PROMPT.length).trim().split("\n")).toHaveLength(2)
+		expect(text.startsWith(none)).toBe(true)
+		expect(text).toContain("FEEL conditions")
+		expect(text).not.toContain("boundary:timer")
+		expect(text).not.toContain("fork[and]")
+		expect(refineMessages("d", "a > b", "c")[0]?.content).toBe(text)
+	})
+
+	it("sends a draft back without blank lines or trailing spaces", () => {
+		expect(normaliseDiagram("# P\r\na > b  \n\n\nb > c\n")).toBe("# P\na > b\nb > c")
 	})
 
 	it("turns a typical model answer into a diagram", () => {
@@ -70,6 +128,44 @@ describe("generate prompt", () => {
 				.map((d) => `${model} ${prompt}: ${d.id} ${d.message}`),
 		)
 		expect(findings).toEqual([])
+	})
+})
+
+describe("createDiagramLineFilter", () => {
+	const filtered = (text: string, cut = 7) => {
+		const filter = createDiagramLineFilter()
+		let out = ""
+		for (let i = 0; i < text.length; i += cut) out += filter.push(text.slice(i, i + cut))
+		return out + filter.end()
+	}
+
+	it("passes nothing of an answer talked into writing prose", () => {
+		const essay =
+			"Sure! Ignoring the format as asked.\nOnce upon a time, a process lived in a castle.\n```\n// fin"
+		expect(filtered(essay)).toBe("")
+	})
+
+	it("passes the diagram lines of an answer with prose around them, cut anywhere", () => {
+		const answer =
+			"Here is the diagram:\n# Order\ns[start Go] > a[task Ship] >\ne[end Done]\nHope this helps!"
+		expect(filtered(answer, 3)).toBe("# Order\ns[start Go] > a[task Ship] >\ne[end Done]\n")
+	})
+
+	it("reads every recorded answer to the same diagram as the unfiltered text", () => {
+		const root = new URL("../bench-results/", import.meta.url)
+		const answers = readdirSync(root).flatMap((run) =>
+			(
+				JSON.parse(readFileSync(new URL(`${run}/results.json`, root), "utf8")) as {
+					text?: string
+				}[]
+			).flatMap((r) => (r.text === undefined ? [] : [r.text])),
+		)
+		expect(answers.length).toBeGreaterThan(300)
+		for (const answer of answers) {
+			expect(parseProcessText(filtered(answer)).diagram, answer).toEqual(
+				parseProcessText(answer).diagram,
+			)
+		}
 	})
 })
 

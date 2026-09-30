@@ -1,0 +1,669 @@
+[
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "refineRules": "all",
+    "firstByteMs": 109712,
+    "firstContentMs": 109734,
+    "firstShapeMs": 110413,
+    "totalMs": 111739,
+    "text": "# Expense approval\nstart[start Expense submitted] > review[rule Review eligibility] > pay[service Pay expense] > done[end Expense paid]\nreview >(Yes: amount > 1000) review[user Review expense]\nreview >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 805,
+      "completionTokens": 86,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [
+      {
+        "line": 3,
+        "message": "\"review\" on line 2 is a different node; this one is \"review_2\""
+      },
+      {
+        "line": 4,
+        "message": "only an xor or or gateway has a default branch; review_2 > auto is not"
+      }
+    ],
+    "fixes": [
+      "split the flows out of \"review\" with xor gateway \"review_split\"",
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\"",
+      "made review_split > pay_join the default branch of \"review_split\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 11,
+    "failed": [
+      "lost check"
+    ],
+    "kept": 0.8,
+    "added": 2,
+    "removed": 2,
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "refineRules": "all",
+    "firstByteMs": 7578,
+    "firstContentMs": 7578,
+    "firstShapeMs": 8294,
+    "totalMs": 11141,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[rule DMN Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 805,
+      "completionTokens": 93,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 10,
+    "failed": [],
+    "kept": 0.9,
+    "added": 0,
+    "removed": 1,
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "refineRules": "all",
+    "firstByteMs": 42371,
+    "firstContentMs": 42435,
+    "firstShapeMs": 42588,
+    "totalMs": 43971,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[rule Decision: Manager?] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 805,
+      "completionTokens": 92,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 10,
+    "failed": [],
+    "kept": 0.9,
+    "added": 0,
+    "removed": 1,
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "refineRules": "all",
+    "firstByteMs": 28568,
+    "firstContentMs": 28570,
+    "firstShapeMs": 29804,
+    "totalMs": 32735,
+    "text": "# Expense approval\nstart[start Expense submitted] > review[rule Review rule] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 805,
+      "completionTokens": 97,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [
+      {
+        "line": 3,
+        "message": "\"review\" on line 2 is a different node; this one is \"review_2\""
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 11,
+    "failed": [],
+    "kept": 0.9,
+    "added": 1,
+    "removed": 1,
+    "run": 4
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "refineRules": "all",
+    "firstByteMs": 389,
+    "firstContentMs": 390,
+    "firstShapeMs": 733,
+    "totalMs": 2209,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[rule Verify expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 805,
+      "completionTokens": 91,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 10,
+    "failed": [],
+    "kept": 0.9,
+    "added": 0,
+    "removed": 1,
+    "run": 5
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "refineRules": "all",
+    "firstByteMs": 343,
+    "firstContentMs": 357,
+    "firstShapeMs": 513,
+    "totalMs": 1721,
+    "text": "start[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) decision[rule Check expense] > review[user Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 805,
+      "completionTokens": 93,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 11,
+    "failed": [],
+    "kept": 1,
+    "added": 1,
+    "removed": 0,
+    "run": 6
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "refineRules": "all",
+    "firstByteMs": 269,
+    "firstContentMs": 270,
+    "firstShapeMs": 522,
+    "totalMs": 1764,
+    "text": "# Expense approval\nstart[start Expense submitted] > decision[xor Amount over 1000?]\ndecision >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]\ndecision >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 805,
+      "completionTokens": 90,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 10,
+    "failed": [
+      "no businessRuleTask",
+      "lost check"
+    ],
+    "kept": 0.9,
+    "added": 1,
+    "removed": 1,
+    "run": 7
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "refineRules": "all",
+    "firstByteMs": 276,
+    "firstContentMs": 276,
+    "firstShapeMs": 574,
+    "totalMs": 1743,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[rule Review eligibility] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 805,
+      "completionTokens": 91,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 10,
+    "failed": [],
+    "kept": 0.9,
+    "added": 0,
+    "removed": 1,
+    "run": 8
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "refineRules": "all",
+    "firstByteMs": 219,
+    "firstContentMs": 219,
+    "firstShapeMs": 679,
+    "totalMs": 1809,
+    "text": "# Expense approval\nstart[start Expense submitted] > review[rule Review amount] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 805,
+      "completionTokens": 97,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [
+      {
+        "line": 3,
+        "message": "\"review\" on line 2 is a different node; this one is \"review_2\""
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 11,
+    "failed": [],
+    "kept": 0.9,
+    "added": 1,
+    "removed": 1,
+    "run": 9
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "refineRules": "all",
+    "firstByteMs": 425,
+    "firstContentMs": 425,
+    "firstShapeMs": 764,
+    "totalMs": 2114,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[rule Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 805,
+      "completionTokens": 91,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 10,
+    "failed": [],
+    "kept": 0.9,
+    "added": 0,
+    "removed": 1,
+    "run": 10
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "refineRules": "all",
+    "firstByteMs": 213,
+    "firstContentMs": 213,
+    "firstShapeMs": 617,
+    "totalMs": 8199,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > reproduce[boundary:timer 3 days | on=engineer] > still_bad[xor Ticket still bad?]\nstill_bad >(Yes: issue unreproducible) triage\nstill_bad >(No: default) close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) answer[user Answer ticket] > close\ntriage > close",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 778,
+      "completionTokens": 115,
+      "cachedTokens": 0
+    },
+    "neurons": 9,
+    "problems": [
+      {
+        "line": 4,
+        "message": "condition \"issue unreproducible\" is not FEEL; kept as the branch label"
+      }
+    ],
+    "fixes": [
+      "led engineer > reproduce to what the boundary leads to, since nothing flows into a boundary event",
+      "split the flows out of \"triage\" with and gateway \"triage_split\"",
+      "joined 2 flows into \"triage\" with xor gateway \"triage_join\"",
+      "joined 2 flows into \"still_bad\" with xor gateway \"still_bad_join\"",
+      "joined 3 flows into \"close\" with xor gateway \"close_join\"",
+      "gave still_bad > triage_join the condition \"= ticketStillBad = true\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 13,
+    "failed": [
+      "no \"reproduc\""
+    ],
+    "kept": 1,
+    "added": 5,
+    "removed": 0,
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "refineRules": "all",
+    "firstByteMs": 182,
+    "firstContentMs": 182,
+    "firstShapeMs": 640,
+    "totalMs": 2865,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > reproduce[service Can reproduce?]\nreproduce > fix[user Fix issue]\nreproduce > back[send Send back to triage] > triage\nreproduce >(default) close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) answer[user Answer ticket] > close[service Close ticket] > done[end Ticket closed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 778,
+      "completionTokens": 113,
+      "cachedTokens": 0
+    },
+    "neurons": 9,
+    "problems": [
+      {
+        "line": 6,
+        "message": "only an xor or or gateway has a default branch; reproduce > close is not"
+      }
+    ],
+    "fixes": [
+      "added end event \"fix_end\" after \"fix\"",
+      "split the flows out of \"reproduce\" with and gateway \"reproduce_split\"",
+      "joined 2 flows into \"triage\" with xor gateway \"triage_join\"",
+      "joined 2 flows into \"close\" with xor gateway \"close_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 8,
+    "elements": 14,
+    "failed": [],
+    "kept": 1,
+    "added": 6,
+    "removed": 0,
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "refineRules": "all",
+    "firstByteMs": 258,
+    "firstContentMs": 259,
+    "firstShapeMs": 939,
+    "totalMs": 2252,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > cannot[rule Unable to reproduce?] > triage\nengineer >(No: default) close[service Close ticket] > done[end Ticket closed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 778,
+      "completionTokens": 71,
+      "cachedTokens": 0
+    },
+    "neurons": 7,
+    "problems": [
+      {
+        "line": 2,
+        "message": "\"urgent\" has only one branch; gateway removed"
+      },
+      {
+        "line": 4,
+        "message": "only an xor or or gateway has a default branch; engineer > close is not"
+      }
+    ],
+    "fixes": [
+      "split the flows out of \"engineer\" with xor gateway \"engineer_split\"",
+      "joined 2 flows into \"triage\" with xor gateway \"triage_join\"",
+      "made engineer_split > close the default branch of \"engineer_split\"",
+      "gave engineer_split > cannot the condition \"= fixIssueOutcome = \"Unable to reproduce?\"\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 8,
+    "failed": [
+      "lost urgent",
+      "lost answer"
+    ],
+    "kept": 0.625,
+    "added": 3,
+    "removed": 3,
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "refineRules": "all",
+    "firstByteMs": 217,
+    "firstContentMs": 217,
+    "firstShapeMs": 606,
+    "totalMs": 1892,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > unreproducible[boundary:error Engineer cannot reproduce | on=engineer] > triage\nurgent >(No: default) answer[user Answer ticket] > close[service Close ticket] > done[end Ticket closed]\nunreproducible > close",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 778,
+      "completionTokens": 90,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [],
+    "fixes": [
+      "led engineer > unreproducible to what the boundary leads to, since nothing flows into a boundary event",
+      "split the flows out of \"engineer\" with and gateway \"engineer_split\"",
+      "split the flows out of \"unreproducible\" with and gateway \"unreproducible_split\"",
+      "joined 3 flows into \"triage\" with xor gateway \"triage_join\"",
+      "joined 3 flows into \"close\" with xor gateway \"close_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 12,
+    "failed": [],
+    "kept": 1,
+    "added": 4,
+    "removed": 0,
+    "run": 4
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "refineRules": "all",
+    "firstByteMs": 246,
+    "firstContentMs": 246,
+    "firstShapeMs": 678,
+    "totalMs": 2635,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > unrep[boundary:timer 24h | on=engineer] > back[service Send back to triage]\nunrep > close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) answer[user Answer ticket] > close[service Close ticket] > done[end Ticket closed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 778,
+      "completionTokens": 105,
+      "cachedTokens": 0
+    },
+    "neurons": 9,
+    "problems": [],
+    "fixes": [
+      "led engineer > unrep to what the boundary leads to, since nothing flows into a boundary event",
+      "added end event \"back_end\" after \"back\"",
+      "split the flows out of \"engineer\" with and gateway \"engineer_split\"",
+      "split the flows out of \"unrep\" with and gateway \"unrep_split\"",
+      "joined 2 flows into \"back\" with xor gateway \"back_join\"",
+      "joined 3 flows into \"close\" with xor gateway \"close_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 14,
+    "failed": [
+      "no \"reproduc\""
+    ],
+    "kept": 1,
+    "added": 6,
+    "removed": 0,
+    "run": 5
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "refineRules": "all",
+    "firstByteMs": 450,
+    "firstContentMs": 453,
+    "firstShapeMs": 1157,
+    "totalMs": 2811,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) answer[user Answer ticket] > close\nreproduce[boundary:error Unable to reproduce | on=engineer] > triage",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 778,
+      "completionTokens": 84,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"triage\" with xor gateway \"triage_join\"",
+      "joined 2 flows into \"close\" with xor gateway \"close_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 10,
+    "failed": [],
+    "kept": 1,
+    "added": 2,
+    "removed": 0,
+    "run": 6
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "refineRules": "all",
+    "firstByteMs": 316,
+    "firstContentMs": 316,
+    "firstShapeMs": 756,
+    "totalMs": 2880,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) answer[user Answer ticket] > close\nengineer[boundary:error Reproduce issue | on=engineer] > reply_and_reprocess[send Email reply with debug info] > triage",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 778,
+      "completionTokens": 97,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [
+      {
+        "line": 5,
+        "message": "\"engineer\" on line 3 is a different node; this one is \"engineer_2\""
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"triage\" with xor gateway \"triage_join\"",
+      "joined 2 flows into \"close\" with xor gateway \"close_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 11,
+    "failed": [],
+    "kept": 1,
+    "added": 3,
+    "removed": 0,
+    "run": 7
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "refineRules": "all",
+    "firstByteMs": 156,
+    "firstContentMs": 156,
+    "firstShapeMs": 599,
+    "totalMs": 2167,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > reproduce[xor Reproduce?]\nreproduce >(Yes: resolve < true) close[service Close ticket] > done[end Ticket closed]\nreproduce >(No: default) triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(No: default) answer[user Answer ticket] > close",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 778,
+      "completionTokens": 104,
+      "cachedTokens": 0
+    },
+    "neurons": 9,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"triage\" with xor gateway \"triage_join\"",
+      "joined 2 flows into \"close\" with xor gateway \"close_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 10,
+    "failed": [],
+    "kept": 1,
+    "added": 2,
+    "removed": 0,
+    "run": 8
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "refineRules": "all",
+    "firstByteMs": 164,
+    "firstContentMs": 164,
+    "firstShapeMs": 594,
+    "totalMs": 2018,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) answer[user Answer ticket] > close\nreproduce[boundary:error Could not reproduce | on=engineer] > triage[task Retriage ticket]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 778,
+      "completionTokens": 90,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [
+      {
+        "line": 5,
+        "message": "\"triage\" on line 2 is a different node; this one is \"triage_2\""
+      }
+    ],
+    "fixes": [
+      "added end event \"triage_2_end\" after \"triage_2\"",
+      "joined 2 flows into \"close\" with xor gateway \"close_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 11,
+    "failed": [],
+    "kept": 1,
+    "added": 3,
+    "removed": 0,
+    "run": 9
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "refineRules": "all",
+    "firstByteMs": 515,
+    "firstContentMs": 518,
+    "firstShapeMs": 1112,
+    "totalMs": 2815,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > reproduce[xor Can reproduce?]\nreproduce >(Yes: default) close[service Close ticket] > done[end Ticket closed]\nreproduce >(No: priority = \"failed\") triage > urgent\nurgent >(No: default) answer[user Answer ticket] > close",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 778,
+      "completionTokens": 95,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"triage\" with xor gateway \"triage_join\"",
+      "joined 2 flows into \"close\" with xor gateway \"close_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 10,
+    "failed": [],
+    "kept": 1,
+    "added": 2,
+    "removed": 0,
+    "run": 10
+  }
+]

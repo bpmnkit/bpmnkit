@@ -514,3 +514,505 @@ Two gaps this run raised are now closed:
   gateway. `bench-generate.mjs` reads the new key. Re-scored, the reworded-rules run is 20/36, and
   the earlier glm × 36 runs are unchanged (18 and 14).
 
+
+## 15. Changing a draft, and asking about the parser's guesses (built 2026-09-30)
+
+Until now, each description got exactly one answer. A reader who wanted "the same, but with a
+reminder after two days" had to rewrite the description and hope for a similar diagram. This
+section adds two things: a draft can be changed by asking, and the parser's own guesses are
+put to the reader as questions.
+
+### Changing a draft
+
+`POST /drop/api/generate` takes `{ description, diagram, change }` as well as `{ description }`.
+The model gets:
+
+```
+system:    REFINE_SYSTEM_PROMPT   (GENERATE_SYSTEM_PROMPT + two lines, same prefix)
+user:      the description
+assistant: the draft, as the model wrote it
+user:      Change: <the change>
+```
+
+It writes the whole diagram again. The design choices:
+
+- **State, not a transcript.** Only the current draft goes back, never the turns before it. The
+  earlier changes are already in the draft, input stays flat however many changes there are,
+  and a small model keeps a short context straighter than a long one.
+- **A full rewrite, not a patch.** A patch syntax (delete lines, edit a node) would save the
+  unchanged lines, about 100 output tokens. But it asks the model to refer correctly to ids it
+  did not just write, and glm already gets that wrong (the reused-id rules in §9). A rewrite of
+  a 60–190-token diagram costs about a second.
+- **The draft the model wrote, not the repaired one.** Sending the parser's repaired diagram
+  would need a writer from the compact model back to the line format, and a diagram full of
+  joins and generated conditions that the model never wrote. The model's own text is shorter,
+  and the parser repairs it the same way again.
+- **Stateless Worker.** The page holds the draft. A forged draft only affects the reader who
+  sent it. The route caps a change at 3–500 characters and a draft at 4,000 (a runaway answer
+  cut at 600 tokens is about 2,400). The change is framed as untrusted data, as the description
+  is.
+- **Same cache and budget.** A change is cached under model, prompt, description, draft and
+  change, and is charged from its usage like a first draft.
+
+Estimated cost on glm-4.7-flash: about 650–750 input tokens (the §14 median of 480 plus the
+draft and the change) and 60–190 output, so about 8–10 neurons. A first draft is about 6.
+Not yet measured.
+
+The page shows each change as it streams. If the change fails, the page draws the draft again.
+The status line says how many elements the change added and removed. Undo returns to the draft
+before each change, because a small model can change parts it was not asked to touch.
+
+### Questions from the parser's guesses
+
+Letting the model decide *whether* to ask is what small models do worst. With thinking off, glm
+would either always ask or never ask, and asking first delays a 1.3 s answer by a whole round
+trip. The parser, on the other hand, knows exactly where it guessed. `parseProcessText` now
+returns those guesses as `questions`. Each one has ready answers where there are any and a
+`draft` for the reader to finish, all written as change requests. The page shows up to three
+under the diagram, and an answer goes through the change route above. No model token is spent
+deciding what to ask.
+
+On the 252 recorded answers, 98 have at least one question, 1.7 on average:
+
+| Guess | Questions |
+|---|---|
+| a condition on a made-up variable (`statusApproved = true`) | 60 |
+| unlabelled branches split in parallel | 43 |
+| a task left out, because nothing leads to it | 22 |
+| a default branch picked when none reads as "otherwise" | 17 |
+| a question answered one way only, removed | 17 |
+| an event without a trigger, made a message event | 4 |
+
+A default the parser picked because the branch reads as "otherwise" (`No`, `Rejected`) is not
+asked about. Neither is a join, a start or end event it added, or a name it gave. Those need
+no decision from the reader.
+
+### Change cases for the benchmark
+
+`bench-generate.mjs --edits` runs the 10 cases in `apps/drop/scripts/edit-cases.json` through
+the same `refineMessages` the route sends. Each case has a description, a draft in the line
+format, a change and assertions. The cases are:
+
+- add a step
+- add a timer boundary (golden prompt 04, which the default run skips because it needs a `.bpmn` file)
+- remove a step
+- add a branch
+- make steps parallel
+- answer a default question
+- answer a made-up-variable question
+- change a task's type
+- rename a step
+- add a loop
+
+`scoreEdit` (`apps/drop/src/lib/edit-bench.ts`) checks the assertions: types, names that must or
+must no longer appear, draft ids to keep, where the default goes, and a word in a condition. It
+also records how much of the draft kept its ids and types (`kept`), and how many elements were
+added and removed. Each case also has a hand-written reference answer. `tests/edit-bench.test.ts`
+checks that every draft fails its case and every reference passes, so a case that cannot be met
+fails in CI rather than in a model run.
+
+```sh
+CLOUDFLARE_ACCOUNT_ID=… CLOUDFLARE_API_TOKEN=… pnpm --filter @bpmnkit/drop bench:generate \
+  --edits --models @cf/zai-org/glm-4.7-flash --runs 3
+```
+
+### Open
+
+- **None of this has run against Workers AI yet.** The benchmark ran end to end only against a
+  local mock (`CLOUDFLARE_API_BASE`). What to look for in the first glm run:
+  - the assertion pass rate
+  - `kept` below 100% on cases that should leave everything else alone, which would show drift
+  - whether an answer to a question is actually applied: cases 06 and 07
+
+  The first run is in §16.
+- **Model-written questions** (a `? question | option | option` line in the format) stay a later
+  step. They are worth adding only if the run above shows the parser's questions miss what readers
+  want to be asked, and only with a benchmark showing they neither lower the 20/36 pass rate nor
+  bring back runaway answers (§9).
+
+## 16. First run of the change cases (2026-09-30)
+
+`2026-09-30T11-28-32-873Z`: glm-4.7-flash × 3 runs × 10 change cases, as the Worker sends a
+change. The figures are re-scored with this section's parser and case fixes, unless marked
+"as recorded".
+
+| glm-4.7-flash × 30 changes | |
+|---|---|
+| assertions, as recorded | 17/30 |
+| assertions, re-scored | **20/30** |
+| answers that wrote the draft back unchanged | 2 |
+| draft kept under the same ids (mean) | 92.6% |
+| input / output tokens (median) | 590 / 64 |
+| neurons (mean) | 6.1 |
+| TTFB / first shape / total (median) | 417 / 1185 / 2135 ms |
+
+**Cost and speed.** A change costs about what a first draft does: 6.1 neurons, not the 8–10
+estimated in §15. The draft is short, and the answer is as short as a first draft's. Four of the
+30 calls waited 11–26 s for their first byte. That is Workers AI queueing, as in §9 and §10. The
+benchmark calls one model and does not hedge; the Worker does.
+
+**By case (re-scored):**
+
+| Case | Pass | What failed |
+|---|---|---|
+| 03 remove a step | 3/3 | |
+| 06 answer the default question | 3/3 | |
+| 08 change a task's type | 3/3 | |
+| 10 add a loop | 3/3 | |
+| 01 add a step | 2/3 | draft written back unchanged |
+| 09 rename a step | 2/3 | added "Charge credit card" as a new step before "Process payment" |
+| 02 add a timer boundary | 1/3 | a `catch:timer … \| on=pay` chained after the task instead of a boundary; "Ship order" dropped |
+| 04 add a branch | 1/3 | the urgent branch replaced by the VIP one; the new question written unconnected |
+| 05 make steps parallel | 1/3 | draft written back unchanged; a broken rewrite (`pick > and`, `… > a`) |
+| 07 answer the made-up-variable question | 1/3 | the score went into a rule task or a gateway name, with no FEEL condition |
+
+Changes that replace or remove something are reliable. Changes that need new structure (a
+boundary, a split or a new branch next to an existing one) pass one time in three. That
+matches glm's weak spots on first drafts: prompt 15 (timer boundary) is 0/3 in §14.
+
+**Unchanged answers.** In 2 of 30 answers, glm wrote the draft back as it was. The route now
+compares the answer with the draft it sent. An unchanged answer is reported ("The diagram came
+back unchanged. Try saying the change another way.") and is not cached, so asking again gets a
+fresh answer. It is still charged.
+
+**Parser fixes from these answers.** Each was checked against every recorded answer:
+
+- A line that ends in an arrow continues on the next line
+  (`engineer[user Fix issue] >` + `gr[xor Issue reproducible?]`). Before, the whole line was lost.
+  8 of the 282 recorded answers do this: glm 2, granite 2 and gpt-oss-120b 4. A last line with no
+  continuation is read without its arrow.
+- A note after the last node of a line (`gr[xor …]   (ADDED)`) is ignored and reported. It
+  appeared when glm marked what it had changed.
+- A second `|` in the attributes (`| on=pay | nonint`) is a separator, so `nonint` is no longer
+  lost.
+- A gateway kind used as an id and never declared (`pick > and`, `and > dispatch`) becomes that
+  gateway, not a task named "And".
+
+Replayed on this run, the fixes move case 10's second run to a pass: it was the wrapped line
+plus the note. The structural-lint replay of every recorded answer stays at 0 findings.
+
+**Case fixes.** Cases 07 and 09 listed the element the change is about among the ids to keep.
+glm renamed `ok` to `score` and `pay` to `charge` along with the names it was asked to change,
+and those two answers were counted as failures. The element a change is about is no longer in
+`keepIds`. Case 07's condition check is now `score >`, not `score`. The looser check had passed
+an answer whose "condition" was the parser's made-up `verificationScore = "above 80"`.
+
+**Next: change rules, not yet measured.** `REFINE_SYSTEM_PROMPT` now has one line for each
+kind of miss in this run, about 130 more input tokens (roughly 0.7 neurons a change):
+
+```
+Always make the change; never write the diagram back as it was.
+- Rename: change only the name inside the brackets.
+- New branch: add a line from the existing gateway and keep its other branches.
+- Timeout or error on a task: a boundary on its own line, late[boundary:timer 24h | on=pay] > handler.
+- Steps at the same time: fork[and] > a, fork > b, then a > joined[and], b > joined.
+- What decides a gateway: write it as FEEL conditions on its branches (score > 80), not as a new task.
+```
+
+They target 01 and 05 (unchanged), 09 (a rename that added a step), 04 (a replaced branch), 02
+(a timer chained as a catch event), 05 (a broken parallel rewrite) and 07 (the score as a task).
+A test checks that the examples parse without a problem. The first draft's prompt is unchanged,
+and the cache key includes the prompt, so no answer written for the old rules is served.
+The next `--edits` run (`--models @cf/zai-org/glm-4.7-flash --runs 3`) is the check against this
+section's 20/30. It should also check that the cases already at 3/3 stay there.
+
+## 17. Second run of the change cases: the change rules (2026-09-30)
+
+`2026-09-30T11-42-51-567Z`: glm-4.7-flash × 3 runs × 10 change cases with the §16 change rules.
+Both runs are scored with the same parser and cases.
+
+| glm-4.7-flash × 30 changes | §16, no rules | with rules |
+|---|---|---|
+| assertions | 20/30 | **21/30** |
+| answers written back unchanged | 2 | **0** |
+| draft kept under the same ids (mean) | 92.6% | 88.0% |
+| input / output tokens (median) | 590 / 64 | 719 / 64 |
+| neurons (mean) | 6.1 | 6.9 |
+| TTFB / first shape / total (median) | 417 / 1185 / 2135 ms | 396 / 868 / 2906 ms |
+
+The total time rose because of queueing: 5 of 30 first bytes took 6.9–23.4 s. The input grew by
+the 129 tokens the rules add.
+
+| Case | §16 | with rules | Rule aimed at it |
+|---|---|---|---|
+| 07 answer the made-up-variable question | 1/3 | **3/3** | FEEL conditions, not a new task |
+| 09 rename a step | 2/3 | **3/3** | rename in place |
+| 02 add a timer boundary | 1/3 | 2/3 | a boundary on its own line |
+| 01 add a step | 2/3 | 2/3 | always make the change |
+| 04 add a branch | 1/3 | 1/3 | keep the other branches |
+| 05 make steps parallel | 1/3 | **0/3** | fork and join |
+| 08 change a task's type | 3/3 | 2/3 | — |
+| 10 add a loop | 3/3 | 2/3 | — |
+| 03, 06 | 3/3 each | 3/3 each | — |
+
+Three runs per case is not much, so a move of one run could be noise. Four results are clear
+enough to act on:
+
+- **Rules that name the exact form work.** The FEEL rule gives `ok >(Yes: score > 80)` in all
+  three runs of 07, and rename-in-place holds in all of 09. No answer came back unchanged.
+- **The parallel rule does not work.** glm packs the fork into one line: `pack / label`, and
+  `pack_and_label[and Pack box, Print shipping label]`. The rule's example is itself written on
+  one line (`fork[and] > a, fork > b, then …`), which may be what it copies. It also dropped
+  a step in all three runs.
+- **The two new failures do not look like the rules' doing.** 08 made the decision the rule
+  task instead of the review. 10 lost its start line and wrote a flow inside a branch label.
+  Neither follows a rule. Both cases passed 3/3 before, so the next run will tell.
+- **01's miss is a pattern the parser could repair.** `sendemail[service Send confirmation
+  email] > done` inserts a step before `done` without redirecting the flow into `done`, so the
+  new step is left out. This is 1 answer in 60, which is too few to justify a rule yet.
+
+**Keep the rules.** They fix unchanged answers and the two question cases, which are the cases
+the product relies on (a clicked answer must be applied). They cost about 0.8 neurons per
+change.
+
+**Parallel rule reworded, not yet measured.** The rule now shows the pattern one path per line,
+with placeholder ids. It does not use case 05's steps, so the benchmark does not score its own
+example:
+
+```
+- Steps at the same time: an and split, one line per branch, and an and join. Keep every step as its own node:
+  before > fork[and]
+  fork > a
+  fork > b
+  a > joined[and]
+  b > joined
+  joined > after
+```
+
+It adds about 25 input tokens. The next `--edits` run is the check against this section's
+table: 05 should rise from 0/3, and 08 and 10 should show whether their drop to 2/3 was noise.
+
+## 18. Third run of the change cases: the parallel rule reworded (2026-09-30)
+
+`2026-09-30T12-19-40-493Z`: glm-4.7-flash × 3 runs × 10 change cases, with the reworded parallel
+rule. All three runs are scored with the same parser and cases.
+
+| Case | §16 no rules | §17 rules | §18 parallel reworded |
+|---|---|---|---|
+| 01 add a step | 2 | 2 | 3 |
+| 02 add a timer boundary | 1 | 2 | 1 |
+| 03 remove a step | 3 | 3 | 3 |
+| 04 add a branch | 1 | 1 | 2 |
+| 05 make steps parallel | 1 | 0 | 1 |
+| 06 answer the default question | 3 | 3 | 3 |
+| 07 answer the made-up-variable question | 1 | 3 | 3 |
+| 08 change a task's type | 3 | 2 | 2 |
+| 09 rename a step | 2 | 3 | 3 |
+| 10 add a loop | 3 | 2 | 1 |
+| **total** | **20/30** | **21/30** | **22/30** |
+| unchanged answers | 2 | 0 | 0 |
+| neurons (mean) | 6.1 | 6.9 | 7.1 |
+| total time (median) | 2.1 s | 2.9 s | 1.7 s |
+
+No call queued in this run: the slowest first byte was 1.7 s. That is why the median total fell.
+
+**The reworded rule gives parallel structure.** All three answers to 05 now split with an `and`
+gateway and join with one. Before, none did. Only #1 passes, though. #2 is a correct diagram:
+glm used the step's id for the gateway (`pack[and]`) and renamed the step to `box`, and
+`keepIds` counts that as losing `pack`. #3 did the same and then joined into a second gateway
+named `label`, which made a mess. So 05 is 1/3 strictly and 2/3 by structure. Reusing a step's
+id for the gateway is new, and it probably comes from the rule's placeholder `fork` being more
+abstract than the step names around it.
+
+**What each rule bought, over three runs:**
+
+- Stable: 06 and 07 at 3/3 (07 was 1/3 before the FEEL rule), 09 at 3/3, and no unchanged
+  answers. These are the cases the questions depend on.
+- Moving within noise: 01, 02 and 04 swing by one run from run to run.
+- **Falling: 10 went 3 → 2 → 1, and 08 went 3 → 2 → 2.** In 10#1, glm drew an error boundary
+  onto itself (`rep[boundary:error … | on=rep]`), which is the boundary rule's form applied where
+  no boundary was asked for. In 08#3, it rewrote most of the diagram. Three runs cannot separate
+  a real cost of the rules from noise. But a rule that shows a pattern (a boundary, a fork) seems
+  to invite the model to use that pattern when it is not asked for.
+- In 02, glm dropped "Ship order" while adding the boundary in 3 of the 9 answers across the
+  runs, with and without the rule.
+
+**Where this leaves the change feature.** Removing, renaming, retyping and answering the parser's
+questions are reliable at 3/3, or 2–3/3 for retyping. Changes that add structure (a boundary,
+a parallel split, a loop, a branch beside others) succeed about half the time. Each prompt rule
+that fixes one of those seems to cost another. More prompt iterations at 3 runs a case will not
+settle it. Two ways to decide:
+
+- **Accept the current rules** and rely on Undo and the "+N −M" status line for the structural
+  changes that go wrong.
+- **Measure the suspected cost**: run `--only 08,10 --runs 10` with the current prompt, then the
+  same with the rules removed. If 10 stays near 1/3 with the rules and near 3/3 without them,
+  drop the boundary and parallel examples and keep the four text-only rules.
+
+**Comparing the rule sets.** `bench-generate.mjs --edits --refine-rules none|text|all` sends one
+of three change prompts. `all` is what the route sends, byte for byte the §18 prompt. `text`
+keeps the four rules without a diagram pattern (always make the change, rename, new branch, FEEL
+conditions). `none` is the §16 prompt. Each result records its rule set, and the summary
+adds a per-case pass table:
+
+```sh
+for rules in all text none; do
+  pnpm --filter @bpmnkit/drop bench:generate --edits --only 08,10 --runs 10 \
+    --models @cf/zai-org/glm-4.7-flash --refine-rules $rules
+done
+```
+
+## 19. The rule sets compared, 10 runs each (2026-09-30)
+
+`2026-09-30T12-43-10-479Z` (all), `…12-47-12-322Z` (text), `…12-49-04-064Z` (none):
+glm-4.7-flash × 10 runs × cases 08 (change a task's type) and 10 (add a loop), per rule set.
+
+| rule set | 08 change type | 10 add loop | total | input tokens (median) | neurons (mean) |
+|---|---|---|---|---|---|
+| all (boundary and parallel examples) | 8/10 | 7/10 | 15/20 | 792 | 8.2 |
+| **text** (no pattern examples) | **10/10** | **10/10** | **20/20** | 698 | 7.8 |
+| none (the §16 prompt) | 8/10 | 7/10 | 15/20 | 629 | 7.3 |
+
+20/20 against 15/20 has a one-sided Fisher p of about 0.024. For 20 answers a set, that is as
+clear as this benchmark gets.
+
+**What the failures show:**
+
+- **`all`: the boundary example leaks.** Two of the three loop failures (#1, #5) answer "send
+  it back if it cannot be reproduced" with `reproduce[boundary:timer 3 days | on=engineer]` or
+  `unrep[boundary:timer 24h | on=engineer]`. That is the rule's own form, used where a decision
+  was needed. The §18 suspicion was right.
+- **`none`: no guidance.** The failures are loops with prose conditions, a decision declared
+  on an existing id, and branches written inside a label. The text rules (FEEL conditions, add a
+  line from the gateway) are the ones that prevent those.
+- **08 fails the same way under `all` and `none`.** The rule task replaces the decision
+  (`check[user Amount over 1000?]`, `review[rule …]` on the gateway's line). Under `text` it never
+  did in 10 runs. The rename-in-place and FEEL rules seem to keep glm from touching the gateway.
+
+**Change: the route now sends `text`.** `REFINE_SYSTEM_PROMPT` is `refineSystemPrompt("text")`:
+
+- the two base lines
+- always make the change
+- rename in place
+- a new branch from the existing gateway
+- FEEL conditions for what decides a gateway
+
+It is 94 input tokens shorter than `all`, and the benchmark's default follows it. `all` stays
+selectable with `--refine-rules all`.
+
+**What this gives up.** The parallel example turned 05's answers into real and-splits (§18, 3/3
+by structure). The boundary example brought 02 to 2/3 once. Without them, those cases fall back
+towards §16 (05: 1/3, 02: 1/3). That is the trade: the two pattern rules help the one change
+they describe, and hurt the changes that could be mistaken for it. A full-suite run with `text`
+(`--edits --runs 3`, the default now) gives the new baseline for all ten cases.
+
+## 20. Full run with the text rules: the new baseline (2026-09-30)
+
+`2026-09-30T13-41-17-249Z`: glm-4.7-flash × 3 runs × 10 change cases, with the `text` rules the
+route now sends.
+
+| Case | §16 none | §17 all | §18 all, parallel reworded | **§20 text** |
+|---|---|---|---|---|
+| 01 add a step | 2 | 2 | 3 | **3** |
+| 02 add a timer boundary | 1 | 2 | 1 | 0 |
+| 03 remove a step | 3 | 3 | 3 | **3** |
+| 04 add a branch | 1 | 1 | 2 | 2 |
+| 05 make steps parallel | 1 | 0 | 1 | 0 |
+| 06 answer the default question | 3 | 3 | 3 | **3** |
+| 07 answer the made-up-variable question | 1 | 3 | 3 | 2 |
+| 08 change a task's type | 3 | 2 | 2 | **3** |
+| 09 rename a step | 2 | 3 | 3 | **3** |
+| 10 add a loop | 3 | 2 | 1 | **3** |
+| **total** | **20/30** | **21/30** | **22/30** | **22/30** |
+| unchanged answers | 2 | 0 | 0 | 0 |
+| input tokens (median) | 590 | 719 | 753 | 659 |
+| neurons (mean) | 6.1 | 6.9 | 7.1 | 6.6 |
+
+The total matches the best earlier run, and the failures moved to where §19 said they would.
+Eight of the ten cases pass 2/3 or better. Six are at 3/3, including every "change what is
+there" case: remove, rename, retype, add a step, and loop.
+
+The two cases at 0/3 are the ones only the pattern examples helped:
+
+- **02, timer boundary.** One answer (#2) drew the boundary but dropped "Ship order". That makes
+  5 of the 12 answers to 02 across the runs that lose the step after the boundary, with or without
+  rules. The other two made a second end event or a service task pretending to be a check.
+- **05, parallel.** glm writes a split without the `and` kind (`pack > print`, `pack > dispatch`),
+  invents kinds (`parand`), or turns it into an xor. The parser correctly makes unlabelled
+  branches out of a task an `and` split. But these answers also lose or rename the steps, so the
+  case fails on `keepIds`.
+
+07 dropped to 2/3: one answer wrote the branches in prose (`>(Above 80)`). In the product, that
+answer gets a made-up variable again, so the same question comes back to the reader, and a
+second answer can fix it.
+
+One call waited 13.4 s for its first byte (queueing). The median total was 2.9 s.
+
+**Where the change feature stands.** With glm-4.7-flash and the `text` rules:
+
+- **Reliable (3/3):** changing what is there, and answering the parser's default question.
+- **Usually (2/3):** answering the made-up-variable question, and adding a branch next to others.
+- **Rarely:** new structure of a kind the draft does not have yet (a boundary, a parallel
+  split). For those, Undo and the "+N −M" status line are the fallback.
+
+## 21. Abuse, and what a generated diagram can reach (2026-09-30)
+
+**The model runs in a sandbox by construction.** It has no tools, no network, no credentials and
+no state. It gets text in and gives text out. Everything it writes goes through fixed steps,
+none of which runs anything:
+
+| Step | What happens to the model's text |
+|---|---|
+| Worker | Only lines in the diagram format are streamed back (below). Nothing is stored except the answer in the D1 cache, keyed by the exact request. |
+| Parser | `parseProcessText` maps the text onto a fixed set of element kinds, a few attributes (`on=`, `job=`, `nonint`) and FEEL conditions. The format has no way to write a script body, a listener, a connector secret or any XML. |
+| XML | `Bpmn.export` escapes every name and condition. |
+| Page | The canvas draws names with `textContent`, and so do the questions. The CSP allows `script-src 'self'` only. |
+| Share | Only when the reader asks. The diagram then goes through the ordinary upload endpoint, with the same validation, size limits and Terms as any drop. |
+
+Drop never deploys or runs a diagram. A generated diagram that someone deploys to their own
+Camunda cluster is like any BPMN file from the internet. Its job types (`job=`) and FEEL
+conditions are plain strings, and they should be reviewed before deployment. FEEL itself has no
+I/O.
+
+**Abuse controls, in the order the route applies them:**
+
+1. The feature is off (404) unless `AI_PASSCODE` is set.
+2. A closed-beta code, with 5 failed attempts per IP and hour before a 429.
+3. Input caps: a description of 10–2,000 characters, a change of 3–500, and a draft of at most 4,000.
+4. Cache: a repeated request costs nothing.
+5. The daily neuron budget, shared by everyone. When it is spent, the route answers 503.
+6. **New:** at most 40 model calls per IP and hour (`MAX_GENERATIONS_PER_HOUR`, migration
+   `0008_ai_generate_calls`). Cached answers do not count. Before this, one caller, or a leaked
+   beta code, could spend the whole day's budget for everyone.
+7. An output cap of 600 tokens on the production model.
+
+**New: only diagram lines leave the Worker.** The route used to stream the model's text as it
+came. A description that talked the model into writing an essay ("ignore the format…") got the
+essay streamed back, which made the route a free general-purpose model for anyone with the
+code. `createDiagramLineFilter` now passes on only lines that start like the format: a
+`# title`, or an id followed by `[`, an arrow, or nothing. The filter's output is what is judged,
+cached and compared for the unchanged check. On all 432 recorded answers, the filtered text
+parses to exactly the same diagram as the unfiltered text (`tests/generate.test.ts`).
+
+**What is left:**
+
+- **Text inside names.** `a[task <any text>]` still passes the filter. With the 600-token cap,
+  the hourly cap and the budget, this is a slow and expensive way to get free text.
+- **One shared beta code.** The per-IP cap slows down a leaked code, but IP rotation gets around
+  it, and the daily budget remains the hard stop. Turnstile now closes most of this gap
+  (below).
+- **Prompt injection in a description** can only change the diagram that the same user gets
+  back. A cached answer is served only for a byte-identical request.
+
+**Turnstile (built 2026-09-30).** When `TURNSTILE_SECRET` is set, the route asks for a solved
+challenge after the passcode, as claims and comments already do:
+
+- A request without a token or pass gets a 403 with `code: "unverified"`, and nothing reaches
+  the model. A missing token is refused without asking Cloudflare.
+- A token Cloudflare accepts earns a **pass**, sent back in `X-Drop-AI-Pass`. A Turnstile token
+  is single-use and lasts 5 minutes. A reader drafts once and then asks for a dozen changes, so
+  the pass carries the session instead. It is `<expiry>.<HMAC-SHA256(expiry, IP hash)>`,
+  signed with a key derived from `TURNSTILE_SECRET` (`src/lib/ai-pass.ts`). It is stateless:
+  nothing is stored and no new secret is needed.
+- A pass lasts 30 minutes and holds only for the IP it was issued to. An expired, forged or
+  moved pass gets the 403, and the page challenges once more.
+
+The page renders the widget in a dialog only when it needs a token: the first call of a visit,
+or when a pass is refused. It keeps the pass in memory for the visit. The landing page carries
+the widget, and its content policy allows `challenges.cloudflare.com`, only when both
+`AI_PASSCODE` and `TURNSTILE_SITE_KEY` are set. With the secret but no site key, every call is
+refused: this fails closed, as the claim check does.
+
+With the challenge, a script needs a solved Turnstile for every 30 minutes and every IP. That
+turns a leaked beta code from a free API into a slow, manual one. The per-IP cap and the daily
+budget stay behind it.

@@ -1,5 +1,61 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: Turnstile
+
+- With `TURNSTILE_SECRET` set, `POST /drop/api/generate` needs a solved challenge after the passcode. A solved one earns a stateless pass (`X-Drop-AI-Pass`: expiry plus an HMAC over it and the caller's IP hash), which lasts 30 minutes, so a draft and its changes cost one check. The page shows the widget in a dialog only when it needs a token. It is on the landing page, with the widened content policy, only when AI and a site key are both configured. Details: `doc/drop-ai-generate-analysis.md` §21.
+
+## 2026-09-30 — Describe-to-diagram: working indicator, output filter, hourly cap
+
+- The page shows that a request is running: an accent bar slides along the top of the canvas (static under reduced motion), and the status counts seconds until the first line arrives, so a queued call reads as a wait. Nothing is blocked.
+- Only diagram lines leave the Worker (`createDiagramLineFilter`). An answer talked into prose is no longer streamed back. On all 432 recorded answers, the filtered text parses to the same diagram.
+- At most 40 model calls per IP and hour (migration `0008_ai_generate_calls`); cached answers do not count.
+- The security model — what the model can reach, the abuse controls, and what is left — is in `doc/drop-ai-generate-analysis.md` §21.
+
+## 2026-09-30 — Describe-to-diagram: full change run with the text rules
+
+- glm-4.7-flash × 30 changes with the `text` rules: 22/30, the same total as the best `all` run. Six cases pass 3/3: remove, rename, retype, add a step, add a loop and the default question. A new timer boundary or parallel split passes 0/3, as expected without their pattern examples. A change costs 6.6 neurons. Details: `doc/drop-ai-generate-analysis.md` §20.
+
+## 2026-09-30 — Describe-to-diagram: the route sends the text-only change rules
+
+- On cases 08 and 10, 10 runs each: `text` rules 20/20, `all` 15/20, `none` 15/20. Under `all`, two of the three loop failures copy the boundary example (`boundary:timer … | on=engineer`) where a decision was needed. `REFINE_SYSTEM_PROMPT` is now `refineSystemPrompt("text")`, 94 input tokens shorter, and the benchmark defaults to it. The parallel and boundary examples stay available as `--refine-rules all`. Details: `doc/drop-ai-generate-analysis.md` §19.
+
+## 2026-09-30 — Describe-to-diagram: benchmark flag for the change rule sets
+
+- `bench-generate.mjs --refine-rules none|text|all` picks the change prompt: `all` is the route's, `text` drops the boundary and parallel pattern rules, and `none` is the first run's. `refineSystemPrompt(rules)` builds them; `REFINE_SYSTEM_PROMPT` is unchanged. The summary adds a per-case pass table. For the 10-run comparison in `doc/drop-ai-generate-analysis.md` §18.
+
+## 2026-09-30 — Describe-to-diagram: the reworded parallel rule measured
+
+- glm-4.7-flash × 30 changes: 22/30 (21 with the first rules, 20 without). Every answer to the parallel case now splits and joins with `and` gateways (none did before). Strictly 1/3 pass, because glm reuses a step's id for the gateway. The question cases stay at 3/3, and no answer comes back unchanged. The loop case went 3 → 2 → 1 across the three runs, and one answer drew a boundary where none was asked for. That is possibly a cost of the pattern rules, but it cannot be told from noise at 3 runs. Details: `doc/drop-ai-generate-analysis.md` §18.
+
+## 2026-09-30 — Describe-to-diagram: the change rules measured
+
+- glm-4.7-flash × 30 changes with the change rules: 21/30, against 20/30 without them. No answer comes back unchanged (was 2). The made-up-variable question is applied in 3/3 runs (was 1/3), and a rename in 3/3 (was 2/3). The parallel rule does not work (0/3): glm packs the fork into one line. It is now reworded to show the fork one path per line; not yet measured. A change costs 6.9 neurons (was 6.1). Details: `doc/drop-ai-generate-analysis.md` §17.
+
+## 2026-09-30 — Describe-to-diagram: change rules in the refine prompt
+
+- `REFINE_SYSTEM_PROMPT` gets one rule for each kind of miss in the first change run: always make the change, rename in place, add a branch next to the existing ones, a timeout as a boundary line, a parallel fork and join, and a gateway decided by FEEL conditions. It adds about 130 input tokens, and a test checks that its examples parse. Not yet measured: `doc/drop-ai-generate-analysis.md` §16.
+
+## 2026-09-30 — Describe-to-diagram: first run of the change cases
+
+- glm-4.7-flash × 30 changes: 17/30 as recorded, and 20/30 re-scored with the fixes below. 92.6% of each draft is kept, a change costs 6.1 neurons (the same as a first draft), and the median total is 2.1 s. Removing a step, changing a type, answering the default question and adding a loop pass every time. A new boundary, a parallel split or an extra branch passes 1 time in 3. Details: `doc/drop-ai-generate-analysis.md` §16.
+- The route reports an answer that writes the draft back unchanged (2 of 30), and does not cache it.
+- `parseProcessText`:
+  - a line that ends in an arrow continues on the next line. Before, the whole line was lost; 8 of the 282 recorded answers do this
+  - a note after a line's last node (`(ADDED)`) is ignored
+  - a second `|` in the attributes is a separator
+  - a gateway kind used as an undeclared id (`pick > and`) becomes that gateway
+- Edit cases 07 and 09 no longer require keeping the id of the element the change is about, and 07's condition check is `score >`.
+
+## 2026-09-30 — Describe-to-diagram: change a draft, and questions about the parser's guesses
+
+Follow-up to bpmnkit/monorepo#208: a draft can be changed by asking, and the guesses the parser had to make are asked as questions. Design and open measurements: `doc/drop-ai-generate-analysis.md` §15.
+
+- `parseProcessText` returns `questions`. They cover a made-up condition variable, a default it had to pick, an implicit parallel split, a question answered one way only, a task left out, a loop exit it added, and an event given a message trigger. Each has ready answers where there are any and a `draft` to finish, all written as change requests. New type `ProcessTextQuestion`. On the 252 recorded model answers, 98 have at least one question, 1.7 on average.
+- `POST /drop/api/generate` takes `{ description, diagram, change }` to change a draft. The model gets `REFINE_SYSTEM_PROMPT`, which is the generate prompt plus two lines. It also gets the description, the draft as its own earlier answer and `Change: …`, and it writes the whole diagram again. Nothing earlier is sent, and the Worker stores no conversation. A change is cached under its own key and charged to the same budget. Limits: a change of 3–500 characters, and a draft of at most 4,000.
+- Drop's page shows up to three questions under the diagram, a change box and Undo. The status line says what a change added and removed.
+- `bench-generate.mjs` accepts a leading `--` (`pnpm bench:generate -- --edits`). pnpm passes it through, and `parseArgs` read every flag after it as a positional argument and failed.
+- `bench-generate.mjs --edits` runs the 10 change cases in `apps/drop/scripts/edit-cases.json`: add, remove and rename a step, add a timer boundary, a branch or a loop, make steps parallel, change a task type, and answer two parser questions. It scores each answer with `scoreEdit` (assertions, and the share of the draft kept under the same ids). `tests/edit-bench.test.ts` checks that every draft fails its case and every hand-written reference passes it. Not yet run against Workers AI.
+
 ## 2026-09-30 — Describe-to-diagram: reworded rules measured; loops, link events, races
 
 - glm-4.7-flash × 36 with the reworded guide rules: 19/36 assertions, against 18 on the old prompt and 14 with the first rules. No error is swallowed, and one-branch gateways are back at 2. Speed and cost are unchanged. Details: `doc/drop-ai-generate-analysis.md` §14.

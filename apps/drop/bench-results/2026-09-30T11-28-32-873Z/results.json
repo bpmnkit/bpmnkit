@@ -1,0 +1,967 @@
+[
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "01-add-step",
+    "firstByteMs": 582,
+    "firstContentMs": 582,
+    "firstShapeMs": 838,
+    "totalMs": 2764,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > confirm[send Employee confirmation] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 641,
+      "completionTokens": 97,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 11,
+    "failed": [],
+    "kept": 1,
+    "added": 1,
+    "removed": 0,
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "01-add-step",
+    "firstByteMs": 18004,
+    "firstContentMs": 18005,
+    "firstShapeMs": 18345,
+    "totalMs": 19820,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]\npay > confirm[send Confirmation email]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 641,
+      "completionTokens": 98,
+      "cachedTokens": 0
+    },
+    "neurons": 8,
+    "problems": [],
+    "fixes": [
+      "added end event \"confirm_end\" after \"confirm\"",
+      "split the flows out of \"pay\" with and gateway \"pay_split\"",
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 13,
+    "failed": [],
+    "kept": 1,
+    "added": 3,
+    "removed": 0,
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "01-add-step",
+    "firstByteMs": 331,
+    "firstContentMs": 331,
+    "firstShapeMs": 571,
+    "totalMs": 1689,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 641,
+      "completionTokens": 90,
+      "cachedTokens": 0
+    },
+    "neurons": 7,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 10,
+    "failed": [
+      "no \"confirm\""
+    ],
+    "kept": 1,
+    "added": 0,
+    "removed": 0,
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "02-add-timer-boundary",
+    "firstByteMs": 26285,
+    "firstContentMs": 26287,
+    "firstShapeMs": 27333,
+    "totalMs": 27727,
+    "text": "# Order process\nstart[start Order received] > validate[service Validate order] > pay[service Process payment] > timer[catch:timer 24 hours | on=pay] > timeout[send Notify timeout] > done[end Payment timed out]\nvalidate > ship[service Ship order] > ship_done[end Order shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 572,
+      "completionTokens": 67,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [
+      "split the flows out of \"validate\" with and gateway \"validate_split\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 9,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "kept": 1,
+    "added": 4,
+    "removed": 0,
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "02-add-timer-boundary",
+    "firstByteMs": 3764,
+    "firstContentMs": 3765,
+    "firstShapeMs": 4327,
+    "totalMs": 7011,
+    "text": "# Order process\nstart[start Order received] > validate[service Validate order] > pay[service Process payment] > done[end Order shipped]\npay[service Process payment] > timeout-exc[boundary:timer Payment timed out? | on=pay | nonint] > end_timed_out[end Order timed out]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 572,
+      "completionTokens": 65,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 3,
+        "message": "unknown attribute \"|\" on \"timeout-exc\"; ignored"
+      }
+    ],
+    "fixes": [
+      "led pay > timeout-exc to what the boundary leads to, since nothing flows into a boundary event",
+      "split the flows out of \"pay\" with and gateway \"pay_split\"",
+      "joined 2 flows into \"end_timed_out\" with xor gateway \"end_timed_out_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 8,
+    "failed": [
+      "lost ship"
+    ],
+    "kept": 0.8,
+    "added": 4,
+    "removed": 1,
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "02-add-timer-boundary",
+    "firstByteMs": 463,
+    "firstContentMs": 480,
+    "firstShapeMs": 1552,
+    "totalMs": 3355,
+    "text": "# Order process\nstart[start Order received] > validate[service Validate order] > pay[service Process payment]\npay > failed[boundary:error Payment timed out | on=pay nonint] > done[end Process terminated]\npay > ship[service Ship order] > done[end Order shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 572,
+      "completionTokens": 60,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 4,
+        "message": "\"done\" on line 3 is a different node; this one is \"done_2\""
+      }
+    ],
+    "fixes": [
+      "led pay > failed to what the boundary leads to, since nothing flows into a boundary event",
+      "split the flows out of \"pay\" with and gateway \"pay_split\"",
+      "joined 2 flows into \"done\" with xor gateway \"done_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 9,
+    "failed": [],
+    "kept": 1,
+    "added": 4,
+    "removed": 0,
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "03-remove-step",
+    "firstByteMs": 25147,
+    "firstContentMs": 25147,
+    "totalMs": 25986,
+    "text": "# Onboarding\nstart[start Employee hired] > contract[user Sign contract] > laptop[service Order laptop] > intro[user Meet the team] > done[end Employee onboarded]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 581,
+      "completionTokens": 37,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 5,
+    "failed": [],
+    "kept": 0.8333333333333334,
+    "added": 0,
+    "removed": 1,
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "03-remove-step",
+    "firstByteMs": 329,
+    "firstContentMs": 330,
+    "totalMs": 904,
+    "text": "# Onboarding\nstart[start Employee hired] > contract[user Sign contract] > laptop[service Order laptop] > intro[user Meet the team] > done[end Employee onboarded]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 581,
+      "completionTokens": 37,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 5,
+    "failed": [],
+    "kept": 0.8333333333333334,
+    "added": 0,
+    "removed": 1,
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "03-remove-step",
+    "firstByteMs": 395,
+    "firstContentMs": 395,
+    "totalMs": 1046,
+    "text": "# Onboarding\nstart[start Employee hired] > contract[user Sign contract] > laptop[service Order laptop] > intro[user Meet the team] > done[end Employee onboarded]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 581,
+      "completionTokens": 37,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 5,
+    "failed": [],
+    "kept": 0.8333333333333334,
+    "added": 0,
+    "removed": 1,
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "04-add-branch",
+    "firstByteMs": 19379,
+    "firstContentMs": 19380,
+    "firstShapeMs": 19783,
+    "totalMs": 23342,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) answer[user Answer ticket] > close\naddress[vip | Xor VIP customer?]\nclose > address[user Contact account manager] > close\nanswer > close",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 610,
+      "completionTokens": 91,
+      "cachedTokens": 0
+    },
+    "neurons": 7,
+    "problems": [
+      {
+        "line": 5,
+        "message": "unknown kind \"vip\" for \"address\"; used task"
+      },
+      {
+        "line": 5,
+        "message": "unknown attribute \"Xor\" on \"address\"; ignored"
+      },
+      {
+        "line": 5,
+        "message": "unknown attribute \"VIP\" on \"address\"; ignored"
+      },
+      {
+        "line": 5,
+        "message": "unknown attribute \"customer?\" on \"address\"; ignored"
+      },
+      {
+        "line": 5,
+        "message": "\"address\" is not connected to a start event; left out"
+      },
+      {
+        "line": 6,
+        "message": "\"address\" on line 5 is a different node; this one is \"address_2\""
+      }
+    ],
+    "fixes": [
+      "split the flows out of \"close\" with and gateway \"close_split\"",
+      "joined 3 flows into \"close\" with xor gateway \"close_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 10,
+    "failed": [],
+    "kept": 1,
+    "added": 2,
+    "removed": 0,
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "04-add-branch",
+    "firstByteMs": 371,
+    "firstContentMs": 374,
+    "firstShapeMs": 634,
+    "totalMs": 1302,
+    "text": "start[start Ticket opened] > triage[user Triage ticket] > vip[xor VIP customer?]\nvip >(Yes: vip = true) engineer[user Fix issue] > close[service Close ticket] > done[end Ticket closed]\nvip >(No: default) answer[user Answer ticket] > close",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 610,
+      "completionTokens": 61,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"close\" with xor gateway \"close_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 8,
+    "failed": [
+      "no \"account manager\""
+    ],
+    "kept": 0.875,
+    "added": 1,
+    "removed": 1,
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "04-add-branch",
+    "firstByteMs": 477,
+    "firstContentMs": 479,
+    "firstShapeMs": 1526,
+    "totalMs": 5182,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) account[service Assign to account manager] > close\ncheck[xor VIP customer?] > account\ncheck >(No: default) answer[user Answer ticket] > close",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 610,
+      "completionTokens": 92,
+      "cachedTokens": 0
+    },
+    "neurons": 7,
+    "problems": [
+      {
+        "line": 5,
+        "message": "\"check\" is not connected to a start event; left out"
+      },
+      {
+        "line": 6,
+        "message": "\"answer\" is not connected to a start event; left out"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"close\" with xor gateway \"close_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 8,
+    "failed": [
+      "lost answer"
+    ],
+    "kept": 0.875,
+    "added": 1,
+    "removed": 1,
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "05-make-parallel",
+    "firstByteMs": 292,
+    "firstContentMs": 292,
+    "firstShapeMs": 595,
+    "totalMs": 1416,
+    "text": "# Order fulfillment\nstart[start Order placed] > pick[user Pick items] > pack[user Pack box]\npick > label[service Print shipping label] > join[xor Items picked and label printed?]\npack > dispatch[user Dispatch package] > done[end Package dispatched]\njoin > dispatch\njoin > done",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 579,
+      "completionTokens": 62,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [
+      "split the flows out of \"pick\" with and gateway \"pick_split\"",
+      "joined 2 flows into \"dispatch\" with xor gateway \"dispatch_join\"",
+      "joined 2 flows into \"done\" with xor gateway \"done_join\"",
+      "made join > done_join the default branch of \"join\"",
+      "gave join > dispatch_join the condition \"= itemsPickedAndLabelPrinted = \"dispatch_join\"\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 10,
+    "failed": [],
+    "kept": 1,
+    "added": 4,
+    "removed": 0,
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "05-make-parallel",
+    "firstByteMs": 1658,
+    "firstContentMs": 1662,
+    "firstShapeMs": 2214,
+    "totalMs": 3106,
+    "text": "# Order fulfillment\nstart[start Order placed] > pick[user Pick items] > and\npack[user Pack box] > label[service Print shipping label] > a\nand > dispatch[user Dispatch package] > done[end Package dispatched]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 579,
+      "completionTokens": 48,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 2,
+        "message": "\"and\" is never declared; added as a task"
+      },
+      {
+        "line": 3,
+        "message": "\"a\" is never declared; added as a task"
+      },
+      {
+        "line": 3,
+        "message": "\"pack\" is not connected to a start event; left out"
+      },
+      {
+        "line": 3,
+        "message": "\"label\" is not connected to a start event; left out"
+      },
+      {
+        "line": 3,
+        "message": "\"a\" is not connected to a start event; left out"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 5,
+    "failed": [
+      "no parallelGateway",
+      "lost pack",
+      "lost label"
+    ],
+    "kept": 0.6666666666666666,
+    "added": 1,
+    "removed": 2,
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "05-make-parallel",
+    "firstByteMs": 471,
+    "firstContentMs": 471,
+    "totalMs": 1472,
+    "text": "# Order fulfillment\nstart[start Order placed] > pick[user Pick items] > pack[user Pack box] > label[service Print shipping label] > dispatch[user Dispatch package] > done[end Package dispatched]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 579,
+      "completionTokens": 42,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 6,
+    "failed": [
+      "no parallelGateway"
+    ],
+    "kept": 1,
+    "added": 0,
+    "removed": 0,
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "06-answer-default-question",
+    "firstByteMs": 267,
+    "firstContentMs": 269,
+    "firstShapeMs": 434,
+    "totalMs": 883,
+    "text": "# Contact customer\nstart[start Contact requested] > channel[xor Channel?]\nchannel >(Phone: channel = \"phone\") call[user Call customer] > done[end Customer contacted]\nchannel >(Mail: default) letter[send Send letter] > done",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 580,
+      "completionTokens": 51,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 6,
+    "failed": [],
+    "kept": 1,
+    "added": 0,
+    "removed": 0,
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "06-answer-default-question",
+    "firstByteMs": 11327,
+    "firstContentMs": 11328,
+    "firstShapeMs": 11710,
+    "totalMs": 12592,
+    "text": "# Contact customer\nstart[start Contact requested] > channel[xor Channel?]\nchannel >(Phone: channel = \"phone\") call[user Call customer] > done[end Customer contacted]\nchannel >(Mail: default) letter[send Send letter] > done",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 580,
+      "completionTokens": 51,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 6,
+    "failed": [],
+    "kept": 1,
+    "added": 0,
+    "removed": 0,
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "06-answer-default-question",
+    "firstByteMs": 288,
+    "firstContentMs": 288,
+    "firstShapeMs": 645,
+    "totalMs": 1497,
+    "text": "# Contact customer\nstart[start Contact requested] > channel[xor Channel?]\nchannel >(Phone: channel = \"phone\") call[user Call customer] > done\nchannel >(Mail: default) letter[send Send letter] > done",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 580,
+      "completionTokens": 48,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 3,
+        "message": "\"done\" is never declared; added as a endEvent"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 6,
+    "failed": [],
+    "kept": 1,
+    "added": 0,
+    "removed": 0,
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "07-answer-variable-question",
+    "firstByteMs": 439,
+    "firstContentMs": 462,
+    "firstShapeMs": 913,
+    "totalMs": 1559,
+    "text": "# KYC check\nstart[start Application received] > verify[service Verify identity] > score[xor Score > 80?]\nscore >(Yes: score > 80) open[service Open account] > done[end Account opened]\nscore >(No: default) reject[send Reject application] > rejected[end Application rejected]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 598,
+      "completionTokens": 67,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 7,
+    "failed": [
+      "lost ok"
+    ],
+    "kept": 0.8571428571428571,
+    "added": 1,
+    "removed": 1,
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "07-answer-variable-question",
+    "firstByteMs": 1332,
+    "firstContentMs": 1348,
+    "firstShapeMs": 12887,
+    "totalMs": 14482,
+    "text": "# KYC check\nstart[start Application received] > verify[service Verify identity] > ok[rule Verification score] > check_trigger[xor Identity verified?]\ncheck_trigger >(Yes) open[service Open account] > done[end Account opened]\ncheck_trigger >(No) reject[send Reject application] > rejected[end Application rejected]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 598,
+      "completionTokens": 68,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [
+      "made check_trigger > reject the default branch of \"check_trigger\"",
+      "gave check_trigger > open the condition \"= identityVerified = true\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 8,
+    "failed": [
+      "lost ok",
+      "no condition on \"score\""
+    ],
+    "kept": 0.8571428571428571,
+    "added": 1,
+    "removed": 1,
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "07-answer-variable-question",
+    "firstByteMs": 442,
+    "firstContentMs": 443,
+    "firstShapeMs": 1185,
+    "totalMs": 3066,
+    "text": "# KYC check\nstart[start Application received] > verify[service Verify identity] > score[xor Verification score]\nscore >(above 80) open[service Open account] > done[end Account opened]\nscore >(below 81) reject[send Reject application] > rejected[end Application rejected]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 598,
+      "completionTokens": 61,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [
+      "made score > reject the default branch of \"score\"",
+      "gave score > open the condition \"= verificationScore = \"above 80\"\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 7,
+    "failed": [
+      "lost ok"
+    ],
+    "kept": 0.8571428571428571,
+    "added": 1,
+    "removed": 1,
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "firstByteMs": 359,
+    "firstContentMs": 359,
+    "firstShapeMs": 1257,
+    "totalMs": 4887,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[rule Expense review] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 642,
+      "completionTokens": 91,
+      "cachedTokens": 0
+    },
+    "neurons": 7,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 10,
+    "failed": [],
+    "kept": 0.9,
+    "added": 0,
+    "removed": 1,
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "firstByteMs": 7539,
+    "firstContentMs": 7540,
+    "firstShapeMs": 7873,
+    "totalMs": 11755,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[rule Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 642,
+      "completionTokens": 91,
+      "cachedTokens": 0
+    },
+    "neurons": 7,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 10,
+    "failed": [],
+    "kept": 0.9,
+    "added": 0,
+    "removed": 1,
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-change-type",
+    "firstByteMs": 278,
+    "firstContentMs": 279,
+    "firstShapeMs": 510,
+    "totalMs": 1609,
+    "text": "start[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[rule Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 642,
+      "completionTokens": 87,
+      "cachedTokens": 0
+    },
+    "neurons": 7,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 10,
+    "failed": [],
+    "kept": 0.9,
+    "added": 0,
+    "removed": 1,
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "09-rename",
+    "firstByteMs": 235,
+    "firstContentMs": 235,
+    "totalMs": 759,
+    "text": "# Order process\nstart[start Order received] > validate[service Validate order] > charge[service Charge credit card] > pay[service Process payment] > ship[service Ship order] > done[end Order shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 563,
+      "completionTokens": 45,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 6,
+    "failed": [
+      "still \"process payment\""
+    ],
+    "kept": 1,
+    "added": 1,
+    "removed": 0,
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "09-rename",
+    "firstByteMs": 263,
+    "firstContentMs": 264,
+    "totalMs": 870,
+    "text": "# Order process\nstart[start Order received] > validate[service Validate order] > pay[service Charge credit card] > ship[service Ship order] > done[end Order shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 563,
+      "completionTokens": 38,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 5,
+    "failed": [],
+    "kept": 1,
+    "added": 0,
+    "removed": 0,
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "09-rename",
+    "firstByteMs": 298,
+    "firstContentMs": 298,
+    "totalMs": 916,
+    "text": "# Order process\nstart[start Order received] > validate[service Validate order] > charge[service Charge credit card] > ship[service Ship order] > done[end Order shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 563,
+      "completionTokens": 38,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 5,
+    "failed": [
+      "lost pay"
+    ],
+    "kept": 0.8,
+    "added": 1,
+    "removed": 1,
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "firstByteMs": 202,
+    "firstContentMs": 205,
+    "firstShapeMs": 573,
+    "totalMs": 2265,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > reproduce[xor Issue reproducible?]\nreproduce >(Yes: default) close[service Close ticket] > done[end Ticket closed]\nreproduce >(No: send back) triage\nurgent >(No: default) answer[user Answer ticket] > close",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 615,
+      "completionTokens": 92,
+      "cachedTokens": 0
+    },
+    "neurons": 7,
+    "problems": [
+      {
+        "line": 5,
+        "message": "condition \"send back\" is not FEEL; kept as the branch label"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"triage\" with xor gateway \"triage_join\"",
+      "joined 2 flows into \"close\" with xor gateway \"close_join\"",
+      "gave reproduce > triage_join the condition \"= issueReproducible = false\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 10,
+    "failed": [],
+    "kept": 1,
+    "added": 2,
+    "removed": 0,
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "firstByteMs": 167,
+    "firstContentMs": 168,
+    "firstShapeMs": 444,
+    "totalMs": 1420,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] >\ngr[xor Issue reproducible?]                (ADDED)\ngr >(Yes: default) close[service Close ticket] > done[end Ticket closed]\ngr >(No: false) triage\nurgent >(No: default) answer[user Answer ticket] > close",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 615,
+      "completionTokens": 93,
+      "cachedTokens": 0
+    },
+    "neurons": 7,
+    "problems": [
+      {
+        "line": 2,
+        "message": "\"urgent\" has only one branch; gateway removed"
+      },
+      {
+        "line": 3,
+        "message": "expected a node id at \"\""
+      },
+      {
+        "line": 4,
+        "message": "expected \">\" at \"(ADDED)\""
+      },
+      {
+        "line": 5,
+        "message": "\"gr\" is never declared; added as a task"
+      },
+      {
+        "line": 5,
+        "message": "only an xor or or gateway has a default branch; gr > close is not"
+      },
+      {
+        "line": 5,
+        "message": "\"gr\" is not connected to a start event; left out"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 5,
+    "failed": [
+      "no \"reproduc\"",
+      "lost urgent",
+      "lost engineer"
+    ],
+    "kept": 0.625,
+    "added": 0,
+    "removed": 3,
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-add-loop",
+    "firstByteMs": 296,
+    "firstContentMs": 296,
+    "firstShapeMs": 809,
+    "totalMs": 2005,
+    "text": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) answer[user Answer ticket] > close\nengineer[boundary:error Issue could not reproduce | on=engineer] > triage",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 615,
+      "completionTokens": 85,
+      "cachedTokens": 0
+    },
+    "neurons": 7,
+    "problems": [
+      {
+        "line": 5,
+        "message": "\"engineer\" on line 3 is a different node; this one is \"engineer_2\""
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"triage\" with xor gateway \"triage_join\"",
+      "joined 2 flows into \"close\" with xor gateway \"close_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 10,
+    "failed": [],
+    "kept": 1,
+    "added": 2,
+    "removed": 0,
+    "run": 3
+  }
+]

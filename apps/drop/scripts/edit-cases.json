@@ -1,0 +1,114 @@
+[
+	{
+		"id": "01-add-step",
+		"description": "An employee submits an expense. If it is over 1000, a manager reviews it; otherwise it is approved automatically. Then the payment is made. If the payment fails, notify the submitter.",
+		"diagram": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+		"change": "After the payment, send the employee a confirmation email.",
+		"reference": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > confirm[send Send confirmation email] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+		"assertions": {
+			"mustMention": ["confirm"],
+			"keepIds": ["check", "review", "auto", "pay", "failed", "notify"]
+		}
+	},
+	{
+		"id": "02-add-timer-boundary",
+		"description": "When an order is received, validate it, process the payment and ship it.",
+		"diagram": "# Order process\nstart[start Order received] > validate[service Validate order] > pay[service Process payment] > ship[service Ship order] > done[end Order shipped]",
+		"change": "If the payment is not confirmed within 24 hours, end the process with \"Payment timed out\".",
+		"reference": "# Order process\nstart[start Order received] > validate[service Validate order] > pay[service Process payment] > ship[service Ship order] > done[end Order shipped]\ntimeout[boundary:timer 24 hours passed | on=pay] > timedout[end Payment timed out]",
+		"assertions": {
+			"mustContainElementTypes": ["boundaryEvent"],
+			"mustMention": ["timed out"],
+			"keepIds": ["validate", "pay", "ship", "done"]
+		}
+	},
+	{
+		"id": "03-remove-step",
+		"description": "When an employee is hired, they sign the contract, we order a laptop, print a badge, and they meet the team.",
+		"diagram": "# Onboarding\nstart[start Employee hired] > contract[user Sign contract] > laptop[service Order laptop] > badge[service Print badge] > intro[user Meet the team] > done[end Employee onboarded]",
+		"change": "Remove the badge step, we don't print badges anymore.",
+		"reference": "# Onboarding\nstart[start Employee hired] > contract[user Sign contract] > laptop[service Order laptop] > intro[user Meet the team] > done[end Employee onboarded]",
+		"assertions": {
+			"mustNotMention": ["badge"],
+			"keepIds": ["contract", "laptop", "intro", "done"]
+		}
+	},
+	{
+		"id": "04-add-branch",
+		"description": "A customer opens a ticket. Support triages it. Urgent tickets go straight to an engineer; others are answered by support. Close the ticket when it is resolved.",
+		"diagram": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) answer[user Answer ticket] > close",
+		"change": "Tickets from VIP customers go to their account manager instead.",
+		"reference": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) answer[user Answer ticket] > close\nurgent >(VIP: customer.vip = true) manager[user Account manager handles ticket] > close",
+		"assertions": {
+			"mustMention": ["account manager"],
+			"keepIds": ["triage", "engineer", "answer", "close"]
+		}
+	},
+	{
+		"id": "05-make-parallel",
+		"description": "When an order is placed, pick the items, pack the box, print the shipping label, then dispatch the package.",
+		"diagram": "# Order fulfillment\nstart[start Order placed] > pick[user Pick items] > pack[user Pack box] > label[service Print shipping label] > dispatch[user Dispatch package] > done[end Package dispatched]",
+		"change": "Packing the box and printing the label can happen at the same time.",
+		"reference": "# Order fulfillment\nstart[start Order placed] > pick[user Pick items] > fork[and]\nfork > pack[user Pack box] > joined[and]\nfork > label[service Print shipping label] > joined\njoined > dispatch[user Dispatch package] > done[end Package dispatched]",
+		"assertions": {
+			"mustContainElementTypes": ["parallelGateway"],
+			"keepIds": ["pick", "pack", "label", "dispatch"]
+		}
+	},
+	{
+		"id": "06-answer-default-question",
+		"description": "Contact the customer by mail or by phone, depending on their preferred channel.",
+		"diagram": "# Contact customer\nstart[start Contact requested] > channel[xor Channel?]\nchannel >(Mail: channel = \"mail\") letter[send Send letter] > done[end Customer contacted]\nchannel >(Phone: channel = \"phone\") call[user Call customer] > done",
+		"change": "At \"Channel?\", make \"Mail\" the default branch.",
+		"reference": "# Contact customer\nstart[start Contact requested] > channel[xor Channel?]\nchannel >(Mail: default) letter[send Send letter] > done[end Customer contacted]\nchannel >(Phone: channel = \"phone\") call[user Call customer] > done",
+		"assertions": {
+			"defaultTo": "letter",
+			"keepIds": ["channel", "letter", "call"]
+		}
+	},
+	{
+		"id": "07-answer-variable-question",
+		"description": "When an application is received, verify the applicant's identity. If verified, open the account; otherwise reject the application.",
+		"diagram": "# KYC check\nstart[start Application received] > verify[service Verify identity] > ok[xor Identity verified?]\nok >(Yes) open[service Open account] > done[end Account opened]\nok >(No) reject[send Reject application] > rejected[end Application rejected]",
+		"change": "At \"Identity verified?\", decide on the verification score: above 80 is verified.",
+		"reference": "# KYC check\nstart[start Application received] > verify[service Verify identity] > ok[xor Identity verified?]\nok >(Yes: score > 80) open[service Open account] > done[end Account opened]\nok >(No: default) reject[send Reject application] > rejected[end Application rejected]",
+		"assertions": {
+			"conditionMentions": "score >",
+			"keepIds": ["verify", "open", "reject"]
+		}
+	},
+	{
+		"id": "08-change-type",
+		"description": "An employee submits an expense. If it is over 1000, a manager reviews it; otherwise it is approved automatically. Then the payment is made. If the payment fails, notify the submitter.",
+		"diagram": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+		"change": "The review is a DMN decision, not a manager.",
+		"reference": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[rule Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]",
+		"assertions": {
+			"mustContainElementTypes": ["businessRuleTask"],
+			"keepIds": ["check", "auto", "pay", "failed"]
+		}
+	},
+	{
+		"id": "09-rename",
+		"description": "When an order is received, validate it, process the payment and ship it.",
+		"diagram": "# Order process\nstart[start Order received] > validate[service Validate order] > pay[service Process payment] > ship[service Ship order] > done[end Order shipped]",
+		"change": "Rename \"Process payment\" to \"Charge credit card\".",
+		"reference": "# Order process\nstart[start Order received] > validate[service Validate order] > pay[service Charge credit card] > ship[service Ship order] > done[end Order shipped]",
+		"assertions": {
+			"mustMention": ["charge credit card"],
+			"mustNotMention": ["process payment"],
+			"keepIds": ["validate", "ship", "done"]
+		}
+	},
+	{
+		"id": "10-add-loop",
+		"description": "A customer opens a ticket. Support triages it. Urgent tickets go straight to an engineer; others are answered by support. Close the ticket when it is resolved.",
+		"diagram": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) answer[user Answer ticket] > close",
+		"change": "If the engineer cannot reproduce the issue, send the ticket back to triage.",
+		"reference": "# Support ticket\nstart[start Ticket opened] > triage[user Triage ticket] > urgent[xor Urgent?]\nurgent >(Yes: priority = \"urgent\") engineer[user Fix issue] > repro[xor Issue reproduced?]\nrepro >(No: reproduced = false) triage\nrepro >(Yes: default) close[service Close ticket] > done[end Ticket closed]\nurgent >(No: default) answer[user Answer ticket] > close",
+		"assertions": {
+			"mustMention": ["reproduc"],
+			"keepIds": ["triage", "urgent", "engineer", "answer", "close"]
+		}
+	}
+]

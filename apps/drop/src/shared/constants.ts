@@ -63,3 +63,6 @@ export const DEMO_SHARE_ID = "demo-loan-approval"
 
 /** localStorage key holding the AI-review access code (closed beta). */
 export const AI_CODE_STORAGE_KEY = "bpmnkit-drop-ai-code"
+
+/** Where describe-to-diagram's page sends the pass a solved challenge earned, and gets a new one. */
+export const AI_PASS_HEADER = "X-Drop-AI-Pass"
