@@ -107,7 +107,7 @@ What it asks, in order:
 | Prompt | What to answer |
 |---|---|
 | Route `yourdomain.com/drop*`? | `y` if your domain is on Cloudflare, else `n` for the `workers.dev` URL |
-| Enable AI review (`AI_PASSCODE`)? | `n` unless you want the closed-beta AI review |
+| Enable AI review (`AI_PASSCODE`)? | `n` unless you want the closed-beta AI review and describe-to-diagram |
 | Turnstile site key | Paste from step 2, or blank to skip |
 | Turnstile secret key | Paste when wrangler prompts — input is hidden |
 | Set GitHub secrets? | `y` if you did step 3 and have `gh` authenticated |
@@ -174,7 +174,9 @@ gh secret set CLOUDFLARE_DROP_API_TOKEN --body "<token from step 3>"
 | Turn Turnstile on later | Re-run `provision` — it picks up where it left off |
 | Turn Turnstile off | `npx wrangler secret delete TURNSTILE_SECRET` |
 | Change the Turnstile keys | Re-run `provision`, or edit `TURNSTILE_SITE_KEY` in `wrangler.jsonc` and redeploy |
-| Turn AI review on | `npx wrangler secret put AI_PASSCODE` |
+| Turn AI review and describe-to-diagram on | `npx wrangler secret put AI_PASSCODE` |
+| Change the describe-to-diagram model | Edit `AI_GENERATE_MODEL` in `wrangler.jsonc`, redeploy |
+| Turn the describe-to-diagram hedge off | Remove `AI_GENERATE_FALLBACK_MODEL` from `wrangler.jsonc`, redeploy |
 | Bump the Terms version | Edit `TOS_VERSION` in `wrangler.jsonc`, redeploy |
 | Deploy a change by hand | `pnpm --filter @bpmnkit/drop deploy` |
 | Add a migration | Drop a `.sql` in `migrations/`; the next deploy applies it |

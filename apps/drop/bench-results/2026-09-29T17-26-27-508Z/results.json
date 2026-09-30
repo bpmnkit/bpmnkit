@@ -1,0 +1,2799 @@
+[
+  {
+    "model": "@cf/openai/gpt-oss-120b",
+    "prompt": "01-slack-notify-ops",
+    "firstByteMs": 710,
+    "firstContentMs": 22175,
+    "totalMs": 22177,
+    "text": "analysis: we need to produce BPM BPMN diagram according's instructions. description: \"When an receive order fails validation, notify # ops on Slack with order id.\" Actually description: \"When an order fails validation, notify # ops on Slack with order order id.\" So process: start event \" order received? maybe validation fails? Let's model: start > validate[ task Validate order? Actually validation failure triggers notification. So sequence: start > validate[ task Validate order] > gateway XOR? we need branch: validation fails vs passes. Only concerned when fails. So we can model XOR gateway \" validation passed? \" with branch Yes: passes maybe end; No: fails -> notify[ service Slack notify ops with order id] > end.\n\n Use short ids lower case. start event: \" order received? maybe start event \" order received\". start[start order received] > validate[task Validate order] > decision xor validation passed? > branch No: notify[ service Slack notify ops | ??? maybe attributes? Not needed. > end[end process complete? maybe end end? Use end[end process complete]. branch Yes: end[end validation passed? maybe end[end validation passed? but not needed. but we need both branches join? Not necessary since they diver separate ends. So two separate end nodes? BPMN typically join automatically? but okay.\n\n Let's craft:\n\n # order validation notification\n start[start Order received] > validate[task Validate order] > decision xor Validation passed? > notify >( No: default ) slack[ service Slack notify ops with order id | on=validate? maybe on=validate? Not required but can include on=validate for boundary? Not needed. > end[end notification sent] > end[end Process complete? hmm we need two ends separate? Actually after notification we end; after passes we end.\n\n So after decision xor we need two branches: Yes: default branch -> end[end validation passed? maybe end[end Validation passed] ; No: default branch -> slack[service Slack notify ops with order id] > end[end notification sent.\n\n Use syntax: decision xor Validation passed? > branch label condition etc.\n\n According to format: gw >(Label: condition) x conditional branch, condition in FEFE; default branch labelled default.\n\n So: decision xor Validation passed? > notify >( No: default ) slack[service Slack notify ops with order id] > end[end notification sent; maybe end[end Process complete? but we already ended after notification. Actually after notification we end; after passes we end too.\n\n So we need two end nodes: end[end Validation passed] and end[end notification sent.\n\n Let's write lines:\n\n start[start Order received > validate[task Validate order > decision xor validation passed? > slack >( No: default ) slack[service Slack notify ops with order id > end[end notification sent] > end[end Validation passed? Wait we need branch Yes: default -> end[end validation passed.\n\n but syntax: after decision xor we need branches: > branch label condition x ; > branch label default y.\n\n So:\n\n validate > decision xor validation passed? > slack >( No: default ) slack[service Slack notify ops with order id > end[end notification sent] > end[end Validation passed? Actually branch Yes: default goes directly to end[end validation passed.\n\n So we need two branches after decision xor: one labeled Yes with condition maybe \"validation passed == true? but we only need default for No. but we can also have Yes: default branch for passes.\n\n Let's define:\n\n decision xor validation passed? > slack >( No: default ) slack[service Slack notify ops with order id > end[end notification sent] > end[end validation passed? Wait we need branch Yes: default after decision xor maybe directly to end[end validation passed.\n\n syntax: decision xor Validation passed? > slack >( No: default ) slack[...] > end[end notification sent] > end[end Validation passed? Actually after branch No we already ended; after branch Yes we need separate path but join automatically? Not necessary.\n\n But we need to declare nodes first time they appear; after that just id.\n\n Let's assign ids: start = start; validate = validate; decision = decision; slack = slack; end notification = notif end; end validation passed = pass end.\n\n Let's write lines:\n\n start[start Order received > validate[task Validate order > decision xor Validation passed? > slack >( No: default ) slack[service Slack notify ops with order id > notif[end Notification sent] > end[end Process complete? Wait we already ended at notif end; maybe end[end Process complete] but we already ended earlier? Actually after notification we end; after passes we also end; they can separate ends.\n\n So after decision xor we need two branches: Yes: default goes to end[end validation passed; No: default goes to slack... > end[end notification sent.\n\n So we need to specify both branches after decision xor: first branch label Yes: default goes directly to end[end validation passed; second branch label No: default goes to slack... > end[end notification sent.\n\n syntax: decision xor Validation passed? > slack >( No: default ) slack[...] > end[end notification sent] > end[end validation passed? Wait ordering: The branches are defined sequentially after decision xor: first branch labelled Yes: default goes to ??? second branch labelled No: default goes to ??? So we need to order accordingly.\n\n Let's write:\n\n start[start Order received > validate[task Validate order > decision xor validation passed? > slack >( Yes: default ) end[end validation passed] > slack >( No: default ) slack[service Slack notify ops with order id > notif[end Notification sent] > end[end Process complete? Actually end[end Process complete not needed; we already ended after notif end.\n\n but we need two end nodes: end[end validation passed] and end[end notification sent.\n\n So after branch Yes we directly end; after branch No we go through Slack notification then end.\n\n Let's craft final diagram:\n\n # order validation notification\n start[start Order received > validate[task Validate order > decision xor Validation passed? > slack >( Yes: default ) end[end validation passed] > slack >( No: default ) slack[service Slack notify ops with order id > notif[end Notification sent] > end[end Process complete? Actually end[end Process complete not needed; we already ended after notif end.\n\n but we need end after notif; we already have end[end Notification sent; that's end node.\n\n So final line ends with end[end Notification sent.\n\n Let's produce final diagram lines:\n\n start[start Order received > validate[task Validate order > decision xor validation passed? > slack >( Yes: default ) end[end validation passed] > slack >( No: default ) slack[ service Slack notify ops with order id > notif[end Notification sent] > end[end Process complete? Wait we already ended after notif; no need extra end.\n\n Actually after branch No we already ended at notif end; no further node needed.\n\n So final line ends after end[end Notification sent.\n\n Let's finalize:\n\n # order validation notification\n start[start Order received > validate[task Validate order > decision xor Validation passed? > slack >( Yes: default ) end[end validation passed] > slack >( No: default ) slack[service Slack notify ops with order declare order id > notif[end notification sent] > end[end Process complete? Hmm.\n\n Let's simplify: Use two separate end nodes: end validation passed and end notification sent; no extra end needed after them.\n\n So final line ends after end[end notification sent; but we also need end[end validation passed earlier; that's separate branch ends earlier; that's okay.\n\n Let's produce final diagram accordingly.<|end|><|start|>assistantfinal \n# order validation notification\n start[start Order received > validate[task Validate order > decision xor Validation passed? > slack >( Yes: default ) end[end validation passed] > slack >( No: default ) slack[service Slack notify ops with order id > notif[end notification sent] > end[end Process complete]<|return|>",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 418,
+      "completionTokens": 1588,
+      "cachedTokens": 0
+    },
+    "neurons": 122,
+    "problems": [
+      {
+        "line": 1,
+        "message": "expected \">\" at \": we need to produce\""
+      },
+      {
+        "line": 3,
+        "message": "expected \">\" at \"short ids lower case\""
+      },
+      {
+        "line": 5,
+        "message": "expected \">\" at \"'s craft:\""
+      },
+      {
+        "line": 8,
+        "message": "expected \">\" at \"xor Validation passe\""
+      },
+      {
+        "line": 10,
+        "message": "expected \">\" at \"after decision xor w\""
+      },
+      {
+        "line": 12,
+        "message": "expected \">\" at \"syntax: decision xor\""
+      },
+      {
+        "line": 14,
+        "message": "expected \">\" at \"to format: gw >(Labe\""
+      },
+      {
+        "line": 16,
+        "message": "expected \">\" at \": decision xor Valid\""
+      },
+      {
+        "line": 18,
+        "message": "expected \">\" at \"we need two end node\""
+      },
+      {
+        "line": 20,
+        "message": "expected \">\" at \"'s write lines:\""
+      },
+      {
+        "line": 22,
+        "message": "\"start[\" is not closed"
+      },
+      {
+        "line": 24,
+        "message": "expected \">\" at \"syntax: after decisi\""
+      },
+      {
+        "line": 26,
+        "message": "expected \">\" at \":\""
+      },
+      {
+        "line": 28,
+        "message": "expected \">\" at \"xor validation passe\""
+      },
+      {
+        "line": 30,
+        "message": "expected \">\" at \"we need two branches\""
+      },
+      {
+        "line": 32,
+        "message": "expected \">\" at \"'s define:\""
+      },
+      {
+        "line": 34,
+        "message": "expected \">\" at \"xor validation passe\""
+      },
+      {
+        "line": 36,
+        "message": "expected \">\" at \": decision xor Valid\""
+      },
+      {
+        "line": 38,
+        "message": "expected \">\" at \"we need to declare n\""
+      },
+      {
+        "line": 40,
+        "message": "expected \">\" at \"'s assign ids: start\""
+      },
+      {
+        "line": 42,
+        "message": "expected \">\" at \"'s write lines:\""
+      },
+      {
+        "line": 44,
+        "message": "\"start[\" is not closed"
+      },
+      {
+        "line": 46,
+        "message": "expected \">\" at \"after decision xor w\""
+      },
+      {
+        "line": 48,
+        "message": "expected \">\" at \"we need to specify b\""
+      },
+      {
+        "line": 50,
+        "message": "expected \">\" at \": decision xor Valid\""
+      },
+      {
+        "line": 52,
+        "message": "expected \">\" at \"'s write:\""
+      },
+      {
+        "line": 54,
+        "message": "\"start[\" is not closed"
+      },
+      {
+        "line": 56,
+        "message": "expected \">\" at \"we need two end node\""
+      },
+      {
+        "line": 58,
+        "message": "expected \">\" at \"after branch Yes we \""
+      },
+      {
+        "line": 60,
+        "message": "expected \">\" at \"'s craft final diagr\""
+      },
+      {
+        "line": 63,
+        "message": "\"start[\" is not closed"
+      },
+      {
+        "line": 65,
+        "message": "expected \">\" at \"we need end after no\""
+      },
+      {
+        "line": 67,
+        "message": "expected \">\" at \"final line ends with\""
+      },
+      {
+        "line": 69,
+        "message": "expected \">\" at \"'s produce final dia\""
+      },
+      {
+        "line": 71,
+        "message": "\"start[\" is not closed"
+      },
+      {
+        "line": 73,
+        "message": "expected \">\" at \"after branch No we a\""
+      },
+      {
+        "line": 75,
+        "message": "expected \">\" at \"final line ends afte\""
+      },
+      {
+        "line": 77,
+        "message": "expected \">\" at \"'s finalize:\""
+      },
+      {
+        "line": 80,
+        "message": "\"start[\" is not closed"
+      },
+      {
+        "line": 82,
+        "message": "expected \">\" at \"'s simplify: Use two\""
+      },
+      {
+        "line": 84,
+        "message": "expected \">\" at \"final line ends afte\""
+      },
+      {
+        "line": 86,
+        "message": "expected \">\" at \"'s produce final dia\""
+      },
+      {
+        "line": 88,
+        "message": "\"start[\" is not closed"
+      }
+    ],
+    "fixes": [
+      "added start event \"start\"",
+      "added end event \"start_end\" after \"start\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 2,
+    "failed": [
+      "2 < 3 elements"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-120b",
+    "prompt": "02-multi-branch-approval",
+    "firstByteMs": 325,
+    "firstReasoningMs": 349,
+    "firstContentMs": 8125,
+    "firstShapeMs": 8352,
+    "totalMs": 9141,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Review expense] > pay[service Process payment] > done[end Payment processed]\ncheck >(No: default) auto[service Auto approve] > pay\nfailed[boundary:error Payment failed | on=pay] > notice[end Failure notice]",
+    "reasoningChars": 3308,
+    "usage": {
+      "promptTokens": 449,
+      "completionTokens": 853,
+      "cachedTokens": 0
+    },
+    "neurons": 72,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 9,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-120b",
+    "prompt": "05-message-correlated-payment",
+    "firstByteMs": 328,
+    "firstReasoningMs": 347,
+    "firstContentMs": 5362,
+    "totalMs": 5516,
+    "text": "# Order processing\nstart[start Order placed] > payrcv[receive Payment confirmed] > ship[task Ship order] > done[end Order shipped]",
+    "reasoningChars": 2530,
+    "usage": {
+      "promptTokens": 425,
+      "completionTokens": 603,
+      "cachedTokens": 0
+    },
+    "neurons": 55,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 4,
+    "failed": [
+      "no intermediateCatchEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-120b",
+    "prompt": "06-multi-instance-email-notify",
+    "firstByteMs": 355,
+    "firstContentMs": 9006,
+    "firstShapeMs": 9007,
+    "totalMs": 9010,
+    "text": "analysis:We need to produce BPM BPMN diagram according: process name line \"# ...\" then sequence flows etc. description: \" Send an email notification to every recipient in list of stakeholders.\" So process: start -> fetch list -> iterate recipients -> send email -> end. maybe include loop or parallel? simplest: start > fetch[ task fetch list of stakeholders? maybe service fetch stakeholders? > send[ service Send email notification] > done[end notifications sent. No branching needed. Use ids short lowercase. tasks verb object: \" fetch list\", \" send email\". start event: \"Notification requested? maybe start:message? but start event can be start[ start Notification triggered? but start kind \" start message? Use start[start Notification triggered]. End: done[end notifications sent? end? Use end[end notifications sent]. Let's craft:\n\n# Send email notifications\n start[start Notification triggered] > fetch[ task fetch list of stakeholders] > send[ service send email notification] > done[end notifications sent]\n\n ids: start, fetch, send, done declared first time with [kind Name]. Use \" start[start Notification triggered] > fetch[ task fetch list of stakeholders] > send[ service send email notification] > done[end notifications sent\". Ensure each node declared once with [ kind Name after id? format: id[k kind Name]. Example: start[start Expense submitted] -> id start with [ start ...? Actually example: start[start Expense submitted] meaning id ' start' with kind ' start? They wrote start[start Expense submitted; start is id and [ start ...? Actually they wrote start[start Expense submitted] meaning id ' start' with kind ' start? Wait they wrote \" start[start Expense submitted] > check[x xor Amount over ...\". So ' start' is id; inside brackets they put kind and name: \" start Expense submitted\". So format: id[k kind Name? Actually they wrote start[start Expense submitted] where ' start' before brackets is id; inside brackets they put \" start Expense submitted\" where first word is kind ( start ) and rest is name. So we need id then [ kind Name]. So for start: start[start Notification triggered] ( kind ' start, name ' Notification triggered). Good.\n\n next fetch[ task fetch list of stakeholders] -> id fetch, kind task, name \" fetch list of stakeholders? Actually verb+ object: \" fetch list of stakeholders\" fits. So inside brackets: \" task fetch list of stakeholders.\n\n next send[ service send email notification] -> id send, kind service, name \" send email notification.\n\n end: done[end notifications sent] -> id done, kind end, name \" notifications sent.\n\n sequence flows using > between ids.\n\nThus final diagram:\n\n# send email notifications\n start[start Notification triggered] > fetch[ task fetch list of stakeholders] > send[ service send email notification] > done[end notifications sent\n\nCheck format: first line \"# Process name\". second line sequence flow with > between ids and declarations with brackets as described. Should no extra lines. Let's output exactly.<|end|><|start|>assistantfinal # send email notifications\n start[start Notification triggered] > fetch[ task fetch list of stakeholders] > send[ service send email notification] > done[end notifications sent]<|return|>",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 415,
+      "completionTokens": 647,
+      "cachedTokens": 0
+    },
+    "neurons": 57,
+    "problems": [
+      {
+        "line": 1,
+        "message": "expected \">\" at \":We need to produce \""
+      },
+      {
+        "line": 6,
+        "message": "expected \">\" at \": start, fetch, send\""
+      },
+      {
+        "line": 8,
+        "message": "expected \">\" at \"fetch[ task fetch li\""
+      },
+      {
+        "line": 10,
+        "message": "expected \">\" at \"send[ service send e\""
+      },
+      {
+        "line": 12,
+        "message": "expected \">\" at \": done[end notificat\""
+      },
+      {
+        "line": 14,
+        "message": "expected \">\" at \"flows using > betwee\""
+      },
+      {
+        "line": 16,
+        "message": "expected \">\" at \"final diagram:\""
+      },
+      {
+        "line": 19,
+        "message": "\"done[\" is not closed"
+      },
+      {
+        "line": 21,
+        "message": "expected \">\" at \"format: first line \"\""
+      },
+      {
+        "line": 22,
+        "message": "expected \">\" at \"<|return|>\""
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [
+      "no subProcess"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-120b",
+    "prompt": "07-error-boundary-payment-refund",
+    "firstByteMs": 3488,
+    "firstContentMs": 17985,
+    "firstShapeMs": 17985,
+    "totalMs": 17986,
+    "text": "analysis:We need to produce BPM BPMN diagram according: Process name line \"# ...\". description: \" Charge customer's card. If charge fails, refund any amount already captured and end with failure notice.\" So steps: start event \" charge request received? maybe \" charge request received\". then task \" charge card\". then xor gateway \" charge succeeded?\". branch yes: proceed maybe end success? Not specified but probably end success. but description only mentions failure path: If charge fails, refund any amount already captured and end with failure notice. So we need success path maybe \" done end? but not described; but we can include success end maybe \" end success\". but description only asks modeling what description asks for and nothing more. So maybe only failure path? But BPMN must have start and end. So start -> charge card -> xor gateway -> branch No -> refund -> end failure notice. branch Yes -> end success ( maybe just end without tasks). include events: start event \" charge request received? maybe \" charge request received\"? Use \" start:message? Actually start event type ' start' with name \" charge request received\". end event type ' end' with name \" charge succeeded? or failure notice? For failure path end event \" failure notice\". For success path end event \" charge completed? but not described; maybe omit success path altogether? but BPMN requires end; we can have two end events: success and failure. but description only mentions failure end; but modeling what description asks for: charge fails -> refund -> end with failure notice. So maybe only failure path; no success path needed. we can still have xor gateway with only No branch? but XOR requires at sequence join? Could just use gateway as decision but only one branch? Could use gateway as event? maybe simpler: start > charge[ service Charge card > refund[ service Refund captured] > notice[end Failure notice]. but need conditional branch on charge success/f failure. Use xor gateway with Yes branch default? Actually we need branch when charge fails; else maybe end success default? but description not mention success; but modeling what description asks for: only failure path. Could still include default branch ending success but not described; might violate \" nothing more. Model what description asks for and nothing more.\" So only include failure path. we can omit xor gateway altogether? but description says \" If charge fails, refund any amount already captured and end with failure notice.\" implies conditional branch only on failure; otherwise success end maybe implicit but not required. Could model as XOR with two branches: Yes: default ( success end ), No: refund -> failure notice. but that adds extra not described but implied? maybe acceptable but \" nothing more\" could still include implied success end as default path because process would normally succeed. but description only instructs failure path; but leaving out success may incomplete but still valid BPMN? start > charge > xor > branch No -> refund -> failure end; branch Yes -> end success ( implicit ). I'd include both but minimal extra: end success named \" charge completed\". That's extra but reasonable; but instruction \" Model what description asks for and nothing more.\" I'd interpret as only modeling failure path; but BPM BPM diagrams typically require end; we can have end event after refund; success path not needed because description only covers failure scenario; but then process ends after failure; if charge succeeds, process would end earlier maybe not described; but we can simply end after charge task if succeed default end. That's minimal extra but still logically implied. I'll include both branches but keep names simple.\n\nLet's produce diagram:\n\n # Charge card\n start[start Charge request received] > charge[ service Charge card] > result xor gateway? Use xor: result xor gateway? label \" charge succeeded?\". Branch Yes: success end[end Charge successful? maybe end? but not described; but we can just end without further tasks: success[end Charge completed?]. Branch No: refund[ service refund captured amount] > notice[end Failure notice| on refund? not needed? End event type end with name \" failure notice.\n\n include attributes after | maybe none.\n\nLet's format:\n\n# Charge card\n start[start Charge request received] > charge[service Charge card] > result xor Charge succeeded?\n result >( Yes: default ) success[end Charge successful?]\n result >( No: default ) refund[service refund captured amount] > failure[end Failure notice]\n\nBut need proper syntax: gw >( label: condition ) id ; default branch label: default.\n\nSo:\n\n result xor Charge succeeded? ; then branches:\n\n result >( Yes: default ) success[end Charge successful?] ; result >( No: default ) refund[ service Refund captured amount] > failure[end Failure notice\n\nBut naming: Use short lowercase ids: start > charge > result > refund > failure etc.\n\nLet's produce:\n\n# charge card\n start[start charge request received] > charge[ service charge card] > result xor charge succeeded?\n result >( Yes: default ) success[end charge successful?]\n result >( No: default ) refund[ service refund captured amount] > failure[end failure notice\n\nMake sure ids unique: start, charge, result, refund, success, failure.\n\nOk.<|end|><|start|>assistantfinal # charge card\n start[start charge request received] > charge[ service charge card] > result xor charge succeeded?\n result >( Yes: default ) success[end charge successful?]\n result >( No: default ) refund[ service refund captured amount] > failure[end failure notice]<|return|>",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 424,
+      "completionTokens": 1095,
+      "cachedTokens": 0
+    },
+    "neurons": 88,
+    "problems": [
+      {
+        "line": 1,
+        "message": "expected \">\" at \":We need to produce \""
+      },
+      {
+        "line": 3,
+        "message": "expected \">\" at \"'s produce diagram:\""
+      },
+      {
+        "line": 6,
+        "message": "expected \">\" at \"xor gateway? Use xor\""
+      },
+      {
+        "line": 8,
+        "message": "expected \">\" at \"attributes after | m\""
+      },
+      {
+        "line": 10,
+        "message": "expected \">\" at \"'s format:\""
+      },
+      {
+        "line": 13,
+        "message": "expected \">\" at \"xor Charge succeeded\""
+      },
+      {
+        "line": 14,
+        "message": "\"result\" is never declared; flow result > success left out"
+      },
+      {
+        "line": 15,
+        "message": "\"result\" is never declared; flow result > refund left out"
+      },
+      {
+        "line": 17,
+        "message": "expected \">\" at \"need proper syntax: \""
+      },
+      {
+        "line": 19,
+        "message": "expected \">\" at \":\""
+      },
+      {
+        "line": 21,
+        "message": "expected \">\" at \"xor Charge succeeded\""
+      },
+      {
+        "line": 23,
+        "message": "expected \">\" at \"; result >( No: defa\""
+      },
+      {
+        "line": 25,
+        "message": "expected \">\" at \"naming: Use short lo\""
+      },
+      {
+        "line": 27,
+        "message": "expected \">\" at \"'s produce:\""
+      },
+      {
+        "line": 30,
+        "message": "expected \">\" at \"xor charge succeeded\""
+      },
+      {
+        "line": 31,
+        "message": "\"success\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 31,
+        "message": "\"result\" is never declared; flow result > success left out"
+      },
+      {
+        "line": 32,
+        "message": "\"failure[\" is not closed"
+      },
+      {
+        "line": 34,
+        "message": "expected \">\" at \"sure ids unique: sta\""
+      },
+      {
+        "line": 36,
+        "message": "expected \">\" at \"<|end|><|start|>assi\""
+      },
+      {
+        "line": 37,
+        "message": "expected \">\" at \"xor charge succeeded\""
+      },
+      {
+        "line": 38,
+        "message": "\"success\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 38,
+        "message": "\"result\" is never declared; flow result > success left out"
+      },
+      {
+        "line": 39,
+        "message": "expected \">\" at \"<|return|>\""
+      }
+    ],
+    "fixes": [
+      "added start event \"start\" before \"success\""
+    ],
+    "lintErrors": [
+      "Element \"refund\" (serviceTask) is not reachable from any start event.",
+      "Element \"failure\" (endEvent) is not reachable from any start event."
+    ],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-120b",
+    "prompt": "08-long-process-onboarding",
+    "firstByteMs": 312,
+    "firstReasoningMs": 330,
+    "firstContentMs": 17325,
+    "firstShapeMs": 17682,
+    "totalMs": 19745,
+    "text": "# Employee onboarding\nstart[start Onboarding started] > record[task Record signed offer] > check[service Run background check] > bggw[xor Background check passed?]\nbggw >(Yes: result = 'pass') create[task Create employee account] > email[task Assign email address] > split[and Parallel setup]\nsplit > it[task Set up IT equipment] > join[and Parallel join]\nsplit > fac[task Set up facilities access] > join\nsplit > ben[task Enroll benefits] > join\njoin > training[user Schedule security training] > compliance[user Acknowledge compliance] > update[task Update org chart] > payroll[task Set up payroll] > orientation[task Schedule orientation] > welcome[task Send welcome email via Slack] > done[end Onboarding complete]\nbggw >(No: default) fail[end Background check failed]",
+    "reasoningChars": 5746,
+    "usage": {
+      "promptTokens": 489,
+      "completionTokens": 1432,
+      "cachedTokens": 0
+    },
+    "neurons": 113,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [
+      "Invalid FEEL expression on condition of \"Flow_4\": Unexpected token '''",
+      "Invalid FEEL expression on condition of \"Flow_4\": Unexpected token 'pass'"
+    ],
+    "lintWarnings": 5,
+    "elements": 19,
+    "failed": [
+      "19 < 25 elements"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-120b",
+    "prompt": "10-email-connector-order-confirmation",
+    "firstByteMs": 433,
+    "firstContentMs": 2522,
+    "totalMs": 2524,
+    "text": "analysis:We need to produce BPM BPM diagram according. Process name first line \"# ...\" then sequence flow lines.\n\n description: When an receive order placed event, send confirmation email.\n\n So start event: Order placed ( receive event ) maybe start? Use start event \" Order placed? Actually start: message event. So start[start Order placed] > send[ service Send confirmation email ] > end[end Process completed? maybe end[ end order processed? but only needed to end. Use end[end Order completed] .\n\n ids: start, send, end.\n\n format: each line sequence flow with > between ids and optionally declare node with [ kind Name]. first appearance declare with [ kind Name]. So start[start Order placed] > send[ service Send confirmation email ] > end[end order completed? but end name maybe \"Order processed\". Use end[end Order processed].\n\n Provide only diagram lines.\n\n Let's produce:\n\n# order confirmation\n start[start Order placed] > send[ service Send confirmation email ] > end[end order processed\n\n Ensure no extra lines.\n\n Let's output accordingly.<|end|><|start|>assistantfinal: # order confirmation\n start[start Order placed] > send[ service Send confirmation email ] > end[end order processed]<|return|>",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 416,
+      "completionTokens": 239,
+      "cachedTokens": 0
+    },
+    "neurons": 30,
+    "problems": [
+      {
+        "line": 1,
+        "message": "expected \">\" at \":We need to produce \""
+      },
+      {
+        "line": 3,
+        "message": "expected \">\" at \": When an receive or\""
+      },
+      {
+        "line": 5,
+        "message": "expected \">\" at \"start event: Order p\""
+      },
+      {
+        "line": 7,
+        "message": "expected \">\" at \": start, send, end.\""
+      },
+      {
+        "line": 9,
+        "message": "expected \">\" at \": each line sequence\""
+      },
+      {
+        "line": 11,
+        "message": "expected \">\" at \"only diagram lines.\""
+      },
+      {
+        "line": 13,
+        "message": "expected \">\" at \"'s produce:\""
+      },
+      {
+        "line": 16,
+        "message": "\"end[\" is not closed"
+      },
+      {
+        "line": 18,
+        "message": "expected \">\" at \"no extra lines.\""
+      },
+      {
+        "line": 20,
+        "message": "expected \">\" at \"'s output accordingl\""
+      },
+      {
+        "line": 21,
+        "message": "expected \">\" at \"<|return|>\""
+      }
+    ],
+    "fixes": [
+      "added start event \"start\"",
+      "added end event \"start_end\" after \"start\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 2,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-120b",
+    "prompt": "11-http-connector-external-api",
+    "firstByteMs": 252,
+    "firstReasoningMs": 287,
+    "firstContentMs": 3878,
+    "firstShapeMs": 4000,
+    "totalMs": 4145,
+    "text": "# Order shipping\nstart > lookup > ship > done\nstart[start Order received]\nlookup[service Lookup shipping address]\nship[service Ship order]\ndone[end Order shipped]",
+    "reasoningChars": 1597,
+    "usage": {
+      "promptTokens": 423,
+      "completionTokens": 399,
+      "cachedTokens": 0
+    },
+    "neurons": 41,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 4,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-120b",
+    "prompt": "12-business-rule-credit-check",
+    "firstByteMs": 767,
+    "firstReasoningMs": 1057,
+    "firstContentMs": 10622,
+    "firstShapeMs": 11359,
+    "totalMs": 11995,
+    "text": "# Loan credit check\nstart[start Loan application received] > check[service Run credit decision table] > decision[xor Credit approved?]\ndecision >(Yes: result = \"Approved\") approve[service Approve application] > approved[end Application approved]\ndecision >(No: default) reject[service Reject application] > rejected[end Application rejected]",
+    "reasoningChars": 2600,
+    "usage": {
+      "promptTokens": 422,
+      "completionTokens": 622,
+      "cachedTokens": 0
+    },
+    "neurons": 56,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 7,
+    "failed": [
+      "no businessRuleTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-120b",
+    "prompt": "13-parallel-gateway-fulfillment",
+    "firstByteMs": 126,
+    "firstReasoningMs": 161,
+    "firstContentMs": 21315,
+    "firstShapeMs": 21734,
+    "totalMs": 22107,
+    "text": "# Order fulfillment\nstart[start Order received] > split[and Parallel] > pick[task Pick items] > join[and Parallel] > dispatch[task Dispatch package] > done[end Order fulfilled]\nstart > split > pack[task Pack box] > join > dispatch > done\nstart > split > label[task Print shipping label] > join > dispatch > done",
+    "reasoningChars": 3931,
+    "usage": {
+      "promptTokens": 436,
+      "completionTokens": 987,
+      "cachedTokens": 0
+    },
+    "neurons": 81,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 8,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-120b",
+    "prompt": "14-user-task-candidate-groups",
+    "firstByteMs": 285,
+    "firstReasoningMs": 318,
+    "firstContentMs": 3672,
+    "totalMs": 3845,
+    "text": "# Document publication\nstart[start Document ready] > review[task Review document] > publish[task Publish document] > done[end Document published]",
+    "reasoningChars": 1733,
+    "usage": {
+      "promptTokens": 415,
+      "completionTokens": 410,
+      "cachedTokens": 0
+    },
+    "neurons": 41,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 4,
+    "failed": [
+      "no userTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-120b",
+    "prompt": "15-timer-boundary-retry",
+    "firstByteMs": 185,
+    "firstReasoningMs": 200,
+    "firstContentMs": 13187,
+    "firstShapeMs": 13414,
+    "totalMs": 13672,
+    "text": "# Report polling\ns[start Report requested] > p[service Poll external system] > r[end Report received]\nt[boundary:timer | on=p] > f[user Flag for manual follow-up] > d[end Process completed]",
+    "reasoningChars": 2467,
+    "usage": {
+      "promptTokens": 430,
+      "completionTokens": 616,
+      "cachedTokens": 0
+    },
+    "neurons": 56,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 6,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-20b",
+    "prompt": "01-slack-notify-ops",
+    "firstByteMs": 247,
+    "firstReasoningMs": 273,
+    "firstContentMs": 3724,
+    "totalMs": 3972,
+    "text": "# Order validation failure notification\nstart[message Order validation failed] > notify[service Notify ops Slack] > end[end Notification sent]",
+    "reasoningChars": 1734,
+    "usage": {
+      "promptTokens": 424,
+      "completionTokens": 416,
+      "cachedTokens": 0
+    },
+    "neurons": 19,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"message\" for \"start\"; used task"
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-20b",
+    "prompt": "02-multi-branch-approval",
+    "firstByteMs": 243,
+    "firstReasoningMs": 268,
+    "firstContentMs": 17430,
+    "firstShapeMs": 17605,
+    "totalMs": 18262,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]\ncheck >(No: default) auto[service Approve automatically] > pay\npay > failed[boundary:error Payment failed | on=pay] > notice[end:error Failure notified]",
+    "reasoningChars": 8138,
+    "usage": {
+      "promptTokens": 455,
+      "completionTokens": 2045,
+      "cachedTokens": 0
+    },
+    "neurons": 64,
+    "problems": [
+      {
+        "line": 5,
+        "message": "a boundary event has no incoming flow; flow pay > failed left out"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 9,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-20b",
+    "prompt": "05-message-correlated-payment",
+    "firstByteMs": 155,
+    "firstReasoningMs": 200,
+    "firstContentMs": 3583,
+    "totalMs": 3943,
+    "text": "# Order processing\nstart[start Order placed] > wait[catch Payment confirmed] > ship[task Ship order] > end[end Order shipped]",
+    "reasoningChars": 1229,
+    "usage": {
+      "promptTokens": 431,
+      "completionTokens": 320,
+      "cachedTokens": 0
+    },
+    "neurons": 17,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 4,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-20b",
+    "prompt": "06-multi-instance-email-notify",
+    "firstByteMs": 124,
+    "firstReasoningMs": 154,
+    "firstContentMs": 5166,
+    "totalMs": 5403,
+    "text": "# Email notification\nstart[start Email notification] > send[service Send email] > done[end Email sent]",
+    "reasoningChars": 2308,
+    "usage": {
+      "promptTokens": 421,
+      "completionTokens": 543,
+      "cachedTokens": 0
+    },
+    "neurons": 22,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 3,
+    "failed": [
+      "no subProcess"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-20b",
+    "prompt": "07-error-boundary-payment-refund",
+    "firstByteMs": 121,
+    "firstReasoningMs": 153,
+    "firstContentMs": 18181,
+    "totalMs": 18842,
+    "text": "# Charge card process\nstart[Charge card] > charge[service Charge card] > check[xor Charge failed?] check >(Yes: failure) refund[service Refund captured amount] > end_fail[end Failure notified]\nstart > charge > check check >(No: default) end_succ[end Charge successful]",
+    "reasoningChars": 6933,
+    "usage": {
+      "promptTokens": 430,
+      "completionTokens": 1689,
+      "cachedTokens": 0
+    },
+    "neurons": 54,
+    "problems": [
+      {
+        "line": 2,
+        "message": "expected \">\" at \"check >(Yes: failure\""
+      },
+      {
+        "line": 3,
+        "message": "expected \">\" at \"check >(No: default)\""
+      }
+    ],
+    "fixes": [
+      "added start event \"start\"",
+      "added end event \"start_end\" after \"start\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 2,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-20b",
+    "prompt": "08-long-process-onboarding",
+    "firstByteMs": 128,
+    "firstReasoningMs": 150,
+    "totalMs": 20535,
+    "text": "",
+    "reasoningChars": 9577,
+    "usage": {
+      "promptTokens": 495,
+      "completionTokens": 2048,
+      "cachedTokens": 0
+    },
+    "neurons": 65,
+    "problems": [],
+    "fixes": [
+      "added start event \"start\"",
+      "added end event \"start_end\" after \"start\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 2,
+    "failed": [
+      "2 < 25 elements",
+      "no exclusiveGateway",
+      "no parallelGateway",
+      "no userTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-20b",
+    "prompt": "10-email-connector-order-confirmation",
+    "firstByteMs": 221,
+    "firstReasoningMs": 258,
+    "firstContentMs": 8096,
+    "totalMs": 8443,
+    "text": "# Order confirmation\nstart > send > done\nstart[Order placed] > send[service Send order confirmation email] > done[end Order confirmation sent]",
+    "reasoningChars": 3119,
+    "usage": {
+      "promptTokens": 422,
+      "completionTokens": 741,
+      "cachedTokens": 0
+    },
+    "neurons": 28,
+    "problems": [
+      {
+        "line": 3,
+        "message": "unknown kind \"order\" for \"start\"; used task"
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-20b",
+    "prompt": "11-http-connector-external-api",
+    "firstByteMs": 162,
+    "firstReasoningMs": 180,
+    "firstContentMs": 3917,
+    "totalMs": 4173,
+    "text": "# Order shipping\nstart[start Order received] > lookup[service Lookup address] > ship[service Ship order] > done[end Order shipped]",
+    "reasoningChars": 1959,
+    "usage": {
+      "promptTokens": 429,
+      "completionTokens": 478,
+      "cachedTokens": 0
+    },
+    "neurons": 21,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 4,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-20b",
+    "prompt": "12-business-rule-credit-check",
+    "firstByteMs": 239,
+    "firstReasoningMs": 270,
+    "firstContentMs": 20627,
+    "firstShapeMs": 20792,
+    "totalMs": 21255,
+    "text": "# Loan application\nstart[start Application received] > check[service Run credit check]\ncheck > decision[xor Credit ok?]\ndecision >(Yes: creditScore >= threshold) approve[user Approve application] > done[end Application processed]\ndecision >(No: default) reject[user Reject application] > done",
+    "reasoningChars": 8046,
+    "usage": {
+      "promptTokens": 428,
+      "completionTokens": 1880,
+      "cachedTokens": 0
+    },
+    "neurons": 59,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 7,
+    "failed": [
+      "no businessRuleTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-20b",
+    "prompt": "13-parallel-gateway-fulfillment",
+    "firstByteMs": 274,
+    "firstReasoningMs": 291,
+    "totalMs": 18100,
+    "text": "",
+    "reasoningChars": 8370,
+    "usage": {
+      "promptTokens": 442,
+      "completionTokens": 2048,
+      "cachedTokens": 0
+    },
+    "neurons": 64,
+    "problems": [],
+    "fixes": [
+      "added start event \"start\"",
+      "added end event \"start_end\" after \"start\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 2,
+    "failed": [
+      "2 < 6 elements",
+      "no parallelGateway"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-20b",
+    "prompt": "14-user-task-candidate-groups",
+    "firstByteMs": 249,
+    "firstReasoningMs": 287,
+    "firstContentMs": 5366,
+    "totalMs": 5635,
+    "text": "# Document review and publish\nstart[Document submitted] > route[service Route to legal review] > publish[service Publish document] > end[Document published]",
+    "reasoningChars": 2635,
+    "usage": {
+      "promptTokens": 421,
+      "completionTokens": 607,
+      "cachedTokens": 0
+    },
+    "neurons": 24,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"document\" for \"start\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"document\" for \"end\"; used task"
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\"",
+      "added end event \"end_end\" after \"end\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 6,
+    "failed": [
+      "no userTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/openai/gpt-oss-20b",
+    "prompt": "15-timer-boundary-retry",
+    "firstByteMs": 258,
+    "firstReasoningMs": 276,
+    "totalMs": 15678,
+    "text": "",
+    "reasoningChars": 8573,
+    "usage": {
+      "promptTokens": 436,
+      "completionTokens": 2048,
+      "cachedTokens": 0
+    },
+    "neurons": 64,
+    "problems": [],
+    "fixes": [
+      "added start event \"start\"",
+      "added end event \"start_end\" after \"start\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 2,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "prompt": "01-slack-notify-ops",
+    "firstByteMs": 532,
+    "firstContentMs": 533,
+    "totalMs": 1041,
+    "text": "# Order validation failure\nfail[start:error Order failed validation] > notify[service Notify ops on Slack with order id] > done[end:error Notification sent]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 397,
+      "completionTokens": 36,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 3,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "prompt": "02-multi-branch-approval",
+    "firstByteMs": 344,
+    "firstContentMs": 373,
+    "firstShapeMs": 662,
+    "totalMs": 1737,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Manager review] > pay[service Process payment]\ncheck >(No: default) auto[service Auto-approve] > pay\npay > done[end Expense paid]\npay[boundary:error Payment failed | on=pay] > failed[end:error Failure notified]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 430,
+      "completionTokens": 98,
+      "cachedTokens": 320
+    },
+    "neurons": 7,
+    "problems": [
+      {
+        "line": 6,
+        "message": "\"pay\" is already declared on line 3; the first declaration is kept"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 8,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "prompt": "05-message-correlated-payment",
+    "firstByteMs": 223,
+    "firstContentMs": 223,
+    "firstShapeMs": 807,
+    "totalMs": 1639,
+    "text": "# Order shipping\nstart[start:message Order placed] > wait[catch:message payment-confirmed] > ship[task Ship order] > done[end:message Order shipped]\nstart[start:message Order placed] > wait[catch:message payment-confirmed]\nwait[catch:message payment-confirmed] > ship[task Ship order]\nship[task Ship order] > done[end:message Order shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 404,
+      "completionTokens": 91,
+      "cachedTokens": 320
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 3,
+        "message": "\"start\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 3,
+        "message": "\"wait\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 4,
+        "message": "\"wait\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 4,
+        "message": "\"ship\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 5,
+        "message": "\"ship\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 5,
+        "message": "\"done\" is already declared on line 2; the first declaration is kept"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [
+      "Message start event \"Order placed\" has no message name.",
+      "Message catch \"payment-confirmed\" (intermediateCatchEvent) has no zeebe:subscription correlationKey."
+    ],
+    "lintWarnings": 0,
+    "elements": 4,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "prompt": "06-multi-instance-email-notify",
+    "firstByteMs": 277,
+    "firstContentMs": 322,
+    "firstShapeMs": 820,
+    "totalMs": 1259,
+    "text": "# Send email notification\nstart[start Notification requested] > loop[service Send email] > done[end Notification sent]\nloop[service Send email] > loop[service Send email] (Label: for each recipient)",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 394,
+      "completionTokens": 47,
+      "cachedTokens": 320
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 3,
+        "message": "expected \">\" at \"(Label: for each rec\""
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 3,
+    "failed": [
+      "no subProcess"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "prompt": "07-error-boundary-payment-refund",
+    "firstByteMs": 3973,
+    "firstContentMs": 3975,
+    "firstShapeMs": 4458,
+    "totalMs": 6469,
+    "text": "# Charge customer card\nstart[start Charge initiated] > charge[service Charge card]\ncharge >(Label: error) fail[boundary:error Charge failed | on=charge]\ncharge > end[end:success Charge completed]\nfail > refund[service Refund amount] > notify[end:error Failure notice]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 406,
+      "completionTokens": 68,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 3,
+        "message": "a boundary event has no incoming flow; flow charge > fail left out"
+      },
+      {
+        "line": 4,
+        "message": "unknown trigger \"success\" for \"end\"; ignored"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 6,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "prompt": "08-long-process-onboarding",
+    "firstByteMs": 284,
+    "firstContentMs": 284,
+    "firstShapeMs": 867,
+    "totalMs": 3148,
+    "text": "# Employee onboarding process\nstart[start Offer signed] > record[task Record signed offer] > check[service Run background check] > bg_fail[end:error Background check failed]\ncheck >(Pass: true) create[service Create employee account and email] > and_start[and]\nand_start > it[task Set up IT equipment]\nand_start > fac[task Facilities access]\nand_start > ben[task Benefits enrollment]\nit > and_end[and]\nfac > and_end\nben > and_end\nand_end > sec[user Schedule security training] > comp[user Compliance acknowledgment] > org[task Update org chart] > pay[service Set up payroll] > orient[task Schedule orientation] > slack[service Send welcome email via Slack] > done[end:Employee onboarded]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 468,
+      "completionTokens": 181,
+      "cachedTokens": 320
+    },
+    "neurons": 9,
+    "problems": [
+      {
+        "line": 10,
+        "message": "unknown trigger \"employee\" for \"done\"; ignored"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 17,
+    "failed": [
+      "17 < 25 elements",
+      "no exclusiveGateway"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "prompt": "10-email-connector-order-confirmation",
+    "firstByteMs": 4193,
+    "firstContentMs": 4194,
+    "firstShapeMs": 4772,
+    "totalMs": 5206,
+    "text": "# Order confirmation process\nord[start:message Order placed] > send[service Send order confirmation email] > end[end:message Order confirmed]\nord[id=ord kind=start]\nsend[id=send kind=service]\nend[id=end kind=end]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 396,
+      "completionTokens": 62,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 3,
+        "message": "\"ord\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 4,
+        "message": "\"send\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 5,
+        "message": "\"end\" is already declared on line 2; the first declaration is kept"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [
+      "Message start event \"Order placed\" has no message name."
+    ],
+    "lintWarnings": 1,
+    "elements": 3,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "prompt": "11-http-connector-external-api",
+    "firstByteMs": 530,
+    "firstContentMs": 530,
+    "totalMs": 1502,
+    "text": "# Ship order\nstart[start:order received] > lookup[service Look up shipping address] > ship[service Ship order] > end[end:order shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 405,
+      "completionTokens": 36,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown trigger \"order\" for \"start\"; ignored"
+      },
+      {
+        "line": 2,
+        "message": "unknown trigger \"order\" for \"end\"; ignored"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 4,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "prompt": "12-business-rule-credit-check",
+    "firstByteMs": 3246,
+    "firstContentMs": 3250,
+    "firstShapeMs": 3255,
+    "totalMs": 3264,
+    "text": "# Loan credit check\nstart[start Application received] > check[service Run DMN credit check] > decision[xor Approved?]\ndecision >(Yes: credit_score >= threshold) approve[task Approve application] > end[end Application approved]\ndecision >(No: default) reject[task Reject application] > end_rej[end Application rejected]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 402,
+      "completionTokens": 76,
+      "cachedTokens": 320
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 7,
+    "failed": [
+      "no businessRuleTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "prompt": "13-parallel-gateway-fulfillment",
+    "firstByteMs": 10464,
+    "firstContentMs": 10464,
+    "firstShapeMs": 10570,
+    "totalMs": 11603,
+    "text": "# Fulfill an order\nstart[start Order received] > and[and]\nand > pick[task Pick items]\nand > pack[task Pack box]\nand > print[task Print shipping label]\npick > join[and]\npack > join\nprint > join\njoin > dispatch[task Dispatch package] > end[end Order fulfilled]\nand[kind and]\njoin[kind and]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 415,
+      "completionTokens": 89,
+      "cachedTokens": 320
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 10,
+        "message": "\"and\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 11,
+        "message": "\"join\" is already declared on line 6; the first declaration is kept"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 8,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "prompt": "14-user-task-candidate-groups",
+    "firstByteMs": 285,
+    "firstContentMs": 285,
+    "firstShapeMs": 648,
+    "totalMs": 1218,
+    "text": "# Document review process\nstart[start Document received] > review[user Review document] > approved[xor Approved?]\napproved >(Yes: default) publish[service Publish document] > done[end Document published]\napproved >(No: needs revision) revise[user Revise document] > review",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 396,
+      "completionTokens": 64,
+      "cachedTokens": 320
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"review\" with xor gateway \"review_join\""
+    ],
+    "lintErrors": [
+      "Invalid FEEL expression on condition of \"Flow_5\": Unexpected token 'revision'"
+    ],
+    "lintWarnings": 6,
+    "elements": 7,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/google/gemma-4-26b-a4b-it",
+    "prompt": "15-timer-boundary-retry",
+    "firstByteMs": 52857,
+    "firstContentMs": 52858,
+    "firstShapeMs": 55246,
+    "totalMs": 55657,
+    "text": "# Report polling process\nstart[start polling request] > poll[service Poll external system] > timeout[boundary:timer Timeout after 5 minutes | on=poll] > flag[user Flag for manual follow-up] > end_fail[end:error Polling failed]\npoll > report_received[event:report received] > end_success[end:report ready]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 413,
+      "completionTokens": 81,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 2,
+        "message": "a boundary event has no incoming flow; flow poll > timeout left out"
+      },
+      {
+        "line": 3,
+        "message": "unknown kind \"event\" for \"report_received\"; used task"
+      },
+      {
+        "line": 3,
+        "message": "\"event\" takes no trigger; ignored \":report\""
+      },
+      {
+        "line": 3,
+        "message": "unknown trigger \"report\" for \"end_success\"; ignored"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 7,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "01-slack-notify-ops",
+    "firstByteMs": 658,
+    "firstContentMs": 659,
+    "firstShapeMs": 967,
+    "totalMs": 2479,
+    "text": "# Order validation\nstart[start Order received] > validate[task Validate order]\nvalidate[task Validate order] > invalid[boundary:error Validation failed | on=validate]\ninvalid[boundary:error Validation failed | on=validate] > slack[service Send message to Slack] > notify[end:error Ops notified]\nslack[service Send message to Slack] > notify[end:error Ops notified]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 359,
+      "completionTokens": 77,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 3,
+        "message": "\"validate\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 3,
+        "message": "a boundary event has no incoming flow; flow validate > invalid left out"
+      },
+      {
+        "line": 4,
+        "message": "\"invalid\" is already declared on line 3; the first declaration is kept"
+      },
+      {
+        "line": 5,
+        "message": "\"slack\" is already declared on line 4; the first declaration is kept"
+      },
+      {
+        "line": 5,
+        "message": "\"notify\" is already declared on line 4; the first declaration is kept"
+      }
+    ],
+    "fixes": [
+      "added end event \"validate_end\" after \"validate\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 6,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "02-multi-branch-approval",
+    "firstByteMs": 206,
+    "firstContentMs": 207,
+    "firstShapeMs": 516,
+    "totalMs": 1586,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Manager review] > pay\ncheck >(No: default) auto[service Auto-approve] > pay\npay[service Process payment] > done[end Expense processed]\nfailed[boundary:error Payment failed | on=pay] > notice[end:error Failure notified]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 390,
+      "completionTokens": 85,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 9,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "05-message-correlated-payment",
+    "firstByteMs": 199,
+    "firstContentMs": 199,
+    "totalMs": 1087,
+    "text": "# Order shipping\nstart[order placed] > await[catch:message payment-confirmed | correlation key=order id] > ship[service Ship order] > done[end Order shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 366,
+      "completionTokens": 38,
+      "cachedTokens": 0
+    },
+    "neurons": 3,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"order\" for \"start\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown attribute \"correlation\" on \"await\"; ignored"
+      },
+      {
+        "line": 2,
+        "message": "unknown attribute \"key=order\" on \"await\"; ignored"
+      },
+      {
+        "line": 2,
+        "message": "unknown attribute \"id\" on \"await\"; ignored"
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\""
+    ],
+    "lintErrors": [
+      "Message catch \"payment-confirmed\" (intermediateCatchEvent) has no zeebe:subscription correlationKey."
+    ],
+    "lintWarnings": 2,
+    "elements": 5,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "06-multi-instance-email-notify",
+    "firstByteMs": 228,
+    "firstContentMs": 228,
+    "firstShapeMs": 945,
+    "totalMs": 1607,
+    "text": "# Stakeholder email distribution\nstart[start Receive list] > prepare[task Prepare email draft] > check[xor Valid recipients?] > send[service Send email to recipient]\ncheck >(Yes: has list) prepare\ncheck >(No: default) done[end Send complete]\nsend > next\nnext > done\ndone",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 356,
+      "completionTokens": 65,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [
+      {
+        "line": 5,
+        "message": "\"next\" is never declared; flow send > next left out"
+      },
+      {
+        "line": 6,
+        "message": "\"next\" is never declared; flow next > done left out"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"prepare\" with xor gateway \"prepare_join\"",
+      "added end event \"send_end\" after \"send\""
+    ],
+    "lintErrors": [
+      "Sequence flow \"Flow_3\" exits a decision gateway without a condition expression.",
+      "Invalid FEEL expression on condition of \"Flow_4\": Unexpected token 'list'"
+    ],
+    "lintWarnings": 5,
+    "elements": 7,
+    "failed": [
+      "no subProcess"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "07-error-boundary-payment-refund",
+    "firstByteMs": 152,
+    "firstContentMs": 152,
+    "firstShapeMs": 511,
+    "totalMs": 2012,
+    "text": "# Card charge process\nstart[start Initiate charge] > check[xor Charge succeeds?]\ncheck >[default no] capture[service Capture amount] > check2[xor Transaction successful?]\ncheck2 >[default no] refund[service Refund captured amount] > notice[end:error Failure notified]\ncapture >[default yes] notify[task Send success notice] > end[end Charge successful]\nnotice > end",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 366,
+      "completionTokens": 85,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 3,
+        "message": "expected a node id at \"[default no] capture\""
+      },
+      {
+        "line": 4,
+        "message": "expected a node id at \"[default no] refund[\""
+      },
+      {
+        "line": 5,
+        "message": "expected a node id at \"[default yes] notify\""
+      },
+      {
+        "line": 6,
+        "message": "\"notice\" is never declared; flow notice > end left out"
+      }
+    ],
+    "fixes": [
+      "added end event \"check_end\" after \"check\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 3,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-long-process-onboarding",
+    "firstByteMs": 248,
+    "firstContentMs": 251,
+    "firstShapeMs": 820,
+    "totalMs": 3648,
+    "text": "# Employee onboarding\nstart[start Offer received] > sign[task Sign offer] > verify[xor Background check bad?]\nverify >(Yes: end[error Onboarding rejected]) startcheck[task Start background check]\nverify >(No: default) account[task Create/assign employee account]\nstartcheck > setupandassign[parallel Setup equipment and assign access] > parallel[xor All parallel tasks done?]\nparallel >(Yes: default) report[xor Training required?]\nparallel >(No: default) payroll[task Update org chart and payroll]\nreport >(Yes: default) training[task Security training] > compliance[task Sign compliance] > all[user Final onboarding tasks] > slack[service Send welcome slack]\nreport >(No: default) payroll > all\nsetupandassign > report\nall > done[end Onboarding complete]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 431,
+      "completionTokens": 172,
+      "cachedTokens": 0
+    },
+    "neurons": 9,
+    "problems": [
+      {
+        "line": 5,
+        "message": "unknown kind \"parallel\" for \"setupandassign\"; used task"
+      },
+      {
+        "line": 7,
+        "message": "\"parallel\" already has a default branch; this one is not the default"
+      },
+      {
+        "line": 9,
+        "message": "\"report\" already has a default branch; this one is not the default"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"payroll\" with xor gateway \"payroll_join\"",
+      "joined 2 flows into \"all\" with xor gateway \"all_join\"",
+      "added end event \"account_end\" after \"account\"",
+      "added end event \"slack_end\" after \"slack\""
+    ],
+    "lintErrors": [
+      "Sequence flow \"Flow_8\" exits a decision gateway without a condition expression.",
+      "Sequence flow \"Flow_13\" exits a decision gateway without a condition expression.",
+      "Invalid FEEL expression on condition of \"Flow_3\": Expected ]",
+      "Invalid FEEL expression on condition of \"Flow_3\": Unexpected token 'Onboarding'"
+    ],
+    "lintWarnings": 8,
+    "elements": 18,
+    "failed": [
+      "18 < 25 elements",
+      "no parallelGateway"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-email-connector-order-confirmation",
+    "firstByteMs": 224,
+    "firstContentMs": 224,
+    "totalMs": 761,
+    "text": "# Order confirmation\nstart[start Order placed] > send[service Send confirmation email] > end[end Confirmation sent]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 357,
+      "completionTokens": 24,
+      "cachedTokens": 0
+    },
+    "neurons": 3,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 3,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "11-http-connector-external-api",
+    "firstByteMs": 204,
+    "firstContentMs": 204,
+    "firstShapeMs": 865,
+    "totalMs": 1154,
+    "text": "# Order shipment\nstart[order placed] > address[service Look up shipping address] > ship[service Ship order] > done[end Order shipped]\nboundary[boundary Look while shipping] | on=ship",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 365,
+      "completionTokens": 43,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"order\" for \"start\"; used task"
+      },
+      {
+        "line": 3,
+        "message": "expected \">\" at \"| on=ship\""
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 5,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "12-business-rule-credit-check",
+    "firstByteMs": 334,
+    "firstContentMs": 336,
+    "firstShapeMs": 843,
+    "totalMs": 3561,
+    "text": "# Loan credit check\nstart[start Credit application] > check[xor Eligible for credit?]\ncheck >(Yes: applicant is eligible) review[service Run credit check] > verify[user Verify check results] > decide[user Decide approval]\ncheck >(No: applicant not eligible) reject[user Reject application] > decay[end Application rejected]\nreview > done[decision Credit approved] \nverify > done\nreject > done\ndecide > done\nfailed[catch:timer Check timeout] > reset[service Retry request] > review",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 363,
+      "completionTokens": 107,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 5,
+        "message": "unknown kind \"decision\" for \"done\"; used task"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"review\" with xor gateway \"review_join\"",
+      "joined 4 flows into \"done\" with xor gateway \"done_join\"",
+      "added end event \"done_end\" after \"done\""
+    ],
+    "lintErrors": [
+      "Invalid FEEL expression on condition of \"Flow_2\": Unexpected token 'is'",
+      "Invalid FEEL expression on condition of \"Flow_5\": Unexpected token 'not'",
+      "Element \"failed\" (intermediateCatchEvent) is not reachable from any start event.",
+      "Element \"reset\" (serviceTask) is not reachable from any start event.",
+      "Exclusive gateway \"Eligible for credit?\" has no default sequence flow."
+    ],
+    "lintWarnings": 10,
+    "elements": 13,
+    "failed": [
+      "no businessRuleTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "13-parallel-gateway-fulfillment",
+    "firstByteMs": 322,
+    "firstContentMs": 323,
+    "firstShapeMs": 827,
+    "totalMs": 1991,
+    "text": "# Order fulfillment\nstart[start Customer order] > pick[item Pick items] > pack[item Pack box] > label[item Print label]\ngw[xor Done picking, packing, printing?] > dispatch[service Dispatch package] > done[end Order fulfilled]\npick >(Yes: all items picked) K\npack >(Yes: all items packed) K\nlabel >(Yes: label printed) K\nK > dispatch",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 377,
+      "completionTokens": 83,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"item\" for \"pick\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"item\" for \"pack\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"item\" for \"label\"; used task"
+      },
+      {
+        "line": 4,
+        "message": "\"K\" is never declared; flow pick > K left out"
+      },
+      {
+        "line": 5,
+        "message": "\"K\" is never declared; flow pack > K left out"
+      },
+      {
+        "line": 6,
+        "message": "\"K\" is never declared; flow label > K left out"
+      },
+      {
+        "line": 7,
+        "message": "\"K\" is never declared; flow K > dispatch left out"
+      }
+    ],
+    "fixes": [
+      "added end event \"label_end\" after \"label\""
+    ],
+    "lintErrors": [
+      "Element \"gw\" (exclusiveGateway) is not reachable from any start event.",
+      "Element \"dispatch\" (serviceTask) is not reachable from any start event.",
+      "Element \"done\" (endEvent) is not reachable from any start event."
+    ],
+    "lintWarnings": 3,
+    "elements": 8,
+    "failed": [
+      "no parallelGateway"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "14-user-task-candidate-groups",
+    "firstByteMs": 342,
+    "firstContentMs": 343,
+    "firstShapeMs": 684,
+    "totalMs": 2268,
+    "text": "# Document routing\nstart[start Document received] > decide[xor Legal review required?]\ndecide >(Yes: and) assign[task Assign to legal] > review[user Review document] > process[service Process document]\ndecide >(No: and) publish[service Publish document] > done[end Document published]\nreview > decide[xor Approved?] > publish ; publish > done\nreject[boundary:error Rejected | on=review] > done[end:error Document disapproved]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 357,
+      "completionTokens": 98,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 5,
+        "message": "expected \">\" at \"; publish > done\""
+      },
+      {
+        "line": 6,
+        "message": "\"done\" is already declared on line 4; the first declaration is kept"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\"",
+      "added end event \"process_end\" after \"process\""
+    ],
+    "lintErrors": [
+      "Invalid FEEL expression on condition of \"Flow_2\": Unexpected token 'and'",
+      "Invalid FEEL expression on condition of \"Flow_5\": Unexpected token 'and'",
+      "Exclusive gateway \"Legal review required?\" has no default sequence flow."
+    ],
+    "lintWarnings": 6,
+    "elements": 10,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "15-timer-boundary-retry",
+    "firstByteMs": 269,
+    "firstContentMs": 270,
+    "firstShapeMs": 672,
+    "totalMs": 1952,
+    "text": "# Report polling\nstart[start Report request] > poll[task Poll report] > check[xor Timeout?]\ncheck >(Yes: timeout) wont[task Give up] > manual[task Flag for manual follow-up] > end[end Error flagged]\ncheck >(No: default) success[service Get report] > end[end Report received]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 372,
+      "completionTokens": 70,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 4,
+        "message": "\"end\" is already declared on line 3; the first declaration is kept"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"end\" with xor gateway \"end_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 8,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "prompt": "01-slack-notify-ops",
+    "firstByteMs": 285,
+    "firstReasoningMs": 289,
+    "totalMs": 13577,
+    "text": "",
+    "reasoningChars": 9506,
+    "usage": {
+      "promptTokens": 370,
+      "completionTokens": 2048,
+      "cachedTokens": 0
+    },
+    "neurons": 64,
+    "problems": [],
+    "fixes": [
+      "added start event \"start\"",
+      "added end event \"start_end\" after \"start\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 2,
+    "failed": [
+      "2 < 3 elements"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "prompt": "02-multi-branch-approval",
+    "firstByteMs": 135,
+    "firstReasoningMs": 142,
+    "firstContentMs": 5331,
+    "firstShapeMs": 5469,
+    "totalMs": 5809,
+    "text": "\n\n# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Review expense] > pay[service Process payment] > done[end Approved]\ncheck >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notice[end:error Failure notified]",
+    "reasoningChars": 2673,
+    "usage": {
+      "promptTokens": 403,
+      "completionTokens": 728,
+      "cachedTokens": 0
+    },
+    "neurons": 24,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 9,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "prompt": "05-message-correlated-payment",
+    "firstByteMs": 133,
+    "firstReasoningMs": 136,
+    "firstContentMs": 8974,
+    "totalMs": 9177,
+    "text": "\n\n# order processing\nstart[start Order placed] > receive[receive Payment confirmed] > ship[service Ship order] > done[end Order shipped]",
+    "reasoningChars": 5903,
+    "usage": {
+      "promptTokens": 377,
+      "completionTokens": 1337,
+      "cachedTokens": 0
+    },
+    "neurons": 42,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [
+      "no intermediateCatchEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "prompt": "06-multi-instance-email-notify",
+    "firstByteMs": 212,
+    "firstReasoningMs": 213,
+    "firstContentMs": 3138,
+    "totalMs": 3254,
+    "text": "\n\n# Send email to stakeholders\nstart[start Send emails] > send[service Send emails] > done[end Done]",
+    "reasoningChars": 2504,
+    "usage": {
+      "promptTokens": 367,
+      "completionTokens": 574,
+      "cachedTokens": 0
+    },
+    "neurons": 19,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 3,
+    "failed": [
+      "no subProcess"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "prompt": "07-error-boundary-payment-refund",
+    "firstByteMs": 137,
+    "firstReasoningMs": 141,
+    "firstContentMs": 8933,
+    "firstShapeMs": 9224,
+    "totalMs": 9495,
+    "text": "\n\n# Charge customer card\nstart[start Charge customer card] > charge[task Charge card] > gw[xor Charge failed?]\ngw >(Yes: Charge failed) refund[task Refund captured amount] > fail[end Failure notice]\ngw >(No: default) end[end Success]",
+    "reasoningChars": 5193,
+    "usage": {
+      "promptTokens": 377,
+      "completionTokens": 1240,
+      "cachedTokens": 0
+    },
+    "neurons": 40,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [
+      "Invalid FEEL expression on condition of \"Flow_3\": Unexpected token 'failed'"
+    ],
+    "lintWarnings": 2,
+    "elements": 6,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "prompt": "08-long-process-onboarding",
+    "firstByteMs": 188,
+    "firstReasoningMs": 192,
+    "firstContentMs": 2995,
+    "firstShapeMs": 3227,
+    "totalMs": 4210,
+    "text": "\n\n# Employee onboarding\nstart[start Offer signed] > record[task Record signed offer] > background[service Run background check] > gw[xor Background check passed?]\ngw >(Yes: result = \"passed\") setup[task Create employee account] > parallel[and Parallel setup]\ngw >(No: default) end[end Process ended]\nsetup > parallel\nparallel > it[task Setup IT equipment] > parallel\nparallel > facilities[task Setup facilities access] > parallel\nparallel > benefits[task Benefits enrollment] > parallel\nparallel > training[task Schedule security training] > compliance[task Compliance acknowledgment] > org[task Update org chart] > payroll[task Set up payroll] > orientation[task Schedule orientation] > slack[service Send welcome email via Slack] > done[end Onboarding complete]\nit > parallel\nfacilities > parallel\nbenefits > parallel",
+    "reasoningChars": 2101,
+    "usage": {
+      "promptTokens": 442,
+      "completionTokens": 623,
+      "cachedTokens": 0
+    },
+    "neurons": 21,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 17,
+    "failed": [
+      "17 < 25 elements",
+      "no userTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "prompt": "10-email-connector-order-confirmation",
+    "firstByteMs": 277,
+    "firstReasoningMs": 285,
+    "firstContentMs": 7593,
+    "totalMs": 7736,
+    "text": "\n\n# Order confirmation\nstart[start Order placed] > send_email[task Send confirmation email] > done[end Confirmation sent]",
+    "reasoningChars": 4257,
+    "usage": {
+      "promptTokens": 368,
+      "completionTokens": 994,
+      "cachedTokens": 0
+    },
+    "neurons": 32,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 3,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "prompt": "11-http-connector-external-api",
+    "firstByteMs": 209,
+    "firstReasoningMs": 213,
+    "firstContentMs": 7999,
+    "totalMs": 8243,
+    "text": "\n\n# ship order with address lookup\nstart[start Order received] > lookup_api[service Look up shipping address] > ship_order[service Ship order] > end[end Order shipped]",
+    "reasoningChars": 4778,
+    "usage": {
+      "promptTokens": 376,
+      "completionTokens": 1109,
+      "cachedTokens": 0
+    },
+    "neurons": 36,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 4,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "prompt": "12-business-rule-credit-check",
+    "firstByteMs": 142,
+    "firstReasoningMs": 149,
+    "firstContentMs": 4235,
+    "firstShapeMs": 4426,
+    "totalMs": 4693,
+    "text": "\n\n# Loan credit check\nstart[start Loan application received] > check[service Run DMN decision table] > gateway[xor Credit approved?]\ngateway >(Yes: Credit approved) approve[task Approve loan] > done[end Loan approved]\ngateway >(No: Credit rejected) reject[task Reject loan] > done[end Loan rejected]",
+    "reasoningChars": 2321,
+    "usage": {
+      "promptTokens": 374,
+      "completionTokens": 587,
+      "cachedTokens": 0
+    },
+    "neurons": 20,
+    "problems": [
+      {
+        "line": 6,
+        "message": "\"done\" is already declared on line 5; the first declaration is kept"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\""
+    ],
+    "lintErrors": [
+      "Invalid FEEL expression on condition of \"Flow_3\": Unexpected token 'approved'",
+      "Invalid FEEL expression on condition of \"Flow_5\": Unexpected token 'rejected'",
+      "Exclusive gateway \"Credit approved?\" has no default sequence flow."
+    ],
+    "lintWarnings": 5,
+    "elements": 7,
+    "failed": [
+      "no businessRuleTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "prompt": "13-parallel-gateway-fulfillment",
+    "firstByteMs": 109,
+    "firstReasoningMs": 115,
+    "firstContentMs": 10381,
+    "firstShapeMs": 10480,
+    "totalMs": 10807,
+    "text": "\n\n# Fulfill order\nstart[start] > gw1[and]\ngw1 > pick[task Pick items]\ngw1 > pack[task Pack box]\ngw1 > print[task Print label]\npick > gw2[and]\npack > gw2\nprint > gw2\ngw2 > dispatch[task Dispatch package]\ndispatch > end[end]",
+    "reasoningChars": 5759,
+    "usage": {
+      "promptTokens": 388,
+      "completionTokens": 1508,
+      "cachedTokens": 0
+    },
+    "neurons": 48,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 8,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "prompt": "14-user-task-candidate-groups",
+    "firstByteMs": 122,
+    "firstReasoningMs": 128,
+    "firstContentMs": 6395,
+    "firstShapeMs": 6608,
+    "totalMs": 6818,
+    "text": "\n\n# Route document for legal review\nstart[start Document created] > send_to_legal[task Send to legal review] > review_approved[xor Legal review approved?]\nreview_approved >(Yes: Approved) publish[service Publish document] > done[end Document published]\nreview_approved >(No: default) reject[end Document rejected]",
+    "reasoningChars": 4794,
+    "usage": {
+      "promptTokens": 368,
+      "completionTokens": 1131,
+      "cachedTokens": 0
+    },
+    "neurons": 36,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 6,
+    "failed": [
+      "no userTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "prompt": "15-timer-boundary-retry",
+    "firstByteMs": 141,
+    "firstReasoningMs": 155,
+    "firstContentMs": 4525,
+    "firstShapeMs": 4705,
+    "totalMs": 4904,
+    "text": "\n\n# Poll external system for report\nstart[start Poll initiated] > poll[task Poll external system]\npoll[boundary:timer 5min | on=poll] > flag[task Flag for manual follow-up] > done[end Report flagged]",
+    "reasoningChars": 2769,
+    "usage": {
+      "promptTokens": 383,
+      "completionTokens": 706,
+      "cachedTokens": 0
+    },
+    "neurons": 23,
+    "problems": [
+      {
+        "line": 5,
+        "message": "\"poll\" is already declared on line 4; the first declaration is kept"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 4,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/ibm-granite/granite-4.0-h-micro",
+    "prompt": "01-slack-notify-ops",
+    "firstByteMs": 259,
+    "firstContentMs": 259,
+    "firstShapeMs": 866,
+    "totalMs": 1529,
+    "text": "# Order validation failure notification\nstart[order validation fails] > notify[gw Order validation failed? | nonint]\nnotify >(Yes: on=ops) slack[send message to Slack with order id] > end[notification complete]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 366,
+      "completionTokens": 49,
+      "cachedTokens": 0
+    },
+    "neurons": 1,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"order\" for \"start\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"gw\" for \"notify\"; used task"
+      },
+      {
+        "line": 3,
+        "message": "unknown kind \"notification\" for \"end\"; used task"
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\"",
+      "added end event \"end_end\" after \"end\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 6,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/ibm-granite/granite-4.0-h-micro",
+    "prompt": "02-multi-branch-approval",
+    "firstByteMs": 519,
+    "firstContentMs": 519,
+    "totalMs": 3068,
+    "text": "# Expense approval process\nstart[Expense submitted] > check[xor Amount > 1000?] > \ncheck >: Yes > review[user Review expense] > approve[Auto-approve] > payment[Process payment] > success[end Payment successful]\ncheck >: No > manager[user Manager approval] > approve[Manager approves] > payment[Process payment] > success[end Payment successful]\nfailed[boundary:error Payment failed | on=payment] > notice[end Failure notice]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 397,
+      "completionTokens": 97,
+      "cachedTokens": 0
+    },
+    "neurons": 2,
+    "problems": [
+      {
+        "line": 2,
+        "message": "expected a node id at \"\""
+      },
+      {
+        "line": 3,
+        "message": "expected a node id at \": Yes > review[user \""
+      },
+      {
+        "line": 4,
+        "message": "expected a node id at \": No > manager[user \""
+      },
+      {
+        "line": 5,
+        "message": "boundary \"failed\" is on \"payment\", which is not a task; left out"
+      },
+      {
+        "line": 5,
+        "message": "\"failed\" was left out; flow failed > notice left out"
+      }
+    ],
+    "fixes": [
+      "added start event \"start\" before \"notice\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 2,
+    "failed": [
+      "2 < 6 elements",
+      "no exclusiveGateway",
+      "no userTask",
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/ibm-granite/granite-4.0-h-micro",
+    "prompt": "05-message-correlated-payment",
+    "firstByteMs": 336,
+    "firstContentMs": 336,
+    "firstShapeMs": 943,
+    "totalMs": 1564,
+    "text": "# Order shipping\nstart[order placed] > wait[wait for payment-confirmed | on=order_id] \npayment-confirmed[receive payment-confirmed] > ship[service Ship order] > end[order shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 373,
+      "completionTokens": 47,
+      "cachedTokens": 0
+    },
+    "neurons": 1,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"order\" for \"start\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"wait\" for \"wait\"; used task"
+      },
+      {
+        "line": 3,
+        "message": "unknown kind \"order\" for \"end\"; used task"
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\"",
+      "added end event \"wait_end\" after \"wait\"",
+      "added end event \"end_end\" after \"end\""
+    ],
+    "lintErrors": [
+      "Element \"payment-confirmed\" (receiveTask) is not reachable from any start event.",
+      "Element \"ship\" (serviceTask) is not reachable from any start event.",
+      "Element \"end\" (task) is not reachable from any start event.",
+      "Element \"end_end\" (endEvent) is not reachable from any start event."
+    ],
+    "lintWarnings": 2,
+    "elements": 8,
+    "failed": [
+      "no intermediateCatchEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/ibm-granite/granite-4.0-h-micro",
+    "prompt": "06-multi-instance-email-notify",
+    "firstByteMs": 268,
+    "firstContentMs": 268,
+    "totalMs": 1473,
+    "text": "# Send email notifications\nstart[service Send email notifications] > list[fetch stakeholder list] > loop[foreach stakeholder in list] > email[send email to stakeholder] > end[end Email notifications sent]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 363,
+      "completionTokens": 46,
+      "cachedTokens": 0
+    },
+    "neurons": 1,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"fetch\" for \"list\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"foreach\" for \"loop\"; used task"
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 6,
+    "failed": [
+      "no subProcess"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/ibm-granite/granite-4.0-h-micro",
+    "prompt": "07-error-boundary-payment-refund",
+    "firstByteMs": 430,
+    "firstContentMs": 432,
+    "firstShapeMs": 1360,
+    "totalMs": 2663,
+    "text": "# Charge customer's card\nstart[Customer requests charge] > check[Card details valid?] > gw1[Yes: Continue] > charge[Service charge customer's card]\ncharge > success[end: Charge succeeded] | fail[boundary:error Charge failed]\nfail > refund[Service capture amount] > refund_success[end: Amount refunded]\nfail > notify[Failure notice sent to customer] > end[Charge failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 373,
+      "completionTokens": 85,
+      "cachedTokens": 0
+    },
+    "neurons": 1,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"customer\" for \"start\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"card\" for \"check\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"yes\" for \"gw1\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "\"yes\" takes no trigger; ignored \":\""
+      },
+      {
+        "line": 3,
+        "message": "expected \">\" at \"| fail[boundary:erro\""
+      },
+      {
+        "line": 4,
+        "message": "unknown trigger \"\" for \"refund_success\"; ignored"
+      },
+      {
+        "line": 4,
+        "message": "\"fail\" is never declared; flow fail > refund left out"
+      },
+      {
+        "line": 5,
+        "message": "unknown kind \"failure\" for \"notify\"; used task"
+      },
+      {
+        "line": 5,
+        "message": "unknown kind \"charge\" for \"end\"; used task"
+      },
+      {
+        "line": 5,
+        "message": "\"fail\" is never declared; flow fail > notify left out"
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\"",
+      "added end event \"charge_end\" after \"charge\"",
+      "added end event \"end_end\" after \"end\""
+    ],
+    "lintErrors": [
+      "Element \"refund\" (serviceTask) is not reachable from any start event.",
+      "Element \"refund_success\" (endEvent) is not reachable from any start event.",
+      "Element \"notify\" (task) is not reachable from any start event.",
+      "Element \"end\" (task) is not reachable from any start event.",
+      "Element \"end_end\" (endEvent) is not reachable from any start event."
+    ],
+    "lintWarnings": 3,
+    "elements": 11,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/ibm-granite/granite-4.0-h-micro",
+    "prompt": "08-long-process-onboarding",
+    "firstByteMs": 639,
+    "firstContentMs": 641,
+    "firstShapeMs": 1376,
+    "totalMs": 4209,
+    "text": "# Employee onboarding process\nstart[Employee offers employment] > record[record signed offer] > background_check[xor Background check failed?] \nbackground_check > Yes[fail] end[Onboarding ended]\nbackground_check > No[success] create[create employee account] > email[assign email address] \nprocess[set up IT equipment] | process[set up facilities access] | process[benefits enrollment] > finish[all three complete] > training[schedule security training] > acknowledge[compliance acknowledgment] \nupdate[update org chart] > payroll[set up payroll] > orientation[schedule orientation] > welcome[send welcome email via Slack]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 438,
+      "completionTokens": 136,
+      "cachedTokens": 0
+    },
+    "neurons": 2,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"employee\" for \"start\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"record\" for \"record\"; used task"
+      },
+      {
+        "line": 3,
+        "message": "expected \">\" at \"end[Onboarding ended\""
+      },
+      {
+        "line": 4,
+        "message": "expected \">\" at \"create[create employ\""
+      },
+      {
+        "line": 5,
+        "message": "expected \">\" at \"| process[set up fac\""
+      },
+      {
+        "line": 6,
+        "message": "unknown kind \"update\" for \"update\"; used task"
+      },
+      {
+        "line": 6,
+        "message": "unknown kind \"set\" for \"payroll\"; used task"
+      },
+      {
+        "line": 6,
+        "message": "unknown kind \"schedule\" for \"orientation\"; used task"
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\"",
+      "added end event \"background_check_end\" after \"background_check\"",
+      "added end event \"welcome_end\" after \"welcome\""
+    ],
+    "lintErrors": [
+      "Element \"update\" (task) is not reachable from any start event.",
+      "Element \"payroll\" (task) is not reachable from any start event.",
+      "Element \"orientation\" (task) is not reachable from any start event.",
+      "Element \"welcome\" (sendTask) is not reachable from any start event.",
+      "Element \"welcome_end\" (endEvent) is not reachable from any start event."
+    ],
+    "lintWarnings": 2,
+    "elements": 10,
+    "failed": [
+      "10 < 25 elements",
+      "no parallelGateway",
+      "no userTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/ibm-granite/granite-4.0-h-micro",
+    "prompt": "10-email-connector-order-confirmation",
+    "firstByteMs": 224,
+    "firstContentMs": 226,
+    "totalMs": 1018,
+    "text": "# Order confirmation\nstart[order placed] > send[gateway Send order confirmation?] > email[send email to customer] > end[email sent]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 364,
+      "completionTokens": 31,
+      "cachedTokens": 0
+    },
+    "neurons": 1,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"order\" for \"start\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"gateway\" for \"send\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"email\" for \"end\"; used task"
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\"",
+      "added end event \"end_end\" after \"end\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 6,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/ibm-granite/granite-4.0-h-micro",
+    "prompt": "11-http-connector-external-api",
+    "firstByteMs": 165,
+    "firstContentMs": 165,
+    "totalMs": 1035,
+    "text": "# Order shipping\nstart[order received] > lookup[call REST API get address] > ship[use address to ship order] > end[shipping complete]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 372,
+      "completionTokens": 34,
+      "cachedTokens": 0
+    },
+    "neurons": 1,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"order\" for \"start\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"use\" for \"ship\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"shipping\" for \"end\"; used task"
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\"",
+      "added end event \"end_end\" after \"end\""
+    ],
+    "lintErrors": [
+      "Call activity \"REST API get address\" has no error boundary event.",
+      "Call activity \"REST API get address\" has no zeebe:calledElement processId."
+    ],
+    "lintWarnings": 1,
+    "elements": 6,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/ibm-granite/granite-4.0-h-micro",
+    "prompt": "12-business-rule-credit-check",
+    "firstByteMs": 481,
+    "firstContentMs": 481,
+    "firstShapeMs": 1353,
+    "totalMs": 1750,
+    "text": "# Loan application decision\nstart[loan application received] > check[dmn Check credit score] > approve[service Approve loan] > end[loan approved]\ncheck > reject[service Reject loan] > end[loan rejected]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 370,
+      "completionTokens": 49,
+      "cachedTokens": 0
+    },
+    "neurons": 1,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"loan\" for \"start\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"dmn\" for \"check\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"loan\" for \"end\"; used task"
+      },
+      {
+        "line": 3,
+        "message": "\"end\" is already declared on line 2; the first declaration is kept"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"end\" with xor gateway \"end_join\"",
+      "added start event \"start_2\" before \"start\"",
+      "added end event \"end_end\" after \"end\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 8,
+    "failed": [
+      "no businessRuleTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/ibm-granite/granite-4.0-h-micro",
+    "prompt": "13-parallel-gateway-fulfillment",
+    "firstByteMs": 482,
+    "firstContentMs": 482,
+    "firstShapeMs": 1010,
+    "totalMs": 2438,
+    "text": "# Fulfill an order\nstart[Order received] > pick[gateway Pick items? (parallel)]\npick > pack[user Pack box] > label[service Print shipping label] > dispatch[gateway Dispatch package? (end: shipped)]\npack > dispatch\nlabel > dispatch\nfailed[boundary:error Dispatch failed | on=dispatch] > notice[end:error Failure notified]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 384,
+      "completionTokens": 75,
+      "cachedTokens": 0
+    },
+    "neurons": 1,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"order\" for \"start\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"gateway\" for \"pick\"; used task"
+      },
+      {
+        "line": 3,
+        "message": "unknown kind \"gateway\" for \"dispatch\"; used task"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"dispatch\" with xor gateway \"dispatch_join\"",
+      "added start event \"start_2\" before \"start\"",
+      "added end event \"dispatch_end\" after \"dispatch\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 10,
+    "failed": [
+      "no parallelGateway"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/ibm-granite/granite-4.0-h-micro",
+    "prompt": "14-user-task-candidate-groups",
+    "firstByteMs": 604,
+    "firstContentMs": 605,
+    "firstShapeMs": 1159,
+    "totalMs": 2592,
+    "text": "# Document review process\nstart[msg Document submitted] > check[gateway Is document legal? | on=start]\ncheck >| legal[task Review by legal team] > end[Document approved]\nlegal >| approve[send msg Document approved by legal] > publish[end Document published]\nlegal >| reject[send msg Document rejected by legal] > end[Document rejected]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 364,
+      "completionTokens": 76,
+      "cachedTokens": 0
+    },
+    "neurons": 1,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"msg\" for \"start\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"gateway\" for \"check\"; used task"
+      },
+      {
+        "line": 3,
+        "message": "expected a node id at \"| legal[task Review \""
+      },
+      {
+        "line": 4,
+        "message": "expected a node id at \"| approve[send msg D\""
+      },
+      {
+        "line": 5,
+        "message": "expected a node id at \"| reject[send msg Do\""
+      }
+    ],
+    "fixes": [
+      "added start event \"start_2\" before \"start\"",
+      "added end event \"check_end\" after \"check\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 4,
+    "failed": [
+      "no userTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/ibm-granite/granite-4.0-h-micro",
+    "prompt": "15-timer-boundary-retry",
+    "firstByteMs": 166,
+    "firstContentMs": 167,
+    "firstShapeMs": 931,
+    "totalMs": 1518,
+    "text": "# Report retrieval\na > poll[gateway: response within 5 minutes?] > response[service Retrieve report] > end[Report retrieved successfully]\npoll > timeout[manual Follow up required] > end[Report not retrieved - manual follow-up needed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 379,
+      "completionTokens": 52,
+      "cachedTokens": 0
+    },
+    "neurons": 1,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"gateway\" for \"poll\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "\"gateway\" takes no trigger; ignored \":\""
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"report\" for \"end\"; used task"
+      },
+      {
+        "line": 2,
+        "message": "\"a\" is never declared; flow a > poll left out"
+      },
+      {
+        "line": 3,
+        "message": "\"end\" is already declared on line 2; the first declaration is kept"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"end\" with xor gateway \"end_join\"",
+      "added start event \"start\" before \"poll\"",
+      "added end event \"end_end\" after \"end\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 7,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  }
+]

@@ -18,7 +18,7 @@ on it. Each README and each package page on this site shows it.
   `@bpmnkit/casen-report`, `@bpmnkit/casen-worker-http`, `@bpmnkit/casen-worker-ai`, and the
   shared plumbing `@bpmnkit/ui`, `@bpmnkit/profiles` and `@bpmnkit/astro-shared`.
 - **Experimental:** Reebe, `@bpmnkit/reebe-wasm`, `@bpmnkit/operate`, `@bpmnkit/user-tasks`,
-  Studio, the Desktop app and proxy-rs.
+  `@bpmnkit/flow`, Studio, the Desktop app and proxy-rs.
 
 Reebe is a dev/test engine: use it on your machine and in CI, not in production. The
 `@bpmnkit/engine/wasm-runner` entry point is part of a Core package, so its API is covered,

@@ -28,6 +28,7 @@
 			".swarm",
 			"**/tmp/**",
 			"**/recordings/**",
+			"**/bench-results/**",
 			"**/templates/generated.ts",
 			"**/src-tauri/**",
 			"**/.astro/**",

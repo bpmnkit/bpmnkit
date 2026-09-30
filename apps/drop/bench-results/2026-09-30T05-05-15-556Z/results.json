@@ -1,0 +1,1836 @@
+[
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "01-slack-notify-ops",
+    "firstByteMs": 594,
+    "firstContentMs": 595,
+    "firstShapeMs": 821,
+    "totalMs": 1544,
+    "text": "# Order validation workflow\nstart[start Order received] > check[xor Is order valid?]\ncheck >(Yes: default) process[service Process order] > end[end Processing complete]\ncheck >(No: default) notify[send Send Slack message #ops | message=\"Order ${id} validation failed\"] > end[end Processing complete]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 382,
+      "completionTokens": 68,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 4,
+        "message": "unknown attribute \"message=\"Order\" on \"notify\"; ignored"
+      },
+      {
+        "line": 4,
+        "message": "unknown attribute \"${id}\" on \"notify\"; ignored"
+      },
+      {
+        "line": 4,
+        "message": "unknown attribute \"validation\" on \"notify\"; ignored"
+      },
+      {
+        "line": 4,
+        "message": "unknown attribute \"failed\"\" on \"notify\"; ignored"
+      },
+      {
+        "line": 4,
+        "message": "\"end\" is already declared on line 3; the first declaration is kept"
+      },
+      {
+        "line": 4,
+        "message": "\"check\" already has a default branch; this one is not the default"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"end\" with xor gateway \"end_join\""
+    ],
+    "lintErrors": [
+      "Sequence flow \"Flow_4\" exits a decision gateway without a condition expression."
+    ],
+    "lintWarnings": 3,
+    "elements": 6,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "01-slack-notify-ops",
+    "firstByteMs": 148,
+    "firstContentMs": 149,
+    "firstShapeMs": 374,
+    "totalMs": 1415,
+    "text": "# Order validation failure notification\nstart[start Order received] > validate[user Validate order]\nvalidate > check[xor Order invalid?]\ncheck >(Yes: order.invalid) throw[throw order Validation failed] > error[catch:error #ops notified]\ncheck >(No: default) process[service Process order] > done[end Order accepted]\nerror > send[send Message to Slack] > end[end Sent notification]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 382,
+      "completionTokens": 83,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 9,
+    "failed": [],
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "01-slack-notify-ops",
+    "firstByteMs": 215,
+    "firstContentMs": 216,
+    "firstShapeMs": 511,
+    "totalMs": 1887,
+    "text": "# Slack notification\nstart[start Order created] > validate[user Validate order]\nvalidate > catch:timer [timer Wait 1m] > timeout[service Retry time out] > done[end Process complete]\nvalidate[xor Failed validation?] > catch:timer [timer Wait 1m]\nvalidate[xor Failed validation?] > notify[service Notify ops on Slack] > done[end Process complete]\nnotify[service Notify ops on Slack] > done-end [end Done]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 382,
+      "completionTokens": 95,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 3,
+        "message": "expected \">\" at \":timer [timer Wait 1\""
+      },
+      {
+        "line": 4,
+        "message": "expected \">\" at \":timer [timer Wait 1\""
+      },
+      {
+        "line": 5,
+        "message": "\"validate\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 6,
+        "message": "expected \">\" at \"[end Done]\""
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 4,
+    "failed": [],
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "02-multi-branch-approval",
+    "firstByteMs": 242,
+    "firstContentMs": 242,
+    "firstShapeMs": 477,
+    "totalMs": 1471,
+    "text": "# Expense approval\nstart[expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Manager review] > process[service Process payment]\ncheck >(No: default) auto[service Auto-approve] > process\nfailed[boundary:error Payment failed | on=process] > error_check[right:error Check payment status]\nerror_check > fail[throw Failure] > notice[end:error Failure notified]\nprocess > notice[end Payment successful]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 413,
+      "completionTokens": 101,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"expense\" for \"start\"; used startEvent"
+      },
+      {
+        "line": 5,
+        "message": "unknown kind \"right\" for \"error_check\"; used task"
+      },
+      {
+        "line": 5,
+        "message": "\"right\" takes no trigger; ignored \":error\""
+      },
+      {
+        "line": 7,
+        "message": "\"notice\" is already declared on line 6; the first declaration is kept"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"process\" with xor gateway \"process_join\"",
+      "joined 2 flows into \"notice\" with xor gateway \"notice_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 11,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "02-multi-branch-approval",
+    "firstByteMs": 230,
+    "firstContentMs": 230,
+    "firstShapeMs": 458,
+    "totalMs": 1072,
+    "text": "# Expense approval\nstart[start Expense submitted] > gate[? Amount over 1000?]\ngate >(Yes: amount > 1000) review[user Manager review] > pay[service Process payment]\ngate >(No: default) auto[service Approve automatically] > pay\nfailed[boundary:error Payment failed | on=pay] > notice[end:error Failure notified]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 413,
+      "completionTokens": 77,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"?\" for \"gate\"; used task"
+      },
+      {
+        "line": 4,
+        "message": "only an xor or or gateway has a default branch; gate > auto is not"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"pay\" with xor gateway \"pay_join\"",
+      "added end event \"pay_end\" after \"pay\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 9,
+    "failed": [],
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "02-multi-branch-approval",
+    "firstByteMs": 11511,
+    "firstContentMs": 11511,
+    "firstShapeMs": 11983,
+    "totalMs": 14127,
+    "text": "# Expense approval\nstart[start Expense submitted] > check[xor Amount over 1000?]\ncheck >(Yes: amount > 1000) review[user Review expense] > pay\ncheck >(No: default) auto[manual Approve] > pay\nfailed[boundary:error Payment failed | on=pay] > notice[end:error Failure notified]\npay > done[end Expense paid]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 413,
+      "completionTokens": 79,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 3,
+        "message": "\"pay\" is never declared; flow review > pay left out"
+      },
+      {
+        "line": 4,
+        "message": "\"pay\" is never declared; flow auto > pay left out"
+      },
+      {
+        "line": 5,
+        "message": "boundary \"failed\" is on \"pay\", which is not a task; left out"
+      },
+      {
+        "line": 5,
+        "message": "\"failed\" was left out; flow failed > notice left out"
+      },
+      {
+        "line": 6,
+        "message": "\"pay\" is never declared; flow pay > done left out"
+      }
+    ],
+    "fixes": [
+      "added end event \"review_end\" after \"review\"",
+      "added end event \"auto_end\" after \"auto\""
+    ],
+    "lintErrors": [
+      "Element \"notice\" (endEvent) is not reachable from any start event.",
+      "Element \"done\" (endEvent) is not reachable from any start event."
+    ],
+    "lintWarnings": 3,
+    "elements": 8,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "05-message-correlated-payment",
+    "firstByteMs": 160,
+    "firstContentMs": 160,
+    "totalMs": 1067,
+    "text": "# Order to shipping\nstart[start Order received] > wait[catch:timer payment-confirmed | timer:amount=1m] > ship[service Ship order] > end[end Shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 389,
+      "completionTokens": 41,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown attribute \"timer:amount=1m\" on \"wait\"; ignored"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "05-message-correlated-payment",
+    "firstByteMs": 117,
+    "firstContentMs": 117,
+    "totalMs": 398,
+    "text": "# Order shipping\nstart[order placed] > wait[catch:timer payment-confirmed | on=wait] > ship[service Ship order] > end[order shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 389,
+      "completionTokens": 37,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"order\" for \"start\"; used startEvent"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"order\" for \"end\"; used endEvent"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [],
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "05-message-correlated-payment",
+    "firstByteMs": 224,
+    "firstContentMs": 224,
+    "firstShapeMs": 668,
+    "totalMs": 1357,
+    "text": "# Process order fulfillment  \nstart[start Order placed] > wait[catch:timer Wait for payment confirmation] > check[xor Payment received?]  \ncheck >(Yes: amount unreconciled) ship[manual Ship order] > done[end Order shipped]  \ncheck >(No: default) cancel[manual Notify customer] > done[end Order cancelled]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 389,
+      "completionTokens": 70,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 3,
+        "message": "condition \"amount unreconciled\" is not FEEL; kept as the branch label"
+      },
+      {
+        "line": 4,
+        "message": "\"done\" is already declared on line 3; the first declaration is kept"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\""
+    ],
+    "lintErrors": [
+      "Sequence flow \"Flow_3\" exits a decision gateway without a condition expression."
+    ],
+    "lintWarnings": 2,
+    "elements": 7,
+    "failed": [],
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "06-multi-instance-email-notify",
+    "firstByteMs": 217,
+    "firstContentMs": 217,
+    "totalMs": 664,
+    "text": "# Stakeholder notification\nstart[start Create job] > send[service Send email notification] > done[end Job complete]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 379,
+      "completionTokens": 25,
+      "cachedTokens": 0
+    },
+    "neurons": 3,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 3,
+    "failed": [
+      "no subProcess"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "06-multi-instance-email-notify",
+    "firstByteMs": 205,
+    "firstContentMs": 206,
+    "totalMs": 763,
+    "text": "# Send stakeholder email\nstart[start Email event] > list[task Get recipients] > send[send Send email to each] > done[end Email sent]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 379,
+      "completionTokens": 34,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 4,
+    "failed": [
+      "no subProcess"
+    ],
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "06-multi-instance-email-notify",
+    "firstByteMs": 169,
+    "firstContentMs": 169,
+    "totalMs": 721,
+    "text": "# Email notification\nstart[start Notification required] > recipients[service Retrieve recipients] > send[service Send email] > done[end Notification sent]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 379,
+      "completionTokens": 30,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 4,
+    "failed": [
+      "no subProcess"
+    ],
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "07-error-boundary-payment-refund",
+    "firstByteMs": 207,
+    "firstContentMs": 207,
+    "firstShapeMs": 596,
+    "totalMs": 1498,
+    "text": "# Card charge\nstart[start Customer?] > charge[service Charge customer?] > check[xor Charge successful?]\ncheck >(No: default) refund[service Refund] > notice[end:error Failure notice] > stop[task Stop process]\ncharge[service Charge customer?] > capture[service Capture amount] > success[end Charge successful]\nstop[task Stop process] > stop2[task End]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 389,
+      "completionTokens": 82,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 3,
+        "message": "an end event has no outgoing flow; flow notice > stop left out"
+      },
+      {
+        "line": 4,
+        "message": "\"charge\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 5,
+        "message": "\"stop\" is already declared on line 3; the first declaration is kept"
+      }
+    ],
+    "fixes": [
+      "added end event \"stop2_end\" after \"stop2\""
+    ],
+    "lintErrors": [
+      "Element \"stop\" (task) is not reachable from any start event.",
+      "Element \"stop2\" (task) is not reachable from any start event.",
+      "Element \"stop2_end\" (endEvent) is not reachable from any start event."
+    ],
+    "lintWarnings": 5,
+    "elements": 10,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "07-error-boundary-payment-refund",
+    "firstByteMs": 141,
+    "firstContentMs": 141,
+    "firstShapeMs": 493,
+    "totalMs": 1131,
+    "text": "# Customer charge\nstart[start Charge order] > charge[service Capture payment] > gw[xor Payment failed?]\ngw >(Yes: success = false) refund[service Issue refund] > notice[end:error Refund sent]\ngw >(No: default) success[end:error Charge caputred]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 389,
+      "completionTokens": 61,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 6,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "07-error-boundary-payment-refund",
+    "firstByteMs": 145,
+    "firstContentMs": 145,
+    "firstShapeMs": 561,
+    "totalMs": 1226,
+    "text": "# Card charge process\nstart[start Charge customer card] > charge[service Process charge] > check[xor Charge successful?]\ncheck >(Yes: success) log[script Log successful charge] > done[end Charge complete]\ncheck >(No: failure) refund[service Refund captured amount] > notice[end:error Failure notice]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 389,
+      "completionTokens": 67,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [
+      "Exclusive gateway \"Charge successful?\" has no default sequence flow."
+    ],
+    "lintWarnings": 6,
+    "elements": 7,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-long-process-onboarding",
+    "firstByteMs": 314,
+    "firstContentMs": 314,
+    "firstShapeMs": 840,
+    "totalMs": 37425,
+    "text": "# Employee onboarding\nstart[start Check employment eligibility] > offer[Task Receive signed offer] > check[xor Background check result?]\ncheck >(Fail: mandatory end) end_point[end:end Process ended]\ncheck >(Pass: mandatory end) review[DMN Check background details] > and1[and Gather setup items]\nand1 > acc[Task Create employee account] > assign[Task Assign email address]\nand1 > create_it[Task Set up IT equipment]\nand1 > facil[Task Facilitate facilities access]\nand1 > benefit[Task Enroll in benefits]\ncreate_it > done[wait for parallel finish]\nfacil > done\nbenefit > done\ndone > training[catch:timer Mandatory training scheduled]\ntraining > ack[Task Security training] > sign[Task Compliance acceptance] > cross[Task Cross-check participation]\ncross > org[Task Update org chart] > payroll[service Set up payroll] > orient[service Schedule employee orientation] > email[Task Send welcome Slack email] > end[end Formal onboarding]\npaid:mandatory的错误处理部分似乎未显示流程继续到达交叉步骤的问题。如果处理不好，可能会中断流程。需要修改边界事件以正确连接到后续步骤。\n修改后的边界事件定义:\nfailed[boundary:error Mandatory end | on=review] > end_point\nfailed[boundary:error Setup incomplete | on=training] > end_point\ncross[boundary:error Not compliant | on=sign] > end_point\nemail[boundary:error Welcome failed | on=email] > end_point\nend[boundary:error Payment failed | on=payroll] > end_point\nend[boundary:error Process failed | on=end] > failed_notice[end:error Failed]\n\n等等，我是不是应该默默地修正这个错误，还是保持原样输出？\n指令是 \"Model what the description asks for and nothing more.\"\n用户提供了一个描述，让我转换为BPMN。\n用户描述中并没有提到\"如果失败，结束进程\"或者明确的错误处理路径。\n描述只说：\"...run a background check (if it fails, end the process), ...\"\n\"if it fails, end the process\" 意味着这里是一个失败分支指向一个结束事件。\n\n我之前的草稿中检查门之后到了 review，然后到 and1，然后并行。这里的 \"if it fails\" 指的是 background check。\n用户说：\"Check employment eligibility\" 也许不算是每日检查？\n\"Check for employment eligibility\" 是一个开始消息事件。这是一个静态状态。\n然后 \"Receive signed offer\"。\n然后 \"Background check result\"。\n背景检查逻辑：\n背景检查失败 -> 结束。\n背景检查成功 -> 继续创建账户，并行设置...\n\n所以这个缺口需要在并行设置 *之前* 处理。\n我之前的草稿：\ncheck > fail > end_point\ncheck > pass > review/dmn\n但是 wait for parallel finish 需要什么作为子流？\n如果我只是放一个结束事件在这里，流程就永远中断了，如果不小心的话（虽然我把它命名为 end_point）。\n但在 BPMN 中，一旦进入并行多选，如果不关闭，就不能只增加退出流。\n\n所以：\ncheck[pks Background check passed?]\n>pskfail[pk No: Process ended] > end\n>psschall[pkm Create employee account and assign email] > and1\n\nor\nreview[DMN Check background] > check2[pks Background check passed?]\n>pskfail > end\n>psschall > and1\n\n让我们坚持流程描述中 \"run a background check (if it fails, end the process)\" 的逻辑。\n背景检查最合适的位置是在拿到信之后。这可能是一个服务的调用。\n让我们说 \"DMN Background check\"。\n\n流程：\nstart > offer > bg_check_check[DMN Background check]\nbg_check_check >(fail:bg_check_failed) end_process\nbg_check_check >(pass:bg_check_passed) acc_create[Task Create employee account and assign email]\nacc_create > parallel[and Gather setup items]\nparallel > create_it\nparallel > facil\nparallel > benefit\ncreate_it > finish\nfacil > finish\nbenefit > finish\nfinish > training\n...\n...\n\n\"Email address\" 是账户设置的子任务（描述说 \"create the employee account and assign an email address\"）。\n描述中 \"You turn a description ... into a BPMN diagram.\"\n格式指令：\"Name tasks verb + object\".\n\n重写：\nstart[start Check employment eligibility] > offer[Task Receive signed offer] > bg_check[DMN Background check]\nbg_check >(Fail: background failed) end_process[end Business process ended]\nbg_check >(Pass: passed) acc[Task Create employee account] > ass[Task Assign email]\nass > and1[and Gather setup items]\nand1 > create_it[Task Set up IT equipment]\nand1 > facil[Task Facilitate facilities access]\nand1 > benefit[Task Enroll in benefits]\ncreate_it > done[wait for parallel finish]\nfacil > done\nbenefit > done\ndone > training[catch:timer Mandatory training scheduled]\ntraining > secure[Task Security training]\nsecure > ack[Task Compliance acceptance]\nack > cross[Task Cross-check participation]\ncross > org[Task Update org chart] > payroll[service Set up payroll] > orient[service Schedule employee orientation] > send[Task Send welcome Slack email] > end[end Formal onboarding]\n\n等等，我需要确保并行组完成了。\nBPMN 规则：如果要在并行组之后连接到过程其余部分，你需要用户输入事件或等待事件来聚合，或者在子流程中使用边界事件（对于简单的路径拓扑很难，通常工具使用一个 \"released\" 或 \"completed\" 任务）。\n或者简单地说，隐式地满足多选门户的可达性，或者显式添加一个结束节点？\n在文本格式描述中，最好的近似是 `and1 > ...` 后跟 `... > done > ...`。\n这意味着 `done` 是所有三个分支的等待点。\"wait for parallel finish\" 很完美。\n\n\"Background check\" 是一条路径还是节点？通常它是一个逻辑检查。这里用 DMN 决策节点（\"gateway\"），或者在描述中描述为一个任务？\nKinds 包括 `DMN` 和 `rule`（这似乎意味着作为规则节点的 DMN？）。指令说 \"gw ...\".\n让我们使用 `bg_check` 作为任务或 DMN 节点。\n描述：\"run a background check (if it fails, end the process)\".\n所以：`bg_check[DMN Background check]`。\n\n一个细节：\"schedule security training and a compliance acknowledgment (both user tasks)\".\n这些是任务。\n\n一个细节：\"set up payroll\" 是一项服务。\n\n一个细节：\"check employment eligibility\" -> 描述以 \"Build a full employee onboarding process: record the signed offer\" 开头。\n等等，\"record the signed offer\" 是开始消息事件吗？\n\"record the signed offer\" 是一个动作。描述以这个开始。\"record the signed offer\" ... \"run a background check\".\n通常，创建流程以 start 消息事件开始。\n\n序列：Start -> Receive Offer (End Event) -> Record Offer (Task) -> Background Check.\n或者 Start -> Background Check -> Record Offer?\n文本：\"record the signed offer, run a background check\".\n通常意味着拿到 offer，先记录，然后做背景检查。\n\"record\" 暗示保存。“记录”通常是一个手动任务或自动任务。\"Task Record signed offer\"。\n\n优化后的步骤：\n1. start[start New employee onboarding request] (Message)\n或者 start[Task Check employment eligibility] (Input)\n让我们使用 start[start Receive signed offer]。\n\n2. record[Task Record signed offer]\n3. check_bg[DMN Background check]\n4. bg_check >(Fail: failed) end_process[end Business process terminated]\n5. bg_check >(Pass: passed) if_pass\n6. if_pass > create[Task Create employee account]\n7. create > assign[Task Assign email address]\n8. assign > and_start[and Gather setup items]\n9. and_start > create_it[Task Set up IT equipment]\n10. and_start > facil[Task Facilitate facilities access]\n11. and_start > benefit[Task Enroll in benefits]\n12. create_it > wait[wait for parallel finish]\n13. facil > wait\n14. benefit > wait\n15. wait > training[catch:timer Mandatory training scheduled]\n16. training > secure[Task Security training]\n17. secure > ack[Task Compliance acknowledgment]\n18. ack > cross[Task Cross-check participation]\n19. cross > org[Task Update org chart]\n20. org > payroll[service Setup payroll]\n21. payroll > orient[service Schedule orientation]\n22. orient > send[Task Send welcome email via Slack]\n23. send > end[end Formal onboarding phase complete]\n\n以下是格式化路径。\n\n# Employee onboarding\nstart[start Receive signed offer] > record[Task Record signed offer] > bg_check[DMN Background check]\nbg_check >(fail:check fail) end_process[end Business process terminated]\nbg_check >(pass:check passed) acc[Task Create employee account] > ass[Task Assign email]\nass > and_start[and Gather setup items]\nand_start > create_it[Task Set up IT equipment]\nand_start > facil[Task Facilitate facilities access]\nand_start > benefit[Task Enroll in benefits]\ncreate_it > wait[wait for parallel finish]\nfacil > wait\nbenefit > wait\nwait > training[catch:timer Mandatory training scheduled]\ntraining > secure[Task Security training]\nsecure > ack[Task Compliance acknowledgment]\nack > cross[Task Cross-check participation]\ncross > org[Task Update org chart] > payroll[service Setup payroll] > orient[service Schedule orientation] > send[Task Send welcome email via Slack] > end[end Formal onboarding phase complete]\n\n一个逻辑检查：\n\"record the signed offer\" 是要求的开始吗？是的。\n\"run",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 454,
+      "completionTokens": 2048,
+      "cachedTokens": 0
+    },
+    "neurons": 78,
+    "problems": [
+      {
+        "line": 3,
+        "message": "unknown trigger \"end\" for \"end_point\"; read as part of the name"
+      },
+      {
+        "line": 3,
+        "message": "condition \"mandatory end\" is not FEEL; kept as the branch label"
+      },
+      {
+        "line": 4,
+        "message": "condition \"mandatory end\" is not FEEL; kept as the branch label"
+      },
+      {
+        "line": 9,
+        "message": "unknown kind \"wait\" for \"done\"; used endEvent"
+      },
+      {
+        "line": 12,
+        "message": "an end event has no outgoing flow; flow done > training left out"
+      },
+      {
+        "line": 15,
+        "message": "expected \">\" at \":mandatory的错误处理部分似乎未\""
+      },
+      {
+        "line": 16,
+        "message": "expected a node id at \"修改后的边界事件定义:\""
+      },
+      {
+        "line": 18,
+        "message": "\"failed\" is already declared on line 17; the first declaration is kept"
+      },
+      {
+        "line": 19,
+        "message": "\"cross\" is already declared on line 13; the first declaration is kept"
+      },
+      {
+        "line": 20,
+        "message": "\"email\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 21,
+        "message": "\"end\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 21,
+        "message": "an end event has no outgoing flow; flow end > end_point left out"
+      },
+      {
+        "line": 22,
+        "message": "\"end\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 22,
+        "message": "an end event has no outgoing flow; flow end > failed_notice left out"
+      },
+      {
+        "line": 24,
+        "message": "expected a node id at \"等等，我是不是应该默默地修正这个错误，还\""
+      },
+      {
+        "line": 25,
+        "message": "expected a node id at \"指令是 \"Model what the \""
+      },
+      {
+        "line": 26,
+        "message": "expected a node id at \"用户提供了一个描述，让我转换为BPMN。\""
+      },
+      {
+        "line": 27,
+        "message": "expected a node id at \"用户描述中并没有提到\"如果失败，结束进程\""
+      },
+      {
+        "line": 28,
+        "message": "expected a node id at \"描述只说：\"...run a backg\""
+      },
+      {
+        "line": 29,
+        "message": "expected a node id at \"\"if it fails, end th\""
+      },
+      {
+        "line": 31,
+        "message": "expected a node id at \"我之前的草稿中检查门之后到了 revie\""
+      },
+      {
+        "line": 32,
+        "message": "expected a node id at \"用户说：\"Check employmen\""
+      },
+      {
+        "line": 33,
+        "message": "expected a node id at \"\"Check for employmen\""
+      },
+      {
+        "line": 34,
+        "message": "expected a node id at \"然后 \"Receive signed o\""
+      },
+      {
+        "line": 35,
+        "message": "expected a node id at \"然后 \"Background check\""
+      },
+      {
+        "line": 36,
+        "message": "expected a node id at \"背景检查逻辑：\""
+      },
+      {
+        "line": 37,
+        "message": "expected a node id at \"背景检查失败 -> 结束。\""
+      },
+      {
+        "line": 38,
+        "message": "expected a node id at \"背景检查成功 -> 继续创建账户，并行设\""
+      },
+      {
+        "line": 40,
+        "message": "expected a node id at \"所以这个缺口需要在并行设置 *之前* 处\""
+      },
+      {
+        "line": 41,
+        "message": "expected a node id at \"我之前的草稿：\""
+      },
+      {
+        "line": 42,
+        "message": "\"fail\" is never declared; flow check > fail left out"
+      },
+      {
+        "line": 42,
+        "message": "\"fail\" is never declared; flow fail > end_point left out"
+      },
+      {
+        "line": 43,
+        "message": "expected \">\" at \"/dmn\""
+      },
+      {
+        "line": 44,
+        "message": "expected a node id at \"但是 wait for parallel\""
+      },
+      {
+        "line": 45,
+        "message": "expected a node id at \"如果我只是放一个结束事件在这里，流程就永\""
+      },
+      {
+        "line": 46,
+        "message": "expected a node id at \"但在 BPMN 中，一旦进入并行多选，如\""
+      },
+      {
+        "line": 48,
+        "message": "expected a node id at \"所以：\""
+      },
+      {
+        "line": 49,
+        "message": "\"check\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 50,
+        "message": "expected a node id at \">pskfail[pk No: Proc\""
+      },
+      {
+        "line": 51,
+        "message": "expected a node id at \">psschall[pkm Create\""
+      },
+      {
+        "line": 54,
+        "message": "\"review\" is already declared on line 4; the first declaration is kept"
+      },
+      {
+        "line": 54,
+        "message": "unknown kind \"pks\" for \"check2\"; used task"
+      },
+      {
+        "line": 55,
+        "message": "expected a node id at \">pskfail > end\""
+      },
+      {
+        "line": 56,
+        "message": "expected a node id at \">psschall > and1\""
+      },
+      {
+        "line": 58,
+        "message": "expected a node id at \"让我们坚持流程描述中 \"run a ba\""
+      },
+      {
+        "line": 59,
+        "message": "expected a node id at \"背景检查最合适的位置是在拿到信之后。这可\""
+      },
+      {
+        "line": 60,
+        "message": "expected a node id at \"让我们说 \"DMN Background\""
+      },
+      {
+        "line": 62,
+        "message": "expected a node id at \"流程：\""
+      },
+      {
+        "line": 70,
+        "message": "\"finish\" is never declared; flow create_it > finish left out"
+      },
+      {
+        "line": 71,
+        "message": "\"finish\" is never declared; flow facil > finish left out"
+      },
+      {
+        "line": 72,
+        "message": "\"finish\" is never declared; flow benefit > finish left out"
+      },
+      {
+        "line": 73,
+        "message": "\"finish\" is never declared; flow finish > training left out"
+      },
+      {
+        "line": 74,
+        "message": "expected a node id at \"...\""
+      },
+      {
+        "line": 75,
+        "message": "expected a node id at \"...\""
+      },
+      {
+        "line": 77,
+        "message": "expected a node id at \"\"Email address\" 是账户设\""
+      },
+      {
+        "line": 78,
+        "message": "expected a node id at \"描述中 \"You turn a desc\""
+      },
+      {
+        "line": 79,
+        "message": "expected a node id at \"格式指令：\"Name tasks ver\""
+      },
+      {
+        "line": 81,
+        "message": "expected a node id at \"重写：\""
+      },
+      {
+        "line": 82,
+        "message": "\"start\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 82,
+        "message": "\"offer\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 83,
+        "message": "condition \"background failed\" is not FEEL; kept as the branch label"
+      },
+      {
+        "line": 84,
+        "message": "\"acc\" is already declared on line 5; the first declaration is kept"
+      },
+      {
+        "line": 85,
+        "message": "\"and1\" is already declared on line 4; the first declaration is kept"
+      },
+      {
+        "line": 86,
+        "message": "\"create_it\" is already declared on line 6; the first declaration is kept"
+      },
+      {
+        "line": 87,
+        "message": "\"facil\" is already declared on line 7; the first declaration is kept"
+      },
+      {
+        "line": 88,
+        "message": "\"benefit\" is already declared on line 8; the first declaration is kept"
+      },
+      {
+        "line": 89,
+        "message": "\"done\" is already declared on line 9; the first declaration is kept"
+      },
+      {
+        "line": 92,
+        "message": "\"training\" is already declared on line 12; the first declaration is kept"
+      },
+      {
+        "line": 92,
+        "message": "an end event has no outgoing flow; flow done > training left out"
+      },
+      {
+        "line": 94,
+        "message": "\"ack\" is already declared on line 13; the first declaration is kept"
+      },
+      {
+        "line": 95,
+        "message": "\"cross\" is already declared on line 13; the first declaration is kept"
+      },
+      {
+        "line": 96,
+        "message": "\"org\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 96,
+        "message": "\"payroll\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 96,
+        "message": "\"orient\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 96,
+        "message": "\"end\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 98,
+        "message": "expected a node id at \"等等，我需要确保并行组完成了。\""
+      },
+      {
+        "line": 99,
+        "message": "expected \">\" at \"规则：如果要在并行组之后连接到过程其余部\""
+      },
+      {
+        "line": 100,
+        "message": "expected a node id at \"或者简单地说，隐式地满足多选门户的可达性\""
+      },
+      {
+        "line": 101,
+        "message": "expected a node id at \"在文本格式描述中，最好的近似是 `and\""
+      },
+      {
+        "line": 102,
+        "message": "expected a node id at \"这意味着 `done` 是所有三个分支的\""
+      },
+      {
+        "line": 104,
+        "message": "expected a node id at \"\"Background check\" 是\""
+      },
+      {
+        "line": 105,
+        "message": "expected \">\" at \"包括 `DMN` 和 `rule`（这似\""
+      },
+      {
+        "line": 106,
+        "message": "expected a node id at \"让我们使用 `bg_check` 作为任\""
+      },
+      {
+        "line": 107,
+        "message": "expected a node id at \"描述：\"run a background\""
+      },
+      {
+        "line": 108,
+        "message": "expected a node id at \"所以：`bg_check[DMN Bac\""
+      },
+      {
+        "line": 110,
+        "message": "expected a node id at \"一个细节：\"schedule secur\""
+      },
+      {
+        "line": 111,
+        "message": "expected a node id at \"这些是任务。\""
+      },
+      {
+        "line": 113,
+        "message": "expected a node id at \"一个细节：\"set up payroll\""
+      },
+      {
+        "line": 115,
+        "message": "expected a node id at \"一个细节：\"check employme\""
+      },
+      {
+        "line": 116,
+        "message": "expected a node id at \"等等，\"record the signe\""
+      },
+      {
+        "line": 117,
+        "message": "expected a node id at \"\"record the signed o\""
+      },
+      {
+        "line": 118,
+        "message": "expected a node id at \"通常，创建流程以 start 消息事件开\""
+      },
+      {
+        "line": 120,
+        "message": "expected a node id at \"序列：Start -> Receive \""
+      },
+      {
+        "line": 121,
+        "message": "expected a node id at \"或者 Start -> Backgrou\""
+      },
+      {
+        "line": 122,
+        "message": "expected a node id at \"文本：\"record the signe\""
+      },
+      {
+        "line": 123,
+        "message": "expected a node id at \"通常意味着拿到 offer，先记录，然后\""
+      },
+      {
+        "line": 124,
+        "message": "expected a node id at \"\"record\" 暗示保存。“记录”通常\""
+      },
+      {
+        "line": 126,
+        "message": "expected a node id at \"优化后的步骤：\""
+      },
+      {
+        "line": 127,
+        "message": "expected a node id at \"1. start[start New e\""
+      },
+      {
+        "line": 128,
+        "message": "expected a node id at \"或者 start[Task Check \""
+      },
+      {
+        "line": 129,
+        "message": "expected a node id at \"让我们使用 start[start Re\""
+      },
+      {
+        "line": 131,
+        "message": "expected a node id at \"2. record[Task Recor\""
+      },
+      {
+        "line": 132,
+        "message": "expected a node id at \"3. check_bg[DMN Back\""
+      },
+      {
+        "line": 133,
+        "message": "expected a node id at \"4. bg_check >(Fail: \""
+      },
+      {
+        "line": 134,
+        "message": "expected a node id at \"5. bg_check >(Pass: \""
+      },
+      {
+        "line": 135,
+        "message": "expected a node id at \"6. if_pass > create[\""
+      },
+      {
+        "line": 136,
+        "message": "expected a node id at \"7. create > assign[T\""
+      },
+      {
+        "line": 137,
+        "message": "expected a node id at \"8. assign > and_star\""
+      },
+      {
+        "line": 138,
+        "message": "expected a node id at \"9. and_start > creat\""
+      },
+      {
+        "line": 139,
+        "message": "expected a node id at \"10. and_start > faci\""
+      },
+      {
+        "line": 140,
+        "message": "expected a node id at \"11. and_start > bene\""
+      },
+      {
+        "line": 141,
+        "message": "expected a node id at \"12. create_it > wait\""
+      },
+      {
+        "line": 142,
+        "message": "expected a node id at \"13. facil > wait\""
+      },
+      {
+        "line": 143,
+        "message": "expected a node id at \"14. benefit > wait\""
+      },
+      {
+        "line": 144,
+        "message": "expected a node id at \"15. wait > training[\""
+      },
+      {
+        "line": 145,
+        "message": "expected a node id at \"16. training > secur\""
+      },
+      {
+        "line": 146,
+        "message": "expected a node id at \"17. secure > ack[Tas\""
+      },
+      {
+        "line": 147,
+        "message": "expected a node id at \"18. ack > cross[Task\""
+      },
+      {
+        "line": 148,
+        "message": "expected a node id at \"19. cross > org[Task\""
+      },
+      {
+        "line": 149,
+        "message": "expected a node id at \"20. org > payroll[se\""
+      },
+      {
+        "line": 150,
+        "message": "expected a node id at \"21. payroll > orient\""
+      },
+      {
+        "line": 151,
+        "message": "expected a node id at \"22. orient > send[Ta\""
+      },
+      {
+        "line": 152,
+        "message": "expected a node id at \"23. send > end[end F\""
+      },
+      {
+        "line": 154,
+        "message": "expected a node id at \"以下是格式化路径。\""
+      },
+      {
+        "line": 157,
+        "message": "\"start\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 157,
+        "message": "\"bg_check\" is already declared on line 82; the first declaration is kept"
+      },
+      {
+        "line": 158,
+        "message": "\"end_process\" is already declared on line 83; the first declaration is kept"
+      },
+      {
+        "line": 158,
+        "message": "condition \"check fail\" is not FEEL; kept as the branch label"
+      },
+      {
+        "line": 159,
+        "message": "\"acc\" is already declared on line 5; the first declaration is kept"
+      },
+      {
+        "line": 159,
+        "message": "\"ass\" is already declared on line 84; the first declaration is kept"
+      },
+      {
+        "line": 159,
+        "message": "condition \"check passed\" is not FEEL; kept as the branch label"
+      },
+      {
+        "line": 161,
+        "message": "\"create_it\" is already declared on line 6; the first declaration is kept"
+      },
+      {
+        "line": 162,
+        "message": "\"facil\" is already declared on line 7; the first declaration is kept"
+      },
+      {
+        "line": 163,
+        "message": "\"benefit\" is already declared on line 8; the first declaration is kept"
+      },
+      {
+        "line": 164,
+        "message": "unknown kind \"wait\" for \"wait\"; used task"
+      },
+      {
+        "line": 167,
+        "message": "\"training\" is already declared on line 12; the first declaration is kept"
+      },
+      {
+        "line": 168,
+        "message": "\"secure\" is already declared on line 93; the first declaration is kept"
+      },
+      {
+        "line": 169,
+        "message": "\"ack\" is already declared on line 13; the first declaration is kept"
+      },
+      {
+        "line": 170,
+        "message": "\"cross\" is already declared on line 13; the first declaration is kept"
+      },
+      {
+        "line": 171,
+        "message": "\"org\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 171,
+        "message": "\"payroll\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 171,
+        "message": "\"orient\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 171,
+        "message": "\"send\" is already declared on line 96; the first declaration is kept"
+      },
+      {
+        "line": 171,
+        "message": "\"end\" is already declared on line 14; the first declaration is kept"
+      },
+      {
+        "line": 173,
+        "message": "expected a node id at \"一个逻辑检查：\""
+      },
+      {
+        "line": 174,
+        "message": "expected a node id at \"\"record the signed o\""
+      },
+      {
+        "line": 175,
+        "message": "expected a node id at \"\"run\""
+      }
+    ],
+    "fixes": [
+      "joined 4 flows into \"end_point\" with xor gateway \"end_point_join\"",
+      "joined 2 flows into \"acc\" with xor gateway \"acc_join\"",
+      "joined 3 flows into \"create_it\" with xor gateway \"create_it_join\"",
+      "joined 3 flows into \"facil\" with xor gateway \"facil_join\"",
+      "joined 3 flows into \"benefit\" with xor gateway \"benefit_join\"",
+      "joined 3 flows into \"done\" with xor gateway \"done_join\"",
+      "joined 2 flows into \"ack\" with xor gateway \"ack_join\"",
+      "joined 2 flows into \"cross\" with xor gateway \"cross_join\"",
+      "joined 2 flows into \"end\" with xor gateway \"end_join\"",
+      "joined 2 flows into \"end_process\" with xor gateway \"end_process_join\"",
+      "joined 2 flows into \"bg_check\" with xor gateway \"bg_check_join\"",
+      "joined 3 flows into \"wait\" with xor gateway \"wait_join\"",
+      "added end event \"assign_end\" after \"assign\"",
+      "added end event \"check2_end\" after \"check2\""
+    ],
+    "lintErrors": [
+      "Sequence flow \"Flow_3\" exits a decision gateway without a condition expression.",
+      "Sequence flow \"Flow_4\" exits a decision gateway without a condition expression.",
+      "Element \"failed_notice\" (endEvent) is not reachable from any start event.",
+      "Exclusive gateway \"Background check result?\" has no default sequence flow.",
+      "\"Check background details\" (businessRuleTask) has neither a zeebe:taskDefinition type nor a zeebe:calledDecision.",
+      "\"Background check\" (businessRuleTask) has neither a zeebe:taskDefinition type nor a zeebe:calledDecision.",
+      "\"Background check\" (businessRuleTask) has neither a zeebe:taskDefinition type nor a zeebe:calledDecision."
+    ],
+    "lintWarnings": 20,
+    "elements": 49,
+    "failed": [
+      "no userTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-long-process-onboarding",
+    "firstByteMs": 135,
+    "firstContentMs": 136,
+    "firstShapeMs": 607,
+    "totalMs": 3141,
+    "text": "# Employee onboarding process\nstart[start Offer received] > task[record Signed offer] > check[xor Background check fail?]\ncheck >(Yes: background check failed) end[end:Process terminated]\ncheck >(No: default) > billing[create Employee account] > assign[assign Email account]\nassign > and[AND Check these tasks] > task[procure IT equipment] > task[grant Facilities access] > task[open benefits enrollment]\nand > info[AND Process complete] > train[user Security training] > certify[compliance Comply with regulations]\ninfo > final[update Org chart] > setup[setup Payroll] > orient[orientation Schedule orientation] > send[send Slack welcome]\ntrain > certify\nfinal > setup\norient > send",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 454,
+      "completionTokens": 157,
+      "cachedTokens": 0
+    },
+    "neurons": 9,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"record\" for \"task\"; used task"
+      },
+      {
+        "line": 3,
+        "message": "unknown trigger \"process\" for \"end\"; read as part of the name"
+      },
+      {
+        "line": 3,
+        "message": "condition \"background check failed\" is not FEEL; kept as the branch label"
+      },
+      {
+        "line": 4,
+        "message": "expected a node id at \"> billing[create Emp\""
+      },
+      {
+        "line": 5,
+        "message": "\"task\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 5,
+        "message": "\"task\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 5,
+        "message": "\"task\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 5,
+        "message": "\"assign\" is never declared; flow assign > and left out"
+      },
+      {
+        "line": 6,
+        "message": "unknown kind \"compliance\" for \"certify\"; used task"
+      },
+      {
+        "line": 7,
+        "message": "unknown kind \"update\" for \"final\"; used task"
+      },
+      {
+        "line": 7,
+        "message": "unknown kind \"setup\" for \"setup\"; used task"
+      },
+      {
+        "line": 7,
+        "message": "unknown kind \"orientation\" for \"orient\"; used task"
+      }
+    ],
+    "fixes": [
+      "joined 3 flows into \"task\" with xor gateway \"task_join\"",
+      "added end event \"certify_end\" after \"certify\"",
+      "added end event \"send_end\" after \"send\""
+    ],
+    "lintErrors": [
+      "Element \"and\" (parallelGateway) is not reachable from any start event.",
+      "Element \"info\" (parallelGateway) is not reachable from any start event.",
+      "Element \"train\" (userTask) is not reachable from any start event.",
+      "Element \"certify\" (task) is not reachable from any start event.",
+      "Element \"final\" (task) is not reachable from any start event.",
+      "Element \"setup\" (task) is not reachable from any start event.",
+      "Element \"orient\" (task) is not reachable from any start event.",
+      "Element \"send\" (sendTask) is not reachable from any start event.",
+      "Element \"certify_end\" (endEvent) is not reachable from any start event.",
+      "Element \"send_end\" (endEvent) is not reachable from any start event."
+    ],
+    "lintWarnings": 4,
+    "elements": 15,
+    "failed": [
+      "15 < 25 elements"
+    ],
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "08-long-process-onboarding",
+    "firstByteMs": 1957,
+    "firstContentMs": 1958,
+    "firstShapeMs": 2538,
+    "totalMs": 5630,
+    "text": "# Employee onboarding\nstart[start Employee offer signed] > record[task Record signed offer] > check[xor Background check fail?]\ncheck >(yes: customer inquiry=offer document) end end Onboarding failed\ncheck >(no: default) user[service Create employee account and assign email] > setup[and Set up everything]\nsetup > IT[task Set up IT equipment]\nsetup > FAC[task Set up facilities access]\nsetup > BEN[task Complete benefits enrollment]\nIT > join[and Finalization]\nFAC > join\nBEN > join\njoin > train[task Schedule security training]\njoin > ack[task Compliance acknowledgment]\ntrain > final[and Post-setup tasks]\nack > final\nfinal > payroll[service Set up payroll]\nfinal > unit[task Update org chart]\nfinal > slack[service Send welcome email via Slack]\nfinal > orient[task Schedule orientation]\nfinal > done[end Onboarding complete]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 454,
+      "completionTokens": 191,
+      "cachedTokens": 0
+    },
+    "neurons": 10,
+    "problems": [
+      {
+        "line": 3,
+        "message": "expected \">\" at \"end Onboarding faile\""
+      }
+    ],
+    "fixes": [
+      "added end event \"payroll_end\" after \"payroll\"",
+      "added end event \"unit_end\" after \"unit\"",
+      "added end event \"slack_end\" after \"slack\"",
+      "added end event \"orient_end\" after \"orient\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 7,
+    "elements": 21,
+    "failed": [
+      "21 < 25 elements",
+      "no userTask"
+    ],
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-email-connector-order-confirmation",
+    "firstByteMs": 307,
+    "firstContentMs": 307,
+    "firstShapeMs": 561,
+    "totalMs": 716,
+    "text": "# Order confirmation\ns[start Order placed] > sendemail[send Send order confirmation email]\nsendemail > done[end Order placed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 380,
+      "completionTokens": 28,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 3,
+    "failed": [],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-email-connector-order-confirmation",
+    "firstByteMs": 146,
+    "firstContentMs": 147,
+    "totalMs": 459,
+    "text": "# Order confirmation\nstart[start Order placed] > email[service Send order confirmation email] > end[end Confirmed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 380,
+      "completionTokens": 25,
+      "cachedTokens": 0
+    },
+    "neurons": 3,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 3,
+    "failed": [],
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "10-email-connector-order-confirmation",
+    "firstByteMs": 152,
+    "firstContentMs": 152,
+    "totalMs": 553,
+    "text": "# Order confirmation\nstart[action Order placed] > send[send Email confirmation] > done[end Email]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 380,
+      "completionTokens": 22,
+      "cachedTokens": 0
+    },
+    "neurons": 3,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"action\" for \"start\"; used startEvent"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 3,
+    "failed": [],
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "11-http-connector-external-api",
+    "firstByteMs": 139,
+    "firstContentMs": 140,
+    "firstShapeMs": 679,
+    "totalMs": 842,
+    "text": "# Shipping process\nstart[start Lookup customer by id] > api[service Call external REST API] > use[service Use address to ship order]\napi > done[end Order shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 388,
+      "completionTokens": 38,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [
+      "added end event \"use_end\" after \"use\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 5,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "11-http-connector-external-api",
+    "firstByteMs": 118,
+    "firstContentMs": 118,
+    "totalMs": 685,
+    "text": "# Ship order\nstart[start Order placed] > lookup[service Lookup customer address] > details[user Lookup customer details] > ship[service Ship order] > done[end Order shipped]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 388,
+      "completionTokens": 38,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 5,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "11-http-connector-external-api",
+    "firstByteMs": 189,
+    "firstContentMs": 189,
+    "firstShapeMs": 1125,
+    "totalMs": 1588,
+    "text": "# Shipment process\nstart[start Look up address] > call[service Address API] > use[task Use address] > ship[service Ship order] > done[end Arrival expected]\ncall[boundary:error API failure | on=call] > failed[end:error Address not found]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 388,
+      "completionTokens": 58,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 3,
+        "message": "\"call\" is already declared on line 2; the first declaration is kept"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 6,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "12-business-rule-credit-check",
+    "firstByteMs": 138,
+    "firstContentMs": 139,
+    "firstShapeMs": 502,
+    "totalMs": 1842,
+    "text": "# Loan application credit check\nstart[Loan application received] > check_od[xor Credit score?]\ncheck_od >(Good: score > 600) check_ar[xor Annual income?]\ncheck_od >(Bad: default) reject[int:error Application rejected] > end[Loan decision emailed]\ncheck_ar >(High: income > 50000) approve[service Approve loan] > end\ncheck_ar >(Low: default) reject[int:error Loan denied] > end",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 386,
+      "completionTokens": 96,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"loan\" for \"start\"; used startEvent"
+      },
+      {
+        "line": 4,
+        "message": "unknown kind \"int\" for \"reject\"; used task"
+      },
+      {
+        "line": 4,
+        "message": "\"int\" takes no trigger; ignored \":error\""
+      },
+      {
+        "line": 4,
+        "message": "unknown kind \"loan\" for \"end\"; used endEvent"
+      },
+      {
+        "line": 6,
+        "message": "\"reject\" is already declared on line 4; the first declaration is kept"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"reject\" with xor gateway \"reject_join\"",
+      "joined 2 flows into \"end\" with xor gateway \"end_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 8,
+    "failed": [
+      "no businessRuleTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "12-business-rule-credit-check",
+    "firstByteMs": 570,
+    "firstContentMs": 570,
+    "firstShapeMs": 1675,
+    "totalMs": 2053,
+    "text": "# Loan credit check a > start[Event: Application received] > check[decision Execute credit check] > xor[Condition: Decision ok?]\nxor >(Yes Decision ok) approve[service Approve loan] > done[end Loan approved]\nxor >(No Decision ok) reject[service Reject loan] > done[end Loan rejected]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 386,
+      "completionTokens": 68,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 2,
+        "message": "\"xor\" is never declared; flow xor > approve left out"
+      },
+      {
+        "line": 3,
+        "message": "\"done\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 3,
+        "message": "\"xor\" is never declared; flow xor > reject left out"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\"",
+      "added start event \"start\" before \"approve\""
+    ],
+    "lintErrors": [
+      "Element \"reject\" (serviceTask) is not reachable from any start event."
+    ],
+    "lintWarnings": 4,
+    "elements": 5,
+    "failed": [
+      "no businessRuleTask"
+    ],
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "12-business-rule-credit-check",
+    "firstByteMs": 108,
+    "firstContentMs": 108,
+    "firstShapeMs": 348,
+    "totalMs": 830,
+    "text": "# Loan credit check\nstart[start Loan application] > evaluate[rule Evaluate credit score] > check[xor Approved?]\ncheck >(Yes) end[end Application approved]\ncheck >(No) reject[service Reject application] > end2[end Application rejected]\nack[boundary:message Acknowledgement | on=evaluate] > end2",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 386,
+      "completionTokens": 67,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"end2\" with xor gateway \"end2_join\""
+    ],
+    "lintErrors": [
+      "Sequence flow \"Flow_3\" exits a decision gateway without a condition expression.",
+      "Sequence flow \"Flow_4\" exits a decision gateway without a condition expression.",
+      "Exclusive gateway \"Approved?\" has no default sequence flow.",
+      "\"Evaluate credit score\" (businessRuleTask) has neither a zeebe:taskDefinition type nor a zeebe:calledDecision.",
+      "Message catch \"Acknowledgement\" (boundaryEvent) has no zeebe:subscription correlationKey."
+    ],
+    "lintWarnings": 4,
+    "elements": 8,
+    "failed": [],
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "13-parallel-gateway-fulfillment",
+    "firstByteMs": 131,
+    "firstContentMs": 132,
+    "totalMs": 518,
+    "text": "# Fulfill order\nstart[start Order received] > pack[task Pack items] > label[task Print label] > dispatch[end Dispatched]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 400,
+      "completionTokens": 31,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 4,
+    "failed": [
+      "4 < 6 elements",
+      "no parallelGateway"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "13-parallel-gateway-fulfillment",
+    "firstByteMs": 165,
+    "firstContentMs": 165,
+    "firstShapeMs": 683,
+    "totalMs": 1184,
+    "text": "# Order fulfillment\nstart[start Order received] > pick[task Pick items] > pack[task Pack box] > label[task Print label]\npick > pack > label > dispatch[task Dispatch package] > done[end Order delivered]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 400,
+      "completionTokens": 49,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 6,
+    "failed": [
+      "no parallelGateway"
+    ],
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "13-parallel-gateway-fulfillment",
+    "firstByteMs": 159,
+    "firstContentMs": 159,
+    "totalMs": 885,
+    "text": "# Package fulfillment\nstart[start Order received] > pick[task Pick items] > pack[task Pack box] > label[task Print shipping label] > done[end Package dispatched]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 400,
+      "completionTokens": 38,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 5,
+    "failed": [
+      "5 < 6 elements",
+      "no parallelGateway"
+    ],
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "14-user-task-candidate-groups",
+    "firstByteMs": 131,
+    "firstContentMs": 131,
+    "firstShapeMs": 356,
+    "totalMs": 1163,
+    "text": "# Document legal review\nstart[start Document created] > check[xor Approval needed?]\ncheck >(Yes: reviewer != legal) distr[send Send to reviewer] > legal[service Legal review] > publish\ncheck >(No: default) pub[service Publish] > done\nfailed[boundary:error Rejected | on=legal] > alert[end:error Rejection alert]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 380,
+      "completionTokens": 77,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 3,
+        "message": "\"publish\" is never declared; flow legal > publish left out"
+      },
+      {
+        "line": 4,
+        "message": "\"done\" is never declared; flow pub > done left out"
+      }
+    ],
+    "fixes": [
+      "added end event \"legal_end\" after \"legal\"",
+      "added end event \"pub_end\" after \"pub\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 9,
+    "failed": [
+      "no userTask"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "14-user-task-candidate-groups",
+    "firstByteMs": 127,
+    "firstContentMs": 127,
+    "firstShapeMs": 505,
+    "totalMs": 1238,
+    "text": "# Document review flow\nstart[start Document prepared] > allocate[service Assign reviewer] > await[catch:timer Review due in 3 days]\nawait > review[user Legal review] > xor[? Approve document?] > process[task Finalize and publish] > end[end Document published]\nxor >(Yes: approved) process\nxor >(No: reject) correction[user Request changes] > await\nawait > review",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 380,
+      "completionTokens": 86,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 3,
+        "message": "unknown kind \"?\" for \"xor\"; used task"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"await\" with xor gateway \"await_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 6,
+    "elements": 9,
+    "failed": [],
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "14-user-task-candidate-groups",
+    "firstByteMs": 136,
+    "firstContentMs": 139,
+    "firstShapeMs": 991,
+    "totalMs": 1365,
+    "text": "# Document routing\nstart[start Document received] > [DMN Review type?] gw\ngw >(Is legal required?) legal[user Legal review] > publish[service Publish document]\ngw >(No: default) publish\nlegal[boundary:error Revision required | on=publish] > [DMN Review type?] gw",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 380,
+      "completionTokens": 64,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 2,
+        "message": "expected a node id at \"[DMN Review type?] g\""
+      },
+      {
+        "line": 3,
+        "message": "\"gw\" is never declared; flow gw > legal left out"
+      },
+      {
+        "line": 4,
+        "message": "\"gw\" is never declared; flow gw > publish left out"
+      },
+      {
+        "line": 5,
+        "message": "expected a node id at \"[DMN Review type?] g\""
+      }
+    ],
+    "fixes": [
+      "added start event \"start\" before \"legal\"",
+      "added end event \"publish_end\" after \"publish\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 4,
+    "failed": [],
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "15-timer-boundary-retry",
+    "firstByteMs": 7597,
+    "firstContentMs": 7597,
+    "firstShapeMs": 9256,
+    "totalMs": 11063,
+    "text": "# Slow report retrieval\nstart[start Poll external system] > poll[service Check system report]\npoll > check[xor Responded within 5 mins?]\ncheck >(Yes: default) end[service Terminate process]\ncheck >(No: timeout < 5 mins) flag[service Flag for manual follow-up]\nstart[catch:timer 5 mins] > check\nstart[boundary:error Manual intervention required | on=flag] > notify[service Notify support team] > end",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 395,
+      "completionTokens": 99,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 5,
+        "message": "condition \"timeout < 5 mins\" is not FEEL; kept as the branch label"
+      },
+      {
+        "line": 6,
+        "message": "\"start\" is already declared on line 2; the first declaration is kept"
+      },
+      {
+        "line": 7,
+        "message": "\"start\" is already declared on line 2; the first declaration is kept"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"end\" with xor gateway \"end_join\"",
+      "added end event \"end_end\" after \"end\"",
+      "added end event \"flag_end\" after \"flag\""
+    ],
+    "lintErrors": [
+      "Sequence flow \"Flow_4\" exits a decision gateway without a condition expression."
+    ],
+    "lintWarnings": 7,
+    "elements": 9,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "15-timer-boundary-retry",
+    "firstByteMs": 355,
+    "firstContentMs": 355,
+    "firstShapeMs": 838,
+    "totalMs": 1675,
+    "text": "# Report polling\nstart[start Poll report] > poll[service Fetch report] > check[xor Timeout after 5 min?]\ncheck >(Yes: elapsed > 300) manual[manual Flag for manual follow-up] > stop[end Poll aborted]\ncheck >(No: default) done[service Process report] > stop",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 395,
+      "completionTokens": 66,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"stop\" with xor gateway \"stop_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 7,
+    "failed": [
+      "no boundaryEvent"
+    ],
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "15-timer-boundary-retry",
+    "firstByteMs": 4876,
+    "firstContentMs": 4877,
+    "firstShapeMs": 5597,
+    "totalMs": 6707,
+    "text": "# Slow system poll\nstart[start Poll system] > poll[service Poll] > check[xor Responded in 5 min?]\ncheck >(Yes: time < 5 min) done[end Success]\ncheck >(No: default) manual[manual Flag manual follow-up] > done\nfailed[boundary:error Canceled | on=poll nonint] > manual",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 395,
+      "completionTokens": 75,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 3,
+        "message": "condition \"time < 5 min\" is not FEEL; kept as the branch label"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\"",
+      "joined 2 flows into \"manual\" with xor gateway \"manual_join\""
+    ],
+    "lintErrors": [
+      "Sequence flow \"Flow_3\" exits a decision gateway without a condition expression."
+    ],
+    "lintWarnings": 4,
+    "elements": 8,
+    "failed": [],
+    "run": 3
+  }
+]

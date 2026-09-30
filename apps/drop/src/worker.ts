@@ -16,6 +16,7 @@ import {
 	handleStats,
 } from "./routes/drop.js"
 import { handleFeelUpdate } from "./routes/feel.js"
+import { handleGenerate } from "./routes/generate.js"
 import { handleReport } from "./routes/reports.js"
 import { handleUpload } from "./routes/upload.js"
 import { handleHistory, handleRestore } from "./routes/versions.js"
@@ -32,7 +33,9 @@ async function route(request: Request, env: Env): Promise<Response> {
 	if (path.length > 5 && path.endsWith("/")) path = path.slice(0, -1)
 
 	if (path === "/drop") {
-		return request.method === "GET" ? html(dropPage(env.TOS_VERSION)) : methodNotAllowed()
+		return request.method === "GET"
+			? html(dropPage(env.TOS_VERSION, env.AI_PASSCODE !== undefined))
+			: methodNotAllowed()
 	}
 	if (!path.startsWith("/drop/")) return json({ error: "not found" }, { status: 404 })
 
@@ -46,6 +49,9 @@ async function route(request: Request, env: Env): Promise<Response> {
 	// API.
 	if (rest === "/api/drops") {
 		return request.method === "POST" ? handleUpload(request, env, now) : methodNotAllowed()
+	}
+	if (rest === "/api/generate") {
+		return request.method === "POST" ? handleGenerate(request, env, now) : methodNotAllowed()
 	}
 	if (rest === "/api/reports") {
 		return request.method === "POST" ? handleReport(request, env, now) : methodNotAllowed()

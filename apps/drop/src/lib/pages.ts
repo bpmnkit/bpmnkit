@@ -8,6 +8,7 @@ import {
 	REPORT_REASONS,
 } from "../shared/constants.js"
 import type { DropRow, FileInfo } from "./db.js"
+import { MAX_DESCRIPTION_CHARS } from "./generate.js"
 import { escapeHtml, jsonForScript } from "./http.js"
 
 // Square, flat, one accent — the favicon is an image asset, so it carries the
@@ -354,6 +355,18 @@ select.ed-select{height:28px;border:1px solid var(--bpmnkit-ds-line);background:
 .fc-out{margin-top:18px}
 .fc-out.hidden{display:none}
 
+/* Describe-to-diagram: the description beside the diagram it becomes. */
+.gen{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);border:1px solid var(--bpmnkit-ds-line);background:var(--bpmnkit-ds-surface)}
+.gen-main{display:flex;flex-direction:column;min-width:0}
+.gen-main textarea{flex:1 1 auto;display:block;width:100%;border:none;background:var(--bpmnkit-ds-surface);color:var(--bpmnkit-ds-ink);font-family:var(--bpmnkit-ds-font-sans);font-size:15px;line-height:1.6;padding:16px 18px;resize:vertical}
+.gen-main textarea:focus-visible{outline-offset:-2px}
+.gen-side{border-left:1px solid var(--bpmnkit-ds-line-soft);min-width:0}
+.gen-canvas{height:340px;background:var(--bpmnkit-ds-canvas);position:relative;overflow:hidden}
+#genStatus.busy{color:var(--bpmnkit-ds-accent)}
+.gen .btn-ghost[hidden],.fc-actions .btn-ghost[hidden]{display:none}
+#genPasscode{max-width:360px;margin-top:14px}
+#genPasscode[hidden]{display:none}
+
 /* The statement editor on a share page: the composer's two boxes, opened on
    what the drop says, with the one accent on the action that writes. */
 .fe-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px}
@@ -401,6 +414,8 @@ dialog strong{display:block;font-size:17px;margin-bottom:6px}
 	.ed-tools>*{flex:none}
 	.feel-split,.fc{grid-template-columns:1fr}
 	.fc-side{border-left:none;border-top:1px solid var(--bpmnkit-ds-line-soft)}
+	.gen{grid-template-columns:1fr}
+	.gen-side{border-left:none;border-top:1px solid var(--bpmnkit-ds-line-soft)}
 }
 `
 
@@ -466,8 +481,45 @@ function pageFooter(): string {
 }
 
 /** The upload landing page. */
-export function dropPage(tosVersion: string): string {
+/** The landing and drop page. `aiEnabled` (AI_PASSCODE set) adds the describe-to-diagram section. */
+export function dropPage(tosVersion: string, aiEnabled = false): string {
 	const accept = ACCEPTED_EXTENSIONS.join(",")
+	// Sections are numbered in page order, and the generator is only sometimes there.
+	let section = 0
+	const num = () => String(++section).padStart(2, "0")
+	// A function, not a string: it must take its number where it sits in the page.
+	const generate = () =>
+		aiEnabled
+			? `<section class="section" id="describe"><div class="section-inner">
+	<div class="section-head"><span class="section-num">${num()}</span><h2 class="section-h2">Describe a process, get a diagram</h2></div>
+	<p class="section-lead section-indent" style="margin-bottom:26px">Say what should happen, in your own words. AI drafts the BPMN and draws it as it goes. Review it, then share it like any drop. Closed beta: it needs an access code.</p>
+	<div class="gen">
+		<div class="gen-main">
+			<div class="panel-bar"><span>description</span><span class="grow"></span><span id="genCount">0 / ${MAX_DESCRIPTION_CHARS}</span></div>
+			<textarea id="genInput" rows="7" maxlength="${MAX_DESCRIPTION_CHARS}" aria-label="Describe the process" placeholder="When an order arrives, check stock. If everything is in stock, charge the card and ship it; otherwise tell the customer and cancel."></textarea>
+		</div>
+		<div class="gen-side">
+			<div class="panel-bar"><span id="genName">process.bpmn</span><span class="grow"></span><span id="genStatus">draft</span></div>
+			<div id="genCanvas" class="gen-canvas"><div class="hero-canvas-msg">The diagram appears here as it is written.</div></div>
+		</div>
+	</div>
+	<div class="fc-actions">
+		<button id="genRun" class="btn-primary" type="button">Draft the diagram</button>
+		<button id="genShare" class="btn-ghost" type="button" hidden>Get a share link</button>
+		<div class="fc-examples" id="genExamples"></div>
+	</div>
+	<div id="genPasscode" class="ai-passcode" hidden>
+		<div class="cm-note" id="genPasscodeMsg">This feature is in a closed beta. Enter your access code.</div>
+		<input id="genCode" type="password" placeholder="Access code" autocomplete="off" aria-label="Access code">
+	</div>
+	<div id="genOut" class="panel fc-out hidden">
+		<div class="link-row"><input id="genUrl" readonly aria-label="Share link"><button id="genCopy" class="btn-ghost" type="button">Copy</button><a id="genOpen" class="btn-ghost" href="#">Open &#8599;</a></div>
+	</div>
+	<div id="genErrors" class="errors hidden"></div>
+	<p class="legal">Your description is sent to Cloudflare Workers AI to draft the diagram. Sharing it follows the <a href="/drop/terms">Terms of Use</a>, like any upload.</p>
+</div></section>
+`
+			: ""
 	const kb = Math.round(MAX_FILE_BYTES / 1000)
 	const main = `<div id="dropOverlay" class="drop-overlay" hidden><div class="drop-overlay-card">${ICON.upload}<span>Release to share your diagram</span></div></div>
 <main>
@@ -481,7 +533,7 @@ export function dropPage(tosVersion: string): string {
 		<div class="hero-ctas">
 			<a class="btn-primary" href="/drop/${DEMO_SHARE_ID}">Open the demo drop</a>
 			<a class="btn-link" href="#drop-zone">Drop a file instead</a>
-			<a class="btn-link" href="#feel">Share a FEEL expression</a>
+			<a class="btn-link" href="#feel">Share a FEEL expression</a>${aiEnabled ? '\n\t\t\t<a class="btn-link" href="#describe">Describe a process</a>' : ""}
 		</div>
 		<ul class="checklist">
 			<li>Renders in the browser — not a screenshot</li>
@@ -515,7 +567,7 @@ export function dropPage(tosVersion: string): string {
 </div></section>
 
 <section class="section"><div class="section-inner">
-	<div class="section-head"><span class="section-num">01</span><h2 class="section-h2">Three steps to a shared link</h2></div>
+	<div class="section-head"><span class="section-num">${num()}</span><h2 class="section-h2">Three steps to a shared link</h2></div>
 	<div class="grid grid--rule">
 		<div class="cell"><span class="cell-num">01</span><h3>Drop your files</h3><p>BPMN, DMN, Camunda Forms &amp; FEEL statements — one or many at once.</p></div>
 		<div class="cell"><span class="cell-num">02</span><h3>Get a short link</h3><p>Validated, converted, and stored — ready in a second.</p></div>
@@ -534,8 +586,8 @@ export function dropPage(tosVersion: string): string {
 	</div>
 </div></section>
 
-<section class="section" id="feel"><div class="section-inner">
-	<div class="section-head"><span class="section-num">02</span><h2 class="section-h2">Share a FEEL expression, with its variables</h2></div>
+${generate()}<section class="section" id="feel"><div class="section-inner">
+	<div class="section-head"><span class="section-num">${num()}</span><h2 class="section-h2">Share a FEEL expression, with its variables</h2></div>
 	<p class="section-lead section-indent" style="margin-bottom:26px">A gateway condition or a decision-table entry is unreadable without the data it reads. Write the expression and the context it runs against, and share one link that shows both &mdash; and the value they produce, evaluated in the reader&rsquo;s browser.</p>
 	<div class="fc">
 		<div class="fc-main">
@@ -560,7 +612,7 @@ export function dropPage(tosVersion: string): string {
 </div></section>
 
 <section class="section section--dark"><div class="section-inner">
-	<div class="section-head"><span class="section-num">03</span><h2 class="section-h2">What people drop</h2></div>
+	<div class="section-head"><span class="section-num">${num()}</span><h2 class="section-h2">What people drop</h2></div>
 	<div class="grid grid--rule">
 		<div class="cell"><div class="uc-diagram" data-uc="review"></div><span class="cell-num">Code review</span><h3>Next to the PR</h3><p>Attach the process next to the PR that implements it.</p></div>
 		<div class="cell"><div class="uc-diagram" data-uc="incident"></div><span class="cell-num">Incident channel</span><h3>Stop describing it</h3><p>Stop describing the flow in Slack. Drop it.</p></div>
@@ -570,7 +622,7 @@ export function dropPage(tosVersion: string): string {
 </div></section>
 
 <section class="section"><div class="section-inner">
-	<div class="section-head"><span class="section-num">04</span><h2 class="section-h2">Has an API, too</h2></div>
+	<div class="section-head"><span class="section-num">${num()}</span><h2 class="section-h2">Has an API, too</h2></div>
 	<p class="section-lead section-indent" style="margin-bottom:26px">No account, fully scriptable — drop straight from your terminal.</p>
 	<pre class="code"><span class="c-comment"># upload — returns a shareId and URL</span>
 <span class="c-prompt">$</span> curl -F files=@order.bpmn https://bpmnkit.com/drop/api/drops
@@ -586,7 +638,7 @@ export function dropPage(tosVersion: string): string {
 </div></section>
 
 <section class="section"><div class="section-inner">
-	<div class="section-head"><span class="section-num">05</span><h2 class="section-h2">Questions</h2></div>
+	<div class="section-head"><span class="section-num">${num()}</span><h2 class="section-h2">Questions</h2></div>
 	<div class="faq">
 		<details name="faq" open><summary>How long do links last?</summary><p>90 days after a drop is last opened. Every view slides the window forward, so links people actually use stay alive; abandoned ones clean themselves up.</p></details>
 		<details name="faq"><summary>Who can see my diagram?</summary><p>Anyone with the link. Links are unguessable (64 bits of randomness) and never listed anywhere, but they aren't otherwise access-controlled — don't drop confidential material.</p></details>
@@ -604,7 +656,7 @@ ${pageFooter()}`
 			"Drop a BPMN, DMN, Camunda Form or FEEL file — or write a FEEL expression with its context — and get a short shareable link that renders it in the browser.",
 		main,
 		nav: true,
-		bootstrap: { id: "drop-config", data: { tosVersion } },
+		bootstrap: { id: "drop-config", data: { tosVersion, aiEnabled } },
 		scriptSrc: ["/drop/assets/drop.js", "/drop/assets/landing.js"],
 	})
 }

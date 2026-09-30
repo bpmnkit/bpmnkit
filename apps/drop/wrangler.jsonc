@@ -15,6 +15,14 @@
 		"TOS_VERSION": "2026-09-24",
 		// AI process review. AI_PASSCODE is a secret (wrangler secret put) — unset = feature off.
 		"AI_MODEL": "@cf/openai/gpt-oss-120b",
+		// Describe-to-diagram. Pick from MODEL_PROFILES in src/lib/generate.ts, by the bench:
+		// glm-4.7-flash had the steadiest latency (first byte < 0.7 s, total < 3.7 s) with
+		// thinking off — doc/drop-ai-generate-analysis.md §8.
+		"AI_GENERATE_MODEL": "@cf/zai-org/glm-4.7-flash",
+		// Asked too if glm has written nothing after AI_GENERATE_HEDGE_MS (Workers AI queueing);
+		// the first to write wins. Remove to turn the hedge off.
+		"AI_GENERATE_FALLBACK_MODEL": "@cf/google/gemma-4-26b-a4b-it",
+		"AI_GENERATE_HEDGE_MS": "1500",
 		"AI_DAILY_BUDGET": "8000",
 		"TURNSTILE_SITE_KEY": "0x4AAAAAAExoiG_f6MSVcEiN"
 		// Turnstile on the edit claim. Add TURNSTILE_SITE_KEY here (it is public and

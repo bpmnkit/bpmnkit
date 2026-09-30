@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.0.1. 352 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.0.1. 353 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -94,7 +94,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Quick Start — Step 3: Deploy to Camunda 8](.llms/chunks/getting-started.quick-start.step-3-deploy-to-camunda-8.md) — 151 tokens
 - [Quick Start — What's next?](.llms/chunks/getting-started.quick-start.what-s-next.md) — 140 tokens
 - [Stability and Versioning — What this page is for](.llms/chunks/getting-started.stability.what-this-page-is-for.md) — 241 tokens
-- [Stability and Versioning — Product tiers](.llms/chunks/getting-started.stability.product-tiers.md) — 419 tokens
+- [Stability and Versioning — Product tiers](.llms/chunks/getting-started.stability.product-tiers.md) — 422 tokens
 - [Stability and Versioning — Versions are per package, not per repo](.llms/chunks/getting-started.stability.versions-are-per-package-not-per-repo.md) — 179 tokens
 - [Stability and Versioning — What counts as public API](.llms/chunks/getting-started.stability.what-counts-as-public-api.md) — 416 tokens
 - [Stability and Versioning — What is a breaking change](.llms/chunks/getting-started.stability.what-is-a-breaking-change.md) — 776 tokens
@@ -312,8 +312,9 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `ensureZeebeExtension(owner, extension)`](.llms/chunks/packages.core.installation-ensurezeebeextension-owner-extension.md) — 323 tokens
 - [@bpmnkit/core — Installation — `reconcileCompact(definitions, compact, options?)`](.llms/chunks/packages.core.installation-reconcilecompact-definitions-compact-options.md) — 129 tokens
 - [@bpmnkit/core — Installation — `compactify(definitions)`](.llms/chunks/packages.core.installation-compactify-definitions.md) — 342 tokens
-- [@bpmnkit/core — Installation — `expand(compact)`](.llms/chunks/packages.core.installation-expand-compact.md) — 164 tokens
+- [@bpmnkit/core — Installation — `expand(compact)`](.llms/chunks/packages.core.installation-expand-compact.md) — 301 tokens
 - [@bpmnkit/core — Installation — `createCompactStream(options?)`](.llms/chunks/packages.core.installation-createcompactstream-options.md) — 502 tokens
+- [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()`](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md) — 550 tokens
 - [@bpmnkit/core — Installation — `retypeElement(element, type)`](.llms/chunks/packages.core.installation-retypeelement-element-type.md) — 189 tokens
 - [@bpmnkit/core — Installation — `createFlowElement(id, type, options?)`](.llms/chunks/packages.core.installation-createflowelement-id-type-options.md) — 61 tokens
 - [@bpmnkit/core — Installation — Element catalog](.llms/chunks/packages.core.installation-element-catalog.md) — 96 tokens

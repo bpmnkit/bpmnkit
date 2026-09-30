@@ -1382,6 +1382,16 @@ The landing site (`apps/landing`) moved off the dark-gradient dev-tool template 
 - **`layoutProcess(process, engine)`** selects `"semantic"` (default) or `"grid"`; the grid walk still backs `layoutFlowNodes()` for ascii, proxy and compact rendering.
 - **Complete diagram interchange** — every participant gets a pool, black boxes included (a participant with no process still gets a band and its message flows are routed); collapsed sub-processes keep their own `BPMNDiagram` for drilldown instead of being flattened into the root plane; root processes beyond the first get a plane of their own. Across the reference corpus auto-layout now emits DI for **every** element, connection and plane.
 
+## BPMN Kit Drop — describe a process, get a diagram (2026-09-29)
+
+A "Describe a process" section on `/drop`, behind the same closed-beta passcode as the AI review. Design and measurements: [`doc/drop-ai-generate-analysis.md`](drop-ai-generate-analysis.md).
+
+- **Drawn while it is written.** The model writes the process in a Mermaid-like line format (`parseProcessText`, about a quarter of the tokens of compact JSON). The Worker streams it through, and the page draws each finished line, so the first shapes appear before the answer is complete.
+- **Small, cacheable prompt.** The prompt is about 330 tokens with the description last, so the fixed prefix can hit Workers AI's prompt cache. Reasoning is kept low or turned off per model, through `MODEL_PROFILES`.
+- **Repaired without a second call.** The parser adds flow ids, merge gateways, default branches and missing start and end events, and reports every line it could not use.
+- **Cheap to run.** Answers are cached in D1 by model, prompt and description. The shared daily neuron budget is charged from the model's reported usage. `AI_GENERATE_MODEL` chooses the model, and `bench:generate` measures the candidates.
+- **Shared like any drop.** Nothing is stored until the reader asks for a link. The diagram then goes through the ordinary upload endpoint, with the same validation and Terms.
+
 ## BPMN Kit Drop v2 — engaging landing + AI process review (2026-07-10)
 
 Second iteration of [BPMN Kit Drop](drop-v2-spec.md), shipped in `apps/drop`.

@@ -18,7 +18,21 @@ export interface Env {
 	AI_PASSCODE?: string
 	/** Workers AI model id (var; default `@cf/openai/gpt-oss-120b`). */
 	AI_MODEL: string
-	/** Daily neuron budget for AI reviews (var; string, parsed at the edge). */
+	/**
+	 * Workers AI model for describe-to-diagram (var). Separate from `AI_MODEL`:
+	 * generation wants the fastest model that writes the line format well, the
+	 * review the one that reasons best. Its options come from `MODEL_PROFILES`.
+	 */
+	AI_GENERATE_MODEL: string
+	/**
+	 * Second model for describe-to-diagram (var). Asked too when the first has
+	 * written nothing after `AI_GENERATE_HEDGE_MS`, or fails; whichever writes
+	 * first is kept. Unset = no hedge.
+	 */
+	AI_GENERATE_FALLBACK_MODEL?: string
+	/** Milliseconds before the fallback is asked (var; default 1500). */
+	AI_GENERATE_HEDGE_MS?: string
+	/** Daily neuron budget shared by AI reviews and generations (var; string, parsed at the edge). */
 	AI_DAILY_BUDGET: string
 	/**
 	 * Turnstile site key (var; public, rendered into the page). Unset = no widget.

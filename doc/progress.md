@@ -1,5 +1,126 @@
 # Progress
 
+## 2026-09-30 — CI fixes for bpmnkit/monorepo#207
+
+- `apps/landing/src/generated/ecosystem.ts` regenerated with `scripts/generate-ecosystem.mjs`. The copy on `main` predates #204's version bumps and #205's `@bpmnkit/flow`, so `@bpmnkit/landing` `tests/ecosystem.test.ts` failed on every PR.
+- `getting-started/stability.md` lists `@bpmnkit/flow` under Experimental, the tier its manifest declares. #205 left it out, and the same test checks it.
+- `api-surface.json` refreshed for the six new `@bpmnkit/core` exports: `parseProcessText`, `createProcessTextStream`, `PROCESS_TEXT_GUIDE` and three types. These are additions only, a minor bump, which the changeset already declares.
+
+## 2026-09-30 — Describe-to-diagram: hedged request against Workers AI queueing
+
+- `lib/hedge.ts`:
+  - `ModelStream` reads one model's answer. It can wait for the first piece of content without losing it, then yield the rest.
+  - `hedge(primary, fallback, ms)` starts the fallback when the primary has written nothing after `ms`, or failed. It returns the first to write and cancels the other.
+- The route runs its model call through it. New vars: `AI_GENERATE_FALLBACK_MODEL` (gemma-4) and `AI_GENERATE_HEDGE_MS` (1500). Unset fallback means no hedge.
+- Both calls are charged, from `usage` or estimated. The winner's answer is cached under the request key.
+- The session-affinity header is now per model (`drop-generate-<model>`).
+- A call that fails before writing now ends in an SSE `error` event ("unavailable"), because the response streams before the race is decided; previously it was a 502 JSON. The client already shows both the same way.
+- Each generation logs `drop.generate` with the primary model, the winner, whether it hedged, time to first content, neurons, and whether the answer was usable.
+- Tests: `generate-route.test.ts` covers six hedge scenarios with a fake binding that queues, fails or answers per model:
+  - primary in time (fallback never called)
+  - primary queued (fallback streams, primary cancelled, both charged)
+  - primary still first after the hedge (fallback cancelled)
+  - primary throws (fallback at once, not after the delay)
+  - both fail
+  - fallback answer cached
+- Not yet measured on Workers AI; the production logs are the measurement.
+
+## 2026-09-30 — Describe-to-diagram: second benchmark run, token cap, parser rules
+
+Second run: glm-4.7-flash, 3 runs per golden prompt. Medians were 167 ms to first byte, 638 ms to first shape and 1.2 s total. The pass rate stayed at 42%, and lint errors fell from 1.5 to 0.9 per run. Details in `doc/drop-ai-generate-analysis.md` §9.
+
+- **Token cap.** `MODEL_PROFILES` gains `maxTokens`, and `maxTokensFor(model)` is what the Worker and the bench send. glm-4.7-flash, gemma-4 and granite use 600; reasoning models keep 2,048. The trigger was one glm answer that "thought aloud" in the output until the 2,048 cap (37 s, 78 neurons); the longest real diagram was 191 tokens.
+- **Parser rules** from the recorded answers, each replayed on all three recorded sets:
+  - an id that is never declared becomes a task
+  - an id reused after an arrow becomes a new node (`done_2`); at the start of a line it means the existing node
+  - a boundary is always new, and attaches to what `on=` meant before it
+  - `>(label) >` and `id [spec]` both parse
+  - a rule task gets its id as decision id
+
+  Replayed results: glm run 1 went from 5 to 6/12, glm run 2 from 15 to 18/36 (problems per run 5.8 → 2.5), and gemma from 7 to 8/12.
+- **A regression caught by the replay.** A first version also split reused ids at the start of a line. On gemma's answers it lost a boundary and added 10 unreachable elements, so it was narrowed before commit.
+- **Not built:** a hedged second request for the ~10% of calls that queue 2–12 s (§10). The prompt cache never hit with glm-4.7.
+- **Tests:** `core/tests/process-text.test.ts` gains eight cases built from recorded answers. `drop/tests/generate.test.ts` covers `maxTokensFor`.
+
+## 2026-09-29 — `parseProcessText`: conditions in prose become branch labels
+
+- Each branch condition is checked with `parseExpression` from `@bpmnkit/feel`, the check the `feel-syntax` lint rule uses. If it is not FEEL, the text moves into the branch label (`Yes: applicant is eligible`), the condition is dropped, and a problem is reported with its line. When its sibling keeps a FEEL condition, the lone-branch rule makes it the default.
+- Replayed on glm-4.7-flash's 12 recorded answers:
+  - invalid-FEEL lint errors (which fail at deploy time): 7 → 0
+  - `feel/empty-condition`: 3 → 9
+  - total errors per run: unchanged at 1.5
+- The guide shows two FEEL examples in the branch line. This is unmeasured and changes the generation cache key.
+- Size: `landing.js` grows from 297.6 to 316.4 kB minified, for the FEEL parser.
+- Tests: prose conditions from golden prompt 12, a prose branch beside a FEEL one becoming the default, and a compound FEEL condition kept.
+
+## 2026-09-29 — Drop describe-to-diagram: model chosen from the benchmark
+
+- `AI_GENERATE_MODEL` is `@cf/zai-org/glm-4.7-flash` (thinking off). On the 12 golden prompts its medians were 238 ms to first byte, 0.8 s to first shape and 2.0 s total, at about 5 neurons per generation. Its first byte never exceeded 0.7 s. gemma-4 passed more assertions (7/12 vs 5/12) but waited 3–53 s for its first byte in 5 of 12 runs. gpt-oss and qwen3 reason for 500–1,250 tokens and take 5–20 s. Full table and reasoning in `doc/drop-ai-generate-analysis.md` §8; the raw results are committed under `apps/drop/bench-results/`.
+- `parseProcessText` now recovers three kinds of drift found in the recorded answers, still reporting the first two as problems:
+  - a missing kind: the whole head becomes the name, and the id suggests start or end
+  - a name written where the trigger goes
+  - common synonyms for a kind (`event`, `parallel`, `exclusive`, `gateway`, `inclusive`, `decision`, `dmn`, `human`)
+
+  Replaying the 72 recorded answers: glm 5 → 6/12, granite 2 → 3/12.
+- The guide spells out `rule (DMN decision)` and `catch (wait for message or timer)`, because every model wrote the DMN step as `service`. Not yet measured.
+- Tests: three regressions in `core/tests/process-text.test.ts`, built from recorded model lines.
+
+## 2026-09-29 — Drop: describe a process, get a diagram
+
+The feature itself, on top of the line format and benchmark (`doc/drop-ai-generate-analysis.md`).
+
+- `POST /drop/api/generate` (`routes/generate.ts`) runs its checks in the same order as the AI review: feature flag, passcode gate (now shared as `checkAiPasscode` in `lib/ai.ts`), description length (10–2000 characters), D1 cache, daily neuron budget, model call.
+- The Worker re-streams only content deltas as its own SSE events (`{text}` / `{done, cached}` / `{error}`), so reasoning never reaches the browser. After the stream it records neurons from `usage`, or estimates them from characters when there is none. Usable answers are cached; an answer with no process in it is reported as an error and not cached.
+- The model comes from `AI_GENERATE_MODEL`, separate from the review's `AI_MODEL`. Options and neuron rates come from `MODEL_PROFILES`, which the bench now shares. Migration `0007_ai_generations`.
+- Page (`client/generate.ts`, mounted by `landing.ts`): the description sits beside a live canvas; each finished line is drawn in the next animation frame and never enlarged past 1:1. Other controls:
+  - three example descriptions
+  - an access-code prompt, sharing the review's stored code
+  - "Get a share link", which posts the BPMN through `/drop/api/drops`
+
+  Sections are now numbered in page order, so they stay sequential with or without the new section.
+- Tests: `drop/tests/generate-route.test.ts` runs against the real migrations. It covers the gate, input checks, streaming without reasoning, budget from usage, cache hit and per-model keys, budget stop, unusable answers and a broken stream, plus the page's section numbering.
+- Verified in Chromium against the real Worker handler, run in Node with a fake streaming model. The steps covered: access-code prompt, wrong code, first shape at ~0.3 s after the model's first token, finished diagram, share link and manifest, cached re-run, and the 390 px layout.
+
+## 2026-09-29 — Line format for AI-generated processes, and the Drop generation benchmark
+
+Second step of Drop's describe-to-diagram feature (`doc/drop-ai-generate-analysis.md`).
+
+- **`@bpmnkit/core`** adds `parseProcessText`, `createProcessTextStream` and `PROCESS_TEXT_GUIDE`. It is a Mermaid-like line format (`a[start Placed] > b[user Check] > c[end Done]`). Branches are written as `gw >(Label: FEEL) x`, and boundaries as `b[boundary:error … | on=task]`.
+  - Cost: about a quarter of the output tokens of minified compact JSON. The guide is 254 tokens, example included.
+  - The parser never throws, and its diagram always expands. It reports unusable lines with their numbers.
+  - It adds the structure a model skips: flow ids, xor joins before tasks, the lone unconditioned branch as default, a missing start event, and end events after open paths.
+  - The stream reads only finished lines, for live preview.
+- **`apps/drop`** adds `src/lib/generate.ts`: the system prompt, a cache-friendly message order, and a reader for both Workers AI stream shapes (`response` and `choices[].delta`, including reasoning and `usage`).
+- **`scripts/bench-generate.mjs`** (`pnpm --filter @bpmnkit/drop bench:generate`) measures candidate models on the golden prompts: time to first shape and total time, tokens, neurons, parser problems and fixes, lint errors and assertions.
+- Tests: `core/tests/process-text.test.ts` covers the guide's example, every repair rule, problem reporting and stream/parse equivalence. `drop/tests/generate.test.ts` covers the prompt, event shapes and chunk splitting.
+- The bench was run end-to-end against a local mock serving both stream shapes and an HTTP 400. It has not yet been run against Workers AI.
+
+## 2026-09-29 — `expand()` rejects compact diagrams that cannot be valid BPMN
+
+First step of Drop's describe-to-diagram feature (`doc/drop-ai-generate-analysis.md` §8).
+
+- `expand()` used to build XML from anything. Now it throws one error that lists every problem. It checks for:
+  - a flow that names an element outside its scope (sub-process flows are checked against their own children)
+  - a boundary event without a host
+  - a duplicate id across elements, flows and processes
+  - a missing element or flow id
+  - an unknown `eventType`, which it used to drop
+- Tests: `core/tests/compact-expand-validation.test.ts`. `element-catalog.test.ts` now gives its boundary event a host.
+- Downstream suites pass: plugins, editor, drop, demo, markdown.
+- Docs: `packages/core.md` documents the throw. `guides/ai.md` said `taskType` where the field is `jobType`.
+
+## 2026-09-29 — Drop: research for generating a process from a description
+
+Analysis only, no feature code: `doc/drop-ai-generate-analysis.md`.
+
+- Measured on repo fixtures with the gpt-oss tokenizer. Relative to minified compact JSON, BPMN XML costs ~6.7×, ProcessPlan JSON ~0.6×, and a chained-edge line DSL ~0.25×. `expand()` + layout + export takes under 1 ms, so the wait is almost entirely output and reasoning tokens.
+- Workers AI JSON mode cannot stream and does not guarantee its schema. The recommendation is therefore a streamed line DSL, parsed per line for a live preview, followed by deterministic normalisation and `optimize()` auto-fix instead of an LLM repair round-trip.
+- Candidate models to benchmark against the 15 golden prompts, with reasoning off or low: gpt-oss-120b/20b, gemma-4-26b-a4b and glm-4.7-flash.
+- Found:
+  - `expand()` silently emits invalid BPMN for dangling edges, duplicate ids and missing flow ids.
+  - Drop's `estimateNeurons()` ignores reasoning tokens.
+  - `guides/ai.md` says `taskType` (should be `jobType`) and cites a non-existent `compactDiagramJsonSchema`.
+
 ## 2026-09-29 — Reebe: Camunda 8 v2 field names, working SQLite mode, configurable gRPC port
 
 Found while running the Durable Agent Flows guide end to end on a local engine.

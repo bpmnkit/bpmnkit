@@ -1155,7 +1155,7 @@
 		{
 			"id": "getting-started.stability.product-tiers",
 			"file": "chunks/getting-started.stability.product-tiers.md",
-			"tokens": 419,
+			"tokens": 422,
 			"tags": [
 				"getting-started",
 				"stability",
@@ -4331,7 +4331,7 @@
 		{
 			"id": "packages.core.installation-expand-compact",
 			"file": "chunks/packages.core.installation-expand-compact.md",
-			"tokens": 164,
+			"tokens": 301,
 			"tags": [
 				"packages",
 				"core",
@@ -4345,7 +4345,8 @@
 				"BpmnElementType",
 				"dataObject",
 				"dataObjectReference",
-				"dataStoreReference"
+				"dataStoreReference",
+				"eventType"
 			]
 		},
 		{
@@ -4364,6 +4365,24 @@
 				"CompactElement",
 				"CompactFlow",
 				"isDefault"
+			]
+		},
+		{
+			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream",
+			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md",
+			"tokens": 550,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"parseprocesstext",
+				"text",
+				"createprocesstextstream"
+			],
+			"entities": [
+				"parseProcessText",
+				"createProcessTextStream()",
+				"end()"
 			]
 		},
 		{
