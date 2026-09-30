@@ -612,7 +612,7 @@ checks that every draft fails its case and every reference passes, so a case tha
 fails in CI rather than in a model run.
 
 ```sh
-CLOUDFLARE_ACCOUNT_ID=… CLOUDFLARE_API_TOKEN=… pnpm --filter @bpmnkit/drop bench:generate -- \
+CLOUDFLARE_ACCOUNT_ID=… CLOUDFLARE_API_TOKEN=… pnpm --filter @bpmnkit/drop bench:generate \
   --edits --models @cf/zai-org/glm-4.7-flash --runs 3
 ```
 

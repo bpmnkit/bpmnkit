@@ -57,6 +57,9 @@ const EDITS_FILE = resolve(here, "edit-cases.json")
 const SKIPPED = ["03", "04", "09"]
 
 const { values: args } = parseArgs({
+	// `pnpm bench:generate -- --runs 3` passes the `--` through, and parseArgs
+	// would read everything after it as positionals.
+	args: process.argv.slice(2).filter((arg, i) => !(i === 0 && arg === "--")),
 	options: {
 		models: { type: "string" },
 		runs: { type: "string", default: "1" },
