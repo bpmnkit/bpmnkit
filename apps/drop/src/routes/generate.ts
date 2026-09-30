@@ -197,6 +197,10 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 
 				const text = winner?.text ?? ""
 				const usable = winner !== null && !winner.failed && isUsable(text)
+				// A small model sometimes writes the draft back as it was (2 of 30 changes
+				// in the §16 run). Not cached, so asking again gets a fresh answer.
+				const unchanged =
+					usable && refine !== undefined && normaliseDiagram(text) === refine.diagram
 				console.log(
 					JSON.stringify({
 						msg: "drop.generate",
@@ -207,9 +211,14 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 						firstContentMs: winner?.firstContentMs ?? null,
 						neurons,
 						usable,
+						unchanged,
 					}),
 				)
-				if (!usable) {
+				if (unchanged) {
+					controller.enqueue(
+						sse({ error: "The diagram came back unchanged. Try saying the change another way." }),
+					)
+				} else if (!usable) {
 					controller.enqueue(
 						sse({
 							error: !winner

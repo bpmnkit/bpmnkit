@@ -175,6 +175,9 @@ interface Edge extends Omit<CompactFlow, "id"> {
 
 const ID = /^[A-Za-z_][\w.-]*/
 
+/** A line that ends in an arrow, with or without a branch label: the path goes on below. */
+const DANGLING = /\s*-{0,2}>\s*(\([^()]*\))?\s*$/
+
 /**
  * Returns the index of the `close` that matches the `open` at `start`, or -1.
  * Quoted text is skipped, so a FEEL string holding a bracket does not end it.
@@ -194,6 +197,9 @@ function matching(text: string, start: number, open: string, close: string): num
 
 /** The type a bare id suggests, for a node written without a kind or never declared. */
 function typeFromId(id: string): BpmnElementType {
+	// `pick > and`, `and > dispatch`: the kind written as if it were an id.
+	const kind = KINDS[id.toLowerCase()] ?? ALIASES[id.toLowerCase()]
+	if (kind !== undefined && GATEWAYS.has(kind)) return kind
 	if (/^start/i.test(id)) return "startEvent"
 	if (/^(end|done|finish)/i.test(id)) return "endEvent"
 	return "task"
@@ -225,16 +231,44 @@ class Reader {
 	/** Catch and boundary events written without a trigger, and made message events. */
 	readonly guessedMessage = new Set<string>()
 	title: string | undefined
+	/** A line that ended in an arrow, waiting for the line that continues it. */
+	private carry: { text: string; line: number } | undefined
 
 	/** Reads one line. Returns whether it added anything. */
 	line(raw: string, n: number): boolean {
-		const text = raw.trim()
+		let text = raw.trim()
+		if (this.carry !== undefined) {
+			if (text === "") return false
+			text = `${this.carry.text} ${text}`
+			this.carry = undefined
+		}
 		if (text === "" || text.startsWith("```") || text.startsWith("//")) return false
 		if (text.startsWith("#")) {
 			if (this.title === undefined) this.title = text.replace(/^#+/, "").trim() || undefined
 			return false
 		}
+		// `engineer[user Fix issue] >` then the next step on the next line: models
+		// wrap a long path. The line is read once it is complete.
+		if (DANGLING.test(text)) {
+			this.carry = { text, line: n }
+			return false
+		}
+		return this.read(text, n)
+	}
 
+	/** Reads a line still waiting for its continuation, without its last arrow. */
+	finish(): boolean {
+		const carry = this.carry
+		if (carry === undefined) return false
+		this.carry = undefined
+		this.problems.push({
+			line: carry.line,
+			message: 'the line ends with ">" and nothing follows; read without it',
+		})
+		return this.read(carry.text.replace(DANGLING, ""), carry.line)
+	}
+
+	private read(text: string, n: number): boolean {
 		// Parse the whole line before keeping any of it, so a line that fails half
 		// way leaves nothing behind.
 		const refs: { id: string; spec?: string }[] = []
@@ -258,6 +292,13 @@ class Reader {
 
 			while (text[i] === " ") i++
 			if (i >= text.length) break
+			// `gr[xor Reproducible?]   (ADDED)`: a note after the last node, most
+			// often marking what a change added.
+			const note = /^\([^()]*\)\s*$/.exec(text.slice(i))?.[0]
+			if (note !== undefined) {
+				this.problems.push({ line: n, message: `ignored the note "${note.trim()}"` })
+				break
+			}
 			// `->` and `-->` are what a model reaches for from Mermaid; take them too.
 			const arrow = /^-{0,2}>/.exec(text.slice(i))?.[0]
 			if (arrow === undefined) return this.fail(n, `expected ">" at "${text.slice(i, i + 20)}"`)
@@ -433,7 +474,8 @@ class Reader {
 		}
 
 		const node: Node = { element, line: n, spec }
-		for (const attr of attrs.split(/[\s,]+/).filter(Boolean)) {
+		// `| on=pay | nonint`: a second bar is only another separator.
+		for (const attr of attrs.split(/[\s,|]+/).filter(Boolean)) {
 			const [key, value] = attr.split("=", 2)
 			if (key === "on" && value) node.on = hostOf.get(value) ?? value
 			else if (key === "job" && value) element.jobType = value
@@ -521,7 +563,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			for (const id of [edge.from, edge.to]) {
 				if (nodes.has(id)) continue
 				const type = typeFromId(id)
-				add(id, type, edge.line, nameFromId(id))
+				add(id, type, edge.line, GATEWAYS.has(type) ? undefined : nameFromId(id))
 				taken.add(id)
 				problems.push({ line: edge.line, message: `"${id}" is never declared; added as a ${type}` })
 			}
@@ -1196,6 +1238,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 export function parseProcessText(text: string): ProcessTextResult {
 	const reader = new Reader()
 	text.split(/\r?\n/).forEach((line, index) => reader.line(line, index + 1))
+	reader.finish()
 	return assemble(reader, true)
 }
 
@@ -1248,6 +1291,7 @@ export function createProcessTextStream(): ProcessTextStream {
 		},
 		end(): ProcessTextResult {
 			if (pending !== "") reader.line(pending, ++lineNumber)
+			reader.finish()
 			pending = ""
 			return assemble(reader, true)
 		},

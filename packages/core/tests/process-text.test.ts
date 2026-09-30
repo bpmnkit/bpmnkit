@@ -615,6 +615,60 @@ describe("parseProcessText", () => {
 		}
 	})
 
+	it("reads a path wrapped onto the next line after its arrow (glm, edit 10)", () => {
+		const text = [
+			"s[start Go] > a[user Fix issue] >",
+			"",
+			"r[xor Reproducible?]",
+			"r >(Yes: default) e[end Done]",
+			"r >(No: reproduced = false)",
+			"a",
+		].join("\n")
+		const { problems } = parseProcessText(text)
+		expect(problems).toEqual([])
+		expect(flows(text).map((f) => `${f.from}>${f.to}`)).toEqual(
+			expect.arrayContaining(["a>r", "r>e", "r>a_join"]),
+		)
+	})
+
+	it("reads a last line that ends in an arrow without it", () => {
+		const { problems } = parseProcessText("s[start Go] > a[task A] > e[end Done] >")
+		expect(problems).toEqual([
+			{ line: 1, message: 'the line ends with ">" and nothing follows; read without it' },
+		])
+		expect(elements("s[start Go] > a[task A] > e[end Done] >").map((e) => e.id)).toEqual([
+			"s",
+			"a",
+			"e",
+		])
+	})
+
+	it("ignores a note after the last node of a line (glm, edit 10)", () => {
+		const text =
+			"s[start Go] > r[xor Reproducible?]      (ADDED)\nr >(Yes: ok) e[end Done]\nr >(No) x[end Dropped]"
+		const { problems } = parseProcessText(text)
+		expect(problems).toEqual([{ line: 1, message: 'ignored the note "(ADDED)"' }])
+		expect(elements(text).find((e) => e.id === "r")?.type).toBe("exclusiveGateway")
+	})
+
+	it("reads a second bar in the attributes as a separator (glm, edit 02)", () => {
+		const text =
+			"s[start Go] > pay[service Pay] > e[end Done]\nt[boundary:timer Late | on=pay | nonint] > l[end Late]"
+		expect(parseProcessText(text).problems).toEqual([])
+		expect(elements(text).find((e) => e.id === "t")).toMatchObject({
+			attachedTo: "pay",
+			interrupting: false,
+		})
+	})
+
+	it("makes a gateway kind used as an id, never declared, that gateway (glm, edit 05)", () => {
+		const text =
+			"s[start Go] > pick[user Pick] > and\nand > pack[user Pack] > dispatch[user Dispatch]\nand > label[service Label] > dispatch\ndispatch > e[end Done]"
+		const and = elements(text).find((e) => e.id === "and")
+		expect(and?.type).toBe("parallelGateway")
+		expect(and?.name).toBeUndefined()
+	})
+
 	it("never produces a diagram expand rejects", () => {
 		const nasty = [
 			"Flow_1[start] > Process_1[task] > start[task]",

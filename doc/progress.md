@@ -1,5 +1,16 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: first run of the change cases
+
+- glm-4.7-flash × 30 changes: 17/30 as recorded, and 20/30 re-scored with the fixes below. 92.6% of each draft is kept, a change costs 6.1 neurons (the same as a first draft), and the median total is 2.1 s. Removing a step, changing a type, answering the default question and adding a loop pass every time. A new boundary, a parallel split or an extra branch passes 1 time in 3. Details: `doc/drop-ai-generate-analysis.md` §16.
+- The route reports an answer that writes the draft back unchanged (2 of 30), and does not cache it.
+- `parseProcessText`:
+  - a line that ends in an arrow continues on the next line. Before, the whole line was lost; 8 of the 282 recorded answers do this
+  - a note after a line's last node (`(ADDED)`) is ignored
+  - a second `|` in the attributes is a separator
+  - a gateway kind used as an undeclared id (`pick > and`) becomes that gateway
+- Edit cases 07 and 09 no longer require keeping the id of the element the change is about, and 07's condition check is `score >`.
+
 ## 2026-09-30 — Describe-to-diagram: change a draft, and questions about the parser's guesses
 
 Follow-up to bpmnkit/monorepo#208: a draft can be changed by asking, and the guesses the parser had to make are asked as questions. Design and open measurements: `doc/drop-ai-generate-analysis.md` §15.

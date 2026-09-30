@@ -270,6 +270,16 @@ describe("POST /drop/api/generate — a change to a draft", () => {
 		expect(again.at(-1)).toEqual({ done: true, cached: true })
 	})
 
+	it("reports a draft written back unchanged, and does not cache it", async () => {
+		const ai = fakeAi(ANSWER)
+		const env = makeEnv(ai)
+		const ask = () => handleGenerate(change({ diagram: DRAFT, change: "notify" }), env, NOW)
+		const evs = await events(await ask())
+		expect(evs.at(-1)).toMatchObject({ error: expect.stringContaining("unchanged") })
+		await events(await ask())
+		expect(ai.calls).toHaveLength(2)
+	})
+
 	it("charges a change from its usage, like a first draft", async () => {
 		const env = makeEnv(fakeAi(CHANGED))
 		await events(await handleGenerate(change({ diagram: DRAFT, change: "notify" }), env, NOW))

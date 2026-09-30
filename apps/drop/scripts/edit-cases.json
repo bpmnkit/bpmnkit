@@ -73,8 +73,8 @@
 		"change": "At \"Identity verified?\", decide on the verification score: above 80 is verified.",
 		"reference": "# KYC check\nstart[start Application received] > verify[service Verify identity] > ok[xor Identity verified?]\nok >(Yes: score > 80) open[service Open account] > done[end Account opened]\nok >(No: default) reject[send Reject application] > rejected[end Application rejected]",
 		"assertions": {
-			"conditionMentions": "score",
-			"keepIds": ["verify", "ok", "open", "reject"]
+			"conditionMentions": "score >",
+			"keepIds": ["verify", "open", "reject"]
 		}
 	},
 	{
@@ -97,7 +97,7 @@
 		"assertions": {
 			"mustMention": ["charge credit card"],
 			"mustNotMention": ["process payment"],
-			"keepIds": ["validate", "pay", "ship", "done"]
+			"keepIds": ["validate", "ship", "done"]
 		}
 	},
 	{

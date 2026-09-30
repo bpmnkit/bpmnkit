@@ -23,7 +23,11 @@ export interface EditAssertions {
 	mustMention?: string[]
 	/** Words no element name may contain any more. */
 	mustNotMention?: string[]
-	/** Draft elements the change must leave in place, with the same type. */
+	/**
+	 * Draft elements the change must leave in place, with the same type. Never
+	 * the element the change is about: a model that renames "Process payment"
+	 * may fairly rename its id `pay` too.
+	 */
 	keepIds?: string[]
 	/** The element a decision's default branch must lead to. */
 	defaultTo?: string

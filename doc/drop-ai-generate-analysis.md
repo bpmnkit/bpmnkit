@@ -623,7 +623,82 @@ CLOUDFLARE_ACCOUNT_ID=… CLOUDFLARE_API_TOKEN=… pnpm --filter @bpmnkit/drop b
   - the assertion pass rate
   - `kept` below 100% on cases that should leave everything else alone, which would show drift
   - whether an answer to a question is actually applied: cases 06 and 07
+
+  The first run is in §16.
 - **Model-written questions** (a `? question | option | option` line in the format) stay a later
   step. They are worth adding only if the run above shows the parser's questions miss what readers
   want to be asked, and only with a benchmark showing they neither lower the 20/36 pass rate nor
   bring back runaway answers (§9).
+
+## 16. First run of the change cases (2026-09-30)
+
+`2026-09-30T11-28-32-873Z`: glm-4.7-flash × 3 runs × 10 change cases, as the Worker sends a
+change. The figures are re-scored with this section's parser and case fixes, unless marked
+"as recorded".
+
+| glm-4.7-flash × 30 changes | |
+|---|---|
+| assertions, as recorded | 17/30 |
+| assertions, re-scored | **20/30** |
+| answers that wrote the draft back unchanged | 2 |
+| draft kept under the same ids (mean) | 92.6% |
+| input / output tokens (median) | 590 / 64 |
+| neurons (mean) | 6.1 |
+| TTFB / first shape / total (median) | 417 / 1185 / 2135 ms |
+
+**Cost and speed.** A change costs about what a first draft does: 6.1 neurons, not the 8–10
+estimated in §15. The draft is short, and the answer is as short as a first draft's. Four of the
+30 calls waited 11–26 s for their first byte. That is Workers AI queueing, as in §9 and §10. The
+benchmark calls one model and does not hedge; the Worker does.
+
+**By case (re-scored):**
+
+| Case | Pass | What failed |
+|---|---|---|
+| 03 remove a step | 3/3 | |
+| 06 answer the default question | 3/3 | |
+| 08 change a task's type | 3/3 | |
+| 10 add a loop | 3/3 | |
+| 01 add a step | 2/3 | draft written back unchanged |
+| 09 rename a step | 2/3 | added "Charge credit card" as a new step before "Process payment" |
+| 02 add a timer boundary | 1/3 | a `catch:timer … \| on=pay` chained after the task instead of a boundary; "Ship order" dropped |
+| 04 add a branch | 1/3 | the urgent branch replaced by the VIP one; the new question written unconnected |
+| 05 make steps parallel | 1/3 | draft written back unchanged; a broken rewrite (`pick > and`, `… > a`) |
+| 07 answer the made-up-variable question | 1/3 | the score went into a rule task or a gateway name, with no FEEL condition |
+
+Changes that replace or remove something are reliable. Changes that need new structure (a
+boundary, a split or a new branch next to an existing one) pass one time in three. That
+matches glm's weak spots on first drafts: prompt 15 (timer boundary) is 0/3 in §14.
+
+**Unchanged answers.** In 2 of 30 answers, glm wrote the draft back as it was. The route now
+compares the answer with the draft it sent. An unchanged answer is reported ("The diagram came
+back unchanged. Try saying the change another way.") and is not cached, so asking again gets a
+fresh answer. It is still charged.
+
+**Parser fixes from these answers.** Each was checked against every recorded answer:
+
+- A line that ends in an arrow continues on the next line
+  (`engineer[user Fix issue] >` + `gr[xor Issue reproducible?]`). Before, the whole line was lost.
+  8 of the 282 recorded answers do this: glm 2, granite 2 and gpt-oss-120b 4. A last line with no
+  continuation is read without its arrow.
+- A note after the last node of a line (`gr[xor …]   (ADDED)`) is ignored and reported. It
+  appeared when glm marked what it had changed.
+- A second `|` in the attributes (`| on=pay | nonint`) is a separator, so `nonint` is no longer
+  lost.
+- A gateway kind used as an id and never declared (`pick > and`, `and > dispatch`) becomes that
+  gateway, not a task named "And".
+
+Replayed on this run, the fixes move case 10's second run to a pass: it was the wrapped line
+plus the note. The structural-lint replay of every recorded answer stays at 0 findings.
+
+**Case fixes.** Cases 07 and 09 listed the element the change is about among the ids to keep.
+glm renamed `ok` to `score` and `pay` to `charge` along with the names it was asked to change,
+and those two answers were counted as failures. The element a change is about is no longer in
+`keepIds`. Case 07's condition check is now `score >`, not `score`. The looser check had passed
+an answer whose "condition" was the parser's made-up `verificationScore = "above 80"`.
+
+**Next.** Two unmeasured options, for the next run:
+
+- A refine rule for the two structural misses: "a boundary is its own line with on=; add a
+  branch next to the ones already there".
+- The same prompt with the 2 unchanged answers retried, to see whether a second try fixes them.
