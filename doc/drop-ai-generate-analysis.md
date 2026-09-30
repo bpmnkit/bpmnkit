@@ -293,12 +293,34 @@ from §8.
 The run-2 figures include the one runaway, cut at the simulated 600-token cap. It adds 12
 unreachable elements, so on the other 35 answers unreachable went from 16 to 3.
 
-## 10. Proposal: a hedged request for the queueing tail
+## 10. Hedged request for the queueing tail (built 2026-09-30)
 
-About 1 in 10 requests waits 2–12 s for Workers AI capacity before the first token. It could
-be hidden: if no content arrives within ~1.5 s, send the same request to a second model (gemma-4)
-and stream whichever answers first. The cost is a second call only in the tail cases, roughly 10%
-more neurons. It is not built.
+About 1 in 10 requests waited 2–12 s for Workers AI capacity before the first token (§9). Once
+content flows, it flows at the model's usual speed, so the wait is the queue and not the model.
+The route now hides it (`apps/drop/src/lib/hedge.ts`):
+
+1. Ask `AI_GENERATE_MODEL` (glm-4.7-flash).
+2. If it has written no content after `AI_GENERATE_HEDGE_MS` (1500 ms), ask
+   `AI_GENERATE_FALLBACK_MODEL` (gemma-4) with the same request. If the primary fails before
+   writing, the fallback is asked at once.
+3. Stream whichever writes first and cancel the other, which also tells Workers AI to stop
+   generating.
+
+The rules around it:
+
+- **Budget.** Both calls are charged: from `usage` when a stream reported it, otherwise estimated
+  from the prompt and what was read. Charging a cancelled call its prompt may slightly overcount;
+  the budget guard errs that way on purpose.
+- **Cache.** The winner's answer is cached under the request key, which is derived from the
+  primary model. A repeat is served from the cache whichever model wrote it.
+- **Cost.** A second call happens only in the slow cases, roughly 10% of requests on the §9 run.
+- **Observability.** Every generation logs
+  `{ msg: "drop.generate", primary, winner, hedged, firstContentMs, neurons, usable }`, so the real
+  hedge rate and the winner split can be read from Workers logs.
+- **Turning it off.** Remove `AI_GENERATE_FALLBACK_MODEL` from `wrangler.jsonc`.
+
+It is not measured against Workers AI yet. The bench calls one model at a time. Production logs
+are the measurement.
 
 ## 11. Issues found along the way
 

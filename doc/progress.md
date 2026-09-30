@@ -1,5 +1,24 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: hedged request against Workers AI queueing
+
+- `lib/hedge.ts`:
+  - `ModelStream` reads one model's answer. It can wait for the first piece of content without losing it, then yield the rest.
+  - `hedge(primary, fallback, ms)` starts the fallback when the primary has written nothing after `ms`, or failed. It returns the first to write and cancels the other.
+- The route runs its model call through it. New vars: `AI_GENERATE_FALLBACK_MODEL` (gemma-4) and `AI_GENERATE_HEDGE_MS` (1500). Unset fallback means no hedge.
+- Both calls are charged, from `usage` or estimated. The winner's answer is cached under the request key.
+- The session-affinity header is now per model (`drop-generate-<model>`).
+- A call that fails before writing now ends in an SSE `error` event ("unavailable"), because the response streams before the race is decided; previously it was a 502 JSON. The client already shows both the same way.
+- Each generation logs `drop.generate` with the primary model, the winner, whether it hedged, time to first content, neurons, and whether the answer was usable.
+- Tests: `generate-route.test.ts` covers six hedge scenarios with a fake binding that queues, fails or answers per model:
+  - primary in time (fallback never called)
+  - primary queued (fallback streams, primary cancelled, both charged)
+  - primary still first after the hedge (fallback cancelled)
+  - primary throws (fallback at once, not after the delay)
+  - both fail
+  - fallback answer cached
+- Not yet measured on Workers AI; the production logs are the measurement.
+
 ## 2026-09-30 — Describe-to-diagram: second benchmark run, token cap, parser rules
 
 Second run: glm-4.7-flash, 3 runs per golden prompt. Medians were 167 ms to first byte, 638 ms to first shape and 1.2 s total. The pass rate stayed at 42%, and lint errors fell from 1.5 to 0.9 per run. Details in `doc/drop-ai-generate-analysis.md` §9.

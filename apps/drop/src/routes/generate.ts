@@ -8,19 +8,17 @@ import {
 	putCachedGeneration,
 } from "../lib/ai.js"
 import {
-	type AiUsage,
 	GENERATE_SYSTEM_PROMPT,
 	type GenerateEvent,
 	MAX_DESCRIPTION_CHARS,
 	MIN_DESCRIPTION_CHARS,
 	MODEL_PROFILES,
-	createSseReader,
 	generateMessages,
 	maxTokensFor,
 	neuronsFor,
 	normaliseDescription,
-	readAiEvent,
 } from "../lib/generate.js"
+import { ModelStream, hedge } from "../lib/hedge.js"
 import { json } from "../lib/http.js"
 import { sha256Hex } from "../lib/ids.js"
 
@@ -31,6 +29,13 @@ export interface AiStreamLike {
 
 const encoder = new TextEncoder()
 const sse = (event: GenerateEvent) => encoder.encode(`data: ${JSON.stringify(event)}\n\n`)
+
+/**
+ * How long the primary model may take to write anything before the fallback is
+ * asked too. The benchmark's median time to first content was well under a
+ * second; the queued calls it hedges against waited 2–12 s.
+ */
+const DEFAULT_HEDGE_MS = 1500
 
 const SSE_HEADERS = {
 	"Content-Type": "text/event-stream; charset=utf-8",
@@ -104,74 +109,77 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 		return json({ error: "AI generation is busy today — try again tomorrow." }, { status: 503 })
 	}
 
-	let upstream: unknown
-	try {
-		upstream = await (env.AI as unknown as AiStreamLike).run(
-			model,
-			{
-				messages: generateMessages(description),
-				stream: true,
-				max_tokens: maxTokensFor(model),
-				...(MODEL_PROFILES[model]?.options ?? {}),
-			},
-			// One instance for every generation, so the fixed system prompt stays in its prefix cache.
-			{ extraHeaders: { "x-session-affinity": "drop-generate" } },
+	const ai = env.AI as unknown as AiStreamLike
+	const call = (name: string) =>
+		new ModelStream(name, () =>
+			ai.run(
+				name,
+				{
+					messages: generateMessages(description),
+					stream: true,
+					max_tokens: maxTokensFor(name),
+					...(MODEL_PROFILES[name]?.options ?? {}),
+				},
+				// One instance per model, so the fixed system prompt can stay in its prefix cache.
+				{ extraHeaders: { "x-session-affinity": `drop-generate-${name}` } },
+			),
 		)
-	} catch {
-		return json({ error: "AI generation is unavailable right now." }, { status: 502 })
-	}
-	if (!(upstream instanceof ReadableStream)) {
-		return json({ error: "AI generation is unavailable right now." }, { status: 502 })
-	}
-	const modelStream = upstream as ReadableStream<Uint8Array>
+	const fallbackModel = env.AI_GENERATE_FALLBACK_MODEL
+	const hedgeMs = Number.parseInt(env.AI_GENERATE_HEDGE_MS ?? "", 10)
 
 	return new Response(
 		new ReadableStream<Uint8Array>({
 			async start(controller) {
-				const reader = createSseReader()
-				const decoder = new TextDecoder()
-				let text = ""
-				let reasoningChars = 0
-				let usage: AiUsage | undefined
-				let failed = false
-				try {
-					for await (const bytes of modelStream) {
-						for (const data of reader.push(decoder.decode(bytes, { stream: true }))) {
-							const delta = readAiEvent(data)
-							if (!delta) continue
-							if (delta.reasoning) reasoningChars += delta.reasoning.length
-							if (delta.usage) usage = delta.usage
-							if (delta.content) {
-								text += delta.content
-								controller.enqueue(sse({ text: delta.content }))
-							}
-						}
-					}
-				} catch {
-					failed = true
+				const { winner, started } = await hedge(
+					call(model),
+					fallbackModel && fallbackModel !== model ? () => call(fallbackModel) : null,
+					Number.isFinite(hedgeMs) ? hedgeMs : DEFAULT_HEDGE_MS,
+				)
+				if (winner) {
+					for await (const text of winner.rest()) controller.enqueue(sse({ text }))
 				}
 
-				// Charged whatever came of it: the neurons were spent either way. Without
-				// a usage chunk, ~4 characters a token is close enough for a budget guard.
-				const neurons = neuronsFor(
-					model,
-					usage ?? {
-						promptTokens: Math.ceil((GENERATE_SYSTEM_PROMPT.length + description.length) / 4),
-						completionTokens: Math.ceil((text.length + reasoningChars) / 4),
-					},
-				)
+				// Every call is charged, the cancelled one included: its neurons were
+				// spent either way. Without a usage chunk, ~4 characters a token is close
+				// enough for a budget guard.
+				let neurons = 0
+				for (const stream of started) {
+					neurons += neuronsFor(
+						stream.model,
+						stream.usage ?? {
+							promptTokens: Math.ceil((GENERATE_SYSTEM_PROMPT.length + description.length) / 4),
+							completionTokens: Math.ceil((stream.text.length + stream.reasoningChars) / 4),
+						},
+					)
+				}
 				await addBudget(env.DB, day, neurons)
 
-				if (failed || !isUsable(text)) {
+				const text = winner?.text ?? ""
+				const usable = winner !== null && !winner.failed && isUsable(text)
+				console.log(
+					JSON.stringify({
+						msg: "drop.generate",
+						primary: model,
+						winner: winner?.model ?? null,
+						hedged: started.length > 1,
+						firstContentMs: winner?.firstContentMs ?? null,
+						neurons,
+						usable,
+					}),
+				)
+				if (!usable) {
 					controller.enqueue(
 						sse({
-							error: failed
-								? "The model stopped part way. Please try again."
-								: "Couldn't turn that into a process. Try describing the steps in order.",
+							error: !winner
+								? "AI generation is unavailable right now. Please try again."
+								: winner.failed
+									? "The model stopped part way. Please try again."
+									: "Couldn't turn that into a process. Try describing the steps in order.",
 						}),
 					)
 				} else {
-					await putCachedGeneration(env.DB, requestHash, model, text, neurons, now)
+					// Cached under the request, whichever model answered it.
+					await putCachedGeneration(env.DB, requestHash, winner.model, text, neurons, now)
 					controller.enqueue(sse({ done: true, cached: false }))
 				}
 				controller.close()

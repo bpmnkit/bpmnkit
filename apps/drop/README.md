@@ -166,5 +166,11 @@ the model returns schema-valid JSON.
 at the highest rate in the table. Answers are cached in D1 by model, prompt and description, and
 nothing becomes a drop until the reader shares it.
 
+If the model has written nothing after `AI_GENERATE_HEDGE_MS` (default 1500), the same request also
+goes to `AI_GENERATE_FALLBACK_MODEL`. Whichever writes first is streamed, the other is cancelled,
+and both are charged. This hides Workers AI queueing, which held about 1 in 10 benchmark calls for
+2–12 s. Remove the fallback var to turn the hedge off. Each generation logs `drop.generate` with the
+winner and whether it hedged.
+
 CI (`.github/workflows/deploy-drop.yml`) runs `d1 migrations apply` then `wrangler deploy`
 on pushes to `main` that touch this app or its rendering dependencies.

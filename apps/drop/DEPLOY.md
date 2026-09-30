@@ -176,6 +176,7 @@ gh secret set CLOUDFLARE_DROP_API_TOKEN --body "<token from step 3>"
 | Change the Turnstile keys | Re-run `provision`, or edit `TURNSTILE_SITE_KEY` in `wrangler.jsonc` and redeploy |
 | Turn AI review and describe-to-diagram on | `npx wrangler secret put AI_PASSCODE` |
 | Change the describe-to-diagram model | Edit `AI_GENERATE_MODEL` in `wrangler.jsonc`, redeploy |
+| Turn the describe-to-diagram hedge off | Remove `AI_GENERATE_FALLBACK_MODEL` from `wrangler.jsonc`, redeploy |
 | Bump the Terms version | Edit `TOS_VERSION` in `wrangler.jsonc`, redeploy |
 | Deploy a change by hand | `pnpm --filter @bpmnkit/drop deploy` |
 | Add a migration | Drop a `.sql` in `migrations/`; the next deploy applies it |

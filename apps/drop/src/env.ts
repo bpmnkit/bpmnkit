@@ -24,6 +24,14 @@ export interface Env {
 	 * review the one that reasons best. Its options come from `MODEL_PROFILES`.
 	 */
 	AI_GENERATE_MODEL: string
+	/**
+	 * Second model for describe-to-diagram (var). Asked too when the first has
+	 * written nothing after `AI_GENERATE_HEDGE_MS`, or fails; whichever writes
+	 * first is kept. Unset = no hedge.
+	 */
+	AI_GENERATE_FALLBACK_MODEL?: string
+	/** Milliseconds before the fallback is asked (var; default 1500). */
+	AI_GENERATE_HEDGE_MS?: string
 	/** Daily neuron budget shared by AI reviews and generations (var; string, parsed at the edge). */
 	AI_DAILY_BUDGET: string
 	/**

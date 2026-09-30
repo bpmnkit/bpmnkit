@@ -19,24 +19,61 @@ const ANSWER = [
 ]
 const USAGE = { prompt_tokens: 420, completion_tokens: 160 }
 
-/** A Workers AI binding that streams `chunks` in the chat-completion shape, reasoning first. */
-function fakeAi(chunks: string[], options: { fail?: boolean } = {}) {
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+/** How one model behaves in {@link fakeAi}. */
+interface FakeModel {
+	chunks?: string[]
+	/** Wait before the first byte — Workers AI queueing. */
+	delay?: number
+	/** `run` rejects. */
+	throws?: boolean
+	/** The stream breaks after its content. */
+	fail?: boolean
+}
+
+/**
+ * A Workers AI binding that streams `chunks` in the chat-completion shape,
+ * reasoning first. `byModel` overrides the behaviour per model.
+ */
+function fakeAi(
+	chunks: string[],
+	options: { fail?: boolean; byModel?: Record<string, FakeModel> } = {},
+) {
 	const calls: { model: string; inputs: Record<string, unknown>; options: unknown }[] = []
+	const cancelled: string[] = []
 	return {
 		calls,
+		cancelled,
 		async run(model: string, inputs: Record<string, unknown>, opts: unknown) {
 			calls.push({ model, inputs, options: opts })
+			const behaviour: FakeModel = { chunks, fail: options.fail, ...options.byModel?.[model] }
+			if (behaviour.throws) throw new Error("capacity")
 			const encoder = new TextEncoder()
+			let stopped = false
 			return new ReadableStream<Uint8Array>({
-				start(controller) {
-					const send = (o: unknown) =>
-						controller.enqueue(encoder.encode(`data: ${JSON.stringify(o)}\n\n`))
+				async start(controller) {
+					const send = (o: unknown) => {
+						if (!stopped) controller.enqueue(encoder.encode(`data: ${JSON.stringify(o)}\n\n`))
+					}
+					if (behaviour.delay) await sleep(behaviour.delay)
 					send({ choices: [{ delta: { reasoning_content: "Plan the steps." } }] })
-					for (const content of chunks) send({ choices: [{ delta: { content } }] })
-					if (options.fail) return controller.error(new Error("upstream reset"))
+					for (const content of behaviour.chunks ?? []) send({ choices: [{ delta: { content } }] })
+					if (behaviour.fail) {
+						// After a tick, so what was sent is read before the stream breaks.
+						await sleep(5)
+						if (!stopped) controller.error(new Error("upstream reset"))
+						return
+					}
 					send({ choices: [{ delta: {} }], usage: USAGE })
-					controller.enqueue(encoder.encode("data: [DONE]\n\n"))
-					controller.close()
+					if (!stopped) {
+						controller.enqueue(encoder.encode("data: [DONE]\n\n"))
+						controller.close()
+					}
+				},
+				cancel() {
+					stopped = true
+					cancelled.push(model)
 				},
 			})
 		},
@@ -109,7 +146,9 @@ describe("POST /drop/api/generate", () => {
 		const call = ai.calls[0]
 		expect(call?.model).toBe(MODEL)
 		expect(call?.inputs).toMatchObject({ stream: true, reasoning: { effort: "low" } })
-		expect(call?.options).toEqual({ extraHeaders: { "x-session-affinity": "drop-generate" } })
+		expect(call?.options).toEqual({
+			extraHeaders: { "x-session-affinity": `drop-generate-${MODEL}` },
+		})
 	})
 
 	it("charges the budget from the model's reported usage", async () => {
@@ -165,6 +204,80 @@ describe("POST /drop/api/generate", () => {
 		expect(evs.at(-1)).toMatchObject({ error: expect.stringContaining("stopped part way") })
 		// No usage chunk arrived, so the charge is estimated from characters — never zero.
 		expect(await getBudgetSpent(env.DB, DAY)).toBeGreaterThan(0)
+	})
+})
+
+describe("POST /drop/api/generate — hedged", () => {
+	const FALLBACK = "@cf/google/gemma-4-26b-a4b-it"
+	const OTHER = ["# Other\n", "s[start Placed] > t[user Check order] > e[end Done]\n"]
+	const hedged = (ai: ReturnType<typeof fakeAi>, over: Partial<Env> = {}) =>
+		makeEnv(ai, { AI_GENERATE_FALLBACK_MODEL: FALLBACK, AI_GENERATE_HEDGE_MS: "30", ...over })
+
+	it("does not ask the fallback when the primary writes in time", async () => {
+		const ai = fakeAi(ANSWER)
+		const evs = await events(await handleGenerate(post(DESCRIPTION), hedged(ai), NOW))
+		expect(ai.calls.map((c) => c.model)).toEqual([MODEL])
+		expect(text(evs)).toBe(ANSWER.join(""))
+	})
+
+	it("streams the fallback when the primary is queued, and cancels the primary", async () => {
+		const ai = fakeAi(ANSWER, {
+			byModel: { [MODEL]: { delay: 400 }, [FALLBACK]: { chunks: OTHER } },
+		})
+		const env = hedged(ai)
+		const evs = await events(await handleGenerate(post(DESCRIPTION), env, NOW))
+		expect(ai.calls.map((c) => c.model)).toEqual([MODEL, FALLBACK])
+		expect(text(evs)).toBe(OTHER.join(""))
+		expect(evs.at(-1)).toEqual({ done: true, cached: false })
+		await sleep(450) // the primary's queued start finishes, then sees it was cancelled
+		expect(ai.cancelled).toContain(MODEL)
+		// Both calls are charged: the fallback's usage, and the primary's prompt at least.
+		expect(await getBudgetSpent(env.DB, DAY)).toBeGreaterThan(
+			neuronsFor(FALLBACK, { promptTokens: 420, completionTokens: 160 }),
+		)
+	})
+
+	it("keeps the primary when it still writes first after the hedge", async () => {
+		const ai = fakeAi(ANSWER, {
+			byModel: { [MODEL]: { delay: 60 }, [FALLBACK]: { chunks: OTHER, delay: 400 } },
+		})
+		const evs = await events(await handleGenerate(post(DESCRIPTION), hedged(ai), NOW))
+		expect(ai.calls.map((c) => c.model)).toEqual([MODEL, FALLBACK])
+		expect(text(evs)).toBe(ANSWER.join(""))
+		await sleep(450)
+		expect(ai.cancelled).toContain(FALLBACK)
+	})
+
+	it("asks the fallback at once when the primary fails, without waiting for the hedge", async () => {
+		const ai = fakeAi(ANSWER, {
+			byModel: { [MODEL]: { throws: true }, [FALLBACK]: { chunks: OTHER } },
+		})
+		const started = Date.now()
+		const evs = await events(
+			await handleGenerate(post(DESCRIPTION), hedged(ai, { AI_GENERATE_HEDGE_MS: "5000" }), NOW),
+		)
+		expect(Date.now() - started).toBeLessThan(1000)
+		expect(text(evs)).toBe(OTHER.join(""))
+	})
+
+	it("reports unavailable when neither model answers", async () => {
+		const ai = fakeAi(ANSWER, {
+			byModel: { [MODEL]: { throws: true }, [FALLBACK]: { throws: true } },
+		})
+		const evs = await events(await handleGenerate(post(DESCRIPTION), hedged(ai), NOW))
+		expect(evs).toEqual([{ error: expect.stringContaining("unavailable") }])
+	})
+
+	it("caches the fallback's answer under the request", async () => {
+		const ai = fakeAi(ANSWER, {
+			byModel: { [MODEL]: { delay: 400 }, [FALLBACK]: { chunks: OTHER } },
+		})
+		const env = hedged(ai)
+		await events(await handleGenerate(post(DESCRIPTION), env, NOW))
+		const again = await events(await handleGenerate(post(DESCRIPTION), env, NOW))
+		expect(ai.calls).toHaveLength(2)
+		expect(text(again)).toBe(OTHER.join(""))
+		expect(again.at(-1)).toEqual({ done: true, cached: true })
 	})
 })
 
