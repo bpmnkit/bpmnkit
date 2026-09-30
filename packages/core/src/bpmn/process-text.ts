@@ -42,14 +42,18 @@ gw >(Label: default) y    branch taken when no condition holds
 Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate link cancel)
 Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>
-Branches that meet again are joined automatically; join parallel branches with an and node.
+Rules:
+- One start event. Every node is on a path from it to an end event: never a node nothing leads to.
+- An xor has two or more branches: each a FEEL condition on a process variable, and one default.
+- A boundary is on a task you declared; its path handles the problem in a task before it ends.
+- Branches that meet again are joined automatically; join parallel branches with an and node.
 
 Example:
 # Expense approval
 start[start Expense submitted] > check[xor Amount over 1000?]
 check >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]
 check >(No: default) auto[service Approve automatically] > pay
-failed[boundary:error Payment failed | on=pay] > notice[end:error Failure notified]`
+failed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]`
 
 /** A line, or part of one, that {@link parseProcessText} could not use. */
 export interface ProcessTextProblem {
@@ -373,11 +377,14 @@ class Reader {
 					message: `"${kind}" takes no trigger; ignored ":${trigger}"`,
 				})
 			} else if (!TRIGGERS.has(trigger)) {
-				// `start:order received` — a name written where the trigger goes.
-				label = [kindWord.slice(kindWord.indexOf(":") + 1), label].filter(Boolean).join(" ")
+				// `start:order received` — a name written where the trigger goes. When the
+				// name already says it (`start:kyc Start KYC`), the word is only noise.
+				const word = kindWord.slice(kindWord.indexOf(":") + 1)
+				const said = label?.toLowerCase().split(/\W+/).includes(trigger) ?? false
+				if (!said) label = [word, label].filter(Boolean).join(" ")
 				this.problems.push({
 					line: n,
-					message: `unknown trigger "${trigger}" for "${id}"; read as part of the name`,
+					message: `unknown trigger "${trigger}" for "${id}"; ${said ? "ignored, the name already says it" : "read as part of the name"}`,
 				})
 			} else {
 				element.eventType = trigger
@@ -414,12 +421,32 @@ function edgeLabel(
 	return out
 }
 
+/** Branch labels that read as "otherwise" — the branch a gateway should default to. */
+const OTHERWISE =
+	/^(no|not|else|otherwise|default|false|reject(ed)?|fail(ed|ure)?|invalid|denied|declined)\b/i
+
+/** `Status approved?` → `statusApproved`: a FEEL variable name for the question a gateway asks. */
+function variableFrom(text: string): string {
+	const words = text
+		.replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+		.split(/[^A-Za-z0-9]+/)
+		.filter(Boolean)
+		.map((word, k) => {
+			const lower = word.toLowerCase()
+			return k === 0 ? lower : lower.charAt(0).toUpperCase() + lower.slice(1)
+		})
+	const name = words.join("")
+	return /^[A-Za-z_]/.test(name) ? name : `_${name}`
+}
+
 /**
  * Turns what the reader holds into a diagram `expand` accepts.
  *
  * `final` is false while the text is still arriving: an edge to a node not yet
  * declared is only waiting, so it is left out without a problem, and nothing is
- * added at the ends of paths that are still being written.
+ * added at the ends of paths that are still being written. Once final, the
+ * result also keeps the modelling rules `lintDiagram` checks — see
+ * {@link parseProcessText}.
  */
 function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	const problems = [...reader.problems]
@@ -429,26 +456,25 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		nodes.set(id, { ...node, element: { ...node.element } })
 	}
 	const taken = new Set(nodes.keys())
+	const typeOf = (id: string) => nodes.get(id)?.element.type
+	const add = (id: string, type: BpmnElementType, line: number, name?: string) => {
+		const element: CompactElement = name === undefined ? { id, type } : { id, type, name }
+		nodes.set(id, { element, line, spec: "" })
+	}
 
-	// An id used but never declared (`review > pay`, `on=pay`) would take every
-	// flow and boundary on it down with it. Once the text is complete, it becomes
-	// a task named from its id instead — while streaming it may yet be declared.
+	// An id used in a flow but never declared (`review > pay`) would take every
+	// flow on it down with it. Once the text is complete, it becomes a task named
+	// from its id instead — while streaming it may yet be declared. An id only an
+	// `on=` names is not added: nothing would lead to it.
 	if (final) {
-		const used = [
-			...reader.edges.flatMap((edge) => [
-				[edge.from, edge.line],
-				[edge.to, edge.line],
-			]),
-			...[...reader.nodes.values()].flatMap((node) =>
-				node.on === undefined ? [] : [[node.on, node.line]],
-			),
-		] as [string, number][]
-		for (const [id, line] of used) {
-			if (nodes.has(id)) continue
-			const type = typeFromId(id)
-			nodes.set(id, { element: { id, type, name: nameFromId(id) }, line, spec: "" })
-			taken.add(id)
-			problems.push({ line, message: `"${id}" is never declared; added as a ${type}` })
+		for (const edge of reader.edges) {
+			for (const id of [edge.from, edge.to]) {
+				if (nodes.has(id)) continue
+				const type = typeFromId(id)
+				add(id, type, edge.line, nameFromId(id))
+				taken.add(id)
+				problems.push({ line: edge.line, message: `"${id}" is never declared; added as a ${type}` })
+			}
 		}
 	}
 
@@ -470,17 +496,19 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			message:
 				node.on === undefined
 					? `boundary "${id}" has no on=<task id>; left out`
-					: `boundary "${id}" is on "${node.on}", which is not a task; left out`,
+					: host === undefined
+						? `boundary "${id}" is on "${node.on}", which is never declared; left out`
+						: `boundary "${id}" is on "${node.on}", which is not a task; left out`,
 		})
 		nodes.delete(id)
 	}
 
 	// Edges: both ends declared, pointing a way BPMN allows, once.
 	const seen = new Set<string>()
-	const edges: Edge[] = []
+	let edges: Edge[] = []
 	for (const edge of reader.edges) {
-		const from = nodes.get(edge.from)?.element.type
-		const to = nodes.get(edge.to)?.element.type
+		const from = typeOf(edge.from)
+		const to = typeOf(edge.to)
 		if (from === undefined || to === undefined) {
 			if (final) {
 				const missing = from === undefined ? edge.from : edge.to
@@ -517,7 +545,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	const defaulted = new Set<string>()
 	for (const edge of edges) {
 		if (!edge.isDefault) continue
-		const from = nodes.get(edge.from)?.element.type
+		const from = typeOf(edge.from)
 		if (from === undefined || !CONDITIONAL.has(from) || defaulted.has(edge.from)) {
 			problems.push({
 				line: edge.line,
@@ -531,57 +559,247 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		defaulted.add(edge.from)
 	}
 
-	// Joins: branches that meet at anything but a gateway meet at an xor first.
-	// Camunda style keeps one incoming flow per task, and it is the one piece of
-	// structure a model most often leaves out.
-	const incoming = new Map<string, Edge[]>()
-	for (const edge of edges) incoming.set(edge.to, [...(incoming.get(edge.to) ?? []), edge])
-	for (const [target, into] of incoming) {
-		const type = nodes.get(target)?.element.type
-		if (into.length < 2 || type === undefined || GATEWAYS.has(type)) continue
-		const join = uniqueId(`${target}_join`, taken)
-		const after = nodes.get(target)?.line ?? 0
-		nodes.set(join, { element: { id: join, type: "exclusiveGateway" }, line: after, spec: "" })
-		for (const edge of into) edge.to = join
-		edges.push({ from: join, to: target, line: after })
-		fixes.push(`joined ${into.length} flows into "${target}" with xor gateway "${join}"`)
-	}
+	const outOf = (id: string) => edges.filter((edge) => edge.from === id)
+	const into = (id: string) => edges.filter((edge) => edge.to === id)
 
 	if (final) {
-		// A conditional split with exactly one unconditioned branch: that branch is the default.
-		for (const [id, node] of nodes) {
-			if (!CONDITIONAL.has(node.element.type) || defaulted.has(id)) continue
-			const out = edges.filter((edge) => edge.from === id)
-			const plain = out.filter((edge) => edge.condition === undefined)
-			const only = plain[0]
-			if (out.length > 1 && plain.length === 1 && only) {
-				only.isDefault = true
-				fixes.push(`made ${id} > ${only.to} the default branch of "${id}"`)
+		// Start: one where none was written, and a start the model left unconnected
+		// leads to the first path that has no way in.
+		const roots = [...nodes.values()].filter(
+			(node) =>
+				node.element.type !== "startEvent" &&
+				node.element.type !== "boundaryEvent" &&
+				node.element.type !== "endEvent" &&
+				into(node.element.id).length === 0,
+		)
+		const first = roots[0]?.element.id
+		const starts = [...nodes.values()].filter((node) => node.element.type === "startEvent")
+		if (starts.length === 0) {
+			const start = uniqueId("start", taken)
+			add(start, "startEvent", 0, "Process started")
+			if (first) edges.unshift({ from: start, to: first, line: 0 })
+			fixes.push(`added start event "${start}"${first ? ` before "${first}"` : ""}`)
+		} else {
+			const idle = starts.find((node) => outOf(node.element.id).length === 0)
+			if (idle && first) {
+				edges.push({ from: idle.element.id, to: first, line: idle.line })
+				fixes.push(`connected start event "${idle.element.id}" to "${first}"`)
 			}
 		}
 
-		const hasIncoming = new Set(edges.map((edge) => edge.to))
-		const hasOutgoing = new Set(edges.map((edge) => edge.from))
-		if (![...nodes.values()].some((node) => node.element.type === "startEvent")) {
-			const first = [...nodes.values()].find(
-				(node) => node.element.type !== "boundaryEvent" && !hasIncoming.has(node.element.id),
-			)
-			const start = uniqueId("start", taken)
-			nodes.set(start, { element: { id: start, type: "startEvent" }, line: 0, spec: "" })
-			if (first) {
-				edges.unshift({ from: start, to: first.element.id, line: 0 })
-				hasOutgoing.add(start)
+		// Reachability: every node lies on a path from a start event.
+		const reach = () => {
+			const reached = new Set<string>()
+			const queue = [...nodes.values()]
+				.filter((node) => node.element.type === "startEvent")
+				.map((node) => node.element.id)
+			for (let id = queue.shift(); id !== undefined; id = queue.shift()) {
+				if (reached.has(id)) continue
+				reached.add(id)
+				for (const edge of outOf(id)) queue.push(edge.to)
+				for (const node of nodes.values()) {
+					if (node.element.attachedTo === id) queue.push(node.element.id)
+				}
 			}
-			fixes.push(`added start event "${start}"${first ? ` before "${first.element.id}"` : ""}`)
+			return reached
 		}
+		let reached = reach()
+		// A task or gateway nothing leads to, written after a path that stops short,
+		// is most often that path's next step with the arrow left out
+		// (`… > label` then `gw[xor Done?] > dispatch`): it continues the latest
+		// such path written before it. Events are not guessed at — a loose timer
+		// or message could belong anywhere.
+		for (const node of [...nodes.values()].sort((a, b) => a.line - b.line)) {
+			const { id, type } = node.element
+			if (reached.has(id) || EVENTS.has(type) || into(id).length > 0) continue
+			const open = [...nodes.values()].filter(
+				(other) =>
+					reached.has(other.element.id) &&
+					other.element.type !== "endEvent" &&
+					other.line <= node.line &&
+					outOf(other.element.id).length === 0,
+			)
+			const from = open.reduce<Node | undefined>(
+				(latest, other) => (latest === undefined || other.line >= latest.line ? other : latest),
+				undefined,
+			)
+			if (from === undefined) continue
+			edges.push({ from: from.element.id, to: id, line: node.line })
+			fixes.push(`connected "${from.element.id}" to "${id}", which nothing led to`)
+			reached = reach()
+		}
+		// What is still unreached is a fragment the model never connected, and
+		// drawing it loose is worse than leaving it out.
+		for (const [id, node] of nodes) {
+			if (reached.has(id)) continue
+			problems.push({
+				line: node.line,
+				message: `"${id}" is not connected to a start event; left out`,
+			})
+			nodes.delete(id)
+		}
+		edges = edges.filter((edge) => reached.has(edge.from) && reached.has(edge.to))
+
+		// Ends: every path that stops elsewhere, including a boundary with nowhere to go.
 		for (const node of [...nodes.values()]) {
 			const { id, type } = node.element
-			if (type === "endEvent" || hasOutgoing.has(id)) continue
+			if (type === "endEvent" || outOf(id).length > 0) continue
 			const end = uniqueId(`${id}_end`, taken)
-			nodes.set(end, { element: { id: end, type: "endEvent" }, line: node.line, spec: "" })
+			const name = EVENTS.has(type) ? node.element.name : undefined
+			add(end, "endEvent", node.line, name ?? "Process completed")
 			edges.push({ from: id, to: end, line: node.line })
 			fixes.push(`added end event "${end}" after "${id}"`)
 		}
+
+		// Pass-through gateways: one way in and one way out decides nothing. Most
+		// often a question the model asked and then answered only one way.
+		for (let removed = true; removed; ) {
+			removed = false
+			for (const [id, node] of nodes) {
+				if (!GATEWAYS.has(node.element.type) || node.element.type === "eventBasedGateway") continue
+				const [inEdge, ...moreIn] = into(id)
+				const [outEdge, ...moreOut] = outOf(id)
+				if (!inEdge || !outEdge || moreIn.length > 0 || moreOut.length > 0) continue
+				if (inEdge.from === outEdge.to) continue
+				inEdge.to = outEdge.to
+				edges = edges.filter((edge) => edge !== outEdge)
+				nodes.delete(id)
+				problems.push({ line: node.line, message: `"${id}" has only one branch; gateway removed` })
+				removed = true
+			}
+		}
+		const once = new Set<string>()
+		edges = edges.filter((edge) => {
+			const key = `${edge.from}>${edge.to}`
+			if (once.has(key)) return false
+			once.add(key)
+			return true
+		})
+
+		// Implicit splits: a task or event with several ways out forks the token
+		// without saying so. Labelled branches are a decision; unlabelled ones run
+		// in parallel, which is what the flows mean in BPMN.
+		for (const node of [...nodes.values()]) {
+			const { id, type } = node.element
+			const out = outOf(id)
+			if (GATEWAYS.has(type) || out.length < 2) continue
+			const decides = out.some((edge) => edge.condition !== undefined || edge.name !== undefined)
+			const split = uniqueId(`${id}_split`, taken)
+			const gatewayType = decides ? "exclusiveGateway" : "parallelGateway"
+			const name = decides ? `${node.element.name ?? nameFromId(id)} outcome?` : undefined
+			add(split, gatewayType, node.line, name)
+			for (const edge of out) edge.from = split
+			edges.push({ from: id, to: split, line: node.line })
+			fixes.push(
+				`split the flows out of "${id}" with ${decides ? "xor" : "and"} gateway "${split}"`,
+			)
+		}
+	}
+
+	// Joins: branches that meet at anything but a join gateway meet at a join
+	// gateway first. Camunda style keeps one incoming flow per task and one role
+	// per gateway, and it is the piece of structure a model most often leaves out.
+	// The join matches the split the branches came from: an xor join after a
+	// parallel split would run what follows once per branch.
+	const splitOf = (edge: Edge): string | undefined => {
+		const visited = new Set<string>()
+		for (let id = edge.from; !visited.has(id); ) {
+			visited.add(id)
+			if (GATEWAYS.has(typeOf(id) ?? "task") && outOf(id).length > 1) return id
+			const [only, ...more] = into(id)
+			if (!only || more.length > 0) return undefined
+			id = only.from
+		}
+		return undefined
+	}
+	for (const [target, node] of [...nodes]) {
+		const incoming = into(target)
+		const type = node.element.type
+		if (incoming.length < 2 || (GATEWAYS.has(type) && outOf(target).length < 2)) continue
+		const splits = new Set(incoming.map(splitOf))
+		const [split] = splits
+		const splitType = splits.size === 1 && split !== undefined ? typeOf(split) : undefined
+		const joinType =
+			splitType === "parallelGateway" || splitType === "inclusiveGateway"
+				? splitType
+				: "exclusiveGateway"
+		const join = uniqueId(`${target}_join`, taken)
+		add(join, joinType, node.line)
+		for (const edge of incoming) edge.to = join
+		edges.push({ from: join, to: target, line: node.line })
+		const kind =
+			joinType === "parallelGateway" ? "and" : joinType === "inclusiveGateway" ? "or" : "xor"
+		fixes.push(`joined ${incoming.length} flows into "${target}" with ${kind} gateway "${join}"`)
+	}
+
+	if (final) {
+		// Conditions: every branch of a decision has a FEEL condition, or is its one
+		// default; every other flow carries neither, nor a label that implies one.
+		for (const [id, node] of nodes) {
+			const out = outOf(id)
+			if (!CONDITIONAL.has(node.element.type) || out.length < 2) {
+				for (const edge of out) {
+					if (edge.condition !== undefined) {
+						fixes.push(`dropped the condition on ${id} > ${edge.to}, which is not a decision`)
+					}
+					edge.condition = undefined
+					edge.isDefault = undefined
+					edge.name = undefined
+				}
+				continue
+			}
+			if (!out.some((edge) => edge.isDefault)) {
+				const plain = out.filter((edge) => edge.condition === undefined)
+				const pool = plain.length > 0 ? plain : out
+				const chosen = pool.find((edge) => OTHERWISE.test(edge.name ?? "")) ?? pool[pool.length - 1]
+				if (chosen) {
+					chosen.isDefault = true
+					if (chosen.condition !== undefined) {
+						chosen.condition = undefined
+						fixes.push(
+							`made ${id} > ${chosen.to} the default branch of "${id}" instead of its condition`,
+						)
+					} else {
+						fixes.push(`made ${id} > ${chosen.to} the default branch of "${id}"`)
+					}
+				}
+			}
+			const variable = variableFrom(node.element.name ?? id)
+			for (const edge of out) {
+				if (edge.isDefault) {
+					edge.condition = undefined
+					continue
+				}
+				if (edge.condition === undefined) {
+					// A branch the model described in prose, or not at all: a condition on
+					// a variable named for the question keeps the gateway deployable and
+					// says plainly which variable decides it.
+					const label = (edge.name ?? nodes.get(edge.to)?.element.name ?? edge.to)
+						.split(":")[0]
+						?.trim()
+						.replace(/"/g, "")
+					edge.condition = /^(yes|true)\b/i.test(label ?? "")
+						? `= ${variable} = true`
+						: /^(no|false)\b/i.test(label ?? "")
+							? `= ${variable} = false`
+							: `= ${variable} = "${label}"`
+					fixes.push(`gave ${id} > ${edge.to} the condition "${edge.condition}"`)
+				}
+				edge.name ??= edge.condition.replace(/^=\s*/, "")
+			}
+		}
+
+		// Names: every event, task and decision says what it is.
+		let named = 0
+		for (const [id, node] of nodes) {
+			const { element } = node
+			if (element.name?.trim()) continue
+			if (element.type === "parallelGateway" || element.type === "eventBasedGateway") continue
+			if (GATEWAYS.has(element.type) && outOf(id).length < 2) continue
+			element.name = GATEWAYS.has(element.type) ? `${nameFromId(id)}?` : nameFromId(id)
+			named++
+		}
+		if (named > 0) fixes.push(`named ${named} unnamed element(s) from their ids`)
 	}
 
 	for (const node of nodes.values()) {
@@ -609,7 +827,11 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		do id = `Flow_${++flowNumber}`
 		while (taken.has(id))
 		taken.add(id)
-		return { id, ...edge }
+		const flow: CompactFlow = { id, ...edge }
+		for (const key of ["name", "condition", "isDefault"] as const) {
+			if (flow[key] === undefined) delete flow[key]
+		}
+		return flow
 	})
 
 	return {
@@ -632,14 +854,27 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 /**
  * Reads a process written in the line format ({@link PROCESS_TEXT_GUIDE}).
  *
- * Never throws. The returned diagram always expands; what could not be used is
- * in `problems`, what was added to complete the diagram is in `fixes`:
+ * Never throws. The returned diagram always expands, and keeps the structural
+ * rules `lintDiagram` checks; what could not be used is in `problems`, what was
+ * added or changed to complete the diagram is in `fixes`:
  *
  * - flow ids are generated, and a repeated edge is written once;
- * - branches meeting at a task or event are joined by an xor gateway first;
- * - a conditional split with one unconditioned branch makes it the default;
  * - a missing start event is added before the first node without an incoming
- *   flow, and an end event after every path that stops elsewhere;
+ *   flow, and a start left unconnected leads there;
+ * - every node lies on a path from a start event: a task or gateway nothing
+ *   leads to continues the latest path written before it that stops short of
+ *   an end event, and a fragment that still cannot be reached is left out,
+ *   never drawn loose;
+ * - an end event is added after every path that stops elsewhere;
+ * - a gateway with one way in and one way out is removed;
+ * - a task or event with several ways out gets a split gateway: xor when the
+ *   branches are labelled, and otherwise parallel;
+ * - branches meeting at a task, an event or a splitting gateway are joined
+ *   first, by a gateway of the type they were split with;
+ * - every decision has a default branch, and every other branch a FEEL
+ *   condition — a prose one becomes a condition on a variable named for the
+ *   gateway's question; flows out of anything else carry no condition or label;
+ * - an unnamed event, task or decision is named from its id;
  * - a service or send task without `job=` uses its id as its job type, and a
  *   rule task its id as its decision id.
  *

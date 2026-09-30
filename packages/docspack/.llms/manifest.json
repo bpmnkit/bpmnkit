@@ -4370,7 +4370,7 @@
 		{
 			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream",
 			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md",
-			"tokens": 550,
+			"tokens": 877,
 			"tags": [
 				"packages",
 				"core",
@@ -4381,6 +4381,7 @@
 			],
 			"entities": [
 				"parseProcessText",
+				"lintDiagram",
 				"createProcessTextStream()",
 				"end()"
 			]

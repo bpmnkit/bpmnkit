@@ -234,7 +234,7 @@ export function mountGenerator(): void {
 		result = { xml: Bpmn.export(defs), file: fileName(defs) }
 		name.textContent = result.file
 		const seconds = ((performance.now() - started) / 1000).toFixed(1)
-		const skipped = problems.length > 0 ? ` · ${problems.length} line(s) skipped` : ""
+		const skipped = problems.length > 0 ? ` · ${problems.length} problem(s) repaired` : ""
 		setStatus(outcome.cached ? `ready (cached)${skipped}` : `ready in ${seconds}s${skipped}`)
 		share.hidden = false
 	}

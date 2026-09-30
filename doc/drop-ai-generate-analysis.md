@@ -328,3 +328,58 @@ are the measurement.
 - **`estimateNeurons()` in `apps/drop/src/lib/ai.ts` ignores reasoning tokens.** It also uses gpt-oss-120b rates whatever `AI_MODEL` says, so the daily budget undercounts. The fix is to read `usage` from the response.
 - **`apps/landing/src/content/docs/guides/ai.md` had two errors.** It told models to write `taskType`, but the field is `jobType` (fixed). It also references a `compactDiagramJsonSchema` export that does not exist (still open).
 - **The demo DSL parser is in `apps/demo`, not in core.** The proxy's non-MCP fallback still asks for compact JSON in a code fence.
+
+## 12. Structural guarantees (2026-09-30)
+
+A user asked for "a KYC process for a bank" and got a diagram with a loose `Governance` task and its
+own end event, a boundary-to-end path hanging off it, and a question gateway (`Status approved?`)
+with one branch. The answer was reconstructed and reproduced: the boundary named `on=governance`,
+which was never declared, so the parser added a task that nothing led to; the gateway got one
+branch and an added end event. The parser completed starts, ends and joins, and nothing else.
+
+Replaying every recorded answer (104, §8 and §9) through `parseProcessText`, then `lintDiagram`
+with bpmnlint's recommended rules, counted the answers with a non-info `flow`, `naming` or `feel`
+finding (a long condition the model wrote, `feel/complex-condition`, is excluded):
+
+| | answers with findings | lint errors | mean elements |
+|---|---|---|---|
+| before | 47 / 104 | 111 | 7.2 |
+| after | 0 / 104 | 0 | 7.3 |
+
+Before, by rule (answers): missing label 30, implicit split 15, branch without condition 14,
+implicit start 9, redundant gateway 7, missing default 7, superfluous flow label 6, mixed gateway 5,
+disconnected 2.
+
+What `parseProcessText` now guarantees on the final text (not on streamed frames):
+
+- **Every node is on a path from a start event.** A task or gateway nothing leads to continues the
+  latest path written before it that stops short of an end event — the model left out one arrow
+  (glm, prompt 13: `… > label` then `gw[xor Ready?] > dispatch`). Loose events are not guessed at.
+  What is still unreached is left out and reported. An id only an `on=` names is no longer added
+  as a task, since nothing would lead to it. On the replay, 8 nodes in 6 answers are still left
+  out, all from answers whose lines did not parse; connecting recovered 14 more.
+- **No pass-through gateways.** One way in and one out is removed and reported.
+- **No implicit splits.** Several flows out of a task or event get an xor gateway when labelled,
+  a parallel one when not.
+- **Joins match their split.** Branches from one parallel split get a parallel join, not an xor
+  join that would run the rest once per branch. A gateway that both joins and splits gets its own
+  join.
+- **Decisions are complete.** One default per xor/or split, preferring a `No` / `Otherwise` /
+  `Rejected` branch, otherwise the last unconditioned one. Every other branch gets a FEEL
+  condition. A prose branch gets one on a variable named for the question (`Status approved?` +
+  `Yes` → `= statusApproved = true`), which is deployable and names the variable a task has to set.
+  Flows out of anything else lose conditions and labels.
+- **Everything is named.** Added events are named, and unnamed nodes are named from their ids.
+
+`apps/drop/tests/generate.test.ts` replays the recorded answers on every test run and expects no
+structural finding, so a parser change that regresses one fails CI.
+
+The guide gained four rules (one start, no loose nodes; an xor has conditions and a default; a
+boundary sits on a declared task and handles the problem before its end; joins). Its example no
+longer sends an error boundary straight to an end event, which `pattern/catch-and-swallow` flags
+and models copy. The guide is now ~310 tokens, up from ~250. The effect on answers is not yet
+measured on Workers AI; the next `bench:generate` run is the measurement.
+
+`pattern/gateway-single-outgoing` flagged every join gateway, since a join has one outgoing flow by
+design. It now skips gateways with several incoming flows; `flow/redundant-gateway` still covers a
+gateway with one flow in and one out.

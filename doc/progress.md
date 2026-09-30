@@ -1,5 +1,25 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: every generated diagram is structurally valid
+
+Follow-up to bpmnkit/monorepo#207. A generated KYC process had a loose task and a one-branch gateway.
+
+- `parseProcessText` now keeps the structural rules `lintDiagram` checks, including bpmnlint's recommended set:
+  - every node is on a path from a start event. A task or gateway nothing leads to continues the latest path that stops short; what is still unreached is left out and reported
+  - a start event left unconnected leads to the first path
+  - pass-through gateways are removed
+  - implicit splits get an xor gateway when labelled, a parallel one otherwise
+  - joins match the split type, and a gateway that joins and splits gets its own join
+  - every decision has one default, and every other branch a FEEL condition. A prose branch gets one on a variable named for the question
+  - flows out of anything but a decision carry no condition or label
+  - added and unnamed elements are named
+  - `start:kyc Start KYC` no longer repeats the word in the name
+- `PROCESS_TEXT_GUIDE` teaches the rules. Its example handles the error boundary in a task.
+- `pattern/gateway-single-outgoing` no longer flags join gateways.
+- Replay of all 104 recorded model answers: answers with structural lint findings went from 47 to 0, and lint errors from 111 to 0. The mean element count is unchanged. `apps/drop/tests/generate.test.ts` keeps that at 0.
+- Drop's status line says "N problem(s) repaired" rather than "line(s) skipped".
+- Details: `doc/drop-ai-generate-analysis.md` §12.
+
 ## 2026-09-30 — CI fixes for bpmnkit/monorepo#207
 
 - `apps/landing/src/generated/ecosystem.ts` regenerated with `scripts/generate-ecosystem.mjs`. The copy on `main` predates #204's version bumps and #205's `@bpmnkit/flow`, so `@bpmnkit/landing` `tests/ecosystem.test.ts` failed on every PR.

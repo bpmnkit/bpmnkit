@@ -1389,6 +1389,7 @@ A "Describe a process" section on `/drop`, behind the same closed-beta passcode 
 - **Drawn while it is written.** The model writes the process in a Mermaid-like line format (`parseProcessText`, about a quarter of the tokens of compact JSON). The Worker streams it through, and the page draws each finished line, so the first shapes appear before the answer is complete.
 - **Small, cacheable prompt.** The prompt is about 330 tokens with the description last, so the fixed prefix can hit Workers AI's prompt cache. Reasoning is kept low or turned off per model, through `MODEL_PROFILES`.
 - **Repaired without a second call.** The parser adds flow ids, merge gateways, default branches and missing start and end events, and reports every line it could not use.
+- **Always structurally valid (2026-09-30).** Every node is on a path from the start. Decisions have conditions and a default, splits and joins are explicit and match, and every element is named. On all 104 recorded model answers, the result has no structural lint finding.
 - **Cheap to run.** Answers are cached in D1 by model, prompt and description. The shared daily neuron budget is charged from the model's reported usage. `AI_GENERATE_MODEL` chooses the model, and `bench:generate` measures the candidates.
 - **Shared like any drop.** Nothing is stored until the reader asks for a link. The diagram then goes through the ordinary upload endpoint, with the same validation and Terms.
 

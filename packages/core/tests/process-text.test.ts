@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest"
+import { resolveBpmnlintConfig } from "../src/bpmn/bpmnlint.js"
 import { expand } from "../src/bpmn/compact.js"
 import { Bpmn } from "../src/bpmn/index.js"
+import { lintDiagram } from "../src/bpmn/lint.js"
 import {
 	PROCESS_TEXT_GUIDE,
 	createProcessTextStream,
@@ -74,21 +76,43 @@ describe("parseProcessText", () => {
 		].join("\n")
 		const [, yes, maybe, other] = flows(text)
 		expect(yes).toMatchObject({ name: "Yes", condition: '= status = "ok" and count(items) > 0' })
-		expect(maybe).toMatchObject({ name: "Maybe" })
-		expect(maybe?.condition).toBeUndefined()
+		// A branch with a label and no condition gets one on the gateway's question.
+		expect(maybe).toMatchObject({ name: "Maybe", condition: '= ok = "Maybe"' })
 		expect(other).toMatchObject({ isDefault: true })
 	})
 
-	it("joins branches that meet at a task, but not at a gateway", () => {
+	it("joins branches that meet at a task with the gateway type they were split by", () => {
 		const text = [
 			"s[start] > split[and] > a[task A] > done[end]",
 			"split > b[task B] > done",
-			"s2[start:message] > m[and] > x[task X]",
+			"s2[start:message] > g[xor Ok?]",
+			"g >(Yes: ok) c[task C] > done2[end]",
+			"g >(No: default) d[task D] > done2",
 		].join("\n")
 		const { diagram, fixes } = parseProcessText(text)
-		expect(fixes).toContain('joined 2 flows into "done" with xor gateway "done_join"')
+		expect(fixes).toContain('joined 2 flows into "done" with and gateway "done_join"')
+		expect(fixes).toContain('joined 2 flows into "done2" with xor gateway "done2_join"')
 		const into = diagram.processes[0]?.flows.filter((f) => f.to === "done")
 		expect(into?.map((f) => f.from)).toEqual(["done_join"])
+	})
+
+	it("gives a gateway that joins and splits a join of its own", () => {
+		const text = [
+			"s[start] > g[xor Ok?]",
+			"g >(Yes: ok) a[task A] > again[xor Retry?]",
+			"g >(No: default) b[task B] > again",
+			"again >(Yes: retry) a",
+			"again >(No: default) e[end Done]",
+		].join("\n")
+		const { diagram, fixes } = parseProcessText(text)
+		expect(fixes).toContain('joined 2 flows into "again" with xor gateway "again_join"')
+		const process = diagram.processes[0]
+		const gateways = process?.elements.filter((e) => e.type === "exclusiveGateway") ?? []
+		for (const gateway of gateways) {
+			const ins = process?.flows.filter((f) => f.to === gateway.id).length ?? 0
+			const outs = process?.flows.filter((f) => f.from === gateway.id).length ?? 0
+			expect(ins > 1 && outs > 1, gateway.id).toBe(false)
+		}
 	})
 
 	it("makes the one unconditioned branch of an xor its default", () => {
@@ -148,16 +172,18 @@ describe("parseProcessText", () => {
 	})
 
 	it("accepts the synonyms models use for a kind, without a problem", () => {
-		const text =
-			"s[start] > p[parallel] > w[event:message Report received] > d[decision Check credit] > e[end]"
+		const text = [
+			"s[start] > p[parallel] > w[event:message Report received] > d[decision Check credit] > e[end]",
+			"p > h[human Review report] > e",
+		].join("\n")
 		const { problems } = parseProcessText(text)
 		expect(problems).toEqual([])
-		expect(elements(text).map((e) => e.type)).toEqual([
-			"startEvent",
+		const types = new Map(elements(text).map((e) => [e.id, e.type]))
+		expect([...["p", "w", "d", "h"].map((id) => types.get(id))]).toEqual([
 			"parallelGateway",
 			"intermediateCatchEvent",
 			"businessRuleTask",
-			"endEvent",
+			"userTask",
 		])
 		expect(elements(text).find((e) => e.id === "w")?.eventType).toBe("message")
 	})
@@ -185,8 +211,12 @@ describe("parseProcessText", () => {
 			{ line: 6, message: 'condition "amount is small" is not FEEL; kept as the branch label' },
 		])
 		const byTarget = new Map(flows(text).map((f) => [f.to, f]))
-		expect(byTarget.get("review")).toMatchObject({ name: "Yes: applicant is eligible" })
-		expect(byTarget.get("review")?.condition).toBeUndefined()
+		// The prose stays the label; the condition asks the gateway's question of a variable.
+		expect(byTarget.get("review")).toMatchObject({
+			name: "Yes: applicant is eligible",
+			condition: "= eligible = true",
+		})
+		expect(byTarget.get("reject")).toMatchObject({ isDefault: true })
 		// With its FEEL sibling kept, the prose branch becomes the default.
 		expect(byTarget.get("big")).toMatchObject({ condition: "= amount > 1000" })
 		expect(byTarget.get("small")).toMatchObject({ name: "No: amount is small", isDefault: true })
@@ -286,10 +316,14 @@ describe("parseProcessText", () => {
 
 	it("ignores a restatement whose kind is not a kind", () => {
 		// gemma-4, golden prompts 10 and 13.
-		const text = "s[start] > and[and] > t[task T] > e[end]\nand[kind and]\ns[id=s kind=start]"
+		const text =
+			"s[start] > and[and] > t[task T] > e[end]\nand > u[task U] > e\nand[kind and]\ns[id=s kind=start]"
 		const { diagram, problems } = parseProcessText(text)
-		expect(diagram.processes[0]?.elements.map((e) => e.id)).toEqual(["s", "and", "t", "e"])
-		expect(problems.map((p) => p.line)).toEqual([2, 3])
+		const ids = diagram.processes[0]?.elements.map((e) => e.id)
+		expect(ids).toEqual(expect.arrayContaining(["s", "and", "t", "e", "u"]))
+		expect(ids).not.toContain("and_2")
+		expect(ids).not.toContain("s_2")
+		expect(problems.map((p) => p.line)).toEqual([3, 4])
 	})
 
 	it("accepts a second arrow after an edge label", () => {
@@ -305,6 +339,7 @@ describe("parseProcessText", () => {
 			"g >(default) b[end]",
 			"s2[start] > p[and]",
 			"p >(default) c[end]",
+			"p > d[end]",
 		].join("\n")
 		const { problems } = parseProcessText(text)
 		expect(problems.map((p) => p.line)).toEqual([3, 5])
@@ -317,6 +352,139 @@ describe("parseProcessText", () => {
 		const els = elements(text)
 		expect(els.find((e) => e.id === "t")?.jobType).toBe("report.poll")
 		expect(els.find((e) => e.id === "w")).toMatchObject({ attachedTo: "t", interrupting: false })
+	})
+
+	it("never draws a node that is not on a path from the start (KYC, Drop)", () => {
+		// A describe-to-diagram answer for "Generate a KYC process for a bank": the
+		// boundary names a host never declared, and the decision has one branch.
+		const text = [
+			"# KYC process",
+			"start[start:kyc Start KYC] > collect[user Collect data] > verify[rule Verify data] > enrich[service Enrich customer profile] > status[xor Status approved?]",
+			"status > done[end]",
+			"gov[boundary:error Governance check failed | on=governance] > cancel[end:error KYC cancelled]",
+		].join("\n")
+		const { diagram, problems } = parseProcessText(text)
+		const process = diagram.processes[0]
+		expect(process?.elements.map((e) => e.id)).toEqual([
+			"start",
+			"collect",
+			"verify",
+			"enrich",
+			"done",
+		])
+		expect(process?.elements[0]?.name).toBe("Start KYC")
+		expect(process?.flows.map((f) => [f.from, f.to])).toEqual([
+			["start", "collect"],
+			["collect", "verify"],
+			["verify", "enrich"],
+			["enrich", "done"],
+		])
+		expect(problems.map((p) => p.message)).toEqual([
+			'unknown trigger "kyc" for "start"; ignored, the name already says it',
+			'"status" has only one branch; gateway removed',
+			'boundary "gov" is on "governance", which is never declared; left out',
+			'"gov" was left out; flow gov > cancel left out',
+			'"cancel" is not connected to a start event; left out',
+		])
+	})
+
+	it("continues a path that stops short with the fragment written after it", () => {
+		// glm-4.7-flash, golden prompt 13: the arrow into the gateway is missing.
+		const text = [
+			"s[start Order received] > pick[task Pick items] > label[task Print label]",
+			"gw[xor Ready?] > dispatch[service Dispatch package] > done[end Order fulfilled]",
+			"t[catch:timer Too late] > late[task Chase]",
+		].join("\n")
+		const { diagram, fixes, problems } = parseProcessText(text)
+		expect(fixes).toContain('connected "label" to "gw", which nothing led to')
+		// A loose event is not guessed at.
+		expect(problems.map((p) => p.message)).toContain(
+			'"t" is not connected to a start event; left out',
+		)
+		const ids = diagram.processes[0]?.elements.map((e) => e.id)
+		expect(ids).toContain("dispatch")
+		expect(ids).not.toContain("late")
+	})
+
+	it("connects a start event left on its own to the first path", () => {
+		const { fixes } = parseProcessText("s[start Begun]\na[task A] > e[end Done]")
+		expect(fixes).toEqual(['connected start event "s" to "a"'])
+	})
+
+	it("splits the flows out of a task with a gateway: xor when labelled, else and", () => {
+		const text = [
+			"s[start] > review[user Review claim]",
+			"review >(Approved) pay[task Pay] > e[end Paid]",
+			"review >(Rejected) e2[end Rejected]",
+			"s2[start:message Update] > both[task Record update]",
+			"both > a[task A] > e3[end Done]",
+			"both > b[task B] > e3",
+		].join("\n")
+		const { diagram } = parseProcessText(text)
+		const els = new Map(diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("review_split")).toMatchObject({
+			type: "exclusiveGateway",
+			name: "Review claim outcome?",
+		})
+		expect(els.get("both_split")?.type).toBe("parallelGateway")
+		expect(els.get("e3_join")?.type).toBe("parallelGateway")
+		const out = flows(text).filter((f) => f.from === "review_split")
+		expect(out.map((f) => [f.to, f.condition, f.isDefault])).toEqual([
+			["pay", '= reviewClaimOutcome = "Approved"', undefined],
+			["e2", undefined, true],
+		])
+	})
+
+	it("gives a decision a default and every other branch a condition", () => {
+		const text = [
+			"s[start] > g[xor Order valid?]",
+			"g >(Yes: order is valid) a[end Accepted]",
+			"g >(No: order is not valid) b[end Refused]",
+			"s2[start] > h[xor Size?]",
+			"h >(Big: size > 10) c[end Big]",
+			"h >(Small: size <= 10) d[end Small]",
+			"s3[start] > p[and] > x[task X] > e[end Done]",
+			"p >(Yes: ok) y[task Y] > e",
+		].join("\n")
+		const byTarget = new Map(flows(text).map((f) => [f.to, f]))
+		expect(byTarget.get("a")).toMatchObject({ condition: "= orderValid = true" })
+		expect(byTarget.get("b")).toMatchObject({ isDefault: true })
+		expect(byTarget.get("b")?.condition).toBeUndefined()
+		// Every branch had a condition: the last becomes the default.
+		expect(byTarget.get("c")).toMatchObject({ condition: "= size > 10" })
+		expect(byTarget.get("d")).toMatchObject({ isDefault: true })
+		expect(byTarget.get("d")?.condition).toBeUndefined()
+		// A parallel split decides nothing: no condition, no label.
+		expect(byTarget.get("y")?.condition).toBeUndefined()
+		expect(byTarget.get("y")?.name).toBeUndefined()
+	})
+
+	it("names what the model left unnamed", () => {
+		const els = elements(
+			"s[start] > check_order[task] > g[xor]\ng >(Yes: ok) e[end]\ng >(No: default) e2[end]",
+		)
+		expect(els.map((e) => e.name)).toEqual(["S", "Check order", "G?", "E", "E2"])
+	})
+
+	it("keeps the rules lintDiagram checks, whatever the model wrote", () => {
+		const recommended = resolveBpmnlintConfig({ extends: "bpmnlint:recommended" })
+		const answers = [
+			EXAMPLE,
+			"start[start:kyc Start KYC] > collect[user Collect data] > status[xor Status approved?]\nstatus > done[end]\ngov[boundary:error Failed | on=governance] > cancel[end:error Cancelled]",
+			"s[start] > a[task A] > b[task B]\na > c[task C]\nb > m[xor Merge?]\nc > m\nm >(ok) d[task D]\nm > a",
+			"x[task X] > y[xor Y?]\ny >(Yes: prose here) z[end]\ny >(No: more prose) z",
+			"s[start Go]\nt[catch:timer Wait] > u[task U]\nv[user V] > w",
+		]
+		for (const answer of answers) {
+			const defs = expand(parseProcessText(answer).diagram)
+			const findings = lintDiagram(defs, { bpmnlint: recommended }).diagnostics.filter(
+				(d) => d.category === "flow" || d.category === "naming" || d.category === "feel",
+			)
+			expect(
+				findings.filter((d) => d.severity !== "info").map((d) => `${d.id}: ${d.message}`),
+				answer,
+			).toEqual([])
+		}
 	})
 
 	it("never produces a diagram expand rejects", () => {

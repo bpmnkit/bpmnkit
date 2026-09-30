@@ -243,6 +243,8 @@ export function analyzePatterns(p: BpmnProcess): OptimizationFinding[] {
 	for (const el of p.flowElements) {
 		if (el.type !== "exclusiveGateway") continue
 		const outflows = bySource.get(el.id) ?? []
+		// Several ways in and one out is a join, which is what a join should look like.
+		if ((byTarget.get(el.id) ?? []).length > 1) continue
 		if (outflows.length === 1) {
 			findings.push({
 				id: "pattern/gateway-single-outgoing",
