@@ -30,6 +30,11 @@ export interface Env {
 	 * first is kept. Unset = no hedge.
 	 */
 	AI_GENERATE_FALLBACK_MODEL?: string
+	/**
+	 * Vision model that drafts from an image (var). Unset = images are refused.
+	 * Only first drafts use it; changes to a draft go to `AI_GENERATE_MODEL`.
+	 */
+	AI_GENERATE_IMAGE_MODEL?: string
 	/** Milliseconds before the fallback is asked (var; default 1500). */
 	AI_GENERATE_HEDGE_MS?: string
 	/** Daily neuron budget shared by AI reviews and generations (var; string, parsed at the edge). */

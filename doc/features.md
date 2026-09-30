@@ -1,5 +1,11 @@
 # Features
 
+## Drop: draft a diagram from an image (2026-09-30)
+
+- Describe-to-diagram takes a whiteboard photo, a sketch or a screenshot, picked or pasted, with
+  an optional description. A vision model (`AI_GENERATE_IMAGE_MODEL`) reads it into the same line
+  format, so the draft streams, is checked, and can be changed and shared like a typed one.
+
 ## Durable agent flows (2026-09-29)
 
 - `@bpmnkit/flow`: write a workflow as typed TypeScript steps — handlers, coding-agent steps,

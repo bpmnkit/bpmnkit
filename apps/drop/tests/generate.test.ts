@@ -10,6 +10,7 @@ import { describe, expect, it } from "vitest"
 import {
 	GENERATE_MAX_TOKENS,
 	GENERATE_SYSTEM_PROMPT,
+	IMAGE_SYSTEM_PROMPT,
 	REFINE_SYSTEM_PROMPT,
 	createDiagramLineFilter,
 	createSseReader,
@@ -27,6 +28,10 @@ describe("generate prompt", () => {
 		const messages = generateMessages("Approve expenses over 1000")
 		expect(messages.map((m) => m.role)).toEqual(["system", "user"])
 		expect(messages[1]?.content).toBe("Approve expenses over 1000")
+	})
+
+	it("reads an image on the same prefix as a description", () => {
+		expect(IMAGE_SYSTEM_PROMPT.startsWith(GENERATE_SYSTEM_PROMPT)).toBe(true)
 	})
 
 	it("is the same prefix for every description, so it can be cached", () => {

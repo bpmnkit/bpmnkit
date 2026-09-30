@@ -12,6 +12,8 @@ import {
 import {
 	GENERATE_SYSTEM_PROMPT,
 	type GenerateEvent,
+	IMAGE_SYSTEM_PROMPT,
+	IMAGE_TOKEN_ESTIMATE,
 	MAX_CHANGE_CHARS,
 	MAX_DESCRIPTION_CHARS,
 	MAX_DIAGRAM_CHARS,
@@ -21,10 +23,12 @@ import {
 	REFINE_SYSTEM_PROMPT,
 	createDiagramLineFilter,
 	generateMessages,
+	imageMessages,
 	maxTokensFor,
 	neuronsFor,
 	normaliseDescription,
 	normaliseDiagram,
+	normaliseImage,
 	refineMessages,
 } from "../lib/generate.js"
 import { ModelStream, hedge } from "../lib/hedge.js"
@@ -66,7 +70,9 @@ function isUsable(text: string): boolean {
 /**
  * POST /drop/api/generate — closed-beta describe-to-diagram.
  *
- * Body `{ description }` for a first draft, or `{ description, diagram, change }`
+ * Body `{ description }` for a first draft, `{ image, description? }` for a
+ * first draft read from a JPEG data URL (a whiteboard, sketch or photo, sent to
+ * `AI_GENERATE_IMAGE_MODEL`), or `{ description, diagram, change }`
  * to change a draft: `diagram` is the text the last answer streamed, and the
  * model writes the whole diagram again with the change made. The Worker keeps
  * no conversation; the client sends the state it has. Answers with a
@@ -89,16 +95,19 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 
 	let description: string
 	let refine: { diagram: string; change: string } | undefined
+	let image: string | null | undefined
 	let token: string | undefined
 	try {
 		const body = (await request.json()) as {
 			description?: unknown
 			diagram?: unknown
 			change?: unknown
+			image?: unknown
 			token?: unknown
 		}
 		if (typeof body.token === "string") token = body.token
 		description = typeof body.description === "string" ? normaliseDescription(body.description) : ""
+		if (body.image !== undefined) image = normaliseImage(body.image)
 		if (body.diagram !== undefined || body.change !== undefined) {
 			refine = {
 				diagram: typeof body.diagram === "string" ? normaliseDiagram(body.diagram) : "",
@@ -111,21 +120,38 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 
 	const { denied: unverified, pass } = await checkAiChallenge(request, env, token, now)
 	if (unverified) return unverified
-	const res = await answer(request, env, now, description, refine)
+	const res = await answer(request, env, now, description, refine, image)
 	// A solved challenge earns a pass, whatever the answer; the page keeps it for the next call.
 	if (pass) res.headers.set(AI_PASS_HEADER, pass)
 	return res
 }
 
-/** Everything after the gates: input check, cache, budget, hourly cap, model call. */
+/**
+ * Everything after the gates: input check, cache, budget, hourly cap, model call.
+ * `image` is `undefined` when none was sent and `null` when one was sent but is not accepted.
+ */
 async function answer(
 	request: Request,
 	env: Env,
 	now: number,
 	description: string,
 	refine: { diagram: string; change: string } | undefined,
+	image: string | null | undefined,
 ): Promise<Response> {
-	if (description.length < MIN_DESCRIPTION_CHARS || description.length > MAX_DESCRIPTION_CHARS) {
+	if (image !== undefined) {
+		if (!env.AI_GENERATE_IMAGE_MODEL) {
+			return json({ error: "drawing from an image is not enabled here" }, { status: 400 })
+		}
+		if (image === null) {
+			return json({ error: "the image must be a JPEG of at most about 1 MB" }, { status: 400 })
+		}
+		if (refine) {
+			return json({ error: "an image starts a draft; send a change without one" }, { status: 400 })
+		}
+	}
+	// With an image, the description is an optional hint.
+	const minDescription = image ? 0 : MIN_DESCRIPTION_CHARS
+	if (description.length < minDescription || description.length > MAX_DESCRIPTION_CHARS) {
 		return json(
 			{
 				error: `describe the process in ${MIN_DESCRIPTION_CHARS}–${MAX_DESCRIPTION_CHARS} characters`,
@@ -146,16 +172,30 @@ async function answer(
 		)
 	}
 
-	const model = env.AI_GENERATE_MODEL
-	const messages = refine
-		? refineMessages(description, refine.diagram, refine.change)
-		: generateMessages(description)
-	const promptChars = messages.reduce((sum, m) => sum + m.content.length, 0)
+	const model = image ? (env.AI_GENERATE_IMAGE_MODEL as string) : env.AI_GENERATE_MODEL
+	const messages = image
+		? imageMessages(description, image)
+		: refine
+			? refineMessages(description, refine.diagram, refine.change)
+			: generateMessages(description)
+	const promptTokenEstimate =
+		Math.ceil(
+			messages.reduce(
+				(sum, m) =>
+					sum +
+					(typeof m.content === "string"
+						? m.content.length
+						: m.content.reduce((n, part) => n + (part.type === "text" ? part.text.length : 0), 0)),
+				0,
+			) / 4,
+		) + (image ? IMAGE_TOKEN_ESTIMATE : 0)
 	// The prompt is part of the key: changing it must not serve answers written for the old one.
 	const requestHash = await sha256Hex(
-		refine
-			? `${model}\n${REFINE_SYSTEM_PROMPT}\n${description}\n${refine.diagram}\n${refine.change}`
-			: `${model}\n${GENERATE_SYSTEM_PROMPT}\n${description}`,
+		image
+			? `${model}\n${IMAGE_SYSTEM_PROMPT}\n${description}\n${image}`
+			: refine
+				? `${model}\n${REFINE_SYSTEM_PROMPT}\n${description}\n${refine.diagram}\n${refine.change}`
+				: `${model}\n${GENERATE_SYSTEM_PROMPT}\n${description}`,
 	)
 	const cached = await getCachedGeneration(env.DB, requestHash)
 	if (cached !== null) {
@@ -194,7 +234,8 @@ async function answer(
 				{ extraHeaders: { "x-session-affinity": `drop-generate-${name}` } },
 			),
 		)
-	const fallbackModel = env.AI_GENERATE_FALLBACK_MODEL
+	// Not hedged: the fallback is picked for text, and a second image call would double its cost.
+	const fallbackModel = image ? undefined : env.AI_GENERATE_FALLBACK_MODEL
 	const hedgeMs = Number.parseInt(env.AI_GENERATE_HEDGE_MS ?? "", 10)
 
 	return new Response(
@@ -226,7 +267,7 @@ async function answer(
 					neurons += neuronsFor(
 						stream.model,
 						stream.usage ?? {
-							promptTokens: Math.ceil(promptChars / 4),
+							promptTokens: promptTokenEstimate,
 							completionTokens: Math.ceil((stream.text.length + stream.reasoningChars) / 4),
 						},
 					)
@@ -243,6 +284,7 @@ async function answer(
 						msg: "drop.generate",
 						primary: model,
 						refine: refine !== undefined,
+						image: image !== undefined,
 						winner: winner?.model ?? null,
 						hedged: started.length > 1,
 						firstContentMs: winner?.firstContentMs ?? null,
@@ -262,7 +304,9 @@ async function answer(
 								? "AI generation is unavailable right now. Please try again."
 								: winner.failed
 									? "The model stopped part way. Please try again."
-									: "Couldn't turn that into a process. Try describing the steps in order.",
+									: image
+										? "Couldn't read a process in that image. Try a clearer picture, or describe the steps."
+										: "Couldn't turn that into a process. Try describing the steps in order.",
 						}),
 					)
 				} else {

@@ -23,6 +23,8 @@
 		// the first to write wins. Remove to turn the hedge off.
 		"AI_GENERATE_FALLBACK_MODEL": "@cf/google/gemma-4-26b-a4b-it",
 		"AI_GENERATE_HEDGE_MS": "1500",
+		// Reads a whiteboard, sketch or photo for a first draft. Unset = no image input.
+		"AI_GENERATE_IMAGE_MODEL": "@cf/google/gemma-4-26b-a4b-it",
 		"AI_DAILY_BUDGET": "8000",
 		"TURNSTILE_SITE_KEY": "0x4AAAAAAExoiG_f6MSVcEiN"
 		// Turnstile on the edit claim. Add TURNSTILE_SITE_KEY here (it is public and

@@ -37,7 +37,7 @@ async function route(request: Request, env: Env): Promise<Response> {
 		// The challenge widget, and the content policy it needs, only where it is used.
 		const turnstileKey = aiEnabled ? env.TURNSTILE_SITE_KEY : undefined
 		return request.method === "GET"
-			? html(dropPage(env.TOS_VERSION, aiEnabled, turnstileKey), {
+			? html(dropPage(env.TOS_VERSION, aiEnabled, turnstileKey, !!env.AI_GENERATE_IMAGE_MODEL), {
 					turnstile: turnstileKey !== undefined,
 				})
 			: methodNotAllowed()

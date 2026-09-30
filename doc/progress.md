@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: draft from an image
+
+- `POST /drop/api/generate` accepts `{ image, description? }`: a JPEG data URL of about 1 MB at most (`normaliseImage`), sent with `IMAGE_SYSTEM_PROMPT` to `AI_GENERATE_IMAGE_MODEL` (`@cf/google/gemma-4-26b-a4b-it`), not hedged. The description is optional with an image. Cached by model, prompt, description and image. The same gates, budget and hourly cap as text apply, and a call with no reported usage is charged `IMAGE_TOKEN_ESTIMATE` (1,500) input tokens for the image. Unset the var and images are refused (400) and the page hides the control.
+- The page: "Add an image", or paste one into the description, with a preview and Remove. The picture is scaled to at most 1568 px and re-encoded as JPEG in the browser (a 3000×2000 PNG went out as 26 kB). Changes to an image draft go to the text model with the draft's text; the image is not sent again.
+- Not yet measured against real whiteboard photos: the benchmark covers text prompts only. Details: `doc/drop-ai-generate-analysis.md` §22.
+
 ## 2026-09-30 — Describe-to-diagram: Turnstile
 
 - With `TURNSTILE_SECRET` set, `POST /drop/api/generate` needs a solved challenge after the passcode. A solved one earns a stateless pass (`X-Drop-AI-Pass`: expiry plus an HMAC over it and the caller's IP hash), which lasts 30 minutes, so a draft and its changes cost one check. The page shows the widget in a dialog only when it needs a token. It is on the landing page, with the widened content policy, only when AI and a site key are both configured. Details: `doc/drop-ai-generate-analysis.md` §21.
