@@ -16,6 +16,8 @@
  *
  * Options:
  *   --edits           run the change cases instead of the golden prompts
+ *   --refine-rules R  with --edits: the change rules to send, none | text | all
+ *                     (default all, what the route sends; see RefineRules)
  *   --models a,b      model ids (default: the candidates below)
  *   --runs N          runs per model and prompt (default 1)
  *   --only 02,13      prompt directory (or edit case) prefixes to run
@@ -38,6 +40,7 @@ import { Bpmn, createProcessTextStream, expand, optimize, parseProcessText } fro
 import { scoreEdit } from "../src/lib/edit-bench.ts"
 import {
 	MODEL_PROFILES,
+	REFINE_RULE_SETS,
 	createSseReader,
 	generateMessages,
 	maxTokensFor,
@@ -66,11 +69,18 @@ const { values: args } = parseArgs({
 		only: { type: "string" },
 		all: { type: "boolean", default: false },
 		edits: { type: "boolean", default: false },
+		"refine-rules": { type: "string", default: "all" },
 		"no-extra": { type: "boolean", default: false },
 		"max-tokens": { type: "string" },
 		out: { type: "string" },
 	},
 })
+
+const refineRules = args["refine-rules"]
+if (!Object.hasOwn(REFINE_RULE_SETS, refineRules)) {
+	console.error(`--refine-rules must be one of: ${Object.keys(REFINE_RULE_SETS).join(", ")}`)
+	process.exit(1)
+}
 
 const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
 const token = process.env.CLOUDFLARE_API_TOKEN
@@ -118,7 +128,7 @@ async function loadEdits() {
 			const draft = parseProcessText(c.diagram).diagram
 			return {
 				id: c.id,
-				messages: refineMessages(c.description, c.diagram, c.change),
+				messages: refineMessages(c.description, c.diagram, c.change, refineRules),
 				score: (diagram) => {
 					const { failed, kept, added, removed } = scoreEdit(draft, diagram, c.assertions)
 					return {
@@ -161,7 +171,7 @@ async function runOne(model, prompt) {
 	const url = `${apiBase}/accounts/${accountId}/ai/run/${model}`
 	const t0 = performance.now()
 	const since = () => Math.round(performance.now() - t0)
-	const result = { model, prompt: prompt.id }
+	const result = { model, prompt: prompt.id, ...(args.edits ? { refineRules } : {}) }
 
 	let response
 	try {
@@ -249,7 +259,7 @@ const slug = (s) => s.replace(/[^\w.-]+/g, "_")
 const prompts = args.edits ? await loadEdits() : await loadPrompts()
 await mkdir(outDir, { recursive: true })
 console.log(
-	`${models.length} model(s) × ${prompts.length} prompt(s) × ${runs} run(s) → ${outDir}\n`,
+	`${models.length} model(s) × ${prompts.length} prompt(s) × ${runs} run(s)${args.edits ? `, change rules: ${refineRules}` : ""} → ${outDir}\n`,
 )
 
 const results = []
@@ -332,8 +342,27 @@ const table = [
 	`|${header.map(() => "---").join("|")}|`,
 	...rows.map((r) => `| ${r.join(" | ")} |`),
 ].join("\n")
+// Per case, for comparing rule sets on the cases they might help or hurt.
+const cases = [...new Set(results.map((r) => r.prompt))]
+const byCase = [
+	`| case | ${models.join(" | ")} |`,
+	`|---|${models.map(() => "---").join("|")}|`,
+	...cases.map(
+		(id) =>
+			`| ${id} | ${models
+				.map((model) => {
+					const rs = results.filter((r) => r.model === model && r.prompt === id)
+					return `${rs.filter((r) => !r.error && r.failed.length === 0).length}/${rs.length}`
+				})
+				.join(" | ")} |`,
+	),
+].join("\n")
+const heading = args.edits ? `Change rules: ${refineRules}\n\n` : ""
+
 await writeFile(
 	join(outDir, "summary.md"),
-	`${table}\n\nMedians except neurons, problems, fixes, lint errors, kept, added and removed (means).\nReasoning tokens are estimated from characters when the model does not report them.\n`,
+	`${heading}${table}\n\n${byCase}\n\nMedians except neurons, problems, fixes, lint errors, kept, added and removed (means).\nReasoning tokens are estimated from characters when the model does not report them.\n`,
 )
-console.log(`\n${table}\n\nWrote ${join(outDir, "summary.md")} and results.json`)
+console.log(
+	`\n${heading}${table}\n\n${byCase}\n\nWrote ${join(outDir, "summary.md")} and results.json`,
+)

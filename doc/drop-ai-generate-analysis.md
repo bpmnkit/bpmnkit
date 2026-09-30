@@ -838,3 +838,16 @@ settle it. Two ways to decide:
 - **Measure the suspected cost**: run `--only 08,10 --runs 10` with the current prompt, then the
   same with the rules removed. If 10 stays near 1/3 with the rules and near 3/3 without them,
   drop the boundary and parallel examples and keep the four text-only rules.
+
+**Comparing the rule sets.** `bench-generate.mjs --edits --refine-rules none|text|all` sends one
+of three change prompts. `all` is what the route sends, byte for byte the §18 prompt. `text`
+keeps the four rules without a diagram pattern (always make the change, rename, new branch, FEEL
+conditions). `none` is the §16 prompt. Each result records its rule set, and the summary
+adds a per-case pass table:
+
+```sh
+for rules in all text none; do
+  pnpm --filter @bpmnkit/drop bench:generate --edits --only 08,10 --runs 10 \
+    --models @cf/zai-org/glm-4.7-flash --refine-rules $rules
+done
+```

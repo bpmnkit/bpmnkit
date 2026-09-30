@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: benchmark flag for the change rule sets
+
+- `bench-generate.mjs --refine-rules none|text|all` picks the change prompt: `all` is the route's, `text` drops the boundary and parallel pattern rules, and `none` is the first run's. `refineSystemPrompt(rules)` builds them; `REFINE_SYSTEM_PROMPT` is unchanged. The summary adds a per-case pass table. For the 10-run comparison in `doc/drop-ai-generate-analysis.md` §18.
+
 ## 2026-09-30 — Describe-to-diagram: the reworded parallel rule measured
 
 - glm-4.7-flash × 30 changes: 22/30 (21 with the first rules, 20 without). Every answer to the parallel case now splits and joins with `and` gateways (none did before). Strictly 1/3 pass, because glm reuses a step's id for the gateway. The question cases stay at 3/3, and no answer comes back unchanged. The loop case went 3 → 2 → 1 across the three runs, and one answer drew a boundary where none was asked for. That is possibly a cost of the pattern rules, but it cannot be told from noise at 3 runs. Details: `doc/drop-ai-generate-analysis.md` §18.

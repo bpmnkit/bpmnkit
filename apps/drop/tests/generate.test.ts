@@ -17,6 +17,7 @@ import {
 	normaliseDiagram,
 	readAiEvent,
 	refineMessages,
+	refineSystemPrompt,
 } from "../src/lib/generate.js"
 
 describe("generate prompt", () => {
@@ -63,6 +64,20 @@ describe("generate prompt", () => {
 			"late[boundary:timer 24h | on=pay] > handler[task Handle] > h[end Handled]",
 		].join("\n")
 		expect(parseProcessText(answer).problems).toEqual([])
+	})
+
+	it("builds each change rule set on the same prefix, the route's being all of them", () => {
+		expect(REFINE_SYSTEM_PROMPT).toBe(refineSystemPrompt("all"))
+		const none = refineSystemPrompt("none")
+		const text = refineSystemPrompt("text")
+		expect(none.startsWith(GENERATE_SYSTEM_PROMPT)).toBe(true)
+		// `none` is the prompt of the first change run: the two base lines only.
+		expect(none.slice(GENERATE_SYSTEM_PROMPT.length).trim().split("\n")).toHaveLength(2)
+		expect(text.startsWith(none)).toBe(true)
+		expect(text).toContain("FEEL conditions")
+		expect(text).not.toContain("boundary:timer")
+		expect(text).not.toContain("fork[and]")
+		expect(refineMessages("d", "a > b", "c", "text")[0]?.content).toBe(text)
 	})
 
 	it("sends a draft back without blank lines or trailing spaces", () => {
