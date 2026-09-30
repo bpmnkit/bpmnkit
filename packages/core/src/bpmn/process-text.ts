@@ -62,6 +62,21 @@ export interface ProcessTextProblem {
 	message: string
 }
 
+/**
+ * A guess {@link parseProcessText} had to make, put as a question. Each answer
+ * is a change request, written for a model to apply to the diagram.
+ */
+export interface ProcessTextQuestion {
+	/** The element the guess is about. It may have been left out of the diagram. */
+	elementId: string
+	/** What was guessed, then the question. */
+	text: string
+	/** Ready answers. Empty when only the reader can say. */
+	options: { label: string; change: string }[]
+	/** The start of a change request for the reader to finish. */
+	draft: string
+}
+
 /** What {@link parseProcessText} read. */
 export interface ProcessTextResult {
 	/** One process. Always valid input for `expand`. */
@@ -70,6 +85,8 @@ export interface ProcessTextResult {
 	problems: ProcessTextProblem[]
 	/** What was added or changed to complete the diagram, e.g. a join gateway or a missing end event. */
 	fixes: string[]
+	/** The guesses behind the fixes that only the reader can confirm, in the order of the text. */
+	questions: ProcessTextQuestion[]
 }
 
 const KINDS: Record<string, BpmnElementType> = {
@@ -205,6 +222,8 @@ class Reader {
 	private readonly taken = new Set<string>()
 	readonly edges: Edge[] = []
 	readonly problems: ProcessTextProblem[] = []
+	/** Catch and boundary events written without a trigger, and made message events. */
+	readonly guessedMessage = new Set<string>()
 	title: string | undefined
 
 	/** Reads one line. Returns whether it added anything. */
@@ -406,6 +425,7 @@ class Reader {
 			element.eventType === undefined
 		) {
 			element.eventType = "message"
+			this.guessedMessage.add(id)
 			this.problems.push({
 				line: n,
 				message: `"${id}" waits for nothing in particular; made it a message event`,
@@ -445,6 +465,13 @@ function edgeLabel(
 const OTHERWISE =
 	/^(no|not|else|otherwise|default|false|reject(ed)?|fail(ed|ure)?|invalid|denied|declined)\b/i
 
+/** `"A", "B" and "C"` */
+function listOf(items: string[]): string {
+	return items.length < 2
+		? (items[0] ?? "")
+		: `${items.slice(0, -1).join(", ")} and ${items.at(-1)}`
+}
+
 /** `Status approved?` → `statusApproved`: a FEEL variable name for the question a gateway asks. */
 function variableFrom(text: string): string {
 	const words = text
@@ -471,12 +498,15 @@ function variableFrom(text: string): string {
 function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	const problems = [...reader.problems]
 	const fixes: string[] = []
+	// Asked once the names are final, so a question uses the names the diagram shows.
+	const asks: { line: number; ask: () => ProcessTextQuestion }[] = []
 	const nodes = new Map<string, Node>()
 	for (const [id, node] of reader.nodes) {
 		nodes.set(id, { ...node, element: { ...node.element } })
 	}
 	const taken = new Set(nodes.keys())
 	const typeOf = (id: string) => nodes.get(id)?.element.type
+	const nameOf = (id: string) => nodes.get(id)?.element.name ?? nameFromId(id)
 	const add = (id: string, type: BpmnElementType, line: number, name?: string) => {
 		const element: CompactElement = name === undefined ? { id, type } : { id, type, name }
 		nodes.set(id, { element, line, spec: "" })
@@ -690,6 +720,17 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 				message: `"${id}" is not connected to a start event; left out`,
 			})
 			nodes.delete(id)
+			const { type, name = nameFromId(id) } = node.element
+			if (EVENTS.has(type) || GATEWAYS.has(type)) continue
+			asks.push({
+				line: node.line,
+				ask: () => ({
+					elementId: id,
+					text: `"${name}" was left out: nothing leads to it. Where does it belong?`,
+					options: [],
+					draft: `Put "${name}" after `,
+				}),
+			})
 		}
 		edges = edges.filter((edge) => reached.has(edge.from) && reached.has(edge.to))
 
@@ -769,6 +810,18 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			add(end, "endEvent", decision.line, "Process completed")
 			edges.push({ from: id, to: end, line: decision.line, name: "Otherwise" })
 			fixes.push(`added an exit from the loop at "${id}" to end event "${end}"`)
+			asks.push({
+				line: decision.line,
+				ask: () => {
+					const name = nameOf(id)
+					return {
+						elementId: id,
+						text: `The loop at "${name}" had no way out, so one was added. When does it end?`,
+						options: [],
+						draft: `Leave the loop at "${name}" when `,
+					}
+				},
+			})
 		}
 
 		// Pass-through gateways: one way in and one way out decides nothing. Most
@@ -800,6 +853,19 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 				edges = edges.filter((edge) => edge !== outEdge)
 				nodes.delete(id)
 				problems.push({ line: node.line, message: `"${id}" has only one branch; gateway removed` })
+				if (CONDITIONAL.has(node.element.type)) {
+					// Most often a question the model asked and answered only one way.
+					const name = node.element.name ?? `${nameFromId(id)}?`
+					asks.push({
+						line: node.line,
+						ask: () => ({
+							elementId: id,
+							text: `"${name}" had only one way to go, so it was removed. What happens otherwise?`,
+							options: [],
+							draft: `At "${name}", otherwise `,
+						}),
+					})
+				}
 				removed = true
 			}
 		}
@@ -846,6 +912,32 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			}
 			const kind = decides ? "xor" : races ? "event" : "and"
 			fixes.push(`split the flows out of "${id}" with ${kind} gateway "${split}"`)
+			if (kind === "and") {
+				// Read now: a join below may take a branch's place as its target.
+				const targetIds = out.map((edge) => edge.to)
+				asks.push({
+					line: node.line,
+					ask: () => {
+						const name = nameOf(id)
+						const branches = listOf(targetIds.map((to) => `"${nameOf(to)}"`))
+						return {
+							elementId: split,
+							text: `After "${name}", ${branches} run at the same time. Is that right?`,
+							options: [
+								{
+									label: "Only one of them",
+									change: `After "${name}", only one of ${branches} happens: decide which with an xor gateway.`,
+								},
+								{
+									label: "One after the other",
+									change: `After "${name}", do ${branches} one after the other, not at the same time.`,
+								},
+							],
+							draft: `After "${name}", `,
+						}
+					},
+				})
+			}
 		}
 	}
 
@@ -904,7 +996,30 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			if (!out.some((edge) => edge.isDefault)) {
 				const plain = out.filter((edge) => edge.condition === undefined)
 				const pool = plain.length > 0 ? plain : out
-				const chosen = pool.find((edge) => OTHERWISE.test(edge.name ?? "")) ?? pool[pool.length - 1]
+				const otherwise = pool.find((edge) => OTHERWISE.test(edge.name ?? ""))
+				const chosen = otherwise ?? pool[pool.length - 1]
+				if (chosen && otherwise === undefined) {
+					// Read now: the loop below gives every other branch a label.
+					const labels = new Map(out.map((edge) => [edge, edge.name?.split(":")[0]?.trim()]))
+					asks.push({
+						line: node.line,
+						ask: () => {
+							const name = nameOf(id)
+							const label = (edge: Edge) => labels.get(edge) || nameOf(edge.to)
+							return {
+								elementId: id,
+								text: `When no condition at "${name}" holds, it takes "${label(chosen)}". Is that the right fallback?`,
+								options: out
+									.filter((edge) => edge !== chosen)
+									.map((edge) => ({
+										label: label(edge),
+										change: `At "${name}", make "${label(edge)}" the default branch.`,
+									})),
+								draft: `At "${name}", when nothing else holds, `,
+							}
+						},
+					})
+				}
 				if (chosen) {
 					chosen.isDefault = true
 					if (chosen.condition !== undefined) {
@@ -918,6 +1033,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 				}
 			}
 			const variable = variableFrom(node.element.name ?? id)
+			let madeUp = false
 			for (const edge of out) {
 				if (edge.isDefault) {
 					edge.condition = undefined
@@ -937,8 +1053,23 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 							? `= ${variable} = false`
 							: `= ${variable} = "${label}"`
 					fixes.push(`gave ${id} > ${edge.to} the condition "${edge.condition}"`)
+					madeUp = true
 				}
 				edge.name ??= edge.condition.replace(/^=\s*/, "")
+			}
+			if (madeUp) {
+				asks.push({
+					line: node.line,
+					ask: () => {
+						const name = nameOf(id)
+						return {
+							elementId: id,
+							text: `"${name}" decides on "${variable}", a variable the diagram made up. What data decides it?`,
+							options: [],
+							draft: `At "${name}", decide on `,
+						}
+					},
+				})
 			}
 		}
 
@@ -953,6 +1084,30 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			named++
 		}
 		if (named > 0) fixes.push(`named ${named} unnamed element(s) from their ids`)
+
+		for (const id of reader.guessedMessage) {
+			const node = nodes.get(id)
+			if (node?.element.eventType !== "message") continue
+			asks.push({
+				line: node.line,
+				ask: () => {
+					const name = nameOf(id)
+					return {
+						elementId: id,
+						text: `"${name}" was written without a trigger, so it waits for a message. Is it something else?`,
+						options: [
+							{ label: "A timer", change: `"${name}" waits for a timer, not a message.` },
+							{ label: "A signal", change: `"${name}" waits for a signal, not a message.` },
+							{
+								label: "Nothing",
+								change: `"${name}" waits for nothing: make it a plain event, or the end.`,
+							},
+						],
+						draft: `"${name}" waits for `,
+					}
+				},
+			})
+		}
 	}
 
 	for (const node of nodes.values()) {
@@ -1001,6 +1156,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		},
 		problems: problems.sort((a, b) => a.line - b.line),
 		fixes,
+		questions: asks.sort((a, b) => a.line - b.line).map(({ ask }) => ask()),
 	}
 }
 

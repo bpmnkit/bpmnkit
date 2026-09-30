@@ -8,7 +8,7 @@ import {
 	REPORT_REASONS,
 } from "../shared/constants.js"
 import type { DropRow, FileInfo } from "./db.js"
-import { MAX_DESCRIPTION_CHARS } from "./generate.js"
+import { MAX_CHANGE_CHARS, MAX_DESCRIPTION_CHARS } from "./generate.js"
 import { escapeHtml, jsonForScript } from "./http.js"
 
 // Square, flat, one accent — the favicon is an image asset, so it carries the
@@ -364,6 +364,15 @@ select.ed-select{height:28px;border:1px solid var(--bpmnkit-ds-line);background:
 .gen-canvas{height:340px;background:var(--bpmnkit-ds-canvas);position:relative;overflow:hidden}
 #genStatus.busy{color:var(--bpmnkit-ds-accent)}
 .gen .btn-ghost[hidden],.fc-actions .btn-ghost[hidden]{display:none}
+.gen-refine{border-top:1px solid var(--bpmnkit-ds-line-soft)}
+.gen-refine[hidden]{display:none}
+.gen-questions{list-style:none;margin:0;padding:0}
+.gen-questions li{padding:10px 12px;border-bottom:1px solid var(--bpmnkit-ds-line-soft);font-size:var(--bpmnkit-ds-t-body-sm);color:var(--bpmnkit-ds-ink-2)}
+.gen-questions .fc-examples{margin-top:8px}
+.gen-change{display:flex}
+.gen-change input{flex:1;min-width:0;border:none;background:var(--bpmnkit-ds-surface);color:var(--bpmnkit-ds-ink);font-family:var(--bpmnkit-ds-font-sans);font-size:14px;padding:10px 12px}
+.gen-change input:focus-visible{outline-offset:-2px}
+.gen-change .btn-ghost{border:none;border-left:1px solid var(--bpmnkit-ds-line)}
 #genPasscode{max-width:360px;margin-top:14px}
 #genPasscode[hidden]{display:none}
 
@@ -492,7 +501,7 @@ export function dropPage(tosVersion: string, aiEnabled = false): string {
 		aiEnabled
 			? `<section class="section" id="describe"><div class="section-inner">
 	<div class="section-head"><span class="section-num">${num()}</span><h2 class="section-h2">Describe a process, get a diagram</h2></div>
-	<p class="section-lead section-indent" style="margin-bottom:26px">Say what should happen, in your own words. AI drafts the BPMN and draws it as it goes. Review it, then share it like any drop. Closed beta: it needs an access code.</p>
+	<p class="section-lead section-indent" style="margin-bottom:26px">Say what should happen, in your own words. AI drafts the BPMN and draws it as it goes. Ask for changes until it fits, then share it like any drop. Closed beta: it needs an access code.</p>
 	<div class="gen">
 		<div class="gen-main">
 			<div class="panel-bar"><span>description</span><span class="grow"></span><span id="genCount">0 / ${MAX_DESCRIPTION_CHARS}</span></div>
@@ -501,6 +510,10 @@ export function dropPage(tosVersion: string, aiEnabled = false): string {
 		<div class="gen-side">
 			<div class="panel-bar"><span id="genName">process.bpmn</span><span class="grow"></span><span id="genStatus">draft</span></div>
 			<div id="genCanvas" class="gen-canvas"><div class="hero-canvas-msg">The diagram appears here as it is written.</div></div>
+			<div id="genRefine" class="gen-refine" hidden>
+				<ul id="genQuestions" class="gen-questions"></ul>
+				<div class="gen-change"><input id="genChange" maxlength="${MAX_CHANGE_CHARS}" autocomplete="off" aria-label="Change the diagram" placeholder="Change something, e.g. a manager approves anything over 5000"><button id="genApply" class="btn-ghost" type="button">Apply</button><button id="genUndo" class="btn-ghost" type="button" hidden>Undo</button></div>
+			</div>
 		</div>
 	</div>
 	<div class="fc-actions">

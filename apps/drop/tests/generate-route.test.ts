@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import type { Env } from "../src/env.js"
 import { getBudgetSpent } from "../src/lib/ai.js"
-import { type GenerateEvent, neuronsFor } from "../src/lib/generate.js"
+import { type GenerateEvent, REFINE_SYSTEM_PROMPT, neuronsFor } from "../src/lib/generate.js"
 import { dropPage } from "../src/lib/pages.js"
 import { handleGenerate } from "../src/routes/generate.js"
 import { migratedDb } from "./d1.js"
@@ -204,6 +204,78 @@ describe("POST /drop/api/generate", () => {
 		expect(evs.at(-1)).toMatchObject({ error: expect.stringContaining("stopped part way") })
 		// No usage chunk arrived, so the charge is estimated from characters — never zero.
 		expect(await getBudgetSpent(env.DB, DAY)).toBeGreaterThan(0)
+	})
+})
+
+describe("POST /drop/api/generate — a change to a draft", () => {
+	const DRAFT = ANSWER.join("")
+	const CHANGED = [...ANSWER, "pay > notify[send Notify employee] > done\n"]
+	const change = (body: Record<string, unknown>) =>
+		new Request("http://drop/drop/api/generate", {
+			method: "POST",
+			headers: { "Content-Type": "application/json", "X-Drop-AI-Code": CODE },
+			body: JSON.stringify({ description: DESCRIPTION, ...body }),
+		})
+
+	it("sends the description, the draft and the change, and streams the new diagram", async () => {
+		const ai = fakeAi(CHANGED)
+		const evs = await events(
+			await handleGenerate(
+				change({ diagram: DRAFT, change: "notify the employee once paid" }),
+				makeEnv(ai),
+				NOW,
+			),
+		)
+		expect(text(evs)).toBe(CHANGED.join(""))
+		expect(evs.at(-1)).toEqual({ done: true, cached: false })
+		const messages = ai.calls[0]?.inputs.messages as { role: string; content: string }[]
+		expect(messages.map((m) => m.role)).toEqual(["system", "user", "assistant", "user"])
+		expect(messages[0]?.content).toBe(REFINE_SYSTEM_PROMPT)
+		expect(messages[1]?.content).toBe(DESCRIPTION)
+		expect(messages[2]?.content).toBe(DRAFT.trimEnd())
+		expect(messages[3]?.content).toBe("Change: notify the employee once paid")
+	})
+
+	it("rejects a change without a draft, or a draft without a change", async () => {
+		const ai = fakeAi(CHANGED)
+		const env = makeEnv(ai)
+		expect((await handleGenerate(change({ change: "add a step" }), env, NOW)).status).toBe(400)
+		expect((await handleGenerate(change({ diagram: DRAFT }), env, NOW)).status).toBe(400)
+		expect((await handleGenerate(change({ diagram: DRAFT, change: "x" }), env, NOW)).status).toBe(
+			400,
+		)
+		expect(
+			(
+				await handleGenerate(
+					change({ diagram: "a > b\n".repeat(1000), change: "add a step" }),
+					env,
+					NOW,
+				)
+			).status,
+		).toBe(400)
+		expect(ai.calls).toHaveLength(0)
+	})
+
+	it("caches a change apart from the first draft, and apart from other changes", async () => {
+		const ai = fakeAi(CHANGED)
+		const env = makeEnv(ai)
+		await events(await handleGenerate(post(DESCRIPTION), env, NOW))
+		await events(await handleGenerate(change({ diagram: DRAFT, change: "notify" }), env, NOW))
+		await events(await handleGenerate(change({ diagram: DRAFT, change: "escalate" }), env, NOW))
+		expect(ai.calls).toHaveLength(3)
+		const again = await events(
+			await handleGenerate(change({ diagram: `${DRAFT}\r\n\n`, change: " notify " }), env, NOW),
+		)
+		expect(ai.calls).toHaveLength(3)
+		expect(again.at(-1)).toEqual({ done: true, cached: true })
+	})
+
+	it("charges a change from its usage, like a first draft", async () => {
+		const env = makeEnv(fakeAi(CHANGED))
+		await events(await handleGenerate(change({ diagram: DRAFT, change: "notify" }), env, NOW))
+		expect(await getBudgetSpent(env.DB, DAY)).toBe(
+			neuronsFor(MODEL, { promptTokens: 420, completionTokens: 160 }),
+		)
 	})
 })
 

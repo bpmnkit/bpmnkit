@@ -10,10 +10,13 @@ import { describe, expect, it } from "vitest"
 import {
 	GENERATE_MAX_TOKENS,
 	GENERATE_SYSTEM_PROMPT,
+	REFINE_SYSTEM_PROMPT,
 	createSseReader,
 	generateMessages,
 	maxTokensFor,
+	normaliseDiagram,
 	readAiEvent,
+	refineMessages,
 } from "../src/lib/generate.js"
 
 describe("generate prompt", () => {
@@ -26,6 +29,17 @@ describe("generate prompt", () => {
 
 	it("is the same prefix for every description, so it can be cached", () => {
 		expect(generateMessages("a")[0]).toEqual(generateMessages("b")[0])
+	})
+
+	it("sends a change with the draft as the model's own answer, on the same prefix", () => {
+		expect(REFINE_SYSTEM_PROMPT.startsWith(GENERATE_SYSTEM_PROMPT)).toBe(true)
+		const messages = refineMessages("Approve expenses", "a > b", "add a review")
+		expect(messages.map((m) => m.role)).toEqual(["system", "user", "assistant", "user"])
+		expect(messages[3]?.content).toBe("Change: add a review")
+	})
+
+	it("sends a draft back without blank lines or trailing spaces", () => {
+		expect(normaliseDiagram("# P\r\na > b  \n\n\nb > c\n")).toBe("# P\na > b\nb > c")
 	})
 
 	it("turns a typical model answer into a diagram", () => {

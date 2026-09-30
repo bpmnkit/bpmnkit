@@ -405,6 +405,7 @@ export {
 } from "./bpmn/process-text.js"
 export type {
 	ProcessTextProblem,
+	ProcessTextQuestion,
 	ProcessTextResult,
 	ProcessTextStream,
 } from "./bpmn/process-text.js"

@@ -1391,6 +1391,8 @@ A "Describe a process" section on `/drop`, behind the same closed-beta passcode 
 - **Repaired without a second call.** The parser adds flow ids, merge gateways, default branches and missing start and end events, and reports every line it could not use.
 - **Always structurally valid (2026-09-30).** Every node is on a path from the start. Decisions have conditions and a default, splits and joins are explicit and match, and every element is named. On all 104 recorded model answers, the result has no structural lint finding.
 - **Cheap to run.** Answers are cached in D1 by model, prompt and description. The shared daily neuron budget is charged from the model's reported usage. `AI_GENERATE_MODEL` chooses the model, and `bench:generate` measures the candidates.
+- **Changed by asking (2026-09-30).** Once drawn, a draft takes change requests ("a manager approves anything over 5000"). The Worker keeps no conversation. The page sends the description, the draft's text and the one change, and the model writes the whole diagram again. Each change can be undone.
+- **Asks about its own guesses (2026-09-30).** The guesses the parser had to make are listed under the diagram as questions: a made-up condition, a default it picked, branches it put in parallel, a step it left out. A ready answer, or one the reader finishes, is sent as a change. The model is not asked to decide when to ask, so no model tokens are spent on it.
 - **Shared like any drop.** Nothing is stored until the reader asks for a link. The diagram then goes through the ordinary upload endpoint, with the same validation and Terms.
 
 ## BPMN Kit Drop v2 — engaging landing + AI process review (2026-07-10)

@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: change a draft, and questions about the parser's guesses
+
+Follow-up to bpmnkit/monorepo#208: a draft can be changed by asking, and the guesses the parser had to make are asked as questions. Design and open measurements: `doc/drop-ai-generate-analysis.md` §15.
+
+- `parseProcessText` returns `questions`. They cover a made-up condition variable, a default it had to pick, an implicit parallel split, a question answered one way only, a task left out, a loop exit it added, and an event given a message trigger. Each has ready answers where there are any and a `draft` to finish, all written as change requests. New type `ProcessTextQuestion`. On the 252 recorded model answers, 98 have at least one question, 1.7 on average.
+- `POST /drop/api/generate` takes `{ description, diagram, change }` to change a draft. The model gets `REFINE_SYSTEM_PROMPT`, which is the generate prompt plus two lines. It also gets the description, the draft as its own earlier answer and `Change: …`, and it writes the whole diagram again. Nothing earlier is sent, and the Worker stores no conversation. A change is cached under its own key and charged to the same budget. Limits: a change of 3–500 characters, and a draft of at most 4,000.
+- Drop's page shows up to three questions under the diagram, a change box and Undo. The status line says what a change added and removed.
+- `bench-generate.mjs --edits` runs the 10 change cases in `apps/drop/scripts/edit-cases.json`: add, remove and rename a step, add a timer boundary, a branch or a loop, make steps parallel, change a task type, and answer two parser questions. It scores each answer with `scoreEdit` (assertions, and the share of the draft kept under the same ids). `tests/edit-bench.test.ts` checks that every draft fails its case and every hand-written reference passes it. Not yet run against Workers AI.
+
 ## 2026-09-30 — Describe-to-diagram: reworded rules measured; loops, link events, races
 
 - glm-4.7-flash × 36 with the reworded guide rules: 19/36 assertions, against 18 on the old prompt and 14 with the first rules. No error is swallowed, and one-branch gateways are back at 2. Speed and cost are unchanged. Details: `doc/drop-ai-generate-analysis.md` §14.

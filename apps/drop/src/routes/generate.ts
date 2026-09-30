@@ -10,13 +10,19 @@ import {
 import {
 	GENERATE_SYSTEM_PROMPT,
 	type GenerateEvent,
+	MAX_CHANGE_CHARS,
 	MAX_DESCRIPTION_CHARS,
+	MAX_DIAGRAM_CHARS,
+	MIN_CHANGE_CHARS,
 	MIN_DESCRIPTION_CHARS,
 	MODEL_PROFILES,
+	REFINE_SYSTEM_PROMPT,
 	generateMessages,
 	maxTokensFor,
 	neuronsFor,
 	normaliseDescription,
+	normaliseDiagram,
+	refineMessages,
 } from "../lib/generate.js"
 import { ModelStream, hedge } from "../lib/hedge.js"
 import { json } from "../lib/http.js"
@@ -56,7 +62,11 @@ function isUsable(text: string): boolean {
 /**
  * POST /drop/api/generate — closed-beta describe-to-diagram.
  *
- * Body `{ description }`. Answers with a server-sent-event stream of
+ * Body `{ description }` for a first draft, or `{ description, diagram, change }`
+ * to change a draft: `diagram` is the text the last answer streamed, and the
+ * model writes the whole diagram again with the change made. The Worker keeps
+ * no conversation; the client sends the state it has. Answers with a
+ * server-sent-event stream of
  * {@link GenerateEvent}s: the model's text as it is written, in the line format
  * `parseProcessText` reads, then `done` or `error`. The client draws the
  * diagram from the text; nothing is stored as a drop until the reader chooses
@@ -71,9 +81,20 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 	if (denied) return denied
 
 	let description: string
+	let refine: { diagram: string; change: string } | undefined
 	try {
-		const body = (await request.json()) as { description?: unknown }
+		const body = (await request.json()) as {
+			description?: unknown
+			diagram?: unknown
+			change?: unknown
+		}
 		description = typeof body.description === "string" ? normaliseDescription(body.description) : ""
+		if (body.diagram !== undefined || body.change !== undefined) {
+			refine = {
+				diagram: typeof body.diagram === "string" ? normaliseDiagram(body.diagram) : "",
+				change: typeof body.change === "string" ? normaliseDescription(body.change) : "",
+			}
+		}
 	} catch {
 		return json({ error: 'expected JSON: { "description": "…" }' }, { status: 400 })
 	}
@@ -85,10 +106,30 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 			{ status: 400 },
 		)
 	}
+	if (refine && (refine.diagram === "" || refine.diagram.length > MAX_DIAGRAM_CHARS)) {
+		return json({ error: "the diagram to change is missing or too long" }, { status: 400 })
+	}
+	if (
+		refine &&
+		(refine.change.length < MIN_CHANGE_CHARS || refine.change.length > MAX_CHANGE_CHARS)
+	) {
+		return json(
+			{ error: `describe the change in ${MIN_CHANGE_CHARS}–${MAX_CHANGE_CHARS} characters` },
+			{ status: 400 },
+		)
+	}
 
 	const model = env.AI_GENERATE_MODEL
+	const messages = refine
+		? refineMessages(description, refine.diagram, refine.change)
+		: generateMessages(description)
+	const promptChars = messages.reduce((sum, m) => sum + m.content.length, 0)
 	// The prompt is part of the key: changing it must not serve answers written for the old one.
-	const requestHash = await sha256Hex(`${model}\n${GENERATE_SYSTEM_PROMPT}\n${description}`)
+	const requestHash = await sha256Hex(
+		refine
+			? `${model}\n${REFINE_SYSTEM_PROMPT}\n${description}\n${refine.diagram}\n${refine.change}`
+			: `${model}\n${GENERATE_SYSTEM_PROMPT}\n${description}`,
+	)
 	const cached = await getCachedGeneration(env.DB, requestHash)
 	if (cached !== null) {
 		return new Response(
@@ -115,7 +156,7 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 			ai.run(
 				name,
 				{
-					messages: generateMessages(description),
+					messages,
 					stream: true,
 					max_tokens: maxTokensFor(name),
 					...(MODEL_PROFILES[name]?.options ?? {}),
@@ -147,7 +188,7 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 					neurons += neuronsFor(
 						stream.model,
 						stream.usage ?? {
-							promptTokens: Math.ceil((GENERATE_SYSTEM_PROMPT.length + description.length) / 4),
+							promptTokens: Math.ceil(promptChars / 4),
 							completionTokens: Math.ceil((stream.text.length + stream.reasoningChars) / 4),
 						},
 					)
@@ -160,6 +201,7 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 					JSON.stringify({
 						msg: "drop.generate",
 						primary: model,
+						refine: refine !== undefined,
 						winner: winner?.model ?? null,
 						hedged: started.length > 1,
 						firstContentMs: winner?.firstContentMs ?? null,

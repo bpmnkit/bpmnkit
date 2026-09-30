@@ -295,6 +295,7 @@
 			"ProcessDocumentation": "type",
 			"ProcessPlan": "type",
 			"ProcessTextProblem": "type",
+			"ProcessTextQuestion": "type",
 			"ProcessTextResult": "type",
 			"ProcessTextStream": "type",
 			"ProcessTypesOptions": "type",

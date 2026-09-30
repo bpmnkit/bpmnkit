@@ -7,13 +7,30 @@
  * is still writing. The final diagram is parsed from the same text by the same
  * parser, so what is shared is exactly what was drawn.
  *
+ * Once drawn, the draft can be changed: a change is sent with the description
+ * and the draft's text, and the model writes the whole diagram again. The
+ * guesses the parser had to make are asked as questions, and an answer is sent
+ * as a change. Each change can be undone.
+ *
  * Nothing is stored until the reader asks for a link. The diagram then goes
  * through `/drop/api/drops` as an ordinary `.bpmn` upload — same validation,
  * same Terms, same short link.
  */
 import { BpmnCanvas } from "@bpmnkit/canvas"
-import { Bpmn, type BpmnDefinitions, createProcessTextStream, expand } from "@bpmnkit/core"
-import { type GenerateEvent, MAX_DESCRIPTION_CHARS, createSseReader } from "../lib/generate.js"
+import {
+	Bpmn,
+	type BpmnDefinitions,
+	type ProcessTextQuestion,
+	createProcessTextStream,
+	expand,
+	parseProcessText,
+} from "@bpmnkit/core"
+import {
+	type GenerateEvent,
+	MAX_DESCRIPTION_CHARS,
+	MIN_CHANGE_CHARS,
+	createSseReader,
+} from "../lib/generate.js"
 import { AI_CODE_STORAGE_KEY } from "../shared/constants.js"
 
 // Short on purpose: a starting point for describing your own process.
@@ -51,6 +68,9 @@ function writeCode(code: string | null): void {
 	}
 }
 
+/** Questions shown at once: past three, a reader stops reading them. */
+const MAX_QUESTIONS = 3
+
 /** A filename from the process name the model wrote, for the shared file. */
 function fileName(defs: BpmnDefinitions): string {
 	const name = defs.processes[0]?.name ?? "process"
@@ -78,6 +98,11 @@ export function mountGenerator(): void {
 	const open = $<HTMLAnchorElement>("genOpen")
 	const copy = $<HTMLButtonElement>("genCopy")
 	const examples = $("genExamples")
+	const refine = $("genRefine")
+	const questions = $("genQuestions")
+	const changeInput = $<HTMLInputElement>("genChange")
+	const apply = $<HTMLButtonElement>("genApply")
+	const undo = $<HTMLButtonElement>("genUndo")
 	if (
 		!input ||
 		!count ||
@@ -93,7 +118,12 @@ export function mountGenerator(): void {
 		!out ||
 		!url ||
 		!open ||
-		!copy
+		!copy ||
+		!refine ||
+		!questions ||
+		!changeInput ||
+		!apply ||
+		!undo
 	) {
 		return
 	}
@@ -101,6 +131,10 @@ export function mountGenerator(): void {
 	let canvas: BpmnCanvas | null = null
 	let running: AbortController | null = null
 	let result: { xml: string; file: string } | null = null
+	/** The draft on screen, as the model wrote it: what a change is made to. */
+	let draft: { description: string; text: string } | null = null
+	/** Earlier texts of this draft, newest last, for Undo. */
+	const earlier: string[] = []
 	/** The latest frame not yet drawn: frames arrive faster than a screen refreshes. */
 	let pending: BpmnDefinitions | null = null
 
@@ -149,33 +183,86 @@ export function mountGenerator(): void {
 		codeInput.focus()
 	}
 
-	async function generate(): Promise<void> {
-		if (!input || !errors || !out || !share || !passcode || !codeInput || !name) return
+	/** Draws a finished answer, and asks what the parser had to guess. */
+	function show(text: string): { ids: Set<string>; problems: number } {
+		if (!name || !share || !refine || !undo) return { ids: new Set(), problems: 0 }
+		const parsed = parseProcessText(text)
+		const defs = expand(parsed.diagram)
+		draw(defs)
+		result = { xml: Bpmn.export(defs), file: fileName(defs) }
+		name.textContent = result.file
+		showQuestions(parsed.questions)
+		share.hidden = false
+		refine.hidden = false
+		undo.hidden = earlier.length === 0
+		return {
+			ids: new Set(parsed.diagram.processes[0]?.elements.map((e) => e.id)),
+			problems: parsed.problems.length,
+		}
+	}
+
+	function showQuestions(list: ProcessTextQuestion[]): void {
+		if (!questions) return
+		questions.replaceChildren(
+			...list.slice(0, MAX_QUESTIONS).map((question) => {
+				const item = document.createElement("li")
+				item.textContent = question.text
+				const answers = document.createElement("div")
+				answers.className = "fc-examples"
+				for (const option of question.options) {
+					const button = document.createElement("button")
+					button.type = "button"
+					button.textContent = option.label
+					button.addEventListener("click", () => void change(option.change))
+					answers.append(button)
+				}
+				const own = document.createElement("button")
+				own.type = "button"
+				own.textContent = question.options.length > 0 ? "Something else…" : "Answer…"
+				own.addEventListener("click", () => {
+					if (!changeInput) return
+					changeInput.value = question.draft
+					changeInput.focus()
+				})
+				answers.append(own)
+				item.append(answers)
+				return item
+			}),
+		)
+	}
+
+	/**
+	 * Streams one answer from the route and draws it as it arrives.
+	 *
+	 * @returns The answer's text, or `null` when it failed — the error is shown.
+	 */
+	async function ask(
+		body: { description: string; diagram?: string; change?: string },
+		verb: string,
+	): Promise<{ text: string; cached: boolean } | null> {
+		if (!errors || !out || !passcode || !codeInput) return null
 		errors.classList.add("hidden")
 		out.classList.add("hidden")
-		const description = input.value.trim()
-		if (description.length < 10) return showError("Describe the process in a sentence or two.")
-
 		const typed = codeInput.value.trim()
 		if (typed) writeCode(typed)
 		const code = readCode()
-		if (!code) return askForCode(false)
+		if (!code) {
+			askForCode(false)
+			return null
+		}
 		passcode.hidden = true
 
 		running?.abort()
 		const controller = new AbortController()
 		running = controller
-		result = null
-		share.hidden = true
-		const started = performance.now()
-		setStatus("drafting…", true)
+		setStatus(`${verb}…`, true)
 
 		let res: Response
 		try {
 			res = await fetch("/drop/api/generate", {
 				method: "POST",
 				headers: { "Content-Type": "application/json", "X-Drop-AI-Code": code },
-				body: JSON.stringify({ description }),
+				body: JSON.stringify(body),
 				signal: controller.signal,
 			})
 		} catch {
@@ -183,34 +270,38 @@ export function mountGenerator(): void {
 				setStatus("draft")
 				showError("Network error — please try again.")
 			}
-			return
+			return null
 		}
 		if (!res.ok || !res.body) {
 			setStatus("draft")
 			if (res.status === 401) {
 				writeCode(null)
 				codeInput.value = ""
-				return askForCode(true)
+				askForCode(true)
+				return null
 			}
-			const body = (await res.json().catch(() => ({}))) as { error?: string }
-			return showError(body.error ?? "Couldn't draft the diagram. Please try again.")
+			const payload = (await res.json().catch(() => ({}))) as { error?: string }
+			showError(payload.error ?? "Couldn't draft the diagram. Please try again.")
+			return null
 		}
 
 		const sse = createSseReader()
 		const stream = createProcessTextStream()
 		const decoder = new TextDecoder()
+		let text = ""
 		let outcome: GenerateEvent | null = null
 		try {
 			// A reader loop rather than `for await`: Safari streams have no async iterator.
-			const body = res.body.getReader()
-			for (let chunk = await body.read(); !chunk.done; chunk = await body.read()) {
+			const reader = res.body.getReader()
+			for (let chunk = await reader.read(); !chunk.done; chunk = await reader.read()) {
 				for (const data of sse.push(decoder.decode(chunk.value, { stream: true }))) {
 					const event = JSON.parse(data) as GenerateEvent
 					if ("text" in event) {
+						text += event.text
 						const frame = stream.push(event.text)
 						if (frame) {
 							draw(frame)
-							setStatus(`drafting… ${frame.processes[0]?.flowElements.length ?? 0} elements`, true)
+							setStatus(`${verb}… ${frame.processes[0]?.flowElements.length ?? 0} elements`, true)
 						}
 					} else {
 						outcome = event
@@ -218,25 +309,73 @@ export function mountGenerator(): void {
 				}
 			}
 		} catch {
-			if (controller.signal.aborted) return
+			if (controller.signal.aborted) return null
 			outcome = { error: "The connection dropped. Please try again." }
 		}
-		if (controller.signal.aborted) return
+		if (controller.signal.aborted) return null
 		running = null
 
 		if (!outcome || "error" in outcome) {
 			setStatus("draft")
-			return showError(outcome && "error" in outcome ? outcome.error : "No diagram came back.")
+			showError(outcome && "error" in outcome ? outcome.error : "No diagram came back.")
+			return null
 		}
-		const { diagram, problems } = stream.end()
-		const defs = expand(diagram)
-		draw(defs)
-		result = { xml: Bpmn.export(defs), file: fileName(defs) }
-		name.textContent = result.file
+		return { text, cached: outcome.done && outcome.cached }
+	}
+
+	const repaired = (problems: number) => (problems > 0 ? ` · ${problems} problem(s) repaired` : "")
+
+	async function generate(): Promise<void> {
+		if (!input || !share || !refine) return
+		const description = input.value.trim()
+		if (description.length < 10) return showError("Describe the process in a sentence or two.")
+		draft = null
+		earlier.length = 0
+		result = null
+		share.hidden = true
+		refine.hidden = true
+		const started = performance.now()
+		const answer = await ask({ description }, "drafting")
+		if (!answer) return
+		draft = { description, text: answer.text }
+		const { problems } = show(answer.text)
 		const seconds = ((performance.now() - started) / 1000).toFixed(1)
-		const skipped = problems.length > 0 ? ` · ${problems.length} problem(s) repaired` : ""
-		setStatus(outcome.cached ? `ready (cached)${skipped}` : `ready in ${seconds}s${skipped}`)
-		share.hidden = false
+		setStatus(
+			answer.cached
+				? `ready (cached)${repaired(problems)}`
+				: `ready in ${seconds}s${repaired(problems)}`,
+		)
+	}
+
+	/** Asks for `request` to be made to the draft on screen, and draws the result. */
+	async function change(request: string): Promise<void> {
+		if (!draft || !changeInput) return
+		const text = request.trim()
+		if (text.length < MIN_CHANGE_CHARS) {
+			changeInput.focus()
+			return
+		}
+		const before = parseProcessText(draft.text).diagram.processes[0]?.elements ?? []
+		const started = performance.now()
+		const answer = await ask(
+			{ description: draft.description, diagram: draft.text, change: text },
+			"changing",
+		)
+		if (!answer) {
+			// The canvas shows what streamed before it failed; the draft is unchanged.
+			if (running === null) show(draft.text)
+			return
+		}
+		earlier.push(draft.text)
+		draft.text = answer.text
+		changeInput.value = ""
+		const { ids, problems } = show(answer.text)
+		const added = [...ids].filter((id) => !before.some((e) => e.id === id)).length
+		const removed = before.filter((e) => !ids.has(e.id)).length
+		const seconds = ((performance.now() - started) / 1000).toFixed(1)
+		setStatus(
+			`changed${answer.cached ? " (cached)" : ` in ${seconds}s`} · +${added} −${removed}${repaired(problems)}`,
+		)
 	}
 
 	async function shareIt(): Promise<void> {
@@ -275,6 +414,19 @@ export function mountGenerator(): void {
 		if (e.key === "Enter") void generate()
 	})
 	run.addEventListener("click", () => void generate())
+	apply.addEventListener("click", () => void change(changeInput.value))
+	changeInput.addEventListener("keydown", (e) => {
+		if (e.key === "Enter") void change(changeInput.value)
+	})
+	undo.addEventListener("click", () => {
+		const previous = earlier.pop()
+		if (!draft || previous === undefined) return
+		running?.abort()
+		running = null
+		draft.text = previous
+		show(previous)
+		setStatus("undone")
+	})
 	share.addEventListener("click", () => void shareIt())
 	copy.addEventListener("click", async () => {
 		await navigator.clipboard.writeText(url.value)

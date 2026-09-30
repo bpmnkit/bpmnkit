@@ -514,3 +514,116 @@ Two gaps this run raised are now closed:
   gateway. `bench-generate.mjs` reads the new key. Re-scored, the reworded-rules run is 20/36, and
   the earlier glm × 36 runs are unchanged (18 and 14).
 
+
+## 15. Changing a draft, and asking about the parser's guesses (built 2026-09-30)
+
+Until now, each description got exactly one answer. A reader who wanted "the same, but with a
+reminder after two days" had to rewrite the description and hope for a similar diagram. This
+section adds two things: a draft can be changed by asking, and the parser's own guesses are
+put to the reader as questions.
+
+### Changing a draft
+
+`POST /drop/api/generate` takes `{ description, diagram, change }` as well as `{ description }`.
+The model gets:
+
+```
+system:    REFINE_SYSTEM_PROMPT   (GENERATE_SYSTEM_PROMPT + two lines, same prefix)
+user:      the description
+assistant: the draft, as the model wrote it
+user:      Change: <the change>
+```
+
+It writes the whole diagram again. The design choices:
+
+- **State, not a transcript.** Only the current draft goes back, never the turns before it. The
+  earlier changes are already in the draft, input stays flat however many changes there are,
+  and a small model keeps a short context straighter than a long one.
+- **A full rewrite, not a patch.** A patch syntax (delete lines, edit a node) would save the
+  unchanged lines, about 100 output tokens. But it asks the model to refer correctly to ids it
+  did not just write, and glm already gets that wrong (the reused-id rules in §9). A rewrite of
+  a 60–190-token diagram costs about a second.
+- **The draft the model wrote, not the repaired one.** Sending the parser's repaired diagram
+  would need a writer from the compact model back to the line format, and a diagram full of
+  joins and generated conditions that the model never wrote. The model's own text is shorter,
+  and the parser repairs it the same way again.
+- **Stateless Worker.** The page holds the draft. A forged draft only affects the reader who
+  sent it. The route caps a change at 3–500 characters and a draft at 4,000 (a runaway answer
+  cut at 600 tokens is about 2,400). The change is framed as untrusted data, as the description
+  is.
+- **Same cache and budget.** A change is cached under model, prompt, description, draft and
+  change, and is charged from its usage like a first draft.
+
+Estimated cost on glm-4.7-flash: about 650–750 input tokens (the §14 median of 480 plus the
+draft and the change) and 60–190 output, so about 8–10 neurons. A first draft is about 6.
+Not yet measured.
+
+The page shows each change as it streams. If the change fails, the page draws the draft again.
+The status line says how many elements the change added and removed. Undo returns to the draft
+before each change, because a small model can change parts it was not asked to touch.
+
+### Questions from the parser's guesses
+
+Letting the model decide *whether* to ask is what small models do worst. With thinking off, glm
+would either always ask or never ask, and asking first delays a 1.3 s answer by a whole round
+trip. The parser, on the other hand, knows exactly where it guessed. `parseProcessText` now
+returns those guesses as `questions`. Each one has ready answers where there are any and a
+`draft` for the reader to finish, all written as change requests. The page shows up to three
+under the diagram, and an answer goes through the change route above. No model token is spent
+deciding what to ask.
+
+On the 252 recorded answers, 98 have at least one question, 1.7 on average:
+
+| Guess | Questions |
+|---|---|
+| a condition on a made-up variable (`statusApproved = true`) | 60 |
+| unlabelled branches split in parallel | 43 |
+| a task left out, because nothing leads to it | 22 |
+| a default branch picked when none reads as "otherwise" | 17 |
+| a question answered one way only, removed | 17 |
+| an event without a trigger, made a message event | 4 |
+
+A default the parser picked because the branch reads as "otherwise" (`No`, `Rejected`) is not
+asked about. Neither is a join, a start or end event it added, or a name it gave. Those need
+no decision from the reader.
+
+### Change cases for the benchmark
+
+`bench-generate.mjs --edits` runs the 10 cases in `apps/drop/scripts/edit-cases.json` through
+the same `refineMessages` the route sends. Each case has a description, a draft in the line
+format, a change and assertions. The cases are:
+
+- add a step
+- add a timer boundary (golden prompt 04, which the default run skips because it needs a `.bpmn` file)
+- remove a step
+- add a branch
+- make steps parallel
+- answer a default question
+- answer a made-up-variable question
+- change a task's type
+- rename a step
+- add a loop
+
+`scoreEdit` (`apps/drop/src/lib/edit-bench.ts`) checks the assertions: types, names that must or
+must no longer appear, draft ids to keep, where the default goes, and a word in a condition. It
+also records how much of the draft kept its ids and types (`kept`), and how many elements were
+added and removed. Each case also has a hand-written reference answer. `tests/edit-bench.test.ts`
+checks that every draft fails its case and every reference passes, so a case that cannot be met
+fails in CI rather than in a model run.
+
+```sh
+CLOUDFLARE_ACCOUNT_ID=… CLOUDFLARE_API_TOKEN=… pnpm --filter @bpmnkit/drop bench:generate -- \
+  --edits --models @cf/zai-org/glm-4.7-flash --runs 3
+```
+
+### Open
+
+- **None of this has run against Workers AI yet.** The benchmark ran end to end only against a
+  local mock (`CLOUDFLARE_API_BASE`). What to look for in the first glm run:
+  - the assertion pass rate
+  - `kept` below 100% on cases that should leave everything else alone, which would show drift
+  - whether an answer to a question is actually applied: cases 06 and 07
+- **Model-written questions** (a `? question | option | option` line in the format) stay a later
+  step. They are worth adding only if the run above shows the parser's questions miss what readers
+  want to be asked, and only with a benchmark showing they neither lower the 20/36 pass rate nor
+  bring back runaway answers (§9).
