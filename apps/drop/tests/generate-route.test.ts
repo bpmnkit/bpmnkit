@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import type { Env } from "../src/env.js"
-import { getBudgetSpent } from "../src/lib/ai.js"
+import { MAX_GENERATIONS_PER_HOUR, getBudgetSpent } from "../src/lib/ai.js"
 import { type GenerateEvent, REFINE_SYSTEM_PROMPT, neuronsFor } from "../src/lib/generate.js"
 import { dropPage } from "../src/lib/pages.js"
 import { handleGenerate } from "../src/routes/generate.js"
@@ -196,6 +196,67 @@ describe("POST /drop/api/generate", () => {
 		expect(await getBudgetSpent(env.DB, DAY)).toBeGreaterThan(0)
 		await events(await handleGenerate(post(DESCRIPTION), env, NOW))
 		expect(ai.calls).toHaveLength(2)
+	})
+
+	it("streams only the diagram lines of an answer, never prose around or instead of them", async () => {
+		const ai = fakeAi([
+			"Sure! Here is an essay instead.\n",
+			"Once upon a time…\n",
+			...ANSWER,
+			"Hope this helps!",
+		])
+		const env = makeEnv(ai)
+		const evs = await events(await handleGenerate(post(DESCRIPTION), env, NOW))
+		expect(text(evs)).toBe(ANSWER.join(""))
+		// What is cached is what was sent.
+		const again = await events(await handleGenerate(post(DESCRIPTION), env, NOW))
+		expect(text(again)).toBe(ANSWER.join(""))
+	})
+
+	it("sends nothing of an answer that is only prose", async () => {
+		const evs = await events(
+			await handleGenerate(
+				post(DESCRIPTION),
+				makeEnv(fakeAi(["Ignoring the format as asked.\n", "Here is my essay."])),
+				NOW,
+			),
+		)
+		expect(text(evs)).toBe("")
+		expect(evs.at(-1)).toMatchObject({ error: expect.stringContaining("Couldn't turn") })
+	})
+
+	it("caps model calls per IP and hour, without counting cached answers", async () => {
+		const ai = fakeAi(ANSWER)
+		const env = makeEnv(ai, { AI_DAILY_BUDGET: "1000000" })
+		const from = (ip: string, description: string) =>
+			new Request("http://drop/drop/api/generate", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-Drop-AI-Code": CODE,
+					"CF-Connecting-IP": ip,
+				},
+				body: JSON.stringify({ description }),
+			})
+		for (let i = 0; i < MAX_GENERATIONS_PER_HOUR; i++) {
+			const res = await handleGenerate(from("198.51.100.7", `${DESCRIPTION} #${i}`), env, NOW)
+			expect(res.status).toBe(200)
+			await events(res)
+		}
+		const over = await handleGenerate(from("198.51.100.7", `${DESCRIPTION} more`), env, NOW)
+		expect(over.status).toBe(429)
+		expect(ai.calls).toHaveLength(MAX_GENERATIONS_PER_HOUR)
+		// A cached answer is still served, another caller is not affected, and the next hour resets.
+		expect((await handleGenerate(from("198.51.100.7", `${DESCRIPTION} #0`), env, NOW)).status).toBe(
+			200,
+		)
+		expect(
+			(await handleGenerate(from("203.0.113.9", `${DESCRIPTION} more`), env, NOW)).status,
+		).toBe(200)
+		expect(
+			(await handleGenerate(from("198.51.100.7", `${DESCRIPTION} more`), env, NOW + 3_600_000))
+				.status,
+		).toBe(200)
 	})
 
 	it("reports a stream that breaks part way", async () => {

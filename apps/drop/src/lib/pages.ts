@@ -363,6 +363,9 @@ select.ed-select{height:28px;border:1px solid var(--bpmnkit-ds-line);background:
 .gen-side{border-left:1px solid var(--bpmnkit-ds-line-soft);min-width:0}
 .gen-canvas{height:340px;background:var(--bpmnkit-ds-canvas);position:relative;overflow:hidden}
 #genStatus.busy{color:var(--bpmnkit-ds-accent)}
+.gen-canvas.busy::after{content:"";position:absolute;top:0;left:0;z-index:2;width:30%;height:2px;background:var(--bpmnkit-ds-accent);animation:gen-busy 1.2s linear infinite;pointer-events:none}
+@keyframes gen-busy{from{transform:translateX(-100%)}to{transform:translateX(340%)}}
+@media (prefers-reduced-motion:reduce){.gen-canvas.busy::after{width:100%;animation:none;opacity:.6}}
 .gen .btn-ghost[hidden],.fc-actions .btn-ghost[hidden]{display:none}
 .gen-refine{border-top:1px solid var(--bpmnkit-ds-line-soft)}
 .gen-refine[hidden]{display:none}

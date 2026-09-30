@@ -123,6 +123,49 @@ export async function checkAiPasscode(
 	return json({ error: "invalid access code" }, { status: 401 })
 }
 
+// ── Generation rate limit ────────────────────────────────────────────────────
+
+/**
+ * Model calls allowed per IP per hour for describe-to-diagram. A draft and a
+ * dozen changes to it is a busy hour; forty is several of those. Cached
+ * answers cost nothing and are not counted.
+ */
+export const MAX_GENERATIONS_PER_HOUR = 40
+
+/**
+ * Counts one model call for the caller, unless they are already at
+ * {@link MAX_GENERATIONS_PER_HOUR} this hour.
+ *
+ * @returns `null` when the call may go ahead, otherwise the response to send.
+ */
+export async function takeGenerateCall(
+	request: Request,
+	env: Env,
+	now: number,
+): Promise<Response | null> {
+	const ipHash = env.REPORT_IP_SALT
+		? await hashIp(clientIp(request), env.REPORT_IP_SALT)
+		: clientIp(request)
+	const hour = Math.floor(now / 3_600_000)
+	const row = await env.DB.prepare(
+		"SELECT count FROM ai_generate_calls WHERE ip_hash = ? AND hour = ?",
+	)
+		.bind(ipHash, hour)
+		.first<{ count: number }>()
+	if ((row?.count ?? 0) >= MAX_GENERATIONS_PER_HOUR) {
+		return json(
+			{ error: "That's a lot of drafts for one hour. Please try again later." },
+			{ status: 429 },
+		)
+	}
+	await env.DB.prepare(
+		"INSERT INTO ai_generate_calls (ip_hash, hour, count) VALUES (?, ?, 1) ON CONFLICT(ip_hash, hour) DO UPDATE SET count = count + 1",
+	)
+		.bind(ipHash, hour)
+		.run()
+	return null
+}
+
 // ── Generation cache ─────────────────────────────────────────────────────────
 
 export async function getCachedGeneration(

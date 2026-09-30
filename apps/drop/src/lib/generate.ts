@@ -285,6 +285,43 @@ export function readAiEvent(data: string): AiDelta | null {
 }
 
 /**
+ * A line the parser could read: a `# title`, or a node id followed by its
+ * declaration, an arrow, or nothing (the continuation of a wrapped path).
+ * Prose, fences and comments start otherwise.
+ */
+const DIAGRAM_LINE = /^(#|[A-Za-z_][\w.-]*( *\[|\s*-{0,2}>|$))/
+
+/**
+ * Passes on only the lines of a model's answer that are in the line format.
+ *
+ * The route streams the answer to the reader as it arrives. Unfiltered, a
+ * description that talks the model into writing an essay would turn the route
+ * into a general-purpose model anyone with the beta code could use. Filtered,
+ * what leaves the Worker is diagram lines, and the parser reads the result
+ * exactly as it reads the whole answer (tested on every recorded answer).
+ */
+export function createDiagramLineFilter(): { push(chunk: string): string; end(): string } {
+	let pending = ""
+	const keep = (line: string) => DIAGRAM_LINE.test(line.trim())
+	return {
+		push(chunk: string): string {
+			pending += chunk
+			const lines = pending.split("\n")
+			pending = lines.pop() ?? ""
+			return lines
+				.filter(keep)
+				.map((line) => `${line}\n`)
+				.join("")
+		},
+		end(): string {
+			const last = pending
+			pending = ""
+			return keep(last) ? last : ""
+		},
+	}
+}
+
+/**
  * Splits a server-sent-event byte stream into `data:` payloads.
  *
  * Chunks arrive cut anywhere, so a partial line is held until its newline.

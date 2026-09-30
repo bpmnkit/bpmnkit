@@ -6,6 +6,7 @@ import {
 	getBudgetSpent,
 	getCachedGeneration,
 	putCachedGeneration,
+	takeGenerateCall,
 } from "../lib/ai.js"
 import {
 	GENERATE_SYSTEM_PROMPT,
@@ -17,6 +18,7 @@ import {
 	MIN_DESCRIPTION_CHARS,
 	MODEL_PROFILES,
 	REFINE_SYSTEM_PROMPT,
+	createDiagramLineFilter,
 	generateMessages,
 	maxTokensFor,
 	neuronsFor,
@@ -73,7 +75,8 @@ function isUsable(text: string): boolean {
  * to share it, through the ordinary upload endpoint.
  *
  * Order, as the review: feature flag → passcode gate → input check → cache →
- * daily budget → model call. See `doc/drop-ai-generate-analysis.md` §6.
+ * daily budget → per-IP hourly cap → model call. Only lines in the diagram
+ * format are streamed back. See `doc/drop-ai-generate-analysis.md` §6 and §21.
  */
 export async function handleGenerate(request: Request, env: Env, now: number): Promise<Response> {
 	if (env.AI_PASSCODE === undefined) return json({ error: "not found" }, { status: 404 })
@@ -149,6 +152,8 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 	if ((await getBudgetSpent(env.DB, day)) >= budget) {
 		return json({ error: "AI generation is busy today — try again tomorrow." }, { status: 503 })
 	}
+	const limited = await takeGenerateCall(request, env, now)
+	if (limited) return limited
 
 	const ai = env.AI as unknown as AiStreamLike
 	const call = (name: string) =>
@@ -176,8 +181,17 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 					fallbackModel && fallbackModel !== model ? () => call(fallbackModel) : null,
 					Number.isFinite(hedgeMs) ? hedgeMs : DEFAULT_HEDGE_MS,
 				)
+				// Only diagram lines leave the Worker, and only they are judged and cached.
+				const filter = createDiagramLineFilter()
+				let text = ""
+				const send = (lines: string) => {
+					if (lines === "") return
+					text += lines
+					controller.enqueue(sse({ text: lines }))
+				}
 				if (winner) {
-					for await (const text of winner.rest()) controller.enqueue(sse({ text }))
+					for await (const chunk of winner.rest()) send(filter.push(chunk))
+					send(filter.end())
 				}
 
 				// Every call is charged, the cancelled one included: its neurons were
@@ -195,7 +209,6 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 				}
 				await addBudget(env.DB, day, neurons)
 
-				const text = winner?.text ?? ""
 				const usable = winner !== null && !winner.failed && isUsable(text)
 				// A small model sometimes writes the draft back as it was (2 of 30 changes
 				// in the §16 run). Not cached, so asking again gets a fresh answer.

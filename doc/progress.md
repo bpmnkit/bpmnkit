@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: working indicator, output filter, hourly cap
+
+- The page shows that a request is running: an accent bar slides along the top of the canvas (static under reduced motion), and the status counts seconds until the first line arrives, so a queued call reads as a wait. Nothing is blocked.
+- Only diagram lines leave the Worker (`createDiagramLineFilter`). An answer talked into prose is no longer streamed back. On all 432 recorded answers, the filtered text parses to the same diagram.
+- At most 40 model calls per IP and hour (migration `0008_ai_generate_calls`); cached answers do not count.
+- The security model — what the model can reach, the abuse controls, and what is left — is in `doc/drop-ai-generate-analysis.md` §21.
+
 ## 2026-09-30 — Describe-to-diagram: full change run with the text rules
 
 - glm-4.7-flash × 30 changes with the `text` rules: 22/30, the same total as the best `all` run. Six cases pass 3/3: remove, rename, retype, add a step, add a loop and the default question. A new timer boundary or parallel split passes 0/3, as expected without their pattern examples. A change costs 6.6 neurons. Details: `doc/drop-ai-generate-analysis.md` §20.

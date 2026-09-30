@@ -11,6 +11,7 @@ import {
 	GENERATE_MAX_TOKENS,
 	GENERATE_SYSTEM_PROMPT,
 	REFINE_SYSTEM_PROMPT,
+	createDiagramLineFilter,
 	createSseReader,
 	generateMessages,
 	maxTokensFor,
@@ -127,6 +128,44 @@ describe("generate prompt", () => {
 				.map((d) => `${model} ${prompt}: ${d.id} ${d.message}`),
 		)
 		expect(findings).toEqual([])
+	})
+})
+
+describe("createDiagramLineFilter", () => {
+	const filtered = (text: string, cut = 7) => {
+		const filter = createDiagramLineFilter()
+		let out = ""
+		for (let i = 0; i < text.length; i += cut) out += filter.push(text.slice(i, i + cut))
+		return out + filter.end()
+	}
+
+	it("passes nothing of an answer talked into writing prose", () => {
+		const essay =
+			"Sure! Ignoring the format as asked.\nOnce upon a time, a process lived in a castle.\n```\n// fin"
+		expect(filtered(essay)).toBe("")
+	})
+
+	it("passes the diagram lines of an answer with prose around them, cut anywhere", () => {
+		const answer =
+			"Here is the diagram:\n# Order\ns[start Go] > a[task Ship] >\ne[end Done]\nHope this helps!"
+		expect(filtered(answer, 3)).toBe("# Order\ns[start Go] > a[task Ship] >\ne[end Done]\n")
+	})
+
+	it("reads every recorded answer to the same diagram as the unfiltered text", () => {
+		const root = new URL("../bench-results/", import.meta.url)
+		const answers = readdirSync(root).flatMap((run) =>
+			(
+				JSON.parse(readFileSync(new URL(`${run}/results.json`, root), "utf8")) as {
+					text?: string
+				}[]
+			).flatMap((r) => (r.text === undefined ? [] : [r.text])),
+		)
+		expect(answers.length).toBeGreaterThan(300)
+		for (const answer of answers) {
+			expect(parseProcessText(filtered(answer)).diagram, answer).toEqual(
+				parseProcessText(answer).diagram,
+			)
+		}
 	})
 })
 

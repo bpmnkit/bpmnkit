@@ -161,6 +161,13 @@ export function mountGenerator(): void {
 		})
 	}
 
+	/** The working indicator on the canvas: shown while a request runs, never in the way. */
+	function setBusy(on: boolean): void {
+		if (!host) return
+		host.classList.toggle("busy", on)
+		host.setAttribute("aria-busy", String(on))
+	}
+
 	function setStatus(text: string, busy = false): void {
 		if (!status) return
 		status.textContent = text
@@ -256,71 +263,87 @@ export function mountGenerator(): void {
 		const controller = new AbortController()
 		running = controller
 		setStatus(`${verb}…`, true)
-
-		let res: Response
+		setBusy(true)
+		const started = performance.now()
+		// Workers AI can queue a call for seconds before its first line: count
+		// them, so a wait reads as a wait and not as a hang.
+		let drawn = false
+		const ticker = setInterval(() => {
+			if (!drawn) setStatus(`${verb}… ${Math.round((performance.now() - started) / 1000)}s`, true)
+		}, 1000)
 		try {
-			res = await fetch("/drop/api/generate", {
-				method: "POST",
-				headers: { "Content-Type": "application/json", "X-Drop-AI-Code": code },
-				body: JSON.stringify(body),
-				signal: controller.signal,
-			})
-		} catch {
-			if (!controller.signal.aborted) {
-				setStatus("draft")
-				showError("Network error — please try again.")
-			}
-			return null
-		}
-		if (!res.ok || !res.body) {
-			setStatus("draft")
-			if (res.status === 401) {
-				writeCode(null)
-				codeInput.value = ""
-				askForCode(true)
+			let res: Response
+			try {
+				res = await fetch("/drop/api/generate", {
+					method: "POST",
+					headers: { "Content-Type": "application/json", "X-Drop-AI-Code": code },
+					body: JSON.stringify(body),
+					signal: controller.signal,
+				})
+			} catch {
+				if (!controller.signal.aborted) {
+					setStatus("draft")
+					showError("Network error — please try again.")
+				}
 				return null
 			}
-			const payload = (await res.json().catch(() => ({}))) as { error?: string }
-			showError(payload.error ?? "Couldn't draft the diagram. Please try again.")
-			return null
-		}
+			if (!res.ok || !res.body) {
+				// Before the await below, so the count cannot overwrite the status.
+				clearInterval(ticker)
+				setStatus("draft")
+				if (res.status === 401) {
+					writeCode(null)
+					codeInput.value = ""
+					askForCode(true)
+					return null
+				}
+				const payload = (await res.json().catch(() => ({}))) as { error?: string }
+				showError(payload.error ?? "Couldn't draft the diagram. Please try again.")
+				return null
+			}
 
-		const sse = createSseReader()
-		const stream = createProcessTextStream()
-		const decoder = new TextDecoder()
-		let text = ""
-		let outcome: GenerateEvent | null = null
-		try {
-			// A reader loop rather than `for await`: Safari streams have no async iterator.
-			const reader = res.body.getReader()
-			for (let chunk = await reader.read(); !chunk.done; chunk = await reader.read()) {
-				for (const data of sse.push(decoder.decode(chunk.value, { stream: true }))) {
-					const event = JSON.parse(data) as GenerateEvent
-					if ("text" in event) {
-						text += event.text
-						const frame = stream.push(event.text)
-						if (frame) {
-							draw(frame)
-							setStatus(`${verb}… ${frame.processes[0]?.flowElements.length ?? 0} elements`, true)
+			const sse = createSseReader()
+			const stream = createProcessTextStream()
+			const decoder = new TextDecoder()
+			let text = ""
+			let outcome: GenerateEvent | null = null
+			try {
+				// A reader loop rather than `for await`: Safari streams have no async iterator.
+				const reader = res.body.getReader()
+				for (let chunk = await reader.read(); !chunk.done; chunk = await reader.read()) {
+					for (const data of sse.push(decoder.decode(chunk.value, { stream: true }))) {
+						const event = JSON.parse(data) as GenerateEvent
+						if ("text" in event) {
+							text += event.text
+							const frame = stream.push(event.text)
+							if (frame) {
+								drawn = true
+								draw(frame)
+								setStatus(`${verb}… ${frame.processes[0]?.flowElements.length ?? 0} elements`, true)
+							}
+						} else {
+							outcome = event
 						}
-					} else {
-						outcome = event
 					}
 				}
+			} catch {
+				if (controller.signal.aborted) return null
+				outcome = { error: "The connection dropped. Please try again." }
 			}
-		} catch {
 			if (controller.signal.aborted) return null
-			outcome = { error: "The connection dropped. Please try again." }
-		}
-		if (controller.signal.aborted) return null
-		running = null
+			running = null
 
-		if (!outcome || "error" in outcome) {
-			setStatus("draft")
-			showError(outcome && "error" in outcome ? outcome.error : "No diagram came back.")
-			return null
+			if (!outcome || "error" in outcome) {
+				setStatus("draft")
+				showError(outcome && "error" in outcome ? outcome.error : "No diagram came back.")
+				return null
+			}
+			return { text, cached: outcome.done && outcome.cached }
+		} finally {
+			clearInterval(ticker)
+			// A newer request took over and owns the indicator now.
+			if (!controller.signal.aborted) setBusy(false)
 		}
-		return { text, cached: outcome.done && outcome.cached }
 	}
 
 	const repaired = (problems: number) => (problems > 0 ? ` · ${problems} problem(s) repaired` : "")
@@ -423,6 +446,7 @@ export function mountGenerator(): void {
 		if (!draft || previous === undefined) return
 		running?.abort()
 		running = null
+		setBusy(false)
 		draft.text = previous
 		show(previous)
 		setStatus("undone")

@@ -944,3 +944,52 @@ One call waited 13.4 s for its first byte (queueing). The median total was 2.9 s
 - **Usually (2/3):** answering the made-up-variable question, and adding a branch next to others.
 - **Rarely:** new structure of a kind the draft does not have yet (a boundary, a parallel
   split). For those, Undo and the "+N −M" status line are the fallback.
+
+## 21. Abuse, and what a generated diagram can reach (2026-09-30)
+
+**The model runs in a sandbox by construction.** It has no tools, no network, no credentials and
+no state. It gets text in and gives text out. Everything it writes goes through fixed steps,
+none of which runs anything:
+
+| Step | What happens to the model's text |
+|---|---|
+| Worker | Only lines in the diagram format are streamed back (below). Nothing is stored except the answer in the D1 cache, keyed by the exact request. |
+| Parser | `parseProcessText` maps the text onto a fixed set of element kinds, a few attributes (`on=`, `job=`, `nonint`) and FEEL conditions. The format has no way to write a script body, a listener, a connector secret or any XML. |
+| XML | `Bpmn.export` escapes every name and condition. |
+| Page | The canvas draws names with `textContent`, and so do the questions. The CSP allows `script-src 'self'` only. |
+| Share | Only when the reader asks. The diagram then goes through the ordinary upload endpoint, with the same validation, size limits and Terms as any drop. |
+
+Drop never deploys or runs a diagram. A generated diagram that someone deploys to their own
+Camunda cluster is like any BPMN file from the internet. Its job types (`job=`) and FEEL
+conditions are plain strings, and they should be reviewed before deployment. FEEL itself has no
+I/O.
+
+**Abuse controls, in the order the route applies them:**
+
+1. The feature is off (404) unless `AI_PASSCODE` is set.
+2. A closed-beta code, with 5 failed attempts per IP and hour before a 429.
+3. Input caps: a description of 10–2,000 characters, a change of 3–500, and a draft of at most 4,000.
+4. Cache: a repeated request costs nothing.
+5. The daily neuron budget, shared by everyone. When it is spent, the route answers 503.
+6. **New:** at most 40 model calls per IP and hour (`MAX_GENERATIONS_PER_HOUR`, migration
+   `0008_ai_generate_calls`). Cached answers do not count. Before this, one caller, or a leaked
+   beta code, could spend the whole day's budget for everyone.
+7. An output cap of 600 tokens on the production model.
+
+**New: only diagram lines leave the Worker.** The route used to stream the model's text as it
+came. A description that talked the model into writing an essay ("ignore the format…") got the
+essay streamed back, which made the route a free general-purpose model for anyone with the
+code. `createDiagramLineFilter` now passes on only lines that start like the format: a
+`# title`, or an id followed by `[`, an arrow, or nothing. The filter's output is what is judged,
+cached and compared for the unchanged check. On all 432 recorded answers, the filtered text
+parses to exactly the same diagram as the unfiltered text (`tests/generate.test.ts`).
+
+**What is left:**
+
+- **Text inside names.** `a[task <any text>]` still passes the filter. With the 600-token cap,
+  the hourly cap and the budget, this is a slow and expensive way to get free text.
+- **One shared beta code.** The per-IP cap slows down a leaked code, but IP rotation gets around
+  it, and the daily budget remains the hard stop. Before this leaves closed beta, give it a
+  per-user gate: Turnstile, which Drop already uses elsewhere, or codes per user.
+- **Prompt injection in a description** can only change the diagram that the same user gets
+  back. A cached answer is served only for a byte-identical request.
