@@ -895,3 +895,52 @@ by structure). The boundary example brought 02 to 2/3 once. Without them, those 
 towards §16 (05: 1/3, 02: 1/3). That is the trade: the two pattern rules help the one change
 they describe, and hurt the changes that could be mistaken for it. A full-suite run with `text`
 (`--edits --runs 3`, the default now) gives the new baseline for all ten cases.
+
+## 20. Full run with the text rules: the new baseline (2026-09-30)
+
+`2026-09-30T13-41-17-249Z`: glm-4.7-flash × 3 runs × 10 change cases, with the `text` rules the
+route now sends.
+
+| Case | §16 none | §17 all | §18 all, parallel reworded | **§20 text** |
+|---|---|---|---|---|
+| 01 add a step | 2 | 2 | 3 | **3** |
+| 02 add a timer boundary | 1 | 2 | 1 | 0 |
+| 03 remove a step | 3 | 3 | 3 | **3** |
+| 04 add a branch | 1 | 1 | 2 | 2 |
+| 05 make steps parallel | 1 | 0 | 1 | 0 |
+| 06 answer the default question | 3 | 3 | 3 | **3** |
+| 07 answer the made-up-variable question | 1 | 3 | 3 | 2 |
+| 08 change a task's type | 3 | 2 | 2 | **3** |
+| 09 rename a step | 2 | 3 | 3 | **3** |
+| 10 add a loop | 3 | 2 | 1 | **3** |
+| **total** | **20/30** | **21/30** | **22/30** | **22/30** |
+| unchanged answers | 2 | 0 | 0 | 0 |
+| input tokens (median) | 590 | 719 | 753 | 659 |
+| neurons (mean) | 6.1 | 6.9 | 7.1 | 6.6 |
+
+The total matches the best earlier run, and the failures moved to where §19 said they would.
+Eight of the ten cases pass 2/3 or better. Six are at 3/3, including every "change what is
+there" case: remove, rename, retype, add a step, and loop.
+
+The two cases at 0/3 are the ones only the pattern examples helped:
+
+- **02, timer boundary.** One answer (#2) drew the boundary but dropped "Ship order". That makes
+  5 of the 12 answers to 02 across the runs that lose the step after the boundary, with or without
+  rules. The other two made a second end event or a service task pretending to be a check.
+- **05, parallel.** glm writes a split without the `and` kind (`pack > print`, `pack > dispatch`),
+  invents kinds (`parand`), or turns it into an xor. The parser correctly makes unlabelled
+  branches out of a task an `and` split. But these answers also lose or rename the steps, so the
+  case fails on `keepIds`.
+
+07 dropped to 2/3: one answer wrote the branches in prose (`>(Above 80)`). In the product, that
+answer gets a made-up variable again, so the same question comes back to the reader, and a
+second answer can fix it.
+
+One call waited 13.4 s for its first byte (queueing). The median total was 2.9 s.
+
+**Where the change feature stands.** With glm-4.7-flash and the `text` rules:
+
+- **Reliable (3/3):** changing what is there, and answering the parser's default question.
+- **Usually (2/3):** answering the made-up-variable question, and adding a branch next to others.
+- **Rarely:** new structure of a kind the draft does not have yet (a boundary, a parallel
+  split). For those, Undo and the "+N −M" status line are the fallback.

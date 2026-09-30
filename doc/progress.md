@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: full change run with the text rules
+
+- glm-4.7-flash × 30 changes with the `text` rules: 22/30, the same total as the best `all` run. Six cases pass 3/3: remove, rename, retype, add a step, add a loop and the default question. A new timer boundary or parallel split passes 0/3, as expected without their pattern examples. A change costs 6.6 neurons. Details: `doc/drop-ai-generate-analysis.md` §20.
+
 ## 2026-09-30 — Describe-to-diagram: the route sends the text-only change rules
 
 - On cases 08 and 10, 10 runs each: `text` rules 20/20, `all` 15/20, `none` 15/20. Under `all`, two of the three loop failures copy the boundary example (`boundary:timer … | on=engineer`) where a decision was needed. `REFINE_SYSTEM_PROMPT` is now `refineSystemPrompt("text")`, 94 input tokens shorter, and the benchmark defaults to it. The parallel and boundary examples stay available as `--refine-rules all`. Details: `doc/drop-ai-generate-analysis.md` §19.
