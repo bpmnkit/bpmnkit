@@ -11,5 +11,7 @@
 - Joins match the split they close. A gateway that both joins and splits gets its own join.
 - Every decision has one default, and every other branch has a FEEL condition. A branch written in prose gets a condition on a variable named for the gateway's question.
 - Unnamed elements are named.
+- Only the first blank start event is kept. An event-based gateway with one way out becomes a catch event. A flow from a node to itself is refused, and a loop with no way out gets an exit.
+- A branch drawn into a boundary event continues to the path that boundary leads to.
 
 `PROCESS_TEXT_GUIDE` teaches these rules. `pattern/gateway-single-outgoing` no longer flags join gateways.

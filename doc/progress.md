@@ -1,5 +1,16 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: analysis of the benchmark runs with the new prompt
+
+- Analysed the two new benchmark runs: 6 models × 12 prompts, and glm-4.7-flash × 36. All four runs were re-scored with the current parser. The new prompt raised assertions for gpt-oss-120b (4 → 7/12), gpt-oss-20b (4 → 7), qwen3 (4 → 6) and gemma (8 → 9). glm stayed at 6/12 and went 18 → 14/36, mostly on prompt 05, where it now uses a receive task. Swallowed errors in glm went 4 → 0, but it misuses boundaries more. Details: `doc/drop-ai-generate-analysis.md` §13.
+- `parseProcessText`:
+  - an event gateway with one way out becomes a catch event
+  - only the first blank start event is kept
+  - a flow from a node to itself is refused, and a loop with no way out gets an exit at its decision
+  - a branch drawn into a boundary continues to the boundary's handler
+- `PROCESS_TEXT_GUIDE`: the default and boundary rules are reworded after glm's misreadings. Not yet measured.
+- `bench-generate.mjs` counts an answer with no content (a reasoning model out of budget) as an error, not as `ok`.
+
 ## 2026-09-30 — Describe-to-diagram: every generated diagram is structurally valid
 
 Follow-up to bpmnkit/monorepo#207. A generated KYC process had a loose task and a one-branch gateway.

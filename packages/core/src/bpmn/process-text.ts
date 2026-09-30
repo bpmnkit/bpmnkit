@@ -44,8 +44,8 @@ Events take a trigger: start:message end:error catch:timer boundary:error (timer
 Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>
 Rules:
 - One start event. Every node is on a path from it to an end event: never a node nothing leads to.
-- An xor has two or more branches: each a FEEL condition on a process variable, and one default.
-- A boundary is on a task you declared; its path handles the problem in a task before it ends.
+- An xor has two or more branches: exactly one is (Label: default), each other has a FEEL condition.
+- A boundary starts its own line, on a task you declared, and leads to a task that handles it; never draw an arrow into a boundary.
 - Branches that meet again are joined automatically; join parallel branches with an and node.
 
 Example:
@@ -503,10 +503,25 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		nodes.delete(id)
 	}
 
+	// A branch drawn into a boundary event (`check >(No) failed[boundary:error … |
+	// on=pay] > notify`) means the path that boundary leads to. Nothing can flow
+	// into a boundary, so the branch goes to its handler instead of being lost.
+	const written = reader.edges.flatMap((edge) => {
+		if (reader.nodes.get(edge.to)?.element.type !== "boundaryEvent") return [edge]
+		const next = reader.edges.filter((out) => out.from === edge.to)
+		if (next.length === 0) return [edge]
+		if (final) {
+			fixes.push(
+				`led ${edge.from} > ${edge.to} to what the boundary leads to, since nothing flows into a boundary event`,
+			)
+		}
+		return next.map((out) => ({ ...edge, to: out.to }))
+	})
+
 	// Edges: both ends declared, pointing a way BPMN allows, once.
 	const seen = new Set<string>()
 	let edges: Edge[] = []
-	for (const edge of reader.edges) {
+	for (const edge of written) {
 		const from = typeOf(edge.from)
 		const to = typeOf(edge.to)
 		if (from === undefined || to === undefined) {
@@ -527,7 +542,9 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 					? "a start event has no incoming flow"
 					: to === "boundaryEvent"
 						? "a boundary event has no incoming flow"
-						: undefined
+						: edge.from === edge.to
+							? "a flow cannot lead back to where it starts"
+							: undefined
 		if (wrong) {
 			problems.push({
 				line: edge.line,
@@ -563,6 +580,22 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	const into = (id: string) => edges.filter((edge) => edge.to === id)
 
 	if (final) {
+		// One blank start: a process that starts twice with no trigger to tell the
+		// two apart is two processes. The later one goes, and what it led to is
+		// placed as any path nothing leads to is, below.
+		const blank = [...nodes.values()]
+			.filter((node) => node.element.type === "startEvent" && node.element.eventType === undefined)
+			.sort((a, b) => a.line - b.line)
+		for (const extra of blank.slice(1)) {
+			const id = extra.element.id
+			nodes.delete(id)
+			edges = edges.filter((edge) => edge.from !== id)
+			problems.push({
+				line: extra.line,
+				message: `"${id}" is a second blank start event; left out`,
+			})
+		}
+
 		// Start: one where none was written, and a start the model left unconnected
 		// leads to the first path that has no way in.
 		const roots = [...nodes.values()].filter(
@@ -651,16 +684,65 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			fixes.push(`added end event "${end}" after "${id}"`)
 		}
 
+		// Exits: a loop with no way out never ends. Its last decision gets a branch
+		// to an end event; the condition rules below give it a condition.
+		for (;;) {
+			const ends = new Set<string>()
+			const queue = [...nodes.values()]
+				.filter((node) => node.element.type === "endEvent")
+				.map((node) => node.element.id)
+			for (let id = queue.shift(); id !== undefined; id = queue.shift()) {
+				if (ends.has(id)) continue
+				ends.add(id)
+				for (const edge of into(id)) queue.push(edge.from)
+			}
+			const stuck = [...nodes.values()].filter(
+				(node) => !ends.has(node.element.id) && node.element.type !== "boundaryEvent",
+			)
+			const decision = stuck
+				.filter((node) => CONDITIONAL.has(node.element.type))
+				.sort((a, b) => b.line - a.line)[0]
+			if (decision === undefined) {
+				for (const node of stuck) {
+					problems.push({
+						line: node.line,
+						message: `"${node.element.id}" is in a loop with no way out`,
+					})
+				}
+				break
+			}
+			const id = decision.element.id
+			const end = uniqueId(`${id}_end`, taken)
+			add(end, "endEvent", decision.line, "Process completed")
+			edges.push({ from: id, to: end, line: decision.line, name: "Otherwise" })
+			fixes.push(`added an exit from the loop at "${id}" to end event "${end}"`)
+		}
+
 		// Pass-through gateways: one way in and one way out decides nothing. Most
 		// often a question the model asked and then answered only one way.
 		for (let removed = true; removed; ) {
 			removed = false
 			for (const [id, node] of nodes) {
-				if (!GATEWAYS.has(node.element.type) || node.element.type === "eventBasedGateway") continue
+				if (!GATEWAYS.has(node.element.type)) continue
 				const [inEdge, ...moreIn] = into(id)
 				const [outEdge, ...moreOut] = outOf(id)
 				if (!inEdge || !outEdge || moreIn.length > 0 || moreOut.length > 0) continue
 				if (inEdge.from === outEdge.to) continue
+				const target = typeOf(outEdge.to)
+				if (
+					node.element.type === "eventBasedGateway" &&
+					target !== "intermediateCatchEvent" &&
+					target !== "receiveTask"
+				) {
+					// Waiting for one event is a catch event, not a race between events.
+					node.element.type = "intermediateCatchEvent"
+					node.element.eventType = "message"
+					problems.push({
+						line: node.line,
+						message: `"${id}" waits for only one event; made it a message catch event`,
+					})
+					continue
+				}
 				inEdge.to = outEdge.to
 				edges = edges.filter((edge) => edge !== outEdge)
 				nodes.delete(id)

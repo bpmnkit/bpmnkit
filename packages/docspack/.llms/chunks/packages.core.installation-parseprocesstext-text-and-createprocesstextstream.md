@@ -31,13 +31,18 @@ number. What it adds or changes is listed in `fixes`:
 - an id declared again after an arrow, with a different kind or name, is a new node (`done_2`),
   and later bare references mean the newest; restated at the start of a line, it is the node
   already there
-- a missing start event is added, and a start event left unconnected leads to the first path
+- a missing start event is added, and a start event left unconnected leads to the first path;
+  only the first blank start event is kept
+- a branch drawn into a boundary event continues to what the boundary leads to, and a flow from a
+  node to itself is refused
 - **every node lies on a path from a start event.** A task or gateway nothing leads to continues
   the latest path written before it that stops short of an end event — most often the model left
   out one arrow. What still cannot be reached, such as a boundary on a task that was never
   declared, is left out and reported; it is never drawn as a loose node
-- an end event is added after every path that stops elsewhere
-- a gateway with one way in and one way out — a question answered only one way — is removed
+- an end event is added after every path that stops elsewhere, and a loop with no way out gets
+  an exit branch from its decision
+- a gateway with one way in and one way out — a question answered only one way — is removed;
+  an event-based gateway waiting for one event becomes a catch event
 - a task or event with several ways out gets a split gateway: exclusive when the branches are
   labelled, parallel when they are not
 - branches that meet at a task, an event or a gateway that also splits are joined first, by a
@@ -52,10 +57,6 @@ number. What it adds or changes is listed in `fixes`:
 - an unnamed event, task or decision is named from its id
 - a service or send task without `job=` takes its id as job type, and a rule task its id as
   decision id
-
-`createProcessTextStream()` reads the same format while it arrives. It reads each finished line
-as it arrives, so every frame is built from whole facts. `push(chunk)` returns a laid-out frame,
-or `null` when nothing new is drawable. `end()` returns what `parseProcessText` would.
 
 ---
 Source: https://bpmnkit.com/docs/packages/core

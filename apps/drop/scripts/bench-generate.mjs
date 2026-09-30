@@ -167,6 +167,12 @@ async function runOne(model, prompt) {
 	result.reasoningChars = reasoningChars
 	result.usage = usage
 	if (usage) result.neurons = neuronsFor(model, usage)
+	// A reasoning model can spend the whole output cap thinking. That answer has
+	// no diagram, and the parser would still complete an empty one.
+	if (text.trim() === "") {
+		result.error = "no diagram: the output cap was spent before any content"
+		return result
+	}
 
 	const parsed = stream.end()
 	result.problems = parsed.problems

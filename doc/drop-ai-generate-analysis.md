@@ -383,3 +383,85 @@ measured on Workers AI; the next `bench:generate` run is the measurement.
 `pattern/gateway-single-outgoing` flagged every join gateway, since a join has one outgoing flow by
 design. It now skips gateways with several incoming flows; `flow/redundant-gateway` still covers a
 gateway with one flow in and one out.
+
+## 13. Third and fourth runs: the §12 prompt (2026-09-30)
+
+Two runs with the §12 prompt and parser, each a repeat of an earlier setup:
+
+- `2026-09-30T08-53-18-938Z`: 6 models × 12 prompts, the same setup as §8
+- `2026-09-30T09-20-45-457Z`: glm-4.7-flash × 3 runs × 12 prompts, the same setup as §9
+
+`summary.md` columns for problems, fixes and lint are not comparable across runs: each run used
+the parser of its day. For the tables below, all four runs were re-parsed and re-scored with the
+current parser, so a difference comes from what the model wrote.
+
+### Speed and cost
+
+The prompt grew by ~80 input tokens (glm: 389 → 469). At glm's input rate, that is under half a
+neuron per request. Output, latency and neurons did not move beyond run-to-run noise:
+
+| glm-4.7-flash, 36 answers | TTFB | first shape | total | in tok | out tok | neurons |
+|---|---|---|---|---|---|---|
+| §9, old prompt | 167 ms | 638 ms | 1232 ms | 389 | 67 | 7.1 |
+| new prompt | 161 ms | 524 ms | 1335 ms | 469 | 77 | 6.3 |
+
+### Assertions (golden prompts), re-scored
+
+| model | §8, old prompt | new prompt |
+|---|---|---|
+| gpt-oss-120b | 4/12 | 7/12 |
+| gpt-oss-20b | 4/12 | 7/12 |
+| gemma-4-26b | 8/12 | 9/12 |
+| glm-4.7-flash | 6/12 | 6/12 |
+| qwen3-30b | 4/12 | 6/12 |
+| granite-4.0-micro | 3/12 | 3/12 |
+| glm-4.7-flash × 36 (§9 vs new) | 18/36 | 14/36 |
+
+The new prompt helps every model except glm, the production model. glm's −4 on 36 answers is
+within about one binomial standard deviation (±3). Most of it is prompt 05: glm now waits for the
+message with a receive task (`ship[receive payment-confirmed | correlation=order id]`), which is
+valid BPMN, but the assertion accepts only an intermediate catch event. Under the old prompt it
+passed with `catch:timer`, which has the wrong trigger for a message.
+
+### What the rules changed in glm's answers (36 answers each)
+
+| | old prompt | new prompt |
+|---|---|---|
+| error boundary straight to an end (`catch-and-swallow`) | 4 | 0 |
+| answers declaring a boundary | 10 | 17 |
+| answers with an arrow *into* a boundary | 0 | 5 |
+| answers marking both xor branches `default` | 1 | 4 |
+| answers needing no repair except joins | 12 | 8 |
+
+The boundary rule worked for what it targeted, since no error is swallowed any more. It also made
+glm reach for boundaries more often, and it misuses them. It writes a gateway branch into a
+boundary (`check >(No: order invalid) fail[boundary:error … | on=ship] > notify`) and puts
+boundaries on gateways. "Each a FEEL condition … and one default" reads to glm as "`default`
+everywhere". Across the six models, swallowed errors went from 6 to 1.
+
+### Reasoning models run out of budget
+
+With no diagram written, gpt-oss-20b (1 answer) and qwen3 (3 answers) spent the whole
+2,048-token cap reasoning. In §8 the counts were 3 and 1. `bench-generate.mjs` counted those
+answers as `ok`, and the parser completed an empty diagram. It now records them as errors.
+Production uses glm, which does not reason.
+
+### Parser changes from these answers
+
+The Drop replay test found four answers that still broke a structural rule, and one lost pattern:
+
+- **An event-based gateway with one way out** (gpt-oss-20b, 05) becomes a message catch event. If
+  its one target is already a catch event, it is removed.
+- **One blank start event.** A later one goes (gemma, 12, which appended an `id[start start]`
+  legend), and what it led to is placed like any unconnected path.
+- **No flow from a node to itself** (glm, 15: `wait[catch:timer 2 minutes]` restated after an
+  arrow). A loop with no way out gets an exit branch from its last decision. With no decision in
+  it, the loop is reported.
+- **A branch drawn into a boundary** now continues to what the boundary leads to, instead of
+  being dropped with its gateway.
+
+The guide's two rules are reworded: "exactly one is (Label: default), each other has a FEEL
+condition", and "a boundary starts its own line … never draw an arrow into a boundary". This is
+unmeasured. The next glm × 36 run (`--models @cf/zai-org/glm-4.7-flash --runs 3`) is the check
+against this section's table.
+

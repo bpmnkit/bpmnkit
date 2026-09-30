@@ -194,7 +194,7 @@ describe("parseProcessText", () => {
 			"s[start] > check[xor Eligible?]",
 			"check >(Yes: applicant is eligible) review[user Review application] > a[end]",
 			"check >(No: applicant not eligible) reject[user Reject application] > b[end]",
-			"s2[start] > g[xor Big?]",
+			"s2[start:message] > g[xor Big?]",
 			"g >(Yes: amount > 1000) big[end]",
 			"g >(No: amount is small) small[end]",
 		].join("\n")
@@ -337,7 +337,7 @@ describe("parseProcessText", () => {
 			"s[start] > g[xor]",
 			"g >(default) a[end]",
 			"g >(default) b[end]",
-			"s2[start] > p[and]",
+			"s2[start:message] > p[and]",
 			"p >(default) c[end]",
 			"p > d[end]",
 		].join("\n")
@@ -440,10 +440,10 @@ describe("parseProcessText", () => {
 			"s[start] > g[xor Order valid?]",
 			"g >(Yes: order is valid) a[end Accepted]",
 			"g >(No: order is not valid) b[end Refused]",
-			"s2[start] > h[xor Size?]",
+			"s2[start:message] > h[xor Size?]",
 			"h >(Big: size > 10) c[end Big]",
 			"h >(Small: size <= 10) d[end Small]",
-			"s3[start] > p[and] > x[task X] > e[end Done]",
+			"s3[start:timer] > p[and] > x[task X] > e[end Done]",
 			"p >(Yes: ok) y[task Y] > e",
 		].join("\n")
 		const byTarget = new Map(flows(text).map((f) => [f.to, f]))
@@ -464,6 +464,71 @@ describe("parseProcessText", () => {
 			"s[start] > check_order[task] > g[xor]\ng >(Yes: ok) e[end]\ng >(No: default) e2[end]",
 		)
 		expect(els.map((e) => e.name)).toEqual(["S", "Check order", "G?", "E", "E2"])
+	})
+
+	it("makes an event gateway that waits for one event a catch event", () => {
+		// gpt-oss-20b, golden prompt 05.
+		const text =
+			"start[start Order placed] > wait[eventgw Payment confirmed] > ship[task Ship order] > end[end Order shipped]"
+		const { diagram, problems } = parseProcessText(text)
+		expect(diagram.processes[0]?.elements.find((e) => e.id === "wait")).toMatchObject({
+			type: "intermediateCatchEvent",
+			eventType: "message",
+		})
+		expect(problems.map((p) => p.message)).toEqual([
+			'"wait" waits for only one event; made it a message catch event',
+		])
+		// Before a catch event it is only a detour, and goes.
+		const detour = "s[start] > g[eventgw] > w[catch:timer 5 minutes] > e[end Done]"
+		expect(elements(detour).map((e) => e.id)).toEqual(["s", "w", "e"])
+	})
+
+	it("leads a branch drawn into a boundary event to the boundary's handler", () => {
+		// glm-4.7-flash, golden prompt 01.
+		const text = [
+			"start[start Order received] > check[xor Order valid?]",
+			"check >(Yes: default) ship[service Ship order] > done[end Order shipped]",
+			"check >(No: order invalid) fail[boundary:error Validation failed | on=ship] > notify[send Notify #ops on Slack] > sent[end Notification sent]",
+		].join("\n")
+		const { diagram } = parseProcessText(text)
+		const process = diagram.processes[0]
+		// The decision keeps both branches…
+		expect(process?.flows.filter((f) => f.from === "check").map((f) => f.to)).toEqual([
+			"ship",
+			"notify_join",
+		])
+		// …and the boundary still leads to the same handler.
+		expect(process?.elements.find((e) => e.id === "fail")).toMatchObject({ attachedTo: "ship" })
+		expect(process?.flows.find((f) => f.from === "fail")?.to).toBe("notify_join")
+	})
+
+	it("keeps one blank start event", () => {
+		// gemma-4, golden prompt 12: a legend of the ids after the diagram.
+		const text = [
+			"start[start Application received] > check[task Check] > done[end Done]",
+			"id[start start]",
+			"id[check rule]",
+		].join("\n")
+		const { diagram, problems } = parseProcessText(text)
+		const starts = diagram.processes[0]?.elements.filter((e) => e.type === "startEvent")
+		expect(starts?.map((e) => e.id)).toEqual(["start"])
+		expect(problems.map((p) => p.message)).toContain('"id" is a second blank start event; left out')
+	})
+
+	it("never loops without a way out", () => {
+		// glm-4.7-flash, golden prompt 15: a node restated after an arrow is a flow to itself.
+		const text =
+			"s[start] > poll[task Poll] > wait[catch:timer 2 minutes] > wait[catch:timer 2 minutes]"
+		const { diagram, problems } = parseProcessText(text)
+		expect(diagram.processes[0]?.flows.some((f) => f.from === f.to)).toBe(false)
+		expect(problems.map((p) => p.message)).toContain(
+			"a flow cannot lead back to where it starts; flow wait > wait left out",
+		)
+		// A loop whose only way out was never written gets one at its decision.
+		const loop = "s[start] > a[task Try] > g[xor Done?]\ng >(No: default) a"
+		const { fixes } = parseProcessText(loop)
+		expect(fixes).toContain('added an exit from the loop at "g" to end event "g_end"')
+		expect(flows(loop).find((f) => f.to === "g_end")).toMatchObject({ from: "g" })
 	})
 
 	it("keeps the rules lintDiagram checks, whatever the model wrote", () => {
