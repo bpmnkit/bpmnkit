@@ -1,5 +1,47 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: reworded rules measured; loops, link events, races
+
+- glm-4.7-flash × 36 with the reworded guide rules: 19/36 assertions, against 18 on the old prompt and 14 with the first rules. No error is swallowed, and one-branch gateways are back at 2. Speed and cost are unchanged. Details: `doc/drop-ai-generate-analysis.md` §14.
+- `parseProcessText`:
+  - a loop with no decision drops the flows that close it, so every path ends
+  - a link event in a path becomes a plain event
+  - unlabelled waits that leave the same node become a race behind an event-based gateway, and receive tasks among them become message catch events
+- `PROCESS_TEXT_GUIDE` no longer offers the `link` trigger.
+- A catch or boundary event written without a trigger becomes a message event, so it can deploy.
+- Golden prompt 15 accepts a race behind an event-based gateway as well as a timer boundary, through a new `mustContainAnyOf` assertion that `bench-generate.mjs` reads. The reworded-rules glm run re-scores to 20/36.
+
+## 2026-09-30 — Describe-to-diagram: analysis of the benchmark runs with the new prompt
+
+- Analysed the two new benchmark runs: 6 models × 12 prompts, and glm-4.7-flash × 36. All four runs were re-scored with the current parser. The new prompt raised assertions for gpt-oss-120b (4 → 7/12), gpt-oss-20b (4 → 7), qwen3 (4 → 6) and gemma (8 → 9). glm stayed at 6/12 and went 18 → 14/36, mostly on prompt 05, where it now uses a receive task. Swallowed errors in glm went 4 → 0, but it misuses boundaries more. Details: `doc/drop-ai-generate-analysis.md` §13.
+- `parseProcessText`:
+  - an event gateway with one way out becomes a catch event
+  - only the first blank start event is kept
+  - a flow from a node to itself is refused, and a loop with no way out gets an exit at its decision
+  - a branch drawn into a boundary continues to the boundary's handler
+- `PROCESS_TEXT_GUIDE`: the default and boundary rules are reworded after glm's misreadings. Not yet measured.
+- `bench-generate.mjs` counts an answer with no content (a reasoning model out of budget) as an error, not as `ok`.
+
+## 2026-09-30 — Describe-to-diagram: every generated diagram is structurally valid
+
+Follow-up to bpmnkit/monorepo#207. A generated KYC process had a loose task and a one-branch gateway.
+
+- `parseProcessText` now keeps the structural rules `lintDiagram` checks, including bpmnlint's recommended set:
+  - every node is on a path from a start event. A task or gateway nothing leads to continues the latest path that stops short; what is still unreached is left out and reported
+  - a start event left unconnected leads to the first path
+  - pass-through gateways are removed
+  - implicit splits get an xor gateway when labelled, a parallel one otherwise
+  - joins match the split type, and a gateway that joins and splits gets its own join
+  - every decision has one default, and every other branch a FEEL condition. A prose branch gets one on a variable named for the question
+  - flows out of anything but a decision carry no condition or label
+  - added and unnamed elements are named
+  - `start:kyc Start KYC` no longer repeats the word in the name
+- `PROCESS_TEXT_GUIDE` teaches the rules. Its example handles the error boundary in a task.
+- `pattern/gateway-single-outgoing` no longer flags join gateways.
+- Replay of all 104 recorded model answers: answers with structural lint findings went from 47 to 0, and lint errors from 111 to 0. The mean element count is unchanged. `apps/drop/tests/generate.test.ts` keeps that at 0.
+- Drop's status line says "N problem(s) repaired" rather than "line(s) skipped".
+- Details: `doc/drop-ai-generate-analysis.md` §12.
+
 ## 2026-09-30 — CI fixes for bpmnkit/monorepo#207
 
 - `apps/landing/src/generated/ecosystem.ts` regenerated with `scripts/generate-ecosystem.mjs`. The copy on `main` predates #204's version bumps and #205's `@bpmnkit/flow`, so `@bpmnkit/landing` `tests/ecosystem.test.ts` failed on every PR.

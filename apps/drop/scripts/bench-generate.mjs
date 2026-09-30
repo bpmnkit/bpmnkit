@@ -104,6 +104,10 @@ function score(defs, assertions) {
 	for (const type of assertions.mustContainElementTypes ?? []) {
 		if (!types.has(type)) failed.push(`no ${type}`)
 	}
+	for (const alternatives of assertions.mustContainAnyOf ?? []) {
+		if (!alternatives.some((type) => types.has(type)))
+			failed.push(`no ${alternatives.join(" or ")}`)
+	}
 	return { elements: elements.length, failed }
 }
 
@@ -167,6 +171,12 @@ async function runOne(model, prompt) {
 	result.reasoningChars = reasoningChars
 	result.usage = usage
 	if (usage) result.neurons = neuronsFor(model, usage)
+	// A reasoning model can spend the whole output cap thinking. That answer has
+	// no diagram, and the parser would still complete an empty one.
+	if (text.trim() === "") {
+		result.error = "no diagram: the output cap was spent before any content"
+		return result
+	}
 
 	const parsed = stream.end()
 	result.problems = parsed.problems

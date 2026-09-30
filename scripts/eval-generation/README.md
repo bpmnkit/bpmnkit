@@ -26,7 +26,7 @@ node scripts/eval-generation/run-eval.mjs --full
 15 prompts in `prompts/<NN-slug>/`, each with:
 
 - `prompt.md` — the natural-language request
-- `expected.json` — `{ id, category, description, assertions? }`; `expectClarification: true` instead of `assertions` for the one ambiguous prompt
+- `expected.json` — `{ id, category, description, assertions? }`; `expectClarification: true` instead of `assertions` for the one ambiguous prompt. `assertions` are read by `apps/drop/scripts/bench-generate.mjs`: `minElements`, `mustContainElementTypes` (every type present) and `mustContainAnyOf` (a list of alternatives; each is met when any one of its types is present)
 - `fixture.plan.json` — a hand-authored, pre-verified `ProcessPlan` (omitted only for the ambiguous prompt) — every one of these compiles with zero `casen synth` problems and zero `casen lint --profile deploy` errors, verified while writing this harness
 - `base.bpmn` — only for the `extend` prompt, the pre-existing process the delta plan merges into
 

@@ -328,3 +328,189 @@ are the measurement.
 - **`estimateNeurons()` in `apps/drop/src/lib/ai.ts` ignores reasoning tokens.** It also uses gpt-oss-120b rates whatever `AI_MODEL` says, so the daily budget undercounts. The fix is to read `usage` from the response.
 - **`apps/landing/src/content/docs/guides/ai.md` had two errors.** It told models to write `taskType`, but the field is `jobType` (fixed). It also references a `compactDiagramJsonSchema` export that does not exist (still open).
 - **The demo DSL parser is in `apps/demo`, not in core.** The proxy's non-MCP fallback still asks for compact JSON in a code fence.
+
+## 12. Structural guarantees (2026-09-30)
+
+A user asked for "a KYC process for a bank" and got a diagram with a loose `Governance` task and its
+own end event, a boundary-to-end path hanging off it, and a question gateway (`Status approved?`)
+with one branch. The answer was reconstructed and reproduced: the boundary named `on=governance`,
+which was never declared, so the parser added a task that nothing led to; the gateway got one
+branch and an added end event. The parser completed starts, ends and joins, and nothing else.
+
+Replaying every recorded answer (104, §8 and §9) through `parseProcessText`, then `lintDiagram`
+with bpmnlint's recommended rules, counted the answers with a non-info `flow`, `naming` or `feel`
+finding (a long condition the model wrote, `feel/complex-condition`, is excluded):
+
+| | answers with findings | lint errors | mean elements |
+|---|---|---|---|
+| before | 47 / 104 | 111 | 7.2 |
+| after | 0 / 104 | 0 | 7.3 |
+
+Before, by rule (answers): missing label 30, implicit split 15, branch without condition 14,
+implicit start 9, redundant gateway 7, missing default 7, superfluous flow label 6, mixed gateway 5,
+disconnected 2.
+
+What `parseProcessText` now guarantees on the final text (not on streamed frames):
+
+- **Every node is on a path from a start event.** A task or gateway nothing leads to continues the
+  latest path written before it that stops short of an end event — the model left out one arrow
+  (glm, prompt 13: `… > label` then `gw[xor Ready?] > dispatch`). Loose events are not guessed at.
+  What is still unreached is left out and reported. An id only an `on=` names is no longer added
+  as a task, since nothing would lead to it. On the replay, 8 nodes in 6 answers are still left
+  out, all from answers whose lines did not parse; connecting recovered 14 more.
+- **No pass-through gateways.** One way in and one out is removed and reported.
+- **No implicit splits.** Several flows out of a task or event get an xor gateway when labelled,
+  a parallel one when not.
+- **Joins match their split.** Branches from one parallel split get a parallel join, not an xor
+  join that would run the rest once per branch. A gateway that both joins and splits gets its own
+  join.
+- **Decisions are complete.** One default per xor/or split, preferring a `No` / `Otherwise` /
+  `Rejected` branch, otherwise the last unconditioned one. Every other branch gets a FEEL
+  condition. A prose branch gets one on a variable named for the question (`Status approved?` +
+  `Yes` → `= statusApproved = true`), which is deployable and names the variable a task has to set.
+  Flows out of anything else lose conditions and labels.
+- **Everything is named.** Added events are named, and unnamed nodes are named from their ids.
+
+`apps/drop/tests/generate.test.ts` replays the recorded answers on every test run and expects no
+structural finding, so a parser change that regresses one fails CI.
+
+The guide gained four rules (one start, no loose nodes; an xor has conditions and a default; a
+boundary sits on a declared task and handles the problem before its end; joins). Its example no
+longer sends an error boundary straight to an end event, which `pattern/catch-and-swallow` flags
+and models copy. The guide is now ~310 tokens, up from ~250. The effect on answers is not yet
+measured on Workers AI; the next `bench:generate` run is the measurement.
+
+`pattern/gateway-single-outgoing` flagged every join gateway, since a join has one outgoing flow by
+design. It now skips gateways with several incoming flows; `flow/redundant-gateway` still covers a
+gateway with one flow in and one out.
+
+## 13. Third and fourth runs: the §12 prompt (2026-09-30)
+
+Two runs with the §12 prompt and parser, each a repeat of an earlier setup:
+
+- `2026-09-30T08-53-18-938Z`: 6 models × 12 prompts, the same setup as §8
+- `2026-09-30T09-20-45-457Z`: glm-4.7-flash × 3 runs × 12 prompts, the same setup as §9
+
+`summary.md` columns for problems, fixes and lint are not comparable across runs: each run used
+the parser of its day. For the tables below, all four runs were re-parsed and re-scored with the
+current parser, so a difference comes from what the model wrote.
+
+### Speed and cost
+
+The prompt grew by ~80 input tokens (glm: 389 → 469). At glm's input rate, that is under half a
+neuron per request. Output, latency and neurons did not move beyond run-to-run noise:
+
+| glm-4.7-flash, 36 answers | TTFB | first shape | total | in tok | out tok | neurons |
+|---|---|---|---|---|---|---|
+| §9, old prompt | 167 ms | 638 ms | 1232 ms | 389 | 67 | 7.1 |
+| new prompt | 161 ms | 524 ms | 1335 ms | 469 | 77 | 6.3 |
+
+### Assertions (golden prompts), re-scored
+
+| model | §8, old prompt | new prompt |
+|---|---|---|
+| gpt-oss-120b | 4/12 | 7/12 |
+| gpt-oss-20b | 4/12 | 7/12 |
+| gemma-4-26b | 8/12 | 9/12 |
+| glm-4.7-flash | 6/12 | 6/12 |
+| qwen3-30b | 4/12 | 6/12 |
+| granite-4.0-micro | 3/12 | 3/12 |
+| glm-4.7-flash × 36 (§9 vs new) | 18/36 | 14/36 |
+
+The new prompt helps every model except glm, the production model. glm's −4 on 36 answers is
+within about one binomial standard deviation (±3). Most of it is prompt 05: glm now waits for the
+message with a receive task (`ship[receive payment-confirmed | correlation=order id]`), which is
+valid BPMN, but the assertion accepts only an intermediate catch event. Under the old prompt it
+passed with `catch:timer`, which has the wrong trigger for a message.
+
+### What the rules changed in glm's answers (36 answers each)
+
+| | old prompt | new prompt |
+|---|---|---|
+| error boundary straight to an end (`catch-and-swallow`) | 4 | 0 |
+| answers declaring a boundary | 10 | 17 |
+| answers with an arrow *into* a boundary | 0 | 5 |
+| answers marking both xor branches `default` | 1 | 4 |
+| answers needing no repair except joins | 12 | 8 |
+
+The boundary rule worked for what it targeted, since no error is swallowed any more. It also made
+glm reach for boundaries more often, and it misuses them. It writes a gateway branch into a
+boundary (`check >(No: order invalid) fail[boundary:error … | on=ship] > notify`) and puts
+boundaries on gateways. "Each a FEEL condition … and one default" reads to glm as "`default`
+everywhere". Across the six models, swallowed errors went from 6 to 1.
+
+### Reasoning models run out of budget
+
+With no diagram written, gpt-oss-20b (1 answer) and qwen3 (3 answers) spent the whole
+2,048-token cap reasoning. In §8 the counts were 3 and 1. `bench-generate.mjs` counted those
+answers as `ok`, and the parser completed an empty diagram. It now records them as errors.
+Production uses glm, which does not reason.
+
+### Parser changes from these answers
+
+The Drop replay test found four answers that still broke a structural rule, and one lost pattern:
+
+- **An event-based gateway with one way out** (gpt-oss-20b, 05) becomes a message catch event. If
+  its one target is already a catch event, it is removed.
+- **One blank start event.** A later one goes (gemma, 12, which appended an `id[start start]`
+  legend), and what it led to is placed like any unconnected path.
+- **No flow from a node to itself** (glm, 15: `wait[catch:timer 2 minutes]` restated after an
+  arrow). A loop with no way out gets an exit branch from its last decision. With no decision in
+  it, the loop is reported.
+- **A branch drawn into a boundary** now continues to what the boundary leads to, instead of
+  being dropped with its gateway.
+
+The guide's two rules are reworded: "exactly one is (Label: default), each other has a FEEL
+condition", and "a boundary starts its own line … never draw an arrow into a boundary". This is
+unmeasured. The next glm × 36 run (`--models @cf/zai-org/glm-4.7-flash --runs 3`) is the check
+against this section's table.
+
+## 14. Fifth run: the reworded rules (2026-09-30)
+
+`2026-09-30T10-10-20-177Z`: glm-4.7-flash × 3 runs × 12 prompts with the §13 wording. All three
+glm × 36 runs were re-scored with the current parser:
+
+| glm-4.7-flash × 36 | §9, old prompt | §13, first rules | reworded rules |
+|---|---|---|---|
+| assertions | 18/36 | 14/36 | **19/36** |
+| answers needing no repair except joins | 12 | 8 | 9 |
+| gateways left with one branch | 2 | 11 | 2 |
+| conditions the parser had to generate | 11 | 22 | 8 |
+| error boundary straight to an end | 4 | 0 | 0 |
+| answers with an arrow into a boundary | 0 | 5 | 2 |
+| answers marking both branches `default` | 1 | 4 | 4 |
+| TTFB / first shape / total (median) | 167 / 638 / 1232 ms | 161 / 524 / 1335 ms | 189 / 671 / 1315 ms |
+| input / output tokens (median) | 389 / 67 | 469 / 77 | 480 / 62 |
+| neurons (mean) | 7.1 | 6.3 | 5.8 |
+
+The rewording recovered glm and kept the gain from the first rules: no error is swallowed any
+more. By prompt, 05 (message wait) went 0 → 2/3 against §13, 07 (error boundary) 0 → 2/3 and 12
+(DMN) 2 → 3/3. 15 (timer boundary) stays at 0/3. glm models the timeout as a decision
+(`xor No response within 5 minutes?`) or as a race between a timer and a receive task, not as a
+boundary. Double `default` did not move. The parser keeps only the first default, and it now
+decides the other branch through a generated condition. Speed and cost are unchanged within noise.
+
+Parser changes from this run. The Drop replay test found two answers that broke a rule, and one
+answer with wrong semantics:
+
+- **Parallel branches drawn back into their own split** (08: `and >(item1) it > and`) made a loop
+  with no decision and no end. When a loop has no decision to add an exit to, the flows that close
+  it are left out, and each path then ends.
+- **A link event in a path** (11: `event:link Address received`) becomes a plain intermediate
+  event. The format cannot give a link event its name or partner. `link` is no longer in the
+  guide's trigger list.
+- **A race was drawn as a parallel split** (15: `poll > timeout[catch:timer …]` and
+  `poll > get[receive …]`), which ran both branches. Unlabelled flows that all wait, with at least
+  one on a catch event, now get an event-based gateway. Receive tasks among them become message
+  catch events, since Camunda 8 accepts only intermediate catch events after an event-based gateway.
+
+Two gaps this run raised are now closed:
+
+- **A catch or boundary event without a trigger** gets a message trigger, which is how models
+  most often mean one (`wait[catch Payment confirmed]`). The linter accepts one with no trigger,
+  but it cannot deploy.
+- **Prompt 15 accepts a race.** Its assertion is now `mustContainAnyOf: [["boundaryEvent",
+  "eventBasedGateway"]]`: a timer boundary, or the reply racing a timer behind an event-based
+  gateway. `bench-generate.mjs` reads the new key. Re-scored, the reworded-rules run is 20/36, and
+  the earlier glm × 36 runs are unchanged (18 and 14).
+

@@ -4370,7 +4370,7 @@
 		{
 			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream",
 			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md",
-			"tokens": 550,
+			"tokens": 981,
 			"tags": [
 				"packages",
 				"core",
@@ -4381,8 +4381,25 @@
 			],
 			"entities": [
 				"parseProcessText",
+				"lintDiagram"
+			]
+		},
+		{
+			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2",
+			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2.md",
+			"tokens": 84,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"parseprocesstext",
+				"text",
+				"createprocesstextstream"
+			],
+			"entities": [
 				"createProcessTextStream()",
-				"end()"
+				"end()",
+				"parseProcessText"
 			]
 		},
 		{

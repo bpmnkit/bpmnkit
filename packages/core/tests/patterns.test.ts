@@ -294,6 +294,35 @@ describe("analyzePatterns", () => {
 			const findings = analyzePatterns(p)
 			expect(findings.some((f) => f.id === "pattern/gateway-single-outgoing")).toBe(true)
 		})
+
+		it("does not flag a join, whose one outgoing flow is the point", () => {
+			const flow = (id: string, sourceRef: string, targetRef: string): BpmnSequenceFlow => ({
+				id,
+				sourceRef,
+				targetRef,
+				extensionElements: [],
+				unknownAttributes: {},
+			})
+			const p = makeProcess(
+				[
+					{
+						type: "exclusiveGateway",
+						id: "Join_1",
+						incoming: ["Flow_1", "Flow_2"],
+						outgoing: ["Flow_3"],
+						extensionElements: [],
+						unknownAttributes: {},
+					},
+				],
+				[
+					flow("Flow_1", "Task_1", "Join_1"),
+					flow("Flow_2", "Task_2", "Join_1"),
+					flow("Flow_3", "Join_1", "Task_3"),
+				],
+			)
+			const findings = analyzePatterns(p)
+			expect(findings.some((f) => f.id === "pattern/gateway-single-outgoing")).toBe(false)
+		})
 	})
 
 	// ── Rule 11: Timer boundary with duration 0 ───────────────────────────────

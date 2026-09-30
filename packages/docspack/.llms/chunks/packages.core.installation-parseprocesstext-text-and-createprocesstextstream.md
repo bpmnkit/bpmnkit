@@ -3,7 +3,7 @@
 A line format for a model to write a new process in. It costs about a quarter of the output
 tokens of minified compact JSON. A path is written once as `a > b > c`, a node is declared inline
 the first time it is used, and the parser adds what the model would otherwise spend tokens on.
-`PROCESS_TEXT_GUIDE` is the part of a system prompt that teaches the format (~250 tokens,
+`PROCESS_TEXT_GUIDE` is the part of a system prompt that teaches the format (~310 tokens,
 example included).
 
 ```text
@@ -11,7 +11,7 @@ example included).
 start[start Expense submitted] > check[xor Amount over 1000?]
 check >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]
 check >(No: default) auto[service Approve automatically] > pay
-failed[boundary:error Payment failed | on=pay] > notice[end:error Failure notified]
+failed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]
 ```
 
 ```typescript
@@ -21,27 +21,45 @@ const { diagram, problems, fixes } = parseProcessText(modelOutput);
 const xml = Bpmn.export(expand(diagram));
 ```
 
-`parseProcessText` never throws, and its diagram always expands. Text it cannot use is returned
-in `problems` with its line number, and it does not appear in the diagram. What it adds is listed
-in `fixes`:
+`parseProcessText` never throws, and its diagram always expands. It also keeps the structural
+rules `lintDiagram` checks — including bpmnlint's recommended set — whatever the model wrote.
+Text it cannot use, and anything it has to leave out, is returned in `problems` with its line
+number. What it adds or changes is listed in `fixes`:
 
 - flow ids are generated
-- an id used but never declared becomes a task named from it
+- an id used in a flow but never declared becomes a task named from it
 - an id declared again after an arrow, with a different kind or name, is a new node (`done_2`),
   and later bare references mean the newest; restated at the start of a line, it is the node
   already there
-- branches that meet at a task or event are joined by an exclusive gateway first
+- a missing start event is added, and a start event left unconnected leads to the first path;
+  only the first blank start event is kept
+- a branch drawn into a boundary event continues to what the boundary leads to, and a flow from a
+  node to itself is refused
+- **every node lies on a path from a start event.** A task or gateway nothing leads to continues
+  the latest path written before it that stops short of an end event — most often the model left
+  out one arrow. What still cannot be reached, such as a boundary on a task that was never
+  declared, is left out and reported; it is never drawn as a loose node
+- an end event is added after every path that stops elsewhere, and a loop with no way out gets
+  an exit branch from its decision; a loop with no decision loses the flows that close it
+- a link event in a path becomes a plain event, since the format cannot name its partner
+- a catch or boundary event written without a trigger becomes a message event, so it deploys
+- a gateway with one way in and one way out — a question answered only one way — is removed;
+  an event-based gateway waiting for one event becomes a catch event
+- a task or event with several ways out gets a split gateway: exclusive when the branches are
+  labelled, event-based when they all wait (at least one on a catch event, and receive tasks
+  among them become message catch events), and parallel otherwise
+- branches that meet at a task, an event or a gateway that also splits are joined first, by a
+  gateway of the type they were split with: parallel branches get a parallel join
 - a condition that is not FEEL (`applicant is eligible`) moves into the branch label and is
   reported, so it cannot fail at deploy time
-- the only unconditioned branch of an xor/or split becomes its default
-- a missing start event is added
-- an end event is added after every path that stops elsewhere
+- every xor/or split has one default — the branch labelled `No`, `Otherwise`, `Rejected` and the
+  like, or else the last unconditioned one — and every other branch a FEEL condition. A branch
+  written in prose gets one on a variable named for the gateway's question:
+  `Status approved?` with `Yes` becomes `= statusApproved = true`
+- flows out of anything but a decision carry no condition or label
+- an unnamed event, task or decision is named from its id
 - a service or send task without `job=` takes its id as job type, and a rule task its id as
   decision id
-
-`createProcessTextStream()` reads the same format while it arrives. It reads each finished line
-as it arrives, so every frame is built from whole facts. `push(chunk)` returns a laid-out frame,
-or `null` when nothing new is drawable. `end()` returns what `parseProcessText` would.
 
 ---
 Source: https://bpmnkit.com/docs/packages/core
