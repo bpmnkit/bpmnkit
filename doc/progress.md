@@ -8,6 +8,8 @@
   - a link event in a path becomes a plain event
   - unlabelled waits that leave the same node become a race behind an event-based gateway, and receive tasks among them become message catch events
 - `PROCESS_TEXT_GUIDE` no longer offers the `link` trigger.
+- A catch or boundary event written without a trigger becomes a message event, so it can deploy.
+- Golden prompt 15 accepts a race behind an event-based gateway as well as a timer boundary, through a new `mustContainAnyOf` assertion that `bench-generate.mjs` reads. The reworded-rules glm run re-scores to 20/36.
 
 ## 2026-09-30 — Describe-to-diagram: analysis of the benchmark runs with the new prompt
 

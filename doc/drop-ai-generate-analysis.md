@@ -504,7 +504,13 @@ answer with wrong semantics:
   one on a catch event, now get an event-based gateway. Receive tasks among them become message
   catch events, since Camunda 8 accepts only intermediate catch events after an event-based gateway.
 
-Two gaps remain open. The linter accepts a catch event or boundary written without a trigger,
-though Camunda 8 would likely refuse to deploy one. And prompt 15's assertion wants a timer
-boundary where a race with an event gateway also answers the description.
+Two gaps this run raised are now closed:
+
+- **A catch or boundary event without a trigger** gets a message trigger, which is how models
+  most often mean one (`wait[catch Payment confirmed]`). The linter accepts one with no trigger,
+  but it cannot deploy.
+- **Prompt 15 accepts a race.** Its assertion is now `mustContainAnyOf: [["boundaryEvent",
+  "eventBasedGateway"]]`: a timer boundary, or the reply racing a timer behind an event-based
+  gateway. `bench-generate.mjs` reads the new key. Re-scored, the reworded-rules run is 20/36, and
+  the earlier glm × 36 runs are unchanged (18 and 14).
 

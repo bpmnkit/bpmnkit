@@ -399,6 +399,18 @@ class Reader {
 			}
 		}
 		if (label) element.name = label
+		// A catch or boundary event waits for something, and cannot deploy without
+		// saying what. Unnamed, it is most often a message: "Payment confirmed".
+		if (
+			(element.type === "intermediateCatchEvent" || element.type === "boundaryEvent") &&
+			element.eventType === undefined
+		) {
+			element.eventType = "message"
+			this.problems.push({
+				line: n,
+				message: `"${id}" waits for nothing in particular; made it a message event`,
+			})
+		}
 
 		const node: Node = { element, line: n, spec }
 		for (const attr of attrs.split(/[\s,]+/).filter(Boolean)) {

@@ -15,5 +15,6 @@
 - A branch drawn into a boundary event continues to the path that boundary leads to.
 - A loop with no decision loses the flows that close it, so every path ends. A link event in a path becomes a plain event.
 - Unlabelled flows from one node that all wait, at least one on a catch event, become a race behind an event-based gateway.
+- A catch or boundary event written without a trigger becomes a message event.
 
 `PROCESS_TEXT_GUIDE` teaches these rules. `pattern/gateway-single-outgoing` no longer flags join gateways.

@@ -565,6 +565,22 @@ describe("parseProcessText", () => {
 		expect(els.get("timeout")).toMatchObject({ eventType: "timer" })
 	})
 
+	it("gives a catch or boundary event written without a trigger a message trigger", () => {
+		// gpt-oss-20b, golden prompt 05: `wait[catch Payment confirmed]`.
+		const text = [
+			"s[start Order placed] > wait[catch Payment confirmed] > ship[task Ship order] > e[end Shipped]",
+			"cancel[boundary Order cancelled | on=ship] > c[end Cancelled]",
+		].join("\n")
+		const { diagram, problems } = parseProcessText(text)
+		const els = new Map(diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("wait")).toMatchObject({ type: "intermediateCatchEvent", eventType: "message" })
+		expect(els.get("cancel")).toMatchObject({ type: "boundaryEvent", eventType: "message" })
+		expect(problems.map((p) => p.message)).toEqual([
+			'"wait" waits for nothing in particular; made it a message event',
+			'"cancel" waits for nothing in particular; made it a message event',
+		])
+	})
+
 	it("makes a link event in a path a plain event", () => {
 		// glm-4.7-flash, golden prompt 11.
 		const text =

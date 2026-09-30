@@ -104,6 +104,10 @@ function score(defs, assertions) {
 	for (const type of assertions.mustContainElementTypes ?? []) {
 		if (!types.has(type)) failed.push(`no ${type}`)
 	}
+	for (const alternatives of assertions.mustContainAnyOf ?? []) {
+		if (!alternatives.some((type) => types.has(type)))
+			failed.push(`no ${alternatives.join(" or ")}`)
+	}
 	return { elements: elements.length, failed }
 }
 
