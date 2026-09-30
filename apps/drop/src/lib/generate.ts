@@ -26,7 +26,13 @@ Always make the change; never write the diagram back as it was.
 - Rename: change only the name inside the brackets.
 - New branch: add a line from the existing gateway and keep its other branches.
 - Timeout or error on a task: a boundary on its own line, late[boundary:timer 24h | on=pay] > handler.
-- Steps at the same time: fork[and] > a, fork > b, then a > joined[and], b > joined.
+- Steps at the same time: an and split, one line per branch, and an and join. Keep every step as its own node:
+  before > fork[and]
+  fork > a
+  fork > b
+  a > joined[and]
+  b > joined
+  joined > after
 - What decides a gateway: write it as FEEL conditions on its branches (score > 80), not as a new task.`
 
 /** Shortest description worth a model call. */

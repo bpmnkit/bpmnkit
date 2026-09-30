@@ -41,14 +41,25 @@ describe("generate prompt", () => {
 	it("teaches only change patterns the parser reads without a problem", () => {
 		const rules = REFINE_SYSTEM_PROMPT.slice(GENERATE_SYSTEM_PROMPT.length)
 		expect(rules).toContain("late[boundary:timer 24h | on=pay] > handler")
-		expect(rules).toContain("fork[and] > a, fork > b, then a > joined[and], b > joined")
-		const answer = [
-			"s[start Go] > pay[service Pay] > fork[and]",
-			"fork > a[task A]",
-			"fork > b[task B]",
+		const parallel = [
+			"before > fork[and]",
+			"fork > a",
+			"fork > b",
 			"a > joined[and]",
 			"b > joined",
-			"joined > e[end Done]",
+			"joined > after",
+		]
+		expect(rules).toContain(parallel.map((line) => `  ${line}`).join("\n"))
+		// In a change the steps already exist; here they are declared where first used.
+		const declared: Record<string, string> = {
+			"fork > a": "fork > a[task A]",
+			"fork > b": "fork > b[task B]",
+			"joined > after": "joined > after[task After]",
+		}
+		const answer = [
+			"s[start Go] > pay[service Pay] > before[task Before]",
+			...parallel.map((line) => declared[line] ?? line),
+			"after > e[end Done]",
 			"late[boundary:timer 24h | on=pay] > handler[task Handle] > h[end Handled]",
 		].join("\n")
 		expect(parseProcessText(answer).problems).toEqual([])

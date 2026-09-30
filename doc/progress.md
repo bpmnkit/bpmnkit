@@ -2,7 +2,7 @@
 
 ## 2026-09-30 — Describe-to-diagram: the change rules measured
 
-- glm-4.7-flash × 30 changes with the change rules: 21/30, against 20/30 without them. No answer comes back unchanged (was 2). The made-up-variable question is applied in 3/3 runs (was 1/3), and a rename in 3/3 (was 2/3). The parallel rule does not work (0/3): glm packs the fork into one line. A change costs 6.9 neurons (was 6.1). Details: `doc/drop-ai-generate-analysis.md` §17.
+- glm-4.7-flash × 30 changes with the change rules: 21/30, against 20/30 without them. No answer comes back unchanged (was 2). The made-up-variable question is applied in 3/3 runs (was 1/3), and a rename in 3/3 (was 2/3). The parallel rule does not work (0/3): glm packs the fork into one line. It is now reworded to show the fork one path per line; not yet measured. A change costs 6.9 neurons (was 6.1). Details: `doc/drop-ai-generate-analysis.md` §17.
 
 ## 2026-09-30 — Describe-to-diagram: change rules in the refine prompt
 

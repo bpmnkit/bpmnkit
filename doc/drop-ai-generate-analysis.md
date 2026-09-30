@@ -764,3 +764,20 @@ enough to act on:
 **Keep the rules.** They fix unchanged answers and the two question cases, which are the cases
 the product relies on (a clicked answer must be applied). They cost about 0.8 neurons per
 change.
+
+**Parallel rule reworded, not yet measured.** The rule now shows the pattern one path per line,
+with placeholder ids. It does not use case 05's steps, so the benchmark does not score its own
+example:
+
+```
+- Steps at the same time: an and split, one line per branch, and an and join. Keep every step as its own node:
+  before > fork[and]
+  fork > a
+  fork > b
+  a > joined[and]
+  b > joined
+  joined > after
+```
+
+It adds about 25 input tokens. The next `--edits` run is the check against this section's
+table: 05 should rise from 0/3, and 08 and 10 should show whether their drop to 2/3 was noise.
