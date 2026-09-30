@@ -27,7 +27,10 @@ Text it cannot use, and anything it has to leave out, is returned in `problems` 
 number. What it adds or changes is listed in `fixes`:
 
 - flow ids are generated
-- an id used in a flow but never declared becomes a task named from it
+- a line that ends in an arrow continues on the next line, a note after a line's last node
+  (`(ADDED)`) is ignored, and a second `|` in the attributes is a separator
+- an id used in a flow but never declared becomes a task named from it, or the gateway its
+  name is a kind of (`pick > and`)
 - an id declared again after an arrow, with a different kind or name, is a new node (`done_2`),
   and later bare references mean the newest; restated at the start of a line, it is the node
   already there
