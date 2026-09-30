@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: change rules in the refine prompt
+
+- `REFINE_SYSTEM_PROMPT` gets one rule for each kind of miss in the first change run: always make the change, rename in place, add a branch next to the existing ones, a timeout as a boundary line, a parallel fork and join, and a gateway decided by FEEL conditions. It adds about 130 input tokens, and a test checks that its examples parse. Not yet measured: `doc/drop-ai-generate-analysis.md` §16.
+
 ## 2026-09-30 — Describe-to-diagram: first run of the change cases
 
 - glm-4.7-flash × 30 changes: 17/30 as recorded, and 20/30 re-scored with the fixes below. 92.6% of each draft is kept, a change costs 6.1 neurons (the same as a first draft), and the median total is 2.1 s. Removing a step, changing a type, answering the default question and adding a loop pass every time. A new boundary, a parallel split or an extra branch passes 1 time in 3. Details: `doc/drop-ai-generate-analysis.md` §16.

@@ -38,6 +38,22 @@ describe("generate prompt", () => {
 		expect(messages[3]?.content).toBe("Change: add a review")
 	})
 
+	it("teaches only change patterns the parser reads without a problem", () => {
+		const rules = REFINE_SYSTEM_PROMPT.slice(GENERATE_SYSTEM_PROMPT.length)
+		expect(rules).toContain("late[boundary:timer 24h | on=pay] > handler")
+		expect(rules).toContain("fork[and] > a, fork > b, then a > joined[and], b > joined")
+		const answer = [
+			"s[start Go] > pay[service Pay] > fork[and]",
+			"fork > a[task A]",
+			"fork > b[task B]",
+			"a > joined[and]",
+			"b > joined",
+			"joined > e[end Done]",
+			"late[boundary:timer 24h | on=pay] > handler[task Handle] > h[end Handled]",
+		].join("\n")
+		expect(parseProcessText(answer).problems).toEqual([])
+	})
+
 	it("sends a draft back without blank lines or trailing spaces", () => {
 		expect(normaliseDiagram("# P\r\na > b  \n\n\nb > c\n")).toBe("# P\na > b\nb > c")
 	})

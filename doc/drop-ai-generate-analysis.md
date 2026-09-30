@@ -697,8 +697,21 @@ and those two answers were counted as failures. The element a change is about is
 `keepIds`. Case 07's condition check is now `score >`, not `score`. The looser check had passed
 an answer whose "condition" was the parser's made-up `verificationScore = "above 80"`.
 
-**Next.** Two unmeasured options, for the next run:
+**Next: change rules, not yet measured.** `REFINE_SYSTEM_PROMPT` now has one line for each
+kind of miss in this run, about 130 more input tokens (roughly 0.7 neurons a change):
 
-- A refine rule for the two structural misses: "a boundary is its own line with on=; add a
-  branch next to the ones already there".
-- The same prompt with the 2 unchanged answers retried, to see whether a second try fixes them.
+```
+Always make the change; never write the diagram back as it was.
+- Rename: change only the name inside the brackets.
+- New branch: add a line from the existing gateway and keep its other branches.
+- Timeout or error on a task: a boundary on its own line, late[boundary:timer 24h | on=pay] > handler.
+- Steps at the same time: fork[and] > a, fork > b, then a > joined[and], b > joined.
+- What decides a gateway: write it as FEEL conditions on its branches (score > 80), not as a new task.
+```
+
+They target 01 and 05 (unchanged), 09 (a rename that added a step), 04 (a replaced branch), 02
+(a timer chained as a catch event), 05 (a broken parallel rewrite) and 07 (the score as a task).
+A test checks that the examples parse without a problem. The first draft's prompt is unchanged,
+and the cache key includes the prompt, so no answer written for the old rules is served.
+The next `--edits` run (`--models @cf/zai-org/glm-4.7-flash --runs 3`) is the check against this
+section's 20/30. It should also check that the cases already at 3/3 stay there.
