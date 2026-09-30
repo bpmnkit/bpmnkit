@@ -1,5 +1,6 @@
 import { parseProcessText } from "@bpmnkit/core"
 import type { Env } from "../env.js"
+import { checkAiChallenge } from "../lib/ai-pass.js"
 import {
 	addBudget,
 	checkAiPasscode,
@@ -29,6 +30,7 @@ import {
 import { ModelStream, hedge } from "../lib/hedge.js"
 import { json } from "../lib/http.js"
 import { sha256Hex } from "../lib/ids.js"
+import { AI_PASS_HEADER } from "../shared/constants.js"
 
 /** The slice of the Workers AI binding this route uses — a stream in, so it is mockable. */
 export interface AiStreamLike {
@@ -74,8 +76,10 @@ function isUsable(text: string): boolean {
  * diagram from the text; nothing is stored as a drop until the reader chooses
  * to share it, through the ordinary upload endpoint.
  *
- * Order, as the review: feature flag → passcode gate → input check → cache →
- * daily budget → per-IP hourly cap → model call. Only lines in the diagram
+ * Order, as the review: feature flag → passcode gate → Turnstile (when
+ * `TURNSTILE_SECRET` is set; a solved challenge earns a pass sent back in
+ * `X-Drop-AI-Pass`) → input check → cache → daily budget → per-IP hourly cap →
+ * model call. Only lines in the diagram
  * format are streamed back. See `doc/drop-ai-generate-analysis.md` §6 and §21.
  */
 export async function handleGenerate(request: Request, env: Env, now: number): Promise<Response> {
@@ -85,12 +89,15 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 
 	let description: string
 	let refine: { diagram: string; change: string } | undefined
+	let token: string | undefined
 	try {
 		const body = (await request.json()) as {
 			description?: unknown
 			diagram?: unknown
 			change?: unknown
+			token?: unknown
 		}
+		if (typeof body.token === "string") token = body.token
 		description = typeof body.description === "string" ? normaliseDescription(body.description) : ""
 		if (body.diagram !== undefined || body.change !== undefined) {
 			refine = {
@@ -101,6 +108,23 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 	} catch {
 		return json({ error: 'expected JSON: { "description": "…" }' }, { status: 400 })
 	}
+
+	const { denied: unverified, pass } = await checkAiChallenge(request, env, token, now)
+	if (unverified) return unverified
+	const res = await answer(request, env, now, description, refine)
+	// A solved challenge earns a pass, whatever the answer; the page keeps it for the next call.
+	if (pass) res.headers.set(AI_PASS_HEADER, pass)
+	return res
+}
+
+/** Everything after the gates: input check, cache, budget, hourly cap, model call. */
+async function answer(
+	request: Request,
+	env: Env,
+	now: number,
+	description: string,
+	refine: { diagram: string; change: string } | undefined,
+): Promise<Response> {
 	if (description.length < MIN_DESCRIPTION_CHARS || description.length > MAX_DESCRIPTION_CHARS) {
 		return json(
 			{

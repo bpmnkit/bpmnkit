@@ -33,8 +33,13 @@ async function route(request: Request, env: Env): Promise<Response> {
 	if (path.length > 5 && path.endsWith("/")) path = path.slice(0, -1)
 
 	if (path === "/drop") {
+		const aiEnabled = env.AI_PASSCODE !== undefined
+		// The challenge widget, and the content policy it needs, only where it is used.
+		const turnstileKey = aiEnabled ? env.TURNSTILE_SITE_KEY : undefined
 		return request.method === "GET"
-			? html(dropPage(env.TOS_VERSION, env.AI_PASSCODE !== undefined))
+			? html(dropPage(env.TOS_VERSION, aiEnabled, turnstileKey), {
+					turnstile: turnstileKey !== undefined,
+				})
 			: methodNotAllowed()
 	}
 	if (!path.startsWith("/drop/")) return json({ error: "not found" }, { status: 404 })

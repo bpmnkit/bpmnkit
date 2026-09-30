@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-09-30 — Describe-to-diagram: Turnstile
+
+- With `TURNSTILE_SECRET` set, `POST /drop/api/generate` needs a solved challenge after the passcode. A solved one earns a stateless pass (`X-Drop-AI-Pass`: expiry plus an HMAC over it and the caller's IP hash), which lasts 30 minutes, so a draft and its changes cost one check. The page shows the widget in a dialog only when it needs a token. It is on the landing page, with the widened content policy, only when AI and a site key are both configured. Details: `doc/drop-ai-generate-analysis.md` §21.
+
 ## 2026-09-30 — Describe-to-diagram: working indicator, output filter, hourly cap
 
 - The page shows that a request is running: an accent bar slides along the top of the canvas (static under reduced motion), and the status counts seconds until the first line arrives, so a queued call reads as a wait. Nothing is blocked.

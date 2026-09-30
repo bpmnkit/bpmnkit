@@ -989,7 +989,30 @@ parses to exactly the same diagram as the unfiltered text (`tests/generate.test.
 - **Text inside names.** `a[task <any text>]` still passes the filter. With the 600-token cap,
   the hourly cap and the budget, this is a slow and expensive way to get free text.
 - **One shared beta code.** The per-IP cap slows down a leaked code, but IP rotation gets around
-  it, and the daily budget remains the hard stop. Before this leaves closed beta, give it a
-  per-user gate: Turnstile, which Drop already uses elsewhere, or codes per user.
+  it, and the daily budget remains the hard stop. Turnstile now closes most of this gap
+  (below).
 - **Prompt injection in a description** can only change the diagram that the same user gets
   back. A cached answer is served only for a byte-identical request.
+
+**Turnstile (built 2026-09-30).** When `TURNSTILE_SECRET` is set, the route asks for a solved
+challenge after the passcode, as claims and comments already do:
+
+- A request without a token or pass gets a 403 with `code: "unverified"`, and nothing reaches
+  the model. A missing token is refused without asking Cloudflare.
+- A token Cloudflare accepts earns a **pass**, sent back in `X-Drop-AI-Pass`. A Turnstile token
+  is single-use and lasts 5 minutes. A reader drafts once and then asks for a dozen changes, so
+  the pass carries the session instead. It is `<expiry>.<HMAC-SHA256(expiry, IP hash)>`,
+  signed with a key derived from `TURNSTILE_SECRET` (`src/lib/ai-pass.ts`). It is stateless:
+  nothing is stored and no new secret is needed.
+- A pass lasts 30 minutes and holds only for the IP it was issued to. An expired, forged or
+  moved pass gets the 403, and the page challenges once more.
+
+The page renders the widget in a dialog only when it needs a token: the first call of a visit,
+or when a pass is refused. It keeps the pass in memory for the visit. The landing page carries
+the widget, and its content policy allows `challenges.cloudflare.com`, only when both
+`AI_PASSCODE` and `TURNSTILE_SITE_KEY` are set. With the secret but no site key, every call is
+refused: this fails closed, as the claim check does.
+
+With the challenge, a script needs a solved Turnstile for every 30 minutes and every IP. That
+turns a leaked beta code from a free API into a slow, manual one. The per-IP cap and the daily
+budget stay behind it.

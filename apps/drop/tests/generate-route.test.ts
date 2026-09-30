@@ -1,9 +1,12 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 import type { Env } from "../src/env.js"
+import { AI_PASS_TTL_MS } from "../src/lib/ai-pass.js"
 import { MAX_GENERATIONS_PER_HOUR, getBudgetSpent } from "../src/lib/ai.js"
 import { type GenerateEvent, REFINE_SYSTEM_PROMPT, neuronsFor } from "../src/lib/generate.js"
 import { dropPage } from "../src/lib/pages.js"
 import { handleGenerate } from "../src/routes/generate.js"
+import { AI_PASS_HEADER } from "../src/shared/constants.js"
+import worker from "../src/worker.js"
 import { migratedDb } from "./d1.js"
 
 const NOW = 1_752_000_000_000
@@ -350,6 +353,102 @@ describe("POST /drop/api/generate — a change to a draft", () => {
 	})
 })
 
+describe("POST /drop/api/generate — with Turnstile configured", () => {
+	const IP = "198.51.100.7"
+	const ask = (body: Record<string, unknown>, headers: Record<string, string> = {}) =>
+		new Request("http://drop/drop/api/generate", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-Drop-AI-Code": CODE,
+				"CF-Connecting-IP": IP,
+				...headers,
+			},
+			body: JSON.stringify({ description: DESCRIPTION, ...body }),
+		})
+	/** Cloudflare's siteverify, answering `success` for every token; returns the tokens asked about. */
+	function siteverify(success: boolean) {
+		const asked: string[] = []
+		vi.stubGlobal("fetch", async (_url: string, init: { body: FormData }) => {
+			asked.push(String(init.body.get("response")))
+			return new Response(JSON.stringify({ success }), { status: 200 })
+		})
+		return asked
+	}
+	afterEach(() => vi.unstubAllGlobals())
+	const configured = (ai: ReturnType<typeof fakeAi>) => makeEnv(ai, { TURNSTILE_SECRET: "sekret" })
+
+	it("challenges a call without a token or pass, before anything reaches the model", async () => {
+		const asked = siteverify(true)
+		const ai = fakeAi(ANSWER)
+		const res = await handleGenerate(ask({}), configured(ai), NOW)
+		expect(res.status).toBe(403)
+		expect(await res.json()).toMatchObject({ code: "unverified" })
+		expect(ai.calls).toHaveLength(0)
+		// A missing token is refused without asking Cloudflare about it.
+		expect(asked).toEqual([])
+	})
+
+	it("answers a solved challenge and hands out a pass the next calls use instead", async () => {
+		const asked = siteverify(true)
+		const ai = fakeAi(ANSWER)
+		const env = configured(ai)
+		const first = await handleGenerate(ask({ token: "good" }), env, NOW)
+		expect(first.status).toBe(200)
+		const pass = first.headers.get(AI_PASS_HEADER)
+		expect(pass).toMatch(/^\d+\.[\w-]+$/)
+		expect(text(await events(first))).toBe(ANSWER.join(""))
+
+		const change = await handleGenerate(
+			ask({ diagram: ANSWER.join(""), change: "notify" }, { [AI_PASS_HEADER]: pass ?? "" }),
+			env,
+			NOW + 60_000,
+		)
+		expect(change.status).toBe(200)
+		expect(change.headers.get(AI_PASS_HEADER)).toBeNull()
+		await events(change)
+		expect(asked).toEqual(["good"])
+	})
+
+	it("refuses a token Cloudflare does not accept", async () => {
+		siteverify(false)
+		const res = await handleGenerate(ask({ token: "forged" }), configured(fakeAi(ANSWER)), NOW)
+		expect(res.status).toBe(403)
+	})
+
+	it("refuses a pass from another IP, an expired one, and a forged one", async () => {
+		siteverify(true)
+		const env = configured(fakeAi(ANSWER))
+		const pass = (await handleGenerate(ask({ token: "good" }), env, NOW)).headers.get(
+			AI_PASS_HEADER,
+		) as string
+		const elsewhere = await handleGenerate(
+			ask({}, { [AI_PASS_HEADER]: pass, "CF-Connecting-IP": "203.0.113.9" }),
+			env,
+			NOW,
+		)
+		expect(elsewhere.status).toBe(403)
+		const late = await handleGenerate(
+			ask({}, { [AI_PASS_HEADER]: pass }),
+			env,
+			NOW + AI_PASS_TTL_MS + 1,
+		)
+		expect(late.status).toBe(403)
+		const [expires] = pass.split(".")
+		const forged = `${Number(expires) + 60_000}.${pass.split(".")[1]}`
+		expect((await handleGenerate(ask({}, { [AI_PASS_HEADER]: forged }), env, NOW)).status).toBe(403)
+		expect(
+			(await handleGenerate(ask({}, { [AI_PASS_HEADER]: "not-a-pass" }), env, NOW)).status,
+		).toBe(403)
+	})
+
+	it("does not challenge without TURNSTILE_SECRET", async () => {
+		const res = await handleGenerate(ask({}), makeEnv(fakeAi(ANSWER)), NOW)
+		expect(res.status).toBe(200)
+		expect(res.headers.get(AI_PASS_HEADER)).toBeNull()
+	})
+})
+
 describe("POST /drop/api/generate — hedged", () => {
 	const FALLBACK = "@cf/google/gemma-4-26b-a4b-it"
 	const OTHER = ["# Other\n", "s[start Placed] > t[user Check order] > e[end Done]\n"]
@@ -425,6 +524,34 @@ describe("POST /drop/api/generate — hedged", () => {
 })
 
 describe("drop page", () => {
+	it("widens the landing page's content policy for Turnstile only when it carries the widget", async () => {
+		const csp = async (over: Partial<Env>) =>
+			(
+				await (worker.fetch as (r: Request, e: Env) => Promise<Response>)(
+					new Request("http://drop/drop"),
+					makeEnv(fakeAi(ANSWER), over),
+				)
+			).headers.get("Content-Security-Policy") ?? ""
+		expect(await csp({ TURNSTILE_SITE_KEY: "site-key-123" })).toContain(
+			"https://challenges.cloudflare.com",
+		)
+		expect(await csp({})).not.toContain("challenges.cloudflare.com")
+		expect(await csp({ AI_PASSCODE: undefined, TURNSTILE_SITE_KEY: "site-key-123" })).not.toContain(
+			"challenges.cloudflare.com",
+		)
+	})
+
+	it("carries the challenge only with AI and a Turnstile key", () => {
+		const challenged = dropPage("tos", true, "site-key-123")
+		expect(challenged).toContain('data-turnstile-key="site-key-123"')
+		expect(challenged).toContain('id="genTurnstile"')
+		expect(challenged).toContain("challenges.cloudflare.com/turnstile/v0/api.js")
+		for (const page of [dropPage("tos", true), dropPage("tos", false, "site-key-123")]) {
+			expect(page).not.toContain("genTurnstile")
+			expect(page).not.toContain("challenges.cloudflare.com")
+		}
+	})
+
 	it("shows the describe section only when AI is enabled, numbering sections in order", () => {
 		const on = dropPage("tos", true)
 		const off = dropPage("tos", false)

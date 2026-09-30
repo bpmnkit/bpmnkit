@@ -493,8 +493,12 @@ function pageFooter(): string {
 }
 
 /** The upload landing page. */
-/** The landing and drop page. `aiEnabled` (AI_PASSCODE set) adds the describe-to-diagram section. */
-export function dropPage(tosVersion: string, aiEnabled = false): string {
+/**
+ * The landing and drop page. `aiEnabled` (AI_PASSCODE set) adds the
+ * describe-to-diagram section; `turnstileKey` adds its challenge, which the
+ * Worker's content policy must then allow.
+ */
+export function dropPage(tosVersion: string, aiEnabled = false, turnstileKey?: string): string {
 	const accept = ACCEPTED_EXTENSIONS.join(",")
 	// Sections are numbered in page order, and the generator is only sometimes there.
 	let section = 0
@@ -502,7 +506,7 @@ export function dropPage(tosVersion: string, aiEnabled = false): string {
 	// A function, not a string: it must take its number where it sits in the page.
 	const generate = () =>
 		aiEnabled
-			? `<section class="section" id="describe"><div class="section-inner">
+			? `<section class="section" id="describe"${turnstileKey ? ` data-turnstile-key="${escapeHtml(turnstileKey)}"` : ""}><div class="section-inner">
 	<div class="section-head"><span class="section-num">${num()}</span><h2 class="section-h2">Describe a process, get a diagram</h2></div>
 	<p class="section-lead section-indent" style="margin-bottom:26px">Say what should happen, in your own words. AI drafts the BPMN and draws it as it goes. Ask for changes until it fits, then share it like any drop. Closed beta: it needs an access code.</p>
 	<div class="gen">
@@ -532,6 +536,17 @@ export function dropPage(tosVersion: string, aiEnabled = false): string {
 		<div class="link-row"><input id="genUrl" readonly aria-label="Share link"><button id="genCopy" class="btn-ghost" type="button">Copy</button><a id="genOpen" class="btn-ghost" href="#">Open &#8599;</a></div>
 	</div>
 	<div id="genErrors" class="errors hidden"></div>
+	${
+		turnstileKey
+			? `<dialog id="genTurnstile" class="ts-dialog">
+		<div class="ts-title">One check before AI drafts</div>
+		<div id="genTurnstileWidget"></div>
+		<div id="genTurnstileError" class="ts-error" hidden>That did not go through — close this and try again.</div>
+		<button id="genTurnstileCancel" class="ts-cancel" type="button">Cancel</button>
+	</dialog>
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>`
+			: ""
+	}
 	<p class="legal">Your description is sent to Cloudflare Workers AI to draft the diagram. Sharing it follows the <a href="/drop/terms">Terms of Use</a>, like any upload.</p>
 </div></section>
 `

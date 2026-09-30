@@ -31,7 +31,7 @@ import {
 	MIN_CHANGE_CHARS,
 	createSseReader,
 } from "../lib/generate.js"
-import { AI_CODE_STORAGE_KEY } from "../shared/constants.js"
+import { AI_CODE_STORAGE_KEY, AI_PASS_HEADER } from "../shared/constants.js"
 
 // Short on purpose: a starting point for describing your own process.
 const EXAMPLES: readonly { label: string; text: string }[] = [
@@ -66,6 +66,20 @@ function writeCode(code: string | null): void {
 	} catch {
 		// private mode: the code lives in the input for this visit only
 	}
+}
+
+/** The slice of Turnstile's global this page uses. */
+interface Turnstile {
+	render(
+		el: HTMLElement,
+		options: {
+			sitekey: string
+			callback(token: string): void
+			"error-callback"?(): void
+			"expired-callback"?(): void
+		},
+	): string
+	remove(widgetId: string): void
 }
 
 /** Questions shown at once: past three, a reader stops reading them. */
@@ -130,6 +144,15 @@ export function mountGenerator(): void {
 
 	let canvas: BpmnCanvas | null = null
 	let running: AbortController | null = null
+	/** Set when the deployment challenges describe-to-diagram; the page then carries the widget. */
+	const sitekey = $("describe")?.dataset.turnstileKey
+	/**
+	 * The pass a solved challenge earned. Kept for this visit only: it is bound
+	 * to the IP it was issued to and lasts half an hour anyway.
+	 */
+	let pass: string | null = null
+	/** True while the reader is looking at the challenge, so the wait counter does not count it. */
+	let confirming = false
 	let result: { xml: string; file: string } | null = null
 	/** The draft on screen, as the model wrote it: what a change is made to. */
 	let draft: { description: string; text: string } | null = null
@@ -239,6 +262,95 @@ export function mountGenerator(): void {
 	}
 
 	/**
+	 * Gets a Turnstile token from the reader.
+	 *
+	 * @returns The token, or `null` when the reader closed the check or it could
+	 * not load (then an error says so).
+	 */
+	function solveChallenge(): Promise<string | null> {
+		const api = (globalThis as { turnstile?: Turnstile }).turnstile
+		const dialog = $<HTMLDialogElement>("genTurnstile")
+		const widget = $("genTurnstileWidget")
+		const failed = $("genTurnstileError")
+		if (!sitekey || !api || !dialog || !widget) {
+			showError("The check could not load. Please reload the page and try again.")
+			return Promise.resolve(null)
+		}
+		return new Promise((resolve) => {
+			let widgetId: string | null = null
+			let settled = false
+			const finish = (token: string | null) => {
+				if (settled) return
+				settled = true
+				if (widgetId) api.remove(widgetId)
+				confirming = false
+				dialog.close()
+				resolve(token)
+			}
+			confirming = true
+			setStatus("one check first…", true)
+			if (failed) failed.hidden = true
+			widget.replaceChildren()
+			dialog.showModal()
+			// Escape and Cancel both end at `close`.
+			dialog.addEventListener("close", () => finish(null), { once: true })
+			widgetId = api.render(widget, {
+				sitekey,
+				callback: (token) => finish(token),
+				"error-callback": () => {
+					if (failed) failed.hidden = false
+				},
+				"expired-callback": () => {
+					if (failed) failed.hidden = false
+				},
+			})
+		})
+	}
+
+	/**
+	 * Posts to the route. When the deployment challenges and the page holds no
+	 * pass, the challenge comes first; when the route refuses the pass (expired,
+	 * or a new IP), the reader is challenged once more. A pass the route hands
+	 * out is kept for the next call.
+	 *
+	 * @returns The response, or `null` when the reader closed the challenge.
+	 */
+	async function send(
+		body: { description: string; diagram?: string; change?: string },
+		code: string,
+		signal: AbortSignal,
+	): Promise<Response | null> {
+		const post = (token?: string) =>
+			fetch("/drop/api/generate", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"X-Drop-AI-Code": code,
+					...(pass ? { [AI_PASS_HEADER]: pass } : {}),
+				},
+				body: JSON.stringify(token ? { ...body, token } : body),
+				signal,
+			})
+		let res: Response
+		if (sitekey && pass === null) {
+			const token = await solveChallenge()
+			if (token === null) return null
+			res = await post(token)
+		} else {
+			res = await post()
+			if (res.status === 403 && sitekey) {
+				pass = null
+				const token = await solveChallenge()
+				if (token === null) return null
+				res = await post(token)
+			}
+		}
+		const issued = res.headers.get(AI_PASS_HEADER)
+		if (issued) pass = issued
+		return res
+	}
+
+	/**
 	 * Streams one answer from the route and draws it as it arrives.
 	 *
 	 * @returns The answer's text, or `null` when it failed — the error is shown.
@@ -269,17 +381,19 @@ export function mountGenerator(): void {
 		// them, so a wait reads as a wait and not as a hang.
 		let drawn = false
 		const ticker = setInterval(() => {
-			if (!drawn) setStatus(`${verb}… ${Math.round((performance.now() - started) / 1000)}s`, true)
+			if (!drawn && !confirming) {
+				setStatus(`${verb}… ${Math.round((performance.now() - started) / 1000)}s`, true)
+			}
 		}, 1000)
 		try {
 			let res: Response
 			try {
-				res = await fetch("/drop/api/generate", {
-					method: "POST",
-					headers: { "Content-Type": "application/json", "X-Drop-AI-Code": code },
-					body: JSON.stringify(body),
-					signal: controller.signal,
-				})
+				const sent = await send(body, code, controller.signal)
+				if (sent === null) {
+					setStatus("draft")
+					return null
+				}
+				res = sent
 			} catch {
 				if (!controller.signal.aborted) {
 					setStatus("draft")
@@ -437,6 +551,9 @@ export function mountGenerator(): void {
 		if (e.key === "Enter") void generate()
 	})
 	run.addEventListener("click", () => void generate())
+	$("genTurnstileCancel")?.addEventListener("click", () =>
+		$<HTMLDialogElement>("genTurnstile")?.close(),
+	)
 	apply.addEventListener("click", () => void change(changeInput.value))
 	changeInput.addEventListener("keydown", (e) => {
 		if (e.key === "Enter") void change(changeInput.value)

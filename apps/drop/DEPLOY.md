@@ -64,6 +64,9 @@ A drop is editable by anyone who has the link. Turnstile is what stands between 
 script rewriting every drop it can find. It is free, with no request cap, and a person is
 challenged **once per editing session** — not per keystroke.
 
+The same widget guards describe-to-diagram when `AI_PASSCODE` is set: one challenge, then a
+signed pass that lasts 30 minutes, so a draft and its changes cost one check.
+
 1. Go to **[dash.cloudflare.com](https://dash.cloudflare.com) → Turnstile → Add widget**.
 2. Name it anything (`bpmnkit-drop`).
 3. Hostnames: your domain, or `<your-subdomain>.workers.dev` if you have no domain.
