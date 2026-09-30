@@ -94,7 +94,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Quick Start — Step 3: Deploy to Camunda 8](.llms/chunks/getting-started.quick-start.step-3-deploy-to-camunda-8.md) — 151 tokens
 - [Quick Start — What's next?](.llms/chunks/getting-started.quick-start.what-s-next.md) — 140 tokens
 - [Stability and Versioning — What this page is for](.llms/chunks/getting-started.stability.what-this-page-is-for.md) — 241 tokens
-- [Stability and Versioning — Product tiers](.llms/chunks/getting-started.stability.product-tiers.md) — 419 tokens
+- [Stability and Versioning — Product tiers](.llms/chunks/getting-started.stability.product-tiers.md) — 422 tokens
 - [Stability and Versioning — Versions are per package, not per repo](.llms/chunks/getting-started.stability.versions-are-per-package-not-per-repo.md) — 179 tokens
 - [Stability and Versioning — What counts as public API](.llms/chunks/getting-started.stability.what-counts-as-public-api.md) — 416 tokens
 - [Stability and Versioning — What is a breaking change](.llms/chunks/getting-started.stability.what-is-a-breaking-change.md) — 776 tokens

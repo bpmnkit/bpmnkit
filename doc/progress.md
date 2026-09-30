@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-09-30 — CI fixes for bpmnkit/monorepo#207
+
+- `apps/landing/src/generated/ecosystem.ts` regenerated with `scripts/generate-ecosystem.mjs`. The copy on `main` predates #204's version bumps and #205's `@bpmnkit/flow`, so `@bpmnkit/landing` `tests/ecosystem.test.ts` failed on every PR.
+- `getting-started/stability.md` lists `@bpmnkit/flow` under Experimental, the tier its manifest declares. #205 left it out, and the same test checks it.
+- `api-surface.json` refreshed for the six new `@bpmnkit/core` exports: `parseProcessText`, `createProcessTextStream`, `PROCESS_TEXT_GUIDE` and three types. These are additions only, a minor bump, which the changeset already declares.
+
 ## 2026-09-30 — Describe-to-diagram: hedged request against Workers AI queueing
 
 - `lib/hedge.ts`:
