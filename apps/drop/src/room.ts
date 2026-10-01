@@ -36,6 +36,7 @@ import {
 	SOCKET_DEAD_MS,
 	type ServerMessage,
 } from "./shared/room-protocol.js"
+import type { SuggestionView } from "./shared/suggestions.js"
 
 /** Per-connection state, kept on the socket so it survives hibernation. */
 interface Attachment {
@@ -61,6 +62,9 @@ const MAX_RENAMES = 20
  * `/drop/api/presence/:shareId` to a room, and that is never this path.
  */
 export const ROOM_COMMENT_PATH = "/internal/comment"
+
+/** Where the Worker posts a suggestion for the room to fan out; unreachable from outside, as above. */
+export const ROOM_SUGGESTION_PATH = "/internal/suggestion"
 
 /**
  * One instance per shareId: the room a drop's viewers share.
@@ -120,8 +124,12 @@ export class DocRoom implements DurableObject {
 	}
 
 	async fetch(request: Request): Promise<Response> {
-		if (new URL(request.url).pathname === ROOM_COMMENT_PATH && request.method === "POST") {
-			return this.fanOutComment(request)
+		const path = new URL(request.url).pathname
+		if (path === ROOM_COMMENT_PATH && request.method === "POST") return this.fanOutComment(request)
+		if (path === ROOM_SUGGESTION_PATH && request.method === "POST") {
+			const suggestion = (await request.json()) as SuggestionView
+			this.broadcast({ type: "suggestion", suggestion })
+			return new Response(null, { status: 204 })
 		}
 		if (request.headers.get("Upgrade") !== "websocket") {
 			return new Response("expected a WebSocket upgrade", { status: 426 })

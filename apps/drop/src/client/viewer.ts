@@ -13,6 +13,7 @@ import {
 	PONG,
 	type ServerMessage,
 } from "../shared/room-protocol.js"
+import type { SuggestionView } from "../shared/suggestions.js"
 import { CommentsPanel, type Thread } from "./comments.js"
 import { type DocFormat, buildDropDocument, deliverDocument, isDocFormat } from "./doc-export.js"
 import { type FeelEditor, mountFeelEditor } from "./feel-edit.js"
@@ -80,6 +81,8 @@ const aiPanel = document.getElementById("aiPanel") as HTMLElement | null
 const aiBody = document.getElementById("aiBody") as HTMLElement | null
 const aiModelEl = document.getElementById("aiModel") as HTMLElement | null
 let current: BpmnCanvas | null = null
+/** The BPMN document on the canvas, live updates included: what a suggestion is reviewed against. */
+let shownXml: { filename: string; xml: string } | null = null
 let activeIndex = -1
 let scale = 1
 let reviewFile: DropFile | null = null
@@ -123,6 +126,7 @@ function showLiveUpdate(doc: WatcherDoc, change: Change | null): void {
 	if (!canvas || file?.filename !== doc.filename) return
 
 	canvas.loadDefinitions(doc.defs, { keepViewport: true })
+	shownXml = { filename: doc.filename, xml: Bpmn.export(doc.defs) }
 
 	if (flashTimer !== null) clearTimeout(flashTimer)
 	if (change) {
@@ -142,6 +146,8 @@ function elementLabel(canvas: BpmnCanvas, id: string): string {
 /** `preview` marks an older version on the canvas, for how comments describe their anchors. */
 async function renderBpmn(xml: string, preview = false): Promise<void> {
 	viewer.innerHTML = ""
+	const file = data.files[activeIndex]
+	shownXml = file && !preview ? { filename: file.filename, xml } : null
 	// Frame the whole diagram (fit-to-viewport), but never enlarge a small
 	// diagram past 100% — the first auto-fit reports its scale and we cap it.
 	let capped = false
@@ -675,7 +681,12 @@ const comments = new CommentsPanel({
 	onOpen: () => {
 		for (const panel of [aiPanel, historyPanel, localHistoryPanel]) if (panel) panel.hidden = true
 	},
-	...(data.aiEdit ? { aiEdit: (threads: Thread[]) => void askAi(threads) } : {}),
+	...(data.aiEdit
+		? {
+				aiEdit: (threads: Thread[]) => void askAi(threads),
+				reviewSuggestion: (s: SuggestionView) => void reviewSuggestion(s),
+			}
+		: {}),
 })
 document.getElementById("commentsClose")?.addEventListener("click", () => comments.close())
 document.getElementById("mentionDismiss")?.addEventListener("click", () => {
@@ -749,6 +760,7 @@ try {
 			}
 		}
 		if (message.type === "comment") comments.receive(message.comment)
+		if (message.type === "suggestion") comments.receiveSuggestion(message.suggestion)
 		handleEditMessage(message)
 		watcher.handle(message)
 	})
@@ -1320,6 +1332,88 @@ async function askAi(threads: Thread[]): Promise<void> {
 		// Null once the editor has gone: Done, a revoked baton, another file.
 		currentXml: () => (session === editing ? editing.currentXml() : null),
 		apply: (defs) => editing.apply(defs),
+		share: (proposal) =>
+			comments.shareSuggestion({ ...proposal, filename: file.filename }).then((s) => s !== null),
+		reply: (threadId, body, resolve) => comments.reply(threadId, body, resolve),
+		notice: (text) => notice(text, 8_000),
+	})
+}
+
+/**
+ * Opens a shared suggestion's preview, worked out against the document the
+ * reader sees — or the editor's, when they are editing that file, and can then
+ * apply it. Reading needs no baton and no access code: nothing is asked of the AI.
+ */
+async function reviewSuggestion(s: SuggestionView): Promise<void> {
+	const editing = session !== null && editingFile === s.filename ? session : null
+	const xml = editing
+		? editing.currentXml()
+		: shownXml?.filename === s.filename
+			? shownXml.xml
+			: null
+	if (xml === null) {
+		notice(`Open ${s.filename} to review this suggestion.`, 6_000)
+		return
+	}
+	if (editing && !comments.displayName) {
+		notice("Add your name in the comments panel first — the replies are posted under it.", 6_000)
+		return
+	}
+	let mod: typeof import("./ai-edit.js")
+	try {
+		mod = await import("./ai-edit.js")
+	} catch {
+		notice("Couldn't load the suggestion. Reload the page and try again.", 8_000)
+		return
+	}
+	// A thread deleted since keeps its number, so the script's `@n` lines still line up.
+	const threads = comments.threadsOf(s).map(
+		(t, k): Thread =>
+			t ?? {
+				root: {
+					id: s.threadIds[k] ?? "",
+					filename: s.filename,
+					elementId: null,
+					elementLabel: "A thread no longer here",
+					elementIds: [],
+					parentId: null,
+					authorName: "",
+					authorId: "",
+					body: "",
+					mentions: [],
+					createdAt: 0,
+					editedAt: null,
+					deletedAt: 0,
+					resolvedAt: null,
+					resolvedBy: null,
+				},
+				replies: [],
+			},
+	)
+	mod.openAiEdit({
+		shareId: data.shareId,
+		filename: s.filename,
+		threads,
+		xml,
+		theme,
+		turnstile: Boolean(data.turnstileKey),
+		challenge: (title) => challenge(title),
+		currentXml: () =>
+			editing
+				? session === editing
+					? editing.currentXml()
+					: null
+				: shownXml?.filename === s.filename
+					? shownXml.xml
+					: null,
+		...(editing ? { apply: (defs: BpmnDefinitions) => editing.apply(defs) } : {}),
+		review: {
+			authorName: s.authorName,
+			script: s.script,
+			aliases: s.aliases,
+			baseHash: s.baseHash,
+			applied: () => comments.markSuggestion(s.id, "applied"),
+		},
 		reply: (threadId, body, resolve) => comments.reply(threadId, body, resolve),
 		notice: (text) => notice(text, 8_000),
 	})

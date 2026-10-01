@@ -1,5 +1,19 @@
 # Progress
 
+## 2026-10-01 — Drop: AI proposals shared as suggested changes
+
+- The proposal dialog has **Share as suggestion**. The proposal is stored on its threads
+  (migration `0010_comment_suggestions`, `POST/PATCH /drop/api/suggestions/…`) instead of being
+  applied, so reviewers can look at it first. Proposals stay private unless shared.
+- A suggestion stores its change script, aliases and base hash, never a description. **Review**
+  works the preview out again against the reader's own document, without asking the AI, and
+  notes when it was made on an earlier version.
+- A reader can review. Whoever holds the baton can apply: one undoable edit, replies, resolve,
+  and the suggestion is recorded "Applied by". Its author can withdraw it. Room fan-out keeps
+  every panel live.
+- Checked with route, panel and dialog tests, and a two-person Chromium run against `wrangler
+  dev`. Details: `doc/drop-ai-feedback-edits-analysis.md` §16.
+
 ## 2026-10-01 — Drop: comments on several elements, and AI review suggestions applied with AI (phase 3)
 
 - A comment can be on several elements: Shift-click (or Cmd/Ctrl-click) them while the comments

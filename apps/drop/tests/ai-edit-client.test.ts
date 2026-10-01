@@ -5,12 +5,36 @@
  * comments panel offers it.
  */
 import type { BpmnCanvas } from "@bpmnkit/canvas"
-import { Bpmn, expand, parseProcessDelta, parseProcessText, writeProcessText } from "@bpmnkit/core"
+import {
+	Bpmn,
+	expand,
+	parseProcessDelta,
+	parseProcessText,
+	semanticHash,
+	writeProcessText,
+} from "@bpmnkit/core"
 import { applyProcessDelta } from "@bpmnkit/editor/headless"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
-import { readAnswer, replyText, summarise } from "../src/client/ai-edit.js"
+import {
+	type AiEditOptions,
+	openAiEdit,
+	readAnswer,
+	replyText,
+	summarise,
+} from "../src/client/ai-edit.js"
 import { CommentsPanel, type Thread } from "../src/client/comments.js"
-import { AUTHOR_STORAGE_KEY, type CommentView } from "../src/shared/comments.js"
+import { AUTHOR_STORAGE_KEY, type CommentView, authorIdFromToken } from "../src/shared/comments.js"
+import type { SuggestionView } from "../src/shared/suggestions.js"
+
+// The preview is drawn by the real canvas on the page; here it only has to exist.
+vi.mock("@bpmnkit/canvas", () => ({
+	BpmnCanvas: class {
+		on() {}
+		highlight() {}
+		loadDefinitions() {}
+		destroy() {}
+	},
+}))
 
 /** An order process laid out as a shared drop would be, with the names of `bpmn-samples/order-process.bpmn`. */
 const XML = Bpmn.export(
@@ -319,5 +343,212 @@ describe("the comments panel with AI changes on", () => {
 		})
 		expect(await panel.reply("a11111111111", "x", true)).toBe(false)
 		expect(methods).toEqual(["POST"])
+	})
+})
+
+function suggestion(over: Partial<SuggestionView>): SuggestionView {
+	return {
+		id: "sug111111111",
+		filename: "order.bpmn",
+		threadIds: ["a11111111111"],
+		script: "validate[service Check Order]\n@1 validate",
+		aliases: writeProcessText(Bpmn.parse(XML)).aliases,
+		baseHash: semanticHash(Bpmn.parse(XML)),
+		authorName: "Ben",
+		authorId: "bbbbbbbbbbbbbbbb",
+		createdAt: 2,
+		status: "open",
+		closedAt: null,
+		closedBy: null,
+		...over,
+	}
+}
+
+describe("shared suggestions in the comments panel", () => {
+	const TOKEN = "1".repeat(24)
+	let reviewed: SuggestionView[]
+	let host: HTMLElement
+	let panel: CommentsPanel
+	const canvas = {
+		overlays: { add: () => "1", remove: () => {} },
+		highlight: vi.fn(),
+		clearHighlights: vi.fn(),
+	} as unknown as BpmnCanvas
+
+	function mount() {
+		host = document.createElement("div")
+		host.innerHTML = `<button id="t"></button><aside id="p" hidden><div id="l"></div><footer id="c"></footer></aside>
+			<div id="n" hidden><span id="nt"></span><button id="no"></button></div>`
+		document.body.replaceChildren(host)
+		const q = <T extends HTMLElement>(id: string) => host.querySelector(`#${id}`) as T
+		panel = new CommentsPanel({
+			shareId: "share1",
+			readOnly: null,
+			toggle: q("t"),
+			panel: q("p"),
+			list: q("l"),
+			compose: q("c"),
+			notice: { box: q("n"), text: q("nt"), open: q("no") },
+			challenge: async () => ({ ok: true, token: null }),
+			announceName: () => {},
+			aiEdit: () => {},
+			reviewSuggestion: (s) => reviewed.push(s),
+		})
+		panel.setFile({ filename: "order.bpmn", kind: "bpmn" })
+		panel.showOn(canvas, Bpmn.parse(XML))
+		panel.open()
+		panel.receive(comment({ id: "a11111111111", elementId: "validate" }))
+		panel.receive(comment({ id: "a22222222222", createdAt: 2 }))
+		return q("l")
+	}
+
+	const cards = (list: HTMLElement) => [...list.querySelectorAll<HTMLElement>(".cm-suggestion")]
+	const buttons = (root: HTMLElement) =>
+		[...root.querySelectorAll("button")].map((b) => b.textContent)
+
+	beforeEach(() => {
+		reviewed = []
+		localStorage.clear()
+		localStorage.setItem("bpmnkit-drop-name", "Ben")
+		localStorage.setItem(AUTHOR_STORAGE_KEY, JSON.stringify({ share1: TOKEN }))
+	})
+
+	afterEach(() => vi.unstubAllGlobals())
+
+	it("shows an open suggestion on each thread it answers, with Review", () => {
+		const list = mount()
+		panel.receiveSuggestion(suggestion({ threadIds: ["a11111111111", "a22222222222"] }))
+		const shown = cards(list)
+		expect(shown).toHaveLength(2)
+		expect(shown[0]?.textContent).toContain("Suggested change")
+		expect(shown[0]?.textContent).toContain("Also answers 1 other thread")
+		expect(buttons(shown[0] as HTMLElement)).toEqual(["Review"])
+		;(shown[0]?.querySelector("button") as HTMLButtonElement).click()
+		expect(reviewed.map((s) => s.id)).toEqual(["sug111111111"])
+	})
+
+	it("offers its author Withdraw, says who applied one, and hides a withdrawn one", async () => {
+		const list = mount()
+		const mine = await authorIdFromToken(TOKEN)
+		await vi.waitFor(() => {
+			panel.receiveSuggestion(suggestion({ authorId: mine }))
+			expect(buttons(cards(list)[0] as HTMLElement)).toEqual(["Review", "Withdraw"])
+		})
+		panel.receiveSuggestion(
+			suggestion({ authorId: mine, status: "applied", closedAt: 3, closedBy: "Carla" }),
+		)
+		expect(cards(list)[0]?.textContent).toContain("Applied by Carla")
+		expect(buttons(cards(list)[0] as HTMLElement)).toEqual([])
+		panel.receiveSuggestion(suggestion({ status: "withdrawn", closedAt: 4, closedBy: "Ben" }))
+		expect(cards(list)).toHaveLength(0)
+	})
+
+	it("shares a proposal and marks a suggestion applied, under the stored name and token", async () => {
+		mount()
+		const sent: { method: string; url: string; body: Record<string, unknown> }[] = []
+		vi.stubGlobal("fetch", async (url: string, init: RequestInit) => {
+			const body = JSON.parse(String(init.body)) as Record<string, unknown>
+			sent.push({ method: String(init.method), url, body })
+			const answer =
+				init.method === "POST"
+					? suggestion({})
+					: suggestion({ status: "applied", closedAt: 3, closedBy: "Ben" })
+			return new Response(JSON.stringify({ suggestion: answer }), { status: 201 })
+		})
+		const shared = await panel.shareSuggestion({
+			filename: "order.bpmn",
+			threadIds: ["a11111111111"],
+			script: "validate[service Check Order]",
+			aliases: {},
+			baseHash: "a".repeat(64),
+		})
+		expect(shared?.id).toBe("sug111111111")
+		expect(await panel.markSuggestion("sug111111111", "applied")).toBe(true)
+		expect(sent.map((s) => [s.method, s.url])).toEqual([
+			["POST", "/drop/api/suggestions/share1"],
+			["PATCH", "/drop/api/suggestions/share1/sug111111111"],
+		])
+		expect(sent[0]?.body).toMatchObject({ threadIds: ["a11111111111"], name: "Ben" })
+		expect(sent[1]?.body).toEqual({ status: "applied", name: "Ben" })
+	})
+
+	it("numbers a suggestion's threads in its order, with a gap for one deleted since", () => {
+		mount()
+		const threads = panel.threadsOf(
+			suggestion({ threadIds: ["a22222222222", "a99999999999", "a11111111111"] }),
+		)
+		expect(threads.map((t) => t?.root.id ?? null)).toEqual(["a22222222222", null, "a11111111111"])
+	})
+})
+
+describe("reviewing a shared suggestion", () => {
+	function open(
+		over: Partial<AiEditOptions> = {},
+		review: Partial<NonNullable<AiEditOptions["review"]>> = {},
+	) {
+		document.body.replaceChildren()
+		const applied = vi.fn(async () => true)
+		const replies: string[] = []
+		const s = suggestion({})
+		const fetched = vi.fn()
+		vi.stubGlobal("fetch", fetched)
+		openAiEdit({
+			shareId: "share1",
+			filename: "order.bpmn",
+			threads: [thread({ id: "a11111111111", elementId: "validate" })],
+			xml: XML,
+			theme: "light",
+			turnstile: false,
+			challenge: async () => ({ ok: true, token: null }),
+			currentXml: () => XML,
+			review: {
+				authorName: s.authorName,
+				script: s.script,
+				aliases: s.aliases,
+				baseHash: s.baseHash,
+				applied,
+				...review,
+			},
+			reply: async (id) => {
+				replies.push(id)
+				return true
+			},
+			notice: () => {},
+			...over,
+		})
+		const dialog = document.querySelector("dialog") as HTMLDialogElement
+		const labels = () => [...dialog.querySelectorAll("button")].map((b) => b.textContent)
+		const press = (label: string) =>
+			[...dialog.querySelectorAll("button")].find((b) => b.textContent === label)?.click()
+		return { dialog, labels, press, applied, replies, fetched }
+	}
+
+	afterEach(() => vi.unstubAllGlobals())
+
+	it("works the script out without asking the AI, and a reader cannot apply it", () => {
+		const { dialog, labels, fetched } = open()
+		expect(fetched).not.toHaveBeenCalled()
+		expect(dialog.querySelector(".ts-title")?.textContent).toBe("Suggested change · 1 thread")
+		const status = dialog.querySelector(".ae-status")?.textContent ?? ""
+		expect(status).toContain("Suggested by Ben")
+		expect(status).toContain("Press Edit to apply it")
+		expect(status).not.toContain("earlier version")
+		expect(dialog.textContent).toContain("Check Order")
+		expect(labels()).toEqual(["×", "Close"])
+	})
+
+	it("says when it was made on an earlier version", () => {
+		const { dialog } = open({}, { baseHash: "f".repeat(64) })
+		expect(dialog.querySelector(".ae-status")?.textContent).toContain("on an earlier version")
+	})
+
+	it("applies it in the editor, replies on its threads, and records it applied", async () => {
+		const apply = vi.fn()
+		const { labels, press, applied, replies } = open({ apply })
+		expect(labels()).toEqual(["×", "Close", "Apply"])
+		press("Apply")
+		await vi.waitFor(() => expect(applied).toHaveBeenCalledOnce())
+		expect(apply).toHaveBeenCalledOnce()
+		expect(replies).toEqual(["a11111111111"])
 	})
 })

@@ -1,5 +1,6 @@
 import type { EditorOp } from "@bpmnkit/editor/headless"
 import type { CommentView } from "./comments.js"
+import type { SuggestionView } from "./suggestions.js"
 
 /**
  * The messages a drop's room and its viewers exchange.
@@ -70,6 +71,11 @@ export type ServerMessage =
 	 * as it now stands, so a page only ever replaces what it has by id.
 	 */
 	| { type: "comment"; comment: CommentView }
+	/**
+	 * A suggested change was shared on threads, applied or withdrawn: the whole
+	 * suggestion as it now stands, replaced by id like a comment.
+	 */
+	| { type: "suggestion"; suggestion: SuggestionView }
 	/**
 	 * You hold the baton, and here is what you are editing.
 	 *

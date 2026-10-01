@@ -19,6 +19,7 @@ import {
 import { handleFeelUpdate } from "./routes/feel.js"
 import { handleGenerate } from "./routes/generate.js"
 import { handleReport } from "./routes/reports.js"
+import { handleSuggestions } from "./routes/suggestions.js"
 import { handleUpload } from "./routes/upload.js"
 import { handleHistory, handleRestore } from "./routes/versions.js"
 
@@ -89,6 +90,10 @@ async function route(request: Request, env: Env): Promise<Response> {
 			env,
 			now,
 		)
+	}
+	const suggestions = rest.match(/^\/api\/suggestions\/([\w-]+)(?:\/([\w-]+))?$/)
+	if (suggestions) {
+		return handleSuggestions(request, suggestions[1] as string, suggestions[2] ?? null, env, now)
 	}
 	const comments = rest.match(/^\/api\/comments\/([\w-]+)(?:\/([\w-]+))?$/)
 	if (comments) {
