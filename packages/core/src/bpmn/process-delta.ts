@@ -103,7 +103,11 @@ export interface ProcessDelta {
 	problems: ProcessTextProblem[]
 }
 
-const ID_LIST = /^[A-Za-z_][\w.-]*(\s*,?\s*[A-Za-z_][\w.-]*)*$/
+/**
+ * One id, or several separated by commas. Not by spaces: a model's prose bullet
+ * ("- review is removed") would otherwise remove every word that is an id.
+ */
+const ID_LIST = /^[A-Za-z_][\w.-]*(\s*,\s*[A-Za-z_][\w.-]*)*$/
 
 /** A line that ends in an arrow: the path goes on below, as in the line format. */
 const DANGLING = /\s*-{0,2}>\s*(\([^()]*\))?\s*$/
@@ -210,6 +214,13 @@ export function parseProcessDelta(text: string): ProcessDelta {
 			for (const id of rest.split(/[\s,]+/).filter(Boolean)) {
 				delta.removedNodes.push({ id, line: n })
 			}
+			return
+		}
+		if (!rest.includes(">")) {
+			delta.problems.push({
+				line: n,
+				message: `expected "- <id>" or "- <id> > <id>" at "${rest.slice(0, 30)}"`,
+			})
 			return
 		}
 		const tokens = tokenizePath(rest)

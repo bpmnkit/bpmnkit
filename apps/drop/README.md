@@ -88,7 +88,10 @@ The same passcode turns on **describe-to-diagram** (`POST /drop/api/generate`, t
 process" section on `/drop`). It streams the model's answer in the line format read by
 `parseProcessText` from `@bpmnkit/core`, and the page draws each finished line. Locally the `AI`
 binding needs a Cloudflare account. `pnpm --filter @bpmnkit/drop bench:generate` compares models
-on the golden prompts; see `doc/drop-ai-generate-analysis.md` §7.
+on the golden prompts; see `doc/drop-ai-generate-analysis.md` §7. With `--feedback` it runs the
+review-feedback cases instead (changing a shared diagram from comments), and `--feedback --dry-run`
+prints their prompt sizes and estimated cost without calling a model; see
+`doc/drop-ai-feedback-edits-analysis.md` §13.
 
 Quick API smoke test:
 

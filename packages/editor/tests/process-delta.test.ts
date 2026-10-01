@@ -329,6 +329,31 @@ describe("applyProcessDelta", () => {
 		expect(renamed?.conditionExpression?.text).toBe("= amount > 10000")
 	})
 
+	it("gives a task retyped or added as a service or rule task what it needs to deploy", () => {
+		const defs = drawn(LOAN)
+		const result = apply(
+			defs,
+			"review[service Review application]\nauto > score[rule Score applicant] > pay_join",
+		)
+		const ext = (id: string) => element(result.definitions, id)?.extensionElements ?? []
+		expect(ext("review").find((e) => e.name === "zeebe:taskDefinition")?.attributes.type).toBe(
+			"review",
+		)
+		expect(ext("score").find((e) => e.name === "zeebe:calledDecision")?.attributes.decisionId).toBe(
+			"score",
+		)
+		expect(result.fixes).toEqual(
+			expect.arrayContaining([
+				'gave review the job type "review"',
+				'gave score the decision "score"',
+			]),
+		)
+		// A task that already has a job type keeps it.
+		const kept = apply(defs, "pay[send Pay out]")
+		expect(kept.fixes).toEqual([])
+		expectSound(result.definitions)
+	})
+
 	it("sets a job type and keeps the rest of the task definition", () => {
 		const defs = drawn(LOAN)
 		const pay = element(defs, "pay")

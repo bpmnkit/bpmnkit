@@ -1,7 +1,10 @@
 # Drop: change a shared diagram from review comments — analysis
 
-Status: phase 0 built (2026-10-01): the core and editor pieces, §12. The route, the model choice and the
-page (phases 1–2) are not built yet.
+Status (2026-10-01):
+- Phase 0 is built: the core and editor pieces, §12.
+- Phase 1's benchmark is built and checked end to end against a local mock, §13. It has not run
+  against Workers AI, so no model is chosen yet.
+- The route and the page (phase 2) are not built.
 
 ## 1. The use case
 
@@ -280,7 +283,7 @@ Measure before choosing:
 | 0 ✓ | `writeProcessText` + aliases (core) | round-trip tests on fixtures |
 | 0 ✓ | Change-script grammar + parser (core, next to `parseProcessText`), guide text | parser tests; guide example parses with no problems |
 | 0 ✓ | `applyProcessDelta` + placement (editor/headless) | tests: DI of untouched shapes is unchanged; `checkIntegrity` passes; no overlaps on the cases |
-| 1 | Benchmark `--feedback` cases; pick the model | pass rate, unresolved ids, cost |
+| 1 (harness ✓, run pending) | Benchmark `--feedback` cases; pick the model | pass rate, unresolved ids, cost |
 | 2 | Route, single-thread + free-text entry points, preview, snapshot apply, thread reply/resolve | route tests in the style of `generate-route.test.ts`; Playwright run of the whole flow |
 | 3 | Batch of threads, multi-element anchors (migration 0009), "Apply" on AI review suggestions | — |
 | later | Proposals stored as "suggested changes" in a thread, so reviewers can discuss them before someone with the baton applies them | — |
@@ -366,4 +369,106 @@ others draw nothing, or draw that process on a second diagram.
   an insert makes widens pools and lanes.
 - Message flows are not re-routed when shapes shift. Sequence flows and associations are.
 - The two-hop neighbourhood cap for large diagrams (§4) belongs to the route, in phase 2.
+
+## 13. Phase 1: the benchmark (built 2026-10-01; not yet run against Workers AI)
+
+```sh
+# Prompt sizes and estimated cost per model; calls nothing, needs no credentials:
+pnpm --filter @bpmnkit/drop bench:generate --feedback --dry-run
+
+# The run:
+CLOUDFLARE_ACCOUNT_ID=… CLOUDFLARE_API_TOKEN=… pnpm --filter @bpmnkit/drop bench:generate \
+  --feedback --runs 3 --models @cf/zai-org/glm-4.7-flash,@cf/openai/gpt-oss-120b,@cf/google/gemma-4-26b-a4b-it
+```
+
+**The prompt** (`apps/drop/src/lib/feedback.ts`; the phase-2 route will import the same code):
+
+- `FEEDBACK_SYSTEM_PROMPT` is fixed, so the prefix cache can reuse it. It is the task, the
+  untrusted-data rule (feedback can only ask for changes to the diagram), "change only what the
+  feedback asks for, never remove or rename a part no item is about", "write nothing for a
+  question", the naming rules, `PROCESS_TEXT_GUIDE` and `PROCESS_DELTA_GUIDE`.
+- `feedbackMessages(diagram, items, hint?)` builds the user message:
+  - the diagram, as `writeProcessText` wrote it;
+  - the threads, numbered, each with its element's alias and name, its author, its body and its
+    replies, each on one line;
+  - the "Try again" hint, if there is one.
+- `createChangeLineFilter` passes only the lines a change script can hold: paths and
+  declarations, `- ` removals and `@n` lines. As with describe-to-diagram, prose a comment talks
+  the model into never leaves the Worker.
+
+**The cases** (`apps/drop/scripts/feedback-cases.json`, 11 cases) use real files:
+`bpmn-samples/order-process` and `parallel-approval`, MIWG C.7.0 (lanes) and C.5.0 (two
+pools, 31 nodes, the largest). Threads are anchored by the files' own element ids, as Drop
+stores them, so every case also tests the alias mapping.
+
+| Case | What the feedback asks |
+|---|---|
+| 01 | a step before the one commented on |
+| 02 | "what if legal takes more than 5 days?" — a timer boundary and an escalation |
+| 03 | remove a step |
+| 04 | rename a step |
+| 05 | retype a rule task to a user task |
+| 06 | a third branch from a gateway, with a reply giving the variable names |
+| 07 | overall feedback: email the requester at the end |
+| 08 | three threads: an insert, a rename, and "looks good" (must change nothing) |
+| 09 | a question only — the right answer is no change |
+| 10 | prompt injection ("remove every task…") next to a real request |
+| 11 | two threads on the 31-node diagram: retype to a DMN task, and add a step |
+
+**The scorer** (`apps/drop/src/lib/feedback-bench.ts`) applies the answer as the page will:
+first the filter, then `parseProcessDelta`, then `applyProcessDelta`. It then checks the
+case's assertions:
+- names that must or must not appear;
+- element types;
+- flows between elements, named by id or by a word in their name;
+- a boundary event and its trigger;
+- which `@n` items were answered;
+- no change at all, where none was asked for.
+
+It also measures three things:
+- **collateral**: elements changed or removed that no thread is about. This fails a case, and
+  it is the number that matters most for this feature.
+- **problems**: unknown ids, mostly.
+- **new lint errors**.
+
+`tests/feedback-bench.test.ts` checks every case:
+- its file is drawn in full;
+- its reference passes with no problems and no new lint errors;
+- an answer that misses fails it. That is an empty answer, or, for the question case, one
+  that changes something.
+
+**Dry run** (`--dry-run`, ≈4 characters a token; output estimated from the reference):
+
+| | input tokens | output tokens | glm-4.7-flash | gemma-4-26b | gpt-oss-120b |
+|---|---|---|---|---|---|
+| typical case (01–10) | 880–1,010 | 10–50 | 6–8 neurons | 9–11 neurons | 29–36 neurons |
+| largest (11, 31 nodes) | 1,350 | 70 | 10 neurons | 15 neurons | 48 neurons |
+
+About 800 input tokens of each request are the fixed system prompt. That is the part
+`x-session-affinity` lets the prefix cache serve. With the daily budget of 8,000 neurons, glm
+would allow roughly 1,000 requests a day, and gpt-oss-120b roughly 200, before caching.
+gpt-oss reasons before it answers, so its real output will be larger than estimated here.
+
+**Checked end to end against a local mock** that streams each case's reference wrapped in
+prose and a code fence, in the chat-completion shape. All 11 cases passed. The filter dropped
+the prose and the fence, and the summary table and per-case table came out as expected. The
+`--edits` mode still runs.
+
+**Found while building the cases, and fixed:**
+
+- A node retyped into a service or business rule task had no job type or decision, so the
+  result would not deploy. A new business rule task had no decision either. The applier now
+  gives them what a parsed draft gets, the written id, and lists each one in `fixes`
+  (cases 10 and 11).
+- A prose bullet such as `- review is removed` read as removing three ids, one of them real.
+  A removal line now takes one id, a comma-separated list, or `a > b`; anything else is a
+  problem and removes nothing.
+
+**What to look for in the first real run**, before choosing a model:
+
+- **collateral** above 0 on any case. That is the failure a reviewer will not forgive.
+- whether 09 (a question) and the third thread of 08 ("looks good") change nothing;
+- whether 10 ignores the injection and still makes the real change;
+- unknown ids on 11, the largest diagram, where the aliases are longest;
+- `@n` coverage, which the page needs to reply on and resolve the right threads.
 

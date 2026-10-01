@@ -289,6 +289,7 @@ export function applyProcessDelta(
 				defs = changeElementType(defs, id, node.type as CreateShapeType)
 				resizeAround(id, node.type)
 				changed.add(id)
+				if (node.jobType === undefined) deployable(id, node.id, node.type, patch)
 			}
 		}
 		const now = element(id)
@@ -695,12 +696,32 @@ export function applyProcessDelta(
 		const patch: Partial<CompactElement> = {}
 		if (node.trigger !== undefined) patch.eventType = node.trigger
 		if (node.jobType !== undefined) patch.jobType = node.jobType
-		else if (JOB_TASKS.has(type)) {
-			patch.jobType = id
-			result.fixes.push(`gave ${id} the job type "${id}"`)
-		}
+		else deployable(id, written, type, patch)
 		if (Object.keys(patch).length > 0) {
 			patches.push({ line: node.line, op: { op: "update", id, patch } })
+		}
+	}
+
+	/**
+	 * What a task of `type` needs to deploy and does not have yet: a job type for
+	 * a service or send task, a decision for a business rule task. As in a parsed
+	 * draft, the written id stands in, and each one is listed in `fixes`.
+	 */
+	function deployable(
+		id: string,
+		written: string,
+		type: BpmnElementType,
+		patch: Partial<CompactElement>,
+	): void {
+		const has = (name: string) =>
+			element(id)?.extensionElements.some((e) => e.name === name) ?? false
+		if (has("zeebe:taskDefinition")) return
+		if (JOB_TASKS.has(type)) {
+			patch.jobType = written
+			result.fixes.push(`gave ${written} the job type "${written}"`)
+		} else if (type === "businessRuleTask" && !has("zeebe:calledDecision")) {
+			patch.decisionId = written
+			result.fixes.push(`gave ${written} the decision "${written}"`)
 		}
 	}
 

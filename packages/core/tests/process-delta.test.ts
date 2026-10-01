@@ -68,12 +68,19 @@ describe("parseProcessDelta", () => {
 	})
 
 	it("reads removals of nodes, lists of nodes and flows along a path", () => {
-		const delta = parseProcessDelta("- a\n- b, c d\n- x > y > z")
+		const delta = parseProcessDelta("- a\n- b, c,d\n- x > y > z")
 		expect(delta.removedNodes.map((r) => r.id)).toEqual(["a", "b", "c", "d"])
 		expect(delta.removedFlows).toEqual([
 			{ from: "x", to: "y", line: 3 },
 			{ from: "y", to: "z", line: 3 },
 		])
+	})
+
+	it("removes nothing on a prose bullet, even one naming an id", () => {
+		const delta = parseProcessDelta("- review is removed\n- Added a second approval step")
+		expect(delta.removedNodes).toEqual([])
+		expect(delta.removedFlows).toEqual([])
+		expect(delta.problems.map((p) => p.line)).toEqual([1, 2])
 	})
 
 	it("takes an arrow at the start of a line as a path, not a removal", () => {

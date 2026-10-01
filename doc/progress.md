@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-10-01 — AI changes from review comments: phase 1 benchmark (built, not yet run)
+
+- `bench:generate --feedback` runs 11 review-feedback cases on real BPMN files (samples, MIWG C.7.0 with lanes, C.5.0 with 31 nodes): inserts, a timer boundary, a removal, a rename, a retype, a new branch, overall feedback, three threads at once, a question that needs no change, and a prompt injection. Answers are filtered, applied with `applyProcessDelta`, and scored on assertions and on collateral, meaning changes to elements no comment was about. `--dry-run` prints the prompt sizes and estimated cost without credentials: about 880–1,350 input tokens, so 6–10 neurons a request on glm-4.7-flash and 29–48 on gpt-oss-120b.
+- `src/lib/feedback.ts`: the fixed `FEEDBACK_SYSTEM_PROMPT`, `feedbackMessages` and `createChangeLineFilter`, which the phase-2 route will reuse.
+- Checked end to end against a local mock: 11/11. Not yet run against Workers AI, so no model is chosen. Details: `doc/drop-ai-feedback-edits-analysis.md` §13.
+- Fixed along the way:
+  - A node retyped into a service or business rule task, or a new rule task, now gets a job type or decision, as a draft does.
+  - A `- ` line that is prose, not ids, no longer removes anything.
+
 ## 2026-10-01 — AI changes from review comments: phase 0 (core and editor)
 
 - `writeProcessText` (core) writes an existing diagram in the line format, under readable aliases, for a model to read. `parseProcessDelta` + `PROCESS_DELTA_GUIDE` (core) read a change script: only what changes, with `-` removals and `@n` lines naming the feedback item a change answers. `applyProcessDelta` (editor, headless) applies it with the editor's modelling functions, so the drawn layout stays. It places new nodes beside what they follow and makes room for an insert by moving only the shapes right of it, widening pools and lanes with them. It joins the neighbours of a removed node and adds new nodes to their lane.

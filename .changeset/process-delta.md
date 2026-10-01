@@ -14,3 +14,5 @@ Change an existing diagram from a model's answer, keeping its layout.
   - New nodes join their lane.
   - Anything the script does not mention is unchanged, down to the byte.
 - `parseProcessText` and `parseProcessDelta` now share one path tokenizer and one FEEL check. The FEEL check is exported as `conditionOrLabel`. `parseProcessText`'s behaviour is unchanged.
+- A node retyped into a service, send or business rule task, and a new business rule task, gets the job type or decision it needs to deploy: the written id, as in a parsed draft. Each one is listed in `fixes`.
+- A removal line takes one id, a comma-separated list, or `a > b`. A prose bullet ("- review is removed") is a problem and removes nothing.
