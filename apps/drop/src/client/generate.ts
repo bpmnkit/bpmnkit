@@ -12,6 +12,11 @@
  * guesses the parser had to make are asked as questions, and an answer is sent
  * as a change. Each change can be undone.
  *
+ * A picture can stand in for the description: a whiteboard, sketch or photo,
+ * picked or pasted, is scaled down and re-encoded as JPEG here, and the Worker
+ * sends it to a vision model. Only the first draft reads the image; changes go
+ * to the text model with the draft's text, like any other.
+ *
  * Nothing is stored until the reader asks for a link. The diagram then goes
  * through `/drop/api/drops` as an ordinary `.bpmn` upload — same validation,
  * same Terms, same short link.
@@ -27,7 +32,9 @@ import {
 } from "@bpmnkit/core"
 import {
 	type GenerateEvent,
+	IMAGE_MAX_SIDE,
 	MAX_DESCRIPTION_CHARS,
+	MAX_IMAGE_CHARS,
 	MIN_CHANGE_CHARS,
 	createSseReader,
 } from "../lib/generate.js"
@@ -82,6 +89,43 @@ interface Turnstile {
 	remove(widgetId: string): void
 }
 
+/**
+ * What a change is told the draft was made from, when it came from an image
+ * alone: the change route needs a description, and the image is not sent again.
+ */
+const IMAGE_DESCRIPTION = "A process read from an image."
+
+/**
+ * Scales `file` down to {@link IMAGE_MAX_SIDE} and re-encodes it as a JPEG data
+ * URL, lowering the quality once if it is still too large.
+ *
+ * @returns The data URL, or `null` when the browser cannot decode the file.
+ */
+async function readImage(file: Blob): Promise<string | null> {
+	let bitmap: ImageBitmap
+	try {
+		bitmap = await createImageBitmap(file)
+	} catch {
+		return null
+	}
+	const scale = Math.min(1, IMAGE_MAX_SIDE / Math.max(bitmap.width, bitmap.height))
+	const canvas = document.createElement("canvas")
+	canvas.width = Math.max(1, Math.round(bitmap.width * scale))
+	canvas.height = Math.max(1, Math.round(bitmap.height * scale))
+	const ctx = canvas.getContext("2d")
+	if (!ctx) return null
+	// JPEG has no transparency: a transparent screenshot would turn black.
+	ctx.fillStyle = "#fff"
+	ctx.fillRect(0, 0, canvas.width, canvas.height)
+	ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+	bitmap.close()
+	for (const quality of [0.85, 0.6]) {
+		const url = canvas.toDataURL("image/jpeg", quality)
+		if (url.length <= MAX_IMAGE_CHARS) return url
+	}
+	return null
+}
+
 /** Questions shown at once: past three, a reader stops reading them. */
 const MAX_QUESTIONS = 3
 
@@ -117,6 +161,12 @@ export function mountGenerator(): void {
 	const changeInput = $<HTMLInputElement>("genChange")
 	const apply = $<HTMLButtonElement>("genApply")
 	const undo = $<HTMLButtonElement>("genUndo")
+	// Present only when the deployment drafts from images.
+	const imagePick = $<HTMLButtonElement>("genImagePick")
+	const imageFile = $<HTMLInputElement>("genImageFile")
+	const imagePreview = $<HTMLImageElement>("genImagePreview")
+	const imageNote = $("genImageNote")
+	const imageClear = $<HTMLButtonElement>("genImageClear")
 	if (
 		!input ||
 		!count ||
@@ -158,6 +208,8 @@ export function mountGenerator(): void {
 	let draft: { description: string; text: string } | null = null
 	/** Earlier texts of this draft, newest last, for Undo. */
 	const earlier: string[] = []
+	/** The image the next draft is read from, as the JPEG data URL sent. */
+	let image: string | null = null
 	/** The latest frame not yet drawn: frames arrive faster than a screen refreshes. */
 	let pending: BpmnDefinitions | null = null
 
@@ -316,7 +368,7 @@ export function mountGenerator(): void {
 	 * @returns The response, or `null` when the reader closed the challenge.
 	 */
 	async function send(
-		body: { description: string; diagram?: string; change?: string },
+		body: { description: string; diagram?: string; change?: string; image?: string },
 		code: string,
 		signal: AbortSignal,
 	): Promise<Response | null> {
@@ -356,7 +408,7 @@ export function mountGenerator(): void {
 	 * @returns The answer's text, or `null` when it failed — the error is shown.
 	 */
 	async function ask(
-		body: { description: string; diagram?: string; change?: string },
+		body: { description: string; diagram?: string; change?: string; image?: string },
 		verb: string,
 	): Promise<{ text: string; cached: boolean } | null> {
 		if (!errors || !out || !passcode || !codeInput) return null
@@ -465,16 +517,28 @@ export function mountGenerator(): void {
 	async function generate(): Promise<void> {
 		if (!input || !share || !refine) return
 		const description = input.value.trim()
-		if (description.length < 10) return showError("Describe the process in a sentence or two.")
+		if (!image && description.length < 10) {
+			return showError(
+				imagePick
+					? "Describe the process in a sentence or two, or add an image of it."
+					: "Describe the process in a sentence or two.",
+			)
+		}
 		draft = null
 		earlier.length = 0
 		result = null
 		share.hidden = true
 		refine.hidden = true
 		const started = performance.now()
-		const answer = await ask({ description }, "drafting")
+		const answer = await ask(
+			image ? { description, image } : { description },
+			image ? "reading the image" : "drafting",
+		)
 		if (!answer) return
-		draft = { description, text: answer.text }
+		draft = {
+			description: image && description.length < 10 ? IMAGE_DESCRIPTION : description,
+			text: answer.text,
+		}
 		const { problems } = show(answer.text)
 		const seconds = ((performance.now() - started) / 1000).toFixed(1)
 		setStatus(
@@ -576,6 +640,43 @@ export function mountGenerator(): void {
 			copy.textContent = "Copy"
 		}, 1500)
 	})
+
+	if (imagePick && imageFile && imagePreview && imageNote && imageClear) {
+		const note = imageNote.textContent ?? ""
+		const setImage = async (file: Blob) => {
+			errors.classList.add("hidden")
+			imageNote.textContent = "reading…"
+			const url = await readImage(file)
+			if (url === null) {
+				imageNote.textContent = note
+				return showError("That image could not be read. Try a PNG or JPEG.")
+			}
+			image = url
+			imagePreview.src = url
+			imagePreview.hidden = false
+			imageClear.hidden = false
+			imageNote.textContent = "drafted from this image; the text above is optional"
+		}
+		imagePick.addEventListener("click", () => imageFile.click())
+		imageFile.addEventListener("change", () => {
+			const file = imageFile.files?.[0]
+			imageFile.value = ""
+			if (file) void setImage(file)
+		})
+		input.addEventListener("paste", (e) => {
+			const file = [...(e.clipboardData?.files ?? [])].find((f) => f.type.startsWith("image/"))
+			if (!file) return
+			e.preventDefault()
+			void setImage(file)
+		})
+		imageClear.addEventListener("click", () => {
+			image = null
+			imagePreview.hidden = true
+			imagePreview.removeAttribute("src")
+			imageClear.hidden = true
+			imageNote.textContent = note
+		})
+	}
 
 	for (const example of EXAMPLES) {
 		const button = document.createElement("button")

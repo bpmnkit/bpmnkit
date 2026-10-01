@@ -2,7 +2,14 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import type { Env } from "../src/env.js"
 import { AI_PASS_TTL_MS } from "../src/lib/ai-pass.js"
 import { MAX_GENERATIONS_PER_HOUR, getBudgetSpent } from "../src/lib/ai.js"
-import { type GenerateEvent, REFINE_SYSTEM_PROMPT, neuronsFor } from "../src/lib/generate.js"
+import {
+	type GenerateEvent,
+	IMAGE_ONLY_TEXT,
+	IMAGE_SYSTEM_PROMPT,
+	IMAGE_TOKEN_ESTIMATE,
+	REFINE_SYSTEM_PROMPT,
+	neuronsFor,
+} from "../src/lib/generate.js"
 import { dropPage } from "../src/lib/pages.js"
 import { handleGenerate } from "../src/routes/generate.js"
 import { AI_PASS_HEADER } from "../src/shared/constants.js"
@@ -353,6 +360,109 @@ describe("POST /drop/api/generate — a change to a draft", () => {
 	})
 })
 
+describe("POST /drop/api/generate — from an image", () => {
+	const VISION = "@cf/google/gemma-4-26b-a4b-it"
+	// A JPEG signature and a few bytes: the route checks the shape, the model reads the picture.
+	const IMAGE = `data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ${"A".repeat(40)}==`
+	const fromImage = (body: Record<string, unknown>) =>
+		new Request("http://drop/drop/api/generate", {
+			method: "POST",
+			headers: { "Content-Type": "application/json", "X-Drop-AI-Code": CODE },
+			body: JSON.stringify(body),
+		})
+	const env = (ai: ReturnType<typeof fakeAi>, over: Partial<Env> = {}) =>
+		makeEnv(ai, { AI_GENERATE_IMAGE_MODEL: VISION, AI_GENERATE_FALLBACK_MODEL: MODEL, ...over })
+
+	it("sends the image to the vision model alone, and streams the diagram it reads", async () => {
+		const ai = fakeAi(ANSWER)
+		const evs = await events(await handleGenerate(fromImage({ image: IMAGE }), env(ai), NOW))
+		expect(text(evs)).toBe(ANSWER.join(""))
+		expect(evs.at(-1)).toEqual({ done: true, cached: false })
+		// Not hedged: the fallback is picked for text.
+		expect(ai.calls.map((c) => c.model)).toEqual([VISION])
+		const messages = ai.calls[0]?.inputs.messages as { role: string; content: unknown }[]
+		expect(messages[0]).toEqual({ role: "system", content: IMAGE_SYSTEM_PROMPT })
+		expect(messages[1]).toEqual({
+			role: "user",
+			content: [
+				{ type: "text", text: IMAGE_ONLY_TEXT },
+				{ type: "image_url", image_url: { url: IMAGE } },
+			],
+		})
+	})
+
+	it("sends a description with the image as its text, however short", async () => {
+		const ai = fakeAi(ANSWER)
+		await events(await handleGenerate(fromImage({ image: IMAGE, description: "HR" }), env(ai), NOW))
+		const messages = ai.calls[0]?.inputs.messages as { content: { text?: string }[] }[]
+		expect(messages[1]?.content[0]?.text).toBe("HR")
+	})
+
+	it("refuses an image when no vision model is configured", async () => {
+		const ai = fakeAi(ANSWER)
+		const res = await handleGenerate(
+			fromImage({ image: IMAGE }),
+			env(ai, { AI_GENERATE_IMAGE_MODEL: undefined }),
+			NOW,
+		)
+		expect(res.status).toBe(400)
+		expect(ai.calls).toHaveLength(0)
+	})
+
+	it("refuses anything but a JPEG data URL within the size limit, and an image with a change", async () => {
+		const ai = fakeAi(ANSWER)
+		for (const image of [
+			"data:image/png;base64,iVBORw0KGgo=",
+			"data:image/jpeg;base64,iVBORw0KGgo=",
+			"https://example.com/whiteboard.jpg",
+			`data:image/jpeg;base64,/9j/${"A".repeat(1_400_000)}`,
+			42,
+		]) {
+			expect((await handleGenerate(fromImage({ image }), env(ai), NOW)).status).toBe(400)
+		}
+		const withChange = fromImage({
+			image: IMAGE,
+			description: DESCRIPTION,
+			diagram: ANSWER.join(""),
+			change: "add a step",
+		})
+		expect((await handleGenerate(withChange, env(ai), NOW)).status).toBe(400)
+		expect(ai.calls).toHaveLength(0)
+	})
+
+	it("caches by the image, apart from the same description without one", async () => {
+		const ai = fakeAi(ANSWER)
+		const e = env(ai)
+		await events(
+			await handleGenerate(fromImage({ image: IMAGE, description: DESCRIPTION }), e, NOW),
+		)
+		await events(await handleGenerate(post(DESCRIPTION), e, NOW))
+		await events(
+			await handleGenerate(
+				fromImage({ image: `${IMAGE.slice(0, -2)}B=`, description: DESCRIPTION }),
+				e,
+				NOW,
+			),
+		)
+		expect(ai.calls).toHaveLength(3)
+		const again = await events(
+			await handleGenerate(fromImage({ image: IMAGE, description: DESCRIPTION }), e, NOW),
+		)
+		expect(again.at(-1)).toEqual({ done: true, cached: true })
+		expect(ai.calls).toHaveLength(3)
+	})
+
+	it("charges the image's tokens when the model reports no usage", async () => {
+		const ai = fakeAi(ANSWER, { byModel: { [VISION]: { fail: true } } })
+		const e = env(ai)
+		await events(await handleGenerate(fromImage({ image: IMAGE }), e, NOW))
+		const spent = await getBudgetSpent(e.DB, DAY)
+		expect(spent).toBeGreaterThanOrEqual(
+			neuronsFor(VISION, { promptTokens: IMAGE_TOKEN_ESTIMATE, completionTokens: 0 }),
+		)
+	})
+})
+
 describe("POST /drop/api/generate — with Turnstile configured", () => {
 	const IP = "198.51.100.7"
 	const ask = (body: Record<string, unknown>, headers: Record<string, string> = {}) =>
@@ -550,6 +660,12 @@ describe("drop page", () => {
 			expect(page).not.toContain("genTurnstile")
 			expect(page).not.toContain("challenges.cloudflare.com")
 		}
+	})
+
+	it("offers drafting from an image only when a vision model is configured", () => {
+		expect(dropPage("tos", true, undefined, true)).toContain('id="genImagePick"')
+		expect(dropPage("tos", true)).not.toContain("genImage")
+		expect(dropPage("tos", false, undefined, true)).not.toContain("genImage")
 	})
 
 	it("shows the describe section only when AI is enabled, numbering sections in order", () => {

@@ -172,5 +172,12 @@ and both are charged. This hides Workers AI queueing, which held about 1 in 10 b
 2–12 s. Remove the fallback var to turn the hedge off. Each generation logs `drop.generate` with the
 winner and whether it hedged.
 
+**From an image.** With `AI_GENERATE_IMAGE_MODEL` set (a vision model, `gemma-4-26b-a4b-it` in
+`wrangler.jsonc`), the page also takes a whiteboard, sketch or photo, picked or pasted. The page
+scales it to at most 1568 px and re-encodes it as JPEG. The route accepts only a JPEG data URL of
+about 1 MB at most, sends it to that model alone (no hedge: the fallback is picked for text),
+and caches the answer by the image. Changes to the draft go to `AI_GENERATE_MODEL` as usual.
+Unset the var to refuse images.
+
 CI (`.github/workflows/deploy-drop.yml`) runs `d1 migrations apply` then `wrangler deploy`
 on pushes to `main` that touch this app or its rendering dependencies.

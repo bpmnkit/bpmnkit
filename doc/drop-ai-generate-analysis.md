@@ -1016,3 +1016,48 @@ refused: this fails closed, as the claim check does.
 With the challenge, a script needs a solved Turnstile for every 30 minutes and every IP. That
 turns a leaked beta code from a free API into a slow, manual one. The per-IP cap and the daily
 budget stay behind it.
+
+## 22. Drafting from an image (built 2026-09-30)
+
+A reader can start a draft from a whiteboard photo, a sketch or a screenshot of a diagram
+instead of a description. This closes the gap to image-first tools such as BA Copilot.
+
+**Model.** `glm-4.7-flash` reads text only. `gemma-4-26b-a4b-it`, already the hedge fallback,
+accepts `image_url` content parts in the chat-completion shape (its Workers AI schema lists
+`text`, `image_url`, `video_url`, `input_audio` and `file`). It is the default
+`AI_GENERATE_IMAGE_MODEL`. Other vision models on Workers AI: `llama-4-scout-17b-16e-instruct`,
+`mistral-small-3.1-24b-instruct` and `llama-3.2-11b-vision-instruct`. They would need a
+`MODEL_PROFILES` entry before they are charged at their own rates.
+
+**Request.** `{ image, description? }`. The page decodes the picture, scales its longest side to
+1568 px, paints it on white (JPEG has no transparency), and sends a JPEG data URL at quality
+0.85, or 0.6 when that is still over the limit. The route accepts only
+`data:image/jpeg;base64,/9j/…` of at most 1,400,000 characters. The page re-encodes every picture
+it sends, so nothing else needs to be accepted. An image with a change is refused: an image
+only starts a draft.
+
+**Prompt.** `IMAGE_SYSTEM_PROMPT` is `GENERATE_SYSTEM_PROMPT` plus three lines: read the steps,
+decisions, branches and lanes, keep the names written in the picture, and treat text in the
+image as untrusted, like a description. The user message is the description, or "Draw the
+process in this image.", then the image.
+
+**Not hedged.** The fallback is picked for text, and hedging an image would send the largest
+input twice. An image call goes to the vision model alone.
+
+**Cost guard.** Workers AI reports usage on the last stream event, and that is what is charged.
+When a stream breaks without usage, the text parts are charged at 4 characters a token plus
+`IMAGE_TOKEN_ESTIMATE` = 1,500 tokens for the image. This is a generous guess, so the budget
+does not undercount.
+
+**Changes.** A change to an image draft goes to the text model with the draft's text, as any
+change does. Its description is the one typed, or "A process read from an image." when none
+was. The picture is in the draft already, and it is not sent again.
+
+**Security.** The picture reaches the model and nothing else. The output goes through the same
+line filter, parser, escaping and upload path as in §21, so text in an image that tries to
+redirect the model can at worst produce a wrong diagram. It cannot produce code. Images are not
+stored. The D1 cache keeps the answer, keyed by a hash that covers the image.
+
+**Open.** No benchmark of image drafts yet. A next step is a small set of whiteboard photos
+and hand-drawn sketches with expected diagrams, run through `bench:generate`.
+

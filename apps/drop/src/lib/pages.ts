@@ -376,6 +376,10 @@ select.ed-select{height:28px;border:1px solid var(--bpmnkit-ds-line);background:
 .gen-change input{flex:1;min-width:0;border:none;background:var(--bpmnkit-ds-surface);color:var(--bpmnkit-ds-ink);font-family:var(--bpmnkit-ds-font-sans);font-size:14px;padding:10px 12px}
 .gen-change input:focus-visible{outline-offset:-2px}
 .gen-change .btn-ghost{border:none;border-left:1px solid var(--bpmnkit-ds-line)}
+.gen-image{display:flex;align-items:center;gap:10px;border-top:1px solid var(--bpmnkit-ds-line-soft);padding:8px 12px;font-family:var(--bpmnkit-ds-font-mono);font-size:12px;color:var(--bpmnkit-ds-ink-2)}
+.gen-image .grow{flex:1;min-width:0}
+.gen-image img{display:block;height:48px;max-width:96px;object-fit:cover;border:1px solid var(--bpmnkit-ds-line)}
+.gen-image img[hidden]{display:none}
 #genPasscode{max-width:360px;margin-top:14px}
 #genPasscode[hidden]{display:none}
 
@@ -496,9 +500,15 @@ function pageFooter(): string {
 /**
  * The landing and drop page. `aiEnabled` (AI_PASSCODE set) adds the
  * describe-to-diagram section; `turnstileKey` adds its challenge, which the
- * Worker's content policy must then allow.
+ * Worker's content policy must then allow; `imageEnabled`
+ * (AI_GENERATE_IMAGE_MODEL set) adds drafting from an image.
  */
-export function dropPage(tosVersion: string, aiEnabled = false, turnstileKey?: string): string {
+export function dropPage(
+	tosVersion: string,
+	aiEnabled = false,
+	turnstileKey?: string,
+	imageEnabled = false,
+): string {
 	const accept = ACCEPTED_EXTENSIONS.join(",")
 	// Sections are numbered in page order, and the generator is only sometimes there.
 	let section = 0
@@ -508,11 +518,16 @@ export function dropPage(tosVersion: string, aiEnabled = false, turnstileKey?: s
 		aiEnabled
 			? `<section class="section" id="describe"${turnstileKey ? ` data-turnstile-key="${escapeHtml(turnstileKey)}"` : ""}><div class="section-inner">
 	<div class="section-head"><span class="section-num">${num()}</span><h2 class="section-h2">Describe a process, get a diagram</h2></div>
-	<p class="section-lead section-indent" style="margin-bottom:26px">Say what should happen, in your own words. AI drafts the BPMN and draws it as it goes. Ask for changes until it fits, then share it like any drop. Closed beta: it needs an access code.</p>
+	<p class="section-lead section-indent" style="margin-bottom:26px">Say what should happen, in your own words${imageEnabled ? ", or add a photo of a whiteboard or sketch" : ""}. AI drafts the BPMN and draws it as it goes. Ask for changes until it fits, then share it like any drop. Closed beta: it needs an access code.</p>
 	<div class="gen">
 		<div class="gen-main">
 			<div class="panel-bar"><span>description</span><span class="grow"></span><span id="genCount">0 / ${MAX_DESCRIPTION_CHARS}</span></div>
 			<textarea id="genInput" rows="7" maxlength="${MAX_DESCRIPTION_CHARS}" aria-label="Describe the process" placeholder="When an order arrives, check stock. If everything is in stock, charge the card and ship it; otherwise tell the customer and cancel."></textarea>
+			${
+				imageEnabled
+					? `<div class="gen-image"><button id="genImagePick" class="btn-ghost" type="button">Add an image</button><input id="genImageFile" type="file" accept="image/*" hidden><img id="genImagePreview" alt="The image to draft from" hidden><span id="genImageNote" class="grow">or paste one: a whiteboard, sketch or photo</span><button id="genImageClear" class="btn-ghost" type="button" hidden>Remove</button></div>`
+					: ""
+			}
 		</div>
 		<div class="gen-side">
 			<div class="panel-bar"><span id="genName">process.bpmn</span><span class="grow"></span><span id="genStatus">draft</span></div>
@@ -547,7 +562,7 @@ export function dropPage(tosVersion: string, aiEnabled = false, turnstileKey?: s
 	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>`
 			: ""
 	}
-	<p class="legal">Your description is sent to Cloudflare Workers AI to draft the diagram. Sharing it follows the <a href="/drop/terms">Terms of Use</a>, like any upload.</p>
+	<p class="legal">Your description${imageEnabled ? " or image" : ""} is sent to Cloudflare Workers AI to draft the diagram. Sharing it follows the <a href="/drop/terms">Terms of Use</a>, like any upload.</p>
 </div></section>
 `
 			: ""
