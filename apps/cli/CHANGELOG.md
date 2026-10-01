@@ -1,5 +1,26 @@
 # @bpmnkit/cli
 
+## 1.2.0
+
+### Minor Changes
+
+- 862aa57: New `@bpmnkit/flow`: write a durable workflow as typed TypeScript steps (`.run()`, `.agent()`, `.waitFor()`, `.approve()`) and get the BPMN, the job types, the message correlation and the worker from the one definition. New `casen agent hire|list|fire|work`: hire coding-agent CLIs by role and rank and run them as a workforce serving the flows' `agent:<role>` jobs. `@bpmnkit/worker-client`'s `poll()` takes an `AbortSignal` to stop it.
+
+### Patch Changes
+
+- 862aa57: Reebe: accept the Camunda 8 v2 `processDefinitionId` when creating an instance and `name` when publishing or correlating a message; the embedded (SQLite) server now opens message subscriptions, creates user tasks without candidate groups or users, and expires messages, resolves incidents and completes batch operations (it used `NOW()`, which SQLite lacks); new `--grpc-port` / `REEBE_GRPC_PORT` so REST can take 26500. `casen reebe start` passes `--grpc-port` through, and its missing-binary hint builds the embedded server.
+- Updated dependencies [0afd35e]
+- Updated dependencies [862aa57]
+- Updated dependencies [48e48de]
+- Updated dependencies [862aa57]
+- Updated dependencies [78ccbf9]
+- Updated dependencies [48e48de]
+- Updated dependencies [48e48de]
+- Updated dependencies [48e48de]
+- Updated dependencies [502cc73]
+  - @bpmnkit/core@1.2.0
+  - @bpmnkit/flow@0.2.0
+
 ## 1.1.0
 
 ### Minor Changes
