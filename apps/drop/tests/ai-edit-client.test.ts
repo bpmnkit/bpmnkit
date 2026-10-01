@@ -32,6 +32,7 @@ function comment(over: Partial<CommentView>): CommentView {
 		filename: "order.bpmn",
 		elementId: null,
 		elementLabel: null,
+		elementIds: [],
 		parentId: null,
 		authorName: "Anna",
 		authorId: "aaaaaaaaaaaaaaaa",
@@ -100,6 +101,18 @@ describe("summarise", () => {
 		expect(summary.threads[0]?.changes).toEqual([])
 		expect(summary.unclaimed).toEqual(['Added user task "Review order"'])
 		expect(summary.review).toEqual(['Condition "Valid?" → "Review order": total > 1000'])
+	})
+
+	it("says what changed on a decision's branches", () => {
+		const { before, result } = propose("valid >(No: is_invalid = true) reject\n@1 valid")
+		const conditioned = summarise(before, result, [thread({})])
+		expect(conditioned.threads[0]?.changes).toEqual([
+			'Set the condition to "Reject Order": is_invalid = true',
+		])
+		const defaulted = propose("valid >(Yes: default) process\n@1 valid")
+		expect(summarise(defaulted.before, defaulted.result, [thread({})]).threads[0]?.changes).toEqual(
+			['Made the branch to "Process Order" the default of "Valid?"'],
+		)
 	})
 
 	it("says when nothing changes", () => {
@@ -247,6 +260,51 @@ describe("the comments panel with AI changes on", () => {
 			name: "Ben",
 		})
 		expect(sent[1]?.body).toEqual({ resolved: true, name: "Ben" })
+	})
+
+	it("starts a thread for an AI review suggestion and answers it", async () => {
+		localStorage.setItem("bpmnkit-drop-name", "Ben")
+		localStorage.setItem(AUTHOR_STORAGE_KEY, JSON.stringify({ share1: "1".repeat(24) }))
+		mount()
+		const sent: Record<string, unknown>[] = []
+		vi.stubGlobal("fetch", async (_url: string, init: RequestInit) => {
+			const body = JSON.parse(String(init.body)) as Record<string, unknown>
+			sent.push(body)
+			return new Response(
+				JSON.stringify({
+					comment: comment({
+						id: "s11111111111",
+						elementId: "validate",
+						elementIds: ["validate"],
+						body: String(body.body),
+					}),
+				}),
+				{ status: 201 },
+			)
+		})
+		const thread = await panel.startThread({
+			elementId: "validate",
+			elementLabel: "Validate Order",
+			body: "AI review: Add a timeout — the task can wait forever.",
+		})
+		expect(thread?.root.id).toBe("s11111111111")
+		expect(thread?.replies).toEqual([])
+		expect(sent[0]).toMatchObject({
+			filename: "order.bpmn",
+			elementId: "validate",
+			elementLabel: "Validate Order",
+			body: "AI review: Add a timeout — the task can wait forever.",
+			name: "Ben",
+		})
+	})
+
+	it("starts no thread without a name, and says so", async () => {
+		const q = mount()
+		const fetched = vi.fn()
+		vi.stubGlobal("fetch", fetched)
+		expect(await panel.startThread({ body: "AI review: x" })).toBeNull()
+		expect(fetched).not.toHaveBeenCalled()
+		expect(q("c").querySelector(".cm-status")?.textContent).toContain("Add your name first")
 	})
 
 	it("does not resolve a thread it could not reply to", async () => {

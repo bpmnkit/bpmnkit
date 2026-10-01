@@ -96,14 +96,23 @@ async function loadItems(
 		if (root.deletedAt !== null) return "a thread was deleted"
 		if (root.resolvedAt !== null) return "a thread is already resolved"
 		const item: FeedbackItem = { author: root.authorName, body: root.body }
-		if (root.elementId !== null) {
-			const alias = written.get(root.elementId)
-			const label = names.get(root.elementId) ?? root.elementLabel ?? undefined
-			if (alias !== undefined) item.on = alias
-			if (label) item.label = label
-			// Anchored to something the diagram no longer has, and nothing to name it by.
-			else if (alias === undefined) item.label = root.elementId
-		}
+		// Every element the thread is on, as the prompt names it: by alias when the
+		// diagram still has it, else by its name, else by its id.
+		const anchors = (root.elementIds.length > 0 ? root.elementIds : [root.elementId])
+			.filter((elementId): elementId is string => elementId !== null)
+			.map((elementId, k) => {
+				const alias = written.get(elementId)
+				const label = names.get(elementId) ?? (k === 0 ? root.elementLabel : null) ?? undefined
+				const anchor: { on?: string; label?: string } = {}
+				if (alias !== undefined) anchor.on = alias
+				if (label) anchor.label = label
+				// Anchored to something the diagram no longer has, and nothing to name it by.
+				else if (alias === undefined) anchor.label = elementId
+				return anchor
+			})
+		const [first, ...more] = anchors
+		if (first) Object.assign(item, first)
+		if (more.length > 0) item.alsoOn = more
 		const replies = all
 			.filter((c) => c.parentId === id && c.deletedAt === null)
 			.sort((a, b) => a.createdAt - b.createdAt)

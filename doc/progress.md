@@ -1,5 +1,18 @@
 # Progress
 
+## 2026-10-01 — Drop: comments on several elements, and AI review suggestions applied with AI (phase 3)
+
+- A comment can be on several elements: Shift-click (or Cmd/Ctrl-click) them while the comments
+  panel is open. Migration `0009_comment_element_ids` stores the list; `element_id` stays the first,
+  so existing comments and pages keep working. Each element gets a marker, the thread reads
+  "On X + n more", and the AI prompt names every element, saying which are no longer there.
+- Each AI review suggestion, including the automated checks, has "Apply with AI". It becomes a
+  comment thread on its element, and the normal flow then proposes, applies, replies and resolves.
+- `applyProcessDelta` no longer leaves an empty branch where the only step of a parallel branch was
+  removed. Replies on a changed gateway now say what changed on its branches.
+- Benchmark case 12: one thread on two tasks, asking to merge them. Checked in Chromium against
+  `wrangler dev`. Details: `doc/drop-ai-feedback-edits-analysis.md` §15.
+
 ## 2026-10-01 — Drop: AI changes from review comments (phase 2)
 
 - `POST /drop/api/ai-edit/:shareId/:filename`. It takes the requester's editor document and the

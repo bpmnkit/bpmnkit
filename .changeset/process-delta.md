@@ -17,3 +17,4 @@ Change an existing diagram from a model's answer, keeping its layout.
 - A node retyped into a service, send or business rule task, and a new business rule task, gets the job type or decision it needs to deploy: the written id, as in a parsed draft. Each one is listed in `fixes`.
 - A removal line takes one id, a comma-separated list, or `a > b`. A prose bullet ("- review is removed") is a problem and removes nothing.
 - An `@` line can name a node the same script removes; it resolves to the removed id.
+- Removing the only step on a branch of a parallel split or event-based gateway no longer joins its neighbours into an empty branch.

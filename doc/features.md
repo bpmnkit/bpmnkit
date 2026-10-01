@@ -1,5 +1,12 @@
 # Features
 
+## Drop: comments on several elements; AI review suggestions applied with AI (2026-10-01)
+
+- Shift-click to put one comment on several elements, such as "these two steps should be one".
+  The AI change reads it as one thread on all of them.
+- Any AI review suggestion can be applied with AI: it becomes a comment thread that the change
+  then answers and resolves.
+
 ## Drop: AI changes from review comments (2026-10-01)
 
 - While editing a shared diagram, ask the AI to make the change one comment thread or all of them

@@ -24,7 +24,7 @@ import { type ApplyProcessDeltaResult, applyProcessDelta } from "@bpmnkit/editor
 import type { FeedbackEvent } from "../lib/feedback.js"
 import { createSseReader } from "../lib/generate.js"
 import { AI_CODE_STORAGE_KEY, AI_PASS_HEADER } from "../shared/constants.js"
-import type { Challenge, Thread } from "./comments.js"
+import { type Challenge, type Thread, anchorsOf } from "./comments.js"
 
 // ── What a proposal does, in words ──────────────────────────────────────────
 
@@ -80,6 +80,44 @@ export function summarise(
 	const was = elementsOf(before)
 	const now = elementsOf(result.definitions)
 
+	const flowsOut = (defs: BpmnDefinitions, id: string) =>
+		new Map(
+			(defs.processes[0]?.sequenceFlows ?? [])
+				.filter((f) => f.sourceRef === id)
+				.map((f) => [f.id, f]),
+		)
+	const defaultOf = (el: BpmnFlowElement | undefined) =>
+		el && "default" in el ? (el.default as string | undefined) : undefined
+
+	/** What changed on the flows out of an element the script restated: a default, a condition, a label. */
+	const branchChanges = (id: string): string[] => {
+		const earlier = flowsOut(before, id)
+		const parts: string[] = []
+		const target = (ref: string) => named(now.get(ref) ?? was.get(ref), ref)
+		for (const [flowId, flow] of flowsOut(result.definitions, id)) {
+			const old = earlier.get(flowId)
+			if (!old) continue
+			const condition = flow.conditionExpression?.text
+			if (condition !== undefined && condition !== old.conditionExpression?.text) {
+				parts.push(
+					`set the condition to ${target(flow.targetRef)}: ${condition.replace(/^=\s*/, "")}`,
+				)
+			}
+			if ((flow.name ?? "") !== (old.name ?? "") && flow.name) {
+				parts.push(`labelled the branch to ${target(flow.targetRef)} "${flow.name}"`)
+			}
+		}
+		const newDefault = defaultOf(now.get(id))
+		if (newDefault !== undefined && newDefault !== defaultOf(was.get(id))) {
+			const flow = flowsOut(result.definitions, id).get(newDefault)
+			if (flow)
+				parts.push(
+					`made the branch to ${target(flow.targetRef)} the default of ${named(now.get(id), id)}`,
+				)
+		}
+		return parts
+	}
+
 	const describe = (id: string): string | null => {
 		const old = was.get(id)
 		const cur = now.get(id)
@@ -91,6 +129,7 @@ export function summarise(
 		if ((old.name ?? "") !== (cur.name ?? "")) {
 			parts.push(`renamed ${named(old, id)} to ${named(cur, id)}`)
 		}
+		parts.push(...branchChanges(id))
 		if (parts.length === 0) parts.push(`changed ${named(cur, id)}`)
 		const text = parts.join(", ")
 		return text.charAt(0).toUpperCase() + text.slice(1)
@@ -258,6 +297,12 @@ function list(items: readonly string[]): HTMLUListElement {
 	const ul = el("ul", "ae-list")
 	for (const item of items) ul.append(el("li", "", item))
 	return ul
+}
+
+/** " + 2 more" for a thread on several elements. */
+function more(root: Thread["root"]): string {
+	const extra = anchorsOf(root).length - 1
+	return extra > 0 ? ` + ${extra} more` : ""
 }
 
 /** Opens the dialog and asks straight away. */
@@ -443,7 +488,7 @@ export function openAiEdit(opts: AiEditOptions): void {
 				el(
 					"div",
 					"cm-anchor",
-					`${t.n}. ${root.elementLabel ?? (root.elementId === null ? "Whole file" : root.elementId)}`,
+					`${t.n}. ${root.elementLabel ?? (root.elementId === null ? "Whole file" : root.elementId)}${more(root)}`,
 				),
 				el("div", "cm-body", `${root.authorName}: ${root.body}`),
 			)

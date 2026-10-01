@@ -29,6 +29,11 @@ export interface FeedbackItem {
 	 * the element the thread was on is no longer in the diagram.
 	 */
 	label?: string
+	/**
+	 * The other elements the thread is on, when it is on several ("these two
+	 * steps should be one"), each as `on` and `label` are.
+	 */
+	alsoOn?: { on?: string; label?: string }[]
 	author: string
 	body: string
 	replies?: { author: string; body: string }[]
@@ -53,13 +58,24 @@ function oneLine(text: string): string {
 }
 
 /** `1. On review ("Review application") — Anna: …` and its replies. */
+/** `review ("Review application")`, or a quoted name for an element the diagram no longer has. */
+function anchorText(anchor: { on?: string; label?: string }, alone: boolean): string {
+	if (anchor.on !== undefined) {
+		return `${anchor.on}${anchor.label ? ` ("${oneLine(anchor.label)}")` : ""}`
+	}
+	const name = `"${oneLine(anchor.label ?? "")}"`
+	return alone ? `${name}, which is no longer in the diagram` : `${name} (no longer in the diagram)`
+}
+
 function itemText(item: FeedbackItem, n: number): string {
+	const anchors = [
+		...(item.on !== undefined || item.label ? [{ on: item.on, label: item.label }] : []),
+		...(item.alsoOn ?? []),
+	]
 	const where =
-		item.on !== undefined
-			? `On ${item.on}${item.label ? ` ("${oneLine(item.label)}")` : ""}`
-			: item.label
-				? `On "${oneLine(item.label)}", which is no longer in the diagram`
-				: "On the whole diagram"
+		anchors.length === 0
+			? "On the whole diagram"
+			: `On ${anchors.map((a) => anchorText(a, anchors.length === 1)).join(", ")}`
 	const lines = [`${n}. ${where} — ${oneLine(item.author)}: ${oneLine(item.body)}`]
 	for (const reply of item.replies ?? []) {
 		lines.push(`   Reply from ${oneLine(reply.author)}: ${oneLine(reply.body)}`)

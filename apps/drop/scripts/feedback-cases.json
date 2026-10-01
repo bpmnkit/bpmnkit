@@ -29,7 +29,10 @@
 		],
 		"reference": "legal_late[boundary:timer 5 days passed | on=legal_review nonint] > escalate[user Escalate to department head] > escalated[end Escalation raised]\n@1 legal_late escalate",
 		"assertions": {
-			"boundary": { "on": "legal-review", "trigger": "timer" },
+			"boundary": {
+				"on": "legal-review",
+				"trigger": "timer"
+			},
 			"mustMentionAnyOf": [["escalat", "department head"]],
 			"addressed": [1],
 			"touch": []
@@ -66,7 +69,9 @@
 		"reference": "write_description[Draft job description]\n@1 write_description",
 		"assertions": {
 			"mustMention": ["draft job description"],
-			"types": { "_392c86ba-38b5-4dc9-b98d-f97ad4c2add5": ["userTask"] },
+			"types": {
+				"_392c86ba-38b5-4dc9-b98d-f97ad4c2add5": ["userTask"]
+			},
 			"addressed": [1],
 			"touch": ["_392c86ba-38b5-4dc9-b98d-f97ad4c2add5"]
 		}
@@ -83,7 +88,9 @@
 		],
 		"reference": "select_other_platforms[user Select other platforms]\n@1 select_other_platforms",
 		"assertions": {
-			"types": { "_eae674ce-4d6e-48ac-819c-c79e0868e40d": ["userTask", "manualTask"] },
+			"types": {
+				"_eae674ce-4d6e-48ac-819c-c79e0868e40d": ["userTask", "manualTask"]
+			},
 			"addressed": [1],
 			"touch": ["_eae674ce-4d6e-48ac-819c-c79e0868e40d"]
 		}
@@ -141,7 +148,10 @@
 				"author": "Gina",
 				"body": "Please call this end event 'Vacancy published'."
 			},
-			{ "author": "Dana", "body": "Looks good to me overall, thanks!" }
+			{
+				"author": "Dana",
+				"body": "Looks good to me overall, thanks!"
+			}
 		],
 		"reference": "approve_advertisement > hr_approval[user Approve by HR] > advertisement_approved\nvacancy_advertised[Vacancy published]\n@1 hr_approval\n@2 vacancy_advertised",
 		"assertions": {
@@ -166,7 +176,9 @@
 			}
 		],
 		"reference": "",
-		"assertions": { "noChange": true }
+		"assertions": {
+			"noChange": true
+		}
 	},
 	{
 		"id": "10-injection",
@@ -213,10 +225,32 @@
 		],
 		"reference": "perform_risk_assessment_of[rule Perform risk assessment of the customer]\nreject_customer_request > send_rejection_letter[send Send rejection letter] > no_business_relation_created\n@1 perform_risk_assessment_of\n@2 send_rejection_letter",
 		"assertions": {
-			"types": { "_be6ea91a-4f8e-4240-86e8-f85036aee96f": ["businessRuleTask"] },
+			"types": {
+				"_be6ea91a-4f8e-4240-86e8-f85036aee96f": ["businessRuleTask"]
+			},
 			"mustMention": ["letter"],
 			"addressed": [1, 2],
 			"touch": ["_be6ea91a-4f8e-4240-86e8-f85036aee96f"]
+		}
+	},
+	{
+		"id": "12-two-elements-merge",
+		"file": "bpmn-samples/parallel-approval.bpmn",
+		"items": [
+			{
+				"on": "legal-review",
+				"alsoOn": ["finance-check"],
+				"author": "Lena",
+				"body": "Legal and finance look at the same documents. Make these one step, \"Legal and finance review\"."
+			}
+		],
+		"reference": "legal_review[Legal and finance review]\n- finance_check\n@1 legal_review finance_check",
+		"assertions": {
+			"mustMention": ["legal and finance review"],
+			"mustNotMention": ["finance check"],
+			"edges": [["split", "legal-review"], ["legal-review", "join"]],
+			"addressed": [1],
+			"touch": ["legal-review", "finance-check"]
 		}
 	}
 ]

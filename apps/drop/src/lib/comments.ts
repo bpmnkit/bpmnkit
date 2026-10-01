@@ -8,6 +8,8 @@ interface CommentRow {
 	filename: string
 	element_id: string | null
 	element_label: string | null
+	/** JSON array of every element, when there is more than one; else null. */
+	element_ids: string | null
 	parent_id: string | null
 	author_name: string
 	author_hash: string
@@ -25,6 +27,25 @@ export interface StoredComment extends CommentView {
 	authorHash: string
 }
 
+/** Every element a row is on: `element_ids` when set, else `element_id`, else none. */
+function parseElementIds(row: Pick<CommentRow, "element_id" | "element_ids">): string[] {
+	if (row.element_ids) {
+		try {
+			const parsed = JSON.parse(row.element_ids) as unknown
+			if (
+				Array.isArray(parsed) &&
+				parsed.every((id) => typeof id === "string") &&
+				parsed.length > 0
+			) {
+				return parsed as string[]
+			}
+		} catch {
+			// A row this code did not write; its first anchor still stands.
+		}
+	}
+	return row.element_id === null ? [] : [row.element_id]
+}
+
 function parseMentions(raw: string): string[] {
 	try {
 		const parsed = JSON.parse(raw) as unknown
@@ -40,6 +61,7 @@ async function fromRow(row: CommentRow): Promise<StoredComment> {
 		filename: row.filename,
 		elementId: row.element_id,
 		elementLabel: row.element_label,
+		elementIds: parseElementIds(row),
 		parentId: row.parent_id,
 		authorName: row.author_name,
 		authorId: await authorIdFromHash(row.author_hash),
@@ -89,16 +111,22 @@ export async function countComments(db: D1Database, shareId: string): Promise<nu
 	return row?.n ?? 0
 }
 
+/**
+ * Stores a new comment. `elementIds` lists every element it is on; its first is
+ * `elementId`. A single anchor is stored in `element_id` alone, as it always was.
+ */
 export async function insertComment(
 	db: D1Database,
 	shareId: string,
-	c: Omit<StoredComment, "authorId">,
+	c: Omit<StoredComment, "authorId" | "elementIds"> & { elementIds?: string[] },
 ): Promise<void> {
+	const several = c.elementIds !== undefined && c.elementIds.length > 1
 	await db
 		.prepare(
-			`INSERT INTO comments (id, drop_id, filename, element_id, element_label, parent_id, author_name,
-			   author_hash, body, mentions, created_at, edited_at, deleted_at, resolved_at, resolved_by)
-			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL)`,
+			`INSERT INTO comments (id, drop_id, filename, element_id, element_label, element_ids, parent_id,
+			   author_name, author_hash, body, mentions, created_at, edited_at, deleted_at, resolved_at,
+			   resolved_by)
+			 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, NULL, NULL)`,
 		)
 		.bind(
 			c.id,
@@ -106,6 +134,7 @@ export async function insertComment(
 			c.filename,
 			c.elementId,
 			c.elementLabel,
+			several ? JSON.stringify(c.elementIds) : null,
 			c.parentId,
 			c.authorName,
 			c.authorHash,

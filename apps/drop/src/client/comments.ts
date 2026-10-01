@@ -15,6 +15,7 @@ import {
 	AUTHOR_HEADER,
 	AUTHOR_STORAGE_KEY,
 	type CommentView,
+	MAX_ANCHORS,
 	MAX_COMMENT_CHARS,
 	MAX_NAME_CHARS,
 	NAME_STORAGE_KEY,
@@ -146,16 +147,26 @@ export function threadsFor(comments: Iterable<CommentView>, filename: string): T
 }
 
 /**
- * Where a thread sits. `removed` is an element id the shown diagram no longer
- * has; `null` ids mean "not a diagram", where every anchor still stands.
+ * Every element a comment is on, first anchor first. A comment from before
+ * comments could be on several elements carries only `elementId`.
+ */
+export function anchorsOf(c: Pick<CommentView, "elementId" | "elementIds">): string[] {
+	if (c.elementIds && c.elementIds.length > 0) return c.elementIds
+	return c.elementId === null ? [] : [c.elementId]
+}
+
+/**
+ * Where a thread sits. `removed` means the shown diagram has none of its
+ * elements any more; one still there is enough to stand on. `null` ids mean
+ * "not a diagram", where every anchor still stands.
  */
 export function anchorState(
 	thread: Thread,
 	ids: ReadonlySet<string> | null,
 ): "file" | "element" | "removed" {
-	const id = thread.root.elementId
-	if (id === null) return "file"
-	return ids === null || ids.has(id) ? "element" : "removed"
+	const anchors = anchorsOf(thread.root)
+	if (anchors.length === 0) return "file"
+	return ids === null || anchors.some((id) => ids.has(id)) ? "element" : "removed"
 }
 
 // ── Storage ─────────────────────────────────────────────────────────────────
@@ -267,7 +278,8 @@ export class CommentsPanel {
 	private ids: Set<string> | null = null
 	/** True while an older version is on the canvas: "removed" then means "not in it". */
 	private preview = false
-	private anchor: { id: string; label: string } | null = null
+	/** What the next comment is on: one element, or several picked with Shift. */
+	private anchors: { id: string; label: string }[] = []
 	private name: string | null = normaliseName(readStored(NAME_STORAGE_KEY))
 	private token: string | null
 	private authorId: string | null = null
@@ -311,7 +323,7 @@ export class CommentsPanel {
 
 	close(): void {
 		this.opts.panel.hidden = true
-		this.anchor = null
+		this.anchors = []
 		this.canvas?.clearHighlights()
 		this.renderCompose()
 	}
@@ -350,7 +362,7 @@ export class CommentsPanel {
 	/** The tab changed. */
 	setFile(file: FileRef): void {
 		this.file = file
-		this.anchor = null
+		this.anchors = []
 		this.focus = null
 		this.replyTo = null
 		this.editing = null
@@ -369,16 +381,28 @@ export class CommentsPanel {
 		this.canvas = canvas
 		this.ids = defs ? drawnIds(defs) : null
 		this.preview = preview
-		if (this.anchor && this.ids && !this.ids.has(this.anchor.id)) this.anchor = null
+		const ids = this.ids
+		if (ids) this.anchors = this.anchors.filter((a) => ids.has(a.id))
 		this.render()
 	}
 
-	/** An element was clicked while the panel was open: that is what the next comment is on. */
-	pick(id: string, label: string): void {
+	/**
+	 * An element was clicked while the panel was open: that is what the next
+	 * comment is on. With `add` (Shift-click) it joins the elements already
+	 * picked, or leaves them if it was one — "these two steps should be one".
+	 */
+	pick(id: string, label: string, add = false): void {
 		if (this.opts.readOnly || this.file?.kind !== "bpmn") return
-		this.anchor = { id, label }
+		if (!add) this.anchors = [{ id, label }]
+		else if (this.anchors.some((a) => a.id === id)) {
+			this.anchors = this.anchors.filter((a) => a.id !== id)
+		} else if (this.anchors.length < MAX_ANCHORS) this.anchors = [...this.anchors, { id, label }]
 		this.canvas?.clearHighlights()
-		this.canvas?.highlight([id], "changed")
+		if (this.anchors.length > 0)
+			this.canvas?.highlight(
+				this.anchors.map((a) => a.id),
+				"changed",
+			)
 		this.renderCompose()
 		this.opts.compose.querySelector("textarea")?.focus()
 	}
@@ -426,7 +450,7 @@ export class CommentsPanel {
 		for (const thread of threads) {
 			const node = this.threadNode(thread)
 			const focus = this.focus
-			if (focus !== null && (thread.root.id === focus || thread.root.elementId === focus)) {
+			if (focus !== null && (thread.root.id === focus || anchorsOf(thread.root).includes(focus))) {
 				node.classList.add("focus")
 				focused ??= node
 			}
@@ -448,9 +472,9 @@ export class CommentsPanel {
 		canvas.overlays.remove({ type: "comment" })
 		const counts = new Map<string, number>()
 		for (const t of threadsFor(this.comments.values(), this.file.filename)) {
-			const id = t.root.elementId
-			if (id && t.root.resolvedAt === null && this.ids.has(id)) {
-				counts.set(id, (counts.get(id) ?? 0) + 1)
+			if (t.root.resolvedAt !== null) continue
+			for (const id of anchorsOf(t.root)) {
+				if (this.ids.has(id)) counts.set(id, (counts.get(id) ?? 0) + 1)
 			}
 		}
 		for (const [id, n] of counts) {
@@ -497,15 +521,38 @@ export class CommentsPanel {
 	 * the reply went; a thread that could not be replied to is not resolved.
 	 */
 	async reply(threadId: string, body: string, resolve: boolean): Promise<boolean> {
-		const ok = await this.create({ parentId: threadId, body, mentions: [] })
+		const ok = (await this.create({ parentId: threadId, body, mentions: [] })) !== null
 		const root = this.comments.get(threadId)
 		if (ok && resolve && root && root.resolvedAt === null) await this.resolve(root, true)
 		return ok
 	}
 
+	/**
+	 * Starts a thread on the open file, as the panel's own composer would, and
+	 * answers it — or null when it was not made (the panel says why). How an AI
+	 * review suggestion becomes something the AI can be asked to apply: a
+	 * thread everyone can see, that the change will reply to.
+	 */
+	async startThread(payload: {
+		elementId?: string
+		elementLabel?: string
+		body: string
+	}): Promise<Thread | null> {
+		if (this.opts.readOnly || !this.file) return null
+		const made = await this.create({
+			filename: this.file.filename,
+			...(payload.elementId ? { elementId: payload.elementId } : {}),
+			...(payload.elementId && payload.elementLabel ? { elementLabel: payload.elementLabel } : {}),
+			body: payload.body.slice(0, MAX_COMMENT_CHARS),
+			mentions: [],
+		})
+		return made ? { root: made, replies: [] } : null
+	}
+
 	private anchorLabel(thread: Thread): string {
 		const { elementId, elementLabel } = thread.root
-		const named = elementLabel ?? elementId ?? ""
+		const more = anchorsOf(thread.root).length - 1
+		const named = `${elementLabel ?? elementId ?? ""}${more > 0 ? ` + ${more} more` : ""}`
 		switch (anchorState(thread, this.ids)) {
 			case "file":
 				return "On the file"
@@ -529,9 +576,9 @@ export class CommentsPanel {
 		if (root.resolvedAt !== null) {
 			box.append(el("div", "cm-resolved", `Resolved by ${root.resolvedBy ?? "someone"}`))
 		}
-		const elementId = root.elementId
-		if (state === "element" && elementId) {
-			box.addEventListener("mouseenter", () => this.canvas?.highlight([elementId], "changed"))
+		const anchored = anchorsOf(root)
+		if (state === "element" && anchored.length > 0) {
+			box.addEventListener("mouseenter", () => this.canvas?.highlight(anchored, "changed"))
 			box.addEventListener("mouseleave", () => this.canvas?.clearHighlights())
 		}
 
@@ -559,7 +606,7 @@ export class CommentsPanel {
 		if (this.replyTo === root.id) {
 			box.append(
 				this.textBox("", "Reply", async (body, mentioned) => {
-					const ok = await this.create({ parentId: root.id, body, mentions: mentioned })
+					const ok = (await this.create({ parentId: root.id, body, mentions: mentioned })) !== null
 					if (ok) this.replyTo = null
 					return ok
 				}),
@@ -620,13 +667,21 @@ export class CommentsPanel {
 		}
 
 		const anchorRow = el("div", "cm-target")
-		if (this.anchor) {
-			anchorRow.append(el("span", "", `On ${this.anchor.label}`))
+		const first = this.anchors[0]
+		if (first) {
+			const more = this.anchors.length - 1
+			const target = el(
+				"span",
+				"",
+				more > 0 ? `On ${first.label} + ${more} more` : `On ${first.label}`,
+			)
+			target.title = this.anchors.map((a) => a.label).join(", ")
+			anchorRow.append(target)
 			anchorRow.append(
 				button(
 					"×",
 					() => {
-						this.anchor = null
+						this.anchors = []
 						this.canvas?.clearHighlights()
 						this.renderCompose()
 					},
@@ -635,7 +690,9 @@ export class CommentsPanel {
 			)
 		} else {
 			anchorRow.textContent =
-				this.file?.kind === "bpmn" ? "On the whole file — or click an element" : "On the whole file"
+				this.file?.kind === "bpmn"
+					? "On the whole file — or click an element, Shift-click for more"
+					: "On the whole file"
 		}
 
 		const nameInput = el("input", "cm-name")
@@ -645,14 +702,21 @@ export class CommentsPanel {
 		nameInput.setAttribute("aria-label", "Your name")
 		nameInput.addEventListener("change", () => this.setName(nameInput.value))
 
-		const box = this.textBox("", "Comment", (body, mentioned) =>
-			this.create({
+		const box = this.textBox("", "Comment", async (body, mentioned) => {
+			const made = await this.create({
 				filename: this.file?.filename,
-				...(this.anchor ? { elementId: this.anchor.id, elementLabel: this.anchor.label } : {}),
+				...(first
+					? {
+							elementId: first.id,
+							elementLabel: first.label,
+							...(this.anchors.length > 1 ? { elementIds: this.anchors.map((a) => a.id) } : {}),
+						}
+					: {}),
 				body,
 				mentions: mentioned,
-			}),
-		)
+			})
+			return made !== null
+		})
 		this.status = el("div", "cm-status")
 		root.append(anchorRow, nameInput, box, this.status)
 	}
@@ -774,15 +838,19 @@ export class CommentsPanel {
 
 	// ── Writes ─────────────────────────────────────────────────────────────────
 
-	private async create(payload: Record<string, unknown>, retried = false): Promise<boolean> {
+	/** Posts a comment; answers it, or null when it was not made (and says why). */
+	private async create(
+		payload: Record<string, unknown>,
+		retried = false,
+	): Promise<CommentView | null> {
 		const nameInput = this.opts.compose.querySelector<HTMLInputElement>(".cm-name")
 		if (nameInput && nameInput.value !== (this.name ?? "") && !this.setName(nameInput.value)) {
-			return false
+			return null
 		}
 		if (!this.name) {
 			this.say("Add your name first — it is what others see and can @mention.")
 			nameInput?.focus()
-			return false
+			return null
 		}
 		const body: Record<string, unknown> = { ...payload, name: this.name }
 		// The first comment from this browser in this drop is the one challenge;
@@ -793,7 +861,7 @@ export class CommentsPanel {
 				if (verified.reason === "unavailable") {
 					this.say("Couldn't load the human check. Reload, or allow challenges.cloudflare.com.")
 				}
-				return false
+				return null
 			}
 			if (verified.token) body.token = verified.token
 		}
@@ -802,16 +870,16 @@ export class CommentsPanel {
 			this.forgetToken()
 			return this.create(payload, true)
 		}
-		if (!res.ok) return false
+		if (!res.ok || !res.comment) return null
 		if (res.authorToken) {
 			this.token = res.authorToken
 			storeAuthorToken(this.opts.shareId, res.authorToken)
 			await this.refreshAuthorId()
 		}
-		this.anchor = null
+		this.anchors = []
 		this.canvas?.clearHighlights()
 		this.renderCompose()
-		return true
+		return res.comment
 	}
 
 	private async patch(c: CommentView, payload: Record<string, unknown>): Promise<boolean> {
@@ -846,7 +914,7 @@ export class CommentsPanel {
 		method: "POST" | "PATCH" | "DELETE",
 		path: string,
 		payload?: Record<string, unknown>,
-	): Promise<{ ok: boolean; code?: string; authorToken?: string }> {
+	): Promise<{ ok: boolean; code?: string; authorToken?: string; comment?: CommentView }> {
 		const headers: Record<string, string> = { "Content-Type": "application/json" }
 		if (this.token) headers[AUTHOR_HEADER] = this.token
 		try {
@@ -873,7 +941,7 @@ export class CommentsPanel {
 			this.say("")
 			this.comments.set(answer.comment.id, answer.comment)
 			this.render()
-			return { ok: true, authorToken: answer.authorToken }
+			return { ok: true, authorToken: answer.authorToken, comment: answer.comment }
 		} catch {
 			this.say("That did not go through. Check your connection and try again.")
 			return { ok: false }

@@ -51,6 +51,7 @@ import { ROOM_COMMENT_PATH } from "../room.js"
 import {
 	AUTHOR_HEADER,
 	type CommentView,
+	MAX_ANCHORS,
 	MAX_COMMENTS_PER_DROP,
 	MAX_COMMENT_CHARS,
 	MAX_COMMENT_WRITES_PER_HOUR,
@@ -79,6 +80,23 @@ function readBody(raw: unknown): { ok: true; body: string } | { ok: false; error
 		return { ok: false, error: fail(400, `a comment is at most ${MAX_COMMENT_CHARS} characters`) }
 	}
 	return { ok: true, body }
+}
+
+/**
+ * The elements a new comment is on: `elementIds`, or the older single
+ * `elementId`, or none. With both, `elementIds` must start with `elementId`.
+ */
+function readAnchors(payload: Record<string, unknown>): string[] | string {
+	const single = payload.elementId ?? null
+	const many = payload.elementIds ?? null
+	if (single !== null && !isElementId(single)) return "that is not an element id"
+	if (many === null) return single === null ? [] : [single as string]
+	if (!Array.isArray(many) || many.length === 0) return "elementIds must list the elements"
+	if (many.length > MAX_ANCHORS) return `a comment is on at most ${MAX_ANCHORS} elements`
+	if (!many.every(isElementId)) return "that is not an element id"
+	const ids = [...new Set(many as string[])]
+	if (single !== null && ids[0] !== single) return "elementIds must start with elementId"
+	return ids
 }
 
 async function readJson(request: Request): Promise<Record<string, unknown> | null> {
@@ -192,6 +210,7 @@ async function create(request: Request, shareId: string, env: Env, now: number):
 	let filename: string
 	let elementId: string | null = null
 	let elementLabel: string | null = null
+	let elementIds: string[] = []
 	let parentId: string | null = null
 	if (payload.parentId !== undefined && payload.parentId !== null) {
 		const parent = isCommentId(payload.parentId)
@@ -200,18 +219,20 @@ async function create(request: Request, shareId: string, env: Env, now: number):
 		if (!parent) return fail(404, "that thread is not on this drop")
 		if (parent.parentId !== null) return fail(400, "replies go on the thread, not on a reply")
 		if (parent.deletedAt !== null) return fail(409, "that comment was deleted")
-		;({ filename, elementId, elementLabel } = parent)
+		;({ filename, elementId, elementLabel, elementIds } = parent)
 		parentId = parent.id
 	} else {
 		const file = gated.found.files.find((f) => f.filename === payload.filename)
 		if (!file) return fail(400, "that file is not in this drop")
 		filename = file.filename
-		if (payload.elementId !== undefined && payload.elementId !== null) {
+		const anchors = readAnchors(payload)
+		if (typeof anchors === "string") return fail(400, anchors)
+		if (anchors.length > 0) {
 			// Only a diagram has elements a marker can sit on; everything else is
 			// commented on as a whole.
 			if (file.kind !== "bpmn") return fail(400, "only a BPMN file takes comments on elements")
-			if (!isElementId(payload.elementId)) return fail(400, "that is not an element id")
-			elementId = payload.elementId
+			elementIds = anchors
+			elementId = anchors[0] as string
 			elementLabel =
 				typeof payload.elementLabel === "string" && payload.elementLabel.trim()
 					? payload.elementLabel.trim().slice(0, MAX_LABEL_CHARS)
@@ -246,6 +267,7 @@ async function create(request: Request, shareId: string, env: Env, now: number):
 		filename,
 		elementId,
 		elementLabel,
+		elementIds,
 		parentId,
 		authorName: name,
 		authorHash: hash,

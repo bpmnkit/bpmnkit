@@ -13,7 +13,7 @@ export interface FeedbackCase {
 	/** The BPMN file, relative to the repository root. */
 	file: string
 	/** The threads, anchored by element id in the file, as Drop stores them. */
-	items: (Omit<FeedbackItem, "on" | "label"> & { on?: string })[]
+	items: (Omit<FeedbackItem, "on" | "label" | "alsoOn"> & { on?: string; alsoOn?: string[] })[]
 	reference: string
 	assertions: FeedbackAssertions
 }
@@ -75,12 +75,17 @@ export function prepareFeedbackCase(c: FeedbackCase, defs: BpmnDefinitions): Pre
 	const { text, aliases } = writeProcessText(defs)
 	const written = new Map(Object.entries(aliases).map(([alias, id]) => [id, alias]))
 	const names = new Map(defs.processes[0]?.flowElements.map((el) => [el.id, el.name]))
-	const items = c.items.map(({ on, ...item }): FeedbackItem => {
+	const anchor = (id: string): { on: string; label?: string } => {
+		const alias = written.get(id)
+		if (alias === undefined) throw new Error(`${c.id}: "${id}" is not written in the diagram`)
+		const label = names.get(id)
+		return label ? { on: alias, label } : { on: alias }
+	}
+	const items = c.items.map(({ on, alsoOn, ...item }): FeedbackItem => {
 		if (on === undefined) return item
-		const alias = written.get(on)
-		if (alias === undefined) throw new Error(`${c.id}: "${on}" is not written in the diagram`)
-		const label = names.get(on)
-		return label ? { ...item, on: alias, label } : { ...item, on: alias }
+		return alsoOn && alsoOn.length > 0
+			? { ...item, ...anchor(on), alsoOn: alsoOn.map(anchor) }
+			: { ...item, ...anchor(on) }
 	})
 	return { text, aliases, items }
 }

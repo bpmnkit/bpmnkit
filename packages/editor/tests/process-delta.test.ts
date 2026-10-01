@@ -295,6 +295,16 @@ describe("applyProcessDelta", () => {
 		expectSound(next)
 	})
 
+	it("does not leave an empty branch where a parallel step was removed", () => {
+		const defs = drawn(
+			"s[start Go] > split[and] > a[task A] > join[and] > e[end Done]\nsplit > b[task B] > join",
+		)
+		const result = apply(defs, "- b")
+		expect(result.fixes).toEqual([])
+		expect(flowsOf(result.definitions)).not.toContain("split>join")
+		expectSound(result.definitions)
+	})
+
 	it("lets an @ line name a node the same script removes", () => {
 		const result = apply(drawn(LOAN), "- auto\n@1 auto")
 		expect(result.problems).toEqual([])

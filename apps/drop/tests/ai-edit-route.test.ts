@@ -279,6 +279,23 @@ describe("POST /drop/api/ai-edit", () => {
 		expect(user).toContain('1. On "Old step", which is no longer in the diagram — Anna:')
 	})
 
+	it("names every element a thread is on, and says which are gone", async () => {
+		const id = await comment({
+			elementId: "validate",
+			elementLabel: "Validate Order",
+			elementIds: ["validate", "gw-check", "Gone_1"],
+			body: "These belong together.",
+		})
+		const ai = fakeAi(ANSWER)
+		await events(
+			await handleAiEdit(post({ xml: XML, threadIds: [id] }), "share1", FILE, makeEnv(ai), NOW),
+		)
+		const user = (ai.calls[0]?.inputs.messages as { content: string }[])[1]?.content
+		expect(user).toContain(
+			'1. On validate ("Validate Order"), valid ("Valid?"), "Gone_1" (no longer in the diagram) — Anna: These belong together.',
+		)
+	})
+
 	it("treats an empty answer as no change, and serves a repeat from the cache", async () => {
 		const id = await comment({ body: "Why do we validate here?" })
 		const ai = fakeAi(["This is a question, so nothing changes.\n"])

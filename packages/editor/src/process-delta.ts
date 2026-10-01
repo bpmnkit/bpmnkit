@@ -360,8 +360,12 @@ export function applyProcessDelta(
 		const out = flowsOut(id).filter((f) => !removedIds.includes(f.targetRef))
 		const only = into[0]
 		const next = out[0]?.targetRef
-		if (into.length === 1 && out.length === 1 && only && next !== undefined) {
-			const source = element(only.sourceRef)
+		const source = only === undefined ? undefined : element(only.sourceRef)
+		// An empty branch of a parallel split does nothing, and one of an
+		// event-based gateway cannot exist: removing the only step on either is
+		// removing the branch.
+		const branchOnly = source?.type === "parallelGateway" || source?.type === "eventBasedGateway"
+		if (into.length === 1 && out.length === 1 && only && next !== undefined && !branchOnly) {
 			const wasDefault = source !== undefined && hasDefault(source) && source.default === only.id
 			bridges.push({ removed: id, into: structuredClone(only), to: next, wasDefault })
 		}

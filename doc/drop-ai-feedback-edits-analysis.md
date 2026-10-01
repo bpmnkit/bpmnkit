@@ -6,6 +6,8 @@ Status (2026-10-01):
   against Workers AI, so no model is chosen yet.
 - Phase 2 is built: the route, the page's flow and the replies, §14. It runs against the model
   named by `AI_FEEDBACK_MODEL` (glm-4.7-flash until the benchmark has run).
+- Phase 3 is built: comments on several elements, and "Apply with AI" on AI review suggestions,
+  §15. Batches of threads shipped with phase 2.
 
 ## 1. The use case
 
@@ -286,7 +288,7 @@ Measure before choosing:
 | 0 ✓ | `applyProcessDelta` + placement (editor/headless) | tests: DI of untouched shapes is unchanged; `checkIntegrity` passes; no overlaps on the cases |
 | 1 (harness ✓, run pending) | Benchmark `--feedback` cases; pick the model | pass rate, unresolved ids, cost |
 | 2 ✓ | Route, single-thread + free-text entry points, preview, snapshot apply, thread reply/resolve | route tests in the style of `generate-route.test.ts`; Playwright run of the whole flow |
-| 3 | Batch of threads, multi-element anchors (migration 0009), "Apply" on AI review suggestions | — |
+| 3 ✓ | Batch of threads, multi-element anchors (migration 0009), "Apply" on AI review suggestions | route, panel and page tests; Playwright run of both |
 | later | Proposals stored as "suggested changes" in a thread, so reviewers can discuss them before someone with the baton applies them | — |
 
 ## 10. Decisions for the owner
@@ -566,4 +568,80 @@ drop that id, so the thread that asked for a removal got no reply.
 - the neighbourhood cut for diagrams over 12,000 characters;
 - whether this gets its own budget (decision 3);
 - phase 3: multi-element anchors, and "Apply" on AI review suggestions.
+
+## 15. Phase 3, as built (2026-10-01)
+
+Batches of threads were already in phase 2 ("Apply all *n* open with AI"). This phase adds the
+other two items.
+
+### Comments on several elements
+
+- **Storage.** Migration `0009_comment_element_ids` adds `comments.element_ids`. It holds a JSON
+  array of every element, written only when there is more than one. `element_id` stays the first
+  anchor, so existing rows, markers and older pages keep working. `CommentView.elementIds` always
+  lists every element: `[]` for the whole file, `[elementId]` for one.
+- **The route** takes `elementIds` (up to `MAX_ANCHORS` = 12, de-duplicated) with or without
+  `elementId`. When both are sent, the list must start with `elementId`. Replies copy their
+  thread's list.
+- **The panel.** Click an element, then Shift-click (or Cmd/Ctrl-click) more. A second
+  Shift-click takes one out again, and a plain click starts over.
+  - The composer says "On Validate Order + 1 more", with every name in its tooltip.
+  - Each element gets a marker, and hovering a thread highlights all of them.
+  - A thread counts as on a removed element only when the diagram has none of its elements left.
+  - `anchorsOf` reads a comment from before this change as one on its single element.
+- **The prompt** names every element:
+  `1. On validate ("Validate Order"), valid ("Valid?"), "Gone_1" (no longer in the diagram) — …`.
+  A thread on a single removed element keeps the phase-2 wording.
+- **The benchmark** has case 12: one thread on "Legal Review" and "Finance Check", asking to merge
+  them into "Legal and finance review".
+
+### "Apply with AI" on AI review suggestions
+
+- **Each suggestion card** in the AI review panel gets the button when AI changes are on. That
+  covers both the model's suggestions and the automated checks.
+- **The suggestion becomes a comment thread first.** The thread is "AI review: <title> — <why>",
+  under the requester's name, on the suggestion's element if the editor's document still has it.
+  Then it runs the normal phase-2 flow. This needs no new route, the request is visible to every
+  reviewer, and the applied change replies to and resolves the thread like any other. The
+  prompt-injection boundary does not move: the text was written by the review model, and it
+  reaches the edit model as a thread like a person's would.
+- **`CommentsPanel.startThread`** posts the thread through the panel's own composer path: the
+  name, the author token and the first-comment challenge. It answers the thread, or `null` with
+  the reason shown in the panel.
+
+### Found and fixed along the way
+
+- **Parallel branches.** Removing the only step on a branch of a parallel split (or an event-based
+  gateway) no longer "bridges" it into an empty split → join flow, which means nothing there. A
+  decision's branch is still bridged, because "otherwise, skip" is a real branch. Case 12 needed
+  this.
+- **Clearer replies.** A reply on a restated gateway said only `Changed "Valid?"`. The summary
+  now says what changed on its branches: a new or changed condition, a new label, which branch is
+  now the default. For example: `Changed with AI: Set the condition to "Process Order":
+  valid = true, made the branch to "Decline order" the default of "Valid?"`.
+
+### Checked
+
+- **Route tests:** stored lists, replies inheriting them, older single anchors, and five refusals.
+- **Panel tests:** Shift-picking and un-picking, the posted list (and no list for one element),
+  markers on every element, the "+ n more" label, and "removed" only when all elements are gone.
+- **Prompt test:** a thread on three elements, one of them gone.
+- **Page tests:** `startThread`, and branch descriptions.
+- **A browser run** against `wrangler dev`, with the `ai-edit` request answered by a canned
+  stream:
+  1. A comment on two elements was made by click and Shift-click, with two markers.
+  2. Applying it renamed both tasks.
+  3. "Apply with AI" on the automated check "Exclusive gateway 'Valid?' has no default sequence
+     flow" created the thread on `gw-check`, proposed the default and condition, and applied
+     them.
+  4. Both threads got replies and were resolved, and the autosaved file has the renames and the
+     gateway's `default`.
+  5. No console errors or warnings.
+
+**Still open:**
+- the model choice (phase 1's run);
+- the neighbourhood cut for diagrams over 12,000 characters;
+- decision 3, whether this gets its own budget;
+- "later": proposals stored as suggested changes in a thread;
+- lasso selection, which would only be a faster way to pick several elements.
 
