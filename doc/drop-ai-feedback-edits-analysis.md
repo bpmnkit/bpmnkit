@@ -289,13 +289,13 @@ Measure before choosing:
 | 1 (harness ✓, run pending) | Benchmark `--feedback` cases; pick the model | pass rate, unresolved ids, cost |
 | 2 ✓ | Route, single-thread + free-text entry points, preview, snapshot apply, thread reply/resolve | route tests in the style of `generate-route.test.ts`; Playwright run of the whole flow |
 | 3 ✓ | Batch of threads, multi-element anchors (migration 0009), "Apply" on AI review suggestions | route, panel and page tests; Playwright run of both |
-| later | Proposals stored as "suggested changes" in a thread, so reviewers can discuss them before someone with the baton applies them | — |
+| later ✓ | Proposals stored as "suggested changes" in a thread, so reviewers can discuss them before someone with the baton applies them (migration 0010) | route tests; panel and dialog tests; Playwright run with two people |
 
 ## 10. Decisions for the owner
 
 1. **Private or shared proposals?** *Decided: private.* A proposal stays in the requester's
-   browser until they apply it, the same way generate keeps its draft. Storing proposals in the
-   thread, GitHub-style, stays in "later".
+   browser until they apply it, the same way generate keeps its draft. Sharing one on its
+   threads is an extra, explicit step ("Share as suggestion", §16).
 2. **Resolve threads automatically on apply?** *Decided: yes*, behind a "Resolve addressed
    threads" checkbox that is on by default.
 3. **Model and budget.** Should this share `AI_DAILY_BUDGET` with review and generate, or get
@@ -642,6 +642,77 @@ other two items.
 - the model choice (phase 1's run);
 - the neighbourhood cut for diagrams over 12,000 characters;
 - decision 3, whether this gets its own budget;
-- "later": proposals stored as suggested changes in a thread;
 - lasso selection, which would only be a faster way to pick several elements.
+
+## 16. Shared suggestions, as built (2026-10-01)
+
+The "later" item. A proposal stays private by default (decision 1). **Share as suggestion** in
+the proposal dialog is a second way out of it, next to Apply: the proposal goes on its threads
+so the reviewers can look at it, and anyone who holds the baton can apply it later.
+
+- **Storage.** Migration `0010_comment_suggestions`, one row per suggestion. A row holds the
+  drop, the file, the thread ids in their `@n` order, the change script, the alias map, the
+  `semanticHash` of the document it was made on, and the author's name and token hash. It also
+  holds a status: `open`, `applied` or `withdrawn`, plus who closed it and when. Rows go with
+  their drop.
+- **No stored description.** A suggestion stores the script and the ids it resolves against,
+  never a summary. Every reader's preview is worked out again from the script against their
+  own document. A browser can therefore not make a suggestion say one thing and do another.
+  The route runs the script through `createChangeLineFilter` again, so a stored suggestion
+  holds change lines and nothing else.
+- **Routes.**
+  - `POST /drop/api/suggestions/:shareId` shares a suggestion. Suggestions are listed with the
+    comments (`GET /drop/api/comments/:shareId` now answers `{ comments, suggestions }`).
+  - `PATCH /drop/api/suggestions/:shareId/:id` takes `{ status: "applied", name }` from anyone
+    who writes on the drop, or `{ status: "withdrawn" }` from the author only. A closed one
+    answers 409.
+  - Writes pass the comments' gates (demo, pinned, banned, hourly allowance) and use the same
+    author token and first-write challenge.
+  - Sharing is off unless AI changes are on. It needs 1–`MAX_FEEDBACK_ITEMS` open threads on
+    that diagram, a script of at most 4,000 characters that changes something, id-shaped
+    aliases, and a 64-hex base hash. A drop holds at most 100 open suggestions.
+  - Every change is fanned out through the room as `{ type: "suggestion" }`.
+- **The panel** shows a "Suggested change" card in each thread it answers, saying "Also answers
+  n other threads" when it spans several. The card has **Review**, plus **Withdraw** for its
+  author. An applied one says "Applied by X", and a withdrawn one disappears.
+- **Review** opens the proposal dialog without asking the AI. It needs no access code, no baton
+  and no budget.
+  - It reads against the editor's document when the reader is editing that file, and otherwise
+    against the document on the canvas, live updates included.
+  - If the document's semantic hash is not the suggestion's base, it says "on an earlier
+    version — check it still fits".
+  - A reader gets "Press Edit to apply it" and only Close.
+  - An editor gets Apply. Apply is the phase-2 commit: one undoable edit, replies on the answered
+    threads (resolved if ticked), then `PATCH applied`.
+  - A thread deleted since keeps its number, so the `@n` lines still line up, and gets no reply.
+- **Not changed:** applying is still an ordinary edit by whoever holds the baton, checked by the
+  room. A suggestion changes nothing on its own.
+
+### Checked
+
+- **Route tests (20):**
+  - sharing, with the filtered script stored and fanned out;
+  - token reuse;
+  - eleven refusals;
+  - resolved threads, replies, the demo, and the feature off;
+  - the open cap;
+  - applied once, by anyone;
+  - withdraw by the author only;
+  - routing, and deletion with the drop.
+- **Page tests:**
+  - the card on every thread it answers, Review and Withdraw, "Applied by", and a withdrawn one
+    hidden;
+  - the share and applied requests, and thread numbering with a gap;
+  - the review dialog: no AI request, a reader cannot apply, the earlier-version note, and Apply
+    → edit, reply, record.
+- **A browser run** against `wrangler dev`, with two people and the `ai-edit` request answered
+  by a canned stream:
+  1. Anna commented on "Send Notification".
+  2. Ben edited, asked the AI, and pressed Share as suggestion instead of Apply.
+  3. The card appeared live in Anna's panel. Her Review showed the rename and "Press Edit to
+     apply it", with Close only.
+  4. Ben pressed Done. Anna edited, reviewed, and applied it.
+  5. The thread got its reply and was resolved, Ben's panel showed "Applied by Anna", and the
+     saved file has the rename.
+  6. The AI was asked once. There were no console errors or warnings.
 

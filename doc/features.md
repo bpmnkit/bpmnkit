@@ -1,5 +1,12 @@
 # Features
 
+## Drop: AI proposals shared as suggested changes (2026-10-01)
+
+- Share an AI proposal on its threads instead of applying it. Reviewers see a "Suggested change"
+  card, can open its preview without an access code, and anyone editing can apply it later.
+- The preview is always recomputed from the stored change against the current diagram. It says
+  when the suggestion was made on an earlier version.
+
 ## Drop: comments on several elements; AI review suggestions applied with AI (2026-10-01)
 
 - Shift-click to put one comment on several elements, such as "these two steps should be one".

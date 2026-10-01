@@ -46,6 +46,7 @@ import { currentHashes, findBannedHashes, getDrop } from "../lib/db.js"
 import { isDemo } from "../lib/demo.js"
 import { clientIp, json } from "../lib/http.js"
 import { hashIp, randomBase58 } from "../lib/ids.js"
+import { listSuggestions, toSuggestionView } from "../lib/suggestions.js"
 import { verifyTurnstile } from "../lib/turnstile.js"
 import { ROOM_COMMENT_PATH } from "../room.js"
 import {
@@ -66,7 +67,7 @@ import {
 
 type Found = NonNullable<Awaited<ReturnType<typeof getDrop>>>
 
-function fail(status: number, error: string, code?: string): Response {
+export function fail(status: number, error: string, code?: string): Response {
 	return json(code ? { error, code } : { error }, { status })
 }
 
@@ -99,7 +100,7 @@ function readAnchors(payload: Record<string, unknown>): string[] | string {
 	return ids
 }
 
-async function readJson(request: Request): Promise<Record<string, unknown> | null> {
+export async function readJson(request: Request): Promise<Record<string, unknown> | null> {
 	const parsed = (await request.json().catch(() => null)) as unknown
 	return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed)
 		? (parsed as Record<string, unknown>)
@@ -123,7 +124,7 @@ async function fanOut(env: Env, shareId: string, comment: CommentView): Promise<
  * The gates every write passes before its payload is read: the drop exists,
  * may be annotated, is not banned, and this address has writes left this hour.
  */
-async function gate(
+export async function gate(
 	request: Request,
 	shareId: string,
 	env: Env,
@@ -156,7 +157,7 @@ async function gate(
 }
 
 /** The hash of the request's author token, when it carries one this drop issued. */
-async function knownAuthor(
+export async function knownAuthor(
 	request: Request,
 	shareId: string,
 	env: Env,
@@ -168,8 +169,37 @@ async function knownAuthor(
 	return (await isKnownAuthor(env.DB, shareId, hash)) ? hash : "unknown"
 }
 
-const UNKNOWN_AUTHOR = () =>
+export const UNKNOWN_AUTHOR = () =>
 	fail(403, "this browser's comment key is not one this drop knows", "unknown-author")
+
+/**
+ * Who a new write is by: the author token the request carries, when this drop
+ * issued it, or — for a browser's first write here — a new token, earned by the
+ * challenge when the deployment has one. Shared by comments and suggestions:
+ * one key per browser per drop, whichever it writes first.
+ */
+export async function authorFor(
+	request: Request,
+	shareId: string,
+	env: Env,
+	payload: Record<string, unknown>,
+	now: number,
+): Promise<{ ok: true; hash: string; issued: string | null } | { ok: false; error: Response }> {
+	const known = await knownAuthor(request, shareId, env)
+	if (known === "unknown") return { ok: false, error: UNKNOWN_AUTHOR() }
+	if (known !== null) return { ok: true, hash: known, issued: null }
+	const secret = env.TURNSTILE_SECRET
+	if (secret) {
+		const token = typeof payload.token === "string" ? payload.token : ""
+		if (!(await verifyTurnstile(secret, token, clientIp(request)))) {
+			return { ok: false, error: fail(403, "that check did not go through", "unverified") }
+		}
+	}
+	const issued = randomBase58(24)
+	const hash = await authorHash(issued)
+	await addAuthor(env.DB, shareId, hash, now)
+	return { ok: true, hash, issued }
+}
 
 /** Routes `/drop/api/comments/:shareId[/:commentId]`. */
 export async function handleComments(
@@ -189,10 +219,15 @@ export async function handleComments(
 	return fail(405, "method not allowed")
 }
 
+/** Every comment on the drop, and the suggested changes shared on its threads. */
 async function list(shareId: string, env: Env): Promise<Response> {
-	if (isDemo(shareId)) return json({ comments: [] })
+	if (isDemo(shareId)) return json({ comments: [], suggestions: [] })
 	if (!(await getDrop(env.DB, shareId))) return fail(404, "not found")
-	return json({ comments: (await listComments(env.DB, shareId)).map(toView) })
+	const [comments, suggestions] = await Promise.all([
+		listComments(env.DB, shareId),
+		listSuggestions(env.DB, shareId),
+	])
+	return json({ comments: comments.map(toView), suggestions: suggestions.map(toSuggestionView) })
 }
 
 async function create(request: Request, shareId: string, env: Env, now: number): Promise<Response> {
@@ -245,22 +280,9 @@ async function create(request: Request, shareId: string, env: Env, now: number):
 	}
 
 	// Last, because it is the one gate that costs a round trip to Cloudflare.
-	const known = await knownAuthor(request, shareId, env)
-	if (known === "unknown") return UNKNOWN_AUTHOR()
-	let hash = known
-	let issued: string | null = null
-	if (hash === null) {
-		const secret = env.TURNSTILE_SECRET
-		if (secret) {
-			const token = typeof payload.token === "string" ? payload.token : ""
-			if (!(await verifyTurnstile(secret, token, clientIp(request)))) {
-				return fail(403, "that check did not go through", "unverified")
-			}
-		}
-		issued = randomBase58(24)
-		hash = await authorHash(issued)
-		await addAuthor(env.DB, shareId, hash, now)
-	}
+	const author = await authorFor(request, shareId, env, payload, now)
+	if (!author.ok) return author.error
+	const { hash, issued } = author
 
 	const stored: Omit<StoredComment, "authorId"> = {
 		id: randomBase58(12),

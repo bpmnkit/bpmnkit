@@ -41,7 +41,7 @@ src/
 migrations/        D1 schema (0001 core, 0002 AI review, 0003 version log,
                    0004 report state, 0005 the FEEL kind, 0006 comments,
                    0007 describe-to-diagram cache, 0008 describe-to-diagram hourly cap,
-                   0009 comments on several elements)
+                   0009 comments on several elements, 0010 suggested changes)
 ```
 
 ## Develop
@@ -103,7 +103,10 @@ With `AI_FEEDBACK_MODEL` set as well (it is, in `wrangler.jsonc`), the passcode 
 make the change the threads ask for. A comment can be on several elements (Shift-click them), and
 each AI review suggestion has the same button: it becomes a comment thread first. The page shows the proposal (a preview, what it does to each
 thread, and what deserves a careful look) and changes nothing until **Apply**. Apply makes one
-undoable edit, then replies on each answered thread and resolves it. Remove `AI_FEEDBACK_MODEL` to
+undoable edit, then replies on each answered thread and resolves it. **Share as suggestion**
+stores the proposal on its threads instead (`/drop/api/suggestions`): everyone can review it,
+worked out again against their own document, and whoever edits can apply it later
+(`doc/drop-ai-feedback-edits-analysis.md` §16). Remove `AI_FEEDBACK_MODEL` to
 turn it off. Locally the model call needs a Cloudflare account; everything around it runs offline.
 See `doc/drop-ai-feedback-edits-analysis.md` §14.
 

@@ -23,6 +23,7 @@ import {
 	mentions,
 	normaliseName,
 } from "../shared/comments.js"
+import type { SuggestionView } from "../shared/suggestions.js"
 
 // ── Pure helpers ────────────────────────────────────────────────────────────
 
@@ -262,6 +263,8 @@ export interface CommentsOptions {
 	 * the deployment has AI changes on; the panel then offers it on open threads.
 	 */
 	aiEdit?(threads: Thread[]): void
+	/** Opens a shared suggestion's preview. Given with `aiEdit`. */
+	reviewSuggestion?(suggestion: SuggestionView): void
 }
 
 interface FileRef {
@@ -271,6 +274,8 @@ interface FileRef {
 
 export class CommentsPanel {
 	private readonly comments = new Map<string, CommentView>()
+	/** Suggested changes shared on this drop's threads, by id. */
+	private readonly suggestions = new Map<string, SuggestionView>()
 	private readonly presentNames = new Set<string>()
 	private file: FileRef | null = null
 	private canvas: BpmnCanvas | null = null
@@ -333,8 +338,12 @@ export class CommentsPanel {
 		try {
 			const res = await fetch(`/drop/api/comments/${this.opts.shareId}`)
 			if (!res.ok) return
-			const { comments } = (await res.json()) as { comments: CommentView[] }
+			const { comments, suggestions } = (await res.json()) as {
+				comments: CommentView[]
+				suggestions?: SuggestionView[]
+			}
 			for (const c of comments) this.comments.set(c.id, c)
+			for (const s of suggestions ?? []) this.suggestions.set(s.id, s)
 			this.render()
 		} catch {
 			// Comments are an addition to the page; the diagram stands without them.
@@ -351,6 +360,49 @@ export class CommentsPanel {
 			this.opts.notice.box.hidden = false
 		}
 		this.render()
+	}
+
+	/** A suggestion from the room: shared, applied or withdrawn, by anyone. */
+	receiveSuggestion(suggestion: SuggestionView): void {
+		this.suggestions.set(suggestion.id, suggestion)
+		this.render()
+	}
+
+	/**
+	 * Shares a proposal on the threads it answers, so the reviewers can look at
+	 * it before anyone applies it. Answers it, or null (the panel says why).
+	 */
+	async shareSuggestion(payload: {
+		filename: string
+		threadIds: string[]
+		script: string
+		aliases: Record<string, string>
+		baseHash: string
+	}): Promise<SuggestionView | null> {
+		if (this.opts.readOnly) return null
+		return (await this.post("suggestions", payload))?.suggestion ?? null
+	}
+
+	/** Records that a suggestion was applied, or withdraws your own. */
+	async markSuggestion(id: string, status: "applied" | "withdrawn"): Promise<boolean> {
+		if (!this.token) return false
+		const res = await this.send("PATCH", `/${id}`, { status, name: this.name }, "suggestions")
+		return res.ok
+	}
+
+	/**
+	 * The threads a suggestion answers, in its order — what its `@n` lines
+	 * number. A thread deleted outright since is null.
+	 */
+	threadsOf(suggestion: SuggestionView): (Thread | null)[] {
+		return suggestion.threadIds.map((id) => {
+			const root = this.comments.get(id)
+			if (!root) return null
+			const replies = [...this.comments.values()]
+				.filter((c) => c.parentId === id && c.deletedAt === null)
+				.sort((a, b) => a.createdAt - b.createdAt)
+			return { root, replies }
+		})
 	}
 
 	/** Who is here, by name, from the room's presence. */
@@ -584,6 +636,10 @@ export class CommentsPanel {
 
 		box.append(this.commentNode(root))
 		for (const reply of thread.replies) box.append(this.commentNode(reply))
+		for (const suggestion of this.suggestions.values()) {
+			if (suggestion.status === "withdrawn" || !suggestion.threadIds.includes(root.id)) continue
+			box.append(this.suggestionNode(suggestion))
+		}
 
 		if (this.opts.readOnly) return box
 		const actions = el("div", "hv-actions")
@@ -613,6 +669,43 @@ export class CommentsPanel {
 			)
 		}
 		return box
+	}
+
+	/**
+	 * A suggested change shared on this thread. It says who and when, never
+	 * what: the preview behind Review is worked out from the script itself.
+	 */
+	private suggestionNode(s: SuggestionView): HTMLElement {
+		const node = el("div", `cm-suggestion${s.status === "applied" ? " applied" : ""}`)
+		const meta = el("div", "cm-meta")
+		meta.append(
+			el("span", "cm-tag", "Suggested change"),
+			el("span", "cm-author", s.authorName),
+			el("span", "cm-when", when(s.createdAt)),
+		)
+		node.append(meta)
+		const others = s.threadIds.length - 1
+		if (others > 0) {
+			node.append(
+				el("div", "cm-when", `Also answers ${others} other thread${others === 1 ? "" : "s"}`),
+			)
+		}
+		if (s.status === "applied") {
+			node.append(el("div", "cm-resolved", `Applied by ${s.closedBy ?? "someone"}`))
+			return node
+		}
+		const actions = el("div", "hv-actions")
+		const review = this.opts.reviewSuggestion
+		if (review) actions.append(button("Review", () => review(s)))
+		if (s.authorId === this.authorId && !this.opts.readOnly) {
+			actions.append(
+				button("Withdraw", () => {
+					void this.markSuggestion(s.id, "withdrawn")
+				}),
+			)
+		}
+		if (actions.childElementCount > 0) node.append(actions)
+		return node
 	}
 
 	private commentNode(c: CommentView): HTMLElement {
@@ -839,10 +932,26 @@ export class CommentsPanel {
 	// ── Writes ─────────────────────────────────────────────────────────────────
 
 	/** Posts a comment; answers it, or null when it was not made (and says why). */
-	private async create(
+	/** Posts a comment; answers it, or null when it was not made (and says why). */
+	private async create(payload: Record<string, unknown>): Promise<CommentView | null> {
+		const res = await this.post("comments", payload)
+		if (!res?.comment) return null
+		this.anchors = []
+		this.canvas?.clearHighlights()
+		this.renderCompose()
+		return res.comment
+	}
+
+	/**
+	 * A new write — a comment or a suggestion — under this browser's name and
+	 * author token. The first write from this browser in this drop is the one
+	 * challenge; the key it earns means the next ones are not asked again.
+	 */
+	private async post(
+		api: "comments" | "suggestions",
 		payload: Record<string, unknown>,
 		retried = false,
-	): Promise<CommentView | null> {
+	): Promise<{ comment?: CommentView; suggestion?: SuggestionView } | null> {
 		const nameInput = this.opts.compose.querySelector<HTMLInputElement>(".cm-name")
 		if (nameInput && nameInput.value !== (this.name ?? "") && !this.setName(nameInput.value)) {
 			return null
@@ -853,8 +962,6 @@ export class CommentsPanel {
 			return null
 		}
 		const body: Record<string, unknown> = { ...payload, name: this.name }
-		// The first comment from this browser in this drop is the one challenge;
-		// the key it earns means the next ones are not asked again.
 		if (!this.token) {
 			const verified = await this.opts.challenge("One check before you comment")
 			if (!verified.ok) {
@@ -865,21 +972,18 @@ export class CommentsPanel {
 			}
 			if (verified.token) body.token = verified.token
 		}
-		const res = await this.send("POST", "", body)
+		const res = await this.send("POST", "", body, api)
 		if (res.code === "unknown-author" && !retried) {
 			this.forgetToken()
-			return this.create(payload, true)
+			return this.post(api, payload, true)
 		}
-		if (!res.ok || !res.comment) return null
+		if (!res.ok) return null
 		if (res.authorToken) {
 			this.token = res.authorToken
 			storeAuthorToken(this.opts.shareId, res.authorToken)
 			await this.refreshAuthorId()
 		}
-		this.anchors = []
-		this.canvas?.clearHighlights()
-		this.renderCompose()
-		return res.comment
+		return res
 	}
 
 	private async patch(c: CommentView, payload: Record<string, unknown>): Promise<boolean> {
@@ -914,22 +1018,30 @@ export class CommentsPanel {
 		method: "POST" | "PATCH" | "DELETE",
 		path: string,
 		payload?: Record<string, unknown>,
-	): Promise<{ ok: boolean; code?: string; authorToken?: string; comment?: CommentView }> {
+		api: "comments" | "suggestions" = "comments",
+	): Promise<{
+		ok: boolean
+		code?: string
+		authorToken?: string
+		comment?: CommentView
+		suggestion?: SuggestionView
+	}> {
 		const headers: Record<string, string> = { "Content-Type": "application/json" }
 		if (this.token) headers[AUTHOR_HEADER] = this.token
 		try {
-			const res = await fetch(`/drop/api/comments/${this.opts.shareId}${path}`, {
+			const res = await fetch(`/drop/api/${api}/${this.opts.shareId}${path}`, {
 				method,
 				headers,
 				...(payload ? { body: JSON.stringify(payload) } : {}),
 			})
 			const answer = (await res.json().catch(() => null)) as {
 				comment?: CommentView
+				suggestion?: SuggestionView
 				authorToken?: string
 				error?: string
 				code?: string
 			} | null
-			if (!res.ok || !answer?.comment) {
+			if (!res.ok || !(answer?.comment || answer?.suggestion)) {
 				if (answer?.code === "unknown-author" && method !== "POST") {
 					this.forgetToken()
 					this.say("This browser no longer holds the key to your comments on this drop.")
@@ -939,9 +1051,15 @@ export class CommentsPanel {
 				return { ok: false, code: answer?.code }
 			}
 			this.say("")
-			this.comments.set(answer.comment.id, answer.comment)
+			if (answer.comment) this.comments.set(answer.comment.id, answer.comment)
+			if (answer.suggestion) this.suggestions.set(answer.suggestion.id, answer.suggestion)
 			this.render()
-			return { ok: true, authorToken: answer.authorToken, comment: answer.comment }
+			return {
+				ok: true,
+				authorToken: answer.authorToken,
+				comment: answer.comment,
+				suggestion: answer.suggestion,
+			}
 		} catch {
 			this.say("That did not go through. Check your connection and try again.")
 			return { ok: false }

@@ -16,10 +16,19 @@
  *    ticked.
  *
  * A proposal is private to the person who asked until they apply it
- * (`doc/drop-ai-feedback-edits-analysis.md` §10).
+ * (`doc/drop-ai-feedback-edits-analysis.md` §10) — or share it on its threads
+ * as a suggested change. The same dialog reviews a shared suggestion: its
+ * script is worked out again against the reader's document, so what it shows
+ * is what applying it would do (§16).
  */
 import { BpmnCanvas } from "@bpmnkit/canvas"
-import { Bpmn, type BpmnDefinitions, type BpmnFlowElement, parseProcessDelta } from "@bpmnkit/core"
+import {
+	Bpmn,
+	type BpmnDefinitions,
+	type BpmnFlowElement,
+	parseProcessDelta,
+	semanticHash,
+} from "@bpmnkit/core"
 import { type ApplyProcessDeltaResult, applyProcessDelta } from "@bpmnkit/editor/headless"
 import type { FeedbackEvent } from "../lib/feedback.js"
 import { createSseReader } from "../lib/generate.js"
@@ -259,7 +268,7 @@ export interface AiEditOptions {
 	filename: string
 	/** The threads to answer, in the order they are numbered. */
 	threads: Thread[]
-	/** The editor's document when the request was made. */
+	/** The editor's document when the request was made; the shown one when reviewing. */
 	xml: string
 	theme: "light" | "dark"
 	/** The deployment challenges AI requests (a Turnstile site key is set). */
@@ -267,8 +276,33 @@ export interface AiEditOptions {
 	challenge: Challenge
 	/** The editor's document now, or null when the editor has closed. */
 	currentXml(): string | null
-	/** Makes the change in the editor: one edit, checked by the room. */
-	apply(defs: BpmnDefinitions): void
+	/**
+	 * Makes the change in the editor: one edit, checked by the room. Absent when
+	 * the reader is not editing — a suggestion can be reviewed, not applied.
+	 */
+	apply?(defs: BpmnDefinitions): void
+	/**
+	 * Shares a fresh proposal on its threads as a suggested change, so the
+	 * reviewers can see it before it is applied. Answers whether it was shared.
+	 */
+	share?(proposal: {
+		threadIds: string[]
+		script: string
+		aliases: Record<string, string>
+		baseHash: string
+	}): Promise<boolean>
+	/**
+	 * Review a shared suggestion instead of asking the AI: its script is worked
+	 * out against `xml` here, as a fresh answer would be. `applied` records it
+	 * once the change is made.
+	 */
+	review?: {
+		authorName: string
+		script: string
+		aliases: Record<string, string>
+		baseHash: string
+		applied(): Promise<boolean>
+	}
 	/** Posts a reply on a thread, and resolves it if asked. Answers whether the reply went. */
 	reply(threadId: string, body: string, resolve: boolean): Promise<boolean>
 	/** A short message on the page, after the dialog has closed. */
@@ -309,13 +343,15 @@ function more(root: Thread["root"]): string {
 export function openAiEdit(opts: AiEditOptions): void {
 	const before = Bpmn.parse(opts.xml)
 	const dialog = el("dialog", "ts-dialog ae-dialog")
-	dialog.setAttribute("aria-label", "AI changes")
+	const review = opts.review
+	const title = review ? "Suggested change" : "AI changes"
+	dialog.setAttribute("aria-label", title)
 	const head = el("div", "ae-head")
 	head.append(
 		el(
 			"span",
 			"ts-title",
-			`AI changes · ${opts.threads.length} thread${opts.threads.length === 1 ? "" : "s"}`,
+			`${title} · ${opts.threads.length} thread${opts.threads.length === 1 ? "" : "s"}`,
 		),
 		button("×", () => dialog.close(), "ai-x"),
 	)
@@ -460,9 +496,16 @@ export function openAiEdit(opts: AiEditOptions): void {
 			aliases: answer.aliases,
 		})
 		const summary = summarise(before, result, opts.threads)
-		status.textContent = summary.empty
-			? "The AI proposes no change."
-			: `Proposed change${answer.cached ? " (answered before)" : ""} — nothing is changed until you apply it.`
+		if (review) {
+			const earlier = semanticHash(before) !== review.baseHash
+			status.textContent = summary.empty
+				? `Suggested by ${review.authorName} — it changes nothing on this version.`
+				: `Suggested by ${review.authorName}${earlier ? ", on an earlier version — check it still fits" : ""}. ${opts.apply ? "Nothing is changed until you apply it." : "Press Edit to apply it."}`
+		} else {
+			status.textContent = summary.empty
+				? "The AI proposes no change."
+				: `Proposed change${answer.cached ? " (answered before)" : ""} — nothing is changed until you apply it.`
+		}
 
 		canvas?.destroy()
 		canvas = null
@@ -525,21 +568,47 @@ export function openAiEdit(opts: AiEditOptions): void {
 		const resolveLabel = el("label", "ae-check")
 		resolveLabel.append(resolve, " Resolve the threads it answers")
 
-		const apply = button(
-			"Apply",
-			() => {
-				void commit(result, summary, resolve.checked)
-			},
-			"hv-btn hv-btn--go",
-		)
-		apply.disabled = summary.empty
-		foot.replaceChildren(
-			hintBox,
-			resolveLabel,
-			button("Try again", () => void ask(hintBox.value.trim())),
-			button("Discard", () => dialog.close()),
-			apply,
-		)
+		const controls: HTMLElement[] = []
+		if (!review) {
+			controls.push(
+				hintBox,
+				button("Try again", () => void ask(hintBox.value.trim())),
+			)
+			if (opts.share && !summary.empty) {
+				const share = opts.share
+				const shareButton = button("Share as suggestion", () => {
+					shareButton.disabled = true
+					void share({
+						threadIds: opts.threads.map((t) => t.root.id),
+						script: answer.script,
+						aliases: answer.aliases,
+						baseHash: semanticHash(before),
+					}).then((shared) => {
+						if (!shared) {
+							shareButton.disabled = false
+							return
+						}
+						dialog.close()
+						opts.notice("Shared on its threads as a suggested change.")
+					})
+				})
+				controls.push(shareButton)
+			}
+		}
+		controls.push(button(review ? "Close" : "Discard", () => dialog.close()))
+		if (opts.apply) {
+			const apply = button(
+				"Apply",
+				() => {
+					void commit(result, summary, resolve.checked)
+				},
+				"hv-btn hv-btn--go",
+			)
+			apply.disabled = summary.empty
+			controls.unshift(resolveLabel)
+			controls.push(apply)
+		}
+		foot.replaceChildren(...controls)
 	}
 
 	async function commit(
@@ -549,18 +618,23 @@ export function openAiEdit(opts: AiEditOptions): void {
 	): Promise<void> {
 		// The proposal was worked out on the document the AI read. If the writer
 		// changed it since — or the editor has closed — it no longer fits.
-		if (opts.currentXml() !== opts.xml) {
-			status.textContent =
-				"The diagram changed since the AI read it. Try again to get a proposal for this version."
+		if (opts.currentXml() !== opts.xml || !opts.apply) {
+			status.textContent = review
+				? "The diagram changed since this was opened. Close it and review the suggestion again."
+				: "The diagram changed since the AI read it. Try again to get a proposal for this version."
 			return
 		}
 		opts.apply(result.definitions)
 		dialog.close()
-		const answered = summary.threads.filter((t) => t.changes.length > 0)
+		// A thread deleted since has nobody left to reply to.
+		const answered = summary.threads.filter(
+			(t) => t.changes.length > 0 && t.thread.root.deletedAt === null,
+		)
 		let replied = 0
 		for (const t of answered) {
 			if (await opts.reply(t.thread.root.id, replyText(t), resolve)) replied += 1
 		}
+		if (review) await review.applied()
 		opts.notice(
 			answered.length === 0
 				? "Applied. No thread was answered, so none was replied to."
@@ -568,5 +642,7 @@ export function openAiEdit(opts: AiEditOptions): void {
 		)
 	}
 
-	void ask()
+	if (review) {
+		propose({ ok: true, aliases: review.aliases, script: review.script, cached: false }, "")
+	} else void ask()
 }
