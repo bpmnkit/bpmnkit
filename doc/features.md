@@ -1,5 +1,12 @@
 # Features
 
+## Change an existing diagram from a model's answer (2026-10-01)
+
+- `writeProcessText` shows a model a diagram someone drew; the model answers with a change
+  script (`parseProcessDelta`), and `applyProcessDelta` applies it without laying the diagram out
+  again. Only what the change touches moves. This is the base for AI changes from Drop review
+  comments.
+
 ## Drop: draft a diagram from an image (2026-09-30)
 
 - Describe-to-diagram takes a whiteboard photo, a sketch or a screenshot, picked or pasted, with

@@ -337,6 +337,8 @@ const { semanticHash, changes } = await writeBpmn(defs, { output: "flow.bpmn" })
 | `createCompactStream(opts?)` | Read a diagram out of a model's token stream, frame by frame |
 | `parseProcessText(text)` | Read a process a model wrote in the line format (`PROCESS_TEXT_GUIDE`); never throws |
 | `createProcessTextStream()` | Read the line format while it streams, one finished line at a time |
+| `writeProcessText(defs)` | Write an existing diagram in the line format, for a model to read; returns the text and an alias → element id map |
+| `parseProcessDelta(text)` | Read a change script (`PROCESS_DELTA_GUIDE`): only what changes, by id; never throws |
 | `generateId(prefix)` | Generate a unique short ID |
 
 ### Process documentation

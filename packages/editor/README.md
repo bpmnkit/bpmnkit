@@ -91,6 +91,19 @@ interface HudOptions {
 
 The HUD's **More** menu has **Export documentation…**: a print-ready HTML view (Print → Save as PDF), or an HTML, Markdown or Word download, built with `@bpmnkit/core`'s process documentation renderers.
 
+### `applyProcessDelta(defs, delta, { aliases })`
+
+Applies a change script from `@bpmnkit/core`'s `parseProcessDelta` to a diagram someone drew, keeping its layout: new nodes are placed beside what they follow, an insert between two connected nodes moves only the shapes right of it, and nothing the script does not mention changes. Returns the new document with what it `created`, `changed` and `removed`, the `fixes` it made and the `problems` it left out. Also exported from `@bpmnkit/editor/headless`.
+
+```typescript
+import { parseProcessDelta, writeProcessText } from "@bpmnkit/core"
+import { applyProcessDelta } from "@bpmnkit/editor/headless"
+
+const { text, aliases } = writeProcessText(defs) // what the model reads
+const script = await askModel(text, feedback)     // e.g. "review > second[user Second approval] > pay"
+const { definitions, problems } = applyProcessDelta(defs, parseProcessDelta(script), { aliases })
+```
+
 ### `createSideDock(container)` → `SideDock`
 
 Creates the right-side collapsible dock.

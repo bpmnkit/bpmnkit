@@ -400,6 +400,7 @@ export { createCompactStream } from "./bpmn/compact-stream.js"
 export type { CompactStream, CompactStreamOptions } from "./bpmn/compact-stream.js"
 export {
 	PROCESS_TEXT_GUIDE,
+	conditionOrLabel,
 	createProcessTextStream,
 	parseProcessText,
 } from "./bpmn/process-text.js"
@@ -409,6 +410,15 @@ export type {
 	ProcessTextResult,
 	ProcessTextStream,
 } from "./bpmn/process-text.js"
+export { PROCESS_DELTA_GUIDE, parseProcessDelta } from "./bpmn/process-delta.js"
+export type { DeltaFlow, DeltaNode, ProcessDelta } from "./bpmn/process-delta.js"
+export {
+	writableCondition,
+	writableLabel,
+	writableName,
+	writeProcessText,
+} from "./bpmn/process-text-writer.js"
+export type { WrittenProcessText } from "./bpmn/process-text-writer.js"
 export {
 	ELEMENT_GROUP_ORDER,
 	ELEMENT_TYPE_GROUPS,

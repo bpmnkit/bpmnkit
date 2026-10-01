@@ -4,6 +4,8 @@ export { injectStyle } from "./inject.js"
 export { createEmptyDefinitions } from "./modeling.js"
 export { applyOp } from "./ops.js"
 export type { EditorOp, OpResult, ShapeMove } from "./ops.js"
+export { applyProcessDelta } from "./process-delta.js"
+export type { ApplyProcessDeltaOptions, ApplyProcessDeltaResult } from "./process-delta.js"
 export { createIdFactory, genId, newIdSeed } from "./id.js"
 export type { IdFactory } from "./id.js"
 export type {

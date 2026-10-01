@@ -89,7 +89,7 @@ export interface ProcessTextResult {
 	questions: ProcessTextQuestion[]
 }
 
-const KINDS: Record<string, BpmnElementType> = {
+export const KINDS: Record<string, BpmnElementType> = {
 	start: "startEvent",
 	end: "endEvent",
 	task: "task",
@@ -115,7 +115,7 @@ const KINDS: Record<string, BpmnElementType> = {
  * from the Drop benchmark's recorded answers. Accepted without a problem: the
  * meaning is plain, and teaching them would only lengthen the prompt.
  */
-const ALIASES: Record<string, BpmnElementType> = {
+export const ALIASES: Record<string, BpmnElementType> = {
 	event: "intermediateCatchEvent",
 	parallel: "parallelGateway",
 	exclusive: "exclusiveGateway",
@@ -126,7 +126,7 @@ const ALIASES: Record<string, BpmnElementType> = {
 	human: "userTask",
 }
 
-const TRIGGERS = new Set([
+export const TRIGGERS = new Set([
 	"timer",
 	"message",
 	"signal",
@@ -139,7 +139,7 @@ const TRIGGERS = new Set([
 	"cancel",
 ])
 
-const EVENTS = new Set<BpmnElementType>([
+export const EVENTS = new Set<BpmnElementType>([
 	"startEvent",
 	"endEvent",
 	"intermediateCatchEvent",
@@ -215,6 +215,97 @@ function nameFromId(id: string): string {
 	return words.charAt(0).toUpperCase() + words.slice(1)
 }
 
+/** A path line split into its parts. */
+export interface PathTokens {
+	/** The nodes in the order written, each with the bracket text it was declared with, if any. */
+	refs: { id: string; spec?: string }[]
+	/** The label of each arrow, between `refs[k]` and `refs[k + 1]`. */
+	labels: (string | undefined)[]
+	/** A parenthesised note after the last node, which carries no meaning. */
+	note?: string
+}
+
+/**
+ * Splits one complete path line (`a[kind Name] >(Label: cond) b > c`) into its
+ * node references and arrow labels, or says where it stops making sense.
+ *
+ * Shared by {@link parseProcessText} and the change-script parser, so the two
+ * read paths the same way.
+ */
+export function tokenizePath(text: string): PathTokens | { error: string } {
+	const refs: PathTokens["refs"] = []
+	const labels: PathTokens["labels"] = []
+	let note: string | undefined
+	let i = 0
+	for (;;) {
+		const id = ID.exec(text.slice(i))?.[0]
+		if (id === undefined) return { error: `expected a node id at "${text.slice(i, i + 20)}"` }
+		i += id.length
+		let spec: string | undefined
+		// `done-end [end Done]`: a space before the bracket still declares.
+		const gap = /^ +\[/.exec(text.slice(i))
+		if (gap) i += gap[0].length - 1
+		if (text[i] === "[") {
+			const end = matching(text, i, "[", "]")
+			if (end < 0) return { error: `"${id}[" is not closed` }
+			spec = text.slice(i + 1, end).trim()
+			i = end + 1
+		}
+		refs.push({ id, spec })
+
+		while (text[i] === " ") i++
+		if (i >= text.length) break
+		// `gr[xor Reproducible?]   (ADDED)`: a note after the last node, most
+		// often marking what a change added.
+		const trailing = /^\([^()]*\)\s*$/.exec(text.slice(i))?.[0]
+		if (trailing !== undefined) {
+			note = trailing.trim()
+			break
+		}
+		// `->` and `-->` are what a model reaches for from Mermaid; take them too.
+		const arrow = /^-{0,2}>/.exec(text.slice(i))?.[0]
+		if (arrow === undefined) return { error: `expected ">" at "${text.slice(i, i + 20)}"` }
+		i += arrow.length
+		let label: string | undefined
+		if (text[i] === "(") {
+			const end = matching(text, i, "(", ")")
+			if (end < 0) return { error: "edge label is not closed" }
+			label = text.slice(i + 1, end)
+			i = end + 1
+		}
+		labels.push(label)
+		while (text[i] === " ") i++
+		// `gw >(No: default) > next`: a second arrow after the label.
+		if (label !== undefined && text[i] === ">") {
+			i++
+			while (text[i] === " ") i++
+		}
+	}
+	return note === undefined ? { refs, labels } : { refs, labels, note }
+}
+
+/**
+ * Keeps a condition only if it is FEEL.
+ *
+ * Models write the branch they mean in prose as often as in FEEL
+ * (`No: is not approved`). As an expression that fails at deploy time; as the
+ * branch's label it still says what was meant, and the missing condition is
+ * one the lint names and a reader can fill in.
+ */
+export function conditionOrLabel(edge: Pick<CompactFlow, "name" | "condition" | "isDefault">): {
+	edge: Pick<CompactFlow, "name" | "condition" | "isDefault">
+	problem?: string
+} {
+	if (edge.condition === undefined) return { edge }
+	const prose = edge.condition.slice(1).trim()
+	if (parseExpression(prose).errors.length === 0) return { edge }
+	const { condition: _dropped, ...rest } = edge
+	return {
+		edge: { ...rest, name: edge.name ? `${edge.name}: ${prose}` : prose },
+		problem: `condition "${prose}" is not FEEL; kept as the branch label`,
+	}
+}
+
 class Reader {
 	readonly nodes = new Map<string, Node>()
 	/**
@@ -271,53 +362,12 @@ class Reader {
 	private read(text: string, n: number): boolean {
 		// Parse the whole line before keeping any of it, so a line that fails half
 		// way leaves nothing behind.
-		const refs: { id: string; spec?: string }[] = []
-		const labels: (string | undefined)[] = []
-		let i = 0
-		for (;;) {
-			const id = ID.exec(text.slice(i))?.[0]
-			if (id === undefined) return this.fail(n, `expected a node id at "${text.slice(i, i + 20)}"`)
-			i += id.length
-			let spec: string | undefined
-			// `done-end [end Done]`: a space before the bracket still declares.
-			const gap = /^ +\[/.exec(text.slice(i))
-			if (gap) i += gap[0].length - 1
-			if (text[i] === "[") {
-				const end = matching(text, i, "[", "]")
-				if (end < 0) return this.fail(n, `"${id}[" is not closed`)
-				spec = text.slice(i + 1, end).trim()
-				i = end + 1
-			}
-			refs.push({ id, spec })
-
-			while (text[i] === " ") i++
-			if (i >= text.length) break
-			// `gr[xor Reproducible?]   (ADDED)`: a note after the last node, most
-			// often marking what a change added.
-			const note = /^\([^()]*\)\s*$/.exec(text.slice(i))?.[0]
-			if (note !== undefined) {
-				this.problems.push({ line: n, message: `ignored the note "${note.trim()}"` })
-				break
-			}
-			// `->` and `-->` are what a model reaches for from Mermaid; take them too.
-			const arrow = /^-{0,2}>/.exec(text.slice(i))?.[0]
-			if (arrow === undefined) return this.fail(n, `expected ">" at "${text.slice(i, i + 20)}"`)
-			i += arrow.length
-			let label: string | undefined
-			if (text[i] === "(") {
-				const end = matching(text, i, "(", ")")
-				if (end < 0) return this.fail(n, "edge label is not closed")
-				label = text.slice(i + 1, end)
-				i = end + 1
-			}
-			labels.push(label)
-			while (text[i] === " ") i++
-			// `gw >(No: default) > next`: a second arrow after the label.
-			if (label !== undefined && text[i] === ">") {
-				i++
-				while (text[i] === " ") i++
-			}
+		const path = tokenizePath(text)
+		if ("error" in path) return this.fail(n, path.error)
+		if (path.note !== undefined) {
+			this.problems.push({ line: n, message: `ignored the note "${path.note}"` })
 		}
+		const { refs, labels } = path
 
 		// Declarations and references resolve left to right, so a chain that
 		// reuses an id (`task[A] > task[B]`) links the nodes in the order written.
@@ -336,27 +386,14 @@ class Reader {
 		return true
 	}
 
-	/**
-	 * Keeps a condition only if it is FEEL.
-	 *
-	 * Models write the branch they mean in prose as often as in FEEL
-	 * (`No: is not approved`). As an expression that fails at deploy time; as the
-	 * branch's label it still says what was meant, and the missing condition is
-	 * one the lint names and a reader can fill in.
-	 */
+	/** {@link conditionOrLabel}, with its problem recorded against line `n`. */
 	private feelOrLabel(
 		edge: Pick<CompactFlow, "name" | "condition" | "isDefault">,
 		n: number,
 	): Pick<CompactFlow, "name" | "condition" | "isDefault"> {
-		if (edge.condition === undefined) return edge
-		const prose = edge.condition.slice(1).trim()
-		if (parseExpression(prose).errors.length === 0) return edge
-		this.problems.push({
-			line: n,
-			message: `condition "${prose}" is not FEEL; kept as the branch label`,
-		})
-		const { condition: _dropped, ...rest } = edge
-		return { ...rest, name: edge.name ? `${edge.name}: ${prose}` : prose }
+		const { edge: kept, problem } = conditionOrLabel(edge)
+		if (problem !== undefined) this.problems.push({ line: n, message: problem })
+		return kept
 	}
 
 	private fail(n: number, message: string): false {
@@ -488,7 +525,7 @@ class Reader {
 	}
 }
 
-function edgeLabel(
+export function edgeLabel(
 	label: string | undefined,
 ): Pick<CompactFlow, "name" | "condition" | "isDefault"> {
 	if (label === undefined) return {}

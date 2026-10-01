@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-01 — AI changes from review comments: phase 0 (core and editor)
+
+- `writeProcessText` (core) writes an existing diagram in the line format, under readable aliases, for a model to read. `parseProcessDelta` + `PROCESS_DELTA_GUIDE` (core) read a change script: only what changes, with `-` removals and `@n` lines naming the feedback item a change answers. `applyProcessDelta` (editor, headless) applies it with the editor's modelling functions, so the drawn layout stays. It places new nodes beside what they follow and makes room for an insert by moving only the shapes right of it, widening pools and lanes with them. It joins the neighbours of a removed node and adds new nodes to their lane.
+- Checked against the 21 MIWG files that draw their process in full: a diagram's own restatement leaves it unchanged, and an insert, a new branch and a removal leave a document the Drop room would accept, with no new shape overlapping another.
+- `parseProcessText` and `parseProcessDelta` share one path tokenizer and FEEL check (`tokenizePath`, `conditionOrLabel`). The drop suite's recorded answers still parse to the same diagrams.
+- Decided for phase 2: a proposal stays private to the person who asked until they apply it, and applying resolves the threads it addressed (`doc/drop-ai-feedback-edits-analysis.md` §10).
+
 ## 2026-10-01 — Drop: analysis of changing a shared diagram from review comments
 
 - Proposal only, nothing built: `doc/drop-ai-feedback-edits-analysis.md`. Reviewers mark elements or leave overall feedback, and the AI makes the change in the editor session. The model writes only a change script in the line format (new `-` and `@n` lines), not the whole diagram again. A new `applyProcessDelta` applies it with the editor's layout-aware modelling functions, so untouched elements and the hand-drawn layout stay as they are. The result goes through the existing `snapshot` op, after a mandatory diff preview.

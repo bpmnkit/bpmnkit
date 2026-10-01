@@ -463,6 +463,8 @@ const { semanticHash, changes } = await writeBpmn(defs, { output: "flow.bpmn" })
 | \`createCompactStream(opts?)\` | Read a diagram out of a model's token stream, frame by frame |
 | \`parseProcessText(text)\` | Read a process a model wrote in the line format (\`PROCESS_TEXT_GUIDE\`); never throws |
 | \`createProcessTextStream()\` | Read the line format while it streams, one finished line at a time |
+| \`writeProcessText(defs)\` | Write an existing diagram in the line format, for a model to read; returns the text and an alias → element id map |
+| \`parseProcessDelta(text)\` | Read a change script (\`PROCESS_DELTA_GUIDE\`): only what changes, by id; never throws |
 | \`generateId(prefix)\` | Generate a unique short ID |
 
 ### Process documentation
@@ -657,6 +659,19 @@ interface HudOptions {
 \`\`\`
 
 The HUD's **More** menu has **Export documentation…**: a print-ready HTML view (Print → Save as PDF), or an HTML, Markdown or Word download, built with \`@bpmnkit/core\`'s process documentation renderers.
+
+### \`applyProcessDelta(defs, delta, { aliases })\`
+
+Applies a change script from \`@bpmnkit/core\`'s \`parseProcessDelta\` to a diagram someone drew, keeping its layout: new nodes are placed beside what they follow, an insert between two connected nodes moves only the shapes right of it, and nothing the script does not mention changes. Returns the new document with what it \`created\`, \`changed\` and \`removed\`, the \`fixes\` it made and the \`problems\` it left out. Also exported from \`@bpmnkit/editor/headless\`.
+
+\`\`\`typescript
+import { parseProcessDelta, writeProcessText } from "@bpmnkit/core"
+import { applyProcessDelta } from "@bpmnkit/editor/headless"
+
+const { text, aliases } = writeProcessText(defs) // what the model reads
+const script = await askModel(text, feedback)     // e.g. "review > second[user Second approval] > pay"
+const { definitions, problems } = applyProcessDelta(defs, parseProcessDelta(script), { aliases })
+\`\`\`
 
 ### \`createSideDock(container)\` → \`SideDock\`
 

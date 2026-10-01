@@ -1,6 +1,7 @@
 # Drop: change a shared diagram from review comments — analysis
 
-Status: proposal (2026-10-01). Nothing in this document is built yet.
+Status: phase 0 built (2026-10-01): the core and editor pieces, §12. The route, the model choice and the
+page (phases 1–2) are not built yet.
 
 ## 1. The use case
 
@@ -276,9 +277,9 @@ Measure before choosing:
 
 | Phase | Work | Check |
 |---|---|---|
-| 0 | `writeProcessText` + aliases (core) | round-trip tests on fixtures |
-| 0 | Change-script grammar + parser (core, next to `parseProcessText`), guide text | parser tests; guide example parses with no problems |
-| 0 | `applyProcessDelta` + placement (editor/headless) | tests: DI of untouched shapes is unchanged; `checkIntegrity` passes; no overlaps on the cases |
+| 0 ✓ | `writeProcessText` + aliases (core) | round-trip tests on fixtures |
+| 0 ✓ | Change-script grammar + parser (core, next to `parseProcessText`), guide text | parser tests; guide example parses with no problems |
+| 0 ✓ | `applyProcessDelta` + placement (editor/headless) | tests: DI of untouched shapes is unchanged; `checkIntegrity` passes; no overlaps on the cases |
 | 1 | Benchmark `--feedback` cases; pick the model | pass rate, unresolved ids, cost |
 | 2 | Route, single-thread + free-text entry points, preview, snapshot apply, thread reply/resolve | route tests in the style of `generate-route.test.ts`; Playwright run of the whole flow |
 | 3 | Batch of threads, multi-element anchors (migration 0009), "Apply" on AI review suggestions | — |
@@ -286,13 +287,13 @@ Measure before choosing:
 
 ## 10. Decisions for the owner
 
-1. **Private or shared proposals?** Phase 1 keeps a proposal in the requester's browser until
-   they apply it, the same way generate keeps its draft. Storing proposals in the thread,
-   GitHub-style, is more collaborative but needs a table and a moderation story.
-2. **Resolve threads automatically on apply?** Proposed: yes, behind a checkbox that is on by
-   default.
+1. **Private or shared proposals?** *Decided: private.* A proposal stays in the requester's
+   browser until they apply it, the same way generate keeps its draft. Storing proposals in the
+   thread, GitHub-style, stays in "later".
+2. **Resolve threads automatically on apply?** *Decided: yes*, behind a "Resolve addressed
+   threads" checkbox that is on by default.
 3. **Model and budget.** Should this share `AI_DAILY_BUDGET` with review and generate, or get
-   its own?
+   its own? Open; phase 1's measured cost will inform it.
 
 ## 11. Found along the way (not part of this feature)
 
@@ -303,3 +304,66 @@ Measure before choosing:
   next autosave would then write it back over the restore. This is from reading the code; it
   has not been reproduced at runtime. It matters here because "undo an AI change through
   version history" depends on restore working.
+
+## 12. Phase 0, as built (2026-10-01)
+
+| Piece | Where | Tests |
+|---|---|---|
+| `writeProcessText(defs)` → `{ text, aliases }` | `packages/core/src/bpmn/process-text-writer.ts` | `packages/core/tests/process-text-writer.test.ts` |
+| `parseProcessDelta(text)`, `PROCESS_DELTA_GUIDE` | `packages/core/src/bpmn/process-delta.ts` | `packages/core/tests/process-delta.test.ts` |
+| `applyProcessDelta(defs, delta, { aliases, ids? })` | `packages/editor/src/process-delta.ts`, exported from `@bpmnkit/editor/headless` | `packages/editor/tests/process-delta.test.ts` |
+
+**What the tests hold.** The test files are the MIWG and round-trip fixtures in
+`packages/core/tests/fixtures/roundtrip`. Of the 29, 21 draw their first process in full; the
+others draw nothing, or draw that process on a second diagram.
+
+- **The writer.** Each flow between written nodes is written once, and each node is declared
+  once. The guide's example round-trips: parse → expand → write → parse gives the same
+  elements, conditions and defaults. Writing that result again gives identical text.
+- **Applying a diagram's own restatement.** The writer's text, applied as a change script,
+  leaves every fixture deep-equal to what it was. Nothing is created, changed or removed. This
+  is the "nothing the script does not mention changes" promise, checked on real files.
+- **Changes on the 21 drawn fixtures.** An insert, a new branch and a removal leave a document
+  the Drop room would accept:
+  - every node and flow drawn;
+  - no dangling flow, boundary, lane reference or gateway default;
+  - no new duplicate id;
+  - it exports and parses back.
+
+  No new shape overlaps another (pools and lanes aside).
+- **Targeted cases on a laid-out loan process:**
+  - rename and retype in place, with untouched shapes keeping their exact bounds;
+  - an insert moves only the shapes right of it, by one amount;
+  - an insert on a branch keeps its condition, and one on the default branch keeps the default;
+  - a new branch overlaps nothing;
+  - a timer boundary sits on its host's bottom edge;
+  - removal joins the neighbours, unless the script reconnected them;
+  - a new node joins its lane, and the pool and lanes widen (miwg-C.7.0).
+
+**Where it differs from §3–§5:**
+
+- **Conditions are read as written.** `parseProcessDelta` does not turn a non-FEEL condition
+  into a label, as `parseProcessText` does. The MIWG files carry conditions in other expression
+  languages (`bpmn:getDataObject('approved')`). Converting them made a plain restatement rename
+  the flow. The applier checks FEEL only when it writes a condition:
+  - a new flow with a non-FEEL condition gets it as its label, as in a draft;
+  - a changed condition that is not FEEL is refused, and the old one is kept.
+
+  A condition carried over by an insert or a bridge is copied unchanged.
+- **A restatement changes only what it states.** This holds for flows as well as for nodes.
+  `check >(Big) review` renames the branch and keeps its condition.
+- **New service and send tasks get their id as job type** when the script gives none, as
+  `parseProcessText` does for a draft. Each one is listed in `fixes`.
+- **Fixed kinds.** The writer writes sub-processes as `sub`, `adhoc` or `transaction`, and a
+  complex gateway as `complex`. A script may restate these, but cannot create them.
+- **Aliases** use up to four words of the name. Three words made "Notify Employee of Refusal"
+  and "… of Approval" both `notify_employee_of`. An id that is already short, lowercase and
+  readable is kept as it is.
+
+**Still open** (none of it blocks phase 1):
+
+- A branch placed below a pool's bottom edge does not grow the pool. Only the horizontal space
+  an insert makes widens pools and lanes.
+- Message flows are not re-routed when shapes shift. Sequence flows and associations are.
+- The two-hop neighbourhood cap for large diagrams (§4) belongs to the route, in phase 2.
+
