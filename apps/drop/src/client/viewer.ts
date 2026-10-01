@@ -13,7 +13,7 @@ import {
 	PONG,
 	type ServerMessage,
 } from "../shared/room-protocol.js"
-import { CommentsPanel } from "./comments.js"
+import { CommentsPanel, type Thread } from "./comments.js"
 import { type DocFormat, buildDropDocument, deliverDocument, isDocFormat } from "./doc-export.js"
 import { type FeelEditor, mountFeelEditor } from "./feel-edit.js"
 import { renderFeelDocument } from "./feel-view.js"
@@ -35,6 +35,8 @@ interface DropData {
 	pinned?: boolean
 	/** Turnstile site key, when the deployment challenges claims. Absent = it does not. */
 	turnstileKey?: string
+	/** AI changes from review comments are on (AI_PASSCODE and AI_FEEDBACK_MODEL set). */
+	aiEdit?: boolean
 }
 
 /** The slice of Turnstile's global this page uses. */
@@ -657,6 +659,7 @@ const comments = new CommentsPanel({
 	onOpen: () => {
 		for (const panel of [aiPanel, historyPanel, localHistoryPanel]) if (panel) panel.hidden = true
 	},
+	...(data.aiEdit ? { aiEdit: (threads: Thread[]) => void askAi(threads) } : {}),
 })
 document.getElementById("commentsClose")?.addEventListener("click", () => comments.close())
 document.getElementById("mentionDismiss")?.addEventListener("click", () => {
@@ -1221,6 +1224,47 @@ doneBtn?.addEventListener("click", () => {
 	watcherSend({ type: "release" })
 	leaveEditMode()
 })
+
+// ── Changes from review comments ────────────────────────────────────────────
+// The change is made in the editor, so it goes through the room's checks like a
+// hand edit and the editor can undo it. That is why asking needs the baton.
+
+async function askAi(threads: Thread[]): Promise<void> {
+	const file = data.files[activeIndex]
+	if (!session || editingFile !== file?.filename) {
+		notice(
+			"Press Edit first — AI changes are made in the editor, where you can check and undo them.",
+			6_000,
+		)
+		return
+	}
+	if (!comments.displayName) {
+		notice("Add your name in the comments panel first — the replies are posted under it.", 6_000)
+		return
+	}
+	let mod: typeof import("./ai-edit.js")
+	try {
+		mod = await import("./ai-edit.js")
+	} catch {
+		notice("Couldn't load the AI changes. Reload the page and try again.", 8_000)
+		return
+	}
+	const editing = session
+	mod.openAiEdit({
+		shareId: data.shareId,
+		filename: file.filename,
+		threads,
+		xml: editing.currentXml(),
+		theme,
+		turnstile: Boolean(data.turnstileKey),
+		challenge: (title) => challenge(title),
+		// Null once the editor has gone: Done, a revoked baton, another file.
+		currentXml: () => (session === editing ? editing.currentXml() : null),
+		apply: (defs) => editing.apply(defs),
+		reply: (threadId, body, resolve) => comments.reply(threadId, body, resolve),
+		notice: (text) => notice(text, 8_000),
+	})
+}
 
 localHistoryBtn?.addEventListener("click", () => {
 	if (!localHistoryPanel) return

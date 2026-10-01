@@ -4,7 +4,8 @@ Status (2026-10-01):
 - Phase 0 is built: the core and editor pieces, §12.
 - Phase 1's benchmark is built and checked end to end against a local mock, §13. It has not run
   against Workers AI, so no model is chosen yet.
-- The route and the page (phase 2) are not built.
+- Phase 2 is built: the route, the page's flow and the replies, §14. It runs against the model
+  named by `AI_FEEDBACK_MODEL` (glm-4.7-flash until the benchmark has run).
 
 ## 1. The use case
 
@@ -284,7 +285,7 @@ Measure before choosing:
 | 0 ✓ | Change-script grammar + parser (core, next to `parseProcessText`), guide text | parser tests; guide example parses with no problems |
 | 0 ✓ | `applyProcessDelta` + placement (editor/headless) | tests: DI of untouched shapes is unchanged; `checkIntegrity` passes; no overlaps on the cases |
 | 1 (harness ✓, run pending) | Benchmark `--feedback` cases; pick the model | pass rate, unresolved ids, cost |
-| 2 | Route, single-thread + free-text entry points, preview, snapshot apply, thread reply/resolve | route tests in the style of `generate-route.test.ts`; Playwright run of the whole flow |
+| 2 ✓ | Route, single-thread + free-text entry points, preview, snapshot apply, thread reply/resolve | route tests in the style of `generate-route.test.ts`; Playwright run of the whole flow |
 | 3 | Batch of threads, multi-element anchors (migration 0009), "Apply" on AI review suggestions | — |
 | later | Proposals stored as "suggested changes" in a thread, so reviewers can discuss them before someone with the baton applies them | — |
 
@@ -471,4 +472,98 @@ the prose and the fence, and the summary table and per-case table came out as ex
 - whether 10 ignores the injection and still makes the real change;
 - unknown ids on 11, the largest diagram, where the aliases are longest;
 - `@n` coverage, which the page needs to reply on and resolve the right threads.
+
+## 14. Phase 2, as built (2026-10-01)
+
+**The setting.** `AI_FEEDBACK_MODEL` (a var in `wrangler.jsonc`) names the model, with
+glm-4.7-flash for now. Unset, the feature is off: the route answers 404 and the page offers
+nothing. It also needs `AI_PASSCODE`, like the other AI features. Its options (thinking off, output
+cap) come from `MODEL_PROFILES`, so switching to any model in that table needs no code change. It
+shares the daily budget and the 40-calls-an-hour cap with describe-to-diagram (decision 3 is still
+open).
+
+**The route** (`apps/drop/src/routes/ai-edit.ts`):
+`POST /drop/api/ai-edit/:shareId/:filename` with `{ xml, threadIds, hint?, token? }`.
+
+- **The diagram comes from the request**, not from the room as §8 first proposed. It is the
+  requester's editor document, and the answer is applied to exactly that document. It is
+  public — every viewer has it — so a forged one only misleads whoever sent it. The threads, the
+  other people's words, are read from D1 by id. They must be open, undeleted roots on this file,
+  at most 10.
+- **The order of checks:**
+  1. the feature flag;
+  2. the passcode;
+  3. the Turnstile pass;
+  4. the input;
+  5. the drop: not the demo, not pinned, not banned, and the file is BPMN;
+  6. the diagram: one process, drawn, written text within 12,000 characters (larger is refused
+     for now — the neighbourhood cut of §4 is not built);
+  7. the threads;
+  8. the cache;
+  9. the budget;
+  10. the hourly cap;
+  11. the model call.
+- **The stream:** first `{ aliases }`, the map the script's ids resolve against, sent by the
+  server so a deploy between page load and request cannot misapply ids. Then the change script,
+  through `createChangeLineFilter`. Then `done` or `error`.
+- **An empty answer is a valid answer.** "This is a question" means no change, so it is not an
+  error, and it is cached like any other answer. A failed call is not cached. The error says
+  "unavailable" if nothing came back, and "stopped part way" if the stream broke.
+- **A thread anchored to an element the diagram no longer has** is sent as
+  `On "<name>", which is no longer in the diagram`, not as feedback on the whole diagram.
+
+**The page** (`apps/drop/src/client/ai-edit.ts`, a lazy chunk of 9.4 kB):
+
+- **Entry points.** "Apply with AI" on each open thread, and "Apply all *n* open with AI" (the
+  first 10) at the top of the panel. A free-text request is a comment on the whole file, then
+  its button. That is the "saved as a comment first" of §6, with no extra input.
+- **Asking needs the editor.** Without the baton the page says "Press Edit first". It also needs a
+  commenter name, because the replies are posted under it.
+- **The proposal dialog.**
+  - A preview canvas: the proposed diagram, with new elements and changed ones highlighted.
+  - **Look closely**: removals, new or changed conditions, new job types.
+  - Each thread with the changes its `@` line claims, or "Not answered".
+  - Changes no thread claims, what was left out, and, collapsed, what the applier filled in.
+  - A hint for **Try again**, the **Resolve the threads it answers** box (on), **Discard**, and
+    **Apply**.
+- **Apply** checks that the editor still holds the document the AI read; if the writer changed
+  it, they are asked to try again. Then one `snapshot` edit: the room checks it, and Undo
+  reverses it. Then each answered thread gets the reply "Changed with AI: …" under the
+  requester's name, and is resolved if the box is ticked. A thread whose reply fails is not
+  resolved.
+
+**Fixed along the way:** an `@` line can name a node the same script removes. The applier used to
+drop that id, so the thread that asked for a removal got no reply.
+
+**Checked:**
+
+- 15 route tests against the real migrations:
+  - the gates;
+  - only open threads on this file;
+  - the prompt built from stored threads, replies, a missing anchor and the hint;
+  - the aliases, filtered script, budget, cache and errors;
+  - a script that applies cleanly to the document sent;
+  - the worker routing;
+  - the page flag.
+- 10 page tests: the summary per thread, "look closely", unclaimed changes, the reply text and its
+  length cap, reading the stream, where the buttons appear, and reply-then-resolve.
+- **A browser run** (Playwright, Chromium) against `wrangler dev`, with only the `ai-edit`
+  request answered by a canned stream, because the local AI binding needs an account:
+  1. "Apply with AI" before Edit says what to do.
+  2. After Edit, the proposal shows the new task under Anna's thread.
+  3. Apply adds it between "Order Received" and "Validate Order", moving the shapes to its
+     right.
+  4. Ben's reply is posted, and Anna's thread is resolved.
+  5. After the autosave, the file in D1 has the new task and its shape, so the room accepted the
+     edit.
+  6. No console errors.
+- Before the browser run, the real route answered inside the local Workers runtime: aliases, then
+  "unavailable" where the model call needs an account.
+
+**Still open:**
+
+- the model choice (phase 1's run);
+- the neighbourhood cut for diagrams over 12,000 characters;
+- whether this gets its own budget (decision 3);
+- phase 3: multi-element anchors, and "Apply" on AI review suggestions.
 

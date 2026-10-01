@@ -26,13 +26,16 @@ src/
   env.ts           Binding types
   routes/          upload, share pages, raw/json download, reports, admin, ai-review, generate,
                    versions (history + restore), feel (saving an edited statement),
-                   comments (review threads, @mentions, author tokens)
+                   comments (review threads, @mentions, author tokens), ai-edit (changes
+                   from review threads)
   lib/             ids, validate, meta, db (D1), versions (the milestone ring), http,
                    pages (HTML), demo (in-memory demo drop), review (deterministic
                    optimizer pass), ai (Workers AI + cache), generate (describe-to-diagram
-                   prompt, model profiles, stream reader)
+                   prompt, model profiles, stream reader), feedback (the review-feedback
+                   prompt and output filter)
   client/          browser bundles: drop, viewer, admin, landing (built to public/drop/assets),
-                   plus the FEEL view, editor and composer, and the comments panel
+                   plus the FEEL view, editor and composer, the comments panel, and the
+                   AI-changes dialog (a lazy chunk, like the editor)
   shared/          constants, and the FEEL document (shape, parse, evaluate) — used by
                    both Worker and client
 migrations/        D1 schema (0001 core, 0002 AI review, 0003 version log,
@@ -92,6 +95,15 @@ on the golden prompts; see `doc/drop-ai-generate-analysis.md` §7. With `--feedb
 review-feedback cases instead (changing a shared diagram from comments), and `--feedback --dry-run`
 prints their prompt sizes and estimated cost without calling a model; see
 `doc/drop-ai-feedback-edits-analysis.md` §13.
+
+With `AI_FEEDBACK_MODEL` set as well (it is, in `wrangler.jsonc`), the passcode also turns on
+**AI changes from review comments** (`POST /drop/api/ai-edit/:shareId/:filename`). While editing,
+"Apply with AI" on a comment thread (or "Apply all … open with AI" in the panel) asks the model to
+make the change the threads ask for. The page shows the proposal (a preview, what it does to each
+thread, and what deserves a careful look) and changes nothing until **Apply**. Apply makes one
+undoable edit, then replies on each answered thread and resolves it. Remove `AI_FEEDBACK_MODEL` to
+turn it off. Locally the model call needs a Cloudflare account; everything around it runs offline.
+See `doc/drop-ai-feedback-edits-analysis.md` §14.
 
 Quick API smoke test:
 

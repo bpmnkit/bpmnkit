@@ -24,7 +24,10 @@ ${PROCESS_DELTA_GUIDE}`
 export interface FeedbackItem {
 	/** The written id (alias) of the element it is on; absent for the whole diagram. */
 	on?: string
-	/** The element's name, so the model can match it to the text. */
+	/**
+	 * The element's name, so the model can match it to the text. With no `on`,
+	 * the element the thread was on is no longer in the diagram.
+	 */
 	label?: string
 	author: string
 	body: string
@@ -52,9 +55,11 @@ function oneLine(text: string): string {
 /** `1. On review ("Review application") — Anna: …` and its replies. */
 function itemText(item: FeedbackItem, n: number): string {
 	const where =
-		item.on === undefined
-			? "On the whole diagram"
-			: `On ${item.on}${item.label ? ` ("${oneLine(item.label)}")` : ""}`
+		item.on !== undefined
+			? `On ${item.on}${item.label ? ` ("${oneLine(item.label)}")` : ""}`
+			: item.label
+				? `On "${oneLine(item.label)}", which is no longer in the diagram`
+				: "On the whole diagram"
 	const lines = [`${n}. ${where} — ${oneLine(item.author)}: ${oneLine(item.body)}`]
 	for (const reply of item.replies ?? []) {
 		lines.push(`   Reply from ${oneLine(reply.author)}: ${oneLine(reply.body)}`)
@@ -114,3 +119,14 @@ export function createChangeLineFilter(): { push(chunk: string): string; end(): 
 		},
 	}
 }
+
+/**
+ * One event on the stream `POST /drop/api/ai-edit` sends: first the alias map
+ * the answer's ids resolve against, then the change script as it is written,
+ * then `done` or `error`.
+ */
+export type FeedbackEvent =
+	| { aliases: Record<string, string> }
+	| { text: string }
+	| { done: true; cached: boolean }
+	| { error: string }

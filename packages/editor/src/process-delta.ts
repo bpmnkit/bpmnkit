@@ -341,6 +341,8 @@ export function applyProcessDelta(
 	}
 	if (flowIds.length > 0) defs = deleteElements(defs, flowIds)
 
+	/** Removed nodes by written id: no longer a target, but an `@` line may still name them. */
+	const gone = new Map<string, string>()
 	/** For the bridge rule: each removed node's one way in and one way out. */
 	const bridges: { removed: string; into: BpmnSequenceFlow; to: string; wasDefault: boolean }[] = []
 	const removedIds: string[] = []
@@ -369,7 +371,11 @@ export function applyProcessDelta(
 		defs = deleteElements(defs, removedIds)
 		const after = new Set(proc().flowElements.map((el) => el.id))
 		result.removed = [...before].filter((id) => !after.has(id))
-		for (const [written, id] of real) if (!after.has(id)) real.delete(written)
+		for (const [written, id] of real) {
+			if (after.has(id)) continue
+			real.delete(written)
+			gone.set(written, id)
+		}
 	}
 
 	// ── Flows: restatements, and the ones to add ─────────────────────────────
@@ -513,8 +519,10 @@ export function applyProcessDelta(
 	}
 
 	for (const entry of delta.addressed) {
-		const resolved = entry.ids.map((w) => real.get(w)).filter((id) => id !== undefined)
-		const unknown = entry.ids.filter((w) => !real.has(w))
+		const resolved = entry.ids
+			.map((w) => real.get(w) ?? gone.get(w))
+			.filter((id) => id !== undefined)
+		const unknown = entry.ids.filter((w) => !real.has(w) && !gone.has(w))
 		if (unknown.length > 0) {
 			problem(entry.line, `@${entry.item} names ${unknown.join(", ")}, which is not in the diagram`)
 		}

@@ -25,6 +25,9 @@
 		"AI_GENERATE_HEDGE_MS": "1500",
 		// Reads a whiteboard, sketch or photo for a first draft. Unset = no image input.
 		"AI_GENERATE_IMAGE_MODEL": "@cf/google/gemma-4-26b-a4b-it",
+		// Changes a shared diagram from its review comments. Unset = off. glm-4.7-flash until
+		// `bench:generate --feedback` says otherwise (doc/drop-ai-feedback-edits-analysis.md §13).
+		"AI_FEEDBACK_MODEL": "@cf/zai-org/glm-4.7-flash",
 		"AI_DAILY_BUDGET": "8000",
 		"TURNSTILE_SITE_KEY": "0x4AAAAAAExoiG_f6MSVcEiN"
 		// Turnstile on the edit claim. Add TURNSTILE_SITE_KEY here (it is public and

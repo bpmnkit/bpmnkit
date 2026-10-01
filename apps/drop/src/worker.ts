@@ -5,6 +5,7 @@ import { html, json } from "./lib/http.js"
 import { adminPage, dropPage, policyPage } from "./lib/pages.js"
 import { DocRoom } from "./room.js"
 import { handleAdmin } from "./routes/admin.js"
+import { handleAiEdit } from "./routes/ai-edit.js"
 import { handleAiReview } from "./routes/ai-review.js"
 import { handleComments } from "./routes/comments.js"
 import {
@@ -74,6 +75,17 @@ async function route(request: Request, env: Env): Promise<Response> {
 			request,
 			aiReview[1] as string,
 			decodeURIComponent(aiReview[2] as string),
+			env,
+			now,
+		)
+	}
+	const aiEdit = rest.match(/^\/api\/ai-edit\/([\w-]+)\/(.+)$/)
+	if (aiEdit) {
+		if (request.method !== "POST") return methodNotAllowed()
+		return handleAiEdit(
+			request,
+			aiEdit[1] as string,
+			decodeURIComponent(aiEdit[2] as string),
 			env,
 			now,
 		)

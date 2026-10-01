@@ -10,6 +10,7 @@
  */
 import type { BpmnCanvas } from "@bpmnkit/canvas"
 import type { BpmnDefinitions } from "@bpmnkit/core"
+import { MAX_FEEDBACK_ITEMS } from "../lib/feedback.js"
 import {
 	AUTHOR_HEADER,
 	AUTHOR_STORAGE_KEY,
@@ -245,6 +246,11 @@ export interface CommentsOptions {
 	announceName(name: string): void
 	/** Opening the panel closes whichever other side panel is open. */
 	onOpen?(): void
+	/**
+	 * Asks the AI to change the diagram as these threads say. Given only when
+	 * the deployment has AI changes on; the panel then offers it on open threads.
+	 */
+	aiEdit?(threads: Thread[]): void
 }
 
 interface FileRef {
@@ -403,6 +409,19 @@ export class CommentsPanel {
 			)
 			return
 		}
+		const open = threads.filter((t) => this.canAskAi(t))
+		const ask = this.opts.aiEdit
+		if (ask && open.length > 1) {
+			const batch = open.slice(0, MAX_FEEDBACK_ITEMS)
+			const all = el("div", "cm-ai-all")
+			all.append(
+				button(
+					`Apply ${batch.length === open.length ? "all" : `the first ${batch.length} of`} ${open.length} open with AI`,
+					() => ask(batch),
+				),
+			)
+			list.append(all)
+		}
 		let focused: HTMLElement | null = null
 		for (const thread of threads) {
 			const node = this.threadNode(thread)
@@ -462,6 +481,28 @@ export class CommentsPanel {
 		this.opts.toggle.textContent = open > 0 ? `Comments ${open}` : "Comments"
 	}
 
+	/** An open, live thread on a diagram: one the AI can be asked to answer. */
+	private canAskAi(thread: Thread): boolean {
+		return (
+			this.file?.kind === "bpmn" &&
+			!this.opts.readOnly &&
+			thread.root.resolvedAt === null &&
+			thread.root.deletedAt === null
+		)
+	}
+
+	/**
+	 * Replies on a thread as this browser's author, and resolves it if asked:
+	 * what an applied AI change says on each thread it answered. Answers whether
+	 * the reply went; a thread that could not be replied to is not resolved.
+	 */
+	async reply(threadId: string, body: string, resolve: boolean): Promise<boolean> {
+		const ok = await this.create({ parentId: threadId, body, mentions: [] })
+		const root = this.comments.get(threadId)
+		if (ok && resolve && root && root.resolvedAt === null) await this.resolve(root, true)
+		return ok
+	}
+
 	private anchorLabel(thread: Thread): string {
 		const { elementId, elementLabel } = thread.root
 		const named = elementLabel ?? elementId ?? ""
@@ -512,6 +553,8 @@ export class CommentsPanel {
 				void this.resolve(root, root.resolvedAt === null)
 			}),
 		)
+		const ask = this.opts.aiEdit
+		if (ask && this.canAskAi(thread)) actions.append(button("Apply with AI", () => ask([thread])))
 		box.append(actions)
 		if (this.replyTo === root.id) {
 			box.append(

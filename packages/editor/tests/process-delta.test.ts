@@ -295,6 +295,12 @@ describe("applyProcessDelta", () => {
 		expectSound(next)
 	})
 
+	it("lets an @ line name a node the same script removes", () => {
+		const result = apply(drawn(LOAN), "- auto\n@1 auto")
+		expect(result.problems).toEqual([])
+		expect(result.addressed.get(1)).toEqual(["auto"])
+	})
+
 	it("does not join the neighbours when the script reconnects them itself", () => {
 		const defs = drawn(LOAN)
 		const result = apply(defs, "- auto\ncheck >(No: default) done")

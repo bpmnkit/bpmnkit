@@ -19,6 +19,7 @@
 		"tests/round-trip.test.ts",
 		"tests/feel-edit.test.ts",
 		"tests/comments-client.test.ts",
-		"tests/doc-export.test.ts"
+		"tests/doc-export.test.ts",
+		"tests/ai-edit-client.test.ts"
 	]
 }

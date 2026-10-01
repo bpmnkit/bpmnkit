@@ -37,6 +37,13 @@ export interface Env {
 	AI_GENERATE_IMAGE_MODEL?: string
 	/** Milliseconds before the fallback is asked (var; default 1500). */
 	AI_GENERATE_HEDGE_MS?: string
+	/**
+	 * Workers AI model that changes a shared diagram from its review comments
+	 * (var). Unset = the feature is off, even with `AI_PASSCODE` set. Pick it with
+	 * `bench:generate --feedback` (doc/drop-ai-feedback-edits-analysis.md §13);
+	 * its options come from `MODEL_PROFILES`.
+	 */
+	AI_FEEDBACK_MODEL?: string
 	/** Daily neuron budget shared by AI reviews and generations (var; string, parsed at the edge). */
 	AI_DAILY_BUDGET: string
 	/**

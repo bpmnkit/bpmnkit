@@ -1,5 +1,12 @@
 # Features
 
+## Drop: AI changes from review comments (2026-10-01)
+
+- While editing a shared diagram, ask the AI to make the change one comment thread or all of them
+  ask for. It proposes a change that keeps the layout. You see it before anything changes, apply
+  it as one undoable edit, and the answered threads get a reply and are resolved. The model is a
+  setting (`AI_FEEDBACK_MODEL`).
+
 ## Change an existing diagram from a model's answer (2026-10-01)
 
 - `writeProcessText` shows a model a diagram someone drew; the model answers with a change
