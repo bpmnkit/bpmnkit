@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-10-01 — Drop: analysis of changing a shared diagram from review comments
+
+- Proposal only, nothing built: `doc/drop-ai-feedback-edits-analysis.md`. Reviewers mark elements or leave overall feedback, and the AI makes the change in the editor session. The model writes only a change script in the line format (new `-` and `@n` lines), not the whole diagram again. A new `applyProcessDelta` applies it with the editor's layout-aware modelling functions, so untouched elements and the hand-drawn layout stay as they are. The result goes through the existing `snapshot` op, after a mandatory diff preview.
+- Found while reading: a version restore writes D1 only and never tells the DocRoom, so the next edit probably writes the old document back (§11, not reproduced).
+
 ## 2026-09-30 — Describe-to-diagram: draft from an image
 
 - `POST /drop/api/generate` accepts `{ image, description? }`: a JPEG data URL of about 1 MB at most (`normaliseImage`), sent with `IMAGE_SYSTEM_PROMPT` to `AI_GENERATE_IMAGE_MODEL` (`@cf/google/gemma-4-26b-a4b-it`), not hedged. The description is optional with an image. Cached by model, prompt, description and image. The same gates, budget and hourly cap as text apply, and a call with no reported usage is charged `IMAGE_TOKEN_ESTIMATE` (1,500) input tokens for the image. Unset the var and images are refused (400) and the page hides the control.
