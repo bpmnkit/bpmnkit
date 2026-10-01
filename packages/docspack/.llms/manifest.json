@@ -4403,6 +4403,26 @@
 			]
 		},
 		{
+			"id": "packages.core.installation-writeprocesstext-defs-and-parseprocessdelta-text",
+			"file": "chunks/packages.core.installation-writeprocesstext-defs-and-parseprocessdelta-text.md",
+			"tokens": 317,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"writeprocesstext",
+				"defs",
+				"parseprocessdelta",
+				"text"
+			],
+			"entities": [
+				"writeProcessText",
+				"parseProcessDelta",
+				"applyProcessDelta",
+				"@bpmnkit/editor/headless"
+			]
+		},
+		{
 			"id": "packages.core.installation-retypeelement-element-type",
 			"file": "chunks/packages.core.installation-retypeelement-element-type.md",
 			"tokens": 189,
@@ -4725,6 +4745,23 @@
 				"options"
 			],
 			"entities": []
+		},
+		{
+			"id": "packages.editor.applying-a-change-script",
+			"file": "chunks/packages.editor.applying-a-change-script.md",
+			"tokens": 355,
+			"tags": [
+				"packages",
+				"editor",
+				"applying",
+				"change",
+				"script"
+			],
+			"entities": [
+				"applyProcessDelta",
+				"parseProcessDelta",
+				"@bpmnkit/core"
+			]
 		},
 		{
 			"id": "packages.editor.full-editor-with-all-plugins",

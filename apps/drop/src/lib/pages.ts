@@ -265,6 +265,23 @@ select.ed-select{height:28px;border:1px solid var(--bpmnkit-ds-line);background:
 .hv-banner[hidden]{display:none}
 .ts-dialog{margin:auto;border:1px solid var(--bpmnkit-ds-line);background:var(--bpmnkit-ds-surface);color:var(--bpmnkit-ds-ink);padding:var(--bpmnkit-ds-sp-4);font-family:inherit;min-width:320px}
 .ts-dialog::backdrop{background:rgba(0,0,0,.35)}
+/* ── AI changes from review comments: the proposal dialog ───────────────── */
+.ae-dialog{width:min(880px,94vw);max-height:90vh;padding:0;display:flex;flex-direction:column}
+.ae-dialog:not([open]){display:none}
+.ae-head{display:flex;align-items:center;justify-content:space-between;padding:var(--bpmnkit-ds-sp-3) var(--bpmnkit-ds-sp-4);border-bottom:1px solid var(--bpmnkit-ds-line)}
+.ae-head .ts-title{margin:0}
+.ae-status{padding:8px var(--bpmnkit-ds-sp-4);border-bottom:1px solid var(--bpmnkit-ds-line-soft)}
+.ae-preview{position:relative;height:min(42vh,360px);border-bottom:1px solid var(--bpmnkit-ds-line);background:var(--bpmnkit-ds-bg)}
+.ae-preview:empty{display:none}
+.ae-body{flex:1 1 auto;overflow-y:auto;padding:0 var(--bpmnkit-ds-sp-4) var(--bpmnkit-ds-sp-3)}
+.ae-body:empty{display:none}
+.ae-thread{border-bottom:1px solid var(--bpmnkit-ds-line);padding:10px 0}
+.ae-details summary{cursor:pointer}
+.ae-list{margin:6px 0 0;padding-left:18px;font-size:var(--bpmnkit-ds-t-body-sm);line-height:1.55;color:var(--bpmnkit-ds-ink-2)}
+.ae-foot{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:var(--bpmnkit-ds-sp-3) var(--bpmnkit-ds-sp-4);border-top:1px solid var(--bpmnkit-ds-line)}
+.ae-hint{flex:1 1 220px;margin:0}
+.ae-check{display:flex;align-items:center;gap:6px;font-family:var(--bpmnkit-ds-font-mono);font-size:var(--bpmnkit-ds-t-mono-micro);letter-spacing:.06em;text-transform:uppercase;color:var(--bpmnkit-ds-ink-3)}
+.cm-ai-all{padding:10px 0;border-bottom:1px solid var(--bpmnkit-ds-line)}
 .ts-title{font-family:var(--bpmnkit-ds-font-mono);font-size:var(--bpmnkit-ds-t-mono-label);text-transform:uppercase;color:var(--bpmnkit-ds-ink-3);margin-bottom:var(--bpmnkit-ds-sp-3)}
 .ts-error{margin-top:var(--bpmnkit-ds-sp-3);color:var(--bpmnkit-danger);font-size:var(--bpmnkit-ds-t-ui)}
 .ts-error[hidden]{display:none}
@@ -716,13 +733,18 @@ function primaryIndex(files: FileInfo[]): number {
 	return 0
 }
 
-/** The read-only share/viewer page for a stored drop. `aiEnabled` reflects whether AI_PASSCODE is set. */
+/**
+ * The read-only share/viewer page for a stored drop. `aiEnabled` reflects
+ * whether AI_PASSCODE is set; `aiEdit` whether changes from review comments are
+ * on too (AI_FEEDBACK_MODEL set).
+ */
 export function sharePage(
 	shareId: string,
 	drop: DropRow,
 	files: FileInfo[],
 	aiEnabled = false,
 	turnstileKey?: string,
+	aiEdit = false,
 ): string {
 	const primary = primaryIndex(files)
 	const title = files[primary]?.name || files[primary]?.filename || "Shared diagram"
@@ -834,6 +856,7 @@ ${
 				// read-only — anyone-with-the-link editing is wrong for a fixture.
 				pinned: drop.expires_at === null,
 				turnstileKey,
+				aiEdit,
 			},
 		},
 		scriptSrc: "/drop/assets/viewer.js",

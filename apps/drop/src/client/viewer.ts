@@ -13,7 +13,7 @@ import {
 	PONG,
 	type ServerMessage,
 } from "../shared/room-protocol.js"
-import { CommentsPanel } from "./comments.js"
+import { CommentsPanel, type Thread } from "./comments.js"
 import { type DocFormat, buildDropDocument, deliverDocument, isDocFormat } from "./doc-export.js"
 import { type FeelEditor, mountFeelEditor } from "./feel-edit.js"
 import { renderFeelDocument } from "./feel-view.js"
@@ -35,6 +35,8 @@ interface DropData {
 	pinned?: boolean
 	/** Turnstile site key, when the deployment challenges claims. Absent = it does not. */
 	turnstileKey?: string
+	/** AI changes from review comments are on (AI_PASSCODE and AI_FEEDBACK_MODEL set). */
+	aiEdit?: boolean
 }
 
 /** The slice of Turnstile's global this page uses. */
@@ -153,8 +155,10 @@ async function renderBpmn(xml: string, preview = false): Promise<void> {
 		comments.showOn(canvas, defs, preview)
 	})
 	canvas.on("plane:change", () => comments.showOn(canvas, shown, preview))
-	canvas.on("element:click", (id: string) => {
-		if (comments.isOpen()) comments.pick(id, elementLabel(canvas, id))
+	canvas.on("element:click", (id: string, event: PointerEvent) => {
+		// Shift (or Cmd/Ctrl) adds the element to the ones the next comment is on.
+		const add = event.shiftKey || event.metaKey || event.ctrlKey
+		if (comments.isOpen()) comments.pick(id, elementLabel(canvas, id), add)
 	})
 	canvas.load(xml)
 	canvas.on("viewport:change", (state) => {
@@ -338,6 +342,20 @@ function suggestionCard(s: Suggestion): HTMLElement {
 			current?.clearHighlights()
 			current?.highlight([id], "changed")
 		})
+	}
+	if (data.aiEdit) {
+		const actions = document.createElement("div")
+		actions.className = "hv-actions"
+		const apply = document.createElement("button")
+		apply.type = "button"
+		apply.className = "hv-btn"
+		apply.textContent = "Apply with AI"
+		apply.addEventListener("click", (e) => {
+			e.stopPropagation()
+			void applySuggestion(s)
+		})
+		actions.append(apply)
+		card.append(actions)
 	}
 	return card
 }
@@ -657,6 +675,7 @@ const comments = new CommentsPanel({
 	onOpen: () => {
 		for (const panel of [aiPanel, historyPanel, localHistoryPanel]) if (panel) panel.hidden = true
 	},
+	...(data.aiEdit ? { aiEdit: (threads: Thread[]) => void askAi(threads) } : {}),
 })
 document.getElementById("commentsClose")?.addEventListener("click", () => comments.close())
 document.getElementById("mentionDismiss")?.addEventListener("click", () => {
@@ -1221,6 +1240,90 @@ doneBtn?.addEventListener("click", () => {
 	watcherSend({ type: "release" })
 	leaveEditMode()
 })
+
+// ── Changes from review comments ────────────────────────────────────────────
+// The change is made in the editor, so it goes through the room's checks like a
+// hand edit and the editor can undo it. That is why asking needs the baton.
+
+/**
+ * The editor session and its file, when an AI change may be asked for now —
+ * otherwise null, with the reason said.
+ */
+function readyForAi(): {
+	file: DropFile
+	editing: import("./edit-session.js").EditSession
+} | null {
+	const file = data.files[activeIndex]
+	if (!session || !file || editingFile !== file.filename) {
+		notice(
+			"Press Edit first — AI changes are made in the editor, where you can check and undo them.",
+			6_000,
+		)
+		return null
+	}
+	if (!comments.displayName) {
+		notice("Add your name in the comments panel first — the replies are posted under it.", 6_000)
+		return null
+	}
+	return { file, editing: session }
+}
+
+/**
+ * Applies an AI review suggestion: it becomes a comment thread first — on its
+ * element, if the diagram still has it — so the request is there for every
+ * reviewer to see, and the change replies to it like to any other thread.
+ */
+async function applySuggestion(s: Suggestion): Promise<void> {
+	const ready = readyForAi()
+	if (!ready) return
+	let element: { id: string; name?: string } | undefined
+	if (s.elementId) {
+		try {
+			const defs = Bpmn.parse(ready.editing.currentXml())
+			const found = defs.processes[0]?.flowElements.find((el) => el.id === s.elementId)
+			if (found) element = { id: found.id, name: found.name }
+		} catch {
+			// The editor's own document always parses; a suggestion without an anchor is still one.
+		}
+	}
+	const thread = await comments.startThread({
+		...(element ? { elementId: element.id, elementLabel: element.name || element.id } : {}),
+		body: `AI review: ${s.title} — ${s.why}`,
+	})
+	if (!thread) {
+		comments.open()
+		return
+	}
+	await askAi([thread])
+}
+
+async function askAi(threads: Thread[]): Promise<void> {
+	const ready = readyForAi()
+	if (!ready) return
+	const { file } = ready
+	let mod: typeof import("./ai-edit.js")
+	try {
+		mod = await import("./ai-edit.js")
+	} catch {
+		notice("Couldn't load the AI changes. Reload the page and try again.", 8_000)
+		return
+	}
+	const editing = ready.editing
+	mod.openAiEdit({
+		shareId: data.shareId,
+		filename: file.filename,
+		threads,
+		xml: editing.currentXml(),
+		theme,
+		turnstile: Boolean(data.turnstileKey),
+		challenge: (title) => challenge(title),
+		// Null once the editor has gone: Done, a revoked baton, another file.
+		currentXml: () => (session === editing ? editing.currentXml() : null),
+		apply: (defs) => editing.apply(defs),
+		reply: (threadId, body, resolve) => comments.reply(threadId, body, resolve),
+		notice: (text) => notice(text, 8_000),
+	})
+}
 
 localHistoryBtn?.addEventListener("click", () => {
 	if (!localHistoryPanel) return

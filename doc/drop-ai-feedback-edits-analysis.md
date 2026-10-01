@@ -1,0 +1,647 @@
+# Drop: change a shared diagram from review comments — analysis
+
+Status (2026-10-01):
+- Phase 0 is built: the core and editor pieces, §12.
+- Phase 1's benchmark is built and checked end to end against a local mock, §13. It has not run
+  against Workers AI, so no model is chosen yet.
+- Phase 2 is built: the route, the page's flow and the replies, §14. It runs against the model
+  named by `AI_FEEDBACK_MODEL` (glm-4.7-flash until the benchmark has run).
+- Phase 3 is built: comments on several elements, and "Apply with AI" on AI review suggestions,
+  §15. Batches of threads shipped with phase 2.
+
+## 1. The use case
+
+Someone shares a BPMN drop. Reviewers leave feedback in two forms:
+
+- **Marked feedback.** A comment on one element: "this needs a four-eyes check", or "what
+  happens if the payment times out?".
+- **Overall feedback.** A comment on the whole file: "split this per country", or "use
+  message events for the callbacks".
+
+The author, or whoever edits the drop next, asks the AI to make those changes. The AI changes
+the parts the feedback is about and leaves the rest of the diagram as it was.
+
+This is a different problem from describe-to-diagram (`doc/drop-ai-generate-analysis.md`).
+That feature draws a new diagram that nobody has laid out yet. Here the diagram already exists.
+Its layout was drawn by a person, and it can carry detail the AI never sees: lanes, I/O
+mappings, form links, task headers and documentation. The bar is "change what was asked and
+nothing else", including the picture.
+
+## 2. What already exists
+
+Most of the pieces exist already. The missing pieces are the parts that join them.
+
+| Piece | Where | Use for this feature |
+|---|---|---|
+| Element-anchored comments, threads, resolve, @mentions, live fan-out | `migrations/0006_comments.sql`, `routes/comments.ts`, `client/comments.ts` | The "mark and comment" step. A comment has one `element_id` (or none, meaning the whole file). Its anchor survives edits because it uses the element id. |
+| Edit baton (single writer, Turnstile), edit ops validated server-side, autosave, version milestones | `room.ts`, `lib/op-guard.ts`, `lib/doc.ts`, `lib/integrity.ts`, `lib/versions.ts` | Applying the AI's change. Every edit goes through `applyOp` + `checkIntegrity` on the room. |
+| `snapshot` editor op (a whole document as one op) | `packages/editor/src/ops.ts`, `lib/op-guard.ts:97` | Applies an AI change as **one** validated, broadcast, undoable step. |
+| Layout-aware modelling functions | `packages/editor/src/modeling.ts` (`createShape`, `createConnection`, `insertShapeOnEdge`, `moveShapes`, `deleteElements`, `changeElementType`, `updateLabel`, `createBoundaryEvent`) | Changing the model **and** its DI without a full re-layout. |
+| Line format, its guide, a streaming parser, change prompts, benchmark harness | `packages/core/src/bpmn/process-text.ts`, `apps/drop/src/lib/generate.ts`, `scripts/bench-generate.mjs`, `scripts/edit-cases.json` | The model already writes this format well. On glm-4.7-flash, 22/30 change cases pass (§20 of the generate analysis). |
+| AI gates: passcode, Turnstile pass, daily budget, hourly cap, output line filter | `lib/ai.ts`, `lib/ai-pass.ts`, `routes/generate.ts` | Reused as they are. |
+| Diagram diff (`diffDiagram`, `@bpmnkit/plugins/diff`) | core, plugins, `client/diff.ts` | The preview of what the AI changed. |
+| AI review suggestions with an `elementId` | `routes/ai-review.ts` | A suggestion is feedback anchored to an element, so "apply this suggestion" comes for free. |
+
+**Missing:**
+
+1. **A writer from BPMN to the line format.** Today the line format only goes from model to
+   diagram. A shared drop was uploaded as XML, so the model has nothing in its own format to
+   read.
+2. **A way to apply a change that keeps the layout.** `parseProcessText` → `expand()` lays out
+   the whole diagram again. Core's `applyBpmnOperations` / `reconcileCompact` keep extensions,
+   but they edit only the semantic model and never touch DI. The proxy MCP server works around
+   this by running `layoutProcess` on everything after an edit (`apps/proxy/src/mcp-server.ts:106`).
+   A hand-drawn shared diagram would lose its layout.
+3. **An editor op for properties.** There is no op for a flow condition, a job type or a
+   documentation change. Ops exist only for rename and changeType. Section 5.4 explains why
+   this does not block phase 1.
+
+## 3. Options for what the model writes
+
+### A. The whole diagram again, in the line format (what refine does today)
+
+Rejected for shared diagrams:
+
+- **Cost and drift scale with the diagram, not with the change.** A draft is 60–190 output
+  tokens. A real shared process has 30–150 elements. Section 16 of the generate analysis
+  already shows `kept` below 100% on drafts: the model changes parts it was not asked to touch.
+- **Reconciling a rewrite deletes whatever the format cannot express.** `reconcileCompact`
+  removes every element the input does not mention. The line format cannot express data
+  objects, annotations, the inside of sub-processes, or lanes, so those would be deleted.
+- **Flow ids are generated by the parser.** No existing flow would match, so every flow would
+  be deleted and added again. That loses the waypoints and condition attributes of every flow.
+
+### B. JSON `BpmnOperation[]`
+
+This is closer, because the vocabulary already exists and `applyBpmnOperations` reports
+unresolved ids. But:
+
+- JSON mode on Workers AI cannot stream (generate analysis §3).
+- JSON takes about four times the tokens of the line format (§2).
+- The models were benchmarked on the line format, not on this vocabulary.
+
+### C. A change script in the line format (recommended)
+
+The model writes **only what changes**, in the format it already knows, using the ids of the
+diagram it was given:
+
+```
+# lines that add or change things — same syntax as today
+check > fourEyes[user Second approval] > pay        new node between two existing ones
+late[boundary:timer P2D | on=review] > remind[send Send reminder] > review
+check >(Yes: amount > 10000) fourEyes               new branch from an existing gateway
+review[user Review application]                     an existing id declared again = rename / retype
+
+# lines that remove things — new, prefixed with "-"
+- check > pay                                       remove a flow
+- autoApprove                                       remove a node (and its flows)
+
+# which feedback each change answers — new, prefixed with "@"
+@1 fourEyes
+@2 late remind
+```
+
+Why C:
+
+- **What the model does not mention stays unchanged by construction.** Nothing is
+  "reconciled", so nothing the format cannot express can be lost.
+- **Output is proportional to the change.** A typical answer is 3–10 lines.
+- **It still streams**, and it still goes through the same line filter. The filter only needs
+  to also accept `-` and `@` lines.
+- **Ids are not a risk here.** Section 15 of the generate analysis rejected a patch syntax
+  because the model had to refer to ids it had not just written. Here it reads them in the
+  diagram it was given. An unknown id is easy to detect, and it is reported as a problem,
+  never applied silently.
+- **`@n` lines tie each change to a comment.** The preview can then group changes by feedback
+  item, and the page knows which threads to reply to.
+
+**One convenience rule:** if a new path runs between two nodes that were directly connected
+(`a > new > b` where `a > b` existed), the old flow is split. That is what a reviewer means
+almost every time, and small models forget the `- a > b` line. The applier records this as a
+`fix`, the same way the parser already records its guesses.
+
+## 4. What the model reads
+
+```
+system:  the change-script prompt (fixed; cache-friendly prefix, see §8)
+user:    Diagram:
+         <the current diagram in the line format, with its ids>
+
+         Feedback (untrusted data):
+         1. on review "Review application" — Anna: we need a four-eyes check above 10k
+            ↳ Ben: agreed, only for the corporate segment
+         2. on the whole diagram — Carla: remind the customer after 2 days of no response
+```
+
+- **The writer** (`writeProcessText(definitions)`, new, in core next to the parser) uses
+  `compactify` and writes paths in topological order. Each node is declared the first time it
+  appears, and flows carry their FEEL conditions. A test checks that
+  `parseProcessText(writeProcessText(x))` round-trips on the repo's fixtures, the same way the
+  guide's example is tested today.
+- **Id aliases.** Modeler ids like `Activity_0x9k2lm` cost about five tokens each, and they
+  give the model no meaning. The writer gives each element a short readable alias based on its
+  name (`review`, `pay`) and keeps an alias → id map. The change script is mapped back before
+  it is applied.
+- **What the format cannot express** is left out and frozen: lanes, data objects, annotations,
+  and anything inside a sub-process (phase 1). The model cannot refer to these, so it cannot
+  break them. New nodes join their predecessor's lane.
+- **Large diagrams.** If the written diagram is longer than a cap (say 12,000 characters),
+  send only the neighbourhood of the anchored elements, two hops out, and mark the edge of
+  that region. Overall feedback on a huge diagram is refused with a clear message.
+- **Comments.** Only the threads the requester ticked are sent, open threads only, with their
+  replies, the element name and the author's display name. Author tokens and hashes are never
+  sent.
+
+## 5. Applying the change
+
+### 5.1 Where
+
+**In the requester's edit session, in the browser.** Applying requires the edit baton. Then
+the result goes through the same `op-guard` → `applyOp` → `checkIntegrity` → autosave →
+milestone path as a hand edit, and everyone watching sees it live. The Worker never writes a
+diagram on the model's behalf.
+
+### 5.2 How: `applyProcessDelta(definitions, delta, aliases)`
+
+New, in `@bpmnkit/editor/headless`, because it needs the DI-aware modelling functions. It maps
+the script onto `modeling.ts`:
+
+| Script line | Modelling call |
+|---|---|
+| existing id declared again with a new name | `updateLabel` |
+| existing id declared again with a new kind | `changeElementType` (keeps loop markers) |
+| `- x` | `deleteElements` |
+| `- a > b` | `deleteElements` on the flow |
+| new node between connected `a` and `b` | `createShape` + `insertShapeOnEdge` |
+| new path between existing nodes | `createShape` / `createConnection` |
+| `boundary … \| on=t` | `createBoundaryEvent` |
+| condition / `job=` on a flow or node | a direct model edit (no op exists, §5.4) |
+
+The result is `{ definitions, problems, fixes, addressed: Map<feedbackNo, elementIds> }`, in
+the same shape as `parseProcessText`'s result.
+
+### 5.3 Placement, without re-laying out the diagram
+
+Positions only change for what the change touches:
+
+- **Insert on a flow.** If the gap between `a` and `b` is wide enough, place the shape in it.
+  Otherwise shift every shape at or right of `b` in the same pool by the shape width plus one
+  grid gap (`moveShapes`). Then re-route only the flows touched.
+- **New branch from a gateway.** Place it one grid row below the lowest successor of the
+  gateway. A chain of new nodes continues to the right.
+- **New boundary event.** On the host's bottom edge. Its handler goes below and to the right.
+- **Delete.** Leave the gap. A stable picture matters more to the people who drew it than a
+  compact one.
+- **Escape hatch.** The preview offers "Tidy layout" (the existing `autoLayout` op) for answers
+  whose placement looks bad. It is never applied automatically.
+
+The editor uses `processes[0]` / `diagrams[0]` throughout (35 places in `modeling.ts`), but the
+room already refuses to edit a multi-process drop (`lib/editable.ts`). So the two limits match,
+and the feature works wherever editing works.
+
+### 5.4 Committing: one `snapshot` op
+
+Phase 1 applies the result with `editor.applyChange(() => next)`. That sends one `snapshot` op.
+It is the same path a restored local checkpoint takes today. Benefits:
+
+- **One undo step**: "Undo AI change".
+- **One server validation** of the whole result.
+- **No new op kinds.** That includes the missing condition/property op.
+
+Watchers get one replace instead of a sequence of steps. They still see the highlight, because
+`diffDiagram` against the previous document gives the touched ids. Granular ops can come later
+if anyone misses them.
+
+## 6. The user's flow
+
+1. **Mark.** As today: open Comments and click an element, or comment on the whole file.
+   *Phase 2:* anchor one comment to several elements (shift-click or lasso). This needs an
+   `element_ids` JSON column next to `element_id`. `element_id` stays the primary anchor, so
+   existing rows and badges keep working.
+2. **Ask.** There are three entry points, all into the same request:
+   - "Apply with AI" on one thread
+   - "Apply open feedback with AI (n)" in the panel header, with a checkbox per thread
+   - a free-text "Tell the AI what to change" box. This is saved as an ordinary file-level
+     comment first, so the request is visible to the other reviewers and can be audited.
+   The button needs the AI beta gate. It also needs the baton: if someone else is editing, it
+   reads "Anna is editing".
+3. **Preview.** The change streams in and is drawn as a diff over the live diagram (added,
+   changed, removed), with a list of changes grouped by feedback item. Changes to **conditions,
+   job types or deletions** are listed first and marked. A feedback item the model did not
+   answer (no `@n` line) is shown as "not addressed". Buttons: **Apply**, **Try again**
+   (with an optional hint), **Discard**.
+4. **Apply.** One `snapshot` op is sent, autosave runs, and a version milestone is cut. Each
+   addressed thread gets a reply: "Changed by AI at <name>'s request: added *Second approval*."
+   The threads are resolved if a "Resolve addressed threads" checkbox is ticked (default on;
+   resolving can be undone). Undo in the editor and the version history both still work.
+
+## 7. Security
+
+This feature adds one risk that describe-to-diagram does not have: **text written by other
+people goes into the prompt.** In generate, prompt injection could only affect the person who
+wrote it (generate analysis §21). Here, a malicious comment or a crafted element name could try
+to steer the change, for example by quietly changing a job type or a condition.
+
+Mitigations:
+
+- **The requester chooses the input.** Only the threads they tick are sent.
+- **Never applied without a person looking at it.** The preview is mandatory. Technical
+  changes (FEEL conditions, `job=`, deletions) are listed first and marked.
+- **The grammar is still the sandbox.** A change script has no way to write a script body, an
+  I/O mapping, a listener or any XML. The applier only calls modelling functions.
+- **The result passes the same checks as a hand edit:** baton, `op-guard`, `checkIntegrity`, the
+  size cap and the ban-list hash at flush.
+- **The prompt frames comments and diagram text as untrusted data**, as the existing prompts
+  do.
+- **The same gates as generate:** passcode, Turnstile pass, daily budget, 40 calls per IP and
+  hour. The output line filter is extended to `-` and `@` lines and nothing else.
+
+## 8. The route and the model
+
+`POST /drop/api/ai-edit/:shareId/:filename`, with body `{ threadIds: string[], hint?: string }`.
+
+- **The server builds the prompt from its own data.** It reads the comments from D1 by id, and
+  checks that they belong to this drop and file and are open. It reads the current document
+  from the room, which is where the baton holder's edits are. The client sends no diagram and
+  no comment text, so a forged request cannot put words into someone else's comments.
+- **SSE response**, in the same event shape as generate (`{text}` / `{done}` / `{error}`).
+- **Cache key:** `semanticHash` of the document + thread ids and bodies + hint + model + prompt.
+
+**Model.** This task is harder than a draft change: the input is longer and the ids are real.
+Measure before choosing:
+
+- Extend `bench-generate.mjs` with a `--feedback` case set: the repo's samples plus a few
+  diagrams the size of real ones, with comments and assertions in the style of `edit-cases.json`.
+- New metrics: unresolved ids, `@n` coverage, and overlapping shapes after placement. (Untouched
+  elements are preserved by construction.)
+- Candidates: `glm-4.7-flash` (the generate default), `gpt-oss-120b` (the review default) and
+  `gemma-4-26b`.
+- **Cost estimate (not measured):** input of about 1,000–4,000 tokens; output of about 50–200.
+  On glm that is roughly 10–40 neurons a call, against today's daily budget of 8,000.
+
+## 9. Plan
+
+| Phase | Work | Check |
+|---|---|---|
+| 0 ✓ | `writeProcessText` + aliases (core) | round-trip tests on fixtures |
+| 0 ✓ | Change-script grammar + parser (core, next to `parseProcessText`), guide text | parser tests; guide example parses with no problems |
+| 0 ✓ | `applyProcessDelta` + placement (editor/headless) | tests: DI of untouched shapes is unchanged; `checkIntegrity` passes; no overlaps on the cases |
+| 1 (harness ✓, run pending) | Benchmark `--feedback` cases; pick the model | pass rate, unresolved ids, cost |
+| 2 ✓ | Route, single-thread + free-text entry points, preview, snapshot apply, thread reply/resolve | route tests in the style of `generate-route.test.ts`; Playwright run of the whole flow |
+| 3 ✓ | Batch of threads, multi-element anchors (migration 0009), "Apply" on AI review suggestions | route, panel and page tests; Playwright run of both |
+| later | Proposals stored as "suggested changes" in a thread, so reviewers can discuss them before someone with the baton applies them | — |
+
+## 10. Decisions for the owner
+
+1. **Private or shared proposals?** *Decided: private.* A proposal stays in the requester's
+   browser until they apply it, the same way generate keeps its draft. Storing proposals in the
+   thread, GitHub-style, stays in "later".
+2. **Resolve threads automatically on apply?** *Decided: yes*, behind a "Resolve addressed
+   threads" checkbox that is on by default.
+3. **Model and budget.** Should this share `AI_DAILY_BUDGET` with review and generate, or get
+   its own? Open; phase 1's measured cost will inform it.
+
+## 11. Found along the way (not part of this feature)
+
+- **Restoring a version can probably be undone by the next edit.** `POST /restore` writes the
+  restored version to D1 only (`routes/versions.ts`), and never contacts the DocRoom. The room
+  reads its Durable Object storage before D1 (`room.ts`, `doc()`), and it never deletes the
+  stored document. So the next claim may load the document from before the restore, and the
+  next autosave would then write it back over the restore. This is from reading the code; it
+  has not been reproduced at runtime. It matters here because "undo an AI change through
+  version history" depends on restore working.
+
+## 12. Phase 0, as built (2026-10-01)
+
+| Piece | Where | Tests |
+|---|---|---|
+| `writeProcessText(defs)` → `{ text, aliases }` | `packages/core/src/bpmn/process-text-writer.ts` | `packages/core/tests/process-text-writer.test.ts` |
+| `parseProcessDelta(text)`, `PROCESS_DELTA_GUIDE` | `packages/core/src/bpmn/process-delta.ts` | `packages/core/tests/process-delta.test.ts` |
+| `applyProcessDelta(defs, delta, { aliases, ids? })` | `packages/editor/src/process-delta.ts`, exported from `@bpmnkit/editor/headless` | `packages/editor/tests/process-delta.test.ts` |
+
+**What the tests hold.** The test files are the MIWG and round-trip fixtures in
+`packages/core/tests/fixtures/roundtrip`. Of the 29, 21 draw their first process in full; the
+others draw nothing, or draw that process on a second diagram.
+
+- **The writer.** Each flow between written nodes is written once, and each node is declared
+  once. The guide's example round-trips: parse → expand → write → parse gives the same
+  elements, conditions and defaults. Writing that result again gives identical text.
+- **Applying a diagram's own restatement.** The writer's text, applied as a change script,
+  leaves every fixture deep-equal to what it was. Nothing is created, changed or removed. This
+  is the "nothing the script does not mention changes" promise, checked on real files.
+- **Changes on the 21 drawn fixtures.** An insert, a new branch and a removal leave a document
+  the Drop room would accept:
+  - every node and flow drawn;
+  - no dangling flow, boundary, lane reference or gateway default;
+  - no new duplicate id;
+  - it exports and parses back.
+
+  No new shape overlaps another (pools and lanes aside).
+- **Targeted cases on a laid-out loan process:**
+  - rename and retype in place, with untouched shapes keeping their exact bounds;
+  - an insert moves only the shapes right of it, by one amount;
+  - an insert on a branch keeps its condition, and one on the default branch keeps the default;
+  - a new branch overlaps nothing;
+  - a timer boundary sits on its host's bottom edge;
+  - removal joins the neighbours, unless the script reconnected them;
+  - a new node joins its lane, and the pool and lanes widen (miwg-C.7.0).
+
+**Where it differs from §3–§5:**
+
+- **Conditions are read as written.** `parseProcessDelta` does not turn a non-FEEL condition
+  into a label, as `parseProcessText` does. The MIWG files carry conditions in other expression
+  languages (`bpmn:getDataObject('approved')`). Converting them made a plain restatement rename
+  the flow. The applier checks FEEL only when it writes a condition:
+  - a new flow with a non-FEEL condition gets it as its label, as in a draft;
+  - a changed condition that is not FEEL is refused, and the old one is kept.
+
+  A condition carried over by an insert or a bridge is copied unchanged.
+- **A restatement changes only what it states.** This holds for flows as well as for nodes.
+  `check >(Big) review` renames the branch and keeps its condition.
+- **New service and send tasks get their id as job type** when the script gives none, as
+  `parseProcessText` does for a draft. Each one is listed in `fixes`.
+- **Fixed kinds.** The writer writes sub-processes as `sub`, `adhoc` or `transaction`, and a
+  complex gateway as `complex`. A script may restate these, but cannot create them.
+- **Aliases** use up to four words of the name. Three words made "Notify Employee of Refusal"
+  and "… of Approval" both `notify_employee_of`. An id that is already short, lowercase and
+  readable is kept as it is.
+
+**Still open** (none of it blocks phase 1):
+
+- A branch placed below a pool's bottom edge does not grow the pool. Only the horizontal space
+  an insert makes widens pools and lanes.
+- Message flows are not re-routed when shapes shift. Sequence flows and associations are.
+- The two-hop neighbourhood cap for large diagrams (§4) belongs to the route, in phase 2.
+
+## 13. Phase 1: the benchmark (built 2026-10-01; not yet run against Workers AI)
+
+```sh
+# Prompt sizes and estimated cost per model; calls nothing, needs no credentials:
+pnpm --filter @bpmnkit/drop bench:generate --feedback --dry-run
+
+# The run:
+CLOUDFLARE_ACCOUNT_ID=… CLOUDFLARE_API_TOKEN=… pnpm --filter @bpmnkit/drop bench:generate \
+  --feedback --runs 3 --models @cf/zai-org/glm-4.7-flash,@cf/openai/gpt-oss-120b,@cf/google/gemma-4-26b-a4b-it
+```
+
+**The prompt** (`apps/drop/src/lib/feedback.ts`; the phase-2 route will import the same code):
+
+- `FEEDBACK_SYSTEM_PROMPT` is fixed, so the prefix cache can reuse it. It is the task, the
+  untrusted-data rule (feedback can only ask for changes to the diagram), "change only what the
+  feedback asks for, never remove or rename a part no item is about", "write nothing for a
+  question", the naming rules, `PROCESS_TEXT_GUIDE` and `PROCESS_DELTA_GUIDE`.
+- `feedbackMessages(diagram, items, hint?)` builds the user message:
+  - the diagram, as `writeProcessText` wrote it;
+  - the threads, numbered, each with its element's alias and name, its author, its body and its
+    replies, each on one line;
+  - the "Try again" hint, if there is one.
+- `createChangeLineFilter` passes only the lines a change script can hold: paths and
+  declarations, `- ` removals and `@n` lines. As with describe-to-diagram, prose a comment talks
+  the model into never leaves the Worker.
+
+**The cases** (`apps/drop/scripts/feedback-cases.json`, 11 cases) use real files:
+`bpmn-samples/order-process` and `parallel-approval`, MIWG C.7.0 (lanes) and C.5.0 (two
+pools, 31 nodes, the largest). Threads are anchored by the files' own element ids, as Drop
+stores them, so every case also tests the alias mapping.
+
+| Case | What the feedback asks |
+|---|---|
+| 01 | a step before the one commented on |
+| 02 | "what if legal takes more than 5 days?" — a timer boundary and an escalation |
+| 03 | remove a step |
+| 04 | rename a step |
+| 05 | retype a rule task to a user task |
+| 06 | a third branch from a gateway, with a reply giving the variable names |
+| 07 | overall feedback: email the requester at the end |
+| 08 | three threads: an insert, a rename, and "looks good" (must change nothing) |
+| 09 | a question only — the right answer is no change |
+| 10 | prompt injection ("remove every task…") next to a real request |
+| 11 | two threads on the 31-node diagram: retype to a DMN task, and add a step |
+
+**The scorer** (`apps/drop/src/lib/feedback-bench.ts`) applies the answer as the page will:
+first the filter, then `parseProcessDelta`, then `applyProcessDelta`. It then checks the
+case's assertions:
+- names that must or must not appear;
+- element types;
+- flows between elements, named by id or by a word in their name;
+- a boundary event and its trigger;
+- which `@n` items were answered;
+- no change at all, where none was asked for.
+
+It also measures three things:
+- **collateral**: elements changed or removed that no thread is about. This fails a case, and
+  it is the number that matters most for this feature.
+- **problems**: unknown ids, mostly.
+- **new lint errors**.
+
+`tests/feedback-bench.test.ts` checks every case:
+- its file is drawn in full;
+- its reference passes with no problems and no new lint errors;
+- an answer that misses fails it. That is an empty answer, or, for the question case, one
+  that changes something.
+
+**Dry run** (`--dry-run`, ≈4 characters a token; output estimated from the reference):
+
+| | input tokens | output tokens | glm-4.7-flash | gemma-4-26b | gpt-oss-120b |
+|---|---|---|---|---|---|
+| typical case (01–10) | 880–1,010 | 10–50 | 6–8 neurons | 9–11 neurons | 29–36 neurons |
+| largest (11, 31 nodes) | 1,350 | 70 | 10 neurons | 15 neurons | 48 neurons |
+
+About 800 input tokens of each request are the fixed system prompt. That is the part
+`x-session-affinity` lets the prefix cache serve. With the daily budget of 8,000 neurons, glm
+would allow roughly 1,000 requests a day, and gpt-oss-120b roughly 200, before caching.
+gpt-oss reasons before it answers, so its real output will be larger than estimated here.
+
+**Checked end to end against a local mock** that streams each case's reference wrapped in
+prose and a code fence, in the chat-completion shape. All 11 cases passed. The filter dropped
+the prose and the fence, and the summary table and per-case table came out as expected. The
+`--edits` mode still runs.
+
+**Found while building the cases, and fixed:**
+
+- A node retyped into a service or business rule task had no job type or decision, so the
+  result would not deploy. A new business rule task had no decision either. The applier now
+  gives them what a parsed draft gets, the written id, and lists each one in `fixes`
+  (cases 10 and 11).
+- A prose bullet such as `- review is removed` read as removing three ids, one of them real.
+  A removal line now takes one id, a comma-separated list, or `a > b`; anything else is a
+  problem and removes nothing.
+
+**What to look for in the first real run**, before choosing a model:
+
+- **collateral** above 0 on any case. That is the failure a reviewer will not forgive.
+- whether 09 (a question) and the third thread of 08 ("looks good") change nothing;
+- whether 10 ignores the injection and still makes the real change;
+- unknown ids on 11, the largest diagram, where the aliases are longest;
+- `@n` coverage, which the page needs to reply on and resolve the right threads.
+
+## 14. Phase 2, as built (2026-10-01)
+
+**The setting.** `AI_FEEDBACK_MODEL` (a var in `wrangler.jsonc`) names the model, with
+glm-4.7-flash for now. Unset, the feature is off: the route answers 404 and the page offers
+nothing. It also needs `AI_PASSCODE`, like the other AI features. Its options (thinking off, output
+cap) come from `MODEL_PROFILES`, so switching to any model in that table needs no code change. It
+shares the daily budget and the 40-calls-an-hour cap with describe-to-diagram (decision 3 is still
+open).
+
+**The route** (`apps/drop/src/routes/ai-edit.ts`):
+`POST /drop/api/ai-edit/:shareId/:filename` with `{ xml, threadIds, hint?, token? }`.
+
+- **The diagram comes from the request**, not from the room as §8 first proposed. It is the
+  requester's editor document, and the answer is applied to exactly that document. It is
+  public — every viewer has it — so a forged one only misleads whoever sent it. The threads, the
+  other people's words, are read from D1 by id. They must be open, undeleted roots on this file,
+  at most 10.
+- **The order of checks:**
+  1. the feature flag;
+  2. the passcode;
+  3. the Turnstile pass;
+  4. the input;
+  5. the drop: not the demo, not pinned, not banned, and the file is BPMN;
+  6. the diagram: one process, drawn, written text within 12,000 characters (larger is refused
+     for now — the neighbourhood cut of §4 is not built);
+  7. the threads;
+  8. the cache;
+  9. the budget;
+  10. the hourly cap;
+  11. the model call.
+- **The stream:** first `{ aliases }`, the map the script's ids resolve against, sent by the
+  server so a deploy between page load and request cannot misapply ids. Then the change script,
+  through `createChangeLineFilter`. Then `done` or `error`.
+- **An empty answer is a valid answer.** "This is a question" means no change, so it is not an
+  error, and it is cached like any other answer. A failed call is not cached. The error says
+  "unavailable" if nothing came back, and "stopped part way" if the stream broke.
+- **A thread anchored to an element the diagram no longer has** is sent as
+  `On "<name>", which is no longer in the diagram`, not as feedback on the whole diagram.
+
+**The page** (`apps/drop/src/client/ai-edit.ts`, a lazy chunk of 9.4 kB):
+
+- **Entry points.** "Apply with AI" on each open thread, and "Apply all *n* open with AI" (the
+  first 10) at the top of the panel. A free-text request is a comment on the whole file, then
+  its button. That is the "saved as a comment first" of §6, with no extra input.
+- **Asking needs the editor.** Without the baton the page says "Press Edit first". It also needs a
+  commenter name, because the replies are posted under it.
+- **The proposal dialog.**
+  - A preview canvas: the proposed diagram, with new elements and changed ones highlighted.
+  - **Look closely**: removals, new or changed conditions, new job types.
+  - Each thread with the changes its `@` line claims, or "Not answered".
+  - Changes no thread claims, what was left out, and, collapsed, what the applier filled in.
+  - A hint for **Try again**, the **Resolve the threads it answers** box (on), **Discard**, and
+    **Apply**.
+- **Apply** checks that the editor still holds the document the AI read; if the writer changed
+  it, they are asked to try again. Then one `snapshot` edit: the room checks it, and Undo
+  reverses it. Then each answered thread gets the reply "Changed with AI: …" under the
+  requester's name, and is resolved if the box is ticked. A thread whose reply fails is not
+  resolved.
+
+**Fixed along the way:** an `@` line can name a node the same script removes. The applier used to
+drop that id, so the thread that asked for a removal got no reply.
+
+**Checked:**
+
+- 15 route tests against the real migrations:
+  - the gates;
+  - only open threads on this file;
+  - the prompt built from stored threads, replies, a missing anchor and the hint;
+  - the aliases, filtered script, budget, cache and errors;
+  - a script that applies cleanly to the document sent;
+  - the worker routing;
+  - the page flag.
+- 10 page tests: the summary per thread, "look closely", unclaimed changes, the reply text and its
+  length cap, reading the stream, where the buttons appear, and reply-then-resolve.
+- **A browser run** (Playwright, Chromium) against `wrangler dev`, with only the `ai-edit`
+  request answered by a canned stream, because the local AI binding needs an account:
+  1. "Apply with AI" before Edit says what to do.
+  2. After Edit, the proposal shows the new task under Anna's thread.
+  3. Apply adds it between "Order Received" and "Validate Order", moving the shapes to its
+     right.
+  4. Ben's reply is posted, and Anna's thread is resolved.
+  5. After the autosave, the file in D1 has the new task and its shape, so the room accepted the
+     edit.
+  6. No console errors.
+- Before the browser run, the real route answered inside the local Workers runtime: aliases, then
+  "unavailable" where the model call needs an account.
+
+**Still open:**
+
+- the model choice (phase 1's run);
+- the neighbourhood cut for diagrams over 12,000 characters;
+- whether this gets its own budget (decision 3);
+- phase 3: multi-element anchors, and "Apply" on AI review suggestions.
+
+## 15. Phase 3, as built (2026-10-01)
+
+Batches of threads were already in phase 2 ("Apply all *n* open with AI"). This phase adds the
+other two items.
+
+### Comments on several elements
+
+- **Storage.** Migration `0009_comment_element_ids` adds `comments.element_ids`. It holds a JSON
+  array of every element, written only when there is more than one. `element_id` stays the first
+  anchor, so existing rows, markers and older pages keep working. `CommentView.elementIds` always
+  lists every element: `[]` for the whole file, `[elementId]` for one.
+- **The route** takes `elementIds` (up to `MAX_ANCHORS` = 12, de-duplicated) with or without
+  `elementId`. When both are sent, the list must start with `elementId`. Replies copy their
+  thread's list.
+- **The panel.** Click an element, then Shift-click (or Cmd/Ctrl-click) more. A second
+  Shift-click takes one out again, and a plain click starts over.
+  - The composer says "On Validate Order + 1 more", with every name in its tooltip.
+  - Each element gets a marker, and hovering a thread highlights all of them.
+  - A thread counts as on a removed element only when the diagram has none of its elements left.
+  - `anchorsOf` reads a comment from before this change as one on its single element.
+- **The prompt** names every element:
+  `1. On validate ("Validate Order"), valid ("Valid?"), "Gone_1" (no longer in the diagram) — …`.
+  A thread on a single removed element keeps the phase-2 wording.
+- **The benchmark** has case 12: one thread on "Legal Review" and "Finance Check", asking to merge
+  them into "Legal and finance review".
+
+### "Apply with AI" on AI review suggestions
+
+- **Each suggestion card** in the AI review panel gets the button when AI changes are on. That
+  covers both the model's suggestions and the automated checks.
+- **The suggestion becomes a comment thread first.** The thread is "AI review: <title> — <why>",
+  under the requester's name, on the suggestion's element if the editor's document still has it.
+  Then it runs the normal phase-2 flow. This needs no new route, the request is visible to every
+  reviewer, and the applied change replies to and resolves the thread like any other. The
+  prompt-injection boundary does not move: the text was written by the review model, and it
+  reaches the edit model as a thread like a person's would.
+- **`CommentsPanel.startThread`** posts the thread through the panel's own composer path: the
+  name, the author token and the first-comment challenge. It answers the thread, or `null` with
+  the reason shown in the panel.
+
+### Found and fixed along the way
+
+- **Parallel branches.** Removing the only step on a branch of a parallel split (or an event-based
+  gateway) no longer "bridges" it into an empty split → join flow, which means nothing there. A
+  decision's branch is still bridged, because "otherwise, skip" is a real branch. Case 12 needed
+  this.
+- **Clearer replies.** A reply on a restated gateway said only `Changed "Valid?"`. The summary
+  now says what changed on its branches: a new or changed condition, a new label, which branch is
+  now the default. For example: `Changed with AI: Set the condition to "Process Order":
+  valid = true, made the branch to "Decline order" the default of "Valid?"`.
+
+### Checked
+
+- **Route tests:** stored lists, replies inheriting them, older single anchors, and five refusals.
+- **Panel tests:** Shift-picking and un-picking, the posted list (and no list for one element),
+  markers on every element, the "+ n more" label, and "removed" only when all elements are gone.
+- **Prompt test:** a thread on three elements, one of them gone.
+- **Page tests:** `startThread`, and branch descriptions.
+- **A browser run** against `wrangler dev`, with the `ai-edit` request answered by a canned
+  stream:
+  1. A comment on two elements was made by click and Shift-click, with two markers.
+  2. Applying it renamed both tasks.
+  3. "Apply with AI" on the automated check "Exclusive gateway 'Valid?' has no default sequence
+     flow" created the thread on `gw-check`, proposed the default and condition, and applied
+     them.
+  4. Both threads got replies and were resolved, and the autosaved file has the renames and the
+     gateway's `default`.
+  5. No console errors or warnings.
+
+**Still open:**
+- the model choice (phase 1's run);
+- the neighbourhood cut for diagrams over 12,000 characters;
+- decision 3, whether this gets its own budget;
+- "later": proposals stored as suggested changes in a thread;
+- lasso selection, which would only be a faster way to pick several elements.
+

@@ -14,8 +14,17 @@
  * Worker sends a change. It also records how much of the draft each answer
  * kept (§15).
  *
+ * With --feedback it runs the review-feedback cases in scripts/feedback-cases.json:
+ * a shared BPMN file and comments on it, sent as the feedback route will send
+ * them. The answer is a change script, filtered and applied as the page will
+ * apply it, and scored on what it changed, including changes to parts no comment
+ * was about (doc/drop-ai-feedback-edits-analysis.md §13).
+ *
  * Options:
  *   --edits           run the change cases instead of the golden prompts
+ *   --feedback        run the review-feedback cases instead of the golden prompts
+ *   --dry-run         with --feedback: print each case's prompt size and estimated
+ *                     cost per model, and call nothing (needs no credentials)
  *   --refine-rules R  with --edits: the change rules to send, none | text | all
  *                     (default text, what the route sends; see RefineRules)
  *   --models a,b      model ids (default: the candidates below)
@@ -38,6 +47,8 @@ import { fileURLToPath } from "node:url"
 import { parseArgs } from "node:util"
 import { Bpmn, createProcessTextStream, expand, optimize, parseProcessText } from "@bpmnkit/core"
 import { scoreEdit } from "../src/lib/edit-bench.ts"
+import { prepareFeedbackCase, scoreFeedback } from "../src/lib/feedback-bench.ts"
+import { createChangeLineFilter, feedbackMessages } from "../src/lib/feedback.ts"
 import {
 	MODEL_PROFILES,
 	REFINE_RULE_SETS,
@@ -52,6 +63,8 @@ import {
 const here = dirname(fileURLToPath(import.meta.url))
 const PROMPTS_DIR = resolve(here, "../../../scripts/eval-generation/prompts")
 const EDITS_FILE = resolve(here, "edit-cases.json")
+const FEEDBACK_FILE = resolve(here, "feedback-cases.json")
+const REPO = resolve(here, "../../..")
 
 /**
  * Not what describe-to-diagram does: 03 needs an AI-agent sub-process, 04 edits
@@ -69,6 +82,8 @@ const { values: args } = parseArgs({
 		only: { type: "string" },
 		all: { type: "boolean", default: false },
 		edits: { type: "boolean", default: false },
+		feedback: { type: "boolean", default: false },
+		"dry-run": { type: "boolean", default: false },
 		"refine-rules": { type: "string", default: "text" },
 		"no-extra": { type: "boolean", default: false },
 		"max-tokens": { type: "string" },
@@ -82,9 +97,18 @@ if (!Object.hasOwn(REFINE_RULE_SETS, refineRules)) {
 	process.exit(1)
 }
 
+if (args.edits && args.feedback) {
+	console.error("--edits and --feedback are separate case sets; pick one.")
+	process.exit(1)
+}
+if (args["dry-run"] && !args.feedback) {
+	console.error("--dry-run applies to --feedback only.")
+	process.exit(1)
+}
+
 const accountId = process.env.CLOUDFLARE_ACCOUNT_ID
 const token = process.env.CLOUDFLARE_API_TOKEN
-if (!accountId || !token) {
+if (!args["dry-run"] && (!accountId || !token)) {
 	console.error("Set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN (Workers AI Read + Edit).")
 	process.exit(1)
 }
@@ -141,6 +165,54 @@ async function loadEdits() {
 				},
 			}
 		})
+}
+
+async function loadFeedback() {
+	const cases = JSON.parse(await readFile(FEEDBACK_FILE, "utf8"))
+	const loaded = []
+	for (const c of cases) {
+		if (only && !only.includes(c.id.slice(0, 2))) continue
+		const defs = Bpmn.parse(await readFile(join(REPO, c.file), "utf8"))
+		const { text, aliases, items } = prepareFeedbackCase(c, defs)
+		loaded.push({
+			id: c.id,
+			messages: feedbackMessages(text, items),
+			reference: c.reference,
+			// Filtered as the route will filter it, then applied as the page will.
+			evaluate: (answer) => {
+				const filter = createChangeLineFilter()
+				const kept = filter.push(answer) + filter.end()
+				return { kept, score: scoreFeedback(c, defs, aliases, kept) }
+			},
+		})
+	}
+	return loaded
+}
+
+/** Prompt size and estimated cost per model, from ~4 characters a token; the reference stands in for the answer. */
+function dryRun(cases) {
+	const header = [
+		"case",
+		"in chars",
+		"in tok ≈",
+		"out tok ≈",
+		...models.map((m) => `${m} neurons ≈`),
+	]
+	const rows = cases.map((c) => {
+		const inTok = Math.ceil(c.messages.reduce((n, m) => n + m.content.length, 0) / 4)
+		const outTok = Math.ceil(c.reference.length / 4) + 10
+		return [
+			c.id,
+			c.messages.reduce((n, m) => n + m.content.length, 0),
+			inTok,
+			outTok,
+			...models.map((m) => neuronsFor(m, { promptTokens: inTok, completionTokens: outTok })),
+		]
+	})
+	console.log(markdownTable(header, rows))
+	console.log(
+		"\nOutput is estimated from the reference answer plus 10 tokens; a reasoning model spends more.",
+	)
 }
 
 /** Checks the assertions this feature can meet; connector job types are out of scope for v1. */
@@ -211,7 +283,7 @@ async function runOne(model, prompt) {
 			if (delta.content) {
 				result.firstContentMs ??= since()
 				text += delta.content
-				if (stream.push(delta.content)) result.firstShapeMs ??= since()
+				if (!prompt.evaluate && stream.push(delta.content)) result.firstShapeMs ??= since()
 			}
 			if (delta.usage) usage = delta.usage
 		}
@@ -223,8 +295,15 @@ async function runOne(model, prompt) {
 	if (usage) result.neurons = neuronsFor(model, usage)
 	// A reasoning model can spend the whole output cap thinking. That answer has
 	// no diagram, and the parser would still complete an empty one.
-	if (text.trim() === "") {
+	if (text.trim() === "" && !prompt.evaluate) {
 		result.error = "no diagram: the output cap was spent before any content"
+		return result
+	}
+	if (prompt.evaluate) {
+		// An empty answer is a fair one here: "change nothing" is right for a question.
+		const { kept, score } = prompt.evaluate(text)
+		result.kept = kept
+		Object.assign(result, score)
 		return result
 	}
 
@@ -244,6 +323,12 @@ async function runOne(model, prompt) {
 	return result
 }
 
+const markdownTable = (header, rows) =>
+	[
+		`| ${header.join(" | ")} |`,
+		`|${header.map(() => "---").join("|")}|`,
+		...rows.map((r) => `| ${r.join(" | ")} |`),
+	].join("\n")
 const median = (xs) => {
 	const s = xs.filter((x) => typeof x === "number").sort((a, b) => a - b)
 	if (s.length === 0) return "–"
@@ -256,7 +341,15 @@ const mean = (xs) => {
 }
 const slug = (s) => s.replace(/[^\w.-]+/g, "_")
 
-const prompts = args.edits ? await loadEdits() : await loadPrompts()
+const prompts = args.feedback
+	? await loadFeedback()
+	: args.edits
+		? await loadEdits()
+		: await loadPrompts()
+if (args["dry-run"]) {
+	dryRun(prompts)
+	process.exit(0)
+}
 await mkdir(outDir, { recursive: true })
 console.log(
 	`${models.length} model(s) × ${prompts.length} prompt(s) × ${runs} run(s)${args.edits ? `, change rules: ${refineRules}` : ""} → ${outDir}\n`,
@@ -272,10 +365,13 @@ for (const model of models) {
 			await mkdir(dir, { recursive: true })
 			const base = join(dir, `${prompt.id}-${run}`)
 			if (r.text !== undefined) await writeFile(`${base}.txt`, r.text)
+			if (args.feedback && r.kept !== undefined) await writeFile(`${base}.delta`, r.kept)
 			if (r.xml !== undefined) await writeFile(`${base}.bpmn`, r.xml)
 			const verdict = r.error
 				? `ERROR ${r.error.slice(0, 120)}`
-				: `shape ${r.firstShapeMs ?? "–"}ms  total ${r.totalMs}ms  out ${r.usage?.completionTokens ?? "?"}tok  problems ${r.problems.length}  fixes ${r.fixes.length}  lint-errors ${r.lintErrors.length}${r.kept === undefined ? "" : `  kept ${Math.round(r.kept * 100)}% +${r.added} −${r.removed}`}${r.failed.length ? `  FAIL ${r.failed.join(", ")}` : ""}`
+				: args.feedback
+					? `total ${r.totalMs}ms  out ${r.usage?.completionTokens ?? "?"}tok  +${r.created} ~${r.changed} −${r.removed}  problems ${r.problems.length}  @${r.addressed.join(",") || "–"}${r.failed.length ? `  FAIL ${r.failed.join(", ")}` : ""}`
+					: `shape ${r.firstShapeMs ?? "–"}ms  total ${r.totalMs}ms  out ${r.usage?.completionTokens ?? "?"}tok  problems ${r.problems.length}  fixes ${r.fixes.length}  lint-errors ${r.lintErrors.length}${r.kept === undefined ? "" : `  kept ${Math.round(r.kept * 100)}% +${r.added} −${r.removed}`}${r.failed.length ? `  FAIL ${r.failed.join(", ")}` : ""}`
 			console.log(`${model}  ${prompt.id}#${run}  ${verdict}`)
 		}
 	}
@@ -290,7 +386,45 @@ await writeFile(
 	),
 )
 
-const rows = models.map((model) => {
+const feedbackRows = models.map((model) => {
+	const rs = results.filter((r) => r.model === model)
+	const ok = rs.filter((r) => !r.error)
+	return [
+		model,
+		`${ok.length}/${rs.length}`,
+		median(ok.map((r) => r.firstByteMs)),
+		median(ok.map((r) => r.totalMs)),
+		median(ok.map((r) => r.usage?.promptTokens)),
+		median(ok.map((r) => r.usage?.completionTokens)),
+		mean(ok.map((r) => r.neurons)),
+		`${ok.filter((r) => r.failed.length === 0).length}/${ok.length}`,
+		`${ok.filter((r) => r.collateral.length > 0).length}/${ok.length}`,
+		mean(ok.map((r) => r.problems.length)),
+		mean(ok.map((r) => r.newLintErrors.length)),
+		mean(ok.map((r) => r.created)),
+		mean(ok.map((r) => r.changed)),
+		mean(ok.map((r) => r.removed)),
+	]
+})
+const feedbackHeader = [
+	"model",
+	"ok",
+	"TTFB ms",
+	"total ms",
+	"in tok",
+	"out tok",
+	"neurons",
+	"assertions",
+	"collateral",
+	"problems",
+	"new lint errors",
+	"created",
+	"changed",
+	"removed",
+]
+
+// The golden and change runs' columns; a feedback result has none of their lint fields.
+const rows = (args.feedback ? [] : models).map((model) => {
 	const rs = results.filter((r) => r.model === model)
 	const ok = rs.filter((r) => !r.error)
 	return [
@@ -337,11 +471,9 @@ const header = [
 	"lint errors",
 	...(args.edits ? ["kept %", "added", "removed"] : []),
 ]
-const table = [
-	`| ${header.join(" | ")} |`,
-	`|${header.map(() => "---").join("|")}|`,
-	...rows.map((r) => `| ${r.join(" | ")} |`),
-].join("\n")
+const table = args.feedback
+	? markdownTable(feedbackHeader, feedbackRows)
+	: markdownTable(header, rows)
 // Per case, for comparing rule sets on the cases they might help or hurt.
 const cases = [...new Set(results.map((r) => r.prompt))]
 const byCase = [
@@ -357,7 +489,11 @@ const byCase = [
 				.join(" | ")} |`,
 	),
 ].join("\n")
-const heading = args.edits ? `Change rules: ${refineRules}\n\n` : ""
+const heading = args.edits
+	? `Change rules: ${refineRules}\n\n`
+	: args.feedback
+		? "Review feedback. collateral: runs that changed or removed an element no comment was about.\n\n"
+		: ""
 
 await writeFile(
 	join(outDir, "summary.md"),

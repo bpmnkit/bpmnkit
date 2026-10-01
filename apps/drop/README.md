@@ -26,18 +26,22 @@ src/
   env.ts           Binding types
   routes/          upload, share pages, raw/json download, reports, admin, ai-review, generate,
                    versions (history + restore), feel (saving an edited statement),
-                   comments (review threads, @mentions, author tokens)
+                   comments (review threads, @mentions, author tokens), ai-edit (changes
+                   from review threads)
   lib/             ids, validate, meta, db (D1), versions (the milestone ring), http,
                    pages (HTML), demo (in-memory demo drop), review (deterministic
                    optimizer pass), ai (Workers AI + cache), generate (describe-to-diagram
-                   prompt, model profiles, stream reader)
+                   prompt, model profiles, stream reader), feedback (the review-feedback
+                   prompt and output filter)
   client/          browser bundles: drop, viewer, admin, landing (built to public/drop/assets),
-                   plus the FEEL view, editor and composer, and the comments panel
+                   plus the FEEL view, editor and composer, the comments panel, and the
+                   AI-changes dialog (a lazy chunk, like the editor)
   shared/          constants, and the FEEL document (shape, parse, evaluate) — used by
                    both Worker and client
 migrations/        D1 schema (0001 core, 0002 AI review, 0003 version log,
                    0004 report state, 0005 the FEEL kind, 0006 comments,
-                   0007 describe-to-diagram cache)
+                   0007 describe-to-diagram cache, 0008 describe-to-diagram hourly cap,
+                   0009 comments on several elements)
 ```
 
 ## Develop
@@ -88,7 +92,20 @@ The same passcode turns on **describe-to-diagram** (`POST /drop/api/generate`, t
 process" section on `/drop`). It streams the model's answer in the line format read by
 `parseProcessText` from `@bpmnkit/core`, and the page draws each finished line. Locally the `AI`
 binding needs a Cloudflare account. `pnpm --filter @bpmnkit/drop bench:generate` compares models
-on the golden prompts; see `doc/drop-ai-generate-analysis.md` §7.
+on the golden prompts; see `doc/drop-ai-generate-analysis.md` §7. With `--feedback` it runs the
+review-feedback cases instead (changing a shared diagram from comments), and `--feedback --dry-run`
+prints their prompt sizes and estimated cost without calling a model; see
+`doc/drop-ai-feedback-edits-analysis.md` §13.
+
+With `AI_FEEDBACK_MODEL` set as well (it is, in `wrangler.jsonc`), the passcode also turns on
+**AI changes from review comments** (`POST /drop/api/ai-edit/:shareId/:filename`). While editing,
+"Apply with AI" on a comment thread (or "Apply all … open with AI" in the panel) asks the model to
+make the change the threads ask for. A comment can be on several elements (Shift-click them), and
+each AI review suggestion has the same button: it becomes a comment thread first. The page shows the proposal (a preview, what it does to each
+thread, and what deserves a careful look) and changes nothing until **Apply**. Apply makes one
+undoable edit, then replies on each answered thread and resolves it. Remove `AI_FEEDBACK_MODEL` to
+turn it off. Locally the model call needs a Cloudflare account; everything around it runs offline.
+See `doc/drop-ai-feedback-edits-analysis.md` §14.
 
 Quick API smoke test:
 

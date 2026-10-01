@@ -12,6 +12,7 @@ import { handleComments } from "../src/routes/comments.js"
 import {
 	AUTHOR_HEADER,
 	type CommentView,
+	MAX_ANCHORS,
 	MAX_COMMENTS_PER_DROP,
 	MAX_COMMENT_CHARS,
 	MAX_COMMENT_WRITES_PER_HOUR,
@@ -182,6 +183,48 @@ describe("creating", () => {
 		["a file not in the drop", { filename: "other.bpmn" }],
 		["a malformed element id", { elementId: "<svg onload=x>" }],
 	])("refuses %s", async (_label, body) => {
+		const res = await post(body)
+		expect(res.status).toBe(400)
+		expect(res.json.error).toBeTruthy()
+	})
+
+	it("stores a comment on several elements, first one as the anchor, and its replies with it", async () => {
+		const res = await post({
+			elementId: "task",
+			elementLabel: "Do Work",
+			elementIds: ["task", "start", "task"],
+			body: "These two should be one step",
+		})
+		expect(res.status).toBe(201)
+		expect(res.comment).toMatchObject({ elementId: "task", elementIds: ["task", "start"] })
+		const reply = await post({ parentId: res.comment.id })
+		expect(reply.comment.elementIds).toEqual(["task", "start"])
+		const listed = await call("GET", null)
+		expect(listed.json.comments?.map((c) => c.elementIds)).toEqual([
+			["task", "start"],
+			["task", "start"],
+		])
+	})
+
+	it("takes elementIds alone, and answers one element as a list of one", async () => {
+		const many = await post({ elementIds: ["start", "task"] })
+		expect(many.comment).toMatchObject({ elementId: "start", elementIds: ["start", "task"] })
+		const one = await post({ elementId: "task" })
+		expect(one.comment.elementIds).toEqual(["task"])
+		const file = await post({})
+		expect(file.comment.elementIds).toEqual([])
+	})
+
+	it.each([
+		["an empty list", { elementIds: [] }],
+		["a malformed id in the list", { elementIds: ["task", "<x>"] }],
+		["a list that does not start with elementId", { elementId: "task", elementIds: ["start"] }],
+		[
+			"too many elements",
+			{ elementIds: Array.from({ length: MAX_ANCHORS + 1 }, (_, k) => `e${k}`) },
+		],
+		["a list that is not a list", { elementIds: "task" }],
+	])("refuses %s of elements", async (_label, body) => {
 		const res = await post(body)
 		expect(res.status).toBe(400)
 		expect(res.json.error).toBeTruthy()

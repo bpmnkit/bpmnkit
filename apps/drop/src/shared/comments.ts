@@ -32,6 +32,9 @@ export const MAX_MENTIONS = 10
 /** Longest element label kept with an anchor, so a removed element can still be named. */
 export const MAX_LABEL_CHARS = 120
 
+/** Most elements one comment can be on: a handful of steps, not a selection of the diagram. */
+export const MAX_ANCHORS = 12
+
 /** localStorage key for the name this browser comments and appears under. */
 export const NAME_STORAGE_KEY = "bpmnkit-drop-name"
 
@@ -142,6 +145,11 @@ export interface CommentView {
 	elementId: string | null
 	/** The element's name when the comment was made, for when it is gone. */
 	elementLabel: string | null
+	/**
+	 * Every element it is on, `elementId` first; empty for the file as a whole.
+	 * More than one when the comment is about several elements at once.
+	 */
+	elementIds: string[]
 	parentId: string | null
 	authorName: string
 	/** See {@link authorIdFromHash}. */

@@ -1,5 +1,56 @@
 # Progress
 
+## 2026-10-01 — Drop: comments on several elements, and AI review suggestions applied with AI (phase 3)
+
+- A comment can be on several elements: Shift-click (or Cmd/Ctrl-click) them while the comments
+  panel is open. Migration `0009_comment_element_ids` stores the list; `element_id` stays the first,
+  so existing comments and pages keep working. Each element gets a marker, the thread reads
+  "On X + n more", and the AI prompt names every element, saying which are no longer there.
+- Each AI review suggestion, including the automated checks, has "Apply with AI". It becomes a
+  comment thread on its element, and the normal flow then proposes, applies, replies and resolves.
+- `applyProcessDelta` no longer leaves an empty branch where the only step of a parallel branch was
+  removed. Replies on a changed gateway now say what changed on its branches.
+- Benchmark case 12: one thread on two tasks, asking to merge them. Checked in Chromium against
+  `wrangler dev`. Details: `doc/drop-ai-feedback-edits-analysis.md` §15.
+
+## 2026-10-01 — Drop: AI changes from review comments (phase 2)
+
+- `POST /drop/api/ai-edit/:shareId/:filename`. It takes the requester's editor document and the
+  ids of open threads, reads the threads from D1, and streams the alias map and then the filtered
+  change script. It is off unless both `AI_PASSCODE` and `AI_FEEDBACK_MODEL` (new var; glm-4.7-flash
+  for now) are set. It uses the same passcode, Turnstile pass, daily budget, hourly cap and cache as
+  describe-to-diagram.
+- The share page offers "Apply with AI" on each open thread and "Apply all open with AI" while
+  editing. It shows the proposal before anything changes: a preview, the changes per thread, and
+  what to look at closely (removals, conditions, job types). **Apply** makes one undoable edit
+  through the room, then replies "Changed with AI: …" on each answered thread and resolves it
+  (on by default).
+- Fixed in `applyProcessDelta`: an `@` line naming a node the same script removes now resolves,
+  so that thread gets its reply.
+- Checked end to end in Chromium against `wrangler dev`, with the model answer stubbed. Details:
+  `doc/drop-ai-feedback-edits-analysis.md` §14.
+
+## 2026-10-01 — AI changes from review comments: phase 1 benchmark (built, not yet run)
+
+- `bench:generate --feedback` runs 11 review-feedback cases on real BPMN files (samples, MIWG C.7.0 with lanes, C.5.0 with 31 nodes): inserts, a timer boundary, a removal, a rename, a retype, a new branch, overall feedback, three threads at once, a question that needs no change, and a prompt injection. Answers are filtered, applied with `applyProcessDelta`, and scored on assertions and on collateral, meaning changes to elements no comment was about. `--dry-run` prints the prompt sizes and estimated cost without credentials: about 880–1,350 input tokens, so 6–10 neurons a request on glm-4.7-flash and 29–48 on gpt-oss-120b.
+- `src/lib/feedback.ts`: the fixed `FEEDBACK_SYSTEM_PROMPT`, `feedbackMessages` and `createChangeLineFilter`, which the phase-2 route will reuse.
+- Checked end to end against a local mock: 11/11. Not yet run against Workers AI, so no model is chosen. Details: `doc/drop-ai-feedback-edits-analysis.md` §13.
+- Fixed along the way:
+  - A node retyped into a service or business rule task, or a new rule task, now gets a job type or decision, as a draft does.
+  - A `- ` line that is prose, not ids, no longer removes anything.
+
+## 2026-10-01 — AI changes from review comments: phase 0 (core and editor)
+
+- `writeProcessText` (core) writes an existing diagram in the line format, under readable aliases, for a model to read. `parseProcessDelta` + `PROCESS_DELTA_GUIDE` (core) read a change script: only what changes, with `-` removals and `@n` lines naming the feedback item a change answers. `applyProcessDelta` (editor, headless) applies it with the editor's modelling functions, so the drawn layout stays. It places new nodes beside what they follow and makes room for an insert by moving only the shapes right of it, widening pools and lanes with them. It joins the neighbours of a removed node and adds new nodes to their lane.
+- Checked against the 21 MIWG files that draw their process in full: a diagram's own restatement leaves it unchanged, and an insert, a new branch and a removal leave a document the Drop room would accept, with no new shape overlapping another.
+- `parseProcessText` and `parseProcessDelta` share one path tokenizer and FEEL check (`tokenizePath`, `conditionOrLabel`). The drop suite's recorded answers still parse to the same diagrams.
+- Decided for phase 2: a proposal stays private to the person who asked until they apply it, and applying resolves the threads it addressed (`doc/drop-ai-feedback-edits-analysis.md` §10).
+
+## 2026-10-01 — Drop: analysis of changing a shared diagram from review comments
+
+- Proposal only, nothing built: `doc/drop-ai-feedback-edits-analysis.md`. Reviewers mark elements or leave overall feedback, and the AI makes the change in the editor session. The model writes only a change script in the line format (new `-` and `@n` lines), not the whole diagram again. A new `applyProcessDelta` applies it with the editor's layout-aware modelling functions, so untouched elements and the hand-drawn layout stay as they are. The result goes through the existing `snapshot` op, after a mandatory diff preview.
+- Found while reading: a version restore writes D1 only and never tells the DocRoom, so the next edit probably writes the old document back (§11, not reproduced).
+
 ## 2026-09-30 — Describe-to-diagram: draft from an image
 
 - `POST /drop/api/generate` accepts `{ image, description? }`: a JPEG data URL of about 1 MB at most (`normaliseImage`), sent with `IMAGE_SYSTEM_PROMPT` to `AI_GENERATE_IMAGE_MODEL` (`@cf/google/gemma-4-26b-a4b-it`), not hedged. The description is optional with an image. Cached by model, prompt, description and image. The same gates, budget and hourly cap as text apply, and a call with no reported usage is charged `IMAGE_TOKEN_ESTIMATE` (1,500) input tokens for the image. Unset the var and images are refused (400) and the page hides the control.

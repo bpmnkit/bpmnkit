@@ -60,6 +60,8 @@ export interface EditSession {
 	replace(xml: string): void
 	/** The document as edited, for the page to keep showing after Done. */
 	currentXml(): string
+	/** Replaces the document as one edit: sent to the room, and one step of undo. */
+	apply(defs: BpmnDefinitions): void
 	/** Where the writer is looking, so a rebuilt editor opens on the same view. */
 	viewport(): ViewportState
 	/** The local-checkpoint panel, for the page to place. */
@@ -154,6 +156,7 @@ export function startEditSession(options: EditSessionOptions): EditSession {
 			}
 		},
 		currentXml: () => editor.exportXml(),
+		apply: (defs) => editor.applyChange(() => defs),
 		viewport: () => editor.getViewport(),
 		historyPanel: panel.el,
 		refreshHistory: () => panel.refresh(),

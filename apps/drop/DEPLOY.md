@@ -181,6 +181,8 @@ gh secret set CLOUDFLARE_DROP_API_TOKEN --body "<token from step 3>"
 | Change the describe-to-diagram model | Edit `AI_GENERATE_MODEL` in `wrangler.jsonc`, redeploy |
 | Turn the describe-to-diagram hedge off | Remove `AI_GENERATE_FALLBACK_MODEL` from `wrangler.jsonc`, redeploy |
 | Turn drafting from an image off | Remove `AI_GENERATE_IMAGE_MODEL` from `wrangler.jsonc`, redeploy |
+| Change the model for AI changes from review comments | Edit `AI_FEEDBACK_MODEL` in `wrangler.jsonc`, redeploy (compare with `bench:generate --feedback`) |
+| Turn AI changes from review comments off | Remove `AI_FEEDBACK_MODEL` from `wrangler.jsonc`, redeploy |
 | Bump the Terms version | Edit `TOS_VERSION` in `wrangler.jsonc`, redeploy |
 | Deploy a change by hand | `pnpm --filter @bpmnkit/drop deploy` |
 | Add a migration | Drop a `.sql` in `migrations/`; the next deploy applies it |

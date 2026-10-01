@@ -10,6 +10,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import {
 	CommentsPanel,
 	anchorState,
+	anchorsOf,
 	drawnIds,
 	mentionAt,
 	mentionsIn,
@@ -26,6 +27,7 @@ function comment(over: Partial<CommentView>): CommentView {
 		filename: "order.bpmn",
 		elementId: null,
 		elementLabel: null,
+		elementIds: [],
 		parentId: null,
 		authorName: "Anna",
 		authorId: "aaaaaaaaaaaaaaaa",
@@ -248,6 +250,96 @@ describe("the panel", () => {
 			comment({ id: "a00000000002", authorName: "Anna", mentions: ["ben"], editedAt: 9 }),
 		)
 		expect(q("n").hidden).toBe(true)
+	})
+
+	it("picks several elements with Shift, posts them all, and drops one picked twice", async () => {
+		const q = mount()
+		const posted: Array<Record<string, unknown>> = []
+		vi.stubGlobal("fetch", async (_url: string, init: RequestInit) => {
+			const body = JSON.parse(init.body as string) as Record<string, unknown>
+			posted.push(body)
+			return new Response(
+				JSON.stringify({
+					comment: comment({
+						id: "new000000002",
+						elementId: "task",
+						elementIds: body.elementIds as string[],
+					}),
+					authorToken: "2".repeat(24),
+				}),
+				{ status: 201 },
+			)
+		})
+		panel.pick("task", "Do Work")
+		panel.pick("start", "Begin", true)
+		panel.pick("end", "Done", true)
+		panel.pick("end", "Done", true)
+		expect(q("c").querySelector(".cm-target")?.textContent).toContain("On Do Work + 1 more")
+		// A plain click starts over.
+		panel.pick("end", "Done")
+		expect(q("c").querySelector(".cm-target")?.textContent).toContain("On Done")
+		expect(q("c").querySelector(".cm-target")?.textContent).not.toContain("more")
+		panel.pick("task", "Do Work")
+		panel.pick("start", "Begin", true)
+
+		const name = q("c").querySelector<HTMLInputElement>(".cm-name") as HTMLInputElement
+		name.value = "Anna"
+		const area = q("c").querySelector("textarea") as HTMLTextAreaElement
+		area.value = "These two should be one"
+		;(q("c").querySelector(".hv-btn--go") as HTMLButtonElement).click()
+		await vi.waitFor(() => expect(posted).toHaveLength(1))
+		expect(posted[0]).toMatchObject({
+			elementId: "task",
+			elementLabel: "Do Work",
+			elementIds: ["task", "start"],
+		})
+		// A marker on each element the open thread is on.
+		await vi.waitFor(() => expect(overlays.map((o) => o.id).sort()).toEqual(["start", "task"]))
+	})
+
+	it("sends no list for a comment on one element", async () => {
+		const q = mount()
+		const posted: Array<Record<string, unknown>> = []
+		vi.stubGlobal("fetch", async (_url: string, init: RequestInit) => {
+			posted.push(JSON.parse(init.body as string) as Record<string, unknown>)
+			return new Response(JSON.stringify({ comment: comment({ id: "new000000003" }) }), {
+				status: 201,
+			})
+		})
+		localStorage.setItem(AUTHOR_STORAGE_KEY, JSON.stringify({ share1: "2".repeat(24) }))
+		panel.pick("task", "Do Work")
+		const name = q("c").querySelector<HTMLInputElement>(".cm-name") as HTMLInputElement
+		name.value = "Anna"
+		;(q("c").querySelector("textarea") as HTMLTextAreaElement).value = "One"
+		;(q("c").querySelector(".hv-btn--go") as HTMLButtonElement).click()
+		await vi.waitFor(() => expect(posted).toHaveLength(1))
+		expect(posted[0]).not.toHaveProperty("elementIds")
+	})
+
+	it("labels a thread on several elements, and calls it removed only when all are gone", () => {
+		const q = mount()
+		panel.receive(
+			comment({
+				id: "a00000000001",
+				elementId: "gone_1",
+				elementLabel: "Old step",
+				elementIds: ["gone_1", "task"],
+			}),
+		)
+		panel.open()
+		const anchor = q("l").querySelector(".cm-anchor")
+		expect(anchor?.textContent).toBe("On Old step + 1 more")
+		expect(anchor?.classList.contains("removed")).toBe(false)
+		expect(overlays.map((o) => o.id)).toEqual(["task"])
+
+		const gone = { root: comment({ elementId: "x", elementIds: ["x", "y"] }), replies: [] }
+		expect(anchorState(gone, drawnIds(Bpmn.parse(SIMPLE_BPMN)))).toBe("removed")
+	})
+
+	it("reads an older comment with no list as on its one element", () => {
+		expect(anchorsOf({ elementId: "task", elementIds: [] })).toEqual(["task"])
+		expect(anchorsOf({ elementId: null, elementIds: [] })).toEqual([])
+		expect(anchorsOf({ elementId: "a", elementIds: ["a", "b"] })).toEqual(["a", "b"])
 	})
 
 	it("offers no composer on a drop that takes no comments", () => {

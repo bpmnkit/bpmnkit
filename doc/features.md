@@ -1,5 +1,26 @@
 # Features
 
+## Drop: comments on several elements; AI review suggestions applied with AI (2026-10-01)
+
+- Shift-click to put one comment on several elements, such as "these two steps should be one".
+  The AI change reads it as one thread on all of them.
+- Any AI review suggestion can be applied with AI: it becomes a comment thread that the change
+  then answers and resolves.
+
+## Drop: AI changes from review comments (2026-10-01)
+
+- While editing a shared diagram, ask the AI to make the change one comment thread or all of them
+  ask for. It proposes a change that keeps the layout. You see it before anything changes, apply
+  it as one undoable edit, and the answered threads get a reply and are resolved. The model is a
+  setting (`AI_FEEDBACK_MODEL`).
+
+## Change an existing diagram from a model's answer (2026-10-01)
+
+- `writeProcessText` shows a model a diagram someone drew; the model answers with a change
+  script (`parseProcessDelta`), and `applyProcessDelta` applies it without laying the diagram out
+  again. Only what the change touches moves. This is the base for AI changes from Drop review
+  comments.
+
 ## Drop: draft a diagram from an image (2026-09-30)
 
 - Describe-to-diagram takes a whiteboard photo, a sketch or a screenshot, picked or pasted, with

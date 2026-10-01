@@ -31,6 +31,7 @@ const COMMENT: CommentView = {
 	filename: "order.bpmn",
 	elementId: "task",
 	elementLabel: "Do Work",
+	elementIds: ["task"],
 	parentId: null,
 	authorName: "Anna",
 	authorId: "0123456789abcdef",
