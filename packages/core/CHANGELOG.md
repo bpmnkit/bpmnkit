@@ -1,5 +1,78 @@
 # @bpmnkit/core
 
+## 1.2.0
+
+### Minor Changes
+
+- 0afd35e: Describe-to-diagram: change a draft by asking, and answer the parser's guesses.
+  - `parseProcessText` returns `questions`: the guesses it had to make that only the reader can confirm. These are a made-up condition variable, a default branch it picked, branches it put in parallel, a question answered one way only, a task left out, a loop exit it added, and an event given a message trigger. Each has ready answers where there are any, and a `draft` to finish, all written as change requests. New type `ProcessTextQuestion`.
+  - Drop: once drawn, a draft takes change requests. `POST /drop/api/generate` accepts `{ description, diagram, change }`, and the model writes the whole diagram again with the change made. The page lists the parser's questions under the diagram, sends an answer as a change, and can undo each change.
+  - Drop: a working indicator on the canvas while a request runs, with the seconds counted until the first line.
+  - Drop: only lines in the diagram format are streamed back from the model, and each IP may make at most 40 model calls an hour (migration `0008_ai_generate_calls`).
+  - Drop: with `TURNSTILE_SECRET` set, describe-to-diagram asks for one Turnstile challenge per 30 minutes, then carries a signed pass.
+  - `bench:generate --edits` measures changes on 10 cases, including how much of the draft each answer keeps.
+
+- 48e48de: `expand()` rejects a compact diagram that cannot become valid BPMN instead of emitting broken XML. It checks for:
+  - a flow or boundary event that names an element outside its scope
+  - a duplicate id
+  - a missing element or flow id
+  - an unknown `eventType`
+
+  It used to drop an unknown `eventType` silently. The error lists every problem in one message, so a model-written diagram can be sent back for repair.
+
+- 78ccbf9: Change an existing diagram from a model's answer, keeping its layout.
+  - `writeProcessText(defs)` (core) writes the first process of a document in the line format, so a model can read a diagram someone drew. Nodes are written under short name-derived aliases, returned with the text as an alias → element id map. Sub-processes are written as the fixed kinds `sub` / `adhoc` / `transaction`, and complex gateways as `complex`. Lanes, data objects, annotations and the inside of a sub-process are left out.
+  - `parseProcessDelta(text)` and `PROCESS_DELTA_GUIDE` (core) read a change script: the line format, but only what changes. It adds `- x` / `- a > b` removals and `@n ids` lines that tie a change to a feedback item. It never throws, and it keeps conditions as written.
+  - `applyProcessDelta(defs, delta, { aliases })` (editor, also in `@bpmnkit/editor/headless`) applies a change script through the editor's modelling functions:
+    - New nodes are placed beside what they follow.
+    - An insert between connected nodes replaces their flow, keeps its condition or default, and moves only the shapes right of it.
+    - Removing a node joins its neighbours.
+    - New nodes join their lane.
+    - Anything the script does not mention is unchanged, down to the byte.
+  - `parseProcessText` and `parseProcessDelta` now share one path tokenizer and one FEEL check. The FEEL check is exported as `conditionOrLabel`. `parseProcessText`'s behaviour is unchanged.
+  - A node retyped into a service, send or business rule task, and a new business rule task, gets the job type or decision it needs to deploy: the written id, as in a parsed draft. Each one is listed in `fixes`.
+  - A removal line takes one id, a comma-separated list, or `a > b`. A prose bullet ("- review is removed") is a problem and removes nothing.
+  - An `@` line can name a node the same script removes; it resolves to the removed id.
+  - Removing the only step on a branch of a parallel split or event-based gateway no longer joins its neighbours into an empty branch.
+
+- 48e48de: New `parseProcessText(text)`, `createProcessTextStream()` and `PROCESS_TEXT_GUIDE` add a line format for a language model to write a new process in, for example `a[start Placed] > b[user Check order] > c[end Done]`. It costs about a quarter of the output tokens of minified compact JSON, and it can be drawn while it streams.
+
+  The parser never throws, and its result always expands. It generates flow ids, joins branches that meet at a task, marks the lone unconditioned branch of a split as the default, and adds missing start and end events. It reports every line it could not use.
+
+### Patch Changes
+
+- 48e48de: `parseProcessText` recovers the grammar drift seen in real model answers instead of discarding it:
+  - A node whose kind is missing, such as `start[Order placed]`, keeps its full name and is typed from its id: `start…` becomes a start event, and `end…`, `done…` or `finish…` becomes an end event.
+  - A name written where the trigger goes, such as `start:order received`, is read as part of the name.
+  - The synonyms `event`, `parallel`, `exclusive`, `gateway`, `inclusive`, `decision`, `dmn` and `human` are accepted as kinds.
+
+  A branch condition that does not parse as FEEL, such as `applicant is eligible`, is kept as the branch label and reported, instead of becoming an expression that fails at deploy time.
+
+  `PROCESS_TEXT_GUIDE` shows two FEEL condition examples and spells out `rule (DMN decision)` and `catch (wait for message or timer)`.
+
+- 48e48de: `parseProcessText` handles more of what real model answers do. Each rule below was replayed on recorded benchmark answers before it was kept:
+  - An id used but never declared becomes a task named from the id (`send_email` becomes "Send email"). Its flows and boundaries are kept instead of dropped.
+  - An id declared again after an arrow, with a different kind or name, becomes a new node (`done_2`). A bare reference to the id after that means the newest node.
+  - Restated exactly, or at the start of a line, the id means the node already there.
+  - A boundary event is always a new node, attached to what its `on=` meant before it was declared.
+  - `>(label) > next` and `id [spec]`, with a space before the bracket, both parse.
+  - A rule task without a decision takes its id as decision id.
+
+- 502cc73: `parseProcessText` keeps the structural rules `lintDiagram` checks, whatever the model wrote.
+  - Every node is on a path from a start event. A task or gateway nothing leads to continues the latest path that stops short of an end event. What is still unreached is left out and reported, and is never drawn as a loose node.
+  - A gateway with one way in and one way out is removed.
+  - A task or event with several ways out gets an xor split when its branches are labelled, and a parallel split when they are not.
+  - Joins match the split they close. A gateway that both joins and splits gets its own join.
+  - Every decision has one default, and every other branch has a FEEL condition. A branch written in prose gets a condition on a variable named for the gateway's question.
+  - Unnamed elements are named.
+  - Only the first blank start event is kept. An event-based gateway with one way out becomes a catch event. A flow from a node to itself is refused, and a loop with no way out gets an exit.
+  - A branch drawn into a boundary event continues to the path that boundary leads to.
+  - A loop with no decision loses the flows that close it, so every path ends. A link event in a path becomes a plain event.
+  - Unlabelled flows from one node that all wait, at least one on a catch event, become a race behind an event-based gateway.
+  - A catch or boundary event written without a trigger becomes a message event.
+
+  `PROCESS_TEXT_GUIDE` teaches these rules. `pattern/gateway-single-outgoing` no longer flags join gateways.
+
 ## 1.1.0
 
 ### Minor Changes
