@@ -7,6 +7,11 @@
   implemented yet.
 - It records seven defects found on the way. The most important: the compact format puts the REST
   connector's `url`/`method` in task headers, where the connector does not read them.
+- Decided: connectors go in a `@bpmnkit/core/connectors` subpath, the API index goes in
+  `connector-gen`, and the bench picks the model. Generation runs in two passes: the fast
+  structure pass stays as it is, then a connect pass writes only `with` lines, as a change script,
+  using connector cards picked for each task. The connect pass is also an "Add connectors" action
+  for existing diagrams.
 
 ## 2026-10-01 — Drop: AI proposals shared as suggested changes
 

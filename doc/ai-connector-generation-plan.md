@@ -1,6 +1,6 @@
 # AI generation with Camunda connectors — analysis and plan
 
-**Status:** plan only, nothing implemented. **Date:** 2026-10-01.
+**Status:** plan only, nothing implemented. Decisions D1–D4 in §8 are agreed. **Date:** 2026-10-01.
 **Follows:** bpmnkit/monorepo#207–#212 (describe-to-diagram, refine, image drafts, feedback edits,
 shared suggestions).
 
@@ -119,24 +119,81 @@ Carried over from #207–#212, because they are why that pipeline works with sma
 - **One source of truth.** Cards, guide text, the plugin reference and the bench all come from
   the same generated data, with a test that parses the guide's own example.
 
-## 4. Architecture
+## 4. Architecture: two passes
+
+**Decided (2026-10-01):** generation runs in two AI passes. First a fast structural pass, then a
+connect pass that only configures connectors.
 
 ```
-user text ──► connector retrieval (code, no model) ──► prompt = FIXED GUIDE + cards + user text
-                 │  searchConnectors + API index                        │
-                 ▼                                                       ▼
-       core/connectors data                          model writes path lines + `with` lines
-       (slim templates + aliases                                         │
-        + operation cards)                                              ▼
-                 ▲                              parseProcessText ─► CompactDiagram (+ connector refs)
-                 │                                                       │
-       connector-gen API index ◄── scripts                                ▼
-       (101 OpenAPI → ops)                         expand() + resolveConnector ─► BPMN with
-                                                   ioMapping / headers / modelerTemplate
-                                                                         │
-                                                                         ▼
-                                    validation: apply problems, lint, ProcessTest with mocks
+PASS 1 — structure (exactly today's pipeline, unchanged)
+user text ─► GENERATE_SYSTEM_PROMPT ─► path lines ─► parseProcessText ─► expand ─► diagram streams in
+                                                                                     │ ids are stable
+PASS 2 — connect                                                                     ▼
+diagram ─► candidates per task (code, no model):            selectConnectors(user text, task names,
+           "Post summary to Slack" → slack chat.postMessage  ◄── core/connectors cards + API index)
+           "List open issues" (+ "GitHub" in text) → http + GitHub API card
+      │
+      ▼
+CONNECT prompt = FIXED CONNECT GUIDE + diagram as text (process-text-writer) + candidate cards + user text
+      │
+      ▼
+model writes only `with` lines (+ kind restatements, e.g. task → service, start → start:message)
+      │
+      ▼
+parseProcessDelta ─► applyProcessDelta (layout kept, #211) ─► resolveConnector ─► BPMN with
+ioMapping / headers / modelerTemplate ─► validation: apply problems, lint, ProcessTest with mocks
 ```
+
+### 4.1 Why two passes
+
+- **Pass 1 does not change.** Its prompt, cached prefix, 600-token cap, latency to the first
+  shape and the bench numbers from #207/#208 stay as they are. Connector work cannot make
+  structure generation worse.
+- **Retrieval is much better with a diagram.** In one pass, connectors can only be picked from
+  the user's sentence. In pass 2, every service task has a name ("Post summary to Slack", "Create
+  GitHub issue"). Candidates are picked **per task**, so the model gets two or three exact cards
+  per task instead of a guessed list for the whole request.
+- **Each pass does one small job.** Pass 2 writes only `with` lines, about 25–40 tokens per
+  task, against a fixed id list. This suits the small Workers AI models better than writing
+  structure and configuration at once (old risk 3).
+- **It reuses the change-script machinery.** Pass 2 output is a change script (#211):
+  `parseProcessDelta`, `applyProcessDelta` with layout kept, and the proposal dialog. Nothing
+  else has to be built.
+- **It works on any diagram.** The same pass is an **"Add connectors"** action for an imported,
+  hand-drawn or older diagram, in Drop, the editor and the CLI, not only for fresh generations.
+- **It fails gracefully.** If pass 2 fails or times out, the user still has the pass 1 diagram,
+  with plain job types as today.
+- **The passes can use different models.** Pass 2 can go straight to the stronger model, or to a
+  bigger output cap, without slowing pass 1.
+
+### 4.2 Costs and how they are handled
+
+- **A second model call:** one more request and about 1–3 s more. Pass 2 starts as soon as
+  pass 1's stream ends; the diagram is already on screen, and tasks show a "connecting…" state.
+  Pass 2 is **skipped entirely**, with no model call, when the selector finds no candidates
+  (e.g. a pure approval flow).
+- **Structure that depends on the connector.** Some connectors need a different shape: an inbound
+  webhook or Kafka start, a message catch, an AI agent ad-hoc sub-process.
+  - Pass 2 may **restate a node's kind**, which the change script already allows
+    (`x[kind Name]`): `task` → `service`, `start` → `start:message`, `catch` →
+    `catch:message`. The inbound connector then binds to that event.
+  - Pass 2 must not add or remove nodes. If it does, the change is reported, not applied.
+  - For pass 1, add one rule line to `GENERATE_SYSTEM_PROMPT`: "each call to an outside system
+    is its own service task, named after the system". This keeps integrations visible to pass 2
+    and costs about 15 tokens on the cached prefix; the bench checks it.
+- **Ids are stable.** `process-text-writer` writes the expanded diagram back with the same ids,
+  so `with <id>:` lines line up. This is the same mechanism feedback edits use.
+- **One pass is still possible.** The parser accepts `with` lines in a pass 1 answer too, since
+  it is the same grammar. Strong models in the CLI and the Claude plugin may write everything at
+  once and skip pass 2. Only Drop's fast path relies on two passes.
+
+### 4.3 Without a model where possible
+
+When every required input of the chosen card can be filled deterministically, pass 2 fills it
+and the model is not called. Examples: a REST GET whose URL comes from the API card with only
+process-variable placeholders, or secrets that follow the `{{secrets.<ALIAS>_TOKEN}}`
+convention. Measure in the bench how often this happens before building it; it is an
+optimisation, not part of P4.
 
 ## 5. Workstreams
 
@@ -239,8 +296,8 @@ scheme and path.
 ### WS5 — Line DSL: writing connectors
 
 Path lines stay exactly as they are, so streaming, the live preview and every structural repair
-are unchanged. Connector configuration goes on **separate `with` lines**, which can follow
-anywhere:
+are unchanged. Connector configuration goes on **separate `with` lines**. In the two-pass flow
+(§4), pass 1 writes the first four lines below and pass 2 writes only the two `with` lines:
 
 ```
 # Triage new GitHub issues
@@ -273,8 +330,10 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
   `modelerTemplate`, so refine and feedback edits keep the configuration. `PROCESS_DELTA_GUIDE`
   gets `with x: …` (set or replace) and `- with x` (clear), and `applyProcessDelta` passes them
   through.
-- **Guide:** add three lines to `PROCESS_TEXT_GUIDE` (about 60 tokens) and one `with` line to its
-  example. The prefix stays fixed and cached; cards are appended per request.
+- **Guide:** `PROCESS_TEXT_GUIDE` (pass 1) is **not** changed. A new `CONNECT_GUIDE` (pass 2,
+  about 200 tokens) teaches only the `with` grammar and the allowed kind restatements. Its
+  example is parsed in a test, like the existing guides. The prefix stays fixed and cached; the
+  diagram and cards are appended per request.
 - **Why not reuse `| job=`:** a single attribute token cannot hold a URL with spaces, FEEL or
   several keys. A `with` line is also complete on its own, so it streams.
 - **ProcessPlan** keeps `PlanConnectorRef`. Add `alias` and `operation` as an alternative to
@@ -282,7 +341,9 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
 
 ### WS6 — Retrieval and prompt assembly
 
-- `selectConnectors(userText) → { cards, apiCards }` in core, deterministic and pure:
+- `selectConnectors({ text, tasks }) → { perTask: Map<id, cards>, apiCards }` in core,
+  deterministic and pure. Each service, send or plain task is scored on its **own name**, with
+  the user text as context (e.g. "GitHub" in the text, "List open issues" on the task). Steps:
   1. `searchConnectors` keyword scoring (exists).
   2. An alias and brand-name dictionary generated from template names and keywords
      ("github", "gh", "slack", "mail" → email/sendgrid, "sheet").
@@ -290,16 +351,20 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
      card plus the top 5 operations by lexical match against the user text.
   4. If nothing matches but the text implies an API call ("call", "fetch", "API", "webhook",
      "endpoint", a URL), the REST card alone.
-  - Caps: at most 4 connector cards and 6 API operations, about 600 tokens.
+  - Caps: at most 3 cards per task, 8 cards and 6 API operations in total, about 700 tokens.
 - **Drop:**
-  - `GENERATE_SYSTEM_PROMPT` stays the cached prefix. The cards go into the user message in a
-    fenced "Connectors you can use" block.
-  - Raise `max_tokens` from 600 to about 900 when cards are present; `with` lines cost about
-    25–40 tokens each.
-  - Record in the bench (§9) whether `glm-4.7-flash` handles it. If not, route
-    connector-bearing prompts to the stronger fallback model directly.
-- **Refine and feedback edits** use the same selector on the instruction text and the existing
-  connector aliases of the diagram.
+  - Pass 1 is unchanged.
+  - New route `POST /drop/api/connect`. It takes the diagram as text, the user text and the
+    selected cards. The prompt is the fixed `CONNECT_GUIDE` prefix, then the diagram, then a
+    fenced "Connectors per task" block, then the user text. It streams `with` lines through
+    `createChangeLineFilter`, and goes through the same gates and rate limits as generate.
+  - After a fresh generation, the client calls it automatically and applies the result with the
+    questions UI. "Add connectors" on an existing or shared diagram shows the result in the
+    proposal dialog (#211), and it can be shared as a suggestion (#212).
+  - Model: the bench decides between `glm-4.7-flash` and the fallback model for pass 2. The
+    output cap is set per diagram as about 40 tokens × candidate tasks.
+- **Refine and feedback edits** keep the `with` lines the writer emits. When an edit adds a new
+  integration task, pass 2 runs for the new tasks only.
 - **CLI / Claude plugin:** `casen connector cards "<query>"` prints cards. The `connect` and
   `implement` skills tell Claude to call it before writing a plan. This needs no model-side
   retrieval tooling.
@@ -344,8 +409,8 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
 | P0 | WS1 defect fixes plus their tests; bench scores `mustContainTaskTypes` | — | S |
 | P1 | WS2: move the catalog into core, slim data, shim, sync workflow | P0 | M |
 | P2 | WS3 cards with per-operation conditions; regenerate skill reference; `casen connector cards` | P1 | M |
-| P3 | WS5 `with` lines: parser, resolver in `expand`, writer, delta, guide; unit tests | P1, P2 | L |
-| P4 | WS6 retrieval and Drop prompt assembly; bench with 10 new connector golden prompts | P3 | M |
+| P3 | WS5 `with` lines: parser, delta, writer, resolver in `expand`, `CONNECT_GUIDE`; unit tests | P1, P2 | L |
+| P4 | WS6 per-task retrieval; Drop pass 2 (`/drop/api/connect`, auto after generate, "Add connectors" action); one rule line added to the pass 1 prompt; bench with 10 new connector golden prompts | P3 | M |
 | P5 | WS4 API index and API cards; GitHub/Stripe/Notion golden prompts | P2 (cards), P4 | L |
 | P6 | WS7 dry run in Drop and CLI, secrets checklist, Studio "Try it" | P3 | M |
 | P7 | Proxy MCP tools, docs (`apps/landing` connectors guide, `doc/features.md`, docspack rebuild), changesets | P4 | S |
@@ -353,18 +418,29 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
 P0–P4 already deliver the headline case for all OOTB connectors and the generic REST connector.
 P5 makes REST calls to arbitrary APIs accurate rather than recalled.
 
-## 8. Risks and open decisions
+## 8. Decisions and risks
 
-1. **What does "connectors in core" mean? (decision needed)** The recommendation is a subpath
-   export with slim data, as in WS2. The alternative, putting the full 2 MB templates in core's
-   main entry, would grow every core consumer, including the editor and canvas bundles, for no
-   benefit to them.
-2. **The API index lives outside core.** Core holds the types and the selector; the data is in
-   `connector-gen`. If it has to be in core too, it costs about 2 MB raw. Options are a further
-   lazy subpath (`@bpmnkit/core/api-index`) or trimming to the top N operations per service.
-3. **Small-model capacity.** `glm-4.7-flash` with thinking off may misplace `with` values. The
-   mitigations are tight cards, a strict per-card key list, deterministic repair, and routing to
-   the fallback model. The bench decides; do not guess.
+**Decided (2026-10-01):**
+
+- **D1 — Connectors in core:** a `@bpmnkit/core/connectors` subpath with slim data (WS2). Core's
+  main entry does not grow, and `@bpmnkit/connectors` becomes a 1.x-compatible shim.
+- **D2 — API index:** lives in `@bpmnkit/connector-gen/api-index`, not in core. Core holds the
+  `ApiCard` type and the selector.
+- **D3 — Model choice:** the bench decides per pass. Pass 1 stays on the fast model; pass 2 may
+  use the stronger one.
+- **D4 — Two-pass flow:** a fast structure pass, then a connect pass (§4).
+
+**Risks:**
+
+1. **Two calls cost latency.** This is covered in §4.2: pass 2 is skipped when nothing matches,
+   and the diagram is visible before pass 2 starts. The bench reports total time per prompt.
+2. **Pass 1 hides integrations.** It may merge "fetch from GitHub and post to Slack" into one
+   task. The new rule line in the pass 1 prompt targets this, and the bench measures it with
+   `mustContainTaskTypes`. If one task names two systems, pass 2 asks a question ("split into two
+   tasks?") instead of guessing.
+3. **Small-model capacity.** This is smaller than in a one-pass design, since pass 2 writes only
+   `with` lines. The mitigations still apply: tight cards, a strict key list per card,
+   deterministic repair and model routing.
 4. **Template drift.** Marketplace versions change keys. The weekly sync PR plus the
    slim-vs-full equivalence test catch that. Aliases are pinned, so recorded answers keep
    parsing.
@@ -383,6 +459,9 @@ P5 makes REST calls to arbitrary APIs accurate rather than recalled.
   - `connectorApplyClean`: zero apply problems
   - `secretsOnly`: no literal tokens
   - `dryRunReachesEnd`
+  - `integrationTasksSeparate`: pass 1 gives each named system its own task
+  - `pass2SkippedCorrectly`: no connect call for prompts with no integration
+  - total time and output tokens per pass
 - New golden prompts in `scripts/eval-generation/prompts/`:
   - GitHub issue triage → Slack
   - Stripe refund over REST
