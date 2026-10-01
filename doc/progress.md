@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-10-01 — Plan: AI generation with Camunda connectors
+
+- Analysis and phased plan for generating executable diagrams with OOTB connectors and the REST
+  connector from a description: `doc/ai-connector-generation-plan.md`. Plan only; nothing is
+  implemented yet.
+- It records seven defects found on the way. The most important: the compact format puts the REST
+  connector's `url`/`method` in task headers, where the connector does not read them.
+
 ## 2026-10-01 — Drop: AI proposals shared as suggested changes
 
 - The proposal dialog has **Share as suggestion**. The proposal is stored on its threads
