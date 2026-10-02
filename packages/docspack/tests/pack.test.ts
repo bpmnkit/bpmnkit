@@ -4,7 +4,8 @@ import { join } from "node:path"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import { buildPack } from "../src/build.js"
 import { chunkPath, discoverPacks, indexPacks, loadPack } from "../src/load.js"
-import { answer, search } from "../src/search.js"
+import { answer, buildIndex, search } from "../src/search.js"
+import type { Pack } from "../src/types.js"
 
 const CHUNK_ID = /^[A-Za-z0-9][A-Za-z0-9._-]*$/
 
@@ -202,6 +203,50 @@ describe("search", () => {
 	})
 })
 
+describe("buildIndex", () => {
+	const pack = { name: "@acme/api-docspack", version: "1.0.0" } as Pack
+	const input = (id: string, content: string) => ({
+		pack,
+		chunk: { id, file: `chunks/${id}.md` },
+		content,
+		tokens: 50,
+	})
+	// Twelve generated digests that all carry the same metadata line, and the one page that
+	// explains what that line means.
+	const digests = Array.from({ length: 12 }, (_, i) =>
+		input(`search-thing-${i}`, `# Search thing ${i}\n\nSearch things.\n\n- Consistency: eventual.`),
+	)
+	const explainer = input(
+		"data-fetching",
+		[
+			"# Data fetching",
+			"",
+			"Endpoints are strongly or eventually consistent. Consistency describes the data behind",
+			"an endpoint: an eventually consistent search may lag behind a write, so a resource you",
+			"have just created can be missing from the result until the exporter catches up. Plan",
+			"for that in any code that searches right after writing, and retry or poll when needed.",
+		].join("\n"),
+	)
+
+	it("does not let a line repeated across a pack's chunks count towards a match", () => {
+		const index = buildIndex([...digests, explainer])
+		const [top] = search(index, "search consistency", { limit: 1 })
+		expect(top?.chunk.id).toBe("data-fetching")
+	})
+
+	it("still returns the repeated line as part of the content", () => {
+		const index = buildIndex([...digests, explainer])
+		const [hit] = search(index, "search thing 3", { limit: 1 })
+		expect(hit?.content).toContain("- Consistency: eventual.")
+	})
+
+	it("treats a line shared by only a few chunks as content", () => {
+		const index = buildIndex([...digests.slice(0, 3), explainer])
+		const hits = search(index, "eventual", { limit: 4 })
+		expect(hits.map((hit) => hit.chunk.id)).toContain("search-thing-0")
+	})
+})
+
 describe("answer", () => {
 	it("spends no more than the token budget", () => {
 		const index = indexPacks([loadPack(packDir)])
@@ -213,6 +258,27 @@ describe("answer", () => {
 	it("returns at most the requested number of chunks", () => {
 		const index = indexPacks([loadPack(packDir)])
 		expect(answer(index, "gateway signature process", { limit: 1 }).hits).toHaveLength(1)
+	})
+
+	it("names the runners-up it had no room for without their content", () => {
+		const index = indexPacks([loadPack(packDir)])
+		const result = answer(index, "gateway signature process", { limit: 1 })
+		const [first] = result.hits
+		expect(result.more.length).toBeGreaterThan(0)
+		expect(result.more.map((hit) => hit.chunkId)).not.toContain(first?.chunkId)
+		expect(result.tokens).toBe(first?.tokens)
+	})
+
+	it("returns exactly the chunk a query names by id, bare or qualified", () => {
+		const index = indexPacks([loadPack(packDir)])
+		const runnerUp = answer(index, "gateway signature process", { limit: 1 }).more[0]
+		if (!runnerUp) throw new Error("expected a runner-up")
+
+		for (const id of [runnerUp.chunkId, runnerUp.chunk.id]) {
+			const result = answer(index, id)
+			expect(result.hits.map((hit) => hit.chunkId)).toEqual([runnerUp.chunkId])
+			expect(result.more).toEqual([])
+		}
 	})
 })
 

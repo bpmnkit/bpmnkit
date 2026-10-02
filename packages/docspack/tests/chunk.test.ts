@@ -106,6 +106,17 @@ which keeps the test about splitting instead of about packing.
 		expect(merged[0]?.body).toContain("also short")
 	})
 
+	// The merged section keeps the first heading as its title; the second heading would otherwise
+	// be weighted as prose and its topic lost to every chunk that names it in a title.
+	it("tags a chunk with the headings of the sections merged into it", () => {
+		const [merged] = chunkDocument({
+			slug: "api/data-fetching",
+			markdown: "## Supported operations\n\nshort\n\n## Data consistency\n\nalso short\n",
+		})
+		expect(merged?.title).toBe("Data Fetching — Supported operations")
+		expect(merged?.tags).toEqual(expect.arrayContaining(["data", "consistency"]))
+	})
+
 	it("subdivides a section that overruns the token budget", () => {
 		const long = `## Big\n\n${Array.from({ length: 40 }, (_, i) => `Paragraph ${i} with a handful of words in it.`).join("\n\n")}\n`
 		const parts = chunkDocument({ slug: "guides/long", markdown: long }, { maxTokens: 100 })

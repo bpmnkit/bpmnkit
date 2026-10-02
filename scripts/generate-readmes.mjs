@@ -1532,7 +1532,7 @@ npx bpmnkit-docs ask "what permissions does creating a process instance need"
 npx bpmnkit-docs ask "FEEL string concatenation" --pack @bpmnkit/camunda-docspack
 \`\`\`
 
-Answers cap at 3 chunks / 3,000 tokens, so prefer several narrow questions to one broad one.
+Answers cap at 3 chunks / 3,000 tokens, so prefer several narrow questions to one broad one. The next five matches are listed by id; \`npx bpmnkit-docs ask <chunk-id>\` reads one of them.
 
 ## API Reference
 
@@ -1587,8 +1587,8 @@ Markdown docs → chunks + manifest → BM25 index → three passages
 
 - **Offline** — \`ask\`, \`search\` and \`list\` read the filesystem only. No server, no network call, nothing resident between questions
 - **Version-locked** — the installed \`package.json\` version wins over the manifest, so an agent reads the docs for the release it has
-- **Bounded answers** — three chunks and 3,000 tokens by default, budgeted from the manifest before any content is read
-- **Real retrieval** — BM25 over chunk text with Porter stemming, so \`authenticate\` finds a passage that only says \`authentication\`; tags and API identifiers weigh 3× prose
+- **Bounded answers** — three chunks and 3,000 tokens by default, budgeted from the manifest before any content is read. The next five matches are listed by id only, and \`ask <chunk-id>\` reads one
+- **Real retrieval** — BM25 over chunk text with Porter stemming, so \`authenticate\` finds a passage that only says \`authentication\`; tags and API identifiers weigh 3× prose, and a line repeated across a pack's chunks (generated metadata, stock responses) is not counted at all
 - **docspack-compatible** — \`.llms/manifest.json\` validates against \`https://docspack.dev/schema/v1.json\`
 - **Safe by construction** — a manifest is untrusted input: chunk paths that escape \`.llms/\` are refused, and community packages are labelled
 - **Zero runtime dependencies**
@@ -1624,6 +1624,11 @@ npx bpmnkit-docs list
 
 # Quick Start — Step 3: Deploy and run
 ...
+
+---
+More matches — pass one id to \`bpmnkit-docs ask\` to read it:
+  @bpmnkit/docspack@0.0.1/getting-started.quick-start.step-2-simulate-locally · 217 tokens
+  ...
 
 ---
 cost: 1,204 tokens, capped at 3,000
@@ -1665,6 +1670,7 @@ function loadPack(dir: string): Pack
 | Command | Purpose |
 | --- | --- |
 | \`bpmnkit-docs ask <question>\` | Answer from the installed docs packages — the command to give an agent |
+| \`bpmnkit-docs ask <chunk-id>\` | Read one chunk, e.g. one listed under "More matches" |
 | \`bpmnkit-docs search <query>\` | Rank matching chunks, for reading in a terminal |
 | \`bpmnkit-docs list\` | Show the docs packages found and their index state |
 | \`bpmnkit-docs build\` | Regenerate this package's \`.llms/\` payload from the docs source |
