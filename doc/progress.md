@@ -1,5 +1,33 @@
 # Progress
 
+## 2026-10-02 — Connectors in AI generation, P7: MCP tools and the guide
+
+- **Proxy MCP server.** Two new tools sit beside `add_http_call`:
+  - `find_connectors { query, limit }` answers with connector cards, plus API cards for any
+    indexed HTTP API the query names. When it names one, connector cards of systems it does
+    not name are dropped: "add a page to notion" first returned an unrelated Automation
+    Anywhere card.
+  - `add_connector { processId, id, name, alias, operation, values }` configures a node
+    through `applyConnectorLines`, the same resolver as `with` lines. `values` may carry
+    `api` and `result`. A missing node is added as a plain task first. The reply lists what
+    was fixed (a literal token becomes a secret) and what is still needed.
+  - Both read the API index, which loads lazily. The stdio loop now awaits tool calls; every
+    other tool is unchanged and synchronous.
+  - Both are on the AI CLIs' tool allowlist (`BPMN_MCP_TOOL_NAMES`).
+  - The chat system prompt's HTTP rule is now a connector rule: `find_connectors`, then
+    `add_connector`.
+  - End-to-end tests drive the real server over stdio: cards, Stripe endpoints, a Slack task
+    with a literal token and a missing input, and a new Stripe REST task.
+- **Docs.**
+  - New guide **Connectors in AI Generation** (`guides/ai-connectors.md`): the two passes,
+    cards, `with` lines, the API index, the checks, and where each appears.
+  - `cli/casen.md` lists the new tools.
+  - The Claude Code plugin's generated connector reference adds `casen connector api` and
+    `casen synth --check`.
+  - Docspack rebuilt.
+- **Not done:** the Rust proxy (`apps/proxy-rs`) keeps its own MCP tool list. It gets no
+  connector tools: they need the catalog and the API index inside its embedded JS bridge.
+
 ## 2026-10-02 — Connectors in AI generation, P6: proving it runs
 
 - **`dryRun(definitions, options)`** (`@bpmnkit/engine/testing`) runs a process once from

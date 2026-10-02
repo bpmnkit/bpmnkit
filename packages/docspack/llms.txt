@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.0.1. 365 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.0.1. 371 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -22,7 +22,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [casen CLI — Worker commands](.llms/chunks/cli.casen.worker-commands.md) — 233 tokens
 - [casen CLI — Local engine (Reebe)](.llms/chunks/cli.casen.local-engine-reebe.md) — 369 tokens
 - [casen CLI — Local proxy](.llms/chunks/cli.casen.local-proxy.md) — 305 tokens
-- [casen CLI — Local proxy — Who can use the proxy](.llms/chunks/cli.casen.local-proxy-who-can-use-the-proxy.md) — 769 tokens
+- [casen CLI — Local proxy — Who can use the proxy](.llms/chunks/cli.casen.local-proxy-who-can-use-the-proxy.md) — 794 tokens
 - [casen CLI — MCP Server Mode](.llms/chunks/cli.casen.mcp-server-mode.md) — 204 tokens
 - [casen connector](.llms/chunks/cli.connector.md) — 213 tokens
 - [casen connector — Browse the bundled OOTB catalog](.llms/chunks/cli.connector.browse-the-bundled-ootb-catalog.md) — 417 tokens
@@ -111,6 +111,12 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [AI Agents — Deploy-grade validation](.llms/chunks/guides.ai-agents.deploy-grade-validation.md) — 205 tokens
 - [AI Agents — Testing without a real LLM call](.llms/chunks/guides.ai-agents.testing-without-a-real-llm-call.md) — 201 tokens
 - [AI Agents — See also](.llms/chunks/guides.ai-agents.see-also.md) — 49 tokens
+- [Connectors in AI Generation](.llms/chunks/guides.ai-connectors.md) — 218 tokens
+- [Connectors in AI Generation — Connector cards](.llms/chunks/guides.ai-connectors.connector-cards.md) — 200 tokens
+- [Connectors in AI Generation — `with` lines](.llms/chunks/guides.ai-connectors.with-lines.md) — 184 tokens
+- [Connectors in AI Generation — Any HTTP API](.llms/chunks/guides.ai-connectors.any-http-api.md) — 275 tokens
+- [Connectors in AI Generation — Proving it runs](.llms/chunks/guides.ai-connectors.proving-it-runs.md) — 334 tokens
+- [Connectors in AI Generation — Keeping the data current](.llms/chunks/guides.ai-connectors.keeping-the-data-current.md) — 86 tokens
 - [Building Processes with AI](.llms/chunks/guides.ai-implement.md) — 403 tokens
 - [Building Processes with AI — The Claude Code plugin](.llms/chunks/guides.ai-implement.the-claude-code-plugin.md) — 231 tokens
 - [Building Processes with AI — Lightweight alternative: `casen skills install`](.llms/chunks/guides.ai-implement.lightweight-alternative-casen-skills-install.md) — 172 tokens

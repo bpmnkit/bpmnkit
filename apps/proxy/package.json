@@ -21,6 +21,7 @@
 	},
 	"dependencies": {
 		"@bpmnkit/api": "workspace:^",
+		"@bpmnkit/connector-gen": "workspace:^",
 		"@bpmnkit/connectors": "workspace:^",
 		"@bpmnkit/core": "workspace:^",
 		"@bpmnkit/engine": "workspace:^",

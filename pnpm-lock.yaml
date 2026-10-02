@@ -494,6 +494,9 @@ importers:
       '@bpmnkit/api':
         specifier: workspace:^
         version: link:../../packages/api
+      '@bpmnkit/connector-gen':
+        specifier: workspace:^
+        version: link:../../packages/connector-gen
       '@bpmnkit/connectors':
         specifier: workspace:^
         version: link:../../packages/connectors

@@ -163,7 +163,7 @@
 		{
 			"id": "cli.casen.local-proxy-who-can-use-the-proxy",
 			"file": "chunks/cli.casen.local-proxy-who-can-use-the-proxy.md",
-			"tokens": 769,
+			"tokens": 794,
 			"tags": [
 				"cli",
 				"casen",
@@ -1389,6 +1389,85 @@
 				"ai-agents",
 				"see",
 				"also"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-connectors",
+			"file": "chunks/guides.ai-connectors.md",
+			"tokens": 218,
+			"tags": [
+				"guides",
+				"ai-connectors"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-connectors.connector-cards",
+			"file": "chunks/guides.ai-connectors.connector-cards.md",
+			"tokens": 200,
+			"tags": [
+				"guides",
+				"ai-connectors",
+				"connector",
+				"cards"
+			],
+			"entities": [
+				"@bpmnkit/core/connectors"
+			]
+		},
+		{
+			"id": "guides.ai-connectors.with-lines",
+			"file": "chunks/guides.ai-connectors.with-lines.md",
+			"tokens": 184,
+			"tags": [
+				"guides",
+				"ai-connectors",
+				"lines"
+			],
+			"entities": [
+				"applyConnectorLines",
+				"data.channel"
+			]
+		},
+		{
+			"id": "guides.ai-connectors.any-http-api",
+			"file": "chunks/guides.ai-connectors.any-http-api.md",
+			"tokens": 275,
+			"tags": [
+				"guides",
+				"ai-connectors",
+				"any",
+				"http",
+				"api"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-connectors.proving-it-runs",
+			"file": "chunks/guides.ai-connectors.proving-it-runs.md",
+			"tokens": 334,
+			"tags": [
+				"guides",
+				"ai-connectors",
+				"proving",
+				"runs"
+			],
+			"entities": [
+				"dryRun",
+				"listSecrets"
+			]
+		},
+		{
+			"id": "guides.ai-connectors.keeping-the-data-current",
+			"file": "chunks/guides.ai-connectors.keeping-the-data-current.md",
+			"tokens": 86,
+			"tags": [
+				"guides",
+				"ai-connectors",
+				"keeping",
+				"data",
+				"current"
 			],
 			"entities": []
 		},

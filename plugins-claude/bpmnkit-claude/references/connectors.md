@@ -6,6 +6,7 @@
 
 ```sh
 casen connector cards "<what the step does>"   # one card per operation: its inputs, and the values that select it
+casen connector api "<what the step does>"     # real endpoints of an HTTP API with no connector (Stripe, Notion, …)
 casen connector search "<query>"               # find templates by name/keyword
 casen connector show <template-id>             # every input of a template, all operations mixed
 ```
@@ -45,6 +46,8 @@ Rules:
 - **Secrets**: any input marked `(secret)` — API keys, tokens, passwords — must use the `{{secrets.NAME}}` placeholder, never a literal credential. `casen synth` does not resolve secrets; the target engine (Reebe/Camunda 8) does at runtime from its configured secret store.
 - **FEEL values**: a leading `=` makes a value a FEEL expression (variables, string concatenation, etc.); without it, the value is a literal string. `casen synth`/`casen lint` parse-validate every FEEL value — a syntax error surfaces as a plan problem before you ever write BPMN.
 - **Conditional fields**: some inputs only apply for a specific dropdown choice (e.g. Slack's `data.channel` only applies when `method` is `chat.postMessage`). A card lists only the inputs of its operation; `casen connector show` lists them all. Supplying a value for a field that doesn't apply is ignored, not an error.
+- **HTTP APIs without a connector** (Stripe, Notion, GitHub's workflow runs, …) use the REST connector (`io.camunda.connectors.HttpJson.v2`). Take the base URL, path, auth and required headers from `casen connector api`, never from memory; credentials are `{{secrets.NAME}}` here too.
+- **Prove it runs**: `casen synth <plan> --check` dry-runs the result with every connector mocked and lists the secrets to create in the cluster; a process that cannot reach its end fails the command.
 - Direction `agentic` connectors (the AI Agent Sub-process) are configured via the `aiAgent` plan step, not `connector` — see `references/agentic.md`.
 
 ## Full index

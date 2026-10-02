@@ -26,6 +26,9 @@
   - Studio's **Try it** runs it on the local engine, sending only GET requests for real.
 - **CLI.** `casen connector cards "<request>"`, `casen connector api "<request>"` and
   `casen synth --check`.
+- **MCP.** The proxy's MCP server has `find_connectors` and `add_connector`, so the AI chat and
+  your own agents configure connectors through the same resolver.
+- **Guide.** [Connectors in AI Generation](/docs/guides/ai-connectors) explains the whole flow.
 
 ## Drop: AI proposals shared as suggested changes (2026-10-01)
 

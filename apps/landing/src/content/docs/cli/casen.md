@@ -426,10 +426,11 @@ your browser can send requests to `localhost`, so the proxy checks every request
   starts in an empty temporary folder and loads none of your own MCP servers, settings,
   plugins or extensions. A `/chat` run that edits a diagram gets only the proxy's diagram
   tools (`get_diagram`, `compose_diagram`, `add_elements`, `remove_elements`,
-  `update_element`, `set_condition`, `add_http_call`, `replace_diagram`); they change the
-  diagram in the MCP server's memory, and `compose_diagram` runs the model's code in an
-  isolated V8 isolate. Chat text, diagrams, incident details and variable values reach the
-  model fenced as untrusted data.
+  `update_element`, `set_condition`, `add_http_call`, `find_connectors`, `add_connector`,
+  `replace_diagram`); they change the diagram in the MCP server's memory, and
+  `compose_diagram` runs the model's code in an isolated V8 isolate. The connector tools also
+  read the bundled connector catalog and API index, and nothing else. Chat text, diagrams,
+  incident details and variable values reach the model fenced as untrusted data.
 
 | CLI | Flags the proxy passes |
 |---|---|

@@ -48,6 +48,7 @@ import {
 } from "@bpmnkit/core"
 import type { BpmnElementType, CompactDmn, CompactForm } from "@bpmnkit/core"
 import { elementTypeDescription } from "./element-vocabulary.js"
+import { addConnector, findConnectors } from "./mcp-connectors.js"
 import { runSandboxedSync } from "./sandbox.js"
 import { handleSdkExecute, handleSdkSearch } from "./sdk-code-mode.js"
 
@@ -331,6 +332,48 @@ const BPMN_TOOLS = [
 		},
 	},
 	{
+		name: "find_connectors",
+		description:
+			"Find the Camunda connector for a step — Slack, GitHub, SendGrid, Kafka, AWS, Teams, OpenAI and the rest of the 133 bundled templates — " +
+			"as cards: one operation each, with only the inputs it needs. A request naming an HTTP API without a connector (Stripe, Notion, …) also gets its real endpoints. " +
+			"Call it before add_connector.",
+		inputSchema: {
+			type: "object",
+			properties: {
+				query: {
+					type: "string",
+					description: 'What the step does, naming the system: "post a message to slack"',
+				},
+				limit: { type: "number", description: "Cards to return (default 5)" },
+			},
+			required: ["query"],
+		},
+	},
+	{
+		name: "add_connector",
+		description:
+			"Configure a node as a Camunda connector from a find_connectors card. A plain task becomes the connector's service task; a missing node is added (connect it with add_elements). " +
+			"Credentials become {{secrets.NAME}} placeholders, and inputs still missing are reported. " +
+			'For an HTTP API from find_connectors: alias "http", values { method, url: "/v1/customers", api: "stripe" }.',
+		inputSchema: {
+			type: "object",
+			properties: {
+				processId: { type: "string" },
+				id: { type: "string", description: "The node to configure" },
+				name: { type: "string", description: "Name for a node that does not exist yet" },
+				alias: { type: "string", description: "The card's alias: slack, github, http, …" },
+				operation: { type: "string", description: "The card's operation, e.g. chat.postMessage" },
+				values: {
+					type: "object",
+					description:
+						'Inputs by key, as strings; "=" starts FEEL. result="name" or "name: expr" keeps the response.',
+					additionalProperties: { type: "string" },
+				},
+			},
+			required: ["processId", "id", "alias"],
+		},
+	},
+	{
 		name: "add_elements",
 		description:
 			"Add BPMN elements (tasks, events, gateways) and/or sequence flows to a process.\n" +
@@ -520,6 +563,44 @@ function getTools(): typeof BPMN_TOOLS {
 }
 
 // ── Tool execution ────────────────────────────────────────────────────────────
+
+/** The tools that read the API index, which loads lazily; every other tool runs in {@link callTool}. */
+async function callToolAsync(name: string, args: Record<string, unknown>): Promise<string> {
+	if (name === "find_connectors") {
+		const limit = typeof args.limit === "number" ? args.limit : undefined
+		return findConnectors(String(args.query ?? ""), limit)
+	}
+	if (name === "add_connector") {
+		if (state.kind !== "bpmn") throw new Error("Current file is not a BPMN diagram")
+		const proc = ensureProcess(args.processId as string)
+		const id = args.id as string
+		if (!proc.flowElements.some((e) => e.id === id)) {
+			const temp = expand({
+				id: "__temp__",
+				processes: [
+					{
+						id: proc.id,
+						elements: [{ id, type: "task", name: (args.name as string) ?? id }],
+						flows: [],
+					},
+				],
+			})
+			const el = temp.processes[0]?.flowElements.find((e) => e.id === id)
+			if (el) proc.flowElements.push({ ...el, incoming: [], outgoing: [] })
+		}
+		const { definitions, text } = await addConnector(state.data, {
+			id,
+			alias: String(args.alias ?? ""),
+			...(typeof args.operation === "string" && { operation: args.operation }),
+			...(typeof args.values === "object" &&
+				args.values !== null && { values: args.values as Record<string, string> }),
+		})
+		state = { kind: "bpmn", data: definitions }
+		saveState()
+		return text
+	}
+	return callTool(name, args)
+}
 
 function callTool(name: string, args: Record<string, unknown>): string {
 	process.stderr.write(`[mcp] tool: ${name} args: ${JSON.stringify(args)}\n`)
@@ -804,7 +885,7 @@ interface JsonRpcResponse {
 
 const rl = createInterface({ input: process.stdin, crlfDelay: Number.POSITIVE_INFINITY })
 
-rl.on("line", (line) => {
+rl.on("line", async (line) => {
 	const trimmed = line.trim()
 	if (!trimmed) return
 
@@ -837,7 +918,7 @@ rl.on("line", (line) => {
 
 			case "tools/call": {
 				const params = req.params as { name: string; arguments?: Record<string, unknown> }
-				const text = callTool(params.name, params.arguments ?? {})
+				const text = await callToolAsync(params.name, params.arguments ?? {})
 				result = { content: [{ type: "text", text }], isError: false }
 				break
 			}

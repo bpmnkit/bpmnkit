@@ -455,7 +455,7 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
 | P4 ✅ | WS6 per-task retrieval; Drop pass 2 (`/drop/api/connect`, auto after generate, "Add connectors" action); one rule line added to the pass 1 prompt; bench with 10 new connector golden prompts (done 2026-10-02; the server applies the lines; Add connectors applies as an undoable edit, not via the proposal dialog; first real bench run pending credentials) | P3 | M |
 | P5 ✅ | WS4 API index and API cards; GitHub/Stripe/Notion golden prompts (done 2026-10-02, see WS4 notes; first real bench run pending credentials) | P2 (cards), P4 | L |
 | P6 ✅ | WS7 dry run in Drop and CLI, secrets checklist, Studio "Try it" (done 2026-10-02, see WS7 notes) | P3 | M |
-| P7 | Proxy MCP tools, docs (`apps/landing` connectors guide, `doc/features.md`, docspack rebuild), changesets | P4 | S |
+| P7 ✅ | Proxy MCP tools, docs (`apps/landing` connectors guide, `doc/features.md`, docspack rebuild), changesets (done 2026-10-02; the Rust proxy has no connector tools yet) | P4 | S |
 
 P0–P4 already deliver the headline case for all OOTB connectors and the generic REST connector.
 P5 makes REST calls to arbitrary APIs accurate rather than recalled.
