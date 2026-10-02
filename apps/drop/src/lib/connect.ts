@@ -1,3 +1,4 @@
+import { API_SERVICES, loadApiServices } from "@bpmnkit/connector-gen/api-index"
 import {
 	Bpmn,
 	type BpmnDefinitions,
@@ -7,12 +8,13 @@ import {
 	parseProcessDelta,
 } from "@bpmnkit/core"
 import {
+	type ApiService,
 	CONNECT_GUIDE,
 	type ConnectorTask,
 	type TaskCards,
+	apiServicesIn,
 	applyConnectorLines,
 	formatConnectorSelection,
-	selectConnectors,
 } from "@bpmnkit/core/connectors"
 
 /**
@@ -69,6 +71,23 @@ export function connectTasks(
 		tasks.push(el.name ? { id, name: el.name, type: el.type } : { id, type: el.type })
 	}
 	return tasks
+}
+
+/** Services of the API index one request may load: each is up to a few hundred KB. */
+const MAX_APIS = 4
+
+/**
+ * The services of the API index that the request, the task names or written
+ * `with` lines name ("Stripe", `api=notion`, a URL on `api.github.com`),
+ * loaded — only these modules of the index are evaluated.
+ */
+export async function connectApis(
+	request: string,
+	tasks: readonly ConnectorTask[],
+	lines = "",
+): Promise<ApiService[]> {
+	const text = [request, ...tasks.map((t) => t.name ?? ""), lines].join("\n")
+	return loadApiServices(apiServicesIn(text, API_SERVICES).slice(0, MAX_APIS))
 }
 
 /** The connect pass's messages: fixed system prompt, then the diagram, the cards and the request. */
@@ -140,6 +159,7 @@ export function finishConnect(
 	defs: BpmnDefinitions,
 	aliases: Readonly<Record<string, string>>,
 	script: string,
+	apis: readonly ApiService[] = [],
 ): ConnectResult {
 	const delta = parseProcessDelta(script)
 	const problems = delta.problems.map((p) => p.message)
@@ -149,7 +169,7 @@ export function finishConnect(
 		if (elementId === undefined) problems.push(`"with ${line.id}:" names no node of the diagram`)
 		else lines.push({ ...line, elementId })
 	}
-	const applied = applyConnectorLines(defs, lines)
+	const applied = applyConnectorLines(defs, lines, { apis })
 	const connected = [
 		...new Set(
 			lines

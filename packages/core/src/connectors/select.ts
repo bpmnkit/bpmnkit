@@ -9,6 +9,7 @@
  */
 
 import type { BpmnElementType } from "../index.js"
+import { type ApiCard, type ApiService, apiBrand, formatApiCard, rankApiOperations } from "./api.js"
 import {
 	type ConnectorCard,
 	cardScore,
@@ -31,6 +32,8 @@ export interface TaskCards {
 	id: string
 	name?: string
 	cards: ConnectorCard[]
+	/** Endpoints of services the task names that no dedicated connector covers, for `http`. */
+	apis?: ApiCard[]
 }
 
 /** Element types a connector template can be applied to, by the BPMN name templates use. */
@@ -180,16 +183,25 @@ const HTTP_WORDS = new Set([
  * ("Fetch order", "Call endpoint") when nothing else fits. Tasks with no
  * candidate are left out, so an empty answer means there is nothing to connect.
  *
+ * With `options.apis`, services of the API index: a task (not an event) that
+ * names a service, or whose request does as above, gets the REST connector
+ * first and an API card with the service's best-fitting operations — unless a
+ * dedicated connector for that system has an operation the task's name
+ * mentions. A dedicated connector comes first; the index is for the rest.
+ *
  * @param options.perTask - Cards per task, at most (default 3).
  * @param options.total - Cards in all, at most (default 8). Every task keeps
  *   its best card before any task gets a second.
+ * @param options.apis - Services of `@bpmnkit/connector-gen/api-index` the
+ *   request or the task names named, loaded.
  */
 export function selectConnectors(
 	input: { text?: string; tasks: readonly ConnectorTask[] },
-	options: { perTask?: number; total?: number } = {},
+	options: { perTask?: number; total?: number; apis?: readonly ApiService[] } = {},
 ): TaskCards[] {
 	const perTask = options.perTask ?? 3
 	const total = options.total ?? 8
+	const apis = options.apis ?? []
 	const requested = new Set(termsOf(input.text ?? ""))
 	const cards = listConnectorCards()
 	const http = connectorCards("io.camunda.connectors.HttpJson.v2")[0]
@@ -201,6 +213,9 @@ export function selectConnectors(
 		const named = new Set(termsOf(task.name ?? ""))
 		for (const card of cards) {
 			for (const system of systems(card)) if (named.has(system)) claimed.add(system)
+		}
+		for (const service of apis) {
+			if (named.has(apiBrand(service.id))) claimed.add(apiBrand(service.id))
 		}
 	}
 
@@ -229,6 +244,34 @@ export function selectConnectors(
 				(inRequest ? 4 : 0)
 			scored.push({ card, score })
 		}
+		const apiCards: ApiCard[] = []
+		if (http && TASKS.has(task.type) && fits(http, task.type)) {
+			for (const service of apis) {
+				const brand = apiBrand(service.id)
+				if (!named.has(brand) && !(requested.has(brand) && !claimed.has(brand))) continue
+				const ranked = rankApiOperations(service, task.name ?? "")
+				const best = ranked[0]
+				if (!best) continue
+				// A dedicated connector wins unless the index has an operation that fits more
+				// of the name: GitHub's connector creates issues, the index lists workflow runs
+				const words = (task.name ?? "")
+					.toLowerCase()
+					.split(/[^a-z0-9]+/)
+					.filter((w) => w.length > 1 && w !== brand && !VERBS.has(w))
+				const covered = Math.max(
+					0,
+					...scored
+						.filter((s) => systems(s.card).includes(brand))
+						.map((s) => words.filter((w) => cardScore(s.card, [w]) >= 3).length),
+				)
+				if (best.hits <= covered) continue
+				apiCards.push({ service, operations: ranked.slice(0, 3).map((r) => r.op) })
+			}
+		}
+		if (apiCards.length > 0 && http) {
+			const others = scored.filter((s) => s.card !== http)
+			scored.splice(0, scored.length, { card: http, score: Number.POSITIVE_INFINITY }, ...others)
+		}
 		if (
 			scored.length === 0 &&
 			http &&
@@ -238,7 +281,7 @@ export function selectConnectors(
 			scored.push({ card: http, score: 1 })
 		}
 		scored.sort((a, b) => b.score - a.score)
-		return { task, cards: scored.slice(0, perTask).map((s) => s.card) }
+		return { task, cards: scored.slice(0, perTask).map((s) => s.card), apis: apiCards.slice(0, 2) }
 	})
 
 	// Every task's best card first, then second-best cards, and so on, up to the total
@@ -254,9 +297,10 @@ export function selectConnectors(
 	}
 	return ranked
 		.filter(({ task }) => kept.has(task.id))
-		.map(({ task }) => {
+		.map(({ task, apis: apiCards }) => {
 			const picked: TaskCards = { id: task.id, cards: kept.get(task.id) ?? [] }
 			if (task.name !== undefined) picked.name = task.name
+			if (apiCards.length > 0 && http && picked.cards.includes(http)) picked.apis = apiCards
 			return picked
 		})
 }
@@ -268,11 +312,17 @@ export function selectConnectors(
  * notify (Notify ops):
  * slack chat.postMessage — … | token*(secret) data.text* data.channel* | …
  * ```
+ *
+ * API cards follow a task's connector cards.
  */
 export function formatConnectorSelection(selection: readonly TaskCards[]): string {
 	return selection
-		.map(({ id, name, cards }) =>
-			[`${id}${name ? ` (${name})` : ""}:`, ...cards.map((c) => formatConnectorCard(c))].join("\n"),
+		.map(({ id, name, cards, apis }) =>
+			[
+				`${id}${name ? ` (${name})` : ""}:`,
+				...cards.map((c) => formatConnectorCard(c)),
+				...(apis ?? []).map(formatApiCard),
+			].join("\n"),
 		)
 		.join("\n\n")
 }

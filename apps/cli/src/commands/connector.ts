@@ -1,7 +1,11 @@
 import { readFile, stat } from "node:fs/promises"
 import { resolve } from "node:path"
+import { API_SERVICES, loadApiServices } from "@bpmnkit/connector-gen/api-index"
 import {
+	apiServicesIn,
+	findApiOperations,
 	findConnectorCards,
+	formatApiCard,
 	formatConnectorCard,
 	getTemplate,
 	listConnectors,
@@ -205,6 +209,82 @@ const cardsCmd: Command = {
 			ctx.output.info(formatConnectorCard(card, { advanced: ctx.flags.advanced === true }))
 			if (Object.keys(card.values).length > 0) {
 				ctx.output.info(`  values: ${JSON.stringify(card.values)}\n`)
+			}
+		}
+	},
+}
+
+const apiCmd: Command = {
+	name: "api",
+	description:
+		"Show real endpoints of an HTTP API — base URL, auth, path, parameters — from the offline API index, for the REST connector",
+	args: [
+		{
+			name: "query",
+			description: 'What the step should do, naming the service, e.g. "create a stripe customer"',
+			required: true,
+		},
+	],
+	flags: [
+		{
+			name: "service",
+			description: "Service id to search when the query does not name one, e.g. notion",
+			type: "string",
+		},
+		{ name: "limit", description: "Operations per service (default: 5)", type: "string" },
+	],
+	examples: [
+		{
+			description: "Find the endpoint that creates a Stripe customer",
+			command: 'casen connector api "create a stripe customer"',
+		},
+		{
+			description: "As JSON, for a tool",
+			command: 'casen connector api "create page" --service notion -o json',
+		},
+	],
+	async run(ctx) {
+		const query = ctx.positional.join(" ")
+		const limit = Number.parseInt(String(ctx.flags.limit ?? "5"), 10)
+		if (!Number.isInteger(limit) || limit < 1) {
+			throw new Error(`--limit must be a positive whole number, not "${String(ctx.flags.limit)}"`)
+		}
+		const wanted =
+			typeof ctx.flags.service === "string" ? ctx.flags.service.toLowerCase() : undefined
+		if (wanted !== undefined && !API_SERVICES.some((s) => s.id === wanted)) {
+			throw new Error(
+				`No API "${wanted}" is in the index. Indexed: ${API_SERVICES.map((s) => s.id).join(", ")}`,
+			)
+		}
+		const services = await loadApiServices(
+			wanted !== undefined ? [wanted] : apiServicesIn(query, API_SERVICES).slice(0, 3),
+		)
+		if (services.length === 0) {
+			ctx.output.info(
+				`"${query}" names no indexed API. Name one, or pass --service. Indexed: ${API_SERVICES.map((s) => s.id).join(", ")}`,
+			)
+			return
+		}
+		const cards = services.map((service) => ({
+			service,
+			operations: findApiOperations(service, query, { limit }),
+		}))
+		if (ctx.output.format === "json") {
+			ctx.output.print(
+				cards.map(({ service: { operations: _all, ...service }, operations }) => ({
+					service,
+					operations,
+				})),
+			)
+			return
+		}
+		ctx.output.info(
+			"For the REST connector: with <id>: http <METHOD> <path> | api=<service> — base URL, auth and {path} parameters are added.\n",
+		)
+		for (const card of cards) {
+			ctx.output.info(`${formatApiCard(card)}\n`)
+			if (card.operations.length === 0) {
+				ctx.output.info("  No operation matched; describe the step in other words.\n")
 			}
 		}
 	},
@@ -548,6 +628,7 @@ export const connectorGroup: CommandGroup = {
 		listCatalogCmd,
 		showCmd,
 		cardsCmd,
+		apiCmd,
 		validateCmd,
 	],
 }

@@ -24,6 +24,18 @@ service task and inbound templates work on events.
   expression `={name: expr}`, under whatever key the operation uses for it.
 - **Credentials.** A credential written as a value becomes a `{{secrets.…}}` placeholder: the
   diagram never carries one.
+- **API index calls.** With `{ apis }` as the last argument, an `http` line that names a
+  service (`http POST /v1/customers | api=stripe`), or calls a URL under its base URL, is
+  completed from the index:
+  - the base URL goes before the path;
+  - each `{param}` of the path reads the variable of the same name;
+  - the service's authentication is set with a `{{secrets.STRIPE_TOKEN}}` placeholder,
+    unless the line sets its own;
+  - the headers the endpoint needs are added, such as Notion's `Notion-Version` or a form
+    body's `Content-Type`.
+
+  A call the index does not have is kept, and becomes a question to check the method and
+  URL.
 
 A required input the line left out becomes a **question** (`AppliedConnectorLines.questions`),
 with a line to finish, and the rest of the line is still applied. A line for a node that already

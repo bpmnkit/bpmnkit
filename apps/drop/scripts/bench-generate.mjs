@@ -23,9 +23,9 @@
  * With --connect each golden prompt's diagram then goes through the connect pass
  * as the Worker runs it (doc/ai-connector-generation-plan.md §4): the same cards,
  * prompt, line filter and server-side apply. The assertions are scored on the
- * connected diagram, so `mustContainTaskTypes` measures the connectors, and a
- * prompt whose expected.json says `"connect": false` must be skipped without a
- * model call.
+ * connected diagram, so `mustContainTaskTypes` measures the connectors and
+ * `mustCallUrls` the REST calls built from the API index, and a prompt whose
+ * expected.json says `"connect": false` must be skipped without a model call.
  *
  * Options:
  *   --connect         run the connect pass after each golden prompt
@@ -63,6 +63,7 @@ import {
 } from "@bpmnkit/core"
 import { connectorLineFor, selectConnectors } from "@bpmnkit/core/connectors"
 import {
+	connectApis,
 	connectMessages,
 	connectTasks,
 	createConnectLineFilter,
@@ -273,6 +274,17 @@ function score(defs, assertions) {
 	for (const jobType of assertions.mustContainTaskTypes ?? []) {
 		if (!jobTypes.has(jobType)) failed.push(`no task type ${jobType}`)
 	}
+	// A REST call's URL, literal or FEEL: each expected part must be in one of them
+	const urls = elements.flatMap((e) =>
+		e.extensionElements
+			.filter((x) => x.name === "zeebe:ioMapping")
+			.flatMap((x) => x.children)
+			.filter((c) => c.name === "zeebe:input" && c.attributes.target === "url")
+			.map((c) => c.attributes.source ?? ""),
+	)
+	for (const part of assertions.mustCallUrls ?? []) {
+		if (!urls.some((url) => url.includes(part))) failed.push(`no call to ${part}`)
+	}
 	return { elements: elements.length, failed }
 }
 
@@ -404,11 +416,14 @@ async function stream(model, body) {
 async function runConnect(model, prompt, diagram) {
 	const defs = expand(diagram)
 	const { text, aliases } = writeProcessText(defs, { connectorLine: connectorLineFor })
-	const selection = selectConnectors({ text: prompt.text, tasks: connectTasks(defs, aliases) })
+	const tasks = connectTasks(defs, aliases)
+	const apis = await connectApis(prompt.text, tasks)
+	const selection = selectConnectors({ text: prompt.text, tasks }, { apis })
 	const expectSkip = prompt.expected.connect === false
 	const connect = {
 		tasks: selection.length,
 		cards: selection.reduce((n, t) => n + t.cards.length, 0),
+		apiCards: selection.reduce((n, t) => n + (t.apis?.length ?? 0), 0),
 		skipped: selection.length === 0,
 		skipRight: (selection.length === 0) === expectSkip,
 	}
@@ -426,7 +441,7 @@ async function runConnect(model, prompt, diagram) {
 		if (usage) connect.neurons = neuronsFor(model, usage)
 		const filter = createConnectLineFilter()
 		connect.lines = filter.push(answer) + filter.end()
-		const done = finishConnect(defs, aliases, connect.lines)
+		const done = finishConnect(defs, aliases, connect.lines, apis)
 		connect.connected = done.connected.length
 		connect.problems = done.problems
 		connect.questions = done.questions.length
@@ -498,7 +513,7 @@ for (const model of models) {
 					? `  | connect ERROR ${c.error.slice(0, 80)}`
 					: c.skipped
 						? `  | connect skipped${c.skipRight ? "" : " (WRONG)"}`
-						: `  | connect ${c.totalMs}ms  out ${c.usage?.completionTokens ?? "?"}tok  connected ${c.connected}/${c.tasks}  problems ${c.problems.length}  questions ${c.questions}${c.literalSecrets ? `  literal secrets ${c.literalSecrets}` : ""}${c.skipRight ? "" : "  (should have skipped)"}`
+						: `  | connect ${c.totalMs}ms  out ${c.usage?.completionTokens ?? "?"}tok  connected ${c.connected}/${c.tasks}  api cards ${c.apiCards}  problems ${c.problems.length}  questions ${c.questions}${c.literalSecrets ? `  literal secrets ${c.literalSecrets}` : ""}${c.skipRight ? "" : "  (should have skipped)"}`
 			console.log(`${model}  ${prompt.id}#${run}  ${verdict}${connected}`)
 		}
 	}

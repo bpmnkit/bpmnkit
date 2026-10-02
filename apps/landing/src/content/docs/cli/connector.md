@@ -17,6 +17,7 @@ casen connector
 ├── search      — find a bundled OOTB connector template by name/keyword
 ├── show        — show a bundled template's required/optional inputs
 ├── cards       — one card per operation: only the inputs it needs, for a request
+├── api         — real endpoints of an HTTP API, from the offline API index, for the REST connector
 ├── generate    — generate new templates from an OpenAPI spec file or catalog entry
 └── catalog     — list all built-in OpenAPI-catalog entries (for `generate`)
 ```
@@ -64,6 +65,23 @@ github createIssue — GitHub Outbound Connector: Issues / Create an issue | own
 `*` marks a required input. A `mode=default: a | b(…)` part is a choice inside the operation, such
 as an authentication type, with the required inputs each choice adds. Retries, timeouts, TLS and
 other plumbing are left out unless you pass `--advanced`; `-o json` prints the cards as data.
+
+## Endpoints of an HTTP API
+
+Most systems have no dedicated connector, so the REST connector calls them. `api` prints the
+real base URL, authentication and endpoints from the offline
+[API index](/docs/packages/connector-gen#api-index). It searches the service the request names,
+or the one `--service` gives:
+
+```
+$ casen connector api "refund a stripe payment" --limit 1
+api stripe — Stripe API https://api.stripe.com auth=bearer secret=STRIPE_TOKEN
+POST /v1/refunds — Create a refund | form body: amount currency charge customer expand instructions_email
+```
+
+Write the call as `with <id>: http POST /v1/refunds | api=stripe`. Applying the line adds the
+base URL, the authentication with a secret placeholder, and the headers the endpoint needs.
+`-o json` prints the endpoints as data.
 
 ## Generate from the OpenAPI catalog
 

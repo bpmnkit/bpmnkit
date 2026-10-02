@@ -19,18 +19,5 @@ Beyond those rules:
 - **Caps.** At most three cards per task and eight in all. Every task keeps its best card
   before any task gets a second.
 
-```typescript
-import { formatConnectorSelection, selectConnectors } from "@bpmnkit/connectors";
-
-const selection = selectConnectors({
-  text: "Every hour, list open GitHub issues and post a summary to Slack",
-  tasks: [
-    { id: "list", name: "List open issues", type: "serviceTask" },
-    { id: "post", name: "Post summary to Slack", type: "serviceTask" },
-  ],
-});
-formatConnectorSelection(selection); // the prompt block, one task per paragraph
-```
-
 ---
 Source: https://bpmnkit.com/docs/packages/connectors

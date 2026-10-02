@@ -385,6 +385,9 @@ importers:
       '@bpmnkit/canvas':
         specifier: workspace:*
         version: link:../../packages/canvas
+      '@bpmnkit/connector-gen':
+        specifier: workspace:*
+        version: link:../../packages/connector-gen
       '@bpmnkit/core':
         specifier: workspace:*
         version: link:../../packages/core

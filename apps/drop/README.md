@@ -118,6 +118,11 @@ that already has its shape (`doc/ai-connector-generation-plan.md` §4).
   (`selectConnectors` from `@bpmnkit/core/connectors`). It asks the model for `with` lines only,
   then applies them itself and streams back the connected diagram. The page never loads the
   catalog.
+- **API cards.** When the request or a task names a service of the
+  [API index](../../packages/connector-gen) — Stripe, Notion, GitHub's workflow runs — the
+  Worker loads that service only. The model then sees its real endpoints next to the REST
+  connector, and a `with … http POST /v1/customers | api=stripe` line gets the base URL,
+  authentication and headers on the server. The index adds about 400 KB gzipped to the Worker.
 - **When no model is asked.** A diagram whose tasks match no connector ends `skipped`, and the
   model isn't called.
 - **Where it runs.**
@@ -127,7 +132,7 @@ that already has its shape (`doc/ai-connector-generation-plan.md` §4).
   - **On a shared diagram:** **Add connectors** runs it while editing. The result is one
     undoable editor change.
 - **Benchmark.** `bench:generate --connect` runs it after each golden prompt and scores the
-  connected diagram.
+  connected diagram. `mustCallUrls` checks that a REST call goes to the index's endpoint.
 - **Turning it off.** Remove `AI_CONNECT_MODEL`.
 
 Quick API smoke test:

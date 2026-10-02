@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.0.1. 361 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.0.1. 364 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -24,8 +24,9 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [casen CLI — Local proxy](.llms/chunks/cli.casen.local-proxy.md) — 305 tokens
 - [casen CLI — Local proxy — Who can use the proxy](.llms/chunks/cli.casen.local-proxy-who-can-use-the-proxy.md) — 769 tokens
 - [casen CLI — MCP Server Mode](.llms/chunks/cli.casen.mcp-server-mode.md) — 204 tokens
-- [casen connector](.llms/chunks/cli.connector.md) — 188 tokens
+- [casen connector](.llms/chunks/cli.connector.md) — 213 tokens
 - [casen connector — Browse the bundled OOTB catalog](.llms/chunks/cli.connector.browse-the-bundled-ootb-catalog.md) — 417 tokens
+- [casen connector — Endpoints of an HTTP API](.llms/chunks/cli.connector.endpoints-of-an-http-api.md) — 181 tokens
 - [casen connector — Generate from the OpenAPI catalog](.llms/chunks/cli.connector.generate-from-the-openapi-catalog.md) — 174 tokens
 - [casen connector — All flags](.llms/chunks/cli.connector.all-flags.md) — 328 tokens
 - [casen connector — Common workflows](.llms/chunks/cli.connector.common-workflows.md) — 288 tokens
@@ -284,18 +285,20 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/connector-gen — `WriteOptions`](.llms/chunks/packages.connector-gen.writeoptions.md) — 235 tokens
 - [@bpmnkit/connector-gen — Body expansion](.llms/chunks/packages.connector-gen.body-expansion.md) — 136 tokens
 - [@bpmnkit/connector-gen — Lower-level API](.llms/chunks/packages.connector-gen.lower-level-api.md) — 185 tokens
+- [@bpmnkit/connector-gen — API index](.llms/chunks/packages.connector-gen.api-index.md) — 422 tokens
 - [@bpmnkit/connector-gen — Catalog reference](.llms/chunks/packages.connector-gen.catalog-reference.md) — 518 tokens
 - [@bpmnkit/connector-gen — `CatalogEntry` type](.llms/chunks/packages.connector-gen.catalogentry-type.md) — 86 tokens
 - [@bpmnkit/connectors — Overview](.llms/chunks/packages.connectors.overview.md) — 245 tokens
 - [@bpmnkit/connectors — Installation](.llms/chunks/packages.connectors.installation.md) — 240 tokens
 - [@bpmnkit/connectors — Connector cards](.llms/chunks/packages.connectors.connector-cards.md) — 320 tokens
-- [@bpmnkit/connectors — Picking cards for a diagram](.llms/chunks/packages.connectors.picking-cards-for-a-diagram.md) — 384 tokens
-- [@bpmnkit/connectors — `with` lines](.llms/chunks/packages.connectors.with-lines.md) — 448 tokens
+- [@bpmnkit/connectors — Picking cards for a diagram](.llms/chunks/packages.connectors.picking-cards-for-a-diagram.md) — 287 tokens
+- [@bpmnkit/connectors — API cards](.llms/chunks/packages.connectors.api-cards.md) — 560 tokens
+- [@bpmnkit/connectors — `with` lines](.llms/chunks/packages.connectors.with-lines.md) — 608 tokens
 - [@bpmnkit/connectors — Applying a template](.llms/chunks/packages.connectors.applying-a-template.md) — 503 tokens
 - [@bpmnkit/connectors — Applying to an element — inbound connectors and linked resources](.llms/chunks/packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources.md) — 667 tokens
 - [@bpmnkit/connectors — Workspace templates](.llms/chunks/packages.connectors.workspace-templates.md) — 710 tokens
 - [@bpmnkit/connectors — Validating a template](.llms/chunks/packages.connectors.validating-a-template.md) — 213 tokens
-- [@bpmnkit/connectors — API Reference](.llms/chunks/packages.connectors.api-reference.md) — 489 tokens
+- [@bpmnkit/connectors — API Reference](.llms/chunks/packages.connectors.api-reference.md) — 619 tokens
 - [@bpmnkit/connectors — Stability](.llms/chunks/packages.connectors.stability.md) — 137 tokens
 - [@bpmnkit/core — Overview](.llms/chunks/packages.core.overview.md) — 136 tokens
 - [@bpmnkit/core — Installation](.llms/chunks/packages.core.installation.md) — 27 tokens
@@ -320,7 +323,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()`](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md) — 1045 tokens
 - [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()` (2)](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2.md) — 397 tokens
 - [@bpmnkit/core — Installation — `writeProcessText(defs)` and `parseProcessDelta(text)`](.llms/chunks/packages.core.installation-writeprocesstext-defs-and-parseprocessdelta-text.md) — 317 tokens
-- [@bpmnkit/core — Installation — Connectors: `with` lines](.llms/chunks/packages.core.installation-connectors-with-lines.md) — 240 tokens
+- [@bpmnkit/core — Installation — Connectors: `with` lines](.llms/chunks/packages.core.installation-connectors-with-lines.md) — 297 tokens
 - [@bpmnkit/core — Installation — `retypeElement(element, type)`](.llms/chunks/packages.core.installation-retypeelement-element-type.md) — 189 tokens
 - [@bpmnkit/core — Installation — `createFlowElement(id, type, options?)`](.llms/chunks/packages.core.installation-createflowelement-id-type-options.md) — 61 tokens
 - [@bpmnkit/core — Installation — Element catalog](.llms/chunks/packages.core.installation-element-catalog.md) — 96 tokens
@@ -331,7 +334,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Writing files — `@bpmnkit/core/node`](.llms/chunks/packages.core.writing-files-bpmnkit-core-node.md) — 52 tokens
 - [@bpmnkit/core — Writing files — `@bpmnkit/core/node` — `writeBpmn(definitions, options)`](.llms/chunks/packages.core.writing-files-bpmnkit-core-node-writebpmn-definitions-options.md) — 440 tokens
 - [@bpmnkit/core — Writing files — `@bpmnkit/core/node` — `exportPreserving(original, definitions)`](.llms/chunks/packages.core.writing-files-bpmnkit-core-node-exportpreserving-original-definitions.md) — 598 tokens
-- [@bpmnkit/core — Connectors — `@bpmnkit/core/connectors`](.llms/chunks/packages.core.connectors-bpmnkit-core-connectors.md) — 247 tokens
+- [@bpmnkit/core — Connectors — `@bpmnkit/core/connectors`](.llms/chunks/packages.core.connectors-bpmnkit-core-connectors.md) — 333 tokens
 - [@bpmnkit/core — DMN Support](.llms/chunks/packages.core.dmn-support.md) — 113 tokens
 - [@bpmnkit/docspack — Overview](.llms/chunks/packages.docspack.overview.md) — 252 tokens
 - [@bpmnkit/docspack — The other pack](.llms/chunks/packages.docspack.the-other-pack.md) — 145 tokens

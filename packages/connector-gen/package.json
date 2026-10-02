@@ -11,6 +11,10 @@
 		"./browser": {
 			"import": "./dist/browser.js",
 			"types": "./dist/browser.d.ts"
+		},
+		"./api-index": {
+			"import": "./dist/api-index.js",
+			"types": "./dist/api-index.d.ts"
 		}
 	},
 	"main": "./dist/index.js",

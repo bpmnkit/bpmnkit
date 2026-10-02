@@ -190,7 +190,7 @@
 		{
 			"id": "cli.connector",
 			"file": "chunks/cli.connector.md",
-			"tokens": 188,
+			"tokens": 213,
 			"tags": [
 				"cli",
 				"connector"
@@ -215,6 +215,19 @@
 				"listConnectors()",
 				"searchConnectors()"
 			]
+		},
+		{
+			"id": "cli.connector.endpoints-of-an-http-api",
+			"file": "chunks/cli.connector.endpoints-of-an-http-api.md",
+			"tokens": 181,
+			"tags": [
+				"cli",
+				"connector",
+				"endpoints",
+				"http",
+				"api"
+			],
+			"entities": []
 		},
 		{
 			"id": "cli.connector.generate-from-the-openapi-catalog",
@@ -3873,6 +3886,24 @@
 			"entities": []
 		},
 		{
+			"id": "packages.connector-gen.api-index",
+			"file": "chunks/packages.connector-gen.api-index.md",
+			"tokens": 422,
+			"tags": [
+				"packages",
+				"connector-gen",
+				"api",
+				"index"
+			],
+			"entities": [
+				"@bpmnkit/connector-gen/api-index",
+				"@bpmnkit/core/connectors",
+				"scripts/build-api-index.mjs",
+				"your-domain.atlassian.net",
+				"baseUrl"
+			]
+		},
+		{
 			"id": "packages.connector-gen.catalog-reference",
 			"file": "chunks/packages.connector-gen.catalog-reference.md",
 			"tokens": 518,
@@ -3954,7 +3985,7 @@
 		{
 			"id": "packages.connectors.picking-cards-for-a-diagram",
 			"file": "chunks/packages.connectors.picking-cards-for-a-diagram.md",
-			"tokens": 384,
+			"tokens": 287,
 			"tags": [
 				"packages",
 				"connectors",
@@ -3965,9 +3996,21 @@
 			"entities": []
 		},
 		{
+			"id": "packages.connectors.api-cards",
+			"file": "chunks/packages.connectors.api-cards.md",
+			"tokens": 560,
+			"tags": [
+				"packages",
+				"connectors",
+				"api",
+				"cards"
+			],
+			"entities": []
+		},
+		{
 			"id": "packages.connectors.with-lines",
 			"file": "chunks/packages.connectors.with-lines.md",
-			"tokens": 448,
+			"tokens": 608,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4069,7 +4112,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 489,
+			"tokens": 619,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4082,6 +4125,7 @@
 				"ConnectorSummary",
 				"clearRegisteredTemplates()",
 				"listConnectorCards()",
+				"rankApiOperations",
 				"@bpmnkit/connectors/node",
 				"discoverElementTemplates",
 				"collectElementTemplates"
@@ -4478,7 +4522,7 @@
 		{
 			"id": "packages.core.installation-connectors-with-lines",
 			"file": "chunks/packages.core.installation-connectors-with-lines.md",
-			"tokens": 240,
+			"tokens": 297,
 			"tags": [
 				"packages",
 				"core",
@@ -4683,7 +4727,7 @@
 		{
 			"id": "packages.core.connectors-bpmnkit-core-connectors",
 			"file": "chunks/packages.core.connectors-bpmnkit-core-connectors.md",
-			"tokens": 247,
+			"tokens": 333,
 			"tags": [
 				"packages",
 				"core",
@@ -4693,7 +4737,9 @@
 			"entities": [
 				"@bpmnkit/core",
 				"formatConnectorCard",
-				"@bpmnkit/connectors"
+				"@bpmnkit/connectors",
+				"ApiService",
+				"@bpmnkit/connector-gen"
 			]
 		},
 		{

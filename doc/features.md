@@ -14,7 +14,12 @@
   - `selectConnectors`, which picks the cards for a diagram's tasks.
   - `with` lines (`with notify: slack chat.postMessage | data.channel=#ops`), applied by
     `applyConnectorLines` with repairs for what models get nearly right.
-- **CLI.** `casen connector cards "<request>"`.
+  - API cards: for a system without a dedicated connector (Stripe, Notion, …), the real base
+    URL, authentication and endpoints for the REST connector. `api=stripe` on an `http` line
+    fills them in.
+- **`@bpmnkit/connector-gen/api-index`:** an offline index of about 80 HTTP APIs, built from
+  their OpenAPI specs and refreshed weekly.
+- **CLI.** `casen connector cards "<request>"` and `casen connector api "<request>"`.
 
 ## Drop: AI proposals shared as suggested changes (2026-10-01)
 

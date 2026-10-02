@@ -120,6 +120,44 @@ Beyond those rules:
 - **Caps.** At most three cards per task and eight in all. Every task keeps its best card
   before any task gets a second.
 
+## API cards
+
+Most systems have no dedicated connector. The REST connector can still call them, but only
+with the right base URL, path and authentication. The
+[API index](/docs/packages/connector-gen#api-index) has these for about 80 HTTP APIs, built
+offline from their OpenAPI specs. Pass the services the request names as `apis`, and a task
+that names one of them gets the REST connector first, plus an **API card** with its
+best-fitting endpoints:
+
+```typescript
+import { API_SERVICES, loadApiServices } from "@bpmnkit/connector-gen/api-index";
+import { apiServicesIn, formatConnectorSelection, selectConnectors } from "@bpmnkit/connectors";
+
+const text = "When someone signs up, create a Stripe customer";
+const apis = await loadApiServices(apiServicesIn(text, API_SERVICES));
+const selection = selectConnectors(
+  { text, tasks: [{ id: "customer", name: "Create customer", type: "serviceTask" }] },
+  { apis },
+);
+formatConnectorSelection(selection);
+// customer (Create customer):
+// http — Send REST Request | url* | …
+// api stripe — Stripe API https://api.stripe.com auth=bearer secret=STRIPE_TOKEN
+// POST /v1/customers — Create a customer | form body: name email description address …
+```
+
+- **A dedicated connector comes first.** The API card is left out when a dedicated
+  connector for the system has an operation that fits as much of the task's name. GitHub's
+  connector creates issues, so "Create GitHub issue" gets it. It has nothing for workflow
+  runs, so "List GitHub workflow runs" gets the API card.
+- **Tasks only.** Events get no API card.
+- **Ranking.** `findApiOperations(service, text)` ranks endpoints by the words of their
+  summary, then of their path. A verb picks the method ("Create" → POST, "List" → GET), and
+  a path that ends in a word of the task wins over a deeper one.
+- **Services in text.** `apiServicesIn(text, summaries)` finds the services a text names by
+  their brand. A brand that is also an everyday word, like "box" or "square", counts only as
+  "Box API".
+
 ```typescript
 import { formatConnectorSelection, selectConnectors } from "@bpmnkit/connectors";
 
@@ -159,6 +197,18 @@ service task and inbound templates work on events.
   expression `={name: expr}`, under whatever key the operation uses for it.
 - **Credentials.** A credential written as a value becomes a `{{secrets.…}}` placeholder: the
   diagram never carries one.
+- **API index calls.** With `{ apis }` as the last argument, an `http` line that names a
+  service (`http POST /v1/customers | api=stripe`), or calls a URL under its base URL, is
+  completed from the index:
+  - the base URL goes before the path;
+  - each `{param}` of the path reads the variable of the same name;
+  - the service's authentication is set with a `{{secrets.STRIPE_TOKEN}}` placeholder,
+    unless the line sets its own;
+  - the headers the endpoint needs are added, such as Notion's `Notion-Version` or a form
+    body's `Content-Type`.
+
+  A call the index does not have is kept, and becomes a question to check the method and
+  URL.
 
 A required input the line left out becomes a **question** (`AppliedConnectorLines.questions`),
 with a line to finish, and the rest of the line is still applied. A line for a node that already
@@ -407,12 +457,17 @@ for CI and takes `--format json`.
 | `formatConnectorCard(card, { advanced })` | A card as one prompt line |
 | `connectorAlias(id)` / `templateIdForAlias(alias)` | Template id ↔ short alias |
 | `CONNECTOR_ALIASES` | Alias and operation dropdowns of every bundled template |
-| `applyConnectorLines(definitions, lines)` | Apply `with` lines → `{ definitions, problems, fixes, questions }` |
-| `resolveConnectorLine(line)` | One `with` line → template, card, values, problems, fixes |
+| `applyConnectorLines(definitions, lines, { apis })` | Apply `with` lines → `{ definitions, problems, fixes, questions }` |
+| `resolveConnectorLine(line, { apis })` | One `with` line → template, card, values, problems, fixes, questions |
 | `connectorLineFor(element, definitions)` | An element's connector as a `with` line |
 | `CONNECT_GUIDE` | System prompt teaching `with` lines |
-| `selectConnectors({ text, tasks }, { perTask, total })` | The cards to show a model for each task of a diagram |
+| `selectConnectors({ text, tasks }, { perTask, total, apis })` | The cards, and API cards, to show a model for each task of a diagram |
 | `formatConnectorSelection(selection)` | Picked cards as a prompt block |
+| `apiServicesIn(text, summaries)` | Ids of the API-index services a text names |
+| `findApiOperations(service, text, { limit })` / `rankApiOperations` | A service's endpoints that fit a task, best first |
+| `formatApiCard({ service, operations })` | An API card for a prompt |
+| `findApiOperation(service, method, path)` | The indexed endpoint a call names |
+| `apiUrl(baseUrl, path)` / `apiAuthValues(service)` / `apiSecretNames(service)` | REST connector inputs for an indexed call |
 
 From `@bpmnkit/connectors/node`: `discoverElementTemplates`, `collectElementTemplates`,
 `DEFAULT_CONFIG_FOLDER`, `TEMPLATES_SUBFOLDER`.

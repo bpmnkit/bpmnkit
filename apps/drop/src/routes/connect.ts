@@ -15,6 +15,7 @@ import {
 	type ConnectEvent,
 	MAX_CONNECT_DIAGRAM_CHARS,
 	MAX_CONNECT_REQUEST_CHARS,
+	connectApis,
 	connectMessages,
 	connectTasks,
 	createConnectLineFilter,
@@ -80,7 +81,9 @@ function readBody(raw: unknown): ConnectRequest | string {
  * each task could use are picked in code (`selectConnectors`); when none fits,
  * the stream ends `skipped` and no model is asked. With `lines` — `with` lines
  * the reader finished themselves, answering a question — no model is asked
- * either: the lines are applied as given.
+ * either: the lines are applied as given. Services of the API index that the
+ * request, the tasks or the lines name are loaded for both: their endpoints
+ * become API cards, and complete the `http` lines that call them.
  *
  * Answers with a server-sent-event stream of {@link ConnectEvent}s: the alias
  * map, the `with` lines as the model writes them (only those), the diagram with
@@ -140,18 +143,21 @@ async function answer(
 		return fail(413, "this diagram is too large to connect yet")
 	}
 
+	const tasks = connectTasks(defs, aliases)
 	if (body.lines !== undefined) {
 		// Only `with` lines, as from a model: anything else in them is not the reader's to send
 		const filter = createConnectLineFilter()
 		const lines = filter.push(body.lines) + filter.end()
+		const apis = await connectApis(body.request, [], lines)
 		return replay([
 			{ aliases },
-			{ result: finishConnect(defs, aliases, lines) },
+			{ result: finishConnect(defs, aliases, lines, apis) },
 			{ done: true, cached: false },
 		])
 	}
 
-	const selection = selectConnectors({ text: body.request, tasks: connectTasks(defs, aliases) })
+	const apis = await connectApis(body.request, tasks)
+	const selection = selectConnectors({ text: body.request, tasks }, { apis })
 	if (selection.length === 0) {
 		return replay([{ aliases }, { done: true, cached: false, skipped: true }])
 	}
@@ -165,7 +171,7 @@ async function answer(
 		return replay([
 			{ aliases },
 			...(cached === "" ? [] : [{ text: cached }]),
-			{ result: finishConnect(defs, aliases, cached) },
+			{ result: finishConnect(defs, aliases, cached, apis) },
 			{ done: true, cached: true },
 		])
 	}
@@ -220,7 +226,7 @@ async function answer(
 				)
 				await addBudget(env.DB, day, neurons)
 				const failed = stream.failed
-				const result = failed ? undefined : finishConnect(defs, aliases, script)
+				const result = failed ? undefined : finishConnect(defs, aliases, script, apis)
 				console.log(
 					JSON.stringify({
 						msg: "drop.connect",

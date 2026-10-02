@@ -14,6 +14,7 @@ import {
 	parseProcessDelta,
 	parseProcessText,
 } from "../../src/index.js"
+import { STRIPE } from "./api-fixtures.js"
 
 function line(text: string): ConnectorLine {
 	const parsed = parseConnectorLine(text, 1, [])
@@ -123,9 +124,11 @@ describe("CONNECT_GUIDE", () => {
 		const example = CONNECT_GUIDE.slice(CONNECT_GUIDE.indexOf("Example:") + "Example:".length)
 		const delta = parseProcessDelta(example)
 		expect(delta.problems).toEqual([])
-		expect(delta.connectors).toHaveLength(2)
+		expect(delta.connectors).toHaveLength(3)
 		for (const connector of delta.connectors) {
-			expect(resolveConnectorLine(connector).problems).toEqual([])
+			const resolved = resolveConnectorLine(connector, { apis: [STRIPE] })
+			expect(resolved.problems).toEqual([])
+			expect(resolved.questions).toEqual([])
 		}
 	})
 })

@@ -1,5 +1,58 @@
 # Progress
 
+## 2026-10-02 — Connectors in AI generation, P5: the API index and API cards
+
+- **`@bpmnkit/connector-gen/api-index`** — offline base URL, auth and endpoints of 78 HTTP
+  APIs, 20,327 operations. One module per service, loaded lazily (3.2 MB raw, about 400 KB
+  gzipped).
+  - **Built by** `scripts/build-api-index.mjs` (`pnpm update-api-index`) from the catalog's
+    specs. It reads OpenAPI 3 and Swagger 2, so GitLab, Kubernetes and DocuSign are in too.
+  - **Per operation:** method, path, a summary of ≤ 12 words, query and top-level body fields
+    (required first, then common names), required headers with their default value (Notion's
+    `Notion-Version`), and whether the body is form-encoded (Stripe).
+  - **Auth:** bearer is preferred, then an API key with its header, then basic. Specs without
+    schemes fall back to the catalog's hint.
+  - **Base URLs:** placeholder hosts (`your-domain.atlassian.net`, `example.zendesk.com`, …)
+    get no `baseUrl`.
+  - **Licenses (plan risk 5):** specs that name a non-commercial, copyleft or proprietary
+    license are skipped: CircleCI, Mollie, Cohere, Trello, Paddle, Coda, Lago.
+  - **Weekly refresh:** the connector-templates workflow now refreshes the index too. A spec
+    that cannot be fetched keeps its previous module.
+  - **Catalog fix:** Notion's spec URL was dead; it now points to
+    `developers.notion.com/openapi.json`. Thirteen other catalog URLs still return 404
+    (Anthropic, Shopify, Datadog, Airtable, …), so those services are not indexed.
+- **Core (`@bpmnkit/core/connectors`, re-exported by `@bpmnkit/connectors`).** `ApiService`
+  types plus functions to find, rank, format and apply API cards. `selectConnectors(…, { apis })`
+  puts the REST connector first, with an API card, for a task that names an indexed service.
+  - **Precedence:** a dedicated connector wins unless the index has an endpoint matching more
+    of the task's name. "Create GitHub issue" keeps the GitHub connector; "List GitHub workflow
+    runs" gets `GET /repos/{owner}/{repo}/actions/runs`.
+  - **Ranking** found the right endpoint first for 12 sample tasks across Stripe, Notion,
+    GitHub, Zendesk, Asana and Discord. That needed a penalty for path words the task lacks
+    and a bonus for a path ending in the task's resource: "Refund payment" →
+    `POST /v1/refunds`, not the terminal reader's `refund_payment`.
+- **`with` lines.** `http POST /v1/customers | api=stripe` (or a URL under a service's base
+  URL) gets:
+  - the base URL;
+  - `{params}` as FEEL from the variables of the same name;
+  - the service's auth with a `{{secrets.STRIPE_TOKEN}}` placeholder, unless the line sets
+    its own;
+  - required headers.
+
+  A call the index lacks becomes a question to check it. `CONNECT_GUIDE` teaches `api=`.
+- **Drop.** The connect route loads only the services the request, task names or written lines
+  name (at most 4), and passes them to selection and to the server-side apply. The Worker
+  bundle grows from 478 KB to 879 KB gzipped.
+- **CLI.** `casen connector api "<request>" [--service id] [--limit n] [-o json]`.
+- **Golden prompts.**
+  - Stripe refund (17) now asserts `mustCallUrls: https://api.stripe.com/v1/refunds`.
+  - New: 26 Notion page and 27 GitHub workflow runs → Slack.
+  - `bench:generate --connect` passes the API services, reports API cards and scores
+    `mustCallUrls`.
+  - A dry run of the three on hand-written pass-1 diagrams offered the right endpoint, and the
+    expected lines applied with no problems or questions.
+- **Not run:** a real Workers AI bench, which needs credentials.
+
 ## 2026-10-02 — Connectors in AI generation, P4: the connect pass in Drop
 
 - **`selectConnectors`** (core/connectors) picks cards per task in code. A card qualifies when:

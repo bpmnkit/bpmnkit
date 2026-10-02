@@ -2016,6 +2016,7 @@ import { articleJsonLd } from "@bpmnkit/astro-shared/seo.js"
 - **Generates Camunda element templates** — REST connector format with input/output mappings
 - **Endpoint selection** — generate all endpoints or filter by path/method
 - **FEEL expressions** — pre-fills input bindings with \`=variable\` expressions
+- **Offline API index** — \`@bpmnkit/connector-gen/api-index\`: base URL, auth and endpoints of about 80 HTTP APIs, one lazily loaded module per service
 - **Zero dependencies** beyond \`yaml\` for YAML parsing
 
 ## Installation
@@ -2039,10 +2040,23 @@ for (const template of templates) {
 }
 \`\`\`
 
+## API index
+
+\`\`\`typescript
+import { API_SERVICES, loadApiService } from "@bpmnkit/connector-gen/api-index"
+
+const stripe = await loadApiService("stripe")
+stripe?.baseUrl // "https://api.stripe.com"
+stripe?.operations.find((o) => o.method === "POST" && o.path === "/v1/customers")
+\`\`\`
+
+Built offline from the catalog's OpenAPI specs by \`scripts/build-api-index.mjs\`; specs under a non-permissive license are left out. \`@bpmnkit/core/connectors\` turns the services into API cards for the REST connector.
+
 ## CLI usage (via \`@bpmnkit/cli\`)
 
 \`\`\`sh
 casen connector generate openapi.yaml --out ./templates/
+casen connector api "create a stripe customer"
 \`\`\`
 
 ## API Reference

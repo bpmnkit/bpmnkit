@@ -20,6 +20,12 @@ with only the inputs it uses and the values that select it, as `formatConnectorC
 for a prompt. See [`@bpmnkit/connectors`](/docs/packages/connectors#connector-cards) for the
 details.
 
+**API cards** do the same for the REST connector and systems without a dedicated connector:
+the real base URL, authentication and endpoints of an HTTP API. Core has their shape
+(`ApiService`) and the functions that pick, format and apply them. The data is the
+[API index](/docs/packages/connector-gen#api-index) of `@bpmnkit/connector-gen`, which is
+too large for core. See [`@bpmnkit/connectors`](/docs/packages/connectors#api-cards).
+
 The bundled templates leave out icons, groups, tooltips and placeholders, which only a
 property panel draws, so an applied element carries no `zeebe:modelerTemplateIcon`.
 [`@bpmnkit/connectors`](/docs/packages/connectors) has the same API with those parts added

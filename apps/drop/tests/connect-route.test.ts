@@ -219,6 +219,31 @@ describe("POST /drop/api/connect", () => {
 		expect(await getBudgetSpent(db, DAY)).toBe(0)
 	})
 
+	it("shows the API index's endpoints for a system without a connector, and completes the call", async () => {
+		const signup = Bpmn.export(
+			expand(
+				parseProcessText(
+					"start[start Signed up] > customer[service Create Stripe customer] > done[end Done]",
+				).diagram,
+			),
+		)
+		const ai = fakeAi([
+			"with customer: http POST /v1/customers | api=stripe | body=={email: email}\n",
+		])
+		const evs = await events(
+			await handleConnect(post({ xml: signup, request: "Bill new users" }), makeEnv(ai), NOW),
+		)
+		const messages = ai.calls[0]?.inputs.messages as { role: string; content: string }[]
+		expect(messages[1]?.content).toContain(
+			"api stripe — Stripe API https://api.stripe.com auth=bearer secret=STRIPE_TOKEN\nPOST /v1/customers — Create a customer",
+		)
+		const result = resultOf(evs)
+		expect(result?.connected).toEqual(["customer"])
+		expect(result?.questions).toEqual([])
+		expect(result?.xml).toContain('source="https://api.stripe.com/v1/customers"')
+		expect(result?.xml).toContain('source="{{secrets.STRIPE_TOKEN}}"')
+	})
+
 	it("is routed by the worker, POST only", async () => {
 		const env = makeEnv(fakeAi(ANSWER))
 		const get = await worker.fetch(new Request("http://drop/drop/api/connect"), env)

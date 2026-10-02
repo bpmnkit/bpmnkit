@@ -1,0 +1,10 @@
+{
+	"id": "github-workflow-runs",
+	"category": "connector",
+	"description": "GitHub's dedicated connector has no operation for workflow runs: the API index's endpoint over REST, then Slack.",
+	"assertions": {
+		"minElements": 4,
+		"mustContainTaskTypes": ["io.camunda:http-json:1", "io.camunda:slack:1"],
+		"mustCallUrls": ["https://api.github.com/repos/", "/actions/runs"]
+	}
+}

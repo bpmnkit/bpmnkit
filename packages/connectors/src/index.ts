@@ -41,6 +41,16 @@ export {
 	resolveConnectorLine,
 	formatConnectorSelection,
 	selectConnectors,
+	apiAuthValues,
+	apiBrand,
+	apiSecretNames,
+	apiServicesIn,
+	apiUrl,
+	findApiOperation,
+	findApiOperations,
+	formatApiCard,
+	formatApiOperation,
+	rankApiOperations,
 } from "@bpmnkit/core/connectors"
 export type {
 	ConnectorSummary,
@@ -61,9 +71,16 @@ export type {
 	CardMode,
 	ConnectorCard,
 	AppliedConnectorLines,
+	ConnectorLineOptions,
 	ResolvedConnectorLine,
 	ConnectorTask,
 	TaskCards,
+	ApiAuth,
+	ApiCard,
+	ApiOperation,
+	ApiService,
+	ApiServiceSummary,
+	RankedApiOperation,
 } from "@bpmnkit/core/connectors"
 export { CAMUNDA_CONNECTOR_TEMPLATES }
 

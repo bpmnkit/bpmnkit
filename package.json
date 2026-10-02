@@ -19,6 +19,7 @@
 		"release": "pnpm turbo build && changeset publish",
 		"fix-bpmn": "node scripts/fix-bpmn.mjs",
 		"update-connectors": "node scripts/update-connectors.mjs",
+		"update-api-index": "pnpm --filter @bpmnkit/connector-gen build && node scripts/build-api-index.mjs",
 		"docs:dev": "pnpm --filter @bpmnkit/landing dev",
 		"docs:build": "pnpm turbo build --filter @bpmnkit/landing",
 		"proxy": "pnpm --filter @bpmnkit/proxy start",

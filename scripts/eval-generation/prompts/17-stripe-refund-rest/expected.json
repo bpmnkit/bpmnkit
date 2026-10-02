@@ -1,9 +1,10 @@
 {
 	"id": "stripe-refund-rest",
 	"category": "connector",
-	"description": "A system with no dedicated connector, reached over REST.",
+	"description": "A system with no dedicated connector, reached over REST at the address the API index gives.",
 	"assertions": {
 		"minElements": 4,
-		"mustContainTaskTypes": ["io.camunda:http-json:1"]
+		"mustContainTaskTypes": ["io.camunda:http-json:1"],
+		"mustCallUrls": ["https://api.stripe.com/v1/refunds"]
 	}
 }

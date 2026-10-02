@@ -15,6 +15,7 @@
 	},
 	"dependencies": {
 		"@bpmnkit/canvas": "workspace:*",
+		"@bpmnkit/connector-gen": "workspace:*",
 		"@bpmnkit/core": "workspace:*",
 		"@bpmnkit/editor": "workspace:*",
 		"@bpmnkit/feel": "workspace:*",

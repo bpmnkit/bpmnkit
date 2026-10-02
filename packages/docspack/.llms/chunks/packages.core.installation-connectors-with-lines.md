@@ -18,6 +18,9 @@ every structural rule.
   core's main entry, so the catalog is only bundled where it is used.
 - **Writing.** `writeProcessText(defs, { connectorLine: connectorLineFor })` writes an
   element's connector back as a `with` line, so a model that changes the diagram keeps it.
+- **API index calls.** `with charge: http POST /v1/customers | api=stripe` calls an endpoint of
+  the [API index](/docs/packages/connector-gen#api-index). Its base URL, authentication and
+  headers come from the index when the lines are applied with `{ apis }`.
 
 ---
 Source: https://bpmnkit.com/docs/packages/core

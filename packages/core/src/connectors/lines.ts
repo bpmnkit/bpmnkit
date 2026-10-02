@@ -17,6 +17,7 @@ import type {
 	ProcessTextQuestion,
 	XmlElement,
 } from "../index.js"
+import { type ApiService, apiAuthValues, apiHeaders, apiUrl, findApiOperation } from "./api.js"
 import { applyTemplateToElement, messageRefOf } from "./apply-element.js"
 import { evalCondition, resolveValues } from "./apply.js"
 import { type ConnectorCard, connectorAlias, connectorCards, templateIdForAlias } from "./cards.js"
@@ -37,10 +38,12 @@ with <id>: <alias> <operation> | key=value | key==FEEL expression
 - Credentials are never values: token={{secrets.SLACK_TOKEN}}.
 - result=name keeps the response in a variable; result=name: response.body keeps a part of it.
 - A plain task that becomes a connector needs no other change. Leave out nodes no card fits.
+- An api card lists real endpoints of a service for the http connector: write http <METHOD> <path> | api=<service>. The base URL, the authentication and the {params} of the path, read from variables of the same name, are added. Prefer a dedicated connector's card to an api card.
 
 Example:
 with notify: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#ops | data.text== "Order " + orderId + " failed"
-with fetch: http GET https://api.example.com/orders | result=order: response.body`
+with fetch: http GET https://api.example.com/orders | result=order: response.body
+with charge: http POST /v1/customers | api=stripe | body=={email: email} | result=customer: response.body`
 
 /** What {@link resolveConnectorLine} made of a line. */
 export interface ResolvedConnectorLine {
@@ -54,7 +57,22 @@ export interface ResolvedConnectorLine {
 	problems: string[]
 	/** What was changed to make the line usable, e.g. a misspelt alias or a literal credential. */
 	fixes: string[]
+	/** What a person should check or give, with the input that answers it. */
+	questions: { text: string; input: string }[]
 }
+
+/** Options of {@link resolveConnectorLine} and {@link applyConnectorLines}. */
+export interface ConnectorLineOptions {
+	/**
+	 * Services of the API index (`@bpmnkit/connector-gen/api-index`) an `http`
+	 * line may call. A line naming one with `api=<id>`, or calling a URL under
+	 * its base URL, gets the base URL, the authentication and the headers the
+	 * operation needs; a call the index does not know becomes a question.
+	 */
+	apis?: readonly ApiService[]
+}
+
+const HTTP_TEMPLATE = "io.camunda.connectors.HttpJson.v2"
 
 const HTTP_METHODS = new Set(["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"])
 const SECRET = /^\{\{\s*secrets\.[A-Za-z0-9_]+\s*\}\}$/
@@ -145,9 +163,15 @@ function pickCard(
  *   result expression `={name: expr}`.
  * - A credential written as a value is replaced by a `{{secrets.…}}`
  *   placeholder: the diagram never carries one.
+ * - On `http`, `api=<service>` or a URL under a service's base URL completes
+ *   the call from `options.apis`: base URL, path parameters, authentication
+ *   and required headers. A call the index lacks is a question.
  */
-export function resolveConnectorLine(line: ConnectorLine): ResolvedConnectorLine {
-	const out: ResolvedConnectorLine = { values: {}, problems: [], fixes: [] }
+export function resolveConnectorLine(
+	line: ConnectorLine,
+	options: ConnectorLineOptions = {},
+): ResolvedConnectorLine {
+	const out: ResolvedConnectorLine = { values: {}, problems: [], fixes: [], questions: [] }
 	const templateId = templateFor(line.alias, out.fixes)
 	const template = templateId === undefined ? undefined : getTemplate(templateId)
 	if (!templateId || !template) {
@@ -171,7 +195,7 @@ export function resolveConnectorLine(line: ConnectorLine): ResolvedConnectorLine
 	for (const arg of rest) {
 		if (HTTP_METHODS.has(arg.toUpperCase()) && templateKeys.has("method")) {
 			values.method = arg.toUpperCase()
-		} else if (/^(https?:\/\/|=|["'])/.test(arg) && templateKeys.has("url")) {
+		} else if (/^(https?:\/\/|=|["']|\/)/.test(arg) && templateKeys.has("url")) {
 			values.url = arg.replace(/^(["'])(.*)\1$/, "$2")
 		} else {
 			out.problems.push(`"${arg}" is not an input of ${connectorAlias(templateId)}; ignored`)
@@ -179,7 +203,7 @@ export function resolveConnectorLine(line: ConnectorLine): ResolvedConnectorLine
 	}
 
 	// A mode the line sets (authentication.type=bearer) switches on the inputs that come with it
-	const { result: _result, ...written } = line.values
+	const { result: _result, api: _api, ...written } = line.values
 	const props = activeProperties(template, { ...card.values, ...values, ...written })
 	const keys = new Set(props.map(propertyKey))
 	const secrets = new Set(
@@ -189,6 +213,7 @@ export function resolveConnectorLine(line: ConnectorLine): ResolvedConnectorLine
 	)
 
 	for (const [written, value] of Object.entries(line.values)) {
+		if (written === "api") continue
 		if (written === "result") {
 			const colon = value.indexOf(":")
 			const name = (colon < 0 ? value : value.slice(0, colon)).trim()
@@ -224,8 +249,82 @@ export function resolveConnectorLine(line: ConnectorLine): ResolvedConnectorLine
 		out.fixes.push(`"${key}" holds a credential; it is the secret ${name} now, never a value`)
 	}
 
+	if (templateId === HTTP_TEMPLATE) {
+		const service = apiServiceFor(line.values.api, values.url, options.apis ?? [], out)
+		if (service) applyApiService(service, values, line.values, out)
+	} else if (line.values.api !== undefined) {
+		out.problems.push("api= is for the http connector; ignored")
+	}
+
 	out.values = { ...card.values, ...values }
 	return out
+}
+
+/** The service an `http` line calls: the one `api=` names, or the one whose base URL its URL starts with. */
+function apiServiceFor(
+	name: string | undefined,
+	url: string | undefined,
+	apis: readonly ApiService[],
+	out: ResolvedConnectorLine,
+): ApiService | undefined {
+	if (name !== undefined) {
+		const wanted = name.trim().toLowerCase()
+		const named = apis.find((s) => s.id === wanted)
+		if (!named) out.problems.push(`no API "${name}" is in the API index; api= ignored`)
+		return named
+	}
+	if (url === undefined) return undefined
+	return apis.find((s) => s.baseUrl !== undefined && url.startsWith(`${s.baseUrl}/`))
+}
+
+/**
+ * Completes an `http` line from the API index: the base URL before a path, the
+ * path's `{params}` read from variables, the service's authentication unless
+ * the line sets its own, and the headers the operation needs. A call the index
+ * does not have is kept, with a question to check it.
+ */
+function applyApiService(
+	service: ApiService,
+	values: Record<string, string>,
+	written: Record<string, string>,
+	out: ResolvedConnectorLine,
+): void {
+	const url = values.url
+	if (!Object.keys(written).some((k) => k.startsWith("authentication."))) {
+		Object.assign(values, apiAuthValues(service))
+	}
+	// A FEEL URL is the line's own: nothing to look up
+	if (url === undefined || url.startsWith("=")) return
+	const base = service.baseUrl
+	const path = base !== undefined && url.startsWith(base) ? url.slice(base.length) : url
+	if (!path.startsWith("/")) return
+	const method = values.method ?? "GET"
+	const op = findApiOperation(service, method, path)
+	if (base === undefined) {
+		out.questions.push({
+			text: `${service.name} has no fixed address: give the full URL of ${method} ${path} for your account.`,
+			input: "url",
+		})
+	} else {
+		values.url = apiUrl(base, path)
+	}
+	if (!op) {
+		out.questions.push({
+			text: `${method} ${path} is not an operation of ${service.name} in the API index — check the method and the URL.`,
+			input: "url",
+		})
+		return
+	}
+	if (!("headers" in written)) {
+		const { headers, missing } = apiHeaders(op)
+		if (headers !== undefined) values.headers = headers
+		if (missing.length > 0) {
+			out.questions.push({
+				text: `${service.name} needs the header${missing.length > 1 ? "s" : ""} ${missing.join(", ")} for ${method} ${op.path}.`,
+				input: "headers",
+			})
+		}
+	}
 }
 
 /** What {@link applyConnectorLines} did. */
@@ -252,10 +351,11 @@ export interface AppliedConnectorLines {
 export function applyConnectorLines(
 	definitions: BpmnDefinitions,
 	lines: ReadonlyArray<ConnectorLine & { elementId: string }>,
+	options: ConnectorLineOptions = {},
 ): AppliedConnectorLines {
 	const out: AppliedConnectorLines = { definitions, problems: [], fixes: [], questions: [] }
 	for (const line of lines) {
-		const resolved = resolveConnectorLine(line)
+		const resolved = resolveConnectorLine(line, options)
 		for (const message of resolved.problems) out.problems.push({ line: line.line, message })
 		out.fixes.push(...resolved.fixes.map((fix) => `${line.id}: ${fix}`))
 		const template = resolved.templateId ? getTemplate(resolved.templateId) : undefined
@@ -275,6 +375,14 @@ export function applyConnectorLines(
 		const card = resolved.card
 		const head = `with ${line.id}: ${card.alias}${card.operation ? ` ${card.operation}` : ""}`
 		const element = elementOf(out.definitions, line.elementId)
+		for (const question of resolved.questions) {
+			out.questions.push({
+				elementId: line.elementId,
+				text: `"${element?.name ?? line.id}": ${question.text}`,
+				options: [],
+				draft: `${head} | ${question.input}=`,
+			})
+		}
 		for (const problem of applied.problems) {
 			if (problem.kind === "missing-required" && problem.key !== undefined) {
 				const input = [...card.required, ...card.optional].find((i) => i.key === problem.key)

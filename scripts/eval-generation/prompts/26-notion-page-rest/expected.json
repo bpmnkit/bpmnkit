@@ -1,0 +1,10 @@
+{
+	"id": "notion-page-rest",
+	"category": "connector",
+	"description": "Notion has no dedicated connector: a REST call to the endpoint the API index gives, with its version header.",
+	"assertions": {
+		"minElements": 3,
+		"mustContainTaskTypes": ["io.camunda:http-json:1"],
+		"mustCallUrls": ["https://api.notion.com/v1/pages"]
+	}
+}

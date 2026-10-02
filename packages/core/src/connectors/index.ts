@@ -41,7 +41,31 @@ export {
 	connectorLineFor,
 	resolveConnectorLine,
 } from "./lines.js"
-export type { AppliedConnectorLines, ResolvedConnectorLine } from "./lines.js"
+export type {
+	AppliedConnectorLines,
+	ConnectorLineOptions,
+	ResolvedConnectorLine,
+} from "./lines.js"
+export {
+	apiAuthValues,
+	apiBrand,
+	apiSecretNames,
+	apiServicesIn,
+	apiUrl,
+	findApiOperation,
+	findApiOperations,
+	formatApiCard,
+	formatApiOperation,
+	rankApiOperations,
+} from "./api.js"
+export type {
+	ApiAuth,
+	ApiCard,
+	ApiOperation,
+	ApiService,
+	ApiServiceSummary,
+	RankedApiOperation,
+} from "./api.js"
 export { formatConnectorSelection, selectConnectors } from "./select.js"
 export type { ConnectorTask, TaskCards } from "./select.js"
 export type {

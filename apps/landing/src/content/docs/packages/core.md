@@ -518,6 +518,9 @@ every structural rule.
   core's main entry, so the catalog is only bundled where it is used.
 - **Writing.** `writeProcessText(defs, { connectorLine: connectorLineFor })` writes an
   element's connector back as a `with` line, so a model that changes the diagram keeps it.
+- **API index calls.** `with charge: http POST /v1/customers | api=stripe` calls an endpoint of
+  the [API index](/docs/packages/connector-gen#api-index). Its base URL, authentication and
+  headers come from the index when the lines are applied with `{ apis }`.
 
 ### `retypeElement(element, type)`
 
@@ -782,6 +785,12 @@ const { serviceTask, problems } = applyConnectorTemplate("io.camunda.connectors.
 with only the inputs it uses and the values that select it, as `formatConnectorCard` writes it
 for a prompt. See [`@bpmnkit/connectors`](/docs/packages/connectors#connector-cards) for the
 details.
+
+**API cards** do the same for the REST connector and systems without a dedicated connector:
+the real base URL, authentication and endpoints of an HTTP API. Core has their shape
+(`ApiService`) and the functions that pick, format and apply them. The data is the
+[API index](/docs/packages/connector-gen#api-index) of `@bpmnkit/connector-gen`, which is
+too large for core. See [`@bpmnkit/connectors`](/docs/packages/connectors#api-cards).
 
 The bundled templates leave out icons, groups, tooltips and placeholders, which only a
 property panel draws, so an applied element carries no `zeebe:modelerTemplateIcon`.
