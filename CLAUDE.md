@@ -16,6 +16,8 @@ npx bpmnkit-docs ask "how do I deploy a process to Camunda 8"
 - **A returned chunk beats recalled knowledge.** It describes the version in this
   workspace; your memory describes some earlier release. If the two disagree, the chunk
   is right. Do not blend them into one answer.
+- The next five matches follow an answer by id only. If one of them is what you wanted,
+  `bpmnkit-docs ask <chunk-id>` returns that chunk alone.
 - `bpmnkit-docs search "<query>"` ranks matches without printing them;
   `bpmnkit-docs list` shows which packs are indexed.
 - Every command reads the filesystem only — no network call, no server, nothing resident.

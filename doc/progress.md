@@ -1,5 +1,25 @@
 # Progress
 
+## 2026-10-02 — Docspack: retrieval fixes from a comparison with Camunda's docs MCP
+
+A side-by-side run of 8 questions against `@bpmnkit/camunda-docspack` and Camunda's docs MCP
+found three ranking defects in `@bpmnkit/docspack`. All three are fixed:
+
+- **Template lines no longer count towards a match.** A line found in at least 5% of a
+  pack's chunks (and at least 10 of them) is left out of the index. The answer still shows
+  it. All 227 API digests say `Consistency: eventual.` or `strong.`, so "consistency" had
+  become a near stop word, and "search endpoint consistency" ranked the page that explains
+  consistency 13th, behind tenant-search digests. It now ranks 1st.
+- **Merged sections keep their headings as tags.** A section that is too short is merged
+  into its neighbour, which keeps only the first heading in its title. The other headings
+  were weighted as prose. Camunda's "Data consistency" was one of them. 175 of the 1,054
+  Camunda chunks were affected. Chunk ids and titles are unchanged.
+- **`ask` lists the next five matches by id**, and `ask <chunk-id>` returns that chunk
+  alone. Several misses were at rank 4.
+- An eval set of 31 queries went from 25 to 27 right answers in the top three, and from 29
+  to 30 in the top eight. The pack was rebuilt from the same camunda-docs commit
+  (`acbf680`), so only the manifest tags changed.
+
 ## 2026-10-01 — Drop: AI proposals shared as suggested changes
 
 - The proposal dialog has **Share as suggestion**. The proposal is stored on its threads

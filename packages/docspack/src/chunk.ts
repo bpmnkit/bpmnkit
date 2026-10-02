@@ -75,6 +75,7 @@ export function chunkDocument(doc: SourceDoc, options: ChunkOptions = {}): Built
 					...directives.tags,
 					...doc.slug.split("/"),
 					...headingTags(part.heading),
+					...mergedHeadings(part.lines).flatMap(headingTags),
 				]).slice(0, 12),
 				entities: dedupe([...directives.entities, ...extractEntities(text)]).slice(0, 12),
 				body: bodyText,
@@ -246,6 +247,19 @@ function joinHeadings(...parts: string[]): string {
 /** Heading words carry the topic; function words carry nothing worth weighting 3x. */
 function headingTags(heading: string): string[] {
 	return tokenize(heading).filter((word) => word.length > 2 && !STOP_WORDS.has(word))
+}
+
+/**
+ * The `##` headings `mergeSmall` folded into this chunk's body.
+ *
+ * A merged section keeps only the first section's heading in its title, so without this the
+ * topic of every section after it is weighted as prose. Camunda's "Data consistency" sat
+ * inside a chunk titled "Supported operations" and lost to twenty tenant-search digests.
+ */
+function mergedHeadings(lines: string[]): string[] {
+	return splitByHeading(lines.join("\n"), 2)
+		.map((section) => section.heading)
+		.filter((heading) => heading !== "")
 }
 
 /**

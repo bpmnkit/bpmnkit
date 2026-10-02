@@ -112,7 +112,9 @@
 				"apis-tools",
 				"orchestration-cluster-api-rest",
 				"intermediate-tutorial",
-				"troubleshooting"
+				"troubleshooting",
+				"next",
+				"steps"
 			],
 			"entities": [
 				"camunda-process-instances.js"
@@ -125,7 +127,10 @@
 			"tags": [
 				"apis-tools",
 				"orchestration-cluster-api-rest",
-				"orchestration-cluster-api-rest-authentication"
+				"orchestration-cluster-api-rest-authentication",
+				"authentication",
+				"support",
+				"matrix"
 			],
 			"entities": []
 		},
@@ -166,7 +171,9 @@
 			"tags": [
 				"apis-tools",
 				"orchestration-cluster-api-rest",
-				"orchestration-cluster-api-rest-data-fetching"
+				"orchestration-cluster-api-rest-data-fetching",
+				"searchable",
+				"resources"
 			],
 			"entities": []
 		},
@@ -179,7 +186,9 @@
 				"orchestration-cluster-api-rest",
 				"orchestration-cluster-api-rest-data-fetching",
 				"supported",
-				"operations"
+				"operations",
+				"data",
+				"consistency"
 			],
 			"entities": []
 		},
@@ -193,7 +202,9 @@
 				"orchestration-cluster-api-rest-data-fetching",
 				"user",
 				"task",
-				"support"
+				"support",
+				"search",
+				"requests"
 			],
 			"entities": []
 		},
@@ -534,7 +545,10 @@
 				"orchestration-cluster-api-rest",
 				"orchestration-cluster-api-rest-secrets",
 				"list",
-				"secrets"
+				"secrets",
+				"grant",
+				"required",
+				"permissions"
 			],
 			"entities": []
 		},
@@ -557,7 +571,9 @@
 				"apis-tools",
 				"orchestration-cluster-api-rest",
 				"orchestration-cluster-api-rest-swagger",
-				"prerequisites"
+				"prerequisites",
+				"accessing",
+				"swagger"
 			],
 			"entities": []
 		},
@@ -5722,7 +5738,8 @@
 			"tags": [
 				"apis-tools",
 				"orchestration-cluster-api-rest",
-				"tutorial"
+				"tutorial",
+				"prerequisites"
 			],
 			"entities": []
 		},
@@ -5735,7 +5752,9 @@
 				"orchestration-cluster-api-rest",
 				"tutorial",
 				"getting",
-				"started"
+				"started",
+				"set",
+				"authentication"
 			],
 			"entities": [
 				"auth.js",
@@ -5815,7 +5834,9 @@
 				"orchestration-cluster-api-rest",
 				"tutorial",
 				"get",
-				"stuck"
+				"stuck",
+				"next",
+				"steps"
 			],
 			"entities": [
 				"camunda-8.js"
@@ -5914,7 +5935,10 @@
 				"components",
 				"best-practices",
 				"architecture",
-				"deciding-about-your-stack"
+				"deciding-about-your-stack",
+				"java",
+				"greenfield",
+				"stack"
 			],
 			"entities": [
 				"pom.xml"
@@ -5942,7 +5966,10 @@
 				"components",
 				"best-practices",
 				"architecture",
-				"sizing-benchmarks"
+				"sizing-benchmarks",
+				"reference",
+				"benchmark",
+				"scenario"
 			],
 			"entities": []
 		},
@@ -5995,7 +6022,10 @@
 				"components",
 				"best-practices",
 				"architecture",
-				"sizing-saas"
+				"sizing-saas",
+				"determine",
+				"cluster",
+				"size"
 			],
 			"entities": []
 		},
@@ -6049,7 +6079,11 @@
 				"components",
 				"best-practices",
 				"architecture",
-				"sizing-self-managed"
+				"sizing-self-managed",
+				"camunda",
+				"8.8",
+				"resource",
+				"consumption"
 			],
 			"entities": []
 		},
@@ -6536,7 +6570,10 @@
 				"components",
 				"best-practices",
 				"architecture",
-				"understanding-human-tasks-management"
+				"understanding-human-tasks-management",
+				"task",
+				"assignment",
+				"features"
 			],
 			"entities": []
 		},
@@ -6636,7 +6673,12 @@
 				"best-practices",
 				"best-practices-overview",
 				"project",
-				"management"
+				"management",
+				"architecture",
+				"development",
+				"modeling",
+				"operations",
+				"guidelines"
 			],
 			"entities": []
 		},
@@ -6862,7 +6904,9 @@
 				"components",
 				"best-practices",
 				"development",
-				"dealing-with-problems-and-exceptions"
+				"dealing-with-problems-and-exceptions",
+				"understanding",
+				"workers"
 			],
 			"entities": [
 				"CompleteJob",
@@ -7201,7 +7245,8 @@
 				"components",
 				"best-practices",
 				"development",
-				"local-development-with-element-templates"
+				"local-development-with-element-templates",
+				"prerequisites"
 			],
 			"entities": []
 		},
@@ -7269,7 +7314,10 @@
 				"element",
 				"templates",
 				"desktop",
-				"modeler"
+				"modeler",
+				"additional",
+				"resources",
+				"next"
 			],
 			"entities": []
 		},
@@ -7430,7 +7478,10 @@
 				"components",
 				"best-practices",
 				"development",
-				"service-integration-patterns"
+				"service-integration-patterns",
+				"understanding",
+				"communication",
+				"patterns"
 			],
 			"entities": []
 		},
@@ -7788,7 +7839,8 @@
 				"writing",
 				"polyglot",
 				"process",
-				"tests"
+				"tests",
+				"integration"
 			],
 			"entities": []
 		},
@@ -7857,7 +7909,9 @@
 				"transactions",
 				"exceptions",
 				"idempotency",
-				"workers"
+				"workers",
+				"data",
+				"minimization"
 			],
 			"entities": [
 				"FetchVariables"
@@ -8067,7 +8121,9 @@
 				"components",
 				"best-practices",
 				"management",
-				"doing-a-proper-poc"
+				"doing-a-proper-poc",
+				"understanding",
+				"poc"
 			],
 			"entities": []
 		},
@@ -8099,7 +8155,9 @@
 				"defining",
 				"scope",
 				"relevant",
-				"business"
+				"business",
+				"planning",
+				"poc"
 			],
 			"entities": []
 		},
@@ -8170,7 +8228,8 @@
 				"management",
 				"doing-a-proper-poc",
 				"presenting",
-				"results"
+				"results",
+				"checklists"
 			],
 			"entities": []
 		},
@@ -8182,7 +8241,11 @@
 				"components",
 				"best-practices",
 				"management",
-				"following-the-customer-success-path"
+				"following-the-customer-success-path",
+				"understanding",
+				"customer",
+				"success",
+				"path"
 			],
 			"entities": []
 		},
@@ -8220,7 +8283,10 @@
 				"components",
 				"best-practices",
 				"modeling",
-				"building-flexibility-into-bpmn-models"
+				"building-flexibility-into-bpmn-models",
+				"understanding",
+				"required",
+				"symbols"
 			],
 			"entities": []
 		},
@@ -8541,7 +8607,9 @@
 				"components",
 				"best-practices",
 				"modeling",
-				"creating-readable-process-models"
+				"creating-readable-process-models",
+				"essential",
+				"practices"
 			],
 			"entities": []
 		},
@@ -8768,7 +8836,10 @@
 				"components",
 				"best-practices",
 				"modeling",
-				"modeling-beyond-the-happy-path"
+				"modeling-beyond-the-happy-path",
+				"happy",
+				"path",
+				"beyond"
 			],
 			"entities": []
 		},
@@ -9277,7 +9348,9 @@
 				"components",
 				"best-practices",
 				"modeling",
-				"naming-bpmn-elements"
+				"naming-bpmn-elements",
+				"essential",
+				"practices"
 			],
 			"entities": []
 		},
@@ -9443,7 +9516,12 @@
 				"naming-technically-relevant-ids",
 				"generating",
 				"constants",
-				"classes"
+				"classes",
+				"camunda",
+				"modeler",
+				"plugin",
+				"generate",
+				"meaningful"
 			],
 			"entities": []
 		},
@@ -9455,7 +9533,12 @@
 				"components",
 				"best-practices",
 				"operations",
-				"reporting-about-processes"
+				"reporting-about-processes",
+				"modeling",
+				"key",
+				"performance",
+				"indicators",
+				"kpis"
 			],
 			"entities": []
 		},
@@ -9663,7 +9746,10 @@
 				"components",
 				"concepts",
 				"access-control",
-				"access-control-overview"
+				"access-control-overview",
+				"identity",
+				"types",
+				"camunda"
 			],
 			"entities": []
 		},
@@ -9722,7 +9808,9 @@
 				"access-control",
 				"access-control-overview",
 				"obtain",
-				"tokens"
+				"tokens",
+				"learn",
+				"more"
 			],
 			"entities": []
 		},
@@ -9734,7 +9822,11 @@
 				"components",
 				"concepts",
 				"access-control",
-				"authorizations"
+				"authorizations",
+				"orchestration",
+				"cluster",
+				"authorization",
+				"overview"
 			],
 			"entities": []
 		},
@@ -10005,7 +10097,10 @@
 				"components",
 				"concepts",
 				"access-control",
-				"connect-to-identity-provider"
+				"connect-to-identity-provider",
+				"idp",
+				"integration",
+				"self-managed"
 			],
 			"entities": []
 		},
@@ -10030,7 +10125,11 @@
 				"components",
 				"concepts",
 				"access-control",
-				"mapping-rules"
+				"mapping-rules",
+				"mapping",
+				"rules",
+				"saas",
+				"self-managed"
 			],
 			"entities": []
 		},
@@ -10070,7 +10169,9 @@
 			"tags": [
 				"components",
 				"concepts",
-				"batch-operations"
+				"batch-operations",
+				"batch",
+				"operations"
 			],
 			"entities": []
 		},
@@ -10130,7 +10231,9 @@
 			"tags": [
 				"components",
 				"concepts",
-				"bpmn-dmn-feel"
+				"bpmn-dmn-feel",
+				"bpmn",
+				"dmn"
 			],
 			"entities": []
 		},
@@ -10154,7 +10257,9 @@
 			"tags": [
 				"components",
 				"concepts",
-				"clusters"
+				"clusters",
+				"cluster",
+				"type"
 			],
 			"entities": []
 		},
@@ -10191,7 +10296,8 @@
 			"tags": [
 				"components",
 				"concepts",
-				"concepts-overview"
+				"concepts-overview",
+				"camunda"
 			],
 			"entities": []
 		},
@@ -10366,7 +10472,9 @@
 			"tags": [
 				"components",
 				"concepts",
-				"decision-instance-deletion"
+				"decision-instance-deletion",
+				"eventual",
+				"consistency"
 			],
 			"entities": []
 		},
@@ -10414,7 +10522,9 @@
 			"tags": [
 				"components",
 				"concepts",
-				"execution-listeners"
+				"execution-listeners",
+				"execution",
+				"listeners"
 			],
 			"entities": []
 		},
@@ -10445,7 +10555,10 @@
 				"concepts",
 				"execution-listeners",
 				"task",
-				"headers"
+				"headers",
+				"implement",
+				"execution",
+				"listener"
 			],
 			"entities": [
 				"taskHeaders"
@@ -10608,7 +10721,9 @@
 				"concepts",
 				"expressions",
 				"expression",
-				"language"
+				"language",
+				"evaluation",
+				"timeout"
 			],
 			"entities": []
 		},
@@ -10633,7 +10748,10 @@
 				"components",
 				"concepts",
 				"global-user-task-listeners",
-				"access-control"
+				"access-control",
+				"need",
+				"configure",
+				"permissions"
 			],
 			"entities": []
 		},
@@ -10708,7 +10826,9 @@
 				"configuration",
 				"configure",
 				"via",
-				"admin"
+				"admin",
+				"see",
+				"also"
 			],
 			"entities": []
 		},
@@ -10719,7 +10839,11 @@
 			"tags": [
 				"components",
 				"concepts",
-				"global-user-task-listeners"
+				"global-user-task-listeners",
+				"global",
+				"user",
+				"task",
+				"listeners"
 			],
 			"entities": []
 		},
@@ -10749,7 +10873,9 @@
 				"concepts",
 				"global-user-task-listeners",
 				"execution",
-				"order"
+				"order",
+				"supported",
+				"features"
 			],
 			"entities": []
 		},
@@ -11065,7 +11191,9 @@
 			"tags": [
 				"components",
 				"concepts",
-				"message-aggregation"
+				"message-aggregation",
+				"message",
+				"aggregation"
 			],
 			"entities": []
 		},
@@ -11102,7 +11230,9 @@
 				"components",
 				"concepts",
 				"message-aggregation",
-				"behavior"
+				"behavior",
+				"publishing",
+				"messages"
 			],
 			"entities": []
 		},
@@ -11129,7 +11259,9 @@
 				"concepts",
 				"message-aggregation",
 				"best",
-				"practices"
+				"practices",
+				"related",
+				"resources"
 			],
 			"entities": [
 				"correlationKey"
@@ -11142,7 +11274,9 @@
 			"tags": [
 				"components",
 				"concepts",
-				"messages"
+				"messages",
+				"message",
+				"subscriptions"
 			],
 			"entities": []
 		},
@@ -11301,7 +11435,8 @@
 				"concepts",
 				"multi-tenancy",
 				"manage",
-				"tenants"
+				"tenants",
+				"optimize"
 			],
 			"entities": []
 		},
@@ -11324,7 +11459,8 @@
 				"components",
 				"concepts",
 				"outbound-connectors-job-workers",
-				"delivery"
+				"delivery",
+				"reusability"
 			],
 			"entities": [
 				"OutboundConnectorFunction"
@@ -11416,7 +11552,8 @@
 			"tags": [
 				"components",
 				"concepts",
-				"process-instance-creation"
+				"process-instance-creation",
+				"commands"
 			],
 			"entities": [
 				"CreateProcessInstance"
@@ -11488,7 +11625,8 @@
 				"process-instance-creation",
 				"feel",
 				"context",
-				"variables"
+				"variables",
+				"business"
 			],
 			"entities": [
 				"camunda.processInstance",
@@ -11677,7 +11815,9 @@
 				"concepts",
 				"process-instance-deletion",
 				"eventual",
-				"consistency"
+				"consistency",
+				"technical",
+				"details"
 			],
 			"entities": []
 		},
@@ -11701,7 +11841,13 @@
 				"concepts",
 				"process-instance-migration",
 				"migrating",
-				"camunda"
+				"camunda",
+				"change",
+				"process",
+				"instance",
+				"flow",
+				"inactive",
+				"parts"
 			],
 			"entities": []
 		},
@@ -11885,7 +12031,11 @@
 				"process-instance-migration",
 				"process",
 				"definitions",
-				"versions"
+				"versions",
+				"jobs",
+				"expressions",
+				"input",
+				"mappings"
 			],
 			"entities": []
 		},
@@ -12079,7 +12229,9 @@
 				"components",
 				"concepts",
 				"process-instance-modification",
-				"limitations"
+				"limitations",
+				"own",
+				"risk"
 			],
 			"entities": []
 		},
@@ -12102,7 +12254,8 @@
 				"components",
 				"concepts",
 				"processes",
-				"bpmn"
+				"bpmn",
+				"modeling"
 			],
 			"entities": []
 		},
@@ -12335,7 +12488,8 @@
 				"resolution",
 				"across",
 				"physical",
-				"tenants"
+				"tenants",
+				"monitor"
 			],
 			"entities": []
 		},
@@ -12583,7 +12737,10 @@
 				"concepts",
 				"secret-resolution",
 				"cache",
-				"behavior"
+				"behavior",
+				"not",
+				"currently",
+				"supported"
 			],
 			"entities": []
 		},
@@ -12607,7 +12764,8 @@
 			"tags": [
 				"components",
 				"concepts",
-				"signals"
+				"signals",
+				"broadcasting"
 			],
 			"entities": [
 				"BroadcastSignal"
@@ -12622,7 +12780,8 @@
 				"concepts",
 				"signals",
 				"signal",
-				"subscriptions"
+				"subscriptions",
+				"cardinality"
 			],
 			"entities": []
 		},
@@ -12645,7 +12804,11 @@
 				"components",
 				"concepts",
 				"user-task-listeners-guide",
-				"prerequisites"
+				"prerequisites",
+				"sign",
+				"log",
+				"camunda",
+				"account"
 			],
 			"entities": [
 				"camunda-8-tutorials/quick-start/task-listeners/worker-java"
@@ -12664,7 +12827,10 @@
 				"process",
 				"user",
 				"task",
-				"hub"
+				"hub",
+				"select",
+				"define",
+				"listener"
 			],
 			"entities": []
 		},
@@ -12693,7 +12859,11 @@
 				"step",
 				"deploy",
 				"run",
-				"process"
+				"process",
+				"understand",
+				"happens",
+				"user",
+				"task"
 			],
 			"entities": []
 		},
@@ -12727,7 +12897,10 @@
 				"verify",
 				"result",
 				"operate",
-				"tasklist"
+				"tasklist",
+				"suggestions",
+				"further",
+				"exploration"
 			],
 			"entities": []
 		},
@@ -12753,7 +12926,10 @@
 			"tags": [
 				"components",
 				"concepts",
-				"user-task-listeners"
+				"user-task-listeners",
+				"user",
+				"task",
+				"listeners"
 			],
 			"entities": []
 		},
@@ -13229,7 +13405,9 @@
 			"tags": [
 				"components",
 				"concepts",
-				"workflow-patterns"
+				"workflow-patterns",
+				"power",
+				"bpmn"
 			],
 			"entities": []
 		},
@@ -13613,7 +13791,9 @@
 				"modeler",
 				"bpmn",
 				"automating-a-process-using-bpmn",
-				"set"
+				"set",
+				"getting",
+				"started"
 			],
 			"entities": []
 		},
@@ -13660,7 +13840,15 @@
 				"components",
 				"modeler",
 				"bpmn",
-				"bpmn-coverage"
+				"bpmn-coverage",
+				"participants",
+				"subprocesses",
+				"tasks",
+				"gateways",
+				"markers",
+				"data",
+				"artifacts",
+				"events"
 			],
 			"entities": [
 				"DataObject",
@@ -13689,7 +13877,8 @@
 				"bpmn",
 				"bpmn-primer",
 				"modeling",
-				"diagrams"
+				"diagrams",
+				"elements"
 			],
 			"entities": []
 		},
@@ -13814,7 +14003,9 @@
 				"modeler",
 				"bpmn",
 				"start",
-				"modeling"
+				"modeling",
+				"creating",
+				"elements"
 			],
 			"entities": []
 		},
@@ -13959,7 +14150,9 @@
 				"bpmn",
 				"call-activities",
 				"boundary",
-				"events"
+				"events",
+				"variable",
+				"mappings"
 			],
 			"entities": [
 				"propagateAllChildVariables",
@@ -14085,7 +14278,9 @@
 				"triggering",
 				"compensation",
 				"event",
-				"subprocess"
+				"subprocess",
+				"additional",
+				"resources"
 			],
 			"entities": []
 		},
@@ -14113,7 +14308,9 @@
 				"embedded",
 				"subprocess",
 				"compensation",
-				"handler"
+				"handler",
+				"call",
+				"activity"
 			],
 			"entities": []
 		},
@@ -14129,7 +14326,9 @@
 				"multi-instance",
 				"activity",
 				"compensation",
-				"handler"
+				"handler",
+				"interrupting",
+				"handlers"
 			],
 			"entities": []
 		},
@@ -14143,7 +14342,9 @@
 				"bpmn",
 				"compensation-handler",
 				"variable",
-				"mappings"
+				"mappings",
+				"additional",
+				"resources"
 			],
 			"entities": []
 		},
@@ -14203,7 +14404,8 @@
 				"intermediate",
 				"conditional",
 				"catch",
-				"events"
+				"events",
+				"boundary"
 			],
 			"entities": []
 		},
@@ -14276,7 +14478,9 @@
 				"components",
 				"modeler",
 				"bpmn",
-				"data-flow"
+				"data-flow",
+				"job",
+				"workers"
 			],
 			"entities": []
 		},
@@ -14477,7 +14681,9 @@
 				"bpmn",
 				"error-events",
 				"variable",
-				"mappings"
+				"mappings",
+				"additional",
+				"resources"
 			],
 			"entities": []
 		},
@@ -14519,7 +14725,8 @@
 				"bpmn",
 				"escalation-events",
 				"throwing",
-				"escalation"
+				"escalation",
+				"catching"
 			],
 			"entities": [
 				"escalationCode"
@@ -14638,7 +14845,8 @@
 				"modeler",
 				"bpmn",
 				"events",
-				"intermediate"
+				"intermediate",
+				"boundary"
 			],
 			"entities": []
 		},
@@ -14665,7 +14873,9 @@
 				"modeler",
 				"bpmn",
 				"exclusive-gateways",
-				"conditions"
+				"conditions",
+				"additional",
+				"resources"
 			],
 			"entities": [
 				"conditionExpression"
@@ -14877,7 +15087,9 @@
 				"bpmn",
 				"message-events",
 				"variable",
-				"mappings"
+				"mappings",
+				"additional",
+				"resources"
 			],
 			"entities": []
 		},
@@ -14961,7 +15173,9 @@
 				"bpmn",
 				"multi-instance",
 				"boundary",
-				"events"
+				"events",
+				"special",
+				"variables"
 			],
 			"entities": [
 				"outputCollection",
@@ -14980,7 +15194,9 @@
 				"multi-instance",
 				"execution",
 				"listeners",
-				"bodies"
+				"bodies",
+				"variable",
+				"mappings"
 			],
 			"entities": [
 				"beforeAll",
@@ -15032,7 +15248,11 @@
 				"components",
 				"modeler",
 				"bpmn",
-				"none-events"
+				"none-events",
+				"none",
+				"start",
+				"events",
+				"end"
 			],
 			"entities": []
 		},
@@ -15048,7 +15268,11 @@
 				"intermediate",
 				"none",
 				"events",
-				"throwing"
+				"throwing",
+				"variable",
+				"mappings",
+				"additional",
+				"resources"
 			],
 			"entities": []
 		},
@@ -15116,7 +15340,9 @@
 				"bpmn",
 				"receive-tasks",
 				"variable",
-				"mappings"
+				"mappings",
+				"additional",
+				"resources"
 			],
 			"entities": []
 		},
@@ -15175,7 +15401,9 @@
 				"bpmn",
 				"script-tasks",
 				"job",
-				"priority"
+				"priority",
+				"additional",
+				"resources"
 			],
 			"entities": []
 		},
@@ -15215,7 +15443,9 @@
 				"bpmn",
 				"send-tasks",
 				"job",
-				"priority"
+				"priority",
+				"additional",
+				"resources"
 			],
 			"entities": []
 		},
@@ -15258,7 +15488,9 @@
 				"bpmn",
 				"service-tasks",
 				"task",
-				"headers"
+				"headers",
+				"variable",
+				"mappings"
 			],
 			"entities": [
 				"taskHeaders"
@@ -15274,7 +15506,11 @@
 				"bpmn",
 				"service-tasks",
 				"job",
-				"priority"
+				"priority",
+				"additional",
+				"resources",
+				"next",
+				"steps"
 			],
 			"entities": []
 		},
@@ -15317,7 +15553,8 @@
 				"signal",
 				"intermediate",
 				"catch",
-				"events"
+				"events",
+				"boundary"
 			],
 			"entities": []
 		},
@@ -15332,7 +15569,8 @@
 				"signal-events",
 				"signal",
 				"throw",
-				"events"
+				"events",
+				"signals"
 			],
 			"entities": []
 		},
@@ -15346,7 +15584,9 @@
 				"bpmn",
 				"signal-events",
 				"variable",
-				"mappings"
+				"mappings",
+				"additional",
+				"resources"
 			],
 			"entities": []
 		},
@@ -15396,7 +15636,9 @@
 				"bpmn",
 				"terminate-events",
 				"process",
-				"scope"
+				"scope",
+				"inside",
+				"subprocess"
 			],
 			"entities": []
 		},
@@ -15422,7 +15664,10 @@
 				"components",
 				"modeler",
 				"bpmn",
-				"timer-events"
+				"timer-events",
+				"timer",
+				"start",
+				"events"
 			],
 			"entities": []
 		},
@@ -15438,7 +15683,8 @@
 				"intermediate",
 				"timer",
 				"catch",
-				"events"
+				"events",
+				"boundary"
 			],
 			"entities": []
 		},
@@ -15567,7 +15813,9 @@
 				"user",
 				"task",
 				"implementation",
-				"types"
+				"types",
+				"camunda",
+				"tasks"
 			],
 			"entities": []
 		},
@@ -15751,7 +15999,9 @@
 				"modeler",
 				"feel",
 				"builtin-functions",
-				"feel-built-in-functions-ai-agent"
+				"feel-built-in-functions-ai-agent",
+				"fromai",
+				"value"
 			],
 			"entities": [
 				"toolCall.userId"
@@ -15844,7 +16094,11 @@
 				"modeler",
 				"feel",
 				"builtin-functions",
-				"feel-built-in-functions-boolean"
+				"feel-built-in-functions-boolean",
+				"not",
+				"negand",
+				"defined",
+				"value"
 			],
 			"entities": []
 		},
@@ -15861,7 +16115,9 @@
 				"get",
 				"else",
 				"value",
-				"default"
+				"default",
+				"assert",
+				"condition"
 			],
 			"entities": []
 		},
@@ -15891,7 +16147,12 @@
 				"modeler",
 				"feel",
 				"builtin-functions",
-				"feel-built-in-functions-context"
+				"feel-built-in-functions-context",
+				"get",
+				"value",
+				"context",
+				"key",
+				"keys"
 			],
 			"entities": [
 				"k1.k2"
@@ -15909,7 +16170,10 @@
 				"feel-built-in-functions-context",
 				"get",
 				"entries",
-				"context"
+				"context",
+				"put",
+				"key",
+				"value"
 			],
 			"entities": [
 				"put()"
@@ -15957,7 +16221,9 @@
 				"modeler",
 				"feel",
 				"builtin-functions",
-				"feel-built-in-functions-conversion"
+				"feel-built-in-functions-conversion",
+				"string",
+				"number"
 			],
 			"entities": []
 		},
@@ -15973,7 +16239,8 @@
 				"feel-built-in-functions-conversion",
 				"number",
 				"grouping",
-				"separator"
+				"separator",
+				"decimal"
 			],
 			"entities": []
 		},
@@ -16002,7 +16269,10 @@
 				"feel",
 				"builtin-functions",
 				"feel-built-in-functions-conversion",
-				"date"
+				"date",
+				"year",
+				"month",
+				"day"
 			],
 			"entities": []
 		},
@@ -16016,7 +16286,10 @@
 				"feel",
 				"builtin-functions",
 				"feel-built-in-functions-conversion",
-				"time"
+				"time",
+				"hour",
+				"minute",
+				"second"
 			],
 			"entities": []
 		},
@@ -16034,7 +16307,8 @@
 				"hour",
 				"minute",
 				"second",
-				"offset"
+				"offset",
+				"date"
 			],
 			"entities": []
 		},
@@ -16065,7 +16339,8 @@
 				"feel-built-in-functions-conversion",
 				"date",
 				"time",
-				"timezone"
+				"timezone",
+				"duration"
 			],
 			"entities": []
 		},
@@ -16081,7 +16356,9 @@
 				"feel-built-in-functions-conversion",
 				"years",
 				"months",
-				"duration"
+				"duration",
+				"json",
+				"value"
 			],
 			"entities": []
 		},
@@ -16122,7 +16399,12 @@
 				"modeler",
 				"feel",
 				"builtin-functions",
-				"feel-built-in-functions-list"
+				"feel-built-in-functions-list",
+				"list",
+				"contains",
+				"element",
+				"count",
+				"min"
 			],
 			"entities": []
 		},
@@ -16137,7 +16419,8 @@
 				"builtin-functions",
 				"feel-built-in-functions-list",
 				"max",
-				"list"
+				"list",
+				"sum"
 			],
 			"entities": []
 		},
@@ -16152,7 +16435,8 @@
 				"builtin-functions",
 				"feel-built-in-functions-list",
 				"product",
-				"list"
+				"list",
+				"mean"
 			],
 			"entities": []
 		},
@@ -16167,7 +16451,8 @@
 				"builtin-functions",
 				"feel-built-in-functions-list",
 				"median",
-				"list"
+				"list",
+				"stddev"
 			],
 			"entities": []
 		},
@@ -16182,7 +16467,8 @@
 				"builtin-functions",
 				"feel-built-in-functions-list",
 				"mode",
-				"list"
+				"list",
+				"all"
 			],
 			"entities": [
 				"all()",
@@ -16200,7 +16486,10 @@
 				"builtin-functions",
 				"feel-built-in-functions-list",
 				"any",
-				"list"
+				"list",
+				"sublist",
+				"start",
+				"position"
 			],
 			"entities": [
 				"any()",
@@ -16221,7 +16510,9 @@
 				"list",
 				"start",
 				"position",
-				"length"
+				"length",
+				"append",
+				"items"
 			],
 			"entities": []
 		},
@@ -16236,7 +16527,12 @@
 				"builtin-functions",
 				"feel-built-in-functions-list",
 				"concatenate",
-				"lists"
+				"lists",
+				"insert",
+				"before",
+				"list",
+				"position",
+				"newitem"
 			],
 			"entities": [
 				"newItem"
@@ -16254,7 +16550,10 @@
 				"feel-built-in-functions-list",
 				"remove",
 				"list",
-				"position"
+				"position",
+				"reverse",
+				"index",
+				"match"
 			],
 			"entities": []
 		},
@@ -16269,7 +16568,10 @@
 				"builtin-functions",
 				"feel-built-in-functions-list",
 				"union",
-				"list"
+				"list",
+				"distinct",
+				"values",
+				"duplicate"
 			],
 			"entities": []
 		},
@@ -16284,7 +16586,11 @@
 				"builtin-functions",
 				"feel-built-in-functions-list",
 				"flatten",
-				"list"
+				"list",
+				"sort",
+				"precedes",
+				"string",
+				"join"
 			],
 			"entities": []
 		},
@@ -16335,7 +16641,9 @@
 				"builtin-functions",
 				"feel-built-in-functions-list",
 				"empty",
-				"list"
+				"list",
+				"partition",
+				"size"
 			],
 			"entities": []
 		},
@@ -16348,7 +16656,10 @@
 				"modeler",
 				"feel",
 				"builtin-functions",
-				"feel-built-in-functions-numeric"
+				"feel-built-in-functions-numeric",
+				"decimal",
+				"scale",
+				"floor"
 			],
 			"entities": []
 		},
@@ -16362,7 +16673,9 @@
 				"feel",
 				"builtin-functions",
 				"feel-built-in-functions-numeric",
-				"ceiling"
+				"ceiling",
+				"scale",
+				"round"
 			],
 			"entities": []
 		},
@@ -16378,7 +16691,8 @@
 				"feel-built-in-functions-numeric",
 				"round",
 				"down",
-				"scale"
+				"scale",
+				"half"
 			],
 			"entities": []
 		},
@@ -16395,7 +16709,9 @@
 				"round",
 				"half",
 				"down",
-				"scale"
+				"scale",
+				"abs",
+				"number"
 			],
 			"entities": []
 		},
@@ -16411,7 +16727,10 @@
 				"feel-built-in-functions-numeric",
 				"modulo",
 				"dividend",
-				"divisor"
+				"divisor",
+				"sqrt",
+				"number",
+				"log"
 			],
 			"entities": []
 		},
@@ -16426,7 +16745,9 @@
 				"builtin-functions",
 				"feel-built-in-functions-numeric",
 				"exp",
-				"number"
+				"number",
+				"odd",
+				"even"
 			],
 			"entities": []
 		},
@@ -16454,7 +16775,10 @@
 				"modeler",
 				"feel",
 				"builtin-functions",
-				"feel-built-in-functions-range"
+				"feel-built-in-functions-range",
+				"before",
+				"point1",
+				"point2"
 			],
 			"entities": []
 		},
@@ -16470,7 +16794,11 @@
 				"feel-built-in-functions-range",
 				"before",
 				"range",
-				"point"
+				"point",
+				"range1",
+				"range2",
+				"after",
+				"point1"
 			],
 			"entities": []
 		},
@@ -16486,7 +16814,10 @@
 				"feel-built-in-functions-range",
 				"after",
 				"range",
-				"point"
+				"point",
+				"range1",
+				"range2",
+				"meets"
 			],
 			"entities": []
 		},
@@ -16502,7 +16833,8 @@
 				"feel-built-in-functions-range",
 				"met",
 				"range1",
-				"range2"
+				"range2",
+				"overlaps"
 			],
 			"entities": []
 		},
@@ -16519,7 +16851,8 @@
 				"overlaps",
 				"before",
 				"range1",
-				"range2"
+				"range2",
+				"after"
 			],
 			"entities": []
 		},
@@ -16535,7 +16868,10 @@
 				"feel-built-in-functions-range",
 				"finishes",
 				"point",
-				"range"
+				"range",
+				"range1",
+				"range2",
+				"finished"
 			],
 			"entities": []
 		},
@@ -16551,7 +16887,10 @@
 				"feel-built-in-functions-range",
 				"finished",
 				"range1",
-				"range2"
+				"range2",
+				"includes",
+				"range",
+				"point"
 			],
 			"entities": []
 		},
@@ -16567,7 +16906,10 @@
 				"feel-built-in-functions-range",
 				"during",
 				"point",
-				"range"
+				"range",
+				"range1",
+				"range2",
+				"starts"
 			],
 			"entities": []
 		},
@@ -16583,7 +16925,10 @@
 				"feel-built-in-functions-range",
 				"starts",
 				"range1",
-				"range2"
+				"range2",
+				"started",
+				"range",
+				"point"
 			],
 			"entities": []
 		},
@@ -16599,7 +16944,9 @@
 				"feel-built-in-functions-range",
 				"coincides",
 				"point1",
-				"point2"
+				"point2",
+				"range1",
+				"range2"
 			],
 			"entities": []
 		},
@@ -16612,7 +16959,12 @@
 				"modeler",
 				"feel",
 				"builtin-functions",
-				"feel-built-in-functions-string"
+				"feel-built-in-functions-string",
+				"substring",
+				"string",
+				"start",
+				"position",
+				"length"
 			],
 			"entities": []
 		},
@@ -16627,7 +16979,10 @@
 				"builtin-functions",
 				"feel-built-in-functions-string",
 				"string",
-				"length"
+				"length",
+				"upper",
+				"case",
+				"lower"
 			],
 			"entities": []
 		},
@@ -16644,7 +16999,9 @@
 				"substring",
 				"before",
 				"string",
-				"match"
+				"match",
+				"after",
+				"contains"
 			],
 			"entities": []
 		},
@@ -16660,7 +17017,11 @@
 				"feel-built-in-functions-string",
 				"starts",
 				"string",
-				"match"
+				"match",
+				"ends",
+				"matches",
+				"input",
+				"pattern"
 			],
 			"entities": []
 		},
@@ -16677,7 +17038,9 @@
 				"matches",
 				"input",
 				"pattern",
-				"flags"
+				"flags",
+				"replace",
+				"replacement"
 			],
 			"entities": []
 		},
@@ -16711,7 +17074,9 @@
 				"feel-built-in-functions-string",
 				"split",
 				"string",
-				"delimiter"
+				"delimiter",
+				"extract",
+				"pattern"
 			],
 			"entities": []
 		},
@@ -16726,7 +17091,10 @@
 				"builtin-functions",
 				"feel-built-in-functions-string",
 				"trim",
-				"string"
+				"string",
+				"uuid",
+				"base64",
+				"value"
 			],
 			"entities": []
 		},
@@ -16741,7 +17109,9 @@
 				"builtin-functions",
 				"feel-built-in-functions-string",
 				"base64",
-				"value"
+				"value",
+				"blank",
+				"string"
 			],
 			"entities": []
 		},
@@ -16754,7 +17124,12 @@
 				"modeler",
 				"feel",
 				"builtin-functions",
-				"feel-built-in-functions-temporal"
+				"feel-built-in-functions-temporal",
+				"now",
+				"today",
+				"day",
+				"week",
+				"date"
 			],
 			"entities": []
 		},
@@ -16770,7 +17145,8 @@
 				"feel-built-in-functions-temporal",
 				"day",
 				"year",
-				"date"
+				"date",
+				"week"
 			],
 			"entities": []
 		},
@@ -16786,7 +17162,8 @@
 				"feel-built-in-functions-temporal",
 				"month",
 				"year",
-				"date"
+				"date",
+				"abs"
 			],
 			"entities": []
 		},
@@ -16816,7 +17193,12 @@
 				"modeler",
 				"feel",
 				"cluster-variable",
-				"data-types"
+				"data-types",
+				"simple",
+				"values",
+				"complex",
+				"variable",
+				"kinds"
 			],
 			"entities": []
 		},
@@ -16894,7 +17276,9 @@
 				"modeler",
 				"feel",
 				"cluster-variable",
-				"examples"
+				"examples",
+				"environment-specific",
+				"configuration"
 			],
 			"entities": []
 		},
@@ -16954,7 +17338,12 @@
 				"modeler",
 				"feel",
 				"cluster-variable",
-				"get-started"
+				"get-started",
+				"step",
+				"create",
+				"global",
+				"cluster",
+				"variable"
 			],
 			"entities": []
 		},
@@ -16971,7 +17360,9 @@
 				"step",
 				"override",
 				"specific",
-				"tenant"
+				"tenant",
+				"access",
+				"variable"
 			],
 			"entities": [
 				"apiUrl",
@@ -17034,7 +17425,11 @@
 				"cluster-variable",
 				"metadata",
 				"structure",
-				"constraints"
+				"constraints",
+				"not",
+				"part",
+				"runtime",
+				"value"
 			],
 			"entities": []
 		},
@@ -17048,7 +17443,8 @@
 				"feel",
 				"cluster-variable",
 				"metadata",
-				"set"
+				"set",
+				"filter"
 			],
 			"entities": []
 		},
@@ -17143,7 +17539,12 @@
 				"cluster-variable",
 				"overview",
 				"get",
-				"started"
+				"started",
+				"learn",
+				"fundamentals",
+				"explore",
+				"further",
+				"resources"
 			],
 			"entities": []
 		},
@@ -17156,7 +17557,9 @@
 				"modeler",
 				"feel",
 				"cluster-variable",
-				"scope-and-priority"
+				"scope-and-priority",
+				"scope",
+				"levels"
 			],
 			"entities": []
 		},
@@ -17191,7 +17594,10 @@
 				"cluster-variable",
 				"scope-and-priority",
 				"multi-tenant",
-				"considerations"
+				"considerations",
+				"troubleshoot",
+				"scope",
+				"resolution"
 			],
 			"entities": [
 				"camunda.vars.cluster",
@@ -17207,7 +17613,8 @@
 				"modeler",
 				"feel",
 				"cluster-variable",
-				"usage-guide"
+				"usage-guide",
+				"bpmn"
 			],
 			"entities": [
 				"a.b"
@@ -17258,7 +17665,8 @@
 				"components",
 				"modeler",
 				"feel",
-				"feel-playground"
+				"feel-playground",
+				"playground"
 			],
 			"entities": []
 		},
@@ -17272,7 +17680,9 @@
 				"feel",
 				"feel-playground",
 				"validate",
-				"expression"
+				"expression",
+				"validation",
+				"results"
 			],
 			"entities": []
 		},
@@ -17715,7 +18125,9 @@
 				"modeler",
 				"feel",
 				"language-guide",
-				"feel-variables"
+				"feel-variables",
+				"access",
+				"variables"
 			],
 			"entities": [
 				"toolCall",
@@ -17775,7 +18187,8 @@
 				"modeler",
 				"feel",
 				"what-is-feel",
-				"learning"
+				"learning",
+				"engines"
 			],
 			"entities": []
 		}
