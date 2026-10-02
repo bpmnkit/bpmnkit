@@ -3,6 +3,7 @@
  * answers with, and the connected diagram it applies on the server.
  */
 import { Bpmn, expand, parseProcessText } from "@bpmnkit/core"
+import { connectorCards } from "@bpmnkit/core/connectors"
 import { beforeEach, describe, expect, it } from "vitest"
 import type { Env } from "../src/env.js"
 import { getBudgetSpent } from "../src/lib/ai.js"
@@ -11,6 +12,7 @@ import {
 	type ConnectEvent,
 	type ConnectResult,
 	createConnectLineFilter,
+	finishConnect,
 } from "../src/lib/connect.js"
 import { sharePage } from "../src/lib/pages.js"
 import { handleConnect } from "../src/routes/connect.js"
@@ -277,5 +279,54 @@ describe("createConnectLineFilter", () => {
 			filter.push("th b: http https://x.example\nstart > a\n") +
 			filter.end()
 		expect(out).toBe("with a: slack | x=1\nwith b: http https://x.example\n")
+	})
+})
+
+describe("finishConnect", () => {
+	const defs = expand(
+		parseProcessText(
+			"start[start Ticket closed] > create[service Create page] > notify[service Notify ops in Slack] > done[end Done]",
+		).diagram,
+	)
+	const aliases = { start: "start", create: "create", notify: "notify", done: "done" }
+	const SLACK =
+		"slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#ops | data.text=hi"
+
+	it("matches an id in any case", () => {
+		const result = finishConnect(defs, aliases, `with Notify: ${SLACK}`)
+		expect(result.connected).toEqual(["notify"])
+		expect(result.problems).toEqual([])
+	})
+
+	it("gives a line with an invented id to the one task its connector fits", () => {
+		const http = connectorCards("io.camunda.connectors.HttpJson.v2")
+		const slack = connectorCards("io.camunda.connectors.Slack.v1")
+		const selection = [
+			{ id: "create", name: "Create page", cards: http },
+			{ id: "notify", name: "Notify ops in Slack", cards: slack },
+		]
+		const result = finishConnect(
+			defs,
+			aliases,
+			"with createPage: http POST https://api.example.com/pages",
+			[],
+			selection,
+		)
+		expect(result.connected).toEqual(["create"])
+		expect(result.fixes[0]).toBe(
+			'read "with createPage:" as "with create:", the one task its connector fits',
+		)
+	})
+
+	it("keeps the first line for a node and reports the next", () => {
+		const result = finishConnect(
+			defs,
+			aliases,
+			`with notify: ${SLACK}\nwith notify: http GET https://api.example.com/x`,
+		)
+		expect(result.problems).toEqual([
+			'"with notify:" configures a node an earlier line did; the first stands',
+		])
+		expect(result.xml).toContain('zeebe:modelerTemplate="io.camunda.connectors.Slack.v1"')
 	})
 })

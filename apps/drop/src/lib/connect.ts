@@ -154,20 +154,56 @@ export interface ConnectResult {
  * Applies a connect pass's answer to the diagram it was written for, on the
  * server: the catalog is already here for the cards, so the page never has to
  * load it.
+ *
+ * A line is matched to its node by id, in any case. A line whose id names no
+ * node goes to the one task of `selection` whose cards fit it and that no
+ * other line configures: models rename `create` to `createPage`. The first
+ * line for a node stands; a later one is reported.
  */
 export function finishConnect(
 	defs: BpmnDefinitions,
 	aliases: Readonly<Record<string, string>>,
 	script: string,
 	apis: readonly ApiService[] = [],
+	selection: readonly TaskCards[] = [],
 ): ConnectResult {
 	const delta = parseProcessDelta(script)
 	const problems = delta.problems.map((p) => p.message)
+	const fixes: string[] = []
+	const byLowerId = new Map(Object.entries(aliases).map(([id, el]) => [id.toLowerCase(), el]))
 	const lines: ConnectorRef[] = []
+	const configured = new Set<string>()
+	const add = (line: ConnectorRef) => {
+		if (configured.has(line.elementId)) {
+			problems.push(`"with ${line.id}:" configures a node an earlier line did; the first stands`)
+			return
+		}
+		configured.add(line.elementId)
+		lines.push(line)
+	}
+	const unmatched: (typeof delta.connectors)[number][] = []
 	for (const line of delta.connectors) {
-		const elementId = aliases[line.id]
-		if (elementId === undefined) problems.push(`"with ${line.id}:" names no node of the diagram`)
-		else lines.push({ ...line, elementId })
+		const elementId = aliases[line.id] ?? byLowerId.get(line.id.toLowerCase())
+		if (elementId === undefined) unmatched.push(line)
+		else add({ ...line, elementId })
+	}
+	for (const line of unmatched) {
+		const alias = line.alias.toLowerCase()
+		const fitting = selection.filter((task) => {
+			const elementId = aliases[task.id]
+			if (elementId === undefined || configured.has(elementId)) return false
+			return alias === "api"
+				? (task.apis?.length ?? 0) > 0
+				: task.cards.some((card) => card.alias === alias)
+		})
+		const only = fitting.length === 1 ? fitting[0] : undefined
+		const elementId = only && aliases[only.id]
+		if (only && elementId) {
+			fixes.push(`read "with ${line.id}:" as "with ${only.id}:", the one task its connector fits`)
+			add({ ...line, elementId })
+		} else {
+			problems.push(`"with ${line.id}:" names no node of the diagram`)
+		}
 	}
 	const applied = applyConnectorLines(defs, lines, { apis })
 	const connected = [
@@ -185,7 +221,7 @@ export function finishConnect(
 		xml: Bpmn.export(applied.definitions),
 		connected,
 		problems: [...problems, ...applied.problems.map((p) => p.message)],
-		fixes: applied.fixes,
+		fixes: [...fixes, ...applied.fixes],
 		questions: applied.questions,
 	}
 }

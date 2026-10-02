@@ -141,6 +141,7 @@ const VERBS = new Set([
 
 /** Words requests use for what templates call something else: "Notify ops" is a message. */
 const SYNONYMS: Record<string, readonly string[]> = {
+	append: ["add"],
 	notify: ["message", "send"],
 	inform: ["message", "send"],
 	alert: ["message", "send"],
@@ -166,6 +167,29 @@ const HTTP_WORDS = new Set([
 	"webhook",
 ])
 
+/** What each further card of a template costs in the ranking. */
+const REPEAT_COST = 8
+
+/**
+ * Ranks each further card of a template lower: the Email connector's IMAP operations must
+ * not crowd out SendGrid, which the request names, while a strong second operation of
+ * one template still beats a weak other one.
+ */
+function varied<T extends { card: ConnectorCard; score: number }>(sorted: readonly T[]): T[] {
+	const count = new Map<string, number>()
+	return sorted
+		.map((entry) => {
+			const n = count.get(entry.card.templateId) ?? 0
+			count.set(entry.card.templateId, n + 1)
+			return { entry, score: entry.score - n * REPEAT_COST }
+		})
+		.sort((a, b) => b.score - a.score)
+		.map(({ entry }) => entry)
+}
+
+/** Words of a request that ask for a plain REST call somewhere in the process. */
+const REST_WORDS = new Set(["rest", "http", "https", "endpoint", "url"])
+
 /**
  * Picks cards for each task that could carry a connector: tasks, and events a
  * connector template can attach to. A card is a candidate for a task when:
@@ -176,11 +200,18 @@ const HTTP_WORDS = new Set([
  * - the task's name shares a word other than a common verb with the
  *   connector's name ("Publish **event**" and an event-bus connector).
  *
- * A few words requests use for what templates call something else rank the
- * candidates: "notify" prefers a connector's message-sending operation.
+ * Ranking:
+ * - A few words requests use for what templates call something else rank the
+ *   candidates: "notify" prefers a connector's message-sending operation.
+ * - A connector naming a system nobody asked for ranks lower: "Azure OpenAI"
+ *   for a request that says OpenAI.
+ * - Each further card of one template ranks lower, so one connector's
+ *   operations do not crowd out another the request names.
+ * - Deprecated templates are never offered.
  *
  * The REST connector is offered for a task whose name asks for an HTTP call
- * ("Fetch order", "Call endpoint") when nothing else fits. Tasks with no
+ * ("Fetch order", "Call endpoint") when nothing else fits, and for a task with
+ * no connector of its own when the request asks for a REST call. Tasks with no
  * candidate are left out, so an empty answer means there is nothing to connect.
  *
  * With `options.apis`, services of the API index: a task (not an event) that
@@ -188,6 +219,9 @@ const HTTP_WORDS = new Set([
  * first and an API card with the service's best-fitting operations — unless a
  * dedicated connector for that system has an operation the task's name
  * mentions. A dedicated connector comes first; the index is for the rest.
+ * - A task that names only the service ("Call Stripe REST API") is matched to
+ *   operations by the request's words.
+ * - A service only the request names goes to the one task it fits best.
  *
  * @param options.perTask - Cards per task, at most (default 3).
  * @param options.total - Cards in all, at most (default 8). Every task keeps
@@ -203,7 +237,10 @@ export function selectConnectors(
 	const total = options.total ?? 8
 	const apis = options.apis ?? []
 	const requested = new Set(termsOf(input.text ?? ""))
-	const cards = listConnectorCards()
+	// A deprecated template has a successor in the catalog: offer that one
+	const cards = listConnectorCards().filter(
+		(card) => !getTemplate(card.templateId)?.name.includes("(Deprecated)"),
+	)
 	const http = connectorCards("io.camunda.connectors.HttpJson.v2")[0]
 
 	// A system some task's name names belongs to that task: "Notify ops in Slack"
@@ -227,6 +264,8 @@ export function selectConnectors(
 		// but does not make every messaging connector a candidate
 		const synonyms = withSynonyms(terms).filter((t) => !named.has(t))
 		const scored: { card: ConnectorCard; score: number }[] = []
+		/** Whether a card fits by the task's own name, not only by the request. */
+		let ownCard = false
 		for (const card of cards) {
 			if (!fits(card, task.type)) continue
 			const own = systems(card)
@@ -237,19 +276,29 @@ export function selectConnectors(
 			// A word of the connector's name, not only of one of its operations
 			const byWord = cardScore(card, content) >= 4
 			if (!inName && !inRequest && !byWord) continue
+			if (inName || byWord) ownCard = true
+			// "Azure OpenAI" for a request that only says OpenAI names a system nobody asked for
+			const unasked = own.filter((s) => !named.has(s) && !requested.has(s)).length
 			const score =
 				cardScore(card, terms) * 2 +
 				cardScore(card, synonyms) +
 				(inName ? 10 : 0) +
-				(inRequest ? 4 : 0)
+				(inRequest ? 4 : 0) -
+				unasked * 8
 			scored.push({ card, score })
 		}
-		const apiCards: ApiCard[] = []
+		const apiCards: (ApiCard & { fromRequest: boolean; score: number })[] = []
 		if (http && TASKS.has(task.type) && fits(http, task.type)) {
 			for (const service of apis) {
 				const brand = apiBrand(service.id)
-				if (!named.has(brand) && !(requested.has(brand) && !claimed.has(brand))) continue
-				const ranked = rankApiOperations(service, task.name ?? "")
+				const inName = named.has(brand)
+				if (!inName && !(requested.has(brand) && !claimed.has(brand))) continue
+				const dedicated = scored.some((s) => systems(s.card).includes(brand))
+				// "Call Stripe REST API" says which service, and only the request says what for
+				let ranked = rankApiOperations(service, task.name ?? "")
+				if (ranked.length === 0 && inName && !dedicated) {
+					ranked = rankApiOperations(service, input.text ?? "")
+				}
 				const best = ranked[0]
 				if (!best) continue
 				// A dedicated connector wins unless the index has an operation that fits more
@@ -265,37 +314,71 @@ export function selectConnectors(
 						.map((s) => words.filter((w) => cardScore(s.card, [w]) >= 3).length),
 				)
 				if (best.hits <= covered) continue
-				apiCards.push({ service, operations: ranked.slice(0, 3).map((r) => r.op) })
+				apiCards.push({
+					service,
+					operations: ranked.slice(0, 3).map((r) => r.op),
+					fromRequest: !inName,
+					score: best.score,
+				})
 			}
 		}
-		if (apiCards.length > 0 && http) {
-			const others = scored.filter((s) => s.card !== http)
-			scored.splice(0, scored.length, { card: http, score: Number.POSITIVE_INFINITY }, ...others)
-		}
-		if (
-			scored.length === 0 &&
-			http &&
-			fits(http, task.type) &&
-			terms.some((t) => HTTP_WORDS.has(t))
-		) {
-			scored.push({ card: http, score: 1 })
+		if (http && fits(http, task.type) && !scored.some((s) => s.card === http)) {
+			if (scored.length === 0 && terms.some((t) => HTTP_WORDS.has(t))) {
+				scored.push({ card: http, score: 1 })
+			} else if (
+				TASKS.has(task.type) &&
+				!ownCard &&
+				[...requested].some((t) => REST_WORDS.has(t))
+			) {
+				// "check the stock with a REST call": Check stock names no system, the request says how
+				scored.push({ card: http, score: 5 })
+			}
 		}
 		scored.sort((a, b) => b.score - a.score)
-		return { task, cards: scored.slice(0, perTask).map((s) => s.card), apis: apiCards.slice(0, 2) }
+		return { task, scored: varied(scored), apiCards }
+	})
+
+	// A service only the request names goes to the one task that fits it best: in "refund the
+	// payment with Stripe, then notify the customer", Notify customer is not a Stripe call
+	for (const service of apis) {
+		const offers = ranked.flatMap(({ apiCards }) =>
+			apiCards.filter((c) => c.service === service && c.fromRequest),
+		)
+		const best = offers.reduce<(typeof offers)[number] | undefined>(
+			(a, b) => (a === undefined || b.score > a.score ? b : a),
+			undefined,
+		)
+		for (const entry of ranked) {
+			entry.apiCards = entry.apiCards.filter(
+				(c) => c.service !== service || !c.fromRequest || c === best,
+			)
+		}
+	}
+
+	const picks = ranked.map(({ task, scored, apiCards }) => {
+		// With an API card, the REST connector it is for comes first
+		const ordered =
+			apiCards.length > 0 && http
+				? [http, ...scored.map((s) => s.card).filter((card) => card !== http)]
+				: scored.map((s) => s.card)
+		const apiPicked: ApiCard[] = apiCards
+			.slice(0, 2)
+			.map(({ service, operations }) => ({ service, operations }))
+		return { task, cards: ordered.slice(0, perTask), apis: apiPicked }
 	})
 
 	// Every task's best card first, then second-best cards, and so on, up to the total
 	const kept = new Map<string, ConnectorCard[]>()
 	let budget = total
 	for (let rank = 0; rank < perTask && budget > 0; rank++) {
-		for (const { task, cards: candidates } of ranked) {
+		for (const { task, cards: candidates } of picks) {
 			const card = candidates[rank]
 			if (card === undefined || budget === 0) continue
 			kept.set(task.id, [...(kept.get(task.id) ?? []), card])
 			budget--
 		}
 	}
-	return ranked
+	return picks
 		.filter(({ task }) => kept.has(task.id))
 		.map(({ task, apis: apiCards }) => {
 			const picked: TaskCards = { id: task.id, cards: kept.get(task.id) ?? [] }

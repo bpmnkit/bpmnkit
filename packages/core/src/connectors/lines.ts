@@ -32,9 +32,10 @@ import type { ElementTemplate, TemplateProperty } from "./template-types.js"
  */
 export const CONNECT_GUIDE = `Connect the diagram: write one with line for each node that calls an outside system, nothing else.
 with <id>: <alias> <operation> | key=value | key==FEEL expression
-- <id> is a node of the diagram. <alias>, <operation> and the keys come from the connector cards.
+- <id> is a node of the diagram, written exactly as before the colon of its cards. <alias>, <operation> and the keys come from the connector cards.
+- When the request names a system, use that system's card.
 - Write every input marked *. Write a mode (key=choice) only to change its default, with the inputs that choice adds.
-- A value starting with = is FEEL: text== "Order " + orderId. Without =, it is literal text.
+- A value starting with = is FEEL: text== "Order " + orderId. Without =, it is literal text. A variable is FEEL too: to==email, never {{email}} or \${email}; {{…}} is only for secrets.
 - Credentials are never values: token={{secrets.SLACK_TOKEN}}.
 - result=name keeps the response in a variable; result=name: response.body keeps a part of it.
 - A plain task that becomes a connector needs no other change. Leave out nodes no card fits.
@@ -105,7 +106,9 @@ function templateFor(alias: string, fixes: string[]): string | undefined {
 	for (const template of allTemplates()) {
 		const candidate = connectorAlias(template.id).toLowerCase()
 		const d = distance(alias, candidate)
-		if (d <= 2 && (best === undefined || d < best.d))
+		// Two letters off a short alias is another word: "api" is not "a2a"
+		const allowed = Math.min(alias.length, candidate.length) <= 4 ? 1 : 2
+		if (d <= allowed && (best === undefined || d < best.d))
 			best = { id: template.id, alias: candidate, d }
 	}
 	if (best) fixes.push(`read connector "${alias}" as "${best.alias}"`)
@@ -168,10 +171,11 @@ function pickCard(
  *   and required headers. A call the index lacks is a question.
  */
 export function resolveConnectorLine(
-	line: ConnectorLine,
+	given: ConnectorLine,
 	options: ConnectorLineOptions = {},
 ): ResolvedConnectorLine {
 	const out: ResolvedConnectorLine = { values: {}, problems: [], fixes: [], questions: [] }
+	const line = apiCardLine(given, options.apis ?? [], out.fixes)
 	const templateId = templateFor(line.alias, out.fixes)
 	const template = templateId === undefined ? undefined : getTemplate(templateId)
 	if (!templateId || !template) {
@@ -238,7 +242,7 @@ export function resolveConnectorLine(
 			key = ends[0]
 			out.fixes.push(`read "${written}" as "${key}"`)
 		}
-		values[key] = value
+		values[key] = feelForVariable(key, value, out.fixes)
 	}
 
 	for (const key of secrets) {
@@ -260,6 +264,39 @@ export function resolveConnectorLine(
 	return out
 }
 
+/**
+ * A line written like an API card's head, `api github GET /issues`, read as the call it
+ * means: `http GET /issues | api=github`.
+ */
+function apiCardLine(
+	line: ConnectorLine,
+	apis: readonly ApiService[],
+	fixes: string[],
+): ConnectorLine {
+	const service = line.args[0]?.toLowerCase()
+	if (line.alias !== "api" || !apis.some((s) => s.id === service)) return line
+	fixes.push(`read "api ${line.args[0]}" as "http … | api=${service}"`)
+	return {
+		...line,
+		alias: "http",
+		args: line.args.slice(1),
+		values: { ...line.values, api: service ?? "" },
+	}
+}
+
+/** `{{orderId}}`, `{{variables.orderId}}` or `${orderId}`: a variable, which FEEL reads as `=orderId`. */
+const TEMPLATED_VARIABLE =
+	/^=?\s*(?:\{\{\s*(?:variables\.)?([A-Za-z_][\w.]*)\s*\}\}|\$\{\s*([A-Za-z_][\w.]*)\s*\})\s*$/
+
+/** A variable written in another template syntax, as the FEEL expression it means. */
+function feelForVariable(key: string, value: string, fixes: string[]): string {
+	const match = TEMPLATED_VARIABLE.exec(value)
+	const name = match?.[1] ?? match?.[2]
+	if (name === undefined || name.startsWith("secrets.")) return value
+	fixes.push(`read "${key}" ${value} as the variable =${name}`)
+	return `=${name}`
+}
+
 /** The service an `http` line calls: the one `api=` names, or the one whose base URL its URL starts with. */
 function apiServiceFor(
 	name: string | undefined,
@@ -274,7 +311,15 @@ function apiServiceFor(
 		return named
 	}
 	if (url === undefined) return undefined
-	return apis.find((s) => s.baseUrl !== undefined && url.startsWith(`${s.baseUrl}/`))
+	const under = apis.find((s) => s.baseUrl !== undefined && url.startsWith(`${s.baseUrl}/`))
+	if (under) return under
+	// A path alone, with one service in play, is a path of that service
+	const only = apis.length === 1 ? apis[0] : undefined
+	if (only && url.startsWith("/")) {
+		out.fixes.push(`read ${url} as a path of ${only.name}`)
+		return only
+	}
+	return undefined
 }
 
 /**
@@ -296,7 +341,11 @@ function applyApiService(
 	// A FEEL URL is the line's own: nothing to look up
 	if (url === undefined || url.startsWith("=")) return
 	const base = service.baseUrl
-	const path = base !== undefined && url.startsWith(base) ? url.slice(base.length) : url
+	// `/charges/{{chargeId}}/refunds` is the path parameter `{chargeId}` in another syntax
+	const path = (base !== undefined && url.startsWith(base) ? url.slice(base.length) : url).replace(
+		/\{\{\s*(?:variables\.)?([A-Za-z_]\w*)\s*\}\}/g,
+		"{$1}",
+	)
 	if (!path.startsWith("/")) return
 	const method = values.method ?? "GET"
 	const op = findApiOperation(service, method, path)

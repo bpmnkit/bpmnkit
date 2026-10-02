@@ -114,9 +114,16 @@ A card is a candidate for a task when:
 
 Beyond those rules:
 - **REST fallback.** The REST connector is offered for a task that asks for an HTTP call
-  ("Fetch …", "Call endpoint") when nothing else fits.
+  ("Fetch …", "Call endpoint") when nothing else fits. It is also offered for a task with no
+  connector of its own when the request asks for a REST call ("check the stock with a REST
+  call").
 - **Synonyms.** A few words requests use for what templates call something else, such as
   "notify" for sending a message, change the ranking only.
+- **Variety.** Each further card of one template ranks lower. The Email connector's IMAP
+  operations do not crowd out SendGrid when the request names it.
+- **Systems nobody named.** A connector that names a system the task and request do not
+  ranks lower: "Azure OpenAI" for a request that says OpenAI.
+- **Deprecated templates** are never offered.
 - **Caps.** At most three cards per task and eight in all. Every task keeps its best card
   before any task gets a second.
 
@@ -197,6 +204,8 @@ service task and inbound templates work on events.
   expression `={name: expr}`, under whatever key the operation uses for it.
 - **Credentials.** A credential written as a value becomes a `{{secrets.…}}` placeholder: the
   diagram never carries one.
+- **Variables in another syntax.** `{{orderId}}`, `{{variables.orderId}}` and `${orderId}`
+  become the FEEL `=orderId`. Secrets are left as they are.
 - **API index calls.** With `{ apis }` as the last argument, an `http` line that names a
   service (`http POST /v1/customers | api=stripe`), or calls a URL under its base URL, is
   completed from the index:
@@ -208,7 +217,9 @@ service task and inbound templates work on events.
     body's `Content-Type`.
 
   A call the index does not have is kept, and becomes a question to check the method and
-  URL.
+  URL. A line written like an API card's head (`api github GET /issues`) is read as
+  `http GET /issues | api=github`. A path alone, with one service loaded, is that service's.
+  A `{{param}}` in a path is the parameter `{param}`.
 
 A required input the line left out becomes a **question** (`AppliedConnectorLines.questions`),
 with a line to finish, and the rest of the line is still applied. A line for a node that already

@@ -24,6 +24,8 @@ service task and inbound templates work on events.
   expression `={name: expr}`, under whatever key the operation uses for it.
 - **Credentials.** A credential written as a value becomes a `{{secrets.…}}` placeholder: the
   diagram never carries one.
+- **Variables in another syntax.** `{{orderId}}`, `{{variables.orderId}}` and `${orderId}`
+  become the FEEL `=orderId`. Secrets are left as they are.
 - **API index calls.** With `{ apis }` as the last argument, an `http` line that names a
   service (`http POST /v1/customers | api=stripe`), or calls a URL under its base URL, is
   completed from the index:
@@ -35,7 +37,9 @@ service task and inbound templates work on events.
     body's `Content-Type`.
 
   A call the index does not have is kept, and becomes a question to check the method and
-  URL.
+  URL. A line written like an API card's head (`api github GET /issues`) is read as
+  `http GET /issues | api=github`. A path alone, with one service loaded, is that service's.
+  A `{{param}}` in a path is the parameter `{param}`.
 
 A required input the line left out becomes a **question** (`AppliedConnectorLines.questions`),
 with a line to finish, and the rest of the line is still applied. A line for a node that already

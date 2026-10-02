@@ -13,9 +13,16 @@ A card is a candidate for a task when:
 
 Beyond those rules:
 - **REST fallback.** The REST connector is offered for a task that asks for an HTTP call
-  ("Fetch …", "Call endpoint") when nothing else fits.
+  ("Fetch …", "Call endpoint") when nothing else fits. It is also offered for a task with no
+  connector of its own when the request asks for a REST call ("check the stock with a REST
+  call").
 - **Synonyms.** A few words requests use for what templates call something else, such as
   "notify" for sending a message, change the ranking only.
+- **Variety.** Each further card of one template ranks lower. The Email connector's IMAP
+  operations do not crowd out SendGrid when the request names it.
+- **Systems nobody named.** A connector that names a system the task and request do not
+  ranks lower: "Azure OpenAI" for a request that says OpenAI.
+- **Deprecated templates** are never offered.
 - **Caps.** At most three cards per task and eight in all. Every task keeps its best card
   before any task gets a second.
 

@@ -456,7 +456,9 @@ async function runConnect(model, prompt, diagram) {
 		if (usage) connect.neurons = neuronsFor(model, usage)
 		const filter = createConnectLineFilter()
 		connect.lines = filter.push(answer) + filter.end()
-		const done = finishConnect(defs, aliases, connect.lines, apis)
+		// What the model wrote before the filter: an answer with no usable line says why here
+		connect.raw = answer
+		const done = finishConnect(defs, aliases, connect.lines, apis, selection)
 		connect.connected = done.connected.length
 		connect.problems = done.problems
 		connect.questions = done.questions.length

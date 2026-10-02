@@ -171,7 +171,7 @@ async function answer(
 		return replay([
 			{ aliases },
 			...(cached === "" ? [] : [{ text: cached }]),
-			{ result: finishConnect(defs, aliases, cached, apis) },
+			{ result: finishConnect(defs, aliases, cached, apis, selection) },
 			{ done: true, cached: true },
 		])
 	}
@@ -226,7 +226,7 @@ async function answer(
 				)
 				await addBudget(env.DB, day, neurons)
 				const failed = stream.failed
-				const result = failed ? undefined : finishConnect(defs, aliases, script, apis)
+				const result = failed ? undefined : finishConnect(defs, aliases, script, apis, selection)
 				console.log(
 					JSON.stringify({
 						msg: "drop.connect",

@@ -1,5 +1,64 @@
 # Progress
 
+## 2026-10-02 — First real bench of the connect pass, and what it showed
+
+**The run:** `bench-results/2026-10-02T14-18-49-149Z`. `gpt-oss-120b` drew the diagrams and
+`glm-4.7-flash` connected them, as deployed. 12 connector prompts (16–27), 3 runs each.
+- **Diagrams:** 36/36 drafted, with a median of 5.8 s and 418 output tokens.
+- **Connect pass:** median 2.8 s, 87 output tokens and 8.5 neurons. Every connected diagram's
+  dry run reached its end.
+- **Skips:** the no-integration prompt (25) was skipped every time, with no model call.
+- **Assertions:** 23/36 passed. Every failure came from the connect pass.
+
+| prompt | pass | prompt | pass |
+|---|---|---|---|
+| 16 GitHub → Slack | 2/3 | 22 internal API | 3/3 |
+| 17 Stripe refund | 1/3 | 23 webhook → REST → Teams | 2/3 |
+| 18 SendGrid | 0/3 | 24 Lambda → SQS | 1/3 |
+| 19 Kafka | 3/3 | 25 no integration (skip) | 3/3 |
+| 20 OpenAI summarise | 1/3 | 26 Notion page | 2/3 |
+| 21 Sheets + Teams | 3/3 | 27 GitHub workflow runs | 2/3 |
+
+**What the model was shown** (replayed offline from the recorded diagrams):
+- **18 SendGrid, 0/3: the SendGrid card was never offered.** "Send order confirmation email"
+  names *email*, so the Email connector's three operations (one SMTP send, two IMAP) took all
+  three slots. SendGrid, named only by the request, was cut.
+- **20 OpenAI.** Azure OpenAI's three operations crowded out the OpenAI connector (which runs on
+  `http-json`, as the prompt expects). A deprecated AI Agent template was offered too.
+- **17 Stripe.** "Call Stripe REST API" names no operation, so no API card was offered. In
+  another run, "Notify customer" got Stripe's `POST /v1/customers` because the request named
+  Stripe.
+- **23.** "Check stock" never got the REST connector: the HTTP call was only in the request.
+
+**Fixed in selection** (`selectConnectors`):
+- Each further card of one template costs 8 points.
+- A connector naming a system nobody asked for costs 8 per system ("Azure").
+- Deprecated templates are never offered.
+- A task that names only a service is matched to its endpoints by the request's words, and
+  only when the service has no connector of its own.
+- A service only the request names goes to the one task it fits best.
+- A task with no connector of its own gets the REST card when the request asks for a REST call.
+
+**Near misses, now repaired** (resolver and `finishConnect`):
+- The API card's head copied as a line (`api github GET /issues`, which the misspelling repair
+  had turned into `a2a`). Short aliases now tolerate one wrong letter, not two.
+- `{{variables.x}}` and `${x}` for variables; `{{param}}` in a path; a path written without
+  `api=`, with one service loaded.
+- `with Refund:` for `refund`.
+- An invented id (`createPage`), given to the one task its connector fits.
+- Two lines for one node: the first stands.
+
+`CONNECT_GUIDE` gets three rules: copy ids exactly, a system the request names wins, and
+variables are FEEL.
+
+**Measured without a model:** `pnpm --filter @bpmnkit/drop bench:rescore <results.json>`
+re-applies the recorded answers with the current code. The recorded answers went from 23/36 to
+27/36 (16, 24, 26 and 27 each gained a run). The rest need the model to see the new cards (17,
+18, 20, 23) or are its own errors: `pay.stripe.com`, and one empty answer in 24. The bench now
+keeps each raw answer (`connect.raw`) so an empty one can be read.
+
+**Next:** rerun the bench with the same command to measure the selection changes.
+
 ## 2026-10-02 — `pnpm build` keeps the WASM engine current
 
 - **The error.** `@bpmnkit/engine:build` failed with `TS2352 … Property 'complete_user_task'
