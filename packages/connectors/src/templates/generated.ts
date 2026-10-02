@@ -7,14 +7,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
   "io.camunda.connectors.ServiceNowIncident.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
+        {
+          "id": "operation",
+          "label": "Operation"
+        },
         {
           "id": "sn",
           "label": "ServiceNow"
@@ -36,10 +37,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Connection timeout"
         },
         {
-          "id": "payload",
-          "label": "Payload"
-        },
-        {
           "id": "output",
           "label": "Output mapping"
         },
@@ -59,6 +56,36 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
+        "tooltip": "Enter only the instance name from your ServiceNow URL",
+        "group": "sn"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "sn"
+      },
+      {
+        "tooltip": "Type the exact ServiceNow table name",
+        "group": "sn"
+      },
+      {
+        "tooltip": "Separate multiple conditions with '^'",
+        "placeholder": "active=true^priority=1",
+        "group": "input"
+      },
+      {
+        "tooltip": "Comma-separated field names",
+        "placeholder": "sys_id,number,short_description",
+        "group": "input"
+      },
+      {
+        "tooltip": "The maximum number of records to return",
+        "placeholder": "10",
+        "group": "input"
+      },
+      {
+        "tooltip": "The unique record identifier (sys_id). If left blank, all incidents are queried",
         "group": "sn"
       },
       {
@@ -68,27 +95,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "sn"
       },
       {
-        "group": "sn"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "sn"
-      },
-      {
-        "group": "sn"
-      },
-      {
-        "group": "sn"
-      },
-      {
         "group": "input"
       },
       {
@@ -116,6 +122,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "tooltip": "Choose type: Send API key in header or as query parameter.",
         "group": "authentication"
       },
       {
@@ -137,18 +144,24 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "tooltip": "Your application's client ID from the OAuth client",
         "group": "authentication"
       },
       {
+        "tooltip": "Your application's client secret from the OAuth client",
         "group": "authentication"
       },
       {
+        "tooltip": "The unique identifier of the target API you want to access",
         "group": "authentication"
       },
       {
+        "tooltip": "Send client ID and client secret as Basic Auth request in the header, or as client credentials in the request body",
         "group": "authentication"
       },
       {
+        "tooltip": "The scopes which you want to request authorization for",
+        "placeholder": "read:contacts",
         "group": "authentication"
       },
       {
@@ -158,9 +171,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
+        "tooltip": "Map of HTTP headers to add to the request",
         "group": "endpoint"
       },
       {
+        "tooltip": "Map of query parameters to add to the request URL",
         "group": "endpoint"
       },
       {
@@ -176,13 +191,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "timeout"
       },
       {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -220,12 +241,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Filter"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Response mapping"
         },
         {
           "id": "errors",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ]
     },
@@ -235,69 +264,427 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
-        "group": "authentication"
+        "group": "operation"
       },
       {
         "group": "authentication"
       },
-      {},
-      {},
-      {},
-      {},
       {
-        "group": "authentication"
-      },
-      {
+        "tooltip": "Your Twilio account SID. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">Twilio outbound connector documentation</a>",
         "group": "authentication"
       },
       {},
+      {},
+      {},
+      {},
       {
+        "tooltip": "Your Twilio API key. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">Twilio outbound connector documentation</a>",
         "group": "authentication"
       },
       {
+        "tooltip": "Your Twilio API secret. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">Twilio outbound connector documentation</a>",
+        "group": "authentication"
+      },
+      {},
+      {
+        "tooltip": "Your Twilio auth token. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">Twilio outbound connector documentation</a>",
+        "group": "authentication"
+      },
+      {
+        "tooltip": "Unique identifier of the message to retrieve information for.",
+        "group": "input"
+      },
+      {
+        "tooltip": "The content of the WhatsApp message that will be sent.",
         "group": "input"
       },
       {
         "group": "input"
       },
       {
+        "tooltip": "Parameter values to substitute in the template provided as a FEEL context with numbered keys; make sure all keys and values are strings or are converted to strings!",
         "group": "input"
       },
       {
+        "tooltip": "The originating Twilio WhatsApp phone number used for sending the message.",
+        "placeholder": "whatsapp:+1234567890",
         "group": "input"
       },
       {
+        "tooltip": "The recipient's WhatsApp phone number.",
+        "placeholder": "whatsapp:+1234567890",
+        "group": "input"
+      },
+      {},
+      {},
+      {
+        "tooltip": "The content of the message that will be sent.",
+        "group": "input"
+      },
+      {
+        "tooltip": "The originating Twilio phone number used for sending the message.",
+        "group": "input"
+      },
+      {
+        "tooltip": "The recipient's phone number.",
+        "group": "input"
+      },
+      {
+        "tooltip": "The maximum number of messages to retrieve per page.",
         "group": "filter"
       },
       {
+        "tooltip": "The date and time the message was sent (<a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">in UTC format</a>)",
         "group": "filter"
       },
       {
+        "tooltip": "The date and time before which messages were sent (<a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">in UTC format</a>)",
         "group": "filter"
       },
       {
+        "tooltip": "The date and time after which messages were sent (<a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">in UTC format</a>)",
         "group": "filter"
       },
       {
+        "tooltip": "The phone number or client identifier of the message sender.",
         "group": "filter"
       },
       {
+        "tooltip": "The phone number or client identifier of the message recipient.",
         "group": "filter"
       },
       {},
       {},
       {},
       {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Sets the timeout in seconds to establish a connection or 0 for an infinite timeout",
         "group": "errors"
       },
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.mcp.start-message": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "icon": {
+        "contents": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAQAAADZc7J/AAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QA/4ePzL8AAAAHdElNRQfqAwsPJB1yGKXXAAABqklEQVRIx6XVvWsUURTG4SfZuDGkUBC7oI1FIIVYJI2KoBILLQQLBbEQUcQijRAM2OQP8AOUhAhiUiQIWoigYkoLCwUrK4UI8QPFVYmFhnWzx2In2VUym53JW92Ze3/n3PPeM3cK1lKnfr34IYcKLlsQQnhhICte9EAI382pCIsOZMMfCmXnFdBjVvikOyt+dOVNtw/Cqex4h2kL+jAmXM+O3xP+2IUbwrR9trWOF8wIFSfR5VtyHuG5/qx40Tsh/DJvSfhtMA8+qRPbzQolm1c/99XwOSHcWlnZ5a0wlI4vW3f8P7zdmJKdGBVmsuO3hao9GBbuZ9t8m3Gh6gJ4JozWA9xp6Lqphuw16yYasp8DI0LZjnqAxxYT/Jiw5ERTfFgII40ObLAlGT0VrqXUXsMvCuFqWiN9EXbjVdPsV9Ib+bOwFx/z4TwSxrFJXx6cw0LVJUVsdbf12uu6KYSf3igLFWez4bQZ8jX5bF87mBWvqcOAQ3qTp8z4v1onfroV55vpfdKZqWpf84JlvvnPq7k22m9Qycu8JSzfAmfyu1AL8YT1hDiiJ23yLxup/hFQZlOcAAAAJXRFWHRkYXRlOmNyZWF0ZQAyMDI2LTAzLTExVDE1OjM2OjI5KzAwOjAwN5TmhAAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyNi0wMy0xMVQxNTozNjoyOSswMDowMEbJXjgAAAAASUVORK5CYII="
+      },
+      "groups": [
+        {
+          "id": "tool-definition",
+          "label": "Tool definition",
+          "openByDefault": true
+        }
+      ],
+      "category": {
+        "id": "aiTools",
+        "name": "AI Tools"
+      }
+    },
+    "properties": [
+      {
+        "tooltip": "Give this process a name that helps AI agents understand what it does. <br/><br/>Use only letters, numbers, hyphens (-), underscores (_), and dots (.). Spaces are not allowed.",
+        "placeholder": "e.g., my_process",
+        "group": "tool-definition"
+      },
+      {
+        "placeholder": "Describe the core function of this process in a clear and concise way.",
+        "group": "tool-definition"
+      },
+      {
+        "placeholder": "Describe the inputs the AI should send to start this process.",
+        "tooltip": "Provide the inputs the AI should send along when this process is started, in plain language.<br/><br/>You can describe optional and required parameters, their data types and formats, and any constraints they have, such as a limited set of options the AI can choose from.",
+        "group": "tool-definition"
+      },
+      {
+        "placeholder": "Describe the specific situations or user intents that should trigger this process.",
+        "group": "tool-definition"
+      },
+      {
+        "placeholder": "Describe the situations or conditions where this process should not be used.",
+        "group": "tool-definition"
+      },
+      {
+        "tooltip": "Describe the outcomes and results after the process completes. You can also mention specific variable names that will be available (e.g., 'iban', 'request_id').",
+        "placeholder": "Describe the expected outcome and what data is returned.",
+        "group": "tool-definition"
+      },
+      {
+        "group": "tool-definition"
+      }
+    ]
+  },
+  "io.camunda.connectors.databricks.rest.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTc5IiBoZWlnaHQ9IjMyMyIgdmlld0JveD0iMCAwIDU3OSAzMjMiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMF8xOTg0XzczMCkiPgo8cGF0aCBkPSJNMzU5LjQgNzUuM0wyODQgMTE3LjdMMjAzLjMgNzIuM0wxOTkuNSA3NC41VjEwNy41TDI4NCAxNTVMMzU5LjQgMTEyLjVWMTMwLjFMMjg0IDE3Mi41TDIwMy4zIDEyNy4yTDE5OS41IDEyOS4zVjEzNC45TDI4NCAxODIuNEwzNjguNSAxMzQuOVYxMDEuOUwzNjQuNiA5OS44TDI4NCAxNDUuMUwyMDguNSAxMDIuN1Y4NS4yTDI4NCAxMjcuNkwzNjguNSA4MC4xVjQ3LjZMMzY0LjIgNDUuMkwyODQgOTAuM0wyMTIuNSA1MC4xTDI4NCA5LjlMMzQyLjggNDNMMzQ4LjEgNDAuMVYzNi4xTDI4NCAwTDE5OS41IDQ3LjZWNTIuN0wyODQgMTAwLjJMMzU5LjQgNTcuN1Y3NS4zWiIgZmlsbD0iI0ZGMzYyMSIvPgo8cGF0aCBkPSJNNjYuNiAzMjAuN1YyMzAuN0g1Mi43VjI2NC40QzUyLjcgMjY0LjkgNTIuNCAyNjUuMyA1MS45IDI2NS41QzUxLjQgMjY1LjcgNTAuOSAyNjUuNSA1MC42IDI2NS4yQzQ1LjkgMjU5LjcgMzguNiAyNTYuNSAzMC41IDI1Ni41QzEzLjQgMjU2LjUgMCAyNzAuOSAwIDI4OS40QzAgMjk4LjQgMy4xIDMwNi44IDguOCAzMTIuOUMxNC41IDMxOSAyMi4yIDMyMi4zIDMwLjYgMzIyLjNDMzguNSAzMjIuMyA0NS44IDMxOSA1MC43IDMxMy4zQzUxIDMxMi45IDUxLjYgMzEyLjggNTIgMzEyLjlDNTIuNSAzMTMuMSA1Mi44IDMxMy41IDUyLjggMzE0VjMyMC43SDY2LjZaTTMzLjcgMzA5LjdDMjIuNyAzMDkuNyAxNCAzMDAuOCAxNCAyODkuNEMxNCAyNzggMjIuNyAyNjkuMSAzMy43IDI2OS4xQzQ0LjcgMjY5LjEgNTMuNCAyNzggNTMuNCAyODkuNEM1My40IDMwMC44IDQ0LjcgMzA5LjcgMzMuNyAzMDkuN1pNMTQwLjcgMzIwLjZWMjU4SDEyN1YyNjQuM0MxMjcgMjY0LjggMTI2LjcgMjY1LjIgMTI2LjIgMjY1LjRDMTI1LjcgMjY1LjYgMTI1LjIgMjY1LjQgMTI0LjkgMjY1QzEyMC4yIDI1OS40IDExMy4xIDI1Ni40IDEwNC44IDI1Ni40Qzg3LjcgMjU2LjQgNzQuMiAyNzAuOSA3NC4yIDI4OS4zQzc0LjIgMzA3LjcgODcuNiAzMjIuMiAxMDQuOCAzMjIuMkMxMTIuNyAzMjIuMiAxMjAuMSAzMTguOSAxMjQuOSAzMTMuMUMxMjUuMiAzMTIuNyAxMjUuOCAzMTIuNiAxMjYuMiAzMTIuN0MxMjYuNyAzMTIuOSAxMjcgMzEzLjMgMTI3IDMxMy44VjMyMC42SDE0MC43Wk0xMDcuOSAzMDkuN0M5Ni45IDMwOS43IDg4LjIgMzAwLjggODguMiAyODkuNEM4OC4yIDI3OCA5Ni45IDI2OS4xIDEwNy45IDI2OS4xQzExOC45IDI2OS4xIDEyNy42IDI3OCAxMjcuNiAyODkuNEMxMjcuNiAzMDAuOCAxMTguOSAzMDkuNyAxMDcuOSAzMDkuN1pNMjU4LjIgMzIwLjZWMjU4SDI0NC41VjI2NC4zQzI0NC41IDI2NC44IDI0NC4yIDI2NS4yIDI0My43IDI2NS40QzI0My4yIDI2NS42IDI0Mi43IDI2NS40IDI0Mi40IDI2NUMyMzcuNyAyNTkuNCAyMzAuNiAyNTYuNCAyMjIuMyAyNTYuNEMyMDUuMiAyNTYuNCAxOTEuNyAyNzAuOSAxOTEuNyAyODkuM0MxOTEuNyAzMDcuNyAyMDUuMSAzMjIuMiAyMjIuMyAzMjIuMkMyMzAuMiAzMjIuMiAyMzcuNiAzMTguOSAyNDIuNCAzMTMuMUMyNDIuNyAzMTIuNyAyNDMuMyAzMTIuNiAyNDMuNyAzMTIuN0MyNDQuMiAzMTIuOSAyNDQuNSAzMTMuMyAyNDQuNSAzMTMuOFYzMjAuNkgyNTguMlpNMjI1LjQgMzA5LjdDMjE0LjQgMzA5LjcgMjA1LjcgMzAwLjggMjA1LjcgMjg5LjRDMjA1LjcgMjc4IDIxNC40IDI2OS4xIDIyNS40IDI2OS4xQzIzNi40IDI2OS4xIDI0NS4xIDI3OCAyNDUuMSAyODkuNEMyNDUuMSAzMDAuOCAyMzYuNCAzMDkuNyAyMjUuNCAzMDkuN1pNMjgzLjQgMzEzLjNDMjgzLjUgMzEzLjMgMjgzLjcgMzEzLjIgMjgzLjggMzEzLjJDMjg0LjEgMzEzLjIgMjg0LjUgMzEzLjQgMjg0LjcgMzEzLjZDMjg5LjQgMzE5LjEgMjk2LjcgMzIyLjMgMzA0LjggMzIyLjNDMzIxLjkgMzIyLjMgMzM1LjQgMzA3LjggMzM1LjQgMjg5LjRDMzM1LjQgMjgwLjQgMzMyLjMgMjcyIDMyNi42IDI2NS45QzMyMC45IDI1OS44IDMxMy4yIDI1Ni41IDMwNC44IDI1Ni41QzI5Ni45IDI1Ni41IDI4OS42IDI1OS44IDI4NC43IDI2NS41QzI4NC40IDI2NS45IDI4My45IDI2NiAyODMuNCAyNjUuOUMyODIuOSAyNjUuNyAyODIuNiAyNjUuMyAyODIuNiAyNjQuOFYyMzAuOEgyNjguN1YzMjAuOUgyODIuNlYzMTQuNkMyODIuNiAzMTMuOSAyODIuOSAzMTMuNSAyODMuNCAzMTMuM1pNMjgyIDI4OS40QzI4MiAyNzggMjkwLjcgMjY5LjEgMzAxLjcgMjY5LjFDMzEyLjcgMjY5LjEgMzIxLjQgMjc4IDMyMS40IDI4OS40QzMyMS40IDMwMC44IDMxMi43IDMwOS43IDMwMS43IDMwOS43QzI5MC42IDMwOS43IDI4MiAzMDAuOCAyODIgMjg5LjRaTTM1Ni45IDI5My4yVjMyMC44SDM0M1YyNThIMzU2LjdWMjY1LjdDMzU2LjcgMjY2LjIgMzU3LjEgMjY2LjcgMzU3LjYgMjY2LjhDMzU4LjEgMjY2LjkgMzU4LjcgMjY2LjcgMzU4LjkgMjY2LjNDMzYyLjQgMjYwLjQgMzY5LjEgMjU2LjcgMzc2LjIgMjU2LjdDMzc3LjEgMjU2LjcgMzc4LjEgMjU2LjggMzc4LjUgMjU2LjlWMjcxLjFDMzc3LjcgMjcwLjkgMzc2LjQgMjcwLjggMzc1LjEgMjcwLjhDMzYzLjkgMjcwLjkgMzU2LjkgMjc5LjQgMzU2LjkgMjkzLjJaTTQwMS4zIDI1OFYzMjAuN0gzODcuM1YyNThINDAxLjNaTTQwMi42IDIzOS4zQzQwMi42IDI0NCAzOTguOCAyNDcuOCAzOTQuMSAyNDcuOEMzODkuNCAyNDcuOCAzODUuNiAyNDQgMzg1LjYgMjM5LjNDMzg1LjYgMjM0LjYgMzg5LjQgMjMwLjggMzk0LjEgMjMwLjhDMzk4LjggMjMwLjggNDAyLjYgMjM0LjYgNDAyLjYgMjM5LjNaTTQ2OC4yIDI2Ni40TDQ1OS40IDI3NC43QzQ1NC40IDI3MSA0NDkuMiAyNjkuMiA0NDMuNyAyNjkuMkM0MzIuMSAyNjkuMiA0MjMuNCAyNzcuOSA0MjMuNCAyODkuNEM0MjMuNCAzMDAuOSA0MzIuMSAzMDkuNiA0NDMuNyAzMDkuNkM0NDguOCAzMDkuNiA0NTQgMzA3LjggNDU5LjcgMzA0LjFMNDY3LjYgMzEyLjRDNDU2LjIgMzIwLjggNDUwLjEgMzIyLjMgNDQyLjMgMzIyLjNDNDMyLjkgMzIyLjMgNDI0LjQgMzE5IDQxOC41IDMxM0M0MTIuNiAzMDcgNDA5LjMgMjk4LjcgNDA5LjMgMjg5LjRDNDA5LjMgMjcwLjMgNDIzLjMgMjU2LjUgNDQyLjUgMjU2LjVDNDQ4LjYgMjU2LjUgNDU4IDI1Ny41IDQ2OC4yIDI2Ni40Wk00ODkuNCAyOTUuNEM0ODkuMiAyOTUuNiA0ODkgMjk1LjkgNDg5IDI5Ni4zVjMyMC43SDQ3NS4xVjIzMC42SDQ4OVYyNzkuOUM0ODkgMjgwLjQgNDg5LjMgMjgwLjggNDg5LjcgMjgxQzQ5MC4yIDI4MS4yIDQ5MC43IDI4MS4xIDQ5MSAyODAuN0w1MTMuNyAyNTcuOUg1MzAuNkw1MDQuMiAyODQuM0M1MDMuOCAyODQuNyA1MDMuNyAyODUuNCA1MDQuMSAyODUuOUw1MzIuOCAzMjAuNkg1MTUuN0w0OTMuNSAyOTMuMUM0OTMuMyAyOTIuOCA0OTMgMjkyLjcgNDkyLjYgMjkyLjdINDkyLjVDNDkyLjIgMjkyLjcgNDkxLjkgMjkyLjggNDkxLjcgMjkzTDQ4OS40IDI5NS40Wk01MzEuNSAzMDYuOEw1NDIuNyAzMDAuOUM1NDUuMSAzMDYuOCA1NTAuMSAzMTAuNCA1NTUuNyAzMTAuNEM1NTkuOSAzMTAuNCA1NjQuOCAzMDguNSA1NjQuOCAzMDMuMkM1NjQuOCAyOTkuNiA1NjIuNiAyOTcuNSA1NTcuMSAyOTUuOEw1NDkuNCAyOTMuM0M1MzguNyAyODkuOSA1MzMuNSAyODQgNTMzLjUgMjc1LjNDNTMzLjUgMjY0LjMgNTQyLjUgMjU2LjMgNTU1IDI1Ni4zQzU2NC44IDI1Ni4zIDU3My40IDI2MS41IDU3Ny41IDI3MEw1NjYuNCAyNzZDNTYzLjggMjcwLjcgNTU5LjcgMjY3LjcgNTU1LjEgMjY3LjdDNTUwLjMgMjY3LjcgNTQ2LjkgMjcwLjMgNTQ2LjkgMjc0LjFDNTQ2LjkgMjc3LjQgNTQ5LjQgMjc5LjggNTU0LjQgMjgxLjVMNTYyIDI4NEM1NzMgMjg3LjYgNTc4LjQgMjkzLjUgNTc4LjQgMzAyLjFDNTc4LjQgMzE1LjIgNTY2LjkgMzIyLjEgNTU1LjUgMzIyLjFDNTQ0LjQgMzIyLjMgNTM1LjMgMzE2LjQgNTMxLjUgMzA2LjhaTTE1OSAyOTkuN1YyNzAuNUMxNTkgMjY5LjggMTU4LjUgMjY5LjMgMTU3LjggMjY5LjNIMTQ4LjFWMjU4SDE1Ny44QzE1OC41IDI1OCAxNTkgMjU3LjUgMTU5IDI1Ni44VjIzOC42SDE3Mi44VjI1Ni44QzE3Mi44IDI1Ny41IDE3My4zIDI1OCAxNzQgMjU4SDE4Ny41VjI2OS4zSDE3NEMxNzMuMyAyNjkuMyAxNzIuOCAyNjkuOCAxNzIuOCAyNzAuNVYyOTYuM0MxNzIuOCAzMDguNCAxNzcuMSAzMDkuNCAxODIuNyAzMDkuNEMxODQuNyAzMDkuNCAxODcuOCAzMDkuMiAxODkuNyAzMDguOVYzMjAuOUMxODcuNSAzMjEuMiAxODMuNSAzMjEuNiAxNzkuMiAzMjEuNkMxNzMuNiAzMjEuNyAxNTkgMzIxLjcgMTU5IDI5OS43WiIgZmlsbD0iIzBCMjAyNiIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE5ODRfNzMwIj4KPHJlY3Qgd2lkdGg9IjU3OC41IiBoZWlnaHQ9IjMyMi4zIiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo="
+      },
+      "groups": [
+        {
+          "id": "operation",
+          "label": "Operation"
+        },
+        {
+          "id": "workspace",
+          "label": "Databricks workspace"
+        },
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "sql",
+          "label": "SQL statement"
+        },
+        {
+          "id": "warehouse",
+          "label": "SQL warehouse"
+        },
+        {
+          "id": "jobs",
+          "label": "Job run"
+        },
+        {
+          "id": "modelServing",
+          "label": "Model Serving"
+        },
+        {
+          "id": "vectorSearch",
+          "label": "Vector Search"
+        },
+        {
+          "id": "headers",
+          "label": "HTTP headers"
+        },
+        {
+          "id": "timeout",
+          "label": "Timeouts"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
+          "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
+        }
+      ]
+    },
+    "properties": [
+      {},
+      {
+        "group": "workspace",
+        "placeholder": "https://dbc-1234abcd-5678.cloud.databricks.com",
+        "tooltip": "Base URL of the Databricks workspace. Do not include a path, the operation-specific path is appended automatically. A trailing slash is tolerated."
+      },
+      {
+        "group": "operation",
+        "tooltip": "Which Databricks API to call. The operation list below changes to match."
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "OAuth M2M with a service principal is the recommended method for production. See <a href=\"https://docs.databricks.com/aws/en/dev-tools/auth/oauth-m2m\">Databricks OAuth M2M</a>."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Application ID of the Databricks service principal."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "OAuth secret of the service principal. Reference it as a connector secret rather than entering the value directly."
+      },
+      {
+        "group": "authentication"
+      },
+      {},
+      {},
+      {},
+      {
+        "group": "modelServing",
+        "placeholder": "databricks-meta-llama-3-3-70b-instruct"
+      },
+      {
+        "group": "modelServing",
+        "tooltip": "List of chat messages. Each entry needs a role of system, user, or assistant, and a content string."
+      },
+      {
+        "group": "modelServing",
+        "tooltip": "Leave blank to use the endpoint default. Databricks reserves tokens up front, so an oversized value can be rejected with HTTP 429 before the request is processed."
+      },
+      {
+        "group": "modelServing",
+        "tooltip": "Leave blank to use the endpoint default of 1.0."
+      },
+      {
+        "group": "modelServing",
+        "tooltip": "Extra parameters merged into the request body, for anything not exposed as its own field: top_p, top_k, tools, tool_choice, response_format, logprobs, reasoning_effort. Streaming stays disabled and cannot be re-enabled here."
+      },
+      {
+        "group": "modelServing",
+        "tooltip": "Full request body for a custom model endpoint, using exactly one of dataframe_split, dataframe_records, inputs, or instances. Prefer dataframe_split, because dataframe_records does not guarantee column ordering. See <a href=\"https://docs.databricks.com/api/model-serving-query/v1/query\">Model Serving query API</a>."
+      },
+      {
+        "group": "sql",
+        "placeholder": "1234567890abcdef"
+      },
+      {
+        "group": "sql",
+        "tooltip": "Named markers such as :min_fare are supported. Positional question-mark markers are not supported by the Databricks SQL Statement Execution API."
+      },
+      {
+        "group": "sql",
+        "tooltip": "List of name, value, and type entries, and the only injection-safe way to pass values into the statement. The name omits the leading colon, type defaults to STRING, and omitting value binds NULL. Complex types such as ARRAY, MAP, and STRUCT are not supported."
+      },
+      {
+        "group": "sql",
+        "placeholder": "main"
+      },
+      {
+        "group": "sql",
+        "placeholder": "default"
+      },
+      {
+        "group": "sql",
+        "tooltip": "How long to wait inline for the statement to finish. 0s returns immediately. If the statement does not finish within the window, the response carries a non-terminal state and the result must be polled with the Get statement operation."
+      },
+      {
+        "group": "sql"
+      },
+      {
+        "group": "sql",
+        "tooltip": "How results are returned. INLINE embeds rows in the response and is capped at 25 MiB, and exceeding the cap aborts the statement without a result set. EXTERNAL_LINKS returns presigned URLs that expire after 15 minutes and must be fetched without an Authorization header."
+      },
+      {
+        "group": "sql",
+        "tooltip": "The statement_id returned by the Execute statement operation. Statements are removed roughly 12 hours after reaching a terminal state, after which these calls return HTTP 404."
+      },
+      {
+        "group": "sql",
+        "tooltip": "Zero-based chunk index, taken from next_chunk_index in a previous response. Use this to page through a result set larger than one chunk."
+      },
+      {
+        "group": "warehouse",
+        "placeholder": "1234567890abcdef",
+        "tooltip": "Start and stop return immediately. Poll Get warehouse until state is RUNNING or STOPPED before relying on the change."
+      },
+      {
+        "group": "jobs",
+        "tooltip": "Numeric ID of the Databricks job to trigger."
+      },
+      {
+        "group": "jobs",
+        "tooltip": "Key-value parameters passed to the run, for example {environment: \"prod\"}. Keys must match parameters declared on the job."
+      },
+      {
+        "group": "jobs",
+        "tooltip": "Databricks returns the existing run instead of starting a new one when a token is reused. Deriving it from a process variable makes the trigger safe to retry. The literal-value check cannot see through a FEEL expression, so make sure what it evaluates to also stays within 64 characters -- a process instance key is fine, a concatenation of several ids may not be."
+      },
+      {
+        "group": "jobs",
+        "tooltip": "The run_id returned by Run job now. Exception: for Get run output on a multi-task job, Databricks only accepts a single task's run_id -- read it from the terminal Get run response's tasks[].run_id, not this top-level run_id."
+      },
+      {
+        "group": "vectorSearch",
+        "placeholder": "main.default.my_index",
+        "tooltip": "Three-level Unity Catalog name of the vector search index."
+      },
+      {
+        "group": "vectorSearch",
+        "tooltip": "Request body for the index query. columns is required, but so is exactly one of query_text or query_vector -- a columns-only payload is rejected with HTTP 400 INVALID_PARAMETER_VALUE. Use query_text for a Delta Sync index backed by a model endpoint, or query_vector for a Direct Vector Access index or a Delta Sync index with self-managed vectors. Optional fields: num_results, filters_json, query_type, and score_threshold."
+      },
+      {
+        "group": "headers",
+        "tooltip": "Extra headers to send with the request. The User-Agent required for Databricks partner attribution is set by this template and cannot be overridden here."
+      },
+      {},
+      {},
+      {},
+      {},
+      {},
+      {
+        "group": "timeout",
+        "tooltip": "Must exceed the SQL wait timeout. Model Serving allows up to 597 seconds of model execution per request, so raise this for slow inference. Use 0 for an infinite timeout."
+      },
+      {
+        "group": "output",
+        "placeholder": "databricksResponse",
+        "tooltip": "Name of the process variable that receives the whole response. See <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\">result variable</a>."
+      },
+      {
+        "group": "output",
+        "tooltip": "Maps the response into process variables, and the shape differs per operation. Execute statement returns status.state plus result.data_array, Run job now returns run_id, Get run returns state.life_cycle_state and state.result_state, and chat returns choices, where FEEL lists are 1-indexed. See <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\">result expression</a>."
+      },
+      {
+        "group": "error",
+        "tooltip": "Left empty on purpose. An error expression sees the mapped output whenever Result variable or Result expression is set, not the raw response, so one written against response.body silently stops firing as soon as a result mapping exists -- which is the normal way to use this task. Map status.state into a variable and branch on it with an exclusive gateway instead. If you do write an expression here, write it against whatever your result mapping produces, and remember it is evaluated on the response alone with no way to tell which operation produced it -- guard on the SQL-specific statement_id so a Model Serving raw payload carrying its own status.state is not misread as a SQL failure. Terminal SQL failure states are FAILED and CANCELED; CLOSED means \"execution successful, and statement closed; result no longer available for fetch\", and PENDING/RUNNING mean the statement is still executing."
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries",
+        "tooltip": "ISO 8601 duration to wait between retries."
+      },
+      {
+        "group": "retries",
+        "tooltip": "ISO-8601 duration after which Zeebe considers this job timed out if not yet completed. Leave empty to use the default timeout. Raise this alongside Read timeout in seconds when waiting on slow Model Serving inference (up to 597s) or a long SQL wait_timeout."
+      },
+      {
+        "tooltip": "Version of the element template"
+      },
+      {
+        "tooltip": "ID of the element template"
       }
     ]
   },
@@ -312,10 +699,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "endpoint",
           "label": "API destination"
-        },
-        {
-          "id": "authentication",
-          "label": "Authentication"
         },
         {
           "id": "authorization",
@@ -369,6 +752,12 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authorization"
       },
       {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
         "group": "activation"
       },
       {
@@ -389,24 +778,44 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       "groups": [
         {
           "id": "endpoint",
-          "label": "Webhook Configuration"
+          "label": "Webhook configuration"
+        },
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "authorization",
+          "label": "Authorization"
+        },
+        {
+          "id": "webhookResponse",
+          "label": "Webhook response"
         },
         {
           "id": "activation",
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable Mapping"
+          "id": "synchronousResponse",
+          "label": "Response mode"
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml,%3Csvg id='icon' xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 32 32'%3E%3Cdefs%3E%3Cstyle%3E .cls-1 %7B fill: none; %7D %3C/style%3E%3C/defs%3E%3Cpath d='M24,26a3,3,0,1,0-2.8164-4H13v1a5,5,0,1,1-5-5V16a7,7,0,1,0,6.9287,8h6.2549A2.9914,2.9914,0,0,0,24,26Z'/%3E%3Cpath d='M24,16a7.024,7.024,0,0,0-2.57.4873l-3.1656-5.5395a3.0469,3.0469,0,1,0-1.7326.9985l4.1189,7.2085.8686-.4976a5.0006,5.0006,0,1,1-1.851,6.8418L17.937,26.501A7.0005,7.0005,0,1,0,24,16Z'/%3E%3Cpath d='M8.532,20.0537a3.03,3.03,0,1,0,1.7326.9985C11.74,18.47,13.86,14.7607,13.89,14.708l.4976-.8682-.8677-.497a5,5,0,1,1,6.812-1.8438l1.7315,1.002a7.0008,7.0008,0,1,0-10.3462,2.0356c-.457.7427-1.1021,1.8716-2.0737,3.5728Z'/%3E%3Crect id='_Transparent_Rectangle_' data-name='&lt;Transparent Rectangle&gt;' class='cls-1' width='32' height='32'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyBpZD0naWNvbicgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCAzMiAzMic+CiAgPGRlZnM+CiAgICA8c3R5bGU+LmNscy0xIHsgZmlsbDogbm9uZTsgfTwvc3R5bGU+CiAgPC9kZWZzPgogIDxwYXRoCiAgICBkPSdNMjQsMjZhMywzLDAsMSwwLTIuODE2NC00SDEzdjFhNSw1LDAsMSwxLTUtNVYxNmE3LDcsMCwxLDAsNi45Mjg3LDhoNi4yNTQ5QTIuOTkxNCwyLjk5MTQsMCwwLDAsMjQsMjZaJy8+CiAgPHBhdGgKICAgIGQ9J00yNCwxNmE3LjAyNCw3LjAyNCwwLDAsMC0yLjU3LjQ4NzNsLTMuMTY1Ni01LjUzOTVhMy4wNDY5LDMuMDQ2OSwwLDEsMC0xLjczMjYuOTk4NWw0LjExODksNy4yMDg1Ljg2ODYtLjQ5NzZhNS4wMDA2LDUuMDAwNiwwLDEsMS0xLjg1MSw2Ljg0MThMMTcuOTM3LDI2LjUwMUE3LjAwMDUsNy4wMDA1LDAsMSwwLDI0LDE2WicvPgogIDxwYXRoCiAgICBkPSdNOC41MzIsMjAuMDUzN2EzLjAzLDMuMDMsMCwxLDAsMS43MzI2Ljk5ODVDMTEuNzQsMTguNDcsMTMuODYsMTQuNzYwNywxMy44OSwxNC43MDhsLjQ5NzYtLjg2ODItLjg2NzctLjQ5N2E1LDUsMCwxLDEsNi44MTItMS44NDM4bDEuNzMxNSwxLjAwMmE3LjAwMDgsNy4wMDA4LDAsMSwwLTEwLjM0NjIsMi4wMzU2Yy0uNDU3Ljc0MjctMS4xMDIxLDEuODcxNi0yLjA3MzcsMy41NzI4WicvPgogIDxyZWN0IGlkPSdfVHJhbnNwYXJlbnRfUmVjdGFuZ2xlXycgZGF0YS1uYW1lPScmbHQ7VHJhbnNwYXJlbnQgUmVjdGFuZ2xlJmd0OycgY2xhc3M9J2Nscy0xJwogICAgd2lkdGg9JzMyJyBoZWlnaHQ9JzMyJy8+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
       {
         "group": "endpoint"
       },
@@ -414,36 +823,105 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
-        "group": "endpoint"
+        "group": "authentication"
       },
       {
-        "group": "endpoint"
+        "group": "authentication"
       },
       {
-        "group": "endpoint"
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "webhookResponse"
+      },
+      {
+        "group": "webhookResponse"
       },
       {
         "group": "activation"
       },
       {
-        "group": "variable-mapping"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
+      },
+      {
+        "group": "synchronousResponse",
+        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output",
+        "tooltip": "<div><p>Example response:</p><code>{\"request\":{\"body\":{\"orderId\":\"123\",\"status\":\"created\"},\"headers\":{\"Content-Type\":\"application/json\"},\"params\":{}}}</code><p>Example FEEL expression: <code>= { orderId: request.body.orderId }</code> -&gt; <code>{\"orderId\":\"123\"}</code></p></div>"
       }
     ]
   },
   "io.camunda.connectors.message.end.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
         {
-          "id": "default",
-          "label": "Properties"
+          "id": "operation",
+          "label": "Operation"
         },
         {
           "id": "connector",
@@ -468,29 +946,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
+      {},
+      {},
+      {},
+      {},
+      {},
       {
-        "group": "default"
+        "group": "operation"
       },
       {
-        "group": "default"
+        "group": "operation",
+        "tooltip": "Duration for which the message remains buffered"
       },
       {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
+        "group": "operation"
       },
       {
         "group": "connector"
@@ -506,6 +975,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -542,6 +1014,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "timeout",
           "label": "Timeout"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -593,16 +1069,25 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "JSON data for the work item, mapping queue column names to values. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/automation-anywhere/\" target=\"_blank\">Automation Anywhere connector documentation</a>"
       },
       {
         "group": "input"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "The queue item identifier to be fetched from queue"
       },
       {
-        "group": "timeout"
+        "group": "timeout",
+        "tooltip": "Sets the timeout in seconds to establish a connection or 0 for an infinite timeout"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       },
       {
         "group": "output"
@@ -615,6 +1100,43 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.connectors.AppIntegrationsChat.Boundary.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "correlation",
+          "label": "Correlation"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDguNUMyMSA3LjEzMzE3IDIxIDUgMjEgNUMyMSA0LjQ2OTU3IDIwLjc4OTMgMy45NjA4NiAyMC40MTQyIDMuNTg1NzlDMjAuMDM5MSAzLjIxMDcxIDE5LjUzMDQgMyAxOSAzSDRDMy40Njk1NyAzIDIuOTYwODYgMy4yMTA3MSAyLjU4NTc5IDMuNTg1NzlDMi4yMTA3MSAzLjk2MDg2IDIgNC40Njk1NyAyIDVWMjEuMjg2QzIuMDAwMDIgMjEuNDI2NCAyLjA0MTY3IDIxLjU2MzcgMi4xMTk2OSAyMS42ODA0QzIuMTk3NyAyMS43OTcxIDIuMzA4NTggMjEuODg4MSAyLjQzODMxIDIxLjk0MTlDMi41NjgwMyAyMS45OTU2IDIuNzEwNzcgMjIuMDA5NyAyLjg0ODQ5IDIxLjk4MjNDMi45ODYyIDIxLjk1NDkgMy4xMTI3IDIxLjg4NzMgMy4yMTIgMjEuNzg4TDUuNDE0IDE5LjU4NkM1Ljc4ODk5IDE5LjIxMDkgNi4yOTc2MSAxOS4wMDAxIDYuODI4IDE5SDEwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMC45MzU5IDE3LjcxNzFDMjEuMTI2OCAxNy41MjY4IDIxLjI3ODMgMTcuMzAwOCAyMS4zODE3IDE3LjA1MThDMjEuNDg1IDE2LjgwMjkgMjEuNTM4MiAxNi41MzYgMjEuNTM4MiAxNi4yNjY0QzIxLjUzODIgMTUuOTk2OSAyMS40ODUgMTUuNzMgMjEuMzgxNyAxNS40ODExQzIxLjI3ODMgMTUuMjMyMSAyMS4xMjY4IDE1LjAwNjEgMjAuOTM1OSAxNC44MTU4TDE4Ljk3MzIgMTIuODUzMkwxMy44NTMzIDE3Ljk3MzFMMTUuODE1OSAxOS45MzU3QzE2LjAwNjIgMjAuMTI2NyAxNi4yMzIzIDIwLjI3ODEgMTYuNDgxMiAyMC4zODE1QzE2LjczMDIgMjAuNDg0OSAxNi45OTcgMjAuNTM4MSAxNy4yNjY2IDIwLjUzODFDMTcuNTM2MSAyMC41MzgxIDE3LjgwMyAyMC40ODQ5IDE4LjA1MiAyMC4zODE1QzE4LjMwMDkgMjAuMjc4MSAxOC41MjcgMjAuMTI2NyAxOC43MTcyIDE5LjkzNTdMMjAuOTM1OSAxNy43MTcxWiIgc3Ryb2tlPSIjRkY0QzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMi4zODY1IDIxLjM4NjdMMTkuODI2NiAxOC44MjY4IiBzdHJva2U9IiNGRjRDMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE1LjEzMzMgMTYuNjkzNEwxMyAxNC41NjAxIiBzdHJva2U9IiNGRjRDMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE3LjY5MzMgMTQuMTMzM0wxNS41NiAxMiIgc3Ryb2tlPSIjRkY0QzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik02IDhIMTUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTYgMTJIMTAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg=="
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -635,17 +1157,24 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI3IiBoZWlnaHQ9IjEyNyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMjcuMiA4MGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjJDNi43IDkzLjIuOCA4Ny4zLjggODBjMC03LjMgNS45LTEzLjIgMTMuMi0xMy4yaDEzLjJWODB6bTYuNiAwYzAtNy4zIDUuOS0xMy4yIDEzLjItMTMuMiA3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzNjMCA3LjMtNS45IDEzLjItMTMuMiAxMy4yLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMlY4MHoiIGZpbGw9IiNFMDFFNUEiLz4KICA8cGF0aCBkPSJNNDcgMjdjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMkMzMy44IDYuNSAzOS43LjYgNDcgLjZjNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yVjI3SDQ3em0wIDYuN2M3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDEzLjlDNi42IDYwLjEuNyA1NC4yLjcgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJINDd6IiBmaWxsPSIjMzZDNUYwIi8+CiAgPHBhdGggZD0iTTk5LjkgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjIgNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yIDAgNy4zLTUuOSAxMy4yLTEzLjIgMTMuMkg5OS45VjQ2Ljl6bS02LjYgMGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjEzLjhDNjYuOSA2LjUgNzIuOC42IDgwLjEuNmM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzMuMXoiIGZpbGw9IiMyRUI2N0QiLz4KICA8cGF0aCBkPSJNODAuMSA5OS44YzcuMyAwIDEzLjIgNS45IDEzLjIgMTMuMiAwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjk5LjhoMTMuMnptMC02LjZjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMiAwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJoMzMuMWM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDgwLjF6IiBmaWxsPSIjRUNCMjJFIi8+Cjwvc3ZnPgo="
       }
     },
     "properties": [
       {},
-      {},
+      {
+        "group": "endpoint"
+      },
       {
         "group": "endpoint"
       },
@@ -656,22 +1185,32 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "activation"
       },
       {
-        "group": "variable-mapping"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "variable-mapping"
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
   "io.camunda.connectors.inbound.AWSSNS.Receive.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": [
-          "receive event",
-          "receive message"
-        ]
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -707,13 +1246,17 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
-        "group": "subscription"
+        "group": "subscription",
+        "tooltip": "The subscription ID is a part of the URL endpoint"
       },
       {
-        "group": "subscription"
+        "group": "subscription",
+        "tooltip": "Control which topic(s) are allowed to start a process"
       },
       {
-        "group": "subscription"
+        "group": "subscription",
+        "tooltip": "Topic ARNs that are allowed to trigger the process, comma-separated",
+        "placeholder": "arn:aws:sns:us-east-1:123456789012:Topic1,arn:aws:sns:us-east-1:123456789012:Topic2"
       },
       {
         "group": "activation"
@@ -735,7 +1278,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "correlation"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -766,16 +1310,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       "groups": [
         {
+          "id": "operation",
+          "label": "Operation"
+        },
+        {
           "id": "server",
           "label": "Server"
         },
         {
           "id": "authentication",
           "label": "Authentication"
-        },
-        {
-          "id": "operation",
-          "label": "Operation"
         },
         {
           "id": "requestBody",
@@ -788,6 +1332,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "url",
           "label": "URL"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -815,6 +1363,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
+        "tooltip": "Authentication type",
         "group": "authentication"
       },
       {
@@ -824,9 +1373,31 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "tooltip": "Your application's client ID from the OAuth client",
         "group": "authentication"
       },
       {
+        "tooltip": "Your application's client secret from the OAuth client",
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "tooltip": "The tenant ID of the Microsoft Entra (Azure AD) application",
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "tooltip": "The OAuth 2.0 refresh token used to obtain a new access token",
         "group": "authentication"
       },
       {
@@ -845,6 +1416,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "parameters"
       },
       {
+        "tooltip": "Supports <a href='https://learn.microsoft.com/en-us/graph/query-parameters?tabs=http' target='_blank'>OData query parameters</a>",
         "group": "parameters"
       },
       {
@@ -878,6 +1450,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "parameters"
       },
       {
+        "tooltip": "Supports <a href='https://learn.microsoft.com/en-us/graph/query-parameters?tabs=http' target='_blank'>OData query parameters</a>",
         "group": "parameters"
       },
       {
@@ -885,6 +1458,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "parameters"
+      },
+      {
+        "group": "requestBody"
       },
       {
         "group": "requestBody"
@@ -921,31 +1497,41 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "url"
       },
       {
+        "tooltip": "Name of variable to store the response in",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables",
         "group": "output"
       },
       {
+        "tooltip": "<a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "error"
       },
       {
         "group": "retries"
       },
       {
+        "tooltip": "ISO-8601 duration to wait between retries",
         "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       }
     ]
   },
   "io.camunda.connectors.agenticai.a2a.client.polling.receive.v0": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
-        "id": "connectors",
-        "name": "Connectors"
+        "id": "aiTools",
+        "name": "AI Tools"
       },
       "groups": [
         {
@@ -1026,7 +1612,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "correlation"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -1058,45 +1645,83 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       "groups": [
         {
           "id": "authentication",
-          "label": "Authentication"
+          "label": "Connection"
         },
         {
           "id": "kafka",
           "label": "Kafka"
         },
         {
+          "id": "schema",
+          "label": "Schema"
+        },
+        {
           "id": "message",
           "label": "Message"
         },
         {
-          "id": "output",
-          "label": "Response mapping"
+          "id": "connector",
+          "label": "Connector"
         },
         {
-          "id": "errors",
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg width='18' height='18' viewBox='0 0 256 416' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMidYMid'%3E%3Cpath d='M201.816 230.216c-16.186 0-30.697 7.171-40.634 18.461l-25.463-18.026c2.703-7.442 4.255-15.433 4.255-23.797 0-8.219-1.498-16.076-4.112-23.408l25.406-17.835c9.936 11.233 24.409 18.365 40.548 18.365 29.875 0 54.184-24.305 54.184-54.184 0-29.879-24.309-54.184-54.184-54.184-29.875 0-54.184 24.305-54.184 54.184 0 5.348.808 10.505 2.258 15.389l-25.423 17.844c-10.62-13.175-25.911-22.374-43.333-25.182v-30.64c24.544-5.155 43.037-26.962 43.037-53.019C124.171 24.305 99.862 0 69.987 0 40.112 0 15.803 24.305 15.803 54.184c0 25.708 18.014 47.246 42.067 52.769v31.038C25.044 143.753 0 172.401 0 206.854c0 34.621 25.292 63.374 58.355 68.94v32.774c-24.299 5.341-42.552 27.011-42.552 52.894 0 29.879 24.309 54.184 54.184 54.184 29.875 0 54.184-24.305 54.184-54.184 0-25.883-18.253-47.553-42.552-52.894v-32.775a69.965 69.965 0 0 0 42.6-24.776l25.633 18.143c-1.423 4.84-2.22 9.946-2.22 15.24 0 29.879 24.309 54.184 54.184 54.184 29.875 0 54.184-24.305 54.184-54.184 0-29.879-24.309-54.184-54.184-54.184zm0-126.695c14.487 0 26.27 11.788 26.27 26.271s-11.783 26.27-26.27 26.27-26.27-11.787-26.27-26.27c0-14.483 11.783-26.271 26.27-26.271zm-158.1-49.337c0-14.483 11.784-26.27 26.271-26.27s26.27 11.787 26.27 26.27c0 14.483-11.783 26.27-26.27 26.27s-26.271-11.787-26.271-26.27zm52.541 307.278c0 14.483-11.783 26.27-26.27 26.27s-26.271-11.787-26.271-26.27c0-14.483 11.784-26.27 26.271-26.27s26.27 11.787 26.27 26.27zm-26.272-117.97c-20.205 0-36.642-16.434-36.642-36.638 0-20.205 16.437-36.642 36.642-36.642 20.204 0 36.641 16.437 36.641 36.642 0 20.204-16.437 36.638-36.641 36.638zm131.831 67.179c-14.487 0-26.27-11.788-26.27-26.271s11.783-26.27 26.27-26.27 26.27 11.787 26.27 26.27c0 14.483-11.783 26.271-26.27 26.271z' style='fill:%23231f20'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCAyNTYgNDE2JyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHByZXNlcnZlQXNwZWN0UmF0aW89J3hNaWRZTWlkJz4KICAgIDxwYXRoIGQ9J00yMDEuODE2IDIzMC4yMTZjLTE2LjE4NiAwLTMwLjY5NyA3LjE3MS00MC42MzQgMTguNDYxbC0yNS40NjMtMTguMDI2YzIuNzAzLTcuNDQyIDQuMjU1LTE1LjQzMyA0LjI1NS0yMy43OTcgMC04LjIxOS0xLjQ5OC0xNi4wNzYtNC4xMTItMjMuNDA4bDI1LjQwNi0xNy44MzVjOS45MzYgMTEuMjMzIDI0LjQwOSAxOC4zNjUgNDAuNTQ4IDE4LjM2NSAyOS44NzUgMCA1NC4xODQtMjQuMzA1IDU0LjE4NC01NC4xODQgMC0yOS44NzktMjQuMzA5LTU0LjE4NC01NC4xODQtNTQuMTg0LTI5Ljg3NSAwLTU0LjE4NCAyNC4zMDUtNTQuMTg0IDU0LjE4NCAwIDUuMzQ4LjgwOCAxMC41MDUgMi4yNTggMTUuMzg5bC0yNS40MjMgMTcuODQ0Yy0xMC42Mi0xMy4xNzUtMjUuOTExLTIyLjM3NC00My4zMzMtMjUuMTgydi0zMC42NGMyNC41NDQtNS4xNTUgNDMuMDM3LTI2Ljk2MiA0My4wMzctNTMuMDE5QzEyNC4xNzEgMjQuMzA1IDk5Ljg2MiAwIDY5Ljk4NyAwIDQwLjExMiAwIDE1LjgwMyAyNC4zMDUgMTUuODAzIDU0LjE4NGMwIDI1LjcwOCAxOC4wMTQgNDcuMjQ2IDQyLjA2NyA1Mi43Njl2MzEuMDM4QzI1LjA0NCAxNDMuNzUzIDAgMTcyLjQwMSAwIDIwNi44NTRjMCAzNC42MjEgMjUuMjkyIDYzLjM3NCA1OC4zNTUgNjguOTR2MzIuNzc0Yy0yNC4yOTkgNS4zNDEtNDIuNTUyIDI3LjAxMS00Mi41NTIgNTIuODk0IDAgMjkuODc5IDI0LjMwOSA1NC4xODQgNTQuMTg0IDU0LjE4NCAyOS44NzUgMCA1NC4xODQtMjQuMzA1IDU0LjE4NC01NC4xODQgMC0yNS44ODMtMTguMjUzLTQ3LjU1My00Mi41NTItNTIuODk0di0zMi43NzVhNjkuOTY1IDY5Ljk2NSAwIDAgMCA0Mi42LTI0Ljc3NmwyNS42MzMgMTguMTQzYy0xLjQyMyA0Ljg0LTIuMjIgOS45NDYtMi4yMiAxNS4yNCAwIDI5Ljg3OSAyNC4zMDkgNTQuMTg0IDU0LjE4NCA1NC4xODQgMjkuODc1IDAgNTQuMTg0LTI0LjMwNSA1NC4xODQtNTQuMTg0IDAtMjkuODc5LTI0LjMwOS01NC4xODQtNTQuMTg0LTU0LjE4NHptMC0xMjYuNjk1YzE0LjQ4NyAwIDI2LjI3IDExLjc4OCAyNi4yNyAyNi4yNzFzLTExLjc4MyAyNi4yNy0yNi4yNyAyNi4yNy0yNi4yNy0xMS43ODctMjYuMjctMjYuMjdjMC0xNC40ODMgMTEuNzgzLTI2LjI3MSAyNi4yNy0yNi4yNzF6bS0xNTguMS00OS4zMzdjMC0xNC40ODMgMTEuNzg0LTI2LjI3IDI2LjI3MS0yNi4yN3MyNi4yNyAxMS43ODcgMjYuMjcgMjYuMjdjMCAxNC40ODMtMTEuNzgzIDI2LjI3LTI2LjI3IDI2LjI3cy0yNi4yNzEtMTEuNzg3LTI2LjI3MS0yNi4yN3ptNTIuNTQxIDMwNy4yNzhjMCAxNC40ODMtMTEuNzgzIDI2LjI3LTI2LjI3IDI2LjI3cy0yNi4yNzEtMTEuNzg3LTI2LjI3MS0yNi4yN2MwLTE0LjQ4MyAxMS43ODQtMjYuMjcgMjYuMjcxLTI2LjI3czI2LjI3IDExLjc4NyAyNi4yNyAyNi4yN3ptLTI2LjI3Mi0xMTcuOTdjLTIwLjIwNSAwLTM2LjY0Mi0xNi40MzQtMzYuNjQyLTM2LjYzOCAwLTIwLjIwNSAxNi40MzctMzYuNjQyIDM2LjY0Mi0zNi42NDIgMjAuMjA0IDAgMzYuNjQxIDE2LjQzNyAzNi42NDEgMzYuNjQyIDAgMjAuMjA0LTE2LjQzNyAzNi42MzgtMzYuNjQxIDM2LjYzOHptMTMxLjgzMSA2Ny4xNzljLTE0LjQ4NyAwLTI2LjI3LTExLjc4OC0yNi4yNy0yNi4yNzFzMTEuNzgzLTI2LjI3IDI2LjI3LTI2LjI3IDI2LjI3IDExLjc4NyAyNi4yNyAyNi4yN2MwIDE0LjQ4My0xMS43ODMgMjYuMjcxLTI2LjI3IDI2LjI3MXonCiAgICAgICAgICBzdHlsZT0nZmlsbDojMjMxZjIwJy8+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Choose a reusable Kafka connection credential, or configure one-time connection parameters below."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The user must have permissions to produce messages to the topic."
       },
       {
         "group": "authentication"
       },
       {
-        "group": "kafka"
+        "group": "authentication",
+        "tooltip": "Bootstrap server(s), comma-delimited if there are multiple.",
+        "placeholder": "broker1:9092,broker2:9092"
       },
       {
         "group": "kafka"
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "Additional Kafka producer properties in JSON. These override generated properties, including brokers and authentication from a reusable credential."
+      },
+      {
+        "group": "schema"
+      },
+      {
+        "group": "schema",
+        "tooltip": "Avro inline schema for the message value"
+      },
+      {
+        "group": "schema",
+        "tooltip": "Schema (JSON or Avro) for the message value."
+      },
+      {
+        "group": "schema",
+        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
+      },
+      {
+        "group": "schema"
       },
       {
         "group": "message"
@@ -1105,13 +1730,32 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "message"
       },
       {
-        "group": "output"
+        "group": "message",
+        "tooltip": "Kafka producer headers in JSON."
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       },
       {
         "group": "output"
       },
       {
-        "group": "errors"
+        "group": "output"
+      },
+      {
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -1147,16 +1791,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
-        "group": "endpoint"
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL."
       },
       {},
       {
         "group": "endpoint"
       },
       {
-        "group": "endpoint"
+        "group": "endpoint",
+        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
       },
       {
+        "tooltip": "Shared secret key used to verify the HMAC signature.",
         "group": "endpoint"
       },
       {},
@@ -1165,19 +1812,28 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Sets up the correlation key from process variables."
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Extracts the correlation key from the incoming message payload."
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Expression to extract the unique identifier of a message."
       },
       {
-        "group": "variable-mapping"
+        "group": "activation",
+        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events. See the <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound#make-your-twilio-webhook-connector-for-receiving-messages-executable' target='_blank'>Twilio webhook activation guide</a>."
       },
       {
-        "group": "variable-mapping"
+        "group": "variable-mapping",
+        "tooltip": "Name of variable to store the result of the connector in."
+      },
+      {
+        "group": "variable-mapping",
+        "tooltip": "Expression to map the inbound payload to process variables."
       }
     ]
   },
@@ -1199,23 +1855,31 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         },
         {
           "id": "configuration",
-          "label": "Configuration"
+          "label": "Queue properties"
         },
         {
           "id": "input",
           "label": "Input"
         },
         {
-          "id": "output",
-          "label": "Output"
+          "id": "connector",
+          "label": "Connector"
         },
         {
-          "id": "errors",
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg width='18' height='18' viewBox='0 0 256 289' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMidYMid'%3E%3Cpath d='M165.258 288.501h3.508l57.261-28.634.953-1.347V29.964l-.953-1.354L168.766 0h-3.551l.043 288.501' fill='%235294CF'/%3E%3Cpath d='M90.741 288.501h-3.557l-57.212-28.634-1.161-1.997-.589-226.742 1.75-2.518L87.184 0h3.601l-.044 288.501' fill='%231F5B98'/%3E%3Cpath d='M87.285 0h81.426v288.501H87.285V0z' fill='%232D72B8'/%3E%3Cpath d='M256 137.769l-1.935-.429-27.628-2.576-.41.204-57.312-2.292h-81.43l-57.313 2.292V91.264l-.06.032.06-.128 57.313-13.28h81.43l57.312 13.28 21.069 11.199v-7.2l8.904-.974-.922-1.798-28.192-20.159-.859.279-57.312-17.759h-81.43L29.972 72.515V28.61L0 63.723v30.666l.232-.168 8.672.946v7.348L0 107.28v30.513l.232-.024 8.672.128v12.807l-7.482.112L0 150.68v30.525l8.904 4.788v7.433l-8.531.942-.373-.28v30.661l29.972 35.118v-43.901l57.313 17.759h81.43l57.481-17.811.764.335 27.821-19.862 1.219-1.979-8.904-.982v-7.284l-1.167-.466-19.043 10.265-.69 1.44-57.481 13.203v.016h-81.43v-.016l-57.313-13.259v-43.864l57.313 2.284v.056h81.43l57.312-2.34 1.305.6 26.779-2.306 1.889-.923-8.904-.128v-12.807l8.904-.128' fill='%231A476F'/%3E%3Cpath d='M226.027 215.966v43.901L256 224.749v-30.461l-29.8 21.626-.173.052M226.027 197.421l.173-.04 29.8-16.028v-30.649l-29.973 2.757v43.96M226.2 91.208l-.173-.04v43.8L256 137.769v-30.634l-29.8-15.927M226.2 72.687L256 94.193V63.731L226.027 28.61v43.905l.173.06v.112' fill='%232D72B8'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCAyNTYgMjg5JyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHByZXNlcnZlQXNwZWN0UmF0aW89J3hNaWRZTWlkJz4KICAgIDxwYXRoIGQ9J00xNjUuMjU4IDI4OC41MDFoMy41MDhsNTcuMjYxLTI4LjYzNC45NTMtMS4zNDdWMjkuOTY0bC0uOTUzLTEuMzU0TDE2OC43NjYgMGgtMy41NTFsLjA0MyAyODguNTAxJwogICAgICAgICAgZmlsbD0nIzUyOTRDRicvPgogICAgPHBhdGggZD0nTTkwLjc0MSAyODguNTAxaC0zLjU1N2wtNTcuMjEyLTI4LjYzNC0xLjE2MS0xLjk5Ny0uNTg5LTIyNi43NDIgMS43NS0yLjUxOEw4Ny4xODQgMGgzLjYwMWwtLjA0NCAyODguNTAxJwogICAgICAgICAgZmlsbD0nIzFGNUI5OCcvPgogICAgPHBhdGggZD0nTTg3LjI4NSAwaDgxLjQyNnYyODguNTAxSDg3LjI4NVYweicgZmlsbD0nIzJENzJCOCcvPgogICAgPHBhdGggZD0nTTI1NiAxMzcuNzY5bC0xLjkzNS0uNDI5LTI3LjYyOC0yLjU3Ni0uNDEuMjA0LTU3LjMxMi0yLjI5MmgtODEuNDNsLTU3LjMxMyAyLjI5MlY5MS4yNjRsLS4wNi4wMzIuMDYtLjEyOCA1Ny4zMTMtMTMuMjhoODEuNDNsNTcuMzEyIDEzLjI4IDIxLjA2OSAxMS4xOTl2LTcuMmw4LjkwNC0uOTc0LS45MjItMS43OTgtMjguMTkyLTIwLjE1OS0uODU5LjI3OS01Ny4zMTItMTcuNzU5aC04MS40M0wyOS45NzIgNzIuNTE1VjI4LjYxTDAgNjMuNzIzdjMwLjY2NmwuMjMyLS4xNjggOC42NzIuOTQ2djcuMzQ4TDAgMTA3LjI4djMwLjUxM2wuMjMyLS4wMjQgOC42NzIuMTI4djEyLjgwN2wtNy40ODIuMTEyTDAgMTUwLjY4djMwLjUyNWw4LjkwNCA0Ljc4OHY3LjQzM2wtOC41MzEuOTQyLS4zNzMtLjI4djMwLjY2MWwyOS45NzIgMzUuMTE4di00My45MDFsNTcuMzEzIDE3Ljc1OWg4MS40M2w1Ny40ODEtMTcuODExLjc2NC4zMzUgMjcuODIxLTE5Ljg2MiAxLjIxOS0xLjk3OS04LjkwNC0uOTgydi03LjI4NGwtMS4xNjctLjQ2Ni0xOS4wNDMgMTAuMjY1LS42OSAxLjQ0LTU3LjQ4MSAxMy4yMDN2LjAxNmgtODEuNDN2LS4wMTZsLTU3LjMxMy0xMy4yNTl2LTQzLjg2NGw1Ny4zMTMgMi4yODR2LjA1Nmg4MS40M2w1Ny4zMTItMi4zNCAxLjMwNS42IDI2Ljc3OS0yLjMwNiAxLjg4OS0uOTIzLTguOTA0LS4xMjh2LTEyLjgwN2w4LjkwNC0uMTI4JwogICAgICAgICAgZmlsbD0nIzFBNDc2RicvPgogICAgPHBhdGggZD0nTTIyNi4wMjcgMjE1Ljk2NnY0My45MDFMMjU2IDIyNC43NDl2LTMwLjQ2MWwtMjkuOCAyMS42MjYtLjE3My4wNTJNMjI2LjAyNyAxOTcuNDIxbC4xNzMtLjA0IDI5LjgtMTYuMDI4di0zMC42NDlsLTI5Ljk3MyAyLjc1N3Y0My45Nk0yMjYuMiA5MS4yMDhsLS4xNzMtLjA0djQzLjhMMjU2IDEzNy43Njl2LTMwLjYzNGwtMjkuOC0xNS45MjdNMjI2LjIgNzIuNjg3TDI1NiA5NC4xOTNWNjMuNzMxTDIyNi4wMjcgMjguNjF2NDMuOTA1bC4xNzMuMDZ2LjExMicKICAgICAgICAgIGZpbGw9JyMyRDcyQjgnLz4KPC9zdmc+"
       }
     },
     "properties": [
@@ -1236,13 +1900,64 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
         "group": "configuration"
       },
       {
         "group": "input"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Attribute name of the table's partition key. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "The role that this key attribute will assume. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "S = String, N = Number, B = Binary"
+      },
+      {
+        "group": "input",
+        "tooltip": "Attribute name of the table's sort key. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "The role that this key attribute will assume. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "S = String, N = Number, B = Binary"
+      },
+      {
+        "group": "input",
+        "tooltip": "Total number of read capacity units. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "Total number of write capacity units. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "Controls how you are charged for read and write throughput. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "Prevents accidental table deletion"
       },
       {
         "group": "input"
@@ -1254,49 +1969,63 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Filter expressions for scan. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "A string that identifies the attributes that you want. For multiple attributes, the names must be comma-separated.",
+        "placeholder": "Artist, SongTitle, Genre"
+      },
+      {
+        "group": "input",
+        "tooltip": "A placeholder that you use as an alternative to an actual attribute name. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "Substitution values for placeholders used in the filter or projection expression. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
       },
       {
         "group": "input"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "DynamoDB item (group of attributes)"
       },
       {
         "group": "input"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Simple or composite primary key"
       },
       {
         "group": "input"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Simple or composite primary key"
       },
       {
         "group": "input"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Simple or composite primary key"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Attribute values to write to the item. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "PUT = set the attribute value, DELETE = remove the attribute"
       },
       {
-        "group": "input"
+        "group": "connector"
       },
       {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
+        "group": "connector"
       },
       {
         "group": "output"
@@ -1305,16 +2034,22 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "output"
       },
       {
-        "group": "errors"
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.HttpJson.v2": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20viewBox%3D%220%200%2018%2018%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M17.0335%208.99997C17.0335%2013.4475%2013.4281%2017.0529%208.98065%2017.0529C4.53316%2017.0529%200.927765%2013.4475%200.927765%208.99997C0.927765%204.55248%204.53316%200.947083%208.98065%200.947083C13.4281%200.947083%2017.0335%204.55248%2017.0335%208.99997Z%22%20fill%3D%22%23505562%22%2F%3E%0A%3Cpath%20d%3D%22M4.93126%2014.1571L6.78106%203.71471H10.1375C11.1917%203.71471%2011.9824%203.98323%2012.5095%204.52027C13.0465%205.04736%2013.315%205.73358%2013.315%206.57892C13.315%207.44414%2013.0714%208.15522%2012.5841%208.71215C12.1067%209.25913%2011.4553%209.63705%2010.6298%209.8459L12.0619%2014.1571H10.3315L9.03364%2010.0249H7.24351L6.51254%2014.1571H4.93126ZM7.49711%208.59281H9.24248C9.99832%208.59281%2010.5901%208.42374%2011.0177%208.08561C11.4553%207.73753%2011.6741%207.26513%2011.6741%206.66842C11.6741%206.19106%2011.5249%205.81811%2011.2265%205.54959C10.9282%205.27113%2010.4558%205.1319%209.80936%205.1319H8.10874L7.49711%208.59281Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E%0A"
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -1325,26 +2060,41 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Authentication"
         },
         {
+          "id": "tls",
+          "label": "Client certificate (mTLS)"
+        },
+        {
           "id": "endpoint",
           "label": "HTTP endpoint"
         },
         {
-          "id": "input",
+          "id": "timeout",
+          "label": "Connection timeout"
+        },
+        {
+          "id": "payload",
           "label": "Payload"
         },
         {
-          "id": "timeout",
-          "label": "Connect timeout"
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
-          "label": "Response mapping"
+          "label": "Output mapping"
         },
         {
-          "id": "errors",
+          "id": "error",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
-      ]
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE3LjAzMzUgOC45OTk5N0MxNy4wMzM1IDEzLjQ0NzUgMTMuNDI4MSAxNy4wNTI5IDguOTgwNjUgMTcuMDUyOUM0LjUzMzE2IDE3LjA1MjkgMC45Mjc3NjUgMTMuNDQ3NSAwLjkyNzc2NSA4Ljk5OTk3QzAuOTI3NzY1IDQuNTUyNDggNC41MzMxNiAwLjk0NzA4MyA4Ljk4MDY1IDAuOTQ3MDgzQzEzLjQyODEgMC45NDcwODMgMTcuMDMzNSA0LjU1MjQ4IDE3LjAzMzUgOC45OTk5N1oiIGZpbGw9IiM1MDU1NjIiLz4KPHBhdGggZD0iTTQuOTMxMjYgMTQuMTU3MUw2Ljc4MTA2IDMuNzE0NzFIMTAuMTM3NUMxMS4xOTE3IDMuNzE0NzEgMTEuOTgyNCAzLjk4MzIzIDEyLjUwOTUgNC41MjAyN0MxMy4wNDY1IDUuMDQ3MzYgMTMuMzE1IDUuNzMzNTggMTMuMzE1IDYuNTc4OTJDMTMuMzE1IDcuNDQ0MTQgMTMuMDcxNCA4LjE1NTIyIDEyLjU4NDEgOC43MTIxNUMxMi4xMDY3IDkuMjU5MTMgMTEuNDU1MyA5LjYzNzA1IDEwLjYyOTggOS44NDU5TDEyLjA2MTkgMTQuMTU3MUgxMC4zMzE1TDkuMDMzNjQgMTAuMDI0OUg3LjI0MzUxTDYuNTEyNTQgMTQuMTU3MUg0LjkzMTI2Wk03LjQ5NzExIDguNTkyODFIOS4yNDI0OEM5Ljk5ODMyIDguNTkyODEgMTAuNTkwMSA4LjQyMzc0IDExLjAxNzcgOC4wODU2MUMxMS40NTUzIDcuNzM3NTMgMTEuNjc0MSA3LjI2NTEzIDExLjY3NDEgNi42Njg0MkMxMS42NzQxIDYuMTkxMDYgMTEuNTI0OSA1LjgxODExIDExLjIyNjUgNS41NDk1OUMxMC45MjgyIDUuMjcxMTMgMTAuNDU1OCA1LjEzMTkgOS44MDkzNiA1LjEzMTlIOC4xMDg3NEw3LjQ5NzExIDguNTkyODFaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K"
+      }
     },
     "properties": [
       {},
@@ -1352,6 +2102,87 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Send API key in header or as query parameter."
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The unique identifier of the target API you want to access"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Send client ID and client secret as a Basic Auth header, or as client credentials in the request body"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The scopes which you want to request authorization for",
+        "placeholder": "read:contacts"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The refresh token used to obtain a new access token"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The scopes to request authorization for (space-separated)"
+      },
+      {
+        "group": "tls",
+        "tooltip": "PEM-encoded client certificate chain presented to the server for mTLS. Provide together with the private key."
+      },
+      {
+        "group": "tls",
+        "tooltip": "PEM-encoded private key (PKCS#1, PKCS#8 or EC), optionally encrypted."
+      },
+      {
+        "group": "tls",
+        "tooltip": "Password protecting the private key. Leave empty if it is not encrypted."
+      },
+      {
+        "group": "tls",
+        "tooltip": "Optional PEM-encoded CA certificate(s) used to validate the server. If empty, the JVM's default trust store is used."
+      },
+      {
         "group": "endpoint"
       },
       {
@@ -1361,49 +2192,67 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
+        "group": "endpoint",
+        "tooltip": "Map of HTTP headers to add to the request"
+      },
+      {
+        "group": "endpoint",
+        "tooltip": "Map of query parameters to add to the request URL"
+      },
+      {
         "group": "endpoint"
       },
       {
-        "group": "authentication"
+        "group": "endpoint",
+        "tooltip": "If enabled, HTTP 3xx redirects will be followed automatically. Disabled by default."
       },
       {
-        "group": "authentication"
+        "group": "endpoint",
+        "tooltip": "How the response body should be returned. Document reference uploads the body to the document store; as text decodes it as a String; as JSON parses it into a structure you can access via dot notation."
       },
       {
-        "group": "authentication"
+        "group": "endpoint"
       },
       {
-        "group": "authentication"
+        "group": "timeout",
+        "tooltip": "Use 0 for an infinite timeout"
       },
       {
-        "group": "authentication"
+        "group": "timeout",
+        "tooltip": "Use 0 for an infinite timeout"
       },
       {
-        "group": "authentication"
+        "group": "payload",
+        "tooltip": "Payload to send with the request"
       },
       {
-        "group": "authentication"
+        "group": "payload",
+        "tooltip": "Null values will not be sent"
       },
       {
-        "group": "authentication"
+        "group": "connector"
       },
       {
-        "group": "authentication"
-      },
-      {
-        "group": "timeout"
-      },
-      {
-        "group": "input"
+        "group": "connector"
       },
       {
         "group": "output"
       },
       {
-        "group": "output"
+        "group": "output",
+        "tooltip": "<div><p>Example response:</p><code>{\"body\":{\"order\":{\"id\":\"123\",\"total\":\"100.00€\"}},\"headers\":{\"Content-Type\":\"application/json\"},\"status\":200}</code><p>Example FEEL expression: <code>= { orderId: body.order.id }</code> -&gt; <code>{\"orderId\":\"123\"}</code></p></div>"
       },
       {
-        "group": "errors"
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -1421,7 +2270,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         },
         {
           "id": "configuration",
-          "label": "Configuration"
+          "label": "Queue properties"
         },
         {
           "id": "eventDetails",
@@ -1432,16 +2281,24 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Event Payload"
         },
         {
-          "id": "output",
-          "label": "Output Mapping"
+          "id": "connector",
+          "label": "Connector"
         },
         {
-          "id": "errors",
-          "label": "Error Handling"
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
+          "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 256 256'%3E%3Cdefs%3E%3ClinearGradient id='logosAwsEventbridge0' x1='0%25' x2='100%25' y1='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%23B0084D'/%3E%3Cstop offset='100%25' stop-color='%23FF4F8B'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23logosAwsEventbridge0)' d='M0 0h256v256H0z'/%3E%3Cpath fill='%23FFF' d='M171.702 211.2c-6.858 0-12.44-5.61-12.44-12.509s5.582-12.509 12.44-12.509c6.857 0 12.438 5.61 12.438 12.51c0 6.898-5.581 12.508-12.438 12.508Zm-27.278-54.4h-33.071L94.815 128l16.538-28.8h33.071L160.96 128l-16.535 28.8ZM88.387 69.818c-6.857 0-12.438-5.61-12.438-12.51c0-6.898 5.581-12.508 12.438-12.508c6.861 0 12.443 5.61 12.443 12.509s-5.582 12.509-12.443 12.509Zm83.315 109.964c-2.362 0-4.614.458-6.699 1.261l-13.514-22.931l-.713.426L167.39 129.6a3.226 3.226 0 0 0 0-3.2l-18.374-32a3.177 3.177 0 0 0-2.755-1.6h-33.435l.13-.077l-12.39-21.03c4.047-3.469 6.628-8.627 6.628-14.384c0-10.426-8.436-18.909-18.807-18.909c-10.367 0-18.803 8.483-18.803 18.909c0 10.425 8.436 18.909 18.803 18.909c2.365 0 4.618-.458 6.702-1.261l11.567 19.625L88.384 126.4a3.226 3.226 0 0 0 0 3.2l18.377 32c.57.992 1.62 1.6 2.756 1.6h36.744c.264 0 .521-.042.77-.102l12.496 21.21c-4.051 3.468-6.629 8.626-6.629 14.383c0 10.426 8.433 18.909 18.804 18.909c10.37 0 18.803-8.483 18.803-18.909c0-10.425-8.433-18.909-18.803-18.909Zm18.968-77.05c-6.857 0-12.436-5.609-12.436-12.508c0-6.9 5.579-12.509 12.436-12.509c6.858 0 12.44 5.61 12.44 12.509c0 6.9-5.582 12.509-12.44 12.509Zm23.303 23.668l-12.08-21.04c4.592-3.453 7.58-8.944 7.58-15.136c0-10.426-8.432-18.909-18.803-18.909c-2.638 0-5.152.554-7.433 1.549l-9.849-17.155a3.18 3.18 0 0 0-2.756-1.6h-39.448v6.4h37.612l9.11 15.872c-3.703 3.456-6.036 8.374-6.036 13.843c0 10.426 8.433 18.909 18.8 18.909c1.932 0 3.8-.298 5.556-.845L207.545 128l-15.892 27.674l5.512 3.2l16.808-29.274a3.21 3.21 0 0 0 0-3.2Zm-146.04 50.39c-6.86 0-12.442-5.612-12.442-12.508c0-6.9 5.581-12.51 12.442-12.51c6.857 0 12.439 5.61 12.439 12.51c0 6.896-5.582 12.508-12.44 12.508Zm10.393 3.236c5.062-3.392 8.41-9.181 8.41-15.744c0-10.426-8.436-18.91-18.803-18.91c-3.004 0-5.833.73-8.353 1.994L48.458 128l18.428-32.093l-5.515-3.2L42.027 126.4a3.21 3.21 0 0 0 0 3.2l12.388 21.568c-3.268 3.405-5.289 8.022-5.289 13.114c0 10.425 8.436 18.908 18.807 18.908c1.562 0 3.074-.214 4.528-.579l10.15 17.68c.57.989 1.62 1.6 2.757 1.6h39.451v-6.4H87.204l-8.878-15.465Z'/%3E%3C/svg%3E%0A"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxOCcgaGVpZ2h0PScxOCcgdmlld0JveD0nMCAwIDI1NiAyNTYnPgogICAgPGRlZnM+CiAgICAgICAgPGxpbmVhckdyYWRpZW50IGlkPSdsb2dvc0F3c0V2ZW50YnJpZGdlMCcgeDE9JzAlJyB4Mj0nMTAwJScgeTE9JzEwMCUnIHkyPScwJSc+CiAgICAgICAgICAgIDxzdG9wIG9mZnNldD0nMCUnIHN0b3AtY29sb3I9JyNCMDA4NEQnLz4KICAgICAgICAgICAgPHN0b3Agb2Zmc2V0PScxMDAlJyBzdG9wLWNvbG9yPScjRkY0RjhCJy8+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDwvZGVmcz4KICAgIDxwYXRoIGZpbGw9J3VybCgjbG9nb3NBd3NFdmVudGJyaWRnZTApJyBkPSdNMCAwaDI1NnYyNTZIMHonLz4KICAgIDxwYXRoIGZpbGw9JyNGRkYnCiAgICAgICAgICBkPSdNMTcxLjcwMiAyMTEuMmMtNi44NTggMC0xMi40NC01LjYxLTEyLjQ0LTEyLjUwOXM1LjU4Mi0xMi41MDkgMTIuNDQtMTIuNTA5YzYuODU3IDAgMTIuNDM4IDUuNjEgMTIuNDM4IDEyLjUxYzAgNi44OTgtNS41ODEgMTIuNTA4LTEyLjQzOCAxMi41MDhabS0yNy4yNzgtNTQuNGgtMzMuMDcxTDk0LjgxNSAxMjhsMTYuNTM4LTI4LjhoMzMuMDcxTDE2MC45NiAxMjhsLTE2LjUzNSAyOC44Wk04OC4zODcgNjkuODE4Yy02Ljg1NyAwLTEyLjQzOC01LjYxLTEyLjQzOC0xMi41MWMwLTYuODk4IDUuNTgxLTEyLjUwOCAxMi40MzgtMTIuNTA4YzYuODYxIDAgMTIuNDQzIDUuNjEgMTIuNDQzIDEyLjUwOXMtNS41ODIgMTIuNTA5LTEyLjQ0MyAxMi41MDlabTgzLjMxNSAxMDkuOTY0Yy0yLjM2MiAwLTQuNjE0LjQ1OC02LjY5OSAxLjI2MWwtMTMuNTE0LTIyLjkzMWwtLjcxMy40MjZMMTY3LjM5IDEyOS42YTMuMjI2IDMuMjI2IDAgMCAwIDAtMy4ybC0xOC4zNzQtMzJhMy4xNzcgMy4xNzcgMCAwIDAtMi43NTUtMS42aC0zMy40MzVsLjEzLS4wNzdsLTEyLjM5LTIxLjAzYzQuMDQ3LTMuNDY5IDYuNjI4LTguNjI3IDYuNjI4LTE0LjM4NGMwLTEwLjQyNi04LjQzNi0xOC45MDktMTguODA3LTE4LjkwOWMtMTAuMzY3IDAtMTguODAzIDguNDgzLTE4LjgwMyAxOC45MDljMCAxMC40MjUgOC40MzYgMTguOTA5IDE4LjgwMyAxOC45MDljMi4zNjUgMCA0LjYxOC0uNDU4IDYuNzAyLTEuMjYxbDExLjU2NyAxOS42MjVMODguMzg0IDEyNi40YTMuMjI2IDMuMjI2IDAgMCAwIDAgMy4ybDE4LjM3NyAzMmMuNTcuOTkyIDEuNjIgMS42IDIuNzU2IDEuNmgzNi43NDRjLjI2NCAwIC41MjEtLjA0Mi43Ny0uMTAybDEyLjQ5NiAyMS4yMWMtNC4wNTEgMy40NjgtNi42MjkgOC42MjYtNi42MjkgMTQuMzgzYzAgMTAuNDI2IDguNDMzIDE4LjkwOSAxOC44MDQgMTguOTA5YzEwLjM3IDAgMTguODAzLTguNDgzIDE4LjgwMy0xOC45MDljMC0xMC40MjUtOC40MzMtMTguOTA5LTE4LjgwMy0xOC45MDlabTE4Ljk2OC03Ny4wNWMtNi44NTcgMC0xMi40MzYtNS42MDktMTIuNDM2LTEyLjUwOGMwLTYuOSA1LjU3OS0xMi41MDkgMTIuNDM2LTEyLjUwOWM2Ljg1OCAwIDEyLjQ0IDUuNjEgMTIuNDQgMTIuNTA5YzAgNi45LTUuNTgyIDEyLjUwOS0xMi40NCAxMi41MDlabTIzLjMwMyAyMy42NjhsLTEyLjA4LTIxLjA0YzQuNTkyLTMuNDUzIDcuNTgtOC45NDQgNy41OC0xNS4xMzZjMC0xMC40MjYtOC40MzItMTguOTA5LTE4LjgwMy0xOC45MDljLTIuNjM4IDAtNS4xNTIuNTU0LTcuNDMzIDEuNTQ5bC05Ljg0OS0xNy4xNTVhMy4xOCAzLjE4IDAgMCAwLTIuNzU2LTEuNmgtMzkuNDQ4djYuNGgzNy42MTJsOS4xMSAxNS44NzJjLTMuNzAzIDMuNDU2LTYuMDM2IDguMzc0LTYuMDM2IDEzLjg0M2MwIDEwLjQyNiA4LjQzMyAxOC45MDkgMTguOCAxOC45MDljMS45MzIgMCAzLjgtLjI5OCA1LjU1Ni0uODQ1TDIwNy41NDUgMTI4bC0xNS44OTIgMjcuNjc0bDUuNTEyIDMuMmwxNi44MDgtMjkuMjc0YTMuMjEgMy4yMSAwIDAgMCAwLTMuMlptLTE0Ni4wNCA1MC4zOWMtNi44NiAwLTEyLjQ0Mi01LjYxMi0xMi40NDItMTIuNTA4YzAtNi45IDUuNTgxLTEyLjUxIDEyLjQ0Mi0xMi41MWM2Ljg1NyAwIDEyLjQzOSA1LjYxIDEyLjQzOSAxMi41MWMwIDYuODk2LTUuNTgyIDEyLjUwOC0xMi40NCAxMi41MDhabTEwLjM5MyAzLjIzNmM1LjA2Mi0zLjM5MiA4LjQxLTkuMTgxIDguNDEtMTUuNzQ0YzAtMTAuNDI2LTguNDM2LTE4LjkxLTE4LjgwMy0xOC45MWMtMy4wMDQgMC01LjgzMy43My04LjM1MyAxLjk5NEw0OC40NTggMTI4bDE4LjQyOC0zMi4wOTNsLTUuNTE1LTMuMkw0Mi4wMjcgMTI2LjRhMy4yMSAzLjIxIDAgMCAwIDAgMy4ybDEyLjM4OCAyMS41NjhjLTMuMjY4IDMuNDA1LTUuMjg5IDguMDIyLTUuMjg5IDEzLjExNGMwIDEwLjQyNSA4LjQzNiAxOC45MDggMTguODA3IDE4LjkwOGMxLjU2MiAwIDMuMDc0LS4yMTQgNC41MjgtLjU3OWwxMC4xNSAxNy42OGMuNTcuOTg5IDEuNjIgMS42IDIuNzU3IDEuNmgzOS40NTF2LTYuNEg4Ny4yMDRsLTguODc4LTE1LjQ2NVonLz4KPC9zdmc+Cg=="
       }
     },
     "properties": [
@@ -1453,19 +2310,44 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
+      },
+      {
         "group": "configuration"
       },
       {
-        "group": "eventDetails"
+        "group": "configuration"
       },
       {
-        "group": "eventDetails"
+        "group": "configuration"
       },
       {
-        "group": "eventDetails"
+        "group": "eventDetails",
+        "tooltip": "Value that identifies the service that generated the event. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound\" target=\"_blank\">Amazon EventBridge documentation</a>."
       },
       {
-        "group": "eventPayload"
+        "group": "eventDetails",
+        "tooltip": "Type of event being sent. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound\" target=\"_blank\">Amazon EventBridge documentation</a>."
+      },
+      {
+        "group": "eventDetails",
+        "tooltip": "Name of the destination event bus. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound\" target=\"_blank\">Amazon EventBridge documentation</a>."
+      },
+      {
+        "group": "eventPayload",
+        "tooltip": "Payload must be provided as JSON. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound\" target=\"_blank\">Amazon EventBridge event payload</a> documentation.",
+        "placeholder": "{\"key\": \"value\"}"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       },
       {
         "group": "output"
@@ -1474,7 +2356,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "output"
       },
       {
-        "group": "errors"
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -1498,12 +2389,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Authentication"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Output"
         },
         {
           "id": "errors",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ]
     },
@@ -1530,6 +2429,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
+        "tooltip": "Globally unique identifier for the project",
         "group": "operation"
       },
       {},
@@ -1546,64 +2446,90 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
+        "tooltip": "Globally unique identifier for the project",
         "group": "operation"
       },
       {
+        "tooltip": "Globally unique identifier for the parent task",
         "group": "operation"
       },
       {
-        "group": "operation"
-      },
-      {},
-      {},
-      {
-        "group": "operation"
-      },
-      {
+        "tooltip": "Free-form textual information associated with the task (i.e., its description)",
         "group": "operation"
       },
       {},
       {},
       {
-        "group": "operation"
-      },
-      {},
-      {
+        "tooltip": "The workspace or organization to filter projects on",
         "group": "operation"
       },
       {
-        "group": "operation"
-      },
-      {
+        "tooltip": "The team to filter projects on",
         "group": "operation"
       },
       {},
       {},
       {
+        "tooltip": "Globally unique identifier for the project",
+        "group": "operation"
+      },
+      {},
+      {
+        "tooltip": "Globally unique identifier for the workspace or organization",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Generally a short sentence fragment that fits on a line in the UI for maximum readability",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Free-form textual information associated with the project (i.e., its description)",
         "group": "operation"
       },
       {},
       {},
       {
+        "tooltip": "Globally unique identifier for the project",
+        "group": "operation"
+      },
+      {},
+      {},
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.agenticai.aiagent.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
-        "id": "connectors",
-        "name": "Connectors"
+        "id": "aiTools",
+        "name": "AI Tools"
       },
       "groups": [
         {
@@ -1648,585 +2574,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "response",
           "label": "Response",
-          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.8/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent/\">documentation</a> for details.",
-          "openByDefault": false
-        },
-        {
-          "id": "connector",
-          "label": "Connector"
-        },
-        {
-          "id": "output",
-          "label": "Output mapping"
-        },
-        {
-          "id": "error",
-          "label": "Error handling"
-        },
-        {
-          "id": "retries",
-          "label": "Retries"
-        }
-      ],
-      "icon": {
-        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNBNTZFRkYiLz4KPG1hc2sgaWQ9InBhdGgtMi1vdXRzaWRlLTFfMTg1XzYiIG1hc2tVbml0cz0idXNlclNwYWNlT25Vc2UiIHg9IjQiIHk9IjQiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0iYmxhY2siPgo8cmVjdCBmaWxsPSJ3aGl0ZSIgeD0iNCIgeT0iNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ii8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMDEwNSAxMi4wOTg3QzE4LjQ5IDEwLjU4OTQgMTcuMTU5NCA4LjEwODE0IDE2LjE3OTkgNi4wMTEwM0MxNi4xNTIgNi4wMDQ1MSAxNi4xMTc2IDYgMTYuMDc5NCA2QzE2LjA0MTEgNiAxNi4wMDY2IDYuMDA0NTEgMTUuOTc4OCA2LjAxMTA0QzE0Ljk5OTQgOC4xMDgxNCAxMy42Njk3IDEwLjU4ODkgMTIuMTQ4MSAxMi4wOTgxQzEwLjYyNjkgMTMuNjA3MSA4LjEyNTY4IDE0LjkyNjQgNi4wMTE1NyAxNS44OTgxQzYuMDA0NzQgMTUuOTI2MSA2IDE1Ljk2MTEgNiAxNkM2IDE2LjAzODcgNi4wMDQ2OCAxNi4wNzM2IDYuMDExNDQgMTYuMTAxNEM4LjEyNTE5IDE3LjA3MjkgMTAuNjI2MiAxOC4zOTE5IDEyLjE0NzcgMTkuOTAxNkMxMy42Njk3IDIxLjQxMDcgMTQuOTk5NiAyMy44OTIgMTUuOTc5MSAyNS45ODlDMTYuMDA2OCAyNS45OTU2IDE2LjA0MTEgMjYgMTYuMDc5MyAyNkMxNi4xMTc1IDI2IDE2LjE1MTkgMjUuOTk1NCAxNi4xNzk2IDI1Ljk4OUMxNy4xNTkxIDIzLjg5MiAxOC40ODg4IDIxLjQxMSAyMC4wMDk5IDE5LjkwMjFNMjAuMDA5OSAxOS45MDIxQzIxLjUyNTMgMTguMzk4NyAyMy45NDY1IDE3LjA2NjkgMjUuOTkxNSAxNi4wODI0QzI1Ljk5NjUgMTYuMDU5MyAyNiAxNi4wMzEgMjYgMTUuOTk5N0MyNiAxNS45Njg0IDI1Ljk5NjUgMTUuOTQwMyAyNS45OTE1IDE1LjkxNzFDMjMuOTQ3NCAxNC45MzI3IDIxLjUyNTkgMTMuNjAxIDIwLjAxMDUgMTIuMDk4NyIvPgo8L21hc2s+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMDEwNSAxMi4wOTg3QzE4LjQ5IDEwLjU4OTQgMTcuMTU5NCA4LjEwODE0IDE2LjE3OTkgNi4wMTEwM0MxNi4xNTIgNi4wMDQ1MSAxNi4xMTc2IDYgMTYuMDc5NCA2QzE2LjA0MTEgNiAxNi4wMDY2IDYuMDA0NTEgMTUuOTc4OCA2LjAxMTA0QzE0Ljk5OTQgOC4xMDgxNCAxMy42Njk3IDEwLjU4ODkgMTIuMTQ4MSAxMi4wOTgxQzEwLjYyNjkgMTMuNjA3MSA4LjEyNTY4IDE0LjkyNjQgNi4wMTE1NyAxNS44OTgxQzYuMDA0NzQgMTUuOTI2MSA2IDE1Ljk2MTEgNiAxNkM2IDE2LjAzODcgNi4wMDQ2OCAxNi4wNzM2IDYuMDExNDQgMTYuMTAxNEM4LjEyNTE5IDE3LjA3MjkgMTAuNjI2MiAxOC4zOTE5IDEyLjE0NzcgMTkuOTAxNkMxMy42Njk3IDIxLjQxMDcgMTQuOTk5NiAyMy44OTIgMTUuOTc5MSAyNS45ODlDMTYuMDA2OCAyNS45OTU2IDE2LjA0MTEgMjYgMTYuMDc5MyAyNkMxNi4xMTc1IDI2IDE2LjE1MTkgMjUuOTk1NCAxNi4xNzk2IDI1Ljk4OUMxNy4xNTkxIDIzLjg5MiAxOC40ODg4IDIxLjQxMSAyMC4wMDk5IDE5LjkwMjFNMjAuMDA5OSAxOS45MDIxQzIxLjUyNTMgMTguMzk4NyAyMy45NDY1IDE3LjA2NjkgMjUuOTkxNSAxNi4wODI0QzI1Ljk5NjUgMTYuMDU5MyAyNiAxNi4wMzEgMjYgMTUuOTk5N0MyNiAxNS45Njg0IDI1Ljk5NjUgMTUuOTQwMyAyNS45OTE1IDE1LjkxNzFDMjMuOTQ3NCAxNC45MzI3IDIxLjUyNTkgMTMuNjAxIDIwLjAxMDUgMTIuMDk4NyIgZmlsbD0id2hpdGUiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yMC4wMTA1IDEyLjA5ODdDMTguNDkgMTAuNTg5NCAxNy4xNTk0IDguMTA4MTQgMTYuMTc5OSA2LjAxMTAzQzE2LjE1MiA2LjAwNDUxIDE2LjExNzYgNiAxNi4wNzk0IDZDMTYuMDQxMSA2IDE2LjAwNjYgNi4wMDQ1MSAxNS45Nzg4IDYuMDExMDRDMTQuOTk5NCA4LjEwODE0IDEzLjY2OTcgMTAuNTg4OSAxMi4xNDgxIDEyLjA5ODFDMTAuNjI2OSAxMy42MDcxIDguMTI1NjggMTQuOTI2NCA2LjAxMTU3IDE1Ljg5ODFDNi4wMDQ3NCAxNS45MjYxIDYgMTUuOTYxMSA2IDE2QzYgMTYuMDM4NyA2LjAwNDY4IDE2LjA3MzYgNi4wMTE0NCAxNi4xMDE0QzguMTI1MTkgMTcuMDcyOSAxMC42MjYyIDE4LjM5MTkgMTIuMTQ3NyAxOS45MDE2QzEzLjY2OTcgMjEuNDEwNyAxNC45OTk2IDIzLjg5MiAxNS45NzkxIDI1Ljk4OUMxNi4wMDY4IDI1Ljk5NTYgMTYuMDQxMSAyNiAxNi4wNzkzIDI2QzE2LjExNzUgMjYgMTYuMTUxOSAyNS45OTU0IDE2LjE3OTYgMjUuOTg5QzE3LjE1OTEgMjMuODkyIDE4LjQ4ODggMjEuNDExIDIwLjAwOTkgMTkuOTAyMU0yMC4wMDk5IDE5LjkwMjFDMjEuNTI1MyAxOC4zOTg3IDIzLjk0NjUgMTcuMDY2OSAyNS45OTE1IDE2LjA4MjRDMjUuOTk2NSAxNi4wNTkzIDI2IDE2LjAzMSAyNiAxNS45OTk3QzI2IDE1Ljk2ODQgMjUuOTk2NSAxNS45NDAzIDI1Ljk5MTUgMTUuOTE3MUMyMy45NDc0IDE0LjkzMjcgMjEuNTI1OSAxMy42MDEgMjAuMDEwNSAxMi4wOTg3IiBzdHJva2U9IiM0OTFEOEIiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgbWFzaz0idXJsKCNwYXRoLTItb3V0c2lkZS0xXzE4NV82KSIvPgo8L3N2Zz4K"
-      }
-    },
-    "properties": [
-      {},
-      {
-        "group": "provider"
-      },
-      {
-        "group": "provider"
-      },
-      {
-        "group": "provider"
-      },
-      {
-        "group": "provider"
-      },
-      {
-        "group": "provider"
-      },
-      {
-        "group": "provider"
-      },
-      {
-        "group": "provider"
-      },
-      {
-        "group": "provider"
-      },
-      {
-        "group": "provider"
-      },
-      {
-        "group": "provider"
-      },
-      {
-        "group": "provider"
-      },
-      {
-        "group": "provider",
-        "tooltip": "Configure a custom OpenAI compatible API endpoint to use the connector with an OpenAI compatible API. Typically ends in <code>/v1</code>."
-      },
-      {
-        "group": "provider"
-      },
-      {
-        "group": "model"
-      },
-      {
-        "group": "model",
-        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-max-tokens\" target=\"_blank\">documentation</a>."
-      },
-      {
-        "group": "model",
-        "tooltip": "Floating point number between 0 and 1. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-temperature\" target=\"_blank\">documentation</a>."
-      },
-      {
-        "group": "model",
-        "tooltip": "Floating point number between 0 and 1. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-top-p\" target=\"_blank\">documentation</a>."
-      },
-      {
-        "group": "model",
-        "tooltip": "Integer greater than 0. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-top-k\" target=\"_blank\">documentation</a>."
-      },
-      {
-        "group": "model"
-      },
-      {
-        "group": "model",
-        "tooltip": "The maximum number of tokens per request to allow in the generated response. <br><br>Details in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InferenceConfiguration.html\" target=\"_blank\">documentation</a>."
-      },
-      {
-        "group": "model",
-        "tooltip": "Floating point number between 0 and 1. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InferenceConfiguration.html\" target=\"_blank\">documentation</a>."
-      },
-      {
-        "group": "model",
-        "tooltip": "Floating point number between 0 and 1. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InferenceConfiguration.html\" target=\"_blank\">documentation</a>."
-      },
-      {
-        "group": "model"
-      },
-      {
-        "group": "model",
-        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://platform.openai.com/docs/api-reference/chat/create#chat-create-max_completion_tokens\" target=\"_blank\">documentation</a>."
-      },
-      {
-        "group": "model",
-        "tooltip": "Floating point number between 0 and 2. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://platform.openai.com/docs/api-reference/chat/create#chat-create-temperature\" target=\"_blank\">documentation</a>."
-      },
-      {
-        "group": "model",
-        "tooltip": "Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://platform.openai.com/docs/api-reference/chat/create#chat-create-top_p\" target=\"_blank\">documentation</a>."
-      },
-      {
-        "group": "systemPrompt"
-      },
-      {
-        "group": "systemPrompt",
-        "tooltip": "Map parameters in the prompt using the <code>{{parameter}}</code> format. Default parameters: <code>current_date</code>, <code>current_time</code>, <code>current_date_time</code>"
-      },
-      {
-        "group": "userPrompt"
-      },
-      {
-        "group": "userPrompt",
-        "tooltip": "Map parameters in the prompt using the <code>{{parameter}}</code> format. Default parameters: <code>current_date</code>, <code>current_time</code>, <code>current_date_time</code>"
-      },
-      {
-        "group": "userPrompt",
-        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.8/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent/\" target=\"_blank\">See documentation</a> for details and supported file types."
-      },
-      {
-        "group": "tools",
-        "tooltip": "Add an ad-hoc sub-process ID to attach the AI agent to the tools. Ensure your process includes a tools feedback loop routing into the ad-hoc sub-process and back to the AI agent connector. <a href=\"https://docs.camunda.io/docs/8.8/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent/\" target=\"_blank\">See documentation</a> for details."
-      },
-      {
-        "group": "tools",
-        "tooltip": "This defines where to handle tool call results returned by the ad-hoc sub-process. Model this as part of your process and route it into the tools feedback loop. <a href=\"https://docs.camunda.io/docs/8.8/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent/\" target=\"_blank\">See documentation</a> for details."
-      },
-      {
-        "group": "memory",
-        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.8/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent/\" target=\"_blank\">See documentation</a> for details."
-      },
-      {
-        "group": "memory"
-      },
-      {
-        "group": "memory",
-        "tooltip": "Will use the cluster default TTL (time-to-live) if not specified. Make sure to set this value to a reasonable duration matching your process lifecycle."
-      },
-      {
-        "group": "memory"
-      },
-      {
-        "group": "memory",
-        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.8/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent/\" target=\"_blank\">See documentation</a> for details."
-      },
-      {
-        "group": "limits"
-      },
-      {
-        "group": "response"
-      },
-      {
-        "group": "response",
-        "tooltip": "Use this option in combination with models which don't support native JSON mode/structured tool calling (e.g. Anthropic). Make sure to instruct the model to return valid JSON in the system prompt. The parsed JSON will be available as <code>response.responseJson</code>.<br><br>If parsing fails, <code>null</code> will be returned as JSON response, but the text content will still be available as <code>response.responseText</code>."
-      },
-      {
-        "group": "response",
-        "tooltip": "If supported by the model, the response will be structured according to the provided schema. A parsed version of the response will be available as <code>response.responseJson</code>."
-      },
-      {
-        "group": "response"
-      },
-      {
-        "group": "response",
-        "tooltip": "In addition to the text content, the assistant message may include multiple additional content blocks and metadata (such as token usage). The message will be available as <code>response.responseMessage</code>."
-      },
-      {
-        "group": "connector"
-      },
-      {
-        "group": "connector"
-      },
-      {
-        "group": "output"
-      },
-      {
-        "group": "output"
-      },
-      {
-        "group": "error"
-      },
-      {
-        "group": "retries"
-      },
-      {
-        "group": "retries"
-      }
-    ]
-  },
-  "io.camunda.connectors.inbound.EmailBoundary.v1": {
-    "template": {
-      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "category": {
-        "id": "connectors",
-        "name": "Connectors"
-      },
-      "groups": [
-        {
-          "id": "authentication",
-          "label": "Authentication"
-        },
-        {
-          "id": "protocol",
-          "label": "Imap Details"
-        },
-        {
-          "id": "listenerInfos",
-          "label": "Listener information"
-        },
-        {
-          "id": "unseenPollingConfig",
-          "label": "After process"
-        },
-        {
-          "id": "allPollingConfig",
-          "label": "After process"
-        },
-        {
-          "id": "activation",
-          "label": "Activation"
-        },
-        {
-          "id": "correlation",
-          "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
-        },
-        {
-          "id": "deduplication",
-          "label": "Deduplication",
-          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
-        },
-        {
-          "id": "output",
-          "label": "Output mapping"
-        }
-      ],
-      "icon": {
-        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzkwXzI0MjApIj4KPHBhdGggZD0iTTguMzM4MzUgOS45NTM2NUwxMC4zODk0IDEyLjAxMDRMOC4zMzI2MiAxNC4wNjcyTDkuMTQ2MTYgMTQuODc1TDEyLjAxMDcgMTIuMDEwNEw5LjE0NjE2IDkuMTQ1ODNMOC4zMzgzNSA5Ljk1MzY1WiIgZmlsbD0iYmxhY2siLz4KPHBhdGggZD0iTTEyLjM0ODggOS45NTM2NUwxNC4zOTk4IDEyLjAxMDRMMTIuMzQzIDE0LjA2NzJMMTMuMTU2NiAxNC44NzVMMTYuMDIxMiAxMi4wMTA0TDEzLjE1NjYgOS4xNDU4M0wxMi4zNDg4IDkuOTUzNjVaIiBmaWxsPSJibGFjayIvPgo8cGF0aCBkPSJNMy45NzIgMTEuNDM3NUgxLjEyNTMzVjIuNzkyMTlMNy42NzM3NiA3LjMyMzk2QzcuNzY5NjcgNy4zOTA0OSA3Ljg4MzYgNy40MjYxNCA4LjAwMDMyIDcuNDI2MTRDOC4xMTcwNSA3LjQyNjE0IDguMjMwOTggNy4zOTA0OSA4LjMyNjg5IDcuMzIzOTZMMTQuODc1MyAyLjc5MjE5VjhIMTYuMDIxMlYyLjI3MDgzQzE2LjAyMTIgMS45NjY5NCAxNS45MDA0IDEuNjc1NDkgMTUuNjg1NiAxLjQ2MDYxQzE1LjQ3MDcgMS4yNDU3MiAxNS4xNzkyIDEuMTI1IDE0Ljg3NTMgMS4xMjVIMS4xMjUzM0MwLjgyMTQzMiAxLjEyNSAwLjUyOTk4NCAxLjI0NTcyIDAuMzE1MDk5IDEuNDYwNjFDMC4xMDAyMTQgMS42NzU0OSAtMC4wMjA1MDc4IDEuOTY2OTQgLTAuMDIwNTA3OCAyLjI3MDgzVjExLjQzNzVDLTAuMDIwNTA3OCAxMS43NDE0IDAuMTAwMjE0IDEyLjAzMjggMC4zMTUwOTkgMTIuMjQ3N0MwLjUyOTk4NCAxMi40NjI2IDAuODIxNDMyIDEyLjU4MzMgMS4xMjUzMyAxMi41ODMzSDMuOTcyVjExLjQzNzVaTTEzLjYxNDkgMi4yNzA4M0w4LjAwMDMyIDYuMTU1MjFMMi4zODU3NCAyLjI3MDgzSDEzLjYxNDlaIiBmaWxsPSIjRkM1RDBEIi8+CjxwYXRoIGQ9Ik00LjI4MjEgOS45NTM2NUw2LjMzMzE0IDEyLjAxMDRMNC4yNzYzNyAxNC4wNjcyTDUuMDg5OTEgMTQuODc1TDcuOTU0NDkgMTIuMDEwNEw1LjA4OTkxIDkuMTQ1ODNMNC4yODIxIDkuOTUzNjVaIiBmaWxsPSJibGFjayIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzkwXzI0MjAiPgo8cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg=="
-      }
-    },
-    "properties": [
-      {},
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication",
-        "tooltip": "Enter your full email address (e.g., user@example.com) or the username provided by your email service. This is used to authenticate your access to the mail server."
-      },
-      {
-        "group": "authentication",
-        "tooltip": "Enter the password associated with your email account. Keep your password secure and do not share it with others."
-      },
-      {
-        "group": "protocol",
-        "tooltip": "Enter the address of the IMAP server used to retrieve your emails. This server allows you to sync your messages across multiple devices. (e.g., imap.example.com)"
-      },
-      {
-        "group": "protocol",
-        "tooltip": "Enter the port number for connecting to the IMAP server. Common ports are 993 for secure connections using SSL/TLS, or 143 for non-secure connections."
-      },
-      {
-        "group": "protocol",
-        "tooltip": "Select the encryption protocol for email security."
-      },
-      {
-        "group": "listenerInfos",
-        "tooltip": "Enter the names of the folder you wish to monitor. If left blank, the listener will default to monitoring the 'INBOX' folder."
-      },
-      {
-        "group": "listenerInfos",
-        "tooltip": "The duration for which the task will wait for a message to arrive in the mailbox before correlating"
-      },
-      {
-        "group": "listenerInfos"
-      },
-      {
-        "group": "unseenPollingConfig",
-        "tooltip": "Chose the desired handling strategy"
-      },
-      {
-        "group": "unseenPollingConfig",
-        "tooltip": "Specify the destination folder to which the emails will be moved. To create a new folder or a hierarchy of folders, use a dot-separated path (e.g., 'Archive' or 'Projects.2023.January'). If any part of the path does not exist, it will be created automatically."
-      },
-      {
-        "group": "allPollingConfig",
-        "tooltip": "Chose the desired handling strategy"
-      },
-      {
-        "group": "allPollingConfig",
-        "tooltip": "Specify the destination folder to which the emails will be moved. To create a new folder or a hierarchy of folders, use a dot-separated path (e.g., 'Archive' or 'Projects.2023.January'). If any part of the path does not exist, it will be created automatically."
-      },
-      {
-        "group": "activation"
-      },
-      {
-        "group": "activation",
-        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
-      },
-      {
-        "group": "correlation"
-      },
-      {
-        "group": "correlation"
-      },
-      {
-        "group": "correlation"
-      },
-      {
-        "group": "correlation"
-      },
-      {
-        "group": "correlation"
-      },
-      {
-        "group": "deduplication"
-      },
-      {
-        "group": "deduplication"
-      },
-      {
-        "group": "deduplication"
-      },
-      {
-        "group": "deduplication"
-      },
-      {
-        "group": "output"
-      },
-      {
-        "group": "output"
-      }
-    ]
-  },
-  "io.camunda.connectors.AWSSNS.v1": {
-    "template": {
-      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "category": {
-        "id": "connectors",
-        "name": "Connectors"
-      },
-      "groups": [
-        {
-          "id": "authentication",
-          "label": "Authentication"
-        },
-        {
-          "id": "topicProperties",
-          "label": "Topic properties"
-        },
-        {
-          "id": "output",
-          "label": "Output"
-        },
-        {
-          "id": "input",
-          "label": "Input message data"
-        },
-        {
-          "id": "errors",
-          "label": "Error handling"
-        }
-      ],
-      "icon": {
-        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 80 80' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 64 (93537) - https://sketch.com --%3E%3Ctitle%3EIcon-Architecture/64/Arch_AWS-Simple-Notification-Service_64%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3ClinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='linearGradient-1'%3E%3Cstop stop-color='%23B0084D' offset='0%25'%3E%3C/stop%3E%3Cstop stop-color='%23FF4F8B' offset='100%25'%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Cg id='Icon-Architecture/64/Arch_AWS-Simple-Notification-Service_64' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Icon-Architecture-BG/64/Application-Integration' fill='url(%23linearGradient-1)'%3E%3Crect id='Rectangle' x='0' y='0' width='80' height='80'%3E%3C/rect%3E%3C/g%3E%3Cpath d='M17,38 C18.103,38 19,38.897 19,40 C19,41.103 18.103,42 17,42 C15.897,42 15,41.103 15,40 C15,38.897 15.897,38 17,38 L17,38 Z M41,64 C29.314,64 19.289,55.466 17.194,43.98 C18.965,43.894 20.427,42.659 20.857,41 L27,41 L27,39 L20.857,39 C20.427,37.342 18.966,36.107 17.195,36.02 C19.285,24.71 29.511,16 41,16 C45.313,16 49.832,17.622 54.429,20.821 L55.571,19.179 C50.633,15.743 45.73,14 41,14 C28.27,14 16.949,23.865 15.063,36.521 C13.839,37.207 13,38.5 13,40 C13,41.5 13.839,42.793 15.063,43.478 C16.97,56.341 28.056,66 41,66 C46.407,66 51.942,64.157 56.585,60.811 L55.415,59.189 C51.11,62.292 45.991,64 41,64 L41,64 Z M30.101,36.442 C31.955,36.895 34.275,37 36,37 C37.642,37 39.823,36.905 41.629,36.506 L37.105,45.553 C37.036,45.691 37,45.845 37,46 L37,50.453 C36.199,50.964 34.833,51.812 34,51.986 L34,46 C34,45.868 33.974,45.737 33.923,45.615 L30.101,36.442 Z M36,33 C40.025,33 42.174,33.604 42.841,34 C42.174,34.396 40.025,35 36,35 C31.975,35 29.826,34.396 29.159,34 C29.826,33.604 31.975,33 36,33 L36,33 Z M33,54 L34,54 C34.043,54 34.086,53.997 34.128,53.992 C35.352,53.833 36.909,52.887 38.272,52.013 L38.535,51.845 C38.824,51.661 39,51.342 39,51 L39,46.236 L44.559,35.12 C44.833,34.801 45,34.434 45,34 C45,31.39 39.361,31 36,31 C32.639,31 27,31.39 27,34 C27,34.366 27.12,34.684 27.32,34.967 L32,46.2 L32,53 C32,53.552 32.447,54 33,54 L33,54 Z M62,53 C63.103,53 64,53.897 64,55 C64,56.103 63.103,57 62,57 C60.897,57 60,56.103 60,55 C60,53.897 60.897,53 62,53 L62,53 Z M62,23 C63.103,23 64,23.897 64,25 C64,26.103 63.103,27 62,27 C60.897,27 60,26.103 60,25 C60,23.897 60.897,23 62,23 L62,23 Z M64,38 C65.103,38 66,38.897 66,40 C66,41.103 65.103,42 64,42 C62.897,42 62,41.103 62,40 C62,38.897 62.897,38 64,38 L64,38 Z M54,41 L60.143,41 C60.589,42.72 62.142,44 64,44 C66.206,44 68,42.206 68,40 C68,37.794 66.206,36 64,36 C62.142,36 60.589,37.28 60.143,39 L54,39 L54,26 L58.143,26 C58.589,27.72 60.142,29 62,29 C64.206,29 66,27.206 66,25 C66,22.794 64.206,21 62,21 C60.142,21 58.589,22.28 58.143,24 L53,24 C52.447,24 52,24.448 52,25 L52,39 L45,39 L45,41 L52,41 L52,55 C52,55.552 52.447,56 53,56 L58.143,56 C58.589,57.72 60.142,59 62,59 C64.206,59 66,57.206 66,55 C66,52.794 64.206,51 62,51 C60.142,51 58.589,52.28 58.143,54 L54,54 L54,41 Z' id='AWS-Simple-Notification-Service_Icon_64_Squid' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
-      }
-    },
-    "properties": [
-      {},
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "topicProperties"
-      },
-      {
-        "group": "topicProperties"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "output"
-      },
-      {
-        "group": "output"
-      },
-      {
-        "group": "errors"
-      }
-    ]
-  },
-  "io.camunda.connectors.Salesforce.v1": {
-    "template": {
-      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "icon": {
-        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgZmlsbD0icmdiKDAlLDAlLDAlKSIgeG1sbnM6dj0iaHR0cHM6Ly92ZWN0YS5pby9uYW5vIj48cGF0aCBkPSJNNC44MiAzLjA3NEMzLjM4MyAzLjE5MSAyLjE1NiA0LjE0MSAxLjcwNyA1LjVhMi44MSAyLjgxIDAgMCAwLS4xNzIgMS4wNTkgMi40NCAyLjQ0IDAgMCAwIC4xMjUuOTFsLjA1MS4xNzYtLjI4NS4yODFDLjkxOCA4LjQzNC42MzcgOC45NDUuNSA5LjYyMWE0LjAxIDQuMDEgMCAwIDAgLjAxMiAxLjIwMyAzLjEzIDMuMTMgMCAwIDAgLjg5MSAxLjYyNWMuNDYxLjQ2MS45NjEuNzM0IDEuNTgyLjg3MS4xODguMDM5LjY3Mi4wOS43MjcuMDc0LjAxNi0uMDA4LjA5LS4wMTYuMTYtLjAybC4xMzMtLjAxNi4xMzMuMjI3Yy45MDIgMS41MTIgMi43NTggMi4wMjcgNC4yNjYgMS4xODRhMy40OSAzLjQ5IDAgMCAwIDEuMDgyLTEuMDA0bC4xNDgtLjIzLjIzLjA3YTIuMTMgMi4xMyAwIDAgMCAuODgzLjEzMyAyLjg0IDIuODQgMCAwIDAgMS41Mi0uNSAzLjUyIDMuNTIgMCAwIDAgLjc4MS0uNzYyYy4wNzQtLjEwNS4xNDgtLjE4Ny4xNi0uMTg3cy4xMzMuMDEyLjI2Mi4wMjNjLjI2Mi4wMjcuNjA5LjAwNC45NjUtLjA2NmEzLjk5IDMuOTkgMCAwIDAgMi40OC0xLjY4NCAzLjkgMy45IDAgMCAwIC4xMTMtNC4xMjUgMy45MyAzLjkzIDAgMCAwLTIuNTIzLTEuODUyIDMuMzUgMy4zNSAwIDAgMC0xLjg3OS4wODZsLS4yNS4wN2EyLjI2IDIuMjYgMCAwIDEtLjA5NC0uMTI1IDMuODMgMy44MyAwIDAgMC0uNjIxLS42MDljLS40NTctLjM0NC0xLjA0Ny0uNTU1LTEuNjQxLS41ODItLjcxNS0uMDM5LTEuNDguMjU4LTIuMDUxLjc4MWwtLjE2NC4xNTItLjExMy0uMTIxYy0uNTgyLS42NDUtMS40NjUtMS4wOTQtMi4yNTgtMS4xNTItLjM0OC0uMDI3LS40MTQtLjAyNy0uNjEzLS4wMTJ6bS44NzkuNzdjLjc2Mi4xNzYgMS4zNzEuNjEzIDEuODMyIDEuMzEzbC4yMDcuMjk3Yy4wMTIgMCAuMTAyLS4xMTMuMjAzLS4yNTRhNC40MiA0LjQyIDAgMCAxIC4zNC0uNDAyYy44OTgtLjg4MyAyLjM1NS0uODc5IDMuMjUuMDE2LjE2NC4xNjQuMzEzLjM2Ny40NTcuNjI1LjA0My4wODIuMDkuMTQ1LjA5OC4xNDVzLjEwNS0uMDM1LjIwNy0uMDgyYTMuMjYgMy4yNiAwIDAgMSAxLjYyOS0uMjg1YzEuMjY2LjEyMSAyLjI4NS45MDIgMi43MzggMi4wOTRhNC41NCA0LjU0IDAgMCAxIC4xMDkuMzc1Yy4wNTkuMjMuMDU5LjI3LjA2My43MDcgMCAuNTEyLS4wMi42NDgtLjE1MiAxLjA0N2EzLjE2IDMuMTYgMCAwIDEtLjc3IDEuMjM0IDMuMTYgMy4xNiAwIDAgMS0xLjU1NS44NTljLS4zNC4wODItLjg1Mi4wOTQtMS4yNS4wMzFsLS4zMDEtLjAzOWE1LjY1IDUuNjUgMCAwIDAtLjEwOS4yMDdjLS4zMDUuNTk4LS44MjQgMS4wMzUtMS40MzQgMS4yMTEtLjU5LjE3Mi0xLjE2OC4xMDktMS43NS0uMTg0YTEuMTkgMS4xOSAwIDAgMC0uMTk1LS4wODJjLS4wMTEgMC0uMDgyLjExMy0uMTQ4LjI1LS4yNTQuNTYzLS42MjEuOTY1LTEuMTEzIDEuMjM4YTIuNTggMi41OCAwIDAgMS0yLjM3NSAwYy0uNTM1LS4yOTMtLjkyNi0uNzU4LTEuMTY4LTEuMzc1LS4wODYtLjIyMy0uMDYyLS4yMTEtLjQzNy0uMTQ4YTIuODggMi44OCAwIDAgMS0xLjAwNC0uMDI3Yy0xLjU0Ny0uMzg3LTIuMzQ4LTIuMDg2LTEuNjU2LTMuNTA4YTIuNTggMi41OCAwIDAgMSAuOTAyLTEuMDE2bC4yMTEtLjE0MWExLjU3IDEuNTcgMCAwIDAtLjA4Mi0uMjQyYy0uMTg0LS40OTYtLjI0Ni0uOTA2LS4xOTktMS4zNDguMTMzLTEuMzA1IDEuMDc4LTIuMzE2IDIuMzgzLTIuNTQ3YTMuOTQgMy45NCAwIDAgMSAxLjA3LjAzMXptLjExNyAzLjUxOWEzMi44MyAzMi44MyAwIDAgMC0uMDA0IDEuMDdsLjAwNCAxLjAzOS4xMzcuMDA0Yy4wOTguMDA0LjE0NSAwIC4xNTYtLjAyYTM2LjkzIDM2LjkzIDAgMCAwIC4wMDgtMi4wODIuMzkuMzkgMCAwIDAtLjMwMS0uMDEyem00LjMwOS0uMDA0Yy0uMTg3LjA0Ny0uMzMyLjE5NS0uMzk1LjQwMmEuODIuODIgMCAwIDAtLjA0My4xNzZjMCAuMDktLjAyMy4xMDktLjE0MS4xMDloLS4xMTNsLS4wMjMuMTA1YS44My44MyAwIDAgMC0uMDIzLjEyOWMwIC4wMTYuMDUxLjAyMy4xMTcuMDIzLjA3OCAwIC4xMTcuMDA4LjExNy4wMjNzLS4wNTEuMzAxLS4xMDUuNjI5Yy0uMTcyLjkzOC0uMTkxLjk4NC0uNDQ1Ljk4NEg4LjkzbC0uMDI3LjA3OGMtLjA0Ny4xMjUtLjAzOS4xNDUuMDYzLjE3Mi4xOTkuMDU1LjQ2MS0uMDI3LjU3NC0uMTguMTAyLS4xNDUuMTQ1LS4yOTcuMjctMS4wMDhsLjEyNS0uNjkxLjE3Mi0uMDA4Yy4xNjgtLjAxMi4xNjgtLjAxMi4xODQtLjA3NGEuNzguNzggMCAwIDAgLjAxNi0uMTI1bC4wMDQtLjA1OUg5Ljk4bC4wMTYtLjEwMmMuMDItLjE0MS4wODItLjI3Ny4xNDUtLjMwOS4wMjctLjAxNi4xMDUtLjAyNy4xOC0uMDIzbC4xMjkuMDA0LjAzOS0uMTA5YS4zOC4zOCAwIDAgMCAuMDI3LS4xMTdjLS4wNDMtLjA0My0uMjctLjA1OS0uMzkxLS4wMzF6bS02LjgwOS43MTFjLS4zNTkuMDgyLS40OTYuNDMtLjI1NC42NDguMDY2LjA1OS4xNDEuMDk0LjMzNi4xNTYuMzQ0LjEwNS40MTQuMTg0LjI4NS4zMTYtLjAzNS4wMzktLjA3LjA0My0uMjE5LjA0M3MtLjE5NS0uMDA4LS4zMjQtLjA3Yy0uMDgyLS4wMzktLjE1Mi0uMDYyLS4xNi0uMDUxYS45LjkgMCAwIDAtLjA1NS4xMDlsLS4wMzEuMDkuMTMzLjA2M2MuMzc5LjE3Ni44MzYuMTEzLjk2OS0uMTM3LjA1MS0uMTAyLjA1NS0uMjU0LjAwNC0uMzUycy0uMTQ1LS4xNTYtLjQzLS4yNWMtLjE5NS0uMDY2LS4yNjYtLjA5OC0uMjk3LS4xNDUtLjA0My0uMDU1LS4wNDMtLjA1OS0uMDA4LS4xMTMuMDItLjAzMS4wNjMtLjA2Ni4wOTQtLjA3OC4wNzQtLjAzMS4yNzMtLjAwOC40MjYuMDQ3LjA2Ni4wMjMuMTI5LjAzNS4xMzcuMDIzcy4wMzEtLjA1MS4wNTEtLjA5NGwuMDMxLS4wODItLjA2Ni0uMDQzYTEuMDEgMS4wMSAwIDAgMC0uNjIxLS4wODJ6bTEuNDExLS4wMDRjLS4xNTYuMDIzLS4yNzcuMDYzLS4zMi4wOTRzLS4wMzkuMDMxLjAwOC4xMjljLjAzNS4wODYuMDUxLjEwMi4wNzguMDkuMTg0LS4wNzQuNDY5LS4xMDIuNTktLjA1NS4wNzguMDI3LjEyNS4xMDIuMTI1LjE5NXYuMDc0bC0uMjI3LS4wMDhjLS4yODktLjAwOC0uNDI2LjAzMS0uNTU5LjE1Ni0uMTA1LjEwNS0uMTQ4LjIyMy0uMTI5LjM1OS4wNTUuMzQuNDUzLjQ1NyAxLjEwMi4zMTZsLjEwNS0uMDIzLjAxNi0uMzA5Yy4wMzUtLjY3Ni0uMDMxLS44OTUtLjI4NS0uOTg0YTEuMjYgMS4yNiAwIDAgMC0uNTA0LS4wMzV6bS40MTQuNzQybC4wNjYuMDEydi4zOThsLS4wOTguMDE2Yy0uMjUuMDMxLS40My0uMDA0LS40OC0uMDlhLjM4LjM4IDAgMCAxLS4wMjMtLjEyOWMwLS4wOTQuMDYzLS4xNjQuMTY0LS4xOTlhMS4zIDEuMyAwIDAgMSAuMzcxLS4wMDh6bTEuODItLjczNGMtLjM0LjA5OC0uNTA0LjM0NC0uNDg0Ljc0Mi4wMTYuMzE2LjEzNy41MDQuNDAyLjYwNS4yMjcuMDkuODM2LjA0Ny44MzYtLjA1OWEuODIuODIgMCAwIDAtLjA3NC0uMjAzbC0uMTA5LjAzMWExLjA2IDEuMDYgMCAwIDEtLjI3My4wMzVjLS4yMjMuMDA0LS4zNDgtLjA1NS0uNDE0LS4xOTUtLjAzMS0uMDUxLS4wNTEtLjExMy0uMDUxLS4xNDVWOC44NGwuNDg4LS4wMDQuNDg4LS4wMDh2LS4xNmMwLS4yNzMtLjExNy0uNDY5LS4zMjgtLjU2MmEuOTEuOTEgMCAwIDAtLjQ4LS4wMzF6bS4zMjQuMjQyYS4yOS4yOSAwIDAgMSAuMTc2LjIzNGwuMDA4LjA2My0uMzEyLjAwOGMtLjE2OCAwLS4zMiAwLS4zMzYtLjAwNC0uMDMxLS4wMTIuMDE2LS4xNzIuMDc0LS4yMzQuMDg2LS4wOTguMjQ2LS4xMjUuMzkxLS4wNjZ6bTAgMCIvPjxwYXRoIGQ9Ik04LjQzOCA4LjA3Yy0uMjAzLjA0Ny0uMzI0LjE1Ni0uMzU5LjMyLS4wNTUuMjIzLjA3NC4zNjcuNDEuNDczLjM0NC4xMDUuNDA2LjE0OC4zNjMuMjYyLS4wNTUuMTQ1LS4zMzIuMTYtLjU5OC4wMzUtLjA3OC0uMDM1LS4xNDUtLjA1OS0uMTUyLS4wNDdzLS4wMzEuMDU1LS4wNTUuMTA5bC0uMDMxLjA5LjEzMy4wNjNjLjQ4NC4yMjcgMS4wMTIuMDU5IDEuMDEyLS4zMi0uMDA0LS4yMDctLjEwNS0uMzAxLS40NjktLjQxOGExLjI4IDEuMjggMCAwIDEtLjI3My0uMTA5LjE0LjE0IDAgMCAxIC4wMDQtLjE5NWMuMDY2LS4wNTUuMzA5LS4wNTEuNDguMDEyLjA3LjAyMy4xMzMuMDM5LjE0NS4wMjdzLjAyNy0uMDUxLjA0Ny0uMDk0bC4wMzEtLjA4Mi0uMDY2LS4wNDNhMS4wMSAxLjAxIDAgMCAwLS42MjEtLjA4MnptMi40MS0uMDA0Yy0uMjcuMDU5LS40NTMuMjY2LS40OTYuNTYzLS4wNDcuMzQuMDg2LjY0NS4zMzYuNzc3LjExNy4wNTkuMzIuMDg2LjQ3My4wNTUuMjMtLjAzOS4zNzEtLjE0MS40NzMtLjMzMi4wNTEtLjA5OC4wNTUtLjEyNS4wNTUtLjM2M3MtLjAwNC0uMjY2LS4wNTUtLjM2N2MtLjA3LS4xMzMtLjE3Mi0uMjMtLjMwMS0uMjg1LS4xMTMtLjA1MS0uMzUyLS4wNzQtLjQ4NC0uMDQ3em0uMzcxLjI3N2MuMTE3LjA2Ni4xNDguMTU2LjE0OC40MjIgMCAuMTk1LS4wMDQuMjQ2LS4wNDMuMzA5LS4wNy4xMjEtLjE0NS4xNi0uMzAxLjE2cy0uMjI3LS4wMzktLjI5Ny0uMTcyYy0uMDYyLS4xMTctLjA2Mi0uNDczLS4wMDQtLjU5NC4wODYtLjE3Mi4zMTMtLjIyNy40OTYtLjEyNXptMS4yNS0uMjY1YS43NS43NSAwIDAgMC0uMTM3LjA2M2MtLjA3LjA0Ny0uMDc0LjA0My0uMDc0LS4wMiAwLS4wNTUtLjAwNC0uMDU1LS4xNDUtLjA1MWwtLjE0NS4wMDh2MS4zOTVoLjMwMWwuMDA4LS40NjFjLjAxMi0uMzkxLjAyLS40NzMuMDUxLS41MzEuMDU5LS4xMDkuMTUyLS4xNTYuMzA1LS4xNTZoLjEzM2wuMDM1LS4wOWMuMDU1LS4xNDUuMDQ3LS4xNTYtLjA2Mi0uMTc2LS4xMzctLjAxNi0uMTgtLjAxNi0uMjcuMDJ6bTAgMCIvPjxwYXRoIGQ9Ik0xMy4zOTUgOC4wODJjLS4zMDUuMDgyLS40NzMuMjk3LS40OTIuNjQ1LS4wMjcuNTcuNDA2Ljg2MyAxLjA0My43MDcuMTAyLS4wMjMuMTA1LS4wMzkuMDU1LS4xNjQtLjAyNy0uMDY2LS4wNDMtLjA4Ni0uMDctLjA3NGExLjI2IDEuMjYgMCAwIDEtLjQzNy4wMTJjLS4xODQtLjA2Mi0uMjctLjIwMy0uMjctLjQ0MSAwLS4xOC4wNDctLjI5Ny4xNDgtLjM4My4wOTQtLjA3OC4xNDEtLjA4Ni4zODMtLjA3NGwuMjA3LjAxNi4wMzktLjEwMmMuMDQzLS4xMTcuMDM5LS4xMjEtLjE0NS0uMTUyLS4xNzYtLjAzMS0uMzItLjAyNy0uNDYxLjAxMnptMCAwIi8+PHBhdGggZD0iTTE0LjYxNyA4LjA3OGMtLjMzMi4wOTQtLjQ5Mi4zNTUtLjQ2OS43NTguMDE2LjMwOS4xNjQuNTEyLjQ0MS41OTguMjM4LjA3Ljc5Ny4wMjMuNzk3LS4wN2EuODIuODIgMCAwIDAtLjA3NC0uMjAzbC0uMTA1LjAzMWMtLjA1OS4wMi0uMTg3LjAzNS0uMjgxLjAzNS0uMjc3IDAtLjQxNC0uMDk0LS40NDktLjMwNWwtLjAxNi0uMDgyLjQ4OC0uMDA0LjQ4OC0uMDA4di0uMTcyYy0uMDA0LS4yNy0uMTEzLS40NTMtLjMyNC0uNTUxLS4xMjUtLjA1NS0uMzUyLS4wNjYtLjQ5Ni0uMDI3em0uMzQuMjM4YS4yOS4yOSAwIDAgMSAuMTc2LjIzNGwuMDA4LjA2My0uMzEyLjAwOGMtLjE2OCAwLS4zMiAwLS4zMzYtLjAwNHMtLjAyLS4wMjctLjAwNC0uMDgyYy4wNzgtLjIyMy4yNTQtLjMwNS40NjktLjIxOXptMCAwIi8+PC9zdmc+"
-      },
-      "category": {
-        "id": "connectors",
-        "name": "Connectors"
-      },
-      "groups": [
-        {
-          "id": "authentication",
-          "label": "Authentication"
-        },
-        {
-          "id": "endpoint",
-          "label": "Instance"
-        },
-        {
-          "id": "input",
-          "label": "Operation"
-        },
-        {
-          "id": "timeout",
-          "label": "Connect timeout"
-        },
-        {
-          "id": "output",
-          "label": "Response mapping"
-        },
-        {
-          "id": "errors",
-          "label": "Error handling"
-        }
-      ]
-    },
-    "properties": [
-      {},
-      {
-        "group": "endpoint"
-      },
-      {
-        "group": "endpoint"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {},
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {},
-      {
-        "group": "input"
-      },
-      {},
-      {},
-      {
-        "group": "input"
-      },
-      {
-        "group": "authentication"
-      },
-      {},
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {},
-      {
-        "group": "timeout"
-      },
-      {
-        "group": "output"
-      },
-      {
-        "group": "output"
-      },
-      {
-        "group": "errors"
-      }
-    ]
-  },
-  "io.camunda.connectors.agenticai.aiagent.jobworker.v1": {
-    "template": {
-      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": [
-          "AI",
-          "AI Agent",
-          "agentic orchestration"
-        ]
-      },
-      "category": {
-        "id": "connectors",
-        "name": "Connectors"
-      },
-      "groups": [
-        {
-          "id": "provider",
-          "label": "Model provider",
-          "openByDefault": false
-        },
-        {
-          "id": "model",
-          "label": "Model",
-          "openByDefault": false
-        },
-        {
-          "id": "systemPrompt",
-          "label": "System prompt",
-          "tooltip": "A system prompt is a set of foundational instructions given to a model before any user interaction begins. It defines the AI agent’s role, behavior, tone, and communication style, ensuring that responses remain consistent and aligned with the AI agent’s intended purpose. These instructions help shape how the model interprets and responds to user input throughout the conversation.",
-          "openByDefault": false
-        },
-        {
-          "id": "userPrompt",
-          "label": "User prompt",
-          "tooltip": "A user prompt is the message or question you give to the AI to start or continue a conversation. It tells the AI what you need, whether it's information, help with a task, or just a chat. The AI uses your prompt to understand how to respond.",
-          "openByDefault": false
-        },
-        {
-          "id": "tools",
-          "label": "Tools",
-          "tooltip": "Tools are optional features the AI Agent can use to perform specific tasks. Configure this if the agent should participate in a tools feedback loop.",
-          "openByDefault": false
-        },
-        {
-          "id": "memory",
-          "label": "Memory",
-          "tooltip": "Configuration of the Agent's short-term/conversational memory.",
-          "openByDefault": false
-        },
-        {
-          "id": "limits",
-          "label": "Limits",
-          "openByDefault": false
-        },
-        {
-          "id": "events",
-          "label": "Event handling",
-          "openByDefault": false
-        },
-        {
-          "id": "response",
-          "label": "Response",
-          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.8/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-process/#response\">documentation</a> for details.",
+          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/#response\">documentation</a> for details.",
           "openByDefault": false
         },
         {
@@ -2253,7 +2601,27 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {},
-      {},
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
       {
         "group": "provider"
       },
@@ -2332,7 +2700,14 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "provider"
       },
       {
-        "group": "model"
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "model",
+        "placeholder": "claude-sonnet-4-6"
       },
       {
         "group": "model",
@@ -2351,7 +2726,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Integer greater than 0. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-top-k\" target=\"_blank\">documentation</a>."
       },
       {
-        "group": "model"
+        "group": "model",
+        "placeholder": "global.anthropic.claude-sonnet-4-6"
       },
       {
         "group": "model",
@@ -2440,11 +2816,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "userPrompt",
-        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.8/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-process/\" target=\"_blank\">See documentation</a> for details and supported file types."
+        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details and supported file types."
+      },
+      {
+        "group": "tools",
+        "tooltip": "Add an ad-hoc sub-process ID to attach the AI agent to the tools. Ensure your process includes a tools feedback loop routing into the ad-hoc sub-process and back to the AI agent connector. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+      },
+      {
+        "group": "tools",
+        "tooltip": "This defines where to handle tool call results returned by the ad-hoc sub-process. Model this as part of your process and route it into the tools feedback loop. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory",
-        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.8/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-process/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory"
@@ -2463,8 +2847,862 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "memory"
       },
       {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
         "group": "memory",
-        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.8/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-process/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Must match the identifier configured for the custom implementation."
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory",
+        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+      },
+      {
+        "group": "limits"
+      },
+      {
+        "group": "response"
+      },
+      {
+        "group": "response",
+        "tooltip": "Use this option in combination with models which don't support native JSON mode/structured tool calling (e.g. Anthropic). Make sure to instruct the model to return valid JSON in the system prompt. The parsed JSON will be available as <code>response.responseJson</code>.<br><br>If parsing fails, <code>null</code> will be returned as JSON response, but the text content will still be available as <code>response.responseText</code>."
+      },
+      {
+        "group": "response",
+        "tooltip": "If supported by the model, the response will be structured according to the provided schema. A parsed version of the response will be available as <code>response.responseJson</code>."
+      },
+      {
+        "group": "response"
+      },
+      {
+        "group": "response",
+        "tooltip": "In addition to the text content, the assistant message may include multiple additional content blocks and metadata (such as token usage). The message will be available as <code>response.responseMessage</code>."
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output",
+        "tooltip": "<div><p>Example response:</p><code>{\"context\":{\"metrics\":{\"modelCalls\":3,\"tokenUsage\":{\"inputTokenCount\":10,\"outputTokenCount\":20},\"toolCalls\":0},\"schemaVersion\":1,\"state\":\"READY\",\"toolDefinitions\":[{\"description\":\"A sample tool for demonstration purposes.\",\"inputSchema\":{\"properties\":{\"input1\":{\"type\":\"string\"},\"input2\":{\"type\":\"number\"}},\"required\":[\"input1\",\"input2\"],\"type\":\"object\"},\"name\":\"sampleTool\"}]},\"responseText\":\"This is a sample response text from the AI agent.\",\"toolCalls\":[]}</code><p>Example FEEL expression: <code>={ responseText: responseText }</code> -&gt; <code>{\"responseText\":\"This is a sample response text from the AI agent.\"}</code></p></div>"
+      },
+      {
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.connectors.inbound.EmailBoundary.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "protocol",
+          "label": "Imap Details"
+        },
+        {
+          "id": "listenerInfos",
+          "label": "Listener information"
+        },
+        {
+          "id": "unseenPollingConfig",
+          "label": "After process"
+        },
+        {
+          "id": "allPollingConfig",
+          "label": "After process"
+        },
+        {
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzkwXzI0MjApIj4KPHBhdGggZD0iTTguMzM4MzUgOS45NTM2NUwxMC4zODk0IDEyLjAxMDRMOC4zMzI2MiAxNC4wNjcyTDkuMTQ2MTYgMTQuODc1TDEyLjAxMDcgMTIuMDEwNEw5LjE0NjE2IDkuMTQ1ODNMOC4zMzgzNSA5Ljk1MzY1WiIgZmlsbD0iYmxhY2siLz4KPHBhdGggZD0iTTEyLjM0ODggOS45NTM2NUwxNC4zOTk4IDEyLjAxMDRMMTIuMzQzIDE0LjA2NzJMMTMuMTU2NiAxNC44NzVMMTYuMDIxMiAxMi4wMTA0TDEzLjE1NjYgOS4xNDU4M0wxMi4zNDg4IDkuOTUzNjVaIiBmaWxsPSJibGFjayIvPgo8cGF0aCBkPSJNMy45NzIgMTEuNDM3NUgxLjEyNTMzVjIuNzkyMTlMNy42NzM3NiA3LjMyMzk2QzcuNzY5NjcgNy4zOTA0OSA3Ljg4MzYgNy40MjYxNCA4LjAwMDMyIDcuNDI2MTRDOC4xMTcwNSA3LjQyNjE0IDguMjMwOTggNy4zOTA0OSA4LjMyNjg5IDcuMzIzOTZMMTQuODc1MyAyLjc5MjE5VjhIMTYuMDIxMlYyLjI3MDgzQzE2LjAyMTIgMS45NjY5NCAxNS45MDA0IDEuNjc1NDkgMTUuNjg1NiAxLjQ2MDYxQzE1LjQ3MDcgMS4yNDU3MiAxNS4xNzkyIDEuMTI1IDE0Ljg3NTMgMS4xMjVIMS4xMjUzM0MwLjgyMTQzMiAxLjEyNSAwLjUyOTk4NCAxLjI0NTcyIDAuMzE1MDk5IDEuNDYwNjFDMC4xMDAyMTQgMS42NzU0OSAtMC4wMjA1MDc4IDEuOTY2OTQgLTAuMDIwNTA3OCAyLjI3MDgzVjExLjQzNzVDLTAuMDIwNTA3OCAxMS43NDE0IDAuMTAwMjE0IDEyLjAzMjggMC4zMTUwOTkgMTIuMjQ3N0MwLjUyOTk4NCAxMi40NjI2IDAuODIxNDMyIDEyLjU4MzMgMS4xMjUzMyAxMi41ODMzSDMuOTcyVjExLjQzNzVaTTEzLjYxNDkgMi4yNzA4M0w4LjAwMDMyIDYuMTU1MjFMMi4zODU3NCAyLjI3MDgzSDEzLjYxNDlaIiBmaWxsPSIjRkM1RDBEIi8+CjxwYXRoIGQ9Ik00LjI4MjEgOS45NTM2NUw2LjMzMzE0IDEyLjAxMDRMNC4yNzYzNyAxNC4wNjcyTDUuMDg5OTEgMTQuODc1TDcuOTU0NDkgMTIuMDEwNEw1LjA4OTkxIDkuMTQ1ODNMNC4yODIxIDkuOTUzNjVaIiBmaWxsPSJibGFjayIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzkwXzI0MjAiPgo8cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg=="
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Enter your full email address (e.g., user@example.com) or the username provided by your email service. This is used to authenticate your access to the mail server."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Enter the password associated with your email account. Keep your password secure and do not share it with others."
+      },
+      {
+        "group": "protocol",
+        "tooltip": "Enter the address of the IMAP server used to retrieve your emails. This server allows you to sync your messages across multiple devices. (e.g., imap.example.com)"
+      },
+      {
+        "group": "protocol",
+        "tooltip": "Enter the port number for connecting to the IMAP server. Common ports are 993 for secure connections using SSL/TLS, or 143 for non-secure connections."
+      },
+      {
+        "group": "protocol",
+        "tooltip": "Select the encryption protocol for email security."
+      },
+      {
+        "group": "listenerInfos",
+        "tooltip": "Enter the names of the folder you wish to monitor. If left blank, the listener will default to monitoring the 'INBOX' folder."
+      },
+      {
+        "group": "listenerInfos",
+        "tooltip": "The duration for which the task will wait for a message to arrive in the mailbox before correlating"
+      },
+      {
+        "group": "listenerInfos"
+      },
+      {
+        "group": "unseenPollingConfig",
+        "tooltip": "Choose the desired handling strategy"
+      },
+      {
+        "group": "unseenPollingConfig",
+        "tooltip": "Specify the destination folder to which the emails will be moved. To create a new folder or a hierarchy of folders, use a dot-separated path (e.g., 'Archive' or 'Projects.2023.January'). If any part of the path does not exist, it will be created automatically."
+      },
+      {
+        "group": "allPollingConfig",
+        "tooltip": "Choose the desired handling strategy"
+      },
+      {
+        "group": "allPollingConfig",
+        "tooltip": "Specify the destination folder to which the emails will be moved. To create a new folder or a hierarchy of folders, use a dot-separated path (e.g., 'Archive' or 'Projects.2023.January'). If any part of the path does not exist, it will be created automatically."
+      },
+      {
+        "group": "activation"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      }
+    ]
+  },
+  "io.camunda.connectors.AWSSNS.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "configuration",
+          "label": "Topic properties"
+        },
+        {
+          "id": "input",
+          "label": "Input message data"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
+          "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCA4MCA4MCcgdmVyc2lvbj0nMS4xJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnCiAgICAgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPjwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggNjQgKDkzNTM3KSAtIGh0dHBzOi8vc2tldGNoLmNvbSAtLT4KICAgIDx0aXRsZT5JY29uLUFyY2hpdGVjdHVyZS82NC9BcmNoX0FXUy1TaW1wbGUtTm90aWZpY2F0aW9uLVNlcnZpY2VfNjQ8L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+CiAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgeDE9JzAlJyB5MT0nMTAwJScgeDI9JzEwMCUnIHkyPScwJScgaWQ9J2xpbmVhckdyYWRpZW50LTEnPgogICAgICAgICAgICA8c3RvcCBzdG9wLWNvbG9yPScjQjAwODREJyBvZmZzZXQ9JzAlJz48L3N0b3A+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9JyNGRjRGOEInIG9mZnNldD0nMTAwJSc+PC9zdG9wPgogICAgICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8L2RlZnM+CiAgICA8ZyBpZD0nSWNvbi1BcmNoaXRlY3R1cmUvNjQvQXJjaF9BV1MtU2ltcGxlLU5vdGlmaWNhdGlvbi1TZXJ2aWNlXzY0JyBzdHJva2U9J25vbmUnIHN0cm9rZS13aWR0aD0nMScgZmlsbD0nbm9uZScKICAgICAgIGZpbGwtcnVsZT0nZXZlbm9kZCc+CiAgICAgICAgPGcgaWQ9J0ljb24tQXJjaGl0ZWN0dXJlLUJHLzY0L0FwcGxpY2F0aW9uLUludGVncmF0aW9uJyBmaWxsPSd1cmwoI2xpbmVhckdyYWRpZW50LTEpJz4KICAgICAgICAgICAgPHJlY3QgaWQ9J1JlY3RhbmdsZScgeD0nMCcgeT0nMCcgd2lkdGg9JzgwJyBoZWlnaHQ9JzgwJz48L3JlY3Q+CiAgICAgICAgPC9nPgogICAgICAgIDxwYXRoIGQ9J00xNywzOCBDMTguMTAzLDM4IDE5LDM4Ljg5NyAxOSw0MCBDMTksNDEuMTAzIDE4LjEwMyw0MiAxNyw0MiBDMTUuODk3LDQyIDE1LDQxLjEwMyAxNSw0MCBDMTUsMzguODk3IDE1Ljg5NywzOCAxNywzOCBMMTcsMzggWiBNNDEsNjQgQzI5LjMxNCw2NCAxOS4yODksNTUuNDY2IDE3LjE5NCw0My45OCBDMTguOTY1LDQzLjg5NCAyMC40MjcsNDIuNjU5IDIwLjg1Nyw0MSBMMjcsNDEgTDI3LDM5IEwyMC44NTcsMzkgQzIwLjQyNywzNy4zNDIgMTguOTY2LDM2LjEwNyAxNy4xOTUsMzYuMDIgQzE5LjI4NSwyNC43MSAyOS41MTEsMTYgNDEsMTYgQzQ1LjMxMywxNiA0OS44MzIsMTcuNjIyIDU0LjQyOSwyMC44MjEgTDU1LjU3MSwxOS4xNzkgQzUwLjYzMywxNS43NDMgNDUuNzMsMTQgNDEsMTQgQzI4LjI3LDE0IDE2Ljk0OSwyMy44NjUgMTUuMDYzLDM2LjUyMSBDMTMuODM5LDM3LjIwNyAxMywzOC41IDEzLDQwIEMxMyw0MS41IDEzLjgzOSw0Mi43OTMgMTUuMDYzLDQzLjQ3OCBDMTYuOTcsNTYuMzQxIDI4LjA1Niw2NiA0MSw2NiBDNDYuNDA3LDY2IDUxLjk0Miw2NC4xNTcgNTYuNTg1LDYwLjgxMSBMNTUuNDE1LDU5LjE4OSBDNTEuMTEsNjIuMjkyIDQ1Ljk5MSw2NCA0MSw2NCBMNDEsNjQgWiBNMzAuMTAxLDM2LjQ0MiBDMzEuOTU1LDM2Ljg5NSAzNC4yNzUsMzcgMzYsMzcgQzM3LjY0MiwzNyAzOS44MjMsMzYuOTA1IDQxLjYyOSwzNi41MDYgTDM3LjEwNSw0NS41NTMgQzM3LjAzNiw0NS42OTEgMzcsNDUuODQ1IDM3LDQ2IEwzNyw1MC40NTMgQzM2LjE5OSw1MC45NjQgMzQuODMzLDUxLjgxMiAzNCw1MS45ODYgTDM0LDQ2IEMzNCw0NS44NjggMzMuOTc0LDQ1LjczNyAzMy45MjMsNDUuNjE1IEwzMC4xMDEsMzYuNDQyIFogTTM2LDMzIEM0MC4wMjUsMzMgNDIuMTc0LDMzLjYwNCA0Mi44NDEsMzQgQzQyLjE3NCwzNC4zOTYgNDAuMDI1LDM1IDM2LDM1IEMzMS45NzUsMzUgMjkuODI2LDM0LjM5NiAyOS4xNTksMzQgQzI5LjgyNiwzMy42MDQgMzEuOTc1LDMzIDM2LDMzIEwzNiwzMyBaIE0zMyw1NCBMMzQsNTQgQzM0LjA0Myw1NCAzNC4wODYsNTMuOTk3IDM0LjEyOCw1My45OTIgQzM1LjM1Miw1My44MzMgMzYuOTA5LDUyLjg4NyAzOC4yNzIsNTIuMDEzIEwzOC41MzUsNTEuODQ1IEMzOC44MjQsNTEuNjYxIDM5LDUxLjM0MiAzOSw1MSBMMzksNDYuMjM2IEw0NC41NTksMzUuMTIgQzQ0LjgzMywzNC44MDEgNDUsMzQuNDM0IDQ1LDM0IEM0NSwzMS4zOSAzOS4zNjEsMzEgMzYsMzEgQzMyLjYzOSwzMSAyNywzMS4zOSAyNywzNCBDMjcsMzQuMzY2IDI3LjEyLDM0LjY4NCAyNy4zMiwzNC45NjcgTDMyLDQ2LjIgTDMyLDUzIEMzMiw1My41NTIgMzIuNDQ3LDU0IDMzLDU0IEwzMyw1NCBaIE02Miw1MyBDNjMuMTAzLDUzIDY0LDUzLjg5NyA2NCw1NSBDNjQsNTYuMTAzIDYzLjEwMyw1NyA2Miw1NyBDNjAuODk3LDU3IDYwLDU2LjEwMyA2MCw1NSBDNjAsNTMuODk3IDYwLjg5Nyw1MyA2Miw1MyBMNjIsNTMgWiBNNjIsMjMgQzYzLjEwMywyMyA2NCwyMy44OTcgNjQsMjUgQzY0LDI2LjEwMyA2My4xMDMsMjcgNjIsMjcgQzYwLjg5NywyNyA2MCwyNi4xMDMgNjAsMjUgQzYwLDIzLjg5NyA2MC44OTcsMjMgNjIsMjMgTDYyLDIzIFogTTY0LDM4IEM2NS4xMDMsMzggNjYsMzguODk3IDY2LDQwIEM2Niw0MS4xMDMgNjUuMTAzLDQyIDY0LDQyIEM2Mi44OTcsNDIgNjIsNDEuMTAzIDYyLDQwIEM2MiwzOC44OTcgNjIuODk3LDM4IDY0LDM4IEw2NCwzOCBaIE01NCw0MSBMNjAuMTQzLDQxIEM2MC41ODksNDIuNzIgNjIuMTQyLDQ0IDY0LDQ0IEM2Ni4yMDYsNDQgNjgsNDIuMjA2IDY4LDQwIEM2OCwzNy43OTQgNjYuMjA2LDM2IDY0LDM2IEM2Mi4xNDIsMzYgNjAuNTg5LDM3LjI4IDYwLjE0MywzOSBMNTQsMzkgTDU0LDI2IEw1OC4xNDMsMjYgQzU4LjU4OSwyNy43MiA2MC4xNDIsMjkgNjIsMjkgQzY0LjIwNiwyOSA2NiwyNy4yMDYgNjYsMjUgQzY2LDIyLjc5NCA2NC4yMDYsMjEgNjIsMjEgQzYwLjE0MiwyMSA1OC41ODksMjIuMjggNTguMTQzLDI0IEw1MywyNCBDNTIuNDQ3LDI0IDUyLDI0LjQ0OCA1MiwyNSBMNTIsMzkgTDQ1LDM5IEw0NSw0MSBMNTIsNDEgTDUyLDU1IEM1Miw1NS41NTIgNTIuNDQ3LDU2IDUzLDU2IEw1OC4xNDMsNTYgQzU4LjU4OSw1Ny43MiA2MC4xNDIsNTkgNjIsNTkgQzY0LjIwNiw1OSA2Niw1Ny4yMDYgNjYsNTUgQzY2LDUyLjc5NCA2NC4yMDYsNTEgNjIsNTEgQzYwLjE0Miw1MSA1OC41ODksNTIuMjggNTguMTQzLDU0IEw1NCw1NCBMNTQsNDEgWicKICAgICAgICAgICAgICBpZD0nQVdTLVNpbXBsZS1Ob3RpZmljYXRpb24tU2VydmljZV9JY29uXzY0X1NxdWlkJyBmaWxsPScjRkZGRkZGJz48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg=="
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "configuration",
+        "placeholder": "arn:aws:sns:us-east-1:123456789012:MyTopic"
+      },
+      {
+        "group": "configuration",
+        "tooltip": "Standard topics maximize throughput; FIFO topics preserve ordering and deduplication. See <a href=\"https://aws.amazon.com/sns/features/\" target=\"_blank\">AWS SNS features</a>"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "input",
+        "tooltip": "Required for FIFO topics. See <a href=\"https://docs.aws.amazon.com/sns/latest/dg/fifo-message-grouping.html\" target=\"_blank\">message grouping for FIFO topics</a> in the Amazon SNS developer guide"
+      },
+      {
+        "group": "input",
+        "tooltip": "Suppresses duplicate messages within a five-minute window. See <a href=\"https://docs.aws.amazon.com/sns/latest/dg/fifo-message-dedup.html\" target=\"_blank\">message deduplication for FIFO topics</a> in the Amazon SNS developer guide"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.connectors.Salesforce.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "operation",
+          "label": "Operation"
+        },
+        {
+          "id": "endpoint",
+          "label": "Instance"
+        },
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "timeout",
+          "label": "Connect timeout"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
+          "id": "output",
+          "label": "Response mapping"
+        },
+        {
+          "id": "errors",
+          "label": "Error handling"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgZmlsbD0icmdiKDAlLDAlLDAlKSIgeG1sbnM6dj0iaHR0cHM6Ly92ZWN0YS5pby9uYW5vIj48cGF0aCBkPSJNNC44MiAzLjA3NEMzLjM4MyAzLjE5MSAyLjE1NiA0LjE0MSAxLjcwNyA1LjVhMi44MSAyLjgxIDAgMCAwLS4xNzIgMS4wNTkgMi40NCAyLjQ0IDAgMCAwIC4xMjUuOTFsLjA1MS4xNzYtLjI4NS4yODFDLjkxOCA4LjQzNC42MzcgOC45NDUuNSA5LjYyMWE0LjAxIDQuMDEgMCAwIDAgLjAxMiAxLjIwMyAzLjEzIDMuMTMgMCAwIDAgLjg5MSAxLjYyNWMuNDYxLjQ2MS45NjEuNzM0IDEuNTgyLjg3MS4xODguMDM5LjY3Mi4wOS43MjcuMDc0LjAxNi0uMDA4LjA5LS4wMTYuMTYtLjAybC4xMzMtLjAxNi4xMzMuMjI3Yy45MDIgMS41MTIgMi43NTggMi4wMjcgNC4yNjYgMS4xODRhMy40OSAzLjQ5IDAgMCAwIDEuMDgyLTEuMDA0bC4xNDgtLjIzLjIzLjA3YTIuMTMgMi4xMyAwIDAgMCAuODgzLjEzMyAyLjg0IDIuODQgMCAwIDAgMS41Mi0uNSAzLjUyIDMuNTIgMCAwIDAgLjc4MS0uNzYyYy4wNzQtLjEwNS4xNDgtLjE4Ny4xNi0uMTg3cy4xMzMuMDEyLjI2Mi4wMjNjLjI2Mi4wMjcuNjA5LjAwNC45NjUtLjA2NmEzLjk5IDMuOTkgMCAwIDAgMi40OC0xLjY4NCAzLjkgMy45IDAgMCAwIC4xMTMtNC4xMjUgMy45MyAzLjkzIDAgMCAwLTIuNTIzLTEuODUyIDMuMzUgMy4zNSAwIDAgMC0xLjg3OS4wODZsLS4yNS4wN2EyLjI2IDIuMjYgMCAwIDEtLjA5NC0uMTI1IDMuODMgMy44MyAwIDAgMC0uNjIxLS42MDljLS40NTctLjM0NC0xLjA0Ny0uNTU1LTEuNjQxLS41ODItLjcxNS0uMDM5LTEuNDguMjU4LTIuMDUxLjc4MWwtLjE2NC4xNTItLjExMy0uMTIxYy0uNTgyLS42NDUtMS40NjUtMS4wOTQtMi4yNTgtMS4xNTItLjM0OC0uMDI3LS40MTQtLjAyNy0uNjEzLS4wMTJ6bS44NzkuNzdjLjc2Mi4xNzYgMS4zNzEuNjEzIDEuODMyIDEuMzEzbC4yMDcuMjk3Yy4wMTIgMCAuMTAyLS4xMTMuMjAzLS4yNTRhNC40MiA0LjQyIDAgMCAxIC4zNC0uNDAyYy44OTgtLjg4MyAyLjM1NS0uODc5IDMuMjUuMDE2LjE2NC4xNjQuMzEzLjM2Ny40NTcuNjI1LjA0My4wODIuMDkuMTQ1LjA5OC4xNDVzLjEwNS0uMDM1LjIwNy0uMDgyYTMuMjYgMy4yNiAwIDAgMSAxLjYyOS0uMjg1YzEuMjY2LjEyMSAyLjI4NS45MDIgMi43MzggMi4wOTRhNC41NCA0LjU0IDAgMCAxIC4xMDkuMzc1Yy4wNTkuMjMuMDU5LjI3LjA2My43MDcgMCAuNTEyLS4wMi42NDgtLjE1MiAxLjA0N2EzLjE2IDMuMTYgMCAwIDEtLjc3IDEuMjM0IDMuMTYgMy4xNiAwIDAgMS0xLjU1NS44NTljLS4zNC4wODItLjg1Mi4wOTQtMS4yNS4wMzFsLS4zMDEtLjAzOWE1LjY1IDUuNjUgMCAwIDAtLjEwOS4yMDdjLS4zMDUuNTk4LS44MjQgMS4wMzUtMS40MzQgMS4yMTEtLjU5LjE3Mi0xLjE2OC4xMDktMS43NS0uMTg0YTEuMTkgMS4xOSAwIDAgMC0uMTk1LS4wODJjLS4wMTEgMC0uMDgyLjExMy0uMTQ4LjI1LS4yNTQuNTYzLS42MjEuOTY1LTEuMTEzIDEuMjM4YTIuNTggMi41OCAwIDAgMS0yLjM3NSAwYy0uNTM1LS4yOTMtLjkyNi0uNzU4LTEuMTY4LTEuMzc1LS4wODYtLjIyMy0uMDYyLS4yMTEtLjQzNy0uMTQ4YTIuODggMi44OCAwIDAgMS0xLjAwNC0uMDI3Yy0xLjU0Ny0uMzg3LTIuMzQ4LTIuMDg2LTEuNjU2LTMuNTA4YTIuNTggMi41OCAwIDAgMSAuOTAyLTEuMDE2bC4yMTEtLjE0MWExLjU3IDEuNTcgMCAwIDAtLjA4Mi0uMjQyYy0uMTg0LS40OTYtLjI0Ni0uOTA2LS4xOTktMS4zNDguMTMzLTEuMzA1IDEuMDc4LTIuMzE2IDIuMzgzLTIuNTQ3YTMuOTQgMy45NCAwIDAgMSAxLjA3LjAzMXptLjExNyAzLjUxOWEzMi44MyAzMi44MyAwIDAgMC0uMDA0IDEuMDdsLjAwNCAxLjAzOS4xMzcuMDA0Yy4wOTguMDA0LjE0NSAwIC4xNTYtLjAyYTM2LjkzIDM2LjkzIDAgMCAwIC4wMDgtMi4wODIuMzkuMzkgMCAwIDAtLjMwMS0uMDEyem00LjMwOS0uMDA0Yy0uMTg3LjA0Ny0uMzMyLjE5NS0uMzk1LjQwMmEuODIuODIgMCAwIDAtLjA0My4xNzZjMCAuMDktLjAyMy4xMDktLjE0MS4xMDloLS4xMTNsLS4wMjMuMTA1YS44My44MyAwIDAgMC0uMDIzLjEyOWMwIC4wMTYuMDUxLjAyMy4xMTcuMDIzLjA3OCAwIC4xMTcuMDA4LjExNy4wMjNzLS4wNTEuMzAxLS4xMDUuNjI5Yy0uMTcyLjkzOC0uMTkxLjk4NC0uNDQ1Ljk4NEg4LjkzbC0uMDI3LjA3OGMtLjA0Ny4xMjUtLjAzOS4xNDUuMDYzLjE3Mi4xOTkuMDU1LjQ2MS0uMDI3LjU3NC0uMTguMTAyLS4xNDUuMTQ1LS4yOTcuMjctMS4wMDhsLjEyNS0uNjkxLjE3Mi0uMDA4Yy4xNjgtLjAxMi4xNjgtLjAxMi4xODQtLjA3NGEuNzguNzggMCAwIDAgLjAxNi0uMTI1bC4wMDQtLjA1OUg5Ljk4bC4wMTYtLjEwMmMuMDItLjE0MS4wODItLjI3Ny4xNDUtLjMwOS4wMjctLjAxNi4xMDUtLjAyNy4xOC0uMDIzbC4xMjkuMDA0LjAzOS0uMTA5YS4zOC4zOCAwIDAgMCAuMDI3LS4xMTdjLS4wNDMtLjA0My0uMjctLjA1OS0uMzkxLS4wMzF6bS02LjgwOS43MTFjLS4zNTkuMDgyLS40OTYuNDMtLjI1NC42NDguMDY2LjA1OS4xNDEuMDk0LjMzNi4xNTYuMzQ0LjEwNS40MTQuMTg0LjI4NS4zMTYtLjAzNS4wMzktLjA3LjA0My0uMjE5LjA0M3MtLjE5NS0uMDA4LS4zMjQtLjA3Yy0uMDgyLS4wMzktLjE1Mi0uMDYyLS4xNi0uMDUxYS45LjkgMCAwIDAtLjA1NS4xMDlsLS4wMzEuMDkuMTMzLjA2M2MuMzc5LjE3Ni44MzYuMTEzLjk2OS0uMTM3LjA1MS0uMTAyLjA1NS0uMjU0LjAwNC0uMzUycy0uMTQ1LS4xNTYtLjQzLS4yNWMtLjE5NS0uMDY2LS4yNjYtLjA5OC0uMjk3LS4xNDUtLjA0My0uMDU1LS4wNDMtLjA1OS0uMDA4LS4xMTMuMDItLjAzMS4wNjMtLjA2Ni4wOTQtLjA3OC4wNzQtLjAzMS4yNzMtLjAwOC40MjYuMDQ3LjA2Ni4wMjMuMTI5LjAzNS4xMzcuMDIzcy4wMzEtLjA1MS4wNTEtLjA5NGwuMDMxLS4wODItLjA2Ni0uMDQzYTEuMDEgMS4wMSAwIDAgMC0uNjIxLS4wODJ6bTEuNDExLS4wMDRjLS4xNTYuMDIzLS4yNzcuMDYzLS4zMi4wOTRzLS4wMzkuMDMxLjAwOC4xMjljLjAzNS4wODYuMDUxLjEwMi4wNzguMDkuMTg0LS4wNzQuNDY5LS4xMDIuNTktLjA1NS4wNzguMDI3LjEyNS4xMDIuMTI1LjE5NXYuMDc0bC0uMjI3LS4wMDhjLS4yODktLjAwOC0uNDI2LjAzMS0uNTU5LjE1Ni0uMTA1LjEwNS0uMTQ4LjIyMy0uMTI5LjM1OS4wNTUuMzQuNDUzLjQ1NyAxLjEwMi4zMTZsLjEwNS0uMDIzLjAxNi0uMzA5Yy4wMzUtLjY3Ni0uMDMxLS44OTUtLjI4NS0uOTg0YTEuMjYgMS4yNiAwIDAgMC0uNTA0LS4wMzV6bS40MTQuNzQybC4wNjYuMDEydi4zOThsLS4wOTguMDE2Yy0uMjUuMDMxLS40My0uMDA0LS40OC0uMDlhLjM4LjM4IDAgMCAxLS4wMjMtLjEyOWMwLS4wOTQuMDYzLS4xNjQuMTY0LS4xOTlhMS4zIDEuMyAwIDAgMSAuMzcxLS4wMDh6bTEuODItLjczNGMtLjM0LjA5OC0uNTA0LjM0NC0uNDg0Ljc0Mi4wMTYuMzE2LjEzNy41MDQuNDAyLjYwNS4yMjcuMDkuODM2LjA0Ny44MzYtLjA1OWEuODIuODIgMCAwIDAtLjA3NC0uMjAzbC0uMTA5LjAzMWExLjA2IDEuMDYgMCAwIDEtLjI3My4wMzVjLS4yMjMuMDA0LS4zNDgtLjA1NS0uNDE0LS4xOTUtLjAzMS0uMDUxLS4wNTEtLjExMy0uMDUxLS4xNDVWOC44NGwuNDg4LS4wMDQuNDg4LS4wMDh2LS4xNmMwLS4yNzMtLjExNy0uNDY5LS4zMjgtLjU2MmEuOTEuOTEgMCAwIDAtLjQ4LS4wMzF6bS4zMjQuMjQyYS4yOS4yOSAwIDAgMSAuMTc2LjIzNGwuMDA4LjA2My0uMzEyLjAwOGMtLjE2OCAwLS4zMiAwLS4zMzYtLjAwNC0uMDMxLS4wMTIuMDE2LS4xNzIuMDc0LS4yMzQuMDg2LS4wOTguMjQ2LS4xMjUuMzkxLS4wNjZ6bTAgMCIvPjxwYXRoIGQ9Ik04LjQzOCA4LjA3Yy0uMjAzLjA0Ny0uMzI0LjE1Ni0uMzU5LjMyLS4wNTUuMjIzLjA3NC4zNjcuNDEuNDczLjM0NC4xMDUuNDA2LjE0OC4zNjMuMjYyLS4wNTUuMTQ1LS4zMzIuMTYtLjU5OC4wMzUtLjA3OC0uMDM1LS4xNDUtLjA1OS0uMTUyLS4wNDdzLS4wMzEuMDU1LS4wNTUuMTA5bC0uMDMxLjA5LjEzMy4wNjNjLjQ4NC4yMjcgMS4wMTIuMDU5IDEuMDEyLS4zMi0uMDA0LS4yMDctLjEwNS0uMzAxLS40NjktLjQxOGExLjI4IDEuMjggMCAwIDEtLjI3My0uMTA5LjE0LjE0IDAgMCAxIC4wMDQtLjE5NWMuMDY2LS4wNTUuMzA5LS4wNTEuNDguMDEyLjA3LjAyMy4xMzMuMDM5LjE0NS4wMjdzLjAyNy0uMDUxLjA0Ny0uMDk0bC4wMzEtLjA4Mi0uMDY2LS4wNDNhMS4wMSAxLjAxIDAgMCAwLS42MjEtLjA4MnptMi40MS0uMDA0Yy0uMjcuMDU5LS40NTMuMjY2LS40OTYuNTYzLS4wNDcuMzQuMDg2LjY0NS4zMzYuNzc3LjExNy4wNTkuMzIuMDg2LjQ3My4wNTUuMjMtLjAzOS4zNzEtLjE0MS40NzMtLjMzMi4wNTEtLjA5OC4wNTUtLjEyNS4wNTUtLjM2M3MtLjAwNC0uMjY2LS4wNTUtLjM2N2MtLjA3LS4xMzMtLjE3Mi0uMjMtLjMwMS0uMjg1LS4xMTMtLjA1MS0uMzUyLS4wNzQtLjQ4NC0uMDQ3em0uMzcxLjI3N2MuMTE3LjA2Ni4xNDguMTU2LjE0OC40MjIgMCAuMTk1LS4wMDQuMjQ2LS4wNDMuMzA5LS4wNy4xMjEtLjE0NS4xNi0uMzAxLjE2cy0uMjI3LS4wMzktLjI5Ny0uMTcyYy0uMDYyLS4xMTctLjA2Mi0uNDczLS4wMDQtLjU5NC4wODYtLjE3Mi4zMTMtLjIyNy40OTYtLjEyNXptMS4yNS0uMjY1YS43NS43NSAwIDAgMC0uMTM3LjA2M2MtLjA3LjA0Ny0uMDc0LjA0My0uMDc0LS4wMiAwLS4wNTUtLjAwNC0uMDU1LS4xNDUtLjA1MWwtLjE0NS4wMDh2MS4zOTVoLjMwMWwuMDA4LS40NjFjLjAxMi0uMzkxLjAyLS40NzMuMDUxLS41MzEuMDU5LS4xMDkuMTUyLS4xNTYuMzA1LS4xNTZoLjEzM2wuMDM1LS4wOWMuMDU1LS4xNDUuMDQ3LS4xNTYtLjA2Mi0uMTc2LS4xMzctLjAxNi0uMTgtLjAxNi0uMjcuMDJ6bTAgMCIvPjxwYXRoIGQ9Ik0xMy4zOTUgOC4wODJjLS4zMDUuMDgyLS40NzMuMjk3LS40OTIuNjQ1LS4wMjcuNTcuNDA2Ljg2MyAxLjA0My43MDcuMTAyLS4wMjMuMTA1LS4wMzkuMDU1LS4xNjQtLjAyNy0uMDY2LS4wNDMtLjA4Ni0uMDctLjA3NGExLjI2IDEuMjYgMCAwIDEtLjQzNy4wMTJjLS4xODQtLjA2Mi0uMjctLjIwMy0uMjctLjQ0MSAwLS4xOC4wNDctLjI5Ny4xNDgtLjM4My4wOTQtLjA3OC4xNDEtLjA4Ni4zODMtLjA3NGwuMjA3LjAxNi4wMzktLjEwMmMuMDQzLS4xMTcuMDM5LS4xMjEtLjE0NS0uMTUyLS4xNzYtLjAzMS0uMzItLjAyNy0uNDYxLjAxMnptMCAwIi8+PHBhdGggZD0iTTE0LjYxNyA4LjA3OGMtLjMzMi4wOTQtLjQ5Mi4zNTUtLjQ2OS43NTguMDE2LjMwOS4xNjQuNTEyLjQ0MS41OTguMjM4LjA3Ljc5Ny4wMjMuNzk3LS4wN2EuODIuODIgMCAwIDAtLjA3NC0uMjAzbC0uMTA1LjAzMWMtLjA1OS4wMi0uMTg3LjAzNS0uMjgxLjAzNS0uMjc3IDAtLjQxNC0uMDk0LS40NDktLjMwNWwtLjAxNi0uMDgyLjQ4OC0uMDA0LjQ4OC0uMDA4di0uMTcyYy0uMDA0LS4yNy0uMTEzLS40NTMtLjMyNC0uNTUxLS4xMjUtLjA1NS0uMzUyLS4wNjYtLjQ5Ni0uMDI3em0uMzQuMjM4YS4yOS4yOSAwIDAgMSAuMTc2LjIzNGwuMDA4LjA2My0uMzEyLjAwOGMtLjE2OCAwLS4zMiAwLS4zMzYtLjAwNHMtLjAyLS4wMjctLjAwNC0uMDgyYy4wNzgtLjIyMy4yNTQtLjMwNS40NjktLjIxOXptMCAwIi8+PC9zdmc+"
+      }
+    },
+    "properties": [
+      {
+        "group": "endpoint"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "operation",
+        "tooltip": "sObject records to create, get, update, or delete a record; SOQL Query to run a Salesforce Object Query Language query; Apex REST to invoke a custom Apex REST endpoint; Composite Request to batch any combination of Salesforce REST API calls into a single request."
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation",
+        "placeholder": "Account"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation",
+        "tooltip": "Name of the child relation"
+      },
+      {
+        "group": "operation",
+        "tooltip": "Salesforce Object Query Language statement used to retrieve records. See the <a href=\"https://developer.salesforce.com/docs/atlas.en-us.soql_sosl.meta/soql_sosl/sforce_api_calls_soql.htm\" target=\"_blank\">SOQL reference</a>."
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation",
+        "tooltip": "Map of query parameters to add to the request URL"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation",
+        "tooltip": "Field values for the Salesforce object, provided as a FEEL context."
+      },
+      {
+        "group": "operation",
+        "tooltip": "Path appended to /services/apexrest/ to build the request URL, e.g. \"MyApexClass\" or \"MyApexClass/action\".",
+        "placeholder": "MyApexClass/action"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation",
+        "tooltip": "Request payload for the Apex REST call, provided as a FEEL context."
+      },
+      {
+        "group": "operation",
+        "tooltip": "Roll back all sub-requests if any of them fails. If disabled, sub-requests are processed independently."
+      },
+      {
+        "group": "operation",
+        "tooltip": "Batch compatible subrequests together where possible."
+      },
+      {
+        "group": "operation",
+        "tooltip": "FEEL list of subrequests, each a context with \"method\", \"url\", \"referenceId\", and optional \"body\" entries. See the <a href=\"https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_composite.htm\" target=\"_blank\">Composite API reference</a>. Reference an earlier subrequest's result by its \"referenceId\" in a later subrequest's \"url\" or \"body\"."
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "timeout",
+        "tooltip": "Timeout in seconds to establish a connection, or 0 for an infinite timeout."
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output",
+        "tooltip": "<div><p>Example response:</p><code>{\"body\":{\"order\":{\"id\":\"123\",\"total\":\"100.00€\"}},\"headers\":{\"Content-Type\":\"application/json\"},\"status\":200}</code><p>Example FEEL expression: <code>= { orderId: body.order.id }</code> -&gt; <code>{\"orderId\":\"123\"}</code></p></div>"
+      },
+      {
+        "group": "errors",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>"
+      }
+    ]
+  },
+  "io.camunda.connectors.agenticai.aiagent.jobworker.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "aiTools",
+        "name": "AI Tools"
+      },
+      "groups": [
+        {
+          "id": "provider",
+          "label": "Model provider",
+          "openByDefault": false
+        },
+        {
+          "id": "model",
+          "label": "Model",
+          "openByDefault": false
+        },
+        {
+          "id": "systemPrompt",
+          "label": "System prompt",
+          "tooltip": "A system prompt is a set of foundational instructions given to a model before any user interaction begins. It defines the AI agent’s role, behavior, tone, and communication style, ensuring that responses remain consistent and aligned with the AI agent’s intended purpose. These instructions help shape how the model interprets and responds to user input throughout the conversation.",
+          "openByDefault": false
+        },
+        {
+          "id": "userPrompt",
+          "label": "User prompt",
+          "tooltip": "A user prompt is the message or question you give to the AI to start or continue a conversation. It tells the AI what you need, whether it's information, help with a task, or just a chat. The AI uses your prompt to understand how to respond.",
+          "openByDefault": false
+        },
+        {
+          "id": "tools",
+          "label": "Tools",
+          "tooltip": "Tools are optional features the AI Agent can use to perform specific tasks. Configure this if the agent should participate in a tools feedback loop.",
+          "openByDefault": false
+        },
+        {
+          "id": "memory",
+          "label": "Memory",
+          "tooltip": "Configuration of the Agent's short-term/conversational memory.",
+          "openByDefault": false
+        },
+        {
+          "id": "limits",
+          "label": "Limits",
+          "openByDefault": false
+        },
+        {
+          "id": "events",
+          "label": "Event handling",
+          "tooltip": "Configure how event sub-process results are handled. Results are added as user messages to the running agent.",
+          "openByDefault": false
+        },
+        {
+          "id": "response",
+          "label": "Response",
+          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/#response\">documentation</a> for details.",
+          "openByDefault": false
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
+          "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNBNTZFRkYiLz4KPG1hc2sgaWQ9InBhdGgtMi1vdXRzaWRlLTFfMTg1XzYiIG1hc2tVbml0cz0idXNlclNwYWNlT25Vc2UiIHg9IjQiIHk9IjQiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0iYmxhY2siPgo8cmVjdCBmaWxsPSJ3aGl0ZSIgeD0iNCIgeT0iNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ii8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMDEwNSAxMi4wOTg3QzE4LjQ5IDEwLjU4OTQgMTcuMTU5NCA4LjEwODE0IDE2LjE3OTkgNi4wMTEwM0MxNi4xNTIgNi4wMDQ1MSAxNi4xMTc2IDYgMTYuMDc5NCA2QzE2LjA0MTEgNiAxNi4wMDY2IDYuMDA0NTEgMTUuOTc4OCA2LjAxMTA0QzE0Ljk5OTQgOC4xMDgxNCAxMy42Njk3IDEwLjU4ODkgMTIuMTQ4MSAxMi4wOTgxQzEwLjYyNjkgMTMuNjA3MSA4LjEyNTY4IDE0LjkyNjQgNi4wMTE1NyAxNS44OTgxQzYuMDA0NzQgMTUuOTI2MSA2IDE1Ljk2MTEgNiAxNkM2IDE2LjAzODcgNi4wMDQ2OCAxNi4wNzM2IDYuMDExNDQgMTYuMTAxNEM4LjEyNTE5IDE3LjA3MjkgMTAuNjI2MiAxOC4zOTE5IDEyLjE0NzcgMTkuOTAxNkMxMy42Njk3IDIxLjQxMDcgMTQuOTk5NiAyMy44OTIgMTUuOTc5MSAyNS45ODlDMTYuMDA2OCAyNS45OTU2IDE2LjA0MTEgMjYgMTYuMDc5MyAyNkMxNi4xMTc1IDI2IDE2LjE1MTkgMjUuOTk1NCAxNi4xNzk2IDI1Ljk4OUMxNy4xNTkxIDIzLjg5MiAxOC40ODg4IDIxLjQxMSAyMC4wMDk5IDE5LjkwMjFNMjAuMDA5OSAxOS45MDIxQzIxLjUyNTMgMTguMzk4NyAyMy45NDY1IDE3LjA2NjkgMjUuOTkxNSAxNi4wODI0QzI1Ljk5NjUgMTYuMDU5MyAyNiAxNi4wMzEgMjYgMTUuOTk5N0MyNiAxNS45Njg0IDI1Ljk5NjUgMTUuOTQwMyAyNS45OTE1IDE1LjkxNzFDMjMuOTQ3NCAxNC45MzI3IDIxLjUyNTkgMTMuNjAxIDIwLjAxMDUgMTIuMDk4NyIvPgo8L21hc2s+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMDEwNSAxMi4wOTg3QzE4LjQ5IDEwLjU4OTQgMTcuMTU5NCA4LjEwODE0IDE2LjE3OTkgNi4wMTEwM0MxNi4xNTIgNi4wMDQ1MSAxNi4xMTc2IDYgMTYuMDc5NCA2QzE2LjA0MTEgNiAxNi4wMDY2IDYuMDA0NTEgMTUuOTc4OCA2LjAxMTA0QzE0Ljk5OTQgOC4xMDgxNCAxMy42Njk3IDEwLjU4ODkgMTIuMTQ4MSAxMi4wOTgxQzEwLjYyNjkgMTMuNjA3MSA4LjEyNTY4IDE0LjkyNjQgNi4wMTE1NyAxNS44OTgxQzYuMDA0NzQgMTUuOTI2MSA2IDE1Ljk2MTEgNiAxNkM2IDE2LjAzODcgNi4wMDQ2OCAxNi4wNzM2IDYuMDExNDQgMTYuMTAxNEM4LjEyNTE5IDE3LjA3MjkgMTAuNjI2MiAxOC4zOTE5IDEyLjE0NzcgMTkuOTAxNkMxMy42Njk3IDIxLjQxMDcgMTQuOTk5NiAyMy44OTIgMTUuOTc5MSAyNS45ODlDMTYuMDA2OCAyNS45OTU2IDE2LjA0MTEgMjYgMTYuMDc5MyAyNkMxNi4xMTc1IDI2IDE2LjE1MTkgMjUuOTk1NCAxNi4xNzk2IDI1Ljk4OUMxNy4xNTkxIDIzLjg5MiAxOC40ODg4IDIxLjQxMSAyMC4wMDk5IDE5LjkwMjFNMjAuMDA5OSAxOS45MDIxQzIxLjUyNTMgMTguMzk4NyAyMy45NDY1IDE3LjA2NjkgMjUuOTkxNSAxNi4wODI0QzI1Ljk5NjUgMTYuMDU5MyAyNiAxNi4wMzEgMjYgMTUuOTk5N0MyNiAxNS45Njg0IDI1Ljk5NjUgMTUuOTQwMyAyNS45OTE1IDE1LjkxNzFDMjMuOTQ3NCAxNC45MzI3IDIxLjUyNTkgMTMuNjAxIDIwLjAxMDUgMTIuMDk4NyIgZmlsbD0id2hpdGUiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yMC4wMTA1IDEyLjA5ODdDMTguNDkgMTAuNTg5NCAxNy4xNTk0IDguMTA4MTQgMTYuMTc5OSA2LjAxMTAzQzE2LjE1MiA2LjAwNDUxIDE2LjExNzYgNiAxNi4wNzk0IDZDMTYuMDQxMSA2IDE2LjAwNjYgNi4wMDQ1MSAxNS45Nzg4IDYuMDExMDRDMTQuOTk5NCA4LjEwODE0IDEzLjY2OTcgMTAuNTg4OSAxMi4xNDgxIDEyLjA5ODFDMTAuNjI2OSAxMy42MDcxIDguMTI1NjggMTQuOTI2NCA2LjAxMTU3IDE1Ljg5ODFDNi4wMDQ3NCAxNS45MjYxIDYgMTUuOTYxMSA2IDE2QzYgMTYuMDM4NyA2LjAwNDY4IDE2LjA3MzYgNi4wMTE0NCAxNi4xMDE0QzguMTI1MTkgMTcuMDcyOSAxMC42MjYyIDE4LjM5MTkgMTIuMTQ3NyAxOS45MDE2QzEzLjY2OTcgMjEuNDEwNyAxNC45OTk2IDIzLjg5MiAxNS45NzkxIDI1Ljk4OUMxNi4wMDY4IDI1Ljk5NTYgMTYuMDQxMSAyNiAxNi4wNzkzIDI2QzE2LjExNzUgMjYgMTYuMTUxOSAyNS45OTU0IDE2LjE3OTYgMjUuOTg5QzE3LjE1OTEgMjMuODkyIDE4LjQ4ODggMjEuNDExIDIwLjAwOTkgMTkuOTAyMU0yMC4wMDk5IDE5LjkwMjFDMjEuNTI1MyAxOC4zOTg3IDIzLjk0NjUgMTcuMDY2OSAyNS45OTE1IDE2LjA4MjRDMjUuOTk2NSAxNi4wNTkzIDI2IDE2LjAzMSAyNiAxNS45OTk3QzI2IDE1Ljk2ODQgMjUuOTk2NSAxNS45NDAzIDI1Ljk5MTUgMTUuOTE3MUMyMy45NDc0IDE0LjkzMjcgMjEuNTI1OSAxMy42MDEgMjAuMDEwNSAxMi4wOTg3IiBzdHJva2U9IiM0OTFEOEIiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgbWFzaz0idXJsKCNwYXRoLTItb3V0c2lkZS0xXzE4NV82KSIvPgo8L3N2Zz4K"
+      }
+    },
+    "properties": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Specify an endpoint to use the connector with an OpenAI compatible API. "
+      },
+      {
+        "group": "provider",
+        "tooltip": "Leave blank if using HTTP headers for authentication.<br>If an Authorization header is specified in the headers, then the API key is ignored."
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "model",
+        "placeholder": "claude-sonnet-4-6"
+      },
+      {
+        "group": "model",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-max-tokens\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Floating point number between 0 and 1. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-temperature\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Floating point number between 0 and 1. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-top-p\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Integer greater than 0. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-top-k\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "placeholder": "global.anthropic.claude-sonnet-4-6"
+      },
+      {
+        "group": "model",
+        "tooltip": "The maximum number of tokens per request to allow in the generated response. <br><br>Details in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InferenceConfiguration.html\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Floating point number between 0 and 1. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InferenceConfiguration.html\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Floating point number between 0 and 1. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_InferenceConfiguration.html\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model"
+      },
+      {
+        "group": "model",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://learn.microsoft.com/en-us/azure/ai-foundry/openai/reference#request-body\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Floating point number between 0 and 2. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://learn.microsoft.com/en-us/azure/ai-foundry/openai/reference#request-body\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://learn.microsoft.com/en-us/azure/ai-foundry/openai/reference#request-body\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model"
+      },
+      {
+        "group": "model",
+        "tooltip": "Maximum number of tokens that can be generated in the response. <br><br>Details in the <a href=\"https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls the degree of randomness in token selection. <br><br>Details in the <a href=\"https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Floating point number between 0 and 1. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Integer greater than 0. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model"
+      },
+      {
+        "group": "model",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://platform.openai.com/docs/api-reference/chat/create#chat-create-max_completion_tokens\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Floating point number between 0 and 2. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://platform.openai.com/docs/api-reference/chat/create#chat-create-temperature\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://platform.openai.com/docs/api-reference/chat/create#chat-create-top_p\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model"
+      },
+      {
+        "group": "model",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://platform.openai.com/docs/api-reference/chat/create#chat-create-max_completion_tokens\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Floating point number between 0 and 2. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://platform.openai.com/docs/api-reference/chat/create#chat-create-temperature\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://platform.openai.com/docs/api-reference/chat/create#chat-create-top_p\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model"
+      },
+      {
+        "group": "systemPrompt"
+      },
+      {
+        "group": "userPrompt"
+      },
+      {
+        "group": "userPrompt",
+        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details and supported file types."
+      },
+      {
+        "group": "memory",
+        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory",
+        "tooltip": "Will use the cluster default TTL (time-to-live) if not specified. Make sure to set this value to a reasonable duration matching your process lifecycle."
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory",
+        "tooltip": "Must match the identifier configured for the custom implementation."
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory",
+        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "limits"
@@ -2511,6 +3749,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -2521,8 +3762,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "keywords": []
       },
       "category": {
-        "id": "connectors",
-        "name": "Connectors"
+        "id": "aiTools",
+        "name": "AI Tools"
       },
       "groups": [
         {
@@ -2732,6 +3973,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Authentication"
         },
         {
+          "id": "configuration",
+          "label": "Configuration"
+        },
+        {
           "id": "queueProperties",
           "label": "Queue properties"
         },
@@ -2749,20 +3994,25 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         },
         {
           "id": "correlation",
-          "label": "Subprocess correlation"
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 40 40' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 64 (93537) - https://sketch.com --%3E%3Ctitle%3EIcon-Architecture/32/Arch_AWS-Simple-Queue-Service_32%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3ClinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='linearGradient-1'%3E%3Cstop stop-color='%23B0084D' offset='0%25'%3E%3C/stop%3E%3Cstop stop-color='%23FF4F8B' offset='100%25'%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Cg id='Icon-Architecture/32/Arch_AWS-Simple-Queue-Service_32' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Icon-Architecture-BG/32/Application-Integration' fill='url(%23linearGradient-1)'%3E%3Crect id='Rectangle' x='0' y='0' width='40' height='40'%3E%3C/rect%3E%3C/g%3E%3Cpath d='M14.3422051,22.3493786 L15.8466767,20.9061074 C15.9428347,20.8141539 15.9969235,20.687218 15.9999285,20.5552846 C16.0019317,20.4223517 15.9518495,20.2934168 15.8596981,20.1984648 L14.3552264,18.6432502 L13.6350433,19.3378994 L14.311154,20.037546 L11.9913429,20.037546 L11.9913429,21.0370413 L14.2650783,21.0370413 L13.6480647,21.6287425 L14.3422051,22.3493786 Z M26.3579452,22.3533765 L27.9074909,20.9001104 C28.0066538,20.8081569 28.0627459,20.679222 28.0647492,20.5442901 C28.0667525,20.4093583 28.0136653,20.2784244 27.918509,20.1834724 L26.3689633,18.6372532 L25.6607999,19.3438963 L26.3549403,20.037546 L24.0110896,20.037546 L24.0110896,21.0370413 L26.2988481,21.0370413 L25.671818,21.6247445 L26.3579452,22.3533765 Z M17.5875367,23.3608678 C18.3387708,23.0570212 19.1621235,22.8941035 20.0045074,22.8941035 C20.8468913,22.8941035 21.670244,23.0570212 22.4214781,23.3608678 C21.7523789,21.5897622 21.7523789,19.3898731 22.4214781,17.6187675 C20.9190098,18.2264606 19.090005,18.2264606 17.5875367,17.6187675 C18.2566359,19.3898731 18.2566359,21.5897622 17.5875367,23.3608678 L17.5875367,23.3608678 Z M15.6443443,25.3408679 C15.546183,25.2439168 15.4971024,25.1159814 15.4971024,24.988046 C15.4971024,24.8601106 15.546183,24.7321753 15.6443443,24.6342247 C17.5845317,22.6982024 17.5845317,18.2824324 15.6443443,16.3454106 C15.546183,16.2484595 15.4971024,16.1205241 15.4971024,15.9925912 C15.4971024,15.8646534 15.546183,15.736718 15.6443443,15.6387674 C15.8396652,15.4438659 16.1571868,15.4438659 16.3525077,15.6387674 C17.2740216,16.5583031 18.6052086,17.0860366 20.0045074,17.0860366 C21.4048079,17.0860366 22.7359948,16.5583031 23.6575088,15.6387674 C23.8528296,15.4438659 24.1703513,15.4438659 24.3656722,15.6387674 C24.4628318,15.736718 24.5119124,15.8646534 24.5119124,15.9925912 C24.5119124,16.1205241 24.4628318,16.2484595 24.3656722,16.3454106 C22.4244831,18.2824324 22.4244831,22.6982024 24.3656722,24.6342247 C24.4628318,24.7321753 24.5119124,24.8601106 24.5119124,24.988046 C24.5119124,25.1159814 24.4628318,25.2439168 24.3656722,25.3408679 C24.2675109,25.4388184 24.1393003,25.4877937 24.0110896,25.4877937 C23.882879,25.4877937 23.7546684,25.4388184 23.6575088,25.3408679 C22.7359948,24.4213322 21.4048079,23.8935987 20.0045074,23.8935987 C18.6052086,23.8935987 17.2740216,24.4213322 16.3525077,25.3408679 C16.1571868,25.5357694 15.8396652,25.5357694 15.6443443,25.3408679 L15.6443443,25.3408679 Z M32.5421049,19.4358499 C32.236603,19.1320033 31.8369464,18.9800801 31.4362882,18.9800801 C31.0366316,18.9800801 30.636975,19.1320033 30.3314731,19.4358499 C29.721471,20.0445425 29.721471,21.0340428 30.3314731,21.6417359 C30.9414753,22.2504285 31.9321027,22.2504285 32.5421049,21.6417359 C33.1511054,21.0340428 33.1511054,20.0445425 32.5421049,19.4358499 L32.5421049,19.4358499 Z M33.2502683,22.3493786 C32.7504472,22.8481267 32.0933677,23.0980005 31.4362882,23.0980005 C30.7802103,23.0980005 30.1231309,22.8481267 29.6233097,22.3493786 C28.6236675,21.3508828 28.6236675,19.7277025 29.6233097,18.7292068 C30.622952,17.7317105 32.250626,17.7317105 33.2502683,18.7292068 C34.2499106,19.7277025 34.2499106,21.3508828 33.2502683,22.3493786 L33.2502683,22.3493786 Z M9.66852687,19.4468443 C9.36302497,19.1429978 8.96336839,18.9910745 8.56271017,18.9910745 C8.16305359,18.9910745 7.76339701,19.1429978 7.45789511,19.4468443 C6.84889461,20.055537 6.84889461,21.0450373 7.45789511,21.6527304 C8.06789726,22.261423 9.05852472,22.261423 9.66852687,21.6527304 C10.2775274,21.0450373 10.2775274,20.055537 9.66852687,19.4468443 L9.66852687,19.4468443 Z M10.3766903,22.3593735 C9.87686914,22.8581217 9.21978965,23.1079955 8.56271017,23.1079955 C7.90663232,23.1079955 7.24955284,22.8581217 6.7497317,22.3593735 C5.75008943,21.3618773 5.75008943,19.738697 6.7497317,18.7402012 C7.74937397,17.7427049 9.37704801,17.7427049 10.3766903,18.7402012 C11.3763325,19.738697 11.3763325,21.3618773 10.3766903,22.3593735 L10.3766903,22.3593735 Z M27.4337125,28.9100654 C25.4364313,30.903059 22.7820705,32.0005047 19.9574301,32.0005047 C17.1327896,32.0005047 14.4784288,30.903059 12.4821492,28.9100654 C11.165987,27.5977281 10.4077413,26.469298 9.94498104,25.1359713 L8.99842599,25.4628063 C9.50726193,26.9290658 10.3626672,28.2104187 11.7739858,29.6167086 C13.9585748,31.7986067 16.8663519,33 19.9574301,33 C23.0495099,33 25.9562853,31.7986067 28.1418759,29.6167086 C29.2827502,28.4782835 30.4206196,27.1869356 31.0115905,25.4608073 L30.0640338,25.1379703 C29.5391715,26.6701966 28.4894469,27.8565974 27.4337125,28.9100654 L27.4337125,28.9100654 Z M9.94498104,15.8596559 L8.99842599,15.5318214 C9.51026687,14.0645624 10.3656722,12.7832095 11.7759891,11.3759202 C16.2863991,6.87519304 23.6264578,6.87419354 28.1378694,11.3759202 C29.2186449,12.4533761 30.4035916,13.7897012 31.0115905,15.5318214 L30.0640338,15.8596559 C29.5241468,14.3094387 28.4293482,13.0800596 27.4297059,12.0825633 C25.434428,10.0915688 22.7810689,8.99612197 19.9574301,8.99612197 C17.1337912,8.99612197 14.4804321,10.0915688 12.4851542,12.0825633 C11.1870215,13.3779092 10.4037347,14.5423211 9.94498104,15.8596559 L9.94498104,15.8596559 Z' id='AWS-Simple-Queue-Service_Icon_32_Squid' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCA0MCA0MCcgdmVyc2lvbj0nMS4xJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnCiAgICAgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPjwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggNjQgKDkzNTM3KSAtIGh0dHBzOi8vc2tldGNoLmNvbSAtLT4KICAgIDx0aXRsZT5JY29uLUFyY2hpdGVjdHVyZS8zMi9BcmNoX0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV8zMjwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPgogICAgICAgIDxsaW5lYXJHcmFkaWVudCB4MT0nMCUnIHkxPScxMDAlJyB4Mj0nMTAwJScgeTI9JzAlJyBpZD0nbGluZWFyR3JhZGllbnQtMSc+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9JyNCMDA4NEQnIG9mZnNldD0nMCUnPjwvc3RvcD4KICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0nI0ZGNEY4Qicgb2Zmc2V0PScxMDAlJz48L3N0b3A+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDwvZGVmcz4KICAgIDxnIGlkPSdJY29uLUFyY2hpdGVjdHVyZS8zMi9BcmNoX0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV8zMicgc3Ryb2tlPSdub25lJyBzdHJva2Utd2lkdGg9JzEnIGZpbGw9J25vbmUnCiAgICAgICBmaWxsLXJ1bGU9J2V2ZW5vZGQnPgogICAgICAgIDxnIGlkPSdJY29uLUFyY2hpdGVjdHVyZS1CRy8zMi9BcHBsaWNhdGlvbi1JbnRlZ3JhdGlvbicgZmlsbD0ndXJsKCNsaW5lYXJHcmFkaWVudC0xKSc+CiAgICAgICAgICAgIDxyZWN0IGlkPSdSZWN0YW5nbGUnIHg9JzAnIHk9JzAnIHdpZHRoPSc0MCcgaGVpZ2h0PSc0MCc+PC9yZWN0PgogICAgICAgIDwvZz4KICAgICAgICA8cGF0aCBkPSdNMTQuMzQyMjA1MSwyMi4zNDkzNzg2IEwxNS44NDY2NzY3LDIwLjkwNjEwNzQgQzE1Ljk0MjgzNDcsMjAuODE0MTUzOSAxNS45OTY5MjM1LDIwLjY4NzIxOCAxNS45OTk5Mjg1LDIwLjU1NTI4NDYgQzE2LjAwMTkzMTcsMjAuNDIyMzUxNyAxNS45NTE4NDk1LDIwLjI5MzQxNjggMTUuODU5Njk4MSwyMC4xOTg0NjQ4IEwxNC4zNTUyMjY0LDE4LjY0MzI1MDIgTDEzLjYzNTA0MzMsMTkuMzM3ODk5NCBMMTQuMzExMTU0LDIwLjAzNzU0NiBMMTEuOTkxMzQyOSwyMC4wMzc1NDYgTDExLjk5MTM0MjksMjEuMDM3MDQxMyBMMTQuMjY1MDc4MywyMS4wMzcwNDEzIEwxMy42NDgwNjQ3LDIxLjYyODc0MjUgTDE0LjM0MjIwNTEsMjIuMzQ5Mzc4NiBaIE0yNi4zNTc5NDUyLDIyLjM1MzM3NjUgTDI3LjkwNzQ5MDksMjAuOTAwMTEwNCBDMjguMDA2NjUzOCwyMC44MDgxNTY5IDI4LjA2Mjc0NTksMjAuNjc5MjIyIDI4LjA2NDc0OTIsMjAuNTQ0MjkwMSBDMjguMDY2NzUyNSwyMC40MDkzNTgzIDI4LjAxMzY2NTMsMjAuMjc4NDI0NCAyNy45MTg1MDksMjAuMTgzNDcyNCBMMjYuMzY4OTYzMywxOC42MzcyNTMyIEwyNS42NjA3OTk5LDE5LjM0Mzg5NjMgTDI2LjM1NDk0MDMsMjAuMDM3NTQ2IEwyNC4wMTEwODk2LDIwLjAzNzU0NiBMMjQuMDExMDg5NiwyMS4wMzcwNDEzIEwyNi4yOTg4NDgxLDIxLjAzNzA0MTMgTDI1LjY3MTgxOCwyMS42MjQ3NDQ1IEwyNi4zNTc5NDUyLDIyLjM1MzM3NjUgWiBNMTcuNTg3NTM2NywyMy4zNjA4Njc4IEMxOC4zMzg3NzA4LDIzLjA1NzAyMTIgMTkuMTYyMTIzNSwyMi44OTQxMDM1IDIwLjAwNDUwNzQsMjIuODk0MTAzNSBDMjAuODQ2ODkxMywyMi44OTQxMDM1IDIxLjY3MDI0NCwyMy4wNTcwMjEyIDIyLjQyMTQ3ODEsMjMuMzYwODY3OCBDMjEuNzUyMzc4OSwyMS41ODk3NjIyIDIxLjc1MjM3ODksMTkuMzg5ODczMSAyMi40MjE0NzgxLDE3LjYxODc2NzUgQzIwLjkxOTAwOTgsMTguMjI2NDYwNiAxOS4wOTAwMDUsMTguMjI2NDYwNiAxNy41ODc1MzY3LDE3LjYxODc2NzUgQzE4LjI1NjYzNTksMTkuMzg5ODczMSAxOC4yNTY2MzU5LDIxLjU4OTc2MjIgMTcuNTg3NTM2NywyMy4zNjA4Njc4IEwxNy41ODc1MzY3LDIzLjM2MDg2NzggWiBNMTUuNjQ0MzQ0MywyNS4zNDA4Njc5IEMxNS41NDYxODMsMjUuMjQzOTE2OCAxNS40OTcxMDI0LDI1LjExNTk4MTQgMTUuNDk3MTAyNCwyNC45ODgwNDYgQzE1LjQ5NzEwMjQsMjQuODYwMTEwNiAxNS41NDYxODMsMjQuNzMyMTc1MyAxNS42NDQzNDQzLDI0LjYzNDIyNDcgQzE3LjU4NDUzMTcsMjIuNjk4MjAyNCAxNy41ODQ1MzE3LDE4LjI4MjQzMjQgMTUuNjQ0MzQ0MywxNi4zNDU0MTA2IEMxNS41NDYxODMsMTYuMjQ4NDU5NSAxNS40OTcxMDI0LDE2LjEyMDUyNDEgMTUuNDk3MTAyNCwxNS45OTI1OTEyIEMxNS40OTcxMDI0LDE1Ljg2NDY1MzQgMTUuNTQ2MTgzLDE1LjczNjcxOCAxNS42NDQzNDQzLDE1LjYzODc2NzQgQzE1LjgzOTY2NTIsMTUuNDQzODY1OSAxNi4xNTcxODY4LDE1LjQ0Mzg2NTkgMTYuMzUyNTA3NywxNS42Mzg3Njc0IEMxNy4yNzQwMjE2LDE2LjU1ODMwMzEgMTguNjA1MjA4NiwxNy4wODYwMzY2IDIwLjAwNDUwNzQsMTcuMDg2MDM2NiBDMjEuNDA0ODA3OSwxNy4wODYwMzY2IDIyLjczNTk5NDgsMTYuNTU4MzAzMSAyMy42NTc1MDg4LDE1LjYzODc2NzQgQzIzLjg1MjgyOTYsMTUuNDQzODY1OSAyNC4xNzAzNTEzLDE1LjQ0Mzg2NTkgMjQuMzY1NjcyMiwxNS42Mzg3Njc0IEMyNC40NjI4MzE4LDE1LjczNjcxOCAyNC41MTE5MTI0LDE1Ljg2NDY1MzQgMjQuNTExOTEyNCwxNS45OTI1OTEyIEMyNC41MTE5MTI0LDE2LjEyMDUyNDEgMjQuNDYyODMxOCwxNi4yNDg0NTk1IDI0LjM2NTY3MjIsMTYuMzQ1NDEwNiBDMjIuNDI0NDgzMSwxOC4yODI0MzI0IDIyLjQyNDQ4MzEsMjIuNjk4MjAyNCAyNC4zNjU2NzIyLDI0LjYzNDIyNDcgQzI0LjQ2MjgzMTgsMjQuNzMyMTc1MyAyNC41MTE5MTI0LDI0Ljg2MDExMDYgMjQuNTExOTEyNCwyNC45ODgwNDYgQzI0LjUxMTkxMjQsMjUuMTE1OTgxNCAyNC40NjI4MzE4LDI1LjI0MzkxNjggMjQuMzY1NjcyMiwyNS4zNDA4Njc5IEMyNC4yNjc1MTA5LDI1LjQzODgxODQgMjQuMTM5MzAwMywyNS40ODc3OTM3IDI0LjAxMTA4OTYsMjUuNDg3NzkzNyBDMjMuODgyODc5LDI1LjQ4Nzc5MzcgMjMuNzU0NjY4NCwyNS40Mzg4MTg0IDIzLjY1NzUwODgsMjUuMzQwODY3OSBDMjIuNzM1OTk0OCwyNC40MjEzMzIyIDIxLjQwNDgwNzksMjMuODkzNTk4NyAyMC4wMDQ1MDc0LDIzLjg5MzU5ODcgQzE4LjYwNTIwODYsMjMuODkzNTk4NyAxNy4yNzQwMjE2LDI0LjQyMTMzMjIgMTYuMzUyNTA3NywyNS4zNDA4Njc5IEMxNi4xNTcxODY4LDI1LjUzNTc2OTQgMTUuODM5NjY1MiwyNS41MzU3Njk0IDE1LjY0NDM0NDMsMjUuMzQwODY3OSBMMTUuNjQ0MzQ0MywyNS4zNDA4Njc5IFogTTMyLjU0MjEwNDksMTkuNDM1ODQ5OSBDMzIuMjM2NjAzLDE5LjEzMjAwMzMgMzEuODM2OTQ2NCwxOC45ODAwODAxIDMxLjQzNjI4ODIsMTguOTgwMDgwMSBDMzEuMDM2NjMxNiwxOC45ODAwODAxIDMwLjYzNjk3NSwxOS4xMzIwMDMzIDMwLjMzMTQ3MzEsMTkuNDM1ODQ5OSBDMjkuNzIxNDcxLDIwLjA0NDU0MjUgMjkuNzIxNDcxLDIxLjAzNDA0MjggMzAuMzMxNDczMSwyMS42NDE3MzU5IEMzMC45NDE0NzUzLDIyLjI1MDQyODUgMzEuOTMyMTAyNywyMi4yNTA0Mjg1IDMyLjU0MjEwNDksMjEuNjQxNzM1OSBDMzMuMTUxMTA1NCwyMS4wMzQwNDI4IDMzLjE1MTEwNTQsMjAuMDQ0NTQyNSAzMi41NDIxMDQ5LDE5LjQzNTg0OTkgTDMyLjU0MjEwNDksMTkuNDM1ODQ5OSBaIE0zMy4yNTAyNjgzLDIyLjM0OTM3ODYgQzMyLjc1MDQ0NzIsMjIuODQ4MTI2NyAzMi4wOTMzNjc3LDIzLjA5ODAwMDUgMzEuNDM2Mjg4MiwyMy4wOTgwMDA1IEMzMC43ODAyMTAzLDIzLjA5ODAwMDUgMzAuMTIzMTMwOSwyMi44NDgxMjY3IDI5LjYyMzMwOTcsMjIuMzQ5Mzc4NiBDMjguNjIzNjY3NSwyMS4zNTA4ODI4IDI4LjYyMzY2NzUsMTkuNzI3NzAyNSAyOS42MjMzMDk3LDE4LjcyOTIwNjggQzMwLjYyMjk1MiwxNy43MzE3MTA1IDMyLjI1MDYyNiwxNy43MzE3MTA1IDMzLjI1MDI2ODMsMTguNzI5MjA2OCBDMzQuMjQ5OTEwNiwxOS43Mjc3MDI1IDM0LjI0OTkxMDYsMjEuMzUwODgyOCAzMy4yNTAyNjgzLDIyLjM0OTM3ODYgTDMzLjI1MDI2ODMsMjIuMzQ5Mzc4NiBaIE05LjY2ODUyNjg3LDE5LjQ0Njg0NDMgQzkuMzYzMDI0OTcsMTkuMTQyOTk3OCA4Ljk2MzM2ODM5LDE4Ljk5MTA3NDUgOC41NjI3MTAxNywxOC45OTEwNzQ1IEM4LjE2MzA1MzU5LDE4Ljk5MTA3NDUgNy43NjMzOTcwMSwxOS4xNDI5OTc4IDcuNDU3ODk1MTEsMTkuNDQ2ODQ0MyBDNi44NDg4OTQ2MSwyMC4wNTU1MzcgNi44NDg4OTQ2MSwyMS4wNDUwMzczIDcuNDU3ODk1MTEsMjEuNjUyNzMwNCBDOC4wNjc4OTcyNiwyMi4yNjE0MjMgOS4wNTg1MjQ3MiwyMi4yNjE0MjMgOS42Njg1MjY4NywyMS42NTI3MzA0IEMxMC4yNzc1Mjc0LDIxLjA0NTAzNzMgMTAuMjc3NTI3NCwyMC4wNTU1MzcgOS42Njg1MjY4NywxOS40NDY4NDQzIEw5LjY2ODUyNjg3LDE5LjQ0Njg0NDMgWiBNMTAuMzc2NjkwMywyMi4zNTkzNzM1IEM5Ljg3Njg2OTE0LDIyLjg1ODEyMTcgOS4yMTk3ODk2NSwyMy4xMDc5OTU1IDguNTYyNzEwMTcsMjMuMTA3OTk1NSBDNy45MDY2MzIzMiwyMy4xMDc5OTU1IDcuMjQ5NTUyODQsMjIuODU4MTIxNyA2Ljc0OTczMTcsMjIuMzU5MzczNSBDNS43NTAwODk0MywyMS4zNjE4NzczIDUuNzUwMDg5NDMsMTkuNzM4Njk3IDYuNzQ5NzMxNywxOC43NDAyMDEyIEM3Ljc0OTM3Mzk3LDE3Ljc0MjcwNDkgOS4zNzcwNDgwMSwxNy43NDI3MDQ5IDEwLjM3NjY5MDMsMTguNzQwMjAxMiBDMTEuMzc2MzMyNSwxOS43Mzg2OTcgMTEuMzc2MzMyNSwyMS4zNjE4NzczIDEwLjM3NjY5MDMsMjIuMzU5MzczNSBMMTAuMzc2NjkwMywyMi4zNTkzNzM1IFogTTI3LjQzMzcxMjUsMjguOTEwMDY1NCBDMjUuNDM2NDMxMywzMC45MDMwNTkgMjIuNzgyMDcwNSwzMi4wMDA1MDQ3IDE5Ljk1NzQzMDEsMzIuMDAwNTA0NyBDMTcuMTMyNzg5NiwzMi4wMDA1MDQ3IDE0LjQ3ODQyODgsMzAuOTAzMDU5IDEyLjQ4MjE0OTIsMjguOTEwMDY1NCBDMTEuMTY1OTg3LDI3LjU5NzcyODEgMTAuNDA3NzQxMywyNi40NjkyOTggOS45NDQ5ODEwNCwyNS4xMzU5NzEzIEw4Ljk5ODQyNTk5LDI1LjQ2MjgwNjMgQzkuNTA3MjYxOTMsMjYuOTI5MDY1OCAxMC4zNjI2NjcyLDI4LjIxMDQxODcgMTEuNzczOTg1OCwyOS42MTY3MDg2IEMxMy45NTg1NzQ4LDMxLjc5ODYwNjcgMTYuODY2MzUxOSwzMyAxOS45NTc0MzAxLDMzIEMyMy4wNDk1MDk5LDMzIDI1Ljk1NjI4NTMsMzEuNzk4NjA2NyAyOC4xNDE4NzU5LDI5LjYxNjcwODYgQzI5LjI4Mjc1MDIsMjguNDc4MjgzNSAzMC40MjA2MTk2LDI3LjE4NjkzNTYgMzEuMDExNTkwNSwyNS40NjA4MDczIEwzMC4wNjQwMzM4LDI1LjEzNzk3MDMgQzI5LjUzOTE3MTUsMjYuNjcwMTk2NiAyOC40ODk0NDY5LDI3Ljg1NjU5NzQgMjcuNDMzNzEyNSwyOC45MTAwNjU0IEwyNy40MzM3MTI1LDI4LjkxMDA2NTQgWiBNOS45NDQ5ODEwNCwxNS44NTk2NTU5IEw4Ljk5ODQyNTk5LDE1LjUzMTgyMTQgQzkuNTEwMjY2ODcsMTQuMDY0NTYyNCAxMC4zNjU2NzIyLDEyLjc4MzIwOTUgMTEuNzc1OTg5MSwxMS4zNzU5MjAyIEMxNi4yODYzOTkxLDYuODc1MTkzMDQgMjMuNjI2NDU3OCw2Ljg3NDE5MzU0IDI4LjEzNzg2OTQsMTEuMzc1OTIwMiBDMjkuMjE4NjQ0OSwxMi40NTMzNzYxIDMwLjQwMzU5MTYsMTMuNzg5NzAxMiAzMS4wMTE1OTA1LDE1LjUzMTgyMTQgTDMwLjA2NDAzMzgsMTUuODU5NjU1OSBDMjkuNTI0MTQ2OCwxNC4zMDk0Mzg3IDI4LjQyOTM0ODIsMTMuMDgwMDU5NiAyNy40Mjk3MDU5LDEyLjA4MjU2MzMgQzI1LjQzNDQyOCwxMC4wOTE1Njg4IDIyLjc4MTA2ODksOC45OTYxMjE5NyAxOS45NTc0MzAxLDguOTk2MTIxOTcgQzE3LjEzMzc5MTIsOC45OTYxMjE5NyAxNC40ODA0MzIxLDEwLjA5MTU2ODggMTIuNDg1MTU0MiwxMi4wODI1NjMzIEMxMS4xODcwMjE1LDEzLjM3NzkwOTIgMTAuNDAzNzM0NywxNC41NDIzMjExIDkuOTQ0OTgxMDQsMTUuODU5NjU1OSBMOS45NDQ5ODEwNCwxNS44NTk2NTU5IFonCiAgICAgICAgICAgICAgaWQ9J0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV9JY29uXzMyX1NxdWlkJyBmaWxsPScjRkZGRkZGJz48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
       {
         "group": "authentication"
       },
@@ -2770,25 +4020,44 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "queueProperties"
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
       },
       {
-        "group": "queueProperties"
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
       },
       {
-        "group": "messagePollingProperties"
+        "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "configuration"
+      },
+      {
+        "group": "queueProperties",
+        "tooltip": "URL of the SQS queue to subscribe to."
+      },
+      {
+        "group": "messagePollingProperties",
+        "tooltip": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>. A value of 0 is automatically overridden to 1."
+      },
+      {
+        "group": "input",
+        "tooltip": "Array of queue attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
+      },
+      {
+        "group": "input",
+        "tooltip": "Array of message attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
       },
       {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
         "group": "correlation"
@@ -2800,22 +4069,41 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
   "io.camunda.connectors.agenticai.a2a.client.v0": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
-        "id": "connectors",
-        "name": "Connectors"
+        "id": "aiTools",
+        "name": "AI Tools"
       },
       "groups": [
         {
@@ -2954,23 +4242,23 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.message.intermediate.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
         {
-          "id": "default",
-          "label": "Properties"
+          "id": "operation",
+          "label": "Operation"
         },
         {
           "id": "connector",
@@ -2995,29 +4283,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
+      {},
+      {},
+      {},
+      {},
+      {},
       {
-        "group": "default"
+        "group": "operation"
       },
       {
-        "group": "default"
+        "group": "operation",
+        "tooltip": "Duration for which the message remains buffered"
       },
       {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
+        "group": "operation"
       },
       {
         "group": "connector"
@@ -3039,18 +4318,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.agenticai.mcp.client.v0": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
-        "id": "connectors",
-        "name": "Connectors"
+        "id": "aiTools",
+        "name": "AI Tools"
       },
       "groups": [
         {
@@ -3058,12 +4337,17 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "MCP Client"
         },
         {
-          "id": "tools",
-          "label": "Tools"
+          "id": "connectorMode",
+          "label": "Connector mode",
+          "tooltip": "Select how this connector is used. When the connector is used as an AI agent tool, select the AI Agent tool mode."
         },
         {
           "id": "operation",
-          "label": "Operation",
+          "label": "Operation"
+        },
+        {
+          "id": "filters",
+          "label": "Filters",
           "openByDefault": false
         },
         {
@@ -3094,10 +4378,29 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "client"
       },
       {
-        "group": "tools"
+        "group": "connectorMode"
       },
       {
-        "group": "tools"
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation",
+        "tooltip": "Forwarded unmodified as the <code>_meta</code> field of the MCP request. Required metadata is defined by the MCP server. See the <a href=\"https://modelcontextprotocol.io/specification/2025-11-25/basic/index#_meta\">MCP specification</a> for details."
       },
       {
         "group": "operation",
@@ -3106,6 +4409,34 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {
         "group": "operation",
         "tooltip": "The parameter structure depends on the method being called. See the <a href=\"https://modelcontextprotocol.io/specification/2024-11-05/server/tools#calling-tools\">MCP specification</a> for an example of the parameters for the <code>tools/call</code> method."
+      },
+      {
+        "group": "operation",
+        "tooltip": "Forwarded unmodified as the <code>_meta</code> field of the MCP request. Required metadata is defined by the MCP server. See the <a href=\"https://modelcontextprotocol.io/specification/2025-11-25/basic/index#_meta\">MCP specification</a> for details."
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
       },
       {
         "group": "connector"
@@ -3127,215 +4458,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.inbound.RabbitMQ.Boundary.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "category": {
-        "id": "connectors",
-        "name": "Connectors"
-      },
-      "groups": [
-        {
-          "id": "authentication",
-          "label": "Authentication"
-        },
-        {
-          "id": "routing",
-          "label": "Routing"
-        },
-        {
-          "id": "subscription",
-          "label": "Subscription"
-        },
-        {
-          "id": "activation",
-          "label": "Activation"
-        },
-        {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
-        }
-      ],
-      "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='-7.5 0 271 271' preserveAspectRatio='xMidYMid'%3E%3Cpath d='M245.44 108.308h-85.09a7.738 7.738 0 0 1-7.735-7.734v-88.68C152.615 5.327 147.29 0 140.726 0h-30.375c-6.568 0-11.89 5.327-11.89 11.894v88.143c0 4.573-3.697 8.29-8.27 8.31l-27.885.133c-4.612.025-8.359-3.717-8.35-8.325l.173-88.241C54.144 5.337 48.817 0 42.24 0H11.89C5.321 0 0 5.327 0 11.894V260.21c0 5.834 4.726 10.56 10.555 10.56H245.44c5.834 0 10.56-4.726 10.56-10.56V118.868c0-5.834-4.726-10.56-10.56-10.56zm-39.902 93.233c0 7.645-6.198 13.844-13.843 13.844H167.69c-7.646 0-13.844-6.199-13.844-13.844v-24.005c0-7.646 6.198-13.844 13.844-13.844h24.005c7.645 0 13.843 6.198 13.843 13.844v24.005z' fill='%23F60'/%3E%3C/svg%3E"
-      }
-    },
-    "properties": [
-      {},
-      {},
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "routing"
-      },
-      {
-        "group": "routing"
-      },
-      {
-        "group": "routing"
-      },
-      {
-        "group": "subscription"
-      },
-      {
-        "group": "subscription"
-      },
-      {
-        "group": "subscription"
-      },
-      {
-        "group": "subscription"
-      },
-      {
-        "group": "activation"
-      },
-      {
-        "group": "activation"
-      },
-      {
-        "group": "activation"
-      },
-      {
-        "group": "variable-mapping"
-      },
-      {
-        "group": "variable-mapping"
-      }
-    ]
-  },
-  "io.camunda.connectors.inbound.Slack.MessageStartEvent.v1": {
-    "template": {
-      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "category": {
-        "id": "connectors",
-        "name": "Connectors"
-      },
-      "groups": [
-        {
-          "id": "endpoint",
-          "label": "Webhook configuration"
-        },
-        {
-          "id": "activation",
-          "label": "Activation"
-        },
-        {
-          "id": "correlation",
-          "label": "Subprocess correlation"
-        },
-        {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
-        }
-      ],
-      "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A"
-      }
-    },
-    "properties": [
-      {},
-      {},
-      {},
-      {
-        "group": "endpoint"
-      },
-      {
-        "group": "endpoint"
-      },
-      {
-        "group": "activation"
-      },
-      {
-        "group": "activation"
-      },
-      {
-        "group": "correlation"
-      },
-      {
-        "group": "correlation"
-      },
-      {
-        "group": "correlation"
-      },
-      {
-        "group": "variable-mapping"
-      },
-      {
-        "group": "variable-mapping"
-      }
-    ]
-  },
-  "io.camunda.connectors.inbound.Slack.IntermediateCatchEvent.v1": {
-    "template": {
-      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "category": {
-        "id": "connectors",
-        "name": "Connectors"
-      },
-      "groups": [
-        {
-          "id": "endpoint",
-          "label": "Webhook configuration"
-        },
-        {
-          "id": "activation",
-          "label": "Activation"
-        },
-        {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
-        }
-      ],
-      "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A"
-      }
-    },
-    "properties": [
-      {},
-      {},
-      {},
-      {
-        "group": "endpoint"
-      },
-      {
-        "group": "endpoint"
-      },
-      {
-        "group": "activation"
-      },
-      {
-        "group": "activation"
-      },
-      {
-        "group": "activation"
-      },
-      {
-        "group": "variable-mapping"
-      },
-      {
-        "group": "variable-mapping"
-      }
-    ]
-  },
-  "io.camunda.connectors.inbound.RabbitMQ.Receive.v1": {
-    "template": {
-      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -3382,7 +4513,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "URI should contain username, password, host name, port number, and virtual host"
       },
       {
         "group": "authentication"
@@ -3391,16 +4523,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "routing"
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "routing"
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "routing"
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "subscription"
+        "group": "subscription",
+        "tooltip": "Name of the queue to subscribe to"
       },
       {
         "group": "subscription"
@@ -3431,7 +4567,325 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      }
+    ]
+  },
+  "io.camunda.connectors.inbound.Slack.MessageStartEvent.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "endpoint",
+          "label": "Webhook configuration"
+        },
+        {
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI3IiBoZWlnaHQ9IjEyNyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMjcuMiA4MGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjJDNi43IDkzLjIuOCA4Ny4zLjggODBjMC03LjMgNS45LTEzLjIgMTMuMi0xMy4yaDEzLjJWODB6bTYuNiAwYzAtNy4zIDUuOS0xMy4yIDEzLjItMTMuMiA3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzNjMCA3LjMtNS45IDEzLjItMTMuMiAxMy4yLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMlY4MHoiIGZpbGw9IiNFMDFFNUEiLz4KICA8cGF0aCBkPSJNNDcgMjdjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMkMzMy44IDYuNSAzOS43LjYgNDcgLjZjNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yVjI3SDQ3em0wIDYuN2M3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDEzLjlDNi42IDYwLjEuNyA1NC4yLjcgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJINDd6IiBmaWxsPSIjMzZDNUYwIi8+CiAgPHBhdGggZD0iTTk5LjkgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjIgNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yIDAgNy4zLTUuOSAxMy4yLTEzLjIgMTMuMkg5OS45VjQ2Ljl6bS02LjYgMGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjEzLjhDNjYuOSA2LjUgNzIuOC42IDgwLjEuNmM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzMuMXoiIGZpbGw9IiMyRUI2N0QiLz4KICA8cGF0aCBkPSJNODAuMSA5OS44YzcuMyAwIDEzLjIgNS45IDEzLjIgMTMuMiAwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjk5LjhoMTMuMnptMC02LjZjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMiAwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJoMzMuMWM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDgwLjF6IiBmaWxsPSIjRUNCMjJFIi8+Cjwvc3ZnPgo="
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL endpoint"
+      },
+      {
+        "group": "endpoint"
+      },
+      {
+        "group": "endpoint",
+        "tooltip": "Used to verify that incoming requests originate from Slack. See <a href='https://api.slack.com/authentication/verifying-requests-from-slack' target='_blank'>Verifying requests from Slack</a>"
+      },
+      {
+        "group": "endpoint"
+      },
+      {
+        "group": "activation"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
+      },
+      {
         "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      }
+    ]
+  },
+  "io.camunda.connectors.inbound.Slack.IntermediateCatchEvent.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "endpoint",
+          "label": "Webhook configuration"
+        },
+        {
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI3IiBoZWlnaHQ9IjEyNyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMjcuMiA4MGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjJDNi43IDkzLjIuOCA4Ny4zLjggODBjMC03LjMgNS45LTEzLjIgMTMuMi0xMy4yaDEzLjJWODB6bTYuNiAwYzAtNy4zIDUuOS0xMy4yIDEzLjItMTMuMiA3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzNjMCA3LjMtNS45IDEzLjItMTMuMiAxMy4yLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMlY4MHoiIGZpbGw9IiNFMDFFNUEiLz4KICA8cGF0aCBkPSJNNDcgMjdjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMkMzMy44IDYuNSAzOS43LjYgNDcgLjZjNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yVjI3SDQ3em0wIDYuN2M3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDEzLjlDNi42IDYwLjEuNyA1NC4yLjcgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJINDd6IiBmaWxsPSIjMzZDNUYwIi8+CiAgPHBhdGggZD0iTTk5LjkgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjIgNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yIDAgNy4zLTUuOSAxMy4yLTEzLjIgMTMuMkg5OS45VjQ2Ljl6bS02LjYgMGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjEzLjhDNjYuOSA2LjUgNzIuOC42IDgwLjEuNmM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzMuMXoiIGZpbGw9IiMyRUI2N0QiLz4KICA8cGF0aCBkPSJNODAuMSA5OS44YzcuMyAwIDEzLjIgNS45IDEzLjIgMTMuMiAwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjk5LjhoMTMuMnptMC02LjZjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMiAwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJoMzMuMWM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDgwLjF6IiBmaWxsPSIjRUNCMjJFIi8+Cjwvc3ZnPgo="
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL endpoint"
+      },
+      {
+        "group": "endpoint"
+      },
+      {
+        "group": "endpoint",
+        "tooltip": "Used to verify that incoming requests originate from Slack. See <a href='https://api.slack.com/authentication/verifying-requests-from-slack' target='_blank'>Verifying requests from Slack</a>"
+      },
+      {
+        "group": "endpoint"
+      },
+      {
+        "group": "activation"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      }
+    ]
+  },
+  "io.camunda.connectors.inbound.RabbitMQ.Receive.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "routing",
+          "label": "Routing"
+        },
+        {
+          "id": "subscription",
+          "label": "Subscription"
+        },
+        {
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxOCcgaGVpZ2h0PScxOCcgdmlld0JveD0nLTcuNSAwIDI3MSAyNzEnIHByZXNlcnZlQXNwZWN0UmF0aW89J3hNaWRZTWlkJz4KICAgIDxwYXRoIGQ9J00yNDUuNDQgMTA4LjMwOGgtODUuMDlhNy43MzggNy43MzggMCAwIDEtNy43MzUtNy43MzR2LTg4LjY4QzE1Mi42MTUgNS4zMjcgMTQ3LjI5IDAgMTQwLjcyNiAwaC0zMC4zNzVjLTYuNTY4IDAtMTEuODkgNS4zMjctMTEuODkgMTEuODk0djg4LjE0M2MwIDQuNTczLTMuNjk3IDguMjktOC4yNyA4LjMxbC0yNy44ODUuMTMzYy00LjYxMi4wMjUtOC4zNTktMy43MTctOC4zNS04LjMyNWwuMTczLTg4LjI0MUM1NC4xNDQgNS4zMzcgNDguODE3IDAgNDIuMjQgMEgxMS44OUM1LjMyMSAwIDAgNS4zMjcgMCAxMS44OTRWMjYwLjIxYzAgNS44MzQgNC43MjYgMTAuNTYgMTAuNTU1IDEwLjU2SDI0NS40NGM1LjgzNCAwIDEwLjU2LTQuNzI2IDEwLjU2LTEwLjU2VjExOC44NjhjMC01LjgzNC00LjcyNi0xMC41Ni0xMC41Ni0xMC41NnptLTM5LjkwMiA5My4yMzNjMCA3LjY0NS02LjE5OCAxMy44NDQtMTMuODQzIDEzLjg0NEgxNjcuNjljLTcuNjQ2IDAtMTMuODQ0LTYuMTk5LTEzLjg0NC0xMy44NDR2LTI0LjAwNWMwLTcuNjQ2IDYuMTk4LTEzLjg0NCAxMy44NDQtMTMuODQ0aDI0LjAwNWM3LjY0NSAwIDEzLjg0MyA2LjE5OCAxMy44NDMgMTMuODQ0djI0LjAwNXonCiAgICAgICAgICBmaWxsPScjRjYwJy8+Cjwvc3ZnPg=="
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "URI should contain username, password, host name, port number, and virtual host"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+      },
+      {
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+      },
+      {
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+      },
+      {
+        "group": "subscription",
+        "tooltip": "Name of the queue to subscribe to"
+      },
+      {
+        "group": "subscription"
+      },
+      {
+        "group": "subscription"
+      },
+      {
+        "group": "subscription"
+      },
+      {
+        "group": "activation"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -3456,42 +4910,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
   "io.camunda.connectors.HubSpot.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": [
-          "create contact",
-          "update contact",
-          "delete contact",
-          "get contact",
-          "get all contacts",
-          "search contact",
-          "create company",
-          "get company",
-          "get all companies",
-          "search company",
-          "delete company",
-          "get all deals",
-          "get deal",
-          "search deal",
-          "delete deal",
-          "batch read contacts",
-          "get all contacts of a company",
-          "add element to list",
-          "enroll contact to a workflow",
-          "submit form"
-        ]
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
         {
-          "id": "server",
-          "label": "Server"
-        },
-        {
           "id": "operation",
           "label": "Operation"
+        },
+        {
+          "id": "server",
+          "label": "Server"
         },
         {
           "id": "authentication",
@@ -3532,6 +4962,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "tooltip": "The access token of your HubSpot private app.",
         "group": "authentication"
       },
       {
@@ -3553,6 +4984,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "server"
       },
       {
+        "tooltip": "The id of the object from which to retrieve the next page.",
         "group": "parameters"
       },
       {
@@ -3571,72 +5003,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
-        "group": "input"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "requestBody"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "requestBody"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
+        "tooltip": "Names of the additional properties as a comma separated list. Leave this empty to get only standard properties. See all <a href=\"https://developers.hubspot.com/docs/reference/api/crm/properties/v1-contacts#get-all-contact-properties\" target=\"_blank\">contact properties</a> and HubSpot's <a href=\"https://knowledge.hubspot.com/properties/hubspots-default-contact-properties\" target=\"_blank\">default contact properties</a>.",
+        "placeholder": "city,annualrevenue",
         "group": "input"
       },
       {
@@ -3666,7 +5034,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {
         "group": "parameters"
       },
+      {},
       {
+        "tooltip": "The field within the object to perform the search on.",
+        "placeholder": "lastname",
+        "group": "input"
+      },
+      {
+        "tooltip": "The value to search for.",
+        "placeholder": "Smith",
         "group": "input"
       },
       {
@@ -3681,71 +5057,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {
         "group": "parameters"
       },
+      {},
       {
+        "tooltip": "Properties of the contact",
+        "group": "input"
+      },
+      {
+        "tooltip": "Company id the contact should be associated with",
         "group": "input"
       },
       {
         "group": "input"
       },
       {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "requestBody"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
         "group": "input"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "requestBody"
       },
       {
         "group": "input"
@@ -3793,6 +5118,113 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "parameters"
       },
       {
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {},
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {},
+      {
+        "group": "input"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
         "group": "parameters"
       },
       {
@@ -3831,8 +5263,45 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {
         "group": "parameters"
       },
+      {},
       {
-        "group": "requestBody"
+        "group": "input"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "tooltip": "The HubSpot account that the form belongs to. <a href=\"https://knowledge.hubspot.com/account-management/manage-multiple-hubspot-accounts#check-your-current-account\" target=\"_blank\">HubSpot account management</a>.",
+        "group": "input"
+      },
+      {
+        "tooltip": "The unique ID of the form you're sending data to. <a href=\"https://knowledge.hubspot.com/forms/find-your-form-guid\" target=\"_blank\">HubSpot form GUID</a>.",
+        "group": "input"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "tooltip": "The values to submit to the form. <a href=\"https://developers.hubspot.com/docs/reference/api/marketing/forms/v3-legacy\" target=\"_blank\">HubSpot Forms API</a>.",
+        "group": "input"
       },
       {
         "group": "input"
@@ -3850,42 +5319,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "parameters"
       },
       {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
+        "tooltip": "The ids of the objects, e.g. contacts or companies, to add to the list",
         "group": "input"
       },
       {
@@ -3910,15 +5344,22 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "url"
       },
       {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "error"
       },
       {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
         "group": "retries"
       },
       {
@@ -3954,12 +5395,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Input"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Output"
         },
         {
           "id": "errors",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ]
     },
@@ -3984,13 +5433,47 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Needs repository and workflow scope."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The private key of your GitHub App. It is recommended to use a secret for this value."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The ID of your GitHub App."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The installation ID for your GitHub App."
+      },
+      {
         "group": "authentication"
       },
       {
         "group": "authentication"
       },
       {
-        "group": "configuration"
+        "group": "authentication"
       },
       {
         "group": "configuration"
@@ -4062,6 +5545,139 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "configuration"
       },
       {
+        "group": "configuration"
+      },
+      {
+        "tooltip": "Repository owner",
+        "group": "configuration"
+      },
+      {
+        "tooltip": "Repository owner",
+        "group": "configuration"
+      },
+      {
+        "tooltip": "Repository owner",
+        "group": "configuration"
+      },
+      {
+        "tooltip": "Repository owner",
+        "group": "configuration"
+      },
+      {
+        "tooltip": "Repository owner",
+        "group": "configuration"
+      },
+      {
+        "tooltip": "Repository owner",
+        "group": "configuration"
+      },
+      {
+        "tooltip": "Repository owner",
+        "group": "configuration"
+      },
+      {
+        "tooltip": "Repository owner",
+        "group": "configuration"
+      },
+      {
+        "tooltip": "Repository owner",
+        "group": "configuration"
+      },
+      {
+        "tooltip": "Repository owner",
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "tooltip": "New name for the label (only for update)",
+        "group": "input"
+      },
+      {
+        "tooltip": "A 6-character hex code, without the leading #, identifying the color of the label.",
+        "placeholder": "ff0000",
+        "group": "input"
+      },
+      {
+        "tooltip": "A short description of the label",
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "tooltip": "The unique identifier of the release",
+        "group": "input"
+      },
+      {
+        "tooltip": "The query contains one or more search keywords and qualifiers. Qualifiers allow you to limit your search to specific areas of GitHub.",
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "tooltip": "The contents of the issue or release",
+        "group": "input"
+      },
+      {
+        "tooltip": "The contents of the issue or release",
+        "group": "input"
+      },
+      {
+        "tooltip": "The contents of the issue comment",
+        "group": "input"
+      },
+      {
+        "tooltip": "Logins for users to assign to this issue as an array of strings.",
+        "group": "input"
+      },
+      {
+        "tooltip": "Labels to associate with this issue as an array of strings.",
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "tooltip": "The number of the milestone to associate this issue with",
         "group": "input"
       },
       {
@@ -4074,84 +5690,175 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
+        "tooltip": "Cannot contain wildcard characters. To use wildcard characters in branch names, use the GraphQL API.",
+        "group": "input"
+      },
+      {
+        "tooltip": "The name of the base branch that the head will be merged into",
+        "group": "input"
+      },
+      {
+        "tooltip": "The head to merge. This can be a branch name or a commit SHA1.",
+        "group": "input"
+      },
+      {
+        "tooltip": "The name is not case sensitive.",
+        "group": "input"
+      },
+      {
+        "tooltip": "The name is not case sensitive.",
+        "group": "input"
+      },
+      {
+        "tooltip": "A short description of the repository",
+        "group": "input"
+      },
+      {
+        "tooltip": "A URL with more information about the repository",
         "group": "input"
       },
       {
         "group": "input"
       },
       {
+        "tooltip": "Specifies the types of repositories you want returned",
+        "group": "input"
+      },
+      {
+        "tooltip": "The property to sort the results by",
+        "group": "input"
+      },
+      {
+        "tooltip": "The order to sort by. Default: asc when using full_name, otherwise desc.",
+        "group": "input"
+      },
+      {
+        "tooltip": "Commit message to use for the merge commit. If omitted, a default message will be used.",
         "group": "input"
       },
       {
         "group": "input"
       },
       {
+        "tooltip": "Email address of the person you are inviting, which can be an existing GitHub user",
+        "group": "input"
+      },
+      {
+        "tooltip": "The role for the new member",
+        "group": "input"
+      },
+      {
+        "tooltip": "The open or closed state of the issue",
+        "group": "input"
+      },
+      {
+        "tooltip": "The reason for the state change. Ignored unless state is changed.",
+        "group": "input"
+      },
+      {
+        "tooltip": "Branch or tag name for the workflow",
+        "group": "input"
+      },
+      {
+        "tooltip": "You can also pass the workflow file name as a string.",
+        "group": "configuration"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "tooltip": "Name of the fully qualified reference",
+        "group": "input"
+      },
+      {
+        "tooltip": "The SHA1 value for this reference",
         "group": "input"
       },
       {
         "group": "input"
       },
       {
+        "tooltip": "The name of the branch where your changes are implemented",
+        "group": "input"
+      },
+      {
+        "tooltip": "The name of the branch you want the changes pulled into",
+        "group": "input"
+      },
+      {
+        "tooltip": "The contents of the pull request",
+        "group": "input"
+      },
+      {
+        "tooltip": "Indicates whether the pull request is a draft",
         "group": "input"
       },
       {
         "group": "input"
       },
       {
+        "tooltip": "The page number of the results to fetch",
+        "group": "input"
+      },
+      {
+        "tooltip": "The number of results to include per page",
+        "group": "input"
+      },
+      {
+        "tooltip": "The path of the file within the repository",
+        "group": "input"
+      },
+      {
+        "tooltip": "The name of the commit/branch/tag. Default: the repository's main branch.",
+        "group": "input"
+      },
+      {
+        "tooltip": "The name of the branch. Default: the repository's main branch.",
+        "group": "input"
+      },
+      {
+        "tooltip": "The commit message for the file upload",
+        "group": "input"
+      },
+      {
+        "tooltip": "Required if you are updating a file. The blob SHA of the file being replaced.",
+        "group": "input"
+      },
+      {
+        "tooltip": "The content to upload as a raw string, document reference, or base64-encoded value.",
+        "group": "input"
+      },
+      {
+        "tooltip": "Uploaded content must be base64 encoded. Check this box if the content is already encoded; otherwise, it will be encoded for you.",
         "group": "input"
       },
       {
         "group": "input"
       },
       {
+        "tooltip": "By default, the committer is the user associated with the access token. Check this box to set a different committer in the commit metadata.",
         "group": "input"
       },
       {
+        "tooltip": "The name/handle of the person that made the commit. Do not include an @.",
+        "placeholder": "octocat",
         "group": "input"
       },
       {
+        "tooltip": "The email of the person that made the commit",
         "group": "input"
       },
       {
+        "tooltip": "By default, the author is the user associated with the access token. Check this box to use a different author in the commit metadata.",
         "group": "input"
       },
       {
+        "tooltip": "The name/handle of the author of the commit. Do not include an @.",
+        "placeholder": "octocat",
         "group": "input"
       },
       {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
+        "tooltip": "The email of the author of the commit",
         "group": "input"
       },
       {
@@ -4176,54 +5883,138 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "group": "output"
+      },
+      {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "group": "output"
+      },
+      {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "group": "output"
+      },
+      {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "group": "output"
+      },
+      {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "group": "output"
+      },
+      {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "group": "output"
+      },
+      {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "group": "output"
+      },
+      {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "group": "output"
+      },
+      {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "group": "output"
+      },
+      {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "group": "output"
+      },
+      {
+        "tooltip": "Sets the timeout in seconds to establish a connection, or 0 for an infinite timeout.",
         "group": "errors"
       },
       {},
@@ -4244,8 +6035,33 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -4276,6 +6092,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "input",
           "label": "Input"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
@@ -4334,6 +6154,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "input"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -4347,66 +6177,134 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       "groups": [
         {
           "id": "authentication",
-          "label": "Authentication"
+          "label": "Connection"
         },
         {
           "id": "kafka",
           "label": "Kafka"
         },
         {
+          "id": "schema",
+          "label": "Schema"
+        },
+        {
           "id": "activation",
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg width='18' height='18' viewBox='0 0 256 416' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMidYMid'%3E%3Cpath d='M201.816 230.216c-16.186 0-30.697 7.171-40.634 18.461l-25.463-18.026c2.703-7.442 4.255-15.433 4.255-23.797 0-8.219-1.498-16.076-4.112-23.408l25.406-17.835c9.936 11.233 24.409 18.365 40.548 18.365 29.875 0 54.184-24.305 54.184-54.184 0-29.879-24.309-54.184-54.184-54.184-29.875 0-54.184 24.305-54.184 54.184 0 5.348.808 10.505 2.258 15.389l-25.423 17.844c-10.62-13.175-25.911-22.374-43.333-25.182v-30.64c24.544-5.155 43.037-26.962 43.037-53.019C124.171 24.305 99.862 0 69.987 0 40.112 0 15.803 24.305 15.803 54.184c0 25.708 18.014 47.246 42.067 52.769v31.038C25.044 143.753 0 172.401 0 206.854c0 34.621 25.292 63.374 58.355 68.94v32.774c-24.299 5.341-42.552 27.011-42.552 52.894 0 29.879 24.309 54.184 54.184 54.184 29.875 0 54.184-24.305 54.184-54.184 0-25.883-18.253-47.553-42.552-52.894v-32.775a69.965 69.965 0 0 0 42.6-24.776l25.633 18.143c-1.423 4.84-2.22 9.946-2.22 15.24 0 29.879 24.309 54.184 54.184 54.184 29.875 0 54.184-24.305 54.184-54.184 0-29.879-24.309-54.184-54.184-54.184zm0-126.695c14.487 0 26.27 11.788 26.27 26.271s-11.783 26.27-26.27 26.27-26.27-11.787-26.27-26.27c0-14.483 11.783-26.271 26.27-26.271zm-158.1-49.337c0-14.483 11.784-26.27 26.271-26.27s26.27 11.787 26.27 26.27c0 14.483-11.783 26.27-26.27 26.27s-26.271-11.787-26.271-26.27zm52.541 307.278c0 14.483-11.783 26.27-26.27 26.27s-26.271-11.787-26.271-26.27c0-14.483 11.784-26.27 26.271-26.27s26.27 11.787 26.27 26.27zm-26.272-117.97c-20.205 0-36.642-16.434-36.642-36.638 0-20.205 16.437-36.642 36.642-36.642 20.204 0 36.641 16.437 36.641 36.642 0 20.204-16.437 36.638-36.641 36.638zm131.831 67.179c-14.487 0-26.27-11.788-26.27-26.271s11.783-26.27 26.27-26.27 26.27 11.787 26.27 26.27c0 14.483-11.783 26.271-26.27 26.271z' style='fill:%23231f20'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCAyNTYgNDE2JyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHByZXNlcnZlQXNwZWN0UmF0aW89J3hNaWRZTWlkJz4KICAgIDxwYXRoIGQ9J00yMDEuODE2IDIzMC4yMTZjLTE2LjE4NiAwLTMwLjY5NyA3LjE3MS00MC42MzQgMTguNDYxbC0yNS40NjMtMTguMDI2YzIuNzAzLTcuNDQyIDQuMjU1LTE1LjQzMyA0LjI1NS0yMy43OTcgMC04LjIxOS0xLjQ5OC0xNi4wNzYtNC4xMTItMjMuNDA4bDI1LjQwNi0xNy44MzVjOS45MzYgMTEuMjMzIDI0LjQwOSAxOC4zNjUgNDAuNTQ4IDE4LjM2NSAyOS44NzUgMCA1NC4xODQtMjQuMzA1IDU0LjE4NC01NC4xODQgMC0yOS44NzktMjQuMzA5LTU0LjE4NC01NC4xODQtNTQuMTg0LTI5Ljg3NSAwLTU0LjE4NCAyNC4zMDUtNTQuMTg0IDU0LjE4NCAwIDUuMzQ4LjgwOCAxMC41MDUgMi4yNTggMTUuMzg5bC0yNS40MjMgMTcuODQ0Yy0xMC42Mi0xMy4xNzUtMjUuOTExLTIyLjM3NC00My4zMzMtMjUuMTgydi0zMC42NGMyNC41NDQtNS4xNTUgNDMuMDM3LTI2Ljk2MiA0My4wMzctNTMuMDE5QzEyNC4xNzEgMjQuMzA1IDk5Ljg2MiAwIDY5Ljk4NyAwIDQwLjExMiAwIDE1LjgwMyAyNC4zMDUgMTUuODAzIDU0LjE4NGMwIDI1LjcwOCAxOC4wMTQgNDcuMjQ2IDQyLjA2NyA1Mi43Njl2MzEuMDM4QzI1LjA0NCAxNDMuNzUzIDAgMTcyLjQwMSAwIDIwNi44NTRjMCAzNC42MjEgMjUuMjkyIDYzLjM3NCA1OC4zNTUgNjguOTR2MzIuNzc0Yy0yNC4yOTkgNS4zNDEtNDIuNTUyIDI3LjAxMS00Mi41NTIgNTIuODk0IDAgMjkuODc5IDI0LjMwOSA1NC4xODQgNTQuMTg0IDU0LjE4NCAyOS44NzUgMCA1NC4xODQtMjQuMzA1IDU0LjE4NC01NC4xODQgMC0yNS44ODMtMTguMjUzLTQ3LjU1My00Mi41NTItNTIuODk0di0zMi43NzVhNjkuOTY1IDY5Ljk2NSAwIDAgMCA0Mi42LTI0Ljc3NmwyNS42MzMgMTguMTQzYy0xLjQyMyA0Ljg0LTIuMjIgOS45NDYtMi4yMiAxNS4yNCAwIDI5Ljg3OSAyNC4zMDkgNTQuMTg0IDU0LjE4NCA1NC4xODQgMjkuODc1IDAgNTQuMTg0LTI0LjMwNSA1NC4xODQtNTQuMTg0IDAtMjkuODc5LTI0LjMwOS01NC4xODQtNTQuMTg0LTU0LjE4NHptMC0xMjYuNjk1YzE0LjQ4NyAwIDI2LjI3IDExLjc4OCAyNi4yNyAyNi4yNzFzLTExLjc4MyAyNi4yNy0yNi4yNyAyNi4yNy0yNi4yNy0xMS43ODctMjYuMjctMjYuMjdjMC0xNC40ODMgMTEuNzgzLTI2LjI3MSAyNi4yNy0yNi4yNzF6bS0xNTguMS00OS4zMzdjMC0xNC40ODMgMTEuNzg0LTI2LjI3IDI2LjI3MS0yNi4yN3MyNi4yNyAxMS43ODcgMjYuMjcgMjYuMjdjMCAxNC40ODMtMTEuNzgzIDI2LjI3LTI2LjI3IDI2LjI3cy0yNi4yNzEtMTEuNzg3LTI2LjI3MS0yNi4yN3ptNTIuNTQxIDMwNy4yNzhjMCAxNC40ODMtMTEuNzgzIDI2LjI3LTI2LjI3IDI2LjI3cy0yNi4yNzEtMTEuNzg3LTI2LjI3MS0yNi4yN2MwLTE0LjQ4MyAxMS43ODQtMjYuMjcgMjYuMjcxLTI2LjI3czI2LjI3IDExLjc4NyAyNi4yNyAyNi4yN3ptLTI2LjI3Mi0xMTcuOTdjLTIwLjIwNSAwLTM2LjY0Mi0xNi40MzQtMzYuNjQyLTM2LjYzOCAwLTIwLjIwNSAxNi40MzctMzYuNjQyIDM2LjY0Mi0zNi42NDIgMjAuMjA0IDAgMzYuNjQxIDE2LjQzNyAzNi42NDEgMzYuNjQyIDAgMjAuMjA0LTE2LjQzNyAzNi42MzgtMzYuNjQxIDM2LjYzOHptMTMxLjgzMSA2Ny4xNzljLTE0LjQ4NyAwLTI2LjI3LTExLjc4OC0yNi4yNy0yNi4yNzFzMTEuNzgzLTI2LjI3IDI2LjI3LTI2LjI3IDI2LjI3IDExLjc4NyAyNi4yNyAyNi4yN2MwIDE0LjQ4My0xMS43ODMgMjYuMjcxLTI2LjI3IDI2LjI3MXonCiAgICAgICAgICBzdHlsZT0nZmlsbDojMjMxZjIwJy8+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Choose a reusable Kafka connection credential, or configure one-time connection parameters below."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Username/password or custom."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The user must have permissions to produce messages to the topic."
       },
       {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Bootstrap server(s), comma-delimited if there are multiple.",
+        "placeholder": "broker1:9092,broker2:9092"
       },
       {
         "group": "kafka"
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "It is strongly recommended to provide an explicit consumer group ID. Use a stable, application-specific identifier that represents the logical consumer group in your application (for example, <code>my-app-order-processor</code>). Leaving this empty auto-generates an ID that may change across connector upgrades, causing message replay."
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "Additional Kafka consumer properties in JSON. These can override brokers and authentication from a reusable credential."
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "List of offsets, e.g. '10' or '=[10, 23]'. If specified, it has to have the same number of values as the number of partitions."
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server. You should only select none if you specified the offsets."
+      },
+      {
+        "group": "schema"
+      },
+      {
+        "group": "schema",
+        "tooltip": "Avro inline schema for the message value"
+      },
+      {
+        "group": "schema",
+        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
+      },
+      {
+        "group": "schema"
       },
       {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "activation"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -4421,6 +6319,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "authentication",
           "label": "Authentication"
+        },
+        {
+          "id": "configuration",
+          "label": "Configuration"
         },
         {
           "id": "queueProperties",
@@ -4439,17 +6341,26 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 40 40' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 64 (93537) - https://sketch.com --%3E%3Ctitle%3EIcon-Architecture/32/Arch_AWS-Simple-Queue-Service_32%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3ClinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='linearGradient-1'%3E%3Cstop stop-color='%23B0084D' offset='0%25'%3E%3C/stop%3E%3Cstop stop-color='%23FF4F8B' offset='100%25'%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Cg id='Icon-Architecture/32/Arch_AWS-Simple-Queue-Service_32' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Icon-Architecture-BG/32/Application-Integration' fill='url(%23linearGradient-1)'%3E%3Crect id='Rectangle' x='0' y='0' width='40' height='40'%3E%3C/rect%3E%3C/g%3E%3Cpath d='M14.3422051,22.3493786 L15.8466767,20.9061074 C15.9428347,20.8141539 15.9969235,20.687218 15.9999285,20.5552846 C16.0019317,20.4223517 15.9518495,20.2934168 15.8596981,20.1984648 L14.3552264,18.6432502 L13.6350433,19.3378994 L14.311154,20.037546 L11.9913429,20.037546 L11.9913429,21.0370413 L14.2650783,21.0370413 L13.6480647,21.6287425 L14.3422051,22.3493786 Z M26.3579452,22.3533765 L27.9074909,20.9001104 C28.0066538,20.8081569 28.0627459,20.679222 28.0647492,20.5442901 C28.0667525,20.4093583 28.0136653,20.2784244 27.918509,20.1834724 L26.3689633,18.6372532 L25.6607999,19.3438963 L26.3549403,20.037546 L24.0110896,20.037546 L24.0110896,21.0370413 L26.2988481,21.0370413 L25.671818,21.6247445 L26.3579452,22.3533765 Z M17.5875367,23.3608678 C18.3387708,23.0570212 19.1621235,22.8941035 20.0045074,22.8941035 C20.8468913,22.8941035 21.670244,23.0570212 22.4214781,23.3608678 C21.7523789,21.5897622 21.7523789,19.3898731 22.4214781,17.6187675 C20.9190098,18.2264606 19.090005,18.2264606 17.5875367,17.6187675 C18.2566359,19.3898731 18.2566359,21.5897622 17.5875367,23.3608678 L17.5875367,23.3608678 Z M15.6443443,25.3408679 C15.546183,25.2439168 15.4971024,25.1159814 15.4971024,24.988046 C15.4971024,24.8601106 15.546183,24.7321753 15.6443443,24.6342247 C17.5845317,22.6982024 17.5845317,18.2824324 15.6443443,16.3454106 C15.546183,16.2484595 15.4971024,16.1205241 15.4971024,15.9925912 C15.4971024,15.8646534 15.546183,15.736718 15.6443443,15.6387674 C15.8396652,15.4438659 16.1571868,15.4438659 16.3525077,15.6387674 C17.2740216,16.5583031 18.6052086,17.0860366 20.0045074,17.0860366 C21.4048079,17.0860366 22.7359948,16.5583031 23.6575088,15.6387674 C23.8528296,15.4438659 24.1703513,15.4438659 24.3656722,15.6387674 C24.4628318,15.736718 24.5119124,15.8646534 24.5119124,15.9925912 C24.5119124,16.1205241 24.4628318,16.2484595 24.3656722,16.3454106 C22.4244831,18.2824324 22.4244831,22.6982024 24.3656722,24.6342247 C24.4628318,24.7321753 24.5119124,24.8601106 24.5119124,24.988046 C24.5119124,25.1159814 24.4628318,25.2439168 24.3656722,25.3408679 C24.2675109,25.4388184 24.1393003,25.4877937 24.0110896,25.4877937 C23.882879,25.4877937 23.7546684,25.4388184 23.6575088,25.3408679 C22.7359948,24.4213322 21.4048079,23.8935987 20.0045074,23.8935987 C18.6052086,23.8935987 17.2740216,24.4213322 16.3525077,25.3408679 C16.1571868,25.5357694 15.8396652,25.5357694 15.6443443,25.3408679 L15.6443443,25.3408679 Z M32.5421049,19.4358499 C32.236603,19.1320033 31.8369464,18.9800801 31.4362882,18.9800801 C31.0366316,18.9800801 30.636975,19.1320033 30.3314731,19.4358499 C29.721471,20.0445425 29.721471,21.0340428 30.3314731,21.6417359 C30.9414753,22.2504285 31.9321027,22.2504285 32.5421049,21.6417359 C33.1511054,21.0340428 33.1511054,20.0445425 32.5421049,19.4358499 L32.5421049,19.4358499 Z M33.2502683,22.3493786 C32.7504472,22.8481267 32.0933677,23.0980005 31.4362882,23.0980005 C30.7802103,23.0980005 30.1231309,22.8481267 29.6233097,22.3493786 C28.6236675,21.3508828 28.6236675,19.7277025 29.6233097,18.7292068 C30.622952,17.7317105 32.250626,17.7317105 33.2502683,18.7292068 C34.2499106,19.7277025 34.2499106,21.3508828 33.2502683,22.3493786 L33.2502683,22.3493786 Z M9.66852687,19.4468443 C9.36302497,19.1429978 8.96336839,18.9910745 8.56271017,18.9910745 C8.16305359,18.9910745 7.76339701,19.1429978 7.45789511,19.4468443 C6.84889461,20.055537 6.84889461,21.0450373 7.45789511,21.6527304 C8.06789726,22.261423 9.05852472,22.261423 9.66852687,21.6527304 C10.2775274,21.0450373 10.2775274,20.055537 9.66852687,19.4468443 L9.66852687,19.4468443 Z M10.3766903,22.3593735 C9.87686914,22.8581217 9.21978965,23.1079955 8.56271017,23.1079955 C7.90663232,23.1079955 7.24955284,22.8581217 6.7497317,22.3593735 C5.75008943,21.3618773 5.75008943,19.738697 6.7497317,18.7402012 C7.74937397,17.7427049 9.37704801,17.7427049 10.3766903,18.7402012 C11.3763325,19.738697 11.3763325,21.3618773 10.3766903,22.3593735 L10.3766903,22.3593735 Z M27.4337125,28.9100654 C25.4364313,30.903059 22.7820705,32.0005047 19.9574301,32.0005047 C17.1327896,32.0005047 14.4784288,30.903059 12.4821492,28.9100654 C11.165987,27.5977281 10.4077413,26.469298 9.94498104,25.1359713 L8.99842599,25.4628063 C9.50726193,26.9290658 10.3626672,28.2104187 11.7739858,29.6167086 C13.9585748,31.7986067 16.8663519,33 19.9574301,33 C23.0495099,33 25.9562853,31.7986067 28.1418759,29.6167086 C29.2827502,28.4782835 30.4206196,27.1869356 31.0115905,25.4608073 L30.0640338,25.1379703 C29.5391715,26.6701966 28.4894469,27.8565974 27.4337125,28.9100654 L27.4337125,28.9100654 Z M9.94498104,15.8596559 L8.99842599,15.5318214 C9.51026687,14.0645624 10.3656722,12.7832095 11.7759891,11.3759202 C16.2863991,6.87519304 23.6264578,6.87419354 28.1378694,11.3759202 C29.2186449,12.4533761 30.4035916,13.7897012 31.0115905,15.5318214 L30.0640338,15.8596559 C29.5241468,14.3094387 28.4293482,13.0800596 27.4297059,12.0825633 C25.434428,10.0915688 22.7810689,8.99612197 19.9574301,8.99612197 C17.1337912,8.99612197 14.4804321,10.0915688 12.4851542,12.0825633 C11.1870215,13.3779092 10.4037347,14.5423211 9.94498104,15.8596559 L9.94498104,15.8596559 Z' id='AWS-Simple-Queue-Service_Icon_32_Squid' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCA0MCA0MCcgdmVyc2lvbj0nMS4xJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnCiAgICAgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPjwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggNjQgKDkzNTM3KSAtIGh0dHBzOi8vc2tldGNoLmNvbSAtLT4KICAgIDx0aXRsZT5JY29uLUFyY2hpdGVjdHVyZS8zMi9BcmNoX0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV8zMjwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPgogICAgICAgIDxsaW5lYXJHcmFkaWVudCB4MT0nMCUnIHkxPScxMDAlJyB4Mj0nMTAwJScgeTI9JzAlJyBpZD0nbGluZWFyR3JhZGllbnQtMSc+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9JyNCMDA4NEQnIG9mZnNldD0nMCUnPjwvc3RvcD4KICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0nI0ZGNEY4Qicgb2Zmc2V0PScxMDAlJz48L3N0b3A+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDwvZGVmcz4KICAgIDxnIGlkPSdJY29uLUFyY2hpdGVjdHVyZS8zMi9BcmNoX0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV8zMicgc3Ryb2tlPSdub25lJyBzdHJva2Utd2lkdGg9JzEnIGZpbGw9J25vbmUnCiAgICAgICBmaWxsLXJ1bGU9J2V2ZW5vZGQnPgogICAgICAgIDxnIGlkPSdJY29uLUFyY2hpdGVjdHVyZS1CRy8zMi9BcHBsaWNhdGlvbi1JbnRlZ3JhdGlvbicgZmlsbD0ndXJsKCNsaW5lYXJHcmFkaWVudC0xKSc+CiAgICAgICAgICAgIDxyZWN0IGlkPSdSZWN0YW5nbGUnIHg9JzAnIHk9JzAnIHdpZHRoPSc0MCcgaGVpZ2h0PSc0MCc+PC9yZWN0PgogICAgICAgIDwvZz4KICAgICAgICA8cGF0aCBkPSdNMTQuMzQyMjA1MSwyMi4zNDkzNzg2IEwxNS44NDY2NzY3LDIwLjkwNjEwNzQgQzE1Ljk0MjgzNDcsMjAuODE0MTUzOSAxNS45OTY5MjM1LDIwLjY4NzIxOCAxNS45OTk5Mjg1LDIwLjU1NTI4NDYgQzE2LjAwMTkzMTcsMjAuNDIyMzUxNyAxNS45NTE4NDk1LDIwLjI5MzQxNjggMTUuODU5Njk4MSwyMC4xOTg0NjQ4IEwxNC4zNTUyMjY0LDE4LjY0MzI1MDIgTDEzLjYzNTA0MzMsMTkuMzM3ODk5NCBMMTQuMzExMTU0LDIwLjAzNzU0NiBMMTEuOTkxMzQyOSwyMC4wMzc1NDYgTDExLjk5MTM0MjksMjEuMDM3MDQxMyBMMTQuMjY1MDc4MywyMS4wMzcwNDEzIEwxMy42NDgwNjQ3LDIxLjYyODc0MjUgTDE0LjM0MjIwNTEsMjIuMzQ5Mzc4NiBaIE0yNi4zNTc5NDUyLDIyLjM1MzM3NjUgTDI3LjkwNzQ5MDksMjAuOTAwMTEwNCBDMjguMDA2NjUzOCwyMC44MDgxNTY5IDI4LjA2Mjc0NTksMjAuNjc5MjIyIDI4LjA2NDc0OTIsMjAuNTQ0MjkwMSBDMjguMDY2NzUyNSwyMC40MDkzNTgzIDI4LjAxMzY2NTMsMjAuMjc4NDI0NCAyNy45MTg1MDksMjAuMTgzNDcyNCBMMjYuMzY4OTYzMywxOC42MzcyNTMyIEwyNS42NjA3OTk5LDE5LjM0Mzg5NjMgTDI2LjM1NDk0MDMsMjAuMDM3NTQ2IEwyNC4wMTEwODk2LDIwLjAzNzU0NiBMMjQuMDExMDg5NiwyMS4wMzcwNDEzIEwyNi4yOTg4NDgxLDIxLjAzNzA0MTMgTDI1LjY3MTgxOCwyMS42MjQ3NDQ1IEwyNi4zNTc5NDUyLDIyLjM1MzM3NjUgWiBNMTcuNTg3NTM2NywyMy4zNjA4Njc4IEMxOC4zMzg3NzA4LDIzLjA1NzAyMTIgMTkuMTYyMTIzNSwyMi44OTQxMDM1IDIwLjAwNDUwNzQsMjIuODk0MTAzNSBDMjAuODQ2ODkxMywyMi44OTQxMDM1IDIxLjY3MDI0NCwyMy4wNTcwMjEyIDIyLjQyMTQ3ODEsMjMuMzYwODY3OCBDMjEuNzUyMzc4OSwyMS41ODk3NjIyIDIxLjc1MjM3ODksMTkuMzg5ODczMSAyMi40MjE0NzgxLDE3LjYxODc2NzUgQzIwLjkxOTAwOTgsMTguMjI2NDYwNiAxOS4wOTAwMDUsMTguMjI2NDYwNiAxNy41ODc1MzY3LDE3LjYxODc2NzUgQzE4LjI1NjYzNTksMTkuMzg5ODczMSAxOC4yNTY2MzU5LDIxLjU4OTc2MjIgMTcuNTg3NTM2NywyMy4zNjA4Njc4IEwxNy41ODc1MzY3LDIzLjM2MDg2NzggWiBNMTUuNjQ0MzQ0MywyNS4zNDA4Njc5IEMxNS41NDYxODMsMjUuMjQzOTE2OCAxNS40OTcxMDI0LDI1LjExNTk4MTQgMTUuNDk3MTAyNCwyNC45ODgwNDYgQzE1LjQ5NzEwMjQsMjQuODYwMTEwNiAxNS41NDYxODMsMjQuNzMyMTc1MyAxNS42NDQzNDQzLDI0LjYzNDIyNDcgQzE3LjU4NDUzMTcsMjIuNjk4MjAyNCAxNy41ODQ1MzE3LDE4LjI4MjQzMjQgMTUuNjQ0MzQ0MywxNi4zNDU0MTA2IEMxNS41NDYxODMsMTYuMjQ4NDU5NSAxNS40OTcxMDI0LDE2LjEyMDUyNDEgMTUuNDk3MTAyNCwxNS45OTI1OTEyIEMxNS40OTcxMDI0LDE1Ljg2NDY1MzQgMTUuNTQ2MTgzLDE1LjczNjcxOCAxNS42NDQzNDQzLDE1LjYzODc2NzQgQzE1LjgzOTY2NTIsMTUuNDQzODY1OSAxNi4xNTcxODY4LDE1LjQ0Mzg2NTkgMTYuMzUyNTA3NywxNS42Mzg3Njc0IEMxNy4yNzQwMjE2LDE2LjU1ODMwMzEgMTguNjA1MjA4NiwxNy4wODYwMzY2IDIwLjAwNDUwNzQsMTcuMDg2MDM2NiBDMjEuNDA0ODA3OSwxNy4wODYwMzY2IDIyLjczNTk5NDgsMTYuNTU4MzAzMSAyMy42NTc1MDg4LDE1LjYzODc2NzQgQzIzLjg1MjgyOTYsMTUuNDQzODY1OSAyNC4xNzAzNTEzLDE1LjQ0Mzg2NTkgMjQuMzY1NjcyMiwxNS42Mzg3Njc0IEMyNC40NjI4MzE4LDE1LjczNjcxOCAyNC41MTE5MTI0LDE1Ljg2NDY1MzQgMjQuNTExOTEyNCwxNS45OTI1OTEyIEMyNC41MTE5MTI0LDE2LjEyMDUyNDEgMjQuNDYyODMxOCwxNi4yNDg0NTk1IDI0LjM2NTY3MjIsMTYuMzQ1NDEwNiBDMjIuNDI0NDgzMSwxOC4yODI0MzI0IDIyLjQyNDQ4MzEsMjIuNjk4MjAyNCAyNC4zNjU2NzIyLDI0LjYzNDIyNDcgQzI0LjQ2MjgzMTgsMjQuNzMyMTc1MyAyNC41MTE5MTI0LDI0Ljg2MDExMDYgMjQuNTExOTEyNCwyNC45ODgwNDYgQzI0LjUxMTkxMjQsMjUuMTE1OTgxNCAyNC40NjI4MzE4LDI1LjI0MzkxNjggMjQuMzY1NjcyMiwyNS4zNDA4Njc5IEMyNC4yNjc1MTA5LDI1LjQzODgxODQgMjQuMTM5MzAwMywyNS40ODc3OTM3IDI0LjAxMTA4OTYsMjUuNDg3NzkzNyBDMjMuODgyODc5LDI1LjQ4Nzc5MzcgMjMuNzU0NjY4NCwyNS40Mzg4MTg0IDIzLjY1NzUwODgsMjUuMzQwODY3OSBDMjIuNzM1OTk0OCwyNC40MjEzMzIyIDIxLjQwNDgwNzksMjMuODkzNTk4NyAyMC4wMDQ1MDc0LDIzLjg5MzU5ODcgQzE4LjYwNTIwODYsMjMuODkzNTk4NyAxNy4yNzQwMjE2LDI0LjQyMTMzMjIgMTYuMzUyNTA3NywyNS4zNDA4Njc5IEMxNi4xNTcxODY4LDI1LjUzNTc2OTQgMTUuODM5NjY1MiwyNS41MzU3Njk0IDE1LjY0NDM0NDMsMjUuMzQwODY3OSBMMTUuNjQ0MzQ0MywyNS4zNDA4Njc5IFogTTMyLjU0MjEwNDksMTkuNDM1ODQ5OSBDMzIuMjM2NjAzLDE5LjEzMjAwMzMgMzEuODM2OTQ2NCwxOC45ODAwODAxIDMxLjQzNjI4ODIsMTguOTgwMDgwMSBDMzEuMDM2NjMxNiwxOC45ODAwODAxIDMwLjYzNjk3NSwxOS4xMzIwMDMzIDMwLjMzMTQ3MzEsMTkuNDM1ODQ5OSBDMjkuNzIxNDcxLDIwLjA0NDU0MjUgMjkuNzIxNDcxLDIxLjAzNDA0MjggMzAuMzMxNDczMSwyMS42NDE3MzU5IEMzMC45NDE0NzUzLDIyLjI1MDQyODUgMzEuOTMyMTAyNywyMi4yNTA0Mjg1IDMyLjU0MjEwNDksMjEuNjQxNzM1OSBDMzMuMTUxMTA1NCwyMS4wMzQwNDI4IDMzLjE1MTEwNTQsMjAuMDQ0NTQyNSAzMi41NDIxMDQ5LDE5LjQzNTg0OTkgTDMyLjU0MjEwNDksMTkuNDM1ODQ5OSBaIE0zMy4yNTAyNjgzLDIyLjM0OTM3ODYgQzMyLjc1MDQ0NzIsMjIuODQ4MTI2NyAzMi4wOTMzNjc3LDIzLjA5ODAwMDUgMzEuNDM2Mjg4MiwyMy4wOTgwMDA1IEMzMC43ODAyMTAzLDIzLjA5ODAwMDUgMzAuMTIzMTMwOSwyMi44NDgxMjY3IDI5LjYyMzMwOTcsMjIuMzQ5Mzc4NiBDMjguNjIzNjY3NSwyMS4zNTA4ODI4IDI4LjYyMzY2NzUsMTkuNzI3NzAyNSAyOS42MjMzMDk3LDE4LjcyOTIwNjggQzMwLjYyMjk1MiwxNy43MzE3MTA1IDMyLjI1MDYyNiwxNy43MzE3MTA1IDMzLjI1MDI2ODMsMTguNzI5MjA2OCBDMzQuMjQ5OTEwNiwxOS43Mjc3MDI1IDM0LjI0OTkxMDYsMjEuMzUwODgyOCAzMy4yNTAyNjgzLDIyLjM0OTM3ODYgTDMzLjI1MDI2ODMsMjIuMzQ5Mzc4NiBaIE05LjY2ODUyNjg3LDE5LjQ0Njg0NDMgQzkuMzYzMDI0OTcsMTkuMTQyOTk3OCA4Ljk2MzM2ODM5LDE4Ljk5MTA3NDUgOC41NjI3MTAxNywxOC45OTEwNzQ1IEM4LjE2MzA1MzU5LDE4Ljk5MTA3NDUgNy43NjMzOTcwMSwxOS4xNDI5OTc4IDcuNDU3ODk1MTEsMTkuNDQ2ODQ0MyBDNi44NDg4OTQ2MSwyMC4wNTU1MzcgNi44NDg4OTQ2MSwyMS4wNDUwMzczIDcuNDU3ODk1MTEsMjEuNjUyNzMwNCBDOC4wNjc4OTcyNiwyMi4yNjE0MjMgOS4wNTg1MjQ3MiwyMi4yNjE0MjMgOS42Njg1MjY4NywyMS42NTI3MzA0IEMxMC4yNzc1Mjc0LDIxLjA0NTAzNzMgMTAuMjc3NTI3NCwyMC4wNTU1MzcgOS42Njg1MjY4NywxOS40NDY4NDQzIEw5LjY2ODUyNjg3LDE5LjQ0Njg0NDMgWiBNMTAuMzc2NjkwMywyMi4zNTkzNzM1IEM5Ljg3Njg2OTE0LDIyLjg1ODEyMTcgOS4yMTk3ODk2NSwyMy4xMDc5OTU1IDguNTYyNzEwMTcsMjMuMTA3OTk1NSBDNy45MDY2MzIzMiwyMy4xMDc5OTU1IDcuMjQ5NTUyODQsMjIuODU4MTIxNyA2Ljc0OTczMTcsMjIuMzU5MzczNSBDNS43NTAwODk0MywyMS4zNjE4NzczIDUuNzUwMDg5NDMsMTkuNzM4Njk3IDYuNzQ5NzMxNywxOC43NDAyMDEyIEM3Ljc0OTM3Mzk3LDE3Ljc0MjcwNDkgOS4zNzcwNDgwMSwxNy43NDI3MDQ5IDEwLjM3NjY5MDMsMTguNzQwMjAxMiBDMTEuMzc2MzMyNSwxOS43Mzg2OTcgMTEuMzc2MzMyNSwyMS4zNjE4NzczIDEwLjM3NjY5MDMsMjIuMzU5MzczNSBMMTAuMzc2NjkwMywyMi4zNTkzNzM1IFogTTI3LjQzMzcxMjUsMjguOTEwMDY1NCBDMjUuNDM2NDMxMywzMC45MDMwNTkgMjIuNzgyMDcwNSwzMi4wMDA1MDQ3IDE5Ljk1NzQzMDEsMzIuMDAwNTA0NyBDMTcuMTMyNzg5NiwzMi4wMDA1MDQ3IDE0LjQ3ODQyODgsMzAuOTAzMDU5IDEyLjQ4MjE0OTIsMjguOTEwMDY1NCBDMTEuMTY1OTg3LDI3LjU5NzcyODEgMTAuNDA3NzQxMywyNi40NjkyOTggOS45NDQ5ODEwNCwyNS4xMzU5NzEzIEw4Ljk5ODQyNTk5LDI1LjQ2MjgwNjMgQzkuNTA3MjYxOTMsMjYuOTI5MDY1OCAxMC4zNjI2NjcyLDI4LjIxMDQxODcgMTEuNzczOTg1OCwyOS42MTY3MDg2IEMxMy45NTg1NzQ4LDMxLjc5ODYwNjcgMTYuODY2MzUxOSwzMyAxOS45NTc0MzAxLDMzIEMyMy4wNDk1MDk5LDMzIDI1Ljk1NjI4NTMsMzEuNzk4NjA2NyAyOC4xNDE4NzU5LDI5LjYxNjcwODYgQzI5LjI4Mjc1MDIsMjguNDc4MjgzNSAzMC40MjA2MTk2LDI3LjE4NjkzNTYgMzEuMDExNTkwNSwyNS40NjA4MDczIEwzMC4wNjQwMzM4LDI1LjEzNzk3MDMgQzI5LjUzOTE3MTUsMjYuNjcwMTk2NiAyOC40ODk0NDY5LDI3Ljg1NjU5NzQgMjcuNDMzNzEyNSwyOC45MTAwNjU0IEwyNy40MzM3MTI1LDI4LjkxMDA2NTQgWiBNOS45NDQ5ODEwNCwxNS44NTk2NTU5IEw4Ljk5ODQyNTk5LDE1LjUzMTgyMTQgQzkuNTEwMjY2ODcsMTQuMDY0NTYyNCAxMC4zNjU2NzIyLDEyLjc4MzIwOTUgMTEuNzc1OTg5MSwxMS4zNzU5MjAyIEMxNi4yODYzOTkxLDYuODc1MTkzMDQgMjMuNjI2NDU3OCw2Ljg3NDE5MzU0IDI4LjEzNzg2OTQsMTEuMzc1OTIwMiBDMjkuMjE4NjQ0OSwxMi40NTMzNzYxIDMwLjQwMzU5MTYsMTMuNzg5NzAxMiAzMS4wMTE1OTA1LDE1LjUzMTgyMTQgTDMwLjA2NDAzMzgsMTUuODU5NjU1OSBDMjkuNTI0MTQ2OCwxNC4zMDk0Mzg3IDI4LjQyOTM0ODIsMTMuMDgwMDU5NiAyNy40Mjk3MDU5LDEyLjA4MjU2MzMgQzI1LjQzNDQyOCwxMC4wOTE1Njg4IDIyLjc4MTA2ODksOC45OTYxMjE5NyAxOS45NTc0MzAxLDguOTk2MTIxOTcgQzE3LjEzMzc5MTIsOC45OTYxMjE5NyAxNC40ODA0MzIxLDEwLjA5MTU2ODggMTIuNDg1MTU0MiwxMi4wODI1NjMzIEMxMS4xODcwMjE1LDEzLjM3NzkwOTIgMTAuNDAzNzM0NywxNC41NDIzMjExIDkuOTQ0OTgxMDQsMTUuODU5NjU1OSBMOS45NDQ5ODEwNCwxNS44NTk2NTU5IFonCiAgICAgICAgICAgICAgaWQ9J0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV9JY29uXzMyX1NxdWlkJyBmaWxsPScjRkZGRkZGJz48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
       {
         "group": "authentication"
       },
@@ -4457,34 +6368,78 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "queueProperties"
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
       },
       {
-        "group": "queueProperties"
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
       },
       {
-        "group": "messagePollingProperties"
+        "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "configuration"
+      },
+      {
+        "group": "queueProperties",
+        "tooltip": "URL of the SQS queue to subscribe to."
+      },
+      {
+        "group": "messagePollingProperties",
+        "tooltip": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>. A value of 0 is automatically overridden to 1."
+      },
+      {
+        "group": "input",
+        "tooltip": "Array of queue attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
+      },
+      {
+        "group": "input",
+        "tooltip": "Array of message attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
       },
       {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "activation"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -4505,8 +6460,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Configuration"
         },
         {
+          "id": "document",
+          "label": "Input document"
+        },
+        {
           "id": "input",
-          "label": "Configure input"
+          "label": "Operation configuration"
+        },
+        {
+          "id": "advanced",
+          "label": "Advanced configuration"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -4534,7 +6501,12 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
       },
       {
         "group": "configuration"
@@ -4543,49 +6515,107 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "document",
+        "tooltip": "Where the document to be analyzed is stored."
       },
       {
-        "group": "input"
+        "group": "document",
+        "tooltip": "S3 bucket that contains the document to be analyzed."
       },
       {
-        "group": "input"
+        "group": "document",
+        "tooltip": "Name of the document to be analyzed in the S3 bucket."
       },
       {
-        "group": "input"
+        "group": "document",
+        "tooltip": "Version of the document to be analyzed in the S3 bucket."
       },
       {
-        "group": "input"
+        "group": "document",
+        "tooltip": "The document to be analyzed."
       },
       {
-        "group": "input"
+        "group": "document"
       },
       {
-        "group": "input"
+        "group": "document"
       },
       {
-        "group": "input"
+        "group": "document"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "How the document should be processed. See more info in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-textract/#input-parameters\" target=\"_blank\">Amazon Textract execution types documentation</a>."
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Documents supplied from Camunda are analyzed in real time. Polling and asynchronous execution require the document to be stored in Amazon S3."
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Select this to return information about the tables that are detected in the input document."
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Select this to return information about detected form data."
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Select this to return the locations of detected signatures."
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Select this to return information about the layout of the document."
+      },
+      {
+        "group": "input",
+        "tooltip": "Select this to return an answer to a query run against the document."
+      },
+      {
+        "group": "input",
+        "tooltip": "A natural-language question applied to the document; Textract returns the extracted answer.",
+        "placeholder": "What is the IBAN in the invoice?"
+      },
+      {
+        "group": "input",
+        "tooltip": "The name of the bucket your output will go to."
+      },
+      {
+        "group": "input",
+        "tooltip": "The prefix of the object key that the output will be saved to."
+      },
+      {
+        "group": "input",
+        "tooltip": "How the analysis result should be returned. JSON returns the result directly in the process variables; Document reference uploads it to the document store and returns the reference."
+      },
+      {
+        "group": "advanced",
+        "tooltip": "The idempotent token that you use to identify the start request."
+      },
+      {
+        "group": "advanced",
+        "tooltip": "An identifier that you specify that's included in the completion notification published to the Amazon SNS topic."
+      },
+      {
+        "group": "advanced",
+        "tooltip": "The KMS key used to encrypt the inference results."
+      },
+      {
+        "group": "advanced",
+        "tooltip": "The Amazon SNS topic role ARN that you want Amazon Textract to publish the completion status of the operation to."
+      },
+      {
+        "group": "advanced",
+        "tooltip": "The Amazon SNS topic ARN that you want Amazon Textract to publish the completion status of the operation to."
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       },
       {
         "group": "output"
@@ -4595,6 +6625,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -4614,81 +6647,143 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       "groups": [
         {
           "id": "authentication",
-          "label": "Authentication"
+          "label": "Connection"
         },
         {
           "id": "kafka",
           "label": "Kafka"
         },
         {
+          "id": "schema",
+          "label": "Schema"
+        },
+        {
           "id": "activation",
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg width='18' height='18' viewBox='0 0 256 416' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMidYMid'%3E%3Cpath d='M201.816 230.216c-16.186 0-30.697 7.171-40.634 18.461l-25.463-18.026c2.703-7.442 4.255-15.433 4.255-23.797 0-8.219-1.498-16.076-4.112-23.408l25.406-17.835c9.936 11.233 24.409 18.365 40.548 18.365 29.875 0 54.184-24.305 54.184-54.184 0-29.879-24.309-54.184-54.184-54.184-29.875 0-54.184 24.305-54.184 54.184 0 5.348.808 10.505 2.258 15.389l-25.423 17.844c-10.62-13.175-25.911-22.374-43.333-25.182v-30.64c24.544-5.155 43.037-26.962 43.037-53.019C124.171 24.305 99.862 0 69.987 0 40.112 0 15.803 24.305 15.803 54.184c0 25.708 18.014 47.246 42.067 52.769v31.038C25.044 143.753 0 172.401 0 206.854c0 34.621 25.292 63.374 58.355 68.94v32.774c-24.299 5.341-42.552 27.011-42.552 52.894 0 29.879 24.309 54.184 54.184 54.184 29.875 0 54.184-24.305 54.184-54.184 0-25.883-18.253-47.553-42.552-52.894v-32.775a69.965 69.965 0 0 0 42.6-24.776l25.633 18.143c-1.423 4.84-2.22 9.946-2.22 15.24 0 29.879 24.309 54.184 54.184 54.184 29.875 0 54.184-24.305 54.184-54.184 0-29.879-24.309-54.184-54.184-54.184zm0-126.695c14.487 0 26.27 11.788 26.27 26.271s-11.783 26.27-26.27 26.27-26.27-11.787-26.27-26.27c0-14.483 11.783-26.271 26.27-26.271zm-158.1-49.337c0-14.483 11.784-26.27 26.271-26.27s26.27 11.787 26.27 26.27c0 14.483-11.783 26.27-26.27 26.27s-26.271-11.787-26.271-26.27zm52.541 307.278c0 14.483-11.783 26.27-26.27 26.27s-26.271-11.787-26.271-26.27c0-14.483 11.784-26.27 26.271-26.27s26.27 11.787 26.27 26.27zm-26.272-117.97c-20.205 0-36.642-16.434-36.642-36.638 0-20.205 16.437-36.642 36.642-36.642 20.204 0 36.641 16.437 36.641 36.642 0 20.204-16.437 36.638-36.641 36.638zm131.831 67.179c-14.487 0-26.27-11.788-26.27-26.271s11.783-26.27 26.27-26.27 26.27 11.787 26.27 26.27c0 14.483-11.783 26.271-26.27 26.271z' style='fill:%23231f20'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCAyNTYgNDE2JyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHByZXNlcnZlQXNwZWN0UmF0aW89J3hNaWRZTWlkJz4KICAgIDxwYXRoIGQ9J00yMDEuODE2IDIzMC4yMTZjLTE2LjE4NiAwLTMwLjY5NyA3LjE3MS00MC42MzQgMTguNDYxbC0yNS40NjMtMTguMDI2YzIuNzAzLTcuNDQyIDQuMjU1LTE1LjQzMyA0LjI1NS0yMy43OTcgMC04LjIxOS0xLjQ5OC0xNi4wNzYtNC4xMTItMjMuNDA4bDI1LjQwNi0xNy44MzVjOS45MzYgMTEuMjMzIDI0LjQwOSAxOC4zNjUgNDAuNTQ4IDE4LjM2NSAyOS44NzUgMCA1NC4xODQtMjQuMzA1IDU0LjE4NC01NC4xODQgMC0yOS44NzktMjQuMzA5LTU0LjE4NC01NC4xODQtNTQuMTg0LTI5Ljg3NSAwLTU0LjE4NCAyNC4zMDUtNTQuMTg0IDU0LjE4NCAwIDUuMzQ4LjgwOCAxMC41MDUgMi4yNTggMTUuMzg5bC0yNS40MjMgMTcuODQ0Yy0xMC42Mi0xMy4xNzUtMjUuOTExLTIyLjM3NC00My4zMzMtMjUuMTgydi0zMC42NGMyNC41NDQtNS4xNTUgNDMuMDM3LTI2Ljk2MiA0My4wMzctNTMuMDE5QzEyNC4xNzEgMjQuMzA1IDk5Ljg2MiAwIDY5Ljk4NyAwIDQwLjExMiAwIDE1LjgwMyAyNC4zMDUgMTUuODAzIDU0LjE4NGMwIDI1LjcwOCAxOC4wMTQgNDcuMjQ2IDQyLjA2NyA1Mi43Njl2MzEuMDM4QzI1LjA0NCAxNDMuNzUzIDAgMTcyLjQwMSAwIDIwNi44NTRjMCAzNC42MjEgMjUuMjkyIDYzLjM3NCA1OC4zNTUgNjguOTR2MzIuNzc0Yy0yNC4yOTkgNS4zNDEtNDIuNTUyIDI3LjAxMS00Mi41NTIgNTIuODk0IDAgMjkuODc5IDI0LjMwOSA1NC4xODQgNTQuMTg0IDU0LjE4NCAyOS44NzUgMCA1NC4xODQtMjQuMzA1IDU0LjE4NC01NC4xODQgMC0yNS44ODMtMTguMjUzLTQ3LjU1My00Mi41NTItNTIuODk0di0zMi43NzVhNjkuOTY1IDY5Ljk2NSAwIDAgMCA0Mi42LTI0Ljc3NmwyNS42MzMgMTguMTQzYy0xLjQyMyA0Ljg0LTIuMjIgOS45NDYtMi4yMiAxNS4yNCAwIDI5Ljg3OSAyNC4zMDkgNTQuMTg0IDU0LjE4NCA1NC4xODQgMjkuODc1IDAgNTQuMTg0LTI0LjMwNSA1NC4xODQtNTQuMTg0IDAtMjkuODc5LTI0LjMwOS01NC4xODQtNTQuMTg0LTU0LjE4NHptMC0xMjYuNjk1YzE0LjQ4NyAwIDI2LjI3IDExLjc4OCAyNi4yNyAyNi4yNzFzLTExLjc4MyAyNi4yNy0yNi4yNyAyNi4yNy0yNi4yNy0xMS43ODctMjYuMjctMjYuMjdjMC0xNC40ODMgMTEuNzgzLTI2LjI3MSAyNi4yNy0yNi4yNzF6bS0xNTguMS00OS4zMzdjMC0xNC40ODMgMTEuNzg0LTI2LjI3IDI2LjI3MS0yNi4yN3MyNi4yNyAxMS43ODcgMjYuMjcgMjYuMjdjMCAxNC40ODMtMTEuNzgzIDI2LjI3LTI2LjI3IDI2LjI3cy0yNi4yNzEtMTEuNzg3LTI2LjI3MS0yNi4yN3ptNTIuNTQxIDMwNy4yNzhjMCAxNC40ODMtMTEuNzgzIDI2LjI3LTI2LjI3IDI2LjI3cy0yNi4yNzEtMTEuNzg3LTI2LjI3MS0yNi4yN2MwLTE0LjQ4MyAxMS43ODQtMjYuMjcgMjYuMjcxLTI2LjI3czI2LjI3IDExLjc4NyAyNi4yNyAyNi4yN3ptLTI2LjI3Mi0xMTcuOTdjLTIwLjIwNSAwLTM2LjY0Mi0xNi40MzQtMzYuNjQyLTM2LjYzOCAwLTIwLjIwNSAxNi40MzctMzYuNjQyIDM2LjY0Mi0zNi42NDIgMjAuMjA0IDAgMzYuNjQxIDE2LjQzNyAzNi42NDEgMzYuNjQyIDAgMjAuMjA0LTE2LjQzNyAzNi42MzgtMzYuNjQxIDM2LjYzOHptMTMxLjgzMSA2Ny4xNzljLTE0LjQ4NyAwLTI2LjI3LTExLjc4OC0yNi4yNy0yNi4yNzFzMTEuNzgzLTI2LjI3IDI2LjI3LTI2LjI3IDI2LjI3IDExLjc4NyAyNi4yNyAyNi4yN2MwIDE0LjQ4My0xMS43ODMgMjYuMjcxLTI2LjI3IDI2LjI3MXonCiAgICAgICAgICBzdHlsZT0nZmlsbDojMjMxZjIwJy8+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Choose a reusable Kafka connection credential, or configure one-time connection parameters below."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Username/password or custom."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The user must have permissions to produce messages to the topic."
       },
       {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Bootstrap server(s), comma-delimited if there are multiple.",
+        "placeholder": "broker1:9092,broker2:9092"
       },
       {
         "group": "kafka"
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "It is strongly recommended to provide an explicit consumer group ID. Use a stable, application-specific identifier that represents the logical consumer group in your application (for example, <code>my-app-order-processor</code>). Leaving this empty auto-generates an ID that may change across connector upgrades, causing message replay."
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "Additional Kafka consumer properties in JSON. These can override brokers and authentication from a reusable credential."
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "List of offsets, e.g. '10' or '=[10, 23]'. If specified, it has to have the same number of values as the number of partitions."
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server. You should only select none if you specified the offsets."
       },
       {
-        "group": "kafka"
+        "group": "schema"
+      },
+      {
+        "group": "schema",
+        "tooltip": "Avro inline schema for the message value"
+      },
+      {
+        "group": "schema",
+        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
+      },
+      {
+        "group": "schema"
       },
       {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "activation"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
   "io.camunda.connectors.agenticai.adhoctoolsschema.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
-        "id": "connectors",
-        "name": "Connectors"
+        "id": "aiTools",
+        "name": "AI Tools"
       },
       "groups": [
         {
@@ -4741,6 +6836,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -4774,42 +6872,54 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL"
+      },
+      {},
+      {
+        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
         "group": "endpoint"
       },
       {},
-      {
-        "group": "endpoint"
-      },
-      {},
       {},
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Sets up the correlation key from process variables"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Extracts the correlation key from the incoming message payload"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Expression to extract unique identifier of a message"
       },
       {
-        "group": "variable-mapping"
+        "group": "activation",
+        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
       },
       {
-        "group": "variable-mapping"
+        "group": "variable-mapping",
+        "tooltip": "Name of variable to store the result of the connector in"
+      },
+      {
+        "group": "variable-mapping",
+        "tooltip": "Expression to map the inbound payload to process variables"
       }
     ]
   },
   "io.camunda.connectors.aws.s3.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
+        {
+          "id": "operation",
+          "label": "Action"
+        },
         {
           "id": "authentication",
           "label": "Authentication"
@@ -4817,10 +6927,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "configuration",
           "label": "Configuration"
-        },
-        {
-          "id": "action",
-          "label": "Action"
         },
         {
           "id": "deleteObject",
@@ -4833,6 +6939,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "downloadObject",
           "label": "Download an object"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -4854,13 +6964,21 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
-        "group": "authentication"
+        "group": "operation"
       },
       {
         "group": "authentication"
       },
       {
         "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
       },
       {
         "group": "configuration"
@@ -4869,7 +6987,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "configuration"
       },
       {
-        "group": "action"
+        "group": "configuration"
       },
       {
         "group": "deleteObject",
@@ -4892,16 +7010,46 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Document to be uploaded on AWS S3"
       },
       {
+        "group": "uploadObject"
+      },
+      {
+        "group": "uploadObject"
+      },
+      {
+        "group": "uploadObject"
+      },
+      {
+        "group": "uploadObject"
+      },
+      {
+        "group": "uploadObject"
+      },
+      {
+        "group": "uploadObject"
+      },
+      {
+        "group": "uploadObject"
+      },
+      {
         "group": "downloadObject",
         "tooltip": "Bucket from where an object should be downloaded"
       },
       {
         "group": "downloadObject",
-        "tooltip": "Key of the object which should be download"
+        "tooltip": "Key of the object which should be downloaded"
       },
       {
         "group": "downloadObject",
-        "tooltip": "If set to true, a document reference will be created. If set to false, the content will be extracted and provided inside the response."
+        "tooltip": "How the downloaded payload should be returned. Document reference uploads the payload to the document store; as text decodes it as a String; as JSON parses it into a structure you can access via dot notation."
+      },
+      {
+        "group": "downloadObject"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       },
       {
         "group": "output"
@@ -4911,6 +7059,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -4929,16 +7080,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       "groups": [
         {
-          "id": "authentication",
-          "label": "Authentication"
-        },
-        {
           "id": "operation",
           "label": "Operation"
         },
         {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
           "id": "parameters",
           "label": "Parameters"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -4975,183 +7130,233 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
+        "tooltip": "The name of your Azure OpenAI Resource. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
         "group": "operation"
       },
       {
+        "tooltip": "The deployment name you chose when you deployed the model. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
         "group": "operation"
       },
       {
-        "group": "operation"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {},
-      {},
-      {},
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
+        "tooltip": "The API version to use for this operation. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
         "group": "operation"
       },
       {
         "group": "parameters"
       },
       {
+        "tooltip": "The maximum number of tokens to generate in the completion. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
         "group": "parameters"
       },
       {
         "group": "parameters"
       },
       {
+        "tooltip": "An alternative to sampling with temperature, AKA nucleus sampling. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Modify the likelihood of specified tokens appearing in the completion. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "A unique identifier representing your end-user. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "How many completions to generate for each prompt. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Whether to stream back partial progress. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Include the log probabilities on the logprobs most likely tokens, as well as the chosen tokens. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "The suffix that comes after a completion of inserted text. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Echo back the prompt in addition to the completion. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
         "group": "parameters"
       },
       {
         "group": "parameters"
       },
       {
+        "tooltip": "Positive values penalize new tokens based on whether they appear in the text so far. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
         "group": "parameters"
       },
       {
+        "tooltip": "Positive values penalize new tokens based on their existing frequency in the text so far. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
         "group": "parameters"
       },
       {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
+        "tooltip": "Generates 'best of' completions server-side and returns the \"best\". <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions\" target=\"_blank\">Azure OpenAI completions documentation</a>",
         "group": "parameters"
       },
       {},
       {},
       {},
       {
+        "tooltip": "The name of your Azure OpenAI Resource. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
         "group": "operation"
       },
       {
+        "tooltip": "The deployment name you chose when you deployed the model. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
         "group": "operation"
       },
       {
+        "tooltip": "The API version to use for this operation. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
         "group": "operation"
       },
       {
+        "tooltip": "Indicates who is giving the current message",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "The content of the message. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "The array of messages associated with this chat completion request. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Part of a user's multi-modal message. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Represents the Vision enhancement features requested for the chat. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
         "group": "parameters"
       },
       {
         "group": "parameters"
       },
       {
+        "tooltip": "How many completions to generate for each prompt. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Whether to stream back partial progress. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
         "group": "parameters"
       },
       {
         "group": "parameters"
       },
       {
+        "tooltip": "The maximum number of tokens to generate in the completion. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
         "group": "parameters"
       },
       {
+        "tooltip": "Positive values penalize new tokens based on whether they appear in the text so far. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
         "group": "parameters"
       },
       {
+        "tooltip": "Positive values penalize new tokens based on their existing frequency in the text so far. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
         "group": "parameters"
       },
       {
+        "tooltip": "Modify the likelihood of specified tokens appearing in the completion. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
         "group": "parameters"
       },
       {
+        "tooltip": "A unique identifier representing your end-user. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
         "group": "parameters"
       },
       {
+        "tooltip": "A list of tools the model can call. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
         "group": "parameters"
       },
       {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
-        "group": "parameters"
-      },
-      {
+        "tooltip": "Represents additional resource data. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions\" target=\"_blank\">Azure OpenAI chat completions documentation</a>",
         "group": "parameters"
       },
       {},
       {},
       {},
       {
+        "tooltip": "The name of your Azure OpenAI Resource. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "operation"
+      },
+      {
+        "tooltip": "The deployment name you chose when you deployed the model. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "operation"
+      },
+      {
+        "tooltip": "The API version to use for this operation. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "operation"
+      },
+      {
+        "tooltip": "The array of messages associated with this chat completion request. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Part of a user's multi-modal message. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Represents the Vision enhancement features requested for the chat. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "tooltip": "How many completions to generate for each prompt. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Whether to stream back partial progress. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "group": "parameters"
+      },
+      {
+        "tooltip": "The maximum number of tokens to generate in the completion. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Positive values penalize new tokens based on whether they appear in the text so far. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Positive values penalize new tokens based on their existing frequency in the text so far. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Modify the likelihood of specified tokens appearing in the completion. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "A unique identifier representing your end-user. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "A list of tools the model can call. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Represents additional resource data. <a href=\"https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions-extensions\" target=\"_blank\">Azure OpenAI completions extensions documentation</a>",
+        "group": "parameters"
+      },
+      {},
+      {},
+      {},
+      {
+        "tooltip": "Name of variable to store the response in",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables",
         "group": "output"
       },
       {
+        "tooltip": "Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">connector error handling documentation</a>.",
         "group": "error"
       },
       {
@@ -5159,6 +7364,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       }
     ]
   },
@@ -5169,8 +7383,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "keywords": []
       },
       "category": {
-        "id": "connectors",
-        "name": "Connectors"
+        "id": "aiTools",
+        "name": "AI Tools"
       },
       "groups": [
         {
@@ -5239,6 +7453,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Authentication"
         },
         {
+          "id": "configuration",
+          "label": "Configuration"
+        },
+        {
           "id": "queueProperties",
           "label": "Queue properties"
         },
@@ -5255,12 +7473,17 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 40 40' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 64 (93537) - https://sketch.com --%3E%3Ctitle%3EIcon-Architecture/32/Arch_AWS-Simple-Queue-Service_32%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3ClinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='linearGradient-1'%3E%3Cstop stop-color='%23B0084D' offset='0%25'%3E%3C/stop%3E%3Cstop stop-color='%23FF4F8B' offset='100%25'%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Cg id='Icon-Architecture/32/Arch_AWS-Simple-Queue-Service_32' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Icon-Architecture-BG/32/Application-Integration' fill='url(%23linearGradient-1)'%3E%3Crect id='Rectangle' x='0' y='0' width='40' height='40'%3E%3C/rect%3E%3C/g%3E%3Cpath d='M14.3422051,22.3493786 L15.8466767,20.9061074 C15.9428347,20.8141539 15.9969235,20.687218 15.9999285,20.5552846 C16.0019317,20.4223517 15.9518495,20.2934168 15.8596981,20.1984648 L14.3552264,18.6432502 L13.6350433,19.3378994 L14.311154,20.037546 L11.9913429,20.037546 L11.9913429,21.0370413 L14.2650783,21.0370413 L13.6480647,21.6287425 L14.3422051,22.3493786 Z M26.3579452,22.3533765 L27.9074909,20.9001104 C28.0066538,20.8081569 28.0627459,20.679222 28.0647492,20.5442901 C28.0667525,20.4093583 28.0136653,20.2784244 27.918509,20.1834724 L26.3689633,18.6372532 L25.6607999,19.3438963 L26.3549403,20.037546 L24.0110896,20.037546 L24.0110896,21.0370413 L26.2988481,21.0370413 L25.671818,21.6247445 L26.3579452,22.3533765 Z M17.5875367,23.3608678 C18.3387708,23.0570212 19.1621235,22.8941035 20.0045074,22.8941035 C20.8468913,22.8941035 21.670244,23.0570212 22.4214781,23.3608678 C21.7523789,21.5897622 21.7523789,19.3898731 22.4214781,17.6187675 C20.9190098,18.2264606 19.090005,18.2264606 17.5875367,17.6187675 C18.2566359,19.3898731 18.2566359,21.5897622 17.5875367,23.3608678 L17.5875367,23.3608678 Z M15.6443443,25.3408679 C15.546183,25.2439168 15.4971024,25.1159814 15.4971024,24.988046 C15.4971024,24.8601106 15.546183,24.7321753 15.6443443,24.6342247 C17.5845317,22.6982024 17.5845317,18.2824324 15.6443443,16.3454106 C15.546183,16.2484595 15.4971024,16.1205241 15.4971024,15.9925912 C15.4971024,15.8646534 15.546183,15.736718 15.6443443,15.6387674 C15.8396652,15.4438659 16.1571868,15.4438659 16.3525077,15.6387674 C17.2740216,16.5583031 18.6052086,17.0860366 20.0045074,17.0860366 C21.4048079,17.0860366 22.7359948,16.5583031 23.6575088,15.6387674 C23.8528296,15.4438659 24.1703513,15.4438659 24.3656722,15.6387674 C24.4628318,15.736718 24.5119124,15.8646534 24.5119124,15.9925912 C24.5119124,16.1205241 24.4628318,16.2484595 24.3656722,16.3454106 C22.4244831,18.2824324 22.4244831,22.6982024 24.3656722,24.6342247 C24.4628318,24.7321753 24.5119124,24.8601106 24.5119124,24.988046 C24.5119124,25.1159814 24.4628318,25.2439168 24.3656722,25.3408679 C24.2675109,25.4388184 24.1393003,25.4877937 24.0110896,25.4877937 C23.882879,25.4877937 23.7546684,25.4388184 23.6575088,25.3408679 C22.7359948,24.4213322 21.4048079,23.8935987 20.0045074,23.8935987 C18.6052086,23.8935987 17.2740216,24.4213322 16.3525077,25.3408679 C16.1571868,25.5357694 15.8396652,25.5357694 15.6443443,25.3408679 L15.6443443,25.3408679 Z M32.5421049,19.4358499 C32.236603,19.1320033 31.8369464,18.9800801 31.4362882,18.9800801 C31.0366316,18.9800801 30.636975,19.1320033 30.3314731,19.4358499 C29.721471,20.0445425 29.721471,21.0340428 30.3314731,21.6417359 C30.9414753,22.2504285 31.9321027,22.2504285 32.5421049,21.6417359 C33.1511054,21.0340428 33.1511054,20.0445425 32.5421049,19.4358499 L32.5421049,19.4358499 Z M33.2502683,22.3493786 C32.7504472,22.8481267 32.0933677,23.0980005 31.4362882,23.0980005 C30.7802103,23.0980005 30.1231309,22.8481267 29.6233097,22.3493786 C28.6236675,21.3508828 28.6236675,19.7277025 29.6233097,18.7292068 C30.622952,17.7317105 32.250626,17.7317105 33.2502683,18.7292068 C34.2499106,19.7277025 34.2499106,21.3508828 33.2502683,22.3493786 L33.2502683,22.3493786 Z M9.66852687,19.4468443 C9.36302497,19.1429978 8.96336839,18.9910745 8.56271017,18.9910745 C8.16305359,18.9910745 7.76339701,19.1429978 7.45789511,19.4468443 C6.84889461,20.055537 6.84889461,21.0450373 7.45789511,21.6527304 C8.06789726,22.261423 9.05852472,22.261423 9.66852687,21.6527304 C10.2775274,21.0450373 10.2775274,20.055537 9.66852687,19.4468443 L9.66852687,19.4468443 Z M10.3766903,22.3593735 C9.87686914,22.8581217 9.21978965,23.1079955 8.56271017,23.1079955 C7.90663232,23.1079955 7.24955284,22.8581217 6.7497317,22.3593735 C5.75008943,21.3618773 5.75008943,19.738697 6.7497317,18.7402012 C7.74937397,17.7427049 9.37704801,17.7427049 10.3766903,18.7402012 C11.3763325,19.738697 11.3763325,21.3618773 10.3766903,22.3593735 L10.3766903,22.3593735 Z M27.4337125,28.9100654 C25.4364313,30.903059 22.7820705,32.0005047 19.9574301,32.0005047 C17.1327896,32.0005047 14.4784288,30.903059 12.4821492,28.9100654 C11.165987,27.5977281 10.4077413,26.469298 9.94498104,25.1359713 L8.99842599,25.4628063 C9.50726193,26.9290658 10.3626672,28.2104187 11.7739858,29.6167086 C13.9585748,31.7986067 16.8663519,33 19.9574301,33 C23.0495099,33 25.9562853,31.7986067 28.1418759,29.6167086 C29.2827502,28.4782835 30.4206196,27.1869356 31.0115905,25.4608073 L30.0640338,25.1379703 C29.5391715,26.6701966 28.4894469,27.8565974 27.4337125,28.9100654 L27.4337125,28.9100654 Z M9.94498104,15.8596559 L8.99842599,15.5318214 C9.51026687,14.0645624 10.3656722,12.7832095 11.7759891,11.3759202 C16.2863991,6.87519304 23.6264578,6.87419354 28.1378694,11.3759202 C29.2186449,12.4533761 30.4035916,13.7897012 31.0115905,15.5318214 L30.0640338,15.8596559 C29.5241468,14.3094387 28.4293482,13.0800596 27.4297059,12.0825633 C25.434428,10.0915688 22.7810689,8.99612197 19.9574301,8.99612197 C17.1337912,8.99612197 14.4804321,10.0915688 12.4851542,12.0825633 C11.1870215,13.3779092 10.4037347,14.5423211 9.94498104,15.8596559 L9.94498104,15.8596559 Z' id='AWS-Simple-Queue-Service_Icon_32_Squid' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCA0MCA0MCcgdmVyc2lvbj0nMS4xJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnCiAgICAgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPjwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggNjQgKDkzNTM3KSAtIGh0dHBzOi8vc2tldGNoLmNvbSAtLT4KICAgIDx0aXRsZT5JY29uLUFyY2hpdGVjdHVyZS8zMi9BcmNoX0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV8zMjwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPgogICAgICAgIDxsaW5lYXJHcmFkaWVudCB4MT0nMCUnIHkxPScxMDAlJyB4Mj0nMTAwJScgeTI9JzAlJyBpZD0nbGluZWFyR3JhZGllbnQtMSc+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9JyNCMDA4NEQnIG9mZnNldD0nMCUnPjwvc3RvcD4KICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0nI0ZGNEY4Qicgb2Zmc2V0PScxMDAlJz48L3N0b3A+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDwvZGVmcz4KICAgIDxnIGlkPSdJY29uLUFyY2hpdGVjdHVyZS8zMi9BcmNoX0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV8zMicgc3Ryb2tlPSdub25lJyBzdHJva2Utd2lkdGg9JzEnIGZpbGw9J25vbmUnCiAgICAgICBmaWxsLXJ1bGU9J2V2ZW5vZGQnPgogICAgICAgIDxnIGlkPSdJY29uLUFyY2hpdGVjdHVyZS1CRy8zMi9BcHBsaWNhdGlvbi1JbnRlZ3JhdGlvbicgZmlsbD0ndXJsKCNsaW5lYXJHcmFkaWVudC0xKSc+CiAgICAgICAgICAgIDxyZWN0IGlkPSdSZWN0YW5nbGUnIHg9JzAnIHk9JzAnIHdpZHRoPSc0MCcgaGVpZ2h0PSc0MCc+PC9yZWN0PgogICAgICAgIDwvZz4KICAgICAgICA8cGF0aCBkPSdNMTQuMzQyMjA1MSwyMi4zNDkzNzg2IEwxNS44NDY2NzY3LDIwLjkwNjEwNzQgQzE1Ljk0MjgzNDcsMjAuODE0MTUzOSAxNS45OTY5MjM1LDIwLjY4NzIxOCAxNS45OTk5Mjg1LDIwLjU1NTI4NDYgQzE2LjAwMTkzMTcsMjAuNDIyMzUxNyAxNS45NTE4NDk1LDIwLjI5MzQxNjggMTUuODU5Njk4MSwyMC4xOTg0NjQ4IEwxNC4zNTUyMjY0LDE4LjY0MzI1MDIgTDEzLjYzNTA0MzMsMTkuMzM3ODk5NCBMMTQuMzExMTU0LDIwLjAzNzU0NiBMMTEuOTkxMzQyOSwyMC4wMzc1NDYgTDExLjk5MTM0MjksMjEuMDM3MDQxMyBMMTQuMjY1MDc4MywyMS4wMzcwNDEzIEwxMy42NDgwNjQ3LDIxLjYyODc0MjUgTDE0LjM0MjIwNTEsMjIuMzQ5Mzc4NiBaIE0yNi4zNTc5NDUyLDIyLjM1MzM3NjUgTDI3LjkwNzQ5MDksMjAuOTAwMTEwNCBDMjguMDA2NjUzOCwyMC44MDgxNTY5IDI4LjA2Mjc0NTksMjAuNjc5MjIyIDI4LjA2NDc0OTIsMjAuNTQ0MjkwMSBDMjguMDY2NzUyNSwyMC40MDkzNTgzIDI4LjAxMzY2NTMsMjAuMjc4NDI0NCAyNy45MTg1MDksMjAuMTgzNDcyNCBMMjYuMzY4OTYzMywxOC42MzcyNTMyIEwyNS42NjA3OTk5LDE5LjM0Mzg5NjMgTDI2LjM1NDk0MDMsMjAuMDM3NTQ2IEwyNC4wMTEwODk2LDIwLjAzNzU0NiBMMjQuMDExMDg5NiwyMS4wMzcwNDEzIEwyNi4yOTg4NDgxLDIxLjAzNzA0MTMgTDI1LjY3MTgxOCwyMS42MjQ3NDQ1IEwyNi4zNTc5NDUyLDIyLjM1MzM3NjUgWiBNMTcuNTg3NTM2NywyMy4zNjA4Njc4IEMxOC4zMzg3NzA4LDIzLjA1NzAyMTIgMTkuMTYyMTIzNSwyMi44OTQxMDM1IDIwLjAwNDUwNzQsMjIuODk0MTAzNSBDMjAuODQ2ODkxMywyMi44OTQxMDM1IDIxLjY3MDI0NCwyMy4wNTcwMjEyIDIyLjQyMTQ3ODEsMjMuMzYwODY3OCBDMjEuNzUyMzc4OSwyMS41ODk3NjIyIDIxLjc1MjM3ODksMTkuMzg5ODczMSAyMi40MjE0NzgxLDE3LjYxODc2NzUgQzIwLjkxOTAwOTgsMTguMjI2NDYwNiAxOS4wOTAwMDUsMTguMjI2NDYwNiAxNy41ODc1MzY3LDE3LjYxODc2NzUgQzE4LjI1NjYzNTksMTkuMzg5ODczMSAxOC4yNTY2MzU5LDIxLjU4OTc2MjIgMTcuNTg3NTM2NywyMy4zNjA4Njc4IEwxNy41ODc1MzY3LDIzLjM2MDg2NzggWiBNMTUuNjQ0MzQ0MywyNS4zNDA4Njc5IEMxNS41NDYxODMsMjUuMjQzOTE2OCAxNS40OTcxMDI0LDI1LjExNTk4MTQgMTUuNDk3MTAyNCwyNC45ODgwNDYgQzE1LjQ5NzEwMjQsMjQuODYwMTEwNiAxNS41NDYxODMsMjQuNzMyMTc1MyAxNS42NDQzNDQzLDI0LjYzNDIyNDcgQzE3LjU4NDUzMTcsMjIuNjk4MjAyNCAxNy41ODQ1MzE3LDE4LjI4MjQzMjQgMTUuNjQ0MzQ0MywxNi4zNDU0MTA2IEMxNS41NDYxODMsMTYuMjQ4NDU5NSAxNS40OTcxMDI0LDE2LjEyMDUyNDEgMTUuNDk3MTAyNCwxNS45OTI1OTEyIEMxNS40OTcxMDI0LDE1Ljg2NDY1MzQgMTUuNTQ2MTgzLDE1LjczNjcxOCAxNS42NDQzNDQzLDE1LjYzODc2NzQgQzE1LjgzOTY2NTIsMTUuNDQzODY1OSAxNi4xNTcxODY4LDE1LjQ0Mzg2NTkgMTYuMzUyNTA3NywxNS42Mzg3Njc0IEMxNy4yNzQwMjE2LDE2LjU1ODMwMzEgMTguNjA1MjA4NiwxNy4wODYwMzY2IDIwLjAwNDUwNzQsMTcuMDg2MDM2NiBDMjEuNDA0ODA3OSwxNy4wODYwMzY2IDIyLjczNTk5NDgsMTYuNTU4MzAzMSAyMy42NTc1MDg4LDE1LjYzODc2NzQgQzIzLjg1MjgyOTYsMTUuNDQzODY1OSAyNC4xNzAzNTEzLDE1LjQ0Mzg2NTkgMjQuMzY1NjcyMiwxNS42Mzg3Njc0IEMyNC40NjI4MzE4LDE1LjczNjcxOCAyNC41MTE5MTI0LDE1Ljg2NDY1MzQgMjQuNTExOTEyNCwxNS45OTI1OTEyIEMyNC41MTE5MTI0LDE2LjEyMDUyNDEgMjQuNDYyODMxOCwxNi4yNDg0NTk1IDI0LjM2NTY3MjIsMTYuMzQ1NDEwNiBDMjIuNDI0NDgzMSwxOC4yODI0MzI0IDIyLjQyNDQ4MzEsMjIuNjk4MjAyNCAyNC4zNjU2NzIyLDI0LjYzNDIyNDcgQzI0LjQ2MjgzMTgsMjQuNzMyMTc1MyAyNC41MTE5MTI0LDI0Ljg2MDExMDYgMjQuNTExOTEyNCwyNC45ODgwNDYgQzI0LjUxMTkxMjQsMjUuMTE1OTgxNCAyNC40NjI4MzE4LDI1LjI0MzkxNjggMjQuMzY1NjcyMiwyNS4zNDA4Njc5IEMyNC4yNjc1MTA5LDI1LjQzODgxODQgMjQuMTM5MzAwMywyNS40ODc3OTM3IDI0LjAxMTA4OTYsMjUuNDg3NzkzNyBDMjMuODgyODc5LDI1LjQ4Nzc5MzcgMjMuNzU0NjY4NCwyNS40Mzg4MTg0IDIzLjY1NzUwODgsMjUuMzQwODY3OSBDMjIuNzM1OTk0OCwyNC40MjEzMzIyIDIxLjQwNDgwNzksMjMuODkzNTk4NyAyMC4wMDQ1MDc0LDIzLjg5MzU5ODcgQzE4LjYwNTIwODYsMjMuODkzNTk4NyAxNy4yNzQwMjE2LDI0LjQyMTMzMjIgMTYuMzUyNTA3NywyNS4zNDA4Njc5IEMxNi4xNTcxODY4LDI1LjUzNTc2OTQgMTUuODM5NjY1MiwyNS41MzU3Njk0IDE1LjY0NDM0NDMsMjUuMzQwODY3OSBMMTUuNjQ0MzQ0MywyNS4zNDA4Njc5IFogTTMyLjU0MjEwNDksMTkuNDM1ODQ5OSBDMzIuMjM2NjAzLDE5LjEzMjAwMzMgMzEuODM2OTQ2NCwxOC45ODAwODAxIDMxLjQzNjI4ODIsMTguOTgwMDgwMSBDMzEuMDM2NjMxNiwxOC45ODAwODAxIDMwLjYzNjk3NSwxOS4xMzIwMDMzIDMwLjMzMTQ3MzEsMTkuNDM1ODQ5OSBDMjkuNzIxNDcxLDIwLjA0NDU0MjUgMjkuNzIxNDcxLDIxLjAzNDA0MjggMzAuMzMxNDczMSwyMS42NDE3MzU5IEMzMC45NDE0NzUzLDIyLjI1MDQyODUgMzEuOTMyMTAyNywyMi4yNTA0Mjg1IDMyLjU0MjEwNDksMjEuNjQxNzM1OSBDMzMuMTUxMTA1NCwyMS4wMzQwNDI4IDMzLjE1MTEwNTQsMjAuMDQ0NTQyNSAzMi41NDIxMDQ5LDE5LjQzNTg0OTkgTDMyLjU0MjEwNDksMTkuNDM1ODQ5OSBaIE0zMy4yNTAyNjgzLDIyLjM0OTM3ODYgQzMyLjc1MDQ0NzIsMjIuODQ4MTI2NyAzMi4wOTMzNjc3LDIzLjA5ODAwMDUgMzEuNDM2Mjg4MiwyMy4wOTgwMDA1IEMzMC43ODAyMTAzLDIzLjA5ODAwMDUgMzAuMTIzMTMwOSwyMi44NDgxMjY3IDI5LjYyMzMwOTcsMjIuMzQ5Mzc4NiBDMjguNjIzNjY3NSwyMS4zNTA4ODI4IDI4LjYyMzY2NzUsMTkuNzI3NzAyNSAyOS42MjMzMDk3LDE4LjcyOTIwNjggQzMwLjYyMjk1MiwxNy43MzE3MTA1IDMyLjI1MDYyNiwxNy43MzE3MTA1IDMzLjI1MDI2ODMsMTguNzI5MjA2OCBDMzQuMjQ5OTEwNiwxOS43Mjc3MDI1IDM0LjI0OTkxMDYsMjEuMzUwODgyOCAzMy4yNTAyNjgzLDIyLjM0OTM3ODYgTDMzLjI1MDI2ODMsMjIuMzQ5Mzc4NiBaIE05LjY2ODUyNjg3LDE5LjQ0Njg0NDMgQzkuMzYzMDI0OTcsMTkuMTQyOTk3OCA4Ljk2MzM2ODM5LDE4Ljk5MTA3NDUgOC41NjI3MTAxNywxOC45OTEwNzQ1IEM4LjE2MzA1MzU5LDE4Ljk5MTA3NDUgNy43NjMzOTcwMSwxOS4xNDI5OTc4IDcuNDU3ODk1MTEsMTkuNDQ2ODQ0MyBDNi44NDg4OTQ2MSwyMC4wNTU1MzcgNi44NDg4OTQ2MSwyMS4wNDUwMzczIDcuNDU3ODk1MTEsMjEuNjUyNzMwNCBDOC4wNjc4OTcyNiwyMi4yNjE0MjMgOS4wNTg1MjQ3MiwyMi4yNjE0MjMgOS42Njg1MjY4NywyMS42NTI3MzA0IEMxMC4yNzc1Mjc0LDIxLjA0NTAzNzMgMTAuMjc3NTI3NCwyMC4wNTU1MzcgOS42Njg1MjY4NywxOS40NDY4NDQzIEw5LjY2ODUyNjg3LDE5LjQ0Njg0NDMgWiBNMTAuMzc2NjkwMywyMi4zNTkzNzM1IEM5Ljg3Njg2OTE0LDIyLjg1ODEyMTcgOS4yMTk3ODk2NSwyMy4xMDc5OTU1IDguNTYyNzEwMTcsMjMuMTA3OTk1NSBDNy45MDY2MzIzMiwyMy4xMDc5OTU1IDcuMjQ5NTUyODQsMjIuODU4MTIxNyA2Ljc0OTczMTcsMjIuMzU5MzczNSBDNS43NTAwODk0MywyMS4zNjE4NzczIDUuNzUwMDg5NDMsMTkuNzM4Njk3IDYuNzQ5NzMxNywxOC43NDAyMDEyIEM3Ljc0OTM3Mzk3LDE3Ljc0MjcwNDkgOS4zNzcwNDgwMSwxNy43NDI3MDQ5IDEwLjM3NjY5MDMsMTguNzQwMjAxMiBDMTEuMzc2MzMyNSwxOS43Mzg2OTcgMTEuMzc2MzMyNSwyMS4zNjE4NzczIDEwLjM3NjY5MDMsMjIuMzU5MzczNSBMMTAuMzc2NjkwMywyMi4zNTkzNzM1IFogTTI3LjQzMzcxMjUsMjguOTEwMDY1NCBDMjUuNDM2NDMxMywzMC45MDMwNTkgMjIuNzgyMDcwNSwzMi4wMDA1MDQ3IDE5Ljk1NzQzMDEsMzIuMDAwNTA0NyBDMTcuMTMyNzg5NiwzMi4wMDA1MDQ3IDE0LjQ3ODQyODgsMzAuOTAzMDU5IDEyLjQ4MjE0OTIsMjguOTEwMDY1NCBDMTEuMTY1OTg3LDI3LjU5NzcyODEgMTAuNDA3NzQxMywyNi40NjkyOTggOS45NDQ5ODEwNCwyNS4xMzU5NzEzIEw4Ljk5ODQyNTk5LDI1LjQ2MjgwNjMgQzkuNTA3MjYxOTMsMjYuOTI5MDY1OCAxMC4zNjI2NjcyLDI4LjIxMDQxODcgMTEuNzczOTg1OCwyOS42MTY3MDg2IEMxMy45NTg1NzQ4LDMxLjc5ODYwNjcgMTYuODY2MzUxOSwzMyAxOS45NTc0MzAxLDMzIEMyMy4wNDk1MDk5LDMzIDI1Ljk1NjI4NTMsMzEuNzk4NjA2NyAyOC4xNDE4NzU5LDI5LjYxNjcwODYgQzI5LjI4Mjc1MDIsMjguNDc4MjgzNSAzMC40MjA2MTk2LDI3LjE4NjkzNTYgMzEuMDExNTkwNSwyNS40NjA4MDczIEwzMC4wNjQwMzM4LDI1LjEzNzk3MDMgQzI5LjUzOTE3MTUsMjYuNjcwMTk2NiAyOC40ODk0NDY5LDI3Ljg1NjU5NzQgMjcuNDMzNzEyNSwyOC45MTAwNjU0IEwyNy40MzM3MTI1LDI4LjkxMDA2NTQgWiBNOS45NDQ5ODEwNCwxNS44NTk2NTU5IEw4Ljk5ODQyNTk5LDE1LjUzMTgyMTQgQzkuNTEwMjY2ODcsMTQuMDY0NTYyNCAxMC4zNjU2NzIyLDEyLjc4MzIwOTUgMTEuNzc1OTg5MSwxMS4zNzU5MjAyIEMxNi4yODYzOTkxLDYuODc1MTkzMDQgMjMuNjI2NDU3OCw2Ljg3NDE5MzU0IDI4LjEzNzg2OTQsMTEuMzc1OTIwMiBDMjkuMjE4NjQ0OSwxMi40NTMzNzYxIDMwLjQwMzU5MTYsMTMuNzg5NzAxMiAzMS4wMTE1OTA1LDE1LjUzMTgyMTQgTDMwLjA2NDAzMzgsMTUuODU5NjU1OSBDMjkuNTI0MTQ2OCwxNC4zMDk0Mzg3IDI4LjQyOTM0ODIsMTMuMDgwMDU5NiAyNy40Mjk3MDU5LDEyLjA4MjU2MzMgQzI1LjQzNDQyOCwxMC4wOTE1Njg4IDIyLjc4MTA2ODksOC45OTYxMjE5NyAxOS45NTc0MzAxLDguOTk2MTIxOTcgQzE3LjEzMzc5MTIsOC45OTYxMjE5NyAxNC40ODA0MzIxLDEwLjA5MTU2ODggMTIuNDg1MTU0MiwxMi4wODI1NjMzIEMxMS4xODcwMjE1LDEzLjM3NzkwOTIgMTAuNDAzNzM0NywxNC41NDIzMjExIDkuOTQ0OTgxMDQsMTUuODU5NjU1OSBMOS45NDQ5ODEwNCwxNS44NTk2NTU5IFonCiAgICAgICAgICAgICAgaWQ9J0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV9JY29uXzMyX1NxdWlkJyBmaWxsPScjRkZGRkZGJz48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg=="
       }
     },
     "properties": [
@@ -5272,7 +7495,13 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "queueProperties"
+        "group": "authentication"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
       },
       {
         "group": "queueProperties"
@@ -5290,10 +7519,242 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "activation"
       },
       {
-        "group": "variable-mapping"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "variable-mapping"
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      }
+    ]
+  },
+  "io.camunda.connectors.AppIntegrations.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "operation",
+          "label": "Operation"
+        },
+        {
+          "id": "recipient",
+          "label": "Recipient"
+        },
+        {
+          "id": "message",
+          "label": "Message"
+        },
+        {
+          "id": "channel",
+          "label": "Channel"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
+          "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDguNUMyMSA3LjEzMzE3IDIxIDUgMjEgNUMyMSA0LjQ2OTU3IDIwLjc4OTMgMy45NjA4NiAyMC40MTQyIDMuNTg1NzlDMjAuMDM5MSAzLjIxMDcxIDE5LjUzMDQgMyAxOSAzSDRDMy40Njk1NyAzIDIuOTYwODYgMy4yMTA3MSAyLjU4NTc5IDMuNTg1NzlDMi4yMTA3MSAzLjk2MDg2IDIgNC40Njk1NyAyIDVWMjEuMjg2QzIuMDAwMDIgMjEuNDI2NCAyLjA0MTY3IDIxLjU2MzcgMi4xMTk2OSAyMS42ODA0QzIuMTk3NyAyMS43OTcxIDIuMzA4NTggMjEuODg4MSAyLjQzODMxIDIxLjk0MTlDMi41NjgwMyAyMS45OTU2IDIuNzEwNzcgMjIuMDA5NyAyLjg0ODQ5IDIxLjk4MjNDMi45ODYyIDIxLjk1NDkgMy4xMTI3IDIxLjg4NzMgMy4yMTIgMjEuNzg4TDUuNDE0IDE5LjU4NkM1Ljc4ODk5IDE5LjIxMDkgNi4yOTc2MSAxOS4wMDAxIDYuODI4IDE5SDEwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMC45MzU5IDE3LjcxNzFDMjEuMTI2OCAxNy41MjY4IDIxLjI3ODMgMTcuMzAwOCAyMS4zODE3IDE3LjA1MThDMjEuNDg1IDE2LjgwMjkgMjEuNTM4MiAxNi41MzYgMjEuNTM4MiAxNi4yNjY0QzIxLjUzODIgMTUuOTk2OSAyMS40ODUgMTUuNzMgMjEuMzgxNyAxNS40ODExQzIxLjI3ODMgMTUuMjMyMSAyMS4xMjY4IDE1LjAwNjEgMjAuOTM1OSAxNC44MTU4TDE4Ljk3MzIgMTIuODUzMkwxMy44NTMzIDE3Ljk3MzFMMTUuODE1OSAxOS45MzU3QzE2LjAwNjIgMjAuMTI2NyAxNi4yMzIzIDIwLjI3ODEgMTYuNDgxMiAyMC4zODE1QzE2LjczMDIgMjAuNDg0OSAxNi45OTcgMjAuNTM4MSAxNy4yNjY2IDIwLjUzODFDMTcuNTM2MSAyMC41MzgxIDE3LjgwMyAyMC40ODQ5IDE4LjA1MiAyMC4zODE1QzE4LjMwMDkgMjAuMjc4MSAxOC41MjcgMjAuMTI2NyAxOC43MTcyIDE5LjkzNTdMMjAuOTM1OSAxNy43MTcxWiIgc3Ryb2tlPSIjRkY0QzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMi4zODY1IDIxLjM4NjdMMTkuODI2NiAxOC44MjY4IiBzdHJva2U9IiNGRjRDMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE1LjEzMzMgMTYuNjkzNEwxMyAxNC41NjAxIiBzdHJva2U9IiNGRjRDMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE3LjY5MzMgMTQuMTMzM0wxNS41NiAxMiIgc3Ryb2tlPSIjRkY0QzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik02IDhIMTUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTYgMTJIMTAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg=="
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "operation"
+      },
+      {
+        "group": "recipient",
+        "tooltip": "Choose whether the recipient comes from Camunda, or is a Microsoft Teams or Slack destination"
+      },
+      {
+        "group": "recipient",
+        "tooltip": "Email address of the recipient. Use a FEEL expression to reference a process variable.",
+        "placeholder": "=assigneeEmail"
+      },
+      {
+        "group": "recipient",
+        "tooltip": "List of candidate usernames, e.g. <code>= [\"alice\", \"bob\"]</code>."
+      },
+      {
+        "group": "recipient",
+        "tooltip": "List of candidate group names, e.g. <code>= [\"approvers\"]</code>."
+      },
+      {
+        "group": "recipient",
+        "tooltip": "Post into a channel, send directly to a person, or reply in a conversation a previous send returned"
+      },
+      {
+        "group": "recipient",
+        "placeholder": "19:xxx@thread.tacv2"
+      },
+      {
+        "group": "recipient",
+        "tooltip": "Microsoft Entra object ID of the recipient — they must have connected the app."
+      },
+      {
+        "group": "recipient",
+        "tooltip": "Conversation returned by a previous send; the message is posted as a reply in it."
+      },
+      {
+        "group": "recipient",
+        "tooltip": "Send to a Slack channel or directly to a person"
+      },
+      {
+        "group": "recipient",
+        "placeholder": "C0123456789"
+      },
+      {
+        "group": "recipient",
+        "placeholder": "U0123456789"
+      },
+      {
+        "group": "recipient",
+        "tooltip": "Message ID of a previous send, to reply in its thread instead of posting a new message"
+      },
+      {
+        "group": "message",
+        "tooltip": "Content sent alongside the message. A Camunda recipient supports a linked form."
+      },
+      {
+        "group": "message",
+        "tooltip": "Content sent alongside the message. Microsoft Teams supports an Adaptive Card or a linked form."
+      },
+      {
+        "group": "message",
+        "tooltip": "Adaptive Card as JSON. Paste a card, or use a FEEL expression to reference one built earlier, e.g. <code>= approvalCard</code>."
+      },
+      {
+        "group": "message",
+        "tooltip": "Content sent alongside the message. Slack supports Block Kit or a linked form."
+      },
+      {
+        "group": "message",
+        "tooltip": "Slack Block Kit <code>blocks</code> array as JSON. Paste it, or use a FEEL expression to reference one built earlier, e.g. <code>= approvalBlocks</code>."
+      },
+      {
+        "group": "message",
+        "tooltip": "Plain text to send. Optional — leave it empty to send only the additional content below."
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "channel",
+        "tooltip": "Where to create the channel"
+      },
+      {
+        "group": "channel",
+        "tooltip": "Display name for the new channel."
+      },
+      {
+        "group": "channel",
+        "tooltip": "ID of the Microsoft Teams team, or a full Teams URL (the groupId query parameter will be extracted automatically)."
+      },
+      {
+        "group": "channel",
+        "tooltip": "Membership type. Only standard (visible to all) is supported for now — private and shared channels follow in a later version."
+      },
+      {
+        "group": "channel",
+        "tooltip": "Display name for the new channel."
+      },
+      {
+        "group": "channel",
+        "tooltip": "Slack workspace (team) ID. Leave empty to use the workspace the backend is configured for."
+      },
+      {
+        "group": "channel",
+        "tooltip": "Create the channel as private rather than public."
+      },
+      {
+        "group": "channel"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -5308,10 +7769,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "endpoint",
           "label": "API destination"
-        },
-        {
-          "id": "authentication",
-          "label": "Authentication"
         },
         {
           "id": "authorization",
@@ -5366,6 +7823,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authorization"
       },
       {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "activation"
+      },
+      {
         "group": "activation"
       },
       {
@@ -5407,12 +7873,17 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='-7.5 0 271 271' preserveAspectRatio='xMidYMid'%3E%3Cpath d='M245.44 108.308h-85.09a7.738 7.738 0 0 1-7.735-7.734v-88.68C152.615 5.327 147.29 0 140.726 0h-30.375c-6.568 0-11.89 5.327-11.89 11.894v88.143c0 4.573-3.697 8.29-8.27 8.31l-27.885.133c-4.612.025-8.359-3.717-8.35-8.325l.173-88.241C54.144 5.337 48.817 0 42.24 0H11.89C5.321 0 0 5.327 0 11.894V260.21c0 5.834 4.726 10.56 10.555 10.56H245.44c5.834 0 10.56-4.726 10.56-10.56V118.868c0-5.834-4.726-10.56-10.56-10.56zm-39.902 93.233c0 7.645-6.198 13.844-13.843 13.844H167.69c-7.646 0-13.844-6.199-13.844-13.844v-24.005c0-7.646 6.198-13.844 13.844-13.844h24.005c7.645 0 13.843 6.198 13.843 13.844v24.005z' fill='%23F60'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxOCcgaGVpZ2h0PScxOCcgdmlld0JveD0nLTcuNSAwIDI3MSAyNzEnIHByZXNlcnZlQXNwZWN0UmF0aW89J3hNaWRZTWlkJz4KICAgIDxwYXRoIGQ9J00yNDUuNDQgMTA4LjMwOGgtODUuMDlhNy43MzggNy43MzggMCAwIDEtNy43MzUtNy43MzR2LTg4LjY4QzE1Mi42MTUgNS4zMjcgMTQ3LjI5IDAgMTQwLjcyNiAwaC0zMC4zNzVjLTYuNTY4IDAtMTEuODkgNS4zMjctMTEuODkgMTEuODk0djg4LjE0M2MwIDQuNTczLTMuNjk3IDguMjktOC4yNyA4LjMxbC0yNy44ODUuMTMzYy00LjYxMi4wMjUtOC4zNTktMy43MTctOC4zNS04LjMyNWwuMTczLTg4LjI0MUM1NC4xNDQgNS4zMzcgNDguODE3IDAgNDIuMjQgMEgxMS44OUM1LjMyMSAwIDAgNS4zMjcgMCAxMS44OTRWMjYwLjIxYzAgNS44MzQgNC43MjYgMTAuNTYgMTAuNTU1IDEwLjU2SDI0NS40NGM1LjgzNCAwIDEwLjU2LTQuNzI2IDEwLjU2LTEwLjU2VjExOC44NjhjMC01LjgzNC00LjcyNi0xMC41Ni0xMC41Ni0xMC41NnptLTM5LjkwMiA5My4yMzNjMCA3LjY0NS02LjE5OCAxMy44NDQtMTMuODQzIDEzLjg0NEgxNjcuNjljLTcuNjQ2IDAtMTMuODQ0LTYuMTk5LTEzLjg0NC0xMy44NDR2LTI0LjAwNWMwLTcuNjQ2IDYuMTk4LTEzLjg0NCAxMy44NDQtMTMuODQ0aDI0LjAwNWM3LjY0NSAwIDEzLjg0MyA2LjE5OCAxMy44NDMgMTMuODQ0djI0LjAwNXonCiAgICAgICAgICBmaWxsPScjRjYwJy8+Cjwvc3ZnPg=="
       }
     },
     "properties": [
@@ -5454,22 +7925,66 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "activation"
       },
       {
-        "group": "variable-mapping"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "variable-mapping"
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      }
+    ]
+  },
+  "io.camunda.connectors.AppIntegrationsChat.Intermediate.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "correlation",
+          "label": "Correlation"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDguNUMyMSA3LjEzMzE3IDIxIDUgMjEgNUMyMSA0LjQ2OTU3IDIwLjc4OTMgMy45NjA4NiAyMC40MTQyIDMuNTg1NzlDMjAuMDM5MSAzLjIxMDcxIDE5LjUzMDQgMyAxOSAzSDRDMy40Njk1NyAzIDIuOTYwODYgMy4yMTA3MSAyLjU4NTc5IDMuNTg1NzlDMi4yMTA3MSAzLjk2MDg2IDIgNC40Njk1NyAyIDVWMjEuMjg2QzIuMDAwMDIgMjEuNDI2NCAyLjA0MTY3IDIxLjU2MzcgMi4xMTk2OSAyMS42ODA0QzIuMTk3NyAyMS43OTcxIDIuMzA4NTggMjEuODg4MSAyLjQzODMxIDIxLjk0MTlDMi41NjgwMyAyMS45OTU2IDIuNzEwNzcgMjIuMDA5NyAyLjg0ODQ5IDIxLjk4MjNDMi45ODYyIDIxLjk1NDkgMy4xMTI3IDIxLjg4NzMgMy4yMTIgMjEuNzg4TDUuNDE0IDE5LjU4NkM1Ljc4ODk5IDE5LjIxMDkgNi4yOTc2MSAxOS4wMDAxIDYuODI4IDE5SDEwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMC45MzU5IDE3LjcxNzFDMjEuMTI2OCAxNy41MjY4IDIxLjI3ODMgMTcuMzAwOCAyMS4zODE3IDE3LjA1MThDMjEuNDg1IDE2LjgwMjkgMjEuNTM4MiAxNi41MzYgMjEuNTM4MiAxNi4yNjY0QzIxLjUzODIgMTUuOTk2OSAyMS40ODUgMTUuNzMgMjEuMzgxNyAxNS40ODExQzIxLjI3ODMgMTUuMjMyMSAyMS4xMjY4IDE1LjAwNjEgMjAuOTM1OSAxNC44MTU4TDE4Ljk3MzIgMTIuODUzMkwxMy44NTMzIDE3Ljk3MzFMMTUuODE1OSAxOS45MzU3QzE2LjAwNjIgMjAuMTI2NyAxNi4yMzIzIDIwLjI3ODEgMTYuNDgxMiAyMC4zODE1QzE2LjczMDIgMjAuNDg0OSAxNi45OTcgMjAuNTM4MSAxNy4yNjY2IDIwLjUzODFDMTcuNTM2MSAyMC41MzgxIDE3LjgwMyAyMC40ODQ5IDE4LjA1MiAyMC4zODE1QzE4LjMwMDkgMjAuMjc4MSAxOC41MjcgMjAuMTI2NyAxOC43MTcyIDE5LjkzNTdMMjAuOTM1OSAxNy43MTcxWiIgc3Ryb2tlPSIjRkY0QzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMi4zODY1IDIxLjM4NjdMMTkuODI2NiAxOC44MjY4IiBzdHJva2U9IiNGRjRDMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE1LjEzMzMgMTYuNjkzNEwxMyAxNC41NjAxIiBzdHJva2U9IiNGRjRDMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE3LjY5MzMgMTQuMTMzM0wxNS41NiAxMiIgc3Ryb2tlPSIjRkY0QzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik02IDhIMTUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTYgMTJIMTAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg=="
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "output"
       }
     ]
   },
   "io.camunda.connectors.agenticai.a2a.client.webhook.intermediate.v0": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
-        "id": "connectors",
-        "name": "Connectors"
+        "id": "aiTools",
+        "name": "AI Tools"
       },
       "groups": [
         {
@@ -5536,6 +8051,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
         "group": "authorization"
       },
       {
@@ -5575,7 +8102,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "correlation"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -5614,65 +8142,117 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI3IiBoZWlnaHQ9IjEyNyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMjcuMiA4MGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjJDNi43IDkzLjIuOCA4Ny4zLjggODBjMC03LjMgNS45LTEzLjIgMTMuMi0xMy4yaDEzLjJWODB6bTYuNiAwYzAtNy4zIDUuOS0xMy4yIDEzLjItMTMuMiA3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzNjMCA3LjMtNS45IDEzLjItMTMuMiAxMy4yLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMlY4MHoiIGZpbGw9IiNFMDFFNUEiLz4KICA8cGF0aCBkPSJNNDcgMjdjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMkMzMy44IDYuNSAzOS43LjYgNDcgLjZjNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yVjI3SDQ3em0wIDYuN2M3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDEzLjlDNi42IDYwLjEuNyA1NC4yLjcgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJINDd6IiBmaWxsPSIjMzZDNUYwIi8+CiAgPHBhdGggZD0iTTk5LjkgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjIgNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yIDAgNy4zLTUuOSAxMy4yLTEzLjIgMTMuMkg5OS45VjQ2Ljl6bS02LjYgMGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjEzLjhDNjYuOSA2LjUgNzIuOC42IDgwLjEuNmM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzMuMXoiIGZpbGw9IiMyRUI2N0QiLz4KICA8cGF0aCBkPSJNODAuMSA5OS44YzcuMyAwIDEzLjIgNS45IDEzLjIgMTMuMiAwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjk5LjhoMTMuMnptMC02LjZjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMiAwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJoMzMuMWM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDgwLjF6IiBmaWxsPSIjRUNCMjJFIi8+Cjwvc3ZnPgo="
       }
     },
     "properties": [
       {},
-      {},
-      {},
       {
-        "group": "endpoint"
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL endpoint"
       },
       {
         "group": "endpoint"
       },
-      {},
       {
-        "group": "activation"
+        "group": "endpoint",
+        "tooltip": "Used to verify that incoming requests originate from Slack. See <a href='https://api.slack.com/authentication/verifying-requests-from-slack' target='_blank'>Verifying requests from Slack</a>"
+      },
+      {
+        "group": "endpoint"
       },
       {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
   "io.camunda.connectors.agenticai.mcp.remoteclient.v0": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
-        "id": "connectors",
-        "name": "Connectors"
+        "id": "aiTools",
+        "name": "AI Tools"
       },
       "groups": [
         {
-          "id": "connection",
-          "label": "HTTP Connection",
-          "tooltip": "Configure the HTTP/SSE connection to the remote MCP server. Setting authentication headers is not supported yet."
+          "id": "transport",
+          "label": "Transport",
+          "tooltip": "Configure the connection to the remote MCP server."
         },
         {
-          "id": "tools",
-          "label": "Tools"
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "options",
+          "label": "Options"
+        },
+        {
+          "id": "connectorMode",
+          "label": "Connector mode",
+          "tooltip": "Select how this connector is used. When the connector is used as an AI agent tool, select the AI Agent tool mode."
         },
         {
           "id": "operation",
           "label": "Operation"
+        },
+        {
+          "id": "filters",
+          "label": "Filters",
+          "openByDefault": false
         },
         {
           "id": "connector",
@@ -5699,19 +8279,114 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
-        "group": "connection"
+        "group": "transport"
       },
       {
-        "group": "connection"
+        "group": "transport"
       },
       {
-        "group": "connection"
+        "group": "transport"
       },
       {
-        "group": "tools"
+        "group": "transport"
       },
       {
-        "group": "tools"
+        "group": "transport"
+      },
+      {
+        "group": "transport"
+      },
+      {
+        "group": "transport"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "options",
+        "tooltip": "Only enable this option if you are sure that the configuration or authentication details of this client will not change between invocations.<br>Caching the client instance can improve performance by reusing existing connections."
+      },
+      {
+        "group": "connectorMode"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation",
+        "tooltip": "Forwarded unmodified as the <code>_meta</code> field of the MCP request. Required metadata is defined by the MCP server. See the <a href=\"https://modelcontextprotocol.io/specification/2025-11-25/basic/index#_meta\">MCP specification</a> for details."
       },
       {
         "group": "operation",
@@ -5720,6 +8395,34 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {
         "group": "operation",
         "tooltip": "The parameter structure depends on the method being called. See the <a href=\"https://modelcontextprotocol.io/specification/2024-11-05/server/tools#calling-tools\">MCP specification</a> for an example of the parameters for the <code>tools/call</code> method."
+      },
+      {
+        "group": "operation",
+        "tooltip": "Forwarded unmodified as the <code>_meta</code> field of the MCP request. Required metadata is defined by the MCP server. See the <a href=\"https://modelcontextprotocol.io/specification/2025-11-25/basic/index#_meta\">MCP specification</a> for details."
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
+      },
+      {
+        "group": "filters"
       },
       {
         "group": "connector"
@@ -5741,27 +8444,31 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.box": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
         {
+          "id": "operation",
+          "label": "Operation"
+        },
+        {
           "id": "authentication",
           "label": "Authentication"
         },
         {
-          "id": "operation",
-          "label": "Operation"
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -5783,6 +8490,89 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation",
+        "tooltip": "Deletes all items contained by the folder"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation",
+        "tooltip": "The document reference that will be uploaded"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation",
+        "tooltip": "Path to the file item to download"
+      },
+      {
+        "group": "operation",
+        "tooltip": "How the downloaded payload should be returned. Document reference uploads the payload to the document store; as text decodes it as a String; as JSON parses it into a structure you can access via dot notation."
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation",
+        "tooltip": "Sort order for results: ASC (ascending) or DESC (descending)"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
         "group": "authentication"
       },
       {
@@ -5792,7 +8582,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "The enterprise ID to authenticate against"
       },
       {
         "group": "authentication"
@@ -5801,64 +8592,22 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "The user ID of the account to authenticate against"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "The access key or developer token"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "The JSON config as string"
       },
       {
-        "group": "operation"
+        "group": "connector"
       },
       {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
+        "group": "connector"
       },
       {
         "group": "output"
@@ -5874,6 +8623,182 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.connectors.inbound.MSFT.O365.EmailBoundary.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "pollingConfig",
+          "label": "Listener Information"
+        },
+        {
+          "id": "postprocessing",
+          "label": "Postprocessing"
+        },
+        {
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIGhlaWdodD0nMTYnIHdpZHRoPScxNicgdmlld0JveD0nLTI3NC42NjI3NSAtNDI1LjgzNCAyMzgwLjQxMDUgMjU1NS4wMDQnPgogICAgPHBhdGggZD0nTTE4MzEuMDgzIDg5NC4yNWE0MC44NzkgNDAuODc5IDAgMDAtMTkuNTAzLTM1LjEzMWgtLjIxM2wtLjc2Ny0uNDI2LTYzNC40OTItMzc1LjU4NWE4Ni4xNzUgODYuMTc1IDAgMDAtOC41MTctNS4wNjcgODUuMTcgODUuMTcgMCAwMC03OC4wOTggMCA4Ni4zNyA4Ni4zNyAwIDAwLTguNTE3IDUuMDY3bC02MzQuNDkgMzc1LjU4NS0uNzY2LjQyNmMtMTkuMzkyIDEyLjA1OS0yNS4zMzcgMzcuNTU2LTEzLjI3OCA1Ni45NDhhNDEuMzQ2IDQxLjM0NiAwIDAwMTQuMjU3IDEzLjg2OGw2MzQuNDkyIDM3NS41ODVhOTUuNjE3IDk1LjYxNyAwIDAwOC41MTcgNS4wNjggODUuMTcgODUuMTcgMCAwMDc4LjA5OCAwIDk1LjUyIDk1LjUyIDAgMDA4LjUxNy01LjA2OGw2MzQuNDkyLTM3NS41ODVhNDAuODQgNDAuODQgMCAwMDIwLjI2OC0zNS42ODV6JyBmaWxsPScjMEEyNzY3Jy8+CiAgICA8cGF0aCBkPSdNNTIwLjQ1MyA2NDMuNDc3aDQxNi4zOHYzODEuNjc0aC00MTYuMzh6TTE3NDUuOTE3IDI1NS41VjgwLjkwOGMxLTQzLjY1Mi0zMy41NTItNzkuODYyLTc3LjIwMy04MC45MDhINTg4LjIwNEM1NDQuNTUyIDEuMDQ2IDUxMCAzNy4yNTYgNTExIDgwLjkwOFYyNTUuNWw2MzguNzUgMTcwLjMzM3onIGZpbGw9JyMwMzY0QjgnLz4KICAgIDxwYXRoIGQ9J001MTEgMjU1LjVoNDI1LjgzM3YzODMuMjVINTExeicgZmlsbD0nIzAwNzhENCcvPgogICAgPHBhdGggZD0nTTEzNjIuNjY3IDI1NS41SDkzNi44MzN2MzgzLjI1TDEzNjIuNjY3IDEwMjJoMzgzLjI1VjYzOC43NXonIGZpbGw9JyMyOEE4RUEnLz4KICAgIDxwYXRoIGQ9J005MzYuODMzIDYzOC43NWg0MjUuODMzVjEwMjJIOTM2LjgzM3onIGZpbGw9JyMwMDc4RDQnLz4KICAgIDxwYXRoIGQ9J005MzYuODMzIDEwMjJoNDI1LjgzM3YzODMuMjVIOTM2LjgzM3onIGZpbGw9JyMwMzY0QjgnLz4KICAgIDxwYXRoIGQ9J001MjAuNDUzIDEwMjUuMTUxaDQxNi4zOHYzNDYuOTY5aC00MTYuMzh6JyBmaWxsPScjMTQ0NDdEJy8+CiAgICA8cGF0aCBkPSdNMTM2Mi42NjcgMTAyMmgzODMuMjV2MzgzLjI1aC0zODMuMjV6JyBmaWxsPScjMDA3OEQ0Jy8+CiAgICA8bGluZWFyR3JhZGllbnQgZ3JhZGllbnRUcmFuc2Zvcm09J21hdHJpeCgxIDAgMCAtMSAwIDE3MDUuMzMzKScgeTI9JzEuOTk4JyB4Mj0nMTEyOC40NTgnIHkxPSc4MTEuMDgzJyB4MT0nMTEyOC40NTgnIGdyYWRpZW50VW5pdHM9J3VzZXJTcGFjZU9uVXNlJyBpZD0nYSc+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScwJyBzdG9wLWNvbG9yPScjMzViOGYxJy8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScxJyBzdG9wLWNvbG9yPScjMjhhOGVhJy8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPHBhdGggZD0nTTE4MTEuNTggOTI3LjU5M2wtLjgwOS40MjYtNjM0LjQ5MiAzNTYuODQ4Yy0yLjc2OCAxLjcwMy01LjU3OCAzLjMyMS04LjUxNyA0Ljc2OWE4OC40MzcgODguNDM3IDAgMDEtMzQuNDA3IDguNTE3bC0zNC42NjMtMjAuMjdhODYuNzA2IDg2LjcwNiAwIDAxLTguNTE3LTQuODk3TDQ0Ny4xNjcgOTA2LjAwM2gtLjI5OGwtMjEuMDM2LTExLjc1M3Y3MjIuMzg0Yy4zMjggNDguMTk2IDM5LjY1MyA4Ny4wMDYgODcuODQ5IDg2LjdoMTIzMC45MTRjLjcyNCAwIDEuMzYzLS4zNDEgMi4xMjktLjM0MWExMDcuNzkgMTA3Ljc5IDAgMDAyOS44MDgtNi4yMTcgODYuMDY2IDg2LjA2NiAwIDAwMTEuOTY2LTYuMjE3YzIuODUzLTEuNjE4IDcuNzUtNS4xNTIgNy43NS01LjE1MmE4NS45NzQgODUuOTc0IDAgMDAzNC44MzMtNjguNzcyVjg5NC4yNWEzOC4zMjMgMzguMzIzIDAgMDEtMTkuNTAyIDMzLjM0M3onIGZpbGw9J3VybCgjYSknLz4KICAgIDxwYXRoIGQ9J00xNzk3LjAxNyA4OTEuMzk3djQ0LjI4N2wtNjYzLjQ0OCA0NTYuNzkxLTY4Ni44Ny00ODYuMTc0YS40MjYuNDI2IDAgMDAtLjQyNi0uNDI2bC02My4wMjMtMzcuODk5di0zMS45MzhsMjUuOTc2LS40MjYgNTQuOTMyIDMxLjUxMiAxLjI3Ny40MjYgNC42ODQgMi45ODFzNjQ1LjU2MyAzNjguMzQ2IDY0Ny4yNjcgMzY5LjE5N2wyNC42OTggMTQuNDc4YzIuMTI5LS44NTIgNC4yNTgtMS43MDMgNi44MTMtMi41NTUgMS4yNzgtLjg1MiA2NDAuODc5LTM2MC42ODEgNjQwLjg3OS0zNjAuNjgxeicgZmlsbD0nIzBBMjc2Nycgb3BhY2l0eT0nLjUnLz4KICAgIDxwYXRoIGQ9J00xODExLjU4IDkyNy41OTNsLS44MDkuNDY4LTYzNC40OTIgMzU2Ljg0OGMtMi43NjggMS43MDMtNS41NzggMy4zMjEtOC41MTcgNC43NjlhODguOTYgODguOTYgMCAwMS03OC4wOTggMCA5Ni41NzggOTYuNTc4IDAgMDEtOC41MTctNC43NjlsLTYzNC40OS0zNTYuODQ4LS43NjYtLjQ2OGEzOC4zMjYgMzguMzI2IDAgMDEtMjAuMDU3LTMzLjM0M3Y3MjIuMzg0Yy4zMDUgNDguMTg4IDM5LjYxNiA4Ny4wMDQgODcuODAzIDg2LjdoMTIyOS42NGM0OC4xODguMzA3IDg3LjUtMzguNTA5IDg3LjgwNy04Ni42OTYgMC0uMDAxIDAgMCAwIDBWODk0LjI1YTM4LjMzIDM4LjMzIDAgMDEtMTkuNTA0IDMzLjM0M3onIGZpbGw9JyMxNDkwREYnLz4KICAgIDxwYXRoIGQ9J00xMTg1LjUyIDEyNzkuNjI5bC05LjQ5NiA1LjMyM2E5Mi44MDYgOTIuODA2IDAgMDEtOC41MTcgNC44MTIgODguMTczIDg4LjE3MyAwIDAxLTMzLjQ3IDguODU3bDI0MS40MDUgMjg1LjQ3OSA0MjEuMTA3IDEwMS40NzZhODYuNzg1IDg2Ljc4NSAwIDAwMjYuNy0zMy4zNDN6JyBvcGFjaXR5PScuMScvPgogICAgPHBhdGggZD0nTTEyMjguNTI5IDEyNTUuNDQybC01Mi41MDUgMjkuNTFhOTIuODA2IDkyLjgwNiAwIDAxLTguNTE3IDQuODEyIDg4LjE3MyA4OC4xNzMgMCAwMS0zMy40NyA4Ljg1N2wxMTMuMTAxIDMxMS44MzggNTQ5LjUzOCA3NC45ODlhODYuMTA0IDg2LjEwNCAwIDAwMzQuNDA3LTY4LjgxNXYtOS4zMjZ6JyBvcGFjaXR5PScuMDUnLz4KICAgIDxwYXRoIGQ9J001MTQuODMzIDE3MDMuMzMzaDEyMjguMzE2YTg4LjMxNiA4OC4zMTYgMCAwMDUyLjU5LTE3LjAzM2wtNjk3LjA4OS00MDguMzMxYTg2LjcwNiA4Ni43MDYgMCAwMS04LjUxNy00Ljg5N0w0NDcuMTI1IDkwNi4wODhoLS4yOThsLTIwLjk5My0xMS44Mzh2NzE5LjkxNGMtLjA0OCA0OS4yIDM5Ljc5OCA4OS4xMjIgODguOTk5IDg5LjE2OS0uMDAxIDAtLjAwMSAwIDAgMHonIGZpbGw9JyMyOEE4RUEnLz4KICAgIDxwYXRoIGQ9J00xMDIyIDQxOC43MjJ2OTA4LjMwM2MtLjA3NiAzMS44NDYtMTkuNDQgNjAuNDcxLTQ4Ljk3MSA3Mi4zOTJhNzMuMzgyIDczLjM4MiAwIDAxLTI4Ljk1NyA1Ljk2Mkg0MjUuODMzVjM4My4yNUg1MTF2LTQyLjU4M2g0MzMuMDczYzQzLjAxOS4xNjMgNzcuODM0IDM1LjAzNSA3Ny45MjcgNzguMDU1eicgb3BhY2l0eT0nLjEnLz4KICAgIDxwYXRoIGQ9J005NzkuNDE3IDQ2MS4zMDV2OTA4LjMwMmE2OS4zNiA2OS4zNiAwIDAxLTYuMzg4IDI5LjgwOGMtMTEuODI2IDI5LjE0OS00MC4wODMgNDguMjczLTcxLjU0IDQ4LjQxN0g0MjUuODMzVjM4My4yNWg0NzUuNjU2YTcxLjQ5MyA3MS40OTMgMCAwMTM1LjM0NCA4Ljk0M2MyNi4xMDQgMTMuMTUxIDQyLjU3NCAzOS44ODMgNDIuNTg0IDY5LjExMnonIG9wYWNpdHk9Jy4yJy8+CiAgICA8cGF0aCBkPSdNOTc5LjQxNyA0NjEuMzA1djgyMy4xMzZjLS4yMDggNDMtMzQuOTI4IDc3Ljg1My03Ny45MjcgNzguMjI1SDQyNS44MzNWMzgzLjI1aDQ3NS42NTZhNzEuNDkzIDcxLjQ5MyAwIDAxMzUuMzQ0IDguOTQzYzI2LjEwNCAxMy4xNTEgNDIuNTc0IDM5Ljg4MyA0Mi41ODQgNjkuMTEyeicgb3BhY2l0eT0nLjInLz4KICAgIDxwYXRoIGQ9J005MzYuODMzIDQ2MS4zMDV2ODIzLjEzNmMtLjA0NiA0My4wNjctMzQuODYxIDc4LjAxNS03Ny45MjcgNzguMjI1SDQyNS44MzNWMzgzLjI1aDQzMy4wNzJjNDMuMDYyLjAyMyA3Ny45NTEgMzQuOTUxIDc3LjkyNyA3OC4wMTNhLjU4OS41ODkgMCAwMS4wMDEuMDQyeicgb3BhY2l0eT0nLjInLz4KICAgIDxsaW5lYXJHcmFkaWVudCBncmFkaWVudFRyYW5zZm9ybT0nbWF0cml4KDEgMCAwIC0xIDAgMTcwNS4zMzMpJyB5Mj0nMzI0LjI1OScgeDI9Jzc3NC4wODYnIHkxPScxMzgzLjA3NCcgeDE9JzE2Mi43NDcnIGdyYWRpZW50VW5pdHM9J3VzZXJTcGFjZU9uVXNlJyBpZD0nYic+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScwJyBzdG9wLWNvbG9yPScjMTc4NGQ5Jy8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScuNScgc3RvcC1jb2xvcj0nIzEwN2FkNScvPgogICAgICAgIDxzdG9wIG9mZnNldD0nMScgc3RvcC1jb2xvcj0nIzBhNjNjOScvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxwYXRoIGQ9J003OC4wNTUgMzgzLjI1aDc4MC43MjNjNDMuMTA5IDAgNzguMDU1IDM0Ljk0NyA3OC4wNTUgNzguMDU1djc4MC43MjNjMCA0My4xMDktMzQuOTQ2IDc4LjA1NS03OC4wNTUgNzguMDU1SDc4LjA1NWMtNDMuMTA5IDAtNzguMDU1LTM0Ljk0Ny03OC4wNTUtNzguMDU1VjQ2MS4zMDVjMC00My4xMDggMzQuOTQ3LTc4LjA1NSA3OC4wNTUtNzguMDU1eicgZmlsbD0ndXJsKCNiKScvPgogICAgPHBhdGggZD0nTTI0My45NiA3MTAuNjMxYTIyNy4wNSAyMjcuMDUgMCAwMTg5LjE3LTk4LjQ5NSAyNjkuNTYgMjY5LjU2IDAgMDExNDEuNjc1LTM1LjUxNSAyNTAuOTEgMjUwLjkxIDAgMDExMzEuMTE0IDMzLjY4MyAyMjUuMDE0IDIyNS4wMTQgMCAwMTg2Ljc0MiA5NC4xMDkgMzAzLjc1MSAzMDMuNzUxIDAgMDEzMC40MDUgMTM4LjM5NiAzMjAuNTY3IDMyMC41NjcgMCAwMS0zMS4yOTkgMTQ0Ljc4MyAyMzAuMzcgMjMwLjM3IDAgMDEtODkuNDI1IDk3LjM4OCAyNjAuODY0IDI2MC44NjQgMCAwMS0xMzYuMDExIDM0LjU3OCAyNTYuMzU1IDI1Ni4zNTUgMCAwMS0xMzQuMDEtMzQuMDY3IDIyOC40OTcgMjI4LjQ5NyAwIDAxLTg3Ljg5Mi05NC4yOCAyOTYuNTA3IDI5Ni41MDcgMCAwMS0zMC43NDUtMTM2LjczNSAzMjkuMjkgMzI5LjI5IDAgMDEzMC4yNzYtMTQzLjg0NXptOTUuMDQ2IDIzMS4yMjdhMTQ3LjM4NiAxNDcuMzg2IDAgMDA1MC4xNjMgNjQuODEyIDEzMS4wMjggMTMxLjAyOCAwIDAwNzguMzUzIDIzLjU5MSAxMzcuMjQ0IDEzNy4yNDQgMCAwMDgzLjYzNC0yNC4zNTggMTQxLjE1NiAxNDEuMTU2IDAgMDA0OC43MTUtNjQuODEyIDI1MS41OTQgMjUxLjU5NCAwIDAwMTUuNTQzLTkwLjQwNCAyNzUuMTk4IDI3NS4xOTggMCAwMC0xNC42NDktOTEuNTU0IDE0NC43NzUgMTQ0Ljc3NSAwIDAwLTQ3LjE4Mi02Ny41MzcgMTI5LjU4IDEyOS41OCAwIDAwLTgyLjkxLTI1LjU1IDEzNS4yMDIgMTM1LjIwMiAwIDAwLTgwLjE4NCAyMy44MDQgMTQ4LjYyNiAxNDguNjI2IDAgMDAtNTEuMSA2NS4zNjUgMjU5Ljc1OSAyNTkuNzU5IDAgMDAtLjM0MSAxODYuNzI4eicgZmlsbD0nI0ZGRicvPgogICAgPHBhdGggZD0nTTEzNjIuNjY3IDI1NS41aDM4My4yNXYzODMuMjVoLTM4My4yNXonIGZpbGw9JyM1MEQ5RkYnLz4KPC9zdmc+Cg=="
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application; optional, depends on whether the client is public or private"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "The email address or user ID of the mailbox to monitor. <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/#mailbox-configuration\" target=\"_blank\">Microsoft O365 Mail connector configuration</a>",
+        "placeholder": "user@example.com"
+      },
+      {
+        "group": "pollingConfig"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "The well-known folder ID or custom folder ID. <a href='https://learn.microsoft.com/en-us/graph/api/resources/mailfolder?view=graph-rest-1.0#properties' target='_blank'>See folder properties in the API</a>"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "The display name of the folder. Must be unique within the mailbox."
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "The interval between email polling requests, in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
+      },
+      {
+        "group": "pollingConfig"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "Only fetch unread emails"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "Only fetch emails where subject contains this text (case-sensitive)"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "Only fetch emails from this sender address (exact match, e.g. 'invoice@vendor.com')"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "A custom OData filter expression. <a href='https://learn.microsoft.com/en-us/graph/filter-query-parameter' target='_blank'>See OData filter documentation</a>"
+      },
+      {
+        "group": "postprocessing"
+      },
+      {
+        "group": "postprocessing"
+      },
+      {
+        "group": "postprocessing"
+      },
+      {
+        "group": "postprocessing",
+        "tooltip": "The well-known folder ID or custom folder ID. <a href='https://learn.microsoft.com/en-us/graph/api/resources/mailfolder?view=graph-rest-1.0#properties' target='_blank'>See folder properties in the API</a>"
+      },
+      {
+        "group": "postprocessing",
+        "tooltip": "The display name of the folder. Must be unique within the mailbox."
+      },
+      {
+        "group": "activation"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -5889,12 +8814,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       "groups": [
         {
+          "id": "operation",
+          "label": "Operation"
+        },
+        {
           "id": "endpoint",
           "label": "HTTP endpoint"
         },
         {
-          "id": "operation",
-          "label": "Operation"
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -5903,14 +8832,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "errors",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ]
     },
     "properties": [
       {},
-      {
-        "group": "authentication"
-      },
+      {},
       {
         "group": "endpoint"
       },
@@ -5927,87 +8858,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {
         "group": "operation"
       },
-      {},
-      {},
-      {},
-      {},
-      {},
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {},
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {},
-      {},
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {},
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {},
-      {},
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {},
-      {},
-      {
-        "group": "operation"
-      },
-      {},
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
-      {},
-      {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
-      },
       {
         "group": "operation"
       },
@@ -6020,23 +8870,256 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
       {
+        "tooltip": "The global ID or URL-encoded path of the project owned by the authenticated user",
+        "group": "operation"
+      },
+      {
+        "tooltip": "The global ID or URL-encoded path of the project owned by the authenticated user",
+        "group": "operation"
+      },
+      {
+        "tooltip": "The global ID or URL-encoded path of the project owned by the authenticated user",
+        "group": "operation"
+      },
+      {
+        "tooltip": "The global ID or URL-encoded path of the project owned by the authenticated user",
+        "group": "operation"
+      },
+      {
+        "tooltip": "The global ID or URL-encoded path of the project owned by the authenticated user",
+        "group": "operation"
+      },
+      {
+        "tooltip": "The internal ID of a project’s issue",
+        "group": "operation"
+      },
+      {},
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {},
+      {},
+      {
+        "group": "endpoint"
+      },
+      {
+        "tooltip": "The internal ID of a project’s issue",
+        "group": "operation"
+      },
+      {},
+      {
+        "tooltip": "The internal ID of a project’s issue",
+        "group": "operation"
+      },
+      {
+        "tooltip": "The content of a note",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Indicates whether an issue has to be marked as internal or not",
+        "group": "operation"
+      },
+      {},
+      {},
+      {
+        "tooltip": "Which issues to return: all issues, those created by the access token owner, or those assigned to the access token owner",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Return all issues or just those that are opened or closed",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Return issues assigned to the given user ID. Mutually exclusive with 'Assignee username'. None returns unassigned issues. 'Any' returns issues with an assignee",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Return issues assigned to the given username. Similar to 'Assignee ID' and mutually exclusive with 'Assignee ID'",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Return issues created by the given user ID",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Search issues against their title and description",
+        "group": "operation"
+      },
+      {},
+      {},
+      {},
+      {
+        "tooltip": "The Git tag the release is associated with",
+        "group": "operation"
+      },
+      {},
+      {
+        "tooltip": "The tag where the release is created from",
+        "group": "operation"
+      },
+      {
+        "tooltip": "A commit SHA, another tag name, or a branch name",
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {},
+      {},
+      {
+        "tooltip": "Return list of branches containing the search string",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Return list of branches with names matching a <a href=\"https://github.com/google/re2/wiki/Syntax\" target=\"_blank\">re2</a> regular expression",
+        "group": "operation"
+      },
+      {},
+      {},
+      {
+        "group": "operation"
+      },
+      {
+        "tooltip": "Branch name or commit SHA to create branch from",
+        "group": "operation"
+      },
+      {},
+      {
+        "tooltip": "Name of the new branch to modify the file in. The commit is added to this branch",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Message of the commit that modifies the file",
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "tooltip": "URL-encoded full path to the file",
+        "placeholder": "lib%2Fclass%2Erb",
+        "group": "operation"
+      },
+      {
+        "tooltip": "The commit author's email address",
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "tooltip": "Change encoding to <code>base64</code>. GitLab's default is <code>text</code>",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Enables or disables the <code>execute</code> flag on the file",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Name of the base branch to start the new branch from",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Name of the branch, tag or commit the file is fetched from",
+        "group": "operation"
+      },
+      {},
+      {},
+      {},
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "tooltip": "Allow commits from members who can merge to the target branch",
+        "group": "operation"
+      },
+      {
+        "tooltip": "The ID of the users to assign the merge request to as an array of numbers",
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "tooltip": "Labels for the merge request, as a comma-separated list",
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "tooltip": "Flag indicating if a merge request should remove the source branch when merging",
+        "group": "operation"
+      },
+      {
+        "tooltip": "The ID of the users added as a reviewer to the merge request as an array of numbers",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Indicates if the merge request is set to be squashed when merged. Project settings might override this value",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Numeric ID of the target project",
+        "group": "operation"
+      },
+      {},
+      {},
+      {},
+      {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.GraphQL.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.1' id='GraphQL_Logo' x='0px' y='0px' viewBox='0 0 400 400' enable-background='new 0 0 400 400' xml:space='preserve'%3E%3Cg%3E%3Cg%3E%3Cg%3E%3Crect x='122' y='-0.4' transform='matrix(-0.866 -0.5 0.5 -0.866 163.3196 363.3136)' fill='%23E535AB' width='16.6' height='320.3'/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Crect x='39.8' y='272.2' fill='%23E535AB' width='320.3' height='16.6'/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Crect x='37.9' y='312.2' transform='matrix(-0.866 -0.5 0.5 -0.866 83.0693 663.3409)' fill='%23E535AB' width='185' height='16.6'/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Crect x='177.1' y='71.1' transform='matrix(-0.866 -0.5 0.5 -0.866 463.3409 283.0693)' fill='%23E535AB' width='185' height='16.6'/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Crect x='122.1' y='-13' transform='matrix(-0.5 -0.866 0.866 -0.5 126.7903 232.1221)' fill='%23E535AB' width='16.6' height='185'/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Crect x='109.6' y='151.6' transform='matrix(-0.5 -0.866 0.866 -0.5 266.0828 473.3766)' fill='%23E535AB' width='320.3' height='16.6'/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Crect x='52.5' y='107.5' fill='%23E535AB' width='16.6' height='185'/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Crect x='330.9' y='107.5' fill='%23E535AB' width='16.6' height='185'/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Crect x='262.4' y='240.1' transform='matrix(-0.5 -0.866 0.866 -0.5 126.7953 714.2875)' fill='%23E535AB' width='14.5' height='160.9'/%3E%3C/g%3E%3C/g%3E%3Cpath fill='%23E535AB' d='M369.5,297.9c-9.6,16.7-31,22.4-47.7,12.8c-16.7-9.6-22.4-31-12.8-47.7c9.6-16.7,31-22.4,47.7-12.8 C373.5,259.9,379.2,281.2,369.5,297.9'/%3E%3Cpath fill='%23E535AB' d='M90.9,137c-9.6,16.7-31,22.4-47.7,12.8c-16.7-9.6-22.4-31-12.8-47.7c9.6-16.7,31-22.4,47.7-12.8 C94.8,99,100.5,120.3,90.9,137'/%3E%3Cpath fill='%23E535AB' d='M30.5,297.9c-9.6-16.7-3.9-38,12.8-47.7c16.7-9.6,38-3.9,47.7,12.8c9.6,16.7,3.9,38-12.8,47.7 C61.4,320.3,40.1,314.6,30.5,297.9'/%3E%3Cpath fill='%23E535AB' d='M309.1,137c-9.6-16.7-3.9-38,12.8-47.7c16.7-9.6,38-3.9,47.7,12.8c9.6,16.7,3.9,38-12.8,47.7 C340.1,159.4,318.7,153.7,309.1,137'/%3E%3Cpath fill='%23E535AB' d='M200,395.8c-19.3,0-34.9-15.6-34.9-34.9c0-19.3,15.6-34.9,34.9-34.9c19.3,0,34.9,15.6,34.9,34.9 C234.9,380.1,219.3,395.8,200,395.8'/%3E%3Cpath fill='%23E535AB' d='M200,74c-19.3,0-34.9-15.6-34.9-34.9c0-19.3,15.6-34.9,34.9-34.9c19.3,0,34.9,15.6,34.9,34.9 C234.9,58.4,219.3,74,200,74'/%3E%3C/g%3E%3C/svg%3E"
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -6048,7 +9131,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         },
         {
           "id": "endpoint",
-          "label": "HTTP endpoint"
+          "label": "HTTP Endpoint"
         },
         {
           "id": "graphql",
@@ -6056,17 +9139,28 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         },
         {
           "id": "timeout",
-          "label": "Connect timeout"
+          "label": "Connection timeout"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
-          "label": "Response mapping"
+          "label": "Output mapping"
         },
         {
-          "id": "errors",
+          "id": "error",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
-      ]
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHhtbG5zOnhsaW5rPSdodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rJyB2ZXJzaW9uPScxLjEnIGlkPSdHcmFwaFFMX0xvZ28nCiAgICAgeD0nMHB4JyB5PScwcHgnIHZpZXdCb3g9JzAgMCA0MDAgNDAwJyBlbmFibGUtYmFja2dyb3VuZD0nbmV3IDAgMCA0MDAgNDAwJyB4bWw6c3BhY2U9J3ByZXNlcnZlJz48Zz48Zz48Zz48cmVjdCB4PScxMjInIHk9Jy0wLjQnIHRyYW5zZm9ybT0nbWF0cml4KC0wLjg2NiAtMC41IDAuNSAtMC44NjYgMTYzLjMxOTYgMzYzLjMxMzYpJyBmaWxsPScjRTUzNUFCJyB3aWR0aD0nMTYuNicgaGVpZ2h0PSczMjAuMycvPjwvZz48L2c+PGc+PGc+PHJlY3QgeD0nMzkuOCcgeT0nMjcyLjInIGZpbGw9JyNFNTM1QUInIHdpZHRoPSczMjAuMycgaGVpZ2h0PScxNi42Jy8+PC9nPjwvZz48Zz48Zz48cmVjdCB4PSczNy45JyB5PSczMTIuMicgdHJhbnNmb3JtPSdtYXRyaXgoLTAuODY2IC0wLjUgMC41IC0wLjg2NiA4My4wNjkzIDY2My4zNDA5KScgZmlsbD0nI0U1MzVBQicgd2lkdGg9JzE4NScgaGVpZ2h0PScxNi42Jy8+PC9nPjwvZz48Zz48Zz48cmVjdCB4PScxNzcuMScgeT0nNzEuMScgdHJhbnNmb3JtPSdtYXRyaXgoLTAuODY2IC0wLjUgMC41IC0wLjg2NiA0NjMuMzQwOSAyODMuMDY5MyknIGZpbGw9JyNFNTM1QUInIHdpZHRoPScxODUnIGhlaWdodD0nMTYuNicvPjwvZz48L2c+PGc+PGc+PHJlY3QgeD0nMTIyLjEnIHk9Jy0xMycgdHJhbnNmb3JtPSdtYXRyaXgoLTAuNSAtMC44NjYgMC44NjYgLTAuNSAxMjYuNzkwMyAyMzIuMTIyMSknIGZpbGw9JyNFNTM1QUInIHdpZHRoPScxNi42JyBoZWlnaHQ9JzE4NScvPjwvZz48L2c+PGc+PGc+PHJlY3QgeD0nMTA5LjYnIHk9JzE1MS42JyB0cmFuc2Zvcm09J21hdHJpeCgtMC41IC0wLjg2NiAwLjg2NiAtMC41IDI2Ni4wODI4IDQ3My4zNzY2KScgZmlsbD0nI0U1MzVBQicgd2lkdGg9JzMyMC4zJyBoZWlnaHQ9JzE2LjYnLz48L2c+PC9nPjxnPjxnPjxyZWN0IHg9JzUyLjUnIHk9JzEwNy41JyBmaWxsPScjRTUzNUFCJyB3aWR0aD0nMTYuNicgaGVpZ2h0PScxODUnLz48L2c+PC9nPjxnPjxnPjxyZWN0IHg9JzMzMC45JyB5PScxMDcuNScgZmlsbD0nI0U1MzVBQicgd2lkdGg9JzE2LjYnIGhlaWdodD0nMTg1Jy8+PC9nPjwvZz48Zz48Zz48cmVjdCB4PScyNjIuNCcgeT0nMjQwLjEnIHRyYW5zZm9ybT0nbWF0cml4KC0wLjUgLTAuODY2IDAuODY2IC0wLjUgMTI2Ljc5NTMgNzE0LjI4NzUpJyBmaWxsPScjRTUzNUFCJyB3aWR0aD0nMTQuNScgaGVpZ2h0PScxNjAuOScvPjwvZz48L2c+PHBhdGgKICAgICAgICBmaWxsPScjRTUzNUFCJwogICAgICAgIGQ9J00zNjkuNSwyOTcuOWMtOS42LDE2LjctMzEsMjIuNC00Ny43LDEyLjhjLTE2LjctOS42LTIyLjQtMzEtMTIuOC00Ny43YzkuNi0xNi43LDMxLTIyLjQsNDcuNy0xMi44IEMzNzMuNSwyNTkuOSwzNzkuMiwyODEuMiwzNjkuNSwyOTcuOScvPjxwYXRoCiAgICAgICAgZmlsbD0nI0U1MzVBQicKICAgICAgICBkPSdNOTAuOSwxMzdjLTkuNiwxNi43LTMxLDIyLjQtNDcuNywxMi44Yy0xNi43LTkuNi0yMi40LTMxLTEyLjgtNDcuN2M5LjYtMTYuNywzMS0yMi40LDQ3LjctMTIuOCBDOTQuOCw5OSwxMDAuNSwxMjAuMyw5MC45LDEzNycvPjxwYXRoCiAgICAgICAgZmlsbD0nI0U1MzVBQicKICAgICAgICBkPSdNMzAuNSwyOTcuOWMtOS42LTE2LjctMy45LTM4LDEyLjgtNDcuN2MxNi43LTkuNiwzOC0zLjksNDcuNywxMi44YzkuNiwxNi43LDMuOSwzOC0xMi44LDQ3LjcgQzYxLjQsMzIwLjMsNDAuMSwzMTQuNiwzMC41LDI5Ny45Jy8+PHBhdGgKICAgICAgICBmaWxsPScjRTUzNUFCJwogICAgICAgIGQ9J00zMDkuMSwxMzdjLTkuNi0xNi43LTMuOS0zOCwxMi44LTQ3LjdjMTYuNy05LjYsMzgtMy45LDQ3LjcsMTIuOGM5LjYsMTYuNywzLjksMzgtMTIuOCw0Ny43IEMzNDAuMSwxNTkuNCwzMTguNywxNTMuNywzMDkuMSwxMzcnLz48cGF0aAogICAgICAgIGZpbGw9JyNFNTM1QUInCiAgICAgICAgZD0nTTIwMCwzOTUuOGMtMTkuMywwLTM0LjktMTUuNi0zNC45LTM0LjljMC0xOS4zLDE1LjYtMzQuOSwzNC45LTM0LjljMTkuMywwLDM0LjksMTUuNiwzNC45LDM0LjkgQzIzNC45LDM4MC4xLDIxOS4zLDM5NS44LDIwMCwzOTUuOCcvPjxwYXRoCiAgICAgICAgZmlsbD0nI0U1MzVBQicKICAgICAgICBkPSdNMjAwLDc0Yy0xOS4zLDAtMzQuOS0xNS42LTM0LjktMzQuOWMwLTE5LjMsMTUuNi0zNC45LDM0LjktMzQuOWMxOS4zLDAsMzQuOSwxNS42LDM0LjksMzQuOSBDMjM0LjksNTguNCwyMTkuMyw3NCwyMDAsNzQnLz48L2c+PC9zdmc+"
+      }
     },
     "properties": [
       {},
@@ -6074,49 +9168,110 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Send API key in header or as query parameter."
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The unique identifier of the target API you want to access"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Send client ID and client secret as a Basic Auth header, or as client credentials in the request body"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The scopes which you want to request authorization for",
+        "placeholder": "read:contacts"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The refresh token used to obtain a new access token"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The scopes to request authorization for (space-separated)"
+      },
+      {
         "group": "endpoint"
+      },
+      {
+        "group": "endpoint",
+        "tooltip": "Map of HTTP headers to add to the request"
       },
       {
         "group": "endpoint"
       },
       {
         "group": "endpoint"
+      },
+      {
+        "group": "endpoint",
+        "tooltip": "How the response body should be returned. Document reference uploads the body to the document store; as text decodes it as a String; as JSON parses it into a structure you can access via dot notation."
+      },
+      {
+        "group": "endpoint"
+      },
+      {
+        "group": "graphql",
+        "tooltip": "The GraphQL query or mutation to execute. See the <a href=\"https://docs.camunda.io/docs/components/connectors/protocol/graphql/#querymutation\" target=\"_blank\">GraphQL query/mutation syntax</a>."
       },
       {
         "group": "graphql"
       },
       {
-        "group": "graphql"
+        "group": "timeout",
+        "tooltip": "Use 0 for an infinite timeout"
       },
       {
-        "group": "authentication"
+        "group": "timeout",
+        "tooltip": "Use 0 for an infinite timeout"
       },
       {
-        "group": "authentication"
+        "group": "connector"
       },
       {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "timeout"
+        "group": "connector"
       },
       {
         "group": "output"
@@ -6125,7 +9280,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "output"
       },
       {
-        "group": "errors"
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -6154,17 +9318,33 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='-7.5 0 271 271' preserveAspectRatio='xMidYMid'%3E%3Cpath d='M245.44 108.308h-85.09a7.738 7.738 0 0 1-7.735-7.734v-88.68C152.615 5.327 147.29 0 140.726 0h-30.375c-6.568 0-11.89 5.327-11.89 11.894v88.143c0 4.573-3.697 8.29-8.27 8.31l-27.885.133c-4.612.025-8.359-3.717-8.35-8.325l.173-88.241C54.144 5.337 48.817 0 42.24 0H11.89C5.321 0 0 5.327 0 11.894V260.21c0 5.834 4.726 10.56 10.555 10.56H245.44c5.834 0 10.56-4.726 10.56-10.56V118.868c0-5.834-4.726-10.56-10.56-10.56zm-39.902 93.233c0 7.645-6.198 13.844-13.843 13.844H167.69c-7.646 0-13.844-6.199-13.844-13.844v-24.005c0-7.646 6.198-13.844 13.844-13.844h24.005c7.645 0 13.843 6.198 13.843 13.844v24.005z' fill='%23F60'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxOCcgaGVpZ2h0PScxOCcgdmlld0JveD0nLTcuNSAwIDI3MSAyNzEnIHByZXNlcnZlQXNwZWN0UmF0aW89J3hNaWRZTWlkJz4KICAgIDxwYXRoIGQ9J00yNDUuNDQgMTA4LjMwOGgtODUuMDlhNy43MzggNy43MzggMCAwIDEtNy43MzUtNy43MzR2LTg4LjY4QzE1Mi42MTUgNS4zMjcgMTQ3LjI5IDAgMTQwLjcyNiAwaC0zMC4zNzVjLTYuNTY4IDAtMTEuODkgNS4zMjctMTEuODkgMTEuODk0djg4LjE0M2MwIDQuNTczLTMuNjk3IDguMjktOC4yNyA4LjMxbC0yNy44ODUuMTMzYy00LjYxMi4wMjUtOC4zNTktMy43MTctOC4zNS04LjMyNWwuMTczLTg4LjI0MUM1NC4xNDQgNS4zMzcgNDguODE3IDAgNDIuMjQgMEgxMS44OUM1LjMyMSAwIDAgNS4zMjcgMCAxMS44OTRWMjYwLjIxYzAgNS44MzQgNC43MjYgMTAuNTYgMTAuNTU1IDEwLjU2SDI0NS40NGM1LjgzNCAwIDEwLjU2LTQuNzI2IDEwLjU2LTEwLjU2VjExOC44NjhjMC01LjgzNC00LjcyNi0xMC41Ni0xMC41Ni0xMC41NnptLTM5LjkwMiA5My4yMzNjMCA3LjY0NS02LjE5OCAxMy44NDQtMTMuODQzIDEzLjg0NEgxNjcuNjljLTcuNjQ2IDAtMTMuODQ0LTYuMTk5LTEzLjg0NC0xMy44NDR2LTI0LjAwNWMwLTcuNjQ2IDYuMTk4LTEzLjg0NCAxMy44NDQtMTMuODQ0aDI0LjAwNWM3LjY0NSAwIDEzLjg0MyA2LjE5OCAxMy44NDMgMTMuODQ0djI0LjAwNXonCiAgICAgICAgICBmaWxsPScjRjYwJy8+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "URI should contain username, password, host name, port number, and virtual host"
+      },
       {
         "group": "authentication"
       },
@@ -6172,22 +9352,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "authentication"
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "routing"
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "routing"
-      },
-      {
-        "group": "routing"
-      },
-      {
-        "group": "subscription"
+        "group": "subscription",
+        "tooltip": "Name of the queue to subscribe to"
       },
       {
         "group": "subscription"
@@ -6202,16 +9380,42 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "activation"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -6245,45 +9449,53 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL"
+      },
+      {},
+      {
+        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
         "group": "endpoint"
       },
       {},
-      {
-        "group": "endpoint"
-      },
-      {},
       {},
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Sets up the correlation key from process variables"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Extracts the correlation key from the incoming message payload"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Expression to extract unique identifier of a message"
       },
       {
-        "group": "variable-mapping"
+        "group": "activation",
+        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
       },
       {
-        "group": "variable-mapping"
+        "group": "variable-mapping",
+        "tooltip": "Name of variable to store the result of the connector in"
+      },
+      {
+        "group": "variable-mapping",
+        "tooltip": "Expression to map the inbound payload to process variables"
       }
     ]
   },
   "io.camunda.connectors.Slack.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg%20width%3D%2218%22%20height%3D%2218%22%20%20viewBox%3D%220%200%20127%20127%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M27.2%2080c0%207.3-5.9%2013.2-13.2%2013.2C6.7%2093.2.8%2087.3.8%2080c0-7.3%205.9-13.2%2013.2-13.2h13.2V80zm6.6%200c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2v33c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V80z%22%20fill%3D%22%23E01E5A%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M47%2027c-7.3%200-13.2-5.9-13.2-13.2C33.8%206.5%2039.7.6%2047%20.6c7.3%200%2013.2%205.9%2013.2%2013.2V27H47zm0%206.7c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H13.9C6.6%2060.1.7%2054.2.7%2046.9c0-7.3%205.9-13.2%2013.2-13.2H47z%22%20fill%3D%22%2336C5F0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M99.9%2046.9c0-7.3%205.9-13.2%2013.2-13.2%207.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H99.9V46.9zm-6.6%200c0%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V13.8C66.9%206.5%2072.8.6%2080.1.6c7.3%200%2013.2%205.9%2013.2%2013.2v33.1z%22%20fill%3D%22%232EB67D%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M80.1%2099.8c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2-7.3%200-13.2-5.9-13.2-13.2V99.8h13.2zm0-6.6c-7.3%200-13.2-5.9-13.2-13.2%200-7.3%205.9-13.2%2013.2-13.2h33.1c7.3%200%2013.2%205.9%2013.2%2013.2%200%207.3-5.9%2013.2-13.2%2013.2H80.1z%22%20fill%3D%22%23ECB22E%22%2F%3E%0A%3C%2Fsvg%3E%0A"
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
         {
-          "id": "method",
-          "label": "Method"
+          "id": "operation",
+          "label": "Operation"
         },
         {
           "id": "authentication",
@@ -6302,40 +9514,149 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Invite"
         },
         {
+          "id": "reaction",
+          "label": "Reaction"
+        },
+        {
+          "id": "pinMessage",
+          "label": "Pin Message"
+        },
+        {
+          "id": "unpinMessage",
+          "label": "Unpin Message"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Output mapping"
         },
         {
-          "id": "errors",
+          "id": "error",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
-      ]
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI3IiBoZWlnaHQ9IjEyNyIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBkPSJNMjcuMiA4MGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjJDNi43IDkzLjIuOCA4Ny4zLjggODBjMC03LjMgNS45LTEzLjIgMTMuMi0xMy4yaDEzLjJWODB6bTYuNiAwYzAtNy4zIDUuOS0xMy4yIDEzLjItMTMuMiA3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzNjMCA3LjMtNS45IDEzLjItMTMuMiAxMy4yLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMlY4MHoiIGZpbGw9IiNFMDFFNUEiLz4KICA8cGF0aCBkPSJNNDcgMjdjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMkMzMy44IDYuNSAzOS43LjYgNDcgLjZjNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yVjI3SDQ3em0wIDYuN2M3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDEzLjlDNi42IDYwLjEuNyA1NC4yLjcgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJINDd6IiBmaWxsPSIjMzZDNUYwIi8+CiAgPHBhdGggZD0iTTk5LjkgNDYuOWMwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjIgNy4zIDAgMTMuMiA1LjkgMTMuMiAxMy4yIDAgNy4zLTUuOSAxMy4yLTEzLjIgMTMuMkg5OS45VjQ2Ljl6bS02LjYgMGMwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjEzLjhDNjYuOSA2LjUgNzIuOC42IDgwLjEuNmM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjJ2MzMuMXoiIGZpbGw9IiMyRUI2N0QiLz4KICA8cGF0aCBkPSJNODAuMSA5OS44YzcuMyAwIDEzLjIgNS45IDEzLjIgMTMuMiAwIDcuMy01LjkgMTMuMi0xMy4yIDEzLjItNy4zIDAtMTMuMi01LjktMTMuMi0xMy4yVjk5LjhoMTMuMnptMC02LjZjLTcuMyAwLTEzLjItNS45LTEzLjItMTMuMiAwLTcuMyA1LjktMTMuMiAxMy4yLTEzLjJoMzMuMWM3LjMgMCAxMy4yIDUuOSAxMy4yIDEzLjIgMCA3LjMtNS45IDEzLjItMTMuMiAxMy4ySDgwLjF6IiBmaWxsPSIjRUNCMjJFIi8+Cjwvc3ZnPgo="
+      }
     },
     "properties": [
       {},
       {
-        "group": "method"
+        "group": "operation"
       },
       {
         "group": "authentication"
       },
       {
-        "group": "channel"
-      },
-      {
-        "group": "channel"
-      },
-      {
-        "group": "channel"
+        "group": "authentication"
       },
       {
         "group": "message"
       },
       {
+        "group": "message"
+      },
+      {
+        "group": "message",
+        "tooltip": "An array of rich message content blocks. See the <a href=\"https://api.slack.com/reference/surfaces/formatting#stack_of_blocks\" target=\"_blank\">Slack Block Kit reference</a>"
+      },
+      {
+        "group": "message",
+        "tooltip": "<a href=\"https://docs.camunda.io/docs/apis-tools/camunda-api-rest/specifications/upload-document-alpha/\">Camunda documents</a> can be added as attachments"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "message"
+      },
+      {
+        "group": "channel"
+      },
+      {
+        "group": "channel"
+      },
+      {
+        "group": "channel"
+      },
+      {
+        "group": "channel"
+      },
+      {
         "group": "invite"
       },
       {
         "group": "invite"
+      },
+      {
+        "group": "invite"
+      },
+      {
+        "group": "invite",
+        "tooltip": "Comma-separated list of users.",
+        "placeholder": "@user1,@user2"
+      },
+      {
+        "group": "reaction",
+        "tooltip": "Channel ID of the message to react to"
+      },
+      {
+        "group": "reaction",
+        "placeholder": "eyes"
+      },
+      {
+        "group": "reaction",
+        "tooltip": "Timestamp of the Slack message to react to"
+      },
+      {
+        "group": "pinMessage",
+        "tooltip": "Channel ID of the message to pin"
+      },
+      {
+        "group": "pinMessage",
+        "tooltip": "Timestamp of the Slack message to pin"
+      },
+      {
+        "group": "unpinMessage",
+        "tooltip": "Channel ID of the message to unpin"
+      },
+      {
+        "group": "unpinMessage",
+        "tooltip": "Timestamp of the Slack message to unpin"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       },
       {
         "group": "output"
@@ -6344,7 +9665,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "output"
       },
       {
-        "group": "errors"
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -6373,12 +9703,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Input"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Output"
         },
         {
           "id": "errors",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
@@ -6400,9 +9738,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "tooltip": "Blue Prism OAuth 2.0 client ID",
         "group": "authentication"
       },
       {
+        "tooltip": "Blue Prism OAuth 2.0 client secret",
         "group": "authentication"
       },
       {
@@ -6430,6 +9770,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
+        "tooltip": "Data type of the value submitted to the work queue item.",
+        "group": "input"
+      },
+      {
+        "tooltip": "Data value submitted to the work queue item.",
+        "group": "input"
+      },
+      {
+        "tooltip": "The earliest time and date that this item is deferred until.",
+        "placeholder": "yyyy-MM-dd",
         "group": "input"
       },
       {
@@ -6442,34 +9792,48 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
+        "tooltip": "Sets the timeout in seconds to establish a connection or 0 for an infinite timeout.",
         "group": "errors"
       },
       {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
+      },
+      {},
+      {},
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.SendGrid.v2": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Cpath%20d%3D%22M0.285706%205.40847H5.43837V10.5611H0.285706V5.40847Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M0.285706%205.40847H5.43837V10.5611H0.285706V5.40847Z%22%20fill%3D%22%2399E1F4%22%2F%3E%0A%3Cpath%20d%3D%22M5.43837%2010.5611L10.5611%2010.5616V15.6844H5.43837V10.5611Z%22%20fill%3D%22white%22%2F%3E%0A%3Cpath%20d%3D%22M5.43837%2010.5611L10.5611%2010.5616V15.6844H5.43837V10.5611Z%22%20fill%3D%22%2399E1F4%22%2F%3E%0A%3Cpath%20d%3D%22M0.285706%2015.6846L5.43837%2015.6844V15.7143H0.285706V15.6846ZM0.285706%2010.5619H5.43837V15.6844L0.285706%2015.6846V10.5619Z%22%20fill%3D%22%231A82E2%22%2F%3E%0A%3Cpath%20d%3D%22M5.43837%200.285706H10.5611V5.40847H5.43837V0.285706ZM10.5616%205.43837H15.7143V10.5611H10.5616V5.43837Z%22%20fill%3D%22%2300B3E3%22%2F%3E%0A%3Cpath%20d%3D%22M5.43837%2010.5611L10.5611%2010.5616V5.40847H5.43837V10.5611Z%22%20fill%3D%22%23009DD9%22%2F%3E%0A%3Cpath%20d%3D%22M10.5611%200.285706H15.7143V5.40847H10.5611V0.285706Z%22%20fill%3D%22%231A82E2%22%2F%3E%0A%3Cpath%20d%3D%22M10.5611%205.40847H15.7143V5.43837H10.5616L10.5611%205.40847Z%22%20fill%3D%22%231A82E2%22%2F%3E%0A%3C%2Fsvg%3E"
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -6492,10 +9856,25 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Compose email"
         },
         {
-          "id": "errors",
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
-      ]
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0wLjI4NTcwNiA1LjQwODQ3SDUuNDM4MzdWMTAuNTYxMUgwLjI4NTcwNlY1LjQwODQ3WiIgZmlsbD0id2hpdGUiLz4KICAgIDxwYXRoIGQ9Ik0wLjI4NTcwNiA1LjQwODQ3SDUuNDM4MzdWMTAuNTYxMUgwLjI4NTcwNlY1LjQwODQ3WiIgZmlsbD0iIzk5RTFGNCIvPgogICAgPHBhdGggZD0iTTUuNDM4MzcgMTAuNTYxMUwxMC41NjExIDEwLjU2MTZWMTUuNjg0NEg1LjQzODM3VjEwLjU2MTFaIiBmaWxsPSJ3aGl0ZSIvPgogICAgPHBhdGggZD0iTTUuNDM4MzcgMTAuNTYxMUwxMC41NjExIDEwLjU2MTZWMTUuNjg0NEg1LjQzODM3VjEwLjU2MTFaIiBmaWxsPSIjOTlFMUY0Ii8+CiAgICA8cGF0aCBkPSJNMC4yODU3MDYgMTUuNjg0Nkw1LjQzODM3IDE1LjY4NDRWMTUuNzE0M0gwLjI4NTcwNlYxNS42ODQ2Wk0wLjI4NTcwNiAxMC41NjE5SDUuNDM4MzdWMTUuNjg0NEwwLjI4NTcwNiAxNS42ODQ2VjEwLjU2MTlaIiBmaWxsPSIjMUE4MkUyIi8+CiAgICA8cGF0aCBkPSJNNS40MzgzNyAwLjI4NTcwNkgxMC41NjExVjUuNDA4NDdINS40MzgzN1YwLjI4NTcwNlpNMTAuNTYxNiA1LjQzODM3SDE1LjcxNDNWMTAuNTYxMUgxMC41NjE2VjUuNDM4MzdaIiBmaWxsPSIjMDBCM0UzIi8+CiAgICA8cGF0aCBkPSJNNS40MzgzNyAxMC41NjExTDEwLjU2MTEgMTAuNTYxNlY1LjQwODQ3SDUuNDM4MzdWMTAuNTYxMVoiIGZpbGw9IiMwMDlERDkiLz4KICAgIDxwYXRoIGQ9Ik0xMC41NjExIDAuMjg1NzA2SDE1LjcxNDNWNS40MDg0N0gxMC41NjExVjAuMjg1NzA2WiIgZmlsbD0iIzFBODJFMiIvPgogICAgPHBhdGggZD0iTTEwLjU2MTEgNS40MDg0N0gxNS43MTQzVjUuNDM4MzdIMTAuNTYxNkwxMC41NjExIDUuNDA4NDdaIiBmaWxsPSIjMUE4MkUyIi8+Cjwvc3ZnPg=="
+      }
     },
     "properties": [
       {},
@@ -6533,16 +9912,65 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "content"
       },
       {
-        "group": "errors"
+        "group": "content",
+        "tooltip": "Files to attach to the email, referenced as <a href=\"https://docs.camunda.io/docs/apis-tools/camunda-api-rest/specifications/upload-document-alpha/\">Camunda documents</a>."
+      },
+      {
+        "group": "content"
+      },
+      {
+        "group": "content"
+      },
+      {
+        "group": "content"
+      },
+      {
+        "group": "content"
+      },
+      {
+        "group": "content"
+      },
+      {
+        "group": "content"
+      },
+      {
+        "group": "content"
+      },
+      {
+        "group": "content"
+      },
+      {
+        "group": "content"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.inbound.KafkaReceive.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -6550,7 +9978,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       "groups": [
         {
           "id": "authentication",
-          "label": "Authentication"
+          "label": "Connection"
         },
         {
           "id": "kafka",
@@ -6586,40 +10014,54 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Choose a reusable Kafka connection credential, or configure one-time connection parameters below."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Username/password or custom."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The user must have permissions to produce messages to the topic."
       },
       {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Bootstrap server(s), comma-delimited if there are multiple.",
+        "placeholder": "broker1:9092,broker2:9092"
       },
       {
         "group": "kafka"
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "It is strongly recommended to provide an explicit consumer group ID. Use a stable, application-specific identifier that represents the logical consumer group in your application (for example, <code>my-app-order-processor</code>). Leaving this empty auto-generates an ID that may change across connector upgrades, causing message replay."
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "Additional Kafka consumer properties in JSON. These can override brokers and authentication from a reusable credential."
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "List of offsets, e.g. '10' or '=[10, 23]'. If specified, it has to have the same number of values as the number of partitions."
       },
       {
-        "group": "kafka"
-      },
-      {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server. You should only select none if you specified the offsets."
       },
       {
         "group": "schema"
       },
       {
-        "group": "schema"
+        "group": "schema",
+        "tooltip": "Avro inline schema for the message value"
       },
       {
-        "group": "schema"
+        "group": "schema",
+        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
       },
       {
         "group": "schema"
@@ -6644,7 +10086,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "correlation"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -6669,9 +10112,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
   "io.camunda.connectors.http.Polling": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "icon": {
-        "contents": "data:image/svg+xml;utf8,%3C%3Fxml version='1.0'%3F%3E%3Csvg width='18' height='18' xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg'%3E%3Cg class='layer'%3E%3Ctitle%3ELayer 1%3C/title%3E%3Cpath d='m17.03,9c0,4.45 -3.6,8.05 -8.05,8.05c-4.45,0 -8.05,-3.6 -8.05,-8.05c0,-4.45 3.6,-8.05 8.05,-8.05c4.45,0 8.05,3.6 8.05,8.05z' fill='%23505562' id='svg_1'/%3E%3Cpath d='m4.93,14.16l1.85,-10.45l3.36,0c1.05,0 1.84,0.27 2.37,0.81c0.54,0.53 0.8,1.21 0.8,2.06c0,0.86 -0.24,1.58 -0.73,2.13c-0.47,0.55 -1.12,0.93 -1.95,1.14l-0.48,0.09l-0.53,0.03l-0.6,0.05l-1.79,0l-0.73,4.14l-1.58,0zm2.57,-5.57l1.74,0c0.76,0 1.35,-0.17 1.78,-0.5c0.44,-0.35 0.65,-0.82 0.65,-1.42c0,-0.48 -0.15,-0.85 -0.44,-1.12c-0.3,-0.28 -0.77,-0.42 -1.42,-0.42l-1.7,0l-0.61,3.46z' fill='white' id='svg_2'/%3E%3C/g%3E%3C/svg%3E"
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -6686,32 +10126,104 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "HTTP Polling configuration"
         },
         {
-          "id": "input",
+          "id": "payload",
           "label": "Payload"
         },
         {
-          "id": "activation",
-          "label": "Condition to proceed"
-        },
-        {
-          "id": "timer",
-          "label": "Timer"
+          "id": "interval",
+          "label": "HTTP Polling Interval"
         },
         {
           "id": "timeout",
-          "label": "Connect timeout"
+          "label": "Connection timeout"
         },
         {
-          "id": "variable-mapping",
-          "label": "Response mapping"
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
-      ]
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0nMS4wJz8+Cjxzdmcgd2lkdGg9JzE4JyBoZWlnaHQ9JzE4JyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPgogICAgPGcgY2xhc3M9J2xheWVyJz4KICAgICAgICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+CiAgICAgICAgPHBhdGggZD0nbTE3LjAzLDljMCw0LjQ1IC0zLjYsOC4wNSAtOC4wNSw4LjA1Yy00LjQ1LDAgLTguMDUsLTMuNiAtOC4wNSwtOC4wNWMwLC00LjQ1IDMuNiwtOC4wNSA4LjA1LC04LjA1YzQuNDUsMCA4LjA1LDMuNiA4LjA1LDguMDV6JwogICAgICAgICAgICAgIGZpbGw9JyM1MDU1NjInIGlkPSdzdmdfMScvPgogICAgICAgIDxwYXRoIGQ9J200LjkzLDE0LjE2bDEuODUsLTEwLjQ1bDMuMzYsMGMxLjA1LDAgMS44NCwwLjI3IDIuMzcsMC44MWMwLjU0LDAuNTMgMC44LDEuMjEgMC44LDIuMDZjMCwwLjg2IC0wLjI0LDEuNTggLTAuNzMsMi4xM2MtMC40NywwLjU1IC0xLjEyLDAuOTMgLTEuOTUsMS4xNGwtMC40OCwwLjA5bC0wLjUzLDAuMDNsLTAuNiwwLjA1bC0xLjc5LDBsLTAuNzMsNC4xNGwtMS41OCwwem0yLjU3LC01LjU3bDEuNzQsMGMwLjc2LDAgMS4zNSwtMC4xNyAxLjc4LC0wLjVjMC40NCwtMC4zNSAwLjY1LC0wLjgyIDAuNjUsLTEuNDJjMCwtMC40OCAtMC4xNSwtMC44NSAtMC40NCwtMS4xMmMtMC4zLC0wLjI4IC0wLjc3LC0wLjQyIC0xLjQyLC0wLjQybC0xLjcsMGwtMC42MSwzLjQ2eicKICAgICAgICAgICAgICBmaWxsPSd3aGl0ZScgaWQ9J3N2Z18yJy8+CiAgICA8L2c+Cjwvc3ZnPg=="
+      }
     },
     "properties": [
       {},
-      {},
       {
         "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Send API key in header or as query parameter."
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The unique identifier of the target API you want to access"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Send client ID and client secret as a Basic Auth header, or as client credentials in the request body"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The scopes which you want to request authorization for",
+        "placeholder": "read:contacts"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The refresh token used to obtain a new access token"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The scopes to request authorization for (space-separated)"
       },
       {
         "group": "endpoint"
@@ -6723,82 +10235,74 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
-        "group": "endpoint"
+        "group": "endpoint",
+        "tooltip": "Map of query parameters to add to the request URL"
+      },
+      {
+        "group": "endpoint",
+        "tooltip": "Map of HTTP headers to add to the request"
       },
       {
         "group": "endpoint"
       },
       {
-        "group": "endpoint"
+        "group": "endpoint",
+        "tooltip": "If enabled, HTTP 3xx redirects will be followed automatically. Disabled by default."
       },
       {
-        "group": "authentication"
+        "group": "payload",
+        "tooltip": "Payload to send with the request"
       },
       {
-        "group": "authentication"
+        "group": "interval",
+        "tooltip": "The delay between HTTP requests, defined in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
       },
       {
-        "group": "authentication"
+        "group": "interval"
       },
       {
-        "group": "authentication"
+        "group": "timeout",
+        "tooltip": "Use 0 for an infinite timeout"
       },
       {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "input"
+        "group": "timeout",
+        "tooltip": "Use 0 for an infinite timeout"
       },
       {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "correlation"
       },
       {
-        "group": "activation"
+        "group": "correlation"
       },
       {
-        "group": "endpoint"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
   "io.camunda.connectors.Jdbc.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": [
-          "relational",
-          "database"
-        ]
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
-        {
-          "id": "database",
-          "label": "Database"
-        },
         {
           "id": "connection",
           "label": "Connection"
@@ -6806,6 +10310,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "query",
           "label": "Query"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -6827,7 +10335,22 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
-        "group": "database"
+        "group": "connection"
+      },
+      {
+        "group": "connection",
+        "tooltip": "If you choose Oracle, make sure the Oracle JDBC driver is included. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#database\">Oracle JDBC driver setup</a>."
+      },
+      {
+        "group": "connection"
+      },
+      {
+        "group": "connection",
+        "tooltip": "URI should contain JDBC driver, host name, and port number. See the <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#uri-connection\" target=\"_blank\">URI connection</a> reference."
+      },
+      {
+        "group": "connection",
+        "tooltip": "Additional properties for the connection ('user' and 'password' for instance). See the <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#connection\" target=\"_blank\">SQL connection properties</a> reference."
       },
       {
         "group": "connection"
@@ -6845,25 +10368,26 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "connection"
       },
       {
-        "group": "connection"
+        "group": "connection",
+        "tooltip": "Additional properties for the connection. See the <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#connection\" target=\"_blank\">SQL connection properties</a> reference."
       },
       {
-        "group": "connection"
+        "group": "query",
+        "tooltip": "Check this box if the SQL statement returns results, e.g. a SELECT or any statement with a RETURNING clause"
       },
       {
-        "group": "connection"
+        "group": "query",
+        "tooltip": "You can use named, positional or binding <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#variables\" target=\"_blank\">parameters</a>"
       },
       {
-        "group": "connection"
+        "group": "query",
+        "tooltip": "The <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#variables\" target=\"_blank\">variables</a> to use in the SQL query."
       },
       {
-        "group": "query"
+        "group": "connector"
       },
       {
-        "group": "query"
-      },
-      {
-        "group": "query"
+        "group": "connector"
       },
       {
         "group": "output"
@@ -6879,15 +10403,81 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.connectors.webhook.GithubWebhookConnectorReceive.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "endpoint",
+          "label": "Webhook configuration"
+        },
+        {
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "variable-mapping",
+          "label": "Variable mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 1024 1024' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z' transform='scale(64)' fill='%231B1F23'/%3E%3C/svg%3E"
+      }
+    },
+    "properties": [
+      {},
+      {},
+      {},
+      {
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL"
+      },
+      {},
+      {
+        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
+        "group": "endpoint"
+      },
+      {},
+      {},
+      {
+        "group": "activation",
+        "tooltip": "Sets up the correlation key from process variables"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Extracts the correlation key from the incoming message payload"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Expression to extract unique identifier of a message"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
+      },
+      {
+        "group": "variable-mapping",
+        "tooltip": "Name of variable to store the result of the connector in"
+      },
+      {
+        "group": "variable-mapping",
+        "tooltip": "Expression to map the inbound payload to process variables"
       }
     ]
   },
   "io.camunda.connectors.GoogleGemini.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -6900,6 +10490,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "input",
           "label": "Configure input"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -6948,34 +10542,38 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
-        "group": "input",
-        "tooltip": "System instructions inform how the model should respond. Use them to give the model context to understand the task, provide more custom responses and adhere to specific guidelines. Instructions apply each time you send a request to the model.<a href=\"https://cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/system-instructions?hl=en\" Learn more about system instructions </a>"
+        "group": "input"
       },
       {
         "group": "input",
-        "tooltip": "Grounding connects model output to verifiable sources of information. This is useful in situations where accuracy and reliability are important.<a href=\"https://cloud.google.com/vertex-ai/generative-ai/docs/grounding/overview?hl=en\" Learn more about grounding </a>"
+        "tooltip": "System instructions inform how the model should respond. Use them to give the model context to understand the task, provide more custom responses and adhere to specific guidelines. Instructions apply each time you send a request to the model. <a href=\"https://cloud.google.com/vertex-ai/generative-ai/docs/learn/prompts/system-instructions?hl=en\" target=\"_blank\">Learn more about system instructions</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "Grounding connects model output to verifiable sources of information. This is useful in situations where accuracy and reliability are important. <a href=\"https://cloud.google.com/vertex-ai/generative-ai/docs/grounding/overview?hl=en\" target=\"_blank\">Learn more about grounding</a>"
       },
       {
         "group": "input"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "You can adjust the likelihood of receiving a model response that could contain harmful content. Content is blocked based on the probability that it's harmful. See the <a href=\"https://cloud.google.com/vertex-ai/generative-ai/docs/learn/responsible-ai?hl=en#safety_filters_and_attributes\">safety filters and attributes</a>."
       },
       {
         "group": "input",
-        "tooltip": "You can adjust the likelihood of receiving a model response that could contain harmful content. Content is blocked based on the probability that it's harmful.<a href=\"https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai?hl=en#safety_filters_and_attributes\" Learn more </a>"
+        "tooltip": "Adjust how much potentially harmful content is blocked, based on the probability that it's harmful: OFF blocks nothing, Block few blocks only high-probability content, Block some blocks medium-and-above, and Block most blocks low-and-above. <a href=\"https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai?hl=en#safety_filters_and_attributes\" target=\"_blank\">Learn more about safety filters</a>"
       },
       {
         "group": "input",
-        "tooltip": "You can adjust the likelihood of receiving a model response that could contain harmful content. Content is blocked based on the probability that it's harmful.<a href=\"https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai?hl=en#safety_filters_and_attributes\" Learn more </a>"
+        "tooltip": "Adjust how much potentially harmful content is blocked, based on the probability that it's harmful: OFF blocks nothing, Block few blocks only high-probability content, Block some blocks medium-and-above, and Block most blocks low-and-above. <a href=\"https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai?hl=en#safety_filters_and_attributes\" target=\"_blank\">Learn more about safety filters</a>"
       },
       {
         "group": "input",
-        "tooltip": "You can adjust the likelihood of receiving a model response that could contain harmful content. Content is blocked based on the probability that it's harmful.<a href=\"https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai?hl=en#safety_filters_and_attributes\" Learn more </a>"
+        "tooltip": "Adjust how much potentially harmful content is blocked, based on the probability that it's harmful: OFF blocks nothing, Block few blocks only high-probability content, Block some blocks medium-and-above, and Block most blocks low-and-above. <a href=\"https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai?hl=en#safety_filters_and_attributes\" target=\"_blank\">Learn more about safety filters</a>"
       },
       {
         "group": "input",
-        "tooltip": "You can adjust the likelihood of receiving a model response that could contain harmful content. Content is blocked based on the probability that it's harmful.<a href=\"https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai?hl=en#safety_filters_and_attributes\" Learn more </a>"
+        "tooltip": "Adjust how much potentially harmful content is blocked, based on the probability that it's harmful: OFF blocks nothing, Block few blocks only high-probability content, Block some blocks medium-and-above, and Block most blocks low-and-above. <a href=\"https://cloud.google.com/vertex-ai/docs/generative-ai/learn/responsible-ai?hl=en#safety_filters_and_attributes\" target=\"_blank\">Learn more about safety filters</a>"
       },
       {
         "group": "input",
@@ -7005,6 +10603,12 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
         "group": "output"
       },
       {
@@ -7018,6 +10622,40 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.connectors.AppIntegrationsChat.Start.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "correlation",
+          "label": "Correlation"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDguNUMyMSA3LjEzMzE3IDIxIDUgMjEgNUMyMSA0LjQ2OTU3IDIwLjc4OTMgMy45NjA4NiAyMC40MTQyIDMuNTg1NzlDMjAuMDM5MSAzLjIxMDcxIDE5LjUzMDQgMyAxOSAzSDRDMy40Njk1NyAzIDIuOTYwODYgMy4yMTA3MSAyLjU4NTc5IDMuNTg1NzlDMi4yMTA3MSAzLjk2MDg2IDIgNC40Njk1NyAyIDVWMjEuMjg2QzIuMDAwMDIgMjEuNDI2NCAyLjA0MTY3IDIxLjU2MzcgMi4xMTk2OSAyMS42ODA0QzIuMTk3NyAyMS43OTcxIDIuMzA4NTggMjEuODg4MSAyLjQzODMxIDIxLjk0MTlDMi41NjgwMyAyMS45OTU2IDIuNzEwNzcgMjIuMDA5NyAyLjg0ODQ5IDIxLjk4MjNDMi45ODYyIDIxLjk1NDkgMy4xMTI3IDIxLjg4NzMgMy4yMTIgMjEuNzg4TDUuNDE0IDE5LjU4NkM1Ljc4ODk5IDE5LjIxMDkgNi4yOTc2MSAxOS4wMDAxIDYuODI4IDE5SDEwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMC45MzU5IDE3LjcxNzFDMjEuMTI2OCAxNy41MjY4IDIxLjI3ODMgMTcuMzAwOCAyMS4zODE3IDE3LjA1MThDMjEuNDg1IDE2LjgwMjkgMjEuNTM4MiAxNi41MzYgMjEuNTM4MiAxNi4yNjY0QzIxLjUzODIgMTUuOTk2OSAyMS40ODUgMTUuNzMgMjEuMzgxNyAxNS40ODExQzIxLjI3ODMgMTUuMjMyMSAyMS4xMjY4IDE1LjAwNjEgMjAuOTM1OSAxNC44MTU4TDE4Ljk3MzIgMTIuODUzMkwxMy44NTMzIDE3Ljk3MzFMMTUuODE1OSAxOS45MzU3QzE2LjAwNjIgMjAuMTI2NyAxNi4yMzIzIDIwLjI3ODEgMTYuNDgxMiAyMC4zODE1QzE2LjczMDIgMjAuNDg0OSAxNi45OTcgMjAuNTM4MSAxNy4yNjY2IDIwLjUzODFDMTcuNTM2MSAyMC41MzgxIDE3LjgwMyAyMC40ODQ5IDE4LjA1MiAyMC4zODE1QzE4LjMwMDkgMjAuMjc4MSAxOC41MjcgMjAuMTI2NyAxOC43MTcyIDE5LjkzNTdMMjAuOTM1OSAxNy43MTcxWiIgc3Ryb2tlPSIjRkY0QzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMi4zODY1IDIxLjM4NjdMMTkuODI2NiAxOC44MjY4IiBzdHJva2U9IiNGRjRDMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE1LjEzMzMgMTYuNjkzNEwxMyAxNC41NjAxIiBzdHJva2U9IiNGRjRDMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE3LjY5MzMgMTQuMTMzM0wxNS41NiAxMiIgc3Ryb2tlPSIjRkY0QzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik02IDhIMTUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTYgMTJIMTAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg=="
+      }
+    },
+    "properties": [
+      {
+        "placeholder": "io.camunda.appIntegrations.conversationStarted.hr-intake",
+        "group": "correlation"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -7030,52 +10668,88 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       "groups": [
         {
-          "id": "authentication",
-          "label": "Authentication"
-        },
-        {
           "id": "operation",
           "label": "Select operation"
+        },
+        {
+          "id": "authentication",
+          "label": "Authentication"
         },
         {
           "id": "operationDetails",
           "label": "Operation details"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Output mapping"
         },
         {
-          "id": "errors",
+          "id": "error",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg width='18' height='18' viewBox='0 0 87.3 78' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z' fill='%230066da'/%3E%3Cpath d='m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z' fill='%2300ac47'/%3E%3Cpath d='m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z' fill='%23ea4335'/%3E%3Cpath d='m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z' fill='%2300832d'/%3E%3Cpath d='m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z' fill='%232684fc'/%3E%3Cpath d='m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z' fill='%23ffba00'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgODcuMyA3OCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KCTxwYXRoIGQ9Im02LjYgNjYuODUgMy44NSA2LjY1Yy44IDEuNCAxLjk1IDIuNSAzLjMgMy4zbDEzLjc1LTIzLjhoLTI3LjVjMCAxLjU1LjQgMy4xIDEuMiA0LjV6IiBmaWxsPSIjMDA2NmRhIi8+Cgk8cGF0aCBkPSJtNDMuNjUgMjUtMTMuNzUtMjMuOGMtMS4zNS44LTIuNSAxLjktMy4zIDMuM2wtMjUuNCA0NGE5LjA2IDkuMDYgMCAwIDAgLTEuMiA0LjVoMjcuNXoiIGZpbGw9IiMwMGFjNDciLz4KCTxwYXRoIGQ9Im03My41NSA3Ni44YzEuMzUtLjggMi41LTEuOSAzLjMtMy4zbDEuNi0yLjc1IDcuNjUtMTMuMjVjLjgtMS40IDEuMi0yLjk1IDEuMi00LjVoLTI3LjUwMmw1Ljg1MiAxMS41eiIgZmlsbD0iI2VhNDMzNSIvPgoJPHBhdGggZD0ibTQzLjY1IDI1IDEzLjc1LTIzLjhjLTEuMzUtLjgtMi45LTEuMi00LjUtMS4yaC0xOC41Yy0xLjYgMC0zLjE1LjQ1LTQuNSAxLjJ6IiBmaWxsPSIjMDA4MzJkIi8+Cgk8cGF0aCBkPSJtNTkuOCA1M2gtMzIuM2wtMTMuNzUgMjMuOGMxLjM1LjggMi45IDEuMiA0LjUgMS4yaDUwLjhjMS42IDAgMy4xNS0uNDUgNC41LTEuMnoiIGZpbGw9IiMyNjg0ZmMiLz4KCTxwYXRoIGQ9Im03My40IDI2LjUtMTIuNy0yMmMtLjgtMS40LTEuOTUtMi41LTMuMy0zLjNsLTEzLjc1IDIzLjggMTYuMTUgMjhoMjcuNDVjMC0xLjU1LS40LTMuMS0xLjItNC41eiIgZmlsbD0iI2ZmYmEwMCIvPgo8L3N2Zz4="
       }
     },
     "properties": [
       {},
       {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
         "group": "operation"
       },
       {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
         "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Your resources will be created here. If left empty, a new resource will appear in the root folder."
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Your resources will be created here. If left empty, a new resource will appear in the root folder."
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Your resources will be created here. If left empty, a new resource will appear in the root folder."
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Upload a Camunda document. See the <a href=\"https://docs.camunda.io/docs/apis-tools/camunda-api-rest/specifications/upload-document-alpha/\">Camunda document upload API</a>."
       },
       {
         "group": "operationDetails"
@@ -7094,6 +10768,25 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "How the downloaded payload should be returned. Document reference uploads the payload to the document store; as text decodes it as a String; as JSON parses it into a structure you can access via dot notation."
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       },
       {
         "group": "output"
@@ -7102,7 +10795,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "output"
       },
       {
-        "group": "errors"
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -7138,16 +10840,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
-        "group": "endpoint"
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL."
       },
       {},
       {
         "group": "endpoint"
       },
       {
-        "group": "endpoint"
+        "group": "endpoint",
+        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
       },
       {
+        "tooltip": "Shared secret key used to verify the HMAC signature.",
         "group": "endpoint"
       },
       {},
@@ -7156,28 +10861,34 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Sets up the correlation key from process variables."
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Extracts the correlation key from the incoming message payload."
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Expression to extract the unique identifier of a message."
       },
       {
-        "group": "variable-mapping"
+        "group": "activation",
+        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events. See the <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound#make-your-twilio-webhook-connector-for-receiving-messages-executable' target='_blank'>Twilio webhook activation guide</a>."
       },
       {
-        "group": "variable-mapping"
+        "group": "variable-mapping",
+        "tooltip": "Name of variable to store the result of the connector in."
+      },
+      {
+        "group": "variable-mapping",
+        "tooltip": "Expression to map the inbound payload to process variables."
       }
     ]
   },
   "io.camunda.connectors.ServiceNowFlow.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -7223,15 +10934,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
+        "tooltip": "Enter only the instance name from your ServiceNow URL",
         "group": "sn"
       },
       {
+        "placeholder": "/api/sn_cico/flow_starter/my_flow",
         "group": "sn"
       },
       {
         "group": "authentication"
       },
       {
+        "tooltip": "Choose type: Send API key in header or as query parameter.",
         "group": "authentication"
       },
       {
@@ -7253,18 +10967,24 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "tooltip": "Your application's client ID from the OAuth client",
         "group": "authentication"
       },
       {
+        "tooltip": "Your application's client secret from the OAuth client",
         "group": "authentication"
       },
       {
+        "tooltip": "The unique identifier of the target API you want to access",
         "group": "authentication"
       },
       {
+        "tooltip": "Send client ID and client secret as Basic Auth request in the header, or as client credentials in the request body",
         "group": "authentication"
       },
       {
+        "tooltip": "The scopes which you want to request authorization for",
+        "placeholder": "read:contacts",
         "group": "authentication"
       },
       {
@@ -7274,9 +10994,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
+        "tooltip": "Map of HTTP headers to add to the request",
         "group": "sn"
       },
       {
+        "tooltip": "Map of query parameters to add to the request URL",
         "group": "sn"
       },
       {
@@ -7292,6 +11014,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "timeout"
       },
       {
+        "tooltip": "Payload to send with the request",
         "group": "sn"
       },
       {
@@ -7299,13 +11022,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Null values will not be sent"
       },
       {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -7332,41 +11061,228 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable Mapping"
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 80 80' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 64 (93537) - https://sketch.com --%3E%3Ctitle%3EIcon-Architecture/64/Arch_AWS-Simple-Notification-Service_64%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3ClinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='linearGradient-1'%3E%3Cstop stop-color='%23B0084D' offset='0%25'%3E%3C/stop%3E%3Cstop stop-color='%23FF4F8B' offset='100%25'%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Cg id='Icon-Architecture/64/Arch_AWS-Simple-Notification-Service_64' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Icon-Architecture-BG/64/Application-Integration' fill='url(%23linearGradient-1)'%3E%3Crect id='Rectangle' x='0' y='0' width='80' height='80'%3E%3C/rect%3E%3C/g%3E%3Cpath d='M17,38 C18.103,38 19,38.897 19,40 C19,41.103 18.103,42 17,42 C15.897,42 15,41.103 15,40 C15,38.897 15.897,38 17,38 L17,38 Z M41,64 C29.314,64 19.289,55.466 17.194,43.98 C18.965,43.894 20.427,42.659 20.857,41 L27,41 L27,39 L20.857,39 C20.427,37.342 18.966,36.107 17.195,36.02 C19.285,24.71 29.511,16 41,16 C45.313,16 49.832,17.622 54.429,20.821 L55.571,19.179 C50.633,15.743 45.73,14 41,14 C28.27,14 16.949,23.865 15.063,36.521 C13.839,37.207 13,38.5 13,40 C13,41.5 13.839,42.793 15.063,43.478 C16.97,56.341 28.056,66 41,66 C46.407,66 51.942,64.157 56.585,60.811 L55.415,59.189 C51.11,62.292 45.991,64 41,64 L41,64 Z M30.101,36.442 C31.955,36.895 34.275,37 36,37 C37.642,37 39.823,36.905 41.629,36.506 L37.105,45.553 C37.036,45.691 37,45.845 37,46 L37,50.453 C36.199,50.964 34.833,51.812 34,51.986 L34,46 C34,45.868 33.974,45.737 33.923,45.615 L30.101,36.442 Z M36,33 C40.025,33 42.174,33.604 42.841,34 C42.174,34.396 40.025,35 36,35 C31.975,35 29.826,34.396 29.159,34 C29.826,33.604 31.975,33 36,33 L36,33 Z M33,54 L34,54 C34.043,54 34.086,53.997 34.128,53.992 C35.352,53.833 36.909,52.887 38.272,52.013 L38.535,51.845 C38.824,51.661 39,51.342 39,51 L39,46.236 L44.559,35.12 C44.833,34.801 45,34.434 45,34 C45,31.39 39.361,31 36,31 C32.639,31 27,31.39 27,34 C27,34.366 27.12,34.684 27.32,34.967 L32,46.2 L32,53 C32,53.552 32.447,54 33,54 L33,54 Z M62,53 C63.103,53 64,53.897 64,55 C64,56.103 63.103,57 62,57 C60.897,57 60,56.103 60,55 C60,53.897 60.897,53 62,53 L62,53 Z M62,23 C63.103,23 64,23.897 64,25 C64,26.103 63.103,27 62,27 C60.897,27 60,26.103 60,25 C60,23.897 60.897,23 62,23 L62,23 Z M64,38 C65.103,38 66,38.897 66,40 C66,41.103 65.103,42 64,42 C62.897,42 62,41.103 62,40 C62,38.897 62.897,38 64,38 L64,38 Z M54,41 L60.143,41 C60.589,42.72 62.142,44 64,44 C66.206,44 68,42.206 68,40 C68,37.794 66.206,36 64,36 C62.142,36 60.589,37.28 60.143,39 L54,39 L54,26 L58.143,26 C58.589,27.72 60.142,29 62,29 C64.206,29 66,27.206 66,25 C66,22.794 64.206,21 62,21 C60.142,21 58.589,22.28 58.143,24 L53,24 C52.447,24 52,24.448 52,25 L52,39 L45,39 L45,41 L52,41 L52,55 C52,55.552 52.447,56 53,56 L58.143,56 C58.589,57.72 60.142,59 62,59 C64.206,59 66,57.206 66,55 C66,52.794 64.206,51 62,51 C60.142,51 58.589,52.28 58.143,54 L54,54 L54,41 Z' id='AWS-Simple-Notification-Service_Icon_64_Squid' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCA4MCA4MCcgdmVyc2lvbj0nMS4xJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnCiAgICAgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPjwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggNjQgKDkzNTM3KSAtIGh0dHBzOi8vc2tldGNoLmNvbSAtLT4KICAgIDx0aXRsZT5JY29uLUFyY2hpdGVjdHVyZS82NC9BcmNoX0FXUy1TaW1wbGUtTm90aWZpY2F0aW9uLVNlcnZpY2VfNjQ8L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+CiAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgeDE9JzAlJyB5MT0nMTAwJScgeDI9JzEwMCUnIHkyPScwJScgaWQ9J2xpbmVhckdyYWRpZW50LTEnPgogICAgICAgICAgICA8c3RvcCBzdG9wLWNvbG9yPScjQjAwODREJyBvZmZzZXQ9JzAlJz48L3N0b3A+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9JyNGRjRGOEInIG9mZnNldD0nMTAwJSc+PC9zdG9wPgogICAgICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8L2RlZnM+CiAgICA8ZyBpZD0nSWNvbi1BcmNoaXRlY3R1cmUvNjQvQXJjaF9BV1MtU2ltcGxlLU5vdGlmaWNhdGlvbi1TZXJ2aWNlXzY0JyBzdHJva2U9J25vbmUnIHN0cm9rZS13aWR0aD0nMScgZmlsbD0nbm9uZScKICAgICAgIGZpbGwtcnVsZT0nZXZlbm9kZCc+CiAgICAgICAgPGcgaWQ9J0ljb24tQXJjaGl0ZWN0dXJlLUJHLzY0L0FwcGxpY2F0aW9uLUludGVncmF0aW9uJyBmaWxsPSd1cmwoI2xpbmVhckdyYWRpZW50LTEpJz4KICAgICAgICAgICAgPHJlY3QgaWQ9J1JlY3RhbmdsZScgeD0nMCcgeT0nMCcgd2lkdGg9JzgwJyBoZWlnaHQ9JzgwJz48L3JlY3Q+CiAgICAgICAgPC9nPgogICAgICAgIDxwYXRoIGQ9J00xNywzOCBDMTguMTAzLDM4IDE5LDM4Ljg5NyAxOSw0MCBDMTksNDEuMTAzIDE4LjEwMyw0MiAxNyw0MiBDMTUuODk3LDQyIDE1LDQxLjEwMyAxNSw0MCBDMTUsMzguODk3IDE1Ljg5NywzOCAxNywzOCBMMTcsMzggWiBNNDEsNjQgQzI5LjMxNCw2NCAxOS4yODksNTUuNDY2IDE3LjE5NCw0My45OCBDMTguOTY1LDQzLjg5NCAyMC40MjcsNDIuNjU5IDIwLjg1Nyw0MSBMMjcsNDEgTDI3LDM5IEwyMC44NTcsMzkgQzIwLjQyNywzNy4zNDIgMTguOTY2LDM2LjEwNyAxNy4xOTUsMzYuMDIgQzE5LjI4NSwyNC43MSAyOS41MTEsMTYgNDEsMTYgQzQ1LjMxMywxNiA0OS44MzIsMTcuNjIyIDU0LjQyOSwyMC44MjEgTDU1LjU3MSwxOS4xNzkgQzUwLjYzMywxNS43NDMgNDUuNzMsMTQgNDEsMTQgQzI4LjI3LDE0IDE2Ljk0OSwyMy44NjUgMTUuMDYzLDM2LjUyMSBDMTMuODM5LDM3LjIwNyAxMywzOC41IDEzLDQwIEMxMyw0MS41IDEzLjgzOSw0Mi43OTMgMTUuMDYzLDQzLjQ3OCBDMTYuOTcsNTYuMzQxIDI4LjA1Niw2NiA0MSw2NiBDNDYuNDA3LDY2IDUxLjk0Miw2NC4xNTcgNTYuNTg1LDYwLjgxMSBMNTUuNDE1LDU5LjE4OSBDNTEuMTEsNjIuMjkyIDQ1Ljk5MSw2NCA0MSw2NCBMNDEsNjQgWiBNMzAuMTAxLDM2LjQ0MiBDMzEuOTU1LDM2Ljg5NSAzNC4yNzUsMzcgMzYsMzcgQzM3LjY0MiwzNyAzOS44MjMsMzYuOTA1IDQxLjYyOSwzNi41MDYgTDM3LjEwNSw0NS41NTMgQzM3LjAzNiw0NS42OTEgMzcsNDUuODQ1IDM3LDQ2IEwzNyw1MC40NTMgQzM2LjE5OSw1MC45NjQgMzQuODMzLDUxLjgxMiAzNCw1MS45ODYgTDM0LDQ2IEMzNCw0NS44NjggMzMuOTc0LDQ1LjczNyAzMy45MjMsNDUuNjE1IEwzMC4xMDEsMzYuNDQyIFogTTM2LDMzIEM0MC4wMjUsMzMgNDIuMTc0LDMzLjYwNCA0Mi44NDEsMzQgQzQyLjE3NCwzNC4zOTYgNDAuMDI1LDM1IDM2LDM1IEMzMS45NzUsMzUgMjkuODI2LDM0LjM5NiAyOS4xNTksMzQgQzI5LjgyNiwzMy42MDQgMzEuOTc1LDMzIDM2LDMzIEwzNiwzMyBaIE0zMyw1NCBMMzQsNTQgQzM0LjA0Myw1NCAzNC4wODYsNTMuOTk3IDM0LjEyOCw1My45OTIgQzM1LjM1Miw1My44MzMgMzYuOTA5LDUyLjg4NyAzOC4yNzIsNTIuMDEzIEwzOC41MzUsNTEuODQ1IEMzOC44MjQsNTEuNjYxIDM5LDUxLjM0MiAzOSw1MSBMMzksNDYuMjM2IEw0NC41NTksMzUuMTIgQzQ0LjgzMywzNC44MDEgNDUsMzQuNDM0IDQ1LDM0IEM0NSwzMS4zOSAzOS4zNjEsMzEgMzYsMzEgQzMyLjYzOSwzMSAyNywzMS4zOSAyNywzNCBDMjcsMzQuMzY2IDI3LjEyLDM0LjY4NCAyNy4zMiwzNC45NjcgTDMyLDQ2LjIgTDMyLDUzIEMzMiw1My41NTIgMzIuNDQ3LDU0IDMzLDU0IEwzMyw1NCBaIE02Miw1MyBDNjMuMTAzLDUzIDY0LDUzLjg5NyA2NCw1NSBDNjQsNTYuMTAzIDYzLjEwMyw1NyA2Miw1NyBDNjAuODk3LDU3IDYwLDU2LjEwMyA2MCw1NSBDNjAsNTMuODk3IDYwLjg5Nyw1MyA2Miw1MyBMNjIsNTMgWiBNNjIsMjMgQzYzLjEwMywyMyA2NCwyMy44OTcgNjQsMjUgQzY0LDI2LjEwMyA2My4xMDMsMjcgNjIsMjcgQzYwLjg5NywyNyA2MCwyNi4xMDMgNjAsMjUgQzYwLDIzLjg5NyA2MC44OTcsMjMgNjIsMjMgTDYyLDIzIFogTTY0LDM4IEM2NS4xMDMsMzggNjYsMzguODk3IDY2LDQwIEM2Niw0MS4xMDMgNjUuMTAzLDQyIDY0LDQyIEM2Mi44OTcsNDIgNjIsNDEuMTAzIDYyLDQwIEM2MiwzOC44OTcgNjIuODk3LDM4IDY0LDM4IEw2NCwzOCBaIE01NCw0MSBMNjAuMTQzLDQxIEM2MC41ODksNDIuNzIgNjIuMTQyLDQ0IDY0LDQ0IEM2Ni4yMDYsNDQgNjgsNDIuMjA2IDY4LDQwIEM2OCwzNy43OTQgNjYuMjA2LDM2IDY0LDM2IEM2Mi4xNDIsMzYgNjAuNTg5LDM3LjI4IDYwLjE0MywzOSBMNTQsMzkgTDU0LDI2IEw1OC4xNDMsMjYgQzU4LjU4OSwyNy43MiA2MC4xNDIsMjkgNjIsMjkgQzY0LjIwNiwyOSA2NiwyNy4yMDYgNjYsMjUgQzY2LDIyLjc5NCA2NC4yMDYsMjEgNjIsMjEgQzYwLjE0MiwyMSA1OC41ODksMjIuMjggNTguMTQzLDI0IEw1MywyNCBDNTIuNDQ3LDI0IDUyLDI0LjQ0OCA1MiwyNSBMNTIsMzkgTDQ1LDM5IEw0NSw0MSBMNTIsNDEgTDUyLDU1IEM1Miw1NS41NTIgNTIuNDQ3LDU2IDUzLDU2IEw1OC4xNDMsNTYgQzU4LjU4OSw1Ny43MiA2MC4xNDIsNTkgNjIsNTkgQzY0LjIwNiw1OSA2Niw1Ny4yMDYgNjYsNTUgQzY2LDUyLjc5NCA2NC4yMDYsNTEgNjIsNTEgQzYwLjE0Miw1MSA1OC41ODksNTIuMjggNTguMTQzLDU0IEw1NCw1NCBMNTQsNDEgWicKICAgICAgICAgICAgICBpZD0nQVdTLVNpbXBsZS1Ob3RpZmljYXRpb24tU2VydmljZV9JY29uXzY0X1NxdWlkJyBmaWxsPScjRkZGRkZGJz48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
+      {
+        "group": "subscription",
+        "tooltip": "The subscription ID is a part of the URL endpoint"
+      },
+      {
+        "group": "subscription",
+        "tooltip": "Control which topic(s) are allowed to start a process"
+      },
+      {
+        "group": "subscription",
+        "tooltip": "Topic ARNs that are allowed to trigger the process, comma-separated",
+        "placeholder": "arn:aws:sns:us-east-1:123456789012:Topic1,arn:aws:sns:us-east-1:123456789012:Topic2"
+      },
+      {
+        "group": "activation"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      }
+    ]
+  },
+  "io.camunda.connectors.inbound.EmailReceive.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "protocol",
+          "label": "Imap Details"
+        },
+        {
+          "id": "listenerInfos",
+          "label": "Listener information"
+        },
+        {
+          "id": "unseenPollingConfig",
+          "label": "After process"
+        },
+        {
+          "id": "allPollingConfig",
+          "label": "After process"
+        },
+        {
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzkwXzI0MjApIj4KPHBhdGggZD0iTTguMzM4MzUgOS45NTM2NUwxMC4zODk0IDEyLjAxMDRMOC4zMzI2MiAxNC4wNjcyTDkuMTQ2MTYgMTQuODc1TDEyLjAxMDcgMTIuMDEwNEw5LjE0NjE2IDkuMTQ1ODNMOC4zMzgzNSA5Ljk1MzY1WiIgZmlsbD0iYmxhY2siLz4KPHBhdGggZD0iTTEyLjM0ODggOS45NTM2NUwxNC4zOTk4IDEyLjAxMDRMMTIuMzQzIDE0LjA2NzJMMTMuMTU2NiAxNC44NzVMMTYuMDIxMiAxMi4wMTA0TDEzLjE1NjYgOS4xNDU4M0wxMi4zNDg4IDkuOTUzNjVaIiBmaWxsPSJibGFjayIvPgo8cGF0aCBkPSJNMy45NzIgMTEuNDM3NUgxLjEyNTMzVjIuNzkyMTlMNy42NzM3NiA3LjMyMzk2QzcuNzY5NjcgNy4zOTA0OSA3Ljg4MzYgNy40MjYxNCA4LjAwMDMyIDcuNDI2MTRDOC4xMTcwNSA3LjQyNjE0IDguMjMwOTggNy4zOTA0OSA4LjMyNjg5IDcuMzIzOTZMMTQuODc1MyAyLjc5MjE5VjhIMTYuMDIxMlYyLjI3MDgzQzE2LjAyMTIgMS45NjY5NCAxNS45MDA0IDEuNjc1NDkgMTUuNjg1NiAxLjQ2MDYxQzE1LjQ3MDcgMS4yNDU3MiAxNS4xNzkyIDEuMTI1IDE0Ljg3NTMgMS4xMjVIMS4xMjUzM0MwLjgyMTQzMiAxLjEyNSAwLjUyOTk4NCAxLjI0NTcyIDAuMzE1MDk5IDEuNDYwNjFDMC4xMDAyMTQgMS42NzU0OSAtMC4wMjA1MDc4IDEuOTY2OTQgLTAuMDIwNTA3OCAyLjI3MDgzVjExLjQzNzVDLTAuMDIwNTA3OCAxMS43NDE0IDAuMTAwMjE0IDEyLjAzMjggMC4zMTUwOTkgMTIuMjQ3N0MwLjUyOTk4NCAxMi40NjI2IDAuODIxNDMyIDEyLjU4MzMgMS4xMjUzMyAxMi41ODMzSDMuOTcyVjExLjQzNzVaTTEzLjYxNDkgMi4yNzA4M0w4LjAwMDMyIDYuMTU1MjFMMi4zODU3NCAyLjI3MDgzSDEzLjYxNDlaIiBmaWxsPSIjRkM1RDBEIi8+CjxwYXRoIGQ9Ik00LjI4MjEgOS45NTM2NUw2LjMzMzE0IDEyLjAxMDRMNC4yNzYzNyAxNC4wNjcyTDUuMDg5OTEgMTQuODc1TDcuOTU0NDkgMTIuMDEwNEw1LjA4OTkxIDkuMTQ1ODNMNC4yODIxIDkuOTUzNjVaIiBmaWxsPSJibGFjayIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzkwXzI0MjAiPgo8cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg=="
+      }
+    },
+    "properties": [
       {},
-      {},
       {
-        "group": "subscription"
+        "group": "authentication"
       },
       {
-        "group": "subscription"
+        "group": "authentication"
       },
       {
-        "group": "subscription"
+        "group": "authentication",
+        "tooltip": "Enter your full email address (e.g., user@example.com) or the username provided by your email service. This is used to authenticate your access to the mail server."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Enter the password associated with your email account. Keep your password secure and do not share it with others."
+      },
+      {
+        "group": "protocol",
+        "tooltip": "Enter the address of the IMAP server used to retrieve your emails. This server allows you to sync your messages across multiple devices. (e.g., imap.example.com)"
+      },
+      {
+        "group": "protocol",
+        "tooltip": "Enter the port number for connecting to the IMAP server. Common ports are 993 for secure connections using SSL/TLS, or 143 for non-secure connections."
+      },
+      {
+        "group": "protocol",
+        "tooltip": "Select the encryption protocol for email security."
+      },
+      {
+        "group": "listenerInfos",
+        "tooltip": "Enter the names of the folder you wish to monitor. If left blank, the listener will default to monitoring the 'INBOX' folder."
+      },
+      {
+        "group": "listenerInfos",
+        "tooltip": "The duration for which the task will wait for a message to arrive in the mailbox before correlating"
+      },
+      {
+        "group": "listenerInfos"
+      },
+      {
+        "group": "unseenPollingConfig",
+        "tooltip": "Choose the desired handling strategy"
+      },
+      {
+        "group": "unseenPollingConfig",
+        "tooltip": "Specify the destination folder to which the emails will be moved. To create a new folder or a hierarchy of folders, use a dot-separated path (e.g., 'Archive' or 'Projects.2023.January'). If any part of the path does not exist, it will be created automatically."
+      },
+      {
+        "group": "allPollingConfig",
+        "tooltip": "Choose the desired handling strategy"
+      },
+      {
+        "group": "allPollingConfig",
+        "tooltip": "Specify the destination folder to which the emails will be moved. To create a new folder or a hierarchy of folders, use a dot-separated path (e.g., 'Archive' or 'Projects.2023.January'). If any part of the path does not exist, it will be created automatically."
       },
       {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "activation"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -7382,6 +11298,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       "groups": [
         {
+          "id": "operation",
+          "label": "Operation"
+        },
+        {
           "id": "authentication",
           "label": "Authentication"
         },
@@ -7390,12 +11310,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Payload"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Response mapping"
         },
         {
           "id": "errors",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ]
     },
@@ -7406,44 +11334,170 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication",
+        "tooltip": "For members of multiple organizations. <a href=\"https://platform.openai.com/docs/api-reference/requesting-organization\" target=\"_blank\">OpenAI organization documentation</a>"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "operation",
+        "tooltip": "Chat: generate a chat completion. Moderation: classify text for policy-violating content."
+      },
+      {},
+      {},
+      {},
+      {
+        "tooltip": "Text to classify with the moderation API.",
+        "group": "input"
+      },
+      {
+        "tooltip": "Choose a listed model, or Custom to enter a model version as free text.",
+        "group": "input"
+      },
+      {
+        "tooltip": "Model version to invoke. See the available <a href=\"https://platform.openai.com/docs/models/overview\" target=\"_blank\">OpenAI models</a>.",
+        "placeholder": "gpt-4o-mini",
+        "group": "input"
+      },
+      {
+        "tooltip": "Sampling temperature: higher values make output more random, lower values more focused and deterministic.",
+        "group": "input"
+      },
+      {
+        "tooltip": "Optional initial instructions for the model",
+        "group": "input"
+      },
+      {
+        "tooltip": "Optional chat history, or examples of the desired model behavior",
+        "group": "input"
+      },
+      {
+        "tooltip": "Input to be evaluated",
+        "group": "input"
+      },
+      {
+        "tooltip": "Number of alternative responses the model will generate",
+        "group": "input"
+      },
+      {},
+      {},
+      {},
+      {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "group": "output"
+      },
+      {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "group": "output"
+      },
+      {
+        "tooltip": "Timeout in seconds to establish a connection, or 0 for an infinite timeout.",
+        "group": "errors"
+      },
+      {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "group": "errors"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.connectors.aws.bedrock.agentcore.runtime.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "configuration",
+          "label": "Configuration"
+        },
+        {
+          "id": "agentConfig",
+          "label": "Agent Configuration"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
+          "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSIwIDAgNDAgNDAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+SWNvbi1BcmNoaXRlY3R1cmUvMzIvQXJjaF9BbWF6b24tQmVkcm9ja18zMjwvdGl0bGU+CiAgICA8ZyBpZD0iSWNvbi1BcmNoaXRlY3R1cmUvMzIvQXJjaF9BbWF6b24tQmVkcm9ja18zMiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9Ikljb24tQXJjaGl0ZWN0dXJlLUJHLzMyL01hY2hpbmUtTGVhcm5pbmciIGZpbGw9IiMwMUE4OEQiPgogICAgICAgICAgICA8cmVjdCBpZD0iUmVjdGFuZ2xlIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiPjwvcmVjdD4KICAgICAgICA8L2c+CiAgICAgICAgPGcgaWQ9Ikljb24tU2VydmljZS8zMi9BbWF6b24tQmVkcm9ja18zMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNi4wMDAwMDAsIDYuMDAwMDAwKSIgZmlsbD0iI0ZGRkZGRiI+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMC41MTYsMjYuOTMzMjExNiBMOC4yOTMsMjUuNjYzMjExNiBMMTEuNzI0LDIzLjk0NzIxMTYgTDExLjI3NywyMy4wNTMyMTE2IEw3LjI3NywyNS4wNTMyMTE2IEw3LjI5NywyNS4wOTQyMTE2IEw0LDIzLjIxMDIxMTYgTDQsMTkuODA5MjExNiBMNy43MjQsMTcuOTQ3MjExNiBMNy4yNzcsMTcuMDUzMjExNiBMMy41MzYsMTguOTIzMjExNiBMMSwxNy4yMzIyMTE2IEwxLDE0LjgwOTIxMTYgTDQuNzI0LDEyLjk0NzIxMTYgTDQuMjc3LDEyLjA1MzIxMTYgTDEsMTMuNjkxMjExNiBMMSwxMC43NjcyMTE2IEwzLjUyMyw5LjA4NjIxMTU4IEw3LDExLjAzODIxMTYgTDcsMTQuMTkxMjExNiBMNS4yNzcsMTUuMDUzMjExNiBMNS43MjQsMTUuOTQ3MjExNiBMNy41LDE1LjA1OTIxMTYgTDkuMjc3LDE1Ljk0NzIxMTYgTDkuNzI0LDE1LjA1MzIxMTYgTDgsMTQuMTkxMjExNiBMOCwxMC43NjcyMTE2IEwxMC43NzgsOC45MTYyMTE1OCBDMTAuOTE2LDguODIzMjExNTggMTEsOC42NjcyMTE1OCAxMSw4LjUwMDIxMTU4IEwxMSw1LjAwMDIxMTU4IEwxMCw1LjAwMDIxMTU4IEwxMCw4LjIzMjIxMTU4IEw3LjI3OCwxMC4wNDcyMTE2IEw0LDguMjA3MjExNTggTDQsNC4wMzUyMTE1OCBMNywyLjY1NzIxMTU4IEw3LDcuMDAwMjExNTggTDgsNy4wMDAyMTE1OCBMOCwyLjE5ODIxMTU4IEwxMC40OTIsMS4wNTQyMTE1OCBMMTQsMi44MDkyMTE1OCBMMTQsMTcuMTkxMjExNiBMNi4yNzcsMjEuMDUzMjExNiBMNi43MjQsMjEuOTQ3MjExNiBMMTQsMTguMzA5MjExNiBMMTQsMjUuMTkxMjExNiBMMTAuNTE2LDI2LjkzMzIxMTYgWiBNMjUuNSwxOS41MDAyMTE2IEMyNS41LDIwLjA1MTIxMTYgMjUuMDUyLDIwLjUwMDIxMTYgMjQuNSwyMC41MDAyMTE2IEMyMy45NDksMjAuNTAwMjExNiAyMy41LDIwLjA1MTIxMTYgMjMuNSwxOS41MDAyMTE2IEMyMy41LDE4Ljk0OTIxMTYgMjMuOTQ5LDE4LjUwMDIxMTYgMjQuNSwxOC41MDAyMTE2IEMyNS4wNTIsMTguNTAwMjExNiAyNS41LDE4Ljk0OTIxMTYgMjUuNSwxOS41MDAyMTE2IEwyNS41LDE5LjUwMDIxMTYgWiBNMjAuNSwyNC4wMDAyMTE2IEMyMC41LDI0LjU1MTIxMTYgMjAuMDUyLDI1LjAwMDIxMTYgMTkuNSwyNS4wMDAyMTE2IEMxOC45NDksMjUuMDAwMjExNiAxOC41LDI0LjU1MTIxMTYgMTguNSwyNC4wMDAyMTE2IEMxOC41LDIzLjQ0OTIxMTYgMTguOTQ5LDIzLjAwMDIxMTYgMTkuNSwyMy4wMDAyMTE2IEMyMC4wNTIsMjMuMDAwMjExNiAyMC41LDIzLjQ0OTIxMTYgMjAuNSwyNC4wMDAyMTE2IEwyMC41LDI0LjAwMDIxMTYgWiBNMTkuNSw0LjAwMDIxMTU4IEMxOS41LDMuNDQ5MjExNTggMTkuOTQ5LDMuMDAwMjExNTggMjAuNSwzLjAwMDIxMTU4IEMyMS4wNTIsMy4wMDAyMTE1OCAyMS41LDMuNDQ5MjExNTggMjEuNSw0LjAwMDIxMTU4IEMyMS41LDQuNTUxMjExNTggMjEuMDUyLDUuMDAwMjExNTggMjAuNSw1LjAwMDIxMTU4IEMxOS45NDksNS4wMDAyMTE1OCAxOS41LDQuNTUxMjExNTggMTkuNSw0LjAwMDIxMTU4IEwxOS41LDQuMDAwMjExNTggWiBNMjYsMTEuNTAwMjExNiBDMjYuNTUyLDExLjUwMDIxMTYgMjcsMTEuOTQ5MjExNiAyNywxMi41MDAyMTE2IEMyNywxMy4wNTEyMTE2IDI2LjU1MiwxMy41MDAyMTE2IDI2LDEzLjUwMDIxMTYgQzI1LjQ0OSwxMy41MDAyMTE2IDI1LDEzLjA1MTIxMTYgMjUsMTIuNTAwMjExNiBDMjUsMTEuOTQ5MjExNiAyNS40NDksMTEuNTAwMjExNiAyNiwxMS41MDAyMTE2IEwyNiwxMS41MDAyMTE2IFogTTI0LjA3MSwxMy4wMDAyMTE2IEMyNC4yOTUsMTMuODYwMjExNiAyNS4wNzEsMTQuNTAwMjExNiAyNiwxNC41MDAyMTE2IEMyNy4xMDMsMTQuNTAwMjExNiAyOCwxMy42MDMyMTE2IDI4LDEyLjUwMDIxMTYgQzI4LDExLjM5NzIxMTYgMjcuMTAzLDEwLjUwMDIxMTYgMjYsMTAuNTAwMjExNiBDMjUuMDcxLDEwLjUwMDIxMTYgMjQuMjk1LDExLjE0MDIxMTYgMjQuMDcxLDEyLjAwMDIxMTYgTDE1LDEyLjAwMDIxMTYgTDE1LDkuMDAwMjExNTggTDIwLjUsOS4wMDAyMTE1OCBDMjAuNzc3LDkuMDAwMjExNTggMjEsOC43NzYyMTE1OCAyMSw4LjUwMDIxMTU4IEwyMSw1LjkyOTIxMTU4IEMyMS44Niw1LjcwNTIxMTU4IDIyLjUsNC45MjkyMTE1OCAyMi41LDQuMDAwMjExNTggQzIyLjUsMi44OTcyMTE1OCAyMS42MDMsMi4wMDAyMTE1OCAyMC41LDIuMDAwMjExNTggQzE5LjM5OCwyLjAwMDIxMTU4IDE4LjUsMi44OTcyMTE1OCAxOC41LDQuMDAwMjExNTggQzE4LjUsNC45MjkyMTE1OCAxOS4xNCw1LjcwNTIxMTU4IDIwLDUuOTI5MjExNTggTDIwLDguMDAwMjExNTggTDE1LDguMDAwMjExNTggTDE1LDIuNTAwMjExNTggQzE1LDIuMzEwMjExNTggMTQuODkzLDIuMTM4MjExNTggMTQuNzI0LDIuMDUzMjExNTggTDEwLjcyNCwwLjA1MzIxMTU4NDMgQzEwLjU4OCwtMC4wMTQ3ODg0MTU3IDEwLjQzLC0wLjAxNzc4ODQxNTcgMTAuMjkxLDAuMDQ1MjExNTg0MyBMMy4yOTEsMy4yNjAyMTE1OCBDMy4xMTUsMy4zNDEyMTE1OCAzLDMuNTE5MjExNTggMywzLjcxNDIxMTU4IEwzLDguMjMyMjExNTggTDAuMjIzLDEwLjA4NDIxMTYgQzAuMDg0LDEwLjE3NzIxMTYgMCwxMC4zMzMyMTE2IDAsMTAuNTAwMjExNiBMMCwxNy41MDAyMTE2IEMwLDE3LjY2NzIxMTYgMC4wODQsMTcuODIzMjExNiAwLjIyMywxNy45MTYyMTE2IEwzLDE5Ljc2NzIxMTYgTDMsMjMuNTAwMjExNiBDMywyMy42NzkyMTE2IDMuMDk2LDIzLjg0NTIxMTYgMy4yNTIsMjMuOTM0MjExNiBMMTAuMjUyLDI3LjkzNDIxMTYgQzEwLjMyOSwyNy45NzgyMTE2IDEwLjQxNCwyOC4wMDAyMTE2IDEwLjUsMjguMDAwMjExNiBDMTAuNTc3LDI4LjAwMDIxMTYgMTAuNjU0LDI3Ljk4MjIxMTYgMTAuNzI0LDI3Ljk0NzIxMTYgTDE0LjcyNCwyNS45NDcyMTE2IEMxNC44OTMsMjUuODYyMjExNiAxNSwyNS42ODkyMTE2IDE1LDI1LjUwMDIxMTYgTDE1LDIxLjAwMDIxMTYgTDE5LDIxLjAwMDIxMTYgTDE5LDIyLjA3MTIxMTYgQzE4LjE0LDIyLjI5NTIxMTYgMTcuNSwyMy4wNzEyMTE2IDE3LjUsMjQuMDAwMjExNiBDMTcuNSwyNS4xMDMyMTE2IDE4LjM5OCwyNi4wMDAyMTE2IDE5LjUsMjYuMDAwMjExNiBDMjAuNjAzLDI2LjAwMDIxMTYgMjEuNSwyNS4xMDMyMTE2IDIxLjUsMjQuMDAwMjExNiBDMjEuNSwyMy4wNzEyMTE2IDIwLjg2LDIyLjI5NTIxMTYgMjAsMjIuMDcxMjExNiBMMjAsMjAuNTAwMjExNiBDMjAsMjAuMjI0MjExNiAxOS43NzcsMjAuMDAwMjExNiAxOS41LDIwLjAwMDIxMTYgTDE1LDIwLjAwMDIxMTYgTDE1LDE3LjAwMDIxMTYgTDIxLjI5MywxNy4wMDAyMTE2IEwyMi43ODQsMTguNDkwMjExNiBDMjIuNjA4LDE4Ljc4ODIxMTYgMjIuNSwxOS4xMzAyMTE2IDIyLjUsMTkuNTAwMjExNiBDMjIuNSwyMC42MDMyMTE2IDIzLjM5OCwyMS41MDAyMTE2IDI0LjUsMjEuNTAwMjExNiBDMjUuNjAzLDIxLjUwMDIxMTYgMjYuNSwyMC42MDMyMTE2IDI2LjUsMTkuNTAwMjExNiBDMjYuNSwxOC4zOTcyMTE2IDI1LjYwMywxNy41MDAyMTE2IDI0LjUsMTcuNTAwMjExNiBDMjQuMTMxLDE3LjUwMDIxMTYgMjMuNzg4LDE3LjYwODIxMTYgMjMuNDkxLDE3Ljc4MzIxMTYgTDIxLjg1NCwxNi4xNDYyMTE2IEMyMS43NiwxNi4wNTMyMTE2IDIxLjYzMywxNi4wMDAyMTE2IDIxLjUsMTYuMDAwMjExNiBMMTUsMTYuMDAwMjExNiBMMTUsMTMuMDAwMjExNiBMMjQuMDcxLDEzLjAwMDIxMTYgWiIgaWQ9IkZpbGwtNSI+PC9wYXRoPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+"
+      }
+    },
+    "properties": [
+      {},
+      {
         "group": "authentication"
       },
       {
         "group": "authentication"
       },
       {
-        "group": "input"
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
       },
       {
-        "group": "endpoint"
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
       },
       {
-        "group": "endpoint"
+        "group": "configuration"
       },
       {
-        "group": "endpoint"
+        "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "agentConfig"
       },
       {
-        "group": "input"
+        "group": "agentConfig"
       },
       {
-        "group": "input"
+        "group": "agentConfig"
       },
       {
-        "group": "input"
+        "group": "connector"
       },
       {
-        "group": "input"
+        "group": "connector"
       },
-      {},
-      {},
-      {},
       {
         "group": "output"
       },
@@ -7451,10 +11505,192 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "output"
       },
       {
-        "group": "errors"
+        "group": "error"
       },
       {
-        "group": "errors"
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.connectors.CamundaOrchestrationCluster.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "operation",
+          "label": "Operation"
+        },
+        {
+          "id": "cluster",
+          "label": "Cluster"
+        },
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "parameters",
+          "label": "Parameters"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
+          "id": "output",
+          "label": "Response mapping"
+        },
+        {
+          "id": "errors",
+          "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAATYAAAE2CAYAAADrvL6pAAAACXBIWXMAAAsSAAALEgHS3X78AAAJEUlEQVR4nO3d71EcyQHG4W6bz5YuApGBcATHRXA4AQtHcGRwOAKjCA45AhzBQQSGDCAD4e+udg1uqfZsIfFnZ5l9+3mq+OCybmp2pvZXPTM927W1VgCS/M7ZBNIIGxBH2IA4wgbEETYgjrABcYQNiCNsQBxhA+IIGxBH2IA4wgbEETYgjrABcYQNiCNsQBxhA+IIGxBH2IA4wgbEETYgjrABcYQNiCNsQBxhA+IIGxBH2IA4wgbEETYgjrABcYQNiCNsQBxhA+IIGxBH2IA4wgbEETYgjrABcYQNiCNsQBxhA+IIGxBH2IA4wgbE2XFKWbda614p5fXKZlf/98dSyuXK/3fdWrt2Elin2lpzQHmSWutuKWW/h+vT36snbu5milwp5byH71LweCph41FqrQellIMetDczH72rHrrT1trlA/493BE2vqmPzA7739wxu880ojvpkfvorPE1wsa9etCOSynvFnSUbnvgTgSO+wgb/6fWOt3oPyql/LzgozMF7ri1drKAfWFhhI3fqLVO985OX/CS87Gm+3CH7sGxyjw2Pqu1Tpedv25R1CZvpwcMtdbDBewLC2HExp1a6+nC7qU9xfvW2tH27TbrJmyD6/fTzvvIJ8GH1prR2+BcinIWFLXJuz76ZGDCNrAegO8Dj8AUN5ekA3MpOqj+xf9b+Kf/obV2voD9YMOEbUD9JfV/DvDJp7luuybyjsel6JhGuQf1aqDPygphG0yfq5b0sOBbfuyTjhmIS9GB9Kkd18/4aaFtddNa2x39/I/EiG0sRwNGbfLGmwljMWIbxMCjtU+M2gZixDaOw4GjVvqozb22QQjbOExY/W/cGYBL0QEMNG/tIb4zry2fVarG8FIjlau+MMuXFmXZf+biL091YG5bPmEbw8EGP+XtytoE31xlqt/3Ot7gO6v7wpbPpWi4DV+GXkwRfcqlXg/c2QZGcLettdcP+HdsMQ8P8m3qSeD0O2j7T71/1V9W3+urUc3pVY89wYQt3ybCdrWOH3fsl64H/XJ2TqZ9hBO2fJsYnazt4URflOV4Xdu7hxFbOGEL1t82mHthlg/rXiGqL6k35yWpNxDCCVu2TYxMzmba7pzrhSb+ajArhC3b3COT6QnjXGGba7t3+ir3hBK2bHN/eWf72e3+IMHlKE8ibNnm/vLOvfr6nOsVmMsWTNiybXvYvvnmwjN4MhpM2HiOuV8mnzNsBBO2bNt+uSVsPImwZRtp0Rb4TNgYlYcHwYSNUXl4EEzYgDjCBsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiCOsAFxhA2II2xAnB2nlAWbfnr8Yqbdm3u9Bl6QsLFYfYX5fWeIx3IpCsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiDOjlPKUtVad0sphzPt3nVr7dTJzyRsLNkUtp9n2r+LUoqwhXIpCsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiCOsAFxhI1RfXTmcwkbo7p05nMJGxBH2LLdjH4AGJOwZbve8k+3u4B9YAsJG8+xN/PRmzNs2x59vkLYss395G/uEdWc4RS2YMKWbe4nf/tbvH3TPYIJW7a5v7xva62zjNpqrdNo7dUc25601kz3CCZs2Tbx5T3csu0WT4vzCVu2TdxHOqq1vl7nBvv25gyb+2vhhC1Ya236At/O/Amny8XjNW/zeM7L0FLK+YzbZgGELd8mvsQ/1VrXMsLq2/lpHdv6CmELJ2z5NvUl/uW5cev//S/r26V7eXAQTtjybXJ0MsXt7LFPSqd/P/13G4raVWvNVI9wtbU2+jGIV2v9OPM9qy+5KKWc9dHR5WpM+sOBvf43jdLebnC//tpaW/c9QRZG2AZQaz0tpbwb/Th0fzSHLZ9L0TGcjX4AuhtRG4OwDaC1dmZS6p2TBewDGyBs4zgd/QA4BuMQtnGcbGCy7pJ98DR0HMI2iP6lHvlSzJPQgQjbWEYdtb3vr5cxCGEbSB+1jTZyuTVaG495bAOqtV5ueFLsS/pTfyrMQIzYxnQ4yCXpP0RtTMI2oD5J9Sj8k9/M/JtuLJiwDaq1Ns3p+hD66afR6IHpHeMStoG11g4D4zZFbd+rU2MTtsGFxU3UuCNsfIrb+y0/EqLGZ8LGndba9DDhL1v6tHT67bddUeMTYeOz/kBhr4diW0w/HLnvQQGrTNDli/r6A9OM/TcLPUJTfA+9KsWXCBv36j/hfdTngy0lcFPQjltrVpriXsLGg/QR3EEp5ccXOGK3/bfUTozQeAhh41H6KO6g/+3PuEjMVV9h69xrUTyWsPEstdZPq03t9tBNvn/ENqdXn65X/s7/d1UreCxhY1Z9jdHfrDPq/hhzEzYgjnlsQBxhA+IIGxBH2IA4wgbEETYgjrABcYQNiCNsQBxhA+IIGxBH2IA4wgbEETYgjrABcYQNiCNsQBxhA+IIGxBH2IA4O05prn//+Q9Wg7rf5e///q+jpe4czyNs2R6zvifEcCkKxBE2II6wAXGEDYgjbEAcYQPiCBsQR9iAOMIGxBE2II6wAXGEDYgjbEAcYQPiCBsQR9iAOMIGxBE2II6wAXGEDYgjbEAcYQPiCBsQR9iAOMIGxBE2II6wAXGEDYgjbEAcYQPiCBsQR9iAOMIGxBE2II6wAXGEDYgjbEAcYQPi7Dil0S5GPwBfcbnYPePZamvNUQSiuBQF4ggbEEfYgDjCBsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiCOsAFxhA2II2xAHGED4ggbEEfYgDjCBsQRNiBLKeU/6wDlv8KCEewAAAAASUVORK5CYII="
+      }
+    },
+    "properties": [
+      {},
+      {},
+      {
+        "group": "operation",
+        "tooltip": "Orchestration Cluster API v2 entity. See the <a href=\"https://docs.camunda.io/docs/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview/\" target=\"_blank\">API reference</a>."
+      },
+      {
+        "group": "operation",
+        "tooltip": "<b>Search</b> issues a POST to <code>/{entity}/search</code> with filter, sort, and page. <b>Get by key</b> issues a GET to <code>/{entity}/{key}</code>."
+      },
+      {
+        "group": "operation",
+        "tooltip": "This entity supports <b>Search</b> only (POST to <code>/{entity}/search</code>)."
+      },
+      {
+        "group": "cluster",
+        "tooltip": "SaaS for cloud clusters on <code>*.zeebe.camunda.io</code>; Self-Managed for clusters you host yourself."
+      },
+      {
+        "group": "cluster",
+        "tooltip": "Token endpoint of your identity provider (e.g. Keycloak, Microsoft Entra ID, Auth0)."
+      },
+      {
+        "group": "cluster",
+        "tooltip": "Base URL of the Orchestration Cluster REST API. Must end with <code>/v2</code>. Example: <code>http://localhost:8080/v2</code>."
+      },
+      {
+        "group": "cluster",
+        "tooltip": "SaaS cluster region, e.g. <code>bru-2</code>, <code>dsm-1</code>. Visible in the cluster overview in Console. Accepts <code>{{secrets.NAME}}</code> or a FEEL expression."
+      },
+      {
+        "group": "cluster",
+        "tooltip": "SaaS cluster ID (UUID). Accepts <code>{{secrets.NAME}}</code> or a FEEL expression. See <a href=\"https://docs.camunda.io/docs/guides/setup-client-connection-credentials\" target=\"_blank\">creating API client credentials</a>."
+      },
+      {},
+      {},
+      {
+        "group": "authentication",
+        "tooltip": "The OAuth token endpoint (SaaS)"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "OAuth 2.0 client ID with permission to call the Orchestration Cluster API."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "OAuth 2.0 client secret. Use a Camunda secret reference like <code>{{secrets.MY_SECRET}}</code> in production."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "OAuth audience expected by your identity provider."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Space-separated OAuth 2.0 scopes. Required by some identity providers (e.g. for Microsoft Entra ID use <code>api://&lt;client-id&gt;/.default</code>)."
+      },
+      {},
+      {
+        "tooltip": "Get by key operation method (GET)"
+      },
+      {
+        "tooltip": "Search operation method (POST)"
+      },
+      {},
+      {},
+      {
+        "group": "parameters",
+        "tooltip": "Entity identifier. Numeric key (processInstanceKey, incidentKey, variableKey, processDefinitionKey, elementInstanceKey, userTaskKey, jobKey, decisionDefinitionKey, decisionRequirementsKey, decisionEvaluationInstanceKey, batchOperationKey, authorizationKey, auditLogKey) or string ID (groupId, roleId, tenantId, mappingRuleId). <b>Path separators (<code>/</code>, <code>..</code>) and whitespace are not allowed.</b> If you supply a FEEL expression, ensure its result contains none of these; the static pattern blocks them only for non-FEEL input."
+      },
+      {
+        "group": "parameters",
+        "tooltip": "FEEL expression evaluating to a context with per-entity filter fields. Example: <code>{state: \"ACTIVE\", processDefinitionId: \"order-process\"}</code>. See the <a href=\"https://docs.camunda.io/docs/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview/\" target=\"_blank\">API reference</a> for fields supported by each entity."
+      },
+      {
+        "group": "parameters",
+        "tooltip": "List of sort objects. Example: <code>[{field: \"startDate\", order: \"ASC\"}]</code>. Order is <code>ASC</code> or <code>DESC</code>."
+      },
+      {
+        "group": "parameters",
+        "tooltip": "Maximum results per page. Default 100, max 10000 (Orchestration Cluster API v2). Leave empty to omit and use server default. Accepts a FEEL expression."
+      },
+      {
+        "group": "parameters",
+        "tooltip": "Forward cursor pagination. Pass the <code>page.endCursor</code> string from the previous response to fetch the next page. Mutually exclusive with Page before and Page from."
+      },
+      {
+        "tooltip": "Backward cursor pagination. Pass the <code>page.startCursor</code> string from the previous response to fetch the previous page. Mutually exclusive with Page after and Page from.",
+        "group": "parameters"
+      },
+      {
+        "tooltip": "Offset-based pagination. Zero-based index of the first result. Mutually exclusive with Page after and Page before.",
+        "group": "parameters"
+      },
+      {},
+      {
+        "group": "output",
+        "tooltip": "Name of a process variable to store the full response in. Skip if you only want to map specific fields via Result expression. See <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable docs</a>."
+      },
+      {
+        "group": "output",
+        "tooltip": "FEEL expression returning a context whose keys become process variables. Example: <code>={items: response.body.items, total: response.body.page.totalItems}</code>. See <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression docs</a>."
+      },
+      {
+        "group": "errors",
+        "tooltip": "Seconds to wait when establishing the TCP connection. <code>0</code> disables the timeout (not recommended in production)."
+      },
+      {
+        "group": "errors",
+        "tooltip": "FEEL expression that maps connector errors to a BPMN error. Example: <code>=if error.code = \"404\" then bpmnError(\"NOT_FOUND\", error.message) else null</code>. See <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN errors docs</a>."
+      },
+      {
+        "group": "connector",
+        "tooltip": "Version of the element template"
+      },
+      {
+        "group": "connector",
+        "tooltip": "ID of the element template"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -7492,34 +11728,42 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL"
+      },
+      {},
+      {
+        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
         "group": "endpoint"
       },
       {},
-      {
-        "group": "endpoint"
-      },
-      {},
       {},
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Expression to extract unique identifier of a message"
       },
       {
-        "group": "activation"
-      },
-      {
-        "group": "correlation"
-      },
-      {
-        "group": "correlation"
+        "group": "activation",
+        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
       },
       {
         "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation",
+        "tooltip": "Sets up the correlation key from process variables"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation",
+        "tooltip": "Extracts the correlation key from the incoming message payload"
+      },
+      {
+        "group": "variable-mapping",
+        "tooltip": "Name of variable to store the result of the connector in"
+      },
+      {
+        "group": "variable-mapping",
+        "tooltip": "Expression to map the inbound payload to process variables"
       }
     ]
   },
@@ -7554,6 +11798,17 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL."
+      },
+      {},
+      {
+        "group": "endpoint",
+        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
+      },
+      {},
+      {
+        "tooltip": "Shared secret key used to verify the HMAC signature.",
         "group": "endpoint"
       },
       {},
@@ -7562,21 +11817,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
-        "group": "endpoint"
-      },
-      {},
-      {},
-      {
-        "group": "endpoint"
+        "group": "activation",
+        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events. See the <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound#make-your-twilio-webhook-connector-for-receiving-messages-executable' target='_blank'>Twilio webhook activation guide</a>."
       },
       {
-        "group": "activation"
+        "group": "variable-mapping",
+        "tooltip": "Name of variable to store the result of the connector in."
       },
       {
-        "group": "variable-mapping"
-      },
-      {
-        "group": "variable-mapping"
+        "group": "variable-mapping",
+        "tooltip": "Expression to map the inbound payload to process variables."
       }
     ]
   },
@@ -7590,7 +11840,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       "groups": [
         {
           "id": "subscription",
-          "label": "Subscription configuration"
+          "label": "Subscription Configuration"
         },
         {
           "id": "activation",
@@ -7598,35 +11848,44 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         },
         {
           "id": "correlation",
-          "label": "Subprocess correlation"
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable Mapping"
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 80 80' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 64 (93537) - https://sketch.com --%3E%3Ctitle%3EIcon-Architecture/64/Arch_AWS-Simple-Notification-Service_64%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3ClinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='linearGradient-1'%3E%3Cstop stop-color='%23B0084D' offset='0%25'%3E%3C/stop%3E%3Cstop stop-color='%23FF4F8B' offset='100%25'%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Cg id='Icon-Architecture/64/Arch_AWS-Simple-Notification-Service_64' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Icon-Architecture-BG/64/Application-Integration' fill='url(%23linearGradient-1)'%3E%3Crect id='Rectangle' x='0' y='0' width='80' height='80'%3E%3C/rect%3E%3C/g%3E%3Cpath d='M17,38 C18.103,38 19,38.897 19,40 C19,41.103 18.103,42 17,42 C15.897,42 15,41.103 15,40 C15,38.897 15.897,38 17,38 L17,38 Z M41,64 C29.314,64 19.289,55.466 17.194,43.98 C18.965,43.894 20.427,42.659 20.857,41 L27,41 L27,39 L20.857,39 C20.427,37.342 18.966,36.107 17.195,36.02 C19.285,24.71 29.511,16 41,16 C45.313,16 49.832,17.622 54.429,20.821 L55.571,19.179 C50.633,15.743 45.73,14 41,14 C28.27,14 16.949,23.865 15.063,36.521 C13.839,37.207 13,38.5 13,40 C13,41.5 13.839,42.793 15.063,43.478 C16.97,56.341 28.056,66 41,66 C46.407,66 51.942,64.157 56.585,60.811 L55.415,59.189 C51.11,62.292 45.991,64 41,64 L41,64 Z M30.101,36.442 C31.955,36.895 34.275,37 36,37 C37.642,37 39.823,36.905 41.629,36.506 L37.105,45.553 C37.036,45.691 37,45.845 37,46 L37,50.453 C36.199,50.964 34.833,51.812 34,51.986 L34,46 C34,45.868 33.974,45.737 33.923,45.615 L30.101,36.442 Z M36,33 C40.025,33 42.174,33.604 42.841,34 C42.174,34.396 40.025,35 36,35 C31.975,35 29.826,34.396 29.159,34 C29.826,33.604 31.975,33 36,33 L36,33 Z M33,54 L34,54 C34.043,54 34.086,53.997 34.128,53.992 C35.352,53.833 36.909,52.887 38.272,52.013 L38.535,51.845 C38.824,51.661 39,51.342 39,51 L39,46.236 L44.559,35.12 C44.833,34.801 45,34.434 45,34 C45,31.39 39.361,31 36,31 C32.639,31 27,31.39 27,34 C27,34.366 27.12,34.684 27.32,34.967 L32,46.2 L32,53 C32,53.552 32.447,54 33,54 L33,54 Z M62,53 C63.103,53 64,53.897 64,55 C64,56.103 63.103,57 62,57 C60.897,57 60,56.103 60,55 C60,53.897 60.897,53 62,53 L62,53 Z M62,23 C63.103,23 64,23.897 64,25 C64,26.103 63.103,27 62,27 C60.897,27 60,26.103 60,25 C60,23.897 60.897,23 62,23 L62,23 Z M64,38 C65.103,38 66,38.897 66,40 C66,41.103 65.103,42 64,42 C62.897,42 62,41.103 62,40 C62,38.897 62.897,38 64,38 L64,38 Z M54,41 L60.143,41 C60.589,42.72 62.142,44 64,44 C66.206,44 68,42.206 68,40 C68,37.794 66.206,36 64,36 C62.142,36 60.589,37.28 60.143,39 L54,39 L54,26 L58.143,26 C58.589,27.72 60.142,29 62,29 C64.206,29 66,27.206 66,25 C66,22.794 64.206,21 62,21 C60.142,21 58.589,22.28 58.143,24 L53,24 C52.447,24 52,24.448 52,25 L52,39 L45,39 L45,41 L52,41 L52,55 C52,55.552 52.447,56 53,56 L58.143,56 C58.589,57.72 60.142,59 62,59 C64.206,59 66,57.206 66,55 C66,52.794 64.206,51 62,51 C60.142,51 58.589,52.28 58.143,54 L54,54 L54,41 Z' id='AWS-Simple-Notification-Service_Icon_64_Squid' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCA4MCA4MCcgdmVyc2lvbj0nMS4xJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnCiAgICAgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPjwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggNjQgKDkzNTM3KSAtIGh0dHBzOi8vc2tldGNoLmNvbSAtLT4KICAgIDx0aXRsZT5JY29uLUFyY2hpdGVjdHVyZS82NC9BcmNoX0FXUy1TaW1wbGUtTm90aWZpY2F0aW9uLVNlcnZpY2VfNjQ8L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+CiAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgeDE9JzAlJyB5MT0nMTAwJScgeDI9JzEwMCUnIHkyPScwJScgaWQ9J2xpbmVhckdyYWRpZW50LTEnPgogICAgICAgICAgICA8c3RvcCBzdG9wLWNvbG9yPScjQjAwODREJyBvZmZzZXQ9JzAlJz48L3N0b3A+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9JyNGRjRGOEInIG9mZnNldD0nMTAwJSc+PC9zdG9wPgogICAgICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8L2RlZnM+CiAgICA8ZyBpZD0nSWNvbi1BcmNoaXRlY3R1cmUvNjQvQXJjaF9BV1MtU2ltcGxlLU5vdGlmaWNhdGlvbi1TZXJ2aWNlXzY0JyBzdHJva2U9J25vbmUnIHN0cm9rZS13aWR0aD0nMScgZmlsbD0nbm9uZScKICAgICAgIGZpbGwtcnVsZT0nZXZlbm9kZCc+CiAgICAgICAgPGcgaWQ9J0ljb24tQXJjaGl0ZWN0dXJlLUJHLzY0L0FwcGxpY2F0aW9uLUludGVncmF0aW9uJyBmaWxsPSd1cmwoI2xpbmVhckdyYWRpZW50LTEpJz4KICAgICAgICAgICAgPHJlY3QgaWQ9J1JlY3RhbmdsZScgeD0nMCcgeT0nMCcgd2lkdGg9JzgwJyBoZWlnaHQ9JzgwJz48L3JlY3Q+CiAgICAgICAgPC9nPgogICAgICAgIDxwYXRoIGQ9J00xNywzOCBDMTguMTAzLDM4IDE5LDM4Ljg5NyAxOSw0MCBDMTksNDEuMTAzIDE4LjEwMyw0MiAxNyw0MiBDMTUuODk3LDQyIDE1LDQxLjEwMyAxNSw0MCBDMTUsMzguODk3IDE1Ljg5NywzOCAxNywzOCBMMTcsMzggWiBNNDEsNjQgQzI5LjMxNCw2NCAxOS4yODksNTUuNDY2IDE3LjE5NCw0My45OCBDMTguOTY1LDQzLjg5NCAyMC40MjcsNDIuNjU5IDIwLjg1Nyw0MSBMMjcsNDEgTDI3LDM5IEwyMC44NTcsMzkgQzIwLjQyNywzNy4zNDIgMTguOTY2LDM2LjEwNyAxNy4xOTUsMzYuMDIgQzE5LjI4NSwyNC43MSAyOS41MTEsMTYgNDEsMTYgQzQ1LjMxMywxNiA0OS44MzIsMTcuNjIyIDU0LjQyOSwyMC44MjEgTDU1LjU3MSwxOS4xNzkgQzUwLjYzMywxNS43NDMgNDUuNzMsMTQgNDEsMTQgQzI4LjI3LDE0IDE2Ljk0OSwyMy44NjUgMTUuMDYzLDM2LjUyMSBDMTMuODM5LDM3LjIwNyAxMywzOC41IDEzLDQwIEMxMyw0MS41IDEzLjgzOSw0Mi43OTMgMTUuMDYzLDQzLjQ3OCBDMTYuOTcsNTYuMzQxIDI4LjA1Niw2NiA0MSw2NiBDNDYuNDA3LDY2IDUxLjk0Miw2NC4xNTcgNTYuNTg1LDYwLjgxMSBMNTUuNDE1LDU5LjE4OSBDNTEuMTEsNjIuMjkyIDQ1Ljk5MSw2NCA0MSw2NCBMNDEsNjQgWiBNMzAuMTAxLDM2LjQ0MiBDMzEuOTU1LDM2Ljg5NSAzNC4yNzUsMzcgMzYsMzcgQzM3LjY0MiwzNyAzOS44MjMsMzYuOTA1IDQxLjYyOSwzNi41MDYgTDM3LjEwNSw0NS41NTMgQzM3LjAzNiw0NS42OTEgMzcsNDUuODQ1IDM3LDQ2IEwzNyw1MC40NTMgQzM2LjE5OSw1MC45NjQgMzQuODMzLDUxLjgxMiAzNCw1MS45ODYgTDM0LDQ2IEMzNCw0NS44NjggMzMuOTc0LDQ1LjczNyAzMy45MjMsNDUuNjE1IEwzMC4xMDEsMzYuNDQyIFogTTM2LDMzIEM0MC4wMjUsMzMgNDIuMTc0LDMzLjYwNCA0Mi44NDEsMzQgQzQyLjE3NCwzNC4zOTYgNDAuMDI1LDM1IDM2LDM1IEMzMS45NzUsMzUgMjkuODI2LDM0LjM5NiAyOS4xNTksMzQgQzI5LjgyNiwzMy42MDQgMzEuOTc1LDMzIDM2LDMzIEwzNiwzMyBaIE0zMyw1NCBMMzQsNTQgQzM0LjA0Myw1NCAzNC4wODYsNTMuOTk3IDM0LjEyOCw1My45OTIgQzM1LjM1Miw1My44MzMgMzYuOTA5LDUyLjg4NyAzOC4yNzIsNTIuMDEzIEwzOC41MzUsNTEuODQ1IEMzOC44MjQsNTEuNjYxIDM5LDUxLjM0MiAzOSw1MSBMMzksNDYuMjM2IEw0NC41NTksMzUuMTIgQzQ0LjgzMywzNC44MDEgNDUsMzQuNDM0IDQ1LDM0IEM0NSwzMS4zOSAzOS4zNjEsMzEgMzYsMzEgQzMyLjYzOSwzMSAyNywzMS4zOSAyNywzNCBDMjcsMzQuMzY2IDI3LjEyLDM0LjY4NCAyNy4zMiwzNC45NjcgTDMyLDQ2LjIgTDMyLDUzIEMzMiw1My41NTIgMzIuNDQ3LDU0IDMzLDU0IEwzMyw1NCBaIE02Miw1MyBDNjMuMTAzLDUzIDY0LDUzLjg5NyA2NCw1NSBDNjQsNTYuMTAzIDYzLjEwMyw1NyA2Miw1NyBDNjAuODk3LDU3IDYwLDU2LjEwMyA2MCw1NSBDNjAsNTMuODk3IDYwLjg5Nyw1MyA2Miw1MyBMNjIsNTMgWiBNNjIsMjMgQzYzLjEwMywyMyA2NCwyMy44OTcgNjQsMjUgQzY0LDI2LjEwMyA2My4xMDMsMjcgNjIsMjcgQzYwLjg5NywyNyA2MCwyNi4xMDMgNjAsMjUgQzYwLDIzLjg5NyA2MC44OTcsMjMgNjIsMjMgTDYyLDIzIFogTTY0LDM4IEM2NS4xMDMsMzggNjYsMzguODk3IDY2LDQwIEM2Niw0MS4xMDMgNjUuMTAzLDQyIDY0LDQyIEM2Mi44OTcsNDIgNjIsNDEuMTAzIDYyLDQwIEM2MiwzOC44OTcgNjIuODk3LDM4IDY0LDM4IEw2NCwzOCBaIE01NCw0MSBMNjAuMTQzLDQxIEM2MC41ODksNDIuNzIgNjIuMTQyLDQ0IDY0LDQ0IEM2Ni4yMDYsNDQgNjgsNDIuMjA2IDY4LDQwIEM2OCwzNy43OTQgNjYuMjA2LDM2IDY0LDM2IEM2Mi4xNDIsMzYgNjAuNTg5LDM3LjI4IDYwLjE0MywzOSBMNTQsMzkgTDU0LDI2IEw1OC4xNDMsMjYgQzU4LjU4OSwyNy43MiA2MC4xNDIsMjkgNjIsMjkgQzY0LjIwNiwyOSA2NiwyNy4yMDYgNjYsMjUgQzY2LDIyLjc5NCA2NC4yMDYsMjEgNjIsMjEgQzYwLjE0MiwyMSA1OC41ODksMjIuMjggNTguMTQzLDI0IEw1MywyNCBDNTIuNDQ3LDI0IDUyLDI0LjQ0OCA1MiwyNSBMNTIsMzkgTDQ1LDM5IEw0NSw0MSBMNTIsNDEgTDUyLDU1IEM1Miw1NS41NTIgNTIuNDQ3LDU2IDUzLDU2IEw1OC4xNDMsNTYgQzU4LjU4OSw1Ny43MiA2MC4xNDIsNTkgNjIsNTkgQzY0LjIwNiw1OSA2Niw1Ny4yMDYgNjYsNTUgQzY2LDUyLjc5NCA2NC4yMDYsNTEgNjIsNTEgQzYwLjE0Miw1MSA1OC41ODksNTIuMjggNTguMTQzLDU0IEw1NCw1NCBMNTQsNDEgWicKICAgICAgICAgICAgICBpZD0nQVdTLVNpbXBsZS1Ob3RpZmljYXRpb24tU2VydmljZV9JY29uXzY0X1NxdWlkJyBmaWxsPScjRkZGRkZGJz48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
-      {},
       {
-        "group": "subscription"
+        "group": "subscription",
+        "tooltip": "The subscription ID is a part of the URL endpoint"
       },
       {
-        "group": "subscription"
+        "group": "subscription",
+        "tooltip": "Control which topic(s) are allowed to start a process"
       },
       {
-        "group": "subscription"
+        "group": "subscription",
+        "tooltip": "Topic ARNs that are allowed to trigger the process, comma-separated",
+        "placeholder": "arn:aws:sns:us-east-1:123456789012:Topic1,arn:aws:sns:us-east-1:123456789012:Topic2"
       },
       {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
         "group": "correlation"
@@ -7638,10 +11897,32 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -7654,52 +11935,139 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       "groups": [
         {
-          "id": "authentication",
-          "label": "Authentication"
-        },
-        {
           "id": "operation",
           "label": "Select operation"
+        },
+        {
+          "id": "authentication",
+          "label": "Authentication"
         },
         {
           "id": "operationDetails",
           "label": "Operation details"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Output mapping"
         },
         {
-          "id": "errors",
+          "id": "error",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/Pgo8IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMC8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9UUi8yMDAxL1JFQy1TVkctMjAwMTA5MDQvRFREL3N2ZzEwLmR0ZCI+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgaWQ9ImJvZHlfMSIgd2lkdGg9IjE4IiBoZWlnaHQ9IjE0Ij4KCjxnIHRyYW5zZm9ybT0ibWF0cml4KDAuMTU5MDkwOSAwIDAgMC4xNTkwOTA5IDMuOTA5MDkxIC0wKSI+CiAgICA8cGF0aCBkPSJNNDIgMEw2NCAyMkw1MyAyNEw0MiAyMkw0MCAxMUw0MiAweiIgc3Ryb2tlPSJub25lIiBmaWxsPSIjMTg4MDM4IiBmaWxsLXJ1bGU9Im5vbnplcm8iIC8+CiAgICA8cGF0aCBkPSJNNDIgMjJMNDIgMEw2IDBDIDIuNjg1IDAgMCAyLjY4NSAwIDZMMCA2TDAgODJDIDAgODUuMzE1IDIuNjg1IDg4IDYgODhMNiA4OEw1OCA4OEMgNjEuMzE1IDg4IDY0IDg1LjMxNSA2NCA4Mkw2NCA4Mkw2NCAyMkw0MiAyMnoiIHN0cm9rZT0ibm9uZSIgZmlsbD0iIzM0QTg1MyIgZmlsbC1ydWxlPSJub256ZXJvIiAvPgogICAgPHBhdGggZD0iTTEyIDM0TDEyIDYzTDUyIDYzTDUyIDM0TDEyIDM0ek0yOS41IDU4TDE3IDU4TDE3IDUxTDI5LjUgNTF6TTI5LjUgNDZMMTcgNDZMMTcgMzlMMjkuNSAzOXpNNDcgNThMMzQuNSA1OEwzNC41IDUxTDQ3IDUxek00NyA0NkwzNC41IDQ2TDM0LjUgMzlMNDcgMzl6IiBzdHJva2U9Im5vbmUiIGZpbGw9IiNGRkZGRkYiIGZpbGwtcnVsZT0ibm9uemVybyIgLz4KPC9nPgo8L3N2Zz4="
+        "contents": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iNDlweCIgaGVpZ2h0PSI2N3B4IiB2aWV3Qm94PSIwIDAgNDkgNjciIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDU0LjEgKDc2NDkwKSAtIGh0dHBzOi8vc2tldGNoYXBwLmNvbSAtLT4KICAgIDx0aXRsZT5TaGVldHMtaWNvbjwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPgogICAgICAgIDxwYXRoIGQ9Ik0yOS41ODMzMzMzLDAgTDQuNDM3NSwwIEMxLjk5Njg3NSwwIDAsMS45OTY4NzUgMCw0LjQzNzUgTDAsNjAuNjQ1ODMzMyBDMCw2My4wODY0NTgzIDEuOTk2ODc1LDY1LjA4MzMzMzMgNC40Mzc1LDY1LjA4MzMzMzMgTDQyLjg5NTgzMzMsNjUuMDgzMzMzMyBDNDUuMzM2NDU4Myw2NS4wODMzMzMzIDQ3LjMzMzMzMzMsNjMuMDg2NDU4MyA0Ny4zMzMzMzMzLDYwLjY0NTgzMzMgTDQ3LjMzMzMzMzMsMTcuNzUgTDI5LjU4MzMzMzMsMCBaIiBpZD0icGF0aC0xIj48L3BhdGg+CiAgICAgICAgPHBhdGggZD0iTTI5LjU4MzMzMzMsMCBMNC40Mzc1LDAgQzEuOTk2ODc1LDAgMCwxLjk5Njg3NSAwLDQuNDM3NSBMMCw2MC42NDU4MzMzIEMwLDYzLjA4NjQ1ODMgMS45OTY4NzUsNjUuMDgzMzMzMyA0LjQzNzUsNjUuMDgzMzMzMyBMNDIuODk1ODMzMyw2NS4wODMzMzMzIEM0NS4zMzY0NTgzLDY1LjA4MzMzMzMgNDcuMzMzMzMzMyw2My4wODY0NTgzIDQ3LjMzMzMzMzMsNjAuNjQ1ODMzMyBMNDcuMzMzMzMzMywxNy43NSBMMjkuNTgzMzMzMywwIFoiIGlkPSJwYXRoLTMiPjwvcGF0aD4KICAgICAgICA8cGF0aCBkPSJNMjkuNTgzMzMzMywwIEw0LjQzNzUsMCBDMS45OTY4NzUsMCAwLDEuOTk2ODc1IDAsNC40Mzc1IEwwLDYwLjY0NTgzMzMgQzAsNjMuMDg2NDU4MyAxLjk5Njg3NSw2NS4wODMzMzMzIDQuNDM3NSw2NS4wODMzMzMzIEw0Mi44OTU4MzMzLDY1LjA4MzMzMzMgQzQ1LjMzNjQ1ODMsNjUuMDgzMzMzMyA0Ny4zMzMzMzMzLDYzLjA4NjQ1ODMgNDcuMzMzMzMzMyw2MC42NDU4MzMzIEw0Ny4zMzMzMzMzLDE3Ljc1IEwyOS41ODMzMzMzLDAgWiIgaWQ9InBhdGgtNSI+PC9wYXRoPgogICAgICAgIDxsaW5lYXJHcmFkaWVudCB4MT0iNTAuMDA1Mzk0NSUiIHkxPSI4LjU4NjEwNjEyJSIgeDI9IjUwLjAwNTM5NDUlIiB5Mj0iMTAwLjAxMzkzOSUiIGlkPSJsaW5lYXJHcmFkaWVudC03Ij4KICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0iIzI2MzIzOCIgc3RvcC1vcGFjaXR5PSIwLjIiIG9mZnNldD0iMCUiPjwvc3RvcD4KICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0iIzI2MzIzOCIgc3RvcC1vcGFjaXR5PSIwLjAyIiBvZmZzZXQ9IjEwMCUiPjwvc3RvcD4KICAgICAgICA8L2xpbmVhckdyYWRpZW50PgogICAgICAgIDxwYXRoIGQ9Ik0yOS41ODMzMzMzLDAgTDQuNDM3NSwwIEMxLjk5Njg3NSwwIDAsMS45OTY4NzUgMCw0LjQzNzUgTDAsNjAuNjQ1ODMzMyBDMCw2My4wODY0NTgzIDEuOTk2ODc1LDY1LjA4MzMzMzMgNC40Mzc1LDY1LjA4MzMzMzMgTDQyLjg5NTgzMzMsNjUuMDgzMzMzMyBDNDUuMzM2NDU4Myw2NS4wODMzMzMzIDQ3LjMzMzMzMzMsNjMuMDg2NDU4MyA0Ny4zMzMzMzMzLDYwLjY0NTgzMzMgTDQ3LjMzMzMzMzMsMTcuNzUgTDI5LjU4MzMzMzMsMCBaIiBpZD0icGF0aC04Ij48L3BhdGg+CiAgICAgICAgPHBhdGggZD0iTTI5LjU4MzMzMzMsMCBMNC40Mzc1LDAgQzEuOTk2ODc1LDAgMCwxLjk5Njg3NSAwLDQuNDM3NSBMMCw2MC42NDU4MzMzIEMwLDYzLjA4NjQ1ODMgMS45OTY4NzUsNjUuMDgzMzMzMyA0LjQzNzUsNjUuMDgzMzMzMyBMNDIuODk1ODMzMyw2NS4wODMzMzMzIEM0NS4zMzY0NTgzLDY1LjA4MzMzMzMgNDcuMzMzMzMzMyw2My4wODY0NTgzIDQ3LjMzMzMzMzMsNjAuNjQ1ODMzMyBMNDcuMzMzMzMzMywxNy43NSBMMjkuNTgzMzMzMywwIFoiIGlkPSJwYXRoLTEwIj48L3BhdGg+CiAgICAgICAgPHBhdGggZD0iTTI5LjU4MzMzMzMsMCBMNC40Mzc1LDAgQzEuOTk2ODc1LDAgMCwxLjk5Njg3NSAwLDQuNDM3NSBMMCw2MC42NDU4MzMzIEMwLDYzLjA4NjQ1ODMgMS45OTY4NzUsNjUuMDgzMzMzMyA0LjQzNzUsNjUuMDgzMzMzMyBMNDIuODk1ODMzMyw2NS4wODMzMzMzIEM0NS4zMzY0NTgzLDY1LjA4MzMzMzMgNDcuMzMzMzMzMyw2My4wODY0NTgzIDQ3LjMzMzMzMzMsNjAuNjQ1ODMzMyBMNDcuMzMzMzMzMywxNy43NSBMMjkuNTgzMzMzMywwIFoiIGlkPSJwYXRoLTEyIj48L3BhdGg+CiAgICAgICAgPHBhdGggZD0iTTI5LjU4MzMzMzMsMCBMNC40Mzc1LDAgQzEuOTk2ODc1LDAgMCwxLjk5Njg3NSAwLDQuNDM3NSBMMCw2MC42NDU4MzMzIEMwLDYzLjA4NjQ1ODMgMS45OTY4NzUsNjUuMDgzMzMzMyA0LjQzNzUsNjUuMDgzMzMzMyBMNDIuODk1ODMzMyw2NS4wODMzMzMzIEM0NS4zMzY0NTgzLDY1LjA4MzMzMzMgNDcuMzMzMzMzMyw2My4wODY0NTgzIDQ3LjMzMzMzMzMsNjAuNjQ1ODMzMyBMNDcuMzMzMzMzMywxNy43NSBMMjkuNTgzMzMzMywwIFoiIGlkPSJwYXRoLTE0Ij48L3BhdGg+CiAgICAgICAgPHJhZGlhbEdyYWRpZW50IGN4PSIzLjE2ODA0Njg4JSIgY3k9IjIuNzE3NDQzMTglIiBmeD0iMy4xNjgwNDY4OCUiIGZ5PSIyLjcxNzQ0MzE4JSIgcj0iMTYxLjI0ODUxNiUiIGdyYWRpZW50VHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wMzE2ODAsMC4wMjcxNzQpLHNjYWxlKDEuMDAwMDAwLDAuNzI3MjczKSx0cmFuc2xhdGUoLTAuMDMxNjgwLC0wLjAyNzE3NCkiIGlkPSJyYWRpYWxHcmFkaWVudC0xNiI+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iMC4xIiBvZmZzZXQ9IjAlIj48L3N0b3A+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9IiNGRkZGRkYiIHN0b3Atb3BhY2l0eT0iMCIgb2Zmc2V0PSIxMDAlIj48L3N0b3A+CiAgICAgICAgPC9yYWRpYWxHcmFkaWVudD4KICAgIDwvZGVmcz4KICAgIDxnIGlkPSJQYWdlLTEiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgICAgIDxnIGlkPSJDb25zdW1lci1BcHBzLVNoZWV0cy1MYXJnZS1WRC1SOC0iIHRyYW5zZm9ybT0idHJhbnNsYXRlKC00NTEuMDAwMDAwLCAtNDUxLjAwMDAwMCkiPgogICAgICAgICAgICA8ZyBpZD0iSGVybyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMC4wMDAwMDAsIDYzLjAwMDAwMCkiPgogICAgICAgICAgICAgICAgPGcgaWQ9IlBlcnNvbmFsIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgyNzcuMDAwMDAwLCAyOTkuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICAgICAgPGcgaWQ9IlNoZWV0cy1pY29uIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxNzQuODMzMzMzLCA4OS45NTgzMzMpIj4KICAgICAgICAgICAgICAgICAgICAgICAgPGcgaWQ9Ikdyb3VwIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxnIGlkPSJDbGlwcGVkIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8bWFzayBpZD0ibWFzay0yIiBmaWxsPSJ3aGl0ZSI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDx1c2UgeGxpbms6aHJlZj0iI3BhdGgtMSI+PC91c2U+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9tYXNrPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxnIGlkPSJTVkdJRF8xXyI+PC9nPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0yOS41ODMzMzMzLDAgTDQuNDM3NSwwIEMxLjk5Njg3NSwwIDAsMS45OTY4NzUgMCw0LjQzNzUgTDAsNjAuNjQ1ODMzMyBDMCw2My4wODY0NTgzIDEuOTk2ODc1LDY1LjA4MzMzMzMgNC40Mzc1LDY1LjA4MzMzMzMgTDQyLjg5NTgzMzMsNjUuMDgzMzMzMyBDNDUuMzM2NDU4Myw2NS4wODMzMzMzIDQ3LjMzMzMzMzMsNjMuMDg2NDU4MyA0Ny4zMzMzMzMzLDYwLjY0NTgzMzMgTDQ3LjMzMzMzMzMsMTcuNzUgTDM2Ljk3OTE2NjcsMTAuMzU0MTY2NyBMMjkuNTgzMzMzMywwIFoiIGlkPSJQYXRoIiBmaWxsPSIjMEY5RDU4IiBmaWxsLXJ1bGU9Im5vbnplcm8iIG1hc2s9InVybCgjbWFzay0yKSI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9nPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGcgaWQ9IkNsaXBwZWQiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxtYXNrIGlkPSJtYXNrLTQiIGZpbGw9IndoaXRlIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPHVzZSB4bGluazpocmVmPSIjcGF0aC0zIj48L3VzZT4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8L21hc2s+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGcgaWQ9IlNWR0lEXzFfIj48L2c+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTExLjgzMzMzMzMsMzEuODAyMDgzMyBMMTEuODMzMzMzMyw1My4yNSBMMzUuNSw1My4yNSBMMzUuNSwzMS44MDIwODMzIEwxMS44MzMzMzMzLDMxLjgwMjA4MzMgWiBNMjIuMTg3NSw1MC4yOTE2NjY3IEwxNC43OTE2NjY3LDUwLjI5MTY2NjcgTDE0Ljc5MTY2NjcsNDYuNTkzNzUgTDIyLjE4NzUsNDYuNTkzNzUgTDIyLjE4NzUsNTAuMjkxNjY2NyBaIE0yMi4xODc1LDQ0LjM3NSBMMTQuNzkxNjY2Nyw0NC4zNzUgTDE0Ljc5MTY2NjcsNDAuNjc3MDgzMyBMMjIuMTg3NSw0MC42NzcwODMzIEwyMi4xODc1LDQ0LjM3NSBaIE0yMi4xODc1LDM4LjQ1ODMzMzMgTDE0Ljc5MTY2NjcsMzguNDU4MzMzMyBMMTQuNzkxNjY2NywzNC43NjA0MTY3IEwyMi4xODc1LDM0Ljc2MDQxNjcgTDIyLjE4NzUsMzguNDU4MzMzMyBaIE0zMi41NDE2NjY3LDUwLjI5MTY2NjcgTDI1LjE0NTgzMzMsNTAuMjkxNjY2NyBMMjUuMTQ1ODMzMyw0Ni41OTM3NSBMMzIuNTQxNjY2Nyw0Ni41OTM3NSBMMzIuNTQxNjY2Nyw1MC4yOTE2NjY3IFogTTMyLjU0MTY2NjcsNDQuMzc1IEwyNS4xNDU4MzMzLDQ0LjM3NSBMMjUuMTQ1ODMzMyw0MC42NzcwODMzIEwzMi41NDE2NjY3LDQwLjY3NzA4MzMgTDMyLjU0MTY2NjcsNDQuMzc1IFogTTMyLjU0MTY2NjcsMzguNDU4MzMzMyBMMjUuMTQ1ODMzMywzOC40NTgzMzMzIEwyNS4xNDU4MzMzLDM0Ljc2MDQxNjcgTDMyLjU0MTY2NjcsMzQuNzYwNDE2NyBMMzIuNTQxNjY2NywzOC40NTgzMzMzIFoiIGlkPSJTaGFwZSIgZmlsbD0iI0YxRjFGMSIgZmlsbC1ydWxlPSJub256ZXJvIiBtYXNrPSJ1cmwoI21hc2stNCkiPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxnIGlkPSJDbGlwcGVkIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8bWFzayBpZD0ibWFzay02IiBmaWxsPSJ3aGl0ZSI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDx1c2UgeGxpbms6aHJlZj0iI3BhdGgtNSI+PC91c2U+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9tYXNrPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxnIGlkPSJTVkdJRF8xXyI+PC9nPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxwb2x5Z29uIGlkPSJQYXRoIiBmaWxsPSJ1cmwoI2xpbmVhckdyYWRpZW50LTcpIiBmaWxsLXJ1bGU9Im5vbnplcm8iIG1hc2s9InVybCgjbWFzay02KSIgcG9pbnRzPSIzMC44ODEzMDIxIDE2LjQ1MjAzMTMgNDcuMzMzMzMzMyAzMi45MDAzNjQ2IDQ3LjMzMzMzMzMgMTcuNzUiPjwvcG9seWdvbj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxnIGlkPSJDbGlwcGVkIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8bWFzayBpZD0ibWFzay05IiBmaWxsPSJ3aGl0ZSI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDx1c2UgeGxpbms6aHJlZj0iI3BhdGgtOCI+PC91c2U+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9tYXNrPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxnIGlkPSJTVkdJRF8xXyI+PC9nPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxnIGlkPSJHcm91cCIgbWFzaz0idXJsKCNtYXNrLTkpIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMjYuNjI1MDAwLCAtMi45NTgzMzMpIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0yLjk1ODMzMzMzLDIuOTU4MzMzMzMgTDIuOTU4MzMzMzMsMTYuMjcwODMzMyBDMi45NTgzMzMzMywxOC43MjI1NTIxIDQuOTQ0MTE0NTgsMjAuNzA4MzMzMyA3LjM5NTgzMzMzLDIwLjcwODMzMzMgTDIwLjcwODMzMzMsMjAuNzA4MzMzMyBMMi45NTgzMzMzMywyLjk1ODMzMzMzIFoiIGlkPSJQYXRoIiBmaWxsPSIjODdDRUFDIiBmaWxsLXJ1bGU9Im5vbnplcm8iPjwvcGF0aD4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9nPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxnIGlkPSJDbGlwcGVkIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8bWFzayBpZD0ibWFzay0xMSIgZmlsbD0id2hpdGUiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8dXNlIHhsaW5rOmhyZWY9IiNwYXRoLTEwIj48L3VzZT4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8L21hc2s+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGcgaWQ9IlNWR0lEXzFfIj48L2c+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPHBhdGggZD0iTTQuNDM3NSwwIEMxLjk5Njg3NSwwIDAsMS45OTY4NzUgMCw0LjQzNzUgTDAsNC44MDcyOTE2NyBDMCwyLjM2NjY2NjY3IDEuOTk2ODc1LDAuMzY5NzkxNjY3IDQuNDM3NSwwLjM2OTc5MTY2NyBMMjkuNTgzMzMzMywwLjM2OTc5MTY2NyBMMjkuNTgzMzMzMywwIEw0LjQzNzUsMCBaIiBpZD0iUGF0aCIgZmlsbC1vcGFjaXR5PSIwLjIiIGZpbGw9IiNGRkZGRkYiIGZpbGwtcnVsZT0ibm9uemVybyIgbWFzaz0idXJsKCNtYXNrLTExKSI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9nPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGcgaWQ9IkNsaXBwZWQiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxtYXNrIGlkPSJtYXNrLTEzIiBmaWxsPSJ3aGl0ZSI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDx1c2UgeGxpbms6aHJlZj0iI3BhdGgtMTIiPjwvdXNlPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvbWFzaz4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8ZyBpZD0iU1ZHSURfMV8iPjwvZz4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNNDIuODk1ODMzMyw2NC43MTM1NDE3IEw0LjQzNzUsNjQuNzEzNTQxNyBDMS45OTY4NzUsNjQuNzEzNTQxNyAwLDYyLjcxNjY2NjcgMCw2MC4yNzYwNDE3IEwwLDYwLjY0NTgzMzMgQzAsNjMuMDg2NDU4MyAxLjk5Njg3NSw2NS4wODMzMzMzIDQuNDM3NSw2NS4wODMzMzMzIEw0Mi44OTU4MzMzLDY1LjA4MzMzMzMgQzQ1LjMzNjQ1ODMsNjUuMDgzMzMzMyA0Ny4zMzMzMzMzLDYzLjA4NjQ1ODMgNDcuMzMzMzMzMyw2MC42NDU4MzMzIEw0Ny4zMzMzMzMzLDYwLjI3NjA0MTcgQzQ3LjMzMzMzMzMsNjIuNzE2NjY2NyA0NS4zMzY0NTgzLDY0LjcxMzU0MTcgNDIuODk1ODMzMyw2NC43MTM1NDE3IFoiIGlkPSJQYXRoIiBmaWxsLW9wYWNpdHk9IjAuMiIgZmlsbD0iIzI2MzIzOCIgZmlsbC1ydWxlPSJub256ZXJvIiBtYXNrPSJ1cmwoI21hc2stMTMpIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8L2c+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8ZyBpZD0iQ2xpcHBlZCI+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPG1hc2sgaWQ9Im1hc2stMTUiIGZpbGw9IndoaXRlIj4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPHVzZSB4bGluazpocmVmPSIjcGF0aC0xNCI+PC91c2U+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9tYXNrPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxnIGlkPSJTVkdJRF8xXyI+PC9nPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0zNC4wMjA4MzMzLDE3Ljc1IEMzMS41NjkxMTQ2LDE3Ljc1IDI5LjU4MzMzMzMsMTUuNzY0MjE4OCAyOS41ODMzMzMzLDEzLjMxMjUgTDI5LjU4MzMzMzMsMTMuNjgyMjkxNyBDMjkuNTgzMzMzMywxNi4xMzQwMTA0IDMxLjU2OTExNDYsMTguMTE5NzkxNyAzNC4wMjA4MzMzLDE4LjExOTc5MTcgTDQ3LjMzMzMzMzMsMTguMTE5NzkxNyBMNDcuMzMzMzMzMywxNy43NSBMMzQuMDIwODMzMywxNy43NSBaIiBpZD0iUGF0aCIgZmlsbC1vcGFjaXR5PSIwLjEiIGZpbGw9IiMyNjMyMzgiIGZpbGwtcnVsZT0ibm9uemVybyIgbWFzaz0idXJsKCNtYXNrLTE1KSI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9nPgogICAgICAgICAgICAgICAgICAgICAgICA8L2c+CiAgICAgICAgICAgICAgICAgICAgICAgIDxwYXRoIGQ9Ik0yOS41ODMzMzMzLDAgTDQuNDM3NSwwIEMxLjk5Njg3NSwwIDAsMS45OTY4NzUgMCw0LjQzNzUgTDAsNjAuNjQ1ODMzMyBDMCw2My4wODY0NTgzIDEuOTk2ODc1LDY1LjA4MzMzMzMgNC40Mzc1LDY1LjA4MzMzMzMgTDQyLjg5NTgzMzMsNjUuMDgzMzMzMyBDNDUuMzM2NDU4Myw2NS4wODMzMzMzIDQ3LjMzMzMzMzMsNjMuMDg2NDU4MyA0Ny4zMzMzMzMzLDYwLjY0NTgzMzMgTDQ3LjMzMzMzMzMsMTcuNzUgTDI5LjU4MzMzMzMsMCBaIiBpZD0iUGF0aCIgZmlsbD0idXJsKCNyYWRpYWxHcmFkaWVudC0xNikiIGZpbGwtcnVsZT0ibm9uemVybyI+PC9wYXRoPgogICAgICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+"
       }
     },
     "properties": [
       {},
       {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
         "group": "operation"
       },
       {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
         "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Folder in which the new spreadsheet is created. If left empty, it is created in the Google Drive root folder of the OAuth token owner."
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Target cell in ColumnRow format. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#add-values-to-spreadsheet\" target=\"_blank\">add values to spreadsheet</a> operation.",
+        "placeholder": "A1"
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "What to add: column or row"
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Leave empty to add to the end of the sheet. Count starts from 0. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#create-empty-column-or-row\" target=\"_blank\">create empty column or row</a> operation."
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Leave empty to add to the end of the sheet. Count starts from 0. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#create-empty-column-or-row\" target=\"_blank\">create empty column or row</a> operation."
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Position of the row, shown to the left of each row. If left empty, a new row is appended to the end. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#what-is-a-row-index\" target=\"_blank\">what is a row index</a>."
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "List of cell values to add as a new row. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#create-row\" target=\"_blank\">create row</a> operation."
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Position of the new worksheet; count starts from 0. Leave empty to add it to the end of the sheet list. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#what-is-a-worksheet-index\" target=\"_blank\">what is a worksheet index</a>."
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "How the column to delete is identified: Numbers (numeric index at the top of the column, starting from 0) or Letters (the column letter). See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#how-can-i-define-which-column-will-be-deleted\" target=\"_blank\">defining which column will be deleted</a>."
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Numeric position of the column to delete; count starts from 0 (column A is 0, B is 1). See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#how-can-i-define-which-column-will-be-deleted\" target=\"_blank\">defining which column will be deleted</a>."
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Letter of the column to delete, as shown at the top of the column. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#how-can-i-define-which-column-will-be-deleted\" target=\"_blank\">defining which column will be deleted</a>.",
+        "placeholder": "A"
       },
       {
         "group": "operationDetails"
@@ -7714,7 +12082,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operationDetails"
       },
       {
-        "group": "operationDetails"
+        "group": "operationDetails",
+        "tooltip": "Position of the row to retrieve, shown to the left of each row. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#what-is-a-row-index\" target=\"_blank\">what is a row index</a>."
       },
       {
         "group": "operationDetails"
@@ -7726,31 +12095,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operationDetails"
       },
       {
-        "group": "operationDetails"
+        "group": "connector"
       },
       {
-        "group": "operationDetails"
-      },
-      {
-        "group": "operationDetails"
-      },
-      {
-        "group": "operationDetails"
-      },
-      {
-        "group": "operationDetails"
-      },
-      {
-        "group": "operationDetails"
-      },
-      {
-        "group": "operationDetails"
-      },
-      {
-        "group": "operationDetails"
-      },
-      {
-        "group": "operationDetails"
+        "group": "connector"
       },
       {
         "group": "output"
@@ -7759,21 +12107,31 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "output"
       },
       {
-        "group": "errors"
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.ServiceNow.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
+        {
+          "id": "operation",
+          "label": "Operation"
+        },
         {
           "id": "sn",
           "label": "ServiceNow"
@@ -7795,10 +12153,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Connection timeout"
         },
         {
-          "id": "payload",
-          "label": "Payload"
-        },
-        {
           "id": "output",
           "label": "Output mapping"
         },
@@ -7818,33 +12172,41 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
+        "tooltip": "Enter only the instance name from your ServiceNow URL",
+        "group": "sn"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "tooltip": "Type the exact ServiceNow table name",
+        "group": "sn"
+      },
+      {
+        "tooltip": "Separate multiple conditions with '^'",
+        "placeholder": "active=true^priority=1",
+        "group": "input"
+      },
+      {
+        "tooltip": "Comma-separated field names",
+        "placeholder": "sys_id,number,short_description",
+        "group": "input"
+      },
+      {
+        "tooltip": "The maximum number of records to return",
+        "placeholder": "10",
+        "group": "input"
+      },
+      {
         "group": "sn"
       },
       {
         "group": "sn"
       },
       {
-        "group": "sn"
-      },
-      {
-        "group": "sn"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "sn"
-      },
-      {
-        "group": "sn"
-      },
-      {
         "group": "input"
       },
       {
@@ -7872,6 +12234,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "tooltip": "Choose type: Send API key in header or as query parameter.",
         "group": "authentication"
       },
       {
@@ -7893,18 +12256,24 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "tooltip": "Your application's client ID from the OAuth client",
         "group": "authentication"
       },
       {
+        "tooltip": "Your application's client secret from the OAuth client",
         "group": "authentication"
       },
       {
+        "tooltip": "The unique identifier of the target API you want to access",
         "group": "authentication"
       },
       {
+        "tooltip": "Send client ID and client secret as Basic Auth request in the header, or as client credentials in the request body",
         "group": "authentication"
       },
       {
+        "tooltip": "The scopes which you want to request authorization for",
+        "placeholder": "read:contacts",
         "group": "authentication"
       },
       {
@@ -7914,9 +12283,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
+        "tooltip": "Map of HTTP headers to add to the request",
         "group": "endpoint"
       },
       {
+        "tooltip": "Map of query parameters to add to the request URL",
         "group": "endpoint"
       },
       {
@@ -7932,13 +12303,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "timeout"
       },
       {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -7951,9 +12328,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
   "io.camunda.connectors.http.Polling.Boundary": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "icon": {
-        "contents": "data:image/svg+xml;utf8,%3C%3Fxml version='1.0'%3F%3E%3Csvg width='18' height='18' xmlns='http://www.w3.org/2000/svg' xmlns:svg='http://www.w3.org/2000/svg'%3E%3Cg class='layer'%3E%3Ctitle%3ELayer 1%3C/title%3E%3Cpath d='m17.03,9c0,4.45 -3.6,8.05 -8.05,8.05c-4.45,0 -8.05,-3.6 -8.05,-8.05c0,-4.45 3.6,-8.05 8.05,-8.05c4.45,0 8.05,3.6 8.05,8.05z' fill='%23505562' id='svg_1'/%3E%3Cpath d='m4.93,14.16l1.85,-10.45l3.36,0c1.05,0 1.84,0.27 2.37,0.81c0.54,0.53 0.8,1.21 0.8,2.06c0,0.86 -0.24,1.58 -0.73,2.13c-0.47,0.55 -1.12,0.93 -1.95,1.14l-0.48,0.09l-0.53,0.03l-0.6,0.05l-1.79,0l-0.73,4.14l-1.58,0zm2.57,-5.57l1.74,0c0.76,0 1.35,-0.17 1.78,-0.5c0.44,-0.35 0.65,-0.82 0.65,-1.42c0,-0.48 -0.15,-0.85 -0.44,-1.12c-0.3,-0.28 -0.77,-0.42 -1.42,-0.42l-1.7,0l-0.61,3.46z' fill='white' id='svg_2'/%3E%3C/g%3E%3C/svg%3E"
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -7968,32 +12342,104 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "HTTP Polling configuration"
         },
         {
-          "id": "input",
+          "id": "payload",
           "label": "Payload"
         },
         {
-          "id": "activation",
-          "label": "Condition to proceed"
-        },
-        {
-          "id": "timer",
-          "label": "Timer"
+          "id": "interval",
+          "label": "HTTP Polling Interval"
         },
         {
           "id": "timeout",
-          "label": "Connect timeout"
+          "label": "Connection timeout"
         },
         {
-          "id": "variable-mapping",
-          "label": "Response mapping"
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
-      ]
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0nMS4wJz8+Cjxzdmcgd2lkdGg9JzE4JyBoZWlnaHQ9JzE4JyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnPgogICAgPGcgY2xhc3M9J2xheWVyJz4KICAgICAgICA8dGl0bGU+TGF5ZXIgMTwvdGl0bGU+CiAgICAgICAgPHBhdGggZD0nbTE3LjAzLDljMCw0LjQ1IC0zLjYsOC4wNSAtOC4wNSw4LjA1Yy00LjQ1LDAgLTguMDUsLTMuNiAtOC4wNSwtOC4wNWMwLC00LjQ1IDMuNiwtOC4wNSA4LjA1LC04LjA1YzQuNDUsMCA4LjA1LDMuNiA4LjA1LDguMDV6JwogICAgICAgICAgICAgIGZpbGw9JyM1MDU1NjInIGlkPSdzdmdfMScvPgogICAgICAgIDxwYXRoIGQ9J200LjkzLDE0LjE2bDEuODUsLTEwLjQ1bDMuMzYsMGMxLjA1LDAgMS44NCwwLjI3IDIuMzcsMC44MWMwLjU0LDAuNTMgMC44LDEuMjEgMC44LDIuMDZjMCwwLjg2IC0wLjI0LDEuNTggLTAuNzMsMi4xM2MtMC40NywwLjU1IC0xLjEyLDAuOTMgLTEuOTUsMS4xNGwtMC40OCwwLjA5bC0wLjUzLDAuMDNsLTAuNiwwLjA1bC0xLjc5LDBsLTAuNzMsNC4xNGwtMS41OCwwem0yLjU3LC01LjU3bDEuNzQsMGMwLjc2LDAgMS4zNSwtMC4xNyAxLjc4LC0wLjVjMC40NCwtMC4zNSAwLjY1LC0wLjgyIDAuNjUsLTEuNDJjMCwtMC40OCAtMC4xNSwtMC44NSAtMC40NCwtMS4xMmMtMC4zLC0wLjI4IC0wLjc3LC0wLjQyIC0xLjQyLC0wLjQybC0xLjcsMGwtMC42MSwzLjQ2eicKICAgICAgICAgICAgICBmaWxsPSd3aGl0ZScgaWQ9J3N2Z18yJy8+CiAgICA8L2c+Cjwvc3ZnPg=="
+      }
     },
     "properties": [
       {},
-      {},
       {
         "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Send API key in header or as query parameter."
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The unique identifier of the target API you want to access"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Send client ID and client secret as a Basic Auth header, or as client credentials in the request body"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The scopes which you want to request authorization for",
+        "placeholder": "read:contacts"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The refresh token used to obtain a new access token"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The scopes to request authorization for (space-separated)"
       },
       {
         "group": "endpoint"
@@ -8005,61 +12451,63 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
-        "group": "endpoint"
+        "group": "endpoint",
+        "tooltip": "Map of query parameters to add to the request URL"
+      },
+      {
+        "group": "endpoint",
+        "tooltip": "Map of HTTP headers to add to the request"
       },
       {
         "group": "endpoint"
       },
       {
-        "group": "endpoint"
+        "group": "endpoint",
+        "tooltip": "If enabled, HTTP 3xx redirects will be followed automatically. Disabled by default."
       },
       {
-        "group": "authentication"
+        "group": "payload",
+        "tooltip": "Payload to send with the request"
       },
       {
-        "group": "authentication"
+        "group": "interval",
+        "tooltip": "The delay between HTTP requests, defined in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
       },
       {
-        "group": "authentication"
+        "group": "interval"
       },
       {
-        "group": "authentication"
+        "group": "timeout",
+        "tooltip": "Use 0 for an infinite timeout"
       },
       {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "input"
+        "group": "timeout",
+        "tooltip": "Use 0 for an infinite timeout"
       },
       {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "correlation"
       },
       {
-        "group": "activation"
+        "group": "correlation"
       },
       {
-        "group": "endpoint"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -8076,133 +12524,12 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Authentication"
         },
         {
-          "id": "queueProperties",
+          "id": "configuration",
           "label": "Queue properties"
         },
         {
           "id": "input",
           "label": "Input message data"
-        },
-        {
-          "id": "output",
-          "label": "Output"
-        },
-        {
-          "id": "errors",
-          "label": "Error handling"
-        }
-      ],
-      "icon": {
-        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 40 40' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 64 (93537) - https://sketch.com --%3E%3Ctitle%3EIcon-Architecture/32/Arch_AWS-Simple-Queue-Service_32%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3ClinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='linearGradient-1'%3E%3Cstop stop-color='%23B0084D' offset='0%25'%3E%3C/stop%3E%3Cstop stop-color='%23FF4F8B' offset='100%25'%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Cg id='Icon-Architecture/32/Arch_AWS-Simple-Queue-Service_32' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Icon-Architecture-BG/32/Application-Integration' fill='url(%23linearGradient-1)'%3E%3Crect id='Rectangle' x='0' y='0' width='40' height='40'%3E%3C/rect%3E%3C/g%3E%3Cpath d='M14.3422051,22.3493786 L15.8466767,20.9061074 C15.9428347,20.8141539 15.9969235,20.687218 15.9999285,20.5552846 C16.0019317,20.4223517 15.9518495,20.2934168 15.8596981,20.1984648 L14.3552264,18.6432502 L13.6350433,19.3378994 L14.311154,20.037546 L11.9913429,20.037546 L11.9913429,21.0370413 L14.2650783,21.0370413 L13.6480647,21.6287425 L14.3422051,22.3493786 Z M26.3579452,22.3533765 L27.9074909,20.9001104 C28.0066538,20.8081569 28.0627459,20.679222 28.0647492,20.5442901 C28.0667525,20.4093583 28.0136653,20.2784244 27.918509,20.1834724 L26.3689633,18.6372532 L25.6607999,19.3438963 L26.3549403,20.037546 L24.0110896,20.037546 L24.0110896,21.0370413 L26.2988481,21.0370413 L25.671818,21.6247445 L26.3579452,22.3533765 Z M17.5875367,23.3608678 C18.3387708,23.0570212 19.1621235,22.8941035 20.0045074,22.8941035 C20.8468913,22.8941035 21.670244,23.0570212 22.4214781,23.3608678 C21.7523789,21.5897622 21.7523789,19.3898731 22.4214781,17.6187675 C20.9190098,18.2264606 19.090005,18.2264606 17.5875367,17.6187675 C18.2566359,19.3898731 18.2566359,21.5897622 17.5875367,23.3608678 L17.5875367,23.3608678 Z M15.6443443,25.3408679 C15.546183,25.2439168 15.4971024,25.1159814 15.4971024,24.988046 C15.4971024,24.8601106 15.546183,24.7321753 15.6443443,24.6342247 C17.5845317,22.6982024 17.5845317,18.2824324 15.6443443,16.3454106 C15.546183,16.2484595 15.4971024,16.1205241 15.4971024,15.9925912 C15.4971024,15.8646534 15.546183,15.736718 15.6443443,15.6387674 C15.8396652,15.4438659 16.1571868,15.4438659 16.3525077,15.6387674 C17.2740216,16.5583031 18.6052086,17.0860366 20.0045074,17.0860366 C21.4048079,17.0860366 22.7359948,16.5583031 23.6575088,15.6387674 C23.8528296,15.4438659 24.1703513,15.4438659 24.3656722,15.6387674 C24.4628318,15.736718 24.5119124,15.8646534 24.5119124,15.9925912 C24.5119124,16.1205241 24.4628318,16.2484595 24.3656722,16.3454106 C22.4244831,18.2824324 22.4244831,22.6982024 24.3656722,24.6342247 C24.4628318,24.7321753 24.5119124,24.8601106 24.5119124,24.988046 C24.5119124,25.1159814 24.4628318,25.2439168 24.3656722,25.3408679 C24.2675109,25.4388184 24.1393003,25.4877937 24.0110896,25.4877937 C23.882879,25.4877937 23.7546684,25.4388184 23.6575088,25.3408679 C22.7359948,24.4213322 21.4048079,23.8935987 20.0045074,23.8935987 C18.6052086,23.8935987 17.2740216,24.4213322 16.3525077,25.3408679 C16.1571868,25.5357694 15.8396652,25.5357694 15.6443443,25.3408679 L15.6443443,25.3408679 Z M32.5421049,19.4358499 C32.236603,19.1320033 31.8369464,18.9800801 31.4362882,18.9800801 C31.0366316,18.9800801 30.636975,19.1320033 30.3314731,19.4358499 C29.721471,20.0445425 29.721471,21.0340428 30.3314731,21.6417359 C30.9414753,22.2504285 31.9321027,22.2504285 32.5421049,21.6417359 C33.1511054,21.0340428 33.1511054,20.0445425 32.5421049,19.4358499 L32.5421049,19.4358499 Z M33.2502683,22.3493786 C32.7504472,22.8481267 32.0933677,23.0980005 31.4362882,23.0980005 C30.7802103,23.0980005 30.1231309,22.8481267 29.6233097,22.3493786 C28.6236675,21.3508828 28.6236675,19.7277025 29.6233097,18.7292068 C30.622952,17.7317105 32.250626,17.7317105 33.2502683,18.7292068 C34.2499106,19.7277025 34.2499106,21.3508828 33.2502683,22.3493786 L33.2502683,22.3493786 Z M9.66852687,19.4468443 C9.36302497,19.1429978 8.96336839,18.9910745 8.56271017,18.9910745 C8.16305359,18.9910745 7.76339701,19.1429978 7.45789511,19.4468443 C6.84889461,20.055537 6.84889461,21.0450373 7.45789511,21.6527304 C8.06789726,22.261423 9.05852472,22.261423 9.66852687,21.6527304 C10.2775274,21.0450373 10.2775274,20.055537 9.66852687,19.4468443 L9.66852687,19.4468443 Z M10.3766903,22.3593735 C9.87686914,22.8581217 9.21978965,23.1079955 8.56271017,23.1079955 C7.90663232,23.1079955 7.24955284,22.8581217 6.7497317,22.3593735 C5.75008943,21.3618773 5.75008943,19.738697 6.7497317,18.7402012 C7.74937397,17.7427049 9.37704801,17.7427049 10.3766903,18.7402012 C11.3763325,19.738697 11.3763325,21.3618773 10.3766903,22.3593735 L10.3766903,22.3593735 Z M27.4337125,28.9100654 C25.4364313,30.903059 22.7820705,32.0005047 19.9574301,32.0005047 C17.1327896,32.0005047 14.4784288,30.903059 12.4821492,28.9100654 C11.165987,27.5977281 10.4077413,26.469298 9.94498104,25.1359713 L8.99842599,25.4628063 C9.50726193,26.9290658 10.3626672,28.2104187 11.7739858,29.6167086 C13.9585748,31.7986067 16.8663519,33 19.9574301,33 C23.0495099,33 25.9562853,31.7986067 28.1418759,29.6167086 C29.2827502,28.4782835 30.4206196,27.1869356 31.0115905,25.4608073 L30.0640338,25.1379703 C29.5391715,26.6701966 28.4894469,27.8565974 27.4337125,28.9100654 L27.4337125,28.9100654 Z M9.94498104,15.8596559 L8.99842599,15.5318214 C9.51026687,14.0645624 10.3656722,12.7832095 11.7759891,11.3759202 C16.2863991,6.87519304 23.6264578,6.87419354 28.1378694,11.3759202 C29.2186449,12.4533761 30.4035916,13.7897012 31.0115905,15.5318214 L30.0640338,15.8596559 C29.5241468,14.3094387 28.4293482,13.0800596 27.4297059,12.0825633 C25.434428,10.0915688 22.7810689,8.99612197 19.9574301,8.99612197 C17.1337912,8.99612197 14.4804321,10.0915688 12.4851542,12.0825633 C11.1870215,13.3779092 10.4037347,14.5423211 9.94498104,15.8596559 L9.94498104,15.8596559 Z' id='AWS-Simple-Queue-Service_Icon_32_Squid' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
-      }
-    },
-    "properties": [
-      {},
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
-        "group": "queueProperties"
-      },
-      {
-        "group": "queueProperties"
-      },
-      {
-        "group": "queueProperties"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "output"
-      },
-      {
-        "group": "output"
-      },
-      {
-        "group": "errors"
-      }
-    ]
-  },
-  "io.camunda.connectors.webhook.GithubWebhookConnector.v1": {
-    "template": {
-      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "category": {
-        "id": "connectors",
-        "name": "Connectors"
-      },
-      "groups": [
-        {
-          "id": "endpoint",
-          "label": "Webhook Configuration"
-        },
-        {
-          "id": "activation",
-          "label": "Activation"
-        },
-        {
-          "id": "variable-mapping",
-          "label": "Variable Mapping"
-        }
-      ],
-      "icon": {
-        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 1024 1024' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z' transform='scale(64)' fill='%231B1F23'/%3E%3C/svg%3E"
-      }
-    },
-    "properties": [
-      {},
-      {},
-      {
-        "group": "endpoint"
-      },
-      {},
-      {
-        "group": "endpoint"
-      },
-      {},
-      {},
-      {
-        "group": "activation"
-      },
-      {
-        "group": "variable-mapping"
-      }
-    ]
-  },
-  "io.camunda.connector.IdpUnstructuredExtractionOutBoundTemplate.v1": {
-    "template": {
-      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
-      "category": {
-        "id": "connectors",
-        "name": "Connectors"
-      },
-      "groups": [
-        {
-          "id": "input",
-          "label": "Input message data"
-        },
-        {
-          "id": "extractor",
-          "label": "Extractor selection"
-        },
-        {
-          "id": "ai",
-          "label": "Ai provider selection"
         },
         {
           "id": "connector",
@@ -8222,124 +12549,57 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMF8xXzcxKSI+CiAgICAgICAgPGcgc3R5bGU9Im1peC1ibGVuZC1tb2RlOm11bHRpcGx5Ij4KICAgICAgICAgICAgPHBhdGggZD0iTTE5LjE3ODkgMEgwVjE5LjE3ODlIMTkuMTc4OVYwWiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC4wMSIvPgogICAgICAgIDwvZz4KICAgICAgICA8cGF0aCBkPSJNMTAuMTg3OSA4Ljk5MDFWNS4zOTQwN0g1LjM5MzE4VjEzLjc4NDhIMTMuNzgzOVY4Ljk5MDFIMTAuMTg3OVpNNi41OTE4NiA2LjU5Mjc0SDguOTg5MjFWOC45OTAxSDYuNTkxODZWNi41OTI3NFpNOC45ODkyMSAxMi41ODYxSDYuNTkxODZWMTAuMTg4OEg4Ljk4OTIxVjEyLjU4NjFaTTEyLjU4NTIgMTIuNTg2MUgxMC4xODc5VjEwLjE4ODhIMTIuNTg1MlYxMi41ODYxWiIgZmlsbD0iI0ZDNUQwRCIvPgogICAgICAgIDxwYXRoIGQ9Ik0xNS41ODE5IDE2Ljc4MTVIMy41OTUxNkMzLjI3NzM3IDE2Ljc4MTEgMi45NzI2OSAxNi42NTQ3IDIuNzQ3OTcgMTYuNDNDMi41MjMyNiAxNi4yMDUzIDIuMzk2ODUgMTUuOTAwNiAyLjM5NjQ4IDE1LjU4MjhWMy41OTYwNUMyLjM5Njg1IDMuMjc4MjUgMi41MjMyNiAyLjk3MzU3IDIuNzQ3OTcgMi43NDg4NkMyLjk3MjY5IDIuNTI0MTQgMy4yNzczNyAyLjM5NzczIDMuNTk1MTYgMi4zOTczN0g5LjU4ODU1VjMuNTk2MDVIMy41OTUxNlYxNS41ODI4SDE1LjU4MTlWOS41ODk0NEgxNi43ODA2VjE1LjU4MjhDMTYuNzgwMyAxNS45MDA2IDE2LjY1MzkgMTYuMjA1MyAxNi40MjkxIDE2LjQzQzE2LjIwNDQgMTYuNjU0NyAxNS44OTk3IDE2Ljc4MTEgMTUuNTgxOSAxNi43ODE1WiIgZmlsbD0iIzE2MTYxNiIvPgogICAgICAgIDxwYXRoIGQ9Ik0xNi41MjYzIDUuMDUyNjNDMTYuMzg2OCA1LjA1MjYzIDE2LjI1OTIgNS4xMzE0NyAxNi4xOTY4IDUuMjU2MjZMMTUuODgzNCA1Ljg4MzAyTDE1LjI1NjMgNi4xOTY3NkMxNS4xMzE1IDYuMjU5MTcgMTUuMDUyNiA2LjM4Njc2IDE1LjA1MjYgNi41MjYzMkMxNS4wNTI2IDYuNjY1ODcgMTUuMTMxNSA2Ljc5MzQ2IDE1LjI1NjMgNi44NTU4N0wxNS44ODM0IDcuMTY5MjVMMTYuMTk2OCA3Ljc5NjM3QzE2LjI1OTIgNy45MjExNiAxNi4zODY4IDggMTYuNTI2MyA4QzE2LjY2NTkgOCAxNi43OTM1IDcuOTIxMTYgMTYuODU1OSA3Ljc5NjM3TDE3LjE2OTYgNy4xNjkyNUwxNy43OTY0IDYuODU1ODdDMTcuOTIxMiA2Ljc5MzQ2IDE4IDYuNjY1ODcgMTggNi41MjYzMkMxOCA2LjM4Njc2IDE3LjkyMTIgNi4yNTkxNyAxNy43OTY0IDYuMTk2NzZMMTcuMTY5NiA1Ljg4MzAyTDE2Ljg1NTkgNS4yNTYyNkwxNi44Mjk2IDUuMjExNjRDMTYuNzYxNSA1LjExMjk0IDE2LjY0ODQgNS4wNTI2MyAxNi41MjYzIDUuMDUyNjNaTTEzLjAyNjMgMi4yODk0N0MxMi44ODY4IDIuMjg5NDcgMTIuNzU5MiAyLjM2ODMgMTIuNjk2OCAyLjQ5MzExTDEyLjE5OTIgMy40ODgyOEwxMS4yMDM2IDMuOTg2MjRDMTEuMDc4OCA0LjA0ODY1IDExIDQuMTc2MjMgMTEgNC4zMTU3OUMxMSA0LjQ1NTM1IDExLjA3ODggNC41ODI5MyAxMS4yMDM2IDQuNjQ1MzRMMTIuMTk5MiA1LjE0MjkzTDEyLjY5NjggNi4xMzg0OEMxMi43NTkyIDYuMjYzMjYgMTIuODg2OCA2LjM0MjExIDEzLjAyNjMgNi4zNDIxMUMxMy4xNjU5IDYuMzQyMTEgMTMuMjkzNSA2LjI2MzI2IDEzLjM1NTkgNi4xMzg0OEwxMy44NTM4IDUuMTQyOTNMMTQuODQ5IDQuNjQ1MzRDMTQuOTczOCA0LjU4MjkzIDE1LjA1MjYgNC40NTUzNSAxNS4wNTI2IDQuMzE1NzlDMTUuMDUyNiA0LjE3NjIzIDE0Ljk3MzggNC4wNDg2NSAxNC44NDkgMy45ODYyNEwxMy44NTM4IDMuNDg4MjhMMTMuMzU1OSAyLjQ5MzExTDEzLjMyOTYgMi40NDg1QzEzLjI2MTUgMi4zNDk3NyAxMy4xNDg0IDIuMjg5NDcgMTMuMDI2MyAyLjI4OTQ3Wk0xNi41MjYzIDFDMTYuMzg2OCAxIDE2LjI1OTIgMS4wNzg4MiAxNi4xOTY4IDEuMjAzNjRMMTUuODgzNCAxLjgzMDM5TDE1LjI1NjMgMi4xNDQxMkMxNS4xMzE1IDIuMjA2NTMgMTUuMDUyNiAyLjMzNDE0IDE1LjA1MjYgMi40NzM2OEMxNS4wNTI2IDIuNjEzMjMgMTUuMTMxNSAyLjc0MDg0IDE1LjI1NjMgMi44MDMyNUwxNS44ODM0IDMuMTE2NjJMMTYuMTk2OCAzLjc0MzczQzE2LjI1OTIgMy44Njg1MyAxNi4zODY4IDMuOTQ3MzcgMTYuNTI2MyAzLjk0NzM3QzE2LjY2NTkgMy45NDczNyAxNi43OTM1IDMuODY4NTMgMTYuODU1OSAzLjc0MzczTDE3LjE2OTYgMy4xMTY2MkwxNy43OTY0IDIuODAzMjVDMTcuOTIxMiAyLjc0MDg0IDE4IDIuNjEzMjMgMTggMi40NzM2OEMxOCAyLjMzNDE0IDE3LjkyMTIgMi4yMDY1MyAxNy43OTY0IDIuMTQ0MTJMMTcuMTY5NiAxLjgzMDM5TDE2Ljg1NTkgMS4yMDM2NEwxNi44Mjk2IDEuMTU5MDNDMTYuNzYxNSAxLjA2MDMgMTYuNjQ4NCAxIDE2LjUyNjMgMVoiIGZpbGw9IiNGQzVEMEQiLz4KICAgIDwvZz4KICAgIDxkZWZzPgogICAgICAgIDxjbGlwUGF0aCBpZD0iY2xpcDBfMV83MSI+CiAgICAgICAgICAgIDxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0id2hpdGUiLz4KICAgICAgICA8L2NsaXBQYXRoPgogICAgPC9kZWZzPgo8L3N2Zz4K"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCA0MCA0MCcgdmVyc2lvbj0nMS4xJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnCiAgICAgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPjwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggNjQgKDkzNTM3KSAtIGh0dHBzOi8vc2tldGNoLmNvbSAtLT4KICAgIDx0aXRsZT5JY29uLUFyY2hpdGVjdHVyZS8zMi9BcmNoX0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV8zMjwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPgogICAgICAgIDxsaW5lYXJHcmFkaWVudCB4MT0nMCUnIHkxPScxMDAlJyB4Mj0nMTAwJScgeTI9JzAlJyBpZD0nbGluZWFyR3JhZGllbnQtMSc+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9JyNCMDA4NEQnIG9mZnNldD0nMCUnPjwvc3RvcD4KICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0nI0ZGNEY4Qicgb2Zmc2V0PScxMDAlJz48L3N0b3A+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDwvZGVmcz4KICAgIDxnIGlkPSdJY29uLUFyY2hpdGVjdHVyZS8zMi9BcmNoX0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV8zMicgc3Ryb2tlPSdub25lJyBzdHJva2Utd2lkdGg9JzEnIGZpbGw9J25vbmUnCiAgICAgICBmaWxsLXJ1bGU9J2V2ZW5vZGQnPgogICAgICAgIDxnIGlkPSdJY29uLUFyY2hpdGVjdHVyZS1CRy8zMi9BcHBsaWNhdGlvbi1JbnRlZ3JhdGlvbicgZmlsbD0ndXJsKCNsaW5lYXJHcmFkaWVudC0xKSc+CiAgICAgICAgICAgIDxyZWN0IGlkPSdSZWN0YW5nbGUnIHg9JzAnIHk9JzAnIHdpZHRoPSc0MCcgaGVpZ2h0PSc0MCc+PC9yZWN0PgogICAgICAgIDwvZz4KICAgICAgICA8cGF0aCBkPSdNMTQuMzQyMjA1MSwyMi4zNDkzNzg2IEwxNS44NDY2NzY3LDIwLjkwNjEwNzQgQzE1Ljk0MjgzNDcsMjAuODE0MTUzOSAxNS45OTY5MjM1LDIwLjY4NzIxOCAxNS45OTk5Mjg1LDIwLjU1NTI4NDYgQzE2LjAwMTkzMTcsMjAuNDIyMzUxNyAxNS45NTE4NDk1LDIwLjI5MzQxNjggMTUuODU5Njk4MSwyMC4xOTg0NjQ4IEwxNC4zNTUyMjY0LDE4LjY0MzI1MDIgTDEzLjYzNTA0MzMsMTkuMzM3ODk5NCBMMTQuMzExMTU0LDIwLjAzNzU0NiBMMTEuOTkxMzQyOSwyMC4wMzc1NDYgTDExLjk5MTM0MjksMjEuMDM3MDQxMyBMMTQuMjY1MDc4MywyMS4wMzcwNDEzIEwxMy42NDgwNjQ3LDIxLjYyODc0MjUgTDE0LjM0MjIwNTEsMjIuMzQ5Mzc4NiBaIE0yNi4zNTc5NDUyLDIyLjM1MzM3NjUgTDI3LjkwNzQ5MDksMjAuOTAwMTEwNCBDMjguMDA2NjUzOCwyMC44MDgxNTY5IDI4LjA2Mjc0NTksMjAuNjc5MjIyIDI4LjA2NDc0OTIsMjAuNTQ0MjkwMSBDMjguMDY2NzUyNSwyMC40MDkzNTgzIDI4LjAxMzY2NTMsMjAuMjc4NDI0NCAyNy45MTg1MDksMjAuMTgzNDcyNCBMMjYuMzY4OTYzMywxOC42MzcyNTMyIEwyNS42NjA3OTk5LDE5LjM0Mzg5NjMgTDI2LjM1NDk0MDMsMjAuMDM3NTQ2IEwyNC4wMTEwODk2LDIwLjAzNzU0NiBMMjQuMDExMDg5NiwyMS4wMzcwNDEzIEwyNi4yOTg4NDgxLDIxLjAzNzA0MTMgTDI1LjY3MTgxOCwyMS42MjQ3NDQ1IEwyNi4zNTc5NDUyLDIyLjM1MzM3NjUgWiBNMTcuNTg3NTM2NywyMy4zNjA4Njc4IEMxOC4zMzg3NzA4LDIzLjA1NzAyMTIgMTkuMTYyMTIzNSwyMi44OTQxMDM1IDIwLjAwNDUwNzQsMjIuODk0MTAzNSBDMjAuODQ2ODkxMywyMi44OTQxMDM1IDIxLjY3MDI0NCwyMy4wNTcwMjEyIDIyLjQyMTQ3ODEsMjMuMzYwODY3OCBDMjEuNzUyMzc4OSwyMS41ODk3NjIyIDIxLjc1MjM3ODksMTkuMzg5ODczMSAyMi40MjE0NzgxLDE3LjYxODc2NzUgQzIwLjkxOTAwOTgsMTguMjI2NDYwNiAxOS4wOTAwMDUsMTguMjI2NDYwNiAxNy41ODc1MzY3LDE3LjYxODc2NzUgQzE4LjI1NjYzNTksMTkuMzg5ODczMSAxOC4yNTY2MzU5LDIxLjU4OTc2MjIgMTcuNTg3NTM2NywyMy4zNjA4Njc4IEwxNy41ODc1MzY3LDIzLjM2MDg2NzggWiBNMTUuNjQ0MzQ0MywyNS4zNDA4Njc5IEMxNS41NDYxODMsMjUuMjQzOTE2OCAxNS40OTcxMDI0LDI1LjExNTk4MTQgMTUuNDk3MTAyNCwyNC45ODgwNDYgQzE1LjQ5NzEwMjQsMjQuODYwMTEwNiAxNS41NDYxODMsMjQuNzMyMTc1MyAxNS42NDQzNDQzLDI0LjYzNDIyNDcgQzE3LjU4NDUzMTcsMjIuNjk4MjAyNCAxNy41ODQ1MzE3LDE4LjI4MjQzMjQgMTUuNjQ0MzQ0MywxNi4zNDU0MTA2IEMxNS41NDYxODMsMTYuMjQ4NDU5NSAxNS40OTcxMDI0LDE2LjEyMDUyNDEgMTUuNDk3MTAyNCwxNS45OTI1OTEyIEMxNS40OTcxMDI0LDE1Ljg2NDY1MzQgMTUuNTQ2MTgzLDE1LjczNjcxOCAxNS42NDQzNDQzLDE1LjYzODc2NzQgQzE1LjgzOTY2NTIsMTUuNDQzODY1OSAxNi4xNTcxODY4LDE1LjQ0Mzg2NTkgMTYuMzUyNTA3NywxNS42Mzg3Njc0IEMxNy4yNzQwMjE2LDE2LjU1ODMwMzEgMTguNjA1MjA4NiwxNy4wODYwMzY2IDIwLjAwNDUwNzQsMTcuMDg2MDM2NiBDMjEuNDA0ODA3OSwxNy4wODYwMzY2IDIyLjczNTk5NDgsMTYuNTU4MzAzMSAyMy42NTc1MDg4LDE1LjYzODc2NzQgQzIzLjg1MjgyOTYsMTUuNDQzODY1OSAyNC4xNzAzNTEzLDE1LjQ0Mzg2NTkgMjQuMzY1NjcyMiwxNS42Mzg3Njc0IEMyNC40NjI4MzE4LDE1LjczNjcxOCAyNC41MTE5MTI0LDE1Ljg2NDY1MzQgMjQuNTExOTEyNCwxNS45OTI1OTEyIEMyNC41MTE5MTI0LDE2LjEyMDUyNDEgMjQuNDYyODMxOCwxNi4yNDg0NTk1IDI0LjM2NTY3MjIsMTYuMzQ1NDEwNiBDMjIuNDI0NDgzMSwxOC4yODI0MzI0IDIyLjQyNDQ4MzEsMjIuNjk4MjAyNCAyNC4zNjU2NzIyLDI0LjYzNDIyNDcgQzI0LjQ2MjgzMTgsMjQuNzMyMTc1MyAyNC41MTE5MTI0LDI0Ljg2MDExMDYgMjQuNTExOTEyNCwyNC45ODgwNDYgQzI0LjUxMTkxMjQsMjUuMTE1OTgxNCAyNC40NjI4MzE4LDI1LjI0MzkxNjggMjQuMzY1NjcyMiwyNS4zNDA4Njc5IEMyNC4yNjc1MTA5LDI1LjQzODgxODQgMjQuMTM5MzAwMywyNS40ODc3OTM3IDI0LjAxMTA4OTYsMjUuNDg3NzkzNyBDMjMuODgyODc5LDI1LjQ4Nzc5MzcgMjMuNzU0NjY4NCwyNS40Mzg4MTg0IDIzLjY1NzUwODgsMjUuMzQwODY3OSBDMjIuNzM1OTk0OCwyNC40MjEzMzIyIDIxLjQwNDgwNzksMjMuODkzNTk4NyAyMC4wMDQ1MDc0LDIzLjg5MzU5ODcgQzE4LjYwNTIwODYsMjMuODkzNTk4NyAxNy4yNzQwMjE2LDI0LjQyMTMzMjIgMTYuMzUyNTA3NywyNS4zNDA4Njc5IEMxNi4xNTcxODY4LDI1LjUzNTc2OTQgMTUuODM5NjY1MiwyNS41MzU3Njk0IDE1LjY0NDM0NDMsMjUuMzQwODY3OSBMMTUuNjQ0MzQ0MywyNS4zNDA4Njc5IFogTTMyLjU0MjEwNDksMTkuNDM1ODQ5OSBDMzIuMjM2NjAzLDE5LjEzMjAwMzMgMzEuODM2OTQ2NCwxOC45ODAwODAxIDMxLjQzNjI4ODIsMTguOTgwMDgwMSBDMzEuMDM2NjMxNiwxOC45ODAwODAxIDMwLjYzNjk3NSwxOS4xMzIwMDMzIDMwLjMzMTQ3MzEsMTkuNDM1ODQ5OSBDMjkuNzIxNDcxLDIwLjA0NDU0MjUgMjkuNzIxNDcxLDIxLjAzNDA0MjggMzAuMzMxNDczMSwyMS42NDE3MzU5IEMzMC45NDE0NzUzLDIyLjI1MDQyODUgMzEuOTMyMTAyNywyMi4yNTA0Mjg1IDMyLjU0MjEwNDksMjEuNjQxNzM1OSBDMzMuMTUxMTA1NCwyMS4wMzQwNDI4IDMzLjE1MTEwNTQsMjAuMDQ0NTQyNSAzMi41NDIxMDQ5LDE5LjQzNTg0OTkgTDMyLjU0MjEwNDksMTkuNDM1ODQ5OSBaIE0zMy4yNTAyNjgzLDIyLjM0OTM3ODYgQzMyLjc1MDQ0NzIsMjIuODQ4MTI2NyAzMi4wOTMzNjc3LDIzLjA5ODAwMDUgMzEuNDM2Mjg4MiwyMy4wOTgwMDA1IEMzMC43ODAyMTAzLDIzLjA5ODAwMDUgMzAuMTIzMTMwOSwyMi44NDgxMjY3IDI5LjYyMzMwOTcsMjIuMzQ5Mzc4NiBDMjguNjIzNjY3NSwyMS4zNTA4ODI4IDI4LjYyMzY2NzUsMTkuNzI3NzAyNSAyOS42MjMzMDk3LDE4LjcyOTIwNjggQzMwLjYyMjk1MiwxNy43MzE3MTA1IDMyLjI1MDYyNiwxNy43MzE3MTA1IDMzLjI1MDI2ODMsMTguNzI5MjA2OCBDMzQuMjQ5OTEwNiwxOS43Mjc3MDI1IDM0LjI0OTkxMDYsMjEuMzUwODgyOCAzMy4yNTAyNjgzLDIyLjM0OTM3ODYgTDMzLjI1MDI2ODMsMjIuMzQ5Mzc4NiBaIE05LjY2ODUyNjg3LDE5LjQ0Njg0NDMgQzkuMzYzMDI0OTcsMTkuMTQyOTk3OCA4Ljk2MzM2ODM5LDE4Ljk5MTA3NDUgOC41NjI3MTAxNywxOC45OTEwNzQ1IEM4LjE2MzA1MzU5LDE4Ljk5MTA3NDUgNy43NjMzOTcwMSwxOS4xNDI5OTc4IDcuNDU3ODk1MTEsMTkuNDQ2ODQ0MyBDNi44NDg4OTQ2MSwyMC4wNTU1MzcgNi44NDg4OTQ2MSwyMS4wNDUwMzczIDcuNDU3ODk1MTEsMjEuNjUyNzMwNCBDOC4wNjc4OTcyNiwyMi4yNjE0MjMgOS4wNTg1MjQ3MiwyMi4yNjE0MjMgOS42Njg1MjY4NywyMS42NTI3MzA0IEMxMC4yNzc1Mjc0LDIxLjA0NTAzNzMgMTAuMjc3NTI3NCwyMC4wNTU1MzcgOS42Njg1MjY4NywxOS40NDY4NDQzIEw5LjY2ODUyNjg3LDE5LjQ0Njg0NDMgWiBNMTAuMzc2NjkwMywyMi4zNTkzNzM1IEM5Ljg3Njg2OTE0LDIyLjg1ODEyMTcgOS4yMTk3ODk2NSwyMy4xMDc5OTU1IDguNTYyNzEwMTcsMjMuMTA3OTk1NSBDNy45MDY2MzIzMiwyMy4xMDc5OTU1IDcuMjQ5NTUyODQsMjIuODU4MTIxNyA2Ljc0OTczMTcsMjIuMzU5MzczNSBDNS43NTAwODk0MywyMS4zNjE4NzczIDUuNzUwMDg5NDMsMTkuNzM4Njk3IDYuNzQ5NzMxNywxOC43NDAyMDEyIEM3Ljc0OTM3Mzk3LDE3Ljc0MjcwNDkgOS4zNzcwNDgwMSwxNy43NDI3MDQ5IDEwLjM3NjY5MDMsMTguNzQwMjAxMiBDMTEuMzc2MzMyNSwxOS43Mzg2OTcgMTEuMzc2MzMyNSwyMS4zNjE4NzczIDEwLjM3NjY5MDMsMjIuMzU5MzczNSBMMTAuMzc2NjkwMywyMi4zNTkzNzM1IFogTTI3LjQzMzcxMjUsMjguOTEwMDY1NCBDMjUuNDM2NDMxMywzMC45MDMwNTkgMjIuNzgyMDcwNSwzMi4wMDA1MDQ3IDE5Ljk1NzQzMDEsMzIuMDAwNTA0NyBDMTcuMTMyNzg5NiwzMi4wMDA1MDQ3IDE0LjQ3ODQyODgsMzAuOTAzMDU5IDEyLjQ4MjE0OTIsMjguOTEwMDY1NCBDMTEuMTY1OTg3LDI3LjU5NzcyODEgMTAuNDA3NzQxMywyNi40NjkyOTggOS45NDQ5ODEwNCwyNS4xMzU5NzEzIEw4Ljk5ODQyNTk5LDI1LjQ2MjgwNjMgQzkuNTA3MjYxOTMsMjYuOTI5MDY1OCAxMC4zNjI2NjcyLDI4LjIxMDQxODcgMTEuNzczOTg1OCwyOS42MTY3MDg2IEMxMy45NTg1NzQ4LDMxLjc5ODYwNjcgMTYuODY2MzUxOSwzMyAxOS45NTc0MzAxLDMzIEMyMy4wNDk1MDk5LDMzIDI1Ljk1NjI4NTMsMzEuNzk4NjA2NyAyOC4xNDE4NzU5LDI5LjYxNjcwODYgQzI5LjI4Mjc1MDIsMjguNDc4MjgzNSAzMC40MjA2MTk2LDI3LjE4NjkzNTYgMzEuMDExNTkwNSwyNS40NjA4MDczIEwzMC4wNjQwMzM4LDI1LjEzNzk3MDMgQzI5LjUzOTE3MTUsMjYuNjcwMTk2NiAyOC40ODk0NDY5LDI3Ljg1NjU5NzQgMjcuNDMzNzEyNSwyOC45MTAwNjU0IEwyNy40MzM3MTI1LDI4LjkxMDA2NTQgWiBNOS45NDQ5ODEwNCwxNS44NTk2NTU5IEw4Ljk5ODQyNTk5LDE1LjUzMTgyMTQgQzkuNTEwMjY2ODcsMTQuMDY0NTYyNCAxMC4zNjU2NzIyLDEyLjc4MzIwOTUgMTEuNzc1OTg5MSwxMS4zNzU5MjAyIEMxNi4yODYzOTkxLDYuODc1MTkzMDQgMjMuNjI2NDU3OCw2Ljg3NDE5MzU0IDI4LjEzNzg2OTQsMTEuMzc1OTIwMiBDMjkuMjE4NjQ0OSwxMi40NTMzNzYxIDMwLjQwMzU5MTYsMTMuNzg5NzAxMiAzMS4wMTE1OTA1LDE1LjUzMTgyMTQgTDMwLjA2NDAzMzgsMTUuODU5NjU1OSBDMjkuNTI0MTQ2OCwxNC4zMDk0Mzg3IDI4LjQyOTM0ODIsMTMuMDgwMDU5NiAyNy40Mjk3MDU5LDEyLjA4MjU2MzMgQzI1LjQzNDQyOCwxMC4wOTE1Njg4IDIyLjc4MTA2ODksOC45OTYxMjE5NyAxOS45NTc0MzAxLDguOTk2MTIxOTcgQzE3LjEzMzc5MTIsOC45OTYxMjE5NyAxNC40ODA0MzIxLDEwLjA5MTU2ODggMTIuNDg1MTU0MiwxMi4wODI1NjMzIEMxMS4xODcwMjE1LDEzLjM3NzkwOTIgMTAuNDAzNzM0NywxNC41NDIzMjExIDkuOTQ0OTgxMDQsMTUuODU5NjU1OSBMOS45NDQ5ODEwNCwxNS44NTk2NTU5IFonCiAgICAgICAgICAgICAgaWQ9J0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV9JY29uXzMyX1NxdWlkJyBmaWxsPScjRkZGRkZGJz48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
       {
-        "group": "input"
+        "group": "authentication"
       },
       {
-        "group": "input"
+        "group": "authentication"
       },
       {
-        "group": "input"
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
       },
       {
-        "group": "extractor"
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
       },
       {
-        "group": "extractor"
+        "group": "configuration",
+        "tooltip": "URL of the SQS queue to send the message to."
       },
       {
-        "group": "extractor"
+        "group": "configuration",
+        "tooltip": "Whether the queue is a <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/standard-queues.html\">standard</a> or <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/FIFO-queues.html\">FIFO</a> queue."
       },
       {
-        "group": "extractor"
+        "group": "configuration"
       },
       {
-        "group": "extractor"
+        "group": "configuration"
       },
       {
-        "group": "extractor"
+        "group": "configuration"
       },
       {
-        "group": "extractor"
+        "group": "input",
+        "tooltip": "Data to send to the SQS queue"
       },
       {
-        "group": "extractor"
+        "group": "input",
+        "tooltip": "Optional message metadata as a map keyed by attribute name, each value having a StringValue and DataType, following the <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-message-metadata.html#sqs-message-attributes\" target=\"_blank\">SQS message attribute format</a>."
       },
       {
-        "group": "extractor"
+        "group": "input",
+        "tooltip": "FIFO only. See <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagegroupid-property.html\">MessageGroupId property</a> in the Amazon SQS developer guide."
       },
       {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
+        "group": "input",
+        "tooltip": "FIFO only. See <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagededuplicationid-property.html\">MessageDeduplicationId property</a> in the Amazon SQS developer guide."
       },
       {
         "group": "connector"
@@ -8355,6 +12615,170 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.connectors.webhook.GithubWebhookConnector.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "endpoint",
+          "label": "Webhook configuration"
+        },
+        {
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "variable-mapping",
+          "label": "Variable mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 1024 1024' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z' transform='scale(64)' fill='%231B1F23'/%3E%3C/svg%3E"
+      }
+    },
+    "properties": [
+      {},
+      {},
+      {
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL"
+      },
+      {},
+      {
+        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
+        "group": "endpoint"
+      },
+      {},
+      {},
+      {
+        "group": "activation",
+        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
+      },
+      {
+        "group": "variable-mapping",
+        "tooltip": "Name of variable to store the result of the connector in"
+      },
+      {
+        "group": "variable-mapping",
+        "tooltip": "Expression to map the inbound payload to process variables"
+      }
+    ]
+  },
+  "io.camunda.connectors.aws.bedrock.knowledgebase.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "configuration",
+          "label": "Configuration"
+        },
+        {
+          "id": "operation",
+          "label": "Operation"
+        },
+        {
+          "id": "retrieve",
+          "label": "Retrieve from Knowledge Base"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
+          "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSIwIDAgNDAgNDAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+SWNvbi1BcmNoaXRlY3R1cmUvMzIvQXJjaF9BbWF6b24tQmVkcm9ja18zMjwvdGl0bGU+CiAgICA8ZyBpZD0iSWNvbi1BcmNoaXRlY3R1cmUvMzIvQXJjaF9BbWF6b24tQmVkcm9ja18zMiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9Ikljb24tQXJjaGl0ZWN0dXJlLUJHLzMyL01hY2hpbmUtTGVhcm5pbmciIGZpbGw9IiMwMUE4OEQiPgogICAgICAgICAgICA8cmVjdCBpZD0iUmVjdGFuZ2xlIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiPjwvcmVjdD4KICAgICAgICA8L2c+CiAgICAgICAgPGcgaWQ9Ikljb24tU2VydmljZS8zMi9BbWF6b24tQmVkcm9ja18zMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNi4wMDAwMDAsIDYuMDAwMDAwKSIgZmlsbD0iI0ZGRkZGRiI+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMC41MTYsMjYuOTMzMjExNiBMOC4yOTMsMjUuNjYzMjExNiBMMTEuNzI0LDIzLjk0NzIxMTYgTDExLjI3NywyMy4wNTMyMTE2IEw3LjI3NywyNS4wNTMyMTE2IEw3LjI5NywyNS4wOTQyMTE2IEw0LDIzLjIxMDIxMTYgTDQsMTkuODA5MjExNiBMNy43MjQsMTcuOTQ3MjExNiBMNy4yNzcsMTcuMDUzMjExNiBMMy41MzYsMTguOTIzMjExNiBMMSwxNy4yMzIyMTE2IEwxLDE0LjgwOTIxMTYgTDQuNzI0LDEyLjk0NzIxMTYgTDQuMjc3LDEyLjA1MzIxMTYgTDEsMTMuNjkxMjExNiBMMSwxMC43NjcyMTE2IEwzLjUyMyw5LjA4NjIxMTU4IEw3LDExLjAzODIxMTYgTDcsMTQuMTkxMjExNiBMNS4yNzcsMTUuMDUzMjExNiBMNS43MjQsMTUuOTQ3MjExNiBMNy41LDE1LjA1OTIxMTYgTDkuMjc3LDE1Ljk0NzIxMTYgTDkuNzI0LDE1LjA1MzIxMTYgTDgsMTQuMTkxMjExNiBMOCwxMC43NjcyMTE2IEwxMC43NzgsOC45MTYyMTE1OCBDMTAuOTE2LDguODIzMjExNTggMTEsOC42NjcyMTE1OCAxMSw4LjUwMDIxMTU4IEwxMSw1LjAwMDIxMTU4IEwxMCw1LjAwMDIxMTU4IEwxMCw4LjIzMjIxMTU4IEw3LjI3OCwxMC4wNDcyMTE2IEw0LDguMjA3MjExNTggTDQsNC4wMzUyMTE1OCBMNywyLjY1NzIxMTU4IEw3LDcuMDAwMjExNTggTDgsNy4wMDAyMTE1OCBMOCwyLjE5ODIxMTU4IEwxMC40OTIsMS4wNTQyMTE1OCBMMTQsMi44MDkyMTE1OCBMMTQsMTcuMTkxMjExNiBMNi4yNzcsMjEuMDUzMjExNiBMNi43MjQsMjEuOTQ3MjExNiBMMTQsMTguMzA5MjExNiBMMTQsMjUuMTkxMjExNiBMMTAuNTE2LDI2LjkzMzIxMTYgWiBNMjUuNSwxOS41MDAyMTE2IEMyNS41LDIwLjA1MTIxMTYgMjUuMDUyLDIwLjUwMDIxMTYgMjQuNSwyMC41MDAyMTE2IEMyMy45NDksMjAuNTAwMjExNiAyMy41LDIwLjA1MTIxMTYgMjMuNSwxOS41MDAyMTE2IEMyMy41LDE4Ljk0OTIxMTYgMjMuOTQ5LDE4LjUwMDIxMTYgMjQuNSwxOC41MDAyMTE2IEMyNS4wNTIsMTguNTAwMjExNiAyNS41LDE4Ljk0OTIxMTYgMjUuNSwxOS41MDAyMTE2IEwyNS41LDE5LjUwMDIxMTYgWiBNMjAuNSwyNC4wMDAyMTE2IEMyMC41LDI0LjU1MTIxMTYgMjAuMDUyLDI1LjAwMDIxMTYgMTkuNSwyNS4wMDAyMTE2IEMxOC45NDksMjUuMDAwMjExNiAxOC41LDI0LjU1MTIxMTYgMTguNSwyNC4wMDAyMTE2IEMxOC41LDIzLjQ0OTIxMTYgMTguOTQ5LDIzLjAwMDIxMTYgMTkuNSwyMy4wMDAyMTE2IEMyMC4wNTIsMjMuMDAwMjExNiAyMC41LDIzLjQ0OTIxMTYgMjAuNSwyNC4wMDAyMTE2IEwyMC41LDI0LjAwMDIxMTYgWiBNMTkuNSw0LjAwMDIxMTU4IEMxOS41LDMuNDQ5MjExNTggMTkuOTQ5LDMuMDAwMjExNTggMjAuNSwzLjAwMDIxMTU4IEMyMS4wNTIsMy4wMDAyMTE1OCAyMS41LDMuNDQ5MjExNTggMjEuNSw0LjAwMDIxMTU4IEMyMS41LDQuNTUxMjExNTggMjEuMDUyLDUuMDAwMjExNTggMjAuNSw1LjAwMDIxMTU4IEMxOS45NDksNS4wMDAyMTE1OCAxOS41LDQuNTUxMjExNTggMTkuNSw0LjAwMDIxMTU4IEwxOS41LDQuMDAwMjExNTggWiBNMjYsMTEuNTAwMjExNiBDMjYuNTUyLDExLjUwMDIxMTYgMjcsMTEuOTQ5MjExNiAyNywxMi41MDAyMTE2IEMyNywxMy4wNTEyMTE2IDI2LjU1MiwxMy41MDAyMTE2IDI2LDEzLjUwMDIxMTYgQzI1LjQ0OSwxMy41MDAyMTE2IDI1LDEzLjA1MTIxMTYgMjUsMTIuNTAwMjExNiBDMjUsMTEuOTQ5MjExNiAyNS40NDksMTEuNTAwMjExNiAyNiwxMS41MDAyMTE2IEwyNiwxMS41MDAyMTE2IFogTTI0LjA3MSwxMy4wMDAyMTE2IEMyNC4yOTUsMTMuODYwMjExNiAyNS4wNzEsMTQuNTAwMjExNiAyNiwxNC41MDAyMTE2IEMyNy4xMDMsMTQuNTAwMjExNiAyOCwxMy42MDMyMTE2IDI4LDEyLjUwMDIxMTYgQzI4LDExLjM5NzIxMTYgMjcuMTAzLDEwLjUwMDIxMTYgMjYsMTAuNTAwMjExNiBDMjUuMDcxLDEwLjUwMDIxMTYgMjQuMjk1LDExLjE0MDIxMTYgMjQuMDcxLDEyLjAwMDIxMTYgTDE1LDEyLjAwMDIxMTYgTDE1LDkuMDAwMjExNTggTDIwLjUsOS4wMDAyMTE1OCBDMjAuNzc3LDkuMDAwMjExNTggMjEsOC43NzYyMTE1OCAyMSw4LjUwMDIxMTU4IEwyMSw1LjkyOTIxMTU4IEMyMS44Niw1LjcwNTIxMTU4IDIyLjUsNC45MjkyMTE1OCAyMi41LDQuMDAwMjExNTggQzIyLjUsMi44OTcyMTE1OCAyMS42MDMsMi4wMDAyMTE1OCAyMC41LDIuMDAwMjExNTggQzE5LjM5OCwyLjAwMDIxMTU4IDE4LjUsMi44OTcyMTE1OCAxOC41LDQuMDAwMjExNTggQzE4LjUsNC45MjkyMTE1OCAxOS4xNCw1LjcwNTIxMTU4IDIwLDUuOTI5MjExNTggTDIwLDguMDAwMjExNTggTDE1LDguMDAwMjExNTggTDE1LDIuNTAwMjExNTggQzE1LDIuMzEwMjExNTggMTQuODkzLDIuMTM4MjExNTggMTQuNzI0LDIuMDUzMjExNTggTDEwLjcyNCwwLjA1MzIxMTU4NDMgQzEwLjU4OCwtMC4wMTQ3ODg0MTU3IDEwLjQzLC0wLjAxNzc4ODQxNTcgMTAuMjkxLDAuMDQ1MjExNTg0MyBMMy4yOTEsMy4yNjAyMTE1OCBDMy4xMTUsMy4zNDEyMTE1OCAzLDMuNTE5MjExNTggMywzLjcxNDIxMTU4IEwzLDguMjMyMjExNTggTDAuMjIzLDEwLjA4NDIxMTYgQzAuMDg0LDEwLjE3NzIxMTYgMCwxMC4zMzMyMTE2IDAsMTAuNTAwMjExNiBMMCwxNy41MDAyMTE2IEMwLDE3LjY2NzIxMTYgMC4wODQsMTcuODIzMjExNiAwLjIyMywxNy45MTYyMTE2IEwzLDE5Ljc2NzIxMTYgTDMsMjMuNTAwMjExNiBDMywyMy42NzkyMTE2IDMuMDk2LDIzLjg0NTIxMTYgMy4yNTIsMjMuOTM0MjExNiBMMTAuMjUyLDI3LjkzNDIxMTYgQzEwLjMyOSwyNy45NzgyMTE2IDEwLjQxNCwyOC4wMDAyMTE2IDEwLjUsMjguMDAwMjExNiBDMTAuNTc3LDI4LjAwMDIxMTYgMTAuNjU0LDI3Ljk4MjIxMTYgMTAuNzI0LDI3Ljk0NzIxMTYgTDE0LjcyNCwyNS45NDcyMTE2IEMxNC44OTMsMjUuODYyMjExNiAxNSwyNS42ODkyMTE2IDE1LDI1LjUwMDIxMTYgTDE1LDIxLjAwMDIxMTYgTDE5LDIxLjAwMDIxMTYgTDE5LDIyLjA3MTIxMTYgQzE4LjE0LDIyLjI5NTIxMTYgMTcuNSwyMy4wNzEyMTE2IDE3LjUsMjQuMDAwMjExNiBDMTcuNSwyNS4xMDMyMTE2IDE4LjM5OCwyNi4wMDAyMTE2IDE5LjUsMjYuMDAwMjExNiBDMjAuNjAzLDI2LjAwMDIxMTYgMjEuNSwyNS4xMDMyMTE2IDIxLjUsMjQuMDAwMjExNiBDMjEuNSwyMy4wNzEyMTE2IDIwLjg2LDIyLjI5NTIxMTYgMjAsMjIuMDcxMjExNiBMMjAsMjAuNTAwMjExNiBDMjAsMjAuMjI0MjExNiAxOS43NzcsMjAuMDAwMjExNiAxOS41LDIwLjAwMDIxMTYgTDE1LDIwLjAwMDIxMTYgTDE1LDE3LjAwMDIxMTYgTDIxLjI5MywxNy4wMDAyMTE2IEwyMi43ODQsMTguNDkwMjExNiBDMjIuNjA4LDE4Ljc4ODIxMTYgMjIuNSwxOS4xMzAyMTE2IDIyLjUsMTkuNTAwMjExNiBDMjIuNSwyMC42MDMyMTE2IDIzLjM5OCwyMS41MDAyMTE2IDI0LjUsMjEuNTAwMjExNiBDMjUuNjAzLDIxLjUwMDIxMTYgMjYuNSwyMC42MDMyMTE2IDI2LjUsMTkuNTAwMjExNiBDMjYuNSwxOC4zOTcyMTE2IDI1LjYwMywxNy41MDAyMTE2IDI0LjUsMTcuNTAwMjExNiBDMjQuMTMxLDE3LjUwMDIxMTYgMjMuNzg4LDE3LjYwODIxMTYgMjMuNDkxLDE3Ljc4MzIxMTYgTDIxLjg1NCwxNi4xNDYyMTE2IEMyMS43NiwxNi4wNTMyMTE2IDIxLjYzMywxNi4wMDAyMTE2IDIxLjUsMTYuMDAwMjExNiBMMTUsMTYuMDAwMjExNiBMMTUsMTMuMDAwMjExNiBMMjQuMDcxLDEzLjAwMDIxMTYgWiIgaWQ9IkZpbGwtNSI+PC9wYXRoPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+"
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "retrieve"
+      },
+      {
+        "group": "retrieve"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -8377,6 +12801,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Authentication"
         },
         {
+          "id": "configuration",
+          "label": "Configuration"
+        },
+        {
           "id": "queueProperties",
           "label": "Queue properties"
         },
@@ -8393,17 +12821,26 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 40 40' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 64 (93537) - https://sketch.com --%3E%3Ctitle%3EIcon-Architecture/32/Arch_AWS-Simple-Queue-Service_32%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3ClinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='linearGradient-1'%3E%3Cstop stop-color='%23B0084D' offset='0%25'%3E%3C/stop%3E%3Cstop stop-color='%23FF4F8B' offset='100%25'%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Cg id='Icon-Architecture/32/Arch_AWS-Simple-Queue-Service_32' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Icon-Architecture-BG/32/Application-Integration' fill='url(%23linearGradient-1)'%3E%3Crect id='Rectangle' x='0' y='0' width='40' height='40'%3E%3C/rect%3E%3C/g%3E%3Cpath d='M14.3422051,22.3493786 L15.8466767,20.9061074 C15.9428347,20.8141539 15.9969235,20.687218 15.9999285,20.5552846 C16.0019317,20.4223517 15.9518495,20.2934168 15.8596981,20.1984648 L14.3552264,18.6432502 L13.6350433,19.3378994 L14.311154,20.037546 L11.9913429,20.037546 L11.9913429,21.0370413 L14.2650783,21.0370413 L13.6480647,21.6287425 L14.3422051,22.3493786 Z M26.3579452,22.3533765 L27.9074909,20.9001104 C28.0066538,20.8081569 28.0627459,20.679222 28.0647492,20.5442901 C28.0667525,20.4093583 28.0136653,20.2784244 27.918509,20.1834724 L26.3689633,18.6372532 L25.6607999,19.3438963 L26.3549403,20.037546 L24.0110896,20.037546 L24.0110896,21.0370413 L26.2988481,21.0370413 L25.671818,21.6247445 L26.3579452,22.3533765 Z M17.5875367,23.3608678 C18.3387708,23.0570212 19.1621235,22.8941035 20.0045074,22.8941035 C20.8468913,22.8941035 21.670244,23.0570212 22.4214781,23.3608678 C21.7523789,21.5897622 21.7523789,19.3898731 22.4214781,17.6187675 C20.9190098,18.2264606 19.090005,18.2264606 17.5875367,17.6187675 C18.2566359,19.3898731 18.2566359,21.5897622 17.5875367,23.3608678 L17.5875367,23.3608678 Z M15.6443443,25.3408679 C15.546183,25.2439168 15.4971024,25.1159814 15.4971024,24.988046 C15.4971024,24.8601106 15.546183,24.7321753 15.6443443,24.6342247 C17.5845317,22.6982024 17.5845317,18.2824324 15.6443443,16.3454106 C15.546183,16.2484595 15.4971024,16.1205241 15.4971024,15.9925912 C15.4971024,15.8646534 15.546183,15.736718 15.6443443,15.6387674 C15.8396652,15.4438659 16.1571868,15.4438659 16.3525077,15.6387674 C17.2740216,16.5583031 18.6052086,17.0860366 20.0045074,17.0860366 C21.4048079,17.0860366 22.7359948,16.5583031 23.6575088,15.6387674 C23.8528296,15.4438659 24.1703513,15.4438659 24.3656722,15.6387674 C24.4628318,15.736718 24.5119124,15.8646534 24.5119124,15.9925912 C24.5119124,16.1205241 24.4628318,16.2484595 24.3656722,16.3454106 C22.4244831,18.2824324 22.4244831,22.6982024 24.3656722,24.6342247 C24.4628318,24.7321753 24.5119124,24.8601106 24.5119124,24.988046 C24.5119124,25.1159814 24.4628318,25.2439168 24.3656722,25.3408679 C24.2675109,25.4388184 24.1393003,25.4877937 24.0110896,25.4877937 C23.882879,25.4877937 23.7546684,25.4388184 23.6575088,25.3408679 C22.7359948,24.4213322 21.4048079,23.8935987 20.0045074,23.8935987 C18.6052086,23.8935987 17.2740216,24.4213322 16.3525077,25.3408679 C16.1571868,25.5357694 15.8396652,25.5357694 15.6443443,25.3408679 L15.6443443,25.3408679 Z M32.5421049,19.4358499 C32.236603,19.1320033 31.8369464,18.9800801 31.4362882,18.9800801 C31.0366316,18.9800801 30.636975,19.1320033 30.3314731,19.4358499 C29.721471,20.0445425 29.721471,21.0340428 30.3314731,21.6417359 C30.9414753,22.2504285 31.9321027,22.2504285 32.5421049,21.6417359 C33.1511054,21.0340428 33.1511054,20.0445425 32.5421049,19.4358499 L32.5421049,19.4358499 Z M33.2502683,22.3493786 C32.7504472,22.8481267 32.0933677,23.0980005 31.4362882,23.0980005 C30.7802103,23.0980005 30.1231309,22.8481267 29.6233097,22.3493786 C28.6236675,21.3508828 28.6236675,19.7277025 29.6233097,18.7292068 C30.622952,17.7317105 32.250626,17.7317105 33.2502683,18.7292068 C34.2499106,19.7277025 34.2499106,21.3508828 33.2502683,22.3493786 L33.2502683,22.3493786 Z M9.66852687,19.4468443 C9.36302497,19.1429978 8.96336839,18.9910745 8.56271017,18.9910745 C8.16305359,18.9910745 7.76339701,19.1429978 7.45789511,19.4468443 C6.84889461,20.055537 6.84889461,21.0450373 7.45789511,21.6527304 C8.06789726,22.261423 9.05852472,22.261423 9.66852687,21.6527304 C10.2775274,21.0450373 10.2775274,20.055537 9.66852687,19.4468443 L9.66852687,19.4468443 Z M10.3766903,22.3593735 C9.87686914,22.8581217 9.21978965,23.1079955 8.56271017,23.1079955 C7.90663232,23.1079955 7.24955284,22.8581217 6.7497317,22.3593735 C5.75008943,21.3618773 5.75008943,19.738697 6.7497317,18.7402012 C7.74937397,17.7427049 9.37704801,17.7427049 10.3766903,18.7402012 C11.3763325,19.738697 11.3763325,21.3618773 10.3766903,22.3593735 L10.3766903,22.3593735 Z M27.4337125,28.9100654 C25.4364313,30.903059 22.7820705,32.0005047 19.9574301,32.0005047 C17.1327896,32.0005047 14.4784288,30.903059 12.4821492,28.9100654 C11.165987,27.5977281 10.4077413,26.469298 9.94498104,25.1359713 L8.99842599,25.4628063 C9.50726193,26.9290658 10.3626672,28.2104187 11.7739858,29.6167086 C13.9585748,31.7986067 16.8663519,33 19.9574301,33 C23.0495099,33 25.9562853,31.7986067 28.1418759,29.6167086 C29.2827502,28.4782835 30.4206196,27.1869356 31.0115905,25.4608073 L30.0640338,25.1379703 C29.5391715,26.6701966 28.4894469,27.8565974 27.4337125,28.9100654 L27.4337125,28.9100654 Z M9.94498104,15.8596559 L8.99842599,15.5318214 C9.51026687,14.0645624 10.3656722,12.7832095 11.7759891,11.3759202 C16.2863991,6.87519304 23.6264578,6.87419354 28.1378694,11.3759202 C29.2186449,12.4533761 30.4035916,13.7897012 31.0115905,15.5318214 L30.0640338,15.8596559 C29.5241468,14.3094387 28.4293482,13.0800596 27.4297059,12.0825633 C25.434428,10.0915688 22.7810689,8.99612197 19.9574301,8.99612197 C17.1337912,8.99612197 14.4804321,10.0915688 12.4851542,12.0825633 C11.1870215,13.3779092 10.4037347,14.5423211 9.94498104,15.8596559 L9.94498104,15.8596559 Z' id='AWS-Simple-Queue-Service_Icon_32_Squid' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCA0MCA0MCcgdmVyc2lvbj0nMS4xJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnCiAgICAgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPjwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggNjQgKDkzNTM3KSAtIGh0dHBzOi8vc2tldGNoLmNvbSAtLT4KICAgIDx0aXRsZT5JY29uLUFyY2hpdGVjdHVyZS8zMi9BcmNoX0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV8zMjwvdGl0bGU+CiAgICA8ZGVzYz5DcmVhdGVkIHdpdGggU2tldGNoLjwvZGVzYz4KICAgIDxkZWZzPgogICAgICAgIDxsaW5lYXJHcmFkaWVudCB4MT0nMCUnIHkxPScxMDAlJyB4Mj0nMTAwJScgeTI9JzAlJyBpZD0nbGluZWFyR3JhZGllbnQtMSc+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9JyNCMDA4NEQnIG9mZnNldD0nMCUnPjwvc3RvcD4KICAgICAgICAgICAgPHN0b3Agc3RvcC1jb2xvcj0nI0ZGNEY4Qicgb2Zmc2V0PScxMDAlJz48L3N0b3A+CiAgICAgICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDwvZGVmcz4KICAgIDxnIGlkPSdJY29uLUFyY2hpdGVjdHVyZS8zMi9BcmNoX0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV8zMicgc3Ryb2tlPSdub25lJyBzdHJva2Utd2lkdGg9JzEnIGZpbGw9J25vbmUnCiAgICAgICBmaWxsLXJ1bGU9J2V2ZW5vZGQnPgogICAgICAgIDxnIGlkPSdJY29uLUFyY2hpdGVjdHVyZS1CRy8zMi9BcHBsaWNhdGlvbi1JbnRlZ3JhdGlvbicgZmlsbD0ndXJsKCNsaW5lYXJHcmFkaWVudC0xKSc+CiAgICAgICAgICAgIDxyZWN0IGlkPSdSZWN0YW5nbGUnIHg9JzAnIHk9JzAnIHdpZHRoPSc0MCcgaGVpZ2h0PSc0MCc+PC9yZWN0PgogICAgICAgIDwvZz4KICAgICAgICA8cGF0aCBkPSdNMTQuMzQyMjA1MSwyMi4zNDkzNzg2IEwxNS44NDY2NzY3LDIwLjkwNjEwNzQgQzE1Ljk0MjgzNDcsMjAuODE0MTUzOSAxNS45OTY5MjM1LDIwLjY4NzIxOCAxNS45OTk5Mjg1LDIwLjU1NTI4NDYgQzE2LjAwMTkzMTcsMjAuNDIyMzUxNyAxNS45NTE4NDk1LDIwLjI5MzQxNjggMTUuODU5Njk4MSwyMC4xOTg0NjQ4IEwxNC4zNTUyMjY0LDE4LjY0MzI1MDIgTDEzLjYzNTA0MzMsMTkuMzM3ODk5NCBMMTQuMzExMTU0LDIwLjAzNzU0NiBMMTEuOTkxMzQyOSwyMC4wMzc1NDYgTDExLjk5MTM0MjksMjEuMDM3MDQxMyBMMTQuMjY1MDc4MywyMS4wMzcwNDEzIEwxMy42NDgwNjQ3LDIxLjYyODc0MjUgTDE0LjM0MjIwNTEsMjIuMzQ5Mzc4NiBaIE0yNi4zNTc5NDUyLDIyLjM1MzM3NjUgTDI3LjkwNzQ5MDksMjAuOTAwMTEwNCBDMjguMDA2NjUzOCwyMC44MDgxNTY5IDI4LjA2Mjc0NTksMjAuNjc5MjIyIDI4LjA2NDc0OTIsMjAuNTQ0MjkwMSBDMjguMDY2NzUyNSwyMC40MDkzNTgzIDI4LjAxMzY2NTMsMjAuMjc4NDI0NCAyNy45MTg1MDksMjAuMTgzNDcyNCBMMjYuMzY4OTYzMywxOC42MzcyNTMyIEwyNS42NjA3OTk5LDE5LjM0Mzg5NjMgTDI2LjM1NDk0MDMsMjAuMDM3NTQ2IEwyNC4wMTEwODk2LDIwLjAzNzU0NiBMMjQuMDExMDg5NiwyMS4wMzcwNDEzIEwyNi4yOTg4NDgxLDIxLjAzNzA0MTMgTDI1LjY3MTgxOCwyMS42MjQ3NDQ1IEwyNi4zNTc5NDUyLDIyLjM1MzM3NjUgWiBNMTcuNTg3NTM2NywyMy4zNjA4Njc4IEMxOC4zMzg3NzA4LDIzLjA1NzAyMTIgMTkuMTYyMTIzNSwyMi44OTQxMDM1IDIwLjAwNDUwNzQsMjIuODk0MTAzNSBDMjAuODQ2ODkxMywyMi44OTQxMDM1IDIxLjY3MDI0NCwyMy4wNTcwMjEyIDIyLjQyMTQ3ODEsMjMuMzYwODY3OCBDMjEuNzUyMzc4OSwyMS41ODk3NjIyIDIxLjc1MjM3ODksMTkuMzg5ODczMSAyMi40MjE0NzgxLDE3LjYxODc2NzUgQzIwLjkxOTAwOTgsMTguMjI2NDYwNiAxOS4wOTAwMDUsMTguMjI2NDYwNiAxNy41ODc1MzY3LDE3LjYxODc2NzUgQzE4LjI1NjYzNTksMTkuMzg5ODczMSAxOC4yNTY2MzU5LDIxLjU4OTc2MjIgMTcuNTg3NTM2NywyMy4zNjA4Njc4IEwxNy41ODc1MzY3LDIzLjM2MDg2NzggWiBNMTUuNjQ0MzQ0MywyNS4zNDA4Njc5IEMxNS41NDYxODMsMjUuMjQzOTE2OCAxNS40OTcxMDI0LDI1LjExNTk4MTQgMTUuNDk3MTAyNCwyNC45ODgwNDYgQzE1LjQ5NzEwMjQsMjQuODYwMTEwNiAxNS41NDYxODMsMjQuNzMyMTc1MyAxNS42NDQzNDQzLDI0LjYzNDIyNDcgQzE3LjU4NDUzMTcsMjIuNjk4MjAyNCAxNy41ODQ1MzE3LDE4LjI4MjQzMjQgMTUuNjQ0MzQ0MywxNi4zNDU0MTA2IEMxNS41NDYxODMsMTYuMjQ4NDU5NSAxNS40OTcxMDI0LDE2LjEyMDUyNDEgMTUuNDk3MTAyNCwxNS45OTI1OTEyIEMxNS40OTcxMDI0LDE1Ljg2NDY1MzQgMTUuNTQ2MTgzLDE1LjczNjcxOCAxNS42NDQzNDQzLDE1LjYzODc2NzQgQzE1LjgzOTY2NTIsMTUuNDQzODY1OSAxNi4xNTcxODY4LDE1LjQ0Mzg2NTkgMTYuMzUyNTA3NywxNS42Mzg3Njc0IEMxNy4yNzQwMjE2LDE2LjU1ODMwMzEgMTguNjA1MjA4NiwxNy4wODYwMzY2IDIwLjAwNDUwNzQsMTcuMDg2MDM2NiBDMjEuNDA0ODA3OSwxNy4wODYwMzY2IDIyLjczNTk5NDgsMTYuNTU4MzAzMSAyMy42NTc1MDg4LDE1LjYzODc2NzQgQzIzLjg1MjgyOTYsMTUuNDQzODY1OSAyNC4xNzAzNTEzLDE1LjQ0Mzg2NTkgMjQuMzY1NjcyMiwxNS42Mzg3Njc0IEMyNC40NjI4MzE4LDE1LjczNjcxOCAyNC41MTE5MTI0LDE1Ljg2NDY1MzQgMjQuNTExOTEyNCwxNS45OTI1OTEyIEMyNC41MTE5MTI0LDE2LjEyMDUyNDEgMjQuNDYyODMxOCwxNi4yNDg0NTk1IDI0LjM2NTY3MjIsMTYuMzQ1NDEwNiBDMjIuNDI0NDgzMSwxOC4yODI0MzI0IDIyLjQyNDQ4MzEsMjIuNjk4MjAyNCAyNC4zNjU2NzIyLDI0LjYzNDIyNDcgQzI0LjQ2MjgzMTgsMjQuNzMyMTc1MyAyNC41MTE5MTI0LDI0Ljg2MDExMDYgMjQuNTExOTEyNCwyNC45ODgwNDYgQzI0LjUxMTkxMjQsMjUuMTE1OTgxNCAyNC40NjI4MzE4LDI1LjI0MzkxNjggMjQuMzY1NjcyMiwyNS4zNDA4Njc5IEMyNC4yNjc1MTA5LDI1LjQzODgxODQgMjQuMTM5MzAwMywyNS40ODc3OTM3IDI0LjAxMTA4OTYsMjUuNDg3NzkzNyBDMjMuODgyODc5LDI1LjQ4Nzc5MzcgMjMuNzU0NjY4NCwyNS40Mzg4MTg0IDIzLjY1NzUwODgsMjUuMzQwODY3OSBDMjIuNzM1OTk0OCwyNC40MjEzMzIyIDIxLjQwNDgwNzksMjMuODkzNTk4NyAyMC4wMDQ1MDc0LDIzLjg5MzU5ODcgQzE4LjYwNTIwODYsMjMuODkzNTk4NyAxNy4yNzQwMjE2LDI0LjQyMTMzMjIgMTYuMzUyNTA3NywyNS4zNDA4Njc5IEMxNi4xNTcxODY4LDI1LjUzNTc2OTQgMTUuODM5NjY1MiwyNS41MzU3Njk0IDE1LjY0NDM0NDMsMjUuMzQwODY3OSBMMTUuNjQ0MzQ0MywyNS4zNDA4Njc5IFogTTMyLjU0MjEwNDksMTkuNDM1ODQ5OSBDMzIuMjM2NjAzLDE5LjEzMjAwMzMgMzEuODM2OTQ2NCwxOC45ODAwODAxIDMxLjQzNjI4ODIsMTguOTgwMDgwMSBDMzEuMDM2NjMxNiwxOC45ODAwODAxIDMwLjYzNjk3NSwxOS4xMzIwMDMzIDMwLjMzMTQ3MzEsMTkuNDM1ODQ5OSBDMjkuNzIxNDcxLDIwLjA0NDU0MjUgMjkuNzIxNDcxLDIxLjAzNDA0MjggMzAuMzMxNDczMSwyMS42NDE3MzU5IEMzMC45NDE0NzUzLDIyLjI1MDQyODUgMzEuOTMyMTAyNywyMi4yNTA0Mjg1IDMyLjU0MjEwNDksMjEuNjQxNzM1OSBDMzMuMTUxMTA1NCwyMS4wMzQwNDI4IDMzLjE1MTEwNTQsMjAuMDQ0NTQyNSAzMi41NDIxMDQ5LDE5LjQzNTg0OTkgTDMyLjU0MjEwNDksMTkuNDM1ODQ5OSBaIE0zMy4yNTAyNjgzLDIyLjM0OTM3ODYgQzMyLjc1MDQ0NzIsMjIuODQ4MTI2NyAzMi4wOTMzNjc3LDIzLjA5ODAwMDUgMzEuNDM2Mjg4MiwyMy4wOTgwMDA1IEMzMC43ODAyMTAzLDIzLjA5ODAwMDUgMzAuMTIzMTMwOSwyMi44NDgxMjY3IDI5LjYyMzMwOTcsMjIuMzQ5Mzc4NiBDMjguNjIzNjY3NSwyMS4zNTA4ODI4IDI4LjYyMzY2NzUsMTkuNzI3NzAyNSAyOS42MjMzMDk3LDE4LjcyOTIwNjggQzMwLjYyMjk1MiwxNy43MzE3MTA1IDMyLjI1MDYyNiwxNy43MzE3MTA1IDMzLjI1MDI2ODMsMTguNzI5MjA2OCBDMzQuMjQ5OTEwNiwxOS43Mjc3MDI1IDM0LjI0OTkxMDYsMjEuMzUwODgyOCAzMy4yNTAyNjgzLDIyLjM0OTM3ODYgTDMzLjI1MDI2ODMsMjIuMzQ5Mzc4NiBaIE05LjY2ODUyNjg3LDE5LjQ0Njg0NDMgQzkuMzYzMDI0OTcsMTkuMTQyOTk3OCA4Ljk2MzM2ODM5LDE4Ljk5MTA3NDUgOC41NjI3MTAxNywxOC45OTEwNzQ1IEM4LjE2MzA1MzU5LDE4Ljk5MTA3NDUgNy43NjMzOTcwMSwxOS4xNDI5OTc4IDcuNDU3ODk1MTEsMTkuNDQ2ODQ0MyBDNi44NDg4OTQ2MSwyMC4wNTU1MzcgNi44NDg4OTQ2MSwyMS4wNDUwMzczIDcuNDU3ODk1MTEsMjEuNjUyNzMwNCBDOC4wNjc4OTcyNiwyMi4yNjE0MjMgOS4wNTg1MjQ3MiwyMi4yNjE0MjMgOS42Njg1MjY4NywyMS42NTI3MzA0IEMxMC4yNzc1Mjc0LDIxLjA0NTAzNzMgMTAuMjc3NTI3NCwyMC4wNTU1MzcgOS42Njg1MjY4NywxOS40NDY4NDQzIEw5LjY2ODUyNjg3LDE5LjQ0Njg0NDMgWiBNMTAuMzc2NjkwMywyMi4zNTkzNzM1IEM5Ljg3Njg2OTE0LDIyLjg1ODEyMTcgOS4yMTk3ODk2NSwyMy4xMDc5OTU1IDguNTYyNzEwMTcsMjMuMTA3OTk1NSBDNy45MDY2MzIzMiwyMy4xMDc5OTU1IDcuMjQ5NTUyODQsMjIuODU4MTIxNyA2Ljc0OTczMTcsMjIuMzU5MzczNSBDNS43NTAwODk0MywyMS4zNjE4NzczIDUuNzUwMDg5NDMsMTkuNzM4Njk3IDYuNzQ5NzMxNywxOC43NDAyMDEyIEM3Ljc0OTM3Mzk3LDE3Ljc0MjcwNDkgOS4zNzcwNDgwMSwxNy43NDI3MDQ5IDEwLjM3NjY5MDMsMTguNzQwMjAxMiBDMTEuMzc2MzMyNSwxOS43Mzg2OTcgMTEuMzc2MzMyNSwyMS4zNjE4NzczIDEwLjM3NjY5MDMsMjIuMzU5MzczNSBMMTAuMzc2NjkwMywyMi4zNTkzNzM1IFogTTI3LjQzMzcxMjUsMjguOTEwMDY1NCBDMjUuNDM2NDMxMywzMC45MDMwNTkgMjIuNzgyMDcwNSwzMi4wMDA1MDQ3IDE5Ljk1NzQzMDEsMzIuMDAwNTA0NyBDMTcuMTMyNzg5NiwzMi4wMDA1MDQ3IDE0LjQ3ODQyODgsMzAuOTAzMDU5IDEyLjQ4MjE0OTIsMjguOTEwMDY1NCBDMTEuMTY1OTg3LDI3LjU5NzcyODEgMTAuNDA3NzQxMywyNi40NjkyOTggOS45NDQ5ODEwNCwyNS4xMzU5NzEzIEw4Ljk5ODQyNTk5LDI1LjQ2MjgwNjMgQzkuNTA3MjYxOTMsMjYuOTI5MDY1OCAxMC4zNjI2NjcyLDI4LjIxMDQxODcgMTEuNzczOTg1OCwyOS42MTY3MDg2IEMxMy45NTg1NzQ4LDMxLjc5ODYwNjcgMTYuODY2MzUxOSwzMyAxOS45NTc0MzAxLDMzIEMyMy4wNDk1MDk5LDMzIDI1Ljk1NjI4NTMsMzEuNzk4NjA2NyAyOC4xNDE4NzU5LDI5LjYxNjcwODYgQzI5LjI4Mjc1MDIsMjguNDc4MjgzNSAzMC40MjA2MTk2LDI3LjE4NjkzNTYgMzEuMDExNTkwNSwyNS40NjA4MDczIEwzMC4wNjQwMzM4LDI1LjEzNzk3MDMgQzI5LjUzOTE3MTUsMjYuNjcwMTk2NiAyOC40ODk0NDY5LDI3Ljg1NjU5NzQgMjcuNDMzNzEyNSwyOC45MTAwNjU0IEwyNy40MzM3MTI1LDI4LjkxMDA2NTQgWiBNOS45NDQ5ODEwNCwxNS44NTk2NTU5IEw4Ljk5ODQyNTk5LDE1LjUzMTgyMTQgQzkuNTEwMjY2ODcsMTQuMDY0NTYyNCAxMC4zNjU2NzIyLDEyLjc4MzIwOTUgMTEuNzc1OTg5MSwxMS4zNzU5MjAyIEMxNi4yODYzOTkxLDYuODc1MTkzMDQgMjMuNjI2NDU3OCw2Ljg3NDE5MzU0IDI4LjEzNzg2OTQsMTEuMzc1OTIwMiBDMjkuMjE4NjQ0OSwxMi40NTMzNzYxIDMwLjQwMzU5MTYsMTMuNzg5NzAxMiAzMS4wMTE1OTA1LDE1LjUzMTgyMTQgTDMwLjA2NDAzMzgsMTUuODU5NjU1OSBDMjkuNTI0MTQ2OCwxNC4zMDk0Mzg3IDI4LjQyOTM0ODIsMTMuMDgwMDU5NiAyNy40Mjk3MDU5LDEyLjA4MjU2MzMgQzI1LjQzNDQyOCwxMC4wOTE1Njg4IDIyLjc4MTA2ODksOC45OTYxMjE5NyAxOS45NTc0MzAxLDguOTk2MTIxOTcgQzE3LjEzMzc5MTIsOC45OTYxMjE5NyAxNC40ODA0MzIxLDEwLjA5MTU2ODggMTIuNDg1MTU0MiwxMi4wODI1NjMzIEMxMS4xODcwMjE1LDEzLjM3NzkwOTIgMTAuNDAzNzM0NywxNC41NDIzMjExIDkuOTQ0OTgxMDQsMTUuODU5NjU1OSBMOS45NDQ5ODEwNCwxNS44NTk2NTU5IFonCiAgICAgICAgICAgICAgaWQ9J0FXUy1TaW1wbGUtUXVldWUtU2VydmljZV9JY29uXzMyX1NxdWlkJyBmaWxsPScjRkZGRkZGJz48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
       {
         "group": "authentication"
       },
@@ -8411,43 +12848,84 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "queueProperties"
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
       },
       {
-        "group": "queueProperties"
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
       },
       {
-        "group": "messagePollingProperties"
+        "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "configuration"
+      },
+      {
+        "group": "queueProperties",
+        "tooltip": "URL of the SQS queue to subscribe to."
+      },
+      {
+        "group": "messagePollingProperties",
+        "tooltip": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>. A value of 0 is automatically overridden to 1."
+      },
+      {
+        "group": "input",
+        "tooltip": "Array of queue attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
+      },
+      {
+        "group": "input",
+        "tooltip": "Array of message attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
       },
       {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "activation"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
   "io.camunda.connectors.csv": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -8485,7 +12963,28 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operation",
-        "tooltip": "CSV as a document or text"
+        "tooltip": "The CSV document to read."
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
       },
       {
         "group": "operation",
@@ -8504,7 +13003,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Type of the row in the CSV file, either Object or Array"
       },
       {
-        "group": "operation"
+        "group": "operation",
+        "tooltip": "<a href=\"https://docs.camunda.io/docs/components/modeler/feel/what-is-feel/\">FEEL</a> function that allows to map each <code>record</code>. Returning <code>null</code> will exclude a record from the final results.",
+        "placeholder": ""
       },
       {
         "group": "operation"
@@ -8522,6 +13023,13 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Mapping of the columns if not included in the CSV itself in the first row."
       },
       {
+        "group": "operation",
+        "tooltip": "How the rendered CSV should be returned. Document reference uploads it to the document store; as text returns the CSV inline as a String."
+      },
+      {
+        "group": "operation"
+      },
+      {
         "group": "connector"
       },
       {
@@ -8535,6 +13043,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -8561,12 +13072,12 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Authentication"
         },
         {
-          "id": "configuration",
-          "label": "Configuration"
-        },
-        {
           "id": "input",
           "label": "Input"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -8575,6 +13086,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "errors",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
@@ -8589,27 +13104,35 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
+        "tooltip": "Google Maps Platform API key. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-maps-platform/' target='_blank'>Google Maps Platform connector documentation</a>",
         "group": "authentication"
       },
       {
+        "tooltip": "Find supported region codes in the <a href='https://developers.google.com/maps/documentation/address-validation/coverage' target='_blank'>Address Validation coverage documentation</a>.",
         "group": "input"
       },
       {
+        "tooltip": "An incorporated city or town political entity",
         "group": "input"
       },
       {
+        "tooltip": "Unstructured address. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-maps-platform/' target='_blank'>Google Maps Platform connector documentation</a>",
         "group": "input"
       },
       {
+        "tooltip": "Complete address. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-maps-platform/' target='_blank'>Google Maps Platform connector documentation</a>",
         "group": "input"
       },
       {
+        "tooltip": "The place ID value that you want to use as the destination for calculating distance",
         "group": "input"
       },
       {
+        "tooltip": "The place ID value that you want to use as the starting point for calculating distance",
         "group": "input"
       },
       {
+        "tooltip": "Unit system for the returned distances: Metric (kilometers/meters) or Imperial (miles/feet).",
         "group": "input"
       },
       {
@@ -8617,9 +13140,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {},
       {},
-      {
-        "group": "input"
-      },
       {},
       {},
       {},
@@ -8627,19 +13147,118 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "errors"
       },
       {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.connectors.Twilio.Webhook.Receive.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "endpoint",
+          "label": "Webhook Configuration"
+        },
+        {
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "variable-mapping",
+          "label": "Variable Mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' preserveAspectRatio='xMidYMid' viewBox='0 0 256 256' id='twilio'%3E%3Cg fill='%23CF272D'%3E%3Cpath d='M127.86 222.304c-52.005 0-94.164-42.159-94.164-94.163 0-52.005 42.159-94.163 94.164-94.163 52.004 0 94.162 42.158 94.162 94.163 0 52.004-42.158 94.163-94.162 94.163zm0-222.023C57.245.281 0 57.527 0 128.141 0 198.756 57.245 256 127.86 256c70.614 0 127.859-57.244 127.859-127.859 0-70.614-57.245-127.86-127.86-127.86z'%3E%3C/path%3E%3Cpath d='M133.116 96.297c0-14.682 11.903-26.585 26.586-26.585 14.683 0 26.585 11.903 26.585 26.585 0 14.684-11.902 26.586-26.585 26.586-14.683 0-26.586-11.902-26.586-26.586M133.116 159.983c0-14.682 11.903-26.586 26.586-26.586 14.683 0 26.585 11.904 26.585 26.586 0 14.683-11.902 26.586-26.585 26.586-14.683 0-26.586-11.903-26.586-26.586M69.431 159.983c0-14.682 11.904-26.586 26.586-26.586 14.683 0 26.586 11.904 26.586 26.586 0 14.683-11.903 26.586-26.586 26.586-14.682 0-26.586-11.903-26.586-26.586M69.431 96.298c0-14.683 11.904-26.585 26.586-26.585 14.683 0 26.586 11.902 26.586 26.585 0 14.684-11.903 26.586-26.586 26.586-14.682 0-26.586-11.902-26.586-26.586'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
+      }
+    },
+    "properties": [
+      {},
+      {},
+      {
+        "group": "endpoint"
+      },
+      {
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL."
+      },
+      {},
+      {
+        "group": "endpoint"
+      },
+      {
+        "group": "endpoint",
+        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
+      },
+      {
+        "tooltip": "Shared secret key used to verify the HMAC signature.",
+        "group": "endpoint"
+      },
+      {},
+      {},
+      {
+        "group": "endpoint"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Sets up the correlation key from process variables."
+      },
+      {
+        "group": "activation",
+        "tooltip": "Extracts the correlation key from the incoming message payload."
+      },
+      {
+        "group": "activation",
+        "tooltip": "Expression to extract the unique identifier of a message."
+      },
+      {
+        "group": "activation",
+        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events. See the <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound#make-your-twilio-webhook-connector-for-receiving-messages-executable' target='_blank'>Twilio webhook activation guide</a>."
+      },
+      {
+        "group": "variable-mapping",
+        "tooltip": "Name of variable to store the result of the connector in."
+      },
+      {
+        "group": "variable-mapping",
+        "tooltip": "Expression to map the inbound payload to process variables."
       }
     ]
   },
@@ -8700,6 +13319,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
         "group": "authentication",
         "tooltip": "Enter your full email address (e.g., user@example.com) or the username provided by your email service. This is used to authenticate your access to the mail server."
       },
@@ -8732,7 +13354,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "unseenPollingConfig",
-        "tooltip": "Chose the desired handling strategy"
+        "tooltip": "Choose the desired handling strategy"
       },
       {
         "group": "unseenPollingConfig",
@@ -8740,7 +13362,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "allPollingConfig",
-        "tooltip": "Chose the desired handling strategy"
+        "tooltip": "Choose the desired handling strategy"
       },
       {
         "group": "allPollingConfig",
@@ -8766,7 +13388,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "correlation"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -8816,12 +13439,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Input"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Output"
         },
         {
           "id": "errors",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ]
     },
@@ -8840,6 +13471,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "tooltip": "UiPath OAuth 2.0 client ID",
+        "group": "authentication"
+      },
+      {
+        "tooltip": "UiPath OAuth 2.0 client secret",
         "group": "authentication"
       },
       {
@@ -8849,9 +13485,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authentication"
-      },
-      {
         "group": "configuration"
       },
       {
@@ -8861,13 +13494,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "configuration"
       },
       {
+        "tooltip": "Your organization ID",
         "group": "configuration"
       },
       {
         "group": "configuration"
       },
       {
-        "group": "configuration"
+        "group": "configuration",
+        "tooltip": "UiPath folder or organization unit ID"
       },
       {
         "group": "configuration"
@@ -8876,6 +13511,24 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
+        "tooltip": "The earliest date and time at which the item is available for processing. If empty the item can be processed as soon as possible.",
+        "placeholder": "2026-01-15",
+        "group": "input"
+      },
+      {
+        "tooltip": "The latest date and time at which the item should be processed. If empty the item can be processed at any given time.",
+        "placeholder": "2026-01-15",
+        "group": "input"
+      },
+      {
+        "group": "input"
+      },
+      {
+        "tooltip": "Data that will be passed in to the job. It should be in the JSON format.",
+        "group": "input"
+      },
+      {
+        "tooltip": "A string reference for the queue item",
         "group": "input"
       },
       {
@@ -8885,30 +13538,22 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
         "group": "input"
       },
       {
+        "tooltip": "Sets the timeout in seconds to establish a connection or 0 for an infinite timeout.",
         "group": "errors"
       },
       {},
@@ -8916,7 +13561,24 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "configuration"
       },
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -8931,10 +13593,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "endpoint",
           "label": "API destination"
-        },
-        {
-          "id": "authentication",
-          "label": "Authentication"
         },
         {
           "id": "authorization",
@@ -8989,6 +13647,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authorization"
       },
       {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "activation"
+      },
+      {
         "group": "activation"
       },
       {
@@ -9026,6 +13693,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Configure input"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Output mapping"
         },
@@ -9039,7 +13710,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iODBweCIgaGVpZ2h0PSI4MHB4IiB2aWV3Qm94PSIwIDAgODAgODAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+SWNvbi1BcmNoaXRlY3R1cmUvNjQvQXJjaF9BbWF6b24tU2FnZU1ha2VyXzY0PC90aXRsZT4KICAgIDxnIGlkPSJJY29uLUFyY2hpdGVjdHVyZS82NC9BcmNoX0FtYXpvbi1TYWdlTWFrZXJfNjQiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgICAgIDxnIGlkPSJJY29uLUFyY2hpdGVjdHVyZS1CRy82NC9NYWNoaW5lLUxlYXJuaW5nIiBmaWxsPSIjMDFBODhEIj4KICAgICAgICAgICAgPHJlY3QgaWQ9IlJlY3RhbmdsZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIj48L3JlY3Q+CiAgICAgICAgPC9nPgogICAgICAgIDxwYXRoIGQ9Ik01NC4wMzQsMjYuMDMzNTczMSBDNTQuMDM0LDI2LjU5MzU2NTQgNTMuNTc4LDI3LjA0OTU1OTIgNTMuMDE3LDI3LjA0OTU1OTIgQzUyLjQ1OCwyNy4wNDk1NTkyIDUyLjAwMiwyNi41OTM1NjU0IDUyLjAwMiwyNi4wMzM1NzMxIEM1Mi4wMDIsMjUuNDczNTgwNyA1Mi40NTgsMjUuMDE3NTg2OSA1My4wMTcsMjUuMDE3NTg2OSBDNTMuNTc4LDI1LjAxNzU4NjkgNTQuMDM0LDI1LjQ3MzU4MDcgNTQuMDM0LDI2LjAzMzU3MzEgTDU0LjAzNCwyNi4wMzM1NzMxIFogTTQ4LjAwMiwzNi4wMDA0MzcgQzQ4LjAwMiwzNS40NDk0NDQ1IDQ4LjQ1LDM1LjAwMDQ1MDYgNDkuMDAyLDM1LjAwMDQ1MDYgQzQ5LjU1NCwzNS4wMDA0NTA2IDUwLjAwMiwzNS40NDk0NDQ1IDUwLjAwMiwzNi4wMDA0MzcgQzUwLjAwMiwzNi41NTE0Mjk0IDQ5LjU1NCwzNy4wMDA0MjMzIDQ5LjAwMiwzNy4wMDA0MjMzIEM0OC40NSwzNy4wMDA0MjMzIDQ4LjAwMiwzNi41NTE0Mjk0IDQ4LjAwMiwzNi4wMDA0MzcgTDQ4LjAwMiwzNi4wMDA0MzcgWiBNNDguMDAyLDU1LjAwMDE3NzUgQzQ4LjAwMiw1NC40NDkxODUgNDguNDUsNTQuMDAwMTkxMiA0OS4wMDIsNTQuMDAwMTkxMiBDNDkuNTU0LDU0LjAwMDE5MTIgNTAuMDAyLDU0LjQ0OTE4NSA1MC4wMDIsNTUuMDAwMTc3NSBDNTAuMDAyLDU1LjU1MTE3IDQ5LjU1NCw1Ni4wMDAxNjM5IDQ5LjAwMiw1Ni4wMDAxNjM5IEM0OC40NSw1Ni4wMDAxNjM5IDQ4LjAwMiw1NS41NTExNyA0OC4wMDIsNTUuMDAwMTc3NSBMNDguMDAyLDU1LjAwMDE3NzUgWiBNNTguMDAyLDQyLjAwMDM1NSBDNTguMDAyLDQyLjU1MTM0NzUgNTcuNTU0LDQzLjAwMDM0MTQgNTcuMDAyLDQzLjAwMDM0MTQgQzU2LjQ1LDQzLjAwMDM0MTQgNTYuMDAyLDQyLjU1MTM0NzUgNTYuMDAyLDQyLjAwMDM1NSBDNTYuMDAyLDQxLjQ0OTM2MjYgNTYuNDUsNDEuMDAwMzY4NyA1Ny4wMDIsNDEuMDAwMzY4NyBDNTcuNTU0LDQxLjAwMDM2ODcgNTguMDAyLDQxLjQ0OTM2MjYgNTguMDAyLDQyLjAwMDM1NSBMNTguMDAyLDQyLjAwMDM1NSBaIE02NSw0NS4yNzIzMTA0IEw1OS45NjMsNDIuMzgyMzQ5OCBDNTkuOTc5LDQyLjI1NjM1MTUgNjAuMDAyLDQyLjEzMTM1MzIgNjAuMDAyLDQyLjAwMDM1NSBDNjAuMDAyLDQwLjM0NjM3NzYgNTguNjU2LDM5LjAwMDM5NiA1Ny4wMDIsMzkuMDAwMzk2IEM1NS4zNDcsMzkuMDAwMzk2IDU0LjAwMiw0MC4zNDYzNzc2IDU0LjAwMiw0Mi4wMDAzNTUgQzU0LjAwMiw0My42NTQzMzI0IDU1LjM0Nyw0NS4wMDAzMTQxIDU3LjAwMiw0NS4wMDAzMTQxIEM1Ny44MDEsNDUuMDAwMzE0MSA1OC41MjMsNDQuNjgxMzE4NCA1OS4wNjEsNDQuMTcxMzI1NCBMNjMuODg2LDQ2LjkzOTI4NzYgTDU5LjU1NSw0OS4xMDUyNTggQzU5LjIxNiw0OS4yNzUyNTU3IDU5LjAwMiw0OS42MjEyNTEgNTkuMDAyLDUwLjAwMDI0NTggTDU5LjAwMiw1OC40NDExMzA1IEw0Ni45ODMsNjUuODM3MDI5NSBMNDEuMDAzLDYyLjQyMDA3NjIgTDQxLjAwMyw1Ni4wMDAxNjM5IEw0Ni4xODYsNTYuMDAwMTYzOSBDNDYuNiw1Ny4xNjExNDggNDcuNyw1OC4wMDAxMzY2IDQ5LjAwMiw1OC4wMDAxMzY2IEM1MC42NTYsNTguMDAwMTM2NiA1Mi4wMDIsNTYuNjU0MTU0OSA1Mi4wMDIsNTUuMDAwMTc3NSBDNTIuMDAyLDUzLjM0NTIwMDEgNTAuNjU2LDUyLjAwMDIxODUgNDkuMDAyLDUyLjAwMDIxODUgQzQ3LjcsNTIuMDAwMjE4NSA0Ni42LDUyLjgzODIwNyA0Ni4xODYsNTQuMDAwMTkxMiBMNDEuMDAzLDU0LjAwMDE5MTIgTDQxLjAwMyw0MC4wMDAzODIzIEM0MS4wMDMsMzkuNjQ5Mzg3MSA0MC44MTgsMzkuMzIzMzkxNiA0MC41MTcsMzkuMTQyMzk0MSBMMzUuNTE2LDM2LjE0MjQzNSBMMzQuNDg3LDM3Ljg1NzQxMTYgTDM5LjAwMyw0MC41NjYzNzQ2IEwzOS4wMDMsNDMuNTA3MzM0NSBMMzMuMDAyLDQ4LjEyMzI3MTQgTDMzLjAwMiw0NC4wMDAzMjc3IEMzMy4wMDIsNDMuNjk2MzMxOSAzMi44NjQsNDMuNDA4MzM1OCAzMi42MjcsNDMuMjE5MzM4NCBMMjguMDAyLDM5LjUxOTM4ODkgTDI4LjAwMiwzNC41MzU0NTcgTDMzLjU1NiwzMC44MzI1MDc1IEMzMy44MzUsMzAuNjQ2NTEwMSAzNC4wMDIsMzAuMzM0NTE0MyAzNC4wMDIsMzAuMDAwNTE4OSBMMzQuMDAyLDI0LjAwMDYwMDggTDMyLjAwMiwyNC4wMDA2MDA4IEwzMi4wMDIsMjkuNDY1NTI2MiBMMjcuMDEzLDMyLjc5MDQ4MDggTDIyLjAwMiwyOS40NjM1MjYyIEwyMi4wMDIsMjEuNTc0NjMzOSBMMjcuMDAyLDE4LjY1ODY3MzggTDI3LjAwMiwyNy4wMDA1NTk5IEwyOS4wMDIsMjcuMDAwNTU5OSBMMjkuMDAyLDE3LjQ5MTY4OTcgTDMzLjAwNSwxNS4xNTY3MjE2IEwzOS4wMDEsMTguNjE1Njc0NCBMMzkuMDAyLDMxLjAwMDUwNTIgQzM5LjAwMiwzMS4zNTk1MDAzIDM5LjE5NCwzMS42OTA0OTU4IDM5LjUwNiwzMS44Njg0OTM0IEw0Ni4wNDIsMzUuNjAzNDQyNCBDNDYuMDI0LDM1LjczNDQ0MDYgNDYuMDAyLDM1Ljg2NDQzODggNDYuMDAyLDM2LjAwMDQzNyBDNDYuMDAyLDM3LjY1NDQxNDQgNDcuMzQ3LDM5LjAwMDM5NiA0OS4wMDIsMzkuMDAwMzk2IEM1MC42NTYsMzkuMDAwMzk2IDUyLjAwMiwzNy42NTQ0MTQ0IDUyLjAwMiwzNi4wMDA0MzcgQzUyLjAwMiwzNC4zNDY0NTk1IDUwLjY1NiwzMy4wMDA0Nzc5IDQ5LjAwMiwzMy4wMDA0Nzc5IEM0OC4yMDgsMzMuMDAwNDc3OSA0Ny40OSwzMy4zMTU0NzM2IDQ2Ljk1MywzMy44MjA0NjY3IEw0MS4wMDIsMzAuNDE5NTEzMiBMNDEuMDAxLDE4LjYxNzY3NDMgTDQ2Ljk2NCwxNS4xNzY3MjEzIEw1OC4wMDIsMjIuNTM1NjIwOCBMNTguMDAyLDI1LjAwMDU4NzIgTDU1Ljg1MSwyNS4wMDA1ODcyIEM1NS40MjksMjMuODQ0NjAzIDU0LjMxOCwyMy4wMTc2MTQyIDUzLjAxNywyMy4wMTc2MTQyIEM1MS4zNTQsMjMuMDE3NjE0MiA1MC4wMDIsMjQuMzcwNTk1OCA1MC4wMDIsMjYuMDMzNTczMSBDNTAuMDAyLDI3LjY5NjU1MDQgNTEuMzU0LDI5LjA0OTUzMTkgNTMuMDE3LDI5LjA0OTUzMTkgQzU0LjM0MywyOS4wNDk1MzE5IDU1LjQ3MSwyOC4xOTA1NDM2IDU1Ljg3NSwyNy4wMDA1NTk5IEw1OC4wMDIsMjcuMDAwNTU5OSBMNTguMDAyLDMwLjAwMDUxODkgQzU4LjAwMiwzMC4zNTk1MTQgNTguMTk0LDMwLjY5MDUwOTUgNTguNTA2LDMwLjg2ODUwNyBMNjUsMzQuNTgwNDU2NCBMNjUsNDUuMjcyMzEwNCBaIE0zMy4wMiw2NS44MzcwMjk1IEwyOS44NjcsNjMuODk3MDU2IEwzNS41ODMsNTkuODE0MTExOCBMMzQuNDIxLDU4LjE4NjEzNCBMMjguMDE4LDYyLjc1OTA3MTYgTDIxLjAwMiw1OC40NDExMzA1IEwyMS4wMDIsNTAuNTY2MjM4MSBMMjUuNTE2LDQ3Ljg1NzI3NTEgTDI0LjQ4Nyw0Ni4xNDIyOTg1IEwxOS45NTgsNDguODYwMjYxNCBMMTUuMDAyLDQ2LjM4MjI5NTIgTDE1LjAwMSw0MC42MTczNzM5IEwyMC40NDksMzcuODk0NDExMSBMMTkuNTU1LDM2LjEwNTQzNTUgTDE1LjAwMSwzOC4zODE0MDQ0IEwxNS4wMDIsMzQuNTgwNDU2NCBMMjAuOTYzLDMxLjE3NDUwMjkgTDI2LjAwMiwzNC41MTk0NTcyIEwyNi4wMDIsMzkuNDgwMzg5NCBMMjAuNDQ5LDQzLjE2NzMzOTEgTDIxLjU1NSw0NC44MzMzMTYzIEwyNi45NTgsNDEuMjQ1MzY1MyBMMzEuMDAyLDQ0LjQ4MDMyMTIgTDMxLjAwMiw0OS42NjIyNTA0IEwyNi4zOTIsNTMuMjA3MjAyIEwyNy42MTEsNTQuNzkyMTgwNCBMMzkuMDAzLDQ2LjAzMDMgTDM5LjAwMyw2Mi40MTkwNzYyIEwzMy4wMiw2NS44MzcwMjk1IFogTTY2LjQ5NiwzMy4xMzI0NzYxIEw2MC4wMDIsMjkuNDIwNTI2OCBMNjAuMDAyLDIyLjAwMDYyODEgQzYwLjAwMiwyMS42NjU2MzI3IDU5LjgzNSwyMS4zNTM2MzcgNTkuNTU2LDIxLjE2ODYzOTUgTDQ3LjU1NiwxMy4xNjg3NDg3IEM0Ny4yNCwxMi45NTg3NTE2IDQ2LjgzMiwxMi45NDQ3NTE4IDQ2LjUwMiwxMy4xMzQ3NDkyIEw0MC4wMDQsMTYuODg0Njk4IEwzMy41MDIsMTMuMTM0NzQ5MiBDMzMuMTksMTIuOTU0NzUxNyAzMi44MDcsMTIuOTU0NzUxNyAzMi40OTgsMTMuMTM2NzQ5MiBMMjAuNDk4LDIwLjEzNjY1MzYgQzIwLjE5LDIwLjMxNTY1MTEgMjAuMDAyLDIwLjY0NDY0NjYgMjAuMDAyLDIxLjAwMDY0MTggTDIwLjAwMiwyOS40MjA1MjY4IEwxMy41MDYsMzMuMTMyNDc2MSBDMTMuMTk0LDMzLjMwOTQ3MzcgMTMuMDAyLDMzLjY0MTQ2OTIgMTMuMDAyLDM0LjAwMDQ2NDMgTDEzLjAwMiwzNC40MTc0NTg2IEMxMy4wMDEsMzQuNDM4NDU4MyAxMywzNC40NTg0NTggMTMsMzQuNDc5NDU3NyBMMTMsNDUuMzYzMzA5MSBDMTMsNDUuMzgzMzA4OCAxMy4wMDEsNDUuNDAzMzA4NiAxMy4wMDIsNDUuNDIyMzA4MyBMMTMuMDAyLDQ3LjAwMDI4NjggQzEzLjAwMiw0Ny4zNzkyODE2IDEzLjIxNiw0Ny43MjUyNzY5IDEzLjU1NSw0Ny44OTQyNzQ1IEwxOS4wMDIsNTAuNjE4MjM3NCBMMTkuMDAyLDU5LjAwMDEyMjkgQzE5LjAwMiw1OS4zNDcxMTgyIDE5LjE4MSw1OS42NjkxMTM4IDE5LjQ3Nyw1OS44NTExMTEzIEwzMi40NzcsNjcuODUxMDAyIEMzMi42MzgsNjcuOTUwMDAwNyAzMi44Miw2OCAzMy4wMDIsNjggQzMzLjE3Myw2OCAzMy4zNDQsNjcuOTU2MDAwNiAzMy40OTgsNjcuODY4MDAxOCBMNDAuMDAzLDY0LjE1MjA1MjUgTDQ2LjUwNiw2Ny44NjgwMDE4IEM0Ni44MjEsNjguMDQ4OTk5MyA0Ny4yMTMsNjguMDQxOTk5NCA0Ny41MjYsNjcuODUxMDAyIEw2MC41MjYsNTkuODUxMTExMyBDNjAuODIyLDU5LjY2OTExMzggNjEuMDAyLDU5LjM0NzExODIgNjEuMDAyLDU5LjAwMDEyMjkgTDYxLjAwMiw1MC42MTgyMzc0IEw2Ni40NDcsNDcuODk0Mjc0NSBDNjYuNzg2LDQ3LjcyNTI3NjkgNjcsNDcuMzc5MjgxNiA2Nyw0Ny4wMDAyODY4IEw2NywzNC4wMDA0NjQzIEM2NywzMy42NDE0NjkyIDY2LjgwNywzMy4zMTA0NzM3IDY2LjQ5NiwzMy4xMzI0NzYxIEw2Ni40OTYsMzMuMTMyNDc2MSBaIiBpZD0iQW1hem9uLVNhZ2VNYWtlcl9JY29uXzY0X1NxdWlkIiBmaWxsPSIjRkZGRkZGIj48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg=="
+        "contents": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iODBweCIgaGVpZ2h0PSI4MHB4IiB2aWV3Qm94PSIwIDAgODAgODAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+SWNvbi1BcmNoaXRlY3R1cmUvNjQvQXJjaF9BbWF6b24tU2FnZU1ha2VyXzY0PC90aXRsZT4KICAgIDxnIGlkPSJJY29uLUFyY2hpdGVjdHVyZS82NC9BcmNoX0FtYXpvbi1TYWdlTWFrZXJfNjQiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPgogICAgICAgIDxnIGlkPSJJY29uLUFyY2hpdGVjdHVyZS1CRy82NC9NYWNoaW5lLUxlYXJuaW5nIiBmaWxsPSIjOTk2OWY3Ij4KICAgICAgICAgICAgPHJlY3QgaWQ9IlJlY3RhbmdsZSIgeD0iMCIgeT0iMCIgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIj48L3JlY3Q+CiAgICAgICAgPC9nPgogICAgICAgIDxwYXRoIGQ9Ik01NC4wMzQsMjYuMDMzNTczMSBDNTQuMDM0LDI2LjU5MzU2NTQgNTMuNTc4LDI3LjA0OTU1OTIgNTMuMDE3LDI3LjA0OTU1OTIgQzUyLjQ1OCwyNy4wNDk1NTkyIDUyLjAwMiwyNi41OTM1NjU0IDUyLjAwMiwyNi4wMzM1NzMxIEM1Mi4wMDIsMjUuNDczNTgwNyA1Mi40NTgsMjUuMDE3NTg2OSA1My4wMTcsMjUuMDE3NTg2OSBDNTMuNTc4LDI1LjAxNzU4NjkgNTQuMDM0LDI1LjQ3MzU4MDcgNTQuMDM0LDI2LjAzMzU3MzEgTDU0LjAzNCwyNi4wMzM1NzMxIFogTTQ4LjAwMiwzNi4wMDA0MzcgQzQ4LjAwMiwzNS40NDk0NDQ1IDQ4LjQ1LDM1LjAwMDQ1MDYgNDkuMDAyLDM1LjAwMDQ1MDYgQzQ5LjU1NCwzNS4wMDA0NTA2IDUwLjAwMiwzNS40NDk0NDQ1IDUwLjAwMiwzNi4wMDA0MzcgQzUwLjAwMiwzNi41NTE0Mjk0IDQ5LjU1NCwzNy4wMDA0MjMzIDQ5LjAwMiwzNy4wMDA0MjMzIEM0OC40NSwzNy4wMDA0MjMzIDQ4LjAwMiwzNi41NTE0Mjk0IDQ4LjAwMiwzNi4wMDA0MzcgTDQ4LjAwMiwzNi4wMDA0MzcgWiBNNDguMDAyLDU1LjAwMDE3NzUgQzQ4LjAwMiw1NC40NDkxODUgNDguNDUsNTQuMDAwMTkxMiA0OS4wMDIsNTQuMDAwMTkxMiBDNDkuNTU0LDU0LjAwMDE5MTIgNTAuMDAyLDU0LjQ0OTE4NSA1MC4wMDIsNTUuMDAwMTc3NSBDNTAuMDAyLDU1LjU1MTE3IDQ5LjU1NCw1Ni4wMDAxNjM5IDQ5LjAwMiw1Ni4wMDAxNjM5IEM0OC40NSw1Ni4wMDAxNjM5IDQ4LjAwMiw1NS41NTExNyA0OC4wMDIsNTUuMDAwMTc3NSBMNDguMDAyLDU1LjAwMDE3NzUgWiBNNTguMDAyLDQyLjAwMDM1NSBDNTguMDAyLDQyLjU1MTM0NzUgNTcuNTU0LDQzLjAwMDM0MTQgNTcuMDAyLDQzLjAwMDM0MTQgQzU2LjQ1LDQzLjAwMDM0MTQgNTYuMDAyLDQyLjU1MTM0NzUgNTYuMDAyLDQyLjAwMDM1NSBDNTYuMDAyLDQxLjQ0OTM2MjYgNTYuNDUsNDEuMDAwMzY4NyA1Ny4wMDIsNDEuMDAwMzY4NyBDNTcuNTU0LDQxLjAwMDM2ODcgNTguMDAyLDQxLjQ0OTM2MjYgNTguMDAyLDQyLjAwMDM1NSBMNTguMDAyLDQyLjAwMDM1NSBaIE02NSw0NS4yNzIzMTA0IEw1OS45NjMsNDIuMzgyMzQ5OCBDNTkuOTc5LDQyLjI1NjM1MTUgNjAuMDAyLDQyLjEzMTM1MzIgNjAuMDAyLDQyLjAwMDM1NSBDNjAuMDAyLDQwLjM0NjM3NzYgNTguNjU2LDM5LjAwMDM5NiA1Ny4wMDIsMzkuMDAwMzk2IEM1NS4zNDcsMzkuMDAwMzk2IDU0LjAwMiw0MC4zNDYzNzc2IDU0LjAwMiw0Mi4wMDAzNTUgQzU0LjAwMiw0My42NTQzMzI0IDU1LjM0Nyw0NS4wMDAzMTQxIDU3LjAwMiw0NS4wMDAzMTQxIEM1Ny44MDEsNDUuMDAwMzE0MSA1OC41MjMsNDQuNjgxMzE4NCA1OS4wNjEsNDQuMTcxMzI1NCBMNjMuODg2LDQ2LjkzOTI4NzYgTDU5LjU1NSw0OS4xMDUyNTggQzU5LjIxNiw0OS4yNzUyNTU3IDU5LjAwMiw0OS42MjEyNTEgNTkuMDAyLDUwLjAwMDI0NTggTDU5LjAwMiw1OC40NDExMzA1IEw0Ni45ODMsNjUuODM3MDI5NSBMNDEuMDAzLDYyLjQyMDA3NjIgTDQxLjAwMyw1Ni4wMDAxNjM5IEw0Ni4xODYsNTYuMDAwMTYzOSBDNDYuNiw1Ny4xNjExNDggNDcuNyw1OC4wMDAxMzY2IDQ5LjAwMiw1OC4wMDAxMzY2IEM1MC42NTYsNTguMDAwMTM2NiA1Mi4wMDIsNTYuNjU0MTU0OSA1Mi4wMDIsNTUuMDAwMTc3NSBDNTIuMDAyLDUzLjM0NTIwMDEgNTAuNjU2LDUyLjAwMDIxODUgNDkuMDAyLDUyLjAwMDIxODUgQzQ3LjcsNTIuMDAwMjE4NSA0Ni42LDUyLjgzODIwNyA0Ni4xODYsNTQuMDAwMTkxMiBMNDEuMDAzLDU0LjAwMDE5MTIgTDQxLjAwMyw0MC4wMDAzODIzIEM0MS4wMDMsMzkuNjQ5Mzg3MSA0MC44MTgsMzkuMzIzMzkxNiA0MC41MTcsMzkuMTQyMzk0MSBMMzUuNTE2LDM2LjE0MjQzNSBMMzQuNDg3LDM3Ljg1NzQxMTYgTDM5LjAwMyw0MC41NjYzNzQ2IEwzOS4wMDMsNDMuNTA3MzM0NSBMMzMuMDAyLDQ4LjEyMzI3MTQgTDMzLjAwMiw0NC4wMDAzMjc3IEMzMy4wMDIsNDMuNjk2MzMxOSAzMi44NjQsNDMuNDA4MzM1OCAzMi42MjcsNDMuMjE5MzM4NCBMMjguMDAyLDM5LjUxOTM4ODkgTDI4LjAwMiwzNC41MzU0NTcgTDMzLjU1NiwzMC44MzI1MDc1IEMzMy44MzUsMzAuNjQ2NTEwMSAzNC4wMDIsMzAuMzM0NTE0MyAzNC4wMDIsMzAuMDAwNTE4OSBMMzQuMDAyLDI0LjAwMDYwMDggTDMyLjAwMiwyNC4wMDA2MDA4IEwzMi4wMDIsMjkuNDY1NTI2MiBMMjcuMDEzLDMyLjc5MDQ4MDggTDIyLjAwMiwyOS40NjM1MjYyIEwyMi4wMDIsMjEuNTc0NjMzOSBMMjcuMDAyLDE4LjY1ODY3MzggTDI3LjAwMiwyNy4wMDA1NTk5IEwyOS4wMDIsMjcuMDAwNTU5OSBMMjkuMDAyLDE3LjQ5MTY4OTcgTDMzLjAwNSwxNS4xNTY3MjE2IEwzOS4wMDEsMTguNjE1Njc0NCBMMzkuMDAyLDMxLjAwMDUwNTIgQzM5LjAwMiwzMS4zNTk1MDAzIDM5LjE5NCwzMS42OTA0OTU4IDM5LjUwNiwzMS44Njg0OTM0IEw0Ni4wNDIsMzUuNjAzNDQyNCBDNDYuMDI0LDM1LjczNDQ0MDYgNDYuMDAyLDM1Ljg2NDQzODggNDYuMDAyLDM2LjAwMDQzNyBDNDYuMDAyLDM3LjY1NDQxNDQgNDcuMzQ3LDM5LjAwMDM5NiA0OS4wMDIsMzkuMDAwMzk2IEM1MC42NTYsMzkuMDAwMzk2IDUyLjAwMiwzNy42NTQ0MTQ0IDUyLjAwMiwzNi4wMDA0MzcgQzUyLjAwMiwzNC4zNDY0NTk1IDUwLjY1NiwzMy4wMDA0Nzc5IDQ5LjAwMiwzMy4wMDA0Nzc5IEM0OC4yMDgsMzMuMDAwNDc3OSA0Ny40OSwzMy4zMTU0NzM2IDQ2Ljk1MywzMy44MjA0NjY3IEw0MS4wMDIsMzAuNDE5NTEzMiBMNDEuMDAxLDE4LjYxNzY3NDMgTDQ2Ljk2NCwxNS4xNzY3MjEzIEw1OC4wMDIsMjIuNTM1NjIwOCBMNTguMDAyLDI1LjAwMDU4NzIgTDU1Ljg1MSwyNS4wMDA1ODcyIEM1NS40MjksMjMuODQ0NjAzIDU0LjMxOCwyMy4wMTc2MTQyIDUzLjAxNywyMy4wMTc2MTQyIEM1MS4zNTQsMjMuMDE3NjE0MiA1MC4wMDIsMjQuMzcwNTk1OCA1MC4wMDIsMjYuMDMzNTczMSBDNTAuMDAyLDI3LjY5NjU1MDQgNTEuMzU0LDI5LjA0OTUzMTkgNTMuMDE3LDI5LjA0OTUzMTkgQzU0LjM0MywyOS4wNDk1MzE5IDU1LjQ3MSwyOC4xOTA1NDM2IDU1Ljg3NSwyNy4wMDA1NTk5IEw1OC4wMDIsMjcuMDAwNTU5OSBMNTguMDAyLDMwLjAwMDUxODkgQzU4LjAwMiwzMC4zNTk1MTQgNTguMTk0LDMwLjY5MDUwOTUgNTguNTA2LDMwLjg2ODUwNyBMNjUsMzQuNTgwNDU2NCBMNjUsNDUuMjcyMzEwNCBaIE0zMy4wMiw2NS44MzcwMjk1IEwyOS44NjcsNjMuODk3MDU2IEwzNS41ODMsNTkuODE0MTExOCBMMzQuNDIxLDU4LjE4NjEzNCBMMjguMDE4LDYyLjc1OTA3MTYgTDIxLjAwMiw1OC40NDExMzA1IEwyMS4wMDIsNTAuNTY2MjM4MSBMMjUuNTE2LDQ3Ljg1NzI3NTEgTDI0LjQ4Nyw0Ni4xNDIyOTg1IEwxOS45NTgsNDguODYwMjYxNCBMMTUuMDAyLDQ2LjM4MjI5NTIgTDE1LjAwMSw0MC42MTczNzM5IEwyMC40NDksMzcuODk0NDExMSBMMTkuNTU1LDM2LjEwNTQzNTUgTDE1LjAwMSwzOC4zODE0MDQ0IEwxNS4wMDIsMzQuNTgwNDU2NCBMMjAuOTYzLDMxLjE3NDUwMjkgTDI2LjAwMiwzNC41MTk0NTcyIEwyNi4wMDIsMzkuNDgwMzg5NCBMMjAuNDQ5LDQzLjE2NzMzOTEgTDIxLjU1NSw0NC44MzMzMTYzIEwyNi45NTgsNDEuMjQ1MzY1MyBMMzEuMDAyLDQ0LjQ4MDMyMTIgTDMxLjAwMiw0OS42NjIyNTA0IEwyNi4zOTIsNTMuMjA3MjAyIEwyNy42MTEsNTQuNzkyMTgwNCBMMzkuMDAzLDQ2LjAzMDMgTDM5LjAwMyw2Mi40MTkwNzYyIEwzMy4wMiw2NS44MzcwMjk1IFogTTY2LjQ5NiwzMy4xMzI0NzYxIEw2MC4wMDIsMjkuNDIwNTI2OCBMNjAuMDAyLDIyLjAwMDYyODEgQzYwLjAwMiwyMS42NjU2MzI3IDU5LjgzNSwyMS4zNTM2MzcgNTkuNTU2LDIxLjE2ODYzOTUgTDQ3LjU1NiwxMy4xNjg3NDg3IEM0Ny4yNCwxMi45NTg3NTE2IDQ2LjgzMiwxMi45NDQ3NTE4IDQ2LjUwMiwxMy4xMzQ3NDkyIEw0MC4wMDQsMTYuODg0Njk4IEwzMy41MDIsMTMuMTM0NzQ5MiBDMzMuMTksMTIuOTU0NzUxNyAzMi44MDcsMTIuOTU0NzUxNyAzMi40OTgsMTMuMTM2NzQ5MiBMMjAuNDk4LDIwLjEzNjY1MzYgQzIwLjE5LDIwLjMxNTY1MTEgMjAuMDAyLDIwLjY0NDY0NjYgMjAuMDAyLDIxLjAwMDY0MTggTDIwLjAwMiwyOS40MjA1MjY4IEwxMy41MDYsMzMuMTMyNDc2MSBDMTMuMTk0LDMzLjMwOTQ3MzcgMTMuMDAyLDMzLjY0MTQ2OTIgMTMuMDAyLDM0LjAwMDQ2NDMgTDEzLjAwMiwzNC40MTc0NTg2IEMxMy4wMDEsMzQuNDM4NDU4MyAxMywzNC40NTg0NTggMTMsMzQuNDc5NDU3NyBMMTMsNDUuMzYzMzA5MSBDMTMsNDUuMzgzMzA4OCAxMy4wMDEsNDUuNDAzMzA4NiAxMy4wMDIsNDUuNDIyMzA4MyBMMTMuMDAyLDQ3LjAwMDI4NjggQzEzLjAwMiw0Ny4zNzkyODE2IDEzLjIxNiw0Ny43MjUyNzY5IDEzLjU1NSw0Ny44OTQyNzQ1IEwxOS4wMDIsNTAuNjE4MjM3NCBMMTkuMDAyLDU5LjAwMDEyMjkgQzE5LjAwMiw1OS4zNDcxMTgyIDE5LjE4MSw1OS42NjkxMTM4IDE5LjQ3Nyw1OS44NTExMTEzIEwzMi40NzcsNjcuODUxMDAyIEMzMi42MzgsNjcuOTUwMDAwNyAzMi44Miw2OCAzMy4wMDIsNjggQzMzLjE3Myw2OCAzMy4zNDQsNjcuOTU2MDAwNiAzMy40OTgsNjcuODY4MDAxOCBMNDAuMDAzLDY0LjE1MjA1MjUgTDQ2LjUwNiw2Ny44NjgwMDE4IEM0Ni44MjEsNjguMDQ4OTk5MyA0Ny4yMTMsNjguMDQxOTk5NCA0Ny41MjYsNjcuODUxMDAyIEw2MC41MjYsNTkuODUxMTExMyBDNjAuODIyLDU5LjY2OTExMzggNjEuMDAyLDU5LjM0NzExODIgNjEuMDAyLDU5LjAwMDEyMjkgTDYxLjAwMiw1MC42MTgyMzc0IEw2Ni40NDcsNDcuODk0Mjc0NSBDNjYuNzg2LDQ3LjcyNTI3NjkgNjcsNDcuMzc5MjgxNiA2Nyw0Ny4wMDAyODY4IEw2NywzNC4wMDA0NjQzIEM2NywzMy42NDE0NjkyIDY2LjgwNywzMy4zMTA0NzM3IDY2LjQ5NiwzMy4xMzI0NzYxIEw2Ni40OTYsMzMuMTMyNDc2MSBaIiBpZD0iQW1hem9uLVNhZ2VNYWtlcl9JY29uXzY0X1NxdWlkIiBmaWxsPSIjRkZGRkZGIj48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg=="
       }
     },
     "properties": [
@@ -9051,7 +13722,12 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
       },
       {
         "group": "configuration"
@@ -9060,49 +13736,72 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "configuration"
       },
       {
         "group": "input"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "The name of the endpoint to invoke. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Input data. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "The MIME type of the input data in the request body. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "The desired MIME type of the inference response from the model container. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Provides additional information about a request for an inference submitted to a model hosted at an Amazon SageMaker endpoint. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "The model to request for inference when invoking a multi-model endpoint. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "The production variant to send the inference request to. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "If the endpoint hosts multiple containers and is configured to use direct invocation, this parameter specifies the host name of the container to invoke. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "If you provide a value, it is added to the captured data when you enable data capture on the endpoint. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Whether request needs to be explained. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "If the endpoint hosts one or more inference components, this parameter specifies the name of inference component to invoke. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "The Amazon S3 URI where the inference request payload is stored. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Maximum age in seconds a request can be in the queue before it is marked as expired. The default is 21,600 seconds. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "Maximum amount of time in seconds a request can be processed before it is marked as expired. The default is 900 seconds. <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_Operations_Amazon_SageMaker_Runtime.html\">Amazon SageMaker Runtime API</a>"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       },
       {
         "group": "output"
@@ -9112,6 +13811,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -9142,30 +13844,38 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Authorization"
         },
         {
+          "id": "webhookResponse",
+          "label": "Webhook response"
+        },
+        {
           "id": "activation",
           "label": "Activation"
         },
         {
+          "id": "synchronousResponse",
+          "label": "Response mode"
+        },
+        {
           "id": "correlation",
-          "label": "Subprocess correlation"
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
         },
         {
-          "id": "webhookResponse",
-          "label": "Webhook response"
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml,%3Csvg id='icon' xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 32 32'%3E%3Cdefs%3E%3Cstyle%3E .cls-1 %7B fill: none; %7D %3C/style%3E%3C/defs%3E%3Cpath d='M24,26a3,3,0,1,0-2.8164-4H13v1a5,5,0,1,1-5-5V16a7,7,0,1,0,6.9287,8h6.2549A2.9914,2.9914,0,0,0,24,26Z'/%3E%3Cpath d='M24,16a7.024,7.024,0,0,0-2.57.4873l-3.1656-5.5395a3.0469,3.0469,0,1,0-1.7326.9985l4.1189,7.2085.8686-.4976a5.0006,5.0006,0,1,1-1.851,6.8418L17.937,26.501A7.0005,7.0005,0,1,0,24,16Z'/%3E%3Cpath d='M8.532,20.0537a3.03,3.03,0,1,0,1.7326.9985C11.74,18.47,13.86,14.7607,13.89,14.708l.4976-.8682-.8677-.497a5,5,0,1,1,6.812-1.8438l1.7315,1.002a7.0008,7.0008,0,1,0-10.3462,2.0356c-.457.7427-1.1021,1.8716-2.0737,3.5728Z'/%3E%3Crect id='_Transparent_Rectangle_' data-name='&lt;Transparent Rectangle&gt;' class='cls-1' width='32' height='32'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyBpZD0naWNvbicgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCAzMiAzMic+CiAgPGRlZnM+CiAgICA8c3R5bGU+LmNscy0xIHsgZmlsbDogbm9uZTsgfTwvc3R5bGU+CiAgPC9kZWZzPgogIDxwYXRoCiAgICBkPSdNMjQsMjZhMywzLDAsMSwwLTIuODE2NC00SDEzdjFhNSw1LDAsMSwxLTUtNVYxNmE3LDcsMCwxLDAsNi45Mjg3LDhoNi4yNTQ5QTIuOTkxNCwyLjk5MTQsMCwwLDAsMjQsMjZaJy8+CiAgPHBhdGgKICAgIGQ9J00yNCwxNmE3LjAyNCw3LjAyNCwwLDAsMC0yLjU3LjQ4NzNsLTMuMTY1Ni01LjUzOTVhMy4wNDY5LDMuMDQ2OSwwLDEsMC0xLjczMjYuOTk4NWw0LjExODksNy4yMDg1Ljg2ODYtLjQ5NzZhNS4wMDA2LDUuMDAwNiwwLDEsMS0xLjg1MSw2Ljg0MThMMTcuOTM3LDI2LjUwMUE3LjAwMDUsNy4wMDA1LDAsMSwwLDI0LDE2WicvPgogIDxwYXRoCiAgICBkPSdNOC41MzIsMjAuMDUzN2EzLjAzLDMuMDMsMCwxLDAsMS43MzI2Ljk5ODVDMTEuNzQsMTguNDcsMTMuODYsMTQuNzYwNywxMy44OSwxNC43MDhsLjQ5NzYtLjg2ODItLjg2NzctLjQ5N2E1LDUsMCwxLDEsNi44MTItMS44NDM4bDEuNzMxNSwxLjAwMmE3LjAwMDgsNy4wMDA4LDAsMSwwLTEwLjM0NjIsMi4wMzU2Yy0uNDU3Ljc0MjctMS4xMDIxLDEuODcxNi0yLjA3MzcsMy41NzI4WicvPgogIDxyZWN0IGlkPSdfVHJhbnNwYXJlbnRfUmVjdGFuZ2xlXycgZGF0YS1uYW1lPScmbHQ7VHJhbnNwYXJlbnQgUmVjdGFuZ2xlJmd0OycgY2xhc3M9J2Nscy0xJwogICAgd2lkdGg9JzMyJyBoZWlnaHQ9JzMyJy8+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
-      {},
       {
         "group": "endpoint"
       },
@@ -9188,7 +13898,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authorization"
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
       },
       {
         "group": "authorization"
@@ -9212,42 +13925,188 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authorization"
       },
       {
-        "group": "activation"
+        "group": "authorization"
       },
       {
-        "group": "activation"
+        "group": "authorization"
       },
       {
-        "group": "correlation"
-      },
-      {
-        "group": "correlation"
-      },
-      {
-        "group": "correlation"
-      },
-      {
-        "group": "variable-mapping"
-      },
-      {
-        "group": "variable-mapping"
+        "group": "authorization"
       },
       {
         "group": "webhookResponse"
+      },
+      {
+        "group": "webhookResponse"
+      },
+      {
+        "group": "activation"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
+      },
+      {
+        "group": "synchronousResponse",
+        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output",
+        "tooltip": "<div><p>Example response:</p><code>{\"request\":{\"body\":{\"orderId\":\"123\",\"status\":\"created\"},\"headers\":{\"Content-Type\":\"application/json\"},\"params\":{}}}</code><p>Example FEEL expression: <code>= { orderId: request.body.orderId }</code> -&gt; <code>{\"orderId\":\"123\"}</code></p></div>"
+      }
+    ]
+  },
+  "io.camunda.connectors.aws.bedrock.codeinterpreter.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "configuration",
+          "label": "Configuration"
+        },
+        {
+          "id": "codeExecution",
+          "label": "Code Execution"
+        },
+        {
+          "id": "session",
+          "label": "Session Settings"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
+          "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSIwIDAgNDAgNDAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+SWNvbi1BcmNoaXRlY3R1cmUvMzIvQXJjaF9BbWF6b24tQmVkcm9ja18zMjwvdGl0bGU+CiAgICA8ZyBpZD0iSWNvbi1BcmNoaXRlY3R1cmUvMzIvQXJjaF9BbWF6b24tQmVkcm9ja18zMiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9Ikljb24tQXJjaGl0ZWN0dXJlLUJHLzMyL01hY2hpbmUtTGVhcm5pbmciIGZpbGw9IiMwMUE4OEQiPgogICAgICAgICAgICA8cmVjdCBpZD0iUmVjdGFuZ2xlIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiPjwvcmVjdD4KICAgICAgICA8L2c+CiAgICAgICAgPGcgaWQ9Ikljb24tU2VydmljZS8zMi9BbWF6b24tQmVkcm9ja18zMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNi4wMDAwMDAsIDYuMDAwMDAwKSIgZmlsbD0iI0ZGRkZGRiI+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMC41MTYsMjYuOTMzMjExNiBMOC4yOTMsMjUuNjYzMjExNiBMMTEuNzI0LDIzLjk0NzIxMTYgTDExLjI3NywyMy4wNTMyMTE2IEw3LjI3NywyNS4wNTMyMTE2IEw3LjI5NywyNS4wOTQyMTE2IEw0LDIzLjIxMDIxMTYgTDQsMTkuODA5MjExNiBMNy43MjQsMTcuOTQ3MjExNiBMNy4yNzcsMTcuMDUzMjExNiBMMy41MzYsMTguOTIzMjExNiBMMSwxNy4yMzIyMTE2IEwxLDE0LjgwOTIxMTYgTDQuNzI0LDEyLjk0NzIxMTYgTDQuMjc3LDEyLjA1MzIxMTYgTDEsMTMuNjkxMjExNiBMMSwxMC43NjcyMTE2IEwzLjUyMyw5LjA4NjIxMTU4IEw3LDExLjAzODIxMTYgTDcsMTQuMTkxMjExNiBMNS4yNzcsMTUuMDUzMjExNiBMNS43MjQsMTUuOTQ3MjExNiBMNy41LDE1LjA1OTIxMTYgTDkuMjc3LDE1Ljk0NzIxMTYgTDkuNzI0LDE1LjA1MzIxMTYgTDgsMTQuMTkxMjExNiBMOCwxMC43NjcyMTE2IEwxMC43NzgsOC45MTYyMTE1OCBDMTAuOTE2LDguODIzMjExNTggMTEsOC42NjcyMTE1OCAxMSw4LjUwMDIxMTU4IEwxMSw1LjAwMDIxMTU4IEwxMCw1LjAwMDIxMTU4IEwxMCw4LjIzMjIxMTU4IEw3LjI3OCwxMC4wNDcyMTE2IEw0LDguMjA3MjExNTggTDQsNC4wMzUyMTE1OCBMNywyLjY1NzIxMTU4IEw3LDcuMDAwMjExNTggTDgsNy4wMDAyMTE1OCBMOCwyLjE5ODIxMTU4IEwxMC40OTIsMS4wNTQyMTE1OCBMMTQsMi44MDkyMTE1OCBMMTQsMTcuMTkxMjExNiBMNi4yNzcsMjEuMDUzMjExNiBMNi43MjQsMjEuOTQ3MjExNiBMMTQsMTguMzA5MjExNiBMMTQsMjUuMTkxMjExNiBMMTAuNTE2LDI2LjkzMzIxMTYgWiBNMjUuNSwxOS41MDAyMTE2IEMyNS41LDIwLjA1MTIxMTYgMjUuMDUyLDIwLjUwMDIxMTYgMjQuNSwyMC41MDAyMTE2IEMyMy45NDksMjAuNTAwMjExNiAyMy41LDIwLjA1MTIxMTYgMjMuNSwxOS41MDAyMTE2IEMyMy41LDE4Ljk0OTIxMTYgMjMuOTQ5LDE4LjUwMDIxMTYgMjQuNSwxOC41MDAyMTE2IEMyNS4wNTIsMTguNTAwMjExNiAyNS41LDE4Ljk0OTIxMTYgMjUuNSwxOS41MDAyMTE2IEwyNS41LDE5LjUwMDIxMTYgWiBNMjAuNSwyNC4wMDAyMTE2IEMyMC41LDI0LjU1MTIxMTYgMjAuMDUyLDI1LjAwMDIxMTYgMTkuNSwyNS4wMDAyMTE2IEMxOC45NDksMjUuMDAwMjExNiAxOC41LDI0LjU1MTIxMTYgMTguNSwyNC4wMDAyMTE2IEMxOC41LDIzLjQ0OTIxMTYgMTguOTQ5LDIzLjAwMDIxMTYgMTkuNSwyMy4wMDAyMTE2IEMyMC4wNTIsMjMuMDAwMjExNiAyMC41LDIzLjQ0OTIxMTYgMjAuNSwyNC4wMDAyMTE2IEwyMC41LDI0LjAwMDIxMTYgWiBNMTkuNSw0LjAwMDIxMTU4IEMxOS41LDMuNDQ5MjExNTggMTkuOTQ5LDMuMDAwMjExNTggMjAuNSwzLjAwMDIxMTU4IEMyMS4wNTIsMy4wMDAyMTE1OCAyMS41LDMuNDQ5MjExNTggMjEuNSw0LjAwMDIxMTU4IEMyMS41LDQuNTUxMjExNTggMjEuMDUyLDUuMDAwMjExNTggMjAuNSw1LjAwMDIxMTU4IEMxOS45NDksNS4wMDAyMTE1OCAxOS41LDQuNTUxMjExNTggMTkuNSw0LjAwMDIxMTU4IEwxOS41LDQuMDAwMjExNTggWiBNMjYsMTEuNTAwMjExNiBDMjYuNTUyLDExLjUwMDIxMTYgMjcsMTEuOTQ5MjExNiAyNywxMi41MDAyMTE2IEMyNywxMy4wNTEyMTE2IDI2LjU1MiwxMy41MDAyMTE2IDI2LDEzLjUwMDIxMTYgQzI1LjQ0OSwxMy41MDAyMTE2IDI1LDEzLjA1MTIxMTYgMjUsMTIuNTAwMjExNiBDMjUsMTEuOTQ5MjExNiAyNS40NDksMTEuNTAwMjExNiAyNiwxMS41MDAyMTE2IEwyNiwxMS41MDAyMTE2IFogTTI0LjA3MSwxMy4wMDAyMTE2IEMyNC4yOTUsMTMuODYwMjExNiAyNS4wNzEsMTQuNTAwMjExNiAyNiwxNC41MDAyMTE2IEMyNy4xMDMsMTQuNTAwMjExNiAyOCwxMy42MDMyMTE2IDI4LDEyLjUwMDIxMTYgQzI4LDExLjM5NzIxMTYgMjcuMTAzLDEwLjUwMDIxMTYgMjYsMTAuNTAwMjExNiBDMjUuMDcxLDEwLjUwMDIxMTYgMjQuMjk1LDExLjE0MDIxMTYgMjQuMDcxLDEyLjAwMDIxMTYgTDE1LDEyLjAwMDIxMTYgTDE1LDkuMDAwMjExNTggTDIwLjUsOS4wMDAyMTE1OCBDMjAuNzc3LDkuMDAwMjExNTggMjEsOC43NzYyMTE1OCAyMSw4LjUwMDIxMTU4IEwyMSw1LjkyOTIxMTU4IEMyMS44Niw1LjcwNTIxMTU4IDIyLjUsNC45MjkyMTE1OCAyMi41LDQuMDAwMjExNTggQzIyLjUsMi44OTcyMTE1OCAyMS42MDMsMi4wMDAyMTE1OCAyMC41LDIuMDAwMjExNTggQzE5LjM5OCwyLjAwMDIxMTU4IDE4LjUsMi44OTcyMTE1OCAxOC41LDQuMDAwMjExNTggQzE4LjUsNC45MjkyMTE1OCAxOS4xNCw1LjcwNTIxMTU4IDIwLDUuOTI5MjExNTggTDIwLDguMDAwMjExNTggTDE1LDguMDAwMjExNTggTDE1LDIuNTAwMjExNTggQzE1LDIuMzEwMjExNTggMTQuODkzLDIuMTM4MjExNTggMTQuNzI0LDIuMDUzMjExNTggTDEwLjcyNCwwLjA1MzIxMTU4NDMgQzEwLjU4OCwtMC4wMTQ3ODg0MTU3IDEwLjQzLC0wLjAxNzc4ODQxNTcgMTAuMjkxLDAuMDQ1MjExNTg0MyBMMy4yOTEsMy4yNjAyMTE1OCBDMy4xMTUsMy4zNDEyMTE1OCAzLDMuNTE5MjExNTggMywzLjcxNDIxMTU4IEwzLDguMjMyMjExNTggTDAuMjIzLDEwLjA4NDIxMTYgQzAuMDg0LDEwLjE3NzIxMTYgMCwxMC4zMzMyMTE2IDAsMTAuNTAwMjExNiBMMCwxNy41MDAyMTE2IEMwLDE3LjY2NzIxMTYgMC4wODQsMTcuODIzMjExNiAwLjIyMywxNy45MTYyMTE2IEwzLDE5Ljc2NzIxMTYgTDMsMjMuNTAwMjExNiBDMywyMy42NzkyMTE2IDMuMDk2LDIzLjg0NTIxMTYgMy4yNTIsMjMuOTM0MjExNiBMMTAuMjUyLDI3LjkzNDIxMTYgQzEwLjMyOSwyNy45NzgyMTE2IDEwLjQxNCwyOC4wMDAyMTE2IDEwLjUsMjguMDAwMjExNiBDMTAuNTc3LDI4LjAwMDIxMTYgMTAuNjU0LDI3Ljk4MjIxMTYgMTAuNzI0LDI3Ljk0NzIxMTYgTDE0LjcyNCwyNS45NDcyMTE2IEMxNC44OTMsMjUuODYyMjExNiAxNSwyNS42ODkyMTE2IDE1LDI1LjUwMDIxMTYgTDE1LDIxLjAwMDIxMTYgTDE5LDIxLjAwMDIxMTYgTDE5LDIyLjA3MTIxMTYgQzE4LjE0LDIyLjI5NTIxMTYgMTcuNSwyMy4wNzEyMTE2IDE3LjUsMjQuMDAwMjExNiBDMTcuNSwyNS4xMDMyMTE2IDE4LjM5OCwyNi4wMDAyMTE2IDE5LjUsMjYuMDAwMjExNiBDMjAuNjAzLDI2LjAwMDIxMTYgMjEuNSwyNS4xMDMyMTE2IDIxLjUsMjQuMDAwMjExNiBDMjEuNSwyMy4wNzEyMTE2IDIwLjg2LDIyLjI5NTIxMTYgMjAsMjIuMDcxMjExNiBMMjAsMjAuNTAwMjExNiBDMjAsMjAuMjI0MjExNiAxOS43NzcsMjAuMDAwMjExNiAxOS41LDIwLjAwMDIxMTYgTDE1LDIwLjAwMDIxMTYgTDE1LDE3LjAwMDIxMTYgTDIxLjI5MywxNy4wMDAyMTE2IEwyMi43ODQsMTguNDkwMjExNiBDMjIuNjA4LDE4Ljc4ODIxMTYgMjIuNSwxOS4xMzAyMTE2IDIyLjUsMTkuNTAwMjExNiBDMjIuNSwyMC42MDMyMTE2IDIzLjM5OCwyMS41MDAyMTE2IDI0LjUsMjEuNTAwMjExNiBDMjUuNjAzLDIxLjUwMDIxMTYgMjYuNSwyMC42MDMyMTE2IDI2LjUsMTkuNTAwMjExNiBDMjYuNSwxOC4zOTcyMTE2IDI1LjYwMywxNy41MDAyMTE2IDI0LjUsMTcuNTAwMjExNiBDMjQuMTMxLDE3LjUwMDIxMTYgMjMuNzg4LDE3LjYwODIxMTYgMjMuNDkxLDE3Ljc4MzIxMTYgTDIxLjg1NCwxNi4xNDYyMTE2IEMyMS43NiwxNi4wNTMyMTE2IDIxLjYzMywxNi4wMDAyMTE2IDIxLjUsMTYuMDAwMjExNiBMMTUsMTYuMDAwMjExNiBMMTUsMTMuMDAwMjExNiBMMjQuMDcxLDEzLjAwMDIxMTYgWiIgaWQ9IkZpbGwtNSI+PC9wYXRoPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+"
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "codeExecution"
+      },
+      {
+        "group": "codeExecution"
+      },
+      {
+        "group": "session"
+      },
+      {
+        "group": "session"
+      },
+      {
+        "group": "session"
+      },
+      {
+        "group": "session"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.AWSSQS.receive.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": [
-          "receive message",
-          "receive event",
-          "receive message from queue",
-          "receive event from queue"
-        ]
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -9305,7 +14164,12 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
       },
       {
         "group": "configuration"
@@ -9314,16 +14178,23 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "configuration"
       },
       {
-        "group": "queueProperties"
+        "group": "configuration"
       },
       {
-        "group": "messagePollingProperties"
+        "group": "queueProperties",
+        "tooltip": "URL of the SQS queue to subscribe to."
       },
       {
-        "group": "input"
+        "group": "messagePollingProperties",
+        "tooltip": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>. A value of 0 is automatically overridden to 1."
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Array of queue attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
+      },
+      {
+        "group": "input",
+        "tooltip": "Array of message attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
       },
       {
         "group": "activation"
@@ -9345,7 +14216,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "correlation"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -9401,6 +14273,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "errors",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ]
     },
@@ -9410,22 +14286,26 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
+        "tooltip": "Dynamics 365 URL. <a href=\"https://learn.microsoft.com/en-us/power-apps/developer/data-platform/discovery-service\">organization URL discovery docs</a>. See also <a href=\"https://learn.microsoft.com/en-us/power-automate/web-api#compose-http-requests\">Power Automate web API docs</a>",
         "group": "configuration"
+      },
+      {
+        "group": "authentication"
       },
       {},
       {
         "group": "authentication"
       },
       {
+        "group": "authentication",
+        "tooltip": "URL to obtain the OAuth access token."
+      },
+      {
+        "tooltip": "Microsoft Azure application client ID. See the <a href=\"https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#register-an-application\">Azure app registration guide</a>.",
         "group": "authentication"
       },
       {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
+        "tooltip": "Microsoft Azure application client secret value. See the <a href=\"https://learn.microsoft.com/en-us/azure/active-directory/develop/quickstart-register-app#register-an-application\">Azure app registration guide</a>.",
         "group": "authentication"
       },
       {
@@ -9438,30 +14318,39 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "configuration"
       },
       {
+        "tooltip": "Unique identifier for entity instances. You can find this in the response of the 'Trigger a flow run' method.",
         "group": "input"
       },
       {
+        "tooltip": "The ID of the desktop flow that you want to run.",
         "group": "input"
       },
       {
+        "tooltip": "Identifies the connection to be used with the desktop flow script.",
         "group": "input"
       },
       {
+        "tooltip": "How the connection name is resolved: 'Connection type' uses a direct connection, 'Connection reference type' uses a connection reference.",
         "group": "input"
       },
       {
+        "tooltip": "'Attended' runs the flow interactively in a signed-in user session; 'Unattended' runs it in the background without user interaction.",
         "group": "input"
       },
       {
+        "tooltip": "Use a standard priority ('normal' or 'high'), or supply your own value.",
         "group": "input"
       },
       {
+        "tooltip": "Timeout for Power Automate script execution, in seconds.",
         "group": "input"
       },
       {
+        "tooltip": "The desktop flow script input parameters, as a JSON-serialized string.",
         "group": "input"
       },
       {
+        "tooltip": "URL that will be called once the desktop flow script is complete. You can use the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/http-webhook/\">webhook connector</a> for this purpose.",
         "group": "input"
       },
       {
@@ -9471,25 +14360,72 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Sets the timeout in seconds to establish a connection or 0 for an infinite timeout",
         "group": "errors"
       },
       {},
       {},
       {},
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.connectors.AppIntegrationsChat.Receive.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "correlation",
+          "label": "Correlation"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxIDguNUMyMSA3LjEzMzE3IDIxIDUgMjEgNUMyMSA0LjQ2OTU3IDIwLjc4OTMgMy45NjA4NiAyMC40MTQyIDMuNTg1NzlDMjAuMDM5MSAzLjIxMDcxIDE5LjUzMDQgMyAxOSAzSDRDMy40Njk1NyAzIDIuOTYwODYgMy4yMTA3MSAyLjU4NTc5IDMuNTg1NzlDMi4yMTA3MSAzLjk2MDg2IDIgNC40Njk1NyAyIDVWMjEuMjg2QzIuMDAwMDIgMjEuNDI2NCAyLjA0MTY3IDIxLjU2MzcgMi4xMTk2OSAyMS42ODA0QzIuMTk3NyAyMS43OTcxIDIuMzA4NTggMjEuODg4MSAyLjQzODMxIDIxLjk0MTlDMi41NjgwMyAyMS45OTU2IDIuNzEwNzcgMjIuMDA5NyAyLjg0ODQ5IDIxLjk4MjNDMi45ODYyIDIxLjk1NDkgMy4xMTI3IDIxLjg4NzMgMy4yMTIgMjEuNzg4TDUuNDE0IDE5LjU4NkM1Ljc4ODk5IDE5LjIxMDkgNi4yOTc2MSAxOS4wMDAxIDYuODI4IDE5SDEwIiBzdHJva2U9ImJsYWNrIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMC45MzU5IDE3LjcxNzFDMjEuMTI2OCAxNy41MjY4IDIxLjI3ODMgMTcuMzAwOCAyMS4zODE3IDE3LjA1MThDMjEuNDg1IDE2LjgwMjkgMjEuNTM4MiAxNi41MzYgMjEuNTM4MiAxNi4yNjY0QzIxLjUzODIgMTUuOTk2OSAyMS40ODUgMTUuNzMgMjEuMzgxNyAxNS40ODExQzIxLjI3ODMgMTUuMjMyMSAyMS4xMjY4IDE1LjAwNjEgMjAuOTM1OSAxNC44MTU4TDE4Ljk3MzIgMTIuODUzMkwxMy44NTMzIDE3Ljk3MzFMMTUuODE1OSAxOS45MzU3QzE2LjAwNjIgMjAuMTI2NyAxNi4yMzIzIDIwLjI3ODEgMTYuNDgxMiAyMC4zODE1QzE2LjczMDIgMjAuNDg0OSAxNi45OTcgMjAuNTM4MSAxNy4yNjY2IDIwLjUzODFDMTcuNTM2MSAyMC41MzgxIDE3LjgwMyAyMC40ODQ5IDE4LjA1MiAyMC4zODE1QzE4LjMwMDkgMjAuMjc4MSAxOC41MjcgMjAuMTI2NyAxOC43MTcyIDE5LjkzNTdMMjAuOTM1OSAxNy43MTcxWiIgc3Ryb2tlPSIjRkY0QzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik0yMi4zODY1IDIxLjM4NjdMMTkuODI2NiAxOC44MjY4IiBzdHJva2U9IiNGRjRDMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE1LjEzMzMgMTYuNjkzNEwxMyAxNC41NjAxIiBzdHJva2U9IiNGRjRDMDAiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE3LjY5MzMgMTQuMTMzM0wxNS41NiAxMiIgc3Ryb2tlPSIjRkY0QzAwIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CjxwYXRoIGQ9Ik02IDhIMTUiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTYgMTJIMTAiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+Cg=="
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -9514,26 +14450,38 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Authorization"
         },
         {
+          "id": "webhookResponse",
+          "label": "Webhook response"
+        },
+        {
           "id": "activation",
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "synchronousResponse",
+          "label": "Response mode"
         },
         {
-          "id": "webhookResponse",
-          "label": "Webhook response"
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml,%3Csvg id='icon' xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 32 32'%3E%3Cdefs%3E%3Cstyle%3E .cls-1 %7B fill: none; %7D %3C/style%3E%3C/defs%3E%3Cpath d='M24,26a3,3,0,1,0-2.8164-4H13v1a5,5,0,1,1-5-5V16a7,7,0,1,0,6.9287,8h6.2549A2.9914,2.9914,0,0,0,24,26Z'/%3E%3Cpath d='M24,16a7.024,7.024,0,0,0-2.57.4873l-3.1656-5.5395a3.0469,3.0469,0,1,0-1.7326.9985l4.1189,7.2085.8686-.4976a5.0006,5.0006,0,1,1-1.851,6.8418L17.937,26.501A7.0005,7.0005,0,1,0,24,16Z'/%3E%3Cpath d='M8.532,20.0537a3.03,3.03,0,1,0,1.7326.9985C11.74,18.47,13.86,14.7607,13.89,14.708l.4976-.8682-.8677-.497a5,5,0,1,1,6.812-1.8438l1.7315,1.002a7.0008,7.0008,0,1,0-10.3462,2.0356c-.457.7427-1.1021,1.8716-2.0737,3.5728Z'/%3E%3Crect id='_Transparent_Rectangle_' data-name='&lt;Transparent Rectangle&gt;' class='cls-1' width='32' height='32'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyBpZD0naWNvbicgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCAzMiAzMic+CiAgPGRlZnM+CiAgICA8c3R5bGU+LmNscy0xIHsgZmlsbDogbm9uZTsgfTwvc3R5bGU+CiAgPC9kZWZzPgogIDxwYXRoCiAgICBkPSdNMjQsMjZhMywzLDAsMSwwLTIuODE2NC00SDEzdjFhNSw1LDAsMSwxLTUtNVYxNmE3LDcsMCwxLDAsNi45Mjg3LDhoNi4yNTQ5QTIuOTkxNCwyLjk5MTQsMCwwLDAsMjQsMjZaJy8+CiAgPHBhdGgKICAgIGQ9J00yNCwxNmE3LjAyNCw3LjAyNCwwLDAsMC0yLjU3LjQ4NzNsLTMuMTY1Ni01LjUzOTVhMy4wNDY5LDMuMDQ2OSwwLDEsMC0xLjczMjYuOTk4NWw0LjExODksNy4yMDg1Ljg2ODYtLjQ5NzZhNS4wMDA2LDUuMDAwNiwwLDEsMS0xLjg1MSw2Ljg0MThMMTcuOTM3LDI2LjUwMUE3LjAwMDUsNy4wMDA1LDAsMSwwLDI0LDE2WicvPgogIDxwYXRoCiAgICBkPSdNOC41MzIsMjAuMDUzN2EzLjAzLDMuMDMsMCwxLDAsMS43MzI2Ljk5ODVDMTEuNzQsMTguNDcsMTMuODYsMTQuNzYwNywxMy44OSwxNC43MDhsLjQ5NzYtLjg2ODItLjg2NzctLjQ5N2E1LDUsMCwxLDEsNi44MTItMS44NDM4bDEuNzMxNSwxLjAwMmE3LjAwMDgsNy4wMDA4LDAsMSwwLTEwLjM0NjIsMi4wMzU2Yy0uNDU3Ljc0MjctMS4xMDIxLDEuODcxNi0yLjA3MzcsMy41NzI4WicvPgogIDxyZWN0IGlkPSdfVHJhbnNwYXJlbnRfUmVjdGFuZ2xlXycgZGF0YS1uYW1lPScmbHQ7VHJhbnNwYXJlbnQgUmVjdGFuZ2xlJmd0OycgY2xhc3M9J2Nscy0xJwogICAgd2lkdGg9JzMyJyBoZWlnaHQ9JzMyJy8+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
-      {},
       {
         "group": "endpoint"
       },
@@ -9556,7 +14504,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authorization"
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
       },
       {
         "group": "authorization"
@@ -9580,46 +14531,83 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authorization"
       },
       {
-        "group": "activation"
+        "group": "authorization"
       },
       {
-        "group": "activation"
+        "group": "authorization"
       },
       {
-        "group": "activation"
-      },
-      {
-        "group": "variable-mapping"
-      },
-      {
-        "group": "variable-mapping"
+        "group": "authorization"
       },
       {
         "group": "webhookResponse"
+      },
+      {
+        "group": "webhookResponse"
+      },
+      {
+        "group": "activation"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
+      },
+      {
+        "group": "synchronousResponse",
+        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output",
+        "tooltip": "<div><p>Example response:</p><code>{\"request\":{\"body\":{\"orderId\":\"123\",\"status\":\"created\"},\"headers\":{\"Content-Type\":\"application/json\"},\"params\":{}}}</code><p>Example FEEL expression: <code>= { orderId: request.body.orderId }</code> -&gt; <code>{\"orderId\":\"123\"}</code></p></div>"
       }
     ]
   },
   "io.camunda.connectors.azure.blobstorage.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": [
-          "download file from azure blob storage",
-          "upload file to azure blob storage"
-        ]
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
         {
-          "id": "authentication",
-          "label": "Authentication"
-        },
-        {
           "id": "operation",
           "label": "Operation"
+        },
+        {
+          "id": "authentication",
+          "label": "Authentication"
         },
         {
           "id": "additionalProperties",
@@ -9649,12 +14637,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
-      },
-      {
         "group": "operation"
       },
       {
@@ -9667,7 +14649,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operation",
-        "tooltip": "By default, only a reference to the document is returned. If this option is unchecked, the full content of the document is extracted and included in the response."
+        "tooltip": "How the downloaded payload should be returned. Document reference uploads the payload to the document store; as text decodes it as a String; as JSON parses it into a structure you can access via dot notation."
+      },
+      {
+        "group": "operation"
       },
       {
         "group": "operation",
@@ -9676,6 +14661,54 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {
         "group": "operation",
         "tooltip": "Document to be uploaded to Azure Blob Storage."
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Shared access signature (SAS) token of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Shared access signature (SAS) URL of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "ID of the Microsoft Entra ID tenant that owns the application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Application (client) ID of the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Client secret generated for the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "URL of the Azure Blob Storage account to connect to. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
       },
       {
         "group": "additionalProperties",
@@ -9704,15 +14737,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.inbound.Slack.ReceiveTask.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -9748,10 +14781,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
-        "group": "endpoint"
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL endpoint"
       },
       {
         "group": "endpoint"
+      },
+      {
+        "group": "endpoint",
+        "tooltip": "Used to verify that incoming requests originate from Slack. See <a href='https://api.slack.com/authentication/verifying-requests-from-slack' target='_blank'>Verifying requests from Slack</a>"
       },
       {
         "group": "endpoint"
@@ -9776,7 +14814,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "correlation"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -9801,9 +14840,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
   "io.camunda:soap": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -9849,7 +14885,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
-        "group": "connection"
+        "group": "connection",
+        "tooltip": "The URL where the service runs"
       },
       {
         "group": "authentication"
@@ -9867,7 +14904,12 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "The X.509 certificate to use to sign the request"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The private key for the certificate"
       },
       {
         "group": "authentication"
@@ -9876,25 +14918,27 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "The alias for the certificate in the keystore"
       },
       {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Fully qualified name of an alternative signature algorithm"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Fully qualified name of an alternative digest algorithm"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "If set, adds a timestamp header with the given timeout"
       },
       {
-        "group": "authentication"
-      },
-      {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Array of signature parts with namespace and localName"
       },
       {
         "group": "soap-message"
@@ -9906,31 +14950,39 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "soap-message"
       },
       {
-        "group": "soap-message"
+        "group": "soap-message",
+        "tooltip": "The template for the header in XML format"
+      },
+      {
+        "group": "soap-message",
+        "tooltip": "The context that is used to fill the template"
+      },
+      {
+        "group": "soap-message",
+        "tooltip": "Definition of the SOAP header as JSON object"
       },
       {
         "group": "soap-message"
       },
       {
-        "group": "soap-message"
+        "group": "soap-message",
+        "tooltip": "The template for the body in XML format"
       },
       {
-        "group": "soap-message"
+        "group": "soap-message",
+        "tooltip": "The context that is used to fill the template"
       },
       {
-        "group": "soap-message"
+        "group": "soap-message",
+        "tooltip": "Definition of the SOAP body as JSON object"
       },
       {
-        "group": "soap-message"
+        "group": "soap-message",
+        "tooltip": "The namespaces that should be declared on the SOAP Envelope"
       },
       {
-        "group": "soap-message"
-      },
-      {
-        "group": "soap-message"
-      },
-      {
-        "group": "timeout"
+        "group": "timeout",
+        "tooltip": "Time in seconds to wait when establishing a connection, or 0 to wait indefinitely"
       },
       {
         "group": "connector"
@@ -9946,6 +14998,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -9981,20 +15036,32 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         },
         {
           "id": "correlation",
-          "label": "Subprocess correlation"
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='-7.5 0 271 271' preserveAspectRatio='xMidYMid'%3E%3Cpath d='M245.44 108.308h-85.09a7.738 7.738 0 0 1-7.735-7.734v-88.68C152.615 5.327 147.29 0 140.726 0h-30.375c-6.568 0-11.89 5.327-11.89 11.894v88.143c0 4.573-3.697 8.29-8.27 8.31l-27.885.133c-4.612.025-8.359-3.717-8.35-8.325l.173-88.241C54.144 5.337 48.817 0 42.24 0H11.89C5.321 0 0 5.327 0 11.894V260.21c0 5.834 4.726 10.56 10.555 10.56H245.44c5.834 0 10.56-4.726 10.56-10.56V118.868c0-5.834-4.726-10.56-10.56-10.56zm-39.902 93.233c0 7.645-6.198 13.844-13.843 13.844H167.69c-7.646 0-13.844-6.199-13.844-13.844v-24.005c0-7.646 6.198-13.844 13.844-13.844h24.005c7.645 0 13.843 6.198 13.843 13.844v24.005z' fill='%23F60'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxOCcgaGVpZ2h0PScxOCcgdmlld0JveD0nLTcuNSAwIDI3MSAyNzEnIHByZXNlcnZlQXNwZWN0UmF0aW89J3hNaWRZTWlkJz4KICAgIDxwYXRoIGQ9J00yNDUuNDQgMTA4LjMwOGgtODUuMDlhNy43MzggNy43MzggMCAwIDEtNy43MzUtNy43MzR2LTg4LjY4QzE1Mi42MTUgNS4zMjcgMTQ3LjI5IDAgMTQwLjcyNiAwaC0zMC4zNzVjLTYuNTY4IDAtMTEuODkgNS4zMjctMTEuODkgMTEuODk0djg4LjE0M2MwIDQuNTczLTMuNjk3IDguMjktOC4yNyA4LjMxbC0yNy44ODUuMTMzYy00LjYxMi4wMjUtOC4zNTktMy43MTctOC4zNS04LjMyNWwuMTczLTg4LjI0MUM1NC4xNDQgNS4zMzcgNDguODE3IDAgNDIuMjQgMEgxMS44OUM1LjMyMSAwIDAgNS4zMjcgMCAxMS44OTRWMjYwLjIxYzAgNS44MzQgNC43MjYgMTAuNTYgMTAuNTU1IDEwLjU2SDI0NS40NGM1LjgzNCAwIDEwLjU2LTQuNzI2IDEwLjU2LTEwLjU2VjExOC44NjhjMC01LjgzNC00LjcyNi0xMC41Ni0xMC41Ni0xMC41NnptLTM5LjkwMiA5My4yMzNjMCA3LjY0NS02LjE5OCAxMy44NDQtMTMuODQzIDEzLjg0NEgxNjcuNjljLTcuNjQ2IDAtMTMuODQ0LTYuMTk5LTEzLjg0NC0xMy44NDR2LTI0LjAwNWMwLTcuNjQ2IDYuMTk4LTEzLjg0NCAxMy44NDQtMTMuODQ0aDI0LjAwNWM3LjY0NSAwIDEzLjg0MyA2LjE5OCAxMy44NDMgMTMuODQ0djI0LjAwNXonCiAgICAgICAgICBmaWxsPScjRjYwJy8+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "URI should contain username, password, host name, port number, and virtual host"
+      },
       {
         "group": "authentication"
       },
@@ -10002,22 +15069,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "authentication"
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "routing"
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "routing"
-      },
-      {
-        "group": "routing"
-      },
-      {
-        "group": "subscription"
+        "group": "subscription",
+        "tooltip": "Name of the queue to subscribe to"
       },
       {
         "group": "subscription"
@@ -10032,7 +15097,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
         "group": "correlation"
@@ -10044,10 +15110,32 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -10072,16 +15160,24 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Message"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Output mapping"
         },
         {
-          "id": "errors",
+          "id": "error",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='-7.5 0 271 271' preserveAspectRatio='xMidYMid'%3E%3Cpath d='M245.44 108.308h-85.09a7.738 7.738 0 0 1-7.735-7.734v-88.68C152.615 5.327 147.29 0 140.726 0h-30.375c-6.568 0-11.89 5.327-11.89 11.894v88.143c0 4.573-3.697 8.29-8.27 8.31l-27.885.133c-4.612.025-8.359-3.717-8.35-8.325l.173-88.241C54.144 5.337 48.817 0 42.24 0H11.89C5.321 0 0 5.327 0 11.894V260.21c0 5.834 4.726 10.56 10.555 10.56H245.44c5.834 0 10.56-4.726 10.56-10.56V118.868c0-5.834-4.726-10.56-10.56-10.56zm-39.902 93.233c0 7.645-6.198 13.844-13.843 13.844H167.69c-7.646 0-13.844-6.199-13.844-13.844v-24.005c0-7.646 6.198-13.844 13.844-13.844h24.005c7.645 0 13.843 6.198 13.843 13.844v24.005z' fill='%23F60'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxOCcgaGVpZ2h0PScxOCcgdmlld0JveD0nLTcuNSAwIDI3MSAyNzEnIHByZXNlcnZlQXNwZWN0UmF0aW89J3hNaWRZTWlkJz4KICAgIDxwYXRoIGQ9J00yNDUuNDQgMTA4LjMwOGgtODUuMDlhNy43MzggNy43MzggMCAwIDEtNy43MzUtNy43MzR2LTg4LjY4QzE1Mi42MTUgNS4zMjcgMTQ3LjI5IDAgMTQwLjcyNiAwaC0zMC4zNzVjLTYuNTY4IDAtMTEuODkgNS4zMjctMTEuODkgMTEuODk0djg4LjE0M2MwIDQuNTczLTMuNjk3IDguMjktOC4yNyA4LjMxbC0yNy44ODUuMTMzYy00LjYxMi4wMjUtOC4zNTktMy43MTctOC4zNS04LjMyNWwuMTczLTg4LjI0MUM1NC4xNDQgNS4zMzcgNDguODE3IDAgNDIuMjQgMEgxMS44OUM1LjMyMSAwIDAgNS4zMjcgMCAxMS44OTRWMjYwLjIxYzAgNS44MzQgNC43MjYgMTAuNTYgMTAuNTU1IDEwLjU2SDI0NS40NGM1LjgzNCAwIDEwLjU2LTQuNzI2IDEwLjU2LTEwLjU2VjExOC44NjhjMC01LjgzNC00LjcyNi0xMC41Ni0xMC41Ni0xMC41NnptLTM5LjkwMiA5My4yMzNjMCA3LjY0NS02LjE5OCAxMy44NDQtMTMuODQzIDEzLjg0NEgxNjcuNjljLTcuNjQ2IDAtMTMuODQ0LTYuMTk5LTEzLjg0NC0xMy44NDR2LTI0LjAwNWMwLTcuNjQ2IDYuMTk4LTEzLjg0NCAxMy44NDQtMTMuODQ0aDI0LjAwNWM3LjY0NSAwIDEzLjg0MyA2LjE5OCAxMy44NDMgMTMuODQ0djI0LjAwNXonCiAgICAgICAgICBmaWxsPScjRjYwJy8+Cjwvc3ZnPg=="
       }
     },
     "properties": [
@@ -10090,7 +15186,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "URI should contain username, password, host name, port number, and virtual host"
       },
       {
         "group": "authentication"
@@ -10099,25 +15196,38 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "routing"
+        "group": "routing",
+        "tooltip": "Topic exchange to publish to. Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "routing"
+        "group": "routing",
+        "tooltip": "A binding is a \"link\" that was set up to bind a queue to an exchange. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "routing"
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "routing"
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "routing"
+        "group": "routing",
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
-        "group": "message"
+        "group": "message",
+        "tooltip": "Properties for the message, routing headers, etc"
       },
       {
-        "group": "message"
+        "group": "message",
+        "tooltip": "Data to send to RabbitMQ"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       },
       {
         "group": "output"
@@ -10126,7 +15236,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "output"
       },
       {
-        "group": "errors"
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -10143,22 +15262,46 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Webhook configuration"
         },
         {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "authorization",
+          "label": "Authorization"
+        },
+        {
+          "id": "webhookResponse",
+          "label": "Webhook response"
+        },
+        {
           "id": "activation",
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "synchronousResponse",
+          "label": "Response mode"
+        },
+        {
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml,%3Csvg id='icon' xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 32 32'%3E%3Cdefs%3E%3Cstyle%3E .cls-1 %7B fill: none; %7D %3C/style%3E%3C/defs%3E%3Cpath d='M24,26a3,3,0,1,0-2.8164-4H13v1a5,5,0,1,1-5-5V16a7,7,0,1,0,6.9287,8h6.2549A2.9914,2.9914,0,0,0,24,26Z'/%3E%3Cpath d='M24,16a7.024,7.024,0,0,0-2.57.4873l-3.1656-5.5395a3.0469,3.0469,0,1,0-1.7326.9985l4.1189,7.2085.8686-.4976a5.0006,5.0006,0,1,1-1.851,6.8418L17.937,26.501A7.0005,7.0005,0,1,0,24,16Z'/%3E%3Cpath d='M8.532,20.0537a3.03,3.03,0,1,0,1.7326.9985C11.74,18.47,13.86,14.7607,13.89,14.708l.4976-.8682-.8677-.497a5,5,0,1,1,6.812-1.8438l1.7315,1.002a7.0008,7.0008,0,1,0-10.3462,2.0356c-.457.7427-1.1021,1.8716-2.0737,3.5728Z'/%3E%3Crect id='_Transparent_Rectangle_' data-name='&lt;Transparent Rectangle&gt;' class='cls-1' width='32' height='32'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyBpZD0naWNvbicgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCAzMiAzMic+CiAgPGRlZnM+CiAgICA8c3R5bGU+LmNscy0xIHsgZmlsbDogbm9uZTsgfTwvc3R5bGU+CiAgPC9kZWZzPgogIDxwYXRoCiAgICBkPSdNMjQsMjZhMywzLDAsMSwwLTIuODE2NC00SDEzdjFhNSw1LDAsMSwxLTUtNVYxNmE3LDcsMCwxLDAsNi45Mjg3LDhoNi4yNTQ5QTIuOTkxNCwyLjk5MTQsMCwwLDAsMjQsMjZaJy8+CiAgPHBhdGgKICAgIGQ9J00yNCwxNmE3LjAyNCw3LjAyNCwwLDAsMC0yLjU3LjQ4NzNsLTMuMTY1Ni01LjUzOTVhMy4wNDY5LDMuMDQ2OSwwLDEsMC0xLjczMjYuOTk4NWw0LjExODksNy4yMDg1Ljg2ODYtLjQ5NzZhNS4wMDA2LDUuMDAwNiwwLDEsMS0xLjg1MSw2Ljg0MThMMTcuOTM3LDI2LjUwMUE3LjAwMDUsNy4wMDA1LDAsMSwwLDI0LDE2WicvPgogIDxwYXRoCiAgICBkPSdNOC41MzIsMjAuMDUzN2EzLjAzLDMuMDMsMCwxLDAsMS43MzI2Ljk5ODVDMTEuNzQsMTguNDcsMTMuODYsMTQuNzYwNywxMy44OSwxNC43MDhsLjQ5NzYtLjg2ODItLjg2NzctLjQ5N2E1LDUsMCwxLDEsNi44MTItMS44NDM4bDEuNzMxNSwxLjAwMmE3LjAwMDgsNy4wMDA4LDAsMSwwLTEwLjM0NjIsMi4wMzU2Yy0uNDU3Ljc0MjctMS4xMDIxLDEuODcxNi0yLjA3MzcsMy41NzI4WicvPgogIDxyZWN0IGlkPSdfVHJhbnNwYXJlbnRfUmVjdGFuZ2xlXycgZGF0YS1uYW1lPScmbHQ7VHJhbnNwYXJlbnQgUmVjdGFuZ2xlJmd0OycgY2xhc3M9J2Nscy0xJwogICAgd2lkdGg9JzMyJyBoZWlnaHQ9JzMyJy8+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
-      {},
       {
         "group": "endpoint"
       },
@@ -10166,28 +15309,107 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
-        "group": "endpoint"
+        "group": "authentication"
       },
       {
-        "group": "endpoint"
+        "group": "authentication"
       },
       {
-        "group": "endpoint"
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "webhookResponse"
+      },
+      {
+        "group": "webhookResponse"
       },
       {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "activation"
+        "group": "synchronousResponse",
+        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output",
+        "tooltip": "<div><p>Example response:</p><code>{\"request\":{\"body\":{\"orderId\":\"123\",\"status\":\"created\"},\"headers\":{\"Content-Type\":\"application/json\"},\"params\":{}}}</code><p>Example FEEL expression: <code>= { orderId: request.body.orderId }</code> -&gt; <code>{\"orderId\":\"123\"}</code></p></div>"
       }
     ]
   },
@@ -10200,24 +15422,12 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       "groups": [
         {
+          "id": "operation",
+          "label": "Operation"
+        },
+        {
           "id": "authentication",
           "label": "Authentication"
-        },
-        {
-          "id": "protocol",
-          "label": "Protocol"
-        },
-        {
-          "id": "smtpAction",
-          "label": "SMTP Action"
-        },
-        {
-          "id": "pop3Action",
-          "label": "POP3 Action"
-        },
-        {
-          "id": "imapAction",
-          "label": "IMAP Action"
         },
         {
           "id": "sendEmailSmtp",
@@ -10241,7 +15451,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         },
         {
           "id": "listEmailsImap",
-          "label": "List Email"
+          "label": "List Emails"
         },
         {
           "id": "searchEmailsImap",
@@ -10253,11 +15463,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         },
         {
           "id": "deleteEmailImap",
-          "label": "Read Email"
+          "label": "Delete Email"
         },
         {
           "id": "moveEmailImap",
           "label": "Move Emails"
+        },
+        {
+          "id": "protocol",
+          "label": "Protocol"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -10279,6 +15497,21 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "authentication"
+      },
+      {
         "group": "authentication"
       },
       {
@@ -10290,7 +15523,145 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Enter the password associated with your email account. Keep your password secure and do not share it with others."
       },
       {
-        "group": "protocol"
+        "group": "sendEmailSmtp",
+        "tooltip": "Address the email will be sent from"
+      },
+      {
+        "group": "sendEmailSmtp",
+        "tooltip": "Comma-separated list of email, e.g., 'email1@domain.com,email2@domain.com' or '=[ \"email1@domain.com\", \"email2@domain.com\"]'"
+      },
+      {
+        "group": "sendEmailSmtp",
+        "tooltip": "Comma-separated list of email, e.g., 'email1@domain.com,email2@domain.com' or '=[ \"email1@domain.com\", \"email2@domain.com\"]'"
+      },
+      {
+        "group": "sendEmailSmtp",
+        "tooltip": "Comma-separated list of email, e.g., 'email1@domain.com,email2@domain.com' or '=[ \"email1@domain.com\", \"email2@domain.com\"]'"
+      },
+      {
+        "group": "sendEmailSmtp",
+        "tooltip": "Additional email headers"
+      },
+      {
+        "group": "sendEmailSmtp"
+      },
+      {
+        "group": "sendEmailSmtp",
+        "tooltip": "Format of the email body: PLAIN sends plain text only, HTML sends HTML only, HTML & Plaintext sends both as a multipart message."
+      },
+      {
+        "group": "sendEmailSmtp"
+      },
+      {
+        "group": "sendEmailSmtp"
+      },
+      {
+        "group": "sendEmailSmtp",
+        "tooltip": "Email attachments, set as a list, e.g. =[document1, document2]"
+      },
+      {
+        "group": "sendEmailSmtp"
+      },
+      {
+        "group": "sendEmailSmtp"
+      },
+      {
+        "group": "sendEmailSmtp"
+      },
+      {
+        "group": "sendEmailSmtp"
+      },
+      {
+        "group": "sendEmailSmtp"
+      },
+      {
+        "group": "sendEmailSmtp"
+      },
+      {
+        "group": "sendEmailSmtp"
+      },
+      {
+        "group": "sendEmailSmtp"
+      },
+      {
+        "group": "sendEmailSmtp"
+      },
+      {
+        "group": "listEmailsPop3",
+        "tooltip": "Enter the maximum number of emails to be read from the specified folder. This limits the number of emails fetched to avoid performance issues with large mailboxes. The default value is set to 100."
+      },
+      {
+        "group": "listEmailsPop3",
+        "tooltip": "Choose the criterion by which the listed emails should be sorted. The default sorting is by 'Sent Date'."
+      },
+      {
+        "group": "listEmailsPop3",
+        "tooltip": "Select the sort order for the emails. Choose 'ASC' for ascending order or 'DESC' for descending order. Ascending order will list older emails first, while descending order will list newer emails first. The default sort order is 'ASC'."
+      },
+      {
+        "group": "searchEmailsPop3",
+        "tooltip": "Define the search criteria using supported keywords and syntax to filter emails. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/email/\">Email connector search syntax</a>."
+      },
+      {
+        "group": "deleteEmailPop3",
+        "tooltip": "The ID of the message, typically returned by a previous email task."
+      },
+      {
+        "group": "readEmailPop3",
+        "tooltip": "ID of the message, typically returned by a previous email task."
+      },
+      {
+        "group": "listEmailsImap",
+        "tooltip": "Enter the maximum number of emails to be read from the specified folder. This limits the number of emails fetched to avoid performance issues with large mailboxes. The default value is set to 100."
+      },
+      {
+        "group": "listEmailsImap",
+        "tooltip": "Specify the folder from which you want to list emails (e.g., 'INBOX', 'Sent', 'Drafts'). If left blank, emails will be listed from the default 'INBOX' folder."
+      },
+      {
+        "group": "listEmailsImap",
+        "tooltip": "Choose the criterion by which the listed emails should be sorted. The default sorting is by 'Received Date'."
+      },
+      {
+        "group": "listEmailsImap",
+        "tooltip": "Select the sort order for the emails. Choose 'ASC' for ascending order or 'DESC' for descending order. Ascending order will list older emails first, while descending order will list newer emails first. The default sort order is 'ASC'."
+      },
+      {
+        "group": "searchEmailsImap",
+        "tooltip": "Define the search criteria using supported keywords and syntax to filter emails. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/email/\">Email connector search syntax</a>."
+      },
+      {
+        "group": "searchEmailsImap",
+        "tooltip": "Folder in which to conduct the email search. If left blank, the search will default to the 'INBOX' folder. You may also specify subfolders using a dot-separated path.",
+        "placeholder": "INBOX.Archives"
+      },
+      {
+        "group": "readEmailImap",
+        "tooltip": "The ID of the message, typically returned by a previous email task."
+      },
+      {
+        "group": "readEmailImap",
+        "tooltip": "Enter the name of the folder from which you wish to read emails. If left blank, emails will be read from the default 'INBOX' folder."
+      },
+      {
+        "group": "deleteEmailImap",
+        "tooltip": "The ID of the message, typically returned by a previous email task."
+      },
+      {
+        "group": "deleteEmailImap",
+        "tooltip": "Specify the name of the folder from which you want to delete emails. If left blank, the default 'INBOX' will be used. For example, you can enter 'Trash' to delete emails from the Trash folder."
+      },
+      {
+        "group": "moveEmailImap",
+        "tooltip": "The ID of the message, typically returned by a previous email task."
+      },
+      {
+        "group": "moveEmailImap",
+        "tooltip": "Enter the name of the folder from which the emails will be moved. This field is required. For example, enter 'INBOX' to move emails from your Inbox."
+      },
+      {
+        "group": "moveEmailImap",
+        "tooltip": "Specify the destination folder to which the emails will be moved. To create a new folder or a hierarchy of folders, use a dot-separated path (e.g., 'Archive' or 'Projects.2023.January'). If any part of the path does not exist, it will be created automatically."
       },
       {
         "group": "protocol",
@@ -10329,113 +15700,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Select the encryption protocol for email security."
       },
       {
-        "group": "smtpAction"
+        "group": "connector"
       },
       {
-        "group": "pop3Action"
-      },
-      {
-        "group": "imapAction"
-      },
-      {
-        "group": "sendEmailSmtp",
-        "tooltip": "Address the email will be sent from"
-      },
-      {
-        "group": "sendEmailSmtp",
-        "tooltip": "Comma-separated list of email, e.g., 'email1@domain.com,email2@domain.com' or '=[ \"email1@domain.com\", \"email2@domain.com\"]'"
-      },
-      {
-        "group": "sendEmailSmtp",
-        "tooltip": "Comma-separated list of email, e.g., 'email1@domain.com,email2@domain.com' or '=[ \"email1@domain.com\", \"email2@domain.com\"]'"
-      },
-      {
-        "group": "sendEmailSmtp",
-        "tooltip": "Comma-separated list of email, e.g., 'email1@domain.com,email2@domain.com' or '=[ \"email1@domain.com\", \"email2@domain.com\"]'"
-      },
-      {
-        "group": "sendEmailSmtp",
-        "tooltip": "Email's subject"
-      },
-      {
-        "group": "sendEmailSmtp",
-        "tooltip": "Email's content"
-      },
-      {
-        "group": "listEmailsPop3",
-        "tooltip": "Enter the maximum number of emails to be read from the specified folder. This limits the number of emails fetched to avoid performance issues with large mailboxes. The default value is set to 100."
-      },
-      {
-        "group": "listEmailsPop3",
-        "tooltip": "Choose the criterion by which the listed emails should be sorted. The default sorting is by 'Sent Date'."
-      },
-      {
-        "group": "listEmailsPop3",
-        "tooltip": "Select the sort order for the emails. Choose 'ASC' for ascending order or 'DESC' for descending order. Ascending order will list older emails first, while descending order will list newer emails first. The default sort order is 'ASC'."
-      },
-      {
-        "group": "searchEmailsPop3",
-        "tooltip": "Define the search criteria using supported keywords and syntax to filter emails."
-      },
-      {
-        "group": "deleteEmailPop3",
-        "tooltip": "The ID of the message, typically returned by a previous email task."
-      },
-      {
-        "group": "readEmailPop3",
-        "tooltip": "The ID of the message, typically returned by a previous email task. Warning: reading an email using POP3 will delete it"
-      },
-      {
-        "group": "listEmailsImap",
-        "tooltip": "Enter the maximum number of emails to be read from the specified folder. This limits the number of emails fetched to avoid performance issues with large mailboxes. The default value is set to 100."
-      },
-      {
-        "group": "listEmailsImap",
-        "tooltip": "Specify the folder from which you want to list emails (e.g., 'INBOX', 'Sent', 'Drafts'). If left blank, emails will be listed from the default 'INBOX' folder."
-      },
-      {
-        "group": "listEmailsImap",
-        "tooltip": "Choose the criterion by which the listed emails should be sorted. The default sorting is by 'Received Date'."
-      },
-      {
-        "group": "listEmailsImap",
-        "tooltip": "Select the sort order for the emails. Choose 'ASC' for ascending order or 'DESC' for descending order. Ascending order will list older emails first, while descending order will list newer emails first. The default sort order is 'ASC'."
-      },
-      {
-        "group": "searchEmailsImap",
-        "tooltip": "Define the search criteria using supported keywords and syntax to filter emails."
-      },
-      {
-        "group": "searchEmailsImap",
-        "tooltip": "Specify the folder in which to conduct the email search. If left blank, the search will default to the 'INBOX' folder. You may also specify subfolders using a dot-separated path (e.g., 'INBOX.Archives')."
-      },
-      {
-        "group": "readEmailImap",
-        "tooltip": "The ID of the message, typically returned by a previous email task."
-      },
-      {
-        "group": "readEmailImap",
-        "tooltip": "Enter the name of the folder from which you wish to read emails. If left blank, emails will be read from the default 'INBOX' folder."
-      },
-      {
-        "group": "deleteEmailImap",
-        "tooltip": "The ID of the message, typically returned by a previous email task."
-      },
-      {
-        "group": "deleteEmailImap",
-        "tooltip": "Specify the name of the folder from which you want to delete emails. If left blank, the default 'INBOX' will be used. For example, you can enter 'Trash' to delete emails from the Trash folder."
-      },
-      {
-        "group": "moveEmailImap",
-        "tooltip": "The ID of the message, typically returned by a previous email task."
-      },
-      {
-        "group": "moveEmailImap",
-        "tooltip": "Enter the name of the folder from which the emails will be moved. This field is required. For example, enter 'INBOX' to move emails from your Inbox."
-      },
-      {
-        "group": "moveEmailImap",
-        "tooltip": "Specify the destination folder to which the emails will be moved. To create a new folder or a hierarchy of folders, use a dot-separated path (e.g., 'Archive' or 'Projects.2023.January'). If any part of the path does not exist, it will be created automatically."
+        "group": "connector"
       },
       {
         "group": "output"
@@ -10445,6 +15713,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -10464,23 +15735,22 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       "groups": [
         {
           "id": "subscription",
-          "label": "Subscription configuration"
+          "label": "Subscription Configuration"
         },
         {
           "id": "activation",
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 80 80' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 64 (93537) - https://sketch.com --%3E%3Ctitle%3EIcon-Architecture/64/Arch_AWS-Simple-Notification-Service_64%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3ClinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='linearGradient-1'%3E%3Cstop stop-color='%23B0084D' offset='0%25'%3E%3C/stop%3E%3Cstop stop-color='%23FF4F8B' offset='100%25'%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Cg id='Icon-Architecture/64/Arch_AWS-Simple-Notification-Service_64' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Icon-Architecture-BG/64/Application-Integration' fill='url(%23linearGradient-1)'%3E%3Crect id='Rectangle' x='0' y='0' width='80' height='80'%3E%3C/rect%3E%3C/g%3E%3Cpath d='M17,38 C18.103,38 19,38.897 19,40 C19,41.103 18.103,42 17,42 C15.897,42 15,41.103 15,40 C15,38.897 15.897,38 17,38 L17,38 Z M41,64 C29.314,64 19.289,55.466 17.194,43.98 C18.965,43.894 20.427,42.659 20.857,41 L27,41 L27,39 L20.857,39 C20.427,37.342 18.966,36.107 17.195,36.02 C19.285,24.71 29.511,16 41,16 C45.313,16 49.832,17.622 54.429,20.821 L55.571,19.179 C50.633,15.743 45.73,14 41,14 C28.27,14 16.949,23.865 15.063,36.521 C13.839,37.207 13,38.5 13,40 C13,41.5 13.839,42.793 15.063,43.478 C16.97,56.341 28.056,66 41,66 C46.407,66 51.942,64.157 56.585,60.811 L55.415,59.189 C51.11,62.292 45.991,64 41,64 L41,64 Z M30.101,36.442 C31.955,36.895 34.275,37 36,37 C37.642,37 39.823,36.905 41.629,36.506 L37.105,45.553 C37.036,45.691 37,45.845 37,46 L37,50.453 C36.199,50.964 34.833,51.812 34,51.986 L34,46 C34,45.868 33.974,45.737 33.923,45.615 L30.101,36.442 Z M36,33 C40.025,33 42.174,33.604 42.841,34 C42.174,34.396 40.025,35 36,35 C31.975,35 29.826,34.396 29.159,34 C29.826,33.604 31.975,33 36,33 L36,33 Z M33,54 L34,54 C34.043,54 34.086,53.997 34.128,53.992 C35.352,53.833 36.909,52.887 38.272,52.013 L38.535,51.845 C38.824,51.661 39,51.342 39,51 L39,46.236 L44.559,35.12 C44.833,34.801 45,34.434 45,34 C45,31.39 39.361,31 36,31 C32.639,31 27,31.39 27,34 C27,34.366 27.12,34.684 27.32,34.967 L32,46.2 L32,53 C32,53.552 32.447,54 33,54 L33,54 Z M62,53 C63.103,53 64,53.897 64,55 C64,56.103 63.103,57 62,57 C60.897,57 60,56.103 60,55 C60,53.897 60.897,53 62,53 L62,53 Z M62,23 C63.103,23 64,23.897 64,25 C64,26.103 63.103,27 62,27 C60.897,27 60,26.103 60,25 C60,23.897 60.897,23 62,23 L62,23 Z M64,38 C65.103,38 66,38.897 66,40 C66,41.103 65.103,42 64,42 C62.897,42 62,41.103 62,40 C62,38.897 62.897,38 64,38 L64,38 Z M54,41 L60.143,41 C60.589,42.72 62.142,44 64,44 C66.206,44 68,42.206 68,40 C68,37.794 66.206,36 64,36 C62.142,36 60.589,37.28 60.143,39 L54,39 L54,26 L58.143,26 C58.589,27.72 60.142,29 62,29 C64.206,29 66,27.206 66,25 C66,22.794 64.206,21 62,21 C60.142,21 58.589,22.28 58.143,24 L53,24 C52.447,24 52,24.448 52,25 L52,39 L45,39 L45,41 L52,41 L52,55 C52,55.552 52.447,56 53,56 L58.143,56 C58.589,57.72 60.142,59 62,59 C64.206,59 66,57.206 66,55 C66,52.794 64.206,51 62,51 C60.142,51 58.589,52.28 58.143,54 L54,54 L54,41 Z' id='AWS-Simple-Notification-Service_Icon_64_Squid' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCA4MCA4MCcgdmVyc2lvbj0nMS4xJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnCiAgICAgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPjwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggNjQgKDkzNTM3KSAtIGh0dHBzOi8vc2tldGNoLmNvbSAtLT4KICAgIDx0aXRsZT5JY29uLUFyY2hpdGVjdHVyZS82NC9BcmNoX0FXUy1TaW1wbGUtTm90aWZpY2F0aW9uLVNlcnZpY2VfNjQ8L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+CiAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgeDE9JzAlJyB5MT0nMTAwJScgeDI9JzEwMCUnIHkyPScwJScgaWQ9J2xpbmVhckdyYWRpZW50LTEnPgogICAgICAgICAgICA8c3RvcCBzdG9wLWNvbG9yPScjQjAwODREJyBvZmZzZXQ9JzAlJz48L3N0b3A+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9JyNGRjRGOEInIG9mZnNldD0nMTAwJSc+PC9zdG9wPgogICAgICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8L2RlZnM+CiAgICA8ZyBpZD0nSWNvbi1BcmNoaXRlY3R1cmUvNjQvQXJjaF9BV1MtU2ltcGxlLU5vdGlmaWNhdGlvbi1TZXJ2aWNlXzY0JyBzdHJva2U9J25vbmUnIHN0cm9rZS13aWR0aD0nMScgZmlsbD0nbm9uZScKICAgICAgIGZpbGwtcnVsZT0nZXZlbm9kZCc+CiAgICAgICAgPGcgaWQ9J0ljb24tQXJjaGl0ZWN0dXJlLUJHLzY0L0FwcGxpY2F0aW9uLUludGVncmF0aW9uJyBmaWxsPSd1cmwoI2xpbmVhckdyYWRpZW50LTEpJz4KICAgICAgICAgICAgPHJlY3QgaWQ9J1JlY3RhbmdsZScgeD0nMCcgeT0nMCcgd2lkdGg9JzgwJyBoZWlnaHQ9JzgwJz48L3JlY3Q+CiAgICAgICAgPC9nPgogICAgICAgIDxwYXRoIGQ9J00xNywzOCBDMTguMTAzLDM4IDE5LDM4Ljg5NyAxOSw0MCBDMTksNDEuMTAzIDE4LjEwMyw0MiAxNyw0MiBDMTUuODk3LDQyIDE1LDQxLjEwMyAxNSw0MCBDMTUsMzguODk3IDE1Ljg5NywzOCAxNywzOCBMMTcsMzggWiBNNDEsNjQgQzI5LjMxNCw2NCAxOS4yODksNTUuNDY2IDE3LjE5NCw0My45OCBDMTguOTY1LDQzLjg5NCAyMC40MjcsNDIuNjU5IDIwLjg1Nyw0MSBMMjcsNDEgTDI3LDM5IEwyMC44NTcsMzkgQzIwLjQyNywzNy4zNDIgMTguOTY2LDM2LjEwNyAxNy4xOTUsMzYuMDIgQzE5LjI4NSwyNC43MSAyOS41MTEsMTYgNDEsMTYgQzQ1LjMxMywxNiA0OS44MzIsMTcuNjIyIDU0LjQyOSwyMC44MjEgTDU1LjU3MSwxOS4xNzkgQzUwLjYzMywxNS43NDMgNDUuNzMsMTQgNDEsMTQgQzI4LjI3LDE0IDE2Ljk0OSwyMy44NjUgMTUuMDYzLDM2LjUyMSBDMTMuODM5LDM3LjIwNyAxMywzOC41IDEzLDQwIEMxMyw0MS41IDEzLjgzOSw0Mi43OTMgMTUuMDYzLDQzLjQ3OCBDMTYuOTcsNTYuMzQxIDI4LjA1Niw2NiA0MSw2NiBDNDYuNDA3LDY2IDUxLjk0Miw2NC4xNTcgNTYuNTg1LDYwLjgxMSBMNTUuNDE1LDU5LjE4OSBDNTEuMTEsNjIuMjkyIDQ1Ljk5MSw2NCA0MSw2NCBMNDEsNjQgWiBNMzAuMTAxLDM2LjQ0MiBDMzEuOTU1LDM2Ljg5NSAzNC4yNzUsMzcgMzYsMzcgQzM3LjY0MiwzNyAzOS44MjMsMzYuOTA1IDQxLjYyOSwzNi41MDYgTDM3LjEwNSw0NS41NTMgQzM3LjAzNiw0NS42OTEgMzcsNDUuODQ1IDM3LDQ2IEwzNyw1MC40NTMgQzM2LjE5OSw1MC45NjQgMzQuODMzLDUxLjgxMiAzNCw1MS45ODYgTDM0LDQ2IEMzNCw0NS44NjggMzMuOTc0LDQ1LjczNyAzMy45MjMsNDUuNjE1IEwzMC4xMDEsMzYuNDQyIFogTTM2LDMzIEM0MC4wMjUsMzMgNDIuMTc0LDMzLjYwNCA0Mi44NDEsMzQgQzQyLjE3NCwzNC4zOTYgNDAuMDI1LDM1IDM2LDM1IEMzMS45NzUsMzUgMjkuODI2LDM0LjM5NiAyOS4xNTksMzQgQzI5LjgyNiwzMy42MDQgMzEuOTc1LDMzIDM2LDMzIEwzNiwzMyBaIE0zMyw1NCBMMzQsNTQgQzM0LjA0Myw1NCAzNC4wODYsNTMuOTk3IDM0LjEyOCw1My45OTIgQzM1LjM1Miw1My44MzMgMzYuOTA5LDUyLjg4NyAzOC4yNzIsNTIuMDEzIEwzOC41MzUsNTEuODQ1IEMzOC44MjQsNTEuNjYxIDM5LDUxLjM0MiAzOSw1MSBMMzksNDYuMjM2IEw0NC41NTksMzUuMTIgQzQ0LjgzMywzNC44MDEgNDUsMzQuNDM0IDQ1LDM0IEM0NSwzMS4zOSAzOS4zNjEsMzEgMzYsMzEgQzMyLjYzOSwzMSAyNywzMS4zOSAyNywzNCBDMjcsMzQuMzY2IDI3LjEyLDM0LjY4NCAyNy4zMiwzNC45NjcgTDMyLDQ2LjIgTDMyLDUzIEMzMiw1My41NTIgMzIuNDQ3LDU0IDMzLDU0IEwzMyw1NCBaIE02Miw1MyBDNjMuMTAzLDUzIDY0LDUzLjg5NyA2NCw1NSBDNjQsNTYuMTAzIDYzLjEwMyw1NyA2Miw1NyBDNjAuODk3LDU3IDYwLDU2LjEwMyA2MCw1NSBDNjAsNTMuODk3IDYwLjg5Nyw1MyA2Miw1MyBMNjIsNTMgWiBNNjIsMjMgQzYzLjEwMywyMyA2NCwyMy44OTcgNjQsMjUgQzY0LDI2LjEwMyA2My4xMDMsMjcgNjIsMjcgQzYwLjg5NywyNyA2MCwyNi4xMDMgNjAsMjUgQzYwLDIzLjg5NyA2MC44OTcsMjMgNjIsMjMgTDYyLDIzIFogTTY0LDM4IEM2NS4xMDMsMzggNjYsMzguODk3IDY2LDQwIEM2Niw0MS4xMDMgNjUuMTAzLDQyIDY0LDQyIEM2Mi44OTcsNDIgNjIsNDEuMTAzIDYyLDQwIEM2MiwzOC44OTcgNjIuODk3LDM4IDY0LDM4IEw2NCwzOCBaIE01NCw0MSBMNjAuMTQzLDQxIEM2MC41ODksNDIuNzIgNjIuMTQyLDQ0IDY0LDQ0IEM2Ni4yMDYsNDQgNjgsNDIuMjA2IDY4LDQwIEM2OCwzNy43OTQgNjYuMjA2LDM2IDY0LDM2IEM2Mi4xNDIsMzYgNjAuNTg5LDM3LjI4IDYwLjE0MywzOSBMNTQsMzkgTDU0LDI2IEw1OC4xNDMsMjYgQzU4LjU4OSwyNy43MiA2MC4xNDIsMjkgNjIsMjkgQzY0LjIwNiwyOSA2NiwyNy4yMDYgNjYsMjUgQzY2LDIyLjc5NCA2NC4yMDYsMjEgNjIsMjEgQzYwLjE0MiwyMSA1OC41ODksMjIuMjggNTguMTQzLDI0IEw1MywyNCBDNTIuNDQ3LDI0IDUyLDI0LjQ0OCA1MiwyNSBMNTIsMzkgTDQ1LDM5IEw0NSw0MSBMNTIsNDEgTDUyLDU1IEM1Miw1NS41NTIgNTIuNDQ3LDU2IDUzLDU2IEw1OC4xNDMsNTYgQzU4LjU4OSw1Ny43MiA2MC4xNDIsNTkgNjIsNTkgQzY0LjIwNiw1OSA2Niw1Ny4yMDYgNjYsNTUgQzY2LDUyLjc5NCA2NC4yMDYsNTEgNjIsNTEgQzYwLjE0Miw1MSA1OC41ODksNTIuMjggNTguMTQzLDU0IEw1NCw1NCBMNTQsNDEgWicKICAgICAgICAgICAgICBpZD0nQVdTLVNpbXBsZS1Ob3RpZmljYXRpb24tU2VydmljZV9JY29uXzY0X1NxdWlkJyBmaWxsPScjRkZGRkZGJz48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg=="
       }
     },
     "properties": [
-      {},
       {},
       {
         "group": "subscription"
@@ -10495,10 +15765,663 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "activation"
       },
       {
-        "group": "variable-mapping"
+        "group": "output"
       },
       {
-        "group": "variable-mapping"
+        "group": "output"
+      }
+    ]
+  },
+  "io.camunda.connectors.agenticai.ai-agent-subprocess.v2": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "aiTools",
+        "name": "AI Tools"
+      },
+      "groups": [
+        {
+          "id": "provider",
+          "label": "Model provider",
+          "openByDefault": false
+        },
+        {
+          "id": "advanced-provider-options",
+          "label": "Advanced provider options",
+          "tooltip": "Advanced options for fine-tuning the connection to the model provider.",
+          "openByDefault": false
+        },
+        {
+          "id": "model",
+          "label": "Model",
+          "openByDefault": false
+        },
+        {
+          "id": "model-options",
+          "label": "Model options",
+          "openByDefault": false
+        },
+        {
+          "id": "systemPrompt",
+          "label": "System prompt",
+          "tooltip": "A system prompt is a set of foundational instructions given to a model before any user interaction begins. It defines the AI agent’s role, behavior, tone, and communication style, ensuring that responses remain consistent and aligned with the AI agent’s intended purpose. These instructions help shape how the model interprets and responds to user input throughout the conversation.",
+          "openByDefault": false
+        },
+        {
+          "id": "userPrompt",
+          "label": "User prompt",
+          "tooltip": "A user prompt is the message or question you give to the AI to start or continue a conversation. It tells the AI what you need, whether it's information, help with a task, or just a chat. The AI uses your prompt to understand how to respond.",
+          "openByDefault": false
+        },
+        {
+          "id": "tools",
+          "label": "Tools",
+          "tooltip": "Tools are optional features the AI Agent can use to perform specific tasks. Configure this if the agent should participate in a tools feedback loop.",
+          "openByDefault": false
+        },
+        {
+          "id": "memory",
+          "label": "Memory",
+          "tooltip": "Configuration of the Agent's short-term/conversational memory.",
+          "openByDefault": false
+        },
+        {
+          "id": "limits",
+          "label": "Limits",
+          "openByDefault": false
+        },
+        {
+          "id": "events",
+          "label": "Event handling",
+          "tooltip": "Configure how event sub-process results are handled. Results are added as user messages to the running agent.",
+          "openByDefault": false
+        },
+        {
+          "id": "response",
+          "label": "Response",
+          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/#response\">documentation</a> for details.",
+          "openByDefault": false
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
+          "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNBNTZFRkYiLz4KPG1hc2sgaWQ9InBhdGgtMi1vdXRzaWRlLTFfMTg1XzYiIG1hc2tVbml0cz0idXNlclNwYWNlT25Vc2UiIHg9IjQiIHk9IjQiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0iYmxhY2siPgo8cmVjdCBmaWxsPSJ3aGl0ZSIgeD0iNCIgeT0iNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ii8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMDEwNSAxMi4wOTg3QzE4LjQ5IDEwLjU4OTQgMTcuMTU5NCA4LjEwODE0IDE2LjE3OTkgNi4wMTEwM0MxNi4xNTIgNi4wMDQ1MSAxNi4xMTc2IDYgMTYuMDc5NCA2QzE2LjA0MTEgNiAxNi4wMDY2IDYuMDA0NTEgMTUuOTc4OCA2LjAxMTA0QzE0Ljk5OTQgOC4xMDgxNCAxMy42Njk3IDEwLjU4ODkgMTIuMTQ4MSAxMi4wOTgxQzEwLjYyNjkgMTMuNjA3MSA4LjEyNTY4IDE0LjkyNjQgNi4wMTE1NyAxNS44OTgxQzYuMDA0NzQgMTUuOTI2MSA2IDE1Ljk2MTEgNiAxNkM2IDE2LjAzODcgNi4wMDQ2OCAxNi4wNzM2IDYuMDExNDQgMTYuMTAxNEM4LjEyNTE5IDE3LjA3MjkgMTAuNjI2MiAxOC4zOTE5IDEyLjE0NzcgMTkuOTAxNkMxMy42Njk3IDIxLjQxMDcgMTQuOTk5NiAyMy44OTIgMTUuOTc5MSAyNS45ODlDMTYuMDA2OCAyNS45OTU2IDE2LjA0MTEgMjYgMTYuMDc5MyAyNkMxNi4xMTc1IDI2IDE2LjE1MTkgMjUuOTk1NCAxNi4xNzk2IDI1Ljk4OUMxNy4xNTkxIDIzLjg5MiAxOC40ODg4IDIxLjQxMSAyMC4wMDk5IDE5LjkwMjFNMjAuMDA5OSAxOS45MDIxQzIxLjUyNTMgMTguMzk4NyAyMy45NDY1IDE3LjA2NjkgMjUuOTkxNSAxNi4wODI0QzI1Ljk5NjUgMTYuMDU5MyAyNiAxNi4wMzEgMjYgMTUuOTk5N0MyNiAxNS45Njg0IDI1Ljk5NjUgMTUuOTQwMyAyNS45OTE1IDE1LjkxNzFDMjMuOTQ3NCAxNC45MzI3IDIxLjUyNTkgMTMuNjAxIDIwLjAxMDUgMTIuMDk4NyIvPgo8L21hc2s+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMDEwNSAxMi4wOTg3QzE4LjQ5IDEwLjU4OTQgMTcuMTU5NCA4LjEwODE0IDE2LjE3OTkgNi4wMTEwM0MxNi4xNTIgNi4wMDQ1MSAxNi4xMTc2IDYgMTYuMDc5NCA2QzE2LjA0MTEgNiAxNi4wMDY2IDYuMDA0NTEgMTUuOTc4OCA2LjAxMTA0QzE0Ljk5OTQgOC4xMDgxNCAxMy42Njk3IDEwLjU4ODkgMTIuMTQ4MSAxMi4wOTgxQzEwLjYyNjkgMTMuNjA3MSA4LjEyNTY4IDE0LjkyNjQgNi4wMTE1NyAxNS44OTgxQzYuMDA0NzQgMTUuOTI2MSA2IDE1Ljk2MTEgNiAxNkM2IDE2LjAzODcgNi4wMDQ2OCAxNi4wNzM2IDYuMDExNDQgMTYuMTAxNEM4LjEyNTE5IDE3LjA3MjkgMTAuNjI2MiAxOC4zOTE5IDEyLjE0NzcgMTkuOTAxNkMxMy42Njk3IDIxLjQxMDcgMTQuOTk5NiAyMy44OTIgMTUuOTc5MSAyNS45ODlDMTYuMDA2OCAyNS45OTU2IDE2LjA0MTEgMjYgMTYuMDc5MyAyNkMxNi4xMTc1IDI2IDE2LjE1MTkgMjUuOTk1NCAxNi4xNzk2IDI1Ljk4OUMxNy4xNTkxIDIzLjg5MiAxOC40ODg4IDIxLjQxMSAyMC4wMDk5IDE5LjkwMjFNMjAuMDA5OSAxOS45MDIxQzIxLjUyNTMgMTguMzk4NyAyMy45NDY1IDE3LjA2NjkgMjUuOTkxNSAxNi4wODI0QzI1Ljk5NjUgMTYuMDU5MyAyNiAxNi4wMzEgMjYgMTUuOTk5N0MyNiAxNS45Njg0IDI1Ljk5NjUgMTUuOTQwMyAyNS45OTE1IDE1LjkxNzFDMjMuOTQ3NCAxNC45MzI3IDIxLjUyNTkgMTMuNjAxIDIwLjAxMDUgMTIuMDk4NyIgZmlsbD0id2hpdGUiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yMC4wMTA1IDEyLjA5ODdDMTguNDkgMTAuNTg5NCAxNy4xNTk0IDguMTA4MTQgMTYuMTc5OSA2LjAxMTAzQzE2LjE1MiA2LjAwNDUxIDE2LjExNzYgNiAxNi4wNzk0IDZDMTYuMDQxMSA2IDE2LjAwNjYgNi4wMDQ1MSAxNS45Nzg4IDYuMDExMDRDMTQuOTk5NCA4LjEwODE0IDEzLjY2OTcgMTAuNTg4OSAxMi4xNDgxIDEyLjA5ODFDMTAuNjI2OSAxMy42MDcxIDguMTI1NjggMTQuOTI2NCA2LjAxMTU3IDE1Ljg5ODFDNi4wMDQ3NCAxNS45MjYxIDYgMTUuOTYxMSA2IDE2QzYgMTYuMDM4NyA2LjAwNDY4IDE2LjA3MzYgNi4wMTE0NCAxNi4xMDE0QzguMTI1MTkgMTcuMDcyOSAxMC42MjYyIDE4LjM5MTkgMTIuMTQ3NyAxOS45MDE2QzEzLjY2OTcgMjEuNDEwNyAxNC45OTk2IDIzLjg5MiAxNS45NzkxIDI1Ljk4OUMxNi4wMDY4IDI1Ljk5NTYgMTYuMDQxMSAyNiAxNi4wNzkzIDI2QzE2LjExNzUgMjYgMTYuMTUxOSAyNS45OTU0IDE2LjE3OTYgMjUuOTg5QzE3LjE1OTEgMjMuODkyIDE4LjQ4ODggMjEuNDExIDIwLjAwOTkgMTkuOTAyMU0yMC4wMDk5IDE5LjkwMjFDMjEuNTI1MyAxOC4zOTg3IDIzLjk0NjUgMTcuMDY2OSAyNS45OTE1IDE2LjA4MjRDMjUuOTk2NSAxNi4wNTkzIDI2IDE2LjAzMSAyNiAxNS45OTk3QzI2IDE1Ljk2ODQgMjUuOTk2NSAxNS45NDAzIDI1Ljk5MTUgMTUuOTE3MUMyMy45NDc0IDE0LjkzMjcgMjEuNTI1OSAxMy42MDEgMjAuMDEwNSAxMi4wOTg3IiBzdHJva2U9IiM0OTFEOEIiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgbWFzaz0idXJsKCNwYXRoLTItb3V0c2lkZS0xXzE4NV82KSIvPgo8L3N2Zz4K"
+      }
+    },
+    "properties": [
+      {},
+      {},
+      {},
+      {},
+      {},
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The full resource endpoint, e.g. <code>https://your-resource.services.ai.azure.com</code>.",
+        "placeholder": "https://your-resource.services.ai.azure.com"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "<code>/v1/messages</code> is appended automatically.",
+        "placeholder": "https://api.anthropic.com"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The OAuth token endpoint"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The unique identifier of the target API you want to access"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Send client ID and client secret as Basic Auth request in the header, or as client credentials in the request body"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The scopes which you want to request authorization for (e.g., read:contacts)"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The full resource endpoint, e.g. <code>https://your-resource.openai.azure.com</code> or a Foundry endpoint such as <code>https://your-resource.services.ai.azure.com</code>.",
+        "placeholder": "https://your-resource.openai.azure.com"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "placeholder": "https://api.openai.com/v1"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The OAuth token endpoint"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The unique identifier of the target API you want to access"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Send client ID and client secret as Basic Auth request in the header, or as client credentials in the request body"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The scopes which you want to request authorization for (e.g., read:contacts)"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Must match the identifier configured for the custom implementation."
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "model",
+        "tooltip": "Specify the model ID. On the Microsoft Foundry backend, enter the deployment name instead. It defaults to the model ID, but can be chosen freely when the deployment is created. See the <a href=\"https://docs.anthropic.com/en/docs/about-claude/models/all-models\" target=\"_blank\">models documentation</a>.",
+        "placeholder": "claude-sonnet-5"
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls how many tokens the model spends when responding, trading thoroughness against speed and cost. Not supported on all models.<br><br>See the <a href=\"https://platform.claude.com/docs/en/build-with-claude/effort\" target=\"_blank\">effort documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Extended thinking mechanism.<br><br><code>enabled</code> uses a manual token budget (older models). <code>adaptive</code> is managed by the model (newer models). <code>disabled</code> turns it off.<br><br>Support varies by model."
+      },
+      {
+        "group": "model",
+        "tooltip": "Maximum number of tokens the model may spend on extended thinking (minimum 1024)."
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls how the model's extended thinking is returned. <code>summarized</code> includes a plain-text summary of the thinking in the response. <code>omitted</code> leaves it out."
+      },
+      {
+        "group": "model",
+        "tooltip": "Enables Anthropic automatic prompt caching. See the <a href=\"https://platform.claude.com/docs/en/build-with-claude/prompt-caching#automatic-caching\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Specify the model ID or inference profile ID. See the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html\" target=\"_blank\">model and inference profile documentation</a>.",
+        "placeholder": "us.amazon.nova-2-lite-v1:0"
+      },
+      {
+        "group": "model",
+        "tooltip": "Enables AWS Bedrock automatic prompt caching. See the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Specify the model ID. On the Microsoft Foundry backend, enter the deployment name instead. It defaults to the model ID, but can be chosen freely when the deployment is created. Some features, like prompt caching, may be managed by the model provider. See the <a href=\"https://platform.openai.com/docs/models\" target=\"_blank\">models documentation</a>.",
+        "placeholder": "gpt-5.5"
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls how many tokens the model spends when responding, trading thoroughness against speed and cost. Not supported on all models.<br><br>See the <a href=\"https://developers.openai.com/api/reference/resources/responses/methods/create\" target=\"_blank\">Responses API reference</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls how many tokens the model spends when responding, trading thoroughness against speed and cost. Not supported on all models.<br><br>See the <a href=\"https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create\" target=\"_blank\">Chat Completions API reference</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Specify the model ID. Some features, like prompt caching, may be managed by the model provider. See the <a href=\"https://ai.google.dev/gemini-api/docs/models\" target=\"_blank\">models documentation</a>.",
+        "placeholder": "gemini-3-pro-preview"
+      },
+      {
+        "group": "model",
+        "tooltip": "Gemini 2.5 models: token budget for extended thinking. -1 = dynamic, 0 = disabled. Mutually exclusive with Thinking level (Gemini 3.x). <br><br>Details in the <a href=\"https://ai.google.dev/gemini-api/docs/thinking\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Gemini 3.x models: qualitative thinking effort. \"default\" lets the model choose its own reasoning depth. Mutually exclusive with Thinking budget (Gemini 2.5). <br><br>Details in the <a href=\"https://ai.google.dev/gemini-api/docs/thinking\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Specify the model ID."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-max-tokens\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 1. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-temperature\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 1. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-top-p\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Integer greater than 0. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-top-k\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. Leave unset to use the model default."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number. The higher the number, the more randomness will be injected into the response. Supported ranges vary by model."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 1. Recommended for advanced use cases only (you usually only need to use temperature)."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://developers.openai.com/api/reference/resources/responses/methods/create\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 2. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://developers.openai.com/api/reference/resources/responses/methods/create\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://developers.openai.com/api/reference/resources/responses/methods/create\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 2. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens to generate before stopping. <br><br>Details in the <a href=\"https://ai.google.dev/api/generate-content#v1beta.GenerationConfig\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Controls the randomness of the output. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://ai.google.dev/api/generate-content#v1beta.GenerationConfig\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 1. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://ai.google.dev/api/generate-content#v1beta.GenerationConfig\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Integer greater than 0. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://ai.google.dev/api/generate-content#v1beta.GenerationConfig\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "systemPrompt"
+      },
+      {
+        "group": "userPrompt"
+      },
+      {
+        "group": "userPrompt",
+        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details and supported file types."
+      },
+      {
+        "group": "memory",
+        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory",
+        "tooltip": "Will use the cluster default TTL (time-to-live) if not specified. Make sure to set this value to a reasonable duration matching your process lifecycle."
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory",
+        "tooltip": "Must match the identifier configured for the custom implementation."
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory",
+        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
+      },
+      {
+        "group": "limits"
+      },
+      {
+        "group": "events"
+      },
+      {
+        "group": "response"
+      },
+      {
+        "group": "response",
+        "tooltip": "Use this option in combination with models which don't support native JSON mode/structured tool calling (e.g. Anthropic). Make sure to instruct the model to return valid JSON in the system prompt. The parsed JSON will be available as <code>response.responseJson</code>.<br><br>If parsing fails, <code>null</code> will be returned as JSON response, but the text content will still be available as <code>response.responseText</code>."
+      },
+      {
+        "group": "response",
+        "tooltip": "If supported by the model, the response will be structured according to the provided schema. A parsed version of the response will be available as <code>response.responseJson</code>."
+      },
+      {
+        "group": "response"
+      },
+      {
+        "group": "response",
+        "tooltip": "In addition to the text content, the assistant message may include multiple additional content blocks and metadata (such as token usage). The message will be available as <code>response.responseMessage</code>."
+      },
+      {
+        "group": "response",
+        "tooltip": "Use this option if you need to re-inject the previous agent context into a future agent execution, for example when modeling a user feedback loop between an agent and a user task."
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -10512,11 +16435,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       "groups": [
         {
           "id": "authentication",
-          "label": "Authentication"
+          "label": "Connection"
         },
         {
           "id": "kafka",
           "label": "Kafka"
+        },
+        {
+          "id": "schema",
+          "label": "Schema"
         },
         {
           "id": "activation",
@@ -10524,52 +16451,84 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         },
         {
           "id": "correlation",
-          "label": "Subprocess correlation"
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable mapping"
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg width='18' height='18' viewBox='0 0 256 416' xmlns='http://www.w3.org/2000/svg' preserveAspectRatio='xMidYMid'%3E%3Cpath d='M201.816 230.216c-16.186 0-30.697 7.171-40.634 18.461l-25.463-18.026c2.703-7.442 4.255-15.433 4.255-23.797 0-8.219-1.498-16.076-4.112-23.408l25.406-17.835c9.936 11.233 24.409 18.365 40.548 18.365 29.875 0 54.184-24.305 54.184-54.184 0-29.879-24.309-54.184-54.184-54.184-29.875 0-54.184 24.305-54.184 54.184 0 5.348.808 10.505 2.258 15.389l-25.423 17.844c-10.62-13.175-25.911-22.374-43.333-25.182v-30.64c24.544-5.155 43.037-26.962 43.037-53.019C124.171 24.305 99.862 0 69.987 0 40.112 0 15.803 24.305 15.803 54.184c0 25.708 18.014 47.246 42.067 52.769v31.038C25.044 143.753 0 172.401 0 206.854c0 34.621 25.292 63.374 58.355 68.94v32.774c-24.299 5.341-42.552 27.011-42.552 52.894 0 29.879 24.309 54.184 54.184 54.184 29.875 0 54.184-24.305 54.184-54.184 0-25.883-18.253-47.553-42.552-52.894v-32.775a69.965 69.965 0 0 0 42.6-24.776l25.633 18.143c-1.423 4.84-2.22 9.946-2.22 15.24 0 29.879 24.309 54.184 54.184 54.184 29.875 0 54.184-24.305 54.184-54.184 0-29.879-24.309-54.184-54.184-54.184zm0-126.695c14.487 0 26.27 11.788 26.27 26.271s-11.783 26.27-26.27 26.27-26.27-11.787-26.27-26.27c0-14.483 11.783-26.271 26.27-26.271zm-158.1-49.337c0-14.483 11.784-26.27 26.271-26.27s26.27 11.787 26.27 26.27c0 14.483-11.783 26.27-26.27 26.27s-26.271-11.787-26.271-26.27zm52.541 307.278c0 14.483-11.783 26.27-26.27 26.27s-26.271-11.787-26.271-26.27c0-14.483 11.784-26.27 26.271-26.27s26.27 11.787 26.27 26.27zm-26.272-117.97c-20.205 0-36.642-16.434-36.642-36.638 0-20.205 16.437-36.642 36.642-36.642 20.204 0 36.641 16.437 36.641 36.642 0 20.204-16.437 36.638-36.641 36.638zm131.831 67.179c-14.487 0-26.27-11.788-26.27-26.271s11.783-26.27 26.27-26.27 26.27 11.787 26.27 26.27c0 14.483-11.783 26.271-26.27 26.271z' style='fill:%23231f20'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCAyNTYgNDE2JyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHByZXNlcnZlQXNwZWN0UmF0aW89J3hNaWRZTWlkJz4KICAgIDxwYXRoIGQ9J00yMDEuODE2IDIzMC4yMTZjLTE2LjE4NiAwLTMwLjY5NyA3LjE3MS00MC42MzQgMTguNDYxbC0yNS40NjMtMTguMDI2YzIuNzAzLTcuNDQyIDQuMjU1LTE1LjQzMyA0LjI1NS0yMy43OTcgMC04LjIxOS0xLjQ5OC0xNi4wNzYtNC4xMTItMjMuNDA4bDI1LjQwNi0xNy44MzVjOS45MzYgMTEuMjMzIDI0LjQwOSAxOC4zNjUgNDAuNTQ4IDE4LjM2NSAyOS44NzUgMCA1NC4xODQtMjQuMzA1IDU0LjE4NC01NC4xODQgMC0yOS44NzktMjQuMzA5LTU0LjE4NC01NC4xODQtNTQuMTg0LTI5Ljg3NSAwLTU0LjE4NCAyNC4zMDUtNTQuMTg0IDU0LjE4NCAwIDUuMzQ4LjgwOCAxMC41MDUgMi4yNTggMTUuMzg5bC0yNS40MjMgMTcuODQ0Yy0xMC42Mi0xMy4xNzUtMjUuOTExLTIyLjM3NC00My4zMzMtMjUuMTgydi0zMC42NGMyNC41NDQtNS4xNTUgNDMuMDM3LTI2Ljk2MiA0My4wMzctNTMuMDE5QzEyNC4xNzEgMjQuMzA1IDk5Ljg2MiAwIDY5Ljk4NyAwIDQwLjExMiAwIDE1LjgwMyAyNC4zMDUgMTUuODAzIDU0LjE4NGMwIDI1LjcwOCAxOC4wMTQgNDcuMjQ2IDQyLjA2NyA1Mi43Njl2MzEuMDM4QzI1LjA0NCAxNDMuNzUzIDAgMTcyLjQwMSAwIDIwNi44NTRjMCAzNC42MjEgMjUuMjkyIDYzLjM3NCA1OC4zNTUgNjguOTR2MzIuNzc0Yy0yNC4yOTkgNS4zNDEtNDIuNTUyIDI3LjAxMS00Mi41NTIgNTIuODk0IDAgMjkuODc5IDI0LjMwOSA1NC4xODQgNTQuMTg0IDU0LjE4NCAyOS44NzUgMCA1NC4xODQtMjQuMzA1IDU0LjE4NC01NC4xODQgMC0yNS44ODMtMTguMjUzLTQ3LjU1My00Mi41NTItNTIuODk0di0zMi43NzVhNjkuOTY1IDY5Ljk2NSAwIDAgMCA0Mi42LTI0Ljc3NmwyNS42MzMgMTguMTQzYy0xLjQyMyA0Ljg0LTIuMjIgOS45NDYtMi4yMiAxNS4yNCAwIDI5Ljg3OSAyNC4zMDkgNTQuMTg0IDU0LjE4NCA1NC4xODQgMjkuODc1IDAgNTQuMTg0LTI0LjMwNSA1NC4xODQtNTQuMTg0IDAtMjkuODc5LTI0LjMwOS01NC4xODQtNTQuMTg0LTU0LjE4NHptMC0xMjYuNjk1YzE0LjQ4NyAwIDI2LjI3IDExLjc4OCAyNi4yNyAyNi4yNzFzLTExLjc4MyAyNi4yNy0yNi4yNyAyNi4yNy0yNi4yNy0xMS43ODctMjYuMjctMjYuMjdjMC0xNC40ODMgMTEuNzgzLTI2LjI3MSAyNi4yNy0yNi4yNzF6bS0xNTguMS00OS4zMzdjMC0xNC40ODMgMTEuNzg0LTI2LjI3IDI2LjI3MS0yNi4yN3MyNi4yNyAxMS43ODcgMjYuMjcgMjYuMjdjMCAxNC40ODMtMTEuNzgzIDI2LjI3LTI2LjI3IDI2LjI3cy0yNi4yNzEtMTEuNzg3LTI2LjI3MS0yNi4yN3ptNTIuNTQxIDMwNy4yNzhjMCAxNC40ODMtMTEuNzgzIDI2LjI3LTI2LjI3IDI2LjI3cy0yNi4yNzEtMTEuNzg3LTI2LjI3MS0yNi4yN2MwLTE0LjQ4MyAxMS43ODQtMjYuMjcgMjYuMjcxLTI2LjI3czI2LjI3IDExLjc4NyAyNi4yNyAyNi4yN3ptLTI2LjI3Mi0xMTcuOTdjLTIwLjIwNSAwLTM2LjY0Mi0xNi40MzQtMzYuNjQyLTM2LjYzOCAwLTIwLjIwNSAxNi40MzctMzYuNjQyIDM2LjY0Mi0zNi42NDIgMjAuMjA0IDAgMzYuNjQxIDE2LjQzNyAzNi42NDEgMzYuNjQyIDAgMjAuMjA0LTE2LjQzNyAzNi42MzgtMzYuNjQxIDM2LjYzOHptMTMxLjgzMSA2Ny4xNzljLTE0LjQ4NyAwLTI2LjI3LTExLjc4OC0yNi4yNy0yNi4yNzFzMTEuNzgzLTI2LjI3IDI2LjI3LTI2LjI3IDI2LjI3IDExLjc4NyAyNi4yNyAyNi4yN2MwIDE0LjQ4My0xMS43ODMgMjYuMjcxLTI2LjI3IDI2LjI3MXonCiAgICAgICAgICBzdHlsZT0nZmlsbDojMjMxZjIwJy8+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Choose a reusable Kafka connection credential, or configure one-time connection parameters below."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Username/password or custom."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The user must have permissions to produce messages to the topic."
       },
       {
         "group": "authentication"
       },
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Bootstrap server(s), comma-delimited if there are multiple.",
+        "placeholder": "broker1:9092,broker2:9092"
       },
       {
         "group": "kafka"
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "It is strongly recommended to provide an explicit consumer group ID. Use a stable, application-specific identifier that represents the logical consumer group in your application (for example, <code>my-app-order-processor</code>). Leaving this empty auto-generates an ID that may change across connector upgrades, causing message replay."
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "Additional Kafka consumer properties in JSON. These can override brokers and authentication from a reusable credential."
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "List of offsets, e.g. '10' or '=[10, 23]'. If specified, it has to have the same number of values as the number of partitions."
       },
       {
-        "group": "kafka"
+        "group": "kafka",
+        "tooltip": "What to do when there is no initial offset in Kafka or if the current offset does not exist any more on the server. You should only select none if you specified the offsets."
       },
       {
-        "group": "kafka"
+        "group": "schema"
+      },
+      {
+        "group": "schema",
+        "tooltip": "Avro inline schema for the message value"
+      },
+      {
+        "group": "schema",
+        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
+      },
+      {
+        "group": "schema"
       },
       {
         "group": "activation"
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
         "group": "correlation"
@@ -10581,10 +16540,32 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -10645,6 +16626,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
         "group": "authentication",
         "tooltip": "Enter your full email address (e.g., user@example.com) or the username provided by your email service. This is used to authenticate your access to the mail server."
       },
@@ -10677,7 +16661,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "unseenPollingConfig",
-        "tooltip": "Chose the desired handling strategy"
+        "tooltip": "Choose the desired handling strategy"
       },
       {
         "group": "unseenPollingConfig",
@@ -10685,7 +16669,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "allPollingConfig",
-        "tooltip": "Chose the desired handling strategy"
+        "tooltip": "Choose the desired handling strategy"
       },
       {
         "group": "allPollingConfig",
@@ -10714,7 +16698,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "correlation"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -10739,14 +16724,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
   "io.camunda.connectors.AWSCOMPREHEND.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
+        {
+          "id": "operation",
+          "label": "Operation"
+        },
         {
           "id": "authentication",
           "label": "Authentication"
@@ -10758,6 +16744,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "input",
           "label": "Data Configuration and Processing"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -10779,13 +16769,21 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
-        "group": "authentication"
+        "group": "operation"
       },
       {
         "group": "authentication"
       },
       {
         "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
       },
       {
         "group": "configuration"
@@ -10794,10 +16792,23 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "configuration"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "<a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_ClassifyDocument.html#comprehend-ClassifyDocument-request-Text\">Text</a> to be analyzed."
+      },
+      {
+        "group": "input",
+        "tooltip": "ARN of the custom model <a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_ClassifyDocument.html#comprehend-ClassifyDocument-request-EndpointArn\">endpoint</a> used to run the classification."
+      },
+      {
+        "group": "input",
+        "tooltip": "Determines <a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/idp-set-textract-options.html\">text extraction actions</a> for PDF files."
+      },
+      {
+        "group": "input",
+        "tooltip": "The Amazon Textract API operation that Amazon Comprehend uses to extract text from PDF files and image files."
       },
       {
         "group": "input"
@@ -10807,52 +16818,60 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "input",
-        "tooltip": "<a href=\"https://docs.aws.amazon.com/comprehend/latest/dg/idp-set-textract-options.html\"target=\"_blank\">more info</a>"
+        "tooltip": "The <a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_InputDataConfig.html#comprehend-Type-InputDataConfig-S3Uri\">S3Uri</a> for input data."
+      },
+      {
+        "group": "input",
+        "tooltip": "Specifies how to <a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_InputDataConfig.html#comprehend-Type-InputDataConfig-InputFormat\">process input data</a>."
+      },
+      {
+        "group": "input",
+        "tooltip": "<a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_StartDocumentClassificationJob.html#comprehend-StartDocumentClassificationJob-request-ClientRequestToken\">Unique identifier</a> for the processing."
+      },
+      {
+        "group": "input",
+        "tooltip": "ARN of IAM role that grants <a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_StartDocumentClassificationJob.html#comprehend-StartDocumentClassificationJob-request-DataAccessRoleArn\">Amazon Comprehend read access</a> to input data."
+      },
+      {
+        "group": "input",
+        "tooltip": "The <a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_StartDocumentClassificationJob.html#comprehend-StartDocumentClassificationJob-request-DocumentClassifierArn\">ARN of document classifier</a> to process input data."
+      },
+      {
+        "group": "input",
+        "tooltip": "ARN of the <a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_StartDocumentClassificationJob.html#comprehend-StartDocumentClassificationJob-request-FlywheelArn\">flywheel</a> that orchestrates training and versioning of the classification model."
       },
       {
         "group": "input"
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "The <a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_InputDataConfig.html#comprehend-Type-OutputDataConfig-S3Uri\">S3Uri</a> for output data."
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "KMS' key Id used to <a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_OutputDataConfig.html#comprehend-Type-OutputDataConfig-KmsKeyId\">encrypt output data</a>."
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Tags to <a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_StartDocumentClassificationJob.html#comprehend-StartDocumentClassificationJob-request-Tags\">associate with the document classification job</a>."
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "<a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_StartDocumentClassificationJob.html#comprehend-StartDocumentClassificationJob-request-VolumeKmsKeyId\">KMS to encrypt data on storage</a> attached to compute instance."
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "<a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_VpcConfig.html#comprehend-Type-VpcConfig-SecurityGroupIds\">ID for security group</a> on instance of private VPC."
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "ID for each <a href=\"https://docs.aws.amazon.com/comprehend/latest/APIReference/API_VpcConfig.html#comprehend-Type-VpcConfig-Subnets\">subnet used in VPC</a>."
       },
       {
-        "group": "input"
+        "group": "connector"
       },
       {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
+        "group": "connector"
       },
       {
         "group": "output"
@@ -10862,6 +16881,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -10896,12 +16918,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Parameters"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Response mapping"
         },
         {
           "id": "errors",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
@@ -10915,15 +16945,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "cluster"
       },
       {
+        "tooltip": "Token endpoint of your authentication server",
+        "group": "cluster"
+      },
+      {
+        "tooltip": "Base URL of Operate in your C8 cluster",
         "group": "cluster"
       },
       {
         "group": "cluster"
       },
       {
-        "group": "cluster"
-      },
-      {
+        "tooltip": "SaaS cluster region and ID. <a href=\"https://docs.camunda.io/docs/guides/setup-client-connection-credentials\" target=\"_blank\">API client credentials documentation</a>",
         "group": "cluster"
       },
       {},
@@ -10935,13 +16968,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "tooltip": "Client ID and secret for the Operate OAuth client",
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
+        "tooltip": "Space-separated list of OAuth 2.0 scopes to request from the token endpoint. Required by some identity providers — e.g. for Microsoft Entra ID use <code>api://&lt;client-id&gt;/.default</code>",
         "group": "authentication"
       },
       {},
       {
+        "tooltip": "Operate API entity to query: process instances, incidents, variables, process definitions, or flow node instances",
         "group": "input"
       },
       {
@@ -10955,29 +16994,53 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "parameters"
       },
       {
+        "tooltip": "Search filter in <a href=\"https://docs.camunda.io/docs/apis-tools/operate-api/specifications/search/\" target=\"_blank\">Operate format</a>",
         "group": "parameters"
       },
       {
+        "tooltip": "List of sort objects in <a href=\"https://docs.camunda.io/docs/apis-tools/operate-api/specifications/search\" target=\"_blank\">Operate format</a>",
         "group": "parameters"
       },
       {
+        "tooltip": "Number of results to return",
         "group": "parameters"
       },
       {
+        "tooltip": "Identifier of the item from which the search should start. Copy the <code>sortValues</code> field from the previous search result, or leave blank for no pagination",
         "group": "parameters"
       },
       {},
       {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Sets the timeout in seconds to establish a connection or 0 for an infinite timeout",
         "group": "errors"
       },
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -10990,28 +17053,314 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       "groups": [
         {
-          "id": "authentication",
-          "label": "Authentication"
-        },
-        {
           "id": "operation",
           "label": "Operation"
+        },
+        {
+          "id": "authentication",
+          "label": "Authentication"
         },
         {
           "id": "data",
           "label": "Data"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Output mapping"
         },
         {
-          "id": "errors",
+          "id": "error",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' height='18' width='18' viewBox='-334.32495 -518.3335 2897.4829 3110.001'%3E%3Cpath d='M1554.637 777.5h575.713c54.391 0 98.483 44.092 98.483 98.483v524.398c0 199.901-162.051 361.952-361.952 361.952h-1.711c-199.901.028-361.975-162-362.004-361.901V828.971c.001-28.427 23.045-51.471 51.471-51.471z' fill='%235059C9'/%3E%3Ccircle r='233.25' cy='440.583' cx='1943.75' fill='%235059C9'/%3E%3Ccircle r='336.917' cy='336.917' cx='1218.083' fill='%237B83EB'/%3E%3Cpath d='M1667.323 777.5H717.01c-53.743 1.33-96.257 45.931-95.01 99.676v598.105c-7.505 322.519 247.657 590.16 570.167 598.053 322.51-7.893 577.671-275.534 570.167-598.053V877.176c1.245-53.745-41.268-98.346-95.011-99.676z' fill='%237B83EB'/%3E%3Cpath d='M1244 777.5v838.145c-.258 38.435-23.549 72.964-59.09 87.598a91.856 91.856 0 01-35.765 7.257H667.613c-6.738-17.105-12.958-34.21-18.142-51.833a631.287 631.287 0 01-27.472-183.49V877.02c-1.246-53.659 41.198-98.19 94.855-99.52z' opacity='.1'/%3E%3Cpath d='M1192.167 777.5v889.978a91.802 91.802 0 01-7.257 35.765c-14.634 35.541-49.163 58.833-87.598 59.09H691.975c-8.812-17.105-17.105-34.21-24.362-51.833-7.257-17.623-12.958-34.21-18.142-51.833a631.282 631.282 0 01-27.472-183.49V877.02c-1.246-53.659 41.198-98.19 94.855-99.52z' opacity='.2'/%3E%3Cpath d='M1192.167 777.5v786.312c-.395 52.223-42.632 94.46-94.855 94.855h-447.84A631.282 631.282 0 01622 1475.177V877.02c-1.246-53.659 41.198-98.19 94.855-99.52z' opacity='.2'/%3E%3Cpath d='M1140.333 777.5v786.312c-.395 52.223-42.632 94.46-94.855 94.855H649.472A631.282 631.282 0 01622 1475.177V877.02c-1.246-53.659 41.198-98.19 94.855-99.52z' opacity='.2'/%3E%3Cpath d='M1244 509.522v163.275c-8.812.518-17.105 1.037-25.917 1.037-8.812 0-17.105-.518-25.917-1.037a284.472 284.472 0 01-51.833-8.293c-104.963-24.857-191.679-98.469-233.25-198.003a288.02 288.02 0 01-16.587-51.833h258.648c52.305.198 94.657 42.549 94.856 94.854z' opacity='.1'/%3E%3Cpath d='M1192.167 561.355v111.442a284.472 284.472 0 01-51.833-8.293c-104.963-24.857-191.679-98.469-233.25-198.003h190.228c52.304.198 94.656 42.55 94.855 94.854z' opacity='.2'/%3E%3Cpath d='M1192.167 561.355v111.442a284.472 284.472 0 01-51.833-8.293c-104.963-24.857-191.679-98.469-233.25-198.003h190.228c52.304.198 94.656 42.55 94.855 94.854z' opacity='.2'/%3E%3Cpath d='M1140.333 561.355v103.148c-104.963-24.857-191.679-98.469-233.25-198.003h138.395c52.305.199 94.656 42.551 94.855 94.855z' opacity='.2'/%3E%3ClinearGradient gradientTransform='matrix(1 0 0 -1 0 2075.333)' y2='394.261' x2='942.234' y1='1683.073' x1='198.099' gradientUnits='userSpaceOnUse' id='a'%3E%3Cstop offset='0' stop-color='%235a62c3'/%3E%3Cstop offset='.5' stop-color='%234d55bd'/%3E%3Cstop offset='1' stop-color='%233940ab'/%3E%3C/linearGradient%3E%3Cpath d='M95.01 466.5h950.312c52.473 0 95.01 42.538 95.01 95.01v950.312c0 52.473-42.538 95.01-95.01 95.01H95.01c-52.473 0-95.01-42.538-95.01-95.01V561.51c0-52.472 42.538-95.01 95.01-95.01z' fill='url(%23a)'/%3E%3Cpath d='M820.211 828.193h-189.97v517.297h-121.03V828.193H320.123V727.844h500.088z' fill='%23FFF'/%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIGhlaWdodD0nMTgnIHdpZHRoPScxOCcgdmlld0JveD0nLTMzNC4zMjQ5NSAtNTE4LjMzMzUgMjg5Ny40ODI5IDMxMTAuMDAxJz4KICAgIDxwYXRoIGQ9J00xNTU0LjYzNyA3NzcuNWg1NzUuNzEzYzU0LjM5MSAwIDk4LjQ4MyA0NC4wOTIgOTguNDgzIDk4LjQ4M3Y1MjQuMzk4YzAgMTk5LjkwMS0xNjIuMDUxIDM2MS45NTItMzYxLjk1MiAzNjEuOTUyaC0xLjcxMWMtMTk5LjkwMS4wMjgtMzYxLjk3NS0xNjItMzYyLjAwNC0zNjEuOTAxVjgyOC45NzFjLjAwMS0yOC40MjcgMjMuMDQ1LTUxLjQ3MSA1MS40NzEtNTEuNDcxeicKICAgICAgICAgIGZpbGw9JyM1MDU5QzknLz4KICAgIDxjaXJjbGUgcj0nMjMzLjI1JyBjeT0nNDQwLjU4MycgY3g9JzE5NDMuNzUnIGZpbGw9JyM1MDU5QzknLz4KICAgIDxjaXJjbGUgcj0nMzM2LjkxNycgY3k9JzMzNi45MTcnIGN4PScxMjE4LjA4MycgZmlsbD0nIzdCODNFQicvPgogICAgPHBhdGggZD0nTTE2NjcuMzIzIDc3Ny41SDcxNy4wMWMtNTMuNzQzIDEuMzMtOTYuMjU3IDQ1LjkzMS05NS4wMSA5OS42NzZ2NTk4LjEwNWMtNy41MDUgMzIyLjUxOSAyNDcuNjU3IDU5MC4xNiA1NzAuMTY3IDU5OC4wNTMgMzIyLjUxLTcuODkzIDU3Ny42NzEtMjc1LjUzNCA1NzAuMTY3LTU5OC4wNTNWODc3LjE3NmMxLjI0NS01My43NDUtNDEuMjY4LTk4LjM0Ni05NS4wMTEtOTkuNjc2eicKICAgICAgICAgIGZpbGw9JyM3QjgzRUInLz4KICAgIDxwYXRoIGQ9J00xMjQ0IDc3Ny41djgzOC4xNDVjLS4yNTggMzguNDM1LTIzLjU0OSA3Mi45NjQtNTkuMDkgODcuNTk4YTkxLjg1NiA5MS44NTYgMCAwMS0zNS43NjUgNy4yNTdINjY3LjYxM2MtNi43MzgtMTcuMTA1LTEyLjk1OC0zNC4yMS0xOC4xNDItNTEuODMzYTYzMS4yODcgNjMxLjI4NyAwIDAxLTI3LjQ3Mi0xODMuNDlWODc3LjAyYy0xLjI0Ni01My42NTkgNDEuMTk4LTk4LjE5IDk0Ljg1NS05OS41MnonCiAgICAgICAgICBvcGFjaXR5PScuMScvPgogICAgPHBhdGggZD0nTTExOTIuMTY3IDc3Ny41djg4OS45NzhhOTEuODAyIDkxLjgwMiAwIDAxLTcuMjU3IDM1Ljc2NWMtMTQuNjM0IDM1LjU0MS00OS4xNjMgNTguODMzLTg3LjU5OCA1OS4wOUg2OTEuOTc1Yy04LjgxMi0xNy4xMDUtMTcuMTA1LTM0LjIxLTI0LjM2Mi01MS44MzMtNy4yNTctMTcuNjIzLTEyLjk1OC0zNC4yMS0xOC4xNDItNTEuODMzYTYzMS4yODIgNjMxLjI4MiAwIDAxLTI3LjQ3Mi0xODMuNDlWODc3LjAyYy0xLjI0Ni01My42NTkgNDEuMTk4LTk4LjE5IDk0Ljg1NS05OS41MnonCiAgICAgICAgICBvcGFjaXR5PScuMicvPgogICAgPHBhdGggZD0nTTExOTIuMTY3IDc3Ny41djc4Ni4zMTJjLS4zOTUgNTIuMjIzLTQyLjYzMiA5NC40Ni05NC44NTUgOTQuODU1aC00NDcuODRBNjMxLjI4MiA2MzEuMjgyIDAgMDE2MjIgMTQ3NS4xNzdWODc3LjAyYy0xLjI0Ni01My42NTkgNDEuMTk4LTk4LjE5IDk0Ljg1NS05OS41MnonCiAgICAgICAgICBvcGFjaXR5PScuMicvPgogICAgPHBhdGggZD0nTTExNDAuMzMzIDc3Ny41djc4Ni4zMTJjLS4zOTUgNTIuMjIzLTQyLjYzMiA5NC40Ni05NC44NTUgOTQuODU1SDY0OS40NzJBNjMxLjI4MiA2MzEuMjgyIDAgMDE2MjIgMTQ3NS4xNzdWODc3LjAyYy0xLjI0Ni01My42NTkgNDEuMTk4LTk4LjE5IDk0Ljg1NS05OS41MnonCiAgICAgICAgICBvcGFjaXR5PScuMicvPgogICAgPHBhdGggZD0nTTEyNDQgNTA5LjUyMnYxNjMuMjc1Yy04LjgxMi41MTgtMTcuMTA1IDEuMDM3LTI1LjkxNyAxLjAzNy04LjgxMiAwLTE3LjEwNS0uNTE4LTI1LjkxNy0xLjAzN2EyODQuNDcyIDI4NC40NzIgMCAwMS01MS44MzMtOC4yOTNjLTEwNC45NjMtMjQuODU3LTE5MS42NzktOTguNDY5LTIzMy4yNS0xOTguMDAzYTI4OC4wMiAyODguMDIgMCAwMS0xNi41ODctNTEuODMzaDI1OC42NDhjNTIuMzA1LjE5OCA5NC42NTcgNDIuNTQ5IDk0Ljg1NiA5NC44NTR6JwogICAgICAgICAgb3BhY2l0eT0nLjEnLz4KICAgIDxwYXRoIGQ9J00xMTkyLjE2NyA1NjEuMzU1djExMS40NDJhMjg0LjQ3MiAyODQuNDcyIDAgMDEtNTEuODMzLTguMjkzYy0xMDQuOTYzLTI0Ljg1Ny0xOTEuNjc5LTk4LjQ2OS0yMzMuMjUtMTk4LjAwM2gxOTAuMjI4YzUyLjMwNC4xOTggOTQuNjU2IDQyLjU1IDk0Ljg1NSA5NC44NTR6JwogICAgICAgICAgb3BhY2l0eT0nLjInLz4KICAgIDxwYXRoIGQ9J00xMTkyLjE2NyA1NjEuMzU1djExMS40NDJhMjg0LjQ3MiAyODQuNDcyIDAgMDEtNTEuODMzLTguMjkzYy0xMDQuOTYzLTI0Ljg1Ny0xOTEuNjc5LTk4LjQ2OS0yMzMuMjUtMTk4LjAwM2gxOTAuMjI4YzUyLjMwNC4xOTggOTQuNjU2IDQyLjU1IDk0Ljg1NSA5NC44NTR6JwogICAgICAgICAgb3BhY2l0eT0nLjInLz4KICAgIDxwYXRoIGQ9J00xMTQwLjMzMyA1NjEuMzU1djEwMy4xNDhjLTEwNC45NjMtMjQuODU3LTE5MS42NzktOTguNDY5LTIzMy4yNS0xOTguMDAzaDEzOC4zOTVjNTIuMzA1LjE5OSA5NC42NTYgNDIuNTUxIDk0Ljg1NSA5NC44NTV6JwogICAgICAgICAgb3BhY2l0eT0nLjInLz4KICAgIDxsaW5lYXJHcmFkaWVudCBncmFkaWVudFRyYW5zZm9ybT0nbWF0cml4KDEgMCAwIC0xIDAgMjA3NS4zMzMpJyB5Mj0nMzk0LjI2MScgeDI9Jzk0Mi4yMzQnIHkxPScxNjgzLjA3MycgeDE9JzE5OC4wOTknCiAgICAgICAgICAgICAgICAgICAgZ3JhZGllbnRVbml0cz0ndXNlclNwYWNlT25Vc2UnIGlkPSdhJz4KICAgICAgICA8c3RvcCBvZmZzZXQ9JzAnIHN0b3AtY29sb3I9JyM1YTYyYzMnLz4KICAgICAgICA8c3RvcCBvZmZzZXQ9Jy41JyBzdG9wLWNvbG9yPScjNGQ1NWJkJy8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScxJyBzdG9wLWNvbG9yPScjMzk0MGFiJy8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPHBhdGggZD0nTTk1LjAxIDQ2Ni41aDk1MC4zMTJjNTIuNDczIDAgOTUuMDEgNDIuNTM4IDk1LjAxIDk1LjAxdjk1MC4zMTJjMCA1Mi40NzMtNDIuNTM4IDk1LjAxLTk1LjAxIDk1LjAxSDk1LjAxYy01Mi40NzMgMC05NS4wMS00Mi41MzgtOTUuMDEtOTUuMDFWNTYxLjUxYzAtNTIuNDcyIDQyLjUzOC05NS4wMSA5NS4wMS05NS4wMXonCiAgICAgICAgICBmaWxsPSd1cmwoI2EpJy8+CiAgICA8cGF0aCBkPSdNODIwLjIxMSA4MjguMTkzaC0xODkuOTd2NTE3LjI5N2gtMTIxLjAzVjgyOC4xOTNIMzIwLjEyM1Y3MjcuODQ0aDUwMC4wODh6JyBmaWxsPScjRkZGJy8+Cjwvc3ZnPg=="
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application; optional, depends on whether the client is public or private"
+      },
+      {
+        "group": "data",
+        "tooltip": "One on one for a private conversation between two people; group for a conversation among three or more people."
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data",
+        "tooltip": "See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/#members-property\">Members property</a> reference."
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data",
+        "tooltip": "See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/#expand-response\">expand response</a> reference."
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data",
+        "tooltip": "Text sends the message body as plain text; HTML renders it as HTML markup."
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data",
+        "tooltip": "Optional list of attachments. Each item must have an 'id', 'contentType' (e.g. 'application/vnd.microsoft.card.adaptive') and 'content' (e.g. an Adaptive Card JSON payload). Attachment IDs must match <attachment id=\"...\"></attachment> tags in the message body (auto-appended if missing)."
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data",
+        "tooltip": "Controls the number of items per response."
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data",
+        "tooltip": "Sets the date range filter for the lastModifiedDateTime and createdDateTime properties. See the <a href=\"https://learn.microsoft.com/en-us/graph/filter-query-parameter\">filter query parameter</a> reference."
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data",
+        "tooltip": "ID or principal name of the user"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data",
+        "tooltip": "Sets the search filter. See the <a href=\"https://learn.microsoft.com/en-us/graph/filter-query-parameter\">filter query parameter</a> reference."
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data",
+        "tooltip": "Text sends the message body as plain text; HTML renders it as HTML markup."
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data",
+        "tooltip": "Optional list of attachments. Each item must have an 'id', 'contentType' (e.g. 'application/vnd.microsoft.card.adaptive') and 'content' (e.g. an Adaptive Card JSON payload). Attachment IDs must match <attachment id=\"...\"></attachment> tags in the message body (auto-appended if missing)."
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data",
+        "tooltip": "Controls the number of items per response"
+      },
+      {
+        "group": "data",
+        "tooltip": "Return message replies"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "data"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
+  "io.camunda.connectors.inbound.MSFT.O365.EmailIntermediate.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "pollingConfig",
+          "label": "Listener Information"
+        },
+        {
+          "id": "postprocessing",
+          "label": "Postprocessing"
+        },
+        {
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIGhlaWdodD0nMTYnIHdpZHRoPScxNicgdmlld0JveD0nLTI3NC42NjI3NSAtNDI1LjgzNCAyMzgwLjQxMDUgMjU1NS4wMDQnPgogICAgPHBhdGggZD0nTTE4MzEuMDgzIDg5NC4yNWE0MC44NzkgNDAuODc5IDAgMDAtMTkuNTAzLTM1LjEzMWgtLjIxM2wtLjc2Ny0uNDI2LTYzNC40OTItMzc1LjU4NWE4Ni4xNzUgODYuMTc1IDAgMDAtOC41MTctNS4wNjcgODUuMTcgODUuMTcgMCAwMC03OC4wOTggMCA4Ni4zNyA4Ni4zNyAwIDAwLTguNTE3IDUuMDY3bC02MzQuNDkgMzc1LjU4NS0uNzY2LjQyNmMtMTkuMzkyIDEyLjA1OS0yNS4zMzcgMzcuNTU2LTEzLjI3OCA1Ni45NDhhNDEuMzQ2IDQxLjM0NiAwIDAwMTQuMjU3IDEzLjg2OGw2MzQuNDkyIDM3NS41ODVhOTUuNjE3IDk1LjYxNyAwIDAwOC41MTcgNS4wNjggODUuMTcgODUuMTcgMCAwMDc4LjA5OCAwIDk1LjUyIDk1LjUyIDAgMDA4LjUxNy01LjA2OGw2MzQuNDkyLTM3NS41ODVhNDAuODQgNDAuODQgMCAwMDIwLjI2OC0zNS42ODV6JyBmaWxsPScjMEEyNzY3Jy8+CiAgICA8cGF0aCBkPSdNNTIwLjQ1MyA2NDMuNDc3aDQxNi4zOHYzODEuNjc0aC00MTYuMzh6TTE3NDUuOTE3IDI1NS41VjgwLjkwOGMxLTQzLjY1Mi0zMy41NTItNzkuODYyLTc3LjIwMy04MC45MDhINTg4LjIwNEM1NDQuNTUyIDEuMDQ2IDUxMCAzNy4yNTYgNTExIDgwLjkwOFYyNTUuNWw2MzguNzUgMTcwLjMzM3onIGZpbGw9JyMwMzY0QjgnLz4KICAgIDxwYXRoIGQ9J001MTEgMjU1LjVoNDI1LjgzM3YzODMuMjVINTExeicgZmlsbD0nIzAwNzhENCcvPgogICAgPHBhdGggZD0nTTEzNjIuNjY3IDI1NS41SDkzNi44MzN2MzgzLjI1TDEzNjIuNjY3IDEwMjJoMzgzLjI1VjYzOC43NXonIGZpbGw9JyMyOEE4RUEnLz4KICAgIDxwYXRoIGQ9J005MzYuODMzIDYzOC43NWg0MjUuODMzVjEwMjJIOTM2LjgzM3onIGZpbGw9JyMwMDc4RDQnLz4KICAgIDxwYXRoIGQ9J005MzYuODMzIDEwMjJoNDI1LjgzM3YzODMuMjVIOTM2LjgzM3onIGZpbGw9JyMwMzY0QjgnLz4KICAgIDxwYXRoIGQ9J001MjAuNDUzIDEwMjUuMTUxaDQxNi4zOHYzNDYuOTY5aC00MTYuMzh6JyBmaWxsPScjMTQ0NDdEJy8+CiAgICA8cGF0aCBkPSdNMTM2Mi42NjcgMTAyMmgzODMuMjV2MzgzLjI1aC0zODMuMjV6JyBmaWxsPScjMDA3OEQ0Jy8+CiAgICA8bGluZWFyR3JhZGllbnQgZ3JhZGllbnRUcmFuc2Zvcm09J21hdHJpeCgxIDAgMCAtMSAwIDE3MDUuMzMzKScgeTI9JzEuOTk4JyB4Mj0nMTEyOC40NTgnIHkxPSc4MTEuMDgzJyB4MT0nMTEyOC40NTgnIGdyYWRpZW50VW5pdHM9J3VzZXJTcGFjZU9uVXNlJyBpZD0nYSc+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScwJyBzdG9wLWNvbG9yPScjMzViOGYxJy8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScxJyBzdG9wLWNvbG9yPScjMjhhOGVhJy8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPHBhdGggZD0nTTE4MTEuNTggOTI3LjU5M2wtLjgwOS40MjYtNjM0LjQ5MiAzNTYuODQ4Yy0yLjc2OCAxLjcwMy01LjU3OCAzLjMyMS04LjUxNyA0Ljc2OWE4OC40MzcgODguNDM3IDAgMDEtMzQuNDA3IDguNTE3bC0zNC42NjMtMjAuMjdhODYuNzA2IDg2LjcwNiAwIDAxLTguNTE3LTQuODk3TDQ0Ny4xNjcgOTA2LjAwM2gtLjI5OGwtMjEuMDM2LTExLjc1M3Y3MjIuMzg0Yy4zMjggNDguMTk2IDM5LjY1MyA4Ny4wMDYgODcuODQ5IDg2LjdoMTIzMC45MTRjLjcyNCAwIDEuMzYzLS4zNDEgMi4xMjktLjM0MWExMDcuNzkgMTA3Ljc5IDAgMDAyOS44MDgtNi4yMTcgODYuMDY2IDg2LjA2NiAwIDAwMTEuOTY2LTYuMjE3YzIuODUzLTEuNjE4IDcuNzUtNS4xNTIgNy43NS01LjE1MmE4NS45NzQgODUuOTc0IDAgMDAzNC44MzMtNjguNzcyVjg5NC4yNWEzOC4zMjMgMzguMzIzIDAgMDEtMTkuNTAyIDMzLjM0M3onIGZpbGw9J3VybCgjYSknLz4KICAgIDxwYXRoIGQ9J00xNzk3LjAxNyA4OTEuMzk3djQ0LjI4N2wtNjYzLjQ0OCA0NTYuNzkxLTY4Ni44Ny00ODYuMTc0YS40MjYuNDI2IDAgMDAtLjQyNi0uNDI2bC02My4wMjMtMzcuODk5di0zMS45MzhsMjUuOTc2LS40MjYgNTQuOTMyIDMxLjUxMiAxLjI3Ny40MjYgNC42ODQgMi45ODFzNjQ1LjU2MyAzNjguMzQ2IDY0Ny4yNjcgMzY5LjE5N2wyNC42OTggMTQuNDc4YzIuMTI5LS44NTIgNC4yNTgtMS43MDMgNi44MTMtMi41NTUgMS4yNzgtLjg1MiA2NDAuODc5LTM2MC42ODEgNjQwLjg3OS0zNjAuNjgxeicgZmlsbD0nIzBBMjc2Nycgb3BhY2l0eT0nLjUnLz4KICAgIDxwYXRoIGQ9J00xODExLjU4IDkyNy41OTNsLS44MDkuNDY4LTYzNC40OTIgMzU2Ljg0OGMtMi43NjggMS43MDMtNS41NzggMy4zMjEtOC41MTcgNC43NjlhODguOTYgODguOTYgMCAwMS03OC4wOTggMCA5Ni41NzggOTYuNTc4IDAgMDEtOC41MTctNC43NjlsLTYzNC40OS0zNTYuODQ4LS43NjYtLjQ2OGEzOC4zMjYgMzguMzI2IDAgMDEtMjAuMDU3LTMzLjM0M3Y3MjIuMzg0Yy4zMDUgNDguMTg4IDM5LjYxNiA4Ny4wMDQgODcuODAzIDg2LjdoMTIyOS42NGM0OC4xODguMzA3IDg3LjUtMzguNTA5IDg3LjgwNy04Ni42OTYgMC0uMDAxIDAgMCAwIDBWODk0LjI1YTM4LjMzIDM4LjMzIDAgMDEtMTkuNTA0IDMzLjM0M3onIGZpbGw9JyMxNDkwREYnLz4KICAgIDxwYXRoIGQ9J00xMTg1LjUyIDEyNzkuNjI5bC05LjQ5NiA1LjMyM2E5Mi44MDYgOTIuODA2IDAgMDEtOC41MTcgNC44MTIgODguMTczIDg4LjE3MyAwIDAxLTMzLjQ3IDguODU3bDI0MS40MDUgMjg1LjQ3OSA0MjEuMTA3IDEwMS40NzZhODYuNzg1IDg2Ljc4NSAwIDAwMjYuNy0zMy4zNDN6JyBvcGFjaXR5PScuMScvPgogICAgPHBhdGggZD0nTTEyMjguNTI5IDEyNTUuNDQybC01Mi41MDUgMjkuNTFhOTIuODA2IDkyLjgwNiAwIDAxLTguNTE3IDQuODEyIDg4LjE3MyA4OC4xNzMgMCAwMS0zMy40NyA4Ljg1N2wxMTMuMTAxIDMxMS44MzggNTQ5LjUzOCA3NC45ODlhODYuMTA0IDg2LjEwNCAwIDAwMzQuNDA3LTY4LjgxNXYtOS4zMjZ6JyBvcGFjaXR5PScuMDUnLz4KICAgIDxwYXRoIGQ9J001MTQuODMzIDE3MDMuMzMzaDEyMjguMzE2YTg4LjMxNiA4OC4zMTYgMCAwMDUyLjU5LTE3LjAzM2wtNjk3LjA4OS00MDguMzMxYTg2LjcwNiA4Ni43MDYgMCAwMS04LjUxNy00Ljg5N0w0NDcuMTI1IDkwNi4wODhoLS4yOThsLTIwLjk5My0xMS44Mzh2NzE5LjkxNGMtLjA0OCA0OS4yIDM5Ljc5OCA4OS4xMjIgODguOTk5IDg5LjE2OS0uMDAxIDAtLjAwMSAwIDAgMHonIGZpbGw9JyMyOEE4RUEnLz4KICAgIDxwYXRoIGQ9J00xMDIyIDQxOC43MjJ2OTA4LjMwM2MtLjA3NiAzMS44NDYtMTkuNDQgNjAuNDcxLTQ4Ljk3MSA3Mi4zOTJhNzMuMzgyIDczLjM4MiAwIDAxLTI4Ljk1NyA1Ljk2Mkg0MjUuODMzVjM4My4yNUg1MTF2LTQyLjU4M2g0MzMuMDczYzQzLjAxOS4xNjMgNzcuODM0IDM1LjAzNSA3Ny45MjcgNzguMDU1eicgb3BhY2l0eT0nLjEnLz4KICAgIDxwYXRoIGQ9J005NzkuNDE3IDQ2MS4zMDV2OTA4LjMwMmE2OS4zNiA2OS4zNiAwIDAxLTYuMzg4IDI5LjgwOGMtMTEuODI2IDI5LjE0OS00MC4wODMgNDguMjczLTcxLjU0IDQ4LjQxN0g0MjUuODMzVjM4My4yNWg0NzUuNjU2YTcxLjQ5MyA3MS40OTMgMCAwMTM1LjM0NCA4Ljk0M2MyNi4xMDQgMTMuMTUxIDQyLjU3NCAzOS44ODMgNDIuNTg0IDY5LjExMnonIG9wYWNpdHk9Jy4yJy8+CiAgICA8cGF0aCBkPSdNOTc5LjQxNyA0NjEuMzA1djgyMy4xMzZjLS4yMDggNDMtMzQuOTI4IDc3Ljg1My03Ny45MjcgNzguMjI1SDQyNS44MzNWMzgzLjI1aDQ3NS42NTZhNzEuNDkzIDcxLjQ5MyAwIDAxMzUuMzQ0IDguOTQzYzI2LjEwNCAxMy4xNTEgNDIuNTc0IDM5Ljg4MyA0Mi41ODQgNjkuMTEyeicgb3BhY2l0eT0nLjInLz4KICAgIDxwYXRoIGQ9J005MzYuODMzIDQ2MS4zMDV2ODIzLjEzNmMtLjA0NiA0My4wNjctMzQuODYxIDc4LjAxNS03Ny45MjcgNzguMjI1SDQyNS44MzNWMzgzLjI1aDQzMy4wNzJjNDMuMDYyLjAyMyA3Ny45NTEgMzQuOTUxIDc3LjkyNyA3OC4wMTNhLjU4OS41ODkgMCAwMS4wMDEuMDQyeicgb3BhY2l0eT0nLjInLz4KICAgIDxsaW5lYXJHcmFkaWVudCBncmFkaWVudFRyYW5zZm9ybT0nbWF0cml4KDEgMCAwIC0xIDAgMTcwNS4zMzMpJyB5Mj0nMzI0LjI1OScgeDI9Jzc3NC4wODYnIHkxPScxMzgzLjA3NCcgeDE9JzE2Mi43NDcnIGdyYWRpZW50VW5pdHM9J3VzZXJTcGFjZU9uVXNlJyBpZD0nYic+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScwJyBzdG9wLWNvbG9yPScjMTc4NGQ5Jy8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScuNScgc3RvcC1jb2xvcj0nIzEwN2FkNScvPgogICAgICAgIDxzdG9wIG9mZnNldD0nMScgc3RvcC1jb2xvcj0nIzBhNjNjOScvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxwYXRoIGQ9J003OC4wNTUgMzgzLjI1aDc4MC43MjNjNDMuMTA5IDAgNzguMDU1IDM0Ljk0NyA3OC4wNTUgNzguMDU1djc4MC43MjNjMCA0My4xMDktMzQuOTQ2IDc4LjA1NS03OC4wNTUgNzguMDU1SDc4LjA1NWMtNDMuMTA5IDAtNzguMDU1LTM0Ljk0Ny03OC4wNTUtNzguMDU1VjQ2MS4zMDVjMC00My4xMDggMzQuOTQ3LTc4LjA1NSA3OC4wNTUtNzguMDU1eicgZmlsbD0ndXJsKCNiKScvPgogICAgPHBhdGggZD0nTTI0My45NiA3MTAuNjMxYTIyNy4wNSAyMjcuMDUgMCAwMTg5LjE3LTk4LjQ5NSAyNjkuNTYgMjY5LjU2IDAgMDExNDEuNjc1LTM1LjUxNSAyNTAuOTEgMjUwLjkxIDAgMDExMzEuMTE0IDMzLjY4MyAyMjUuMDE0IDIyNS4wMTQgMCAwMTg2Ljc0MiA5NC4xMDkgMzAzLjc1MSAzMDMuNzUxIDAgMDEzMC40MDUgMTM4LjM5NiAzMjAuNTY3IDMyMC41NjcgMCAwMS0zMS4yOTkgMTQ0Ljc4MyAyMzAuMzcgMjMwLjM3IDAgMDEtODkuNDI1IDk3LjM4OCAyNjAuODY0IDI2MC44NjQgMCAwMS0xMzYuMDExIDM0LjU3OCAyNTYuMzU1IDI1Ni4zNTUgMCAwMS0xMzQuMDEtMzQuMDY3IDIyOC40OTcgMjI4LjQ5NyAwIDAxLTg3Ljg5Mi05NC4yOCAyOTYuNTA3IDI5Ni41MDcgMCAwMS0zMC43NDUtMTM2LjczNSAzMjkuMjkgMzI5LjI5IDAgMDEzMC4yNzYtMTQzLjg0NXptOTUuMDQ2IDIzMS4yMjdhMTQ3LjM4NiAxNDcuMzg2IDAgMDA1MC4xNjMgNjQuODEyIDEzMS4wMjggMTMxLjAyOCAwIDAwNzguMzUzIDIzLjU5MSAxMzcuMjQ0IDEzNy4yNDQgMCAwMDgzLjYzNC0yNC4zNTggMTQxLjE1NiAxNDEuMTU2IDAgMDA0OC43MTUtNjQuODEyIDI1MS41OTQgMjUxLjU5NCAwIDAwMTUuNTQzLTkwLjQwNCAyNzUuMTk4IDI3NS4xOTggMCAwMC0xNC42NDktOTEuNTU0IDE0NC43NzUgMTQ0Ljc3NSAwIDAwLTQ3LjE4Mi02Ny41MzcgMTI5LjU4IDEyOS41OCAwIDAwLTgyLjkxLTI1LjU1IDEzNS4yMDIgMTM1LjIwMiAwIDAwLTgwLjE4NCAyMy44MDQgMTQ4LjYyNiAxNDguNjI2IDAgMDAtNTEuMSA2NS4zNjUgMjU5Ljc1OSAyNTkuNzU5IDAgMDAtLjM0MSAxODYuNzI4eicgZmlsbD0nI0ZGRicvPgogICAgPHBhdGggZD0nTTEzNjIuNjY3IDI1NS41aDM4My4yNXYzODMuMjVoLTM4My4yNXonIGZpbGw9JyM1MEQ5RkYnLz4KPC9zdmc+Cg=="
       }
     },
     "properties": [
@@ -11029,127 +17378,136 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication",
+        "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application"
+      },
+      {
+        "group": "authentication"
+      },
+      {
         "group": "authentication"
       },
       {
         "group": "authentication"
       },
       {
-        "group": "operation"
+        "group": "authentication",
+        "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application; optional, depends on whether the client is public or private"
       },
       {
-        "group": "operation"
+        "group": "pollingConfig",
+        "tooltip": "The email address or user ID of the mailbox to monitor. <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/#mailbox-configuration\" target=\"_blank\">Microsoft O365 Mail connector configuration</a>",
+        "placeholder": "user@example.com"
       },
       {
-        "group": "operation"
+        "group": "pollingConfig"
       },
       {
-        "group": "operation"
+        "group": "pollingConfig",
+        "tooltip": "The well-known folder ID or custom folder ID. <a href='https://learn.microsoft.com/en-us/graph/api/resources/mailfolder?view=graph-rest-1.0#properties' target='_blank'>See folder properties in the API</a>"
       },
       {
-        "group": "operation"
+        "group": "pollingConfig",
+        "tooltip": "The display name of the folder. Must be unique within the mailbox."
       },
       {
-        "group": "data"
+        "group": "pollingConfig",
+        "tooltip": "The interval between email polling requests, in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
       },
       {
-        "group": "data"
+        "group": "pollingConfig"
       },
       {
-        "group": "data"
+        "group": "pollingConfig",
+        "tooltip": "Only fetch unread emails"
       },
       {
-        "group": "data"
+        "group": "pollingConfig",
+        "tooltip": "Only fetch emails where subject contains this text (case-sensitive)"
       },
       {
-        "group": "data"
+        "group": "pollingConfig",
+        "tooltip": "Only fetch emails from this sender address (exact match, e.g. 'invoice@vendor.com')"
       },
       {
-        "group": "data"
+        "group": "pollingConfig",
+        "tooltip": "A custom OData filter expression. <a href='https://learn.microsoft.com/en-us/graph/filter-query-parameter' target='_blank'>See OData filter documentation</a>"
       },
       {
-        "group": "data"
+        "group": "postprocessing"
       },
       {
-        "group": "data"
+        "group": "postprocessing"
       },
       {
-        "group": "data"
+        "group": "postprocessing"
       },
       {
-        "group": "data"
+        "group": "postprocessing",
+        "tooltip": "The well-known folder ID or custom folder ID. <a href='https://learn.microsoft.com/en-us/graph/api/resources/mailfolder?view=graph-rest-1.0#properties' target='_blank'>See folder properties in the API</a>"
       },
       {
-        "group": "data"
+        "group": "postprocessing",
+        "tooltip": "The display name of the folder. Must be unique within the mailbox."
       },
       {
-        "group": "data"
+        "group": "activation"
       },
       {
-        "group": "data"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "data"
+        "group": "correlation"
       },
       {
-        "group": "data"
+        "group": "correlation"
       },
       {
-        "group": "data"
+        "group": "correlation"
       },
       {
-        "group": "data"
+        "group": "correlation"
       },
       {
-        "group": "data"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
-        "group": "data"
+        "group": "deduplication"
       },
       {
-        "group": "data"
+        "group": "deduplication"
       },
       {
-        "group": "data"
+        "group": "deduplication"
       },
       {
-        "group": "data"
+        "group": "deduplication"
       },
       {
         "group": "output"
       },
       {
         "group": "output"
-      },
-      {
-        "group": "errors"
       }
     ]
   },
   "io.camunda.connectors.google.gcp.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": [
-          "download file from google cloud storage",
-          "upload file to google cloud storage",
-          "download file from gcs",
-          "upload file to gcs",
-          "gcs"
-        ]
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
         {
-          "id": "authentication",
-          "label": "Authentication"
-        },
-        {
           "id": "operation",
           "label": "Operation"
+        },
+        {
+          "id": "authentication",
+          "label": "Authentication"
         },
         {
           "id": "additionalProperties",
@@ -11179,7 +17537,23 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
-        "group": "authentication"
+        "group": "operation"
+      },
+      {
+        "group": "operation",
+        "tooltip": "The project where the bucket is located."
+      },
+      {
+        "group": "operation",
+        "tooltip": "A bucket acts as a directory that organizes a set of objects."
+      },
+      {
+        "group": "operation",
+        "tooltip": "Name of the object in the bucket to download."
+      },
+      {
+        "group": "operation",
+        "tooltip": "How the downloaded payload should be returned. Document reference uploads the payload to the document store; as text decodes it as a String; as JSON parses it into a structure you can access via dot notation."
       },
       {
         "group": "operation"
@@ -11194,23 +17568,32 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operation",
-        "tooltip": "Specify the name of the document to be downloaded."
-      },
-      {
-        "group": "operation",
-        "tooltip": "If checked, a Camunda document is created and its reference is returned\nIf not checked, no document is created and the content is passed as is"
-      },
-      {
-        "group": "operation",
-        "tooltip": "The project where the bucket is located."
-      },
-      {
-        "group": "operation",
-        "tooltip": "A bucket acts as a directory that organizes a set of objects."
-      },
-      {
-        "group": "operation",
         "tooltip": "Document to be uploaded to Google Cloud Storage."
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "operation"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Service account key in JSON format. See the <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/google-cloud-storage/#authentication\" target=\"_blank\">Google Cloud Storage authentication guide</a> for details."
       },
       {
         "group": "additionalProperties",
@@ -11230,6 +17613,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -11371,16 +17757,24 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Operation details"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Output mapping"
         },
         {
-          "id": "errors",
+          "id": "error",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;utf8,%3Csvg width='18' height='18' viewBox='0 0 48 48' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Ctitle%3EIcon-Resource/Compute/Res_Amazon-Lambda_Lambda-Function_48_Light%3C/title%3E%3Cg id='Icon-Resource/Compute/Res_Amazon-Lambda_Lambda-Function_48' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cpath d='M24,44 C12.972,44 4,35.028 4,24 C4,12.972 12.972,4 24,4 C35.028,4 44,12.972 44,24 C44,35.028 35.028,44 24,44 L24,44 Z M24,2 C11.869,2 2,11.869 2,24 C2,36.131 11.869,46 24,46 C36.131,46 46,36.131 46,24 C46,11.869 36.131,2 24,2 L24,2 Z M17.231,35.25 L11.876,35.25 L18.221,21.959 L20.902,27.492 L17.231,35.25 Z M19.114,19.215 C18.946,18.87 18.597,18.651 18.214,18.651 L18.211,18.651 C17.826,18.652 17.477,18.874 17.312,19.221 L9.389,35.819 C9.24,36.129 9.262,36.493 9.445,36.783 C9.628,37.074 9.947,37.25 10.291,37.25 L17.864,37.25 C18.251,37.25 18.603,37.027 18.769,36.678 L22.915,27.915 C23.044,27.642 23.043,27.323 22.911,27.051 L19.114,19.215 Z M36.125,35.25 L30.673,35.25 L20.761,13.953 C20.597,13.601 20.243,13.375 19.854,13.375 L16.251,13.375 L16.255,9.25 L23.475,9.25 L33.339,30.545 C33.503,30.898 33.856,31.125 34.246,31.125 L36.125,31.125 L36.125,35.25 Z M37.125,29.125 L34.885,29.125 L25.021,7.83 C24.856,7.477 24.503,7.25 24.113,7.25 L15.256,7.25 C14.704,7.25 14.257,7.697 14.256,8.249 L14.25,14.374 C14.25,14.64 14.355,14.894 14.543,15.082 C14.73,15.27 14.984,15.375 15.25,15.375 L19.217,15.375 L29.129,36.672 C29.293,37.024 29.646,37.25 30.035,37.25 L37.125,37.25 C37.678,37.25 38.125,36.803 38.125,36.25 L38.125,30.125 C38.125,29.572 37.678,29.125 37.125,29.125 L37.125,29.125 Z' id='Amazon-Lambda-Lambda-Function_Resource-Icon_light-bg' fill='%23D45B07'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCA0OCA0OCcgdmVyc2lvbj0nMS4xJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnCiAgICAgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPgogICAgPHRpdGxlPkljb24tUmVzb3VyY2UvQ29tcHV0ZS9SZXNfQW1hem9uLUxhbWJkYV9MYW1iZGEtRnVuY3Rpb25fNDhfTGlnaHQ8L3RpdGxlPgogICAgPGcgaWQ9J0ljb24tUmVzb3VyY2UvQ29tcHV0ZS9SZXNfQW1hem9uLUxhbWJkYV9MYW1iZGEtRnVuY3Rpb25fNDgnIHN0cm9rZT0nbm9uZScgc3Ryb2tlLXdpZHRoPScxJyBmaWxsPSdub25lJwogICAgICAgZmlsbC1ydWxlPSdldmVub2RkJz4KICAgICAgICA8cGF0aCBkPSdNMjQsNDQgQzEyLjk3Miw0NCA0LDM1LjAyOCA0LDI0IEM0LDEyLjk3MiAxMi45NzIsNCAyNCw0IEMzNS4wMjgsNCA0NCwxMi45NzIgNDQsMjQgQzQ0LDM1LjAyOCAzNS4wMjgsNDQgMjQsNDQgTDI0LDQ0IFogTTI0LDIgQzExLjg2OSwyIDIsMTEuODY5IDIsMjQgQzIsMzYuMTMxIDExLjg2OSw0NiAyNCw0NiBDMzYuMTMxLDQ2IDQ2LDM2LjEzMSA0NiwyNCBDNDYsMTEuODY5IDM2LjEzMSwyIDI0LDIgTDI0LDIgWiBNMTcuMjMxLDM1LjI1IEwxMS44NzYsMzUuMjUgTDE4LjIyMSwyMS45NTkgTDIwLjkwMiwyNy40OTIgTDE3LjIzMSwzNS4yNSBaIE0xOS4xMTQsMTkuMjE1IEMxOC45NDYsMTguODcgMTguNTk3LDE4LjY1MSAxOC4yMTQsMTguNjUxIEwxOC4yMTEsMTguNjUxIEMxNy44MjYsMTguNjUyIDE3LjQ3NywxOC44NzQgMTcuMzEyLDE5LjIyMSBMOS4zODksMzUuODE5IEM5LjI0LDM2LjEyOSA5LjI2MiwzNi40OTMgOS40NDUsMzYuNzgzIEM5LjYyOCwzNy4wNzQgOS45NDcsMzcuMjUgMTAuMjkxLDM3LjI1IEwxNy44NjQsMzcuMjUgQzE4LjI1MSwzNy4yNSAxOC42MDMsMzcuMDI3IDE4Ljc2OSwzNi42NzggTDIyLjkxNSwyNy45MTUgQzIzLjA0NCwyNy42NDIgMjMuMDQzLDI3LjMyMyAyMi45MTEsMjcuMDUxIEwxOS4xMTQsMTkuMjE1IFogTTM2LjEyNSwzNS4yNSBMMzAuNjczLDM1LjI1IEwyMC43NjEsMTMuOTUzIEMyMC41OTcsMTMuNjAxIDIwLjI0MywxMy4zNzUgMTkuODU0LDEzLjM3NSBMMTYuMjUxLDEzLjM3NSBMMTYuMjU1LDkuMjUgTDIzLjQ3NSw5LjI1IEwzMy4zMzksMzAuNTQ1IEMzMy41MDMsMzAuODk4IDMzLjg1NiwzMS4xMjUgMzQuMjQ2LDMxLjEyNSBMMzYuMTI1LDMxLjEyNSBMMzYuMTI1LDM1LjI1IFogTTM3LjEyNSwyOS4xMjUgTDM0Ljg4NSwyOS4xMjUgTDI1LjAyMSw3LjgzIEMyNC44NTYsNy40NzcgMjQuNTAzLDcuMjUgMjQuMTEzLDcuMjUgTDE1LjI1Niw3LjI1IEMxNC43MDQsNy4yNSAxNC4yNTcsNy42OTcgMTQuMjU2LDguMjQ5IEwxNC4yNSwxNC4zNzQgQzE0LjI1LDE0LjY0IDE0LjM1NSwxNC44OTQgMTQuNTQzLDE1LjA4MiBDMTQuNzMsMTUuMjcgMTQuOTg0LDE1LjM3NSAxNS4yNSwxNS4zNzUgTDE5LjIxNywxNS4zNzUgTDI5LjEyOSwzNi42NzIgQzI5LjI5MywzNy4wMjQgMjkuNjQ2LDM3LjI1IDMwLjAzNSwzNy4yNSBMMzcuMTI1LDM3LjI1IEMzNy42NzgsMzcuMjUgMzguMTI1LDM2LjgwMyAzOC4xMjUsMzYuMjUgTDM4LjEyNSwzMC4xMjUgQzM4LjEyNSwyOS41NzIgMzcuNjc4LDI5LjEyNSAzNy4xMjUsMjkuMTI1IEwzNy4xMjUsMjkuMTI1IFonCiAgICAgICAgICAgICAgaWQ9J0FtYXpvbi1MYW1iZGEtTGFtYmRhLUZ1bmN0aW9uX1Jlc291cmNlLUljb25fbGlnaHQtYmcnIGZpbGw9JyNENDVCMDcnPjwvcGF0aD4KICAgIDwvZz4KPC9zdmc+"
       }
     },
     "properties": [
@@ -11392,16 +17786,39 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "configuration"
+      },
+      {
+        "group": "configuration"
+      },
+      {
         "group": "configuration"
       },
       {
         "group": "operation"
       },
       {
-        "group": "operationDetails"
+        "group": "operationDetails",
+        "tooltip": "Name, ARN or alias of your function"
       },
       {
-        "group": "operationDetails"
+        "group": "operationDetails",
+        "tooltip": "JSON input passed to the Lambda function when it is invoked.",
+        "placeholder": "{\"key\": \"value\"}"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       },
       {
         "group": "output"
@@ -11410,24 +17827,30 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "output"
       },
       {
-        "group": "errors"
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.message.sendtask.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
         {
-          "id": "default",
-          "label": "Properties"
+          "id": "operation",
+          "label": "Operation"
         },
         {
           "id": "connector",
@@ -11452,215 +17875,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "default"
-      },
-      {
-        "group": "connector"
-      },
-      {
-        "group": "connector"
-      },
-      {
-        "group": "output"
-      },
-      {
-        "group": "output"
-      },
-      {
-        "group": "error"
-      },
-      {
-        "group": "retries"
-      },
-      {
-        "group": "retries"
-      }
-    ]
-  },
-  "io.camunda.connector.IdpClassificationOutBoundTemplate.v1": {
-    "template": {
-      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
-      "category": {
-        "id": "connectors",
-        "name": "Connectors"
-      },
-      "groups": [
-        {
-          "id": "input",
-          "label": "Input message data"
-        },
-        {
-          "id": "extractor",
-          "label": "Extractor selection"
-        },
-        {
-          "id": "ai",
-          "label": "Ai provider selection"
-        },
-        {
-          "id": "connector",
-          "label": "Connector"
-        },
-        {
-          "id": "output",
-          "label": "Output mapping"
-        },
-        {
-          "id": "error",
-          "label": "Error handling"
-        },
-        {
-          "id": "retries",
-          "label": "Retries"
-        }
-      ],
-      "icon": {
-        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxnIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTptdWx0aXBseSI+CiAgICAgICAgPHBhdGggZD0iTTE5LjE3ODkgMEgwVjE5LjE3ODlIMTkuMTc4OVYwWiIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC4wMSIvPgogICAgPC9nPgogICAgPHBhdGggZD0iTTEwLjE4NzkgOC45OTAxVjUuMzk0MDdINS4zOTMxOFYxMy43ODQ4SDEzLjc4MzlWOC45OTAxSDEwLjE4NzlaTTYuNTkxODYgNi41OTI3NEg4Ljk4OTIxVjguOTkwMUg2LjU5MTg2VjYuNTkyNzRaTTguOTg5MjEgMTIuNTg2MUg2LjU5MTg2VjEwLjE4ODhIOC45ODkyMVYxMi41ODYxWk0xMi41ODUyIDEyLjU4NjFIMTAuMTg3OVYxMC4xODg4SDEyLjU4NTJWMTIuNTg2MVoiIGZpbGw9IiNGQzVEMEQiLz4KICAgIDxwYXRoIGQ9Ik0xNS41ODE5IDE2Ljc4MTVIMy41OTUxNkMzLjI3NzM3IDE2Ljc4MTEgMi45NzI2OSAxNi42NTQ3IDIuNzQ3OTcgMTYuNDNDMi41MjMyNiAxNi4yMDUzIDIuMzk2ODUgMTUuOTAwNiAyLjM5NjQ4IDE1LjU4MjhWMy41OTYwNUMyLjM5Njg1IDMuMjc4MjUgMi41MjMyNiAyLjk3MzU3IDIuNzQ3OTcgMi43NDg4NkMyLjk3MjY5IDIuNTI0MTQgMy4yNzczNyAyLjM5NzczIDMuNTk1MTYgMi4zOTczN0g5LjU4ODU1VjMuNTk2MDVIMy41OTUxNlYxNS41ODI4SDE1LjU4MTlWOS41ODk0NEgxNi43ODA2VjE1LjU4MjhDMTYuNzgwMyAxNS45MDA2IDE2LjY1MzkgMTYuMjA1MyAxNi40MjkxIDE2LjQzQzE2LjIwNDQgMTYuNjU0NyAxNS44OTk3IDE2Ljc4MTEgMTUuNTgxOSAxNi43ODE1WiIgZmlsbD0iIzE2MTYxNiIvPgogICAgPHBhdGggZD0iTTE3IDcuNUgxMlY2LjVIMTdWNy41WiIgZmlsbD0iI0ZDNUQwRCIvPgogICAgPHBhdGggZD0iTTE3IDUuNUgxMlY0LjVIMTdWNS41WiIgZmlsbD0iI0ZDNUQwRCIvPgogICAgPHBhdGggZD0iTTE3IDMuNUgxNUgxMlYyLjVIMTdWMy41WiIgZmlsbD0iI0ZDNUQwRCIvPgo8L3N2Zz4K"
-      }
-    },
-    "properties": [
+      {},
+      {},
+      {},
+      {},
       {},
       {
-        "group": "input"
+        "group": "operation"
       },
       {
-        "group": "input"
+        "group": "operation",
+        "tooltip": "Duration for which the message remains buffered"
       },
       {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
-      },
-      {
-        "group": "ai"
+        "group": "operation"
       },
       {
         "group": "connector"
@@ -11676,6 +17904,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "error"
+      },
+      {
+        "group": "retries"
       },
       {
         "group": "retries"
@@ -11696,10 +17927,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "endpoint",
           "label": "API destination"
-        },
-        {
-          "id": "authentication",
-          "label": "Authentication"
         },
         {
           "id": "authorization",
@@ -11754,6 +17981,12 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authorization"
       },
       {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
         "group": "activation"
       },
       {
@@ -11773,24 +18006,33 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       }
     ]
   },
-  "io.camunda.connector.IdpStructuredExtractionOutBoundTemplate.v1": {
+  "io.camunda.connectors.aws.bedrock.agentcore.memory.longterm.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
       },
       "groups": [
         {
-          "id": "input",
-          "label": "Input message data"
+          "id": "operation",
+          "label": "Operation"
         },
         {
-          "id": "extractor",
-          "label": "Extractor selection"
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "configuration",
+          "label": "Configuration"
+        },
+        {
+          "id": "retrieve",
+          "label": "Retrieve Memory Records"
+        },
+        {
+          "id": "list",
+          "label": "List Memory Records"
         },
         {
           "id": "connector",
@@ -11810,73 +18052,63 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjE5LjE3ODkiIGhlaWdodD0iMTkuMTc4OSIgZmlsbD0id2hpdGUiIGZpbGwtb3BhY2l0eT0iMC4wMSIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOm11bHRpcGx5Ii8+CjxwYXRoIGQ9Ik0xNi43ODA2IDcuMTkyMDhIMTEuOTg1OVYyLjM5NzM3SDE2Ljc4MDZWNy4xOTIwOFpNMTMuMTg0NiA1Ljk5MzRIMTUuNTgxOVYzLjU5NjA1SDEzLjE4NDZWNS45OTM0WiIgZmlsbD0iI0ZDNUQwRCIvPgo8cGF0aCBkPSJNMTAuMTg3OSA4Ljk5MDFWNS4zOTQwN0g1LjM5MzE4VjEzLjc4NDhIMTMuNzgzOVY4Ljk5MDFIMTAuMTg3OVpNNi41OTE4NiA2LjU5Mjc0SDguOTg5MjFWOC45OTAxSDYuNTkxODZWNi41OTI3NFpNOC45ODkyMSAxMi41ODYxSDYuNTkxODZWMTAuMTg4OEg4Ljk4OTIxVjEyLjU4NjFaTTEyLjU4NTIgMTIuNTg2MUgxMC4xODc5VjEwLjE4ODhIMTIuNTg1MlYxMi41ODYxWiIgZmlsbD0iI0ZDNUQwRCIvPgo8cGF0aCBkPSJNMTUuNTgxOSAxNi43ODE1SDMuNTk1MTZDMy4yNzczNyAxNi43ODExIDIuOTcyNjkgMTYuNjU0NyAyLjc0Nzk3IDE2LjQzQzIuNTIzMjYgMTYuMjA1MyAyLjM5Njg1IDE1LjkwMDYgMi4zOTY0OCAxNS41ODI4VjMuNTk2MDVDMi4zOTY4NSAzLjI3ODI1IDIuNTIzMjYgMi45NzM1NyAyLjc0Nzk3IDIuNzQ4ODZDMi45NzI2OSAyLjUyNDE0IDMuMjc3MzcgMi4zOTc3MyAzLjU5NTE2IDIuMzk3MzdIOS41ODg1NVYzLjU5NjA1SDMuNTk1MTZWMTUuNTgyOEgxNS41ODE5VjkuNTg5NDRIMTYuNzgwNlYxNS41ODI4QzE2Ljc4MDMgMTUuOTAwNiAxNi42NTM5IDE2LjIwNTMgMTYuNDI5MSAxNi40M0MxNi4yMDQ0IDE2LjY1NDcgMTUuODk5NyAxNi43ODExIDE1LjU4MTkgMTYuNzgxNVoiIGZpbGw9IiMxNjE2MTYiLz4KPC9zdmc+Cg=="
+        "contents": "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSIwIDAgNDAgNDAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+SWNvbi1BcmNoaXRlY3R1cmUvMzIvQXJjaF9BbWF6b24tQmVkcm9ja18zMjwvdGl0bGU+CiAgICA8ZyBpZD0iSWNvbi1BcmNoaXRlY3R1cmUvMzIvQXJjaF9BbWF6b24tQmVkcm9ja18zMiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9Ikljb24tQXJjaGl0ZWN0dXJlLUJHLzMyL01hY2hpbmUtTGVhcm5pbmciIGZpbGw9IiMwMUE4OEQiPgogICAgICAgICAgICA8cmVjdCBpZD0iUmVjdGFuZ2xlIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiPjwvcmVjdD4KICAgICAgICA8L2c+CiAgICAgICAgPGcgaWQ9Ikljb24tU2VydmljZS8zMi9BbWF6b24tQmVkcm9ja18zMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNi4wMDAwMDAsIDYuMDAwMDAwKSIgZmlsbD0iI0ZGRkZGRiI+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMC41MTYsMjYuOTMzMjExNiBMOC4yOTMsMjUuNjYzMjExNiBMMTEuNzI0LDIzLjk0NzIxMTYgTDExLjI3NywyMy4wNTMyMTE2IEw3LjI3NywyNS4wNTMyMTE2IEw3LjI5NywyNS4wOTQyMTE2IEw0LDIzLjIxMDIxMTYgTDQsMTkuODA5MjExNiBMNy43MjQsMTcuOTQ3MjExNiBMNy4yNzcsMTcuMDUzMjExNiBMMy41MzYsMTguOTIzMjExNiBMMSwxNy4yMzIyMTE2IEwxLDE0LjgwOTIxMTYgTDQuNzI0LDEyLjk0NzIxMTYgTDQuMjc3LDEyLjA1MzIxMTYgTDEsMTMuNjkxMjExNiBMMSwxMC43NjcyMTE2IEwzLjUyMyw5LjA4NjIxMTU4IEw3LDExLjAzODIxMTYgTDcsMTQuMTkxMjExNiBMNS4yNzcsMTUuMDUzMjExNiBMNS43MjQsMTUuOTQ3MjExNiBMNy41LDE1LjA1OTIxMTYgTDkuMjc3LDE1Ljk0NzIxMTYgTDkuNzI0LDE1LjA1MzIxMTYgTDgsMTQuMTkxMjExNiBMOCwxMC43NjcyMTE2IEwxMC43NzgsOC45MTYyMTE1OCBDMTAuOTE2LDguODIzMjExNTggMTEsOC42NjcyMTE1OCAxMSw4LjUwMDIxMTU4IEwxMSw1LjAwMDIxMTU4IEwxMCw1LjAwMDIxMTU4IEwxMCw4LjIzMjIxMTU4IEw3LjI3OCwxMC4wNDcyMTE2IEw0LDguMjA3MjExNTggTDQsNC4wMzUyMTE1OCBMNywyLjY1NzIxMTU4IEw3LDcuMDAwMjExNTggTDgsNy4wMDAyMTE1OCBMOCwyLjE5ODIxMTU4IEwxMC40OTIsMS4wNTQyMTE1OCBMMTQsMi44MDkyMTE1OCBMMTQsMTcuMTkxMjExNiBMNi4yNzcsMjEuMDUzMjExNiBMNi43MjQsMjEuOTQ3MjExNiBMMTQsMTguMzA5MjExNiBMMTQsMjUuMTkxMjExNiBMMTAuNTE2LDI2LjkzMzIxMTYgWiBNMjUuNSwxOS41MDAyMTE2IEMyNS41LDIwLjA1MTIxMTYgMjUuMDUyLDIwLjUwMDIxMTYgMjQuNSwyMC41MDAyMTE2IEMyMy45NDksMjAuNTAwMjExNiAyMy41LDIwLjA1MTIxMTYgMjMuNSwxOS41MDAyMTE2IEMyMy41LDE4Ljk0OTIxMTYgMjMuOTQ5LDE4LjUwMDIxMTYgMjQuNSwxOC41MDAyMTE2IEMyNS4wNTIsMTguNTAwMjExNiAyNS41LDE4Ljk0OTIxMTYgMjUuNSwxOS41MDAyMTE2IEwyNS41LDE5LjUwMDIxMTYgWiBNMjAuNSwyNC4wMDAyMTE2IEMyMC41LDI0LjU1MTIxMTYgMjAuMDUyLDI1LjAwMDIxMTYgMTkuNSwyNS4wMDAyMTE2IEMxOC45NDksMjUuMDAwMjExNiAxOC41LDI0LjU1MTIxMTYgMTguNSwyNC4wMDAyMTE2IEMxOC41LDIzLjQ0OTIxMTYgMTguOTQ5LDIzLjAwMDIxMTYgMTkuNSwyMy4wMDAyMTE2IEMyMC4wNTIsMjMuMDAwMjExNiAyMC41LDIzLjQ0OTIxMTYgMjAuNSwyNC4wMDAyMTE2IEwyMC41LDI0LjAwMDIxMTYgWiBNMTkuNSw0LjAwMDIxMTU4IEMxOS41LDMuNDQ5MjExNTggMTkuOTQ5LDMuMDAwMjExNTggMjAuNSwzLjAwMDIxMTU4IEMyMS4wNTIsMy4wMDAyMTE1OCAyMS41LDMuNDQ5MjExNTggMjEuNSw0LjAwMDIxMTU4IEMyMS41LDQuNTUxMjExNTggMjEuMDUyLDUuMDAwMjExNTggMjAuNSw1LjAwMDIxMTU4IEMxOS45NDksNS4wMDAyMTE1OCAxOS41LDQuNTUxMjExNTggMTkuNSw0LjAwMDIxMTU4IEwxOS41LDQuMDAwMjExNTggWiBNMjYsMTEuNTAwMjExNiBDMjYuNTUyLDExLjUwMDIxMTYgMjcsMTEuOTQ5MjExNiAyNywxMi41MDAyMTE2IEMyNywxMy4wNTEyMTE2IDI2LjU1MiwxMy41MDAyMTE2IDI2LDEzLjUwMDIxMTYgQzI1LjQ0OSwxMy41MDAyMTE2IDI1LDEzLjA1MTIxMTYgMjUsMTIuNTAwMjExNiBDMjUsMTEuOTQ5MjExNiAyNS40NDksMTEuNTAwMjExNiAyNiwxMS41MDAyMTE2IEwyNiwxMS41MDAyMTE2IFogTTI0LjA3MSwxMy4wMDAyMTE2IEMyNC4yOTUsMTMuODYwMjExNiAyNS4wNzEsMTQuNTAwMjExNiAyNiwxNC41MDAyMTE2IEMyNy4xMDMsMTQuNTAwMjExNiAyOCwxMy42MDMyMTE2IDI4LDEyLjUwMDIxMTYgQzI4LDExLjM5NzIxMTYgMjcuMTAzLDEwLjUwMDIxMTYgMjYsMTAuNTAwMjExNiBDMjUuMDcxLDEwLjUwMDIxMTYgMjQuMjk1LDExLjE0MDIxMTYgMjQuMDcxLDEyLjAwMDIxMTYgTDE1LDEyLjAwMDIxMTYgTDE1LDkuMDAwMjExNTggTDIwLjUsOS4wMDAyMTE1OCBDMjAuNzc3LDkuMDAwMjExNTggMjEsOC43NzYyMTE1OCAyMSw4LjUwMDIxMTU4IEwyMSw1LjkyOTIxMTU4IEMyMS44Niw1LjcwNTIxMTU4IDIyLjUsNC45MjkyMTE1OCAyMi41LDQuMDAwMjExNTggQzIyLjUsMi44OTcyMTE1OCAyMS42MDMsMi4wMDAyMTE1OCAyMC41LDIuMDAwMjExNTggQzE5LjM5OCwyLjAwMDIxMTU4IDE4LjUsMi44OTcyMTE1OCAxOC41LDQuMDAwMjExNTggQzE4LjUsNC45MjkyMTE1OCAxOS4xNCw1LjcwNTIxMTU4IDIwLDUuOTI5MjExNTggTDIwLDguMDAwMjExNTggTDE1LDguMDAwMjExNTggTDE1LDIuNTAwMjExNTggQzE1LDIuMzEwMjExNTggMTQuODkzLDIuMTM4MjExNTggMTQuNzI0LDIuMDUzMjExNTggTDEwLjcyNCwwLjA1MzIxMTU4NDMgQzEwLjU4OCwtMC4wMTQ3ODg0MTU3IDEwLjQzLC0wLjAxNzc4ODQxNTcgMTAuMjkxLDAuMDQ1MjExNTg0MyBMMy4yOTEsMy4yNjAyMTE1OCBDMy4xMTUsMy4zNDEyMTE1OCAzLDMuNTE5MjExNTggMywzLjcxNDIxMTU4IEwzLDguMjMyMjExNTggTDAuMjIzLDEwLjA4NDIxMTYgQzAuMDg0LDEwLjE3NzIxMTYgMCwxMC4zMzMyMTE2IDAsMTAuNTAwMjExNiBMMCwxNy41MDAyMTE2IEMwLDE3LjY2NzIxMTYgMC4wODQsMTcuODIzMjExNiAwLjIyMywxNy45MTYyMTE2IEwzLDE5Ljc2NzIxMTYgTDMsMjMuNTAwMjExNiBDMywyMy42NzkyMTE2IDMuMDk2LDIzLjg0NTIxMTYgMy4yNTIsMjMuOTM0MjExNiBMMTAuMjUyLDI3LjkzNDIxMTYgQzEwLjMyOSwyNy45NzgyMTE2IDEwLjQxNCwyOC4wMDAyMTE2IDEwLjUsMjguMDAwMjExNiBDMTAuNTc3LDI4LjAwMDIxMTYgMTAuNjU0LDI3Ljk4MjIxMTYgMTAuNzI0LDI3Ljk0NzIxMTYgTDE0LjcyNCwyNS45NDcyMTE2IEMxNC44OTMsMjUuODYyMjExNiAxNSwyNS42ODkyMTE2IDE1LDI1LjUwMDIxMTYgTDE1LDIxLjAwMDIxMTYgTDE5LDIxLjAwMDIxMTYgTDE5LDIyLjA3MTIxMTYgQzE4LjE0LDIyLjI5NTIxMTYgMTcuNSwyMy4wNzEyMTE2IDE3LjUsMjQuMDAwMjExNiBDMTcuNSwyNS4xMDMyMTE2IDE4LjM5OCwyNi4wMDAyMTE2IDE5LjUsMjYuMDAwMjExNiBDMjAuNjAzLDI2LjAwMDIxMTYgMjEuNSwyNS4xMDMyMTE2IDIxLjUsMjQuMDAwMjExNiBDMjEuNSwyMy4wNzEyMTE2IDIwLjg2LDIyLjI5NTIxMTYgMjAsMjIuMDcxMjExNiBMMjAsMjAuNTAwMjExNiBDMjAsMjAuMjI0MjExNiAxOS43NzcsMjAuMDAwMjExNiAxOS41LDIwLjAwMDIxMTYgTDE1LDIwLjAwMDIxMTYgTDE1LDE3LjAwMDIxMTYgTDIxLjI5MywxNy4wMDAyMTE2IEwyMi43ODQsMTguNDkwMjExNiBDMjIuNjA4LDE4Ljc4ODIxMTYgMjIuNSwxOS4xMzAyMTE2IDIyLjUsMTkuNTAwMjExNiBDMjIuNSwyMC42MDMyMTE2IDIzLjM5OCwyMS41MDAyMTE2IDI0LjUsMjEuNTAwMjExNiBDMjUuNjAzLDIxLjUwMDIxMTYgMjYuNSwyMC42MDMyMTE2IDI2LjUsMTkuNTAwMjExNiBDMjYuNSwxOC4zOTcyMTE2IDI1LjYwMywxNy41MDAyMTE2IDI0LjUsMTcuNTAwMjExNiBDMjQuMTMxLDE3LjUwMDIxMTYgMjMuNzg4LDE3LjYwODIxMTYgMjMuNDkxLDE3Ljc4MzIxMTYgTDIxLjg1NCwxNi4xNDYyMTE2IEMyMS43NiwxNi4wNTMyMTE2IDIxLjYzMywxNi4wMDAyMTE2IDIxLjUsMTYuMDAwMjExNiBMMTUsMTYuMDAwMjExNiBMMTUsMTMuMDAwMjExNiBMMjQuMDcxLDEzLjAwMDIxMTYgWiIgaWQ9IkZpbGwtNSI+PC9wYXRoPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+"
       }
     },
     "properties": [
       {},
       {
-        "group": "input"
+        "group": "operation"
       },
       {
-        "group": "input"
+        "group": "authentication"
       },
       {
-        "group": "input"
+        "group": "authentication"
       },
       {
-        "group": "input"
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
       },
       {
-        "group": "extractor"
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
       },
       {
-        "group": "extractor"
+        "group": "configuration"
       },
       {
-        "group": "extractor"
+        "group": "configuration"
       },
       {
-        "group": "extractor"
+        "group": "configuration"
       },
       {
-        "group": "extractor"
+        "group": "configuration"
       },
       {
-        "group": "extractor"
+        "group": "configuration"
       },
       {
-        "group": "extractor"
+        "group": "retrieve"
       },
       {
-        "group": "extractor"
+        "group": "retrieve"
       },
       {
-        "group": "extractor"
+        "group": "retrieve"
       },
       {
-        "group": "extractor"
+        "group": "retrieve"
       },
       {
-        "group": "extractor"
+        "group": "list"
       },
       {
-        "group": "extractor"
+        "group": "list"
       },
       {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
-      },
-      {
-        "group": "extractor"
+        "group": "list"
       },
       {
         "group": "connector"
@@ -11898,6 +18130,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -11910,6 +18145,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       "groups": [
         {
+          "id": "operation",
+          "label": "Operation"
+        },
+        {
           "id": "authentication",
           "label": "Authentication"
         },
@@ -11918,16 +18157,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Configuration"
         },
         {
-          "id": "action",
-          "label": "Action"
-        },
-        {
           "id": "invokeModel",
           "label": "Invoke Model"
         },
         {
           "id": "converse",
           "label": "Converse"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -11949,13 +18188,21 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
-        "group": "authentication"
+        "group": "operation"
       },
       {
         "group": "authentication"
       },
       {
         "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM access key of a user with the necessary permissions for this connector"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "IAM secret key of a user with the necessary permissions for this connector"
       },
       {
         "group": "configuration"
@@ -11964,13 +18211,28 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "configuration"
       },
       {
-        "group": "action"
+        "group": "configuration"
       },
       {
-        "group": "invokeModel"
+        "group": "invokeModel",
+        "tooltip": "ID of the model to invoke. See <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html\" target=\"_blank\">AWS Bedrock model IDs</a>.",
+        "placeholder": "amazon.titan-text-express-v1"
       },
       {
-        "group": "invokeModel"
+        "group": "invokeModel",
+        "tooltip": "Request body sent to the model, whose structure depends on the model. See <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-parameters.html\" target=\"_blank\">AWS Bedrock model parameters</a>."
+      },
+      {
+        "group": "converse",
+        "tooltip": "History of the conversation to continue. If not set, this starts a new conversation."
+      },
+      {
+        "group": "converse",
+        "tooltip": "ID of the model to invoke. See <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html\" target=\"_blank\">AWS Bedrock model IDs</a>.",
+        "placeholder": "amazon.titan-text-express-v1"
+      },
+      {
+        "group": "converse"
       },
       {
         "group": "converse"
@@ -11989,6 +18251,33 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "converse"
+      },
+      {
+        "group": "converse"
+      },
+      {
+        "group": "converse"
+      },
+      {
+        "group": "converse"
+      },
+      {
+        "group": "converse"
+      },
+      {
+        "group": "converse"
+      },
+      {
+        "group": "converse"
+      },
+      {
+        "group": "converse"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
       },
       {
         "group": "output"
@@ -12004,18 +18293,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.agenticai.a2a.client.webhook.receive.v0": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
-        "id": "connectors",
-        "name": "Connectors"
+        "id": "aiTools",
+        "name": "AI Tools"
       },
       "groups": [
         {
@@ -12082,6 +18371,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
         "group": "authorization"
       },
       {
@@ -12121,7 +18422,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "correlation"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -12143,12 +18445,658 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       }
     ]
   },
+  "io.camunda.connectors.agenticai.ai-agent-task.v2": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "aiTools",
+        "name": "AI Tools"
+      },
+      "groups": [
+        {
+          "id": "provider",
+          "label": "Model provider",
+          "openByDefault": false
+        },
+        {
+          "id": "advanced-provider-options",
+          "label": "Advanced provider options",
+          "tooltip": "Advanced options for fine-tuning the connection to the model provider.",
+          "openByDefault": false
+        },
+        {
+          "id": "model",
+          "label": "Model",
+          "openByDefault": false
+        },
+        {
+          "id": "model-options",
+          "label": "Model options",
+          "openByDefault": false
+        },
+        {
+          "id": "systemPrompt",
+          "label": "System prompt",
+          "tooltip": "A system prompt is a set of foundational instructions given to a model before any user interaction begins. It defines the AI agent’s role, behavior, tone, and communication style, ensuring that responses remain consistent and aligned with the AI agent’s intended purpose. These instructions help shape how the model interprets and responds to user input throughout the conversation.",
+          "openByDefault": false
+        },
+        {
+          "id": "userPrompt",
+          "label": "User prompt",
+          "tooltip": "A user prompt is the message or question you give to the AI to start or continue a conversation. It tells the AI what you need, whether it's information, help with a task, or just a chat. The AI uses your prompt to understand how to respond.",
+          "openByDefault": false
+        },
+        {
+          "id": "tools",
+          "label": "Tools",
+          "tooltip": "Tools are optional features the AI Agent can use to perform specific tasks. Configure this if the agent should participate in a tools feedback loop.",
+          "openByDefault": false
+        },
+        {
+          "id": "memory",
+          "label": "Memory",
+          "tooltip": "Configuration of the Agent's short-term/conversational memory.",
+          "openByDefault": false
+        },
+        {
+          "id": "limits",
+          "label": "Limits",
+          "openByDefault": false
+        },
+        {
+          "id": "response",
+          "label": "Response",
+          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/#response\">documentation</a> for details.",
+          "openByDefault": false
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
+          "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiIGZpbGw9IiNBNTZFRkYiLz4KPG1hc2sgaWQ9InBhdGgtMi1vdXRzaWRlLTFfMTg1XzYiIG1hc2tVbml0cz0idXNlclNwYWNlT25Vc2UiIHg9IjQiIHk9IjQiIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0iYmxhY2siPgo8cmVjdCBmaWxsPSJ3aGl0ZSIgeD0iNCIgeT0iNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0Ii8+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMDEwNSAxMi4wOTg3QzE4LjQ5IDEwLjU4OTQgMTcuMTU5NCA4LjEwODE0IDE2LjE3OTkgNi4wMTEwM0MxNi4xNTIgNi4wMDQ1MSAxNi4xMTc2IDYgMTYuMDc5NCA2QzE2LjA0MTEgNiAxNi4wMDY2IDYuMDA0NTEgMTUuOTc4OCA2LjAxMTA0QzE0Ljk5OTQgOC4xMDgxNCAxMy42Njk3IDEwLjU4ODkgMTIuMTQ4MSAxMi4wOTgxQzEwLjYyNjkgMTMuNjA3MSA4LjEyNTY4IDE0LjkyNjQgNi4wMTE1NyAxNS44OTgxQzYuMDA0NzQgMTUuOTI2MSA2IDE1Ljk2MTEgNiAxNkM2IDE2LjAzODcgNi4wMDQ2OCAxNi4wNzM2IDYuMDExNDQgMTYuMTAxNEM4LjEyNTE5IDE3LjA3MjkgMTAuNjI2MiAxOC4zOTE5IDEyLjE0NzcgMTkuOTAxNkMxMy42Njk3IDIxLjQxMDcgMTQuOTk5NiAyMy44OTIgMTUuOTc5MSAyNS45ODlDMTYuMDA2OCAyNS45OTU2IDE2LjA0MTEgMjYgMTYuMDc5MyAyNkMxNi4xMTc1IDI2IDE2LjE1MTkgMjUuOTk1NCAxNi4xNzk2IDI1Ljk4OUMxNy4xNTkxIDIzLjg5MiAxOC40ODg4IDIxLjQxMSAyMC4wMDk5IDE5LjkwMjFNMjAuMDA5OSAxOS45MDIxQzIxLjUyNTMgMTguMzk4NyAyMy45NDY1IDE3LjA2NjkgMjUuOTkxNSAxNi4wODI0QzI1Ljk5NjUgMTYuMDU5MyAyNiAxNi4wMzEgMjYgMTUuOTk5N0MyNiAxNS45Njg0IDI1Ljk5NjUgMTUuOTQwMyAyNS45OTE1IDE1LjkxNzFDMjMuOTQ3NCAxNC45MzI3IDIxLjUyNTkgMTMuNjAxIDIwLjAxMDUgMTIuMDk4NyIvPgo8L21hc2s+CjxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMjAuMDEwNSAxMi4wOTg3QzE4LjQ5IDEwLjU4OTQgMTcuMTU5NCA4LjEwODE0IDE2LjE3OTkgNi4wMTEwM0MxNi4xNTIgNi4wMDQ1MSAxNi4xMTc2IDYgMTYuMDc5NCA2QzE2LjA0MTEgNiAxNi4wMDY2IDYuMDA0NTEgMTUuOTc4OCA2LjAxMTA0QzE0Ljk5OTQgOC4xMDgxNCAxMy42Njk3IDEwLjU4ODkgMTIuMTQ4MSAxMi4wOTgxQzEwLjYyNjkgMTMuNjA3MSA4LjEyNTY4IDE0LjkyNjQgNi4wMTE1NyAxNS44OTgxQzYuMDA0NzQgMTUuOTI2MSA2IDE1Ljk2MTEgNiAxNkM2IDE2LjAzODcgNi4wMDQ2OCAxNi4wNzM2IDYuMDExNDQgMTYuMTAxNEM4LjEyNTE5IDE3LjA3MjkgMTAuNjI2MiAxOC4zOTE5IDEyLjE0NzcgMTkuOTAxNkMxMy42Njk3IDIxLjQxMDcgMTQuOTk5NiAyMy44OTIgMTUuOTc5MSAyNS45ODlDMTYuMDA2OCAyNS45OTU2IDE2LjA0MTEgMjYgMTYuMDc5MyAyNkMxNi4xMTc1IDI2IDE2LjE1MTkgMjUuOTk1NCAxNi4xNzk2IDI1Ljk4OUMxNy4xNTkxIDIzLjg5MiAxOC40ODg4IDIxLjQxMSAyMC4wMDk5IDE5LjkwMjFNMjAuMDA5OSAxOS45MDIxQzIxLjUyNTMgMTguMzk4NyAyMy45NDY1IDE3LjA2NjkgMjUuOTkxNSAxNi4wODI0QzI1Ljk5NjUgMTYuMDU5MyAyNiAxNi4wMzEgMjYgMTUuOTk5N0MyNiAxNS45Njg0IDI1Ljk5NjUgMTUuOTQwMyAyNS45OTE1IDE1LjkxNzFDMjMuOTQ3NCAxNC45MzI3IDIxLjUyNTkgMTMuNjAxIDIwLjAxMDUgMTIuMDk4NyIgZmlsbD0id2hpdGUiLz4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yMC4wMTA1IDEyLjA5ODdDMTguNDkgMTAuNTg5NCAxNy4xNTk0IDguMTA4MTQgMTYuMTc5OSA2LjAxMTAzQzE2LjE1MiA2LjAwNDUxIDE2LjExNzYgNiAxNi4wNzk0IDZDMTYuMDQxMSA2IDE2LjAwNjYgNi4wMDQ1MSAxNS45Nzg4IDYuMDExMDRDMTQuOTk5NCA4LjEwODE0IDEzLjY2OTcgMTAuNTg4OSAxMi4xNDgxIDEyLjA5ODFDMTAuNjI2OSAxMy42MDcxIDguMTI1NjggMTQuOTI2NCA2LjAxMTU3IDE1Ljg5ODFDNi4wMDQ3NCAxNS45MjYxIDYgMTUuOTYxMSA2IDE2QzYgMTYuMDM4NyA2LjAwNDY4IDE2LjA3MzYgNi4wMTE0NCAxNi4xMDE0QzguMTI1MTkgMTcuMDcyOSAxMC42MjYyIDE4LjM5MTkgMTIuMTQ3NyAxOS45MDE2QzEzLjY2OTcgMjEuNDEwNyAxNC45OTk2IDIzLjg5MiAxNS45NzkxIDI1Ljk4OUMxNi4wMDY4IDI1Ljk5NTYgMTYuMDQxMSAyNiAxNi4wNzkzIDI2QzE2LjExNzUgMjYgMTYuMTUxOSAyNS45OTU0IDE2LjE3OTYgMjUuOTg5QzE3LjE1OTEgMjMuODkyIDE4LjQ4ODggMjEuNDExIDIwLjAwOTkgMTkuOTAyMU0yMC4wMDk5IDE5LjkwMjFDMjEuNTI1MyAxOC4zOTg3IDIzLjk0NjUgMTcuMDY2OSAyNS45OTE1IDE2LjA4MjRDMjUuOTk2NSAxNi4wNTkzIDI2IDE2LjAzMSAyNiAxNS45OTk3QzI2IDE1Ljk2ODQgMjUuOTk2NSAxNS45NDAzIDI1Ljk5MTUgMTUuOTE3MUMyMy45NDc0IDE0LjkzMjcgMjEuNTI1OSAxMy42MDEgMjAuMDEwNSAxMi4wOTg3IiBzdHJva2U9IiM0OTFEOEIiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgbWFzaz0idXJsKCNwYXRoLTItb3V0c2lkZS0xXzE4NV82KSIvPgo8L3N2Zz4K"
+      }
+    },
+    "properties": [
+      {},
+      {},
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The full resource endpoint, e.g. <code>https://your-resource.services.ai.azure.com</code>.",
+        "placeholder": "https://your-resource.services.ai.azure.com"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "<code>/v1/messages</code> is appended automatically.",
+        "placeholder": "https://api.anthropic.com"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The OAuth token endpoint"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The unique identifier of the target API you want to access"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Send client ID and client secret as Basic Auth request in the header, or as client credentials in the request body"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The scopes which you want to request authorization for (e.g., read:contacts)"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The full resource endpoint, e.g. <code>https://your-resource.openai.azure.com</code> or a Foundry endpoint such as <code>https://your-resource.services.ai.azure.com</code>.",
+        "placeholder": "https://your-resource.openai.azure.com"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "placeholder": "https://api.openai.com/v1"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The OAuth token endpoint"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The unique identifier of the target API you want to access"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Send client ID and client secret as Basic Auth request in the header, or as client credentials in the request body"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The scopes which you want to request authorization for (e.g., read:contacts)"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Must match the identifier configured for the custom implementation."
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "model",
+        "tooltip": "Specify the model ID. On the Microsoft Foundry backend, enter the deployment name instead. It defaults to the model ID, but can be chosen freely when the deployment is created. See the <a href=\"https://docs.anthropic.com/en/docs/about-claude/models/all-models\" target=\"_blank\">models documentation</a>.",
+        "placeholder": "claude-sonnet-5"
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls how many tokens the model spends when responding, trading thoroughness against speed and cost. Not supported on all models.<br><br>See the <a href=\"https://platform.claude.com/docs/en/build-with-claude/effort\" target=\"_blank\">effort documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Extended thinking mechanism.<br><br><code>enabled</code> uses a manual token budget (older models). <code>adaptive</code> is managed by the model (newer models). <code>disabled</code> turns it off.<br><br>Support varies by model."
+      },
+      {
+        "group": "model",
+        "tooltip": "Maximum number of tokens the model may spend on extended thinking (minimum 1024)."
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls how the model's extended thinking is returned. <code>summarized</code> includes a plain-text summary of the thinking in the response. <code>omitted</code> leaves it out."
+      },
+      {
+        "group": "model",
+        "tooltip": "Enables Anthropic automatic prompt caching. See the <a href=\"https://platform.claude.com/docs/en/build-with-claude/prompt-caching#automatic-caching\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Specify the model ID or inference profile ID. See the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html\" target=\"_blank\">model and inference profile documentation</a>.",
+        "placeholder": "us.amazon.nova-2-lite-v1:0"
+      },
+      {
+        "group": "model",
+        "tooltip": "Enables AWS Bedrock automatic prompt caching. See the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Specify the model ID. On the Microsoft Foundry backend, enter the deployment name instead. It defaults to the model ID, but can be chosen freely when the deployment is created. Some features, like prompt caching, may be managed by the model provider. See the <a href=\"https://platform.openai.com/docs/models\" target=\"_blank\">models documentation</a>.",
+        "placeholder": "gpt-5.5"
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls how many tokens the model spends when responding, trading thoroughness against speed and cost. Not supported on all models.<br><br>See the <a href=\"https://developers.openai.com/api/reference/resources/responses/methods/create\" target=\"_blank\">Responses API reference</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls how many tokens the model spends when responding, trading thoroughness against speed and cost. Not supported on all models.<br><br>See the <a href=\"https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create\" target=\"_blank\">Chat Completions API reference</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Specify the model ID. Some features, like prompt caching, may be managed by the model provider. See the <a href=\"https://ai.google.dev/gemini-api/docs/models\" target=\"_blank\">models documentation</a>.",
+        "placeholder": "gemini-3-pro-preview"
+      },
+      {
+        "group": "model",
+        "tooltip": "Gemini 2.5 models: token budget for extended thinking. -1 = dynamic, 0 = disabled. Mutually exclusive with Thinking level (Gemini 3.x). <br><br>Details in the <a href=\"https://ai.google.dev/gemini-api/docs/thinking\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Gemini 3.x models: qualitative thinking effort. \"default\" lets the model choose its own reasoning depth. Mutually exclusive with Thinking budget (Gemini 2.5). <br><br>Details in the <a href=\"https://ai.google.dev/gemini-api/docs/thinking\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Specify the model ID."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-max-tokens\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 1. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-temperature\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 1. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-top-p\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Integer greater than 0. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.anthropic.com/en/api/messages#body-top-k\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. Leave unset to use the model default."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number. The higher the number, the more randomness will be injected into the response. Supported ranges vary by model."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 1. Recommended for advanced use cases only (you usually only need to use temperature)."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://developers.openai.com/api/reference/resources/responses/methods/create\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 2. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://developers.openai.com/api/reference/resources/responses/methods/create\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://developers.openai.com/api/reference/resources/responses/methods/create\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 2. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens to generate before stopping. <br><br>Details in the <a href=\"https://ai.google.dev/api/generate-content#v1beta.GenerationConfig\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Controls the randomness of the output. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://ai.google.dev/api/generate-content#v1beta.GenerationConfig\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 1. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://ai.google.dev/api/generate-content#v1beta.GenerationConfig\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Integer greater than 0. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://ai.google.dev/api/generate-content#v1beta.GenerationConfig\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "systemPrompt"
+      },
+      {
+        "group": "userPrompt"
+      },
+      {
+        "group": "userPrompt",
+        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details and supported file types."
+      },
+      {
+        "group": "tools",
+        "tooltip": "Add an ad-hoc sub-process ID to attach the AI agent to the tools. Ensure your process includes a tools feedback loop routing into the ad-hoc sub-process and back to the AI agent connector. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+      },
+      {
+        "group": "tools",
+        "tooltip": "This defines where to handle tool call results returned by the ad-hoc sub-process. Model this as part of your process and route it into the tools feedback loop. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+      },
+      {
+        "group": "memory",
+        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory",
+        "tooltip": "Will use the cluster default TTL (time-to-live) if not specified. Make sure to set this value to a reasonable duration matching your process lifecycle."
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory",
+        "tooltip": "Must match the identifier configured for the custom implementation."
+      },
+      {
+        "group": "memory"
+      },
+      {
+        "group": "memory",
+        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+      },
+      {
+        "group": "limits"
+      },
+      {
+        "group": "response"
+      },
+      {
+        "group": "response",
+        "tooltip": "Use this option in combination with models which don't support native JSON mode/structured tool calling (e.g. Anthropic). Make sure to instruct the model to return valid JSON in the system prompt. The parsed JSON will be available as <code>response.responseJson</code>.<br><br>If parsing fails, <code>null</code> will be returned as JSON response, but the text content will still be available as <code>response.responseText</code>."
+      },
+      {
+        "group": "response",
+        "tooltip": "If supported by the model, the response will be structured according to the provided schema. A parsed version of the response will be available as <code>response.responseJson</code>."
+      },
+      {
+        "group": "response"
+      },
+      {
+        "group": "response",
+        "tooltip": "In addition to the text content, the assistant message may include multiple additional content blocks and metadata (such as token usage). The message will be available as <code>response.responseMessage</code>."
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output",
+        "tooltip": "<div><p>Example response:</p><code>{\"context\":{\"metrics\":{\"modelCalls\":3,\"tokenUsage\":{\"inputTokenCount\":10,\"outputTokenCount\":20},\"toolCalls\":0},\"schemaVersion\":1,\"state\":\"READY\",\"toolDefinitions\":[{\"description\":\"A sample tool for demonstration purposes.\",\"inputSchema\":{\"properties\":{\"input1\":{\"type\":\"string\"},\"input2\":{\"type\":\"number\"}},\"required\":[\"input1\",\"input2\"],\"type\":\"object\"},\"name\":\"sampleTool\"}]},\"responseText\":\"This is a sample response text from the AI agent.\",\"toolCalls\":[]}</code><p>Example FEEL expression: <code>={ responseText: responseText }</code> -&gt; <code>{\"responseText\":\"This is a sample response text from the AI agent.\"}</code></p></div>"
+      },
+      {
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
   "io.camunda.connectors.EmbeddingsVectorDB.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -12458,15 +19406,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
   "io.camunda.connectors.webhook.WebhookConnectorReceive.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
         "id": "connectors",
         "name": "Connectors"
@@ -12491,6 +19439,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "activation",
           "label": "Activation"
+        },
+        {
+          "id": "synchronousResponse",
+          "label": "Response mode"
         },
         {
           "id": "correlation",
@@ -12535,6 +19487,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
+      {
         "group": "authorization"
       },
       {
@@ -12572,7 +19536,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "correlation"
+        "group": "synchronousResponse",
+        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
       },
       {
         "group": "correlation"
@@ -12585,6 +19550,187 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output",
+        "tooltip": "<div><p>Example response:</p><code>{\"request\":{\"body\":{\"orderId\":\"123\",\"status\":\"created\"},\"headers\":{\"Content-Type\":\"application/json\"},\"params\":{}}}</code><p>Example FEEL expression: <code>= { orderId: request.body.orderId }</code> -&gt; <code>{\"orderId\":\"123\"}</code></p></div>"
+      }
+    ]
+  },
+  "io.camunda.connectors.inbound.MSFT.O365.EmailMessageStart.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "authentication",
+          "label": "Authentication"
+        },
+        {
+          "id": "pollingConfig",
+          "label": "Listener Information"
+        },
+        {
+          "id": "postprocessing",
+          "label": "Postprocessing"
+        },
+        {
+          "id": "activation",
+          "label": "Activation"
+        },
+        {
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        }
+      ],
+      "icon": {
+        "contents": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIGhlaWdodD0nMTYnIHdpZHRoPScxNicgdmlld0JveD0nLTI3NC42NjI3NSAtNDI1LjgzNCAyMzgwLjQxMDUgMjU1NS4wMDQnPgogICAgPHBhdGggZD0nTTE4MzEuMDgzIDg5NC4yNWE0MC44NzkgNDAuODc5IDAgMDAtMTkuNTAzLTM1LjEzMWgtLjIxM2wtLjc2Ny0uNDI2LTYzNC40OTItMzc1LjU4NWE4Ni4xNzUgODYuMTc1IDAgMDAtOC41MTctNS4wNjcgODUuMTcgODUuMTcgMCAwMC03OC4wOTggMCA4Ni4zNyA4Ni4zNyAwIDAwLTguNTE3IDUuMDY3bC02MzQuNDkgMzc1LjU4NS0uNzY2LjQyNmMtMTkuMzkyIDEyLjA1OS0yNS4zMzcgMzcuNTU2LTEzLjI3OCA1Ni45NDhhNDEuMzQ2IDQxLjM0NiAwIDAwMTQuMjU3IDEzLjg2OGw2MzQuNDkyIDM3NS41ODVhOTUuNjE3IDk1LjYxNyAwIDAwOC41MTcgNS4wNjggODUuMTcgODUuMTcgMCAwMDc4LjA5OCAwIDk1LjUyIDk1LjUyIDAgMDA4LjUxNy01LjA2OGw2MzQuNDkyLTM3NS41ODVhNDAuODQgNDAuODQgMCAwMDIwLjI2OC0zNS42ODV6JyBmaWxsPScjMEEyNzY3Jy8+CiAgICA8cGF0aCBkPSdNNTIwLjQ1MyA2NDMuNDc3aDQxNi4zOHYzODEuNjc0aC00MTYuMzh6TTE3NDUuOTE3IDI1NS41VjgwLjkwOGMxLTQzLjY1Mi0zMy41NTItNzkuODYyLTc3LjIwMy04MC45MDhINTg4LjIwNEM1NDQuNTUyIDEuMDQ2IDUxMCAzNy4yNTYgNTExIDgwLjkwOFYyNTUuNWw2MzguNzUgMTcwLjMzM3onIGZpbGw9JyMwMzY0QjgnLz4KICAgIDxwYXRoIGQ9J001MTEgMjU1LjVoNDI1LjgzM3YzODMuMjVINTExeicgZmlsbD0nIzAwNzhENCcvPgogICAgPHBhdGggZD0nTTEzNjIuNjY3IDI1NS41SDkzNi44MzN2MzgzLjI1TDEzNjIuNjY3IDEwMjJoMzgzLjI1VjYzOC43NXonIGZpbGw9JyMyOEE4RUEnLz4KICAgIDxwYXRoIGQ9J005MzYuODMzIDYzOC43NWg0MjUuODMzVjEwMjJIOTM2LjgzM3onIGZpbGw9JyMwMDc4RDQnLz4KICAgIDxwYXRoIGQ9J005MzYuODMzIDEwMjJoNDI1LjgzM3YzODMuMjVIOTM2LjgzM3onIGZpbGw9JyMwMzY0QjgnLz4KICAgIDxwYXRoIGQ9J001MjAuNDUzIDEwMjUuMTUxaDQxNi4zOHYzNDYuOTY5aC00MTYuMzh6JyBmaWxsPScjMTQ0NDdEJy8+CiAgICA8cGF0aCBkPSdNMTM2Mi42NjcgMTAyMmgzODMuMjV2MzgzLjI1aC0zODMuMjV6JyBmaWxsPScjMDA3OEQ0Jy8+CiAgICA8bGluZWFyR3JhZGllbnQgZ3JhZGllbnRUcmFuc2Zvcm09J21hdHJpeCgxIDAgMCAtMSAwIDE3MDUuMzMzKScgeTI9JzEuOTk4JyB4Mj0nMTEyOC40NTgnIHkxPSc4MTEuMDgzJyB4MT0nMTEyOC40NTgnIGdyYWRpZW50VW5pdHM9J3VzZXJTcGFjZU9uVXNlJyBpZD0nYSc+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScwJyBzdG9wLWNvbG9yPScjMzViOGYxJy8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScxJyBzdG9wLWNvbG9yPScjMjhhOGVhJy8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPHBhdGggZD0nTTE4MTEuNTggOTI3LjU5M2wtLjgwOS40MjYtNjM0LjQ5MiAzNTYuODQ4Yy0yLjc2OCAxLjcwMy01LjU3OCAzLjMyMS04LjUxNyA0Ljc2OWE4OC40MzcgODguNDM3IDAgMDEtMzQuNDA3IDguNTE3bC0zNC42NjMtMjAuMjdhODYuNzA2IDg2LjcwNiAwIDAxLTguNTE3LTQuODk3TDQ0Ny4xNjcgOTA2LjAwM2gtLjI5OGwtMjEuMDM2LTExLjc1M3Y3MjIuMzg0Yy4zMjggNDguMTk2IDM5LjY1MyA4Ny4wMDYgODcuODQ5IDg2LjdoMTIzMC45MTRjLjcyNCAwIDEuMzYzLS4zNDEgMi4xMjktLjM0MWExMDcuNzkgMTA3Ljc5IDAgMDAyOS44MDgtNi4yMTcgODYuMDY2IDg2LjA2NiAwIDAwMTEuOTY2LTYuMjE3YzIuODUzLTEuNjE4IDcuNzUtNS4xNTIgNy43NS01LjE1MmE4NS45NzQgODUuOTc0IDAgMDAzNC44MzMtNjguNzcyVjg5NC4yNWEzOC4zMjMgMzguMzIzIDAgMDEtMTkuNTAyIDMzLjM0M3onIGZpbGw9J3VybCgjYSknLz4KICAgIDxwYXRoIGQ9J00xNzk3LjAxNyA4OTEuMzk3djQ0LjI4N2wtNjYzLjQ0OCA0NTYuNzkxLTY4Ni44Ny00ODYuMTc0YS40MjYuNDI2IDAgMDAtLjQyNi0uNDI2bC02My4wMjMtMzcuODk5di0zMS45MzhsMjUuOTc2LS40MjYgNTQuOTMyIDMxLjUxMiAxLjI3Ny40MjYgNC42ODQgMi45ODFzNjQ1LjU2MyAzNjguMzQ2IDY0Ny4yNjcgMzY5LjE5N2wyNC42OTggMTQuNDc4YzIuMTI5LS44NTIgNC4yNTgtMS43MDMgNi44MTMtMi41NTUgMS4yNzgtLjg1MiA2NDAuODc5LTM2MC42ODEgNjQwLjg3OS0zNjAuNjgxeicgZmlsbD0nIzBBMjc2Nycgb3BhY2l0eT0nLjUnLz4KICAgIDxwYXRoIGQ9J00xODExLjU4IDkyNy41OTNsLS44MDkuNDY4LTYzNC40OTIgMzU2Ljg0OGMtMi43NjggMS43MDMtNS41NzggMy4zMjEtOC41MTcgNC43NjlhODguOTYgODguOTYgMCAwMS03OC4wOTggMCA5Ni41NzggOTYuNTc4IDAgMDEtOC41MTctNC43NjlsLTYzNC40OS0zNTYuODQ4LS43NjYtLjQ2OGEzOC4zMjYgMzguMzI2IDAgMDEtMjAuMDU3LTMzLjM0M3Y3MjIuMzg0Yy4zMDUgNDguMTg4IDM5LjYxNiA4Ny4wMDQgODcuODAzIDg2LjdoMTIyOS42NGM0OC4xODguMzA3IDg3LjUtMzguNTA5IDg3LjgwNy04Ni42OTYgMC0uMDAxIDAgMCAwIDBWODk0LjI1YTM4LjMzIDM4LjMzIDAgMDEtMTkuNTA0IDMzLjM0M3onIGZpbGw9JyMxNDkwREYnLz4KICAgIDxwYXRoIGQ9J00xMTg1LjUyIDEyNzkuNjI5bC05LjQ5NiA1LjMyM2E5Mi44MDYgOTIuODA2IDAgMDEtOC41MTcgNC44MTIgODguMTczIDg4LjE3MyAwIDAxLTMzLjQ3IDguODU3bDI0MS40MDUgMjg1LjQ3OSA0MjEuMTA3IDEwMS40NzZhODYuNzg1IDg2Ljc4NSAwIDAwMjYuNy0zMy4zNDN6JyBvcGFjaXR5PScuMScvPgogICAgPHBhdGggZD0nTTEyMjguNTI5IDEyNTUuNDQybC01Mi41MDUgMjkuNTFhOTIuODA2IDkyLjgwNiAwIDAxLTguNTE3IDQuODEyIDg4LjE3MyA4OC4xNzMgMCAwMS0zMy40NyA4Ljg1N2wxMTMuMTAxIDMxMS44MzggNTQ5LjUzOCA3NC45ODlhODYuMTA0IDg2LjEwNCAwIDAwMzQuNDA3LTY4LjgxNXYtOS4zMjZ6JyBvcGFjaXR5PScuMDUnLz4KICAgIDxwYXRoIGQ9J001MTQuODMzIDE3MDMuMzMzaDEyMjguMzE2YTg4LjMxNiA4OC4zMTYgMCAwMDUyLjU5LTE3LjAzM2wtNjk3LjA4OS00MDguMzMxYTg2LjcwNiA4Ni43MDYgMCAwMS04LjUxNy00Ljg5N0w0NDcuMTI1IDkwNi4wODhoLS4yOThsLTIwLjk5My0xMS44Mzh2NzE5LjkxNGMtLjA0OCA0OS4yIDM5Ljc5OCA4OS4xMjIgODguOTk5IDg5LjE2OS0uMDAxIDAtLjAwMSAwIDAgMHonIGZpbGw9JyMyOEE4RUEnLz4KICAgIDxwYXRoIGQ9J00xMDIyIDQxOC43MjJ2OTA4LjMwM2MtLjA3NiAzMS44NDYtMTkuNDQgNjAuNDcxLTQ4Ljk3MSA3Mi4zOTJhNzMuMzgyIDczLjM4MiAwIDAxLTI4Ljk1NyA1Ljk2Mkg0MjUuODMzVjM4My4yNUg1MTF2LTQyLjU4M2g0MzMuMDczYzQzLjAxOS4xNjMgNzcuODM0IDM1LjAzNSA3Ny45MjcgNzguMDU1eicgb3BhY2l0eT0nLjEnLz4KICAgIDxwYXRoIGQ9J005NzkuNDE3IDQ2MS4zMDV2OTA4LjMwMmE2OS4zNiA2OS4zNiAwIDAxLTYuMzg4IDI5LjgwOGMtMTEuODI2IDI5LjE0OS00MC4wODMgNDguMjczLTcxLjU0IDQ4LjQxN0g0MjUuODMzVjM4My4yNWg0NzUuNjU2YTcxLjQ5MyA3MS40OTMgMCAwMTM1LjM0NCA4Ljk0M2MyNi4xMDQgMTMuMTUxIDQyLjU3NCAzOS44ODMgNDIuNTg0IDY5LjExMnonIG9wYWNpdHk9Jy4yJy8+CiAgICA8cGF0aCBkPSdNOTc5LjQxNyA0NjEuMzA1djgyMy4xMzZjLS4yMDggNDMtMzQuOTI4IDc3Ljg1My03Ny45MjcgNzguMjI1SDQyNS44MzNWMzgzLjI1aDQ3NS42NTZhNzEuNDkzIDcxLjQ5MyAwIDAxMzUuMzQ0IDguOTQzYzI2LjEwNCAxMy4xNTEgNDIuNTc0IDM5Ljg4MyA0Mi41ODQgNjkuMTEyeicgb3BhY2l0eT0nLjInLz4KICAgIDxwYXRoIGQ9J005MzYuODMzIDQ2MS4zMDV2ODIzLjEzNmMtLjA0NiA0My4wNjctMzQuODYxIDc4LjAxNS03Ny45MjcgNzguMjI1SDQyNS44MzNWMzgzLjI1aDQzMy4wNzJjNDMuMDYyLjAyMyA3Ny45NTEgMzQuOTUxIDc3LjkyNyA3OC4wMTNhLjU4OS41ODkgMCAwMS4wMDEuMDQyeicgb3BhY2l0eT0nLjInLz4KICAgIDxsaW5lYXJHcmFkaWVudCBncmFkaWVudFRyYW5zZm9ybT0nbWF0cml4KDEgMCAwIC0xIDAgMTcwNS4zMzMpJyB5Mj0nMzI0LjI1OScgeDI9Jzc3NC4wODYnIHkxPScxMzgzLjA3NCcgeDE9JzE2Mi43NDcnIGdyYWRpZW50VW5pdHM9J3VzZXJTcGFjZU9uVXNlJyBpZD0nYic+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScwJyBzdG9wLWNvbG9yPScjMTc4NGQ5Jy8+CiAgICAgICAgPHN0b3Agb2Zmc2V0PScuNScgc3RvcC1jb2xvcj0nIzEwN2FkNScvPgogICAgICAgIDxzdG9wIG9mZnNldD0nMScgc3RvcC1jb2xvcj0nIzBhNjNjOScvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxwYXRoIGQ9J003OC4wNTUgMzgzLjI1aDc4MC43MjNjNDMuMTA5IDAgNzguMDU1IDM0Ljk0NyA3OC4wNTUgNzguMDU1djc4MC43MjNjMCA0My4xMDktMzQuOTQ2IDc4LjA1NS03OC4wNTUgNzguMDU1SDc4LjA1NWMtNDMuMTA5IDAtNzguMDU1LTM0Ljk0Ny03OC4wNTUtNzguMDU1VjQ2MS4zMDVjMC00My4xMDggMzQuOTQ3LTc4LjA1NSA3OC4wNTUtNzguMDU1eicgZmlsbD0ndXJsKCNiKScvPgogICAgPHBhdGggZD0nTTI0My45NiA3MTAuNjMxYTIyNy4wNSAyMjcuMDUgMCAwMTg5LjE3LTk4LjQ5NSAyNjkuNTYgMjY5LjU2IDAgMDExNDEuNjc1LTM1LjUxNSAyNTAuOTEgMjUwLjkxIDAgMDExMzEuMTE0IDMzLjY4MyAyMjUuMDE0IDIyNS4wMTQgMCAwMTg2Ljc0MiA5NC4xMDkgMzAzLjc1MSAzMDMuNzUxIDAgMDEzMC40MDUgMTM4LjM5NiAzMjAuNTY3IDMyMC41NjcgMCAwMS0zMS4yOTkgMTQ0Ljc4MyAyMzAuMzcgMjMwLjM3IDAgMDEtODkuNDI1IDk3LjM4OCAyNjAuODY0IDI2MC44NjQgMCAwMS0xMzYuMDExIDM0LjU3OCAyNTYuMzU1IDI1Ni4zNTUgMCAwMS0xMzQuMDEtMzQuMDY3IDIyOC40OTcgMjI4LjQ5NyAwIDAxLTg3Ljg5Mi05NC4yOCAyOTYuNTA3IDI5Ni41MDcgMCAwMS0zMC43NDUtMTM2LjczNSAzMjkuMjkgMzI5LjI5IDAgMDEzMC4yNzYtMTQzLjg0NXptOTUuMDQ2IDIzMS4yMjdhMTQ3LjM4NiAxNDcuMzg2IDAgMDA1MC4xNjMgNjQuODEyIDEzMS4wMjggMTMxLjAyOCAwIDAwNzguMzUzIDIzLjU5MSAxMzcuMjQ0IDEzNy4yNDQgMCAwMDgzLjYzNC0yNC4zNTggMTQxLjE1NiAxNDEuMTU2IDAgMDA0OC43MTUtNjQuODEyIDI1MS41OTQgMjUxLjU5NCAwIDAwMTUuNTQzLTkwLjQwNCAyNzUuMTk4IDI3NS4xOTggMCAwMC0xNC42NDktOTEuNTU0IDE0NC43NzUgMTQ0Ljc3NSAwIDAwLTQ3LjE4Mi02Ny41MzcgMTI5LjU4IDEyOS41OCAwIDAwLTgyLjkxLTI1LjU1IDEzNS4yMDIgMTM1LjIwMiAwIDAwLTgwLjE4NCAyMy44MDQgMTQ4LjYyNiAxNDguNjI2IDAgMDAtNTEuMSA2NS4zNjUgMjU5Ljc1OSAyNTkuNzU5IDAgMDAtLjM0MSAxODYuNzI4eicgZmlsbD0nI0ZGRicvPgogICAgPHBhdGggZD0nTTEzNjIuNjY3IDI1NS41aDM4My4yNXYzODMuMjVoLTM4My4yNXonIGZpbGw9JyM1MEQ5RkYnLz4KPC9zdmc+Cg=="
+      }
+    },
+    "properties": [
+      {},
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application; optional, depends on whether the client is public or private"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "The email address or user ID of the mailbox to monitor. <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/#mailbox-configuration\" target=\"_blank\">Microsoft O365 Mail connector configuration</a>",
+        "placeholder": "user@example.com"
+      },
+      {
+        "group": "pollingConfig"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "The well-known folder ID or custom folder ID. <a href='https://learn.microsoft.com/en-us/graph/api/resources/mailfolder?view=graph-rest-1.0#properties' target='_blank'>See folder properties in the API</a>"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "The display name of the folder. Must be unique within the mailbox."
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "The interval between email polling requests, in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
+      },
+      {
+        "group": "pollingConfig"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "Only fetch unread emails"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "Only fetch emails where subject contains this text (case-sensitive)"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "Only fetch emails from this sender address (exact match, e.g. 'invoice@vendor.com')"
+      },
+      {
+        "group": "pollingConfig",
+        "tooltip": "A custom OData filter expression. <a href='https://learn.microsoft.com/en-us/graph/filter-query-parameter' target='_blank'>See OData filter documentation</a>"
+      },
+      {
+        "group": "postprocessing"
+      },
+      {
+        "group": "postprocessing"
+      },
+      {
+        "group": "postprocessing"
+      },
+      {
+        "group": "postprocessing",
+        "tooltip": "The well-known folder ID or custom folder ID. <a href='https://learn.microsoft.com/en-us/graph/api/resources/mailfolder?view=graph-rest-1.0#properties' target='_blank'>See folder properties in the API</a>"
+      },
+      {
+        "group": "postprocessing",
+        "tooltip": "The display name of the folder. Must be unique within the mailbox."
+      },
+      {
+        "group": "activation"
+      },
+      {
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -12609,12 +19755,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
   "io.camunda.connectors.agenticai.a2a.client.polling.intermediate.v0": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
-      "metadata": {
-        "keywords": []
-      },
       "category": {
-        "id": "connectors",
-        "name": "Connectors"
+        "id": "aiTools",
+        "name": "AI Tools"
       },
       "groups": [
         {
@@ -12695,7 +19838,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "correlation"
       },
       {
-        "group": "correlation"
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -12734,12 +19878,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Payload"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Response mapping"
         },
         {
           "id": "errors",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
@@ -12750,31 +19902,52 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
-        "group": "authentication"
+        "group": "authentication",
+        "tooltip": "Get your API key at <a href=\"https://huggingface.co/settings/tokens\" target=\"_blank\">Hugging Face API tokens</a>"
       },
       {
-        "group": "input"
+        "group": "input",
+        "placeholder": "meta-llama/Llama-3.2-3B-Instruct",
+        "tooltip": "Full model repository ID. Browse models on <a href=\"https://huggingface.co/models\" target=\"_blank\">Hugging Face</a>."
       },
       {
-        "group": "input"
+        "group": "input",
+        "tooltip": "Chat messages array in format: [{\"role\": \"user\", \"content\": \"Your message\"}]. Use 'system' role for instructions and 'user' role for queries. See the <a href=\"https://huggingface.co/docs/inference-providers/index#http--curl\" target=\"_blank\">Hugging Face inference API</a>."
       },
+      {},
+      {},
+      {},
       {
-        "group": "endpoint"
-      },
-      {
-        "group": "endpoint"
-      },
-      {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. For chat completion, use: =response.body.choices[1].message.content to get the AI response. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Sets the timeout in seconds to establish a connection or 0 for an infinite timeout",
         "group": "errors"
       },
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -12789,10 +19962,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "endpoint",
           "label": "API destination"
-        },
-        {
-          "id": "authentication",
-          "label": "Authentication"
         },
         {
           "id": "authorization",
@@ -12826,6 +19995,12 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {},
+      {
+        "group": "authorization"
+      },
+      {
+        "group": "authorization"
+      },
       {
         "group": "authorization"
       },
@@ -12909,6 +20084,17 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
+        "group": "endpoint",
+        "tooltip": "The webhook ID is a part of the URL."
+      },
+      {},
+      {
+        "group": "endpoint",
+        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
+      },
+      {},
+      {
+        "tooltip": "Shared secret key used to verify the HMAC signature.",
         "group": "endpoint"
       },
       {},
@@ -12917,33 +20103,32 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "endpoint"
       },
       {
-        "group": "endpoint"
-      },
-      {},
-      {},
-      {
-        "group": "endpoint"
+        "group": "activation",
+        "tooltip": "Expression to extract the unique identifier of a message."
       },
       {
-        "group": "activation"
+        "group": "activation",
+        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events."
       },
       {
-        "group": "activation"
-      },
-      {
+        "tooltip": "Indicates whether correlation is required. This is needed for event-based subprocess message start events.",
         "group": "correlation"
       },
       {
-        "group": "correlation"
+        "group": "correlation",
+        "tooltip": "Sets up the correlation key from process variables."
       },
       {
-        "group": "correlation"
+        "group": "correlation",
+        "tooltip": "Extracts the correlation key from the incoming message payload."
       },
       {
-        "group": "variable-mapping"
+        "group": "variable-mapping",
+        "tooltip": "Name of variable to store the result of the connector in."
       },
       {
-        "group": "variable-mapping"
+        "group": "variable-mapping",
+        "tooltip": "Expression to map the inbound payload to process variables."
       }
     ]
   },
@@ -12964,41 +20149,79 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Activation"
         },
         {
-          "id": "variable-mapping",
-          "label": "Variable Mapping"
+          "id": "correlation",
+          "label": "Correlation",
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+        },
+        {
+          "id": "deduplication",
+          "label": "Deduplication",
+          "tooltip": "Deduplication allows you to configure multiple inbound connector elements to reuse the same backend (consumer/thread/endpoint) by sharing the same deduplication ID."
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
         }
       ],
       "icon": {
-        "contents": "data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 80 80' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 64 (93537) - https://sketch.com --%3E%3Ctitle%3EIcon-Architecture/64/Arch_AWS-Simple-Notification-Service_64%3C/title%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3ClinearGradient x1='0%25' y1='100%25' x2='100%25' y2='0%25' id='linearGradient-1'%3E%3Cstop stop-color='%23B0084D' offset='0%25'%3E%3C/stop%3E%3Cstop stop-color='%23FF4F8B' offset='100%25'%3E%3C/stop%3E%3C/linearGradient%3E%3C/defs%3E%3Cg id='Icon-Architecture/64/Arch_AWS-Simple-Notification-Service_64' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Icon-Architecture-BG/64/Application-Integration' fill='url(%23linearGradient-1)'%3E%3Crect id='Rectangle' x='0' y='0' width='80' height='80'%3E%3C/rect%3E%3C/g%3E%3Cpath d='M17,38 C18.103,38 19,38.897 19,40 C19,41.103 18.103,42 17,42 C15.897,42 15,41.103 15,40 C15,38.897 15.897,38 17,38 L17,38 Z M41,64 C29.314,64 19.289,55.466 17.194,43.98 C18.965,43.894 20.427,42.659 20.857,41 L27,41 L27,39 L20.857,39 C20.427,37.342 18.966,36.107 17.195,36.02 C19.285,24.71 29.511,16 41,16 C45.313,16 49.832,17.622 54.429,20.821 L55.571,19.179 C50.633,15.743 45.73,14 41,14 C28.27,14 16.949,23.865 15.063,36.521 C13.839,37.207 13,38.5 13,40 C13,41.5 13.839,42.793 15.063,43.478 C16.97,56.341 28.056,66 41,66 C46.407,66 51.942,64.157 56.585,60.811 L55.415,59.189 C51.11,62.292 45.991,64 41,64 L41,64 Z M30.101,36.442 C31.955,36.895 34.275,37 36,37 C37.642,37 39.823,36.905 41.629,36.506 L37.105,45.553 C37.036,45.691 37,45.845 37,46 L37,50.453 C36.199,50.964 34.833,51.812 34,51.986 L34,46 C34,45.868 33.974,45.737 33.923,45.615 L30.101,36.442 Z M36,33 C40.025,33 42.174,33.604 42.841,34 C42.174,34.396 40.025,35 36,35 C31.975,35 29.826,34.396 29.159,34 C29.826,33.604 31.975,33 36,33 L36,33 Z M33,54 L34,54 C34.043,54 34.086,53.997 34.128,53.992 C35.352,53.833 36.909,52.887 38.272,52.013 L38.535,51.845 C38.824,51.661 39,51.342 39,51 L39,46.236 L44.559,35.12 C44.833,34.801 45,34.434 45,34 C45,31.39 39.361,31 36,31 C32.639,31 27,31.39 27,34 C27,34.366 27.12,34.684 27.32,34.967 L32,46.2 L32,53 C32,53.552 32.447,54 33,54 L33,54 Z M62,53 C63.103,53 64,53.897 64,55 C64,56.103 63.103,57 62,57 C60.897,57 60,56.103 60,55 C60,53.897 60.897,53 62,53 L62,53 Z M62,23 C63.103,23 64,23.897 64,25 C64,26.103 63.103,27 62,27 C60.897,27 60,26.103 60,25 C60,23.897 60.897,23 62,23 L62,23 Z M64,38 C65.103,38 66,38.897 66,40 C66,41.103 65.103,42 64,42 C62.897,42 62,41.103 62,40 C62,38.897 62.897,38 64,38 L64,38 Z M54,41 L60.143,41 C60.589,42.72 62.142,44 64,44 C66.206,44 68,42.206 68,40 C68,37.794 66.206,36 64,36 C62.142,36 60.589,37.28 60.143,39 L54,39 L54,26 L58.143,26 C58.589,27.72 60.142,29 62,29 C64.206,29 66,27.206 66,25 C66,22.794 64.206,21 62,21 C60.142,21 58.589,22.28 58.143,24 L53,24 C52.447,24 52,24.448 52,25 L52,39 L45,39 L45,41 L52,41 L52,55 C52,55.552 52.447,56 53,56 L58.143,56 C58.589,57.72 60.142,59 62,59 C64.206,59 66,57.206 66,55 C66,52.794 64.206,51 62,51 C60.142,51 58.589,52.28 58.143,54 L54,54 L54,41 Z' id='AWS-Simple-Notification-Service_Icon_64_Squid' fill='%23FFFFFF'%3E%3C/path%3E%3C/g%3E%3C/svg%3E"
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTgnIGhlaWdodD0nMTgnIHZpZXdCb3g9JzAgMCA4MCA4MCcgdmVyc2lvbj0nMS4xJyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnCiAgICAgeG1sbnM6eGxpbms9J2h0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsnPjwhLS0gR2VuZXJhdG9yOiBTa2V0Y2ggNjQgKDkzNTM3KSAtIGh0dHBzOi8vc2tldGNoLmNvbSAtLT4KICAgIDx0aXRsZT5JY29uLUFyY2hpdGVjdHVyZS82NC9BcmNoX0FXUy1TaW1wbGUtTm90aWZpY2F0aW9uLVNlcnZpY2VfNjQ8L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+CiAgICA8ZGVmcz4KICAgICAgICA8bGluZWFyR3JhZGllbnQgeDE9JzAlJyB5MT0nMTAwJScgeDI9JzEwMCUnIHkyPScwJScgaWQ9J2xpbmVhckdyYWRpZW50LTEnPgogICAgICAgICAgICA8c3RvcCBzdG9wLWNvbG9yPScjQjAwODREJyBvZmZzZXQ9JzAlJz48L3N0b3A+CiAgICAgICAgICAgIDxzdG9wIHN0b3AtY29sb3I9JyNGRjRGOEInIG9mZnNldD0nMTAwJSc+PC9zdG9wPgogICAgICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8L2RlZnM+CiAgICA8ZyBpZD0nSWNvbi1BcmNoaXRlY3R1cmUvNjQvQXJjaF9BV1MtU2ltcGxlLU5vdGlmaWNhdGlvbi1TZXJ2aWNlXzY0JyBzdHJva2U9J25vbmUnIHN0cm9rZS13aWR0aD0nMScgZmlsbD0nbm9uZScKICAgICAgIGZpbGwtcnVsZT0nZXZlbm9kZCc+CiAgICAgICAgPGcgaWQ9J0ljb24tQXJjaGl0ZWN0dXJlLUJHLzY0L0FwcGxpY2F0aW9uLUludGVncmF0aW9uJyBmaWxsPSd1cmwoI2xpbmVhckdyYWRpZW50LTEpJz4KICAgICAgICAgICAgPHJlY3QgaWQ9J1JlY3RhbmdsZScgeD0nMCcgeT0nMCcgd2lkdGg9JzgwJyBoZWlnaHQ9JzgwJz48L3JlY3Q+CiAgICAgICAgPC9nPgogICAgICAgIDxwYXRoIGQ9J00xNywzOCBDMTguMTAzLDM4IDE5LDM4Ljg5NyAxOSw0MCBDMTksNDEuMTAzIDE4LjEwMyw0MiAxNyw0MiBDMTUuODk3LDQyIDE1LDQxLjEwMyAxNSw0MCBDMTUsMzguODk3IDE1Ljg5NywzOCAxNywzOCBMMTcsMzggWiBNNDEsNjQgQzI5LjMxNCw2NCAxOS4yODksNTUuNDY2IDE3LjE5NCw0My45OCBDMTguOTY1LDQzLjg5NCAyMC40MjcsNDIuNjU5IDIwLjg1Nyw0MSBMMjcsNDEgTDI3LDM5IEwyMC44NTcsMzkgQzIwLjQyNywzNy4zNDIgMTguOTY2LDM2LjEwNyAxNy4xOTUsMzYuMDIgQzE5LjI4NSwyNC43MSAyOS41MTEsMTYgNDEsMTYgQzQ1LjMxMywxNiA0OS44MzIsMTcuNjIyIDU0LjQyOSwyMC44MjEgTDU1LjU3MSwxOS4xNzkgQzUwLjYzMywxNS43NDMgNDUuNzMsMTQgNDEsMTQgQzI4LjI3LDE0IDE2Ljk0OSwyMy44NjUgMTUuMDYzLDM2LjUyMSBDMTMuODM5LDM3LjIwNyAxMywzOC41IDEzLDQwIEMxMyw0MS41IDEzLjgzOSw0Mi43OTMgMTUuMDYzLDQzLjQ3OCBDMTYuOTcsNTYuMzQxIDI4LjA1Niw2NiA0MSw2NiBDNDYuNDA3LDY2IDUxLjk0Miw2NC4xNTcgNTYuNTg1LDYwLjgxMSBMNTUuNDE1LDU5LjE4OSBDNTEuMTEsNjIuMjkyIDQ1Ljk5MSw2NCA0MSw2NCBMNDEsNjQgWiBNMzAuMTAxLDM2LjQ0MiBDMzEuOTU1LDM2Ljg5NSAzNC4yNzUsMzcgMzYsMzcgQzM3LjY0MiwzNyAzOS44MjMsMzYuOTA1IDQxLjYyOSwzNi41MDYgTDM3LjEwNSw0NS41NTMgQzM3LjAzNiw0NS42OTEgMzcsNDUuODQ1IDM3LDQ2IEwzNyw1MC40NTMgQzM2LjE5OSw1MC45NjQgMzQuODMzLDUxLjgxMiAzNCw1MS45ODYgTDM0LDQ2IEMzNCw0NS44NjggMzMuOTc0LDQ1LjczNyAzMy45MjMsNDUuNjE1IEwzMC4xMDEsMzYuNDQyIFogTTM2LDMzIEM0MC4wMjUsMzMgNDIuMTc0LDMzLjYwNCA0Mi44NDEsMzQgQzQyLjE3NCwzNC4zOTYgNDAuMDI1LDM1IDM2LDM1IEMzMS45NzUsMzUgMjkuODI2LDM0LjM5NiAyOS4xNTksMzQgQzI5LjgyNiwzMy42MDQgMzEuOTc1LDMzIDM2LDMzIEwzNiwzMyBaIE0zMyw1NCBMMzQsNTQgQzM0LjA0Myw1NCAzNC4wODYsNTMuOTk3IDM0LjEyOCw1My45OTIgQzM1LjM1Miw1My44MzMgMzYuOTA5LDUyLjg4NyAzOC4yNzIsNTIuMDEzIEwzOC41MzUsNTEuODQ1IEMzOC44MjQsNTEuNjYxIDM5LDUxLjM0MiAzOSw1MSBMMzksNDYuMjM2IEw0NC41NTksMzUuMTIgQzQ0LjgzMywzNC44MDEgNDUsMzQuNDM0IDQ1LDM0IEM0NSwzMS4zOSAzOS4zNjEsMzEgMzYsMzEgQzMyLjYzOSwzMSAyNywzMS4zOSAyNywzNCBDMjcsMzQuMzY2IDI3LjEyLDM0LjY4NCAyNy4zMiwzNC45NjcgTDMyLDQ2LjIgTDMyLDUzIEMzMiw1My41NTIgMzIuNDQ3LDU0IDMzLDU0IEwzMyw1NCBaIE02Miw1MyBDNjMuMTAzLDUzIDY0LDUzLjg5NyA2NCw1NSBDNjQsNTYuMTAzIDYzLjEwMyw1NyA2Miw1NyBDNjAuODk3LDU3IDYwLDU2LjEwMyA2MCw1NSBDNjAsNTMuODk3IDYwLjg5Nyw1MyA2Miw1MyBMNjIsNTMgWiBNNjIsMjMgQzYzLjEwMywyMyA2NCwyMy44OTcgNjQsMjUgQzY0LDI2LjEwMyA2My4xMDMsMjcgNjIsMjcgQzYwLjg5NywyNyA2MCwyNi4xMDMgNjAsMjUgQzYwLDIzLjg5NyA2MC44OTcsMjMgNjIsMjMgTDYyLDIzIFogTTY0LDM4IEM2NS4xMDMsMzggNjYsMzguODk3IDY2LDQwIEM2Niw0MS4xMDMgNjUuMTAzLDQyIDY0LDQyIEM2Mi44OTcsNDIgNjIsNDEuMTAzIDYyLDQwIEM2MiwzOC44OTcgNjIuODk3LDM4IDY0LDM4IEw2NCwzOCBaIE01NCw0MSBMNjAuMTQzLDQxIEM2MC41ODksNDIuNzIgNjIuMTQyLDQ0IDY0LDQ0IEM2Ni4yMDYsNDQgNjgsNDIuMjA2IDY4LDQwIEM2OCwzNy43OTQgNjYuMjA2LDM2IDY0LDM2IEM2Mi4xNDIsMzYgNjAuNTg5LDM3LjI4IDYwLjE0MywzOSBMNTQsMzkgTDU0LDI2IEw1OC4xNDMsMjYgQzU4LjU4OSwyNy43MiA2MC4xNDIsMjkgNjIsMjkgQzY0LjIwNiwyOSA2NiwyNy4yMDYgNjYsMjUgQzY2LDIyLjc5NCA2NC4yMDYsMjEgNjIsMjEgQzYwLjE0MiwyMSA1OC41ODksMjIuMjggNTguMTQzLDI0IEw1MywyNCBDNTIuNDQ3LDI0IDUyLDI0LjQ0OCA1MiwyNSBMNTIsMzkgTDQ1LDM5IEw0NSw0MSBMNTIsNDEgTDUyLDU1IEM1Miw1NS41NTIgNTIuNDQ3LDU2IDUzLDU2IEw1OC4xNDMsNTYgQzU4LjU4OSw1Ny43MiA2MC4xNDIsNTkgNjIsNTkgQzY0LjIwNiw1OSA2Niw1Ny4yMDYgNjYsNTUgQzY2LDUyLjc5NCA2NC4yMDYsNTEgNjIsNTEgQzYwLjE0Miw1MSA1OC41ODksNTIuMjggNTguMTQzLDU0IEw1NCw1NCBMNTQsNDEgWicKICAgICAgICAgICAgICBpZD0nQVdTLVNpbXBsZS1Ob3RpZmljYXRpb24tU2VydmljZV9JY29uXzY0X1NxdWlkJyBmaWxsPScjRkZGRkZGJz48L3BhdGg+CiAgICA8L2c+Cjwvc3ZnPg=="
       }
     },
     "properties": [
       {},
-      {},
-      {},
       {
-        "group": "subscription"
+        "group": "subscription",
+        "tooltip": "The subscription ID is a part of the URL endpoint"
       },
       {
-        "group": "subscription"
+        "group": "subscription",
+        "tooltip": "Control which topic(s) are allowed to start a process"
       },
       {
-        "group": "subscription"
-      },
-      {
-        "group": "activation"
-      },
-      {
-        "group": "activation"
+        "group": "subscription",
+        "tooltip": "Topic ARNs that are allowed to trigger the process, comma-separated",
+        "placeholder": "arn:aws:sns:us-east-1:123456789012:Topic1,arn:aws:sns:us-east-1:123456789012:Topic2"
       },
       {
         "group": "activation"
       },
       {
-        "group": "variable-mapping"
+        "group": "activation",
+        "tooltip": "Unmatched events are rejected by default, allowing the upstream service to handle the error. Check this box to consume unmatched events and return a success response"
       },
       {
-        "group": "variable-mapping"
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation"
+      },
+      {
+        "group": "correlation",
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "deduplication"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
       }
     ]
   },
@@ -13023,12 +20246,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
           "label": "Input"
         },
         {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
           "id": "output",
           "label": "Output"
         },
         {
-          "id": "errors",
+          "id": "error",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ],
       "icon": {
@@ -13052,6 +20283,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
+        "tooltip": "Name of the person. Both name and company can be included.",
+        "group": "input"
+      },
+      {
+        "tooltip": "Name of the organization. Both name and company can be included.",
+        "group": "input"
+      },
+      {
+        "tooltip": "Phone number to reach the person or organization",
         "group": "input"
       },
       {
@@ -13073,51 +20313,59 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
+        "tooltip": "The country code of the address location",
+        "placeholder": "US",
+        "group": "input"
+      },
+      {
+        "tooltip": "Federal tax identifier of the person or organization",
+        "group": "input"
+      },
+      {
+        "tooltip": "State tax identifier of the person or organization",
+        "group": "input"
+      },
+      {
+        "tooltip": "Weight of parcel in oz",
+        "group": "input"
+      },
+      {
+        "tooltip": "Required if width and/or height are present (inches)",
+        "group": "input"
+      },
+      {
+        "tooltip": "Required if length and/or height are present (inches)",
+        "group": "input"
+      },
+      {
+        "tooltip": "Required if length and/or width are present (inches)",
+        "group": "input"
+      },
+      {
+        "tooltip": "Optional, one of <a href=\"https://www.easypost.com/service-levels-and-parcels\" target=\"_blank\">predefined packages</a>",
+        "group": "input"
+      },
+      {
+        "tooltip": "ID of the destination address",
+        "group": "input"
+      },
+      {
+        "tooltip": "ID of the origin address",
+        "group": "input"
+      },
+      {
+        "tooltip": "ID of the parcel",
         "group": "input"
       },
       {
         "group": "input"
       },
       {
+        "tooltip": "ID of the actual rate quote for this service",
         "group": "input"
       },
       {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
-        "group": "input"
-      },
-      {
+        "tooltip": "ID of an address that has already been created",
         "group": "input"
       },
       {
@@ -13129,32 +20377,57 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {},
+      {},
       {
-        "group": "errors"
+        "tooltip": "Sets the timeout in seconds to establish a connection or 0 for an infinite timeout",
+        "group": "error"
       },
       {
+        "tooltip": "Name of variable to store the response in.",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables.",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables.",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables.",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables.",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables.",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables.",
         "group": "output"
       },
       {
-        "group": "errors"
+        "tooltip": "Expression to handle errors.",
+        "group": "error"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   },
@@ -13170,20 +20443,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       "groups": [
         {
-          "id": "authentication",
-          "label": "Authentication"
+          "id": "operation",
+          "label": "Operation"
         },
         {
-          "id": "endpoint",
-          "label": "HTTP endpoint"
+          "id": "authentication",
+          "label": "Authentication"
         },
         {
           "id": "input",
           "label": "Payload"
         },
         {
-          "id": "timeout",
-          "label": "Connect timeout"
+          "id": "connector",
+          "label": "Connector"
         },
         {
           "id": "output",
@@ -13192,36 +20465,50 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "errors",
           "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
         }
       ]
     },
     "properties": [
       {},
       {
+        "tooltip": "Temporary or permanent WhatsApp application access token. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/whatsapp/' target='_blank'>WhatsApp connector documentation</a>",
         "group": "authentication"
       },
       {
+        "tooltip": "A phone number ID registered in your WhatsApp application. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/whatsapp/' target='_blank'>WhatsApp connector documentation</a>",
         "group": "input"
       },
       {
+        "tooltip": "A phone number that should receive a message. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/whatsapp/' target='_blank'>WhatsApp connector documentation</a>",
         "group": "input"
       },
       {
+        "tooltip": "Choose whether to send arbitrary plain text or an approved WhatsApp message template. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/whatsapp/' target='_blank'>WhatsApp connector documentation</a>",
+        "group": "operation"
+      },
+      {
+        "tooltip": "Plain text message to be sent to the recipient",
         "group": "input"
       },
       {
+        "tooltip": "An approved WhatsApp template name",
         "group": "input"
       },
       {
+        "placeholder": "en_US",
+        "tooltip": "An approved WhatsApp template language code",
         "group": "input"
       },
       {
+        "tooltip": "Values for the header variables, only if the template header uses any",
         "group": "input"
       },
       {
-        "group": "input"
-      },
-      {
+        "tooltip": "Values for the body variables, only if the template body uses any",
         "group": "input"
       },
       {},
@@ -13230,13 +20517,32 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "tooltip": "ISO-8601 duration to wait between retries",
+        "group": "retries"
+      },
+      {
+        "group": "retries"
       }
     ]
   }

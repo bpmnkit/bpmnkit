@@ -10,7 +10,7 @@ sidebar:
 `@bpmnkit/connectors` answers two questions about Camunda 8 connectors: **which ones exist**,
 and **what happens to a task when you apply one**.
 
-It bundles the 116 out-of-the-box Camunda connector templates as data, so a catalog, a search
+It bundles the 133 out-of-the-box Camunda connector templates as data, so a catalog, a search
 box or an AI tool call can work offline. And it resolves a template plus a set of values into
 the `zeebe:taskDefinition`, `zeebe:ioMapping` and `zeebe:modelerTemplate` bookkeeping the
 Modeler would write — deterministically, so the same template and values always produce the
@@ -38,8 +38,8 @@ npm install @bpmnkit/connectors
 ```typescript
 import { listConnectors, searchConnectors, getTemplate } from "@bpmnkit/connectors";
 
-listConnectors().length;        // 116
-searchConnectors("slack");      // 6 matches, inbound and outbound
+listConnectors().length;        // 133
+searchConnectors("slack");      // 11 matches, inbound and outbound
 
 const template = getTemplate("io.camunda.connectors.Slack.v1");
 ```
@@ -300,7 +300,7 @@ for CI and takes `--format json`.
 | `readTemplateDocument(text)` | Parse a file holding one template or many |
 | `registerElementTemplates(templates)` | Merge templates into the catalog |
 | `clearRegisteredTemplates()` | Drop everything registered |
-| `CAMUNDA_CONNECTOR_TEMPLATES` | The 116 bundled templates, raw |
+| `CAMUNDA_CONNECTOR_TEMPLATES` | The 133 bundled templates, raw |
 
 From `@bpmnkit/connectors/node`: `discoverElementTemplates`, `collectElementTemplates`,
 `DEFAULT_CONFIG_FOLDER`, `TEMPLATES_SUBFOLDER`.

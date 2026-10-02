@@ -31,8 +31,9 @@ async function fetchTemplates() {
 	const registry = await fetch(REGISTRY_URL).then((r) => r.json())
 	const templates = []
 	for (const [, versions] of Object.entries(registry)) {
-		// Take latest version only (last entry in array)
-		const latest = versions.at(-1)
+		// The newest version only. The registry lists versions newest first, but the order is not
+		// promised, so pick the highest number rather than a position.
+		const latest = versions.reduce((a, b) => (b.version > a.version ? b : a), versions[0])
 		if (!latest?.ref) continue
 		const tpl = await fetch(latest.ref)
 			.then((r) => r.json())

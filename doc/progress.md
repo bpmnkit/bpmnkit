@@ -1,5 +1,27 @@
 # Progress
 
+## 2026-10-02 — Connector templates refreshed, `zeebe:agentDefinition` supported
+
+- **The update script bundled the oldest version of every template.** The marketplace registry
+  lists versions newest first, and `update-connectors.mjs` took `versions.at(-1)`. That is why the
+  HTTP connector was version 1 (latest 18), Slack 1 (13) and GitHub 1 (15), and why P0 matched
+  `restConnector()` to "version 1". The script now takes the highest version, and the stamp is 18.
+- **133 templates:** 20 new (AI Agent Task/Sub-process v2, MCP start event, Databricks, App
+  Integrations, Bedrock AgentCore, O365 email inbound, …) and 3 IDP templates gone upstream.
+  `catalog-meta.json` is committed.
+- **`zeebe:agentDefinition agentType`** (Camunda 8.10) is supported end to end: template
+  binding, validator, applier (builder options and apply-to-element), `ZeebeExtensions`, builder
+  options for service tasks and ad-hoc sub-processes, and `getZeebeExtensions`.
+- **`Configuration` property type** (8.10 reusable credentials) validates, with
+  `configurationTemplate`.
+- **Renamed inbound input keys:** newer inbound templates have explicit property ids
+  (`correlationKeyProcess`, `correlationKeyPayload`, `messageNameUuid`). Tests now use them.
+- **Camunda version:** 55 of the 133 newest templates declare `engines.camunda ^8.10`. The
+  bundle holds one version per template, the newest. A Camunda version picker that bundles
+  older versions is not done.
+- Checked: core 1,928, connectors 156, and every consumer package's tests pass; typecheck and
+  the tarball check pass.
+
 ## 2026-10-02 — Connectors in AI generation, P1: the connector catalog in core
 
 - `@bpmnkit/core/connectors` is a new subpath with the catalog, apply, apply-to-element and

@@ -37,7 +37,15 @@ export interface TemplateValidation {
 }
 
 /** Property `type` values the schema allows. Absent means String. */
-const PROPERTY_TYPES = new Set(["String", "Text", "Hidden", "Dropdown", "Boolean", "Number"])
+const PROPERTY_TYPES = new Set([
+	"String",
+	"Text",
+	"Hidden",
+	"Dropdown",
+	"Boolean",
+	"Number",
+	"Configuration",
+])
 
 /** FEEL modes the schema allows. */
 const FEEL_MODES = new Set(["optional", "required", "static"])
@@ -55,6 +63,7 @@ const BINDING_FIELDS: Record<string, readonly string[]> = {
 	"zeebe:taskHeader": ["key"],
 	"zeebe:property": ["name"],
 	"zeebe:adHoc": ["property"],
+	"zeebe:agentDefinition": ["property"],
 	"bpmn:Message#property": ["name"],
 	"bpmn:Message#zeebe:subscription#property": ["name"],
 	"zeebe:linkedResource": ["property", "linkName"],
@@ -62,6 +71,7 @@ const BINDING_FIELDS: Record<string, readonly string[]> = {
 
 const TASK_DEFINITION_PROPERTIES = new Set(["type", "retries"])
 const AD_HOC_PROPERTIES = new Set(["outputCollection", "outputElement", "activeElementsCollection"])
+const AGENT_DEFINITION_PROPERTIES = new Set(["agentType"])
 
 function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === "object" && value !== null && !Array.isArray(value)
@@ -122,6 +132,14 @@ function checkBinding(
 			problems.push({
 				path: `${path}.property`,
 				message: `expected one of ${[...AD_HOC_PROPERTIES].join(", ")}`,
+			})
+		}
+	}
+	if (type === "zeebe:agentDefinition" && isNonEmptyString(binding.property)) {
+		if (!AGENT_DEFINITION_PROPERTIES.has(binding.property)) {
+			problems.push({
+				path: `${path}.property`,
+				message: `expected one of ${[...AGENT_DEFINITION_PROPERTIES].join(", ")}`,
 			})
 		}
 	}

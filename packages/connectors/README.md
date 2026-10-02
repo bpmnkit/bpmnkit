@@ -18,7 +18,7 @@
 
 ## Overview
 
-`@bpmnkit/connectors` bundles the 116+ Camunda 8 out-of-the-box connector element templates (Slack, SendGrid, HTTP, Kafka, AWS, the agentic-AI family, and more) and applies them to `@bpmnkit/core` builder options deterministically — every binding kind (`zeebe:input`, `zeebe:output`, `zeebe:taskHeader`, `zeebe:taskDefinition`, `zeebe:property`, `zeebe:adHoc`), dropdown-gated conditions, required-field validation, and FEEL parse-checking on FEEL-tagged values.
+`@bpmnkit/connectors` bundles the 130+ Camunda 8 out-of-the-box connector element templates (Slack, SendGrid, HTTP, Kafka, AWS, the agentic-AI family, and more) and applies them to `@bpmnkit/core` builder options deterministically — every binding kind (`zeebe:input`, `zeebe:output`, `zeebe:taskHeader`, `zeebe:taskDefinition`, `zeebe:property`, `zeebe:adHoc`, `zeebe:agentDefinition`), dropdown-gated conditions, required-field validation, and FEEL parse-checking on FEEL-tagged values.
 
 ## Features
 

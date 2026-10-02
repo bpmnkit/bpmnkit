@@ -273,6 +273,13 @@ function ownedExtensions(
 		const written = Object.values(accum.adHoc).some((value) => value !== undefined)
 		owned.push(["zeebe:adHoc", written ? zeebeElement({ adHoc: accum.adHoc }) : undefined])
 	}
+	if (declared.has("zeebe:agentDefinition")) {
+		const { agentType } = accum.agentDefinition
+		owned.push([
+			"zeebe:agentDefinition",
+			agentType === undefined ? undefined : zeebeElement({ agentDefinition: { agentType } }),
+		])
+	}
 	if (declared.has("zeebe:linkedResource")) {
 		const children: XmlElement[] = [...accum.linkedResources].map(([linkName, attributes]) => ({
 			name: "zeebe:linkedResource",

@@ -4,6 +4,7 @@ import {
 	getTemplate,
 	summarizeTemplate,
 } from "../../src/connectors/index.js"
+import { Bpmn, getZeebeExtensions } from "../../src/index.js"
 
 describe("applyConnectorTemplate", () => {
 	it("returns a problem for an unknown template id", () => {
@@ -111,9 +112,9 @@ describe("applyConnectorTemplate", () => {
 			"io.camunda.connectors.webhook.WebhookConnectorIntermediate.v1",
 			{
 				"inbound.context": "paid",
-				"message.name": "order-paid",
-				"message.correlationKey": "=orderId",
-				correlationKeyExpression: "=request.body.orderId",
+				messageNameUuid: "order-paid",
+				correlationKeyProcess: "=orderId",
+				correlationKeyPayload: "=request.body.orderId",
 			},
 		)
 		expect(result.problems).toEqual([])
@@ -126,14 +127,14 @@ describe("applyConnectorTemplate", () => {
 			"io.camunda.connectors.webhook.WebhookConnectorBoundary.v1",
 			{
 				"inbound.context": "c",
-				"message.correlationKey": "=k",
-				correlationKeyExpression: "=k",
+				correlationKeyProcess: "=k",
+				correlationKeyPayload: "=k",
 			},
 		)
 		expect(result.boundaryEvent?.correlationKey).toBe("=k")
 		expect(result.boundaryEvent?.messageName).toBeUndefined()
 		expect(result.problems).toHaveLength(1)
-		expect(result.problems[0]?.key).toBe("message.name")
+		expect(result.problems[0]?.key).toBe("messageNameUuid")
 		expect(result.problems[0]?.kind).toBeUndefined()
 		expect(result.problems[0]?.message).toMatch(/applyTemplateToElement/)
 	})
@@ -150,10 +151,10 @@ describe("applyConnectorTemplate", () => {
 			"io.camunda.connectors.webhook.WebhookConnectorStartMessage.v1",
 			{
 				"inbound.context": "c",
-				"message.name": "order-placed",
+				messageNameUuid: "order-placed",
 				correlationRequired: "required",
-				"message.correlationKey": "=k",
-				correlationKeyExpression: "=k",
+				correlationKeyProcess: "=k",
+				correlationKeyPayload: "=k",
 			},
 		)
 		expect(start.startEvent?.messageName).toBe("order-placed")
@@ -167,10 +168,37 @@ describe("applyConnectorTemplate", () => {
 		const rpa = getTemplate("camunda.connectors.rpa")
 		if (!webhook || !rpa) throw new Error("bundled templates missing")
 		expect(summarizeTemplate(webhook).requiredInputs.map((i) => i.key)).toContain(
-			"message.correlationKey",
+			"correlationKeyProcess",
 		)
 		expect(summarizeTemplate(rpa).requiredInputs.map((i) => i.key)).toContain(
 			"linkedResource.RPAScript.resourceId",
 		)
+	})
+})
+
+describe("zeebe:agentDefinition", () => {
+	it("AI Agent Task v2: the service task carries its agent type, and the builder writes it", () => {
+		const result = applyConnectorTemplate("io.camunda.connectors.agenticai.ai-agent-task.v2", {})
+		expect(result.serviceTask?.agentDefinition).toEqual({ agentType: "aiAgentTask" })
+
+		const options = result.serviceTask
+		if (!options) throw new Error("no service task")
+		const xml = Bpmn.export(
+			Bpmn.createProcess("p").startEvent("s").serviceTask("agent", options).endEvent("e").build(),
+		)
+		expect(xml).toContain('<zeebe:agentDefinition agentType="aiAgentTask"')
+
+		const agent = Bpmn.parse(xml).processes[0]?.flowElements.find((e) => e.id === "agent")
+		expect(getZeebeExtensions(agent?.extensionElements ?? []).agentDefinition).toEqual({
+			agentType: "aiAgentTask",
+		})
+	})
+
+	it("AI Agent Sub-process v2: the ad-hoc sub-process carries its agent type", () => {
+		const result = applyConnectorTemplate(
+			"io.camunda.connectors.agenticai.ai-agent-subprocess.v2",
+			{},
+		)
+		expect(result.adHocSubProcess?.agentDefinition).toEqual({ agentType: "aiAgentSubProcess" })
 	})
 })

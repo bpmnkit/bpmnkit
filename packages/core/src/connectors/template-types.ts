@@ -43,8 +43,15 @@ export interface TemplateProperty {
 	label?: string
 	/** Hint text shown below the input. */
 	description?: string
-	/** UI control type. */
-	type: "String" | "Text" | "Hidden" | "Dropdown" | "Boolean" | "Number"
+	/**
+	 * UI control type. `Configuration` (Camunda 8.10+) picks a reusable connection
+	 * credential saved in the cluster; its value is a reference to it, bound like
+	 * any other input, and {@link TemplateProperty.configurationTemplate} names
+	 * the kind of credential.
+	 */
+	type: "String" | "Text" | "Hidden" | "Dropdown" | "Boolean" | "Number" | "Configuration"
+	/** For a `Configuration` property: the kind of credential, e.g. `io.camunda:aws-credential:1`. */
+	configurationTemplate?: string
 	/** Default value applied when the template is first used. */
 	value?: string | number | boolean
 	/**
@@ -102,6 +109,8 @@ export type TemplateBinding =
 			type: "zeebe:adHoc"
 			property: "outputCollection" | "outputElement" | "activeElementsCollection"
 	  }
+	/** `zeebe:agentDefinition` (Camunda 8.10+), used by the AI Agent v2 templates. */
+	| { type: "zeebe:agentDefinition"; property: "agentType" }
 	/**
 	 * Inbound-connector bindings — the root `bpmn:Message` an event or receive
 	 * task references, and that message's `zeebe:subscription` — and the

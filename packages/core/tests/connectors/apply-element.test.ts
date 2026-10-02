@@ -91,7 +91,9 @@ describe("applyTemplateToElement — inbound connectors", () => {
 		expect(start.type).toBe("startEvent")
 		expect(start.name).toBe("Order in")
 		expect(start.unknownAttributes["zeebe:modelerTemplate"]).toBe(id)
-		expect(start.unknownAttributes["zeebe:modelerTemplateVersion"]).toBe("1")
+		expect(start.unknownAttributes["zeebe:modelerTemplateVersion"]).toBe(
+			String(template(id).version),
+		)
 		// The core bundle leaves icons out; @bpmnkit/connectors stamps them from its full templates
 		expect(start.unknownAttributes["zeebe:modelerTemplateIcon"]).toBeUndefined()
 
@@ -118,7 +120,7 @@ describe("applyTemplateToElement — inbound connectors", () => {
 			fixture(),
 			"wait",
 			"io.camunda.connectors.webhook.WebhookConnectorIntermediate.v1",
-			{ "inbound.context": "x", "message.correlationKey": "=id", correlationKeyExpression: "=id" },
+			{ "inbound.context": "x", correlationKeyProcess: "=id", correlationKeyPayload: "=id" },
 		).definitions
 		const startName = first.messages[0]?.name
 		const waitName = intermediate.messages[0]?.name
@@ -130,8 +132,8 @@ describe("applyTemplateToElement — inbound connectors", () => {
 		const id = "io.camunda.connectors.webhook.WebhookConnectorIntermediate.v1"
 		const values = {
 			"inbound.context": "paid",
-			"message.correlationKey": "=orderId",
-			correlationKeyExpression: "=request.body.orderId",
+			correlationKeyProcess: "=orderId",
+			correlationKeyPayload: "=request.body.orderId",
 		}
 		const once = apply(fixture(), "wait", id, values).definitions
 		const twice = applyTemplateToElement(once, "wait", template(id), values).definitions
@@ -146,8 +148,8 @@ describe("applyTemplateToElement — inbound connectors", () => {
 			"io.camunda.connectors.webhook.WebhookConnectorIntermediate.v1",
 			{
 				"inbound.context": "paid",
-				"message.correlationKey": "=orderId",
-				correlationKeyExpression: "=request.body.orderId",
+				correlationKeyProcess: "=orderId",
+				correlationKeyPayload: "=request.body.orderId",
 			},
 		)
 		expect(problems).toEqual([])
@@ -177,8 +179,8 @@ describe("applyTemplateToElement — inbound connectors", () => {
 			"io.camunda.connectors.webhook.WebhookConnectorBoundary.v1",
 			{
 				"inbound.context": "cancel",
-				"message.correlationKey": "=orderId",
-				correlationKeyExpression: "=request.body.orderId",
+				correlationKeyProcess: "=orderId",
+				correlationKeyPayload: "=request.body.orderId",
 			},
 		)
 		expect(problems).toEqual([])
@@ -259,8 +261,8 @@ describe("applyTemplateToElement — inbound connectors", () => {
 			{
 				"topic.bootstrapServers": "kafka:9092",
 				"topic.topicName": "orders",
-				"message.correlationKey": "=orderId",
-				correlationKeyExpression: "=value.orderId",
+				correlationKeyProcess: "=orderId",
+				correlationKeyPayload: "=value.orderId",
 			},
 		)
 		expect(problems).toEqual([])
@@ -274,9 +276,9 @@ describe("applyTemplateToElement — inbound connectors", () => {
 		const id = "io.camunda.connectors.webhook.WebhookConnectorIntermediate.v1"
 		const values = (name: string) => ({
 			"inbound.context": "c",
-			"message.name": name,
-			"message.correlationKey": "=k",
-			correlationKeyExpression: "=k",
+			messageNameUuid: name,
+			correlationKeyProcess: "=k",
+			correlationKeyPayload: "=k",
 		})
 		const first = apply(fixture(), "wait", id, values("paid")).definitions
 		expect(first.messages.map((m) => m.name)).toEqual(["paid"])
@@ -300,10 +302,10 @@ describe("applyTemplateToElement — inbound connectors", () => {
 			fixture(),
 			"wait",
 			"io.camunda.connectors.webhook.WebhookConnectorIntermediate.v1",
-			{ "inbound.context": "paid", correlationKeyExpression: "=k" },
+			{ "inbound.context": "paid", correlationKeyPayload: "=k" },
 		)
 		expect(problems).toEqual([
-			expect.objectContaining({ key: "message.correlationKey", kind: "missing-required" }),
+			expect.objectContaining({ key: "correlationKeyProcess", kind: "missing-required" }),
 		])
 		const wait = element(definitions, "wait")
 		expect(zeebeProperties(wait)["inbound.context"]).toBe("paid")
@@ -389,9 +391,24 @@ describe("applyTemplateToElement — refusals", () => {
 		const before = Bpmn.export(model)
 		apply(model, "wait", "io.camunda.connectors.webhook.WebhookConnectorIntermediate.v1", {
 			"inbound.context": "c",
-			"message.correlationKey": "=k",
-			correlationKeyExpression: "=k",
+			correlationKeyProcess: "=k",
+			correlationKeyPayload: "=k",
 		})
 		expect(Bpmn.export(model)).toBe(before)
+	})
+})
+
+describe("applyTemplateToElement — zeebe:agentDefinition", () => {
+	it("marks a service task as an AI agent, and re-applies to the same element", () => {
+		const id = "io.camunda.connectors.agenticai.ai-agent-task.v2"
+		const { definitions } = applyTemplateToElement(fixture(), "work", template(id), {})
+
+		const work = element(roundTrip(definitions), "work")
+		expect(extension(work, "zeebe:agentDefinition")?.attributes).toEqual({
+			agentType: "aiAgentTask",
+		})
+		// Applying again gives the same element
+		const twice = applyTemplateToElement(definitions, "work", template(id), {}).definitions
+		expect(Bpmn.export(twice)).toBe(Bpmn.export(definitions))
 	})
 })

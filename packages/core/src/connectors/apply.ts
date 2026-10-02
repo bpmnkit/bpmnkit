@@ -55,6 +55,8 @@ export interface Accumulator {
 	taskType?: string
 	retries?: string
 	adHoc: { outputCollection?: string; outputElement?: string; activeElementsCollection?: string }
+	/** `zeebe:agentDefinition` bindings, e.g. `agentType`. */
+	agentDefinition: { agentType?: string }
 	/** `bpmn:Message#property` bindings — attribute name to value, e.g. `name`. */
 	message: Record<string, string>
 	/** `bpmn:Message#zeebe:subscription#property` bindings, e.g. `correlationKey`. */
@@ -111,6 +113,7 @@ export const APPLIED_BINDING_TYPES: ReadonlySet<string> = new Set([
 	"zeebe:taskDefinition:type",
 	"zeebe:property",
 	"zeebe:adHoc",
+	"zeebe:agentDefinition",
 	"property",
 	"bpmn:Message#property",
 	"bpmn:Message#zeebe:subscription#property",
@@ -142,6 +145,9 @@ function applyBinding(binding: TemplateBinding, value: string, accum: Accumulato
 			return
 		case "zeebe:adHoc":
 			accum.adHoc[binding.property] = value
+			return
+		case "zeebe:agentDefinition":
+			accum.agentDefinition[binding.property] = value
 			return
 		case "property":
 			// "name" binds to the element's display name — handled by the caller, not here.
@@ -209,6 +215,7 @@ export function resolveBindings(
 		taskHeaders: {},
 		zeebeProperties: [],
 		adHoc: {},
+		agentDefinition: {},
 		message: {},
 		subscription: {},
 		linkedResources: new Map(),
@@ -255,7 +262,8 @@ export function resolveBindings(
  *
  * Unlike a naive apply that only handles `zeebe:input`, this resolves every
  * binding kind (`zeebe:input`, `zeebe:output`, `zeebe:taskHeader`,
- * `zeebe:taskDefinition(:type)`, `zeebe:property`, `zeebe:adHoc`), respects
+ * `zeebe:taskDefinition(:type)`, `zeebe:property`, `zeebe:adHoc`,
+ * `zeebe:agentDefinition`), respects
  * dropdown-gated `condition`s, validates required fields, and parse-validates
  * any value that looks like a FEEL expression (leading "=").
  *
@@ -304,6 +312,8 @@ export function applyElementTemplate(
 	const name = values.name ?? template.name
 
 	const direction = directionOf(template)
+	const { agentType } = accum.agentDefinition
+	const agentDefinition = agentType === undefined ? undefined : { agentType }
 
 	if (direction === "bpmn:AdHocSubProcess") {
 		return {
@@ -318,6 +328,7 @@ export function applyElementTemplate(
 						: undefined,
 				taskHeaders: Object.keys(accum.taskHeaders).length > 0 ? accum.taskHeaders : undefined,
 				zeebeProperties: accum.zeebeProperties.length > 0 ? accum.zeebeProperties : undefined,
+				agentDefinition,
 				outputCollection: accum.adHoc.outputCollection,
 				outputElement: accum.adHoc.outputElement,
 				activeElementsCollection: accum.adHoc.activeElementsCollection,
@@ -386,6 +397,7 @@ export function applyElementTemplate(
 					: undefined,
 			taskHeaders: Object.keys(accum.taskHeaders).length > 0 ? accum.taskHeaders : undefined,
 			zeebeProperties: accum.zeebeProperties.length > 0 ? accum.zeebeProperties : undefined,
+			agentDefinition,
 			modelerTemplate,
 			modelerTemplateVersion,
 			modelerTemplateIcon,

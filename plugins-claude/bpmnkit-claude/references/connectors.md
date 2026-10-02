@@ -2,7 +2,7 @@
 
 # Connector catalog
 
-116 bundled Camunda 8 out-of-the-box connector templates, from `@bpmnkit/connectors`. This is an **index** — look up full input specs at plan-authoring time, don't guess at property keys:
+133 bundled Camunda 8 out-of-the-box connector templates, from `@bpmnkit/connectors`. This is an **index** — look up full input specs at plan-authoring time, don't guess at property keys:
 
 ```sh
 casen connector search "<query>"          # find candidates by name/keyword
@@ -43,7 +43,8 @@ Rules:
 
 | Template id | Name | Task type |
 |---|---|---|
-| `io.camunda.connectors.agenticai.aiagent.jobworker.v1` | AI Agent Subprocess | `io.camunda.agenticai:aiagent-job-worker:1` |
+| `io.camunda.connectors.agenticai.ai-agent-subprocess.v2` | AI Agent Sub-process | `io.camunda.agenticai:aiagent:subprocess:2` |
+| `io.camunda.connectors.agenticai.aiagent.jobworker.v1` | AI Agent Sub-process (Deprecated) | `io.camunda.agenticai:aiagent-job-worker:1` |
 
 ### Inbound boundary (boundary event)
 
@@ -51,10 +52,12 @@ Rules:
 |---|---|---|
 | `io.camunda.connectors.AWSEventBridge.boundary.v1` | Amazon EventBridge Boundary Event Connector | — |
 | `io.camunda.connectors.AWSSQS.boundary.v1` | Amazon SQS Boundary Event Connector | — |
+| `io.camunda.connectors.AppIntegrationsChat.Boundary.v1` | App Integrations Chat Message Boundary Event | — |
 | `io.camunda.connectors.inbound.EmailBoundary.v1` | Email Boundary Event Connector | — |
 | `io.camunda.connectors.webhook.GithubWebhookConnectorBoundary.v1` | GitHub Webhook Boundary Event Connector | — |
 | `io.camunda.connectors.http.Polling.Boundary` | HTTP Polling Boundary Catch Event Connector | — |
 | `io.camunda.connectors.inbound.KafkaBoundary.v1` | Kafka Boundary Event Connector | — |
+| `io.camunda.connectors.inbound.MSFT.O365.EmailBoundary.v1` | Microsoft O365 Email Boundary Event Connector | — |
 | `io.camunda.connectors.inbound.RabbitMQ.Boundary.v1` | RabbitMQ Boundary Event Connector | — |
 | `io.camunda.connectors.inbound.Slack.BoundaryEvent.v1` | Slack Webhook Boundary Event Connector | — |
 | `io.camunda.connectors.inbound.AWSSNS.Boundary.v1` | SNS HTTPS Boundary Event Connector | — |
@@ -69,48 +72,57 @@ Rules:
 | `io.camunda.connectors.agenticai.a2a.client.polling.receive.v0` | A2A Client Polling Receive Task Connector (early access) | — |
 | `io.camunda.connectors.agenticai.a2a.client.webhook.intermediate.v0` | A2A Client Webhook Intermediate Catch Event Connector (early access) | — |
 | `io.camunda.connectors.agenticai.a2a.client.webhook.receive.v0` | A2A Client Webhook Receive Task Connector (early access) | — |
-| `io.camunda.connectors.AWSEventBridge.intermediate.v1` | Amazon EventBridge Connector | — |
+| `io.camunda.connectors.AWSEventBridge.intermediate.v1` | Amazon EventBridge Intermediate Catch Event Connector | — |
 | `io.camunda.connectors.AWSEventBridge.receive.v1` | Amazon EventBridge Receive Task Connector | — |
-| `io.camunda.connectors.AWSSQS.intermediate.v1` | Amazon SQS connector | — |
+| `io.camunda.connectors.AWSSQS.intermediate.v1` | Amazon SQS Intermediate Message Catch Event connector | — |
 | `io.camunda.connectors.AWSSQS.receive.v1` | Amazon SQS Receive Task Connector | — |
+| `io.camunda.connectors.AppIntegrationsChat.Intermediate.v1` | App Integrations Chat Message Intermediate Event | — |
+| `io.camunda.connectors.AppIntegrationsChat.Receive.v1` | App Integrations Chat Message Receive Task | — |
 | `io.camunda.connectors.inbound.EmailIntermediate.v1` | Email Intermediate Catch Event Connector | — |
-| `io.camunda.connectors.webhook.GithubWebhookConnectorIntermediate.v1` | GitHub webhook connector | — |
+| `io.camunda.connectors.inbound.EmailReceive.v1` | Email Receive Task Connector | — |
+| `io.camunda.connectors.webhook.GithubWebhookConnectorIntermediate.v1` | GitHub Webhook Intermediate Catch Event Connector | — |
+| `io.camunda.connectors.webhook.GithubWebhookConnectorReceive.v1` | GitHub Webhook Receive Task Connector | — |
 | `io.camunda.connectors.http.Polling` | HTTP Polling Intermediate Catch Event Connector | — |
-| `io.camunda.connectors.inbound.KafkaIntermediate.v1` | Kafka consumer connector | — |
+| `io.camunda.connectors.inbound.KafkaIntermediate.v1` | Kafka Intermediate Catch Event Connector | — |
 | `io.camunda.connectors.inbound.KafkaReceive.v1` | Kafka Receive Task Connector | — |
-| `io.camunda.connectors.inbound.RabbitMQ.Intermediate.v1` | RabbitMQ connector | — |
+| `io.camunda.connectors.inbound.MSFT.O365.EmailIntermediate.v1` | Microsoft O365 Email Intermediate Catch Event Connector | — |
+| `io.camunda.connectors.inbound.RabbitMQ.Intermediate.v1` | RabbitMQ Intermediate Catch Event Connector | — |
 | `io.camunda.connectors.inbound.RabbitMQ.Receive.v1` | RabbitMQ Receive Task Connector | — |
 | `io.camunda.connectors.message.intermediate.v1` | Send Message Connector (Intermediate Throw Event) | `io.camunda:sendMessage:1` |
-| `io.camunda.connectors.inbound.Slack.IntermediateCatchEvent.v1` | Slack Webhook | — |
+| `io.camunda.connectors.inbound.Slack.IntermediateCatchEvent.v1` | Slack Webhook Intermediate Catch Event Connector | — |
 | `io.camunda.connectors.inbound.Slack.ReceiveTask.v1` | Slack Webhook Receive Task Connector | — |
+| `io.camunda.connectors.inbound.AWSSNS.IntermediateCatchEvent.v1` | SNS HTTPS Intermediate Catch Event Connector | — |
 | `io.camunda.connectors.inbound.AWSSNS.Receive.v1` | SNS HTTPS Receive Task Connector | — |
-| `io.camunda.connectors.inbound.AWSSNS.IntermediateCatchEvent.v1` | SNS HTTPS Subscription | — |
-| `io.camunda.connectors.Twilio.Webhook.Intermediate.v1` | Twilio connector | — |
-| `io.camunda.connectors.webhook.WebhookConnectorIntermediate.v1` | Webhook connector | — |
+| `io.camunda.connectors.Twilio.Webhook.Intermediate.v1` | Twilio Intermediate Catch Event Connector | — |
+| `io.camunda.connectors.Twilio.Webhook.Receive.v1` | Twilio Receive Task Connector | — |
+| `io.camunda.connectors.webhook.WebhookConnectorIntermediate.v1` | Webhook Intermediate Event Connector | — |
 | `io.camunda.connectors.webhook.WebhookConnectorReceive.v1` | Webhook Receive Task Connector | — |
 
 ### Inbound start (start event — triggered by an external system)
 
 | Template id | Name | Task type |
 |---|---|---|
-| `io.camunda.connectors.AWSEventBridge.startEvent.v1` | Amazon EventBridge Connector | — |
 | `io.camunda.connectors.AWSEventBridge.MessageStart.v1` | Amazon EventBridge Message Start Event Connector | — |
-| `io.camunda.connectors.AWSSQS.StartEvent.v1` | Amazon SQS connector | — |
+| `io.camunda.connectors.AWSEventBridge.startEvent.v1` | Amazon EventBridge Start Event Connector | — |
 | `io.camunda.connectors.AWSSQS.startmessage.v1` | Amazon SQS Message Start Event Connector | — |
+| `io.camunda.connectors.AWSSQS.StartEvent.v1` | Amazon SQS Start Event Connector | — |
+| `io.camunda.connectors.AppIntegrationsChat.Start.v1` | App Integrations Chat Conversation Start Event | — |
 | `io.camunda.connectors.inbound.EmailMessageStart.v1` | Email Message Start Event Connector | — |
-| `io.camunda.connectors.webhook.GithubWebhookConnector.v1` | GitHub Webhook Connector | — |
 | `io.camunda.connectors.webhook.GithubWebhookConnectorMessageStart.v1` | GitHub Webhook Message Start Event Connector | — |
+| `io.camunda.connectors.webhook.GithubWebhookConnector.v1` | GitHub Webhook Start Event Connector | — |
 | `io.camunda.connectors.inbound.KafkaMessageStart.v1` | Kafka Message Start Event Connector | — |
-| `io.camunda.connectors.inbound.RabbitMQ.StartEvent.v1` | RabbitMQ connector | — |
+| `io.camunda.mcp.start-message` | MCP start event | — |
+| `io.camunda.connectors.inbound.MSFT.O365.EmailMessageStart.v1` | Microsoft O365 Email Message Start Event Connector | — |
 | `io.camunda.connectors.inbound.RabbitMQ.MessageStart.v1` | RabbitMQ Message Start Event Connector | — |
-| `io.camunda.connectors.inbound.Slack.StartEvent.v1` | Slack Webhook | — |
+| `io.camunda.connectors.inbound.RabbitMQ.StartEvent.v1` | RabbitMQ Start Event Connector | — |
 | `io.camunda.connectors.inbound.Slack.MessageStartEvent.v1` | Slack Webhook Message Start Event Connector | — |
+| `io.camunda.connectors.inbound.Slack.StartEvent.v1` | Slack Webhook Start Event Connector | — |
 | `io.camunda.connectors.inbound.AWSSNS.MessageStartEvent.v1` | SNS HTTPS Message Start Event Connector Subscription | — |
-| `io.camunda.connectors.inbound.AWSSNS.StartEvent.v1` | SNS HTTPS subscription | — |
-| `io.camunda.connectors.TwilioWebhook.v1` | Twilio connector | — |
+| `io.camunda.connectors.inbound.AWSSNS.StartEvent.v1` | SNS HTTPS Start Event Connector | — |
 | `io.camunda.connectors.TwilioWebhookMessageStart.v1` | Twilio Message Start Event Connector | — |
-| `io.camunda.connectors.webhook.WebhookConnector.v1` | Webhook Connector | — |
+| `io.camunda.connectors.TwilioWebhook.v1` | Twilio Start Event Connector | — |
 | `io.camunda.connectors.webhook.WebhookConnectorStartMessage.v1` | Webhook Message Start Event Connector | — |
+| `io.camunda.connectors.webhook.WebhookConnector.v1` | Webhook Start Event Connector | — |
 
 ### Outbound (service task — call an external system)
 
@@ -119,67 +131,72 @@ Rules:
 | `io.camunda.connectors.agenticai.a2a.client.v0` | A2A Client (early access) | `io.camunda.agenticai:a2aclient:0` |
 | `io.camunda.connectors.agenticai.adhoctoolsschema.v0` | Ad-hoc subprocess tools schema (alpha) | `io.camunda.agenticai:adhoctoolsschema:0` |
 | `io.camunda.connectors.agenticai.adhoctoolsschema.v1` | Ad-hoc tools schema | `io.camunda.agenticai:adhoctoolsschema:1` |
-| `io.camunda.connectors.agenticai.aiagent.v1` | AI Agent | `io.camunda.agenticai:aiagent:1` |
 | `io.camunda.connectors.agenticai.aiagent.v0` | AI Agent (alpha) | `io.camunda.agenticai:aiagent:0` |
-| `io.camunda.connectors.AWSEventBridge.v1` | Amazon EventBridge Connector | `io.camunda:aws-eventbridge:1` |
-| `io.camunda.connectors.AWSSNS.v1` | Amazon SNS connector | `io.camunda:aws-sns:1` |
-| `io.camunda.connectors.AWSSQS.v1` | Amazon SQS connector | `io.camunda:aws-sqs:1` |
-| `io.camunda.connectors.Asana.v1` | Asana connector | `io.camunda:http-json:1` |
-| `io.camunda.connectors.AutomationAnywhere.v1` | Automation Anywhere connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.agenticai.ai-agent-task.v2` | AI Agent Task | `io.camunda.agenticai:aiagent:task:2` |
+| `io.camunda.connectors.agenticai.aiagent.v1` | AI Agent Task (Deprecated) | `io.camunda.agenticai:aiagent:1` |
+| `io.camunda.connectors.AppIntegrations.v1` | App Integrations Connector | `io.camunda:app-integrations` |
+| `io.camunda.connectors.Asana.v1` | Asana Outbound Connector | `io.camunda:http-json:1` |
 | `io.camunda.connectors.AutomationAnywhere` | Automation Anywhere Outbound Connector | `io.camunda:connector-automationanywhere:1` |
-| `io.camunda.connectors.aws.bedrock.v1` | AWS BedRock Outbound Connector | `io.camunda:aws-bedrock:1` |
+| `io.camunda.connectors.AutomationAnywhere.v1` | Automation Anywhere Outbound Connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.aws.bedrock.agentcore.memory.longterm.v1` | AWS Bedrock AgentCore Long-Term Memory Connector | `io.camunda:aws-bedrock-agentcore-lt-memory:1` |
+| `io.camunda.connectors.aws.bedrock.v1` | AWS Bedrock Outbound Connector | `io.camunda:aws-bedrock:1` |
 | `io.camunda.connectors.AWSCOMPREHEND.v1` | AWS Comprehend Outbound Connector | `io.camunda:aws-comprehend:1` |
-| `io.camunda.connectors.AWSDynamoDB.v1` | AWS DynamoDB | `io.camunda:aws-dynamodb:1` |
-| `io.camunda.connectors.AWSLAMBDA.v2` | AWS Lambda connector | `io.camunda:aws-lambda:1` |
+| `io.camunda.connectors.AWSDynamoDB.v1` | AWS DynamoDB Outbound Connector | `io.camunda:aws-dynamodb:1` |
 | `io.camunda.connectors.aws.s3.v1` | AWS S3 Outbound Connector | `io.camunda:aws-s3:1` |
-| `io.camunda.connectors.AWSSAGEMAKER.v1` | AWS SageMaker Outbound Connector | `io.camunda:aws-sagemaker:1` |
-| `io.camunda.connectors.AWSTEXTRACT.v1` | AWS Textract Outbound Connector | `io.camunda:aws-textract:1` |
 | `io.camunda.connectors.azure.blobstorage.v1` | Azure Blob Storage Outbound Connector | `io.camunda:azure-blobstorage:1` |
 | `io.camunda.connectors.AzureOpenAI.outbound.v1` | Azure OpenAI Connector | `io.camunda:http-json:1` |
-| `io.camunda.connectors.BluePrism.v1` | Blue Prism connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.BluePrism.v1` | Blue Prism Outbound Connector | `io.camunda:http-json:1` |
 | `io.camunda.connectors.box` | Box Outbound Connector | `io.camunda:box:1` |
-| `io.camunda.connectors.CamundaOperate.v1` | Camunda Operate connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.CamundaOperate.v1` | Camunda Operate Outbound connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.CamundaOrchestrationCluster.v1` | Camunda Orchestration Cluster API connector | `io.camunda:http-json:1` |
 | `io.camunda.connectors.csv` | CSV Connector | `io.camunda:csv-connector` |
-| `io.camunda.connectors.EasyPost.v1` | Easy Post connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.databricks.rest.v1` | Databricks | `io.camunda:http-json:1` |
+| `io.camunda.connectors.EasyPost.v1` | Easy Post Outbound Connector | `io.camunda:http-json:1` |
 | `io.camunda.connectors.email.v1` | Email Connector | `io.camunda:email:1` |
 | `io.camunda.connectors.EmbeddingsVectorDB.v1` | Embeddings Vector DB Outbound Connector | `io.camunda:embeddings-vector-database:1` |
-| `io.camunda.connectors.GitHub.v1` | GitHub | `io.camunda:http-json:1` |
-| `io.camunda.connectors.GitLab.v1` | GitLab connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.Jdbc.v1` | Execute SQL Statement on Database | `io.camunda:connector-jdbc:1` |
+| `io.camunda.connectors.AWSTEXTRACT.v1` | Extract Text from Document with AWS Textract | `io.camunda:aws-textract:1` |
+| `io.camunda.connectors.GoogleGemini.v1` | Generate Content with Google Gemini | `io.camunda:google-gemini:1` |
+| `io.camunda.connectors.GitHub.v1` | GitHub Outbound Connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.GitLab.v1` | GitLab Outbound Connector | `io.camunda:http-json:1` |
 | `io.camunda.connectors.google.gcp.v1` | Google Cloud Storage Outbound Connector | `io.camunda:google-gcs:1` |
-| `io.camunda.connectors.GoogleDrive.v1` | Google Drive connector | `io.camunda:google-drive:1` |
-| `io.camunda.connectors.GoogleGemini.v1` | Google Gemini Outbound Connector | `io.camunda:google-gemini:1` |
-| `io.camunda.connectors.GoogleMapsPlatform.v1` | Google Maps Platform connector | `io.camunda:http-json:1` |
-| `io.camunda.connectors.GoogleSheets.v1` | Google Sheets connector | `io.camunda:google-sheets:1` |
-| `io.camunda.connectors.GraphQL.v1` | GraphQL connector | `io.camunda:connector-graphql:1` |
+| `io.camunda.connectors.GoogleDrive.v1` | Google Drive Outbound Connector | `io.camunda:google-drive:1` |
+| `io.camunda.connectors.GoogleMapsPlatform.v1` | Google Maps Platform Outbound Connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.GoogleSheets.v1` | Google Sheets Outbound Connector | `io.camunda:google-sheets:1` |
 | `io.camunda.connectors.HubSpot.v1` | HubSpot Outbound Connector | `io.camunda:http-json:1` |
-| `io.camunda.connectors.HuggingFace.v1` | Hugging Face Outbound Connector | `io.camunda:http-json:1` |
-| `io.camunda.connector.IdpClassificationOutBoundTemplate.v1` | IDP Classification Outbound Connector | `io.camunda:idp-classification-connector-template:1` |
-| `io.camunda.connector.IdpStructuredExtractionOutBoundTemplate.v1` | IDP Structured Extraction Outbound Connector | `io.camunda:idp-structured-connector-template:1` |
-| `io.camunda.connector.IdpUnstructuredExtractionOutBoundTemplate.v1` | IDP Unstructured Extraction Outbound Connector | `io.camunda:idp-unstructured-connector-template:1` |
-| `io.camunda.connectors.KAFKA.v1` | Kafka producer connector | `io.camunda:connector-kafka:1` |
-| `io.camunda.connectors.agenticai.mcp.client.v0` | MCP Client (early access) | `io.camunda.agenticai:mcpclient:0` |
-| `io.camunda.connectors.agenticai.mcp.remoteclient.v0` | MCP Remote Client (early access) | `io.camunda.agenticai:mcpremoteclient:0` |
+| `io.camunda.connectors.aws.bedrock.agentcore.runtime.v1` | Invoke Agent in AWS Bedrock AgentCore Runtime | `io.camunda:aws-bedrock-agentcore-runtime:1` |
+| `io.camunda.connectors.AWSLAMBDA.v2` | Invoke AWS Lambda Function | `io.camunda:aws-lambda:1` |
+| `io.camunda.connectors.agenticai.mcp.client.v0` | MCP Client | `io.camunda.agenticai:mcpclient:1` |
+| `io.camunda.connectors.agenticai.mcp.remoteclient.v0` | MCP Remote Client | `io.camunda.agenticai:mcpremoteclient:1` |
 | `io.camunda.connectors.MSFT.O365.Mail.v1` | Microsoft Office 365 Mail Connector | `io.camunda:http-json:1` |
-| `io.camunda.connectors.MSTeams.v1` | Microsoft Teams connector | `io.camunda:connector-microsoft-teams:1` |
-| `io.camunda.connectors.OpenAI.v1` | OpenAI connector | `io.camunda:http-json:1` |
-| `io.camunda.connectors.PowerAutomate.v1` | Power Automate connector | `io.camunda:http-json:1` |
-| `io.camunda.connectors.RabbitMQ.v1` | RabbitMQ connector | `io.camunda:connector-rabbitmq:1` |
-| `io.camunda.connectors.HttpJson.v2` | REST connector | `io.camunda:http-json:1` |
-| `camunda.connectors.rpa` | RPA Connector | `={
+| `io.camunda.connectors.MSTeams.v1` | Microsoft Teams Outbound Connector | `io.camunda:connector-microsoft-teams:1` |
+| `io.camunda.connectors.OpenAI.v1` | OpenAI Outbound Connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.PowerAutomate.v1` | Power Automate Outbound Connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.AWSSNS.v1` | Publish Message to AWS SNS | `io.camunda:aws-sns:1` |
+| `io.camunda.connectors.KAFKA.v1` | Publish Message to Kafka | `io.camunda:connector-kafka:1` |
+| `io.camunda.connectors.RabbitMQ.v1` | Publish Message to RabbitMQ | `io.camunda:connector-rabbitmq:1` |
+| `io.camunda.connectors.aws.bedrock.knowledgebase.v1` | Retrieve Documents from AWS Bedrock Knowledge Base | `io.camunda:aws-bedrock-knowledgebase:1` |
+| `io.camunda.connectors.aws.bedrock.codeinterpreter.v1` | Run Code with AWS Bedrock Code Interpreter | `io.camunda:aws-bedrock-codeinterpreter:1` |
+| `io.camunda.connectors.HuggingFace.v1` | Run Inference on Hugging Face | `io.camunda:http-json:1` |
+| `io.camunda.connectors.AWSSAGEMAKER.v1` | Run Inference with AWS SageMaker | `io.camunda:aws-sagemaker:1` |
+| `camunda.connectors.rpa` | Run RPA Script | `={
   label: if (camundaRpaWorkerLabel = null or camundaRpaWorkerLabel = "") then "default" else camundaRpaWorkerLabel,
   baseName: "camunda::RPA-Task::",
   definitionType: baseName + label
 }.definitionType` |
-| `io.camunda.connectors.Salesforce.v1` | Salesforce Connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.Salesforce.v1` | Salesforce Outbound Connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.SendGrid.v2` | Send Email with SendGrid | `io.camunda:sendgrid:1` |
+| `io.camunda.connectors.AWSEventBridge.v1` | Send Event to AWS EventBridge | `io.camunda:aws-eventbridge:1` |
+| `io.camunda.connectors.GraphQL.v1` | Send GraphQL Request | `io.camunda:connector-graphql:1` |
 | `io.camunda.connectors.message.end.v1` | Send Message Connector (Message End Event) | `io.camunda:sendMessage:1` |
 | `io.camunda.connectors.message.sendtask.v1` | Send Message Connector (Send Task) | `io.camunda:sendMessage:1` |
-| `io.camunda.connectors.SendGrid.v2` | SendGrid connector | `io.camunda:sendgrid:1` |
+| `io.camunda.connectors.AWSSQS.v1` | Send Message to AWS SQS | `io.camunda:aws-sqs:1` |
+| `io.camunda.connectors.HttpJson.v2` | Send REST Request | `io.camunda:http-json:1` |
+| `io.camunda:soap` | Send SOAP Request | `io.camunda:soap:1` |
 | `io.camunda.connectors.ServiceNowFlow.v1` | ServiceNow Flow Starter | `io.camunda:http-json:1` |
 | `io.camunda.connectors.ServiceNowIncident.v1` | ServiceNow Incident Handler | `io.camunda:http-json:1` |
 | `io.camunda.connectors.ServiceNow.v1` | ServiceNow Outbound Connector | `io.camunda:http-json:1` |
-| `io.camunda.connectors.Slack.v1` | Slack connector | `io.camunda:slack:1` |
-| `io.camunda:soap` | SOAP Connector | `io.camunda:soap:1` |
-| `io.camunda.connectors.Jdbc.v1` | SQL Database Connector | `io.camunda:connector-jdbc:1` |
-| `io.camunda.connectors.Twilio.v1` | Twilio connector | `io.camunda:http-json:1` |
-| `io.camunda.connectors.UIPath.v1` | UiPath connector | `io.camunda:http-json:1` |
-| `io.camunda.connectors.WhatsApp.v1` | WhatsApp Business Connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.Slack.v1` | Slack Outbound Connector | `io.camunda:slack:1` |
+| `io.camunda.connectors.Twilio.v1` | Twilio Outbound Connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.UIPath.v1` | UiPath Outbound Connector | `io.camunda:http-json:1` |
+| `io.camunda.connectors.WhatsApp.v1` | WhatsApp Business Outbound Connector | `io.camunda:http-json:1` |

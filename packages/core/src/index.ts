@@ -235,6 +235,7 @@ export type {
 	ZeebeTaskSchedule,
 	ZeebePriorityDefinition,
 	ZeebeSubscription,
+	ZeebeAgentDefinition,
 } from "./bpmn/zeebe-extensions.js"
 export {
 	assertZeebePlacement,

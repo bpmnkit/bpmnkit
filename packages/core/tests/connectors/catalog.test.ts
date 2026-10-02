@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { getTemplate, listConnectors, searchConnectors } from "../../src/connectors/index.js"
 
 describe("listConnectors", () => {
-	it("returns all 116+ bundled OOTB connector templates as summaries", () => {
+	it("returns all 130+ bundled OOTB connector templates as summaries", () => {
 		const summaries = listConnectors()
 		expect(summaries.length).toBeGreaterThan(100)
 		const ids = new Set(summaries.map((s) => s.id))
