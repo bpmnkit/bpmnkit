@@ -9,6 +9,7 @@ import {
 	parseProcessText,
 	writeProcessText,
 } from "@bpmnkit/core"
+import { applyConnectorLines } from "@bpmnkit/core/connectors"
 import { describe, expect, it } from "vitest"
 import { createIdFactory } from "../src/id.js"
 import { applyProcessDelta } from "../src/process-delta.js"
@@ -497,5 +498,58 @@ describe("applyProcessDelta", () => {
 			expect(result.definitions).toEqual(defs)
 			expect([result.created, result.changed, result.removed]).toEqual([[], [], []])
 		})
+	})
+})
+
+describe("applyProcessDelta — with lines", () => {
+	const connect = (defs: BpmnDefinitions, script: string, withCatalog = true) => {
+		const { aliases } = writeProcessText(defs)
+		return applyProcessDelta(defs, parseProcessDelta(script), {
+			aliases,
+			ids: createIdFactory("test"),
+			...(withCatalog ? { applyConnectors: applyConnectorLines } : {}),
+		})
+	}
+
+	it("configures an existing task as a connector and keeps the layout", () => {
+		const before = drawn(LOAN)
+		const result = connect(
+			before,
+			"with pay: http POST https://pay.example/payouts | body=={amount: amount}",
+		)
+		expect(result.problems).toEqual([])
+		expect(result.changed).toEqual(["pay"])
+		const pay = result.definitions.processes[0]?.flowElements.find((el) => el.id === "pay")
+		expect(pay?.unknownAttributes["zeebe:modelerTemplate"]).toBe(
+			"io.camunda.connectors.HttpJson.v2",
+		)
+		const shapes = (d: BpmnDefinitions) => d.diagrams[0]?.plane.shapes.map((s) => s.bounds)
+		expect(shapes(result.definitions)).toEqual(shapes(before))
+	})
+
+	it("passes questions on, and reports with lines it cannot apply", () => {
+		const result = connect(drawn(LOAN), "with pay: slack chat.postMessage\nwith ghost: http")
+		expect(result.questions.map((q) => q.draft)).toContain(
+			"with pay: slack chat.postMessage | token=",
+		)
+		expect(result.problems.map((p) => p.message)).toEqual([
+			'"with ghost:" names no node of the diagram; ignored',
+		])
+		const without = connect(drawn(LOAN), "with pay: http https://x.example", false)
+		expect(without.problems.map((p) => p.message)).toEqual([
+			'"with pay:" needs the connector catalog to apply; ignored',
+		])
+	})
+
+	it("can configure a node the same script adds", () => {
+		const result = connect(
+			drawn(LOAN),
+			"review > notify[task Notify applicant] > pay\nwith notify: sendgrid mail | apiKey={{secrets.SG}}",
+		)
+		const notify = result.definitions.processes[0]?.flowElements.find((el) => el.id === "notify")
+		expect(notify?.type).toBe("serviceTask")
+		expect(notify?.unknownAttributes["zeebe:modelerTemplate"]).toBe(
+			"io.camunda.connectors.SendGrid.v2",
+		)
 	})
 })

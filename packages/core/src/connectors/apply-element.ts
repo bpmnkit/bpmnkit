@@ -125,7 +125,7 @@ function isMessageDefinition(
 }
 
 /** The id of the root message an element references, if any. */
-function messageRefOf(element: BpmnFlowElement): string | undefined {
+export function messageRefOf(element: BpmnFlowElement): string | undefined {
 	if (element.type === "receiveTask" || element.type === "sendTask") return element.messageRef
 	if ("eventDefinitions" in element) {
 		return element.eventDefinitions.find(isMessageDefinition)?.messageRef

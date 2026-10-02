@@ -3952,6 +3952,25 @@
 			]
 		},
 		{
+			"id": "packages.connectors.with-lines",
+			"file": "chunks/packages.connectors.with-lines.md",
+			"tokens": 414,
+			"tags": [
+				"packages",
+				"connectors",
+				"lines"
+			],
+			"entities": [
+				"parseProcessText",
+				"applyTemplateToElement",
+				"resolveConnectorLine",
+				"postMessage",
+				"chat.postMessage",
+				"data.channel",
+				"AppliedConnectorLines.questions"
+			]
+		},
+		{
 			"id": "packages.connectors.applying-a-template",
 			"file": "chunks/packages.connectors.applying-a-template.md",
 			"tokens": 503,
@@ -4037,7 +4056,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 361,
+			"tokens": 439,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4444,6 +4463,24 @@
 			]
 		},
 		{
+			"id": "packages.core.installation-connectors-with-lines",
+			"file": "chunks/packages.core.installation-connectors-with-lines.md",
+			"tokens": 240,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"connectors",
+				"lines"
+			],
+			"entities": [
+				"parseProcessText",
+				"parseProcessDelta",
+				"applyConnectorLines",
+				"@bpmnkit/core/connectors"
+			]
+		},
+		{
 			"id": "packages.core.installation-retypeelement-element-type",
 			"file": "chunks/packages.core.installation-retypeelement-element-type.md",
 			"tokens": 189,
@@ -4786,7 +4823,7 @@
 		{
 			"id": "packages.editor.applying-a-change-script",
 			"file": "chunks/packages.editor.applying-a-change-script.md",
-			"tokens": 355,
+			"tokens": 465,
 			"tags": [
 				"packages",
 				"editor",
@@ -4797,7 +4834,11 @@
 			"entities": [
 				"applyProcessDelta",
 				"parseProcessDelta",
-				"@bpmnkit/core"
+				"@bpmnkit/core",
+				"applyConnectorLines",
+				"@bpmnkit/core/connectors",
+				"applyConnectors",
+				"result.questions"
 			]
 		},
 		{

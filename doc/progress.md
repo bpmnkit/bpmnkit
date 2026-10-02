@@ -1,5 +1,43 @@
 # Progress
 
+## 2026-10-02 — Connectors in AI generation, P3: `with` lines
+
+- **The format.** `with <id>: <alias> [operation] | key=value | key==FEEL` configures a node as a
+  connector, in the line format and in change scripts. Path lines are unchanged, so streaming and
+  every structural repair are unchanged.
+- **Parsing, in core's main entry, without the catalog.** `parseConnectorLine`, plus
+  `connectors` on `parseProcessText`'s and `parseProcessDelta`'s results. A line whose node
+  doesn't exist is a problem.
+- **Resolving and applying, in `@bpmnkit/core/connectors`.**
+  - `resolveConnectorLine` repairs: an alias within two letters, an operation by its last dotted
+    part or by the input that selects it, a short key (`channel` → `data.channel`), `http POST
+    <url>` written without keys, and `result=name[: expr]` into whichever result header the
+    operation has. A credential written as a value becomes a `{{secrets.…}}` placeholder.
+  - `applyConnectorLines` applies through `applyTemplateToElement`, so a plain task becomes a
+    service task and inbound templates work on events. A missing required input becomes a
+    question with a line to finish.
+  - `connectorLineFor` writes an element back as a line. Applying it again gives the same XML.
+  - `CONNECT_GUIDE` is the connect pass's prompt; its example parses and resolves cleanly.
+- **Writer and editor take hooks.** `writeProcessText(defs, { connectorLine })` and
+  `applyProcessDelta(…, { applyConnectors })`, so neither the editor nor core's main entry
+  carries the catalog. `applyProcessDelta` returns `questions`.
+- **Shown to run.** An engine test generates "GitHub issues → Slack" from text with `with` lines,
+  deploys it, mocks both connectors by job type, and checks:
+  - the REST URL built from FEEL;
+  - the result expression feeding the gateway;
+  - the Slack message `"New issues: 2"`;
+  - the quiet branch when there are no issues.
+- **Fixed:** the `isEmpty` template condition (Camunda 8.10 templates with a saved-credential
+  picker, 38 of them) was treated as always true. In the applier and the editor's panel, HTTP's
+  `url` and `urlOverride` were then both active.
+- **Changed from the plan:**
+  - Connector configuration is not a `CompactElement` field resolved inside `expand`. Lines are
+    applied to the expanded diagram by `applyConnectorLines`, which reuses
+    `applyTemplateToElement` (inbound messages, outputs, stamps) and keeps the catalog out of
+    `expand`.
+  - Not done: `- with x` (removing a connector), and `alias`/`operation` in a ProcessPlan
+    `PlanConnectorRef`.
+
 ## 2026-10-02 — Connectors in AI generation, P2: connector cards
 
 - **Cards.** A connector card is one operation of one template, with only the inputs that

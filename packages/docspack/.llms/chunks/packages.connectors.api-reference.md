@@ -20,6 +20,10 @@
 | `formatConnectorCard(card, { advanced })` | A card as one prompt line |
 | `connectorAlias(id)` / `templateIdForAlias(alias)` | Template id ↔ short alias |
 | `CONNECTOR_ALIASES` | Alias and operation dropdowns of every bundled template |
+| `applyConnectorLines(definitions, lines)` | Apply `with` lines → `{ definitions, problems, fixes, questions }` |
+| `resolveConnectorLine(line)` | One `with` line → template, card, values, problems, fixes |
+| `connectorLineFor(element, definitions)` | An element's connector as a `with` line |
+| `CONNECT_GUIDE` | System prompt teaching `with` lines |
 
 From `@bpmnkit/connectors/node`: `discoverElementTemplates`, `collectElementTemplates`,
 `DEFAULT_CONFIG_FOLDER`, `TEMPLATES_SUBFOLDER`.

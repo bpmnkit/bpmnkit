@@ -414,7 +414,7 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
 | P0 ✅ | WS1 defect fixes plus their tests; bench scores `mustContainTaskTypes` (done 2026-10-02) | — | S |
 | P1 ✅ | WS2: move the catalog into core, slim data, shim, sync workflow (done 2026-10-02, see WS2 notes) | P0 | M |
 | P2 ✅ | WS3 cards with per-operation conditions; regenerate skill reference; `casen connector cards` (done 2026-10-02) | P1 | M |
-| P3 | WS5 `with` lines: parser, delta, writer, resolver in `expand`, `CONNECT_GUIDE`; unit tests | P1, P2 | L |
+| P3 ✅ | WS5 `with` lines: parser, delta, writer, resolver (`applyConnectorLines`, not inside `expand`), `CONNECT_GUIDE`; unit tests (done 2026-10-02; `- with x` and plan aliases deferred) | P1, P2 | L |
 | P4 | WS6 per-task retrieval; Drop pass 2 (`/drop/api/connect`, auto after generate, "Add connectors" action); one rule line added to the pass 1 prompt; bench with 10 new connector golden prompts | P3 | M |
 | P5 | WS4 API index and API cards; GitHub/Stripe/Notion golden prompts | P2 (cards), P4 | L |
 | P6 | WS7 dry run in Drop and CLI, secrets checklist, Studio "Try it" | P3 | M |

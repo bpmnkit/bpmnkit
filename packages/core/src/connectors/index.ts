@@ -35,6 +35,13 @@ export {
 	templateIdForAlias,
 } from "./cards.js"
 export type { CardInput, CardMode, ConnectorCard } from "./cards.js"
+export {
+	CONNECT_GUIDE,
+	applyConnectorLines,
+	connectorLineFor,
+	resolveConnectorLine,
+} from "./lines.js"
+export type { AppliedConnectorLines, ResolvedConnectorLine } from "./lines.js"
 export type {
 	ElementTemplate,
 	TemplateGroup,

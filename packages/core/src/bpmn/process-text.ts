@@ -26,6 +26,7 @@ import { slugify, uniqueId } from "../plan/slug.js"
 import type { BpmnDefinitions, BpmnElementType } from "./bpmn-model.js"
 import { expand } from "./compact.js"
 import type { CompactDiagram, CompactElement, CompactFlow } from "./compact.js"
+import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connector-line.js"
 
 /**
  * How to write the format — the part of a system prompt that teaches it.
@@ -87,6 +88,17 @@ export interface ProcessTextResult {
 	fixes: string[]
 	/** The guesses behind the fixes that only the reader can confirm, in the order of the text. */
 	questions: ProcessTextQuestion[]
+	/**
+	 * The `with` lines, each with the id of the element it configures. Not
+	 * applied: `applyConnectorLines` from `@bpmnkit/core/connectors` writes them
+	 * onto the expanded diagram.
+	 */
+	connectors: ConnectorRef[]
+}
+
+/** A `with` line, and the element it names in the diagram. */
+export interface ConnectorRef extends ConnectorLine {
+	elementId: string
 }
 
 export const KINDS: Record<string, BpmnElementType> = {
@@ -319,6 +331,8 @@ class Reader {
 	private readonly taken = new Set<string>()
 	readonly edges: Edge[] = []
 	readonly problems: ProcessTextProblem[] = []
+	/** `with` lines, with the written id resolved to the node it meant when read. */
+	readonly connectors: ConnectorRef[] = []
 	/** Catch and boundary events written without a trigger, and made message events. */
 	readonly guessedMessage = new Set<string>()
 	title: string | undefined
@@ -336,6 +350,16 @@ class Reader {
 		if (text === "" || text.startsWith("```") || text.startsWith("//")) return false
 		if (text.startsWith("#")) {
 			if (this.title === undefined) this.title = text.replace(/^#+/, "").trim() || undefined
+			return false
+		}
+		if (CONNECTOR_LINE.test(text)) {
+			const connector = parseConnectorLine(text, n, this.problems)
+			if (connector) {
+				this.connectors.push({
+					...connector,
+					elementId: this.current.get(connector.id) ?? connector.id,
+				})
+			}
 			return false
 		}
 		// `engineer[user Fix issue] >` then the next step on the next line: models
@@ -1221,6 +1245,19 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		return flow
 	})
 
+	// A `with` line configures a node of the diagram; one whose node was left out, or
+	// never written, has nothing to configure.
+	const connectors: ConnectorRef[] = []
+	for (const ref of reader.connectors) {
+		if (nodes.has(ref.elementId)) connectors.push(ref)
+		else if (final) {
+			problems.push({
+				line: ref.line,
+				message: `"with ${ref.id}:" names no node of the diagram; ignored`,
+			})
+		}
+	}
+
 	return {
 		diagram: {
 			id: "Definitions_1",
@@ -1236,6 +1273,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		problems: problems.sort((a, b) => a.line - b.line),
 		fixes,
 		questions: asks.sort((a, b) => a.line - b.line).map(({ ask }) => ask()),
+		connectors,
 	}
 }
 

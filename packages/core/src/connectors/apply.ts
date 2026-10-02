@@ -74,6 +74,7 @@ export function evalCondition(cond: TemplateCondition, values: Record<string, st
 	if ("equals" in cond) return values[cond.property] === String(cond.equals)
 	if ("oneOf" in cond) return cond.oneOf.includes(values[cond.property] ?? "")
 	if ("isActive" in cond) return Boolean(values[cond.property]) === cond.isActive
+	if ("isEmpty" in cond) return !values[cond.property] === cond.isEmpty
 	return true
 }
 

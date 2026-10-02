@@ -323,6 +323,7 @@ adds those back for a property panel.
 | `applyTemplateToElement(defs, id, template, values)` | Apply a template to an existing element |
 | `validateElementTemplate(value)` | Structural check of an element template |
 | `findConnectorCards(query)` / `formatConnectorCard(card)` | One card per operation, with only its inputs — for a model's prompt |
+| `applyConnectorLines(defs, lines)` | Apply the `with` lines a model wrote in the line format |
 
 ```typescript
 import { applyConnectorTemplate } from "@bpmnkit/core/connectors"

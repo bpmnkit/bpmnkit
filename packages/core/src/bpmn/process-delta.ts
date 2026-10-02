@@ -18,6 +18,7 @@
 
 import type { BpmnElementType } from "./bpmn-model.js"
 import type { CompactFlow } from "./compact.js"
+import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connector-line.js"
 import {
 	ALIASES,
 	KINDS,
@@ -99,6 +100,8 @@ export interface ProcessDelta {
 	removedFlows: { from: string; to: string; line: number }[]
 	/** `@n` lines: the feedback item, and the ids the script says answer it. */
 	addressed: { item: number; ids: string[]; line: number }[]
+	/** `with` lines: connector configuration for a node, existing or new. */
+	connectors: ConnectorLine[]
 	/** Lines, or parts of lines, that were left out. */
 	problems: ProcessTextProblem[]
 }
@@ -165,6 +168,7 @@ export function parseProcessDelta(text: string): ProcessDelta {
 		removedNodes: [],
 		removedFlows: [],
 		addressed: [],
+		connectors: [],
 		problems: [],
 	}
 	const declared = new Map<string, DeltaNode>()
@@ -259,6 +263,11 @@ export function parseProcessDelta(text: string): ProcessDelta {
 			}
 			const ids = (match[2] ?? "").split(/[\s,]+/).filter((id) => /^[A-Za-z_][\w.-]*$/.test(id))
 			delta.addressed.push({ item, ids, line: n })
+			return
+		}
+		if (CONNECTOR_LINE.test(line)) {
+			const connector = parseConnectorLine(line, n, delta.problems)
+			if (connector) delta.connectors.push(connector)
 			return
 		}
 		// `- x` removes; `-> x` is an arrow a model wrote at the start of a line.

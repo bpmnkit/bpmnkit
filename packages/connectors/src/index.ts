@@ -35,6 +35,10 @@ export {
 	formatConnectorCard,
 	listConnectorCards,
 	templateIdForAlias,
+	CONNECT_GUIDE,
+	applyConnectorLines,
+	connectorLineFor,
+	resolveConnectorLine,
 } from "@bpmnkit/core/connectors"
 export type {
 	ConnectorSummary,
@@ -54,6 +58,8 @@ export type {
 	CardInput,
 	CardMode,
 	ConnectorCard,
+	AppliedConnectorLines,
+	ResolvedConnectorLine,
 } from "@bpmnkit/core/connectors"
 export { CAMUNDA_CONNECTOR_TEMPLATES }
 

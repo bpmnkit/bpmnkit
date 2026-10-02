@@ -125,6 +125,14 @@ export type TemplateCondition =
 	| { property: string; equals: string; type?: string }
 	| { property: string; oneOf: string[]; type?: string }
 	| { property: string; isActive: boolean; type?: string }
+	/** `true`: the property has no value. Used by Camunda 8.10 templates beside a saved credential. */
+	| { property: string; isEmpty: boolean; type?: string }
 	| {
-			allMatch: Array<{ property: string; equals?: string; oneOf?: string[]; isActive?: boolean }>
+			allMatch: Array<{
+				property: string
+				equals?: string
+				oneOf?: string[]
+				isActive?: boolean
+				isEmpty?: boolean
+			}>
 	  }
