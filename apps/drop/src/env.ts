@@ -44,6 +44,12 @@ export interface Env {
 	 * its options come from `MODEL_PROFILES`.
 	 */
 	AI_FEEDBACK_MODEL?: string
+	/**
+	 * Workers AI model for the connect pass, which configures the connectors of a
+	 * generated or existing diagram (var). Unset = the feature is off, even with
+	 * `AI_PASSCODE` set.
+	 */
+	AI_CONNECT_MODEL?: string
 	/** Daily neuron budget shared by AI reviews and generations (var; string, parsed at the edge). */
 	AI_DAILY_BUDGET: string
 	/**

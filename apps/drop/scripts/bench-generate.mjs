@@ -20,7 +20,15 @@
  * apply it, and scored on what it changed, including changes to parts no comment
  * was about (doc/drop-ai-feedback-edits-analysis.md §13).
  *
+ * With --connect each golden prompt's diagram then goes through the connect pass
+ * as the Worker runs it (doc/ai-connector-generation-plan.md §4): the same cards,
+ * prompt, line filter and server-side apply. The assertions are scored on the
+ * connected diagram, so `mustContainTaskTypes` measures the connectors, and a
+ * prompt whose expected.json says `"connect": false` must be skipped without a
+ * model call.
+ *
  * Options:
+ *   --connect         run the connect pass after each golden prompt
  *   --edits           run the change cases instead of the golden prompts
  *   --feedback        run the review-feedback cases instead of the golden prompts
  *   --dry-run         with --feedback: print each case's prompt size and estimated
@@ -45,7 +53,22 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises"
 import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { parseArgs } from "node:util"
-import { Bpmn, createProcessTextStream, expand, optimize, parseProcessText } from "@bpmnkit/core"
+import {
+	Bpmn,
+	createProcessTextStream,
+	expand,
+	optimize,
+	parseProcessText,
+	writeProcessText,
+} from "@bpmnkit/core"
+import { connectorLineFor, selectConnectors } from "@bpmnkit/core/connectors"
+import {
+	connectMessages,
+	connectTasks,
+	createConnectLineFilter,
+	finishConnect,
+	maxConnectTokens,
+} from "../src/lib/connect.ts"
 import { scoreEdit } from "../src/lib/edit-bench.ts"
 import { prepareFeedbackCase, scoreFeedback } from "../src/lib/feedback-bench.ts"
 import { createChangeLineFilter, feedbackMessages } from "../src/lib/feedback.ts"
@@ -82,6 +105,7 @@ const { values: args } = parseArgs({
 		only: { type: "string" },
 		all: { type: "boolean", default: false },
 		edits: { type: "boolean", default: false },
+		connect: { type: "boolean", default: false },
 		feedback: { type: "boolean", default: false },
 		"dry-run": { type: "boolean", default: false },
 		"refine-rules": { type: "string", default: "text" },
@@ -99,6 +123,10 @@ if (!Object.hasOwn(REFINE_RULE_SETS, refineRules)) {
 
 if (args.edits && args.feedback) {
 	console.error("--edits and --feedback are separate case sets; pick one.")
+	process.exit(1)
+}
+if (args.connect && (args.edits || args.feedback)) {
+	console.error("--connect runs after the golden prompts only.")
 	process.exit(1)
 }
 if (args["dry-run"] && !args.feedback) {
@@ -137,6 +165,8 @@ async function loadPrompts() {
 		const expected = JSON.parse(await readFile(join(PROMPTS_DIR, dir, "expected.json"), "utf8"))
 		prompts.push({
 			id: dir,
+			text,
+			expected,
 			messages: generateMessages(text),
 			score: (diagram) => score(expand(diagram), expected.assertions ?? {}),
 		})
@@ -332,8 +362,84 @@ async function runOne(model, prompt) {
 		Object.assign(result, prompt.score(parsed.diagram))
 	} catch (error) {
 		result.error = `expand: ${error.message}`
+		return result
 	}
+	if (args.connect) Object.assign(result, await runConnect(model, prompt, parsed.diagram))
 	return result
+}
+
+/** Reads a Workers AI stream: the content, and the usage when the model reports it. */
+async function stream(model, body) {
+	const response = await fetch(`${apiBase}/accounts/${accountId}/ai/run/${model}`, {
+		method: "POST",
+		headers: {
+			Authorization: `Bearer ${token}`,
+			"Content-Type": "application/json",
+			"x-session-affinity": `bench-connect-${model}`,
+		},
+		body: JSON.stringify(body),
+		signal: AbortSignal.timeout(180_000),
+	})
+	if (!response.ok || !response.body) {
+		throw new Error(`HTTP ${response.status}: ${(await response.text()).slice(0, 500)}`)
+	}
+	const sse = createSseReader()
+	const decoder = new TextDecoder()
+	let text = ""
+	let usage
+	for await (const bytes of response.body) {
+		for (const data of sse.push(decoder.decode(bytes, { stream: true }))) {
+			const delta = readAiEvent(data)
+			if (delta?.content) text += delta.content
+			if (delta?.usage) usage = delta.usage
+		}
+	}
+	return { text, usage }
+}
+
+/**
+ * The connect pass on a generated diagram, as the Worker runs it. Its scores
+ * replace the diagram's: the assertions are about the connected result.
+ */
+async function runConnect(model, prompt, diagram) {
+	const defs = expand(diagram)
+	const { text, aliases } = writeProcessText(defs, { connectorLine: connectorLineFor })
+	const selection = selectConnectors({ text: prompt.text, tasks: connectTasks(defs, aliases) })
+	const expectSkip = prompt.expected.connect === false
+	const connect = {
+		tasks: selection.length,
+		cards: selection.reduce((n, t) => n + t.cards.length, 0),
+		skipped: selection.length === 0,
+		skipRight: (selection.length === 0) === expectSkip,
+	}
+	if (connect.skipped) return { connect }
+	const t0 = performance.now()
+	try {
+		const { text: answer, usage } = await stream(model, {
+			messages: connectMessages(text, selection, prompt.text),
+			stream: true,
+			max_tokens: maxTokens ?? maxConnectTokens(selection.length),
+			...(args["no-extra"] ? {} : (MODEL_PROFILES[model]?.options ?? {})),
+		})
+		connect.totalMs = Math.round(performance.now() - t0)
+		connect.usage = usage
+		if (usage) connect.neurons = neuronsFor(model, usage)
+		const filter = createConnectLineFilter()
+		connect.lines = filter.push(answer) + filter.end()
+		const done = finishConnect(defs, aliases, connect.lines)
+		connect.connected = done.connected.length
+		connect.problems = done.problems
+		connect.questions = done.questions.length
+		// The resolver replaces a literal credential; a model that writes one still counts
+		connect.literalSecrets = done.fixes.filter((f) => f.includes("holds a credential")).length
+		return {
+			connect,
+			xml: done.xml,
+			...score(Bpmn.parse(done.xml), prompt.expected.assertions ?? {}),
+		}
+	} catch (error) {
+		return { connect: { ...connect, error: String(error) } }
+	}
 }
 
 const markdownTable = (header, rows) =>
@@ -385,7 +491,15 @@ for (const model of models) {
 				: args.feedback
 					? `total ${r.totalMs}ms  out ${r.usage?.completionTokens ?? "?"}tok  +${r.created} ~${r.changed} −${r.removed}  problems ${r.problems.length}  @${r.addressed.join(",") || "–"}${r.failed.length ? `  FAIL ${r.failed.join(", ")}` : ""}`
 					: `shape ${r.firstShapeMs ?? "–"}ms  total ${r.totalMs}ms  out ${r.usage?.completionTokens ?? "?"}tok  problems ${r.problems.length}  fixes ${r.fixes.length}  lint-errors ${r.lintErrors.length}${r.kept === undefined ? "" : `  kept ${Math.round(r.kept * 100)}% +${r.added} −${r.removed}`}${r.failed.length ? `  FAIL ${r.failed.join(", ")}` : ""}`
-			console.log(`${model}  ${prompt.id}#${run}  ${verdict}`)
+			const c = r.connect
+			const connected = !c
+				? ""
+				: c.error
+					? `  | connect ERROR ${c.error.slice(0, 80)}`
+					: c.skipped
+						? `  | connect skipped${c.skipRight ? "" : " (WRONG)"}`
+						: `  | connect ${c.totalMs}ms  out ${c.usage?.completionTokens ?? "?"}tok  connected ${c.connected}/${c.tasks}  problems ${c.problems.length}  questions ${c.questions}${c.literalSecrets ? `  literal secrets ${c.literalSecrets}` : ""}${c.skipRight ? "" : "  (should have skipped)"}`
+			console.log(`${model}  ${prompt.id}#${run}  ${verdict}${connected}`)
 		}
 	}
 }
@@ -399,7 +513,8 @@ await writeFile(
 	),
 )
 
-const feedbackRows = models.map((model) => {
+// Only for feedback runs: the other runs' results have no collateral field to count.
+const feedbackRows = (args.feedback ? models : []).map((model) => {
 	const rs = results.filter((r) => r.model === model)
 	const ok = rs.filter((r) => !r.error)
 	return [
@@ -466,6 +581,16 @@ const rows = (args.feedback ? [] : models).map((model) => {
 					mean(ok.map((r) => r.removed)),
 				]
 			: []),
+		...(args.connect
+			? [
+					`${ok.filter((r) => r.connect?.skipRight).length}/${ok.length}`,
+					median(ok.map((r) => r.connect?.totalMs)),
+					median(ok.map((r) => r.connect?.usage?.completionTokens)),
+					mean(ok.map((r) => r.connect?.neurons)),
+					mean(ok.map((r) => r.connect?.problems?.length)),
+					mean(ok.map((r) => r.connect?.questions)),
+				]
+			: []),
 	]
 })
 const header = [
@@ -483,6 +608,16 @@ const header = [
 	"fixes",
 	"lint errors",
 	...(args.edits ? ["kept %", "added", "removed"] : []),
+	...(args.connect
+		? [
+				"connect skip right",
+				"connect ms",
+				"connect out tok",
+				"connect neurons",
+				"connect problems",
+				"connect questions",
+			]
+		: []),
 ]
 const table = args.feedback
 	? markdownTable(feedbackHeader, feedbackRows)

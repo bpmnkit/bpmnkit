@@ -168,6 +168,22 @@ with notify: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.text=
 		expect(inputs(applied.definitions, "notify").token).toBe("{{secrets.SLACK_TOKEN}}")
 	})
 
+	it("changes only what a later line names on a node that already has the connector", () => {
+		const parsed = parseProcessText(TEXT)
+		const first = applyConnectorLines(expand(parsed.diagram), parsed.connectors).definitions
+		const [notify] = parsed.connectors.filter((c) => c.id === "notify")
+		if (!notify) throw new Error("no notify line")
+		const answer = applyConnectorLines(first, [
+			{ ...notify, args: ["chat.postMessage"], values: { "data.channel": "#ops" } },
+		])
+		expect(answer.questions).toEqual([])
+		expect(inputs(answer.definitions, "notify")).toMatchObject({
+			token: "{{secrets.SLACK_TOKEN}}",
+			"data.channel": "#ops",
+			"data.text": '= "Order " + order.id',
+		})
+	})
+
 	it("applies an inbound connector to a start event", () => {
 		const parsed = parseProcessText(
 			"start[start:message Order webhook] > work[task Do work] > done[end Done]\nwith start: webhook-message-start | inbound.context=orders",

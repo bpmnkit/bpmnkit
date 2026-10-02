@@ -242,8 +242,9 @@ export interface AppliedConnectorLines {
  * Applies `with` lines to the elements they name: each line is resolved
  * ({@link resolveConnectorLine}) and written with `applyTemplateToElement`,
  * which converts a plain task into the template's element type and stamps the
- * template. A required input the line did not give becomes a question; the
- * rest of the line is still applied.
+ * template. A line for an element that already carries the same template
+ * changes only the inputs it names. A required input the line did not give
+ * becomes a question; the rest of the line is still applied.
  *
  * Pass `parseProcessText(text).connectors` with the expanded diagram, or the
  * lines of a change script with the ids they resolve to.
@@ -259,12 +260,17 @@ export function applyConnectorLines(
 		out.fixes.push(...resolved.fixes.map((fix) => `${line.id}: ${fix}`))
 		const template = resolved.templateId ? getTemplate(resolved.templateId) : undefined
 		if (!template || !resolved.card) continue
-		const applied = applyTemplateToElement(
-			out.definitions,
-			line.elementId,
-			template,
-			resolved.values,
-		)
+		// A line for a node that already carries this connector changes only what it names:
+		// answering "which channel?" must not drop the token the first line set
+		const current = elementOf(out.definitions, line.elementId)
+		const kept =
+			current?.unknownAttributes["zeebe:modelerTemplate"] === template.id
+				? readValues(out.definitions, current, template)
+				: {}
+		const applied = applyTemplateToElement(out.definitions, line.elementId, template, {
+			...kept,
+			...resolved.values,
+		})
 		out.definitions = applied.definitions
 		const card = resolved.card
 		const head = `with ${line.id}: ${card.alias}${card.operation ? ` ${card.operation}` : ""}`

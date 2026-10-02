@@ -8,6 +8,7 @@ import { handleAdmin } from "./routes/admin.js"
 import { handleAiEdit } from "./routes/ai-edit.js"
 import { handleAiReview } from "./routes/ai-review.js"
 import { handleComments } from "./routes/comments.js"
+import { handleConnect } from "./routes/connect.js"
 import {
 	handleDiffPage,
 	handleJson,
@@ -59,6 +60,9 @@ async function route(request: Request, env: Env): Promise<Response> {
 	}
 	if (rest === "/api/generate") {
 		return request.method === "POST" ? handleGenerate(request, env, now) : methodNotAllowed()
+	}
+	if (rest === "/api/connect") {
+		return request.method === "POST" ? handleConnect(request, env, now) : methodNotAllowed()
 	}
 	if (rest === "/api/reports") {
 		return request.method === "POST" ? handleReport(request, env, now) : methodNotAllowed()

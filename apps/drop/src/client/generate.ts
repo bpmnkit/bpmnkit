@@ -30,6 +30,8 @@ import {
 	expand,
 	parseProcessText,
 } from "@bpmnkit/core"
+// Types only: the connect pass applies its answer on the server, so the page never loads the catalog.
+import type { ConnectEvent, ConnectResult } from "../lib/connect.js"
 import {
 	type GenerateEvent,
 	IMAGE_MAX_SIDE,
@@ -212,6 +214,10 @@ export function mountGenerator(): void {
 	let image: string | null = null
 	/** The latest frame not yet drawn: frames arrive faster than a screen refreshes. */
 	let pending: BpmnDefinitions | null = null
+	/** The draft with its connectors, by the draft text it was connected from, so Undo keeps them. */
+	const connected = new Map<string, string>()
+	/** What the parser asked about the draft on screen; connector questions are shown after them. */
+	let parserQuestions: ProcessTextQuestion[] = []
 
 	function draw(defs: BpmnDefinitions): void {
 		pending = defs
@@ -269,10 +275,13 @@ export function mountGenerator(): void {
 	function show(text: string): { ids: Set<string>; problems: number } {
 		if (!name || !share || !refine || !undo) return { ids: new Set(), problems: 0 }
 		const parsed = parseProcessText(text)
-		const defs = expand(parsed.diagram)
+		const plain = expand(parsed.diagram)
+		const withConnectors = connected.get(text)
+		const defs = withConnectors === undefined ? plain : Bpmn.parse(withConnectors)
 		draw(defs)
-		result = { xml: Bpmn.export(defs), file: fileName(defs) }
+		result = { xml: withConnectors ?? Bpmn.export(defs), file: fileName(defs) }
 		name.textContent = result.file
+		parserQuestions = parsed.questions
 		showQuestions(parsed.questions)
 		share.hidden = false
 		refine.hidden = false
@@ -368,12 +377,13 @@ export function mountGenerator(): void {
 	 * @returns The response, or `null` when the reader closed the challenge.
 	 */
 	async function send(
-		body: { description: string; diagram?: string; change?: string; image?: string },
+		body: Record<string, string>,
 		code: string,
 		signal: AbortSignal,
+		path = "/drop/api/generate",
 	): Promise<Response | null> {
 		const post = (token?: string) =>
-			fetch("/drop/api/generate", {
+			fetch(path, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -546,6 +556,76 @@ export function mountGenerator(): void {
 				? `ready (cached)${repaired(problems)}`
 				: `ready in ${seconds}s${repaired(problems)}`,
 		)
+		await connect()
+	}
+
+	/**
+	 * The second pass: configures the draft's connectors (`doc/ai-connector-generation-plan.md`
+	 * §4). The server picks the cards, asks the model and applies its answer, so the
+	 * page only draws the connected diagram. With `lines` — a `with` line the reader
+	 * finished to answer a question — no model is asked.
+	 *
+	 * Quiet when it cannot help: a deployment without the feature, a draft with no
+	 * task a connector fits, or a failure leave the draft as it is.
+	 */
+	async function connect(lines?: string): Promise<void> {
+		if (!draft || !result || !status) return
+		const code = readCode()
+		if (!code) return
+		const text = draft.text
+		const before = status.textContent ?? ""
+		running?.abort()
+		const controller = new AbortController()
+		running = controller
+		setStatus(lines ? "connecting…" : `${before} · connecting…`, true)
+		setBusy(true)
+		const body: Record<string, string> = { xml: result.xml, request: draft.description }
+		if (lines) body.lines = lines
+		let outcome: ConnectResult | undefined
+		let note = ""
+		try {
+			const res = await send(body, code, controller.signal, "/drop/api/connect")
+			if (!res?.ok || !res.body) {
+				// Off (404), or a check the reader closed: the draft stands as it is.
+				if (!controller.signal.aborted) setStatus(before)
+				return
+			}
+			const sse = createSseReader()
+			const decoder = new TextDecoder()
+			const reader = res.body.getReader()
+			for (let chunk = await reader.read(); !chunk.done; chunk = await reader.read()) {
+				for (const data of sse.push(decoder.decode(chunk.value, { stream: true }))) {
+					const event = JSON.parse(data) as ConnectEvent
+					if ("result" in event) outcome = event.result
+					else if ("error" in event) note = " · connectors failed"
+				}
+			}
+		} catch {
+			if (controller.signal.aborted) return
+			note = " · connectors failed"
+		} finally {
+			if (!controller.signal.aborted) {
+				setBusy(false)
+				running = null
+			}
+		}
+		if (controller.signal.aborted || draft?.text !== text) return
+		if (!outcome) {
+			setStatus(`${before}${note}`)
+			return
+		}
+		if (outcome.connected.length > 0) {
+			connected.set(text, outcome.xml)
+			const defs = Bpmn.parse(outcome.xml)
+			draw(defs)
+			result = { xml: outcome.xml, file: fileName(defs) }
+		}
+		showQuestions([...parserQuestions, ...outcome.questions])
+		const count = outcome.connected.length
+		const asks = outcome.questions.length
+		setStatus(
+			`${lines ? "connected" : before}${count > 0 ? ` · ${count} connector${count === 1 ? "" : "s"}` : ""}${asks > 0 ? ` · ${asks} input${asks === 1 ? "" : "s"} to fill` : ""}`,
+		)
 	}
 
 	/** Asks for `request` to be made to the draft on screen, and draws the result. */
@@ -554,6 +634,12 @@ export function mountGenerator(): void {
 		const text = request.trim()
 		if (text.length < MIN_CHANGE_CHARS) {
 			changeInput.focus()
+			return
+		}
+		// A connector question answered: the line is applied as written, without a model
+		if (/^with\s+[A-Za-z_][\w.-]*\s*:/i.test(text)) {
+			changeInput.value = ""
+			await connect(text)
 			return
 		}
 		const before = parseProcessText(draft.text).diagram.processes[0]?.elements ?? []
@@ -577,6 +663,7 @@ export function mountGenerator(): void {
 		setStatus(
 			`changed${answer.cached ? " (cached)" : ` in ${seconds}s`} · +${added} −${removed}${repaired(problems)}`,
 		)
+		await connect()
 	}
 
 	async function shareIt(): Promise<void> {

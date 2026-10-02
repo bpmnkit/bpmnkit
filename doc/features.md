@@ -1,5 +1,21 @@
 # Features
 
+## AI generation with Camunda connectors (2026-10-02)
+
+- **Drop: describe a process that calls other systems and get it connected.** After the diagram
+  is drafted, a second pass configures its connectors: Slack, GitHub, SendGrid, Kafka, AWS,
+  Teams and the rest of the 133 Camunda templates, or a REST call. It fills in the inputs,
+  keeps credentials as `{{secrets.…}}` placeholders, and asks for any required input it could
+  not fill. Answering is one line, applied without asking the AI again. Shared diagrams have
+  **Add connectors** while editing, as one undoable change.
+- **`@bpmnkit/core/connectors`:** the Camunda 8 connector catalog, outside core's main entry.
+  - Connector cards: one operation each, with only its inputs.
+  - Fixed aliases (`http`, `slack`, …).
+  - `selectConnectors`, which picks the cards for a diagram's tasks.
+  - `with` lines (`with notify: slack chat.postMessage | data.channel=#ops`), applied by
+    `applyConnectorLines` with repairs for what models get nearly right.
+- **CLI.** `casen connector cards "<request>"`.
+
 ## Drop: AI proposals shared as suggested changes (2026-10-01)
 
 - Share an AI proposal on its threads instead of applying it. Reviewers see a "Suggested change"

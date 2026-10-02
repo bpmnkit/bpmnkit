@@ -99,6 +99,40 @@ operation.
   `sqs-message-start`, in `CONNECTOR_ALIASES`. That table also lists which dropdowns choose the
   operation. `connectorAlias(id)` and `templateIdForAlias(alias)` map between the two.
 
+## Picking cards for a diagram
+
+`selectConnectors({ text, tasks })` picks the cards a model should see when it connects a
+diagram, per task and in code. `text` is what the person asked for; `tasks` are the diagram's
+nodes. It returns only tasks with a candidate, so an empty answer means there is nothing to
+connect.
+
+A card is a candidate for a task when:
+- **the task's name names the system** ("Post summary to **Slack**");
+- **the request names the system,** the task is a task rather than an event, and no other
+  task's name claims that system; or
+- **the task's name shares a word with the connector's name,** other than a common verb.
+
+Beyond those rules:
+- **REST fallback.** The REST connector is offered for a task that asks for an HTTP call
+  ("Fetch …", "Call endpoint") when nothing else fits.
+- **Synonyms.** A few words requests use for what templates call something else, such as
+  "notify" for sending a message, change the ranking only.
+- **Caps.** At most three cards per task and eight in all. Every task keeps its best card
+  before any task gets a second.
+
+```typescript
+import { formatConnectorSelection, selectConnectors } from "@bpmnkit/connectors";
+
+const selection = selectConnectors({
+  text: "Every hour, list open GitHub issues and post a summary to Slack",
+  tasks: [
+    { id: "list", name: "List open issues", type: "serviceTask" },
+    { id: "post", name: "Post summary to Slack", type: "serviceTask" },
+  ],
+});
+formatConnectorSelection(selection); // the prompt block, one task per paragraph
+```
+
 ## `with` lines
 
 In the [line format](/docs/packages/core#connectors-with-lines), a model configures a connector
@@ -127,7 +161,9 @@ service task and inbound templates work on events.
   diagram never carries one.
 
 A required input the line left out becomes a **question** (`AppliedConnectorLines.questions`),
-with a line to finish, and the rest of the line is still applied.
+with a line to finish, and the rest of the line is still applied. A line for a node that already
+carries the same connector changes only the inputs it names, so the answer to a question keeps
+everything else.
 
 - **Writing back.** `connectorLineFor(element, definitions)` writes an element's connector back
   as a line. Applying that line again gives the same element.
@@ -375,6 +411,8 @@ for CI and takes `--format json`.
 | `resolveConnectorLine(line)` | One `with` line → template, card, values, problems, fixes |
 | `connectorLineFor(element, definitions)` | An element's connector as a `with` line |
 | `CONNECT_GUIDE` | System prompt teaching `with` lines |
+| `selectConnectors({ text, tasks }, { perTask, total })` | The cards to show a model for each task of a diagram |
+| `formatConnectorSelection(selection)` | Picked cards as a prompt block |
 
 From `@bpmnkit/connectors/node`: `discoverElementTemplates`, `collectElementTemplates`,
 `DEFAULT_CONFIG_FOLDER`, `TEMPLATES_SUBFOLDER`.

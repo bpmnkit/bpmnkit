@@ -1,0 +1,9 @@
+{
+	"id": "openai-summarise",
+	"category": "connector",
+	"description": "An AI connector feeding a messaging connector.",
+	"assertions": {
+		"minElements": 4,
+		"mustContainTaskTypes": ["io.camunda:http-json:1", "io.camunda:slack:1"]
+	}
+}

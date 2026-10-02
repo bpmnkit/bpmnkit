@@ -110,6 +110,26 @@ worked out again against their own document, and whoever edits can apply it late
 turn it off. Locally the model call needs a Cloudflare account; everything around it runs offline.
 See `doc/drop-ai-feedback-edits-analysis.md` §14.
 
+With `AI_CONNECT_MODEL` set as well (it is, in `wrangler.jsonc`), the passcode also turns on the
+**connect pass** (`POST /drop/api/connect`). It configures the Camunda connectors of a diagram
+that already has its shape (`doc/ai-connector-generation-plan.md` §4).
+
+- **How it picks.** The Worker picks the connector cards for each task in code
+  (`selectConnectors` from `@bpmnkit/core/connectors`). It asks the model for `with` lines only,
+  then applies them itself and streams back the connected diagram. The page never loads the
+  catalog.
+- **When no model is asked.** A diagram whose tasks match no connector ends `skipped`, and the
+  model isn't called.
+- **Where it runs.**
+  - **After every draft or change:** the "Describe a process" generator runs it on its own. A
+    required input the model left out becomes a question; the reader finishes its line, and the
+    line is applied without a model (`lines` in the body).
+  - **On a shared diagram:** **Add connectors** runs it while editing. The result is one
+    undoable editor change.
+- **Benchmark.** `bench:generate --connect` runs it after each golden prompt and scores the
+  connected diagram.
+- **Turning it off.** Remove `AI_CONNECT_MODEL`.
+
 Quick API smoke test:
 
 ```sh

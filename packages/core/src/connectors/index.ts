@@ -42,6 +42,8 @@ export {
 	resolveConnectorLine,
 } from "./lines.js"
 export type { AppliedConnectorLines, ResolvedConnectorLine } from "./lines.js"
+export { formatConnectorSelection, selectConnectors } from "./select.js"
+export type { ConnectorTask, TaskCards } from "./select.js"
 export type {
 	ElementTemplate,
 	TemplateGroup,

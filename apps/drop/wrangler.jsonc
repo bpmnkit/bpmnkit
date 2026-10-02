@@ -28,6 +28,10 @@
 		// Changes a shared diagram from its review comments. Unset = off. glm-4.7-flash until
 		// `bench:generate --feedback` says otherwise (doc/drop-ai-feedback-edits-analysis.md §13).
 		"AI_FEEDBACK_MODEL": "@cf/zai-org/glm-4.7-flash",
+		// Configures the connectors of a diagram that has its shape (the second pass of
+		// doc/ai-connector-generation-plan.md §4). Unset = off. glm-4.7-flash until
+		// `bench:generate --connect` says otherwise.
+		"AI_CONNECT_MODEL": "@cf/zai-org/glm-4.7-flash",
 		"AI_DAILY_BUDGET": "8000",
 		"TURNSTILE_SITE_KEY": "0x4AAAAAAExoiG_f6MSVcEiN"
 		// Turnstile on the edit claim. Add TURNSTILE_SITE_KEY here (it is public and

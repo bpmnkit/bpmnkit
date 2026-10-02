@@ -1,0 +1,9 @@
+{
+	"id": "lambda-then-sqs",
+	"category": "connector",
+	"description": "Two AWS connectors in a row.",
+	"assertions": {
+		"minElements": 4,
+		"mustContainTaskTypes": ["io.camunda:aws-lambda:1", "io.camunda:aws-sqs:1"]
+	}
+}

@@ -3952,9 +3952,22 @@
 			]
 		},
 		{
+			"id": "packages.connectors.picking-cards-for-a-diagram",
+			"file": "chunks/packages.connectors.picking-cards-for-a-diagram.md",
+			"tokens": 384,
+			"tags": [
+				"packages",
+				"connectors",
+				"picking",
+				"cards",
+				"diagram"
+			],
+			"entities": []
+		},
+		{
 			"id": "packages.connectors.with-lines",
 			"file": "chunks/packages.connectors.with-lines.md",
-			"tokens": 414,
+			"tokens": 448,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4056,7 +4069,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 439,
+			"tokens": 489,
 			"tags": [
 				"packages",
 				"connectors",

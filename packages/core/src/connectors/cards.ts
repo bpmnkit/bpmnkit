@@ -319,6 +319,27 @@ const NOISE = new Set([
 	"using",
 ])
 
+/** How well a card matches search terms: alias, then template name, then operation, then anywhere. */
+export function cardScore(card: ConnectorCard, terms: readonly string[]): number {
+	const alias = card.alias.toLowerCase()
+	const name = new Set(words(card.title.split(":")[0] ?? ""))
+	const operation = new Set(words(`${card.operation ?? ""} ${card.title.split(":")[1] ?? ""}`))
+	const anywhere = `${card.description ?? ""} ${card.taskType ?? ""}`.toLowerCase()
+	let score = 0
+	for (const term of terms) {
+		if (alias === term || alias.split("-").includes(term)) score += 5
+		else if (name.has(term)) score += 4
+		if (operation.has(term)) score += 3
+		else if (anywhere.includes(term)) score += 1
+	}
+	return score
+}
+
+/** The words of a request that can say which connector it means. */
+export function searchTerms(text: string): string[] {
+	return words(text).filter((w) => !NOISE.has(w))
+}
+
 /**
  * Cards that match a query, best first: an alias named outright scores highest,
  * then words of the template name, then of the operation, then anywhere.
@@ -328,23 +349,10 @@ export function findConnectorCards(
 	query: string,
 	options: { limit?: number } = {},
 ): ConnectorCard[] {
-	const terms = words(query).filter((w) => !NOISE.has(w))
+	const terms = searchTerms(query)
 	if (terms.length === 0) return []
 	const scored = listConnectorCards()
-		.map((card) => {
-			const alias = card.alias.toLowerCase()
-			const name = new Set(words(card.title.split(":")[0] ?? ""))
-			const operation = new Set(words(`${card.operation ?? ""} ${card.title.split(":")[1] ?? ""}`))
-			const anywhere = `${card.description ?? ""} ${card.taskType ?? ""}`.toLowerCase()
-			let score = 0
-			for (const term of terms) {
-				if (alias === term || alias.split("-").includes(term)) score += 5
-				else if (name.has(term)) score += 4
-				if (operation.has(term)) score += 3
-				else if (anywhere.includes(term)) score += 1
-			}
-			return { card, score }
-		})
+		.map((card) => ({ card, score: cardScore(card, terms) }))
 		.filter((s) => s.score > 0)
 		.sort(
 			(a, b) =>

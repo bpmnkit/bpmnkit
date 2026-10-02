@@ -1,5 +1,48 @@
 # Progress
 
+## 2026-10-02 — Connectors in AI generation, P4: the connect pass in Drop
+
+- **`selectConnectors`** (core/connectors) picks cards per task in code. A card qualifies when:
+  - the task's name names the system;
+  - the request names it and no other task's name does (tasks only, never events); or
+  - the task's name shares a word with the connector's name.
+
+  Synonyms such as "notify" for sending a message rank only. REST is the fallback for
+  HTTP-call tasks. Caps: 3 per task, 8 in all.
+
+  Tested on the plan's scenarios: GitHub → Slack, notify ops, Kafka, email, REST fallback,
+  webhook start, and a pure approval flow, which selects nothing.
+- **`POST /drop/api/connect`** (`AI_CONNECT_MODEL`, glm-4.7-flash for now). It uses
+  ai-edit's gates, cache, budget and hourly cap.
+  - **How it answers.** The Worker writes the diagram text with existing connectors and picks
+    the cards. It asks for `with` lines only (its own line filter) and applies them on the
+    server, so the page bundles no catalog.
+  - **Skipping.** With nothing to connect, the stream ends `skipped` and no model is called.
+  - **`lines` mode.** `with` lines the reader finished are applied without a model or budget.
+  - **Merging.** `applyConnectorLines` now merges with an element's existing connector, so
+    such an answer keeps the rest.
+- **The page.**
+  - **Generator:** connects after every draft and change, and redraws. Missing inputs become
+    questions answered with one line. Undo keeps the connected version, and Share shares it.
+  - **Share page:** **Add connectors** while editing applies the result as one undoable
+    editor change.
+- **Pass 1** gets one rule line: "Each call to an outside system is its own service task".
+- **Benchmark.** `bench:generate --connect` adds the connect pass to the golden prompts and
+  scores the connected diagram. It adds ten connector golden prompts (16–25, with 25
+  expecting a skip). It also fixes a crash at the end of every golden-prompt run (the
+  feedback table read a field those results lack).
+- **Checked.**
+  - Route tests: 11.
+  - Chromium against `wrangler dev`, with the model answers stubbed:
+    - the generator: draft → connect → question → answer via the real worker → change →
+      undo → share, with the shared XML connected;
+    - Add connectors → Done, and Add connectors → Undo → Done, on the stored files;
+    - no console errors.
+  - The benchmark's `--connect` path against a local mock of the Workers AI API.
+- **Not done yet.** No benchmark run against Workers AI, since that needs Cloudflare
+  credentials, so the model choice for the connect pass (D3) is still open. Add connectors
+  applies directly, as an undoable change, rather than through the proposal dialog.
+
 ## 2026-10-02 — Connectors in AI generation, P3: `with` lines
 
 - **The format.** `with <id>: <alias> [operation] | key=value | key==FEEL` configures a node as a

@@ -39,6 +39,8 @@ export {
 	applyConnectorLines,
 	connectorLineFor,
 	resolveConnectorLine,
+	formatConnectorSelection,
+	selectConnectors,
 } from "@bpmnkit/core/connectors"
 export type {
 	ConnectorSummary,
@@ -60,6 +62,8 @@ export type {
 	ConnectorCard,
 	AppliedConnectorLines,
 	ResolvedConnectorLine,
+	ConnectorTask,
+	TaskCards,
 } from "@bpmnkit/core/connectors"
 export { CAMUNDA_CONNECTOR_TEMPLATES }
 

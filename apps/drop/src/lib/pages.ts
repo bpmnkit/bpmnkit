@@ -739,7 +739,8 @@ function primaryIndex(files: FileInfo[]): number {
 /**
  * The read-only share/viewer page for a stored drop. `aiEnabled` reflects
  * whether AI_PASSCODE is set; `aiEdit` whether changes from review comments are
- * on too (AI_FEEDBACK_MODEL set).
+ * on too (AI_FEEDBACK_MODEL set); `aiConnect` whether "Add connectors" is
+ * (AI_CONNECT_MODEL set).
  */
 export function sharePage(
 	shareId: string,
@@ -748,6 +749,7 @@ export function sharePage(
 	aiEnabled = false,
 	turnstileKey?: string,
 	aiEdit = false,
+	aiConnect = false,
 ): string {
 	const primary = primaryIndex(files)
 	const title = files[primary]?.name || files[primary]?.filename || "Shared diagram"
@@ -767,6 +769,7 @@ export function sharePage(
 		<span class="ed-info" title="Created ${created} · expires ${expires}"><span id="viewCount">${drop.view_count}</span> VIEWS · <span id="presence" hidden>0 VIEWING</span> · EXPIRES ${expires}</span>
 		<div class="ed-group">
 			${aiEnabled ? `<button id="aiReviewBtn" type="button" hidden>AI review</button>` : ""}
+			${aiConnect ? `<button id="aiConnectBtn" type="button" hidden title="Configure the Camunda connectors of the tasks that call other systems">Add connectors</button>` : ""}
 			<button id="editBtn" type="button" hidden>Edit</button>
 			<button id="doneBtn" type="button" hidden>Done</button>
 			<button id="localHistoryBtn" type="button" hidden>On this device</button>
@@ -860,6 +863,7 @@ ${
 				pinned: drop.expires_at === null,
 				turnstileKey,
 				aiEdit,
+				aiConnect,
 			},
 		},
 		scriptSrc: "/drop/assets/viewer.js",

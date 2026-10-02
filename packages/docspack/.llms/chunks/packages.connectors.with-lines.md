@@ -26,7 +26,9 @@ service task and inbound templates work on events.
   diagram never carries one.
 
 A required input the line left out becomes a **question** (`AppliedConnectorLines.questions`),
-with a line to finish, and the rest of the line is still applied.
+with a line to finish, and the rest of the line is still applied. A line for a node that already
+carries the same connector changes only the inputs it names, so the answer to a question keeps
+everything else.
 
 - **Writing back.** `connectorLineFor(element, definitions)` writes an element's connector back
   as a line. Applying that line again gives the same element.

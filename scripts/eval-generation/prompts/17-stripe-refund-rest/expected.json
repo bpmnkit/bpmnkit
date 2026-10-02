@@ -1,0 +1,9 @@
+{
+	"id": "stripe-refund-rest",
+	"category": "connector",
+	"description": "A system with no dedicated connector, reached over REST.",
+	"assertions": {
+		"minElements": 4,
+		"mustContainTaskTypes": ["io.camunda:http-json:1"]
+	}
+}

@@ -415,7 +415,7 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
 | P1 ✅ | WS2: move the catalog into core, slim data, shim, sync workflow (done 2026-10-02, see WS2 notes) | P0 | M |
 | P2 ✅ | WS3 cards with per-operation conditions; regenerate skill reference; `casen connector cards` (done 2026-10-02) | P1 | M |
 | P3 ✅ | WS5 `with` lines: parser, delta, writer, resolver (`applyConnectorLines`, not inside `expand`), `CONNECT_GUIDE`; unit tests (done 2026-10-02; `- with x` and plan aliases deferred) | P1, P2 | L |
-| P4 | WS6 per-task retrieval; Drop pass 2 (`/drop/api/connect`, auto after generate, "Add connectors" action); one rule line added to the pass 1 prompt; bench with 10 new connector golden prompts | P3 | M |
+| P4 ✅ | WS6 per-task retrieval; Drop pass 2 (`/drop/api/connect`, auto after generate, "Add connectors" action); one rule line added to the pass 1 prompt; bench with 10 new connector golden prompts (done 2026-10-02; the server applies the lines; Add connectors applies as an undoable edit, not via the proposal dialog; first real bench run pending credentials) | P3 | M |
 | P5 | WS4 API index and API cards; GitHub/Stripe/Notion golden prompts | P2 (cards), P4 | L |
 | P6 | WS7 dry run in Drop and CLI, secrets checklist, Studio "Try it" | P3 | M |
 | P7 | Proxy MCP tools, docs (`apps/landing` connectors guide, `doc/features.md`, docspack rebuild), changesets | P4 | S |
