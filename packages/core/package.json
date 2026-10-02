@@ -12,6 +12,10 @@
 		"./node": {
 			"types": "./dist/node/index.d.ts",
 			"import": "./dist/node/index.js"
+		},
+		"./connectors": {
+			"types": "./dist/connectors/index.d.ts",
+			"import": "./dist/connectors/index.js"
 		}
 	},
 	"files": ["LICENSE", "README.md", "dist/**/*.js", "dist/**/*.d.ts"],

@@ -127,7 +127,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "apps/cli",
 		name: "@bpmnkit/cli",
-		version: "1.1.0",
+		version: "1.2.0",
 		description: "Command-line interface for Camunda 8 — deploy, manage, and monitor processes from the terminal",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/cli",
@@ -167,7 +167,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/core",
 		name: "@bpmnkit/core",
-		version: "1.1.0",
+		version: "1.2.0",
 		description: "TypeScript-first BPMN 2.0 SDK — parse, build, layout, and optimize diagrams",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/core",
@@ -197,7 +197,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/editor",
 		name: "@bpmnkit/editor",
-		version: "1.1.0",
+		version: "1.2.0",
 		description: "Full-featured interactive BPMN editor with undo/redo, HUD, and side-dock UI",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/editor",
@@ -227,7 +227,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/flow",
 		name: "@bpmnkit/flow",
-		version: "0.1.0",
+		version: "0.2.0",
 		description: "Code-first durable flows — one TypeScript definition yields the BPMN, the job types, the message correlation and the worker",
 		tier: "experimental",
 		npm: "https://www.npmjs.com/package/@bpmnkit/flow",
@@ -327,7 +327,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/worker-client",
 		name: "@bpmnkit/worker-client",
-		version: "0.1.0",
+		version: "0.2.0",
 		description: "Thin Zeebe REST client for standalone workers — no BPMNKit SDK required at runtime",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/worker-client",
@@ -352,7 +352,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/vscode",
 		name: "BPMN Kit for VS Code",
-		version: "0.5.0",
+		version: "0.5.1",
 		description: "View, edit, lint, diff and simulate BPMN, DMN and Forms in VS Code",
 		tier: "tools",
 		github: "https://github.com/bpmnkit/monorepo/tree/main/apps/vscode",
@@ -361,7 +361,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/drop",
 		name: "Drop",
-		version: "0.0.12",
+		version: "0.1.0",
 		description: "Share a BPMN, DMN or Form file as a link at bpmnkit.com/drop",
 		tier: "tools",
 		github: "https://github.com/bpmnkit/monorepo/tree/main/apps/drop",
@@ -370,7 +370,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/reebe",
 		name: "Reebe",
-		version: "0.1.4",
+		version: "0.1.5",
 		description: "Single-node dev/test engine for the Zeebe API, in Rust. Not for production",
 		tier: "experimental",
 		github: "https://github.com/bpmnkit/monorepo/tree/main/apps/reebe",
@@ -379,7 +379,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/studio",
 		name: "Studio",
-		version: "0.1.2",
+		version: "0.1.3",
 		description: "Browser workspace for models, a local WASM engine and cluster monitoring",
 		tier: "experimental",
 		github: "https://github.com/bpmnkit/monorepo/tree/main/apps/studio",
@@ -388,7 +388,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/desktop",
 		name: "Desktop app",
-		version: "0.1.43",
+		version: "0.1.44",
 		description: "Tauri build of the editor for Windows, macOS and Linux",
 		tier: "experimental",
 		github: "https://github.com/bpmnkit/monorepo/tree/main/apps/desktop",

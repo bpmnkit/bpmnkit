@@ -682,9 +682,6 @@ importers:
       '@bpmnkit/core':
         specifier: workspace:^
         version: link:../core
-      '@bpmnkit/feel':
-        specifier: workspace:^
-        version: link:../feel
 
   packages/core:
     dependencies:

@@ -1,11 +1,11 @@
+import { parseExpression } from "@bpmnkit/feel"
 import type {
 	AdHocSubProcessOptions,
 	BoundaryEventOptions,
 	IntermediateCatchEventOptions,
 	ServiceTaskOptions,
 	StartEventOptions,
-} from "@bpmnkit/core"
-import { parseExpression } from "@bpmnkit/feel"
+} from "../index.js"
 import { getTemplate, propertyKey } from "./catalog.js"
 import type {
 	ElementTemplate,

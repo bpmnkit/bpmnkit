@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { getTemplate, listConnectors, searchConnectors } from "../src/index.js"
+import { getTemplate, listConnectors, searchConnectors } from "../../src/connectors/index.js"
 
 describe("listConnectors", () => {
 	it("returns all 116+ bundled OOTB connector templates as summaries", () => {

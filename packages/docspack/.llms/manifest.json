@@ -3901,7 +3901,7 @@
 		{
 			"id": "packages.connectors.overview",
 			"file": "chunks/packages.connectors.overview.md",
-			"tokens": 146,
+			"tokens": 245,
 			"tags": [
 				"packages",
 				"connectors",
@@ -3909,7 +3909,10 @@
 			],
 			"entities": [
 				"@bpmnkit/connectors",
-				"@bpmnkit/connectors/node"
+				"@bpmnkit/connectors/node",
+				"@bpmnkit/core/connectors",
+				"getTemplate",
+				"applyConnectorTemplate"
 			]
 		},
 		{
@@ -4607,6 +4610,21 @@
 				"preserveDmnFormatting",
 				"exportFormPreserving",
 				"preserveFormFormatting"
+			]
+		},
+		{
+			"id": "packages.core.connectors-bpmnkit-core-connectors",
+			"file": "chunks/packages.core.connectors-bpmnkit-core-connectors.md",
+			"tokens": 194,
+			"tags": [
+				"packages",
+				"core",
+				"connectors",
+				"bpmnkit"
+			],
+			"entities": [
+				"@bpmnkit/core",
+				"@bpmnkit/connectors"
 			]
 		},
 		{

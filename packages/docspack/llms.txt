@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.0.1. 356 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.0.1. 357 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -286,7 +286,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/connector-gen — Lower-level API](.llms/chunks/packages.connector-gen.lower-level-api.md) — 185 tokens
 - [@bpmnkit/connector-gen — Catalog reference](.llms/chunks/packages.connector-gen.catalog-reference.md) — 518 tokens
 - [@bpmnkit/connector-gen — `CatalogEntry` type](.llms/chunks/packages.connector-gen.catalogentry-type.md) — 86 tokens
-- [@bpmnkit/connectors — Overview](.llms/chunks/packages.connectors.overview.md) — 146 tokens
+- [@bpmnkit/connectors — Overview](.llms/chunks/packages.connectors.overview.md) — 245 tokens
 - [@bpmnkit/connectors — Installation](.llms/chunks/packages.connectors.installation.md) — 240 tokens
 - [@bpmnkit/connectors — Applying a template](.llms/chunks/packages.connectors.applying-a-template.md) — 503 tokens
 - [@bpmnkit/connectors — Applying to an element — inbound connectors and linked resources](.llms/chunks/packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources.md) — 667 tokens
@@ -327,6 +327,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Writing files — `@bpmnkit/core/node`](.llms/chunks/packages.core.writing-files-bpmnkit-core-node.md) — 52 tokens
 - [@bpmnkit/core — Writing files — `@bpmnkit/core/node` — `writeBpmn(definitions, options)`](.llms/chunks/packages.core.writing-files-bpmnkit-core-node-writebpmn-definitions-options.md) — 440 tokens
 - [@bpmnkit/core — Writing files — `@bpmnkit/core/node` — `exportPreserving(original, definitions)`](.llms/chunks/packages.core.writing-files-bpmnkit-core-node-exportpreserving-original-definitions.md) — 598 tokens
+- [@bpmnkit/core — Connectors — `@bpmnkit/core/connectors`](.llms/chunks/packages.core.connectors-bpmnkit-core-connectors.md) — 194 tokens
 - [@bpmnkit/core — DMN Support](.llms/chunks/packages.core.dmn-support.md) — 113 tokens
 - [@bpmnkit/docspack — Overview](.llms/chunks/packages.docspack.overview.md) — 252 tokens
 - [@bpmnkit/docspack — The other pack](.llms/chunks/packages.docspack.the-other-pack.md) — 145 tokens

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest"
-import { applyConnectorTemplate, getTemplate, summarizeTemplate } from "../src/index.js"
+import {
+	applyConnectorTemplate,
+	getTemplate,
+	summarizeTemplate,
+} from "../../src/connectors/index.js"
 
 describe("applyConnectorTemplate", () => {
 	it("returns a problem for an unknown template id", () => {

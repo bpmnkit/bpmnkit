@@ -159,6 +159,7 @@ Parse → Modify → Validate → Export
 - **Camunda Form Definitions** — type-safe form schema builder
 - **Optimizer** — built-in rule engine to detect and auto-fix anti-patterns
 - **Compact Format** — 70% smaller token-efficient JSON representation for AI/LLM workflows
+- **Connector catalog** — all Camunda 8 out-of-the-box connector templates, applied deterministically (\`@bpmnkit/core/connectors\`)
 - **Zero Dependencies** — runs in browsers, Node.js, Deno, Bun, and edge runtimes
 
 ## Installation
@@ -432,6 +433,28 @@ import { writeBpmn } from "@bpmnkit/core/node"
 
 // Refuses rather than overwrite; pass force: true to replace.
 const { semanticHash, changes } = await writeBpmn(defs, { output: "flow.bpmn" })
+\`\`\`
+
+### Connectors (\`@bpmnkit/core/connectors\`)
+
+The Camunda 8 out-of-the-box connector catalog, behind its own subpath so its data is only
+bundled by code that imports it. The templates leave out icons, groups, tooltips and
+placeholders; [\`@bpmnkit/connectors\`](https://www.npmjs.com/package/@bpmnkit/connectors)
+adds those back for a property panel.
+
+| Export | Description |
+|--------|-------------|
+| \`listConnectors()\` / \`searchConnectors(query)\` | Summaries: task type, direction, required and optional inputs |
+| \`applyConnectorTemplate(id, values)\` | Builder options for a bundled template, plus problems |
+| \`applyTemplateToElement(defs, id, template, values)\` | Apply a template to an existing element |
+| \`validateElementTemplate(value)\` | Structural check of an element template |
+
+\`\`\`typescript
+import { applyConnectorTemplate } from "@bpmnkit/core/connectors"
+
+const { serviceTask, problems } = applyConnectorTemplate("io.camunda.connectors.HttpJson.v2", {
+  url: "https://api.example.com/orders",
+})
 \`\`\`
 
 ### DMN
@@ -2053,6 +2076,8 @@ interface GenerateOptions {
 - **Required-field and FEEL validation** — problems are reported, never silently swallowed
 - **Works with any template** — bundled catalog or a custom/generated \`ElementTemplate\`
 - **Inbound connectors and linked resources** — \`applyTemplateToElement\` writes a template onto an element of a parsed model: the root \`bpmn:message\` and its \`zeebe:subscription\` correlation key, \`zeebe:properties\`, \`zeebe:linkedResources\` and the \`zeebe:modelerTemplate\` stamps
+
+The catalog and application logic live in \`@bpmnkit/core/connectors\`, whose templates leave out icons, groups, tooltips and placeholders to stay small. This package re-exports that API and adds those parts back, so \`getTemplate\` and \`applyConnectorTemplate\` answer with the full template. Use it in an editor or property panel, and the core subpath where a bundle should stay small.
 
 ## Installation
 

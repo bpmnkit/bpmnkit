@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { CAMUNDA_CONNECTOR_TEMPLATES } from "../src/index.js"
-import { readTemplateDocument, validateElementTemplate } from "../src/validate.js"
+import { BUNDLED_CONNECTOR_TEMPLATES } from "../../src/connectors/index.js"
+import { readTemplateDocument, validateElementTemplate } from "../../src/connectors/validate.js"
 
 /** A minimal template that passes, for tests to break one field at a time. */
 function template(overrides: Record<string, unknown> = {}): Record<string, unknown> {
@@ -35,7 +35,7 @@ describe("validateElementTemplate", () => {
 	it("accepts every template in the bundled catalogue", () => {
 		// The bundle is generated; if the validator rejects it, one of the two is
 		// wrong and this is where that shows up rather than in a user's project.
-		const rejected = CAMUNDA_CONNECTOR_TEMPLATES.filter(
+		const rejected = BUNDLED_CONNECTOR_TEMPLATES.filter(
 			(t) => !validateElementTemplate(t).valid,
 		).map((t) => ({ id: t.id, problems: validateElementTemplate(t).problems }))
 		expect(rejected).toEqual([])
@@ -167,7 +167,7 @@ describe("validateElementTemplate", () => {
 	})
 
 	it("warns about nothing in the bundled catalogue", () => {
-		const warned = CAMUNDA_CONNECTOR_TEMPLATES.filter(
+		const warned = BUNDLED_CONNECTOR_TEMPLATES.filter(
 			(t) => validateElementTemplate(t).warnings.length > 0,
 		).map((t) => t.id)
 		expect(warned).toEqual([])

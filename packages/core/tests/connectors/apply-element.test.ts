@@ -1,8 +1,8 @@
-import { Bpmn } from "@bpmnkit/core"
-import type { BpmnDefinitions, BpmnFlowElement, XmlElement } from "@bpmnkit/core"
 import { describe, expect, it } from "vitest"
-import { applyTemplateToElement, getTemplate } from "../src/index.js"
-import type { ElementTemplate } from "../src/index.js"
+import { applyTemplateToElement, getTemplate } from "../../src/connectors/index.js"
+import type { ElementTemplate } from "../../src/connectors/index.js"
+import { Bpmn } from "../../src/index.js"
+import type { BpmnDefinitions, BpmnFlowElement, XmlElement } from "../../src/index.js"
 
 /** One of each element an inbound or linked-resource template targets. */
 const FIXTURE = `<?xml version="1.0" encoding="UTF-8"?>
@@ -92,7 +92,8 @@ describe("applyTemplateToElement — inbound connectors", () => {
 		expect(start.name).toBe("Order in")
 		expect(start.unknownAttributes["zeebe:modelerTemplate"]).toBe(id)
 		expect(start.unknownAttributes["zeebe:modelerTemplateVersion"]).toBe("1")
-		expect(start.unknownAttributes["zeebe:modelerTemplateIcon"]).toMatch(/^data:image/)
+		// The core bundle leaves icons out; @bpmnkit/connectors stamps them from its full templates
+		expect(start.unknownAttributes["zeebe:modelerTemplateIcon"]).toBeUndefined()
 
 		const props = zeebeProperties(start)
 		expect(props["inbound.type"]).toBe("io.camunda:webhook:1")

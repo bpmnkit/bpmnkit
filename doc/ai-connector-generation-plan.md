@@ -231,8 +231,13 @@ Goal: `import { listConnectors, applyConnectorTemplate } from "@bpmnkit/core/con
 - `@bpmnkit/connectors` 1.x becomes a **re-export shim** of `@bpmnkit/core/connectors`, plus
   the full templates and `./node` discovery. This is non-breaking for its 1.x users (plugins, CLI,
   proxy, vscode).
-- `compilePlan` can then default `resolveConnector` to the core resolver. Injecting one stays
-  possible, for custom or workspace templates (`registerElementTemplates`).
+- ~~`compilePlan` can then default `resolveConnector` to the core resolver.~~ Not done:
+  `compilePlan` is in core's main entry, so a default would put the catalog there. Callers pass
+  `applyConnectorTemplate` from `@bpmnkit/core/connectors`.
+- **As built (P1):** the shim does not keep a second, full copy. `scripts/update-connectors.mjs`
+  splits each template. Core gets the slim part; `@bpmnkit/connectors` gets only the panel parts
+  (icons, groups, tooltips, placeholders) and joins them back at load time. So a bundle that
+  imports `@bpmnkit/connectors` does not carry the catalog twice.
 - **Sync:** have `scripts/update-connectors.mjs` write both data files and commit
   `catalog-meta.json`. Add a weekly workflow modelled on `.github/workflows/camunda-docspack.yml`
   that opens a PR when the marketplace changes (fixes defect 6).
@@ -407,7 +412,7 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
 | Phase | Content | Depends on | Size |
 |---|---|---|---|
 | P0 ✅ | WS1 defect fixes plus their tests; bench scores `mustContainTaskTypes` (done 2026-10-02) | — | S |
-| P1 | WS2: move the catalog into core, slim data, shim, sync workflow | P0 | M |
+| P1 ✅ | WS2: move the catalog into core, slim data, shim, sync workflow (done 2026-10-02, see WS2 notes) | P0 | M |
 | P2 | WS3 cards with per-operation conditions; regenerate skill reference; `casen connector cards` | P1 | M |
 | P3 | WS5 `with` lines: parser, delta, writer, resolver in `expand`, `CONNECT_GUIDE`; unit tests | P1, P2 | L |
 | P4 | WS6 per-task retrieval; Drop pass 2 (`/drop/api/connect`, auto after generate, "Add connectors" action); one rule line added to the pass 1 prompt; bench with 10 new connector golden prompts | P3 | M |

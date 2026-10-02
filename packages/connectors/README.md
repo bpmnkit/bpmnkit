@@ -28,6 +28,8 @@
 - **Works with any template** — bundled catalog or a custom/generated `ElementTemplate`
 - **Inbound connectors and linked resources** — `applyTemplateToElement` writes a template onto an element of a parsed model: the root `bpmn:message` and its `zeebe:subscription` correlation key, `zeebe:properties`, `zeebe:linkedResources` and the `zeebe:modelerTemplate` stamps
 
+The catalog and application logic live in `@bpmnkit/core/connectors`, whose templates leave out icons, groups, tooltips and placeholders to stay small. This package re-exports that API and adds those parts back, so `getTemplate` and `applyConnectorTemplate` answer with the full template. Use it in an editor or property panel, and the core subpath where a bundle should stay small.
+
 ## Installation
 
 ```sh

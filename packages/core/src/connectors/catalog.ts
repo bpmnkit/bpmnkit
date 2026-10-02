@@ -1,5 +1,5 @@
 import type { ElementTemplate, TemplateCondition, TemplateProperty } from "./template-types.js"
-import { CAMUNDA_CONNECTOR_TEMPLATES } from "./templates/generated.js"
+import { BUNDLED_CONNECTOR_TEMPLATES } from "./templates/generated.js"
 
 /** Where in the process a connector template attaches. */
 export type ConnectorDirection =
@@ -179,9 +179,9 @@ export function clearRegisteredTemplates(): void {
 }
 
 /** The bundled templates plus registered ones, the latter winning on id. */
-function allTemplates(): ElementTemplate[] {
-	if (registered.size === 0) return CAMUNDA_CONNECTOR_TEMPLATES
-	const bundled = CAMUNDA_CONNECTOR_TEMPLATES.filter((t) => !registered.has(t.id))
+function allTemplates(): readonly ElementTemplate[] {
+	if (registered.size === 0) return BUNDLED_CONNECTOR_TEMPLATES
+	const bundled = BUNDLED_CONNECTOR_TEMPLATES.filter((t) => !registered.has(t.id))
 	return [...bundled, ...registered.values()]
 }
 
@@ -195,7 +195,7 @@ export function listConnectors(): ConnectorSummary[] {
 
 /** The full element template for a given template id, registered or bundled. */
 export function getTemplate(id: string): ElementTemplate | undefined {
-	return registered.get(id) ?? CAMUNDA_CONNECTOR_TEMPLATES.find((t) => t.id === id)
+	return registered.get(id) ?? BUNDLED_CONNECTOR_TEMPLATES.find((t) => t.id === id)
 }
 
 /** Tie-break preference when two templates score equally — outbound "do this" connectors are the common case. */

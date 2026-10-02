@@ -17,14 +17,14 @@ import type {
 	BpmnMessageEventDefinition,
 	XmlElement,
 	ZeebeExtensions,
-} from "@bpmnkit/core"
+} from "../index.js"
 import {
 	bpmnElementName,
 	isZeebePlacementAllowed,
 	retypeElement,
 	sha256Hex,
 	zeebeExtensionsToXmlElements,
-} from "@bpmnkit/core"
+} from "../index.js"
 import { type Accumulator, type ApplyProblem, resolveBindings } from "./apply.js"
 import type { ElementTemplate, TemplateBinding } from "./template-types.js"
 

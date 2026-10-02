@@ -1,8 +1,8 @@
 import type { Dirent } from "node:fs"
 import { readFile, readdir, stat } from "node:fs/promises"
 import { dirname, join, resolve, sep } from "node:path"
-import type { ElementTemplate } from "../template-types.js"
-import { type TemplateProblem, readTemplateDocument } from "../validate.js"
+import type { ElementTemplate } from "@bpmnkit/core/connectors"
+import { type TemplateProblem, readTemplateDocument } from "@bpmnkit/core/connectors"
 
 /** The folder name searched at each level, unless the caller names another. */
 export const DEFAULT_CONFIG_FOLDER = ".camunda"

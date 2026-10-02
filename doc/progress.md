@@ -1,5 +1,26 @@
 # Progress
 
+## 2026-10-02 — Connectors in AI generation, P1: the connector catalog in core
+
+- `@bpmnkit/core/connectors` is a new subpath with the catalog, apply, apply-to-element and
+  validation code, moved from `@bpmnkit/connectors`, and the 116 OOTB templates. It is
+  125 KB gzipped on its own; core's main entry does not import it and is unchanged.
+- Core's templates leave out icons, groups, tooltips and placeholders. `@bpmnkit/connectors`
+  re-exports core's API and ships only those parts, joined back at load time. Its
+  `getTemplate`/`applyConnectorTemplate`/`CAMUNDA_CONNECTOR_TEMPLATES` still answer with full
+  templates. The joined set is identical to the original 116, and a bundle importing the package
+  is 270 KB gzipped, down from 283 KB for the templates alone.
+- A test summarises and applies every template from both halves and expects the same result.
+- `scripts/update-connectors.mjs` writes both halves from one fetch, compares against the
+  committed data and writes nothing when unchanged. A weekly workflow
+  (`connector-templates.yml`) opens a pull request.
+- Run against the live registry today, the script finds 133 templates (17 new). Two of them, the
+  AI Agent v2 templates, use a binding type `zeebe:agentDefinition` that the applier does not
+  support yet, so the first weekly pull request will fail its tests until that is added. The
+  data in this change is the committed 116.
+- Changed from the plan: `compilePlan` keeps an injected `resolveConnector`. Defaulting it to
+  the core catalog would put the catalog in core's main entry.
+
 ## 2026-10-02 — Connectors in AI generation, P0: compact connector tasks run
 
 - `CompactElement` has `inputs` (input mappings) and `modelerTemplate`; both round-trip through
