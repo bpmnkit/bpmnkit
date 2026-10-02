@@ -533,3 +533,5 @@ export type {
 	SynthResult,
 	UnsupportedElement,
 } from "./plan/index.js"
+export { listSecrets } from "./bpmn/secrets.js"
+export type { DiagramSecret } from "./bpmn/secrets.js"

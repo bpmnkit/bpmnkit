@@ -26,6 +26,8 @@
  * connected diagram, so `mustContainTaskTypes` measures the connectors and
  * `mustCallUrls` the REST calls built from the API index, and a prompt whose
  * expected.json says `"connect": false` must be skipped without a model call.
+ * Each connected diagram is also dry-run with every call mocked (`dryRun` from
+ * `@bpmnkit/engine/testing`), and its secrets are listed.
  *
  * Options:
  *   --connect         run the connect pass after each golden prompt
@@ -57,11 +59,13 @@ import {
 	Bpmn,
 	createProcessTextStream,
 	expand,
+	listSecrets,
 	optimize,
 	parseProcessText,
 	writeProcessText,
 } from "@bpmnkit/core"
 import { connectorLineFor, selectConnectors } from "@bpmnkit/core/connectors"
+import { dryRun as dryRunProcess } from "@bpmnkit/engine/testing"
 import {
 	connectApis,
 	connectMessages,
@@ -447,6 +451,13 @@ async function runConnect(model, prompt, diagram) {
 		connect.questions = done.questions.length
 		// The resolver replaces a literal credential; a model that writes one still counts
 		connect.literalSecrets = done.fixes.filter((f) => f.includes("holds a credential")).length
+		// Executable, not only well-formed: a run with every call mocked reaches the end (WS7)
+		const connectedDefs = Bpmn.parse(done.xml)
+		const run = await dryRunProcess(connectedDefs)
+		connect.dryRun = run.reachedEnd
+			? "end"
+			: `stops at ${run.stoppedAt[0] ?? "?"}: ${run.error ?? ""}`
+		connect.secrets = listSecrets(connectedDefs).map((s) => s.name)
 		return {
 			connect,
 			xml: done.xml,
@@ -513,7 +524,7 @@ for (const model of models) {
 					? `  | connect ERROR ${c.error.slice(0, 80)}`
 					: c.skipped
 						? `  | connect skipped${c.skipRight ? "" : " (WRONG)"}`
-						: `  | connect ${c.totalMs}ms  out ${c.usage?.completionTokens ?? "?"}tok  connected ${c.connected}/${c.tasks}  api cards ${c.apiCards}  problems ${c.problems.length}  questions ${c.questions}${c.literalSecrets ? `  literal secrets ${c.literalSecrets}` : ""}${c.skipRight ? "" : "  (should have skipped)"}`
+						: `  | connect ${c.totalMs}ms  out ${c.usage?.completionTokens ?? "?"}tok  connected ${c.connected}/${c.tasks}  api cards ${c.apiCards}  problems ${c.problems.length}  questions ${c.questions}  dry run ${c.dryRun === "end" ? "✓" : `✗ ${c.dryRun}`}${c.literalSecrets ? `  literal secrets ${c.literalSecrets}` : ""}${c.skipRight ? "" : "  (should have skipped)"}`
 			console.log(`${model}  ${prompt.id}#${run}  ${verdict}${connected}`)
 		}
 	}

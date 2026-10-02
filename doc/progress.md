@@ -1,5 +1,44 @@
 # Progress
 
+## 2026-10-02 — Connectors in AI generation, P6: proving it runs
+
+- **`dryRun(definitions, options)`** (`@bpmnkit/engine/testing`) runs a process once from
+  start to end, built on `ProcessTest`.
+  - **Mocks.** Every connector answers an empty HTTP 200, mapped by its result headers. Every
+    other job (service, user, agent) completes with no variables.
+  - **Waits.** A message the run waits for is delivered (an event without a `messageRef` is
+    keyed by its id). Otherwise the clock moves a day.
+  - **Multi-instance.** One over a plain variable gets a one-item list unless one is given.
+  - **Result.** `reachedEnd`, `path`, the connectors passed, the `steps` taken, and where and
+    why it stopped. It never throws for a process that cannot run.
+  - **Fixtures.** All 14 compilable fixture plans in `scripts/eval-generation` reach their end
+    (06's multi-instance needed the one-item list).
+- **`listSecrets(definitions)`** (`@bpmnkit/core`) lists every secret a diagram reads, with
+  the elements that read it: `{{secrets.X}}`, `camunda.secrets.X`, and message correlation
+  keys, which are attributed to the events that wait for the message.
+- **Drop.**
+  - A draft with connectors shows **Secrets** (the names to create) and **Dry run** (✓ runs
+    to "Done" · n connectors mocked, or ✗ stops at "X": why) above its questions.
+  - The engine is a separate `dry-run.js` bundle (94 KB gzipped). It is fetched by URL only
+    for drafts with connectors; `landing.js` is unchanged in size.
+  - Checked in Chromium: the bundle loads and runs a connected diagram (message wait included)
+    to its end.
+  - The dry run runs in the browser, not the Worker: the engine's virtual clock is global, and
+    concurrent requests in one isolate would share it.
+- **CLI.** `casen synth --check` dry-runs each executable process and lists the secrets. A run
+  that cannot finish exits 1; with `--json` the findings are under `check`.
+- **Bench.** `bench:generate --connect` dry-runs every connected diagram (`dry run ✓/✗` in the
+  report) and records its secrets.
+- **Studio.** **Try it** (local engine only) deploys and starts the model like Deploy & Run.
+  - GET requests of the REST connector go out for real.
+  - Every other method, connector and job is simulated, and the job table says why ("POST
+    not sent: Try it only sends GET requests").
+  - Before this, a local run sent every REST method for real.
+- **Found, not fixed:** `compilePlan` names a connector step after its template ("Slack
+  Outbound Connector"), not the step's `name`. That is visible in `--check`'s secrets list.
+- **Not run:** a real Workers AI bench, which needs credentials; and Studio's Try it in a
+  browser. The decision rule is unit-tested, and Studio typechecks and builds.
+
 ## 2026-10-02 — Connectors in AI generation, P5: the API index and API cards
 
 - **`@bpmnkit/connector-gen/api-index`** — offline base URL, auth and endpoints of 78 HTTP

@@ -518,6 +518,10 @@ every structural rule.
   core's main entry, so the catalog is only bundled where it is used.
 - **Writing.** `writeProcessText(defs, { connectorLine: connectorLineFor })` writes an
   element's connector back as a `with` line, so a model that changes the diagram keeps it.
+- **Secrets.** `listSecrets(definitions)` lists every secret the diagram's configuration
+  reads, with the elements that read it. It covers `{{secrets.NAME}}`,
+  `camunda.secrets.NAME` and message correlation keys, so whoever deploys knows what to
+  create first.
 - **API index calls.** `with charge: http POST /v1/customers | api=stripe` calls an endpoint of
   the [API index](/docs/packages/connector-gen#api-index). Its base URL, authentication and
   headers come from the index when the lines are applied with `{ apis }`.

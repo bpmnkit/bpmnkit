@@ -281,6 +281,8 @@ export function useCreateProcessInstance() {
 			processDefinitionKey?: string
 			bpmnProcessId?: string
 			variables?: Record<string, unknown>
+			/** Local engine only: send GET requests for real and simulate every other job. */
+			tryIt?: boolean
 		}) => proxyPost<{ processInstanceKey: string }>("/api/process-instances", params),
 		onSuccess: () => {
 			void qc.invalidateQueries({ queryKey: ["instances"] })

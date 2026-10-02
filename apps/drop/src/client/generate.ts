@@ -28,6 +28,7 @@ import {
 	type ProcessTextQuestion,
 	createProcessTextStream,
 	expand,
+	listSecrets,
 	parseProcessText,
 } from "@bpmnkit/core"
 // Types only: the connect pass applies its answer on the server, so the page never loads the catalog.
@@ -41,6 +42,8 @@ import {
 	createSseReader,
 } from "../lib/generate.js"
 import { AI_CODE_STORAGE_KEY, AI_PASS_HEADER } from "../shared/constants.js"
+// Types only: the dry run is its own bundle, fetched once a draft has connectors.
+import type * as DryRunModule from "./dry-run.js"
 
 // Short on purpose: a starting point for describing your own process.
 const EXAMPLES: readonly { label: string; text: string }[] = [
@@ -160,6 +163,7 @@ export function mountGenerator(): void {
 	const examples = $("genExamples")
 	const refine = $("genRefine")
 	const questions = $("genQuestions")
+	const checkBox = $("genCheck")
 	const changeInput = $<HTMLInputElement>("genChange")
 	const apply = $<HTMLButtonElement>("genApply")
 	const undo = $<HTMLButtonElement>("genUndo")
@@ -283,12 +287,75 @@ export function mountGenerator(): void {
 		name.textContent = result.file
 		parserQuestions = parsed.questions
 		showQuestions(parsed.questions)
+		void showCheck(defs, result.xml)
 		share.hidden = false
 		refine.hidden = false
 		undo.hidden = earlier.length === 0
 		return {
 			ids: new Set(parsed.diagram.processes[0]?.elements.map((e) => e.id)),
 			problems: parsed.problems.length,
+		}
+	}
+
+	/** The latest diagram checked: an older check finishing late is not shown. */
+	let checking = ""
+
+	/**
+	 * For a draft with connectors: the secrets to create before deploying, and
+	 * a dry run with every outside call mocked, which says whether the process
+	 * runs from start to end (`doc/ai-connector-generation-plan.md` WS7).
+	 */
+	async function showCheck(defs: BpmnDefinitions, xml: string): Promise<void> {
+		if (!checkBox) return
+		checking = xml
+		const elements = defs.processes.flatMap((p) => p.flowElements)
+		const connectors = elements.filter(
+			(el) => el.unknownAttributes["zeebe:modelerTemplate"] !== undefined,
+		)
+		if (connectors.length === 0) {
+			checkBox.hidden = true
+			return
+		}
+		const nameOf = (id: string) => elements.find((el) => el.id === id)?.name ?? id
+		const row = (label: string, ...content: (string | Node)[]) => {
+			const div = document.createElement("div")
+			const b = document.createElement("b")
+			b.textContent = label
+			const span = document.createElement("span")
+			span.append(...content)
+			div.append(b, span)
+			return { div, span }
+		}
+		const run = row("Dry run", "running…")
+		const rows = [run.div]
+		const secrets = listSecrets(defs)
+		if (secrets.length > 0) {
+			const names = secrets.flatMap((s, i) => {
+				const code = document.createElement("code")
+				code.textContent = s.name
+				return i === 0 ? [code] : [" ", code]
+			})
+			rows.push(row("Secrets", ...names, " — create these in your cluster before deploying").div)
+		}
+		checkBox.replaceChildren(...rows)
+		checkBox.hidden = false
+		try {
+			const url = "/drop/assets/dry-run.js"
+			const { check } = (await import(url)) as typeof DryRunModule
+			const outcome = await check(xml)
+			if (checking !== xml) return
+			const mocked = `${outcome.connectors.length} connector${outcome.connectors.length === 1 ? "" : "s"} mocked`
+			if (outcome.reachedEnd) {
+				const end = outcome.path.at(-1)
+				run.span.className = "ok"
+				run.span.textContent = `✓ runs to “${end ? nameOf(end) : "the end"}” · ${mocked}`
+			} else {
+				const at = outcome.stoppedAt[0] ?? outcome.path.at(-1)
+				run.span.className = "bad"
+				run.span.textContent = `✗ stops${at ? ` at “${nameOf(at)}”` : ""}${outcome.error ? `: ${outcome.error}` : ""}`
+			}
+		} catch {
+			if (checking === xml) run.span.textContent = "could not run here"
 		}
 	}
 
@@ -537,6 +604,7 @@ export function mountGenerator(): void {
 		draft = null
 		earlier.length = 0
 		result = null
+		checking = ""
 		share.hidden = true
 		refine.hidden = true
 		const started = performance.now()
@@ -619,6 +687,7 @@ export function mountGenerator(): void {
 			const defs = Bpmn.parse(outcome.xml)
 			draw(defs)
 			result = { xml: outcome.xml, file: fileName(defs) }
+			void showCheck(defs, outcome.xml)
 		}
 		showQuestions([...parserQuestions, ...outcome.questions])
 		const count = outcome.connected.length

@@ -18,6 +18,7 @@
 		"@bpmnkit/connector-gen": "workspace:*",
 		"@bpmnkit/core": "workspace:*",
 		"@bpmnkit/editor": "workspace:*",
+		"@bpmnkit/engine": "workspace:*",
 		"@bpmnkit/feel": "workspace:*",
 		"@bpmnkit/plugins": "workspace:*",
 		"@bpmnkit/ui": "workspace:*"

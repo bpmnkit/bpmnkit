@@ -95,7 +95,7 @@
 		{
 			"id": "cli.casen.bpmn-generation-pipeline",
 			"file": "chunks/cli.casen.bpmn-generation-pipeline.md",
-			"tokens": 341,
+			"tokens": 474,
 			"tags": [
 				"cli",
 				"casen",
@@ -2954,6 +2954,21 @@
 			]
 		},
 		{
+			"id": "guides.testing-processes.dry-run",
+			"file": "chunks/guides.testing-processes.dry-run.md",
+			"tokens": 381,
+			"tags": [
+				"guides",
+				"testing-processes",
+				"dry",
+				"run"
+			],
+			"entities": [
+				"reachedEnd",
+				"stoppedAt"
+			]
+		},
+		{
 			"id": "guides.testing-processes.ai-agents",
 			"file": "chunks/guides.testing-processes.ai-agents.md",
 			"tokens": 235,
@@ -4522,7 +4537,7 @@
 		{
 			"id": "packages.core.installation-connectors-with-lines",
 			"file": "chunks/packages.core.installation-connectors-with-lines.md",
-			"tokens": 297,
+			"tokens": 347,
 			"tags": [
 				"packages",
 				"core",
@@ -4534,7 +4549,8 @@
 				"parseProcessText",
 				"parseProcessDelta",
 				"applyConnectorLines",
-				"@bpmnkit/core/connectors"
+				"@bpmnkit/core/connectors",
+				"camunda.secrets.NAME"
 			]
 		},
 		{

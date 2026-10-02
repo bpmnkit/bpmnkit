@@ -394,6 +394,9 @@ importers:
       '@bpmnkit/editor':
         specifier: workspace:*
         version: link:../../packages/editor
+      '@bpmnkit/engine':
+        specifier: workspace:*
+        version: link:../../packages/engine
       '@bpmnkit/feel':
         specifier: workspace:*
         version: link:../../packages/feel

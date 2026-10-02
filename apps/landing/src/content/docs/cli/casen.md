@@ -273,6 +273,23 @@ casen deploy deploy order-process.bpmn --target camunda8 # active Camunda 8 prof
 
 `casen synth` reports any problems keyed by JSON path in the plan (e.g. `steps[2].connector.values.token`) — fix the plan, never the XML, and re-run. If the plan has a `tests` array, `casen synth` also writes a `<file>.bpmn.tests.json` sidecar, runnable with `casen test <file>.bpmn`.
 
+`--check` also proves the result runs:
+- It [dry-runs](/docs/guides/testing-processes#dry-run) each process once, with every
+  connector and job mocked.
+- It lists the secrets the diagram reads, to create in the cluster before deploying.
+
+A run that cannot reach its end fails the command:
+
+```
+$ casen synth synth order-process.plan.json --check
+✓ Wrote order-process.plan.bpmn
+✓ Dry run of order-validation-failed reaches "Ops notified" · 1 connector(s) mocked
+Secrets to create in the cluster before deploying:
+  SLACK_OAUTH_TOKEN — "Slack Outbound Connector"
+```
+
+With `--json`, the findings are in the output's `check` field.
+
 See [Building Processes with AI](/docs/guides/ai-implement) and [AI Agents](/docs/guides/ai-agents) for full walkthroughs.
 
 `casen lint` reads a `.bpmnlintrc` if your project has one. See

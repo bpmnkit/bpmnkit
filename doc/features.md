@@ -19,7 +19,13 @@
     fills them in.
 - **`@bpmnkit/connector-gen/api-index`:** an offline index of about 80 HTTP APIs, built from
   their OpenAPI specs and refreshed weekly.
-- **CLI.** `casen connector cards "<request>"` and `casen connector api "<request>"`.
+- **Proving it runs.** A generated diagram is dry-run with every outside call mocked, and
+  the secrets it needs are listed.
+  - Drop's generator shows both.
+  - `casen synth --check` gates on the dry run.
+  - Studio's **Try it** runs it on the local engine, sending only GET requests for real.
+- **CLI.** `casen connector cards "<request>"`, `casen connector api "<request>"` and
+  `casen synth --check`.
 
 ## Drop: AI proposals shared as suggested changes (2026-10-01)
 

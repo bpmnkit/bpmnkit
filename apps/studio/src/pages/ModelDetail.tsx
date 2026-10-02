@@ -25,6 +25,7 @@ import {
 	ExternalLink,
 	Eye,
 	FileCode,
+	FlaskConical,
 	Image,
 	Link2,
 	MonitorPlay,
@@ -1228,57 +1229,68 @@ export function ModelDetail() {
 		dockRef.current?.setVisible(!runMode)
 	}, [runMode])
 
-	const handleDeployAndRun = useCallback(async () => {
-		const editor = editorRef.current
-		if (!editor || !model) return
-		// Save first
-		const xml = editor.exportXml()
-		if (!xml) return
-		try {
-			setSaveStatus("saving")
-			const updated = await saveModel({ ...model, content: xml })
-			upsertModel(updated)
-			setSaveStatus("saved")
-		} catch {
-			setSaveStatus("unsaved")
-			toast.error("Failed to save model")
-			return
-		}
-		// Deploy
-		let bpmnProcessId: string | undefined
-		try {
-			const companions = getCompanionDmns(xml, useModelsStore.getState().models)
-			const deployResult = await deploy.mutateAsync({
-				xml,
-				fileName: `${model.name}.bpmn`,
-				...(companions.length && { companions }),
-			})
-			bpmnProcessId = deployResult.processes?.[0]?.bpmnProcessId
-		} catch (err) {
-			toast.error(err instanceof Error ? err.message : String(err))
-			return
-		}
-		if (!bpmnProcessId) {
-			toast.error("Deploy did not return a process ID")
-			return
-		}
-		// Start instance
-		let vars: Record<string, unknown> = {}
-		try {
-			const trimmed = runVariables.trim()
-			if (trimmed && trimmed !== "{}") vars = JSON.parse(trimmed)
-		} catch {
-			toast.error("Variables must be valid JSON")
-			return
-		}
-		try {
-			const result = await createInstance.mutateAsync({ bpmnProcessId, variables: vars })
-			setActiveInstanceKey(result.processInstanceKey)
-			setRunMode(true)
-		} catch (err) {
-			toast.error(err instanceof Error ? err.message : String(err))
-		}
-	}, [model, saveModel, upsertModel, deploy, createInstance, runVariables])
+	/**
+	 * Saves, deploys and starts the model. `tryIt` makes the run a safe one on the
+	 * local engine: GET requests go out for real, everything else is simulated.
+	 */
+	const handleDeployAndRun = useCallback(
+		async (options: { tryIt?: boolean } = {}) => {
+			const editor = editorRef.current
+			if (!editor || !model) return
+			// Save first
+			const xml = editor.exportXml()
+			if (!xml) return
+			try {
+				setSaveStatus("saving")
+				const updated = await saveModel({ ...model, content: xml })
+				upsertModel(updated)
+				setSaveStatus("saved")
+			} catch {
+				setSaveStatus("unsaved")
+				toast.error("Failed to save model")
+				return
+			}
+			// Deploy
+			let bpmnProcessId: string | undefined
+			try {
+				const companions = getCompanionDmns(xml, useModelsStore.getState().models)
+				const deployResult = await deploy.mutateAsync({
+					xml,
+					fileName: `${model.name}.bpmn`,
+					...(companions.length && { companions }),
+				})
+				bpmnProcessId = deployResult.processes?.[0]?.bpmnProcessId
+			} catch (err) {
+				toast.error(err instanceof Error ? err.message : String(err))
+				return
+			}
+			if (!bpmnProcessId) {
+				toast.error("Deploy did not return a process ID")
+				return
+			}
+			// Start instance
+			let vars: Record<string, unknown> = {}
+			try {
+				const trimmed = runVariables.trim()
+				if (trimmed && trimmed !== "{}") vars = JSON.parse(trimmed)
+			} catch {
+				toast.error("Variables must be valid JSON")
+				return
+			}
+			try {
+				const result = await createInstance.mutateAsync({
+					bpmnProcessId,
+					variables: vars,
+					...(options.tryIt && { tryIt: true }),
+				})
+				setActiveInstanceKey(result.processInstanceKey)
+				setRunMode(true)
+			} catch (err) {
+				toast.error(err instanceof Error ? err.message : String(err))
+			}
+		},
+		[model, saveModel, upsertModel, deploy, createInstance, runVariables],
+	)
 
 	const handleDeploy = useCallback(async () => {
 		const editor = editorRef.current
@@ -1445,6 +1457,16 @@ export function ModelDetail() {
 											<Rocket size={13} />
 										)}
 										Deploy
+									</Button>
+									<Button
+										size="sm"
+										variant="outline"
+										onClick={() => void handleDeployAndRun({ tryIt: true })}
+										disabled={isPending}
+										title="Run once on the local engine: GET requests go out for real, every other connector and task is simulated"
+									>
+										<FlaskConical size={13} />
+										Try it
 									</Button>
 									<Button size="sm" onClick={() => void handleDeployAndRun()} disabled={isPending}>
 										{isPending ? (

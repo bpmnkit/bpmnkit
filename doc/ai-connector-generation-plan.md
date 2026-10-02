@@ -415,6 +415,22 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
 - **Secrets checklist:** the generated result lists every `{{secrets.X}}` it needs, so the user
   knows what to configure in the Camunda console before deploying.
 
+**As built (P6).**
+- **Dry run.** `dryRun` in `@bpmnkit/engine/testing` is built on `ProcessTest`, not a new
+  runner. It answers messages and timers so waits do not stop it. It seeds a multi-instance
+  over a plain variable with one item.
+- **Drop.** The dry run runs in the browser, from a lazily fetched bundle. It does not run in
+  the Worker, because the engine's virtual clock is global per isolate.
+- **CLI.** `casen synth --check`, as planned.
+- **Bench.** The bench reports the dry run and the secrets. `connectorApplyClean` is the
+  existing problems count; `secretsOnly` is the existing literal-secrets count.
+- **Static gate.** It stays as built in P3/P4: problems and missing inputs become questions.
+  The lint rule is not wired into Drop.
+- **Studio.** "Try it" is a separate run mode on the local engine: GET for real, everything
+  else simulated. The existing Simulate toggle keeps its meaning.
+- **Secrets.** `listSecrets` is in core's main entry, so the page computes the checklist
+  without the connector catalog.
+
 ## 6. Where each part lives
 
 | Piece | Package | Notes |
@@ -438,7 +454,7 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
 | P3 ✅ | WS5 `with` lines: parser, delta, writer, resolver (`applyConnectorLines`, not inside `expand`), `CONNECT_GUIDE`; unit tests (done 2026-10-02; `- with x` and plan aliases deferred) | P1, P2 | L |
 | P4 ✅ | WS6 per-task retrieval; Drop pass 2 (`/drop/api/connect`, auto after generate, "Add connectors" action); one rule line added to the pass 1 prompt; bench with 10 new connector golden prompts (done 2026-10-02; the server applies the lines; Add connectors applies as an undoable edit, not via the proposal dialog; first real bench run pending credentials) | P3 | M |
 | P5 ✅ | WS4 API index and API cards; GitHub/Stripe/Notion golden prompts (done 2026-10-02, see WS4 notes; first real bench run pending credentials) | P2 (cards), P4 | L |
-| P6 | WS7 dry run in Drop and CLI, secrets checklist, Studio "Try it" | P3 | M |
+| P6 ✅ | WS7 dry run in Drop and CLI, secrets checklist, Studio "Try it" (done 2026-10-02, see WS7 notes) | P3 | M |
 | P7 | Proxy MCP tools, docs (`apps/landing` connectors guide, `doc/features.md`, docspack rebuild), changesets | P4 | S |
 
 P0–P4 already deliver the headline case for all OOTB connectors and the generic REST connector.

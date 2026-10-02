@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.0.1. 364 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.0.1. 365 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -17,7 +17,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [casen CLI — View BPMN, DMN, and Form files](.llms/chunks/cli.casen.view-bpmn-dmn-and-form-files.md) — 186 tokens
 - [casen CLI — Common Workflows](.llms/chunks/cli.casen.common-workflows.md) — 191 tokens
 - [casen CLI — Plugins](.llms/chunks/cli.casen.plugins.md) — 270 tokens
-- [casen CLI — BPMN generation pipeline](.llms/chunks/cli.casen.bpmn-generation-pipeline.md) — 341 tokens
+- [casen CLI — BPMN generation pipeline](.llms/chunks/cli.casen.bpmn-generation-pipeline.md) — 474 tokens
 - [casen CLI — AIKit Skills](.llms/chunks/cli.casen.aikit-skills.md) — 196 tokens
 - [casen CLI — Worker commands](.llms/chunks/cli.casen.worker-commands.md) — 233 tokens
 - [casen CLI — Local engine (Reebe)](.llms/chunks/cli.casen.local-engine-reebe.md) — 369 tokens
@@ -220,6 +220,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Testing Processes — Install](.llms/chunks/guides.testing-processes.install.md) — 693 tokens
 - [Testing Processes — Jobs](.llms/chunks/guides.testing-processes.jobs.md) — 355 tokens
 - [Testing Processes — Connectors](.llms/chunks/guides.testing-processes.connectors.md) — 204 tokens
+- [Testing Processes — Dry run](.llms/chunks/guides.testing-processes.dry-run.md) — 381 tokens
 - [Testing Processes — AI agents](.llms/chunks/guides.testing-processes.ai-agents.md) — 235 tokens
 - [Testing Processes — Messages](.llms/chunks/guides.testing-processes.messages.md) — 357 tokens
 - [Testing Processes — Coverage](.llms/chunks/guides.testing-processes.coverage.md) — 221 tokens
@@ -323,7 +324,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()`](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md) — 1045 tokens
 - [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()` (2)](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2.md) — 397 tokens
 - [@bpmnkit/core — Installation — `writeProcessText(defs)` and `parseProcessDelta(text)`](.llms/chunks/packages.core.installation-writeprocesstext-defs-and-parseprocessdelta-text.md) — 317 tokens
-- [@bpmnkit/core — Installation — Connectors: `with` lines](.llms/chunks/packages.core.installation-connectors-with-lines.md) — 297 tokens
+- [@bpmnkit/core — Installation — Connectors: `with` lines](.llms/chunks/packages.core.installation-connectors-with-lines.md) — 347 tokens
 - [@bpmnkit/core — Installation — `retypeElement(element, type)`](.llms/chunks/packages.core.installation-retypeelement-element-type.md) — 189 tokens
 - [@bpmnkit/core — Installation — `createFlowElement(id, type, options?)`](.llms/chunks/packages.core.installation-createflowelement-id-type-options.md) — 61 tokens
 - [@bpmnkit/core — Installation — Element catalog](.llms/chunks/packages.core.installation-element-catalog.md) — 96 tokens

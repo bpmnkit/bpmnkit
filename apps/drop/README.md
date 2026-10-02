@@ -131,8 +131,16 @@ that already has its shape (`doc/ai-connector-generation-plan.md` §4).
     line is applied without a model (`lines` in the body).
   - **On a shared diagram:** **Add connectors** runs it while editing. The result is one
     undoable editor change.
+- **Checks on the result.** A draft with connectors gets two lines above its questions:
+  - **Secrets:** the secrets to create in the cluster before deploying (`listSecrets`).
+  - **Dry run:** whether the process runs from start to end with every call mocked, or
+    where it stops (`dryRun` from `@bpmnkit/engine/testing`).
+
+  The dry run is its own bundle, `dry-run.js` (about 94 KB gzipped). It is fetched only
+  once a draft has connectors, so `landing.js` does not grow.
 - **Benchmark.** `bench:generate --connect` runs it after each golden prompt and scores the
   connected diagram. `mustCallUrls` checks that a REST call goes to the index's endpoint.
+  Each connected diagram is dry-run, and its secrets are listed.
 - **Turning it off.** Remove `AI_CONNECT_MODEL`.
 
 Quick API smoke test:

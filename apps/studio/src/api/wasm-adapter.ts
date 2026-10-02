@@ -10,6 +10,7 @@ import { resolveSecretString } from "@bpmnkit/engine"
 import type { WasmEngine } from "@bpmnkit/reebe-wasm"
 import { proxySecretResolver } from "../stores/secrets.js"
 import { queryClient } from "./queryClient.js"
+import { tryItDecision } from "./try-it.js"
 import type {
 	ElementInstance,
 	Incident,
@@ -107,6 +108,8 @@ export interface JobResult {
 	kind: "simulated" | "rest-ok" | "rest-error"
 	status?: number
 	error?: string
+	/** Why a job was simulated rather than run, e.g. a POST a Try it run does not send. */
+	note?: string
 	processInstanceKey: number
 }
 
@@ -146,6 +149,9 @@ export function setSimulationMode(enabled: boolean): void {
 	simulationMode = enabled
 }
 
+/** Instances started with **Try it** (`tryIt` on the create request); see {@link tryItDecision}. */
+const tryInstances = new Set<number>()
+
 /** Jobs currently being handled to avoid double-activation. */
 const inFlight = new Set<number>()
 
@@ -167,9 +173,11 @@ async function handleJob(eng: WasmEngine, job: WasmJob, allVars: WasmVariable[])
 	} catch {
 		return
 	}
+	const trying = tryInstances.has(job.process_instance_key)
 	if (job.job_type === HTTP_JOB_TYPE) {
-		await handleHttpJob(eng, job, allVars)
-	} else if (simulationMode) {
+		await handleHttpJob(eng, job, allVars, trying)
+	} else if (simulationMode || trying) {
+		const decision = trying ? tryItDecision(job.job_type, undefined) : undefined
 		try {
 			eng.complete_job(job.key, "{}")
 			jobResults.set(job.key, {
@@ -178,6 +186,7 @@ async function handleJob(eng: WasmEngine, job: WasmJob, allVars: WasmVariable[])
 				jobType: job.job_type,
 				kind: "simulated",
 				processInstanceKey: job.process_instance_key,
+				...(decision && !decision.send && { note: decision.note }),
 			})
 		} catch {
 			// ignore — job may have been completed elsewhere
@@ -212,6 +221,7 @@ async function handleHttpJob(
 	eng: WasmEngine,
 	job: WasmJob,
 	allVars: WasmVariable[],
+	trying: boolean,
 ): Promise<void> {
 	// Build variable map: element-scoped vars first, then process-scoped as fallback
 	const varMap: Record<string, unknown> = {}
@@ -225,6 +235,26 @@ async function handleHttpJob(
 	const rawUrl = typeof varMap.url === "string" ? varMap.url : undefined
 	const url = rawUrl ? await applySecrets(rawUrl) : undefined
 	const method = typeof varMap.method === "string" ? varMap.method.toUpperCase() : "GET"
+	const decision = trying ? tryItDecision(job.job_type, method) : undefined
+	if (decision && !decision.send) {
+		try {
+			eng.complete_job(
+				job.key,
+				JSON.stringify({ response: { status: 200, body: {}, headers: {} } }),
+			)
+		} catch {
+			/* ignore */
+		}
+		jobResults.set(job.key, {
+			jobKey: job.key,
+			elementId: job.element_id,
+			jobType: job.job_type,
+			kind: "simulated",
+			note: decision.note,
+			processInstanceKey: job.process_instance_key,
+		})
+		return
+	}
 	const reqBody =
 		method !== "GET" && method !== "HEAD" && varMap.body !== undefined
 			? JSON.stringify(varMap.body)
@@ -256,7 +286,7 @@ async function handleHttpJob(
 	}
 
 	if (!url) {
-		if (simulationMode) {
+		if (simulationMode || trying) {
 			try {
 				eng.complete_job(
 					job.key,
@@ -351,7 +381,7 @@ async function handleHttpJob(
 		} catch (e) {
 			logError(`HTTP job ${job.key}: complete_job failed:`, e)
 		}
-	} else if (simulationMode) {
+	} else if (simulationMode || trying) {
 		// Tier 3 (simulation on): complete with empty simulated response
 		try {
 			eng.complete_job(job.key, JSON.stringify({ response: { status: 0, body: {}, headers: {} } }))
@@ -598,6 +628,8 @@ export async function wasmRoute(
 			bpmnProcessId?: string
 			processDefinitionKey?: string
 			variables?: Record<string, unknown>
+			/** Studio's own: start a Try it run (see `tryInstances`). */
+			tryIt?: boolean
 		}
 		const processId = b.bpmnProcessId ?? localDefs.get(b.processDefinitionKey ?? "")?.bpmnProcessId
 		log(`   create instance processId=${processId}, vars=${JSON.stringify(b.variables ?? {})}`)
@@ -611,6 +643,8 @@ export async function wasmRoute(
 			logError("   create_process_instance failed:", err)
 			throw new Error(String(err))
 		}
+		// Jobs are taken on the next poll, so marking the run now comes before its first job
+		if (b.tryIt && result?.processInstanceKey) tryInstances.add(Number(result.processInstanceKey))
 		log(`← ${method} ${path} → processInstanceKey=${result?.processInstanceKey}`)
 		return { processInstanceKey: result?.processInstanceKey ?? "0" }
 	}
