@@ -12,6 +12,9 @@
 		"LICENSE"
 	],
 	"main": "reebe_wasm.js",
+	"scripts": {
+		"build:wasm": "node ../../scripts/build-wasm.mjs"
+	},
 	"types": "reebe_wasm.d.ts",
 	"sideEffects": [
 		"./snippets/*"

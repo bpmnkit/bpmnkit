@@ -27,7 +27,7 @@
 		"proxy-rs:build": "cargo build --manifest-path apps/proxy-rs/Cargo.toml --release",
 		"desktop:dev": "pnpm --filter @bpmnkit/desktop tauri:dev",
 		"desktop:build": "pnpm --filter @bpmnkit/desktop tauri:build",
-		"build:wasm": "WASM_VERSION=$(node -p \"require('./apps/reebe-wasm/package.json').version\") && wasm-pack build apps/reebe/crates/reebe-wasm --target web --scope bpmnkit --out-dir \"$(pwd)/apps/reebe-wasm\" && node scripts/patch-wasm-pkg.mjs \"$WASM_VERSION\"",
+		"build:wasm": "node scripts/build-wasm.mjs",
 		"bootstrap": "pnpm install && pnpm build:wasm"
 	},
 	"devDependencies": {

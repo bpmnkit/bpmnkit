@@ -1,5 +1,39 @@
 # Progress
 
+## 2026-10-02 — `pnpm build` keeps the WASM engine current
+
+- **The error.** `@bpmnkit/engine:build` failed with `TS2352 … Property 'complete_user_task'
+  is missing in type 'WasmEngine'`.
+- **The cause.** `apps/reebe-wasm`'s `.js`, `.d.ts` and `.wasm` are build output, not
+  committed, so a checkout keeps whatever an earlier `pnpm build:wasm` left there. Nothing in
+  `pnpm build` rebuilt them:
+  - turbo's `build` depends on `^build:wasm`, but `@bpmnkit/reebe-wasm`, the package the
+    engine and Studio depend on, had no `build:wasm`;
+  - `@bpmnkit/reebe` had one, which nothing depends on. Its relative `--out-dir` resolved
+    against the crate, so it never wrote to `apps/reebe-wasm` either.
+
+  A local build from before `complete_user_task` (added to the engine runner in #202) broke the
+  engine's type check.
+- **The fix.** `scripts/build-wasm.mjs`, now behind `pnpm build:wasm` and both packages'
+  `build:wasm`:
+  - It keeps files that are newer than every Rust source and export every method of the
+    crate's `WasmEngine`. CI, which builds the WASM in a step of its own, does not compile it
+    twice.
+  - Otherwise it builds them with wasm-pack, and keeps the committed `package.json`, which
+    wasm-pack overwrites.
+  - Without wasm-pack, it fails with the missing methods and how to build them, before the
+    engine's type check.
+
+  `apps/reebe-wasm/turbo.json` gives that task the crates as inputs, so turbo reruns it when
+  the Rust changes.
+- **Checked.**
+  - Stale typings with no wasm-pack: the clear failure.
+  - Current typings: skipped.
+  - With wasm-pack, the crate compiled and the typings were regenerated. This container then
+    failed on `wasm-opt`'s download, which wasm-pack fetches without the proxy.
+  - With the regenerated output: the engine builds, the engine's WASM runner tests (9) pass,
+    and Studio's scenario runner tests (18) pass.
+
 ## 2026-10-02 — Connectors in AI generation, P7: MCP tools and the guide
 
 - **Proxy MCP server.** Two new tools sit beside `add_http_call`:
