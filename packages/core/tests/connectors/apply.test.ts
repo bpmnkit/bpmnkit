@@ -202,3 +202,19 @@ describe("zeebe:agentDefinition", () => {
 		expect(result.adHocSubProcess?.agentDefinition).toEqual({ agentType: "aiAgentSubProcess" })
 	})
 })
+
+describe("conditions on hidden dropdowns", () => {
+	it("GitHub createIssue applies only its own inputs: a hidden dropdown's default switches nothing on", () => {
+		const result = applyConnectorTemplate("io.camunda.connectors.GitHub.v1", {
+			operationGroup: "issues",
+			issueOperationType: "createIssue",
+			owner: "acme",
+			repo: "shop",
+			issueTitle: "Broken checkout",
+		})
+		expect(result.problems).toEqual([])
+		const targets = result.serviceTask?.ioMapping?.inputs?.map((i) => i.target) ?? []
+		expect(targets.filter((t) => t === "url")).toHaveLength(1)
+		expect(targets.filter((t) => t === "method")).toHaveLength(1)
+	})
+})

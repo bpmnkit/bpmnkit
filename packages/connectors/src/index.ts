@@ -28,6 +28,13 @@ export {
 	applyTemplateToElement,
 	validateElementTemplate,
 	readTemplateDocument,
+	CONNECTOR_ALIASES,
+	connectorAlias,
+	connectorCards,
+	findConnectorCards,
+	formatConnectorCard,
+	listConnectorCards,
+	templateIdForAlias,
 } from "@bpmnkit/core/connectors"
 export type {
 	ConnectorSummary,
@@ -44,6 +51,9 @@ export type {
 	TemplateProblem,
 	TemplateValidation,
 	TemplateDocumentResult,
+	CardInput,
+	CardMode,
+	ConnectorCard,
 } from "@bpmnkit/core/connectors"
 export { CAMUNDA_CONNECTOR_TEMPLATES }
 

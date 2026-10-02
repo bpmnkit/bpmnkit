@@ -19,8 +19,16 @@ const GENERATED_NOTICE =
 // ── references/connectors.md ──────────────────────────────────────────────────
 
 async function generateConnectors() {
-	const { listConnectors } = await import(join(ROOT, "packages/connectors/dist/index.js"))
+	const { listConnectors, connectorAlias, connectorCards } = await import(
+		join(ROOT, "packages/connectors/dist/index.js")
+	)
 	const all = listConnectors()
+	const operations = (id) =>
+		connectorCards(id)
+			.map((card) => card.operation)
+			.filter(Boolean)
+			.map((op) => `\`${op}\``)
+			.join(", ") || "—"
 
 	const byDirection = new Map()
 	for (const c of all) {
@@ -41,21 +49,34 @@ async function generateConnectors() {
 		.map(([direction, connectors]) => {
 			const rows = connectors
 				.sort((a, b) => a.name.localeCompare(b.name))
-				.map((c) => `| \`${c.id}\` | ${c.name} | ${c.taskType ? `\`${c.taskType}\`` : "—"} |`)
+				.map(
+					(c) =>
+						`| \`${connectorAlias(c.id)}\` | \`${c.id}\` | ${c.name} | ${c.taskType ? `\`${c.taskType}\`` : "—"} | ${operations(c.id)} |`,
+				)
 				.join("\n")
-			return `### ${DIRECTION_LABEL[direction] ?? direction}\n\n| Template id | Name | Task type |\n|---|---|---|\n${rows}`
+			return `### ${DIRECTION_LABEL[direction] ?? direction}\n\n| Alias | Template id | Name | Task type | Operations |\n|---|---|---|---|---|\n${rows}`
 		})
 		.join("\n\n")
 
 	const content = `${GENERATED_NOTICE}
 # Connector catalog
 
-${all.length} bundled Camunda 8 out-of-the-box connector templates, from \`@bpmnkit/connectors\`. This is an **index** — look up full input specs at plan-authoring time, don't guess at property keys:
+${all.length} bundled Camunda 8 out-of-the-box connector templates, from \`@bpmnkit/connectors\`. This is an **index** — look up the inputs at plan-authoring time, don't guess at property keys:
 
 \`\`\`sh
-casen connector search "<query>"          # find candidates by name/keyword
-casen connector show <template-id>        # required/optional inputs, task type, direction
+casen connector cards "<what the step does>"   # one card per operation: its inputs, and the values that select it
+casen connector search "<query>"               # find templates by name/keyword
+casen connector show <template-id>             # every input of a template, all operations mixed
 \`\`\`
+
+A **card** is one operation of one connector with only the inputs that operation uses, e.g.
+
+\`\`\`
+slack chat.postMessage — Slack Outbound Connector: Post message | token*(secret) data.text* data.channel* | optional: data.thread resultVariable resultExpression(=FEEL)
+  values: {"method":"chat.postMessage"}
+\`\`\`
+
+\`*\` marks a required input. \`values\` selects the operation: pass it along with your inputs. A \`mode=default: a | b(adds*)\` part is a choice inside the operation (an authentication type, say), with the inputs each choice adds.
 
 ## Using a connector in a plan
 
@@ -79,10 +100,10 @@ A \`connector\` step (or an \`aiAgent\` tool's \`connector\` field) references a
 \`\`\`
 
 Rules:
-- **Value keys** come from \`casen connector show <id>\`'s "Required inputs" / "Optional inputs" lists (dotted paths like \`data.channel\`, not the display label).
+- **Value keys** come from \`casen connector cards\` (dotted paths like \`data.channel\`, not the display label). Include the card's \`values\`, which pick the operation.
 - **Secrets**: any input marked \`(secret)\` — API keys, tokens, passwords — must use the \`{{secrets.NAME}}\` placeholder, never a literal credential. \`casen synth\` does not resolve secrets; the target engine (Reebe/Camunda 8) does at runtime from its configured secret store.
 - **FEEL values**: a leading \`=\` makes a value a FEEL expression (variables, string concatenation, etc.); without it, the value is a literal string. \`casen synth\`/\`casen lint\` parse-validate every FEEL value — a syntax error surfaces as a plan problem before you ever write BPMN.
-- **Conditional fields**: some inputs only apply for a specific dropdown choice (e.g. Slack's \`data.channel\` only applies when \`method\` is \`chat.postMessage\`) — \`casen connector show\` reflects this; supplying a value for a field that doesn't apply is ignored, not an error.
+- **Conditional fields**: some inputs only apply for a specific dropdown choice (e.g. Slack's \`data.channel\` only applies when \`method\` is \`chat.postMessage\`). A card lists only the inputs of its operation; \`casen connector show\` lists them all. Supplying a value for a field that doesn't apply is ignored, not an error.
 - Direction \`agentic\` connectors (the AI Agent Sub-process) are configured via the \`aiAgent\` plan step, not \`connector\` — see \`references/agentic.md\`.
 
 ## Full index

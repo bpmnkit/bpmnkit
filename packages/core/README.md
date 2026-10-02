@@ -322,6 +322,7 @@ adds those back for a property panel.
 | `applyConnectorTemplate(id, values)` | Builder options for a bundled template, plus problems |
 | `applyTemplateToElement(defs, id, template, values)` | Apply a template to an existing element |
 | `validateElementTemplate(value)` | Structural check of an element template |
+| `findConnectorCards(query)` / `formatConnectorCard(card)` | One card per operation, with only its inputs — for a model's prompt |
 
 ```typescript
 import { applyConnectorTemplate } from "@bpmnkit/core/connectors"

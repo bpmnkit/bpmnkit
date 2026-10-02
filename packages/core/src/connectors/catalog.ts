@@ -42,7 +42,7 @@ export interface ConnectorSummary {
 
 const SECRET_PATTERN = /token|secret|password|api.?key|apikey|credential|access.?key/i
 
-function isSecretField(prop: TemplateProperty, key: string): boolean {
+export function isSecretField(prop: TemplateProperty, key: string): boolean {
 	return SECRET_PATTERN.test(`${prop.label ?? ""} ${key}`)
 }
 
@@ -180,7 +180,7 @@ export function clearRegisteredTemplates(): void {
 }
 
 /** The bundled templates plus registered ones, the latter winning on id. */
-function allTemplates(): readonly ElementTemplate[] {
+export function allTemplates(): readonly ElementTemplate[] {
 	if (registered.size === 0) return BUNDLED_CONNECTOR_TEMPLATES
 	const bundled = BUNDLED_CONNECTOR_TEMPLATES.filter((t) => !registered.has(t.id))
 	return [...bundled, ...registered.values()]

@@ -1,6 +1,8 @@
 import { readFile, stat } from "node:fs/promises"
 import { resolve } from "node:path"
 import {
+	findConnectorCards,
+	formatConnectorCard,
 	getTemplate,
 	listConnectors,
 	readTemplateDocument,
@@ -146,6 +148,63 @@ const showCmd: Command = {
 			ctx.output.info("\nOptional inputs:")
 			for (const i of summary.optionalInputs) {
 				ctx.output.info(`  ${i.key}${i.isSecret ? " (secret)" : ""} — ${i.label}`)
+			}
+		}
+	},
+}
+
+const cardsCmd: Command = {
+	name: "cards",
+	description:
+		"Show connector cards — one operation each, with only the inputs it needs — for a request",
+	args: [
+		{
+			name: "query",
+			description: 'What the step should do, e.g. "post a message to slack"',
+			required: true,
+		},
+	],
+	flags: [
+		WORKSPACE_FLAG,
+		CONFIG_FOLDER_FLAG,
+		{ name: "limit", description: "How many cards to show (default: 5)", type: "string" },
+		{
+			name: "advanced",
+			description: "Include retries, timeouts, TLS and other plumbing inputs",
+			type: "boolean",
+		},
+	],
+	examples: [
+		{
+			description: "Find how to post to Slack",
+			command: 'casen connector cards "post a message to slack"',
+		},
+		{
+			description: "As JSON, for a tool",
+			command: 'casen connector cards "create github issue" -o json',
+		},
+	],
+	async run(ctx) {
+		await includeWorkspaceTemplates(ctx)
+		const query = ctx.positional.join(" ")
+		const limit = Number.parseInt(String(ctx.flags.limit ?? "5"), 10)
+		if (!Number.isInteger(limit) || limit < 1) {
+			throw new Error(`--limit must be a positive whole number, not "${String(ctx.flags.limit)}"`)
+		}
+		const cards = findConnectorCards(query, { limit })
+		if (cards.length === 0) {
+			ctx.output.info(`No connector matched "${query}". Try 'casen connector list' to browse all.`)
+			return
+		}
+		if (ctx.output.format === "json") {
+			ctx.output.print(cards)
+			return
+		}
+		ctx.output.info("A * marks a required input. Pass the card's values with yours.\n")
+		for (const card of cards) {
+			ctx.output.info(formatConnectorCard(card, { advanced: ctx.flags.advanced === true }))
+			if (Object.keys(card.values).length > 0) {
+				ctx.output.info(`  values: ${JSON.stringify(card.values)}\n`)
 			}
 		}
 	},
@@ -488,6 +547,7 @@ export const connectorGroup: CommandGroup = {
 		searchCmd,
 		listCatalogCmd,
 		showCmd,
+		cardsCmd,
 		validateCmd,
 	],
 }

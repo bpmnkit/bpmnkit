@@ -12,6 +12,7 @@ a real service), and **generate** brand-new connector element templates from Ope
 casen connector
 ├── search      — find a bundled OOTB connector template by name/keyword
 ├── show        — show a bundled template's required/optional inputs
+├── cards       — one card per operation: only the inputs it needs, for a request
 ├── generate    — generate new templates from an OpenAPI spec file or catalog entry
 └── catalog     — list all built-in OpenAPI-catalog entries (for `generate`)
 ```

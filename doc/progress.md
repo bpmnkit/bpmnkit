@@ -1,5 +1,38 @@
 # Progress
 
+## 2026-10-02 — Connectors in AI generation, P2: connector cards
+
+- **Cards.** A connector card is one operation of one template, with only the inputs that
+  operation uses. It also carries the `values` that select the operation, and its modes
+  (authentication type, AI provider), each with the inputs it adds. `findConnectorCards`,
+  `connectorCards`, `listConnectorCards` and `formatConnectorCard` are in
+  `@bpmnkit/core/connectors`, re-exported by `@bpmnkit/connectors`.
+  - 133 templates give 341 cards.
+  - Prompt lines are about 90 tokens median. Plumbing (retries, timeouts, TLS, saved
+    credentials) is marked `advanced` and left out by default.
+- **Aliases.** `CONNECTOR_ALIASES` (`connectors/aliases.ts`) is a committed table: a fixed
+  alias per template, plus the dropdowns that choose its operation.
+  - It is written down rather than derived, because an operation is a single dropdown in Slack,
+    nested groups in GitHub, and one key defined several times in HubSpot. Names alone don't
+    tell operations apart from modes.
+  - Tests require an entry for every bundled template, unique aliases, and listed dropdowns that
+    exist. A new template from the weekly refresh fails until it gets an alias.
+- **Each card is applied in its tests.** Every card is applied with its required inputs, and with
+  each mode choice plus what that choice adds, and must produce no missing-required problem.
+  That's 341 cards, every mode choice included.
+- **Fixed: the applier's condition evaluation.** `resolveValues` gave every property its
+  default, including dropdowns hidden by their own condition. So GitHub's hidden
+  `labelOperationType` switched the label inputs on under "create issue": applying it reported
+  11 false missing-required problems and wrote ten `url` and ten `method` inputs. Only active
+  properties have values now, resolved until stable, as in the Modeler. There is a regression
+  test.
+- **CLI.** `casen connector cards "<request>"` (with `--limit`, `--advanced` and `-o json`).
+  The Claude plugin's `references/connectors.md` now has an alias column and each template's
+  operations, and points at `casen connector cards`.
+- **Not fixed.** The editor's property panel (`plugins/config-panel-bpmn/template-engine.ts`)
+  evaluates conditions against all stored values in the same way. It may show fields of an
+  unselected operation.
+
 ## 2026-10-02 — Connector templates refreshed, `zeebe:agentDefinition` supported
 
 - **The update script bundled the oldest version of every template.** The marketplace registry

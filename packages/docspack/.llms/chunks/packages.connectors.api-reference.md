@@ -15,6 +15,11 @@
 | `registerElementTemplates(templates)` | Merge templates into the catalog |
 | `clearRegisteredTemplates()` | Drop everything registered |
 | `CAMUNDA_CONNECTOR_TEMPLATES` | The 133 bundled templates, raw |
+| `findConnectorCards(query, { limit })` | Operation cards matching a request, best first |
+| `connectorCards(id)` / `listConnectorCards()` | The cards of one template / of all |
+| `formatConnectorCard(card, { advanced })` | A card as one prompt line |
+| `connectorAlias(id)` / `templateIdForAlias(alias)` | Template id ↔ short alias |
+| `CONNECTOR_ALIASES` | Alias and operation dropdowns of every bundled template |
 
 From `@bpmnkit/connectors/node`: `discoverElementTemplates`, `collectElementTemplates`,
 `DEFAULT_CONFIG_FOLDER`, `TEMPLATES_SUBFOLDER`.

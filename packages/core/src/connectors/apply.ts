@@ -65,7 +65,7 @@ export interface Accumulator {
 	linkedResources: Map<string, Record<string, string>>
 }
 
-function evalCondition(cond: TemplateCondition, values: Record<string, string>): boolean {
+export function evalCondition(cond: TemplateCondition, values: Record<string, string>): boolean {
 	if ("allMatch" in cond) {
 		return cond.allMatch.every((c) => evalCondition(c as TemplateCondition, values))
 	}
@@ -82,19 +82,42 @@ function defaultValueOf(prop: TemplateProperty): string | undefined {
 	return String(prop.value)
 }
 
-/** Resolves every property to its effective string value: user override, else template default. */
-function resolveValues(
+/**
+ * The effective value of every active property: user override, else template
+ * default.
+ *
+ * Only an active property has a value, as in the Modeler. A dropdown hidden by
+ * its own condition does not keep its default, so it cannot switch on the
+ * properties that depend on it: GitHub's `labelOperationType` defaults to a
+ * label operation, but while `operationGroup` is "issue" it is hidden, and the
+ * label inputs stay off. Conditions can chain, so this repeats until nothing
+ * changes.
+ */
+export function resolveValues(
 	template: ElementTemplate,
 	values: Record<string, string>,
 ): Record<string, string> {
-	const resolved: Record<string, string> = {}
-	for (const prop of template.properties) {
-		const key = propertyKey(prop)
-		if (!key) continue
-		const value = values[key] ?? defaultValueOf(prop)
-		if (value !== undefined) resolved[key] = value
+	let resolved: Record<string, string> = {}
+	// Each pass can only switch on properties whose conditions read the previous pass's
+	// values, so the chain is never longer than the property list
+	for (let pass = 0; pass <= template.properties.length; pass++) {
+		const next: Record<string, string> = {}
+		for (const prop of template.properties) {
+			const key = propertyKey(prop)
+			if (!key || key in next) continue
+			if (prop.condition && !evalCondition(prop.condition, resolved)) continue
+			const value = values[key] ?? defaultValueOf(prop)
+			if (value !== undefined) next[key] = value
+		}
+		if (sameValues(next, resolved)) return next
+		resolved = next
 	}
 	return resolved
+}
+
+function sameValues(a: Record<string, string>, b: Record<string, string>): boolean {
+	const keys = Object.keys(a)
+	return keys.length === Object.keys(b).length && keys.every((k) => b[k] === a[k])
 }
 
 /**

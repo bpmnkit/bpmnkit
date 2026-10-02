@@ -190,7 +190,7 @@
 		{
 			"id": "cli.connector",
 			"file": "chunks/cli.connector.md",
-			"tokens": 166,
+			"tokens": 188,
 			"tags": [
 				"cli",
 				"connector"
@@ -200,7 +200,7 @@
 		{
 			"id": "cli.connector.browse-the-bundled-ootb-catalog",
 			"file": "chunks/cli.connector.browse-the-bundled-ootb-catalog.md",
-			"tokens": 213,
+			"tokens": 417,
 			"tags": [
 				"cli",
 				"connector",
@@ -3935,6 +3935,23 @@
 			]
 		},
 		{
+			"id": "packages.connectors.connector-cards",
+			"file": "chunks/packages.connectors.connector-cards.md",
+			"tokens": 320,
+			"tags": [
+				"packages",
+				"connectors",
+				"connector",
+				"cards"
+			],
+			"entities": [
+				"card.values",
+				"applyConnectorTemplate",
+				"card.modes",
+				"formatConnectorCard"
+			]
+		},
+		{
 			"id": "packages.connectors.applying-a-template",
 			"file": "chunks/packages.connectors.applying-a-template.md",
 			"tokens": 503,
@@ -4020,7 +4037,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 262,
+			"tokens": 361,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4032,6 +4049,7 @@
 				"ElementTemplate",
 				"ConnectorSummary",
 				"clearRegisteredTemplates()",
+				"listConnectorCards()",
 				"@bpmnkit/connectors/node",
 				"discoverElementTemplates",
 				"collectElementTemplates"
@@ -4615,7 +4633,7 @@
 		{
 			"id": "packages.core.connectors-bpmnkit-core-connectors",
 			"file": "chunks/packages.core.connectors-bpmnkit-core-connectors.md",
-			"tokens": 194,
+			"tokens": 247,
 			"tags": [
 				"packages",
 				"core",
@@ -4624,6 +4642,7 @@
 			],
 			"entities": [
 				"@bpmnkit/core",
+				"formatConnectorCard",
 				"@bpmnkit/connectors"
 			]
 		},

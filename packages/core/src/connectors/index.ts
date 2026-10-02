@@ -25,6 +25,16 @@ export type { ApplyResult, ApplyProblem } from "./apply.js"
 export { applyTemplateToElement } from "./apply-element.js"
 export type { ApplyToElementResult } from "./apply-element.js"
 export { BUNDLED_CONNECTOR_TEMPLATES } from "./templates/generated.js"
+export { CONNECTOR_ALIASES } from "./aliases.js"
+export {
+	connectorAlias,
+	connectorCards,
+	findConnectorCards,
+	formatConnectorCard,
+	listConnectorCards,
+	templateIdForAlias,
+} from "./cards.js"
+export type { CardInput, CardMode, ConnectorCard } from "./cards.js"
 export type {
 	ElementTemplate,
 	TemplateGroup,
