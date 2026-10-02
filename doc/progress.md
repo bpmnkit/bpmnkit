@@ -25,6 +25,9 @@
   - The Claude Code plugin's generated connector reference adds `casen connector api` and
     `casen synth --check`.
   - Docspack rebuilt.
+- **Bench.** `--connect-model` runs the connect pass on another model than the draft, as the
+  Worker does (`AI_MODEL` draws, `AI_CONNECT_MODEL` connects). Each result records the
+  connect model. Smoke-tested against a local mock of the Workers AI API.
 - **Not done:** the Rust proxy (`apps/proxy-rs`) keeps its own MCP tool list. It gets no
   connector tools: they need the catalog and the API index inside its embedded JS bridge.
 

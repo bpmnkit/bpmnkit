@@ -31,6 +31,8 @@
  *
  * Options:
  *   --connect         run the connect pass after each golden prompt
+ *   --connect-model M with --connect: the model of the connect pass (default: the same
+ *                     model as the draft); the Worker's is AI_CONNECT_MODEL
  *   --edits           run the change cases instead of the golden prompts
  *   --feedback        run the review-feedback cases instead of the golden prompts
  *   --dry-run         with --feedback: print each case's prompt size and estimated
@@ -111,6 +113,7 @@ const { values: args } = parseArgs({
 		all: { type: "boolean", default: false },
 		edits: { type: "boolean", default: false },
 		connect: { type: "boolean", default: false },
+		"connect-model": { type: "string" },
 		feedback: { type: "boolean", default: false },
 		"dry-run": { type: "boolean", default: false },
 		"refine-rules": { type: "string", default: "text" },
@@ -132,6 +135,10 @@ if (args.edits && args.feedback) {
 }
 if (args.connect && (args.edits || args.feedback)) {
 	console.error("--connect runs after the golden prompts only.")
+	process.exit(1)
+}
+if (args["connect-model"] && !args.connect) {
+	console.error("--connect-model needs --connect.")
 	process.exit(1)
 }
 if (args["dry-run"] && !args.feedback) {
@@ -380,7 +387,10 @@ async function runOne(model, prompt) {
 		result.error = `expand: ${error.message}`
 		return result
 	}
-	if (args.connect) Object.assign(result, await runConnect(model, prompt, parsed.diagram))
+	if (args.connect) {
+		const connectModel = args["connect-model"] ?? model
+		Object.assign(result, await runConnect(connectModel, prompt, parsed.diagram))
+	}
 	return result
 }
 
@@ -425,6 +435,7 @@ async function runConnect(model, prompt, diagram) {
 	const selection = selectConnectors({ text: prompt.text, tasks }, { apis })
 	const expectSkip = prompt.expected.connect === false
 	const connect = {
+		model,
 		tasks: selection.length,
 		cards: selection.reduce((n, t) => n + t.cards.length, 0),
 		apiCards: selection.reduce((n, t) => n + (t.apis?.length ?? 0), 0),
