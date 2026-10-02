@@ -406,7 +406,7 @@ with post: slack chat.postMessage | channel=#triage | text== "New issues: " + st
 
 | Phase | Content | Depends on | Size |
 |---|---|---|---|
-| P0 | WS1 defect fixes plus their tests; bench scores `mustContainTaskTypes` | — | S |
+| P0 ✅ | WS1 defect fixes plus their tests; bench scores `mustContainTaskTypes` (done 2026-10-02) | — | S |
 | P1 | WS2: move the catalog into core, slim data, shim, sync workflow | P0 | M |
 | P2 | WS3 cards with per-operation conditions; regenerate skill reference; `casen connector cards` | P1 | M |
 | P3 | WS5 `with` lines: parser, delta, writer, resolver in `expand`, `CONNECT_GUIDE`; unit tests | P1, P2 | L |

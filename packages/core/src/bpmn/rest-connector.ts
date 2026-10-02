@@ -37,6 +37,13 @@ export interface RestConnectorConfig {
 }
 
 const REST_CONNECTOR_TYPE = "io.camunda:http-json:1"
+
+/**
+ * Version of the bundled `io.camunda.connectors.HttpJson.v2` template in
+ * `@bpmnkit/connectors`. An editor matches a stamped element to its template by
+ * id and version, so this must follow the bundled one; a test there checks it.
+ */
+export const REST_CONNECTOR_TEMPLATE_VERSION = "1"
 const DEFAULT_TIMEOUT = 20
 const DEFAULT_RETRIES = "3"
 

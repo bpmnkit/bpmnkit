@@ -118,7 +118,9 @@ casen generate bpmn --help-schema
 |---|---|---|
 | `jobType` | `serviceTask`, `sendTask` | Sets `zeebe:taskDefinition.type` |
 | `taskHeaders` | `serviceTask`, `sendTask` | Sets `zeebe:taskHeaders` key/value pairs |
-| `resultVariable` | `serviceTask`, `businessRuleTask` | Maps connector response to a variable |
+| `inputs` | any task | Sets `zeebe:ioMapping` inputs (target → source); connectors read their settings from these |
+| `resultVariable` | `serviceTask`, `businessRuleTask` | Stores the result: a `resultVariable` task header for a Camunda connector (`io.camunda:…`), an output mapping of `response` for any other job worker |
+| `modelerTemplate` | any element | `{ "id", "version" }` of the applied element template (`zeebe:modelerTemplate`) |
 | `calledProcess` | `callActivity` | Sets `zeebe:calledElement.processId` |
 | `formId` | `userTask` | Sets `zeebe:formDefinition.formId` |
 | `decisionId` | `businessRuleTask` | Sets `zeebe:calledDecision.decisionId` |
@@ -131,13 +133,16 @@ casen generate bpmn --help-schema
   "type": "serviceTask",
   "name": "Call API",
   "jobType": "io.camunda:http-json:1",
-  "taskHeaders": {
+  "inputs": {
     "url": "https://api.example.com/orders",
     "method": "POST"
   },
   "resultVariable": "apiResponse"
 }
 ```
+
+`authentication.type` defaults to `noAuth`. Older answers that put `url` and `method` in
+`taskHeaders` still work: they are moved to input mappings, where the connector reads them.
 
 ## Modify-existing mode (`--input`)
 

@@ -40,7 +40,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [casen diff — Flags](.llms/chunks/cli.diff.flags.md) — 301 tokens
 - [casen diff — The same diff elsewhere](.llms/chunks/cli.diff.the-same-diff-elsewhere.md) — 128 tokens
 - [casen generate](.llms/chunks/cli.generate.md) — 529 tokens
-- [casen generate — Definition mode (AI / scripting path)](.llms/chunks/cli.generate.definition-mode-ai-scripting-path.md) — 671 tokens
+- [casen generate — Definition mode (AI / scripting path)](.llms/chunks/cli.generate.definition-mode-ai-scripting-path.md) — 791 tokens
 - [casen generate — Modify-existing mode (`--input`)](.llms/chunks/cli.generate.modify-existing-mode-input.md) — 448 tokens
 - [casen generate — Typical AI workflow](.llms/chunks/cli.generate.typical-ai-workflow.md) — 493 tokens
 - [casen generate — Typical AI workflow — Keep the file current in CI](.llms/chunks/cli.generate.typical-ai-workflow-keep-the-file-current-in-ci.md) — 77 tokens

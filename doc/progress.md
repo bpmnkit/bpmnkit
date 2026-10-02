@@ -1,5 +1,19 @@
 # Progress
 
+## 2026-10-02 — Connectors in AI generation, P0: compact connector tasks run
+
+- `CompactElement` has `inputs` (input mappings) and `modelerTemplate`; both round-trip through
+  `compactify`/`expand`. Before, a compact edit dropped every connector's input mappings.
+- HTTP connector settings that the compact format, the CLI help and the proxy prompts put in task
+  headers (`url`, `method`, `authentication.*`) are now input mappings, which is where the
+  connector reads them. A connector's `resultVariable` is a task header, not an output mapping of
+  `response`. An engine test runs such a task against a mocked connector; it failed before the fix.
+- `Bpmn.restConnector()` stamps template version `1`, matching the bundled `HttpJson.v2`. A
+  connectors test keeps the two in step. A dead job-type comparison in `optimize/patterns.ts` is gone.
+- The Drop bench scores `mustContainTaskTypes`, so golden prompts 01, 03, 10 and 11 report their
+  missing connectors.
+- Plan: `doc/ai-connector-generation-plan.md` (P0, WS1).
+
 ## 2026-10-01 — Plan: AI generation with Camunda connectors
 
 - Analysis and phased plan for generating executable diagrams with OOTB connectors and the REST

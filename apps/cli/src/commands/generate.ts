@@ -26,7 +26,9 @@ CompactElement — all fields except id+type are optional
     serviceTask/sendTask:
     "jobType":        Zeebe job type string (e.g. "my-worker"),
     "taskHeaders":    { key: value } — Zeebe task headers,
+    "inputs":         { target: source } — Zeebe input mappings (connector settings),
     "resultVariable": variable to store the response in,
+    "modelerTemplate": { "id": template id, "version": n } — applied element template,
 
     callActivity:
     "calledProcess":  process ID of the called process,
@@ -70,7 +72,7 @@ ELEMENT TYPES
 
 HTTP CONNECTOR (serviceTask)
   { "type": "serviceTask", "jobType": "io.camunda:http-json:1",
-    "taskHeaders": { "url": "https://...", "method": "POST" },
+    "inputs": { "url": "https://...", "method": "POST" },
     "resultVariable": "response" }
 
 PATCH FORMAT (for --patch and stdin when --input is set)

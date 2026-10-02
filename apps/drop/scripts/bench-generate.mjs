@@ -215,10 +215,20 @@ function dryRun(cases) {
 	)
 }
 
-/** Checks the assertions this feature can meet; connector job types are out of scope for v1. */
+/**
+ * Checks a golden prompt's assertions. Connector job types are scored too, so the
+ * connector prompts show what generation still misses (doc/ai-connector-generation-plan.md).
+ */
 function score(defs, assertions) {
 	const elements = defs.processes.flatMap((p) => p.flowElements)
 	const types = new Set(elements.map((e) => e.type))
+	const jobTypes = new Set(
+		elements.flatMap((e) =>
+			e.extensionElements
+				.filter((x) => x.name === "zeebe:taskDefinition" && x.attributes.type)
+				.map((x) => x.attributes.type),
+		),
+	)
 	const failed = []
 	if (assertions.minElements !== undefined && elements.length < assertions.minElements) {
 		failed.push(`${elements.length} < ${assertions.minElements} elements`)
@@ -229,6 +239,9 @@ function score(defs, assertions) {
 	for (const alternatives of assertions.mustContainAnyOf ?? []) {
 		if (!alternatives.some((type) => types.has(type)))
 			failed.push(`no ${alternatives.join(" or ")}`)
+	}
+	for (const jobType of assertions.mustContainTaskTypes ?? []) {
+		if (!jobTypes.has(jobType)) failed.push(`no task type ${jobType}`)
 	}
 	return { elements: elements.length, failed }
 }

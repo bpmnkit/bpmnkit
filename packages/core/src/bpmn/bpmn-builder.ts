@@ -26,6 +26,7 @@ import type {
 import { createFlowElement } from "./element-shape.js"
 import type { RestConnectorConfig } from "./rest-connector.js"
 import {
+	REST_CONNECTOR_TEMPLATE_VERSION,
 	restConnectorRetries,
 	restConnectorTaskType,
 	restConnectorToIoMappingInputs,
@@ -2645,7 +2646,7 @@ export class ProcessBuilder {
 		// Stamp the template identifier so editors recognise this as a REST connector
 		el.unknownAttributes = {
 			"zeebe:modelerTemplate": "io.camunda.connectors.HttpJson.v2",
-			"zeebe:modelerTemplateVersion": "12",
+			"zeebe:modelerTemplateVersion": REST_CONNECTOR_TEMPLATE_VERSION,
 		}
 		this.addFlowElement(el)
 		return this

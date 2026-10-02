@@ -24,7 +24,7 @@ export const COMPACT_FORMAT = [
 	"Gateways: exclusiveGateway, parallelGateway, inclusiveGateway, eventBasedGateway, complexGateway",
 	"Containers: subProcess, adHocSubProcess, eventSubProcess, transaction",
 	"Data: dataObject, dataObjectReference (add dataObjectRef), dataStoreReference (add dataStoreRef) — wired by data associations, not sequence flows",
-	'HTTP REST calls: always use jobType: "io.camunda:http-json:1" with taskHeaders {url, method, headers?, body?} and resultVariable.',
+	'HTTP REST calls: always use jobType: "io.camunda:http-json:1" with inputs {url, method, headers?, body?} and resultVariable.',
 ].join("\n")
 
 // ── MCP prompt builders (for Claude + Copilot with MCP tools) ─────────────────
@@ -46,7 +46,7 @@ export function buildMcpSystemPrompt(): string {
 		"",
 		"HTTP/REST RULE: Any time the user asks for an HTTP request, API call, webhook, or external service",
 		"integration — use add_http_call (or Bridge.mcpAddHttpCall inside compose_diagram).",
-		"add_http_call sets jobType: io.camunda:http-json:1 and the correct taskHeaders automatically.",
+		"add_http_call sets jobType: io.camunda:http-json:1 and the correct input mappings automatically.",
 		"Use your knowledge of the target API to supply the real endpoint URL.",
 		"",
 		"═══════════════════════════════════════════════════════",
