@@ -281,6 +281,17 @@ describe("createConnectLineFilter", () => {
 		expect(out).toBe("with a: slack | x=1\nwith b: http https://x.example\n")
 	})
 
+	it("reads a line naming its node by label, or without the colon after its id", () => {
+		const filter = createConnectLineFilter()
+		const out =
+			filter.push(
+				"with start Ticket closed: http POST /v1/pages | api=notion\nwith create http POST /v1/pages | api=notion\nwith create http POST https://x.example/a | x=1\n",
+			) + filter.end()
+		expect(out).toBe(
+			"with start_Ticket_closed: http POST /v1/pages | api=notion\nwith create: http POST /v1/pages | api=notion\nwith create: http POST https://x.example/a | x=1\n",
+		)
+	})
+
 	it("gives a with line written without its first word that word back", () => {
 		const filter = createConnectLineFilter()
 		const out =
@@ -358,6 +369,20 @@ describe("finishConnect", () => {
 		)
 		expect(result.connected).toEqual(["b", "c"])
 		expect(result.problems).toEqual([])
+	})
+
+	it("of two lines for a node, keeps the one with a connector offered for it", () => {
+		const http = connectorCards("io.camunda.connectors.HttpJson.v2")
+		const result = finishConnect(
+			defs,
+			aliases,
+			`with create: ${SLACK}\nwith create: http POST https://api.example.com/pages`,
+			[],
+			[{ id: "create", name: "Create page", cards: http }],
+		)
+		expect(result.xml).toMatch(
+			/id="create"[^>]*modelerTemplate="io.camunda.connectors.HttpJson.v2"|modelerTemplate="io.camunda.connectors.HttpJson.v2"[^>]*id="create"/,
+		)
 	})
 
 	it("keeps the first line for a node and reports the next", () => {

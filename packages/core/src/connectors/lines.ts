@@ -242,7 +242,13 @@ export function resolveConnectorLine(
 			key = ends[0]
 			out.fixes.push(`read "${written}" as "${key}"`)
 		}
-		values[key] = feelForVariable(key, value, out.fixes)
+		// `url=api.notion.base` beside a positional URL is not one: the positional stands
+		if (key === "url" && values.url !== undefined && !/^(https?:\/\/|=|\/|["'])/.test(value)) {
+			out.fixes.push(`kept the URL ${values.url}, not url=${value}`)
+			continue
+		}
+		values[key] =
+			key === "headers" ? feelHeaders(value, out.fixes) : feelForVariable(key, value, out.fixes)
 	}
 
 	for (const key of secrets) {
@@ -293,6 +299,17 @@ function apiCardLine(
 /** `{{orderId}}`, `{{variables.orderId}}` or `${orderId}`: a variable, which FEEL reads as `=orderId`. */
 const TEMPLATED_VARIABLE =
 	/^=?\s*(?:\{\{\s*(?:variables\.)?([A-Za-z_][\w.]*)\s*\}\}|\$\{\s*([A-Za-z_][\w.]*)\s*\})\s*$/
+
+/** `Notion-Version: 2026-03-11`, headers written as text, as the FEEL context the connector reads. */
+function feelHeaders(value: string, fixes: string[]): string {
+	if (/^\s*[={]/.test(value) || !/^\s*[\w-]+\s*:/.test(value)) return value
+	const entries = value.split(/[,;]\s*(?=[\w-]+\s*:)/).map((pair) => {
+		const colon = pair.indexOf(":")
+		return `${JSON.stringify(pair.slice(0, colon).trim())}: ${JSON.stringify(pair.slice(colon + 1).trim())}`
+	})
+	fixes.push(`read headers ${value} as a FEEL context`)
+	return `={${entries.join(", ")}}`
+}
 
 /** A variable written in another template syntax, as the FEEL expression it means. */
 function feelForVariable(key: string, value: string, fixes: string[]): string {

@@ -278,7 +278,10 @@ export function selectConnectors(
 			if (!inName && !inRequest && !byWord) continue
 			if (inName || byWord) ownCard = true
 			// "Azure OpenAI" for a request that only says OpenAI names a system nobody asked for
-			const unasked = own.filter((s) => !named.has(s) && !requested.has(s)).length
+			const asked = (s: string) =>
+				[s, s.replace(/s$/, ""), `${s}s`].some((form) => named.has(form) || requested.has(form))
+			// "Google Sheet" asks for the sheets connector: one word, singular or plural
+			const unasked = own.filter((s) => !asked(s)).length
 			const score =
 				cardScore(card, terms) * 2 +
 				cardScore(card, synonyms) +

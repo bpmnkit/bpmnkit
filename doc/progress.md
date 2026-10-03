@@ -1,9 +1,58 @@
 # Progress
 
+## 2026-10-03 — Third bench of the connect pass, and degenerate gpt-oss answers
+
+**The run:** `bench-results/2026-10-03T07-39-10-853Z`. Connector prompts 16–27, 3 runs each;
+28/36 passed. `gpt-oss-120b` drafted and `glm-4.7-flash` connected.
+
+**Correction (applies to all three runs).** Production drafts with `glm-4.7-flash`
+(`AI_GENERATE_MODEL`), with `gemma-4-26b-a4b-it` as fallback. `gpt-oss-120b` is `AI_MODEL`,
+the process-review model. The runs connected as deployed, but their drafts came from a model
+production does not draft with, so their drafting numbers say nothing about Drop's generator.
+- **Better than before:** 18 SendGrid and 27 GitHub workflow runs passed every run.
+- **Behind the 8 failures:**
+  - **Four were empty drafts.** `gpt-oss-120b` wrote nothing but `!` up to its 2,048-token cap:
+    16 run 2, 17 run 1, 20 run 2 and 25 run 3. With 10 run 3 in the run before, that is 5 of 108
+    drafts. `!` is token 0 of gpt-oss, so the model or its host emits token 0 over and over.
+    It is not the prompt. Production showed such an answer to the reader as a broken diagram.
+  - **Three were near misses:** `with start Ticket closed:` (a label for an id) and
+    `with create http …` (no colon), both on 26. Also 21 run 3 put a Teams line on the Sheets
+    task before the right Google Sheets line.
+  - **One was a model choice:** 16 run 1 posted to Slack through REST rather than the Slack
+    connector.
+
+**Fixed:**
+- **`ModelStream.first()`** now reads 8 characters before it calls an answer begun. An answer of
+  nothing but `!` counts as none: it is cancelled and marked `degenerate`.
+  - **With a fallback model** (`AI_GENERATE_FALLBACK_MODEL`), the hedge streams the fallback's
+    answer.
+  - **Without one**, the reader gets "unavailable, try again" instead of garbage.
+  - This covers the generate, change and connect routes alike.
+  - The bench now marks such a draft as an error instead of "ok".
+- **The line filter** reads `with <label>: …` as an id to match by words, and `with id alias …`
+  as `with id: alias …`.
+- **The resolver** reads headers written as text (`Notion-Version: 2026-03-11`) as a FEEL
+  context. A written `url=` that is not a URL no longer overrides a positional one.
+- **Card selection:** a system's name counts in the singular and the plural. "Google Sheet"
+  had ranked the Sheets connector below Teams, which caused 21 run 3.
+- **Two lines for one node:** the one whose connector ranks higher among the node's cards
+  stands, else the first.
+
+**Re-scored without a model:**
+
+| run | recorded | re-scored |
+|---|---|---|
+| 2026-10-02 (16–27) | 23/36 | 27/36 |
+| 2026-10-03 06:26 (all) | 51/72 | 54/72 |
+| 2026-10-03 07:39 (16–27) | 28/36 | 31/36 |
+
+The latest run's 5 remaining failures are the 4 degenerate drafts (now handed to the fallback
+in production) and 16 run 1's model choice. Of the 32 runs with a real draft, 31 pass.
+
 ## 2026-10-03 — Second bench of the connect pass: 32/36 on connector prompts
 
-**The run:** `bench-results/2026-10-03T06-26-21-674Z`. As deployed: `gpt-oss-120b` drafts,
-`glm-4.7-flash` connects. All 24 default golden prompts, 3 runs each; 51/72 passed.
+**The run:** `bench-results/2026-10-03T06-26-21-674Z`. `gpt-oss-120b` drafts and
+`glm-4.7-flash` connects. Drafting in production is `glm-4.7-flash`: see the correction above. All 24 default golden prompts, 3 runs each; 51/72 passed.
 - **Connector prompts (16–27): 32/36, up from 23/36.** The cards offered since 2026-10-02 did
   it: 18 SendGrid 0→2, 20 OpenAI 1→3, 17 Stripe 1→2, 23 REST 2→3, and 24 1→3.
 - **Drafting prompts (01–15): 19/36.** 06 sub-process, 07 boundary event, 08 25 elements and 11
@@ -42,7 +91,8 @@ failures above. Next steps:
 ## 2026-10-02 — First real bench of the connect pass, and what it showed
 
 **The run:** `bench-results/2026-10-02T14-18-49-149Z`. `gpt-oss-120b` drew the diagrams and
-`glm-4.7-flash` connected them, as deployed. 12 connector prompts (16–27), 3 runs each.
+`glm-4.7-flash` connected them. The connect model is the deployed one; drafting in production is
+`glm-4.7-flash` (see the 2026-10-03 correction). 12 connector prompts (16–27), 3 runs each.
 - **Diagrams:** 36/36 drafted, with a median of 5.8 s and 418 output tokens.
 - **Connect pass:** median 2.8 s, 87 output tokens and 8.5 neurons. Every connected diagram's
   dry run reached its end.

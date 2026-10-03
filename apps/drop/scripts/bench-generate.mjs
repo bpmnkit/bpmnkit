@@ -356,6 +356,8 @@ async function runOne(model, prompt) {
 	}
 	result.totalMs = since()
 	result.text = text
+	// gpt-oss's token 0 over and over: the Worker gives such an answer up (ModelStream), so it is not ok
+	if (/^!+$/.test(text.trim())) result.error = "degenerate answer: nothing but !"
 	result.reasoningChars = reasoningChars
 	result.usage = usage
 	if (usage) result.neurons = neuronsFor(model, usage)

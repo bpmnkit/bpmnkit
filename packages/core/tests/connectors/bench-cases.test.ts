@@ -49,6 +49,18 @@ describe("what the connect pass is shown", () => {
 		expect(cards.indexOf("openai chat")).toBeLessThan(cards.indexOf("azure-openai completion"))
 	})
 
+	it("takes a system's name in the singular or the plural", () => {
+		const picked = aliases(
+			"Append every new lead to our Google Sheet, then notify the sales team in Microsoft Teams.",
+			[
+				{ id: "append", name: "Append lead", type: "serviceTask" },
+				{ id: "notify", name: "Notify sales team", type: "serviceTask" },
+			],
+			[],
+		)
+		expect(picked.append?.cards[0]).toBe("google-sheets addValues")
+	})
+
 	it("never offers a deprecated template", () => {
 		const picked = aliases("Summarise the ticket with an AI agent", [
 			{ id: "sum", name: "Summarise ticket with AI agent", type: "serviceTask" },
@@ -145,6 +157,17 @@ describe("near misses the resolver repairs", () => {
 			method: "GET",
 			url: "https://api.github.com/repos/web/web/actions/runs",
 		})
+	})
+
+	it("reads headers written as text as a FEEL context, and keeps a positional URL", () => {
+		const r = resolveConnectorLine(
+			line(
+				"with create: http POST /v1/pages | api=notion | url=api.notion.base | headers=Notion-Version: 2026-03-11",
+			),
+			{ apis: [NOTION] },
+		)
+		expect(r.values.url).toBe("https://api.notion.com/v1/pages")
+		expect(r.values.headers).toBe('={"Notion-Version": "2026-03-11"}')
 	})
 
 	it("reads a #channel written as FEEL as the text it is", () => {

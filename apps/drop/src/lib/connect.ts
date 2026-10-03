@@ -111,6 +111,11 @@ export function connectMessages(
 const CONNECT_LINE = /^with\s+[A-Za-z_][\w.-]*\s*:/i
 /** `<id>: <alias> …` — the same line without its `with`, as models sometimes write it. */
 const BARE_CONNECT_LINE = /^[A-Za-z_][\w.-]*\s*:\s*[A-Za-z][\w.-]*(\s|$)/
+/** `with <a node's label>: <alias> …` — words before the colon, an alias after it. */
+const LABEL_CONNECT_LINE =
+	/^with\s+([A-Za-z][\w-]*(?:\s+[\w-]+)+)\s*:\s*([A-Za-z][\w.-]*(?:[\s|].*)?)$/
+/** `with <id> <alias> …` — a with line without the colon after its id. */
+const NO_COLON_CONNECT_LINE = /^with\s+[A-Za-z_][\w.-]*\s+[A-Za-z][\w.-]*(\s|$)/
 
 /**
  * Passes on only `with` lines, for the reason `createDiagramLineFilter` exists:
@@ -126,6 +131,13 @@ export function createConnectLineFilter(): { push(chunk: string): string; end():
 		if (CONNECT_LINE.test(line)) return line
 		// `notify: slack chat.postMessage | …` is a with line missing its first word
 		if (BARE_CONNECT_LINE.test(line) && line.includes("|")) return `with ${line}`
+		// `with start Ticket closed: http …` names the node by its label: matched by words later
+		const label = LABEL_CONNECT_LINE.exec(line)
+		if (label?.[1] && label[2]) {
+			return `with ${label[1].trim().replace(/[^\w.-]+/g, "_")}: ${label[2]}`
+		}
+		// `with create http POST …` lost the colon after its id
+		if (NO_COLON_CONNECT_LINE.test(line)) return line.replace(/^with\s+(\S+)\s+/, "with $1: ")
 		return undefined
 	}
 	return {
@@ -215,19 +227,36 @@ export function finishConnect(
 	const fixes: string[] = []
 	const byLowerId = new Map(Object.entries(aliases).map(([id, el]) => [id.toLowerCase(), el]))
 	const lines: ConnectorRef[] = []
+	const offered = (task: TaskCards, alias: string) =>
+		alias === "api" || HTTP_METHOD.test(alias)
+			? (task.apis?.length ?? 0) > 0 || task.cards.some((card) => card.alias === "http")
+			: task.cards.some((card) => card.alias === alias)
+	/** Where a connector stands among a task's cards; after all of them when not offered. */
+	const rank = (task: TaskCards, alias: string) => {
+		const at = task.cards.findIndex((card) => card.alias === alias.toLowerCase())
+		if (at >= 0) return at
+		return offered(task, alias.toLowerCase()) ? task.cards.length : Number.POSITIVE_INFINITY
+	}
 	const configured = new Set<string>()
+	const taskOf = new Map(selection.map((task) => [aliases[task.id], task]))
 	const add = (line: ConnectorRef) => {
 		if (configured.has(line.elementId)) {
+			// Two lines for one node: the one whose connector ranks higher among the node's
+			// cards stands, else the first
+			const task = taskOf.get(line.elementId)
+			const index = lines.findIndex((l) => l.elementId === line.elementId)
+			const earlier = lines[index]
+			if (task && earlier && rank(task, line.alias) < rank(task, earlier.alias)) {
+				lines[index] = line
+				problems.push(`"with ${earlier.id}:" gave way to a later line whose connector ranks higher`)
+				return
+			}
 			problems.push(`"with ${line.id}:" configures a node an earlier line did; the first stands`)
 			return
 		}
 		configured.add(line.elementId)
 		lines.push(line)
 	}
-	const offered = (task: TaskCards, alias: string) =>
-		alias === "api" || HTTP_METHOD.test(alias)
-			? (task.apis?.length ?? 0) > 0 || task.cards.some((card) => card.alias === "http")
-			: task.cards.some((card) => card.alias === alias)
 	const candidates = new Set(selection.map((task) => aliases[task.id]))
 	const unmatched: (typeof delta.connectors)[number][] = []
 	for (const line of delta.connectors) {
