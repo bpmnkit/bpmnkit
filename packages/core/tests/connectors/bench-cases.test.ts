@@ -133,6 +133,29 @@ describe("near misses the resolver repairs", () => {
 		})
 	})
 
+	it("reads a line that starts with the method as a REST call", () => {
+		const r = resolveConnectorLine(
+			line("with list: GET /repos/web/web/actions/runs | api=github"),
+			{
+				apis: [GITHUB],
+			},
+		)
+		expect(r.templateId).toBe("io.camunda.connectors.HttpJson.v2")
+		expect(r.values).toMatchObject({
+			method: "GET",
+			url: "https://api.github.com/repos/web/web/actions/runs",
+		})
+	})
+
+	it("reads a #channel written as FEEL as the text it is", () => {
+		const r = resolveConnectorLine(
+			line(
+				"with p: slack chat.postMessage | token={{secrets.T}} | data.channel==#ops | data.text=hi",
+			),
+		)
+		expect(r.values["data.channel"]).toBe("#ops")
+	})
+
 	it("reads a path alone as a path of the one service in play, its {{param}} as a parameter", () => {
 		const r = resolveConnectorLine(line("with r: http POST /v1/pages/{{page_id}} | body=={}"), {
 			apis: [NOTION],

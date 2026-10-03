@@ -1,5 +1,44 @@
 # Progress
 
+## 2026-10-03 — Second bench of the connect pass: 32/36 on connector prompts
+
+**The run:** `bench-results/2026-10-03T06-26-21-674Z`. As deployed: `gpt-oss-120b` drafts,
+`glm-4.7-flash` connects. All 24 default golden prompts, 3 runs each; 51/72 passed.
+- **Connector prompts (16–27): 32/36, up from 23/36.** The cards offered since 2026-10-02 did
+  it: 18 SendGrid 0→2, 20 OpenAI 1→3, 17 Stripe 1→2, 23 REST 2→3, and 24 1→3.
+- **Drafting prompts (01–15): 19/36.** 06 sub-process, 07 boundary event, 08 25 elements and 11
+  boundary event fail every run. They failed in both September runs too: these are drafting
+  limits, not connect-pass regressions.
+- **Broken drafts:** three, none of them connect-pass failures.
+  - 08 run 3 hit the 2,048-token cap.
+  - 10 run 3 degenerated into `!!!!…` up to the cap.
+  - 27 run 2 wrote `start:timer[…]` for `start[start:timer …]`, so the line was lost.
+
+  The bench counts all three "ok": it does not yet tell a broken draft from a poor one.
+
+**Fixed, then re-scored with `bench:rescore` on the recorded raw answers: 51/72 → 54/72.**
+- **The bench's "connect skip right" (53/72) was wrong.** Prompts from before the connect pass
+  have no `connect` field and were expected to connect. A prompt now expects a skip unless it
+  asserts a connector task type. By that rule every skip in the run was right.
+- **`notify: slack chat.postMessage | …`** (a with line missing its `with`) was dropped by the
+  line filter. It now gets its first word back. Fixed 01 run 1.
+- **`with list: GET /repos/…`** (a REST call missing its alias) is read as `http GET …`. Fixed 27
+  run 3.
+- **Node matching:**
+  - A line on a node no card was offered for (`with start: sendgrid mail …`) goes to the task
+    its connector fits. Fixed 18 run 1.
+  - An invented id that fits several tasks goes to the one whose id and name share most words:
+    `with lookup:` → "Lookup shipping address".
+- **`data.channel==#ops`** (a literal written as FEEL) is read as the text `#ops`.
+- **The re-scorer** now applies today's line filter to raw answers, and checks every assertion
+  bench:generate checks, not only connector types and URLs.
+
+**Left:** 17 run 3 (the model called `https://api.stripe.com` with no path), and the drafting
+failures above. Next steps:
+- drafting: boundary events and sub-processes;
+- the output cap for long processes;
+- detecting degenerate drafts.
+
 ## 2026-10-02 — First real bench of the connect pass, and what it showed
 
 **The run:** `bench-results/2026-10-02T14-18-49-149Z`. `gpt-oss-120b` drew the diagrams and

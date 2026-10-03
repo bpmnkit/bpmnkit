@@ -1,8 +1,9 @@
 /**
  * Re-scores the connect pass of a `bench:generate --connect` run without a model:
- * each recorded answer is applied again with the current card selection,
- * resolver and node matching, and scored on its prompt's `mustContainTaskTypes`
- * and `mustCallUrls`. What changes is what the code changed, not the model.
+ * each recorded answer (the raw one where the run kept it) is applied again with
+ * the current line filter, card selection,
+ * resolver and node matching, and scored on every assertion of its prompt, as
+ * bench:generate scores it. What changes is what the code changed, not the model.
  *
  *   pnpm --filter @bpmnkit/drop bench:rescore bench-results/<run>/results.json
  *
@@ -13,14 +14,19 @@ import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { Bpmn, expand, parseProcessText, writeProcessText } from "@bpmnkit/core"
 import { connectorLineFor, selectConnectors } from "@bpmnkit/core/connectors"
-import { connectApis, connectTasks, finishConnect } from "../src/lib/connect.ts"
+import {
+	connectApis,
+	connectTasks,
+	createConnectLineFilter,
+	finishConnect,
+} from "../src/lib/connect.ts"
 
 interface Result {
 	prompt: string
 	run?: number
 	text: string
 	failed: string[]
-	connect?: { skipped?: boolean; lines?: string }
+	connect?: { skipped?: boolean; lines?: string; raw?: string }
 }
 
 const file = process.argv[2]
@@ -49,6 +55,9 @@ for (const result of results) {
 		readFileSync(resolve(PROMPTS, result.prompt, "expected.json"), "utf8"),
 	)
 	const assertions = (expected.assertions ?? {}) as {
+		minElements?: number
+		mustContainElementTypes?: string[]
+		mustContainAnyOf?: string[][]
 		mustContainTaskTypes?: string[]
 		mustCallUrls?: string[]
 	}
@@ -57,8 +66,15 @@ for (const result of results) {
 	const tasks = connectTasks(defs, aliases)
 	const apis = await connectApis(request, tasks)
 	const selection = selectConnectors({ text: request, tasks }, { apis })
-	const done = finishConnect(defs, aliases, result.connect.lines ?? "", apis, selection)
+	// The raw answer, where the run kept it, goes through today's line filter too
+	let lines = result.connect.lines ?? ""
+	if (result.connect.raw !== undefined) {
+		const filter = createConnectLineFilter()
+		lines = filter.push(result.connect.raw) + filter.end()
+	}
+	const done = finishConnect(defs, aliases, lines, apis, selection)
 	const elements = Bpmn.parse(done.xml).processes.flatMap((p) => p.flowElements)
+	const elementTypes = new Set<string>(elements.map((e) => e.type))
 	const ext = elements.flatMap((e) => e.extensionElements)
 	const types = new Set(
 		ext.filter((x) => x.name === "zeebe:taskDefinition").map((x) => x.attributes.type),
@@ -68,7 +84,17 @@ for (const result of results) {
 		.flatMap((x) => x.children)
 		.filter((c) => c.attributes.target === "url")
 		.map((c) => c.attributes.source ?? "")
+	// Every assertion bench:generate scores, so a pass here is a pass there
 	const failed = [
+		...(assertions.minElements !== undefined && elements.length < assertions.minElements
+			? [`${elements.length} < ${assertions.minElements} elements`]
+			: []),
+		...(assertions.mustContainElementTypes ?? [])
+			.filter((t) => !elementTypes.has(t))
+			.map((t) => `no ${t}`),
+		...(assertions.mustContainAnyOf ?? [])
+			.filter((any) => !any.some((t) => elementTypes.has(t)))
+			.map((any) => `no ${any.join(" or ")}`),
 		...(assertions.mustContainTaskTypes ?? []).filter((t) => !types.has(t)).map((t) => `no ${t}`),
 		...(assertions.mustCallUrls ?? [])
 			.filter((u) => !urls.some((url) => url.includes(u)))

@@ -19,4 +19,8 @@ Connect pass fixes from its first real benchmark.
   - a path written without `api=`.
 
   A short alias no longer matches another connector two letters away.
-- **Drop:** a line is matched to its node by id in any case, or to the one task its connector fits. A second line for a node is reported.
+- **Drop:**
+  - A line is matched to its node by id in any case. If the id names no node, or a node no card was offered for, the line goes to the task its connector fits; with several, to the one whose name shares the line's words.
+  - A second line for a node is reported.
+  - A line missing its `with` is kept.
+- **More resolver repairs:** a line starting with an HTTP method is read as a REST call, and `==#channel` is read as the text it is.

@@ -433,7 +433,13 @@ async function runConnect(model, prompt, diagram) {
 	const tasks = connectTasks(defs, aliases)
 	const apis = await connectApis(prompt.text, tasks)
 	const selection = selectConnectors({ text: prompt.text, tasks }, { apis })
-	const expectSkip = prompt.expected.connect === false
+	// A prompt that predates the connect pass says nothing: it expects one when it asserts a connector
+	const expectSkip =
+		prompt.expected.connect === false ||
+		(prompt.expected.connect === undefined &&
+			!(prompt.expected.assertions?.mustContainTaskTypes ?? []).some((t) =>
+				t.startsWith("io.camunda"),
+			))
 	const connect = {
 		model,
 		tasks: selection.length,

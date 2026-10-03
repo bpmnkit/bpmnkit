@@ -109,31 +109,72 @@ export function connectMessages(
 
 /** `with <id>:` — the only line the connect pass may write. */
 const CONNECT_LINE = /^with\s+[A-Za-z_][\w.-]*\s*:/i
+/** `<id>: <alias> …` — the same line without its `with`, as models sometimes write it. */
+const BARE_CONNECT_LINE = /^[A-Za-z_][\w.-]*\s*:\s*[A-Za-z][\w.-]*(\s|$)/
 
 /**
  * Passes on only `with` lines, for the reason `createDiagramLineFilter` exists:
  * what leaves the Worker is connector configuration, not whatever the request
- * talked the model into writing.
+ * talked the model into writing. A line that is one but for its first word,
+ * `notify: slack chat.postMessage | …`, gets it back.
  */
 export function createConnectLineFilter(): { push(chunk: string): string; end(): string } {
 	let pending = ""
-	const keep = (line: string) => CONNECT_LINE.test(line.trim())
+	/** The line as a `with` line, or `undefined` for anything else. */
+	const keep = (raw: string): string | undefined => {
+		const line = raw.trim()
+		if (CONNECT_LINE.test(line)) return line
+		// `notify: slack chat.postMessage | …` is a with line missing its first word
+		if (BARE_CONNECT_LINE.test(line) && line.includes("|")) return `with ${line}`
+		return undefined
+	}
 	return {
 		push(chunk: string): string {
 			pending += chunk
 			const lines = pending.split("\n")
 			pending = lines.pop() ?? ""
 			return lines
-				.filter(keep)
-				.map((line) => `${line.trim()}\n`)
+				.map(keep)
+				.filter((line) => line !== undefined)
+				.map((line) => `${line}\n`)
 				.join("")
 		},
 		end(): string {
 			const last = pending
 			pending = ""
-			return keep(last) ? last.trim() : ""
+			return keep(last) ?? ""
 		},
 	}
+}
+
+const HTTP_METHOD = /^(get|post|put|patch|delete)$/
+
+/** Words of an id or a name: `lookupAddress`, `lookup_address` and "Lookup address" alike. */
+function idWords(text: string): Set<string> {
+	return new Set(
+		text
+			.replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+			.toLowerCase()
+			.split(/[^a-z0-9]+/)
+			.filter((w) => w.length > 2),
+	)
+}
+
+/**
+ * The task a line with an unknown id meant: the only one its connector fits, or of
+ * several, the one whose id and name share the most words with it.
+ */
+function closest(id: string, tasks: readonly TaskCards[]): TaskCards | undefined {
+	if (tasks.length <= 1) return tasks[0]
+	const words = idWords(id)
+	const scored = tasks
+		.map((task) => {
+			const own = idWords(`${task.id} ${task.name ?? ""}`)
+			return { task, score: [...words].filter((w) => own.has(w)).length }
+		})
+		.sort((a, b) => b.score - a.score)
+	const [best, next] = scored
+	return best && best.score > 0 && best.score > (next?.score ?? 0) ? best.task : undefined
 }
 
 /** The diagram with the connect pass's lines applied, as the page receives it. */
@@ -156,9 +197,11 @@ export interface ConnectResult {
  * load it.
  *
  * A line is matched to its node by id, in any case. A line whose id names no
- * node goes to the one task of `selection` whose cards fit it and that no
- * other line configures: models rename `create` to `createPage`. The first
- * line for a node stands; a later one is reported.
+ * node, or a node no card was offered for, goes to a task of `selection` whose
+ * cards fit it and that no other line configures: the only one, or the one
+ * whose id and name share most words with the line's id. Models rename
+ * `create` to `createPage`, and put a send task's connector on the start
+ * event. The first line for a node stands; a later one is reported.
  */
 export function finishConnect(
 	defs: BpmnDefinitions,
@@ -181,28 +224,41 @@ export function finishConnect(
 		configured.add(line.elementId)
 		lines.push(line)
 	}
+	const offered = (task: TaskCards, alias: string) =>
+		alias === "api" || HTTP_METHOD.test(alias)
+			? (task.apis?.length ?? 0) > 0 || task.cards.some((card) => card.alias === "http")
+			: task.cards.some((card) => card.alias === alias)
+	const candidates = new Set(selection.map((task) => aliases[task.id]))
 	const unmatched: (typeof delta.connectors)[number][] = []
 	for (const line of delta.connectors) {
 		const elementId = aliases[line.id] ?? byLowerId.get(line.id.toLowerCase())
-		if (elementId === undefined) unmatched.push(line)
+		// A node no card was offered for, while one that was offers this connector:
+		// "with start: sendgrid mail" meant the send task, not the start event
+		const misplaced =
+			elementId !== undefined &&
+			!candidates.has(elementId) &&
+			selection.some((task) => offered(task, line.alias.toLowerCase()))
+		if (elementId === undefined || misplaced) unmatched.push(line)
 		else add({ ...line, elementId })
 	}
 	for (const line of unmatched) {
-		const alias = line.alias.toLowerCase()
 		const fitting = selection.filter((task) => {
 			const elementId = aliases[task.id]
-			if (elementId === undefined || configured.has(elementId)) return false
-			return alias === "api"
-				? (task.apis?.length ?? 0) > 0
-				: task.cards.some((card) => card.alias === alias)
+			return (
+				elementId !== undefined &&
+				!configured.has(elementId) &&
+				offered(task, line.alias.toLowerCase())
+			)
 		})
-		const only = fitting.length === 1 ? fitting[0] : undefined
-		const elementId = only && aliases[only.id]
-		if (only && elementId) {
-			fixes.push(`read "with ${line.id}:" as "with ${only.id}:", the one task its connector fits`)
+		const picked = closest(line.id, fitting)
+		const elementId = picked && aliases[picked.id]
+		if (picked && elementId) {
+			fixes.push(`read "with ${line.id}:" as "with ${picked.id}:", the task its connector fits`)
 			add({ ...line, elementId })
 		} else {
-			problems.push(`"with ${line.id}:" names no node of the diagram`)
+			const fallback = aliases[line.id] ?? byLowerId.get(line.id.toLowerCase())
+			if (fallback !== undefined) add({ ...line, elementId: fallback })
+			else problems.push(`"with ${line.id}:" names no node of the diagram`)
 		}
 	}
 	const applied = applyConnectorLines(defs, lines, { apis })

@@ -280,6 +280,14 @@ describe("createConnectLineFilter", () => {
 			filter.end()
 		expect(out).toBe("with a: slack | x=1\nwith b: http https://x.example\n")
 	})
+
+	it("gives a with line written without its first word that word back", () => {
+		const filter = createConnectLineFilter()
+		const out =
+			filter.push("notify: slack chat.postMessage | data.channel=#ops\nNote: this is it\n") +
+			filter.end()
+		expect(out).toBe("with notify: slack chat.postMessage | data.channel=#ops\n")
+	})
 })
 
 describe("finishConnect", () => {
@@ -314,8 +322,42 @@ describe("finishConnect", () => {
 		)
 		expect(result.connected).toEqual(["create"])
 		expect(result.fixes[0]).toBe(
-			'read "with createPage:" as "with create:", the one task its connector fits',
+			'read "with createPage:" as "with create:", the task its connector fits',
 		)
+	})
+
+	it("moves a line off a node no card was offered for, to the task its connector fits", () => {
+		const slack = connectorCards("io.camunda.connectors.Slack.v1")
+		const result = finishConnect(
+			defs,
+			aliases,
+			`with start: ${SLACK}`,
+			[],
+			[{ id: "notify", name: "Notify ops in Slack", cards: slack }],
+		)
+		expect(result.connected).toEqual(["notify"])
+		expect(result.xml).not.toMatch(/<bpmn:startEvent[^>]*modelerTemplate/)
+	})
+
+	it("of several tasks a connector fits, takes the one whose name shares the line's words", () => {
+		const twoCalls = expand(
+			parseProcessText(
+				"a[start Order received] > b[service Lookup shipping address] > c[service Ship order] > d[end Done]",
+			).diagram,
+		)
+		const http = connectorCards("io.camunda.connectors.HttpJson.v2")
+		const result = finishConnect(
+			twoCalls,
+			{ a: "a", b: "b", c: "c", d: "d" },
+			"with lookup: http GET https://api.example.com/address\nwith ship: http POST https://api.example.com/ship",
+			[],
+			[
+				{ id: "b", name: "Lookup shipping address", cards: http },
+				{ id: "c", name: "Ship order", cards: http },
+			],
+		)
+		expect(result.connected).toEqual(["b", "c"])
+		expect(result.problems).toEqual([])
 	})
 
 	it("keeps the first line for a node and reports the next", () => {

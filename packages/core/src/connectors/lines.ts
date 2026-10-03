@@ -266,13 +266,19 @@ export function resolveConnectorLine(
 
 /**
  * A line written like an API card's head, `api github GET /issues`, read as the call it
- * means: `http GET /issues | api=github`.
+ * means: `http GET /issues | api=github`; one that starts with the method, `GET /issues`,
+ * as `http GET /issues`.
  */
 function apiCardLine(
 	line: ConnectorLine,
 	apis: readonly ApiService[],
 	fixes: string[],
 ): ConnectorLine {
+	// `with list: GET /repos/…` is a REST call missing its alias
+	if (HTTP_METHODS.has(line.alias.toUpperCase())) {
+		fixes.push(`read "${line.alias}" as "http ${line.alias.toUpperCase()}"`)
+		return { ...line, alias: "http", args: [line.alias.toUpperCase(), ...line.args] }
+	}
 	const service = line.args[0]?.toLowerCase()
 	if (line.alias !== "api" || !apis.some((s) => s.id === service)) return line
 	fixes.push(`read "api ${line.args[0]}" as "http … | api=${service}"`)
@@ -290,6 +296,12 @@ const TEMPLATED_VARIABLE =
 
 /** A variable written in another template syntax, as the FEEL expression it means. */
 function feelForVariable(key: string, value: string, fixes: string[]): string {
+	// `channel==#ops` is the literal #ops: no FEEL starts with # or @
+	if (/^=\s*[#@][\w.-]+$/.test(value)) {
+		const literal = value.replace(/^=\s*/, "")
+		fixes.push(`read "${key}" ${value} as the text ${literal}`)
+		return literal
+	}
 	const match = TEMPLATED_VARIABLE.exec(value)
 	const name = match?.[1] ?? match?.[2]
 	if (name === undefined || name.startsWith("secrets.")) return value
