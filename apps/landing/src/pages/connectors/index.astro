@@ -44,6 +44,7 @@ const jsonLd = breadcrumbJsonLd([
     .connectors-section { margin-top: 56px; border-top: 1px solid var(--border); padding-top: 40px; }
     .connectors-section h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; }
     .connectors-section > p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.65; max-width: 720px; margin-bottom: 20px; }
+    .connectors-section > p a { color: var(--accent-bright); }
   </style>
 </head>
 <body>
@@ -67,7 +68,7 @@ const jsonLd = breadcrumbJsonLd([
       </div>
       <section class="connectors-section">
         <h2>Maintained by BPMN Kit</h2>
-        <p>Templates for services Camunda does not ship a connector for. They run on Camunda's REST connector, so a cluster needs no extra job worker, and <code>@bpmnkit/connectors</code> bundles them in the same catalog.</p>
+        <p>Templates for services Camunda does not ship a connector for. They run on Camunda's REST connector, so a cluster needs no extra job worker, and <code>@bpmnkit/connectors</code> bundles them in the same catalog. New: <a href="/blog/cloudflare-clef-decisions-camunda">route a process on a Cloudflare Clef decision</a>, step by step.</p>
         <div class="connectors-grid">
           {maintained.map((c) => (
             <a href={`/connectors/${encodeURIComponent(c.id)}`} class="connector-card">

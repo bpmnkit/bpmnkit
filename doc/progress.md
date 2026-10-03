@@ -1,5 +1,20 @@
 # Progress
 
+## 2026-10-03 — Clef how-to on the landing page; template fixed for Camunda Modeler
+
+- **How-to blog post** `/blog/cloudflare-clef-decisions-camunda`: Cloudflare token and account
+  ID, a curl call to check them, connector secrets, getting the template, a minimal process,
+  deploying and starting it, reading `clef` in Operate, and a troubleshooting table.
+- **Template download** at `/connectors/<id>.json` for the templates BPMN Kit maintains (with
+  `$schema`). The template's connector page links the file and the how-to; `/connectors` and
+  the AI Decisions guide link the how-to.
+- **Fix:** the Clef template's two timeout fields were `String` with `feel: "static"`, which
+  Camunda's schema allows only on `Number` and `Boolean` — Modeler would have rejected the
+  template. They are now `Number` with `=20`, as in Camunda's REST connector. Checked with
+  `@bpmn-io/element-templates-validator` (`validateZeebe`): valid.
+- `validateElementTemplate` now reports that mistake, so `.camunda/element-templates/` files
+  with it are caught before Modeler sees them. All 116 Camunda templates still pass.
+
 ## 2026-10-03 — Editor: BPMN Kit connector templates in the connector picker
 
 - The properties panel's **Connector** list for service tasks (and ad-hoc sub-processes) now

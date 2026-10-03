@@ -111,7 +111,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [AI Agents — Testing without a real LLM call](.llms/chunks/guides.ai-agents.testing-without-a-real-llm-call.md) — 201 tokens
 - [AI Agents — See also](.llms/chunks/guides.ai-agents.see-also.md) — 49 tokens
 - [AI Decisions](.llms/chunks/guides.ai-decisions.md) — 232 tokens
-- [AI Decisions — The template](.llms/chunks/guides.ai-decisions.the-template.md) — 286 tokens
+- [AI Decisions — The template](.llms/chunks/guides.ai-decisions.the-template.md) — 323 tokens
 - [AI Decisions — Questions and answers](.llms/chunks/guides.ai-decisions.questions-and-answers.md) — 421 tokens
 - [AI Decisions — Example: triage a support ticket](.llms/chunks/guides.ai-decisions.example-triage-a-support-ticket.md) — 449 tokens
 - [AI Decisions — Test the routing](.llms/chunks/guides.ai-decisions.test-the-routing.md) — 197 tokens

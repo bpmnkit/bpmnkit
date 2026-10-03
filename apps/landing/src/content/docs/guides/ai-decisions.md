@@ -27,6 +27,9 @@ option. A gateway can then route on the answer, and route on how sure the model 
 runs on Camunda's REST connector (`io.camunda:http-json:1`), so any cluster with the connector
 runtime can run it. You do not deploy a job worker.
 
+To set it up on a cluster and test it step by step, follow the how-to
+[Route a Camunda 8 process on a Cloudflare Clef decision](/blog/cloudflare-clef-decisions-camunda).
+
 | Field | Key | Notes |
 |---|---|---|
 | API token | `authentication.token` | Default `{{secrets.CLOUDFLARE_API_TOKEN}}`. Needs Workers AI permission. |
