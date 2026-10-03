@@ -20,6 +20,8 @@ service task and inbound templates work on events.
 - **A short key.** A key the operation lacks, but that is the end of one it has, is read as that
   one (`channel` → `data.channel`).
 - **Values without a key.** `http POST https://…` sets `method` and `url`.
+- **Inputs in one part.** `| region=eu-west-1 functionName=resize` is two inputs, as the cards
+  list them. A FEEL value is never split, and a `*` copied from a card (`token*=`) is dropped.
 - **Results.** `result=name` sets the result variable; `result=name: expr` sets the result
   expression `={name: expr}`, under whatever key the operation uses for it.
 - **Credentials.** A credential written as a value becomes a `{{secrets.…}}` placeholder: the
@@ -38,7 +40,8 @@ service task and inbound templates work on events.
 
   A call the index does not have is kept, and becomes a question to check the method and
   URL. A line written like an API card's head (`api github GET /issues`) is read as
-  `http GET /issues | api=github`. A path alone, with one service loaded, is that service's.
+  `http GET /issues | api=github`. A service written where the alias goes
+  (`stripe POST /v1/refunds`) is the same call; a connector of that name wins. A path alone, with one service loaded, is that service's.
   A `{{param}}` in a path is the parameter `{param}`.
 
 A required input the line left out becomes a **question** (`AppliedConnectorLines.questions`),

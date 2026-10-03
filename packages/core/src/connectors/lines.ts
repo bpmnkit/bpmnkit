@@ -285,6 +285,20 @@ function apiCardLine(
 		fixes.push(`read "${line.alias}" as "http ${line.alias.toUpperCase()}"`)
 		return { ...line, alias: "http", args: [line.alias.toUpperCase(), ...line.args] }
 	}
+	// `stripe POST /v1/refunds` names a service of the index where a connector alias goes
+	if (
+		apis.some((s) => s.id === line.alias) &&
+		templateIdForAlias(line.alias) === undefined &&
+		!allTemplates().some((t) => t.id.toLowerCase() === line.alias)
+	) {
+		// `STRIPE_API_POST` is an operation of the card read as its method
+		const args = line.args.map((arg) => {
+			const method = /(?:^|[_.-])(get|post|put|patch|delete)$/i.exec(arg)?.[1]
+			return method ? method.toUpperCase() : arg
+		})
+		fixes.push(`read "${line.alias}" as "http … | api=${line.alias}"`)
+		return { ...line, alias: "http", args, values: { ...line.values, api: line.alias } }
+	}
 	const service = line.args[0]?.toLowerCase()
 	if (line.alias !== "api" || !apis.some((s) => s.id === service)) return line
 	fixes.push(`read "api ${line.args[0]}" as "http … | api=${service}"`)

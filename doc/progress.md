@@ -1,5 +1,37 @@
 # Progress
 
+## 2026-10-03 — Fourth bench of the connect pass: the production drafting model
+
+**The run:** `bench-results/2026-10-03T08-49-27-587Z`. Connector prompts 16–27, 3 runs each.
+`glm-4.7-flash` drafted and connected, as production does: the first run whose drafting
+numbers describe Drop. 36/36 answers; 27/36 passed, 32/36 re-scored with the fixes below
+(`pnpm --filter @bpmnkit/drop bench:rescore`). Draft medians: 1,361 ms, 58 output tokens.
+The connect pass was skipped rightly 34 of 36 times.
+
+**Fixed (5 runs):**
+- **A service as the alias** (17 runs 2 and 3): `stripe POST /v1/refunds` and
+  `stripe STRIPE_API_POST /v1/refunds`. A service of the loaded API index written where the alias
+  goes is now `http <METHOD> <path> | api=<service>`. A connector of that name still wins.
+- **A flow before the colon** (20 run 1, 26 run 2): `start > summarize: openai chat …` and
+  `with start>task: http …`. Drop's line filter reads them as lines for the last node.
+- **The node copied, not a card** (24 run 1): `with lambda: service Run AWS Lambda resize | …`.
+  An alias that is a kind of task (`service`, `send`, …) becomes the node's first card.
+- **Inputs in one part** (24 runs 1 and 2): `| accessKey*={{…}} region=… payload=={…}`, written
+  as the cards list inputs. The parser splits them, never inside a FEEL value, and drops a copied
+  `*`.
+
+**Not fixed by code (4 runs):**
+- **17 run 1.** The draft was broken: `call back[service …]` has a space in its id, so it had
+  3 elements and no task.
+- **21 run 2.** The draft posted to Slack, where the request asked for Teams.
+- **24 run 2.** The draft made "Send to SQS" a catching event, so the inbound SQS connector was
+  the right card for it.
+- **20 run 3.** The draft made the OpenAI step an `agent`, and the connect pass configured the
+  AI Agent connector with the OpenAI provider. That is a reasonable answer, but the prompt
+  expects the REST-based OpenAI connector (`io.camunda:http-json:1`).
+
+Earlier runs re-score as before (27/36, 54/72, 31/36): the new repairs changed none of them.
+
 ## 2026-10-03 — Third bench of the connect pass, and degenerate gpt-oss answers
 
 **The run:** `bench-results/2026-10-03T07-39-10-853Z`. Connector prompts 16–27, 3 runs each;

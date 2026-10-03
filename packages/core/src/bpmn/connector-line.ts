@@ -63,6 +63,34 @@ function splitParts(text: string): string[] {
 	return parts.map((p) => p.trim())
 }
 
+/**
+ * `a=1 b=2 c==x + 1`, several inputs in one part as the cards list them, split
+ * into one part each: at a space before `key=`, outside quotes and brackets.
+ * A FEEL value runs to the end of the part, as it may hold `=` itself.
+ */
+function splitPairs(part: string): string[] {
+	const pairs: string[] = []
+	let depth = 0
+	let quote: string | undefined
+	let start = 0
+	for (let i = 0; i < part.length; i++) {
+		const ch = part[i]
+		if (quote !== undefined) {
+			if (ch === "\\") i++
+			else if (ch === quote) quote = undefined
+		} else if (ch === '"' || ch === "'") quote = ch
+		else if (ch === "(" || ch === "[" || ch === "{") depth++
+		else if (ch === ")" || ch === "]" || ch === "}") depth = Math.max(0, depth - 1)
+		else if (ch === "=" && part[i + 1] === "=" && depth === 0) break
+		else if (/\s/.test(ch ?? "") && depth === 0 && /^\s+[A-Za-z_][\w.]*\*?=/.test(part.slice(i))) {
+			pairs.push(part.slice(start, i))
+			start = i + 1
+		}
+	}
+	pairs.push(part.slice(start))
+	return pairs.map((p) => p.trim()).filter((p) => p !== "")
+}
+
 function headWords(head: string): string[] {
 	const words: string[] = []
 	let rest = head.trim()
@@ -99,10 +127,10 @@ export function parseConnectorLine(
 		return undefined
 	}
 	const values: Record<string, string> = {}
-	for (const part of rest) {
-		if (part === "") continue
+	for (const part of rest.flatMap(splitPairs)) {
 		const eq = part.indexOf("=")
-		const key = eq < 0 ? "" : part.slice(0, eq).trim()
+		// `token*={{secrets.T}}`: the card's required mark copied with the key
+		const key = eq < 0 ? "" : part.slice(0, eq).trim().replace(/\*$/, "")
 		if (eq <= 0 || !/^[\w.:$-]+$/.test(key)) {
 			problems.push({ line, message: `expected "key=value" at "${part.slice(0, 30)}"; ignored` })
 			continue

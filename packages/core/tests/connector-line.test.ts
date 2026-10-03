@@ -42,6 +42,23 @@ describe("parseConnectorLine", () => {
 		expect(problems.map((p) => p.message)).toEqual(['expected "key=value" at "nonsense"; ignored'])
 	})
 
+	it("splits inputs written in one part, as the cards list them, and drops a copied *", () => {
+		const { line, problems } = parse(
+			'with r: lambda | accessKey*={{secrets.AWS_KEY}} region=us-east-1 payload=={id: id, note: "a b=c"}',
+		)
+		expect(problems).toEqual([])
+		expect(line?.values).toEqual({
+			accessKey: "{{secrets.AWS_KEY}}",
+			region: "us-east-1",
+			payload: '={id: id, note: "a b=c"}',
+		})
+	})
+
+	it("never splits a FEEL value", () => {
+		const { line } = parse("with a: http | body== x = 1 and y=2")
+		expect(line?.values).toEqual({ body: "= x = 1 and y=2" })
+	})
+
 	it("is not a with line without the id and colon", () => {
 		expect(parse("with the team > notify").line).toBeUndefined()
 	})

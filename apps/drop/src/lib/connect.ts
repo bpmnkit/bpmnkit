@@ -114,6 +114,8 @@ const BARE_CONNECT_LINE = /^[A-Za-z_][\w.-]*\s*:\s*[A-Za-z][\w.-]*(\s|$)/
 /** `with <a node's label>: <alias> …` — words before the colon, an alias after it. */
 const LABEL_CONNECT_LINE =
 	/^with\s+([A-Za-z][\w-]*(?:\s+[\w-]+)+)\s*:\s*([A-Za-z][\w.-]*(?:[\s|].*)?)$/
+/** `start > summarize: …` or `with start>summarize: …` — the line names a flow; its last node is meant. */
+const FLOW_CONNECT_LINE = /^(?:with\s+)?(?:[A-Za-z_][\w.-]*\s*>\s*)+([A-Za-z_][\w.-]*\s*:)/i
 /** `with <id> <alias> …` — a with line without the colon after its id. */
 const NO_COLON_CONNECT_LINE = /^with\s+[A-Za-z_][\w.-]*\s+[A-Za-z][\w.-]*(\s|$)/
 
@@ -127,7 +129,8 @@ export function createConnectLineFilter(): { push(chunk: string): string; end():
 	let pending = ""
 	/** The line as a `with` line, or `undefined` for anything else. */
 	const keep = (raw: string): string | undefined => {
-		const line = raw.trim()
+		const flow = FLOW_CONNECT_LINE.exec(raw.trim())
+		const line = flow?.[1] ? `with ${flow[1]}${raw.trim().slice(flow[0].length)}` : raw.trim()
 		if (CONNECT_LINE.test(line)) return line
 		// `notify: slack chat.postMessage | …` is a with line missing its first word
 		if (BARE_CONNECT_LINE.test(line) && line.includes("|")) return `with ${line}`
@@ -160,6 +163,8 @@ export function createConnectLineFilter(): { push(chunk: string): string; end():
 }
 
 const HTTP_METHOD = /^(get|post|put|patch|delete)$/
+/** The kinds of task the line format writes before a name: no connector is called that. */
+const NODE_KIND = /^(task|service|user|send|receive|script|manual|business)$/
 
 /** Words of an id or a name: `lookupAddress`, `lookup_address` and "Lookup address" alike. */
 function idWords(text: string): Set<string> {
@@ -259,8 +264,17 @@ export function finishConnect(
 	}
 	const candidates = new Set(selection.map((task) => aliases[task.id]))
 	const unmatched: (typeof delta.connectors)[number][] = []
-	for (const line of delta.connectors) {
-		const elementId = aliases[line.id] ?? byLowerId.get(line.id.toLowerCase())
+	for (const written of delta.connectors) {
+		const elementId = aliases[written.id] ?? byLowerId.get(written.id.toLowerCase())
+		// `with resize: service Run AWS Lambda resize | …` copied the node, not a card: its
+		// first card is the connector meant
+		const card = elementId === undefined ? undefined : taskOf.get(elementId)?.cards[0]
+		const line =
+			NODE_KIND.test(written.alias) && card
+				? { ...written, alias: card.alias, args: card.operation ? [card.operation] : [] }
+				: written
+		if (line !== written)
+			fixes.push(`read "${written.alias} …" on ${written.id} as "${line.alias}"`)
 		// A node no card was offered for, while one that was offers this connector:
 		// "with start: sendgrid mail" meant the send task, not the start event
 		const misplaced =

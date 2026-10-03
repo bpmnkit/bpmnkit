@@ -292,6 +292,17 @@ describe("createConnectLineFilter", () => {
 		)
 	})
 
+	it("reads a line naming a flow, a > b:, as one for its last node", () => {
+		const filter = createConnectLineFilter()
+		const out =
+			filter.push(
+				"start > summarize: openai chat | x=1\nwith start>task: http POST /v1/pages | api=notion\ncheck >(Yes: ok) b\n",
+			) + filter.end()
+		expect(out).toBe(
+			"with summarize: openai chat | x=1\nwith task: http POST /v1/pages | api=notion\n",
+		)
+	})
+
 	it("gives a with line written without its first word that word back", () => {
 		const filter = createConnectLineFilter()
 		const out =
@@ -383,6 +394,19 @@ describe("finishConnect", () => {
 		expect(result.xml).toMatch(
 			/id="create"[^>]*modelerTemplate="io.camunda.connectors.HttpJson.v2"|modelerTemplate="io.camunda.connectors.HttpJson.v2"[^>]*id="create"/,
 		)
+	})
+
+	it("reads a line that copied the node's kind and name as the node's first card", () => {
+		const slack = connectorCards("io.camunda.connectors.Slack.v1")
+		const result = finishConnect(
+			defs,
+			aliases,
+			"with notify: service Notify ops in Slack | token={{secrets.SLACK_TOKEN}} data.channel=#ops data.text=hi",
+			[],
+			[{ id: "notify", name: "Notify ops in Slack", cards: slack }],
+		)
+		expect(result.connected).toEqual(["notify"])
+		expect(result.fixes[0]).toBe(`read "service …" on notify as "${slack[0]?.alias}"`)
 	})
 
 	it("keeps the first line for a node and reports the next", () => {

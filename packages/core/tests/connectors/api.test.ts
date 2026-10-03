@@ -156,6 +156,17 @@ describe("resolveConnectorLine with api=", () => {
 		expect(r.values.headers).toBe('={"Notion-Version": "2026-03-11"}')
 	})
 
+	it("reads a service of the index written as the alias as an http call to it", () => {
+		const r = resolveConnectorLine(line("with r: stripe STRIPE_API_POST /v1/refunds"), {
+			apis: APIS,
+		})
+		expect(r.problems).toEqual([])
+		expect(r.values).toMatchObject({ method: "POST", url: "https://api.stripe.com/v1/refunds" })
+		// A connector's own alias still names the connector
+		const github = resolveConnectorLine(line("with g: github"), { apis: APIS })
+		expect(github.templateId).not.toBe("io.camunda.connectors.HttpJson.v2")
+	})
+
 	it("knows a service by its base URL without api=", () => {
 		const r = resolveConnectorLine(
 			line("with i: http POST https://api.github.com/repos/acme/web/issues"),
