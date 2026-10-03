@@ -1,0 +1,2032 @@
+[
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "16-github-issues-to-slack",
+    "firstByteMs": 27743,
+    "firstContentMs": 27743,
+    "firstShapeMs": 28491,
+    "totalMs": 29118,
+    "text": "# Hourly github slack\nstart[start Hourly trigger] > grab[service Retrieve github issues] > decide[xor Any open issues?]\ndecide >(Yes: true) post[send Post issues to Slack] > done[end Done]\ndecide >(No: default) done",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 506,
+      "completionTokens": 58,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 6,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 6630,
+      "usage": {
+        "promptTokens": 885,
+        "completionTokens": 102,
+        "cachedTokens": 0
+      },
+      "neurons": 9,
+      "lines": "with grab: github createIssue | token={{secrets.github_pat}} | owner=acmeRepo | repo=acme | issueTitle== \"Hourly GitHub Issue Summary\" | issueAssignees== \"\" | issueLabels== open | githubBody== \"Current open issues:\" + issues | github_app\nwith post: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.text== \"Summary: \" + issues | data.channel=#triage | data.messageType=plainText",
+      "raw": "with grab: github createIssue | token={{secrets.github_pat}} | owner=acmeRepo | repo=acme | issueTitle== \"Hourly GitHub Issue Summary\" | issueAssignees== \"\" | issueLabels== open | githubBody== \"Current open issues:\" + issues | github_app\nwith post: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.text== \"Summary: \" + issues | data.channel=#triage | data.messageType=plainText",
+      "connected": 2,
+      "problems": [
+        "expected \"key=value\" at \"github_app\"; ignored",
+        "github createIssue has no input \"token\"; ignored"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "SLACK_TOKEN"
+      ]
+    },
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "16-github-issues-to-slack",
+    "firstByteMs": 351,
+    "firstContentMs": 351,
+    "firstShapeMs": 834,
+    "totalMs": 1633,
+    "text": "# GitHub triage\nstart[clock ticks] > list[service List open issues] > gate[xor More than 10 issues?]\ngate >(Yes: github_issues > 10) long[service Post list longer than 10 to Slack] > done[end Process complete]\ngate >(No: default) short[service Post list fewer than 10 to Slack] > done",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 506,
+      "completionTokens": 78,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"clock\" for \"start\"; used startEvent"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 7,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 3,
+      "cards": 8,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 15943,
+      "usage": {
+        "promptTokens": 1018,
+        "completionTokens": 116,
+        "cachedTokens": 0
+      },
+      "neurons": 10,
+      "lines": "with gate: github listCommits owner=owner repo=repo authentication.authType=pat: pat | authentication.pat={{secrets.GITHUB_PAT_SECRET}} resultVariable listCommits\nwith long: slack chat.postMessage token={{secrets.SLACK_TOKEN}} data.text=\"Open issues: \" + listCommits | data.channel=#triage | data.messageType=plainText\nwith short: slack chat.postMessage token={{secrets.SLACK_TOKEN}} data.text=\"Fewer issues to review\" | data.channel=#triage | data.messageType=plainText",
+      "raw": "with gate: github listCommits owner=owner repo=repo authentication.authType=pat: pat | authentication.pat={{secrets.GITHUB_PAT_SECRET}} resultVariable listCommits\nwith long: slack chat.postMessage token={{secrets.SLACK_TOKEN}} data.text=\"Open issues: \" + listCommits | data.channel=#triage | data.messageType=plainText\nwith short: slack chat.postMessage token={{secrets.SLACK_TOKEN}} data.text=\"Fewer issues to review\" | data.channel=#triage | data.messageType=plainText",
+      "connected": 3,
+      "problems": [
+        "\"token={{secrets.SLACK_TOKEN}}\" is not an input of slack; ignored",
+        "\"data.text=\"Open\" is not an input of slack; ignored",
+        "\"issues:\" is not an input of slack; ignored",
+        "\"\" + listCommits\" is not an input of slack; ignored",
+        "\"token={{secrets.SLACK_TOKEN}}\" is not an input of slack; ignored",
+        "\"data.text=\"Fewer\" is not an input of slack; ignored",
+        "\"issues\" is not an input of slack; ignored",
+        "\"to\" is not an input of slack; ignored",
+        "\"review\"\" is not an input of slack; ignored",
+        "\"owner=owner\" is not an input of github; ignored",
+        "\"repo=repo\" is not an input of github; ignored",
+        "\"authentication.authType=pat:\" is not an input of github; ignored",
+        "\"pat\" is not an input of github; ignored"
+      ],
+      "questions": 6,
+      "literalSecrets": 1,
+      "dryRun": "end",
+      "secrets": [
+        "GITHUB_AUTHENTICATION_PAT"
+      ]
+    },
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "16-github-issues-to-slack",
+    "firstByteMs": 8058,
+    "firstContentMs": 8059,
+    "totalMs": 8898,
+    "text": "# Github issues status report\nstart[start Trigger timer] > gather[service List open github issues] > post[service Post summary to slack] > done[end Report created]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 506,
+      "completionTokens": 36,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 4,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 3375,
+      "usage": {
+        "promptTokens": 834,
+        "completionTokens": 169,
+        "cachedTokens": 0
+      },
+      "neurons": 11,
+      "lines": "with startTrigger: github listCommits | owner=YOUR_ORG | repo=YOUR_REPO_NAME | authentication.authType=pat | authentication.pat={{secrets.GITHUB_TOKEN}} | result=listCommits\nwith gather: github listBranches | owner=YOUR_ORG | repo=YOUR_REPO_NAME | authentication.authType=pat | authentication.pat={{secrets.GITHUB_TOKEN}} | result=listBranches\nwith gather: github listAlertsForRepo | owner=YOUR_ORG | repo=YOUR_REPO_NAME | authentication.authType=pat | authentication.pat={{secrets.GITHUB_TOKEN}} | result=listAlerts\nwith post: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.text=Summary of open issues, branches and alerts for repo YOUR_REPO_NAME (Owned by YOUR_ORG) | data.channel=#triage",
+      "raw": "startTrigger: github listCommits | owner=YOUR_ORG | repo=YOUR_REPO_NAME | authentication.authType=pat | authentication.pat={{secrets.GITHUB_TOKEN}} | result=listCommits\ngather: github listBranches | owner=YOUR_ORG | repo=YOUR_REPO_NAME | authentication.authType=pat | authentication.pat={{secrets.GITHUB_TOKEN}} | result=listBranches\ngather: github listAlertsForRepo | owner=YOUR_ORG | repo=YOUR_REPO_NAME | authentication.authType=pat | authentication.pat={{secrets.GITHUB_TOKEN}} | result=listAlerts\npost: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.text=Summary of open issues, branches and alerts for repo YOUR_REPO_NAME (Owned by YOUR_ORG) | data.channel=#triage",
+      "connected": 2,
+      "problems": [
+        "\"with gather:\" configures a node an earlier line did; the first stands",
+        "\"with startTrigger:\" names no node of the diagram"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "GITHUB_TOKEN",
+        "SLACK_TOKEN"
+      ]
+    },
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "17-stripe-refund-rest",
+    "firstByteMs": 249,
+    "firstContentMs": 252,
+    "firstShapeMs": 611,
+    "totalMs": 1809,
+    "text": "# Refund process\nstart[start Refund requested] > check[xor Approved?]\ncheck >(Yes: approved) refund[user Manually initiate refund] > call back[service Stripe refund] > send back[send Notify customer] > ended[end Refund done]\ncheck >(No: default) abort[manual Stop refund] > ended[boundary:escalation Error | on=refund]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 507,
+      "completionTokens": 80,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 2,
+        "message": "\"check\" has only one branch; gateway removed"
+      },
+      {
+        "line": 3,
+        "message": "expected \">\" at \"back[service Stripe \""
+      },
+      {
+        "line": 4,
+        "message": "boundary \"ended\" is on \"refund\", which is never declared; left out"
+      },
+      {
+        "line": 4,
+        "message": "\"ended\" was left out; flow abort > ended left out"
+      }
+    ],
+    "fixes": [
+      "added end event \"abort_end\" after \"abort\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 1,
+    "elements": 3,
+    "failed": [
+      "3 < 4 elements",
+      "no task type io.camunda:http-json:1",
+      "no call to https://api.stripe.com/v1/refunds"
+    ],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 0,
+      "cards": 0,
+      "apiCards": 0,
+      "skipped": true,
+      "skipRight": false
+    },
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "17-stripe-refund-rest",
+    "firstByteMs": 314,
+    "firstContentMs": 314,
+    "firstShapeMs": 644,
+    "totalMs": 1324,
+    "text": "# Refund process\nstart[start Refund request] > check[xor Refund approved?]\ncheck >(Yes: default) process[service Stripe REST API refund] > update[service Confirm refund on way] > done[end Refund completed]\ncheck >(No: default) decline[service Send no refund notification] > todo[end No refund]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 507,
+      "completionTokens": 71,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 4,
+        "message": "\"check\" already has a default branch; this one is not the default"
+      }
+    ],
+    "fixes": [
+      "gave check > decline the condition \"= refundApproved = false\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 7,
+    "failed": [
+      "no call to https://api.stripe.com/v1/refunds"
+    ],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 3,
+      "cards": 3,
+      "apiCards": 1,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1702,
+      "usage": {
+        "promptTokens": 1080,
+        "completionTokens": 102,
+        "cachedTokens": 0
+      },
+      "neurons": 10,
+      "lines": "with process: stripe STRIPE_API_POST /v1/refunds | body=={amount: amount, currency: currency} | result=stripeRefund: response.body\nwith update: stripe STRIPE_API_GET /v1/refunds/{{stripeRefund.id}} | result=refundStatus: response.body\nwith decline: http POST https://api.example.com/notifications | token={{secrets.NOTIFICATION_TOKEN}} | body=={to: email, message: \"Refund declined\"}",
+      "raw": "with process: stripe STRIPE_API_POST /v1/refunds | body=={amount: amount, currency: currency} | result=stripeRefund: response.body\nwith update: stripe STRIPE_API_GET /v1/refunds/{{stripeRefund.id}} | result=refundStatus: response.body\nwith decline: http POST https://api.example.com/notifications | token={{secrets.NOTIFICATION_TOKEN}} | body=={to: email, message: \"Refund declined\"}",
+      "connected": 1,
+      "problems": [
+        "no connector is called \"stripe\"",
+        "no connector is called \"stripe\"",
+        "http has no input \"token\"; ignored"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "17-stripe-refund-rest",
+    "firstByteMs": 310,
+    "firstContentMs": 311,
+    "firstShapeMs": 719,
+    "totalMs": 1706,
+    "text": "# Refund process\nstart[start Refund initiated] > process[xor Approved?]\nprocess >(Yes: status = \"approved\") refund[service Stripe refund payment] > notify[send Notify customer] > done[end Refund delivered]\nprocess >(No: default) abort[manual Notify manager] > cancelled[end Refund cancelled]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 507,
+      "completionTokens": 68,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 7,
+    "failed": [
+      "no call to https://api.stripe.com/v1/refunds"
+    ],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 2,
+      "apiCards": 1,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1212,
+      "usage": {
+        "promptTokens": 915,
+        "completionTokens": 63,
+        "cachedTokens": 0
+      },
+      "neurons": 8,
+      "lines": "with refund: stripe POST /v1/refunds | expand=customer | result=refund\nwith notify: http POST https://api.notify.com/path | token={{secrets.SLACK_TOKEN}} | data.channel=users.db | data.text==\"Refund \" + orderId + \" is on its way\"",
+      "raw": "with refund: stripe POST /v1/refunds | expand=customer | result=refund\nwith notify: http POST https://api.notify.com/path | token={{secrets.SLACK_TOKEN}} | data.channel=users.db | data.text==\"Refund \" + orderId + \" is on its way\"",
+      "connected": 1,
+      "problems": [
+        "no connector is called \"stripe\"",
+        "http has no input \"token\"; ignored",
+        "http has no input \"data.channel\"; ignored",
+        "http has no input \"data.text\"; ignored"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "18-sendgrid-confirmation",
+    "firstByteMs": 235,
+    "firstContentMs": 236,
+    "firstShapeMs": 510,
+    "totalMs": 1671,
+    "text": "# Order confirmation after payment\nstart[order placed] > verify[xor Order paid?]\nverify >(Yes: payment status = \"paid\") confirm[task Send confirmation email] > sent[end Confirmation sent]\nverify >(No: default) hold[task Hold order] > failed[end Order failed]\nfailed[boundary:error SendGrid error | on=confirm] > alert[service SendSlack alert] > sent",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 497,
+      "completionTokens": 84,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"order\" for \"start\"; used startEvent"
+      },
+      {
+        "line": 3,
+        "message": "condition \"payment status = \"paid\"\" is not FEEL; kept as the branch label"
+      },
+      {
+        "line": 5,
+        "message": "\"failed\" on line 4 is a different node; this one is \"failed_2\""
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"sent\" with xor gateway \"sent_join\"",
+      "gave verify > confirm the condition \"= orderPaid = true\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 9,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1299,
+      "usage": {
+        "promptTokens": 1015,
+        "completionTokens": 93,
+        "cachedTokens": 0
+      },
+      "neurons": 9,
+      "lines": "with confirm: sendgrid mail | apiKey={{secrets.SENDGRID_API_KEY}} | from.name==customerName | from.email==customerEmail | to.name==customerName | to.email==customerEmail | content.subject==\"Order Confirmation\" | content.value==\"Thank you for your order.\"\nwith alert: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.text==\"Order failed verification: \" + orderId | data.channel==\"#ops\"",
+      "raw": "with confirm: sendgrid mail | apiKey={{secrets.SENDGRID_API_KEY}} | from.name==customerName | from.email==customerEmail | to.name==customerName | to.email==customerEmail | content.subject==\"Order Confirmation\" | content.value==\"Thank you for your order.\"\nwith alert: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.text==\"Order failed verification: \" + orderId | data.channel==\"#ops\"",
+      "connected": 2,
+      "problems": [],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "SENDGRID_API_KEY",
+        "SLACK_TOKEN"
+      ]
+    },
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "18-sendgrid-confirmation",
+    "firstByteMs": 238,
+    "firstContentMs": 238,
+    "totalMs": 857,
+    "text": "# Order confirmation\nstart[Order created] > pay[service Process payment] > sendgrid[send, confirm with SendGrid] > confirmed[end Confirmation sent]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 497,
+      "completionTokens": 34,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"order\" for \"start\"; used startEvent"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"send,\" for \"sendgrid\"; used task"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1903,
+      "usage": {
+        "promptTokens": 1055,
+        "completionTokens": 118,
+        "cachedTokens": 0
+      },
+      "neurons": 11,
+      "lines": "with pay: email deleteEmailImap | token={{secrets.Email_connector_password}} | authentication.type=simple: simple | authentication.simpleAuthenticationUsername={{secrets.Email_connector_username}} | data.imapHost={{secrets.Email_imapHost}} | imapMessageIdDelete={{order.imapMessageId}}\nwith sendgrid: sendgrid mail | apiKey={{secrets.SendGrid_apiKey}} | from.name={{customer.name}} | from.email={{customer.email}} | content.subject=Order confirmation | content.value=[[]] | to.name={{customer.name}} | to.email={{customer.email}}",
+      "raw": "with pay: email deleteEmailImap | token={{secrets.Email_connector_password}} | authentication.type=simple: simple | authentication.simpleAuthenticationUsername={{secrets.Email_connector_username}} | data.imapHost={{secrets.Email_imapHost}} | imapMessageIdDelete={{order.imapMessageId}}\nwith sendgrid: sendgrid mail | apiKey={{secrets.SendGrid_apiKey}} | from.name={{customer.name}} | from.email={{customer.email}} | content.subject=Order confirmation | content.value=[[]] | to.name={{customer.name}} | to.email={{customer.email}}",
+      "connected": 2,
+      "problems": [
+        "email deleteEmailImap has no input \"token\"; ignored",
+        "email deleteEmailImap has no input \"authentication.simpleAuthenticationUsername\"; ignored"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "Email_imapHost",
+        "SendGrid_apiKey"
+      ]
+    },
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "18-sendgrid-confirmation",
+    "firstByteMs": 249,
+    "firstContentMs": 249,
+    "totalMs": 924,
+    "text": "# Order confirmation\nstart[start Order paid] > email[service SendGrid: send order confirmation] > done[end Confirmation sent]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 497,
+      "completionTokens": 27,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 3,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 1,
+      "cards": 3,
+      "apiCards": 1,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1192,
+      "usage": {
+        "promptTokens": 836,
+        "completionTokens": 54,
+        "cachedTokens": 0
+      },
+      "neurons": 7,
+      "lines": "with email: sendgrid byTemplate | apiKey={{secrets.SENDGRID_TOKEN}} | from.name==\"Shop\" | from.email==email | to.name==name | to.email==email | template.id==12345 | template.data=={\"orderId\": orderId}",
+      "raw": "with email: sendgrid byTemplate | apiKey={{secrets.SENDGRID_TOKEN}} | from.name==\"Shop\" | from.email==email | to.name==name | to.email==email | template.id==12345 | template.data=={\"orderId\": orderId}",
+      "connected": 1,
+      "problems": [],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "SENDGRID_TOKEN"
+      ]
+    },
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "19-kafka-publish",
+    "firstByteMs": 227,
+    "firstContentMs": 228,
+    "firstShapeMs": 736,
+    "totalMs": 887,
+    "text": "# Ship order\nstart[start Order processed] > ship[service Ship order] > shipped[event Order shipped] > send[send Order shipped event]\nshipped > sent[end Event sent]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 502,
+      "completionTokens": 39,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 2,
+        "message": "\"shipped\" waits for nothing in particular; made it a message event"
+      }
+    ],
+    "fixes": [
+      "added end event \"send_end\" after \"send\"",
+      "split the flows out of \"shipped\" with and gateway \"shipped_split\""
+    ],
+    "lintErrors": [
+      "Message catch \"Order shipped\" (intermediateCatchEvent) has no zeebe:subscription correlationKey."
+    ],
+    "lintWarnings": 2,
+    "elements": 7,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 3,
+      "cards": 4,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 5057,
+      "usage": {
+        "promptTokens": 821,
+        "completionTokens": 178,
+        "cachedTokens": 0
+      },
+      "neurons": 11,
+      "lines": "with ship: kafka publish | topic.bootstrapServers*={{config.kafka.bootstrapServers}} | topic.topicName={{config.kafka.topic}} | message.value==json({'orderId': orderId, 'status': 'shipped'}) | result=shippedMessage\nwith send: eventbridge send | authentication.accessKey*={{secrets.AWS_ACCESS_KEY}} | authentication.secretKey*={{secrets.AWS_SECRET_KEY}} | configuration.region={{config.aws.region}} | input.source=='order-shipped' | input.detailType=='Order Shipped' | input.eventBusName==eventbridge.eventBusName | input.detail==shippedMessage | result=sendResponse\nwith sent: send-message-end correlate | messageName*='order.shipped' | correlationKey==order.id | variables=={id: orderId} | tenantId==orderId | requestTimeout==5000 | correlationType.type=publish | publish",
+      "raw": "with ship: kafka publish | topic.bootstrapServers*={{config.kafka.bootstrapServers}} | topic.topicName={{config.kafka.topic}} | message.value==json({'orderId': orderId, 'status': 'shipped'}) | result=shippedMessage\nwith send: eventbridge send | authentication.accessKey*={{secrets.AWS_ACCESS_KEY}} | authentication.secretKey*={{secrets.AWS_SECRET_KEY}} | configuration.region={{config.aws.region}} | input.source=='order-shipped' | input.detailType=='Order Shipped' | input.eventBusName==eventbridge.eventBusName | input.detail==shippedMessage | result=sendResponse\nwith sent: send-message-end correlate | messageName*='order.shipped' | correlationKey==order.id | variables=={id: orderId} | tenantId==orderId | requestTimeout==5000 | correlationType.type=publish | publish",
+      "connected": 3,
+      "problems": [
+        "expected \"key=value\" at \"topic.bootstrapServers*={{conf\"; ignored",
+        "expected \"key=value\" at \"authentication.accessKey*={{se\"; ignored",
+        "expected \"key=value\" at \"authentication.secretKey*={{se\"; ignored",
+        "expected \"key=value\" at \"messageName*='order.shipped'\"; ignored",
+        "expected \"key=value\" at \"publish\"; ignored",
+        "\"publish\" is not an input of kafka; ignored",
+        "Invalid FEEL expression for \"message.value\": Expected context key",
+        "\"send\" is not an input of eventbridge; ignored",
+        "Invalid FEEL expression for \"input.source\": Unexpected token '''",
+        "Invalid FEEL expression for \"input.source\": Unexpected token 'order'",
+        "Invalid FEEL expression for \"input.detailType\": Unexpected token '''",
+        "Invalid FEEL expression for \"input.detailType\": Unexpected token 'Order'",
+        "\"correlate\" is not an input of send-message-end; ignored"
+      ],
+      "questions": 4,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "19-kafka-publish",
+    "firstByteMs": 452,
+    "firstContentMs": 452,
+    "firstShapeMs": 883,
+    "totalMs": 1019,
+    "text": "# Shipment notification\nstart[start Order shipped] > ack[task ACK shipment status] > kafka[service Post event to Kafka]\nkafka > end[end Notification sent]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 502,
+      "completionTokens": 36,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 1,
+      "cards": 2,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1546,
+      "usage": {
+        "promptTokens": 648,
+        "completionTokens": 69,
+        "cachedTokens": 0
+      },
+      "neurons": 7,
+      "lines": "with kafka: kafka Publish Message to Kafka | topic.bootstrapServers==topicBootstrapServers | topic.topicName==\"order-shipped\" | message.value==json{orderId: orderId, customerEmail: customerEmail, timestamp: now()} | authentication.password={{secrets.kafkaPassword}} | authentication.username={{secrets.kafkaUsername}} | resultVariable=messageResult",
+      "raw": "with kafka: kafka Publish Message to Kafka | topic.bootstrapServers==topicBootstrapServers | topic.topicName==\"order-shipped\" | message.value==json{orderId: orderId, customerEmail: customerEmail, timestamp: now()} | authentication.password={{secrets.kafkaPassword}} | authentication.username={{secrets.kafkaUsername}} | resultVariable=messageResult",
+      "connected": 1,
+      "problems": [
+        "\"Publish\" is not an input of kafka; ignored",
+        "\"Message\" is not an input of kafka; ignored",
+        "\"to\" is not an input of kafka; ignored",
+        "\"Kafka\" is not an input of kafka; ignored",
+        "Invalid FEEL expression for \"message.value\": Unexpected token '{'"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "kafkaPassword",
+        "kafkaUsername"
+      ]
+    },
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "19-kafka-publish",
+    "firstByteMs": 257,
+    "firstContentMs": 258,
+    "totalMs": 655,
+    "text": "# Order shipped notification\nstart[start Order shipped] > shipping[service Publish order-shipped event] > done[end Order shipped notification]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 502,
+      "completionTokens": 28,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 3,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 1,
+      "cards": 3,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1648,
+      "usage": {
+        "promptTokens": 716,
+        "completionTokens": 86,
+        "cachedTokens": 0
+      },
+      "neurons": 8,
+      "lines": "with shipping: kafka publishMessage | topic.bootstrapServers=${bootstrapServers} | topic.topicName=order-shipped | message.value=={\"orderId\": \"${orderId}\", \"status\": \"shipped\"} | topic.messageKey==orderId | authentication.password={{secrets.kafkaAuthPassword}} | authentication.username={{secrets.kafkaAuthUsername}} | additionalProperties=={} | message.headers=={} | resultVariable=event | schemaStrategy.type=noSchema",
+      "raw": "with shipping: kafka publishMessage | topic.bootstrapServers=${bootstrapServers} | topic.topicName=order-shipped | message.value=={\"orderId\": \"${orderId}\", \"status\": \"shipped\"} | topic.messageKey==orderId | authentication.password={{secrets.kafkaAuthPassword}} | authentication.username={{secrets.kafkaAuthUsername}} | additionalProperties=={} | message.headers=={} | resultVariable=event | schemaStrategy.type=noSchema",
+      "connected": 1,
+      "problems": [
+        "\"publishMessage\" is not an input of kafka; ignored",
+        "kafka has no input \"topic.messageKey\"; ignored",
+        "kafka has no input \"message.headers\"; ignored"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "kafkaAuthPassword",
+        "kafkaAuthUsername"
+      ]
+    },
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "20-openai-summarise",
+    "firstByteMs": 155,
+    "firstContentMs": 155,
+    "firstShapeMs": 2282,
+    "totalMs": 2313,
+    "text": "# Support ticket summarizer\nstart[start New ticket] > summarize[service Summarize with OpenAI] > post[service Post summary to Slack] > end[message Support summarized]\n",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 503,
+      "completionTokens": 39,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"message\" for \"end\"; used endEvent"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 4,
+    "failed": [
+      "no task type io.camunda:http-json:1",
+      "no task type io.camunda:slack:1"
+    ],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 3,
+      "cards": 7,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 900,
+      "usage": {
+        "promptTokens": 986,
+        "completionTokens": 69,
+        "cachedTokens": 0
+      },
+      "neurons": 8,
+      "lines": "",
+      "raw": "start > summarize: openai chat | auth=internal_token | contentType=internal_prompt | resultVariable=summary\nsummarize > post: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.text==summary | data.channel=#support\npost > end: send-message-end | auth=messageName | auth=publish",
+      "connected": 0,
+      "problems": [],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "20-openai-summarise",
+    "firstByteMs": 247,
+    "firstContentMs": 259,
+    "totalMs": 947,
+    "text": "# Ticket summarisation\nstart[start Ticket received] > summarise[service Call OpenAI API] > slack[service Post summary to Slack] > done[end Ticket done]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 503,
+      "completionTokens": 36,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 4,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1006,
+      "usage": {
+        "promptTokens": 921,
+        "completionTokens": 51,
+        "cachedTokens": 0
+      },
+      "neurons": 7,
+      "lines": "with summarise: openai chat authentication.token=$(openai.token) | internal_prompt=summarise_ticket_prompt\nwith slack: slack chat.postMessage token={{secrets.SLACK_TOKEN}} | data.channel=#support | data.text==summary.resultVariable",
+      "raw": "with summarise: openai chat authentication.token=$(openai.token) | internal_prompt=summarise_ticket_prompt\nwith slack: slack chat.postMessage token={{secrets.SLACK_TOKEN}} | data.channel=#support | data.text==summary.resultVariable",
+      "connected": 2,
+      "problems": [
+        "\"authentication.token=$(openai.token)\" is not an input of openai; ignored",
+        "\"token={{secrets.SLACK_TOKEN}}\" is not an input of slack; ignored"
+      ],
+      "questions": 2,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "20-openai-summarise",
+    "firstByteMs": 627,
+    "firstContentMs": 627,
+    "totalMs": 1826,
+    "text": "# Support ticket automation\nstart[start Ticket created] > open[service Open ticket in CRM] > sum[agent Summarise with OpenAI] > send[service Post summary to Slack] > end[service Close ticket]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 503,
+      "completionTokens": 47,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"agent\" for \"sum\"; used task"
+      }
+    ],
+    "fixes": [
+      "added end event \"end_end\" after \"end\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 6,
+    "failed": [
+      "no task type io.camunda:http-json:1"
+    ],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 1,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1288,
+      "usage": {
+        "promptTokens": 1178,
+        "completionTokens": 84,
+        "cachedTokens": 0
+      },
+      "neurons": 10,
+      "lines": "with sum: ai-agent-v0 | provider.type=openai | data.agentContext== \"Summarise the support ticket:\" + ticketBody | data.systemPrompt.prompt== \"You are a support ticket summarizer.\" | data.userPrompt.prompt==ticketBody | resultVariable=summary\nwith send: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#support | data.text==summary",
+      "raw": "with sum: ai-agent-v0 | provider.type=openai | data.agentContext== \"Summarise the support ticket:\" + ticketBody | data.systemPrompt.prompt== \"You are a support ticket summarizer.\" | data.userPrompt.prompt==ticketBody | resultVariable=summary\nwith send: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#support | data.text==summary",
+      "connected": 2,
+      "problems": [],
+      "questions": 1,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "SLACK_TOKEN"
+      ]
+    },
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "21-sheets-and-teams",
+    "firstByteMs": 227,
+    "firstContentMs": 227,
+    "totalMs": 545,
+    "text": "# Lead capture flow\nstart[start Lead captured] > append[service Append to Google Sheet] > notify[send Message to Microsoft Teams] > done[end Lead notified]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 498,
+      "completionTokens": 35,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 5433,
+      "usage": {
+        "promptTokens": 1090,
+        "completionTokens": 206,
+        "cachedTokens": 0
+      },
+      "neurons": 14,
+      "lines": "with append: google-sheets addValues | authentication.authType=refresh | authentication.oauthClientId={{secrets.GOOGLE_ID}} | authentication.oauthClientSecret={{secrets.GOOGLE_SECRET}} | authentication.oauthRefreshToken={{secrets.GOOGLE_TOKEN}} | addValues.spreadsheetId={{secrets.SPREADSHEET_ID}} | addValues.worksheetName=Leads | cellId=A1 | value== { \"id\": lead.id, \"firstName\": lead.firstName, \"lastName\": lead.lastName, \"email\": lead.email, \"phone\": lead.phone, \"acquisitionDate\": now() }\nwith notify: teams sendMessageToChannel | authentication.type=clientCredentials | data.sendMessageToChannel.bodyType=TEXT | data.sendMessageToChannel.groupId={{secrets.TEAMS_GROUP_ID}} | data.sendMessageToChannel.channelId={{secrets.TEAMS_CHANNEL_ID}} | data.sendMessageToChannel.content== \"New lead captured: \" + lead.firstName + \" \" + lead.lastName + \" (\" + lead.email + \")\"",
+      "raw": "with append: google-sheets addValues | authentication.authType=refresh | authentication.oauthClientId={{secrets.GOOGLE_ID}} | authentication.oauthClientSecret={{secrets.GOOGLE_SECRET}} | authentication.oauthRefreshToken={{secrets.GOOGLE_TOKEN}} | addValues.spreadsheetId={{secrets.SPREADSHEET_ID}} | addValues.worksheetName=Leads | cellId=A1 | value== { \"id\": lead.id, \"firstName\": lead.firstName, \"lastName\": lead.lastName, \"email\": lead.email, \"phone\": lead.phone, \"acquisitionDate\": now() }\nwith notify: teams sendMessageToChannel | authentication.type=clientCredentials | data.sendMessageToChannel.bodyType=TEXT | data.sendMessageToChannel.groupId={{secrets.TEAMS_GROUP_ID}} | data.sendMessageToChannel.channelId={{secrets.TEAMS_CHANNEL_ID}} | data.sendMessageToChannel.content== \"New lead captured: \" + lead.firstName + \" \" + lead.lastName + \" (\" + lead.email + \")\"",
+      "connected": 2,
+      "problems": [],
+      "questions": 3,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "GOOGLE_ID",
+        "GOOGLE_SECRET",
+        "GOOGLE_TOKEN",
+        "SPREADSHEET_ID",
+        "TEAMS_CHANNEL_ID",
+        "TEAMS_GROUP_ID"
+      ]
+    },
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "21-sheets-and-teams",
+    "firstByteMs": 456,
+    "firstContentMs": 457,
+    "firstShapeMs": 983,
+    "totalMs": 1179,
+    "text": "# Lead ingestion\nstart[start Lead received] > sheet[service Append lead to Google Sheet] > notify[send Post summary to Slack]\nnotify > done[end Process complete]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 498,
+      "completionTokens": 36,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [
+      "no task type io.camunda:connector-microsoft-teams:1"
+    ],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 2870,
+      "usage": {
+        "promptTokens": 908,
+        "completionTokens": 147,
+        "cachedTokens": 0
+      },
+      "neurons": 11,
+      "lines": "with sheet: google-sheets addValues | authentication.authType=refresh | oauthClientId={{secrets.GOOGLE_CLIENT_ID}} | oauthClientSecret={{secrets.GOOGLE_CLIENT_SECRET}} | oauthRefreshToken={{secrets.GOOGLE_CLIENT_REFRESH_TOKEN}} | addValues.spreadsheetId={{secrets.SPREADSHEET_ID}} | addValues.worksheetName=Leads | cellId=A1 | value==concatenate([[leadName], [leadEmail], [leadPhone]])\nwith notify: http POST https://outlook.office.com/webhook/{webhookUrl}/incomingWebhook | data=={\"text\": \"New Lead: \" + leadName + \" - \" + leadPhone}\nwith done: end Process Complete",
+      "raw": "with sheet: google-sheets addValues | authentication.authType=refresh | oauthClientId={{secrets.GOOGLE_CLIENT_ID}} | oauthClientSecret={{secrets.GOOGLE_CLIENT_SECRET}} | oauthRefreshToken={{secrets.GOOGLE_CLIENT_REFRESH_TOKEN}} | addValues.spreadsheetId={{secrets.SPREADSHEET_ID}} | addValues.worksheetName=Leads | cellId=A1 | value==concatenate([[leadName], [leadEmail], [leadPhone]])\nwith notify: http POST https://outlook.office.com/webhook/{webhookUrl}/incomingWebhook | data=={\"text\": \"New Lead: \" + leadName + \" - \" + leadPhone}\nwith done: end Process Complete",
+      "connected": 2,
+      "problems": [
+        "http has no input \"data\"; ignored",
+        "no connector is called \"end\""
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_REFRESH_TOKEN",
+        "GOOGLE_CLIENT_SECRET",
+        "SPREADSHEET_ID"
+      ]
+    },
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "21-sheets-and-teams",
+    "firstByteMs": 161,
+    "firstContentMs": 161,
+    "firstShapeMs": 559,
+    "totalMs": 894,
+    "text": "# Lead processing\nstart[start New lead received] > append[service Append to Google Sheet] > notify[send Notify in Teams] > end[end Lead added]\nfailed[boundary:error Append to Google Sheet failed | on=append] > notify[send Notify in Teams] > notice[end Processing failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 498,
+      "completionTokens": 62,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [
+      "split the flows out of \"notify\" with and gateway \"notify_split\"",
+      "joined 2 flows into \"notify\" with xor gateway \"notify_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 8,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 2655,
+      "usage": {
+        "promptTokens": 1128,
+        "completionTokens": 166,
+        "cachedTokens": 0
+      },
+      "neurons": 13,
+      "lines": "with append: google-sheets addValues | token={{secrets.google-sheets.oauthClientId}},{{secrets.google-sheets.oauthClientSecret}},{{secrets.google-sheets.oauthRefreshToken}} | authType=refresh | spreadsheetId==spreadsheetId | worksheetName==worksheetName | cellId==leadId | value== \"New lead: \" + fullName + \" <\" + email + \">\" | resultVariable=appendResult\nwith notify: teams sendMessageToChannel | token={{secrets.teams.credentials.clientId}},{{secrets.teams.credentials.tenantId}},{{secrets.teams.credentials.clientSecret}} | authType=clientCredentials | groupId==teamChannelId | channelId==leadUpstreamId | bodyType=TEXT | content==\"Lead Added: \" + fullName + \" (\" + email + \")\"",
+      "raw": "with append: google-sheets addValues | token={{secrets.google-sheets.oauthClientId}},{{secrets.google-sheets.oauthClientSecret}},{{secrets.google-sheets.oauthRefreshToken}} | authType=refresh | spreadsheetId==spreadsheetId | worksheetName==worksheetName | cellId==leadId | value== \"New lead: \" + fullName + \" <\" + email + \">\" | resultVariable=appendResult\nwith notify: teams sendMessageToChannel | token={{secrets.teams.credentials.clientId}},{{secrets.teams.credentials.tenantId}},{{secrets.teams.credentials.clientSecret}} | authType=clientCredentials | groupId==teamChannelId | channelId==leadUpstreamId | bodyType=TEXT | content==\"Lead Added: \" + fullName + \" (\" + email + \")\"",
+      "connected": 2,
+      "problems": [
+        "google-sheets addValues has no input \"token\"; ignored",
+        "teams sendMessageToChannel has no input \"token\"; ignored",
+        "teams sendMessageToChannel has no input \"authType\"; ignored"
+      ],
+      "questions": 6,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "22-internal-api",
+    "firstByteMs": 250,
+    "firstContentMs": 251,
+    "firstShapeMs": 673,
+    "totalMs": 1672,
+    "text": "# Customer credit check\nstart[start Application submitted] > fetch[service Fetch internal API] > check[xor Credit score below 600?]\ncheck >(Yes: score < 600) reject[event Application rejected] > end[end Done]\ncheck >(No: default) approve[task Approve application] > end\nfetch[service Fetch https://credit.internal.example/score | nonint]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 511,
+      "completionTokens": 80,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 3,
+        "message": "\"reject\" waits for nothing in particular; made it a message event"
+      },
+      {
+        "line": 5,
+        "message": "\"fetch\" is already declared on line 2; ignored \"service Fetch https://credit.internal.example/score | nonint\""
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"end\" with xor gateway \"end_join\""
+    ],
+    "lintErrors": [
+      "Message catch \"Application rejected\" (intermediateCatchEvent) has no zeebe:subscription correlationKey."
+    ],
+    "lintWarnings": 3,
+    "elements": 7,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 2,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1605,
+      "usage": {
+        "promptTokens": 837,
+        "completionTokens": 62,
+        "cachedTokens": 0
+      },
+      "neurons": 7,
+      "lines": "with fetch: service Fetch internal API | url=https://credit.internal.example/score | method=GET | result=score: response.body\nwith reject: http POST /reject | api=credit | body=={email: email, reason: \"Credit score below 600\"} | result=rejectResult",
+      "raw": "with fetch: service Fetch internal API | url=https://credit.internal.example/score | method=GET | result=score: response.body\nwith reject: http POST /reject | api=credit | body=={email: email, reason: \"Credit score below 600\"} | result=rejectResult",
+      "connected": 1,
+      "problems": [
+        "no connector is called \"service\"",
+        "no API \"credit\" is in the API index; api= ignored"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "22-internal-api",
+    "firstByteMs": 243,
+    "firstContentMs": 243,
+    "firstShapeMs": 655,
+    "totalMs": 1159,
+    "text": "# Credit score check\nstart[start Customer application] > fetch[service Fetch credit score from https://credit.internal.example/score] > check[xor Credit score below 600?]\ncheck >(Yes: score < 600) reject[user Reject application] > ends[end Application rejected]\ncheck >(No: default) accept[user Accept application] > ends[end Application accepted]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 511,
+      "completionTokens": 75,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 4,
+        "message": "\"ends\" on line 3 is a different node; this one is \"ends_2\""
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 7,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 1,
+      "cards": 1,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 26955,
+      "usage": {
+        "promptTokens": 699,
+        "completionTokens": 43,
+        "cachedTokens": 0
+      },
+      "neurons": 6,
+      "lines": "with fetch: http GET https://credit.internal.example/score | result=creditScore: response.body.checkScore | optional.headers={ \"Authorization\": \"Bearer \" + {{secrets.CREDIT_API_TOKEN}} }",
+      "raw": "with fetch: http GET https://credit.internal.example/score | result=creditScore: response.body.checkScore | optional.headers={ \"Authorization\": \"Bearer \" + {{secrets.CREDIT_API_TOKEN}} }",
+      "connected": 1,
+      "problems": [
+        "http has no input \"optional.headers\"; ignored"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "22-internal-api",
+    "firstByteMs": 560,
+    "firstContentMs": 561,
+    "firstShapeMs": 976,
+    "totalMs": 1526,
+    "text": "# Loan application check\nstart[start Application received] > score[service Fetch credit score] > assess[xor Score below 600?]\nassess >(Yes: score < 600) reject[end Rejected] > done[end Application submitted]\nassess >(No: default) approve[user Manual approval] > done",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 511,
+      "completionTokens": 64,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 3,
+        "message": "an end event has no outgoing flow; flow reject > done left out"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 6,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 1,
+      "cards": 1,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1921,
+      "usage": {
+        "promptTokens": 676,
+        "completionTokens": 136,
+        "cachedTokens": 0
+      },
+      "neurons": 9,
+      "lines": "with score: http GET https://credit.internal.example/score | url=raw-url | result=result: response.body | followRedirects=true | queryParameters=={customerId: customerId} | documentReturnFormat=JSON | authentication.type=bearer | authentication.token={{secrets.CREDIT_TOKEN}} | api=creditScoreService\nwith reject: http POST https://internal.api.example/reject | url=raw-url | body=={orderId: orderId, reason: \"Credit score below 600\"} | api=loanService\nwith approve: http POST https://internal.api.example/approve | url=raw-url | body=={orderId: orderId} | api=loanService",
+      "raw": "with score: http GET https://credit.internal.example/score | url=raw-url | result=result: response.body | followRedirects=true | queryParameters=={customerId: customerId} | documentReturnFormat=JSON | authentication.type=bearer | authentication.token={{secrets.CREDIT_TOKEN}} | api=creditScoreService\nwith reject: http POST https://internal.api.example/reject | url=raw-url | body=={orderId: orderId, reason: \"Credit score below 600\"} | api=loanService\nwith approve: http POST https://internal.api.example/approve | url=raw-url | body=={orderId: orderId} | api=loanService",
+      "connected": 2,
+      "problems": [
+        "no API \"creditScoreService\" is in the API index; api= ignored",
+        "no API \"loanService\" is in the API index; api= ignored",
+        "Template \"io.camunda.connectors.HttpJson.v2\" applies to bpmn:Task, not bpmn:endEvent \"reject\"",
+        "no API \"loanService\" is in the API index; api= ignored"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "CREDIT_TOKEN"
+      ]
+    },
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "23-webhook-rest-teams",
+    "firstByteMs": 242,
+    "firstContentMs": 242,
+    "firstShapeMs": 769,
+    "totalMs": 2239,
+    "text": "# New order processing\nstart[mess New order] > stock[service Check stock] > notify[send(Microsoft Teams) Notify warehouse] > done[end Order acknowledged]\nstock > check[xor Stock available?]\ncheck >(Yes: default) valid[task Mark order valid] > done\ncheck >(No: out of stock) invalid[manual Contact supplier] > check[svc Cancel order] > failed[boundary:error Cancel failed | on=check] > notify[send(Microsoft Teams) Notify order failure] > notice[end Order cancelled]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 512,
+      "completionTokens": 112,
+      "cachedTokens": 0
+    },
+    "neurons": 7,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"mess\" for \"start\"; used startEvent"
+      },
+      {
+        "line": 2,
+        "message": "unknown kind \"send(microsoft\" for \"notify\"; used task"
+      },
+      {
+        "line": 5,
+        "message": "\"check\" is already declared on line 3; ignored \"svc Cancel order\""
+      },
+      {
+        "line": 5,
+        "message": "\"notify\" is already declared on line 2; ignored \"send(Microsoft Teams) Notify order failure\""
+      },
+      {
+        "line": 5,
+        "message": "condition \"out of stock\" is not FEEL; kept as the branch label"
+      },
+      {
+        "line": 5,
+        "message": "boundary \"failed\" is on \"check\", which is not a task; left out"
+      },
+      {
+        "line": 5,
+        "message": "\"failed\" was left out; flow failed > notify left out"
+      }
+    ],
+    "fixes": [
+      "led check > failed to what the boundary leads to, since nothing flows into a boundary event",
+      "split the flows out of \"stock\" with and gateway \"stock_split\"",
+      "split the flows out of \"notify\" with and gateway \"notify_split\"",
+      "joined 2 flows into \"notify\" with xor gateway \"notify_join\"",
+      "joined 2 flows into \"done\" with xor gateway \"done_join\"",
+      "joined 2 flows into \"check\" with xor gateway \"check_join\"",
+      "gave check > invalid the condition \"= stockAvailable = false\"",
+      "gave check > notify_join the condition \"= stockAvailable = \"notify_join\"\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 13,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 3,
+      "cards": 5,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 2111,
+      "usage": {
+        "promptTokens": 1274,
+        "completionTokens": 122,
+        "cachedTokens": 0
+      },
+      "neurons": 12,
+      "lines": "with stock: http GET https://api.inventory.example.com/stocks | result=stock\nwith notify: teams sendMessageToChannel | authentication.credentials.clientId={{secrets.TEAMS_CLIENT_ID}} | authentication.credentials.tenantId={{secrets.TEAMS_TENANT_ID}} | authentication.credentials.clientSecret={{secrets.TEAMS_CLIENT_SECRET}} | data.sendMessageToChannel.groupId=warehouse | data.sendMessageToChannel.channelId=general | data.sendMessageToChannel.content== \"New order: \" + orderId\nwith valid: http POST https://api.orders.example.com/validations | result=validation",
+      "raw": "with stock: http GET https://api.inventory.example.com/stocks | result=stock\nwith notify: teams sendMessageToChannel | authentication.credentials.clientId={{secrets.TEAMS_CLIENT_ID}} | authentication.credentials.tenantId={{secrets.TEAMS_TENANT_ID}} | authentication.credentials.clientSecret={{secrets.TEAMS_CLIENT_SECRET}} | data.sendMessageToChannel.groupId=warehouse | data.sendMessageToChannel.channelId=general | data.sendMessageToChannel.content== \"New order: \" + orderId\nwith valid: http POST https://api.orders.example.com/validations | result=validation",
+      "connected": 3,
+      "problems": [],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "TEAMS_CLIENT_ID",
+        "TEAMS_CLIENT_SECRET",
+        "TEAMS_TENANT_ID"
+      ]
+    },
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "23-webhook-rest-teams",
+    "firstByteMs": 247,
+    "firstContentMs": 247,
+    "firstShapeMs": 603,
+    "totalMs": 944,
+    "text": "# New order processing\nstart[start Webhook received] > check[service Check inventory] > notify[service Notify warehouse] > done[end Order processed]\ncheck >(Low: stock < 10) restock[service Restock items]\nrestock > check\nnotify > done",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 512,
+      "completionTokens": 57,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [
+      "split the flows out of \"check\" with xor gateway \"check_split\"",
+      "joined 2 flows into \"check\" with xor gateway \"check_join\"",
+      "made check_split > notify the default branch of \"check_split\""
+    ],
+    "lintErrors": [
+      "Service task \"Restock items\" calls an HTTP connector but has no error boundary event."
+    ],
+    "lintWarnings": 6,
+    "elements": 7,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 4,
+      "cards": 8,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 3571,
+      "usage": {
+        "promptTokens": 1573,
+        "completionTokens": 198,
+        "cachedTokens": 0
+      },
+      "neurons": 16,
+      "lines": "with webhook-start: webhook-start Webhook Start Event Connector | inbound.context=inbound.context\nwith check: http Send REST Request | url=http://inventory-service/api/stock | resultVariable=stock\nwith teamsChat: teams createChat Microsoft Teams Outbound Connector | clientId={{secrets.CLIENT_ID}} | tenantId={{secrets.TENANT_ID}} | clientSecret={{secrets.CLIENT_SECRET}} | data.createChat.members=warehouse-emails@example.com | data.createChat.chatType=group | resultVariable=chatId\nwith notify: teams sendMessageToChat Microsoft Teams Outbound Connector | chatId={{chatId}} | content== \"New order requires restocking. Please review.\" | clientId={{secrets.CLIENT_ID}} | tenantId={{secrets.TENANT_ID}} | clientSecret={{secrets.CLIENT_SECRET}}\nwith restock: http Send REST Request | url=http://inventory-service/api/restock | method=POST | body=={action: \"restock\"}",
+      "raw": "with webhook-start: webhook-start Webhook Start Event Connector | inbound.context=inbound.context\nwith check: http Send REST Request | url=http://inventory-service/api/stock | resultVariable=stock\nwith teamsChat: teams createChat Microsoft Teams Outbound Connector | clientId={{secrets.CLIENT_ID}} | tenantId={{secrets.TENANT_ID}} | clientSecret={{secrets.CLIENT_SECRET}} | data.createChat.members=warehouse-emails@example.com | data.createChat.chatType=group | resultVariable=chatId\nwith notify: teams sendMessageToChat Microsoft Teams Outbound Connector | chatId={{chatId}} | content== \"New order requires restocking. Please review.\" | clientId={{secrets.CLIENT_ID}} | tenantId={{secrets.TENANT_ID}} | clientSecret={{secrets.CLIENT_SECRET}}\nwith restock: http Send REST Request | url=http://inventory-service/api/restock | method=POST | body=={action: \"restock\"}",
+      "connected": 4,
+      "problems": [
+        "\"with teamsChat:\" names no node of the diagram",
+        "\"Send\" is not an input of http; ignored",
+        "\"REST\" is not an input of http; ignored",
+        "\"Request\" is not an input of http; ignored",
+        "\"Microsoft\" is not an input of teams; ignored",
+        "\"Teams\" is not an input of teams; ignored",
+        "\"Outbound\" is not an input of teams; ignored",
+        "\"Connector\" is not an input of teams; ignored",
+        "\"Send\" is not an input of http; ignored",
+        "\"REST\" is not an input of http; ignored",
+        "\"Request\" is not an input of http; ignored",
+        "\"Webhook\" is not an input of webhook-start; ignored",
+        "\"Start\" is not an input of webhook-start; ignored",
+        "\"Event\" is not an input of webhook-start; ignored",
+        "\"Connector\" is not an input of webhook-start; ignored"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "CLIENT_ID",
+        "CLIENT_SECRET",
+        "TENANT_ID"
+      ]
+    },
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "23-webhook-rest-teams",
+    "firstByteMs": 279,
+    "firstContentMs": 279,
+    "totalMs": 797,
+    "text": "# New order processing\nstart[start New order webhook] > stock[service Check stock] > notify[send Notify warehouse] > done[end Order processed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 512,
+      "completionTokens": 32,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 3,
+      "cards": 8,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1124,
+      "usage": {
+        "promptTokens": 1424,
+        "completionTokens": 62,
+        "cachedTokens": 0
+      },
+      "neurons": 11,
+      "lines": "with stock: http GET https://inventory.example.com/stock | method=GET\nwith notify: teams sendMessageToChat | token={{secrets.TEAMS_TOKEN}} | data.sendMessageInChat.chatId={{teams_chat_id}} | data.sendMessageInChat.content+= \"New order needs stock check: \" + orderId",
+      "raw": "stock: http GET https://inventory.example.com/stock | method=GET\nnotify: teams sendMessageToChat | token={{secrets.TEAMS_TOKEN}} | data.sendMessageInChat.chatId={{teams_chat_id}} | data.sendMessageInChat.content+= \"New order needs stock check: \" + orderId",
+      "connected": 2,
+      "problems": [
+        "expected \"key=value\" at \"data.sendMessageInChat.content\"; ignored",
+        "teams sendMessageToChat has no input \"token\"; ignored"
+      ],
+      "questions": 4,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "24-lambda-then-sqs",
+    "firstByteMs": 234,
+    "firstContentMs": 234,
+    "firstShapeMs": 578,
+    "totalMs": 1436,
+    "text": "# Image processing workflow\nstart[start Upload] > resize[xor Is image?]\nresize >(Yes: true) lambda[service Run AWS Lambda resize] > sqs[service Send message to SQS]\nresize >(No: default) done[end Upload complete]\nlambda > done\nsqs > done",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 503,
+      "completionTokens": 62,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [
+      "split the flows out of \"lambda\" with and gateway \"lambda_split\"",
+      "joined 3 flows into \"done\" with xor gateway \"done_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 7,
+    "failed": [
+      "no task type io.camunda:aws-lambda:1",
+      "no task type io.camunda:aws-sqs:1"
+    ],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 2048,
+      "usage": {
+        "promptTokens": 997,
+        "completionTokens": 155,
+        "cachedTokens": 0
+      },
+      "neurons": 12,
+      "lines": "with lambda: service Run AWS Lambda resize | authentication.accessKey*={{secrets.AWS_ACCESS_KEY_ID}} authentication.secretKey*={{secrets.AWS_SECRET_ACCESS_KEY}} configuration.region*={{secrets.AWS_REGION}} awsFunction.functionName*={{secrets.RESIZE_FUNCTION_ARN}} awsFunction.payload*={{secrets.IMAGE_PAYLOAD}} authentication.type=credentials: defaultCredentialsChain | credentials\nwith sqs: service Send message to SQS | authentication.accessKey*={{secrets.AWS_ACCESS_KEY_ID}} authentication.secretKey*={{secrets.AWS_SECRET_ACCESS_KEY}} queue.url*={{secrets.SQS_QUEUE_URL}} configuration.region*={{secrets.AWS_REGION}} queue.messageBody*={{secrets.SQS_MESSAGE_BODY}} authentication.type=credentials: defaultCredentialsChain | credentials",
+      "raw": "with lambda: service Run AWS Lambda resize | authentication.accessKey*={{secrets.AWS_ACCESS_KEY_ID}} authentication.secretKey*={{secrets.AWS_SECRET_ACCESS_KEY}} configuration.region*={{secrets.AWS_REGION}} awsFunction.functionName*={{secrets.RESIZE_FUNCTION_ARN}} awsFunction.payload*={{secrets.IMAGE_PAYLOAD}} authentication.type=credentials: defaultCredentialsChain | credentials\nwith sqs: service Send message to SQS | authentication.accessKey*={{secrets.AWS_ACCESS_KEY_ID}} authentication.secretKey*={{secrets.AWS_SECRET_ACCESS_KEY}} queue.url*={{secrets.SQS_QUEUE_URL}} configuration.region*={{secrets.AWS_REGION}} queue.messageBody*={{secrets.SQS_MESSAGE_BODY}} authentication.type=credentials: defaultCredentialsChain | credentials",
+      "connected": 0,
+      "problems": [
+        "expected \"key=value\" at \"authentication.accessKey*={{se\"; ignored",
+        "expected \"key=value\" at \"credentials\"; ignored",
+        "expected \"key=value\" at \"authentication.accessKey*={{se\"; ignored",
+        "expected \"key=value\" at \"credentials\"; ignored",
+        "no connector is called \"service\"",
+        "no connector is called \"service\""
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "24-lambda-then-sqs",
+    "firstByteMs": 176,
+    "firstContentMs": 176,
+    "totalMs": 775,
+    "text": "# Image processing\nstart[start Upload received] > resize[service Run lambda Resize] > queue[event catch Send to SQS] > done[end Image processed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 503,
+      "completionTokens": 33,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [
+      {
+        "line": 2,
+        "message": "\"queue\" waits for nothing in particular; made it a message event"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [
+      "Message catch \"catch Send to SQS\" (intermediateCatchEvent) has no zeebe:subscription correlationKey."
+    ],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [
+      "no task type io.camunda:aws-sqs:1"
+    ],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 4,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 2193,
+      "usage": {
+        "promptTokens": 821,
+        "completionTokens": 105,
+        "cachedTokens": 0
+      },
+      "neurons": 9,
+      "lines": "with resize: lambda Invoke | accessToken={{secrets.LAMBDA_ACCESS_KEY}} accessTokenSecret={{secrets.LAMBDA_SECRET_KEY}} region=us-east-1 functionName=resizeLambda payload=={ jobId: jobId, originalUrl: originalUrl }\nwith queue: sqs-catch Amazon SQS Catch | accessToken={{secrets.SQS_ACCESS_KEY}} accessTokenSecret={{secrets.SQS_SECRET_KEY}} region=us-east-1 url==serviceUrls.sqsUrl correlationKeyProcess==orderId correlationKeyPayload==orderId",
+      "raw": "with resize: lambda Invoke | accessToken={{secrets.LAMBDA_ACCESS_KEY}} accessTokenSecret={{secrets.LAMBDA_SECRET_KEY}} region=us-east-1 functionName=resizeLambda payload=={ jobId: jobId, originalUrl: originalUrl }\nwith queue: sqs-catch Amazon SQS Catch | accessToken={{secrets.SQS_ACCESS_KEY}} accessTokenSecret={{secrets.SQS_SECRET_KEY}} region=us-east-1 url==serviceUrls.sqsUrl correlationKeyProcess==orderId correlationKeyPayload==orderId",
+      "connected": 2,
+      "problems": [
+        "\"Invoke\" is not an input of lambda; ignored",
+        "lambda has no input \"accessToken\"; ignored",
+        "\"Amazon\" is not an input of sqs-catch; ignored",
+        "\"SQS\" is not an input of sqs-catch; ignored",
+        "\"Catch\" is not an input of sqs-catch; ignored",
+        "sqs-catch has no input \"accessToken\"; ignored"
+      ],
+      "questions": 11,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "24-lambda-then-sqs",
+    "firstByteMs": 227,
+    "firstContentMs": 228,
+    "firstShapeMs": 883,
+    "totalMs": 1179,
+    "text": "# Image resize process\nstart[start Image uploaded] > resize[service Run AWS Lambda to resize] > signal[send Resize completion] > queue[send Message to SQS queue] > end[success Image processed]\nfailed[boundary:error Resize failure | on=resize] > deadend[end Process failed]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 503,
+      "completionTokens": 63,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 2,
+        "message": "unknown kind \"success\" for \"end\"; used endEvent"
+      }
+    ],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 7,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 2299,
+      "usage": {
+        "promptTokens": 995,
+        "completionTokens": 131,
+        "cachedTokens": 0
+      },
+      "neurons": 11,
+      "lines": "with resize: lambda invoke | authentication.accessKey={{secrets.accessKey}} authentication.secretKey={{secrets.secretKey}} configuration.region=ap-south-1 awsFunction.functionName=ImageResizeFunction awsFunction.payload=body\nwith queue: sqs send-message | messageName=ResizeNotification queue.url=https://sqs.ap-south-1.amazonaws.com/123456789012/my-queue | body== \"Image \" + orderId + \" resized successfully\"\nwith send: sqs send-message | messageName=ResizeNotification queue.url={{secrets.queueUrl}} | body== \"Image \" + orderId + \" resized successfully\"",
+      "raw": "with resize: lambda invoke | authentication.accessKey={{secrets.accessKey}} authentication.secretKey={{secrets.secretKey}} configuration.region=ap-south-1 awsFunction.functionName=ImageResizeFunction awsFunction.payload=body\nwith queue: sqs send-message | messageName=ResizeNotification queue.url=https://sqs.ap-south-1.amazonaws.com/123456789012/my-queue | body== \"Image \" + orderId + \" resized successfully\"\nwith send: sqs send-message | messageName=ResizeNotification queue.url={{secrets.queueUrl}} | body== \"Image \" + orderId + \" resized successfully\"",
+      "connected": 2,
+      "problems": [
+        "\"with send:\" names no node of the diagram",
+        "\"invoke\" is not an input of lambda; ignored",
+        "\"send-message\" is not an input of sqs; ignored",
+        "sqs has no input \"messageName\"; ignored",
+        "sqs has no input \"body\"; ignored"
+      ],
+      "questions": 9,
+      "literalSecrets": 1,
+      "dryRun": "end",
+      "secrets": [
+        "LAMBDA_AUTHENTICATION_ACCESSKEY"
+      ]
+    },
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "25-no-integration",
+    "firstByteMs": 245,
+    "firstContentMs": 245,
+    "firstShapeMs": 662,
+    "totalMs": 1567,
+    "text": "# Expense workflow\nstart[start Expense received] > review[xor Approved?]\nreview >(Yes: default) done[end Expense approved]\nreview >(No: rejected) resubmit[send Email link to submitter] > restart[xor Resubmitted?]\nrestart >(Yes: approved) review\nrestart >(No: default) end[end Rejected]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 501,
+      "completionTokens": 73,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [],
+    "fixes": [
+      "joined 2 flows into \"review\" with xor gateway \"review_join\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 7,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 1,
+      "cards": 3,
+      "apiCards": 0,
+      "skipped": false,
+      "skipRight": false,
+      "totalMs": 2265,
+      "usage": {
+        "promptTokens": 787,
+        "completionTokens": 115,
+        "cachedTokens": 0
+      },
+      "neurons": 9,
+      "lines": "with resubmit: email readEmailImap | token={{secrets.EMAIL_USER}} | password={{secrets.EMAIL_PASSWORD}} | imapMessageId=== resubmitMessageId | imapHost== data.imapHost | readEmailFolder== \"INBOX\" | result=message\nwith restart: email moveEmailImap | token={{secrets.EMAIL_USER}} | password={{secrets.EMAIL_PASSWORD}} | imapMessageId=== resubmitMessageId | imapHost== data.imapHost | fromFolder== \"INBOX\" | toFolder== \"processed\"",
+      "raw": "with resubmit: email readEmailImap | token={{secrets.EMAIL_USER}} | password={{secrets.EMAIL_PASSWORD}} | imapMessageId=== resubmitMessageId | imapHost== data.imapHost | readEmailFolder== \"INBOX\" | result=message\nwith restart: email moveEmailImap | token={{secrets.EMAIL_USER}} | password={{secrets.EMAIL_PASSWORD}} | imapMessageId=== resubmitMessageId | imapHost== data.imapHost | fromFolder== \"INBOX\" | toFolder== \"processed\"",
+      "connected": 1,
+      "problems": [
+        "email readEmailImap has no input \"token\"; ignored",
+        "email readEmailImap has no input \"password\"; ignored",
+        "email readEmailImap has no input \"imapMessageId\"; ignored",
+        "email moveEmailImap has no input \"token\"; ignored",
+        "email moveEmailImap has no input \"password\"; ignored",
+        "email moveEmailImap has no input \"imapMessageId\"; ignored",
+        "Template \"io.camunda.connectors.email.v1\" applies to bpmn:Task, not bpmn:exclusiveGateway \"restart\""
+      ],
+      "questions": 3,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "25-no-integration",
+    "firstByteMs": 301,
+    "firstContentMs": 301,
+    "firstShapeMs": 619,
+    "totalMs": 2662,
+    "text": "# Expense manager review\nstart[start Expense report submitted] > review[user Approve expense] \nreview >(Reject: amount <= 0 or status = incorrect) notify[send Notify employee to resubmit] > resubmit[event Start resubmission timer] > term[end Resubmission time out]\nreview >(Approve: default) summary[send Expense summary to manager] > approve[service Approve expense report] > done[end Expense approved]\n\nresubmit >\nterm[event Expense rejected] > approve > done",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 501,
+      "completionTokens": 106,
+      "cachedTokens": 0
+    },
+    "neurons": 7,
+    "problems": [
+      {
+        "line": 3,
+        "message": "\"resubmit\" waits for nothing in particular; made it a message event"
+      },
+      {
+        "line": 4,
+        "message": "only an xor or or gateway has a default branch; review > summary is not"
+      },
+      {
+        "line": 7,
+        "message": "\"term\" on line 3 is a different node; this one is \"term_2\""
+      },
+      {
+        "line": 7,
+        "message": "\"term_2\" waits for nothing in particular; made it a message event"
+      }
+    ],
+    "fixes": [
+      "split the flows out of \"review\" with xor gateway \"review_split\"",
+      "split the flows out of \"resubmit\" with and gateway \"resubmit_split\"",
+      "joined 2 flows into \"approve\" with xor gateway \"approve_join\"",
+      "made review_split > summary the default branch of \"review_split\""
+    ],
+    "lintErrors": [
+      "Message catch \"Start resubmission timer\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "Message catch \"Expense rejected\" (intermediateCatchEvent) has no zeebe:subscription correlationKey."
+    ],
+    "lintWarnings": 6,
+    "elements": 12,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 0,
+      "cards": 0,
+      "apiCards": 0,
+      "skipped": true,
+      "skipRight": true
+    },
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "25-no-integration",
+    "firstByteMs": 175,
+    "firstContentMs": 175,
+    "firstShapeMs": 456,
+    "totalMs": 923,
+    "text": "# Expense review loop\nstart[start Report received] > review[user Review report] > decision[xor Approved?]\ndecision >(Yes: default) process[service Process payment] > done[end Paid]\ndecision >(No: rejection) back[user Send to employee] > notice[end Report sent]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 501,
+      "completionTokens": 59,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 5,
+    "elements": 7,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 0,
+      "cards": 0,
+      "apiCards": 0,
+      "skipped": true,
+      "skipRight": true
+    },
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "26-notion-page-rest",
+    "firstByteMs": 9999,
+    "firstContentMs": 9999,
+    "totalMs": 11421,
+    "text": "# Notion knowledge base management\nstart[start ticket closed] > notion[service Create page in Notion] > done[end page created]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 504,
+      "completionTokens": 29,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 3,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 1,
+      "cards": 1,
+      "apiCards": 1,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 3306,
+      "usage": {
+        "promptTokens": 775,
+        "completionTokens": 146,
+        "cachedTokens": 0
+      },
+      "neurons": 10,
+      "lines": "with notion: http POST https://api.notion.com/v1/pages | authentication.type=bearer | authentication.token={{secrets.NOTION_TOKEN}} | method=POST | resultVariable=result | resultExpression=response.body | documentReturnFormat=JSON | headers=={\"Consent-Type\": \"application/json\", \"Accept\": \"application/json\", \"Notion-Version\": \"2026-03-11\"} | body=={\"parent\": {\"database_id\": \"{{notion.intent.target.id}}\"}, \"properties\": {\"Name\": {\"title\": [{\"plain_text\": \"{{ticket.subject}}\"}]}, \"Resolution\": {\"rich_text\": [{\"plain_text\": \"{{ticket.resolution}}\"}]}} | query=={\"filter_properties\": \"true\"}",
+      "raw": "with notion: http POST https://api.notion.com/v1/pages | authentication.type=bearer | authentication.token={{secrets.NOTION_TOKEN}} | method=POST | resultVariable=result | resultExpression=response.body | documentReturnFormat=JSON | headers=={\"Consent-Type\": \"application/json\", \"Accept\": \"application/json\", \"Notion-Version\": \"2026-03-11\"} | body=={\"parent\": {\"database_id\": \"{{notion.intent.target.id}}\"}, \"properties\": {\"Name\": {\"title\": [{\"plain_text\": \"{{ticket.subject}}\"}]}, \"Resolution\": {\"rich_text\": [{\"plain_text\": \"{{ticket.resolution}}\"}]}} | query=={\"filter_properties\": \"true\"}",
+      "connected": 1,
+      "problems": [
+        "Invalid FEEL expression for \"body\": Expected }",
+        "Invalid FEEL expression for \"body\": Unexpected token '|'"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "NOTION_TOKEN"
+      ]
+    },
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "26-notion-page-rest",
+    "firstByteMs": 163,
+    "firstContentMs": 164,
+    "totalMs": 614,
+    "text": "# Notion knowledge base\nstart[start Ticket closed] > task[service Create Notion page] > done[end Notion page created]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 504,
+      "completionTokens": 29,
+      "cachedTokens": 0
+    },
+    "neurons": 4,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 3,
+    "failed": [
+      "no task type io.camunda:http-json:1",
+      "no call to https://api.notion.com/v1/pages"
+    ],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 1,
+      "cards": 1,
+      "apiCards": 1,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 2459,
+      "usage": {
+        "promptTokens": 772,
+        "completionTokens": 127,
+        "cachedTokens": 0
+      },
+      "neurons": 9,
+      "lines": "",
+      "raw": "with start>task: http POST https://api.notion.com/v1/pages | token={{secrets.NOTION_TOKEN}} | headers=={ \"Notion-Version\": \"2026-03-11\" } | body=={ \"parent\": { \"type\": \"database_id\", \"database_id\": \"{{database_id}}\" }, \"properties\": { \"name\": { \"title\": [ { \"text\": { \"content\": \"{{summary}}\" } } ] }, \"resolution\": { \"rich_text\": [ { \"text\": { \"content\": \"{{resolution}}\" } } ] } } } | result=id: body.id",
+      "connected": 0,
+      "problems": [],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": []
+    },
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "26-notion-page-rest",
+    "firstByteMs": 7747,
+    "firstContentMs": 7749,
+    "totalMs": 8515,
+    "text": "# Notion KB page creation\nstart[start Ticket closed] > summary[service Get ticket summary] > save[service Save to Notion] > done[end Page created]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 504,
+      "completionTokens": 36,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 4,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 1,
+      "cards": 1,
+      "apiCards": 1,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 2247,
+      "usage": {
+        "promptTokens": 783,
+        "completionTokens": 90,
+        "cachedTokens": 0
+      },
+      "neurons": 8,
+      "lines": "with save: http POST https://api.notion.com/v1/pages | authentication.type=bearer | authentication.token={{secrets.NOTION_TOKEN}} | headers=={\"Content-Type\": \"application/json\", \"Notion-Version\": \"2026-03-11\"} | body=={parent: {database_id: databaseId}, properties: {name: {title: [{plain_text: name}]}}} | result=createdPage: response.body",
+      "raw": "with save: http POST https://api.notion.com/v1/pages | authentication.type=bearer | authentication.token={{secrets.NOTION_TOKEN}} | headers=={\"Content-Type\": \"application/json\", \"Notion-Version\": \"2026-03-11\"} | body=={parent: {database_id: databaseId}, properties: {name: {title: [{plain_text: name}]}}} | result=createdPage: response.body",
+      "connected": 1,
+      "problems": [],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "NOTION_TOKEN"
+      ]
+    },
+    "run": 3
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "27-github-workflow-runs",
+    "firstByteMs": 168,
+    "firstContentMs": 168,
+    "firstShapeMs": 642,
+    "totalMs": 1398,
+    "text": "# GitHub Actions monitoring\nstart[start Daily job switch] > fetch[service Fetch workflow runs] > filter[xor Any failed?]\nfilter >(Yes: github.repos.results[?(@.status == 'failure')]) post[send Post to Slack] > done[end Job done]\nfilter >(No: default) done\nfailed[catch:timer Daily timer] > fetch",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 507,
+      "completionTokens": 77,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 3,
+        "message": "condition \"github.repos.results[?(@.status == 'failure')]\" is not FEEL; kept as the branch label"
+      },
+      {
+        "line": 5,
+        "message": "\"failed\" is not connected to a start event; left out"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\"",
+      "gave filter > post the condition \"= anyFailed = true\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 3,
+    "elements": 6,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 1,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 2129,
+      "usage": {
+        "promptTokens": 1088,
+        "completionTokens": 84,
+        "cachedTokens": 0
+      },
+      "neurons": 10,
+      "lines": "with fetch: http GET /repos/web-repo/actions/runs | api=github | resultVariable=github.repos.results | query=={status: \"failure\", per_page: \"100\"}\nwith post: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#builds | data.text== \"Failed runs: \" + github.repos.results | data.messageType=plainText",
+      "raw": "with fetch: http GET /repos/web-repo/actions/runs | api=github | resultVariable=github.repos.results | query=={status: \"failure\", per_page: \"100\"}\nwith post: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#builds | data.text== \"Failed runs: \" + github.repos.results | data.messageType=plainText",
+      "connected": 2,
+      "problems": [
+        "http has no input \"query\"; ignored"
+      ],
+      "questions": 1,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "GITHUB_TOKEN",
+        "SLACK_TOKEN"
+      ]
+    },
+    "run": 1
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "27-github-workflow-runs",
+    "firstByteMs": 342,
+    "firstContentMs": 342,
+    "firstShapeMs": 1216,
+    "totalMs": 1803,
+    "text": "# GitHub build monitor\nstart[start Job started] > run[service List GitHub actions] > list[xor Has failures?] > post[send Post to Slack] > check[xor All good?] > done[end Job done]\nlist >(Yes: runs_count == 0) silence[manual Mark silent] > done\npost >(No: runs_count > 0) done\nsilence > done",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 507,
+      "completionTokens": 82,
+      "cachedTokens": 0
+    },
+    "neurons": 6,
+    "problems": [
+      {
+        "line": 2,
+        "message": "\"check\" has only one branch; gateway removed"
+      }
+    ],
+    "fixes": [
+      "joined 2 flows into \"done\" with xor gateway \"done_join\"",
+      "made list > post the default branch of \"list\""
+    ],
+    "lintErrors": [],
+    "lintWarnings": 4,
+    "elements": 7,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 1,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1889,
+      "usage": {
+        "promptTokens": 1056,
+        "completionTokens": 90,
+        "cachedTokens": 0
+      },
+      "neurons": 10,
+      "lines": "with run: api github GET /repos/${owner}/${repo}/actions/runs?status=failure | resultVariable=response: response.body\nwith post: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#builds | data.text==\"Failed runs for \" + \"${owner}/${repo}\":\\n\" + response.body.workflows?.map(wrk => \"- \" + wrk.name).join(\"\\n\")",
+      "raw": "with run: api github GET /repos/${owner}/${repo}/actions/runs?status=failure | resultVariable=response: response.body\nwith post: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#builds | data.text==\"Failed runs for \" + \"${owner}/${repo}\":\\n\" + response.body.workflows?.map(wrk => \"- \" + wrk.name).join(\"\\n\")",
+      "connected": 2,
+      "problems": [
+        "Invalid FEEL expression for \"data.text\": Unexpected token ':'"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "GITHUB_TOKEN",
+        "SLACK_TOKEN"
+      ]
+    },
+    "run": 2
+  },
+  {
+    "model": "@cf/zai-org/glm-4.7-flash",
+    "prompt": "27-github-workflow-runs",
+    "firstByteMs": 238,
+    "firstContentMs": 239,
+    "totalMs": 971,
+    "text": "# GitHub failures monitor\nstart[start Every morning] > list[service List failed GitHub Actions runs] > send[send Post summary to Slack in #builds channel] > done[end List and post summary]",
+    "reasoningChars": 0,
+    "usage": {
+      "promptTokens": 507,
+      "completionTokens": 43,
+      "cachedTokens": 0
+    },
+    "neurons": 5,
+    "problems": [],
+    "fixes": [],
+    "lintErrors": [],
+    "lintWarnings": 2,
+    "elements": 4,
+    "failed": [],
+    "connect": {
+      "model": "@cf/zai-org/glm-4.7-flash",
+      "tasks": 2,
+      "cards": 6,
+      "apiCards": 1,
+      "skipped": false,
+      "skipRight": true,
+      "totalMs": 1587,
+      "usage": {
+        "promptTokens": 1046,
+        "completionTokens": 108,
+        "cachedTokens": 0
+      },
+      "neurons": 10,
+      "lines": "with list: http GET https://api.github.com/repos/web/web/actions/runs | queryPerPage=100 & queryStatus=failed & queryRef=main | token={{secrets.GITHUB_TOKEN}} | result=runs\nwith send: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#builds | data.text== \"*Failed GitHub Actions Runs:*\\n\" + runs.workflowRuns.map(r| \"- \" + r.headBranch + \" (\" + r.conclusion + \")\").join(\"\\n\")",
+      "raw": "with list: http GET https://api.github.com/repos/web/web/actions/runs | queryPerPage=100 & queryStatus=failed & queryRef=main | token={{secrets.GITHUB_TOKEN}} | result=runs\nwith send: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#builds | data.text== \"*Failed GitHub Actions Runs:*\\n\" + runs.workflowRuns.map(r| \"- \" + r.headBranch + \" (\" + r.conclusion + \")\").join(\"\\n\")",
+      "connected": 2,
+      "problems": [
+        "http has no input \"queryPerPage\"; ignored",
+        "http has no input \"token\"; ignored",
+        "Invalid FEEL expression for \"data.text\": Expected )",
+        "Invalid FEEL expression for \"data.text\": Unexpected token '|'"
+      ],
+      "questions": 0,
+      "literalSecrets": 0,
+      "dryRun": "end",
+      "secrets": [
+        "GITHUB_TOKEN",
+        "SLACK_TOKEN"
+      ]
+    },
+    "run": 3
+  }
+]
