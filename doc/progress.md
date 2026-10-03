@@ -1,5 +1,15 @@
 # Progress
 
+## 2026-10-03 — Editor: BPMN Kit connector templates in the connector picker
+
+- The properties panel's **Connector** list for service tasks (and ad-hoc sub-processes) now
+  offers `BPMNKIT_CONNECTOR_TEMPLATES` after Camunda's, so **Cloudflare Clef Decision** can be
+  picked in the editor and a task stamped with it opens in the template's form.
+- Camunda's templates are registered first. A REST-connector task with no
+  `zeebe:modelerTemplate` therefore still maps to Camunda's REST connector, not to Clef, which
+  uses the same job type. A test pins this.
+- The i18n harvest treats BPMN Kit template names as product names, like Camunda's.
+
 ## 2026-10-03 — Connectors: Cloudflare Clef decision template
 
 - **New template `io.bpmnkit.connectors.CloudflareClef.v1`** for Cloudflare's Clef and

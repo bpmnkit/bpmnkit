@@ -1529,15 +1529,26 @@
 			]
 		},
 		{
-			"id": "guides.ai-decisions.use-the-template-in-camunda-modeler",
-			"file": "chunks/guides.ai-decisions.use-the-template-in-camunda-modeler.md",
-			"tokens": 233,
+			"id": "guides.ai-decisions.use-the-template-in-the-editor",
+			"file": "chunks/guides.ai-decisions.use-the-template-in-the-editor.md",
+			"tokens": 148,
 			"tags": [
 				"guides",
 				"ai-decisions",
 				"template",
+				"editor",
 				"camunda",
-				"modeler",
+				"modeler"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-decisions.limits",
+			"file": "chunks/guides.ai-decisions.limits.md",
+			"tokens": 144,
+			"tags": [
+				"guides",
+				"ai-decisions",
 				"limits"
 			],
 			"entities": []

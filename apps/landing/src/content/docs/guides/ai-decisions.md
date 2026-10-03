@@ -174,6 +174,11 @@ const run = await t.start("TicketTriage", { ticket: { subject: "Refund", body: "
 
 `apps/examples/tests/ticket-triage-clef.process.test.ts` tests all four branches.
 
+## Use the template in the editor
+
+In the BPMN Kit [editor](/editor), select a service task and pick **Cloudflare Clef Decision**
+in the **Connector** list. The panel then shows the template's fields.
+
 ## Use the template in Camunda Modeler
 
 To use the template in Desktop Modeler or Web Modeler, write it to a JSON file:

@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.1.0. 362 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.1.0. 363 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -115,7 +115,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [AI Decisions — Questions and answers](.llms/chunks/guides.ai-decisions.questions-and-answers.md) — 421 tokens
 - [AI Decisions — Example: triage a support ticket](.llms/chunks/guides.ai-decisions.example-triage-a-support-ticket.md) — 449 tokens
 - [AI Decisions — Test the routing](.llms/chunks/guides.ai-decisions.test-the-routing.md) — 197 tokens
-- [AI Decisions — Use the template in Camunda Modeler](.llms/chunks/guides.ai-decisions.use-the-template-in-camunda-modeler.md) — 233 tokens
+- [AI Decisions — Use the template in the editor](.llms/chunks/guides.ai-decisions.use-the-template-in-the-editor.md) — 148 tokens
+- [AI Decisions — Limits](.llms/chunks/guides.ai-decisions.limits.md) — 144 tokens
 - [Building Processes with AI](.llms/chunks/guides.ai-implement.md) — 403 tokens
 - [Building Processes with AI — The Claude Code plugin](.llms/chunks/guides.ai-implement.the-claude-code-plugin.md) — 231 tokens
 - [Building Processes with AI — Lightweight alternative: `casen skills install`](.llms/chunks/guides.ai-implement.lightweight-alternative-casen-skills-install.md) — 172 tokens

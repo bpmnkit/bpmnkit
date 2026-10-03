@@ -1,19 +1,4 @@
-# AI Decisions — Use the template in Camunda Modeler
-
-To use the template in Desktop Modeler or Web Modeler, write it to a JSON file:
-
-```typescript
-import { writeFileSync } from "node:fs"
-import { getTemplate } from "@bpmnkit/connectors"
-
-const clef = getTemplate("io.bpmnkit.connectors.CloudflareClef.v1")
-writeFileSync(".camunda/element-templates/cloudflare-clef.json", JSON.stringify(clef, null, 2))
-```
-
-The template is in the **AI decisions** category of the template chooser.
-
-
-## Limits
+# AI Decisions — Limits
 
 These limits are from Cloudflare's model page:
 
