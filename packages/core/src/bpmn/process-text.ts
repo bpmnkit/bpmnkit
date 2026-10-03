@@ -235,6 +235,8 @@ export interface PathTokens {
 	labels: (string | undefined)[]
 	/** A parenthesised note after the last node, which carries no meaning. */
 	note?: string
+	/** Ids written with spaces (`call back[…]`), and the id each was read as. */
+	joined?: { written: string; id: string }[]
 }
 
 /**
@@ -247,12 +249,21 @@ export interface PathTokens {
 export function tokenizePath(text: string): PathTokens | { error: string } {
 	const refs: PathTokens["refs"] = []
 	const labels: PathTokens["labels"] = []
+	const joined: NonNullable<PathTokens["joined"]> = []
 	let note: string | undefined
 	let i = 0
 	for (;;) {
-		const id = ID.exec(text.slice(i))?.[0]
+		let id = ID.exec(text.slice(i))?.[0]
 		if (id === undefined) return { error: `expected a node id at "${text.slice(i, i + 20)}"` }
 		i += id.length
+		// `call back[service …]`: words before a bracket are one id
+		const words = /^((?: +[A-Za-z_][\w.-]*)+)(?= *\[)/.exec(text.slice(i))?.[1]
+		if (words !== undefined) {
+			const written = `${id}${words}`
+			id = written.split(/ +/).join("_")
+			joined.push({ written, id })
+			i += words.length
+		}
 		let spec: string | undefined
 		// `done-end [end Done]`: a space before the bracket still declares.
 		const gap = /^ +\[/.exec(text.slice(i))
@@ -293,7 +304,10 @@ export function tokenizePath(text: string): PathTokens | { error: string } {
 			while (text[i] === " ") i++
 		}
 	}
-	return note === undefined ? { refs, labels } : { refs, labels, note }
+	const tokens: PathTokens = { refs, labels }
+	if (note !== undefined) tokens.note = note
+	if (joined.length > 0) tokens.joined = joined
+	return tokens
 }
 
 /**
@@ -390,6 +404,9 @@ class Reader {
 		if ("error" in path) return this.fail(n, path.error)
 		if (path.note !== undefined) {
 			this.problems.push({ line: n, message: `ignored the note "${path.note}"` })
+		}
+		for (const { written, id } of path.joined ?? []) {
+			this.problems.push({ line: n, message: `"${written}" is not an id; read as "${id}"` })
 		}
 		const { refs, labels } = path
 
@@ -522,7 +539,22 @@ class Reader {
 		if (label) element.name = label
 		// A catch or boundary event waits for something, and cannot deploy without
 		// saying what. Unnamed, it is most often a message: "Payment confirmed".
-		if (
+		// `queue[event catch Send to SQS]` is named for a call it makes, not for what it waits
+		// for: it is a service task, as every call to an outside system is
+		const call =
+			element.type === "intermediateCatchEvent" && element.eventType === undefined
+				? /^(?:(?:catch|throw|event)\s+)?((?:send|post|publish|call|notify|invoke|push|upload|create|update|delete|run|trigger)\b.*)$/i.exec(
+						label ?? "",
+					)?.[1]
+				: undefined
+		if (call !== undefined) {
+			element.type = "serviceTask"
+			element.name = call
+			this.problems.push({
+				line: n,
+				message: `"${id}" is named for a call it makes, "${call}"; made it a service task`,
+			})
+		} else if (
 			(element.type === "intermediateCatchEvent" || element.type === "boundaryEvent") &&
 			element.eventType === undefined
 		) {

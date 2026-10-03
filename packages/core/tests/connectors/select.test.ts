@@ -24,6 +24,19 @@ describe("selectConnectors", () => {
 		expect(result.post?.[0]).toBe("slack chat.postMessage")
 	})
 
+	it("ranks the request's system first on a task that names one the request does not", () => {
+		// glm-4.7-flash, golden prompt 21: the draft said Slack, the request Teams
+		const result = picked(
+			"Append every new lead to our Google Sheet, then notify the sales team in Microsoft Teams.",
+			[
+				{ id: "sheet", name: "Append lead to Google Sheet", type: "serviceTask" },
+				{ id: "notify", name: "Post summary to Slack", type: "sendTask" },
+			],
+		)
+		expect(result.sheet?.[0]).toBe("google-sheets addValues")
+		expect(result.notify?.[0]).toMatch(/^teams sendMessageTo/)
+	})
+
 	it("keeps a system for the task that names it, rather than every task the request covers", () => {
 		const result = picked("When an order fails, tell ops in Slack", [
 			{ id: "log", name: "Record failure", type: "serviceTask" },

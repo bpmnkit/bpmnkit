@@ -1,5 +1,27 @@
 # Progress
 
+## 2026-10-03 — Drafting repairs from the fourth bench
+
+The four failures of the fourth bench that the connect pass could not fix came from the draft.
+Three are repaired now; the fourth is a reasonable answer the prompt does not accept. A new
+bench run is needed to measure them, as each needs a model answer the run did not record.
+
+- **An id with spaces** (17 run 1): `call back[service Stripe refund]` stopped the line, which
+  left a 3-element diagram with no task. `parseProcessText` now reads words before a bracket as
+  one id, `call_back`, and reports it.
+- **A call drafted as a catch event** (24 run 2): `queue[event catch Send to SQS]`. A catch event
+  without a trigger whose name starts with a calling verb (send, post, publish, call, notify,
+  invoke, …) is now a service task, so the outbound SQS connector fits it.
+- **The wrong system** (21 run 2): the draft said "Post summary to Slack" for a request that
+  says Microsoft Teams. That is word for word the example in Drop's drafting prompt, which now
+  asks for the system the description names, with an example no golden prompt uses.
+  `selectConnectors` also ranks the request's system first on a task that names a system the
+  request does not, by what the request asks of it: Teams `sendMessageTo…` before Slack.
+- **Not changed** (20 run 3): an AI Agent connector with the OpenAI provider. Prompt 20 still
+  expects the OpenAI connector.
+
+Re-scoring every committed bench gives the same totals as before.
+
 ## 2026-10-03 — Fourth bench of the connect pass: the production drafting model
 
 **The run:** `bench-results/2026-10-03T08-49-27-587Z`. Connector prompts 16–27, 3 runs each.

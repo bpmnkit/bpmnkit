@@ -581,6 +581,31 @@ describe("parseProcessText", () => {
 		])
 	})
 
+	it("makes a catch event named for a call it makes a service task", () => {
+		// glm-4.7-flash, golden prompt 24.
+		const text =
+			"s[start Upload received] > queue[event catch Send to SQS] > wait[catch Reply received] > e[end Done]"
+		const { diagram, problems } = parseProcessText(text)
+		const els = new Map(diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("queue")).toMatchObject({ type: "serviceTask", name: "Send to SQS" })
+		expect(els.get("wait")).toMatchObject({ type: "intermediateCatchEvent", eventType: "message" })
+		expect(problems.map((p) => p.message)).toEqual([
+			'"queue" is named for a call it makes, "Send to SQS"; made it a service task',
+			'"wait" waits for nothing in particular; made it a message event',
+		])
+	})
+
+	it("reads an id written with spaces before its bracket as one id", () => {
+		// glm-4.7-flash, golden prompt 17.
+		const text =
+			"s[start Refund requested] > call back[service Stripe refund] > e[end Refunded]\ncall_back > e"
+		const { diagram, problems } = parseProcessText(text)
+		expect(diagram.processes[0]?.elements.map((e) => e.id)).toEqual(["s", "call_back", "e"])
+		expect(problems.map((p) => p.message)).toContain(
+			'"call back" is not an id; read as "call_back"',
+		)
+	})
+
 	it("makes a link event in a path a plain event", () => {
 		// glm-4.7-flash, golden prompt 11.
 		const text =

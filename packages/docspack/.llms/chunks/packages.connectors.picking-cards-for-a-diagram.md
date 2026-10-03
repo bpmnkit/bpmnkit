@@ -22,6 +22,9 @@ Beyond those rules:
   operations do not crowd out SendGrid when the request names it.
 - **Systems nobody named.** A connector that names a system the task and request do not
   ranks lower: "Azure OpenAI" for a request that says OpenAI.
+- **The request wins.** A task whose name names a system the request does not ("Post summary
+  to Slack" for a request that says Teams) gets the request's system first, ranked by what the
+  request asks of it.
 - **Deprecated templates** are never offered.
 - **Caps.** At most three cards per task and eight in all. Every task keeps its best card
   before any task gets a second.

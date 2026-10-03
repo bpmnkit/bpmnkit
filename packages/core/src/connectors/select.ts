@@ -167,6 +167,11 @@ const HTTP_WORDS = new Set([
 	"webhook",
 ])
 
+/** Whether a request's terms name a system: one word, singular or plural ("Google Sheet"). */
+function askedFor(system: string, requested: ReadonlySet<string>): boolean {
+	return [system, system.replace(/s$/, ""), `${system}s`].some((form) => requested.has(form))
+}
+
 /** What each further card of a template costs in the ranking. */
 const REPEAT_COST = 8
 
@@ -237,6 +242,7 @@ export function selectConnectors(
 	const total = options.total ?? 8
 	const apis = options.apis ?? []
 	const requested = new Set(termsOf(input.text ?? ""))
+	const requestTerms = withSynonyms([...requested])
 	// A deprecated template has a successor in the catalog: offer that one
 	const cards = listConnectorCards().filter(
 		(card) => !getTemplate(card.templateId)?.name.includes("(Deprecated)"),
@@ -264,6 +270,15 @@ export function selectConnectors(
 		// but does not make every messaging connector a candidate
 		const synonyms = withSynonyms(terms).filter((t) => !named.has(t))
 		const scored: { card: ConnectorCard; score: number }[] = []
+		// "Post summary to Slack" in a request that says Teams: the draft named the wrong
+		// system, and the request's own ranks first
+		const misnamed =
+			requested.size > 0 &&
+			cards.some(
+				(card) =>
+					fits(card, task.type) &&
+					systems(card).some((s) => named.has(s) && !askedFor(s, requested)),
+			)
 		/** Whether a card fits by the task's own name, not only by the request. */
 		let ownCard = false
 		for (const card of cards) {
@@ -286,7 +301,9 @@ export function selectConnectors(
 				cardScore(card, terms) * 2 +
 				cardScore(card, synonyms) +
 				(inName ? 10 : 0) +
-				(inRequest ? 4 : 0) -
+				(inRequest ? 4 : 0) +
+				// The request's system ranks first, by what the request asks of it
+				(inRequest && misnamed ? 30 + cardScore(card, requestTerms) : 0) -
 				unasked * 8
 			scored.push({ card, score })
 		}

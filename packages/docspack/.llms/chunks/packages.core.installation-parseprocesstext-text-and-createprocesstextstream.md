@@ -45,7 +45,10 @@ number. What it adds or changes is listed in `fixes`:
 - an end event is added after every path that stops elsewhere, and a loop with no way out gets
   an exit branch from its decision; a loop with no decision loses the flows that close it
 - a link event in a path becomes a plain event, since the format cannot name its partner
-- a catch or boundary event written without a trigger becomes a message event, so it deploys
+- a catch or boundary event written without a trigger becomes a message event, so it deploys.
+  A catch event named for a call it makes ("Send to SQS") becomes a service task instead
+- an id written with spaces before its bracket (`call back[service …]`) is read as one id,
+  `call_back`
 - a gateway with one way in and one way out — a question answered only one way — is removed;
   an event-based gateway waiting for one event becomes a catch event
 - a task or event with several ways out gets a split gateway: exclusive when the branches are
