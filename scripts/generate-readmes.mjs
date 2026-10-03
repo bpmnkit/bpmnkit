@@ -2059,6 +2059,7 @@ interface GenerateOptions {
 - **Required-field and FEEL validation** — problems are reported, never silently swallowed
 - **Works with any template** — bundled catalog or a custom/generated \`ElementTemplate\`
 - **Inbound connectors and linked resources** — \`applyTemplateToElement\` writes a template onto an element of a parsed model: the root \`bpmn:message\` and its \`zeebe:subscription\` correlation key, \`zeebe:properties\`, \`zeebe:linkedResources\` and the \`zeebe:modelerTemplate\` stamps
+- **Templates BPMN Kit maintains** — \`BPMNKIT_CONNECTOR_TEMPLATES\` adds services Camunda ships no connector for, on the REST connector, e.g. Cloudflare Clef decision models (\`io.bpmnkit.connectors.CloudflareClef.v1\`)
 
 ## Installation
 

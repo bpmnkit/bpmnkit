@@ -14,7 +14,8 @@
 | `readTemplateDocument(text)` | Parse a file holding one template or many |
 | `registerElementTemplates(templates)` | Merge templates into the catalog |
 | `clearRegisteredTemplates()` | Drop everything registered |
-| `CAMUNDA_CONNECTOR_TEMPLATES` | The 116 bundled templates, raw |
+| `CAMUNDA_CONNECTOR_TEMPLATES` | The 116 bundled Camunda templates, raw |
+| `BPMNKIT_CONNECTOR_TEMPLATES` | The templates BPMN Kit maintains, raw |
 
 From `@bpmnkit/connectors/node`: `discoverElementTemplates`, `collectElementTemplates`,
 `DEFAULT_CONFIG_FOLDER`, `TEMPLATES_SUBFOLDER`.

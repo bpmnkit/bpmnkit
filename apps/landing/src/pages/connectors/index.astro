@@ -3,11 +3,14 @@ import "../../styles/global.css"
 import Seo from "@bpmnkit/astro-shared/Seo.astro"
 import { breadcrumbJsonLd } from "@bpmnkit/astro-shared/seo.js"
 import { CATALOG } from "@bpmnkit/connector-gen"
-import { listConnectors } from "@bpmnkit/connectors"
+import { BPMNKIT_CONNECTOR_TEMPLATES, listConnectors } from "@bpmnkit/connectors"
 import Footer from "../../components/Footer.astro"
 import Nav from "../../components/Nav.astro"
 
-const connectors = listConnectors().sort((a, b) => a.name.localeCompare(b.name))
+const bpmnkitIds = new Set(BPMNKIT_CONNECTOR_TEMPLATES.map((t) => t.id))
+const all = listConnectors().sort((a, b) => a.name.localeCompare(b.name))
+const connectors = all.filter((c) => !bpmnkitIds.has(c.id))
+const maintained = all.filter((c) => bpmnkitIds.has(c.id))
 
 const jsonLd = breadcrumbJsonLd([
 	{ name: "Home", url: "https://bpmnkit.com" },
@@ -38,6 +41,9 @@ const jsonLd = breadcrumbJsonLd([
     .connector-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
     .connector-card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .connector-badge { display: inline-block; font-family: var(--font-mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-top: 8px; }
+    .connectors-section { margin-top: 56px; border-top: 1px solid var(--border); padding-top: 40px; }
+    .connectors-section h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; }
+    .connectors-section > p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.65; max-width: 720px; margin-bottom: 20px; }
   </style>
 </head>
 <body>
@@ -59,6 +65,19 @@ const jsonLd = breadcrumbJsonLd([
           </a>
         ))}
       </div>
+      <section class="connectors-section">
+        <h2>Maintained by BPMN Kit</h2>
+        <p>Templates for services Camunda does not ship a connector for. They run on Camunda's REST connector, so a cluster needs no extra job worker, and <code>@bpmnkit/connectors</code> bundles them in the same catalog.</p>
+        <div class="connectors-grid">
+          {maintained.map((c) => (
+            <a href={`/connectors/${encodeURIComponent(c.id)}`} class="connector-card">
+              <h3>{c.name}</h3>
+              <p>{c.description}</p>
+              <span class="connector-badge">{BPMNKIT_CONNECTOR_TEMPLATES.find((t) => t.id === c.id)?.category?.name ?? c.direction}</span>
+            </a>
+          ))}
+        </div>
+      </section>
     </main>
     <Footer />
   </div>

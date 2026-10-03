@@ -1,7 +1,7 @@
 {
 	"$schema": "https://docspack.dev/schema/v1.json",
 	"name": "@bpmnkit/docspack",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"documents": [
 		"@bpmnkit/core",
 		"@bpmnkit/canvas",
@@ -199,7 +199,7 @@
 		{
 			"id": "cli.connector",
 			"file": "chunks/cli.connector.md",
-			"tokens": 166,
+			"tokens": 177,
 			"tags": [
 				"cli",
 				"connector",
@@ -210,7 +210,7 @@
 		{
 			"id": "cli.connector.browse-the-bundled-ootb-catalog",
 			"file": "chunks/cli.connector.browse-the-bundled-ootb-catalog.md",
-			"tokens": 213,
+			"tokens": 211,
 			"tags": [
 				"cli",
 				"connector",
@@ -1455,6 +1455,94 @@
 			"entities": []
 		},
 		{
+			"id": "guides.ai-decisions",
+			"file": "chunks/guides.ai-decisions.md",
+			"tokens": 232,
+			"tags": [
+				"guides",
+				"ai-decisions"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-decisions.the-template",
+			"file": "chunks/guides.ai-decisions.the-template.md",
+			"tokens": 286,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"template"
+			],
+			"entities": [
+				"@bpmnkit/connectors",
+				"io.bpmnkit.connectors.CloudflareClef.v1",
+				"authentication.token",
+				"accountId",
+				"body.state",
+				"body.questions",
+				"body.images",
+				"resultExpression"
+			]
+		},
+		{
+			"id": "guides.ai-decisions.questions-and-answers",
+			"file": "chunks/guides.ai-decisions.questions-and-answers.md",
+			"tokens": 421,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"questions",
+				"answers"
+			],
+			"entities": [
+				"clef.team"
+			]
+		},
+		{
+			"id": "guides.ai-decisions.example-triage-a-support-ticket",
+			"file": "chunks/guides.ai-decisions.example-triage-a-support-ticket.md",
+			"tokens": 449,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"example",
+				"triage",
+				"support",
+				"ticket"
+			],
+			"entities": [
+				"apps/examples/src/07-ai-ticket-triage-clef.ts"
+			]
+		},
+		{
+			"id": "guides.ai-decisions.test-the-routing",
+			"file": "chunks/guides.ai-decisions.test-the-routing.md",
+			"tokens": 197,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"test",
+				"routing"
+			],
+			"entities": [
+				"apps/examples/tests/ticket-triage-clef.process.test.ts"
+			]
+		},
+		{
+			"id": "guides.ai-decisions.use-the-template-in-camunda-modeler",
+			"file": "chunks/guides.ai-decisions.use-the-template-in-camunda-modeler.md",
+			"tokens": 233,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"template",
+				"camunda",
+				"modeler",
+				"limits"
+			],
+			"entities": []
+		},
+		{
 			"id": "guides.ai-implement",
 			"file": "chunks/guides.ai-implement.md",
 			"tokens": 403,
@@ -2081,7 +2169,7 @@
 		{
 			"id": "guides.claude-code-plugin.reference-docs",
 			"file": "chunks/guides.claude-code-plugin.reference-docs.md",
-			"tokens": 412,
+			"tokens": 410,
 			"tags": [
 				"guides",
 				"claude-code-plugin",
@@ -4088,7 +4176,7 @@
 		{
 			"id": "packages.connectors.overview",
 			"file": "chunks/packages.connectors.overview.md",
-			"tokens": 146,
+			"tokens": 157,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4102,7 +4190,7 @@
 		{
 			"id": "packages.connectors.installation",
 			"file": "chunks/packages.connectors.installation.md",
-			"tokens": 240,
+			"tokens": 402,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4117,7 +4205,9 @@
 				"ConnectorInputSpec",
 				"isSecret",
 				"isFeel",
-				"summarizeTemplate"
+				"summarizeTemplate",
+				"getTemplate",
+				"io.bpmnkit.connectors.CloudflareClef.v1"
 			]
 		},
 		{
@@ -4206,7 +4296,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 262,
+			"tokens": 278,
 			"tags": [
 				"packages",
 				"connectors",

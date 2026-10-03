@@ -1,5 +1,24 @@
 # Progress
 
+## 2026-10-03 — Connectors: Cloudflare Clef decision template
+
+- **New template `io.bpmnkit.connectors.CloudflareClef.v1`** for Cloudflare's Clef and
+  Clef-flash decision models (Workers AI). It runs on the REST connector
+  (`io.camunda:http-json:1`). The Model dropdown sets the URL path and the body's `model`
+  together: one hidden URL property per choice, each gated by a condition. The account id is
+  its own input mapping ahead of the URL, so the URL can read it. The default result expression
+  keeps the answers as `clef.<question id>`.
+- **Templates this repo maintains** now have their own home: `BPMNKIT_CONNECTOR_TEMPLATES` in
+  `packages/connectors/src/templates/bpmnkit.ts`, beside the generated Camunda mirror that
+  `pnpm update-connectors` overwrites. The catalog lists both. The template's `category` is
+  "AI decisions", so `ElementTemplate` gains the schema's optional `category` field.
+- `/connectors` keeps counting Camunda's templates in its headline and lists BPMN Kit's in a
+  "Maintained by BPMN Kit" section.
+- New guide [AI Decisions](/docs/guides/ai-decisions) and example
+  `apps/examples/src/07-ai-ticket-triage-clef.ts`: ticket triage that pages on-call, queues by
+  team, and sends a low-confidence answer to a person. Its process test covers all four
+  branches.
+
 ## 2026-10-02 — Docspack: retrieval fixes from a comparison with Camunda's docs MCP
 
 A side-by-side run of 8 questions against `@bpmnkit/camunda-docspack` and Camunda's docs MCP

@@ -176,7 +176,7 @@ Every skill reads the relevant reference doc before authoring a plan:
 | File | Contents |
 |---|---|
 | `references/plan-format.md` | The `ProcessPlan` JSON schema + annotated, tested examples |
-| `references/connectors.md` | The 116-template Camunda connector catalog index |
+| `references/connectors.md` | The bundled connector catalog index |
 | `references/agentic.md` | The AI Agent Sub-process pattern, binding keys, a full example |
 | `references/feel.md` | FEEL syntax crib sheet + the `"="`-means-expression convention |
 | `references/modeling-style.md` | Camunda naming/structure conventions |

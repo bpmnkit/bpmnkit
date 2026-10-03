@@ -1771,6 +1771,7 @@
 			"ApplyProblem": "type",
 			"ApplyResult": "type",
 			"ApplyToElementResult": "type",
+			"BPMNKIT_CONNECTOR_TEMPLATES": "value",
 			"CAMUNDA_CONNECTOR_TEMPLATES": "value",
 			"ConnectorDirection": "type",
 			"ConnectorInputSpec": "type",
