@@ -1,5 +1,32 @@
 # Progress
 
+## 2026-10-04 — Fifth bench of the connect pass
+
+**The run:** `bench-results/2026-10-04T05-57-16-575Z`. Prompts 16–27, 3 runs each, with
+`glm-4.7-flash` for both passes. It passed 30/36, up from 27/36; 21 Teams and 17 Stripe passed
+every run. It re-scores to 33/36 with the fixes below. Medians: TTFB 212 ms and total 680 ms
+for the draft; 1,457 ms for the connect pass.
+
+**Fixed:**
+- **Lines run together** (16 run 1): the model wrote all three `with` lines on one line. Drop's
+  filter now splits a line at each `with <id>:`.
+- **A REST card ahead of the connector** (18 run 1): the API index's SendGrid endpoint came
+  first, and the model's REST line took the only task. An API card is now also left out when the
+  dedicated connector covers as much of the request as the index's best endpoint does.
+  GitHub workflow runs (27) keep their API card.
+- **A distractor card** (24 run 2): "Send message to SQS" was offered SQS, Camunda's
+  Send message connector and SNS, and the model took Send message. A task that names its system
+  is no longer offered connectors that only share a word with it.
+- **An id reused for a second node** (20 run 3): `send[…] > send[post Slack message to #support
+  channel]` was dropped as a restatement, because `post` is no kind. A name of three words or
+  more after an arrow now makes a new node.
+- **Unclosed brackets** (16 run 3, 26 run 3): `start[start HR) > …` and
+  `end[page created in Notion` at the end of the line each left a draft with no task. The bracket
+  is now closed where the name ends, in diagrams and in change scripts.
+
+16 run 3, 26 run 3 and 24 run 2 need new model answers to score. Every earlier bench re-scores as
+before.
+
 ## 2026-10-03 — Drafting repairs from the fourth bench
 
 The four failures of the fourth bench that the connect pass could not fix came from the draft.

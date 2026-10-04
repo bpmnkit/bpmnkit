@@ -143,12 +143,15 @@ export function createConnectLineFilter(): { push(chunk: string): string; end():
 		if (NO_COLON_CONNECT_LINE.test(line)) return line.replace(/^with\s+(\S+)\s+/, "with $1: ")
 		return undefined
 	}
+	/** `with a: … with b: …`: several lines run together are each kept on their own. */
+	const each = (line: string) => line.split(/\s+(?=with\s+[A-Za-z_][\w.-]*\s*:)/i)
 	return {
 		push(chunk: string): string {
 			pending += chunk
 			const lines = pending.split("\n")
 			pending = lines.pop() ?? ""
 			return lines
+				.flatMap(each)
 				.map(keep)
 				.filter((line) => line !== undefined)
 				.map((line) => `${line}\n`)
@@ -157,7 +160,10 @@ export function createConnectLineFilter(): { push(chunk: string): string; end():
 		end(): string {
 			const last = pending
 			pending = ""
-			return keep(last) ?? ""
+			return each(last)
+				.map(keep)
+				.filter((line) => line !== undefined)
+				.join("\n")
 		},
 	}
 }

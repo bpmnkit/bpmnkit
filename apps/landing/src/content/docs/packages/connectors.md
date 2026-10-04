@@ -123,6 +123,8 @@ Beyond those rules:
   operations do not crowd out SendGrid when the request names it.
 - **Systems nobody named.** A connector that names a system the task and request do not
   ranks lower: "Azure OpenAI" for a request that says OpenAI.
+- **Named systems only.** A task whose name names a system gets no connector that only shares
+  a word with it: "Send message to SQS" gets SQS, not Camunda's Send message connector.
 - **The request wins.** A task whose name names a system the request does not ("Post summary
   to Slack" for a request that says Teams) gets the request's system first, ranked by what the
   request asks of it.
@@ -159,7 +161,10 @@ formatConnectorSelection(selection);
 - **A dedicated connector comes first.** The API card is left out when a dedicated
   connector for the system has an operation that fits as much of the task's name. GitHub's
   connector creates issues, so "Create GitHub issue" gets it. It has nothing for workflow
-  runs, so "List GitHub workflow runs" gets the API card.
+  runs, so "List GitHub workflow runs" gets the API card. The request counts too: the API
+  card is also left out when the connector covers as much of the request as the best
+  endpoint does. "Send a confirmation email with SendGrid" gets SendGrid's connector, whatever
+  the task is called.
 - **Tasks only.** Events get no API card.
 - **Ranking.** `findApiOperations(service, text)` ranks endpoints by the words of their
   summary, then of their path. A verb picks the method ("Create" → POST, "List" → GET), and

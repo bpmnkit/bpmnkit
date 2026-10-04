@@ -27,7 +27,10 @@ formatConnectorSelection(selection);
 - **A dedicated connector comes first.** The API card is left out when a dedicated
   connector for the system has an operation that fits as much of the task's name. GitHub's
   connector creates issues, so "Create GitHub issue" gets it. It has nothing for workflow
-  runs, so "List GitHub workflow runs" gets the API card.
+  runs, so "List GitHub workflow runs" gets the API card. The request counts too: the API
+  card is also left out when the connector covers as much of the request as the best
+  endpoint does. "Send a confirmation email with SendGrid" gets SendGrid's connector, whatever
+  the task is called.
 - **Tasks only.** Events get no API card.
 - **Ranking.** `findApiOperations(service, text)` ranks endpoints by the words of their
   summary, then of their path. A verb picks the method ("Create" → POST, "List" → GET), and

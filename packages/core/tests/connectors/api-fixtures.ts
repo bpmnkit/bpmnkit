@@ -151,3 +151,19 @@ export const JIRA: ApiService = {
 		},
 	],
 }
+
+export const SENDGRID: ApiService = {
+	id: "sendgrid",
+	name: "SendGrid Mail API",
+	baseUrl: "https://api.sendgrid.com",
+	auth: { type: "bearer" },
+	license: "MIT",
+	operations: [
+		{
+			method: "POST",
+			path: "/v3/mail/send",
+			summary: "Send Email with Twilio SendGrid",
+			body: ["personalizations*", "from*", "content", "reply_to", "reply_to_list", "subject"],
+		},
+	],
+}

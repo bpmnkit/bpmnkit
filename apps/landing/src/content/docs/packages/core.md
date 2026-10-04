@@ -417,7 +417,10 @@ number. What it adds or changes is listed in `fixes`:
   name is a kind of (`pick > and`)
 - an id declared again after an arrow, with a different kind or name, is a new node (`done_2`),
   and later bare references mean the newest; restated at the start of a line, it is the node
-  already there
+  already there. A name of three words or more makes a new node even when its kind word is
+  unknown (`send[post Slack message to #support]`)
+- a bracket left open is closed where the name plainly ends: at a `)` before the next arrow,
+  before the next arrow, or at the end of the line (`start[start Order) > …`)
 - a missing start event is added, and a start event left unconnected leads to the first path;
   only the first blank start event is kept
 - a branch drawn into a boundary event continues to what the boundary leads to, and a flow from a

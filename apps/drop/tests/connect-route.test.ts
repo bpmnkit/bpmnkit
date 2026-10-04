@@ -303,6 +303,17 @@ describe("createConnectLineFilter", () => {
 		)
 	})
 
+	it("splits with lines run together on one line", () => {
+		const filter = createConnectLineFilter()
+		const out =
+			filter.push("with list: github | x=1 with post: slack chat.postMessage | y=2\n") +
+			filter.push("with a: http | z=3 with b: http | w=4") +
+			filter.end()
+		expect(out).toBe(
+			"with list: github | x=1\nwith post: slack chat.postMessage | y=2\nwith a: http | z=3\nwith b: http | w=4",
+		)
+	})
+
 	it("gives a with line written without its first word that word back", () => {
 		const filter = createConnectLineFilter()
 		const out =

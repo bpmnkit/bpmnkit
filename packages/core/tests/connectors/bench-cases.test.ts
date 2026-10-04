@@ -9,7 +9,7 @@ import {
 	selectConnectors,
 } from "../../src/connectors/index.js"
 import { type ConnectorLine, parseConnectorLine } from "../../src/index.js"
-import { GITHUB, NOTION, STRIPE } from "./api-fixtures.js"
+import { GITHUB, NOTION, SENDGRID, STRIPE } from "./api-fixtures.js"
 
 function aliases(text: string, tasks: ConnectorTask[], apis = [STRIPE]) {
 	return Object.fromEntries(
@@ -75,6 +75,38 @@ describe("what the connect pass is shown", () => {
 		)
 		expect(picked.call?.cards[0]).toBe("http")
 		expect(picked.call?.apis).toEqual(["stripe POST /v1/refunds"])
+	})
+
+	it("prefers a dedicated connector that covers the request to the index's endpoint", () => {
+		// glm-4.7-flash drafting, 2026-10-04: http came first, and the model's REST line took the task
+		const picked = aliases(
+			"After an order is paid, send the customer an order confirmation email with SendGrid.",
+			[{ id: "confirm", name: "Create order confirmation in SendGrid", type: "sendTask" }],
+			[SENDGRID],
+		)
+		expect(picked.confirm?.cards[0]).toBe("sendgrid mail")
+		expect(picked.confirm?.apis).toEqual([])
+		// The index still wins where the connector cannot do what the request asks
+		const runs = aliases(
+			"Every morning, list the failed GitHub Actions workflow runs of our web repository.",
+			[{ id: "list", name: "List failed workflow runs", type: "serviceTask" }],
+			[GITHUB],
+		)
+		expect(runs.list?.apis).toEqual(["github GET /repos/{owner}/{repo}/actions/runs"])
+	})
+
+	it("offers only the system a task names, not connectors that share a word with it", () => {
+		// glm-4.7-flash, 2026-10-04: Camunda's Send message connector for "Send message to SQS"
+		const picked = aliases(
+			"Run an AWS Lambda function to resize each uploaded image, then send a message about it to an SQS queue.",
+			[
+				{ id: "resize", name: "Resize in AWS Lambda", type: "serviceTask" },
+				{ id: "send", name: "Send message to SQS", type: "serviceTask" },
+			],
+			[],
+		)
+		expect(picked.resize?.cards).toEqual(["lambda"])
+		expect(picked.send?.cards).toEqual(["sqs"])
 	})
 
 	it("gives a service only the request names to the one task that fits it best", () => {

@@ -595,6 +595,31 @@ describe("parseProcessText", () => {
 		])
 	})
 
+	it("closes a bracket left open where the name ends", () => {
+		// glm-4.7-flash, golden prompts 16 and 26.
+		const text = [
+			"start[start HR) > fetch[service Fetch issues] > done[end Done]",
+			"fetch > page[service Create page] > end[end Page created",
+		].join("\n")
+		const { diagram, problems } = parseProcessText(text)
+		const els = new Map(diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("start")).toMatchObject({ type: "startEvent", name: "HR" })
+		expect(els.get("end")).toMatchObject({ type: "endEvent", name: "Page created" })
+		expect(problems.map((p) => p.message)).toEqual([
+			'"start[" is not closed; closed it where its name ends',
+			'"end[" is not closed; closed it where its name ends',
+		])
+	})
+
+	it("reads an id declared again after an arrow, with a name of several words, as a new node", () => {
+		// glm-4.7-flash, golden prompt 20.
+		const text =
+			"s[start New ticket] > send[task Summarise ticket] > send[post Slack message to #support] > e[end Done]"
+		const { diagram } = parseProcessText(text)
+		expect(diagram.processes[0]?.elements.map((e) => e.id)).toEqual(["s", "send", "send_2", "e"])
+		expect(diagram.processes[0]?.flows.map((f) => `${f.from}>${f.to}`)).toContain("send>send_2")
+	})
+
 	it("reads an id written with spaces before its bracket as one id", () => {
 		// glm-4.7-flash, golden prompt 17.
 		const text =

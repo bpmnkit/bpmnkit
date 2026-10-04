@@ -183,6 +183,15 @@ export function parseProcessDelta(text: string): ProcessDelta {
 		if (tokens.note !== undefined) {
 			delta.problems.push({ line: n, message: `ignored the note "${tokens.note}"` })
 		}
+		for (const id of tokens.unclosed ?? []) {
+			delta.problems.push({
+				line: n,
+				message: `"${id}[" is not closed; closed it where its name ends`,
+			})
+		}
+		for (const { written, id } of tokens.joined ?? []) {
+			delta.problems.push({ line: n, message: `"${written}" is not an id; read as "${id}"` })
+		}
 		for (const ref of tokens.refs) {
 			if (ref.spec === undefined) continue
 			const node = readSpec(ref.id, ref.spec, n, delta.problems)

@@ -269,7 +269,7 @@ export function selectConnectors(
 		// Synonyms only rank: "Notify ops" prefers a connector's send-message operation,
 		// but does not make every messaging connector a candidate
 		const synonyms = withSynonyms(terms).filter((t) => !named.has(t))
-		const scored: { card: ConnectorCard; score: number }[] = []
+		const scored: { card: ConnectorCard; score: number; byWordOnly?: boolean }[] = []
 		// "Post summary to Slack" in a request that says Teams: the draft named the wrong
 		// system, and the request's own ranks first
 		const misnamed =
@@ -305,7 +305,12 @@ export function selectConnectors(
 				// The request's system ranks first, by what the request asks of it
 				(inRequest && misnamed ? 30 + cardScore(card, requestTerms) : 0) -
 				unasked * 8
-			scored.push({ card, score })
+			scored.push(inName || inRequest ? { card, score } : { card, score, byWordOnly: true })
+		}
+		// "Send message to SQS" names its system: Camunda's own Send message connector, which
+		// only shares a word with it, is a distraction
+		if (scored.some((s) => !s.byWordOnly && systems(s.card).some((x) => named.has(x)))) {
+			for (let k = scored.length - 1; k >= 0; k--) if (scored[k]?.byWordOnly) scored.splice(k, 1)
 		}
 		const apiCards: (ApiCard & { fromRequest: boolean; score: number })[] = []
 		if (http && TASKS.has(task.type) && fits(http, task.type)) {
@@ -323,16 +328,28 @@ export function selectConnectors(
 				if (!best) continue
 				// A dedicated connector wins unless the index has an operation that fits more
 				// of the name: GitHub's connector creates issues, the index lists workflow runs
-				const words = (task.name ?? "")
-					.toLowerCase()
-					.split(/[^a-z0-9]+/)
-					.filter((w) => w.length > 1 && w !== brand && !VERBS.has(w))
-				const covered = Math.max(
-					0,
-					...scored
-						.filter((s) => systems(s.card).includes(brand))
-						.map((s) => words.filter((w) => cardScore(s.card, [w]) >= 3).length),
-				)
+				const wordsOf = (text: string) =>
+					text
+						.toLowerCase()
+						.split(/[^a-z0-9]+/)
+						.filter((w) => w.length > 1 && w !== brand && !VERBS.has(w))
+				const coverage = (text: string) =>
+					Math.max(
+						0,
+						...scored
+							.filter((s) => systems(s.card).includes(brand))
+							.map((s) => wordsOf(text).filter((w) => cardScore(s.card, [w]) >= 3).length),
+					)
+				const covered = coverage(task.name ?? "")
+				// The request decides too: "a confirmation email with SendGrid" is SendGrid's mail
+				// operation whatever the task is called, while "failed workflow runs" is the index's
+				if (
+					dedicated &&
+					input.text &&
+					(rankApiOperations(service, input.text ?? "")[0]?.hits ?? 0) <= coverage(input.text ?? "")
+				) {
+					continue
+				}
 				if (best.hits <= covered) continue
 				apiCards.push({
 					service,

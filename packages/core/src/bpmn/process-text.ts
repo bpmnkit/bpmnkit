@@ -237,6 +237,8 @@ export interface PathTokens {
 	note?: string
 	/** Ids written with spaces (`call back[…]`), and the id each was read as. */
 	joined?: { written: string; id: string }[]
+	/** Ids whose bracket was never closed, read as closed where the name ends. */
+	unclosed?: string[]
 }
 
 /**
@@ -250,6 +252,7 @@ export function tokenizePath(text: string): PathTokens | { error: string } {
 	const refs: PathTokens["refs"] = []
 	const labels: PathTokens["labels"] = []
 	const joined: NonNullable<PathTokens["joined"]> = []
+	const unclosed: string[] = []
 	let note: string | undefined
 	let i = 0
 	for (;;) {
@@ -269,10 +272,20 @@ export function tokenizePath(text: string): PathTokens | { error: string } {
 		const gap = /^ +\[/.exec(text.slice(i))
 		if (gap) i += gap[0].length - 1
 		if (text[i] === "[") {
-			const end = matching(text, i, "[", "]")
-			if (end < 0) return { error: `"${id}[" is not closed` }
+			let end = matching(text, i, "[", "]")
+			let after = end + 1
+			if (end < 0) {
+				// `start[start HR) > …` or `end[Page created` at the end of the line: the
+				// bracket closes where its name plainly ends, before the next arrow
+				const open = /^[^[\]]*?(?:\)(?=\s*-{0,2}>)|(?=\s+-{0,2}>)|$)/.exec(text.slice(i + 1))?.[0]
+				if (open === undefined || open.trim() === "") return { error: `"${id}[" is not closed` }
+				const closer = open.endsWith(")") ? 1 : 0
+				end = i + 1 + open.length - closer
+				after = i + 1 + open.length
+				unclosed.push(id)
+			}
 			spec = text.slice(i + 1, end).trim()
-			i = end + 1
+			i = after
 		}
 		refs.push({ id, spec })
 
@@ -307,6 +320,7 @@ export function tokenizePath(text: string): PathTokens | { error: string } {
 	const tokens: PathTokens = { refs, labels }
 	if (note !== undefined) tokens.note = note
 	if (joined.length > 0) tokens.joined = joined
+	if (unclosed.length > 0) tokens.unclosed = unclosed
 	return tokens
 }
 
@@ -405,6 +419,12 @@ class Reader {
 		if (path.note !== undefined) {
 			this.problems.push({ line: n, message: `ignored the note "${path.note}"` })
 		}
+		for (const id of path.unclosed ?? []) {
+			this.problems.push({
+				line: n,
+				message: `"${id}[" is not closed; closed it where its name ends`,
+			})
+		}
 		for (const { written, id } of path.joined ?? []) {
 			this.problems.push({ line: n, message: `"${written}" is not an id; read as "${id}"` })
 		}
@@ -466,7 +486,10 @@ class Reader {
 			const word = spec.split(/[\s|]/, 1)[0]?.toLowerCase().split(":")[0] ?? ""
 			const kind = KINDS[word] ?? ALIASES[word]
 			// A boundary is always new: it cannot be a revision of the task it sits on.
-			if (kind === undefined || (!afterArrow && kind !== "boundaryEvent")) {
+			// `send[…] > send[post Slack message to #support]`: a name of several words
+			// after an arrow is a second node, whatever its kind word
+			const named = afterArrow && !spec.includes("=") && spec.trim().split(/\s+/).length >= 3
+			if ((kind === undefined && !named) || (!afterArrow && kind !== "boundaryEvent")) {
 				this.problems.push({
 					line: n,
 					message: `"${written}" is already declared on line ${earlier.line}; ignored "${spec}"`,
