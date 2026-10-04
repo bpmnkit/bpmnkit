@@ -218,4 +218,21 @@ describe("near misses the resolver repairs", () => {
 		expect(r.values.url).toBe('="https://api.notion.com/v1/pages/" + string(page_id)')
 		expect(r.values["authentication.token"]).toBe("{{secrets.NOTION_TOKEN}}")
 	})
+
+	it("reads an SDK call as the operation it starts with", () => {
+		// glm-4.7-flash, 2026-10-04: golden prompt 20
+		const r = resolveConnectorLine(
+			line("with s: openai chat.completions.create | internal_prompt==text"),
+		)
+		expect(r.card?.operation).toBe("chat")
+	})
+
+	it("keeps the path an api= line completes over a FEEL url= of its own", () => {
+		// glm-4.7-flash, 2026-10-04: golden prompt 26
+		const r = resolveConnectorLine(
+			line('with c: http POST /v1/pages | api=notion | url==api.notion.basePath + "/v1/pages"'),
+			{ apis: [NOTION] },
+		)
+		expect(r.values.url).toBe("https://api.notion.com/v1/pages")
+	})
 })

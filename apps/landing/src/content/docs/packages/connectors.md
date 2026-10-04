@@ -204,7 +204,8 @@ service task and inbound templates work on events.
 - **A misspelt alias.** One within two letters of a real alias is read as that one (`slak` →
   `slack`).
 - **The operation.** It is matched exactly, or by its last dotted part (`postMessage` →
-  `chat.postMessage`). It may also be given as the input that selects it.
+  `chat.postMessage`), or as the start of an SDK call (`chat.completions.create` → `chat`). It
+  may also be given as the input that selects it.
 - **A short key.** A key the operation lacks, but that is the end of one it has, is read as that
   one (`channel` → `data.channel`).
 - **Values without a key.** `http POST https://…` sets `method` and `url`.
@@ -229,7 +230,8 @@ service task and inbound templates work on events.
   A call the index does not have is kept, and becomes a question to check the method and
   URL. A line written like an API card's head (`api github GET /issues`) is read as
   `http GET /issues | api=github`. A service written where the alias goes
-  (`stripe POST /v1/refunds`) is the same call; a connector of that name wins. A path alone, with one service loaded, is that service's.
+  (`stripe POST /v1/refunds`) is the same call; a connector of that name wins. A path alone, with one service loaded, is that service's. A
+  FEEL `url=` beside the path is ignored: the index completes the path.
   A `{{param}}` in a path is the parameter `{param}`.
 
 A required input the line left out becomes a **question** (`AppliedConnectorLines.questions`),

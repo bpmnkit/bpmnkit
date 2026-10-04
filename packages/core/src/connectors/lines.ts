@@ -115,6 +115,14 @@ function templateFor(alias: string, fixes: string[]): string | undefined {
 	return best?.id
 }
 
+/**
+ * Whether a `with` line's alias names a connector, as the resolver reads it: exactly, by a
+ * template id, or within a letter or two of one.
+ */
+export function isConnectorAlias(alias: string): boolean {
+	return templateFor(alias.toLowerCase(), []) !== undefined
+}
+
 /** The properties active once a card's operation is chosen. */
 function activeProperties(template: ElementTemplate, values: Record<string, string>) {
 	const resolved = resolveValues(template, values)
@@ -139,7 +147,11 @@ function pickCard(
 	if (word !== undefined) {
 		const named =
 			cards.find((c) => c.operation?.toLowerCase() === word) ??
-			cards.find((c) => c.operation?.toLowerCase().endsWith(`.${word}`))
+			cards.find((c) => c.operation?.toLowerCase().endsWith(`.${word}`)) ??
+			// `chat.completions.create`, the SDK call, for the operation `chat`
+			cards.find(
+				(c) => c.operation !== undefined && word.startsWith(`${c.operation.toLowerCase()}.`),
+			)
 		if (named) return { card: named, rest: args.slice(1) }
 	}
 	// `method=chat.postMessage` written as an input names the operation too
@@ -242,8 +254,13 @@ export function resolveConnectorLine(
 			key = ends[0]
 			out.fixes.push(`read "${written}" as "${key}"`)
 		}
-		// `url=api.notion.base` beside a positional URL is not one: the positional stands
-		if (key === "url" && values.url !== undefined && !/^(https?:\/\/|=|\/|["'])/.test(value)) {
+		// `url=api.notion.base` beside a positional URL is not one: the positional stands. With
+		// api=, the index completes the positional path, so a FEEL url= only gets it wrong
+		if (
+			key === "url" &&
+			values.url !== undefined &&
+			(!/^(https?:\/\/|=|\/|["'])/.test(value) || line.values.api !== undefined)
+		) {
 			out.fixes.push(`kept the URL ${values.url}, not url=${value}`)
 			continue
 		}

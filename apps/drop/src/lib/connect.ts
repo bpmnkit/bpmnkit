@@ -15,6 +15,7 @@ import {
 	apiServicesIn,
 	applyConnectorLines,
 	formatConnectorSelection,
+	isConnectorAlias,
 } from "@bpmnkit/core/connectors"
 
 /**
@@ -114,8 +115,16 @@ const BARE_CONNECT_LINE = /^[A-Za-z_][\w.-]*\s*:\s*[A-Za-z][\w.-]*(\s|$)/
 /** `with <a node's label>: <alias> …` — words before the colon, an alias after it. */
 const LABEL_CONNECT_LINE =
 	/^with\s+([A-Za-z][\w-]*(?:\s+[\w-]+)+)\s*:\s*([A-Za-z][\w.-]*(?:[\s|].*)?)$/
-/** `start > summarize: …` or `with start>summarize: …` — the line names a flow; its last node is meant. */
-const FLOW_CONNECT_LINE = /^(?:with\s+)?(?:[A-Za-z_][\w.-]*\s*>\s*)+([A-Za-z_][\w.-]*\s*:)/i
+/**
+ * `start > summarize: …`, `with start>summarize: …` or `resize:invokeLambda > queue:send …` —
+ * the line names a flow; its last node is meant.
+ */
+const FLOW_CONNECT_LINE = /^(?:with\s+)?(?:[^>|]*>\s*)+([A-Za-z_][\w.-]*\s*:)/i
+/** `with append[service Append to Google Sheet]: …` — the node's declaration copied with its id. */
+const DECLARED_CONNECT_LINE = /^(with\s+[A-Za-z_][\w.-]*)\s*\[[^\]]*\]\s*:/i
+/** `with db: notify failed: slack …` — a label between the id and the alias. */
+const LABELLED_CONNECT_LINE =
+	/^(with\s+[A-Za-z_][\w.-]*\s*:)\s*[A-Za-z][\w-]*(?:\s+[\w-]+)*\s*:\s+(?=[A-Za-z])/i
 /** `with <id> <alias> …` — a with line without the colon after its id. */
 const NO_COLON_CONNECT_LINE = /^with\s+[A-Za-z_][\w.-]*\s+[A-Za-z][\w.-]*(\s|$)/
 
@@ -129,8 +138,13 @@ export function createConnectLineFilter(): { push(chunk: string): string; end():
 	let pending = ""
 	/** The line as a `with` line, or `undefined` for anything else. */
 	const keep = (raw: string): string | undefined => {
-		const flow = FLOW_CONNECT_LINE.exec(raw.trim())
-		const line = flow?.[1] ? `with ${flow[1]}${raw.trim().slice(flow[0].length)}` : raw.trim()
+		const trimmed = raw
+			.trim()
+			.replace(DECLARED_CONNECT_LINE, "$1:")
+			.replace(LABELLED_CONNECT_LINE, "$1 ")
+		// A with line keeps any > inside its values; only another line can name a flow
+		const flow = CONNECT_LINE.test(trimmed) ? null : FLOW_CONNECT_LINE.exec(trimmed)
+		const line = flow?.[1] ? `with ${flow[1]}${trimmed.slice(flow[0].length)}` : trimmed
 		if (CONNECT_LINE.test(line)) return line
 		// `notify: slack chat.postMessage | …` is a with line missing its first word
 		if (BARE_CONNECT_LINE.test(line) && line.includes("|")) return `with ${line}`
@@ -248,6 +262,12 @@ export function finishConnect(
 		if (at >= 0) return at
 		return offered(task, alias.toLowerCase()) ? task.cards.length : Number.POSITIVE_INFINITY
 	}
+	/** Whether the resolver reads an alias as a connector, a REST call or an API card. */
+	const known = (alias: string) =>
+		alias === "api" ||
+		HTTP_METHOD.test(alias) ||
+		apis.some((s) => s.id === alias) ||
+		isConnectorAlias(alias)
 	const configured = new Set<string>()
 	const taskOf = new Map(selection.map((task) => [aliases[task.id], task]))
 	const add = (line: ConnectorRef) => {
@@ -270,13 +290,29 @@ export function finishConnect(
 	}
 	const candidates = new Set(selection.map((task) => aliases[task.id]))
 	const unmatched: (typeof delta.connectors)[number][] = []
-	for (const written of delta.connectors) {
+	for (const given of delta.connectors) {
+		// `with approved: stripe http POST …` put the node's id where the alias goes
+		const shifted =
+			aliases[given.id] === undefined &&
+			byLowerId.get(given.id.toLowerCase()) === undefined &&
+			aliases[given.alias] !== undefined &&
+			given.args[0] !== undefined
+		const written = shifted
+			? {
+					...given,
+					id: given.alias,
+					alias: given.args[0]?.toLowerCase() ?? "",
+					args: given.args.slice(1),
+				}
+			: given
+		if (shifted) fixes.push(`read "with ${given.id}: ${given.alias} …" as "with ${written.id}:"`)
 		const elementId = aliases[written.id] ?? byLowerId.get(written.id.toLowerCase())
-		// `with resize: service Run AWS Lambda resize | …` copied the node, not a card: its
-		// first card is the connector meant
+		// `with resize: service Run AWS Lambda resize | …` copied the node, and
+		// `with queue: sendSqsMessage | …` named the operation: no connector is called that,
+		// so the node's first card is the one meant
 		const card = elementId === undefined ? undefined : taskOf.get(elementId)?.cards[0]
 		const line =
-			NODE_KIND.test(written.alias) && card
+			card && (NODE_KIND.test(written.alias) || !known(written.alias))
 				? { ...written, alias: card.alias, args: card.operation ? [card.operation] : [] }
 				: written
 		if (line !== written)
@@ -291,14 +327,17 @@ export function finishConnect(
 		else add({ ...line, elementId })
 	}
 	for (const line of unmatched) {
-		const fitting = selection.filter((task) => {
-			const elementId = aliases[task.id]
-			return (
-				elementId !== undefined &&
-				!configured.has(elementId) &&
-				offered(task, line.alias.toLowerCase())
-			)
-		})
+		const fits = (free: boolean) =>
+			selection.filter((task) => {
+				const elementId = aliases[task.id]
+				if (elementId === undefined || !offered(task, line.alias.toLowerCase())) return false
+				if (free) return !configured.has(elementId)
+				// A task another line configures with a connector that ranks lower there
+				const earlier = lines.find((l) => l.elementId === elementId)
+				return earlier !== undefined && rank(task, line.alias) < rank(task, earlier.alias)
+			})
+		const free = fits(true)
+		const fitting = free.length > 0 ? free : fits(false)
 		const picked = closest(line.id, fitting)
 		const elementId = picked && aliases[picked.id]
 		if (picked && elementId) {

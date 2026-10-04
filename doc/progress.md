@@ -1,5 +1,32 @@
 # Progress
 
+## 2026-10-04 — Sixth bench of the connect pass
+
+**The run:** `bench-results/2026-10-04T06-13-21-229Z`. Prompts 16–27, 3 runs each, with
+`glm-4.7-flash` for both passes. It passed 28/36. The code was the same as for the fifth run's
+30/36, so the difference is the model's variance. 18 SendGrid passed every run, and the connect
+pass was skipped rightly 35/36 times. It re-scores to 34/36 with the repairs below.
+
+**Repaired (6 runs):**
+- **The node's id where the alias goes** (17 run 3): `with approved: stripe http POST …`, where
+  `stripe` is the node.
+- **The node's declaration copied with its id** (21 run 2): `with append[service Append to Google
+  Sheet]: …`.
+- **An invented alias in a flow** (24 run 3): `resize:invokeLambda > queue:sendSqsMessage | …`.
+  The flow may hold any text before its last node now. An alias that names no connector, API,
+  method or near miss of one becomes the node's first card, as a task kind already did.
+- **An SDK call as the operation** (20 run 2): `openai chat.completions.create` is `chat`.
+- **A FEEL `url=` beside an `api=` path** (26 run 1): `url==api.notion.basePath + "/v1/pages"`
+  replaced the completed URL. With `api=`, the path stands.
+- **A label before the alias, and a call on the start event** (27 run 3):
+  `with db: notify failed: slack …` loses the label. A line misplaced on a node no card was
+  offered for may now take a task from a line whose connector is not offered there.
+
+**Not repaired (2 runs):** 16 run 1 never configured the task that lists issues. 27 run 1 called
+GitHub's `/search/jobs` instead of the workflow runs endpoint on its API card.
+
+Every earlier bench re-scores as before.
+
 ## 2026-10-04 — Fifth bench of the connect pass
 
 **The run:** `bench-results/2026-10-04T05-57-16-575Z`. Prompts 16–27, 3 runs each, with

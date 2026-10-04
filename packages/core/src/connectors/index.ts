@@ -39,6 +39,7 @@ export {
 	CONNECT_GUIDE,
 	applyConnectorLines,
 	connectorLineFor,
+	isConnectorAlias,
 	resolveConnectorLine,
 } from "./lines.js"
 export type {

@@ -314,6 +314,27 @@ describe("createConnectLineFilter", () => {
 		)
 	})
 
+	it("drops what models write between the id and the alias, and reads flows with free text", () => {
+		const filter = createConnectLineFilter()
+		const out =
+			filter.push(
+				[
+					"with append[service Append to Google Sheet]: google-sheets addValues | x=1",
+					"with db: notify failed: slack chat.postMessage | y=2",
+					"resize:invokeLambda > queue:sendSqsMessage | z=3",
+					'with post: slack | data.text== a > b: c + "d"',
+				].join("\n"),
+			) + filter.end()
+		expect(out).toBe(
+			[
+				"with append: google-sheets addValues | x=1",
+				"with db: slack chat.postMessage | y=2",
+				"with queue:sendSqsMessage | z=3",
+				'with post: slack | data.text== a > b: c + "d"',
+			].join("\n"),
+		)
+	})
+
 	it("gives a with line written without its first word that word back", () => {
 		const filter = createConnectLineFilter()
 		const out =
@@ -418,6 +439,49 @@ describe("finishConnect", () => {
 		)
 		expect(result.connected).toEqual(["notify"])
 		expect(result.fixes[0]).toBe(`read "service …" on notify as "${slack[0]?.alias}"`)
+	})
+
+	it("reads a node's id written where the alias goes", () => {
+		const slack = connectorCards("io.camunda.connectors.Slack.v1")
+		const result = finishConnect(
+			defs,
+			aliases,
+			`with approved: notify ${SLACK}`,
+			[],
+			[{ id: "notify", name: "Notify ops in Slack", cards: slack }],
+		)
+		expect(result.connected).toEqual(["notify"])
+	})
+
+	it("reads an alias no connector has as the node's first card", () => {
+		const slack = connectorCards("io.camunda.connectors.Slack.v1")
+		const result = finishConnect(
+			defs,
+			aliases,
+			"with notify: postSlackMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#ops | data.text=hi",
+			[],
+			[{ id: "notify", name: "Notify ops in Slack", cards: slack }],
+		)
+		expect(result.connected).toEqual(["notify"])
+	})
+
+	it("lets a misplaced line take a task from a line whose connector is not offered there", () => {
+		const http = connectorCards("io.camunda.connectors.HttpJson.v2")
+		const slack = connectorCards("io.camunda.connectors.Slack.v1")
+		const result = finishConnect(
+			defs,
+			aliases,
+			`with start: http GET https://api.example.com/pages\nwith create: ${SLACK}`,
+			[],
+			[
+				{ id: "create", name: "Create page", cards: http },
+				{ id: "notify", name: "Notify ops in Slack", cards: slack },
+			],
+		)
+		expect(result.xml).toMatch(
+			/id="create"[^>]*modelerTemplate="io.camunda.connectors.HttpJson.v2"|modelerTemplate="io.camunda.connectors.HttpJson.v2"[^>]*id="create"/,
+		)
+		expect(result.xml).not.toMatch(/<bpmn:startEvent[^>]*modelerTemplate/)
 	})
 
 	it("keeps the first line for a node and reports the next", () => {
