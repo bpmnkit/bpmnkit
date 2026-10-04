@@ -2,7 +2,7 @@
 
 # Connector catalog
 
-116 bundled Camunda 8 out-of-the-box connector templates, from `@bpmnkit/connectors`. This is an **index** — look up full input specs at plan-authoring time, don't guess at property keys:
+117 bundled connector templates from `@bpmnkit/connectors`: Camunda 8's out-of-the-box ones and the few BPMN Kit maintains. This is an **index** — look up full input specs at plan-authoring time, don't guess at property keys:
 
 ```sh
 casen connector search "<query>"          # find candidates by name/keyword
@@ -139,6 +139,7 @@ Rules:
 | `io.camunda.connectors.BluePrism.v1` | Blue Prism connector | `io.camunda:http-json:1` |
 | `io.camunda.connectors.box` | Box Outbound Connector | `io.camunda:box:1` |
 | `io.camunda.connectors.CamundaOperate.v1` | Camunda Operate connector | `io.camunda:http-json:1` |
+| `io.bpmnkit.connectors.CloudflareClef.v1` | Cloudflare Clef Decision | `io.camunda:http-json:1` |
 | `io.camunda.connectors.csv` | CSV Connector | `io.camunda:csv-connector` |
 | `io.camunda.connectors.EasyPost.v1` | Easy Post connector | `io.camunda:http-json:1` |
 | `io.camunda.connectors.email.v1` | Email Connector | `io.camunda:email:1` |

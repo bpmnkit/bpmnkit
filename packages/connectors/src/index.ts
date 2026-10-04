@@ -13,6 +13,7 @@ export type { ApplyResult, ApplyProblem } from "./apply.js"
 export { applyTemplateToElement } from "./apply-element.js"
 export type { ApplyToElementResult } from "./apply-element.js"
 export { CAMUNDA_CONNECTOR_TEMPLATES } from "./templates/generated.js"
+export { BPMNKIT_CONNECTOR_TEMPLATES } from "./templates/bpmnkit.js"
 export type {
 	ElementTemplate,
 	TemplateGroup,

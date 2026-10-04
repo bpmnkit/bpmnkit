@@ -117,6 +117,17 @@ describe("validateElementTemplate", () => {
 		expect(paths(value)).toContain("properties[0].choices")
 	})
 
+	it("allows feel static only on Number and Boolean properties, as Camunda's schema does", () => {
+		const withStatic = (type: string) =>
+			template({
+				properties: [{ type, feel: "static", binding: { type: "zeebe:input", name: "x" } }],
+			})
+		expect(paths(withStatic("String"))).toContain("properties[0].feel")
+		expect(paths(withStatic("Text"))).toContain("properties[0].feel")
+		expect(paths(withStatic("Number"))).not.toContain("properties[0].feel")
+		expect(paths(withStatic("Boolean"))).not.toContain("properties[0].feel")
+	})
+
 	it("rejects an invalid feel mode", () => {
 		const value = template({
 			properties: [{ feel: "sometimes", binding: { type: "zeebe:input", name: "x" } }],

@@ -26,7 +26,7 @@
  */
 
 import type { CanvasPlugin } from "@bpmnkit/canvas"
-import { CAMUNDA_CONNECTOR_TEMPLATES } from "@bpmnkit/connectors"
+import { BPMNKIT_CONNECTOR_TEMPLATES, CAMUNDA_CONNECTOR_TEMPLATES } from "@bpmnkit/connectors"
 import type { ElementTemplate } from "@bpmnkit/connectors"
 import type {
 	BpmnConditionalEventDefinition,
@@ -92,13 +92,20 @@ function validateJson(value: FieldValue): string | null {
 // ── Built-in template registry ────────────────────────────────────────────────
 
 /**
- * All built-in Camunda connector templates, keyed by template id.
+ * Camunda's connector templates, then the ones BPMN Kit maintains — in that
+ * order, so a task type both use (the REST connector's) still maps to
+ * Camunda's template when a task carries no `zeebe:modelerTemplate`.
+ */
+const BUNDLED_TEMPLATES = [...CAMUNDA_CONNECTOR_TEMPLATES, ...BPMNKIT_CONNECTOR_TEMPLATES]
+
+/**
+ * All built-in connector templates, keyed by template id.
  * Pre-built so that reference-equality comparisons in the renderer work.
  */
 const TEMPLATE_REGISTRY = new Map<string, ReturnType<typeof buildRegistrationFromTemplate>>()
 
 /** Templates applicable to service tasks. */
-const SERVICE_TASK_TEMPLATES = CAMUNDA_CONNECTOR_TEMPLATES.filter(
+const SERVICE_TASK_TEMPLATES = BUNDLED_TEMPLATES.filter(
 	(t) => t.appliesTo.includes("bpmn:ServiceTask") || t.appliesTo.includes("bpmn:Task"),
 )
 
@@ -118,8 +125,8 @@ function extractTaskType(t: ElementTemplate): string | undefined {
 	return undefined
 }
 
-// Register all Camunda connector templates
-for (const tpl of CAMUNDA_CONNECTOR_TEMPLATES) {
+// Register all bundled connector templates
+for (const tpl of BUNDLED_TEMPLATES) {
 	TEMPLATE_REGISTRY.set(tpl.id, buildRegistrationFromTemplate(tpl))
 }
 
@@ -356,7 +363,7 @@ const SERVICE_TASK_ADAPTER: PanelAdapter = {
 // ── Ad-hoc subprocess schema (template-aware, shown for adHocSubProcess) ──────
 
 /** Templates applicable to ad-hoc subprocesses (AI agent pattern). */
-const ADHOC_SUBPROCESS_TEMPLATES = CAMUNDA_CONNECTOR_TEMPLATES.filter(
+const ADHOC_SUBPROCESS_TEMPLATES = BUNDLED_TEMPLATES.filter(
 	(t) => t.appliesTo.includes("bpmn:SubProcess") || t.appliesTo.includes("bpmn:AdHocSubProcess"),
 )
 

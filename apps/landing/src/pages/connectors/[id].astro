@@ -2,7 +2,12 @@
 import "../../styles/global.css"
 import Seo from "@bpmnkit/astro-shared/Seo.astro"
 import { breadcrumbJsonLd, softwareApplicationJsonLd } from "@bpmnkit/astro-shared/seo.js"
-import { type ConnectorInputSpec, type ConnectorSummary, listConnectors } from "@bpmnkit/connectors"
+import {
+	BPMNKIT_CONNECTOR_TEMPLATES,
+	type ConnectorInputSpec,
+	type ConnectorSummary,
+	listConnectors,
+} from "@bpmnkit/connectors"
 import Footer from "../../components/Footer.astro"
 import Nav from "../../components/Nav.astro"
 
@@ -14,6 +19,13 @@ export async function getStaticPaths() {
 }
 
 const { connector } = Astro.props as { connector: ConnectorSummary }
+
+/** BPMN Kit's own templates have a downloadable file and a how-to; Camunda's live in Camunda's marketplace. */
+const HOWTOS: Record<string, string> = {
+	"io.bpmnkit.connectors.CloudflareClef.v1": "/blog/cloudflare-clef-decisions-camunda",
+}
+const maintained = BPMNKIT_CONNECTOR_TEMPLATES.some((t) => t.id === connector.id)
+const howto = HOWTOS[connector.id]
 
 function renderInput(input: ConnectorInputSpec): string {
 	if (input.isSecret) return `"${input.key}": "<your ${input.label.toLowerCase()}>"`
@@ -72,6 +84,8 @@ const jsonLd = [
     .connector-inputs-table th, .connector-inputs-table td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
     .connector-inputs-table th { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }
     .connector-inputs-table code { font-family: var(--font-mono); color: var(--accent); font-size: 0.8rem; }
+    .connector-links { display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.9rem; margin-bottom: 32px; }
+    .connector-links a { color: var(--accent-bright); }
     .connector-code { background: var(--code-bg); padding: 18px; overflow-x: auto; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.6; color: var(--code-fg); white-space: pre; }
   </style>
 </head>
@@ -94,6 +108,13 @@ const jsonLd = [
         <span>{connector.direction}</span>
         {connector.taskType && <span>{connector.taskType}</span>}
       </div>
+
+      {maintained && (
+        <div class="connector-links">
+          {howto && <a href={howto}>How to set it up and test it →</a>}
+          <a href={`/connectors/${encodeURIComponent(connector.id)}.json`} download>Download template JSON</a>
+        </div>
+      )}
 
       {connector.requiredInputs.length > 0 && (
         <div class="connector-section">
