@@ -1,5 +1,19 @@
 # Progress
 
+## 2026-10-04 — Golden prompts 10 and 20 accept either fitting connector
+
+A `mustContainTaskTypes` entry may now be a list, met by any one of its job types. `bench:generate`
+and `bench:rescore` both read it.
+- **Prompt 10** ("send the customer an order confirmation email") names no provider: SendGrid or
+  the Email connector.
+- **Prompt 20** ("summarise it with OpenAI"): the OpenAI connector, or the AI Agent connector. The
+  check does not read the agent's provider.
+
+Re-scored with these and today's repairs:
+- the full set (`2026-10-04T07-09-30-692Z`): 49/72, of which prompt 10 is 3/3;
+- the five-run connector bench (`2026-10-04T07-06-25-832Z`): 52/60;
+- the first two connector benches: 29/36 and 33/36.
+
 ## 2026-10-04 — Seventh and eighth benches: five runs, and the whole golden set
 
 **The runs**, both with `glm-4.7-flash` for both passes:

@@ -58,7 +58,7 @@ for (const result of results) {
 		minElements?: number
 		mustContainElementTypes?: string[]
 		mustContainAnyOf?: string[][]
-		mustContainTaskTypes?: string[]
+		mustContainTaskTypes?: (string | string[])[]
 		mustCallUrls?: string[]
 	}
 	const defs = expand(parseProcessText(result.text).diagram)
@@ -95,7 +95,10 @@ for (const result of results) {
 		...(assertions.mustContainAnyOf ?? [])
 			.filter((any) => !any.some((t) => elementTypes.has(t)))
 			.map((any) => `no ${any.join(" or ")}`),
-		...(assertions.mustContainTaskTypes ?? []).filter((t) => !types.has(t)).map((t) => `no ${t}`),
+		...(assertions.mustContainTaskTypes ?? [])
+			.map((entry) => (Array.isArray(entry) ? entry : [entry]))
+			.filter((any) => !any.some((t) => types.has(t)))
+			.map((any) => `no ${any.join(" or ")}`),
 		...(assertions.mustCallUrls ?? [])
 			.filter((u) => !urls.some((url) => url.includes(u)))
 			.map((u) => `no call to ${u}`),

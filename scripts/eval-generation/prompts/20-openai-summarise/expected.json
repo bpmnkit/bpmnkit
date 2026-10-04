@@ -1,9 +1,17 @@
 {
 	"id": "openai-summarise",
 	"category": "connector",
-	"description": "An AI connector feeding a messaging connector.",
+	"description": "An AI step feeding a messaging connector: the OpenAI connector, or the AI Agent connector.",
 	"assertions": {
 		"minElements": 4,
-		"mustContainTaskTypes": ["io.camunda:http-json:1", "io.camunda:slack:1"]
+		"mustContainTaskTypes": [
+			[
+				"io.camunda:http-json:1",
+				"io.camunda.agenticai:aiagent:0",
+				"io.camunda.agenticai:aiagent:1",
+				"io.camunda.agenticai:aiagent:task:2"
+			],
+			"io.camunda:slack:1"
+		]
 	}
 }

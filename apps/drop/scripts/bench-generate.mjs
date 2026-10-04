@@ -282,8 +282,10 @@ function score(defs, assertions) {
 		if (!alternatives.some((type) => types.has(type)))
 			failed.push(`no ${alternatives.join(" or ")}`)
 	}
-	for (const jobType of assertions.mustContainTaskTypes ?? []) {
-		if (!jobTypes.has(jobType)) failed.push(`no task type ${jobType}`)
+	// An entry may list alternatives: any one of its job types meets it
+	for (const entry of assertions.mustContainTaskTypes ?? []) {
+		const any = Array.isArray(entry) ? entry : [entry]
+		if (!any.some((t) => jobTypes.has(t))) failed.push(`no task type ${any.join(" or ")}`)
 	}
 	// A REST call's URL, literal or FEEL: each expected part must be in one of them
 	const urls = elements.flatMap((e) =>
@@ -439,9 +441,9 @@ async function runConnect(model, prompt, diagram) {
 	const expectSkip =
 		prompt.expected.connect === false ||
 		(prompt.expected.connect === undefined &&
-			!(prompt.expected.assertions?.mustContainTaskTypes ?? []).some((t) =>
-				t.startsWith("io.camunda"),
-			))
+			!(prompt.expected.assertions?.mustContainTaskTypes ?? [])
+				.flat()
+				.some((t) => t.startsWith("io.camunda")))
 	const connect = {
 		model,
 		tasks: selection.length,
