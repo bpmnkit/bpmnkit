@@ -4,6 +4,8 @@
 
 Suspends a running process instance, pausing further processing until it is resumed.
 Only process instances in the ACTIVE state can be suspended.
+A child process instance can be suspended independently of its parent or root process
+instance; suspension does not cascade to or from related instances.
 
 - Required permissions: SUSPEND_PROCESS_INSTANCE on PROCESS_DEFINITION.
 - Added in Camunda 8.10.

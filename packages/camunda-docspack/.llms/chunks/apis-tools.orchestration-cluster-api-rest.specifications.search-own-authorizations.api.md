@@ -15,7 +15,7 @@ Request body:
     filter (AuthorizationFilter) — The authorization search filters.
 
 Responses:
-  200 AuthorizationSearchResult — The authorization search result.
+  200 OwnAuthorizationSearchResult — The authorization search result.
   400 ProblemDetail — The provided data is not valid.
   401 ProblemDetail — The request lacks valid authentication credentials.
   500 ProblemDetail — An internal error occurred while processing the request.
