@@ -235,4 +235,40 @@ describe("near misses the resolver repairs", () => {
 		)
 		expect(r.values.url).toBe("https://api.notion.com/v1/pages")
 	})
+
+	it("reads an operation the connector lacks as the one that shares its start", () => {
+		// glm-4.7-flash, 2026-10-04: golden prompt 10
+		const r = resolveConnectorLine(line("with s: email sendEmailImap | smtpTo==email"))
+		expect(r.card?.operation).toBe("sendEmailSmtp")
+		expect(r.fixes).toContain('read operation "sendEmailImap" as "sendEmailSmtp"')
+	})
+
+	it("spells a path's words as the service does, and reads ${x} inside FEEL as x", () => {
+		// glm-4.7-flash, 2026-10-04: golden prompts 27 and 23
+		const r = resolveConnectorLine(
+			line("with c: http GET /repos/{owner}/{repo}/Actions/runs | api=github"),
+			{
+				apis: [GITHUB],
+			},
+		)
+		expect(r.values.url).toContain('"/actions/runs"')
+		const feel = resolveConnectorLine(
+			line('with n: slack chat.postMessage | data.text== "Order " + ${orderId} + " failed"'),
+		)
+		expect(feel.values["data.text"]).toBe('= "Order " + orderId + " failed"')
+	})
+
+	it("gives a service only the request names to no task that names another system", () => {
+		// glm-4.7-flash, 2026-10-04: GitHub's endpoints went to "Slack message to channel"
+		const picked = aliases(
+			"Every morning, list the failed GitHub Actions workflow runs of our web repository and post the list to the #builds channel in Slack.",
+			[
+				{ id: "setup", name: "Fetch services endpoint", type: "serviceTask" },
+				{ id: "post", name: "Slack message to channel #builds", type: "sendTask" },
+			],
+			[GITHUB],
+		)
+		expect(picked.post?.apis ?? []).toEqual([])
+		expect(picked.post?.cards[0]).toBe("slack chat.postMessage")
+	})
 })

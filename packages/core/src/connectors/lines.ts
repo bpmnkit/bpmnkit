@@ -141,7 +141,7 @@ function pickCard(
 	cards: ConnectorCard[],
 	args: string[],
 	values: Record<string, string>,
-): { card?: ConnectorCard; rest: string[] } {
+): { card?: ConnectorCard; rest: string[]; guessed?: boolean } {
 	if (cards.length === 1) return { card: cards[0], rest: args }
 	const word = args[0]?.toLowerCase()
 	if (word !== undefined) {
@@ -153,6 +153,20 @@ function pickCard(
 				(c) => c.operation !== undefined && word.startsWith(`${c.operation.toLowerCase()}.`),
 			)
 		if (named) return { card: named, rest: args.slice(1) }
+		// `sendEmailImap`, an operation the connector does not have, for `sendEmailSmtp`: the
+		// one operation that shares the longest start with it, when that start is a word or more
+		const shared = (op: string) => {
+			let k = 0
+			while (k < op.length && k < word.length && op[k] === word[k]) k++
+			return k
+		}
+		const ranked = cards
+			.map((c) => ({ c, n: shared(c.operation?.toLowerCase() ?? "") }))
+			.sort((a, b) => b.n - a.n)
+		const [best, next] = ranked
+		if (best && best.n >= 5 && best.n > (next?.n ?? 0)) {
+			return { card: best.c, rest: args.slice(1), guessed: true }
+		}
 	}
 	// `method=chat.postMessage` written as an input names the operation too
 	const byValues = cards.filter((c) =>
@@ -196,7 +210,7 @@ export function resolveConnectorLine(
 	}
 	out.templateId = templateId
 	const cards = connectorCards(templateId)
-	const { card, rest } = pickCard(cards, line.args, line.values)
+	const { card, rest, guessed } = pickCard(cards, line.args, line.values)
 	if (!card) {
 		const names = cards.map((c) => c.operation).filter(Boolean)
 		out.problems.push(
@@ -205,6 +219,7 @@ export function resolveConnectorLine(
 		return out
 	}
 	out.card = card
+	if (guessed) out.fixes.push(`read operation "${line.args[0]}" as "${card.operation}"`)
 	// Words without a key first: `http POST` makes `body` an input, as a mode does
 	const values: Record<string, string> = {}
 	const templateKeys = new Set(template.properties.map(propertyKey))
@@ -344,6 +359,12 @@ function feelHeaders(value: string, fixes: string[]): string {
 
 /** A variable written in another template syntax, as the FEEL expression it means. */
 function feelForVariable(key: string, value: string, fixes: string[]): string {
+	// `== "Order " + ${orderId} + " failed"`: a template variable inside FEEL is the variable
+	if (value.startsWith("=") && /\$\{\s*[A-Za-z_][\w.]*\s*\}/.test(value)) {
+		const feel = value.replace(/\$\{\s*([A-Za-z_][\w.]*)\s*\}/g, "$1")
+		fixes.push(`read "${key}" ${value} as ${feel}`)
+		return feel
+	}
 	// `channel==#ops` is the literal #ops: no FEEL starts with # or @
 	if (/^=\s*[#@][\w.-]+$/.test(value)) {
 		const literal = value.replace(/^=\s*/, "")
@@ -402,10 +423,22 @@ function applyApiService(
 	if (url === undefined || url.startsWith("=")) return
 	const base = service.baseUrl
 	// `/charges/{{chargeId}}/refunds` is the path parameter `{chargeId}` in another syntax
-	const path = (base !== undefined && url.startsWith(base) ? url.slice(base.length) : url).replace(
+	const given = (base !== undefined && url.startsWith(base) ? url.slice(base.length) : url).replace(
 		/\{\{\s*(?:variables\.)?([A-Za-z_]\w*)\s*\}\}/g,
 		"{$1}",
 	)
+	// `/repos/web/Actions/runs`: a word of the service's paths, in the case the service writes it
+	const spelling = new Map(
+		service.operations
+			.flatMap((op) => op.path.split("/"))
+			.filter((part) => part !== "" && !part.startsWith("{"))
+			.map((part) => [part.toLowerCase(), part]),
+	)
+	const path = given
+		.split("/")
+		.map((part) => spelling.get(part.toLowerCase()) ?? part)
+		.join("/")
+	if (path !== given) out.fixes.push(`read ${given} as ${path}, as ${service.name} spells it`)
 	if (!path.startsWith("/")) return
 	const method = values.method ?? "GET"
 	const op = findApiOperation(service, method, path)

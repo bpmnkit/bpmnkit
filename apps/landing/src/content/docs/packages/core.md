@@ -419,6 +419,10 @@ number. What it adds or changes is listed in `fixes`:
   and later bare references mean the newest; restated at the start of a line, it is the node
   already there. A name of three words or more makes a new node even when its kind word is
   unknown (`send[post Slack message to #support]`)
+- a number written as an id (`1[service …]`) becomes `n1`; a numbered list (`1. a > b`) is
+  still prose
+- a line that starts with an arrow continues the last node of the path above it, and a space
+  between an arrow and its label (`gw > (No: default) b`) is allowed
 - a bracket left open is closed where the name plainly ends: at a `)` before the next arrow,
   before the next arrow, or at the end of the line (`start[start Order) > …`)
 - a missing start event is added, and a start event left unconnected leads to the first path;

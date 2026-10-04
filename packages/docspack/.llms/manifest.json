@@ -4104,7 +4104,7 @@
 		{
 			"id": "packages.connectors.with-lines",
 			"file": "chunks/packages.connectors.with-lines.md",
-			"tokens": 814,
+			"tokens": 822,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4117,9 +4117,23 @@
 				"postMessage",
 				"chat.postMessage",
 				"chat.completions.create",
+				"sendEmailImap",
+				"sendEmailSmtp",
 				"data.channel",
+				"orderId",
 				"AppliedConnectorLines.questions"
 			]
+		},
+		{
+			"id": "packages.connectors.with-lines-2",
+			"file": "chunks/packages.connectors.with-lines-2.md",
+			"tokens": 78,
+			"tags": [
+				"packages",
+				"connectors",
+				"lines"
+			],
+			"entities": []
 		},
 		{
 			"id": "packages.connectors.applying-a-template",
@@ -4562,7 +4576,7 @@
 		{
 			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream",
 			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md",
-			"tokens": 1177,
+			"tokens": 1255,
 			"tags": [
 				"packages",
 				"core",

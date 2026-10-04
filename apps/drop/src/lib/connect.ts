@@ -128,6 +128,19 @@ const LABELLED_CONNECT_LINE =
 /** `with <id> <alias> …` — a with line without the colon after its id. */
 const NO_COLON_CONNECT_LINE = /^with\s+[A-Za-z_][\w.-]*\s+[A-Za-z][\w.-]*(\s|$)/
 
+/** The lines of {@link CONNECT_GUIDE}'s example, after their ids: what a model copies, not configures. */
+const EXAMPLE_BODIES = new Set(
+	CONNECT_GUIDE.slice(CONNECT_GUIDE.indexOf("Example:"))
+		.split("\n")
+		.map((line) => CONNECT_LINE.exec(line) && line.slice(line.indexOf(":") + 1).trim())
+		.filter((body): body is string => typeof body === "string"),
+)
+
+/** Whether a with line is one of the guide's examples, word for word, under any id. */
+function copied(line: string): boolean {
+	return EXAMPLE_BODIES.has(line.slice(line.indexOf(":") + 1).trim())
+}
+
 /**
  * Passes on only `with` lines, for the reason `createDiagramLineFilter` exists:
  * what leaves the Worker is connector configuration, not whatever the request
@@ -157,27 +170,44 @@ export function createConnectLineFilter(): { push(chunk: string): string; end():
 		if (NO_COLON_CONNECT_LINE.test(line)) return line.replace(/^with\s+(\S+)\s+/, "with $1: ")
 		return undefined
 	}
-	/** `with a: … with b: …`: several lines run together are each kept on their own. */
-	const each = (line: string) => line.split(/\s+(?=with\s+[A-Za-z_][\w.-]*\s*:)/i)
+	/**
+	 * `with a: … with b: …`: several lines run together are each kept on their own, as are
+	 * the steps of a flow written as one, `start > save: … > create: http … > done`.
+	 */
+	const each = (line: string) =>
+		line.split(/\s+(?=with\s+[A-Za-z_][\w.-]*\s*:)/i).flatMap((part) => {
+			if (CONNECT_LINE.test(part.trim())) return [part]
+			const steps = part.split(/\s+>\s+(?=[A-Za-z_][\w.-]*\s*:\s)/)
+			if (steps.length < 2) return [part]
+			const last = steps.length - 1
+			steps[last] = (steps[last] ?? "").replace(/\s+>\s+[A-Za-z_][\w.-]*\s*$/, "")
+			return steps
+		})
 	return {
 		push(chunk: string): string {
 			pending += chunk
 			const lines = pending.split("\n")
 			pending = lines.pop() ?? ""
-			return lines
-				.flatMap(each)
-				.map(keep)
-				.filter((line) => line !== undefined)
-				.map((line) => `${line}\n`)
-				.join("")
+			return (
+				lines
+					.flatMap(each)
+					.map(keep)
+					// The guide's examples, copied under any id, configure nothing the reader asked for
+					.filter((line) => line !== undefined && !copied(line))
+					.map((line) => `${line}\n`)
+					.join("")
+			)
 		},
 		end(): string {
 			const last = pending
 			pending = ""
-			return each(last)
-				.map(keep)
-				.filter((line) => line !== undefined)
-				.join("\n")
+			return (
+				each(last)
+					.map(keep)
+					// The guide's examples, copied under any id, configure nothing the reader asked for
+					.filter((line) => line !== undefined && !copied(line))
+					.join("\n")
+			)
 		},
 	}
 }

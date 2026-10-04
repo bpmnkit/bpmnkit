@@ -1,5 +1,47 @@
 # Progress
 
+## 2026-10-04 — Seventh and eighth benches: five runs, and the whole golden set
+
+**The runs**, both with `glm-4.7-flash` for both passes:
+- `bench-results/2026-10-04T07-06-25-832Z`: connector prompts 16–27, 5 runs each. It passed
+  50/60 (83%), and 52/60 re-scored with the repairs below. 16, 17, 18, 19, 22, 24 and 25 passed
+  every run. 27 GitHub workflow runs is the weakest at 1/5.
+- `bench-results/2026-10-04T07-09-30-692Z`: every default prompt, 3 runs each. It passed 46/72.
+  The connector prompts in it passed 31/36, in line with the run above.
+
+**Prompts 01–15: no regression from the parser repairs.** They passed 15/36, against 19/36 for
+the same prompts on 2026-09-30. The difference is prompt 10, 3/3 then and 0/3 now. The bench
+did not score connector task types then, and prompt 10 expects SendGrid for "send the customer
+an order confirmation email", which names no provider. Run 3 configured the Email connector's
+SMTP send, a working answer. The other drafting failures are as before:
+- 06 draws no sub-process for a multi-instance step;
+- 08 is shorter than 25 elements;
+- 11 and 15 have no boundary events;
+- 12 and 13 sometimes leave out their rule task and parallel gateway.
+
+**Repaired:**
+- **Drafts:**
+  - Numbers as ids (`1[service …]`, 27 run 5) become `n1`; a numbered list stays prose.
+  - A line starting with `>` (26 run 2) continues the path above.
+  - `gw > (No: default) b` (12 run 1) may have a space before the label.
+  - Drop's diagram filter passes the same shapes on.
+- **Card selection:** a service only the request names no longer goes to a task that names
+  another system. GitHub's endpoints went to "Slack message to channel #builds" (27 run 4).
+- **Resolver:**
+  - A path's words are spelt as the service spells them: `Actions/runs` (27 run 1).
+  - `${orderId}` inside FEEL is `orderId` (23 run 5).
+  - An operation the connector lacks is read as the one sharing the longest start with it:
+    `sendEmailImap` is `sendEmailSmtp` (10 runs 1 and 2).
+- **Drop's connect filter:**
+  - A flow of steps on one line, `start > save: … > create: http … > done`, is split
+    (26 run 1).
+  - The guide's example lines copied word for word, under any id, are dropped: 23 run 4 and
+    26 run 2 copied them.
+
+**Open:** prompts 10 and 20 expect one connector where the request allows two (SendGrid or the
+Email connector; the OpenAI connector or the AI Agent with OpenAI). Every earlier bench
+re-scores as before.
+
 ## 2026-10-04 — Sixth bench of the connect pass
 
 **The run:** `bench-results/2026-10-04T06-13-21-229Z`. Prompts 16–27, 3 runs each, with

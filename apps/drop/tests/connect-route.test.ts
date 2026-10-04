@@ -335,6 +335,21 @@ describe("createConnectLineFilter", () => {
 		)
 	})
 
+	it("splits a flow of connector steps, and drops the guide's example lines", () => {
+		const filter = createConnectLineFilter()
+		const out =
+			filter.push(
+				[
+					"start > save: task_a | x=1 > create: http POST /v1/pages | api=notion | result=page: response.body > done",
+					'with notify: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#ops | data.text== "Order " + orderId + " failed"',
+					"with fetch: http GET https://api.example.com/orders | result=order: response.body",
+				].join("\n"),
+			) + filter.end()
+		expect(out).toBe(
+			"with save: task_a | x=1\nwith create: http POST /v1/pages | api=notion | result=page: response.body\n",
+		)
+	})
+
 	it("gives a with line written without its first word that word back", () => {
 		const filter = createConnectLineFilter()
 		const out =

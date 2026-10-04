@@ -257,8 +257,18 @@ export function tokenizePath(text: string): PathTokens | { error: string } {
 	let i = 0
 	for (;;) {
 		let id = ID.exec(text.slice(i))?.[0]
-		if (id === undefined) return { error: `expected a node id at "${text.slice(i, i + 20)}"` }
-		i += id.length
+		// `1[service List runs] > 2[xor …]`: numbers for ids, which BPMN ids cannot start with
+		const number =
+			id === undefined ? /^\d[\w-]*(?=\s*(?:\[|-{0,2}>))/.exec(text.slice(i))?.[0] : undefined
+		if (number !== undefined) {
+			id = `n${number}`
+			if (!joined.some((j) => j.id === id)) joined.push({ written: number, id })
+			i += number.length
+		} else if (id === undefined) {
+			return { error: `expected a node id at "${text.slice(i, i + 20)}"` }
+		} else {
+			i += id.length
+		}
 		// `call back[service …]`: words before a bracket are one id
 		const words = /^((?: +[A-Za-z_][\w.-]*)+)(?= *\[)/.exec(text.slice(i))?.[1]
 		if (words !== undefined) {
@@ -303,6 +313,9 @@ export function tokenizePath(text: string): PathTokens | { error: string } {
 		if (arrow === undefined) return { error: `expected ">" at "${text.slice(i, i + 20)}"` }
 		i += arrow.length
 		let label: string | undefined
+		// `credit > (No: default) decision`: a space before the label
+		const spaced = /^ +\(/.exec(text.slice(i))
+		if (spaced) i += spaced[0].length - 1
 		if (text[i] === "(") {
 			const end = matching(text, i, "(", ")")
 			if (end < 0) return { error: "edge label is not closed" }
@@ -366,6 +379,8 @@ class Reader {
 	title: string | undefined
 	/** A line that ended in an arrow, waiting for the line that continues it. */
 	private carry: { text: string; line: number } | undefined
+	/** The last node of the last path read, which a line starting with an arrow continues. */
+	private tail: string | undefined
 
 	/** Reads one line. Returns whether it added anything. */
 	line(raw: string, n: number): boolean {
@@ -389,6 +404,14 @@ class Reader {
 				})
 			}
 			return false
+		}
+		// `> stop[end Done]`: the path above wrapped before its arrow
+		if (/^-{0,2}>/.test(text) && this.tail !== undefined) {
+			this.problems.push({
+				line: n,
+				message: `the line starts with ">"; read it as continuing "${this.tail}"`,
+			})
+			text = `${this.tail} ${text}`
 		}
 		// `engineer[user Fix issue] >` then the next step on the next line: models
 		// wrap a long path. The line is read once it is complete.
@@ -444,6 +467,7 @@ class Reader {
 				this.edges.push({ from, to, line: n, ...this.feelOrLabel(edgeLabel(labels[k]), n) })
 			}
 		}
+		this.tail = ids.at(-1)
 		return true
 	}
 

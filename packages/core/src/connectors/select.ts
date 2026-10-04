@@ -318,6 +318,8 @@ export function selectConnectors(
 				const brand = apiBrand(service.id)
 				const inName = named.has(brand)
 				if (!inName && !(requested.has(brand) && !claimed.has(brand))) continue
+				// "Post list to Slack" names its own system: the request's GitHub is not its call
+				if (!inName && scored.some((s) => systems(s.card).some((x) => named.has(x)))) continue
 				const dedicated = scored.some((s) => systems(s.card).includes(brand))
 				// "Call Stripe REST API" says which service, and only the request says what for
 				let ranked = rankApiOperations(service, task.name ?? "")

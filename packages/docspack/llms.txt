@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.0.1. 371 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.0.1. 372 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -300,7 +300,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/connectors — Connector cards](.llms/chunks/packages.connectors.connector-cards.md) — 320 tokens
 - [@bpmnkit/connectors — Picking cards for a diagram](.llms/chunks/packages.connectors.picking-cards-for-a-diagram.md) — 505 tokens
 - [@bpmnkit/connectors — API cards](.llms/chunks/packages.connectors.api-cards.md) — 613 tokens
-- [@bpmnkit/connectors — `with` lines](.llms/chunks/packages.connectors.with-lines.md) — 814 tokens
+- [@bpmnkit/connectors — `with` lines](.llms/chunks/packages.connectors.with-lines.md) — 822 tokens
+- [@bpmnkit/connectors — `with` lines (2)](.llms/chunks/packages.connectors.with-lines-2.md) — 78 tokens
 - [@bpmnkit/connectors — Applying a template](.llms/chunks/packages.connectors.applying-a-template.md) — 503 tokens
 - [@bpmnkit/connectors — Applying to an element — inbound connectors and linked resources](.llms/chunks/packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources.md) — 667 tokens
 - [@bpmnkit/connectors — Workspace templates](.llms/chunks/packages.connectors.workspace-templates.md) — 710 tokens
@@ -327,7 +328,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `compactify(definitions)`](.llms/chunks/packages.core.installation-compactify-definitions.md) — 342 tokens
 - [@bpmnkit/core — Installation — `expand(compact)`](.llms/chunks/packages.core.installation-expand-compact.md) — 301 tokens
 - [@bpmnkit/core — Installation — `createCompactStream(options?)`](.llms/chunks/packages.core.installation-createcompactstream-options.md) — 502 tokens
-- [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()`](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md) — 1177 tokens
+- [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()`](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md) — 1255 tokens
 - [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()` (2)](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2.md) — 397 tokens
 - [@bpmnkit/core — Installation — `writeProcessText(defs)` and `parseProcessDelta(text)`](.llms/chunks/packages.core.installation-writeprocesstext-defs-and-parseprocessdelta-text.md) — 317 tokens
 - [@bpmnkit/core — Installation — Connectors: `with` lines](.llms/chunks/packages.core.installation-connectors-with-lines.md) — 347 tokens

@@ -204,8 +204,10 @@ service task and inbound templates work on events.
 - **A misspelt alias.** One within two letters of a real alias is read as that one (`slak` →
   `slack`).
 - **The operation.** It is matched exactly, or by its last dotted part (`postMessage` →
-  `chat.postMessage`), or as the start of an SDK call (`chat.completions.create` → `chat`). It
-  may also be given as the input that selects it.
+  `chat.postMessage`), or as the start of an SDK call (`chat.completions.create` → `chat`). An
+  operation the connector lacks is read as the one sharing the longest start with it, of five
+  letters or more (`sendEmailImap` → `sendEmailSmtp`). It may also be given as the input that
+  selects it.
 - **A short key.** A key the operation lacks, but that is the end of one it has, is read as that
   one (`channel` → `data.channel`).
 - **Values without a key.** `http POST https://…` sets `method` and `url`.
@@ -216,7 +218,8 @@ service task and inbound templates work on events.
 - **Credentials.** A credential written as a value becomes a `{{secrets.…}}` placeholder: the
   diagram never carries one.
 - **Variables in another syntax.** `{{orderId}}`, `{{variables.orderId}}` and `${orderId}`
-  become the FEEL `=orderId`. Secrets are left as they are.
+  become the FEEL `=orderId`, and `${orderId}` inside a FEEL expression becomes `orderId`.
+  Secrets are left as they are.
 - **API index calls.** With `{ apis }` as the last argument, an `http` line that names a
   service (`http POST /v1/customers | api=stripe`), or calls a URL under its base URL, is
   completed from the index:
@@ -231,7 +234,8 @@ service task and inbound templates work on events.
   URL. A line written like an API card's head (`api github GET /issues`) is read as
   `http GET /issues | api=github`. A service written where the alias goes
   (`stripe POST /v1/refunds`) is the same call; a connector of that name wins. A path alone, with one service loaded, is that service's. A
-  FEEL `url=` beside the path is ignored: the index completes the path.
+  FEEL `url=` beside the path is ignored: the index completes the path. A word of the path is
+  spelt as the service spells it (`Actions` → `actions`).
   A `{{param}}` in a path is the parameter `{param}`.
 
 A required input the line left out becomes a **question** (`AppliedConnectorLines.questions`),

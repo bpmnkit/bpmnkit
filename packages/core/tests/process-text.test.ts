@@ -620,6 +620,40 @@ describe("parseProcessText", () => {
 		expect(diagram.processes[0]?.flows.map((f) => `${f.from}>${f.to}`)).toContain("send>send_2")
 	})
 
+	it("reads numbers written as ids, a line starting with an arrow, and a space before a label", () => {
+		// glm-4.7-flash, golden prompts 27, 26 and 12.
+		const numbers = parseProcessText(
+			"s[start Go] > 1[service List runs] > 2[xor Any?]\n2 >(Yes: n > 0) 3[service Post list] > e[end Done]\n2 > (No: default) e",
+		)
+		expect(numbers.diagram.processes[0]?.elements.map((e) => e.id)).toEqual(
+			expect.arrayContaining(["s", "n1", "n2", "n3", "e"]),
+		)
+		// A numbered list is prose, not ids
+		const list = parseProcessText("1. s[start Go] > e[end Done]")
+		expect(list.diagram.processes[0]?.elements.map((e) => e.id)).not.toContain("n1")
+		expect(list.problems[0]?.message).toMatch(/^expected a node id/)
+		expect(numbers.problems.map((p) => p.message)).toEqual([
+			'"1" is not an id; read as "n1"',
+			'"2" is not an id; read as "n2"',
+			'"2" is not an id; read as "n2"',
+			'"3" is not an id; read as "n3"',
+			'"2" is not an id; read as "n2"',
+		])
+		expect(
+			numbers.diagram.processes[0]?.flows.find((f) => f.from === "n2" && f.isDefault),
+		).toMatchObject({
+			isDefault: true,
+		})
+		const wrapped = parseProcessText("s[start Go] > write[service Write page]\n> stop[end Done]")
+		expect(wrapped.diagram.processes[0]?.flows.map((f) => `${f.from}>${f.to}`)).toEqual([
+			"s>write",
+			"write>stop",
+		])
+		expect(wrapped.problems.map((p) => p.message)).toEqual([
+			'the line starts with ">"; read it as continuing "write"',
+		])
+	})
+
 	it("reads an id written with spaces before its bracket as one id", () => {
 		// glm-4.7-flash, golden prompt 17.
 		const text =
