@@ -1,5 +1,15 @@
 # @bpmnkit/connectors
 
+## 1.2.0
+
+### Minor Changes
+
+- 461287b: New template: **Cloudflare Clef Decision** (`io.bpmnkit.connectors.CloudflareClef.v1`). It asks a Clef decision model typed yes/no, choice and score questions and returns calibrated answers that a gateway can route on. It runs on Camunda's REST connector, so no extra job worker is needed. It is the first template this repo maintains itself: `BPMNKIT_CONNECTOR_TEMPLATES` holds such templates beside the generated `CAMUNDA_CONNECTOR_TEMPLATES`, and `listConnectors`, `searchConnectors` and `getTemplate` include them. `ElementTemplate` gains the schema's optional `category`.
+
+### Patch Changes
+
+- 461287b: `validateElementTemplate` rejects `feel: "static"` on a property that is not `Number` or `Boolean`, as Camunda's element-template schema does — Camunda Modeler refuses the whole template over it. The Cloudflare Clef Decision template's timeouts are now `Number` fields with `=20`, like Camunda's REST connector, so the template loads in Modeler.
+
 ## 1.1.0
 
 ### Minor Changes
