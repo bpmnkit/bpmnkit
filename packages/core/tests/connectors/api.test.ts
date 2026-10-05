@@ -55,6 +55,31 @@ describe("apiServicesIn", () => {
 })
 
 describe("findApiOperations", () => {
+	it("ignores the brand's parts and weighs a word most operations share down", () => {
+		// glm-4.7-flash, golden prompt 27: "GitHub" was searched as git and hub, and
+		// "Actions" is in hundreds of GitHub's summaries
+		const actions = Array.from({ length: 30 }, (_, k) => ({
+			method: "GET",
+			path: `/repos/{owner}/{repo}/actions/thing${k}`,
+			summary: `Get GitHub Actions thing ${k} for a repository`,
+		}))
+		const service = {
+			...GITHUB,
+			operations: [
+				{ method: "GET", path: "/", summary: "GitHub API Root" },
+				...actions,
+				{
+					method: "GET",
+					path: "/repos/{owner}/{repo}/actions/runs",
+					summary: "List workflow runs for a repository",
+				},
+			],
+		}
+		expect(findApiOperations(service, "List failed GitHub Actions runs")[0]?.path).toBe(
+			"/repos/{owner}/{repo}/actions/runs",
+		)
+	})
+
 	it("ranks by the task's words, with the verb choosing the method", () => {
 		expect(findApiOperations(GITHUB, "Create GitHub issue")[0]).toMatchObject({
 			method: "POST",

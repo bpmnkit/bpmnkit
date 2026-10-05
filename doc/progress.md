@@ -1,5 +1,42 @@
 # Progress
 
+## 2026-10-05 — Prompt 27: GitHub's workflow runs, ranked
+
+Prompt 27 failed 2 of 5 runs by calling `/actions/workflows` or `/actions/caches`. Most drafts
+named the task "List failed GitHub Actions runs", which already says runs. The API card still
+listed caches and permissions first, for two reasons:
+- **A bug.** "GitHub" is searched as `github`, `git` and `hub`. Only `github` was left out as the
+  brand, so every summary that says GitHub matched twice.
+- **A common word.** "Actions" is in hundreds of GitHub's summaries.
+
+**Fixed in `rankApiOperations`:**
+- The parts of the service's name never count.
+- A word that a tenth or more of the service's operations share counts a third.
+
+"List failed GitHub Actions runs" now ranks `GET /repos/{owner}/{repo}/actions/runs` first.
+
+**Fixed in `selectConnectors`:** dropping the bogus matches showed that a dedicated connector
+"covered" too much.
+- An operation now covers a task's word only when it does what the task's verb says, and the word
+  is what it is about. Its resource, the last word of the operation, must match, plural for
+  plural.
+  - `listIssueComments` lists comments.
+  - `getIssue` gets one issue.
+  - `createIssue` still covers "Create GitHub issue".
+- The request check compares the same words. The connector wins when it covers every word of the
+  request that the index's best endpoint has. SendGrid's mail operation still wins prompt 18.
+- "List open issues" and "Get open issues" now get GitHub's issue endpoints (prompt 16 expects
+  REST).
+
+**The drafting prompt** asks for the task to be named in the description's own words for what it
+does: "List overdue invoices in Xero" for "list the overdue invoices in Xero", never
+"Check Xero". "Fetch failed GitHub Actions", which says nothing of runs, should become rarer.
+
+Over every recorded draft, the selection changed only for prompts 16 and 27. Re-scored, every
+bench is as before but one: 16 run 3 of `2026-10-04T06-13-21-229Z` passed before only through
+the bogus matches. For "Fetch open issues from GitHub", GitHub's own `searchIssues` now covers
+the task, and prompt 16 accepts only REST.
+
 ## 2026-10-05 — Ninth bench: five runs of the connector prompts and prompt 10
 
 **The run:** `bench-results/2026-10-05T06-10-54-339Z`. Prompts 10 and 16–27, 5 runs each,

@@ -144,22 +144,38 @@ export interface RankedApiOperation {
  * needs a word other than a verb in common. Shorter paths win ties.
  */
 export function rankApiOperations(service: ApiService, text: string): RankedApiOperation[] {
-	const brand = new Set(lowerWords(`${service.id} ${service.name}`).map(stem))
+	// "GitHub" is also searched as git and hub: none of them tells one operation from another
+	const brand = new Set([
+		...lowerWords(`${service.id} ${service.name}`).map(stem),
+		...stems(`${service.id} ${service.name}`),
+	])
 	const terms = [...stems(text)].filter((t) => !brand.has(t))
 	const methods = new Set(terms.map((t) => VERB_METHOD[t]).filter((m) => m !== undefined))
 	const content = terms.filter((t) => VERB_METHOD[t] === undefined)
 	if (content.length === 0) return []
+	const words = service.operations.map((op) => ({
+		op,
+		summary: stems(op.summary ?? ""),
+		path: pathWords(op.path),
+		id: stems(op.id ?? ""),
+	}))
+	// A word in a tenth of the service's operations or more names an area, not an operation:
+	// "GitHub Actions" is in hundreds of GitHub's summaries, "runs" in a few
+	const common = new Set(
+		content.filter(
+			(term) =>
+				words.filter((w) => w.summary.has(term) || w.path.has(term)).length * 10 >=
+				Math.max(20, words.length),
+		),
+	)
 	const ranked: RankedApiOperation[] = []
-	for (const op of service.operations) {
-		const summary = stems(op.summary ?? "")
-		const path = pathWords(op.path)
-		const id = stems(op.id ?? "")
+	for (const { op, summary, path, id } of words) {
 		let hits = 0
 		let score = 0
 		for (const term of content) {
 			const s = summary.has(term) ? 3 : path.has(term) ? 2 : id.has(term) ? 1 : 0
 			if (s > 0) hits++
-			score += s
+			score += common.has(term) ? s / 3 : s
 		}
 		if (hits === 0) continue
 		for (const term of terms) if (VERB_METHOD[term] !== undefined && summary.has(term)) score += 1

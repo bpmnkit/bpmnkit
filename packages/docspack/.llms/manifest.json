@@ -4092,14 +4092,17 @@
 		{
 			"id": "packages.connectors.api-cards",
 			"file": "chunks/packages.connectors.api-cards.md",
-			"tokens": 613,
+			"tokens": 713,
 			"tags": [
 				"packages",
 				"connectors",
 				"api",
 				"cards"
 			],
-			"entities": []
+			"entities": [
+				"createIssue",
+				"getIssue"
+			]
 		},
 		{
 			"id": "packages.connectors.with-lines",

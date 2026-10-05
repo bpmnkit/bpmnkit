@@ -284,4 +284,19 @@ describe("near misses the resolver repairs", () => {
 		)
 		expect(picked).toEqual({})
 	})
+
+	it("lets a connector cover a task only with an operation that does what it asks", () => {
+		// GitHub's connector creates and gets one issue; listing open issues is the index's
+		const tasks = (name: string) => [{ id: "t", name, type: "serviceTask" as const }]
+		const request = "Every hour, list the open issues of our GitHub repository."
+		expect(aliases(request, tasks("List open issues in GitHub"), [GITHUB]).t?.apis).toEqual([
+			"github GET /repos/{owner}/{repo}/issues",
+		])
+		expect(aliases(request, tasks("Get open GitHub issues"), [GITHUB]).t?.apis).toEqual([
+			"github GET /repos/{owner}/{repo}/issues",
+		])
+		expect(
+			aliases("Create a GitHub issue", tasks("Create GitHub issue"), [GITHUB]).t?.cards[0],
+		).toBe("github createIssue")
+	})
 })

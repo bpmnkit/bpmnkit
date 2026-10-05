@@ -169,6 +169,12 @@ function askedFor(system: string, requested: ReadonlySet<string>): boolean {
 	return [system, system.replace(/s$/, ""), `${system}s`].some((form) => requested.has(form))
 }
 
+/** A word without its plural ending: issues → issue, repositories → repository. */
+function singular(word: string): string {
+	if (word.length > 4 && word.endsWith("ies")) return `${word.slice(0, -3)}y`
+	return word.length > 3 && word.endsWith("s") && !word.endsWith("ss") ? word.slice(0, -1) : word
+}
+
 /** What each further card of a template costs in the ranking. */
 const REPEAT_COST = 8
 
@@ -332,22 +338,46 @@ export function selectConnectors(
 						.toLowerCase()
 						.split(/[^a-z0-9]+/)
 						.filter((w) => w.length > 1 && w !== brand && !VERBS.has(w))
+				// An operation covers the task's words only when it does what the task's verb says:
+				// GitHub's createIssue says nothing for "List open issues"
+				const verb = (task.name ?? "").toLowerCase().split(/[^a-z]+/)[0] ?? ""
+				const does = (card: ConnectorCard) => {
+					const own = /^(?:[a-z]+\.)?([a-z]+)/.exec(card.operation ?? "")?.[1]
+					return !VERBS.has(verb) || own === undefined || !VERBS.has(own) || own === verb
+				}
+				// …and is about the word: listIssueComments lists comments, not issues
+				const resource = (card: ConnectorCard) => {
+					const parts = (card.operation ?? "")
+						.replace(/^[a-z]+\./, "")
+						.split(/(?=[A-Z])/)
+						.map((p) => p.toLowerCase())
+					return parts.length > 1 && VERBS.has(parts[0] ?? "") ? parts.at(-1) : undefined
+				}
+				// "issues" asks for many: getIssue, about one, does not cover it
+				const covers = (card: ConnectorCard, word: string) => {
+					const own = resource(card)
+					if (own === undefined) return cardScore(card, [word]) >= 3
+					const many = (w: string) => singular(w) !== w
+					return singular(own) === singular(word) && (!many(word) || many(own))
+				}
 				const coverage = (text: string) =>
 					Math.max(
 						0,
 						...scored
-							.filter((s) => systems(s.card).includes(brand))
-							.map((s) => wordsOf(text).filter((w) => cardScore(s.card, [w]) >= 3).length),
+							.filter((s) => systems(s.card).includes(brand) && does(s.card))
+							.map((s) => wordsOf(text).filter((w) => covers(s.card, w)).length),
 					)
 				const covered = coverage(task.name ?? "")
 				// The request decides too: "a confirmation email with SendGrid" is SendGrid's mail
-				// operation whatever the task is called, while "failed workflow runs" is the index's
-				if (
-					dedicated &&
-					input.text &&
-					(rankApiOperations(service, input.text ?? "")[0]?.hits ?? 0) <= coverage(input.text ?? "")
-				) {
-					continue
+				// operation whatever the task is called, while "failed workflow runs" is the index's.
+				// The connector wins when it covers every word of the request the index's best
+				// endpoint has
+				const asked = input.text ? rankApiOperations(service, input.text)[0]?.op : undefined
+				if (dedicated && asked) {
+					const text = `${asked.summary ?? ""} ${asked.path}`.toLowerCase()
+					const hit = wordsOf(input.text ?? "").filter((w) => text.includes(singular(w)))
+					const mine = scored.filter((s) => systems(s.card).includes(brand) && does(s.card))
+					if (hit.length > 0 && hit.every((w) => mine.some((s) => covers(s.card, w)))) continue
 				}
 				if (best.hits <= covered) continue
 				apiCards.push({

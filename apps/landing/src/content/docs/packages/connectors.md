@@ -161,15 +161,19 @@ formatConnectorSelection(selection);
 ```
 
 - **A dedicated connector comes first.** The API card is left out when a dedicated
-  connector for the system has an operation that fits as much of the task's name. GitHub's
+  connector for the system has an operation that fits as much of the task's name. An operation
+  fits a word when it does what the task's verb says and the word is what it is about:
+  `createIssue` fits "Create issue", but neither it nor `getIssue` fits "List open issues". GitHub's
   connector creates issues, so "Create GitHub issue" gets it. It has nothing for workflow
   runs, so "List GitHub workflow runs" gets the API card. The request counts too: the API
-  card is also left out when the connector covers as much of the request as the best
-  endpoint does. "Send a confirmation email with SendGrid" gets SendGrid's connector, whatever
+  card is also left out when the connector covers every word of the request that the best
+  endpoint has. "Send a confirmation email with SendGrid" gets SendGrid's connector, whatever
   the task is called.
 - **Tasks only.** Events get no API card.
 - **Ranking.** `findApiOperations(service, text)` ranks endpoints by the words of their
-  summary, then of their path. A verb picks the method ("Create" → POST, "List" → GET), and
+  summary, then of their path. The service's own name never counts, nor its parts ("git" and
+  "hub" of GitHub), and a word a tenth of its endpoints share counts a third: "GitHub Actions"
+  is in hundreds of summaries, "runs" in a few. A verb picks the method ("Create" → POST, "List" → GET), and
   a path that ends in a word of the task wins over a deeper one.
 - **Services in text.** `apiServicesIn(text, summaries)` finds the services a text names by
   their brand. A brand that is also an everyday word, like "box" or "square", counts only as
