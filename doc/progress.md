@@ -17,6 +17,9 @@
   each: a cold start on a busy CI runner takes more than vitest's 5s default.
 - So do core's two `generateProcessTypes` tests that run the TypeScript compiler, and Drop's test
   that lints every recorded bench answer: each takes about a second locally and over 5s on CI.
+- `api-surface.json` records what this branch adds: the `@bpmnkit/core/connectors` entry point,
+  the connector and API exports re-exported from `@bpmnkit/connectors`, and the dry run in
+  `@bpmnkit/engine/testing`. All additions, covered by the minor bumps in the changesets.
 
 ## 2026-10-05 — Five runs with the draft check
 
