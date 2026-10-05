@@ -82,7 +82,8 @@ describe("generate prompt", () => {
 		expect(none.slice(GENERATE_SYSTEM_PROMPT.length).trim().split("\n")).toHaveLength(2)
 		expect(text.startsWith(none)).toBe(true)
 		expect(text).toContain("FEEL conditions")
-		expect(text).not.toContain("boundary:timer")
+		// The diagram-pattern rules stay out of `text`; the guide's own example has its patterns
+		expect(text).not.toContain("late[boundary:timer 24h")
 		expect(text).not.toContain("fork[and]")
 		expect(refineMessages("d", "a > b", "c")[0]?.content).toBe(text)
 	})

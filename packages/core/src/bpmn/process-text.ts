@@ -42,19 +42,22 @@ gw >(Label: condition) x  conditional branch, condition in FEEL (amount > 1000, 
 gw >(Label: default) y    branch taken when no condition holds
 Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate cancel)
-Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>
+Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>, each=<list variable> (once per item), after=<ISO duration> (timer)
 Rules:
 - One start event. Every node is on a path from it to an end event: never a node nothing leads to.
 - An xor has two or more branches: exactly one is (Label: default), each other has a FEEL condition.
 - A boundary starts its own line, on a task you declared, and leads to a task that handles it; never draw an arrow into a boundary.
 - Branches that meet again are joined automatically; join parallel branches with an and node.
+- Steps done at the same time start from an and node. A deadline is a boundary:timer on the task that may run late.
 
 Example:
 # Expense approval
 start[start Expense submitted] > check[xor Amount over 1000?]
-check >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]
+check >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > split[and] > book[service Book expense] > join[and] > done[end Expense paid]
 check >(No: default) auto[service Approve automatically] > pay
-failed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]`
+split > inform[send Email each approver | each=approvers] > join
+failed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]
+late[boundary:timer Review overdue | on=review after=P2D] > escalate[user Escalate review] > stuck[end Review escalated]`
 
 /** A line, or part of one, that {@link parseProcessText} could not use. */
 export interface ProcessTextProblem {
@@ -559,8 +562,13 @@ class Reader {
 			})
 		}
 		const bar = spec.indexOf("|")
-		const head = (bar < 0 ? spec : spec.slice(0, bar)).trim()
-		const attrs = bar < 0 ? "" : spec.slice(bar + 1)
+		// `boundary:timer on=poll`: an attribute written before the bar is one still
+		const loose = /\s+((?:on|job|each|after)=\S+|nonint)(?=\s|$)/g
+		const beforeBar = bar < 0 ? spec : spec.slice(0, bar)
+		const head = beforeBar.replace(loose, "").trim()
+		const attrs =
+			[...beforeBar.matchAll(loose)].map((m) => m[1]).join(" ") +
+			(bar < 0 ? "" : ` ${spec.slice(bar + 1)}`)
 		const space = head.search(/\s/)
 		const kindWord = space < 0 ? head : head.slice(0, space)
 		const name = space < 0 ? undefined : head.slice(space + 1).trim() || undefined
@@ -641,12 +649,64 @@ class Reader {
 			if (key === "on" && value) node.on = hostOf.get(value) ?? value
 			else if (key === "job" && value) element.jobType = value
 			else if (key === "nonint" && value === undefined) element.interrupting = false
-			else
+			else if (key === "each" && value && ACTIVITIES.has(element.type)) {
+				element.multiInstance = {
+					collection: value.startsWith("=") ? value : `=${value}`,
+					element: itemOf(value.replace(/^=/, "")),
+				}
+			} else if (key === "after" && value && element.eventType === "timer" && duration(value)) {
+				element.timerDuration = duration(value)
+			} else
 				this.problems.push({ line: n, message: `unknown attribute "${attr}" on "${id}"; ignored` })
+		}
+		// `late[boundary:timer 5 minutes | on=poll]`: a timer's name says how long it waits
+		if (element.eventType === "timer" && element.timerDuration === undefined && label) {
+			const said = duration(label)
+			if (said) element.timerDuration = said
 		}
 		this.nodes.set(id, node)
 		return id
 	}
+}
+
+/** Element types `each=` makes multi-instance. */
+const ACTIVITIES = new Set<BpmnElementType>([
+	"task",
+	"serviceTask",
+	"sendTask",
+	"receiveTask",
+	"userTask",
+	"manualTask",
+	"scriptTask",
+	"businessRuleTask",
+	"callActivity",
+	"subProcess",
+])
+
+/** The variable one item of a list is in: `recipients` → `recipient`, else `item`. */
+function itemOf(collection: string): string {
+	if (!/^[A-Za-z_]\w*$/.test(collection)) return "item"
+	if (collection.endsWith("ies") && collection.length > 4) return `${collection.slice(0, -3)}y`
+	if (collection.endsWith("s") && !collection.endsWith("ss") && collection.length > 3)
+		return collection.slice(0, -1)
+	return "item"
+}
+
+const UNITS: Record<string, string> = { s: "S", m: "M", h: "H", d: "D", w: "W" }
+
+/**
+ * An ISO 8601 duration from what models write: `PT5M` as it is, `5m`, `5 min`,
+ * `5 minutes`, `2 hours` or `1 day`, also inside a name ("Wait 5 minutes").
+ */
+export function duration(text: string): string | undefined {
+	const iso = /\bP(?:\d+[YMWD])*(?:T(?:\d+[HMS])+)?\b/.exec(text)?.[0]
+	if (iso && iso !== "P") return iso
+	const m =
+		/(\d+)\s*(s|sec|secs|seconds?|m|min|mins|minutes?|h|hrs?|hours?|d|days?|w|weeks?)\b/i.exec(text)
+	if (!m?.[1] || !m[2]) return undefined
+	const unit = UNITS[m[2][0]?.toLowerCase() ?? ""]
+	if (unit === undefined) return undefined
+	return unit === "D" || unit === "W" ? `P${m[1]}${unit}` : `PT${m[1]}${unit}`
 }
 
 export function edgeLabel(

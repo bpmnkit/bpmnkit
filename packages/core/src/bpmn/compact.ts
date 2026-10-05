@@ -71,6 +71,14 @@ export interface CompactElement {
 	interrupting?: boolean
 	/** Nested content for sub-process container types (subProcess, eventSubProcess, etc.) */
 	children?: { elements: CompactElement[]; flows: CompactFlow[] }
+	/**
+	 * Runs the activity once per item of a list (`zeebe:loopCharacteristics`):
+	 * `collection` is the FEEL expression of the list, `element` the variable each
+	 * instance gets its item in. In parallel unless `sequential`.
+	 */
+	multiInstance?: { collection: string; element?: string; sequential?: boolean }
+	/** A timer event's ISO 8601 duration (`PT5M`): how long it waits once reached. */
+	timerDuration?: string
 }
 
 /** A sequence flow in compact form. */
@@ -243,7 +251,19 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 	}
 
 	if ("eventDefinitions" in el && el.eventDefinitions.length > 0) {
-		result.eventType = el.eventDefinitions[0]?.type
+		const def = el.eventDefinitions[0]
+		result.eventType = def?.type
+		if (def?.type === "timer" && def.timeDuration) result.timerDuration = def.timeDuration
+	}
+
+	const loop = "loopCharacteristics" in el ? el.loopCharacteristics : undefined
+	const zeebeLoop = loop?.extensionElements.find((x) => x.name === "zeebe:loopCharacteristics")
+	const collection = zeebeLoop?.attributes.inputCollection
+	if (loop && collection) {
+		result.multiInstance = { collection }
+		if (zeebeLoop.attributes.inputElement)
+			result.multiInstance.element = zeebeLoop.attributes.inputElement
+		if (loop.isSequential) result.multiInstance.sequential = true
 	}
 
 	if (el.type === "boundaryEvent") {
@@ -619,9 +639,26 @@ export function buildFlowElement(
 		extensionElements: makeExtensions(el),
 		unknownAttributes: templateAttributes(el),
 	}
-	const eventDef = el.eventType ? makeEventDef(el.eventType) : undefined
+	const made = el.eventType ? makeEventDef(el.eventType) : undefined
+	const eventDef =
+		made?.type === "timer" && el.timerDuration ? { ...made, timeDuration: el.timerDuration } : made
 	const eventDefs: BpmnEventDefinition[] = eventDef ? [eventDef] : []
 	const subContent = buildSubContent(el.children)
+	const loop = el.multiInstance && {
+		loopCharacteristics: {
+			isSequential: el.multiInstance.sequential || undefined,
+			extensionElements: [
+				{
+					name: "zeebe:loopCharacteristics",
+					attributes: {
+						inputCollection: el.multiInstance.collection,
+						...(el.multiInstance.element ? { inputElement: el.multiInstance.element } : {}),
+					},
+					children: [],
+				},
+			],
+		},
+	}
 
 	switch (el.type) {
 		case "startEvent":
@@ -641,25 +678,25 @@ export function buildFlowElement(
 				eventDefinitions: eventDefs,
 			}
 		case "serviceTask":
-			return { ...base, type: "serviceTask" }
+			return { ...base, type: "serviceTask", ...loop }
 		case "scriptTask":
-			return { ...base, type: "scriptTask" }
+			return { ...base, type: "scriptTask", ...loop }
 		case "userTask":
-			return { ...base, type: "userTask" }
+			return { ...base, type: "userTask", ...loop }
 		case "businessRuleTask":
-			return { ...base, type: "businessRuleTask" }
+			return { ...base, type: "businessRuleTask", ...loop }
 		case "callActivity":
-			return { ...base, type: "callActivity" }
+			return { ...base, type: "callActivity", ...loop }
 		case "sendTask":
-			return { ...base, type: "sendTask" }
+			return { ...base, type: "sendTask", ...loop }
 		case "receiveTask":
-			return { ...base, type: "receiveTask" }
+			return { ...base, type: "receiveTask", ...loop }
 		case "manualTask":
-			return { ...base, type: "manualTask" }
+			return { ...base, type: "manualTask", ...loop }
 		case "task":
-			return { ...base, type: "task" }
+			return { ...base, type: "task", ...loop }
 		case "subProcess":
-			return { ...base, type: "subProcess", ...subContent }
+			return { ...base, type: "subProcess", ...subContent, ...loop }
 		case "adHocSubProcess":
 			return { ...base, type: "adHocSubProcess", ...subContent }
 		case "eventSubProcess":

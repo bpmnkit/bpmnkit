@@ -282,6 +282,10 @@ function score(defs, assertions) {
 		if (!alternatives.some((type) => types.has(type)))
 			failed.push(`no ${alternatives.join(" or ")}`)
 	}
+	// A step that runs once per item of a list: a multi-instance task or sub-process
+	if (assertions.mustContainMultiInstance && !elements.some((e) => e.loopCharacteristics)) {
+		failed.push("no multi-instance step")
+	}
 	// An entry may list alternatives: any one of its job types meets it
 	for (const entry of assertions.mustContainTaskTypes ?? []) {
 		const any = Array.isArray(entry) ? entry : [entry]

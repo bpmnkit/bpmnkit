@@ -1,8 +1,8 @@
 {
 	"id": "multi-instance-email-notify",
 	"category": "multi-instance",
-	"description": "A multi-instance sub-process iterating a collection, one email per recipient.",
+	"description": "A step run once per recipient: a multi-instance task or sub-process iterating the list.",
 	"assertions": {
-		"mustContainElementTypes": ["subProcess"]
+		"mustContainMultiInstance": true
 	}
 }

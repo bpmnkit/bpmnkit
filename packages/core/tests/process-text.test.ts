@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { resolveBpmnlintConfig } from "../src/bpmn/bpmnlint.js"
-import { expand } from "../src/bpmn/compact.js"
+import { compactify, expand } from "../src/bpmn/compact.js"
 import { Bpmn } from "../src/bpmn/index.js"
 import { lintDiagram } from "../src/bpmn/lint.js"
 import {
@@ -667,6 +667,32 @@ describe("parseProcessText", () => {
 		)
 		// At the start of a line, it stays prose
 		expect(parseProcessText("end of the answer").problems[0]?.message).toMatch(/^expected ">"/)
+	})
+
+	it("reads each= as a step run once per item, and a timer's duration from after= or its name", () => {
+		// glm-4.7-flash, golden prompts 06 and 15
+		const text = [
+			"s[start Go] > mail[send Email stakeholder | each=stakeholders] > poll[service Poll report] > e[end Done]",
+			"late[boundary:timer No reply in 5 minutes on=poll] > flag[user Flag for follow-up] > f[end Flagged]",
+			"mail > wait[catch:timer Cool down | after=2h] > e",
+		].join("\n")
+		const { diagram, problems } = parseProcessText(text)
+		expect(problems).toEqual([])
+		const els = new Map(diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("mail")?.multiInstance).toEqual({
+			collection: "=stakeholders",
+			element: "stakeholder",
+		})
+		expect(els.get("late")).toMatchObject({ attachedTo: "poll", timerDuration: "PT5M" })
+		expect(els.get("wait")?.timerDuration).toBe("PT2H")
+
+		const defs = expand(diagram)
+		const xml = Bpmn.export(defs)
+		expect(xml).toContain('inputCollection="=stakeholders" inputElement="stakeholder"')
+		expect(xml).toContain("<bpmn:timeDuration>PT5M</bpmn:timeDuration>")
+		const back = compactify(Bpmn.parse(xml)).processes[0]?.elements
+		expect(back?.find((e) => e.id === "mail")?.multiInstance?.collection).toBe("=stakeholders")
+		expect(back?.find((e) => e.id === "late")?.timerDuration).toBe("PT5M")
 	})
 
 	it("reads an id written with spaces before its bracket as one id", () => {

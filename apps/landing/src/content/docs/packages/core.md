@@ -387,16 +387,29 @@ arrived 16% of the way into the tool argument, with 15 frames following.
 A line format for a model to write a new process in. It costs about a quarter of the output
 tokens of minified compact JSON. A path is written once as `a > b > c`, a node is declared inline
 the first time it is used, and the parser adds what the model would otherwise spend tokens on.
-`PROCESS_TEXT_GUIDE` is the part of a system prompt that teaches the format (~310 tokens,
+`PROCESS_TEXT_GUIDE` is the part of a system prompt that teaches the format (~400 tokens,
 example included).
 
 ```text
 # Expense approval
 start[start Expense submitted] > check[xor Amount over 1000?]
-check >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]
+check >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > split[and] > book[service Book expense] > join[and] > done[end Expense paid]
 check >(No: default) auto[service Approve automatically] > pay
+split > inform[send Email each approver | each=approvers] > join
 failed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]
+late[boundary:timer Review overdue | on=review after=P2D] > escalate[user Escalate review] > stuck[end Review escalated]
 ```
+
+Attributes after `|`:
+- `on=<task>` puts a boundary event on its task, and `nonint` makes it non-interrupting;
+- `job=<type>` sets the job type;
+- `each=<list>` runs a task or sub-process once per item of the list variable, each instance
+  getting its item in the singular (`each=approvers` → `approver`);
+- `after=<duration>` sets a timer's duration, ISO 8601 or `5m`, `2 hours`, `1 day`. Without
+  it, a duration in the timer's name is read ("Wait 5 minutes" → `PT5M`).
+
+An attribute written before the `|` (`late[boundary:timer on=pay]`) is read all the same.
+Change scripts do not read `each=` and `after=` yet.
 
 ```typescript
 import { expand, Bpmn, parseProcessText, PROCESS_TEXT_GUIDE } from "@bpmnkit/core";

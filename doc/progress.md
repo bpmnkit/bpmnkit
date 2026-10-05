@@ -1,5 +1,42 @@
 # Progress
 
+## 2026-10-05 — Drafting quality for golden prompts 01–15
+
+The last full run (`2026-10-04T07-09-30-692Z`) failed most of 06, 08, 11, 13 and 15. The drafts
+showed why:
+- **06** could not pass: the line format had no way to run a step once per recipient.
+- **13 and 08** drafted parallel work in sequence. The guide's example had no parallel split.
+- **15** drafted a timeout as an xor, or wrote `boundary:timer on=poll` without the bar, which
+  dropped the boundary. Timers had no duration in the format at all, so none could deploy.
+- **11** asked for a REST call and got none of the error boundary the HTTP pattern lint wants.
+
+**Added to the line format (`parseProcessText`, `expand`, `compactify`):**
+- **`each=<list>`** on a task or sub-process: multi-instance over `=<list>`, each instance
+  getting its item in the singular (`each=approvers` → `approver`). `CompactElement.multiInstance`
+  carries it.
+- **`after=<duration>`** on a timer event: ISO 8601, or `5m`, `2 hours`, `1 day`. Without it, a
+  duration in the name is read ("Wait 5 minutes" → `PT5M`). `CompactElement.timerDuration`
+  carries it.
+- **An attribute before the bar** (`late[boundary:timer on=poll]`) is read as one.
+
+**The guide** (~400 tokens, up from ~310) lists both attributes. It has a rule for steps done at
+the same time and for deadlines. Its one example now also shows an `and` split and join, an
+`each=` task and a timer boundary with `after=`.
+
+**Drop's drafting prompt:** a REST call gets a `boundary:error` leading to a task that handles
+the failure.
+
+**Golden prompt 06** now asks for a step run once per recipient, a multi-instance task or
+sub-process (`mustContainMultiInstance`). The format writes the first. The sub-process it asked
+for could not be written.
+
+**Risk to measure:** an earlier change bench found glm copying timer-boundary and parallel
+examples where nobody asked for them: `text` rules 20/20, `all` 15/20
+(`doc/drop-ai-generate-analysis.md` §19). The change prompt builds on the drafting prompt, so the
+guide's new example reaches change runs too. The change bench (`--edits`) should be rerun with
+the drafting bench. Change scripts do not read `each=` and `after=` yet; existing loops and
+durations are kept, as a change only touches what it names.
+
 ## 2026-10-05 — Tenth bench: 89%, re-scored 92%
 
 **The run:** `bench-results/2026-10-05T06-41-57-613Z`. Prompts 10 and 16–27, 5 runs each, with

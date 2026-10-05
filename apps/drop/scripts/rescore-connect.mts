@@ -59,6 +59,7 @@ for (const result of results) {
 		mustContainElementTypes?: string[]
 		mustContainAnyOf?: string[][]
 		mustContainTaskTypes?: (string | string[])[]
+		mustContainMultiInstance?: boolean
 		mustCallUrls?: string[]
 	}
 	const defs = expand(parseProcessText(result.text).diagram)
@@ -95,6 +96,10 @@ for (const result of results) {
 		...(assertions.mustContainAnyOf ?? [])
 			.filter((any) => !any.some((t) => elementTypes.has(t)))
 			.map((any) => `no ${any.join(" or ")}`),
+		...(assertions.mustContainMultiInstance &&
+		!elements.some((e) => "loopCharacteristics" in e && e.loopCharacteristics)
+			? ["no multi-instance step"]
+			: []),
 		...(assertions.mustContainTaskTypes ?? [])
 			.map((entry) => (Array.isArray(entry) ? entry : [entry]))
 			.filter((any) => !any.some((t) => types.has(t)))
