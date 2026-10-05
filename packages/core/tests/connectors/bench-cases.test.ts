@@ -309,4 +309,15 @@ describe("near misses the resolver repairs", () => {
 		expect(r.values.method).toBe("GET")
 		expect(r.values.url).toContain('"/actions/runs"')
 	})
+
+	it("reads a URL written as the alias as a REST call, and a method inside api=", () => {
+		// glm-4.7-flash, 2026-10-05: golden prompt 27
+		const r = resolveConnectorLine(
+			line("with fetch: https://api.github.com/repos/web/web/Actions/runs | api=github GET"),
+			{ apis: [GITHUB] },
+		)
+		expect(r.templateId).toBe("io.camunda.connectors.HttpJson.v2")
+		expect(r.values.method).toBe("GET")
+		expect(r.values.url).toBe("https://api.github.com/repos/web/web/actions/runs")
+	})
 })

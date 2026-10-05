@@ -1,5 +1,35 @@
 # Progress
 
+## 2026-10-05 — Five runs with the draft check
+
+**The run:** `bench-results/2026-10-05T13-41-09-074Z`, every default prompt, 5 runs,
+`glm-4.7-flash`, with the check after each draft. 119 of 120 runs answered; one got Workers AI's
+HTTP 429 "capacity temporarily exceeded". It passed **99/119 (83%)**:
+- **prompts 01–15: 47/60 (78%)**, the rate the 3-run bench measured (28/36), so it holds;
+- **connector prompts 16–27: 52/60 (87%)**.
+
+12 business rule, 16, 20, 21, 22, 23, 24 and 25 passed every run. The check found gaps in 29
+drafts and kept 18 completions, at a median 2.3 s each. No run without the check (`--no-check`)
+was made, so its share of the gain is measured only against the earlier runs: 20–21 of 36 on
+01–15.
+
+**Weakest:**
+- **08 onboarding (2/5):** drafts of 12–22 of 25 elements.
+- **13 parallel (2/5):** three of the drafts have 3 elements.
+- **27 GitHub workflow runs (1/5).** Of its four failures:
+  - two called `/actions/workflows`;
+  - one wrote unreadable Slack lines;
+  - one wrote `with fetch: https://api.github.com/repos/web/web/actions/runs | api=github GET`,
+    the right call in the wrong place.
+
+**Repaired:**
+- A URL written where the alias goes is a REST call to it, and keeps its case.
+- A method after the service in `api=` is the call's method.
+- Drop counts a URL alias as a connector it knows, so the task's first card does not replace it.
+
+27 run 3 now passes: 100/120 re-scored. `bench:rescore` skips a run the model never answered.
+Every earlier bench re-scores as before or better.
+
 ## 2026-10-05 — The draft check, measured: prompts 01–15 at 78%
 
 **The run:** `bench-results/2026-10-05T13-23-33-255Z`, every default prompt, 3 runs,

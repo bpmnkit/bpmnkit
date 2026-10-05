@@ -25,6 +25,7 @@ import {
 interface Result {
 	prompt: string
 	run?: number
+	error?: string
 	text: string
 	failed: string[]
 	connect?: { skipped?: boolean; lines?: string; raw?: string }
@@ -47,6 +48,8 @@ const results = Array.isArray(raw) ? raw : raw.results
 let before = 0
 let after = 0
 for (const result of results) {
+	// A run the model never answered (an HTTP 429, say) has nothing to re-score
+	if (result.error !== undefined || result.failed === undefined) continue
 	const passed = result.failed.length === 0
 	before += passed ? 1 : 0
 	if (!result.connect || result.connect.skipped) {

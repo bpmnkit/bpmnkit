@@ -276,7 +276,7 @@ export function finishConnect(
 	selection: readonly TaskCards[] = [],
 ): ConnectResult {
 	const offered = (task: TaskCards, alias: string) =>
-		alias === "api" || HTTP_METHOD.test(alias)
+		alias === "api" || HTTP_METHOD.test(alias) || /^https?:\/\//i.test(alias)
 			? (task.apis?.length ?? 0) > 0 || task.cards.some((card) => card.alias === "http")
 			: task.cards.some((card) => card.alias === alias)
 	// A guide example copied word for word configures what the reader asked for only when
@@ -309,6 +309,7 @@ export function finishConnect(
 	const known = (alias: string) =>
 		alias === "api" ||
 		HTTP_METHOD.test(alias) ||
+		/^https?:\/\//i.test(alias) ||
 		apis.some((s) => s.id === alias) ||
 		isConnectorAlias(alias)
 	const configured = new Set<string>()

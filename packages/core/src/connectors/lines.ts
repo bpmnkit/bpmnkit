@@ -308,10 +308,28 @@ export function resolveConnectorLine(
  * as `http GET /issues`.
  */
 function apiCardLine(
-	line: ConnectorLine,
+	given: ConnectorLine,
 	apis: readonly ApiService[],
 	fixes: string[],
 ): ConnectorLine {
+	let line = given
+	// `with fetch: https://api.github.com/… | api=github GET`: a URL where the alias goes is a
+	// REST call to it, and a method after the service in api= is the call's method
+	if (/^https?:\/\//i.test(line.alias)) {
+		fixes.push(`read "${line.alias}" as "http ${line.alias}"`)
+		line = { ...line, alias: "http", args: [line.alias, ...line.args] }
+	}
+	const apiMethod = /^(\S+)\s+(get|post|put|patch|delete)$/i.exec(line.values.api ?? "")
+	if (apiMethod?.[1] && apiMethod[2]) {
+		const method = apiMethod[2].toUpperCase()
+		fixes.push(`read api=${line.values.api} as api=${apiMethod[1]} with ${method}`)
+		const hasMethod = line.args.some((arg) => HTTP_METHODS.has(arg.toUpperCase()))
+		line = {
+			...line,
+			args: hasMethod ? line.args : [method, ...line.args],
+			values: { ...line.values, api: apiMethod[1] },
+		}
+	}
 	// `http GET api github — List workflow runs for a repository`: an API card's line copied
 	// with the summary where the path goes. The summary names the operation
 	const dash = line.args.findIndex((arg) => arg === "—" || arg === "-")

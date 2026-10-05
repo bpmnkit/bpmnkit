@@ -216,7 +216,8 @@ service task and inbound templates work on events.
   selects it.
 - **A short key.** A key the operation lacks, but that is the end of one it has, is read as that
   one (`channel` → `data.channel`).
-- **Values without a key.** `http POST https://…` sets `method` and `url`.
+- **Values without a key.** `http POST https://…` sets `method` and `url`. A URL written where
+  the alias goes is a REST call to it, and `api=github GET` names the method too.
 - **Inputs in one part.** `| region=eu-west-1 functionName=resize` is two inputs, as the cards
   list them. A FEEL value is never split, and a `*` copied from a card (`token*=`) is dropped.
 - **Results.** `result=name` sets the result variable; `result=name: expr` sets the result

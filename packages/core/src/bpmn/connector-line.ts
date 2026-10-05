@@ -137,5 +137,12 @@ export function parseConnectorLine(
 		}
 		values[key] = part.slice(eq + 1).trim()
 	}
-	return { id, alias: alias.toLowerCase(), args, values, line }
+	// A URL where the alias goes keeps its case: paths are case-sensitive
+	return {
+		id,
+		alias: /^https?:\/\//i.test(alias) ? alias : alias.toLowerCase(),
+		args,
+		values,
+		line,
+	}
 }
