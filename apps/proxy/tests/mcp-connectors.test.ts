@@ -47,6 +47,10 @@ function callTool(
 	})
 }
 
+// Each call starts a fresh server under tsx: under a second here, past vitest's 5s default on a
+// busy CI runner.
+const SPAWN = { timeout: 30_000 }
+
 function diagramFile(name: string): string {
 	const path = join(dir, name)
 	const defs = expand(
@@ -58,7 +62,7 @@ function diagramFile(name: string): string {
 	return path
 }
 
-describe("find_connectors", () => {
+describe("find_connectors", SPAWN, () => {
 	it("answers with connector cards", async () => {
 		const { text, isError } = await callTool(
 			"find_connectors",
@@ -90,7 +94,7 @@ describe("find_connectors", () => {
 	})
 })
 
-describe("add_connector", () => {
+describe("add_connector", SPAWN, () => {
 	it("configures a task from a card, keeps credentials out, and says what is missing", async () => {
 		const output = join(dir, "slack.bpmn")
 		const { text } = await callTool(

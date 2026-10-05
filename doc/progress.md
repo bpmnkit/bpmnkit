@@ -13,6 +13,8 @@
   `dist` with Node rather than through Vite. Transforming the bundled connector templates took
   17s on CI, which pushed example 07 (Clef) past its build budget and the proxy's MCP connector
   tests past vitest's 5s limit.
+- The proxy's MCP connector tests, which start a fresh server under tsx for each call, get 30s
+  each: a cold start on a busy CI runner takes more than vitest's 5s default.
 
 ## 2026-10-05 — Five runs with the draft check
 
