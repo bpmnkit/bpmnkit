@@ -11,6 +11,9 @@ the connector data ships in the packages, so nothing is fetched at run time.
 1. **The shape.** A model writes the process in the
    [line format](/docs/packages/core#parseprocesstexttext-and-createprocesstextstream): tasks,
    gateways, events. Each call to an outside system is its own service task.
+   In Drop, code then checks the draft against the request. A DMN decision, a time limit or a
+   REST call the request names, with no rule task, timer or error boundary for it in the draft,
+   gets one change request asking for exactly that. A complete draft skips it.
 2. **The connectors.** A second, small call configures them. Code picks the connector cards
    each task could use and sends only those. The model answers with `with` lines only, and
    code applies them.

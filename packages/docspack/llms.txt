@@ -111,7 +111,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [AI Agents — Deploy-grade validation](.llms/chunks/guides.ai-agents.deploy-grade-validation.md) — 205 tokens
 - [AI Agents — Testing without a real LLM call](.llms/chunks/guides.ai-agents.testing-without-a-real-llm-call.md) — 201 tokens
 - [AI Agents — See also](.llms/chunks/guides.ai-agents.see-also.md) — 49 tokens
-- [Connectors in AI Generation](.llms/chunks/guides.ai-connectors.md) — 218 tokens
+- [Connectors in AI Generation](.llms/chunks/guides.ai-connectors.md) — 284 tokens
 - [Connectors in AI Generation — Connector cards](.llms/chunks/guides.ai-connectors.connector-cards.md) — 200 tokens
 - [Connectors in AI Generation — `with` lines](.llms/chunks/guides.ai-connectors.with-lines.md) — 184 tokens
 - [Connectors in AI Generation — Any HTTP API](.llms/chunks/guides.ai-connectors.any-http-api.md) — 275 tokens

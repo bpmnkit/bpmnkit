@@ -32,6 +32,7 @@ import {
 	parseProcessText,
 } from "@bpmnkit/core"
 // Types only: the connect pass applies its answer on the server, so the page never loads the catalog.
+import { completes, draftGaps, gapChange } from "../lib/check.js"
 import type { ConnectEvent, ConnectResult } from "../lib/connect.js"
 import {
 	type GenerateEvent,
@@ -624,7 +625,38 @@ export function mountGenerator(): void {
 				? `ready (cached)${repaired(problems)}`
 				: `ready in ${seconds}s${repaired(problems)}`,
 		)
+		// A request with words to check against: an image alone has none
+		if (description.length >= 10) await complete()
 		await connect()
+	}
+
+	/**
+	 * The check after a draft (`src/lib/check.ts`): when the request names what the
+	 * draft has no element for — a DMN decision, a deadline, a failure to handle — one
+	 * change request asks for exactly that. Its answer stands only when it fills a gap
+	 * and keeps every element; otherwise the draft does.
+	 */
+	async function complete(): Promise<void> {
+		if (!draft) return
+		const change = gapChange(draftGaps(draft.description, draft.text))
+		if (!change) return
+		const before = status?.textContent ?? ""
+		const text = draft.text
+		const answer = await ask(
+			{ description: draft.description, diagram: text, change },
+			"completing",
+		)
+		if (draft?.text !== text) return
+		if (answer && completes(draft.description, text, answer.text)) {
+			earlier.push(text)
+			draft.text = answer.text
+			const { problems } = show(answer.text)
+			setStatus(`${before} · completed${repaired(problems)}`)
+		} else {
+			// What streamed is not kept: the canvas shows the draft again
+			show(text)
+			setStatus(before)
+		}
 	}
 
 	/**

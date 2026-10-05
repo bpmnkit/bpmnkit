@@ -110,6 +110,22 @@ worked out again against their own document, and whoever edits can apply it late
 turn it off. Locally the model call needs a Cloudflare account; everything around it runs offline.
 See `doc/drop-ai-feedback-edits-analysis.md` §14.
 
+**The check after a draft** (`src/lib/check.ts`) runs on the page between drafting and the connect
+pass. Code compares the request with the draft. The draft may lack an element for something the
+request names:
+- a DMN decision without a rule task;
+- a time limit without a timer;
+- a failure to handle, or a REST call, without an error boundary;
+- work done at the same time without an and split;
+- a step for every item of a list without `each=`;
+- work a person does without a user task;
+- a message to wait for without a message catch event.
+
+Then one change request, through the same route as any change, asks for exactly those. Its answer
+stands only when it fills a gap and keeps every element of the draft; otherwise the draft stays,
+and Undo returns to it. A complete draft costs nothing more. `bench:generate` runs the same check
+(`--no-check` leaves it out).
+
 With `AI_CONNECT_MODEL` set as well (it is, in `wrangler.jsonc`), the passcode also turns on the
 **connect pass** (`POST /drop/api/connect`). It configures the Camunda connectors of a diagram
 that already has its shape (`doc/ai-connector-generation-plan.md` §4).

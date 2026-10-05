@@ -1,5 +1,47 @@
 # Progress
 
+## 2026-10-05 — Drop checks each draft against its request
+
+Drafting had settled at 20–21 of 36 on prompts 01–15. The rest were planning misses glm makes
+despite the guide's rules:
+- a DMN decision drafted as a plain gateway;
+- a timeout drafted as an xor;
+- a REST call or a named failure without an error boundary;
+- "every recipient in a list" without `each=`;
+- legal review without a user task.
+
+Examples taught the patterns but were copied into unrelated processes, so they stay out of the
+prompt.
+
+**The check** (`apps/drop/src/lib/check.ts`): `draftGaps(request, draft)` matches what the request
+names against the draft's elements, in code:
+- DMN or decision table → a rule task;
+- a time limit or timeout → a timer;
+- "if … fails" → an error boundary;
+- REST, HTTP or an external API → an error boundary;
+- at the same time or in parallel → an and split;
+- every item of a list → `each=`;
+- a user task, a review by someone, or manual work → a user task;
+- waiting for a message → a message catch event.
+
+`gapChange` makes those gaps one change request. The page sends it through the change route
+right after the draft, before the connect pass. `completes` keeps the answer only when it fills a
+gap and keeps every element of the draft; otherwise the draft stands. A complete draft costs no
+model call.
+
+**Measured on recorded drafts** (the three drafting benches of 2026-10-05), the check flags every
+failing draft of 07, 08, 11, 13, 14 and 15, and half of 12's. On passing drafts it flags:
+- 17 and 23 (6 of 8, 7 of 9): REST calls without the error boundary the HTTP lint pattern wants;
+- 05 (4 of 8): drafts that wait on a timer, not the payment message. They pass only because the
+  assertion accepts any catch event.
+
+"For each new support ticket" is each process instance, not a list: the per-item rule asks for
+list wording.
+
+`bench:generate` runs the same check after each golden prompt's draft (`--no-check` leaves it
+out). Its summary gains "drafts with gaps", "completions kept" and "check ms". Smoke-tested
+against a fake Workers AI (`CLOUDFLARE_API_BASE`); it needs a real bench to measure.
+
 ## 2026-10-05 — Third drafting and change bench: where drafting stands
 
 **The runs**, both `glm-4.7-flash`, with the repairs for per-item steps and DMN outcomes:

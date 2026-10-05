@@ -44,6 +44,10 @@
  *   --only 02,13      prompt directory (or edit case) prefixes to run
  *   --all             include the prompts skipped by default
  *   --no-extra        send no model-specific options (reasoning effort, thinking toggle)
+ *   --no-check        skip the check after a golden prompt's draft. By default, as on the
+ *                     page, a draft that lacks what its request names (a DMN task, a
+ *                     timer, an error boundary, …, `src/lib/check.ts`) gets one change
+ *                     request, kept when it fills a gap and loses no element
  *   --max-tokens N    output cap (default: the model's, as the Worker sends)
  *   --out DIR         where to write results (default bench-results/<timestamp>)
  *
@@ -68,6 +72,7 @@ import {
 } from "@bpmnkit/core"
 import { connectorLineFor, selectConnectors } from "@bpmnkit/core/connectors"
 import { dryRun as dryRunProcess } from "@bpmnkit/engine/testing"
+import { completes, draftGaps, gapChange } from "../src/lib/check.ts"
 import {
 	connectApis,
 	connectMessages,
@@ -118,6 +123,7 @@ const { values: args } = parseArgs({
 		"dry-run": { type: "boolean", default: false },
 		"refine-rules": { type: "string", default: "text" },
 		"no-extra": { type: "boolean", default: false },
+		"no-check": { type: "boolean", default: false },
 		"max-tokens": { type: "string" },
 		out: { type: "string" },
 	},
@@ -381,7 +387,42 @@ async function runOne(model, prompt) {
 		return result
 	}
 
-	const parsed = stream.end()
+	let parsed = stream.end()
+	// The check the page runs after a draft: one change request for what the request names
+	// and the draft lacks, kept when it fills a gap without losing an element
+	if (prompt.text !== undefined && !args["no-check"]) {
+		const gaps = draftGaps(prompt.text, text)
+		const change = gapChange(gaps)
+		result.check = { gaps: gaps.map((g) => g.kind) }
+		if (change) {
+			const t1 = performance.now()
+			try {
+				const fixed = await askModel(model, {
+					messages: refineMessages(prompt.text, text, change),
+					stream: true,
+					max_tokens: maxTokens ?? maxTokensFor(model),
+					...(args["no-extra"] ? {} : (MODEL_PROFILES[model]?.options ?? {})),
+				})
+				const adopted = completes(prompt.text, text, fixed.text)
+				Object.assign(result.check, {
+					ms: Math.round(performance.now() - t1),
+					usage: fixed.usage,
+					neurons: fixed.usage ? neuronsFor(model, fixed.usage) : undefined,
+					text: fixed.text,
+					left: draftGaps(prompt.text, fixed.text).map((g) => g.kind),
+					adopted,
+				})
+				if (adopted) {
+					result.draft = text
+					text = fixed.text
+					result.text = text
+					parsed = parseProcessText(text)
+				}
+			} catch (error) {
+				result.check.error = String(error)
+			}
+		}
+	}
 	result.problems = parsed.problems
 	result.fixes = parsed.fixes
 	try {
@@ -401,6 +442,9 @@ async function runOne(model, prompt) {
 	}
 	return result
 }
+
+/** {@link stream}, under a name `runOne`'s own `stream` does not hide. */
+const askModel = (model, body) => stream(model, body)
 
 /** Reads a Workers AI stream: the content, and the usage when the model reports it. */
 async function stream(model, body) {
@@ -552,7 +596,11 @@ for (const model of models) {
 					: c.skipped
 						? `  | connect skipped${c.skipRight ? "" : " (WRONG)"}`
 						: `  | connect ${c.totalMs}ms  out ${c.usage?.completionTokens ?? "?"}tok  connected ${c.connected}/${c.tasks}  api cards ${c.apiCards}  problems ${c.problems.length}  questions ${c.questions}  dry run ${c.dryRun === "end" ? "✓" : `✗ ${c.dryRun}`}${c.literalSecrets ? `  literal secrets ${c.literalSecrets}` : ""}${c.skipRight ? "" : "  (should have skipped)"}`
-			console.log(`${model}  ${prompt.id}#${run}  ${verdict}${connected}`)
+			const k = r.check
+			const checked = !k?.gaps.length
+				? ""
+				: `  | check ${k.gaps.join(",")} ${k.error ? `ERROR ${k.error.slice(0, 60)}` : `${k.adopted ? "kept" : "dropped"} ${k.ms}ms`}`
+			console.log(`${model}  ${prompt.id}#${run}  ${verdict}${checked}${connected}`)
 		}
 	}
 }
@@ -627,6 +675,13 @@ const rows = (args.feedback ? [] : models).map((model) => {
 		mean(ok.map((r) => r.problems.length)),
 		mean(ok.map((r) => r.fixes.length)),
 		mean(ok.map((r) => r.lintErrors.length)),
+		...(!args.edits && !args["no-check"]
+			? [
+					`${ok.filter((r) => r.check?.gaps.length).length}/${ok.length}`,
+					`${ok.filter((r) => r.check?.adopted).length}/${ok.filter((r) => r.check?.gaps.length).length}`,
+					median(ok.filter((r) => r.check?.ms !== undefined).map((r) => r.check.ms)),
+				]
+			: []),
 		...(args.edits
 			? [
 					mean(ok.map((r) => r.kept * 100)),
@@ -660,6 +715,7 @@ const header = [
 	"problems",
 	"fixes",
 	"lint errors",
+	...(!args.edits && !args["no-check"] ? ["drafts with gaps", "completions kept", "check ms"] : []),
 	...(args.edits ? ["kept %", "added", "removed"] : []),
 	...(args.connect
 		? [
