@@ -669,6 +669,21 @@ describe("parseProcessText", () => {
 		expect(parseProcessText("end of the answer").problems[0]?.message).toMatch(/^expected ">"/)
 	})
 
+	it("makes a pass-through and node named like a step a task, and removes pass-throughs a removal leaves", () => {
+		// glm-4.7-flash, golden prompt 13
+		const text = [
+			"s[start Order] > a[and] > b[and Pack into box] > c[service Ship] > e[end Done]",
+			"a > h[xor Wait?] > b",
+		].join("\n")
+		const { diagram, problems } = parseProcessText(text)
+		const els = new Map(diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("b")).toMatchObject({ type: "task", name: "Pack into box" })
+		expect(els.has("a")).toBe(false)
+		expect(problems.map((p) => p.message)).toContain(
+			'"b" is a gateway with one way in and out, named like a step; made it a task',
+		)
+	})
+
 	it("reads each= as a step run once per item, and a timer's duration from after= or its name", () => {
 		// glm-4.7-flash, golden prompts 06 and 15
 		const text = [

@@ -48,16 +48,14 @@ Rules:
 - An xor has two or more branches: exactly one is (Label: default), each other has a FEEL condition.
 - A boundary starts its own line, on a task you declared, and leads to a task that handles it; never draw an arrow into a boundary.
 - Branches that meet again are joined automatically; join parallel branches with an and node.
-- Steps done at the same time start from an and node. A deadline is a boundary:timer on the task that may run late.
+- Steps done at the same time start from an and node and meet at another. A deadline is a boundary:timer with after= on the task that may run late. A step done for every item of a list takes each=<list>; use it only when the description says every or each.
 
 Example:
 # Expense approval
 start[start Expense submitted] > check[xor Amount over 1000?]
-check >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > split[and] > book[service Book expense] > join[and] > done[end Expense paid]
+check >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expense] > done[end Expense paid]
 check >(No: default) auto[service Approve automatically] > pay
-split > inform[send Email each approver | each=approvers] > join
-failed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]
-late[boundary:timer Review overdue | on=review after=P2D] > escalate[user Escalate review] > stuck[end Review escalated]`
+failed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]`
 
 /** A line, or part of one, that {@link parseProcessText} could not use. */
 export interface ProcessTextProblem {
@@ -1089,14 +1087,37 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 
 		// Pass-through gateways: one way in and one way out decides nothing. Most
 		// often a question the model asked and then answered only one way.
+		const dedupe = () => {
+			const once = new Set<string>()
+			edges = edges.filter((edge) => {
+				const key = `${edge.from}>${edge.to}`
+				if (once.has(key)) return false
+				once.add(key)
+				return true
+			})
+		}
 		for (let removed = true; removed; ) {
 			removed = false
+			// Removing one gateway can leave two flows between the same nodes: one is enough
+			dedupe()
 			for (const [id, node] of nodes) {
 				if (!GATEWAYS.has(node.element.type)) continue
 				const [inEdge, ...moreIn] = into(id)
 				const [outEdge, ...moreOut] = outOf(id)
 				if (!inEdge || !outEdge || moreIn.length > 0 || moreOut.length > 0) continue
 				if (inEdge.from === outEdge.to) continue
+				// `pack[and Pack into box]`: a step written with a gateway's kind is that step
+				if (
+					node.element.name &&
+					(node.element.type === "parallelGateway" || node.element.type === "inclusiveGateway")
+				) {
+					node.element.type = "task"
+					problems.push({
+						line: node.line,
+						message: `"${id}" is a gateway with one way in and out, named like a step; made it a task`,
+					})
+					continue
+				}
 				const target = typeOf(outEdge.to)
 				if (
 					node.element.type === "eventBasedGateway" &&

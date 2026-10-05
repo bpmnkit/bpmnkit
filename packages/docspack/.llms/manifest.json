@@ -4579,7 +4579,7 @@
 		{
 			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream",
 			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md",
-			"tokens": 1498,
+			"tokens": 1493,
 			"tags": [
 				"packages",
 				"core",
@@ -4589,6 +4589,7 @@
 				"createprocesstextstream"
 			],
 			"entities": [
+				"glm-4.7-flash",
 				"parseProcessText",
 				"lintDiagram"
 			]

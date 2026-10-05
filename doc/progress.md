@@ -1,5 +1,37 @@
 # Progress
 
+## 2026-10-05 — Drafting bench of 01–15, and examples the model copies
+
+**The runs**, both `glm-4.7-flash`:
+- `bench-results/2026-10-05T10-38-56-569Z`, every default prompt, 3 runs: 58/72. Prompts 01–15
+  rose from 18/36 (re-scored) to **25/36**. 06, 10 and 11 passed every run, and 15 two of three.
+- `bench-results/2026-10-05T10-47-56-640Z`, the change cases with the `text` rules: 19/30,
+  against 22/30 on 2026-09-30. 08 change-type fell from 3/3 to 0/3; timer boundary and
+  make-parallel rose from 0/3 to 1/3 each.
+
+**The model copied the examples.** The connect pass was skipped rightly only 52 of 72 times, and
+the drafts showed why:
+- the guide example's "Email each approver | each=approvers" and "Book expense" turned up in
+  unrelated processes;
+- the drafting prompt's naming example became "List overdue documents in Xero" in prompt 14;
+- `each=` went on steps no description called per item.
+
+The change cases edit the guide's old "Expense approval" example. Seeing a longer version of the
+same process in the guide, the model mixed the two (08 change-type). This is what the change
+bench of 2026-09-30 found for the `all` rules: glm copies example lines, not rules written as
+text.
+
+**Changed:**
+- **The guide's example is the original four lines again.** Parallel work, deadlines and steps
+  run per item are rules in words. `each=` is only for what the description calls every or each.
+  `each=` and `after=` stay in the attribute line.
+- **Drop's drafting prompt** names tasks in the description's own words, with no example.
+- **A gateway that passes through** (one way in, one way out) and carries a step's name is now a
+  task: `pack[and Pack into box]` (13 run 3). Duplicate flows a removal leaves are merged before
+  the next gateway is checked, so a chain of pass-through gateways no longer survives.
+
+Both benches need running again to measure this. Every earlier bench re-scores as before.
+
 ## 2026-10-05 — Drafting quality for golden prompts 01–15
 
 The last full run (`2026-10-04T07-09-30-692Z`) failed most of 06, 08, 11, 13 and 15. The drafts
