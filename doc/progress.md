@@ -6,6 +6,8 @@
   `@bpmnkit/core/connectors`, where the catalog now lives; `@bpmnkit/connectors`
   re-exports it. The catalog lists Camunda's 133 templates, then BPMN Kit's.
 - Clef gets the card alias `clef`, so generation can name it like any other connector.
+- The API index test loads every service in one batch, with a 30s budget: one by one it
+  took over vitest's 5s default on a busy CI runner.
 
 ## 2026-10-05 — Five runs with the draft check
 

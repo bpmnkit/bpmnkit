@@ -13,13 +13,14 @@ describe("the API index", () => {
 		expect(ids).toEqual(expect.arrayContaining(["github", "stripe", "notion"]))
 	})
 
-	it("loads every service it lists, with well-formed operations", async () => {
-		for (const summary of API_SERVICES) {
-			const service = await loadApiService(summary.id)
-			expect(service?.id).toBe(summary.id)
-			expect(service?.operations.length).toBeGreaterThan(0)
-			if (service?.baseUrl !== undefined) expect(service.baseUrl).toMatch(/^https?:\/\/[^/]+/)
-			for (const op of service?.operations ?? []) {
+	// Imports every generated service module, which takes over 5s on a busy CI runner
+	it("loads every service it lists, with well-formed operations", { timeout: 30_000 }, async () => {
+		const services = await loadApiServices(API_SERVICES.map((s) => s.id))
+		expect(services.map((s) => s.id)).toEqual(API_SERVICES.map((s) => s.id))
+		for (const service of services) {
+			expect(service.operations.length).toBeGreaterThan(0)
+			if (service.baseUrl !== undefined) expect(service.baseUrl).toMatch(/^https?:\/\/[^/]+/)
+			for (const op of service.operations) {
 				expect(METHODS.has(op.method)).toBe(true)
 				expect(op.path.startsWith("/")).toBe(true)
 			}
