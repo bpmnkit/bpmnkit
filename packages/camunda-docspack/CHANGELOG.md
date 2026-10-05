@@ -1,5 +1,13 @@
 # @bpmnkit/camunda-docspack
 
+## 0.1.5
+
+### Patch Changes
+
+- bf2d38d: Better ranking. A line repeated in at least 5% of a pack's chunks no longer counts towards a match: API digest metadata such as `Consistency: eventual.` had made "consistency" almost unsearchable. Sections merged into one chunk now keep their headings as tags. `ask` lists the next five matches by id, and `ask <chunk-id>` returns that one chunk. `answer()` returns them as `more`.
+- Updated dependencies [bf2d38d]
+  - @bpmnkit/docspack@1.1.0
+
 ## 0.1.4
 
 ### Patch Changes

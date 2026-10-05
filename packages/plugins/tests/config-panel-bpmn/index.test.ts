@@ -587,3 +587,65 @@ describe("AI Agent Subprocess adapter", () => {
 		expect(el.unknownAttributes["zeebe:modelerTemplateVersion"]).toBeUndefined()
 	})
 })
+
+describe("BPMN Kit connector templates", () => {
+	const CLEF_TEMPLATE_ID = "io.bpmnkit.connectors.CloudflareClef.v1"
+
+	function serviceTaskRegistration() {
+		type Field = { key: string; options?: Array<{ value: string; label: string }> }
+		type Schema = { groups: Array<{ fields: Field[] }> }
+		type Adapter = {
+			resolve?: (d: BpmnDefinitions, id: string) => unknown
+		}
+		const registered = new Map<string, { schema: Schema; adapter: Adapter }>()
+		createConfigPanelBpmnPlugin({
+			name: "config-panel",
+			install: vi.fn(),
+			uninstall: vi.fn(),
+			registerSchema: vi.fn((t: string, schema: Schema, adapter: Adapter) => {
+				registered.set(t, { schema, adapter })
+			}),
+		}).install({
+			container: document.createElement("div"),
+			svg: document.createElementNS("http://www.w3.org/2000/svg", "svg") as SVGSVGElement,
+			viewportEl: document.createElementNS("http://www.w3.org/2000/svg", "g") as SVGGElement,
+			getViewport: () => ({ tx: 0, ty: 0, scale: 1 }),
+			setViewport: vi.fn(),
+			getShapes: () => [],
+			getEdges: () => [],
+			getTheme: () => "dark" as const,
+			setTheme: vi.fn(),
+			on: (_e: unknown, _h: unknown) => () => {},
+			emit: vi.fn(),
+		})
+		const reg = registered.get("serviceTask")
+		if (!reg) throw new Error("serviceTask not registered")
+		return reg
+	}
+
+	it("offers the Clef template in the service task's connector picker", () => {
+		const { schema } = serviceTaskRegistration()
+		const picker = schema.groups.flatMap((g) => g.fields).find((f) => f.key === "connector")
+		expect(picker?.options).toContainEqual({
+			value: CLEF_TEMPLATE_ID,
+			label: "Cloudflare Clef Decision",
+		})
+	})
+
+	it("opens a task stamped with the Clef template in that template's form", () => {
+		const { adapter } = serviceTaskRegistration()
+		const defs = makeMinimalDefs({ extensionElements: [taskDefExt(REST_TYPE)] })
+		const task = defs.processes[0]?.flowElements[0]
+		if (!task) throw new Error("no task")
+		task.unknownAttributes = { "zeebe:modelerTemplate": CLEF_TEMPLATE_ID }
+
+		expect(adapter.resolve?.(defs, "task1")).not.toBeNull()
+	})
+
+	it("leaves an unstamped REST task on Camunda's REST connector", () => {
+		// Clef runs on the REST connector's job type; it must not claim plain REST tasks.
+		const { adapter } = serviceTaskRegistration()
+		const defs = makeMinimalDefs({ extensionElements: [taskDefExt(REST_TYPE)] })
+		expect(adapter.resolve?.(defs, "task1")).toBeNull()
+	})
+})

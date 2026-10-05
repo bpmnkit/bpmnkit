@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.0.1. 372 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.1.0. 379 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -24,8 +24,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [casen CLI — Local proxy](.llms/chunks/cli.casen.local-proxy.md) — 305 tokens
 - [casen CLI — Local proxy — Who can use the proxy](.llms/chunks/cli.casen.local-proxy-who-can-use-the-proxy.md) — 794 tokens
 - [casen CLI — MCP Server Mode](.llms/chunks/cli.casen.mcp-server-mode.md) — 204 tokens
-- [casen connector](.llms/chunks/cli.connector.md) — 213 tokens
-- [casen connector — Browse the bundled OOTB catalog](.llms/chunks/cli.connector.browse-the-bundled-ootb-catalog.md) — 417 tokens
+- [casen connector](.llms/chunks/cli.connector.md) — 224 tokens
+- [casen connector — Browse the bundled OOTB catalog](.llms/chunks/cli.connector.browse-the-bundled-ootb-catalog.md) — 416 tokens
 - [casen connector — Endpoints of an HTTP API](.llms/chunks/cli.connector.endpoints-of-an-http-api.md) — 181 tokens
 - [casen connector — Generate from the OpenAPI catalog](.llms/chunks/cli.connector.generate-from-the-openapi-catalog.md) — 174 tokens
 - [casen connector — All flags](.llms/chunks/cli.connector.all-flags.md) — 328 tokens
@@ -117,6 +117,13 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Connectors in AI Generation — Any HTTP API](.llms/chunks/guides.ai-connectors.any-http-api.md) — 275 tokens
 - [Connectors in AI Generation — Proving it runs](.llms/chunks/guides.ai-connectors.proving-it-runs.md) — 334 tokens
 - [Connectors in AI Generation — Keeping the data current](.llms/chunks/guides.ai-connectors.keeping-the-data-current.md) — 86 tokens
+- [AI Decisions](.llms/chunks/guides.ai-decisions.md) — 232 tokens
+- [AI Decisions — The template](.llms/chunks/guides.ai-decisions.the-template.md) — 323 tokens
+- [AI Decisions — Questions and answers](.llms/chunks/guides.ai-decisions.questions-and-answers.md) — 421 tokens
+- [AI Decisions — Example: triage a support ticket](.llms/chunks/guides.ai-decisions.example-triage-a-support-ticket.md) — 449 tokens
+- [AI Decisions — Test the routing](.llms/chunks/guides.ai-decisions.test-the-routing.md) — 197 tokens
+- [AI Decisions — Use the template in the editor](.llms/chunks/guides.ai-decisions.use-the-template-in-the-editor.md) — 148 tokens
+- [AI Decisions — Limits](.llms/chunks/guides.ai-decisions.limits.md) — 144 tokens
 - [Building Processes with AI](.llms/chunks/guides.ai-implement.md) — 403 tokens
 - [Building Processes with AI — The Claude Code plugin](.llms/chunks/guides.ai-implement.the-claude-code-plugin.md) — 231 tokens
 - [Building Processes with AI — Lightweight alternative: `casen skills install`](.llms/chunks/guides.ai-implement.lightweight-alternative-casen-skills-install.md) — 172 tokens
@@ -158,7 +165,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Building Processes — Multi-Instance](.llms/chunks/guides.building-processes.multi-instance.md) — 687 tokens
 - [Claude Code Plugin](.llms/chunks/guides.claude-code-plugin.md) — 205 tokens
 - [Claude Code Plugin — Configuration](.llms/chunks/guides.claude-code-plugin.configuration.md) — 592 tokens
-- [Claude Code Plugin — Reference docs](.llms/chunks/guides.claude-code-plugin.reference-docs.md) — 412 tokens
+- [Claude Code Plugin — Reference docs](.llms/chunks/guides.claude-code-plugin.reference-docs.md) — 410 tokens
 - [Claude Code Plugin — Ambient Hooks](.llms/chunks/guides.claude-code-plugin.ambient-hooks.md) — 191 tokens
 - [Camunda 8 Deployment](.llms/chunks/guides.deployment.md) — 192 tokens
 - [Camunda 8 Deployment — Deploying a Process](.llms/chunks/guides.deployment.deploying-a-process.md) — 195 tokens
@@ -295,8 +302,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/connector-gen — API index](.llms/chunks/packages.connector-gen.api-index.md) — 422 tokens
 - [@bpmnkit/connector-gen — Catalog reference](.llms/chunks/packages.connector-gen.catalog-reference.md) — 518 tokens
 - [@bpmnkit/connector-gen — `CatalogEntry` type](.llms/chunks/packages.connector-gen.catalogentry-type.md) — 86 tokens
-- [@bpmnkit/connectors — Overview](.llms/chunks/packages.connectors.overview.md) — 245 tokens
-- [@bpmnkit/connectors — Installation](.llms/chunks/packages.connectors.installation.md) — 240 tokens
+- [@bpmnkit/connectors — Overview](.llms/chunks/packages.connectors.overview.md) — 256 tokens
+- [@bpmnkit/connectors — Installation](.llms/chunks/packages.connectors.installation.md) — 402 tokens
 - [@bpmnkit/connectors — Connector cards](.llms/chunks/packages.connectors.connector-cards.md) — 320 tokens
 - [@bpmnkit/connectors — Picking cards for a diagram](.llms/chunks/packages.connectors.picking-cards-for-a-diagram.md) — 548 tokens
 - [@bpmnkit/connectors — API cards](.llms/chunks/packages.connectors.api-cards.md) — 713 tokens
@@ -306,7 +313,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/connectors — Applying to an element — inbound connectors and linked resources](.llms/chunks/packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources.md) — 667 tokens
 - [@bpmnkit/connectors — Workspace templates](.llms/chunks/packages.connectors.workspace-templates.md) — 710 tokens
 - [@bpmnkit/connectors — Validating a template](.llms/chunks/packages.connectors.validating-a-template.md) — 213 tokens
-- [@bpmnkit/connectors — API Reference](.llms/chunks/packages.connectors.api-reference.md) — 619 tokens
+- [@bpmnkit/connectors — API Reference](.llms/chunks/packages.connectors.api-reference.md) — 635 tokens
 - [@bpmnkit/connectors — Stability](.llms/chunks/packages.connectors.stability.md) — 137 tokens
 - [@bpmnkit/core — Overview](.llms/chunks/packages.core.overview.md) — 136 tokens
 - [@bpmnkit/core — Installation](.llms/chunks/packages.core.installation.md) — 27 tokens

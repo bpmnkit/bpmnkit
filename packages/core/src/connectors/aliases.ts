@@ -75,6 +75,7 @@ export const CONNECTOR_ALIASES: Readonly<
 		alias: "camunda-api",
 		operations: ["input.internal_endpoint"],
 	},
+	"io.bpmnkit.connectors.CloudflareClef.v1": { alias: "clef" },
 	"io.camunda.connectors.AWSCOMPREHEND.v1": { alias: "comprehend", operations: ["input.type"] },
 	"io.camunda.connectors.csv": { alias: "csv", operations: ["operation"] },
 	"io.camunda.connectors.databricks.rest.v1": {

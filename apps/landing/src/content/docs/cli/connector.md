@@ -5,8 +5,8 @@ sidebar:
   order: 5
 ---
 
-`casen connector` has two independent jobs: **browse** the 133 bundled Camunda 8 out-of-the-box
-connector templates (`search`/`show` — used by the AI generation pipeline to wire a plan step to
+`casen connector` has two independent jobs: **browse** the bundled connector templates — Camunda 8's 133
+out-of-the-box ones plus the few BPMN Kit maintains (`search`/`show` — used by the AI generation pipeline to wire a plan step to
 a real service), and **generate** brand-new connector element templates from OpenAPI 3.x/Swagger
 2.x specs (`generate`/`catalog` — for APIs Camunda doesn't ship a template for).
 
@@ -29,7 +29,7 @@ casen connector search slack
 casen connector show io.camunda.connectors.Slack.v1
 ```
 
-`search` scores the 133 bundled templates by keyword match and prints a table (template id,
+`search` scores the bundled templates by keyword match and prints a table (template id,
 direction, task type, description). `show` prints a template's task type, direction, and its
 required/optional input keys — these are the keys a `ProcessPlan` `connector` step's `values`
 object uses (see [Building Processes with AI](/docs/guides/ai-implement)):

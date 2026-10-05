@@ -412,6 +412,9 @@ importers:
       '@bpmnkit/camunda-docspack':
         specifier: workspace:*
         version: link:../../packages/camunda-docspack
+      '@bpmnkit/connectors':
+        specifier: workspace:*
+        version: link:../../packages/connectors
       '@bpmnkit/core':
         specifier: workspace:*
         version: link:../../packages/core

@@ -10,8 +10,9 @@ sidebar:
 `@bpmnkit/connectors` answers two questions about Camunda 8 connectors: **which ones exist**,
 and **what happens to a task when you apply one**.
 
-It bundles the 133 out-of-the-box Camunda connector templates as data, so a catalog, a search
-box or an AI tool call can work offline. And it resolves a template plus a set of values into
+It bundles the 133 out-of-the-box Camunda connector templates as data, plus the
+[templates BPMN Kit maintains](#templates-maintained-by-bpmn-kit), so a catalog, a search box
+or an AI tool call can work offline. And it resolves a template plus a set of values into
 the `zeebe:taskDefinition`, `zeebe:ioMapping` and `zeebe:modelerTemplate` bookkeeping the
 Modeler would write — deterministically, so the same template and values always produce the
 same XML.
@@ -38,7 +39,7 @@ npm install @bpmnkit/connectors
 ```typescript
 import { listConnectors, searchConnectors, getTemplate } from "@bpmnkit/connectors";
 
-listConnectors().length;        // 133
+listConnectors().length;        // 134 — Camunda's 133, plus BPMN Kit's
 searchConnectors("slack");      // 11 matches, inbound and outbound
 
 const template = getTemplate("io.camunda.connectors.Slack.v1");
@@ -68,6 +69,19 @@ template you hold yourself.
 
 `CAMUNDA_CONNECTOR_TEMPLATES` is the raw bundled array if you would rather work with the
 templates directly.
+
+### Templates maintained by BPMN Kit
+
+`CAMUNDA_CONNECTOR_TEMPLATES` mirrors Camunda's marketplace and is regenerated from it.
+Templates for services Camunda does not ship one for live beside it in
+`BPMNKIT_CONNECTOR_TEMPLATES`, and join the same catalog: `listConnectors`,
+`searchConnectors`, `getTemplate` and `casen connector` find them like any other. Each runs on
+a connector the Camunda runtime already has — the REST connector, `io.camunda:http-json:1` —
+so a cluster needs no extra job worker.
+
+| Template id | What it does | Guide |
+|---|---|---|
+| `io.bpmnkit.connectors.CloudflareClef.v1` | Asks a Cloudflare Clef decision model typed questions and returns calibrated answers to route on | [AI Decisions](/docs/guides/ai-decisions) |
 
 ## Connector cards
 
@@ -487,7 +501,8 @@ for CI and takes `--format json`.
 | `readTemplateDocument(text)` | Parse a file holding one template or many |
 | `registerElementTemplates(templates)` | Merge templates into the catalog |
 | `clearRegisteredTemplates()` | Drop everything registered |
-| `CAMUNDA_CONNECTOR_TEMPLATES` | The 133 bundled templates, raw |
+| `CAMUNDA_CONNECTOR_TEMPLATES` | The 133 bundled Camunda templates, raw |
+| `BPMNKIT_CONNECTOR_TEMPLATES` | The templates BPMN Kit maintains, raw |
 | `findConnectorCards(query, { limit })` | Operation cards matching a request, best first |
 | `connectorCards(id)` / `listConnectorCards()` | The cards of one template / of all |
 | `formatConnectorCard(card, { advanced })` | A card as one prompt line |

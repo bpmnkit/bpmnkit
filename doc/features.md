@@ -30,6 +30,12 @@
   your own agents configure connectors through the same resolver.
 - **Guide.** [Connectors in AI Generation](/docs/guides/ai-connectors) explains the whole flow.
 
+## Connectors: Cloudflare Clef decision models (2026-10-03)
+
+- Ask a Cloudflare Clef decision model yes/no, choice and score questions from a service task,
+  and route a gateway on the answers and their confidence. The template runs on Camunda's REST
+  connector and is in the bundled connector catalog.
+
 ## Drop: AI proposals shared as suggested changes (2026-10-01)
 
 - Share an AI proposal on its threads instead of applying it. Reviewers see a "Suggested change"

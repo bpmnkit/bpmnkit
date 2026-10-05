@@ -14,7 +14,8 @@
 | `readTemplateDocument(text)` | Parse a file holding one template or many |
 | `registerElementTemplates(templates)` | Merge templates into the catalog |
 | `clearRegisteredTemplates()` | Drop everything registered |
-| `CAMUNDA_CONNECTOR_TEMPLATES` | The 133 bundled templates, raw |
+| `CAMUNDA_CONNECTOR_TEMPLATES` | The 133 bundled Camunda templates, raw |
+| `BPMNKIT_CONNECTOR_TEMPLATES` | The templates BPMN Kit maintains, raw |
 | `findConnectorCards(query, { limit })` | Operation cards matching a request, best first |
 | `connectorCards(id)` / `listConnectorCards()` | The cards of one template / of all |
 | `formatConnectorCard(card, { advanced })` | A card as one prompt line |

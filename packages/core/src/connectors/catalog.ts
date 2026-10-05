@@ -1,4 +1,5 @@
 import type { ElementTemplate, TemplateCondition, TemplateProperty } from "./template-types.js"
+import { BPMNKIT_CONNECTOR_TEMPLATES } from "./templates/bpmnkit.js"
 import { BUNDLED_CONNECTOR_TEMPLATES } from "./templates/generated.js"
 
 /** Where in the process a connector template attaches. */
@@ -179,10 +180,16 @@ export function clearRegisteredTemplates(): void {
 	cachedSummaries = undefined
 }
 
+/** Camunda's marketplace templates, then the ones this repo maintains. */
+const BUNDLED: readonly ElementTemplate[] = [
+	...BUNDLED_CONNECTOR_TEMPLATES,
+	...BPMNKIT_CONNECTOR_TEMPLATES,
+]
+
 /** The bundled templates plus registered ones, the latter winning on id. */
 export function allTemplates(): readonly ElementTemplate[] {
-	if (registered.size === 0) return BUNDLED_CONNECTOR_TEMPLATES
-	const bundled = BUNDLED_CONNECTOR_TEMPLATES.filter((t) => !registered.has(t.id))
+	if (registered.size === 0) return BUNDLED
+	const bundled = BUNDLED.filter((t) => !registered.has(t.id))
 	return [...bundled, ...registered.values()]
 }
 
@@ -196,7 +203,7 @@ export function listConnectors(): ConnectorSummary[] {
 
 /** The full element template for a given template id, registered or bundled. */
 export function getTemplate(id: string): ElementTemplate | undefined {
-	return registered.get(id) ?? BUNDLED_CONNECTOR_TEMPLATES.find((t) => t.id === id)
+	return registered.get(id) ?? BUNDLED.find((t) => t.id === id)
 }
 
 /** Tie-break preference when two templates score equally — outbound "do this" connectors are the common case. */

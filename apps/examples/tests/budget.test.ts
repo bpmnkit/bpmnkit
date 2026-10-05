@@ -9,7 +9,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest"
 /**
  * A budget on what it costs to express a real process with this SDK.
  *
- * These examples are the closest thing we have to the code a model writes: six
+ * These examples are the closest thing we have to the code a model writes: seven
  * whole processes, built by chaining the public API and nothing else. If a
  * change makes the builder more verbose, it shows up here as more lines for the
  * same diagram — and that is the property that decides whether a model can emit
@@ -44,6 +44,7 @@ const BUDGETS: Record<string, Budget> = {
 	"04-invoice-processing": { lines: 117, elements: 35 },
 	"05-content-publishing": { lines: 139, elements: 46 },
 	"06-ai-code-review-agent": { lines: 192, elements: 20 },
+	"07-ai-ticket-triage-clef": { lines: 71, elements: 21 },
 }
 
 /**

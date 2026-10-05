@@ -28,6 +28,7 @@ export {
 	applyTemplateToElement,
 	validateElementTemplate,
 	readTemplateDocument,
+	BPMNKIT_CONNECTOR_TEMPLATES,
 	CONNECTOR_ALIASES,
 	connectorAlias,
 	connectorCards,

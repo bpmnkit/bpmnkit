@@ -77,7 +77,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/camunda-docspack",
 		name: "@bpmnkit/camunda-docspack",
-		version: "0.1.4",
+		version: "0.1.5",
 		description: "Camunda 8 documentation as an offline, version-locked docspack package for AI agents",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/camunda-docspack",
@@ -187,7 +187,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/docspack",
 		name: "@bpmnkit/docspack",
-		version: "1.0.1",
+		version: "1.1.0",
 		description: "BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/docspack",
@@ -361,7 +361,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/drop",
 		name: "Drop",
-		version: "0.1.0",
+		version: "0.2.0",
 		description: "Share a BPMN, DMN or Form file as a link at bpmnkit.com/drop",
 		tier: "tools",
 		github: "https://github.com/bpmnkit/monorepo/tree/main/apps/drop",

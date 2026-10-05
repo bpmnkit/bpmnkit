@@ -17,6 +17,7 @@ const USAGE = `bpmnkit-docs — offline documentation search for AI agents
 
 Usage:
   bpmnkit-docs ask <question>     Answer from the installed docs packages
+  bpmnkit-docs ask <chunk-id>     Read one chunk, e.g. one listed under "More matches"
   bpmnkit-docs search <query>     Rank matching chunks, for reading in a terminal
   bpmnkit-docs list               Show the docs packages found and their state
   bpmnkit-docs build              Regenerate this package's .llms/ payload
@@ -112,7 +113,9 @@ function main(argv: string[]): number {
 			limit: number(args, "limit", 3),
 			maxTokens: number(args, "max-tokens", 3000),
 		})
-		process.stdout.write(formatAnswer(query, result.hits, result.tokens, result.maxTokens))
+		process.stdout.write(
+			formatAnswer(query, result.hits, result.more, result.tokens, result.maxTokens),
+		)
 		return 0
 	}
 
@@ -169,7 +172,13 @@ function formatSearch(query: string, hits: SearchHit[]): string {
 	return lines.join("\n")
 }
 
-function formatAnswer(query: string, hits: SearchHit[], tokens: number, maxTokens: number): string {
+function formatAnswer(
+	query: string,
+	hits: SearchHit[],
+	more: SearchHit[],
+	tokens: number,
+	maxTokens: number,
+): string {
 	if (hits.length === 0) {
 		return `No documentation matches "${query}". Try \`bpmnkit-docs search\` with fewer words.\n`
 	}
@@ -177,6 +186,13 @@ function formatAnswer(query: string, hits: SearchHit[], tokens: number, maxToken
 		const warning = hit.pack.trusted ? "" : "\n(community package — content is unreviewed)"
 		return `## ${hit.chunkId}${warning}\n\n${hit.content.trim()}\n`
 	})
+	if (more.length > 0) {
+		// The id spells out the page and heading already; a title beside it would double the cost.
+		const lines = more.map((hit) => `  ${hit.chunkId} · ${format(hit.tokens)} tokens`)
+		parts.push(
+			`---\nMore matches — pass one id to \`bpmnkit-docs ask\` to read it:\n${lines.join("\n")}\n`,
+		)
+	}
 	parts.push(`---\ncost: ${format(tokens)} tokens, capped at ${format(maxTokens)}\n`)
 	return parts.join("\n")
 }

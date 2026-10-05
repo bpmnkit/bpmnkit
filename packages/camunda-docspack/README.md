@@ -50,7 +50,7 @@ npx bpmnkit-docs ask "what permissions does creating a process instance need"
 npx bpmnkit-docs ask "FEEL string concatenation" --pack @bpmnkit/camunda-docspack
 ```
 
-Answers cap at 3 chunks / 3,000 tokens, so prefer several narrow questions to one broad one.
+Answers cap at 3 chunks / 3,000 tokens, so prefer several narrow questions to one broad one. The next five matches are listed by id; `npx bpmnkit-docs ask <chunk-id>` reads one of them.
 
 ## API Reference
 

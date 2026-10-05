@@ -70,7 +70,7 @@ Every skill that writes or changes a process goes through the same pipeline: **p
 | File | Contents |
 |------|----------|
 | `references/plan-format.md` | The `ProcessPlan` JSON schema + annotated, tested examples |
-| `references/connectors.md` | The Camunda connector catalog index + how to apply one |
+| `references/connectors.md` | The bundled connector catalog index + how to apply one |
 | `references/agentic.md` | The AI Agent Sub-process pattern — binding keys, `fromAi()`, a full example |
 | `references/feel.md` | FEEL syntax crib sheet + the `"="`-means-expression convention |
 | `references/modeling-style.md` | Camunda naming/structure conventions for generated processes |

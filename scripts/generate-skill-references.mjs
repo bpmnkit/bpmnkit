@@ -61,7 +61,7 @@ async function generateConnectors() {
 	const content = `${GENERATED_NOTICE}
 # Connector catalog
 
-${all.length} bundled Camunda 8 out-of-the-box connector templates, from \`@bpmnkit/connectors\`. This is an **index** — look up the inputs at plan-authoring time, don't guess at property keys:
+${all.length} bundled connector templates from \`@bpmnkit/connectors\`: Camunda 8's out-of-the-box ones and the few BPMN Kit maintains. This is an **index** — look up full input specs at plan-authoring time, don't guess at property keys:
 
 \`\`\`sh
 casen connector cards "<what the step does>"   # one card per operation: its inputs, and the values that select it

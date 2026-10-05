@@ -2,7 +2,7 @@
 
 # Connector catalog
 
-133 bundled Camunda 8 out-of-the-box connector templates, from `@bpmnkit/connectors`. This is an **index** — look up the inputs at plan-authoring time, don't guess at property keys:
+134 bundled connector templates from `@bpmnkit/connectors`: Camunda 8's out-of-the-box ones and the few BPMN Kit maintains. This is an **index** — look up full input specs at plan-authoring time, don't guess at property keys:
 
 ```sh
 casen connector cards "<what the step does>"   # one card per operation: its inputs, and the values that select it
@@ -162,6 +162,7 @@ Rules:
 | `box` | `io.camunda.connectors.box` | Box Outbound Connector | `io.camunda:box:1` | `createFolder`, `deleteFolder`, `uploadFile`, `downloadFile`, `moveFile`, `deleteFile`, `search` |
 | `operate` | `io.camunda.connectors.CamundaOperate.v1` | Camunda Operate Outbound connector | `io.camunda:http-json:1` | `/v1/process-instances`, `/v1/incidents`, `/v1/variables`, `/v1/process-definitions`, `/v1/flownode-instances` |
 | `camunda-api` | `io.camunda.connectors.CamundaOrchestrationCluster.v1` | Camunda Orchestration Cluster API connector | `io.camunda:http-json:1` | `/process-instances`, `/process-definitions`, `/element-instances`, `/incidents`, `/variables`, `/user-tasks`, `/jobs`, `/decision-instances`, `/decision-definitions`, `/decision-requirements`, `/batch-operations`, `/batch-operation-items`, `/message-subscriptions`, `/correlated-message-subscriptions`, `/audit-logs`, `/authorizations`, `/groups`, `/roles`, `/tenants`, `/mapping-rules` |
+| `clef` | `io.bpmnkit.connectors.CloudflareClef.v1` | Cloudflare Clef Decision | `io.camunda:http-json:1` | — |
 | `csv` | `io.camunda.connectors.csv` | CSV Connector | `io.camunda:csv-connector` | `readCsv`, `writeCsv` |
 | `databricks` | `io.camunda.connectors.databricks.rest.v1` | Databricks | `io.camunda:http-json:1` | `sql.execute`, `sql.getStatement`, `sql.getChunk`, `sql.cancel`, `warehouse.get`, `warehouse.start`, `warehouse.stop`, `jobs.runNow`, `jobs.getRun`, `jobs.getRunOutput`, `jobs.cancelRun`, `serving.chat`, `serving.raw`, `serving.getEndpoint`, `vectorSearch.query` |
 | `easypost` | `io.camunda.connectors.EasyPost.v1` | Easy Post Outbound Connector | `io.camunda:http-json:1` | `createAddress`, `createParcel`, `createShipment`, `buyShipment`, `verifyAddressById`, `retrieveTracker` |

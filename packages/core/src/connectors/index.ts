@@ -25,6 +25,7 @@ export type { ApplyResult, ApplyProblem } from "./apply.js"
 export { applyTemplateToElement } from "./apply-element.js"
 export type { ApplyToElementResult } from "./apply-element.js"
 export { BUNDLED_CONNECTOR_TEMPLATES } from "./templates/generated.js"
+export { BPMNKIT_CONNECTOR_TEMPLATES } from "./templates/bpmnkit.js"
 export { CONNECTOR_ALIASES } from "./aliases.js"
 export {
 	connectorAlias,

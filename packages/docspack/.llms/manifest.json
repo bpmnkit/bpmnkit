@@ -1,7 +1,7 @@
 {
 	"$schema": "https://docspack.dev/schema/v1.json",
 	"name": "@bpmnkit/docspack",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"documents": [
 		"@bpmnkit/core",
 		"@bpmnkit/canvas",
@@ -24,7 +24,12 @@
 			"tokens": 732,
 			"tags": [
 				"cli",
-				"casen"
+				"casen",
+				"installation",
+				"quick",
+				"start",
+				"navigation",
+				"structure"
 			],
 			"entities": []
 		},
@@ -65,7 +70,9 @@
 				"bpmn",
 				"dmn",
 				"form",
-				"files"
+				"files",
+				"connection",
+				"profiles"
 			],
 			"entities": []
 		},
@@ -127,7 +134,9 @@
 				"cli",
 				"casen",
 				"worker",
-				"commands"
+				"commands",
+				"agent",
+				"workforce"
 			],
 			"entities": [
 				"@bpmnkit/flow"
@@ -190,17 +199,18 @@
 		{
 			"id": "cli.connector",
 			"file": "chunks/cli.connector.md",
-			"tokens": 213,
+			"tokens": 224,
 			"tags": [
 				"cli",
-				"connector"
+				"connector",
+				"commands"
 			],
 			"entities": []
 		},
 		{
 			"id": "cli.connector.browse-the-bundled-ootb-catalog",
 			"file": "chunks/cli.connector.browse-the-bundled-ootb-catalog.md",
-			"tokens": 417,
+			"tokens": 416,
 			"tags": [
 				"cli",
 				"connector",
@@ -238,7 +248,9 @@
 				"connector",
 				"generate",
 				"openapi",
-				"catalog"
+				"catalog",
+				"local",
+				"file"
 			],
 			"entities": []
 		},
@@ -353,7 +365,8 @@
 			"tags": [
 				"cli",
 				"dev",
-				"deploying"
+				"deploying",
+				"security"
 			],
 			"entities": []
 		},
@@ -363,7 +376,9 @@
 			"tokens": 412,
 			"tags": [
 				"cli",
-				"diff"
+				"diff",
+				"categories",
+				"matter"
 			],
 			"entities": [
 				"diffSemantics()",
@@ -404,7 +419,10 @@
 			"tokens": 529,
 			"tags": [
 				"cli",
-				"generate"
+				"generate",
+				"commands",
+				"template",
+				"mode"
 			],
 			"entities": []
 		},
@@ -458,7 +476,12 @@
 				"cli",
 				"generate",
 				"typical",
-				"workflow"
+				"workflow",
+				"typed",
+				"code",
+				"generation",
+				"casen",
+				"types"
 			],
 			"entities": [
 				"processIds",
@@ -570,7 +593,10 @@
 			"tokens": 326,
 			"tags": [
 				"cli",
-				"plugin-authoring"
+				"plugin-authoring",
+				"scaffold",
+				"new",
+				"plugin"
 			],
 			"entities": [
 				"CasenPlugin"
@@ -636,7 +662,9 @@
 				"cli",
 				"plugin-authoring",
 				"test",
-				"locally"
+				"locally",
+				"publish",
+				"npm"
 			],
 			"entities": [
 				"prepublishOnly",
@@ -663,7 +691,8 @@
 			"tokens": 172,
 			"tags": [
 				"cli",
-				"plugins"
+				"plugins",
+				"available"
 			],
 			"entities": [
 				"@bpmnkit/casen-report",
@@ -679,7 +708,8 @@
 				"cli",
 				"plugins",
 				"bpmnkit",
-				"casen-report"
+				"casen-report",
+				"casen-worker-ai"
 			],
 			"entities": [
 				"@bpmnkit/casen-worker-ai"
@@ -693,7 +723,8 @@
 				"cli",
 				"plugins",
 				"bpmnkit",
-				"casen-worker-http"
+				"casen-worker-http",
+				"authoring"
 			],
 			"entities": []
 		},
@@ -703,7 +734,8 @@
 			"tokens": 166,
 			"tags": [
 				"cli",
-				"skills"
+				"skills",
+				"installation"
 			],
 			"entities": []
 		},
@@ -774,7 +806,9 @@
 			"tokens": 357,
 			"tags": [
 				"cli",
-				"view"
+				"view",
+				"commands",
+				"subcommands"
 			],
 			"entities": [
 				"exportSvg",
@@ -789,7 +823,8 @@
 				"cli",
 				"view",
 				"folder",
-				"support"
+				"support",
+				"flags"
 			],
 			"entities": []
 		},
@@ -801,7 +836,11 @@
 				"cli",
 				"view",
 				"tabbed",
-				"navigation"
+				"navigation",
+				"stopping",
+				"server",
+				"usage",
+				"workflow"
 			],
 			"entities": []
 		},
@@ -903,7 +942,15 @@
 			"tokens": 523,
 			"tags": [
 				"getting-started",
-				"conformance"
+				"conformance",
+				"feel",
+				"94.5",
+				"dmn",
+				"tck",
+				"375",
+				"378",
+				"camunda",
+				"examples"
 			],
 			"entities": [
 				"@bpmnkit/feel",
@@ -1045,7 +1092,11 @@
 				"getting-started",
 				"conformance",
 				"camunda",
-				"forms"
+				"forms",
+				"known",
+				"gaps",
+				"one",
+				"list"
 			],
 			"entities": [
 				"activeElementsCollection",
@@ -1058,7 +1109,15 @@
 			"tokens": 140,
 			"tags": [
 				"getting-started",
-				"installation"
+				"installation",
+				"core",
+				"sdk",
+				"simulation",
+				"engine",
+				"camunda",
+				"rest",
+				"api",
+				"client"
 			],
 			"entities": [
 				"@bpmnkit/core"
@@ -1073,7 +1132,10 @@
 				"installation",
 				"svg",
 				"canvas",
-				"viewer"
+				"viewer",
+				"full",
+				"editor",
+				"cli"
 			],
 			"entities": []
 		},
@@ -1085,7 +1147,9 @@
 				"getting-started",
 				"installation",
 				"worker",
-				"client"
+				"client",
+				"typescript",
+				"requirements"
 			],
 			"entities": [
 				"tsconfig.json"
@@ -1109,7 +1173,10 @@
 			"tokens": 149,
 			"tags": [
 				"getting-started",
-				"quick-start"
+				"quick-start",
+				"step",
+				"create",
+				"process"
 			],
 			"entities": []
 		},
@@ -1159,7 +1226,9 @@
 			"tags": [
 				"getting-started",
 				"stability",
-				"page"
+				"page",
+				"covered",
+				"today"
 			],
 			"entities": [
 				"package.json"
@@ -1255,7 +1324,9 @@
 				"stability",
 				"not",
 				"breaking",
-				"change"
+				"change",
+				"runtime",
+				"support"
 			],
 			"entities": [
 				"semanticHash",
@@ -1284,7 +1355,9 @@
 				"getting-started",
 				"stability",
 				"support",
-				"window"
+				"window",
+				"packages",
+				"covers"
 			],
 			"entities": [
 				"@bpmnkit/core",
@@ -1307,7 +1380,9 @@
 			"tokens": 145,
 			"tags": [
 				"guides",
-				"ai-agents"
+				"ai-agents",
+				"quick",
+				"start"
 			],
 			"entities": [
 				"ProcessPlan",
@@ -1398,7 +1473,9 @@
 			"tokens": 284,
 			"tags": [
 				"guides",
-				"ai-connectors"
+				"ai-connectors",
+				"two",
+				"passes"
 			],
 			"entities": []
 		},
@@ -1451,7 +1528,8 @@
 				"guides",
 				"ai-connectors",
 				"proving",
-				"runs"
+				"runs",
+				"meet"
 			],
 			"entities": [
 				"dryRun",
@@ -1472,12 +1550,112 @@
 			"entities": []
 		},
 		{
+			"id": "guides.ai-decisions",
+			"file": "chunks/guides.ai-decisions.md",
+			"tokens": 232,
+			"tags": [
+				"guides",
+				"ai-decisions"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-decisions.the-template",
+			"file": "chunks/guides.ai-decisions.the-template.md",
+			"tokens": 323,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"template"
+			],
+			"entities": [
+				"@bpmnkit/connectors",
+				"io.bpmnkit.connectors.CloudflareClef.v1",
+				"authentication.token",
+				"accountId",
+				"body.state",
+				"body.questions",
+				"body.images",
+				"resultExpression"
+			]
+		},
+		{
+			"id": "guides.ai-decisions.questions-and-answers",
+			"file": "chunks/guides.ai-decisions.questions-and-answers.md",
+			"tokens": 421,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"questions",
+				"answers"
+			],
+			"entities": [
+				"clef.team"
+			]
+		},
+		{
+			"id": "guides.ai-decisions.example-triage-a-support-ticket",
+			"file": "chunks/guides.ai-decisions.example-triage-a-support-ticket.md",
+			"tokens": 449,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"example",
+				"triage",
+				"support",
+				"ticket"
+			],
+			"entities": [
+				"apps/examples/src/07-ai-ticket-triage-clef.ts"
+			]
+		},
+		{
+			"id": "guides.ai-decisions.test-the-routing",
+			"file": "chunks/guides.ai-decisions.test-the-routing.md",
+			"tokens": 197,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"test",
+				"routing"
+			],
+			"entities": [
+				"apps/examples/tests/ticket-triage-clef.process.test.ts"
+			]
+		},
+		{
+			"id": "guides.ai-decisions.use-the-template-in-the-editor",
+			"file": "chunks/guides.ai-decisions.use-the-template-in-the-editor.md",
+			"tokens": 148,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"template",
+				"editor",
+				"camunda",
+				"modeler"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-decisions.limits",
+			"file": "chunks/guides.ai-decisions.limits.md",
+			"tokens": 144,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"limits"
+			],
+			"entities": []
+		},
+		{
 			"id": "guides.ai-implement",
 			"file": "chunks/guides.ai-implement.md",
 			"tokens": 403,
 			"tags": [
 				"guides",
-				"ai-implement"
+				"ai-implement",
+				"pipeline"
 			],
 			"entities": [
 				"ProcessPlan"
@@ -1507,7 +1685,9 @@
 				"alternative",
 				"casen",
 				"skills",
-				"install"
+				"install",
+				"gets",
+				"created"
 			],
 			"entities": []
 		},
@@ -1518,7 +1698,9 @@
 			"tags": [
 				"guides",
 				"ai-implement",
-				"deploying"
+				"deploying",
+				"implementing",
+				"workers"
 			],
 			"entities": [
 				"@bpmnkit/worker-client"
@@ -1543,7 +1725,9 @@
 			"tokens": 478,
 			"tags": [
 				"guides",
-				"ai"
+				"ai",
+				"compact",
+				"format"
 			],
 			"entities": [
 				"expand()",
@@ -1562,7 +1746,9 @@
 				"ai",
 				"minimal",
 				"empty",
-				"diagram"
+				"diagram",
+				"prompting",
+				"strategy"
 			],
 			"entities": [
 				"Bpmn.makeEmpty()"
@@ -1708,7 +1894,8 @@
 			"tags": [
 				"guides",
 				"bpmn-in-markdown",
-				"astro"
+				"astro",
+				"docusaurus"
 			],
 			"entities": [
 				"@astrojs/mdx",
@@ -1722,7 +1909,12 @@
 			"tags": [
 				"guides",
 				"bpmn-in-markdown",
-				"vitepress"
+				"vitepress",
+				"next.js",
+				"mdx",
+				"unified",
+				"anything",
+				"remark"
 			],
 			"entities": [
 				"remarkBpmn"
@@ -1737,7 +1929,9 @@
 				"bpmn-in-markdown",
 				"plain",
 				"html",
-				"pipelines"
+				"pipelines",
+				"github",
+				"readmes"
 			],
 			"entities": [
 				"renderBpmnInHtml",
@@ -1780,7 +1974,8 @@
 			"tags": [
 				"guides",
 				"bpmn-in-markdown",
-				"accessibility"
+				"accessibility",
+				"errors"
 			],
 			"entities": [
 				"file.messages"
@@ -1804,7 +1999,11 @@
 			"tokens": 518,
 			"tags": [
 				"guides",
-				"bpmnlint"
+				"bpmnlint",
+				"two",
+				"ways",
+				"bpmnlintrc",
+				"honoured"
 			],
 			"entities": [
 				"acme/no-foo",
@@ -1962,7 +2161,8 @@
 				"guides",
 				"building-processes",
 				"service",
-				"tasks"
+				"tasks",
+				"user"
 			],
 			"entities": []
 		},
@@ -2008,7 +2208,9 @@
 				"guides",
 				"building-processes",
 				"call",
-				"activities"
+				"activities",
+				"multi-process",
+				"diagrams"
 			],
 			"entities": [
 				"Bpmn.createDiagram()"
@@ -2033,7 +2235,9 @@
 			"tags": [
 				"guides",
 				"building-processes",
-				"multi-instance"
+				"multi-instance",
+				"generated",
+				"ids"
 			],
 			"entities": [
 				"defaultFlow",
@@ -2046,7 +2250,9 @@
 			"tokens": 205,
 			"tags": [
 				"guides",
-				"claude-code-plugin"
+				"claude-code-plugin",
+				"prerequisites",
+				"installation"
 			],
 			"entities": [
 				"ProcessPlan"
@@ -2059,7 +2265,8 @@
 			"tags": [
 				"guides",
 				"claude-code-plugin",
-				"configuration"
+				"configuration",
+				"skills"
 			],
 			"entities": [
 				"ProcessPlan"
@@ -2068,12 +2275,13 @@
 		{
 			"id": "guides.claude-code-plugin.reference-docs",
 			"file": "chunks/guides.claude-code-plugin.reference-docs.md",
-			"tokens": 412,
+			"tokens": 410,
 			"tags": [
 				"guides",
 				"claude-code-plugin",
 				"reference",
-				"docs"
+				"docs",
+				"agents"
 			],
 			"entities": [
 				"references/plan-format.md",
@@ -2092,7 +2300,10 @@
 				"guides",
 				"claude-code-plugin",
 				"ambient",
-				"hooks"
+				"hooks",
+				"mcp",
+				"server",
+				"required"
 			],
 			"entities": [
 				"@bpmnkit/proxy"
@@ -2104,7 +2315,8 @@
 			"tokens": 192,
 			"tags": [
 				"guides",
-				"deployment"
+				"deployment",
+				"setup"
 			],
 			"entities": [
 				"@bpmnkit/api"
@@ -2118,7 +2330,9 @@
 				"guides",
 				"deployment",
 				"deploying",
-				"process"
+				"process",
+				"starting",
+				"instances"
 			],
 			"entities": []
 		},
@@ -2130,7 +2344,9 @@
 				"guides",
 				"deployment",
 				"handling",
-				"jobs"
+				"jobs",
+				"querying",
+				"instances"
 			],
 			"entities": []
 		},
@@ -2142,7 +2358,9 @@
 				"guides",
 				"deployment",
 				"managing",
-				"incidents"
+				"incidents",
+				"lifecycle",
+				"events"
 			],
 			"entities": []
 		},
@@ -2313,7 +2531,9 @@
 				"durable-agent-flows",
 				"start",
 				"engine",
-				"deploy"
+				"deploy",
+				"hire",
+				"workforce"
 			],
 			"entities": [
 				"workforce.json"
@@ -2338,7 +2558,8 @@
 				"guides",
 				"durable-agent-flows",
 				"durable",
-				"waits"
+				"waits",
+				"security"
 			],
 			"entities": []
 		},
@@ -2375,7 +2596,8 @@
 				"guides",
 				"gateways",
 				"inclusive",
-				"gateway"
+				"gateway",
+				"event-based"
 			],
 			"entities": []
 		},
@@ -2422,7 +2644,8 @@
 			"tokens": 290,
 			"tags": [
 				"guides",
-				"migrate-from-camunda-7"
+				"migrate-from-camunda-7",
+				"run"
 			],
 			"entities": [
 				"sourceXml"
@@ -2536,7 +2759,8 @@
 			"tokens": 304,
 			"tags": [
 				"guides",
-				"patterns"
+				"patterns",
+				"available"
 			],
 			"entities": [
 				"@bpmnkit/patterns",
@@ -2576,7 +2800,9 @@
 			"tags": [
 				"guides",
 				"patterns",
-				"cli"
+				"cli",
+				"templates",
+				"code"
 			],
 			"entities": [
 				"@bpmnkit/patterns/templates"
@@ -2590,7 +2816,9 @@
 				"guides",
 				"patterns",
 				"pattern",
-				"schema"
+				"schema",
+				"adding",
+				"custom"
 			],
 			"entities": [
 				"packages/patterns/src/patterns/",
@@ -2618,7 +2846,9 @@
 			"tokens": 488,
 			"tags": [
 				"guides",
-				"process-documentation"
+				"process-documentation",
+				"document",
+				"contains"
 			],
 			"entities": []
 		},
@@ -2642,7 +2872,8 @@
 			"tags": [
 				"guides",
 				"process-documentation",
-				"drop"
+				"drop",
+				"cli"
 			],
 			"entities": []
 		},
@@ -2653,7 +2884,8 @@
 			"tags": [
 				"guides",
 				"process-documentation",
-				"code"
+				"code",
+				"limits"
 			],
 			"entities": [
 				"documentationToHtml",
@@ -2668,7 +2900,9 @@
 			"tokens": 261,
 			"tags": [
 				"guides",
-				"simulation"
+				"simulation",
+				"basic",
+				"usage"
 			],
 			"entities": [
 				"@bpmnkit/engine"
@@ -2682,7 +2916,8 @@
 				"guides",
 				"simulation",
 				"instance",
-				"state"
+				"state",
+				"variables"
 			],
 			"entities": [
 				"ProcessInstance"
@@ -2696,7 +2931,9 @@
 				"guides",
 				"simulation",
 				"message",
-				"correlation"
+				"correlation",
+				"step-by-step",
+				"execution"
 			],
 			"entities": [
 				"intermediateCatchEvent",
@@ -2725,7 +2962,9 @@
 				"simulation",
 				"dmn",
 				"decision",
-				"evaluation"
+				"evaluation",
+				"testing",
+				"vitest"
 			],
 			"entities": []
 		},
@@ -2990,7 +3229,10 @@
 			"tags": [
 				"guides",
 				"testing-processes",
-				"install"
+				"install",
+				"complete",
+				"vitest",
+				"example"
 			],
 			"entities": [
 				"@bpmnkit/engine/testing/vitest",
@@ -3068,7 +3310,9 @@
 			"tags": [
 				"guides",
 				"testing-processes",
-				"messages"
+				"messages",
+				"virtual",
+				"clock"
 			],
 			"entities": [
 				"publishMessage",
@@ -3146,7 +3390,9 @@
 			"tokens": 413,
 			"tags": [
 				"guides",
-				"typed-workers"
+				"typed-workers",
+				"generate",
+				"types"
 			],
 			"entities": [
 				"ProcessId",
@@ -3184,7 +3430,11 @@
 				"typed-workers",
 				"types",
 				"another",
-				"client"
+				"client",
+				"check",
+				"workers",
+				"against",
+				"bpmn"
 			],
 			"entities": [
 				"@camunda8/orchestration-cluster-api",
@@ -3281,7 +3531,10 @@
 				"using-bpmnkit-with-ai",
 				"library",
 				"instead",
-				"cli"
+				"cli",
+				"indexing",
+				"own",
+				"corpus"
 			],
 			"entities": [
 				"minTokens",
@@ -3339,7 +3592,9 @@
 				"guides",
 				"using-bpmnkit-with-ai",
 				"runnable",
-				"examples"
+				"examples",
+				"keeping",
+				"fast"
 			],
 			"entities": [
 				"apps/examples/src/ai",
@@ -3554,7 +3809,9 @@
 			"tokens": 184,
 			"tags": [
 				"guides",
-				"workers-standalone"
+				"workers-standalone",
+				"scaffold",
+				"worker"
 			],
 			"entities": [
 				"@bpmnkit/worker-client"
@@ -3594,7 +3851,8 @@
 				"guides",
 				"workers-standalone",
 				"running",
-				"workers"
+				"workers",
+				"docker"
 			],
 			"entities": []
 		},
@@ -3606,7 +3864,10 @@
 				"guides",
 				"workers-standalone",
 				"camunda",
-				"saas"
+				"saas",
+				"listing",
+				"available",
+				"workers"
 			],
 			"entities": [
 				"@bpmnkit/worker-client"
@@ -3633,7 +3894,10 @@
 			"tags": [
 				"packages",
 				"api",
-				"overview"
+				"overview",
+				"installation",
+				"client",
+				"configuration"
 			],
 			"entities": [
 				"@bpmnkit/api"
@@ -3671,7 +3935,9 @@
 				"packages",
 				"api",
 				"process",
-				"operations"
+				"operations",
+				"job",
+				"workers"
 			],
 			"entities": []
 		},
@@ -3683,7 +3949,9 @@
 				"packages",
 				"api",
 				"incident",
-				"resolution"
+				"resolution",
+				"message",
+				"correlation"
 			],
 			"entities": []
 		},
@@ -3720,7 +3988,9 @@
 			"tags": [
 				"packages",
 				"ascii",
-				"installation"
+				"installation",
+				"rendering",
+				"process"
 			],
 			"entities": [
 				"applyAutoLayout",
@@ -3748,7 +4018,9 @@
 				"packages",
 				"ascii",
 				"rendering",
-				"form"
+				"form",
+				"api",
+				"reference"
 			],
 			"entities": [
 				"renderBpmnAscii",
@@ -3765,7 +4037,8 @@
 				"packages",
 				"ascii",
 				"command",
-				"line"
+				"line",
+				"stability"
 			],
 			"entities": [
 				"@bpmnkit/ascii",
@@ -3794,7 +4067,8 @@
 			"tags": [
 				"packages",
 				"camunda-docspack",
-				"installation"
+				"installation",
+				"asking"
 			],
 			"entities": [
 				"@bpmnkit/docspack",
@@ -3824,7 +4098,9 @@
 			"tags": [
 				"packages",
 				"camunda-docspack",
-				"rebuilding"
+				"rebuilding",
+				"api",
+				"reference"
 			],
 			"entities": [
 				"docs.camunda.io"
@@ -3853,7 +4129,10 @@
 			"tags": [
 				"packages",
 				"canvas",
-				"overview"
+				"overview",
+				"installation",
+				"basic",
+				"usage"
 			],
 			"entities": [
 				"@bpmnkit/canvas"
@@ -3866,7 +4145,8 @@
 			"tags": [
 				"packages",
 				"canvas",
-				"options"
+				"options",
+				"api"
 			],
 			"entities": [
 				"canvas.getXML()",
@@ -3880,7 +4160,8 @@
 			"tags": [
 				"packages",
 				"canvas",
-				"events"
+				"events",
+				"plugins"
 			],
 			"entities": [
 				"@bpmnkit/canvas-plugin-minimap",
@@ -3914,7 +4195,11 @@
 			"tags": [
 				"packages",
 				"connector-gen",
-				"installation"
+				"installation",
+				"quick",
+				"start",
+				"generating",
+				"url"
 			],
 			"entities": []
 		},
@@ -3926,7 +4211,8 @@
 				"packages",
 				"connector-gen",
 				"generating",
-				"catalog"
+				"catalog",
+				"generatoroptions"
 			],
 			"entities": [
 				"GeneratorOptions",
@@ -3945,7 +4231,9 @@
 			"tags": [
 				"packages",
 				"connector-gen",
-				"writeoptions"
+				"writeoptions",
+				"auth",
+				"blocks"
 			],
 			"entities": [
 				"outputDir",
@@ -4019,14 +4307,15 @@
 				"packages",
 				"connector-gen",
 				"catalogentry",
-				"type"
+				"type",
+				"cli"
 			],
 			"entities": []
 		},
 		{
 			"id": "packages.connectors.overview",
 			"file": "chunks/packages.connectors.overview.md",
-			"tokens": 245,
+			"tokens": 256,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4043,11 +4332,13 @@
 		{
 			"id": "packages.connectors.installation",
 			"file": "chunks/packages.connectors.installation.md",
-			"tokens": 240,
+			"tokens": 402,
 			"tags": [
 				"packages",
 				"connectors",
-				"installation"
+				"installation",
+				"browsing",
+				"catalog"
 			],
 			"entities": [
 				"listConnectors",
@@ -4056,7 +4347,9 @@
 				"ConnectorInputSpec",
 				"isSecret",
 				"isFeel",
-				"summarizeTemplate"
+				"summarizeTemplate",
+				"getTemplate",
+				"io.bpmnkit.connectors.CloudflareClef.v1"
 			]
 		},
 		{
@@ -4224,7 +4517,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 619,
+			"tokens": 635,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4276,7 +4569,9 @@
 			"tags": [
 				"packages",
 				"core",
-				"installation"
+				"installation",
+				"api",
+				"reference"
 			],
 			"entities": []
 		},
@@ -4864,7 +5159,9 @@
 				"packages",
 				"core",
 				"dmn",
-				"support"
+				"support",
+				"typescript",
+				"types"
 			],
 			"entities": [
 				"@bpmnkit/core"
@@ -4892,7 +5189,8 @@
 				"packages",
 				"docspack",
 				"other",
-				"pack"
+				"pack",
+				"installation"
 			],
 			"entities": [
 				"@bpmnkit/camunda-docspack"
@@ -4907,7 +5205,9 @@
 				"docspack",
 				"giving",
 				"agent",
-				"access"
+				"access",
+				"asking",
+				"question"
 			],
 			"entities": [
 				"AGENTS.md",
@@ -4922,7 +5222,8 @@
 				"packages",
 				"docspack",
 				"reading",
-				"yourself"
+				"yourself",
+				"commands"
 			],
 			"entities": []
 		},
@@ -4936,7 +5237,9 @@
 				"packages",
 				"docspack",
 				"index",
-				"directly"
+				"directly",
+				"pack",
+				"built"
 			],
 			"entities": [
 				"TwoColumn",
@@ -4963,7 +5266,8 @@
 			"tags": [
 				"packages",
 				"editor",
-				"overview"
+				"overview",
+				"installation"
 			],
 			"entities": [
 				"@bpmnkit/editor"
@@ -4977,7 +5281,9 @@
 				"packages",
 				"editor",
 				"basic",
-				"setup"
+				"setup",
+				"side",
+				"dock"
 			],
 			"entities": []
 		},
@@ -4989,7 +5295,10 @@
 				"packages",
 				"editor",
 				"hud",
-				"options"
+				"options",
+				"editoroptions",
+				"sidedock",
+				"api"
 			],
 			"entities": []
 		},
@@ -5095,7 +5404,9 @@
 			"tags": [
 				"packages",
 				"engine",
-				"installation"
+				"installation",
+				"api",
+				"reference"
 			],
 			"entities": [
 				"StartOptions",
@@ -5175,7 +5486,9 @@
 			"tags": [
 				"packages",
 				"feel",
-				"installation"
+				"installation",
+				"parsing",
+				"evaluating"
 			],
 			"entities": [
 				"EvalContext"
@@ -5189,7 +5502,9 @@
 				"packages",
 				"feel",
 				"unary",
-				"tests"
+				"tests",
+				"language",
+				"covers"
 			],
 			"entities": []
 		},
@@ -5283,7 +5598,9 @@
 			"tags": [
 				"packages",
 				"flow",
-				"installation"
+				"installation",
+				"quick",
+				"start"
 			],
 			"entities": []
 		},
@@ -5343,7 +5660,9 @@
 				"packages",
 				"flow",
 				"testing",
-				"simulator"
+				"simulator",
+				"agent",
+				"contract"
 			],
 			"entities": [
 				"definitions()",
@@ -5385,7 +5704,9 @@
 			"tags": [
 				"packages",
 				"operate",
-				"installation"
+				"installation",
+				"quick",
+				"start"
 			],
 			"entities": [
 				"application.yaml"
@@ -5468,7 +5789,8 @@
 			"tags": [
 				"packages",
 				"plugins",
-				"installation"
+				"installation",
+				"plugin"
 			],
 			"entities": []
 		},
@@ -5503,7 +5825,8 @@
 			"tags": [
 				"packages",
 				"plugins",
-				"styles"
+				"styles",
+				"stability"
 			],
 			"entities": [
 				"injectFormViewerStyles",
@@ -5517,7 +5840,10 @@
 			"tokens": 141,
 			"tags": [
 				"packages",
-				"worker-client"
+				"worker-client",
+				"installation",
+				"quick",
+				"start"
 			],
 			"entities": [
 				"@bpmnkit/worker-client"
@@ -5570,7 +5896,10 @@
 				"packages",
 				"worker-client",
 				"job.complete",
-				"variables"
+				"variables",
+				"job.fail",
+				"message",
+				"retries"
 			],
 			"entities": []
 		},
@@ -5584,7 +5913,10 @@
 				"job.throwerror",
 				"errorcode",
 				"message",
-				"variables"
+				"variables",
+				"engine",
+				"refuses",
+				"call"
 			],
 			"entities": [
 				"throwError"
@@ -5599,7 +5931,9 @@
 				"worker-client",
 				"oauth2",
 				"camunda",
-				"saas"
+				"saas",
+				"environment",
+				"variables"
 			],
 			"entities": [
 				"clientId",

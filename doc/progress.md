@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-05 — Main merged into the connect-pass branch
+
+- Main's Cloudflare Clef template (`BPMNKIT_CONNECTOR_TEMPLATES`) moves to
+  `@bpmnkit/core/connectors`, where the catalog now lives; `@bpmnkit/connectors`
+  re-exports it. The catalog lists Camunda's 133 templates, then BPMN Kit's.
+- Clef gets the card alias `clef`, so generation can name it like any other connector.
+
 ## 2026-10-05 — Five runs with the draft check
 
 **The run:** `bench-results/2026-10-05T13-41-09-074Z`, every default prompt, 5 runs,
@@ -983,6 +990,70 @@ keeps each raw answer (`connect.raw`) so an empty one can be read.
   structure pass stays as it is, then a connect pass writes only `with` lines, as a change script,
   using connector cards picked for each task. The connect pass is also an "Add connectors" action
   for existing diagrams.
+
+## 2026-10-03 — Clef how-to on the landing page; template fixed for Camunda Modeler
+
+- **How-to blog post** `/blog/cloudflare-clef-decisions-camunda`: Cloudflare token and account
+  ID, a curl call to check them, connector secrets, getting the template, a minimal process,
+  deploying and starting it, reading `clef` in Operate, and a troubleshooting table.
+- **Template download** at `/connectors/<id>.json` for the templates BPMN Kit maintains (with
+  `$schema`). The template's connector page links the file and the how-to; `/connectors` and
+  the AI Decisions guide link the how-to.
+- **Fix:** the Clef template's two timeout fields were `String` with `feel: "static"`, which
+  Camunda's schema allows only on `Number` and `Boolean` — Modeler would have rejected the
+  template. They are now `Number` with `=20`, as in Camunda's REST connector. Checked with
+  `@bpmn-io/element-templates-validator` (`validateZeebe`): valid.
+- `validateElementTemplate` now reports that mistake, so `.camunda/element-templates/` files
+  with it are caught before Modeler sees them. All 116 Camunda templates still pass.
+
+## 2026-10-03 — Editor: BPMN Kit connector templates in the connector picker
+
+- The properties panel's **Connector** list for service tasks (and ad-hoc sub-processes) now
+  offers `BPMNKIT_CONNECTOR_TEMPLATES` after Camunda's, so **Cloudflare Clef Decision** can be
+  picked in the editor and a task stamped with it opens in the template's form.
+- Camunda's templates are registered first. A REST-connector task with no
+  `zeebe:modelerTemplate` therefore still maps to Camunda's REST connector, not to Clef, which
+  uses the same job type. A test pins this.
+- The i18n harvest treats BPMN Kit template names as product names, like Camunda's.
+
+## 2026-10-03 — Connectors: Cloudflare Clef decision template
+
+- **New template `io.bpmnkit.connectors.CloudflareClef.v1`** for Cloudflare's Clef and
+  Clef-flash decision models (Workers AI). It runs on the REST connector
+  (`io.camunda:http-json:1`). The Model dropdown sets the URL path and the body's `model`
+  together: one hidden URL property per choice, each gated by a condition. The account id is
+  its own input mapping ahead of the URL, so the URL can read it. The default result expression
+  keeps the answers as `clef.<question id>`.
+- **Templates this repo maintains** now have their own home: `BPMNKIT_CONNECTOR_TEMPLATES` in
+  `packages/connectors/src/templates/bpmnkit.ts`, beside the generated Camunda mirror that
+  `pnpm update-connectors` overwrites. The catalog lists both. The template's `category` is
+  "AI decisions", so `ElementTemplate` gains the schema's optional `category` field.
+- `/connectors` keeps counting Camunda's templates in its headline and lists BPMN Kit's in a
+  "Maintained by BPMN Kit" section.
+- New guide [AI Decisions](/docs/guides/ai-decisions) and example
+  `apps/examples/src/07-ai-ticket-triage-clef.ts`: ticket triage that pages on-call, queues by
+  team, and sends a low-confidence answer to a person. Its process test covers all four
+  branches.
+
+## 2026-10-02 — Docspack: retrieval fixes from a comparison with Camunda's docs MCP
+
+A side-by-side run of 8 questions against `@bpmnkit/camunda-docspack` and Camunda's docs MCP
+found three ranking defects in `@bpmnkit/docspack`. All three are fixed:
+
+- **Template lines no longer count towards a match.** A line found in at least 5% of a
+  pack's chunks (and at least 10 of them) is left out of the index. The answer still shows
+  it. All 227 API digests say `Consistency: eventual.` or `strong.`, so "consistency" had
+  become a near stop word, and "search endpoint consistency" ranked the page that explains
+  consistency 13th, behind tenant-search digests. It now ranks 1st.
+- **Merged sections keep their headings as tags.** A section that is too short is merged
+  into its neighbour, which keeps only the first heading in its title. The other headings
+  were weighted as prose. Camunda's "Data consistency" was one of them. 175 of the 1,054
+  Camunda chunks were affected. Chunk ids and titles are unchanged.
+- **`ask` lists the next five matches by id**, and `ask <chunk-id>` returns that chunk
+  alone. Several misses were at rank 4.
+- An eval set of 31 queries went from 25 to 27 right answers in the top three, and from 29
+  to 30 in the top eight. The pack was rebuilt from the same camunda-docs commit
+  (`acbf680`), so only the manifest tags changed.
 
 ## 2026-10-01 — Drop: AI proposals shared as suggested changes
 

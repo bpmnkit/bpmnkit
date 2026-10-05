@@ -170,6 +170,12 @@ function checkProperty(
 				path: `${path}.feel`,
 				message: `expected one of ${[...FEEL_MODES].join(", ")}`,
 			})
+		} else if (property.feel === "static" && type !== "Number" && type !== "Boolean") {
+			// Camunda Modeler rejects the whole template over this one field.
+			problems.push({
+				path: `${path}.feel`,
+				message: `feel "static" is only allowed on Number and Boolean properties, not ${type ?? "String"}`,
+			})
 		}
 	}
 

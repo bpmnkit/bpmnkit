@@ -27,6 +27,8 @@ export interface ElementTemplate {
 	documentationRef?: string
 	/** Custom icon: { contents: "data:image/svg+xml;base64,..." } */
 	icon?: { contents: string }
+	/** Groups the template with others of its kind in a template chooser. */
+	category?: { id: string; name: string }
 }
 
 export interface TemplateGroup {

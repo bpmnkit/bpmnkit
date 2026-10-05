@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+	BPMNKIT_CONNECTOR_TEMPLATES,
 	BUNDLED_CONNECTOR_TEMPLATES,
 	CONNECTOR_ALIASES,
 	type ConnectorCard,
@@ -14,7 +15,9 @@ import {
 	templateIdForAlias,
 } from "../../src/connectors/index.js"
 
-const byId = new Map(BUNDLED_CONNECTOR_TEMPLATES.map((t) => [t.id, t]))
+const byId = new Map(
+	[...BUNDLED_CONNECTOR_TEMPLATES, ...BPMNKIT_CONNECTOR_TEMPLATES].map((t) => [t.id, t]),
+)
 
 /** A value a property accepts: its first choice for a dropdown, else a placeholder. */
 function sample(template: ElementTemplate, key: string): string {
