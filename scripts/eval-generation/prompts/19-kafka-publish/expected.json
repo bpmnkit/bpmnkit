@@ -1,0 +1,9 @@
+{
+	"id": "kafka-publish",
+	"category": "connector",
+	"description": "An event-bus connector.",
+	"assertions": {
+		"minElements": 3,
+		"mustContainTaskTypes": ["io.camunda:connector-kafka:1"]
+	}
+}

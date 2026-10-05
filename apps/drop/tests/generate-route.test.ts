@@ -612,6 +612,25 @@ describe("POST /drop/api/generate — hedged", () => {
 		expect(text(evs)).toBe(OTHER.join(""))
 	})
 
+	it("gives up on an answer of nothing but ! and streams the fallback's", async () => {
+		const bangs = ["!!!!", "!!!!!!", "!!!!!!!!"]
+		const ai = fakeAi(ANSWER, {
+			byModel: { [MODEL]: { chunks: bangs }, [FALLBACK]: { chunks: OTHER } },
+		})
+		const evs = await events(
+			await handleGenerate(post(DESCRIPTION), hedged(ai, { AI_GENERATE_HEDGE_MS: "5000" }), NOW),
+		)
+		expect(ai.calls.map((c) => c.model)).toEqual([MODEL, FALLBACK])
+		expect(text(evs)).toBe(OTHER.join(""))
+	})
+
+	it("reports unavailable for an answer of nothing but ! when there is no fallback", async () => {
+		const ai = fakeAi(["!!!!!!", "!!!!!!!!!!"])
+		const evs = await events(await handleGenerate(post(DESCRIPTION), makeEnv(ai), NOW))
+		expect(text(evs)).toBe("")
+		expect(evs).toEqual([{ error: expect.stringContaining("unavailable") }])
+	})
+
 	it("reports unavailable when neither model answers", async () => {
 		const ai = fakeAi(ANSWER, {
 			byModel: { [MODEL]: { throws: true }, [FALLBACK]: { throws: true } },

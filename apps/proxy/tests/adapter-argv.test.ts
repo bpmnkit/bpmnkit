@@ -60,7 +60,8 @@ describe("claude argv", () => {
 			"--allowedTools",
 			"mcp__bpmn__get_diagram,mcp__bpmn__compose_diagram,mcp__bpmn__add_elements," +
 				"mcp__bpmn__remove_elements,mcp__bpmn__update_element,mcp__bpmn__set_condition," +
-				"mcp__bpmn__add_http_call,mcp__bpmn__replace_diagram",
+				"mcp__bpmn__add_http_call,mcp__bpmn__find_connectors,mcp__bpmn__add_connector," +
+				"mcp__bpmn__replace_diagram",
 			"--include-partial-messages",
 		])
 		// Still no built-in tools, no other MCP servers, no settings files.
@@ -109,6 +110,8 @@ describe("copilot argv", () => {
 			"--allow-tool=bpmn(update_element)",
 			"--allow-tool=bpmn(set_condition)",
 			"--allow-tool=bpmn(add_http_call)",
+			"--allow-tool=bpmn(find_connectors)",
+			"--allow-tool=bpmn(add_connector)",
 			"--allow-tool=bpmn(replace_diagram)",
 		])
 	})

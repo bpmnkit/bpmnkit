@@ -389,6 +389,14 @@ select.ed-select{height:28px;border:1px solid var(--bpmnkit-ds-line);background:
 .gen .btn-ghost[hidden],.fc-actions .btn-ghost[hidden]{display:none}
 .gen-refine{border-top:1px solid var(--bpmnkit-ds-line-soft)}
 .gen-refine[hidden]{display:none}
+.gen-check{border-bottom:1px solid var(--bpmnkit-ds-line-soft)}
+.gen-check[hidden]{display:none}
+.gen-check div{display:flex;gap:10px;padding:8px 12px;font-size:var(--bpmnkit-ds-t-body-sm);color:var(--bpmnkit-ds-ink-2)}
+.gen-check div+div{border-top:1px solid var(--bpmnkit-ds-line-soft)}
+.gen-check b{font-family:var(--bpmnkit-ds-font-mono);font-size:11px;font-weight:400;text-transform:uppercase;letter-spacing:.06em;color:var(--bpmnkit-ds-ink-3);min-width:64px}
+.gen-check .ok{color:var(--bpmnkit-success,#16a34a)}
+.gen-check .bad{color:var(--bpmnkit-danger,#dc2626)}
+.gen-check code{font-family:var(--bpmnkit-ds-font-mono);font-size:12px}
 .gen-questions{list-style:none;margin:0;padding:0}
 .gen-questions li{padding:10px 12px;border-bottom:1px solid var(--bpmnkit-ds-line-soft);font-size:var(--bpmnkit-ds-t-body-sm);color:var(--bpmnkit-ds-ink-2)}
 .gen-questions .fc-examples{margin-top:8px}
@@ -553,6 +561,7 @@ export function dropPage(
 			<div class="panel-bar"><span id="genName">process.bpmn</span><span class="grow"></span><span id="genStatus">draft</span></div>
 			<div id="genCanvas" class="gen-canvas"><div class="hero-canvas-msg">The diagram appears here as it is written.</div></div>
 			<div id="genRefine" class="gen-refine" hidden>
+				<div id="genCheck" class="gen-check" hidden></div>
 				<ul id="genQuestions" class="gen-questions"></ul>
 				<div class="gen-change"><input id="genChange" maxlength="${MAX_CHANGE_CHARS}" autocomplete="off" aria-label="Change the diagram" placeholder="Change something, e.g. a manager approves anything over 5000"><button id="genApply" class="btn-ghost" type="button">Apply</button><button id="genUndo" class="btn-ghost" type="button" hidden>Undo</button></div>
 			</div>
@@ -739,7 +748,8 @@ function primaryIndex(files: FileInfo[]): number {
 /**
  * The read-only share/viewer page for a stored drop. `aiEnabled` reflects
  * whether AI_PASSCODE is set; `aiEdit` whether changes from review comments are
- * on too (AI_FEEDBACK_MODEL set).
+ * on too (AI_FEEDBACK_MODEL set); `aiConnect` whether "Add connectors" is
+ * (AI_CONNECT_MODEL set).
  */
 export function sharePage(
 	shareId: string,
@@ -748,6 +758,7 @@ export function sharePage(
 	aiEnabled = false,
 	turnstileKey?: string,
 	aiEdit = false,
+	aiConnect = false,
 ): string {
 	const primary = primaryIndex(files)
 	const title = files[primary]?.name || files[primary]?.filename || "Shared diagram"
@@ -767,6 +778,7 @@ export function sharePage(
 		<span class="ed-info" title="Created ${created} · expires ${expires}"><span id="viewCount">${drop.view_count}</span> VIEWS · <span id="presence" hidden>0 VIEWING</span> · EXPIRES ${expires}</span>
 		<div class="ed-group">
 			${aiEnabled ? `<button id="aiReviewBtn" type="button" hidden>AI review</button>` : ""}
+			${aiConnect ? `<button id="aiConnectBtn" type="button" hidden title="Configure the Camunda connectors of the tasks that call other systems">Add connectors</button>` : ""}
 			<button id="editBtn" type="button" hidden>Edit</button>
 			<button id="doneBtn" type="button" hidden>Done</button>
 			<button id="localHistoryBtn" type="button" hidden>On this device</button>
@@ -860,6 +872,7 @@ ${
 				pinned: drop.expires_at === null,
 				turnstileKey,
 				aiEdit,
+				aiConnect,
 			},
 		},
 		scriptSrc: "/drop/assets/viewer.js",

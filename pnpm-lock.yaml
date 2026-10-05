@@ -385,12 +385,18 @@ importers:
       '@bpmnkit/canvas':
         specifier: workspace:*
         version: link:../../packages/canvas
+      '@bpmnkit/connector-gen':
+        specifier: workspace:*
+        version: link:../../packages/connector-gen
       '@bpmnkit/core':
         specifier: workspace:*
         version: link:../../packages/core
       '@bpmnkit/editor':
         specifier: workspace:*
         version: link:../../packages/editor
+      '@bpmnkit/engine':
+        specifier: workspace:*
+        version: link:../../packages/engine
       '@bpmnkit/feel':
         specifier: workspace:*
         version: link:../../packages/feel
@@ -491,6 +497,9 @@ importers:
       '@bpmnkit/api':
         specifier: workspace:^
         version: link:../../packages/api
+      '@bpmnkit/connector-gen':
+        specifier: workspace:^
+        version: link:../../packages/connector-gen
       '@bpmnkit/connectors':
         specifier: workspace:^
         version: link:../../packages/connectors
@@ -685,9 +694,6 @@ importers:
       '@bpmnkit/core':
         specifier: workspace:^
         version: link:../core
-      '@bpmnkit/feel':
-        specifier: workspace:^
-        version: link:../feel
 
   packages/core:
     dependencies:

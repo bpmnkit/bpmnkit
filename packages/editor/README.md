@@ -93,7 +93,7 @@ The HUD's **More** menu has **Export documentation…**: a print-ready HTML view
 
 ### `applyProcessDelta(defs, delta, { aliases })`
 
-Applies a change script from `@bpmnkit/core`'s `parseProcessDelta` to a diagram someone drew, keeping its layout: new nodes are placed beside what they follow, an insert between two connected nodes moves only the shapes right of it, and nothing the script does not mention changes. Returns the new document with what it `created`, `changed` and `removed`, the `fixes` it made and the `problems` it left out. Also exported from `@bpmnkit/editor/headless`.
+Applies a change script from `@bpmnkit/core`'s `parseProcessDelta` to a diagram someone drew, keeping its layout: new nodes are placed beside what they follow, an insert between two connected nodes moves only the shapes right of it, and nothing the script does not mention changes. Returns the new document with what it `created`, `changed` and `removed`, the `fixes` it made and the `problems` it left out. Also exported from `@bpmnkit/editor/headless`. A script's `with` lines configure connectors when you pass `applyConnectors: applyConnectorLines` from `@bpmnkit/core/connectors`; required inputs they left out come back as `questions`.
 
 ```typescript
 import { parseProcessDelta, writeProcessText } from "@bpmnkit/core"

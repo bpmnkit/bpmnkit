@@ -1,0 +1,9 @@
+{
+	"id": "sendgrid-confirmation",
+	"category": "connector",
+	"description": "A dedicated email connector named outright.",
+	"assertions": {
+		"minElements": 3,
+		"mustContainTaskTypes": ["io.camunda:sendgrid:1"]
+	}
+}

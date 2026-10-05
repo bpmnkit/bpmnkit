@@ -187,6 +187,8 @@ describe("POST /chat (AI bridge chat)", () => {
 			"mcp__bpmn__update_element",
 			"mcp__bpmn__set_condition",
 			"mcp__bpmn__add_http_call",
+			"mcp__bpmn__find_connectors",
+			"mcp__bpmn__add_connector",
 			"mcp__bpmn__replace_diagram",
 		])
 		expect(inputXml).toContain("Ship order")

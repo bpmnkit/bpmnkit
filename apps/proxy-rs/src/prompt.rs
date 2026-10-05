@@ -32,7 +32,7 @@ const COMPACT_FORMAT: &str = r#"CompactDiagram JSON format:
 Element types — Events: startEvent, endEvent, intermediateThrowEvent, intermediateCatchEvent (add eventType: timer|message|signal|error), boundaryEvent (add attachedTo + eventType)
 Tasks: serviceTask, userTask (add formId), businessRuleTask (add decisionId+resultVariable), callActivity (add calledProcess), scriptTask, sendTask, manualTask
 Gateways: exclusiveGateway, parallelGateway, inclusiveGateway, eventBasedGateway  |  Containers: subProcess, adHocSubProcess
-HTTP REST calls: always use jobType: "io.camunda:http-json:1" with taskHeaders {url, method, headers?, body?} and resultVariable."#;
+HTTP REST calls: always use jobType: "io.camunda:http-json:1" with inputs {url, method, headers?, body?} and resultVariable."#;
 
 pub fn build_mcp_system_prompt() -> String {
     vec![
@@ -42,7 +42,7 @@ pub fn build_mcp_system_prompt() -> String {
         "",
         "HTTP/REST RULE: Any time the user asks for an HTTP request, API call, webhook, or external service",
         "integration — you MUST call add_http_call. Never use add_elements for this.",
-        "add_http_call sets jobType: io.camunda:http-json:1 and the correct taskHeaders automatically.",
+        "add_http_call sets jobType: io.camunda:http-json:1 and the correct input mappings automatically.",
         "Use your knowledge of the target API to supply the real endpoint URL.",
     ]
     .join("\n")

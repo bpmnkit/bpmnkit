@@ -232,7 +232,8 @@ describe("generateProcessTypes", () => {
 		expect(source).toContain('"payment-received": { correlationKey: "=orderId" }')
 	})
 
-	it("compiles, and rejects typos in keys, job types and codes", () => {
+	// Each runs the TypeScript compiler: under a second here, past vitest's 5s default on a busy CI runner
+	it("compiles, and rejects typos in keys, job types and codes", { timeout: 30_000 }, () => {
 		const consumer = `
 declare const vars: JobTypes["charge-card"]["variables"]
 const amount: unknown = vars.amount
@@ -257,7 +258,7 @@ export { amount, out, missing, code, badCode, anyCode, provider, t, m, e, p }
 		expect(typeErrors(source + consumer)).toEqual([])
 	})
 
-	it("renders a model with nothing in it", () => {
+	it("renders a model with nothing in it", { timeout: 30_000 }, () => {
 		const empty = generateProcessTypes(
 			Bpmn.parse(`<bpmn:definitions ${NS} id="D" targetNamespace="x" />`),
 		)

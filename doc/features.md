@@ -1,5 +1,35 @@
 # Features
 
+## AI generation with Camunda connectors (2026-10-02)
+
+- **Drop: describe a process that calls other systems and get it connected.** After the diagram
+  is drafted, a second pass configures its connectors: Slack, GitHub, SendGrid, Kafka, AWS,
+  Teams and the rest of the 133 Camunda templates, or a REST call. It fills in the inputs,
+  keeps credentials as `{{secrets.…}}` placeholders, and asks for any required input it could
+  not fill. Answering is one line, applied without asking the AI again. Shared diagrams have
+  **Add connectors** while editing, as one undoable change.
+- **`@bpmnkit/core/connectors`:** the Camunda 8 connector catalog, outside core's main entry.
+  - Connector cards: one operation each, with only its inputs.
+  - Fixed aliases (`http`, `slack`, …).
+  - `selectConnectors`, which picks the cards for a diagram's tasks.
+  - `with` lines (`with notify: slack chat.postMessage | data.channel=#ops`), applied by
+    `applyConnectorLines` with repairs for what models get nearly right.
+  - API cards: for a system without a dedicated connector (Stripe, Notion, …), the real base
+    URL, authentication and endpoints for the REST connector. `api=stripe` on an `http` line
+    fills them in.
+- **`@bpmnkit/connector-gen/api-index`:** an offline index of about 80 HTTP APIs, built from
+  their OpenAPI specs and refreshed weekly.
+- **Proving it runs.** A generated diagram is dry-run with every outside call mocked, and
+  the secrets it needs are listed.
+  - Drop's generator shows both.
+  - `casen synth --check` gates on the dry run.
+  - Studio's **Try it** runs it on the local engine, sending only GET requests for real.
+- **CLI.** `casen connector cards "<request>"`, `casen connector api "<request>"` and
+  `casen synth --check`.
+- **MCP.** The proxy's MCP server has `find_connectors` and `add_connector`, so the AI chat and
+  your own agents configure connectors through the same resolver.
+- **Guide.** [Connectors in AI Generation](/docs/guides/ai-connectors) explains the whole flow.
+
 ## Connectors: Cloudflare Clef decision models (2026-10-03)
 
 - Ask a Cloudflare Clef decision model yes/no, choice and score questions from a service task,

@@ -51,6 +51,15 @@ export interface ZeebeAdHoc {
 	activeElementsCollection?: string
 }
 
+/**
+ * Zeebe agent definition (`zeebe:agentDefinition`, Camunda 8.10+): marks a
+ * service task or ad-hoc sub-process as an AI agent the engine runs, e.g.
+ * `aiAgentTask` or `aiAgentSubProcess`.
+ */
+export interface ZeebeAgentDefinition {
+	agentType: string
+}
+
 /** Zeebe form definition extension for user tasks. */
 export interface ZeebeFormDefinition {
 	/** ID of the Camunda Form linked to this user task. */
@@ -95,6 +104,8 @@ export interface ZeebeExtensions {
 	taskHeaders?: ZeebeTaskHeaders
 	properties?: ZeebeProperties
 	adHoc?: ZeebeAdHoc
+	/** AI agent marker (zeebe:agentDefinition). */
+	agentDefinition?: ZeebeAgentDefinition
 	/** Camunda Form linked to a user task (zeebe:formDefinition). */
 	formDefinition?: ZeebeFormDefinition
 	/** DMN decision invoked by a business rule task (zeebe:calledDecision). */
@@ -187,6 +198,14 @@ export function zeebeExtensionsToXmlElements(extensions: ZeebeExtensions): XmlEl
 		if (outputElement) attrs.outputElement = outputElement
 		if (activeElementsCollection) attrs.activeElementsCollection = activeElementsCollection
 		elements.push({ name: "zeebe:adHoc", attributes: attrs, children: [] })
+	}
+
+	if (extensions.agentDefinition) {
+		elements.push({
+			name: "zeebe:agentDefinition",
+			attributes: { agentType: extensions.agentDefinition.agentType },
+			children: [],
+		})
 	}
 
 	if (extensions.userTask) {

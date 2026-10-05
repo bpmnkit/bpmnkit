@@ -235,6 +235,7 @@ export type {
 	ZeebeTaskSchedule,
 	ZeebePriorityDefinition,
 	ZeebeSubscription,
+	ZeebeAgentDefinition,
 } from "./bpmn/zeebe-extensions.js"
 export {
 	assertZeebePlacement,
@@ -409,7 +410,10 @@ export type {
 	ProcessTextQuestion,
 	ProcessTextResult,
 	ProcessTextStream,
+	ConnectorRef,
 } from "./bpmn/process-text.js"
+export { parseConnectorLine } from "./bpmn/connector-line.js"
+export type { ConnectorLine } from "./bpmn/connector-line.js"
 export { PROCESS_DELTA_GUIDE, parseProcessDelta } from "./bpmn/process-delta.js"
 export type { DeltaFlow, DeltaNode, ProcessDelta } from "./bpmn/process-delta.js"
 export {
@@ -418,7 +422,7 @@ export {
 	writableName,
 	writeProcessText,
 } from "./bpmn/process-text-writer.js"
-export type { WrittenProcessText } from "./bpmn/process-text-writer.js"
+export type { WriteProcessTextOptions, WrittenProcessText } from "./bpmn/process-text-writer.js"
 export {
 	ELEMENT_GROUP_ORDER,
 	ELEMENT_TYPE_GROUPS,
@@ -529,3 +533,5 @@ export type {
 	SynthResult,
 	UnsupportedElement,
 } from "./plan/index.js"
+export { listSecrets } from "./bpmn/secrets.js"
+export type { DiagramSecret } from "./bpmn/secrets.js"

@@ -1,6 +1,7 @@
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
+import type { ElementTemplate } from "@bpmnkit/core/connectors"
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import {
 	clearRegisteredTemplates,
@@ -10,7 +11,6 @@ import {
 	searchConnectors,
 } from "../src/index.js"
 import { discoverElementTemplates } from "../src/node/discover.js"
-import type { ElementTemplate } from "../src/template-types.js"
 
 // ── Fixtures ──────────────────────────────────────────────────────────────────
 

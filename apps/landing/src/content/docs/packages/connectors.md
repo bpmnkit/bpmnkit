@@ -10,7 +10,7 @@ sidebar:
 `@bpmnkit/connectors` answers two questions about Camunda 8 connectors: **which ones exist**,
 and **what happens to a task when you apply one**.
 
-It bundles the 116 out-of-the-box Camunda connector templates as data, plus the
+It bundles the 133 out-of-the-box Camunda connector templates as data, plus the
 [templates BPMN Kit maintains](#templates-maintained-by-bpmn-kit), so a catalog, a search box
 or an AI tool call can work offline. And it resolves a template plus a set of values into
 the `zeebe:taskDefinition`, `zeebe:ioMapping` and `zeebe:modelerTemplate` bookkeeping the
@@ -19,6 +19,14 @@ same XML.
 
 The package root is browser-safe. Everything that touches the filesystem lives behind
 `@bpmnkit/connectors/node`.
+
+The catalog and application logic live in
+[`@bpmnkit/core/connectors`](/docs/packages/core#connectors--bpmnkitcoreconnectors), whose
+templates leave out icons, groups, tooltips and placeholders. This package re-exports that API
+and adds those parts back: `getTemplate`, `applyConnectorTemplate` and
+`CAMUNDA_CONNECTOR_TEMPLATES` answer with the full templates, so an applied element carries its
+icon. Use it in an editor or property panel. Use the core subpath where a bundle should stay
+small, for example in a worker that generates diagrams.
 
 ## Installation
 
@@ -31,8 +39,8 @@ npm install @bpmnkit/connectors
 ```typescript
 import { listConnectors, searchConnectors, getTemplate } from "@bpmnkit/connectors";
 
-listConnectors().length;        // 117 — Camunda's 116, plus BPMN Kit's
-searchConnectors("slack");      // 6 matches, inbound and outbound
+listConnectors().length;        // 134 — Camunda's 133, plus BPMN Kit's
+searchConnectors("slack");      // 11 matches, inbound and outbound
 
 const template = getTemplate("io.camunda.connectors.Slack.v1");
 ```
@@ -74,6 +82,193 @@ so a cluster needs no extra job worker.
 | Template id | What it does | Guide |
 |---|---|---|
 | `io.bpmnkit.connectors.CloudflareClef.v1` | Asks a Cloudflare Clef decision model typed questions and returns calibrated answers to route on | [AI Decisions](/docs/guides/ai-decisions) |
+
+## Connector cards
+
+A summary lists every input of a template. Many templates hold several operations, so GitHub's
+lists `owner` five times, once per operation that uses it. A **card** is one operation with only
+the inputs it uses. It is the shape to hand a language model:
+
+```typescript
+import { findConnectorCards, formatConnectorCard } from "@bpmnkit/connectors";
+
+const [card] = findConnectorCards("create a github issue");
+card.alias;      // "github"
+card.operation;  // "createIssue"
+card.values;     // { operationGroup: "issues", issueOperationType: "createIssue" }
+card.required;   // owner, repo, issueTitle
+formatConnectorCard(card);
+// github createIssue — GitHub Outbound Connector: Issues / Create an issue | owner* repo* issueTitle* | optional: …
+```
+
+Pass `card.values` together with the inputs to `applyConnectorTemplate`. They select the
+operation.
+
+- **Modes.** Dropdowns that change what an operation needs without making it a different
+  operation, such as an authentication type, are `card.modes`. Each choice lists the required
+  inputs it adds.
+- **Advanced inputs.** Inputs marked `advanced` (retries, timeouts, TLS, saved credentials) are
+  left out of `formatConnectorCard` unless you pass `{ advanced: true }`.
+- **Aliases.** Every bundled template has a short, fixed alias, such as `http`, `slack` or
+  `sqs-message-start`, in `CONNECTOR_ALIASES`. That table also lists which dropdowns choose the
+  operation. `connectorAlias(id)` and `templateIdForAlias(alias)` map between the two.
+
+## Picking cards for a diagram
+
+`selectConnectors({ text, tasks })` picks the cards a model should see when it connects a
+diagram, per task and in code. `text` is what the person asked for; `tasks` are the diagram's
+nodes. It returns only tasks with a candidate, so an empty answer means there is nothing to
+connect.
+
+A card is a candidate for a task when:
+- **the task's name names the system** ("Post summary to **Slack**");
+- **the request names the system,** the task is a task rather than an event, and no other
+  task's name claims that system; or
+- **the task's name shares a word with the connector's name,** other than a common verb.
+
+Beyond those rules:
+- **REST fallback.** The REST connector is offered for a task that asks for an HTTP call
+  ("Fetch …", "Call endpoint") when nothing else fits. It is also offered for a task with no
+  connector of its own when the request asks for a REST call ("check the stock with a REST
+  call").
+- **Synonyms.** A few words requests use for what templates call something else, such as
+  "notify" for sending a message, change the ranking only.
+- **Variety.** Each further card of one template ranks lower. The Email connector's IMAP
+  operations do not crowd out SendGrid when the request names it.
+- **Systems nobody named.** A connector that names a system the task and request do not
+  ranks lower: "Azure OpenAI" for a request that says OpenAI.
+- **Generic words.** A word every process has (request, document, file, data, report, record,
+  form) never makes a connector a candidate by itself: "Request rework" is no SOAP request.
+- **Named systems only.** A task whose name names a system gets no connector that only shares
+  a word with it: "Send message to SQS" gets SQS, not Camunda's Send message connector.
+- **The request wins.** A task whose name names a system the request does not ("Post summary
+  to Slack" for a request that says Teams) gets the request's system first, ranked by what the
+  request asks of it.
+- **Deprecated templates** are never offered.
+- **Caps.** At most three cards per task and eight in all. Every task keeps its best card
+  before any task gets a second.
+
+## API cards
+
+Most systems have no dedicated connector. The REST connector can still call them, but only
+with the right base URL, path and authentication. The
+[API index](/docs/packages/connector-gen#api-index) has these for about 80 HTTP APIs, built
+offline from their OpenAPI specs. Pass the services the request names as `apis`, and a task
+that names one of them gets the REST connector first, plus an **API card** with its
+best-fitting endpoints:
+
+```typescript
+import { API_SERVICES, loadApiServices } from "@bpmnkit/connector-gen/api-index";
+import { apiServicesIn, formatConnectorSelection, selectConnectors } from "@bpmnkit/connectors";
+
+const text = "When someone signs up, create a Stripe customer";
+const apis = await loadApiServices(apiServicesIn(text, API_SERVICES));
+const selection = selectConnectors(
+  { text, tasks: [{ id: "customer", name: "Create customer", type: "serviceTask" }] },
+  { apis },
+);
+formatConnectorSelection(selection);
+// customer (Create customer):
+// http — Send REST Request | url* | …
+// api stripe — Stripe API https://api.stripe.com auth=bearer secret=STRIPE_TOKEN
+// POST /v1/customers — Create a customer | form body: name email description address …
+```
+
+- **A dedicated connector comes first.** The API card is left out when a dedicated
+  connector for the system has an operation that fits as much of the task's name. An operation
+  fits a word when it does what the task's verb says and the word is what it is about:
+  `createIssue` fits "Create issue", but neither it nor `getIssue` fits "List open issues". GitHub's
+  connector creates issues, so "Create GitHub issue" gets it. It has nothing for workflow
+  runs, so "List GitHub workflow runs" gets the API card. The request counts too: the API
+  card is also left out when the connector covers every word of the request that the best
+  endpoint has. "Send a confirmation email with SendGrid" gets SendGrid's connector, whatever
+  the task is called.
+- **Tasks only.** Events get no API card.
+- **Ranking.** `findApiOperations(service, text)` ranks endpoints by the words of their
+  summary, then of their path. The service's own name never counts, nor its parts ("git" and
+  "hub" of GitHub), and a word a tenth of its endpoints share counts a third: "GitHub Actions"
+  is in hundreds of summaries, "runs" in a few. A verb picks the method ("Create" → POST, "List" → GET), and
+  a path that ends in a word of the task wins over a deeper one.
+- **Services in text.** `apiServicesIn(text, summaries)` finds the services a text names by
+  their brand. A brand that is also an everyday word, like "box" or "square", counts only as
+  "Box API".
+
+```typescript
+import { formatConnectorSelection, selectConnectors } from "@bpmnkit/connectors";
+
+const selection = selectConnectors({
+  text: "Every hour, list open GitHub issues and post a summary to Slack",
+  tasks: [
+    { id: "list", name: "List open issues", type: "serviceTask" },
+    { id: "post", name: "Post summary to Slack", type: "serviceTask" },
+  ],
+});
+formatConnectorSelection(selection); // the prompt block, one task per paragraph
+```
+
+## `with` lines
+
+In the [line format](/docs/packages/core#connectors-with-lines), a model configures a connector
+with a `with` line:
+
+```
+with post: slack postMessage | channel=#ops | text== "Order " + orderId | token=xoxb-123
+```
+
+`applyConnectorLines(definitions, lines)` applies the lines from `parseProcessText` or a change
+script. Each line goes through `applyTemplateToElement`, so a plain task becomes the connector's
+service task and inbound templates work on events.
+
+`resolveConnectorLine` repairs what a model gets nearly right and reports the rest:
+
+- **A misspelt alias.** One within two letters of a real alias is read as that one (`slak` →
+  `slack`).
+- **The operation.** It is matched exactly, or by its last dotted part (`postMessage` →
+  `chat.postMessage`), or as the start of an SDK call (`chat.completions.create` → `chat`). An
+  operation the connector lacks is read as the one sharing the longest start with it, of five
+  letters or more (`sendEmailImap` → `sendEmailSmtp`). It may also be given as the input that
+  selects it.
+- **A short key.** A key the operation lacks, but that is the end of one it has, is read as that
+  one (`channel` → `data.channel`).
+- **Values without a key.** `http POST https://…` sets `method` and `url`. A URL written where
+  the alias goes is a REST call to it, and `api=github GET` names the method too.
+- **Inputs in one part.** `| region=eu-west-1 functionName=resize` is two inputs, as the cards
+  list them. A FEEL value is never split, and a `*` copied from a card (`token*=`) is dropped.
+- **Results.** `result=name` sets the result variable; `result=name: expr` sets the result
+  expression `={name: expr}`, under whatever key the operation uses for it.
+- **Credentials.** A credential written as a value becomes a `{{secrets.…}}` placeholder: the
+  diagram never carries one.
+- **Variables in another syntax.** `{{orderId}}`, `{{variables.orderId}}` and `${orderId}`
+  become the FEEL `=orderId`, and `${orderId}` inside a FEEL expression becomes `orderId`.
+  Secrets are left as they are.
+- **API index calls.** With `{ apis }` as the last argument, an `http` line that names a
+  service (`http POST /v1/customers | api=stripe`), or calls a URL under its base URL, is
+  completed from the index:
+  - the base URL goes before the path;
+  - each `{param}` of the path reads the variable of the same name;
+  - the service's authentication is set with a `{{secrets.STRIPE_TOKEN}}` placeholder,
+    unless the line sets its own;
+  - the headers the endpoint needs are added, such as Notion's `Notion-Version` or a form
+    body's `Content-Type`.
+
+  A call the index does not have is kept, and becomes a question to check the method and
+  URL. A line written like an API card's head (`api github GET /issues`) is read as
+  `http GET /issues | api=github`. A service written where the alias goes
+  (`stripe POST /v1/refunds`) is the same call; a connector of that name wins. A path alone, with one service loaded, is that service's. A
+  FEEL `url=` beside the path is ignored: the index completes the path. A word of the path is
+  spelt as the service spells it (`Actions` → `actions`). An endpoint's summary written where
+  the path goes (`http GET — List workflow runs for a repository`) is read as that endpoint.
+  A `{{param}}` in a path is the parameter `{param}`.
+
+A required input the line left out becomes a **question** (`AppliedConnectorLines.questions`),
+with a line to finish, and the rest of the line is still applied. A line for a node that already
+carries the same connector changes only the inputs it names, so the answer to a question keeps
+everything else.
+
+- **Writing back.** `connectorLineFor(element, definitions)` writes an element's connector back
+  as a line. Applying that line again gives the same element.
+- **Prompting.** `CONNECT_GUIDE` is the system prompt that teaches the format to the pass that
+  configures a finished diagram's connectors.
 
 ## Applying a template
 
@@ -306,8 +501,24 @@ for CI and takes `--format json`.
 | `readTemplateDocument(text)` | Parse a file holding one template or many |
 | `registerElementTemplates(templates)` | Merge templates into the catalog |
 | `clearRegisteredTemplates()` | Drop everything registered |
-| `CAMUNDA_CONNECTOR_TEMPLATES` | The 116 bundled Camunda templates, raw |
+| `CAMUNDA_CONNECTOR_TEMPLATES` | The 133 bundled Camunda templates, raw |
 | `BPMNKIT_CONNECTOR_TEMPLATES` | The templates BPMN Kit maintains, raw |
+| `findConnectorCards(query, { limit })` | Operation cards matching a request, best first |
+| `connectorCards(id)` / `listConnectorCards()` | The cards of one template / of all |
+| `formatConnectorCard(card, { advanced })` | A card as one prompt line |
+| `connectorAlias(id)` / `templateIdForAlias(alias)` | Template id ↔ short alias |
+| `CONNECTOR_ALIASES` | Alias and operation dropdowns of every bundled template |
+| `applyConnectorLines(definitions, lines, { apis })` | Apply `with` lines → `{ definitions, problems, fixes, questions }` |
+| `resolveConnectorLine(line, { apis })` | One `with` line → template, card, values, problems, fixes, questions |
+| `connectorLineFor(element, definitions)` | An element's connector as a `with` line |
+| `CONNECT_GUIDE` | System prompt teaching `with` lines |
+| `selectConnectors({ text, tasks }, { perTask, total, apis })` | The cards, and API cards, to show a model for each task of a diagram |
+| `formatConnectorSelection(selection)` | Picked cards as a prompt block |
+| `apiServicesIn(text, summaries)` | Ids of the API-index services a text names |
+| `findApiOperations(service, text, { limit })` / `rankApiOperations` | A service's endpoints that fit a task, best first |
+| `formatApiCard({ service, operations })` | An API card for a prompt |
+| `findApiOperation(service, method, path)` | The indexed endpoint a call names |
+| `apiUrl(baseUrl, path)` / `apiAuthValues(service)` / `apiSecretNames(service)` | REST connector inputs for an indexed call |
 
 From `@bpmnkit/connectors/node`: `discoverElementTemplates`, `collectElementTemplates`,
 `DEFAULT_CONFIG_FOLDER`, `TEMPLATES_SUBFOLDER`.

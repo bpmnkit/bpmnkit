@@ -28,6 +28,15 @@ await build({
 	...shared,
 })
 
+// The dry run brings the engine, which only a generated draft with connectors needs:
+// generate.ts imports it by URL, after the draft is connected. The engine's Node-only
+// file loading is never reached in a browser.
+await build({
+	entryPoints: { "dry-run": "src/client/dry-run.ts" },
+	...shared,
+	external: ["node:*"],
+})
+
 // The viewer is built on its own, with splitting, because it is the only entry
 // with a dynamic `import()`: the editor is fetched when someone presses Edit and
 // never by the far larger number of people who only read a drop. Splitting the

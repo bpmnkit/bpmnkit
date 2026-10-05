@@ -237,6 +237,11 @@ export function getZeebeExtensions(extensionElements: XmlElement[]): ZeebeExtens
 		ext.formDefinition = formDefinition
 	}
 
+	const agentDefEl = findChild(extensionElements, "agentDefinition")
+	if (agentDefEl) {
+		ext.agentDefinition = { agentType: agentDefEl.attributes.agentType ?? "" }
+	}
+
 	const calledDecEl = findChild(extensionElements, "calledDecision")
 	if (calledDecEl) {
 		const calledDecision: ZeebeCalledDecision = {

@@ -26,6 +26,7 @@ import type {
 import { createFlowElement } from "./element-shape.js"
 import type { RestConnectorConfig } from "./rest-connector.js"
 import {
+	REST_CONNECTOR_TEMPLATE_VERSION,
 	restConnectorRetries,
 	restConnectorTaskType,
 	restConnectorToIoMappingInputs,
@@ -103,6 +104,8 @@ export interface ServiceTaskOptions {
 	taskHeaders?: Record<string, string>
 	/** Zeebe property key-value pairs (`zeebe:properties`/`zeebe:property`). */
 	zeebeProperties?: Array<{ name: string; value: string }>
+	/** Marks the task as an AI agent the engine runs (`zeebe:agentDefinition`, Camunda 8.10+). */
+	agentDefinition?: { agentType: string }
 	/** Zeebe modeler template ID. */
 	modelerTemplate?: string
 	/** Zeebe modeler template version. */
@@ -333,6 +336,8 @@ export interface AdHocSubProcessOptions extends ElementOptions {
 	taskHeaders?: Record<string, string>
 	/** Zeebe property key-value pairs (`zeebe:properties`/`zeebe:property`). */
 	zeebeProperties?: Array<{ name: string; value: string }>
+	/** Marks the sub-process as an AI agent the engine runs (`zeebe:agentDefinition`, Camunda 8.10+). */
+	agentDefinition?: { agentType: string }
 	/** Multi-instance loop configuration. */
 	loopCharacteristics?: {
 		inputCollection: string
@@ -655,6 +660,8 @@ function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
 		extensions.properties = { properties: options.zeebeProperties }
 	}
 
+	if (options.agentDefinition) extensions.agentDefinition = options.agentDefinition
+
 	return zeebeExtensionsToXmlElements(extensions)
 }
 
@@ -688,6 +695,7 @@ function buildAdHocSubProcessExtensions(options?: AdHocSubProcessOptions): {
 	if (options?.zeebeProperties) {
 		zeebeExt.properties = { properties: options.zeebeProperties }
 	}
+	if (options?.agentDefinition) zeebeExt.agentDefinition = options.agentDefinition
 	const extensionElements = zeebeExtensionsToXmlElements(zeebeExt)
 
 	const adHocAttrs: Record<string, string> = {}
@@ -2645,7 +2653,7 @@ export class ProcessBuilder {
 		// Stamp the template identifier so editors recognise this as a REST connector
 		el.unknownAttributes = {
 			"zeebe:modelerTemplate": "io.camunda.connectors.HttpJson.v2",
-			"zeebe:modelerTemplateVersion": "12",
+			"zeebe:modelerTemplateVersion": REST_CONNECTOR_TEMPLATE_VERSION,
 		}
 		this.addFlowElement(el)
 		return this

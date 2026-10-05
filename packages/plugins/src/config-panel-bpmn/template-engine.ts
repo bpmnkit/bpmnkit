@@ -41,6 +41,10 @@ function buildConditionFn(
 		const expected = cond.isActive
 		return (values) => Boolean(values[cond.property]) === expected
 	}
+	if ("isEmpty" in cond) {
+		const expected = cond.isEmpty
+		return (values) => !values[cond.property] === expected
+	}
 	return () => true
 }
 

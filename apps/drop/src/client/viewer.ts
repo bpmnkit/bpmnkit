@@ -3,6 +3,7 @@ import { Bpmn, type BpmnDefinitions, compactify, sha256Hex } from "@bpmnkit/core
 import { DmnViewer } from "@bpmnkit/plugins/dmn-viewer"
 import { FormViewer } from "@bpmnkit/plugins/form-viewer"
 import { injectUiStyles } from "@bpmnkit/ui"
+import type { ConnectEvent, ConnectResult } from "../lib/connect.js"
 import type { ReviewResult, Suggestion } from "../lib/review.js"
 import { AI_CODE_STORAGE_KEY, DEMO_SHARE_ID, type FileKind } from "../shared/constants.js"
 import { type FeelDocument, feelLabel, serializeFeelDocument } from "../shared/feel-doc.js"
@@ -38,6 +39,8 @@ interface DropData {
 	turnstileKey?: string
 	/** AI changes from review comments are on (AI_PASSCODE and AI_FEEDBACK_MODEL set). */
 	aiEdit?: boolean
+	/** "Add connectors" is on (AI_PASSCODE and AI_CONNECT_MODEL set). */
+	aiConnect?: boolean
 }
 
 /** The slice of Turnstile's global this page uses. */
@@ -77,6 +80,7 @@ const theme = document.documentElement.getAttribute("data-theme") === "dark" ? "
 const zoombar = document.getElementById("zoombar") as HTMLElement
 const zoomLevel = document.getElementById("zoomLevel") as HTMLElement
 const aiBtn = document.getElementById("aiReviewBtn") as HTMLButtonElement | null
+const connectBtn = document.getElementById("aiConnectBtn") as HTMLButtonElement | null
 const aiPanel = document.getElementById("aiPanel") as HTMLElement | null
 const aiBody = document.getElementById("aiBody") as HTMLElement | null
 const aiModelEl = document.getElementById("aiModel") as HTMLElement | null
@@ -91,6 +95,7 @@ let reviewFile: DropFile | null = null
 function setActiveReviewFile(file: DropFile | null): void {
 	reviewFile = file
 	if (aiBtn) aiBtn.hidden = file === null
+	if (connectBtn) connectBtn.hidden = file === null
 	if (!file && aiPanel) aiPanel.hidden = true
 	aiBody?.replaceChildren()
 }
@@ -471,6 +476,7 @@ async function loadReview(): Promise<void> {
 		}
 		if (res.status === 404) {
 			if (aiBtn) aiBtn.hidden = true
+			if (connectBtn) connectBtn.hidden = true
 			if (aiPanel) aiPanel.hidden = true
 			return
 		}
@@ -486,6 +492,7 @@ aiBtn?.addEventListener("click", () => {
 	aiPanel.hidden = !aiPanel.hidden
 	if (!aiPanel.hidden) void loadReview()
 })
+connectBtn?.addEventListener("click", () => void addConnectors())
 document.getElementById("aiClose")?.addEventListener("click", () => {
 	if (aiPanel) aiPanel.hidden = true
 })
@@ -1307,6 +1314,88 @@ async function applySuggestion(s: Suggestion): Promise<void> {
 		return
 	}
 	await askAi([thread])
+}
+
+/**
+ * Configures the connectors of the diagram being edited: the server picks the
+ * cards for its tasks, asks the model and applies the answer
+ * (`POST /drop/api/connect`). The result is one editor change, so it can be
+ * checked on the canvas and undone; what still needs an input is said in a
+ * notice.
+ */
+async function addConnectors(): Promise<void> {
+	const file = data.files[activeIndex]
+	const editing = session
+	if (!editing || !file || editingFile !== file.filename) {
+		notice(
+			"Press Edit first — connectors are added in the editor, where you can check and undo them.",
+			6_000,
+		)
+		return
+	}
+	const code = localStorage.getItem(AI_CODE_STORAGE_KEY)
+	if (!code) {
+		if (aiPanel) aiPanel.hidden = false
+		showPasscodeForm(false)
+		return
+	}
+	const xml = editing.currentXml()
+	const post = (token?: string) =>
+		fetch("/drop/api/connect", {
+			method: "POST",
+			headers: { "Content-Type": "application/json", "X-Drop-AI-Code": code },
+			body: JSON.stringify(token ? { xml, token } : { xml }),
+		})
+	if (connectBtn) connectBtn.disabled = true
+	notice("Adding connectors…", 30_000)
+	try {
+		let res = await post()
+		if (res.status === 403 && data.turnstileKey) {
+			const checked = await challenge("One check before the AI connects")
+			if (!checked.ok || !checked.token) return
+			res = await post(checked.token)
+		}
+		if (res.status === 401) {
+			localStorage.removeItem(AI_CODE_STORAGE_KEY)
+			if (aiPanel) aiPanel.hidden = false
+			showPasscodeForm(true)
+			return
+		}
+		if (!res.ok || !res.body) {
+			const payload = (await res.json().catch(() => ({}))) as { error?: string }
+			notice(payload.error ?? "Couldn't add connectors. Please try again.", 8_000)
+			return
+		}
+		let result: ConnectResult | undefined
+		let skipped = false
+		let failed: string | undefined
+		for (const block of (await res.text()).split("\n\n")) {
+			if (!block.startsWith("data: ")) continue
+			const event = JSON.parse(block.slice(6)) as ConnectEvent
+			if ("result" in event) result = event.result
+			else if ("error" in event) failed = event.error
+			else if ("done" in event && event.skipped) skipped = true
+		}
+		if (failed) return notice(failed, 8_000)
+		if (skipped || !result || result.connected.length === 0) {
+			return notice("No task here calls a system a connector covers.", 6_000)
+		}
+		// The diagram was changed meanwhile: the answer is for a document that is gone
+		if (session !== editing || editing.currentXml() !== xml) {
+			return notice("The diagram changed while the AI was working — try again.", 8_000)
+		}
+		editing.apply(Bpmn.parse(result.xml))
+		const n = result.connected.length
+		const asks = result.questions.map((q) => q.text)
+		notice(
+			`Added ${n} connector${n === 1 ? "" : "s"} — Undo removes ${n === 1 ? "it" : "them"}.${asks.length > 0 ? ` Still to fill: ${asks.join(" ")}` : ""}`,
+			asks.length > 0 ? 15_000 : 6_000,
+		)
+	} catch {
+		notice("Network error — please try again.", 6_000)
+	} finally {
+		if (connectBtn) connectBtn.disabled = false
+	}
 }
 
 async function askAi(threads: Thread[]): Promise<void> {

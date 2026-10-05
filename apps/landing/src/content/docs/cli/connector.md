@@ -5,7 +5,7 @@ sidebar:
   order: 5
 ---
 
-`casen connector` has two independent jobs: **browse** the bundled connector templates — Camunda 8's 116
+`casen connector` has two independent jobs: **browse** the bundled connector templates — Camunda 8's 133
 out-of-the-box ones plus the few BPMN Kit maintains (`search`/`show` — used by the AI generation pipeline to wire a plan step to
 a real service), and **generate** brand-new connector element templates from OpenAPI 3.x/Swagger
 2.x specs (`generate`/`catalog` — for APIs Camunda doesn't ship a template for).
@@ -16,6 +16,8 @@ a real service), and **generate** brand-new connector element templates from Ope
 casen connector
 ├── search      — find a bundled OOTB connector template by name/keyword
 ├── show        — show a bundled template's required/optional inputs
+├── cards       — one card per operation: only the inputs it needs, for a request
+├── api         — real endpoints of an HTTP API, from the offline API index, for the REST connector
 ├── generate    — generate new templates from an OpenAPI spec file or catalog entry
 └── catalog     — list all built-in OpenAPI-catalog entries (for `generate`)
 ```
@@ -49,6 +51,37 @@ Required inputs:
 A field marked `(secret)` should be supplied as a `{{secrets.NAME}}` placeholder, never a literal
 credential. This is the same catalog `@bpmnkit/connectors`' `listConnectors()`/`searchConnectors()`
 expose programmatically.
+
+`show` lists every input of a template, whichever operation it belongs to: GitHub's lists `owner`
+for each of its operations. `cards` answers a request with one card per operation instead, each with
+only the inputs that operation uses, and the `values` that select it:
+
+```
+$ casen connector cards "create a github issue" --limit 1
+github createIssue — GitHub Outbound Connector: Issues / Create an issue | owner* repo* issueTitle* | optional: authentication.pat(secret) githubBody issueAssignees(=FEEL) issueLabels(=FEEL) issueMilestone resultVariable resultExpressionCreateIssue(=FEEL) | authentication.authType=pat: pat | github_app
+  values: {"operationGroup":"issues","issueOperationType":"createIssue"}
+```
+
+`*` marks a required input. A `mode=default: a | b(…)` part is a choice inside the operation, such
+as an authentication type, with the required inputs each choice adds. Retries, timeouts, TLS and
+other plumbing are left out unless you pass `--advanced`; `-o json` prints the cards as data.
+
+## Endpoints of an HTTP API
+
+Most systems have no dedicated connector, so the REST connector calls them. `api` prints the
+real base URL, authentication and endpoints from the offline
+[API index](/docs/packages/connector-gen#api-index). It searches the service the request names,
+or the one `--service` gives:
+
+```
+$ casen connector api "refund a stripe payment" --limit 1
+api stripe — Stripe API https://api.stripe.com auth=bearer secret=STRIPE_TOKEN
+POST /v1/refunds — Create a refund | form body: amount currency charge customer expand instructions_email
+```
+
+Write the call as `with <id>: http POST /v1/refunds | api=stripe`. Applying the line adds the
+base URL, the authentication with a secret placeholder, and the headers the endpoint needs.
+`-o json` prints the endpoints as data.
 
 ## Generate from the OpenAPI catalog
 

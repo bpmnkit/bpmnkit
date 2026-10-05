@@ -10,8 +10,8 @@ npm install @bpmnkit/connectors
 ```typescript
 import { listConnectors, searchConnectors, getTemplate } from "@bpmnkit/connectors";
 
-listConnectors().length;        // 117 — Camunda's 116, plus BPMN Kit's
-searchConnectors("slack");      // 6 matches, inbound and outbound
+listConnectors().length;        // 134 — Camunda's 133, plus BPMN Kit's
+searchConnectors("slack");      // 11 matches, inbound and outbound
 
 const template = getTemplate("io.camunda.connectors.Slack.v1");
 ```
