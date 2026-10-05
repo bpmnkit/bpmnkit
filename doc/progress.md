@@ -1,5 +1,31 @@
 # Progress
 
+## 2026-10-05 — Tenth bench: 89%, re-scored 92%
+
+**The run:** `bench-results/2026-10-05T06-41-57-613Z`. Prompts 10 and 16–27, 5 runs each, with
+`glm-4.7-flash` for both passes, after the ranking fix for prompt 27. It passed **58/65 (89%)**:
+up from 56/65, and every run of 10, 16, 18, 19, 20, 22, 24 and 26 passed. 27 is still 3/5.
+Re-scored with the repairs below: **60/65 (92%)**.
+
+**Prompt 16** already accepts the GitHub connector: its job type is `io.camunda:http-json:1`, as
+the REST connector's is. 16 run 3 of `2026-10-04T06-13-21-229Z` re-scores as a fail because the
+model wrote a REST line, which the corrected cards no longer offered that task.
+
+**Repaired:**
+- **The first card keeps a REST call** (17 run 1): `stripe-refund-payment POST /v1/refunds`. The
+  unknown alias became the task's first card, REST, but lost `POST /v1/refunds`. A REST first card
+  now keeps the line's method and path, and gets `api=` from the task's API card.
+- **An API card's summary for the path** (27 run 5):
+  `http GET api github — List workflow runs for a repository`. A summary after a dash that names
+  an operation of a loaded service is read as that operation.
+
+**Not repaired:**
+- **21 runs 1 and 2:** a draft with no header and an id without brackets, and Teams drafted as a
+  user task.
+- **23 run 4:** the stock check drafted as a user task.
+- **25 run 2:** a draft on one line.
+- **27 run 4:** a draft without kinds, where the model chose GitHub's `listAlertsForRepo`.
+
 ## 2026-10-05 — Prompt 27: GitHub's workflow runs, ranked
 
 Prompt 27 failed 2 of 5 runs by calling `/actions/workflows` or `/actions/caches`. Most drafts

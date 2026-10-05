@@ -241,7 +241,8 @@ service task and inbound templates work on events.
   `http GET /issues | api=github`. A service written where the alias goes
   (`stripe POST /v1/refunds`) is the same call; a connector of that name wins. A path alone, with one service loaded, is that service's. A
   FEEL `url=` beside the path is ignored: the index completes the path. A word of the path is
-  spelt as the service spells it (`Actions` → `actions`).
+  spelt as the service spells it (`Actions` → `actions`). An endpoint's summary written where
+  the path goes (`http GET — List workflow runs for a repository`) is read as that endpoint.
   A `{{param}}` in a path is the parameter `{param}`.
 
 A required input the line left out becomes a **question** (`AppliedConnectorLines.questions`),

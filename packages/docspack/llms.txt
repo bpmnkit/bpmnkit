@@ -300,7 +300,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/connectors — Connector cards](.llms/chunks/packages.connectors.connector-cards.md) — 320 tokens
 - [@bpmnkit/connectors — Picking cards for a diagram](.llms/chunks/packages.connectors.picking-cards-for-a-diagram.md) — 548 tokens
 - [@bpmnkit/connectors — API cards](.llms/chunks/packages.connectors.api-cards.md) — 713 tokens
-- [@bpmnkit/connectors — `with` lines](.llms/chunks/packages.connectors.with-lines.md) — 822 tokens
+- [@bpmnkit/connectors — `with` lines](.llms/chunks/packages.connectors.with-lines.md) — 853 tokens
 - [@bpmnkit/connectors — `with` lines (2)](.llms/chunks/packages.connectors.with-lines-2.md) — 78 tokens
 - [@bpmnkit/connectors — Applying a template](.llms/chunks/packages.connectors.applying-a-template.md) — 503 tokens
 - [@bpmnkit/connectors — Applying to an element — inbound connectors and linked resources](.llms/chunks/packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources.md) — 667 tokens

@@ -312,6 +312,24 @@ function apiCardLine(
 	apis: readonly ApiService[],
 	fixes: string[],
 ): ConnectorLine {
+	// `http GET api github — List workflow runs for a repository`: an API card's line copied
+	// with the summary where the path goes. The summary names the operation
+	const dash = line.args.findIndex((arg) => arg === "—" || arg === "-")
+	if (line.alias === "http" && dash >= 0) {
+		const summary = line.args
+			.slice(dash + 1)
+			.join(" ")
+			.trim()
+			.toLowerCase()
+		for (const service of apis) {
+			const op = service.operations.find((o) => o.summary?.toLowerCase() === summary)
+			if (!op) continue
+			fixes.push(
+				`read "${line.args.slice(dash + 1).join(" ")}" as ${op.method} ${op.path} of ${service.name}`,
+			)
+			return { ...line, args: [op.method, op.path], values: { ...line.values, api: service.id } }
+		}
+	}
 	// `with list: GET /repos/…` is a REST call missing its alias
 	if (HTTP_METHODS.has(line.alias.toUpperCase())) {
 		fixes.push(`read "${line.alias}" as "http ${line.alias.toUpperCase()}"`)

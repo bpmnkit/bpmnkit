@@ -3,7 +3,7 @@
  * answers with, and the connected diagram it applies on the server.
  */
 import { Bpmn, expand, parseProcessText } from "@bpmnkit/core"
-import { connectorCards } from "@bpmnkit/core/connectors"
+import { type ApiService, connectorCards } from "@bpmnkit/core/connectors"
 import { beforeEach, describe, expect, it } from "vitest"
 import type { Env } from "../src/env.js"
 import { getBudgetSpent } from "../src/lib/ai.js"
@@ -472,6 +472,34 @@ describe("finishConnect", () => {
 			[{ id: "notify", name: "Notify ops in Slack", cards: slack }],
 		)
 		expect(result.connected).toEqual(["notify"])
+	})
+
+	it("keeps a REST call's method and path when the first card is REST, with the task's API", () => {
+		// glm-4.7-flash, golden prompt 17: `stripe-refund-payment POST /v1/refunds`
+		const stripe: ApiService = {
+			id: "stripe",
+			name: "Stripe API",
+			baseUrl: "https://api.stripe.com",
+			auth: { type: "bearer" },
+			operations: [{ method: "POST", path: "/v1/refunds", summary: "Create a refund" }],
+		}
+		const http = connectorCards("io.camunda.connectors.HttpJson.v2")
+		const result = finishConnect(
+			defs,
+			aliases,
+			"with create: stripe-refund-payment POST /v1/refunds",
+			[stripe],
+			[
+				{
+					id: "create",
+					name: "Refund payment",
+					cards: http,
+					apis: [{ service: stripe, operations: stripe.operations }],
+				},
+			],
+		)
+		expect(result.connected).toEqual(["create"])
+		expect(result.xml).toContain("https://api.stripe.com/v1/refunds")
 	})
 
 	it("reads an alias no connector has as the node's first card", () => {

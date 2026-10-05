@@ -299,4 +299,14 @@ describe("near misses the resolver repairs", () => {
 			aliases("Create a GitHub issue", tasks("Create GitHub issue"), [GITHUB]).t?.cards[0],
 		).toBe("github createIssue")
 	})
+
+	it("reads an API card's summary written where the path goes as that operation", () => {
+		// glm-4.7-flash, 2026-10-05: golden prompt 27
+		const r = resolveConnectorLine(
+			line("with l: http GET api github — List workflow runs for a repository"),
+			{ apis: [GITHUB] },
+		)
+		expect(r.values.method).toBe("GET")
+		expect(r.values.url).toContain('"/actions/runs"')
+	})
 })

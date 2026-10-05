@@ -344,10 +344,18 @@ export function finishConnect(
 		// `with resize: service Run AWS Lambda resize | …` copied the node, and
 		// `with queue: sendSqsMessage | …` named the operation: no connector is called that,
 		// so the node's first card is the one meant
-		const card = elementId === undefined ? undefined : taskOf.get(elementId)?.cards[0]
+		const task = elementId === undefined ? undefined : taskOf.get(elementId)
+		const card = task?.cards[0]
+		// The REST card keeps the line's method and path, and the task's API card says whose
+		const api = card?.alias === "http" ? task?.apis?.[0]?.service.id : undefined
 		const line =
 			card && (NODE_KIND.test(written.alias) || !known(written.alias))
-				? { ...written, alias: card.alias, args: card.operation ? [card.operation] : [] }
+				? {
+						...written,
+						alias: card.alias,
+						args: card.operation ? [card.operation] : written.args,
+						values: api && !written.values.api ? { ...written.values, api } : written.values,
+					}
 				: written
 		if (line !== written)
 			fixes.push(`read "${written.alias} …" on ${written.id} as "${line.alias}"`)
