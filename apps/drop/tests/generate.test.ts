@@ -105,36 +105,41 @@ describe("generate prompt", () => {
 		expect(() => expand(diagram)).not.toThrow()
 	})
 
-	it("keeps every recorded model answer free of structural lint findings", () => {
-		// Every answer the benchmark recorded, however broken: what reaches the
-		// canvas has no loose node, pass-through gateway, implicit split, branch
-		// without a condition or unnamed event.
-		const root = new URL("../bench-results/", import.meta.url)
-		const answers = readdirSync(root).flatMap((run) =>
-			(
-				JSON.parse(readFileSync(new URL(`${run}/results.json`, root), "utf8")) as {
-					model: string
-					prompt: string
-					text?: string
-				}[]
-			).filter((r) => r.text !== undefined),
-		)
-		expect(answers.length).toBeGreaterThan(100)
-		const recommended = resolveBpmnlintConfig({ extends: "bpmnlint:recommended" })
-		const structural = new Set(["flow", "naming", "feel"])
-		const findings = answers.flatMap(({ model, prompt, text = "" }) =>
-			lintDiagram(expand(parseProcessText(text).diagram), { bpmnlint: recommended })
-				// How long a condition the model wrote is, is up to the model.
-				.diagnostics.filter(
-					(d) =>
-						structural.has(d.category) &&
-						d.severity !== "info" &&
-						d.id !== "feel/complex-condition",
-				)
-				.map((d) => `${model} ${prompt}: ${d.id} ${d.message}`),
-		)
-		expect(findings).toEqual([])
-	})
+	// Lints every recorded bench answer: about a second here, past vitest's 5s default on a busy CI runner
+	it(
+		"keeps every recorded model answer free of structural lint findings",
+		{ timeout: 30_000 },
+		() => {
+			// Every answer the benchmark recorded, however broken: what reaches the
+			// canvas has no loose node, pass-through gateway, implicit split, branch
+			// without a condition or unnamed event.
+			const root = new URL("../bench-results/", import.meta.url)
+			const answers = readdirSync(root).flatMap((run) =>
+				(
+					JSON.parse(readFileSync(new URL(`${run}/results.json`, root), "utf8")) as {
+						model: string
+						prompt: string
+						text?: string
+					}[]
+				).filter((r) => r.text !== undefined),
+			)
+			expect(answers.length).toBeGreaterThan(100)
+			const recommended = resolveBpmnlintConfig({ extends: "bpmnlint:recommended" })
+			const structural = new Set(["flow", "naming", "feel"])
+			const findings = answers.flatMap(({ model, prompt, text = "" }) =>
+				lintDiagram(expand(parseProcessText(text).diagram), { bpmnlint: recommended })
+					// How long a condition the model wrote is, is up to the model.
+					.diagnostics.filter(
+						(d) =>
+							structural.has(d.category) &&
+							d.severity !== "info" &&
+							d.id !== "feel/complex-condition",
+					)
+					.map((d) => `${model} ${prompt}: ${d.id} ${d.message}`),
+			)
+			expect(findings).toEqual([])
+		},
+	)
 })
 
 describe("createDiagramLineFilter", () => {

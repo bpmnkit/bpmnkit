@@ -15,6 +15,8 @@
   tests past vitest's 5s limit.
 - The proxy's MCP connector tests, which start a fresh server under tsx for each call, get 30s
   each: a cold start on a busy CI runner takes more than vitest's 5s default.
+- So do core's two `generateProcessTypes` tests that run the TypeScript compiler, and Drop's test
+  that lints every recorded bench answer: each takes about a second locally and over 5s on CI.
 
 ## 2026-10-05 — Five runs with the draft check
 
