@@ -2,9 +2,6 @@ import { defineConfig } from "vitest/config"
 
 export default defineConfig({
 	test: {
-		include: ["tests/**/*.test.ts"],
-		environment: "happy-dom",
-		passWithNoTests: true,
 		server: {
 			deps: {
 				// Already compiled; Vite's transform of the bundled connector templates

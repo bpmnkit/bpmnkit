@@ -8,9 +8,11 @@
 - Clef gets the card alias `clef`, so generation can name it like any other connector.
 - The API index test loads every service in one batch, with a 30s budget: one by one it
   took over vitest's 5s default on a busy CI runner.
-- The examples' tests load `@bpmnkit/core` and `@bpmnkit/connectors` from `dist` with Node
-  rather than through Vite: transforming the bundled connector templates took 17s on CI and
-  pushed example 07 (Clef) past its build budget.
+- Tests in every package that loads the connector catalog (examples, proxy, drop, plugins,
+  editor, engine, vscode, cli, connectors) import `@bpmnkit/core` and `@bpmnkit/connectors` from
+  `dist` with Node rather than through Vite. Transforming the bundled connector templates took
+  17s on CI, which pushed example 07 (Clef) past its build budget and the proxy's MCP connector
+  tests past vitest's 5s limit.
 
 ## 2026-10-05 — Five runs with the draft check
 
