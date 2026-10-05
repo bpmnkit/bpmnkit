@@ -440,6 +440,9 @@ number. What it adds or changes is listed in `fixes`:
   at the start of a line they stay prose
 - a line that starts with an arrow continues the last node of the path above it, and a space
   between an arrow and its label (`gw > (No: default) b`) is allowed
+- a step whose name says it is done for each or every item ("Send email to each stakeholder") runs
+  once per item of the list (`=stakeholders`); "every day" and other time words do not count
+- a DMN decision whose outcomes are not labelled splits with an exclusive gateway, not in parallel
 - a bracket left open is closed where the name plainly ends: at a `)` before the next arrow,
   before the next arrow, or at the end of the line (`start[start Order) > …`)
 - a missing start event is added, and a start event left unconnected leads to the first path;

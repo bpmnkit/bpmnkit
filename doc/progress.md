@@ -1,5 +1,38 @@
 # Progress
 
+## 2026-10-05 — Drafting without examples: the second bench, and repairs in code
+
+**The runs**, both `glm-4.7-flash`, with the guide's example restored and the patterns written as
+rules:
+- `bench-results/2026-10-05T11-03-43-277Z`, every default prompt, 3 runs: 52/72. Prompts 01–15
+  passed **20/36**: 18 before the guide changes, 25 with the copied examples. 13 parallel
+  fulfilment passed every run. 06 fell to 0/3, as no draft wrote `each=` without an example.
+- `bench-results/2026-10-05T11-09-25-786Z`, the change cases with `text` rules: **20/30** (22
+  on 2026-09-30, 19 with the examples). 08 change-type is back to 2/3. Timer boundary and
+  make-parallel are 0/3 again, as on 2026-09-30.
+
+**"Connect skip right" (56/72) is not a fair measure for prompts 01–15.** They predate the connect
+pass, so the bench expects a skip whenever they assert no connector. But a "Send email to each
+stakeholder" or "Publish document" task fits a connector. Prompt 25, written to have no
+integration, passed 3/3.
+
+**Repaired in code, where the model does not follow the rules:**
+- **A step named for each or every item is run per item** (06): "Send email to each stakeholder"
+  runs once per `stakeholder` over `=stakeholders`, listed in `fixes`. "Every day" and other time
+  words are schedules, not lists.
+- **A DMN decision's unlabelled outcomes split with an xor** (12): `decide > approve` and
+  `decide > reject` from a rule task were a parallel split, approving and rejecting at once. The
+  usual default branch and questions follow.
+- **The connect filter:**
+  - A diagram line copied before the colon without `with` (`slack[send … | job=slack]: slack …`,
+    01 run 2) is a line for that node.
+  - A guide example copied word for word is dropped only when no task was offered its connector.
+    In 01 run 3 it was the right Slack line for a Slack task.
+
+Re-scored, the drafting bench is 57/72: 01 runs 2 and 3, 06 runs 1 and 3, and 12 run 2 now pass.
+Runs that skipped the connect pass are not re-scored, among them 12 runs 1 and 3. Every earlier
+bench re-scores as before.
+
 ## 2026-10-05 — Drafting bench of 01–15, and examples the model copies
 
 **The runs**, both `glm-4.7-flash`:

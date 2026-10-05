@@ -684,6 +684,29 @@ describe("parseProcessText", () => {
 		)
 	})
 
+	it("reads a step named for each or every item as run per item, but not every day", () => {
+		// glm-4.7-flash, golden prompt 06
+		const r = parseProcessText(
+			"s[start Go] > mail[service Send email to each stakeholder] > report[service Report sales every day] > e[end Done]",
+		)
+		const els = new Map(r.diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("mail")?.multiInstance).toEqual({
+			collection: "=stakeholders",
+			element: "stakeholder",
+		})
+		expect(els.get("report")?.multiInstance).toBeUndefined()
+		expect(r.fixes).toContain('"mail" runs once per stakeholder, over the list "stakeholders"')
+	})
+
+	it("splits the unlabelled outcomes of a DMN decision with an xor", () => {
+		// glm-4.7-flash, golden prompt 12
+		const r = parseProcessText(
+			"s[start Go] > decide[rule Credit check]\ndecide > ok[user Approve loan] > e[end Approved]\ndecide > no[user Reject loan] > f[end Rejected]",
+		)
+		const split = r.diagram.processes[0]?.elements.find((e) => e.id === "decide_split")
+		expect(split?.type).toBe("exclusiveGateway")
+	})
+
 	it("reads each= as a step run once per item, and a timer's duration from after= or its name", () => {
 		// glm-4.7-flash, golden prompts 06 and 15
 		const text = [

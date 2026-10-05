@@ -121,7 +121,7 @@ const LABEL_CONNECT_LINE =
  */
 const FLOW_CONNECT_LINE = /^(?:with\s+)?(?:[^>|]*>\s*)+([A-Za-z_][\w.-]*\s*:)/i
 /** `with append[service Append to Google Sheet]: …` — the node's declaration copied with its id. */
-const DECLARED_CONNECT_LINE = /^(with\s+[A-Za-z_][\w.-]*)\s*\[[^\]]*\]\s*:/i
+const DECLARED_CONNECT_LINE = /^(?:with\s+)?([A-Za-z_][\w.-]*)\s*\[[^\]]*\]\s*:/i
 /** `with pub | topic=…` — no colon and no connector: the node's first card is meant. */
 const UNNAMED_CONNECT_LINE = /^(with\s+[A-Za-z_][\w.-]*)\s*\|/i
 /** `with db: notify failed: slack …` — a label between the id and the alias. */
@@ -155,7 +155,7 @@ export function createConnectLineFilter(): { push(chunk: string): string; end():
 	const keep = (raw: string): string | undefined => {
 		const trimmed = raw
 			.trim()
-			.replace(DECLARED_CONNECT_LINE, "$1:")
+			.replace(DECLARED_CONNECT_LINE, "with $1:")
 			.replace(LABELLED_CONNECT_LINE, "$1 ")
 			// "task" is no connector: finishConnect gives the node its first card
 			.replace(UNNAMED_CONNECT_LINE, "$1: task |")
@@ -192,26 +192,20 @@ export function createConnectLineFilter(): { push(chunk: string): string; end():
 			pending += chunk
 			const lines = pending.split("\n")
 			pending = lines.pop() ?? ""
-			return (
-				lines
-					.flatMap(each)
-					.map(keep)
-					// The guide's examples, copied under any id, configure nothing the reader asked for
-					.filter((line) => line !== undefined && !copied(line))
-					.map((line) => `${line}\n`)
-					.join("")
-			)
+			return lines
+				.flatMap(each)
+				.map(keep)
+				.filter((line) => line !== undefined)
+				.map((line) => `${line}\n`)
+				.join("")
 		},
 		end(): string {
 			const last = pending
 			pending = ""
-			return (
-				each(last)
-					.map(keep)
-					// The guide's examples, copied under any id, configure nothing the reader asked for
-					.filter((line) => line !== undefined && !copied(line))
-					.join("\n")
-			)
+			return each(last)
+				.map(keep)
+				.filter((line) => line !== undefined)
+				.join("\n")
 		},
 	}
 }
@@ -281,15 +275,30 @@ export function finishConnect(
 	apis: readonly ApiService[] = [],
 	selection: readonly TaskCards[] = [],
 ): ConnectResult {
-	const delta = parseProcessDelta(script)
-	const problems = delta.problems.map((p) => p.message)
-	const fixes: string[] = []
-	const byLowerId = new Map(Object.entries(aliases).map(([id, el]) => [id.toLowerCase(), el]))
-	const lines: ConnectorRef[] = []
 	const offered = (task: TaskCards, alias: string) =>
 		alias === "api" || HTTP_METHOD.test(alias)
 			? (task.apis?.length ?? 0) > 0 || task.cards.some((card) => card.alias === "http")
 			: task.cards.some((card) => card.alias === alias)
+	// A guide example copied word for word configures what the reader asked for only when
+	// some task was offered its connector: Slack for "Notify ops on Slack", not for Teams
+	const dropped: string[] = []
+	const kept = script.split("\n").filter((line) => {
+		if (!copied(line.trim())) return true
+		const alias = /:\s*([A-Za-z][\w.-]*)/.exec(line)?.[1]?.toLowerCase() ?? ""
+		if (selection.some((task) => offered(task, alias))) return true
+		dropped.push(line.trim())
+		return false
+	})
+	const delta = parseProcessDelta(kept.join("\n"))
+	const problems = [
+		...dropped.map(
+			(line) => `"${line.slice(0, 40)}…" is the guide's example, not this diagram's; ignored`,
+		),
+		...delta.problems.map((p) => p.message),
+	]
+	const fixes: string[] = []
+	const byLowerId = new Map(Object.entries(aliases).map(([id, el]) => [id.toLowerCase(), el]))
+	const lines: ConnectorRef[] = []
 	/** Where a connector stands among a task's cards; after all of them when not offered. */
 	const rank = (task: TaskCards, alias: string) => {
 		const at = task.cards.findIndex((card) => card.alias === alias.toLowerCase())

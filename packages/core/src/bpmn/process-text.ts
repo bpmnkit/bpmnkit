@@ -388,6 +388,8 @@ class Reader {
 	private readonly taken = new Set<string>()
 	readonly edges: Edge[] = []
 	readonly problems: ProcessTextProblem[] = []
+	/** What reading a declaration repaired, listed with the parser's other fixes. */
+	readonly fixes: string[] = []
 	/** `with` lines, with the written id resolved to the node it meant when read. */
 	readonly connectors: ConnectorRef[] = []
 	/** Catch and boundary events written without a trigger, and made message events. */
@@ -657,6 +659,20 @@ class Reader {
 			} else
 				this.problems.push({ line: n, message: `unknown attribute "${attr}" on "${id}"; ignored` })
 		}
+		// "Send email to each stakeholder": a step its name says is done per item runs once
+		// per item of the list of them, whose variable only the reader can name for sure
+		const per = /\b(?:each|every)\s+([a-z]{3,})\b/i.exec(label ?? "")?.[1]?.toLowerCase()
+		if (
+			per &&
+			!TIME_WORDS.has(per) &&
+			ACTIVITIES.has(element.type) &&
+			element.multiInstance === undefined
+		) {
+			const list =
+				per.endsWith("y") && !/[aeiou]y$/.test(per) ? `${per.slice(0, -1)}ies` : `${per}s`
+			element.multiInstance = { collection: `=${list}`, element: per }
+			this.fixes.push(`"${id}" runs once per ${per}, over the list "${list}"`)
+		}
 		// `late[boundary:timer 5 minutes | on=poll]`: a timer's name says how long it waits
 		if (element.eventType === "timer" && element.timerDuration === undefined && label) {
 			const said = duration(label)
@@ -666,6 +682,23 @@ class Reader {
 		return id
 	}
 }
+
+/** "Every day" is a schedule, not a list. */
+const TIME_WORDS = new Set([
+	"second",
+	"minute",
+	"hour",
+	"day",
+	"week",
+	"month",
+	"quarter",
+	"year",
+	"morning",
+	"evening",
+	"night",
+	"time",
+	"other",
+])
 
 /** Element types `each=` makes multi-instance. */
 const ACTIVITIES = new Set<BpmnElementType>([
@@ -758,7 +791,7 @@ function variableFrom(text: string): string {
  */
 function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	const problems = [...reader.problems]
-	const fixes: string[] = []
+	const fixes: string[] = [...reader.fixes]
 	// Asked once the names are final, so a question uses the names the diagram shows.
 	const asks: { line: number; ask: () => ProcessTextQuestion }[] = []
 	const nodes = new Map<string, Node>()
@@ -1170,7 +1203,10 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			const { id, type } = node.element
 			const out = outOf(id)
 			if (GATEWAYS.has(type) || out.length < 2) continue
-			const decides = out.some((edge) => edge.condition !== undefined || edge.name !== undefined)
+			// A DMN decision's outcomes are alternatives, labelled or not
+			const decides =
+				type === "businessRuleTask" ||
+				out.some((edge) => edge.condition !== undefined || edge.name !== undefined)
 			const targets = out.map((edge) => nodes.get(edge.to)?.element)
 			const races =
 				!decides &&

@@ -335,18 +335,17 @@ describe("createConnectLineFilter", () => {
 		)
 	})
 
-	it("splits a flow of connector steps, and drops the guide's example lines", () => {
+	it("splits a flow of connector steps, and a declaration copied before the colon", () => {
 		const filter = createConnectLineFilter()
 		const out =
 			filter.push(
 				[
 					"start > save: task_a | x=1 > create: http POST /v1/pages | api=notion | result=page: response.body > done",
-					'with notify: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#ops | data.text== "Order " + orderId + " failed"',
-					"with fetch: http GET https://api.example.com/orders | result=order: response.body",
+					"slack[send Notify ops on Slack | job=slack]: slack chat.postMessage | x=1",
 				].join("\n"),
 			) + filter.end()
 		expect(out).toBe(
-			"with save: task_a | x=1\nwith create: http POST /v1/pages | api=notion | result=page: response.body\n",
+			"with save: task_a | x=1\nwith create: http POST /v1/pages | api=notion | result=page: response.body\nwith slack: slack chat.postMessage | x=1",
 		)
 	})
 
@@ -531,6 +530,32 @@ describe("finishConnect", () => {
 			/id="create"[^>]*modelerTemplate="io.camunda.connectors.HttpJson.v2"|modelerTemplate="io.camunda.connectors.HttpJson.v2"[^>]*id="create"/,
 		)
 		expect(result.xml).not.toMatch(/<bpmn:startEvent[^>]*modelerTemplate/)
+	})
+
+	it("keeps a guide example copied word for word only where its connector was offered", () => {
+		const example =
+			'with notify: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#ops | data.text== "Order " + orderId + " failed"'
+		const slack = connectorCards("io.camunda.connectors.Slack.v1")
+		const http = connectorCards("io.camunda.connectors.HttpJson.v2")
+		// golden prompt 01: the example is the right line for a Slack task
+		const offered = finishConnect(
+			defs,
+			aliases,
+			example,
+			[],
+			[{ id: "notify", name: "Notify ops in Slack", cards: slack }],
+		)
+		expect(offered.connected).toEqual(["notify"])
+		// golden prompt 23: on a Teams task it is only the example
+		const elsewhere = finishConnect(
+			defs,
+			aliases,
+			example,
+			[],
+			[{ id: "create", name: "Create page", cards: http }],
+		)
+		expect(elsewhere.connected).toEqual([])
+		expect(elsewhere.problems[0]).toMatch(/is the guide's example, not this diagram's; ignored$/)
 	})
 
 	it("keeps the first line for a node and reports the next", () => {
