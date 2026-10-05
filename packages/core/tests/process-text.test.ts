@@ -707,6 +707,45 @@ describe("parseProcessText", () => {
 		expect(split?.type).toBe("exclusiveGateway")
 	})
 
+	it("runs a row of steps between two and nodes in parallel", () => {
+		// glm-4.7-flash, golden prompt 13
+		const r = parseProcessText(
+			"s[start Order] > fork[and Start work] > pick[service Pick items] > pack[service Pack box] > label[service Print label] > joined[and Ready] > ship[send Dispatch] > e[end Done]",
+		)
+		const flows = r.diagram.processes[0]?.flows.map((f) => `${f.from}>${f.to}`) ?? []
+		for (const step of ["pick", "pack", "label"]) {
+			expect(flows).toContain(`fork>${step}`)
+			expect(flows).toContain(`${step}>joined`)
+		}
+		expect(flows).not.toContain("pick>pack")
+	})
+
+	it("makes a catch event on a task a boundary, and a gateway with each= a task run per item", () => {
+		// glm-4.7-flash, golden prompts 15 and 06
+		const r = parseProcessText(
+			[
+				"s[start Go] > poll[service Poll system] > late[catch:timer | on=poll after=PT5M] > flag[user Flag for follow-up] > e[end Done]",
+				"s > every[and Process every recipient | each=recipients] > poll",
+			].join("\n"),
+		)
+		const els = new Map(r.diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("late")).toMatchObject({ type: "boundaryEvent", attachedTo: "poll" })
+		expect(r.diagram.processes[0]?.flows.some((f) => f.from === "poll" && f.to === "late")).toBe(
+			false,
+		)
+		expect(els.get("every")).toMatchObject({
+			type: "task",
+			multiInstance: { collection: "=recipients" },
+		})
+		// On anything but a task, a catch event stays one
+		const start = parseProcessText(
+			"s[start Order placed] > w[catch:message Paid | on=s] > ship[service Ship] > e[end Done]",
+		)
+		expect(start.diagram.processes[0]?.elements.find((x) => x.id === "w")?.type).toBe(
+			"intermediateCatchEvent",
+		)
+	})
+
 	it("puts a boundary without on= on the one task drawn into it", () => {
 		// glm-4.7-flash, golden prompt 06
 		const r = parseProcessText(

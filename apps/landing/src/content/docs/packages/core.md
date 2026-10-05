@@ -445,6 +445,9 @@ number. What it adds or changes is listed in `fixes`:
 - a step whose name says it is done for each or every item ("Send email to each stakeholder") runs
   once per item of the list (`=stakeholders`); "every day" and other time words do not count
 - a DMN decision whose outcomes are not labelled splits with an exclusive gateway, not in parallel
+- steps in a row between an and split and an and join (`fork[and] > a > b > joined[and]`) run in
+  parallel; a catch event with `on=` a task is a boundary event; a named and node with `each=` is
+  a task run per item
 - a bracket left open is closed where the name plainly ends: at a `)` before the next arrow,
   before the next arrow, or at the end of the line (`start[start Order) > …`)
 - a missing start event is added, and a start event left unconnected leads to the first path;

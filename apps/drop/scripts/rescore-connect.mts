@@ -14,6 +14,7 @@ import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { Bpmn, expand, parseProcessText, writeProcessText } from "@bpmnkit/core"
 import { connectorLineFor, selectConnectors } from "@bpmnkit/core/connectors"
+import { completes } from "../src/lib/check.ts"
 import {
 	connectApis,
 	connectTasks,
@@ -27,6 +28,8 @@ interface Result {
 	text: string
 	failed: string[]
 	connect?: { skipped?: boolean; lines?: string; raw?: string }
+	/** The check after the draft: its completion, kept or not when recorded. */
+	check?: { text?: string; adopted?: boolean }
 }
 
 const file = process.argv[2]
@@ -62,7 +65,14 @@ for (const result of results) {
 		mustContainMultiInstance?: boolean
 		mustCallUrls?: string[]
 	}
-	const defs = expand(parseProcessText(result.text).diagram)
+	// A completion the check dropped when recorded may be kept by today's parser
+	let text = result.text
+	const completion = result.check?.text
+	if (completion !== undefined && !result.check?.adopted && completes(request, text, completion)) {
+		text = completion
+		console.log(`${result.prompt} run ${result.run ?? 1}: today's check keeps the completion`)
+	}
+	const defs = expand(parseProcessText(text).diagram)
 	const { aliases } = writeProcessText(defs, { connectorLine: connectorLineFor })
 	const tasks = connectTasks(defs, aliases)
 	const apis = await connectApis(request, tasks)

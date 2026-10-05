@@ -649,7 +649,18 @@ class Reader {
 			if (key === "on" && value) node.on = hostOf.get(value) ?? value
 			else if (key === "job" && value) element.jobType = value
 			else if (key === "nonint" && value === undefined) element.interrupting = false
-			else if (key === "each" && value && ACTIVITIES.has(element.type)) {
+			else if (key === "each" && value && GATEWAYS.has(element.type) && element.name) {
+				// `and[and Process every recipient | each=recipients]`: a step, run per item
+				this.problems.push({
+					line: n,
+					message: `"${id}" is a gateway with each=, named like a step; made it a task run per item`,
+				})
+				element.type = "task"
+				element.multiInstance = {
+					collection: value.startsWith("=") ? value : `=${value}`,
+					element: itemOf(value.replace(/^=/, "")),
+				}
+			} else if (key === "each" && value && ACTIVITIES.has(element.type)) {
 				element.multiInstance = {
 					collection: value.startsWith("=") ? value : `=${value}`,
 					element: itemOf(value.replace(/^=/, "")),
@@ -666,6 +677,15 @@ class Reader {
 				element.timerDuration = duration(value)
 			} else
 				this.problems.push({ line: n, message: `unknown attribute "${attr}" on "${id}"; ignored` })
+		}
+		// `late[catch:timer | on=poll after=PT5M]`: an event on a task is a boundary event
+		const host = node.on === undefined ? undefined : this.nodes.get(node.on)?.element
+		if (element.type === "intermediateCatchEvent" && host && ACTIVITIES.has(host.type)) {
+			element.type = "boundaryEvent"
+			this.problems.push({
+				line: n,
+				message: `"${id}" is a catch event on "${node.on}"; made it a boundary event`,
+			})
 		}
 		// "Send email to each stakeholder": a step its name says is done per item runs once
 		// per item of the list of them, whose variable only the reader can name for sure
@@ -868,7 +888,10 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	// on=pay] > notify`) means the path that boundary leads to. Nothing can flow
 	// into a boundary, so the branch goes to its handler instead of being lost.
 	const written = reader.edges.flatMap((edge) => {
-		if (reader.nodes.get(edge.to)?.element.type !== "boundaryEvent") return [edge]
+		const target = reader.nodes.get(edge.to)
+		if (target?.element.type !== "boundaryEvent") return [edge]
+		// `poll > late[… | on=poll]`: the arrow from its own task only says where it sits
+		if (target.on === edge.from) return []
 		const next = reader.edges.filter((out) => out.from === edge.to)
 		if (next.length === 0) return [edge]
 		if (final) {
@@ -1133,6 +1156,41 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 					}
 				},
 			})
+		}
+
+		// `fork[and] > pick > pack > label > joined[and]`: steps between an and split and an
+		// and join with nothing beside them are the parallel branches, drawn in a row
+		for (const [id, node] of nodes) {
+			if (node.element.type !== "parallelGateway") continue
+			if (into(id).length !== 1 || outOf(id).length !== 1) continue
+			const chain: string[] = []
+			let at = outOf(id)[0]?.to
+			while (at !== undefined) {
+				const next = nodes.get(at)?.element
+				if (!next || GATEWAYS.has(next.type) || EVENTS.has(next.type)) break
+				if (into(at).length !== 1 || outOf(at).length !== 1) break
+				chain.push(at)
+				at = outOf(at)[0]?.to
+			}
+			const join = at === undefined ? undefined : nodes.get(at)
+			if (
+				chain.length < 2 ||
+				!join ||
+				at === undefined ||
+				join.element.type !== "parallelGateway" ||
+				into(at).length !== 1
+			) {
+				continue
+			}
+			const end = at
+			edges = edges.filter((edge) => edge.from !== id && !chain.includes(edge.from))
+			for (const step of chain) {
+				edges.push({ from: id, to: step, line: node.line })
+				edges.push({ from: step, to: end, line: node.line })
+			}
+			fixes.push(
+				`ran ${chain.map((c) => `"${c}"`).join(", ")} in parallel between "${id}" and "${end}", as their and nodes say`,
+			)
 		}
 
 		// Pass-through gateways: one way in and one way out decides nothing. Most

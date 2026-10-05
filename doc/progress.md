@@ -1,5 +1,44 @@
 # Progress
 
+## 2026-10-05 — The draft check, measured: prompts 01–15 at 78%
+
+**The run:** `bench-results/2026-10-05T13-23-33-255Z`, every default prompt, 3 runs,
+`glm-4.7-flash`, with the check after each draft. It passed **61/72**, the best full run so far,
+and prompts 01–15 passed **28/36 (78%)**, up from 20–21. 01, 02, 05, 07 and 11 passed every run.
+
+**The check:** 24 of 72 drafts had a gap, and 18 of the 24 completions were kept. A check took
+a median 2.1 s.
+
+| Gap | Drafts | Completion kept | Passed in the end |
+|---|---|---|---|
+| rest | 5 | 5 | 5 |
+| failure | 4 | 4 | 3 |
+| user | 5 | 3 | 3 |
+| message | 3 | 2 | 3 |
+| each | 3 | 2 | 2 |
+| dmn | 2 | 2 | 1 |
+| parallel | 2 | 0 | 0 |
+
+**Repaired, from the dropped completions:**
+- **Steps in a row between two and nodes** (13 run 3):
+  `and[and Picking/Packing/Printing] > pick > pack > label > and[and Package ready]` runs them as
+  the parallel branches the and nodes mean.
+- **A catch event on a task is a boundary** (15 run 3): `timedout[catch:timer | on=poll after=PT5M]`.
+  The arrow from its own task into a boundary is dropped, as it only says where the boundary
+  sits. On anything but a task, such as the start event in 05 run 3, a catch event stays one.
+- **A gateway with `each=` and a step's name is a task run per item** (06 run 3):
+  `and[and Process every recipient | each=recipients]`.
+
+**`bench:rescore` re-evaluates a completion the check dropped** and uses it when today's check
+would keep it. Re-scored, the run is **63/72**: 06 run 3 and 13 run 3 now pass. Every earlier
+bench re-scores as before or better (`2026-10-05T10-38-56-569Z`: 61/72).
+
+**Still failing:**
+- **12 run 3:** both branches of its xor lead to the same task.
+- **14 run 1:** the completion is a garbled draft.
+- **08 run 2:** 24 of the 25 elements.
+- **10, 16, 24, 27, one run each:** connector choices.
+
 ## 2026-10-05 — Drop checks each draft against its request
 
 Drafting had settled at 20–21 of 36 on prompts 01–15. The rest were planning misses glm makes
