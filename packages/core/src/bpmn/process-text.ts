@@ -239,6 +239,8 @@ export interface PathTokens {
 	joined?: { written: string; id: string }[]
 	/** Ids whose bracket was never closed, read as closed where the name ends. */
 	unclosed?: string[]
+	/** Kinds written with a name but no brackets after an arrow (`> end Done`), read as declared. */
+	bracketless?: string[]
 }
 
 /**
@@ -253,6 +255,7 @@ export function tokenizePath(text: string): PathTokens | { error: string } {
 	const labels: PathTokens["labels"] = []
 	const joined: NonNullable<PathTokens["joined"]> = []
 	const unclosed: string[] = []
+	const bracketless: string[] = []
 	let note: string | undefined
 	let i = 0
 	for (;;) {
@@ -278,6 +281,17 @@ export function tokenizePath(text: string): PathTokens | { error: string } {
 			i += words.length
 		}
 		let spec: string | undefined
+		// `… > xor Notify sales? >(Yes: …)`: a kind and a name without brackets, after an
+		// arrow. At the start of a line it is more likely prose ("end of the answer").
+		const bare =
+			refs.length > 0 && KINDS[id] !== undefined
+				? /^ +([^[\]()>|]+?)(?=\s*(?:-{0,2}>|$))/.exec(text.slice(i))
+				: null
+		if (bare?.[1]) {
+			spec = `${id} ${bare[1].trim()}`
+			bracketless.push(id)
+			i += bare[0].length
+		}
 		// `done-end [end Done]`: a space before the bracket still declares.
 		const gap = /^ +\[/.exec(text.slice(i))
 		if (gap) i += gap[0].length - 1
@@ -334,6 +348,7 @@ export function tokenizePath(text: string): PathTokens | { error: string } {
 	if (note !== undefined) tokens.note = note
 	if (joined.length > 0) tokens.joined = joined
 	if (unclosed.length > 0) tokens.unclosed = unclosed
+	if (bracketless.length > 0) tokens.bracketless = bracketless
 	return tokens
 }
 
@@ -441,6 +456,12 @@ class Reader {
 		if ("error" in path) return this.fail(n, path.error)
 		if (path.note !== undefined) {
 			this.problems.push({ line: n, message: `ignored the note "${path.note}"` })
+		}
+		for (const id of path.bracketless ?? []) {
+			this.problems.push({
+				line: n,
+				message: `"${id} …" has no brackets; read it as declaring "${id}"`,
+			})
 		}
 		for (const id of path.unclosed ?? []) {
 			this.problems.push({

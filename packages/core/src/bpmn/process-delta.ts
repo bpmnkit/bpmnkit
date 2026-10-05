@@ -183,6 +183,12 @@ export function parseProcessDelta(text: string): ProcessDelta {
 		if (tokens.note !== undefined) {
 			delta.problems.push({ line: n, message: `ignored the note "${tokens.note}"` })
 		}
+		for (const id of tokens.bracketless ?? []) {
+			delta.problems.push({
+				line: n,
+				message: `"${id} …" has no brackets; read it as declaring "${id}"`,
+			})
+		}
 		for (const id of tokens.unclosed ?? []) {
 			delta.problems.push({
 				line: n,

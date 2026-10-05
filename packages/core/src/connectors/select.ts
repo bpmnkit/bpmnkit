@@ -156,16 +156,13 @@ function withSynonyms(terms: readonly string[]): string[] {
 }
 
 /** Words of a task name that mean a plain REST call when no connector names the system. */
-const HTTP_WORDS = new Set([
-	"http",
-	"https",
-	"rest",
-	"endpoint",
-	"request",
-	"fetch",
-	"url",
-	"webhook",
-])
+const HTTP_WORDS = new Set(["http", "https", "rest", "endpoint", "fetch", "url", "webhook"])
+
+/**
+ * Nouns every business process has, which a connector's name may share without being
+ * asked for: "Request rework" is no SOAP request, "Save document" no Textract call.
+ */
+const GENERIC = new Set(["request", "document", "file", "data", "report", "record", "form"])
 
 /** Whether a request's terms name a system: one word, singular or plural ("Google Sheet"). */
 function askedFor(system: string, requested: ReadonlySet<string>): boolean {
@@ -265,7 +262,7 @@ export function selectConnectors(
 	const ranked = input.tasks.map((task) => {
 		const terms = termsOf(task.name ?? "")
 		const named = new Set(terms)
-		const content = terms.filter((t) => !VERBS.has(t))
+		const content = terms.filter((t) => !VERBS.has(t) && !GENERIC.has(t))
 		// Synonyms only rank: "Notify ops" prefers a connector's send-message operation,
 		// but does not make every messaging connector a candidate
 		const synonyms = withSynonyms(terms).filter((t) => !named.has(t))

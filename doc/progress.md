@@ -1,5 +1,32 @@
 # Progress
 
+## 2026-10-05 — Ninth bench: five runs of the connector prompts and prompt 10
+
+**The run:** `bench-results/2026-10-05T06-10-54-339Z`. Prompts 10 and 16–27, 5 runs each,
+with `glm-4.7-flash` for both passes. It passed **56/65 (86%)**, the best run so far: 83% on the
+last five-run bench. Prompts 10, 18, 22, 23, 25 and 26 passed every run. It re-scores to 57/65
+with the repairs below.
+
+**Repaired:**
+- **A line with no connector** (19 run 1): `with pub | topic.topicName=…`. It now gets the node's
+  first card.
+- **Kinds without brackets** (21 run 2): `> xor Notify sales?` and `> end Lead added` declare
+  nodes after an arrow. At the start of a line they stay prose.
+- **Generic words** (25 runs 4 and 5, the no-integration prompt): "Request rework" was offered
+  SOAP, REST and GraphQL, and "Save document" Textract. Request, document, file, data, report,
+  record and form no longer make a connector a candidate by themselves. Over every recorded
+  draft, the selection changed only where such cards went away.
+
+**Not repaired:**
+- **27 runs 3 and 4:** they called `/actions/workflows`. For "List failed GitHub Actions", the
+  API card ranks endpoints by the task's name, and every Actions endpoint shares it. Only the
+  request says "workflow runs". Adding the request's words to the ranking moved 27 too little,
+  and pushed Stripe's refund endpoints aside, so it was left out.
+- **Drafts:** 16, 17, 20 and 24 failed on drafts or model choices: a rule task for the
+  summary, two connectors in one line, invented paths.
+
+Every earlier bench re-scores as before.
+
 ## 2026-10-04 — Golden prompts 10 and 20 accept either fitting connector
 
 A `mustContainTaskTypes` entry may now be a list, met by any one of its job types. `bench:generate`

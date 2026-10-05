@@ -654,6 +654,21 @@ describe("parseProcessText", () => {
 		])
 	})
 
+	it("reads a kind and a name without brackets after an arrow, not at the start of a line", () => {
+		// glm-4.7-flash, golden prompt 21.
+		const r = parseProcessText(
+			"s[start Lead] > gs[service Append row] > xor Notify sales?\nxor >(Yes: isNew) t[send Notify] > end Lead added\nxor >(No: default) end",
+		)
+		const els = new Map(r.diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("xor")).toMatchObject({ type: "exclusiveGateway", name: "Notify sales?" })
+		expect(els.get("end")).toMatchObject({ type: "endEvent", name: "Lead added" })
+		expect(r.problems.map((p) => p.message)).toContain(
+			'"xor …" has no brackets; read it as declaring "xor"',
+		)
+		// At the start of a line, it stays prose
+		expect(parseProcessText("end of the answer").problems[0]?.message).toMatch(/^expected ">"/)
+	})
+
 	it("reads an id written with spaces before its bracket as one id", () => {
 		// glm-4.7-flash, golden prompt 17.
 		const text =

@@ -122,6 +122,8 @@ const LABEL_CONNECT_LINE =
 const FLOW_CONNECT_LINE = /^(?:with\s+)?(?:[^>|]*>\s*)+([A-Za-z_][\w.-]*\s*:)/i
 /** `with append[service Append to Google Sheet]: …` — the node's declaration copied with its id. */
 const DECLARED_CONNECT_LINE = /^(with\s+[A-Za-z_][\w.-]*)\s*\[[^\]]*\]\s*:/i
+/** `with pub | topic=…` — no colon and no connector: the node's first card is meant. */
+const UNNAMED_CONNECT_LINE = /^(with\s+[A-Za-z_][\w.-]*)\s*\|/i
 /** `with db: notify failed: slack …` — a label between the id and the alias. */
 const LABELLED_CONNECT_LINE =
 	/^(with\s+[A-Za-z_][\w.-]*\s*:)\s*[A-Za-z][\w-]*(?:\s+[\w-]+)*\s*:\s+(?=[A-Za-z])/i
@@ -155,6 +157,8 @@ export function createConnectLineFilter(): { push(chunk: string): string; end():
 			.trim()
 			.replace(DECLARED_CONNECT_LINE, "$1:")
 			.replace(LABELLED_CONNECT_LINE, "$1 ")
+			// "task" is no connector: finishConnect gives the node its first card
+			.replace(UNNAMED_CONNECT_LINE, "$1: task |")
 		// A with line keeps any > inside its values; only another line can name a flow
 		const flow = CONNECT_LINE.test(trimmed) ? null : FLOW_CONNECT_LINE.exec(trimmed)
 		const line = flow?.[1] ? `with ${flow[1]}${trimmed.slice(flow[0].length)}` : trimmed

@@ -4079,7 +4079,7 @@
 		{
 			"id": "packages.connectors.picking-cards-for-a-diagram",
 			"file": "chunks/packages.connectors.picking-cards-for-a-diagram.md",
-			"tokens": 505,
+			"tokens": 548,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4576,7 +4576,7 @@
 		{
 			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream",
 			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md",
-			"tokens": 1255,
+			"tokens": 1294,
 			"tags": [
 				"packages",
 				"core",

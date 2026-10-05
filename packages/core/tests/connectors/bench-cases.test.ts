@@ -271,4 +271,17 @@ describe("near misses the resolver repairs", () => {
 		expect(picked.post?.apis ?? []).toEqual([])
 		expect(picked.post?.cards[0]).toBe("slack chat.postMessage")
 	})
+
+	it("offers nothing for a task that only shares a generic word with a connector", () => {
+		// glm-4.7-flash, 2026-10-05: golden prompt 25, which has no integration
+		const picked = aliases(
+			"A manager reviews each expense report and either approves or rejects it; rejected reports go back to the employee.",
+			[
+				{ id: "archive", name: "Save document", type: "serviceTask" },
+				{ id: "resubmit", name: "Request rework from submitter", type: "serviceTask" },
+			],
+			[],
+		)
+		expect(picked).toEqual({})
+	})
 })

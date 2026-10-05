@@ -350,6 +350,12 @@ describe("createConnectLineFilter", () => {
 		)
 	})
 
+	it("gives a line with no connector the node's kind, for its first card", () => {
+		const filter = createConnectLineFilter()
+		const out = filter.push("with pub | topic.topicName=orders\n") + filter.end()
+		expect(out).toBe("with pub: task | topic.topicName=orders\n")
+	})
+
 	it("gives a with line written without its first word that word back", () => {
 		const filter = createConnectLineFilter()
 		const out =
