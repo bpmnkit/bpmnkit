@@ -411,6 +411,8 @@ Attributes after `|`:
   it, a duration in the timer's name is read ("Wait 5 minutes" → `PT5M`).
 
 An attribute written before the `|` (`late[boundary:timer on=pay]`) is read all the same.
+`after=` on an event that is not a timer makes it one, and a boundary without `on=` that one
+task is drawn into (`send > wait[boundary:timer …]`) goes on that task.
 Change scripts do not read `each=` and `after=` yet.
 
 ```typescript

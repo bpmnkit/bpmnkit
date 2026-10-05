@@ -1,5 +1,33 @@
 # Progress
 
+## 2026-10-05 — Third drafting and change bench: where drafting stands
+
+**The runs**, both `glm-4.7-flash`, with the repairs for per-item steps and DMN outcomes:
+- `bench-results/2026-10-05T11-40-04-287Z`, every default prompt, 3 runs: 54/72. Prompts 01–15
+  passed **21/36**, against 20 on the run before. 01, 02, 05, 10 and 14 passed every run.
+  Between the two runs, 11 went from 3/3 to 0/3 (the model left out the error boundary the rule
+  asks for), and 14 from 1/3 to 3/3: at 3 runs, a prompt moves by two from one run to the next.
+- `bench-results/2026-10-05T11-46-04-332Z`, change cases, `text` rules: **20/30** again. Adding
+  a timer boundary and making steps parallel are still 0/3, as on 2026-09-30:
+  - the answers drop `ship` from the order;
+  - they merge packing and labelling into one node;
+  - they write an error boundary for a timeout.
+
+**Repaired:**
+- **`after=` makes an event a timer:** `delay[boundary:error Timeout | after=p1d]` waits a time,
+  which only a timer does. ISO durations are read in lower case too.
+- **A boundary drawn into from one task, without `on=`, goes on that task:**
+  `send > wait[boundary:timer Wait 60s]` (06 run 1) was left out.
+
+Re-scored, `2026-10-05T10-38-56-569Z` rises to 60/72. Every other bench is as before.
+
+**Where drafting stands:** without examples to copy, prompts 01–15 pass 20–21 of 36 with the
+repairs in code. The remaining failures are planning, not syntax:
+- 08 drafts 14–24 of the 25 elements;
+- 11 leaves out the error boundary;
+- 12 decides credit with an xor and no DMN task;
+- 15 models the timeout as an xor.
+
 ## 2026-10-05 — Drafting without examples: the second bench, and repairs in code
 
 **The runs**, both `glm-4.7-flash`, with the guide's example restored and the patterns written as

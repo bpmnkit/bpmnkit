@@ -707,6 +707,29 @@ describe("parseProcessText", () => {
 		expect(split?.type).toBe("exclusiveGateway")
 	})
 
+	it("puts a boundary without on= on the one task drawn into it", () => {
+		// glm-4.7-flash, golden prompt 06
+		const r = parseProcessText(
+			"s[start Go] > send[service Send email] > ok[end Sent]\nsend > wait[boundary:timer Wait 60s] > done[end Dropped]",
+		)
+		const wait = r.diagram.processes[0]?.elements.find((e) => e.id === "wait")
+		expect(wait).toMatchObject({ attachedTo: "send", timerDuration: "PT60S" })
+		expect(r.fixes).toContain('put boundary "wait" on "send", the task drawn into it')
+		expect(r.problems).toEqual([])
+	})
+
+	it("makes an event with after= a timer, and reads a lower-case ISO duration", () => {
+		// glm-4.7-flash, change case 02
+		const r = parseProcessText(
+			"s[start Go] > pay[service Process payment] > e[end Done]\ndelay[boundary:error Timeout | on=pay after=p1d] > t[end Payment timed out]",
+		)
+		const delay = r.diagram.processes[0]?.elements.find((e) => e.id === "delay")
+		expect(delay).toMatchObject({ eventType: "timer", timerDuration: "P1D", attachedTo: "pay" })
+		expect(r.problems.map((p) => p.message)).toEqual([
+			'"delay" waits p1d, which only a timer does; made it a timer event',
+		])
+	})
+
 	it("reads each= as a step run once per item, and a timer's duration from after= or its name", () => {
 		// glm-4.7-flash, golden prompts 06 and 15
 		const text = [

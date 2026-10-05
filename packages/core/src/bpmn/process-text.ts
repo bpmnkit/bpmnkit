@@ -654,7 +654,15 @@ class Reader {
 					collection: value.startsWith("=") ? value : `=${value}`,
 					element: itemOf(value.replace(/^=/, "")),
 				}
-			} else if (key === "after" && value && element.eventType === "timer" && duration(value)) {
+			} else if (key === "after" && value && EVENTS.has(element.type) && duration(value)) {
+				// `delay[boundary:error Timeout | after=P1D]`: only a timer waits for a time
+				if (element.eventType !== "timer" && element.type !== "endEvent") {
+					this.problems.push({
+						line: n,
+						message: `"${id}" waits ${value}, which only a timer does; made it a timer event`,
+					})
+					element.eventType = "timer"
+				}
 				element.timerDuration = duration(value)
 			} else
 				this.problems.push({ line: n, message: `unknown attribute "${attr}" on "${id}"; ignored` })
@@ -730,8 +738,9 @@ const UNITS: Record<string, string> = { s: "S", m: "M", h: "H", d: "D", w: "W" }
  * `5 minutes`, `2 hours` or `1 day`, also inside a name ("Wait 5 minutes").
  */
 export function duration(text: string): string | undefined {
-	const iso = /\bP(?:\d+[YMWD])*(?:T(?:\d+[HMS])+)?\b/.exec(text)?.[0]
-	if (iso && iso !== "P") return iso
+	// `p1d` is P1D: models write ISO durations in lower case too
+	const iso = /\bP(?:\d+[YMWD])*(?:T(?:\d+[HMS])+)?\b/i.exec(text)?.[0]?.toUpperCase()
+	if (iso && iso !== "P" && iso !== "PT") return iso
 	const m =
 		/(\d+)\s*(s|sec|secs|seconds?|m|min|mins|minutes?|h|hrs?|hours?|d|days?|w|weeks?)\b/i.exec(text)
 	if (!m?.[1] || !m[2]) return undefined
@@ -825,6 +834,14 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	// Boundary events: a host that is an activity, in this process.
 	for (const [id, node] of nodes) {
 		if (node.element.type !== "boundaryEvent") continue
+		// `send > wait[boundary:timer …]` without on=: the one task drawn into it is its host
+		const drawn = node.on === undefined ? reader.edges.filter((edge) => edge.to === id) : []
+		const from = drawn.length === 1 ? nodes.get(drawn[0]?.from ?? "") : undefined
+		if (from && drawn[0] && !EVENTS.has(from.element.type) && !GATEWAYS.has(from.element.type)) {
+			node.on = from.element.id
+			reader.edges.splice(reader.edges.indexOf(drawn[0]), 1)
+			fixes.push(`put boundary "${id}" on "${from.element.id}", the task drawn into it`)
+		}
 		const host = node.on === undefined ? undefined : nodes.get(node.on)
 		const hostType = host?.element.type
 		if (hostType !== undefined && !EVENTS.has(hostType) && !GATEWAYS.has(hostType)) {
