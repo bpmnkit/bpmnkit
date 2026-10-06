@@ -1,5 +1,15 @@
 # Progress
 
+## 2026-10-06 — First publish of a new package documented
+
+- The Release run for the 2026-10-06 version PR published nine packages, but `@bpmnkit/flow`
+  and `@bpmnkit/markdown` failed with `404 Not Found`. `release.yml` holds no npm token and
+  publishes only through trusted publishing (OIDC), which npm cannot set up for a package that
+  does not exist yet. Both packages need a manual first publish and a trusted publisher.
+- `PUBLISHING.md` said a first publish needed nothing special, and described an `NPM_TOKEN`
+  that the workflow does not use. It now describes trusted publishing and the bootstrap steps,
+  and its troubleshooting covers the 404. `CLAUDE.md`'s new-package checklist has the same step.
+
 ## 2026-10-06 — docspack 1.3.2, Camunda pack rebuilt against camunda-docs@b4b27e3
 
 - The root `docspack` devDependency moves from `^1.2.0` to `^1.3.2`.

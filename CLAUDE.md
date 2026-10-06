@@ -212,6 +212,12 @@ When creating a new published package under `packages/` or `apps/`, complete all
    the declarations it ships. Requires a build first. The full run is part of the release
    workflow.
 
+6. **Tell the user the package needs a manual first publish.** The release workflow publishes
+   with npm trusted publishing (OIDC), which cannot create a package that does not exist yet —
+   its first publish fails with a 404. A maintainer must publish it once by hand and register
+   `release.yml` as its trusted publisher; see "Publishing a package for the first time" in
+   `PUBLISHING.md`.
+
 Never hand-write a `README.md` or `LICENSE` for a published package — they are generated/synced by these scripts and will be overwritten on the next build.
 
 ## Dependency Management

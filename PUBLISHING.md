@@ -3,8 +3,6 @@
 How the twenty-six published `@bpmnkit/*` packages reach the registry: the automated
 release flow, the gates in front of it, and the one-time setup behind it.
 
-This document covers the full publish lifecycle: one-time setup, the automated release flow, and how npm provenance (trusted publishing) works.
-
 ---
 
 ## How it works
@@ -38,32 +36,36 @@ Everything publishes under the [`@bpmnkit`](https://www.npmjs.com/org/bpmnkit) n
 organization, which already exists. A new package needs `publishConfig.access: "public"` in
 its manifest — `check-packages.mjs` enforces that — and nothing else.
 
-### 2. Create an npm Automation token
+### 2. Authentication: trusted publishing, no token
 
-Provenance attestation requires authentication via a token even though the build provenance is verified via OIDC. Create a **Granular Access Token** (recommended over legacy tokens):
+`release.yml` holds no npm token. Every package authenticates with
+[npm trusted publishing](https://docs.npmjs.com/trusted-publishers): the job's
+`id-token: write` permission lets npm exchange a GitHub OIDC token for a short-lived publish
+credential. For that to work, each package on npmjs.com must name this repository and
+workflow as its trusted publisher.
 
-1. On npmjs.com → **Access Tokens** → **Generate New Token** → **Granular Access Token**
-2. Set:
-   - **Token name:** `github-actions-bpmnkit`
-   - **Expiration:** 365 days (or your org policy)
-   - **Packages and scopes:** Read and write access on the `@bpmnkit` scope
-   - **Organizations:** no org permission needed
-3. Copy the token
+### 3. Publishing a package for the first time
 
-### 3. Add the token to GitHub Actions secrets
+**A brand-new package cannot be published by the release workflow.** npm can only attach a
+trusted publisher to a package that already exists, so the first OIDC publish of a new name
+fails with `404 Not Found` (`ERR_PNPM_FAILED_TO_PUBLISH ... status 404`). The other packages
+in the same run still publish; the run goes red.
 
-In the GitHub repository (`bpmnkit/monorepo`):
+Bootstrap a new package once, by hand, before (or right after) its first version PR merges:
 
-1. **Settings** → **Secrets and variables** → **Actions** → **New repository secret**
-2. Name: `NPM_TOKEN`
-3. Value: the token from step 2
+1. Build it: `pnpm turbo build --filter <package>`.
+2. Publish it from a maintainer account in the `@bpmnkit` org:
+   `pnpm --filter <package> publish --access public --no-git-checks`.
+3. On npmjs.com → the package → **Settings** → **Trusted Publisher** → **GitHub Actions**:
+   organization `bpmnkit`, repository `monorepo`, workflow filename `release.yml`.
+4. Optionally, under **Publishing access**, require 2FA and disallow tokens, as the existing
+   packages do.
 
-### 4. Publishing a package for the first time
+From then on the package publishes through the automated flow like any other. If the version
+PR already merged and the release failed on the new package, re-run the failed Release job
+after step 3; changesets skips every version that is already on npm.
 
-Nothing special is required. A new package publishes through the automated flow like any
-other: add it to `scripts/published-packages.mjs`, give it a changeset, and merge the version
-PR. Changesets publishes every non-private workspace package it has a version bump for,
-whether or not the registry has seen it before.
+The package also needs to be in `scripts/published-packages.mjs` and to have a changeset.
 
 ---
 
@@ -153,23 +155,20 @@ Or via the npm web UI on the package's **Code** tab.
 |---|---|
 | `contents: write` | Changesets action creates version commits |
 | `pull-requests: write` | Changesets action opens/updates the Version PR |
-| `id-token: write` | npm provenance OIDC attestation |
+| `id-token: write` | npm trusted publishing and provenance attestation |
 
 ---
 
 ## Troubleshooting
 
-**"Package not found" on publish**
-- The package name must match the `name` field in its `package.json`.
-- Your token must have write access to the `@bpmnkit` scope.
-
-**"You must be logged in" / 401 errors**
-- Check the `NPM_TOKEN` secret is set in the repository's Actions secrets.
-- Make sure the token has not expired and has write access to the `@bpmnkit` scope.
+**`404 Not Found` on publish**
+- The package has never been published, so it has no trusted publisher yet — see
+  [Publishing a package for the first time](#3-publishing-a-package-for-the-first-time).
+- Otherwise, check the package's trusted publisher on npmjs.com names `bpmnkit/monorepo`
+  and `release.yml`.
 
 **Provenance attestation fails**
 - Ensure `permissions: id-token: write` is present in the workflow job.
-- The `registry-url: https://registry.npmjs.org` field in `setup-node` is required for the token to be picked up correctly.
 
 **Changesets PR not created**
 - Verify at least one `.changeset/*.md` file was committed to the branch before merging.
