@@ -1,5 +1,17 @@
 # @bpmnkit/plugins
 
+## 1.2.0
+
+### Minor Changes
+
+- 461287b: The properties panel's connector picker offers the templates BPMN Kit maintains (`BPMNKIT_CONNECTOR_TEMPLATES`), starting with **Cloudflare Clef Decision**, after Camunda's. A REST-connector task without a `zeebe:modelerTemplate` still opens as Camunda's REST connector.
+
+### Patch Changes
+
+- Updated dependencies [461287b]
+- Updated dependencies [461287b]
+  - @bpmnkit/connectors@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes
