@@ -7,6 +7,8 @@
   `reebe-wasm#build:wasm`. The Deploy Drop workflow had no Rust toolchain or wasm-pack, and
   failed with "apps/reebe-wasm has not been built". It now builds reebe-wasm the way
   `ci.yml` does before building Drop.
+- Deploy Drop also runs on changes to `packages/engine` and `packages/connector-gen`, now
+  part of what Drop serves.
 
 ## 2026-10-06 — Reebe restart test stops its first engine cleanly
 

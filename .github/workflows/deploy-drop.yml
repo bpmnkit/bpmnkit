@@ -7,6 +7,9 @@ on:
       - "apps/drop/**"
       - "packages/core/**"
       - "packages/canvas/**"
+      # Drop depends on both since #218.
+      - "packages/connector-gen/**"
+      - "packages/engine/**"
       # The room replays the writer's ops through @bpmnkit/editor/headless, and
       # the browser loads the editor itself on claim — a change to either is a
       # change to what Drop serves.
