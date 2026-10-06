@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-10-06 — Reebe restart test stops its first engine cleanly
+
+- `test_restart_does_not_replay_processed_commands` stopped the first engine as soon as the
+  job row appeared. The engine writes that row while it processes a command and records the
+  command as processed only afterwards, so on a busy CI runner the stop could land in between
+  and the restarted engine processed the command again: three jobs instead of two (main,
+  `ba14aa5`). The test now stops the engine once every command in the log is recorded.
+
 ## 2026-10-05 — Main merged into the connect-pass branch
 
 - Main's Cloudflare Clef template (`BPMNKIT_CONNECTOR_TEMPLATES`) moves to
