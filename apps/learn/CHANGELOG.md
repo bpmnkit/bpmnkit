@@ -1,5 +1,23 @@
 # @bpmnkit/learn
 
+## 0.1.5
+
+### Patch Changes
+
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+  - @bpmnkit/core@1.3.0
+  - @bpmnkit/editor@1.3.0
+  - @bpmnkit/plugins@1.2.1
+  - @bpmnkit/engine@1.2.0
+
 ## 0.1.4
 
 ### Patch Changes

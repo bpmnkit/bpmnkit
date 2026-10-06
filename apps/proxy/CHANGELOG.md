@@ -1,5 +1,34 @@
 # @bpmnkit/ai-server
 
+## 0.5.0
+
+### Minor Changes
+
+- ba14aa5: The MCP server gets `find_connectors { query }`, which returns connector cards plus the endpoints of an indexed HTTP API the query names. It also gets `add_connector { processId, id, alias, operation, values }`, which configures a node through the same resolver as `with` lines. A literal credential becomes a `{{secrets.NAME}}` placeholder, and inputs still missing are reported. AI chat runs may call both, and the chat prompt tells the model to use them for any outside system.
+
+### Patch Changes
+
+- ba14aa5: Connector tasks from the compact format now run on Camunda 8:
+  - `CompactElement` gains `inputs` (`zeebe:input` mappings, target → source) and `modelerTemplate` (`{ id, version }`). Both round-trip through `compactify()` and `expand()`, so compact edits no longer drop a connector's configuration.
+  - An HTTP connector task (`io.camunda:http-json:1`) with `url`, `method` or `authentication.*` in `taskHeaders` gets them as input mappings, where the connector reads them, with `authentication.type` defaulting to `noAuth`.
+  - For a Camunda connector job type (`io.camunda:…`), `resultVariable` becomes the `resultVariable` task header instead of an output mapping of `response`, which the connector never sets. Other job workers keep the output mapping.
+  - `Bpmn.restConnector()` stamps `zeebe:modelerTemplateVersion` `1`, the version of the bundled HTTP connector template, instead of `12`.
+  - The CLI's `generate` help and the proxy's AI prompts teach `inputs` for HTTP calls instead of task headers.
+
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+  - @bpmnkit/connector-gen@1.1.0
+  - @bpmnkit/core@1.3.0
+  - @bpmnkit/connectors@1.3.0
+  - @bpmnkit/engine@1.2.0
+
 ## 0.4.0
 
 ### Minor Changes
