@@ -16,6 +16,13 @@ no conflict resolution because there is never a second writer to conflict with.
 reviewer can lose work by closing the tab — and none at which they can be asked whether
 they meant it. That is what makes the version log below load-bearing rather than a nicety.
 
+**Asking the AI while you edit.** Where the deployment has AI changes on (a closed beta,
+behind an access code), **Ask AI** opens a chat beside the editor. Say what to change — select
+elements first to make the request about them — and the change is made in the editor with the
+layout kept, as one edit that **Undo** reverts. A diagram drafted with *Describe a process* on
+the Drop landing page has **Open in editor**: it is stored as a drop like a share link, and
+opens straight into the editor with this chat, so you can keep refining it there.
+
 **Version history.** Every file keeps the original it was uploaded as, pinned and never
 overwritten, plus its ten most recent milestones. Repeated saves inside an hour collapse
 into one milestone, and a new editing session always starts its own, so a stranger editing
@@ -49,15 +56,6 @@ their page with a button that opens the thread. Drop has no accounts and stores 
 addresses, so **a mention sends no email and no push notification**. Someone who does not
 have the drop open sees the mention the next time they open it. If it matters, send them
 the link yourself.
-
-**Who you are, without an account.** Your display name is whatever you type into the
-comment box. The browser remembers it and shows it to the other people viewing the drop.
-Nothing checks it, so two people can both call themselves Anna. Your first comment on a
-drop gives your browser a private key for that drop, and the server stores only a hash
-of it. That key is what lets you edit or delete **your own** comments, and nobody else's.
-It lives in this browser only: clear the site data, or change browsers, and your earlier
-comments can no longer be edited or deleted from there. A deleted comment that has replies
-leaves a "Comment deleted" placeholder, so the replies still make sense.
 
 ---
 Source: https://bpmnkit.com/docs/guides/drop

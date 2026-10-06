@@ -176,8 +176,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Drop — Share & Co-edit — Sharing a file](.llms/chunks/guides.drop.sharing-a-file.md) — 464 tokens
 - [Drop — Share & Co-edit — Sharing a FEEL expression](.llms/chunks/guides.drop.sharing-a-feel-expression.md) — 447 tokens
 - [Drop — Share & Co-edit — Sharing a FEEL expression — Trying it with your own numbers](.llms/chunks/guides.drop.sharing-a-feel-expression-trying-it-with-your-own-numbers.md) — 479 tokens
-- [Drop — Share & Co-edit — Reviewing it together](.llms/chunks/guides.drop.reviewing-it-together.md) — 975 tokens
-- [Drop — Share & Co-edit — Reviewing it together (2)](.llms/chunks/guides.drop.reviewing-it-together-2.md) — 242 tokens
+- [Drop — Share & Co-edit — Reviewing it together](.llms/chunks/guides.drop.reviewing-it-together.md) — 949 tokens
+- [Drop — Share & Co-edit — Reviewing it together (2)](.llms/chunks/guides.drop.reviewing-it-together-2.md) — 412 tokens
 - [Drop — Share & Co-edit — Reviewing it together — Rate limiting the edit baton](.llms/chunks/guides.drop.reviewing-it-together-rate-limiting-the-edit-baton.md) — 139 tokens
 - [Drop — Share & Co-edit — Running your own](.llms/chunks/guides.drop.running-your-own.md) — 200 tokens
 - [Drop — Share & Co-edit — What Drop is not](.llms/chunks/guides.drop.what-drop-is-not.md) — 180 tokens
