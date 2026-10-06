@@ -360,6 +360,62 @@ describe("POST /drop/api/ai-edit", () => {
 		expect(get.status).toBe(405)
 	})
 
+	it("takes the editor's own request, on the elements selected, without reading any thread", async () => {
+		const ai = fakeAi(ANSWER)
+		const res = await handleAiEdit(
+			post({
+				xml: XML,
+				request: "Check the credit\nbefore validating",
+				elementIds: ["validate", "gw-check"],
+			}),
+			"share1",
+			FILE,
+			makeEnv(ai),
+			NOW,
+		)
+		const evs = await events(res)
+		expect(script(evs)).toBe("start > credit[service Check credit] > validate\n@1 credit\n")
+		const user = (ai.calls[0]?.inputs.messages as { content: string }[])[1]?.content ?? ""
+		expect(user).toContain(
+			'1. On validate ("Validate Order"), valid ("Valid?") — The person editing: Check the credit before validating',
+		)
+		expect(user).not.toContain("2. ")
+	})
+
+	it("sends a request with nothing selected as on the whole diagram", async () => {
+		const ai = fakeAi(ANSWER)
+		await events(
+			await handleAiEdit(
+				post({ xml: XML, request: "Add a credit check" }),
+				"share1",
+				FILE,
+				makeEnv(ai),
+				NOW,
+			),
+		)
+		const user = (ai.calls[0]?.inputs.messages as { content: string }[])[1]?.content ?? ""
+		expect(user).toContain("1. On the whole diagram — The person editing: Add a credit check")
+	})
+
+	it("refuses a bad request with a reason, before calling the model", async () => {
+		const id = await comment()
+		const ai = fakeAi(ANSWER)
+		const env = makeEnv(ai)
+		const bad = [
+			{ xml: XML, request: "  " },
+			{ xml: XML, request: "x".repeat(501) },
+			{ xml: XML, request: "Add a check", threadIds: [id] },
+			{ xml: XML, request: "Add a check", elementIds: "validate" },
+			{ xml: XML, request: "Add a check", elementIds: ["Nope_1"] },
+			{ xml: XML, request: "Add a check", elementIds: ["x".repeat(201)] },
+		]
+		for (const body of bad) {
+			const res = await handleAiEdit(post(body), "share1", FILE, env, NOW)
+			expect(res.status, JSON.stringify(body).slice(0, 80)).toBe(400)
+		}
+		expect(ai.calls).toHaveLength(0)
+	})
+
 	it("tells the page whether the feature is on", () => {
 		const page = (aiEdit: boolean) =>
 			sharePage(
@@ -371,6 +427,8 @@ describe("POST /drop/api/ai-edit", () => {
 				aiEdit,
 			)
 		expect(page(true)).toContain('"aiEdit":true')
+		expect(page(true)).toContain('id="aiChatPanel"')
 		expect(page(false)).toContain('"aiEdit":false')
+		expect(page(false)).not.toContain('id="aiChatBtn"')
 	})
 })

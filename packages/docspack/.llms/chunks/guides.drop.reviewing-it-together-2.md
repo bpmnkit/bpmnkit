@@ -1,5 +1,14 @@
 # Drop — Share & Co-edit — Reviewing it together (2)
 
+**Who you are, without an account.** Your display name is whatever you type into the
+comment box. The browser remembers it and shows it to the other people viewing the drop.
+Nothing checks it, so two people can both call themselves Anna. Your first comment on a
+drop gives your browser a private key for that drop, and the server stores only a hash
+of it. That key is what lets you edit or delete **your own** comments, and nobody else's.
+It lives in this browser only: clear the site data, or change browsers, and your earlier
+comments can no longer be edited or deleted from there. A deleted comment that has replies
+leaves a "Comment deleted" placeholder, so the replies still make sense.
+
 Comments follow the same abuse rules as edits. Where the deployment configures Turnstile,
 your first comment on a drop needs one challenge, and your later comments on it do not.
 Each address can make 60 comment writes an hour. A drop holds at most 500 comments, and a

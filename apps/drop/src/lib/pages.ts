@@ -546,7 +546,7 @@ export function dropPage(
 		aiEnabled
 			? `<section class="section" id="describe"${turnstileKey ? ` data-turnstile-key="${escapeHtml(turnstileKey)}"` : ""}><div class="section-inner">
 	<div class="section-head"><span class="section-num">${num()}</span><h2 class="section-h2">Describe a process, get a diagram</h2></div>
-	<p class="section-lead section-indent" style="margin-bottom:26px">Say what should happen, in your own words${imageEnabled ? ", or add a photo of a whiteboard or sketch" : ""}. AI drafts the BPMN and draws it as it goes. Ask for changes until it fits, then share it like any drop. Closed beta: it needs an access code.</p>
+	<p class="section-lead section-indent" style="margin-bottom:26px">Say what should happen, in your own words${imageEnabled ? ", or add a photo of a whiteboard or sketch" : ""}. AI drafts the BPMN and draws it as it goes. Ask for changes until it fits, then share it like any drop, or open it in the editor and keep going there. Closed beta: it needs an access code.</p>
 	<div class="gen">
 		<div class="gen-main">
 			<div class="panel-bar"><span>description</span><span class="grow"></span><span id="genCount">0 / ${MAX_DESCRIPTION_CHARS}</span></div>
@@ -569,6 +569,7 @@ export function dropPage(
 	</div>
 	<div class="fc-actions">
 		<button id="genRun" class="btn-primary" type="button">Draft the diagram</button>
+		<button id="genEdit" class="btn-ghost" type="button" hidden title="Store the draft as a drop and keep working on it in the editor">Open in editor</button>
 		<button id="genShare" class="btn-ghost" type="button" hidden>Get a share link</button>
 		<div class="fc-examples" id="genExamples"></div>
 	</div>
@@ -781,6 +782,7 @@ export function sharePage(
 			${aiConnect ? `<button id="aiConnectBtn" type="button" hidden title="Configure the Camunda connectors of the tasks that call other systems">Add connectors</button>` : ""}
 			<button id="editBtn" type="button" hidden>Edit</button>
 			<button id="doneBtn" type="button" hidden>Done</button>
+			${aiEdit ? `<button id="aiChatBtn" type="button" hidden title="Ask the AI to change the diagram you are editing">Ask AI</button>` : ""}
 			<button id="localHistoryBtn" type="button" hidden>On this device</button>
 			<select id="editorLang" hidden aria-label="Editor language" title="Editor language"></select>
 			<button id="historyBtn" type="button" hidden>History</button>
@@ -821,6 +823,15 @@ export function sharePage(
 		<div id="commentsBody" class="ai-body"></div>
 		<footer id="commentsCompose" class="cm-compose"></footer>
 	</aside>
+	${
+		aiEdit
+			? `<aside id="aiChatPanel" class="ai-panel" hidden>
+		<header class="ai-head"><span>Ask AI</span><button id="aiChatClose" class="ai-x" type="button" aria-label="Close">&times;</button></header>
+		<div id="aiChatBody" class="ai-body" aria-live="polite"></div>
+		<footer id="aiChatCompose" class="cm-compose"></footer>
+	</aside>`
+			: ""
+	}
 	<aside id="historyPanel" class="ai-panel" hidden>
 		<header class="ai-head"><span>Saved milestones</span><button id="historyClose" class="ai-x" type="button" aria-label="Close">&times;</button></header>
 		<div id="historyBody" class="ai-body"></div>

@@ -126,6 +126,14 @@ stands only when it fills a gap and keeps every element of the draft; otherwise 
 and Undo returns to it. A complete draft costs nothing more. `bench:generate` runs the same check
 (`--no-check` leaves it out).
 
+The same route also backs **Ask AI**, the chat beside the editor (`src/client/ai-chat.ts`). A request
+in your own words is sent as `{ xml, request, elementIds? }` instead of `threadIds` — one feedback
+item, on the elements selected when it was sent. The change script is applied with the layout kept
+and becomes one editor change at once (Undo reverts it); an answer for a diagram that changed
+meanwhile is not applied. **Open in editor** on a describe-to-diagram draft stores it as a drop
+like Get a share link, and goes to `/drop/:shareId#edit`: the page claims the editor on arrival and
+opens the chat, so the draft keeps changing there instead of being drawn again from scratch.
+
 With `AI_CONNECT_MODEL` set as well (it is, in `wrangler.jsonc`), the passcode also turns on the
 **connect pass** (`POST /drop/api/connect`). It configures the Camunda connectors of a diagram
 that already has its shape (`doc/ai-connector-generation-plan.md` §4).

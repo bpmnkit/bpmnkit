@@ -241,7 +241,7 @@ export async function readAnswer(res: Response, onText: (script: string) => void
 	return { ok: true, aliases, script, cached: "done" in outcome && outcome.cached }
 }
 
-function readCode(): string | null {
+export function readCode(): string | null {
 	try {
 		return localStorage.getItem(AI_CODE_STORAGE_KEY)
 	} catch {
@@ -249,7 +249,7 @@ function readCode(): string | null {
 	}
 }
 
-function writeCode(code: string | null): void {
+export function writeCode(code: string | null): void {
 	try {
 		if (code === null) localStorage.removeItem(AI_CODE_STORAGE_KEY)
 		else localStorage.setItem(AI_CODE_STORAGE_KEY, code)
@@ -260,6 +260,59 @@ function writeCode(code: string | null): void {
 
 /** The pass a solved challenge earned, for this visit (see `lib/ai-pass.ts`). */
 let pass: string | null = null
+
+/**
+ * Posts to the AI-changes route, with the challenge first when the deployment
+ * asks and the page holds no pass, and once more when the route refuses it.
+ *
+ * @returns The response, or `null` when the reader closed the challenge.
+ */
+export async function postAiEdit(
+	to: {
+		shareId: string
+		filename: string
+		xml: string
+		turnstile: boolean
+		challenge: Challenge
+	},
+	body: Record<string, unknown>,
+	code: string,
+	signal: AbortSignal,
+	title: string,
+): Promise<Response | null> {
+	const post = (token?: string) =>
+		fetch(`/drop/api/ai-edit/${to.shareId}/${encodeURIComponent(to.filename)}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"X-Drop-AI-Code": code,
+				...(pass ? { [AI_PASS_HEADER]: pass } : {}),
+			},
+			body: JSON.stringify({ xml: to.xml, ...body, ...(token ? { token } : {}) }),
+			signal,
+		})
+	const solve = async () => {
+		const verified = await to.challenge(title)
+		return verified.ok ? (verified.token ?? undefined) : null
+	}
+	let res: Response
+	if (to.turnstile && pass === null) {
+		const token = await solve()
+		if (token === null) return null
+		res = await post(token)
+	} else {
+		res = await post()
+		if (res.status === 403 && to.turnstile) {
+			pass = null
+			const token = await solve()
+			if (token === null) return null
+			res = await post(token)
+		}
+	}
+	const issued = res.headers.get(AI_PASS_HEADER)
+	if (issued) pass = issued
+	return res
+}
 
 // ── The dialog ──────────────────────────────────────────────────────────────
 
@@ -393,50 +446,14 @@ export function openAiEdit(opts: AiEditOptions): void {
 		input.focus()
 	}
 
-	/** Posts, with the challenge first when the deployment asks and the page holds no pass. */
-	const send = async (
-		code: string,
-		hint: string,
-		signal: AbortSignal,
-	): Promise<Response | null> => {
-		const post = (token?: string) =>
-			fetch(`/drop/api/ai-edit/${opts.shareId}/${encodeURIComponent(opts.filename)}`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"X-Drop-AI-Code": code,
-					...(pass ? { [AI_PASS_HEADER]: pass } : {}),
-				},
-				body: JSON.stringify({
-					xml: opts.xml,
-					threadIds: opts.threads.map((t) => t.root.id),
-					...(hint ? { hint } : {}),
-					...(token ? { token } : {}),
-				}),
-				signal,
-			})
-		const solve = async () => {
-			const verified = await opts.challenge("One check before the AI changes this")
-			return verified.ok ? (verified.token ?? undefined) : null
-		}
-		let res: Response
-		if (opts.turnstile && pass === null) {
-			const token = await solve()
-			if (token === null) return null
-			res = await post(token)
-		} else {
-			res = await post()
-			if (res.status === 403 && opts.turnstile) {
-				pass = null
-				const token = await solve()
-				if (token === null) return null
-				res = await post(token)
-			}
-		}
-		const issued = res.headers.get(AI_PASS_HEADER)
-		if (issued) pass = issued
-		return res
-	}
+	const send = (code: string, hint: string, signal: AbortSignal) =>
+		postAiEdit(
+			opts,
+			{ threadIds: opts.threads.map((t) => t.root.id), ...(hint ? { hint } : {}) },
+			code,
+			signal,
+			"One check before the AI changes this",
+		)
 
 	async function ask(hint = ""): Promise<void> {
 		const code = readCode()

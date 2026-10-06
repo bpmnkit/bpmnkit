@@ -7,6 +7,31 @@
   the closed weekly PR: 1112 chunks from 393 documents, the same bytes on two builds. Six chunk
   ids left with upstream renames and removals; nothing in the repo pins any of them.
 
+## 2026-10-06 — Drop: open a draft in the editor, with an AI chat
+
+- Describe-to-diagram gets **Open in editor** next to Get a share link. It uploads the draft as
+  an ordinary drop and goes to `/drop/:shareId#edit`; the viewer claims the editor on the first
+  connection (with the usual Turnstile check) and opens the AI chat.
+- The editor gets an **Ask AI** panel (`src/client/ai-chat.ts`, a lazy chunk). A request goes to
+  `POST /drop/api/ai-edit` as one feedback item — `{ xml, request, elementIds? }` instead of
+  `threadIds` — on the elements selected when it was sent. The change script is applied with
+  `applyProcessDelta`, so layout and hand edits are kept, and lands as one undoable editor
+  change. An answer for a diagram that changed meanwhile is not applied.
+- Why the delta route rather than the generator's: the generator writes the whole diagram again
+  and lays it out anew, which would throw away whatever was moved or added by hand in the editor.
+- `postAiEdit` in `ai-edit.ts` now carries the passcode, Turnstile pass and retry for both the
+  comments dialog and the chat; `EditSession.selection()` reports the editor's selection.
+
+## 2026-10-06 — Deploy Drop builds the Reebe WASM engine
+
+- #218 made `@bpmnkit/drop` depend on `@bpmnkit/engine`, which builds against
+  `@bpmnkit/reebe-wasm`, so `pnpm turbo build --filter @bpmnkit/drop` now runs
+  `reebe-wasm#build:wasm`. The Deploy Drop workflow had no Rust toolchain or wasm-pack, and
+  failed with "apps/reebe-wasm has not been built". It now builds reebe-wasm the way
+  `ci.yml` does before building Drop.
+- Deploy Drop also runs on changes to `packages/engine` and `packages/connector-gen`, now
+  part of what Drop serves.
+
 ## 2026-10-06 — Reebe restart test stops its first engine cleanly
 
 - `test_restart_does_not_replay_processed_commands` stopped the first engine as soon as the
