@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-10-06 — Deploy Drop builds the Reebe WASM engine
+
+- #218 made `@bpmnkit/drop` depend on `@bpmnkit/engine`, which builds against
+  `@bpmnkit/reebe-wasm`, so `pnpm turbo build --filter @bpmnkit/drop` now runs
+  `reebe-wasm#build:wasm`. The Deploy Drop workflow had no Rust toolchain or wasm-pack, and
+  failed with "apps/reebe-wasm has not been built". It now builds reebe-wasm the way
+  `ci.yml` does before building Drop.
+
 ## 2026-10-06 — Reebe restart test stops its first engine cleanly
 
 - `test_restart_does_not_replay_processed_commands` stopped the first engine as soon as the

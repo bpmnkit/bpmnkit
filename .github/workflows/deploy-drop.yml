@@ -38,6 +38,28 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Drop depends on @bpmnkit/engine, which builds against @bpmnkit/reebe-wasm.
+      - name: Add wasm32 target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: apps/reebe -> target
+
+      - name: Install wasm-pack
+        uses: jetli/wasm-pack-action@v0.4.0
+        with:
+          version: latest
+
+      - name: Build reebe-wasm
+        env:
+          CARGO_HTTP_MULTIPLEXING: false
+        run: |
+          WASM_VERSION=$(node -p "require('./apps/reebe-wasm/package.json').version")
+          wasm-pack build apps/reebe/crates/reebe-wasm --target web --scope bpmnkit --out-dir "$GITHUB_WORKSPACE/apps/reebe-wasm"
+          node scripts/patch-wasm-pkg.mjs "$WASM_VERSION"
+
       - name: Build drop (client bundles + workspace deps)
         run: pnpm turbo build --filter @bpmnkit/drop
 
