@@ -64,6 +64,8 @@ export interface EditSession {
 	apply(defs: BpmnDefinitions): void
 	/** Where the writer is looking, so a rebuilt editor opens on the same view. */
 	viewport(): ViewportState
+	/** The ids selected now: what an AI chat request is about. */
+	selection(): string[]
 	/** The local-checkpoint panel, for the page to place. */
 	historyPanel: HTMLElement
 	refreshHistory(): Promise<void>
@@ -124,6 +126,11 @@ export function startEditSession(options: EditSessionOptions): EditSession {
 		scheduleCheckpoint()
 	})
 
+	let selected: string[] = []
+	editor.on("editor:select", (ids) => {
+		selected = ids
+	})
+
 	// ── The local history panel ────────────────────────────────────────────────
 
 	const panel = createHistoryPanel({
@@ -158,6 +165,7 @@ export function startEditSession(options: EditSessionOptions): EditSession {
 		currentXml: () => editor.exportXml(),
 		apply: (defs) => editor.applyChange(() => defs),
 		viewport: () => editor.getViewport(),
+		selection: () => [...selected],
 		historyPanel: panel.el,
 		refreshHistory: () => panel.refresh(),
 		destroy(): void {

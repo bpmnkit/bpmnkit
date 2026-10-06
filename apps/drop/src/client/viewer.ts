@@ -84,6 +84,8 @@ const connectBtn = document.getElementById("aiConnectBtn") as HTMLButtonElement 
 const aiPanel = document.getElementById("aiPanel") as HTMLElement | null
 const aiBody = document.getElementById("aiBody") as HTMLElement | null
 const aiModelEl = document.getElementById("aiModel") as HTMLElement | null
+const aiChatBtn = document.getElementById("aiChatBtn") as HTMLButtonElement | null
+const aiChatPanel = document.getElementById("aiChatPanel") as HTMLElement | null
 let current: BpmnCanvas | null = null
 /** The BPMN document on the canvas, live updates included: what a suggestion is reviewed against. */
 let shownXml: { filename: string; xml: string } | null = null
@@ -686,7 +688,9 @@ const comments = new CommentsPanel({
 	challenge: (title) => challenge(title),
 	announceName: (name) => watcherSend({ type: "name", name }),
 	onOpen: () => {
-		for (const panel of [aiPanel, historyPanel, localHistoryPanel]) if (panel) panel.hidden = true
+		for (const panel of [aiPanel, historyPanel, localHistoryPanel, aiChatPanel]) {
+			if (panel) panel.hidden = true
+		}
 	},
 	...(data.aiEdit
 		? {
@@ -753,6 +757,12 @@ try {
 		} catch {
 			return
 		}
+		// Arrived from "Open in editor": the claim needs this socket, so it goes now.
+		if (message.type === "hello" && editOnArrival) {
+			editOnArrival = false
+			const file = data.files[activeIndex]
+			if (file?.kind === "bpmn" && readOnlyReason(file) === null) startEditing(file)
+		}
 		if (message.type === "hello" || message.type === "presence") {
 			// Saying someone is editing is what makes a diagram changing under the
 			// reader's eyes legible rather than unsettling.
@@ -808,6 +818,13 @@ let editorLang: Awaited<ReturnType<typeof import("./edit-session.js").loadEditor
 let feelEditor: FeelEditor | null = null
 /** The file the editor is open on, for going back to it afterwards. */
 let editingFile: string | null = null
+/**
+ * Set when the page was opened with `#edit` — "Open in editor" on a generated
+ * draft — so the first connection claims the editor and opens the AI chat.
+ */
+let editOnArrival = location.hash === "#edit"
+let chatOnEdit = editOnArrival && aiChatPanel !== null
+if (editOnArrival) history.replaceState(null, "", location.pathname + location.search)
 /** Set when we let the baton go ourselves and have already said why. */
 let quietRelease = false
 /** Numbers this writer's ops, so a rejection can name the one it refused. */
@@ -867,6 +884,8 @@ function updateEditAffordance(): void {
 	}
 	if (doneBtn) doneBtn.hidden = !editing
 	if (localHistoryBtn) localHistoryBtn.hidden = session === null
+	if (aiChatBtn) aiChatBtn.hidden = session === null
+	if (aiChatPanel && session === null) aiChatPanel.hidden = true
 	if (editorLangSelect) editorLangSelect.hidden = session === null
 }
 
@@ -1022,6 +1041,10 @@ async function enterEditMode(granted: { filename: string; xml: string }): Promis
 	fillLanguagePicker(editModule)
 	zoombar.hidden = true
 	updateEditAffordance()
+	if (chatOnEdit) {
+		chatOnEdit = false
+		void openChat()
+	}
 }
 
 /** Builds the editor on `viewer` in the current language. */
@@ -1237,6 +1260,11 @@ editBtn?.addEventListener("click", () => {
 	// locally, and the challenge is on the save.
 	if (file.kind === "feel") return enterFeelEdit(file)
 	if (isDemo) return void dropACopy(file)
+	startEditing(file)
+})
+
+/** Challenges, then asks the room for the baton on `file`; `granted` opens the editor. */
+function startEditing(file: DropFile): void {
 	void challenge().then((result) => {
 		if (!result.ok) {
 			// Cancelling is a decision and needs no comment; a challenge that could
@@ -1252,7 +1280,7 @@ editBtn?.addEventListener("click", () => {
 		const token = result.token
 		watcherSend({ type: "claim", filename: file.filename, ...(token ? { token } : {}) })
 	})
-})
+}
 
 doneBtn?.addEventListener("click", () => {
 	if (feelEditor) return leaveFeelEdit()
@@ -1507,6 +1535,56 @@ async function reviewSuggestion(s: SuggestionView): Promise<void> {
 		notice: (text) => notice(text, 8_000),
 	})
 }
+
+// ── The editor's AI chat ────────────────────────────────────────────────────
+// Free-form requests through the same route and applier as the changes from
+// comments, made in the editor as one undoable change (`ai-chat.ts`).
+
+let chat: import("./ai-chat.js").AiChat | null = null
+
+async function openChat(): Promise<void> {
+	if (!aiChatPanel) return
+	if (!chat) {
+		let mod: typeof import("./ai-chat.js")
+		try {
+			mod = await import("./ai-chat.js")
+		} catch {
+			notice("Couldn't load the AI chat. Reload the page and try again.", 8_000)
+			return
+		}
+		chat = mod.mountAiChat({
+			shareId: data.shareId,
+			log: document.getElementById("aiChatBody") as HTMLElement,
+			compose: document.getElementById("aiChatCompose") as HTMLElement,
+			turnstile: Boolean(data.turnstileKey),
+			challenge: (title) => challenge(title),
+			target: () => {
+				const editing = session
+				if (!editing || editingFile === null) return null
+				return {
+					filename: editingFile,
+					xml: () => editing.currentXml(),
+					selection: () => editing.selection(),
+					apply: (defs) => editing.apply(defs),
+				}
+			},
+		})
+	}
+	// Only a writer gets here; the chat shares the right-hand side with the other panels.
+	if (session === null) return
+	comments.close()
+	for (const panel of [aiPanel, historyPanel, localHistoryPanel]) if (panel) panel.hidden = true
+	aiChatPanel.hidden = false
+	chat.focus()
+}
+
+aiChatBtn?.addEventListener("click", () => {
+	if (aiChatPanel && !aiChatPanel.hidden) aiChatPanel.hidden = true
+	else void openChat()
+})
+document.getElementById("aiChatClose")?.addEventListener("click", () => {
+	if (aiChatPanel) aiChatPanel.hidden = true
+})
 
 localHistoryBtn?.addEventListener("click", () => {
 	if (!localHistoryPanel) return

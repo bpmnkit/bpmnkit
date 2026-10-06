@@ -22,7 +22,13 @@ import {
 	createChangeLineFilter,
 	feedbackMessages,
 } from "../lib/feedback.js"
-import { MODEL_PROFILES, maxTokensFor, neuronsFor } from "../lib/generate.js"
+import {
+	MAX_CHANGE_CHARS,
+	MIN_CHANGE_CHARS,
+	MODEL_PROFILES,
+	maxTokensFor,
+	neuronsFor,
+} from "../lib/generate.js"
 import { ModelStream, hedge } from "../lib/hedge.js"
 import { json } from "../lib/http.js"
 import { sha256Hex } from "../lib/ids.js"
@@ -42,12 +48,47 @@ function fail(status: number, error: string): Response {
 	return json({ error }, { status })
 }
 
+/** What the change is asked from: stored review threads, or the editor's own words. */
+type EditAsk =
+	| { threadIds: string[] }
+	/** Typed in the editor's AI chat, about the elements selected then (none: the whole diagram). */
+	| { request: string; elementIds: string[] }
+
 /** The request body, checked for shape only. */
-interface EditRequest {
+type EditRequest = EditAsk & {
 	xml: string
-	threadIds: string[]
 	hint: string
 	token?: string
+}
+
+/** Longest element id taken from a request; the editor's are far shorter. */
+const MAX_ELEMENT_ID_CHARS = 200
+
+function readAsk(body: Record<string, unknown>): EditAsk | string {
+	if (body.request !== undefined) {
+		if (body.threadIds !== undefined) return "ask with threads or with a request, not both"
+		const request = typeof body.request === "string" ? body.request.trim() : ""
+		if (request.length < MIN_CHANGE_CHARS) return "say what to change"
+		if (request.length > MAX_CHANGE_CHARS) {
+			return `a request is at most ${MAX_CHANGE_CHARS} characters`
+		}
+		const ids = body.elementIds ?? []
+		if (
+			!Array.isArray(ids) ||
+			ids.length > MAX_FEEDBACK_ITEMS ||
+			!ids.every((id) => typeof id === "string" && id.length <= MAX_ELEMENT_ID_CHARS)
+		) {
+			return "unknown element ids"
+		}
+		return { request, elementIds: [...new Set(ids as string[])] }
+	}
+	const ids = body.threadIds
+	if (!Array.isArray(ids) || ids.length === 0) return "pick at least one comment thread"
+	if (ids.length > MAX_FEEDBACK_ITEMS) {
+		return `at most ${MAX_FEEDBACK_ITEMS} threads at a time — split the review up`
+	}
+	if (!ids.every((id) => typeof id === "string" && isCommentId(id))) return "unknown thread id"
+	return { threadIds: [...new Set(ids as string[])] }
 }
 
 function readBody(raw: unknown): EditRequest | string {
@@ -55,19 +96,43 @@ function readBody(raw: unknown): EditRequest | string {
 	const body = raw as Record<string, unknown>
 	if (typeof body.xml !== "string" || body.xml.length === 0) return "the diagram is missing"
 	if (body.xml.length > MAX_ROW_BYTES) return "the diagram is too large"
-	const ids = body.threadIds
-	if (!Array.isArray(ids) || ids.length === 0) return "pick at least one comment thread"
-	if (ids.length > MAX_FEEDBACK_ITEMS) {
-		return `at most ${MAX_FEEDBACK_ITEMS} threads at a time — split the review up`
-	}
-	if (!ids.every((id) => typeof id === "string" && isCommentId(id))) return "unknown thread id"
+	const ask = readAsk(body)
+	if (typeof ask === "string") return ask
 	const hint = typeof body.hint === "string" ? body.hint.trim() : ""
 	if (hint.length > MAX_HINT_CHARS) return `a hint is at most ${MAX_HINT_CHARS} characters`
 	return {
+		...ask,
 		xml: body.xml,
-		threadIds: [...new Set(ids as string[])],
 		hint,
 		...(typeof body.token === "string" ? { token: body.token } : {}),
+	}
+}
+
+/**
+ * The editor's request as the one feedback item, on the elements it was about.
+ * Those come from the requester's own document, so each must be in it.
+ */
+function requestItem(
+	request: string,
+	elementIds: readonly string[],
+	aliases: Record<string, string>,
+	defs: BpmnDefinitions,
+): FeedbackItem | string {
+	const written = new Map(Object.entries(aliases).map(([alias, id]) => [id, alias]))
+	const names = new Map(defs.processes[0]?.flowElements.map((el) => [el.id, el.name]))
+	const anchors: { on: string; label?: string }[] = []
+	for (const id of elementIds) {
+		const alias = written.get(id)
+		if (alias === undefined) return "a selected element is not in the diagram"
+		const label = names.get(id)
+		anchors.push(label ? { on: alias, label } : { on: alias })
+	}
+	const [first, ...more] = anchors
+	return {
+		author: "The person editing",
+		body: request,
+		...first,
+		...(more.length > 0 ? { alsoOn: more } : {}),
 	}
 }
 
@@ -128,11 +193,13 @@ async function loadItems(
  * POST /drop/api/ai-edit/:shareId/:filename — closed beta: change a shared
  * diagram as its review threads ask.
  *
- * Body `{ xml, threadIds, hint?, token? }`. `xml` is the requester's editor
+ * Body `{ xml, threadIds, hint?, token? }`, or `{ xml, request, elementIds?,
+ * hint?, token? }` from the editor's AI chat. `xml` is the requester's editor
  * document: the answer is applied to exactly that, in their editor, so it is
  * what the model must read. It is public — any viewer of the drop has it — and
  * a forged one only misleads the person who sent it. The threads are read
- * from D1 by id: those are other people's words.
+ * from D1 by id: those are other people's words. A `request` is the
+ * requester's own, sent as one feedback item on the elements they selected.
  *
  * Answers with a server-sent-event stream of {@link FeedbackEvent}s: the alias
  * map the answer's ids resolve against, then the change script as the model
@@ -202,8 +269,16 @@ async function answer(
 		return fail(413, "this diagram is too large for AI changes yet")
 	}
 
-	const items = await loadItems(env, shareId, filename, body.threadIds, aliases, defs)
-	if (typeof items === "string") return fail(400, items)
+	let items: FeedbackItem[]
+	if ("request" in body) {
+		const item = requestItem(body.request, body.elementIds, aliases, defs)
+		if (typeof item === "string") return fail(400, item)
+		items = [item]
+	} else {
+		const loaded = await loadItems(env, shareId, filename, body.threadIds, aliases, defs)
+		if (typeof loaded === "string") return fail(400, loaded)
+		items = loaded
+	}
 
 	const messages = feedbackMessages(text, items, body.hint || undefined)
 	const userContent = messages[1]?.content ?? ""
@@ -283,6 +358,7 @@ async function answer(
 						msg: "drop.ai-edit",
 						model,
 						threads: items.length,
+						chat: "request" in body,
 						firstContentMs: stream.firstContentMs ?? null,
 						neurons,
 						lines: script === "" ? 0 : script.trimEnd().split("\n").length,

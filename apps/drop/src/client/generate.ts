@@ -17,9 +17,11 @@
  * sends it to a vision model. Only the first draft reads the image; changes go
  * to the text model with the draft's text, like any other.
  *
- * Nothing is stored until the reader asks for a link. The diagram then goes
- * through `/drop/api/drops` as an ordinary `.bpmn` upload — same validation,
- * same Terms, same short link.
+ * Nothing is stored until the reader asks for a link, or to open the draft in
+ * the editor. The diagram then goes through `/drop/api/drops` as an ordinary
+ * `.bpmn` upload — same validation, same Terms, same short link. "Open in
+ * editor" goes to that link with `#edit`, where the editor opens with the AI
+ * chat beside it, for changes that keep the layout and any hand edits.
  */
 import { BpmnCanvas } from "@bpmnkit/canvas"
 import {
@@ -150,6 +152,7 @@ export function mountGenerator(): void {
 	const count = $("genCount")
 	const run = $<HTMLButtonElement>("genRun")
 	const share = $<HTMLButtonElement>("genShare")
+	const edit = $<HTMLButtonElement>("genEdit")
 	const status = $("genStatus")
 	const name = $("genName")
 	const host = $("genCanvas")
@@ -290,6 +293,7 @@ export function mountGenerator(): void {
 		showQuestions(parsed.questions)
 		void showCheck(defs, result.xml)
 		share.hidden = false
+		if (edit) edit.hidden = false
 		refine.hidden = false
 		undo.hidden = earlier.length === 0
 		return {
@@ -607,6 +611,7 @@ export function mountGenerator(): void {
 		result = null
 		checking = ""
 		share.hidden = true
+		if (edit) edit.hidden = true
 		refine.hidden = true
 		const started = performance.now()
 		const answer = await ask(
@@ -767,8 +772,13 @@ export function mountGenerator(): void {
 		await connect()
 	}
 
-	async function shareIt(): Promise<void> {
-		if (!result || !share || !url || !open || !out) return
+	/**
+	 * Stores the draft as a drop.
+	 *
+	 * @returns Its link, or `null` when it failed — the error is shown.
+	 */
+	async function upload(): Promise<string | null> {
+		if (!result || !share) return null
 		const body = new FormData()
 		body.append(
 			"files",
@@ -776,20 +786,37 @@ export function mountGenerator(): void {
 			result.file,
 		)
 		share.disabled = true
+		if (edit) edit.disabled = true
 		try {
 			const res = await fetch("/drop/api/drops", { method: "POST", body })
 			const payload = (await res.json()) as { url?: string; error?: string; details?: string[] }
 			if (!res.ok || !payload.url) {
-				return showError(payload.details?.join("\n") ?? payload.error ?? "Sharing failed.")
+				showError(payload.details?.join("\n") ?? payload.error ?? "Sharing failed.")
+				return null
 			}
-			url.value = new URL(payload.url, location.origin).href
-			open.href = payload.url
-			out.classList.remove("hidden")
+			return payload.url
 		} catch {
 			showError("Network error — please try again.")
+			return null
 		} finally {
 			share.disabled = false
+			if (edit) edit.disabled = false
 		}
+	}
+
+	async function shareIt(): Promise<void> {
+		if (!url || !open || !out) return
+		const link = await upload()
+		if (link === null) return
+		url.value = new URL(link, location.origin).href
+		open.href = link
+		out.classList.remove("hidden")
+	}
+
+	/** Stores the draft and opens it in the editor, with the AI chat beside it. */
+	async function openInEditor(): Promise<void> {
+		const link = await upload()
+		if (link !== null) location.href = `${link}#edit`
 	}
 
 	const updateCount = () => {
@@ -821,6 +848,7 @@ export function mountGenerator(): void {
 		setStatus("undone")
 	})
 	share.addEventListener("click", () => void shareIt())
+	edit?.addEventListener("click", () => void openInEditor())
 	copy.addEventListener("click", async () => {
 		await navigator.clipboard.writeText(url.value)
 		copy.textContent = "Copied"

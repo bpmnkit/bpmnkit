@@ -153,6 +153,13 @@ no conflict resolution because there is never a second writer to conflict with.
 reviewer can lose work by closing the tab — and none at which they can be asked whether
 they meant it. That is what makes the version log below load-bearing rather than a nicety.
 
+**Asking the AI while you edit.** Where the deployment has AI changes on (a closed beta,
+behind an access code), **Ask AI** opens a chat beside the editor. Say what to change — select
+elements first to make the request about them — and the change is made in the editor with the
+layout kept, as one edit that **Undo** reverts. A diagram drafted with *Describe a process* on
+the Drop landing page has **Open in editor**: it is stored as a drop like a share link, and
+opens straight into the editor with this chat, so you can keep refining it there.
+
 **Version history.** Every file keeps the original it was uploaded as, pinned and never
 overwritten, plus its ten most recent milestones. Repeated saves inside an hour collapse
 into one milestone, and a new editing session always starts its own, so a stranger editing

@@ -1,5 +1,12 @@
 # Features
 
+## Drop: open a draft in the editor and chat with the AI (2026-10-06)
+
+- **Open in editor** on a describe-to-diagram draft stores it as a drop and opens it in the
+  editor, instead of only offering a share link.
+- **Ask AI** in the editor: say what to change, about the selected elements or the whole
+  diagram, and the change is made in place with the layout kept — one undoable edit per answer.
+
 ## AI generation with Camunda connectors (2026-10-02)
 
 - **Drop: describe a process that calls other systems and get it connected.** After the diagram
