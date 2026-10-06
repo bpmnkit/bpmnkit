@@ -1,5 +1,13 @@
 # @bpmnkit/examples
 
+## 0.0.43
+
+### Patch Changes
+
+- Updated dependencies [461287b]
+- Updated dependencies [461287b]
+  - @bpmnkit/connectors@1.2.0
+
 ## 0.0.42
 
 ### Patch Changes
