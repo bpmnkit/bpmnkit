@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-06 — docspack 1.3.2, Camunda pack rebuilt against camunda-docs@b4b27e3
+
+- The root `docspack` devDependency moves from `^1.2.0` to `^1.3.2`.
+- `@bpmnkit/camunda-docspack` is rebuilt with the steps of `camunda-docspack.yml`, replacing
+  the closed weekly PR: 1112 chunks from 393 documents, the same bytes on two builds. Six chunk
+  ids left with upstream renames and removals; nothing in the repo pins any of them.
+
 ## 2026-10-06 — Drop: open a draft in the editor, with an AI chat
 
 - Describe-to-diagram gets **Open in editor** next to Get a share link. It uploads the draft as

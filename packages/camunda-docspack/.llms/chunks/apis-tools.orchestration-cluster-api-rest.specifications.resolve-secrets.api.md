@@ -1,4 +1,4 @@
-# Resolve secrets (alpha)
+# Resolve secrets
 
 `POST /secrets/resolve`
 
@@ -15,8 +15,6 @@ HTTP 400: a missing or non-array `references` field, more than 20 references, or
 References are resolved against the secret stores configured for the caller's physical
 tenant, served from the gateway's secret cache when the value is already cached and read
 from the store otherwise.
-
-This endpoint is an [alpha feature](/components/early-access/alpha/alpha-features.md) and may be subject to change in future releases.
 
 - Required permissions: REVEAL on SECRET.
 - Added in Camunda 8.10.

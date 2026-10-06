@@ -14,8 +14,9 @@ Authentication: bearerAuth or basicAuth
 Request body:
   application/json: AgentInstanceCreationRequest (required)
     elementInstanceKey (ElementInstanceKey, required) — The key of the AI Agent Sub-process or AI Agent Task element instance. The engine uses this key to infer processInstanceKey, elementId, processDefinitionKey,…
-    definition (AgentInstanceDefinition, required) — Static definition set once at creation.
-    limits (AgentInstanceLimits) — Limits for the agent execution. When omitted, all limits default to -1 (no limit).
+    jobKey (JobKey, required) — The key of the job activation during which this creation is being made. A creation must always be attributed to the active job that produced it.
+    jobLeaseToken (JobLeaseToken, required) — Opaque lease token received from the job activation response. Disambiguates this activation from any other activation of the same job: if the job is later…
+    history (AgentInstanceHistoryItem[], required) — A batch of history items to append to the agent instance's conversation history, in request order. Each created item is echoed back in the response's…
 
 Responses:
   200 AgentInstanceCreationResult — The agent instance was created.

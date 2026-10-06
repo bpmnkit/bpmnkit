@@ -17,7 +17,7 @@ Request body:
   application/json: JobUpdateRequest (required)
     changeset (JobChangeset, required)
     operationReference (OperationReference)
-    leaseToken (string) — The token identifying a leased job's activation, obtained from `ActivatedJobResult.leaseToken`. For a leased job, a supplied token is validated to prove the…
+    jobLeaseToken (JobLeaseToken) — The token identifying a leased job's activation, obtained from `ActivatedJobResult.jobLeaseToken`. For a leased job, a supplied token is validated to prove the…
 
 Responses:
   204 — The job was updated successfully.
