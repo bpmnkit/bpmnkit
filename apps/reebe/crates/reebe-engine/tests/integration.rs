@@ -985,6 +985,19 @@ async fn test_restart_does_not_replay_processed_commands() {
     deploy(&first.handle, SIMPLE_SERVICE_TASK_BPMN, "simple-service.bpmn").await;
     let first_instance = create_instance(&first.handle, "simple-service", serde_json::json!({})).await;
     assert_eq!(wait_for_jobs(&pool, "do-work", 60).await.len(), 1);
+    // The job row appears while the engine is still processing the command that wrote
+    // it; stopping then would leave that command unrecorded and the next engine would
+    // rightly process it again. Stop once every command in the log is recorded.
+    for _ in 0..100 {
+        let unprocessed = count(&pool, "SELECT COUNT(*) FROM partition_records r
+            WHERE r.record_type = 'COMMAND' AND r.position >
+                COALESCE((SELECT p.position FROM processed_positions p
+                          WHERE p.partition_id = r.partition_id), 0)").await;
+        if unprocessed == 0 {
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(50)).await;
+    }
     first.stop();
 
     // A command appended while no engine runs, as if the server stopped right after
