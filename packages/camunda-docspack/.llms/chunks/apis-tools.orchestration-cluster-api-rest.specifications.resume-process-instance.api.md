@@ -4,6 +4,8 @@
 
 Resumes a suspended process instance, returning it to the ACTIVE state and continuing processing.
 Only process instances in the SUSPENDED state can be resumed.
+A child process instance can be resumed independently of its parent or root process
+instance; resumption does not cascade to or from related instances.
 
 - Required permissions: SUSPEND_PROCESS_INSTANCE on PROCESS_DEFINITION.
 - Added in Camunda 8.10.

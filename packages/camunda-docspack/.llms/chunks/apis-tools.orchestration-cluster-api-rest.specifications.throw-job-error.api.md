@@ -18,7 +18,7 @@ Request body:
     errorCode (string, required) — The error code that will be matched with an error catch event.
     errorMessage (string) — An error message that provides additional context.
     variables (object) — JSON object that will instantiate the variables at the local scope of the error catch event that catches the thrown error.
-    leaseToken (string) — The token identifying a leased job's activation, obtained from `ActivatedJobResult.leaseToken`. For a leased job, the matching token must be supplied to prove…
+    jobLeaseToken (JobLeaseToken) — The token identifying a leased job's activation, obtained from `ActivatedJobResult.jobLeaseToken`. For a leased job, the matching token must be supplied to…
 
 Responses:
   204 — An error is thrown for the job.

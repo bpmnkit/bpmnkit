@@ -1,15 +1,15 @@
 # Secret resolution and job activation — Resolve references before activation
 
-The broker resolves secret references on a background scheduler, not on the processing path, so a slow or unavailable secret store cannot stall processing.
+The broker resolves secret references on a background scheduler, not on the processing path, so a slow or unavailable secret store cannot stall overall processing.
 
 Each physical tenant supports exactly one secret store, and that store's id must be `default`. A `camunda.secrets.<name>` reference always addresses it. `camunda.physical-tenants.<tenant-key>.secrets.*` can override which store backs a given tenant, but never adds a second store alongside it.
 
-When the broker creates a job, it records each secret reference together with its position in the job variables. The variable value itself keeps the placeholder text `camunda.secrets.<name>`. Nothing is read from a secret store at this point.
+When the broker creates a job, the variable value itself keeps the placeholder text `camunda.secrets.<name>`. Nothing is read from a secret store at this point.
 
-The scheduler then works through the references that are still pending:
+When the job activation is requested, the scheduler then works through the references that are not in the cache within cycles:
 
-1. Each cycle collects up to `camunda.processing.engine.secrets.batch-resolution-limit` pending references and groups them by store.
-2. The scheduler requests each store's group of references in one call. The store's local cache holds successfully resolved values for the next activation.
+1. Each cycle collects up to `camunda.processing.engine.secrets.batch-resolution-limit` pending references.
+2. The scheduler requests each store's references. The store's local cache holds successfully resolved values for the next activation.
 3. References beyond the limit stay pending and are collected by a later cycle. When a cycle reaches the limit and makes progress, the next cycle starts immediately instead of waiting for `camunda.processing.engine.secrets.interval`.
 
 Resolution records carry no secret values. Only the store's cache holds a value, and only for as long as its cache entry lives.
