@@ -502,6 +502,20 @@ describe("parseProcessText", () => {
 		expect(process?.flows.find((f) => f.from === "fail")?.to).toBe("notify_join")
 	})
 
+	it("continues the happy path from the task, not from its boundary", () => {
+		// The drop draft for "read github issues …, count the open ones, post the number to slack".
+		const text = [
+			"start[start Start] > read[service Read github issues] > err[boundary:error API error | on=read] > handle[task Handle failure] > fail[end API error]",
+			"err > calc[task Calculate count of open issues] > post[service Post the number to slack] > done[end Done]",
+		].join("\n")
+		const { diagram, fixes } = parseProcessText(text)
+		const process = diagram.processes[0]
+		expect(process?.flows.filter((f) => f.from === "read").map((f) => f.to)).toEqual(["calc"])
+		expect(process?.flows.filter((f) => f.from === "err").map((f) => f.to)).toEqual(["handle"])
+		expect(process?.elements.some((e) => e.type === "parallelGateway")).toBe(false)
+		expect(fixes).toContain(`moved err > calc onto "read", which had no way out but its boundary`)
+	})
+
 	it("keeps one blank start event", () => {
 		// gemma-4, golden prompt 12: a legend of the ids after the diagram.
 		const text = [

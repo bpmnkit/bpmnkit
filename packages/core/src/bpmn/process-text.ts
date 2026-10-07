@@ -964,6 +964,21 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	const into = (id: string) => edges.filter((edge) => edge.to === id)
 
 	if (final) {
+		// A boundary with several ways out, on a task with none (`read > err[boundary:error
+		// … | on=read] > handle`, then `err > count > post`), is the task's own path
+		// written through its boundary. The first way out handles the boundary; the
+		// rest continue from the task, where the work goes on when nothing fails.
+		for (const node of nodes.values()) {
+			const { id, type, attachedTo } = node.element
+			if (type !== "boundaryEvent" || attachedTo === undefined) continue
+			const [, ...rest] = outOf(id)
+			if (rest.length === 0 || outOf(attachedTo).length > 0) continue
+			for (const edge of rest) edge.from = attachedTo
+			fixes.push(
+				`moved ${rest.map((edge) => `${id} > ${edge.to}`).join(", ")} onto "${attachedTo}", which had no way out but its boundary`,
+			)
+		}
+
 		// One blank start: a process that starts twice with no trigger to tell the
 		// two apart is two processes. The later one goes, and what it led to is
 		// placed as any path nothing leads to is, below.

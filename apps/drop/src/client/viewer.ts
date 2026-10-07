@@ -1065,6 +1065,7 @@ function openSession(
 		shareId: data.shareId,
 		filename,
 		translate: editorLang.translate,
+		propertiesPanel: document.getElementById("propsPanel") ?? undefined,
 		sendOp: (op) => {
 			opSeq += 1
 			watcherSend({ type: "op", seq: opSeq, op })

@@ -1,5 +1,20 @@
 # Progress
 
+## 2026-10-07 — Drop: properties panel in the editor; the happy path no longer runs through a boundary
+
+- The drop editor had no properties panel, so a generated draft's task types and connector
+  inputs could not be seen or changed. `src/client/properties.ts` adds the config panel and its
+  BPMN schemas in a `#propsPanel` aside. The connector templates make that chunk 2.4 MB, so it
+  is loaded after the editor opens (a stand-in plugin hands it the canvas API); the reader's
+  bundle and the editor's own chunk are unchanged. With Ask AI, history or comments open, the
+  panel sits to their left.
+- "Read github issues of a repo via api, then calculate the count of open issues, and post the
+  number to a slack channel" drew the count and the post behind an and split *after the error
+  boundary*, and an empty end after the read. The model had written the main path through the
+  boundary (`read > err[boundary:error … | on=read] > handle …` then `err > calc > post`).
+  `parseProcessText` now moves every way out of a boundary but the first onto its task when
+  the task has none of its own.
+
 ## 2026-10-06 — docspack 1.3.2, Camunda pack rebuilt against camunda-docs@b4b27e3
 
 - The root `docspack` devDependency moves from `^1.2.0` to `^1.3.2`.
