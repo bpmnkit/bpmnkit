@@ -42,11 +42,13 @@ gw >(Label: condition) x  conditional branch, condition in FEEL (amount > 1000, 
 gw >(Label: default) y    branch taken when no condition holds
 Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate cancel)
-Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>, each=<list variable> (once per item), after=<ISO duration> (timer)
+Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>, each=<list variable> (once per item), after=<ISO duration> (timer), result=<variable>, feel=<FEEL expression> (last)
 Rules:
 - One start event. Every node is on a path from it to an end event: never a node nothing leads to.
 - An xor has two or more branches: exactly one is (Label: default), each other has a FEEL condition.
 - A boundary starts its own line, on a task you declared, and leads to a task that handles it; never draw an arrow into a boundary.
+- A boundary leads only to the handling. What happens next when nothing fails follows the task itself (read > count), never the boundary.
+- A step that only works on process data (count, sum, filter, compare, pick, format a message) is a script task, never a service or plain task: its FEEL reads the variables earlier steps set with result=. read[service Read issues | result=issues] > count[script Count open issues | result=openCount feel=count(issues[state = "open"])]
 - Branches that meet again are joined automatically; join parallel branches with an and node.
 - Steps done at the same time start from an and node and meet at another. A deadline is a boundary:timer with after= on the task that may run late. A step done for every item of a list takes each=<list>; use it only when the description says every or each.
 
@@ -206,6 +208,30 @@ function matching(text: string, start: number, open: string, close: string): num
 		else if (ch === close && --depth === 0) return i
 	}
 	return -1
+}
+
+/**
+ * Splits `feel=` off a declaration's attributes. A FEEL expression has spaces and
+ * commas, so it takes the rest of them: `| result=open feel=count(issues[state = "open"])`.
+ *
+ * @returns The other attributes, and the expression with its leading `=`, if any.
+ */
+export function splitFeel(attrs: string): { plain: string; feel?: string } {
+	const at = /(?:^|[\s,|])feel=/.exec(attrs)
+	if (!at) return { plain: attrs }
+	const feel = attrs.slice(at.index + at[0].length).trim()
+	if (feel === "") return { plain: attrs.slice(0, at.index) }
+	return { plain: attrs.slice(0, at.index), feel: feel.startsWith("=") ? feel : `= ${feel}` }
+}
+
+/** Words that name the handling of a failure, a timeout or a cancellation. */
+const HANDLING =
+	/\b(?:fail\w*|error\w*|handle\w*|alert\w*|notify\w*|retr(?:y|ies)|escalat\w*|cancel\w*|reject\w*|abort\w*|roll\s?back|compensat\w*|timeout|timed out|late)\b/i
+
+/** Whether `element` reads as the handling of what a boundary catches. */
+function handles(element: CompactElement | undefined): boolean {
+	if (element === undefined) return false
+	return HANDLING.test(element.name ?? "") || HANDLING.test(element.id.replace(/[_.-]+/g, " "))
 }
 
 /** The type a bare id suggests, for a node written without a kind or never declared. */
@@ -563,7 +589,7 @@ class Reader {
 		}
 		const bar = spec.indexOf("|")
 		// `boundary:timer on=poll`: an attribute written before the bar is one still
-		const loose = /\s+((?:on|job|each|after)=\S+|nonint)(?=\s|$)/g
+		const loose = /\s+((?:on|job|each|after|result)=\S+|nonint)(?=\s|$)/g
 		const beforeBar = bar < 0 ? spec : spec.slice(0, bar)
 		const head = beforeBar.replace(loose, "").trim()
 		const attrs =
@@ -643,8 +669,9 @@ class Reader {
 		}
 
 		const node: Node = { element, line: n, spec }
+		const { plain, feel } = splitFeel(attrs)
 		// `| on=pay | nonint`: a second bar is only another separator.
-		for (const attr of attrs.split(/[\s,|]+/).filter(Boolean)) {
+		for (const attr of plain.split(/[\s,|]+/).filter(Boolean)) {
 			const [key, value] = attr.split("=", 2)
 			if (key === "on" && value) node.on = hostOf.get(value) ?? value
 			else if (key === "job" && value) element.jobType = value
@@ -675,8 +702,29 @@ class Reader {
 					element.eventType = "timer"
 				}
 				element.timerDuration = duration(value)
+			} else if (key === "result" && value && ACTIVITIES.has(element.type)) {
+				element.resultVariable = value
 			} else
 				this.problems.push({ line: n, message: `unknown attribute "${attr}" on "${id}"; ignored` })
+		}
+		if (feel !== undefined) {
+			// `calc[task Count open issues | feel=…]`: a step that evaluates FEEL is a script task
+			if (element.type === "task") element.type = "scriptTask"
+			if (element.type === "scriptTask") {
+				element.script = feel
+				element.resultVariable ??= id
+				if (parseExpression(feel.slice(1)).errors.length > 0) {
+					this.problems.push({
+						line: n,
+						message: `feel= on "${id}" is not FEEL; kept for the reader to correct`,
+					})
+				}
+			} else {
+				this.problems.push({
+					line: n,
+					message: `only a script task evaluates feel=; ignored on "${id}"`,
+				})
+			}
 		}
 		// `late[catch:timer | on=poll after=PT5M]`: an event on a task is a boundary event
 		const host = node.on === undefined ? undefined : this.nodes.get(node.on)?.element
@@ -964,18 +1012,35 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	const into = (id: string) => edges.filter((edge) => edge.to === id)
 
 	if (final) {
-		// A boundary with several ways out, on a task with none (`read > err[boundary:error
-		// … | on=read] > handle`, then `err > count > post`), is the task's own path
-		// written through its boundary. The first way out handles the boundary; the
-		// rest continue from the task, where the work goes on when nothing fails.
-		for (const node of nodes.values()) {
+		// A boundary leads to the handling of what it catches, and to nothing else:
+		// the work that goes on when nothing goes wrong follows the task. A model
+		// often writes that work through the boundary instead (`read >
+		// err[boundary:error … | on=read] > handle`, then `err > count > post`),
+		// which would run it only when the task fails. The ways out named for
+		// handling it stay (the first, when none is), and the rest move to the task. A bare end the task led to goes: it only stood in for
+		// the work that now follows.
+		for (const node of [...nodes.values()]) {
 			const { id, type, attachedTo } = node.element
 			if (type !== "boundaryEvent" || attachedTo === undefined) continue
-			const [, ...rest] = outOf(id)
-			if (rest.length === 0 || outOf(attachedTo).length > 0) continue
+			const out = outOf(id)
+			if (out.length < 2) continue
+			const handling = out.filter((edge) => handles(nodes.get(edge.to)?.element))
+			const rest =
+				handling.length > 0 ? out.filter((edge) => !handling.includes(edge)) : out.slice(1)
+			if (rest.length === 0) continue
+			for (const edge of outOf(attachedTo)) {
+				const end = nodes.get(edge.to)?.element
+				if (end?.type !== "endEvent" || end.eventType !== undefined) continue
+				if (into(end.id).length > 1) continue
+				nodes.delete(end.id)
+				edges = edges.filter((other) => other !== edge)
+				fixes.push(
+					`removed end event "${end.id}" after "${attachedTo}", whose work followed its boundary`,
+				)
+			}
 			for (const edge of rest) edge.from = attachedTo
 			fixes.push(
-				`moved ${rest.map((edge) => `${id} > ${edge.to}`).join(", ")} onto "${attachedTo}", which had no way out but its boundary`,
+				`moved ${rest.map((edge) => `${id} > ${edge.to}`).join(", ")} onto "${attachedTo}": a boundary leads only to its handling`,
 			)
 		}
 

@@ -320,6 +320,11 @@ export function applyProcessDelta(
 				?.attributes.type
 			if (current !== node.jobType) patch.jobType = node.jobType
 		}
+		if (node.script !== undefined) {
+			const current = now?.extensionElements.find((e) => e.name === "zeebe:script")
+			if (current?.attributes.expression !== node.script) patch.script = node.script
+		}
+		if (node.resultVariable !== undefined) patch.resultVariable = node.resultVariable
 		if (node.interrupting === false && now && "cancelActivity" in now && now.cancelActivity) {
 			patch.interrupting = false
 		}
@@ -751,6 +756,8 @@ export function applyProcessDelta(
 		if (node.trigger !== undefined) patch.eventType = node.trigger
 		if (node.jobType !== undefined) patch.jobType = node.jobType
 		else deployable(id, written, type, patch)
+		if (node.script !== undefined) patch.script = node.script
+		if (node.resultVariable !== undefined) patch.resultVariable = node.resultVariable
 		if (Object.keys(patch).length > 0) {
 			patches.push({ line: node.line, op: { op: "update", id, patch } })
 		}

@@ -104,6 +104,11 @@ function spec(element: CompactElement, host: string | undefined): string {
 	if (host !== undefined) attrs.push(`on=${host}`)
 	if (element.interrupting === false) attrs.push("nonint")
 	if (element.jobType) attrs.push(`job=${element.jobType}`)
+	if (element.script) {
+		// Last: feel= takes the rest of the attributes
+		if (element.resultVariable) attrs.push(`result=${element.resultVariable}`)
+		attrs.push(`feel=${element.script.replace(/^=\s*/, "").replace(/\s+/g, " ")}`)
+	}
 	return `[${word}${trigger}${name}${attrs.length > 0 ? ` | ${attrs.join(" ")}` : ""}]`
 }
 

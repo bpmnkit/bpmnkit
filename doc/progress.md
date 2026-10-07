@@ -1,5 +1,20 @@
 # Progress
 
+## 2026-10-07 — Process text: the work goes on from the task, and data steps are FEEL scripts
+
+- The boundary repair is no longer limited to a task with no way out of its own. A boundary
+  keeps only the ways out named for handling (failure, error, notify, retry, … — the first when
+  none is); the rest move to its task, and a bare end event the task led to is dropped. A
+  boundary whose ways out all read as handling (notify *and* log) keeps its parallel split. The
+  guide states the rule as well.
+- Steps that only work on process data become script tasks evaluating FEEL: `result=` and
+  `feel=` in the line format and in change scripts, `CompactElement.script` ↔ `zeebe:script`,
+  `writeProcessText` writes them back, and the guide teaches it with
+  `count[script … | result=openCount feel=count(issues[state = "open"])]`. Drop's post-draft
+  check sends one change request when a step named for a computation has no FEEL.
+- The engine's dry run runs the script; with the call mocked the variable it reads is null, and
+  the run still reaches its end.
+
 ## 2026-10-07 — Drop: properties panel in the editor; the happy path no longer runs through a boundary
 
 - The drop editor had no properties panel, so a generated draft's task types and connector
