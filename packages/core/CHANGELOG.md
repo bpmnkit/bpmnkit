@@ -1,5 +1,19 @@
 # @bpmnkit/core
 
+## 1.4.0
+
+### Minor Changes
+
+- f11e88f: Script tasks that compute FEEL, from the line format and from change scripts.
+  - `CompactElement.script` is a script task's FEEL expression, written as `zeebe:script` (with `resultVariable`) and read back by `compactify`; an `update` operation can patch it.
+  - The line format takes `result=<variable>` and `feel=<expression>` (last, so the expression keeps its spaces and commas): `count[script Count open issues | result=openCount feel=count(issues[state = "open"])]`. `feel=` on a plain task makes it a script task; an expression that is not FEEL is kept and reported. `writeProcessText` writes them back.
+  - `PROCESS_TEXT_GUIDE` tells the model that a step working only on process data — count, sum, filter, compare, format — is such a script task, reading what earlier steps stored with `result=`.
+  - `parseProcessDelta` and `applyProcessDelta` (`@bpmnkit/editor`) read and apply `result=` and `feel=`, so the AI chat in the editor can add or change one.
+
+### Patch Changes
+
+- f11e88f: `parseProcessText`: a boundary leads only to the handling of what it catches. When a model writes the work that follows a task through its boundary (`read > err[boundary:error … | on=read] > handle`, then `err > count > post`), the ways out that are not named for handling (failure, error, notify, retry, … — the first when none is) move onto the task, and a bare end event the task led to is dropped. Before, the task got a "Process completed" end and the boundary forked into the handler _and_ the rest of the work — so "read issues, count them, post to Slack" counted and posted only when the read failed. The guide now states the rule too.
+
 ## 1.3.0
 
 ### Minor Changes

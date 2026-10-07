@@ -1,5 +1,19 @@
 # @bpmnkit/drop
 
+## 0.4.0
+
+### Minor Changes
+
+- f11e88f: The editor on a drop gets a properties panel: select one element to see and change its configuration — name, task type, connector inputs, conditions, timers. It is fetched as its own chunk once the editor is open, so neither readers nor the editor's start wait for the connector templates, and it opens beside an open side panel (Ask AI, history, comments) instead of covering it.
+
+### Patch Changes
+
+- f11e88f: The check after a draft asks for FEEL where it is missing: a step named for a computation from process data ("Calculate the count of open issues") that is not a script task with a FEEL expression gets one change request naming it.
+- Updated dependencies [f11e88f]
+- Updated dependencies [f11e88f]
+  - @bpmnkit/core@1.4.0
+  - @bpmnkit/editor@1.4.0
+
 ## 0.3.0
 
 ### Minor Changes
