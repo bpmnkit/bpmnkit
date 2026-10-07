@@ -234,6 +234,8 @@ select.ed-select{height:28px;border:1px solid var(--bpmnkit-ds-line);background:
 /* ── AI review panel ────────────────────────────────────────────────────── */
 .ai-panel{position:absolute;top:0;right:0;bottom:0;width:var(--bpmnkit-ds-panel-width);max-width:92vw;background:var(--bpmnkit-ds-surface);border-left:1px solid var(--bpmnkit-ds-line);z-index:8;display:flex;flex-direction:column}
 .ai-panel[hidden]{display:none}
+/* Opens on selection, so it makes room for a side panel already open rather than covering it. */
+.stage:has(>.ai-panel:not(.props-panel):not([hidden]))>.props-panel{right:var(--bpmnkit-ds-panel-width)}
 .ai-head{display:flex;align-items:center;justify-content:space-between;padding:0 var(--bpmnkit-ds-sp-4);height:var(--bpmnkit-ds-topbar-height);border-bottom:1px solid var(--bpmnkit-ds-line);font-family:var(--bpmnkit-ds-font-mono);font-size:var(--bpmnkit-ds-t-mono-micro);letter-spacing:.12em;text-transform:uppercase;color:var(--bpmnkit-ds-ink-3)}
 .ai-x{border:none;background:none;font-family:var(--bpmnkit-ds-font-mono);font-size:14px;cursor:pointer;color:var(--bpmnkit-ds-ink-4);padding:0 4px;font-variant-emoji:text}
 .ai-x:hover{color:var(--bpmnkit-ds-ink)}
@@ -450,6 +452,7 @@ dialog strong{display:block;font-size:17px;margin-bottom:6px}
 @media (max-width:720px){
 	.nav-tagline{display:none}
 	.ai-panel{width:100%}
+	.stage:has(>.ai-panel:not(.props-panel):not([hidden]))>.props-panel{right:0}
 	/* The tabs and the tools do not fit on one row of a phone: the tools get a
 	   row of their own that scrolls sideways, so every action stays reachable. */
 	.ed-topbar{flex-wrap:wrap;height:auto}
@@ -837,6 +840,7 @@ export function sharePage(
 		<div id="historyBody" class="ai-body"></div>
 		<footer class="ai-foot"><span id="historyBound"></span></footer>
 	</aside>
+	<aside id="propsPanel" class="ai-panel props-panel" aria-label="Properties" hidden></aside>
 	<a class="ed-github" href="https://github.com/bpmnkit/monorepo" target="_blank" rel="noopener"><img class="logo" src="${FAVICON}" alt="">GitHub</a>
 	${
 		aiEnabled

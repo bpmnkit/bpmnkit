@@ -25,6 +25,7 @@ import {
 	type ProcessTextProblem,
 	TRIGGERS,
 	edgeLabel,
+	splitFeel,
 	tokenizePath,
 } from "./process-text.js"
 
@@ -77,6 +78,10 @@ export interface DeltaNode {
 	on?: string
 	/** Zeebe job type, from `job=`. */
 	jobType?: string
+	/** A script task's FEEL expression, with its leading `=`, from `feel=`. */
+	script?: string
+	/** The variable a script task's or a job's result goes to, from `result=`. */
+	resultVariable?: string
 	/** `nonint`: a non-interrupting boundary or start event. */
 	interrupting?: false
 	line: number
@@ -144,10 +149,17 @@ function readSpec(
 		}
 	}
 
-	for (const attr of attrs.split(/[\s,|]+/).filter(Boolean)) {
+	const { plain, feel } = splitFeel(attrs)
+	if (feel !== undefined) {
+		// A step that evaluates FEEL is a script task
+		if (node.type === undefined || node.type === "task") node.type = "scriptTask"
+		node.script = feel
+	}
+	for (const attr of plain.split(/[\s,|]+/).filter(Boolean)) {
 		const [key, value] = attr.split("=", 2)
 		if (key === "on" && value) node.on = value
 		else if (key === "job" && value) node.jobType = value
+		else if (key === "result" && value) node.resultVariable = value
 		else if (key === "nonint" && value === undefined) node.interrupting = false
 		else problems.push({ line, message: `unknown attribute "${attr}" on "${id}"; ignored` })
 	}

@@ -22,7 +22,7 @@
  * panels with separate labels. A merged list would quietly imply the local ones
  * are shared. They are not.
  */
-import type { ViewportState } from "@bpmnkit/canvas"
+import type { CanvasPlugin, ViewportState } from "@bpmnkit/canvas"
 import { Bpmn, type BpmnDefinitions } from "@bpmnkit/core"
 import {
 	AVAILABLE_LOCALES,
@@ -51,6 +51,8 @@ export interface EditSessionOptions {
 	filename: string
 	/** Sends one edit to the room. */
 	sendOp(op: EditorOp): void
+	/** Holds the selected element's properties; shown while one element is selected. */
+	propertiesPanel?: HTMLElement
 	/** The editor's language, from {@link loadEditorLocale}. English when absent. */
 	translate?: Translate
 }
@@ -74,6 +76,12 @@ export interface EditSession {
 }
 
 export function startEditSession(options: EditSessionOptions): EditSession {
+	const propertiesPanel = options.propertiesPanel
+	// Called only once the panel's chunk has arrived, long after `editor` is built.
+	const properties = propertiesPanel
+		? [deferredProperties(propertiesPanel, (): BpmnEditor => editor, options.translate)]
+		: []
+
 	const editor = new BpmnEditor({
 		container: options.container,
 		xml: options.xml,
@@ -84,6 +92,7 @@ export function startEditSession(options: EditSessionOptions): EditSession {
 		// re-frame the diagram a frame after `setViewport` placed it.
 		fit: "none",
 		translate: options.translate,
+		plugins: properties,
 	})
 	editor.setViewport(options.viewport)
 	// The palette, the toolbar and the undo buttons. Only a writer ever gets
@@ -174,6 +183,43 @@ export function startEditSession(options: EditSessionOptions): EditSession {
 			writeCheckpoint()
 			panel.el.remove()
 			editor.destroy()
+			if (propertiesPanel) propertiesPanel.hidden = true
+		},
+	}
+}
+
+/**
+ * The properties panel, installed once its chunk arrives. The editor takes its
+ * plugins when it is built, so this stands in for them and passes the canvas
+ * API on; a selection made before then shows on the next one.
+ */
+function deferredProperties(
+	container: HTMLElement,
+	editor: () => BpmnEditor,
+	translate: Translate | undefined,
+): CanvasPlugin {
+	let installed: CanvasPlugin[] = []
+	let gone = false
+	return {
+		name: "drop-properties",
+		install(api) {
+			import("./properties.js")
+				.then((mod) => {
+					if (gone) return
+					installed = mod.createPropertiesPlugins({
+						getDefinitions: () => editor().getDefinitions(),
+						applyChange: (fn) => editor().applyChange(fn),
+						container,
+						translate,
+					})
+					for (const plugin of installed) plugin.install(api)
+				})
+				// A chunk that fails to arrive leaves the editor without the panel, nothing worse.
+				.catch(() => {})
+		},
+		uninstall() {
+			gone = true
+			for (const plugin of installed) plugin.uninstall?.()
 		},
 	}
 }

@@ -52,6 +52,24 @@ describe("draftGaps", () => {
 		).toEqual(["each"])
 	})
 
+	it("asks for FEEL where a step that computes from process data has none", () => {
+		const request =
+			"read github issues of a repo via api, then calculate the count of open issues, and post the number to a slack channel"
+		const draft = [
+			"# GitHub issue counter",
+			"start[start Start] > read[service Read github issues of a repo via api] > calc[task Calculate count of open issues] > post[service Post the number to a slack channel] > done[end Done]",
+			"err[boundary:error API error | on=read] > handle[task Handle failure] > fail[end API error]",
+		].join("\n")
+		const gaps = draftGaps(request, draft)
+		expect(gaps.map((g) => g.kind)).toEqual(["feel"])
+		expect(gaps[0]?.change).toContain('"Calculate count of open issues"')
+		const scripted = draft.replace(
+			"calc[task Calculate count of open issues]",
+			'calc[script Calculate count of open issues | result=openIssues feel=count(issues[state = "open"])]',
+		)
+		expect(draftGaps(request, scripted)).toEqual([])
+	})
+
 	it("finds nothing in a draft that has what its request names", () => {
 		const request =
 			"Fulfill an order by picking the items, packing the box, and printing the shipping label all at the same time, then dispatch the package."

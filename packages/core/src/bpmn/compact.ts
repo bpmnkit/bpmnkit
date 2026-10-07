@@ -56,8 +56,14 @@ export interface CompactElement {
 	/** Linked decision ID (businessRuleTask: zeebe:calledDecision.decisionId) */
 	decisionId?: string
 	/**
+	 * The FEEL expression a script task evaluates (`zeebe:script`), with its leading
+	 * `=`. Its value goes to {@link resultVariable}.
+	 */
+	script?: string
+	/**
 	 * Primary output variable.
 	 * - For businessRuleTask: stored in zeebe:calledDecision.resultVariable.
+	 * - For a scriptTask with {@link script}: stored in zeebe:script.resultVariable.
 	 * - For a Camunda connector job type (`io.camunda:…`): stored as the `resultVariable`
 	 *   task header, which is where the connector runtime reads it.
 	 * - For any other serviceTask with jobType: stored as a zeebe:ioMapping output (source "= response").
@@ -217,9 +223,14 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 	if (formId) result.formId = formId
 
 	const decisionId = findAttr(ext, "zeebe:calledDecision", "decisionId")
+	const script = findAttr(ext, "zeebe:script", "expression")
 	if (decisionId) {
 		result.decisionId = decisionId
 		const rv = findAttr(ext, "zeebe:calledDecision", "resultVariable")
+		if (rv) result.resultVariable = rv
+	} else if (script) {
+		result.script = script
+		const rv = findAttr(ext, "zeebe:script", "resultVariable")
 		if (rv) result.resultVariable = rv
 	} else if (connector) {
 		if (headerResult !== undefined) result.resultVariable = headerResult
@@ -540,6 +551,13 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 				decisionId: el.decisionId,
 				resultVariable: el.resultVariable ?? "result",
 			},
+			children: [],
+		})
+	}
+	if (el.script) {
+		ext.push({
+			name: "zeebe:script",
+			attributes: { expression: el.script, resultVariable: el.resultVariable ?? "result" },
 			children: [],
 		})
 	}

@@ -502,6 +502,79 @@ describe("parseProcessText", () => {
 		expect(process?.flows.find((f) => f.from === "fail")?.to).toBe("notify_join")
 	})
 
+	describe("a boundary leads only to its handling; the work goes on from the task", () => {
+		const from = (text: string, id: string) =>
+			flows(text)
+				.filter((f) => f.from === id)
+				.map((f) => f.to)
+
+		it("moves the work written through the boundary onto the task", () => {
+			// The drop draft for "read github issues …, count the open ones, post the number to slack".
+			const text = [
+				"start[start Start] > read[service Read github issues] > err[boundary:error API error | on=read] > handle[task Handle failure] > fail[end API error]",
+				"err > calc[task Calculate count of open issues] > post[service Post the number to slack] > done[end Done]",
+			].join("\n")
+			const { fixes } = parseProcessText(text)
+			expect(from(text, "read")).toEqual(["calc"])
+			expect(from(text, "err")).toEqual(["handle"])
+			expect(elements(text).some((e) => e.type === "parallelGateway")).toBe(false)
+			expect(fixes).toContain(`moved err > calc onto "read": a boundary leads only to its handling`)
+		})
+
+		it("keeps the way out named for the handling, written second", () => {
+			const text = [
+				"start[start Start] > read[service Read issues]",
+				"err[boundary:error API error | on=read] > calc[task Count issues] > done[end Done]",
+				"err > alert[send Alert the team] > failed[end Failed]",
+			].join("\n")
+			expect(from(text, "read")).toEqual(["calc"])
+			expect(from(text, "err")).toEqual(["alert"])
+		})
+
+		it("replaces the bare end the task led to", () => {
+			const text = [
+				"start[start Start] > read[service Read issues] > completed[end]",
+				"err[boundary:error API error | on=read] > handle[task Handle failure] > failed[end Failed]",
+				"err > calc[task Count issues] > done[end Done]",
+			].join("\n")
+			expect(from(text, "read")).toEqual(["calc"])
+			expect(elements(text).map((e) => e.id)).not.toContain("completed")
+		})
+
+		it("leaves a boundary whose ways out all handle it", () => {
+			const text = [
+				"start[start Start] > pay[service Pay] > done[end Done]",
+				"err[boundary:error Payment failed | on=pay] > notify[send Notify customer] > a[end Notified]",
+				"err > log[task Log the failure] > b[end Logged]",
+			].join("\n")
+			expect(from(text, "pay")).toEqual(["done"])
+			expect(elements(text).find((e) => e.id === "err_split")?.type).toBe("parallelGateway")
+		})
+	})
+
+	it("reads a FEEL expression into a script task", () => {
+		const text =
+			'start[start Start] > calc[task Count open issues | result=openIssues feel=count(issues[state = "open"])] > done[end Done]'
+		const { diagram, problems } = parseProcessText(text)
+		expect(problems).toEqual([])
+		const calc = diagram.processes[0]?.elements.find((e) => e.id === "calc")
+		expect(calc).toMatchObject({
+			type: "scriptTask",
+			script: '= count(issues[state = "open"])',
+			resultVariable: "openIssues",
+		})
+		const xml = Bpmn.export(expand(diagram))
+		expect(xml).toContain(
+			'<zeebe:script expression="= count(issues[state = &quot;open&quot;])" resultVariable="openIssues"',
+		)
+		expect(
+			compactify(Bpmn.parse(xml)).processes[0]?.elements.find((e) => e.id === "calc"),
+		).toMatchObject({
+			script: '= count(issues[state = "open"])',
+			resultVariable: "openIssues",
+		})
+	})
+
 	it("keeps one blank start event", () => {
 		// gemma-4, golden prompt 12: a legend of the ids after the diagram.
 		const text = [

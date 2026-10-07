@@ -3,7 +3,7 @@
 A line format for a model to write a new process in. It costs about a quarter of the output
 tokens of minified compact JSON. A path is written once as `a > b > c`, a node is declared inline
 the first time it is used, and the parser adds what the model would otherwise spend tokens on.
-`PROCESS_TEXT_GUIDE` is the part of a system prompt that teaches the format (~350 tokens,
+`PROCESS_TEXT_GUIDE` is the part of a system prompt that teaches the format (~600 tokens,
 example included).
 
 ```text
@@ -25,11 +25,25 @@ Attributes after `|`:
   getting its item in the singular (`each=approvers` → `approver`);
 - `after=<duration>` sets a timer's duration, ISO 8601 or `5m`, `2 hours`, `1 day`. Without
   it, a duration in the timer's name is read ("Wait 5 minutes" → `PT5M`).
+- `result=<variable>` names the variable a task's result goes to;
+- `feel=<expression>` makes the step a script task that evaluates the FEEL expression into
+  `result=` (its id when there is none), written as `zeebe:script`. It comes last: the
+  expression takes the rest of the attributes, spaces and commas included. An expression that
+  does not parse as FEEL is kept and reported in `problems`.
+
+The guide tells the model that a step working only on process data — counting, summing,
+filtering, formatting — is such a script task, never a service task:
+`count[script Count open issues | result=openCount feel=count(issues[state = "open"])]`.
+
+A boundary leads only to the handling of what it catches. When a model writes the work that
+follows a task through its boundary instead (`err > count > post`), the parser moves those
+ways out onto the task — all but the ones named for handling (failure, error, notify, retry,
+…; the first when none is) — and drops a bare end event the task led to.
 
 An attribute written before the `|` (`late[boundary:timer on=pay]`) is read all the same.
 `after=` on an event that is not a timer makes it one, and a boundary without `on=` that one
 task is drawn into (`send > wait[boundary:timer …]`) goes on that task.
-Change scripts do not read `each=` and `after=` yet.
+Change scripts read `result=` and `feel=`, but not `each=` and `after=` yet.
 
 ```typescript
 import { expand, Bpmn, parseProcessText, PROCESS_TEXT_GUIDE } from "@bpmnkit/core";

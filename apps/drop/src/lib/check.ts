@@ -11,7 +11,7 @@ import { type CompactElement, parseProcessText } from "@bpmnkit/core"
 
 /** Something the request asks for that the draft does not have. */
 export interface DraftGap {
-	kind: "dmn" | "deadline" | "failure" | "rest" | "parallel" | "each" | "user" | "message"
+	kind: "dmn" | "deadline" | "failure" | "rest" | "parallel" | "each" | "user" | "message" | "feel"
 	/** One line of the change request that adds it. */
 	change: string
 }
@@ -22,7 +22,7 @@ interface Rule {
 	asks: RegExp
 	/** Whether the draft already has it. */
 	has: (elements: readonly CompactElement[]) => boolean
-	change: (request: string) => string
+	change: (request: string, elements: readonly CompactElement[]) => string
 }
 
 const DURATION =
@@ -33,6 +33,23 @@ const hasType = (type: CompactElement["type"]) => (elements: readonly CompactEle
 
 const errorBoundary = (elements: readonly CompactElement[]) =>
 	elements.some((e) => e.type === "boundaryEvent" && e.eventType === "error")
+
+/** A step's name that says it only works on data the process already has. */
+const COMPUTES =
+	/^(?:calculate|count|compute|sum|total|average|filter|sort|format|convert|transform|aggregate|merge|extract|parse|round|concatenate|determine|derive)\b/i
+
+/** Words that make a step a call to another system rather than a computation. */
+const CALLS = /\b(?:api|http|rest|endpoint|service|system|via)\b/i
+
+/** Steps named for a computation that are not a script task evaluating FEEL. */
+const unscripted = (elements: readonly CompactElement[]) =>
+	elements.filter(
+		(e) =>
+			(e.type === "task" || e.type === "scriptTask" || e.type === "serviceTask") &&
+			e.script === undefined &&
+			COMPUTES.test(e.name ?? "") &&
+			!CALLS.test(e.name ?? ""),
+	)
 
 const RULES: readonly Rule[] = [
 	{
@@ -100,6 +117,17 @@ const RULES: readonly Rule[] = [
 			),
 		change: () => "Wait for the message with a catch:message event before the step that needs it.",
 	},
+	{
+		kind: "feel",
+		asks: /\b(?:calculat|count|comput|sum|total|averag|filter|sort|format|convert|transform|aggregat|merg|extract|pars|round|concatenat|determin|deriv)\w*/i,
+		has: (elements) => unscripted(elements).length === 0,
+		change: (_request, elements) =>
+			`Make ${unscripted(elements)
+				.map((e) => `"${e.name}"`)
+				.join(
+					", ",
+				)} a script task that computes a FEEL expression from the process data: id[script Name | result=<variable> feel=<FEEL expression>].`,
+	},
 ]
 
 /** What `request` asks for that the line-format draft `text` has no element for. */
@@ -110,7 +138,7 @@ export function draftGaps(request: string, text: string): DraftGap[] {
 	const kinds = new Set(gaps.map((g) => g.kind))
 	return gaps
 		.filter((rule) => !(rule.kind === "rest" && kinds.has("failure")))
-		.map((rule) => ({ kind: rule.kind, change: rule.change(request) }))
+		.map((rule) => ({ kind: rule.kind, change: rule.change(request, elements) }))
 }
 
 /** The one change request that fills `gaps`, or `undefined` when there are none. */

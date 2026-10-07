@@ -140,6 +140,25 @@ describe("applyProcessDelta", () => {
 		expectSound(next)
 	})
 
+	it("adds a script task that computes FEEL, and changes an existing one's expression", () => {
+		const defs = drawn(LOAN)
+		const added = apply(
+			defs,
+			"pay > fee[task Compute fee | result=fee feel=amount * 0.01] > done",
+		).definitions
+		const script = (id: string, d: BpmnDefinitions) =>
+			element(d, id)?.extensionElements.find((e) => e.name === "zeebe:script")?.attributes
+		expect(element(added, "fee")?.type).toBe("scriptTask")
+		expect(script("fee", added)).toEqual({ expression: "= amount * 0.01", resultVariable: "fee" })
+		// The writer gives it back to the model as it is, and a change to it lands
+		expect(writeProcessText(added).text).toContain(
+			"fee[script Compute fee | result=fee feel=amount * 0.01]",
+		)
+		const changed = apply(added, "fee[script Compute fee | feel=amount * 0.02]").definitions
+		expect(script("fee", changed)).toEqual({ expression: "= amount * 0.02", resultVariable: "fee" })
+		expectSound(changed)
+	})
+
 	it("resizes a retyped shape about its centre", () => {
 		const defs = drawn(LOAN)
 		const next = apply(defs, "review[xor Complete?]").definitions
