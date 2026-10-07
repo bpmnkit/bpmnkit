@@ -1,5 +1,14 @@
 # @bpmnkit/learn
 
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [f11e88f]
+- Updated dependencies [f11e88f]
+  - @bpmnkit/core@1.4.0
+  - @bpmnkit/editor@1.4.0
+
 ## 0.1.5
 
 ### Patch Changes
