@@ -521,7 +521,7 @@ ${script}
 
 function pageFooter(): string {
 	return `<footer class="foot"><div class="foot-inner">
-<a href="/drop/terms">Terms</a><a href="/drop/privacy">Privacy</a><a href="https://github.com/bpmnkit/monorepo">GitHub</a>
+<a href="/drop/terms">Terms</a><a href="/drop/privacy">Privacy</a><a href="https://github.com/bpmnkit/bpmnkit">GitHub</a>
 <span class="spacer"></span>
 <span>MIT-licensed &middot; bpmnkit.com</span>
 </div></footer>`
@@ -841,7 +841,7 @@ export function sharePage(
 		<footer class="ai-foot"><span id="historyBound"></span></footer>
 	</aside>
 	<aside id="propsPanel" class="ai-panel props-panel" aria-label="Properties" hidden></aside>
-	<a class="ed-github" href="https://github.com/bpmnkit/monorepo" target="_blank" rel="noopener"><img class="logo" src="${FAVICON}" alt="">GitHub</a>
+	<a class="ed-github" href="https://github.com/bpmnkit/bpmnkit" target="_blank" rel="noopener"><img class="logo" src="${FAVICON}" alt="">GitHub</a>
 	${
 		aiEnabled
 			? `<aside id="aiPanel" class="ai-panel" hidden>

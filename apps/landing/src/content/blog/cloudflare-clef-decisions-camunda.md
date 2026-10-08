@@ -185,7 +185,7 @@ The incident message on the service task usually tells you the cause.
 
 The last three rows describe how the template builds the URL. We have not seen those
 failures on a cluster yet. If you get one, please
-[open an issue](https://github.com/bpmnkit/monorepo/issues) with the incident message.
+[open an issue](https://github.com/bpmnkit/bpmnkit/issues) with the incident message.
 
 ## Next steps
 
