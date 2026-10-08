@@ -17,7 +17,9 @@ import { runBpmnlint } from "../../src/node/bpmnlint.js"
 
 const ROOT = fileURLToPath(new URL("../../../../", import.meta.url))
 const CORE = fileURLToPath(new URL("../../", import.meta.url))
-const SKIP = new Set(["node_modules", "dist", ".git", ".turbo", ".astro"])
+// `target` is Cargo's build directory: `cargo test` for apps/reebe runs in parallel
+// under turbo and creates and removes directories there while this walk reads it.
+const SKIP = new Set(["node_modules", "dist", ".git", ".turbo", ".astro", "target"])
 
 function bpmnFiles(dir: string): string[] {
 	return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
