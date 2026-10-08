@@ -32,7 +32,7 @@ describe("link events (linkName)", () => {
 				.endEvent("e")
 				.build(),
 		)
-		expect(xml.match(/<bpmn:linkEventDefinition [^>]*name="L"/g)).toHaveLength(2)
+		expect(xml.match(/<bpmn:linkEventDefinition [^>]*name="L"/g) ?? []).toHaveLength(2)
 	})
 
 	it("does not chain from a link throw or into a link catch", () => {
