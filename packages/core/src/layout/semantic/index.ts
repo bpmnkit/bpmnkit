@@ -207,8 +207,10 @@ function shift(b: Bounds, dx: number, dy: number): Bounds {
  * sit on the outward side, outside the host, in the gaps between the stems of
  * the events docked on that border: each gap holds at most one label, and the
  * gaps beyond the first and last stem are unbounded. A label takes the gap on
- * its left if it fits there, else the one on its right; when neither fits it
- * takes the wider free one and wraps to its width, growing away from the host.
+ * its left if it fits there, else the one on its right. When neither fits, it
+ * wraps into the wider free gap if that still holds its longest word at a
+ * readable width; otherwise it goes beyond the outermost stem on its nearer
+ * side, a row farther from the host than the labels already there.
  */
 function boundaryLabels(graph: SemanticGraph, bounds: Map<string, Bounds>): Map<string, Bounds> {
 	const labels = new Map<string, Bounds>()
@@ -224,6 +226,19 @@ function boundaryLabels(graph: SemanticGraph, bounds: Map<string, Bounds>): Map<
 				.filter(({ b }) => b.y + b.height / 2 <= host.y + 1 === onTop)
 				.sort((p, q) => p.b.x - q.b.x)
 			const stems = side.map(({ b }) => b.x + b.width / 2)
+			const first = stems[0] ?? 0
+			const last = stems[stems.length - 1] ?? 0
+			/** Labels already beyond the first / last stem, each a row of its own. */
+			const outer = { left: 0, right: 0 }
+			const place = (b: Bounds, x: number, width: number, height: number, row = 0): Bounds => {
+				const offset = LABEL_OFFSET + row * (LABEL_HEIGHT + LABEL_OFFSET)
+				return {
+					x,
+					y: onTop ? b.y - offset - height : b.y + b.height + offset,
+					width,
+					height,
+				}
+			}
 			let leftGapTaken = false
 			side.forEach(({ event, b }, i) => {
 				const stem = stems[i] as number
@@ -237,24 +252,43 @@ function boundaryLabels(graph: SemanticGraph, bounds: Map<string, Bounds>): Map<
 				const leftRoom = leftGapTaken ? 0 : stem - previous - 2 * LABEL_OFFSET
 				const rightRoom = next - stem - 2 * LABEL_OFFSET
 				const full = Math.max(name.length * LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH)
-				const onRight = leftRoom >= full ? false : rightRoom >= full || rightRoom > leftRoom
-				// Events docked closer than a character apart leave no room; keep one.
-				const width = Math.max(Math.min(full, onRight ? rightRoom : leftRoom), LABEL_CHAR_WIDTH)
-				const height = wrappedLines(name, width) * LABEL_HEIGHT
-				labels.set(event.id, {
-					x: onRight ? stem + LABEL_OFFSET : stem - LABEL_OFFSET - width,
-					y: onTop ? b.y - LABEL_OFFSET - height : b.y + b.height + LABEL_OFFSET,
-					width,
-					height,
-				})
-				leftGapTaken = onRight
+				leftGapTaken = false
+				if (leftRoom >= full) {
+					if (i === 0) outer.left++
+					labels.set(event.id, place(b, stem - LABEL_OFFSET - full, full, LABEL_HEIGHT))
+					return
+				}
+				if (rightRoom >= full) {
+					if (i === side.length - 1) outer.right++
+					labels.set(event.id, place(b, stem + LABEL_OFFSET, full, LABEL_HEIGHT))
+					leftGapTaken = true
+					return
+				}
+				const onRight = rightRoom > leftRoom
+				const room = onRight ? rightRoom : leftRoom
+				const longestWord = Math.max(...name.split(/\s+/).map((w) => w.length * LABEL_CHAR_WIDTH))
+				if (room >= Math.max(longestWord, LABEL_MIN_WIDTH)) {
+					const height = wrappedLines(name, room) * LABEL_HEIGHT
+					const x = onRight ? stem + LABEL_OFFSET : stem - LABEL_OFFSET - room
+					labels.set(event.id, place(b, x, room, height))
+					leftGapTaken = onRight
+					return
+				}
+				// No gap here is readable: beyond the outermost stem nothing crosses it.
+				const toLeft = i < side.length / 2
+				const row = toLeft ? outer.left++ : outer.right++
+				const x = toLeft ? first - LABEL_OFFSET - full : last + LABEL_OFFSET
+				labels.set(event.id, place(b, x, full, LABEL_HEIGHT, row))
 			})
 		}
 	}
 	return labels
 }
 
-/** Lines `text` takes when wrapped at word boundaries to `width`, at the label's character width. */
+/**
+ * Lines `text` takes when wrapped at word boundaries to `width`. Callers keep
+ * `width` at least as wide as the longest word, as the renderers need.
+ */
 function wrappedLines(text: string, width: number): number {
 	const perLine = Math.max(1, Math.floor(width / LABEL_CHAR_WIDTH))
 	let lines = 1
@@ -265,10 +299,8 @@ function wrappedLines(text: string, width: number): number {
 			used = need
 			continue
 		}
-		if (used > 0) lines++
-		// A word longer than a line breaks across as many lines as it needs.
-		lines += Math.ceil(word.length / perLine) - 1
-		used = word.length % perLine || perLine
+		lines++
+		used = word.length
 	}
 	return lines
 }

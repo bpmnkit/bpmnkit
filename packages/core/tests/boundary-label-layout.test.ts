@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import type { BpmnDefinitions, BpmnDiShape } from "../src/bpmn/bpmn-model.js"
+import { exportSvg } from "../src/bpmn/svg.js"
 import { Bpmn, resetIdCounter } from "../src/index.js"
 import type { Bounds, Waypoint } from "../src/layout/types.js"
 
@@ -170,6 +171,63 @@ describe("boundary event labels and docking (#222)", () => {
 		const wrapped = ids.map((id) => label(defs, id)).filter((l) => l.height > 14)
 		expect(wrapped.length).toBeGreaterThan(0)
 		expect(crossings(defs, ["Flow_b1_x1", "Flow_b2_x2", "Flow_b3_x3"])).toEqual([])
+	})
+
+	it("the SVG export draws every label line inside its bounds", () => {
+		const names = ["Payment deadline hit", "Reconciliation pending", "Upstream service down"]
+		const opts = (name: string, top: boolean) =>
+			top ? { name, escalationCode: name } : { name, errorCode: name }
+		// Three events on a titled container (the middle label wraps into its gap) and
+		// on a 100 px task (no gap is readable, so it goes beyond the outer stem),
+		// docked on the bottom and, for the task, on the top as well.
+		const cases = [
+			{ host: "titled", top: false },
+			{ host: "task", top: false },
+			{ host: "task", top: true },
+		]
+		for (const { host, top } of cases) {
+			let b = Bpmn.createProcess("p").startEvent("s")
+			b =
+				host === "task"
+					? b.serviceTask("h", { name: "Work", taskType: "w" })
+					: b.subProcess(
+							"h",
+							(c) => {
+								c.startEvent("ss").serviceTask("A", { name: "A", taskType: "x" }).endEvent("se")
+							},
+							{ name: "Titled" },
+						)
+			names.forEach((name, i) => {
+				b = b.withBoundary(`b${i + 1}`, opts(name, top), (h) => h.endEvent(`x${i + 1}`))
+			})
+			const defs = b.endEvent("e").withAutoLayout().build()
+			const where = `${host}, top: ${top}`
+
+			const svg = exportSvg(defs)
+			const texts = [...svg.matchAll(/<text [^>]*x="([^"]+)" y="([^"]+)">([^<]*)<\/text>/g)].map(
+				(m) => ({ x: Number(m[1]), y: Number(m[2]), text: m[3] as string }),
+			)
+			const ids = ["b1", "b2", "b3"]
+			for (const id of ids) {
+				const lb = label(defs, id)
+				const lines = texts.filter((t) => Math.abs(t.x - (lb.x + lb.width / 2)) < 0.01)
+				expect(lines.map((l) => l.text).join(" "), `${id} (${where})`).toBe(names[ids.indexOf(id)])
+				for (const line of lines) {
+					// Centred text at the export's 6.5 px glyph estimate; lines are 14 px tall.
+					expect(line.text.length * 6.5, `${id}: "${line.text}"`).toBeLessThanOrEqual(lb.width)
+					expect(line.y - 7, `${id}: "${line.text}"`).toBeGreaterThanOrEqual(lb.y - 0.01)
+					expect(line.y + 7, `${id}: "${line.text}"`).toBeLessThanOrEqual(lb.y + lb.height + 0.01)
+				}
+				expect(edgesHitting(defs, lb), `${id} (${where})`).toEqual([])
+				expect(rectsOverlap(lb, shape(defs, "h").bounds), `${id} (${where})`).toBe(false)
+			}
+			for (let i = 0; i < ids.length; i++) {
+				for (let j = i + 1; j < ids.length; j++) {
+					const [p, q] = [ids[i] as string, ids[j] as string]
+					expect(rectsOverlap(label(defs, p), label(defs, q)), `${p}/${q} (${where})`).toBe(false)
+				}
+			}
+		}
 	})
 
 	it("labels of two events on a narrow task stay clear of both stems", () => {
