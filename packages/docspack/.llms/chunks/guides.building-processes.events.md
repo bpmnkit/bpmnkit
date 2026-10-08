@@ -36,6 +36,17 @@
 })
 ```
 
+Link events are a "go-to" inside one process or sub-process: a link throw continues at the link
+catch with the same name. The throw has no outgoing flow and the catch no incoming one, so the
+builder stops chaining at the throw and starts a new chain at the catch:
+
+```typescript
+.serviceTask("check", { name: "Check", taskType: "check" })
+.intermediateThrowEvent("to-retry", { linkName: "Retry" })    // nothing chains from here
+.intermediateCatchEvent("from-retry", { linkName: "Retry" })  // starts a new chain
+.serviceTask("retry", { name: "Retry", taskType: "retry" })
+```
+
 ### End Events
 
 ```typescript

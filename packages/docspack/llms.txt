@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.1.0. 379 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.1.1. 379 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -157,7 +157,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [bpmnlint Compatibility — Camunda version compatibility — What is covered](.llms/chunks/guides.bpmnlint.camunda-version-compatibility-what-is-covered.md) — 504 tokens
 - [bpmnlint Compatibility — From your own code](.llms/chunks/guides.bpmnlint.from-your-own-code.md) — 233 tokens
 - [Building Processes — Service Tasks](.llms/chunks/guides.building-processes.service-tasks.md) — 202 tokens
-- [Building Processes — Events](.llms/chunks/guides.building-processes.events.md) — 244 tokens
+- [Building Processes — Events](.llms/chunks/guides.building-processes.events.md) — 378 tokens
 - [Building Processes — Sub-Processes](.llms/chunks/guides.building-processes.sub-processes.md) — 181 tokens
 - [Building Processes — Boundary Events](.llms/chunks/guides.building-processes.boundary-events.md) — 294 tokens
 - [Building Processes — Call Activities](.llms/chunks/guides.building-processes.call-activities.md) — 216 tokens
