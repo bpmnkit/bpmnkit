@@ -141,7 +141,7 @@ describe("boundary event labels and docking (#222)", () => {
 		expect(edgesHitting(defs, lb)).toEqual([])
 	})
 
-	it("wraps a label that fits in neither gap instead of crossing a stem or a label", () => {
+	it("moves a label that fits in neither gap beyond the outermost stem", () => {
 		// Three events 50 px apart on a 200 px container, each name 140 px wide.
 		const names = ["Payment deadline hit", "Customer cancelled it", "Upstream service down"]
 		const defs = Bpmn.createProcess("p")
@@ -167,10 +167,54 @@ describe("boundary event labels and docking (#222)", () => {
 				expect(rectsOverlap(label(defs, a), label(defs, b)), `${a} / ${b}`).toBe(false)
 			}
 		}
-		// The middle label had no 140 px gap on either side, so it wrapped.
-		const wrapped = ids.map((id) => label(defs, id)).filter((l) => l.height > 14)
-		expect(wrapped.length).toBeGreaterThan(0)
+		// The middle label had no 140 px gap on either side: it sits one row out,
+		// past the outermost stem, on a single line.
+		const stems = ids.map((id) => {
+			const b = shape(defs, id).bounds
+			return b.x + b.width / 2
+		})
+		const middle = ids
+			.map((id) => label(defs, id))
+			.find((l) => l.y > Math.min(...ids.map((id) => label(defs, id).y)))
+		expect(middle).toBeDefined()
+		if (!middle) return
+		expect(middle.height).toBe(14)
+		const outside = middle.x + middle.width <= Math.min(...stems) || middle.x >= Math.max(...stems)
+		expect(outside).toBe(true)
 		expect(crossings(defs, ["Flow_b1_x1", "Flow_b2_x2", "Flow_b3_x3"])).toEqual([])
+	})
+
+	it("never lets a long many-word label reach the handler routes", () => {
+		// Before, a name like this wrapped into a 42 px gap and grew down into the routes.
+		const long = "we waited for the payment and then for the bank and then for the clerk"
+		const defs = Bpmn.createProcess("p")
+			.startEvent("s")
+			.subProcess(
+				"sub",
+				(c) => {
+					c.startEvent("ss").serviceTask("A", { name: "A", taskType: "x" }).endEvent("se")
+				},
+				{ name: "T" },
+			)
+			.withBoundary("b1", { name: "Timer", timerDuration: "PT1H" }, (h) => h.endEvent("x1"))
+			.withBoundary("b2", { name: long, errorCode: "L" }, (h) => h.endEvent("x2"))
+			.withBoundary("b3", { name: "Failed", errorCode: "F" }, (h) => h.endEvent("x3"))
+			.withBoundary("b4", { name: "Cancel", errorCode: "C" }, (h) => h.endEvent("x4"))
+			.endEvent("e")
+			.withAutoLayout()
+			.build()
+		const ids = ["b1", "b2", "b3", "b4"]
+		for (const id of ids) {
+			const lb = label(defs, id)
+			expect(lb.height, id).toBe(14)
+			expect(edgesHitting(defs, lb), id).toEqual([])
+		}
+		for (let i = 0; i < ids.length; i++) {
+			for (let j = i + 1; j < ids.length; j++) {
+				const [a, b] = [ids[i] as string, ids[j] as string]
+				expect(rectsOverlap(label(defs, a), label(defs, b)), `${a} / ${b}`).toBe(false)
+			}
+		}
 	})
 
 	it("the SVG export draws every label line inside its bounds", () => {

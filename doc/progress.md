@@ -9,15 +9,14 @@
 - Boundary-event labels sit beside the exit stem instead of centred on it — on the outward side,
   outside the host, in the gaps between the stems of the events on that border, one label per
   gap. A label takes the gap on its left if it fits, else the one on its right; when neither
-  fits it wraps into the wider free gap if that still holds its longest word, and otherwise goes
-  beyond the outermost stem on its nearer side, one row farther out. No label is crossed by its
-  own or a neighbour's exit edge.
-- SVG export (`exportSvg`) starts a wrapped external label at the top of its DI bounds, as the
-  canvas does, instead of at their centre, and wraps it to the full box width the layout sized.
+  fits it goes beyond the outermost stem on its nearer side, one row farther out. Labels stay on
+  one line, so none reaches a route's turn. No label is crossed by its own or a neighbour's exit
+  edge.
 - Events sharing a border are ordered by how many bands away their handler sits, farthest
   outermost, so the handler routes nest instead of crossing each other's stems. Two existing
   tests asserted declaration order for two timers whose second handler sits lower, a layout
   where the first route crossed the second stem; they now assert the nested order.
+
 ## 2026-10-08 — Pin wasm-pack in CI
 
 - Every workflow that builds `reebe-wasm` now installs wasm-pack `v0.15.0` instead of `latest`.

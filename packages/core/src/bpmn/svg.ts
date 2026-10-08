@@ -248,18 +248,7 @@ export function exportSvg(defs: BpmnDefinitions, options?: SvgExportOptions): st
 				height: 20,
 			}
 			labelParts.push(
-				// Wrapped lines start at the top of the label box, as on the canvas.
-				labelSvg(
-					el.name,
-					lb.x + lb.width / 2,
-					lb.y + lb.height / 2,
-					// The full box: layout sizes it at a wider glyph estimate than this one.
-					lb.width,
-					t,
-					true,
-					font,
-					lb.y,
-				),
+				labelSvg(el.name, lb.x + lb.width / 2, lb.y + lb.height / 2, lb.width - 4, t, true, font),
 			)
 		}
 	}
@@ -369,9 +358,8 @@ function textStyle(t: Theme, font?: LabelFontCss): string {
 
 /**
  * Generates SVG text element(s) for a label centred at (cx, cy).
- * topAlign=true makes multi-line text flow downward from `top` (default cy)
- * rather than being centred around cy — prevents long labels from overlapping
- * the shape above.
+ * topAlign=true makes multi-line text flow downward from cy rather than
+ * being centred around it — prevents long labels from overlapping the shape above.
  */
 function labelSvg(
 	text: string,
@@ -381,7 +369,6 @@ function labelSvg(
 	t: Theme,
 	topAlign = false,
 	font?: LabelFontCss,
-	top = cy,
 ): string {
 	const lines = wrapText(text, maxWidth, charPx(font))
 	const lineH = font ? (font.fontSize * DEFAULT_LINE_H) / DEFAULT_SIZE : DEFAULT_LINE_H
@@ -390,7 +377,7 @@ function labelSvg(
 		return `<text style="${style}" x="${cx}" y="${cy}">${esc(lines[0] ?? text)}</text>`
 	}
 	const totalH = lines.length * lineH
-	const startY = topAlign ? top + lineH / 2 : cy - totalH / 2 + lineH / 2
+	const startY = topAlign ? cy + lineH / 2 : cy - totalH / 2 + lineH / 2
 	return lines
 		.map((l, i) => `<text style="${style}" x="${cx}" y="${startY + i * lineH}">${esc(l)}</text>`)
 		.join("")
