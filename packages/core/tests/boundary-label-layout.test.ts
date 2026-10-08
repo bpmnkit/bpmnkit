@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest"
 import type { BpmnDefinitions, BpmnDiShape } from "../src/bpmn/bpmn-model.js"
 import { exportSvg } from "../src/bpmn/svg.js"
 import { Bpmn, resetIdCounter } from "../src/index.js"
+import { layoutProcess } from "../src/layout/layout-engine.js"
 import type { Bounds, Waypoint } from "../src/layout/types.js"
 
 function plane(defs: BpmnDefinitions) {
@@ -296,6 +297,49 @@ describe("boundary event labels and docking (#222)", () => {
 					expect(rectsOverlap(label(defs, p), label(defs, q)), `${p}/${q} (${where})`).toBe(false)
 				}
 			}
+		}
+	})
+
+	it("a bottom-docked event leaves downward even when lanes put its handler above", () => {
+		const defs = Bpmn.createProcess("p")
+			.startEvent("s")
+			.subProcess(
+				"sub",
+				(c) => {
+					c.startEvent("ss").serviceTask("A", { name: "A", taskType: "x" }).endEvent("se")
+				},
+				{ name: "Titled" },
+			)
+			.withBoundary("esc", escalated, (h) => h.endEvent("handled"))
+			.endEvent("e")
+			.build()
+		const process = defs.processes[0]
+		expect(process).toBeDefined()
+		if (!process) return
+		// The handler sits in the upper lane, its titled host in the lower one.
+		process.laneSet = {
+			lanes: [
+				{ id: "up", flowNodeRefs: ["handled"], unknownAttributes: {} },
+				{ id: "down", flowNodeRefs: ["s", "sub", "esc", "e"], unknownAttributes: {} },
+			],
+		}
+		const result = layoutProcess(process)
+		const byId = new Map(result.nodes.map((n) => [n.id, n.bounds]))
+		const host = byId.get("sub") as Bounds
+		const esc = byId.get("esc") as Bounds
+		const handled = byId.get("handled") as Bounds
+		expect(esc.y + esc.height / 2).toBe(host.y + host.height)
+		expect(handled.y + handled.height).toBeLessThan(host.y)
+
+		const edge = result.edges.find((e) => e.sourceRef === "esc")
+		expect(edge).toBeDefined()
+		const wps = edge?.waypoints ?? []
+		// Leaves through the event's outward (bottom) side, never back into its host.
+		expect(wps[0]?.y).toBe(esc.y + esc.height)
+		const inner = { x: host.x + 1, y: host.y + 1, width: host.width - 2, height: host.height - 2 }
+		for (let i = 0; i + 1 < wps.length; i++) {
+			const [p, q] = [wps[i] as Waypoint, wps[i + 1] as Waypoint]
+			expect(segmentHits(p, q, inner), `segment ${i}`).toBe(false)
 		}
 	})
 

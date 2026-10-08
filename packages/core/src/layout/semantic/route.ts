@@ -137,7 +137,13 @@ export function routeFlows(
 		const direct = isBackEdge
 			? []
 			: fromBoundary
-				? fromBoundaryCandidates(ctx, source, target, targetRank)
+				? fromBoundaryCandidates(
+						ctx,
+						source,
+						bounds.get(hostOf(graph, flow.sourceRef)),
+						target,
+						targetRank,
+					)
 				: forwardCandidates(ctx, source, target, sourceRank, targetRank)
 
 		const clear = pick(direct, ctx, flow.sourceRef, flow.targetRef)
@@ -427,20 +433,29 @@ function forwardCandidates(
 	return candidates
 }
 
-/** A boundary event leaves through its outward side, never into its host. */
+/**
+ * A boundary event leaves through its outward side, never into its host.
+ *
+ * The side is where the event is docked, not where the target lies: lanes can
+ * put a handler above a host whose event sits on its bottom border. A target
+ * behind the docked side is reached around the stem, not straight at it.
+ */
 function fromBoundaryCandidates(
 	ctx: RouteContext,
 	source: Bounds,
+	host: Bounds | undefined,
 	target: Bounds,
 	targetRank: number | undefined,
 ): Waypoint[][] {
 	const from = centre(source)
 	const to = centre(target)
-	const down = to.y >= from.y
+	// Same side test as searchRoute and the label placement.
+	const down = host === undefined ? to.y >= from.y : from.y > host.y + 1
 	const exitY = down ? source.y + source.height : source.y
 	const stem = down ? exitY + BOUNDARY_STEM : exitY - BOUNDARY_STEM
+	const ahead = down ? to.y >= exitY : to.y <= exitY
 
-	if (Math.abs(from.x - to.x) < 1) {
+	if (ahead && Math.abs(from.x - to.x) < 1) {
 		return [
 			[
 				{ x: from.x, y: exitY },
@@ -451,19 +466,21 @@ function fromBoundaryCandidates(
 
 	if (target.x >= from.x) {
 		const gutter = ctx.gutterX.get(targetRank ?? 0) ?? target.x - H_GAP / 2
+		const around = [
+			{ x: from.x, y: exitY },
+			{ x: from.x, y: stem },
+			{ x: gutter, y: stem },
+			{ x: gutter, y: to.y },
+			{ x: target.x, y: to.y },
+		]
+		if (!ahead) return [around]
 		return [
 			[
 				{ x: from.x, y: exitY },
 				{ x: from.x, y: to.y },
 				{ x: target.x, y: to.y },
 			],
-			[
-				{ x: from.x, y: exitY },
-				{ x: from.x, y: stem },
-				{ x: gutter, y: stem },
-				{ x: gutter, y: to.y },
-				{ x: target.x, y: to.y },
-			],
+			around,
 		]
 	}
 

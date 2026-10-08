@@ -12,6 +12,10 @@
   fits it goes beyond the outermost stem on its nearer side, past the labels already there.
   Every label stays on one line in the row next to the host, short of the turn a route takes
   past a stem, so none is crossed by its own or a neighbour's exit edge.
+- A boundary event's route leaves through the side it is docked on, not the side its target lies
+  on: lanes can put a handler above a host whose event sits on the bottom border, and the route
+  used to leave through the event's top, back into the host. A target behind the docked side is
+  reached around the stem.
 - Events sharing a border are ordered by how many bands away their handler sits, farthest
   outermost, so the handler routes nest instead of crossing each other's stems. Two existing
   tests asserted declaration order for two timers whose second handler sits lower, a layout
