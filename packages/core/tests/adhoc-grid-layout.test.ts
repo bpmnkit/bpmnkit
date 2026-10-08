@@ -102,6 +102,29 @@ describe("unconnected children of an expanded sub-process (#221)", () => {
 		expectInsideAndApart(bounds, ["A", "B", "C", "first", "second"])
 	})
 
+	it("sizes grid columns for the labels of events and gateways", () => {
+		// 22-character names: each label (154 px) is wider than the 150 px shape pitch.
+		const ids = ["G1", "G2", "G3", "G4"]
+		const defs = layoutAdHoc((c) => {
+			for (const id of ids) c.exclusiveGateway(id, { name: `Route the ${id} request..` })
+		})
+		const plane = defs.diagrams[0]?.plane
+		const labels = ids.map((id) => {
+			const lb = plane?.shapes.find((s) => s.bpmnElement === id)?.label?.bounds
+			expect(lb, id).toBeDefined()
+			return lb as Bounds
+		})
+		expect(new Set(ids.map((id) => get(boundsOf(defs), id).x)).size).toBe(2)
+		for (let i = 0; i < labels.length; i++) {
+			for (let j = i + 1; j < labels.length; j++) {
+				expect(overlaps(labels[i] as Bounds, labels[j] as Bounds), `${ids[i]}/${ids[j]}`).toBe(
+					false,
+				)
+			}
+		}
+		expectInsideAndApart(boundsOf(defs), ids)
+	})
+
 	it("does not pack a node that loops on itself", () => {
 		const bounds = boundsOf(
 			layoutAdHoc((c) => {

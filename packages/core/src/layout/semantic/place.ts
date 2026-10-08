@@ -1,6 +1,6 @@
 import type { BpmnBoundaryEvent, BpmnFlowElement, BpmnLaneSet } from "../../bpmn/bpmn-model.js"
 import type { Bounds } from "../types.js"
-import { ELEMENT_SIZES } from "../types.js"
+import { ELEMENT_SIZES, LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH } from "../types.js"
 import type { BandLayout } from "./bands.js"
 import type { SemanticGraph } from "./graph.js"
 
@@ -12,6 +12,28 @@ export const LANE_PADDING = 40
 export const BOUNDARY_SIZE = 36
 
 const DEFAULT_SIZE = { width: 100, height: 80 }
+
+const EXTERNAL_LABEL_TYPES = new Set([
+	"startEvent",
+	"endEvent",
+	"intermediateThrowEvent",
+	"intermediateCatchEvent",
+	"boundaryEvent",
+	"exclusiveGateway",
+	"parallelGateway",
+	"inclusiveGateway",
+	"eventBasedGateway",
+	"complexGateway",
+])
+
+/**
+ * Width of the label an event or gateway carries centred below its shape;
+ * undefined for types whose name sits inside the shape.
+ */
+export function externalLabelWidth(type: string, name: string): number | undefined {
+	if (!EXTERNAL_LABEL_TYPES.has(type)) return undefined
+	return Math.max(name.length * LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH)
+}
 
 export interface Placement {
 	/** Absolute bounds per flow node, boundary events included. */
@@ -85,7 +107,7 @@ export function place(
 		if (members.length === 0) continue
 		if (members.length === 1 && looseSet.has(members[0] as string)) {
 			// The whole grid takes the place of the first loose node; the rest are in it.
-			if (members[0] === loose[0]) cursorY = placeGrid(loose, sizes, cursorY, bounds)
+			if (members[0] === loose[0]) cursorY = placeGrid(graph, loose, sizes, cursorY, bounds)
 			continue
 		}
 
@@ -149,6 +171,7 @@ function looseNodes(graph: SemanticGraph): string[] {
  * stacked below.
  */
 function placeGrid(
+	graph: SemanticGraph,
 	ids: string[],
 	sizes: Map<string, { width: number; height: number }>,
 	top: number,
@@ -159,7 +182,11 @@ function placeGrid(
 	let cellHeight = 0
 	for (const id of ids) {
 		const size = sizes.get(id) ?? DEFAULT_SIZE
-		cellWidth = Math.max(cellWidth, size.width)
+		// An event's or gateway's label is centred below it and can be wider than the
+		// shape; the cell holds it so neighbouring columns' labels never meet.
+		const el = graph.byId.get(id)
+		const label = el?.name ? externalLabelWidth(el.type, el.name) : undefined
+		cellWidth = Math.max(cellWidth, size.width, label ?? 0)
 		cellHeight = Math.max(cellHeight, size.height)
 	}
 	ids.forEach((id, i) => {

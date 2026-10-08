@@ -6,10 +6,10 @@ import type {
 } from "../../bpmn/bpmn-model.js"
 import { placeEdgeLabels } from "../grid/edge-labels.js"
 import type { Bounds, LayoutEdge, LayoutNode, LayoutResult } from "../types.js"
-import { LABEL_CHAR_WIDTH, LABEL_HEIGHT, LABEL_MIN_WIDTH, SUBPROCESS_PADDING } from "../types.js"
+import { LABEL_HEIGHT, SUBPROCESS_PADDING } from "../types.js"
 import { assignBands } from "./bands.js"
 import { buildSemanticGraph } from "./graph.js"
-import { place, sizeOf } from "./place.js"
+import { externalLabelWidth, place, sizeOf } from "./place.js"
 import { routeFlows } from "./route.js"
 
 /** Padding between an expanded sub-process border and its children. */
@@ -20,18 +20,6 @@ const TITLE_BAND = 28
 const LABEL_OFFSET = 4
 
 const CONTAINER_TYPES = new Set(["subProcess", "adHocSubProcess", "eventSubProcess", "transaction"])
-const EXTERNAL_LABEL_TYPES = new Set([
-	"startEvent",
-	"endEvent",
-	"intermediateThrowEvent",
-	"intermediateCatchEvent",
-	"boundaryEvent",
-	"exclusiveGateway",
-	"parallelGateway",
-	"inclusiveGateway",
-	"eventBasedGateway",
-	"complexGateway",
-])
 
 interface Container {
 	flowElements?: BpmnFlowElement[]
@@ -200,8 +188,8 @@ function shift(b: Bounds, dx: number, dy: number): Bounds {
 
 /** Events and gateways carry their name outside the shape; activities do not. */
 function externalLabel(type: string, name: string, bounds: Bounds): Bounds | undefined {
-	if (!EXTERNAL_LABEL_TYPES.has(type)) return undefined
-	const width = Math.max(name.length * LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH)
+	const width = externalLabelWidth(type, name)
+	if (width === undefined) return undefined
 	return {
 		x: bounds.x + bounds.width / 2 - width / 2,
 		y: bounds.y + bounds.height + LABEL_OFFSET,
