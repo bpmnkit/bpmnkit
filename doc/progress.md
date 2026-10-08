@@ -14,6 +14,7 @@
   of its own, and for `subProcess`/`transaction`/`adHocSubProcess`/`eventSubProcess` inside a
   branch, which forwarded only the messages.
 - The same code or name used at process level and in a sub-process yields a single root element.
+
 ## 2026-10-08 — Pin wasm-pack in CI
 
 - Every workflow that builds `reebe-wasm` now installs wasm-pack `v0.15.0` instead of `latest`.
