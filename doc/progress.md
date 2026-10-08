@@ -7,8 +7,9 @@
   event goes on the bottom border, and its handler is banded below accordingly (#222). Tasks
   and untitled containers keep escalation on top.
 - Boundary-event labels sit beside the exit stem instead of centred on it — on the outward side,
-  outside the host, left of the stem, or right of it when the left would reach the neighbouring
-  event's stem. A label is no longer crossed by its own exit edge.
+  outside the host, in the gaps between the stems of the events on that border, one label per
+  gap. A label takes the gap on its left if it fits, else the one on its right; when neither
+  fits it wraps to the wider free gap. No label is crossed by its own or a neighbour's exit edge.
 - Events sharing a border are ordered by how many bands away their handler sits, farthest
   outermost, so the handler routes nest instead of crossing each other's stems. Two existing
   tests asserted declaration order for two timers whose second handler sits lower, a layout

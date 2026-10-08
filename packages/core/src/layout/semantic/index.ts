@@ -203,9 +203,12 @@ function shift(b: Bounds, dx: number, dy: number): Bounds {
  * centred on it.
  *
  * A boundary event's flows leave its outward side at the centre, so a label
- * centred below (or above) the event is crossed by its own exit edge. The label
- * sits on the outward side, outside the host, to the left of the stem — or to
- * the right when the left would reach the stem of the event docked before it.
+ * centred below (or above) the event is crossed by its own exit edge. Labels
+ * sit on the outward side, outside the host, in the gaps between the stems of
+ * the events docked on that border: each gap holds at most one label, and the
+ * gaps beyond the first and last stem are unbounded. A label takes the gap on
+ * its left if it fits there, else the one on its right; when neither fits it
+ * takes the wider free one and wraps to its width, growing away from the host.
  */
 function boundaryLabels(graph: SemanticGraph, bounds: Map<string, Bounds>): Map<string, Bounds> {
 	const labels = new Map<string, Bounds>()
@@ -220,24 +223,54 @@ function boundaryLabels(graph: SemanticGraph, bounds: Map<string, Bounds>): Map<
 			const side = docked
 				.filter(({ b }) => b.y + b.height / 2 <= host.y + 1 === onTop)
 				.sort((p, q) => p.b.x - q.b.x)
-			let previousStem = Number.NEGATIVE_INFINITY
-			for (const { event, b } of side) {
-				const stem = b.x + b.width / 2
-				if (event.name) {
-					const width = Math.max(event.name.length * LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH)
-					const left = stem - LABEL_OFFSET - width
-					labels.set(event.id, {
-						x: left > previousStem ? left : stem + LABEL_OFFSET,
-						y: onTop ? b.y - LABEL_OFFSET - LABEL_HEIGHT : b.y + b.height + LABEL_OFFSET,
-						width,
-						height: LABEL_HEIGHT,
-					})
+			const stems = side.map(({ b }) => b.x + b.width / 2)
+			let leftGapTaken = false
+			side.forEach(({ event, b }, i) => {
+				const stem = stems[i] as number
+				const name = event.name
+				if (!name) {
+					leftGapTaken = false
+					return
 				}
-				previousStem = stem
-			}
+				const previous = stems[i - 1] ?? Number.NEGATIVE_INFINITY
+				const next = stems[i + 1] ?? Number.POSITIVE_INFINITY
+				const leftRoom = leftGapTaken ? 0 : stem - previous - 2 * LABEL_OFFSET
+				const rightRoom = next - stem - 2 * LABEL_OFFSET
+				const full = Math.max(name.length * LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH)
+				const onRight = leftRoom >= full ? false : rightRoom >= full || rightRoom > leftRoom
+				// Events docked closer than a character apart leave no room; keep one.
+				const width = Math.max(Math.min(full, onRight ? rightRoom : leftRoom), LABEL_CHAR_WIDTH)
+				const height = wrappedLines(name, width) * LABEL_HEIGHT
+				labels.set(event.id, {
+					x: onRight ? stem + LABEL_OFFSET : stem - LABEL_OFFSET - width,
+					y: onTop ? b.y - LABEL_OFFSET - height : b.y + b.height + LABEL_OFFSET,
+					width,
+					height,
+				})
+				leftGapTaken = onRight
+			})
 		}
 	}
 	return labels
+}
+
+/** Lines `text` takes when wrapped at word boundaries to `width`, at the label's character width. */
+function wrappedLines(text: string, width: number): number {
+	const perLine = Math.max(1, Math.floor(width / LABEL_CHAR_WIDTH))
+	let lines = 1
+	let used = 0
+	for (const word of text.split(/\s+/).filter((w) => w.length > 0)) {
+		const need = used === 0 ? word.length : used + 1 + word.length
+		if (need <= perLine) {
+			used = need
+			continue
+		}
+		if (used > 0) lines++
+		// A word longer than a line breaks across as many lines as it needs.
+		lines += Math.ceil(word.length / perLine) - 1
+		used = word.length % perLine || perLine
+	}
+	return lines
 }
 
 /** Events and gateways carry their name outside the shape; activities do not. */

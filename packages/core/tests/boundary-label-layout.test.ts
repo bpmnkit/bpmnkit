@@ -140,6 +140,38 @@ describe("boundary event labels and docking (#222)", () => {
 		expect(edgesHitting(defs, lb)).toEqual([])
 	})
 
+	it("wraps a label that fits in neither gap instead of crossing a stem or a label", () => {
+		// Three events 50 px apart on a 200 px container, each name 140 px wide.
+		const names = ["Payment deadline hit", "Customer cancelled it", "Upstream service down"]
+		const defs = Bpmn.createProcess("p")
+			.startEvent("s")
+			.subProcess(
+				"sub",
+				(c) => {
+					c.startEvent("ss").serviceTask("A", { name: "A", taskType: "x" }).endEvent("se")
+				},
+				{ name: "Titled" },
+			)
+			.withBoundary("b1", { name: names[0], timerDuration: "PT1H" }, (h) => h.endEvent("x1"))
+			.withBoundary("b2", { name: names[1], errorCode: "C" }, (h) => h.endEvent("x2"))
+			.withBoundary("b3", { name: names[2], errorCode: "U" }, (h) => h.endEvent("x3"))
+			.endEvent("e")
+			.withAutoLayout()
+			.build()
+		const ids = ["b1", "b2", "b3"]
+		for (const id of ids) expect(edgesHitting(defs, label(defs, id)), id).toEqual([])
+		for (let i = 0; i < ids.length; i++) {
+			for (let j = i + 1; j < ids.length; j++) {
+				const [a, b] = [ids[i] as string, ids[j] as string]
+				expect(rectsOverlap(label(defs, a), label(defs, b)), `${a} / ${b}`).toBe(false)
+			}
+		}
+		// The middle label had no 140 px gap on either side, so it wrapped.
+		const wrapped = ids.map((id) => label(defs, id)).filter((l) => l.height > 14)
+		expect(wrapped.length).toBeGreaterThan(0)
+		expect(crossings(defs, ["Flow_b1_x1", "Flow_b2_x2", "Flow_b3_x3"])).toEqual([])
+	})
+
 	it("labels of two events on a narrow task stay clear of both stems", () => {
 		const defs = Bpmn.createProcess("p")
 			.startEvent("s")
