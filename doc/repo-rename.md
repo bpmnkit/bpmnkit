@@ -38,10 +38,15 @@ records and the redirect keeps them working.
 
 - [ ] npm CLI **11.15.0 or newer**: `npm --version` (`npm i -g npm@latest` otherwise).
 - [ ] `npm login` as an owner of the `@bpmnkit` packages; account-level 2FA must be on.
-- [ ] Dry run, and keep the output as a record of the current configuration:
+- [ ] Dry run, in an interactive terminal, and copy its output somewhere as a record of the
+      current configuration:
       ```sh
-      node scripts/migrate-npm-trust.mjs | tee npm-trust-before.txt
+      node scripts/migrate-npm-trust.mjs
       ```
+      Don't pipe or redirect it (no `| tee`, no `>`): npm asks for 2FA only on a terminal —
+      every trust call needs it, listing too — and otherwise fails with `EOTP`. On the first
+      package npm opens a browser to authenticate; tick **"skip two-factor authentication for
+      the next 5 minutes"** there, and the rest of the run needs no more prompts.
       Each package should show one configuration naming `bpmnkit/monorepo` and
       `release.yml`. A package flagged `! configuration does not name bpmnkit/monorepo`
       needs a look by hand before going further.
@@ -71,8 +76,9 @@ The registry allows only one trust configuration per package, so each package's 
 revoked and a new one created. The script does that for all packages in
 `scripts/published-packages.mjs`:
 
-- [ ] On npmjs.com, enable **"skip two-factor authentication for the next 5 minutes"** (or be
-      ready to enter OTPs) — there are 29 packages and two writes each.
+- [ ] Have the browser ready: the first call asks for 2FA. Tick **"skip two-factor
+      authentication for the next 5 minutes"** — there are 29 packages and up to three calls
+      each. If the window runs out mid-run, npm asks again and the script carries on.
 - [ ] Run it:
       ```sh
       node scripts/migrate-npm-trust.mjs --apply
@@ -91,9 +97,8 @@ npm trust github '@bpmnkit/core' \
   --yes
 ```
 
-The workflow file is `release.yml` (not `publish.yml`), and the release job has no
-`environment:`, so no `--env` is needed. If the before-record from step 0 shows an environment
-or a different file for some package, create that one by hand with the matching flags.
+The workflow file is `release.yml` (not `publish.yml`). The script keeps the workflow file and
+any environment the old configuration had, so the new one differs only in the repository.
 
 If the script stops part-way, re-run it: packages already done are skipped.
 
@@ -121,4 +126,3 @@ If a publish fails with a provenance or `404 / not authorized` error, compare
 - [ ] Claude Code plugin users who added the marketplace with
       `/plugin marketplace add github:bpmnkit/monorepo` keep working through the redirect; new
       instructions say `github:bpmnkit/bpmnkit`.
-- [ ] Delete `npm-trust-before.txt` once the first release from the new name has gone out.
