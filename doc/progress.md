@@ -11,6 +11,14 @@
   written in sequence builds the pair rather than a flow between them.
 - Guide: "Building processes" shows the pattern.
 
+## 2026-10-08 — Tests: bpmnlint parity walk skips Cargo's `target`
+
+- `tests/node/bpmnlint-parity.test.ts` collects every `.bpmn` file in the repository by walking
+  it, and `target` was not on its skip list. Under turbo, `cargo test` for `apps/reebe` runs in
+  parallel and creates and removes directories in `apps/reebe/target/debug/deps`, so the walk
+  could list one and then fail with `ENOENT` opening it, which failed CI on unrelated changes.
+  No tracked file or `.bpmn` fixture lives under a `target` directory.
+
 ## 2026-10-08 — Pin wasm-pack in CI
 
 - Every workflow that builds `reebe-wasm` now installs wasm-pack `v0.15.0` instead of `latest`.
