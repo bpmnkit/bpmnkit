@@ -45,6 +45,14 @@ export function place(
 	bandLayout: BandLayout,
 	sizes: Map<string, { width: number; height: number }>,
 	laneSet: BpmnLaneSet | undefined,
+	/**
+	 * Pack nodes that have no sequence flow at all into a wrapped grid rather
+	 * than one row each. Set for the inside of an expanded sub-process, where
+	 * such nodes are an unordered set (the tools of an ad-hoc sub-process) and a
+	 * single column would both imply an order and grow the container into a
+	 * tall strip.
+	 */
+	packLoose = false,
 ): Placement {
 	const bounds = new Map<string, Bounds>()
 	const componentOf = new Map<string, number>()
@@ -69,10 +77,17 @@ export function place(
 	}
 
 	// ── Rows: one per band, laid out per component then stacked ──
+	const loose = packLoose ? looseNodes(graph) : []
+	const looseSet = new Set(loose)
 	let cursorY = 0
 	for (let component = 0; component < graph.components.length; component++) {
 		const members = (graph.components[component] ?? []).filter((id) => graph.byId.has(id))
 		if (members.length === 0) continue
+		if (members.length === 1 && looseSet.has(members[0] as string)) {
+			// The whole grid takes the place of the first loose node; the rest are in it.
+			if (members[0] === loose[0]) cursorY = placeGrid(loose, sizes, cursorY, bounds)
+			continue
+		}
 
 		const rowHeight = new Map<number, number>()
 		for (const id of members) {
@@ -108,6 +123,52 @@ export function place(
 	const lanes = laneSet ? applyLanes(graph, laneSet, bounds) : []
 	dockBoundaryEvents(graph, bounds)
 	return { bounds, lanes, gutterX }
+}
+
+/**
+ * Nodes with no incoming or outgoing flow, in declaration order — only when
+ * there are at least two of them, since one has nothing to be packed with.
+ */
+function looseNodes(graph: SemanticGraph): string[] {
+	const loose = graph.components
+		.filter((members) => members.length === 1)
+		.map((members) => members[0] as string)
+		.filter((id) => graph.byId.has(id))
+	return loose.length >= 2 ? loose : []
+}
+
+/**
+ * Place `ids` row by row in `ceil(sqrt(n))` columns of equal cells, starting at
+ * `top`, so the set grows roughly square. Returns the cursor for whatever is
+ * stacked below.
+ */
+function placeGrid(
+	ids: string[],
+	sizes: Map<string, { width: number; height: number }>,
+	top: number,
+	bounds: Map<string, Bounds>,
+): number {
+	const columns = Math.ceil(Math.sqrt(ids.length))
+	let cellWidth = 0
+	let cellHeight = 0
+	for (const id of ids) {
+		const size = sizes.get(id) ?? DEFAULT_SIZE
+		cellWidth = Math.max(cellWidth, size.width)
+		cellHeight = Math.max(cellHeight, size.height)
+	}
+	ids.forEach((id, i) => {
+		const size = sizes.get(id) ?? DEFAULT_SIZE
+		const column = i % columns
+		const row = Math.floor(i / columns)
+		bounds.set(id, {
+			x: column * (cellWidth + H_GAP) + (cellWidth - size.width) / 2,
+			y: top + row * (cellHeight + V_GAP) + (cellHeight - size.height) / 2,
+			width: size.width,
+			height: size.height,
+		})
+	})
+	const rows = Math.ceil(ids.length / columns)
+	return top + rows * (cellHeight + V_GAP) - V_GAP + COMPONENT_GAP
 }
 
 /**

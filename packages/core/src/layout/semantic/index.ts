@@ -57,6 +57,8 @@ export function semanticLayout(
 	laneSet?: BpmnLaneSet,
 	/** Sub-processes drawn collapsed: their contents go on a plane of their own. */
 	collapsed: ReadonlySet<string> = new Set(),
+	/** True for the contents of an expanded sub-process; see `place`'s `packLoose`. */
+	inContainer = false,
 ): LayoutResult {
 	if (flowElements.length === 0) return { nodes: [], edges: [] }
 
@@ -85,7 +87,7 @@ export function semanticLayout(
 		}
 	}
 
-	const { bounds, lanes, gutterX } = place(graph, bandLayout, sizes, laneSet)
+	const { bounds, lanes, gutterX } = place(graph, bandLayout, sizes, laneSet, inContainer)
 
 	const nodes: LayoutNode[] = []
 	for (const el of flowElements) {
@@ -153,6 +155,7 @@ function childLayoutOf(
 		container.sequenceFlows ?? [],
 		container.laneSet,
 		collapsed,
+		true,
 	)
 	const extent = extentOf(result)
 	if (!extent) return null

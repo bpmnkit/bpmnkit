@@ -1,5 +1,17 @@
 # Progress
 
+## 2026-10-08 — Layout: unconnected sub-process children are packed into a grid
+
+- Inside an expanded sub-process (ad-hoc, plain, transaction, event sub-process), the semantic
+  layout places nodes with no sequence flow — the tools of an AI agent's ad-hoc sub-process —
+  in a wrapped grid of `ceil(sqrt(n))` columns, in declaration order, instead of one row each
+  (#221). Four tools now make a 2×2, 400×340 container instead of a 200×660 strip; nine make a
+  3×3.
+- Connected sub-flows in the same container keep their left-to-right layout, stacked below the
+  grid in declaration order. A single unconnected child and every process-level layout are
+  unchanged.
+- The older `grid` engine is unchanged.
+
 ## 2026-10-08 — Rename the repository to `bpmnkit/bpmnkit`
 
 - Every live reference to `github.com/bpmnkit/monorepo` (package manifests, generated READMEs,
