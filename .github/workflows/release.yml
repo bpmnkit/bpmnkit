@@ -44,7 +44,9 @@ jobs:
       - name: Install wasm-pack
         uses: jetli/wasm-pack-action@v0.4.0
         with:
-          version: latest
+          # Pinned: "latest" needs a GitHub API lookup and silently falls back to
+          # v0.9.1 when it is rate-limited, whose wasm-opt rejects current rustc output.
+          version: v0.15.0
 
       - name: Build reebe-wasm
         env:

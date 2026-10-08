@@ -13,6 +13,13 @@
   outermost, so the handler routes nest instead of crossing each other's stems. Two existing
   tests asserted declaration order for two timers whose second handler sits lower, a layout
   where the first route crossed the second stem; they now assert the nested order.
+## 2026-10-08 — Pin wasm-pack in CI
+
+- Every workflow that builds `reebe-wasm` now installs wasm-pack `v0.15.0` instead of `latest`.
+  `jetli/wasm-pack-action` resolves `latest` through an unauthenticated GitHub API call and,
+  when that is rate-limited, silently installs its default `v0.9.1`. That release's bundled
+  `wasm-opt` rejects current rustc output ("Only 1 table definition allowed in MVP"), which
+  failed Deploy Studio while the other deploys of the same commit got `v0.15.0` and passed.
 
 ## 2026-10-08 — Rename the repository to `bpmnkit/bpmnkit`
 
