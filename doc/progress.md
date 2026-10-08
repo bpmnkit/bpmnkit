@@ -8,6 +8,9 @@
   past progress entries, plans and recordings keep the old links — GitHub redirects them.
 - New `scripts/migrate-npm-trust.mjs` moves each published package's npm trusted-publishing
   configuration to the new repository (dry run by default, `--apply` to write).
+  It must run on an interactive terminal — npm asks for 2FA on every trust call, listing too,
+  and fails with `EOTP` when its output is captured — so it captures only `npm trust list
+  --json`, re-running that once on the terminal to authenticate when npm says `EOTP`.
 - New `doc/repo-rename.md`: the order to rename, merge and move npm trust in.
 
 ## 2026-10-07 — Process text: the work goes on from the task, and data steps are FEEL scripts

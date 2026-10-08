@@ -5,15 +5,17 @@
  *
  * The registry allows one trust configuration per package, so the old one has
  * to be revoked before the new one can be created. A package whose current
- * configuration does not name the old repository is left alone and reported.
+ * configuration names neither repository is left alone and reported.
  *
  *   node scripts/migrate-npm-trust.mjs           # dry run: list and plan
  *   node scripts/migrate-npm-trust.mjs --apply   # revoke + create
  *
- * Needs npm >= 11.15.0, `npm login` as an owner of the @bpmnkit packages, and
- * account-level 2FA (allow "skip 2FA for 5 minutes" on npmjs.com for the run).
+ * Needs npm >= 11.15.0, `npm login` as an owner of the @bpmnkit packages, an
+ * interactive terminal, and account-level 2FA. Every trust call — listing too —
+ * asks for 2FA; tick "skip two-factor authentication for the next 5 minutes"
+ * when the browser asks, or there is one prompt per call.
  */
-import { execFileSync } from "node:child_process"
+import { spawnSync } from "node:child_process"
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import { PUBLISHED } from "./published-packages.mjs"
@@ -23,52 +25,82 @@ const NEW_REPO = "bpmnkit/bpmnkit"
 const WORKFLOW = "release.yml"
 const apply = process.argv.includes("--apply")
 
-function npm(args) {
-	return execFileSync("npm", args, { encoding: "utf8", stdio: ["inherit", "pipe", "inherit"] })
+// npm asks for 2FA only on a terminal; piped or redirected, every call fails with EOTP.
+if (!process.stdin.isTTY || !process.stdout.isTTY) {
+	console.error("Run this in an interactive terminal, without piping or redirecting its output.")
+	process.exit(1)
 }
 
-/** `npm trust list --json` output's shape is undocumented: accept one entry or a list. */
+/** Runs npm attached to the terminal, so it can ask for 2FA itself. */
+function npm(args) {
+	const result = spawnSync("npm", args, { stdio: "inherit" })
+	if (result.status !== 0) throw new Error(`npm ${args.join(" ")} exited with ${result.status}`)
+}
+
+/**
+ * The package's trust configurations, from `npm trust list --json`.
+ *
+ * Capturing the output means stdout is not a terminal, and npm only asks for
+ * 2FA on a terminal — otherwise it fails with EOTP. On EOTP the same list runs
+ * once attached to the terminal, to authenticate, and the capture is retried;
+ * that retry succeeds only inside the "skip 2FA for 5 minutes" window.
+ */
 function configs(name) {
-	const out = npm(["trust", "list", name, "--json"]).trim()
-	if (!out) return []
-	const parsed = JSON.parse(out)
-	return Array.isArray(parsed) ? parsed : [parsed]
+	const args = ["trust", "list", name, "--json"]
+	let result = spawnSync("npm", args, { encoding: "utf8" })
+	if (result.status !== 0 && result.stderr.includes("EOTP")) {
+		console.log(
+			`  2FA needed — authenticate in the browser and tick "skip 2FA for the next 5 minutes"`,
+		)
+		npm(["trust", "list", name])
+		result = spawnSync("npm", args, { encoding: "utf8" })
+	}
+	if (result.status !== 0) {
+		process.stderr.write(result.stderr)
+		throw new Error(`npm ${args.join(" ")} exited with ${result.status}`)
+	}
+	// One pretty-printed JSON object per configuration, or nothing when there is none.
+	return result.stdout
+		.split(/^(?=\{)/m)
+		.filter((chunk) => chunk.trim())
+		.map((chunk) => JSON.parse(chunk))
 }
 
 const failed = []
 for (const dir of PUBLISHED) {
 	const { name } = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"))
+	console.log(`\n${name}`)
 	try {
 		const current = configs(name)
-		const old = current.filter((c) => JSON.stringify(c).includes(OLD_REPO))
-		const migrated = current.some((c) => JSON.stringify(c).includes(NEW_REPO))
-		console.log(`\n${name}\n  current: ${JSON.stringify(current)}`)
+		for (const c of current) console.log(`  current: ${JSON.stringify(c)}`)
 
-		if (migrated) {
+		if (current.some((c) => c.repository === NEW_REPO)) {
 			console.log(`  already trusts ${NEW_REPO} — skipping`)
 			continue
 		}
-		if (current.length > 0 && old.length === 0) {
+		const old = current.find((c) => c.repository === OLD_REPO)
+		if (current.length > 0 && !old) {
 			console.log(`  ! configuration does not name ${OLD_REPO} — left alone, check by hand`)
 			failed.push(name)
 			continue
 		}
 
-		for (const c of old) {
-			console.log(`  revoke ${c.id}`)
-			if (apply) npm(["trust", "revoke", name, `--id=${c.id}`])
-		}
 		const create = [
 			"trust",
 			"github",
 			name,
 			`--repo=${NEW_REPO}`,
-			`--file=${WORKFLOW}`,
+			`--file=${old?.file ?? WORKFLOW}`,
+			...(old?.environment ? [`--env=${old.environment}`] : []),
 			"--allow-publish",
 			"--yes",
 		]
+		if (old) console.log(`  npm trust revoke ${name} --id=${old.id}`)
 		console.log(`  npm ${create.join(" ")}`)
-		if (apply) npm(create)
+		if (!apply) continue
+
+		if (old) npm(["trust", "revoke", name, `--id=${old.id}`])
+		npm(create)
 	} catch (error) {
 		console.error(`  ! ${name}: ${error.message}`)
 		failed.push(name)
