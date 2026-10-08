@@ -92,6 +92,70 @@ describe("SubProcessContentBuilder root definitions (#220)", () => {
 		expect(await moddleWarnings(xml)).toEqual([])
 	})
 
+	it("resolves refs on boundary events inside sub-process content", async () => {
+		const defs = Bpmn.createProcess("p")
+			.startEvent("s")
+			.subProcess("sub", (c) => {
+				c.startEvent("ss").serviceTask("work", { name: "Work", taskType: "w" }).endEvent("se")
+				c.boundaryEvent("onErr", { attachedTo: "work", errorCode: "B_ERR" }).endEvent("ee")
+				c.boundaryEvent("onMsg", {
+					attachedTo: "work",
+					messageName: "B_MSG",
+					correlationKey: "=k",
+				}).endEvent("me")
+				c.boundaryEvent("onSig", { attachedTo: "work", signalName: "B_SIG" }).endEvent("ge")
+			})
+			.endEvent("e")
+			.build()
+		const xml = Bpmn.export(defs)
+
+		expect(defs.errors.map((e) => e.errorCode)).toEqual(["B_ERR"])
+		expect(defs.messages.map((m) => m.name)).toEqual(["B_MSG"])
+		expect(defs.signals.map((s) => s.name)).toEqual(["B_SIG"])
+		const ids = rootIds(defs)
+		const refs = eventRefs(xml)
+		expect(refs).toHaveLength(3)
+		for (const ref of refs) expect(ids, ref).toContain(ref)
+		expect(await moddleWarnings(xml)).toEqual([])
+	})
+
+	it("resolves refs in every container a branch creates", async () => {
+		const defs = Bpmn.createProcess("p")
+			.startEvent("s")
+			.parallelGateway("fork")
+			.branch("tx", (b) => b.transaction("bTx", referencingContent("tx")).endEvent("txe"))
+			.branch("ah", (b) =>
+				b
+					.adHocSubProcess("bAh", (a) => {
+						a.subProcess("bAhSub", referencingContent("ah"))
+					})
+					.endEvent("ahe"),
+			)
+			.branch("evt", (b) =>
+				b
+					.subProcess("host", (c) => {
+						c.startEvent("hs").endEvent("he")
+					})
+					.eventSubProcess("bEvt", (ev) => {
+						ev.startEvent("evs", { messageName: "EV_MSG" }).endEvent("eve", {
+							escalationCode: "EV_ESC",
+						})
+					})
+					.endEvent("evte"),
+			)
+			.build()
+		const xml = Bpmn.export(defs)
+
+		const ids = rootIds(defs)
+		const refs = eventRefs(xml)
+		// Four refs in each of bTx and bAhSub, plus evs and eve.
+		expect(refs).toHaveLength(10)
+		for (const ref of refs) expect(ids, ref).toContain(ref)
+		expect(defs.messages.map((m) => m.name).sort()).toEqual(["EV_MSG", "M1"])
+		expect(defs.escalations.map((e) => e.escalationCode).sort()).toEqual(["E1", "EV_ESC"])
+		expect(await moddleWarnings(xml)).toEqual([])
+	})
+
 	it("shares one root definition between process level and sub-process", () => {
 		const defs = Bpmn.createProcess("p")
 			.startEvent("s")
