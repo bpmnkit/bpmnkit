@@ -10,6 +10,7 @@
   one leaves no open end to join) and a link catch gets no incoming flow, so `throw → catch`
   written in sequence builds the pair rather than a flow between them.
 - Guide: "Building processes" shows the pattern.
+
 ## 2026-10-08 — Pin wasm-pack in CI
 
 - Every workflow that builds `reebe-wasm` now installs wasm-pack `v0.15.0` instead of `latest`.
