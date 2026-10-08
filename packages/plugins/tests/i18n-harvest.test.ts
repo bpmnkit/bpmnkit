@@ -2,7 +2,7 @@ import { readFileSync, readdirSync, statSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { BpmnCanvas } from "@bpmnkit/canvas"
-import { CAMUNDA_CONNECTOR_TEMPLATES } from "@bpmnkit/connectors"
+import { BPMNKIT_CONNECTOR_TEMPLATES, CAMUNDA_CONNECTOR_TEMPLATES } from "@bpmnkit/connectors"
 import { Bpmn } from "@bpmnkit/core"
 import { BpmnEditor, createTranslationRecorder, initEditorHud } from "@bpmnkit/editor"
 import type { CreateShapeType, Translate } from "@bpmnkit/editor"
@@ -368,7 +368,9 @@ function staticKeys(): Set<string> {
  * template names are product names, and a FEEL or JSON placeholder is code —
  * both are shown as given in every language.
  */
-const TEMPLATE_NAMES = new Set(CAMUNDA_CONNECTOR_TEMPLATES.map((template) => template.name))
+const TEMPLATE_NAMES = new Set(
+	[...CAMUNDA_CONNECTOR_TEMPLATES, ...BPMNKIT_CONNECTOR_TEMPLATES].map((template) => template.name),
+)
 function isTranslatable(key: string): boolean {
 	return !TEMPLATE_NAMES.has(key) && !/^(=|\{"|\d+$)/.test(key)
 }

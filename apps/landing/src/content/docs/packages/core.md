@@ -387,7 +387,7 @@ arrived 16% of the way into the tool argument, with 15 frames following.
 A line format for a model to write a new process in. It costs about a quarter of the output
 tokens of minified compact JSON. A path is written once as `a > b > c`, a node is declared inline
 the first time it is used, and the parser adds what the model would otherwise spend tokens on.
-`PROCESS_TEXT_GUIDE` is the part of a system prompt that teaches the format (~310 tokens,
+`PROCESS_TEXT_GUIDE` is the part of a system prompt that teaches the format (~600 tokens,
 example included).
 
 ```text
@@ -397,6 +397,37 @@ check >(Yes: amount > 1000) review[user Review expense] > pay[service Pay expens
 check >(No: default) auto[service Approve automatically] > pay
 failed[boundary:error Payment failed | on=pay] > notify[send Notify submitter] > notice[end Payment failed]
 ```
+
+Parallel work, deadlines and steps run per item are taught as rules, not in the example:
+`glm-4.7-flash` copied example lines such as "Email each approver" into processes that never
+asked for them.
+
+Attributes after `|`:
+- `on=<task>` puts a boundary event on its task, and `nonint` makes it non-interrupting;
+- `job=<type>` sets the job type;
+- `each=<list>` runs a task or sub-process once per item of the list variable, each instance
+  getting its item in the singular (`each=approvers` → `approver`);
+- `after=<duration>` sets a timer's duration, ISO 8601 or `5m`, `2 hours`, `1 day`. Without
+  it, a duration in the timer's name is read ("Wait 5 minutes" → `PT5M`).
+- `result=<variable>` names the variable a task's result goes to;
+- `feel=<expression>` makes the step a script task that evaluates the FEEL expression into
+  `result=` (its id when there is none), written as `zeebe:script`. It comes last: the
+  expression takes the rest of the attributes, spaces and commas included. An expression that
+  does not parse as FEEL is kept and reported in `problems`.
+
+The guide tells the model that a step working only on process data — counting, summing,
+filtering, formatting — is such a script task, never a service task:
+`count[script Count open issues | result=openCount feel=count(issues[state = "open"])]`.
+
+A boundary leads only to the handling of what it catches. When a model writes the work that
+follows a task through its boundary instead (`err > count > post`), the parser moves those
+ways out onto the task — all but the ones named for handling (failure, error, notify, retry,
+…; the first when none is) — and drops a bare end event the task led to.
+
+An attribute written before the `|` (`late[boundary:timer on=pay]`) is read all the same.
+`after=` on an event that is not a timer makes it one, and a boundary without `on=` that one
+task is drawn into (`send > wait[boundary:timer …]`) goes on that task.
+Change scripts read `result=` and `feel=`, but not `each=` and `after=` yet.
 
 ```typescript
 import { expand, Bpmn, parseProcessText, PROCESS_TEXT_GUIDE } from "@bpmnkit/core";
@@ -417,7 +448,22 @@ number. What it adds or changes is listed in `fixes`:
   name is a kind of (`pick > and`)
 - an id declared again after an arrow, with a different kind or name, is a new node (`done_2`),
   and later bare references mean the newest; restated at the start of a line, it is the node
-  already there
+  already there. A name of three words or more makes a new node even when its kind word is
+  unknown (`send[post Slack message to #support]`)
+- a number written as an id (`1[service …]`) becomes `n1`; a numbered list (`1. a > b`) is
+  still prose
+- after an arrow, a kind and a name without brackets (`… > end Order shipped`) declare a node;
+  at the start of a line they stay prose
+- a line that starts with an arrow continues the last node of the path above it, and a space
+  between an arrow and its label (`gw > (No: default) b`) is allowed
+- a step whose name says it is done for each or every item ("Send email to each stakeholder") runs
+  once per item of the list (`=stakeholders`); "every day" and other time words do not count
+- a DMN decision whose outcomes are not labelled splits with an exclusive gateway, not in parallel
+- steps in a row between an and split and an and join (`fork[and] > a > b > joined[and]`) run in
+  parallel; a catch event with `on=` a task is a boundary event; a named and node with `each=` is
+  a task run per item
+- a bracket left open is closed where the name plainly ends: at a `)` before the next arrow,
+  before the next arrow, or at the end of the line (`start[start Order) > …`)
 - a missing start event is added, and a start event left unconnected leads to the first path;
   only the first blank start event is kept
 - a branch drawn into a boundary event continues to what the boundary leads to, and a flow from a
@@ -429,7 +475,10 @@ number. What it adds or changes is listed in `fixes`:
 - an end event is added after every path that stops elsewhere, and a loop with no way out gets
   an exit branch from its decision; a loop with no decision loses the flows that close it
 - a link event in a path becomes a plain event, since the format cannot name its partner
-- a catch or boundary event written without a trigger becomes a message event, so it deploys
+- a catch or boundary event written without a trigger becomes a message event, so it deploys.
+  A catch event named for a call it makes ("Send to SQS") becomes a service task instead
+- an id written with spaces before its bracket (`call back[service …]`) is read as one id,
+  `call_back`
 - a gateway with one way in and one way out — a question answered only one way — is removed;
   an event-based gateway waiting for one event becomes a catch event
 - a task or event with several ways out gets a split gateway: exclusive when the branches are
@@ -497,6 +546,34 @@ const delta = parseProcessDelta(modelOutput);
 
 `parseProcessDelta` never throws and resolves nothing: it reads the script. Apply it with
 `applyProcessDelta` from `@bpmnkit/editor/headless`, which keeps the diagram's layout.
+
+### Connectors: `with` lines
+
+Both formats take `with` lines, which configure a node as a Camunda connector:
+
+```
+with notify: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#ops | data.text== "Order " + orderId
+with fetch: http GET https://api.example.com/orders | result=order: response.body
+```
+
+A line names a node by its id, then the connector's alias, its operation and its inputs as
+`key=value` (`key==expr` for FEEL). Path lines are unchanged, so a diagram still streams and keeps
+every structural rule.
+
+- **Parsing.** `parseProcessText` returns the lines as `connectors`, each with the element it
+  names. `parseProcessDelta` returns them as `connectors` too. Neither applies them.
+- **Applying.** `applyConnectorLines` from
+  [`@bpmnkit/core/connectors`](/docs/packages/connectors#with-lines) applies them, outside
+  core's main entry, so the catalog is only bundled where it is used.
+- **Writing.** `writeProcessText(defs, { connectorLine: connectorLineFor })` writes an
+  element's connector back as a `with` line, so a model that changes the diagram keeps it.
+- **Secrets.** `listSecrets(definitions)` lists every secret the diagram's configuration
+  reads, with the elements that read it. It covers `{{secrets.NAME}}`,
+  `camunda.secrets.NAME` and message correlation keys, so whoever deploys knows what to
+  create first.
+- **API index calls.** `with charge: http POST /v1/customers | api=stripe` calls an endpoint of
+  the [API index](/docs/packages/connector-gen#api-index). Its base URL, authentication and
+  headers come from the index when the lines are applied with `{ apis }`.
 
 ### `retypeElement(element, type)`
 
@@ -739,6 +816,39 @@ Builder output is stable for the same reason: sequence-flow and root-definition 
 derived from the model (`Flow_<source>_<target>`, `Message_<name>`, `Error_<code>`) rather
 than randomly generated, so rebuilding an unchanged model produces the same file and the one
 edge that changed is not buried in a diff of edges that did not.
+
+## Connectors — `@bpmnkit/core/connectors`
+
+The Camunda 8 out-of-the-box connector catalog and deterministic element-template
+application. It sits behind its own subpath because its data is about 100 KB gzipped: code
+that imports only `@bpmnkit/core` does not bundle it.
+
+```typescript
+import { applyConnectorTemplate, searchConnectors } from "@bpmnkit/core/connectors"
+
+searchConnectors("slack")[0]?.requiredInputs // what the template will ask for
+
+const { serviceTask, problems } = applyConnectorTemplate("io.camunda.connectors.HttpJson.v2", {
+  url: "https://api.example.com/orders",
+})
+// serviceTask: builder options — task type, input mappings, headers, template stamp
+```
+
+`findConnectorCards(query)` answers a request with **connector cards**: one operation each,
+with only the inputs it uses and the values that select it, as `formatConnectorCard` writes it
+for a prompt. See [`@bpmnkit/connectors`](/docs/packages/connectors#connector-cards) for the
+details.
+
+**API cards** do the same for the REST connector and systems without a dedicated connector:
+the real base URL, authentication and endpoints of an HTTP API. Core has their shape
+(`ApiService`) and the functions that pick, format and apply them. The data is the
+[API index](/docs/packages/connector-gen#api-index) of `@bpmnkit/connector-gen`, which is
+too large for core. See [`@bpmnkit/connectors`](/docs/packages/connectors#api-cards).
+
+The bundled templates leave out icons, groups, tooltips and placeholders, which only a
+property panel draws, so an applied element carries no `zeebe:modelerTemplateIcon`.
+[`@bpmnkit/connectors`](/docs/packages/connectors) has the same API with those parts added
+back. It is the one to use in an editor.
 
 ## DMN Support
 

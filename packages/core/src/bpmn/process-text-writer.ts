@@ -17,11 +17,22 @@
  */
 
 import { assertBpmnDefinitions } from "./argument-guards.js"
-import type { BpmnDefinitions, BpmnElementType } from "./bpmn-model.js"
+import type { BpmnDefinitions, BpmnElementType, BpmnFlowElement } from "./bpmn-model.js"
 import { compactify } from "./compact.js"
 import type { CompactElement, CompactFlow } from "./compact.js"
 import { FIXED_KINDS } from "./process-delta.js"
 import { KINDS } from "./process-text.js"
+
+/** Options for {@link writeProcessText}. */
+export interface WriteProcessTextOptions {
+	/**
+	 * Writes an element's connector as a `with` line, after `with <id>: `, or
+	 * answers `undefined` for an element without one. Pass `connectorLineFor`
+	 * from `@bpmnkit/core/connectors`, so a model that changes the diagram keeps
+	 * its connectors; without it no `with` lines are written.
+	 */
+	connectorLine?: (element: BpmnFlowElement, definitions: BpmnDefinitions) => string | undefined
+}
 
 /** What {@link writeProcessText} wrote. */
 export interface WrittenProcessText {
@@ -93,6 +104,11 @@ function spec(element: CompactElement, host: string | undefined): string {
 	if (host !== undefined) attrs.push(`on=${host}`)
 	if (element.interrupting === false) attrs.push("nonint")
 	if (element.jobType) attrs.push(`job=${element.jobType}`)
+	if (element.script) {
+		// Last: feel= takes the rest of the attributes
+		if (element.resultVariable) attrs.push(`result=${element.resultVariable}`)
+		attrs.push(`feel=${element.script.replace(/^=\s*/, "").replace(/\s+/g, " ")}`)
+	}
 	return `[${word}${trigger}${name}${attrs.length > 0 ? ` | ${attrs.join(" ")}` : ""}]`
 }
 
@@ -119,7 +135,10 @@ function label(flow: CompactFlow): string {
  * // aliases: { start: "StartEvent_1", check_order: "Activity_0x9k2lm", … }
  * ```
  */
-export function writeProcessText(definitions: BpmnDefinitions): WrittenProcessText {
+export function writeProcessText(
+	definitions: BpmnDefinitions,
+	options: WriteProcessTextOptions = {},
+): WrittenProcessText {
 	assertBpmnDefinitions(definitions, "writeProcessText")
 	const process = compactify(definitions).processes[0]
 	if (!process) return { text: "", aliases: {} }
@@ -196,6 +215,17 @@ export function writeProcessText(definitions: BpmnDefinitions): WrittenProcessTe
 		expand(el.id)
 		drain()
 		if (!declared.has(el.id)) lines.push(ref(el.id))
+	}
+
+	if (options.connectorLine) {
+		const real = new Map(
+			(definitions.processes[0]?.flowElements ?? []).map((el) => [el.id, el] as const),
+		)
+		for (const el of elements) {
+			const element = real.get(el.id)
+			const line = element && options.connectorLine(element, definitions)
+			if (line) lines.push(`with ${alias.get(el.id) ?? el.id}: ${line}`)
+		}
 	}
 
 	const aliases: Record<string, string> = {}

@@ -19,6 +19,7 @@
 		"release": "pnpm turbo build && changeset publish",
 		"fix-bpmn": "node scripts/fix-bpmn.mjs",
 		"update-connectors": "node scripts/update-connectors.mjs",
+		"update-api-index": "pnpm --filter @bpmnkit/connector-gen build && node scripts/build-api-index.mjs",
 		"docs:dev": "pnpm --filter @bpmnkit/landing dev",
 		"docs:build": "pnpm turbo build --filter @bpmnkit/landing",
 		"proxy": "pnpm --filter @bpmnkit/proxy start",
@@ -26,7 +27,7 @@
 		"proxy-rs:build": "cargo build --manifest-path apps/proxy-rs/Cargo.toml --release",
 		"desktop:dev": "pnpm --filter @bpmnkit/desktop tauri:dev",
 		"desktop:build": "pnpm --filter @bpmnkit/desktop tauri:build",
-		"build:wasm": "WASM_VERSION=$(node -p \"require('./apps/reebe-wasm/package.json').version\") && wasm-pack build apps/reebe/crates/reebe-wasm --target web --scope bpmnkit --out-dir \"$(pwd)/apps/reebe-wasm\" && node scripts/patch-wasm-pkg.mjs \"$WASM_VERSION\"",
+		"build:wasm": "node scripts/build-wasm.mjs",
 		"bootstrap": "pnpm install && pnpm build:wasm"
 	},
 	"devDependencies": {
@@ -58,7 +59,7 @@
 		"bpmn-moddle": "^10.3.1",
 		"bpmnlint": "^11.14.0",
 		"concurrently": "^9.0.0",
-		"docspack": "^1.2.0",
+		"docspack": "^1.3.2",
 		"esbuild": "^0.27.0",
 		"happy-dom": "^20.7.0",
 		"markdown-it": "^15.0.2",

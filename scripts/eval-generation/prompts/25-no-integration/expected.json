@@ -1,0 +1,9 @@
+{
+	"id": "no-integration",
+	"category": "no-connector",
+	"description": "Calls no outside system: the connect pass must be skipped without a model call.",
+	"assertions": {
+		"minElements": 4
+	},
+	"connect": false
+}

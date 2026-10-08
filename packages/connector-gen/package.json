@@ -1,6 +1,6 @@
 {
 	"name": "@bpmnkit/connector-gen",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"private": false,
 	"type": "module",
 	"exports": {
@@ -11,6 +11,10 @@
 		"./browser": {
 			"import": "./dist/browser.js",
 			"types": "./dist/browser.d.ts"
+		},
+		"./api-index": {
+			"import": "./dist/api-index.js",
+			"types": "./dist/api-index.d.ts"
 		}
 	},
 	"main": "./dist/index.js",

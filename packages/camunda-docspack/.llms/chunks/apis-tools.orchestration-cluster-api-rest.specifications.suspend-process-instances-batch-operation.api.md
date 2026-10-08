@@ -3,8 +3,10 @@
 `POST /process-instances/suspension`
 
 Suspends multiple running process instances.
-Since only ACTIVE root instances can be suspended, any given
-filters for state and parentProcessInstanceKey are ignored and overridden during this batch operation.
+Any given filter for state or parentProcessInstanceKey is ignored and overridden, as only
+ACTIVE process instances can be suspended and suspension does not cascade between parent
+and child instances, so child instances are suspended independently of their parent or
+root instance.
 This is done asynchronously, the progress can be tracked using the batchOperationKey from the response and the batch operation status endpoint (/batch-operations/{batchOperationKey}).
 
 - Added in Camunda 8.10.

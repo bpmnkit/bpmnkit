@@ -10,8 +10,8 @@ npm install @bpmnkit/connectors
 ```typescript
 import { listConnectors, searchConnectors, getTemplate } from "@bpmnkit/connectors";
 
-listConnectors().length;        // 116
-searchConnectors("slack");      // 6 matches, inbound and outbound
+listConnectors().length;        // 134 — Camunda's 133, plus BPMN Kit's
+searchConnectors("slack");      // 11 matches, inbound and outbound
 
 const template = getTemplate("io.camunda.connectors.Slack.v1");
 ```
@@ -40,6 +40,19 @@ template you hold yourself.
 
 `CAMUNDA_CONNECTOR_TEMPLATES` is the raw bundled array if you would rather work with the
 templates directly.
+
+### Templates maintained by BPMN Kit
+
+`CAMUNDA_CONNECTOR_TEMPLATES` mirrors Camunda's marketplace and is regenerated from it.
+Templates for services Camunda does not ship one for live beside it in
+`BPMNKIT_CONNECTOR_TEMPLATES`, and join the same catalog: `listConnectors`,
+`searchConnectors`, `getTemplate` and `casen connector` find them like any other. Each runs on
+a connector the Camunda runtime already has — the REST connector, `io.camunda:http-json:1` —
+so a cluster needs no extra job worker.
+
+| Template id | What it does | Guide |
+|---|---|---|
+| `io.bpmnkit.connectors.CloudflareClef.v1` | Asks a Cloudflare Clef decision model typed questions and returns calibrated answers to route on | [AI Decisions](/docs/guides/ai-decisions) |
 
 ---
 Source: https://bpmnkit.com/docs/packages/connectors

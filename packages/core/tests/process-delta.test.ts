@@ -129,7 +129,11 @@ describe("parseProcessDelta", () => {
 		const delta = parseProcessDelta("a[user Open\nb > c\nd[task X | color=red]")
 		expect(delta.problems.map((p) => p.line)).toEqual([1, 3])
 		expect(delta.flows).toHaveLength(1)
-		expect(delta.nodes).toEqual([{ id: "d", type: "task", name: "X", line: 3 }])
+		// The open bracket is closed where the name ends, and reported
+		expect(delta.nodes).toEqual([
+			{ id: "a", type: "userTask", name: "Open", line: 1 },
+			{ id: "d", type: "task", name: "X", line: 3 },
+		])
 	})
 
 	it("ignores an unknown trigger and brackets on a removal", () => {

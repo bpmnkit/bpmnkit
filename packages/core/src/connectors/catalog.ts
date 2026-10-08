@@ -1,0 +1,252 @@
+import type { ElementTemplate, TemplateCondition, TemplateProperty } from "./template-types.js"
+import { BPMNKIT_CONNECTOR_TEMPLATES } from "./templates/bpmnkit.js"
+import { BUNDLED_CONNECTOR_TEMPLATES } from "./templates/generated.js"
+
+/** Where in the process a connector template attaches. */
+export type ConnectorDirection =
+	| "outbound"
+	| "inbound-start"
+	| "inbound-intermediate"
+	| "inbound-boundary"
+	/** The AI Agent Sub-process connector — an ad-hoc sub-process, not a single task. */
+	| "agentic"
+
+/** One user-configurable (non-Hidden) property on a connector template. */
+export interface ConnectorInputSpec {
+	/** Lookup key — matches the keys `applyConnectorTemplate()` expects in its `values` argument. */
+	key: string
+	label: string
+	description?: string
+	/** True for fields whose label/key suggest a credential (API key, token, password, secret). */
+	isSecret: boolean
+	/** True if the field's value is interpreted as FEEL (a leading "=" makes it an expression). */
+	isFeel: boolean
+	default?: string | number | boolean
+	choices?: Array<{ name: string; value: string }>
+	/** This field only applies (and is only required) when this condition holds against other values. */
+	condition?: TemplateCondition
+}
+
+/** A connector template reduced to what a skill or LLM needs to select and configure it. */
+export interface ConnectorSummary {
+	id: string
+	name: string
+	description?: string
+	/** Zeebe job type this template sets, e.g. "io.camunda:slack:1". Absent for some inbound templates. */
+	taskType?: string
+	appliesTo: string[]
+	direction: ConnectorDirection
+	keywords: string[]
+	requiredInputs: ConnectorInputSpec[]
+	optionalInputs: ConnectorInputSpec[]
+}
+
+const SECRET_PATTERN = /token|secret|password|api.?key|apikey|credential|access.?key/i
+
+export function isSecretField(prop: TemplateProperty, key: string): boolean {
+	return SECRET_PATTERN.test(`${prop.label ?? ""} ${key}`)
+}
+
+/** Same key-derivation logic used at apply time — kept in sync with `apply.ts`. */
+export function propertyKey(prop: TemplateProperty): string {
+	if (prop.id) return prop.id
+	const b = prop.binding
+	if (b.type === "zeebe:input") return b.name
+	if (b.type === "zeebe:output") return b.source
+	if (b.type === "zeebe:taskHeader") return b.key
+	if (b.type === "zeebe:taskDefinition") return `taskDef.${b.property}`
+	if (b.type === "zeebe:taskDefinition:type") return "taskDef.type"
+	if (b.type === "property") return b.name
+	if (b.type === "zeebe:property") return b.name
+	if (b.type === "zeebe:adHoc") return `adHoc.${b.property}`
+	if (b.type === "zeebe:agentDefinition") return `agentDefinition.${b.property}`
+	if (b.type === "bpmn:Message#property") return `message.${b.name}`
+	if (b.type === "bpmn:Message#zeebe:subscription#property") return `message.${b.name}`
+	if (b.type === "zeebe:linkedResource") return `linkedResource.${b.linkName}.${b.property}`
+	return ""
+}
+
+function toInputSpec(prop: TemplateProperty): ConnectorInputSpec {
+	const key = propertyKey(prop)
+	return {
+		key,
+		label: prop.label ?? key,
+		description: prop.description,
+		isSecret: isSecretField(prop, key),
+		isFeel: prop.feel === "required" || prop.feel === "optional",
+		default: prop.value,
+		choices: prop.choices,
+		condition: prop.condition,
+	}
+}
+
+function taskDefinitionType(template: ElementTemplate): string | undefined {
+	for (const prop of template.properties) {
+		if (prop.binding.type === "zeebe:taskDefinition" && prop.binding.property === "type") {
+			return typeof prop.value === "string" ? prop.value : undefined
+		}
+		if (prop.binding.type === "zeebe:taskDefinition:type") {
+			return typeof prop.value === "string" ? prop.value : undefined
+		}
+	}
+	return undefined
+}
+
+function directionOf(template: ElementTemplate): ConnectorDirection {
+	const elementType = template.elementType?.value ?? template.appliesTo[0]
+	switch (elementType) {
+		case "bpmn:AdHocSubProcess":
+			return "agentic"
+		case "bpmn:StartEvent":
+			return "inbound-start"
+		case "bpmn:IntermediateCatchEvent":
+		case "bpmn:IntermediateThrowEvent":
+		case "bpmn:ReceiveTask":
+			return "inbound-intermediate"
+		case "bpmn:BoundaryEvent":
+			return "inbound-boundary"
+		default:
+			return "outbound"
+	}
+}
+
+function keywordsOf(template: ElementTemplate): string[] {
+	const words = new Set<string>()
+	for (const raw of `${template.name} ${template.description ?? ""}`
+		.toLowerCase()
+		.split(/[^a-z0-9]+/)) {
+		if (raw.length > 2) words.add(raw)
+	}
+	return [...words]
+}
+
+/**
+ * What a template will do, without applying it.
+ *
+ * The catalogue computes this for every listing already; it is exported because
+ * anything offering a template to a person needs to be able to say what it
+ * binds and what it will ask for — a picker that applies on the first click is
+ * asking someone to choose blind.
+ *
+ * @param template - The template to describe.
+ */
+export function summarizeTemplate(template: ElementTemplate): ConnectorSummary {
+	const visible = template.properties.filter((p) => p.type !== "Hidden")
+	return {
+		id: template.id,
+		name: template.name,
+		description: template.description,
+		taskType: taskDefinitionType(template),
+		appliesTo: template.appliesTo,
+		direction: directionOf(template),
+		keywords: keywordsOf(template),
+		requiredInputs: visible.filter((p) => p.constraints?.notEmpty === true).map(toInputSpec),
+		optionalInputs: visible.filter((p) => p.constraints?.notEmpty !== true).map(toInputSpec),
+	}
+}
+
+/**
+ * Templates a host has registered on top of the bundled catalogue — a project's
+ * own `.camunda/element-templates/`, or anything else it has that the bundle
+ * does not.
+ *
+ * Kept separate rather than merged into one array so the bundle stays the
+ * constant it is declared to be, and so `clearRegisteredTemplates()` is exact.
+ */
+const registered = new Map<string, ElementTemplate>()
+
+let cachedSummaries: ConnectorSummary[] | undefined
+
+/**
+ * Adds templates to the catalogue, replacing any bundled template with the same
+ * id.
+ *
+ * The workspace wins deliberately: a project that ships its own version of a
+ * connector means it, and the bundle is the fallback. Registering the same id
+ * twice keeps the later one, so a nearer directory can override a further one.
+ *
+ * @param templates - Validated templates. Nothing is checked here; run
+ *   `validateElementTemplate` (or `readTemplateDocument`) at the boundary where
+ *   the JSON was read, so a bad file is reported against its own path.
+ */
+export function registerElementTemplates(templates: readonly ElementTemplate[]): void {
+	for (const template of templates) registered.set(template.id, template)
+	cachedSummaries = undefined
+}
+
+/** Drops every registered template, leaving only the bundled catalogue. */
+export function clearRegisteredTemplates(): void {
+	registered.clear()
+	cachedSummaries = undefined
+}
+
+/** Camunda's marketplace templates, then the ones this repo maintains. */
+const BUNDLED: readonly ElementTemplate[] = [
+	...BUNDLED_CONNECTOR_TEMPLATES,
+	...BPMNKIT_CONNECTOR_TEMPLATES,
+]
+
+/** The bundled templates plus registered ones, the latter winning on id. */
+export function allTemplates(): readonly ElementTemplate[] {
+	if (registered.size === 0) return BUNDLED
+	const bundled = BUNDLED.filter((t) => !registered.has(t.id))
+	return [...bundled, ...registered.values()]
+}
+
+/** Every connector template — bundled and registered — as a compact summary. */
+export function listConnectors(): ConnectorSummary[] {
+	if (!cachedSummaries) {
+		cachedSummaries = allTemplates().map(summarizeTemplate)
+	}
+	return cachedSummaries
+}
+
+/** The full element template for a given template id, registered or bundled. */
+export function getTemplate(id: string): ElementTemplate | undefined {
+	return registered.get(id) ?? BUNDLED.find((t) => t.id === id)
+}
+
+/** Tie-break preference when two templates score equally — outbound "do this" connectors are the common case. */
+const DIRECTION_RANK: Record<ConnectorDirection, number> = {
+	outbound: 0,
+	agentic: 1,
+	"inbound-start": 2,
+	"inbound-intermediate": 3,
+	"inbound-boundary": 4,
+}
+
+/**
+ * Keyword-scored search over the bundled connector catalog — mirrors
+ * `@bpmnkit/patterns`' `findPattern()` matching style. Matches against the
+ * template name are weighted highest, then keyword-list matches, then a
+ * general substring match; ties prefer outbound connectors.
+ */
+export function searchConnectors(query: string): ConnectorSummary[] {
+	const terms = query
+		.toLowerCase()
+		.split(/[^a-z0-9]+/)
+		.filter((t) => t.length > 1)
+	if (terms.length === 0) return []
+
+	const scored = listConnectors()
+		.map((summary) => {
+			const nameWords = new Set(summary.name.toLowerCase().split(/[^a-z0-9]+/))
+			const haystack =
+				`${summary.name} ${summary.description ?? ""} ${summary.keywords.join(" ")} ${summary.taskType ?? ""}`.toLowerCase()
+			let score = 0
+			for (const term of terms) {
+				if (nameWords.has(term)) score += 4
+				else if (summary.keywords.includes(term)) score += 3
+				else if (haystack.includes(term)) score += 1
+			}
+			return { summary, score }
+		})
+		.filter((s) => s.score > 0)
+		.sort(
+			(a, b) =>
+				b.score - a.score ||
+				DIRECTION_RANK[a.summary.direction] - DIRECTION_RANK[b.summary.direction],
+		)
+
+	return scored.map((s) => s.summary)
+}

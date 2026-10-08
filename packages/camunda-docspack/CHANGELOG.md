@@ -1,5 +1,28 @@
 # @bpmnkit/camunda-docspack
 
+## 0.1.6
+
+### Patch Changes
+
+- a7f4e42: The pack is rebuilt from camunda-docs@b4b27e3: 1112 chunks from 393 documents. 64 chunks are new and 120 have changed content. Six chunk ids are gone because upstream renamed or removed their headings. Anything that pins one of them gets no result:
+  - `apis-tools.orchestration-cluster-api-rest.specifications.create-agent-instance-history-item.api`
+  - `components.best-practices.modeling.naming-technically-relevant-ids.using-naming-conventions-for-bpmn-ids-editing-ids-with-camunda-modeler`
+  - `components.concepts.process-applications`
+  - `components.concepts.process-applications.next-steps`
+  - `components.concepts.secret-resolution.two-resolution-paths`
+  - `components.modeler.bpmn.conditional-events.conditional-events.modeling-conditional-events-in-modeler`
+
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+  - @bpmnkit/core@1.3.0
+
 ## 0.1.5
 
 ### Patch Changes

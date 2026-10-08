@@ -90,7 +90,10 @@ describe("applyBpmnOperations", () => {
 		expect(
 			extensions?.find((e) => e.name === "zeebe:taskDefinition")?.attributes.retries,
 		).toBeUndefined()
-		expect(extensions?.find((e) => e.name === "zeebe:ioMapping")).toBeUndefined()
+		// Input mappings are part of the compact form now; retries still are not
+		expect(
+			extensions?.find((e) => e.name === "zeebe:ioMapping")?.children[0]?.attributes.source,
+		).toBe("=customer.id")
 	})
 
 	it("patches one extension without disturbing the others", () => {

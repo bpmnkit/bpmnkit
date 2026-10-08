@@ -18,12 +18,14 @@
 
 import type { BpmnElementType } from "./bpmn-model.js"
 import type { CompactFlow } from "./compact.js"
+import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connector-line.js"
 import {
 	ALIASES,
 	KINDS,
 	type ProcessTextProblem,
 	TRIGGERS,
 	edgeLabel,
+	splitFeel,
 	tokenizePath,
 } from "./process-text.js"
 
@@ -76,6 +78,10 @@ export interface DeltaNode {
 	on?: string
 	/** Zeebe job type, from `job=`. */
 	jobType?: string
+	/** A script task's FEEL expression, with its leading `=`, from `feel=`. */
+	script?: string
+	/** The variable a script task's or a job's result goes to, from `result=`. */
+	resultVariable?: string
 	/** `nonint`: a non-interrupting boundary or start event. */
 	interrupting?: false
 	line: number
@@ -99,6 +105,8 @@ export interface ProcessDelta {
 	removedFlows: { from: string; to: string; line: number }[]
 	/** `@n` lines: the feedback item, and the ids the script says answer it. */
 	addressed: { item: number; ids: string[]; line: number }[]
+	/** `with` lines: connector configuration for a node, existing or new. */
+	connectors: ConnectorLine[]
 	/** Lines, or parts of lines, that were left out. */
 	problems: ProcessTextProblem[]
 }
@@ -141,10 +149,17 @@ function readSpec(
 		}
 	}
 
-	for (const attr of attrs.split(/[\s,|]+/).filter(Boolean)) {
+	const { plain, feel } = splitFeel(attrs)
+	if (feel !== undefined) {
+		// A step that evaluates FEEL is a script task
+		if (node.type === undefined || node.type === "task") node.type = "scriptTask"
+		node.script = feel
+	}
+	for (const attr of plain.split(/[\s,|]+/).filter(Boolean)) {
 		const [key, value] = attr.split("=", 2)
 		if (key === "on" && value) node.on = value
 		else if (key === "job" && value) node.jobType = value
+		else if (key === "result" && value) node.resultVariable = value
 		else if (key === "nonint" && value === undefined) node.interrupting = false
 		else problems.push({ line, message: `unknown attribute "${attr}" on "${id}"; ignored` })
 	}
@@ -165,6 +180,7 @@ export function parseProcessDelta(text: string): ProcessDelta {
 		removedNodes: [],
 		removedFlows: [],
 		addressed: [],
+		connectors: [],
 		problems: [],
 	}
 	const declared = new Map<string, DeltaNode>()
@@ -178,6 +194,21 @@ export function parseProcessDelta(text: string): ProcessDelta {
 		}
 		if (tokens.note !== undefined) {
 			delta.problems.push({ line: n, message: `ignored the note "${tokens.note}"` })
+		}
+		for (const id of tokens.bracketless ?? []) {
+			delta.problems.push({
+				line: n,
+				message: `"${id} …" has no brackets; read it as declaring "${id}"`,
+			})
+		}
+		for (const id of tokens.unclosed ?? []) {
+			delta.problems.push({
+				line: n,
+				message: `"${id}[" is not closed; closed it where its name ends`,
+			})
+		}
+		for (const { written, id } of tokens.joined ?? []) {
+			delta.problems.push({ line: n, message: `"${written}" is not an id; read as "${id}"` })
 		}
 		for (const ref of tokens.refs) {
 			if (ref.spec === undefined) continue
@@ -259,6 +290,11 @@ export function parseProcessDelta(text: string): ProcessDelta {
 			}
 			const ids = (match[2] ?? "").split(/[\s,]+/).filter((id) => /^[A-Za-z_][\w.-]*$/.test(id))
 			delta.addressed.push({ item, ids, line: n })
+			return
+		}
+		if (CONNECTOR_LINE.test(line)) {
+			const connector = parseConnectorLine(line, n, delta.problems)
+			if (connector) delta.connectors.push(connector)
 			return
 		}
 		// `- x` removes; `-> x` is an arrow a model wrote at the start of a line.

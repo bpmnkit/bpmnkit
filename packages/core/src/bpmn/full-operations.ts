@@ -167,6 +167,7 @@ const PATCH_EXTENSIONS: ReadonlyArray<[keyof CompactElement, string]> = [
 	["formId", "zeebe:formDefinition"],
 	["calledProcess", "zeebe:calledElement"],
 	["decisionId", "zeebe:calledDecision"],
+	["script", "zeebe:script"],
 	["taskHeaders", "zeebe:taskHeaders"],
 ]
 
@@ -225,7 +226,9 @@ function setTaskHeaders(element: BpmnFlowElement, headers: Record<string, string
  * `zeebe:calledDecision` instead.
  */
 function setResultVariable(element: BpmnFlowElement, resultVariable: string): void {
-	const calledDecision = element.extensionElements.find((e) => e.name === "zeebe:calledDecision")
+	const calledDecision = element.extensionElements.find(
+		(e) => e.name === "zeebe:calledDecision" || e.name === "zeebe:script",
+	)
 	if (calledDecision) {
 		calledDecision.attributes.resultVariable = resultVariable
 		return
@@ -290,6 +293,12 @@ function patchElement(
 	}
 	if (patch.decisionId !== undefined) {
 		setExtensionAttribute(element, "zeebe:calledDecision", "decisionId", patch.decisionId)
+	}
+	if (patch.script !== undefined) {
+		const script = ensureExtension(element, "zeebe:script")
+		script.attributes.expression = patch.script
+		// Camunda will not deploy a script without the variable its value goes to
+		script.attributes.resultVariable ??= patch.resultVariable ?? "result"
 	}
 	if (patch.resultVariable !== undefined) setResultVariable(element, patch.resultVariable)
 	if (patch.taskHeaders !== undefined) setTaskHeaders(element, patch.taskHeaders)

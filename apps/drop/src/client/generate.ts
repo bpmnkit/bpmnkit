@@ -17,9 +17,11 @@
  * sends it to a vision model. Only the first draft reads the image; changes go
  * to the text model with the draft's text, like any other.
  *
- * Nothing is stored until the reader asks for a link. The diagram then goes
- * through `/drop/api/drops` as an ordinary `.bpmn` upload — same validation,
- * same Terms, same short link.
+ * Nothing is stored until the reader asks for a link, or to open the draft in
+ * the editor. The diagram then goes through `/drop/api/drops` as an ordinary
+ * `.bpmn` upload — same validation, same Terms, same short link. "Open in
+ * editor" goes to that link with `#edit`, where the editor opens with the AI
+ * chat beside it, for changes that keep the layout and any hand edits.
  */
 import { BpmnCanvas } from "@bpmnkit/canvas"
 import {
@@ -28,8 +30,12 @@ import {
 	type ProcessTextQuestion,
 	createProcessTextStream,
 	expand,
+	listSecrets,
 	parseProcessText,
 } from "@bpmnkit/core"
+// Types only: the connect pass applies its answer on the server, so the page never loads the catalog.
+import { completes, draftGaps, gapChange } from "../lib/check.js"
+import type { ConnectEvent, ConnectResult } from "../lib/connect.js"
 import {
 	type GenerateEvent,
 	IMAGE_MAX_SIDE,
@@ -39,6 +45,8 @@ import {
 	createSseReader,
 } from "../lib/generate.js"
 import { AI_CODE_STORAGE_KEY, AI_PASS_HEADER } from "../shared/constants.js"
+// Types only: the dry run is its own bundle, fetched once a draft has connectors.
+import type * as DryRunModule from "./dry-run.js"
 
 // Short on purpose: a starting point for describing your own process.
 const EXAMPLES: readonly { label: string; text: string }[] = [
@@ -144,6 +152,7 @@ export function mountGenerator(): void {
 	const count = $("genCount")
 	const run = $<HTMLButtonElement>("genRun")
 	const share = $<HTMLButtonElement>("genShare")
+	const edit = $<HTMLButtonElement>("genEdit")
 	const status = $("genStatus")
 	const name = $("genName")
 	const host = $("genCanvas")
@@ -158,6 +167,7 @@ export function mountGenerator(): void {
 	const examples = $("genExamples")
 	const refine = $("genRefine")
 	const questions = $("genQuestions")
+	const checkBox = $("genCheck")
 	const changeInput = $<HTMLInputElement>("genChange")
 	const apply = $<HTMLButtonElement>("genApply")
 	const undo = $<HTMLButtonElement>("genUndo")
@@ -212,6 +222,10 @@ export function mountGenerator(): void {
 	let image: string | null = null
 	/** The latest frame not yet drawn: frames arrive faster than a screen refreshes. */
 	let pending: BpmnDefinitions | null = null
+	/** The draft with its connectors, by the draft text it was connected from, so Undo keeps them. */
+	const connected = new Map<string, string>()
+	/** What the parser asked about the draft on screen; connector questions are shown after them. */
+	let parserQuestions: ProcessTextQuestion[] = []
 
 	function draw(defs: BpmnDefinitions): void {
 		pending = defs
@@ -269,17 +283,84 @@ export function mountGenerator(): void {
 	function show(text: string): { ids: Set<string>; problems: number } {
 		if (!name || !share || !refine || !undo) return { ids: new Set(), problems: 0 }
 		const parsed = parseProcessText(text)
-		const defs = expand(parsed.diagram)
+		const plain = expand(parsed.diagram)
+		const withConnectors = connected.get(text)
+		const defs = withConnectors === undefined ? plain : Bpmn.parse(withConnectors)
 		draw(defs)
-		result = { xml: Bpmn.export(defs), file: fileName(defs) }
+		result = { xml: withConnectors ?? Bpmn.export(defs), file: fileName(defs) }
 		name.textContent = result.file
+		parserQuestions = parsed.questions
 		showQuestions(parsed.questions)
+		void showCheck(defs, result.xml)
 		share.hidden = false
+		if (edit) edit.hidden = false
 		refine.hidden = false
 		undo.hidden = earlier.length === 0
 		return {
 			ids: new Set(parsed.diagram.processes[0]?.elements.map((e) => e.id)),
 			problems: parsed.problems.length,
+		}
+	}
+
+	/** The latest diagram checked: an older check finishing late is not shown. */
+	let checking = ""
+
+	/**
+	 * For a draft with connectors: the secrets to create before deploying, and
+	 * a dry run with every outside call mocked, which says whether the process
+	 * runs from start to end (`doc/ai-connector-generation-plan.md` WS7).
+	 */
+	async function showCheck(defs: BpmnDefinitions, xml: string): Promise<void> {
+		if (!checkBox) return
+		checking = xml
+		const elements = defs.processes.flatMap((p) => p.flowElements)
+		const connectors = elements.filter(
+			(el) => el.unknownAttributes["zeebe:modelerTemplate"] !== undefined,
+		)
+		if (connectors.length === 0) {
+			checkBox.hidden = true
+			return
+		}
+		const nameOf = (id: string) => elements.find((el) => el.id === id)?.name ?? id
+		const row = (label: string, ...content: (string | Node)[]) => {
+			const div = document.createElement("div")
+			const b = document.createElement("b")
+			b.textContent = label
+			const span = document.createElement("span")
+			span.append(...content)
+			div.append(b, span)
+			return { div, span }
+		}
+		const run = row("Dry run", "running…")
+		const rows = [run.div]
+		const secrets = listSecrets(defs)
+		if (secrets.length > 0) {
+			const names = secrets.flatMap((s, i) => {
+				const code = document.createElement("code")
+				code.textContent = s.name
+				return i === 0 ? [code] : [" ", code]
+			})
+			rows.push(row("Secrets", ...names, " — create these in your cluster before deploying").div)
+		}
+		checkBox.replaceChildren(...rows)
+		checkBox.hidden = false
+		try {
+			const url = "/drop/assets/dry-run.js"
+			const { check } = (await import(url)) as typeof DryRunModule
+			const outcome = await check(xml)
+			if (checking !== xml) return
+			const mocked = `${outcome.connectors.length} connector${outcome.connectors.length === 1 ? "" : "s"} mocked`
+			if (outcome.reachedEnd) {
+				const end = outcome.path.at(-1)
+				run.span.className = "ok"
+				run.span.textContent = `✓ runs to “${end ? nameOf(end) : "the end"}” · ${mocked}`
+			} else {
+				const at = outcome.stoppedAt[0] ?? outcome.path.at(-1)
+				run.span.className = "bad"
+				run.span.textContent = `✗ stops${at ? ` at “${nameOf(at)}”` : ""}${outcome.error ? `: ${outcome.error}` : ""}`
+			}
+		} catch {
+			if (checking === xml) run.span.textContent = "could not run here"
 		}
 	}
 
@@ -368,12 +449,13 @@ export function mountGenerator(): void {
 	 * @returns The response, or `null` when the reader closed the challenge.
 	 */
 	async function send(
-		body: { description: string; diagram?: string; change?: string; image?: string },
+		body: Record<string, string>,
 		code: string,
 		signal: AbortSignal,
+		path = "/drop/api/generate",
 	): Promise<Response | null> {
 		const post = (token?: string) =>
-			fetch("/drop/api/generate", {
+			fetch(path, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -527,7 +609,9 @@ export function mountGenerator(): void {
 		draft = null
 		earlier.length = 0
 		result = null
+		checking = ""
 		share.hidden = true
+		if (edit) edit.hidden = true
 		refine.hidden = true
 		const started = performance.now()
 		const answer = await ask(
@@ -546,6 +630,108 @@ export function mountGenerator(): void {
 				? `ready (cached)${repaired(problems)}`
 				: `ready in ${seconds}s${repaired(problems)}`,
 		)
+		// A request with words to check against: an image alone has none
+		if (description.length >= 10) await complete()
+		await connect()
+	}
+
+	/**
+	 * The check after a draft (`src/lib/check.ts`): when the request names what the
+	 * draft has no element for — a DMN decision, a deadline, a failure to handle — one
+	 * change request asks for exactly that. Its answer stands only when it fills a gap
+	 * and keeps every element; otherwise the draft does.
+	 */
+	async function complete(): Promise<void> {
+		if (!draft) return
+		const change = gapChange(draftGaps(draft.description, draft.text))
+		if (!change) return
+		const before = status?.textContent ?? ""
+		const text = draft.text
+		const answer = await ask(
+			{ description: draft.description, diagram: text, change },
+			"completing",
+		)
+		if (draft?.text !== text) return
+		if (answer && completes(draft.description, text, answer.text)) {
+			earlier.push(text)
+			draft.text = answer.text
+			const { problems } = show(answer.text)
+			setStatus(`${before} · completed${repaired(problems)}`)
+		} else {
+			// What streamed is not kept: the canvas shows the draft again
+			show(text)
+			setStatus(before)
+		}
+	}
+
+	/**
+	 * The second pass: configures the draft's connectors (`doc/ai-connector-generation-plan.md`
+	 * §4). The server picks the cards, asks the model and applies its answer, so the
+	 * page only draws the connected diagram. With `lines` — a `with` line the reader
+	 * finished to answer a question — no model is asked.
+	 *
+	 * Quiet when it cannot help: a deployment without the feature, a draft with no
+	 * task a connector fits, or a failure leave the draft as it is.
+	 */
+	async function connect(lines?: string): Promise<void> {
+		if (!draft || !result || !status) return
+		const code = readCode()
+		if (!code) return
+		const text = draft.text
+		const before = status.textContent ?? ""
+		running?.abort()
+		const controller = new AbortController()
+		running = controller
+		setStatus(lines ? "connecting…" : `${before} · connecting…`, true)
+		setBusy(true)
+		const body: Record<string, string> = { xml: result.xml, request: draft.description }
+		if (lines) body.lines = lines
+		let outcome: ConnectResult | undefined
+		let note = ""
+		try {
+			const res = await send(body, code, controller.signal, "/drop/api/connect")
+			if (!res?.ok || !res.body) {
+				// Off (404), or a check the reader closed: the draft stands as it is.
+				if (!controller.signal.aborted) setStatus(before)
+				return
+			}
+			const sse = createSseReader()
+			const decoder = new TextDecoder()
+			const reader = res.body.getReader()
+			for (let chunk = await reader.read(); !chunk.done; chunk = await reader.read()) {
+				for (const data of sse.push(decoder.decode(chunk.value, { stream: true }))) {
+					const event = JSON.parse(data) as ConnectEvent
+					if ("result" in event) outcome = event.result
+					else if ("error" in event) note = " · connectors failed"
+				}
+			}
+		} catch {
+			if (controller.signal.aborted) return
+			note = " · connectors failed"
+		} finally {
+			if (!controller.signal.aborted) {
+				setBusy(false)
+				running = null
+			}
+		}
+		if (controller.signal.aborted || draft?.text !== text) return
+		if (!outcome) {
+			setStatus(`${before}${note}`)
+			return
+		}
+		if (outcome.connected.length > 0) {
+			connected.set(text, outcome.xml)
+			const defs = Bpmn.parse(outcome.xml)
+			draw(defs)
+			result = { xml: outcome.xml, file: fileName(defs) }
+			void showCheck(defs, outcome.xml)
+		}
+		showQuestions([...parserQuestions, ...outcome.questions])
+		const count = outcome.connected.length
+		const asks = outcome.questions.length
+		setStatus(
+			`${lines ? "connected" : before}${count > 0 ? ` · ${count} connector${count === 1 ? "" : "s"}` : ""}${asks > 0 ? ` · ${asks} input${asks === 1 ? "" : "s"} to fill` : ""}`,
+		)
 	}
 
 	/** Asks for `request` to be made to the draft on screen, and draws the result. */
@@ -554,6 +740,12 @@ export function mountGenerator(): void {
 		const text = request.trim()
 		if (text.length < MIN_CHANGE_CHARS) {
 			changeInput.focus()
+			return
+		}
+		// A connector question answered: the line is applied as written, without a model
+		if (/^with\s+[A-Za-z_][\w.-]*\s*:/i.test(text)) {
+			changeInput.value = ""
+			await connect(text)
 			return
 		}
 		const before = parseProcessText(draft.text).diagram.processes[0]?.elements ?? []
@@ -577,10 +769,16 @@ export function mountGenerator(): void {
 		setStatus(
 			`changed${answer.cached ? " (cached)" : ` in ${seconds}s`} · +${added} −${removed}${repaired(problems)}`,
 		)
+		await connect()
 	}
 
-	async function shareIt(): Promise<void> {
-		if (!result || !share || !url || !open || !out) return
+	/**
+	 * Stores the draft as a drop.
+	 *
+	 * @returns Its link, or `null` when it failed — the error is shown.
+	 */
+	async function upload(): Promise<string | null> {
+		if (!result || !share) return null
 		const body = new FormData()
 		body.append(
 			"files",
@@ -588,20 +786,37 @@ export function mountGenerator(): void {
 			result.file,
 		)
 		share.disabled = true
+		if (edit) edit.disabled = true
 		try {
 			const res = await fetch("/drop/api/drops", { method: "POST", body })
 			const payload = (await res.json()) as { url?: string; error?: string; details?: string[] }
 			if (!res.ok || !payload.url) {
-				return showError(payload.details?.join("\n") ?? payload.error ?? "Sharing failed.")
+				showError(payload.details?.join("\n") ?? payload.error ?? "Sharing failed.")
+				return null
 			}
-			url.value = new URL(payload.url, location.origin).href
-			open.href = payload.url
-			out.classList.remove("hidden")
+			return payload.url
 		} catch {
 			showError("Network error — please try again.")
+			return null
 		} finally {
 			share.disabled = false
+			if (edit) edit.disabled = false
 		}
+	}
+
+	async function shareIt(): Promise<void> {
+		if (!url || !open || !out) return
+		const link = await upload()
+		if (link === null) return
+		url.value = new URL(link, location.origin).href
+		open.href = link
+		out.classList.remove("hidden")
+	}
+
+	/** Stores the draft and opens it in the editor, with the AI chat beside it. */
+	async function openInEditor(): Promise<void> {
+		const link = await upload()
+		if (link !== null) location.href = `${link}#edit`
 	}
 
 	const updateCount = () => {
@@ -633,6 +848,7 @@ export function mountGenerator(): void {
 		setStatus("undone")
 	})
 	share.addEventListener("click", () => void shareIt())
+	edit?.addEventListener("click", () => void openInEditor())
 	copy.addEventListener("click", async () => {
 		await navigator.clipboard.writeText(url.value)
 		copy.textContent = "Copied"

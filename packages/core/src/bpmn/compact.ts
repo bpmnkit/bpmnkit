@@ -15,6 +15,7 @@ import type {
 	BpmnSequenceFlow,
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
+import { restConnectorTaskType } from "./rest-connector.js"
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -37,12 +38,17 @@ export interface CompactElement {
 	dataStoreRef?: string
 	/** dataObject / dataObjectReference: marks a collection. */
 	isCollection?: boolean
-	/**
-	 * Zeebe task headers (key→value).
-	 * For the Camunda HTTP connector use jobType "io.camunda:http-json:1" and set:
-	 *   url, method, and optionally headers/body/connectionTimeoutInSeconds.
-	 */
+	/** Zeebe task headers (key→value). */
 	taskHeaders?: Record<string, string>
+	/**
+	 * Zeebe input mappings (target→source); a source starting with `=` is FEEL.
+	 * A connector reads its configuration from these: for the Camunda HTTP
+	 * connector (jobType "io.camunda:http-json:1") set `url`, `method`, and
+	 * optionally `headers`, `queryParameters`, `body`, `authentication.type`.
+	 */
+	inputs?: Record<string, string>
+	/** The element template applied to this element (`zeebe:modelerTemplate`). */
+	modelerTemplate?: { id: string; version?: number }
 	/** Called process ID (callActivity: zeebe:calledElement.processId) */
 	calledProcess?: string
 	/** Linked form ID (userTask: zeebe:formDefinition.formId) */
@@ -50,9 +56,17 @@ export interface CompactElement {
 	/** Linked decision ID (businessRuleTask: zeebe:calledDecision.decisionId) */
 	decisionId?: string
 	/**
+	 * The FEEL expression a script task evaluates (`zeebe:script`), with its leading
+	 * `=`. Its value goes to {@link resultVariable}.
+	 */
+	script?: string
+	/**
 	 * Primary output variable.
 	 * - For businessRuleTask: stored in zeebe:calledDecision.resultVariable.
-	 * - For serviceTask with jobType: stored as a zeebe:ioMapping output (source "= response").
+	 * - For a scriptTask with {@link script}: stored in zeebe:script.resultVariable.
+	 * - For a Camunda connector job type (`io.camunda:…`): stored as the `resultVariable`
+	 *   task header, which is where the connector runtime reads it.
+	 * - For any other serviceTask with jobType: stored as a zeebe:ioMapping output (source "= response").
 	 */
 	resultVariable?: string
 	/** Event definition type (timer, error, message, signal, …) */
@@ -63,6 +77,14 @@ export interface CompactElement {
 	interrupting?: boolean
 	/** Nested content for sub-process container types (subProcess, eventSubProcess, etc.) */
 	children?: { elements: CompactElement[]; flows: CompactFlow[] }
+	/**
+	 * Runs the activity once per item of a list (`zeebe:loopCharacteristics`):
+	 * `collection` is the FEEL expression of the list, `element` the variable each
+	 * instance gets its item in. In parallel unless `sequential`.
+	 */
+	multiInstance?: { collection: string; element?: string; sequential?: boolean }
+	/** A timer event's ISO 8601 duration (`PT5M`): how long it waits once reached. */
+	timerDuration?: string
 }
 
 /** A sequence flow in compact form. */
@@ -177,14 +199,19 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 	const jobType = findAttr(ext, "zeebe:taskDefinition", "type")
 	if (jobType) result.jobType = jobType
 
-	// Extract task headers (key→value map from zeebe:taskHeaders children)
+	// Extract task headers (key→value map from zeebe:taskHeaders children). A connector's
+	// result variable is a header; it is kept apart to round-trip as `resultVariable`.
+	const connector = jobType !== undefined && isConnectorJobType(jobType)
+	let headerResult: string | undefined
 	const taskHeadersEl = ext.find((e) => e.name === "zeebe:taskHeaders")
 	if (taskHeadersEl && taskHeadersEl.children.length > 0) {
 		const headers: Record<string, string> = {}
 		for (const child of taskHeadersEl.children) {
 			const key = child.attributes.key
 			const value = child.attributes.value
-			if (key !== undefined && value !== undefined) headers[key] = value
+			if (key === undefined || value === undefined) continue
+			if (connector && key === "resultVariable") headerResult = value
+			else headers[key] = value
 		}
 		if (Object.keys(headers).length > 0) result.taskHeaders = headers
 	}
@@ -196,12 +223,19 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 	if (formId) result.formId = formId
 
 	const decisionId = findAttr(ext, "zeebe:calledDecision", "decisionId")
+	const script = findAttr(ext, "zeebe:script", "expression")
 	if (decisionId) {
 		result.decisionId = decisionId
 		const rv = findAttr(ext, "zeebe:calledDecision", "resultVariable")
 		if (rv) result.resultVariable = rv
+	} else if (script) {
+		result.script = script
+		const rv = findAttr(ext, "zeebe:script", "resultVariable")
+		if (rv) result.resultVariable = rv
+	} else if (connector) {
+		if (headerResult !== undefined) result.resultVariable = headerResult
 	} else {
-		// For service tasks: extract the primary output variable from ioMapping
+		// For job workers: extract the primary output variable from ioMapping
 		const ioMappingEl = ext.find((e) => e.name === "zeebe:ioMapping")
 		if (ioMappingEl) {
 			const outputs = ioMappingEl.children.filter((c) => c.name === "zeebe:output")
@@ -212,8 +246,35 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		}
 	}
 
+	const inputs: Record<string, string> = {}
+	for (const input of ext.find((e) => e.name === "zeebe:ioMapping")?.children ?? []) {
+		const { source, target } = input.attributes
+		if (input.name === "zeebe:input" && source !== undefined && target !== undefined) {
+			inputs[target] = source
+		}
+	}
+	if (Object.keys(inputs).length > 0) result.inputs = inputs
+
+	const template = el.unknownAttributes["zeebe:modelerTemplate"]
+	if (template) {
+		const version = Number.parseInt(el.unknownAttributes["zeebe:modelerTemplateVersion"] ?? "", 10)
+		result.modelerTemplate = Number.isNaN(version) ? { id: template } : { id: template, version }
+	}
+
 	if ("eventDefinitions" in el && el.eventDefinitions.length > 0) {
-		result.eventType = el.eventDefinitions[0]?.type
+		const def = el.eventDefinitions[0]
+		result.eventType = def?.type
+		if (def?.type === "timer" && def.timeDuration) result.timerDuration = def.timeDuration
+	}
+
+	const loop = "loopCharacteristics" in el ? el.loopCharacteristics : undefined
+	const zeebeLoop = loop?.extensionElements.find((x) => x.name === "zeebe:loopCharacteristics")
+	const collection = zeebeLoop?.attributes.inputCollection
+	if (loop && collection) {
+		result.multiInstance = { collection }
+		if (zeebeLoop.attributes.inputElement)
+			result.multiInstance.element = zeebeLoop.attributes.inputElement
+		if (loop.isSequential) result.multiInstance.sequential = true
 	}
 
 	if (el.type === "boundaryEvent") {
@@ -409,16 +470,64 @@ export function makeEventDef(eventType: string): BpmnEventDefinition | undefined
 	}
 }
 
+/**
+ * Job types run by the Camunda connector runtime (`io.camunda:http-json:1`,
+ * `io.camunda.agenticai:aiagent:1`, …). The runtime reads `resultVariable` from
+ * a task header, not from an output mapping.
+ */
+export function isConnectorJobType(jobType: string): boolean {
+	return /^io\.camunda[.:]/.test(jobType)
+}
+
+/** Inputs of the HTTP connector that older compact answers wrote as task headers. */
+function isRestInputKey(key: string): boolean {
+	return (
+		key === "url" ||
+		key === "method" ||
+		key === "headers" ||
+		key === "queryParameters" ||
+		key === "body" ||
+		key === "connectionTimeoutInSeconds" ||
+		key === "readTimeoutInSeconds" ||
+		key.startsWith("authentication.")
+	)
+}
+
+/**
+ * Split an element's configuration into input mappings and task headers the
+ * way the engine reads them. The HTTP connector reads `url`, `method` and the
+ * rest from its inputs, so those keys move out of `taskHeaders`, where earlier
+ * prompts told models to put them and where the connector never looks.
+ */
+function zeebeConfig(el: CompactElement): {
+	inputs: Record<string, string>
+	headers: Record<string, string>
+} {
+	const rest = el.jobType === restConnectorTaskType()
+	const inputs = { ...el.inputs }
+	const headers: Record<string, string> = {}
+	for (const [key, value] of Object.entries(el.taskHeaders ?? {})) {
+		if (rest && isRestInputKey(key)) inputs[key] ??= value
+		else headers[key] = value
+	}
+	if (rest && inputs.url !== undefined) inputs["authentication.type"] ??= "noAuth"
+	if (el.jobType && isConnectorJobType(el.jobType) && el.resultVariable && !el.decisionId) {
+		headers.resultVariable ??= el.resultVariable
+	}
+	return { inputs, headers }
+}
+
 export function makeExtensions(el: CompactElement): XmlElement[] {
 	const ext: XmlElement[] = []
+	const { inputs, headers } = zeebeConfig(el)
 	if (el.jobType) {
 		ext.push({ name: "zeebe:taskDefinition", attributes: { type: el.jobType }, children: [] })
 	}
-	if (el.taskHeaders && Object.keys(el.taskHeaders).length > 0) {
+	if (Object.keys(headers).length > 0) {
 		ext.push({
 			name: "zeebe:taskHeaders",
 			attributes: {},
-			children: Object.entries(el.taskHeaders).map(([key, value]) => ({
+			children: Object.entries(headers).map(([key, value]) => ({
 				name: "zeebe:header",
 				attributes: { key, value },
 				children: [],
@@ -444,19 +553,29 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 			},
 			children: [],
 		})
-	} else if (el.resultVariable && el.jobType) {
-		// Service task with a result variable: map the connector response to the variable
+	}
+	if (el.script) {
 		ext.push({
-			name: "zeebe:ioMapping",
-			attributes: {},
-			children: [
-				{
-					name: "zeebe:output",
-					attributes: { source: "= response", target: el.resultVariable },
-					children: [],
-				},
-			],
+			name: "zeebe:script",
+			attributes: { expression: el.script, resultVariable: el.resultVariable ?? "result" },
+			children: [],
 		})
+	}
+	const ioMapping: XmlElement[] = Object.entries(inputs).map(([target, source]) => ({
+		name: "zeebe:input",
+		attributes: { source, target },
+		children: [],
+	}))
+	if (el.resultVariable && el.jobType && !el.decisionId && !isConnectorJobType(el.jobType)) {
+		// A job worker's result: map its `response` variable to the result variable
+		ioMapping.push({
+			name: "zeebe:output",
+			attributes: { source: "= response", target: el.resultVariable },
+			children: [],
+		})
+	}
+	if (ioMapping.length > 0) {
+		ext.push({ name: "zeebe:ioMapping", attributes: {}, children: ioMapping })
 	}
 	return ext
 }
@@ -514,6 +633,14 @@ function buildSubContent(
 	}
 }
 
+function templateAttributes(el: CompactElement): Record<string, string> {
+	if (!el.modelerTemplate) return {}
+	const { id, version } = el.modelerTemplate
+	return version === undefined
+		? { "zeebe:modelerTemplate": id }
+		: { "zeebe:modelerTemplate": id, "zeebe:modelerTemplateVersion": String(version) }
+}
+
 export function buildFlowElement(
 	el: CompactElement,
 	incoming: string[],
@@ -528,11 +655,28 @@ export function buildFlowElement(
 		incoming,
 		outgoing,
 		extensionElements: makeExtensions(el),
-		unknownAttributes: {} as Record<string, string>,
+		unknownAttributes: templateAttributes(el),
 	}
-	const eventDef = el.eventType ? makeEventDef(el.eventType) : undefined
+	const made = el.eventType ? makeEventDef(el.eventType) : undefined
+	const eventDef =
+		made?.type === "timer" && el.timerDuration ? { ...made, timeDuration: el.timerDuration } : made
 	const eventDefs: BpmnEventDefinition[] = eventDef ? [eventDef] : []
 	const subContent = buildSubContent(el.children)
+	const loop = el.multiInstance && {
+		loopCharacteristics: {
+			isSequential: el.multiInstance.sequential || undefined,
+			extensionElements: [
+				{
+					name: "zeebe:loopCharacteristics",
+					attributes: {
+						inputCollection: el.multiInstance.collection,
+						...(el.multiInstance.element ? { inputElement: el.multiInstance.element } : {}),
+					},
+					children: [],
+				},
+			],
+		},
+	}
 
 	switch (el.type) {
 		case "startEvent":
@@ -552,25 +696,25 @@ export function buildFlowElement(
 				eventDefinitions: eventDefs,
 			}
 		case "serviceTask":
-			return { ...base, type: "serviceTask" }
+			return { ...base, type: "serviceTask", ...loop }
 		case "scriptTask":
-			return { ...base, type: "scriptTask" }
+			return { ...base, type: "scriptTask", ...loop }
 		case "userTask":
-			return { ...base, type: "userTask" }
+			return { ...base, type: "userTask", ...loop }
 		case "businessRuleTask":
-			return { ...base, type: "businessRuleTask" }
+			return { ...base, type: "businessRuleTask", ...loop }
 		case "callActivity":
-			return { ...base, type: "callActivity" }
+			return { ...base, type: "callActivity", ...loop }
 		case "sendTask":
-			return { ...base, type: "sendTask" }
+			return { ...base, type: "sendTask", ...loop }
 		case "receiveTask":
-			return { ...base, type: "receiveTask" }
+			return { ...base, type: "receiveTask", ...loop }
 		case "manualTask":
-			return { ...base, type: "manualTask" }
+			return { ...base, type: "manualTask", ...loop }
 		case "task":
-			return { ...base, type: "task" }
+			return { ...base, type: "task", ...loop }
 		case "subProcess":
-			return { ...base, type: "subProcess", ...subContent }
+			return { ...base, type: "subProcess", ...subContent, ...loop }
 		case "adHocSubProcess":
 			return { ...base, type: "adHocSubProcess", ...subContent }
 		case "eventSubProcess":

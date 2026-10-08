@@ -1,0 +1,9 @@
+{
+	"id": "sheets-and-teams",
+	"category": "connector",
+	"description": "Two dedicated connectors from different vendors.",
+	"assertions": {
+		"minElements": 4,
+		"mustContainTaskTypes": ["io.camunda:google-sheets:1", "io.camunda:connector-microsoft-teams:1"]
+	}
+}

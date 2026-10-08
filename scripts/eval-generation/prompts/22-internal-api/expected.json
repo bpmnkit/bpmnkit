@@ -1,0 +1,10 @@
+{
+	"id": "internal-api",
+	"category": "connector",
+	"description": "A plain REST call to a URL the description gives.",
+	"assertions": {
+		"minElements": 4,
+		"mustContainTaskTypes": ["io.camunda:http-json:1"],
+		"mustContainElementTypes": ["exclusiveGateway"]
+	}
+}

@@ -1,6 +1,6 @@
 # Progress
 
-## 2026-10-03 — Rename the repository to `bpmnkit/bpmnkit`
+## 2026-10-08 — Rename the repository to `bpmnkit/bpmnkit`
 
 - Every live reference to `github.com/bpmnkit/monorepo` (package manifests, generated READMEs,
   site links, docs, `server.json`, the Claude plugin, `check-packages.mjs`, `patch-wasm-pkg.mjs`)
@@ -9,6 +9,1125 @@
 - New `scripts/migrate-npm-trust.mjs` moves each published package's npm trusted-publishing
   configuration to the new repository (dry run by default, `--apply` to write).
 - New `doc/repo-rename.md`: the order to rename, merge and move npm trust in.
+
+## 2026-10-07 — Process text: the work goes on from the task, and data steps are FEEL scripts
+
+- The boundary repair is no longer limited to a task with no way out of its own. A boundary
+  keeps only the ways out named for handling (failure, error, notify, retry, … — the first when
+  none is); the rest move to its task, and a bare end event the task led to is dropped. A
+  boundary whose ways out all read as handling (notify *and* log) keeps its parallel split. The
+  guide states the rule as well.
+- Steps that only work on process data become script tasks evaluating FEEL: `result=` and
+  `feel=` in the line format and in change scripts, `CompactElement.script` ↔ `zeebe:script`,
+  `writeProcessText` writes them back, and the guide teaches it with
+  `count[script … | result=openCount feel=count(issues[state = "open"])]`. Drop's post-draft
+  check sends one change request when a step named for a computation has no FEEL.
+- The engine's dry run runs the script; with the call mocked the variable it reads is null, and
+  the run still reaches its end.
+
+## 2026-10-07 — Drop: properties panel in the editor; the happy path no longer runs through a boundary
+
+- The drop editor had no properties panel, so a generated draft's task types and connector
+  inputs could not be seen or changed. `src/client/properties.ts` adds the config panel and its
+  BPMN schemas in a `#propsPanel` aside. The connector templates make that chunk 2.4 MB, so it
+  is loaded after the editor opens (a stand-in plugin hands it the canvas API); the reader's
+  bundle and the editor's own chunk are unchanged. With Ask AI, history or comments open, the
+  panel sits to their left.
+- "Read github issues of a repo via api, then calculate the count of open issues, and post the
+  number to a slack channel" drew the count and the post behind an and split *after the error
+  boundary*, and an empty end after the read. The model had written the main path through the
+  boundary (`read > err[boundary:error … | on=read] > handle …` then `err > calc > post`).
+  `parseProcessText` now moves every way out of a boundary but the first onto its task when
+  the task has none of its own.
+
+## 2026-10-06 — docspack 1.3.2, Camunda pack rebuilt against camunda-docs@b4b27e3
+
+- The root `docspack` devDependency moves from `^1.2.0` to `^1.3.2`.
+- `@bpmnkit/camunda-docspack` is rebuilt with the steps of `camunda-docspack.yml`, replacing
+  the closed weekly PR: 1112 chunks from 393 documents, the same bytes on two builds. Six chunk
+  ids left with upstream renames and removals; nothing in the repo pins any of them.
+
+## 2026-10-06 — Drop: open a draft in the editor, with an AI chat
+
+- Describe-to-diagram gets **Open in editor** next to Get a share link. It uploads the draft as
+  an ordinary drop and goes to `/drop/:shareId#edit`; the viewer claims the editor on the first
+  connection (with the usual Turnstile check) and opens the AI chat.
+- The editor gets an **Ask AI** panel (`src/client/ai-chat.ts`, a lazy chunk). A request goes to
+  `POST /drop/api/ai-edit` as one feedback item — `{ xml, request, elementIds? }` instead of
+  `threadIds` — on the elements selected when it was sent. The change script is applied with
+  `applyProcessDelta`, so layout and hand edits are kept, and lands as one undoable editor
+  change. An answer for a diagram that changed meanwhile is not applied.
+- Why the delta route rather than the generator's: the generator writes the whole diagram again
+  and lays it out anew, which would throw away whatever was moved or added by hand in the editor.
+- `postAiEdit` in `ai-edit.ts` now carries the passcode, Turnstile pass and retry for both the
+  comments dialog and the chat; `EditSession.selection()` reports the editor's selection.
+
+## 2026-10-06 — Deploy Drop builds the Reebe WASM engine
+
+- #218 made `@bpmnkit/drop` depend on `@bpmnkit/engine`, which builds against
+  `@bpmnkit/reebe-wasm`, so `pnpm turbo build --filter @bpmnkit/drop` now runs
+  `reebe-wasm#build:wasm`. The Deploy Drop workflow had no Rust toolchain or wasm-pack, and
+  failed with "apps/reebe-wasm has not been built". It now builds reebe-wasm the way
+  `ci.yml` does before building Drop.
+- Deploy Drop also runs on changes to `packages/engine` and `packages/connector-gen`, now
+  part of what Drop serves.
+
+## 2026-10-06 — Reebe restart test stops its first engine cleanly
+
+- `test_restart_does_not_replay_processed_commands` stopped the first engine as soon as the
+  job row appeared. The engine writes that row while it processes a command and records the
+  command as processed only afterwards, so on a busy CI runner the stop could land in between
+  and the restarted engine processed the command again: three jobs instead of two (main,
+  `ba14aa5`). The test now stops the engine once every command in the log is recorded.
+
+## 2026-10-05 — Main merged into the connect-pass branch
+
+- Main's Cloudflare Clef template (`BPMNKIT_CONNECTOR_TEMPLATES`) moves to
+  `@bpmnkit/core/connectors`, where the catalog now lives; `@bpmnkit/connectors`
+  re-exports it. The catalog lists Camunda's 133 templates, then BPMN Kit's.
+- Clef gets the card alias `clef`, so generation can name it like any other connector.
+- The API index test loads every service in one batch, with a 30s budget: one by one it
+  took over vitest's 5s default on a busy CI runner.
+- Tests in every package that loads the connector catalog (examples, proxy, drop, plugins,
+  editor, engine, vscode, cli, connectors) import `@bpmnkit/core` and `@bpmnkit/connectors` from
+  `dist` with Node rather than through Vite. Transforming the bundled connector templates took
+  17s on CI, which pushed example 07 (Clef) past its build budget and the proxy's MCP connector
+  tests past vitest's 5s limit.
+- The proxy's MCP connector tests, which start a fresh server under tsx for each call, get 30s
+  each: a cold start on a busy CI runner takes more than vitest's 5s default.
+- So do core's two `generateProcessTypes` tests that run the TypeScript compiler, and Drop's test
+  that lints every recorded bench answer: each takes about a second locally and over 5s on CI.
+- `api-surface.json` records what this branch adds: the `@bpmnkit/core/connectors` entry point,
+  the connector and API exports re-exported from `@bpmnkit/connectors`, and the dry run in
+  `@bpmnkit/engine/testing`. All additions, covered by the minor bumps in the changesets.
+
+## 2026-10-05 — Five runs with the draft check
+
+**The run:** `bench-results/2026-10-05T13-41-09-074Z`, every default prompt, 5 runs,
+`glm-4.7-flash`, with the check after each draft. 119 of 120 runs answered; one got Workers AI's
+HTTP 429 "capacity temporarily exceeded". It passed **99/119 (83%)**:
+- **prompts 01–15: 47/60 (78%)**, the rate the 3-run bench measured (28/36), so it holds;
+- **connector prompts 16–27: 52/60 (87%)**.
+
+12 business rule, 16, 20, 21, 22, 23, 24 and 25 passed every run. The check found gaps in 29
+drafts and kept 18 completions, at a median 2.3 s each. No run without the check (`--no-check`)
+was made, so its share of the gain is measured only against the earlier runs: 20–21 of 36 on
+01–15.
+
+**Weakest:**
+- **08 onboarding (2/5):** drafts of 12–22 of 25 elements.
+- **13 parallel (2/5):** three of the drafts have 3 elements.
+- **27 GitHub workflow runs (1/5).** Of its four failures:
+  - two called `/actions/workflows`;
+  - one wrote unreadable Slack lines;
+  - one wrote `with fetch: https://api.github.com/repos/web/web/actions/runs | api=github GET`,
+    the right call in the wrong place.
+
+**Repaired:**
+- A URL written where the alias goes is a REST call to it, and keeps its case.
+- A method after the service in `api=` is the call's method.
+- Drop counts a URL alias as a connector it knows, so the task's first card does not replace it.
+
+27 run 3 now passes: 100/120 re-scored. `bench:rescore` skips a run the model never answered.
+Every earlier bench re-scores as before or better.
+
+## 2026-10-05 — The draft check, measured: prompts 01–15 at 78%
+
+**The run:** `bench-results/2026-10-05T13-23-33-255Z`, every default prompt, 3 runs,
+`glm-4.7-flash`, with the check after each draft. It passed **61/72**, the best full run so far,
+and prompts 01–15 passed **28/36 (78%)**, up from 20–21. 01, 02, 05, 07 and 11 passed every run.
+
+**The check:** 24 of 72 drafts had a gap, and 18 of the 24 completions were kept. A check took
+a median 2.1 s.
+
+| Gap | Drafts | Completion kept | Passed in the end |
+|---|---|---|---|
+| rest | 5 | 5 | 5 |
+| failure | 4 | 4 | 3 |
+| user | 5 | 3 | 3 |
+| message | 3 | 2 | 3 |
+| each | 3 | 2 | 2 |
+| dmn | 2 | 2 | 1 |
+| parallel | 2 | 0 | 0 |
+
+**Repaired, from the dropped completions:**
+- **Steps in a row between two and nodes** (13 run 3):
+  `and[and Picking/Packing/Printing] > pick > pack > label > and[and Package ready]` runs them as
+  the parallel branches the and nodes mean.
+- **A catch event on a task is a boundary** (15 run 3): `timedout[catch:timer | on=poll after=PT5M]`.
+  The arrow from its own task into a boundary is dropped, as it only says where the boundary
+  sits. On anything but a task, such as the start event in 05 run 3, a catch event stays one.
+- **A gateway with `each=` and a step's name is a task run per item** (06 run 3):
+  `and[and Process every recipient | each=recipients]`.
+
+**`bench:rescore` re-evaluates a completion the check dropped** and uses it when today's check
+would keep it. Re-scored, the run is **63/72**: 06 run 3 and 13 run 3 now pass. Every earlier
+bench re-scores as before or better (`2026-10-05T10-38-56-569Z`: 61/72).
+
+**Still failing:**
+- **12 run 3:** both branches of its xor lead to the same task.
+- **14 run 1:** the completion is a garbled draft.
+- **08 run 2:** 24 of the 25 elements.
+- **10, 16, 24, 27, one run each:** connector choices.
+
+## 2026-10-05 — Drop checks each draft against its request
+
+Drafting had settled at 20–21 of 36 on prompts 01–15. The rest were planning misses glm makes
+despite the guide's rules:
+- a DMN decision drafted as a plain gateway;
+- a timeout drafted as an xor;
+- a REST call or a named failure without an error boundary;
+- "every recipient in a list" without `each=`;
+- legal review without a user task.
+
+Examples taught the patterns but were copied into unrelated processes, so they stay out of the
+prompt.
+
+**The check** (`apps/drop/src/lib/check.ts`): `draftGaps(request, draft)` matches what the request
+names against the draft's elements, in code:
+- DMN or decision table → a rule task;
+- a time limit or timeout → a timer;
+- "if … fails" → an error boundary;
+- REST, HTTP or an external API → an error boundary;
+- at the same time or in parallel → an and split;
+- every item of a list → `each=`;
+- a user task, a review by someone, or manual work → a user task;
+- waiting for a message → a message catch event.
+
+`gapChange` makes those gaps one change request. The page sends it through the change route
+right after the draft, before the connect pass. `completes` keeps the answer only when it fills a
+gap and keeps every element of the draft; otherwise the draft stands. A complete draft costs no
+model call.
+
+**Measured on recorded drafts** (the three drafting benches of 2026-10-05), the check flags every
+failing draft of 07, 08, 11, 13, 14 and 15, and half of 12's. On passing drafts it flags:
+- 17 and 23 (6 of 8, 7 of 9): REST calls without the error boundary the HTTP lint pattern wants;
+- 05 (4 of 8): drafts that wait on a timer, not the payment message. They pass only because the
+  assertion accepts any catch event.
+
+"For each new support ticket" is each process instance, not a list: the per-item rule asks for
+list wording.
+
+`bench:generate` runs the same check after each golden prompt's draft (`--no-check` leaves it
+out). Its summary gains "drafts with gaps", "completions kept" and "check ms". Smoke-tested
+against a fake Workers AI (`CLOUDFLARE_API_BASE`); it needs a real bench to measure.
+
+## 2026-10-05 — Third drafting and change bench: where drafting stands
+
+**The runs**, both `glm-4.7-flash`, with the repairs for per-item steps and DMN outcomes:
+- `bench-results/2026-10-05T11-40-04-287Z`, every default prompt, 3 runs: 54/72. Prompts 01–15
+  passed **21/36**, against 20 on the run before. 01, 02, 05, 10 and 14 passed every run.
+  Between the two runs, 11 went from 3/3 to 0/3 (the model left out the error boundary the rule
+  asks for), and 14 from 1/3 to 3/3: at 3 runs, a prompt moves by two from one run to the next.
+- `bench-results/2026-10-05T11-46-04-332Z`, change cases, `text` rules: **20/30** again. Adding
+  a timer boundary and making steps parallel are still 0/3, as on 2026-09-30:
+  - the answers drop `ship` from the order;
+  - they merge packing and labelling into one node;
+  - they write an error boundary for a timeout.
+
+**Repaired:**
+- **`after=` makes an event a timer:** `delay[boundary:error Timeout | after=p1d]` waits a time,
+  which only a timer does. ISO durations are read in lower case too.
+- **A boundary drawn into from one task, without `on=`, goes on that task:**
+  `send > wait[boundary:timer Wait 60s]` (06 run 1) was left out.
+
+Re-scored, `2026-10-05T10-38-56-569Z` rises to 60/72. Every other bench is as before.
+
+**Where drafting stands:** without examples to copy, prompts 01–15 pass 20–21 of 36 with the
+repairs in code. The remaining failures are planning, not syntax:
+- 08 drafts 14–24 of the 25 elements;
+- 11 leaves out the error boundary;
+- 12 decides credit with an xor and no DMN task;
+- 15 models the timeout as an xor.
+
+## 2026-10-05 — Drafting without examples: the second bench, and repairs in code
+
+**The runs**, both `glm-4.7-flash`, with the guide's example restored and the patterns written as
+rules:
+- `bench-results/2026-10-05T11-03-43-277Z`, every default prompt, 3 runs: 52/72. Prompts 01–15
+  passed **20/36**: 18 before the guide changes, 25 with the copied examples. 13 parallel
+  fulfilment passed every run. 06 fell to 0/3, as no draft wrote `each=` without an example.
+- `bench-results/2026-10-05T11-09-25-786Z`, the change cases with `text` rules: **20/30** (22
+  on 2026-09-30, 19 with the examples). 08 change-type is back to 2/3. Timer boundary and
+  make-parallel are 0/3 again, as on 2026-09-30.
+
+**"Connect skip right" (56/72) is not a fair measure for prompts 01–15.** They predate the connect
+pass, so the bench expects a skip whenever they assert no connector. But a "Send email to each
+stakeholder" or "Publish document" task fits a connector. Prompt 25, written to have no
+integration, passed 3/3.
+
+**Repaired in code, where the model does not follow the rules:**
+- **A step named for each or every item is run per item** (06): "Send email to each stakeholder"
+  runs once per `stakeholder` over `=stakeholders`, listed in `fixes`. "Every day" and other time
+  words are schedules, not lists.
+- **A DMN decision's unlabelled outcomes split with an xor** (12): `decide > approve` and
+  `decide > reject` from a rule task were a parallel split, approving and rejecting at once. The
+  usual default branch and questions follow.
+- **The connect filter:**
+  - A diagram line copied before the colon without `with` (`slack[send … | job=slack]: slack …`,
+    01 run 2) is a line for that node.
+  - A guide example copied word for word is dropped only when no task was offered its connector.
+    In 01 run 3 it was the right Slack line for a Slack task.
+
+Re-scored, the drafting bench is 57/72: 01 runs 2 and 3, 06 runs 1 and 3, and 12 run 2 now pass.
+Runs that skipped the connect pass are not re-scored, among them 12 runs 1 and 3. Every earlier
+bench re-scores as before.
+
+## 2026-10-05 — Drafting bench of 01–15, and examples the model copies
+
+**The runs**, both `glm-4.7-flash`:
+- `bench-results/2026-10-05T10-38-56-569Z`, every default prompt, 3 runs: 58/72. Prompts 01–15
+  rose from 18/36 (re-scored) to **25/36**. 06, 10 and 11 passed every run, and 15 two of three.
+- `bench-results/2026-10-05T10-47-56-640Z`, the change cases with the `text` rules: 19/30,
+  against 22/30 on 2026-09-30. 08 change-type fell from 3/3 to 0/3; timer boundary and
+  make-parallel rose from 0/3 to 1/3 each.
+
+**The model copied the examples.** The connect pass was skipped rightly only 52 of 72 times, and
+the drafts showed why:
+- the guide example's "Email each approver | each=approvers" and "Book expense" turned up in
+  unrelated processes;
+- the drafting prompt's naming example became "List overdue documents in Xero" in prompt 14;
+- `each=` went on steps no description called per item.
+
+The change cases edit the guide's old "Expense approval" example. Seeing a longer version of the
+same process in the guide, the model mixed the two (08 change-type). This is what the change
+bench of 2026-09-30 found for the `all` rules: glm copies example lines, not rules written as
+text.
+
+**Changed:**
+- **The guide's example is the original four lines again.** Parallel work, deadlines and steps
+  run per item are rules in words. `each=` is only for what the description calls every or each.
+  `each=` and `after=` stay in the attribute line.
+- **Drop's drafting prompt** names tasks in the description's own words, with no example.
+- **A gateway that passes through** (one way in, one way out) and carries a step's name is now a
+  task: `pack[and Pack into box]` (13 run 3). Duplicate flows a removal leaves are merged before
+  the next gateway is checked, so a chain of pass-through gateways no longer survives.
+
+Both benches need running again to measure this. Every earlier bench re-scores as before.
+
+## 2026-10-05 — Drafting quality for golden prompts 01–15
+
+The last full run (`2026-10-04T07-09-30-692Z`) failed most of 06, 08, 11, 13 and 15. The drafts
+showed why:
+- **06** could not pass: the line format had no way to run a step once per recipient.
+- **13 and 08** drafted parallel work in sequence. The guide's example had no parallel split.
+- **15** drafted a timeout as an xor, or wrote `boundary:timer on=poll` without the bar, which
+  dropped the boundary. Timers had no duration in the format at all, so none could deploy.
+- **11** asked for a REST call and got none of the error boundary the HTTP pattern lint wants.
+
+**Added to the line format (`parseProcessText`, `expand`, `compactify`):**
+- **`each=<list>`** on a task or sub-process: multi-instance over `=<list>`, each instance
+  getting its item in the singular (`each=approvers` → `approver`). `CompactElement.multiInstance`
+  carries it.
+- **`after=<duration>`** on a timer event: ISO 8601, or `5m`, `2 hours`, `1 day`. Without it, a
+  duration in the name is read ("Wait 5 minutes" → `PT5M`). `CompactElement.timerDuration`
+  carries it.
+- **An attribute before the bar** (`late[boundary:timer on=poll]`) is read as one.
+
+**The guide** (~400 tokens, up from ~310) lists both attributes. It has a rule for steps done at
+the same time and for deadlines. Its one example now also shows an `and` split and join, an
+`each=` task and a timer boundary with `after=`.
+
+**Drop's drafting prompt:** a REST call gets a `boundary:error` leading to a task that handles
+the failure.
+
+**Golden prompt 06** now asks for a step run once per recipient, a multi-instance task or
+sub-process (`mustContainMultiInstance`). The format writes the first. The sub-process it asked
+for could not be written.
+
+**Risk to measure:** an earlier change bench found glm copying timer-boundary and parallel
+examples where nobody asked for them: `text` rules 20/20, `all` 15/20
+(`doc/drop-ai-generate-analysis.md` §19). The change prompt builds on the drafting prompt, so the
+guide's new example reaches change runs too. The change bench (`--edits`) should be rerun with
+the drafting bench. Change scripts do not read `each=` and `after=` yet; existing loops and
+durations are kept, as a change only touches what it names.
+
+## 2026-10-05 — Tenth bench: 89%, re-scored 92%
+
+**The run:** `bench-results/2026-10-05T06-41-57-613Z`. Prompts 10 and 16–27, 5 runs each, with
+`glm-4.7-flash` for both passes, after the ranking fix for prompt 27. It passed **58/65 (89%)**:
+up from 56/65, and every run of 10, 16, 18, 19, 20, 22, 24 and 26 passed. 27 is still 3/5.
+Re-scored with the repairs below: **60/65 (92%)**.
+
+**Prompt 16** already accepts the GitHub connector: its job type is `io.camunda:http-json:1`, as
+the REST connector's is. 16 run 3 of `2026-10-04T06-13-21-229Z` re-scores as a fail because the
+model wrote a REST line, which the corrected cards no longer offered that task.
+
+**Repaired:**
+- **The first card keeps a REST call** (17 run 1): `stripe-refund-payment POST /v1/refunds`. The
+  unknown alias became the task's first card, REST, but lost `POST /v1/refunds`. A REST first card
+  now keeps the line's method and path, and gets `api=` from the task's API card.
+- **An API card's summary for the path** (27 run 5):
+  `http GET api github — List workflow runs for a repository`. A summary after a dash that names
+  an operation of a loaded service is read as that operation.
+
+**Not repaired:**
+- **21 runs 1 and 2:** a draft with no header and an id without brackets, and Teams drafted as a
+  user task.
+- **23 run 4:** the stock check drafted as a user task.
+- **25 run 2:** a draft on one line.
+- **27 run 4:** a draft without kinds, where the model chose GitHub's `listAlertsForRepo`.
+
+## 2026-10-05 — Prompt 27: GitHub's workflow runs, ranked
+
+Prompt 27 failed 2 of 5 runs by calling `/actions/workflows` or `/actions/caches`. Most drafts
+named the task "List failed GitHub Actions runs", which already says runs. The API card still
+listed caches and permissions first, for two reasons:
+- **A bug.** "GitHub" is searched as `github`, `git` and `hub`. Only `github` was left out as the
+  brand, so every summary that says GitHub matched twice.
+- **A common word.** "Actions" is in hundreds of GitHub's summaries.
+
+**Fixed in `rankApiOperations`:**
+- The parts of the service's name never count.
+- A word that a tenth or more of the service's operations share counts a third.
+
+"List failed GitHub Actions runs" now ranks `GET /repos/{owner}/{repo}/actions/runs` first.
+
+**Fixed in `selectConnectors`:** dropping the bogus matches showed that a dedicated connector
+"covered" too much.
+- An operation now covers a task's word only when it does what the task's verb says, and the word
+  is what it is about. Its resource, the last word of the operation, must match, plural for
+  plural.
+  - `listIssueComments` lists comments.
+  - `getIssue` gets one issue.
+  - `createIssue` still covers "Create GitHub issue".
+- The request check compares the same words. The connector wins when it covers every word of the
+  request that the index's best endpoint has. SendGrid's mail operation still wins prompt 18.
+- "List open issues" and "Get open issues" now get GitHub's issue endpoints (prompt 16 expects
+  REST).
+
+**The drafting prompt** asks for the task to be named in the description's own words for what it
+does: "List overdue invoices in Xero" for "list the overdue invoices in Xero", never
+"Check Xero". "Fetch failed GitHub Actions", which says nothing of runs, should become rarer.
+
+Over every recorded draft, the selection changed only for prompts 16 and 27. Re-scored, every
+bench is as before but one: 16 run 3 of `2026-10-04T06-13-21-229Z` passed before only through
+the bogus matches. For "Fetch open issues from GitHub", GitHub's own `searchIssues` now covers
+the task, and prompt 16 accepts only REST.
+
+## 2026-10-05 — Ninth bench: five runs of the connector prompts and prompt 10
+
+**The run:** `bench-results/2026-10-05T06-10-54-339Z`. Prompts 10 and 16–27, 5 runs each,
+with `glm-4.7-flash` for both passes. It passed **56/65 (86%)**, the best run so far: 83% on the
+last five-run bench. Prompts 10, 18, 22, 23, 25 and 26 passed every run. It re-scores to 57/65
+with the repairs below.
+
+**Repaired:**
+- **A line with no connector** (19 run 1): `with pub | topic.topicName=…`. It now gets the node's
+  first card.
+- **Kinds without brackets** (21 run 2): `> xor Notify sales?` and `> end Lead added` declare
+  nodes after an arrow. At the start of a line they stay prose.
+- **Generic words** (25 runs 4 and 5, the no-integration prompt): "Request rework" was offered
+  SOAP, REST and GraphQL, and "Save document" Textract. Request, document, file, data, report,
+  record and form no longer make a connector a candidate by themselves. Over every recorded
+  draft, the selection changed only where such cards went away.
+
+**Not repaired:**
+- **27 runs 3 and 4:** they called `/actions/workflows`. For "List failed GitHub Actions", the
+  API card ranks endpoints by the task's name, and every Actions endpoint shares it. Only the
+  request says "workflow runs". Adding the request's words to the ranking moved 27 too little,
+  and pushed Stripe's refund endpoints aside, so it was left out.
+- **Drafts:** 16, 17, 20 and 24 failed on drafts or model choices: a rule task for the
+  summary, two connectors in one line, invented paths.
+
+Every earlier bench re-scores as before.
+
+## 2026-10-04 — Golden prompts 10 and 20 accept either fitting connector
+
+A `mustContainTaskTypes` entry may now be a list, met by any one of its job types. `bench:generate`
+and `bench:rescore` both read it.
+- **Prompt 10** ("send the customer an order confirmation email") names no provider: SendGrid or
+  the Email connector.
+- **Prompt 20** ("summarise it with OpenAI"): the OpenAI connector, or the AI Agent connector. The
+  check does not read the agent's provider.
+
+Re-scored with these and today's repairs:
+- the full set (`2026-10-04T07-09-30-692Z`): 49/72, of which prompt 10 is 3/3;
+- the five-run connector bench (`2026-10-04T07-06-25-832Z`): 52/60;
+- the first two connector benches: 29/36 and 33/36.
+
+## 2026-10-04 — Seventh and eighth benches: five runs, and the whole golden set
+
+**The runs**, both with `glm-4.7-flash` for both passes:
+- `bench-results/2026-10-04T07-06-25-832Z`: connector prompts 16–27, 5 runs each. It passed
+  50/60 (83%), and 52/60 re-scored with the repairs below. 16, 17, 18, 19, 22, 24 and 25 passed
+  every run. 27 GitHub workflow runs is the weakest at 1/5.
+- `bench-results/2026-10-04T07-09-30-692Z`: every default prompt, 3 runs each. It passed 46/72.
+  The connector prompts in it passed 31/36, in line with the run above.
+
+**Prompts 01–15: no regression from the parser repairs.** They passed 15/36, against 19/36 for
+the same prompts on 2026-09-30. The difference is prompt 10, 3/3 then and 0/3 now. The bench
+did not score connector task types then, and prompt 10 expects SendGrid for "send the customer
+an order confirmation email", which names no provider. Run 3 configured the Email connector's
+SMTP send, a working answer. The other drafting failures are as before:
+- 06 draws no sub-process for a multi-instance step;
+- 08 is shorter than 25 elements;
+- 11 and 15 have no boundary events;
+- 12 and 13 sometimes leave out their rule task and parallel gateway.
+
+**Repaired:**
+- **Drafts:**
+  - Numbers as ids (`1[service …]`, 27 run 5) become `n1`; a numbered list stays prose.
+  - A line starting with `>` (26 run 2) continues the path above.
+  - `gw > (No: default) b` (12 run 1) may have a space before the label.
+  - Drop's diagram filter passes the same shapes on.
+- **Card selection:** a service only the request names no longer goes to a task that names
+  another system. GitHub's endpoints went to "Slack message to channel #builds" (27 run 4).
+- **Resolver:**
+  - A path's words are spelt as the service spells them: `Actions/runs` (27 run 1).
+  - `${orderId}` inside FEEL is `orderId` (23 run 5).
+  - An operation the connector lacks is read as the one sharing the longest start with it:
+    `sendEmailImap` is `sendEmailSmtp` (10 runs 1 and 2).
+- **Drop's connect filter:**
+  - A flow of steps on one line, `start > save: … > create: http … > done`, is split
+    (26 run 1).
+  - The guide's example lines copied word for word, under any id, are dropped: 23 run 4 and
+    26 run 2 copied them.
+
+**Open:** prompts 10 and 20 expect one connector where the request allows two (SendGrid or the
+Email connector; the OpenAI connector or the AI Agent with OpenAI). Every earlier bench
+re-scores as before.
+
+## 2026-10-04 — Sixth bench of the connect pass
+
+**The run:** `bench-results/2026-10-04T06-13-21-229Z`. Prompts 16–27, 3 runs each, with
+`glm-4.7-flash` for both passes. It passed 28/36. The code was the same as for the fifth run's
+30/36, so the difference is the model's variance. 18 SendGrid passed every run, and the connect
+pass was skipped rightly 35/36 times. It re-scores to 34/36 with the repairs below.
+
+**Repaired (6 runs):**
+- **The node's id where the alias goes** (17 run 3): `with approved: stripe http POST …`, where
+  `stripe` is the node.
+- **The node's declaration copied with its id** (21 run 2): `with append[service Append to Google
+  Sheet]: …`.
+- **An invented alias in a flow** (24 run 3): `resize:invokeLambda > queue:sendSqsMessage | …`.
+  The flow may hold any text before its last node now. An alias that names no connector, API,
+  method or near miss of one becomes the node's first card, as a task kind already did.
+- **An SDK call as the operation** (20 run 2): `openai chat.completions.create` is `chat`.
+- **A FEEL `url=` beside an `api=` path** (26 run 1): `url==api.notion.basePath + "/v1/pages"`
+  replaced the completed URL. With `api=`, the path stands.
+- **A label before the alias, and a call on the start event** (27 run 3):
+  `with db: notify failed: slack …` loses the label. A line misplaced on a node no card was
+  offered for may now take a task from a line whose connector is not offered there.
+
+**Not repaired (2 runs):** 16 run 1 never configured the task that lists issues. 27 run 1 called
+GitHub's `/search/jobs` instead of the workflow runs endpoint on its API card.
+
+Every earlier bench re-scores as before.
+
+## 2026-10-04 — Fifth bench of the connect pass
+
+**The run:** `bench-results/2026-10-04T05-57-16-575Z`. Prompts 16–27, 3 runs each, with
+`glm-4.7-flash` for both passes. It passed 30/36, up from 27/36; 21 Teams and 17 Stripe passed
+every run. It re-scores to 33/36 with the fixes below. Medians: TTFB 212 ms and total 680 ms
+for the draft; 1,457 ms for the connect pass.
+
+**Fixed:**
+- **Lines run together** (16 run 1): the model wrote all three `with` lines on one line. Drop's
+  filter now splits a line at each `with <id>:`.
+- **A REST card ahead of the connector** (18 run 1): the API index's SendGrid endpoint came
+  first, and the model's REST line took the only task. An API card is now also left out when the
+  dedicated connector covers as much of the request as the index's best endpoint does.
+  GitHub workflow runs (27) keep their API card.
+- **A distractor card** (24 run 2): "Send message to SQS" was offered SQS, Camunda's
+  Send message connector and SNS, and the model took Send message. A task that names its system
+  is no longer offered connectors that only share a word with it.
+- **An id reused for a second node** (20 run 3): `send[…] > send[post Slack message to #support
+  channel]` was dropped as a restatement, because `post` is no kind. A name of three words or
+  more after an arrow now makes a new node.
+- **Unclosed brackets** (16 run 3, 26 run 3): `start[start HR) > …` and
+  `end[page created in Notion` at the end of the line each left a draft with no task. The bracket
+  is now closed where the name ends, in diagrams and in change scripts.
+
+16 run 3, 26 run 3 and 24 run 2 need new model answers to score. Every earlier bench re-scores as
+before.
+
+## 2026-10-03 — Drafting repairs from the fourth bench
+
+The four failures of the fourth bench that the connect pass could not fix came from the draft.
+Three are repaired now; the fourth is a reasonable answer the prompt does not accept. A new
+bench run is needed to measure them, as each needs a model answer the run did not record.
+
+- **An id with spaces** (17 run 1): `call back[service Stripe refund]` stopped the line, which
+  left a 3-element diagram with no task. `parseProcessText` now reads words before a bracket as
+  one id, `call_back`, and reports it.
+- **A call drafted as a catch event** (24 run 2): `queue[event catch Send to SQS]`. A catch event
+  without a trigger whose name starts with a calling verb (send, post, publish, call, notify,
+  invoke, …) is now a service task, so the outbound SQS connector fits it.
+- **The wrong system** (21 run 2): the draft said "Post summary to Slack" for a request that
+  says Microsoft Teams. That is word for word the example in Drop's drafting prompt, which now
+  asks for the system the description names, with an example no golden prompt uses.
+  `selectConnectors` also ranks the request's system first on a task that names a system the
+  request does not, by what the request asks of it: Teams `sendMessageTo…` before Slack.
+- **Not changed** (20 run 3): an AI Agent connector with the OpenAI provider. Prompt 20 still
+  expects the OpenAI connector.
+
+Re-scoring every committed bench gives the same totals as before.
+
+## 2026-10-03 — Fourth bench of the connect pass: the production drafting model
+
+**The run:** `bench-results/2026-10-03T08-49-27-587Z`. Connector prompts 16–27, 3 runs each.
+`glm-4.7-flash` drafted and connected, as production does: the first run whose drafting
+numbers describe Drop. 36/36 answers; 27/36 passed, 32/36 re-scored with the fixes below
+(`pnpm --filter @bpmnkit/drop bench:rescore`). Draft medians: 1,361 ms, 58 output tokens.
+The connect pass was skipped rightly 34 of 36 times.
+
+**Fixed (5 runs):**
+- **A service as the alias** (17 runs 2 and 3): `stripe POST /v1/refunds` and
+  `stripe STRIPE_API_POST /v1/refunds`. A service of the loaded API index written where the alias
+  goes is now `http <METHOD> <path> | api=<service>`. A connector of that name still wins.
+- **A flow before the colon** (20 run 1, 26 run 2): `start > summarize: openai chat …` and
+  `with start>task: http …`. Drop's line filter reads them as lines for the last node.
+- **The node copied, not a card** (24 run 1): `with lambda: service Run AWS Lambda resize | …`.
+  An alias that is a kind of task (`service`, `send`, …) becomes the node's first card.
+- **Inputs in one part** (24 runs 1 and 2): `| accessKey*={{…}} region=… payload=={…}`, written
+  as the cards list inputs. The parser splits them, never inside a FEEL value, and drops a copied
+  `*`.
+
+**Not fixed by code (4 runs):**
+- **17 run 1.** The draft was broken: `call back[service …]` has a space in its id, so it had
+  3 elements and no task.
+- **21 run 2.** The draft posted to Slack, where the request asked for Teams.
+- **24 run 2.** The draft made "Send to SQS" a catching event, so the inbound SQS connector was
+  the right card for it.
+- **20 run 3.** The draft made the OpenAI step an `agent`, and the connect pass configured the
+  AI Agent connector with the OpenAI provider. That is a reasonable answer, but the prompt
+  expects the REST-based OpenAI connector (`io.camunda:http-json:1`).
+
+Earlier runs re-score as before (27/36, 54/72, 31/36): the new repairs changed none of them.
+
+## 2026-10-03 — Third bench of the connect pass, and degenerate gpt-oss answers
+
+**The run:** `bench-results/2026-10-03T07-39-10-853Z`. Connector prompts 16–27, 3 runs each;
+28/36 passed. `gpt-oss-120b` drafted and `glm-4.7-flash` connected.
+
+**Correction (applies to all three runs).** Production drafts with `glm-4.7-flash`
+(`AI_GENERATE_MODEL`), with `gemma-4-26b-a4b-it` as fallback. `gpt-oss-120b` is `AI_MODEL`,
+the process-review model. The runs connected as deployed, but their drafts came from a model
+production does not draft with, so their drafting numbers say nothing about Drop's generator.
+- **Better than before:** 18 SendGrid and 27 GitHub workflow runs passed every run.
+- **Behind the 8 failures:**
+  - **Four were empty drafts.** `gpt-oss-120b` wrote nothing but `!` up to its 2,048-token cap:
+    16 run 2, 17 run 1, 20 run 2 and 25 run 3. With 10 run 3 in the run before, that is 5 of 108
+    drafts. `!` is token 0 of gpt-oss, so the model or its host emits token 0 over and over.
+    It is not the prompt. Production showed such an answer to the reader as a broken diagram.
+  - **Three were near misses:** `with start Ticket closed:` (a label for an id) and
+    `with create http …` (no colon), both on 26. Also 21 run 3 put a Teams line on the Sheets
+    task before the right Google Sheets line.
+  - **One was a model choice:** 16 run 1 posted to Slack through REST rather than the Slack
+    connector.
+
+**Fixed:**
+- **`ModelStream.first()`** now reads 8 characters before it calls an answer begun. An answer of
+  nothing but `!` counts as none: it is cancelled and marked `degenerate`.
+  - **With a fallback model** (`AI_GENERATE_FALLBACK_MODEL`), the hedge streams the fallback's
+    answer.
+  - **Without one**, the reader gets "unavailable, try again" instead of garbage.
+  - This covers the generate, change and connect routes alike.
+  - The bench now marks such a draft as an error instead of "ok".
+- **The line filter** reads `with <label>: …` as an id to match by words, and `with id alias …`
+  as `with id: alias …`.
+- **The resolver** reads headers written as text (`Notion-Version: 2026-03-11`) as a FEEL
+  context. A written `url=` that is not a URL no longer overrides a positional one.
+- **Card selection:** a system's name counts in the singular and the plural. "Google Sheet"
+  had ranked the Sheets connector below Teams, which caused 21 run 3.
+- **Two lines for one node:** the one whose connector ranks higher among the node's cards
+  stands, else the first.
+
+**Re-scored without a model:**
+
+| run | recorded | re-scored |
+|---|---|---|
+| 2026-10-02 (16–27) | 23/36 | 27/36 |
+| 2026-10-03 06:26 (all) | 51/72 | 54/72 |
+| 2026-10-03 07:39 (16–27) | 28/36 | 31/36 |
+
+The latest run's 5 remaining failures are the 4 degenerate drafts (now handed to the fallback
+in production) and 16 run 1's model choice. Of the 32 runs with a real draft, 31 pass.
+
+## 2026-10-03 — Second bench of the connect pass: 32/36 on connector prompts
+
+**The run:** `bench-results/2026-10-03T06-26-21-674Z`. `gpt-oss-120b` drafts and
+`glm-4.7-flash` connects. Drafting in production is `glm-4.7-flash`: see the correction above. All 24 default golden prompts, 3 runs each; 51/72 passed.
+- **Connector prompts (16–27): 32/36, up from 23/36.** The cards offered since 2026-10-02 did
+  it: 18 SendGrid 0→2, 20 OpenAI 1→3, 17 Stripe 1→2, 23 REST 2→3, and 24 1→3.
+- **Drafting prompts (01–15): 19/36.** 06 sub-process, 07 boundary event, 08 25 elements and 11
+  boundary event fail every run. They failed in both September runs too: these are drafting
+  limits, not connect-pass regressions.
+- **Broken drafts:** three, none of them connect-pass failures.
+  - 08 run 3 hit the 2,048-token cap.
+  - 10 run 3 degenerated into `!!!!…` up to the cap.
+  - 27 run 2 wrote `start:timer[…]` for `start[start:timer …]`, so the line was lost.
+
+  The bench counts all three "ok": it does not yet tell a broken draft from a poor one.
+
+**Fixed, then re-scored with `bench:rescore` on the recorded raw answers: 51/72 → 54/72.**
+- **The bench's "connect skip right" (53/72) was wrong.** Prompts from before the connect pass
+  have no `connect` field and were expected to connect. A prompt now expects a skip unless it
+  asserts a connector task type. By that rule every skip in the run was right.
+- **`notify: slack chat.postMessage | …`** (a with line missing its `with`) was dropped by the
+  line filter. It now gets its first word back. Fixed 01 run 1.
+- **`with list: GET /repos/…`** (a REST call missing its alias) is read as `http GET …`. Fixed 27
+  run 3.
+- **Node matching:**
+  - A line on a node no card was offered for (`with start: sendgrid mail …`) goes to the task
+    its connector fits. Fixed 18 run 1.
+  - An invented id that fits several tasks goes to the one whose id and name share most words:
+    `with lookup:` → "Lookup shipping address".
+- **`data.channel==#ops`** (a literal written as FEEL) is read as the text `#ops`.
+- **The re-scorer** now applies today's line filter to raw answers, and checks every assertion
+  bench:generate checks, not only connector types and URLs.
+
+**Left:** 17 run 3 (the model called `https://api.stripe.com` with no path), and the drafting
+failures above. Next steps:
+- drafting: boundary events and sub-processes;
+- the output cap for long processes;
+- detecting degenerate drafts.
+
+## 2026-10-02 — First real bench of the connect pass, and what it showed
+
+**The run:** `bench-results/2026-10-02T14-18-49-149Z`. `gpt-oss-120b` drew the diagrams and
+`glm-4.7-flash` connected them. The connect model is the deployed one; drafting in production is
+`glm-4.7-flash` (see the 2026-10-03 correction). 12 connector prompts (16–27), 3 runs each.
+- **Diagrams:** 36/36 drafted, with a median of 5.8 s and 418 output tokens.
+- **Connect pass:** median 2.8 s, 87 output tokens and 8.5 neurons. Every connected diagram's
+  dry run reached its end.
+- **Skips:** the no-integration prompt (25) was skipped every time, with no model call.
+- **Assertions:** 23/36 passed. Every failure came from the connect pass.
+
+| prompt | pass | prompt | pass |
+|---|---|---|---|
+| 16 GitHub → Slack | 2/3 | 22 internal API | 3/3 |
+| 17 Stripe refund | 1/3 | 23 webhook → REST → Teams | 2/3 |
+| 18 SendGrid | 0/3 | 24 Lambda → SQS | 1/3 |
+| 19 Kafka | 3/3 | 25 no integration (skip) | 3/3 |
+| 20 OpenAI summarise | 1/3 | 26 Notion page | 2/3 |
+| 21 Sheets + Teams | 3/3 | 27 GitHub workflow runs | 2/3 |
+
+**What the model was shown** (replayed offline from the recorded diagrams):
+- **18 SendGrid, 0/3: the SendGrid card was never offered.** "Send order confirmation email"
+  names *email*, so the Email connector's three operations (one SMTP send, two IMAP) took all
+  three slots. SendGrid, named only by the request, was cut.
+- **20 OpenAI.** Azure OpenAI's three operations crowded out the OpenAI connector (which runs on
+  `http-json`, as the prompt expects). A deprecated AI Agent template was offered too.
+- **17 Stripe.** "Call Stripe REST API" names no operation, so no API card was offered. In
+  another run, "Notify customer" got Stripe's `POST /v1/customers` because the request named
+  Stripe.
+- **23.** "Check stock" never got the REST connector: the HTTP call was only in the request.
+
+**Fixed in selection** (`selectConnectors`):
+- Each further card of one template costs 8 points.
+- A connector naming a system nobody asked for costs 8 per system ("Azure").
+- Deprecated templates are never offered.
+- A task that names only a service is matched to its endpoints by the request's words, and
+  only when the service has no connector of its own.
+- A service only the request names goes to the one task it fits best.
+- A task with no connector of its own gets the REST card when the request asks for a REST call.
+
+**Near misses, now repaired** (resolver and `finishConnect`):
+- The API card's head copied as a line (`api github GET /issues`, which the misspelling repair
+  had turned into `a2a`). Short aliases now tolerate one wrong letter, not two.
+- `{{variables.x}}` and `${x}` for variables; `{{param}}` in a path; a path written without
+  `api=`, with one service loaded.
+- `with Refund:` for `refund`.
+- An invented id (`createPage`), given to the one task its connector fits.
+- Two lines for one node: the first stands.
+
+`CONNECT_GUIDE` gets three rules: copy ids exactly, a system the request names wins, and
+variables are FEEL.
+
+**Measured without a model:** `pnpm --filter @bpmnkit/drop bench:rescore <results.json>`
+re-applies the recorded answers with the current code. The recorded answers went from 23/36 to
+27/36 (16, 24, 26 and 27 each gained a run). The rest need the model to see the new cards (17,
+18, 20, 23) or are its own errors: `pay.stripe.com`, and one empty answer in 24. The bench now
+keeps each raw answer (`connect.raw`) so an empty one can be read.
+
+**Next:** rerun the bench with the same command to measure the selection changes.
+
+## 2026-10-02 — `pnpm build` keeps the WASM engine current
+
+- **The error.** `@bpmnkit/engine:build` failed with `TS2352 … Property 'complete_user_task'
+  is missing in type 'WasmEngine'`.
+- **The cause.** `apps/reebe-wasm`'s `.js`, `.d.ts` and `.wasm` are build output, not
+  committed, so a checkout keeps whatever an earlier `pnpm build:wasm` left there. Nothing in
+  `pnpm build` rebuilt them:
+  - turbo's `build` depends on `^build:wasm`, but `@bpmnkit/reebe-wasm`, the package the
+    engine and Studio depend on, had no `build:wasm`;
+  - `@bpmnkit/reebe` had one, which nothing depends on. Its relative `--out-dir` resolved
+    against the crate, so it never wrote to `apps/reebe-wasm` either.
+
+  A local build from before `complete_user_task` (added to the engine runner in #202) broke the
+  engine's type check.
+- **The fix.** `scripts/build-wasm.mjs`, now behind `pnpm build:wasm` and both packages'
+  `build:wasm`:
+  - It keeps files that are newer than every Rust source and export every method of the
+    crate's `WasmEngine`. CI, which builds the WASM in a step of its own, does not compile it
+    twice.
+  - Otherwise it builds them with wasm-pack, and keeps the committed `package.json`, which
+    wasm-pack overwrites.
+  - Without wasm-pack, it fails with the missing methods and how to build them, before the
+    engine's type check.
+
+  `apps/reebe-wasm/turbo.json` gives that task the crates as inputs, so turbo reruns it when
+  the Rust changes.
+- **Checked.**
+  - Stale typings with no wasm-pack: the clear failure.
+  - Current typings: skipped.
+  - With wasm-pack, the crate compiled and the typings were regenerated. This container then
+    failed on `wasm-opt`'s download, which wasm-pack fetches without the proxy.
+  - With the regenerated output: the engine builds, the engine's WASM runner tests (9) pass,
+    and Studio's scenario runner tests (18) pass.
+
+## 2026-10-02 — Connectors in AI generation, P7: MCP tools and the guide
+
+- **Proxy MCP server.** Two new tools sit beside `add_http_call`:
+  - `find_connectors { query, limit }` answers with connector cards, plus API cards for any
+    indexed HTTP API the query names. When it names one, connector cards of systems it does
+    not name are dropped: "add a page to notion" first returned an unrelated Automation
+    Anywhere card.
+  - `add_connector { processId, id, name, alias, operation, values }` configures a node
+    through `applyConnectorLines`, the same resolver as `with` lines. `values` may carry
+    `api` and `result`. A missing node is added as a plain task first. The reply lists what
+    was fixed (a literal token becomes a secret) and what is still needed.
+  - Both read the API index, which loads lazily. The stdio loop now awaits tool calls; every
+    other tool is unchanged and synchronous.
+  - Both are on the AI CLIs' tool allowlist (`BPMN_MCP_TOOL_NAMES`).
+  - The chat system prompt's HTTP rule is now a connector rule: `find_connectors`, then
+    `add_connector`.
+  - End-to-end tests drive the real server over stdio: cards, Stripe endpoints, a Slack task
+    with a literal token and a missing input, and a new Stripe REST task.
+- **Docs.**
+  - New guide **Connectors in AI Generation** (`guides/ai-connectors.md`): the two passes,
+    cards, `with` lines, the API index, the checks, and where each appears.
+  - `cli/casen.md` lists the new tools.
+  - The Claude Code plugin's generated connector reference adds `casen connector api` and
+    `casen synth --check`.
+  - Docspack rebuilt.
+- **Bench.** `--connect-model` runs the connect pass on another model than the draft, as the
+  Worker does (`AI_MODEL` draws, `AI_CONNECT_MODEL` connects). Each result records the
+  connect model. Smoke-tested against a local mock of the Workers AI API.
+- **Not done:** the Rust proxy (`apps/proxy-rs`) keeps its own MCP tool list. It gets no
+  connector tools: they need the catalog and the API index inside its embedded JS bridge.
+
+## 2026-10-02 — Connectors in AI generation, P6: proving it runs
+
+- **`dryRun(definitions, options)`** (`@bpmnkit/engine/testing`) runs a process once from
+  start to end, built on `ProcessTest`.
+  - **Mocks.** Every connector answers an empty HTTP 200, mapped by its result headers. Every
+    other job (service, user, agent) completes with no variables.
+  - **Waits.** A message the run waits for is delivered (an event without a `messageRef` is
+    keyed by its id). Otherwise the clock moves a day.
+  - **Multi-instance.** One over a plain variable gets a one-item list unless one is given.
+  - **Result.** `reachedEnd`, `path`, the connectors passed, the `steps` taken, and where and
+    why it stopped. It never throws for a process that cannot run.
+  - **Fixtures.** All 14 compilable fixture plans in `scripts/eval-generation` reach their end
+    (06's multi-instance needed the one-item list).
+- **`listSecrets(definitions)`** (`@bpmnkit/core`) lists every secret a diagram reads, with
+  the elements that read it: `{{secrets.X}}`, `camunda.secrets.X`, and message correlation
+  keys, which are attributed to the events that wait for the message.
+- **Drop.**
+  - A draft with connectors shows **Secrets** (the names to create) and **Dry run** (✓ runs
+    to "Done" · n connectors mocked, or ✗ stops at "X": why) above its questions.
+  - The engine is a separate `dry-run.js` bundle (94 KB gzipped). It is fetched by URL only
+    for drafts with connectors; `landing.js` is unchanged in size.
+  - Checked in Chromium: the bundle loads and runs a connected diagram (message wait included)
+    to its end.
+  - The dry run runs in the browser, not the Worker: the engine's virtual clock is global, and
+    concurrent requests in one isolate would share it.
+- **CLI.** `casen synth --check` dry-runs each executable process and lists the secrets. A run
+  that cannot finish exits 1; with `--json` the findings are under `check`.
+- **Bench.** `bench:generate --connect` dry-runs every connected diagram (`dry run ✓/✗` in the
+  report) and records its secrets.
+- **Studio.** **Try it** (local engine only) deploys and starts the model like Deploy & Run.
+  - GET requests of the REST connector go out for real.
+  - Every other method, connector and job is simulated, and the job table says why ("POST
+    not sent: Try it only sends GET requests").
+  - Before this, a local run sent every REST method for real.
+- **Found, not fixed:** `compilePlan` names a connector step after its template ("Slack
+  Outbound Connector"), not the step's `name`. That is visible in `--check`'s secrets list.
+- **Not run:** a real Workers AI bench, which needs credentials; and Studio's Try it in a
+  browser. The decision rule is unit-tested, and Studio typechecks and builds.
+
+## 2026-10-02 — Connectors in AI generation, P5: the API index and API cards
+
+- **`@bpmnkit/connector-gen/api-index`** — offline base URL, auth and endpoints of 78 HTTP
+  APIs, 20,327 operations. One module per service, loaded lazily (3.2 MB raw, about 400 KB
+  gzipped).
+  - **Built by** `scripts/build-api-index.mjs` (`pnpm update-api-index`) from the catalog's
+    specs. It reads OpenAPI 3 and Swagger 2, so GitLab, Kubernetes and DocuSign are in too.
+  - **Per operation:** method, path, a summary of ≤ 12 words, query and top-level body fields
+    (required first, then common names), required headers with their default value (Notion's
+    `Notion-Version`), and whether the body is form-encoded (Stripe).
+  - **Auth:** bearer is preferred, then an API key with its header, then basic. Specs without
+    schemes fall back to the catalog's hint.
+  - **Base URLs:** placeholder hosts (`your-domain.atlassian.net`, `example.zendesk.com`, …)
+    get no `baseUrl`.
+  - **Licenses (plan risk 5):** specs that name a non-commercial, copyleft or proprietary
+    license are skipped: CircleCI, Mollie, Cohere, Trello, Paddle, Coda, Lago.
+  - **Weekly refresh:** the connector-templates workflow now refreshes the index too. A spec
+    that cannot be fetched keeps its previous module.
+  - **Catalog fix:** Notion's spec URL was dead; it now points to
+    `developers.notion.com/openapi.json`. Thirteen other catalog URLs still return 404
+    (Anthropic, Shopify, Datadog, Airtable, …), so those services are not indexed.
+- **Core (`@bpmnkit/core/connectors`, re-exported by `@bpmnkit/connectors`).** `ApiService`
+  types plus functions to find, rank, format and apply API cards. `selectConnectors(…, { apis })`
+  puts the REST connector first, with an API card, for a task that names an indexed service.
+  - **Precedence:** a dedicated connector wins unless the index has an endpoint matching more
+    of the task's name. "Create GitHub issue" keeps the GitHub connector; "List GitHub workflow
+    runs" gets `GET /repos/{owner}/{repo}/actions/runs`.
+  - **Ranking** found the right endpoint first for 12 sample tasks across Stripe, Notion,
+    GitHub, Zendesk, Asana and Discord. That needed a penalty for path words the task lacks
+    and a bonus for a path ending in the task's resource: "Refund payment" →
+    `POST /v1/refunds`, not the terminal reader's `refund_payment`.
+- **`with` lines.** `http POST /v1/customers | api=stripe` (or a URL under a service's base
+  URL) gets:
+  - the base URL;
+  - `{params}` as FEEL from the variables of the same name;
+  - the service's auth with a `{{secrets.STRIPE_TOKEN}}` placeholder, unless the line sets
+    its own;
+  - required headers.
+
+  A call the index lacks becomes a question to check it. `CONNECT_GUIDE` teaches `api=`.
+- **Drop.** The connect route loads only the services the request, task names or written lines
+  name (at most 4), and passes them to selection and to the server-side apply. The Worker
+  bundle grows from 478 KB to 879 KB gzipped.
+- **CLI.** `casen connector api "<request>" [--service id] [--limit n] [-o json]`.
+- **Golden prompts.**
+  - Stripe refund (17) now asserts `mustCallUrls: https://api.stripe.com/v1/refunds`.
+  - New: 26 Notion page and 27 GitHub workflow runs → Slack.
+  - `bench:generate --connect` passes the API services, reports API cards and scores
+    `mustCallUrls`.
+  - A dry run of the three on hand-written pass-1 diagrams offered the right endpoint, and the
+    expected lines applied with no problems or questions.
+- **Not run:** a real Workers AI bench, which needs credentials.
+
+## 2026-10-02 — Connectors in AI generation, P4: the connect pass in Drop
+
+- **`selectConnectors`** (core/connectors) picks cards per task in code. A card qualifies when:
+  - the task's name names the system;
+  - the request names it and no other task's name does (tasks only, never events); or
+  - the task's name shares a word with the connector's name.
+
+  Synonyms such as "notify" for sending a message rank only. REST is the fallback for
+  HTTP-call tasks. Caps: 3 per task, 8 in all.
+
+  Tested on the plan's scenarios: GitHub → Slack, notify ops, Kafka, email, REST fallback,
+  webhook start, and a pure approval flow, which selects nothing.
+- **`POST /drop/api/connect`** (`AI_CONNECT_MODEL`, glm-4.7-flash for now). It uses
+  ai-edit's gates, cache, budget and hourly cap.
+  - **How it answers.** The Worker writes the diagram text with existing connectors and picks
+    the cards. It asks for `with` lines only (its own line filter) and applies them on the
+    server, so the page bundles no catalog.
+  - **Skipping.** With nothing to connect, the stream ends `skipped` and no model is called.
+  - **`lines` mode.** `with` lines the reader finished are applied without a model or budget.
+  - **Merging.** `applyConnectorLines` now merges with an element's existing connector, so
+    such an answer keeps the rest.
+- **The page.**
+  - **Generator:** connects after every draft and change, and redraws. Missing inputs become
+    questions answered with one line. Undo keeps the connected version, and Share shares it.
+  - **Share page:** **Add connectors** while editing applies the result as one undoable
+    editor change.
+- **Pass 1** gets one rule line: "Each call to an outside system is its own service task".
+- **Benchmark.** `bench:generate --connect` adds the connect pass to the golden prompts and
+  scores the connected diagram. It adds ten connector golden prompts (16–25, with 25
+  expecting a skip). It also fixes a crash at the end of every golden-prompt run (the
+  feedback table read a field those results lack).
+- **Checked.**
+  - Route tests: 11.
+  - Chromium against `wrangler dev`, with the model answers stubbed:
+    - the generator: draft → connect → question → answer via the real worker → change →
+      undo → share, with the shared XML connected;
+    - Add connectors → Done, and Add connectors → Undo → Done, on the stored files;
+    - no console errors.
+  - The benchmark's `--connect` path against a local mock of the Workers AI API.
+- **Not done yet.** No benchmark run against Workers AI, since that needs Cloudflare
+  credentials, so the model choice for the connect pass (D3) is still open. Add connectors
+  applies directly, as an undoable change, rather than through the proposal dialog.
+
+## 2026-10-02 — Connectors in AI generation, P3: `with` lines
+
+- **The format.** `with <id>: <alias> [operation] | key=value | key==FEEL` configures a node as a
+  connector, in the line format and in change scripts. Path lines are unchanged, so streaming and
+  every structural repair are unchanged.
+- **Parsing, in core's main entry, without the catalog.** `parseConnectorLine`, plus
+  `connectors` on `parseProcessText`'s and `parseProcessDelta`'s results. A line whose node
+  doesn't exist is a problem.
+- **Resolving and applying, in `@bpmnkit/core/connectors`.**
+  - `resolveConnectorLine` repairs: an alias within two letters, an operation by its last dotted
+    part or by the input that selects it, a short key (`channel` → `data.channel`), `http POST
+    <url>` written without keys, and `result=name[: expr]` into whichever result header the
+    operation has. A credential written as a value becomes a `{{secrets.…}}` placeholder.
+  - `applyConnectorLines` applies through `applyTemplateToElement`, so a plain task becomes a
+    service task and inbound templates work on events. A missing required input becomes a
+    question with a line to finish.
+  - `connectorLineFor` writes an element back as a line. Applying it again gives the same XML.
+  - `CONNECT_GUIDE` is the connect pass's prompt; its example parses and resolves cleanly.
+- **Writer and editor take hooks.** `writeProcessText(defs, { connectorLine })` and
+  `applyProcessDelta(…, { applyConnectors })`, so neither the editor nor core's main entry
+  carries the catalog. `applyProcessDelta` returns `questions`.
+- **Shown to run.** An engine test generates "GitHub issues → Slack" from text with `with` lines,
+  deploys it, mocks both connectors by job type, and checks:
+  - the REST URL built from FEEL;
+  - the result expression feeding the gateway;
+  - the Slack message `"New issues: 2"`;
+  - the quiet branch when there are no issues.
+- **Fixed:** the `isEmpty` template condition (Camunda 8.10 templates with a saved-credential
+  picker, 38 of them) was treated as always true. In the applier and the editor's panel, HTTP's
+  `url` and `urlOverride` were then both active.
+- **Changed from the plan:**
+  - Connector configuration is not a `CompactElement` field resolved inside `expand`. Lines are
+    applied to the expanded diagram by `applyConnectorLines`, which reuses
+    `applyTemplateToElement` (inbound messages, outputs, stamps) and keeps the catalog out of
+    `expand`.
+  - Not done: `- with x` (removing a connector), and `alias`/`operation` in a ProcessPlan
+    `PlanConnectorRef`.
+
+## 2026-10-02 — Connectors in AI generation, P2: connector cards
+
+- **Cards.** A connector card is one operation of one template, with only the inputs that
+  operation uses. It also carries the `values` that select the operation, and its modes
+  (authentication type, AI provider), each with the inputs it adds. `findConnectorCards`,
+  `connectorCards`, `listConnectorCards` and `formatConnectorCard` are in
+  `@bpmnkit/core/connectors`, re-exported by `@bpmnkit/connectors`.
+  - 133 templates give 341 cards.
+  - Prompt lines are about 90 tokens median. Plumbing (retries, timeouts, TLS, saved
+    credentials) is marked `advanced` and left out by default.
+- **Aliases.** `CONNECTOR_ALIASES` (`connectors/aliases.ts`) is a committed table: a fixed
+  alias per template, plus the dropdowns that choose its operation.
+  - It is written down rather than derived, because an operation is a single dropdown in Slack,
+    nested groups in GitHub, and one key defined several times in HubSpot. Names alone don't
+    tell operations apart from modes.
+  - Tests require an entry for every bundled template, unique aliases, and listed dropdowns that
+    exist. A new template from the weekly refresh fails until it gets an alias.
+- **Each card is applied in its tests.** Every card is applied with its required inputs, and with
+  each mode choice plus what that choice adds, and must produce no missing-required problem.
+  That's 341 cards, every mode choice included.
+- **Fixed: the applier's condition evaluation.** `resolveValues` gave every property its
+  default, including dropdowns hidden by their own condition. So GitHub's hidden
+  `labelOperationType` switched the label inputs on under "create issue": applying it reported
+  11 false missing-required problems and wrote ten `url` and ten `method` inputs. Only active
+  properties have values now, resolved until stable, as in the Modeler. There is a regression
+  test.
+- **CLI.** `casen connector cards "<request>"` (with `--limit`, `--advanced` and `-o json`).
+  The Claude plugin's `references/connectors.md` now has an alias column and each template's
+  operations, and points at `casen connector cards`.
+- **Not fixed.** The editor's property panel (`plugins/config-panel-bpmn/template-engine.ts`)
+  evaluates conditions against all stored values in the same way. It may show fields of an
+  unselected operation.
+
+## 2026-10-02 — Connector templates refreshed, `zeebe:agentDefinition` supported
+
+- **The update script bundled the oldest version of every template.** The marketplace registry
+  lists versions newest first, and `update-connectors.mjs` took `versions.at(-1)`. That is why the
+  HTTP connector was version 1 (latest 18), Slack 1 (13) and GitHub 1 (15), and why P0 matched
+  `restConnector()` to "version 1". The script now takes the highest version, and the stamp is 18.
+- **133 templates:** 20 new (AI Agent Task/Sub-process v2, MCP start event, Databricks, App
+  Integrations, Bedrock AgentCore, O365 email inbound, …) and 3 IDP templates gone upstream.
+  `catalog-meta.json` is committed.
+- **`zeebe:agentDefinition agentType`** (Camunda 8.10) is supported end to end: template
+  binding, validator, applier (builder options and apply-to-element), `ZeebeExtensions`, builder
+  options for service tasks and ad-hoc sub-processes, and `getZeebeExtensions`.
+- **`Configuration` property type** (8.10 reusable credentials) validates, with
+  `configurationTemplate`.
+- **Renamed inbound input keys:** newer inbound templates have explicit property ids
+  (`correlationKeyProcess`, `correlationKeyPayload`, `messageNameUuid`). Tests now use them.
+- **Camunda version:** 55 of the 133 newest templates declare `engines.camunda ^8.10`. The
+  bundle holds one version per template, the newest. A Camunda version picker that bundles
+  older versions is not done.
+- Checked: core 1,928, connectors 156, and every consumer package's tests pass; typecheck and
+  the tarball check pass.
+
+## 2026-10-02 — Connectors in AI generation, P1: the connector catalog in core
+
+- `@bpmnkit/core/connectors` is a new subpath with the catalog, apply, apply-to-element and
+  validation code, moved from `@bpmnkit/connectors`, and the 116 OOTB templates. It is
+  125 KB gzipped on its own; core's main entry does not import it and is unchanged.
+- Core's templates leave out icons, groups, tooltips and placeholders. `@bpmnkit/connectors`
+  re-exports core's API and ships only those parts, joined back at load time. Its
+  `getTemplate`/`applyConnectorTemplate`/`CAMUNDA_CONNECTOR_TEMPLATES` still answer with full
+  templates. The joined set is identical to the original 116, and a bundle importing the package
+  is 270 KB gzipped, down from 283 KB for the templates alone.
+- A test summarises and applies every template from both halves and expects the same result.
+- `scripts/update-connectors.mjs` writes both halves from one fetch, compares against the
+  committed data and writes nothing when unchanged. A weekly workflow
+  (`connector-templates.yml`) opens a pull request.
+- Run against the live registry today, the script finds 133 templates (17 new). Two of them, the
+  AI Agent v2 templates, use a binding type `zeebe:agentDefinition` that the applier does not
+  support yet, so the first weekly pull request will fail its tests until that is added. The
+  data in this change is the committed 116.
+- Changed from the plan: `compilePlan` keeps an injected `resolveConnector`. Defaulting it to
+  the core catalog would put the catalog in core's main entry.
+
+## 2026-10-02 — Connectors in AI generation, P0: compact connector tasks run
+
+- `CompactElement` has `inputs` (input mappings) and `modelerTemplate`; both round-trip through
+  `compactify`/`expand`. Before, a compact edit dropped every connector's input mappings.
+- HTTP connector settings that the compact format, the CLI help and the proxy prompts put in task
+  headers (`url`, `method`, `authentication.*`) are now input mappings, which is where the
+  connector reads them. A connector's `resultVariable` is a task header, not an output mapping of
+  `response`. An engine test runs such a task against a mocked connector; it failed before the fix.
+- `Bpmn.restConnector()` stamps template version `1`, matching the bundled `HttpJson.v2`. A
+  connectors test keeps the two in step. A dead job-type comparison in `optimize/patterns.ts` is gone.
+- The Drop bench scores `mustContainTaskTypes`, so golden prompts 01, 03, 10 and 11 report their
+  missing connectors.
+- Plan: `doc/ai-connector-generation-plan.md` (P0, WS1).
+
+## 2026-10-01 — Plan: AI generation with Camunda connectors
+
+- Analysis and phased plan for generating executable diagrams with OOTB connectors and the REST
+  connector from a description: `doc/ai-connector-generation-plan.md`. Plan only; nothing is
+  implemented yet.
+- It records seven defects found on the way. The most important: the compact format puts the REST
+  connector's `url`/`method` in task headers, where the connector does not read them.
+- Decided: connectors go in a `@bpmnkit/core/connectors` subpath, the API index goes in
+  `connector-gen`, and the bench picks the model. Generation runs in two passes: the fast
+  structure pass stays as it is, then a connect pass writes only `with` lines, as a change script,
+  using connector cards picked for each task. The connect pass is also an "Add connectors" action
+  for existing diagrams.
+
+## 2026-10-03 — Clef how-to on the landing page; template fixed for Camunda Modeler
+
+- **How-to blog post** `/blog/cloudflare-clef-decisions-camunda`: Cloudflare token and account
+  ID, a curl call to check them, connector secrets, getting the template, a minimal process,
+  deploying and starting it, reading `clef` in Operate, and a troubleshooting table.
+- **Template download** at `/connectors/<id>.json` for the templates BPMN Kit maintains (with
+  `$schema`). The template's connector page links the file and the how-to; `/connectors` and
+  the AI Decisions guide link the how-to.
+- **Fix:** the Clef template's two timeout fields were `String` with `feel: "static"`, which
+  Camunda's schema allows only on `Number` and `Boolean` — Modeler would have rejected the
+  template. They are now `Number` with `=20`, as in Camunda's REST connector. Checked with
+  `@bpmn-io/element-templates-validator` (`validateZeebe`): valid.
+- `validateElementTemplate` now reports that mistake, so `.camunda/element-templates/` files
+  with it are caught before Modeler sees them. All 116 Camunda templates still pass.
+
+## 2026-10-03 — Editor: BPMN Kit connector templates in the connector picker
+
+- The properties panel's **Connector** list for service tasks (and ad-hoc sub-processes) now
+  offers `BPMNKIT_CONNECTOR_TEMPLATES` after Camunda's, so **Cloudflare Clef Decision** can be
+  picked in the editor and a task stamped with it opens in the template's form.
+- Camunda's templates are registered first. A REST-connector task with no
+  `zeebe:modelerTemplate` therefore still maps to Camunda's REST connector, not to Clef, which
+  uses the same job type. A test pins this.
+- The i18n harvest treats BPMN Kit template names as product names, like Camunda's.
+
+## 2026-10-03 — Connectors: Cloudflare Clef decision template
+
+- **New template `io.bpmnkit.connectors.CloudflareClef.v1`** for Cloudflare's Clef and
+  Clef-flash decision models (Workers AI). It runs on the REST connector
+  (`io.camunda:http-json:1`). The Model dropdown sets the URL path and the body's `model`
+  together: one hidden URL property per choice, each gated by a condition. The account id is
+  its own input mapping ahead of the URL, so the URL can read it. The default result expression
+  keeps the answers as `clef.<question id>`.
+- **Templates this repo maintains** now have their own home: `BPMNKIT_CONNECTOR_TEMPLATES` in
+  `packages/connectors/src/templates/bpmnkit.ts`, beside the generated Camunda mirror that
+  `pnpm update-connectors` overwrites. The catalog lists both. The template's `category` is
+  "AI decisions", so `ElementTemplate` gains the schema's optional `category` field.
+- `/connectors` keeps counting Camunda's templates in its headline and lists BPMN Kit's in a
+  "Maintained by BPMN Kit" section.
+- New guide [AI Decisions](/docs/guides/ai-decisions) and example
+  `apps/examples/src/07-ai-ticket-triage-clef.ts`: ticket triage that pages on-call, queues by
+  team, and sends a low-confidence answer to a person. Its process test covers all four
+  branches.
 
 ## 2026-10-02 — Docspack: retrieval fixes from a comparison with Camunda's docs MCP
 

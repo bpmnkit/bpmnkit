@@ -60,10 +60,7 @@ export function analyzePatterns(p: BpmnProcess): OptimizationFinding[] {
 	for (const el of p.flowElements) {
 		if (el.type !== "serviceTask") continue
 		const jobType = readZeebeTaskType(el.extensionElements) ?? ""
-		const isHttp =
-			jobType.toLowerCase().includes("http") ||
-			jobType.toLowerCase().includes("rest") ||
-			jobType === "io.camunda.connector.HttpJson:1"
+		const isHttp = jobType.toLowerCase().includes("http") || jobType.toLowerCase().includes("rest")
 		if (!isHttp) continue
 		if (!hasBoundaryOf(el.id, "error", boundaryTypes)) {
 			findings.push({

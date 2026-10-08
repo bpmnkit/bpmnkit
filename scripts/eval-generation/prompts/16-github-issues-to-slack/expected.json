@@ -1,0 +1,9 @@
+{
+	"id": "github-issues-to-slack",
+	"category": "connector",
+	"description": "A REST or GitHub call, then Slack: two systems named in one sentence.",
+	"assertions": {
+		"minElements": 4,
+		"mustContainTaskTypes": ["io.camunda:http-json:1", "io.camunda:slack:1"]
+	}
+}

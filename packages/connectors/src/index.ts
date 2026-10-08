@@ -1,28 +1,106 @@
+/**
+ * The connector API lives in `@bpmnkit/core/connectors`; this package re-exports
+ * it with the full Camunda templates. Core bundles the templates without icons,
+ * groups, tooltips and placeholders; this package adds those back (it ships
+ * only them, not a second copy of the catalog). {@link getTemplate} and
+ * {@link applyConnectorTemplate} answer with the full template, so applied
+ * elements carry their icon and a property panel can draw its groups.
+ *
+ * @packageDocumentation
+ */
+import {
+	type ApplyResult,
+	type ElementTemplate,
+	applyConnectorTemplate as applyCoreTemplate,
+	applyElementTemplate,
+	getTemplate as getCoreTemplate,
+} from "@bpmnkit/core/connectors"
+import { CAMUNDA_CONNECTOR_TEMPLATES, WHOLE_BY_CORE_COPY } from "./panel-parts.js"
+
 export {
 	listConnectors,
 	searchConnectors,
-	getTemplate,
 	propertyKey,
 	registerElementTemplates,
 	clearRegisteredTemplates,
 	summarizeTemplate,
-} from "./catalog.js"
-export type { ConnectorSummary, ConnectorInputSpec, ConnectorDirection } from "./catalog.js"
-export { applyConnectorTemplate, applyElementTemplate } from "./apply.js"
-export type { ApplyResult, ApplyProblem } from "./apply.js"
-export { applyTemplateToElement } from "./apply-element.js"
-export type { ApplyToElementResult } from "./apply-element.js"
-export { CAMUNDA_CONNECTOR_TEMPLATES } from "./templates/generated.js"
+	applyElementTemplate,
+	applyTemplateToElement,
+	validateElementTemplate,
+	readTemplateDocument,
+	BPMNKIT_CONNECTOR_TEMPLATES,
+	CONNECTOR_ALIASES,
+	connectorAlias,
+	connectorCards,
+	findConnectorCards,
+	formatConnectorCard,
+	listConnectorCards,
+	templateIdForAlias,
+	CONNECT_GUIDE,
+	applyConnectorLines,
+	connectorLineFor,
+	resolveConnectorLine,
+	formatConnectorSelection,
+	selectConnectors,
+	apiAuthValues,
+	apiBrand,
+	apiSecretNames,
+	apiServicesIn,
+	apiUrl,
+	findApiOperation,
+	findApiOperations,
+	formatApiCard,
+	formatApiOperation,
+	rankApiOperations,
+} from "@bpmnkit/core/connectors"
 export type {
+	ConnectorSummary,
+	ConnectorInputSpec,
+	ConnectorDirection,
+	ApplyResult,
+	ApplyProblem,
+	ApplyToElementResult,
 	ElementTemplate,
 	TemplateGroup,
 	TemplateProperty,
 	TemplateBinding,
 	TemplateCondition,
-} from "./template-types.js"
-export { validateElementTemplate, readTemplateDocument } from "./validate.js"
-export type {
 	TemplateProblem,
 	TemplateValidation,
 	TemplateDocumentResult,
-} from "./validate.js"
+	CardInput,
+	CardMode,
+	ConnectorCard,
+	AppliedConnectorLines,
+	ConnectorLineOptions,
+	ResolvedConnectorLine,
+	ConnectorTask,
+	TaskCards,
+	ApiAuth,
+	ApiCard,
+	ApiOperation,
+	ApiService,
+	ApiServiceSummary,
+	RankedApiOperation,
+} from "@bpmnkit/core/connectors"
+export { CAMUNDA_CONNECTOR_TEMPLATES }
+
+/** The full element template for a given template id, registered or bundled. */
+export function getTemplate(id: string): ElementTemplate | undefined {
+	const template = getCoreTemplate(id)
+	// A registered template is returned as given; only core's bundled copies are made whole
+	return template && (WHOLE_BY_CORE_COPY.get(template) ?? template)
+}
+
+/**
+ * Applies a bundled Camunda 8 out-of-the-box connector element template by
+ * id, from the full template, so the applied element carries its icon. See
+ * `applyElementTemplate` for the binding-resolution behavior.
+ */
+export function applyConnectorTemplate(
+	templateId: string,
+	values: Record<string, string> = {},
+): ApplyResult {
+	const template = getTemplate(templateId)
+	return template ? applyElementTemplate(template, values) : applyCoreTemplate(templateId, values)
+}

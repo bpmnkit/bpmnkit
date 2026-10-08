@@ -27,11 +27,13 @@ import {
 	type BpmnProcess,
 	type BpmnSequenceFlow,
 	type CompactElement,
+	type ConnectorRef,
 	type DeltaFlow,
 	type DeltaNode,
 	ELEMENT_SIZES,
 	type ProcessDelta,
 	type ProcessTextProblem,
+	type ProcessTextQuestion,
 	applyBpmnOperations,
 	conditionOrLabel,
 	writableCondition,
@@ -60,6 +62,21 @@ export interface ApplyProcessDeltaOptions {
 	 * here. Pass `createIdFactory(seed)` for a result that replays identically.
 	 */
 	ids?: IdFactory
+	/**
+	 * Applies the script's `with` lines. Pass `applyConnectorLines` from
+	 * `@bpmnkit/core/connectors`; it is a parameter so that this package does not
+	 * carry the connector catalog. Without it, `with` lines are reported and left
+	 * out.
+	 */
+	applyConnectors?: (
+		definitions: BpmnDefinitions,
+		lines: ConnectorRef[],
+	) => {
+		definitions: BpmnDefinitions
+		problems: ProcessTextProblem[]
+		fixes: string[]
+		questions: ProcessTextQuestion[]
+	}
 }
 
 export interface ApplyProcessDeltaResult {
@@ -77,6 +94,8 @@ export interface ApplyProcessDeltaResult {
 	problems: ProcessTextProblem[]
 	/** What was done that the script did not say outright, e.g. a flow replaced by an insert. */
 	fixes: string[]
+	/** Required connector inputs the `with` lines left out, as questions with a line to finish. */
+	questions: ProcessTextQuestion[]
 }
 
 /** Gap between a node and the next, left to right. */
@@ -218,6 +237,7 @@ export function applyProcessDelta(
 		addressed: new Map(),
 		problems: [],
 		fixes: [],
+		questions: [],
 	}
 	const problem = (line: number, message: string) => result.problems.push({ line, message })
 	if (!definitions.processes[0] || !definitions.diagrams[0]) {
@@ -300,6 +320,11 @@ export function applyProcessDelta(
 				?.attributes.type
 			if (current !== node.jobType) patch.jobType = node.jobType
 		}
+		if (node.script !== undefined) {
+			const current = now?.extensionElements.find((e) => e.name === "zeebe:script")
+			if (current?.attributes.expression !== node.script) patch.script = node.script
+		}
+		if (node.resultVariable !== undefined) patch.resultVariable = node.resultVariable
 		if (node.interrupting === false && now && "cancelActivity" in now && now.cancelActivity) {
 			patch.interrupting = false
 		}
@@ -522,6 +547,28 @@ export function applyProcessDelta(
 			el.default = undefined
 	}
 
+	// ── Connectors ───────────────────────────────────────────────────────────
+	// Last, so a `with` line can name a node the script added or retyped.
+	const connectorLines: ConnectorRef[] = []
+	for (const line of delta.connectors) {
+		const id = real.get(line.id)
+		if (id === undefined || !element(id)) {
+			problem(line.line, `"with ${line.id}:" names no node of the diagram; ignored`)
+		} else if (!options.applyConnectors) {
+			problem(line.line, `"with ${line.id}:" needs the connector catalog to apply; ignored`)
+		} else {
+			connectorLines.push({ ...line, elementId: id })
+		}
+	}
+	if (options.applyConnectors && connectorLines.length > 0) {
+		const applied = options.applyConnectors(defs, connectorLines)
+		defs = applied.definitions
+		result.problems.push(...applied.problems)
+		result.fixes.push(...applied.fixes)
+		result.questions.push(...applied.questions)
+		for (const line of connectorLines) changed.add(line.elementId)
+	}
+
 	for (const entry of delta.addressed) {
 		const resolved = entry.ids
 			.map((w) => real.get(w) ?? gone.get(w))
@@ -709,6 +756,8 @@ export function applyProcessDelta(
 		if (node.trigger !== undefined) patch.eventType = node.trigger
 		if (node.jobType !== undefined) patch.jobType = node.jobType
 		else deployable(id, written, type, patch)
+		if (node.script !== undefined) patch.script = node.script
+		if (node.resultVariable !== undefined) patch.resultVariable = node.resultVariable
 		if (Object.keys(patch).length > 0) {
 			patches.push({ line: node.line, op: { op: "update", id, patch } })
 		}

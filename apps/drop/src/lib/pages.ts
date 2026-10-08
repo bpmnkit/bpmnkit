@@ -234,6 +234,8 @@ select.ed-select{height:28px;border:1px solid var(--bpmnkit-ds-line);background:
 /* ── AI review panel ────────────────────────────────────────────────────── */
 .ai-panel{position:absolute;top:0;right:0;bottom:0;width:var(--bpmnkit-ds-panel-width);max-width:92vw;background:var(--bpmnkit-ds-surface);border-left:1px solid var(--bpmnkit-ds-line);z-index:8;display:flex;flex-direction:column}
 .ai-panel[hidden]{display:none}
+/* Opens on selection, so it makes room for a side panel already open rather than covering it. */
+.stage:has(>.ai-panel:not(.props-panel):not([hidden]))>.props-panel{right:var(--bpmnkit-ds-panel-width)}
 .ai-head{display:flex;align-items:center;justify-content:space-between;padding:0 var(--bpmnkit-ds-sp-4);height:var(--bpmnkit-ds-topbar-height);border-bottom:1px solid var(--bpmnkit-ds-line);font-family:var(--bpmnkit-ds-font-mono);font-size:var(--bpmnkit-ds-t-mono-micro);letter-spacing:.12em;text-transform:uppercase;color:var(--bpmnkit-ds-ink-3)}
 .ai-x{border:none;background:none;font-family:var(--bpmnkit-ds-font-mono);font-size:14px;cursor:pointer;color:var(--bpmnkit-ds-ink-4);padding:0 4px;font-variant-emoji:text}
 .ai-x:hover{color:var(--bpmnkit-ds-ink)}
@@ -389,6 +391,14 @@ select.ed-select{height:28px;border:1px solid var(--bpmnkit-ds-line);background:
 .gen .btn-ghost[hidden],.fc-actions .btn-ghost[hidden]{display:none}
 .gen-refine{border-top:1px solid var(--bpmnkit-ds-line-soft)}
 .gen-refine[hidden]{display:none}
+.gen-check{border-bottom:1px solid var(--bpmnkit-ds-line-soft)}
+.gen-check[hidden]{display:none}
+.gen-check div{display:flex;gap:10px;padding:8px 12px;font-size:var(--bpmnkit-ds-t-body-sm);color:var(--bpmnkit-ds-ink-2)}
+.gen-check div+div{border-top:1px solid var(--bpmnkit-ds-line-soft)}
+.gen-check b{font-family:var(--bpmnkit-ds-font-mono);font-size:11px;font-weight:400;text-transform:uppercase;letter-spacing:.06em;color:var(--bpmnkit-ds-ink-3);min-width:64px}
+.gen-check .ok{color:var(--bpmnkit-success,#16a34a)}
+.gen-check .bad{color:var(--bpmnkit-danger,#dc2626)}
+.gen-check code{font-family:var(--bpmnkit-ds-font-mono);font-size:12px}
 .gen-questions{list-style:none;margin:0;padding:0}
 .gen-questions li{padding:10px 12px;border-bottom:1px solid var(--bpmnkit-ds-line-soft);font-size:var(--bpmnkit-ds-t-body-sm);color:var(--bpmnkit-ds-ink-2)}
 .gen-questions .fc-examples{margin-top:8px}
@@ -442,6 +452,7 @@ dialog strong{display:block;font-size:17px;margin-bottom:6px}
 @media (max-width:720px){
 	.nav-tagline{display:none}
 	.ai-panel{width:100%}
+	.stage:has(>.ai-panel:not(.props-panel):not([hidden]))>.props-panel{right:0}
 	/* The tabs and the tools do not fit on one row of a phone: the tools get a
 	   row of their own that scrolls sideways, so every action stays reachable. */
 	.ed-topbar{flex-wrap:wrap;height:auto}
@@ -538,7 +549,7 @@ export function dropPage(
 		aiEnabled
 			? `<section class="section" id="describe"${turnstileKey ? ` data-turnstile-key="${escapeHtml(turnstileKey)}"` : ""}><div class="section-inner">
 	<div class="section-head"><span class="section-num">${num()}</span><h2 class="section-h2">Describe a process, get a diagram</h2></div>
-	<p class="section-lead section-indent" style="margin-bottom:26px">Say what should happen, in your own words${imageEnabled ? ", or add a photo of a whiteboard or sketch" : ""}. AI drafts the BPMN and draws it as it goes. Ask for changes until it fits, then share it like any drop. Closed beta: it needs an access code.</p>
+	<p class="section-lead section-indent" style="margin-bottom:26px">Say what should happen, in your own words${imageEnabled ? ", or add a photo of a whiteboard or sketch" : ""}. AI drafts the BPMN and draws it as it goes. Ask for changes until it fits, then share it like any drop, or open it in the editor and keep going there. Closed beta: it needs an access code.</p>
 	<div class="gen">
 		<div class="gen-main">
 			<div class="panel-bar"><span>description</span><span class="grow"></span><span id="genCount">0 / ${MAX_DESCRIPTION_CHARS}</span></div>
@@ -553,6 +564,7 @@ export function dropPage(
 			<div class="panel-bar"><span id="genName">process.bpmn</span><span class="grow"></span><span id="genStatus">draft</span></div>
 			<div id="genCanvas" class="gen-canvas"><div class="hero-canvas-msg">The diagram appears here as it is written.</div></div>
 			<div id="genRefine" class="gen-refine" hidden>
+				<div id="genCheck" class="gen-check" hidden></div>
 				<ul id="genQuestions" class="gen-questions"></ul>
 				<div class="gen-change"><input id="genChange" maxlength="${MAX_CHANGE_CHARS}" autocomplete="off" aria-label="Change the diagram" placeholder="Change something, e.g. a manager approves anything over 5000"><button id="genApply" class="btn-ghost" type="button">Apply</button><button id="genUndo" class="btn-ghost" type="button" hidden>Undo</button></div>
 			</div>
@@ -560,6 +572,7 @@ export function dropPage(
 	</div>
 	<div class="fc-actions">
 		<button id="genRun" class="btn-primary" type="button">Draft the diagram</button>
+		<button id="genEdit" class="btn-ghost" type="button" hidden title="Store the draft as a drop and keep working on it in the editor">Open in editor</button>
 		<button id="genShare" class="btn-ghost" type="button" hidden>Get a share link</button>
 		<div class="fc-examples" id="genExamples"></div>
 	</div>
@@ -739,7 +752,8 @@ function primaryIndex(files: FileInfo[]): number {
 /**
  * The read-only share/viewer page for a stored drop. `aiEnabled` reflects
  * whether AI_PASSCODE is set; `aiEdit` whether changes from review comments are
- * on too (AI_FEEDBACK_MODEL set).
+ * on too (AI_FEEDBACK_MODEL set); `aiConnect` whether "Add connectors" is
+ * (AI_CONNECT_MODEL set).
  */
 export function sharePage(
 	shareId: string,
@@ -748,6 +762,7 @@ export function sharePage(
 	aiEnabled = false,
 	turnstileKey?: string,
 	aiEdit = false,
+	aiConnect = false,
 ): string {
 	const primary = primaryIndex(files)
 	const title = files[primary]?.name || files[primary]?.filename || "Shared diagram"
@@ -767,8 +782,10 @@ export function sharePage(
 		<span class="ed-info" title="Created ${created} · expires ${expires}"><span id="viewCount">${drop.view_count}</span> VIEWS · <span id="presence" hidden>0 VIEWING</span> · EXPIRES ${expires}</span>
 		<div class="ed-group">
 			${aiEnabled ? `<button id="aiReviewBtn" type="button" hidden>AI review</button>` : ""}
+			${aiConnect ? `<button id="aiConnectBtn" type="button" hidden title="Configure the Camunda connectors of the tasks that call other systems">Add connectors</button>` : ""}
 			<button id="editBtn" type="button" hidden>Edit</button>
 			<button id="doneBtn" type="button" hidden>Done</button>
+			${aiEdit ? `<button id="aiChatBtn" type="button" hidden title="Ask the AI to change the diagram you are editing">Ask AI</button>` : ""}
 			<button id="localHistoryBtn" type="button" hidden>On this device</button>
 			<select id="editorLang" hidden aria-label="Editor language" title="Editor language"></select>
 			<button id="historyBtn" type="button" hidden>History</button>
@@ -809,11 +826,21 @@ export function sharePage(
 		<div id="commentsBody" class="ai-body"></div>
 		<footer id="commentsCompose" class="cm-compose"></footer>
 	</aside>
+	${
+		aiEdit
+			? `<aside id="aiChatPanel" class="ai-panel" hidden>
+		<header class="ai-head"><span>Ask AI</span><button id="aiChatClose" class="ai-x" type="button" aria-label="Close">&times;</button></header>
+		<div id="aiChatBody" class="ai-body" aria-live="polite"></div>
+		<footer id="aiChatCompose" class="cm-compose"></footer>
+	</aside>`
+			: ""
+	}
 	<aside id="historyPanel" class="ai-panel" hidden>
 		<header class="ai-head"><span>Saved milestones</span><button id="historyClose" class="ai-x" type="button" aria-label="Close">&times;</button></header>
 		<div id="historyBody" class="ai-body"></div>
 		<footer class="ai-foot"><span id="historyBound"></span></footer>
 	</aside>
+	<aside id="propsPanel" class="ai-panel props-panel" aria-label="Properties" hidden></aside>
 	<a class="ed-github" href="https://github.com/bpmnkit/bpmnkit" target="_blank" rel="noopener"><img class="logo" src="${FAVICON}" alt="">GitHub</a>
 	${
 		aiEnabled
@@ -860,6 +887,7 @@ ${
 				pinned: drop.expires_at === null,
 				turnstileKey,
 				aiEdit,
+				aiConnect,
 			},
 		},
 		scriptSrc: "/drop/assets/viewer.js",

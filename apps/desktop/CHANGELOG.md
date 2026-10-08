@@ -1,5 +1,38 @@
 # @bpmnkit/desktop
 
+## 0.1.47
+
+### Patch Changes
+
+- Updated dependencies [f11e88f]
+- Updated dependencies [f11e88f]
+  - @bpmnkit/core@1.4.0
+  - @bpmnkit/editor@1.4.0
+
+## 0.1.46
+
+### Patch Changes
+
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+  - @bpmnkit/core@1.3.0
+  - @bpmnkit/editor@1.3.0
+  - @bpmnkit/plugins@1.2.1
+
+## 0.1.45
+
+### Patch Changes
+
+- Updated dependencies [461287b]
+  - @bpmnkit/plugins@1.2.0
+
 ## 0.1.44
 
 ### Patch Changes

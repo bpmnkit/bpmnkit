@@ -1,5 +1,56 @@
 # @bpmnkit/cli
 
+## 1.3.0
+
+### Minor Changes
+
+- ba14aa5: API cards: real endpoints of HTTP APIs for the REST connector, from an offline index.
+  - **`@bpmnkit/connector-gen/api-index`**: the base URL, authentication and endpoints of 78 HTTP APIs (20,327 operations), built from the catalog's OpenAPI specs by `scripts/build-api-index.mjs`. It is one lazily loaded module per service (`API_SERVICES`, `loadApiService`, `loadApiServices`). Specs that state a non-permissive license are left out. Notion's catalog spec URL is fixed.
+  - **`@bpmnkit/core/connectors`** (re-exported by `@bpmnkit/connectors`):
+    - `selectConnectors(…, { apis })` offers the REST connector with an **API card** — the service's best-fitting endpoints — for a task that names a system without a dedicated connector, or one whose connector lacks the operation.
+    - On an `http` line, `api=<service>` or a URL under the service's base URL gets the base URL, `{param}`s as FEEL, authentication with a secret placeholder, and required headers (`applyConnectorLines(…, { apis })`). A call the index lacks becomes a question.
+    - New exports: `apiServicesIn`, `findApiOperations`, `rankApiOperations`, `findApiOperation`, `formatApiCard`, `formatApiOperation`, `apiUrl`, `apiAuthValues`, `apiSecretNames`, `apiBrand` and the `ApiService` types.
+  - **`@bpmnkit/cli`**: `casen connector api "<request>"` prints the endpoints of the API a request names.
+  - **`@bpmnkit/drop`**: the connect pass loads the services a request names and shows their endpoints to the model. `bench:generate` scores `mustCallUrls`, with new Notion and GitHub-workflow-runs golden prompts.
+
+- ba14aa5: Connector cards: one connector operation with only the inputs it uses, for a model's prompt.
+  - **New functions.** `findConnectorCards(query)`, `connectorCards(id)`, `listConnectorCards()` and `formatConnectorCard(card)` are in `@bpmnkit/core/connectors`, re-exported by `@bpmnkit/connectors`. A card carries the operation's required and optional inputs (secrets and FEEL marked), the `values` that select it, and its modes (an authentication type, say), each with the inputs it adds. Plumbing such as retries, timeouts and TLS is marked `advanced`.
+  - **Aliases.** `CONNECTOR_ALIASES` gives every bundled template a short, fixed alias (`http`, `slack`, `sqs-message-start`, …) and lists the dropdowns that choose its operation. Use `connectorAlias(id)` and `templateIdForAlias(alias)` to map between them.
+  - **CLI.** `casen connector cards "<request>"` prints the best cards; `-o json` prints them as data.
+  - **Fix: a hidden dropdown's default no longer switches inputs on.** Applying a template used every property's default when evaluating conditions, including dropdowns hidden by their own condition. Applying GitHub's "create issue" therefore reported 11 missing required inputs belonging to other operations and wrote ten `url` and ten `method` inputs. Only active properties count now, as in the Modeler.
+
+- ba14aa5: Prove a generated process runs, and list the secrets it needs.
+  - **`@bpmnkit/engine/testing`**: `dryRun(definitions, { processId, variables, response })` runs a process once from start to end with every connector and job mocked. It delivers the messages it waits for and moves the clock for timers. It reports `reachedEnd`, the path, the connectors passed, and where and why it stopped.
+  - **`@bpmnkit/core`**: `listSecrets(definitions)` lists every `{{secrets.X}}` / `camunda.secrets.X` a diagram reads, with the elements that read it.
+  - **`@bpmnkit/cli`**: `casen synth --check` dry-runs the compiled processes and lists their secrets. A process that cannot reach its end fails the command.
+  - **`@bpmnkit/drop`**: drafts with connectors show their secrets and a dry-run result. `bench:generate --connect` dry-runs each connected diagram.
+  - **`@bpmnkit/studio`**: **Try it** runs a model on the local engine, sending only GET requests for real and simulating everything else.
+
+### Patch Changes
+
+- ba14aa5: Connector tasks from the compact format now run on Camunda 8:
+  - `CompactElement` gains `inputs` (`zeebe:input` mappings, target → source) and `modelerTemplate` (`{ id, version }`). Both round-trip through `compactify()` and `expand()`, so compact edits no longer drop a connector's configuration.
+  - An HTTP connector task (`io.camunda:http-json:1`) with `url`, `method` or `authentication.*` in `taskHeaders` gets them as input mappings, where the connector reads them, with `authentication.type` defaulting to `noAuth`.
+  - For a Camunda connector job type (`io.camunda:…`), `resultVariable` becomes the `resultVariable` task header instead of an output mapping of `response`, which the connector never sets. Other job workers keep the output mapping.
+  - `Bpmn.restConnector()` stamps `zeebe:modelerTemplateVersion` `1`, the version of the bundled HTTP connector template, instead of `12`.
+  - The CLI's `generate` help and the proxy's AI prompts teach `inputs` for HTTP calls instead of task headers.
+
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+  - @bpmnkit/connector-gen@1.1.0
+  - @bpmnkit/core@1.3.0
+  - @bpmnkit/connectors@1.3.0
+  - @bpmnkit/proxy@0.5.0
+  - @bpmnkit/engine@1.2.0
+
 ## 1.2.0
 
 ### Minor Changes

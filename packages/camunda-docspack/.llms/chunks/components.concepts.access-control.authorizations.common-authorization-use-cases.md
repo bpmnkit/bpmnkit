@@ -30,6 +30,7 @@ This section describes authorization for domain resources (such as process and d
   - `MODIFY_PROCESS_INSTANCE` to modify running instances
   - `CANCEL_PROCESS_INSTANCE` to cancel running instances
   - `DELETE_PROCESS_INSTANCE` to delete completed instances
+  - `SUSPEND_PROCESS_INSTANCE` to suspend or resume running instances
 
 - Decision-related: Resource type `Decision Definition`
   - `READ_DECISION_DEFINITION` to view DMN models

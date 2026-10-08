@@ -24,7 +24,7 @@ export const COMPACT_FORMAT = [
 	"Gateways: exclusiveGateway, parallelGateway, inclusiveGateway, eventBasedGateway, complexGateway",
 	"Containers: subProcess, adHocSubProcess, eventSubProcess, transaction",
 	"Data: dataObject, dataObjectReference (add dataObjectRef), dataStoreReference (add dataStoreRef) — wired by data associations, not sequence flows",
-	'HTTP REST calls: always use jobType: "io.camunda:http-json:1" with taskHeaders {url, method, headers?, body?} and resultVariable.',
+	'HTTP REST calls: always use jobType: "io.camunda:http-json:1" with inputs {url, method, headers?, body?} and resultVariable.',
 ].join("\n")
 
 // ── MCP prompt builders (for Claude + Copilot with MCP tools) ─────────────────
@@ -44,10 +44,11 @@ export function buildMcpSystemPrompt(): string {
 		"PREFER compose_diagram for any operation involving multiple steps, building a process from scratch,",
 		"batch modifications, or logic — it completes the work in one call instead of many.",
 		"",
-		"HTTP/REST RULE: Any time the user asks for an HTTP request, API call, webhook, or external service",
-		"integration — use add_http_call (or Bridge.mcpAddHttpCall inside compose_diagram).",
-		"add_http_call sets jobType: io.camunda:http-json:1 and the correct taskHeaders automatically.",
-		"Use your knowledge of the target API to supply the real endpoint URL.",
+		"CONNECTOR RULE: Any step that calls an outside system (Slack, GitHub, email, Kafka, an HTTP API, …)",
+		"is a connector. Call find_connectors with what the step does, then add_connector with the card's",
+		"alias, operation and inputs. Credentials are {{secrets.NAME}}, never values. For an HTTP API",
+		"without a connector, find_connectors lists its real endpoints: use alias http with api=<service>.",
+		"add_http_call (or Bridge.mcpAddHttpCall inside compose_diagram) still adds a plain REST call.",
 		"",
 		"═══════════════════════════════════════════════════════",
 		"CAMUNDA BPMN BEST PRACTICES (always apply these)",

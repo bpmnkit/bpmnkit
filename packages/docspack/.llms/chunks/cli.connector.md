@@ -1,7 +1,7 @@
 # casen connector
 
-`casen connector` has two independent jobs: **browse** the 116 bundled Camunda 8 out-of-the-box
-connector templates (`search`/`show` — used by the AI generation pipeline to wire a plan step to
+`casen connector` has two independent jobs: **browse** the bundled connector templates — Camunda 8's 133
+out-of-the-box ones plus the few BPMN Kit maintains (`search`/`show` — used by the AI generation pipeline to wire a plan step to
 a real service), and **generate** brand-new connector element templates from OpenAPI 3.x/Swagger
 2.x specs (`generate`/`catalog` — for APIs Camunda doesn't ship a template for).
 
@@ -12,6 +12,8 @@ a real service), and **generate** brand-new connector element templates from Ope
 casen connector
 ├── search      — find a bundled OOTB connector template by name/keyword
 ├── show        — show a bundled template's required/optional inputs
+├── cards       — one card per operation: only the inputs it needs, for a request
+├── api         — real endpoints of an HTTP API, from the offline API index, for the REST connector
 ├── generate    — generate new templates from an OpenAPI spec file or catalog entry
 └── catalog     — list all built-in OpenAPI-catalog entries (for `generate`)
 ```

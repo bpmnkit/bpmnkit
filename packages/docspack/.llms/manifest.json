@@ -102,7 +102,7 @@
 		{
 			"id": "cli.casen.bpmn-generation-pipeline",
 			"file": "chunks/cli.casen.bpmn-generation-pipeline.md",
-			"tokens": 341,
+			"tokens": 474,
 			"tags": [
 				"cli",
 				"casen",
@@ -172,7 +172,7 @@
 		{
 			"id": "cli.casen.local-proxy-who-can-use-the-proxy",
 			"file": "chunks/cli.casen.local-proxy-who-can-use-the-proxy.md",
-			"tokens": 769,
+			"tokens": 794,
 			"tags": [
 				"cli",
 				"casen",
@@ -199,7 +199,7 @@
 		{
 			"id": "cli.connector",
 			"file": "chunks/cli.connector.md",
-			"tokens": 166,
+			"tokens": 224,
 			"tags": [
 				"cli",
 				"connector",
@@ -210,7 +210,7 @@
 		{
 			"id": "cli.connector.browse-the-bundled-ootb-catalog",
 			"file": "chunks/cli.connector.browse-the-bundled-ootb-catalog.md",
-			"tokens": 213,
+			"tokens": 416,
 			"tags": [
 				"cli",
 				"connector",
@@ -225,6 +225,19 @@
 				"listConnectors()",
 				"searchConnectors()"
 			]
+		},
+		{
+			"id": "cli.connector.endpoints-of-an-http-api",
+			"file": "chunks/cli.connector.endpoints-of-an-http-api.md",
+			"tokens": 181,
+			"tags": [
+				"cli",
+				"connector",
+				"endpoints",
+				"http",
+				"api"
+			],
+			"entities": []
 		},
 		{
 			"id": "cli.connector.generate-from-the-openapi-catalog",
@@ -416,7 +429,7 @@
 		{
 			"id": "cli.generate.definition-mode-ai-scripting-path",
 			"file": "chunks/cli.generate.definition-mode-ai-scripting-path.md",
-			"tokens": 671,
+			"tokens": 791,
 			"tags": [
 				"cli",
 				"generate",
@@ -1455,6 +1468,187 @@
 			"entities": []
 		},
 		{
+			"id": "guides.ai-connectors",
+			"file": "chunks/guides.ai-connectors.md",
+			"tokens": 284,
+			"tags": [
+				"guides",
+				"ai-connectors",
+				"two",
+				"passes"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-connectors.connector-cards",
+			"file": "chunks/guides.ai-connectors.connector-cards.md",
+			"tokens": 200,
+			"tags": [
+				"guides",
+				"ai-connectors",
+				"connector",
+				"cards"
+			],
+			"entities": [
+				"@bpmnkit/core/connectors"
+			]
+		},
+		{
+			"id": "guides.ai-connectors.with-lines",
+			"file": "chunks/guides.ai-connectors.with-lines.md",
+			"tokens": 184,
+			"tags": [
+				"guides",
+				"ai-connectors",
+				"lines"
+			],
+			"entities": [
+				"applyConnectorLines",
+				"data.channel"
+			]
+		},
+		{
+			"id": "guides.ai-connectors.any-http-api",
+			"file": "chunks/guides.ai-connectors.any-http-api.md",
+			"tokens": 275,
+			"tags": [
+				"guides",
+				"ai-connectors",
+				"any",
+				"http",
+				"api"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-connectors.proving-it-runs",
+			"file": "chunks/guides.ai-connectors.proving-it-runs.md",
+			"tokens": 334,
+			"tags": [
+				"guides",
+				"ai-connectors",
+				"proving",
+				"runs",
+				"meet"
+			],
+			"entities": [
+				"dryRun",
+				"listSecrets"
+			]
+		},
+		{
+			"id": "guides.ai-connectors.keeping-the-data-current",
+			"file": "chunks/guides.ai-connectors.keeping-the-data-current.md",
+			"tokens": 86,
+			"tags": [
+				"guides",
+				"ai-connectors",
+				"keeping",
+				"data",
+				"current"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-decisions",
+			"file": "chunks/guides.ai-decisions.md",
+			"tokens": 232,
+			"tags": [
+				"guides",
+				"ai-decisions"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-decisions.the-template",
+			"file": "chunks/guides.ai-decisions.the-template.md",
+			"tokens": 323,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"template"
+			],
+			"entities": [
+				"@bpmnkit/connectors",
+				"io.bpmnkit.connectors.CloudflareClef.v1",
+				"authentication.token",
+				"accountId",
+				"body.state",
+				"body.questions",
+				"body.images",
+				"resultExpression"
+			]
+		},
+		{
+			"id": "guides.ai-decisions.questions-and-answers",
+			"file": "chunks/guides.ai-decisions.questions-and-answers.md",
+			"tokens": 421,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"questions",
+				"answers"
+			],
+			"entities": [
+				"clef.team"
+			]
+		},
+		{
+			"id": "guides.ai-decisions.example-triage-a-support-ticket",
+			"file": "chunks/guides.ai-decisions.example-triage-a-support-ticket.md",
+			"tokens": 449,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"example",
+				"triage",
+				"support",
+				"ticket"
+			],
+			"entities": [
+				"apps/examples/src/07-ai-ticket-triage-clef.ts"
+			]
+		},
+		{
+			"id": "guides.ai-decisions.test-the-routing",
+			"file": "chunks/guides.ai-decisions.test-the-routing.md",
+			"tokens": 197,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"test",
+				"routing"
+			],
+			"entities": [
+				"apps/examples/tests/ticket-triage-clef.process.test.ts"
+			]
+		},
+		{
+			"id": "guides.ai-decisions.use-the-template-in-the-editor",
+			"file": "chunks/guides.ai-decisions.use-the-template-in-the-editor.md",
+			"tokens": 148,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"template",
+				"editor",
+				"camunda",
+				"modeler"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-decisions.limits",
+			"file": "chunks/guides.ai-decisions.limits.md",
+			"tokens": 144,
+			"tags": [
+				"guides",
+				"ai-decisions",
+				"limits"
+			],
+			"entities": []
+		},
+		{
 			"id": "guides.ai-implement",
 			"file": "chunks/guides.ai-implement.md",
 			"tokens": 403,
@@ -2081,7 +2275,7 @@
 		{
 			"id": "guides.claude-code-plugin.reference-docs",
 			"file": "chunks/guides.claude-code-plugin.reference-docs.md",
-			"tokens": 412,
+			"tokens": 410,
 			"tags": [
 				"guides",
 				"claude-code-plugin",
@@ -2236,7 +2430,7 @@
 		{
 			"id": "guides.drop.reviewing-it-together",
 			"file": "chunks/guides.drop.reviewing-it-together.md",
-			"tokens": 975,
+			"tokens": 949,
 			"tags": [
 				"guides",
 				"drop",
@@ -2250,7 +2444,7 @@
 		{
 			"id": "guides.drop.reviewing-it-together-2",
 			"file": "chunks/guides.drop.reviewing-it-together-2.md",
-			"tokens": 242,
+			"tokens": 412,
 			"tags": [
 				"guides",
 				"drop",
@@ -3078,6 +3272,21 @@
 				"resultVariable",
 				"resultExpression",
 				"errorExpression"
+			]
+		},
+		{
+			"id": "guides.testing-processes.dry-run",
+			"file": "chunks/guides.testing-processes.dry-run.md",
+			"tokens": 381,
+			"tags": [
+				"guides",
+				"testing-processes",
+				"dry",
+				"run"
+			],
+			"entities": [
+				"reachedEnd",
+				"stoppedAt"
 			]
 		},
 		{
@@ -4059,6 +4268,24 @@
 			"entities": []
 		},
 		{
+			"id": "packages.connector-gen.api-index",
+			"file": "chunks/packages.connector-gen.api-index.md",
+			"tokens": 422,
+			"tags": [
+				"packages",
+				"connector-gen",
+				"api",
+				"index"
+			],
+			"entities": [
+				"@bpmnkit/connector-gen/api-index",
+				"@bpmnkit/core/connectors",
+				"scripts/build-api-index.mjs",
+				"your-domain.atlassian.net",
+				"baseUrl"
+			]
+		},
+		{
 			"id": "packages.connector-gen.catalog-reference",
 			"file": "chunks/packages.connector-gen.catalog-reference.md",
 			"tokens": 518,
@@ -4088,7 +4315,7 @@
 		{
 			"id": "packages.connectors.overview",
 			"file": "chunks/packages.connectors.overview.md",
-			"tokens": 146,
+			"tokens": 256,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4096,13 +4323,16 @@
 			],
 			"entities": [
 				"@bpmnkit/connectors",
-				"@bpmnkit/connectors/node"
+				"@bpmnkit/connectors/node",
+				"@bpmnkit/core/connectors",
+				"getTemplate",
+				"applyConnectorTemplate"
 			]
 		},
 		{
 			"id": "packages.connectors.installation",
 			"file": "chunks/packages.connectors.installation.md",
-			"tokens": 240,
+			"tokens": 402,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4117,8 +4347,89 @@
 				"ConnectorInputSpec",
 				"isSecret",
 				"isFeel",
-				"summarizeTemplate"
+				"summarizeTemplate",
+				"getTemplate",
+				"io.bpmnkit.connectors.CloudflareClef.v1"
 			]
+		},
+		{
+			"id": "packages.connectors.connector-cards",
+			"file": "chunks/packages.connectors.connector-cards.md",
+			"tokens": 320,
+			"tags": [
+				"packages",
+				"connectors",
+				"connector",
+				"cards"
+			],
+			"entities": [
+				"card.values",
+				"applyConnectorTemplate",
+				"card.modes",
+				"formatConnectorCard"
+			]
+		},
+		{
+			"id": "packages.connectors.picking-cards-for-a-diagram",
+			"file": "chunks/packages.connectors.picking-cards-for-a-diagram.md",
+			"tokens": 548,
+			"tags": [
+				"packages",
+				"connectors",
+				"picking",
+				"cards",
+				"diagram"
+			],
+			"entities": []
+		},
+		{
+			"id": "packages.connectors.api-cards",
+			"file": "chunks/packages.connectors.api-cards.md",
+			"tokens": 713,
+			"tags": [
+				"packages",
+				"connectors",
+				"api",
+				"cards"
+			],
+			"entities": [
+				"createIssue",
+				"getIssue"
+			]
+		},
+		{
+			"id": "packages.connectors.with-lines",
+			"file": "chunks/packages.connectors.with-lines.md",
+			"tokens": 880,
+			"tags": [
+				"packages",
+				"connectors",
+				"lines"
+			],
+			"entities": [
+				"parseProcessText",
+				"applyTemplateToElement",
+				"resolveConnectorLine",
+				"postMessage",
+				"chat.postMessage",
+				"chat.completions.create",
+				"sendEmailImap",
+				"sendEmailSmtp",
+				"data.channel",
+				"orderId",
+				"AppliedConnectorLines.questions"
+			]
+		},
+		{
+			"id": "packages.connectors.with-lines-2",
+			"file": "chunks/packages.connectors.with-lines-2.md",
+			"tokens": 78,
+			"tags": [
+				"packages",
+				"connectors",
+				"lines"
+			],
+			"entities": []
 		},
 		{
 			"id": "packages.connectors.applying-a-template",
@@ -4206,7 +4517,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 262,
+			"tokens": 635,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4218,6 +4529,8 @@
 				"ElementTemplate",
 				"ConnectorSummary",
 				"clearRegisteredTemplates()",
+				"listConnectorCards()",
+				"rankApiOperations",
 				"@bpmnkit/connectors/node",
 				"discoverElementTemplates",
 				"collectElementTemplates"
@@ -4561,7 +4874,7 @@
 		{
 			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream",
 			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md",
-			"tokens": 1045,
+			"tokens": 1923,
 			"tags": [
 				"packages",
 				"core",
@@ -4571,6 +4884,7 @@
 				"createprocesstextstream"
 			],
 			"entities": [
+				"glm-4.7-flash",
 				"parseProcessText",
 				"lintDiagram"
 			]
@@ -4611,6 +4925,25 @@
 				"parseProcessDelta",
 				"applyProcessDelta",
 				"@bpmnkit/editor/headless"
+			]
+		},
+		{
+			"id": "packages.core.installation-connectors-with-lines",
+			"file": "chunks/packages.core.installation-connectors-with-lines.md",
+			"tokens": 347,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"connectors",
+				"lines"
+			],
+			"entities": [
+				"parseProcessText",
+				"parseProcessDelta",
+				"applyConnectorLines",
+				"@bpmnkit/core/connectors",
+				"camunda.secrets.NAME"
 			]
 		},
 		{
@@ -4801,6 +5134,24 @@
 			]
 		},
 		{
+			"id": "packages.core.connectors-bpmnkit-core-connectors",
+			"file": "chunks/packages.core.connectors-bpmnkit-core-connectors.md",
+			"tokens": 333,
+			"tags": [
+				"packages",
+				"core",
+				"connectors",
+				"bpmnkit"
+			],
+			"entities": [
+				"@bpmnkit/core",
+				"formatConnectorCard",
+				"@bpmnkit/connectors",
+				"ApiService",
+				"@bpmnkit/connector-gen"
+			]
+		},
+		{
 			"id": "packages.core.dmn-support",
 			"file": "chunks/packages.core.dmn-support.md",
 			"tokens": 113,
@@ -4954,7 +5305,7 @@
 		{
 			"id": "packages.editor.applying-a-change-script",
 			"file": "chunks/packages.editor.applying-a-change-script.md",
-			"tokens": 355,
+			"tokens": 465,
 			"tags": [
 				"packages",
 				"editor",
@@ -4965,7 +5316,11 @@
 			"entities": [
 				"applyProcessDelta",
 				"parseProcessDelta",
-				"@bpmnkit/core"
+				"@bpmnkit/core",
+				"applyConnectorLines",
+				"@bpmnkit/core/connectors",
+				"applyConnectors",
+				"result.questions"
 			]
 		},
 		{

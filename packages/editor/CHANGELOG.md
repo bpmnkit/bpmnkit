@@ -1,5 +1,54 @@
 # @bpmnkit/editor
 
+## 1.4.0
+
+### Minor Changes
+
+- f11e88f: Script tasks that compute FEEL, from the line format and from change scripts.
+  - `CompactElement.script` is a script task's FEEL expression, written as `zeebe:script` (with `resultVariable`) and read back by `compactify`; an `update` operation can patch it.
+  - The line format takes `result=<variable>` and `feel=<expression>` (last, so the expression keeps its spaces and commas): `count[script Count open issues | result=openCount feel=count(issues[state = "open"])]`. `feel=` on a plain task makes it a script task; an expression that is not FEEL is kept and reported. `writeProcessText` writes them back.
+  - `PROCESS_TEXT_GUIDE` tells the model that a step working only on process data — count, sum, filter, compare, format — is such a script task, reading what earlier steps stored with `result=`.
+  - `parseProcessDelta` and `applyProcessDelta` (`@bpmnkit/editor`) read and apply `result=` and `feel=`, so the AI chat in the editor can add or change one.
+
+### Patch Changes
+
+- Updated dependencies [f11e88f]
+- Updated dependencies [f11e88f]
+  - @bpmnkit/core@1.4.0
+
+## 1.3.0
+
+### Minor Changes
+
+- ba14aa5: `with` lines: a language model configures Camunda connectors in the line format.
+
+  ```
+  with notify: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel=#ops | data.text== "Order " + orderId
+  with fetch: http GET https://api.example.com/orders | result=order: response.body
+  ```
+
+  - **`@bpmnkit/core`** parses them, without the catalog. `parseProcessText` returns `connectors`, each with the element it names. `parseProcessDelta` returns `connectors` too. `parseConnectorLine` is exported. `writeProcessText(defs, { connectorLine })` writes an element's connector back as a `with` line.
+  - **`@bpmnkit/core/connectors`** resolves and applies them, re-exported by `@bpmnkit/connectors`:
+    - `applyConnectorLines(definitions, lines)` applies each line through `applyTemplateToElement`. A plain task becomes the connector's service task, and inbound templates work on events.
+    - `resolveConnectorLine` repairs a near-miss alias, an operation given by its last dotted part or by the input that selects it, a short key, and `http POST <url>` written without keys. It turns `result=name[: expr]` into the right result header, and a credential written as a value into a `{{secrets.…}}` placeholder.
+    - A required input left out becomes a question with a line to finish.
+    - `connectorLineFor(element)` writes an element back as a line, and `CONNECT_GUIDE` is the connect pass's system prompt.
+  - **`@bpmnkit/editor`'s `applyProcessDelta`** applies a script's `with` lines when given `applyConnectors: applyConnectorLines`, and returns `questions`.
+  - **Fix:** template conditions of the form `isEmpty` (Camunda 8.10 templates with a saved-credential picker) are evaluated. They used to count as always true, in the applier and in the editor's property panel, so the URL input of the HTTP connector was active twice.
+
+### Patch Changes
+
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+- Updated dependencies [ba14aa5]
+  - @bpmnkit/core@1.3.0
+
 ## 1.2.0
 
 ### Minor Changes

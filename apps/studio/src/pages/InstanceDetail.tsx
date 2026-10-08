@@ -399,7 +399,11 @@ export function WasmInstanceDetail({
 										<tr key={r.jobKey} className="border-border border-b last:border-0">
 											<td className="ds-datum px-3 py-2 text-fg">{r.elementId}</td>
 											<td className="px-3 py-2">
-												{r.kind === "simulated" && <span className="text-muted">Simulated</span>}
+												{r.kind === "simulated" && (
+													<span className="text-muted">
+														Simulated{r.note ? ` — ${r.note}` : ""}
+													</span>
+												)}
 												{r.kind === "rest-ok" && (
 													<span className="text-success">REST {r.status}</span>
 												)}

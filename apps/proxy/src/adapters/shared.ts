@@ -25,7 +25,8 @@ export const BPMN_MCP_SERVER = "bpmn"
 /**
  * The diagram tools a chat run may call — every tool the proxy's MCP server
  * offers except the SDK code-mode pair, which no chat prompt asks for. They read
- * and change the diagram held in that server's memory and nothing else.
+ * and change the diagram held in that server's memory and nothing else; the
+ * connector pair also reads the bundled connector catalog and API index.
  */
 export const BPMN_MCP_TOOL_NAMES = [
 	"get_diagram",
@@ -35,6 +36,8 @@ export const BPMN_MCP_TOOL_NAMES = [
 	"update_element",
 	"set_condition",
 	"add_http_call",
+	"find_connectors",
+	"add_connector",
 	"replace_diagram",
 ] as const
 

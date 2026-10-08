@@ -1,0 +1,9 @@
+{
+	"id": "webhook-rest-teams",
+	"category": "connector",
+	"description": "An inbound webhook start, a REST call and a messaging connector.",
+	"assertions": {
+		"minElements": 4,
+		"mustContainTaskTypes": ["io.camunda:http-json:1", "io.camunda:connector-microsoft-teams:1"]
+	}
+}

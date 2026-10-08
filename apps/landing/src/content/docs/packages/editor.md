@@ -127,6 +127,21 @@ cannot be created and attributes the Zeebe schema forbids are reported in `probl
 out. Like the editor's other modelling functions, it acts on the first process. Pass
 `ids: createIdFactory(seed)` for a result that replays identically.
 
+A script's `with` lines configure connectors, on existing nodes or ones the script adds. They
+need the connector catalog, which this package does not carry. Pass `applyConnectorLines` from
+`@bpmnkit/core/connectors` as `applyConnectors`. Required inputs the lines left out come back as
+`result.questions`.
+
+```typescript
+import { applyConnectorLines, connectorLineFor } from "@bpmnkit/core/connectors";
+
+const { text, aliases } = writeProcessText(defs, { connectorLine: connectorLineFor });
+const result = applyProcessDelta(defs, parseProcessDelta(modelOutput), {
+  aliases,
+  applyConnectors: applyConnectorLines,
+});
+```
+
 ## Full Editor with All Plugins
 
 The landing page editor uses the `createStorageTabsBridge` plugin which wires together

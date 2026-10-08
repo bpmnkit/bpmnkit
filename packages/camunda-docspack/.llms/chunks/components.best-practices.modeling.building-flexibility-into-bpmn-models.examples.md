@@ -38,9 +38,6 @@ This leads to another subprocess to be triggered, and this one is interrupting. 
 
 ### Allow for order details to change, but repeat order validation
 
-**Caution: Camunda 7 Only**
-Condition events are [not yet supported in Camunda 8](https://docs.camunda.io/docs/next/components/modeler/bpmn/bpmn-coverage)
-
 If the customer changes the order details, the order must be validated again.
 
 Diagram (BPMN):

@@ -39,3 +39,5 @@ export type {
 export type { ExpectedToolCall } from "./matchers.js"
 export { formatCoverage } from "./coverage.js"
 export type { CoverageCount, CoverageReport, ProcessCoverage } from "./coverage.js"
+export { dryRun } from "./dry-run.js"
+export type { DryRunOptions, DryRunResult, DryRunStep } from "./dry-run.js"

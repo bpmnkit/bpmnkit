@@ -273,6 +273,23 @@ casen deploy deploy order-process.bpmn --target camunda8 # active Camunda 8 prof
 
 `casen synth` reports any problems keyed by JSON path in the plan (e.g. `steps[2].connector.values.token`) — fix the plan, never the XML, and re-run. If the plan has a `tests` array, `casen synth` also writes a `<file>.bpmn.tests.json` sidecar, runnable with `casen test <file>.bpmn`.
 
+`--check` also proves the result runs:
+- It [dry-runs](/docs/guides/testing-processes#dry-run) each process once, with every
+  connector and job mocked.
+- It lists the secrets the diagram reads, to create in the cluster before deploying.
+
+A run that cannot reach its end fails the command:
+
+```
+$ casen synth synth order-process.plan.json --check
+✓ Wrote order-process.plan.bpmn
+✓ Dry run of order-validation-failed reaches "Ops notified" · 1 connector(s) mocked
+Secrets to create in the cluster before deploying:
+  SLACK_OAUTH_TOKEN — "Slack Outbound Connector"
+```
+
+With `--json`, the findings are in the output's `check` field.
+
 See [Building Processes with AI](/docs/guides/ai-implement) and [AI Agents](/docs/guides/ai-agents) for full walkthroughs.
 
 `casen lint` reads a `.bpmnlintrc` if your project has one. See
@@ -409,10 +426,11 @@ your browser can send requests to `localhost`, so the proxy checks every request
   starts in an empty temporary folder and loads none of your own MCP servers, settings,
   plugins or extensions. A `/chat` run that edits a diagram gets only the proxy's diagram
   tools (`get_diagram`, `compose_diagram`, `add_elements`, `remove_elements`,
-  `update_element`, `set_condition`, `add_http_call`, `replace_diagram`); they change the
-  diagram in the MCP server's memory, and `compose_diagram` runs the model's code in an
-  isolated V8 isolate. Chat text, diagrams, incident details and variable values reach the
-  model fenced as untrusted data.
+  `update_element`, `set_condition`, `add_http_call`, `find_connectors`, `add_connector`,
+  `replace_diagram`); they change the diagram in the MCP server's memory, and
+  `compose_diagram` runs the model's code in an isolated V8 isolate. The connector tools also
+  read the bundled connector catalog and API index, and nothing else. Chat text, diagrams,
+  incident details and variable values reach the model fenced as untrusted data.
 
 | CLI | Flags the proxy passes |
 |---|---|

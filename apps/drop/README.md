@@ -110,6 +110,63 @@ worked out again against their own document, and whoever edits can apply it late
 turn it off. Locally the model call needs a Cloudflare account; everything around it runs offline.
 See `doc/drop-ai-feedback-edits-analysis.md` §14.
 
+**The check after a draft** (`src/lib/check.ts`) runs on the page between drafting and the connect
+pass. Code compares the request with the draft. The draft may lack an element for something the
+request names:
+- a DMN decision without a rule task;
+- a time limit without a timer;
+- a failure to handle, or a REST call, without an error boundary;
+- work done at the same time without an and split;
+- a step for every item of a list without `each=`;
+- work a person does without a user task;
+- a message to wait for without a message catch event.
+
+Then one change request, through the same route as any change, asks for exactly those. Its answer
+stands only when it fills a gap and keeps every element of the draft; otherwise the draft stays,
+and Undo returns to it. A complete draft costs nothing more. `bench:generate` runs the same check
+(`--no-check` leaves it out).
+
+The same route also backs **Ask AI**, the chat beside the editor (`src/client/ai-chat.ts`). A request
+in your own words is sent as `{ xml, request, elementIds? }` instead of `threadIds` — one feedback
+item, on the elements selected when it was sent. The change script is applied with the layout kept
+and becomes one editor change at once (Undo reverts it); an answer for a diagram that changed
+meanwhile is not applied. **Open in editor** on a describe-to-diagram draft stores it as a drop
+like Get a share link, and goes to `/drop/:shareId#edit`: the page claims the editor on arrival and
+opens the chat, so the draft keeps changing there instead of being drawn again from scratch.
+
+With `AI_CONNECT_MODEL` set as well (it is, in `wrangler.jsonc`), the passcode also turns on the
+**connect pass** (`POST /drop/api/connect`). It configures the Camunda connectors of a diagram
+that already has its shape (`doc/ai-connector-generation-plan.md` §4).
+
+- **How it picks.** The Worker picks the connector cards for each task in code
+  (`selectConnectors` from `@bpmnkit/core/connectors`). It asks the model for `with` lines only,
+  then applies them itself and streams back the connected diagram. The page never loads the
+  catalog.
+- **API cards.** When the request or a task names a service of the
+  [API index](../../packages/connector-gen) — Stripe, Notion, GitHub's workflow runs — the
+  Worker loads that service only. The model then sees its real endpoints next to the REST
+  connector, and a `with … http POST /v1/customers | api=stripe` line gets the base URL,
+  authentication and headers on the server. The index adds about 400 KB gzipped to the Worker.
+- **When no model is asked.** A diagram whose tasks match no connector ends `skipped`, and the
+  model isn't called.
+- **Where it runs.**
+  - **After every draft or change:** the "Describe a process" generator runs it on its own. A
+    required input the model left out becomes a question; the reader finishes its line, and the
+    line is applied without a model (`lines` in the body).
+  - **On a shared diagram:** **Add connectors** runs it while editing. The result is one
+    undoable editor change.
+- **Checks on the result.** A draft with connectors gets two lines above its questions:
+  - **Secrets:** the secrets to create in the cluster before deploying (`listSecrets`).
+  - **Dry run:** whether the process runs from start to end with every call mocked, or
+    where it stops (`dryRun` from `@bpmnkit/engine/testing`).
+
+  The dry run is its own bundle, `dry-run.js` (about 94 KB gzipped). It is fetched only
+  once a draft has connectors, so `landing.js` does not grow.
+- **Benchmark.** `bench:generate --connect` runs it after each golden prompt and scores the
+  connected diagram. `mustCallUrls` checks that a REST call goes to the index's endpoint.
+  Each connected diagram is dry-run, and its secrets are listed.
+- **Turning it off.** Remove `AI_CONNECT_MODEL`.
+
 Quick API smoke test:
 
 ```sh

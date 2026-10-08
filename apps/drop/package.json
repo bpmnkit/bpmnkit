@@ -1,6 +1,6 @@
 {
 	"name": "@bpmnkit/drop",
-	"version": "0.2.0",
+	"version": "0.4.0",
 	"private": true,
 	"type": "module",
 	"scripts": {
@@ -11,12 +11,15 @@
 		"dev": "node scripts/build-client.mjs && wrangler dev",
 		"deploy": "wrangler deploy",
 		"provision": "node scripts/provision.mjs",
-		"bench:generate": "tsx scripts/bench-generate.mjs"
+		"bench:generate": "tsx scripts/bench-generate.mjs",
+		"bench:rescore": "tsx scripts/rescore-connect.mts"
 	},
 	"dependencies": {
 		"@bpmnkit/canvas": "workspace:*",
+		"@bpmnkit/connector-gen": "workspace:*",
 		"@bpmnkit/core": "workspace:*",
 		"@bpmnkit/editor": "workspace:*",
+		"@bpmnkit/engine": "workspace:*",
 		"@bpmnkit/feel": "workspace:*",
 		"@bpmnkit/plugins": "workspace:*",
 		"@bpmnkit/ui": "workspace:*"

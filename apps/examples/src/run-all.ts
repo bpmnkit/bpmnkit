@@ -12,5 +12,6 @@ await import("./03-loan-approval.js")
 await import("./04-invoice-processing.js")
 await import("./05-content-publishing.js")
 await import("./06-ai-code-review-agent.js")
+await import("./07-ai-ticket-triage-clef.js")
 
 console.log("\nAll examples written to output/")

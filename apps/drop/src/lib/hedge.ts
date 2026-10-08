@@ -13,6 +13,9 @@
  */
 import { type AiUsage, createSseReader, readAiEvent } from "./generate.js"
 
+/** Characters {@link ModelStream.first} reads before it calls an answer begun. */
+const DECIDE_AFTER_CHARS = 8
+
 /**
  * One model's answer, read as it streams.
  *
@@ -27,6 +30,8 @@ export class ModelStream {
 	usage: AiUsage | undefined
 	/** The call failed, or its stream broke. */
 	failed = false
+	/** The model wrote only `!` — gpt-oss's token 0 over and over — and was given up on. */
+	degenerate = false
 	/** When the first piece of content arrived, in ms after {@link first} was called. */
 	firstContentMs: number | undefined
 
@@ -41,7 +46,12 @@ export class ModelStream {
 		private readonly start: () => Promise<unknown>,
 	) {}
 
-	/** Resolves `true` at the first piece of content, `false` if the answer ends or fails without one. */
+	/**
+	 * Resolves `true` once the answer has begun, `false` if it ends or fails without
+	 * content. It waits for a few characters first: gpt-oss-120b sometimes writes
+	 * nothing but `!` up to its token limit (5 of 108 drafts in the 2026-10-03
+	 * benchmarks), and such an answer counts as none, so a fallback can take over.
+	 */
 	async first(): Promise<boolean> {
 		const began = Date.now()
 		let upstream: unknown
@@ -63,13 +73,23 @@ export class ModelStream {
 		}
 		for (;;) {
 			const content = await this.read()
-			if (content === null) return false
-			if (content.length > 0) {
-				this.firstContentMs = Date.now() - began
-				this.pending = content
-				return true
-			}
+			const seen = this.pending.join("").trim()
+			if (content === null) return seen.length > 0 && !this.giveUpIfDegenerate(seen)
+			if (content.length === 0) continue
+			this.firstContentMs ??= Date.now() - began
+			this.pending.push(...content)
+			const now = this.pending.join("").trim()
+			if (now.length >= DECIDE_AFTER_CHARS) return !this.giveUpIfDegenerate(now)
 		}
+	}
+
+	/** Cancels an answer of nothing but `!`, and says whether it was one. */
+	private giveUpIfDegenerate(text: string): boolean {
+		if (!/^!+$/.test(text)) return false
+		this.degenerate = true
+		this.failed = true
+		this.cancel()
+		return true
 	}
 
 	/** The content from the first piece on. Stops at the end of the answer or when it breaks. */

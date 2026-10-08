@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { resolveBpmnlintConfig } from "../src/bpmn/bpmnlint.js"
-import { expand } from "../src/bpmn/compact.js"
+import { compactify, expand } from "../src/bpmn/compact.js"
 import { Bpmn } from "../src/bpmn/index.js"
 import { lintDiagram } from "../src/bpmn/lint.js"
 import {
@@ -502,6 +502,79 @@ describe("parseProcessText", () => {
 		expect(process?.flows.find((f) => f.from === "fail")?.to).toBe("notify_join")
 	})
 
+	describe("a boundary leads only to its handling; the work goes on from the task", () => {
+		const from = (text: string, id: string) =>
+			flows(text)
+				.filter((f) => f.from === id)
+				.map((f) => f.to)
+
+		it("moves the work written through the boundary onto the task", () => {
+			// The drop draft for "read github issues …, count the open ones, post the number to slack".
+			const text = [
+				"start[start Start] > read[service Read github issues] > err[boundary:error API error | on=read] > handle[task Handle failure] > fail[end API error]",
+				"err > calc[task Calculate count of open issues] > post[service Post the number to slack] > done[end Done]",
+			].join("\n")
+			const { fixes } = parseProcessText(text)
+			expect(from(text, "read")).toEqual(["calc"])
+			expect(from(text, "err")).toEqual(["handle"])
+			expect(elements(text).some((e) => e.type === "parallelGateway")).toBe(false)
+			expect(fixes).toContain(`moved err > calc onto "read": a boundary leads only to its handling`)
+		})
+
+		it("keeps the way out named for the handling, written second", () => {
+			const text = [
+				"start[start Start] > read[service Read issues]",
+				"err[boundary:error API error | on=read] > calc[task Count issues] > done[end Done]",
+				"err > alert[send Alert the team] > failed[end Failed]",
+			].join("\n")
+			expect(from(text, "read")).toEqual(["calc"])
+			expect(from(text, "err")).toEqual(["alert"])
+		})
+
+		it("replaces the bare end the task led to", () => {
+			const text = [
+				"start[start Start] > read[service Read issues] > completed[end]",
+				"err[boundary:error API error | on=read] > handle[task Handle failure] > failed[end Failed]",
+				"err > calc[task Count issues] > done[end Done]",
+			].join("\n")
+			expect(from(text, "read")).toEqual(["calc"])
+			expect(elements(text).map((e) => e.id)).not.toContain("completed")
+		})
+
+		it("leaves a boundary whose ways out all handle it", () => {
+			const text = [
+				"start[start Start] > pay[service Pay] > done[end Done]",
+				"err[boundary:error Payment failed | on=pay] > notify[send Notify customer] > a[end Notified]",
+				"err > log[task Log the failure] > b[end Logged]",
+			].join("\n")
+			expect(from(text, "pay")).toEqual(["done"])
+			expect(elements(text).find((e) => e.id === "err_split")?.type).toBe("parallelGateway")
+		})
+	})
+
+	it("reads a FEEL expression into a script task", () => {
+		const text =
+			'start[start Start] > calc[task Count open issues | result=openIssues feel=count(issues[state = "open"])] > done[end Done]'
+		const { diagram, problems } = parseProcessText(text)
+		expect(problems).toEqual([])
+		const calc = diagram.processes[0]?.elements.find((e) => e.id === "calc")
+		expect(calc).toMatchObject({
+			type: "scriptTask",
+			script: '= count(issues[state = "open"])',
+			resultVariable: "openIssues",
+		})
+		const xml = Bpmn.export(expand(diagram))
+		expect(xml).toContain(
+			'<zeebe:script expression="= count(issues[state = &quot;open&quot;])" resultVariable="openIssues"',
+		)
+		expect(
+			compactify(Bpmn.parse(xml)).processes[0]?.elements.find((e) => e.id === "calc"),
+		).toMatchObject({
+			script: '= count(issues[state = "open"])',
+			resultVariable: "openIssues",
+		})
+	})
+
 	it("keeps one blank start event", () => {
 		// gemma-4, golden prompt 12: a legend of the ids after the diagram.
 		const text = [
@@ -579,6 +652,231 @@ describe("parseProcessText", () => {
 			'"wait" waits for nothing in particular; made it a message event',
 			'"cancel" waits for nothing in particular; made it a message event',
 		])
+	})
+
+	it("makes a catch event named for a call it makes a service task", () => {
+		// glm-4.7-flash, golden prompt 24.
+		const text =
+			"s[start Upload received] > queue[event catch Send to SQS] > wait[catch Reply received] > e[end Done]"
+		const { diagram, problems } = parseProcessText(text)
+		const els = new Map(diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("queue")).toMatchObject({ type: "serviceTask", name: "Send to SQS" })
+		expect(els.get("wait")).toMatchObject({ type: "intermediateCatchEvent", eventType: "message" })
+		expect(problems.map((p) => p.message)).toEqual([
+			'"queue" is named for a call it makes, "Send to SQS"; made it a service task',
+			'"wait" waits for nothing in particular; made it a message event',
+		])
+	})
+
+	it("closes a bracket left open where the name ends", () => {
+		// glm-4.7-flash, golden prompts 16 and 26.
+		const text = [
+			"start[start HR) > fetch[service Fetch issues] > done[end Done]",
+			"fetch > page[service Create page] > end[end Page created",
+		].join("\n")
+		const { diagram, problems } = parseProcessText(text)
+		const els = new Map(diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("start")).toMatchObject({ type: "startEvent", name: "HR" })
+		expect(els.get("end")).toMatchObject({ type: "endEvent", name: "Page created" })
+		expect(problems.map((p) => p.message)).toEqual([
+			'"start[" is not closed; closed it where its name ends',
+			'"end[" is not closed; closed it where its name ends',
+		])
+	})
+
+	it("reads an id declared again after an arrow, with a name of several words, as a new node", () => {
+		// glm-4.7-flash, golden prompt 20.
+		const text =
+			"s[start New ticket] > send[task Summarise ticket] > send[post Slack message to #support] > e[end Done]"
+		const { diagram } = parseProcessText(text)
+		expect(diagram.processes[0]?.elements.map((e) => e.id)).toEqual(["s", "send", "send_2", "e"])
+		expect(diagram.processes[0]?.flows.map((f) => `${f.from}>${f.to}`)).toContain("send>send_2")
+	})
+
+	it("reads numbers written as ids, a line starting with an arrow, and a space before a label", () => {
+		// glm-4.7-flash, golden prompts 27, 26 and 12.
+		const numbers = parseProcessText(
+			"s[start Go] > 1[service List runs] > 2[xor Any?]\n2 >(Yes: n > 0) 3[service Post list] > e[end Done]\n2 > (No: default) e",
+		)
+		expect(numbers.diagram.processes[0]?.elements.map((e) => e.id)).toEqual(
+			expect.arrayContaining(["s", "n1", "n2", "n3", "e"]),
+		)
+		// A numbered list is prose, not ids
+		const list = parseProcessText("1. s[start Go] > e[end Done]")
+		expect(list.diagram.processes[0]?.elements.map((e) => e.id)).not.toContain("n1")
+		expect(list.problems[0]?.message).toMatch(/^expected a node id/)
+		expect(numbers.problems.map((p) => p.message)).toEqual([
+			'"1" is not an id; read as "n1"',
+			'"2" is not an id; read as "n2"',
+			'"2" is not an id; read as "n2"',
+			'"3" is not an id; read as "n3"',
+			'"2" is not an id; read as "n2"',
+		])
+		expect(
+			numbers.diagram.processes[0]?.flows.find((f) => f.from === "n2" && f.isDefault),
+		).toMatchObject({
+			isDefault: true,
+		})
+		const wrapped = parseProcessText("s[start Go] > write[service Write page]\n> stop[end Done]")
+		expect(wrapped.diagram.processes[0]?.flows.map((f) => `${f.from}>${f.to}`)).toEqual([
+			"s>write",
+			"write>stop",
+		])
+		expect(wrapped.problems.map((p) => p.message)).toEqual([
+			'the line starts with ">"; read it as continuing "write"',
+		])
+	})
+
+	it("reads a kind and a name without brackets after an arrow, not at the start of a line", () => {
+		// glm-4.7-flash, golden prompt 21.
+		const r = parseProcessText(
+			"s[start Lead] > gs[service Append row] > xor Notify sales?\nxor >(Yes: isNew) t[send Notify] > end Lead added\nxor >(No: default) end",
+		)
+		const els = new Map(r.diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("xor")).toMatchObject({ type: "exclusiveGateway", name: "Notify sales?" })
+		expect(els.get("end")).toMatchObject({ type: "endEvent", name: "Lead added" })
+		expect(r.problems.map((p) => p.message)).toContain(
+			'"xor …" has no brackets; read it as declaring "xor"',
+		)
+		// At the start of a line, it stays prose
+		expect(parseProcessText("end of the answer").problems[0]?.message).toMatch(/^expected ">"/)
+	})
+
+	it("makes a pass-through and node named like a step a task, and removes pass-throughs a removal leaves", () => {
+		// glm-4.7-flash, golden prompt 13
+		const text = [
+			"s[start Order] > a[and] > b[and Pack into box] > c[service Ship] > e[end Done]",
+			"a > h[xor Wait?] > b",
+		].join("\n")
+		const { diagram, problems } = parseProcessText(text)
+		const els = new Map(diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("b")).toMatchObject({ type: "task", name: "Pack into box" })
+		expect(els.has("a")).toBe(false)
+		expect(problems.map((p) => p.message)).toContain(
+			'"b" is a gateway with one way in and out, named like a step; made it a task',
+		)
+	})
+
+	it("reads a step named for each or every item as run per item, but not every day", () => {
+		// glm-4.7-flash, golden prompt 06
+		const r = parseProcessText(
+			"s[start Go] > mail[service Send email to each stakeholder] > report[service Report sales every day] > e[end Done]",
+		)
+		const els = new Map(r.diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("mail")?.multiInstance).toEqual({
+			collection: "=stakeholders",
+			element: "stakeholder",
+		})
+		expect(els.get("report")?.multiInstance).toBeUndefined()
+		expect(r.fixes).toContain('"mail" runs once per stakeholder, over the list "stakeholders"')
+	})
+
+	it("splits the unlabelled outcomes of a DMN decision with an xor", () => {
+		// glm-4.7-flash, golden prompt 12
+		const r = parseProcessText(
+			"s[start Go] > decide[rule Credit check]\ndecide > ok[user Approve loan] > e[end Approved]\ndecide > no[user Reject loan] > f[end Rejected]",
+		)
+		const split = r.diagram.processes[0]?.elements.find((e) => e.id === "decide_split")
+		expect(split?.type).toBe("exclusiveGateway")
+	})
+
+	it("runs a row of steps between two and nodes in parallel", () => {
+		// glm-4.7-flash, golden prompt 13
+		const r = parseProcessText(
+			"s[start Order] > fork[and Start work] > pick[service Pick items] > pack[service Pack box] > label[service Print label] > joined[and Ready] > ship[send Dispatch] > e[end Done]",
+		)
+		const flows = r.diagram.processes[0]?.flows.map((f) => `${f.from}>${f.to}`) ?? []
+		for (const step of ["pick", "pack", "label"]) {
+			expect(flows).toContain(`fork>${step}`)
+			expect(flows).toContain(`${step}>joined`)
+		}
+		expect(flows).not.toContain("pick>pack")
+	})
+
+	it("makes a catch event on a task a boundary, and a gateway with each= a task run per item", () => {
+		// glm-4.7-flash, golden prompts 15 and 06
+		const r = parseProcessText(
+			[
+				"s[start Go] > poll[service Poll system] > late[catch:timer | on=poll after=PT5M] > flag[user Flag for follow-up] > e[end Done]",
+				"s > every[and Process every recipient | each=recipients] > poll",
+			].join("\n"),
+		)
+		const els = new Map(r.diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("late")).toMatchObject({ type: "boundaryEvent", attachedTo: "poll" })
+		expect(r.diagram.processes[0]?.flows.some((f) => f.from === "poll" && f.to === "late")).toBe(
+			false,
+		)
+		expect(els.get("every")).toMatchObject({
+			type: "task",
+			multiInstance: { collection: "=recipients" },
+		})
+		// On anything but a task, a catch event stays one
+		const start = parseProcessText(
+			"s[start Order placed] > w[catch:message Paid | on=s] > ship[service Ship] > e[end Done]",
+		)
+		expect(start.diagram.processes[0]?.elements.find((x) => x.id === "w")?.type).toBe(
+			"intermediateCatchEvent",
+		)
+	})
+
+	it("puts a boundary without on= on the one task drawn into it", () => {
+		// glm-4.7-flash, golden prompt 06
+		const r = parseProcessText(
+			"s[start Go] > send[service Send email] > ok[end Sent]\nsend > wait[boundary:timer Wait 60s] > done[end Dropped]",
+		)
+		const wait = r.diagram.processes[0]?.elements.find((e) => e.id === "wait")
+		expect(wait).toMatchObject({ attachedTo: "send", timerDuration: "PT60S" })
+		expect(r.fixes).toContain('put boundary "wait" on "send", the task drawn into it')
+		expect(r.problems).toEqual([])
+	})
+
+	it("makes an event with after= a timer, and reads a lower-case ISO duration", () => {
+		// glm-4.7-flash, change case 02
+		const r = parseProcessText(
+			"s[start Go] > pay[service Process payment] > e[end Done]\ndelay[boundary:error Timeout | on=pay after=p1d] > t[end Payment timed out]",
+		)
+		const delay = r.diagram.processes[0]?.elements.find((e) => e.id === "delay")
+		expect(delay).toMatchObject({ eventType: "timer", timerDuration: "P1D", attachedTo: "pay" })
+		expect(r.problems.map((p) => p.message)).toEqual([
+			'"delay" waits p1d, which only a timer does; made it a timer event',
+		])
+	})
+
+	it("reads each= as a step run once per item, and a timer's duration from after= or its name", () => {
+		// glm-4.7-flash, golden prompts 06 and 15
+		const text = [
+			"s[start Go] > mail[send Email stakeholder | each=stakeholders] > poll[service Poll report] > e[end Done]",
+			"late[boundary:timer No reply in 5 minutes on=poll] > flag[user Flag for follow-up] > f[end Flagged]",
+			"mail > wait[catch:timer Cool down | after=2h] > e",
+		].join("\n")
+		const { diagram, problems } = parseProcessText(text)
+		expect(problems).toEqual([])
+		const els = new Map(diagram.processes[0]?.elements.map((e) => [e.id, e]))
+		expect(els.get("mail")?.multiInstance).toEqual({
+			collection: "=stakeholders",
+			element: "stakeholder",
+		})
+		expect(els.get("late")).toMatchObject({ attachedTo: "poll", timerDuration: "PT5M" })
+		expect(els.get("wait")?.timerDuration).toBe("PT2H")
+
+		const defs = expand(diagram)
+		const xml = Bpmn.export(defs)
+		expect(xml).toContain('inputCollection="=stakeholders" inputElement="stakeholder"')
+		expect(xml).toContain("<bpmn:timeDuration>PT5M</bpmn:timeDuration>")
+		const back = compactify(Bpmn.parse(xml)).processes[0]?.elements
+		expect(back?.find((e) => e.id === "mail")?.multiInstance?.collection).toBe("=stakeholders")
+		expect(back?.find((e) => e.id === "late")?.timerDuration).toBe("PT5M")
+	})
+
+	it("reads an id written with spaces before its bracket as one id", () => {
+		// glm-4.7-flash, golden prompt 17.
+		const text =
+			"s[start Refund requested] > call back[service Stripe refund] > e[end Refunded]\ncall_back > e"
+		const { diagram, problems } = parseProcessText(text)
+		expect(diagram.processes[0]?.elements.map((e) => e.id)).toEqual(["s", "call_back", "e"])
+		expect(problems.map((p) => p.message)).toContain(
+			'"call back" is not an id; read as "call_back"',
+		)
 	})
 
 	it("makes a link event in a path a plain event", () => {

@@ -20,7 +20,19 @@
  * apply it, and scored on what it changed, including changes to parts no comment
  * was about (doc/drop-ai-feedback-edits-analysis.md §13).
  *
+ * With --connect each golden prompt's diagram then goes through the connect pass
+ * as the Worker runs it (doc/ai-connector-generation-plan.md §4): the same cards,
+ * prompt, line filter and server-side apply. The assertions are scored on the
+ * connected diagram, so `mustContainTaskTypes` measures the connectors and
+ * `mustCallUrls` the REST calls built from the API index, and a prompt whose
+ * expected.json says `"connect": false` must be skipped without a model call.
+ * Each connected diagram is also dry-run with every call mocked (`dryRun` from
+ * `@bpmnkit/engine/testing`), and its secrets are listed.
+ *
  * Options:
+ *   --connect         run the connect pass after each golden prompt
+ *   --connect-model M with --connect: the model of the connect pass (default: the same
+ *                     model as the draft); the Worker's is AI_CONNECT_MODEL
  *   --edits           run the change cases instead of the golden prompts
  *   --feedback        run the review-feedback cases instead of the golden prompts
  *   --dry-run         with --feedback: print each case's prompt size and estimated
@@ -32,6 +44,10 @@
  *   --only 02,13      prompt directory (or edit case) prefixes to run
  *   --all             include the prompts skipped by default
  *   --no-extra        send no model-specific options (reasoning effort, thinking toggle)
+ *   --no-check        skip the check after a golden prompt's draft. By default, as on the
+ *                     page, a draft that lacks what its request names (a DMN task, a
+ *                     timer, an error boundary, …, `src/lib/check.ts`) gets one change
+ *                     request, kept when it fills a gap and loses no element
  *   --max-tokens N    output cap (default: the model's, as the Worker sends)
  *   --out DIR         where to write results (default bench-results/<timestamp>)
  *
@@ -45,7 +61,26 @@ import { mkdir, readFile, readdir, writeFile } from "node:fs/promises"
 import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { parseArgs } from "node:util"
-import { Bpmn, createProcessTextStream, expand, optimize, parseProcessText } from "@bpmnkit/core"
+import {
+	Bpmn,
+	createProcessTextStream,
+	expand,
+	listSecrets,
+	optimize,
+	parseProcessText,
+	writeProcessText,
+} from "@bpmnkit/core"
+import { connectorLineFor, selectConnectors } from "@bpmnkit/core/connectors"
+import { dryRun as dryRunProcess } from "@bpmnkit/engine/testing"
+import { completes, draftGaps, gapChange } from "../src/lib/check.ts"
+import {
+	connectApis,
+	connectMessages,
+	connectTasks,
+	createConnectLineFilter,
+	finishConnect,
+	maxConnectTokens,
+} from "../src/lib/connect.ts"
 import { scoreEdit } from "../src/lib/edit-bench.ts"
 import { prepareFeedbackCase, scoreFeedback } from "../src/lib/feedback-bench.ts"
 import { createChangeLineFilter, feedbackMessages } from "../src/lib/feedback.ts"
@@ -82,10 +117,13 @@ const { values: args } = parseArgs({
 		only: { type: "string" },
 		all: { type: "boolean", default: false },
 		edits: { type: "boolean", default: false },
+		connect: { type: "boolean", default: false },
+		"connect-model": { type: "string" },
 		feedback: { type: "boolean", default: false },
 		"dry-run": { type: "boolean", default: false },
 		"refine-rules": { type: "string", default: "text" },
 		"no-extra": { type: "boolean", default: false },
+		"no-check": { type: "boolean", default: false },
 		"max-tokens": { type: "string" },
 		out: { type: "string" },
 	},
@@ -99,6 +137,14 @@ if (!Object.hasOwn(REFINE_RULE_SETS, refineRules)) {
 
 if (args.edits && args.feedback) {
 	console.error("--edits and --feedback are separate case sets; pick one.")
+	process.exit(1)
+}
+if (args.connect && (args.edits || args.feedback)) {
+	console.error("--connect runs after the golden prompts only.")
+	process.exit(1)
+}
+if (args["connect-model"] && !args.connect) {
+	console.error("--connect-model needs --connect.")
 	process.exit(1)
 }
 if (args["dry-run"] && !args.feedback) {
@@ -137,6 +183,8 @@ async function loadPrompts() {
 		const expected = JSON.parse(await readFile(join(PROMPTS_DIR, dir, "expected.json"), "utf8"))
 		prompts.push({
 			id: dir,
+			text,
+			expected,
 			messages: generateMessages(text),
 			score: (diagram) => score(expand(diagram), expected.assertions ?? {}),
 		})
@@ -215,10 +263,20 @@ function dryRun(cases) {
 	)
 }
 
-/** Checks the assertions this feature can meet; connector job types are out of scope for v1. */
+/**
+ * Checks a golden prompt's assertions. Connector job types are scored too, so the
+ * connector prompts show what generation still misses (doc/ai-connector-generation-plan.md).
+ */
 function score(defs, assertions) {
 	const elements = defs.processes.flatMap((p) => p.flowElements)
 	const types = new Set(elements.map((e) => e.type))
+	const jobTypes = new Set(
+		elements.flatMap((e) =>
+			e.extensionElements
+				.filter((x) => x.name === "zeebe:taskDefinition" && x.attributes.type)
+				.map((x) => x.attributes.type),
+		),
+	)
 	const failed = []
 	if (assertions.minElements !== undefined && elements.length < assertions.minElements) {
 		failed.push(`${elements.length} < ${assertions.minElements} elements`)
@@ -229,6 +287,26 @@ function score(defs, assertions) {
 	for (const alternatives of assertions.mustContainAnyOf ?? []) {
 		if (!alternatives.some((type) => types.has(type)))
 			failed.push(`no ${alternatives.join(" or ")}`)
+	}
+	// A step that runs once per item of a list: a multi-instance task or sub-process
+	if (assertions.mustContainMultiInstance && !elements.some((e) => e.loopCharacteristics)) {
+		failed.push("no multi-instance step")
+	}
+	// An entry may list alternatives: any one of its job types meets it
+	for (const entry of assertions.mustContainTaskTypes ?? []) {
+		const any = Array.isArray(entry) ? entry : [entry]
+		if (!any.some((t) => jobTypes.has(t))) failed.push(`no task type ${any.join(" or ")}`)
+	}
+	// A REST call's URL, literal or FEEL: each expected part must be in one of them
+	const urls = elements.flatMap((e) =>
+		e.extensionElements
+			.filter((x) => x.name === "zeebe:ioMapping")
+			.flatMap((x) => x.children)
+			.filter((c) => c.name === "zeebe:input" && c.attributes.target === "url")
+			.map((c) => c.attributes.source ?? ""),
+	)
+	for (const part of assertions.mustCallUrls ?? []) {
+		if (!urls.some((url) => url.includes(part))) failed.push(`no call to ${part}`)
 	}
 	return { elements: elements.length, failed }
 }
@@ -290,6 +368,8 @@ async function runOne(model, prompt) {
 	}
 	result.totalMs = since()
 	result.text = text
+	// gpt-oss's token 0 over and over: the Worker gives such an answer up (ModelStream), so it is not ok
+	if (/^!+$/.test(text.trim())) result.error = "degenerate answer: nothing but !"
 	result.reasoningChars = reasoningChars
 	result.usage = usage
 	if (usage) result.neurons = neuronsFor(model, usage)
@@ -307,7 +387,42 @@ async function runOne(model, prompt) {
 		return result
 	}
 
-	const parsed = stream.end()
+	let parsed = stream.end()
+	// The check the page runs after a draft: one change request for what the request names
+	// and the draft lacks, kept when it fills a gap without losing an element
+	if (prompt.text !== undefined && !args["no-check"]) {
+		const gaps = draftGaps(prompt.text, text)
+		const change = gapChange(gaps)
+		result.check = { gaps: gaps.map((g) => g.kind) }
+		if (change) {
+			const t1 = performance.now()
+			try {
+				const fixed = await askModel(model, {
+					messages: refineMessages(prompt.text, text, change),
+					stream: true,
+					max_tokens: maxTokens ?? maxTokensFor(model),
+					...(args["no-extra"] ? {} : (MODEL_PROFILES[model]?.options ?? {})),
+				})
+				const adopted = completes(prompt.text, text, fixed.text)
+				Object.assign(result.check, {
+					ms: Math.round(performance.now() - t1),
+					usage: fixed.usage,
+					neurons: fixed.usage ? neuronsFor(model, fixed.usage) : undefined,
+					text: fixed.text,
+					left: draftGaps(prompt.text, fixed.text).map((g) => g.kind),
+					adopted,
+				})
+				if (adopted) {
+					result.draft = text
+					text = fixed.text
+					result.text = text
+					parsed = parseProcessText(text)
+				}
+			} catch (error) {
+				result.check.error = String(error)
+			}
+		}
+	}
 	result.problems = parsed.problems
 	result.fixes = parsed.fixes
 	try {
@@ -319,8 +434,109 @@ async function runOne(model, prompt) {
 		Object.assign(result, prompt.score(parsed.diagram))
 	} catch (error) {
 		result.error = `expand: ${error.message}`
+		return result
+	}
+	if (args.connect) {
+		const connectModel = args["connect-model"] ?? model
+		Object.assign(result, await runConnect(connectModel, prompt, parsed.diagram))
 	}
 	return result
+}
+
+/** {@link stream}, under a name `runOne`'s own `stream` does not hide. */
+const askModel = (model, body) => stream(model, body)
+
+/** Reads a Workers AI stream: the content, and the usage when the model reports it. */
+async function stream(model, body) {
+	const response = await fetch(`${apiBase}/accounts/${accountId}/ai/run/${model}`, {
+		method: "POST",
+		headers: {
+			Authorization: `Bearer ${token}`,
+			"Content-Type": "application/json",
+			"x-session-affinity": `bench-connect-${model}`,
+		},
+		body: JSON.stringify(body),
+		signal: AbortSignal.timeout(180_000),
+	})
+	if (!response.ok || !response.body) {
+		throw new Error(`HTTP ${response.status}: ${(await response.text()).slice(0, 500)}`)
+	}
+	const sse = createSseReader()
+	const decoder = new TextDecoder()
+	let text = ""
+	let usage
+	for await (const bytes of response.body) {
+		for (const data of sse.push(decoder.decode(bytes, { stream: true }))) {
+			const delta = readAiEvent(data)
+			if (delta?.content) text += delta.content
+			if (delta?.usage) usage = delta.usage
+		}
+	}
+	return { text, usage }
+}
+
+/**
+ * The connect pass on a generated diagram, as the Worker runs it. Its scores
+ * replace the diagram's: the assertions are about the connected result.
+ */
+async function runConnect(model, prompt, diagram) {
+	const defs = expand(diagram)
+	const { text, aliases } = writeProcessText(defs, { connectorLine: connectorLineFor })
+	const tasks = connectTasks(defs, aliases)
+	const apis = await connectApis(prompt.text, tasks)
+	const selection = selectConnectors({ text: prompt.text, tasks }, { apis })
+	// A prompt that predates the connect pass says nothing: it expects one when it asserts a connector
+	const expectSkip =
+		prompt.expected.connect === false ||
+		(prompt.expected.connect === undefined &&
+			!(prompt.expected.assertions?.mustContainTaskTypes ?? [])
+				.flat()
+				.some((t) => t.startsWith("io.camunda")))
+	const connect = {
+		model,
+		tasks: selection.length,
+		cards: selection.reduce((n, t) => n + t.cards.length, 0),
+		apiCards: selection.reduce((n, t) => n + (t.apis?.length ?? 0), 0),
+		skipped: selection.length === 0,
+		skipRight: (selection.length === 0) === expectSkip,
+	}
+	if (connect.skipped) return { connect }
+	const t0 = performance.now()
+	try {
+		const { text: answer, usage } = await stream(model, {
+			messages: connectMessages(text, selection, prompt.text),
+			stream: true,
+			max_tokens: maxTokens ?? maxConnectTokens(selection.length),
+			...(args["no-extra"] ? {} : (MODEL_PROFILES[model]?.options ?? {})),
+		})
+		connect.totalMs = Math.round(performance.now() - t0)
+		connect.usage = usage
+		if (usage) connect.neurons = neuronsFor(model, usage)
+		const filter = createConnectLineFilter()
+		connect.lines = filter.push(answer) + filter.end()
+		// What the model wrote before the filter: an answer with no usable line says why here
+		connect.raw = answer
+		const done = finishConnect(defs, aliases, connect.lines, apis, selection)
+		connect.connected = done.connected.length
+		connect.problems = done.problems
+		connect.questions = done.questions.length
+		// The resolver replaces a literal credential; a model that writes one still counts
+		connect.literalSecrets = done.fixes.filter((f) => f.includes("holds a credential")).length
+		// Executable, not only well-formed: a run with every call mocked reaches the end (WS7)
+		const connectedDefs = Bpmn.parse(done.xml)
+		const run = await dryRunProcess(connectedDefs)
+		connect.dryRun = run.reachedEnd
+			? "end"
+			: `stops at ${run.stoppedAt[0] ?? "?"}: ${run.error ?? ""}`
+		connect.secrets = listSecrets(connectedDefs).map((s) => s.name)
+		return {
+			connect,
+			xml: done.xml,
+			...score(Bpmn.parse(done.xml), prompt.expected.assertions ?? {}),
+		}
+	} catch (error) {
+		return { connect: { ...connect, error: String(error) } }
+	}
 }
 
 const markdownTable = (header, rows) =>
@@ -372,7 +588,19 @@ for (const model of models) {
 				: args.feedback
 					? `total ${r.totalMs}ms  out ${r.usage?.completionTokens ?? "?"}tok  +${r.created} ~${r.changed} −${r.removed}  problems ${r.problems.length}  @${r.addressed.join(",") || "–"}${r.failed.length ? `  FAIL ${r.failed.join(", ")}` : ""}`
 					: `shape ${r.firstShapeMs ?? "–"}ms  total ${r.totalMs}ms  out ${r.usage?.completionTokens ?? "?"}tok  problems ${r.problems.length}  fixes ${r.fixes.length}  lint-errors ${r.lintErrors.length}${r.kept === undefined ? "" : `  kept ${Math.round(r.kept * 100)}% +${r.added} −${r.removed}`}${r.failed.length ? `  FAIL ${r.failed.join(", ")}` : ""}`
-			console.log(`${model}  ${prompt.id}#${run}  ${verdict}`)
+			const c = r.connect
+			const connected = !c
+				? ""
+				: c.error
+					? `  | connect ERROR ${c.error.slice(0, 80)}`
+					: c.skipped
+						? `  | connect skipped${c.skipRight ? "" : " (WRONG)"}`
+						: `  | connect ${c.totalMs}ms  out ${c.usage?.completionTokens ?? "?"}tok  connected ${c.connected}/${c.tasks}  api cards ${c.apiCards}  problems ${c.problems.length}  questions ${c.questions}  dry run ${c.dryRun === "end" ? "✓" : `✗ ${c.dryRun}`}${c.literalSecrets ? `  literal secrets ${c.literalSecrets}` : ""}${c.skipRight ? "" : "  (should have skipped)"}`
+			const k = r.check
+			const checked = !k?.gaps.length
+				? ""
+				: `  | check ${k.gaps.join(",")} ${k.error ? `ERROR ${k.error.slice(0, 60)}` : `${k.adopted ? "kept" : "dropped"} ${k.ms}ms`}`
+			console.log(`${model}  ${prompt.id}#${run}  ${verdict}${checked}${connected}`)
 		}
 	}
 }
@@ -386,7 +614,8 @@ await writeFile(
 	),
 )
 
-const feedbackRows = models.map((model) => {
+// Only for feedback runs: the other runs' results have no collateral field to count.
+const feedbackRows = (args.feedback ? models : []).map((model) => {
 	const rs = results.filter((r) => r.model === model)
 	const ok = rs.filter((r) => !r.error)
 	return [
@@ -446,11 +675,28 @@ const rows = (args.feedback ? [] : models).map((model) => {
 		mean(ok.map((r) => r.problems.length)),
 		mean(ok.map((r) => r.fixes.length)),
 		mean(ok.map((r) => r.lintErrors.length)),
+		...(!args.edits && !args["no-check"]
+			? [
+					`${ok.filter((r) => r.check?.gaps.length).length}/${ok.length}`,
+					`${ok.filter((r) => r.check?.adopted).length}/${ok.filter((r) => r.check?.gaps.length).length}`,
+					median(ok.filter((r) => r.check?.ms !== undefined).map((r) => r.check.ms)),
+				]
+			: []),
 		...(args.edits
 			? [
 					mean(ok.map((r) => r.kept * 100)),
 					mean(ok.map((r) => r.added)),
 					mean(ok.map((r) => r.removed)),
+				]
+			: []),
+		...(args.connect
+			? [
+					`${ok.filter((r) => r.connect?.skipRight).length}/${ok.length}`,
+					median(ok.map((r) => r.connect?.totalMs)),
+					median(ok.map((r) => r.connect?.usage?.completionTokens)),
+					mean(ok.map((r) => r.connect?.neurons)),
+					mean(ok.map((r) => r.connect?.problems?.length)),
+					mean(ok.map((r) => r.connect?.questions)),
 				]
 			: []),
 	]
@@ -469,7 +715,18 @@ const header = [
 	"problems",
 	"fixes",
 	"lint errors",
+	...(!args.edits && !args["no-check"] ? ["drafts with gaps", "completions kept", "check ms"] : []),
 	...(args.edits ? ["kept %", "added", "removed"] : []),
+	...(args.connect
+		? [
+				"connect skip right",
+				"connect ms",
+				"connect out tok",
+				"connect neurons",
+				"connect problems",
+				"connect questions",
+			]
+		: []),
 ]
 const table = args.feedback
 	? markdownTable(feedbackHeader, feedbackRows)

@@ -26,6 +26,7 @@ import { slugify, uniqueId } from "../plan/slug.js"
 import type { BpmnDefinitions, BpmnElementType } from "./bpmn-model.js"
 import { expand } from "./compact.js"
 import type { CompactDiagram, CompactElement, CompactFlow } from "./compact.js"
+import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connector-line.js"
 
 /**
  * How to write the format — the part of a system prompt that teaches it.
@@ -41,12 +42,15 @@ gw >(Label: condition) x  conditional branch, condition in FEEL (amount > 1000, 
 gw >(Label: default) y    branch taken when no condition holds
 Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate cancel)
-Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>
+Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>, each=<list variable> (once per item), after=<ISO duration> (timer), result=<variable>, feel=<FEEL expression> (last)
 Rules:
 - One start event. Every node is on a path from it to an end event: never a node nothing leads to.
 - An xor has two or more branches: exactly one is (Label: default), each other has a FEEL condition.
 - A boundary starts its own line, on a task you declared, and leads to a task that handles it; never draw an arrow into a boundary.
+- A boundary leads only to the handling. What happens next when nothing fails follows the task itself (read > count), never the boundary.
+- A step that only works on process data (count, sum, filter, compare, pick, format a message) is a script task, never a service or plain task: its FEEL reads the variables earlier steps set with result=. read[service Read issues | result=issues] > count[script Count open issues | result=openCount feel=count(issues[state = "open"])]
 - Branches that meet again are joined automatically; join parallel branches with an and node.
+- Steps done at the same time start from an and node and meet at another. A deadline is a boundary:timer with after= on the task that may run late. A step done for every item of a list takes each=<list>; use it only when the description says every or each.
 
 Example:
 # Expense approval
@@ -87,6 +91,17 @@ export interface ProcessTextResult {
 	fixes: string[]
 	/** The guesses behind the fixes that only the reader can confirm, in the order of the text. */
 	questions: ProcessTextQuestion[]
+	/**
+	 * The `with` lines, each with the id of the element it configures. Not
+	 * applied: `applyConnectorLines` from `@bpmnkit/core/connectors` writes them
+	 * onto the expanded diagram.
+	 */
+	connectors: ConnectorRef[]
+}
+
+/** A `with` line, and the element it names in the diagram. */
+export interface ConnectorRef extends ConnectorLine {
+	elementId: string
 }
 
 export const KINDS: Record<string, BpmnElementType> = {
@@ -195,6 +210,30 @@ function matching(text: string, start: number, open: string, close: string): num
 	return -1
 }
 
+/**
+ * Splits `feel=` off a declaration's attributes. A FEEL expression has spaces and
+ * commas, so it takes the rest of them: `| result=open feel=count(issues[state = "open"])`.
+ *
+ * @returns The other attributes, and the expression with its leading `=`, if any.
+ */
+export function splitFeel(attrs: string): { plain: string; feel?: string } {
+	const at = /(?:^|[\s,|])feel=/.exec(attrs)
+	if (!at) return { plain: attrs }
+	const feel = attrs.slice(at.index + at[0].length).trim()
+	if (feel === "") return { plain: attrs.slice(0, at.index) }
+	return { plain: attrs.slice(0, at.index), feel: feel.startsWith("=") ? feel : `= ${feel}` }
+}
+
+/** Words that name the handling of a failure, a timeout or a cancellation. */
+const HANDLING =
+	/\b(?:fail\w*|error\w*|handle\w*|alert\w*|notify\w*|retr(?:y|ies)|escalat\w*|cancel\w*|reject\w*|abort\w*|roll\s?back|compensat\w*|timeout|timed out|late)\b/i
+
+/** Whether `element` reads as the handling of what a boundary catches. */
+function handles(element: CompactElement | undefined): boolean {
+	if (element === undefined) return false
+	return HANDLING.test(element.name ?? "") || HANDLING.test(element.id.replace(/[_.-]+/g, " "))
+}
+
 /** The type a bare id suggests, for a node written without a kind or never declared. */
 function typeFromId(id: string): BpmnElementType {
 	// `pick > and`, `and > dispatch`: the kind written as if it were an id.
@@ -223,6 +262,12 @@ export interface PathTokens {
 	labels: (string | undefined)[]
 	/** A parenthesised note after the last node, which carries no meaning. */
 	note?: string
+	/** Ids written with spaces (`call back[…]`), and the id each was read as. */
+	joined?: { written: string; id: string }[]
+	/** Ids whose bracket was never closed, read as closed where the name ends. */
+	unclosed?: string[]
+	/** Kinds written with a name but no brackets after an arrow (`> end Done`), read as declared. */
+	bracketless?: string[]
 }
 
 /**
@@ -235,21 +280,63 @@ export interface PathTokens {
 export function tokenizePath(text: string): PathTokens | { error: string } {
 	const refs: PathTokens["refs"] = []
 	const labels: PathTokens["labels"] = []
+	const joined: NonNullable<PathTokens["joined"]> = []
+	const unclosed: string[] = []
+	const bracketless: string[] = []
 	let note: string | undefined
 	let i = 0
 	for (;;) {
-		const id = ID.exec(text.slice(i))?.[0]
-		if (id === undefined) return { error: `expected a node id at "${text.slice(i, i + 20)}"` }
-		i += id.length
+		let id = ID.exec(text.slice(i))?.[0]
+		// `1[service List runs] > 2[xor …]`: numbers for ids, which BPMN ids cannot start with
+		const number =
+			id === undefined ? /^\d[\w-]*(?=\s*(?:\[|-{0,2}>))/.exec(text.slice(i))?.[0] : undefined
+		if (number !== undefined) {
+			id = `n${number}`
+			if (!joined.some((j) => j.id === id)) joined.push({ written: number, id })
+			i += number.length
+		} else if (id === undefined) {
+			return { error: `expected a node id at "${text.slice(i, i + 20)}"` }
+		} else {
+			i += id.length
+		}
+		// `call back[service …]`: words before a bracket are one id
+		const words = /^((?: +[A-Za-z_][\w.-]*)+)(?= *\[)/.exec(text.slice(i))?.[1]
+		if (words !== undefined) {
+			const written = `${id}${words}`
+			id = written.split(/ +/).join("_")
+			joined.push({ written, id })
+			i += words.length
+		}
 		let spec: string | undefined
+		// `… > xor Notify sales? >(Yes: …)`: a kind and a name without brackets, after an
+		// arrow. At the start of a line it is more likely prose ("end of the answer").
+		const bare =
+			refs.length > 0 && KINDS[id] !== undefined
+				? /^ +([^[\]()>|]+?)(?=\s*(?:-{0,2}>|$))/.exec(text.slice(i))
+				: null
+		if (bare?.[1]) {
+			spec = `${id} ${bare[1].trim()}`
+			bracketless.push(id)
+			i += bare[0].length
+		}
 		// `done-end [end Done]`: a space before the bracket still declares.
 		const gap = /^ +\[/.exec(text.slice(i))
 		if (gap) i += gap[0].length - 1
 		if (text[i] === "[") {
-			const end = matching(text, i, "[", "]")
-			if (end < 0) return { error: `"${id}[" is not closed` }
+			let end = matching(text, i, "[", "]")
+			let after = end + 1
+			if (end < 0) {
+				// `start[start HR) > …` or `end[Page created` at the end of the line: the
+				// bracket closes where its name plainly ends, before the next arrow
+				const open = /^[^[\]]*?(?:\)(?=\s*-{0,2}>)|(?=\s+-{0,2}>)|$)/.exec(text.slice(i + 1))?.[0]
+				if (open === undefined || open.trim() === "") return { error: `"${id}[" is not closed` }
+				const closer = open.endsWith(")") ? 1 : 0
+				end = i + 1 + open.length - closer
+				after = i + 1 + open.length
+				unclosed.push(id)
+			}
 			spec = text.slice(i + 1, end).trim()
-			i = end + 1
+			i = after
 		}
 		refs.push({ id, spec })
 
@@ -267,6 +354,9 @@ export function tokenizePath(text: string): PathTokens | { error: string } {
 		if (arrow === undefined) return { error: `expected ">" at "${text.slice(i, i + 20)}"` }
 		i += arrow.length
 		let label: string | undefined
+		// `credit > (No: default) decision`: a space before the label
+		const spaced = /^ +\(/.exec(text.slice(i))
+		if (spaced) i += spaced[0].length - 1
 		if (text[i] === "(") {
 			const end = matching(text, i, "(", ")")
 			if (end < 0) return { error: "edge label is not closed" }
@@ -281,7 +371,12 @@ export function tokenizePath(text: string): PathTokens | { error: string } {
 			while (text[i] === " ") i++
 		}
 	}
-	return note === undefined ? { refs, labels } : { refs, labels, note }
+	const tokens: PathTokens = { refs, labels }
+	if (note !== undefined) tokens.note = note
+	if (joined.length > 0) tokens.joined = joined
+	if (unclosed.length > 0) tokens.unclosed = unclosed
+	if (bracketless.length > 0) tokens.bracketless = bracketless
+	return tokens
 }
 
 /**
@@ -319,11 +414,17 @@ class Reader {
 	private readonly taken = new Set<string>()
 	readonly edges: Edge[] = []
 	readonly problems: ProcessTextProblem[] = []
+	/** What reading a declaration repaired, listed with the parser's other fixes. */
+	readonly fixes: string[] = []
+	/** `with` lines, with the written id resolved to the node it meant when read. */
+	readonly connectors: ConnectorRef[] = []
 	/** Catch and boundary events written without a trigger, and made message events. */
 	readonly guessedMessage = new Set<string>()
 	title: string | undefined
 	/** A line that ended in an arrow, waiting for the line that continues it. */
 	private carry: { text: string; line: number } | undefined
+	/** The last node of the last path read, which a line starting with an arrow continues. */
+	private tail: string | undefined
 
 	/** Reads one line. Returns whether it added anything. */
 	line(raw: string, n: number): boolean {
@@ -337,6 +438,24 @@ class Reader {
 		if (text.startsWith("#")) {
 			if (this.title === undefined) this.title = text.replace(/^#+/, "").trim() || undefined
 			return false
+		}
+		if (CONNECTOR_LINE.test(text)) {
+			const connector = parseConnectorLine(text, n, this.problems)
+			if (connector) {
+				this.connectors.push({
+					...connector,
+					elementId: this.current.get(connector.id) ?? connector.id,
+				})
+			}
+			return false
+		}
+		// `> stop[end Done]`: the path above wrapped before its arrow
+		if (/^-{0,2}>/.test(text) && this.tail !== undefined) {
+			this.problems.push({
+				line: n,
+				message: `the line starts with ">"; read it as continuing "${this.tail}"`,
+			})
+			text = `${this.tail} ${text}`
 		}
 		// `engineer[user Fix issue] >` then the next step on the next line: models
 		// wrap a long path. The line is read once it is complete.
@@ -367,6 +486,21 @@ class Reader {
 		if (path.note !== undefined) {
 			this.problems.push({ line: n, message: `ignored the note "${path.note}"` })
 		}
+		for (const id of path.bracketless ?? []) {
+			this.problems.push({
+				line: n,
+				message: `"${id} …" has no brackets; read it as declaring "${id}"`,
+			})
+		}
+		for (const id of path.unclosed ?? []) {
+			this.problems.push({
+				line: n,
+				message: `"${id}[" is not closed; closed it where its name ends`,
+			})
+		}
+		for (const { written, id } of path.joined ?? []) {
+			this.problems.push({ line: n, message: `"${written}" is not an id; read as "${id}"` })
+		}
 		const { refs, labels } = path
 
 		// Declarations and references resolve left to right, so a chain that
@@ -383,6 +517,7 @@ class Reader {
 				this.edges.push({ from, to, line: n, ...this.feelOrLabel(edgeLabel(labels[k]), n) })
 			}
 		}
+		this.tail = ids.at(-1)
 		return true
 	}
 
@@ -425,7 +560,10 @@ class Reader {
 			const word = spec.split(/[\s|]/, 1)[0]?.toLowerCase().split(":")[0] ?? ""
 			const kind = KINDS[word] ?? ALIASES[word]
 			// A boundary is always new: it cannot be a revision of the task it sits on.
-			if (kind === undefined || (!afterArrow && kind !== "boundaryEvent")) {
+			// `send[…] > send[post Slack message to #support]`: a name of several words
+			// after an arrow is a second node, whatever its kind word
+			const named = afterArrow && !spec.includes("=") && spec.trim().split(/\s+/).length >= 3
+			if ((kind === undefined && !named) || (!afterArrow && kind !== "boundaryEvent")) {
 				this.problems.push({
 					line: n,
 					message: `"${written}" is already declared on line ${earlier.line}; ignored "${spec}"`,
@@ -450,8 +588,13 @@ class Reader {
 			})
 		}
 		const bar = spec.indexOf("|")
-		const head = (bar < 0 ? spec : spec.slice(0, bar)).trim()
-		const attrs = bar < 0 ? "" : spec.slice(bar + 1)
+		// `boundary:timer on=poll`: an attribute written before the bar is one still
+		const loose = /\s+((?:on|job|each|after|result)=\S+|nonint)(?=\s|$)/g
+		const beforeBar = bar < 0 ? spec : spec.slice(0, bar)
+		const head = beforeBar.replace(loose, "").trim()
+		const attrs =
+			[...beforeBar.matchAll(loose)].map((m) => m[1]).join(" ") +
+			(bar < 0 ? "" : ` ${spec.slice(bar + 1)}`)
 		const space = head.search(/\s/)
 		const kindWord = space < 0 ? head : head.slice(0, space)
 		const name = space < 0 ? undefined : head.slice(space + 1).trim() || undefined
@@ -498,7 +641,22 @@ class Reader {
 		if (label) element.name = label
 		// A catch or boundary event waits for something, and cannot deploy without
 		// saying what. Unnamed, it is most often a message: "Payment confirmed".
-		if (
+		// `queue[event catch Send to SQS]` is named for a call it makes, not for what it waits
+		// for: it is a service task, as every call to an outside system is
+		const call =
+			element.type === "intermediateCatchEvent" && element.eventType === undefined
+				? /^(?:(?:catch|throw|event)\s+)?((?:send|post|publish|call|notify|invoke|push|upload|create|update|delete|run|trigger)\b.*)$/i.exec(
+						label ?? "",
+					)?.[1]
+				: undefined
+		if (call !== undefined) {
+			element.type = "serviceTask"
+			element.name = call
+			this.problems.push({
+				line: n,
+				message: `"${id}" is named for a call it makes, "${call}"; made it a service task`,
+			})
+		} else if (
 			(element.type === "intermediateCatchEvent" || element.type === "boundaryEvent") &&
 			element.eventType === undefined
 		) {
@@ -511,18 +669,152 @@ class Reader {
 		}
 
 		const node: Node = { element, line: n, spec }
+		const { plain, feel } = splitFeel(attrs)
 		// `| on=pay | nonint`: a second bar is only another separator.
-		for (const attr of attrs.split(/[\s,|]+/).filter(Boolean)) {
+		for (const attr of plain.split(/[\s,|]+/).filter(Boolean)) {
 			const [key, value] = attr.split("=", 2)
 			if (key === "on" && value) node.on = hostOf.get(value) ?? value
 			else if (key === "job" && value) element.jobType = value
 			else if (key === "nonint" && value === undefined) element.interrupting = false
-			else
+			else if (key === "each" && value && GATEWAYS.has(element.type) && element.name) {
+				// `and[and Process every recipient | each=recipients]`: a step, run per item
+				this.problems.push({
+					line: n,
+					message: `"${id}" is a gateway with each=, named like a step; made it a task run per item`,
+				})
+				element.type = "task"
+				element.multiInstance = {
+					collection: value.startsWith("=") ? value : `=${value}`,
+					element: itemOf(value.replace(/^=/, "")),
+				}
+			} else if (key === "each" && value && ACTIVITIES.has(element.type)) {
+				element.multiInstance = {
+					collection: value.startsWith("=") ? value : `=${value}`,
+					element: itemOf(value.replace(/^=/, "")),
+				}
+			} else if (key === "after" && value && EVENTS.has(element.type) && duration(value)) {
+				// `delay[boundary:error Timeout | after=P1D]`: only a timer waits for a time
+				if (element.eventType !== "timer" && element.type !== "endEvent") {
+					this.problems.push({
+						line: n,
+						message: `"${id}" waits ${value}, which only a timer does; made it a timer event`,
+					})
+					element.eventType = "timer"
+				}
+				element.timerDuration = duration(value)
+			} else if (key === "result" && value && ACTIVITIES.has(element.type)) {
+				element.resultVariable = value
+			} else
 				this.problems.push({ line: n, message: `unknown attribute "${attr}" on "${id}"; ignored` })
+		}
+		if (feel !== undefined) {
+			// `calc[task Count open issues | feel=…]`: a step that evaluates FEEL is a script task
+			if (element.type === "task") element.type = "scriptTask"
+			if (element.type === "scriptTask") {
+				element.script = feel
+				element.resultVariable ??= id
+				if (parseExpression(feel.slice(1)).errors.length > 0) {
+					this.problems.push({
+						line: n,
+						message: `feel= on "${id}" is not FEEL; kept for the reader to correct`,
+					})
+				}
+			} else {
+				this.problems.push({
+					line: n,
+					message: `only a script task evaluates feel=; ignored on "${id}"`,
+				})
+			}
+		}
+		// `late[catch:timer | on=poll after=PT5M]`: an event on a task is a boundary event
+		const host = node.on === undefined ? undefined : this.nodes.get(node.on)?.element
+		if (element.type === "intermediateCatchEvent" && host && ACTIVITIES.has(host.type)) {
+			element.type = "boundaryEvent"
+			this.problems.push({
+				line: n,
+				message: `"${id}" is a catch event on "${node.on}"; made it a boundary event`,
+			})
+		}
+		// "Send email to each stakeholder": a step its name says is done per item runs once
+		// per item of the list of them, whose variable only the reader can name for sure
+		const per = /\b(?:each|every)\s+([a-z]{3,})\b/i.exec(label ?? "")?.[1]?.toLowerCase()
+		if (
+			per &&
+			!TIME_WORDS.has(per) &&
+			ACTIVITIES.has(element.type) &&
+			element.multiInstance === undefined
+		) {
+			const list =
+				per.endsWith("y") && !/[aeiou]y$/.test(per) ? `${per.slice(0, -1)}ies` : `${per}s`
+			element.multiInstance = { collection: `=${list}`, element: per }
+			this.fixes.push(`"${id}" runs once per ${per}, over the list "${list}"`)
+		}
+		// `late[boundary:timer 5 minutes | on=poll]`: a timer's name says how long it waits
+		if (element.eventType === "timer" && element.timerDuration === undefined && label) {
+			const said = duration(label)
+			if (said) element.timerDuration = said
 		}
 		this.nodes.set(id, node)
 		return id
 	}
+}
+
+/** "Every day" is a schedule, not a list. */
+const TIME_WORDS = new Set([
+	"second",
+	"minute",
+	"hour",
+	"day",
+	"week",
+	"month",
+	"quarter",
+	"year",
+	"morning",
+	"evening",
+	"night",
+	"time",
+	"other",
+])
+
+/** Element types `each=` makes multi-instance. */
+const ACTIVITIES = new Set<BpmnElementType>([
+	"task",
+	"serviceTask",
+	"sendTask",
+	"receiveTask",
+	"userTask",
+	"manualTask",
+	"scriptTask",
+	"businessRuleTask",
+	"callActivity",
+	"subProcess",
+])
+
+/** The variable one item of a list is in: `recipients` → `recipient`, else `item`. */
+function itemOf(collection: string): string {
+	if (!/^[A-Za-z_]\w*$/.test(collection)) return "item"
+	if (collection.endsWith("ies") && collection.length > 4) return `${collection.slice(0, -3)}y`
+	if (collection.endsWith("s") && !collection.endsWith("ss") && collection.length > 3)
+		return collection.slice(0, -1)
+	return "item"
+}
+
+const UNITS: Record<string, string> = { s: "S", m: "M", h: "H", d: "D", w: "W" }
+
+/**
+ * An ISO 8601 duration from what models write: `PT5M` as it is, `5m`, `5 min`,
+ * `5 minutes`, `2 hours` or `1 day`, also inside a name ("Wait 5 minutes").
+ */
+export function duration(text: string): string | undefined {
+	// `p1d` is P1D: models write ISO durations in lower case too
+	const iso = /\bP(?:\d+[YMWD])*(?:T(?:\d+[HMS])+)?\b/i.exec(text)?.[0]?.toUpperCase()
+	if (iso && iso !== "P" && iso !== "PT") return iso
+	const m =
+		/(\d+)\s*(s|sec|secs|seconds?|m|min|mins|minutes?|h|hrs?|hours?|d|days?|w|weeks?)\b/i.exec(text)
+	if (!m?.[1] || !m[2]) return undefined
+	const unit = UNITS[m[2][0]?.toLowerCase() ?? ""]
+	if (unit === undefined) return undefined
+	return unit === "D" || unit === "W" ? `P${m[1]}${unit}` : `PT${m[1]}${unit}`
 }
 
 export function edgeLabel(
@@ -576,7 +868,7 @@ function variableFrom(text: string): string {
  */
 function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	const problems = [...reader.problems]
-	const fixes: string[] = []
+	const fixes: string[] = [...reader.fixes]
 	// Asked once the names are final, so a question uses the names the diagram shows.
 	const asks: { line: number; ask: () => ProcessTextQuestion }[] = []
 	const nodes = new Map<string, Node>()
@@ -610,6 +902,14 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	// Boundary events: a host that is an activity, in this process.
 	for (const [id, node] of nodes) {
 		if (node.element.type !== "boundaryEvent") continue
+		// `send > wait[boundary:timer …]` without on=: the one task drawn into it is its host
+		const drawn = node.on === undefined ? reader.edges.filter((edge) => edge.to === id) : []
+		const from = drawn.length === 1 ? nodes.get(drawn[0]?.from ?? "") : undefined
+		if (from && drawn[0] && !EVENTS.has(from.element.type) && !GATEWAYS.has(from.element.type)) {
+			node.on = from.element.id
+			reader.edges.splice(reader.edges.indexOf(drawn[0]), 1)
+			fixes.push(`put boundary "${id}" on "${from.element.id}", the task drawn into it`)
+		}
 		const host = node.on === undefined ? undefined : nodes.get(node.on)
 		const hostType = host?.element.type
 		if (hostType !== undefined && !EVENTS.has(hostType) && !GATEWAYS.has(hostType)) {
@@ -636,7 +936,10 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	// on=pay] > notify`) means the path that boundary leads to. Nothing can flow
 	// into a boundary, so the branch goes to its handler instead of being lost.
 	const written = reader.edges.flatMap((edge) => {
-		if (reader.nodes.get(edge.to)?.element.type !== "boundaryEvent") return [edge]
+		const target = reader.nodes.get(edge.to)
+		if (target?.element.type !== "boundaryEvent") return [edge]
+		// `poll > late[… | on=poll]`: the arrow from its own task only says where it sits
+		if (target.on === edge.from) return []
 		const next = reader.edges.filter((out) => out.from === edge.to)
 		if (next.length === 0) return [edge]
 		if (final) {
@@ -709,6 +1012,38 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	const into = (id: string) => edges.filter((edge) => edge.to === id)
 
 	if (final) {
+		// A boundary leads to the handling of what it catches, and to nothing else:
+		// the work that goes on when nothing goes wrong follows the task. A model
+		// often writes that work through the boundary instead (`read >
+		// err[boundary:error … | on=read] > handle`, then `err > count > post`),
+		// which would run it only when the task fails. The ways out named for
+		// handling it stay (the first, when none is), and the rest move to the task. A bare end the task led to goes: it only stood in for
+		// the work that now follows.
+		for (const node of [...nodes.values()]) {
+			const { id, type, attachedTo } = node.element
+			if (type !== "boundaryEvent" || attachedTo === undefined) continue
+			const out = outOf(id)
+			if (out.length < 2) continue
+			const handling = out.filter((edge) => handles(nodes.get(edge.to)?.element))
+			const rest =
+				handling.length > 0 ? out.filter((edge) => !handling.includes(edge)) : out.slice(1)
+			if (rest.length === 0) continue
+			for (const edge of outOf(attachedTo)) {
+				const end = nodes.get(edge.to)?.element
+				if (end?.type !== "endEvent" || end.eventType !== undefined) continue
+				if (into(end.id).length > 1) continue
+				nodes.delete(end.id)
+				edges = edges.filter((other) => other !== edge)
+				fixes.push(
+					`removed end event "${end.id}" after "${attachedTo}", whose work followed its boundary`,
+				)
+			}
+			for (const edge of rest) edge.from = attachedTo
+			fixes.push(
+				`moved ${rest.map((edge) => `${id} > ${edge.to}`).join(", ")} onto "${attachedTo}": a boundary leads only to its handling`,
+			)
+		}
+
 		// One blank start: a process that starts twice with no trigger to tell the
 		// two apart is two processes. The later one goes, and what it led to is
 		// placed as any path nothing leads to is, below.
@@ -903,16 +1238,74 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			})
 		}
 
+		// `fork[and] > pick > pack > label > joined[and]`: steps between an and split and an
+		// and join with nothing beside them are the parallel branches, drawn in a row
+		for (const [id, node] of nodes) {
+			if (node.element.type !== "parallelGateway") continue
+			if (into(id).length !== 1 || outOf(id).length !== 1) continue
+			const chain: string[] = []
+			let at = outOf(id)[0]?.to
+			while (at !== undefined) {
+				const next = nodes.get(at)?.element
+				if (!next || GATEWAYS.has(next.type) || EVENTS.has(next.type)) break
+				if (into(at).length !== 1 || outOf(at).length !== 1) break
+				chain.push(at)
+				at = outOf(at)[0]?.to
+			}
+			const join = at === undefined ? undefined : nodes.get(at)
+			if (
+				chain.length < 2 ||
+				!join ||
+				at === undefined ||
+				join.element.type !== "parallelGateway" ||
+				into(at).length !== 1
+			) {
+				continue
+			}
+			const end = at
+			edges = edges.filter((edge) => edge.from !== id && !chain.includes(edge.from))
+			for (const step of chain) {
+				edges.push({ from: id, to: step, line: node.line })
+				edges.push({ from: step, to: end, line: node.line })
+			}
+			fixes.push(
+				`ran ${chain.map((c) => `"${c}"`).join(", ")} in parallel between "${id}" and "${end}", as their and nodes say`,
+			)
+		}
+
 		// Pass-through gateways: one way in and one way out decides nothing. Most
 		// often a question the model asked and then answered only one way.
+		const dedupe = () => {
+			const once = new Set<string>()
+			edges = edges.filter((edge) => {
+				const key = `${edge.from}>${edge.to}`
+				if (once.has(key)) return false
+				once.add(key)
+				return true
+			})
+		}
 		for (let removed = true; removed; ) {
 			removed = false
+			// Removing one gateway can leave two flows between the same nodes: one is enough
+			dedupe()
 			for (const [id, node] of nodes) {
 				if (!GATEWAYS.has(node.element.type)) continue
 				const [inEdge, ...moreIn] = into(id)
 				const [outEdge, ...moreOut] = outOf(id)
 				if (!inEdge || !outEdge || moreIn.length > 0 || moreOut.length > 0) continue
 				if (inEdge.from === outEdge.to) continue
+				// `pack[and Pack into box]`: a step written with a gateway's kind is that step
+				if (
+					node.element.name &&
+					(node.element.type === "parallelGateway" || node.element.type === "inclusiveGateway")
+				) {
+					node.element.type = "task"
+					problems.push({
+						line: node.line,
+						message: `"${id}" is a gateway with one way in and out, named like a step; made it a task`,
+					})
+					continue
+				}
 				const target = typeOf(outEdge.to)
 				if (
 					node.element.type === "eventBasedGateway" &&
@@ -965,7 +1358,10 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			const { id, type } = node.element
 			const out = outOf(id)
 			if (GATEWAYS.has(type) || out.length < 2) continue
-			const decides = out.some((edge) => edge.condition !== undefined || edge.name !== undefined)
+			// A DMN decision's outcomes are alternatives, labelled or not
+			const decides =
+				type === "businessRuleTask" ||
+				out.some((edge) => edge.condition !== undefined || edge.name !== undefined)
 			const targets = out.map((edge) => nodes.get(edge.to)?.element)
 			const races =
 				!decides &&
@@ -1221,6 +1617,19 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		return flow
 	})
 
+	// A `with` line configures a node of the diagram; one whose node was left out, or
+	// never written, has nothing to configure.
+	const connectors: ConnectorRef[] = []
+	for (const ref of reader.connectors) {
+		if (nodes.has(ref.elementId)) connectors.push(ref)
+		else if (final) {
+			problems.push({
+				line: ref.line,
+				message: `"with ${ref.id}:" names no node of the diagram; ignored`,
+			})
+		}
+	}
+
 	return {
 		diagram: {
 			id: "Definitions_1",
@@ -1236,6 +1645,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		problems: problems.sort((a, b) => a.line - b.line),
 		fixes,
 		questions: asks.sort((a, b) => a.line - b.line).map(({ ask }) => ask()),
+		connectors,
 	}
 }
 

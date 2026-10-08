@@ -1,0 +1,15 @@
+{
+	"$schema": "https://v2-10-12.turborepo.dev/schema.json",
+	"extends": ["//"],
+	"tasks": {
+		"build:wasm": {
+			"inputs": [
+				"$TURBO_ROOT$/apps/reebe/crates/**/*.rs",
+				"$TURBO_ROOT$/apps/reebe/**/Cargo.toml",
+				"$TURBO_ROOT$/apps/reebe/Cargo.lock",
+				"$TURBO_ROOT$/scripts/build-wasm.mjs"
+			],
+			"outputs": ["reebe_wasm*", "snippets/**"]
+		}
+	}
+}

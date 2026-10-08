@@ -159,6 +159,7 @@ Parse → Modify → Validate → Export
 - **Camunda Form Definitions** — type-safe form schema builder
 - **Optimizer** — built-in rule engine to detect and auto-fix anti-patterns
 - **Compact Format** — 70% smaller token-efficient JSON representation for AI/LLM workflows
+- **Connector catalog** — all Camunda 8 out-of-the-box connector templates, applied deterministically (\`@bpmnkit/core/connectors\`)
 - **Zero Dependencies** — runs in browsers, Node.js, Deno, Bun, and edge runtimes
 
 ## Installation
@@ -434,6 +435,31 @@ import { writeBpmn } from "@bpmnkit/core/node"
 const { semanticHash, changes } = await writeBpmn(defs, { output: "flow.bpmn" })
 \`\`\`
 
+### Connectors (\`@bpmnkit/core/connectors\`)
+
+The Camunda 8 out-of-the-box connector catalog, behind its own subpath so its data is only
+bundled by code that imports it. The templates leave out icons, groups, tooltips and
+placeholders; [\`@bpmnkit/connectors\`](https://www.npmjs.com/package/@bpmnkit/connectors)
+adds those back for a property panel.
+
+| Export | Description |
+|--------|-------------|
+| \`listConnectors()\` / \`searchConnectors(query)\` | Summaries: task type, direction, required and optional inputs |
+| \`applyConnectorTemplate(id, values)\` | Builder options for a bundled template, plus problems |
+| \`applyTemplateToElement(defs, id, template, values)\` | Apply a template to an existing element |
+| \`validateElementTemplate(value)\` | Structural check of an element template |
+| \`findConnectorCards(query)\` / \`formatConnectorCard(card)\` | One card per operation, with only its inputs — for a model's prompt |
+| \`applyConnectorLines(defs, lines)\` | Apply the \`with\` lines a model wrote in the line format |
+| \`selectConnectors({ text, tasks })\` | Pick the cards a model sees for each task of a diagram |
+
+\`\`\`typescript
+import { applyConnectorTemplate } from "@bpmnkit/core/connectors"
+
+const { serviceTask, problems } = applyConnectorTemplate("io.camunda.connectors.HttpJson.v2", {
+  url: "https://api.example.com/orders",
+})
+\`\`\`
+
 ### DMN
 
 | Export | Description |
@@ -662,7 +688,7 @@ The HUD's **More** menu has **Export documentation…**: a print-ready HTML view
 
 ### \`applyProcessDelta(defs, delta, { aliases })\`
 
-Applies a change script from \`@bpmnkit/core\`'s \`parseProcessDelta\` to a diagram someone drew, keeping its layout: new nodes are placed beside what they follow, an insert between two connected nodes moves only the shapes right of it, and nothing the script does not mention changes. Returns the new document with what it \`created\`, \`changed\` and \`removed\`, the \`fixes\` it made and the \`problems\` it left out. Also exported from \`@bpmnkit/editor/headless\`.
+Applies a change script from \`@bpmnkit/core\`'s \`parseProcessDelta\` to a diagram someone drew, keeping its layout: new nodes are placed beside what they follow, an insert between two connected nodes moves only the shapes right of it, and nothing the script does not mention changes. Returns the new document with what it \`created\`, \`changed\` and \`removed\`, the \`fixes\` it made and the \`problems\` it left out. Also exported from \`@bpmnkit/editor/headless\`. A script's \`with\` lines configure connectors when you pass \`applyConnectors: applyConnectorLines\` from \`@bpmnkit/core/connectors\`; required inputs they left out come back as \`questions\`.
 
 \`\`\`typescript
 import { parseProcessDelta, writeProcessText } from "@bpmnkit/core"
@@ -1996,6 +2022,7 @@ import { articleJsonLd } from "@bpmnkit/astro-shared/seo.js"
 - **Generates Camunda element templates** — REST connector format with input/output mappings
 - **Endpoint selection** — generate all endpoints or filter by path/method
 - **FEEL expressions** — pre-fills input bindings with \`=variable\` expressions
+- **Offline API index** — \`@bpmnkit/connector-gen/api-index\`: base URL, auth and endpoints of about 80 HTTP APIs, one lazily loaded module per service
 - **Zero dependencies** beyond \`yaml\` for YAML parsing
 
 ## Installation
@@ -2019,10 +2046,23 @@ for (const template of templates) {
 }
 \`\`\`
 
+## API index
+
+\`\`\`typescript
+import { API_SERVICES, loadApiService } from "@bpmnkit/connector-gen/api-index"
+
+const stripe = await loadApiService("stripe")
+stripe?.baseUrl // "https://api.stripe.com"
+stripe?.operations.find((o) => o.method === "POST" && o.path === "/v1/customers")
+\`\`\`
+
+Built offline from the catalog's OpenAPI specs by \`scripts/build-api-index.mjs\`; specs under a non-permissive license are left out. \`@bpmnkit/core/connectors\` turns the services into API cards for the REST connector.
+
 ## CLI usage (via \`@bpmnkit/cli\`)
 
 \`\`\`sh
 casen connector generate openapi.yaml --out ./templates/
+casen connector api "create a stripe customer"
 \`\`\`
 
 ## API Reference
@@ -2050,7 +2090,7 @@ interface GenerateOptions {
 			"Camunda 8 out-of-the-box connector catalog and deterministic element-template application for @bpmnkit/core",
 		content: `## Overview
 
-\`@bpmnkit/connectors\` bundles the 116+ Camunda 8 out-of-the-box connector element templates (Slack, SendGrid, HTTP, Kafka, AWS, the agentic-AI family, and more) and applies them to \`@bpmnkit/core\` builder options deterministically — every binding kind (\`zeebe:input\`, \`zeebe:output\`, \`zeebe:taskHeader\`, \`zeebe:taskDefinition\`, \`zeebe:property\`, \`zeebe:adHoc\`), dropdown-gated conditions, required-field validation, and FEEL parse-checking on FEEL-tagged values.
+\`@bpmnkit/connectors\` bundles the 130+ Camunda 8 out-of-the-box connector element templates (Slack, SendGrid, HTTP, Kafka, AWS, the agentic-AI family, and more) and applies them to \`@bpmnkit/core\` builder options deterministically — every binding kind (\`zeebe:input\`, \`zeebe:output\`, \`zeebe:taskHeader\`, \`zeebe:taskDefinition\`, \`zeebe:property\`, \`zeebe:adHoc\`, \`zeebe:agentDefinition\`), dropdown-gated conditions, required-field validation, and FEEL parse-checking on FEEL-tagged values.
 
 ## Features
 
@@ -2059,6 +2099,9 @@ interface GenerateOptions {
 - **Required-field and FEEL validation** — problems are reported, never silently swallowed
 - **Works with any template** — bundled catalog or a custom/generated \`ElementTemplate\`
 - **Inbound connectors and linked resources** — \`applyTemplateToElement\` writes a template onto an element of a parsed model: the root \`bpmn:message\` and its \`zeebe:subscription\` correlation key, \`zeebe:properties\`, \`zeebe:linkedResources\` and the \`zeebe:modelerTemplate\` stamps
+- **Templates BPMN Kit maintains** — \`BPMNKIT_CONNECTOR_TEMPLATES\` adds services Camunda ships no connector for, on the REST connector, e.g. Cloudflare Clef decision models (\`io.bpmnkit.connectors.CloudflareClef.v1\`)
+
+The catalog and application logic live in \`@bpmnkit/core/connectors\`, whose templates leave out icons, groups, tooltips and placeholders to stay small. This package re-exports that API and adds those parts back, so \`getTemplate\` and \`applyConnectorTemplate\` answer with the full template. Use it in an editor or property panel, and the core subpath where a bundle should stay small.
 
 ## Installation
 

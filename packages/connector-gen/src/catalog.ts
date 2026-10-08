@@ -38,7 +38,7 @@ export const CATALOG: CatalogEntry[] = [
 		id: "notion",
 		name: "Notion API",
 		description: "Read and write Notion pages, databases, and blocks",
-		url: "https://raw.githubusercontent.com/notion-sdk-python/notion-sdk-py/main/openapi.yaml",
+		url: "https://developers.notion.com/openapi.json",
 		idPrefix: "io.notion",
 		defaultAuth: "bearer",
 	},
