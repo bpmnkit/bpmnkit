@@ -22,6 +22,17 @@
   tests asserted declaration order for two timers whose second handler sits lower, a layout
   where the first route crossed the second stem; they now assert the nested order.
 
+## 2026-10-08 — Builder: link events (`linkName`)
+
+- `intermediateThrowEvent(id, { linkName })` and `intermediateCatchEvent(id, { linkName })` emit
+  a `<bpmn:linkEventDefinition name="…"/>` in `ProcessBuilder`, `BranchBuilder` and
+  `SubProcessContentBuilder` (#219). The option used to be silently ignored, so link events
+  could only be built by patching the model after `build()`.
+- Auto-chaining respects link semantics: nothing chains from a link throw (a branch ending in
+  one leaves no open end to join) and a link catch gets no incoming flow, so `throw → catch`
+  written in sequence builds the pair rather than a flow between them.
+- Guide: "Building processes" shows the pattern.
+
 ## 2026-10-08 — Tests: bpmnlint parity walk skips Cargo's `target`
 
 - `tests/node/bpmnlint-parity.test.ts` collects every `.bpmn` file in the repository by walking
