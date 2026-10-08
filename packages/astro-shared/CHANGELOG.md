@@ -1,5 +1,13 @@
 # @bpmnkit/astro-shared
 
+## 0.1.3
+
+### Patch Changes
+
+- 4d8207c: The repository moved to github.com/bpmnkit/bpmnkit. Republished so each package's `repository`, `bugs` and `homepage` metadata and its npm provenance point at the new repository.
+- Updated dependencies [4d8207c]
+  - @bpmnkit/ui@0.3.2
+
 ## 0.1.2
 
 ### Patch Changes

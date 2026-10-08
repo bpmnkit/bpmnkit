@@ -1,5 +1,19 @@
 # @bpmnkit/plugins
 
+## 1.2.2
+
+### Patch Changes
+
+- 4d8207c: The repository moved to github.com/bpmnkit/bpmnkit. Republished so each package's `repository`, `bugs` and `homepage` metadata and its npm provenance point at the new repository.
+- Updated dependencies [4d8207c]
+  - @bpmnkit/core@1.4.1
+  - @bpmnkit/canvas@1.0.2
+  - @bpmnkit/editor@1.4.1
+  - @bpmnkit/feel@1.1.1
+  - @bpmnkit/ascii@1.0.2
+  - @bpmnkit/connector-gen@1.1.1
+  - @bpmnkit/connectors@1.3.1
+
 ## 1.2.1
 
 ### Patch Changes

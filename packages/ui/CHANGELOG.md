@@ -1,5 +1,11 @@
 # @bpmnkit/ui
 
+## 0.3.2
+
+### Patch Changes
+
+- 4d8207c: The repository moved to github.com/bpmnkit/bpmnkit. Republished so each package's `repository`, `bugs` and `homepage` metadata and its npm provenance point at the new repository.
+
 ## 0.3.1
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @bpmnkit/drop
 
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [4d8207c]
+  - @bpmnkit/core@1.4.1
+  - @bpmnkit/canvas@1.0.2
+  - @bpmnkit/editor@1.4.1
+  - @bpmnkit/ui@0.3.2
+  - @bpmnkit/plugins@1.2.2
+  - @bpmnkit/engine@1.2.1
+  - @bpmnkit/feel@1.1.1
+  - @bpmnkit/connector-gen@1.1.1
+
 ## 0.4.0
 
 ### Minor Changes

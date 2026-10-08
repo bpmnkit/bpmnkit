@@ -1,5 +1,16 @@
 # @bpmnkit/examples
 
+## 0.0.46
+
+### Patch Changes
+
+- Updated dependencies [4d8207c]
+  - @bpmnkit/core@1.4.1
+  - @bpmnkit/engine@1.2.1
+  - @bpmnkit/docspack@1.1.1
+  - @bpmnkit/camunda-docspack@0.1.7
+  - @bpmnkit/connectors@1.3.1
+
 ## 0.0.45
 
 ### Patch Changes
