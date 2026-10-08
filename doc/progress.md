@@ -9,9 +9,9 @@
 - Boundary-event labels sit beside the exit stem instead of centred on it — on the outward side,
   outside the host, in the gaps between the stems of the events on that border, one label per
   gap. A label takes the gap on its left if it fits, else the one on its right; when neither
-  fits it goes beyond the outermost stem on its nearer side, one row farther out. Labels stay on
-  one line, so none reaches a route's turn. No label is crossed by its own or a neighbour's exit
-  edge.
+  fits it goes beyond the outermost stem on its nearer side, past the labels already there.
+  Every label stays on one line in the row next to the host, short of the turn a route takes
+  past a stem, so none is crossed by its own or a neighbour's exit edge.
 - Events sharing a border are ordered by how many bands away their handler sits, farthest
   outermost, so the handler routes nest instead of crossing each other's stems. Two existing
   tests asserted declaration order for two timers whose second handler sits lower, a layout

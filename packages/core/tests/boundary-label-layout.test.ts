@@ -167,20 +167,22 @@ describe("boundary event labels and docking (#222)", () => {
 				expect(rectsOverlap(label(defs, a), label(defs, b)), `${a} / ${b}`).toBe(false)
 			}
 		}
-		// The middle label had no 140 px gap on either side: it sits one row out,
-		// past the outermost stem, on a single line.
-		const stems = ids.map((id) => {
-			const b = shape(defs, id).bounds
-			return b.x + b.width / 2
-		})
-		const middle = ids
-			.map((id) => label(defs, id))
-			.find((l) => l.y > Math.min(...ids.map((id) => label(defs, id).y)))
-		expect(middle).toBeDefined()
-		if (!middle) return
+		// The middle event's label had no 140 px gap on either side: it sits past the
+		// outermost stem, on a single line, in the same row as the others.
+		const stems = new Map(
+			ids.map((id) => {
+				const b = shape(defs, id).bounds
+				return [id, b.x + b.width / 2] as const
+			}),
+		)
+		const sorted = [...stems.values()].sort((p, q) => p - q)
+		const middleId = ids.find((id) => stems.get(id) === sorted[1]) as string
+		const middle = label(defs, middleId)
 		expect(middle.height).toBe(14)
-		const outside = middle.x + middle.width <= Math.min(...stems) || middle.x >= Math.max(...stems)
+		const outside =
+			middle.x + middle.width <= (sorted[0] as number) || middle.x >= (sorted[2] as number)
 		expect(outside).toBe(true)
+		expect(new Set(ids.map((id) => label(defs, id).y)).size).toBe(1)
 		expect(crossings(defs, ["Flow_b1_x1", "Flow_b2_x2", "Flow_b3_x3"])).toEqual([])
 	})
 
@@ -213,6 +215,29 @@ describe("boundary event labels and docking (#222)", () => {
 			for (let j = i + 1; j < ids.length; j++) {
 				const [a, b] = [ids[i] as string, ids[j] as string]
 				expect(rectsOverlap(label(defs, a), label(defs, b)), `${a} / ${b}`).toBe(false)
+			}
+		}
+	})
+
+	it("keeps every label in the row next to the host, however many events there are", () => {
+		// Ten long names on a 100 px task: most labels go past the outer stems.
+		let b = Bpmn.createProcess("p")
+			.startEvent("s")
+			.serviceTask("t", { name: "Work", taskType: "w" })
+		const ids = Array.from({ length: 10 }, (_, i) => `b${i}`)
+		for (const id of ids) {
+			b = b.withBoundary(id, { name: `Upstream failure ${id}`, errorCode: id }, (h) =>
+				h.endEvent(`x_${id}`),
+			)
+		}
+		const defs = b.endEvent("e").withAutoLayout().build()
+		const labels = ids.map((id) => label(defs, id))
+		expect(new Set(labels.map((l) => l.y)).size).toBe(1)
+		for (const id of ids) expect(edgesHitting(defs, label(defs, id)), id).toEqual([])
+		for (let i = 0; i < labels.length; i++) {
+			for (let j = i + 1; j < labels.length; j++) {
+				const [p, q] = [labels[i] as Bounds, labels[j] as Bounds]
+				expect(rectsOverlap(p, q), `${ids[i]}/${ids[j]}`).toBe(false)
 			}
 		}
 	})
