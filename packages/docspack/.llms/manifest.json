@@ -1,7 +1,7 @@
 {
 	"$schema": "https://docspack.dev/schema/v1.json",
 	"name": "@bpmnkit/docspack",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"documents": [
 		"@bpmnkit/core",
 		"@bpmnkit/canvas",
@@ -2169,7 +2169,7 @@
 		{
 			"id": "guides.building-processes.events",
 			"file": "chunks/guides.building-processes.events.md",
-			"tokens": 244,
+			"tokens": 378,
 			"tags": [
 				"guides",
 				"building-processes",

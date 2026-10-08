@@ -248,6 +248,12 @@ export interface IntermediateCatchEventOptions extends ElementOptions {
 	correlationKey?: string
 	/** Signal name — creates a signal catch event (aspirational). */
 	signalName?: string
+	/**
+	 * Link name — creates a link catch event, the target of the link throw event with the same
+	 * name. A link catch has no incoming sequence flow: it starts a new chain, so it is never
+	 * connected from the current position.
+	 */
+	linkName?: string
 }
 
 /** Options for an intermediate throw event. */
@@ -262,6 +268,12 @@ export interface IntermediateThrowEventOptions extends ElementOptions {
 	compensation?: boolean
 	/** Activity to compensate (activityRef attribute on compensateEventDefinition). */
 	activityRef?: string
+	/**
+	 * Link name — creates a link throw event, which continues at the link catch event with the
+	 * same name. A link throw has no outgoing sequence flow: nothing chains from it, and as the
+	 * last element of a branch it leaves no open end to join.
+	 */
+	linkName?: string
 }
 
 /** Options for an end event. */
@@ -473,6 +485,7 @@ function buildEventDefinitions(
 		escalationCode?: string
 		compensation?: boolean
 		activityRef?: string
+		linkName?: string
 	},
 	rootErrors?: BpmnError[],
 	rootMessages?: BpmnMessage[],
@@ -547,7 +560,23 @@ function buildEventDefinitions(
 	if (opts.compensation) {
 		defs.push({ type: "compensate", activityRef: opts.activityRef })
 	}
+	if (opts.linkName !== undefined) {
+		defs.push({ type: "link", name: opts.linkName })
+	}
 	return defs
+}
+
+/**
+ * A link event pair is a "go-to" within one scope: the throw has no outgoing
+ * sequence flow and the catch no incoming one. The builders' auto-chaining has
+ * to stop at a throw and restart at a catch, or it fabricates exactly the flows
+ * that make the pair invalid.
+ */
+function isLinkEvent(
+	element: BpmnFlowElement,
+	type: "intermediateThrowEvent" | "intermediateCatchEvent",
+): boolean {
+	return element.type === type && element.eventDefinitions.some((def) => def.type === "link")
 }
 
 /**
@@ -1147,6 +1176,12 @@ export class BranchBuilder {
 		this._elements.push(element)
 		this._ids.add(element.id)
 
+		if (isLinkEvent(element, "intermediateCatchEvent")) {
+			this.isFirstElement = false
+			this.lastNodeId = element.id
+			return this
+		}
+
 		if (this.lastNodeId) {
 			const flowId = generateId("Flow")
 			const flow: BpmnSequenceFlow = {
@@ -1179,7 +1214,7 @@ export class BranchBuilder {
 		this.openBranchEnds = []
 
 		this.isFirstElement = false
-		this.lastNodeId = element.id
+		this.lastNodeId = isLinkEvent(element, "intermediateThrowEvent") ? undefined : element.id
 		return this
 	}
 
@@ -1676,7 +1711,7 @@ export class SubProcessContentBuilder {
 		}
 		this._elements.push(element)
 		this._ids.add(element.id)
-		if (this.autoConnect) {
+		if (this.autoConnect && !isLinkEvent(element, "intermediateCatchEvent")) {
 			if (this.lastNodeId) {
 				this._flows.push({
 					id: generateId("Flow"),
@@ -1699,7 +1734,7 @@ export class SubProcessContentBuilder {
 		}
 		// The cursor still moves even when nothing is wired, so `connectTo()` after
 		// an activity keeps naming that activity as the flow's source.
-		this.lastNodeId = element.id
+		this.lastNodeId = isLinkEvent(element, "intermediateThrowEvent") ? undefined : element.id
 		return this
 	}
 
@@ -3242,6 +3277,13 @@ export class ProcessBuilder {
 			return
 		}
 
+		// A link catch starts a new chain; open branch ends wait for the next element.
+		if (isLinkEvent(element, "intermediateCatchEvent")) {
+			this._savedMainFlowId = undefined
+			this.lastNodeId = element.id
+			return
+		}
+
 		if (this.lastNodeId) {
 			const flowId = generateId("Flow")
 			this.sequenceFlows.push({
@@ -3269,7 +3311,7 @@ export class ProcessBuilder {
 		// Clear any saved compensation cursor — a normal element advancing the cursor
 		// means the compensation boundary/handler pattern has been interrupted.
 		this._savedMainFlowId = undefined
-		this.lastNodeId = element.id
+		this.lastNodeId = isLinkEvent(element, "intermediateThrowEvent") ? undefined : element.id
 	}
 }
 
