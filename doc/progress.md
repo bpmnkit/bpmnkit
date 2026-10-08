@@ -7,10 +7,12 @@
   in a wrapped grid of `ceil(sqrt(n))` columns, in declaration order, instead of one row each
   (#221). Four tools now make a 2×2, 400×340 container instead of a 200×660 strip; nine make a
   3×3.
-- Connected sub-flows in the same container keep their left-to-right layout, stacked below the
-  grid in declaration order. A single unconnected child and every process-level layout are
-  unchanged.
+- Connected sub-flows in the same container keep their left-to-right layout and stack around
+  the grid in declaration order: the grid takes the place of the first unconnected node. A node
+  that loops on itself has flow and is not packed. A single unconnected child, the plane of a
+  collapsed sub-process and every process-level layout are unchanged.
 - The older `grid` engine is unchanged.
+
 ## 2026-10-08 — Pin wasm-pack in CI
 
 - Every workflow that builds `reebe-wasm` now installs wasm-pack `v0.15.0` instead of `latest`.
