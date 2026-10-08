@@ -343,6 +343,56 @@ describe("boundary event labels and docking (#222)", () => {
 		}
 	})
 
+	it("orders docked events by where lanes put their handlers, not by band", () => {
+		const defs = Bpmn.createProcess("p")
+			.startEvent("s")
+			.serviceTask("t", { name: "Work", taskType: "w" })
+			.withBoundary("b1", { name: "One", timerDuration: "PT1H" }, (h) => h.endEvent("x1"))
+			.withBoundary("b2", { name: "Two", errorCode: "E2" }, (h) => h.endEvent("x2"))
+			.endEvent("e")
+			.build()
+		const process = defs.processes[0]
+		expect(process).toBeDefined()
+		if (!process) return
+		// Bands put x1 nearer the host than x2; the lanes put it farther away.
+		process.laneSet = {
+			lanes: [
+				{ id: "main", flowNodeRefs: ["s", "t", "b1", "b2", "e"], unknownAttributes: {} },
+				{ id: "near", flowNodeRefs: ["x2"], unknownAttributes: {} },
+				{ id: "far", flowNodeRefs: ["x1"], unknownAttributes: {} },
+			],
+		}
+		const result = layoutProcess(process)
+		const byId = new Map(result.nodes.map((n) => [n.id, n.bounds]))
+		const x1 = byId.get("x1") as Bounds
+		const x2 = byId.get("x2") as Bounds
+		expect(x1.y).toBeGreaterThan(x2.y)
+		// The event serving the farther handler takes the outer (left) slot ...
+		expect((byId.get("b1") as Bounds).x).toBeLessThan((byId.get("b2") as Bounds).x)
+		// ... so neither route crosses the other's stem.
+		const segs = result.edges
+			.filter((e) => e.sourceRef === "b1" || e.sourceRef === "b2")
+			.map((e) => ({ id: e.sourceRef, wps: e.waypoints }))
+		const [r1, r2] = [segs.find((s) => s.id === "b1"), segs.find((s) => s.id === "b2")]
+		for (let i = 0; i + 1 < (r1?.wps.length ?? 0); i++) {
+			for (let j = 0; j + 1 < (r2?.wps.length ?? 0); j++) {
+				const [p, q] = [r1?.wps[i] as Waypoint, r1?.wps[i + 1] as Waypoint]
+				const [u, v] = [r2?.wps[j] as Waypoint, r2?.wps[j + 1] as Waypoint]
+				const vertical = p.x === q.x ? { p, q } : u.x === v.x ? { p: u, q: v } : null
+				const horizontal = p.y === q.y ? { p, q } : u.y === v.y ? { p: u, q: v } : null
+				if (!vertical || !horizontal || vertical.p === horizontal.p) continue
+				const x = vertical.p.x
+				const y = horizontal.p.y
+				const crosses =
+					y > Math.min(vertical.p.y, vertical.q.y) &&
+					y < Math.max(vertical.p.y, vertical.q.y) &&
+					x > Math.min(horizontal.p.x, horizontal.q.x) &&
+					x < Math.max(horizontal.p.x, horizontal.q.x)
+				expect(crosses, `b1[${i}] × b2[${j}]`).toBe(false)
+			}
+		}
+	})
+
 	it("labels of two events on a narrow task stay clear of both stems", () => {
 		const defs = Bpmn.createProcess("p")
 			.startEvent("s")

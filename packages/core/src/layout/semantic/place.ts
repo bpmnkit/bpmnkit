@@ -111,7 +111,7 @@ export function place(
 
 	separateSameCell(graph, bandLayout, bounds)
 	const lanes = laneSet ? applyLanes(graph, laneSet, bounds) : []
-	dockBoundaryEvents(graph, bandLayout, bounds, titled)
+	dockBoundaryEvents(graph, bounds, titled)
 	return { bounds, lanes, gutterX }
 }
 
@@ -271,14 +271,13 @@ function laneTree(laneSet: BpmnLaneSet): LaneNode[] {
 /**
  * Dock boundary events on their host's edge — escalation on top, everything
  * else on the bottom — spread along it. Events sharing a side are ordered by
- * how far their handler sits from the host's band, then how far it runs —
+ * how far out from that border their handler ended up, then how far it runs —
  * farthest first, so outer slots serve outer paths and the routes nest.
  * The side comes from {@link boundarySide}, the rule that also placed the
  * handler's band, so a handler is never routed around its own host.
  */
 function dockBoundaryEvents(
 	graph: SemanticGraph,
-	bandLayout: BandLayout,
 	bounds: Map<string, Bounds>,
 	titled: ReadonlySet<string>,
 ): void {
@@ -297,8 +296,8 @@ function dockBoundaryEvents(
 		for (const [side, list] of sides) {
 			const ordered = [...list].sort(
 				(a, b) =>
-					handlerDepth(graph, bandLayout, hostId, b.id) -
-						handlerDepth(graph, bandLayout, hostId, a.id) ||
+					handlerDepth(graph, bounds, hostId, host, side, b.id) -
+						handlerDepth(graph, bounds, hostId, host, side, a.id) ||
 					handlerReach(graph, b.id) - handlerReach(graph, a.id),
 			)
 			const n = ordered.length
@@ -317,26 +316,32 @@ function dockBoundaryEvents(
 }
 
 /**
- * How many bands the handler of a boundary event sits away from its host.
+ * How far out from the docked border the handler of a boundary event sits,
+ * measured on the final positions (after lanes, which can reorder handlers
+ * against their bands). Negative when the handler lies behind the border.
  *
- * Each handler leaves its event straight out and turns toward its own band, so
- * the event docked outermost has to serve the farthest band; otherwise its turn
- * cuts across the stems of the events docked inside it.
+ * Each handler leaves its event straight out and turns toward its target, so
+ * the event docked outermost has to serve the farthest handler; otherwise its
+ * turn cuts across the stems of the events docked inside it.
  */
 function handlerDepth(
 	graph: SemanticGraph,
-	bandLayout: BandLayout,
+	bounds: Map<string, Bounds>,
 	hostId: string,
+	host: Bounds,
+	side: "top" | "bottom",
 	eventId: string,
 ): number {
-	const hostBand = bandLayout.bands.get(hostId) ?? 0
-	let depth = 0
+	let depth = Number.NEGATIVE_INFINITY
+	// Flows out of a boundary event are keyed by its host (see graph.ts).
 	for (const flow of graph.outgoing.get(hostId) ?? []) {
 		if (flow.sourceRef !== eventId) continue
-		const band = bandLayout.bands.get(flow.targetRef)
-		if (band !== undefined) depth = Math.max(depth, Math.abs(band - hostBand))
+		const target = bounds.get(flow.targetRef)
+		if (!target) continue
+		const centre = target.y + target.height / 2
+		depth = Math.max(depth, side === "top" ? host.y - centre : centre - (host.y + host.height))
 	}
-	return depth
+	return Number.isFinite(depth) ? depth : 0
 }
 
 /** How far the handler of a boundary event runs, in ranks. */

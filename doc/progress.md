@@ -16,8 +16,9 @@
   on: lanes can put a handler above a host whose event sits on the bottom border, and the route
   used to leave through the event's top, back into the host. A target behind the docked side is
   reached around the stem.
-- Events sharing a border are ordered by how many bands away their handler sits, farthest
-  outermost, so the handler routes nest instead of crossing each other's stems. Two existing
+- Events sharing a border are ordered by how far out from it their handler ends up (after lanes,
+  which can reverse the band order), farthest outermost, so the handler routes nest instead of
+  crossing each other's stems. Two existing
   tests asserted declaration order for two timers whose second handler sits lower, a layout
   where the first route crossed the second stem; they now assert the nested order.
 
