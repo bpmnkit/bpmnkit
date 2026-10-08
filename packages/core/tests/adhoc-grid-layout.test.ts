@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest"
 import type { BpmnDefinitions } from "../src/bpmn/bpmn-model.js"
 import { Bpmn, resetIdCounter } from "../src/index.js"
 import type { SubProcessContentBuilder } from "../src/index.js"
+import { layoutProcess } from "../src/layout/layout-engine.js"
 import type { Bounds } from "../src/layout/types.js"
 import { SUBPROCESS_PADDING } from "../src/layout/types.js"
 
@@ -99,6 +100,31 @@ describe("unconnected children of an expanded sub-process (#221)", () => {
 		expect(get(bounds, "first").y).toBe(get(bounds, "second").y)
 		expect(get(bounds, "first").x).toBeLessThan(get(bounds, "second").x)
 		expectInsideAndApart(bounds, ["A", "B", "C", "first", "second"])
+	})
+
+	it("does not pack a node that loops on itself", () => {
+		const bounds = boundsOf(
+			layoutAdHoc((c) => {
+				c.serviceTask("A", { name: "A", taskType: "x" }).connectTo("A")
+				c.serviceTask("B", { name: "B", taskType: "x" }).connectTo("B")
+			}),
+		)
+		// Each self-loop is a flow of its own: they stack, one row each, as before.
+		expect(get(bounds, "A").x).toBe(get(bounds, "B").x)
+		expect(get(bounds, "B").y).toBeGreaterThan(get(bounds, "A").y)
+	})
+
+	it("leaves the plane of a collapsed sub-process unpacked", () => {
+		const defs = layoutAdHoc(tools(["A", "B", "C", "D"]))
+		const process = defs.processes[0]
+		expect(process).toBeDefined()
+		if (!process) return
+		const plane = layoutProcess(process, "semantic", new Set(["ah"])).planes?.find(
+			(p) => p.elementId === "ah",
+		)
+		expect(plane).toBeDefined()
+		const xs = new Set(plane?.result.nodes.map((n) => n.bounds.x))
+		expect(xs.size).toBe(1)
 	})
 
 	it("leaves a single unconnected child and process-level layout as they were", () => {

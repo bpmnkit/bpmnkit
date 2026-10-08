@@ -133,7 +133,13 @@ function looseNodes(graph: SemanticGraph): string[] {
 	const loose = graph.components
 		.filter((members) => members.length === 1)
 		.map((members) => members[0] as string)
-		.filter((id) => graph.byId.has(id))
+		// A one-node component can still loop on itself; that node has flow.
+		.filter(
+			(id) =>
+				graph.byId.has(id) &&
+				(graph.outgoing.get(id) ?? []).length === 0 &&
+				(graph.incoming.get(id) ?? []).length === 0,
+		)
 	return loose.length >= 2 ? loose : []
 }
 

@@ -155,7 +155,9 @@ function childLayoutOf(
 		container.sequenceFlows ?? [],
 		container.laneSet,
 		collapsed,
-		true,
+		// A collapsed container's contents go on a plane of their own, laid out
+		// like any top-level scope.
+		!collapsed.has(el.id),
 	)
 	const extent = extentOf(result)
 	if (!extent) return null
