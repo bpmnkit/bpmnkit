@@ -35,12 +35,21 @@ function isDefaultFlow(source: BpmnFlowElement | undefined, flow: BpmnSequenceFl
 	return gateway.default !== undefined && gateway.default === flow.id
 }
 
-/** Escalation handlers read as "upward" exceptions; everything else reads downward. */
-function boundarySide(event: BpmnBoundaryEvent): 1 | -1 {
+/**
+ * Escalation handlers read as "upward" exceptions; everything else reads downward.
+ * A titled host sends every handler down: its title is centred on the top border,
+ * so nothing docks there. Placement docks the event on the same side.
+ */
+export function boundarySide(event: BpmnBoundaryEvent, hostTitled: boolean): 1 | -1 {
+	if (hostTitled) return 1
 	return event.eventDefinitions.some((d) => d.type === "escalation") ? -1 : 1
 }
 
-export function assignBands(graph: SemanticGraph): BandLayout {
+export function assignBands(
+	graph: SemanticGraph,
+	/** Hosts whose title is drawn along their top border; see {@link boundarySide}. */
+	titled: ReadonlySet<string> = new Set(),
+): BandLayout {
 	const bands = new Map<string, number>()
 	const spine = new Set<string>()
 	const straightFlows = new Set<string>()
@@ -63,7 +72,7 @@ export function assignBands(graph: SemanticGraph): BandLayout {
 	for (let i = 0; i < sources.length; i++) {
 		const source = sources[i]
 		if (!source) continue
-		for (const branch of branchesFrom(graph, source, assigned)) {
+		for (const branch of branchesFrom(graph, source, assigned, titled)) {
 			branches.push(branch)
 			for (const id of branch.nodes) {
 				assigned.add(id)
@@ -256,6 +265,7 @@ function branchesFrom(
 	graph: SemanticGraph,
 	source: { id: string; depth: number; side: 1 | -1 },
 	assigned: Set<string>,
+	titled: ReadonlySet<string>,
 ): Branch[] {
 	const out: Branch[] = []
 	const node = graph.byId.get(source.id)
@@ -272,7 +282,7 @@ function branchesFrom(
 	for (let i = 0; i < alternatives.length; i++) {
 		const flow = alternatives[i]
 		if (!flow) continue
-		const handler = handlerSideOf(graph, source.id, flow)
+		const handler = handlerSideOf(graph, source.id, flow, titled)
 		let side: 1 | -1
 		if (handler !== undefined) side = handler
 		else if (hasDefault) side = 1
@@ -289,10 +299,11 @@ function handlerSideOf(
 	graph: SemanticGraph,
 	hostId: string,
 	flow: BpmnSequenceFlow,
+	titled: ReadonlySet<string>,
 ): 1 | -1 | undefined {
 	if (flow.sourceRef === hostId) return undefined
 	const event = (graph.attachers.get(hostId) ?? []).find((e) => e.id === flow.sourceRef)
-	return event ? boundarySide(event) : undefined
+	return event ? boundarySide(event, titled.has(hostId)) : undefined
 }
 
 /**

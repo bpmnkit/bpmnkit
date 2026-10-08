@@ -1,5 +1,19 @@
 # Progress
 
+## 2026-10-08 — Layout: boundary events stay off a sub-process title, labels off their exit edge
+
+- A named expanded sub-process draws its title centred on its top border, so the semantic layout
+  no longer docks an escalation boundary event there: on a titled container every boundary
+  event goes on the bottom border, and its handler is banded below accordingly (#222). Tasks
+  and untitled containers keep escalation on top.
+- Boundary-event labels sit beside the exit stem instead of centred on it — on the outward side,
+  outside the host, left of the stem, or right of it when the left would reach the neighbouring
+  event's stem. A label is no longer crossed by its own exit edge.
+- Events sharing a border are ordered by how many bands away their handler sits, farthest
+  outermost, so the handler routes nest instead of crossing each other's stems. Two existing
+  tests asserted declaration order for two timers whose second handler sits lower, a layout
+  where the first route crossed the second stem; they now assert the nested order.
+
 ## 2026-10-08 — Rename the repository to `bpmnkit/bpmnkit`
 
 - Every live reference to `github.com/bpmnkit/monorepo` (package manifests, generated READMEs,

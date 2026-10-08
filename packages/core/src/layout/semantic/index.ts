@@ -8,7 +8,7 @@ import { placeEdgeLabels } from "../grid/edge-labels.js"
 import type { Bounds, LayoutEdge, LayoutNode, LayoutResult } from "../types.js"
 import { LABEL_CHAR_WIDTH, LABEL_HEIGHT, LABEL_MIN_WIDTH, SUBPROCESS_PADDING } from "../types.js"
 import { assignBands } from "./bands.js"
-import { buildSemanticGraph } from "./graph.js"
+import { type SemanticGraph, buildSemanticGraph } from "./graph.js"
 import { place, sizeOf } from "./place.js"
 import { routeFlows } from "./route.js"
 
@@ -61,7 +61,6 @@ export function semanticLayout(
 	if (flowElements.length === 0) return { nodes: [], edges: [] }
 
 	const graph = buildSemanticGraph(flowElements, sequenceFlows)
-	const bandLayout = assignBands(graph)
 
 	// Children first: an expanded sub-process is sized by what it contains, while
 	// a collapsed one stays activity-sized and its contents move to their own plane.
@@ -85,7 +84,13 @@ export function semanticLayout(
 		}
 	}
 
-	const { bounds, lanes, gutterX } = place(graph, bandLayout, sizes, laneSet)
+	// A named expanded sub-process draws its title along its top border.
+	const titled = new Set(
+		[...childResults.keys()].filter((id) => graph.byId.get(id)?.name !== undefined),
+	)
+	const bandLayout = assignBands(graph, titled)
+	const { bounds, lanes, gutterX } = place(graph, bandLayout, sizes, laneSet, titled)
+	const besideStem = boundaryLabels(graph, bounds)
 
 	const nodes: LayoutNode[] = []
 	for (const el of flowElements) {
@@ -101,7 +106,7 @@ export function semanticLayout(
 		}
 		if (el.name) {
 			node.label = el.name
-			const labelBounds = externalLabel(el.type, el.name, b)
+			const labelBounds = besideStem.get(el.id) ?? externalLabel(el.type, el.name, b)
 			if (labelBounds) node.labelBounds = labelBounds
 		}
 		if (childResults.has(el.id)) node.isExpanded = true
@@ -191,6 +196,48 @@ function extentOf(result: LayoutResult): Bounds | null {
 
 function shift(b: Bounds, dx: number, dy: number): Bounds {
 	return { x: b.x + dx, y: b.y + dy, width: b.width, height: b.height }
+}
+
+/**
+ * Labels for named boundary events, beside the event's exit stem rather than
+ * centred on it.
+ *
+ * A boundary event's flows leave its outward side at the centre, so a label
+ * centred below (or above) the event is crossed by its own exit edge. The label
+ * sits on the outward side, outside the host, to the left of the stem — or to
+ * the right when the left would reach the stem of the event docked before it.
+ */
+function boundaryLabels(graph: SemanticGraph, bounds: Map<string, Bounds>): Map<string, Bounds> {
+	const labels = new Map<string, Bounds>()
+	for (const [hostId, events] of graph.attachers) {
+		const host = bounds.get(hostId)
+		if (!host) continue
+		const docked = events
+			.map((event) => ({ event, b: bounds.get(event.id) }))
+			.filter((d): d is { event: (typeof events)[number]; b: Bounds } => d.b !== undefined)
+		for (const onTop of [true, false]) {
+			// Same side test the router uses to pick the exit direction.
+			const side = docked
+				.filter(({ b }) => b.y + b.height / 2 <= host.y + 1 === onTop)
+				.sort((p, q) => p.b.x - q.b.x)
+			let previousStem = Number.NEGATIVE_INFINITY
+			for (const { event, b } of side) {
+				const stem = b.x + b.width / 2
+				if (event.name) {
+					const width = Math.max(event.name.length * LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH)
+					const left = stem - LABEL_OFFSET - width
+					labels.set(event.id, {
+						x: left > previousStem ? left : stem + LABEL_OFFSET,
+						y: onTop ? b.y - LABEL_OFFSET - LABEL_HEIGHT : b.y + b.height + LABEL_OFFSET,
+						width,
+						height: LABEL_HEIGHT,
+					})
+				}
+				previousStem = stem
+			}
+		}
+	}
+	return labels
 }
 
 /** Events and gateways carry their name outside the shape; activities do not. */
