@@ -1,5 +1,20 @@
 # Progress
 
+## 2026-10-08 — Builder: event refs inside sub-processes resolve to root definitions
+
+- `SubProcessContentBuilder` shares the process's four root registries (errors, messages,
+  signals, escalations) instead of only its messages, and passes them to every event option and
+  every container it creates (#220). `escalationCode`, `messageName`, `signalName` and
+  `errorCode` on start, end, intermediate and boundary events inside a sub-process, transaction,
+  ad-hoc or event sub-process — at any depth — now create one `<bpmn:escalation>`/`<bpmn:message>`/
+  `<bpmn:signal>`/`<bpmn:error>` at definitions level and reference it by id. Before, the code or
+  name was written into the `*Ref` attribute with no root element behind it, which bpmn-moddle
+  reports as an unresolved reference and Zeebe rejects.
+- Same fix for `branch()` inside sub-process content, whose `BranchBuilder` got empty registries
+  of its own, and for `subProcess`/`transaction`/`adHocSubProcess`/`eventSubProcess` inside a
+  branch, which forwarded only the messages.
+- The same code or name used at process level and in a sub-process yields a single root element.
+
 ## 2026-10-08 — Rename the repository to `bpmnkit/bpmnkit`
 
 - Every live reference to `github.com/bpmnkit/monorepo` (package manifests, generated READMEs,
