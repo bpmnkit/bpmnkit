@@ -1,5 +1,13 @@
 # @bpmnkit/casen-worker-ai
 
+## 0.1.12
+
+### Patch Changes
+
+- 4d8207c: The repository moved to github.com/bpmnkit/bpmnkit. Republished so each package's `repository`, `bugs` and `homepage` metadata and its npm provenance point at the new repository.
+- Updated dependencies [4d8207c]
+  - @bpmnkit/cli-sdk@0.0.12
+
 ## 0.1.11
 
 ### Patch Changes

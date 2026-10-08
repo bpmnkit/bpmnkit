@@ -1,5 +1,22 @@
 # @bpmnkit/cli
 
+## 1.3.1
+
+### Patch Changes
+
+- 4d8207c: The repository moved to github.com/bpmnkit/bpmnkit. Republished so each package's `repository`, `bugs` and `homepage` metadata and its npm provenance point at the new repository.
+- Updated dependencies [4d8207c]
+  - @bpmnkit/core@1.4.1
+  - @bpmnkit/engine@1.2.1
+  - @bpmnkit/api@1.0.2
+  - @bpmnkit/ascii@1.0.2
+  - @bpmnkit/profiles@0.0.22
+  - @bpmnkit/connector-gen@1.1.1
+  - @bpmnkit/connectors@1.3.1
+  - @bpmnkit/patterns@0.1.1
+  - @bpmnkit/flow@0.2.1
+  - @bpmnkit/proxy@0.5.1
+
 ## 1.3.0
 
 ### Minor Changes

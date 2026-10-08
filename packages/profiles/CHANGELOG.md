@@ -1,5 +1,13 @@
 # @bpmnkit/profiles
 
+## 0.0.22
+
+### Patch Changes
+
+- 4d8207c: The repository moved to github.com/bpmnkit/bpmnkit. Republished so each package's `repository`, `bugs` and `homepage` metadata and its npm provenance point at the new repository.
+- Updated dependencies [4d8207c]
+  - @bpmnkit/api@1.0.2
+
 ## 0.0.21
 
 ### Patch Changes
