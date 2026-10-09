@@ -207,6 +207,12 @@ export function createOutputWriter(format: OutputFormat, noColor: boolean): Outp
 				process.stdout.write(toYaml(data))
 				return
 			}
+			// A string result is a document (process XML, resource content): print it as is, so
+			// it can be redirected to a file
+			if (typeof data === "string") {
+				process.stdout.write(data.endsWith("\n") ? data : `${data}\n`)
+				return
+			}
 			const obj =
 				typeof data === "object" && data !== null
 					? flattenForDisplay(data)

@@ -493,10 +493,12 @@ export class DecisionDefinitionResource extends ResourceBase {
    * Returns decision definition as XML.
    * @see GET /decision-definitions/{decisionDefinitionKey}/xml
    */
-  async getDecisionDefinitionXML(decisionDefinitionKey: string): Promise<void> {
+  async getDecisionDefinitionXML(decisionDefinitionKey: string): Promise<string> {
     return this._http.request({
       method: "GET",
       path: `/decision-definitions/${decisionDefinitionKey}/xml`,
+      accept: "text/xml",
+      responseType: "text",
       cacheable: true,
     });
   }
@@ -588,10 +590,12 @@ export class DecisionRequirementsResource extends ResourceBase {
    * Returns decision requirements as XML.
    * @see GET /decision-requirements/{decisionRequirementsKey}/xml
    */
-  async getDecisionRequirementsXML(decisionRequirementsKey: string): Promise<void> {
+  async getDecisionRequirementsXML(decisionRequirementsKey: string): Promise<string> {
     return this._http.request({
       method: "GET",
       path: `/decision-requirements/${decisionRequirementsKey}/xml`,
+      accept: "text/xml",
+      responseType: "text",
       cacheable: true,
     });
   }
@@ -1599,10 +1603,12 @@ export class ProcessDefinitionResource extends ResourceBase {
    * Returns process definition as XML.
    * @see GET /process-definitions/{processDefinitionKey}/xml
    */
-  async getProcessDefinitionXML(processDefinitionKey: string): Promise<void> {
+  async getProcessDefinitionXML(processDefinitionKey: string): Promise<string | undefined> {
     return this._http.request({
       method: "GET",
       path: `/process-definitions/${processDefinitionKey}/xml`,
+      accept: "text/xml",
+      responseType: "text",
       cacheable: true,
     });
   }

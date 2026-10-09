@@ -44,3 +44,29 @@ describe("HttpClient request bodies", () => {
 		expect(init.headers).toHaveProperty("Content-Type", "application/json")
 	})
 })
+
+describe("HttpClient text responses", () => {
+	const client = () =>
+		new CamundaClient({ baseUrl: "http://localhost:8080/v2", auth: { type: "none" } })
+
+	it("returns a process definition's XML as text", async () => {
+		const xml = '<?xml version="1.0"?><definitions/>'
+		const fetchMock = vi.fn(
+			async () => new Response(xml, { headers: { "content-type": "text/xml" } }),
+		)
+		vi.stubGlobal("fetch", fetchMock)
+
+		expect(await client().processDefinition.getProcessDefinitionXML("1")).toBe(xml)
+		const [, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
+		expect(init.headers).toHaveProperty("Accept", "text/xml")
+	})
+
+	it("returns undefined when the definition has no XML (204)", async () => {
+		vi.stubGlobal(
+			"fetch",
+			vi.fn(async () => new Response(null, { status: 204 })),
+		)
+
+		expect(await client().processDefinition.getProcessDefinitionXML("1")).toBeUndefined()
+	})
+})

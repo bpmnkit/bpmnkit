@@ -1815,7 +1815,8 @@ Workflows now start automatically without a "Run" click.
 - Any HTTP client can start a process instance; request body becomes process variables
 - Optional `WEBHOOK_TOKEN` env var for Bearer token protection
 
-**Timer trigger** (scan + schedule):
+**Timer trigger** (scan + schedule) — *removed 2026-10-09: the engines fire timer start
+events themselves, so the trigger started each instance twice*:
 - Parses `<timeDuration>`, `<timeDate>`, `<timeCycle>` from deployed BPMN timer start events
 - ISO 8601 duration/date/repeating-interval support (`PT1H`, `R/PT30M`, `2026-01-01T00:00:00Z`)
 - Persists last-fired timestamps to `~/.bpmnkit/timer-state.json`

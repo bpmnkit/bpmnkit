@@ -65,7 +65,7 @@ Methods are grouped by resource, one property per tag of the API spec. The most 
 |---|---|
 | `client.resource` | createDeployment, getResource, deleteResource |
 | `client.processInstance` | createProcessInstance, searchProcessInstances, getProcessInstance, cancelProcessInstance |
-| `client.processDefinition` | searchProcessDefinitions, getProcessDefinition |
+| `client.processDefinition` | searchProcessDefinitions, getProcessDefinition, getProcessDefinitionXML |
 | `client.job` | activateJobs, completeJob, failJob, throwJobError |
 | `client.incident` | searchIncidents, getIncident, resolveIncident |
 | `client.variable` | searchVariables, getVariable |

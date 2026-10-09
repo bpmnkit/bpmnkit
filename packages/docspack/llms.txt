@@ -277,7 +277,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 ## packages
 
 - [@bpmnkit/api — Overview](.llms/chunks/packages.api.overview.md) — 298 tokens
-- [@bpmnkit/api — Resource Namespaces](.llms/chunks/packages.api.resource-namespaces.md) — 189 tokens
+- [@bpmnkit/api — Resource Namespaces](.llms/chunks/packages.api.resource-namespaces.md) — 191 tokens
 - [@bpmnkit/api — Process Operations](.llms/chunks/packages.api.process-operations.md) — 251 tokens
 - [@bpmnkit/api — Incident Resolution](.llms/chunks/packages.api.incident-resolution.md) — 143 tokens
 - [@bpmnkit/api — Observability Events](.llms/chunks/packages.api.observability-events.md) — 87 tokens

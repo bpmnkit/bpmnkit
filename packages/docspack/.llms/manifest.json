@@ -3923,7 +3923,7 @@
 		{
 			"id": "packages.api.resource-namespaces",
 			"file": "chunks/packages.api.resource-namespaces.md",
-			"tokens": 189,
+			"tokens": 191,
 			"tags": [
 				"packages",
 				"api",

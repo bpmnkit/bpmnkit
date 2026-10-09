@@ -1,5 +1,25 @@
 # Progress
 
+## 2026-10-09 — XML endpoints typed, proxy timer trigger removed, file-watch lookup fixed
+
+- **XML endpoints.** The API generator now reads `text/*` responses: `getProcessDefinitionXML`,
+  `getDecisionDefinitionXML` and `getDecisionRequirementsXML` send `Accept: text/xml`, read the
+  body as text and return `string` (`string | undefined` for process definitions, which answer
+  204 when there is no XML). Before, they were typed `Promise<void>` and the body went through
+  `response.json()`, which throws on XML. The CLI's table output prints a string result as is,
+  so `casen pd get-x-m-l <key> > order.bpmn` writes the file.
+- **Timer trigger removed** (`apps/proxy/src/triggers/timer.ts`). Camunda 8 SaaS, Self-Managed
+  and Reebe fire timer start events themselves, so the proxy started a second instance for every
+  one it saw. It also never saw any: it fetched XML by process ID from an endpoint that takes the
+  definition key, and parsed the XML as JSON.
+- **File-watch trigger** had the same lookup, so it never found a `watchPath`. It now searches
+  with a valid query, keeps the latest version of each process, and reads the XML by key as text.
+- **Proxy operate stream.** The `as AnyQuery` casts and the `items()`/`total()` helpers are gone;
+  the search queries and results are typed. An unknown `state` filter from the URL is ignored
+  instead of being sent to the engine.
+- **Blog.** "Connect to Camunda 8 from Node.js" used `client.process.deploy` and the Console
+  API URL; it now uses the real API.
+
 ## 2026-10-09 — Camunda SaaS path fixed; fast-start proposal
 
 - `doc/fast-start-proposal.md`: why n8n's first hour works, what Camunda 8 SaaS lacks for it,

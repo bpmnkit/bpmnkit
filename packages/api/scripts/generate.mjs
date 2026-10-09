@@ -837,6 +837,8 @@ function collectOperations(allFiles, entryFile = ENTRY_FILE) {
 
 			// Response schema (200 or 201) — keep as schema ref name if possible
 			let responseSchema = null
+			/** Media type of a plain-text response (the XML endpoints answer `text/xml`). */
+			let responseText = null
 			const responses = op.responses ?? {}
 			for (const code of ["200", "201"]) {
 				const resp = responses[code]
@@ -847,9 +849,12 @@ function collectOperations(allFiles, entryFile = ENTRY_FILE) {
 					const content = respResolved?.content ?? {}
 					const jsonContent = content["application/json"]
 					responseSchema = jsonContent?.schema ?? null
+					if (!jsonContent) responseText = Object.keys(content).find((t) => t.startsWith("text/"))
 					break
 				}
 			}
+			// A 204 next to a 200 means the call can answer with no body at all
+			const responseMayBeEmpty = "200" in responses && "204" in responses
 
 			const eventuallyConsistent = op["x-eventually-consistent"] === true
 			const summary = op.summary ?? ""
@@ -865,6 +870,8 @@ function collectOperations(allFiles, entryFile = ENTRY_FILE) {
 				requestBodyRequired,
 				multipart,
 				responseSchema,
+				responseText: responseText ?? null,
+				responseMayBeEmpty,
 				eventuallyConsistent,
 				summary,
 				description,
@@ -1235,6 +1242,18 @@ function buildParamList(parameters, requestBodySchema, requestBodyRequired, mult
 	return parts
 }
 
+/** The TypeScript type a generated method resolves to. */
+function responseTsType(op) {
+	const type = op.responseSchema
+		? withTypesNs(schemaToTsRef(op.responseSchema))
+		: op.responseText
+			? "string"
+			: "void"
+	// Only for text responses: widening the JSON ones that can also answer 204
+	// (getStartProcessForm, getUserTaskForm) would change a stable return type
+	return op.responseText && op.responseMayBeEmpty ? `${type} | undefined` : type
+}
+
 function buildMethodBody(op) {
 	const pathParams = op.parameters.filter((p) => p?.in === "path")
 	const queryParams = op.parameters.filter((p) => p?.in === "query")
@@ -1253,6 +1272,11 @@ function buildMethodBody(op) {
 
 	if (op.requestBodySchema || op.multipart) {
 		lines.push("      body,")
+	}
+
+	if (op.responseText) {
+		lines.push(`      accept: "${op.responseText}",`)
+		lines.push('      responseType: "text",')
 	}
 
 	if (queryParams.length > 0) {
@@ -1303,7 +1327,7 @@ function generateResources(
 
 		for (const op of ops) {
 			const methodName = operationToMethodName(op.operationId)
-			const returnType = op.responseSchema ? withTypesNs(schemaToTsRef(op.responseSchema)) : "void"
+			const returnType = responseTsType(op)
 			const paramList = buildParamList(
 				op.parameters,
 				op.requestBodySchema,
@@ -1839,7 +1863,7 @@ function generateCliCommandsContent(
 					...pathParams.map((p) => p.name),
 					...(hasBody ? ["body as never"] : []),
 				].join(", ")
-				if (op.responseSchema) {
+				if (op.responseSchema || op.responseText) {
 					lines.push(
 						`        const result = await client.${clientProp}.${methodName}(${callArgs});`,
 					)

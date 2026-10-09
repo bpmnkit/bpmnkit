@@ -153,32 +153,53 @@ function startWatcher(def: WatchDef): void {
 
 // ── BPMN scanning ─────────────────────────────────────────────────────────────
 
-async function fetchDeployedProcesses(
+interface DeployedProcess {
+	processDefinitionId: string
+	processDefinitionKey: string
+}
+
+/** The latest version of every deployed process definition. */
+export async function fetchDeployedProcesses(
 	baseUrl: string,
 	authHeader: string,
-): Promise<{ processDefinitionId: string }[]> {
+): Promise<DeployedProcess[]> {
 	const res = await fetch(clusterApiUrl(baseUrl, "/process-definitions/search"), {
 		method: "POST",
 		headers: { authorization: authHeader, "content-type": "application/json" },
-		body: JSON.stringify({ pageSize: 100 }),
+		body: JSON.stringify({ page: { limit: 100 } }),
 	})
 	if (!res.ok) return []
-	const data = (await res.json()) as { items?: { processDefinitionId: string }[] }
-	return data.items ?? []
+	const data = (await res.json()) as {
+		items?: { processDefinitionId?: string; processDefinitionKey?: string; version?: number }[]
+	}
+	const latest = new Map<string, { key: string; version: number }>()
+	for (const item of data.items ?? []) {
+		if (!item.processDefinitionId || !item.processDefinitionKey) continue
+		const version = item.version ?? 0
+		const seen = latest.get(item.processDefinitionId)
+		if (!seen || version > seen.version) {
+			latest.set(item.processDefinitionId, { key: item.processDefinitionKey, version })
+		}
+	}
+	return [...latest].map(([processDefinitionId, { key }]) => ({
+		processDefinitionId,
+		processDefinitionKey: key,
+	}))
 }
 
-async function fetchProcessXml(
+/** The BPMN XML of a process definition. The endpoint takes the key and answers XML, not JSON. */
+export async function fetchProcessXml(
 	baseUrl: string,
 	authHeader: string,
-	processId: string,
+	processDefinitionKey: string,
 ): Promise<string | null> {
 	const res = await fetch(
-		clusterApiUrl(baseUrl, `/process-definitions/${encodeURIComponent(processId)}/xml`),
-		{ headers: { authorization: authHeader } },
+		clusterApiUrl(baseUrl, `/process-definitions/${encodeURIComponent(processDefinitionKey)}/xml`),
+		{ headers: { authorization: authHeader, accept: "text/xml" } },
 	)
-	if (!res.ok) return null
-	const data = (await res.json()) as { bpmnXml?: string }
-	return data.bpmnXml ?? null
+	// 204: the definition has no XML
+	if (!res.ok || res.status === 204) return null
+	return await res.text()
 }
 
 /**
@@ -225,7 +246,7 @@ async function scanAndApply(): Promise<void> {
 		// proceed unauthenticated
 	}
 
-	let processes: { processDefinitionId: string }[]
+	let processes: DeployedProcess[]
 	try {
 		processes = await fetchDeployedProcesses(baseUrl, authHeader)
 	} catch {
@@ -234,7 +255,9 @@ async function scanAndApply(): Promise<void> {
 
 	const newDefs: WatchDef[] = []
 	for (const proc of processes) {
-		const xml = await fetchProcessXml(baseUrl, authHeader, proc.processDefinitionId)
+		const xml = await fetchProcessXml(baseUrl, authHeader, proc.processDefinitionKey).catch(
+			() => null,
+		)
 		if (xml) {
 			newDefs.push(...extractWatchDefs(proc.processDefinitionId, xml))
 		}

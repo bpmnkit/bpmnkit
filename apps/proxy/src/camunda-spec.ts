@@ -234,7 +234,7 @@ export const CAMUNDA_SPEC: Record<string, Record<string, MethodSpec>> = {
 			description: "Get decision definition XML Returns decision definition as XML.",
 			endpoint: "GET /decision-definitions/{decisionDefinitionKey}/xml",
 			params: "decisionDefinitionKey: string",
-			returns: "void",
+			returns: "string",
 		},
 	},
 	decisionInstance: {
@@ -277,7 +277,7 @@ export const CAMUNDA_SPEC: Record<string, Record<string, MethodSpec>> = {
 			description: "Get decision requirements XML Returns decision requirements as XML.",
 			endpoint: "GET /decision-requirements/{decisionRequirementsKey}/xml",
 			params: "decisionRequirementsKey: string",
-			returns: "void",
+			returns: "string",
 		},
 	},
 	resource: {
@@ -729,7 +729,7 @@ export const CAMUNDA_SPEC: Record<string, Record<string, MethodSpec>> = {
 			description: "Get process definition XML Returns process definition as XML.",
 			endpoint: "GET /process-definitions/{processDefinitionKey}/xml",
 			params: "processDefinitionKey: string",
-			returns: "void",
+			returns: "string | undefined",
 		},
 		getProcessDefinitionInstanceVersionStatistics: {
 			description:

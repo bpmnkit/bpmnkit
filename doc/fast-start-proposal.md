@@ -186,11 +186,20 @@ When it is done, one command ends like this:
 The main measure is the median time from `npm create bpmnkit` to the first completed instance
 on SaaS. A scripted end-to-end test on a trial cluster measures it.
 
-## 6. Found while fixing Phase 0, not fixed yet
+## 6. Found while fixing Phase 0 — fixed (2026-10-09)
 
-- `getProcessDefinitionXML` and the other XML endpoints are typed `Promise<void>`. The generator
-  reads only `application/json` responses.
-- The proxy triggers start timers on the active profile. When that profile is SaaS, they can
-  start an instance a second time, after SaaS's own timer has already started one.
-- The `as AnyQuery` casts in `apps/proxy/src/index.ts` are not needed now that search queries
-  have their `filter` type.
+- [x] The XML endpoints (`getProcessDefinitionXML`, `getDecisionDefinitionXML`,
+  `getDecisionRequirementsXML`) were typed `Promise<void>` and parsed their XML as JSON. They
+  now ask for `text/xml` and return a `string`. `casen pd get-x-m-l <key>` prints the XML as is,
+  so it can be redirected to a file.
+- [x] The proxy's timer trigger started instances of timer start events, which every engine it
+  talks to (SaaS, Self-Managed, Reebe) already does. It is removed. The file-watch trigger had
+  the same broken XML lookup, so it never found a watch definition. It now reads the XML by
+  definition key.
+- [x] The `as AnyQuery` casts in `apps/proxy/src/index.ts` are gone. The search queries and
+  results are typed.
+- [x] The blog post "Connect to Camunda 8 from Node.js" uses the real API.
+
+Still open: `getStartProcessForm` and `getUserTaskForm` return `undefined` when there is no
+form (HTTP 204), but their types do not say so. Fixing that would change a stable return type,
+which the stability policy counts as major.

@@ -17,29 +17,35 @@ from Camunda's own OpenAPI specification, so every request and response is typed
 import { CamundaClient } from "@bpmnkit/api";
 
 const client = new CamundaClient({
-  baseUrl: "https://api.cloud.camunda.io",
+  // The cluster's REST address with /v2: ZEEBE_REST_ADDRESS in the credentials file
+  // Camunda Hub gives you when you create an API client for a cluster
+  baseUrl: `${process.env.ZEEBE_REST_ADDRESS}/v2`,
   auth: {
     type: "oauth2",
-    clientId: process.env.CAMUNDA_CLIENT_ID,
-    clientSecret: process.env.CAMUNDA_CLIENT_SECRET,
-    audience: process.env.CAMUNDA_AUDIENCE,
+    clientId: process.env.ZEEBE_CLIENT_ID ?? "",
+    clientSecret: process.env.ZEEBE_CLIENT_SECRET ?? "",
+    tokenUrl: process.env.ZEEBE_AUTHORIZATION_SERVER_URL ?? "",
+    audience: "zeebe.camunda.io",
   },
 });
 ```
 
 OAuth2, Bearer, and Basic auth are all supported. Under the hood, the client caches
-tokens (LRU + TTL) and retries transient failures with exponential backoff, so a
+its OAuth2 token until shortly before it expires, can cache read responses (LRU + TTL)
+when you turn that on, and retries transient failures with exponential backoff, so a
 flaky network blip during a deploy doesn't fail the whole request.
 
 ## Deploying and starting a process
 
 ```typescript
-// Deploy a process definition
-await client.process.deploy({ resources: [{ content: xml }] });
+// Deploy a process definition: a multipart upload, one `resources` part per file
+const form = new FormData();
+form.append("resources", new Blob([xml]), "my-flow.bpmn");
+await client.resource.createDeployment(form);
 
 // Start a new instance
-const instance = await client.process.startInstance({
-  bpmnProcessId: "my-flow",
+const instance = await client.processInstance.createProcessInstance({
+  processDefinitionId: "my-flow",
   variables: { orderId: "ord-123" },
 });
 ```
