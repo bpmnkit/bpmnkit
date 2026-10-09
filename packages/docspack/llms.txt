@@ -351,7 +351,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Writing files — `@bpmnkit/core/node` — `exportPreserving(original, definitions)`](.llms/chunks/packages.core.writing-files-bpmnkit-core-node-exportpreserving-original-definitions.md) — 598 tokens
 - [@bpmnkit/core — Connectors — `@bpmnkit/core/connectors`](.llms/chunks/packages.core.connectors-bpmnkit-core-connectors.md) — 333 tokens
 - [@bpmnkit/core — DMN Support](.llms/chunks/packages.core.dmn-support.md) — 113 tokens
-- [@bpmnkit/docspack — Overview](.llms/chunks/packages.docspack.overview.md) — 252 tokens
+- [@bpmnkit/docspack — Overview](.llms/chunks/packages.docspack.overview.md) — 275 tokens
 - [@bpmnkit/docspack — The other pack](.llms/chunks/packages.docspack.the-other-pack.md) — 145 tokens
 - [@bpmnkit/docspack — Giving an agent access](.llms/chunks/packages.docspack.giving-an-agent-access.md) — 268 tokens
 - [@bpmnkit/docspack — Reading it yourself](.llms/chunks/packages.docspack.reading-it-yourself.md) — 329 tokens

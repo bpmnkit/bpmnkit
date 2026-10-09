@@ -1,20 +1,29 @@
 /**
- * The retrieval side: a BM25 index over chunk text, with tags and entities
- * weighted above prose. Built in memory from the manifests — the corpus is a
- * project's own documentation, not the whole registry, so there is nothing to
- * persist and no database to keep in step.
+ * The retrieval side: a BM25 index over chunk text and entities, with tags
+ * scored as a field of their own. Built in memory from the manifests — the
+ * corpus is a project's own documentation, not the whole registry, so there is
+ * nothing to persist and no database to keep in step.
  */
 
-import { terms } from "./text.js"
+import { stem, terms } from "./text.js"
 import type { ManifestChunk, Pack, SearchHit } from "./types.js"
 
 /** BM25 saturation and length-normalisation, at their conventional values. */
 const K1 = 1.2
 const B = 0.75
 
-/** A tag is a deliberate index term; a word in a paragraph is incidental. */
-const TAG_WEIGHT = 3
+/** An entity is a deliberate index term; a word in a paragraph is incidental. */
 const ENTITY_WEIGHT = 3
+
+/**
+ * A tag adds this share of a query term's IDF, after the BM25 sum and outside it. Counted into
+ * the same frequencies as the prose, a tag was saturated away: Camunda's incidents page lost
+ * "resolve the incident" to five `secret-resolution-incidents` chunks that say every query word
+ * in prose. A tag that is the term ("incidents") outweighs one that holds it as a part
+ * ("secret-resolution-incidents"), because the page that is about a thing beats one that names it.
+ */
+const WHOLE_TAG_WEIGHT = 1
+const PART_TAG_WEIGHT = 0.3
 
 /**
  * A line repeated in this share of a pack's chunks is the pack's template, not its content —
@@ -37,6 +46,10 @@ interface IndexedChunk {
 	content: string
 	frequencies: Map<string, number>
 	length: number
+	/** Stems of the tags that are one word. */
+	wholeTags: Set<string>
+	/** Index terms of every tag, the parts of `a-b` tags included. */
+	tagTerms: Set<string>
 }
 
 export interface DocsIndex {
@@ -71,10 +84,11 @@ export function buildIndex(inputs: IndexInput[]): DocsIndex {
 				.join("\n"),
 		)
 		add(contentTerms, 1)
-		add(terms((input.chunk.tags ?? []).join(" ")), TAG_WEIGHT)
 		add(terms((input.chunk.entities ?? []).join(" ")), ENTITY_WEIGHT)
+		const tags = input.chunk.tags ?? []
+		const tagTerms = new Set(terms(tags.join(" ")))
 
-		for (const term of frequencies.keys()) {
+		for (const term of new Set([...frequencies.keys(), ...tagTerms])) {
 			documentFrequency.set(term, (documentFrequency.get(term) ?? 0) + 1)
 		}
 
@@ -86,6 +100,10 @@ export function buildIndex(inputs: IndexInput[]): DocsIndex {
 			content: input.content,
 			frequencies,
 			length: contentTerms.length,
+			wholeTags: new Set(
+				tags.filter((tag) => !/[._-]/.test(tag)).map((tag) => stem(tag.toLowerCase())),
+			),
+			tagTerms,
 		})
 	}
 
@@ -165,12 +183,15 @@ export function search(index: DocsIndex, query: string, options: SearchOptions =
 
 		let score = 0
 		for (const term of new Set(queryTerms)) {
-			const frequency = candidate.frequencies.get(term)
-			if (!frequency) continue
 			const documents = index.documentFrequency.get(term) ?? 0
 			const idf = Math.log(1 + (total - documents + 0.5) / (documents + 0.5))
-			const norm = K1 * (1 - B + (B * candidate.length) / index.averageLength)
-			score += idf * ((frequency * (K1 + 1)) / (frequency + norm))
+			const frequency = candidate.frequencies.get(term)
+			if (frequency) {
+				const norm = K1 * (1 - B + (B * candidate.length) / index.averageLength)
+				score += idf * ((frequency * (K1 + 1)) / (frequency + norm))
+			}
+			if (candidate.wholeTags.has(term)) score += WHOLE_TAG_WEIGHT * idf
+			else if (candidate.tagTerms.has(term)) score += PART_TAG_WEIGHT * idf
 		}
 		if (score <= 0) continue
 

@@ -23,7 +23,8 @@ does the same job with no extra tooling.
 - **Bounded** — three chunks and 3,000 tokens by default, budgeted from the manifest
   before any content is read
 - **Real retrieval** — BM25 with Porter stemming, so `authenticate` finds a passage that
-  only says `authentication`; tags and API identifiers weigh 3× prose
+  only says `authentication`; API identifiers weigh 3× prose, and a page whose path tag is
+  the query word (`incidents`) ranks above pages that only mention it
 - Zero runtime dependencies
 
 ## The other pack

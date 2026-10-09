@@ -240,6 +240,34 @@ describe("buildIndex", () => {
 		expect(hit?.content).toContain("- Consistency: eventual.")
 	})
 
+	it("ranks the page a tag names above pages that only say the query words", () => {
+		const tagged = (id: string, tags: string[], content: string) => ({
+			...input(id, content),
+			chunk: { id, file: `chunks/${id}.md`, tags },
+		})
+		const topic = tagged(
+			"incidents",
+			["concepts", "incidents"],
+			"# Incidents\n\nA stuck instance needs a person to act. Fix the cause, then resolve it.",
+		)
+		// Each of these says every query word, more often than the page that is about them.
+		const neighbours = Array.from({ length: 4 }, (_, i) =>
+			tagged(
+				`secret-resolution-incidents-${i}`,
+				["concepts", "secret-resolution-incidents", `step-${i}`],
+				`# Secret resolution ${i}\n\nResolve the incident: the job retries, the incident stays until you resolve the incident.`,
+			),
+		)
+		// Unrelated pages, so "incident" is rare in the pack as it is in a real one. In a pack of
+		// only these five chunks its IDF is close to zero, and so is any tag's bonus.
+		const others = Array.from({ length: 20 }, (_, i) =>
+			input(`other-${i}`, `# Other ${i}\n\nDeploy a process model and start an instance.`),
+		)
+		const index = buildIndex([...others, ...neighbours, topic])
+		const [top] = search(index, "resolve the incident", { limit: 1 })
+		expect(top?.chunk.id).toBe("incidents")
+	})
+
 	it("treats a line shared by only a few chunks as content", () => {
 		const index = buildIndex([...digests.slice(0, 3), explainer])
 		const hits = search(index, "eventual", { limit: 4 })

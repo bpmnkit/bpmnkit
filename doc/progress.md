@@ -1,5 +1,23 @@
 # Progress
 
+## 2026-10-09 — docspack: tags scored as their own field, plus a retrieval eval
+
+- `search` scores a chunk's tags apart from its prose. A query term that a tag names whole
+  (`incidents`) adds its full IDF, and one that a tag only holds as a part
+  (`secret-resolution-incidents`) adds 0.3 of it, after the BM25 sum. Before, tags were added
+  into the prose frequencies with weight 3, and BM25 saturated the weight away: Camunda's
+  incidents page lost "resolve the incident" to five secret-resolution chunks that say every
+  query word in prose. Entities keep their 3× weight inside the prose field.
+- `should`, `need`, `needs`, `happen`, `happens` and `my` are stop words. "What happens when"
+  pulled in every chunk that says "happens".
+- `packages/camunda-docspack/tests/retrieval.test.ts` is a fixed eval of 18 questions against
+  the committed pack: the 6 of a comparison with the Camunda Docs MCP server, and 12 held out
+  after the tuning. Each must find its target in the chunks an answer returns. 15 passed
+  before this change and 17 pass after it. The one known miss ("can one message be correlated
+  to several waiting instances", 3rd before, 6th now) is an `it.fails` case, so the suite says
+  when a later change fixes it. A target that the weekly rebuild renames fails as stale, not
+  as a miss.
+
 ## 2026-10-08 — Layout: boundary events stay off a sub-process title, labels off their exit edge
 
 - A named expanded sub-process draws its title centred on its top border, so the semantic layout

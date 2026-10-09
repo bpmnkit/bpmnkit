@@ -1614,7 +1614,7 @@ Markdown docs → chunks + manifest → BM25 index → three passages
 - **Offline** — \`ask\`, \`search\` and \`list\` read the filesystem only. No server, no network call, nothing resident between questions
 - **Version-locked** — the installed \`package.json\` version wins over the manifest, so an agent reads the docs for the release it has
 - **Bounded answers** — three chunks and 3,000 tokens by default, budgeted from the manifest before any content is read. The next five matches are listed by id only, and \`ask <chunk-id>\` reads one
-- **Real retrieval** — BM25 over chunk text with Porter stemming, so \`authenticate\` finds a passage that only says \`authentication\`; tags and API identifiers weigh 3× prose, and a line repeated across a pack's chunks (generated metadata, stock responses) is not counted at all
+- **Real retrieval** — BM25 over chunk text with Porter stemming, so \`authenticate\` finds a passage that only says \`authentication\`; API identifiers weigh 3× prose, a chunk's path tags count as their own field (a tag that *is* the query word, like \`incidents\`, ranks that page above ones that only mention it), and a line repeated across a pack's chunks (generated metadata, stock responses) is not counted at all
 - **docspack-compatible** — \`.llms/manifest.json\` validates against \`https://docspack.dev/schema/v1.json\`
 - **Safe by construction** — a manifest is untrusted input: chunk paths that escape \`.llms/\` are refused, and community packages are labelled
 - **Zero runtime dependencies**
