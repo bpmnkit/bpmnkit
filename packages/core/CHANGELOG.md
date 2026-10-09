@@ -1,5 +1,17 @@
 # @bpmnkit/core
 
+## 1.5.0
+
+### Minor Changes
+
+- 08d195e: Builder: `intermediateThrowEvent`/`intermediateCatchEvent` take a `linkName` option and emit a `linkEventDefinition`. Nothing auto-chains from a link throw and a link catch receives no incoming flow.
+
+### Patch Changes
+
+- 20d3d22: Builder: error, message, signal and escalation options on events inside sub-process content (sub-processes, transactions, ad-hoc and event sub-processes, and branches inside them, at any depth) now create root definitions and reference them by id instead of emitting dangling `*Ref` attributes.
+- 45f449c: Layout: unconnected children of an expanded sub-process (e.g. the tools of an ad-hoc sub-process) are packed into a roughly square grid instead of a single column.
+- da7fc42: Layout: boundary events are no longer docked on the top border of a named expanded sub-process (where its title is), boundary labels are placed beside the exit edge instead of across it, and events sharing a border are ordered so their handler routes do not cross.
+
 ## 1.4.1
 
 ### Patch Changes
