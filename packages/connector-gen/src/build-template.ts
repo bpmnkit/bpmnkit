@@ -45,8 +45,8 @@ function toDisplayName(id: string): string {
  * For paths with parameters (e.g. /repos/{owner}/{repo}), returns a FEEL expression
  * and feel="optional" so it's visible and editable in the modeler.
  */
-function buildUrlField(op: OperationWithMeta): PropertyDef {
-	const base = op.baseUrl
+function buildUrlField(op: OperationWithMeta, baseUrlOverride?: string): PropertyDef {
+	const base = baseUrlOverride ? baseUrlOverride.replace(/\/$/, "") : op.baseUrl
 	const hasPathParams = op.pathParams.length > 0
 
 	if (!hasPathParams) {
@@ -513,7 +513,7 @@ export function buildTemplate(op: OperationWithMeta, opts: GeneratorOptions): Co
 	})
 
 	// 3. URL (hidden if no path params, editable FEEL string if path params)
-	properties.push(buildUrlField(op))
+	properties.push(buildUrlField(op, opts.baseUrl))
 
 	// 4. Path params as individual inputs (above URL display)
 	for (const param of op.pathParams) {
