@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+	EXAMPLES,
 	type GeneratorSettings,
 	generateConnectors,
 	serializeTemplates,
@@ -79,6 +80,19 @@ describe("generateConnectors", () => {
 			"not a valid regular expression",
 		)
 		expect(() => generateConnectors("just text", SETTINGS)).toThrow()
+	})
+})
+
+describe("EXAMPLES", () => {
+	it("generates templates from every bundled example", () => {
+		expect(
+			Object.fromEntries(
+				Object.entries(EXAMPLES).map(([id, { spec }]) => {
+					const result = generateConnectors(spec, SETTINGS)
+					return [id, `${result.connectors.length} · ${result.auth}`]
+				}),
+			),
+		).toEqual({ petstore: "4 · apiKey", inventory: "3 · basic" })
 	})
 })
 

@@ -9,6 +9,9 @@
   element-template file or copied. It runs `@bpmnkit/connector-gen/browser` in the page — the
   spec is never uploaded. Linked from the Tools menu, the footer, `/integrations` and
   `/connectors`.
+- Two one-click example specs sit right under the drop zone — Pet Store (OpenAPI 3) and Inventory
+  (Swagger 2) — so the generator can be tried without a file; the loaded example spec can be
+  downloaded to try drag and drop with it.
 - `@bpmnkit/connector-gen`: `parseOpenApi` now upgrades Swagger 2.0 documents to OpenAPI 3
   (`swagger2.ts`) instead of rejecting them, which the package README already claimed it did.
   Catalog entries pointing at `swagger.json` specs benefit too.

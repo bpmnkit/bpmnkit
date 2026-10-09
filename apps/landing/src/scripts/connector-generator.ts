@@ -100,7 +100,16 @@ export function templatesFileName(title: string): string {
 
 // ─── DOM ──────────────────────────────────────────────────────────────────────
 
-const EXAMPLE_SPEC = `openapi: "3.0.3"
+export interface ExampleSpec {
+	readonly fileName: string
+	readonly spec: string
+}
+
+/** One-click specs so a visitor can see the generator work without a file of their own. */
+export const EXAMPLES: Record<string, ExampleSpec> = {
+	petstore: {
+		fileName: "pet-store.openapi.yaml",
+		spec: `openapi: "3.0.3"
 info:
   title: Pet Store API
   version: "1.0.0"
@@ -152,7 +161,88 @@ paths:
       responses:
         "200":
           description: The pet
-`
+    delete:
+      operationId: deletePet
+      summary: Delete a pet
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "204":
+          description: Deleted
+`,
+	},
+	inventory: {
+		fileName: "inventory.swagger.yaml",
+		spec: `swagger: "2.0"
+info:
+  title: Inventory API
+  version: "2.1.0"
+host: inventory.example.com
+basePath: /api
+schemes: [https]
+securityDefinitions:
+  basicAuth:
+    type: basic
+paths:
+  /items:
+    get:
+      operationId: searchItems
+      summary: Search items
+      parameters:
+        - name: q
+          in: query
+          type: string
+        - name: inStock
+          in: query
+          type: boolean
+      responses:
+        "200":
+          description: Matching items
+    post:
+      operationId: addItem
+      summary: Add an item
+      parameters:
+        - name: item
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/Item"
+      responses:
+        "201":
+          description: Created
+  /items/{sku}/stock:
+    put:
+      operationId: updateStock
+      summary: Update stock level
+      parameters:
+        - name: sku
+          in: path
+          required: true
+          type: string
+        - name: level
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              quantity: { type: integer }
+      responses:
+        "200":
+          description: Updated
+definitions:
+  Item:
+    type: object
+    required: [sku, name]
+    properties:
+      sku: { type: string }
+      name: { type: string }
+      price: { type: number }
+`,
+	},
+}
 
 function $<T extends HTMLElement>(root: HTMLElement, selector: string): T {
 	const el = root.querySelector<T>(selector)
@@ -160,8 +250,8 @@ function $<T extends HTMLElement>(root: HTMLElement, selector: string): T {
 	return el
 }
 
-function download(text: string, fileName: string): void {
-	const url = URL.createObjectURL(new Blob([text], { type: "application/json" }))
+function download(text: string, fileName: string, type = "application/json"): void {
+	const url = URL.createObjectURL(new Blob([text], { type }))
 	const a = document.createElement("a")
 	a.href = url
 	a.download = fileName
@@ -172,7 +262,8 @@ function download(text: string, fileName: string): void {
 export function mountConnectorGenerator(root: HTMLElement): void {
 	const dropZone = $<HTMLElement>(root, "[data-cg-drop]")
 	const fileInput = $<HTMLInputElement>(root, "[data-cg-file]")
-	const exampleBtn = $<HTMLButtonElement>(root, "[data-cg-example]")
+	const exampleBtns = root.querySelectorAll<HTMLButtonElement>("[data-cg-example]")
+	const exampleDownload = $<HTMLButtonElement>(root, "[data-cg-example-download]")
 	const sourceLabel = $<HTMLElement>(root, "[data-cg-source]")
 	const idPrefix = $<HTMLInputElement>(root, "[data-cg-prefix]")
 	const baseUrl = $<HTMLInputElement>(root, "[data-cg-base-url]")
@@ -189,6 +280,7 @@ export function mountConnectorGenerator(root: HTMLElement): void {
 	const status = $<HTMLElement>(root, "[data-cg-status]")
 
 	let specText: string | null = null
+	let example: ExampleSpec | null = null
 	let result: GeneratorResult | null = null
 	const selected = new Set<number>()
 
@@ -275,9 +367,11 @@ export function mountConnectorGenerator(root: HTMLElement): void {
 		results.hidden = false
 	}
 
-	function load(text: string, source: string): void {
+	function load(text: string, source: string, from: ExampleSpec | null = null): void {
 		specText = text
+		example = from
 		sourceLabel.textContent = source
+		exampleDownload.hidden = from === null
 		run()
 	}
 
@@ -305,7 +399,14 @@ export function mountConnectorGenerator(root: HTMLElement): void {
 		if (file) void loadFile(file)
 		fileInput.value = ""
 	})
-	exampleBtn.addEventListener("click", () => load(EXAMPLE_SPEC, "pet-store.yaml (example)"))
+	for (const btn of exampleBtns) {
+		const spec = EXAMPLES[btn.dataset.cgExample ?? ""]
+		if (spec)
+			btn.addEventListener("click", () => load(spec.spec, `${spec.fileName} (example)`, spec))
+	}
+	exampleDownload.addEventListener("click", () => {
+		if (example) download(example.spec, example.fileName, "application/yaml")
+	})
 
 	let timer: ReturnType<typeof setTimeout> | undefined
 	for (const input of [idPrefix, baseUrl, filter]) {
