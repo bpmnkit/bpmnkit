@@ -967,6 +967,21 @@ function resolveBoundaryEventArgs(
 }
 
 /**
+ * The root-level messages, errors, signals and escalations of one process.
+ *
+ * Every builder working on the process — the process itself, its branches and
+ * its sub-process contents at any depth — shares the same four arrays, so an
+ * event option resolves to one root definition however deeply it is nested,
+ * and that definition is the one `build()` emits.
+ */
+interface RootDefinitions {
+	errors: BpmnError[]
+	messages: BpmnMessage[]
+	signals: BpmnSignal[]
+	escalations: BpmnEscalation[]
+}
+
+/**
  * Build a transaction element from a content callback.
  *
  * A transaction is a sub-process with atomic semantics: the same container
@@ -979,10 +994,10 @@ function makeTransactionEl(
 	id: string,
 	content: unknown,
 	options: unknown,
-	rootMessages: BpmnMessage[],
+	roots: RootDefinitions,
 ): BpmnFlowElement {
 	const resolved = resolveSubProcessArgs<SubProcessOptions>(content, options)
-	const sub = new SubProcessContentBuilder(rootMessages)
+	const sub = new SubProcessContentBuilder(roots)
 	resolved.content(sub)
 	finalizeScope(sub._elements, sub._flows)
 
@@ -1158,6 +1173,15 @@ export class BranchBuilder {
 		this.rootMessages = rootMessages
 		this.rootSignals = rootSignals
 		this.rootEscalations = rootEscalations
+	}
+
+	private roots(): RootDefinitions {
+		return {
+			errors: this.rootErrors,
+			messages: this.rootMessages,
+			signals: this.rootSignals,
+			escalations: this.rootEscalations,
+		}
 	}
 
 	/** Set a FEEL condition expression on this branch's outgoing sequence flow. */
@@ -1521,7 +1545,7 @@ export class BranchBuilder {
 		options?: SubProcessOptions,
 	): this {
 		const resolved = resolveSubProcessArgs<SubProcessOptions>(content, options)
-		const sub = new SubProcessContentBuilder(this.rootMessages)
+		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
 
@@ -1544,7 +1568,7 @@ export class BranchBuilder {
 		content: (b: SubProcessContentBuilder) => void,
 		options?: SubProcessOptions,
 	): this {
-		return this.addElement(makeTransactionEl(id, content, options, this.rootMessages))
+		return this.addElement(makeTransactionEl(id, content, options, this.roots()))
 	}
 
 	/**
@@ -1562,7 +1586,7 @@ export class BranchBuilder {
 	): this {
 		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(content, options)
 		// Ad-hoc sub-process children are unordered — see SubProcessContentBuilder.autoConnect.
-		const sub = new SubProcessContentBuilder(this.rootMessages, false)
+		const sub = new SubProcessContentBuilder(this.roots(), false)
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
 
@@ -1585,7 +1609,7 @@ export class BranchBuilder {
 		options?: ElementOptions,
 	): this {
 		const resolved = resolveSubProcessArgs<ElementOptions>(content, options)
-		const sub = new SubProcessContentBuilder(this.rootMessages)
+		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
 
@@ -1685,7 +1709,10 @@ export class SubProcessContentBuilder {
 	private lastNodeId: string | undefined
 	private currentGatewayId: string | undefined
 	private openBranchEnds: string[] = []
+	private readonly rootErrors: BpmnError[]
 	private readonly rootMessages: BpmnMessage[]
+	private readonly rootSignals: BpmnSignal[]
+	private readonly rootEscalations: BpmnEscalation[]
 	/**
 	 * Whether sequential calls chain themselves with sequence flows.
 	 *
@@ -1700,9 +1727,24 @@ export class SubProcessContentBuilder {
 	private readonly autoConnect: boolean
 
 	/** @internal */
-	constructor(rootMessages: BpmnMessage[] = [], autoConnect = true) {
-		this.rootMessages = rootMessages
+	constructor(
+		roots: RootDefinitions = { errors: [], messages: [], signals: [], escalations: [] },
+		autoConnect = true,
+	) {
+		this.rootErrors = roots.errors
+		this.rootMessages = roots.messages
+		this.rootSignals = roots.signals
+		this.rootEscalations = roots.escalations
 		this.autoConnect = autoConnect
+	}
+
+	private roots(): RootDefinitions {
+		return {
+			errors: this.rootErrors,
+			messages: this.rootMessages,
+			signals: this.rootSignals,
+			escalations: this.rootEscalations,
+		}
 	}
 
 	private addElement(element: BpmnFlowElement): this {
@@ -1760,7 +1802,13 @@ export class SubProcessContentBuilder {
 	startEvent(id?: string, options?: StartEventOptions): this {
 		const el = makeFlowElement(id ?? generateId("StartEvent"), "startEvent", options)
 		if (el.type === "startEvent" && options) {
-			el.eventDefinitions = buildEventDefinitions(options)
+			el.eventDefinitions = buildEventDefinitions(
+				options,
+				this.rootErrors,
+				this.rootMessages,
+				this.rootSignals,
+				this.rootEscalations,
+			)
 			if (options.isInterrupting === false) el.isInterrupting = false
 		}
 		return this.addElement(el)
@@ -1768,7 +1816,14 @@ export class SubProcessContentBuilder {
 
 	endEvent(id?: string, options?: EndEventOptions): this {
 		const el = makeFlowElement(id ?? generateId("EndEvent"), "endEvent", options)
-		if (el.type === "endEvent" && options) el.eventDefinitions = buildEventDefinitions(options)
+		if (el.type === "endEvent" && options)
+			el.eventDefinitions = buildEventDefinitions(
+				options,
+				this.rootErrors,
+				this.rootMessages,
+				this.rootSignals,
+				this.rootEscalations,
+			)
 		return this.addElement(el)
 	}
 
@@ -1779,7 +1834,13 @@ export class SubProcessContentBuilder {
 			options,
 		)
 		if (el.type === "intermediateThrowEvent" && options)
-			el.eventDefinitions = buildEventDefinitions(options)
+			el.eventDefinitions = buildEventDefinitions(
+				options,
+				this.rootErrors,
+				this.rootMessages,
+				this.rootSignals,
+				this.rootEscalations,
+			)
 		return this.addElement(el)
 	}
 
@@ -1793,7 +1854,13 @@ export class SubProcessContentBuilder {
 			},
 		)
 		if (el.type === "intermediateCatchEvent" && options)
-			el.eventDefinitions = buildEventDefinitions(options)
+			el.eventDefinitions = buildEventDefinitions(
+				options,
+				this.rootErrors,
+				this.rootMessages,
+				this.rootSignals,
+				this.rootEscalations,
+			)
 		return this.addElement(el)
 	}
 
@@ -1909,7 +1976,14 @@ export class SubProcessContentBuilder {
 		if (!this.currentGatewayId) {
 			throw new Error("branch() must be called after a gateway element")
 		}
-		const b = new BranchBuilder(this.currentGatewayId, name)
+		const b = new BranchBuilder(
+			this.currentGatewayId,
+			name,
+			this.rootErrors,
+			this.rootMessages,
+			this.rootSignals,
+			this.rootEscalations,
+		)
 		callback(b)
 
 		for (const el of b._elements) {
@@ -1993,7 +2067,13 @@ export class SubProcessContentBuilder {
 		if (element.type === "boundaryEvent") {
 			element.attachedToRef = options.attachedTo
 			element.cancelActivity = options.cancelActivity
-			element.eventDefinitions = buildEventDefinitions(options)
+			element.eventDefinitions = buildEventDefinitions(
+				options,
+				this.rootErrors,
+				this.rootMessages,
+				this.rootSignals,
+				this.rootEscalations,
+			)
 		}
 		// Push directly — no sequence flow, boundary events attach via attachedToRef
 		this._elements.push(element)
@@ -2056,7 +2136,7 @@ export class SubProcessContentBuilder {
 		options?: SubProcessOptions,
 	): this {
 		const resolved = resolveSubProcessArgs<SubProcessOptions>(content, options)
-		const sub = new SubProcessContentBuilder(this.rootMessages)
+		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
 
@@ -2079,7 +2159,7 @@ export class SubProcessContentBuilder {
 		content: (b: SubProcessContentBuilder) => void,
 		options?: SubProcessOptions,
 	): this {
-		return this.addElement(makeTransactionEl(id, content, options, this.rootMessages))
+		return this.addElement(makeTransactionEl(id, content, options, this.roots()))
 	}
 
 	/**
@@ -2097,7 +2177,7 @@ export class SubProcessContentBuilder {
 	): this {
 		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(content, options)
 		// Ad-hoc sub-process children are unordered — see SubProcessContentBuilder.autoConnect.
-		const sub = new SubProcessContentBuilder(this.rootMessages, false)
+		const sub = new SubProcessContentBuilder(this.roots(), false)
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
 
@@ -2120,7 +2200,7 @@ export class SubProcessContentBuilder {
 		options?: ElementOptions,
 	): this {
 		const resolved = resolveSubProcessArgs<ElementOptions>(content, options)
-		const sub = new SubProcessContentBuilder(this.rootMessages)
+		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
 
@@ -2185,6 +2265,15 @@ export class ProcessBuilder {
 
 	constructor(processId: string) {
 		this.processId = processId
+	}
+
+	private roots(): RootDefinitions {
+		return {
+			errors: this.rootErrors,
+			messages: this.rootMessages,
+			signals: this.rootSignals,
+			escalations: this.rootEscalations,
+		}
 	}
 
 	/**
@@ -2914,7 +3003,7 @@ export class ProcessBuilder {
 	): this {
 		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(content, options)
 		// Ad-hoc sub-process children are unordered — see SubProcessContentBuilder.autoConnect.
-		const sub = new SubProcessContentBuilder(this.rootMessages, false)
+		const sub = new SubProcessContentBuilder(this.roots(), false)
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
 
@@ -2938,7 +3027,7 @@ export class ProcessBuilder {
 		options?: SubProcessOptions,
 	): this {
 		const resolved = resolveSubProcessArgs<SubProcessOptions>(content, options)
-		const sub = new SubProcessContentBuilder(this.rootMessages)
+		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
 
@@ -2962,7 +3051,7 @@ export class ProcessBuilder {
 		content: (b: SubProcessContentBuilder) => void,
 		options?: SubProcessOptions,
 	): this {
-		this.addFlowElement(makeTransactionEl(id, content, options, this.rootMessages))
+		this.addFlowElement(makeTransactionEl(id, content, options, this.roots()))
 		return this
 	}
 
@@ -2973,7 +3062,7 @@ export class ProcessBuilder {
 		options?: ElementOptions,
 	): this {
 		const resolved = resolveSubProcessArgs<ElementOptions>(content, options)
-		const sub = new SubProcessContentBuilder(this.rootMessages)
+		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
 
