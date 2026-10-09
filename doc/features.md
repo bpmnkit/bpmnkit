@@ -1,5 +1,11 @@
 # Features
 
+## Connector generator on the website (2026-10-09)
+
+- **bpmnkit.com/connector-generator:** drag and drop an OpenAPI 3 or Swagger 2 spec and download
+  Camunda 8 REST connector element templates, generated in the browser.
+- **`@bpmnkit/connector-gen`** accepts Swagger 2.0 specs and honours the base-URL override.
+
 ## Drop: open a draft in the editor and chat with the AI (2026-10-06)
 
 - **Open in editor** on a describe-to-diagram draft stores it as a drop and opens it in the

@@ -1,0 +1,169 @@
+---
+import "../styles/global.css"
+import Seo from "@bpmnkit/astro-shared/Seo.astro"
+import { breadcrumbJsonLd } from "@bpmnkit/astro-shared/seo.js"
+import Footer from "../components/Footer.astro"
+import Nav from "../components/Nav.astro"
+
+const jsonLd = breadcrumbJsonLd([
+	{ name: "Home", url: "https://bpmnkit.com" },
+	{ name: "Connector Generator", url: "https://bpmnkit.com/connector-generator" },
+])
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <Seo
+    title="OpenAPI to Camunda Connector Generator — BPMN Kit"
+    description="Drop an OpenAPI 3 or Swagger 2 spec and get Camunda 8 REST connector element templates — one per operation, with typed inputs and auth detected from the spec. Runs entirely in your browser."
+    jsonLd={jsonLd}
+  />
+  <style is:global>
+    .cg-wrap { min-height: 100dvh; display: flex; flex-direction: column; }
+    .cg-main { flex: 1; max-width: 960px; margin: 0 auto; width: 100%; padding: calc(var(--nav-h) + 56px) 24px 80px; }
+    .cg-main h1 { font-size: clamp(1.7rem, 3.8vw, 2.3rem); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .cg-lede { color: var(--text-muted); font-size: 1rem; line-height: 1.65; margin-bottom: 28px; }
+    .cg-label { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-meta); }
+    .cg-drop { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 40px 20px; border: 1px dashed var(--border); background: var(--bg-card); text-align: center; cursor: pointer; }
+    .cg-drop.is-over, .cg-drop:hover, .cg-drop:focus-within { border-color: var(--accent); }
+    .cg-drop strong { font-size: 1.05rem; color: var(--text); }
+    .cg-drop span { font-size: 0.88rem; color: var(--text-muted); }
+    .cg-drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .cg-source { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+    .cg-source:empty { display: none; }
+    .cg-examples { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; padding: 10px 14px; border: 1px solid var(--border); border-top: none; background: var(--bg-card); }
+    .cg-example { font-family: var(--font-mono); font-size: 12px; padding: 6px 11px; border: 1px solid var(--accent); background: none; color: var(--accent); cursor: pointer; }
+    .cg-example:hover { background: var(--accent); color: var(--panel); }
+    .cg-example-download { font-family: var(--font-mono); font-size: 12px; background: none; border: none; padding: 0; color: var(--accent-bright); text-decoration: underline; cursor: pointer; margin-left: auto; }
+    .cg-example-download[hidden] { display: none; }
+    .cg-options { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--border); border-top: none; }
+    .cg-field { display: flex; flex-direction: column; gap: 6px; padding: 12px 14px; border-right: 1px solid var(--border); }
+    .cg-field:nth-child(4) { border-right: none; }
+    .cg-field input[type="text"], .cg-field select { font-family: var(--font-mono); font-size: 13px; padding: 6px 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); width: 100%; }
+    .cg-check { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--text-muted); border-top: 1px solid var(--border); border-right: none; }
+    .cg-error:not(:empty) { margin-top: 16px; padding: 10px 14px; border: 1px solid var(--bpmnkit-danger, #dc2626); color: var(--bpmnkit-danger, #dc2626); font-size: 0.9rem; }
+    .cg-results { margin-top: 28px; }
+    .cg-results[hidden] { display: none; }
+    .cg-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 10px 14px; border: 1px solid var(--border); background: var(--bg-card); }
+    .cg-summary { flex: 1; font-size: 0.9rem; color: var(--text); }
+    .cg-btn { font-family: var(--font-mono); font-size: 12px; padding: 7px 13px; border: 1px solid var(--accent); background: var(--accent); color: var(--panel); cursor: pointer; }
+    .cg-btn.secondary { background: none; color: var(--accent); }
+    .cg-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .cg-status { font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-meta); }
+    .cg-list { border: 1px solid var(--border); border-top: none; }
+    .cg-row { border-bottom: 1px solid var(--border); }
+    .cg-row:last-child { border-bottom: none; }
+    .cg-row summary { display: flex; align-items: center; gap: 12px; padding: 9px 14px; cursor: pointer; list-style: none; }
+    .cg-row summary::-webkit-details-marker { display: none; }
+    .cg-method { font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--accent); width: 56px; flex-shrink: 0; }
+    .cg-name { font-size: 0.9rem; color: var(--text); }
+    .cg-path { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); margin-left: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+    .cg-json { margin: 0; padding: 14px; max-height: 360px; overflow: auto; background: var(--code-bg); color: var(--code-fg); font-family: var(--font-mono); font-size: 12px; line-height: 1.55; }
+    .cg-next { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 0.92rem; color: var(--text-muted); line-height: 1.7; }
+    .cg-next h2 { font-size: 1.15rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+    .cg-next a { color: var(--accent-bright); }
+    @media (max-width: 640px) {
+      .cg-options { grid-template-columns: 1fr; }
+      .cg-field { border-right: none; border-bottom: 1px solid var(--border); }
+      .cg-check { border-top: none; border-bottom: none; }
+      .cg-path { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <Nav />
+  <div class="cg-wrap">
+    <main class="cg-main">
+      <h1>OpenAPI to Camunda Connector Generator</h1>
+      <p class="cg-lede">
+        Drop an OpenAPI 3 or Swagger 2 spec — JSON or YAML — and get one Camunda 8 REST connector
+        element template per operation, with typed inputs for path, query and body parameters and
+        the auth type detected from the spec. The spec is converted in your browser by
+        <code>@bpmnkit/connector-gen</code>; it is never uploaded.
+      </p>
+
+      <div id="connector-generator">
+        <label class="cg-drop" data-cg-drop>
+          <strong>Drop your OpenAPI / Swagger spec here</strong>
+          <span>or click to choose a <code>.json</code>, <code>.yaml</code> or <code>.yml</code> file</span>
+          <span class="cg-source" data-cg-source></span>
+          <input type="file" accept=".json,.yaml,.yml,application/json,application/yaml,text/yaml" data-cg-file />
+        </label>
+
+        <div class="cg-examples">
+          <span class="cg-label">No spec at hand? Try one:</span>
+          <button type="button" class="cg-example" data-cg-example="petstore">Pet Store · OpenAPI 3</button>
+          <button type="button" class="cg-example" data-cg-example="inventory">Inventory · Swagger 2</button>
+          <button type="button" class="cg-example-download" data-cg-example-download hidden>Download this spec</button>
+        </div>
+
+        <div class="cg-options">
+          <label class="cg-field">
+            <span class="cg-label">ID prefix</span>
+            <input type="text" value="com.example" spellcheck="false" data-cg-prefix />
+          </label>
+          <label class="cg-field">
+            <span class="cg-label">Base URL override</span>
+            <input type="text" placeholder="from the spec" spellcheck="false" data-cg-base-url />
+          </label>
+          <label class="cg-field">
+            <span class="cg-label">Operation filter (regex)</span>
+            <input type="text" placeholder="e.g. ^(list|create)" spellcheck="false" data-cg-filter />
+          </label>
+          <label class="cg-field">
+            <span class="cg-label">Default auth</span>
+            <select data-cg-auth>
+              <option value="auto">Detect from spec</option>
+              <option value="noAuth">No auth</option>
+              <option value="apiKey">API key</option>
+              <option value="basic">Basic auth</option>
+              <option value="bearer">Bearer token</option>
+              <option value="oauth-client-credentials-flow">OAuth 2.0 client credentials</option>
+            </select>
+          </label>
+          <label class="cg-field cg-check">
+            <input type="checkbox" data-cg-expand />
+            One field per body property
+          </label>
+        </div>
+
+        <div class="cg-error" data-cg-error role="alert"></div>
+
+        <section class="cg-results" data-cg-results hidden aria-live="polite">
+          <div class="cg-bar">
+            <input type="checkbox" aria-label="Select all templates" data-cg-select-all />
+            <span class="cg-summary" data-cg-summary></span>
+            <span class="cg-status" data-cg-status role="status"></span>
+            <button type="button" class="cg-btn secondary" data-cg-copy>Copy JSON</button>
+            <button type="button" class="cg-btn" data-cg-download>Download</button>
+          </div>
+          <div class="cg-list" data-cg-list></div>
+        </section>
+      </div>
+
+      <div class="cg-next">
+        <h2>Using the templates</h2>
+        <p>
+          The download is a standard element template file. Put it in Camunda Modeler's
+          <code>resources/element-templates</code> folder, or upload it to Web Modeler — then apply a template to a service task.
+          To generate in a script or CI instead, use
+          <a href="/docs/packages/connector-gen"><code>@bpmnkit/connector-gen</code></a> or
+          <code>casen connector generate</code>. Looking for a ready-made spec? Browse the
+          <a href="/integrations">integrations catalog</a>.
+        </p>
+      </div>
+    </main>
+    <Footer />
+  </div>
+
+  <script>
+    import { mountConnectorGenerator } from "../scripts/connector-generator.ts";
+    const root = document.getElementById("connector-generator");
+    if (root) mountConnectorGenerator(root);
+  </script>
+</body>
+</html>
