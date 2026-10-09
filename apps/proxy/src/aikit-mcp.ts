@@ -26,7 +26,7 @@ import { createInterface } from "node:readline"
 import { CamundaClient } from "@bpmnkit/api"
 import { Bpmn, compactify, optimize } from "@bpmnkit/core"
 import { ALL_PATTERNS, findPattern } from "@bpmnkit/patterns"
-import { getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
+import { clusterApiUrl, getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
 import { CAMUNDA_SPEC } from "./camunda-spec.js"
 import { writeModelXml } from "./model-write.js"
 import { runSandboxed } from "./sandbox.js"
@@ -525,7 +525,7 @@ async function toolBpmnDeploy(path: string, target: "local" | "camunda8"): Promi
 	}
 	const authHeader = await getAuthHeader(profile.config)
 	const baseUrl = profile.config.baseUrl.replace(/\/$/, "")
-	const res = await fetch(`${baseUrl}/v2/deployments`, {
+	const res = await fetch(clusterApiUrl(baseUrl, "/deployments"), {
 		method: "POST",
 		headers: { authorization: authHeader },
 		body: formData,

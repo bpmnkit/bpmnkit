@@ -12,7 +12,7 @@ import { existsSync, readFileSync, readdirSync, statSync, watch } from "node:fs"
 import type { FSWatcher } from "node:fs"
 import { homedir } from "node:os"
 import { basename, join, relative } from "node:path"
-import { getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
+import { clusterApiUrl, getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -61,7 +61,7 @@ async function fireProcess(processId: string, variables: Record<string, unknown>
 		// proceed unauthenticated
 	}
 
-	const res = await fetch(`${baseUrl}/v2/process-instances`, {
+	const res = await fetch(clusterApiUrl(baseUrl, "/process-instances"), {
 		method: "POST",
 		headers: { authorization: authHeader, "content-type": "application/json" },
 		body: JSON.stringify({ processDefinitionId: processId, variables }),
@@ -157,7 +157,7 @@ async function fetchDeployedProcesses(
 	baseUrl: string,
 	authHeader: string,
 ): Promise<{ processDefinitionId: string }[]> {
-	const res = await fetch(`${baseUrl}/v2/process-definitions/search`, {
+	const res = await fetch(clusterApiUrl(baseUrl, "/process-definitions/search"), {
 		method: "POST",
 		headers: { authorization: authHeader, "content-type": "application/json" },
 		body: JSON.stringify({ pageSize: 100 }),
@@ -173,7 +173,7 @@ async function fetchProcessXml(
 	processId: string,
 ): Promise<string | null> {
 	const res = await fetch(
-		`${baseUrl}/v2/process-definitions/${encodeURIComponent(processId)}/xml`,
+		clusterApiUrl(baseUrl, `/process-definitions/${encodeURIComponent(processId)}/xml`),
 		{ headers: { authorization: authHeader } },
 	)
 	if (!res.ok) return null

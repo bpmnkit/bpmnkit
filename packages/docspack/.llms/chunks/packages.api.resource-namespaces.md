@@ -1,20 +1,22 @@
 # @bpmnkit/api — Resource Namespaces
 
-All methods are grouped by resource type:
+Methods are grouped by resource, one property per tag of the API spec. The most used:
 
-| Namespace | Methods |
+| Namespace | Methods (selection) |
 |---|---|
-| `client.process` | deploy, startInstance, listInstances, getInstance, cancel, migrate |
-| `client.jobs` | activate, complete, fail, throwError, activateAndProcess |
-| `client.incidents` | list, resolve, get |
-| `client.variables` | list, get, update |
-| `client.decisions` | evaluate, list, getInstance |
-| `client.messages` | publish, correlate |
-| `client.signals` | broadcast |
-| `client.userTasks` | list, get, complete, assign, claim |
-| `client.users` | list, get, create, delete |
-| `client.groups` | list, get, create, assignMember |
-| `client.authorizations` | list, create, delete |
+| `client.resource` | createDeployment, getResource, deleteResource |
+| `client.processInstance` | createProcessInstance, searchProcessInstances, getProcessInstance, cancelProcessInstance |
+| `client.processDefinition` | searchProcessDefinitions, getProcessDefinition |
+| `client.job` | activateJobs, completeJob, failJob, throwJobError |
+| `client.incident` | searchIncidents, getIncident, resolveIncident |
+| `client.variable` | searchVariables, getVariable |
+| `client.message` | publishMessage, correlateMessage |
+| `client.signal` | broadcastSignal |
+| `client.decisionDefinition` | evaluateDecision, searchDecisionDefinitions |
+| `client.userTask` | searchUserTasks, getUserTask, assignUserTask, completeUserTask |
+
+Users, groups, roles, tenants, authorizations, documents, batch operations and the rest have
+their own namespaces (`client.user`, `client.group`, …).
 
 ---
 Source: https://bpmnkit.com/docs/packages/api

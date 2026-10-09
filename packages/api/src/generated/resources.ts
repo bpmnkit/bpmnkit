@@ -607,10 +607,11 @@ export class ResourceResource extends ResourceBase {
    *  This is an atomic call, i.e. either all resources are deployed or none of them are.
    * @see POST /deployments
    */
-  async createDeployment(): Promise<Types.DeploymentResult> {
+  async createDeployment(body: FormData): Promise<Types.DeploymentResult> {
     return this._http.request({
       method: "POST",
       path: "/deployments",
+      body,
     });
   }
 
@@ -672,10 +673,11 @@ export class DocumentResource extends ResourceBase {
    *  Note that this is currently supported for document stores of type: AWS, GCP, in-memory (non-production), local (non-production)
    * @see POST /documents
    */
-  async createDocument(query?: { storeId?: string; documentId?: Types.DocumentId }): Promise<Types.DocumentReference> {
+  async createDocument(body: FormData, query?: { storeId?: string; documentId?: Types.DocumentId }): Promise<Types.DocumentReference> {
     return this._http.request({
       method: "POST",
       path: "/documents",
+      body,
       query: query as Record<string, unknown> | undefined,
     });
   }
@@ -688,10 +690,11 @@ export class DocumentResource extends ResourceBase {
    *  The caller must provide a file name for each document, which will be used in case of a multi-status response
    * @see POST /documents/batch
    */
-  async createDocuments(query?: { storeId?: string }): Promise<Types.DocumentCreationBatchResponse> {
+  async createDocuments(body: FormData, query?: { storeId?: string }): Promise<Types.DocumentCreationBatchResponse> {
     return this._http.request({
       method: "POST",
       path: "/documents/batch",
+      body,
       query: query as Record<string, unknown> | undefined,
     });
   }

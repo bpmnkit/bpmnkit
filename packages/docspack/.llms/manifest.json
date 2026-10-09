@@ -62,7 +62,7 @@
 		{
 			"id": "cli.casen.view-bpmn-dmn-and-form-files",
 			"file": "chunks/cli.casen.view-bpmn-dmn-and-form-files.md",
-			"tokens": 186,
+			"tokens": 274,
 			"tags": [
 				"cli",
 				"casen",
@@ -74,7 +74,9 @@
 				"connection",
 				"profiles"
 			],
-			"entities": []
+			"entities": [
+				"config.json"
+			]
 		},
 		{
 			"id": "cli.casen.common-workflows",
@@ -1198,7 +1200,7 @@
 		{
 			"id": "getting-started.quick-start.step-3-deploy-to-camunda-8",
 			"file": "chunks/getting-started.quick-start.step-3-deploy-to-camunda-8.md",
-			"tokens": 151,
+			"tokens": 321,
 			"tags": [
 				"getting-started",
 				"quick-start",
@@ -2312,20 +2314,21 @@
 		{
 			"id": "guides.deployment",
 			"file": "chunks/guides.deployment.md",
-			"tokens": 192,
+			"tokens": 318,
 			"tags": [
 				"guides",
 				"deployment",
 				"setup"
 			],
 			"entities": [
-				"@bpmnkit/api"
+				"@bpmnkit/api",
+				"baseUrl"
 			]
 		},
 		{
 			"id": "guides.deployment.deploying-a-process",
 			"file": "chunks/guides.deployment.deploying-a-process.md",
-			"tokens": 195,
+			"tokens": 203,
 			"tags": [
 				"guides",
 				"deployment",
@@ -2339,35 +2342,48 @@
 		{
 			"id": "guides.deployment.handling-jobs",
 			"file": "chunks/guides.deployment.handling-jobs.md",
-			"tokens": 195,
+			"tokens": 164,
 			"tags": [
 				"guides",
 				"deployment",
 				"handling",
-				"jobs",
+				"jobs"
+			],
+			"entities": [
+				"@bpmnkit/worker-client"
+			]
+		},
+		{
+			"id": "guides.deployment.querying-instances",
+			"file": "chunks/guides.deployment.querying-instances.md",
+			"tokens": 158,
+			"tags": [
+				"guides",
+				"deployment",
 				"querying",
-				"instances"
+				"instances",
+				"managing",
+				"incidents"
 			],
 			"entities": []
 		},
 		{
-			"id": "guides.deployment.managing-incidents",
-			"file": "chunks/guides.deployment.managing-incidents.md",
-			"tokens": 143,
+			"id": "guides.deployment.lifecycle-events",
+			"file": "chunks/guides.deployment.lifecycle-events.md",
+			"tokens": 182,
 			"tags": [
 				"guides",
 				"deployment",
-				"managing",
-				"incidents",
 				"lifecycle",
-				"events"
+				"events",
+				"cli"
 			],
 			"entities": []
 		},
 		{
 			"id": "guides.deployment.ci-cd-deploy-on-push",
 			"file": "chunks/guides.deployment.ci-cd-deploy-on-push.md",
-			"tokens": 222,
+			"tokens": 216,
 			"tags": [
 				"guides",
 				"deployment",
@@ -3890,7 +3906,7 @@
 		{
 			"id": "packages.api.overview",
 			"file": "chunks/packages.api.overview.md",
-			"tokens": 218,
+			"tokens": 298,
 			"tags": [
 				"packages",
 				"api",
@@ -3900,13 +3916,14 @@
 				"configuration"
 			],
 			"entities": [
-				"@bpmnkit/api"
+				"@bpmnkit/api",
+				"baseUrl"
 			]
 		},
 		{
 			"id": "packages.api.resource-namespaces",
 			"file": "chunks/packages.api.resource-namespaces.md",
-			"tokens": 172,
+			"tokens": 189,
 			"tags": [
 				"packages",
 				"api",
@@ -3914,23 +3931,24 @@
 				"namespaces"
 			],
 			"entities": [
-				"client.process",
-				"client.jobs",
-				"client.incidents",
-				"client.variables",
-				"client.decisions",
-				"client.messages",
-				"client.signals",
-				"client.userTasks",
-				"client.users",
-				"client.groups",
-				"client.authorizations"
+				"client.resource",
+				"client.processInstance",
+				"client.processDefinition",
+				"client.job",
+				"client.incident",
+				"client.variable",
+				"client.message",
+				"client.signal",
+				"client.decisionDefinition",
+				"client.userTask",
+				"client.user",
+				"client.group"
 			]
 		},
 		{
 			"id": "packages.api.process-operations",
 			"file": "chunks/packages.api.process-operations.md",
-			"tokens": 238,
+			"tokens": 251,
 			"tags": [
 				"packages",
 				"api",
@@ -3939,12 +3957,14 @@
 				"job",
 				"workers"
 			],
-			"entities": []
+			"entities": [
+				"@bpmnkit/worker-client"
+			]
 		},
 		{
 			"id": "packages.api.incident-resolution",
 			"file": "chunks/packages.api.incident-resolution.md",
-			"tokens": 137,
+			"tokens": 143,
 			"tags": [
 				"packages",
 				"api",
@@ -3958,14 +3978,19 @@
 		{
 			"id": "packages.api.observability-events",
 			"file": "chunks/packages.api.observability-events.md",
-			"tokens": 94,
+			"tokens": 87,
 			"tags": [
 				"packages",
 				"api",
 				"observability",
 				"events"
 			],
-			"entities": []
+			"entities": [
+				"rawResponse",
+				"tokenRefresh",
+				"cacheHit",
+				"cacheMiss"
+			]
 		},
 		{
 			"id": "packages.ascii.overview",

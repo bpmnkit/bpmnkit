@@ -285,7 +285,7 @@ export const CAMUNDA_SPEC: Record<string, Record<string, MethodSpec>> = {
 			description:
 				"Deploy resources Deploys one or more resources (e.g. processes, decision models, or forms). This is an atomic call, i.e. either all resources are deployed or none of them are.",
 			endpoint: "POST /deployments",
-			params: "none",
+			params: "body: FormData",
 			returns: "DeploymentResult",
 		},
 		getResource: {
@@ -315,14 +315,14 @@ export const CAMUNDA_SPEC: Record<string, Record<string, MethodSpec>> = {
 			description:
 				"Upload document Upload a document to the Camunda 8 cluster. Note that this is currently supported for document stores of type: AWS, GCP, in-memory (non-production), local (non-production)",
 			endpoint: "POST /documents",
-			params: "query?: { storeId?: string; documentId?: DocumentId }",
+			params: "body: FormData, query?: { storeId?: string; documentId?: DocumentId }",
 			returns: "DocumentReference",
 		},
 		createDocuments: {
 			description:
 				"Upload multiple documents Upload multiple documents to the Camunda 8 cluster. The caller must provide a file name for each document, which will be used in case of a multi-status response",
 			endpoint: "POST /documents/batch",
-			params: "query?: { storeId?: string }",
+			params: "body: FormData, query?: { storeId?: string }",
 			returns: "DocumentCreationBatchResponse",
 		},
 		getDocument: {

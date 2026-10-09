@@ -2,13 +2,13 @@
 
 ```typescript
 // Find all incidents for a process instance
-const { items: incidents } = await client.incidents.list({
-  processInstanceKey: instance.processInstanceKey,
+const { items: incidents } = await client.incident.searchIncidents({
+  filter: { processInstanceKey: instance.processInstanceKey },
 });
 
 // Fix the problem in your code, then resolve
-for (const incident of incidents) {
-  await client.incidents.resolve({ incidentKey: incident.key });
+for (const { incidentKey } of incidents) {
+  if (incidentKey) await client.incident.resolveIncident(incidentKey);
 }
 ```
 
@@ -16,8 +16,8 @@ for (const incident of incidents) {
 ## Message Correlation
 
 ```typescript
-await client.messages.publish({
-  messageName: "payment-confirmed",
+await client.message.publishMessage({
+  name: "payment-confirmed",
   correlationKey: "ord-456",
   variables: {
     paymentMethod: "card",

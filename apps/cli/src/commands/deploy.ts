@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises"
 import { basename, resolve } from "node:path"
-import { getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
+import { clusterApiUrl, getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
 import type { Command, CommandGroup } from "../types.js"
 
 const ZEEBE_ADDRESS = (process.env.ZEEBE_ADDRESS ?? "http://localhost:26500").replace(/\/$/, "")
@@ -51,7 +51,7 @@ const deployCmd: Command = {
 			}
 			const authHeader = await getAuthHeader(profile.config)
 			const baseUrl = profile.config.baseUrl.replace(/\/$/, "")
-			const res = await fetch(`${baseUrl}/v2/deployments`, {
+			const res = await fetch(clusterApiUrl(baseUrl, "/deployments"), {
 				method: "POST",
 				headers: { authorization: authHeader },
 				body: formData,

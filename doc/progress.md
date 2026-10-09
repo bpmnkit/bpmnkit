@@ -1,5 +1,35 @@
 # Progress
 
+## 2026-10-09 — Camunda SaaS path fixed; fast-start proposal
+
+- `doc/fast-start-proposal.md`: why n8n's first hour works, what Camunda 8 SaaS lacks for it,
+  and a four-phase plan for building on BPMN Kit and running on SaaS in ten minutes. Phase 0
+  is done:
+  - **Doubled `/v2`.** Profiles store the base URL with `/v2`. The CLI SaaS deploy
+    (`apps/cli/src/commands/deploy.ts`), the proxy worker daemon, webhook, timer and
+    file-watch triggers, run-history re-runs, the MCP deploy and the VS Code deploy added it
+    again. `clusterApiUrl()` in `@bpmnkit/profiles` joins the URL for all of them, with or
+    without `/v2` on the base.
+  - **Multipart bodies dropped.** The API generator read only `application/json` request
+    bodies, so `createDeployment`, `createDocument` and `createDocuments` sent nothing. They
+    now take `FormData`, `HttpClient` passes FormData through with fetch's own multipart
+    Content-Type, and the generated CLI commands take file arguments (`makeUploadCmd`).
+  - **`allOf` with its own `properties`.** The generator dropped a schema's own properties
+    when it also had `allOf`, and read only the direct properties of each member. So every
+    search query lacked `filter` and `sort`, every search result lacked `items`, and
+    `ProcessInstanceFilter` lacked `state`. `allOfMembers()` flattens nested `allOf` and counts
+    the schema's own properties as one more member.
+  - **Docs.** `getting-started/quick-start.md`, `guides/deployment.md`, `packages/api.md` and
+    the profile section of `cli/casen.md` used methods that do not exist
+    (`client.process.deploy`, `client.jobs.activateAndProcess`, `casen profile add`) and the
+    Console API URL as a cluster URL. Every TypeScript snippet now type-checks against the
+    built packages. The docspack is rebuilt.
+  - **READMEs and the CLI page.** The root and CLI READMEs (`scripts/generate-readmes.mjs`) and
+    `apps/landing/src/pages/cli.astro` listed commands the CLI does not have:
+    `casen profile add`, `profile remove`, `casen deploy <file>`, `casen instances`,
+    `casen processes`, `casen incidents` and `casen jobs`. Each was run against the built CLI,
+    and the real commands replace them.
+
 ## 2026-10-09 — camunda-docspack: Self-Managed, the web components and the client guides
 
 - `INCLUDED` adds 22 directories of camunda-docs: `self-managed/`, ten of `components/` (admin,

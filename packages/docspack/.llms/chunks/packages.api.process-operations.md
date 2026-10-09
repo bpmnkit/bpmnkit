@@ -1,59 +1,51 @@
 # @bpmnkit/api — Process Operations
 
 ```typescript
-// Deploy
-const deployed = await client.process.deploy({
-  resources: [{ content: bpmnXml, name: "my-flow.bpmn" }],
-});
+// Deploy: a multipart upload, one `resources` part per file
+const form = new FormData();
+form.append("resources", new Blob([bpmnXml]), "my-flow.bpmn");
+await client.resource.createDeployment(form);
 
 // Start instance
-const instance = await client.process.startInstance({
-  bpmnProcessId: "my-flow",
+const instance = await client.processInstance.createProcessInstance({
+  processDefinitionId: "my-flow",
   variables: { customerId: "cust-001" },
 });
 
 // List active instances
-const { items } = await client.process.listInstances({
-  state: "ACTIVE",
-  bpmnProcessId: "my-flow",
+const { items } = await client.processInstance.searchProcessInstances({
+  filter: { processDefinitionId: "my-flow", state: "ACTIVE" },
 });
 
 // Cancel instance
-await client.process.cancel({
-  processInstanceKey: instance.processInstanceKey,
-});
+await client.processInstance.cancelProcessInstance(instance.processInstanceKey);
 ```
 
 
 ## Job Workers
 
+For a long-running worker, use [`@bpmnkit/worker-client`](/docs/guides/deployment#handling-jobs).
+To handle a batch of jobs yourself:
+
 ```typescript
-// Activate and handle jobs in a poll loop
-const worker = await client.jobs.activateAndProcess({
+const { jobs } = await client.job.activateJobs({
   type: "send-email",
   maxJobsToActivate: 10,
   timeout: 60_000,          // job lock duration in ms
   worker: "email-worker-1",
-
-  handler: async (job) => {
-    try {
-      await sendEmail(job.variables);
-      await client.jobs.complete({
-        jobKey: job.key,
-        variables: { emailSent: true },
-      });
-    } catch (err) {
-      await client.jobs.fail({
-        jobKey: job.key,
-        errorMessage: String(err),
-        retries: job.retries - 1,
-      });
-    }
-  },
 });
 
-// Stop polling
-worker.close();
+for (const job of jobs) {
+  try {
+    await sendEmail(job.variables);
+    await client.job.completeJob(job.jobKey, { variables: { emailSent: true } });
+  } catch (err) {
+    await client.job.failJob(job.jobKey, {
+      errorMessage: String(err),
+      retries: job.retries - 1,
+    });
+  }
+}
 ```
 
 ---

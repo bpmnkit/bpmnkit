@@ -83,8 +83,7 @@ export interface AuditLogSearchQuerySortRequest {
 
 /** Audit log search request. */
 export type AuditLogSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -102,6 +101,418 @@ export type AuditLogSearchQueryRequest = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "actorId" | "actorType" | "annotation" | "auditLogKey" | "batchOperationKey" | "batchOperationType" | "category" | "decisionDefinitionId" | "decisionDefinitionKey" | "decisionEvaluationKey" | "decisionRequirementsId" | "decisionRequirementsKey" | "elementInstanceKey" | "entityKey" | "entityType" | "jobKey" | "operationType" | "processDefinitionId" | "processDefinitionKey" | "processInstanceKey" | "result" | "tenantId" | "timestamp" | "userTaskKey";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The audit log key search filter. */
+      auditLogKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The process definition key search filter. */
+      processDefinitionKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The process instance key search filter. */
+      processInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The element instance key search filter. */
+      elementInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The operation type search filter. */
+      operationType?: "ASSIGN" | "CANCEL" | "COMPLETE" | "CREATE" | "DELETE" | "EVALUATE" | "MIGRATE" | "MODIFY" | "RESOLVE" | "RESUME" | "SUSPEND" | "UNASSIGN" | "UNKNOWN" | "UPDATE" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ASSIGN" | "CANCEL" | "COMPLETE" | "CREATE" | "DELETE" | "EVALUATE" | "MIGRATE" | "MODIFY" | "RESOLVE" | "RESUME" | "SUSPEND" | "UNASSIGN" | "UNKNOWN" | "UPDATE";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ASSIGN" | "CANCEL" | "COMPLETE" | "CREATE" | "DELETE" | "EVALUATE" | "MIGRATE" | "MODIFY" | "RESOLVE" | "RESUME" | "SUSPEND" | "UNASSIGN" | "UNKNOWN" | "UPDATE";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ASSIGN" | "CANCEL" | "COMPLETE" | "CREATE" | "DELETE" | "EVALUATE" | "MIGRATE" | "MODIFY" | "RESOLVE" | "RESUME" | "SUSPEND" | "UNASSIGN" | "UNKNOWN" | "UPDATE">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The result search filter. */
+      result?: "FAIL" | "SUCCESS" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "FAIL" | "SUCCESS";
+        /** Checks for inequality with the provided value. */
+        $neq?: "FAIL" | "SUCCESS";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"FAIL" | "SUCCESS">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The timestamp search filter. */
+      timestamp?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The actor ID search filter. */
+      actorId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The actor type search filter. */
+      actorType?: "ANONYMOUS" | "CLIENT" | "UNKNOWN" | "USER" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ANONYMOUS" | "CLIENT" | "UNKNOWN" | "USER";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ANONYMOUS" | "CLIENT" | "UNKNOWN" | "USER";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ANONYMOUS" | "CLIENT" | "UNKNOWN" | "USER">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The agent element ID search filter. */
+      agentElementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The entity key search filter. */
+      entityKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The entity type search filter. */
+      entityType?: "AUTHORIZATION" | "BATCH" | "DECISION" | "GROUP" | "INCIDENT" | "JOB" | "MAPPING_RULE" | "PROCESS_INSTANCE" | "RESOURCE" | "ROLE" | "TENANT" | "USER" | "USER_TASK" | "VARIABLE" | "CLIENT" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "AUTHORIZATION" | "BATCH" | "DECISION" | "GROUP" | "INCIDENT" | "JOB" | "MAPPING_RULE" | "PROCESS_INSTANCE" | "RESOURCE" | "ROLE" | "TENANT" | "USER" | "USER_TASK" | "VARIABLE" | "CLIENT";
+        /** Checks for inequality with the provided value. */
+        $neq?: "AUTHORIZATION" | "BATCH" | "DECISION" | "GROUP" | "INCIDENT" | "JOB" | "MAPPING_RULE" | "PROCESS_INSTANCE" | "RESOURCE" | "ROLE" | "TENANT" | "USER" | "USER_TASK" | "VARIABLE" | "CLIENT";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"AUTHORIZATION" | "BATCH" | "DECISION" | "GROUP" | "INCIDENT" | "JOB" | "MAPPING_RULE" | "PROCESS_INSTANCE" | "RESOURCE" | "ROLE" | "TENANT" | "USER" | "USER_TASK" | "VARIABLE" | "CLIENT">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The tenant ID search filter. */
+      tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The category search filter. */
+      category?: "ADMIN" | "DEPLOYED_RESOURCES" | "USER_TASKS" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ADMIN" | "DEPLOYED_RESOURCES" | "USER_TASKS";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ADMIN" | "DEPLOYED_RESOURCES" | "USER_TASKS";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ADMIN" | "DEPLOYED_RESOURCES" | "USER_TASKS">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The deployment key search filter. */
+      deploymentKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The form key search filter. */
+      formKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The resource key search filter. */
+      resourceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The batch operation type search filter. */
+      batchOperationType?: "ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The process definition ID search filter. */
+      processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The job key search filter. */
+      jobKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The user task key search filter. */
+      userTaskKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The decision requirements ID search filter. */
+      decisionRequirementsId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The decision requirements key search filter. */
+      decisionRequirementsKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The decision definition ID search filter. */
+      decisionDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The decision definition key search filter. */
+      decisionDefinitionKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The decision evaluation key search filter. */
+      decisionEvaluationKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The related entity key search filter. */
+      relatedEntityKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The related entity type search filter. */
+      relatedEntityType?: "AUTHORIZATION" | "BATCH" | "DECISION" | "GROUP" | "INCIDENT" | "JOB" | "MAPPING_RULE" | "PROCESS_INSTANCE" | "RESOURCE" | "ROLE" | "TENANT" | "USER" | "USER_TASK" | "VARIABLE" | "CLIENT" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "AUTHORIZATION" | "BATCH" | "DECISION" | "GROUP" | "INCIDENT" | "JOB" | "MAPPING_RULE" | "PROCESS_INSTANCE" | "RESOURCE" | "ROLE" | "TENANT" | "USER" | "USER_TASK" | "VARIABLE" | "CLIENT";
+        /** Checks for inequality with the provided value. */
+        $neq?: "AUTHORIZATION" | "BATCH" | "DECISION" | "GROUP" | "INCIDENT" | "JOB" | "MAPPING_RULE" | "PROCESS_INSTANCE" | "RESOURCE" | "ROLE" | "TENANT" | "USER" | "USER_TASK" | "VARIABLE" | "CLIENT";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"AUTHORIZATION" | "BATCH" | "DECISION" | "GROUP" | "INCIDENT" | "JOB" | "MAPPING_RULE" | "PROCESS_INSTANCE" | "RESOURCE" | "ROLE" | "TENANT" | "USER" | "USER_TASK" | "VARIABLE" | "CLIENT">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The entity description filter. */
+      entityDescription?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
   };
 };
 
@@ -515,8 +926,7 @@ export interface AuditLogFilter {
 
 /** Audit log search response. */
 export interface AuditLogSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -527,6 +937,77 @@ export interface AuditLogSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The unique key of the audit log entry. */
+      auditLogKey: string;
+      /** System-generated entity key for an audit log entry. */
+      entityKey: string;
+      /** The type of entity affected by the operation. */
+      entityType: "AUTHORIZATION" | "BATCH" | "DECISION" | "GROUP" | "INCIDENT" | "JOB" | "MAPPING_RULE" | "PROCESS_INSTANCE" | "RESOURCE" | "ROLE" | "TENANT" | "USER" | "USER_TASK" | "VARIABLE" | "CLIENT";
+      /** The type of operation performed. */
+      operationType: "ASSIGN" | "CANCEL" | "COMPLETE" | "CREATE" | "DELETE" | "EVALUATE" | "MIGRATE" | "MODIFY" | "RESOLVE" | "RESUME" | "SUSPEND" | "UNASSIGN" | "UNKNOWN" | "UPDATE";
+      /** Key of the batch operation. */
+      batchOperationKey: string;
+      /** The type of batch operation performed, if this is part of a batch. */
+      batchOperationType: "ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE";
+      /** The timestamp when the operation occurred. */
+      timestamp: string;
+      /** The ID of the actor who performed the operation. */
+      actorId: string | null;
+      /** The type of the actor who performed the operation. */
+      actorType: "ANONYMOUS" | "CLIENT" | "UNKNOWN" | "USER";
+      /** The element ID of the agent that performed the operation (e.g. ad-hoc subprocess element ID). */
+      agentElementId: string | null;
+      /** The tenant ID of the audit log. */
+      tenantId: string;
+      /** The result status of the operation. */
+      result: "FAIL" | "SUCCESS";
+      /** Additional notes about the operation. */
+      annotation: string | null;
+      /** The category of the audit log operation. */
+      category: "ADMIN" | "DEPLOYED_RESOURCES" | "USER_TASKS";
+      /** The process definition ID. */
+      processDefinitionId: string;
+      /** The key of the process definition. */
+      processDefinitionKey: string;
+      /** The key of the process instance. */
+      processInstanceKey: string;
+      /**  The key of the root process instance. The root process instance is the top-level
+ ancestor in the process instance hierarchy. This field is only present for data
+ belonging to process instance hierarchies created in version 8.9 or later. */
+      rootProcessInstanceKey: string;
+      /** The key of the element instance. */
+      elementInstanceKey: string;
+      /** The key of the job. */
+      jobKey: string;
+      /** The key of the user task. */
+      userTaskKey: string;
+      /** The decision requirements ID. */
+      decisionRequirementsId: string | null;
+      /** The assigned key of the decision requirements. */
+      decisionRequirementsKey: string;
+      /** The decision definition ID. */
+      decisionDefinitionId: string;
+      /** The key of the decision definition. */
+      decisionDefinitionKey: string;
+      /** The key of the decision evaluation. */
+      decisionEvaluationKey: string;
+      /** The key of the deployment. */
+      deploymentKey: string;
+      /** The key of the form. */
+      formKey: string;
+      /** The system-assigned key for this resource. */
+      resourceKey: string;
+      /**  The key of the related entity. The content depends on the operation type and entity type.
+ For example, for authorization operations, this will contain the ID of the owner (e.g., user or group) the authorization belongs to. */
+      relatedEntityKey: string;
+      /**  The type of the related entity. The content depends on the operation type and entity type.
+ For example, for authorization operations, this will contain the type of the owner (e.g., USER or GROUP) the authorization belongs to. */
+      relatedEntityType: "AUTHORIZATION" | "BATCH" | "DECISION" | "GROUP" | "INCIDENT" | "JOB" | "MAPPING_RULE" | "PROCESS_INSTANCE" | "RESOURCE" | "ROLE" | "TENANT" | "USER" | "USER_TASK" | "VARIABLE" | "CLIENT";
+      /**  Additional description of the entity affected by the operation.
+ For example, for variable operations, this will contain the variable name. */
+      entityDescription: string | null;
+  }>;
 }
 
 /** System-generated entity key for an audit log entry. */
@@ -877,8 +1358,7 @@ export interface AuthorizationSearchQuerySortRequest {
 }
 
 export type AuthorizationSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -896,6 +1376,24 @@ export type AuthorizationSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "ownerId" | "ownerType" | "resourceId" | "resourcePropertyName" | "resourceType";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The ID of the owner of permissions. */
+      ownerId?: string;
+      /** The type of the owner of permissions. */
+      ownerType?: "USER" | "CLIENT" | "ROLE" | "GROUP" | "MAPPING_RULE" | "UNSPECIFIED";
+      /** The IDs of the resource to search permissions for. */
+      resourceIds?: Array<string>;
+      /** The names of the resource properties to search permissions for. */
+      resourcePropertyNames?: Array<string>;
+      /** The type of resource to search permissions for. */
+      resourceType?: "AUDIT_LOG" | "AUTHORIZATION" | "BATCH" | "CLUSTER_VARIABLE" | "COMPONENT" | "DECISION_DEFINITION" | "DECISION_REQUIREMENTS_DEFINITION" | "DOCUMENT" | "EXPRESSION" | "GLOBAL_LISTENER" | "GROUP" | "MAPPING_RULE" | "MESSAGE" | "PROCESS_DEFINITION" | "RESOURCE" | "ROLE" | "SYSTEM" | "TENANT" | "USER" | "USER_TASK";
   };
 };
 
@@ -931,8 +1429,7 @@ export interface AuthorizationResult {
 }
 
 export interface AuthorizationSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -943,6 +1440,22 @@ export interface AuthorizationSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The ID of the owner of permissions. */
+      ownerId?: string;
+      /** The type of the owner of permissions. */
+      ownerType?: "USER" | "CLIENT" | "ROLE" | "GROUP" | "MAPPING_RULE" | "UNSPECIFIED";
+      /** The type of resource that the permissions relate to. */
+      resourceType?: "AUDIT_LOG" | "AUTHORIZATION" | "BATCH" | "CLUSTER_VARIABLE" | "COMPONENT" | "DECISION_DEFINITION" | "DECISION_REQUIREMENTS_DEFINITION" | "DOCUMENT" | "EXPRESSION" | "GLOBAL_LISTENER" | "GROUP" | "MAPPING_RULE" | "MESSAGE" | "PROCESS_DEFINITION" | "RESOURCE" | "ROLE" | "SYSTEM" | "TENANT" | "USER" | "USER_TASK";
+      /** ID of the resource the permission relates to (mutually exclusive with `resourcePropertyName`). */
+      resourceId?: string | null;
+      /** The name of the resource property the permission relates to (mutually exclusive with `resourceId`). */
+      resourcePropertyName: string | null;
+      /** Specifies the types of the permissions. */
+      permissionTypes: Array<"ACCESS" | "CANCEL_PROCESS_INSTANCE" | "CLAIM" | "CLAIM_USER_TASK" | "COMPLETE" | "COMPLETE_USER_TASK" | "CREATE" | "CREATE_BATCH_OPERATION_CANCEL_PROCESS_INSTANCE" | "CREATE_BATCH_OPERATION_DELETE_DECISION_DEFINITION" | "CREATE_BATCH_OPERATION_DELETE_DECISION_INSTANCE" | "CREATE_BATCH_OPERATION_DELETE_PROCESS_DEFINITION" | "CREATE_BATCH_OPERATION_DELETE_PROCESS_INSTANCE" | "CREATE_BATCH_OPERATION_MIGRATE_PROCESS_INSTANCE" | "CREATE_BATCH_OPERATION_MODIFY_PROCESS_INSTANCE" | "CREATE_BATCH_OPERATION_RESOLVE_INCIDENT" | "CREATE_DECISION_INSTANCE" | "CREATE_PROCESS_INSTANCE" | "CREATE_TASK_LISTENER" | "DELETE" | "DELETE_DECISION_INSTANCE" | "DELETE_DRD" | "DELETE_FORM" | "DELETE_PROCESS" | "DELETE_PROCESS_INSTANCE" | "DELETE_RESOURCE" | "DELETE_TASK_LISTENER" | "EVALUATE" | "MODIFY_PROCESS_INSTANCE" | "READ" | "READ_DECISION_DEFINITION" | "READ_DECISION_INSTANCE" | "READ_JOB_METRIC" | "READ_PROCESS_DEFINITION" | "READ_PROCESS_INSTANCE" | "READ_USAGE_METRIC" | "READ_USER_TASK" | "READ_TASK_LISTENER" | "UPDATE" | "UPDATE_PROCESS_INSTANCE" | "UPDATE_USER_TASK" | "UPDATE_TASK_LISTENER">;
+      /** The key of the authorization. */
+      authorizationKey?: string;
+  }>;
 }
 
 export interface AuthorizationCreateResult {
@@ -979,8 +1492,7 @@ export interface BatchOperationSearchQuerySortRequest {
 
 /** Batch operation search request. */
 export type BatchOperationSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -998,6 +1510,78 @@ export type BatchOperationSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "batchOperationKey" | "operationType" | "state" | "startDate" | "endDate" | "actorType" | "actorId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The key (or operate legacy ID) of the batch operation. */
+      batchOperationKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The type of the batch operation. */
+      operationType?: "ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The state of the batch operation. */
+      state?: "ACTIVE" | "CANCELED" | "COMPLETED" | "CREATED" | "FAILED" | "PARTIALLY_COMPLETED" | "SUSPENDED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "CANCELED" | "COMPLETED" | "CREATED" | "FAILED" | "PARTIALLY_COMPLETED" | "SUSPENDED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "CANCELED" | "COMPLETED" | "CREATED" | "FAILED" | "PARTIALLY_COMPLETED" | "SUSPENDED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "CANCELED" | "COMPLETED" | "CREATED" | "FAILED" | "PARTIALLY_COMPLETED" | "SUSPENDED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The type of the actor who performed the operation. */
+      actorType?: "ANONYMOUS" | "CLIENT" | "UNKNOWN" | "USER";
+      /** The ID of the actor who performed the operation. */
+      actorId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
   };
 };
 
@@ -1071,8 +1655,7 @@ export interface BatchOperationFilter {
 
 /** The batch operation search query result. */
 export interface BatchOperationSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -1083,6 +1666,41 @@ export interface BatchOperationSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** Key or (Operate Legacy ID = UUID) of the batch operation. */
+      batchOperationKey: string;
+      /** The batch operation state. */
+      state: "ACTIVE" | "CANCELED" | "COMPLETED" | "CREATED" | "FAILED" | "PARTIALLY_COMPLETED" | "SUSPENDED";
+      /** The type of the batch operation. */
+      batchOperationType: "ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE";
+      /**  The start date of the batch operation.
+ This is `null` if the batch operation has not yet started. */
+      startDate?: string | null;
+      /**  The end date of the batch operation.
+ This is `null` if the batch operation is still running. */
+      endDate?: string | null;
+      /**  The type of the actor who performed the operation.
+ This is `null` if the batch operation was created before 8.9,
+ or if the actor information is not available. */
+      actorType: "ANONYMOUS" | "CLIENT" | "UNKNOWN" | "USER";
+      /** The ID of the actor who performed the operation. Available for batch operations created since 8.9. */
+      actorId: string | null;
+      /** The total number of items contained in this batch operation. */
+      operationsTotalCount: number;
+      /** The number of items which failed during execution of the batch operation. (e.g. because they are rejected by the Zeebe engine). */
+      operationsFailedCount: number;
+      /** The number of successfully completed tasks. */
+      operationsCompletedCount: number;
+      /** The errors that occurred per partition during the batch operation. */
+      errors: Array<{
+        /** The partition ID where the error occurred. */
+        partitionId?: number;
+        /** The type of the error that occurred during the batch operation. */
+        "type"?: "QUERY_FAILED" | "RESULT_BUFFER_SIZE_EXCEEDED";
+        /** The error message that occurred during the batch operation. */
+        message?: string;
+    }>;
+  }>;
 }
 
 export interface BatchOperationResponse {
@@ -1139,8 +1757,7 @@ export interface BatchOperationItemSearchQuerySortRequest {
 
 /** Batch operation item search request. */
 export type BatchOperationItemSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -1158,6 +1775,93 @@ export type BatchOperationItemSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "batchOperationKey" | "itemKey" | "processInstanceKey" | "processedDate" | "state";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The key (or operate legacy ID) of the batch operation. */
+      batchOperationKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The key of the item, e.g. a process instance key. */
+      itemKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The process instance key of the processed item. */
+      processInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The state of the batch operation. */
+      state?: "ACTIVE" | "COMPLETED" | "CANCELED" | "FAILED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "CANCELED" | "FAILED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "CANCELED" | "FAILED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "CANCELED" | "FAILED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The type of the batch operation. */
+      operationType?: "ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
   };
 };
 
@@ -1245,8 +1949,7 @@ export interface BatchOperationItemFilter {
 }
 
 export interface BatchOperationItemSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -1257,6 +1960,26 @@ export interface BatchOperationItemSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The type of the batch operation. */
+      operationType?: "ADD_VARIABLE" | "CANCEL_PROCESS_INSTANCE" | "DELETE_DECISION_DEFINITION" | "DELETE_DECISION_INSTANCE" | "DELETE_PROCESS_DEFINITION" | "DELETE_PROCESS_INSTANCE" | "MIGRATE_PROCESS_INSTANCE" | "MODIFY_PROCESS_INSTANCE" | "RESOLVE_INCIDENT" | "UPDATE_VARIABLE";
+      /** The key (or operate legacy ID) of the batch operation. */
+      batchOperationKey?: string;
+      /** Key of the item, e.g. a process instance key. */
+      itemKey?: string;
+      /** the process instance key of the processed item. */
+      processInstanceKey?: string;
+      /**  The key of the root process instance. The root process instance is the top-level
+ ancestor in the process instance hierarchy. This field is only present for data
+ belonging to process instance hierarchies created in version 8.9 or later. */
+      rootProcessInstanceKey: string;
+      /** State of the item. */
+      state?: "ACTIVE" | "COMPLETED" | "SKIPPED" | "CANCELED" | "FAILED";
+      /** the date this item was processed. */
+      processedDate?: string;
+      /** the error message from the engine in case of a failed operation. */
+      errorMessage?: string | null;
+  }>;
 }
 
 export interface BatchOperationItemResponse {
@@ -1418,6 +2141,186 @@ export interface DecisionInstanceDeletionBatchOperationRequest {
 export interface ProcessInstanceCancellationBatchOperationRequest {
     /** The process instance filter. */
     filter: {
+  startDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+  endDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+  hasIncident?: boolean;
+  tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  variables?: Array<{
+        /** Name of the variable. */
+        name: string;
+        /**  The value of the variable.
+ Variable values in filters need to be in serialized JSON format. For example, a variable
+ with string value `myValue` can be found with the filter value `"myValue"`. Consider
+ appropriate escaping for special characters in JSON strings when constructing filter values. */
+        value: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+    }>;
+  processInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  parentProcessInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  parentElementInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  batchOperationId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  errorMessage?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+  elementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+  tags?: Array<string>;
   processDefinitionId?: string | {
   $eq?: string;
   $neq?: string;
@@ -1473,8 +2376,7 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
         $notIn?: Array<string>;
     };
   $or?: Array<{
-        /** The start date. */
-        startDate?: string | {
+  startDate?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -1492,8 +2394,7 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<string>;
       };
-        /** The end date. */
-        endDate?: string | {
+  endDate?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -1511,8 +2412,7 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<string>;
       };
-        /** The process instance state. */
-        state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
           /** Checks for equality with the provided value. */
           $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
           /** Checks for inequality with the provided value. */
@@ -1531,10 +2431,8 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
           $like?: string;
       };
-        /** Whether this process instance has a related incident or not. */
-        hasIncident?: boolean;
-        /** The tenant id. */
-        tenantId?: string | {
+  hasIncident?: boolean;
+  tenantId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -1542,8 +2440,7 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** The process instance variables. */
-        variables?: Array<{
+  variables?: Array<{
           /** Name of the variable. */
           name: string;
           /**  The value of the variable.
@@ -1559,8 +2456,7 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
   $like?: string;
 };
       }>;
-        /** The key of this process instance. */
-        processInstanceKey?: string | {
+  processInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -1572,8 +2468,7 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The parent process instance key. */
-        parentProcessInstanceKey?: string | {
+  parentProcessInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -1585,8 +2480,7 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The parent element instance key. */
-        parentElementInstanceKey?: string | {
+  parentElementInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -1598,8 +2492,7 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The batch operation id. */
-        batchOperationId?: string | {
+  batchOperationId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -1607,8 +2500,7 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** The error message related to the process. */
-        errorMessage?: string | {
+  errorMessage?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -1616,10 +2508,8 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** Whether the process has failed jobs with retries left. */
-        hasRetriesLeft?: boolean;
-        /** The state of the element instances associated with the process instance. */
-        elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
           /** Checks for equality with the provided value. */
           $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
           /** Checks for inequality with the provided value. */
@@ -1638,8 +2528,7 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
           $like?: string;
       };
-        /** The element id associated with the process instance. */
-        elementId?: string | {
+  elementId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -1647,10 +2536,8 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** Whether the element instance has an incident or not. */
-        hasElementInstanceIncident?: boolean;
-        /** The incident error hash code, associated with this process. */
-        incidentErrorHashCode?: number | {
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
           /** Checks for equality with the provided value. */
           $eq?: number;
           /** Checks for inequality with the provided value. */
@@ -1668,9 +2555,62 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<number>;
       };
-        /** List of tags. Tags need to start with a letter; then alphanumerics, `_`, `-`, `:`, or `.`; length ≤ 100. */
-        tags?: Array<string>;
-    }>;
+  tags?: Array<string>;
+  processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionName?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionVersion?: number | {
+          /** Checks for equality with the provided value. */
+          $eq?: number;
+          /** Checks for inequality with the provided value. */
+          $neq?: number;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Greater than comparison with the provided value. */
+          $gt?: number;
+          /** Greater than or equal comparison with the provided value. */
+          $gte?: number;
+          /** Lower than comparison with the provided value. */
+          $lt?: number;
+          /** Lower than or equal comparison with the provided value. */
+          $lte?: number;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<number>;
+      };
+  processDefinitionVersionTag?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionKey?: string | {
+          /** Checks for equality with the provided value. */
+          $eq?: string;
+          /** Checks for inequality with the provided value. */
+          $neq?: string;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<string>;
+          /** Checks if the property matches none of the provided values. */
+          $notIn?: Array<string>;
+      };
+}>;
 };
     /**  A reference key chosen by the user that will be part of all records resulting from this operation.
  Must be > 0 if provided. */
@@ -1681,6 +2621,186 @@ export interface ProcessInstanceCancellationBatchOperationRequest {
 export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
     /** The process instance filter. */
     filter: {
+  startDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+  endDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+  hasIncident?: boolean;
+  tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  variables?: Array<{
+        /** Name of the variable. */
+        name: string;
+        /**  The value of the variable.
+ Variable values in filters need to be in serialized JSON format. For example, a variable
+ with string value `myValue` can be found with the filter value `"myValue"`. Consider
+ appropriate escaping for special characters in JSON strings when constructing filter values. */
+        value: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+    }>;
+  processInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  parentProcessInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  parentElementInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  batchOperationId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  errorMessage?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+  elementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+  tags?: Array<string>;
   processDefinitionId?: string | {
   $eq?: string;
   $neq?: string;
@@ -1736,8 +2856,7 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
         $notIn?: Array<string>;
     };
   $or?: Array<{
-        /** The start date. */
-        startDate?: string | {
+  startDate?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -1755,8 +2874,7 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<string>;
       };
-        /** The end date. */
-        endDate?: string | {
+  endDate?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -1774,8 +2892,7 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<string>;
       };
-        /** The process instance state. */
-        state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
           /** Checks for equality with the provided value. */
           $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
           /** Checks for inequality with the provided value. */
@@ -1794,10 +2911,8 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
           $like?: string;
       };
-        /** Whether this process instance has a related incident or not. */
-        hasIncident?: boolean;
-        /** The tenant id. */
-        tenantId?: string | {
+  hasIncident?: boolean;
+  tenantId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -1805,8 +2920,7 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** The process instance variables. */
-        variables?: Array<{
+  variables?: Array<{
           /** Name of the variable. */
           name: string;
           /**  The value of the variable.
@@ -1822,8 +2936,7 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
   $like?: string;
 };
       }>;
-        /** The key of this process instance. */
-        processInstanceKey?: string | {
+  processInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -1835,8 +2948,7 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The parent process instance key. */
-        parentProcessInstanceKey?: string | {
+  parentProcessInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -1848,8 +2960,7 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The parent element instance key. */
-        parentElementInstanceKey?: string | {
+  parentElementInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -1861,8 +2972,7 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The batch operation id. */
-        batchOperationId?: string | {
+  batchOperationId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -1870,8 +2980,7 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** The error message related to the process. */
-        errorMessage?: string | {
+  errorMessage?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -1879,10 +2988,8 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** Whether the process has failed jobs with retries left. */
-        hasRetriesLeft?: boolean;
-        /** The state of the element instances associated with the process instance. */
-        elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
           /** Checks for equality with the provided value. */
           $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
           /** Checks for inequality with the provided value. */
@@ -1901,8 +3008,7 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
           $like?: string;
       };
-        /** The element id associated with the process instance. */
-        elementId?: string | {
+  elementId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -1910,10 +3016,8 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** Whether the element instance has an incident or not. */
-        hasElementInstanceIncident?: boolean;
-        /** The incident error hash code, associated with this process. */
-        incidentErrorHashCode?: number | {
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
           /** Checks for equality with the provided value. */
           $eq?: number;
           /** Checks for inequality with the provided value. */
@@ -1931,9 +3035,62 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<number>;
       };
-        /** List of tags. Tags need to start with a letter; then alphanumerics, `_`, `-`, `:`, or `.`; length ≤ 100. */
-        tags?: Array<string>;
-    }>;
+  tags?: Array<string>;
+  processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionName?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionVersion?: number | {
+          /** Checks for equality with the provided value. */
+          $eq?: number;
+          /** Checks for inequality with the provided value. */
+          $neq?: number;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Greater than comparison with the provided value. */
+          $gt?: number;
+          /** Greater than or equal comparison with the provided value. */
+          $gte?: number;
+          /** Lower than comparison with the provided value. */
+          $lt?: number;
+          /** Lower than or equal comparison with the provided value. */
+          $lte?: number;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<number>;
+      };
+  processDefinitionVersionTag?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionKey?: string | {
+          /** Checks for equality with the provided value. */
+          $eq?: string;
+          /** Checks for inequality with the provided value. */
+          $neq?: string;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<string>;
+          /** Checks if the property matches none of the provided values. */
+          $notIn?: Array<string>;
+      };
+}>;
 };
     /**  A reference key chosen by the user that will be part of all records resulting from this operation.
  Must be > 0 if provided. */
@@ -1944,6 +3101,186 @@ export interface ProcessInstanceIncidentResolutionBatchOperationRequest {
 export interface ProcessInstanceDeletionBatchOperationRequest {
     /** The process instance filter. */
     filter: {
+  startDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+  endDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+  hasIncident?: boolean;
+  tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  variables?: Array<{
+        /** Name of the variable. */
+        name: string;
+        /**  The value of the variable.
+ Variable values in filters need to be in serialized JSON format. For example, a variable
+ with string value `myValue` can be found with the filter value `"myValue"`. Consider
+ appropriate escaping for special characters in JSON strings when constructing filter values. */
+        value: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+    }>;
+  processInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  parentProcessInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  parentElementInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  batchOperationId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  errorMessage?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+  elementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+  tags?: Array<string>;
   processDefinitionId?: string | {
   $eq?: string;
   $neq?: string;
@@ -1999,8 +3336,7 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
         $notIn?: Array<string>;
     };
   $or?: Array<{
-        /** The start date. */
-        startDate?: string | {
+  startDate?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2018,8 +3354,7 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<string>;
       };
-        /** The end date. */
-        endDate?: string | {
+  endDate?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2037,8 +3372,7 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<string>;
       };
-        /** The process instance state. */
-        state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
           /** Checks for equality with the provided value. */
           $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
           /** Checks for inequality with the provided value. */
@@ -2057,10 +3391,8 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
           $like?: string;
       };
-        /** Whether this process instance has a related incident or not. */
-        hasIncident?: boolean;
-        /** The tenant id. */
-        tenantId?: string | {
+  hasIncident?: boolean;
+  tenantId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -2068,8 +3400,7 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** The process instance variables. */
-        variables?: Array<{
+  variables?: Array<{
           /** Name of the variable. */
           name: string;
           /**  The value of the variable.
@@ -2085,8 +3416,7 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
   $like?: string;
 };
       }>;
-        /** The key of this process instance. */
-        processInstanceKey?: string | {
+  processInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2098,8 +3428,7 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The parent process instance key. */
-        parentProcessInstanceKey?: string | {
+  parentProcessInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2111,8 +3440,7 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The parent element instance key. */
-        parentElementInstanceKey?: string | {
+  parentElementInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2124,8 +3452,7 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The batch operation id. */
-        batchOperationId?: string | {
+  batchOperationId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -2133,8 +3460,7 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** The error message related to the process. */
-        errorMessage?: string | {
+  errorMessage?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -2142,10 +3468,8 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** Whether the process has failed jobs with retries left. */
-        hasRetriesLeft?: boolean;
-        /** The state of the element instances associated with the process instance. */
-        elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
           /** Checks for equality with the provided value. */
           $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
           /** Checks for inequality with the provided value. */
@@ -2164,8 +3488,7 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
           $like?: string;
       };
-        /** The element id associated with the process instance. */
-        elementId?: string | {
+  elementId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -2173,10 +3496,8 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** Whether the element instance has an incident or not. */
-        hasElementInstanceIncident?: boolean;
-        /** The incident error hash code, associated with this process. */
-        incidentErrorHashCode?: number | {
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
           /** Checks for equality with the provided value. */
           $eq?: number;
           /** Checks for inequality with the provided value. */
@@ -2194,9 +3515,62 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<number>;
       };
-        /** List of tags. Tags need to start with a letter; then alphanumerics, `_`, `-`, `:`, or `.`; length ≤ 100. */
-        tags?: Array<string>;
-    }>;
+  tags?: Array<string>;
+  processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionName?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionVersion?: number | {
+          /** Checks for equality with the provided value. */
+          $eq?: number;
+          /** Checks for inequality with the provided value. */
+          $neq?: number;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Greater than comparison with the provided value. */
+          $gt?: number;
+          /** Greater than or equal comparison with the provided value. */
+          $gte?: number;
+          /** Lower than comparison with the provided value. */
+          $lt?: number;
+          /** Lower than or equal comparison with the provided value. */
+          $lte?: number;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<number>;
+      };
+  processDefinitionVersionTag?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionKey?: string | {
+          /** Checks for equality with the provided value. */
+          $eq?: string;
+          /** Checks for inequality with the provided value. */
+          $neq?: string;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<string>;
+          /** Checks if the property matches none of the provided values. */
+          $notIn?: Array<string>;
+      };
+}>;
 };
     /**  A reference key chosen by the user that will be part of all records resulting from this operation.
  Must be > 0 if provided. */
@@ -2206,6 +3580,186 @@ export interface ProcessInstanceDeletionBatchOperationRequest {
 export interface ProcessInstanceMigrationBatchOperationRequest {
     /** The process instance filter. */
     filter: {
+  startDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+  endDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+  hasIncident?: boolean;
+  tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  variables?: Array<{
+        /** Name of the variable. */
+        name: string;
+        /**  The value of the variable.
+ Variable values in filters need to be in serialized JSON format. For example, a variable
+ with string value `myValue` can be found with the filter value `"myValue"`. Consider
+ appropriate escaping for special characters in JSON strings when constructing filter values. */
+        value: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+    }>;
+  processInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  parentProcessInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  parentElementInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  batchOperationId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  errorMessage?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+  elementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+  tags?: Array<string>;
   processDefinitionId?: string | {
   $eq?: string;
   $neq?: string;
@@ -2261,8 +3815,7 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
         $notIn?: Array<string>;
     };
   $or?: Array<{
-        /** The start date. */
-        startDate?: string | {
+  startDate?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2280,8 +3833,7 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<string>;
       };
-        /** The end date. */
-        endDate?: string | {
+  endDate?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2299,8 +3851,7 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<string>;
       };
-        /** The process instance state. */
-        state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
           /** Checks for equality with the provided value. */
           $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
           /** Checks for inequality with the provided value. */
@@ -2319,10 +3870,8 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
           $like?: string;
       };
-        /** Whether this process instance has a related incident or not. */
-        hasIncident?: boolean;
-        /** The tenant id. */
-        tenantId?: string | {
+  hasIncident?: boolean;
+  tenantId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -2330,8 +3879,7 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** The process instance variables. */
-        variables?: Array<{
+  variables?: Array<{
           /** Name of the variable. */
           name: string;
           /**  The value of the variable.
@@ -2347,8 +3895,7 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
   $like?: string;
 };
       }>;
-        /** The key of this process instance. */
-        processInstanceKey?: string | {
+  processInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2360,8 +3907,7 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The parent process instance key. */
-        parentProcessInstanceKey?: string | {
+  parentProcessInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2373,8 +3919,7 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The parent element instance key. */
-        parentElementInstanceKey?: string | {
+  parentElementInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2386,8 +3931,7 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The batch operation id. */
-        batchOperationId?: string | {
+  batchOperationId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -2395,8 +3939,7 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** The error message related to the process. */
-        errorMessage?: string | {
+  errorMessage?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -2404,10 +3947,8 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** Whether the process has failed jobs with retries left. */
-        hasRetriesLeft?: boolean;
-        /** The state of the element instances associated with the process instance. */
-        elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
           /** Checks for equality with the provided value. */
           $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
           /** Checks for inequality with the provided value. */
@@ -2426,8 +3967,7 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
           $like?: string;
       };
-        /** The element id associated with the process instance. */
-        elementId?: string | {
+  elementId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -2435,10 +3975,8 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** Whether the element instance has an incident or not. */
-        hasElementInstanceIncident?: boolean;
-        /** The incident error hash code, associated with this process. */
-        incidentErrorHashCode?: number | {
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
           /** Checks for equality with the provided value. */
           $eq?: number;
           /** Checks for inequality with the provided value. */
@@ -2456,9 +3994,62 @@ export interface ProcessInstanceMigrationBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<number>;
       };
-        /** List of tags. Tags need to start with a letter; then alphanumerics, `_`, `-`, `:`, or `.`; length ≤ 100. */
-        tags?: Array<string>;
-    }>;
+  tags?: Array<string>;
+  processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionName?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionVersion?: number | {
+          /** Checks for equality with the provided value. */
+          $eq?: number;
+          /** Checks for inequality with the provided value. */
+          $neq?: number;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Greater than comparison with the provided value. */
+          $gt?: number;
+          /** Greater than or equal comparison with the provided value. */
+          $gte?: number;
+          /** Lower than comparison with the provided value. */
+          $lt?: number;
+          /** Lower than or equal comparison with the provided value. */
+          $lte?: number;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<number>;
+      };
+  processDefinitionVersionTag?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionKey?: string | {
+          /** Checks for equality with the provided value. */
+          $eq?: string;
+          /** Checks for inequality with the provided value. */
+          $neq?: string;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<string>;
+          /** Checks if the property matches none of the provided values. */
+          $notIn?: Array<string>;
+      };
+}>;
 };
     /** The migration plan. */
     migrationPlan: {
@@ -2495,6 +4086,186 @@ export interface ProcessInstanceMigrationBatchOperationPlan {
 export interface ProcessInstanceModificationBatchOperationRequest {
     /** The process instance filter. */
     filter: {
+  startDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+  endDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+  hasIncident?: boolean;
+  tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  variables?: Array<{
+        /** Name of the variable. */
+        name: string;
+        /**  The value of the variable.
+ Variable values in filters need to be in serialized JSON format. For example, a variable
+ with string value `myValue` can be found with the filter value `"myValue"`. Consider
+ appropriate escaping for special characters in JSON strings when constructing filter values. */
+        value: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+    }>;
+  processInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  parentProcessInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  parentElementInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  batchOperationId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  errorMessage?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+  elementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+  tags?: Array<string>;
   processDefinitionId?: string | {
   $eq?: string;
   $neq?: string;
@@ -2550,8 +4321,7 @@ export interface ProcessInstanceModificationBatchOperationRequest {
         $notIn?: Array<string>;
     };
   $or?: Array<{
-        /** The start date. */
-        startDate?: string | {
+  startDate?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2569,8 +4339,7 @@ export interface ProcessInstanceModificationBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<string>;
       };
-        /** The end date. */
-        endDate?: string | {
+  endDate?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2588,8 +4357,7 @@ export interface ProcessInstanceModificationBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<string>;
       };
-        /** The process instance state. */
-        state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
           /** Checks for equality with the provided value. */
           $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
           /** Checks for inequality with the provided value. */
@@ -2608,10 +4376,8 @@ export interface ProcessInstanceModificationBatchOperationRequest {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
           $like?: string;
       };
-        /** Whether this process instance has a related incident or not. */
-        hasIncident?: boolean;
-        /** The tenant id. */
-        tenantId?: string | {
+  hasIncident?: boolean;
+  tenantId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -2619,8 +4385,7 @@ export interface ProcessInstanceModificationBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** The process instance variables. */
-        variables?: Array<{
+  variables?: Array<{
           /** Name of the variable. */
           name: string;
           /**  The value of the variable.
@@ -2636,8 +4401,7 @@ export interface ProcessInstanceModificationBatchOperationRequest {
   $like?: string;
 };
       }>;
-        /** The key of this process instance. */
-        processInstanceKey?: string | {
+  processInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2649,8 +4413,7 @@ export interface ProcessInstanceModificationBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The parent process instance key. */
-        parentProcessInstanceKey?: string | {
+  parentProcessInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2662,8 +4425,7 @@ export interface ProcessInstanceModificationBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The parent element instance key. */
-        parentElementInstanceKey?: string | {
+  parentElementInstanceKey?: string | {
           /** Checks for equality with the provided value. */
           $eq?: string;
           /** Checks for inequality with the provided value. */
@@ -2675,8 +4437,7 @@ export interface ProcessInstanceModificationBatchOperationRequest {
           /** Checks if the property matches none of the provided values. */
           $notIn?: Array<string>;
       };
-        /** The batch operation id. */
-        batchOperationId?: string | {
+  batchOperationId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -2684,8 +4445,7 @@ export interface ProcessInstanceModificationBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** The error message related to the process. */
-        errorMessage?: string | {
+  errorMessage?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -2693,10 +4453,8 @@ export interface ProcessInstanceModificationBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** Whether the process has failed jobs with retries left. */
-        hasRetriesLeft?: boolean;
-        /** The state of the element instances associated with the process instance. */
-        elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
           /** Checks for equality with the provided value. */
           $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
           /** Checks for inequality with the provided value. */
@@ -2715,8 +4473,7 @@ export interface ProcessInstanceModificationBatchOperationRequest {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
           $like?: string;
       };
-        /** The element id associated with the process instance. */
-        elementId?: string | {
+  elementId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -2724,10 +4481,8 @@ export interface ProcessInstanceModificationBatchOperationRequest {
   $notIn?: Array<string>;
   $like?: string;
 };
-        /** Whether the element instance has an incident or not. */
-        hasElementInstanceIncident?: boolean;
-        /** The incident error hash code, associated with this process. */
-        incidentErrorHashCode?: number | {
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
           /** Checks for equality with the provided value. */
           $eq?: number;
           /** Checks for inequality with the provided value. */
@@ -2745,9 +4500,62 @@ export interface ProcessInstanceModificationBatchOperationRequest {
           /** Checks if the property matches any of the provided values. */
           $in?: Array<number>;
       };
-        /** List of tags. Tags need to start with a letter; then alphanumerics, `_`, `-`, `:`, or `.`; length ≤ 100. */
-        tags?: Array<string>;
-    }>;
+  tags?: Array<string>;
+  processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionName?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionVersion?: number | {
+          /** Checks for equality with the provided value. */
+          $eq?: number;
+          /** Checks for inequality with the provided value. */
+          $neq?: number;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Greater than comparison with the provided value. */
+          $gt?: number;
+          /** Greater than or equal comparison with the provided value. */
+          $gte?: number;
+          /** Lower than comparison with the provided value. */
+          $lt?: number;
+          /** Lower than or equal comparison with the provided value. */
+          $lte?: number;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<number>;
+      };
+  processDefinitionVersionTag?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionKey?: string | {
+          /** Checks for equality with the provided value. */
+          $eq?: string;
+          /** Checks for inequality with the provided value. */
+          $neq?: string;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<string>;
+          /** Checks if the property matches none of the provided values. */
+          $notIn?: Array<string>;
+      };
+}>;
 };
     /** Instructions for moving tokens between elements. */
     moveInstructions: Array<{
@@ -2928,22 +4736,19 @@ export interface UpdateClusterVariableRequest {
 }
 
 export interface ClusterVariableResult {
-    /** The name of the cluster variable. Unique within its scope (global or tenant-specific). */
-    name: string;
-    /** The scope of a cluster variable. */
-    scope: "GLOBAL" | "TENANT";
-    /** Only provided if the cluster variable scope is TENANT. Null for global scope variables. */
-    tenantId?: string | null;
+  name: string;
+  scope: "GLOBAL" | "TENANT";
+  tenantId?: string | null;
+  value?: string;
 }
 
 /** Cluster variable search response item. */
 export interface ClusterVariableSearchResult {
-    /** The name of the cluster variable. Unique within its scope (global or tenant-specific). */
-    name: string;
-    /** The scope of a cluster variable. */
-    scope: "GLOBAL" | "TENANT";
-    /** Only provided if the cluster variable scope is TENANT. Null for global scope variables. */
-    tenantId?: string | null;
+  name: string;
+  scope: "GLOBAL" | "TENANT";
+  tenantId?: string | null;
+  value?: string;
+  isTruncated?: boolean;
 }
 
 /** Cluster variable response item. */
@@ -2958,8 +4763,7 @@ export interface ClusterVariableResultBase {
 
 /** Cluster variable search query request. */
 export type ClusterVariableSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -2977,6 +4781,63 @@ export type ClusterVariableSearchQueryRequest = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "name" | "value" | "tenantId" | "scope";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** Name of the cluster variable. */
+      name?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The value of the cluster variable. */
+      value?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The scope filter for cluster variables. */
+      scope?: "GLOBAL" | "TENANT" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "GLOBAL" | "TENANT";
+        /** Checks for inequality with the provided value. */
+        $neq?: "GLOBAL" | "TENANT";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"GLOBAL" | "TENANT">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** Tenant ID of this variable. */
+      tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /**  Filter cluster variables by truncation status of their stored values. When true, returns only variables whose stored values are truncated (i.e., the value exceeds the storage size limit and is truncated in storage). When false, returns only variables with non-truncated stored values. This filter is based on the underlying storage characteristic, not the response format. */
+      isTruncated?: boolean;
   };
 };
 
@@ -3084,8 +4945,7 @@ export interface AdvancedClusterVariableScopeFilter {
 
 /** Cluster variable search query response. */
 export interface ClusterVariableSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -3096,6 +4956,13 @@ export interface ClusterVariableSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+  name: string;
+  scope: "GLOBAL" | "TENANT";
+  tenantId?: string | null;
+  value?: string;
+  isTruncated?: boolean;
+}>;
 }
 
 export interface ConditionalEvaluationInstruction {
@@ -3185,8 +5052,7 @@ export interface MessagePublicationResult {
 }
 
 export interface MessageSubscriptionSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -3197,6 +5063,34 @@ export interface MessageSubscriptionSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The message subscription key associated with this message subscription. */
+      messageSubscriptionKey?: string;
+      /** The process definition ID associated with this message subscription. */
+      processDefinitionId?: string;
+      /** The process definition key associated with this message subscription. */
+      processDefinitionKey?: string;
+      /** The process instance key associated with this message subscription. */
+      processInstanceKey?: string;
+      /**  The key of the root process instance. The root process instance is the top-level
+ ancestor in the process instance hierarchy. This field is only present for data
+ belonging to process instance hierarchies created in version 8.9 or later. */
+      rootProcessInstanceKey: string;
+      /** The element ID associated with this message subscription. */
+      elementId?: string;
+      /** The element instance key associated with this message subscription. */
+      elementInstanceKey?: string;
+      /** The state of message subscription. */
+      messageSubscriptionState?: "CORRELATED" | "CREATED" | "DELETED" | "MIGRATED";
+      /** The last updated date of the message subscription. */
+      lastUpdatedDate?: string;
+      /** The name of the message associated with the message subscription. */
+      messageName?: string;
+      /** The correlation key of the message subscription. */
+      correlationKey?: string;
+      /** The unique identifier of the tenant. */
+      tenantId?: string;
+  }>;
 }
 
 export interface MessageSubscriptionResult {
@@ -3236,8 +5130,7 @@ export interface MessageSubscriptionSearchQuerySortRequest {
 }
 
 export type MessageSubscriptionSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -3255,6 +5148,150 @@ export type MessageSubscriptionSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "messageSubscriptionKey" | "processDefinitionId" | "processInstanceKey" | "elementId" | "elementInstanceKey" | "messageSubscriptionState" | "lastUpdatedDate" | "messageName" | "correlationKey" | "tenantId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The message subscription key associated with this message subscription. */
+      messageSubscriptionKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for equality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The process definition key associated with this correlated message subscription. This only works for data created with 8.9 and later. */
+      processDefinitionKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The process definition ID associated with this message subscription. */
+      processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The process instance key associated with this message subscription. */
+      processInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The element ID associated with this message subscription. */
+      elementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The element instance key associated with this message subscription. */
+      elementInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The message subscription state. */
+      messageSubscriptionState?: "CORRELATED" | "CREATED" | "DELETED" | "MIGRATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "CORRELATED" | "CREATED" | "DELETED" | "MIGRATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "CORRELATED" | "CREATED" | "DELETED" | "MIGRATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"CORRELATED" | "CREATED" | "DELETED" | "MIGRATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The last updated date of the message subscription. */
+      lastUpdatedDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The name of the message associated with the message subscription. */
+      messageName?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The correlation key of the message subscription. */
+      correlationKey?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The unique external tenant ID. */
+      tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
   };
 };
 
@@ -3399,8 +5436,7 @@ export interface MessageSubscriptionFilter {
 }
 
 export interface CorrelatedMessageSubscriptionSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -3411,6 +5447,36 @@ export interface CorrelatedMessageSubscriptionSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The correlation key of the message. */
+      correlationKey: string;
+      /** The time when the message was correlated. */
+      correlationTime: string;
+      /** The element ID that received the message. */
+      elementId: string;
+      /** The element instance key that received the message. */
+      elementInstanceKey?: string;
+      /** The message key. */
+      messageKey: string;
+      /** The name of the message. */
+      messageName: string;
+      /** The partition ID that correlated the message. */
+      partitionId: number;
+      /** The process definition ID associated with this correlated message subscription. */
+      processDefinitionId: string;
+      /** The process definition key associated with this correlated message subscription. */
+      processDefinitionKey?: string;
+      /** The process instance key associated with this correlated message subscription. */
+      processInstanceKey: string;
+      /**  The key of the root process instance. The root process instance is the top-level
+ ancestor in the process instance hierarchy. This field is only present for data
+ belonging to process instance hierarchies created in version 8.9 or later. */
+      rootProcessInstanceKey: string;
+      /** The subscription key that received the message. */
+      subscriptionKey: string;
+      /** The tenant ID associated with this correlated message subscription. */
+      tenantId: string;
+  }>;
 }
 
 export interface CorrelatedMessageSubscriptionResult {
@@ -3445,8 +5511,7 @@ export interface CorrelatedMessageSubscriptionResult {
 }
 
 export type CorrelatedMessageSubscriptionSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -3464,6 +5529,162 @@ export type CorrelatedMessageSubscriptionSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "correlationKey" | "correlationTime" | "elementId" | "elementInstanceKey" | "messageKey" | "messageName" | "partitionId" | "processDefinitionId" | "processDefinitionKey" | "processInstanceKey" | "subscriptionKey" | "tenantId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The correlation key of the message. */
+      correlationKey?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The time when the message was correlated. */
+      correlationTime?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The element ID that received the message. */
+      elementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The element instance key that received the message. */
+      elementInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The message key. */
+      messageKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The name of the message. */
+      messageName?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The partition ID that correlated the message. */
+      partitionId?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+      /** The process definition ID associated with this correlated message subscription. */
+      processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The process definition key associated with this correlated message subscription. For intermediate message events, this only works for data created with 8.9 and later. */
+      processDefinitionKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The process instance key associated with this correlated message subscription. */
+      processInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The subscription key that received the message. */
+      subscriptionKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for equality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The tenant ID associated with this correlated message subscription. */
+      tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
   };
 };
 
@@ -3713,8 +5934,7 @@ export interface DecisionDefinitionSearchQuerySortRequest {
 }
 
 export type DecisionDefinitionSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -3732,6 +5952,36 @@ export type DecisionDefinitionSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "decisionDefinitionKey" | "decisionDefinitionId" | "name" | "version" | "decisionRequirementsId" | "decisionRequirementsKey" | "decisionRequirementsName" | "decisionRequirementsVersion" | "tenantId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The DMN ID of the decision definition. */
+      decisionDefinitionId?: string;
+      /** The DMN name of the decision definition. */
+      name?: string;
+      /**  Whether to only return the latest version of each decision definition.
+ When using this filter, pagination functionality is limited, you can only paginate forward using `after` and `limit`.
+ The response contains no `startCursor` in the `page`, and requests ignore the `from` and `before` in the `page`. */
+      isLatestVersion?: boolean;
+      /** The assigned version of the decision definition. */
+      version?: number;
+      /** the DMN ID of the decision requirements graph that the decision definition is part of. */
+      decisionRequirementsId?: string;
+      /** The tenant ID of the decision definition. */
+      tenantId?: string;
+      /** The assigned key, which acts as a unique identifier for this decision definition. */
+      decisionDefinitionKey?: string;
+      /** The assigned key of the decision requirements graph that the decision definition is part of. */
+      decisionRequirementsKey?: string;
+      /** The DMN name of the decision requirements that the decision definition is part of. */
+      decisionRequirementsName?: string;
+      /** The assigned version of the decision requirements that the decision definition is part of. */
+      decisionRequirementsVersion?: number;
   };
 };
 
@@ -3762,8 +6012,7 @@ export interface DecisionDefinitionFilter {
 }
 
 export interface DecisionDefinitionSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -3774,6 +6023,26 @@ export interface DecisionDefinitionSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The DMN ID of the decision definition. */
+      decisionDefinitionId: string;
+      /** The assigned key, which acts as a unique identifier for this decision definition. */
+      decisionDefinitionKey: string;
+      /** the DMN ID of the decision requirements graph that the decision definition is part of. */
+      decisionRequirementsId: string;
+      /** The assigned key of the decision requirements graph that the decision definition is part of. */
+      decisionRequirementsKey: string;
+      /** The DMN name of the decision requirements that the decision definition is part of. */
+      decisionRequirementsName: string;
+      /** The assigned version of the decision requirements that the decision definition is part of. */
+      decisionRequirementsVersion: number;
+      /** The DMN name of the decision definition. */
+      name: string;
+      /** The tenant ID of the decision definition. */
+      tenantId: string;
+      /** The assigned version of the decision definition. */
+      version: number;
+  }>;
 }
 
 export interface DecisionDefinitionResult {
@@ -3975,8 +6244,7 @@ export interface DecisionInstanceSearchQuerySortRequest {
 }
 
 export type DecisionInstanceSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -3994,6 +6262,138 @@ export type DecisionInstanceSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "decisionDefinitionId" | "decisionDefinitionKey" | "decisionDefinitionName" | "decisionDefinitionType" | "decisionDefinitionVersion" | "decisionEvaluationInstanceKey" | "decisionEvaluationKey" | "elementInstanceKey" | "evaluationDate" | "evaluationFailure" | "processDefinitionKey" | "processInstanceKey" | "rootDecisionDefinitionKey" | "state" | "tenantId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The key of the decision evaluation instance. */
+      decisionEvaluationInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The state of the decision instance. */
+      state?: "EVALUATED" | "FAILED" | "UNSPECIFIED" | "UNKNOWN" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "EVALUATED" | "FAILED" | "UNSPECIFIED" | "UNKNOWN";
+        /** Checks for inequality with the provided value. */
+        $neq?: "EVALUATED" | "FAILED" | "UNSPECIFIED" | "UNKNOWN";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"EVALUATED" | "FAILED" | "UNSPECIFIED" | "UNKNOWN">;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<"EVALUATED" | "FAILED" | "UNSPECIFIED" | "UNKNOWN">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The evaluation failure of the decision instance. */
+      evaluationFailure?: string;
+      /** The evaluation date of the decision instance. */
+      evaluationDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The ID of the DMN decision. */
+      decisionDefinitionId?: string;
+      /** The name of the DMN decision. */
+      decisionDefinitionName?: string;
+      /** The version of the decision. */
+      decisionDefinitionVersion?: number;
+      /** The type of the decision. UNSPECIFIED is deprecated and should not be used anymore, for removal in 8.10 */
+      decisionDefinitionType?: "DECISION_TABLE" | "LITERAL_EXPRESSION" | "UNSPECIFIED" | "UNKNOWN";
+      /** The tenant ID of the decision instance. */
+      tenantId?: string;
+      /** The key of the parent decision evaluation. Note that this is not the identifier of an individual decision instance; the `decisionEvaluationInstanceKey` is the identifier for a decision instance. */
+      decisionEvaluationKey?: string;
+      /** The key of the process definition. */
+      processDefinitionKey?: string;
+      /** The key of the process instance. */
+      processInstanceKey?: string;
+      /** The key of the decision. */
+      decisionDefinitionKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The key of the element instance this decision instance is linked to. */
+      elementInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The key of the root decision definition. */
+      rootDecisionDefinitionKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The key of the decision requirements definition. */
+      decisionRequirementsKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
   };
 };
 
@@ -4132,8 +6532,7 @@ export type DeleteDecisionInstanceRequest = {
 } | null;
 
 export interface DecisionInstanceSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -4144,6 +6543,44 @@ export interface DecisionInstanceSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** System-generated key for a decision evaluation instance. */
+      decisionEvaluationInstanceKey?: string;
+      /** The state of the decision instance. UNSPECIFIED and UNKNOWN are deprecated and should not be used anymore, for removal in 8.10 */
+      state?: "EVALUATED" | "FAILED" | "UNSPECIFIED" | "UNKNOWN";
+      /** The evaluation date of the decision instance. */
+      evaluationDate?: string;
+      /** The evaluation failure of the decision instance. */
+      evaluationFailure: string | null;
+      /** The ID of the DMN decision. */
+      decisionDefinitionId?: string;
+      /** The name of the DMN decision. */
+      decisionDefinitionName?: string;
+      /** The version of the decision. */
+      decisionDefinitionVersion?: number;
+      /** The type of the decision. UNSPECIFIED is deprecated and should not be used anymore, for removal in 8.10 */
+      decisionDefinitionType?: "DECISION_TABLE" | "LITERAL_EXPRESSION" | "UNSPECIFIED" | "UNKNOWN";
+      /** The result of the decision instance. */
+      result?: string;
+      /** The tenant ID of the decision instance. */
+      tenantId: string;
+      /** The key of the decision evaluation where this instance was created. */
+      decisionEvaluationKey?: string;
+      /** The key of the process definition. */
+      processDefinitionKey?: string;
+      /** The key of the process instance. */
+      processInstanceKey?: string;
+      /**  The key of the root process instance. The root process instance is the top-level
+ ancestor in the process instance hierarchy. This field is only present for data
+ belonging to process instance hierarchies created in version 8.9 or later. */
+      rootProcessInstanceKey: string;
+      /** The key of the decision. */
+      decisionDefinitionKey?: string;
+      /** The key of the element instance this decision instance is linked to. */
+      elementInstanceKey?: string;
+      /** The key of the root decision definition. */
+      rootDecisionDefinitionKey?: string;
+  }>;
 }
 
 export interface DecisionInstanceResult {
@@ -4337,8 +6774,7 @@ export interface DecisionRequirementsSearchQuerySortRequest {
 }
 
 export type DecisionRequirementsSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -4356,6 +6792,26 @@ export type DecisionRequirementsSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "decisionRequirementsKey" | "decisionRequirementsName" | "version" | "decisionRequirementsId" | "tenantId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The DMN name of the decision requirements. */
+      decisionRequirementsName?: string;
+      /** the DMN ID of the decision requirements. */
+      decisionRequirementsId?: string;
+      /** System-generated key for a deployed decision requirements definition. */
+      decisionRequirementsKey?: string;
+      /** The assigned version of the decision requirements. */
+      version?: number;
+      /** The tenant ID of the decision requirements. */
+      tenantId?: string;
+      /** The name of the resource from which the decision requirements were parsed */
+      resourceName?: string;
   };
 };
 
@@ -4376,8 +6832,7 @@ export interface DecisionRequirementsFilter {
 }
 
 export interface DecisionRequirementsSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -4388,6 +6843,20 @@ export interface DecisionRequirementsSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The DMN name of the decision requirements. */
+      decisionRequirementsName?: string;
+      /** The assigned version of the decision requirements. */
+      version?: number;
+      /** The DMN ID of the decision requirements. */
+      decisionRequirementsId?: string;
+      /** The name of the resource from which this decision requirements was parsed. */
+      resourceName?: string;
+      /** The tenant ID of the decision requirements. */
+      tenantId?: string;
+      /** The assigned key, which acts as a unique identifier for this decision requirements. */
+      decisionRequirementsKey?: string;
+  }>;
 }
 
 export interface DecisionRequirementsResult {
@@ -4901,8 +7370,7 @@ export interface ElementInstanceSearchQuerySortRequest {
 
 /** Element instance search request. */
 export type ElementInstanceSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -4920,6 +7388,94 @@ export type ElementInstanceSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "elementInstanceKey" | "processInstanceKey" | "processDefinitionKey" | "processDefinitionId" | "startDate" | "endDate" | "elementId" | "elementName" | "type" | "state" | "incidentKey" | "tenantId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The process definition ID associated to this element instance. */
+      processDefinitionId?: string;
+      /** State of element instance as defined set of values. */
+      state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** Type of element as defined set of values. */
+      "type"?: "UNSPECIFIED" | "PROCESS" | "SUB_PROCESS" | "EVENT_SUB_PROCESS" | "AD_HOC_SUB_PROCESS" | "AD_HOC_SUB_PROCESS_INNER_INSTANCE" | "START_EVENT" | "INTERMEDIATE_CATCH_EVENT" | "INTERMEDIATE_THROW_EVENT" | "BOUNDARY_EVENT" | "END_EVENT" | "SERVICE_TASK" | "RECEIVE_TASK" | "USER_TASK" | "MANUAL_TASK" | "TASK" | "EXCLUSIVE_GATEWAY" | "INCLUSIVE_GATEWAY" | "PARALLEL_GATEWAY" | "EVENT_BASED_GATEWAY" | "SEQUENCE_FLOW" | "MULTI_INSTANCE_BODY" | "CALL_ACTIVITY" | "BUSINESS_RULE_TASK" | "SCRIPT_TASK" | "SEND_TASK" | "UNKNOWN";
+      /** The element ID for this element instance. */
+      elementId?: string;
+      /** The element name. This only works for data created with 8.8 and onwards. Instances from prior versions don't contain this data and cannot be found. */
+      elementName?: string;
+      /** Shows whether this element instance has an incident related to. */
+      hasIncident?: boolean;
+      /** The unique identifier of the tenant. */
+      tenantId?: string;
+      /** The assigned key, which acts as a unique identifier for this element instance. */
+      elementInstanceKey?: string;
+      /** The process instance key associated to this element instance. */
+      processInstanceKey?: string;
+      /** The process definition key associated to this element instance. */
+      processDefinitionKey?: string;
+      /** The key of incident if field incident is true. */
+      incidentKey?: string;
+      /** The start date of this element instance. */
+      startDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The end date of this element instance. */
+      endDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The scope key of this element instance. If provided with a process instance key it will return element instances that are immediate children of the process instance. If provided with an element instance key it will return element instances that are immediate children of the element instance. */
+      elementInstanceScopeKey?: string;
   };
 };
 
@@ -5050,8 +7606,7 @@ export interface AdvancedElementInstanceStateFilter {
 }
 
 export interface ElementInstanceSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -5062,6 +7617,38 @@ export interface ElementInstanceSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The process definition ID associated to this element instance. */
+      processDefinitionId: string;
+      /** Date when element instance started. */
+      startDate: string;
+      /** Date when element instance finished. */
+      endDate?: string | null;
+      /** The element ID for this element instance. */
+      elementId: string;
+      /** The element name for this element instance. */
+      elementName: string;
+      /** Type of element as defined set of values. */
+      "type": "UNSPECIFIED" | "PROCESS" | "SUB_PROCESS" | "EVENT_SUB_PROCESS" | "AD_HOC_SUB_PROCESS" | "AD_HOC_SUB_PROCESS_INNER_INSTANCE" | "START_EVENT" | "INTERMEDIATE_CATCH_EVENT" | "INTERMEDIATE_THROW_EVENT" | "BOUNDARY_EVENT" | "END_EVENT" | "SERVICE_TASK" | "RECEIVE_TASK" | "USER_TASK" | "MANUAL_TASK" | "TASK" | "EXCLUSIVE_GATEWAY" | "INCLUSIVE_GATEWAY" | "PARALLEL_GATEWAY" | "EVENT_BASED_GATEWAY" | "SEQUENCE_FLOW" | "MULTI_INSTANCE_BODY" | "CALL_ACTIVITY" | "BUSINESS_RULE_TASK" | "SCRIPT_TASK" | "SEND_TASK" | "UNKNOWN";
+      /** State of element instance as defined set of values. */
+      state: "ACTIVE" | "COMPLETED" | "TERMINATED";
+      /** Shows whether this element instance has an incident. If true also an incidentKey is provided. */
+      hasIncident: boolean;
+      /** The tenant ID of the incident. */
+      tenantId: string;
+      /** The assigned key, which acts as a unique identifier for this element instance. */
+      elementInstanceKey: string;
+      /** The process instance key associated to this element instance. */
+      processInstanceKey: string;
+      /**  The key of the root process instance. The root process instance is the top-level
+ ancestor in the process instance hierarchy. This field is only present for data
+ belonging to process instance hierarchies created in version 8.9 or later. */
+      rootProcessInstanceKey: string;
+      /** The process definition key associated to this element instance. */
+      processDefinitionKey: string;
+      /** Incident key associated with this element instance. */
+      incidentKey?: string;
+  }>;
 }
 
 export interface ElementInstanceResult {
@@ -5161,56 +7748,46 @@ export interface GlobalListenerBase {
 }
 
 export interface GlobalTaskListenerBase {
-    /** The name of the job type, used as a reference to specify which job workers request the respective listener job. */
-    "type"?: string;
-    /** Number of retries for the listener job. */
-    retries?: number;
-    /** Whether the listener should run after model-level listeners. */
-    afterNonGlobal?: boolean;
-    /** The priority of the listener. Higher priority listeners are executed before lower priority ones. */
-    priority?: number;
+  "type"?: string;
+  retries?: number;
+  afterNonGlobal?: boolean;
+  priority?: number;
+  eventTypes?: Array<"all" | "creating" | "assigning" | "updating" | "completing" | "canceling">;
 }
 
 /** List of user task event types that trigger the listener. */
 export type GlobalTaskListenerEventTypes = Array<"all" | "creating" | "assigning" | "updating" | "completing" | "canceling">;
 
 export interface CreateGlobalTaskListenerRequest {
-    /** The name of the job type, used as a reference to specify which job workers request the respective listener job. */
-    "type"?: string;
-    /** Number of retries for the listener job. */
-    retries?: number;
-    /** Whether the listener should run after model-level listeners. */
-    afterNonGlobal?: boolean;
-    /** The priority of the listener. Higher priority listeners are executed before lower priority ones. */
-    priority?: number;
+  "type"?: string;
+  retries?: number;
+  afterNonGlobal?: boolean;
+  priority?: number;
+  eventTypes?: Array<"all" | "creating" | "assigning" | "updating" | "completing" | "canceling">;
+  id: string;
 }
 
 export interface UpdateGlobalTaskListenerRequest {
-    /** The name of the job type, used as a reference to specify which job workers request the respective listener job. */
-    "type"?: string;
-    /** Number of retries for the listener job. */
-    retries?: number;
-    /** Whether the listener should run after model-level listeners. */
-    afterNonGlobal?: boolean;
-    /** The priority of the listener. Higher priority listeners are executed before lower priority ones. */
-    priority?: number;
+  "type"?: string;
+  retries?: number;
+  afterNonGlobal?: boolean;
+  priority?: number;
+  eventTypes?: Array<"all" | "creating" | "assigning" | "updating" | "completing" | "canceling">;
 }
 
 export interface GlobalTaskListenerResult {
-    /** The name of the job type, used as a reference to specify which job workers request the respective listener job. */
-    "type"?: string;
-    /** Number of retries for the listener job. */
-    retries?: number;
-    /** Whether the listener should run after model-level listeners. */
-    afterNonGlobal?: boolean;
-    /** The priority of the listener. Higher priority listeners are executed before lower priority ones. */
-    priority?: number;
+  "type"?: string;
+  retries?: number;
+  afterNonGlobal?: boolean;
+  priority?: number;
+  eventTypes?: Array<"all" | "creating" | "assigning" | "updating" | "completing" | "canceling">;
+  id: string;
+  source: "CONFIGURATION" | "API";
 }
 
 /** Global listener search query request. */
 export type GlobalTaskListenerSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -5228,6 +7805,112 @@ export type GlobalTaskListenerSearchQueryRequest = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "id" | "type" | "afterNonGlobal" | "priority" | "source";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** Id of the global listener. */
+      id?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** Job type of the global listener. */
+      "type"?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** Number of retries of the global listener. */
+      retries?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+      /** Event types of the global listener. */
+      eventTypes?: Array<"all" | "creating" | "assigning" | "updating" | "completing" | "canceling" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "all" | "creating" | "assigning" | "updating" | "completing" | "canceling";
+        /** Checks for inequality with the provided value. */
+        $neq?: "all" | "creating" | "assigning" | "updating" | "completing" | "canceling";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"all" | "creating" | "assigning" | "updating" | "completing" | "canceling">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    }>;
+      /** Whether the listener runs after model-level listeners. */
+      afterNonGlobal?: boolean;
+      /** Priority of the global listener. */
+      priority?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+      /** How the global listener was defined. */
+      source?: "CONFIGURATION" | "API" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "CONFIGURATION" | "API";
+        /** Checks for inequality with the provided value. */
+        $neq?: "CONFIGURATION" | "API";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"CONFIGURATION" | "API">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
   };
 };
 
@@ -5426,8 +8109,7 @@ export interface AdvancedGlobalTaskListenerEventTypeFilter {
 
 /** Global listener search query response. */
 export interface GlobalTaskListenerSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -5438,6 +8120,15 @@ export interface GlobalTaskListenerSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+  "type"?: string;
+  retries?: number;
+  afterNonGlobal?: boolean;
+  priority?: number;
+  eventTypes?: Array<"all" | "creating" | "assigning" | "updating" | "completing" | "canceling">;
+  id: string;
+  source: "CONFIGURATION" | "API";
+}>;
 }
 
 export interface GroupCreateRequest {
@@ -5493,8 +8184,7 @@ export interface GroupSearchQuerySortRequest {
 
 /** Group search request. */
 export type GroupSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -5512,6 +8202,25 @@ export type GroupSearchQueryRequest = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "name" | "groupId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The group ID search filters. */
+      groupId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The group name search filters. */
+      name?: string;
   };
 };
 
@@ -5532,8 +8241,7 @@ export interface GroupFilter {
 
 /** Group search response. */
 export interface GroupSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -5544,6 +8252,14 @@ export interface GroupSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The group name. */
+      name?: string;
+      /** The group ID. */
+      groupId?: string;
+      /** The group description. */
+      description?: string;
+  }>;
 }
 
 export interface GroupUserResult {
@@ -5552,8 +8268,7 @@ export interface GroupUserResult {
 }
 
 export interface GroupUserSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -5564,11 +8279,14 @@ export interface GroupUserSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The unique name of a user. */
+      username?: string;
+  }>;
 }
 
 export type GroupUserSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -5587,6 +8305,12 @@ export type GroupUserSearchQueryRequest = {
       /** The maximum number of items to return in one request. */
       limit?: number;
   };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "username";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
 };
 
 export interface GroupUserSearchQuerySortRequest {
@@ -5602,8 +8326,7 @@ export interface GroupClientResult {
 }
 
 export interface GroupClientSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -5614,11 +8337,14 @@ export interface GroupClientSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The ID of the client. */
+      clientId?: string;
+  }>;
 }
 
 export type GroupClientSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -5637,11 +8363,16 @@ export type GroupClientSearchQueryRequest = {
       /** The maximum number of items to return in one request. */
       limit?: number;
   };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "clientId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
 };
 
 export interface GroupMappingRuleSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -5652,11 +8383,20 @@ export interface GroupMappingRuleSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The name of the claim to map. */
+      claimName?: string;
+      /** The value of the claim to map. */
+      claimValue?: string;
+      /** The name of the mapping rule. */
+      name?: string;
+      /** The ID of the mapping rule. */
+      mappingRuleId?: string;
+  }>;
 }
 
 export interface GroupRoleSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -5667,6 +8407,14 @@ export interface GroupRoleSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The role name. */
+      name?: string;
+      /** The role id. */
+      roleId?: string;
+      /** The description of the role. */
+      description?: string;
+  }>;
 }
 
 export interface GroupClientSearchQuerySortRequest {
@@ -5677,8 +8425,7 @@ export interface GroupClientSearchQuerySortRequest {
 }
 
 export type IncidentSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -5696,6 +8443,178 @@ export type IncidentSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "incidentKey" | "processDefinitionKey" | "processDefinitionId" | "processInstanceKey" | "errorType" | "errorMessage" | "elementId" | "elementInstanceKey" | "creationTime" | "state" | "jobKey" | "tenantId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The process definition ID associated to this incident. */
+      processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** Incident error type with a defined set of values. */
+      errorType?: "AD_HOC_SUB_PROCESS_NO_RETRIES" | "CALLED_DECISION_ERROR" | "CALLED_ELEMENT_ERROR" | "CONDITION_ERROR" | "DECISION_EVALUATION_ERROR" | "EXECUTION_LISTENER_NO_RETRIES" | "EXTRACT_VALUE_ERROR" | "FORM_NOT_FOUND" | "IO_MAPPING_ERROR" | "JOB_NO_RETRIES" | "MESSAGE_SIZE_EXCEEDED" | "RESOURCE_NOT_FOUND" | "TASK_LISTENER_NO_RETRIES" | "UNHANDLED_ERROR_EVENT" | "UNKNOWN" | "UNSPECIFIED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "AD_HOC_SUB_PROCESS_NO_RETRIES" | "CALLED_DECISION_ERROR" | "CALLED_ELEMENT_ERROR" | "CONDITION_ERROR" | "DECISION_EVALUATION_ERROR" | "EXECUTION_LISTENER_NO_RETRIES" | "EXTRACT_VALUE_ERROR" | "FORM_NOT_FOUND" | "IO_MAPPING_ERROR" | "JOB_NO_RETRIES" | "MESSAGE_SIZE_EXCEEDED" | "RESOURCE_NOT_FOUND" | "TASK_LISTENER_NO_RETRIES" | "UNHANDLED_ERROR_EVENT" | "UNKNOWN" | "UNSPECIFIED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "AD_HOC_SUB_PROCESS_NO_RETRIES" | "CALLED_DECISION_ERROR" | "CALLED_ELEMENT_ERROR" | "CONDITION_ERROR" | "DECISION_EVALUATION_ERROR" | "EXECUTION_LISTENER_NO_RETRIES" | "EXTRACT_VALUE_ERROR" | "FORM_NOT_FOUND" | "IO_MAPPING_ERROR" | "JOB_NO_RETRIES" | "MESSAGE_SIZE_EXCEEDED" | "RESOURCE_NOT_FOUND" | "TASK_LISTENER_NO_RETRIES" | "UNHANDLED_ERROR_EVENT" | "UNKNOWN" | "UNSPECIFIED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"AD_HOC_SUB_PROCESS_NO_RETRIES" | "CALLED_DECISION_ERROR" | "CALLED_ELEMENT_ERROR" | "CONDITION_ERROR" | "DECISION_EVALUATION_ERROR" | "EXECUTION_LISTENER_NO_RETRIES" | "EXTRACT_VALUE_ERROR" | "FORM_NOT_FOUND" | "IO_MAPPING_ERROR" | "JOB_NO_RETRIES" | "MESSAGE_SIZE_EXCEEDED" | "RESOURCE_NOT_FOUND" | "TASK_LISTENER_NO_RETRIES" | "UNHANDLED_ERROR_EVENT" | "UNKNOWN" | "UNSPECIFIED">;
+        /** Checks if the property does not match any of the provided values. */
+        $notIn?: Array<"AD_HOC_SUB_PROCESS_NO_RETRIES" | "CALLED_DECISION_ERROR" | "CALLED_ELEMENT_ERROR" | "CONDITION_ERROR" | "DECISION_EVALUATION_ERROR" | "EXECUTION_LISTENER_NO_RETRIES" | "EXTRACT_VALUE_ERROR" | "FORM_NOT_FOUND" | "IO_MAPPING_ERROR" | "JOB_NO_RETRIES" | "MESSAGE_SIZE_EXCEEDED" | "RESOURCE_NOT_FOUND" | "TASK_LISTENER_NO_RETRIES" | "UNHANDLED_ERROR_EVENT" | "UNKNOWN" | "UNSPECIFIED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The error message of this incident. */
+      errorMessage?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The element ID associated to this incident. */
+      elementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** Date of incident creation. */
+      creationTime?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** State of this incident with a defined set of values. */
+      state?: "ACTIVE" | "MIGRATED" | "PENDING" | "RESOLVED" | "UNKNOWN" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "MIGRATED" | "PENDING" | "RESOLVED" | "UNKNOWN";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "MIGRATED" | "PENDING" | "RESOLVED" | "UNKNOWN";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "MIGRATED" | "PENDING" | "RESOLVED" | "UNKNOWN">;
+        /** Checks if the property does not match any of the provided values. */
+        $notIn?: Array<"ACTIVE" | "MIGRATED" | "PENDING" | "RESOLVED" | "UNKNOWN">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The tenant ID of the incident. */
+      tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The assigned key, which acts as a unique identifier for this incident. */
+      incidentKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The process definition key associated to this incident. */
+      processDefinitionKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The process instance key associated to this incident. */
+      processInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The element instance key associated to this incident. */
+      elementInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The job key, if exists, associated with this incident. */
+      jobKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
   };
 };
 
@@ -5973,8 +8892,7 @@ export interface IncidentSearchQuerySortRequest {
 }
 
 export interface IncidentSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -5985,6 +8903,36 @@ export interface IncidentSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The process definition ID associated to this incident. */
+      processDefinitionId?: string;
+      /** The type of the incident error. */
+      errorType?: "AD_HOC_SUB_PROCESS_NO_RETRIES" | "CALLED_DECISION_ERROR" | "CALLED_ELEMENT_ERROR" | "CONDITION_ERROR" | "DECISION_EVALUATION_ERROR" | "EXECUTION_LISTENER_NO_RETRIES" | "EXTRACT_VALUE_ERROR" | "FORM_NOT_FOUND" | "IO_MAPPING_ERROR" | "JOB_NO_RETRIES" | "MESSAGE_SIZE_EXCEEDED" | "RESOURCE_NOT_FOUND" | "TASK_LISTENER_NO_RETRIES" | "UNHANDLED_ERROR_EVENT" | "UNKNOWN" | "UNSPECIFIED";
+      /** Error message which describes the error in more detail. */
+      errorMessage?: string;
+      /** The element ID associated to this incident. */
+      elementId?: string;
+      /** The creation time of the incident. */
+      creationTime?: string;
+      /** The incident state. */
+      state?: "ACTIVE" | "MIGRATED" | "PENDING" | "RESOLVED" | "UNKNOWN";
+      /** The tenant ID of the incident. */
+      tenantId: string;
+      /** The assigned key, which acts as a unique identifier for this incident. */
+      incidentKey?: string;
+      /** The process definition key associated to this incident. */
+      processDefinitionKey?: string;
+      /** The process instance key associated to this incident. */
+      processInstanceKey?: string;
+      /**  The key of the root process instance. The root process instance is the top-level
+ ancestor in the process instance hierarchy. This field is only present for data
+ belonging to process instance hierarchies created in version 8.9 or later. */
+      rootProcessInstanceKey: string;
+      /** The element instance key associated to this incident. */
+      elementInstanceKey?: string;
+      /** The job key, if exists, associated with this incident. */
+      jobKey: string;
+  }>;
 }
 
 export interface IncidentResult {
@@ -6042,8 +8990,7 @@ export interface IncidentProcessInstanceStatisticsByErrorQuery {
 }
 
 export interface IncidentProcessInstanceStatisticsByErrorQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -6054,6 +9001,14 @@ export interface IncidentProcessInstanceStatisticsByErrorQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The hash code identifying a specific incident error.. */
+      errorHashCode?: number;
+      /** The error message associated with the incident error hash code. */
+      errorMessage?: string;
+      /**  The number of active process instances that currently have an active incident with this error. */
+      activeInstancesWithErrorCount?: number;
+  }>;
 }
 
 export interface IncidentProcessInstanceStatisticsByErrorResult {
@@ -6095,8 +9050,7 @@ export interface IncidentProcessInstanceStatisticsByDefinitionQuery {
 }
 
 export interface IncidentProcessInstanceStatisticsByDefinitionQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -6107,6 +9061,21 @@ export interface IncidentProcessInstanceStatisticsByDefinitionQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** Id of a process definition, from the model. Only ids of process definitions that are deployed are useful. */
+      processDefinitionId?: string;
+      /** System-generated key for a deployed process definition. */
+      processDefinitionKey?: string;
+      /** The name of the process definition. */
+      processDefinitionName?: string;
+      /** The version of the process definition. */
+      processDefinitionVersion?: number;
+      /** The unique identifier of the tenant. */
+      tenantId?: string;
+      /**  The number of active process instances that currently have an incident
+ with the specified error hash code. */
+      activeInstancesWithErrorCount?: number;
+  }>;
 }
 
 export interface IncidentProcessInstanceStatisticsByDefinitionResult {
@@ -6325,8 +9294,7 @@ export interface UserTaskProperties {
 
 /** Job search request. */
 export type JobSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -6344,6 +9312,297 @@ export type JobSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "deadline" | "deniedReason" | "elementId" | "elementInstanceKey" | "endTime" | "errorCode" | "errorMessage" | "hasFailedWithRetriesLeft" | "isDenied" | "jobKey" | "kind" | "listenerEventType" | "processDefinitionId" | "processDefinitionKey" | "processInstanceKey" | "retries" | "state" | "tenantId" | "type" | "worker";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** When the job can next be activated. */
+      deadline?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The reason provided by the user task listener for denying the work. */
+      deniedReason?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The element ID associated with the job. */
+      elementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The element instance key associated with the job. */
+      elementInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** When the job ended. */
+      endTime?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The error code provided for the failed job. */
+      errorCode?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The error message that provides additional context for a failed job. */
+      errorMessage?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** Indicates whether the job has failed with retries left. */
+      hasFailedWithRetriesLeft?: boolean;
+      /** Indicates whether the user task listener denies the work. */
+      isDenied?: boolean | null;
+      /** The key, a unique identifier for the job. */
+      jobKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The kind of the job. */
+      kind?: "BPMN_ELEMENT" | "EXECUTION_LISTENER" | "TASK_LISTENER" | "AD_HOC_SUB_PROCESS" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "BPMN_ELEMENT" | "EXECUTION_LISTENER" | "TASK_LISTENER" | "AD_HOC_SUB_PROCESS";
+        /** Checks for inequality with the provided value. */
+        $neq?: "BPMN_ELEMENT" | "EXECUTION_LISTENER" | "TASK_LISTENER" | "AD_HOC_SUB_PROCESS";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"BPMN_ELEMENT" | "EXECUTION_LISTENER" | "TASK_LISTENER" | "AD_HOC_SUB_PROCESS">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The listener event type of the job. */
+      listenerEventType?: "ASSIGNING" | "CANCELING" | "COMPLETING" | "CREATING" | "END" | "START" | "UNSPECIFIED" | "UPDATING" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ASSIGNING" | "CANCELING" | "COMPLETING" | "CREATING" | "END" | "START" | "UNSPECIFIED" | "UPDATING";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ASSIGNING" | "CANCELING" | "COMPLETING" | "CREATING" | "END" | "START" | "UNSPECIFIED" | "UPDATING";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ASSIGNING" | "CANCELING" | "COMPLETING" | "CREATING" | "END" | "START" | "UNSPECIFIED" | "UPDATING">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The process definition ID associated with the job. */
+      processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The process definition key associated with the job. */
+      processDefinitionKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The process instance key associated with the job. */
+      processInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The number of retries left. */
+      retries?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+      /** The state of the job. */
+      state?: "CANCELED" | "COMPLETED" | "CREATED" | "ERROR_THROWN" | "FAILED" | "MIGRATED" | "RETRIES_UPDATED" | "TIMED_OUT" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "CANCELED" | "COMPLETED" | "CREATED" | "ERROR_THROWN" | "FAILED" | "MIGRATED" | "RETRIES_UPDATED" | "TIMED_OUT";
+        /** Checks for inequality with the provided value. */
+        $neq?: "CANCELED" | "COMPLETED" | "CREATED" | "ERROR_THROWN" | "FAILED" | "MIGRATED" | "RETRIES_UPDATED" | "TIMED_OUT";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"CANCELED" | "COMPLETED" | "CREATED" | "ERROR_THROWN" | "FAILED" | "MIGRATED" | "RETRIES_UPDATED" | "TIMED_OUT">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The tenant ID. */
+      tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The type of the job. */
+      "type"?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The name of the worker for this job. */
+      worker?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** When the job was created. Field is present for jobs created after 8.9. */
+      creationTime?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** When the job was last updated. Field is present for jobs created after 8.9. */
+      lastUpdateTime?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
   };
 };
 
@@ -6643,8 +9902,7 @@ export interface JobFilter {
 
 /** Job search response. */
 export interface JobSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -6655,6 +9913,61 @@ export interface JobSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** A set of custom headers defined during modelling. */
+      customHeaders: {
+        [key: string]: string;
+    };
+      /** If the job has been activated, when it will next be available to be activated. */
+      deadline?: string | null;
+      /** The reason provided by the user task listener for denying the work. */
+      deniedReason?: string | null;
+      /** The element ID associated with the job. May be missing on job failure. */
+      elementId: string;
+      /** The element instance key associated with the job. */
+      elementInstanceKey: string;
+      /**  End date of the job.
+ This is `null` if the job is not in an end state yet. */
+      endTime?: string | null;
+      /** The error code provided for a failed job. */
+      errorCode?: string | null;
+      /** The error message that provides additional context for a failed job. */
+      errorMessage?: string | null;
+      /** Indicates whether the job has failed with retries left. */
+      hasFailedWithRetriesLeft: boolean;
+      /** Indicates whether the user task listener denies the work. */
+      isDenied?: boolean | null;
+      /** The key, a unique identifier for the job. */
+      jobKey: string;
+      /** The job kind. */
+      kind: "BPMN_ELEMENT" | "EXECUTION_LISTENER" | "TASK_LISTENER" | "AD_HOC_SUB_PROCESS";
+      /** The listener event type of the job. */
+      listenerEventType: "ASSIGNING" | "CANCELING" | "COMPLETING" | "CREATING" | "END" | "START" | "UNSPECIFIED" | "UPDATING";
+      /** The process definition ID associated with the job. */
+      processDefinitionId: string;
+      /** The process definition key associated with the job. */
+      processDefinitionKey: string;
+      /** The process instance key associated with the job. */
+      processInstanceKey: string;
+      /**  The key of the root process instance. The root process instance is the top-level
+ ancestor in the process instance hierarchy. This field is only present for data
+ belonging to process instance hierarchies created in version 8.9 or later. */
+      rootProcessInstanceKey: string;
+      /** The amount of retries left to this job. */
+      retries: number;
+      /** The state of the job. */
+      state: "CANCELED" | "COMPLETED" | "CREATED" | "ERROR_THROWN" | "FAILED" | "MIGRATED" | "RETRIES_UPDATED" | "TIMED_OUT";
+      /** The unique identifier of the tenant. */
+      tenantId: string;
+      /** The type of the job. */
+      "type": string;
+      /** The name of the worker of this job. */
+      worker: string;
+      /** When the job was created. Field is present for jobs created after 8.9. */
+      creationTime?: string;
+      /** When the job was last updated. Field is present for jobs created after 8.9. */
+      lastUpdateTime?: string;
+  }>;
 }
 
 export interface JobSearchResult {
@@ -7185,8 +10498,7 @@ export interface JobTypeStatisticsFilter {
 
 /** Job type statistics query result. */
 export interface JobTypeStatisticsQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -7197,6 +10509,33 @@ export interface JobTypeStatisticsQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The job type identifier. */
+      jobType: string;
+      /** Metric for a single job status. */
+      created: {
+        /** Number of jobs in this status. */
+        count: number;
+        /** ISO 8601 timestamp of the last update for this status. */
+        lastUpdatedAt: string | null;
+    };
+      /** Metric for a single job status. */
+      completed: {
+        /** Number of jobs in this status. */
+        count: number;
+        /** ISO 8601 timestamp of the last update for this status. */
+        lastUpdatedAt: string | null;
+    };
+      /** Metric for a single job status. */
+      failed: {
+        /** Number of jobs in this status. */
+        count: number;
+        /** ISO 8601 timestamp of the last update for this status. */
+        lastUpdatedAt: string | null;
+    };
+      /** Number of distinct workers observed for this job type. */
+      workers: number;
+  }>;
 }
 
 /** Statistics for a single job type. */
@@ -7260,8 +10599,7 @@ export interface JobWorkerStatisticsFilter {
 
 /** Job worker statistics query result. */
 export interface JobWorkerStatisticsQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -7272,6 +10610,31 @@ export interface JobWorkerStatisticsQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The worker identifier. */
+      worker: string;
+      /** Metric for a single job status. */
+      created: {
+        /** Number of jobs in this status. */
+        count: number;
+        /** ISO 8601 timestamp of the last update for this status. */
+        lastUpdatedAt: string | null;
+    };
+      /** Metric for a single job status. */
+      completed: {
+        /** Number of jobs in this status. */
+        count: number;
+        /** ISO 8601 timestamp of the last update for this status. */
+        lastUpdatedAt: string | null;
+    };
+      /** Metric for a single job status. */
+      failed: {
+        /** Number of jobs in this status. */
+        count: number;
+        /** ISO 8601 timestamp of the last update for this status. */
+        lastUpdatedAt: string | null;
+    };
+  }>;
 }
 
 /** Statistics for a single worker within a job type. */
@@ -7339,8 +10702,7 @@ export interface JobTimeSeriesStatisticsFilter {
 
 /** Job time-series statistics query result. */
 export interface JobTimeSeriesStatisticsQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -7351,6 +10713,31 @@ export interface JobTimeSeriesStatisticsQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** ISO 8601 timestamp representing the start of this time bucket. */
+      time: string;
+      /** Metric for a single job status. */
+      created: {
+        /** Number of jobs in this status. */
+        count: number;
+        /** ISO 8601 timestamp of the last update for this status. */
+        lastUpdatedAt: string | null;
+    };
+      /** Metric for a single job status. */
+      completed: {
+        /** Number of jobs in this status. */
+        count: number;
+        /** ISO 8601 timestamp of the last update for this status. */
+        lastUpdatedAt: string | null;
+    };
+      /** Metric for a single job status. */
+      failed: {
+        /** Number of jobs in this status. */
+        count: number;
+        /** ISO 8601 timestamp of the last update for this status. */
+        lastUpdatedAt: string | null;
+    };
+  }>;
 }
 
 /** Aggregated job metrics for a single time bucket. */
@@ -7402,12 +10789,10 @@ export interface MappingRuleCreateUpdateRequest {
 }
 
 export interface MappingRuleCreateRequest {
-    /** The name of the claim to map. */
-    claimName: string;
-    /** The value of the claim to map. */
-    claimValue: string;
-    /** The name of the mapping rule. */
-    name: string;
+  claimName: string;
+  claimValue: string;
+  name: string;
+  mappingRuleId: string;
 }
 
 export interface MappingRuleUpdateRequest {
@@ -7453,8 +10838,7 @@ export interface MappingRuleUpdateResult {
 }
 
 export interface MappingRuleSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -7465,6 +10849,16 @@ export interface MappingRuleSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The name of the claim to map. */
+      claimName?: string;
+      /** The value of the claim to map. */
+      claimValue?: string;
+      /** The name of the mapping rule. */
+      name?: string;
+      /** The ID of the mapping rule. */
+      mappingRuleId?: string;
+  }>;
 }
 
 export interface MappingRuleResult {
@@ -7486,8 +10880,7 @@ export interface MappingRuleSearchQuerySortRequest {
 }
 
 export type MappingRuleSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -7505,6 +10898,22 @@ export type MappingRuleSearchQueryRequest = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "mappingRuleId" | "claimName" | "claimValue" | "name";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The claim name to match against a token. */
+      claimName?: string;
+      /** The value of the claim to match. */
+      claimValue?: string;
+      /** The name of the mapping rule. */
+      name?: string;
+      /** The ID of the mapping rule. */
+      mappingRuleId?: string;
   };
 };
 
@@ -7528,8 +10937,7 @@ export interface ProcessDefinitionSearchQuerySortRequest {
 }
 
 export type ProcessDefinitionSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -7547,6 +10955,48 @@ export type ProcessDefinitionSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "processDefinitionKey" | "name" | "resourceName" | "version" | "versionTag" | "processDefinitionId" | "tenantId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** Name of this process definition. */
+      name?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /**  Whether to only return the latest version of each process definition.
+ When using this filter, pagination functionality is limited, you can only paginate forward using `after` and `limit`.
+ The response contains no `startCursor` in the `page`, and requests ignore the `from` and `before` in the `page`. */
+      isLatestVersion?: boolean;
+      /** Resource name of this process definition. */
+      resourceName?: string;
+      /** Version of this process definition. */
+      version?: number;
+      /** Version tag of this process definition. */
+      versionTag?: string;
+      /** Process definition ID of this process definition. */
+      processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** Tenant ID of this process definition. */
+      tenantId?: string;
+      /** The key for this process definition. */
+      processDefinitionKey?: string;
+      /** Indicates whether the start event of the process has an associated Form Key. */
+      hasStartForm?: boolean;
   };
 };
 
@@ -7589,8 +11039,7 @@ export interface ProcessDefinitionFilter {
 }
 
 export interface ProcessDefinitionSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -7601,6 +11050,24 @@ export interface ProcessDefinitionSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** Name of this process definition. */
+      name?: string | null;
+      /** Resource name for this process definition. */
+      resourceName?: string;
+      /** Version of this process definition. */
+      version?: number;
+      /** Version tag of this process definition. */
+      versionTag?: string | null;
+      /** Process definition ID of this process definition. */
+      processDefinitionId?: string;
+      /** Tenant ID of this process definition. */
+      tenantId?: string;
+      /** The key for this process definition. */
+      processDefinitionKey?: string;
+      /** Indicates whether the start event of the process has an associated Form Key. */
+      hasStartForm?: boolean;
+  }>;
 }
 
 export interface ProcessDefinitionResult {
@@ -8189,8 +11656,7 @@ export interface ProcessDefinitionMessageSubscriptionStatisticsQuery {
 }
 
 export interface ProcessDefinitionMessageSubscriptionStatisticsQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -8201,6 +11667,18 @@ export interface ProcessDefinitionMessageSubscriptionStatisticsQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The process definition ID associated with this message subscription. */
+      processDefinitionId?: string;
+      /** The tenant ID associated with this message subscription. */
+      tenantId?: string;
+      /** The process definition key associated with this message subscription. */
+      processDefinitionKey?: string;
+      /** The number of process instances with active message subscriptions. */
+      processInstancesWithActiveSubscriptions?: number;
+      /** The total number of active message subscriptions for this process definition key. */
+      activeSubscriptions?: number;
+  }>;
 }
 
 export interface ProcessDefinitionMessageSubscriptionStatisticsResult {
@@ -8234,8 +11712,7 @@ export interface ProcessDefinitionInstanceStatisticsQuery {
 }
 
 export interface ProcessDefinitionInstanceStatisticsQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -8246,6 +11723,20 @@ export interface ProcessDefinitionInstanceStatisticsQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** Id of a process definition, from the model. Only ids of process definitions that are deployed are useful. */
+      processDefinitionId?: string;
+      /** The unique identifier of the tenant. */
+      tenantId?: string;
+      /** Name of the latest deployed process definition instance version. */
+      latestProcessDefinitionName?: string | null;
+      /** Indicates whether multiple versions of this process definition instance are deployed. */
+      hasMultipleVersions?: boolean;
+      /** Total number of currently active process instances of this definition that do not have incidents. */
+      activeInstancesWithoutIncidentCount?: number;
+      /** Total number of currently active process instances of this definition that have at least one incident. */
+      activeInstancesWithIncidentCount?: number;
+  }>;
 }
 
 /** Process definition instance statistics response. */
@@ -8304,8 +11795,7 @@ export interface ProcessDefinitionInstanceVersionStatisticsFilter {
 }
 
 export interface ProcessDefinitionInstanceVersionStatisticsQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -8316,6 +11806,22 @@ export interface ProcessDefinitionInstanceVersionStatisticsQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The ID associated with the process definition. */
+      processDefinitionId: string;
+      /** The unique key of the process definition. */
+      processDefinitionKey: string;
+      /** The name of the process definition. */
+      processDefinitionName: string | null;
+      /** The tenant ID associated with the process definition. */
+      tenantId: string;
+      /** The version number of the process definition. */
+      processDefinitionVersion: number;
+      /** The number of active process instances for this version that currently have incidents. */
+      activeInstancesWithIncidentCount: number;
+      /** The number of active process instances for this version that do not have any incidents. */
+      activeInstancesWithoutIncidentCount: number;
+  }>;
 }
 
 /** Process definition instance version statistics response. */
@@ -8643,8 +12149,7 @@ export interface ProcessInstanceSearchQuerySortRequest {
 
 /** Process instance search request. */
 export type ProcessInstanceSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -8663,6 +12168,484 @@ export type ProcessInstanceSearchQuery = {
       /** The maximum number of items to return in one request. */
       limit?: number;
   };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "processInstanceKey" | "processDefinitionId" | "processDefinitionName" | "processDefinitionVersion" | "processDefinitionVersionTag" | "processDefinitionKey" | "parentProcessInstanceKey" | "parentElementInstanceKey" | "startDate" | "endDate" | "state" | "hasIncident" | "tenantId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+  startDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+  endDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+  hasIncident?: boolean;
+  tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  variables?: Array<{
+        /** Name of the variable. */
+        name: string;
+        /**  The value of the variable.
+ Variable values in filters need to be in serialized JSON format. For example, a variable
+ with string value `myValue` can be found with the filter value `"myValue"`. Consider
+ appropriate escaping for special characters in JSON strings when constructing filter values. */
+        value: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+    }>;
+  processInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  parentProcessInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  parentElementInstanceKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  batchOperationId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  errorMessage?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+  elementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+  tags?: Array<string>;
+  processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionName?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionVersion?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+  processDefinitionVersionTag?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+  $or?: Array<{
+  startDate?: string | {
+          /** Checks for equality with the provided value. */
+          $eq?: string;
+          /** Checks for inequality with the provided value. */
+          $neq?: string;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Greater than comparison with the provided value. */
+          $gt?: string;
+          /** Greater than or equal comparison with the provided value. */
+          $gte?: string;
+          /** Lower than comparison with the provided value. */
+          $lt?: string;
+          /** Lower than or equal comparison with the provided value. */
+          $lte?: string;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<string>;
+      };
+  endDate?: string | {
+          /** Checks for equality with the provided value. */
+          $eq?: string;
+          /** Checks for inequality with the provided value. */
+          $neq?: string;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Greater than comparison with the provided value. */
+          $gt?: string;
+          /** Greater than or equal comparison with the provided value. */
+          $gte?: string;
+          /** Lower than comparison with the provided value. */
+          $lt?: string;
+          /** Lower than or equal comparison with the provided value. */
+          $lte?: string;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<string>;
+      };
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+          /** Checks for equality with the provided value. */
+          $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+          /** Checks for inequality with the provided value. */
+          $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+          /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+          $like?: string;
+      };
+  hasIncident?: boolean;
+  tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  variables?: Array<{
+          /** Name of the variable. */
+          name: string;
+          /**  The value of the variable.
+ Variable values in filters need to be in serialized JSON format. For example, a variable
+ with string value `myValue` can be found with the filter value `"myValue"`. Consider
+ appropriate escaping for special characters in JSON strings when constructing filter values. */
+          value: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      }>;
+  processInstanceKey?: string | {
+          /** Checks for equality with the provided value. */
+          $eq?: string;
+          /** Checks for inequality with the provided value. */
+          $neq?: string;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<string>;
+          /** Checks if the property matches none of the provided values. */
+          $notIn?: Array<string>;
+      };
+  parentProcessInstanceKey?: string | {
+          /** Checks for equality with the provided value. */
+          $eq?: string;
+          /** Checks for inequality with the provided value. */
+          $neq?: string;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<string>;
+          /** Checks if the property matches none of the provided values. */
+          $notIn?: Array<string>;
+      };
+  parentElementInstanceKey?: string | {
+          /** Checks for equality with the provided value. */
+          $eq?: string;
+          /** Checks for inequality with the provided value. */
+          $neq?: string;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<string>;
+          /** Checks if the property matches none of the provided values. */
+          $notIn?: Array<string>;
+      };
+  batchOperationId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  errorMessage?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+          /** Checks for equality with the provided value. */
+          $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+          /** Checks for inequality with the provided value. */
+          $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+          /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+          $like?: string;
+      };
+  elementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
+          /** Checks for equality with the provided value. */
+          $eq?: number;
+          /** Checks for inequality with the provided value. */
+          $neq?: number;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Greater than comparison with the provided value. */
+          $gt?: number;
+          /** Greater than or equal comparison with the provided value. */
+          $gte?: number;
+          /** Lower than comparison with the provided value. */
+          $lt?: number;
+          /** Lower than or equal comparison with the provided value. */
+          $lte?: number;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<number>;
+      };
+  tags?: Array<string>;
+  processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionName?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionVersion?: number | {
+          /** Checks for equality with the provided value. */
+          $eq?: number;
+          /** Checks for inequality with the provided value. */
+          $neq?: number;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Greater than comparison with the provided value. */
+          $gt?: number;
+          /** Greater than or equal comparison with the provided value. */
+          $gte?: number;
+          /** Lower than comparison with the provided value. */
+          $lt?: number;
+          /** Lower than or equal comparison with the provided value. */
+          $lte?: number;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<number>;
+      };
+  processDefinitionVersionTag?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionKey?: string | {
+          /** Checks for equality with the provided value. */
+          $eq?: string;
+          /** Checks for inequality with the provided value. */
+          $neq?: string;
+          /** Checks if the current property exists. */
+          $exists?: boolean;
+          /** Checks if the property matches any of the provided values. */
+          $in?: Array<string>;
+          /** Checks if the property matches none of the provided values. */
+          $notIn?: Array<string>;
+      };
+}>;
+};
 };
 
 /** Base process instance search filter. */
@@ -9251,8 +13234,7 @@ export interface ProcessDefinitionStatisticsFilter {
 
 /** Process instance search filter. */
 export interface ProcessInstanceFilterFields {
-    /** The start date. */
-    startDate?: string | {
+  startDate?: string | {
       /** Checks for equality with the provided value. */
       $eq?: string;
       /** Checks for inequality with the provided value. */
@@ -9270,8 +13252,7 @@ export interface ProcessInstanceFilterFields {
       /** Checks if the property matches any of the provided values. */
       $in?: Array<string>;
   };
-    /** The end date. */
-    endDate?: string | {
+  endDate?: string | {
       /** Checks for equality with the provided value. */
       $eq?: string;
       /** Checks for inequality with the provided value. */
@@ -9289,8 +13270,7 @@ export interface ProcessInstanceFilterFields {
       /** Checks if the property matches any of the provided values. */
       $in?: Array<string>;
   };
-    /** The process instance state. */
-    state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
       /** Checks for equality with the provided value. */
       $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
       /** Checks for inequality with the provided value. */
@@ -9309,10 +13289,8 @@ export interface ProcessInstanceFilterFields {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
       $like?: string;
   };
-    /** Whether this process instance has a related incident or not. */
-    hasIncident?: boolean;
-    /** The tenant id. */
-    tenantId?: string | {
+  hasIncident?: boolean;
+  tenantId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -9320,8 +13298,7 @@ export interface ProcessInstanceFilterFields {
   $notIn?: Array<string>;
   $like?: string;
 };
-    /** The process instance variables. */
-    variables?: Array<{
+  variables?: Array<{
       /** Name of the variable. */
       name: string;
       /**  The value of the variable.
@@ -9337,8 +13314,7 @@ export interface ProcessInstanceFilterFields {
   $like?: string;
 };
   }>;
-    /** The key of this process instance. */
-    processInstanceKey?: string | {
+  processInstanceKey?: string | {
       /** Checks for equality with the provided value. */
       $eq?: string;
       /** Checks for inequality with the provided value. */
@@ -9350,8 +13326,7 @@ export interface ProcessInstanceFilterFields {
       /** Checks if the property matches none of the provided values. */
       $notIn?: Array<string>;
   };
-    /** The parent process instance key. */
-    parentProcessInstanceKey?: string | {
+  parentProcessInstanceKey?: string | {
       /** Checks for equality with the provided value. */
       $eq?: string;
       /** Checks for inequality with the provided value. */
@@ -9363,8 +13338,7 @@ export interface ProcessInstanceFilterFields {
       /** Checks if the property matches none of the provided values. */
       $notIn?: Array<string>;
   };
-    /** The parent element instance key. */
-    parentElementInstanceKey?: string | {
+  parentElementInstanceKey?: string | {
       /** Checks for equality with the provided value. */
       $eq?: string;
       /** Checks for inequality with the provided value. */
@@ -9376,8 +13350,7 @@ export interface ProcessInstanceFilterFields {
       /** Checks if the property matches none of the provided values. */
       $notIn?: Array<string>;
   };
-    /** The batch operation id. */
-    batchOperationId?: string | {
+  batchOperationId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -9385,8 +13358,7 @@ export interface ProcessInstanceFilterFields {
   $notIn?: Array<string>;
   $like?: string;
 };
-    /** The error message related to the process. */
-    errorMessage?: string | {
+  errorMessage?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -9394,10 +13366,8 @@ export interface ProcessInstanceFilterFields {
   $notIn?: Array<string>;
   $like?: string;
 };
-    /** Whether the process has failed jobs with retries left. */
-    hasRetriesLeft?: boolean;
-    /** The state of the element instances associated with the process instance. */
-    elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
       /** Checks for equality with the provided value. */
       $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
       /** Checks for inequality with the provided value. */
@@ -9416,8 +13386,7 @@ export interface ProcessInstanceFilterFields {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
       $like?: string;
   };
-    /** The element id associated with the process instance. */
-    elementId?: string | {
+  elementId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -9425,10 +13394,8 @@ export interface ProcessInstanceFilterFields {
   $notIn?: Array<string>;
   $like?: string;
 };
-    /** Whether the element instance has an incident or not. */
-    hasElementInstanceIncident?: boolean;
-    /** The incident error hash code, associated with this process. */
-    incidentErrorHashCode?: number | {
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
       /** Checks for equality with the provided value. */
       $eq?: number;
       /** Checks for inequality with the provided value. */
@@ -9446,12 +13413,245 @@ export interface ProcessInstanceFilterFields {
       /** Checks if the property matches any of the provided values. */
       $in?: Array<number>;
   };
-    /** List of tags. Tags need to start with a letter; then alphanumerics, `_`, `-`, `:`, or `.`; length ≤ 100. */
-    tags?: Array<string>;
+  tags?: Array<string>;
+  processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionName?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionVersion?: number | {
+      /** Checks for equality with the provided value. */
+      $eq?: number;
+      /** Checks for inequality with the provided value. */
+      $neq?: number;
+      /** Checks if the current property exists. */
+      $exists?: boolean;
+      /** Greater than comparison with the provided value. */
+      $gt?: number;
+      /** Greater than or equal comparison with the provided value. */
+      $gte?: number;
+      /** Lower than comparison with the provided value. */
+      $lt?: number;
+      /** Lower than or equal comparison with the provided value. */
+      $lte?: number;
+      /** Checks if the property matches any of the provided values. */
+      $in?: Array<number>;
+  };
+  processDefinitionVersionTag?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionKey?: string | {
+      /** Checks for equality with the provided value. */
+      $eq?: string;
+      /** Checks for inequality with the provided value. */
+      $neq?: string;
+      /** Checks if the current property exists. */
+      $exists?: boolean;
+      /** Checks if the property matches any of the provided values. */
+      $in?: Array<string>;
+      /** Checks if the property matches none of the provided values. */
+      $notIn?: Array<string>;
+  };
 }
 
 /** Process instance search filter. */
 export interface ProcessInstanceFilter {
+  startDate?: string | {
+      /** Checks for equality with the provided value. */
+      $eq?: string;
+      /** Checks for inequality with the provided value. */
+      $neq?: string;
+      /** Checks if the current property exists. */
+      $exists?: boolean;
+      /** Greater than comparison with the provided value. */
+      $gt?: string;
+      /** Greater than or equal comparison with the provided value. */
+      $gte?: string;
+      /** Lower than comparison with the provided value. */
+      $lt?: string;
+      /** Lower than or equal comparison with the provided value. */
+      $lte?: string;
+      /** Checks if the property matches any of the provided values. */
+      $in?: Array<string>;
+  };
+  endDate?: string | {
+      /** Checks for equality with the provided value. */
+      $eq?: string;
+      /** Checks for inequality with the provided value. */
+      $neq?: string;
+      /** Checks if the current property exists. */
+      $exists?: boolean;
+      /** Greater than comparison with the provided value. */
+      $gt?: string;
+      /** Greater than or equal comparison with the provided value. */
+      $gte?: string;
+      /** Lower than comparison with the provided value. */
+      $lt?: string;
+      /** Lower than or equal comparison with the provided value. */
+      $lte?: string;
+      /** Checks if the property matches any of the provided values. */
+      $in?: Array<string>;
+  };
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+      /** Checks for equality with the provided value. */
+      $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+      /** Checks for inequality with the provided value. */
+      $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+      /** Checks if the current property exists. */
+      $exists?: boolean;
+      /** Checks if the property matches any of the provided values. */
+      $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+      /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+      $like?: string;
+  };
+  hasIncident?: boolean;
+  tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  variables?: Array<{
+      /** Name of the variable. */
+      name: string;
+      /**  The value of the variable.
+ Variable values in filters need to be in serialized JSON format. For example, a variable
+ with string value `myValue` can be found with the filter value `"myValue"`. Consider
+ appropriate escaping for special characters in JSON strings when constructing filter values. */
+      value: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  }>;
+  processInstanceKey?: string | {
+      /** Checks for equality with the provided value. */
+      $eq?: string;
+      /** Checks for inequality with the provided value. */
+      $neq?: string;
+      /** Checks if the current property exists. */
+      $exists?: boolean;
+      /** Checks if the property matches any of the provided values. */
+      $in?: Array<string>;
+      /** Checks if the property matches none of the provided values. */
+      $notIn?: Array<string>;
+  };
+  parentProcessInstanceKey?: string | {
+      /** Checks for equality with the provided value. */
+      $eq?: string;
+      /** Checks for inequality with the provided value. */
+      $neq?: string;
+      /** Checks if the current property exists. */
+      $exists?: boolean;
+      /** Checks if the property matches any of the provided values. */
+      $in?: Array<string>;
+      /** Checks if the property matches none of the provided values. */
+      $notIn?: Array<string>;
+  };
+  parentElementInstanceKey?: string | {
+      /** Checks for equality with the provided value. */
+      $eq?: string;
+      /** Checks for inequality with the provided value. */
+      $neq?: string;
+      /** Checks if the current property exists. */
+      $exists?: boolean;
+      /** Checks if the property matches any of the provided values. */
+      $in?: Array<string>;
+      /** Checks if the property matches none of the provided values. */
+      $notIn?: Array<string>;
+  };
+  batchOperationId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  errorMessage?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+      /** Checks for equality with the provided value. */
+      $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+      /** Checks for inequality with the provided value. */
+      $neq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
+      /** Checks if the current property exists. */
+      $exists?: boolean;
+      /** Checks if the property matches any of the provided values. */
+      $in?: Array<"ACTIVE" | "COMPLETED" | "TERMINATED">;
+      /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+      $like?: string;
+  };
+  elementId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
+      /** Checks for equality with the provided value. */
+      $eq?: number;
+      /** Checks for inequality with the provided value. */
+      $neq?: number;
+      /** Checks if the current property exists. */
+      $exists?: boolean;
+      /** Greater than comparison with the provided value. */
+      $gt?: number;
+      /** Greater than or equal comparison with the provided value. */
+      $gte?: number;
+      /** Lower than comparison with the provided value. */
+      $lt?: number;
+      /** Lower than or equal comparison with the provided value. */
+      $lte?: number;
+      /** Checks if the property matches any of the provided values. */
+      $in?: Array<number>;
+  };
+  tags?: Array<string>;
   processDefinitionId?: string | {
   $eq?: string;
   $neq?: string;
@@ -9507,8 +13707,7 @@ export interface ProcessInstanceFilter {
       $notIn?: Array<string>;
   };
   $or?: Array<{
-      /** The start date. */
-      startDate?: string | {
+  startDate?: string | {
         /** Checks for equality with the provided value. */
         $eq?: string;
         /** Checks for inequality with the provided value. */
@@ -9526,8 +13725,7 @@ export interface ProcessInstanceFilter {
         /** Checks if the property matches any of the provided values. */
         $in?: Array<string>;
     };
-      /** The end date. */
-      endDate?: string | {
+  endDate?: string | {
         /** Checks for equality with the provided value. */
         $eq?: string;
         /** Checks for inequality with the provided value. */
@@ -9545,8 +13743,7 @@ export interface ProcessInstanceFilter {
         /** Checks if the property matches any of the provided values. */
         $in?: Array<string>;
     };
-      /** The process instance state. */
-      state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  state?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
         /** Checks for equality with the provided value. */
         $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
         /** Checks for inequality with the provided value. */
@@ -9565,10 +13762,8 @@ export interface ProcessInstanceFilter {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
         $like?: string;
     };
-      /** Whether this process instance has a related incident or not. */
-      hasIncident?: boolean;
-      /** The tenant id. */
-      tenantId?: string | {
+  hasIncident?: boolean;
+  tenantId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -9576,8 +13771,7 @@ export interface ProcessInstanceFilter {
   $notIn?: Array<string>;
   $like?: string;
 };
-      /** The process instance variables. */
-      variables?: Array<{
+  variables?: Array<{
         /** Name of the variable. */
         name: string;
         /**  The value of the variable.
@@ -9593,8 +13787,7 @@ export interface ProcessInstanceFilter {
   $like?: string;
 };
     }>;
-      /** The key of this process instance. */
-      processInstanceKey?: string | {
+  processInstanceKey?: string | {
         /** Checks for equality with the provided value. */
         $eq?: string;
         /** Checks for inequality with the provided value. */
@@ -9606,8 +13799,7 @@ export interface ProcessInstanceFilter {
         /** Checks if the property matches none of the provided values. */
         $notIn?: Array<string>;
     };
-      /** The parent process instance key. */
-      parentProcessInstanceKey?: string | {
+  parentProcessInstanceKey?: string | {
         /** Checks for equality with the provided value. */
         $eq?: string;
         /** Checks for inequality with the provided value. */
@@ -9619,8 +13811,7 @@ export interface ProcessInstanceFilter {
         /** Checks if the property matches none of the provided values. */
         $notIn?: Array<string>;
     };
-      /** The parent element instance key. */
-      parentElementInstanceKey?: string | {
+  parentElementInstanceKey?: string | {
         /** Checks for equality with the provided value. */
         $eq?: string;
         /** Checks for inequality with the provided value. */
@@ -9632,8 +13823,7 @@ export interface ProcessInstanceFilter {
         /** Checks if the property matches none of the provided values. */
         $notIn?: Array<string>;
     };
-      /** The batch operation id. */
-      batchOperationId?: string | {
+  batchOperationId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -9641,8 +13831,7 @@ export interface ProcessInstanceFilter {
   $notIn?: Array<string>;
   $like?: string;
 };
-      /** The error message related to the process. */
-      errorMessage?: string | {
+  errorMessage?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -9650,10 +13839,8 @@ export interface ProcessInstanceFilter {
   $notIn?: Array<string>;
   $like?: string;
 };
-      /** Whether the process has failed jobs with retries left. */
-      hasRetriesLeft?: boolean;
-      /** The state of the element instances associated with the process instance. */
-      elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
+  hasRetriesLeft?: boolean;
+  elementInstanceState?: "ACTIVE" | "COMPLETED" | "TERMINATED" | {
         /** Checks for equality with the provided value. */
         $eq?: "ACTIVE" | "COMPLETED" | "TERMINATED";
         /** Checks for inequality with the provided value. */
@@ -9672,8 +13859,7 @@ export interface ProcessInstanceFilter {
  Wildcard characters can be escaped with backslash, for instance: `\*`. */
         $like?: string;
     };
-      /** The element id associated with the process instance. */
-      elementId?: string | {
+  elementId?: string | {
   $eq?: string;
   $neq?: string;
   $exists?: boolean;
@@ -9681,10 +13867,8 @@ export interface ProcessInstanceFilter {
   $notIn?: Array<string>;
   $like?: string;
 };
-      /** Whether the element instance has an incident or not. */
-      hasElementInstanceIncident?: boolean;
-      /** The incident error hash code, associated with this process. */
-      incidentErrorHashCode?: number | {
+  hasElementInstanceIncident?: boolean;
+  incidentErrorHashCode?: number | {
         /** Checks for equality with the provided value. */
         $eq?: number;
         /** Checks for inequality with the provided value. */
@@ -9702,15 +13886,67 @@ export interface ProcessInstanceFilter {
         /** Checks if the property matches any of the provided values. */
         $in?: Array<number>;
     };
-      /** List of tags. Tags need to start with a letter; then alphanumerics, `_`, `-`, `:`, or `.`; length ≤ 100. */
-      tags?: Array<string>;
-  }>;
+  tags?: Array<string>;
+  processDefinitionId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionName?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionVersion?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+  processDefinitionVersionTag?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  processDefinitionKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+}>;
 }
 
 /** Process instance search response. */
 export interface ProcessInstanceSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -9721,6 +13957,42 @@ export interface ProcessInstanceSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** Id of a process definition, from the model. Only ids of process definitions that are deployed are useful. */
+      processDefinitionId: string;
+      /** The process definition name. */
+      processDefinitionName: string | null;
+      /** The process definition version. */
+      processDefinitionVersion: number;
+      /** The process definition version tag. */
+      processDefinitionVersionTag: string | null;
+      /** The start time of the process instance. */
+      startDate: string;
+      /** The completion or termination time of the process instance. */
+      endDate: string | null;
+      /** Process instance states */
+      state: "ACTIVE" | "COMPLETED" | "TERMINATED";
+      /** Whether this process instance has a related incident or not. */
+      hasIncident: boolean;
+      /** The unique identifier of the tenant. */
+      tenantId: string;
+      /** The key of this process instance. */
+      processInstanceKey: string;
+      /** The process definition key. */
+      processDefinitionKey: string;
+      /** The parent process instance key. */
+      parentProcessInstanceKey: string;
+      /** The parent element instance key. */
+      parentElementInstanceKey: string;
+      /**  The key of the root process instance. The root process instance is the top-level
+ ancestor in the process instance hierarchy. This field is only present for data
+ belonging to process instance hierarchies created in version 8.9 or later. */
+      rootProcessInstanceKey: string;
+      /** List of tags. Tags need to start with a letter; then alphanumerics, `_`, `-`, `:`, or `.`; length ≤ 100. */
+      tags: Array<string>;
+      /** The business id associated with this process instance. */
+      businessId: string;
+  }>;
 }
 
 /** Process instance search response item. */
@@ -10213,8 +14485,7 @@ export interface RoleSearchQuerySortRequest {
 
 /** Role search request. */
 export type RoleSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -10232,6 +14503,18 @@ export type RoleSearchQueryRequest = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "name" | "roleId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The role ID search filters. */
+      roleId?: string;
+      /** The role name search filters. */
+      name?: string;
   };
 };
 
@@ -10245,8 +14528,7 @@ export interface RoleFilter {
 
 /** Role search response. */
 export interface RoleSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -10257,6 +14539,14 @@ export interface RoleSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The role name. */
+      name?: string;
+      /** The role id. */
+      roleId?: string;
+      /** The description of the role. */
+      description?: string;
+  }>;
 }
 
 export interface RoleUserResult {
@@ -10265,8 +14555,7 @@ export interface RoleUserResult {
 }
 
 export interface RoleUserSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -10277,11 +14566,14 @@ export interface RoleUserSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The unique name of a user. */
+      username?: string;
+  }>;
 }
 
 export type RoleUserSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -10300,6 +14592,12 @@ export type RoleUserSearchQueryRequest = {
       /** The maximum number of items to return in one request. */
       limit?: number;
   };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "username";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
 };
 
 export interface RoleUserSearchQuerySortRequest {
@@ -10315,8 +14613,7 @@ export interface RoleClientResult {
 }
 
 export interface RoleClientSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -10327,11 +14624,14 @@ export interface RoleClientSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The ID of the client. */
+      clientId?: string;
+  }>;
 }
 
 export type RoleClientSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -10350,6 +14650,12 @@ export type RoleClientSearchQueryRequest = {
       /** The maximum number of items to return in one request. */
       limit?: number;
   };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "clientId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
 };
 
 export interface RoleClientSearchQuerySortRequest {
@@ -10365,8 +14671,7 @@ export interface RoleGroupResult {
 }
 
 export interface RoleGroupSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -10377,11 +14682,14 @@ export interface RoleGroupSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The id of the group. */
+      groupId?: string;
+  }>;
 }
 
 export type RoleGroupSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -10400,11 +14708,16 @@ export type RoleGroupSearchQueryRequest = {
       /** The maximum number of items to return in one request. */
       limit?: number;
   };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "groupId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
 };
 
 export interface RoleMappingRuleSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -10415,6 +14728,16 @@ export interface RoleMappingRuleSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The name of the claim to map. */
+      claimName?: string;
+      /** The value of the claim to map. */
+      claimValue?: string;
+      /** The name of the mapping rule. */
+      name?: string;
+      /** The ID of the mapping rule. */
+      mappingRuleId?: string;
+  }>;
 }
 
 export interface RoleGroupSearchQuerySortRequest {
@@ -10513,12 +14836,20 @@ export interface Partition {
 }
 
 export interface UsageMetricsResponse {
-    /** The amount of created root process instances. */
-    processInstances?: number;
-    /** The amount of executed decision instances. */
-    decisionInstances?: number;
-    /** The amount of unique active task users. */
-    assignees?: number;
+  processInstances?: number;
+  decisionInstances?: number;
+  assignees?: number;
+  activeTenants?: number;
+  tenants: {
+      [key: string]: {
+        /** The amount of created root process instances. */
+        processInstances?: number;
+        /** The amount of executed decision instances. */
+        decisionInstances?: number;
+        /** The amount of unique active task users. */
+        assignees?: number;
+    };
+  };
 }
 
 export interface UsageMetricsResponseItem {
@@ -10583,8 +14914,7 @@ export interface TenantSearchQuerySortRequest {
 
 /** Tenant search request */
 export type TenantSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -10602,6 +14932,18 @@ export type TenantSearchQueryRequest = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "key" | "name" | "tenantId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The unique identifier of the tenant. */
+      tenantId?: string;
+      /** The name of the tenant. */
+      name?: string;
   };
 };
 
@@ -10615,8 +14957,7 @@ export interface TenantFilter {
 
 /** Tenant search response. */
 export interface TenantSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -10627,6 +14968,14 @@ export interface TenantSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The tenant name. */
+      name?: string;
+      /** The unique identifier of the tenant. */
+      tenantId?: string;
+      /** The tenant description. */
+      description?: string;
+  }>;
 }
 
 export interface TenantUserResult {
@@ -10635,8 +14984,7 @@ export interface TenantUserResult {
 }
 
 export interface TenantUserSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -10647,11 +14995,14 @@ export interface TenantUserSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The unique name of a user. */
+      username?: string;
+  }>;
 }
 
 export type TenantUserSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -10670,6 +15021,12 @@ export type TenantUserSearchQueryRequest = {
       /** The maximum number of items to return in one request. */
       limit?: number;
   };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "username";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
 };
 
 export interface TenantUserSearchQuerySortRequest {
@@ -10685,8 +15042,7 @@ export interface TenantClientResult {
 }
 
 export interface TenantClientSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -10697,11 +15053,14 @@ export interface TenantClientSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The ID of the client. */
+      clientId?: string;
+  }>;
 }
 
 export type TenantClientSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -10720,6 +15079,12 @@ export type TenantClientSearchQueryRequest = {
       /** The maximum number of items to return in one request. */
       limit?: number;
   };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "clientId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
 };
 
 export interface TenantClientSearchQuerySortRequest {
@@ -10735,8 +15100,7 @@ export interface TenantGroupResult {
 }
 
 export interface TenantGroupSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -10747,11 +15111,14 @@ export interface TenantGroupSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The groupId of the group. */
+      groupId?: string;
+  }>;
 }
 
 export type TenantGroupSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -10770,11 +15137,16 @@ export type TenantGroupSearchQueryRequest = {
       /** The maximum number of items to return in one request. */
       limit?: number;
   };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "groupId";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
 };
 
 export interface TenantRoleSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -10785,11 +15157,18 @@ export interface TenantRoleSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The role name. */
+      name?: string;
+      /** The role id. */
+      roleId?: string;
+      /** The description of the role. */
+      description?: string;
+  }>;
 }
 
 export interface TenantMappingRuleSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -10800,6 +15179,16 @@ export interface TenantMappingRuleSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The name of the claim to map. */
+      claimName?: string;
+      /** The value of the claim to map. */
+      claimValue?: string;
+      /** The name of the mapping rule. */
+      name?: string;
+      /** The ID of the mapping rule. */
+      mappingRuleId?: string;
+  }>;
 }
 
 export interface TenantGroupSearchQuerySortRequest {
@@ -10864,8 +15253,7 @@ export interface UserSearchQuerySortRequest {
 }
 
 export type UserSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -10883,6 +15271,41 @@ export type UserSearchQueryRequest = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "username" | "name" | "email";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The username of the user. */
+      username?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The name of the user. */
+      name?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The email of the user. */
+      email?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
   };
 };
 
@@ -10918,8 +15341,7 @@ export interface UserFilter {
 }
 
 export interface UserSearchResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -10930,6 +15352,14 @@ export interface UserSearchResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The unique name of a user. */
+      username?: string;
+      /** The name of the user. */
+      name?: string;
+      /** The email of the user. */
+      email?: string;
+  }>;
 }
 
 export interface UserTaskSearchQuerySortRequest {
@@ -10941,8 +15371,7 @@ export interface UserTaskSearchQuerySortRequest {
 
 /** User task search query request. */
 export type UserTaskSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -10960,6 +15389,222 @@ export type UserTaskSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "creationDate" | "completionDate" | "followUpDate" | "dueDate" | "priority" | "name";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The user task state. */
+      state?: "CREATING" | "CREATED" | "ASSIGNING" | "UPDATING" | "COMPLETING" | "COMPLETED" | "CANCELING" | "CANCELED" | "FAILED" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "CREATING" | "CREATED" | "ASSIGNING" | "UPDATING" | "COMPLETING" | "COMPLETED" | "CANCELING" | "CANCELED" | "FAILED";
+        /** Checks for inequality with the provided value. */
+        $neq?: "CREATING" | "CREATED" | "ASSIGNING" | "UPDATING" | "COMPLETING" | "COMPLETED" | "CANCELING" | "CANCELED" | "FAILED";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"CREATING" | "CREATED" | "ASSIGNING" | "UPDATING" | "COMPLETING" | "COMPLETED" | "CANCELING" | "CANCELED" | "FAILED">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The assignee of the user task. */
+      assignee?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The priority of the user task. */
+      priority?: number | {
+        /** Checks for equality with the provided value. */
+        $eq?: number;
+        /** Checks for inequality with the provided value. */
+        $neq?: number;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: number;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: number;
+        /** Lower than comparison with the provided value. */
+        $lt?: number;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: number;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<number>;
+    };
+      /** The element ID of the user task. */
+      elementId?: string;
+      /** The task name. This only works for data created with 8.8 and onwards. Instances from prior versions don't contain this data and cannot be found. */
+      name?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The candidate group for this user task. */
+      candidateGroup?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The candidate user for this user task. */
+      candidateUser?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** Tenant ID of this user task. */
+      tenantId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** The ID of the process definition. */
+      processDefinitionId?: string;
+      /** The user task creation date. */
+      creationDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The user task completion date. */
+      completionDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The user task follow-up date. */
+      followUpDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The user task due date. */
+      dueDate?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The variables of the process instance. */
+      processInstanceVariables?: Array<{
+        /** Name of the variable. */
+        name: string;
+        /**  The value of the variable.
+ Variable values in filters need to be in serialized JSON format. For example, a variable
+ with string value `myValue` can be found with the filter value `"myValue"`. Consider
+ appropriate escaping for special characters in JSON strings when constructing filter values. */
+        value: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+    }>;
+      /** The local variables of the user task. */
+      localVariables?: Array<{
+        /** Name of the variable. */
+        name: string;
+        /**  The value of the variable.
+ Variable values in filters need to be in serialized JSON format. For example, a variable
+ with string value `myValue` can be found with the filter value `"myValue"`. Consider
+ appropriate escaping for special characters in JSON strings when constructing filter values. */
+        value: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+    }>;
+      /** The key for this user task. */
+      userTaskKey?: string;
+      /** The key of the process definition. */
+      processDefinitionKey?: string;
+      /** The key of the process instance. */
+      processInstanceKey?: string;
+      /** The key of the element instance. */
+      elementInstanceKey?: string;
+      /** List of tags. Tags need to start with a letter; then alphanumerics, `_`, `-`, `:`, or `.`; length ≤ 100. */
+      tags?: Array<string>;
   };
 };
 
@@ -11177,8 +15822,7 @@ export interface UserTaskFilter {
 
 /** User task search query response. */
 export interface UserTaskSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -11189,6 +15833,62 @@ export interface UserTaskSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+      /** The name for this user task. */
+      name?: string;
+      /**  The state of the user task.
+ Note: FAILED state is only for legacy job-worker-based tasks. */
+      state?: "CREATING" | "CREATED" | "ASSIGNING" | "UPDATING" | "COMPLETING" | "COMPLETED" | "CANCELING" | "CANCELED" | "FAILED";
+      /** The assignee of the user task. */
+      assignee: string | null;
+      /** The element ID of the user task. */
+      elementId?: string;
+      /** The candidate groups for this user task. */
+      candidateGroups: Array<string>;
+      /** The candidate users for this user task. */
+      candidateUsers: Array<string>;
+      /** The ID of the process definition. */
+      processDefinitionId?: string;
+      /** The creation date of a user task. */
+      creationDate?: string;
+      /** The completion date of a user task. */
+      completionDate: string | null;
+      /** The follow date of a user task. */
+      followUpDate: string | null;
+      /** The due date of a user task. */
+      dueDate: string | null;
+      /** The unique identifier of the tenant. */
+      tenantId?: string;
+      /** The external form reference. */
+      externalFormReference: string | null;
+      /** The version of the process definition. */
+      processDefinitionVersion?: number;
+      /** Custom headers for the user task. */
+      customHeaders: {
+        [key: string]: string;
+    };
+      /** The priority of a user task. The higher the value the higher the priority. */
+      priority?: number;
+      /** The key of the user task. */
+      userTaskKey?: string;
+      /** The key of the element instance. */
+      elementInstanceKey?: string;
+      /**  The name of the process definition.
+ This is `null` if the process has no name defined. */
+      processName?: string | null;
+      /** The key of the process definition. */
+      processDefinitionKey?: string;
+      /** The key of the process instance. */
+      processInstanceKey?: string;
+      /**  The key of the root process instance. The root process instance is the top-level
+ ancestor in the process instance hierarchy. This field is only present for data
+ belonging to process instance hierarchies created in version 8.9 or later. */
+      rootProcessInstanceKey: string;
+      /** The key of the form. */
+      formKey: string;
+      /** List of tags. Tags need to start with a letter; then alphanumerics, `_`, `-`, `:`, or `.`; length ≤ 100. */
+      tags: Array<string>;
+  }>;
 }
 
 export interface UserTaskResult {
@@ -11339,8 +16039,7 @@ export interface UserTaskVariableSearchQuerySortRequest {
 
 /** User task search query request. */
 export type UserTaskVariableSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -11359,12 +16058,28 @@ export type UserTaskVariableSearchQueryRequest = {
       /** The maximum number of items to return in one request. */
       limit?: number;
   };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "value" | "name" | "tenantId" | "variableKey" | "scopeKey" | "processInstanceKey";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** Name of the variable. */
+      name?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+  };
 };
 
 /** User task search query request. */
 export type UserTaskAuditLogSearchQueryRequest = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -11382,6 +16097,102 @@ export type UserTaskAuditLogSearchQueryRequest = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "actorId" | "actorType" | "annotation" | "auditLogKey" | "batchOperationKey" | "batchOperationType" | "category" | "decisionDefinitionId" | "decisionDefinitionKey" | "decisionEvaluationKey" | "decisionRequirementsId" | "decisionRequirementsKey" | "elementInstanceKey" | "entityKey" | "entityType" | "jobKey" | "operationType" | "processDefinitionId" | "processDefinitionKey" | "processInstanceKey" | "result" | "tenantId" | "timestamp" | "userTaskKey";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** The audit log operation type search filter. */
+      operationType?: "ASSIGN" | "CANCEL" | "COMPLETE" | "CREATE" | "DELETE" | "EVALUATE" | "MIGRATE" | "MODIFY" | "RESOLVE" | "RESUME" | "SUSPEND" | "UNASSIGN" | "UNKNOWN" | "UPDATE" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ASSIGN" | "CANCEL" | "COMPLETE" | "CREATE" | "DELETE" | "EVALUATE" | "MIGRATE" | "MODIFY" | "RESOLVE" | "RESUME" | "SUSPEND" | "UNASSIGN" | "UNKNOWN" | "UPDATE";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ASSIGN" | "CANCEL" | "COMPLETE" | "CREATE" | "DELETE" | "EVALUATE" | "MIGRATE" | "MODIFY" | "RESOLVE" | "RESUME" | "SUSPEND" | "UNASSIGN" | "UNKNOWN" | "UPDATE";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ASSIGN" | "CANCEL" | "COMPLETE" | "CREATE" | "DELETE" | "EVALUATE" | "MIGRATE" | "MODIFY" | "RESOLVE" | "RESUME" | "SUSPEND" | "UNASSIGN" | "UNKNOWN" | "UPDATE">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The audit log result search filter. */
+      result?: "FAIL" | "SUCCESS" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "FAIL" | "SUCCESS";
+        /** Checks for inequality with the provided value. */
+        $neq?: "FAIL" | "SUCCESS";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"FAIL" | "SUCCESS">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The audit log timestamp filter. */
+      timestamp?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Greater than comparison with the provided value. */
+        $gt?: string;
+        /** Greater than or equal comparison with the provided value. */
+        $gte?: string;
+        /** Lower than comparison with the provided value. */
+        $lt?: string;
+        /** Lower than or equal comparison with the provided value. */
+        $lte?: string;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+    };
+      /** The actor type search filter. */
+      actorType?: "ANONYMOUS" | "CLIENT" | "UNKNOWN" | "USER" | {
+        /** Checks for equality with the provided value. */
+        $eq?: "ANONYMOUS" | "CLIENT" | "UNKNOWN" | "USER";
+        /** Checks for inequality with the provided value. */
+        $neq?: "ANONYMOUS" | "CLIENT" | "UNKNOWN" | "USER";
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<"ANONYMOUS" | "CLIENT" | "UNKNOWN" | "USER">;
+        /**  Checks if the property matches the provided like value.
+
+ Supported wildcard characters are:
+
+ * `*`: matches zero, one, or multiple characters.
+ * `?`: matches one, single character.
+
+ Wildcard characters can be escaped with backslash, for instance: `\*`. */
+        $like?: string;
+    };
+      /** The actor ID search filter. */
+      actorId?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
   };
 };
 
@@ -11545,8 +16356,7 @@ export interface VariableSearchQuerySortRequest {
 
 /** Variable search query request. */
 export type VariableSearchQuery = {
-    /** Pagination criteria. */
-    page?: {
+  page?: {
       /** The maximum number of items to return in one request. */
       limit?: number;
   } | {
@@ -11564,6 +16374,71 @@ export type VariableSearchQuery = {
       before: string;
       /** The maximum number of items to return in one request. */
       limit?: number;
+  };
+  sort?: Array<{
+      /** The field to sort by. */
+      field: "value" | "name" | "tenantId" | "variableKey" | "scopeKey" | "processInstanceKey";
+      /** The order in which to sort the related field. */
+      order?: "ASC" | "DESC";
+  }>;
+  filter?: {
+      /** Name of the variable. */
+      name?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /**  The value of the variable.
+ Variable values in filters need to be in serialized JSON format. For example, a variable
+ with string value `myValue` can be found with the filter value `"myValue"`. Consider
+ appropriate escaping for special characters in JSON strings when constructing filter values. */
+      value?: string | {
+  $eq?: string;
+  $neq?: string;
+  $exists?: boolean;
+  $in?: Array<string>;
+  $notIn?: Array<string>;
+  $like?: string;
+};
+      /** Tenant ID of this variable. */
+      tenantId?: string;
+      /** Whether the value is truncated or not. */
+      isTruncated?: boolean;
+      /** The key for this variable. */
+      variableKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /**  The key of the scope that defines where this variable is directly defined. This can be a
+ process instance key (for process-level variables) or an element instance key (for local
+ variables scoped to tasks, subprocesses, gateways, events, etc.). Use this filter to
+ find variables directly defined in specific scopes. Note that this does not include
+ variables from parent scopes that would be visible through the scope hierarchy. */
+      scopeKey?: string | {
+        /** Checks for equality with the provided value. */
+        $eq?: string;
+        /** Checks for inequality with the provided value. */
+        $neq?: string;
+        /** Checks if the current property exists. */
+        $exists?: boolean;
+        /** Checks if the property matches any of the provided values. */
+        $in?: Array<string>;
+        /** Checks if the property matches none of the provided values. */
+        $notIn?: Array<string>;
+    };
+      /** The key of the process instance of this variable. */
+      processInstanceKey?: unknown;
   };
 };
 
@@ -11630,8 +16505,7 @@ export interface VariableFilter {
 
 /** Variable search query response. */
 export interface VariableSearchQueryResult {
-    /** Pagination information about the search results. */
-    page: {
+  page: {
       /** Total items matching the criteria. */
       totalItems: number;
       /**  Indicates whether there are more items matching the criteria beyond the returned items.
@@ -11642,48 +16516,39 @@ export interface VariableSearchQueryResult {
       /** The cursor value for getting the next page of results. Use this in the `after` field of an ensuing request. */
       endCursor: string;
   };
+  items: Array<{
+  name: string;
+  tenantId: string;
+  variableKey: string;
+  scopeKey: string;
+  processInstanceKey: string;
+  rootProcessInstanceKey: string;
+  value?: string;
+  isTruncated?: boolean;
+}>;
 }
 
 /** Variable search response item. */
 export interface VariableSearchResult {
-    /** Name of this variable. */
-    name: string;
-    /** Tenant ID of this variable. */
-    tenantId: string;
-    /** The key for this variable. */
-    variableKey: string;
-    /**  The key of the scope where this variable is directly defined. For process-level
- variables, this is the process instance key. For local variables, this is the key of the
- specific element instance (task, subprocess, gateway, event, etc.) where the variable is
- directly defined. */
-    scopeKey: string;
-    /** The key of the process instance of this variable. */
-    processInstanceKey: string;
-    /**  The key of the root process instance. The root process instance is the top-level
- ancestor in the process instance hierarchy. This field is only present for data
- belonging to process instance hierarchies created in version 8.9 or later. */
-    rootProcessInstanceKey: string;
+  name: string;
+  tenantId: string;
+  variableKey: string;
+  scopeKey: string;
+  processInstanceKey: string;
+  rootProcessInstanceKey: string;
+  value?: string;
+  isTruncated?: boolean;
 }
 
 /** Variable search response item. */
 export interface VariableResult {
-    /** Name of this variable. */
-    name: string;
-    /** Tenant ID of this variable. */
-    tenantId: string;
-    /** The key for this variable. */
-    variableKey: string;
-    /**  The key of the scope where this variable is directly defined. For process-level
- variables, this is the process instance key. For local variables, this is the key of the
- specific element instance (task, subprocess, gateway, event, etc.) where the variable is
- directly defined. */
-    scopeKey: string;
-    /** The key of the process instance of this variable. */
-    processInstanceKey: string;
-    /**  The key of the root process instance. The root process instance is the top-level
- ancestor in the process instance hierarchy. This field is only present for data
- belonging to process instance hierarchies created in version 8.9 or later. */
-    rootProcessInstanceKey: string;
+  name: string;
+  tenantId: string;
+  variableKey: string;
+  scopeKey: string;
+  processInstanceKey: string;
+  rootProcessInstanceKey: string;
+  value?: string;
 }
 
 /** Variable response item. */

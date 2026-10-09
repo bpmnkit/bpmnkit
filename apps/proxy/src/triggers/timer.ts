@@ -13,7 +13,7 @@
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { homedir } from "node:os"
 import { join } from "node:path"
-import { getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
+import { clusterApiUrl, getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -103,7 +103,7 @@ async function fetchDeployedProcesses(
 	baseUrl: string,
 	authHeader: string,
 ): Promise<DeployedProcess[]> {
-	const res = await fetch(`${baseUrl}/v2/process-definitions/search`, {
+	const res = await fetch(clusterApiUrl(baseUrl, "/process-definitions/search"), {
 		method: "POST",
 		headers: { authorization: authHeader, "content-type": "application/json" },
 		body: JSON.stringify({ pageSize: 100 }),
@@ -119,7 +119,7 @@ async function fetchProcessXml(
 	processId: string,
 ): Promise<string | null> {
 	const res = await fetch(
-		`${baseUrl}/v2/process-definitions/${encodeURIComponent(processId)}/xml`,
+		clusterApiUrl(baseUrl, `/process-definitions/${encodeURIComponent(processId)}/xml`),
 		{
 			headers: { authorization: authHeader },
 		},
@@ -167,7 +167,7 @@ function extractTimerDefs(processId: string, xml: string): TimerDef[] {
 // ── Firing ────────────────────────────────────────────────────────────────────
 
 async function fireProcess(baseUrl: string, authHeader: string, processId: string): Promise<void> {
-	const res = await fetch(`${baseUrl}/v2/process-instances`, {
+	const res = await fetch(clusterApiUrl(baseUrl, "/process-instances"), {
 		method: "POST",
 		headers: { authorization: authHeader, "content-type": "application/json" },
 		body: JSON.stringify({ processDefinitionId: processId, variables: {} }),

@@ -25,125 +25,126 @@ pnpm add @bpmnkit/api
 
 ## Client Configuration
 
+`baseUrl` is the cluster's Orchestration Cluster REST address, ending in `/v2`. On Camunda
+SaaS that is `ZEEBE_REST_ADDRESS` from a cluster's API client credentials file.
+
 ```typescript
 import { CamundaClient } from "@bpmnkit/api";
 
 const client = new CamundaClient({
-  baseUrl: "https://api.cloud.camunda.io",
+  baseUrl: `${process.env.ZEEBE_REST_ADDRESS}/v2`,
   auth: {
     type: "oauth2",
-    clientId: process.env.CAMUNDA_CLIENT_ID,
-    clientSecret: process.env.CAMUNDA_CLIENT_SECRET,
-    audience: process.env.CAMUNDA_AUDIENCE,
-    tokenUrl: process.env.CAMUNDA_TOKEN_URL,
+    clientId: process.env.ZEEBE_CLIENT_ID ?? "",
+    clientSecret: process.env.ZEEBE_CLIENT_SECRET ?? "",
+    tokenUrl: process.env.ZEEBE_AUTHORIZATION_SERVER_URL ?? "",
+    audience: "zeebe.camunda.io",
   },
   // Optional:
   cache: {
-    maxSize: 500,     // LRU cache size (default: 200)
-    ttlMs: 30_000,    // cache TTL in ms (default: 60_000)
+    enabled: true,    // cache eventually-consistent reads (default: false)
+    maxSize: 500,     // entries (default: 500)
+    ttl: 30_000,      // ms (default: 30_000)
   },
   retry: {
     maxAttempts: 3,   // default: 3
-    initialDelayMs: 200,
-    maxDelayMs: 5_000,
+    initialDelay: 100,
+    maxDelay: 5_000,
   },
 });
 ```
 
+With no arguments, `new CamundaClient()` reads `CAMUNDA_BASE_URL` and the `CAMUNDA_AUTH_*`
+variables, or a config file named by `CAMUNDA_CONFIG_FILE`.
+
 ## Resource Namespaces
 
-All methods are grouped by resource type:
+Methods are grouped by resource, one property per tag of the API spec. The most used:
 
-| Namespace | Methods |
+| Namespace | Methods (selection) |
 |---|---|
-| `client.process` | deploy, startInstance, listInstances, getInstance, cancel, migrate |
-| `client.jobs` | activate, complete, fail, throwError, activateAndProcess |
-| `client.incidents` | list, resolve, get |
-| `client.variables` | list, get, update |
-| `client.decisions` | evaluate, list, getInstance |
-| `client.messages` | publish, correlate |
-| `client.signals` | broadcast |
-| `client.userTasks` | list, get, complete, assign, claim |
-| `client.users` | list, get, create, delete |
-| `client.groups` | list, get, create, assignMember |
-| `client.authorizations` | list, create, delete |
+| `client.resource` | createDeployment, getResource, deleteResource |
+| `client.processInstance` | createProcessInstance, searchProcessInstances, getProcessInstance, cancelProcessInstance |
+| `client.processDefinition` | searchProcessDefinitions, getProcessDefinition |
+| `client.job` | activateJobs, completeJob, failJob, throwJobError |
+| `client.incident` | searchIncidents, getIncident, resolveIncident |
+| `client.variable` | searchVariables, getVariable |
+| `client.message` | publishMessage, correlateMessage |
+| `client.signal` | broadcastSignal |
+| `client.decisionDefinition` | evaluateDecision, searchDecisionDefinitions |
+| `client.userTask` | searchUserTasks, getUserTask, assignUserTask, completeUserTask |
+
+Users, groups, roles, tenants, authorizations, documents, batch operations and the rest have
+their own namespaces (`client.user`, `client.group`, …).
 
 ## Process Operations
 
 ```typescript
-// Deploy
-const deployed = await client.process.deploy({
-  resources: [{ content: bpmnXml, name: "my-flow.bpmn" }],
-});
+// Deploy: a multipart upload, one `resources` part per file
+const form = new FormData();
+form.append("resources", new Blob([bpmnXml]), "my-flow.bpmn");
+await client.resource.createDeployment(form);
 
 // Start instance
-const instance = await client.process.startInstance({
-  bpmnProcessId: "my-flow",
+const instance = await client.processInstance.createProcessInstance({
+  processDefinitionId: "my-flow",
   variables: { customerId: "cust-001" },
 });
 
 // List active instances
-const { items } = await client.process.listInstances({
-  state: "ACTIVE",
-  bpmnProcessId: "my-flow",
+const { items } = await client.processInstance.searchProcessInstances({
+  filter: { processDefinitionId: "my-flow", state: "ACTIVE" },
 });
 
 // Cancel instance
-await client.process.cancel({
-  processInstanceKey: instance.processInstanceKey,
-});
+await client.processInstance.cancelProcessInstance(instance.processInstanceKey);
 ```
 
 ## Job Workers
 
+For a long-running worker, use [`@bpmnkit/worker-client`](/docs/guides/deployment#handling-jobs).
+To handle a batch of jobs yourself:
+
 ```typescript
-// Activate and handle jobs in a poll loop
-const worker = await client.jobs.activateAndProcess({
+const { jobs } = await client.job.activateJobs({
   type: "send-email",
   maxJobsToActivate: 10,
   timeout: 60_000,          // job lock duration in ms
   worker: "email-worker-1",
-
-  handler: async (job) => {
-    try {
-      await sendEmail(job.variables);
-      await client.jobs.complete({
-        jobKey: job.key,
-        variables: { emailSent: true },
-      });
-    } catch (err) {
-      await client.jobs.fail({
-        jobKey: job.key,
-        errorMessage: String(err),
-        retries: job.retries - 1,
-      });
-    }
-  },
 });
 
-// Stop polling
-worker.close();
+for (const job of jobs) {
+  try {
+    await sendEmail(job.variables);
+    await client.job.completeJob(job.jobKey, { variables: { emailSent: true } });
+  } catch (err) {
+    await client.job.failJob(job.jobKey, {
+      errorMessage: String(err),
+      retries: job.retries - 1,
+    });
+  }
+}
 ```
 
 ## Incident Resolution
 
 ```typescript
 // Find all incidents for a process instance
-const { items: incidents } = await client.incidents.list({
-  processInstanceKey: instance.processInstanceKey,
+const { items: incidents } = await client.incident.searchIncidents({
+  filter: { processInstanceKey: instance.processInstanceKey },
 });
 
 // Fix the problem in your code, then resolve
-for (const incident of incidents) {
-  await client.incidents.resolve({ incidentKey: incident.key });
+for (const { incidentKey } of incidents) {
+  if (incidentKey) await client.incident.resolveIncident(incidentKey);
 }
 ```
 
 ## Message Correlation
 
 ```typescript
-await client.messages.publish({
-  messageName: "payment-confirmed",
+await client.message.publishMessage({
+  name: "payment-confirmed",
   correlationKey: "ord-456",
   variables: {
     paymentMethod: "card",
@@ -156,10 +157,10 @@ await client.messages.publish({
 ## Observability Events
 
 ```typescript
-type ClientEvent = "request" | "response" | "error" | "retry" | "token-refresh";
-
 client.on("request",  (e) => logger.debug(e.method, e.url));
 client.on("response", (e) => metrics.histogram("api.latency", e.durationMs));
-client.on("error",    (e) => logger.error(e.status, e.url, e.body));
+client.on("error",    (e) => logger.error(e.url, e.error.message));
 client.on("retry",    (e) => logger.warn(`Retrying ${e.url} (attempt ${e.attempt})`));
 ```
+
+The other events are `rawResponse`, `tokenRefresh`, `cacheHit` and `cacheMiss`.

@@ -6,7 +6,7 @@
  * `Authorization: Bearer <token>` on incoming requests.
  */
 import type { IncomingMessage, ServerResponse } from "node:http"
-import { getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
+import { clusterApiUrl, getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
 
 // ── Request matcher ───────────────────────────────────────────────────────────
 
@@ -77,7 +77,7 @@ export async function handleWebhook(
 		// proceed without auth
 	}
 
-	const startRes = await fetch(`${baseUrl}/v2/process-instances`, {
+	const startRes = await fetch(clusterApiUrl(baseUrl, "/process-instances"), {
 		method: "POST",
 		headers: { authorization: authHeader, "content-type": "application/json" },
 		body: JSON.stringify({ processDefinitionId: processId, variables }),

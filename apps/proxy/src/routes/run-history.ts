@@ -2,7 +2,7 @@ import { mkdirSync } from "node:fs"
 import type http from "node:http"
 import { homedir } from "node:os"
 import { join } from "node:path"
-import { getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
+import { clusterApiUrl, getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
 /**
  * Run history store — persists worker job execution history to SQLite.
  *
@@ -365,7 +365,7 @@ export async function handleRerunHistory(
 		variables = { ...variables, ...variableOverrides }
 
 		const processId = run.processId ?? ""
-		const startRes = await fetch(`${baseUrl}/v2/process-instances`, {
+		const startRes = await fetch(clusterApiUrl(baseUrl, "/process-instances"), {
 			method: "POST",
 			headers: { authorization: authHeader, "content-type": "application/json" },
 			body: JSON.stringify({ processDefinitionId: processId, variables }),
