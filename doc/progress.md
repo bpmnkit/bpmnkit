@@ -1,5 +1,21 @@
 # Progress
 
+## 2026-10-09 — Landing: in-browser OpenAPI → connector generator
+
+- New page `/connector-generator` on bpmnkit.com: drop (or pick) an OpenAPI 3 or Swagger 2 spec,
+  JSON or YAML, and get one Camunda 8 REST connector element template per operation. ID prefix,
+  base-URL override, operation filter, default auth and body expansion are adjustable and
+  regenerate live; each template can be previewed, and the selected ones downloaded as one
+  element-template file or copied. It runs `@bpmnkit/connector-gen/browser` in the page — the
+  spec is never uploaded. Linked from the Tools menu, the footer, `/integrations` and
+  `/connectors`.
+- `@bpmnkit/connector-gen`: `parseOpenApi` now upgrades Swagger 2.0 documents to OpenAPI 3
+  (`swagger2.ts`) instead of rejecting them, which the package README already claimed it did.
+  Catalog entries pointing at `swagger.json` specs benefit too.
+- `@bpmnkit/connector-gen`: `GeneratorOptions.baseUrl` was documented as an override but never
+  read, so `casen connector generate --base-url` had no effect. It now replaces the spec's
+  server URL.
+
 ## 2026-10-08 — Layout: boundary events stay off a sub-process title, labels off their exit edge
 
 - A named expanded sub-process draws its title centred on its top border, so the semantic layout
