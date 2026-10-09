@@ -1,5 +1,25 @@
 # Progress
 
+## 2026-10-09 — camunda-docspack: the Modeler, the guides and the reference
+
+- A comparison with the Camunda Docs MCP found areas with no chunk at all: DMN, forms, element
+  templates, the Camunda 7 migration guides, the glossary, c8ctl, the audit log. `INCLUDED` now
+  covers them and the other pages that were left out: 7,134 chunks, up from 6,039. `INCLUDED` also
+  takes a single page, so the glossary and the supported environments come without their siblings.
+- Two transforms were wrong. A shared component imported under another name (`GHIcon` for
+  `GitHubInlineIcon`) is now looked up by its module. A tag whose props run over more than 40 lines,
+  or an HTML tag with a `className={…}`, left its props in the text; the Hub card grid was one.
+- The eval grows from 20 to 55 questions. 24 are labelled by the first two pages the MCP returned,
+  so another system sets the answer. On the 22 of them that the old pack could also answer, the
+  larger corpus costs one top-3 hit (14 of 22, was 15) and 0.035 in mean reciprocal rank.
+  The Python SDK question loses most (1st to 4th), to the new SDK and MCP pages.
+- Tried and dropped, each against all three sets: a bonus for query words in the chunk title
+  (14 of 20 on the first set, was 16), a bonus for the best chunk of the same page (also worse),
+  a score factor for the share of query words a chunk has (no change on the 22), and whole-word
+  tags on the API digests (the permissions question fell from 2nd to 13th). What the 12 known
+  misses of the two new sets share is vocabulary: the page says "compute form state", the question says "calculate
+  the value of a form field". Only an index of questions, or embeddings, closes that.
+
 ## 2026-10-09 — camunda-docspack: rebuilt against camunda-docs@9bd7ca2
 
 - The committed pack is rebuilt from the current camunda-docs (`9bd7ca2`, was `b4b27e3`), with

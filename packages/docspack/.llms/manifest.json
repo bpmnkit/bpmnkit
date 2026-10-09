@@ -1,7 +1,7 @@
 {
 	"$schema": "https://docspack.dev/schema/v1.json",
 	"name": "@bpmnkit/docspack",
-	"version": "1.1.1",
+	"version": "1.2.0",
 	"documents": [
 		"@bpmnkit/core",
 		"@bpmnkit/canvas",
@@ -3473,7 +3473,7 @@
 		{
 			"id": "guides.using-bpmnkit-with-ai.the-two-packs-bpmn-kit-ships",
 			"file": "chunks/guides.using-bpmnkit-with-ai.the-two-packs-bpmn-kit-ships.md",
-			"tokens": 161,
+			"tokens": 180,
 			"tags": [
 				"guides",
 				"using-bpmnkit-with-ai",
@@ -4048,7 +4048,7 @@
 		{
 			"id": "packages.camunda-docspack.overview",
 			"file": "chunks/packages.camunda-docspack.overview.md",
-			"tokens": 371,
+			"tokens": 403,
 			"tags": [
 				"packages",
 				"camunda-docspack",

@@ -2,7 +2,7 @@
 
 > Camunda 8 documentation as an offline, version-locked docspack package for AI agents
 
-Version 0.1.7. 6039 chunks documenting camunda@8.10.
+Version 0.2.0. 7134 chunks documenting camunda@8.10.
 
 ```sh
 npm i -D @bpmnkit/camunda-docspack
@@ -11,6 +11,132 @@ npx bpmnkit-docs ask "how do I deploy a process"
 
 ## apis-tools
 
+- [Administration API (SaaS)](.llms/chunks/apis-tools.administration-api.administration-api-reference.md) — 147 tokens
+- [Administration API (SaaS) — Authentication](.llms/chunks/apis-tools.administration-api.administration-api-reference.authentication.md) — 55 tokens
+- [Authentication](.llms/chunks/apis-tools.administration-api.authentication.md) — 471 tokens
+- [Authentication — Use a token](.llms/chunks/apis-tools.administration-api.authentication.use-a-token.md) — 164 tokens
+- [Authentication — Client credentials and scopes](.llms/chunks/apis-tools.administration-api.authentication.client-credentials-and-scopes.md) — 251 tokens
+- [Authentication — Rate limiting](.llms/chunks/apis-tools.administration-api.authentication.rate-limiting.md) — 397 tokens
+- [Tutorial](.llms/chunks/apis-tools.administration-api.tutorial.md) — 321 tokens
+- [Tutorial — Getting started](.llms/chunks/apis-tools.administration-api.tutorial.getting-started.md) — 478 tokens
+- [Tutorial — GET a list of existing clients](.llms/chunks/apis-tools.administration-api.tutorial.get-a-list-of-existing-clients.md) — 655 tokens
+- [Tutorial — POST a client](.llms/chunks/apis-tools.administration-api.tutorial.post-a-client.md) — 376 tokens
+- [Tutorial — GET a client ID](.llms/chunks/apis-tools.administration-api.tutorial.get-a-client-id.md) — 226 tokens
+- [Tutorial — DELETE a client](.llms/chunks/apis-tools.administration-api.tutorial.delete-a-client.md) — 242 tokens
+- [Tutorial — If you get stuck](.llms/chunks/apis-tools.administration-api.tutorial.if-you-get-stuck.md) — 98 tokens
+- [Build your own client](.llms/chunks/apis-tools.build-your-own-client.md) — 326 tokens
+- [Build your own client — gRPC handling](.llms/chunks/apis-tools.build-your-own-client.grpc-handling.md) — 510 tokens
+- [Cluster inspection and process management](.llms/chunks/apis-tools.c8ctl.cluster-inspection.md) — 314 tokens
+- [Cluster inspection and process management — Topology](.llms/chunks/apis-tools.c8ctl.cluster-inspection.topology.md) — 415 tokens
+- [Cluster inspection and process management — User tasks](.llms/chunks/apis-tools.c8ctl.cluster-inspection.user-tasks.md) — 173 tokens
+- [Cluster inspection and process management — Jobs](.llms/chunks/apis-tools.c8ctl.cluster-inspection.jobs.md) — 295 tokens
+- [Cluster inspection and process management — Search](.llms/chunks/apis-tools.c8ctl.cluster-inspection.search.md) — 66 tokens
+- [Cluster inspection and process management — Search — Date range filtering](.llms/chunks/apis-tools.c8ctl.cluster-inspection.search-date-range-filtering.md) — 488 tokens
+- [Cluster inspection and process management — Search — Wildcard search](.llms/chunks/apis-tools.c8ctl.cluster-inspection.search-wildcard-search.md) — 185 tokens
+- [Cluster inspection and process management — Search — Case-insensitive search](.llms/chunks/apis-tools.c8ctl.cluster-inspection.search-case-insensitive-search.md) — 225 tokens
+- [Cluster inspection and process management — Search — Search process definitions](.llms/chunks/apis-tools.c8ctl.cluster-inspection.search-search-process-definitions.md) — 76 tokens
+- [Cluster inspection and process management — Search — Search process instances](.llms/chunks/apis-tools.c8ctl.cluster-inspection.search-search-process-instances.md) — 94 tokens
+- [Cluster inspection and process management — Search — Search user tasks](.llms/chunks/apis-tools.c8ctl.cluster-inspection.search-search-user-tasks.md) — 88 tokens
+- [Cluster inspection and process management — Search — Search incidents](.llms/chunks/apis-tools.c8ctl.cluster-inspection.search-search-incidents.md) — 77 tokens
+- [Cluster inspection and process management — Search — Search jobs](.llms/chunks/apis-tools.c8ctl.cluster-inspection.search-search-jobs.md) — 80 tokens
+- [Cluster inspection and process management — Search — Search variables](.llms/chunks/apis-tools.c8ctl.cluster-inspection.search-search-variables.md) — 102 tokens
+- [Cluster inspection and process management — Search — Search wait states](.llms/chunks/apis-tools.c8ctl.cluster-inspection.search-search-wait-states.md) — 152 tokens
+- [Cluster inspection and process management — Variables](.llms/chunks/apis-tools.c8ctl.cluster-inspection.variables.md) — 384 tokens
+- [Cluster inspection and process management — Identity management](.llms/chunks/apis-tools.c8ctl.cluster-inspection.identity-management.md) — 535 tokens
+- [Cluster inspection and process management — Messages](.llms/chunks/apis-tools.c8ctl.cluster-inspection.messages.md) — 237 tokens
+- [Cluster inspection and process management — Sorting and limiting results](.llms/chunks/apis-tools.c8ctl.cluster-inspection.sorting-and-limiting-results.md) — 209 tokens
+- [Command reference](.llms/chunks/apis-tools.c8ctl.command-reference.md) — 304 tokens
+- [Command reference — Resource Aliases](.llms/chunks/apis-tools.c8ctl.command-reference.resource-aliases.md) — 272 tokens
+- [Command reference — Commands — `list`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-list.md) — 825 tokens
+- [Command reference — Commands — `list` (2)](.llms/chunks/apis-tools.c8ctl.command-reference.commands-list-2.md) — 625 tokens
+- [Command reference — Commands — `search`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-search.md) — 900 tokens
+- [Command reference — Commands — `search` (2)](.llms/chunks/apis-tools.c8ctl.command-reference.commands-search-2.md) — 1016 tokens
+- [Command reference — Commands — `search` (3)](.llms/chunks/apis-tools.c8ctl.command-reference.commands-search-3.md) — 23 tokens
+- [Command reference — Commands — `get`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-get.md) — 475 tokens
+- [Command reference — Commands — `create`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-create.md) — 767 tokens
+- [Command reference — Commands — `delete`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-delete.md) — 126 tokens
+- [Command reference — Commands — `cancel`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-cancel.md) — 56 tokens
+- [Command reference — Commands — `await`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-await.md) — 253 tokens
+- [Command reference — Commands — `complete`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-complete.md) — 126 tokens
+- [Command reference — Commands — `fail`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-fail.md) — 112 tokens
+- [Command reference — Commands — `update`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-update.md) — 197 tokens
+- [Command reference — Commands — `activate`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-activate.md) — 175 tokens
+- [Command reference — Commands — `resolve`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-resolve.md) — 53 tokens
+- [Command reference — Commands — `publish`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-publish.md) — 137 tokens
+- [Command reference — Commands — `correlate`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-correlate.md) — 141 tokens
+- [Command reference — Commands — `set`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-set.md) — 227 tokens
+- [Command reference — Commands — `deploy`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-deploy.md) — 235 tokens
+- [Command reference — Commands — `run`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-run.md) — 175 tokens
+- [Command reference — Commands — `assign`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-assign.md) — 212 tokens
+- [Command reference — Commands — `unassign`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-unassign.md) — 212 tokens
+- [Command reference — Commands — `watch`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-watch.md) — 204 tokens
+- [Command reference — Commands — `open`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-open.md) — 93 tokens
+- [Command reference — Commands — `add`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-add.md) — 308 tokens
+- [Command reference — Commands — `remove`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-remove.md) — 105 tokens
+- [Command reference — Commands — `load`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-load.md) — 144 tokens
+- [Command reference — Commands — `unload`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-unload.md) — 108 tokens
+- [Command reference — Commands — `upgrade`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-upgrade.md) — 103 tokens
+- [Command reference — Commands — `downgrade`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-downgrade.md) — 63 tokens
+- [Command reference — Commands — `sync`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-sync.md) — 48 tokens
+- [Command reference — Commands — `init`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-init.md) — 71 tokens
+- [Command reference — Commands — `doctor`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-doctor.md) — 91 tokens
+- [Command reference — Commands — `use`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-use.md) — 126 tokens
+- [Command reference — Commands — `output`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-output.md) — 60 tokens
+- [Command reference — Commands — `completion`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-completion.md) — 151 tokens
+- [Command reference — Commands — `mcp-proxy`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-mcp-proxy.md) — 48 tokens
+- [Command reference — Commands — `feedback`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-feedback.md) — 35 tokens
+- [Command reference — Commands — `help`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-help.md) — 47 tokens
+- [Command reference — Commands — `which`](.llms/chunks/apis-tools.c8ctl.command-reference.commands-which.md) — 61 tokens
+- [Development workflows](.llms/chunks/apis-tools.c8ctl.development-workflows.md) — 187 tokens
+- [Development workflows — Deploy](.llms/chunks/apis-tools.c8ctl.development-workflows.deploy.md) — 815 tokens
+- [Development workflows — Run](.llms/chunks/apis-tools.c8ctl.development-workflows.run.md) — 334 tokens
+- [Development workflows — Profile management](.llms/chunks/apis-tools.c8ctl.development-workflows.profile-management.md) — 338 tokens
+- [Development workflows — Session management](.llms/chunks/apis-tools.c8ctl.development-workflows.session-management.md) — 648 tokens
+- [Development workflows — Advanced example: iterative process testing](.llms/chunks/apis-tools.c8ctl.development-workflows.advanced-example-iterative-process-testing.md) — 403 tokens
+- [Development workflows — Open web applications](.llms/chunks/apis-tools.c8ctl.development-workflows.open-web-applications.md) — 145 tokens
+- [Development workflows — AI agents and scripting](.llms/chunks/apis-tools.c8ctl.development-workflows.ai-agents-and-scripting.md) — 482 tokens
+- [Development workflows — Verbose mode](.llms/chunks/apis-tools.c8ctl.development-workflows.verbose-mode.md) — 112 tokens
+- [c8ctl CLI](.llms/chunks/apis-tools.c8ctl.getting-started.md) — 247 tokens
+- [c8ctl CLI — Prerequisites](.llms/chunks/apis-tools.c8ctl.getting-started.prerequisites.md) — 124 tokens
+- [c8ctl CLI — Prerequisites — Start a cluster](.llms/chunks/apis-tools.c8ctl.getting-started.prerequisites-start-a-cluster.md) — 125 tokens
+- [c8ctl CLI — Prerequisites — Stop the cluster](.llms/chunks/apis-tools.c8ctl.getting-started.prerequisites-stop-the-cluster.md) — 30 tokens
+- [c8ctl CLI — Prerequisites — Check cluster status](.llms/chunks/apis-tools.c8ctl.getting-started.prerequisites-check-cluster-status.md) — 42 tokens
+- [c8ctl CLI — Prerequisites — View cluster logs](.llms/chunks/apis-tools.c8ctl.getting-started.prerequisites-view-cluster-logs.md) — 39 tokens
+- [c8ctl CLI — Prerequisites — Manage cached versions](.llms/chunks/apis-tools.c8ctl.getting-started.prerequisites-manage-cached-versions.md) — 137 tokens
+- [c8ctl CLI — Prerequisites — Manage secrets](.llms/chunks/apis-tools.c8ctl.getting-started.prerequisites-manage-secrets.md) — 331 tokens
+- [c8ctl CLI — Prerequisites — Version aliases](.llms/chunks/apis-tools.c8ctl.getting-started.prerequisites-version-aliases.md) — 191 tokens
+- [c8ctl CLI — Prerequisites — Debug output](.llms/chunks/apis-tools.c8ctl.getting-started.prerequisites-debug-output.md) — 38 tokens
+- [c8ctl CLI — Prerequisites — Supported platforms](.llms/chunks/apis-tools.c8ctl.getting-started.prerequisites-supported-platforms.md) — 108 tokens
+- [c8ctl CLI — Credential resolution](.llms/chunks/apis-tools.c8ctl.getting-started.credential-resolution.md) — 335 tokens
+- [c8ctl CLI — Tenant resolution](.llms/chunks/apis-tools.c8ctl.getting-started.tenant-resolution.md) — 135 tokens
+- [c8ctl CLI — Tenant resolution — Add a profile](.llms/chunks/apis-tools.c8ctl.getting-started.tenant-resolution-add-a-profile.md) — 185 tokens
+- [c8ctl CLI — Tenant resolution — Gateway-fronted clusters](.llms/chunks/apis-tools.c8ctl.getting-started.tenant-resolution-gateway-fronted-clusters.md) — 198 tokens
+- [c8ctl CLI — Tenant resolution — List profiles](.llms/chunks/apis-tools.c8ctl.getting-started.tenant-resolution-list-profiles.md) — 49 tokens
+- [c8ctl CLI — Tenant resolution — Switch the active profile](.llms/chunks/apis-tools.c8ctl.getting-started.tenant-resolution-switch-the-active-profile.md) — 61 tokens
+- [c8ctl CLI — Tenant resolution — Show the current profile](.llms/chunks/apis-tools.c8ctl.getting-started.tenant-resolution-show-the-current-profile.md) — 32 tokens
+- [c8ctl CLI — Tenant resolution — Remove a profile](.llms/chunks/apis-tools.c8ctl.getting-started.tenant-resolution-remove-a-profile.md) — 68 tokens
+- [c8ctl CLI — Tenant resolution — Camunda Modeler integration](.llms/chunks/apis-tools.c8ctl.getting-started.tenant-resolution-camunda-modeler-integration.md) — 207 tokens
+- [c8ctl CLI — Get help](.llms/chunks/apis-tools.c8ctl.getting-started.get-help.md) — 142 tokens
+- [c8ctl CLI — Send feedback](.llms/chunks/apis-tools.c8ctl.getting-started.send-feedback.md) — 267 tokens
+- [c8ctl CLI — Output modes](.llms/chunks/apis-tools.c8ctl.getting-started.output-modes.md) — 179 tokens
+- [c8ctl CLI — Debug mode](.llms/chunks/apis-tools.c8ctl.getting-started.debug-mode.md) — 156 tokens
+- [Identity management](.llms/chunks/apis-tools.c8ctl.identity-management.md) — 362 tokens
+- [Identity management — Users](.llms/chunks/apis-tools.c8ctl.identity-management.users.md) — 202 tokens
+- [Identity management — Groups](.llms/chunks/apis-tools.c8ctl.identity-management.groups.md) — 177 tokens
+- [Identity management — Authorizations](.llms/chunks/apis-tools.c8ctl.identity-management.authorizations.md) — 178 tokens
+- [Identity management — Assign and unassign](.llms/chunks/apis-tools.c8ctl.identity-management.assign-and-unassign.md) — 185 tokens
+- [Extend c8ctl with plugins](.llms/chunks/apis-tools.c8ctl.plugins.md) — 256 tokens
+- [Extend c8ctl with plugins — Scaffold a new plugin](.llms/chunks/apis-tools.c8ctl.plugins.scaffold-a-new-plugin.md) — 142 tokens
+- [Extend c8ctl with plugins — Manage plugins](.llms/chunks/apis-tools.c8ctl.plugins.manage-plugins.md) — 527 tokens
+- [Extend c8ctl with plugins — The c8ctl version a plugin needs](.llms/chunks/apis-tools.c8ctl.plugins.the-c8ctl-version-a-plugin-needs.md) — 705 tokens
+- [Extend c8ctl with plugins — Plugin structure](.llms/chunks/apis-tools.c8ctl.plugins.plugin-structure.md) — 171 tokens
+- [Extend c8ctl with plugins — Plugin runtime API](.llms/chunks/apis-tools.c8ctl.plugins.plugin-runtime-api.md) — 338 tokens
+- [Extend c8ctl with plugins — Plugin runtime API — Running npm from a plugin](.llms/chunks/apis-tools.c8ctl.plugins.plugin-runtime-api-running-npm-from-a-plugin.md) — 522 tokens
+- [Extend c8ctl with plugins — Plugin runtime API — TypeScript autocomplete](.llms/chunks/apis-tools.c8ctl.plugins.plugin-runtime-api-typescript-autocomplete.md) — 82 tokens
+- [Extend c8ctl with plugins — Plugin runtime API — Use the SDK client from a plugin](.llms/chunks/apis-tools.c8ctl.plugins.plugin-runtime-api-use-the-sdk-client-from-a-plugin.md) — 110 tokens
+- [Extend c8ctl with plugins — Help integration](.llms/chunks/apis-tools.c8ctl.plugins.help-integration.md) — 222 tokens
+- [Extend c8ctl with plugins — Find plugins](.llms/chunks/apis-tools.c8ctl.plugins.find-plugins.md) — 169 tokens
+- [Extend c8ctl with plugins — Best practices](.llms/chunks/apis-tools.c8ctl.plugins.best-practices.md) — 151 tokens
 - [Configuration](.llms/chunks/apis-tools.camunda-spring-boot-starter.configuration.md) — 172 tokens
 - [Configuration — Modes](.llms/chunks/apis-tools.camunda-spring-boot-starter.configuration.modes.md) — 381 tokens
 - [Configuration — Connectivity](.llms/chunks/apis-tools.camunda-spring-boot-starter.configuration.connectivity.md) — 32 tokens
@@ -53,6 +179,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Properties reference — `camunda.client.cluster-variables.variables`](.llms/chunks/apis-tools.camunda-spring-boot-starter.properties-reference.camunda.client.cluster-variables.variables.md) — 130 tokens
 - [Properties reference — `camunda.client.worker.override`](.llms/chunks/apis-tools.camunda-spring-boot-starter.properties-reference.camunda.client.worker.override.md) — 654 tokens
 - [Properties reference — Deprecated properties](.llms/chunks/apis-tools.camunda-spring-boot-starter.properties-reference.deprecated-properties.md) — 734 tokens
+- [Community-supported component clients](.llms/chunks/apis-tools.community-clients.index.md) — 277 tokens
 - [Authentication](.llms/chunks/apis-tools.csharp-sdk.authentication.md) — 69 tokens
 - [Configuration Reference](.llms/chunks/apis-tools.csharp-sdk.configuration-reference.md) — 628 tokens
 - [Creating a Process Instance](.llms/chunks/apis-tools.csharp-sdk.creating-a-process-instance.md) — 296 tokens
@@ -89,6 +216,43 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Typed Variables with DTOs](.llms/chunks/apis-tools.csharp-sdk.typed-variables-with-dtos.md) — 199 tokens
 - [Typed Variables with DTOs — Receiving Variables (Output)](.llms/chunks/apis-tools.csharp-sdk.typed-variables-with-dtos.receiving-variables-output.md) — 172 tokens
 - [Typed Variables with DTOs — Searching Variables as a DTO](.llms/chunks/apis-tools.csharp-sdk.typed-variables-with-dtos.searching-variables-as-a-dto.md) — 354 tokens
+- [Introduction to task applications](.llms/chunks/apis-tools.frontend-development.01-task-applications.01-introduction-to-task-applications.md) — 428 tokens
+- [Introduction to task applications — Tasklist layout](.llms/chunks/apis-tools.frontend-development.01-task-applications.01-introduction-to-task-applications.tasklist-layout.md) — 108 tokens
+- [Introduction to task applications — Tasklist layout — Task page](.llms/chunks/apis-tools.frontend-development.01-task-applications.01-introduction-to-task-applications.tasklist-layout-task-page.md) — 686 tokens
+- [Introduction to task applications — Tasklist layout — Processes page](.llms/chunks/apis-tools.frontend-development.01-task-applications.01-introduction-to-task-applications.tasklist-layout-processes-page.md) — 194 tokens
+- [Introduction to task applications — Task lifecycle](.llms/chunks/apis-tools.frontend-development.01-task-applications.01-introduction-to-task-applications.task-lifecycle.md) — 310 tokens
+- [Introduction to task applications — Task assignment](.llms/chunks/apis-tools.frontend-development.01-task-applications.01-introduction-to-task-applications.task-assignment.md) — 229 tokens
+- [Introduction to task applications — Additional elements and alternative use cases](.llms/chunks/apis-tools.frontend-development.01-task-applications.01-introduction-to-task-applications.additional-elements-and-alternative-use-cases.md) — 302 tokens
+- [User task lifecycle](.llms/chunks/apis-tools.frontend-development.01-task-applications.02-user-task-lifecycle.md) — 534 tokens
+- [User task lifecycle — Task assignment](.llms/chunks/apis-tools.frontend-development.01-task-applications.02-user-task-lifecycle.task-assignment.md) — 421 tokens
+- [User task lifecycle — Lifecycle events](.llms/chunks/apis-tools.frontend-development.01-task-applications.02-user-task-lifecycle.lifecycle-events.md) — 395 tokens
+- [User task lifecycle — Implement the lifecycle](.llms/chunks/apis-tools.frontend-development.01-task-applications.02-user-task-lifecycle.implement-the-lifecycle.md) — 406 tokens
+- [User task lifecycle — Reporting](.llms/chunks/apis-tools.frontend-development.01-task-applications.02-user-task-lifecycle.reporting.md) — 155 tokens
+- [Task application architecture](.llms/chunks/apis-tools.frontend-development.01-task-applications.03-task-application-architecture.md) — 656 tokens
+- [Introduction to forms](.llms/chunks/apis-tools.frontend-development.03-forms.01-introduction-to-forms.md) — 147 tokens
+- [Introduction to forms — Camunda Forms](.llms/chunks/apis-tools.frontend-development.03-forms.01-introduction-to-forms.camunda-forms.md) — 457 tokens
+- [Concepts](.llms/chunks/apis-tools.frontend-development.03-forms.02-embed-forms.01-concepts.md) — 676 tokens
+- [Concepts — The form schema](.llms/chunks/apis-tools.frontend-development.03-forms.02-embed-forms.01-concepts.the-form-schema.md) — 625 tokens
+- [Concepts — Examples](.llms/chunks/apis-tools.frontend-development.03-forms.02-embed-forms.01-concepts.examples.md) — 38 tokens
+- [Embed forms in JavaScript](.llms/chunks/apis-tools.frontend-development.03-forms.02-embed-forms.02-embed-in-javascript.md) — 296 tokens
+- [Embed forms in JavaScript — Embed into your application](.llms/chunks/apis-tools.frontend-development.03-forms.02-embed-forms.02-embed-in-javascript.embed-into-your-application.md) — 205 tokens
+- [Embed forms in JavaScript — Embed into your application — Input form context data](.llms/chunks/apis-tools.frontend-development.03-forms.02-embed-forms.02-embed-in-javascript.embed-into-your-application-input-form-context-data.md) — 274 tokens
+- [Embed forms in JavaScript — Embed into your application — Validate a form](.llms/chunks/apis-tools.frontend-development.03-forms.02-embed-forms.02-embed-in-javascript.embed-into-your-application-validate-a-form.md) — 117 tokens
+- [Embed forms in JavaScript — Embed into your application — Trigger and listen to form events](.llms/chunks/apis-tools.frontend-development.03-forms.02-embed-forms.02-embed-in-javascript.embed-into-your-application-trigger-and-listen-to-form-events.md) — 155 tokens
+- [Embed forms in JavaScript — Embed into your application — Retrieve form output data](.llms/chunks/apis-tools.frontend-development.03-forms.02-embed-forms.02-embed-in-javascript.embed-into-your-application-retrieve-form-output-data.md) — 86 tokens
+- [Embed forms in JavaScript — Embed into your application — Retrieve schema variables](.llms/chunks/apis-tools.frontend-development.03-forms.02-embed-forms.02-embed-in-javascript.embed-into-your-application-retrieve-schema-variables.md) — 239 tokens
+- [Embed forms in JavaScript — Embed into your application — Next steps](.llms/chunks/apis-tools.frontend-development.03-forms.02-embed-forms.02-embed-in-javascript.embed-into-your-application-next-steps.md) — 124 tokens
+- [Styling](.llms/chunks/apis-tools.frontend-development.03-forms.03-customize-and-extend.01-styling.md) — 315 tokens
+- [Styling — Theming with semantic tokens](.llms/chunks/apis-tools.frontend-development.03-forms.03-customize-and-extend.01-styling.theming-with-semantic-tokens.md) — 285 tokens
+- [Styling — Component variables](.llms/chunks/apis-tools.frontend-development.03-forms.03-customize-and-extend.01-styling.component-variables.md) — 99 tokens
+- [Styling — Styleable classes](.llms/chunks/apis-tools.frontend-development.03-forms.03-customize-and-extend.01-styling.styleable-classes.md) — 90 tokens
+- [Styling — Example](.llms/chunks/apis-tools.frontend-development.03-forms.03-customize-and-extend.01-styling.example.md) — 237 tokens
+- [Styling — Styling via form viewer customization](.llms/chunks/apis-tools.frontend-development.03-forms.03-customize-and-extend.01-styling.styling-via-form-viewer-customization.md) — 263 tokens
+- [Custom components](.llms/chunks/apis-tools.frontend-development.03-forms.03-customize-and-extend.02-custom-components.md) — 234 tokens
+- [Custom components — Use cases for custom components](.llms/chunks/apis-tools.frontend-development.03-forms.03-customize-and-extend.02-custom-components.use-cases-for-custom-components.md) — 269 tokens
+- [Integrate API data](.llms/chunks/apis-tools.frontend-development.03-forms.03-customize-and-extend.03-integrate-api-data.md) — 247 tokens
+- [Integrate API data — Load data on runtime with form events](.llms/chunks/apis-tools.frontend-development.03-forms.03-customize-and-extend.03-integrate-api-data.load-data-on-runtime-with-form-events.md) — 221 tokens
+- [Integrate API data — Load data on runtime with a custom component](.llms/chunks/apis-tools.frontend-development.03-forms.03-customize-and-extend.03-integrate-api-data.load-data-on-runtime-with-a-custom-component.md) — 228 tokens
 - [Architecture](.llms/chunks/apis-tools.go-sdk.architecture.md) — 414 tokens
 - [Authentication](.llms/chunks/apis-tools.go-sdk.authentication.md) — 278 tokens
 - [Backpressure](.llms/chunks/apis-tools.go-sdk.backpressure.md) — 266 tokens
@@ -246,6 +410,87 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Process application management in Web Modeler API v1 — Projects API — File paths exclude process applications](.llms/chunks/apis-tools.migration-manuals.web-modeler-v1-apis.projects-api-file-paths-exclude-process-applications.md) — 533 tokens
 - [Process application management in Web Modeler API v1 — Projects API — Project folders exclude process applications](.llms/chunks/apis-tools.migration-manuals.web-modeler-v1-apis.projects-api-project-folders-exclude-process-applications.md) — 522 tokens
 - [Process application management in Web Modeler API v1 — Versions API](.llms/chunks/apis-tools.migration-manuals.web-modeler-v1-apis.versions-api.md) — 227 tokens
+- [Migrate from the removed Operate API](.llms/chunks/apis-tools.operate-api.overview.md) — 177 tokens
+- [Disable sharing](.llms/chunks/apis-tools.optimize-api.configuration.disable-sharing.md) — 140 tokens
+- [Disable sharing — Request headers](.llms/chunks/apis-tools.optimize-api.configuration.disable-sharing.request-headers.md) — 240 tokens
+- [Disable sharing — Example](.llms/chunks/apis-tools.optimize-api.configuration.disable-sharing.example.md) — 56 tokens
+- [Enable sharing](.llms/chunks/apis-tools.optimize-api.configuration.enable-sharing.md) — 135 tokens
+- [Enable sharing — Request headers](.llms/chunks/apis-tools.optimize-api.configuration.enable-sharing.request-headers.md) — 240 tokens
+- [Enable sharing — Example](.llms/chunks/apis-tools.optimize-api.configuration.enable-sharing.example.md) — 56 tokens
+- [Delete dashboards](.llms/chunks/apis-tools.optimize-api.dashboard.delete-dashboard.md) — 174 tokens
+- [Delete dashboards — Query parameters](.llms/chunks/apis-tools.optimize-api.dashboard.delete-dashboard.query-parameters.md) — 187 tokens
+- [Delete dashboards — Example](.llms/chunks/apis-tools.optimize-api.dashboard.delete-dashboard.example.md) — 63 tokens
+- [Export dashboard definitions](.llms/chunks/apis-tools.optimize-api.dashboard.export-dashboard-definitions.md) — 145 tokens
+- [Export dashboard definitions — Request headers](.llms/chunks/apis-tools.optimize-api.dashboard.export-dashboard-definitions.request-headers.md) — 154 tokens
+- [Export dashboard definitions — Response codes](.llms/chunks/apis-tools.optimize-api.dashboard.export-dashboard-definitions.response-codes.md) — 160 tokens
+- [Export dashboard definitions — Example](.llms/chunks/apis-tools.optimize-api.dashboard.export-dashboard-definitions.example.md) — 394 tokens
+- [Get dashboard IDs](.llms/chunks/apis-tools.optimize-api.dashboard.get-dashboard-ids.md) — 139 tokens
+- [Get dashboard IDs — Query parameters](.llms/chunks/apis-tools.optimize-api.dashboard.get-dashboard-ids.query-parameters.md) — 145 tokens
+- [Get dashboard IDs — Response codes](.llms/chunks/apis-tools.optimize-api.dashboard.get-dashboard-ids.response-codes.md) — 139 tokens
+- [Get dashboard IDs — Example](.llms/chunks/apis-tools.optimize-api.dashboard.get-dashboard-ids.example.md) — 103 tokens
+- [Delete process definition data](.llms/chunks/apis-tools.optimize-api.delete-process-definition-data.md) — 208 tokens
+- [Delete process definition data — Configuration](.llms/chunks/apis-tools.optimize-api.delete-process-definition-data.configuration.md) — 162 tokens
+- [Delete process definition data — Request headers](.llms/chunks/apis-tools.optimize-api.delete-process-definition-data.request-headers.md) — 175 tokens
+- [Delete process definition data — Query parameters](.llms/chunks/apis-tools.optimize-api.delete-process-definition-data.query-parameters.md) — 220 tokens
+- [Delete process definition data — Example](.llms/chunks/apis-tools.optimize-api.delete-process-definition-data.example.md) — 67 tokens
+- [External variable ingestion](.llms/chunks/apis-tools.optimize-api.external-variable-ingestion.md) — 150 tokens
+- [External variable ingestion — Functionality](.llms/chunks/apis-tools.optimize-api.external-variable-ingestion.functionality.md) — 304 tokens
+- [External variable ingestion — Configuration](.llms/chunks/apis-tools.optimize-api.external-variable-ingestion.configuration.md) — 152 tokens
+- [External variable ingestion — Request body](.llms/chunks/apis-tools.optimize-api.external-variable-ingestion.request-body.md) — 254 tokens
+- [External variable ingestion — Result](.llms/chunks/apis-tools.optimize-api.external-variable-ingestion.result.md) — 139 tokens
+- [External variable ingestion — Example](.llms/chunks/apis-tools.optimize-api.external-variable-ingestion.example.md) — 109 tokens
+- [Health readiness](.llms/chunks/apis-tools.optimize-api.health-readiness.md) — 191 tokens
+- [Import entities](.llms/chunks/apis-tools.optimize-api.import-entities.md) — 234 tokens
+- [Import entities — Method & HTTP target resource](.llms/chunks/apis-tools.optimize-api.import-entities.method-http-target-resource.md) — 193 tokens
+- [Import entities — Request body](.llms/chunks/apis-tools.optimize-api.import-entities.request-body.md) — 336 tokens
+- [Import entities — Example](.llms/chunks/apis-tools.optimize-api.import-entities.example.md) — 229 tokens
+- [Authentication](.llms/chunks/apis-tools.optimize-api.optimize-api-authentication.md) — 777 tokens
+- [Authentication — Use a token](.llms/chunks/apis-tools.optimize-api.optimize-api-authentication.use-a-token.md) — 218 tokens
+- [Authentication — Token expiration](.llms/chunks/apis-tools.optimize-api.optimize-api-authentication.token-expiration.md) — 51 tokens
+- [Optimize API](.llms/chunks/apis-tools.optimize-api.overview.md) — 138 tokens
+- [Optimize API — API Postman collection](.llms/chunks/apis-tools.optimize-api.overview.api-postman-collection.md) — 101 tokens
+- [Delete reports](.llms/chunks/apis-tools.optimize-api.report.delete-report.md) — 205 tokens
+- [Delete reports — Query parameters](.llms/chunks/apis-tools.optimize-api.report.delete-report.query-parameters.md) — 187 tokens
+- [Delete reports — Example](.llms/chunks/apis-tools.optimize-api.report.delete-report.example.md) — 63 tokens
+- [Export report definitions](.llms/chunks/apis-tools.optimize-api.report.export-report-definitions.md) — 205 tokens
+- [Export report definitions — Query parameters](.llms/chunks/apis-tools.optimize-api.report.export-report-definitions.query-parameters.md) — 208 tokens
+- [Export report definitions — Example](.llms/chunks/apis-tools.optimize-api.report.export-report-definitions.example.md) — 165 tokens
+- [Export report result data](.llms/chunks/apis-tools.optimize-api.report.get-data-export.md) — 244 tokens
+- [Export report result data — Method & HTTP target resource](.llms/chunks/apis-tools.optimize-api.report.get-data-export.method-http-target-resource.md) — 448 tokens
+- [Export report result data — Request body](.llms/chunks/apis-tools.optimize-api.report.get-data-export.request-body.md) — 287 tokens
+- [Export report result data — Response codes](.llms/chunks/apis-tools.optimize-api.report.get-data-export.response-codes.md) — 186 tokens
+- [Export report result data — Example](.llms/chunks/apis-tools.optimize-api.report.get-data-export.example.md) — 433 tokens
+- [Get report IDs](.llms/chunks/apis-tools.optimize-api.report.get-report-ids.md) — 139 tokens
+- [Get report IDs — Query parameters](.llms/chunks/apis-tools.optimize-api.report.get-report-ids.query-parameters.md) — 144 tokens
+- [Get report IDs — Response codes](.llms/chunks/apis-tools.optimize-api.report.get-report-ids.response-codes.md) — 139 tokens
+- [Get report IDs — Example](.llms/chunks/apis-tools.optimize-api.report.get-report-ids.example.md) — 104 tokens
+- [Tutorial](.llms/chunks/apis-tools.optimize-api.tutorial.md) — 253 tokens
+- [Tutorial — Getting started](.llms/chunks/apis-tools.optimize-api.tutorial.getting-started.md) — 435 tokens
+- [Tutorial — GET a list of existing dashboard IDs](.llms/chunks/apis-tools.optimize-api.tutorial.get-a-list-of-existing-dashboard-ids.md) — 637 tokens
+- [Tutorial — DELETE a dashboard](.llms/chunks/apis-tools.optimize-api.tutorial.delete-a-dashboard.md) — 348 tokens
+- [Tutorial — If you get stuck](.llms/chunks/apis-tools.optimize-api.tutorial.if-you-get-stuck.md) — 97 tokens
+- [Variable labeling](.llms/chunks/apis-tools.optimize-api.variable-labeling.md) — 156 tokens
+- [Variable labeling — Limitations](.llms/chunks/apis-tools.optimize-api.variable-labeling.limitations.md) — 157 tokens
+- [Variable labeling — Request body](.llms/chunks/apis-tools.optimize-api.variable-labeling.request-body.md) — 226 tokens
+- [Variable labeling — Example 1](.llms/chunks/apis-tools.optimize-api.variable-labeling.example-1.md) — 146 tokens
+- [Variable labeling — Example 2](.llms/chunks/apis-tools.optimize-api.variable-labeling.example-2.md) — 242 tokens
+- [Variable labeling — Example 4](.llms/chunks/apis-tools.optimize-api.variable-labeling.example-4.md) — 111 tokens
+- [Orchestration Cluster MCP Server](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-overview.md) — 717 tokens
+- [Orchestration Cluster MCP Server — Get started](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-overview.get-started.md) — 160 tokens
+- [Orchestration Cluster MCP Server — Available tools](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-overview.available-tools.md) — 192 tokens
+- [Enable and connect](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-setup.md) — 296 tokens
+- [Enable and connect — Connect an MCP client](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-setup.connect-an-mcp-client.md) — 101 tokens
+- [Enable and connect — Connect an MCP client — MCP endpoint URL](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-setup.connect-an-mcp-client-mcp-endpoint-url.md) — 199 tokens
+- [Enable and connect — Connect an MCP client — Direct HTTP connection](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-setup.connect-an-mcp-client-direct-http-connection.md) — 143 tokens
+- [Enable and connect — Connect an MCP client — Use c8ctl `mcp-proxy`](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-setup.connect-an-mcp-client-use-c8ctl-mcp-proxy.md) — 544 tokens
+- [Enable and connect — Connect an MCP client — Use with the MCP Client connectors](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-setup.connect-an-mcp-client-use-with-the-mcp-client-connectors.md) — 107 tokens
+- [Enable and connect — Connect an MCP client — remote](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-setup.connect-an-mcp-client-remote.md) — 271 tokens
+- [Enable and connect — Connect an MCP client — client](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-setup.connect-an-mcp-client-client.md) — 255 tokens
+- [Available tools](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-tools.md) — 176 tokens
+- [Available tools — Incidents](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-tools.incidents.md) — 151 tokens
+- [Available tools — Process definitions](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-tools.process-definitions.md) — 212 tokens
+- [Available tools — User tasks](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-tools.user-tasks.md) — 161 tokens
+- [Available tools — Variables](.llms/chunks/apis-tools.orchestration-cluster-api-mcp.orchestration-cluster-api-mcp-tools.variables.md) — 72 tokens
 - [Intermediate tutorial](.llms/chunks/apis-tools.orchestration-cluster-api-rest.intermediate-tutorial.md) — 153 tokens
 - [Intermediate tutorial — Prerequisites](.llms/chunks/apis-tools.orchestration-cluster-api-rest.intermediate-tutorial.prerequisites.md) — 636 tokens
 - [Intermediate tutorial — Prerequisites — Set up authentication](.llms/chunks/apis-tools.orchestration-cluster-api-rest.intermediate-tutorial.prerequisites-set-up-authentication.md) — 383 tokens
@@ -554,6 +799,24 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Support status](.llms/chunks/apis-tools.php-sdk.support-status.md) — 219 tokens
 - [Using the SDK](.llms/chunks/apis-tools.php-sdk.using-the-sdk.md) — 219 tokens
 - [Using the SDK — Parallel async reads](.llms/chunks/apis-tools.php-sdk.using-the-sdk.parallel-async-reads.md) — 114 tokens
+- [Processes MCP Server](.llms/chunks/apis-tools.processes-mcp.processes-mcp-overview.md) — 302 tokens
+- [Processes MCP Server — Key features](.llms/chunks/apis-tools.processes-mcp.processes-mcp-overview.key-features.md) — 219 tokens
+- [Processes MCP Server — Authentication](.llms/chunks/apis-tools.processes-mcp.processes-mcp-overview.authentication.md) — 81 tokens
+- [Processes MCP Server — Transport](.llms/chunks/apis-tools.processes-mcp.processes-mcp-overview.transport.md) — 58 tokens
+- [Processes MCP Server — Audit logging for MCP operations](.llms/chunks/apis-tools.processes-mcp.processes-mcp-overview.audit-logging-for-mcp-operations.md) — 218 tokens
+- [Processes MCP Server — Get started](.llms/chunks/apis-tools.processes-mcp.processes-mcp-overview.get-started.md) — 185 tokens
+- [Processes MCP Server — Static tools](.llms/chunks/apis-tools.processes-mcp.processes-mcp-overview.static-tools.md) — 65 tokens
+- [Enable and connect](.llms/chunks/apis-tools.processes-mcp.processes-mcp-setup.md) — 294 tokens
+- [Enable and connect — Connect an MCP client](.llms/chunks/apis-tools.processes-mcp.processes-mcp-setup.connect-an-mcp-client.md) — 101 tokens
+- [Enable and connect — Connect an MCP client — MCP endpoint URL](.llms/chunks/apis-tools.processes-mcp.processes-mcp-setup.connect-an-mcp-client-mcp-endpoint-url.md) — 200 tokens
+- [Enable and connect — Connect an MCP client — Direct HTTP connection](.llms/chunks/apis-tools.processes-mcp.processes-mcp-setup.connect-an-mcp-client-direct-http-connection.md) — 142 tokens
+- [Enable and connect — Connect an MCP client — Use c8ctl `mcp-proxy`](.llms/chunks/apis-tools.processes-mcp.processes-mcp-setup.connect-an-mcp-client-use-c8ctl-mcp-proxy.md) — 546 tokens
+- [Enable and connect — Connect an MCP client — Use with the MCP Client connectors](.llms/chunks/apis-tools.processes-mcp.processes-mcp-setup.connect-an-mcp-client-use-with-the-mcp-client-connectors.md) — 88 tokens
+- [Enable and connect — Connect an MCP client — remote](.llms/chunks/apis-tools.processes-mcp.processes-mcp-setup.connect-an-mcp-client-remote.md) — 270 tokens
+- [Enable and connect — Connect an MCP client — client](.llms/chunks/apis-tools.processes-mcp.processes-mcp-setup.connect-an-mcp-client-client.md) — 254 tokens
+- [Static tools](.llms/chunks/apis-tools.processes-mcp.processes-mcp-static-tools.md) — 219 tokens
+- [Version binding](.llms/chunks/apis-tools.processes-mcp.processes-mcp-version-binding.md) — 140 tokens
+- [Version binding — Stale tool references](.llms/chunks/apis-tools.processes-mcp.processes-mcp-version-binding.stale-tool-references.md) — 235 tokens
 - [Authentication](.llms/chunks/apis-tools.python-sdk.authentication.md) — 187 tokens
 - [Authentication — OAuth 2.0](.llms/chunks/apis-tools.python-sdk.authentication.oauth-2.0.md) — 114 tokens
 - [Backpressure](.llms/chunks/apis-tools.python-sdk.backpressure.md) — 221 tokens
@@ -604,6 +867,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [The Camunda Domain Type System](.llms/chunks/apis-tools.rust-sdk.the-camunda-domain-type-system.md) — 192 tokens
 - [The full API surface](.llms/chunks/apis-tools.rust-sdk.the-full-api-surface.md) — 292 tokens
 - [The full API surface — Raw client access](.llms/chunks/apis-tools.rust-sdk.the-full-api-surface.raw-client-access.md) — 99 tokens
+- [Migrate from the removed Tasklist API](.llms/chunks/apis-tools.tasklist-api-rest.tasklist-api-rest-overview.md) — 171 tokens
 - [Assertions](.llms/chunks/apis-tools.testing.assertions.md) — 200 tokens
 - [Assertions — Configuration](.llms/chunks/apis-tools.testing.assertions.configuration.md) — 456 tokens
 - [Assertions — Process instance assertions](.llms/chunks/apis-tools.testing.assertions.process-instance-assertions.md) — 459 tokens
@@ -751,6 +1015,23 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Orchestration Cluster API TypeScript client](.llms/chunks/apis-tools.typescript.oca-client.md) — 559 tokens
 - [Orchestration Cluster API TypeScript client — Use the Orchestration Cluster API package](.llms/chunks/apis-tools.typescript.oca-client.use-the-orchestration-cluster-api-package.md) — 175 tokens
 - [TypeScript SDK](.llms/chunks/apis-tools.typescript.typescript-sdk.md) — 92 tokens
+- [Authentication](.llms/chunks/apis-tools.web-modeler-api.authentication.md) — 141 tokens
+- [Authentication — Generate a token](.llms/chunks/apis-tools.web-modeler-api.authentication.generate-a-token.md) — 618 tokens
+- [Authentication — Use a token](.llms/chunks/apis-tools.web-modeler-api.authentication.use-a-token.md) — 186 tokens
+- [Authentication — Organization-level access](.llms/chunks/apis-tools.web-modeler-api.authentication.organization-level-access.md) — 166 tokens
+- [Web Modeler API](.llms/chunks/apis-tools.web-modeler-api.index.md) — 180 tokens
+- [Web Modeler API — API reference](.llms/chunks/apis-tools.web-modeler-api.index.api-reference.md) — 207 tokens
+- [Web Modeler API — Rate limiting](.llms/chunks/apis-tools.web-modeler-api.index.rate-limiting.md) — 262 tokens
+- [Tutorial](.llms/chunks/apis-tools.web-modeler-api.tutorial.md) — 168 tokens
+- [Tutorial — Prerequisites](.llms/chunks/apis-tools.web-modeler-api.tutorial.prerequisites.md) — 221 tokens
+- [Tutorial — Getting started](.llms/chunks/apis-tools.web-modeler-api.tutorial.getting-started.md) — 430 tokens
+- [Tutorial — Create a new project (POST) and add a collaborator (PUT)](.llms/chunks/apis-tools.web-modeler-api.tutorial.create-a-new-project-post-and-add-a-collaborator-put.md) — 718 tokens
+- [Tutorial — View project details (GET)](.llms/chunks/apis-tools.web-modeler-api.tutorial.view-project-details-get.md) — 212 tokens
+- [Tutorial — Delete a project](.llms/chunks/apis-tools.web-modeler-api.tutorial.delete-a-project.md) — 227 tokens
+- [Tutorial — If you get stuck](.llms/chunks/apis-tools.web-modeler-api.tutorial.if-you-get-stuck.md) — 99 tokens
+- [APIs & tools](.llms/chunks/apis-tools.working-with-apis-tools.md) — 186 tokens
+- [APIs & tools — APIs](.llms/chunks/apis-tools.working-with-apis-tools.apis.md) — 154 tokens
+- [APIs & tools — Testing](.llms/chunks/apis-tools.working-with-apis-tools.testing.md) — 95 tokens
 - [Deprecated RPCs](.llms/chunks/apis-tools.zeebe-api.deprecated-rpcs.md) — 587 tokens
 - [Zeebe API RPCs](.llms/chunks/apis-tools.zeebe-api.gateway-service.md) — 321 tokens
 - [Zeebe API RPCs — `ActivateJobs` RPC](.llms/chunks/apis-tools.zeebe-api.gateway-service.activatejobs-rpc.md) — 50 tokens
@@ -796,6 +1077,14 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Zeebe API (gRPC) — Key capabilities](.llms/chunks/apis-tools.zeebe-api.grpc.key-capabilities.md) — 135 tokens
 - [Technical error handling](.llms/chunks/apis-tools.zeebe-api.technical-error-handling.md) — 475 tokens
 - [Authentication](.llms/chunks/apis-tools.zeebe-api.zeebe-api-authentication.md) — 123 tokens
+- [Tutorial](.llms/chunks/apis-tools.zeebe-api-rest.tutorial.md) — 261 tokens
+- [Tutorial — Getting started](.llms/chunks/apis-tools.zeebe-api-rest.tutorial.getting-started.md) — 350 tokens
+- [Tutorial — Assign a Zeebe user task (POST)](.llms/chunks/apis-tools.zeebe-api-rest.tutorial.assign-a-zeebe-user-task-post.md) — 805 tokens
+- [Tutorial — Unassign a Zeebe user task (DELETE)](.llms/chunks/apis-tools.zeebe-api-rest.tutorial.unassign-a-zeebe-user-task-delete.md) — 292 tokens
+- [Tutorial — If you get stuck](.llms/chunks/apis-tools.zeebe-api-rest.tutorial.if-you-get-stuck.md) — 99 tokens
+- [Authentication](.llms/chunks/apis-tools.zeebe-api-rest.zeebe-api-rest-authentication.md) — 245 tokens
+- [Overview](.llms/chunks/apis-tools.zeebe-api-rest.zeebe-api-rest-overview.md) — 241 tokens
+- [Overview — API Explorer](.llms/chunks/apis-tools.zeebe-api-rest.zeebe-api-rest-overview.api-explorer.md) — 56 tokens
 
 ## components
 
@@ -970,6 +1259,22 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Add long-term memory to your AI agents — Retrieve from the vector database — Prefetch vs. tool-based approach](.llms/chunks/components.agentic-orchestration.rag-ai-agents.retrieve-from-the-vector-database-prefetch-vs.-tool-based-approach.md) — 250 tokens
 - [Add long-term memory to your AI agents — Store in the vector database](.llms/chunks/components.agentic-orchestration.rag-ai-agents.store-in-the-vector-database.md) — 309 tokens
 - [Add long-term memory to your AI agents — Gate memory writes with human approval](.llms/chunks/components.agentic-orchestration.rag-ai-agents.gate-memory-writes-with-human-approval.md) — 405 tokens
+- [Access control](.llms/chunks/components.audit-log.overview.access-control.md) — 428 tokens
+- [Operation data structure](.llms/chunks/components.audit-log.overview.operation-structure.md) — 312 tokens
+- [Operation data structure — Entity key](.llms/chunks/components.audit-log.overview.operation-structure.entity-key.md) — 173 tokens
+- [Operation data structure — Details](.llms/chunks/components.audit-log.overview.operation-structure.details.md) — 220 tokens
+- [Operation data structure — Actor](.llms/chunks/components.audit-log.overview.operation-structure.actor.md) — 96 tokens
+- [Operation data structure — Inbound channel](.llms/chunks/components.audit-log.overview.operation-structure.inbound-channel.md) — 323 tokens
+- [Operation data structure — REST API](.llms/chunks/components.audit-log.overview.operation-structure.rest-api.md) — 56 tokens
+- [Recorded operations](.llms/chunks/components.audit-log.overview.recorded-operations.md) — 165 tokens
+- [Recorded operations — Recorded operations](.llms/chunks/components.audit-log.overview.recorded-operations.recorded-operations.md) — 37 tokens
+- [Recorded operations — Recorded operations — `USER_TASKS` operations](.llms/chunks/components.audit-log.overview.recorded-operations.recorded-operations-user_tasks-operations.md) — 174 tokens
+- [Recorded operations — Recorded operations — `ADMIN` operations](.llms/chunks/components.audit-log.overview.recorded-operations.recorded-operations-admin-operations.md) — 377 tokens
+- [Recorded operations — Recorded operations — `DEPLOYED_RESOURCES` operations](.llms/chunks/components.audit-log.overview.recorded-operations.recorded-operations-deployed_resources-operations.md) — 405 tokens
+- [Recorded operations — Log scope](.llms/chunks/components.audit-log.overview.recorded-operations.log-scope.md) — 131 tokens
+- [Audit log](.llms/chunks/components.audit-log.overview.md) — 223 tokens
+- [Audit log — Impact on secondary storage](.llms/chunks/components.audit-log.overview.impact-on-secondary-storage.md) — 163 tokens
+- [Audit log — Get started](.llms/chunks/components.audit-log.overview.get-started.md) — 105 tokens
 - [Data flow](.llms/chunks/components.best-practices.architecture.data-flow.md) — 345 tokens
 - [Data flow — Command processing path](.llms/chunks/components.best-practices.architecture.data-flow.command-processing-path.md) — 336 tokens
 - [Data flow — Export pipeline](.llms/chunks/components.best-practices.architecture.data-flow.export-pipeline.md) — 617 tokens
@@ -1215,6 +1520,133 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Versioning process definitions — Dealing with long running processes](.llms/chunks/components.best-practices.operations.versioning-process-definitions.dealing-with-long-running-processes.md) — 195 tokens
 - [Versioning process definitions — Dealing with long running processes — Cutting very long running processes into pieces](.llms/chunks/components.best-practices.operations.versioning-process-definitions.dealing-with-long-running-processes-cutting-very-long-running-processes-into-pieces.md) — 483 tokens
 - [Versioning process definitions — Dealing with long running processes — Using call activities to influence versioning behaviour of pieces](.llms/chunks/components.best-practices.operations.versioning-process-definitions.dealing-with-long-running-processes-using-call-activities-to-influence-versioning-behaviour-of-pieces.md) — 375 tokens
+- [Camunda app integrations](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.md) — 287 tokens
+- [Camunda app integrations — What you can do on each platform](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.what-you-can-do-on-each-platform.md) — 571 tokens
+- [Camunda app integrations — Process variable: `appContext`](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.process-variable-appcontext.md) — 522 tokens
+- [Camunda app integrations — Get started — saas](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.get-started-saas.md) — 297 tokens
+- [Camunda app integrations — Get started — self-managed](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.get-started-self-managed.md) — 161 tokens
+- [Camunda app integrations — Get started — Install the app](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.get-started-install-the-app.md) — 71 tokens
+- [Camunda app integrations — Get started — saas](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.get-started-saas-2.md) — 110 tokens
+- [Camunda app integrations — Get started — self-managed](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.get-started-self-managed-2.md) — 119 tokens
+- [Camunda app integrations — Get started — saas](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.get-started-saas-3.md) — 105 tokens
+- [Camunda app integrations — Get started — self-managed](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.get-started-self-managed-3.md) — 95 tokens
+- [Camunda app integrations — Get started — Sign in and authorize](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.get-started-sign-in-and-authorize.md) — 112 tokens
+- [Camunda app integrations — Get started — Switch organization and cluster](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.get-started-switch-organization-and-cluster.md) — 114 tokens
+- [Camunda app integrations — Explore further resources](.llms/chunks/components.camunda-integrations.app-integrations.app-integrations.explore-further-resources.md) — 93 tokens
+- [Install app integrations](.llms/chunks/components.camunda-integrations.app-integrations.installation.md) — 188 tokens
+- [Install app integrations — Prerequisites](.llms/chunks/components.camunda-integrations.app-integrations.installation.prerequisites.md) — 189 tokens
+- [Install app integrations — Step 1: Create applications in Camunda Identity](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-1-create-applications-in-camunda-identity.md) — 387 tokens
+- [Install app integrations — Step 2: Register the chat app](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-2-register-the-chat-app.md) — 170 tokens
+- [Install app integrations — Step 2: Register the chat app — teams](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-2-register-the-chat-app-teams.md) — 277 tokens
+- [Install app integrations — Step 2: Register the chat app — slack](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-2-register-the-chat-app-slack.md) — 513 tokens
+- [Install app integrations — Step 2: Register the chat app — Slack app permissions](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-2-register-the-chat-app-slack-app-permissions.md) — 368 tokens
+- [Install app integrations — Step 3: Configure the App Integrations exporter](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-3-configure-the-app-integrations-exporter.md) — 291 tokens
+- [Install app integrations — Step 4: Create the configuration file](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-4-create-the-configuration-file.md) — 48 tokens
+- [Install app integrations — Step 4: Create the configuration file — Auth configuration](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-4-create-the-configuration-file-auth-configuration.md) — 167 tokens
+- [Install app integrations — Step 4: Create the configuration file — keycloak](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-4-create-the-configuration-file-keycloak.md) — 345 tokens
+- [Install app integrations — Step 4: Create the configuration file — entra](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-4-create-the-configuration-file-entra.md) — 517 tokens
+- [Install app integrations — Step 4: Create the configuration file — Secret management](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-4-create-the-configuration-file-secret-management.md) — 219 tokens
+- [Install app integrations — Step 4: Create the configuration file — Example configuration file](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-4-create-the-configuration-file-example-configuration-file.md) — 643 tokens
+- [Install app integrations — Step 4: Create the configuration file — Stage values](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-4-create-the-configuration-file-stage-values.md) — 127 tokens
+- [Install app integrations — Step 5: Start the application](.llms/chunks/components.camunda-integrations.app-integrations.installation.step-5-start-the-application.md) — 352 tokens
+- [Install app integrations — Configuration reference](.llms/chunks/components.camunda-integrations.app-integrations.installation.configuration-reference.md) — 1287 tokens
+- [Install app integrations — Configuration reference — Notes](.llms/chunks/components.camunda-integrations.app-integrations.installation.configuration-reference-notes.md) — 146 tokens
+- [Camunda for Microsoft Teams](.llms/chunks/components.camunda-integrations.app-integrations.microsoft-teams.md) — 113 tokens
+- [Camunda for Microsoft Teams — Commands](.llms/chunks/components.camunda-integrations.app-integrations.microsoft-teams.commands.md) — 267 tokens
+- [Camunda for Microsoft Teams — Interactive cards](.llms/chunks/components.camunda-integrations.app-integrations.microsoft-teams.interactive-cards.md) — 388 tokens
+- [Camunda for Microsoft Teams — Use pop-up dialogs](.llms/chunks/components.camunda-integrations.app-integrations.microsoft-teams.use-pop-up-dialogs.md) — 220 tokens
+- [Camunda for Microsoft Teams — Notifications](.llms/chunks/components.camunda-integrations.app-integrations.microsoft-teams.notifications.md) — 208 tokens
+- [Camunda for Microsoft Teams — Error handling](.llms/chunks/components.camunda-integrations.app-integrations.microsoft-teams.error-handling.md) — 165 tokens
+- [Camunda for Microsoft Teams — Tabs](.llms/chunks/components.camunda-integrations.app-integrations.microsoft-teams.tabs.md) — 626 tokens
+- [Notification rules](.llms/chunks/components.camunda-integrations.app-integrations.notification-rules.md) — 389 tokens
+- [Notification rules — Channel vs. personal rules](.llms/chunks/components.camunda-integrations.app-integrations.notification-rules.channel-vs.-personal-rules.md) — 283 tokens
+- [Notification rules — Access the notification rules page](.llms/chunks/components.camunda-integrations.app-integrations.notification-rules.access-the-notification-rules-page.md) — 212 tokens
+- [Notification rules — Rule structure](.llms/chunks/components.camunda-integrations.app-integrations.notification-rules.rule-structure.md) — 668 tokens
+- [Notification rules — Create a rule](.llms/chunks/components.camunda-integrations.app-integrations.notification-rules.create-a-rule.md) — 158 tokens
+- [Notification rules — View existing rules](.llms/chunks/components.camunda-integrations.app-integrations.notification-rules.view-existing-rules.md) — 268 tokens
+- [Notification rules — Edit a rule](.llms/chunks/components.camunda-integrations.app-integrations.notification-rules.edit-a-rule.md) — 164 tokens
+- [Notification rules — What happens when a task matches](.llms/chunks/components.camunda-integrations.app-integrations.notification-rules.what-happens-when-a-task-matches.md) — 216 tokens
+- [Notification rules — Automatic cleanup](.llms/chunks/components.camunda-integrations.app-integrations.notification-rules.automatic-cleanup.md) — 143 tokens
+- [Camunda for Slack](.llms/chunks/components.camunda-integrations.app-integrations.slack.md) — 485 tokens
+- [Camunda for Slack — Where answers appear](.llms/chunks/components.camunda-integrations.app-integrations.slack.where-answers-appear.md) — 234 tokens
+- [Camunda for Slack — Start a process](.llms/chunks/components.camunda-integrations.app-integrations.slack.start-a-process.md) — 250 tokens
+- [Camunda for Slack — Switch organization and cluster](.llms/chunks/components.camunda-integrations.app-integrations.slack.switch-organization-and-cluster.md) — 255 tokens
+- [Camunda for Slack — Limits](.llms/chunks/components.camunda-integrations.app-integrations.slack.limits.md) — 194 tokens
+- [Troubleshoot app integrations](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.md) — 57 tokens
+- [Troubleshoot app integrations — saas](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.saas.md) — 57 tokens
+- [Troubleshoot app integrations — self-managed](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.self-managed.md) — 67 tokens
+- [Troubleshoot app integrations — saas](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.saas-2.md) — 69 tokens
+- [Troubleshoot app integrations — self-managed](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.self-managed-2.md) — 72 tokens
+- [Troubleshoot app integrations — Tasks not displayed](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.tasks-not-displayed.md) — 105 tokens
+- [Troubleshoot app integrations — Notifications are not delivered](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.notifications-are-not-delivered.md) — 159 tokens
+- [Troubleshoot app integrations — The Slack app does not respond](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.the-slack-app-does-not-respond.md) — 182 tokens
+- [Troubleshoot app integrations — Channel mentions are ignored but direct messages work](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.channel-mentions-are-ignored-but-direct-messages-work.md) — 123 tokens
+- [Troubleshoot app integrations — Notifications are not delivered to a Slack channel](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.notifications-are-not-delivered-to-a-slack-channel.md) — 213 tokens
+- [Troubleshoot app integrations — A modal fails to open or a dropdown returns nothing](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.a-modal-fails-to-open-or-a-dropdown-returns-nothing.md) — 167 tokens
+- [Troubleshoot app integrations — Other Slack messages worth searching for](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.other-slack-messages-worth-searching-for.md) — 371 tokens
+- [Troubleshoot app integrations — Get help](.llms/chunks/components.camunda-integrations.app-integrations.troubleshoot.get-help.md) — 45 tokens
+- [Microsoft Teams](.llms/chunks/components.camunda-integrations.ms-teams.md) — 248 tokens
+- [Camunda integrations](.llms/chunks/components.camunda-integrations.overview.md) — 198 tokens
+- [Camunda integrations — SAP integration](.llms/chunks/components.camunda-integrations.overview.sap-integration.md) — 169 tokens
+- [Camunda integrations — ServiceNow integration](.llms/chunks/components.camunda-integrations.overview.servicenow-integration.md) — 133 tokens
+- [SAP integration](.llms/chunks/components.camunda-integrations.sap.camunda-sap-integration.md) — 155 tokens
+- [SAP integration — Purpose](.llms/chunks/components.camunda-integrations.sap.camunda-sap-integration.purpose.md) — 222 tokens
+- [SAP integration — Audience](.llms/chunks/components.camunda-integrations.sap.camunda-sap-integration.audience.md) — 188 tokens
+- [SAP integration — About the integration](.llms/chunks/components.camunda-integrations.sap.camunda-sap-integration.about-the-integration.md) — 226 tokens
+- [CSAP c8ctl plugin](.llms/chunks/components.camunda-integrations.sap.csap-cli.md) — 147 tokens
+- [CSAP c8ctl plugin — Features](.llms/chunks/components.camunda-integrations.sap.csap-cli.features.md) — 274 tokens
+- [CSAP c8ctl plugin — Prerequisites](.llms/chunks/components.camunda-integrations.sap.csap-cli.prerequisites.md) — 174 tokens
+- [CSAP c8ctl plugin — Usage](.llms/chunks/components.camunda-integrations.sap.csap-cli.usage.md) — 813 tokens
+- [CSAP c8ctl plugin — Environment variables](.llms/chunks/components.camunda-integrations.sap.csap-cli.environment-variables.md) — 335 tokens
+- [CSAP c8ctl plugin — Migrate from the `csap` binary](.llms/chunks/components.camunda-integrations.sap.csap-cli.migrate-from-the-csap-binary.md) — 149 tokens
+- [CSAP c8ctl plugin — Deploying modules](.llms/chunks/components.camunda-integrations.sap.csap-cli.deploying-modules.md) — 141 tokens
+- [SAP eventing with SAP Advanced Event Mesh (AEM)](.llms/chunks/components.camunda-integrations.sap.eventing.md) — 465 tokens
+- [SAP eventing with SAP Advanced Event Mesh (AEM) — Prerequisites](.llms/chunks/components.camunda-integrations.sap.eventing.prerequisites.md) — 154 tokens
+- [SAP eventing with SAP Advanced Event Mesh (AEM) — SAP Eventing Message Start Event Connector](.llms/chunks/components.camunda-integrations.sap.eventing.sap-eventing-message-start-event-connector.md) — 417 tokens
+- [SAP eventing with SAP Advanced Event Mesh (AEM) — SAP Eventing Intermediate Event Connector](.llms/chunks/components.camunda-integrations.sap.eventing.sap-eventing-intermediate-event-connector.md) — 442 tokens
+- [SAP eventing with SAP Advanced Event Mesh (AEM) — SAP Eventing Outbound Connector](.llms/chunks/components.camunda-integrations.sap.eventing.sap-eventing-outbound-connector.md) — 394 tokens
+- [SAP OData connector](.llms/chunks/components.camunda-integrations.sap.odata-connector.md) — 165 tokens
+- [SAP OData connector — Overview](.llms/chunks/components.camunda-integrations.sap.odata-connector.overview.md) — 385 tokens
+- [SAP OData connector — Configuration and deployment](.llms/chunks/components.camunda-integrations.sap.odata-connector.configuration-and-deployment.md) — 724 tokens
+- [SAP OData connector — Working with the SAP OData connector in Camunda Modeler — Modeling options](.llms/chunks/components.camunda-integrations.sap.odata-connector.working-with-the-sap-odata-connector-in-camunda-modeler-modeling-options.md) — 213 tokens
+- [SAP OData connector — Working with the SAP OData connector in Camunda Modeler — Advanced capabilities](.llms/chunks/components.camunda-integrations.sap.odata-connector.working-with-the-sap-odata-connector-in-camunda-modeler-advanced-capabilities.md) — 133 tokens
+- [SAP OData connector — Working with the SAP OData connector in Camunda Modeler — $batch requests](.llms/chunks/components.camunda-integrations.sap.odata-connector.working-with-the-sap-odata-connector-in-camunda-modeler-batch-requests.md) — 477 tokens
+- [SAP OData connector — Working with the SAP OData connector in Camunda Modeler — Query result structure](.llms/chunks/components.camunda-integrations.sap.odata-connector.working-with-the-sap-odata-connector-in-camunda-modeler-query-result-structure.md) — 788 tokens
+- [SAP OData connector — Working with the SAP OData connector in Camunda Modeler — Error handling](.llms/chunks/components.camunda-integrations.sap.odata-connector.working-with-the-sap-odata-connector-in-camunda-modeler-error-handling.md) — 495 tokens
+- [SAP OData connector — Tips](.llms/chunks/components.camunda-integrations.sap.odata-connector.tips.md) — 131 tokens
+- [Prerequisites](.llms/chunks/components.camunda-integrations.sap.prerequisites.md) — 262 tokens
+- [Prerequisites — Authentication and connectivity](.llms/chunks/components.camunda-integrations.sap.prerequisites.authentication-and-connectivity.md) — 146 tokens
+- [SAP RFC connector](.llms/chunks/components.camunda-integrations.sap.rfc-connector.md) — 141 tokens
+- [SAP RFC connector — Overview](.llms/chunks/components.camunda-integrations.sap.rfc-connector.overview.md) — 304 tokens
+- [SAP RFC connector — Configuration and deployment](.llms/chunks/components.camunda-integrations.sap.rfc-connector.configuration-and-deployment.md) — 761 tokens
+- [SAP RFC connector — Working with the SAP RFC connector in Camunda Hub and Desktop Modeler](.llms/chunks/components.camunda-integrations.sap.rfc-connector.working-with-the-sap-rfc-connector-in-camunda-hub-and-desktop-modeler.md) — 777 tokens
+- [SAP RFC connector — Query result structure](.llms/chunks/components.camunda-integrations.sap.rfc-connector.query-result-structure.md) — 231 tokens
+- [SAP RFC connector — Error handling](.llms/chunks/components.camunda-integrations.sap.rfc-connector.error-handling.md) — 79 tokens
+- [Best practices](.llms/chunks/components.camunda-integrations.servicenow.best-practices.md) — 242 tokens
+- [Blueprints](.llms/chunks/components.camunda-integrations.servicenow.blueprints.md) — 568 tokens
+- [Camunda Spoke for ServiceNow](.llms/chunks/components.camunda-integrations.servicenow.camunda-spoke.md) — 774 tokens
+- [ServiceNow Flow Starter](.llms/chunks/components.camunda-integrations.servicenow.connectors.flow-starter.md) — 158 tokens
+- [ServiceNow Flow Starter — Supported operations](.llms/chunks/components.camunda-integrations.servicenow.connectors.flow-starter.supported-operations.md) — 443 tokens
+- [ServiceNow Flow Starter — Example configuration](.llms/chunks/components.camunda-integrations.servicenow.connectors.flow-starter.example-configuration.md) — 136 tokens
+- [ServiceNow Incident Handler](.llms/chunks/components.camunda-integrations.servicenow.connectors.incident-handler.md) — 264 tokens
+- [ServiceNow Incident Handler — Configure the connector](.llms/chunks/components.camunda-integrations.servicenow.connectors.incident-handler.configure-the-connector.md) — 249 tokens
+- [ServiceNow Incident Handler — Example configurations](.llms/chunks/components.camunda-integrations.servicenow.connectors.incident-handler.example-configurations.md) — 215 tokens
+- [ServiceNow outbound connector](.llms/chunks/components.camunda-integrations.servicenow.connectors.outbound-connector.md) — 274 tokens
+- [ServiceNow outbound connector — Configure the connector](.llms/chunks/components.camunda-integrations.servicenow.connectors.outbound-connector.configure-the-connector.md) — 366 tokens
+- [ServiceNow outbound connector — Example: Create a requested item](.llms/chunks/components.camunda-integrations.servicenow.connectors.outbound-connector.example-create-a-requested-item.md) — 154 tokens
+- [Glossary](.llms/chunks/components.camunda-integrations.servicenow.glossary.md) — 597 tokens
+- [Prerequisites](.llms/chunks/components.camunda-integrations.servicenow.prerequisites.md) — 223 tokens
+- [ServiceNow](.llms/chunks/components.camunda-integrations.servicenow.servicenow-integration.md) — 165 tokens
+- [ServiceNow — About the integration](.llms/chunks/components.camunda-integrations.servicenow.servicenow-integration.about-the-integration.md) — 392 tokens
+- [Setup & configuration](.llms/chunks/components.camunda-integrations.servicenow.setup-and-configuration.md) — 153 tokens
+- [Setup & configuration — Configure ServiceNow](.llms/chunks/components.camunda-integrations.servicenow.setup-and-configuration.configure-servicenow.md) — 627 tokens
+- [Troubleshooting](.llms/chunks/components.camunda-integrations.servicenow.troubleshooting.md) — 324 tokens
+- [Troubleshooting — Camunda](.llms/chunks/components.camunda-integrations.servicenow.troubleshooting.camunda.md) — 258 tokens
+- [Troubleshooting — General tips](.llms/chunks/components.camunda-integrations.servicenow.troubleshooting.general-tips.md) — 211 tokens
+- [Slack](.llms/chunks/components.camunda-integrations.slack.md) — 246 tokens
+- [Using Camunda 8](.llms/chunks/components.components-overview.md) — 140 tokens
+- [Using Camunda 8 — Best Practices](.llms/chunks/components.components-overview.best-practices.md) — 137 tokens
+- [Using Camunda 8 — Camunda 8 SaaS](.llms/chunks/components.components-overview.camunda-8-saas.md) — 63 tokens
 - [Identity and access management in Camunda 8](.llms/chunks/components.concepts.access-control.access-control-overview.md) — 280 tokens
 - [Identity and access management in Camunda 8 — Identity provider (IdP) integration](.llms/chunks/components.concepts.access-control.access-control-overview.identity-provider-idp-integration.md) — 268 tokens
 - [Identity and access management in Camunda 8 — Authentication vs. authorization](.llms/chunks/components.concepts.access-control.access-control-overview.authentication-vs.-authorization.md) — 416 tokens
@@ -2293,9 +2725,9 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Upload a document to a BPMN process](.llms/chunks/components.document-handling.upload-document-to-bpmn-process.md) — 638 tokens
 - [Upload a document to a BPMN process — Upload a document when using any connector](.llms/chunks/components.document-handling.upload-document-to-bpmn-process.upload-a-document-when-using-any-connector.md) — 484 tokens
 - [Upload a document to a BPMN process — Upload a document using the Orchestration Cluster REST API](.llms/chunks/components.document-handling.upload-document-to-bpmn-process.upload-a-document-using-the-orchestration-cluster-rest-api.md) — 122 tokens
+- [Features and integrations](.llms/chunks/components.features-integrations.features-integrations.md) — 74 tokens
 - [Camunda Hub](.llms/chunks/components.hub.index.md) — 375 tokens
-- [Camunda Hub — Manage organizational resources](.llms/chunks/components.hub.index.manage-organizational-resources.md) — 324 tokens
-- [Camunda Hub — Build within a workspace](.llms/chunks/components.hub.index.build-within-a-workspace.md) — 36 tokens
+- [Camunda Hub — Manage organizational resources](.llms/chunks/components.hub.index.manage-organizational-resources.md) — 64 tokens
 - [Assess business value](.llms/chunks/components.hub.organization.analyze-operations.business-value-dashboard.md) — 191 tokens
 - [Assess business value — Availability and permissions](.llms/chunks/components.hub.organization.analyze-operations.business-value-dashboard.availability-and-permissions.md) — 173 tokens
 - [Assess business value — How the dashboard calculates metrics](.llms/chunks/components.hub.organization.analyze-operations.business-value-dashboard.how-the-dashboard-calculates-metrics.md) — 465 tokens
@@ -2700,6 +3132,9 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Test your process — Use Test mode with Camunda Self-Managed](.llms/chunks/components.hub.workspace.modeler.validation.test-your-process.use-test-mode-with-camunda-self-managed.md) — 179 tokens
 - [Test your process — Test usage and billing considerations](.llms/chunks/components.hub.workspace.modeler.validation.test-your-process.test-usage-and-billing-considerations.md) — 134 tokens
 - [Token simulation](.llms/chunks/components.hub.workspace.modeler.validation.token-simulation.md) — 309 tokens
+- [Process modeling](.llms/chunks/components.modeler.about-modeler.md) — 144 tokens
+- [Process modeling — Open the modeler in Camunda Hub](.llms/chunks/components.modeler.about-modeler.open-the-modeler-in-camunda-hub.md) — 193 tokens
+- [Process modeling — Next steps](.llms/chunks/components.modeler.about-modeler.next-steps.md) — 259 tokens
 - [Ad-hoc sub-processes](.llms/chunks/components.modeler.bpmn.ad-hoc-subprocesses.ad-hoc-subprocesses.md) — 329 tokens
 - [Ad-hoc sub-processes — BPMN implementation](.llms/chunks/components.modeler.bpmn.ad-hoc-subprocesses.ad-hoc-subprocesses.bpmn-implementation.md) — 493 tokens
 - [Ad-hoc sub-processes — Job worker implementation](.llms/chunks/components.modeler.bpmn.ad-hoc-subprocesses.ad-hoc-subprocesses.job-worker-implementation.md) — 574 tokens
@@ -2854,6 +3289,178 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [User tasks — User task implementation types — User task listeners](.llms/chunks/components.modeler.bpmn.user-tasks.user-tasks.user-task-implementation-types-user-task-listeners.md) — 242 tokens
 - [User tasks — Job worker implementation](.llms/chunks/components.modeler.bpmn.user-tasks.user-tasks.job-worker-implementation.md) — 599 tokens
 - [User tasks — Additional resources](.llms/chunks/components.modeler.bpmn.user-tasks.user-tasks.additional-resources.md) — 542 tokens
+- [Data handling](.llms/chunks/components.modeler.data-handling.md) — 208 tokens
+- [Data handling — How the modeler discovers variables](.llms/chunks/components.modeler.data-handling.how-the-modeler-discovers-variables.md) — 285 tokens
+- [Data handling — Inspecting variables](.llms/chunks/components.modeler.data-handling.inspecting-variables.md) — 325 tokens
+- [Data handling — Defining example data](.llms/chunks/components.modeler.data-handling.defining-example-data.md) — 346 tokens
+- [Data handling — Next steps](.llms/chunks/components.modeler.data-handling.next-steps.md) — 55 tokens
+- [Connect to Camunda 8](.llms/chunks/components.modeler.desktop-modeler.connect-to-camunda-8.md) — 471 tokens
+- [Use credentials](.llms/chunks/components.modeler.desktop-modeler.credentials.md) — 152 tokens
+- [Use credentials — Select a credential](.llms/chunks/components.modeler.desktop-modeler.credentials.select-a-credential.md) — 159 tokens
+- [Use credentials — What you can do in the chooser](.llms/chunks/components.modeler.desktop-modeler.credentials.what-you-can-do-in-the-chooser.md) — 323 tokens
+- [Use credentials — Create a credential](.llms/chunks/components.modeler.desktop-modeler.credentials.create-a-credential.md) — 259 tokens
+- [Use credentials — Edit or upgrade a credential](.llms/chunks/components.modeler.desktop-modeler.credentials.edit-or-upgrade-a-credential.md) — 203 tokens
+- [Use credentials — Additional resources](.llms/chunks/components.modeler.desktop-modeler.credentials.additional-resources.md) — 48 tokens
+- [Custom lint rules](.llms/chunks/components.modeler.desktop-modeler.custom-lint-rules.custom-lint-rules.md) — 550 tokens
+- [Custom lint rules — Additional resources](.llms/chunks/components.modeler.desktop-modeler.custom-lint-rules.custom-lint-rules.additional-resources.md) — 35 tokens
+- [Deploy a diagram](.llms/chunks/components.modeler.desktop-modeler.deploy-diagram.md) — 175 tokens
+- [Configuring templates](.llms/chunks/components.modeler.desktop-modeler.element-templates.configuring-templates.md) — 303 tokens
+- [Configuring templates — Local templates](.llms/chunks/components.modeler.desktop-modeler.element-templates.configuring-templates.local-templates.md) — 95 tokens
+- [Using templates](.llms/chunks/components.modeler.desktop-modeler.element-templates.using-templates.md) — 338 tokens
+- [Using templates — Removing templates](.llms/chunks/components.modeler.desktop-modeler.element-templates.using-templates.removing-templates.md) — 318 tokens
+- [Using templates — Missing templates](.llms/chunks/components.modeler.desktop-modeler.element-templates.using-templates.missing-templates.md) — 82 tokens
+- [Flags](.llms/chunks/components.modeler.desktop-modeler.flags.flags.md) — 219 tokens
+- [Flags — Available flags](.llms/chunks/components.modeler.desktop-modeler.flags.flags.available-flags.md) — 247 tokens
+- [Flags — Examples](.llms/chunks/components.modeler.desktop-modeler.flags.flags.examples.md) — 696 tokens
+- [Desktop Modeler](.llms/chunks/components.modeler.desktop-modeler.index.md) — 134 tokens
+- [Desktop Modeler — Features](.llms/chunks/components.modeler.desktop-modeler.index.features.md) — 193 tokens
+- [Desktop Modeler — Get started](.llms/chunks/components.modeler.desktop-modeler.index.get-started.md) — 73 tokens
+- [Install Desktop Modeler](.llms/chunks/components.modeler.desktop-modeler.install-the-modeler.md) — 305 tokens
+- [Install Desktop Modeler — Wire file associations](.llms/chunks/components.modeler.desktop-modeler.install-the-modeler.wire-file-associations.md) — 159 tokens
+- [Model your first diagram](.llms/chunks/components.modeler.desktop-modeler.model-your-first-diagram.md) — 585 tokens
+- [Plugins](.llms/chunks/components.modeler.desktop-modeler.plugins.plugins.md) — 254 tokens
+- [Plugins — Overview of your possibilities as a plugin developer](.llms/chunks/components.modeler.desktop-modeler.plugins.plugins.overview-of-your-possibilities-as-a-plugin-developer.md) — 441 tokens
+- [Plugins — Getting started with development — Plugin entry point](.llms/chunks/components.modeler.desktop-modeler.plugins.plugins.getting-started-with-development-plugin-entry-point.md) — 157 tokens
+- [Plugins — Getting started with development — Changing the appearance of the modeler](.llms/chunks/components.modeler.desktop-modeler.plugins.plugins.getting-started-with-development-changing-the-appearance-of-the-modeler.md) — 92 tokens
+- [Plugins — Getting started with development — Adding menu entries to the modeler](.llms/chunks/components.modeler.desktop-modeler.plugins.plugins.getting-started-with-development-adding-menu-entries-to-the-modeler.md) — 260 tokens
+- [Plugins — Getting started with development — Extend the modeler and its BPMN and DMN components](.llms/chunks/components.modeler.desktop-modeler.plugins.plugins.getting-started-with-development-extend-the-modeler-and-its-bpmn-and-dmn-components.md) — 573 tokens
+- [Plugins — Getting started with development — Development workflow](.llms/chunks/components.modeler.desktop-modeler.plugins.plugins.getting-started-with-development-development-workflow.md) — 101 tokens
+- [Plugins — Additional resources](.llms/chunks/components.modeler.desktop-modeler.plugins.plugins.additional-resources.md) — 33 tokens
+- [Process applications](.llms/chunks/components.modeler.desktop-modeler.process-applications.md) — 189 tokens
+- [Process applications — Example: Consumer loan application](.llms/chunks/components.modeler.desktop-modeler.process-applications.example-consumer-loan-application.md) — 277 tokens
+- [Process applications — Editor support for process applications](.llms/chunks/components.modeler.desktop-modeler.process-applications.editor-support-for-process-applications.md) — 459 tokens
+- [Search paths](.llms/chunks/components.modeler.desktop-modeler.search-paths.search-paths.md) — 284 tokens
+- [Search paths — User data directory](.llms/chunks/components.modeler.desktop-modeler.search-paths.search-paths.user-data-directory.md) — 296 tokens
+- [Settings](.llms/chunks/components.modeler.desktop-modeler.settings.settings.md) — 135 tokens
+- [Settings — Settings overview](.llms/chunks/components.modeler.desktop-modeler.settings.settings.settings-overview.md) — 267 tokens
+- [Settings — Settings JSON file](.llms/chunks/components.modeler.desktop-modeler.settings.settings.settings-json-file.md) — 59 tokens
+- [Start a new process instance](.llms/chunks/components.modeler.desktop-modeler.start-instance.md) — 166 tokens
+- [Task testing](.llms/chunks/components.modeler.desktop-modeler.task-testing.md) — 161 tokens
+- [Task testing — Testing a single activity](.llms/chunks/components.modeler.desktop-modeler.task-testing.testing-a-single-activity.md) — 213 tokens
+- [Task testing — Test results](.llms/chunks/components.modeler.desktop-modeler.task-testing.test-results.md) — 172 tokens
+- [Telemetry](.llms/chunks/components.modeler.desktop-modeler.telemetry.telemetry.md) — 189 tokens
+- [Telemetry — Definition of events — Ping event](.llms/chunks/components.modeler.desktop-modeler.telemetry.telemetry.definition-of-events-ping-event.md) — 120 tokens
+- [Telemetry — Definition of events — Diagram opened/closed event](.llms/chunks/components.modeler.desktop-modeler.telemetry.telemetry.definition-of-events-diagram-opened-closed-event.md) — 204 tokens
+- [Telemetry — Definition of events — Deployment and start instance events](.llms/chunks/components.modeler.desktop-modeler.telemetry.telemetry.definition-of-events-deployment-and-start-instance-events.md) — 213 tokens
+- [Telemetry — Definition of events — Tracked click events](.llms/chunks/components.modeler.desktop-modeler.telemetry.telemetry.definition-of-events-tracked-click-events.md) — 200 tokens
+- [Telemetry — Definition of events — Overlay opened event](.llms/chunks/components.modeler.desktop-modeler.telemetry.telemetry.definition-of-events-overlay-opened-event.md) — 145 tokens
+- [Telemetry — Definition of events — Form editor events](.llms/chunks/components.modeler.desktop-modeler.telemetry.telemetry.definition-of-events-form-editor-events.md) — 168 tokens
+- [Telemetry — Definition of events — BPMN editor events](.llms/chunks/components.modeler.desktop-modeler.telemetry.telemetry.definition-of-events-bpmn-editor-events.md) — 230 tokens
+- [Telemetry — Definition of events — Task testing events](.llms/chunks/components.modeler.desktop-modeler.telemetry.telemetry.definition-of-events-task-testing-events.md) — 154 tokens
+- [Telemetry — Definition of events — Variables panel events](.llms/chunks/components.modeler.desktop-modeler.telemetry.telemetry.definition-of-events-variables-panel-events.md) — 148 tokens
+- [Telemetry — Definition of events — Connection event](.llms/chunks/components.modeler.desktop-modeler.telemetry.telemetry.definition-of-events-connection-event.md) — 143 tokens
+- [Troubleshooting](.llms/chunks/components.modeler.desktop-modeler.troubleshooting.md) — 136 tokens
+- [Troubleshooting — I cannot connect to an orchestration cluster {#i-cannot-connect-to-zeebe}](.llms/chunks/components.modeler.desktop-modeler.troubleshooting.i-cannot-connect-to-an-orchestration-cluster-i-cannot-connect-to-zeebe.md) — 188 tokens
+- [Troubleshooting — I cannot connect to a local orchestration cluster {#i-cannot-connect-to-local-zeebe}](.llms/chunks/components.modeler.desktop-modeler.troubleshooting.i-cannot-connect-to-a-local-orchestration-cluster-i-cannot-connect-to-local-zeebe.md) — 242 tokens
+- [Troubleshooting — How to configure a REST connection](.llms/chunks/components.modeler.desktop-modeler.troubleshooting.how-to-configure-a-rest-connection.md) — 227 tokens
+- [Troubleshooting — Resolve a general Zeebe connection issue](.llms/chunks/components.modeler.desktop-modeler.troubleshooting.resolve-a-general-zeebe-connection-issue.md) — 281 tokens
+- [Troubleshooting — Debug Zeebe connection issues](.llms/chunks/components.modeler.desktop-modeler.troubleshooting.debug-zeebe-connection-issues.md) — 230 tokens
+- [Troubleshooting — How can I provide a custom SSL certificate?](.llms/chunks/components.modeler.desktop-modeler.troubleshooting.how-can-i-provide-a-custom-ssl-certificate.md) — 158 tokens
+- [Troubleshooting — How can I get details about a secure remote connection?](.llms/chunks/components.modeler.desktop-modeler.troubleshooting.how-can-i-get-details-about-a-secure-remote-connection.md) — 215 tokens
+- [Troubleshooting — How can I debug log gRPC / Zeebe communication?](.llms/chunks/components.modeler.desktop-modeler.troubleshooting.how-can-i-debug-log-grpc-zeebe-communication.md) — 306 tokens
+- [Troubleshooting — Other questions?](.llms/chunks/components.modeler.desktop-modeler.troubleshooting.other-questions.md) — 40 tokens
+- [Use connectors](.llms/chunks/components.modeler.desktop-modeler.use-connectors.md) — 135 tokens
+- [Use connectors — Automatic connector template fetching](.llms/chunks/components.modeler.desktop-modeler.use-connectors.automatic-connector-template-fetching.md) — 164 tokens
+- [Use connectors — Disable automatic connector template fetching](.llms/chunks/components.modeler.desktop-modeler.use-connectors.disable-automatic-connector-template-fetching.md) — 150 tokens
+- [Utilize forms](.llms/chunks/components.modeler.desktop-modeler.utilize-forms.md) — 508 tokens
+- [Utilize forms — Deploy and run](.llms/chunks/components.modeler.desktop-modeler.utilize-forms.deploy-and-run.md) — 189 tokens
+- [Utilize forms — Additional resources](.llms/chunks/components.modeler.desktop-modeler.utilize-forms.additional-resources.md) — 42 tokens
+- [Decision literal expression](.llms/chunks/components.modeler.dmn.decision-literal-expression.md) — 144 tokens
+- [Decision literal expression — Decision name](.llms/chunks/components.modeler.dmn.decision-literal-expression.decision-name.md) — 268 tokens
+- [Decision literal expression — Literal expression](.llms/chunks/components.modeler.dmn.decision-literal-expression.literal-expression.md) — 518 tokens
+- [Decision requirements graph](.llms/chunks/components.modeler.dmn.decision-requirements-graph.md) — 190 tokens
+- [Decision requirements graph — Decision requirements graph name](.llms/chunks/components.modeler.dmn.decision-requirements-graph.decision-requirements-graph-name.md) — 175 tokens
+- [Decision requirements graph — Decision](.llms/chunks/components.modeler.dmn.decision-requirements-graph.decision.md) — 158 tokens
+- [Decision requirements graph — Required decisions](.llms/chunks/components.modeler.dmn.decision-requirements-graph.required-decisions.md) — 223 tokens
+- [Decision requirements graph — Input data](.llms/chunks/components.modeler.dmn.decision-requirements-graph.input-data.md) — 246 tokens
+- [Hit policy](.llms/chunks/components.modeler.dmn.decision-table-hit-policy.md) — 180 tokens
+- [Hit policy — The role of a hit policy](.llms/chunks/components.modeler.dmn.decision-table-hit-policy.the-role-of-a-hit-policy.md) — 205 tokens
+- [Hit policy — Any](.llms/chunks/components.modeler.dmn.decision-table-hit-policy.any.md) — 235 tokens
+- [Hit policy — Rule order](.llms/chunks/components.modeler.dmn.decision-table-hit-policy.rule-order.md) — 317 tokens
+- [Hit policy — Rule order — Aggregators for collect](.llms/chunks/components.modeler.dmn.decision-table-hit-policy.rule-order-aggregators-for-collect.md) — 553 tokens
+- [Input](.llms/chunks/components.modeler.dmn.decision-table-input.md) — 167 tokens
+- [Input — Input ID](.llms/chunks/components.modeler.dmn.decision-table-input.input-id.md) — 179 tokens
+- [Input — Input expression](.llms/chunks/components.modeler.dmn.decision-table-input.input-expression.md) — 264 tokens
+- [Output](.llms/chunks/components.modeler.dmn.decision-table-output.md) — 144 tokens
+- [Output — Output ID](.llms/chunks/components.modeler.dmn.decision-table-output.output-id.md) — 161 tokens
+- [Output — Output name](.llms/chunks/components.modeler.dmn.decision-table-output.output-name.md) — 319 tokens
+- [Output — Output type definition](.llms/chunks/components.modeler.dmn.decision-table-output.output-type-definition.md) — 130 tokens
+- [Rule](.llms/chunks/components.modeler.dmn.decision-table-rule.md) — 212 tokens
+- [Rule — Input entry](.llms/chunks/components.modeler.dmn.decision-table-rule.input-entry.md) — 175 tokens
+- [Rule — Output entry](.llms/chunks/components.modeler.dmn.decision-table-rule.output-entry.md) — 157 tokens
+- [Overview](.llms/chunks/components.modeler.dmn.decision-table.md) — 139 tokens
+- [Overview — Decision name](.llms/chunks/components.modeler.dmn.decision-table.decision-name.md) — 345 tokens
+- [Data types](.llms/chunks/components.modeler.dmn.dmn-data-types.md) — 269 tokens
+- [Modeling with DMN](.llms/chunks/components.modeler.dmn.dmn.md) — 153 tokens
+- [Modeling with DMN — Start modeling](.llms/chunks/components.modeler.dmn.dmn.start-modeling.md) — 221 tokens
+- [Modeling with DMN — DMN coverage](.llms/chunks/components.modeler.dmn.dmn.dmn-coverage.md) — 254 tokens
+- [Modeling with DMN — Literal expressions](.llms/chunks/components.modeler.dmn.dmn.literal-expressions.md) — 394 tokens
+- [Element templates](.llms/chunks/components.modeler.element-templates.about-templates.md) — 177 tokens
+- [Element templates — Next steps](.llms/chunks/components.modeler.element-templates.about-templates.next-steps.md) — 93 tokens
+- [Additional resources](.llms/chunks/components.modeler.element-templates.additional-resources.md) — 49 tokens
+- [Defining templates](.llms/chunks/components.modeler.element-templates.defining-templates.md) — 273 tokens
+- [Defining templates — Optional keys](.llms/chunks/components.modeler.element-templates.defining-templates.optional-keys.md) — 641 tokens
+- [Defining templates — Creating multiple templates in one file](.llms/chunks/components.modeler.element-templates.defining-templates.creating-multiple-templates-in-one-file.md) — 251 tokens
+- [Defining templates — Further reading](.llms/chunks/components.modeler.element-templates.defining-templates.further-reading.md) — 157 tokens
+- [Element templates with dependencies](.llms/chunks/components.modeler.element-templates.element-template-with-dependencies.md) — 412 tokens
+- [Element templates with dependencies — Next steps](.llms/chunks/components.modeler.element-templates.element-template-with-dependencies.next-steps.md) — 94 tokens
+- [Example template](.llms/chunks/components.modeler.element-templates.template-example.md) — 599 tokens
+- [Example template — How the example works](.llms/chunks/components.modeler.element-templates.template-example.how-the-example-works.md) — 283 tokens
+- [Example template — Visual result](.llms/chunks/components.modeler.element-templates.template-example.visual-result.md) — 211 tokens
+- [Template metadata](.llms/chunks/components.modeler.element-templates.template-metadata.md) — 255 tokens
+- [Template metadata — Identification: `id` and `version`](.llms/chunks/components.modeler.element-templates.template-metadata.identification-id-and-version.md) — 306 tokens
+- [Template metadata — Discoverability: `name`, `description`, `keywords`, `icon`, `documentationRef`, and `category`](.llms/chunks/components.modeler.element-templates.template-metadata.discoverability-name-description-keywords-icon-documentationref-and-category.md) — 635 tokens
+- [Template metadata — Engine compatibility: `engines`](.llms/chunks/components.modeler.element-templates.template-metadata.engine-compatibility-engines.md) — 407 tokens
+- [Template metadata — Supported BPMN types: `appliesTo` and `elementType`](.llms/chunks/components.modeler.element-templates.template-metadata.supported-bpmn-types-appliesto-and-elementtype.md) — 471 tokens
+- [Template metadata — Grouping properties: `groups`](.llms/chunks/components.modeler.element-templates.template-metadata.grouping-properties-groups.md) — 281 tokens
+- [Template metadata — Predefined configurations: `steps` and `presets`](.llms/chunks/components.modeler.element-templates.template-metadata.predefined-configurations-steps-and-presets.md) — 265 tokens
+- [Template metadata — Predefined configurations: `steps` and `presets` — Defining presets with `presets`](.llms/chunks/components.modeler.element-templates.template-metadata.predefined-configurations-steps-and-presets-defining-presets-with-presets.md) — 156 tokens
+- [Template metadata — Predefined configurations: `steps` and `presets` — Defining the menu with `steps`](.llms/chunks/components.modeler.element-templates.template-metadata.predefined-configurations-steps-and-presets-defining-the-menu-with-steps.md) — 500 tokens
+- [Template metadata — Embedding configurations: `configurationTemplates`](.llms/chunks/components.modeler.element-templates.template-metadata.embedding-configurations-configurationtemplates.md) — 365 tokens
+- [Template metadata — Deprecating a template: `deprecated`](.llms/chunks/components.modeler.element-templates.template-metadata.deprecating-a-template-deprecated.md) — 300 tokens
+- [Template properties](.llms/chunks/components.modeler.element-templates.template-properties.md) — 395 tokens
+- [Template properties — What is part of a property?](.llms/chunks/components.modeler.element-templates.template-properties.what-is-part-of-a-property.md) — 777 tokens
+- [Template properties — Setting the input type: `type`](.llms/chunks/components.modeler.element-templates.template-properties.setting-the-input-type-type.md) — 45 tokens
+- [Template properties — Setting the input type: `type` — String input type](.llms/chunks/components.modeler.element-templates.template-properties.setting-the-input-type-type-string-input-type.md) — 59 tokens
+- [Template properties — Setting the input type: `type` — Text input type](.llms/chunks/components.modeler.element-templates.template-properties.setting-the-input-type-type-text-input-type.md) — 59 tokens
+- [Template properties — Setting the input type: `type` — Hidden input type](.llms/chunks/components.modeler.element-templates.template-properties.setting-the-input-type-type-hidden-input-type.md) — 69 tokens
+- [Template properties — Setting the input type: `type` — Number input type](.llms/chunks/components.modeler.element-templates.template-properties.setting-the-input-type-type-number-input-type.md) — 57 tokens
+- [Template properties — Setting the input type: `type` — Boolean / checkbox input type](.llms/chunks/components.modeler.element-templates.template-properties.setting-the-input-type-type-boolean-checkbox-input-type.md) — 82 tokens
+- [Template properties — Setting the input type: `type` — Dropdown input type](.llms/chunks/components.modeler.element-templates.template-properties.setting-the-input-type-type-dropdown-input-type.md) — 190 tokens
+- [Template properties — Setting the input type: `type` — Configuration input type](.llms/chunks/components.modeler.element-templates.template-properties.setting-the-input-type-type-configuration-input-type.md) — 581 tokens
+- [Template properties — Setting a default value: `value`](.llms/chunks/components.modeler.element-templates.template-properties.setting-a-default-value-value.md) — 155 tokens
+- [Template properties — Generating a value: `generatedValue`](.llms/chunks/components.modeler.element-templates.template-properties.generating-a-value-generatedvalue.md) — 177 tokens
+- [Template properties — Adding FEEL editor support: `feel`](.llms/chunks/components.modeler.element-templates.template-properties.adding-feel-editor-support-feel.md) — 339 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding.md) — 477 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Input mapping: `zeebe:input`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-input-mapping-zeebe-input.md) — 180 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Output mapping: `zeebe:output`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-output-mapping-zeebe-output.md) — 272 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Header: `zeebe:taskHeader`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-header-zeebe-taskheader.md) — 170 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Task definition: `zeebe:taskDefinition`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-task-definition-zeebe-taskdefinition.md) — 224 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Task definition: `zeebe:taskDefinition:type` (deprecated)](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-task-definition-zeebe-taskdefinition-type-deprecated.md) — 184 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Extension properties: `zeebe:property`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-extension-properties-zeebe-property.md) — 193 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Primitive BPMN properties: `property`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-primitive-bpmn-properties-property.md) — 248 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Message name: `bpmn:Message#property`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-message-name-bpmn-message-property.md) — 319 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Message correlation key: `bpmn:Message#zeebe:subscription#property`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-message-correlation-key-bpmn-message-zeebe-subscription-property.md) — 242 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Signal name: `bpmn:Signal#property`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-signal-name-bpmn-signal-property.md) — 209 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Timer event definition property name: `bpmn:TimerEventDefinition#property`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-timer-event-definition-property-name-bpmn-timereventdefinition-property.md) — 375 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Conditional event definition property: `bpmn:ConditionalEventDefinition#property`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-conditional-event-definition-property-bpmn-conditionaleventdefinition-property.md) — 268 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Conditional filter: `bpmn:ConditionalEventDefinition#zeebe:conditionalFilter#property`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-conditional-filter-bpmn-conditionaleventdefinition-zeebe-conditionalfilter-property.md) — 273 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Called element: `zeebe:calledElement`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-called-element-zeebe-calledelement.md) — 549 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — User task implementation: `zeebe:userTask`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-user-task-implementation-zeebe-usertask.md) — 230 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Form: `zeebe:formDefinition`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-form-zeebe-formdefinition.md) — 410 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — User task assignment: `zeebe:assignmentDefinition`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-user-task-assignment-zeebe-assignmentdefinition.md) — 287 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — User task schedule: `zeebe:taskSchedule`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-user-task-schedule-zeebe-taskschedule.md) — 283 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — User task priority: `zeebe:priorityDefinition`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-user-task-priority-zeebe-prioritydefinition.md) — 272 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Called decision: `zeebe:calledDecision`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-called-decision-zeebe-calleddecision.md) — 387 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Script: `zeebe:script`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-script-zeebe-script.md) — 285 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Ad-hoc sub-processes: `zeebe:adHoc`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-ad-hoc-sub-processes-zeebe-adhoc.md) — 467 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Execution listener: `zeebe:executionListener`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-execution-listener-zeebe-executionlistener.md) — 368 tokens
+- [Template properties — Binding an input to a BPMN or Camunda element property: `binding` — Task listener: `zeebe:taskListener`](.llms/chunks/components.modeler.element-templates.template-properties.binding-an-input-to-a-bpmn-or-camunda-element-property-binding-task-listener-zeebe-tasklistener.md) — 369 tokens
+- [Template properties — Setting a task implementation](.llms/chunks/components.modeler.element-templates.template-properties.setting-a-task-implementation.md) — 568 tokens
+- [Template properties — Preventing persisting empty values: `optional`](.llms/chunks/components.modeler.element-templates.template-properties.preventing-persisting-empty-values-optional.md) — 203 tokens
+- [Template properties — Grouping fields: `group`](.llms/chunks/components.modeler.element-templates.template-properties.grouping-fields-group.md) — 374 tokens
+- [Template properties — Showing properties conditionally: `condition`](.llms/chunks/components.modeler.element-templates.template-properties.showing-properties-conditionally-condition.md) — 467 tokens
+- [Template properties — Preventing edits: `editable`](.llms/chunks/components.modeler.element-templates.template-properties.preventing-edits-editable.md) — 494 tokens
 - [AI agent functions](.llms/chunks/components.modeler.feel.builtin-functions.feel-built-in-functions-ai-agent.md) — 210 tokens
 - [AI agent functions — fromAi(value, description)](.llms/chunks/components.modeler.feel.builtin-functions.feel-built-in-functions-ai-agent.fromai-value-description.md) — 148 tokens
 - [AI agent functions — fromAi(value, description, type)](.llms/chunks/components.modeler.feel.builtin-functions.feel-built-in-functions-ai-agent.fromai-value-description-type.md) — 183 tokens
@@ -2986,6 +3593,80 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Introduction](.llms/chunks/components.modeler.feel.language-guide.language-guide-introduction.md) — 135 tokens
 - [What is FEEL?](.llms/chunks/components.modeler.feel.what-is-feel.md) — 146 tokens
 - [What is FEEL? — Learning FEEL](.llms/chunks/components.modeler.feel.what-is-feel.learning-feel.md) — 350 tokens
+- [What are Camunda Forms?](.llms/chunks/components.modeler.forms.camunda-forms-reference.md) — 347 tokens
+- [What are Camunda Forms? — Additional resources](.llms/chunks/components.modeler.forms.camunda-forms-reference.additional-resources.md) — 44 tokens
+- [Data binding](.llms/chunks/components.modeler.forms.configuration.forms-config-data-binding.md) — 766 tokens
+- [Options Source](.llms/chunks/components.modeler.forms.configuration.forms-config-options.md) — 573 tokens
+- [Table data binding](.llms/chunks/components.modeler.forms.configuration.forms-config-table-data-binding.md) — 338 tokens
+- [Table data binding — Data source](.llms/chunks/components.modeler.forms.configuration.forms-config-table-data-binding.data-source.md) — 181 tokens
+- [Templating syntax](.llms/chunks/components.modeler.forms.configuration.forms-config-templating-syntax.md) — 361 tokens
+- [Templating syntax — Additional details](.llms/chunks/components.modeler.forms.configuration.forms-config-templating-syntax.additional-details.md) — 326 tokens
+- [Button](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-button.md) — 207 tokens
+- [Checkbox group](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-checkbox-group.md) — 470 tokens
+- [Checkbox](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-checkbox.md) — 383 tokens
+- [Datetime](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-datetime.md) — 497 tokens
+- [Datetime — Datatypes](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-datetime.datatypes.md) — 124 tokens
+- [Document preview](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-document-preview.md) — 364 tokens
+- [Document preview — Additional guides](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-document-preview.additional-guides.md) — 32 tokens
+- [Dynamic list](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-dynamiclist.md) — 315 tokens
+- [Dynamic list — Usage](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-dynamiclist.usage.md) — 92 tokens
+- [Expression field](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-expression.md) — 245 tokens
+- [Filepicker](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-filepicker.md) — 375 tokens
+- [Filepicker — Reference uploaded files](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-filepicker.reference-uploaded-files.md) — 104 tokens
+- [Group](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-group.md) — 339 tokens
+- [HTML view](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-html.md) — 165 tokens
+- [HTML view — Our security and sanitation strategy](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-html.our-security-and-sanitation-strategy.md) — 192 tokens
+- [HTML view — HTML configurations](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-html.html-configurations.md) — 307 tokens
+- [iframe](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-iframe.md) — 568 tokens
+- [iframe — Security advisory](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-iframe.security-advisory.md) — 431 tokens
+- [Image view](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-image.md) — 206 tokens
+- [Number](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-number.md) — 621 tokens
+- [Radio group](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-radio.md) — 475 tokens
+- [Select](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-select.md) — 479 tokens
+- [Separator](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-separator.md) — 146 tokens
+- [Spacer](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-spacer.md) — 182 tokens
+- [Table](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-table.md) — 347 tokens
+- [Taglist](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-taglist.md) — 461 tokens
+- [Text view](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-text.md) — 195 tokens
+- [Text view — Example text configurations](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-text.example-text-configurations.md) — 331 tokens
+- [Text area](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-textarea.md) — 408 tokens
+- [Text area — Datatypes](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-textarea.datatypes.md) — 72 tokens
+- [Textfield](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library-textfield.md) — 668 tokens
+- [Overview of Form Elements](.llms/chunks/components.modeler.forms.form-element-library.forms-element-library.md) — 327 tokens
+- [Modeling guidance](.llms/chunks/components.modeler.reference.modeling-guidance.index.md) — 85 tokens
+- [Agent fromAi() contract](.llms/chunks/components.modeler.reference.modeling-guidance.rules.agent-fromai-contract.md) — 395 tokens
+- [Agent fromAi() contract — (guideline) Correct `fromAi()` usage](.llms/chunks/components.modeler.reference.modeling-guidance.rules.agent-fromai-contract.guideline-correct-fromai-usage.md) — 772 tokens
+- [Agent fromAi() contract — See also](.llms/chunks/components.modeler.reference.modeling-guidance.rules.agent-fromai-contract.see-also.md) — 58 tokens
+- [Agent tool documentation](.llms/chunks/components.modeler.reference.modeling-guidance.rules.agent-tool-documentation.md) — 233 tokens
+- [Agent tool documentation — (guideline) No documentation](.llms/chunks/components.modeler.reference.modeling-guidance.rules.agent-tool-documentation.guideline-no-documentation.md) — 155 tokens
+- [Agent tool documentation — Declare a sub-process as agentic](.llms/chunks/components.modeler.reference.modeling-guidance.rules.agent-tool-documentation.declare-a-sub-process-as-agentic.md) — 625 tokens
+- [Agent tool documentation — See also](.llms/chunks/components.modeler.reference.modeling-guidance.rules.agent-tool-documentation.see-also.md) — 53 tokens
+- [Agent tool output key](.llms/chunks/components.modeler.reference.modeling-guidance.rules.agent-tool-output-key.md) — 198 tokens
+- [Agent tool output key — How a tool can set `toolCallResult`](.llms/chunks/components.modeler.reference.modeling-guidance.rules.agent-tool-output-key.how-a-tool-can-set-toolcallresult.md) — 451 tokens
+- [Agent tool output key — (guideline) Result never reaches the agent](.llms/chunks/components.modeler.reference.modeling-guidance.rules.agent-tool-output-key.guideline-result-never-reaches-the-agent.md) — 724 tokens
+- [Agent tool output key — See also](.llms/chunks/components.modeler.reference.modeling-guidance.rules.agent-tool-output-key.see-also.md) — 46 tokens
+- [Called element](.llms/chunks/components.modeler.reference.modeling-guidance.rules.called-element.md) — 137 tokens
+- [Element type](.llms/chunks/components.modeler.reference.modeling-guidance.rules.element-type.md) — 126 tokens
+- [Error reference](.llms/chunks/components.modeler.reference.modeling-guidance.rules.error-reference.md) — 146 tokens
+- [Error reference — (guideline) Error selected and error code specified](.llms/chunks/components.modeler.reference.modeling-guidance.rules.error-reference.guideline-error-selected-and-error-code-specified.md) — 59 tokens
+- [Escalation reference](.llms/chunks/components.modeler.reference.modeling-guidance.rules.escalation-reference.md) — 146 tokens
+- [Escalation reference — (guideline) Escalation selected and escalation code specified](.llms/chunks/components.modeler.reference.modeling-guidance.rules.escalation-reference.guideline-escalation-selected-and-escalation-code-specified.md) — 59 tokens
+- [FEEL](.llms/chunks/components.modeler.reference.modeling-guidance.rules.feel.md) — 165 tokens
+- [Message reference](.llms/chunks/components.modeler.reference.modeling-guidance.rules.message-reference.md) — 146 tokens
+- [Infinite Loop](.llms/chunks/components.modeler.reference.modeling-guidance.rules.no-loop.md) — 136 tokens
+- [Infinite Loop — References](.llms/chunks/components.modeler.reference.modeling-guidance.rules.no-loop.references.md) — 27 tokens
+- [Task testing](.llms/chunks/components.modeler.task-testing.md) — 153 tokens
+- [Task testing — How it works](.llms/chunks/components.modeler.task-testing.how-it-works.md) — 188 tokens
+- [Task testing — Prerequisites](.llms/chunks/components.modeler.task-testing.prerequisites.md) — 251 tokens
+- [Task testing — Variable persistence](.llms/chunks/components.modeler.task-testing.variable-persistence.md) — 130 tokens
+- [Using Camunda Hub and Desktop Modeler together](.llms/chunks/components.modeler.using-hub-and-desktop-modeler-together.md) — 388 tokens
+- [Using Camunda Hub and Desktop Modeler together — Projects and process applications](.llms/chunks/components.modeler.using-hub-and-desktop-modeler-together.projects-and-process-applications.md) — 466 tokens
+- [Using Camunda Hub and Desktop Modeler together — Element templates](.llms/chunks/components.modeler.using-hub-and-desktop-modeler-together.element-templates.md) — 45 tokens
+- [Using Camunda Hub and Desktop Modeler together — Element templates — Templates per file](.llms/chunks/components.modeler.using-hub-and-desktop-modeler-together.element-templates-templates-per-file.md) — 114 tokens
+- [Using Camunda Hub and Desktop Modeler together — Element templates — Shared element templates](.llms/chunks/components.modeler.using-hub-and-desktop-modeler-together.element-templates-shared-element-templates.md) — 275 tokens
+- [Using Camunda Hub and Desktop Modeler together — Element templates — Project element templates](.llms/chunks/components.modeler.using-hub-and-desktop-modeler-together.element-templates-project-element-templates.md) — 241 tokens
+- [Using Camunda Hub and Desktop Modeler together — Element templates — Handling multiple template versions](.llms/chunks/components.modeler.using-hub-and-desktop-modeler-together.element-templates-handling-multiple-template-versions.md) — 351 tokens
+- [Using Camunda Hub and Desktop Modeler together — Frequently asked questions](.llms/chunks/components.modeler.using-hub-and-desktop-modeler-together.frequently-asked-questions.md) — 336 tokens
 - [Introduction to Operate](.llms/chunks/components.operate.operate-introduction.md) — 201 tokens
 - [Introduction to Operate — Availability](.llms/chunks/components.operate.operate-introduction.availability.md) — 135 tokens
 - [Access control](.llms/chunks/components.operate.overview.access-control.md) — 267 tokens
@@ -3138,6 +3819,55 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Monitor dashboards](.llms/chunks/components.optimize.userguide.view-mode.md) — 570 tokens
 - [Monitor dashboards — Interacting with reports](.llms/chunks/components.optimize.userguide.view-mode.interacting-with-reports.md) — 330 tokens
 - [What is Optimize?](.llms/chunks/components.optimize.what-is-optimize.md) — 381 tokens
+- [About the Orchestration Cluster](.llms/chunks/components.orchestration-cluster.md) — 164 tokens
+- [About the Orchestration Cluster — Tasklist](.llms/chunks/components.orchestration-cluster.tasklist.md) — 81 tokens
+- [Handle project data safely](.llms/chunks/components.process-os-harness.best-practices.data-handling.md) — 138 tokens
+- [Handle project data safely — Where project data lives](.llms/chunks/components.process-os-harness.best-practices.data-handling.where-project-data-lives.md) — 188 tokens
+- [Handle project data safely — Control what reaches the AI platform](.llms/chunks/components.process-os-harness.best-practices.data-handling.control-what-reaches-the-ai-platform.md) — 168 tokens
+- [Handle project data safely — Choose sources that make discovery succeed](.llms/chunks/components.process-os-harness.best-practices.data-handling.choose-sources-that-make-discovery-succeed.md) — 159 tokens
+- [Handle project data safely — Handle personal and regulated data](.llms/chunks/components.process-os-harness.best-practices.data-handling.handle-personal-and-regulated-data.md) — 173 tokens
+- [Install ProcessOS Harness and configure a project](.llms/chunks/components.process-os-harness.get-started.install.md) — 349 tokens
+- [Install ProcessOS Harness and configure a project — Install ProcessOS Harness](.llms/chunks/components.process-os-harness.get-started.install.install-processos-harness.md) — 316 tokens
+- [Install ProcessOS Harness and configure a project — Next steps](.llms/chunks/components.process-os-harness.get-started.install.next-steps.md) — 85 tokens
+- [Set up your organization for ProcessOS Harness](.llms/chunks/components.process-os-harness.get-started.project-setup.md) — 237 tokens
+- [Set up your organization for ProcessOS Harness — Complete the Camunda Academy learning path](.llms/chunks/components.process-os-harness.get-started.project-setup.complete-the-camunda-academy-learning-path.md) — 268 tokens
+- [System requirements](.llms/chunks/components.process-os-harness.get-started.system-requirements.md) — 225 tokens
+- [System requirements — Governance process](.llms/chunks/components.process-os-harness.get-started.system-requirements.governance-process.md) — 146 tokens
+- [System requirements — AI coding agent](.llms/chunks/components.process-os-harness.get-started.system-requirements.ai-coding-agent.md) — 537 tokens
+- [System requirements — Builder client](.llms/chunks/components.process-os-harness.get-started.system-requirements.builder-client.md) — 223 tokens
+- [System requirements — Generated solutions](.llms/chunks/components.process-os-harness.get-started.system-requirements.generated-solutions.md) — 168 tokens
+- [ProcessOS Harness](.llms/chunks/components.process-os-harness.overview.md) — 239 tokens
+- [ProcessOS Harness — Who is ProcessOS Harness for?](.llms/chunks/components.process-os-harness.overview.who-is-processos-harness-for.md) — 162 tokens
+- [ProcessOS Harness — Key principles](.llms/chunks/components.process-os-harness.overview.key-principles.md) — 606 tokens
+- [ProcessOS Harness — Current scope](.llms/chunks/components.process-os-harness.overview.current-scope.md) — 145 tokens
+- [ProcessOS Harness — Get started](.llms/chunks/components.process-os-harness.overview.get-started.md) — 182 tokens
+- [ProcessOS Harness — Best practices](.llms/chunks/components.process-os-harness.overview.best-practices.md) — 27 tokens
+- [Generate Camunda artifacts](.llms/chunks/components.process-os-harness.run-a-project.artifact-generation.md) — 208 tokens
+- [Builder task](.llms/chunks/components.process-os-harness.run-a-project.builder-task.md) — 216 tokens
+- [Builder task — How a builder task works](.llms/chunks/components.process-os-harness.run-a-project.builder-task.how-a-builder-task-works.md) — 231 tokens
+- [Builder task — Work on a builder task](.llms/chunks/components.process-os-harness.run-a-project.builder-task.work-on-a-builder-task.md) — 62 tokens
+- [Run a project with the governance process](.llms/chunks/components.process-os-harness.run-a-project.governance-process.md) — 150 tokens
+- [Run a project with the governance process — Control the governance process with `next`](.llms/chunks/components.process-os-harness.run-a-project.governance-process.control-the-governance-process-with-next.md) — 348 tokens
+- [Run a project with the governance process — Gates and tasks](.llms/chunks/components.process-os-harness.run-a-project.governance-process.gates-and-tasks.md) — 280 tokens
+- [Run a project with the governance process — Next steps](.llms/chunks/components.process-os-harness.run-a-project.governance-process.next-steps.md) — 82 tokens
+- [Discover the as-is process](.llms/chunks/components.process-os-harness.run-a-project.phases.1-discovery.md) — 310 tokens
+- [Discover the as-is process — Discovery specialists](.llms/chunks/components.process-os-harness.run-a-project.phases.1-discovery.discovery-specialists.md) — 203 tokens
+- [Discover the as-is process — WIP - Discovery actions](.llms/chunks/components.process-os-harness.run-a-project.phases.1-discovery.wip-discovery-actions.md) — 90 tokens
+- [Transform the process to a to-be design](.llms/chunks/components.process-os-harness.run-a-project.phases.2-transformation.md) — 147 tokens
+- [Transform the process to a to-be design — Choose a tier](.llms/chunks/components.process-os-harness.run-a-project.phases.2-transformation.choose-a-tier.md) — 205 tokens
+- [Transform the process to a to-be design — Next step](.llms/chunks/components.process-os-harness.run-a-project.phases.2-transformation.next-step.md) — 40 tokens
+- [Implement the Camunda solution](.llms/chunks/components.process-os-harness.run-a-project.phases.3-implementation.md) — 190 tokens
+- [Implement the Camunda solution — Validate with the test layers](.llms/chunks/components.process-os-harness.run-a-project.phases.3-implementation.validate-with-the-test-layers.md) — 349 tokens
+- [Review generated results with SMEs](.llms/chunks/components.process-os-harness.run-a-project.review-cycle.md) — 756 tokens
+- [Review generated results with SMEs — Manage files during the review cycle](.llms/chunks/components.process-os-harness.run-a-project.review-cycle.manage-files-during-the-review-cycle.md) — 119 tokens
+- [Get started with RPA](.llms/chunks/components.rpa.getting-started.md) — 790 tokens
+- [Get started with RPA — Automate execution](.llms/chunks/components.rpa.getting-started.automate-execution.md) — 520 tokens
+- [Get started with RPA — Interact with the process](.llms/chunks/components.rpa.getting-started.interact-with-the-process.md) — 699 tokens
+- [Robotic process automation (RPA)](.llms/chunks/components.rpa.overview.md) — 194 tokens
+- [Robotic process automation (RPA) — Further resources](.llms/chunks/components.rpa.overview.further-resources.md) — 62 tokens
+- [RPA production setup](.llms/chunks/components.rpa.production.md) — 682 tokens
+- [RPA production setup — Installation and setup guide](.llms/chunks/components.rpa.production.installation-and-setup-guide.md) — 594 tokens
+- [RPA production setup — FAQ](.llms/chunks/components.rpa.production.faq.md) — 142 tokens
 - [Auto-updates](.llms/chunks/components.saas.auto-updates.md) — 278 tokens
 - [Auto-updates — Update availability](.llms/chunks/components.saas.auto-updates.update-availability.md) — 134 tokens
 - [Backup and restore overview](.llms/chunks/components.saas.backup-restore-overview.md) — 174 tokens
@@ -3368,6 +4098,10 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Overview — Task details](.llms/chunks/components.tasklist.userguide.using-tasklist.task-details.md) — 235 tokens
 - [Overview — Filtering](.llms/chunks/components.tasklist.userguide.using-tasklist.filtering.md) — 147 tokens
 - [Overview — Document handling](.llms/chunks/components.tasklist.userguide.using-tasklist.document-handling.md) — 48 tokens
+- [Wait states](.llms/chunks/components.wait-states.overview.md) — 221 tokens
+- [Wait states — Supported wait state types](.llms/chunks/components.wait-states.overview.supported-wait-state-types.md) — 300 tokens
+- [Wait states — Impact on secondary storage](.llms/chunks/components.wait-states.overview.impact-on-secondary-storage.md) — 249 tokens
+- [Wait states — Get started](.llms/chunks/components.wait-states.overview.get-started.md) — 51 tokens
 - [Architecture](.llms/chunks/components.zeebe.technical-concepts.architecture.md) — 381 tokens
 - [Architecture — Gateways](.llms/chunks/components.zeebe.technical-concepts.architecture.gateways.md) — 220 tokens
 - [Architecture — Exporters](.llms/chunks/components.zeebe.technical-concepts.architecture.exporters.md) — 137 tokens
@@ -3409,6 +4143,373 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Technical concepts](.llms/chunks/components.zeebe.technical-concepts.technical-concepts-overview.md) — 248 tokens
 - [Introduction to Zeebe](.llms/chunks/components.zeebe.zeebe-overview.md) — 286 tokens
 - [Introduction to Zeebe — Get started](.llms/chunks/components.zeebe.zeebe-overview.get-started.md) — 34 tokens
+
+## guides
+
+- [AI usage guidelines](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.md) — 318 tokens
+- [AI usage guidelines — How to use AI services responsibly](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.how-to-use-ai-services-responsibly.md) — 315 tokens
+- [AI usage guidelines — What these features are designed for](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.what-these-features-are-designed-for.md) — 202 tokens
+- [AI usage guidelines — Evaluating AI outputs](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.evaluating-ai-outputs.md) — 297 tokens
+- [AI usage guidelines — Knowing your AI tools](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.knowing-your-ai-tools.md) — 230 tokens
+- [AI usage guidelines — Handling data with care](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.handling-data-with-care.md) — 309 tokens
+- [AI usage guidelines — Using content in AI features](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.using-content-in-ai-features.md) — 178 tokens
+- [AI usage guidelines — What you must not do](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.what-you-must-not-do.md) — 317 tokens
+- [AI usage guidelines — Working with AI agents](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.working-with-ai-agents.md) — 146 tokens
+- [AI usage guidelines — Working with AI agents — Before you deploy: planning](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.working-with-ai-agents-before-you-deploy-planning.md) — 141 tokens
+- [AI usage guidelines — Working with AI agents — Governance](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.working-with-ai-agents-governance.md) — 96 tokens
+- [AI usage guidelines — Working with AI agents — Pilot before you scale](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.working-with-ai-agents-pilot-before-you-scale.md) — 78 tokens
+- [AI usage guidelines — Working with AI agents — Human oversight](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.working-with-ai-agents-human-oversight.md) — 234 tokens
+- [AI usage guidelines — Working with AI agents — Technical readiness](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.working-with-ai-agents-technical-readiness.md) — 120 tokens
+- [AI usage guidelines — Working with AI agents — Data and tool access](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.working-with-ai-agents-data-and-tool-access.md) — 135 tokens
+- [AI usage guidelines — Working with AI agents — Transparency and communication](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.working-with-ai-agents-transparency-and-communication.md) — 236 tokens
+- [AI usage guidelines — Working with AI agents — Bias and fairness](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.working-with-ai-agents-bias-and-fairness.md) — 103 tokens
+- [AI usage guidelines — Working with AI agents — Documentation](.llms/chunks/guides.build-with-ai.ai-usage-guidelines.working-with-ai-agents-documentation.md) — 112 tokens
+- [Build with AI](.llms/chunks/guides.build-with-ai.overview.md) — 161 tokens
+- [Build with AI — Build AI agents](.llms/chunks/guides.build-with-ai.overview.build-ai-agents.md) — 158 tokens
+- [Build with AI — Use AI responsibly](.llms/chunks/guides.build-with-ai.overview.use-ai-responsibly.md) — 50 tokens
+- [Create a cluster](.llms/chunks/guides.create-cluster.md) — 329 tokens
+- [Build your first AI agent](.llms/chunks/guides.getting-started-agentic-orchestration.md) — 242 tokens
+- [Build your first AI agent — Prerequisites](.llms/chunks/guides.getting-started-agentic-orchestration.prerequisites.md) — 726 tokens
+- [Build your first AI agent — Step 1: Install the model blueprint](.llms/chunks/guides.getting-started-agentic-orchestration.step-1-install-the-model-blueprint.md) — 497 tokens
+- [Build your first AI agent — Step 2: Configure the AI Agent connector](.llms/chunks/guides.getting-started-agentic-orchestration.step-2-configure-the-ai-agent-connector.md) — 79 tokens
+- [Build your first AI agent — Step 2: Configure the AI Agent connector — camunda-provided-llm](.llms/chunks/guides.getting-started-agentic-orchestration.step-2-configure-the-ai-agent-connector-camunda-provided-llm.md) — 135 tokens
+- [Build your first AI agent — Step 2: Configure the AI Agent connector — aws](.llms/chunks/guides.getting-started-agentic-orchestration.step-2-configure-the-ai-agent-connector-aws.md) — 132 tokens
+- [Build your first AI agent — Step 2: Configure the AI Agent connector — saas](.llms/chunks/guides.getting-started-agentic-orchestration.step-2-configure-the-ai-agent-connector-saas.md) — 44 tokens
+- [Build your first AI agent — Step 2: Configure the AI Agent connector — self-managed](.llms/chunks/guides.getting-started-agentic-orchestration.step-2-configure-the-ai-agent-connector-self-managed.md) — 186 tokens
+- [Build your first AI agent — Step 2: Configure the AI Agent connector — local](.llms/chunks/guides.getting-started-agentic-orchestration.step-2-configure-the-ai-agent-connector-local.md) — 415 tokens
+- [Build your first AI agent — Step 3: Test your AI agent](.llms/chunks/guides.getting-started-agentic-orchestration.step-3-test-your-ai-agent.md) — 112 tokens
+- [Build your first AI agent — Step 3: Test your AI agent — saas](.llms/chunks/guides.getting-started-agentic-orchestration.step-3-test-your-ai-agent-saas.md) — 311 tokens
+- [Build your first AI agent — Step 3: Test your AI agent — self-managed](.llms/chunks/guides.getting-started-agentic-orchestration.step-3-test-your-ai-agent-self-managed.md) — 370 tokens
+- [Build your first AI agent — Step 3: Test your AI agent — Monitor the process execution](.llms/chunks/guides.getting-started-agentic-orchestration.step-3-test-your-ai-agent-monitor-the-process-execution.md) — 232 tokens
+- [Build your first AI agent — Step 4: Add your first tool](.llms/chunks/guides.getting-started-agentic-orchestration.step-4-add-your-first-tool.md) — 763 tokens
+- [Build your first AI agent — Next steps](.llms/chunks/guides.getting-started-agentic-orchestration.next-steps.md) — 168 tokens
+- [Run your first Spring Boot, Node.js, Python, or C# project with Camunda 8](.llms/chunks/guides.getting-started-example.md) — 203 tokens
+- [Run your first Spring Boot, Node.js, Python, or C# project with Camunda 8 — Prerequisites](.llms/chunks/guides.getting-started-example.prerequisites.md) — 233 tokens
+- [Run your first Spring Boot, Node.js, Python, or C# project with Camunda 8 — Example project](.llms/chunks/guides.getting-started-example.example-project.md) — 321 tokens
+- [Run your first Spring Boot, Node.js, Python, or C# project with Camunda 8 — View the process instance and start job workers](.llms/chunks/guides.getting-started-example.view-the-process-instance-and-start-job-workers.md) — 482 tokens
+- [Run your first Spring Boot, Node.js, Python, or C# project with Camunda 8 — Complete!](.llms/chunks/guides.getting-started-example.complete.md) — 209 tokens
+- [Run your first Spring Boot, Node.js, Python, or C# project with Camunda 8 — Teardown](.llms/chunks/guides.getting-started-example.teardown.md) — 63 tokens
+- [Run your first BPMN process with Camunda 8](.llms/chunks/guides.getting-started-hello-world.md) — 215 tokens
+- [Run your first BPMN process with Camunda 8 — Step 1: Download the Getting Started Package](.llms/chunks/guides.getting-started-hello-world.step-1-download-the-getting-started-package.md) — 344 tokens
+- [Run your first BPMN process with Camunda 8 — Step 3: Explore your process in Operate](.llms/chunks/guides.getting-started-hello-world.step-3-explore-your-process-in-operate.md) — 227 tokens
+- [Run your first BPMN process with Camunda 8 — Step 4: Try different scenarios](.llms/chunks/guides.getting-started-hello-world.step-4-try-different-scenarios.md) — 226 tokens
+- [Run your first BPMN process with Camunda 8 — Step 5: Understand how it works](.llms/chunks/guides.getting-started-hello-world.step-5-understand-how-it-works.md) — 417 tokens
+- [Run your first BPMN process with Camunda 8 — Step 6: Clean up](.llms/chunks/guides.getting-started-hello-world.step-6-clean-up.md) — 195 tokens
+- [Get started with API orchestration](.llms/chunks/guides.getting-started-orchestrate-apis.md) — 221 tokens
+- [Get started with API orchestration — Sign Up](.llms/chunks/guides.getting-started-orchestrate-apis.sign-up.md) — 270 tokens
+- [Get started with API orchestration — Create a REST connector task](.llms/chunks/guides.getting-started-orchestrate-apis.create-a-rest-connector-task.md) — 231 tokens
+- [Get started with API orchestration — Make your REST connector executable](.llms/chunks/guides.getting-started-orchestrate-apis.make-your-rest-connector-executable.md) — 155 tokens
+- [Get started with API orchestration — Deploy your process](.llms/chunks/guides.getting-started-orchestrate-apis.deploy-your-process.md) — 274 tokens
+- [Get started with API orchestration — Wrap up](.llms/chunks/guides.getting-started-orchestrate-apis.wrap-up.md) — 158 tokens
+- [Get started with API orchestration — Additional resources and next steps](.llms/chunks/guides.getting-started-orchestrate-apis.additional-resources-and-next-steps.md) — 124 tokens
+- [Get started with human task orchestration](.llms/chunks/guides.getting-started-orchestrate-human-tasks.md) — 491 tokens
+- [Get started with human task orchestration — Sign Up](.llms/chunks/guides.getting-started-orchestrate-human-tasks.sign-up.md) — 196 tokens
+- [Get started with human task orchestration — Step 1: Create a new process](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-1-create-a-new-process.md) — 75 tokens
+- [Get started with human task orchestration — Step 1: Create a new process — saas](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-1-create-a-new-process-saas.md) — 168 tokens
+- [Get started with human task orchestration — Step 1: Create a new process — sm](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-1-create-a-new-process-sm.md) — 100 tokens
+- [Get started with human task orchestration — Step 1: Create a new process — saas](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-1-create-a-new-process-saas-2.md) — 66 tokens
+- [Get started with human task orchestration — Step 1: Create a new process — sm](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-1-create-a-new-process-sm-2.md) — 447 tokens
+- [Get started with human task orchestration — Step 1: Create a new process — saas](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-1-create-a-new-process-saas-3.md) — 50 tokens
+- [Get started with human task orchestration — Step 1: Create a new process — sm](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-1-create-a-new-process-sm-3.md) — 141 tokens
+- [Get started with human task orchestration — Step 2: Design a form](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-2-design-a-form.md) — 107 tokens
+- [Get started with human task orchestration — Step 2: Design a form — saas](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-2-design-a-form-saas.md) — 399 tokens
+- [Get started with human task orchestration — Step 2: Design a form — sm](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-2-design-a-form-sm.md) — 384 tokens
+- [Get started with human task orchestration — Step 3: Link the form to your process](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-3-link-the-form-to-your-process.md) — 224 tokens
+- [Get started with human task orchestration — Step 4: Run your process](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-4-run-your-process.md) — 172 tokens
+- [Get started with human task orchestration — Step 4: Run your process — saas](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-4-run-your-process-saas.md) — 250 tokens
+- [Get started with human task orchestration — Step 4: Run your process — sm](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-4-run-your-process-sm.md) — 188 tokens
+- [Get started with human task orchestration — Step 4: Run your process — saas](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-4-run-your-process-saas-2.md) — 198 tokens
+- [Get started with human task orchestration — Step 4: Run your process — sm](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-4-run-your-process-sm-2.md) — 119 tokens
+- [Get started with human task orchestration — Step 5: Complete a user task](.llms/chunks/guides.getting-started-orchestrate-human-tasks.step-5-complete-a-user-task.md) — 647 tokens
+- [Get started with human task orchestration — Wrap up](.llms/chunks/guides.getting-started-orchestrate-human-tasks.wrap-up.md) — 217 tokens
+- [Get started with human task orchestration — Additional resources and next steps](.llms/chunks/guides.getting-started-orchestrate-human-tasks.additional-resources-and-next-steps.md) — 159 tokens
+- [Get started with Camunda](.llms/chunks/guides.introduction-to-camunda-8.md) — 199 tokens
+- [Get started with Camunda — Build your first AI agent](.llms/chunks/guides.introduction-to-camunda-8.build-your-first-ai-agent.md) — 156 tokens
+- [Get started with Camunda — Orchestrate human tasks](.llms/chunks/guides.introduction-to-camunda-8.orchestrate-human-tasks.md) — 132 tokens
+- [Conceptual differences](.llms/chunks/guides.migrating-from-camunda-7.conceptual-differences.md) — 174 tokens
+- [Conceptual differences — Architectural differences](.llms/chunks/guides.migrating-from-camunda-7.conceptual-differences.architectural-differences.md) — 36 tokens
+- [Conceptual differences — Architectural differences — No embedded engine in Camunda 8](.llms/chunks/guides.migrating-from-camunda-7.conceptual-differences.architectural-differences-no-embedded-engine-in-camunda-8.md) — 237 tokens
+- [Conceptual differences — Architectural differences — Different data types](.llms/chunks/guides.migrating-from-camunda-7.conceptual-differences.architectural-differences-different-data-types.md) — 186 tokens
+- [Conceptual differences — Architectural differences — Expression language](.llms/chunks/guides.migrating-from-camunda-7.conceptual-differences.architectural-differences-expression-language.md) — 207 tokens
+- [Conceptual differences — Architectural differences — Different connector infrastructure](.llms/chunks/guides.migrating-from-camunda-7.conceptual-differences.architectural-differences-different-connector-infrastructure.md) — 118 tokens
+- [Conceptual differences — Architectural differences — Multi-tenancy](.llms/chunks/guides.migrating-from-camunda-7.conceptual-differences.architectural-differences-multi-tenancy.md) — 384 tokens
+- [Conceptual differences — Process solutions using Spring Boot](.llms/chunks/guides.migrating-from-camunda-7.conceptual-differences.process-solutions-using-spring-boot.md) — 409 tokens
+- [Conceptual differences — Programming model](.llms/chunks/guides.migrating-from-camunda-7.conceptual-differences.programming-model.md) — 227 tokens
+- [Conceptual differences — Other process solution architectures](.llms/chunks/guides.migrating-from-camunda-7.conceptual-differences.other-process-solution-architectures.md) — 303 tokens
+- [Conceptual differences — Plugins](.llms/chunks/guides.migrating-from-camunda-7.conceptual-differences.plugins.md) — 137 tokens
+- [Camunda 7 to Camunda 8 migration guide](.llms/chunks/guides.migrating-from-camunda-7.index.md) — 195 tokens
+- [Camunda 7 to Camunda 8 migration guide — What you will learn](.llms/chunks/guides.migrating-from-camunda-7.index.what-you-will-learn.md) — 166 tokens
+- [Migration journey](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.md) — 126 tokens
+- [Migration journey — Simplified migration journey](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.simplified-migration-journey.md) — 58 tokens
+- [Migration journey — Advanced migration journey](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.advanced-migration-journey.md) — 294 tokens
+- [Migration journey — Analyze your solution](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.analyze-your-solution.md) — 129 tokens
+- [Migration journey — Estimate migration effort and budget project](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.estimate-migration-effort-and-budget-project.md) — 166 tokens
+- [Migration journey — When to migrate?](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.when-to-migrate.md) — 356 tokens
+- [Migration journey — When not to migrate?](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.when-not-to-migrate.md) — 154 tokens
+- [Migration journey — Define your target Camunda version for migration](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.define-your-target-camunda-version-for-migration.md) — 425 tokens
+- [Migration journey — Leverage guidance, advisory, and tooling](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.leverage-guidance-advisory-and-tooling.md) — 812 tokens
+- [Migration journey — Drain out vs big bang](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.drain-out-vs-big-bang.md) — 878 tokens
+- [Migration journey — Drain out vs big bang (2)](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.drain-out-vs-big-bang-2.md) — 154 tokens
+- [Migration journey — Adapt existing code vs refactoring](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.adapt-existing-code-vs-refactoring.md) — 507 tokens
+- [Migration journey — Prepare your Camunda 7 solution (optional)](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.prepare-your-camunda-7-solution-optional.md) — 589 tokens
+- [Migration journey — Convert models](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.convert-models.md) — 114 tokens
+- [Migration journey — Convert expressions](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.convert-expressions.md) — 111 tokens
+- [Migration journey — Refactor code](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.refactor-code.md) — 383 tokens
+- [Migration journey — Improve Camunda 8 solution (optional)](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.improve-camunda-8-solution-optional.md) — 839 tokens
+- [Migration journey — Improve Camunda 8 solution (optional) (2)](.llms/chunks/guides.migrating-from-camunda-7.migration-journey.improve-camunda-8-solution-optional-2.md) — 792 tokens
+- [Migration-ready solutions](.llms/chunks/guides.migrating-from-camunda-7.migration-readiness.md) — 386 tokens
+- [Migration-ready solutions — Clean delegates](.llms/chunks/guides.migrating-from-camunda-7.migration-readiness.clean-delegates.md) — 407 tokens
+- [Migration-ready solutions — No transaction managers](.llms/chunks/guides.migrating-from-camunda-7.migration-readiness.no-transaction-managers.md) — 347 tokens
+- [Migration-ready solutions — Use primitive variable types or JSON](.llms/chunks/guides.migrating-from-camunda-7.migration-readiness.use-primitive-variable-types-or-json.md) — 321 tokens
+- [Migration-ready solutions — Simple expressions and FEEL](.llms/chunks/guides.migrating-from-camunda-7.migration-readiness.simple-expressions-and-feel.md) — 726 tokens
+- [Migration-ready solutions — Camunda Forms](.llms/chunks/guides.migrating-from-camunda-7.migration-readiness.camunda-forms.md) — 96 tokens
+- [Code Conversion](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.md) — 157 tokens
+- [Code Conversion — Overview](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.overview.md) — 546 tokens
+- [Code Conversion — API mapping guide](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.api-mapping-guide.md) — 363 tokens
+- [Code Conversion — Code conversion patterns](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.code-conversion-patterns.md) — 603 tokens
+- [Code Conversion — Refactoring recipes (using OpenRewrite)](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.refactoring-recipes-using-openrewrite.md) — 223 tokens
+- [Code Conversion — Refactoring recipes (using OpenRewrite) — How the recipes work](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.refactoring-recipes-using-openrewrite-how-the-recipes-work.md) — 117 tokens
+- [Code Conversion — Refactoring recipes (using OpenRewrite) — Available recipes](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.refactoring-recipes-using-openrewrite-available-recipes.md) — 183 tokens
+- [Code Conversion — Refactoring recipes (using OpenRewrite) — Using the recipes](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.refactoring-recipes-using-openrewrite-using-the-recipes.md) — 490 tokens
+- [Code Conversion — Refactoring recipes (using OpenRewrite) — Recipe completeness and limitations](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.refactoring-recipes-using-openrewrite-recipe-completeness-and-limitations.md) — 189 tokens
+- [Code Conversion — Refactoring recipes (using OpenRewrite) — Additional resources](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.refactoring-recipes-using-openrewrite-additional-resources.md) — 59 tokens
+- [Code Conversion — Diagram Converter](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.diagram-converter.md) — 194 tokens
+- [Code Conversion — Leverage AI for migration](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.leverage-ai-for-migration.md) — 118 tokens
+- [Code Conversion — Leverage AI for migration — Key API mapping reference](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.leverage-ai-for-migration-key-api-mapping-reference.md) — 771 tokens
+- [Code Conversion — Example: Adjust a Spring Boot application](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.code-conversion.example-adjust-a-spring-boot-application.md) — 39 tokens
+- [Cockpit plugin](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.cockpit-plugin.md) — 168 tokens
+- [Cockpit plugin — Prerequisites](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.cockpit-plugin.prerequisites.md) — 263 tokens
+- [Cockpit plugin — Installation](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.cockpit-plugin.installation.md) — 252 tokens
+- [Cockpit plugin — Using the Cockpit plugin](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.cockpit-plugin.using-the-cockpit-plugin.md) — 262 tokens
+- [Configuration examples](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.config-examples.md) — 275 tokens
+- [Configuration examples — Datasource](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.config-examples.datasource.md) — 220 tokens
+- [Configuration examples — Logging](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.config-examples.logging.md) — 68 tokens
+- [Configuration property reference](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.config-properties.md) — 204 tokens
+- [Configuration property reference — `camunda.migrator`](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.config-properties.camunda.migrator.md) — 881 tokens
+- [Configuration property reference — `camunda.migrator.history.auto-cancel.cleanup`](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.config-properties.camunda.migrator.history.auto-cancel.cleanup.md) — 239 tokens
+- [Configuration property reference — `camunda.migrator.interceptors.[n]`](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.config-properties.camunda.migrator.interceptors.-n.md) — 382 tokens
+- [Configuration property reference — `camunda.migrator.c7.data-source`](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.config-properties.camunda.migrator.c7.data-source.md) — 289 tokens
+- [Configuration property reference — `camunda.migrator.c8`](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.config-properties.camunda.migrator.c8.md) — 140 tokens
+- [Configuration property reference — `camunda.migrator.c8.data-source`](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.config-properties.camunda.migrator.c8.data-source.md) — 323 tokens
+- [Configuration property reference — `logging`](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.config-properties.logging.md) — 164 tokens
+- [Database](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.database.md) — 165 tokens
+- [Database — Transaction isolation level](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.database.transaction-isolation-level.md) — 349 tokens
+- [Database — Dropping the migration mapping schema](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.database.dropping-the-migration-mapping-schema.md) — 286 tokens
+- [Coverage](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history-coverage.md) — 3971 tokens
+- [History](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.md) — 394 tokens
+- [History — Requirements and limitations](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.requirements-and-limitations.md) — 443 tokens
+- [History — Usage examples](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.usage-examples.md) — 233 tokens
+- [History — Entity types](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.entity-types.md) — 141 tokens
+- [History — Tenants](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.tenants.md) — 275 tokens
+- [History — History Cleanup](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.history-cleanup.md) — 366 tokens
+- [History — Partition distribution](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.partition-distribution.md) — 486 tokens
+- [History — Forms](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.forms.md) — 282 tokens
+- [History — Atomicity](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.atomicity.md) — 199 tokens
+- [History — Entity transformation](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.entity-transformation.md) — 288 tokens
+- [History — Custom transformation](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.custom-transformation.md) — 87 tokens
+- [History — Custom transformation — Type-safe API](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.custom-transformation-type-safe-api.md) — 63 tokens
+- [History — Custom transformation — How to implement an `EntityInterceptor`](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.custom-transformation-how-to-implement-an-entityinterceptor.md) — 95 tokens
+- [History — Custom transformation — Create a custom entity interceptor](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.custom-transformation-create-a-custom-entity-interceptor.md) — 415 tokens
+- [History — Custom transformation — Limit interceptors by entity type](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.custom-transformation-limit-interceptors-by-entity-type.md) — 285 tokens
+- [History — Custom transformation — Configure custom interceptors](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.custom-transformation-configure-custom-interceptors.md) — 83 tokens
+- [History — Custom transformation — Deployment](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.custom-transformation-deployment.md) — 94 tokens
+- [History — Custom transformation — Execution order](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.custom-transformation-execution-order.md) — 60 tokens
+- [History — Custom transformation — Required fields](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.custom-transformation-required-fields.md) — 500 tokens
+- [History — Custom transformation — Error handling](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.history.custom-transformation-error-handling.md) — 227 tokens
+- [Identity](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.md) — 189 tokens
+- [Identity — Authorizations](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.authorizations.md) — 609 tokens
+- [Identity — Partial migration](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.partial-migration.md) — 79 tokens
+- [Identity — Partial migration — `Authorization` compatibility](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.partial-migration-authorization-compatibility.md) — 194 tokens
+- [Identity — Partial migration — `Batch` compatibility](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.partial-migration-batch-compatibility.md) — 486 tokens
+- [Identity — Partial migration — `Group Membership` compatibility](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.partial-migration-group-membership-compatibility.md) — 200 tokens
+- [Identity — Partial migration — `Tenant Membership` compatibility](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.partial-migration-tenant-membership-compatibility.md) — 200 tokens
+- [Identity — Partial migration — `System` compatibility](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.partial-migration-system-compatibility.md) — 129 tokens
+- [Identity — Partial migration — `Decision Definition` compatibility](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.partial-migration-decision-definition-compatibility.md) — 230 tokens
+- [Identity — Partial migration — `Process Definition` compatibility](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.partial-migration-process-definition-compatibility.md) — 490 tokens
+- [Identity — Partial migration — `Deployment` compatibility](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.partial-migration-deployment-compatibility.md) — 281 tokens
+- [Identity — Partial migration — `ALL` permissions compatibility](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.partial-migration-all-permissions-compatibility.md) — 85 tokens
+- [Identity — Executing identity migration](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.identity.executing-identity-migration.md) — 188 tokens
+- [Data Migrator](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.index.md) — 451 tokens
+- [Data Migrator — Key features](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.index.key-features.md) — 158 tokens
+- [Data Migrator — Typical choreography of runtime and history migration](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.index.typical-choreography-of-runtime-and-history-migration.md) — 323 tokens
+- [Data Migrator — Customization](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.index.customization.md) — 149 tokens
+- [Data Migrator — Cockpit plugin (experimental)](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.index.cockpit-plugin-experimental.md) — 54 tokens
+- [Install and quick start](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.install.md) — 602 tokens
+- [Limitations](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.md) — 510 tokens
+- [Limitations — Runtime](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.runtime.md) — 25 tokens
+- [Limitations — Runtime — General limitations](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.runtime-general-limitations.md) — 253 tokens
+- [Limitations — Runtime — Variables](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.runtime-variables.md) — 116 tokens
+- [Limitations — Runtime — Incidents](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.runtime-incidents.md) — 72 tokens
+- [Limitations — Runtime — BPMN elements](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.runtime-bpmn-elements.md) — 859 tokens
+- [Limitations — Runtime — BPMN elements (2)](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.runtime-bpmn-elements-2.md) — 859 tokens
+- [Limitations — Runtime — BPMN elements (3)](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.runtime-bpmn-elements-3.md) — 265 tokens
+- [Limitations — History](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.history.md) — 25 tokens
+- [Limitations — History — General](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.history-general.md) — 1025 tokens
+- [Limitations — History — DMN](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.history-dmn.md) — 74 tokens
+- [Limitations — History — Forms](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.history-forms.md) — 147 tokens
+- [Limitations — History — Jobs](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.history-jobs.md) — 142 tokens
+- [Limitations — History — Incidents](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.history-incidents.md) — 224 tokens
+- [Limitations — History — Audit logs](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.history-audit-logs.md) — 91 tokens
+- [Limitations — History — Data coverage](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.history-data-coverage.md) — 59 tokens
+- [Limitations — Cockpit plugin](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.limitations.cockpit-plugin.md) — 228 tokens
+- [Runtime](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.runtime.md) — 178 tokens
+- [Runtime — Requirements and limitations](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.runtime.requirements-and-limitations.md) — 341 tokens
+- [Runtime — Choreography](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.runtime.choreography.md) — 359 tokens
+- [Runtime — Validation and skip reasons](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.runtime.validation-and-skip-reasons.md) — 398 tokens
+- [Runtime — Usage examples](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.runtime.usage-examples.md) — 155 tokens
+- [Runtime — Job type configuration](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.runtime.job-type-configuration.md) — 646 tokens
+- [Runtime — Job type configuration — Externally Started Process Instances](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.runtime.job-type-configuration-externally-started-process-instances.md) — 391 tokens
+- [Runtime — Tenants](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.runtime.tenants.md) — 313 tokens
+- [Troubleshooting](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.troubleshooting.md) — 209 tokens
+- [Troubleshooting — Performance issues](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.troubleshooting.performance-issues.md) — 227 tokens
+- [Troubleshooting — Getting help](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.troubleshooting.getting-help.md) — 58 tokens
+- [Variables](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.md) — 133 tokens
+- [Variables — Supported types](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.supported-types.md) — 416 tokens
+- [Variables — Unsupported types](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.unsupported-types.md) — 252 tokens
+- [Variables — Transformation](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.transformation.md) — 362 tokens
+- [Variables — Disabling built-in interceptors](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.disabling-built-in-interceptors.md) — 157 tokens
+- [Variables — Disabling built-in interceptors — How to implement a `VariableInterceptor`](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.disabling-built-in-interceptors-how-to-implement-a-variableinterceptor.md) — 97 tokens
+- [Variables — Disabling built-in interceptors — Creating a custom variable interceptor](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.disabling-built-in-interceptors-creating-a-custom-variable-interceptor.md) — 161 tokens
+- [Variables — Disabling built-in interceptors — Type restrictions](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.disabling-built-in-interceptors-type-restrictions.md) — 211 tokens
+- [Variables — Disabling built-in interceptors — Entity type filtering](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.disabling-built-in-interceptors-entity-type-filtering.md) — 303 tokens
+- [Variables — Disabling built-in interceptors — Detecting migration context](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.disabling-built-in-interceptors-detecting-migration-context.md) — 104 tokens
+- [Variables — Disabling built-in interceptors — Configuring custom interceptors](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.disabling-built-in-interceptors-configuring-custom-interceptors.md) — 85 tokens
+- [Variables — Disabling built-in interceptors — Deployment](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.disabling-built-in-interceptors-deployment.md) — 96 tokens
+- [Variables — Disabling built-in interceptors — Execution order](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.disabling-built-in-interceptors-execution-order.md) — 95 tokens
+- [Variables — Disabling built-in interceptors — Error handling](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.disabling-built-in-interceptors-error-handling.md) — 121 tokens
+- [Variables — Disabling built-in interceptors — maclinux](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.disabling-built-in-interceptors-maclinux.md) — 98 tokens
+- [Variables — Disabling built-in interceptors — windows](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.data-migrator.variables.disabling-built-in-interceptors-windows.md) — 70 tokens
+- [Diagram Converter](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.diagram-converter.md) — 359 tokens
+- [Diagram Converter — Install the Diagram Converter](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.diagram-converter.install-the-diagram-converter.md) — 344 tokens
+- [Diagram Converter — Analyze your diagrams using the web interface](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.diagram-converter.analyze-your-diagrams-using-the-web-interface.md) — 817 tokens
+- [Diagram Converter — Use the CLI](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.diagram-converter.use-the-cli.md) — 80 tokens
+- [Diagram Converter — Use the CLI — Local mode](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.diagram-converter.use-the-cli-local-mode.md) — 127 tokens
+- [Diagram Converter — Use the CLI — maclinux](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.diagram-converter.use-the-cli-maclinux.md) — 38 tokens
+- [Diagram Converter — Use the CLI — windows](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.diagram-converter.use-the-cli-windows.md) — 609 tokens
+- [Diagram Converter — Use the CLI — Engine mode](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.diagram-converter.use-the-cli-engine-mode.md) — 692 tokens
+- [Diagram Converter — Convert your diagrams](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.diagram-converter.convert-your-diagrams.md) — 190 tokens
+- [Diagram Converter — Extend the conversion logic](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.diagram-converter.extend-the-conversion-logic.md) — 205 tokens
+- [Migration tools](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.index.md) — 145 tokens
+- [Migration tools — Agentic migration](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.index.agentic-migration.md) — 145 tokens
+- [Migration tools — Agentic migration — Set up and run](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.index.agentic-migration-set-up-and-run.md) — 55 tokens
+- [Migration tools — Agentic migration — claude-code](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.index.agentic-migration-claude-code.md) — 54 tokens
+- [Migration tools — Agentic migration — copilot-cli](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.index.agentic-migration-copilot-cli.md) — 55 tokens
+- [Migration tools — Agentic migration — other-agents](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.index.agentic-migration-other-agents.md) — 124 tokens
+- [Migration tools — Agentic migration — aws-transform](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.index.agentic-migration-aws-transform.md) — 575 tokens
+- [Migration tools — Agentic migration — Select a Java migration path](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.index.agentic-migration-select-a-java-migration-path.md) — 232 tokens
+- [Migration tools — Agentic migration — Agent workflow](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.index.agentic-migration-agent-workflow.md) — 515 tokens
+- [Migration tools — Manual migration](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.index.manual-migration.md) — 314 tokens
+- [Migration tools — Examples](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.index.examples.md) — 169 tokens
+- [Update guide](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.update-guide.md) — 157 tokens
+- [Update guide — Breaking changes by version](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.update-guide.breaking-changes-by-version.md) — 41 tokens
+- [Update guide — Breaking changes by version — Version 0.3.x to 0.3.3](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.update-guide.breaking-changes-by-version-version-0.3.x-to-0.3.3.md) — 352 tokens
+- [Update guide — Breaking changes by version — Version 0.2.x to 0.3.0](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.update-guide.breaking-changes-by-version-version-0.2.x-to-0.3.0.md) — 758 tokens
+- [Update guide — Breaking changes by version — Version 0.1.x to 0.2.0](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.update-guide.breaking-changes-by-version-version-0.1.x-to-0.2.0.md) — 811 tokens
+- [Version compatibility](.llms/chunks/guides.migrating-from-camunda-7.migration-tooling.version-compatibility.md) — 219 tokens
+
+## reference
+
+- [Release policy](.llms/chunks/reference.announcements-release-notes.release-policy.md) — 381 tokens
+- [Release policy — General availability (GA)](.llms/chunks/reference.announcements-release-notes.release-policy.general-availability-ga.md) — 753 tokens
+- [Release policy — Self-Managed](.llms/chunks/reference.announcements-release-notes.release-policy.self-managed.md) — 190 tokens
+- [Release policy — Dependency maintenance policies](.llms/chunks/reference.announcements-release-notes.release-policy.dependency-maintenance-policies.md) — 697 tokens
+- [Glossary](.llms/chunks/reference.glossary.md) — 92 tokens
+- [Glossary — Ad-hoc sub-process](.llms/chunks/reference.glossary.ad-hoc-sub-process.md) — 124 tokens
+- [Glossary — Admin](.llms/chunks/reference.glossary.admin.md) — 72 tokens
+- [Glossary — Agent definition](.llms/chunks/reference.glossary.agent-definition.md) — 129 tokens
+- [Glossary — Agent instance](.llms/chunks/reference.glossary.agent-instance.md) — 148 tokens
+- [Glossary — Agent loop](.llms/chunks/reference.glossary.agent-loop.md) — 139 tokens
+- [Glossary — Agent orchestration](.llms/chunks/reference.glossary.agent-orchestration.md) — 107 tokens
+- [Glossary — Agentic orchestration](.llms/chunks/reference.glossary.agentic-orchestration.md) — 148 tokens
+- [Glossary — AI agent](.llms/chunks/reference.glossary.ai-agent.md) — 211 tokens
+- [Glossary — AI agent function](.llms/chunks/reference.glossary.ai-agent-function.md) — 100 tokens
+- [Glossary — Artificial intelligence (AI)](.llms/chunks/reference.glossary.artificial-intelligence-ai.md) — 81 tokens
+- [Glossary — Audit log](.llms/chunks/reference.glossary.audit-log.md) — 70 tokens
+- [Glossary — B](.llms/chunks/reference.glossary.b.md) — 256 tokens
+- [Glossary — C — Camunda 8](.llms/chunks/reference.glossary.c-camunda-8.md) — 445 tokens
+- [Glossary — C — Camunda AI agent](.llms/chunks/reference.glossary.c-camunda-ai-agent.md) — 134 tokens
+- [Glossary — C — Catalog](.llms/chunks/reference.glossary.c-catalog.md) — 73 tokens
+- [Glossary — C — Child process instance](.llms/chunks/reference.glossary.c-child-process-instance.md) — 65 tokens
+- [Glossary — C — Client](.llms/chunks/reference.glossary.c-client.md) — 23 tokens
+- [Glossary — C — Cluster](.llms/chunks/reference.glossary.c-cluster.md) — 100 tokens
+- [Glossary — C — Cluster variable](.llms/chunks/reference.glossary.c-cluster-variable.md) — 101 tokens
+- [Glossary — C — Cluster-wide operation](.llms/chunks/reference.glossary.c-cluster-wide-operation.md) — 107 tokens
+- [Glossary — C — Command](.llms/chunks/reference.glossary.c-command.md) — 54 tokens
+- [Glossary — C — Connector](.llms/chunks/reference.glossary.c-connector.md) — 64 tokens
+- [Glossary — C — Connector runtime](.llms/chunks/reference.glossary.c-connector-runtime.md) — 84 tokens
+- [Glossary — C — Connector secrets](.llms/chunks/reference.glossary.c-connector-secrets.md) — 124 tokens
+- [Glossary — C — Connector template](.llms/chunks/reference.glossary.c-connector-template.md) — 104 tokens
+- [Glossary — C — Context window](.llms/chunks/reference.glossary.c-context-window.md) — 56 tokens
+- [Glossary — C — Correlation](.llms/chunks/reference.glossary.c-correlation.md) — 47 tokens
+- [Glossary — C — Correlation key](.llms/chunks/reference.glossary.c-correlation-key.md) — 89 tokens
+- [Glossary — C — Credential](.llms/chunks/reference.glossary.c-credential.md) — 112 tokens
+- [Glossary — C — Credential type](.llms/chunks/reference.glossary.c-credential-type.md) — 74 tokens
+- [Glossary — C — CSAP CLI](.llms/chunks/reference.glossary.c-csap-cli.md) — 130 tokens
+- [Glossary — D](.llms/chunks/reference.glossary.d.md) — 140 tokens
+- [Glossary — E — Elasticsearch/OpenSearch](.llms/chunks/reference.glossary.e-elasticsearch-opensearch.md) — 76 tokens
+- [Glossary — E — Element](.llms/chunks/reference.glossary.e-element.md) — 76 tokens
+- [Glossary — E — Element template](.llms/chunks/reference.glossary.e-element-template.md) — 102 tokens
+- [Glossary — E — Embedding (vector embedding)](.llms/chunks/reference.glossary.e-embedding-vector-embedding.md) — 78 tokens
+- [Glossary — E — Environment](.llms/chunks/reference.glossary.e-environment.md) — 140 tokens
+- [Glossary — E — Event](.llms/chunks/reference.glossary.e-event.md) — 94 tokens
+- [Glossary — E — Execution platform version](.llms/chunks/reference.glossary.e-execution-platform-version.md) — 105 tokens
+- [Glossary — E — Execution listener](.llms/chunks/reference.glossary.e-execution-listener.md) — 114 tokens
+- [Glossary — E — Exporter](.llms/chunks/reference.glossary.e-exporter.md) — 23 tokens
+- [Glossary — E — External agent](.llms/chunks/reference.glossary.e-external-agent.md) — 155 tokens
+- [Glossary — F](.llms/chunks/reference.glossary.f.md) — 314 tokens
+- [Glossary — G](.llms/chunks/reference.glossary.g.md) — 308 tokens
+- [Glossary — H](.llms/chunks/reference.glossary.h.md) — 419 tokens
+- [Glossary — I](.llms/chunks/reference.glossary.i.md) — 317 tokens
+- [Glossary — J](.llms/chunks/reference.glossary.j.md) — 213 tokens
+- [Glossary — K](.llms/chunks/reference.glossary.k.md) — 305 tokens
+- [Glossary — L](.llms/chunks/reference.glossary.l.md) — 411 tokens
+- [Glossary — M](.llms/chunks/reference.glossary.m.md) — 434 tokens
+- [Glossary — O](.llms/chunks/reference.glossary.o.md) — 170 tokens
+- [Glossary — P — Parent process instance](.llms/chunks/reference.glossary.p-parent-process-instance.md) — 94 tokens
+- [Glossary — P — Partition](.llms/chunks/reference.glossary.p-partition.md) — 85 tokens
+- [Glossary — P — Physical Tenant](.llms/chunks/reference.glossary.p-physical-tenant.md) — 93 tokens
+- [Glossary — P — Polling connector](.llms/chunks/reference.glossary.p-polling-connector.md) — 87 tokens
+- [Glossary — P — Primary storage](.llms/chunks/reference.glossary.p-primary-storage.md) — 133 tokens
+- [Glossary — P — Process](.llms/chunks/reference.glossary.p-process.md) — 94 tokens
+- [Glossary — P — Process definition](.llms/chunks/reference.glossary.p-process-definition.md) — 90 tokens
+- [Glossary — P — Process definition version](.llms/chunks/reference.glossary.p-process-definition-version.md) — 120 tokens
+- [Glossary — P — Process instance](.llms/chunks/reference.glossary.p-process-instance.md) — 190 tokens
+- [Glossary — P — Process instance tag](.llms/chunks/reference.glossary.p-process-instance-tag.md) — 93 tokens
+- [Glossary — P — Process model](.llms/chunks/reference.glossary.p-process-model.md) — 83 tokens
+- [Glossary — P — Process variable](.llms/chunks/reference.glossary.p-process-variable.md) — 86 tokens
+- [Glossary — P — ProcessOS](.llms/chunks/reference.glossary.p-processos.md) — 65 tokens
+- [Glossary — P — ProcessOS Harness](.llms/chunks/reference.glossary.p-processos-harness.md) — 108 tokens
+- [Glossary — P — Project](.llms/chunks/reference.glossary.p-project.md) — 73 tokens
+- [Glossary — P — Project snapshot {#snapshot-project}](.llms/chunks/reference.glossary.p-project-snapshot-snapshot-project.md) — 79 tokens
+- [Glossary — P — Prompt](.llms/chunks/reference.glossary.p-prompt.md) — 55 tokens
+- [Glossary — P — Protocol connector](.llms/chunks/reference.glossary.p-protocol-connector.md) — 134 tokens
+- [Glossary — P — Public API](.llms/chunks/reference.glossary.p-public-api.md) — 126 tokens
+- [Glossary — R](.llms/chunks/reference.glossary.r.md) — 789 tokens
+- [Glossary — S — SaaS-managed secret](.llms/chunks/reference.glossary.s-saas-managed-secret.md) — 116 tokens
+- [Glossary — S — SAP](.llms/chunks/reference.glossary.s-sap.md) — 94 tokens
+- [Glossary — S — Secondary storage](.llms/chunks/reference.glossary.s-secondary-storage.md) — 101 tokens
+- [Glossary — S — Secret reference](.llms/chunks/reference.glossary.s-secret-reference.md) — 197 tokens
+- [Glossary — S — Secret reference (legacy)](.llms/chunks/reference.glossary.s-secret-reference-legacy.md) — 106 tokens
+- [Glossary — S — Secret reference (Orchestration Cluster)](.llms/chunks/reference.glossary.s-secret-reference-orchestration-cluster.md) — 190 tokens
+- [Glossary — S — Secret resolution](.llms/chunks/reference.glossary.s-secret-resolution.md) — 109 tokens
+- [Glossary — S — Segment](.llms/chunks/reference.glossary.s-segment.md) — 63 tokens
+- [Glossary — S — Snapshot](.llms/chunks/reference.glossary.s-snapshot.md) — 179 tokens
+- [Glossary — S — Soft pause exporting](.llms/chunks/reference.glossary.s-soft-pause-exporting.md) — 87 tokens
+- [Glossary — S — Subscription inbound connector](.llms/chunks/reference.glossary.s-subscription-inbound-connector.md) — 96 tokens
+- [Glossary — T](.llms/chunks/reference.glossary.t.md) — 490 tokens
+- [Glossary — U](.llms/chunks/reference.glossary.u.md) — 327 tokens
+- [Glossary — V](.llms/chunks/reference.glossary.v.md) — 251 tokens
+- [Glossary — W](.llms/chunks/reference.glossary.w.md) — 259 tokens
+- [Glossary — Z](.llms/chunks/reference.glossary.z.md) — 479 tokens
+- [Camunda 8 public API](.llms/chunks/reference.public-api.md) — 395 tokens
+- [Camunda 8 public API — What is not included in the public API](.llms/chunks/reference.public-api.what-is-not-included-in-the-public-api.md) — 481 tokens
+- [Camunda 8 public API — Client and API compatibility](.llms/chunks/reference.public-api.client-and-api-compatibility.md) — 720 tokens
+- [Supported environments](.llms/chunks/reference.supported-environments.md) — 257 tokens
+- [Supported environments — Web browsers](.llms/chunks/reference.supported-environments.web-browsers.md) — 164 tokens
+- [Supported environments — Camunda 8 Self-Managed](.llms/chunks/reference.supported-environments.camunda-8-self-managed.md) — 696 tokens
+- [Supported environments — Component requirements](.llms/chunks/reference.supported-environments.component-requirements.md) — 451 tokens
+- [Supported environments — Component requirements — OpenSearch and Elasticsearch support](.llms/chunks/reference.supported-environments.component-requirements-opensearch-and-elasticsearch-support.md) — 149 tokens
+- [Supported environments — Component requirements — Component version matrix](.llms/chunks/reference.supported-environments.component-requirements-component-version-matrix.md) — 358 tokens
 
 ## self-managed
 

@@ -29,32 +29,57 @@ import { readOperations } from "./openapi.js"
  * somebody makes, not a corpus that silently grows between two weekly builds.
  */
 export const INCLUDED = [
-	"docs/components/best-practices",
-	"docs/components/modeler/bpmn",
-	"docs/components/modeler/feel",
-	"docs/components/concepts",
 	"docs/components/admin",
 	"docs/components/agentic-orchestration",
+	"docs/components/audit-log",
+	"docs/components/best-practices",
+	"docs/components/camunda-integrations",
+	"docs/components/components-overview.md",
+	"docs/components/concepts",
 	"docs/components/connectors",
 	"docs/components/document-handling",
+	"docs/components/features-integrations",
 	"docs/components/hub",
+	"docs/components/modeler",
 	"docs/components/operate",
 	"docs/components/optimize",
+	"docs/components/orchestration-cluster.md",
+	"docs/components/process-os-harness",
+	"docs/components/rpa",
 	"docs/components/saas",
 	"docs/components/tasklist",
+	"docs/components/wait-states",
 	"docs/components/zeebe",
-	"docs/apis-tools/orchestration-cluster-api-rest",
+	"docs/apis-tools/administration-api",
+	"docs/apis-tools/build-your-own-client.md",
+	"docs/apis-tools/c8ctl",
 	"docs/apis-tools/camunda-spring-boot-starter",
+	"docs/apis-tools/community-clients",
 	"docs/apis-tools/csharp-sdk",
+	"docs/apis-tools/frontend-development",
 	"docs/apis-tools/go-sdk",
 	"docs/apis-tools/java-client",
 	"docs/apis-tools/migration-manuals",
+	"docs/apis-tools/operate-api",
+	"docs/apis-tools/optimize-api",
+	"docs/apis-tools/orchestration-cluster-api-mcp",
+	"docs/apis-tools/orchestration-cluster-api-rest",
 	"docs/apis-tools/php-sdk",
+	"docs/apis-tools/processes-mcp",
 	"docs/apis-tools/python-sdk",
 	"docs/apis-tools/rust-sdk",
+	"docs/apis-tools/tasklist-api-rest",
 	"docs/apis-tools/testing",
 	"docs/apis-tools/typescript",
+	"docs/apis-tools/web-modeler-api",
+	"docs/apis-tools/working-with-apis-tools.md",
 	"docs/apis-tools/zeebe-api",
+	"docs/apis-tools/zeebe-api-rest",
+	"docs/guides",
+	"docs/reference/announcements-release-notes/release-policy.md",
+	"docs/reference/glossary.md",
+	"docs/reference/public-api.md",
+	"docs/reference/supported-environments.md",
 	"docs/self-managed",
 ] as const
 
@@ -258,7 +283,8 @@ function sources(root: string): string[] {
 	for (const included of INCLUDED) {
 		const dir = join(root, included)
 		if (!existsSync(dir)) throw new Error(`${dir}: not found in the camunda-docs checkout`)
-		walk(dir, out)
+		if (statSync(dir).isFile()) out.push(dir)
+		else walk(dir, out)
 	}
 	return out.sort()
 }

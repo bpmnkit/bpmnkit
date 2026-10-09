@@ -18,7 +18,7 @@
 
 ## Overview
 
-`@bpmnkit/camunda-docspack` packages the Camunda 8 documentation — BPMN, FEEL, engine concepts, the web components, Self-Managed deployment and configuration, the client guides and the Orchestration Cluster API — as a [docspack](https://docspack.dev/spec) pack you can search offline, with no network call and no MCP server.
+`@bpmnkit/camunda-docspack` packages the Camunda 8 documentation — BPMN, FEEL, DMN, forms, element templates, engine concepts, the web components, Self-Managed deployment and configuration, the client guides, the Camunda 7 migration guides, the glossary and the Orchestration Cluster API — as a [docspack](https://docspack.dev/spec) pack you can search offline, with no network call and no MCP server.
 
 It is built from the `docs/` tree of [camunda/camunda-docs](https://github.com/camunda/camunda-docs), which is the unreleased **8.10** documentation, plus the Orchestration Cluster API specification.
 

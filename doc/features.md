@@ -1,5 +1,15 @@
 # Features
 
+## Camunda docspack covers the Modeler, the guides and the reference (2026-10-09)
+
+- **`@bpmnkit/camunda-docspack`** now also carries DMN, Camunda Forms, element templates, the
+  Desktop Modeler, the Camunda 7 migration guides, the getting-started guides, the glossary, the
+  supported environments, c8ctl, the integrations, the audit log and the MCP server guides. 7,134
+  chunks, up from 6,039. Questions about a decision table or a form field now find a Camunda
+  page; before, the pack had none.
+- The retrieval eval has 55 questions, 24 of them labelled by the pages the Camunda Docs MCP
+  server returns for them.
+
 ## Camunda docspack covers Self-Managed, the web components and the clients (2026-10-09)
 
 - **`@bpmnkit/camunda-docspack`** now also carries Self-Managed (deployment, configuration,
