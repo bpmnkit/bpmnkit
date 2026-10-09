@@ -1,6 +1,6 @@
 ---
 title: "@bpmnkit/camunda-docspack"
-description: The Camunda 8 documentation as an offline, version-locked package an AI agent can install and search — BPMN, FEEL, engine concepts and the Orchestration Cluster API.
+description: The Camunda 8 documentation as an offline, version-locked package an AI agent can install and search — BPMN, FEEL, engine concepts, Self-Managed, the clients and the Orchestration Cluster API.
 sidebar:
   order: 9
 ---
@@ -9,8 +9,12 @@ sidebar:
 
 `@bpmnkit/camunda-docspack` packages the **Camunda 8 documentation** as a
 [docspack](https://docspack.dev/spec) pack you can search offline: BPMN and FEEL
-references, engine concepts, the best-practice pages, and one digest per
-Orchestration Cluster API operation.
+references, engine concepts, the best-practice pages, the web components
+(Operate, Tasklist, Admin, Optimize, Hub, connectors, agentic orchestration),
+Self-Managed deployment and configuration, the client guides (Java client, Spring
+Boot starter, the SDKs, process testing), and one digest per Orchestration Cluster
+API operation. The SDKs' generated `api-reference/` pages are left out: one page
+per type would outrank every guide.
 
 It is the companion to [`@bpmnkit/docspack`](/docs/packages/docspack), and the
 split is the point. Ask ours how to *drive the library*; ask this one what the
@@ -75,7 +79,7 @@ put in `AGENTS.md` or `CLAUDE.md` so an agent knows to ask both.
   diagrams, and Camunda's own Markdown export drops them. Each one is rendered as
   a flow description instead, so a page about naming gateways still contains the
   gateway, its question and its conditions.
-- **227 API operations.** One digest per endpoint, read from the specification
+- **244 API operations.** One digest per endpoint, read from the specification
   rather than from the generated reference pages, with required permissions
   decoded, the version it appeared in, and its consistency guarantee.
 - **Every chunk cites its page.** Links are rewritten to absolute

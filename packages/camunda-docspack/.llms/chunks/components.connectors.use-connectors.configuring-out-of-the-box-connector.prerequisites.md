@@ -1,0 +1,34 @@
+# Integrate a built-in connector — Prerequisites
+
+Before you begin, ensure you have:
+
+- [A Camunda 8 account](https://docs.camunda.io/docs/next/components/hub/organization/manage-organization-settings/manage-plan/create-account).
+- [A SendGrid account](https://signup.sendgrid.com/). You'll use SendGrid in the example connector. Once you've created your account, you will immediately be prompted to create a [sender](https://docs.sendgrid.com/ui/sending-email/senders).
+- [A Camunda Hub workspace](https://docs.camunda.io/docs/next/components/hub/organization/manage-workspaces/index). This is typically provisioned by a center of excellence team.
+
+### Create a cluster
+
+---
+---
+
+To deploy and run your process, create a cluster in Camunda 8.
+
+1. In **Camunda Hub**, under **Console > Clusters**, click **Create cluster**.
+2. Name your cluster.
+3. Select a region and backup location.
+4. Select a cluster type and tag.
+5. Select a channel and generation. For the purpose of this guide, Camunda recommends using the **Stable** channel and the latest generation.
+6. Click **Create cluster**.
+
+It will take a few moments to create your cluster. Check the status on the **Clusters** page or by clicking into the cluster itself and looking at the **Components** section.
+
+**Tip**
+If **Create cluster** is disabled, consider these explanations:
+
+- Your organization is on a trial plan, and you have already created a cluster. In this case, you cannot create another cluster, because only one cluster is included in the trial plan.
+- Your billing reservations do not allow any more clusters. You must increase the [reservations](https://docs.camunda.io/docs/next/components/hub/organization/manage-organization-settings/manage-plan/update-billing-reservations) to create more clusters. If you do not have the necessary rights, contact an admin or the owner of the organization.
+
+If the cluster shows a status of at least **Creating**, you can start modeling. However, Zeebe must show a status of **Healthy** to properly deploy your model.
+
+---
+Source: https://docs.camunda.io/docs/next/components/connectors/use-connectors/configuring-out-of-the-box-connector

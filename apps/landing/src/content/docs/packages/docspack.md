@@ -31,8 +31,8 @@ does the same job with no extra tooling.
 
 BPMN Kit publishes a second pack:
 **[`@bpmnkit/camunda-docspack`](/docs/packages/camunda-docspack)**, the Camunda 8
-documentation — BPMN and FEEL references, engine concepts, best practices and the
-Orchestration Cluster API. `bpmnkit-docs` reads both, so ask this package how to
+documentation — BPMN and FEEL references, engine concepts, best practices, the web
+components, Self-Managed, the client guides and the Orchestration Cluster API. `bpmnkit-docs` reads both, so ask this package how to
 drive the library and that one what the engine does:
 
 ```sh

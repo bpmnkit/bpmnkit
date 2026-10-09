@@ -2,8 +2,12 @@
 
 `@bpmnkit/camunda-docspack` packages the **Camunda 8 documentation** as a
 [docspack](https://docspack.dev/spec) pack you can search offline: BPMN and FEEL
-references, engine concepts, the best-practice pages, and one digest per
-Orchestration Cluster API operation.
+references, engine concepts, the best-practice pages, the web components
+(Operate, Tasklist, Admin, Optimize, Hub, connectors, agentic orchestration),
+Self-Managed deployment and configuration, the client guides (Java client, Spring
+Boot starter, the SDKs, process testing), and one digest per Orchestration Cluster
+API operation. The SDKs' generated `api-reference/` pages are left out: one page
+per type would outrank every guide.
 
 It is the companion to [`@bpmnkit/docspack`](/docs/packages/docspack), and the
 split is the point. Ask ours how to *drive the library*; ask this one what the

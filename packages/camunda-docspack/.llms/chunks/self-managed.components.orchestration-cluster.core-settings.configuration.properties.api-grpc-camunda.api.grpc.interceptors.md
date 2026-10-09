@@ -1,0 +1,11 @@
+# Property reference — API - gRPC — `camunda.api.grpc.interceptors`
+
+| Property                                     | Description                                                                                                                                                                                                                                                         | Default value | Overridable per Physical Tenant |
+| :------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------ | :------------------------------ |
+| `camunda.api.grpc.interceptors[]`            | This property is part of Camunda's gRPC interceptor system, which allows you to add custom processing logic to gRPC requests and responses.The property is a list of interceptor configurations, each requiring an `id`, `jar-path` and `class-name`. | No entries    | No                              |
+| `camunda.api.grpc.interceptors[].id`         | The unique identifier for a particular gRPC interceptor configuration.                                                                                                                                                                                       | Null          | No                              |
+| `camunda.api.grpc.interceptors[].jar-path`   | The file path to a JAR file that contains a custom gRPC interceptor implementation.                                                                                                                                                                          | Null          | No                              |
+| `camunda.api.grpc.interceptors[].class-name` | Set the fully qualified class name of a custom gRPC interceptor implementation that should be loaded and executed by the Camunda gRPC server.                                                                                                                | Null          | No                              |
+
+---
+Source: https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties

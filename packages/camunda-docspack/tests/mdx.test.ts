@@ -74,4 +74,90 @@ describe("stripMdx", () => {
 		const source = "```tsx\n<SomeNewThing />\n```"
 		expect(stripMdx(source, { file })).toBe(source)
 	})
+
+	it("keeps the answer in a comparison table cell", () => {
+		const out = stripMdx("| Tasklist UI | <YesItem /> | <NoItem /> |", { file })
+		expect(out).toBe("| Tasklist UI | Yes | No |")
+	})
+
+	it("drops a component imported from an image, whatever its name", () => {
+		const source = 'import RegionLoss from "./img/region-loss.svg"\n\nBefore <RegionLoss /> after.'
+		expect(stripMdx(source, { file })).toBe("Before  after.")
+	})
+
+	it("drops only the landing-page sections, not every component of that name", () => {
+		const landing = [
+			"import {",
+			"  Components,",
+			"  Installation,",
+			'} from "@site/src/components/CamundaSelfManaged";',
+			"",
+			"<Components hideHeading/>",
+		].join("\n")
+		expect(stripMdx(landing, { file })).toBe("")
+		expect(() => stripMdx("<Components />", { file })).toThrow(UnknownConstructError)
+	})
+
+	it("keeps an escaped tag, which is a placeholder in the sentence", () => {
+		const source = "Click **Sync with \\<GitProvider\\>**."
+		expect(stripMdx(source, { file })).toBe(source)
+	})
+
+	it("removes a tag whose props run over lines, props and all", () => {
+		const source = [
+			"Choose a client.",
+			'<Tabs groupId="client" values={[',
+			"{label: 'Java client', value: 'java-client' }",
+			"]}>",
+			'<TabItem value="java-client">',
+			"Add the dependency.",
+			"</TabItem>",
+			"</Tabs>",
+		].join("\n")
+		expect(stripMdx(source, { file })).toBe(
+			"Choose a client.\n\n### java-client\n\nAdd the dependency.",
+		)
+	})
+
+	it("ends a tag at its own `>`, not one inside a prop", () => {
+		const source = [
+			"<StateContainer",
+			'current={<img src={Four} alt="Current" style={{border: "none"}} />}',
+			"/>",
+			"Then promote the writer.",
+		].join("\n")
+		expect(stripMdx(source, { file })).toBe("Then promote the writer.")
+	})
+
+	it("resolves a partial's own import from the partial's directory", () => {
+		const files: Record<string, string> = {
+			"./config/_memory.md": 'import Backends from "./_backends.md"\n\n<Backends />',
+			"config/_backends.md": "Store memory in a document.",
+		}
+		const out = stripMdx('import Memory from "./config/_memory.md"\n\n<Memory />', {
+			file,
+			readPartial: (path) => files[path],
+		})
+		expect(out).toBe("Store memory in a document.")
+	})
+
+	it("renders the part of a partial that the including tag's attributes select", () => {
+		const files: Record<string, string> = {
+			"./_response.md": [
+				'import ProcessFields from "./_process.md"',
+				'import TaskFields from "./_task.md"',
+				"",
+				"Configure the response.",
+				'{props.type === "process" && <ProcessFields />}',
+				'{props.type === "task" && <TaskFields />}',
+			].join("\n"),
+			"_process.md": "Process fields.",
+			"_task.md": "Task fields.",
+		}
+		const out = stripMdx('import Response from "./_response.md"\n\n<Response type="process" />', {
+			file,
+			readPartial: (path) => files[path],
+		})
+		expect(out).toBe("Configure the response.\n\nProcess fields.")
+	})
 })

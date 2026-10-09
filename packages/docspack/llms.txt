@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.1.1. 379 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.1.1. 380 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -245,7 +245,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Typed Workers — Use the types with another client](.llms/chunks/guides.typed-workers.use-the-types-with-another-client.md) — 314 tokens
 - [Typed Workers — How the types are derived](.llms/chunks/guides.typed-workers.how-the-types-are-derived.md) — 533 tokens
 - [Using BPMN Kit with AI](.llms/chunks/guides.using-bpmnkit-with-ai.md) — 210 tokens
-- [Using BPMN Kit with AI — The two packs BPMN Kit ships](.llms/chunks/guides.using-bpmnkit-with-ai.the-two-packs-bpmn-kit-ships.md) — 147 tokens
+- [Using BPMN Kit with AI — The two packs BPMN Kit ships](.llms/chunks/guides.using-bpmnkit-with-ai.the-two-packs-bpmn-kit-ships.md) — 161 tokens
 - [Using BPMN Kit with AI — Telling an agent they exist](.llms/chunks/guides.using-bpmnkit-with-ai.telling-an-agent-they-exist.md) — 224 tokens
 - [Using BPMN Kit with AI — Asking](.llms/chunks/guides.using-bpmnkit-with-ai.asking.md) — 314 tokens
 - [Using BPMN Kit with AI — From the library instead of the CLI](.llms/chunks/guides.using-bpmnkit-with-ai.from-the-library-instead-of-the-cli.md) — 706 tokens
@@ -285,7 +285,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/ascii — Rendering a decision table](.llms/chunks/packages.ascii.rendering-a-decision-table.md) — 197 tokens
 - [@bpmnkit/ascii — Rendering a form](.llms/chunks/packages.ascii.rendering-a-form.md) — 262 tokens
 - [@bpmnkit/ascii — From the command line](.llms/chunks/packages.ascii.from-the-command-line.md) — 152 tokens
-- [@bpmnkit/camunda-docspack — Overview](.llms/chunks/packages.camunda-docspack.overview.md) — 308 tokens
+- [@bpmnkit/camunda-docspack — Overview](.llms/chunks/packages.camunda-docspack.overview.md) — 371 tokens
 - [@bpmnkit/camunda-docspack — Installation](.llms/chunks/packages.camunda-docspack.installation.md) — 252 tokens
 - [@bpmnkit/camunda-docspack — What makes this corpus different](.llms/chunks/packages.camunda-docspack.what-makes-this-corpus-different.md) — 192 tokens
 - [@bpmnkit/camunda-docspack — Rebuilding it](.llms/chunks/packages.camunda-docspack.rebuilding-it.md) — 227 tokens
@@ -352,8 +352,9 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Connectors — `@bpmnkit/core/connectors`](.llms/chunks/packages.core.connectors-bpmnkit-core-connectors.md) — 333 tokens
 - [@bpmnkit/core — DMN Support](.llms/chunks/packages.core.dmn-support.md) — 113 tokens
 - [@bpmnkit/docspack — Overview](.llms/chunks/packages.docspack.overview.md) — 275 tokens
-- [@bpmnkit/docspack — The other pack](.llms/chunks/packages.docspack.the-other-pack.md) — 145 tokens
-- [@bpmnkit/docspack — Giving an agent access](.llms/chunks/packages.docspack.giving-an-agent-access.md) — 268 tokens
+- [@bpmnkit/docspack — The other pack](.llms/chunks/packages.docspack.the-other-pack.md) — 139 tokens
+- [@bpmnkit/docspack — Installation](.llms/chunks/packages.docspack.installation.md) — 148 tokens
+- [@bpmnkit/docspack — Asking a question](.llms/chunks/packages.docspack.asking-a-question.md) — 146 tokens
 - [@bpmnkit/docspack — Reading it yourself](.llms/chunks/packages.docspack.reading-it-yourself.md) — 329 tokens
 - [@bpmnkit/docspack — Using the index directly](.llms/chunks/packages.docspack.using-the-index-directly.md) — 320 tokens
 - [@bpmnkit/docspack — Trust](.llms/chunks/packages.docspack.trust.md) — 118 tokens

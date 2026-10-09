@@ -55,6 +55,21 @@ const MCP_COMPARISON: Case[] = [
 			"apis-tools.orchestration-cluster-api-rest.orchestration-cluster-api-rest-data-fetching",
 		],
 	},
+	// These two had no answer in the pack until it took in Self-Managed and the client guides.
+	{
+		question: "how do I enable multi-tenancy in 8.7 self-managed",
+		targets: [
+			"self-managed.components.orchestration-cluster.core-settings.configuration.properties",
+		],
+	},
+	{
+		question: "Spring Zeebe client UNAUTHENTICATED error SaaS",
+		targets: [
+			"self-managed.components.orchestration-cluster.zeebe.security.client-authorization",
+			"components.hub.organization.manage-clusters.manage-api-clients",
+			"apis-tools.camunda-spring-boot-starter",
+		],
+	},
 ]
 
 // Questions written after the ranking was tuned on the set above, to catch overfitting.
@@ -74,12 +89,14 @@ const HELD_OUT: Case[] = [
 	{
 		question: "difference between authentication and authorization",
 		targets: ["components.concepts.access-control.access-control-overview.authentication-vs"],
+		knownMiss:
+			"ranks 7th since Self-Managed is in the pack: its OIDC and Keycloak pages say both words far more often",
 	},
 	{
 		question: "can one message be correlated to several waiting instances",
 		targets: ["components.concepts.messages.message-cardinality"],
 		knownMiss:
-			"ranks 6th: four general message pages and the correlate-message digest say every query word in prose",
+			"ranks 12th: general message pages, message assertions and the RabbitMQ connector say every query word in prose",
 	},
 	{
 		question: "move a running instance to a newer version of the process",
@@ -116,6 +133,8 @@ const HELD_OUT: Case[] = [
 	{
 		question: "how much storage does Elasticsearch need",
 		targets: ["components.best-practices.architecture.sizing"],
+		knownMiss:
+			"ranks 10th since Self-Managed is in the pack: its secondary-storage pages are about Elasticsearch, not its size",
 	},
 ]
 

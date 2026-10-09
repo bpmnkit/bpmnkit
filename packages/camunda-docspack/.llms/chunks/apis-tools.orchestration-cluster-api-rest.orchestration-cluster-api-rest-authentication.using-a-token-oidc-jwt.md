@@ -2,11 +2,6 @@
 
 OIDC-based authentication is recommended for production and required for SaaS. Obtain an access token and pass it as an OAuth 2.0 Bearer Token in the `Authorization` header of each request. The token's subject (user or client) must also have the required authorizations. Otherwise, requests fail with `403 Forbidden` even if authentication succeeds.
 
-<Tabs groupId="environment" defaultValue="saas" queryString values={[
-{label: 'SaaS', value: 'saas' },
-{label: 'Self-Managed', value: 'self-managed' },
-]}>
-
 ### saas
 
 1. [Create client credentials](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-api-clients#create-a-client) in Camunda Hub.

@@ -1,5 +1,37 @@
 # Progress
 
+## 2026-10-09 — camunda-docspack: Self-Managed, the web components and the client guides
+
+- `INCLUDED` adds 22 directories of camunda-docs: `self-managed/`, ten of `components/` (admin,
+  agentic-orchestration, connectors, document-handling, hub, operate, optimize, saas, tasklist,
+  zeebe) and eleven of `apis-tools/` (camunda-spring-boot-starter, java-client, migration-manuals,
+  testing, zeebe-api, and the C#, Go, PHP, Python, Rust and TypeScript SDKs). Built from the same
+  upstream commit as before (`b4b27e3`), the pack grows from 1,112 to 5,877 chunks, and no chunk
+  of the old corpus changes except the five below. The build stays reproducible.
+- `api-reference/` is excluded like `specifications/`: the SDKs generate one page per type or
+  method there.
+- `mdx.ts` handles the components of the new pages. `YesItem` and `NoItem` become Yes and No,
+  because they are the cells of a comparison table; three download links become their link
+  text. Card grids, table wrappers, interactive widgets and diagrams are dropped by name, and a
+  component imported from an image file, or from the module of the Self-Managed landing
+  sections, by its import. Names such as `Components` are not dropped anywhere else.
+- Five transforms were wrong or missing:
+  - A JSX tag whose props run over lines is joined and removed whole, and a tag ends at the
+    first `>` outside its braces and quotes. Before, `<Tabs values={[ … ]}>` and
+    `<ReactPlayer playing loop … />` left their props in the text: five chunks of the old
+    corpus change for this, and one that held nothing else is gone.
+  - An `import {` over several lines is skipped to its `from`; its names leaked into the prose.
+  - A partial's own imports resolve from the partial's directory, not the including page's.
+  - A partial that switches on a prop (`{props.type === "task" && <X />}`) is rendered with the
+    attributes it was included with.
+  - An escaped `\<GitProvider\>` is prose and stays.
+- The retrieval eval gains the two MCP-comparison questions the pack could not answer before
+  (multi-tenancy configuration, client authentication); both now rank 3rd. Two held-out
+  questions regress, because new pages on the same topic outrank their targets: "difference
+  between authentication and authorization" (7th, Self-Managed OIDC pages) and "how much
+  storage does Elasticsearch need" (10th, Self-Managed secondary-storage pages). They are known
+  misses. The message-cardinality miss drops from 6th to 12th.
+
 ## 2026-10-09 — docspack: tags scored as their own field, plus a retrieval eval
 
 - `search` scores a chunk's tags apart from its prose. A query term that a tag names whole

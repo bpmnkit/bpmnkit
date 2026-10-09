@@ -4,7 +4,7 @@
   diagrams, and Camunda's own Markdown export drops them. Each one is rendered as
   a flow description instead, so a page about naming gateways still contains the
   gateway, its question and its conditions.
-- **227 API operations.** One digest per endpoint, read from the specification
+- **244 API operations.** One digest per endpoint, read from the specification
   rather than from the generated reference pages, with required permissions
   decoded, the version it appeared in, and its consistency guarantee.
 - **Every chunk cites its page.** Links are rewritten to absolute

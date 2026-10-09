@@ -1,0 +1,9 @@
+# Property reference — Secrets — secrets-cache-yaml
+
+| Property                         | Description                                                                                                                                                                                                                                                                                                                                                          | Default value | Overridable per Physical Tenant |
+| :------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------ | :------------------------------ |
+| `camunda.secrets.cache.ttl`      | How long a resolved secret is served from the cache before it is fetched from the store again, so a secret rotated in the store is picked up without a restart. Must be at least `1m` and a whole number of minutes; a shorter or fractional value is rejected at startup.                                                                                           | `20m`         | Yes                             |
+| `camunda.secrets.cache.max-size` | Maximum number of secrets held in each store's cache. Once reached, caching another secret evicts one already held; which one is the cache implementation's choice. This limit applies to each cache independently. The maximum number of cached secret entries across all stores is the number of configured stores multiplied by this value. Must be at least `1`. | `1000`        | Yes                             |
+
+---
+Source: https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties

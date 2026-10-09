@@ -1,5 +1,18 @@
 # Features
 
+## Camunda docspack covers Self-Managed, the web components and the clients (2026-10-09)
+
+- **`@bpmnkit/camunda-docspack`** now also carries Self-Managed (deployment, configuration,
+  upgrades), the web components (Operate, Tasklist, Admin, Optimize, Hub, connectors, agentic
+  orchestration, document handling, Zeebe) and the client guides (Java client, Spring Boot
+  starter, the six SDKs, process testing, migration manuals, the Zeebe gRPC API). 5,877
+  chunks, up from 1,112. Questions on multi-tenancy configuration or on client authentication
+  now find a Camunda page; before, the pack had none.
+- The SDKs' generated `api-reference/` pages stay out: one page per type or method, 2,700 for
+  TypeScript alone, would outrank every guide.
+- **Search ranks by tag as a field of its own**, so the page that is *about* a thing ranks above
+  pages that only mention it. A fixed eval of 20 questions guards the ranking.
+
 ## Drop: open a draft in the editor and chat with the AI (2026-10-06)
 
 - **Open in editor** on a describe-to-diagram draft stores it as a drop and opens it in the
