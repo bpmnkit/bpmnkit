@@ -1,6 +1,6 @@
 import type { BpmnBoundaryEvent, BpmnFlowElement, BpmnLaneSet } from "../../bpmn/bpmn-model.js"
 import type { Bounds } from "../types.js"
-import { ELEMENT_SIZES } from "../types.js"
+import { ELEMENT_SIZES, LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH } from "../types.js"
 import type { BandLayout } from "./bands.js"
 import type { SemanticGraph } from "./graph.js"
 
@@ -12,6 +12,28 @@ export const LANE_PADDING = 40
 export const BOUNDARY_SIZE = 36
 
 const DEFAULT_SIZE = { width: 100, height: 80 }
+
+const EXTERNAL_LABEL_TYPES = new Set([
+	"startEvent",
+	"endEvent",
+	"intermediateThrowEvent",
+	"intermediateCatchEvent",
+	"boundaryEvent",
+	"exclusiveGateway",
+	"parallelGateway",
+	"inclusiveGateway",
+	"eventBasedGateway",
+	"complexGateway",
+])
+
+/**
+ * Width of the label an event or gateway carries centred below its shape;
+ * undefined for types whose name sits inside the shape.
+ */
+export function externalLabelWidth(type: string, name: string): number | undefined {
+	if (!EXTERNAL_LABEL_TYPES.has(type)) return undefined
+	return Math.max(name.length * LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH)
+}
 
 export interface Placement {
 	/** Absolute bounds per flow node, boundary events included. */
@@ -45,6 +67,14 @@ export function place(
 	bandLayout: BandLayout,
 	sizes: Map<string, { width: number; height: number }>,
 	laneSet: BpmnLaneSet | undefined,
+	/**
+	 * Pack nodes that have no sequence flow at all into a wrapped grid rather
+	 * than one row each. Set for the inside of an expanded sub-process, where
+	 * such nodes are an unordered set (the tools of an ad-hoc sub-process) and a
+	 * single column would both imply an order and grow the container into a
+	 * tall strip.
+	 */
+	packLoose = false,
 ): Placement {
 	const bounds = new Map<string, Bounds>()
 	const componentOf = new Map<string, number>()
@@ -69,10 +99,17 @@ export function place(
 	}
 
 	// ── Rows: one per band, laid out per component then stacked ──
+	const loose = packLoose ? looseNodes(graph) : []
+	const looseSet = new Set(loose)
 	let cursorY = 0
 	for (let component = 0; component < graph.components.length; component++) {
 		const members = (graph.components[component] ?? []).filter((id) => graph.byId.has(id))
 		if (members.length === 0) continue
+		if (members.length === 1 && looseSet.has(members[0] as string)) {
+			// The whole grid takes the place of the first loose node; the rest are in it.
+			if (members[0] === loose[0]) cursorY = placeGrid(graph, loose, sizes, cursorY, bounds)
+			continue
+		}
 
 		const rowHeight = new Map<number, number>()
 		for (const id of members) {
@@ -108,6 +145,63 @@ export function place(
 	const lanes = laneSet ? applyLanes(graph, laneSet, bounds) : []
 	dockBoundaryEvents(graph, bounds)
 	return { bounds, lanes, gutterX }
+}
+
+/**
+ * Nodes with no incoming or outgoing flow, in declaration order — only when
+ * there are at least two of them, since one has nothing to be packed with.
+ */
+function looseNodes(graph: SemanticGraph): string[] {
+	const loose = graph.components
+		.filter((members) => members.length === 1)
+		.map((members) => members[0] as string)
+		// A one-node component can still loop on itself; that node has flow.
+		.filter(
+			(id) =>
+				graph.byId.has(id) &&
+				(graph.outgoing.get(id) ?? []).length === 0 &&
+				(graph.incoming.get(id) ?? []).length === 0,
+		)
+	return loose.length >= 2 ? loose : []
+}
+
+/**
+ * Place `ids` row by row in `ceil(sqrt(n))` columns of equal cells, starting at
+ * `top`, so the set grows roughly square. Returns the cursor for whatever is
+ * stacked below.
+ */
+function placeGrid(
+	graph: SemanticGraph,
+	ids: string[],
+	sizes: Map<string, { width: number; height: number }>,
+	top: number,
+	bounds: Map<string, Bounds>,
+): number {
+	const columns = Math.ceil(Math.sqrt(ids.length))
+	let cellWidth = 0
+	let cellHeight = 0
+	for (const id of ids) {
+		const size = sizes.get(id) ?? DEFAULT_SIZE
+		// An event's or gateway's label is centred below it and can be wider than the
+		// shape; the cell holds it so neighbouring columns' labels never meet.
+		const el = graph.byId.get(id)
+		const label = el?.name ? externalLabelWidth(el.type, el.name) : undefined
+		cellWidth = Math.max(cellWidth, size.width, label ?? 0)
+		cellHeight = Math.max(cellHeight, size.height)
+	}
+	ids.forEach((id, i) => {
+		const size = sizes.get(id) ?? DEFAULT_SIZE
+		const column = i % columns
+		const row = Math.floor(i / columns)
+		bounds.set(id, {
+			x: column * (cellWidth + H_GAP) + (cellWidth - size.width) / 2,
+			y: top + row * (cellHeight + V_GAP) + (cellHeight - size.height) / 2,
+			width: size.width,
+			height: size.height,
+		})
+	})
+	const rows = Math.ceil(ids.length / columns)
+	return top + rows * (cellHeight + V_GAP) - V_GAP + COMPONENT_GAP
 }
 
 /**
