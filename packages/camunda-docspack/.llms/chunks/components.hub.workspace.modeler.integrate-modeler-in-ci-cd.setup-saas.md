@@ -1,11 +1,8 @@
 # Integrate Camunda Hub into CI/CD — Setup — saas
 
-Users without **Organization Owner** or **Organization Admin** roles in Camunda Hub can deploy only on `dev`, `test`, or `stage` clusters. To restrict their deployment permissions, remove the now-deprecated **Developer** role from users in Camunda Hub.
+To restrict who can deploy from Camunda Hub, control which [environments are assigned to each workspace](https://docs.camunda.io/docs/next/components/hub/organization/manage-environments/assign-environments), and manage the deployment permissions in the clusters. You can also require an approved project snapshot before anyone deploys to an environment tagged `prod`. See the [project deployment settings](https://docs.camunda.io/docs/next/components/hub/workspace/modeler/modeler-settings#project-deployment).
 
-**Info**
-Only users with **Organization Owner** or **Organization Admin** roles can deploy from Camunda Hub to `prod` clusters.
-
-Read more in the [user roles documentation](https://docs.camunda.io/docs/next/components/hub/organization/manage-users/index).
+Read more in the [user roles documentation](https://docs.camunda.io/docs/next/components/hub/organization/users-and-roles).
 
 ---
 Source: https://docs.camunda.io/docs/next/components/hub/workspace/modeler/integrate-modeler-in-ci-cd

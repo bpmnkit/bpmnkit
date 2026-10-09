@@ -1,6 +1,6 @@
 # Install the Camunda Hub release — Create `hub-values.yaml`
 
-Create a values file that sets the `hub` role, configures Camunda Hub and Management Identity, and declares one record for each Orchestration Cluster the Hub manages:
+Create a values file that sets the `hub` role, configures Camunda Hub and Management Identity, and declares one record for each Orchestration Cluster the Hub manages. The cluster records can describe Orchestration Clusters in different environments:
 
 ```yaml
 global:

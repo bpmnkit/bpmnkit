@@ -15,9 +15,6 @@ orchestration:
             inlineSecret: pass
   index:
     prefix: my-env-camunda # Prefix for Orchestration Cluster indices
-
-elasticsearch:
-  enabled: false
 ```
 
 For more details on index prefix configuration, including Optimize-specific settings when Optimize is enabled, see [prefix Elasticsearch/OpenSearch indices](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/elasticsearch/configure-elasticsearch-prefix-indices).

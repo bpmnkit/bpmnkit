@@ -8,7 +8,7 @@ By default, an application with Mail API permissions can access _all mailboxes_ 
 ### Bearer token authentication
 
 If you own a bearer token, in the **Authentication** section select **Bearer token** in the **Type** field.
-Enter a bearer token in the field **Bearer token**. Use [secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to avoid exposing sensitive credentials.
+Enter a bearer token in the field **Bearer token**. Use [secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to avoid exposing sensitive credentials.
 
 **Note**
 The default time-to-live (TTL) for bearer tokens is 3600 seconds. Therefore, this approach might not work for long-living and/or repetitive processes.

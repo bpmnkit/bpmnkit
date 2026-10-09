@@ -38,7 +38,7 @@ See the following example:
   "logging.googleapis.com/sourceLocation": {
     "file": "RequestLoggingFilter.java",
     "line": 91,
-    "function": "io.camunda.modeler.util.logging.RequestLoggingFilter.customAfterRequest"
+    "function": "io.camunda.hub.util.logging.RequestLoggingFilter.customAfterRequest"
   },
   "logging.googleapis.com/labels": {
     "correlationId": "04284456-b95b-4121-a54b-6c48be6d3afd"
@@ -48,7 +48,7 @@ See the following example:
     "name": "http-nio-8081-exec-1",
     "priority": 5
   },
-  "loggerName": "io.camunda.modeler.util.logging.RequestLoggingFilter",
+  "loggerName": "io.camunda.hub.util.logging.RequestLoggingFilter",
   "correlationId": "04284456-b95b-4121-a54b-6c48be6d3afd"
 }
 ```

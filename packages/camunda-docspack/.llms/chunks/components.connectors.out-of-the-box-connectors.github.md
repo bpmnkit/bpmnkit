@@ -11,7 +11,7 @@ To use the **GitHub connector**, you must have a GitHub instance and an [access 
 
 **Note**
 Use secrets to avoid exposing your GitHub access token credentials as plain text.
-Refer to our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Refer to our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/github

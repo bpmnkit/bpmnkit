@@ -1,11 +1,13 @@
 # Install the Camunda 8.10 deployment topology — Before you begin
 
+The chart deploys the Kubernetes workloads, services, secrets wiring, and volumes, and generates the Management Identity presets and Camunda Hub cluster inventory from `global.topology.clusters`. Everything else is yours to provide, and every URL you configure must be reachable from the release that uses it.
+
 Prepare the following resources:
 
 - An OpenID Connect (OIDC) provider that every namespace can reach, with a pinned issuer. The examples use an external Keycloak instance with Management Identity-managed client registration.
-- Separate public hostnames and TLS certificates for the Hub and orchestration namespaces.
+- Separate public hostnames and TLS certificates for the Hub and orchestration namespaces, plus cross-namespace or cross-cluster DNS, routing, and TLS trust.
 - External PostgreSQL databases for Management Identity and Camunda Hub.
-- A supported secondary storage backend for the Orchestration Cluster, and Elasticsearch or OpenSearch for Optimize.
+- A supported secondary storage backend for the Orchestration Cluster, and Elasticsearch or OpenSearch for Optimize. Index retention and deletion, including after a Helm uninstall, is your responsibility.
 - Network policies that permit Domain Name System (DNS) traffic and the required cross-namespace service traffic.
 
 Camunda 8.10 bundles no Elasticsearch, PostgreSQL, or Keycloak subcharts, so these must exist before you install. See [deploy required dependencies](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/operator-based-infrastructure).

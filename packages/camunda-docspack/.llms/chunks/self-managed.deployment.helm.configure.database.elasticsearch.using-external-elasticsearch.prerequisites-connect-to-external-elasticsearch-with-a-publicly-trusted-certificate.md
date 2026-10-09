@@ -13,9 +13,6 @@ orchestration:
           username: elastic
           secret:
             inlineSecret: pass
-
-elasticsearch:
-  enabled: false
 ```
 
 ---

@@ -16,7 +16,7 @@ or the registered application in the [Azure Active Directory](https://aad.portal
 the relevant [Microsoft Graph API permissions](https://learn.microsoft.com/en-us/graph/permissions-reference).
 
 **Note**
-Use secrets to store credentials so you don't expose sensitive information directly from the process. See [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Use secrets to store credentials so you don't expose sensitive information directly from the process. See [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/microsoft-teams

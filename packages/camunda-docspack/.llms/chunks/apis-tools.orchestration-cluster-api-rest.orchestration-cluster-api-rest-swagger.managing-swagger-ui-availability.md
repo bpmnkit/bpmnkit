@@ -2,7 +2,7 @@
 
 ### SaaS
 
-Control Swagger UI access in [Camunda Hub](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/settings):
+Control Swagger UI access in [Camunda Hub](https://docs.camunda.io/docs/next/components/saas/clusters/settings):
 
 1. Open Camunda Hub.
 1. In the left navigation under **Clusters**, select a cluster.

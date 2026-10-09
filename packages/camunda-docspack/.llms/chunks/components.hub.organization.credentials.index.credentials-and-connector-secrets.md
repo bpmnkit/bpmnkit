@@ -1,6 +1,6 @@
 # Manage credentials — Credentials and connector secrets
 
-Credentials and [connector secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) work together rather than replacing each other:
+Credentials and [connector secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) work together rather than replacing each other:
 
 |         | Connector secret                             | Credential                                                      |
 | ------- | -------------------------------------------- | --------------------------------------------------------------- |

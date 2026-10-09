@@ -1,6 +1,6 @@
 # Deploy multiple Optimize instances with Helm — Verify process data and index isolation
 
-Both Optimize instances read the same `zeebe-record` indices produced by the Orchestration Cluster. The 8.10 chart automatically enables the legacy Zeebe exporter when Optimize and its Elasticsearch or OpenSearch connection are enabled. This pattern applies to single-region deployments only — [dual-region deployments don't support Optimize](https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/dual-region#limitations).
+Both Optimize instances read the same `zeebe-record` indices produced by the Orchestration Cluster. The 8.10 chart automatically enables the legacy Zeebe exporter when Optimize and its Elasticsearch or OpenSearch connection are enabled. In a dual-region deployment, the chart suppresses that automatic behavior, so this pattern applies to single-region deployments only. See [Management platform and Orchestration Cluster](https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/dual-region#management-platform-and-orchestration-cluster).
 
 1. Deploy a test process to the shared Orchestration Cluster.
 1. Start and complete at least one process instance.

@@ -10,7 +10,7 @@ While blue-green deployments are more straightforward with Self-Managed setups, 
 
 #### How can I prevent manual deployments from Camunda Hub?
 
-To enforce CI/CD pipelines and restrict manual deployments, you can disable manual deployments. For Self-Managed setups, set environment variables `ZEEBE_BPMN_DEPLOYMENT_ENABLED` and `ZEEBE_DMN_DEPLOYMENT_ENABLED`. In Camunda 8 SaaS, manage deployment permissions via [user roles](https://docs.camunda.io/docs/next/components/hub/organization/manage-users/index).
+To enforce CI/CD pipelines and restrict manual deployments, you can disable manual deployments. For Self-Managed setups, set environment variables `ZEEBE_BPMN_DEPLOYMENT_ENABLED` and `ZEEBE_DMN_DEPLOYMENT_ENABLED`. In Camunda 8 SaaS, manage deployment permissions via [user roles](https://docs.camunda.io/docs/next/components/hub/organization/users-and-roles).
 
 #### How can I sync files between Camunda Hub and version control?
 

@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-10-09 — camunda-docspack: rebuilt against camunda-docs@9bd7ca2
+
+- The committed pack is rebuilt from the current camunda-docs (`9bd7ca2`, was `b4b27e3`), with
+  this branch's tag-field ranking and MDX transforms: 6,039 chunks, up from 5,877; 121 chunk ids
+  departed with renamed upstream headings and pages. The build is reproducible.
+- Two retrieval-eval targets follow upstream renames: Hub's `manage-api-clients` moved to
+  `components.saas.clusters.manage-api-clients`, and the worker idempotency section is now
+  `writing-good-workers.write-idempotent-workers`. All eval questions answer as before.
+
 ## 2026-10-09 — camunda-docspack: Self-Managed, the web components and the client guides
 
 - `INCLUDED` adds 22 directories of camunda-docs: `self-managed/`, ten of `components/` (admin,

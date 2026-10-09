@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions — Handling errors on the process level — Distinguishing between exceptions and results
+# Deal with problems and exceptions — Handling errors on the process level — Distinguishing between exceptions and results
 
 As an alternative to throwing a Java exception, you can also write a problematic result into a process variable and model an XOR-Gateway later in the process flow to take a different path if that problem occurs.
 

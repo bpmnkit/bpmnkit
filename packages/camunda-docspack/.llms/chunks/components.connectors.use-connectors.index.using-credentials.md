@@ -9,7 +9,7 @@ Some connectors let you select a [credential](https://docs.camunda.io/docs/next/
 `secrets.*` is a deprecated syntax. Instead, use `{{secrets.*}}`
 
 You can use sensitive information in your connectors without exposing it in your BPMN processes by using a [legacy secret reference](https://docs.camunda.io/docs/next/reference/glossary#secret-reference-legacy).
-Use Camunda Hub to [create and manage secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+Use Camunda Hub to [create and manage secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 
 You can reference a secret like `MY_API_KEY` with `{{secrets.MY_API_KEY}}` in any connector field in the properties
 panel. Secrets resolve in every field, not only in a specific subset of fields.

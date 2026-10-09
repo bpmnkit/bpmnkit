@@ -14,7 +14,7 @@ The lifecycle of an executable starts when the connector runtime detects a chang
 
 When you deploy a new process version, the connector runtime checks whether it can deduplicate inbound connectors in the new version with any currently active executables. If deduplication is possible, the runtime updates the existing executable. If the executable is inactive (for example, in the `CANCELED` or `FAILED_TO_ACTIVATE` state), the runtime also attempts to restart it.
 
-When the executable is no longer needed—for example, when its originating process version is no longer the latest and no active instances are waiting on message subscriptions—the runtime deactivates it.
+When the executable is no longer needed (for example, when its originating process version is no longer the latest and no active instances are waiting on message subscriptions), the runtime deactivates it.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/advanced-topics/inbound-lifecycle

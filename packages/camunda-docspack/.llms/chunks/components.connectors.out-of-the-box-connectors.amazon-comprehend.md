@@ -14,7 +14,7 @@ To use the **Amazon Comprehend connector**, you must have an **AWS IAM Access Ke
 
 **Note**
 Use **secrets** to avoid exposing your AWS IAM credentials as plain text.  
-Refer to [managing secrets](https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/components/hub/organization/manage-clusters/manage-secrets) for more details.
+Refer to [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) for more details.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/amazon-comprehend

@@ -4,7 +4,7 @@ Choose between **Camunda SaaS** and **Camunda Self-managed** depending on your C
 
 ### SaaS clusters
 
-If you are using a SaaS cluster, you will be required to provide your **Region** and **Cluster ID**. You will see these values when you [create an API client](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-api-clients#create-a-client) for your cluster.
+If you are using a SaaS cluster, you will be required to provide your **Region** and **Cluster ID**. You will see these values when you [create an API client](https://docs.camunda.io/docs/next/components/saas/clusters/manage-api-clients#create-a-client) for your cluster.
 
 ### Self-Managed clusters
 

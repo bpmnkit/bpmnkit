@@ -13,13 +13,22 @@ The PHP SDK is a **technical preview**. Its API surface may still evolve and cha
 - `ext-json`; `ext-pcntl` is optional (enables forked job workers)
 
 
-## Stable release (recommended for evaluation and integration testing)
+## Stable release (recommended for production)
 
-While the SDK is a Technical Preview, use the stable release to evaluate it or in integration testing rather than in production. The stable version tracks the latest supported Camunda server release.
+The stable version tracks the latest supported Camunda server release.
 
 ```bash
-composer require camunda/orchestration-cluster-api
+composer require camunda8/orchestration-cluster-api
 ```
+
+
+## Versioning
+
+This SDK has a different release cadence from the Camunda server. The major version of the SDK signals a 1:1 type coherence with the server API for a Camunda minor release.
+
+SDK version `n.y.z` → server version `8.n`, so the type surface of SDK version `10.y.z` matches the API surface of Camunda `8.10`.
+
+Using the matching SDK major version for the server minor version provides the strongest guarantees about runtime reliability.
 
 ---
 Source: https://docs.camunda.io/docs/next/apis-tools/php-sdk/installing-the-sdk-to-your-project

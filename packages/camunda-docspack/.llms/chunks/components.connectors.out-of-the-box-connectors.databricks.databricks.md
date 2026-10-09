@@ -14,7 +14,7 @@ To use the **Databricks connector**, you need an active Camunda 8.9 or later clu
 You also need credentials to authenticate against your workspace. See [configure authentication](#configure-authentication) below.
 
 **Note**
-Use secrets to store credentials so you don't expose sensitive information directly from the process. See [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Use secrets to store credentials so you don't expose sensitive information directly from the process. See [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/databricks/databricks

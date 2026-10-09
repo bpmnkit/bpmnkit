@@ -32,8 +32,8 @@ If using the model `Jamba-instruct` with model ID `ai21.jamba-instruct-v1:0`, an
 
 The FEEL mapping could be as follows:
 
-```
-{ response : body.choices.message.content[1] }
+```feel
+= { AIResponse: response.body.choices[1].message.content }
 ```
 
 ---

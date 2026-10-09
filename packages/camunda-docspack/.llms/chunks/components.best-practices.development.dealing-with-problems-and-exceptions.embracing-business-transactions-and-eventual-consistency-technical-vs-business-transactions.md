@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions — Embracing business transactions and eventual consistency — Technical vs business transactions
+# Deal with problems and exceptions — Embracing business transactions and eventual consistency — Technical vs business transactions
 
 Applications using databases can often leverage ACID (atomic, consistent, isolated, durable) capabilities of that database. This means that some business logic is either successfully committed as a whole, or rolled back completely in case of any error. It is normally referred to as "transactions".
 

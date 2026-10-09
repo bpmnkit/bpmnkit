@@ -1,7 +1,7 @@
 # Java client — What can you build with it? — Step 2b: Configure the Orchestration Cluster connection for SaaS
 
 **Use for:** Camunda 8 SaaS environments.
-Get the values below from your [Camunda Hub client credentials](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-api-clients#create-a-client).
+Get the values below from your [Camunda Hub client credentials](https://docs.camunda.io/docs/next/components/saas/clusters/manage-api-clients#create-a-client).
 
 ```java
 private static final String CAMUNDA_CLUSTER_ID = "[Cluster ID from Hub]";

@@ -6,7 +6,7 @@ Once the token is obtained, put it in the **Access token** field of the **Authen
 
 **Note**
 Use secrets to avoid exposing your WhatsApp access token credentials as plain text.
-See our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+See our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 
 ## Sender and recipient

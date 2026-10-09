@@ -66,7 +66,7 @@ const MCP_COMPARISON: Case[] = [
 		question: "Spring Zeebe client UNAUTHENTICATED error SaaS",
 		targets: [
 			"self-managed.components.orchestration-cluster.zeebe.security.client-authorization",
-			"components.hub.organization.manage-clusters.manage-api-clients",
+			"components.saas.clusters.manage-api-clients",
 			"apis-tools.camunda-spring-boot-starter",
 		],
 	},
@@ -77,7 +77,7 @@ const HELD_OUT: Case[] = [
 	{
 		question: "should my worker be idempotent if the same job is delivered twice",
 		targets: [
-			"components.best-practices.development.writing-good-workers.thinking-about-transactions-exceptions-and-idempotency-of-workers",
+			"components.best-practices.development.writing-good-workers.write-idempotent-workers",
 		],
 	},
 	{

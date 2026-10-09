@@ -1,7 +1,7 @@
 # Run or publish your process — Run a process — Best practices for running a process
 
 - Use the [Test mode](#test-run-using-test-mode) to run a process instance with test data before running it with live data.
-- Verify that the process is running as expected on a development cluster before running it with live data in your production environment.
+- Verify that the process is running as expected in a development environment before running it with live data in your production environment.
 - Use [Operate](https://docs.camunda.io/docs/next/components/operate/operate-introduction) to help you diagnose any problems with the process.
 
 **Tip**

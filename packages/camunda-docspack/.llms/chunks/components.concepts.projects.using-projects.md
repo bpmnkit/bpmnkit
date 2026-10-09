@@ -5,7 +5,7 @@ You can use projects in both Camunda Hub and Desktop Modeler. However, there are
 
 ## Projects in Camunda Hub
 
-In Camunda Hub, workspaces contain projects, and projects contain files. Every file must be stored within a project:
+In Camunda Hub, [workspaces](https://docs.camunda.io/docs/next/components/concepts/workspaces) contain projects, and projects contain files. Every file must be stored within a project:
 
 ```
 Camunda Hub
@@ -23,7 +23,7 @@ You can treat files in a project as a single bundle or as independent resources.
 
 - [Take a snapshot](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/project-versioning) of the current state of all project files.
 - Manage individual [file versions](https://docs.camunda.io/docs/next/components/hub/workspace/modeler/modeling/versions).
-- [Deploy an entire project](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/deploy-project).
+- [Deploy an entire project](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/deploy-project) to an [environment](https://docs.camunda.io/docs/next/components/concepts/environments) assigned to its workspace.
 - [Deploy individual project resources](https://docs.camunda.io/docs/next/components/hub/workspace/modeler/run-or-publish-your-process#deploy-a-process).
 
 ---

@@ -1,7 +1,7 @@
 # Camunda Orchestration Cluster API connector — Configure authentication
 
 For both SaaS and Self-Managed clusters, you need to provide **Client ID** and **Client secret**.
-You will see these values when you [create an API client](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-api-clients#create-a-client) for your cluster.
+You will see these values when you [create an API client](https://docs.camunda.io/docs/next/components/saas/clusters/manage-api-clients#create-a-client) for your cluster.
 
 For Self-Managed clusters, you can additionally specify:
 

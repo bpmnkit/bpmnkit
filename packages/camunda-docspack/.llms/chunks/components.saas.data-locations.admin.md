@@ -9,7 +9,7 @@
 **Info: Learn more**
 
 - [Admin](https://docs.camunda.io/docs/next/components/admin/admin-introduction)
-- [Connect to an identity provider](https://docs.camunda.io/docs/next/components/hub/organization/manage-organization-settings/external-sso)
+- [Connect to an identity provider](https://docs.camunda.io/docs/next/components/saas/organization/external-sso)
 
 ---
 Source: https://docs.camunda.io/docs/next/components/saas/data-locations

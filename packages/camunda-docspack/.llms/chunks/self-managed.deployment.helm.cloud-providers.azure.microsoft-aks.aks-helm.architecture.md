@@ -5,7 +5,7 @@ In addition to the infrastructure diagram provided in the [Terraform setup guide
 The architecture includes the following core components:
 
 - **Orchestration Cluster**: Core process execution engine (Zeebe, Operate, Tasklist, and Admin)
-- **Web Modeler and Console**: Management and design tools (Web Modeler, Console, and Management Identity)
+- **Management plane**: Design and management tools (Camunda Hub and Management Identity)
 
 To demonstrate how to deploy with a custom domain, the following stack is also included:
 
@@ -14,7 +14,7 @@ To demonstrate how to deploy with a custom domain, the following stack is also i
 - **Contour**: Ingress controller backed by the Envoy proxy, providing HTTP/HTTPS load balancing and routing to Kubernetes services
 
 **Note: Single namespace deployment**
-This guide uses a single Kubernetes namespace for simplicity, since the deployment is done with a single Helm chart. This differs from the [reference architecture](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#orchestration-cluster-vs-camunda-hub), which recommends separating Orchestration Cluster and Web Modeler or Console into different namespaces in production to improve isolation and enable independent scaling.
+This guide uses a single Kubernetes namespace for simplicity, since the deployment uses a single Helm chart. This differs from the [reference architecture](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#camunda-hub-vs-orchestration-cluster), which recommends separating the Orchestration Cluster from the [management plane](https://docs.camunda.io/docs/next/reference/glossary#management-plane) into different namespaces in production to improve isolation and enable independent scaling.
 
 ### Considerations
 

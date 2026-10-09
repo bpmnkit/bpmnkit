@@ -11,21 +11,7 @@ Contour is exposed through a `LoadBalancer` Service, so the load balancer your c
 
 Contour is a choice, not a requirement. Camunda tests the reference architectures with Contour, so that is what the procedures install, but any Ingress controller supporting gRPC and HTTP/2 works, for example [Traefik](https://traefik.io/traefik/), [HAProxy](https://haproxy-ingress.github.io/), or [Envoy Gateway](https://gateway.envoyproxy.io/). Select your own controller through `global.ingress.className`.
 
-Each controller declares the gRPC upstream differently, and not on the same object:
-
-| Ingress controller | Annotation                                           | Object                                    |
-| ------------------ | ---------------------------------------------------- | ----------------------------------------- |
-| Contour            | `projectcontour.io/upstream-protocol.h2c: "26500"`   | Orchestration Cluster `Service`           |
-| Ingress-nginx      | `nginx.ingress.kubernetes.io/backend-protocol: GRPC` | Zeebe `Ingress` (added by the Helm chart) |
-
-Check your controller's documentation for its own equivalent. With Contour, set the annotation on the Orchestration Cluster service, and use `projectcontour.io/upstream-protocol.h2` instead when the upstream itself uses TLS:
-
-```yaml
-orchestration:
-  service:
-    annotations:
-      projectcontour.io/upstream-protocol.h2c: "26500"
-```
+Each controller declares the gRPC upstream differently, and not on the same object. For the annotation each controller needs, see [configure the gRPC upstream](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/ingress/ingress-setup#configure-the-grpc-upstream).
 
 **Note**
 [Ingress-nginx reached end of life in March 2026](https://kubernetes.io/blog/2025/11/11/ingress-nginx-retirement/). The Camunda 8 reference architectures moved to Contour in 8.9.

@@ -31,7 +31,7 @@ At the organization level in Camunda Hub, in the left navigation, click **Shared
 [Users with elevated access](https://docs.camunda.io/docs/next/components/hub/workspace/modeler/collaboration/collaboration#elevated-access) can:
 
 - View additional details about the published version.
-- Open the resource's versions list (if they are a [Organization Admin or Organization Owner](https://docs.camunda.io/docs/next/components/hub/organization/manage-users/index#elevated-workspace-access) or are a [Workspace Admin or Editor](https://docs.camunda.io/docs/next/components/hub/organization/manage-workspaces/manage-workspace-members#workspace-roles) of the resource's workspace).
+- Open the resource's versions list (if they are an [Organization Admin or Organization Owner](https://docs.camunda.io/docs/next/components/hub/organization/users-and-roles#elevated-workspace-access) or are a [Workspace Admin or Editor](https://docs.camunda.io/docs/next/components/hub/organization/manage-workspaces/manage-workspace-members#workspace-roles) of the resource's workspace).
 - Unpublish an element template directly from this view.
 
 Organization users without special organization permissions can:

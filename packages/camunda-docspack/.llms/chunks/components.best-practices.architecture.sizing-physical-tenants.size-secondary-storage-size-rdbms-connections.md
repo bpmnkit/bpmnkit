@@ -11,6 +11,8 @@ With the defaults (`maximum-pool-size` `10`, `minimum-idle` `2`), three brokers 
 
 HikariCP metrics carry the `physicalTenant` tag. If data availability latency rises as you add tenants, check pool saturation before adding database capacity.
 
+If brokers fail to start or restart repeatedly with a database connection error, see [Database rejects new connections](https://docs.camunda.io/docs/next/self-managed/concepts/physical-tenants/troubleshooting#database-rejects-new-connections-on-rdbms).
+
 #### Use a connection pooler
 
 Camunda doesn't ship or require a connection pooler. If you use one, such as PgBouncer, validate it with your own load and size its limits separately:

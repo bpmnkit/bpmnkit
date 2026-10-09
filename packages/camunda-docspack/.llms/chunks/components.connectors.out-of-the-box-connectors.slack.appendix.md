@@ -32,7 +32,7 @@ The **Slack connector** uses an OAuth bearer token (for example, the Slack app b
 
 We advise you to keep your Slack bot token safe and avoid exposing it in the BPMN `xml` file by creating a secret:
 
-1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 2. Name your secret `SLACK_OAUTH_TOKEN` so you can reference it later in the connector.
 
 The **Slack inbound connector** is a connector that allows you to start or continue

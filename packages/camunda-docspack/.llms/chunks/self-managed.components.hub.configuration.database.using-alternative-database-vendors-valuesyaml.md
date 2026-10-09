@@ -9,7 +9,7 @@ camundaHub:
       secret:
         inlineSecret: "[DB_PASSWORD]"
     env:
-      - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+      - name: SPRING_DATASOURCE_DRIVERCLASSNAME
         value: "[YOUR_CUSTOM_DRIVER]"
 ```
 

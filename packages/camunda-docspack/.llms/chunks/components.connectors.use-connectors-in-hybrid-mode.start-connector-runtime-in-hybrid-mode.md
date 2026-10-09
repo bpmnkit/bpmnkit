@@ -2,7 +2,7 @@
 
 ### Prerequisites
 
-Ensure you have a running Camunda cluster, and a pair of `Client ID`/`Client Secret` with `Orchestration Cluster REST API` scope. Learn more about [how to obtain required credentials](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-api-clients).
+Ensure you have a running Camunda cluster, and a pair of `Client ID`/`Client Secret` with `Orchestration Cluster REST API` scope. Learn more about [how to obtain required credentials](https://docs.camunda.io/docs/next/components/saas/clusters/manage-api-clients).
 
 To use secrets managed by the SaaS environment, add the `Secrets` scope.
 

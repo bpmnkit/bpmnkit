@@ -5,7 +5,7 @@ For environments using OIDC:
 1. Generate a JSON Web Token (JWT).
 2. Include the token in each API request as: `Authorization: Bearer <TOKEN>`.
 
-- [Generate a token (SaaS)](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-api-clients#create-a-client)
+- [Generate a token (SaaS)](https://docs.camunda.io/docs/next/components/saas/clusters/manage-api-clients#create-a-client)
 - [Generate a token (Self-Managed)](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/admin/connect-external-identity-provider)
 
 Example request using a token:

@@ -1,6 +1,6 @@
 # Copilot — Configuration
 
-To enable Copilot, set the AI feature flag (`FEATURE_AI_ENABLED` / `camunda.hub.feature.ai-enabled`) to `true`.
+To enable Copilot, set the AI feature flag (`camunda.hub.feature.ai-enabled` / `CAMUNDA_HUB_FEATURE_AIENABLED`) to `true`.
 Then configure the default LLM provider for BPMN, FEEL, and form copilots.
 Each provider has its own configuration options described below.
 

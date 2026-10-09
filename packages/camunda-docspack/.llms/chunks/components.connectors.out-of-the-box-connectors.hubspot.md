@@ -22,7 +22,7 @@ When creating a private app, you must grant the permissions required to access t
 - `automation`
 
 **Note**
-Use secrets to avoid exposing your token credentials as plain text. Refer to our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Use secrets to avoid exposing your token credentials as plain text. Refer to our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/hubspot

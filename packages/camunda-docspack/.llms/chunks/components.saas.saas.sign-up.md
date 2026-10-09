@@ -8,9 +8,9 @@ Sign up and start your developer journey with Camunda 8 SaaS.
 1. Log in to Camunda 8 SaaS using either the email address and password you signed up with or the social login buttons. You can also log in to Camunda 8 SaaS directly at [camunda.io](https://weblogin.cloud.camunda.io/).
 
 
-## Architecture
+## Manage Camunda 8 SaaS
 
-The Camunda 8 SaaS platform is built on Amazon Web Services (AWS) and based on a microservices architecture.
+Set up and manage the resources of your Camunda 8 SaaS account:
 
 ---
 Source: https://docs.camunda.io/docs/next/components/saas/saas

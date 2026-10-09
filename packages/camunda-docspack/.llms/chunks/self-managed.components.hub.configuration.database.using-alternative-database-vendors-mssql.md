@@ -1,7 +1,7 @@
 # Database — Using alternative database vendors — MSSQL
 
 The MSSQL driver is provided by default, so no additional steps are required.  
-To use a custom database driver, set `SPRING_DATASOURCE_DRIVER_CLASS_NAME` to the fully qualified class name of your driver.  
+To use a custom database driver, set `SPRING_DATASOURCE_DRIVERCLASSNAME` to the fully qualified class name of your driver.  
 Otherwise, omit this variable.
 
 ---

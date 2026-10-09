@@ -54,7 +54,7 @@ You can manage these assignments by selecting the relevant tab on the tenant det
 ### Assign mapping rules to a tenant
 
 **Note**
-Assignment of [mapping rules](https://docs.camunda.io/docs/next/components/concepts/access-control/mapping-rules) is only available for [OIDC authentication in Self-Managed](https://docs.camunda.io/docs/next/components/concepts/access-control/connect-to-identity-provider#self-managed). On SaaS, identity is managed by Camunda, so mapping rules cannot map claims from a customer identity provider.
+Assignment of [mapping rules](https://docs.camunda.io/docs/next/components/concepts/access-control/mapping-rules) is only available for OIDC authentication. On Self-Managed, see [OIDC authentication](https://docs.camunda.io/docs/next/components/concepts/access-control/connect-to-identity-provider#self-managed). On SaaS, mapping rules become available after you [connect an external identity provider](https://docs.camunda.io/docs/next/components/saas/clusters/connect-external-identity-provider) to the cluster.
 
 1. Select the **Mapping rules** tab.
 2. Click **Assign mapping rule**. Search for a mapping rule ID and confirm.

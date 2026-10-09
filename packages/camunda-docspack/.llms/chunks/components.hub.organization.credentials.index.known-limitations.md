@@ -2,7 +2,7 @@
 
 In this release:
 
-- You cannot create a secret from a credential. Create secrets in [Connector secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) first.
+- You cannot create a secret from a credential. Create secrets in [Connector secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) first.
 - The plain-text warning checks the whole field value, so a value that combines literal text with a reference, such as `Bearer camunda.secrets.TOKEN`, is flagged even though the reference resolves.
 - Hub does not show which processes use a given credential, so check the impact yourself before you edit or delete one.
 - Credentials are visible to everyone in your organization who has access to Camunda Hub. You cannot restrict a credential to a project or a subset of users.

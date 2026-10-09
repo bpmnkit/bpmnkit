@@ -14,7 +14,7 @@ App integrations must be set up before this connector can be used. This is an ad
 
 ### saas
 
-An organization administrator must turn on **Enable app integrations extensions** in the [cluster settings](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/settings#enable-app-integrations-extensions) of every cluster that uses the connector.
+An organization administrator must turn on **Enable app integrations extensions** in the [cluster settings](https://docs.camunda.io/docs/next/components/saas/clusters/settings#enable-app-integrations-extensions) of every cluster that uses the connector.
 
 ### self-managed
 

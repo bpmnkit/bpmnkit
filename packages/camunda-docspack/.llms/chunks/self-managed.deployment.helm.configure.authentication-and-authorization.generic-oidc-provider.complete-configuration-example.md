@@ -110,7 +110,7 @@ identity:
 optimize:
   enabled: true
 
-# Console and Web Modeler (Camunda Hub)
+# Camunda Hub (Console and Web Modeler)
 camundaHub:
   enabled: true # Deploys both Console and Web Modeler
   restapi:

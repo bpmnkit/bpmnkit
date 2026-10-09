@@ -15,7 +15,7 @@ The simple filter provides the following options:
 For more complex filtering, use the **Advanced Configuration** section to provide an [OData filter query](https://learn.microsoft.com/en-us/graph/query-parameters#filter-parameter).
 
 **Note**
-OData filter queries are evaluated at deployment time and can only use static values or [secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets). They cannot reference process variables. If you need dynamic filtering based on runtime data, use the [Activation Condition](#activation-condition) section instead.
+OData filter queries are evaluated at deployment time and can only use static values or [secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets). They cannot reference process variables. If you need dynamic filtering based on runtime data, use the [Activation Condition](#activation-condition) section instead.
 
 Examples of filters not supported by the simple filter:
 

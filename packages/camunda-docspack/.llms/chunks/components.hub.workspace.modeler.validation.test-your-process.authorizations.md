@@ -1,6 +1,6 @@
 # Test your process — Authorizations
 
-If [authorizations](https://docs.camunda.io/docs/next/components/admin/authorization) are enabled on the cluster where you will run a test, the following permissions are required for each action:
+If [authorizations](https://docs.camunda.io/docs/next/components/admin/authorization) are enabled on the environment where you will run a test, the following permissions are required for each action:
 
 | Resource Type       | Permission                                       | Allowed action                                                                                                  |
 | ------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |

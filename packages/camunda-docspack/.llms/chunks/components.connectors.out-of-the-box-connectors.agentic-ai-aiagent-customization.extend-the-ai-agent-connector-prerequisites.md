@@ -61,10 +61,12 @@ This guide assumes you are starting from a fresh Spring Boot project and intend 
 5. If the default AI Agent connector is already connected to your engine (for example, if you are connecting to SaaS), you can override the registered AI Agent connector job worker type by setting one of the following type environment variables to a custom value (such as `my-ai-agent`) when starting your application.
    This allows you to use your custom connector in combination with an [element template configured](https://docs.camunda.io/docs/next/components/connectors/use-connectors-in-hybrid-mode) for the `my-ai-agent` job worker type.
 
-| Variable                             | Description                                                                                            |
-| :----------------------------------- | :----------------------------------------------------------------------------------------------------- |
-| `CONNECTOR_AI_AGENT_JOB_WORKER_TYPE` | Overrides the type of the [AI Agent Sub-process](https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess) job worker.       |
-| `CONNECTOR_AI_AGENT_TYPE`            | Overrides the type of the [AI Agent Task](https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task) outbound connector job worker. |
+| Variable                             | Description                                                                                                                                           |
+| :----------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CONNECTOR_AI_AGENT_TASK_TYPE`       | Overrides the type of the [AI Agent Task](https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task) connector (default `io.camunda.agenticai:aiagent:task:2`).                    |
+| `CONNECTOR_AI_AGENT_SUBPROCESS_TYPE` | Overrides the type of the [AI Agent Sub-process](https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess) connector (default `io.camunda.agenticai:aiagent:subprocess:2`). |
+
+If you previously overrode the job types of the legacy element templates, see [job type overrides](https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-upgrade#job-type-overrides).
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-customization

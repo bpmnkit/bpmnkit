@@ -9,7 +9,7 @@ The **SQL connector** is an outbound connector that allows you to connect your B
 
 To use the **SQL connector**, ensure you have an SQL database instance running.
 
-To avoid exposing your sensitive data as plain text, use secrets. Follow our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+To avoid exposing your sensitive data as plain text, use secrets. Follow our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 
 ## Create an SQL connector task

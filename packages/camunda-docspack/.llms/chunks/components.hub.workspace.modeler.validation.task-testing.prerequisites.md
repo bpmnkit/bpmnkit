@@ -2,7 +2,7 @@
 
 Before running task testing, ensure you have:
 
-- A connection to an active Camunda 8.8 or later orchestration cluster
+- A [runtime connection](https://docs.camunda.io/docs/next/components/hub/workspace/modeler/modeling/connect-to-a-runtime) to an environment, hosted on an active Camunda 8.8 or later Orchestration Cluster
 - Permissions to deploy and run processes in the target environment
 
 
@@ -20,7 +20,7 @@ To test a task in Camunda Hub:
    - Provide realistic sample data to reflect actual execution conditions.
 5. Click **Run test** to execute the task.
 
-Camunda Hub automatically deploys the process before running the test. The task executes on the connected cluster using your defined input data.
+Camunda Hub automatically deploys the process before running the test. The task executes on the environment or cluster selected in the **Runtime** selector, using your defined input data. To test against a different runtime, [change the runtime connection](https://docs.camunda.io/docs/next/components/hub/workspace/modeler/modeling/connect-to-a-runtime#change-the-runtime-connection). If you're connected to a production runtime, the **Test** tab shows **You are connected to a production cluster** (or **production environment**), because running a task there uses production data and can cause real side effects.
 
 During execution, the log displays each step in real time, including any states where the test is waiting for an external action to complete.
 

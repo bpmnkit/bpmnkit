@@ -20,7 +20,7 @@ Learn more about Amazon S3 in the [Amazon Simple Storage Service Documentation](
 
 **Note**
 Use secrets to store credentials and avoid exposing sensitive information from the process.
-See [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+See [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/amazon-s3

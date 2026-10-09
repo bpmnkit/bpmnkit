@@ -26,8 +26,8 @@ Without these additions, traffic is transmitted in cleartext and is therefore in
    - ALB:80
      - `/*` routes to the Orchestration Cluster UI and REST API.
      - `/connectors*` routes to the Connectors.
-   - ALB:9600 (optional, not recommended to be exposed publicly)
-     - `/*` routes to the Orchestration Cluster management endpoints.
+   - ALB:9600
+     - Not forwarded to the management API (see [Endpoint reference](#endpoint-reference)).
      - Connectors combines the management port with the web server by default.
    - NLB:26500 (TCP)
      - Exposes the Orchestration Cluster Zeebe Gateway over gRPC. Retrieve the endpoint with `terraform output -raw region_0_nlb_grpc_endpoint` or `terraform output -raw region_1_nlb_grpc_endpoint`.

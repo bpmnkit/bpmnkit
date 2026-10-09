@@ -1,6 +1,6 @@
 # Manage credentials — Credentials and connector secrets — Store sensitive values as secrets, not plain text
 
-Store every sensitive value, such as a password or API key, as a [secret](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) on the cluster, and reference it from the credential field. A credential field accepts any text you type, so a value entered directly is stored as you typed it, outside the secrets vault.
+Store every sensitive value, such as a password or API key, as a [secret](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) on the cluster, and reference it from the credential field. A credential field accepts any text you type, so a value entered directly is stored as you typed it, outside the secrets vault.
 
 To guide you to a secret, Camunda Hub highlights a sensitive field and warns you when its value is not a secret reference. Saving is still allowed, so the value stays exposed until you replace it with a reference. The warning clears as soon as the field references a secret.
 

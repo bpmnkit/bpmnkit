@@ -1,8 +1,8 @@
 # Set up a new project
 
-Create a project, and select a development cluster to deploy to.
+Create a project in a workspace. The project can deploy to the environments assigned to the workspace.
 
-Create a project, and select a development cluster to deploy to.
+Create a project in a workspace. The project can deploy to every environment assigned to the workspace.
 
 
 ## Prerequisites
@@ -18,25 +18,12 @@ Create a project to work on a set of related files:
 2. Provide a project name, and click **Create project**.
 
 
-## Connect clusters
+## Deployment environments
 
-Connect clusters to which you'll deploy project files.
+A project doesn't have its own deployment targets. It can deploy to all the [environments](https://docs.camunda.io/docs/next/components/concepts/environments) that are assigned to its workspace, and it always reflects changes to that set.
 
-There are [four deployment stages](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/deploy-project#deployment-stages):
-
-- Development
-- Testing
-- Staging
-- Production
-
-To deploy project files, you must connect a cluster to at least one stage:
-
-1. In your project, next to **Connected clusters**, click **Configure**.
-2. For each stage, select a cluster.
-3. Click **Save**.
-
-**Tip**
-If you don't have an appropriate cluster for a stage, [create one](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/create-cluster).
+- To see the environments you can deploy to, open the [deploy dialog](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/deploy-project#deploy-your-project) of the project.
+- If no environment is assigned, an organization admin must [assign environments to the workspace](https://docs.camunda.io/docs/next/components/hub/organization/manage-environments/assign-environments).
 
 ---
 Source: https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/create-a-project

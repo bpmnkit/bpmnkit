@@ -4,7 +4,7 @@ Scheduled backups are created periodically (e.g daily, weekly). They are configu
 
 ### Retention
 
-A backup schedule retains the last five successful and failed backups. Failed backups are retained to allow further root-cause analysis for backup failures. If a backup fails, it is not retried immediately as the failure can lead to instability.
+A backup schedule retains the last three successful and failed backups. Failed backups are retained to allow further root-cause analysis for backup failures. If a backup fails, it is not retried immediately as the failure can lead to instability.
 
 **Note**
 If you require more retained backups or more frequent backups, [contact Camunda support](https://camunda.com/services/support/) to discuss your specific needs.

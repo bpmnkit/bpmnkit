@@ -1,6 +1,6 @@
 # Install Camunda for production with Helm — Installation and configuration — Namespace setup
 
-To get started, create two namespaces:
+This example creates a Hub release and an Orchestration Cluster release in separate namespaces. If you already have a Hub serving other environments, you can connect the new Orchestration Cluster to it instead. Create the namespaces you need:
 
 ```bash
 kubectl create namespace hub
@@ -14,7 +14,7 @@ kubectl create namespace orchestration
 Each component is installed by the Helm chart automatically, and does not need to be installed separately.
 
 **Note**
-For more information on the difference between the Orchestration Cluster and Camunda Hub, see the Camunda 8 [reference architecture](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#orchestration-cluster-vs-camunda-hub).
+For more information on the difference between the Orchestration Cluster and Camunda Hub, see the Camunda 8 [reference architecture](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#camunda-hub-vs-orchestration-cluster).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/production/index

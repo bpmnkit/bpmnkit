@@ -2,10 +2,11 @@
 
 The Orchestration Cluster comes packaged with built-in exporters:
 
-- [Elasticsearch](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/exporters/elasticsearch-exporter)
-- [OpenSearch](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/exporters/opensearch-exporter)
+- [Analytics Exporter](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/exporters/analytics-exporter)
 - [Camunda Exporter](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/exporters/camunda-exporter)
 - [RDBMS Exporter](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/exporters/rdbms-exporter)
+- [Elasticsearch](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/exporters/elasticsearch-exporter)
+- [OpenSearch](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/exporters/opensearch-exporter)
 
 This section of the docs explains how these exporters can be [installed](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/exporters/install-zeebe-exporters) and configured.
 

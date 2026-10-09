@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions — Handling exceptions on a technical level — Using incidents
+# Deal with problems and exceptions — Handling exceptions on a technical level — Using incidents
 
 Whenever a job fails with a retry count of `0`, an incident is raised. An incident requires human intervention, typically using Operate. Refer to [incidents in the Operate docs](https://docs.camunda.io/docs/next/components/operate/userguide/resolve-incidents-update-variables).
 

@@ -48,7 +48,7 @@ If any of the fields are not populated, you must configure your security method 
 
 Properties loading consists of three steps:
 
-1. Construct client properties from the BPMN diagram: authentication, bootstrap server, message properties.
+1. Construct client properties from the BPMN diagram: authentication, bootstrap server, message properties. If selected, the **Connection credential** supplies authentication and bootstrap servers instead of the inline fields.
 2. Load miscellaneous properties.
 3. Load and **override** properties from the field **Additional properties**.
 

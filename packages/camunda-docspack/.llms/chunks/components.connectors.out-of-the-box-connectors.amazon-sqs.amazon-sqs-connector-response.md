@@ -39,7 +39,7 @@ Example of a valid message attribute as a FEEL value:
 
 ### How do I store AWS IAM Secrets for my SQS connector?
 
-Store your AWS IAM credentials as secrets to avoid exposing sensitive information. Follow our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Store your AWS IAM credentials as secrets to avoid exposing sensitive information. Follow our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 ### AWS authentication types
 

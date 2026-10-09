@@ -9,7 +9,7 @@ You can choose a [region](https://docs.camunda.io/docs/next/components/saas/regi
 **Info: Learn More**
 
 - [Backups](https://docs.camunda.io/docs/next/components/saas/backups)
-- [Cluster backups](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/cluster-backups)
+- [Cluster backups](https://docs.camunda.io/docs/next/components/saas/clusters/cluster-backups)
 
 ---
 Source: https://docs.camunda.io/docs/next/components/saas/data-locations

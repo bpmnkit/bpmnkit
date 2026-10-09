@@ -1,10 +1,10 @@
 # Upgrade Camunda 8.9 to 8.10 using Helm — Next steps
 
-This upgrade keeps your deployment in the chart's default `combined` topology: one Helm release running every enabled component. Nothing in the upgrade changes your release layout.
+This upgrade keeps your deployment in the chart's default `combined` topology. In this topology, one Helm release runs every enabled component. The upgrade doesn't change your release layout.
 
-For a new production deployment, Camunda 8.10's baseline topology is instead one Hub release plus one release per Orchestration Cluster, with one Optimize release per Physical Tenant. See [Camunda 8.10 deployment topology](https://docs.camunda.io/docs/next/self-managed/reference-architecture/deployment-topology).
+For a new production deployment, the baseline topology of Camunda 8.10 is different. It has one Hub release and one release for each Orchestration Cluster. It also has one Optimize release for each Physical Tenant. See [Camunda 8.10 deployment topology](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#deployment-topology).
 
-Adopting that topology on an existing deployment is a separate operation with its own data, storage, and rollback planning. Complete this version upgrade first, then see [move from a combined release to the split topology](https://docs.camunda.io/docs/next/self-managed/upgrade/helm/combined-to-split-topology).
+To move an existing deployment to that topology, you do a separate operation. This operation needs its own data, storage, and rollback planning. First, complete this version upgrade. Then, see [move from a combined release to the split topology](https://docs.camunda.io/docs/next/self-managed/upgrade/helm/combined-to-split-topology).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/upgrade/helm/890-to-8100

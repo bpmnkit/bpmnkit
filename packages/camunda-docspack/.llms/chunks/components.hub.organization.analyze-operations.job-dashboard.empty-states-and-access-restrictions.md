@@ -2,7 +2,7 @@
 
 ### No jobs in the queue
 
-If there are no jobs for the cluster or selected time range, the Jobs page shows:
+If there are no jobs for the environment, cluster, or selected time range, the Jobs page shows:
 
 - Heading: **No jobs in the queue**
 - Message: **No jobs found.**
@@ -10,9 +10,9 @@ If there are no jobs for the cluster or selected time range, the Jobs page shows
 
 This means there is no job activity to display.
 
-### Jobs card access restricted
+### Jobs access restricted
 
-If the feature is disabled for the cluster or you don't have permission, the **Jobs** card on the cluster overview shows:
+If the feature is disabled for the cluster or you don't have permission, the **Jobs** card on the environment or cluster overview shows:
 
 - Status: **Access restricted**
 - Message explaining that the feature is restricted or disabled and you must contact an administrator.

@@ -7,8 +7,5 @@ A credential is deployed to environments, not to clusters. An environment is the
 - Camunda Hub shows an environment by its name, and adds the cluster name in parentheses whenever the two names differ.
 - On a Self-Managed cluster with several Physical Tenants, each environment is an independent target, with its own copy of the credential, its own values, and its own state. A credential deployed to one environment isn't readable from the other environments on that cluster.
 
-**Note**
-On Camunda 8 SaaS, Hub labels each target as a cluster. The **Environments only** tab is named **Clusters only**, and the wizard, the credential list, and the scan say _cluster_ wherever this page says _environment_. A SaaS cluster holds a single environment, so everything else on this page applies unchanged.
-
 ---
 Source: https://docs.camunda.io/docs/next/components/hub/organization/credentials/index

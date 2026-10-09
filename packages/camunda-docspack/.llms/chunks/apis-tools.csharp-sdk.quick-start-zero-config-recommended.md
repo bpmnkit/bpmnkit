@@ -21,6 +21,7 @@ Typical environment (example):
 
 ```bash
 CAMUNDA_REST_ADDRESS=https://cluster.example   # SDK appends /v2 automatically
+CAMUNDA_REST_ADDRESS_EXACT=false                # optional: true = use address verbatim (no /v2), e.g. behind a gateway
 CAMUNDA_AUTH_STRATEGY=OAUTH
 CAMUNDA_CLIENT_ID=***
 CAMUNDA_CLIENT_SECRET=***

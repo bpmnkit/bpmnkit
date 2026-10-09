@@ -9,7 +9,7 @@ Select and configure the model **Provider** you want to use from the following s
 - [Custom implementation](#custom-implementation) (Self-Managed/Hybrid only).
 
 **Tip**
-Use [connector secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to store credentials and avoid exposing sensitive information directly in the process.
+Use [connector secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to store credentials and avoid exposing sensitive information directly in the process.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-model-providers

@@ -19,7 +19,7 @@ To create a credential, select **Create credential**, and complete the three ste
 You can also save the credential as a draft at any step. A draft is saved in Hub but is not deployed to any environment.
 
 **Note**
-You cannot create a secret while creating a credential. Add the secret to the cluster first in [Connector secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets), then reference it here. A credential's ID also cannot be changed after you create it, so to rename a credential, delete it and create a new one.
+You cannot create a secret while creating a credential. Add the secret to the cluster first in [Connector secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets), then reference it here. A credential's ID also cannot be changed after you create it, so to rename a credential, delete it and create a new one.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/hub/organization/credentials/index

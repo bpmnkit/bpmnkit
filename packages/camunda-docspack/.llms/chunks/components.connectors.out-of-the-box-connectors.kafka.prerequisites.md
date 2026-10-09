@@ -1,18 +1,25 @@
 # Kafka connector — Prerequisites
 
-To use the **Kafka Consumer connector**, you must have a Kafka instance with a configured bootstrap server.
+To use the **Kafka Producer connector**, you must have a Kafka instance with a configured bootstrap server.
 
 **Note**
-Use secrets to avoid exposing your sensitive data as plain text. To learn more, see [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+Use secrets to avoid exposing your sensitive data as plain text. To learn more, see [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 
 
-## Create a Kafka Consumer connector event
+## Create a Kafka Producer connector task
 
-1. Add a **Start Event** or an **Intermediate Event** to your BPMN diagram to get started.
-2. Change its template to a Kafka Consumer.
-3. Fill in all required properties.
-4. Complete your BPMN diagram.
-5. Deploy the diagram to activate the Kafka consumer.
+---
+---
+
+You can apply a connector to a task or event via the append menu. For example:
+
+- **From the canvas**: Select an element and click the **Change element** icon to change an existing element, or use the append feature to add a new element to the diagram.
+- **From the properties panel**: Navigate to the **Template** section and click **Select**.
+- **From the side palette**: Click the **Create element** icon.
+
+In each of these menus, you can search by connector name or by the operation you want to perform, such as `upload object` or `send email`. Connectors that provide several operations list them as separate entries, and selecting an operation applies the connector with that operation preselected.
+
+After you have applied a connector to your element, follow the configuration steps or see [using connectors](https://docs.camunda.io/docs/next/components/connectors/use-connectors/index) to learn more.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/kafka

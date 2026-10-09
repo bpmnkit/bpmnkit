@@ -1,6 +1,6 @@
 # Trigger a process from Databricks with a webhook — Store your API credentials as secrets
 
-Store the webhook credential and the OpenAI and SendGrid API keys as [secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) before you deploy the process. Create three secrets:
+Store the webhook credential and the OpenAI and SendGrid API keys as [secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) before you deploy the process. Create three secrets:
 
 | Key               | Value                                                                                       |
 | :---------------- | :------------------------------------------------------------------------------------------ |
@@ -16,7 +16,7 @@ How you create them depends on where your cluster runs:
 Reference the secrets from Connector fields so their values aren't stored as plain text in the BPMN model. Reference them from a connector task as `{{secrets.FraudWebhookKey}}`, `{{secrets.OpenAI}}`, or `{{secrets.SendGrid}}`.
 
 **Tip**
-On Camunda 8.10 and later, you can also reference these secrets as `=camunda.secrets.FraudWebhookKey`, `=camunda.secrets.OpenAI`, and `=camunda.secrets.SendGrid`. See [reference connector secrets as `camunda.secrets.<name>`](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets#reference-connector-secrets-as-camundasecretsname).
+On Camunda 8.10 and later, you can also reference these secrets as `=camunda.secrets.FraudWebhookKey`, `=camunda.secrets.OpenAI`, and `=camunda.secrets.SendGrid`. See [reference connector secrets as `camunda.secrets.<name>`](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets#reference-connector-secrets-as-camundasecretsname).
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/databricks/databricks-ai-fraud-detection

@@ -26,7 +26,7 @@ This allows administrators to set up tenants and assignments before enforcing mu
 
 How you enable multi-tenancy checks depends on your deployment model:
 
-- **SaaS**: Enable the **Multi-tenancy** toggle per cluster in [Camunda Hub cluster settings](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/settings#multi-tenancy).
+- **SaaS**: Enable the **Multi-tenancy** toggle per cluster in [Camunda Hub cluster settings](https://docs.camunda.io/docs/next/components/saas/clusters/settings#multi-tenancy).
 - **Self-Managed**: Configure multi-tenancy through [Orchestration Cluster configuration properties](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties#multi-tenancy).
 
 **Warning**

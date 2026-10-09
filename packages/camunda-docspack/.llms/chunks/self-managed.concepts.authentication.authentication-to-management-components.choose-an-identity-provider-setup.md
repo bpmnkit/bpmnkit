@@ -4,14 +4,23 @@ Authentication relies on the **OpenID Connect (OIDC)** and **OAuth 2.0** protoco
 
 Three primary setups are supported:
 
-- Use Keycloak as the default built-in Identity Provider (IdP).
-- Configure the built-in Keycloak to connect to an external IdP.
+- Use Keycloak as the default Identity Provider (IdP).
+- Configure Keycloak to connect to an external IdP.
 - Connect directly to an external OIDC IdP.
 
 
-## Use Keycloak as default (built-in) IdP
+## Use Keycloak as the default IdP
 
-This is the default authentication setup for Self-Managed installation methods, including [Docker Compose](https://docs.camunda.io/docs/next/self-managed/quickstart/developer-quickstart/docker-compose), [Helm charts](https://docs.camunda.io/docs/next/self-managed/deployment/helm/index) and [Manual installation](https://docs.camunda.io/docs/next/self-managed/deployment/manual/install). It comes with a pre-packaged Keycloak instance that acts as the Identity Provider.
+Management Identity uses Keycloak as its Identity Provider (IdP) by default. With Helm, Keycloak is an option. The Helm default is Basic authentication. See [Helm chart authentication and authorization](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/authentication-and-authorization/index).
+
+The following table shows which installation methods start Management Identity and Keycloak. For the Docker Compose files, see [choose a Docker Compose configuration](https://docs.camunda.io/docs/next/self-managed/quickstart/developer-quickstart/docker-compose/configuration#choose-a-docker-compose-configuration).
+
+| Installation method                                                | Starts Management Identity                                          | Starts Keycloak                                                                                                                                                                                               |
+| :----------------------------------------------------------------- | :------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Docker Compose, full (`docker-compose-full.yaml`)                  | Yes                                                                 | Yes                                                                                                                                                                                                           |
+| Docker Compose, standalone Camunda Hub (`docker-compose-hub.yaml`) | Yes                                                                 | Yes                                                                                                                                                                                                           |
+| Docker Compose, lightweight (`docker-compose.yaml`)                | No                                                                  | No                                                                                                                                                                                                            |
+| Helm                                                               | Yes, when you set `identity.enabled: true`. The default is `false`. | No. The chart doesn't deploy Keycloak. Deploy it with the [Keycloak operator](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/operator-based-infrastructure#keycloak-deployment) and connect the Helm chart to it. |
 
 In this setup:
 

@@ -11,7 +11,7 @@ To use the **GitLab connector**, you must have a GitLab instance and an [access 
 or a service account on whose behalf a BPMN process will be executed.
 
 **Note**
-Use secrets to avoid exposing your GitLab access token credentials as plain text. Refer to our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Use secrets to avoid exposing your GitLab access token credentials as plain text. Refer to our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/gitlab

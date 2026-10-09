@@ -1,6 +1,6 @@
 # Microsoft 365 email inbound connector — Authentication — Bearer token
 
-Select **Bearer token** in the **Type** dropdown in the **Authentication** section and enter your bearer token value. Use [secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to avoid exposing sensitive credentials.
+Select **Bearer token** in the **Type** dropdown in the **Authentication** section and enter your bearer token value. Use [secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to avoid exposing sensitive credentials.
 
 **Note**
 Bearer tokens expire after **60–90 minutes**. The connector cannot refresh them automatically, so you must provide a new valid access token before expiry.

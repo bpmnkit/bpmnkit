@@ -20,9 +20,11 @@ The following properties for the ad-hoc sub-process must be configured. You can 
   {
     id: toolCall._meta.id,
     name: toolCall._meta.name,
-    content: toolCallResult
+    content: toolCallResult,
+    completedAt: now()
   }
   ```
+  The `completedAt` field records when the individual tool call completed. If it is missing, the AI Agent connector uses the time at which it processes the tool call results instead, which can be later than the actual completion time for slow or parallel tool calls.
 
 As a final step, the element must be configured to activate the ad-hoc sub-process.
 

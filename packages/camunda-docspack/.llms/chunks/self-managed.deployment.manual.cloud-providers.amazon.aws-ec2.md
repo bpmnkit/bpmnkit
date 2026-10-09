@@ -4,7 +4,7 @@ Learn how to install Camunda 8 on AWS EC2 instances.
 
 This guide provides a detailed walkthrough for installing the Camunda 8 single JAR on AWS EC2 instances. It focuses on managed services provided by AWS and their cloud offering. Finally, you will verify that the connection to your Self-Managed Camunda 8 environment is functioning correctly.
 
-This guide focuses on setting up the [Orchestration Cluster](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#orchestration-cluster-vs-camunda-hub) for Camunda 8. Camunda Hub is not covered in this manual deployment approach, as this component is not supported on virtual machines. To deploy Camunda Hub, explore the available options for [Kubernetes-based deployments](https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/quick-install).
+This guide focuses on setting up the [Orchestration Cluster](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#camunda-hub-vs-orchestration-cluster) for Camunda 8. Camunda Hub is not covered in this manual deployment approach, as this component is not supported on virtual machines. To deploy Camunda Hub, explore the available options for [Kubernetes-based deployments](https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/quick-install).
 
 **Note: Cost management**
 This guide provisions resources that can incur costs in your cloud provider account. Review your provider's pricing before you begin.

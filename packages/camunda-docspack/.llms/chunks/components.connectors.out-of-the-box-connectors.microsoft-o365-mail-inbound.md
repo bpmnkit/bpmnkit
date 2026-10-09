@@ -16,7 +16,7 @@ The **Microsoft 365 Email Inbound connector** allows you to consume emails by mo
 Learn more about [creating, configuring, and authorizing Microsoft Apps](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app).
 
 **Note**
-Use secrets to avoid exposing your Microsoft credentials as plain text. Refer to our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Use secrets to avoid exposing your Microsoft credentials as plain text. Refer to our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound
