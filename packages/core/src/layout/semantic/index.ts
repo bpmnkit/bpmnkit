@@ -6,9 +6,9 @@ import type {
 } from "../../bpmn/bpmn-model.js"
 import { placeEdgeLabels } from "../grid/edge-labels.js"
 import type { Bounds, LayoutEdge, LayoutNode, LayoutResult } from "../types.js"
-import { LABEL_HEIGHT, SUBPROCESS_PADDING } from "../types.js"
+import { LABEL_CHAR_WIDTH, LABEL_HEIGHT, LABEL_MIN_WIDTH, SUBPROCESS_PADDING } from "../types.js"
 import { assignBands } from "./bands.js"
-import { buildSemanticGraph } from "./graph.js"
+import { type SemanticGraph, buildSemanticGraph } from "./graph.js"
 import { externalLabelWidth, place, sizeOf } from "./place.js"
 import { routeFlows } from "./route.js"
 
@@ -51,7 +51,6 @@ export function semanticLayout(
 	if (flowElements.length === 0) return { nodes: [], edges: [] }
 
 	const graph = buildSemanticGraph(flowElements, sequenceFlows)
-	const bandLayout = assignBands(graph)
 
 	// Children first: an expanded sub-process is sized by what it contains, while
 	// a collapsed one stays activity-sized and its contents move to their own plane.
@@ -75,7 +74,13 @@ export function semanticLayout(
 		}
 	}
 
-	const { bounds, lanes, gutterX } = place(graph, bandLayout, sizes, laneSet, inContainer)
+	// A named expanded sub-process draws its title along its top border.
+	const titled = new Set(
+		[...childResults.keys()].filter((id) => graph.byId.get(id)?.name !== undefined),
+	)
+	const bandLayout = assignBands(graph, titled)
+	const { bounds, lanes, gutterX } = place(graph, bandLayout, sizes, laneSet, inContainer, titled)
+	const besideStem = boundaryLabels(graph, bounds)
 
 	const nodes: LayoutNode[] = []
 	for (const el of flowElements) {
@@ -91,7 +96,7 @@ export function semanticLayout(
 		}
 		if (el.name) {
 			node.label = el.name
-			const labelBounds = externalLabel(el.type, el.name, b)
+			const labelBounds = besideStem.get(el.id) ?? externalLabel(el.type, el.name, b)
 			if (labelBounds) node.labelBounds = labelBounds
 		}
 		if (childResults.has(el.id)) node.isExpanded = true
@@ -184,6 +189,96 @@ function extentOf(result: LayoutResult): Bounds | null {
 
 function shift(b: Bounds, dx: number, dy: number): Bounds {
 	return { x: b.x + dx, y: b.y + dy, width: b.width, height: b.height }
+}
+
+/**
+ * Labels for named boundary events, beside the event's exit stem rather than
+ * centred on it.
+ *
+ * A boundary event's flows leave its outward side at the centre, so a label
+ * centred below (or above) the event is crossed by its own exit edge. Labels
+ * sit on the outward side, outside the host, in the gaps between the stems of
+ * the events docked on that border: each gap holds at most one label, and the
+ * gaps beyond the first and last stem are unbounded. A label takes the gap on
+ * its left if it fits there, else the one on its right. When neither fits, it
+ * goes beyond the outermost stem on its nearer side, past the labels already
+ * there. Every label stays on one line in the one row next to the host:
+ * routing does not see labels, and anything farther out would reach the turn
+ * a route takes just past a stem.
+ */
+function boundaryLabels(graph: SemanticGraph, bounds: Map<string, Bounds>): Map<string, Bounds> {
+	const labels = new Map<string, Bounds>()
+	for (const [hostId, events] of graph.attachers) {
+		const host = bounds.get(hostId)
+		if (!host) continue
+		const docked = events
+			.map((event) => ({ event, b: bounds.get(event.id) }))
+			.filter((d): d is { event: (typeof events)[number]; b: Bounds } => d.b !== undefined)
+		for (const onTop of [true, false]) {
+			// Same side test the router uses to pick the exit direction.
+			const side = docked
+				.filter(({ b }) => b.y + b.height / 2 <= host.y + 1 === onTop)
+				.sort((p, q) => p.b.x - q.b.x)
+			const stems = side.map(({ b }) => b.x + b.width / 2)
+			/** How far labels beyond the first / last stem already reach. */
+			const outer = {
+				left: (stems[0] ?? 0) - LABEL_OFFSET,
+				right: (stems[stems.length - 1] ?? 0) + LABEL_OFFSET,
+			}
+			/** Labels that fit no gap, placed past the outer labels once those are known. */
+			const spill = { left: [] as Array<() => void>, right: [] as Array<() => void> }
+			const place = (b: Bounds, x: number, width: number): Bounds => ({
+				x,
+				y: onTop ? b.y - LABEL_OFFSET - LABEL_HEIGHT : b.y + b.height + LABEL_OFFSET,
+				width,
+				height: LABEL_HEIGHT,
+			})
+			let leftGapTaken = false
+			side.forEach(({ event, b }, i) => {
+				const stem = stems[i] as number
+				const name = event.name
+				if (!name) {
+					leftGapTaken = false
+					return
+				}
+				const previous = stems[i - 1] ?? Number.NEGATIVE_INFINITY
+				const next = stems[i + 1] ?? Number.POSITIVE_INFINITY
+				const leftRoom = leftGapTaken ? 0 : stem - previous - 2 * LABEL_OFFSET
+				const rightRoom = next - stem - 2 * LABEL_OFFSET
+				const full = Math.max(name.length * LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH)
+				leftGapTaken = false
+				if (leftRoom >= full) {
+					const x = stem - LABEL_OFFSET - full
+					if (i === 0) outer.left = x - LABEL_OFFSET
+					labels.set(event.id, place(b, x, full))
+					return
+				}
+				if (rightRoom >= full) {
+					if (i === side.length - 1) outer.right = stem + 2 * LABEL_OFFSET + full
+					labels.set(event.id, place(b, stem + LABEL_OFFSET, full))
+					leftGapTaken = true
+					return
+				}
+				// Neither gap holds it: beyond the outermost stem no stem crosses it.
+				if (i < side.length / 2) {
+					spill.left.push(() => {
+						outer.left -= full
+						labels.set(event.id, place(b, outer.left, full))
+						outer.left -= LABEL_OFFSET
+					})
+				} else {
+					spill.right.push(() => {
+						labels.set(event.id, place(b, outer.right, full))
+						outer.right += full + LABEL_OFFSET
+					})
+				}
+			})
+			// Nearest stems first, so the order outward matches the order of the events.
+			for (const put of spill.left.reverse()) put()
+			for (const put of spill.right) put()
+		}
+	}
+	return labels
 }
 
 /** Events and gateways carry their name outside the shape; activities do not. */

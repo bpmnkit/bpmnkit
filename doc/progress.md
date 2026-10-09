@@ -1,5 +1,27 @@
 # Progress
 
+## 2026-10-08 — Layout: boundary events stay off a sub-process title, labels off their exit edge
+
+- A named expanded sub-process draws its title centred on its top border, so the semantic layout
+  no longer docks an escalation boundary event there: on a titled container every boundary
+  event goes on the bottom border, and its handler is banded below accordingly (#222). Tasks
+  and untitled containers keep escalation on top.
+- Boundary-event labels sit beside the exit stem instead of centred on it — on the outward side,
+  outside the host, in the gaps between the stems of the events on that border, one label per
+  gap. A label takes the gap on its left if it fits, else the one on its right; when neither
+  fits it goes beyond the outermost stem on its nearer side, past the labels already there.
+  Every label stays on one line in the row next to the host, short of the turn a route takes
+  past a stem, so none is crossed by its own or a neighbour's exit edge.
+- A boundary event's route leaves through the side it is docked on, not the side its target lies
+  on: lanes can put a handler above a host whose event sits on the bottom border, and the route
+  used to leave through the event's top, back into the host. A target behind the docked side is
+  reached around the stem.
+- Events sharing a border are ordered by how far out from it their handler ends up (after lanes,
+  which can reverse the band order), farthest outermost, so the handler routes nest instead of
+  crossing each other's stems. Two existing
+  tests asserted declaration order for two timers whose second handler sits lower, a layout
+  where the first route crossed the second stem; they now assert the nested order.
+
 ## 2026-10-08 — Layout: unconnected sub-process children are packed into a grid
 
 - Inside an expanded sub-process (ad-hoc, plain, transaction, event sub-process), the semantic

@@ -583,11 +583,13 @@ describe("Builder → auto-layout integration", () => {
 		// convention): the two boundary events sit at 1/3 and 2/3 of the host width.
 		// On a 100px-wide task their 36px shapes touch, so this asserts the
 		// spec-defined distinct, symmetric placement rather than a min-gap.
+		// EB2 sits in the band below EB1, so B2 takes the outer (left) slot: B1's
+		// route turns right above EB2's level and never crosses B2's stem.
 		const hostLeft = taskShape.bounds.x
 		const hostW = taskShape.bounds.width
-		expect(b1Shape.bounds.x + b1Shape.bounds.width / 2).toBeCloseTo(hostLeft + hostW / 3, 0)
-		expect(b2Shape.bounds.x + b2Shape.bounds.width / 2).toBeCloseTo(hostLeft + (2 * hostW) / 3, 0)
-		expect(b1Shape.bounds.x).toBeLessThan(b2Shape.bounds.x)
+		expect(b2Shape.bounds.x + b2Shape.bounds.width / 2).toBeCloseTo(hostLeft + hostW / 3, 0)
+		expect(b1Shape.bounds.x + b1Shape.bounds.width / 2).toBeCloseTo(hostLeft + (2 * hostW) / 3, 0)
+		expect(b2Shape.bounds.x).toBeLessThan(b1Shape.bounds.x)
 
 		// Chain end events must exist in the diagram
 		shapeFor(diagram.plane.shapes, "EB1")
@@ -644,19 +646,21 @@ describe("Builder → auto-layout integration", () => {
 		const b2CenterX = b2Shape.bounds.x + b2Shape.bounds.width / 2
 
 		// The two events must be symmetric around task center (within 1px)
-		const leftDistance = Math.abs(taskCenterX - b1CenterX)
-		const rightDistance = Math.abs(taskCenterX - b2CenterX)
+		const leftDistance = Math.abs(taskCenterX - b2CenterX)
+		const rightDistance = Math.abs(taskCenterX - b1CenterX)
 		expect(Math.abs(leftDistance - rightDistance)).toBeLessThanOrEqual(2)
 
 		// The grid engine divides the host width into n+1 gaps (bpmn-auto-layout
 		// convention): the two boundary events sit at 1/3 and 2/3 of the host width.
 		// On a 100px-wide task their 36px shapes touch, so this asserts the
 		// spec-defined distinct, symmetric placement rather than a min-gap.
+		// EB2 sits in the band below EB1, so B2 takes the outer (left) slot: B1's
+		// route turns right above EB2's level and never crosses B2's stem.
 		const hostLeft = taskShape.bounds.x
 		const hostW = taskShape.bounds.width
-		expect(b1Shape.bounds.x + b1Shape.bounds.width / 2).toBeCloseTo(hostLeft + hostW / 3, 0)
-		expect(b2Shape.bounds.x + b2Shape.bounds.width / 2).toBeCloseTo(hostLeft + (2 * hostW) / 3, 0)
-		expect(b1Shape.bounds.x).toBeLessThan(b2Shape.bounds.x)
+		expect(b2Shape.bounds.x + b2Shape.bounds.width / 2).toBeCloseTo(hostLeft + hostW / 3, 0)
+		expect(b1Shape.bounds.x + b1Shape.bounds.width / 2).toBeCloseTo(hostLeft + (2 * hostW) / 3, 0)
+		expect(b2Shape.bounds.x).toBeLessThan(b1Shape.bounds.x)
 	})
 
 	// -----------------------------------------------------------------------

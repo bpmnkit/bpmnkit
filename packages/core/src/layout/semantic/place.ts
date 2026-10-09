@@ -1,7 +1,7 @@
 import type { BpmnBoundaryEvent, BpmnFlowElement, BpmnLaneSet } from "../../bpmn/bpmn-model.js"
 import type { Bounds } from "../types.js"
 import { ELEMENT_SIZES, LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH } from "../types.js"
-import type { BandLayout } from "./bands.js"
+import { type BandLayout, boundarySide } from "./bands.js"
 import type { SemanticGraph } from "./graph.js"
 
 /** Geometry constants. Layout may add space beyond these; it never takes any back. */
@@ -75,6 +75,11 @@ export function place(
 	 * tall strip.
 	 */
 	packLoose = false,
+	/**
+	 * Hosts whose title is drawn along their top border — named expanded
+	 * sub-processes. Boundary events stay off that border.
+	 */
+	titled: ReadonlySet<string> = new Set(),
 ): Placement {
 	const bounds = new Map<string, Bounds>()
 	const componentOf = new Map<string, number>()
@@ -143,7 +148,7 @@ export function place(
 
 	separateSameCell(graph, bandLayout, bounds)
 	const lanes = laneSet ? applyLanes(graph, laneSet, bounds) : []
-	dockBoundaryEvents(graph, bounds)
+	dockBoundaryEvents(graph, bounds, titled)
 	return { bounds, lanes, gutterX }
 }
 
@@ -360,16 +365,23 @@ function laneTree(laneSet: BpmnLaneSet): LaneNode[] {
 /**
  * Dock boundary events on their host's edge — escalation on top, everything
  * else on the bottom — spread along it. Events sharing a side are ordered by
- * how far their handler runs, longest first, so long paths get the outer slot.
+ * how far out from that border their handler ended up, then how far it runs —
+ * farthest first, so outer slots serve outer paths and the routes nest.
+ * The side comes from {@link boundarySide}, the rule that also placed the
+ * handler's band, so a handler is never routed around its own host.
  */
-function dockBoundaryEvents(graph: SemanticGraph, bounds: Map<string, Bounds>): void {
+function dockBoundaryEvents(
+	graph: SemanticGraph,
+	bounds: Map<string, Bounds>,
+	titled: ReadonlySet<string>,
+): void {
 	for (const [hostId, events] of graph.attachers) {
 		const host = bounds.get(hostId)
 		if (!host) continue
 
 		const sides = new Map<"top" | "bottom", BpmnBoundaryEvent[]>()
 		for (const event of events) {
-			const side = event.eventDefinitions.some((d) => d.type === "escalation") ? "top" : "bottom"
+			const side = boundarySide(event, titled.has(hostId)) === -1 ? "top" : "bottom"
 			const list = sides.get(side)
 			if (list) list.push(event)
 			else sides.set(side, [event])
@@ -377,7 +389,10 @@ function dockBoundaryEvents(graph: SemanticGraph, bounds: Map<string, Bounds>): 
 
 		for (const [side, list] of sides) {
 			const ordered = [...list].sort(
-				(a, b) => handlerReach(graph, b.id) - handlerReach(graph, a.id),
+				(a, b) =>
+					handlerDepth(graph, bounds, hostId, host, side, b.id) -
+						handlerDepth(graph, bounds, hostId, host, side, a.id) ||
+					handlerReach(graph, b.id) - handlerReach(graph, a.id),
 			)
 			const n = ordered.length
 			for (let i = 0; i < n; i++) {
@@ -392,6 +407,35 @@ function dockBoundaryEvents(graph: SemanticGraph, bounds: Map<string, Bounds>): 
 			}
 		}
 	}
+}
+
+/**
+ * How far out from the docked border the handler of a boundary event sits,
+ * measured on the final positions (after lanes, which can reorder handlers
+ * against their bands). Negative when the handler lies behind the border.
+ *
+ * Each handler leaves its event straight out and turns toward its target, so
+ * the event docked outermost has to serve the farthest handler; otherwise its
+ * turn cuts across the stems of the events docked inside it.
+ */
+function handlerDepth(
+	graph: SemanticGraph,
+	bounds: Map<string, Bounds>,
+	hostId: string,
+	host: Bounds,
+	side: "top" | "bottom",
+	eventId: string,
+): number {
+	let depth = Number.NEGATIVE_INFINITY
+	// Flows out of a boundary event are keyed by its host (see graph.ts).
+	for (const flow of graph.outgoing.get(hostId) ?? []) {
+		if (flow.sourceRef !== eventId) continue
+		const target = bounds.get(flow.targetRef)
+		if (!target) continue
+		const centre = target.y + target.height / 2
+		depth = Math.max(depth, side === "top" ? host.y - centre : centre - (host.y + host.height))
+	}
+	return Number.isFinite(depth) ? depth : 0
 }
 
 /** How far the handler of a boundary event runs, in ranks. */
