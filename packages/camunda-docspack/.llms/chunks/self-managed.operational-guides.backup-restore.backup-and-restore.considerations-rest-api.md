@@ -1,0 +1,12 @@
+# Camunda back up and restore — Considerations — REST API
+
+With Camunda 8.10, the Orchestration Cluster (Zeebe and the web applications) exposes backup, exporting control, and restore as [Orchestration Cluster REST API](https://docs.camunda.io/docs/next/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview) endpoints under `/v2/...`. Prefer the REST API over the management (actuator) API for new deployments. It requires authentication and authorization like the rest of the Orchestration Cluster API, works the same way whether you run one Physical Tenant or several, and is the surface Camunda expects to keep building on. Each step of the [back up process](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/elasticsearch/backup#back-up-process) links to the specific REST endpoint it uses.
+
+A runtime backup requires the `BACKUP:CREATE` permission; a history backup requires `BACKUP:CREATE` as well and is only available when secondary storage is Elasticsearch or OpenSearch. Pausing and resuming exporting each require their own `EXPORTER:PAUSE` permission, separate from `BACKUP:CREATE`. Pausing exporting before a backup is required for state consistency, though neither API enforces it as a precondition of the backup call itself: a soft pause (`?soft=true`) keeps exporting running but stops it from committing its position, which avoids log compaction removing data your backup still needs. See [back up process](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/elasticsearch/backup#back-up-process) for how the two calls fit together in a procedure.
+
+This page describes the concepts shared by all deployments. For the full step-by-step procedure, see the [Elasticsearch / OpenSearch backup guide](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/elasticsearch/backup), which uses these REST endpoints as the primary path and the management API below as a backward-compatible alternative.
+
+Optimize is not covered by these REST endpoints. Back it up with its own [management API](#management-api) procedure regardless of which path your Orchestration Cluster uses; see [Optimize backup and restore](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/optimize-backup-and-restore).
+
+---
+Source: https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/backup-and-restore

@@ -33,11 +33,37 @@ export const INCLUDED = [
 	"docs/components/modeler/bpmn",
 	"docs/components/modeler/feel",
 	"docs/components/concepts",
+	"docs/components/admin",
+	"docs/components/agentic-orchestration",
+	"docs/components/connectors",
+	"docs/components/document-handling",
+	"docs/components/hub",
+	"docs/components/operate",
+	"docs/components/optimize",
+	"docs/components/saas",
+	"docs/components/tasklist",
+	"docs/components/zeebe",
 	"docs/apis-tools/orchestration-cluster-api-rest",
+	"docs/apis-tools/camunda-spring-boot-starter",
+	"docs/apis-tools/csharp-sdk",
+	"docs/apis-tools/go-sdk",
+	"docs/apis-tools/java-client",
+	"docs/apis-tools/migration-manuals",
+	"docs/apis-tools/php-sdk",
+	"docs/apis-tools/python-sdk",
+	"docs/apis-tools/rust-sdk",
+	"docs/apis-tools/testing",
+	"docs/apis-tools/typescript",
+	"docs/apis-tools/zeebe-api",
+	"docs/self-managed",
 ] as const
 
-/** Generated API reference: a base64 blob wrapped in React imports, with no prose in it. */
-const EXCLUDED = /\/specifications\//
+/**
+ * Generated API reference, with no prose in it: the Orchestration Cluster `specifications/`
+ * pages are a base64 blob wrapped in React imports, and each SDK's `api-reference/` is one page
+ * per type or method — 2,700 of them for TypeScript alone, enough to outrank every guide.
+ */
+const EXCLUDED = /\/(specifications|api-reference)\//
 
 /** The Orchestration Cluster API specification, which those generated pages are rendered from. */
 const API_SPEC = "api/camunda/v2/camunda-openapi.yaml"

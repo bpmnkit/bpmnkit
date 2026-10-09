@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions — Handling errors on the process level — Using BPMN error events
+# Deal with problems and exceptions — Handling errors on the process level — Using BPMN error events
 
 A common way to resolve these deviations is using a BPMN error event, which allows a process model to react to errors within a task. For example:
 

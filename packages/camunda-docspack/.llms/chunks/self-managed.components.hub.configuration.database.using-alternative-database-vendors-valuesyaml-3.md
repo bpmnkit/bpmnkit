@@ -1,0 +1,17 @@
+# Database — Using alternative database vendors — valuesYaml
+
+```yaml
+camundaHub:
+  restapi:
+    externalDatabase:
+      url: "jdbc:sqlserver://[DB_HOST]:[DB_PORT];databaseName=[DB_NAME]"
+      username: "[DB_USER]"
+      secret:
+        inlineSecret: "[DB_PASSWORD]"
+    env:
+      - name: SPRING_DATASOURCE_DRIVERCLASSNAME # Optional; omit to use default MSSQL driver
+        value: "[YOUR_CUSTOM_DRIVER]"
+```
+
+---
+Source: https://docs.camunda.io/docs/next/self-managed/components/hub/configuration/database

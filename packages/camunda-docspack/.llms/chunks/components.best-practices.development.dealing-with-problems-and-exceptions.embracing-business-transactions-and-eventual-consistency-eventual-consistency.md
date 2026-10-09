@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions — Embracing business transactions and eventual consistency — Eventual consistency
+# Deal with problems and exceptions — Embracing business transactions and eventual consistency — Eventual consistency
 
 It is important to be aware that these temporary inconsistencies are possible. You also have to understand the failure scenarios they can cause. In the above example, you could have created a marketing campaign at a moment when a customer was already in the CRM system, but not yet in billing, so they got included in that list. Then, even if their order gets rejected and they never end up as an active customer, they might still receive an upgrade advertisement.
 

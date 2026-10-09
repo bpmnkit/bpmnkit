@@ -1,5 +1,64 @@
 # Progress
 
+## 2026-10-09 — camunda-docspack: rebuilt against camunda-docs@9bd7ca2
+
+- The committed pack is rebuilt from the current camunda-docs (`9bd7ca2`, was `b4b27e3`), with
+  this branch's tag-field ranking and MDX transforms: 6,039 chunks, up from 5,877; 121 chunk ids
+  departed with renamed upstream headings and pages. The build is reproducible.
+- Two retrieval-eval targets follow upstream renames: Hub's `manage-api-clients` moved to
+  `components.saas.clusters.manage-api-clients`, and the worker idempotency section is now
+  `writing-good-workers.write-idempotent-workers`. All eval questions answer as before.
+
+## 2026-10-09 — camunda-docspack: Self-Managed, the web components and the client guides
+
+- `INCLUDED` adds 22 directories of camunda-docs: `self-managed/`, ten of `components/` (admin,
+  agentic-orchestration, connectors, document-handling, hub, operate, optimize, saas, tasklist,
+  zeebe) and eleven of `apis-tools/` (camunda-spring-boot-starter, java-client, migration-manuals,
+  testing, zeebe-api, and the C#, Go, PHP, Python, Rust and TypeScript SDKs). Built from the same
+  upstream commit as before (`b4b27e3`), the pack grows from 1,112 to 5,877 chunks, and no chunk
+  of the old corpus changes except the five below. The build stays reproducible.
+- `api-reference/` is excluded like `specifications/`: the SDKs generate one page per type or
+  method there.
+- `mdx.ts` handles the components of the new pages. `YesItem` and `NoItem` become Yes and No,
+  because they are the cells of a comparison table; three download links become their link
+  text. Card grids, table wrappers, interactive widgets and diagrams are dropped by name, and a
+  component imported from an image file, or from the module of the Self-Managed landing
+  sections, by its import. Names such as `Components` are not dropped anywhere else.
+- Five transforms were wrong or missing:
+  - A JSX tag whose props run over lines is joined and removed whole, and a tag ends at the
+    first `>` outside its braces and quotes. Before, `<Tabs values={[ … ]}>` and
+    `<ReactPlayer playing loop … />` left their props in the text: five chunks of the old
+    corpus change for this, and one that held nothing else is gone.
+  - An `import {` over several lines is skipped to its `from`; its names leaked into the prose.
+  - A partial's own imports resolve from the partial's directory, not the including page's.
+  - A partial that switches on a prop (`{props.type === "task" && <X />}`) is rendered with the
+    attributes it was included with.
+  - An escaped `\<GitProvider\>` is prose and stays.
+- The retrieval eval gains the two MCP-comparison questions the pack could not answer before
+  (multi-tenancy configuration, client authentication); both now rank 3rd. Two held-out
+  questions regress, because new pages on the same topic outrank their targets: "difference
+  between authentication and authorization" (7th, Self-Managed OIDC pages) and "how much
+  storage does Elasticsearch need" (10th, Self-Managed secondary-storage pages). They are known
+  misses. The message-cardinality miss drops from 6th to 12th.
+
+## 2026-10-09 — docspack: tags scored as their own field, plus a retrieval eval
+
+- `search` scores a chunk's tags apart from its prose. A query term that a tag names whole
+  (`incidents`) adds its full IDF, and one that a tag only holds as a part
+  (`secret-resolution-incidents`) adds 0.3 of it, after the BM25 sum. Before, tags were added
+  into the prose frequencies with weight 3, and BM25 saturated the weight away: Camunda's
+  incidents page lost "resolve the incident" to five secret-resolution chunks that say every
+  query word in prose. Entities keep their 3× weight inside the prose field.
+- `should`, `need`, `needs`, `happen`, `happens` and `my` are stop words. "What happens when"
+  pulled in every chunk that says "happens".
+- `packages/camunda-docspack/tests/retrieval.test.ts` is a fixed eval of 18 questions against
+  the committed pack: the 6 of a comparison with the Camunda Docs MCP server, and 12 held out
+  after the tuning. Each must find its target in the chunks an answer returns. 15 passed
+  before this change and 17 pass after it. The one known miss ("can one message be correlated
+  to several waiting instances", 3rd before, 6th now) is an `it.fails` case, so the suite says
+  when a later change fixes it. A target that the weekly rebuild renames fails as stale, not
+  as a miss.
+
 ## 2026-10-09 — Landing: in-browser OpenAPI → connector generator
 
 - New page `/connector-generator` on bpmnkit.com: drop (or pick) an OpenAPI 3 or Swagger 2 spec,

@@ -1,0 +1,21 @@
+# Connect Admin to an identity provider
+
+Learn how to connect Camunda 8 Orchestration Cluster Admin to an external Identity Provider (IdP) via OpenID Connect (OIDC) for authentication and user management.
+
+Configure Admin to use an external identity provider (IdP) via OpenID Connect (OIDC) at the application level, including claims and mapping rules.
+
+**Info: Deploying with Helm?**
+If you deploy Camunda 8 Self-Managed with Helm, use the [Helm chart authentication and authorization guides](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/authentication-and-authorization/index) to configure OIDC and Admin.
+
+
+## About Authentication and authorization
+
+You can configure IdP integration to control authentication and authorization for both the web components and machine-to-machine (M2M) API access (for connectors and workers).
+
+| Access type                                                               | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| :------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [Web components](#web-components)                                         | Users authenticate via the OIDC [Authorization Code Flow](https://openid.net/specs/openid-connect-core-1_0.html#CodeFlowAuth).Users are redirected to your IdP to log in, and Camunda receives a token to establish the session.Claims from the token are used to identify the user's username, and (optionally) groups for easier assignment and management.Mapping Rules can be used to map token claims to Camunda roles, authorizations, or tenants.As user information is not stored in the Orchestration Cluster using OIDC, features such as user search and user validation on assigning authorizations or tenants and user management are not available in the Orchestration Cluster Admin UI. |
+| [Machine-to-machine (M2M) API access](#machine-to-machine-m2m-api-access) | Connectors, job workers or other implementations that use the Orchestration Cluster REST or gRPC APIs (for example, by using one of the Camunda Clients) use the [OAuth Client Credentials Flow](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4) to obtain a JWT access token for authentication.This authentication method for Camunda Clients is separate from the interactive user login and typically requires additional configuration in your IdP and Camunda.                                                                                                                                                                                                                                                                                         |
+
+---
+Source: https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/admin/connect-external-identity-provider

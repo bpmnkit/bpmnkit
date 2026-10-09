@@ -1526,7 +1526,7 @@ Full guide: https://bpmnkit.com/docs/guides/bpmn-in-markdown
 			"Camunda 8 documentation as an offline, version-locked docspack package for AI agents",
 		content: `## Overview
 
-\`@bpmnkit/camunda-docspack\` packages the Camunda 8 documentation — BPMN, FEEL, engine concepts and the Orchestration Cluster API — as a [docspack](https://docspack.dev/spec) pack you can search offline, with no network call and no MCP server.
+\`@bpmnkit/camunda-docspack\` packages the Camunda 8 documentation — BPMN, FEEL, engine concepts, the web components, Self-Managed deployment and configuration, the client guides and the Orchestration Cluster API — as a [docspack](https://docspack.dev/spec) pack you can search offline, with no network call and no MCP server.
 
 It is built from the \`docs/\` tree of [camunda/camunda-docs](https://github.com/camunda/camunda-docs), which is the unreleased **8.10** documentation, plus the Orchestration Cluster API specification.
 
@@ -1535,7 +1535,7 @@ It is built from the \`docs/\` tree of [camunda/camunda-docs](https://github.com
 ## Features
 
 - **Diagrams as text** — the best-practice pages argue through embedded BPMN diagrams. Camunda's own Markdown export drops them; this renders each one as a flow description, so a page about naming gateways still contains the gateway, its question and its conditions.
-- **227 API operations** — one digest per endpoint, read from the specification rather than from the generated reference pages, with required permissions decoded, the version it appeared in, and its consistency guarantee.
+- **244 API operations** — one digest per endpoint, read from the specification rather than from the generated reference pages, with required permissions decoded, the version it appeared in, and its consistency guarantee.
 - **Every chunk cites its page** — links are rewritten to absolute \`docs.camunda.io\` URLs, and each chunk ends with the page it came from.
 - **Nothing dropped silently** — an MDX component the build does not recognise fails the build by file and line instead of quietly thinning the corpus.
 - **Offline** — one SQLite-free local index; no server, nothing resident.
@@ -1614,7 +1614,7 @@ Markdown docs → chunks + manifest → BM25 index → three passages
 - **Offline** — \`ask\`, \`search\` and \`list\` read the filesystem only. No server, no network call, nothing resident between questions
 - **Version-locked** — the installed \`package.json\` version wins over the manifest, so an agent reads the docs for the release it has
 - **Bounded answers** — three chunks and 3,000 tokens by default, budgeted from the manifest before any content is read. The next five matches are listed by id only, and \`ask <chunk-id>\` reads one
-- **Real retrieval** — BM25 over chunk text with Porter stemming, so \`authenticate\` finds a passage that only says \`authentication\`; tags and API identifiers weigh 3× prose, and a line repeated across a pack's chunks (generated metadata, stock responses) is not counted at all
+- **Real retrieval** — BM25 over chunk text with Porter stemming, so \`authenticate\` finds a passage that only says \`authentication\`; API identifiers weigh 3× prose, a chunk's path tags count as their own field (a tag that *is* the query word, like \`incidents\`, ranks that page above ones that only mention it), and a line repeated across a pack's chunks (generated metadata, stock responses) is not counted at all
 - **docspack-compatible** — \`.llms/manifest.json\` validates against \`https://docspack.dev/schema/v1.json\`
 - **Safe by construction** — a manifest is untrusted input: chunk paths that escape \`.llms/\` are refused, and community packages are labelled
 - **Zero runtime dependencies**

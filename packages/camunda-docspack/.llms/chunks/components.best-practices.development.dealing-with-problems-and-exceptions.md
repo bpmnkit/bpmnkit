@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions
+# Deal with problems and exceptions
 
 Take a closer look at understanding workers, handling exceptions on a technical level, leveraging retries, using incidents, and more.
 

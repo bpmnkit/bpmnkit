@@ -14,7 +14,7 @@ For SaaS clusters, Swagger UI is accessible through your cluster's dedicated end
 
 1. Open Camunda Hub.
 1. In the left navigation under **Clusters**, select a cluster.
-1. If the cluster is paused, you must [resume](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-cluster#resume-a-cluster) it before accessing the Swagger UI.
+1. If the cluster is paused, you must [resume](https://docs.camunda.io/docs/next/components/saas/clusters/manage-cluster#resume-a-cluster) it before accessing the Swagger UI.
 1. Under **Cluster Details**, click **Open Swagger UI**.
 
 **Note**

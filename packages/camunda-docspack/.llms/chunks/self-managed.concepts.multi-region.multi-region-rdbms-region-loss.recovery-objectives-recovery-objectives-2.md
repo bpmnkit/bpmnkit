@@ -1,0 +1,20 @@
+# Region loss and recovery in Multi-Region RDBMS — Recovery objectives {#recovery-objectives} (2)
+
+The window has three parts, and only the first happens inside the engine:
+
+| What                      | Typical duration                | Why it takes time                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| :------------------------ | :------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Raft re-election          | A few seconds                   | Partitions whose leader was in the lost zone have no leader until a follower misses the leader's heartbeats. A follower starts an election after the [`election-timeout`](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/configuration/broker#camundaclusterraft), 2.5 seconds by default, which is ten 250 ms heartbeat intervals. With priority election, the preferred replica stands first, and the vote itself is short compared to the timeout. These partitions don't process during that window. |
+| Client traffic rerouting  | Tens of seconds to minutes      | The gateway in the lost region is unreachable. Clients pointed at it fail until your traffic management reroutes them. For example, an Amazon Route 53 health check probes every 10 or 30 seconds and marks the endpoint unhealthy after several failed probes. Clients then follow the new record once its TTL expires.                                                                                                                                                                                          |
+| Database writer promotion | Under a minute to a few minutes | Only if the writer was in the lost region. Exporting stops until a surviving member is promoted, while the engine keeps processing. For Aurora Global Database, a switchover typically takes under 30 seconds on recent engine versions. A failover after an unplanned outage typically completes within a few minutes. The APIs and web applications that read secondary storage serve stale data until exporting resumes.                                                                                       |
+
+These durations come from defaults and vendor documentation, not from a measurement of this architecture. Measure your own window, because your timeouts and your database decide it.
+
+Skewing partition leadership to the writer's zone makes the first of these worse in one specific case. Losing that zone loses most partition leaders at once, so more partitions re-elect simultaneously. That is the price of avoiding an inter-region round trip on every export flush.
+
+Client configuration decides whether the re-election and rerouting windows are visible. A re-election is a window a client retries through, not an outage. That only holds if its timeout and retry budget survives one. A client that gives up on the first refused connection sees the re-election as downtime, in a single-region cluster as much as here.
+
+The window is longer here, because the new leader and the rerouted client can both be a region away. Size client timeouts and retries for a leader change that crosses a region boundary.
+
+---
+Source: https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/multi-region-rdbms-region-loss

@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions — Handling exceptions on a technical level — Leveraging retries
+# Deal with problems and exceptions — Handling exceptions on a technical level — Leveraging retries
 
 Using the [`FailJob `](https://docs.camunda.io/docs/next/apis-tools/zeebe-api/gateway-service#failjob-rpc) API is pretty handy to leverage the built-in retry mechanism of Zeebe. The initial number of retries is set in the BPMN process model:
 

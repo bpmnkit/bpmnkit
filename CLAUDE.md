@@ -27,7 +27,8 @@ index does not go stale: `pnpm --filter @bpmnkit/docspack build`.
 
 This repo also ships **`@bpmnkit/camunda-docspack`** (`packages/camunda-docspack`), the
 Camunda 8 documentation in the same format — BPMN and FEEL references, engine concepts,
-best practices and the Orchestration Cluster API. Ask it for anything about *Camunda*
+best practices, the web components, Self-Managed deployment and configuration, the client
+guides and the Orchestration Cluster API. Ask it for anything about *Camunda*
 rather than about BPMN Kit's own APIs, and use `--pack` when a question could match both:
 
 ```sh

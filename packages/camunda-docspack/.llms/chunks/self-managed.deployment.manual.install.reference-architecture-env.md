@@ -1,0 +1,18 @@
+# Camunda manual installation — Reference architecture — env
+
+```bash
+CAMUNDA_DATA_SECONDARYSTORAGE_TYPE=elasticsearch|opensearch # defaults to elasticsearch
+
+# Elasticsearch
+CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_URL=http://localhost:9200
+CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_USERNAME=
+CAMUNDA_DATA_SECONDARYSTORAGE_ELASTICSEARCH_PASSWORD=
+
+# OpenSearch
+CAMUNDA_DATA_SECONDARYSTORAGE_OPENSEARCH_URL=http://localhost:9200
+CAMUNDA_DATA_SECONDARYSTORAGE_OPENSEARCH_USERNAME=
+CAMUNDA_DATA_SECONDARYSTORAGE_OPENSEARCH_PASSWORD=
+```
+
+---
+Source: https://docs.camunda.io/docs/next/self-managed/deployment/manual/install

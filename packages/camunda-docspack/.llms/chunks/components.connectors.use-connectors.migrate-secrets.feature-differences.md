@@ -1,0 +1,15 @@
+# Migrate to `camunda.secrets.<name>` — Feature differences
+
+|                  | `{{secrets.<name>}}` (legacy)                                                                                                                        | `camunda.secrets.<name>` (recommended)                                                                                                  |
+| :--------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
+| Resolved by      | The connector runtime, at execution time                                                                                                             | The Orchestration Cluster, ahead of job activation or on demand through the API                                                         |
+| Where you use it | Any connector field in the properties panel                                                                                                          | Input mapping FEEL expressions, and connector or credential fields backed by a `SECRET_REFERENCE` cluster variable                      |
+| Value source     | Connector secret providers, for example prefixed environment variables or a custom provider                                                          | A File, AWS Secrets Manager, or GCP Secret Manager store in Self-Managed; managed secrets in SaaS                                       |
+| Authorization    | None; the [secret filter](https://docs.camunda.io/docs/next/self-managed/components/connectors/connectors-configuration#secret-filter) restricts which fields may resolve a secret | The `SECRET` resource's `READ` and `REVEAL` authorizations govern the `/v2/secrets` API; broker-side resolution is not governed by them |
+| Tenant awareness | Not scoped per physical tenant unless you opt in to a tenant-aware provider in the connector runtime configuration                                   | Each physical tenant resolves its own configured secret store                                                                           |
+| Caching          | Values are read from the provider on each execution                                                                                                  | Cache-first with a configurable cache lifetime, so rotated values become available without a restart                                    |
+
+For the full behavior of the recommended syntax, see [Secret resolution](https://docs.camunda.io/docs/next/components/concepts/secret-resolution) and [Secret resolution and job activation](https://docs.camunda.io/docs/next/components/concepts/secret-resolution-and-job-activation). For the legacy syntax, see [Using secrets](https://docs.camunda.io/docs/next/components/connectors/use-connectors/index#using-secrets).
+
+---
+Source: https://docs.camunda.io/docs/next/components/connectors/use-connectors/migrate-secrets

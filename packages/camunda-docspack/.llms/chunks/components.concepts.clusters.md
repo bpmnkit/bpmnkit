@@ -1,33 +1,25 @@
 # Clusters
 
-Learn more about the clusters available in your Camunda 8 plan.
+A cluster is the infrastructure that runs Camunda 8. Learn how clusters relate to environments, workspaces, and Physical Tenants.
 
-A [cluster](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/create-cluster) is a provided group of production-ready nodes that run Camunda 8.
+A cluster is the infrastructure that runs Camunda 8. It includes the Orchestration Cluster that automates your processes, and the components that run alongside it, such as connectors and Optimize.
 
-When [creating a cluster in SaaS](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/create-cluster), you can choose the cluster **type** and **size** to meet your organization's availability and scalability needs, and to provide control over cluster performance and availability.
+In Camunda Hub, a cluster is an administrative unit: the infrastructure that organization admins create, size, and maintain. Teams don't deploy to a cluster directly. They deploy to an [environment](https://docs.camunda.io/docs/next/components/concepts/environments) hosted on it.
 
 
-## Cluster type
+## Create and manage clusters
 
-The cluster type defines the Availability Target for the cluster.
+How you create and manage clusters depends on the edition of Camunda that you use.
 
-You can choose from three different cluster types:
+In SaaS, organization admins create clusters in Camunda Hub. When you [create a cluster](https://docs.camunda.io/docs/next/components/saas/clusters/create-cluster), you choose its type, size, region, and version. The type defines the availability and uptime of the cluster, and the size defines its capacity.
 
-- **Basic**: A cluster for non-production use, including experimentation, early development, and basic use cases that don't require a high Availability Target.
-- **Standard**: A production-ready cluster with a higher Availability Target.
-- **Advanced**: A production-ready cluster with the highest Availability Target.
+Organization admins and DevOps users [manage clusters](https://docs.camunda.io/docs/next/components/saas/clusters/manage-cluster), for example to rename, resume, update, or resize a cluster.
 
-### Cluster availability and uptime
+Learn more about [SaaS clusters](https://docs.camunda.io/docs/next/components/saas/clusters), including cluster types, sizes, and Free Trial clusters.
 
-| Type                                                               | Basic                                                                                  | Standard                                                      | Advanced                                                         |
-| :----------------------------------------------------------------- | :------------------------------------------------------------------------------------- | :------------------------------------------------------------ | :--------------------------------------------------------------- |
-| Usage                                                              | Non-production use, including experimentation, early development, and basic use cases. | A production-ready cluster with a higher Availability Target. | A production-ready cluster with the highest Availability Target. |
-| Availability Target(Orchestration Cluster\*) | 99%                                                                                    | 99.5%                                                         | 99.9%                                                            |
+In Self-Managed, you provision clusters outside Camunda Hub, and you don't create them in Camunda Hub. To show a cluster and its environments in Camunda Hub, add it to the Camunda Hub configuration.
 
-* Orchestration Cluster means the core components for process automation and orchestration: Zeebe, Operate, Tasklist, Identity, and the Orchestration Cluster APIs (or any successor or renamed equivalent as specified in the Documentation from time to time).
-
-**Info**
-See the terms of your agreement with Camunda for the definitions of Availability Target, Downtime, and Excluded Downtime.
+Learn more about [clusters in Self-Managed](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/index) and [Physical Tenants in the Camunda Hub configuration](https://docs.camunda.io/docs/next/self-managed/components/hub/configuration/environments#physical-tenants).
 
 ---
 Source: https://docs.camunda.io/docs/next/components/concepts/clusters

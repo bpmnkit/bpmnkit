@@ -1,0 +1,21 @@
+# Restore a backup with the Restore Application — 1. Restore Elasticsearch/OpenSearch snapshots {#restore-es-snapshots-step} — 3. Stop all components apart from Elasticsearch/OpenSearch {#stop-all-components}
+
+If you are using an external Elasticsearch/OpenSearch and Kubernetes, you could temporarily [uninstall](https://helm.sh/docs/helm/helm_uninstall/) the Camunda Helm chart or [scale](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_scale/) all components to 0, so that nothing is running and potentially interacting with the datastore.
+
+In a manual setup, you can simply stop all components.
+
+Before restoring the Elasticsearch/OpenSearch snapshots, stop Optimize if it is installed. If Operate and Tasklist are deployed as standalone applications, stop them as well. With the official Camunda Helm chart, Operate and Tasklist run as part of the single orchestration cluster deployment, so stop the orchestration deployment as described above rather than stopping separate application deployments.
+
+With Helm, disable the other components in `values.yml`:
+
+```yaml
+connectors:
+  enabled: false
+optimize:
+  enabled: false
+orchestration:
+  enabled: false
+```
+
+---
+Source: https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/elasticsearch/restore-application

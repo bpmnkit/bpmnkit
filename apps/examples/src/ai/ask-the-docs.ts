@@ -6,7 +6,8 @@
  *
  *   @bpmnkit/docspack          BPMN Kit's own APIs, CLI and guides
  *   @bpmnkit/camunda-docspack  the Camunda 8 documentation — BPMN, FEEL, the
- *                              engine and the Orchestration Cluster API
+ *                              engine, Self-Managed, the clients and the
+ *                              Orchestration Cluster API
  *
  * Both are read by the same CLI (`npx bpmnkit-docs ask "..."`) and the same
  * library, shown here. Retrieval is BM25 over chunks on disk: no tokens spent,
