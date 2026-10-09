@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.6
+
+### Patch Changes
+
+- Updated dependencies [08d195e]
+- Updated dependencies [20d3d22]
+- Updated dependencies [45f449c]
+- Updated dependencies [da7fc42]
+  - @bpmnkit/core@1.5.0
+
 ## 0.5.5
 
 ### Patch Changes
