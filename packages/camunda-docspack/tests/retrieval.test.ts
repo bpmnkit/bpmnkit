@@ -69,6 +69,8 @@ const MCP_COMPARISON: Case[] = [
 			"components.saas.clusters.manage-api-clients",
 			"apis-tools.camunda-spring-boot-starter",
 		],
+		knownMiss:
+			"ranks 5th since the Python SDK and the MCP client setup pages are in the pack: they share its words, and the page that answers it names no more of them",
 	},
 ]
 
@@ -138,6 +140,226 @@ const HELD_OUT: Case[] = [
 	},
 ]
 
+// Questions for the areas added after the sets above, which the pack did not cover before: DMN,
+// forms, element templates, the Camunda 7 migration guides, the glossary, c8ctl and the audit log.
+const NEW_AREAS: Case[] = [
+	{
+		question: "which hit policy returns the outputs of all matching rules in a decision table",
+		targets: ["components.modeler.dmn.decision-table-hit-policy"],
+	},
+	{
+		question: "let users add several rows of the same fields in a Camunda form",
+		targets: ["components.modeler.forms.form-element-library.forms-element-library-dynamiclist"],
+		knownMiss:
+			'ranks 41st: the page says "dynamically manage a list" where the question says "add several rows", and the forms configuration pages share more of its words',
+	},
+	{
+		question: "calculate the value of a form field from other fields",
+		targets: ["components.modeler.forms.form-element-library.forms-element-library-expression"],
+		knownMiss:
+			'ranks 14th: the page says "compute form state", so the forms configuration pages outrank it',
+	},
+	{
+		question: "what is different between the Camunda 7 and Camunda 8 architecture",
+		targets: ["guides.migrating-from-camunda-7.conceptual-differences"],
+	},
+	{
+		question: "convert my JavaDelegate into a job worker",
+		targets: [
+			"guides.migrating-from-camunda-7.migration-tooling.code-conversion",
+			"guides.migrating-from-camunda-7.migration-readiness.clean-delegates",
+			"guides.migrating-from-camunda-7.migration-journey.refactor-code",
+		],
+	},
+	{
+		question: "deploy a BPMN file from the command line",
+		targets: [
+			"apis-tools.c8ctl.command-reference.commands-deploy",
+			"apis-tools.c8ctl.development-workflows.deploy",
+		],
+	},
+	{
+		question: "who is allowed to read the audit log",
+		targets: ["components.audit-log.overview.access-control"],
+		knownMiss:
+			"ranks 11th: the digests of the three audit-log endpoints outrank the page: they are short and repeat the query words",
+	},
+	{
+		question: "write my own element template JSON for a task",
+		targets: ["components.modeler.element-templates.defining-templates"],
+		knownMiss:
+			'ranks 33rd: "element template" is in 66 chunks, mostly connector pages, so the page that defines templates is one of many',
+	},
+	{
+		question: "connect Camunda to SAP",
+		targets: ["components.camunda-integrations.sap"],
+	},
+	{
+		question: "put a FEEL expression in a decision instead of a table",
+		targets: ["components.modeler.dmn.decision-literal-expression"],
+	},
+	{
+		question: "first process hello world tutorial for Camunda 8",
+		targets: ["guides.getting-started-hello-world", "guides.getting-started-example"],
+	},
+]
+
+// Questions put to the Camunda Docs MCP server on 2026-10-09. A target is one of the first two
+// docs.camunda.io pages it returned, so this set is labelled by a system other than this one.
+const MCP_LABELLED: Case[] = [
+	{
+		question:
+			"How do I configure the job worker timeout and the maximum number of jobs to activate in the Java client?",
+		targets: [
+			"apis-tools.java-client.job-worker",
+			"components.best-practices.development.writing-good-workers",
+		],
+	},
+	{
+		question: "How do I install Camunda 8 Self-Managed on Kubernetes with Helm?",
+		targets: ["self-managed.deployment.helm.install", "self-managed.deployment.helm"],
+	},
+	{
+		question: "What is the difference between a message start event and a signal start event?",
+		targets: ["components.modeler.bpmn.message-events", "components.modeler.bpmn.signal-events"],
+	},
+	{
+		question: "How can I call a REST API from a BPMN process without writing code?",
+		targets: ["components.connectors.protocol.rest"],
+		knownMiss:
+			"is not in the top 60: pages that share more of the question's words outrank the page the MCP returns first",
+	},
+	{
+		question: "How do I escalate a user task after two days with a boundary timer event?",
+		targets: [
+			"components.concepts.workflow-patterns",
+			"components.concepts.process-instance-migration",
+		],
+	},
+	{
+		question: "How do I assign a user task to a candidate group?",
+		targets: ["components.modeler.bpmn.user-tasks"],
+	},
+	{
+		question: "How do I migrate Camunda 7 external task workers to Camunda 8 job workers?",
+		targets: [
+			"guides.migrating-from-camunda-7.migration-tooling.code-conversion",
+			"guides.migrating-from-camunda-7.migration-journey",
+		],
+	},
+	{
+		question: "How do I call a DMN decision from a BPMN process with a business rule task?",
+		targets: [
+			"components.hub.workspace.modeler.modeling.advanced-modeling.business-rule-task-linking",
+			"components.modeler.bpmn.business-rule-tasks",
+		],
+	},
+	{
+		question: "How do I search for process instances by a variable value with the REST API?",
+		targets: [
+			"apis-tools.orchestration-cluster-api-rest.specifications.search-process-instances",
+			"apis-tools.orchestration-cluster-api-rest.orchestration-cluster-api-rest-data-fetching",
+		],
+		knownMiss:
+			"ranks 7th: pages that share more of the question's words outrank the page the MCP returns first",
+	},
+	{
+		question: "How do I back up and restore Camunda 8 Self-Managed data?",
+		targets: ["self-managed.operational-guides.backup-restore.backup-and-restore"],
+		knownMiss:
+			"ranks 11th: pages that share more of the question's words outrank the page the MCP returns first",
+	},
+	{
+		question: "Which Java versions and environments does Camunda 8 support?",
+		targets: ["reference.supported-environments"],
+	},
+	{
+		question:
+			"How do I connect the Orchestration Cluster to an external OIDC identity provider such as Microsoft Entra ID?",
+		targets: [
+			"components.saas.clusters.connect-external-identity-provider",
+			"self-managed.deployment.helm.configure.authentication-and-authorization.microsoft-entra",
+		],
+		knownMiss:
+			"ranks 5th: pages that share more of the question's words outrank the page the MCP returns first",
+	},
+	{
+		question: "How do I start a process instance with the Camunda Python SDK?",
+		targets: ["apis-tools.python-sdk.creating-a-process-instance"],
+		knownMiss:
+			"ranks 4th: pages that share more of the question's words outrank the page the MCP returns first",
+	},
+	{
+		question: "How do I set a retry back off when failing a job?",
+		targets: ["components.concepts.job-workers", "apis-tools.python-sdk.job-workers"],
+	},
+	{
+		question:
+			"How do I configure the connection from Camunda to a secured Elasticsearch with a username and password?",
+		targets: [
+			"self-managed.components.optimize.configuration.system-configuration",
+			"self-managed.components.orchestration-cluster.core-settings.configuration.properties",
+		],
+	},
+	{
+		question: "How do I write automated tests for a BPMN process with Camunda Process Test?",
+		targets: [
+			"apis-tools.testing.getting-started",
+			"components.best-practices.development.testing-process-definitions",
+		],
+	},
+	{
+		question: "How do I filter a list of objects by a property in FEEL?",
+		targets: [
+			"components.modeler.feel.language-guide.feel-context-expressions",
+			"components.modeler.feel.language-guide.feel-list-expressions",
+		],
+		knownMiss:
+			"ranks 4th: pages that share more of the question's words outrank the page the MCP returns first",
+	},
+	{
+		question: "How do I handle a BPMN error thrown by a job worker with an error boundary event?",
+		targets: ["apis-tools.python-sdk.job-workers", "components.modeler.bpmn.error-events"],
+	},
+	{
+		question: "How do I give an AI agent tools in an ad-hoc sub-process?",
+		targets: [
+			"components.agentic-orchestration.add-tool-to-ai-agent",
+			"components.connectors.out-of-the-box-connectors.agentic-ai-aiagent-task-example",
+		],
+	},
+	{
+		question: "What is the maximum size of process variables in Camunda 8?",
+		targets: [
+			"components.concepts.variables",
+			"components.best-practices.architecture.sizing-your-environment",
+		],
+		knownMiss:
+			"ranks 5th: pages that share more of the question's words outrank the page the MCP returns first",
+	},
+	{
+		question: "How do I upgrade the Camunda Helm chart from 8.8 to 8.9?",
+		targets: ["self-managed.upgrade"],
+	},
+	{
+		question: "What is the difference between a call activity and an embedded sub-process?",
+		targets: ["components.modeler.bpmn.call-activities", "components.concepts.variables"],
+		knownMiss:
+			"ranks 17th: pages that share more of the question's words outrank the page the MCP returns first",
+	},
+	{
+		question: "How do I trigger a process with the inbound webhook connector?",
+		targets: [
+			"components.connectors.protocol.http-webhook",
+			"components.connectors.out-of-the-box-connectors.databricks.databricks-ai-fraud-detection",
+		],
+	},
+	{
+		question: "How do I run a multi-instance task in parallel over a collection?",
+		targets: ["components.modeler.bpmn.multi-instance", "components.concepts.workflow-patterns"],
+	},
+]
+
 function matches(chunkId: string, target: string): boolean {
 	return chunkId === target || chunkId.startsWith(`${target}.`) || chunkId.startsWith(`${target}-`)
 }
@@ -151,6 +373,8 @@ function answers({ question, targets }: Case): boolean {
 describe.each([
 	["questions of the MCP comparison", MCP_COMPARISON],
 	["held-out questions", HELD_OUT],
+	["questions for the added areas", NEW_AREAS],
+	["questions labelled by the MCP's pages", MCP_LABELLED],
 ])("retrieval: %s", (_, cases) => {
 	// Separate from the ranking tests, so a renamed section fails here and cannot pass as a
 	// known miss.

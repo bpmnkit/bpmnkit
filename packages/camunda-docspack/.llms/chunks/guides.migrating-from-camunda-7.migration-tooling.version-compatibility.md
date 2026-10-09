@@ -1,0 +1,18 @@
+# Version compatibility
+
+The version compatibility matrix for comparing supported Camunda 7, Camunda 8 versions, and Migration Tooling versions.
+
+Each version of the Migration Tooling is bound to a specific version of Camunda 7 and 8.
+
+Camunda only recommends and supports these combinations:
+
+| Migration Tooling Version | Camunda 7 Version | Camunda 8 Version | Support Status           |
+| :------------------------ | :---------------- | :---------------- | :----------------------- |
+| `0.1.x` \*                | `7.24.x`          | `8.8.x`           | 🔴 **End of Life (EOL)** |
+| `0.2.x`                   | `7.24.x`          | `8.8.x`           | ✅ **Supported**         |
+| `0.3.x`                   | `7.24.x`          | `8.9.x`           | ✅ **Supported**         |
+
+\* Data Migrator only. Code Conversion and Diagram Converter were added to the Migration Tooling in version 0.2.0.
+
+---
+Source: https://docs.camunda.io/docs/next/guides/migrating-from-camunda-7/migration-tooling/version-compatibility
