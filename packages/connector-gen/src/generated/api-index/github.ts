@@ -939,6 +939,7 @@ const service: ApiService = {"id":"github","name":"GitHub REST API","baseUrl":"h
 	{"method":"GET","path":"/repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers","summary":"Get all requested reviewers for a pull request"},
 	{"method":"POST","path":"/repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers","summary":"Request reviewers for a pull request","body":["reviewers","team_reviewers"]},
 	{"method":"DELETE","path":"/repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers","summary":"Remove requested reviewers from a pull request","body":["reviewers*","team_reviewers"]},
+	{"method":"POST","path":"/repos/{owner}/{repo}/pulls/{pull_number}/requested_reviewers/rerequest","summary":"Rerequest reviewers for a pull request","body":["reviewers","team_reviewers"]},
 	{"method":"GET","path":"/repos/{owner}/{repo}/pulls/{pull_number}/reviews","summary":"List reviews for a pull request","query":["per_page","page"]},
 	{"method":"POST","path":"/repos/{owner}/{repo}/pulls/{pull_number}/reviews","summary":"Create a review for a pull request","body":["body","commit_id","event","comments"]},
 	{"method":"GET","path":"/repos/{owner}/{repo}/pulls/{pull_number}/reviews/{review_id}","summary":"Get a review for a pull request"},
