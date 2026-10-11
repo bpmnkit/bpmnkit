@@ -2,7 +2,7 @@
 
 Learn more about backups with the Orchestration Cluster.
 
-When running an orchestration cluster with [secondary storage](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties#secondary-storage), you must configure a snapshot repository in your chosen database:
+When running an orchestration cluster with [secondary storage](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties#data---secondary-storage), you must configure a snapshot repository in your chosen database:
 
 - [Elasticsearch snapshot repository](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html)
 - [OpenSearch snapshot repository](https://docs.opensearch.org/docs/latest/tuning-your-cluster/availability-and-recovery/snapshots/snapshot-restore/)

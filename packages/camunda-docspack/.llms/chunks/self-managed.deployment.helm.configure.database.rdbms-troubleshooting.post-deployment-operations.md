@@ -18,7 +18,7 @@ kubectl patch secret camunda-db-secret \
 3. Restart the Orchestration Cluster pods:
 
 ```bash
-kubectl rollout restart deployment/camunda-orchestration -n camunda
+kubectl rollout restart statefulset/camunda-zeebe -n camunda
 ```
 
 ### JDBC driver updates

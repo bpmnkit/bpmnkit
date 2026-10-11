@@ -6,6 +6,8 @@ Keep the Orchestration Cluster running in recovery mode while you restore the sn
 
 #### 1. Restore templates
 
+The Orchestration Cluster is already running in recovery mode, so you don't need to start Camunda 8 for this step. Skip the start instructions below and confirm that the index templates exist.
+
 **Note**
 This step is only required for restoring an Elasticsearch/OpenSearch snapshot on a fresh cluster.
 

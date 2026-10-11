@@ -1,6 +1,6 @@
 # History cleanup — Process data
 
-The age of process instance data is determined by the `endTime` field of each process instance. Running instances are never cleaned up.
+The age of process instance data is determined by the `endDate` field of each process instance. Running instances are never cleaned up.
 
 To enable the cleanup of process instance data, the `historyCleanup.processDataCleanup.enabled` property needs to be set to `true`.
 

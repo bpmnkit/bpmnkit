@@ -5,7 +5,7 @@
 Search Orchestration Cluster logs for exporter startup:
 
 ```bash
-kubectl -n camunda logs deploy/orchestration | grep -E "RdbmsExporter|RDBMS Exporter"
+kubectl -n camunda logs statefulset/camunda-zeebe | grep -E "RdbmsExporter|RDBMS Exporter"
 ```
 
 Successful startup includes lines similar to:

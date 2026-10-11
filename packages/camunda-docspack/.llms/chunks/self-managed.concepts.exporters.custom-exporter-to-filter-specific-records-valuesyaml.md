@@ -1,11 +1,9 @@
 # Camunda exporters — Custom exporter to filter specific records — valuesYaml
 
 ```yaml
-        zeebe:
-        broker:
-            experimental:
-            features:
-                enableMessageBodyOnExpired: true
+        camunda:
+          processing:
+            enable-message-body-on-expired: true
         ```
 
         

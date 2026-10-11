@@ -12,11 +12,15 @@ Develop, test, and rehearse these procedures in a non-production environment bef
 
 In a [dual-region](https://docs.camunda.io/docs/next/self-managed/deployment/helm/operational-tasks/dual-region-ops) setup, losing a region costs the Zeebe quorum. Processing stops, and the failover procedure exists to restore it. That procedure removes the lost brokers, disables the exporter to the lost region, and later restores secondary storage from a snapshot.
 
-With three or more zones and no zone holding half the replicas or more, none of that applies. Every partition keeps a majority of its replicas. Zeebe keeps processing, and you need no Zeebe action to restore service. The [dry run](#1-confirm-the-quorum-is-intact) confirms this before you act. The failover procedure mostly reports. It only acts on the database writer, and only when the writer was in the lost region.
+With three or more zones and no zone holding half the replicas or more, none of that applies. Every partition keeps a majority of its replicas. Zeebe continues processing without operator intervention. If a partition's leader was in the lost region, that partition briefly pauses while a new leader is elected.
+
+First, use the [dry run](#1-confirm-the-quorum-is-intact) to check whether the surviving replicas retain quorum. If they do, Zeebe can continue processing without manual recovery. If the failed region also hosted the database writer, [promote a surviving database instance](#2-promote-the-database-writer-if-needed) so exporting can resume. If the writer is still available, no database failover is needed.
+
+Secondary-storage recovery may affect processing throughput, depending on your flow-control configuration and available broker disk space. See [processing during secondary-storage recovery](https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/multi-region-rdbms-region-loss#processing-during-secondary-storage-recovery).
 
 | Step                             | Dual-region                             | Multi-Region RDBMS                              |
 | :------------------------------- | :-------------------------------------- | :---------------------------------------------- |
-| Restore processing               | Force-remove the lost brokers           | Nothing, processing never stopped               |
+| Restore processing               | Force-remove the lost brokers           | No operator action required.                    |
 | Secondary storage after failover | Disable the exporter to the lost region | Nothing, there is one exporter and one database |
 | Promote the database             | n/a                                     | Only if the writer was in the lost region       |
 | Remove the lost zone             | Same step as restoring processing       | Recommended, not needed for quorum              |

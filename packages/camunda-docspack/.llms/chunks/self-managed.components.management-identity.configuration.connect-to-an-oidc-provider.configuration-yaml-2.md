@@ -7,9 +7,9 @@ camunda:
     baseUrl: <IDENTITY_URL>
     authUrl: https://login.microsoftonline.com/<Microsoft Entra tenant ID>/v2.0
     tokenUrl: https://login.microsoftonline.com/<Microsoft Entra tenant ID>/v2.0
-    clientId: <Client ID from Step 2>
-    clientSecret: <Client secret from Step 5>
-    audience: <Client ID from Step 2>
+    clientId: <Client ID from Step 3>
+    clientSecret: <Client secret from Step 6>
+    audience: <Client ID from Step 3>
 identity:
   initialClaimName: <Initial claim name if not using the default "oid">
   initialClaimValue: <Initial claim value>

@@ -35,7 +35,7 @@ Secondary storage is configurable. For backend trade-offs and production guidanc
 
 Components within the Orchestration Cluster communicate seamlessly, particularly:
 
-- **Zeebe brokers** exchange data over gRPC endpoints for efficient inter-broker communication.
+- **Zeebe brokers** exchange data over the internal API (port 26502) for efficient inter-broker communication.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/reference-architecture/manual

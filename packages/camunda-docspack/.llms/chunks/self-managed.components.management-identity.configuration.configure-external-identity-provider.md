@@ -17,7 +17,7 @@ If you deploy Camunda 8 Self-Managed with Helm, use the [Helm chart guide for co
 
 2.  Click **Administrator Console** and log in using the Keycloak administrator credentials.
     - The default administrator username is `admin`.
-    - When deploying Camunda 8 with [Helm charts](https://docs.camunda.io/docs/next/self-managed/setup/overview), you can extract the password as detailed in [secrets extraction](https://docs.camunda.io/docs/next/self-managed/upgrade/helm/index#secrets-extraction).
+    - When deploying Camunda 8 with [Helm charts](https://docs.camunda.io/docs/next/self-managed/setup/overview), the Keycloak operator stores the administrator credentials in the `keycloak-initial-admin` secret. Extract the password with `kubectl get secret keycloak-initial-admin --namespace <namespace> -o jsonpath='{.data.password}' | base64 -d`. For details, see [deploy Keycloak and connect Camunda](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/authentication-and-authorization/internal-keycloak#deploy-keycloak-and-connect-camunda).
     - Using the example [Docker Compose](https://docs.camunda.io/docs/next/self-managed/quickstart/developer-quickstart/docker-compose) setup, the password is set via `KEYCLOAK_ADMIN_PASSWORD` environment variable and is `admin` per default.
 
 3.  Select the realm you are using with Camunda 8. By default, this is **Camunda-platform**.

@@ -7,14 +7,14 @@ The S3 bucket is set up following best practices, including encryption, logging,
 
 #### Set up the bucket module
 
-In the parent directory where your other modules reside (`clusters` and `peering`), navigate to the directory called `backup_bucket` for the S3 configuration:
+From the `peering` directory, navigate to the sibling directory called `backup_bucket` for the S3 configuration:
 
 ```bash
-ls
+ls ..
 # Example output:
 # clusters  peering backup_bucket
 
-cd backup_bucket
+cd ../backup_bucket
 ```
 
 We'll re-use the previously configured S3 bucket to store the state of the backup bucket configuration.
@@ -67,7 +67,7 @@ The `BACKUP_BUCKET_REGION` will define the region of the bucket, you can pick on
                   -var backup_bucket_region="$BACKUP_BUCKET_REGION"
    ```
 
-1. After reviewing the execution plan, apply the configuration to create the VPC peering connection:
+1. After reviewing the execution plan, apply the configuration to create the S3 backup bucket:
 
    ```bash
    terraform apply backup-bucket.plan     # apply the creation

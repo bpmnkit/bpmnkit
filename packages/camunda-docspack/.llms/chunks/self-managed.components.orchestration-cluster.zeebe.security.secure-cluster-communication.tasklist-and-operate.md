@@ -1,6 +1,6 @@
 # Secure cluster communication — Tasklist and Operate
 
-Using the same set of configuration properties, you can configure Tasklist and Operate to enable TLS-secured connectivity within a Camunda 8 cluster. Refer to the documentation on [Tasklist configuration](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/tasklist/tasklist-configuration#intra-cluster-secure-connection) and [Operate configuration](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/operate/operate-configuration#intra-cluster-secure-connection) for additional details.
+Using the same set of configuration properties, you can configure Tasklist and Operate to enable TLS-secured connectivity within a Camunda 8 cluster. Refer to the documentation on [Tasklist configuration](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/tasklist/tasklist-configuration#intra-cluster-secure-connection) and [Operate configuration](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/operate/operate-configuration) for additional details.
 
 
 ## How it works

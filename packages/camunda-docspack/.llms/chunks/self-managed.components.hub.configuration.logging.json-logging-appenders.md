@@ -1,10 +1,10 @@
 # Logging — JSON logging appenders
 
-| Appender           | Description                                          | Enable / Variable                                                                 |
-| ------------------ | ---------------------------------------------------- | --------------------------------------------------------------------------------- |
-| Console            | Standard text output.                                | `CAMUNDA_HUB_LOG_APPENDER=Console`                                                |
-| Stackdriver (JSON) | JSON output for Google Cloud / Stackdriver.          | `CAMUNDA_HUB_LOG_APPENDER=Stackdriver`                                            |
-| RollingFile        | Writes logs to a rotating file, disabled by default. | `CAMUNDA_LOG_FILE_APPENDER_ENABLED=true` + `CAMUNDA_HUB_LOG_APPENDER=RollingFile` |
+| Appender           | Description                                                                                           | Enable / Variable                        |
+| ------------------ | ----------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| Console            | Standard text output.                                                                                 | `CAMUNDA_HUB_LOG_APPENDER=Console`       |
+| Stackdriver (JSON) | JSON output for Google Cloud / Stackdriver.                                                           | `CAMUNDA_HUB_LOG_APPENDER=Stackdriver`   |
+| RollingFile        | Writes logs to a rotating file in addition to the Console or Stackdriver output. Disabled by default. | `CAMUNDA_LOG_FILE_APPENDER_ENABLED=true` |
 
 #### JSON structure
 

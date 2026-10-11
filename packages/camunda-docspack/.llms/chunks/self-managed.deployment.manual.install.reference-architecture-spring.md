@@ -3,8 +3,8 @@
 ```yaml
 camunda:
   data:
-    type: elasticsearch|opensearch # defaults to elasticsearch
     secondary-storage:
+      type: elasticsearch|opensearch # defaults to elasticsearch
       # Elasticsearch
       elasticsearch:
         url: http://localhost:9200

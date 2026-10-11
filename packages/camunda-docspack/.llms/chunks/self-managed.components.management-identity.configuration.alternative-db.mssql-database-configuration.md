@@ -19,7 +19,7 @@ JAVA_TOOL_OPTIONS=$JAVA_OPTS
 identity:
   externalDatabase:
     enabled: true
-  # These three configuration options are added so that spring knows to connect to oracledb using it's client library
+  # These configuration options are added so that Spring knows how to connect to SQL Server
   env:
     - name: SPRING_DATASOURCE_URL
       value: "jdbc:sqlserver://${IDENTITY_DATABASE_HOST:}:${IDENTITY_DATABASE_PORT:};databaseName=${IDENTITY_DATABASE_NAME:};encrypt=true;hostNameInCertificate={CACERT_/CN};trustServerCertificate=false"
@@ -32,11 +32,11 @@ identity:
   # Extra volumes are mounted for any TLS certs necessary for the database:
   extraVolumeMounts:
     - name: "keystore-secret"
-      secret:
-        secretName: "keystore-secret"
+      mountPath: "/usr/local/certificates"
   extraVolumes:
     - name: "keystore-secret"
-      mountPath: "/usr/local/certificates"
+      secret:
+        secretName: "keystore-secret"
 ```
 
 ### applicationYaml
@@ -46,7 +46,7 @@ spring:
   datasource:
     url: jdbc:sqlserver://${IDENTITY_DATABASE_HOST:}:${IDENTITY_DATABASE_PORT:};databaseName=${IDENTITY_DATABASE_NAME:};encrypt=true;hostNameInCertificate={CACERT_/CN};trustServerCertificate=false
     username: user
-    password: AStrongPassword
+    password: <password>
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
   jpa:
     database: sql_server

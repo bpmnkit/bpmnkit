@@ -15,7 +15,7 @@ WHERE table_schema = 'public';
 3. Query the database to confirm the instance was recorded:
 
 ```sql
-SELECT * FROM process_instances;
+SELECT * FROM process_instance;
 ```
 
 4. Review logs for successful initialization:

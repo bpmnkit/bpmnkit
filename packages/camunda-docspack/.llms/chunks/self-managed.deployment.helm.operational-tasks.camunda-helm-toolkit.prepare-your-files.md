@@ -1,4 +1,4 @@
-# Use the Camunda Helm Toolkit — Prepare your files
+# Prepare Helm upgrades with the Camunda Helm Toolkit — Prepare your files
 
 Provide your own override files, such as the files you pass to Helm with `-f`, rather than the chart's default `values.yaml`.
 

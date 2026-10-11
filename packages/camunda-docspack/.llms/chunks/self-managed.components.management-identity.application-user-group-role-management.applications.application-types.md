@@ -1,6 +1,6 @@
 # Manage applications — Application types
 
-To align with the [OAuth 2.0 standard](https://oauth.net/2/client-types/), Camunda distinguishes between _confidental_ and _public_ clients. Applications are also categorized by usage pattern, using the _M2M_ application type in Identity, for systems to communicate using _confidental_ clients without direct user interaction.
+To align with the [OAuth 2.0 standard](https://oauth.net/2/client-types/), Camunda distinguishes between _confidential_ and _public_ clients. Applications are also categorized by usage pattern, using the _M2M_ application type in Identity, for systems to communicate using _confidential_ clients without direct user interaction.
 
 - Confidential
 - Machine-to-machine (M2M)

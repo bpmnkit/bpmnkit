@@ -13,7 +13,7 @@ A minimum set of permissions is required to gain access to an Amazon EKS cluster
 
 The policy should look as follows and can be restricted further to specific Amazon EKS clusters if required:
 
-```json
+```shell
 cat <<EOF >./policy-eks.json
 {
     "Version": "2012-10-17",

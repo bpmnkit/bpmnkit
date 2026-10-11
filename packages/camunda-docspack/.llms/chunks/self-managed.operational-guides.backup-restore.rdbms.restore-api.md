@@ -4,7 +4,7 @@ Learn how to restore a Camunda 8 Self-Managed backup with the Orchestration Clus
 
 Restore Zeebe partition data through the Orchestration Cluster Restore API without restarting the brokers, when using a relational database management system (RDBMS) as secondary storage.
 
-This page is part of the RDBMS [restore procedure](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/rdbms/restore). To compare it with the legacy Restore Application, see [choosing a restore approach](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/backup-and-restore#choosing-a-restore-approach).
+This page is part of the RDBMS [restore procedure](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/rdbms/restore). To compare it with the legacy Restore Application, see [choosing a restore approach](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/rdbms/restore#choosing-a-restore-approach).
 
 
 ## About the Restore API

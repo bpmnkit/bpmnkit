@@ -8,9 +8,9 @@ camunda:
     authUrl: <AUTH_URL_ENDPOINT>
     tokenUrl: <TOKEN_URL_ENDPOINT>
     jwksUrl: <JWKS_URL>
-    clientId: <Client ID from Step 3>
-    clientSecret: <Client secret from Step 3>
-    audience: <Audience from Step 3>
+    clientId: <Client ID from Step 4>
+    clientSecret: <Client secret from Step 4>
+    audience: <Audience from Step 4>
 identity:
   initialClaimName: <Initial claim name if not using the default "oid">
   initialClaimValue: <Initial claim value>

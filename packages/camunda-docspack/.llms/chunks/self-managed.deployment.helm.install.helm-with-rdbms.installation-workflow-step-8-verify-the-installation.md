@@ -7,13 +7,13 @@ Check that tables were created and data is being written:
 kubectl port-forward -n camunda svc/postgres 5432:5432
 
 # Connect and verify
-psql -h localhost -U camunda -d camunda -c "SELECT * FROM zeebe_process;"
+psql -h localhost -U camunda -d camunda -c "SELECT COUNT(*) FROM process_instance;"
 ```
 
 Deploy a test process using Web Modeler and verify it appears in the database:
 
 ```sql
-SELECT COUNT(*) FROM process_instances;
+SELECT COUNT(*) FROM process_instance;
 ```
 
 For a full post-deployment checklist, see [validate RDBMS connectivity](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/validate-rdbms).

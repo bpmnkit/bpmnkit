@@ -46,7 +46,7 @@ zeebe.broker.exporters.elasticsearch:
       password: camunda123
 ```
 
-For additional configuration options, see the [common secondary storage configuration](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties#secondary-storage).
+For additional configuration options, see the [common secondary storage configuration](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties#data---secondary-storage).
 
 #### Start the schema manager
 

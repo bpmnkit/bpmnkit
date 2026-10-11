@@ -18,7 +18,7 @@ Later in this guide, we will refer to it as **first cluster**.
 1. Reference each cluster context name and ensure that each cluster's context name matches the corresponding cluster name. If the context name does not match, you will need to rename it to follow this guide.
 
    ```bash reference
-    https://github.com/camunda/camunda-deployment-references/blob/main//generic/openshift/dual-region/procedure/set-cluster-names.sh
+    https://github.com/camunda/camunda-deployment-references/blob/main/generic/openshift/dual-region/procedure/set-cluster-names.sh
    ```
 
 2. The following manifest will create a namespace for the management cluster, enable the [open-cluster-management operator](https://open-cluster-management.io/) and the [associated subscription](https://docs.openshift.com/container-platform/4.17/operators/admin/olm-adding-operators-to-cluster.html#olm-installing-operator-from-operatorhub-using-cli_olm-adding-operators-to-a-cluster).

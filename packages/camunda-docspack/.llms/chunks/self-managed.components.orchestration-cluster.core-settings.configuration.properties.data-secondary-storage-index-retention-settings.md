@@ -5,12 +5,12 @@ Properties such as `camunda.data.secondary-storage.elasticsearch.number-of-shard
 **Note**
 Shards/replicas and template priority overrides are not currently exposed as Helm values. Configure these via environment variables or `application.yaml` properties if supported by your runtime version.
 
-#### Replica count changes (`number-of-replicas` and per-index overrides`)
+#### Replica count changes (`number-of-replicas` and per-index overrides)
 
 - For newer versions (8.8+), changes are applied to existing indices on the next application restart, with settings updated in place.
 - These are also written to the index templates so that newly created indices inherit the updated replica configuration.
 
-#### Shard count changes (`number-of-shards` and per-index overrides`)
+#### Shard count changes (`number-of-shards` and per-index overrides)
 
 - These are only applied to index templates, affecting indices created _after_ the change.
 - Existing indices retain their original shard layout.

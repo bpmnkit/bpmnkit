@@ -13,7 +13,7 @@ changeId=$(curl -sL -X POST 'http://localhost:9600/actuator/cluster/purge' | jq 
 lastChangeId=-1
 while [ ! $changeId -eq $lastChangeId ]; do
   lastChangeId=$(curl -sL 'http://localhost:9600/actuator/cluster' | jq '.lastChange.id')
-  [ $changeId -ge $lastChangeId ] && break
+  [ $lastChangeId -ge $changeId ] && break
   echo "Awaiting last change ID ${lastChangeId} to be equal to purge change ID ${changeId}"
   sleep 1
 done

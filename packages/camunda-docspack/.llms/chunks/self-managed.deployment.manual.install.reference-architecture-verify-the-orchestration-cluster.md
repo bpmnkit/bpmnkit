@@ -27,7 +27,6 @@ curl -u username:password -L 'http://localhost:8080/v2/topology' \
 ```
 
   Example output
-  
 
 ```json
 // amount of brokers, size, partitions etc. depends on your configuration
@@ -66,8 +65,6 @@ curl -u username:password -L 'http://localhost:8080/v2/topology' \
 }
 ```
 
-  
-
 Check the health status of the Orchestration Cluster with the actuator endpoint:
 
 ```bash
@@ -75,7 +72,6 @@ curl localhost:9600/actuator/health
 ```
 
   Example output
-  
 
 ```json
 {

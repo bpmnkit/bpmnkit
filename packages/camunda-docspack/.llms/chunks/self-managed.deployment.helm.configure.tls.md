@@ -13,7 +13,7 @@ Enable TLS for Camunda 8 Self-Managed component connections to datastores using 
 | Camunda components → external OIDC issuer with private CA (Entra, Okta, internal Keycloak) | `global.tls.caBundle`                                                                                                                                                                         |
 | Browser / external client → Ingress / GatewayAPI (UI, gRPC)                                | Standard Kubernetes Ingress TLS — configured via per-component `*.ingress.tls` or `global.gateway.tls`, _not_ `global.tls.caBundle`. See [Ingress configuration](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/ingress/ingress-setup). |
 
-In-cluster pod-to-pod traffic is not covered by this overlay — see [In-cluster transport (service mesh required)](#in-cluster-transport-service-mesh-required).
+In-cluster pod-to-pod traffic isn't covered by this overlay. See [Encrypt in-cluster transport](#in-cluster-transport-service-mesh-required).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/tls

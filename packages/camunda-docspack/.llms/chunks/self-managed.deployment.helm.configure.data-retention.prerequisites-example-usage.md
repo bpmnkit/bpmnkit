@@ -36,14 +36,13 @@ Exporter configuration and full retention examples are documented in [Zeebe Elas
 optimize:
   enabled: true
 
-# Or enable the legacy Zeebe exporter directly:
 orchestration:
+  # Or enable the legacy Zeebe exporter directly:
   exporters:
     zeebe:
       enabled: true
 
-# Zeebe records retention (Elasticsearch/OpenSearch Exporter indices)
-orchestration:
+  # Zeebe records retention (Elasticsearch/OpenSearch Exporter indices)
   retention:
     enabled: true
     minimumAge: 30d

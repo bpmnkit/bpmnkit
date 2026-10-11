@@ -8,10 +8,7 @@ The following resources and configuration options are important to keep in mind 
   identity:
     serviceAccount:
       enabled: false
-  console:
-    serviceAccount:
-      enabled: false
-  webModeler:
+  camundaHub:
     serviceAccount:
       enabled: false
   connectors:

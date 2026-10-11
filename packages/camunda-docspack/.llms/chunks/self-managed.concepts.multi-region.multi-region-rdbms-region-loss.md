@@ -4,7 +4,7 @@ How a Multi-Region RDBMS cluster behaves when a region disappears, how long reco
 
 Learn how a [Multi-Region RDBMS](https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/multi-region-rdbms) cluster behaves when it loses a region, and how it recovers. A region loss is an unplanned change, unlike [growing the cluster](https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/multi-region-rdbms-growth).
 
-Losing one region out of three or more removes that region's replicas of every partition. Under the default `2-2-1` layout, that is one or two replicas. The remaining replicas still form a majority if every declared zone runs and no zone holds half the replicas or more. The cluster then keeps its quorum. Processing resumes without any operator step. Partitions whose leader was in the lost region pause for a Raft re-election and then continue. Partitions led elsewhere continue without interruption.
+With a `2-2-1` replica layout across three regions, each partition has five replicas. Losing one region leaves three or four replicas per partition, preserving quorum as long as every declared zone runs and no zone holds half the replicas or more. Partitions whose leader was in the lost region briefly pause while a new leader is elected; other partitions continue processing. No operator action is needed to restore Zeebe quorum.
 
 **Warning: Two things need attention**
 

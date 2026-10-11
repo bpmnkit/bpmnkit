@@ -11,8 +11,8 @@ Operate and maintain RDBMS secondary storage for manual Camunda 8 installations 
 
 - Use vendor-recommended backup procedures.
 - Backup frequency depends on your RPO (Recovery Point Objective).
-- Database backups capture consistent state (Camunda flushes synchronously).
-- Zeebe exporter position is stored in RDBMS.
+- The exporter writes to the database in batches, so a database backup can lag behind the latest Zeebe state.
+- The exporter stores its last exported position in the RDBMS and resumes from that position after a restore.
 
 **Restore procedure**:
 

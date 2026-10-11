@@ -1,4 +1,4 @@
-# Use the Camunda Helm Toolkit — Keep configuration local
+# Prepare Helm upgrades with the Camunda Helm Toolkit — Keep configuration local
 
 With the local Docker setup above, your YAML is processed by the container on your machine.
 

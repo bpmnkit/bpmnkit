@@ -32,7 +32,11 @@ To create the peering between each cluster’s VPC, you need to gather some info
 
 #### Set up the peering module
 
-In the parent directory where your clusters module reside (`clusters`), navigate to the directory called `peering` which contains the VPC peering configuration:
+From the `clusters` directory, navigate to the sibling directory called `peering`, which contains the VPC peering configuration:
+
+```bash
+cd ../peering
+```
 
 We'll re-use the previously configured S3 bucket to store the state of the peering configuration.
 

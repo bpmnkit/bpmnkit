@@ -28,7 +28,7 @@ Using an RDBMS as secondary storage unlocks three new capabilities not available
 
 **Note**
 
-- The examples in this guide are based on using the following tools: [curl](https://curl.se/), [jq](https://jqlang.org/), and [kubectl](https://kubernetes.io/de/docs/reference/kubectl/).
+- The examples in this guide are based on using the following tools: [curl](https://curl.se/), [jq](https://jqlang.org/), and [kubectl](https://kubernetes.io/docs/reference/kubectl/).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/backup-and-restore

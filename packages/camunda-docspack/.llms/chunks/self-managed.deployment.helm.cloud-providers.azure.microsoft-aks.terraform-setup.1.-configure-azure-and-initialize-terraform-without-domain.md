@@ -10,6 +10,10 @@ https://github.com/camunda/camunda-deployment-references/blob/main/azure/kuberne
 
 This value specifies the Azure Subscription ID in which all infrastructure will be deployed, including the AKS cluster, PostgreSQL Flexible Server, and Key Vault. To retrieve your current subscription ID, you can run the following command:
 
+```bash
+az account show --query "id" -o tsv
+```
+
 ##### terraform_sp_app_id
 
 This is the Application (client) ID of the Azure Service Principal that Terraform uses to configure Role-Based Access Control (RBAC). By providing this ID, Terraform ensures that the Service Principal has the necessary access rights to manage and provision resources within your Azure subscription.

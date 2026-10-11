@@ -20,6 +20,7 @@ Use this table to migrate from legacy `DOCUMENT_*` environment variables to the 
 | `DOCUMENT_STORE_<id>_ENDPOINT`                          | `camunda.document.aws.<id>.endpoint`                 |
 | `DOCUMENT_STORE_<id>_FORCE_PATH_STYLE`                  | `camunda.document.aws.<id>.force-path-style`         |
 | `DOCUMENT_STORE_<id>_CHUNKED_ENCODING_ENABLED`          | `camunda.document.aws.<id>.chunked-encoding-enabled` |
+| `DOCUMENT_STORE_<id>_SUPPORT_LEGACY_MD5`                | `camunda.document.aws.<id>.support-legacy-md5`       |
 
 ### GCP
 

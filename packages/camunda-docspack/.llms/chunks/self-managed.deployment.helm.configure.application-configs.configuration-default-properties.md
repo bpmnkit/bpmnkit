@@ -5,7 +5,7 @@ The `helm template` command can show you the application's default configuration
 - Use this output as a **reference** to discover the right keys and defaults.
 - Only copy the full content into `<componentName>.configuration` if you intentionally want to **replace** the default config (advanced).
 
-Keep the original `values.yaml` unchanged and maintain a separate file with your custom settings. For details, see [Creating your own values files](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/self-managed/deployment/helm/chart-parameters#creating-your-own-values-files). To generate the default configuration, replace `<your-release-name>` with your release name and run:
+Keep the original `values.yaml` unchanged and maintain a separate file with your custom settings. For details, see [Creating your own values files](https://docs.camunda.io/docs/next/self-managed/deployment/helm/chart-parameters#creating-your-own-values-files). To generate the default configuration, replace `<your-release-name>` with your release name and run:
 
 ```bash
 helm template <your-release-name> \

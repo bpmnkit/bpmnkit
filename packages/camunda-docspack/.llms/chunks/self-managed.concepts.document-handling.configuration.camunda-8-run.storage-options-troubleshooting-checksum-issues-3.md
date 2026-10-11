@@ -4,7 +4,7 @@ Deprecated: legacy environment variable equivalents
 
 ```
 DOCUMENT_STORE_LOCAL_CLASS=io.camunda.document.store.localstorage.LocalStorageDocumentStoreProvider
-DOCUMENT_STORE_LOCAL_PATH=/usr/local/camunda/documents
+DOCUMENT_STORE_LOCAL_PATH=/path/to/documents
 DOCUMENT_DEFAULT_STORE_ID=local
 ```
 

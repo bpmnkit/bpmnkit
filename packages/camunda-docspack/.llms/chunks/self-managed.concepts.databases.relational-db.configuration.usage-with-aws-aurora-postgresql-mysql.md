@@ -60,8 +60,6 @@ camunda:
 In addition, you can override the default failoverTimeoutMs (60 seconds) by adding the `failoverTimeoutMs` parameter to
 the JDBC URL: `jdbc:aws-wrapper:postgresql://aurora-host:5432/camunda?wrapperPlugins=failover&failoverTimeoutMs=30000`.
 
-````yaml
-
 The AWS JDBC wrapper JAR is shipped with the Camunda distribution alongside most of the other JDBC drivers. There is no need to provide it separately.
 
 ### Per-physical-tenant credentials on Aurora
@@ -87,7 +85,7 @@ camunda:
             url: jdbc:aws-wrapper:postgresql://aurora-host:5432/camunda?currentSchema=tenant_a_schema
             username: tenant_a_user
             password: tenant-a-secret
-````
+```
 
 For IAM authentication, the same pattern applies with the `iam` wrapper plugin and passwordless database users:
 

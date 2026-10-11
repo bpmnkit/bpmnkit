@@ -6,12 +6,12 @@ Otherwise, you will get a redirection error in Keycloak.
 
 For example:
 
-```
+```yaml
 global:
   identity:
     auth:
-    operate
-      redirectUrl: https://operate.example.com
+      optimize:
+        redirectUrl: https://optimize.example.com
 ```
 
 

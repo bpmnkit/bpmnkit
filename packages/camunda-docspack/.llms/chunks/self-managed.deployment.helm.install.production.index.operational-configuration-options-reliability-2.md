@@ -43,17 +43,7 @@ It is best to store secrets in an external secret manager such as [Vault by Hash
 
 When upgrading the Camunda Helm chart, make sure to read the [upgrade guide](https://docs.camunda.io/docs/next/self-managed/upgrade/components/index) and corresponding new version release notes before upgrading. Perform the upgrade on a test environment first before attempting in production.
 
-The following is an example configuration for the Orchestration Cluster to create persistent storage:
-
-```yaml
-orchestration:
-  extraVolumes:
-    - name: persistent-state
-      emptyDir: {}
-  extraVolumeMounts:
-    - name: persistent-state
-      mountPath: /mount
-```
+The following is an example configuration that mounts an additional volume into the Orchestration Cluster pods. This `emptyDir` volume is ephemeral: Kubernetes deletes its data when a pod is deleted or rescheduled. To keep data after that, use a `persistentVolumeClaim` volume instead.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/production/index

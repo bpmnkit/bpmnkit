@@ -1,6 +1,6 @@
 # Cluster scaling — Scale up brokers — 2. Send scale request to the Zeebe Gateway
 
-Send a POST request to the Zeebe Gateway's management endpoint to add new brokers to the cluster or redistribute partitions. See the [API reference](#api-reference) for details.
+Send a PATCH request to the Zeebe Gateway's management endpoint to add new brokers to the cluster or redistribute partitions. See the [API reference](#api-reference) for details.
 
 If you are running on Kubernetes and haven’t set up Ingress, port-forward to access the Zeebe Gateway on your local machine:
 

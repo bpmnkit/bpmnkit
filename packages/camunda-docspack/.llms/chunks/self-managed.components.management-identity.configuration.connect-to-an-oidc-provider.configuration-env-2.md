@@ -5,9 +5,9 @@
     CAMUNDA_IDENTITY_BASE_URL=<IDENTITY_URL>
     CAMUNDA_IDENTITY_ISSUER=https://login.microsoftonline.com/<Microsoft Entra tenant ID>/v2.0
     CAMUNDA_IDENTITY_ISSUER_BACKEND_URL=https://login.microsoftonline.com/<Microsoft Entra tenant ID>/v2.0
-    CAMUNDA_IDENTITY_CLIENT_ID=<Client ID from Step 2>
-    CAMUNDA_IDENTITY_CLIENT_SECRET=<Client secret from Step 5>
-    CAMUNDA_IDENTITY_AUDIENCE=<Client ID from Step 2>
+    CAMUNDA_IDENTITY_CLIENT_ID=<Client ID from Step 3>
+    CAMUNDA_IDENTITY_CLIENT_SECRET=<Client secret from Step 6>
+    CAMUNDA_IDENTITY_AUDIENCE=<Client ID from Step 3>
     IDENTITY_INITIAL_CLAIM_NAME=<Initial claim name if not using the default "oid">
     IDENTITY_INITIAL_CLAIM_VALUE=<Initial claim value>
     SPRING_PROFILES_ACTIVE=oidc

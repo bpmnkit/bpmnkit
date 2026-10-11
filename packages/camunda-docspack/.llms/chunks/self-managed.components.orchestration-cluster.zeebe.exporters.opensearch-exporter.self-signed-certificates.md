@@ -41,7 +41,7 @@ In this case, it is recommended to create a new custom trust store based on the 
     - `javax.net.ssl.trustStorePassword`: set to your trust store password.
 
     The following example uses a trust store location of `/tmp/zeebeTrustStore.jks`, and a password of `changeme`. When using the official distribution
-    (whether Docker image or the bundled shell scripts), these propertiescan be provided using the following environment variable:
+    (whether Docker image or the bundled shell scripts), these properties can be provided using the following environment variable:
 
     ```sh
     JAVA_OPTS="-Djavax.net.ssl.trustStore=/tmp/zeebeTrustStore.jks -Djavax.net.ssl.trustStorePassword=changeme ${JAVA_OPTS}"

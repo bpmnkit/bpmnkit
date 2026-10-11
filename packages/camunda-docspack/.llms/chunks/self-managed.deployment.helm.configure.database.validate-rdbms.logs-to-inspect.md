@@ -29,8 +29,7 @@
 Fetch logs:
 
 ```bash
-kubectl -n camunda logs deploy/orchestration
-kubectl -n camunda logs statefulset/zeebe-broker-0
+kubectl -n camunda logs statefulset/camunda-zeebe
 ```
 
 If logs contain connection, driver, or authentication stack traces, the application typically fails fast and does not reach full readiness.

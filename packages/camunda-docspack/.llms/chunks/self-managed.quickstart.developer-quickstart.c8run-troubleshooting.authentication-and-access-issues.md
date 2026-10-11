@@ -57,7 +57,7 @@
 
    ```powershell
    $pair = "demo:demo"
-   bytes = [System.Text.Encoding]::ASCII.GetBytes($pair)
+   $bytes = [System.Text.Encoding]::ASCII.GetBytes($pair)
    $base64 = [System.Convert]::ToBase64String($bytes)
    Invoke-WebRequest -Uri http://localhost:8080/v2/topology -Headers @{Authorization="Basic $base64"}
    ```

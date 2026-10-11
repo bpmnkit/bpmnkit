@@ -10,7 +10,7 @@ This is the default authentication method for all installation options: [Camunda
   
 ### env
 
-```yaml
+```shell
 CAMUNDA_SECURITY_AUTHENTICATION_METHOD=basic
 ```
   
@@ -25,7 +25,10 @@ camunda.security.authentication.method: basic
 ### helm
 
 ```yaml
-orchestration.security.authentication.method=basic
+orchestration:
+  security:
+    authentication:
+      method: basic
 ```
   
 

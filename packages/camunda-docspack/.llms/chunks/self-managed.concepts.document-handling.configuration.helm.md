@@ -26,7 +26,7 @@ To change the storage to **Google Cloud Platform**, **AWS S3**, or **Azure Blob 
 
 The following `values.yaml` example shows the legacy configuration format. It generates deprecated `DOCUMENT_*` environment variables that are bridged to `camunda.document.*` properties at runtime. This approach still works but is deprecated. To use the new unified format instead, see [using the unified configuration format](#using-the-unified-configuration-format).
 
-The example below represents part of the [default Helm chart values](https://github.com/camunda/camunda-platform-helm/blob/main/charts/camunda-platform-8.7/values.yaml) and shows the fields you need to change to enable the storage type of your preference.
+The example below represents part of the [default Helm chart values](https://github.com/camunda/camunda-platform-helm/blob/main/charts/camunda-platform-8.10/values.yaml) and shows the fields you need to change to enable the storage type of your preference.
 
 **Note**
 Azure Blob Storage configuration differs from AWS and GCP. Only the connection string secret is managed in `values.yaml` under `global.documentStore.type.azure`. All other Azure configuration (container name, class, endpoint, etc.) must be provided via [`extraConfiguration`](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/application-configs). See the [Azure Blob Storage configuration](#azure-blob-storage-configuration) section below for details.

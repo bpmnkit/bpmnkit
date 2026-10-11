@@ -13,7 +13,7 @@ In this context:
 - [Primary storage](https://docs.camunda.io/docs/next/reference/glossary#primary-storage) is the broker-managed store for workflow execution state management.
 - [Secondary storage](https://docs.camunda.io/docs/next/reference/glossary#secondary-storage) is an external store used for indexing, querying, analytics, and retention.
 
-For a deeper conceptual comparison, see [understanding primary vs secondary storage](https://docs.camunda.io/docs/next/self-managed/concepts/secondary-storage/no-secondary-storage#about-this-mode).
+For a deeper conceptual comparison, see [understanding primary vs secondary storage](https://docs.camunda.io/docs/next/self-managed/concepts/secondary-storage/index#about-secondary-storage).
 
 ```mermaid
 graph LR
