@@ -17,6 +17,18 @@
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Grep|Glob|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/docspack-nudge.mjs\" 2>/dev/null || true",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   }
 }
