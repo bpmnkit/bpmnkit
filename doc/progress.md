@@ -1,5 +1,17 @@
 # Progress
 
+## 2026-10-13 — docspack 1.5 repo recipe and a leaner CLAUDE.md
+
+- `docspack` dev dependency bumped to `^1.5.0`; `docspack agent install --recipe repo` added the
+  marked block to `CLAUDE.md` and `AGENTS.md`, the `docspack` and `docspack-repo` skills under
+  `.claude/skills/`, and SessionStart hooks (`sync`, `index --repo`) in `.claude/settings.json`.
+- `scripts/docspack-nudge.mjs` (+ test): a PreToolUse hook that points broad greps and globs over
+  `packages/`, `apps/`, `plugins-*` and the docs at `docspack recall`.
+- `CLAUDE.md` cut from ~3,900 to ~1,350 tokens: the generic guidelines became one short rules list,
+  the project structure now lists the real apps (the old one named `backend`/`frontend`/`shared`
+  and React + Carbon, none of which exist here), and `doc/documentation.md` (never created) left
+  the docs table. The token table and full design-system rules moved verbatim to `doc/brand-tokens.md`.
+
 ## 2026-10-09 — camunda-docspack: the Modeler, the guides and the reference
 
 - A comparison with the Camunda Docs MCP found areas with no chunk at all: DMN, forms, element
