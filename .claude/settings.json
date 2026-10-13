@@ -1,0 +1,22 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx --no-install docspack sync --quiet >/dev/null 2>&1 || true"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx --no-install docspack index --repo --quiet >/dev/null 2>&1 || true"
+          }
+        ]
+      }
+    ]
+  }
+}
