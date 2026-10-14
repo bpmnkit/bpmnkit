@@ -15,7 +15,7 @@ For document-store backends, cluster data is stored in indices governed by a sch
 {cluster-index-prefix}-{legacy-prefix}-{datatype}-{schemaversion}_[{date}]
 ```
 
-- `cluster-index-prefix` – Prefix for index names (default: ``).
+- `cluster-index-prefix` – Prefix for index names. It's empty by default and set with `camunda.data.secondary-storage.{elasticsearch|opensearch}.index-prefix`.
 - `legacy-prefix` – Legacy component prefix (e.g. `operate`, `tasklist`, `camunda`).
 - `datatype` – Identifies the type of data stored (e.g., `user`, `variable`, `task`).
 - `schemaversion` – Version of the index schema.
@@ -23,7 +23,7 @@ For document-store backends, cluster data is stored in indices governed by a sch
 
 > The version in the index name is specific to the schema and may differ from the cluster software version. See [data retention](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/concepts/data-retention).
 
-For configuration details related to document-store secondary storage, see [Camunda Exporter](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/exporters/camunda-exporter).
+For configuration details related to document-store secondary storage, see the [secondary storage properties](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties#data---secondary-storage) and the [Camunda Exporter](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/exporters/camunda-exporter) options.
 
 From 8.8 onwards, no schema migrations are required when upgrading the orchestration cluster.
 

@@ -54,10 +54,13 @@ cat nodeC.pem ca.pem > chainNodeC.pem
 5. You can now configure each node using its respective final `chainNode*.pem` file and `node*.key` file. For example, if node `A` was a broker:
 
 ```yaml
-security:
-  enabled: true
-  certificateChainPath: chainNodeA.pem
-  privateKeyPath: nodeA.key
+camunda:
+  security:
+    transport-layer-security:
+      cluster:
+        enabled: true
+        certificate-chain-path: chainNodeA.pem
+        certificate-private-key-path: nodeA.key
 ```
 
 ---

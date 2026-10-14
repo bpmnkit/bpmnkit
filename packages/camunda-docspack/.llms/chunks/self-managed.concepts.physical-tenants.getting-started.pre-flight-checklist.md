@@ -11,7 +11,7 @@ Confirm each of these before you start. Every item here has caused a real setup 
 
 Two behaviors that are easy to miss on a first rollout
 
-- **Table and index prefixes are compared case-insensitively.** Configuring `riskprod_` for one tenant and `RISKPROD_` for another is treated as the same storage location and fails startup, not two distinct ones. Pick prefixes that are unique regardless of case.
+- **RDBMS table prefixes are compared case-insensitively.** Configuring `riskprod_` for one tenant and `RISKPROD_` for another is treated as the same storage location and fails startup, not two distinct ones. Pick table prefixes that are unique regardless of case.
 - **Elasticsearch, OpenSearch, and custom exporters need explicit per-tenant assignment.** Only the built-in Camunda exporter and the RDBMS exporter merge their configuration from the root automatically, based on the tenant's configured secondary storage type. The Elasticsearch and OpenSearch exporters are treated as custom exporters: like any custom exporter loaded from a JAR, they need a full configuration block per tenant, and that tenant must list them under its own exporter assignment configuration rather than inheriting from the root. If your secondary storage is RDBMS and you don't use any custom exporters, skip this.
 
 Deploying from Desktop Modeler?

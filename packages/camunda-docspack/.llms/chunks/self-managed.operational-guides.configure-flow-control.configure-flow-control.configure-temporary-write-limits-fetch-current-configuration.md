@@ -1,6 +1,6 @@
 # Camunda components flow control configuration — Configure temporary write limits — Fetch current configuration
 
-The backup API can be reached via the `/actuator` management port, which is 9600 by default. The configured context path does not apply to the management port.
+The flow control API can be reached via the `/actuator` management port, which is 9600 by default. The configured context path does not apply to the management port.
 
 The following endpoint can be used to fetch the flow control configuration:
 
@@ -14,7 +14,7 @@ With multiple [Physical Tenants](https://docs.camunda.io/docs/next/self-managed/
 
 | Code             | Description                                                             |
 | ---------------- | ----------------------------------------------------------------------- |
-| 200 Accepted     | The flow configuration was retrieved successfully.                      |
+| 200 OK           | The flow configuration was retrieved successfully.                      |
 | 400 Bad Request  | Indicates issues with the request.                                      |
 | 500 Server Error | All other errors. Refer to the returned error message for more details. |
 

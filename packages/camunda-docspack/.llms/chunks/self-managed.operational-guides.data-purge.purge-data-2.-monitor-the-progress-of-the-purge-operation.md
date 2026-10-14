@@ -8,7 +8,7 @@ You can monitor the progress of the operation by sending a `GET` request to the 
 curl --request GET 'http://localhost:9600/actuator/cluster'
 ```
 
-When the scaling has completed, the `changeId` from the previous response will be marked as completed:
+When the purge has completed, the `changeId` from the previous response will be marked as completed:
 
 ```json
 {

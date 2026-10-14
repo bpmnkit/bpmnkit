@@ -1,6 +1,6 @@
 # Deploy an EKS cluster with eksctl — 2. EKS cluster — Check existing StorageClasses
 
-We recommend using **gp3** volumes with Camunda 8 (see [volume performance](https://docs.camunda.io/docs/next/self-managed/deployment/helm/cloud-providers/amazon/amazon-eks/amazon-eks#volume-performance)). It may be necessary to create the `gp3` StorageClass, as the default configuration only includes **gp2**. For detailed information, refer to the [AWS documentation](https://aws.amazon.com/ebs/general-purpose/).
+We recommend using **gp3** volumes with Camunda 8 (see [volume performance](https://docs.camunda.io/docs/next/self-managed/reference-architecture/kubernetes#amazon-eks-1)). It may be necessary to create the `gp3` StorageClass, as the default configuration only includes **gp2**. For detailed information, refer to the [AWS documentation](https://aws.amazon.com/ebs/general-purpose/).
 
 **Danger: Reclaim policy**
 Using `reclaimPolicy: Delete` can cause **permanent data loss** if a PVC is deleted. Consider using `Retain` for production. See [troubleshooting](https://docs.camunda.io/docs/next/self-managed/operational-guides/troubleshooting#zeebe-data-loss-after-pvc-deletion) for details.

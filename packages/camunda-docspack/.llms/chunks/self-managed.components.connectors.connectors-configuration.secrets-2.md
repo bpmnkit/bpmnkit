@@ -4,7 +4,7 @@ In the [manual setup](https://docs.camunda.io/docs/next/self-managed/deployment/
 them as environment variables before starting the runtime environment. You can, for example, export them beforehand as follows:
 
 ```bash
-export MY_SECRET='foo'
+export SECRET_MY_SECRET='foo'
 ```
 
 Reference the secret in the connector's input in the prefixed style `{{secrets.MY_SECRET}}`.
@@ -54,9 +54,10 @@ connectors:
 For Docker images, you can add the JAR by using volumes, for example:
 
 ```bash
+# Mount the secret provider JAR and set the gRPC address of Zeebe
 docker run --rm --name=connectors -d \
-  -v $PWD/my-secret-provider-with-dependencies.jar:/opt/app/my-secret-provider-with-dependencies.jar \  # Specify secret provider
-  -e CAMUNDA_CLIENT_ZEEBE_GRPCADDRESS=http://ip.address.of.zeebe:26500 \ # Specify grpc Zeebe address
+  -v $PWD/my-secret-provider-with-dependencies.jar:/opt/app/my-secret-provider-with-dependencies.jar \
+  -e CAMUNDA_CLIENT_GRPCADDRESS=http://ip.address.of.zeebe:26500 \
   camunda/connectors:latest
 ```
 

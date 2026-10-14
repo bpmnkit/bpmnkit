@@ -38,7 +38,17 @@ For other driver sources (e.g., private repositories), adjust the `wget` command
 
 #### Option B: ConfigMap (GitOps-friendly)
 
-Store the driver JAR in a ConfigMap and mount it:
+Store the driver JAR in a ConfigMap and mount it. A ConfigMap can't exceed 1 MiB, so this option only fits small drivers. The Oracle driver in Option A is larger than that limit.
+
+Create the ConfigMap from the JAR file. The command stores the JAR in the `binaryData` field:
+
+```bash
+kubectl create configmap jdbc-drivers \
+  --from-file=driver.jar=<path-to-driver-jar> \
+  -n camunda
+```
+
+For GitOps, commit the equivalent manifest instead. Store the base64-encoded JAR in `binaryData`, not in `data`:
 
 ```yaml
 apiVersion: v1
@@ -46,9 +56,13 @@ kind: ConfigMap
 metadata:
   name: jdbc-drivers
   namespace: camunda
-data:
-  ojdbc.jar: <base64-encoded JAR content>
----
+binaryData:
+  driver.jar: <base64-encoded JAR content>
+```
+
+Then mount the ConfigMap in your `values-rdbms.yaml`:
+
+```yaml
 orchestration:
   extraVolumeMounts:
     - name: jdbcdrivers

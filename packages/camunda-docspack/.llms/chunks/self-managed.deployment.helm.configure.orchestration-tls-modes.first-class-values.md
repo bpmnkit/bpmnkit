@@ -21,10 +21,10 @@ global:
             existingSecretKey: keystore-password # pkcs12 only — keystore password key inside the Secret
         proxyVerify:
           enabled: false
+          sniHost: "" # optional: SNI hostname NGINX presents when verifying the upstream cert (defaults to the Orchestration Service name)
           caSecret:
             secret:
-              existingSecret: "" # Secret holding the CA bundle for NGINX upstream verification
-              existingSecretKey: ca.crt
+              existingSecret: "" # Secret holding the CA bundle for NGINX upstream verification, under the fixed ca.crt key
             namespace: "" # optional: CA Secret namespace (defaults to release namespace)
       grpc:
         enabled: false # gRPC TLS — sets CAMUNDA_API_GRPC_SSL_ENABLED on Orchestration

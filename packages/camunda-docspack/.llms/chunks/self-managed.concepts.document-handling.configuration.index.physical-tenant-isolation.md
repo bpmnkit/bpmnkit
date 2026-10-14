@@ -1,8 +1,8 @@
 # Document handling configuration — Physical Tenant isolation
 
-When running Physical Tenants, each tenant must be assigned a distinct document store location. Camunda validates uniqueness at startup and fails if two tenants resolve to the same `provider, bucket/container, path` tuple.
+When running Physical Tenants, each tenant must be assigned a distinct document store location. Camunda validates uniqueness at startup and fails if two tenants resolve to the same `provider, bucket/container, path` tuple, or if one tenant's path is nested inside another's.
 
-For the per-tenant configuration model, including the root catalog, `assigned` restriction, field-level overrides, and startup collision examples, see [document store isolation](https://docs.camunda.io/docs/next/self-managed/concepts/physical-tenants/configuration-reference#document-store-isolation).
+For the per-tenant configuration model, including the root catalog, `assigned` restriction, field-level overrides, and startup collision examples, see [document store storage](https://docs.camunda.io/docs/next/self-managed/concepts/physical-tenants/storage-isolation#document-store-storage).
 
 
 ## Storage policies

@@ -2,7 +2,7 @@
 
 Operate multiple Optimize instances on a shared Elasticsearch/OpenSearch cluster.
 
-In case you have a large shared Elasticsearch/OpenSearch cluster that you want to operate multiple Optimize instances on that are intended to run in complete isolation from each other, it is required to change the [`*.settings.index.prefix`](https://docs.camunda.io/docs/next/self-managed/components/optimize/configuration/system-configuration#index-settings) setting for each Optimize instance.
+In case you have a large shared Elasticsearch/OpenSearch cluster that you want to operate multiple Optimize instances on that are intended to run in complete isolation from each other, it is required to change the `*.settings.index.prefix` setting ([Elasticsearch](https://docs.camunda.io/docs/next/self-managed/components/optimize/configuration/system-configuration#elasticsearch-index-settings), [OpenSearch](https://docs.camunda.io/docs/next/self-managed/components/optimize/configuration/system-configuration#opensearch-index-settings)) for each Optimize instance.
 
 **Note**
 Although a shared Elasticsearch/OpenSearch cluster setup is possible, it's recommended to operate a dedicated Elasticsearch/OpenSearch cluster per Optimize instance.

@@ -5,7 +5,7 @@
 Check Orchestration Cluster logs for Liquibase initialization:
 
 ```bash
-kubectl -n camunda logs deploy/orchestration | grep -E "Liquibase|MyBatisConfiguration"
+kubectl -n camunda logs statefulset/camunda-zeebe | grep -E "Liquibase|MyBatisConfiguration"
 ```
 
 A successful run includes a line similar to:

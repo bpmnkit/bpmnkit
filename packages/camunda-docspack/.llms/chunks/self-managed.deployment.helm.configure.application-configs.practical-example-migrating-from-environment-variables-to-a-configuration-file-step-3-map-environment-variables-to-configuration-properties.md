@@ -2,9 +2,9 @@
 
 For each environment variable, find the corresponding property in the [Zeebe configuration](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/configuration/broker).
 
-For example, the environment variable `ZEEBE_BROKER_DATA_BACKUP_S3_BUCKETNAME` maps to the property `zeebe.broker.data.backup.s3.bucketName`, documented under [Zeebe S3 Backup](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/configuration/broker#zeebebrokerdatabackups3).
+For example, the environment variable `ZEEBE_BROKER_DATA_BACKUP_S3_BUCKETNAME` maps to the legacy property `zeebe.broker.data.backup.s3.bucketName`. The current name of this property, `camunda.data.primary-storage.backup.s3.bucket-name`, is documented under [Zeebe S3 Backup](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/configuration/broker#camundadataprimary-storagebackups3).
 
-Add the property to the configuration file. Add the `data` section under `zeebe.broker`:
+Add the property to the configuration file. This example keeps the legacy `zeebe.broker` tree used in the previous steps, so add the `data` section under `zeebe.broker`:
 
 ```yaml
 zeebe:

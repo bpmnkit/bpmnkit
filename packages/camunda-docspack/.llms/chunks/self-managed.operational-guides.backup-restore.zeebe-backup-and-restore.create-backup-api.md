@@ -23,7 +23,7 @@ When continuous backups, the backup scheduler, or the checkpoint scheduler are e
 ```shell
 curl --request POST 'http://localhost:9600/actuator/backupRuntime' \
 -H 'Content-Type: application/json' \
--d '{ "backupId": "100" }'
+-d '{ "backupId": 100 }'
 ```
 
 ### Response
@@ -41,7 +41,7 @@ curl --request POST 'http://localhost:9600/actuator/backupRuntime' \
 
 ```json
 {
-  "backupId": 1772011199310,
+  "backupId": 100,
   "message": "A backup with id 100 has been scheduled. Use GET actuator/backups/100 to monitor the status."
 }
 ```

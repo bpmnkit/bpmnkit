@@ -8,7 +8,7 @@
 
 2. Click the **Add application** button located on the top right of the table and a modal will open.
 
-3. Enter a name for your application. In this guide we will use a set of example values. Select the type of your application based on our [guide](https://docs.camunda.io/docs/next/self-managed/components/management-identity/application-user-group-role-management/applications#types-of-applications). Depending on the selected type, you might need to enter at least one redirect URI. Once you have entered the required details, click **Add**:
+3. Enter a name for your application. In this guide we will use a set of example values. Select the type of your application based on our [guide](https://docs.camunda.io/docs/next/self-managed/components/management-identity/application-user-group-role-management/applications#application-types). Depending on the selected type, you might need to enter at least one redirect URI. Once you have entered the required details, click **Add**:
 
    
 

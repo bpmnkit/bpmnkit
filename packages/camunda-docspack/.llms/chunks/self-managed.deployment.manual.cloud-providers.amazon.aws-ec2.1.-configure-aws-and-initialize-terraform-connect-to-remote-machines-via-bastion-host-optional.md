@@ -7,7 +7,7 @@ This guide does not cover the VPN client setup, as it requires specific manual c
 ```sh
 export BASTION_HOST=$(terraform output -raw bastion_ip)
 # retrieves the first IP from the camunda_ips array
-export CAMUNDA_IP=$(tf output -json camunda_ips | jq -r '.[0]')
+export CAMUNDA_IP=$(terraform output -json camunda_ips | jq -r '.[0]')
 
 ssh -J admin@${BASTION_HOST} admin@${CAMUNDA_IP}
 ```

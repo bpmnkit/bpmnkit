@@ -1,4 +1,4 @@
-# Use the Camunda Helm Toolkit — Use the local Web UI
+# Prepare Helm upgrades with the Camunda Helm Toolkit — Use the local Web UI
 
 Start the toolkit in Docker to migrate and validate files through your browser.
 

@@ -21,16 +21,18 @@ this data can be reproduced by replaying past records from the Zeebe log stream,
 be present on all brokers. Zeebe's logstream segments are usually compacted as soon as all exporters have acknowledged the
 records.
 
-Camunda supports different strategies to handle this situation and preventing Zeebe log stream segments from being
+Camunda supports different strategies to handle this situation and prevent Zeebe log stream segments from being
 compacted prematurely.
 The following strategies are supported:
 
 - **LSN replication monitoring:** dynamic monitoring of the replication lag based on the database LSN. This is the most
   preferred strategy and should be used whenever possible with the used database vendor.
+- **Time-based replication monitoring:** monitoring of the replication lag that the primary replica reports. This is
+  less precise than LSN replication monitoring and may lead to less frequent acknowledgements.
 - **Delay backoff replication monitoring:** Adds a static delay to the acknowledgement of records to the broker.
 
 **Note**
-Deferring the logstream compaction with either strategy may drastically increase the disk space usage of the logstream.
+Deferring the logstream compaction with any strategy may drastically increase the disk space usage of the logstream.
 It is recommended to monitor the disk space usage and adjust the disk size or delay limit accordingly.
 
 ---

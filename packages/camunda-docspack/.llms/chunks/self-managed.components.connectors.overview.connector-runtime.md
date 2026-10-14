@@ -1,9 +1,9 @@
 # Overview — Connector runtime
 
-The connector runtime environment can be installed using the supported [deployment options](https://docs.camunda.io/docs/next/self-managed/setup/overview#deployment-options).
+The connector runtime environment can be installed using the supported [deployment options](https://docs.camunda.io/docs/next/self-managed/setup/overview#production-installations).
 
-Currently, we support an installation of connectors with [Docker](https://docs.camunda.io/docs/next/self-managed/deployment/docker/docker#connectors),
-[Docker Compose](https://docs.camunda.io/docs/next/self-managed/quickstart/developer-quickstart/docker-compose), [Helm charts](https://docs.camunda.io/docs/next/self-managed/setup/overview), and the [manual setup](https://docs.camunda.io/docs/next/self-managed/deployment/manual/install#connectors-1).
+Currently, we support an installation of connectors with [Docker](https://docs.camunda.io/docs/next/self-managed/deployment/docker/docker#docker-images-and-configuration-references),
+[Docker Compose](https://docs.camunda.io/docs/next/self-managed/quickstart/developer-quickstart/docker-compose), [Helm charts](https://docs.camunda.io/docs/next/self-managed/setup/overview), and the [manual setup](https://docs.camunda.io/docs/next/self-managed/deployment/manual/install#connectors).
 
 
 ## Connector templates

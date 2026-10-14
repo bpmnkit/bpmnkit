@@ -14,7 +14,7 @@ To upgrade a Zeebe cluster, take the following steps:
 
 This endpoint allows querying the status of the partitions and performing operations to prepare an upgrade.
 
-The endpoint is available under `http://{zeebe-broker}:{zeebe.broker.network.monitoringApi.port}/actuator/partitions` (default port: `9600`).
+The endpoint is available under `http://{zeebe-broker}:{management.server.port}/actuator/partitions` (default port: `9600`).
 
 It is enabled by default. It can be disabled in the configuration by setting:
 

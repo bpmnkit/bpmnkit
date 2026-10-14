@@ -1,7 +1,7 @@
 # Camunda exporters — Custom exporter to filter specific records — envVars
 
 ```sh
-        ZEEBE_BROKER_EXPERIMENTAL_FEATURES_ENABLEMESSAGEBODYONEXPIRED=true
+        CAMUNDA_PROCESSING_ENABLEMESSAGEBODYONEXPIRED=true
         ```
 
 ---

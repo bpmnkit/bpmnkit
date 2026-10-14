@@ -1,7 +1,7 @@
 {
 	"$schema": "https://docspack.dev/schema/v1.json",
 	"name": "@bpmnkit/camunda-docspack",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"documents": [
 		"camunda@8.10"
 	],
@@ -46956,12 +46956,25 @@
 		{
 			"id": "components.hub.organization.users-and-roles",
 			"file": "chunks/components.hub.organization.users-and-roles.md",
-			"tokens": 327,
+			"tokens": 245,
+			"tags": [
+				"components",
+				"hub",
+				"organization",
+				"users-and-roles"
+			],
+			"entities": []
+		},
+		{
+			"id": "components.hub.organization.users-and-roles.manage-users",
+			"file": "chunks/components.hub.organization.users-and-roles.manage-users.md",
+			"tokens": 181,
 			"tags": [
 				"components",
 				"hub",
 				"organization",
 				"users-and-roles",
+				"manage",
 				"users"
 			],
 			"entities": []
@@ -46969,7 +46982,7 @@
 		{
 			"id": "components.hub.organization.users-and-roles.roles-and-permissions",
 			"file": "chunks/components.hub.organization.users-and-roles.roles-and-permissions.md",
-			"tokens": 726,
+			"tokens": 596,
 			"tags": [
 				"components",
 				"hub",
@@ -46981,33 +46994,80 @@
 			"entities": []
 		},
 		{
-			"id": "components.hub.organization.users-and-roles.elevated-workspace-access",
-			"file": "chunks/components.hub.organization.users-and-roles.elevated-workspace-access.md",
-			"tokens": 453,
+			"id": "components.hub.organization.users-and-roles.access-to-organization-resources",
+			"file": "chunks/components.hub.organization.users-and-roles.access-to-organization-resources.md",
+			"tokens": 540,
 			"tags": [
 				"components",
 				"hub",
 				"organization",
 				"users-and-roles",
-				"elevated",
-				"workspace",
-				"access"
+				"access",
+				"resources"
 			],
 			"entities": []
 		},
 		{
-			"id": "components.hub.organization.users-and-roles.user-task-access-restrictions",
-			"file": "chunks/components.hub.organization.users-and-roles.user-task-access-restrictions.md",
-			"tokens": 76,
+			"id": "components.hub.organization.users-and-roles.access-to-runtime-environments",
+			"file": "chunks/components.hub.organization.users-and-roles.access-to-runtime-environments.md",
+			"tokens": 232,
 			"tags": [
 				"components",
 				"hub",
 				"organization",
 				"users-and-roles",
-				"user",
-				"task",
 				"access",
-				"restrictions"
+				"runtime",
+				"environments"
+			],
+			"entities": []
+		},
+		{
+			"id": "components.hub.organization.users-and-roles.manage-users-manage-users-self-managed",
+			"file": "chunks/components.hub.organization.users-and-roles.manage-users-manage-users-self-managed.md",
+			"tokens": 592,
+			"tags": [
+				"components",
+				"hub",
+				"organization",
+				"users-and-roles",
+				"manage",
+				"users",
+				"manage-users-self-managed",
+				"roles",
+				"permissions",
+				"roles-and-permissions-self-managed"
+			],
+			"entities": []
+		},
+		{
+			"id": "components.hub.organization.users-and-roles.access-to-organization-resources-access-to-organization-resources-self-managed",
+			"file": "chunks/components.hub.organization.users-and-roles.access-to-organization-resources-access-to-organization-resources-self-managed.md",
+			"tokens": 617,
+			"tags": [
+				"components",
+				"hub",
+				"organization",
+				"users-and-roles",
+				"access",
+				"resources",
+				"access-to-organization-resources-self-managed"
+			],
+			"entities": []
+		},
+		{
+			"id": "components.hub.organization.users-and-roles.access-to-runtime-environments-access-to-runtime-environments-self-managed",
+			"file": "chunks/components.hub.organization.users-and-roles.access-to-runtime-environments-access-to-runtime-environments-self-managed.md",
+			"tokens": 240,
+			"tags": [
+				"components",
+				"hub",
+				"organization",
+				"users-and-roles",
+				"access",
+				"runtime",
+				"environments",
+				"access-to-runtime-environments-self-managed"
 			],
 			"entities": []
 		},
@@ -73745,7 +73805,7 @@
 		{
 			"id": "self-managed.components.connectors.connectors-configuration.secrets",
 			"file": "chunks/self-managed.components.connectors.connectors-configuration.secrets.md",
-			"tokens": 883,
+			"tokens": 859,
 			"tags": [
 				"self-managed",
 				"components",
@@ -73758,7 +73818,7 @@
 		{
 			"id": "self-managed.components.connectors.connectors-configuration.secrets-2",
 			"file": "chunks/self-managed.components.connectors.connectors-configuration.secrets-2.md",
-			"tokens": 516,
+			"tokens": 521,
 			"tags": [
 				"self-managed",
 				"components",
@@ -74056,7 +74116,7 @@
 		{
 			"id": "self-managed.components.connectors.connectors-configuration.multi-tenancy-outbound-connector-config",
 			"file": "chunks/self-managed.components.connectors.connectors-configuration.multi-tenancy-outbound-connector-config.md",
-			"tokens": 304,
+			"tokens": 302,
 			"tags": [
 				"self-managed",
 				"components",
@@ -74241,7 +74301,7 @@
 		{
 			"id": "self-managed.components.connectors.overview.connector-runtime",
 			"file": "chunks/self-managed.components.connectors.overview.connector-runtime.md",
-			"tokens": 517,
+			"tokens": 518,
 			"tags": [
 				"self-managed",
 				"components",
@@ -75284,7 +75344,7 @@
 		{
 			"id": "self-managed.components.hub.configuration.legacy-cluster-config.envvars-2",
 			"file": "chunks/self-managed.components.hub.configuration.legacy-cluster-config.envvars-2.md",
-			"tokens": 328,
+			"tokens": 344,
 			"tags": [
 				"self-managed",
 				"components",
@@ -75327,7 +75387,7 @@
 		{
 			"id": "self-managed.components.hub.configuration.logging.changing-log-level-at-runtime",
 			"file": "chunks/self-managed.components.hub.configuration.logging.changing-log-level-at-runtime.md",
-			"tokens": 145,
+			"tokens": 187,
 			"tags": [
 				"self-managed",
 				"components",
@@ -75340,7 +75400,8 @@
 				"runtime"
 			],
 			"entities": [
-				"io.camunda"
+				"io.camunda",
+				"management.endpoints.web.base-path"
 			]
 		},
 		{
@@ -75379,7 +75440,7 @@
 		{
 			"id": "self-managed.components.hub.configuration.logging.json-logging-appenders",
 			"file": "chunks/self-managed.components.hub.configuration.logging.json-logging-appenders.md",
-			"tokens": 637,
+			"tokens": 646,
 			"tags": [
 				"self-managed",
 				"components",
@@ -75400,7 +75461,7 @@
 		{
 			"id": "self-managed.components.hub.configuration.logging.pattern-layout",
 			"file": "chunks/self-managed.components.hub.configuration.logging.pattern-layout.md",
-			"tokens": 140,
+			"tokens": 160,
 			"tags": [
 				"self-managed",
 				"components",
@@ -76232,8 +76293,63 @@
 			"entities": []
 		},
 		{
+			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-catalog",
+			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-catalog.md",
+			"tokens": 56,
+			"tags": [
+				"self-managed",
+				"components",
+				"hub",
+				"configuration",
+				"properties",
+				"restapi",
+				"component",
+				"catalog"
+			],
+			"entities": []
+		},
+		{
 			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-application.yaml-15",
 			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-application.yaml-15.md",
+			"tokens": 179,
+			"tags": [
+				"self-managed",
+				"components",
+				"hub",
+				"configuration",
+				"properties",
+				"restapi",
+				"component",
+				"application.yaml"
+			],
+			"entities": [
+				"server.tomcat.max-part-count",
+				"multipart/form-data",
+				"spring.servlet.multipart.max-request-size",
+				"spring.servlet.multipart.max-file-size"
+			]
+		},
+		{
+			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-15",
+			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-15.md",
+			"tokens": 174,
+			"tags": [
+				"self-managed",
+				"components",
+				"hub",
+				"configuration",
+				"properties",
+				"restapi",
+				"component",
+				"env"
+			],
+			"entities": [
+				"multipart/form-data"
+			]
+		},
+		{
+			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-application.yaml-16",
+			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-application.yaml-16.md",
 			"tokens": 566,
 			"tags": [
 				"self-managed",
@@ -76257,8 +76373,8 @@
 			]
 		},
 		{
-			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-15",
-			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-15.md",
+			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-16",
+			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-16.md",
 			"tokens": 826,
 			"tags": [
 				"self-managed",
@@ -76289,8 +76405,8 @@
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-application.yaml-16",
-			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-application.yaml-16.md",
+			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-application.yaml-17",
+			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-application.yaml-17.md",
 			"tokens": 38,
 			"tags": [
 				"self-managed",
@@ -76305,8 +76421,8 @@
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-16",
-			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-16.md",
+			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-17",
+			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-17.md",
 			"tokens": 73,
 			"tags": [
 				"self-managed",
@@ -76338,8 +76454,8 @@
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-application.yaml-17",
-			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-application.yaml-17.md",
+			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-application.yaml-18",
+			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-application.yaml-18.md",
 			"tokens": 192,
 			"tags": [
 				"self-managed",
@@ -76356,8 +76472,8 @@
 			]
 		},
 		{
-			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-17",
-			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-17.md",
+			"id": "self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-18",
+			"file": "chunks/self-managed.components.hub.configuration.properties.configuration-of-the-restapi-component-env-18.md",
 			"tokens": 190,
 			"tags": [
 				"self-managed",
@@ -76574,7 +76690,7 @@
 		{
 			"id": "self-managed.components.hub.troubleshooting.troubleshoot-missing-data.resolution",
 			"file": "chunks/self-managed.components.hub.troubleshooting.troubleshoot-missing-data.resolution.md",
-			"tokens": 62,
+			"tokens": 64,
 			"tags": [
 				"self-managed",
 				"components",
@@ -76838,7 +76954,7 @@
 		{
 			"id": "self-managed.components.management-identity.access-management.access-management-overview",
 			"file": "chunks/self-managed.components.management-identity.access-management.access-management-overview.md",
-			"tokens": 262,
+			"tokens": 261,
 			"tags": [
 				"self-managed",
 				"components",
@@ -76852,7 +76968,7 @@
 		{
 			"id": "self-managed.components.management-identity.access-management.access-management-overview.permissions",
 			"file": "chunks/self-managed.components.management-identity.access-management.access-management-overview.permissions.md",
-			"tokens": 793,
+			"tokens": 805,
 			"tags": [
 				"self-managed",
 				"components",
@@ -76928,7 +77044,7 @@
 		{
 			"id": "self-managed.components.management-identity.application-user-group-role-management.applications.manage-applications",
 			"file": "chunks/self-managed.components.management-identity.application-user-group-role-management.applications.manage-applications.md",
-			"tokens": 222,
+			"tokens": 221,
 			"tags": [
 				"self-managed",
 				"components",
@@ -77064,7 +77180,7 @@
 		{
 			"id": "self-managed.components.management-identity.application-user-group-role-management.manage-roles.default-roles",
 			"file": "chunks/self-managed.components.management-identity.application-user-group-role-management.manage-roles.default-roles.md",
-			"tokens": 501,
+			"tokens": 514,
 			"tags": [
 				"self-managed",
 				"components",
@@ -77161,7 +77277,7 @@
 		{
 			"id": "self-managed.components.management-identity.configuration.alternative-db.oracle-database-configuration",
 			"file": "chunks/self-managed.components.management-identity.configuration.alternative-db.oracle-database-configuration.md",
-			"tokens": 470,
+			"tokens": 477,
 			"tags": [
 				"self-managed",
 				"components",
@@ -77171,12 +77287,14 @@
 				"oracle",
 				"database"
 			],
-			"entities": []
+			"entities": [
+				"ojdbc.jar"
+			]
 		},
 		{
 			"id": "self-managed.components.management-identity.configuration.alternative-db.mssql-database-configuration",
 			"file": "chunks/self-managed.components.management-identity.configuration.alternative-db.mssql-database-configuration.md",
-			"tokens": 247,
+			"tokens": 243,
 			"tags": [
 				"self-managed",
 				"components",
@@ -77205,7 +77323,7 @@
 		{
 			"id": "self-managed.components.management-identity.configuration.configure-external-identity-provider",
 			"file": "chunks/self-managed.components.management-identity.configuration.configure-external-identity-provider.md",
-			"tokens": 498,
+			"tokens": 540,
 			"tags": [
 				"self-managed",
 				"components",
@@ -77329,7 +77447,7 @@
 		{
 			"id": "self-managed.components.management-identity.configuration.connect-to-an-oidc-provider.configuration-env",
 			"file": "chunks/self-managed.components.management-identity.configuration.connect-to-an-oidc-provider.configuration-env.md",
-			"tokens": 314,
+			"tokens": 311,
 			"tags": [
 				"self-managed",
 				"components",
@@ -77435,7 +77553,7 @@
 		{
 			"id": "self-managed.components.management-identity.configuration.identity-configuration-overview",
 			"file": "chunks/self-managed.components.management-identity.configuration.identity-configuration-overview.md",
-			"tokens": 657,
+			"tokens": 658,
 			"tags": [
 				"self-managed",
 				"components",
@@ -77471,7 +77589,7 @@
 		{
 			"id": "self-managed.components.management-identity.configuration.initialize-tenants.before-you-begin",
 			"file": "chunks/self-managed.components.management-identity.configuration.initialize-tenants.before-you-begin.md",
-			"tokens": 435,
+			"tokens": 461,
 			"tags": [
 				"self-managed",
 				"components",
@@ -77523,7 +77641,7 @@
 		{
 			"id": "self-managed.components.management-identity.identity-first-steps.log-in-to-management-identity",
 			"file": "chunks/self-managed.components.management-identity.identity-first-steps.log-in-to-management-identity.md",
-			"tokens": 229,
+			"tokens": 218,
 			"tags": [
 				"self-managed",
 				"components",
@@ -77572,7 +77690,7 @@
 		{
 			"id": "self-managed.components.management-identity.manage-tenants.enable-multi-tenancy-for-optimize",
 			"file": "chunks/self-managed.components.management-identity.manage-tenants.enable-multi-tenancy-for-optimize.md",
-			"tokens": 183,
+			"tokens": 219,
 			"tags": [
 				"self-managed",
 				"components",
@@ -77708,7 +77826,7 @@
 		{
 			"id": "self-managed.components.management-identity.miscellaneous.configuration-variables.license-configuration",
 			"file": "chunks/self-managed.components.management-identity.miscellaneous.configuration-variables.license-configuration.md",
-			"tokens": 287,
+			"tokens": 624,
 			"tags": [
 				"self-managed",
 				"components",
@@ -77785,7 +77903,7 @@
 		{
 			"id": "self-managed.components.management-identity.miscellaneous.configure-logging",
 			"file": "chunks/self-managed.components.management-identity.miscellaneous.configure-logging.md",
-			"tokens": 280,
+			"tokens": 279,
 			"tags": [
 				"self-managed",
 				"components",
@@ -77801,7 +77919,7 @@
 		{
 			"id": "self-managed.components.management-identity.miscellaneous.configure-logging.general-configuration-options",
 			"file": "chunks/self-managed.components.management-identity.miscellaneous.configure-logging.general-configuration-options.md",
-			"tokens": 499,
+			"tokens": 496,
 			"tags": [
 				"self-managed",
 				"components",
@@ -78090,7 +78208,7 @@
 				"data"
 			],
 			"entities": [
-				"endTime",
+				"endDate",
 				"historyCleanup.processDataCleanup.enabled",
 				"historyCleanup.processDataCleanup.cleanupMode",
 				"cleanupMode",
@@ -78433,7 +78551,7 @@
 		{
 			"id": "self-managed.components.optimize.configuration.shared-elasticsearch-cluster",
 			"file": "chunks/self-managed.components.optimize.configuration.shared-elasticsearch-cluster.md",
-			"tokens": 353,
+			"tokens": 363,
 			"tags": [
 				"self-managed",
 				"components",
@@ -78608,7 +78726,7 @@
 		{
 			"id": "self-managed.components.optimize.configuration.system-configuration.security",
 			"file": "chunks/self-managed.components.optimize.configuration.system-configuration.security.md",
-			"tokens": 938,
+			"tokens": 935,
 			"tags": [
 				"self-managed",
 				"components",
@@ -78624,7 +78742,7 @@
 		{
 			"id": "self-managed.components.optimize.configuration.system-configuration.import",
 			"file": "chunks/self-managed.components.optimize.configuration.system-configuration.import.md",
-			"tokens": 341,
+			"tokens": 338,
 			"tags": [
 				"self-managed",
 				"components",
@@ -78759,7 +78877,7 @@
 		{
 			"id": "self-managed.components.optimize.configuration.system-configuration.history-cleanup-settings",
 			"file": "chunks/self-managed.components.optimize.configuration.system-configuration.history-cleanup-settings.md",
-			"tokens": 830,
+			"tokens": 808,
 			"tags": [
 				"self-managed",
 				"components",
@@ -78771,7 +78889,7 @@
 				"settings"
 			],
 			"entities": [
-				"endTime"
+				"endDate"
 			]
 		},
 		{
@@ -78810,7 +78928,7 @@
 		{
 			"id": "self-managed.components.optimize.configuration.system-configuration.localization",
 			"file": "chunks/self-managed.components.optimize.configuration.system-configuration.localization.md",
-			"tokens": 205,
+			"tokens": 204,
 			"tags": [
 				"self-managed",
 				"components",
@@ -78928,7 +79046,7 @@
 		{
 			"id": "self-managed.components.optimize.overview.optimize-web-container-configuration",
 			"file": "chunks/self-managed.components.optimize.overview.optimize-web-container-configuration.md",
-			"tokens": 238,
+			"tokens": 261,
 			"tags": [
 				"self-managed",
 				"components",
@@ -79071,7 +79189,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components",
 			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components.md",
-			"tokens": 595,
+			"tokens": 44,
 			"tags": [
 				"self-managed",
 				"components",
@@ -79080,45 +79198,164 @@
 				"connect-external-identity-provider",
 				"web"
 			],
-			"entities": [
-				"application.yaml"
-			]
+			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri.md",
-			"tokens": 825,
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-prerequisites",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-prerequisites.md",
+			"tokens": 74,
 			"tags": [
 				"self-managed",
 				"components",
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri"
+				"web",
+				"prerequisites"
 			],
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-2",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-2.md",
-			"tokens": 51,
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-1-prepare-your-idp",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-1-prepare-your-idp.md",
+			"tokens": 267,
 			"tags": [
 				"self-managed",
 				"components",
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri"
+				"web",
+				"step",
+				"prepare",
+				"idp"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-2-choose-your-deployment-and-configuration-method",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-2-choose-your-deployment-and-configuration-method.md",
+			"tokens": 61,
+			"tags": [
+				"self-managed",
+				"components",
+				"orchestration-cluster",
+				"admin",
+				"connect-external-identity-provider",
+				"web",
+				"step",
+				"choose",
+				"deployment",
+				"configuration",
+				"method"
 			],
 			"entities": [
 				"application.yaml"
 			]
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-entraid",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-entraid.md",
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-3-set-the-authentication-method-to-oidc",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-3-set-the-authentication-method-to-oidc.md",
+			"tokens": 49,
+			"tags": [
+				"self-managed",
+				"components",
+				"orchestration-cluster",
+				"admin",
+				"connect-external-identity-provider",
+				"web",
+				"step",
+				"set",
+				"authentication",
+				"method",
+				"oidc"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-yaml",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-yaml.md",
+			"tokens": 35,
+			"tags": [
+				"self-managed",
+				"components",
+				"orchestration-cluster",
+				"admin",
+				"connect-external-identity-provider",
+				"web",
+				"yaml"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-env",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-env.md",
+			"tokens": 33,
+			"tags": [
+				"self-managed",
+				"components",
+				"orchestration-cluster",
+				"admin",
+				"connect-external-identity-provider",
+				"web",
+				"env"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-4-configure-the-oidc-connection-details",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-4-configure-the-oidc-connection-details.md",
+			"tokens": 49,
+			"tags": [
+				"self-managed",
+				"components",
+				"orchestration-cluster",
+				"admin",
+				"connect-external-identity-provider",
+				"web",
+				"step",
+				"configure",
+				"oidc",
+				"connection",
+				"details"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-yaml-2",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-yaml-2.md",
+			"tokens": 66,
+			"tags": [
+				"self-managed",
+				"components",
+				"orchestration-cluster",
+				"admin",
+				"connect-external-identity-provider",
+				"web",
+				"yaml"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-env-2",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-env-2.md",
+			"tokens": 337,
+			"tags": [
+				"self-managed",
+				"components",
+				"orchestration-cluster",
+				"admin",
+				"connect-external-identity-provider",
+				"web",
+				"env"
+			],
+			"entities": [
+				"application.yaml"
+			]
+		},
+		{
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-entraid",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-entraid.md",
 			"tokens": 77,
 			"tags": [
 				"self-managed",
@@ -79126,15 +79363,14 @@
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri",
+				"web",
 				"entraid"
 			],
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-keycloak",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-keycloak.md",
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-keycloak",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-keycloak.md",
 			"tokens": 75,
 			"tags": [
 				"self-managed",
@@ -79142,15 +79378,30 @@
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri",
+				"web",
 				"keycloak"
 			],
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-step-5-restart-the-orchestration-cluster",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-step-5-restart-the-orchestration-cluster.md",
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-redirect-uri",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-redirect-uri.md",
+			"tokens": 643,
+			"tags": [
+				"self-managed",
+				"components",
+				"orchestration-cluster",
+				"admin",
+				"connect-external-identity-provider",
+				"web",
+				"redirect",
+				"uri"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-5-restart-the-orchestration-cluster",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-5-restart-the-orchestration-cluster.md",
 			"tokens": 116,
 			"tags": [
 				"self-managed",
@@ -79158,8 +79409,7 @@
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri",
+				"web",
 				"step",
 				"restart",
 				"orchestration",
@@ -79168,8 +79418,8 @@
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-step-6-test-user-authentication",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-step-6-test-user-authentication.md",
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-6-test-user-authentication",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-6-test-user-authentication.md",
 			"tokens": 120,
 			"tags": [
 				"self-managed",
@@ -79177,8 +79427,7 @@
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri",
+				"web",
 				"step",
 				"test",
 				"user",
@@ -79187,8 +79436,8 @@
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-step-7-assign-admin-role-to-users",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-step-7-assign-admin-role-to-users.md",
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-7-assign-admin-role-to-users",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-step-7-assign-admin-role-to-users.md",
 			"tokens": 102,
 			"tags": [
 				"self-managed",
@@ -79196,8 +79445,7 @@
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri",
+				"web",
 				"step",
 				"assign",
 				"role",
@@ -79206,8 +79454,8 @@
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-yaml",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-yaml.md",
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-yaml-3",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-yaml-3.md",
 			"tokens": 37,
 			"tags": [
 				"self-managed",
@@ -79215,15 +79463,14 @@
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri",
+				"web",
 				"yaml"
 			],
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-env",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-env.md",
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-env-3",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-env-3.md",
 			"tokens": 153,
 			"tags": [
 				"self-managed",
@@ -79231,15 +79478,14 @@
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri",
+				"web",
 				"env"
 			],
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-optional-step-8-configure-bring-your-own-groups",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-optional-step-8-configure-bring-your-own-groups.md",
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-optional-step-8-configure-bring-your-own-groups",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-optional-step-8-configure-bring-your-own-groups.md",
 			"tokens": 193,
 			"tags": [
 				"self-managed",
@@ -79247,19 +79493,19 @@
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri",
+				"web",
 				"optional",
 				"step",
 				"configure",
 				"bring",
-				"own"
+				"own",
+				"groups"
 			],
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-yaml-2",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-yaml-2.md",
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-yaml-4",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-yaml-4.md",
 			"tokens": 36,
 			"tags": [
 				"self-managed",
@@ -79267,15 +79513,14 @@
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri",
+				"web",
 				"yaml"
 			],
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-env-2",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-env-2.md",
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-env-4",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-env-4.md",
 			"tokens": 33,
 			"tags": [
 				"self-managed",
@@ -79283,24 +79528,22 @@
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri",
+				"web",
 				"env"
 			],
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-optional-step-9-mapping-rules",
-			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.redirect-uri-optional-step-9-mapping-rules.md",
-			"tokens": 82,
+			"id": "self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-optional-step-9-mapping-rules",
+			"file": "chunks/self-managed.components.orchestration-cluster.admin.connect-external-identity-provider.web-components-optional-step-9-mapping-rules.md",
+			"tokens": 80,
 			"tags": [
 				"self-managed",
 				"components",
 				"orchestration-cluster",
 				"admin",
 				"connect-external-identity-provider",
-				"redirect",
-				"uri",
+				"web",
 				"optional",
 				"step",
 				"mapping",
@@ -80267,7 +80510,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.concepts.backups",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.concepts.backups.md",
-			"tokens": 148,
+			"tokens": 149,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80281,7 +80524,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.concepts.backups.configure-this-in-kubernetes-with-helm",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.concepts.backups.configure-this-in-kubernetes-with-helm.md",
-			"tokens": 151,
+			"tokens": 177,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80295,9 +80538,7 @@
 				"configuration",
 				"parameters"
 			],
-			"entities": [
-				"camunda.data.backup.repository-name"
-			]
+			"entities": []
 		},
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.concepts.data-retention",
@@ -80316,7 +80557,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.concepts.data-retention.archive-period",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.concepts.data-retention.archive-period.md",
-			"tokens": 250,
+			"tokens": 251,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80402,7 +80643,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.concepts.schema-and-migration",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.concepts.schema-and-migration.md",
-			"tokens": 329,
+			"tokens": 356,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80417,7 +80658,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.concepts.usage-metrics",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.concepts.usage-metrics.md",
-			"tokens": 527,
+			"tokens": 519,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80441,7 +80682,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.concepts.usage-metrics.best-practices-for-monitoring",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.concepts.usage-metrics.best-practices-for-monitoring.md",
-			"tokens": 403,
+			"tokens": 73,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80451,16 +80692,9 @@
 				"usage-metrics",
 				"best",
 				"practices",
-				"monitoring",
-				"deprecated",
-				"usage",
-				"metrics"
+				"monitoring"
 			],
-			"entities": [
-				"startTime",
-				"endTime",
-				"tenantId"
-			]
+			"entities": []
 		},
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.concepts.version-compatibility",
@@ -80484,7 +80718,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.concepts.version-compatibility.required-upgrade-procedure",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.concepts.version-compatibility.required-upgrade-procedure.md",
-			"tokens": 321,
+			"tokens": 341,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80710,7 +80944,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.csrf-protection.how-csrf-protection-works-in-camunda",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.csrf-protection.how-csrf-protection-works-in-camunda.md",
-			"tokens": 234,
+			"tokens": 155,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80721,16 +80955,36 @@
 				"csrf",
 				"protection",
 				"works",
-				"camunda",
-				"protected",
-				"unprotected"
+				"camunda"
 			],
-			"entities": []
+			"entities": [
+				"HttpOnly",
+				"camunda.security.csrf.cookie-http-only"
+			]
+		},
+		{
+			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.csrf-protection.protected-vs-unprotected-paths",
+			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.csrf-protection.protected-vs-unprotected-paths.md",
+			"tokens": 172,
+			"tags": [
+				"self-managed",
+				"components",
+				"orchestration-cluster",
+				"core-settings",
+				"configuration",
+				"csrf-protection",
+				"protected",
+				"unprotected",
+				"paths"
+			],
+			"entities": [
+				"camunda.security.csrf.ignored-path-patterns"
+			]
 		},
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.csrf-protection.security-considerations",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.csrf-protection.security-considerations.md",
-			"tokens": 59,
+			"tokens": 68,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80741,7 +80995,9 @@
 				"security",
 				"considerations"
 			],
-			"entities": []
+			"entities": [
+				"camunda.security.csrf.ignored-path-patterns"
+			]
 		},
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.licensing",
@@ -80762,7 +81018,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.logging",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.logging.md",
-			"tokens": 464,
+			"tokens": 465,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80780,7 +81036,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.logging.environment-variables",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.logging.environment-variables.md",
-			"tokens": 153,
+			"tokens": 161,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80798,7 +81054,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.logging.json-logging-appenders",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.logging.json-logging-appenders.md",
-			"tokens": 145,
+			"tokens": 139,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80814,7 +81070,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.logging.pattern-layout-format",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.logging.pattern-layout-format.md",
-			"tokens": 174,
+			"tokens": 139,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80824,36 +81080,19 @@
 				"logging",
 				"pattern",
 				"layout",
-				"format"
-			],
-			"entities": []
-		},
-		{
-			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.logging.changing-log-level-at-runtime",
-			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.logging.changing-log-level-at-runtime.md",
-			"tokens": 156,
-			"tags": [
-				"self-managed",
-				"components",
-				"orchestration-cluster",
-				"core-settings",
-				"configuration",
-				"logging",
+				"format",
 				"changing",
 				"log",
-				"level",
-				"runtime",
-				"sensitive",
-				"data"
+				"level"
 			],
 			"entities": [
 				"io.camunda"
 			]
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.logging.best-practices",
-			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.logging.best-practices.md",
-			"tokens": 87,
+			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.logging.sensitive-data",
+			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.logging.sensitive-data.md",
+			"tokens": 186,
 			"tags": [
 				"self-managed",
 				"components",
@@ -80861,6 +81100,8 @@
 				"core-settings",
 				"configuration",
 				"logging",
+				"sensitive",
+				"data",
 				"best",
 				"practices"
 			],
@@ -81006,7 +81247,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.api-rest-camunda.api.rest.filters",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.api-rest-camunda.api.rest.filters.md",
-			"tokens": 317,
+			"tokens": 319,
 			"tags": [
 				"self-managed",
 				"components",
@@ -81018,10 +81259,7 @@
 				"rest",
 				"camunda.api.rest.filters"
 			],
-			"entities": [
-				"camunda.api.rest.filters.jar-path",
-				"camunda.api.rest.filters.class-name"
-			]
+			"entities": []
 		},
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.api-rest-camunda.api.rest.process-cache",
@@ -81714,7 +81952,7 @@
 			],
 			"entities": [
 				"camunda.data.primary-storage.backup.store",
-				"camunda.data.primary-storage.backup.continous",
+				"camunda.data.primary-storage.backup.continuous",
 				"camunda.data.primary-storage.backup.required",
 				"camunda.data.primary-storage.backup.schedule",
 				"camunda.data.primary-storage.backup.checkpoint-interval",
@@ -81726,7 +81964,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-primary-storage-camunda.data.primary-storage.backup.retention",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-primary-storage-camunda.data.primary-storage.backup.retention.md",
-			"tokens": 288,
+			"tokens": 291,
 			"tags": [
 				"self-managed",
 				"components",
@@ -81740,14 +81978,13 @@
 				"camunda.data.primary-storage.backup.retention"
 			],
 			"entities": [
-				"camunda.data.primary-storage.backup.retention.window",
-				"camunda.data.primary-storage.backup.cleanup-schedule"
+				"camunda.data.primary-storage.backup.retention.window"
 			]
 		},
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-primary-storage-camunda.data.primary-storage.backup.s3",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-primary-storage-camunda.data.primary-storage.backup.s3.md",
-			"tokens": 1095,
+			"tokens": 1094,
 			"tags": [
 				"self-managed",
 				"components",
@@ -81778,7 +82015,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-primary-storage-camunda.data.primary-storage.backup.gcs",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-primary-storage-camunda.data.primary-storage.backup.gcs.md",
-			"tokens": 526,
+			"tokens": 527,
 			"tags": [
 				"self-managed",
 				"components",
@@ -81794,7 +82031,7 @@
 			"entities": [
 				"camunda.data.primary-storage.backup.gcs.bucket-name",
 				"basePath",
-				"camunda.data.primary-storage.backup.gcs.endpoint",
+				"camunda.data.primary-storage.backup.gcs.base-path",
 				"camunda.data.primary-storage.backup.gcs.host",
 				"camunda.data.primary-storage.backup.gcs.auth"
 			]
@@ -81802,7 +82039,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-primary-storage-camunda.data.primary-storage.backup.azure",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-primary-storage-camunda.data.primary-storage.backup.azure.md",
-			"tokens": 694,
+			"tokens": 708,
 			"tags": [
 				"self-managed",
 				"components",
@@ -81967,7 +82204,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-primary-storage-camunda_data_primarystorage_backup_s3",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-primary-storage-camunda_data_primarystorage_backup_s3.md",
-			"tokens": 1064,
+			"tokens": 1063,
 			"tags": [
 				"self-managed",
 				"components",
@@ -82010,7 +82247,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-primary-storage-camunda_data_primarystorage_backup_azure",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-primary-storage-camunda_data_primarystorage_backup_azure.md",
-			"tokens": 675,
+			"tokens": 689,
 			"tags": [
 				"self-managed",
 				"components",
@@ -82088,7 +82325,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-secondary-storage-camunda.data.secondary-storage.elasticsearch",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-secondary-storage-camunda.data.secondary-storage.elasticsearch.md",
-			"tokens": 2504,
+			"tokens": 2592,
 			"tags": [
 				"self-managed",
 				"components",
@@ -82150,7 +82387,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-secondary-storage-camunda.data.secondary-storage.rdbms",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-secondary-storage-camunda.data.secondary-storage.rdbms.md",
-			"tokens": 1888,
+			"tokens": 1881,
 			"tags": [
 				"self-managed",
 				"components",
@@ -82235,7 +82472,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-secondary-storage-camunda_data_secondarystorage_rdbms",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-secondary-storage-camunda_data_secondarystorage_rdbms.md",
-			"tokens": 1535,
+			"tokens": 1525,
 			"tags": [
 				"self-managed",
 				"components",
@@ -82491,7 +82728,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-exporters",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.data-exporters.md",
-			"tokens": 648,
+			"tokens": 649,
 			"tags": [
 				"self-managed",
 				"components",
@@ -82503,7 +82740,6 @@
 				"exporters"
 			],
 			"entities": [
-				"camunda.data.exporters.elasticsearch.args.index-prefix",
 				"camunda.data.exporters",
 				"camunda.data.exporters.elasticsearch.class-name",
 				"camunda.data.exporters.elasticsearch.jar-path",
@@ -82588,7 +82824,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.processing-camunda.processing",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.processing-camunda.processing.md",
-			"tokens": 2676,
+			"tokens": 2747,
 			"tags": [
 				"self-managed",
 				"components",
@@ -82617,7 +82853,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.processing-camunda_processing",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.processing-camunda_processing.md",
-			"tokens": 2578,
+			"tokens": 2648,
 			"tags": [
 				"self-managed",
 				"components",
@@ -82916,7 +83152,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.secrets-secrets-concurrency-yaml",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.secrets-secrets-concurrency-yaml.md",
-			"tokens": 340,
+			"tokens": 361,
 			"tags": [
 				"self-managed",
 				"components",
@@ -82934,7 +83170,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.secrets-secrets-concurrency-env",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.secrets-secrets-concurrency-env.md",
-			"tokens": 338,
+			"tokens": 360,
 			"tags": [
 				"self-managed",
 				"components",
@@ -83976,7 +84212,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.properties.system-camunda.system",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.properties.system-camunda.system.md",
-			"tokens": 387,
+			"tokens": 393,
 			"tags": [
 				"self-managed",
 				"components",
@@ -84137,7 +84373,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.configuration.webserver.propagation-of-membership-changes-to-active-sessions",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.configuration.webserver.propagation-of-membership-changes-to-active-sessions.md",
-			"tokens": 199,
+			"tokens": 200,
 			"tags": [
 				"self-managed",
 				"components",
@@ -84156,7 +84392,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.core-settings.overview",
 			"file": "chunks/self-managed.components.orchestration-cluster.core-settings.overview.md",
-			"tokens": 416,
+			"tokens": 426,
 			"tags": [
 				"self-managed",
 				"components",
@@ -84191,7 +84427,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.operate.operate-configuration.licensing",
 			"file": "chunks/self-managed.components.orchestration-cluster.operate.operate-configuration.licensing.md",
-			"tokens": 194,
+			"tokens": 195,
 			"tags": [
 				"self-managed",
 				"components",
@@ -84383,7 +84619,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.tasklist.tasklist-configuration.licensing",
 			"file": "chunks/self-managed.components.orchestration-cluster.tasklist.tasklist-configuration.licensing.md",
-			"tokens": 350,
+			"tokens": 351,
 			"tags": [
 				"self-managed",
 				"components",
@@ -85165,7 +85401,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.broker.configuration-camunda-hub-ping-configuration",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.broker.configuration-camunda-hub-ping-configuration.md",
-			"tokens": 563,
+			"tokens": 936,
 			"tags": [
 				"self-managed",
 				"components",
@@ -85183,8 +85419,29 @@
 				"retry.maxRetries",
 				"retry.minRetryDelay",
 				"retry.maxRetryDelay",
-				"retry.retryDelayMultiplier"
+				"retry.retryDelayMultiplier",
+				"tokenEndpoint",
+				"clientId",
+				"clientSecret",
+				"tokenRequestParameters"
 			]
+		},
+		{
+			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.broker.configuration-camunda-hub-ping-configuration-2",
+			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.broker.configuration-camunda-hub-ping-configuration-2.md",
+			"tokens": 94,
+			"tags": [
+				"self-managed",
+				"components",
+				"orchestration-cluster",
+				"zeebe",
+				"configuration",
+				"broker",
+				"camunda",
+				"hub",
+				"ping"
+			],
+			"entities": []
 		},
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.broker.configuration-continuous-backups-configuration",
@@ -85320,7 +85577,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.configuration.licensing",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.configuration.licensing.md",
-			"tokens": 197,
+			"tokens": 221,
 			"tags": [
 				"self-managed",
 				"components",
@@ -85349,20 +85606,6 @@
 				"probes",
 				"experimental",
 				"options"
-			],
-			"entities": []
-		},
-		{
-			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.configuration.logging",
-			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.configuration.logging.md",
-			"tokens": 39,
-			"tags": [
-				"self-managed",
-				"components",
-				"orchestration-cluster",
-				"zeebe",
-				"configuration",
-				"logging"
 			],
 			"entities": []
 		},
@@ -85405,7 +85648,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.fixed-partitioning",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.fixed-partitioning.md",
-			"tokens": 419,
+			"tokens": 414,
 			"tags": [
 				"self-managed",
 				"components",
@@ -85640,7 +85883,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.gateway-health-probes.customizing-health-probes-memory",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.gateway-health-probes.customizing-health-probes-memory.md",
-			"tokens": 133,
+			"tokens": 134,
 			"tags": [
 				"self-managed",
 				"components",
@@ -85705,7 +85948,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.gateway.configuration-server",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.gateway.configuration-server.md",
-			"tokens": 577,
+			"tokens": 580,
 			"tags": [
 				"self-managed",
 				"components",
@@ -85830,8 +86073,8 @@
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.gateway.configuration-zeebe.gateway.cluster.security.authentication",
-			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.gateway.configuration-zeebe.gateway.cluster.security.authentication.md",
+			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.gateway.configuration-zeebe.gateway.security.authentication",
+			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.gateway.configuration-zeebe.gateway.security.authentication.md",
 			"tokens": 256,
 			"tags": [
 				"self-managed",
@@ -85840,13 +86083,13 @@
 				"zeebe",
 				"configuration",
 				"gateway",
-				"zeebe.gateway.cluster.security.authentication"
+				"zeebe.gateway.security.authentication"
 			],
 			"entities": []
 		},
 		{
-			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.gateway.configuration-zeebe.gateway.cluster.security.authentication.identity",
-			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.gateway.configuration-zeebe.gateway.cluster.security.authentication.identity.md",
+			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.gateway.configuration-zeebe.gateway.security.authentication.identity",
+			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.gateway.configuration-zeebe.gateway.security.authentication.identity.md",
 			"tokens": 341,
 			"tags": [
 				"self-managed",
@@ -85855,7 +86098,7 @@
 				"zeebe",
 				"configuration",
 				"gateway",
-				"zeebe.gateway.cluster.security.authentication.identity"
+				"zeebe.gateway.security.authentication.identity"
 			],
 			"entities": []
 		},
@@ -85958,7 +86201,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.priority-election",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.priority-election.md",
-			"tokens": 153,
+			"tokens": 183,
 			"tags": [
 				"self-managed",
 				"components",
@@ -85967,7 +86210,10 @@
 				"configuration",
 				"priority-election"
 			],
-			"entities": []
+			"entities": [
+				"camunda.cluster.raft.priority-election-enabled",
+				"camunda.cluster.raft"
+			]
 		},
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.priority-election.limitations",
@@ -85987,7 +86233,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.configuration.zone-aware-clusters",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.configuration.zone-aware-clusters.md",
-			"tokens": 432,
+			"tokens": 449,
 			"tags": [
 				"self-managed",
 				"components",
@@ -86781,7 +87027,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.exporters.opensearch-exporter.configuration",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.exporters.opensearch-exporter.configuration.md",
-			"tokens": 529,
+			"tokens": 527,
 			"tags": [
 				"self-managed",
 				"components",
@@ -86795,7 +87041,8 @@
 				"jarPath",
 				"CAMUNDA_DATA_EXPORTERS_OPENSEARCH_...",
 				"orchestration.configuration",
-				"values.yaml"
+				"values.yaml",
+				"optimizeModeEnabled"
 			]
 		},
 		{
@@ -86901,7 +87148,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.exporters.opensearch-exporter.example",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.exporters.opensearch-exporter.example.md",
-			"tokens": 284,
+			"tokens": 306,
 			"tags": [
 				"self-managed",
 				"components",
@@ -86916,7 +87163,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.exporters.opensearch-exporter.self-signed-certificates",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.exporters.opensearch-exporter.self-signed-certificates.md",
-			"tokens": 582,
+			"tokens": 583,
 			"tags": [
 				"self-managed",
 				"components",
@@ -86936,7 +87183,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.exporters.opensearch-exporter.legacy-zeebe-records-and-optimize-filters",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.exporters.opensearch-exporter.legacy-zeebe-records-and-optimize-filters.md",
-			"tokens": 279,
+			"tokens": 278,
 			"tags": [
 				"self-managed",
 				"components",
@@ -86950,6 +87197,7 @@
 				"filters"
 			],
 			"entities": [
+				"optimizeModeEnabled",
 				"index.optimizeModeEnabled",
 				"index.job"
 			]
@@ -87047,7 +87295,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.operations.backups",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.operations.backups.md",
-			"tokens": 224,
+			"tokens": 228,
 			"tags": [
 				"backup",
 				"backups",
@@ -87062,7 +87310,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.operations.backups.cold-backups",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.operations.backups.cold-backups.md",
-			"tokens": 492,
+			"tokens": 493,
 			"tags": [
 				"backup",
 				"backups",
@@ -87074,7 +87322,7 @@
 				"cold"
 			],
 			"entities": [
-				"zeebe.broker.data.directory"
+				"camunda.data.primary-storage.directory"
 			]
 		},
 		{
@@ -87449,7 +87697,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.operations.disk-space",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.operations.disk-space.md",
-			"tokens": 356,
+			"tokens": 359,
 			"tags": [
 				"self-managed",
 				"components",
@@ -87459,7 +87707,7 @@
 				"disk-space"
 			],
 			"entities": [
-				"freeSpace.replication"
+				"free-space.replication"
 			]
 		},
 		{
@@ -87482,7 +87730,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.operations.health.gateway",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.operations.health.gateway.md",
-			"tokens": 485,
+			"tokens": 531,
 			"tags": [
 				"self-managed",
 				"components",
@@ -87530,7 +87778,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.operations.management-api.exporters-api",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.operations.management-api.exporters-api.md",
-			"tokens": 718,
+			"tokens": 719,
 			"tags": [
 				"self-managed",
 				"components",
@@ -87839,7 +88087,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.operations.network-ports",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.operations.network-ports.md",
-			"tokens": 487,
+			"tokens": 488,
 			"tags": [
 				"self-managed",
 				"components",
@@ -87957,7 +88205,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.operations.setting-up-a-cluster.example",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.operations.setting-up-a-cluster.example.md",
-			"tokens": 352,
+			"tokens": 356,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88024,7 +88272,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.operations.update-zeebe.rolling-update",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.operations.update-zeebe.rolling-update.md",
-			"tokens": 367,
+			"tokens": 368,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88036,13 +88284,13 @@
 				"update"
 			],
 			"entities": [
-				"snapshotPeriod"
+				"camunda.data.snapshot-period"
 			]
 		},
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.operations.update-zeebe.rolling-update-using-helm",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.operations.update-zeebe.rolling-update-using-helm.md",
-			"tokens": 698,
+			"tokens": 695,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88153,7 +88401,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.security.client-authorization.client",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.security.client-authorization.client.md",
-			"tokens": 171,
+			"tokens": 170,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88171,7 +88419,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.security.client-authorization.client-oauthcredentialsprovider",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.security.client-authorization.client-oauthcredentialsprovider.md",
-			"tokens": 691,
+			"tokens": 689,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88185,14 +88433,13 @@
 			"entities": [
 				"OAuthCredentialsProvider",
 				"OAuthCredentialsProviderBuilder",
-				"OAuthCredentialProvider",
 				"CamundaClientBuilder"
 			]
 		},
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.security.client-authorization.client-custom-credentials-provider",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.security.client-authorization.client-custom-credentials-provider.md",
-			"tokens": 280,
+			"tokens": 282,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88206,15 +88453,14 @@
 				"provider"
 			],
 			"entities": [
-				"CredentialProvider",
-				"StatusCode",
-				"CredentialsProvider"
+				"CredentialsProvider",
+				"StatusCode"
 			]
 		},
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.security.secure-client-communication",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.security.secure-client-communication.md",
-			"tokens": 679,
+			"tokens": 745,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88229,6 +88475,9 @@
 				"config/defaults.yaml",
 				"certificateChainPath",
 				"privateKeyPath",
+				"camunda.api.grpc.ssl.enabled",
+				"camunda.api.grpc.ssl.certificate",
+				"camunda.api.grpc.ssl.certificate-private-key",
 				"server.ssl"
 			]
 		},
@@ -88318,7 +88567,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.security.secure-cluster-communication.broker",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.security.secure-cluster-communication.broker.md",
-			"tokens": 270,
+			"tokens": 280,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88329,10 +88578,8 @@
 				"broker"
 			],
 			"entities": [
-				"zeebe.broker.network.security",
-				"certificateChainPath",
-				"privateKeyPath",
-				"keyStore.filePath"
+				"camunda.security.transport-layer-security.cluster",
+				"key-store.file-path"
 			]
 		},
 		{
@@ -88358,7 +88605,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.security.secure-cluster-communication.tasklist-and-operate",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.security.secure-cluster-communication.tasklist-and-operate.md",
-			"tokens": 348,
+			"tokens": 347,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88392,7 +88639,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.security.secure-cluster-communication.self-signed-certificates-testing-example",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.security.secure-cluster-communication.self-signed-certificates-testing-example.md",
-			"tokens": 618,
+			"tokens": 625,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88456,7 +88703,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.zeebe-gateway.filters.compiling-your-filter",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.zeebe-gateway.filters.compiling-your-filter.md",
-			"tokens": 171,
+			"tokens": 194,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88474,7 +88721,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.zeebe-gateway.filters.packaging-a-filter",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.zeebe-gateway.filters.packaging-a-filter.md",
-			"tokens": 260,
+			"tokens": 259,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88586,7 +88833,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.zeebe-gateway.interceptors.compiling-your-interceptor",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.zeebe-gateway.interceptors.compiling-your-interceptor.md",
-			"tokens": 178,
+			"tokens": 202,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88602,7 +88849,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.zeebe-gateway.interceptors.packaging-an-interceptor",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.zeebe-gateway.interceptors.packaging-an-interceptor.md",
-			"tokens": 278,
+			"tokens": 281,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88698,7 +88945,7 @@
 		{
 			"id": "self-managed.components.orchestration-cluster.zeebe.zeebe-gateway.job-streaming.nginx",
 			"file": "chunks/self-managed.components.orchestration-cluster.zeebe.zeebe-gateway.job-streaming.nginx.md",
-			"tokens": 71,
+			"tokens": 70,
 			"tags": [
 				"self-managed",
 				"components",
@@ -88779,7 +89026,7 @@
 		{
 			"id": "self-managed.concepts.audit-log.configure.configure-secondary-storage-retention",
 			"file": "chunks/self-managed.concepts.audit-log.configure.configure-secondary-storage-retention.md",
-			"tokens": 122,
+			"tokens": 137,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -88853,7 +89100,7 @@
 		{
 			"id": "self-managed.concepts.authentication.authentication-to-management-components.choose-an-identity-provider-setup",
 			"file": "chunks/self-managed.concepts.authentication.authentication-to-management-components.choose-an-identity-provider-setup.md",
-			"tokens": 555,
+			"tokens": 567,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -88997,7 +89244,7 @@
 		{
 			"id": "self-managed.concepts.authentication.authentication-to-orchestration-cluster.basic-authentication",
 			"file": "chunks/self-managed.concepts.authentication.authentication-to-orchestration-cluster.basic-authentication.md",
-			"tokens": 368,
+			"tokens": 373,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -89010,7 +89257,7 @@
 		{
 			"id": "self-managed.concepts.authentication.authentication-to-orchestration-cluster.oidc",
 			"file": "chunks/self-managed.concepts.authentication.authentication-to-orchestration-cluster.oidc.md",
-			"tokens": 309,
+			"tokens": 314,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -89023,7 +89270,7 @@
 		{
 			"id": "self-managed.concepts.authentication.authentication-to-orchestration-cluster.unprotected-api-mode",
 			"file": "chunks/self-managed.concepts.authentication.authentication-to-orchestration-cluster.unprotected-api-mode.md",
-			"tokens": 185,
+			"tokens": 202,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -89050,7 +89297,7 @@
 		{
 			"id": "self-managed.concepts.databases.elasticsearch.elasticsearch-privileges",
 			"file": "chunks/self-managed.concepts.databases.elasticsearch.elasticsearch-privileges.md",
-			"tokens": 500,
+			"tokens": 519,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -89098,7 +89345,7 @@
 		{
 			"id": "self-managed.concepts.databases.elasticsearch.elasticsearch-without-cluster-privileges.1.-initialize-the-schema-manager-initialize",
 			"file": "chunks/self-managed.concepts.databases.elasticsearch.elasticsearch-without-cluster-privileges.1.-initialize-the-schema-manager-initialize.md",
-			"tokens": 388,
+			"tokens": 389,
 			"tags": [
 				"elasticsearch",
 				"schema",
@@ -89258,7 +89505,7 @@
 		{
 			"id": "self-managed.concepts.databases.elasticsearch.elasticsearch-without-cluster-privileges.standalone-backup-application-2.-start-the-backup-application",
 			"file": "chunks/self-managed.concepts.databases.elasticsearch.elasticsearch-without-cluster-privileges.standalone-backup-application-2.-start-the-backup-application.md",
-			"tokens": 406,
+			"tokens": 420,
 			"tags": [
 				"elasticsearch",
 				"schema",
@@ -89300,7 +89547,7 @@
 		{
 			"id": "self-managed.concepts.databases.elasticsearch.opensearch-privileges",
 			"file": "chunks/self-managed.concepts.databases.elasticsearch.opensearch-privileges.md",
-			"tokens": 290,
+			"tokens": 280,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -89331,7 +89578,7 @@
 		{
 			"id": "self-managed.concepts.databases.elasticsearch.opensearch-without-cluster-privileges",
 			"file": "chunks/self-managed.concepts.databases.elasticsearch.opensearch-without-cluster-privileges.md",
-			"tokens": 285,
+			"tokens": 290,
 			"tags": [
 				"opensearch",
 				"schema",
@@ -89371,7 +89618,7 @@
 		{
 			"id": "self-managed.concepts.databases.elasticsearch.opensearch-without-cluster-privileges.start-the-camunda-single-application-start",
 			"file": "chunks/self-managed.concepts.databases.elasticsearch.opensearch-without-cluster-privileges.start-the-camunda-single-application-start.md",
-			"tokens": 744,
+			"tokens": 769,
 			"tags": [
 				"opensearch",
 				"schema",
@@ -89500,7 +89747,7 @@
 		{
 			"id": "self-managed.concepts.databases.overview.document-store-backends-rdbms-behavior-and-limitations",
 			"file": "chunks/self-managed.concepts.databases.overview.document-store-backends-rdbms-behavior-and-limitations.md",
-			"tokens": 695,
+			"tokens": 702,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -89650,7 +89897,7 @@
 		{
 			"id": "self-managed.concepts.databases.relational-db.configuration.history-cleanup",
 			"file": "chunks/self-managed.concepts.databases.relational-db.configuration.history-cleanup.md",
-			"tokens": 581,
+			"tokens": 561,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -89660,14 +89907,12 @@
 				"history",
 				"cleanup"
 			],
-			"entities": [
-				"historyCleanupBatchSize"
-			]
+			"entities": []
 		},
 		{
 			"id": "self-managed.concepts.databases.relational-db.configuration.exporter-cache-configuration",
 			"file": "chunks/self-managed.concepts.databases.relational-db.configuration.exporter-cache-configuration.md",
-			"tokens": 476,
+			"tokens": 516,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -89777,7 +90022,7 @@
 		{
 			"id": "self-managed.concepts.databases.relational-db.configuration.usage-with-aws-aurora-postgresql-mysql",
 			"file": "chunks/self-managed.concepts.databases.relational-db.configuration.usage-with-aws-aurora-postgresql-mysql.md",
-			"tokens": 692,
+			"tokens": 690,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -89855,7 +90100,7 @@
 		{
 			"id": "self-managed.concepts.databases.relational-db.rdbms-setup-guide.step-2-provision-the-database",
 			"file": "chunks/self-managed.concepts.databases.relational-db.rdbms-setup-guide.step-2-provision-the-database.md",
-			"tokens": 384,
+			"tokens": 405,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -89871,7 +90116,7 @@
 		{
 			"id": "self-managed.concepts.databases.relational-db.rdbms-setup-guide.step-3-configure-connections-and-authentication",
 			"file": "chunks/self-managed.concepts.databases.relational-db.rdbms-setup-guide.step-3-configure-connections-and-authentication.md",
-			"tokens": 516,
+			"tokens": 527,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -89903,7 +90148,9 @@
 				"management",
 				"schema"
 			],
-			"entities": []
+			"entities": [
+				"camunda.data.secondary-storage.rdbms.auto-ddl"
+			]
 		},
 		{
 			"id": "self-managed.concepts.databases.relational-db.rdbms-setup-guide.step-6-validation",
@@ -90175,7 +90422,7 @@
 		{
 			"id": "self-managed.concepts.document-handling.configuration.camunda-8-run.storage-options-troubleshooting-checksum-issues-2",
 			"file": "chunks/self-managed.concepts.document-handling.configuration.camunda-8-run.storage-options-troubleshooting-checksum-issues-2.md",
-			"tokens": 930,
+			"tokens": 943,
 			"tags": [
 				"document handling",
 				"document storage configuration",
@@ -90283,7 +90530,7 @@
 		{
 			"id": "self-managed.concepts.document-handling.configuration.docker",
 			"file": "chunks/self-managed.concepts.document-handling.configuration.docker.md",
-			"tokens": 859,
+			"tokens": 909,
 			"tags": [
 				"document handling",
 				"document storage configuration",
@@ -90335,7 +90582,7 @@
 		{
 			"id": "self-managed.concepts.document-handling.configuration.docker.troubleshooting-checksum-issues",
 			"file": "chunks/self-managed.concepts.document-handling.configuration.docker.troubleshooting-checksum-issues.md",
-			"tokens": 846,
+			"tokens": 857,
 			"tags": [
 				"document handling",
 				"document storage configuration",
@@ -90402,7 +90649,7 @@
 		{
 			"id": "self-managed.concepts.document-handling.configuration.docker.property-mapping-reference",
 			"file": "chunks/self-managed.concepts.document-handling.configuration.docker.property-mapping-reference.md",
-			"tokens": 608,
+			"tokens": 619,
 			"tags": [
 				"document handling",
 				"document storage configuration",
@@ -90480,7 +90727,7 @@
 		{
 			"id": "self-managed.concepts.document-handling.configuration.helm.using-the-unified-configuration-format-aws-s3",
 			"file": "chunks/self-managed.concepts.document-handling.configuration.helm.using-the-unified-configuration-format-aws-s3.md",
-			"tokens": 632,
+			"tokens": 661,
 			"tags": [
 				"document handling",
 				"document storage configuration",
@@ -90495,9 +90742,10 @@
 			],
 			"entities": [
 				"extraConfiguration",
+				"accessKeyId.secret",
+				"secretAccessKey.secret",
 				"existingSecret",
-				"accessKeyIdKey",
-				"secretAccessKeyKey",
+				"existingSecretKey",
 				"global.documentStore.type.aws"
 			]
 		},
@@ -90643,7 +90891,7 @@
 		{
 			"id": "self-managed.concepts.document-handling.configuration.index.physical-tenant-isolation",
 			"file": "chunks/self-managed.concepts.document-handling.configuration.index.physical-tenant-isolation.md",
-			"tokens": 233,
+			"tokens": 246,
 			"tags": [
 				"document handling",
 				"document storage configuration",
@@ -90806,7 +91054,7 @@
 		{
 			"id": "self-managed.concepts.exporters.custom-exporter-to-filter-specific-records-valuesyaml",
 			"file": "chunks/self-managed.concepts.exporters.custom-exporter-to-filter-specific-records-valuesyaml.md",
-			"tokens": 191,
+			"tokens": 189,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -90982,7 +91230,7 @@
 		{
 			"id": "self-managed.concepts.multi-region.dual-region.architecture-component-requirements",
 			"file": "chunks/self-managed.concepts.multi-region.dual-region.architecture-component-requirements.md",
-			"tokens": 610,
+			"tokens": 620,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -91294,7 +91542,7 @@
 		{
 			"id": "self-managed.concepts.multi-region.multi-region-rdbms-region-loss",
 			"file": "chunks/self-managed.concepts.multi-region.multi-region-rdbms-region-loss.md",
-			"tokens": 458,
+			"tokens": 443,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -91306,7 +91554,7 @@
 		{
 			"id": "self-managed.concepts.multi-region.multi-region-rdbms-region-loss.recovery-objectives-recovery-objectives",
 			"file": "chunks/self-managed.concepts.multi-region.multi-region-rdbms-region-loss.recovery-objectives-recovery-objectives.md",
-			"tokens": 851,
+			"tokens": 903,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -91321,7 +91569,7 @@
 		{
 			"id": "self-managed.concepts.multi-region.multi-region-rdbms-region-loss.recovery-objectives-recovery-objectives-2",
 			"file": "chunks/self-managed.concepts.multi-region.multi-region-rdbms-region-loss.recovery-objectives-recovery-objectives-2.md",
-			"tokens": 751,
+			"tokens": 835,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -91334,9 +91582,26 @@
 			"entities": []
 		},
 		{
+			"id": "self-managed.concepts.multi-region.multi-region-rdbms-region-loss.processing-during-secondary-storage-recovery-processing-during-secondary-storage-recovery",
+			"file": "chunks/self-managed.concepts.multi-region.multi-region-rdbms-region-loss.processing-during-secondary-storage-recovery-processing-during-secondary-storage-recovery.md",
+			"tokens": 182,
+			"tags": [
+				"self-managed",
+				"concepts",
+				"multi-region",
+				"multi-region-rdbms-region-loss",
+				"processing",
+				"during",
+				"secondary-storage",
+				"recovery",
+				"processing-during-secondary-storage-recovery"
+			],
+			"entities": []
+		},
+		{
 			"id": "self-managed.concepts.multi-region.multi-region-rdbms-region-loss.remove-a-lost-zone",
 			"file": "chunks/self-managed.concepts.multi-region.multi-region-rdbms-region-loss.remove-a-lost-zone.md",
-			"tokens": 414,
+			"tokens": 415,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -91424,7 +91689,7 @@
 		{
 			"id": "self-managed.concepts.multi-region.multi-region-rdbms.architecture-monitor-asynchronous-replication",
 			"file": "chunks/self-managed.concepts.multi-region.multi-region-rdbms.architecture-monitor-asynchronous-replication.md",
-			"tokens": 574,
+			"tokens": 596,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -91577,7 +91842,7 @@
 		{
 			"id": "self-managed.concepts.multi-region.resilience-tiers",
 			"file": "chunks/self-managed.concepts.multi-region.resilience-tiers.md",
-			"tokens": 217,
+			"tokens": 272,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -91605,7 +91870,7 @@
 		{
 			"id": "self-managed.concepts.multi-region.resilience-tiers.comparison-of-multi-region-resilience",
 			"file": "chunks/self-managed.concepts.multi-region.resilience-tiers.comparison-of-multi-region-resilience.md",
-			"tokens": 822,
+			"tokens": 589,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -91617,16 +91882,53 @@
 			"entities": []
 		},
 		{
-			"id": "self-managed.concepts.multi-region.resilience-tiers.comparison-of-multi-region-resilience-2",
-			"file": "chunks/self-managed.concepts.multi-region.resilience-tiers.comparison-of-multi-region-resilience-2.md",
-			"tokens": 142,
+			"id": "self-managed.concepts.multi-region.resilience-tiers.comparison-of-multi-region-resilience-cold-recovery-recovery-conditions",
+			"file": "chunks/self-managed.concepts.multi-region.resilience-tiers.comparison-of-multi-region-resilience-cold-recovery-recovery-conditions.md",
+			"tokens": 62,
 			"tags": [
 				"self-managed",
 				"concepts",
 				"multi-region",
 				"resilience-tiers",
 				"comparison",
-				"resilience"
+				"resilience",
+				"cold",
+				"recovery",
+				"conditions"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.concepts.multi-region.resilience-tiers.comparison-of-multi-region-resilience-dual-region-recovery-conditions",
+			"file": "chunks/self-managed.concepts.multi-region.resilience-tiers.comparison-of-multi-region-resilience-dual-region-recovery-conditions.md",
+			"tokens": 80,
+			"tags": [
+				"self-managed",
+				"concepts",
+				"multi-region",
+				"resilience-tiers",
+				"comparison",
+				"resilience",
+				"dual-region",
+				"recovery",
+				"conditions"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.concepts.multi-region.resilience-tiers.comparison-of-multi-region-resilience-multi-region-rdbms-recovery-conditions",
+			"file": "chunks/self-managed.concepts.multi-region.resilience-tiers.comparison-of-multi-region-resilience-multi-region-rdbms-recovery-conditions.md",
+			"tokens": 276,
+			"tags": [
+				"self-managed",
+				"concepts",
+				"multi-region",
+				"resilience-tiers",
+				"comparison",
+				"resilience",
+				"rdbms",
+				"recovery",
+				"conditions"
 			],
 			"entities": []
 		},
@@ -91919,7 +92221,7 @@
 		{
 			"id": "self-managed.concepts.physical-tenants.api-routing.per-tenant-endpoint-reference",
 			"file": "chunks/self-managed.concepts.physical-tenants.api-routing.per-tenant-endpoint-reference.md",
-			"tokens": 201,
+			"tokens": 222,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -92335,7 +92637,7 @@
 		{
 			"id": "self-managed.concepts.physical-tenants.authorization-model.tenant-local-operations",
 			"file": "chunks/self-managed.concepts.physical-tenants.authorization-model.tenant-local-operations.md",
-			"tokens": 495,
+			"tokens": 498,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -92776,7 +93078,7 @@
 		{
 			"id": "self-managed.concepts.physical-tenants.getting-started.day-2-operations",
 			"file": "chunks/self-managed.concepts.physical-tenants.getting-started.day-2-operations.md",
-			"tokens": 499,
+			"tokens": 538,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -92790,7 +93092,7 @@
 		{
 			"id": "self-managed.concepts.physical-tenants.getting-started.troubleshooting-this-scenario",
 			"file": "chunks/self-managed.concepts.physical-tenants.getting-started.troubleshooting-this-scenario.md",
-			"tokens": 643,
+			"tokens": 655,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -93108,7 +93410,7 @@
 		{
 			"id": "self-managed.concepts.physical-tenants.provisioning-and-lifecycle.default-tenant-lifecycle",
 			"file": "chunks/self-managed.concepts.physical-tenants.provisioning-and-lifecycle.default-tenant-lifecycle.md",
-			"tokens": 495,
+			"tokens": 575,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -93121,7 +93423,10 @@
 				"rename",
 				"delete"
 			],
-			"entities": []
+			"entities": [
+				"lastChange.id",
+				"changeId"
+			]
 		},
 		{
 			"id": "self-managed.concepts.physical-tenants.provisioning-and-lifecycle.out-of-scope",
@@ -93174,7 +93479,7 @@
 		{
 			"id": "self-managed.concepts.physical-tenants.storage-isolation.amazon-opensearch-service-storage",
 			"file": "chunks/self-managed.concepts.physical-tenants.storage-isolation.amazon-opensearch-service-storage.md",
-			"tokens": 763,
+			"tokens": 762,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -93470,7 +93775,7 @@
 		{
 			"id": "self-managed.concepts.physical-tenants.storage-isolation.known-limitations",
 			"file": "chunks/self-managed.concepts.physical-tenants.storage-isolation.known-limitations.md",
-			"tokens": 321,
+			"tokens": 330,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -93522,7 +93827,7 @@
 		{
 			"id": "self-managed.concepts.physical-tenants.troubleshooting.startup-and-configuration-errors",
 			"file": "chunks/self-managed.concepts.physical-tenants.troubleshooting.startup-and-configuration-errors.md",
-			"tokens": 535,
+			"tokens": 631,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -93683,7 +93988,7 @@
 		{
 			"id": "self-managed.concepts.physical-tenants.troubleshooting.known-limitations",
 			"file": "chunks/self-managed.concepts.physical-tenants.troubleshooting.known-limitations.md",
-			"tokens": 543,
+			"tokens": 560,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -93711,7 +94016,7 @@
 		{
 			"id": "self-managed.concepts.secondary-storage.configuring-secondary-storage",
 			"file": "chunks/self-managed.concepts.secondary-storage.configuring-secondary-storage.md",
-			"tokens": 690,
+			"tokens": 693,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -93774,7 +94079,7 @@
 		{
 			"id": "self-managed.concepts.secondary-storage.index.supported-storage-options",
 			"file": "chunks/self-managed.concepts.secondary-storage.index.supported-storage-options.md",
-			"tokens": 594,
+			"tokens": 597,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -93851,7 +94156,7 @@
 		{
 			"id": "self-managed.concepts.secondary-storage.managing-secondary-storage.backups",
 			"file": "chunks/self-managed.concepts.secondary-storage.managing-secondary-storage.backups.md",
-			"tokens": 196,
+			"tokens": 224,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -94042,7 +94347,7 @@
 		{
 			"id": "self-managed.concepts.wait-states.configure.configure-secondary-storage-retention",
 			"file": "chunks/self-managed.concepts.wait-states.configure.configure-secondary-storage-retention.md",
-			"tokens": 122,
+			"tokens": 137,
 			"tags": [
 				"self-managed",
 				"concepts",
@@ -95151,7 +95456,7 @@
 		{
 			"id": "self-managed.deployment.containers.cloud-providers.amazon.index",
 			"file": "chunks/self-managed.deployment.containers.cloud-providers.amazon.index.md",
-			"tokens": 214,
+			"tokens": 213,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -95223,7 +95528,7 @@
 		{
 			"id": "self-managed.deployment.docker.docker.docker-images-and-configuration-references",
 			"file": "chunks/self-managed.deployment.docker.docker.docker-images-and-configuration-references.md",
-			"tokens": 265,
+			"tokens": 264,
 			"tags": [
 				"camunda docker",
 				"self-managed",
@@ -96223,7 +96528,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.amazon.amazon-eks.eks-helm.verify-connectivity-to-camunda-8-without",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.amazon.amazon-eks.eks-helm.verify-connectivity-to-camunda-8-without.md",
-			"tokens": 789,
+			"tokens": 774,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -96473,7 +96778,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.amazon.amazon-eks.eksctl.2.-eks-cluster-kubernetes-secret-encryption",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.amazon.amazon-eks.eksctl.2.-eks-cluster-kubernetes-secret-encryption.md",
-			"tokens": 201,
+			"tokens": 202,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -96556,7 +96861,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.amazon.amazon-eks.eksctl.2.-eks-cluster-check-existing-storageclasses",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.amazon.amazon-eks.eksctl.2.-eks-cluster-check-existing-storageclasses.md",
-			"tokens": 461,
+			"tokens": 459,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -96927,7 +97232,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.amazon.amazon-eks.irsa.instance-metadata-service-imds",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.amazon.amazon-eks.irsa.instance-metadata-service-imds.md",
-			"tokens": 401,
+			"tokens": 409,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -98521,7 +98826,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.amazon.openshift.terraform-setup-dual-region.1.-configure-aws-and-initialize-terraform-openshift-clusters-module-setup",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.amazon.openshift.terraform-setup-dual-region.1.-configure-aws-and-initialize-terraform-openshift-clusters-module-setup.md",
-			"tokens": 858,
+			"tokens": 857,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -98541,7 +98846,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.amazon.openshift.terraform-setup-dual-region.1.-configure-aws-and-initialize-terraform-openshift-clusters-module-setup-2",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.amazon.openshift.terraform-setup-dual-region.1.-configure-aws-and-initialize-terraform-openshift-clusters-module-setup-2.md",
-			"tokens": 844,
+			"tokens": 940,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -98565,7 +98870,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.amazon.openshift.terraform-setup-dual-region.1.-configure-aws-and-initialize-terraform-openshift-clusters-module-setup-3",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.amazon.openshift.terraform-setup-dual-region.1.-configure-aws-and-initialize-terraform-openshift-clusters-module-setup-3.md",
-			"tokens": 513,
+			"tokens": 411,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -98585,7 +98890,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.amazon.openshift.terraform-setup-dual-region.1.-configure-aws-and-initialize-terraform-region-peering-module-setup",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.amazon.openshift.terraform-setup-dual-region.1.-configure-aws-and-initialize-terraform-region-peering-module-setup.md",
-			"tokens": 781,
+			"tokens": 782,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -98608,7 +98913,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.amazon.openshift.terraform-setup-dual-region.1.-configure-aws-and-initialize-terraform-s3-backup-bucket-module-setup",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.amazon.openshift.terraform-setup-dual-region.1.-configure-aws-and-initialize-terraform-s3-backup-bucket-module-setup.md",
-			"tokens": 686,
+			"tokens": 679,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -98881,7 +99186,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.amazon.openshift.terraform-setup.1.-configure-aws-and-initialize-terraform-openshift-cluster-module-setup",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.amazon.openshift.terraform-setup.1.-configure-aws-and-initialize-terraform-openshift-cluster-module-setup.md",
-			"tokens": 860,
+			"tokens": 859,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -99045,7 +99350,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.aks-helm",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.aks-helm.md",
-			"tokens": 321,
+			"tokens": 343,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -99056,12 +99361,14 @@
 				"aks-helm",
 				"requirements"
 			],
-			"entities": []
+			"entities": [
+				"values.yml"
+			]
 		},
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.aks-helm.architecture",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.aks-helm.architecture.md",
-			"tokens": 592,
+			"tokens": 593,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -99238,7 +99545,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.aks-helm.deploy-camunda-8-via-helm-charts-1.-create-the-values.yml-file",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.aks-helm.deploy-camunda-8-via-helm-charts-1.-create-the-values.yml-file.md",
-			"tokens": 182,
+			"tokens": 186,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -99586,7 +99893,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.aks-helm.verify-connectivity-to-camunda-8-without",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.aks-helm.verify-connectivity-to-camunda-8-without.md",
-			"tokens": 787,
+			"tokens": 773,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -99799,7 +100106,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.terraform-setup.requirements-variants",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.terraform-setup.requirements-variants.md",
-			"tokens": 865,
+			"tokens": 866,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -99929,7 +100236,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.terraform-setup.1.-configure-azure-and-initialize-terraform-existing-sp",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.terraform-setup.1.-configure-azure-and-initialize-terraform-existing-sp.md",
-			"tokens": 225,
+			"tokens": 222,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -99950,7 +100257,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.terraform-setup.1.-configure-azure-and-initialize-terraform-new-sp",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.terraform-setup.1.-configure-azure-and-initialize-terraform-new-sp.md",
-			"tokens": 297,
+			"tokens": 294,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -99972,7 +100279,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.terraform-setup.1.-configure-azure-and-initialize-terraform-with-domain",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.terraform-setup.1.-configure-azure-and-initialize-terraform-with-domain.md",
-			"tokens": 355,
+			"tokens": 370,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -99993,7 +100300,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.terraform-setup.1.-configure-azure-and-initialize-terraform-without-domain",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.azure.microsoft-aks.terraform-setup.1.-configure-azure-and-initialize-terraform-without-domain.md",
-			"tokens": 634,
+			"tokens": 649,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -100588,7 +100895,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.kind.domain-mode-deployment-domain-mode-deployment-deploy-camunda-8",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.kind.domain-mode-deployment-domain-mode-deployment-deploy-camunda-8.md",
-			"tokens": 416,
+			"tokens": 363,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -100612,7 +100919,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.kind.no-domain-mode-deployment-no-domain-mode-deployment",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.kind.no-domain-mode-deployment-no-domain-mode-deployment.md",
-			"tokens": 44,
+			"tokens": 821,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -100623,85 +100930,8 @@
 				"mode",
 				"no-domain-mode-deployment"
 			],
-			"entities": []
-		},
-		{
-			"id": "self-managed.deployment.helm.cloud-providers.kind.no-domain-mode-deployment-no-domain-mode-deployment-deploy-prerequisite-services",
-			"file": "chunks/self-managed.deployment.helm.cloud-providers.kind.no-domain-mode-deployment-no-domain-mode-deployment-deploy-prerequisite-services.md",
-			"tokens": 203,
-			"tags": [
-				"self-managed",
-				"deployment",
-				"helm",
-				"cloud-providers",
-				"kind",
-				"no-domain",
-				"mode",
-				"no-domain-mode-deployment",
-				"deploy",
-				"prerequisite",
-				"services"
-			],
-			"entities": []
-		},
-		{
-			"id": "self-managed.deployment.helm.cloud-providers.kind.no-domain-mode-deployment-no-domain-mode-deployment-configure-your-hosts-file-for-keycloak",
-			"file": "chunks/self-managed.deployment.helm.cloud-providers.kind.no-domain-mode-deployment-no-domain-mode-deployment-configure-your-hosts-file-for-keycloak.md",
-			"tokens": 202,
-			"tags": [
-				"self-managed",
-				"deployment",
-				"helm",
-				"cloud-providers",
-				"kind",
-				"no-domain",
-				"mode",
-				"no-domain-mode-deployment",
-				"configure",
-				"hosts",
-				"file",
-				"keycloak"
-			],
 			"entities": [
-				"httpPort"
-			]
-		},
-		{
-			"id": "self-managed.deployment.helm.cloud-providers.kind.no-domain-mode-deployment-no-domain-mode-deployment-create-identity-secrets",
-			"file": "chunks/self-managed.deployment.helm.cloud-providers.kind.no-domain-mode-deployment-no-domain-mode-deployment-create-identity-secrets.md",
-			"tokens": 144,
-			"tags": [
-				"self-managed",
-				"deployment",
-				"helm",
-				"cloud-providers",
-				"kind",
-				"no-domain",
-				"mode",
-				"no-domain-mode-deployment",
-				"create",
-				"identity",
-				"secrets"
-			],
-			"entities": []
-		},
-		{
-			"id": "self-managed.deployment.helm.cloud-providers.kind.no-domain-mode-deployment-no-domain-mode-deployment-deploy-camunda-8",
-			"file": "chunks/self-managed.deployment.helm.cloud-providers.kind.no-domain-mode-deployment-no-domain-mode-deployment-deploy-camunda-8.md",
-			"tokens": 399,
-			"tags": [
-				"self-managed",
-				"deployment",
-				"helm",
-				"cloud-providers",
-				"kind",
-				"no-domain",
-				"mode",
-				"no-domain-mode-deployment",
-				"deploy",
-				"camunda"
-			],
-			"entities": [
+				"httpPort",
 				"camunda-elastic-values.yml",
 				"camunda-rdbms-values.yml",
 				"camunda-keycloak-no-domain-values.yml",
@@ -100743,7 +100973,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.kind.cleanup",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.kind.cleanup.md",
-			"tokens": 165,
+			"tokens": 166,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -100821,7 +101051,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.openshift.dual-region.requirements",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.openshift.dual-region.requirements.md",
-			"tokens": 531,
+			"tokens": 527,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -100855,7 +101085,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.openshift.dual-region.setup-advanced-cluster-management-and-submariner-advanced-cluster-management",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.openshift.dual-region.setup-advanced-cluster-management-and-submariner-advanced-cluster-management.md",
-			"tokens": 851,
+			"tokens": 850,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -100903,7 +101133,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.openshift.dual-region.setup-advanced-cluster-management-and-submariner-submariner",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.openshift.dual-region.setup-advanced-cluster-management-and-submariner-submariner.md",
-			"tokens": 833,
+			"tokens": 831,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -101158,7 +101388,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.openshift.dual-region.failover",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.openshift.dual-region.failover.md",
-			"tokens": 59,
+			"tokens": 57,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -101485,7 +101715,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.openshift.redhat-openshift.deploy-camunda-8-via-helm-charts-openshift-routes-4",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.openshift.redhat-openshift.deploy-camunda-8-via-helm-charts-openshift-routes-4.md",
-			"tokens": 97,
+			"tokens": 98,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -101504,7 +101734,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.openshift.redhat-openshift.deploy-camunda-8-via-helm-charts-kubernetes-ingress-2",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.openshift.redhat-openshift.deploy-camunda-8-via-helm-charts-kubernetes-ingress-2.md",
-			"tokens": 96,
+			"tokens": 97,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -101523,7 +101753,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.openshift.redhat-openshift.deploy-camunda-8-via-helm-charts-no-ingress-2",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.openshift.redhat-openshift.deploy-camunda-8-via-helm-charts-no-ingress-2.md",
-			"tokens": 487,
+			"tokens": 488,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -101682,7 +101912,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.openshift.redhat-openshift.verify-connectivity-to-camunda-8-without",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.openshift.redhat-openshift.verify-connectivity-to-camunda-8-without.md",
-			"tokens": 774,
+			"tokens": 759,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -101885,7 +102115,7 @@
 		{
 			"id": "self-managed.deployment.helm.cloud-providers.openshift.redhat-openshift.pitfalls-to-avoid-no-root-scc",
 			"file": "chunks/self-managed.deployment.helm.cloud-providers.openshift.redhat-openshift.pitfalls-to-avoid-no-root-scc.md",
-			"tokens": 219,
+			"tokens": 236,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -102039,7 +102269,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.application-configs.configuration-default-properties",
 			"file": "chunks/self-managed.deployment.helm.configure.application-configs.configuration-default-properties.md",
-			"tokens": 252,
+			"tokens": 251,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -102171,7 +102401,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.application-configs.practical-example-migrating-from-environment-variables-to-a-configuration-file-step-2-generate-the-default-configuration-file",
 			"file": "chunks/self-managed.deployment.helm.configure.application-configs.practical-example-migrating-from-environment-variables-to-a-configuration-file-step-2-generate-the-default-configuration-file.md",
-			"tokens": 182,
+			"tokens": 196,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -102193,7 +102423,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.application-configs.practical-example-migrating-from-environment-variables-to-a-configuration-file-step-3-map-environment-variables-to-configuration-properties",
 			"file": "chunks/self-managed.deployment.helm.configure.application-configs.practical-example-migrating-from-environment-variables-to-a-configuration-file-step-3-map-environment-variables-to-configuration-properties.md",
-			"tokens": 211,
+			"tokens": 244,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -102210,6 +102440,7 @@
 			],
 			"entities": [
 				"zeebe.broker.data.backup.s3.bucketName",
+				"camunda.data.primary-storage.backup.s3.bucket-name",
 				"zeebe.broker"
 			]
 		},
@@ -103087,7 +103318,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.authentication-and-authorization.generic-oidc-provider.complete-configuration-example",
 			"file": "chunks/self-managed.deployment.helm.configure.authentication-and-authorization.generic-oidc-provider.complete-configuration-example.md",
-			"tokens": 685,
+			"tokens": 771,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -103098,6 +103329,26 @@
 				"complete",
 				"configuration",
 				"example"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.deployment.helm.configure.authentication-and-authorization.generic-oidc-provider.complete-configuration-example-verify-before-deploying",
+			"file": "chunks/self-managed.deployment.helm.configure.authentication-and-authorization.generic-oidc-provider.complete-configuration-example-verify-before-deploying.md",
+			"tokens": 137,
+			"tags": [
+				"self-managed",
+				"deployment",
+				"helm",
+				"configure",
+				"authentication-and-authorization",
+				"generic-oidc-provider",
+				"complete",
+				"configuration",
+				"example",
+				"verify",
+				"before",
+				"deploying"
 			],
 			"entities": [
 				"redirectUrl"
@@ -103336,7 +103587,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.authentication-and-authorization.jwt-token-claims",
 			"file": "chunks/self-managed.deployment.helm.configure.authentication-and-authorization.jwt-token-claims.md",
-			"tokens": 155,
+			"tokens": 209,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -103353,7 +103604,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.authentication-and-authorization.jwt-token-claims.decode-the-token",
 			"file": "chunks/self-managed.deployment.helm.configure.authentication-and-authorization.jwt-token-claims.decode-the-token.md",
-			"tokens": 305,
+			"tokens": 190,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -103362,7 +103613,21 @@
 				"authentication-and-authorization",
 				"jwt-token-claims",
 				"decode",
-				"token",
+				"token"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.deployment.helm.configure.authentication-and-authorization.jwt-token-claims.required-claims",
+			"file": "chunks/self-managed.deployment.helm.configure.authentication-and-authorization.jwt-token-claims.required-claims.md",
+			"tokens": 187,
+			"tags": [
+				"self-managed",
+				"deployment",
+				"helm",
+				"configure",
+				"authentication-and-authorization",
+				"jwt-token-claims",
 				"required",
 				"claims"
 			],
@@ -103561,7 +103826,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.authentication-and-authorization.microsoft-entra.configuration-configure-components-using-oidc-3",
 			"file": "chunks/self-managed.deployment.helm.configure.authentication-and-authorization.microsoft-entra.configuration-configure-components-using-oidc-3.md",
-			"tokens": 109,
+			"tokens": 141,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -103578,7 +103843,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.authentication-and-authorization.microsoft-entra.configuration-full-configuration-example",
 			"file": "chunks/self-managed.deployment.helm.configure.authentication-and-authorization.microsoft-entra.configuration-full-configuration-example.md",
-			"tokens": 468,
+			"tokens": 467,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -103758,7 +104023,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.authentication-and-authorization.troubleshooting-oidc",
 			"file": "chunks/self-managed.deployment.helm.configure.authentication-and-authorization.troubleshooting-oidc.md",
-			"tokens": 192,
+			"tokens": 212,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -104033,7 +104298,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.configure-logical-tenants.configuration",
 			"file": "chunks/self-managed.deployment.helm.configure.configure-logical-tenants.configuration.md",
-			"tokens": 346,
+			"tokens": 454,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -104045,7 +104310,10 @@
 			"entities": [
 				"global.multitenancy.enabled",
 				"orchestration.multitenancy.checks.enabled",
-				"orchestration.multitenancy.api.enabled"
+				"camunda.security.multi-tenancy.checks-enabled",
+				"orchestration.extraConfiguration",
+				"orchestration.multitenancy.api.enabled",
+				"camunda.security.multi-tenancy.api-enabled"
 			]
 		},
 		{
@@ -104086,7 +104354,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.configure-physical-tenants.prerequisites",
 			"file": "chunks/self-managed.deployment.helm.configure.configure-physical-tenants.prerequisites.md",
-			"tokens": 440,
+			"tokens": 488,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -104099,6 +104367,7 @@
 			],
 			"entities": [
 				"orchestration.configuration",
+				"orchestration.extraConfiguration",
 				"application.yaml",
 				"security.initialization",
 				"orchestration.env",
@@ -104232,7 +104501,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.data-retention.prerequisites-example-usage",
 			"file": "chunks/self-managed.deployment.helm.configure.data-retention.prerequisites-example-usage.md",
-			"tokens": 386,
+			"tokens": 384,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -104307,7 +104576,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.data-retention.differences-from-previous-versions",
 			"file": "chunks/self-managed.deployment.helm.configure.data-retention.differences-from-previous-versions.md",
-			"tokens": 326,
+			"tokens": 315,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -104398,7 +104667,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.database.all-shards-failed",
 			"file": "chunks/self-managed.deployment.helm.configure.database.all-shards-failed.md",
-			"tokens": 583,
+			"tokens": 582,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -104937,7 +105206,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.database.rdbms-jdbc-drivers.loading-jdbc-drivers-into-pods",
 			"file": "chunks/self-managed.deployment.helm.configure.database.rdbms-jdbc-drivers.loading-jdbc-drivers-into-pods.md",
-			"tokens": 556,
+			"tokens": 586,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -105167,7 +105436,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.database.rdbms-schema-management.rolling-upgrades",
 			"file": "chunks/self-managed.deployment.helm.configure.database.rdbms-schema-management.rolling-upgrades.md",
-			"tokens": 359,
+			"tokens": 369,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -105334,7 +105603,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.database.rdbms-troubleshooting.schema-creation-failure",
 			"file": "chunks/self-managed.deployment.helm.configure.database.rdbms-troubleshooting.schema-creation-failure.md",
-			"tokens": 149,
+			"tokens": 178,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -105375,7 +105644,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.database.rdbms-troubleshooting.slow-data-export",
 			"file": "chunks/self-managed.deployment.helm.configure.database.rdbms-troubleshooting.slow-data-export.md",
-			"tokens": 187,
+			"tokens": 192,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -105387,10 +105656,7 @@
 				"data",
 				"export"
 			],
-			"entities": [
-				"flushInterval",
-				"queueSize"
-			]
+			"entities": []
 		},
 		{
 			"id": "self-managed.deployment.helm.configure.database.rdbms-troubleshooting.tls-ssl-configuration",
@@ -105560,7 +105826,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.database.rdbms.using-aws-aurora-postgresql-optional",
 			"file": "chunks/self-managed.deployment.helm.configure.database.rdbms.using-aws-aurora-postgresql-optional.md",
-			"tokens": 305,
+			"tokens": 334,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -105623,7 +105889,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.database.using-existing-postgres.troubleshooting",
 			"file": "chunks/self-managed.deployment.helm.configure.database.using-existing-postgres.troubleshooting.md",
-			"tokens": 170,
+			"tokens": 191,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -105652,7 +105918,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.database.using-external-opensearch.prerequisites",
 			"file": "chunks/self-managed.deployment.helm.configure.database.using-external-opensearch.prerequisites.md",
-			"tokens": 783,
+			"tokens": 770,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -105668,6 +105934,7 @@
 				"orchestration.data.secondaryStorage.opensearch.url",
 				"orchestration.data.secondaryStorage.opensearch.auth.username",
 				"orchestration.index.prefix",
+				"global.tls.caBundle.secret",
 				"values.yaml"
 			]
 		},
@@ -105760,7 +106027,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.database.validate-rdbms.logs-to-inspect",
 			"file": "chunks/self-managed.deployment.helm.configure.database.validate-rdbms.logs-to-inspect.md",
-			"tokens": 271,
+			"tokens": 264,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -106007,7 +106274,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.ingress.accessing-components-without-ingress.accessing-web-applications",
 			"file": "chunks/self-managed.deployment.helm.configure.ingress.accessing-components-without-ingress.accessing-web-applications.md",
-			"tokens": 533,
+			"tokens": 580,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -106020,7 +106287,9 @@
 				"applications"
 			],
 			"entities": [
-				"orchestration.security.initialization.users"
+				"orchestration.security.initialization.users",
+				"identity.firstUser.username",
+				"identity.firstUser.secret"
 			]
 		},
 		{
@@ -106054,9 +106323,9 @@
 			"entities": []
 		},
 		{
-			"id": "self-managed.deployment.helm.configure.ingress.gateway-api-setup.prerequisites-scenario-a-gateway-and-camunda-in-the-same-namespace-default",
-			"file": "chunks/self-managed.deployment.helm.configure.ingress.gateway-api-setup.prerequisites-scenario-a-gateway-and-camunda-in-the-same-namespace-default.md",
-			"tokens": 190,
+			"id": "self-managed.deployment.helm.configure.ingress.gateway-api-setup.prerequisites-scenario-a-gateway-and-camunda-in-the-same-namespace",
+			"file": "chunks/self-managed.deployment.helm.configure.ingress.gateway-api-setup.prerequisites-scenario-a-gateway-and-camunda-in-the-same-namespace.md",
+			"tokens": 188,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -106438,7 +106707,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.ingress.ingress-setup.troubleshooting",
 			"file": "chunks/self-managed.deployment.helm.configure.ingress.ingress-setup.troubleshooting.md",
-			"tokens": 43,
+			"tokens": 42,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -106464,7 +106733,7 @@
 			],
 			"entities": [
 				"values.yaml",
-				"global.license.key"
+				"global.license.secret.inlineSecret"
 			]
 		},
 		{
@@ -106857,7 +107126,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.operator-based-infrastructure.elasticsearch-deployment",
 			"file": "chunks/self-managed.deployment.helm.configure.operator-based-infrastructure.elasticsearch-deployment.md",
-			"tokens": 673,
+			"tokens": 688,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -107357,7 +107626,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.orchestration-tls-modes.first-class-values",
 			"file": "chunks/self-managed.deployment.helm.configure.orchestration-tls-modes.first-class-values.md",
-			"tokens": 384,
+			"tokens": 415,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -107473,7 +107742,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.orchestration-tls-modes.first-class-values-verify-the-rest-backend-certificate-at-the-ingress-nginx",
 			"file": "chunks/self-managed.deployment.helm.configure.orchestration-tls-modes.first-class-values-verify-the-rest-backend-certificate-at-the-ingress-nginx.md",
-			"tokens": 388,
+			"tokens": 392,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -107521,7 +107790,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.orchestration-tls-modes.example-rest-plaintext-grpc-tls",
 			"file": "chunks/self-managed.deployment.helm.configure.orchestration-tls-modes.example-rest-plaintext-grpc-tls.md",
-			"tokens": 294,
+			"tokens": 290,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -107933,7 +108202,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.registry-and-images.air-gapped-installation.configuration-access-camunda-images-from-the-camunda-registry",
 			"file": "chunks/self-managed.deployment.helm.configure.registry-and-images.air-gapped-installation.configuration-access-camunda-images-from-the-camunda-registry.md",
-			"tokens": 93,
+			"tokens": 95,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -107952,7 +108221,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.registry-and-images.air-gapped-installation.configuration-required-helm-charts",
 			"file": "chunks/self-managed.deployment.helm.configure.registry-and-images.air-gapped-installation.configuration-required-helm-charts.md",
-			"tokens": 216,
+			"tokens": 213,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -107988,7 +108257,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.registry-and-images.air-gapped-installation.configuration-deploy-helm-charts-to-a-repository",
 			"file": "chunks/self-managed.deployment.helm.configure.registry-and-images.air-gapped-installation.configuration-deploy-helm-charts-to-a-repository.md",
-			"tokens": 297,
+			"tokens": 298,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -108347,7 +108616,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.secret-management.extract-plaintext-values-and-reference-them-as-kubernetes-secrets-hands-on-example-camunda-setup",
 			"file": "chunks/self-managed.deployment.helm.configure.secret-management.extract-plaintext-values-and-reference-them-as-kubernetes-secrets-hands-on-example-camunda-setup.md",
-			"tokens": 567,
+			"tokens": 645,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -108398,7 +108667,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.tls",
 			"file": "chunks/self-managed.deployment.helm.configure.tls.md",
-			"tokens": 308,
+			"tokens": 302,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -108550,7 +108819,7 @@
 		{
 			"id": "self-managed.deployment.helm.configure.tls.common-gotchas",
 			"file": "chunks/self-managed.deployment.helm.configure.tls.common-gotchas.md",
-			"tokens": 283,
+			"tokens": 319,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -108559,11 +108828,10 @@
 				"tls",
 				"common",
 				"gotchas",
+				"encrypt",
 				"in-cluster",
 				"transport",
-				"service",
-				"mesh",
-				"required"
+				"in-cluster-transport-service-mesh-required"
 			],
 			"entities": [
 				"trustStoreType",
@@ -108774,7 +109042,7 @@
 		{
 			"id": "self-managed.deployment.helm.install.helm-with-rdbms.installation-workflow-step-6-handle-custom-jdbc-drivers-if-required",
 			"file": "chunks/self-managed.deployment.helm.install.helm-with-rdbms.installation-workflow-step-6-handle-custom-jdbc-drivers-if-required.md",
-			"tokens": 307,
+			"tokens": 418,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -108790,7 +109058,8 @@
 				"drivers"
 			],
 			"entities": [
-				"values-rdbms.yaml"
+				"values-rdbms.yaml",
+				"binaryData"
 			]
 		},
 		{
@@ -108830,7 +109099,7 @@
 		{
 			"id": "self-managed.deployment.helm.install.helm-with-rdbms.common-deployment-scenarios",
 			"file": "chunks/self-managed.deployment.helm.install.helm-with-rdbms.common-deployment-scenarios.md",
-			"tokens": 387,
+			"tokens": 388,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -109236,7 +109505,7 @@
 		{
 			"id": "self-managed.deployment.helm.install.production.index.operational-configuration-options-reliability-2",
 			"file": "chunks/self-managed.deployment.helm.install.production.index.operational-configuration-options-reliability-2.md",
-			"tokens": 840,
+			"tokens": 854,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -109254,13 +109523,15 @@
 				"topology.kubernetes.io/zone",
 				"DoNotSchedule",
 				"podAntiAffinity",
-				"labelSelector"
+				"labelSelector",
+				"emptyDir",
+				"persistentVolumeClaim"
 			]
 		},
 		{
 			"id": "self-managed.deployment.helm.install.production.index.operational-configuration-options-reliability-3",
 			"file": "chunks/self-managed.deployment.helm.install.production.index.operational-configuration-options-reliability-3.md",
-			"tokens": 141,
+			"tokens": 167,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -109278,7 +109549,7 @@
 		{
 			"id": "self-managed.deployment.helm.install.production.index.operational-configuration-options-security",
 			"file": "chunks/self-managed.deployment.helm.install.production.index.operational-configuration-options-security.md",
-			"tokens": 1118,
+			"tokens": 1112,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -109433,7 +109704,7 @@
 		{
 			"id": "self-managed.deployment.helm.install.quick-install.install-a-specific-version",
 			"file": "chunks/self-managed.deployment.helm.install.quick-install.install-a-specific-version.md",
-			"tokens": 272,
+			"tokens": 319,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -109463,7 +109734,7 @@
 		{
 			"id": "self-managed.deployment.helm.install.quick-install.next-steps",
 			"file": "chunks/self-managed.deployment.helm.install.quick-install.next-steps.md",
-			"tokens": 259,
+			"tokens": 255,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -110013,7 +110284,7 @@
 		{
 			"id": "self-managed.deployment.helm.install.topology.orchestration-release.install-the-release",
 			"file": "chunks/self-managed.deployment.helm.install.topology.orchestration-release.install-the-release.md",
-			"tokens": 335,
+			"tokens": 338,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -110280,7 +110551,20 @@
 		{
 			"id": "self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit",
 			"file": "chunks/self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.md",
-			"tokens": 300,
+			"tokens": 216,
+			"tags": [
+				"self-managed",
+				"deployment",
+				"helm",
+				"operational-tasks",
+				"camunda-helm-toolkit"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.check-version-compatibility",
+			"file": "chunks/self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.check-version-compatibility.md",
+			"tokens": 232,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -110296,7 +110580,7 @@
 		{
 			"id": "self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.prepare-your-files",
 			"file": "chunks/self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.prepare-your-files.md",
-			"tokens": 185,
+			"tokens": 189,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -110313,7 +110597,7 @@
 		{
 			"id": "self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.use-the-local-web-ui",
 			"file": "chunks/self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.use-the-local-web-ui.md",
-			"tokens": 272,
+			"tokens": 276,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -110326,9 +110610,23 @@
 			"entities": []
 		},
 		{
+			"id": "self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.what-to-do-with-the-report",
+			"file": "chunks/self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.what-to-do-with-the-report.md",
+			"tokens": 233,
+			"tags": [
+				"self-managed",
+				"deployment",
+				"helm",
+				"operational-tasks",
+				"camunda-helm-toolkit",
+				"report"
+			],
+			"entities": []
+		},
+		{
 			"id": "self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.migrate-from-the-cli",
 			"file": "chunks/self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.migrate-from-the-cli.md",
-			"tokens": 641,
+			"tokens": 645,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -110349,7 +110647,7 @@
 		{
 			"id": "self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.validate-override-files",
 			"file": "chunks/self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.validate-override-files.md",
-			"tokens": 207,
+			"tokens": 206,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -110365,7 +110663,7 @@
 		{
 			"id": "self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.interpret-reports-and-exit-codes",
 			"file": "chunks/self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.interpret-reports-and-exit-codes.md",
-			"tokens": 332,
+			"tokens": 336,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -110382,7 +110680,7 @@
 		{
 			"id": "self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.keep-configuration-local",
 			"file": "chunks/self-managed.deployment.helm.operational-tasks.camunda-helm-toolkit.keep-configuration-local.md",
-			"tokens": 170,
+			"tokens": 174,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -110641,7 +110939,7 @@
 		{
 			"id": "self-managed.deployment.helm.operational-tasks.diagnostics",
 			"file": "chunks/self-managed.deployment.helm.operational-tasks.diagnostics.md",
-			"tokens": 236,
+			"tokens": 240,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -110651,12 +110949,14 @@
 				"collection",
 				"script"
 			],
-			"entities": []
+			"entities": [
+				"helm-values.yaml"
+			]
 		},
 		{
 			"id": "self-managed.deployment.helm.operational-tasks.diagnostics.what-the-script-collects",
 			"file": "chunks/self-managed.deployment.helm.operational-tasks.diagnostics.what-the-script-collects.md",
-			"tokens": 284,
+			"tokens": 379,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -110666,7 +110966,11 @@
 				"script",
 				"collects"
 			],
-			"entities": []
+			"entities": [
+				"helm-version.txt",
+				"helm-history.txt",
+				"helm-values.yaml"
+			]
 		},
 		{
 			"id": "self-managed.deployment.helm.operational-tasks.diagnostics.usage",
@@ -111373,7 +111677,7 @@
 		{
 			"id": "self-managed.deployment.helm.operational-tasks.multi-region-rdbms-ops",
 			"file": "chunks/self-managed.deployment.helm.operational-tasks.multi-region-rdbms-ops.md",
-			"tokens": 692,
+			"tokens": 779,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -111402,7 +111706,7 @@
 		{
 			"id": "self-managed.deployment.helm.operational-tasks.multi-region-rdbms-ops.prerequisites",
 			"file": "chunks/self-managed.deployment.helm.operational-tasks.multi-region-rdbms-ops.prerequisites.md",
-			"tokens": 334,
+			"tokens": 377,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -111414,6 +111718,26 @@
 			"entities": [
 				"aws/kubernetes/eks-multi-region-rdbms"
 			]
+		},
+		{
+			"id": "self-managed.deployment.helm.operational-tasks.multi-region-rdbms-ops.handle-a-region-loss-monitor-secondary-storage-recovery-monitor-secondary-storage-recovery",
+			"file": "chunks/self-managed.deployment.helm.operational-tasks.multi-region-rdbms-ops.handle-a-region-loss-monitor-secondary-storage-recovery-monitor-secondary-storage-recovery.md",
+			"tokens": 133,
+			"tags": [
+				"self-managed",
+				"deployment",
+				"helm",
+				"operational-tasks",
+				"multi-region-rdbms-ops",
+				"handle",
+				"region",
+				"loss",
+				"monitor",
+				"secondary-storage",
+				"recovery",
+				"monitor-secondary-storage-recovery"
+			],
+			"entities": []
 		},
 		{
 			"id": "self-managed.deployment.helm.operational-tasks.multi-region-rdbms-ops.handle-a-region-loss-1.-confirm-the-quorum-is-intact",
@@ -112202,7 +112526,7 @@
 		{
 			"id": "self-managed.deployment.manual.cloud-providers.amazon.aws-ec2.2.-deploy-camunda-8-turn-off-bastion-host-optional",
 			"file": "chunks/self-managed.deployment.manual.cloud-providers.amazon.aws-ec2.2.-deploy-camunda-8-turn-off-bastion-host-optional.md",
-			"tokens": 91,
+			"tokens": 93,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -112669,7 +112993,7 @@
 		{
 			"id": "self-managed.deployment.manual.rdbms.configuration.database-setup",
 			"file": "chunks/self-managed.deployment.manual.rdbms.configuration.database-setup.md",
-			"tokens": 196,
+			"tokens": 205,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -112770,7 +113094,7 @@
 		{
 			"id": "self-managed.deployment.manual.rdbms.operations",
 			"file": "chunks/self-managed.deployment.manual.rdbms.operations.md",
-			"tokens": 168,
+			"tokens": 196,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -112785,7 +113109,7 @@
 		{
 			"id": "self-managed.deployment.manual.rdbms.operations.schema-upgrades",
 			"file": "chunks/self-managed.deployment.manual.rdbms.operations.schema-upgrades.md",
-			"tokens": 577,
+			"tokens": 158,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -112796,7 +113120,20 @@
 				"upgrades",
 				"disabling",
 				"automatic",
-				"updates",
+				"updates"
+			],
+			"entities": []
+		},
+		{
+			"id": "self-managed.deployment.manual.rdbms.operations.verification-and-troubleshooting",
+			"file": "chunks/self-managed.deployment.manual.rdbms.operations.verification-and-troubleshooting.md",
+			"tokens": 453,
+			"tags": [
+				"self-managed",
+				"deployment",
+				"manual",
+				"rdbms",
+				"operations",
 				"verification",
 				"troubleshooting"
 			],
@@ -112820,7 +113157,7 @@
 		{
 			"id": "self-managed.deployment.manual.rdbms.operations.security",
 			"file": "chunks/self-managed.deployment.manual.rdbms.operations.security.md",
-			"tokens": 161,
+			"tokens": 160,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -112898,7 +113235,7 @@
 		{
 			"id": "self-managed.deployment.manual.rdbms.rdbms-production-architecture.network-and-security",
 			"file": "chunks/self-managed.deployment.manual.rdbms.rdbms-production-architecture.network-and-security.md",
-			"tokens": 167,
+			"tokens": 174,
 			"tags": [
 				"self-managed",
 				"deployment",
@@ -113104,7 +113441,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.elasticsearch.backup",
 			"file": "chunks/self-managed.operational-guides.backup-restore.elasticsearch.backup.md",
-			"tokens": 569,
+			"tokens": 575,
 			"tags": [
 				"backup",
 				"backups",
@@ -113671,7 +114008,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.elasticsearch.restore-api",
 			"file": "chunks/self-managed.operational-guides.backup-restore.elasticsearch.restore-api.md",
-			"tokens": 378,
+			"tokens": 377,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -113795,7 +114132,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.elasticsearch.restore-api.restoring-an-elasticsearch-opensearch-backed-cluster-3.-restore-elasticsearch-opensearch-snapshots-restore-es-snapshots-step",
 			"file": "chunks/self-managed.operational-guides.backup-restore.elasticsearch.restore-api.restoring-an-elasticsearch-opensearch-backed-cluster-3.-restore-elasticsearch-opensearch-snapshots-restore-es-snapshots-step.md",
-			"tokens": 396,
+			"tokens": 439,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -113960,7 +114297,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.elasticsearch.restore-api.restoring-an-elasticsearch-opensearch-backed-cluster-6.-confirm-the-cluster-state-after-restore-api-recovery",
 			"file": "chunks/self-managed.operational-guides.backup-restore.elasticsearch.restore-api.restoring-an-elasticsearch-opensearch-backed-cluster-6.-confirm-the-cluster-state-after-restore-api-recovery.md",
-			"tokens": 94,
+			"tokens": 97,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -113976,6 +114313,28 @@
 				"restore"
 			],
 			"entities": []
+		},
+		{
+			"id": "self-managed.operational-guides.backup-restore.elasticsearch.restore-api.restoring-an-elasticsearch-opensearch-backed-cluster-7.-start-optimize-again",
+			"file": "chunks/self-managed.operational-guides.backup-restore.elasticsearch.restore-api.restoring-an-elasticsearch-opensearch-backed-cluster-7.-start-optimize-again.md",
+			"tokens": 103,
+			"tags": [
+				"self-managed",
+				"operational-guides",
+				"backup-restore",
+				"elasticsearch",
+				"restore-api",
+				"restoring",
+				"opensearch-backed",
+				"cluster",
+				"start",
+				"optimize",
+				"again"
+			],
+			"entities": [
+				"optimize.enabled",
+				"values.yml"
+			]
 		},
 		{
 			"id": "self-managed.operational-guides.backup-restore.elasticsearch.restore-api.restoring-a-cluster-with-multiple-physical-tenants",
@@ -114388,7 +114747,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.elasticsearch.restore-application.2.-restore-the-zeebe-cluster-restore-zeebe-cluster-restoring-a-cluster-with-multiple-physical-tenants",
 			"file": "chunks/self-managed.operational-guides.backup-restore.elasticsearch.restore-application.2.-restore-the-zeebe-cluster-restore-zeebe-cluster-restoring-a-cluster-with-multiple-physical-tenants.md",
-			"tokens": 290,
+			"tokens": 301,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -114448,7 +114807,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.elasticsearch.restore-application.2.-restore-the-zeebe-cluster-restore-zeebe-cluster-restore-success-or-failure",
 			"file": "chunks/self-managed.operational-guides.backup-restore.elasticsearch.restore-application.2.-restore-the-zeebe-cluster-restore-zeebe-cluster-restore-success-or-failure.md",
-			"tokens": 305,
+			"tokens": 343,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -114463,7 +114822,8 @@
 				"failure"
 			],
 			"entities": [
-				"zeebe.restore.ignoreFilesInTarget"
+				"camunda.system.restore.ignore-files-in-target",
+				"directory-initialized.json"
 			]
 		},
 		{
@@ -114760,7 +115120,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.optimize-backup-and-restore.restore-a-backup-step-3-stop-optimize",
 			"file": "chunks/self-managed.operational-guides.backup-restore.optimize-backup-and-restore.restore-a-backup-step-3-stop-optimize.md",
-			"tokens": 117,
+			"tokens": 124,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -114779,7 +115139,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.optimize-backup-and-restore.restore-a-backup-step-4-delete-all-existing-optimize-indices",
 			"file": "chunks/self-managed.operational-guides.backup-restore.optimize-backup-and-restore.restore-a-backup-step-4-delete-all-existing-optimize-indices.md",
-			"tokens": 55,
+			"tokens": 110,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -114799,7 +115159,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.optimize-backup-and-restore.restore-a-backup-elasticsearch-3",
 			"file": "chunks/self-managed.operational-guides.backup-restore.optimize-backup-and-restore.restore-a-backup-elasticsearch-3.md",
-			"tokens": 64,
+			"tokens": 65,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -114814,7 +115174,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.optimize-backup-and-restore.restore-a-backup-opensearch-3",
 			"file": "chunks/self-managed.operational-guides.backup-restore.optimize-backup-and-restore.restore-a-backup-opensearch-3.md",
-			"tokens": 64,
+			"tokens": 65,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -115124,7 +115484,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.rdbms.restore-api",
 			"file": "chunks/self-managed.operational-guides.backup-restore.rdbms.restore-api.md",
-			"tokens": 394,
+			"tokens": 393,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -115508,7 +115868,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.rdbms.restore-application",
 			"file": "chunks/self-managed.operational-guides.backup-restore.rdbms.restore-application.md",
-			"tokens": 250,
+			"tokens": 249,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -115858,7 +116218,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.rdbms.restore-application.3.-restore-zeebe-from-its-primary-storage-backup-restore-zeebe-restoring-a-cluster-with-multiple-physical-tenants",
 			"file": "chunks/self-managed.operational-guides.backup-restore.rdbms.restore-application.3.-restore-zeebe-from-its-primary-storage-backup-restore-zeebe-restoring-a-cluster-with-multiple-physical-tenants.md",
-			"tokens": 296,
+			"tokens": 306,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -115922,7 +116282,7 @@
 		{
 			"id": "self-managed.operational-guides.backup-restore.rdbms.restore-application.3.-restore-zeebe-from-its-primary-storage-backup-restore-zeebe-restore-success-or-failure",
 			"file": "chunks/self-managed.operational-guides.backup-restore.rdbms.restore-application.3.-restore-zeebe-from-its-primary-storage-backup-restore-zeebe-restore-success-or-failure.md",
-			"tokens": 390,
+			"tokens": 428,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -115938,7 +116298,8 @@
 				"success"
 			],
 			"entities": [
-				"zeebe.restore.ignoreFilesInTarget"
+				"camunda.system.restore.ignore-files-in-target",
+				"directory-initialized.json"
 			]
 		},
 		{
@@ -116141,12 +116502,14 @@
 				"zeebe-backup-and-restore",
 				"api"
 			],
-			"entities": []
+			"entities": [
+				"backupRuntime"
+			]
 		},
 		{
 			"id": "self-managed.operational-guides.backup-restore.zeebe-backup-and-restore.create-backup-api",
 			"file": "chunks/self-managed.operational-guides.backup-restore.zeebe-backup-and-restore.create-backup-api.md",
-			"tokens": 475,
+			"tokens": 474,
 			"tags": [
 				"backup",
 				"backups",
@@ -116369,7 +116732,7 @@
 		{
 			"id": "self-managed.operational-guides.configure-flow-control.configure-flow-control.configure-temporary-write-limits-fetch-current-configuration",
 			"file": "chunks/self-managed.operational-guides.configure-flow-control.configure-flow-control.configure-temporary-write-limits-fetch-current-configuration.md",
-			"tokens": 358,
+			"tokens": 359,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -116454,7 +116817,7 @@
 		{
 			"id": "self-managed.operational-guides.data-purge.purge-data",
 			"file": "chunks/self-managed.operational-guides.data-purge.purge-data.md",
-			"tokens": 93,
+			"tokens": 92,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -116483,7 +116846,7 @@
 		{
 			"id": "self-managed.operational-guides.data-purge.purge-data-1.-send-the-purge-request-to-the-zeebe-gateway",
 			"file": "chunks/self-managed.operational-guides.data-purge.purge-data-1.-send-the-purge-request-to-the-zeebe-gateway.md",
-			"tokens": 439,
+			"tokens": 438,
 			"tags": [
 				"self-managed",
 				"operational-guides",
@@ -116499,7 +116862,7 @@
 				"changeId",
 				"currentTopology",
 				"plannedChanges",
-				"expectedToplogy"
+				"expectedTopology"
 			]
 		},
 		{
@@ -116597,7 +116960,7 @@
 		{
 			"id": "self-managed.operational-guides.monitoring.metrics.configuration-defaults",
 			"file": "chunks/self-managed.operational-guides.monitoring.metrics.configuration-defaults.md",
-			"tokens": 519,
+			"tokens": 517,
 			"tags": [
 				"observability",
 				"metrics",
@@ -116909,7 +117272,7 @@
 		{
 			"id": "self-managed.operational-guides.monitoring.metrics.secret-resolution-and-cache-metrics-cache-size-and-the-configured-maximum",
 			"file": "chunks/self-managed.operational-guides.monitoring.metrics.secret-resolution-and-cache-metrics-cache-size-and-the-configured-maximum.md",
-			"tokens": 91,
+			"tokens": 92,
 			"tags": [
 				"observability",
 				"metrics",
@@ -116960,7 +117323,7 @@
 		{
 			"id": "self-managed.operational-guides.monitoring.metrics.grafana",
 			"file": "chunks/self-managed.operational-guides.monitoring.metrics.grafana.md",
-			"tokens": 394,
+			"tokens": 395,
 			"tags": [
 				"observability",
 				"metrics",
@@ -117554,7 +117917,7 @@
 		{
 			"id": "self-managed.quickstart.developer-quickstart.c8run.install-start.shut-down-camunda-8-run",
 			"file": "chunks/self-managed.quickstart.developer-quickstart.c8run.install-start.shut-down-camunda-8-run.md",
-			"tokens": 161,
+			"tokens": 164,
 			"tags": [
 				"self-managed",
 				"quickstart",
@@ -117591,7 +117954,7 @@
 		{
 			"id": "self-managed.quickstart.developer-quickstart.c8run.secondary-storage.default-h2-camunda-8-run",
 			"file": "chunks/self-managed.quickstart.developer-quickstart.c8run.secondary-storage.default-h2-camunda-8-run.md",
-			"tokens": 182,
+			"tokens": 184,
 			"tags": [
 				"self-managed",
 				"quickstart",
@@ -117729,7 +118092,7 @@
 				"primary"
 			],
 			"entities": [
-				"data.secondary-storage",
+				"camunda.data.secondary-storage",
 				"application.yaml"
 			]
 		},
@@ -117836,7 +118199,7 @@
 		{
 			"id": "self-managed.quickstart.developer-quickstart.c8run-troubleshooting.data-and-persistence-issues",
 			"file": "chunks/self-managed.quickstart.developer-quickstart.c8run-troubleshooting.data-and-persistence-issues.md",
-			"tokens": 330,
+			"tokens": 190,
 			"tags": [
 				"self-managed",
 				"quickstart",
@@ -117844,11 +118207,25 @@
 				"c8run-troubleshooting",
 				"data",
 				"persistence",
-				"issues",
-				"connector"
+				"issues"
 			],
 			"entities": [
-				"camunda-data/",
+				"camunda-data/"
+			]
+		},
+		{
+			"id": "self-managed.quickstart.developer-quickstart.c8run-troubleshooting.connector-issues",
+			"file": "chunks/self-managed.quickstart.developer-quickstart.c8run-troubleshooting.connector-issues.md",
+			"tokens": 260,
+			"tags": [
+				"self-managed",
+				"quickstart",
+				"developer-quickstart",
+				"c8run-troubleshooting",
+				"connector",
+				"issues"
+			],
+			"entities": [
 				"connectors.log",
 				"connector-secrets.txt"
 			]
@@ -117882,7 +118259,7 @@
 		{
 			"id": "self-managed.quickstart.developer-quickstart.c8run.pages-in-this-section",
 			"file": "chunks/self-managed.quickstart.developer-quickstart.c8run.pages-in-this-section.md",
-			"tokens": 491,
+			"tokens": 524,
 			"tags": [
 				"self-managed",
 				"quickstart",
@@ -117891,30 +118268,21 @@
 				"pages",
 				"section",
 				"common",
-				"tasks",
-				"install",
-				"start",
-				"camunda",
-				"run"
+				"tasks"
 			],
 			"entities": [
 				"application.yaml"
 			]
 		},
 		{
-			"id": "self-managed.quickstart.developer-quickstart.c8run.shut-down-camunda-8-run-shut-down-camunda-8-run",
-			"file": "chunks/self-managed.quickstart.developer-quickstart.c8run.shut-down-camunda-8-run-shut-down-camunda-8-run.md",
-			"tokens": 96,
+			"id": "self-managed.quickstart.developer-quickstart.c8run.next-steps",
+			"file": "chunks/self-managed.quickstart.developer-quickstart.c8run.next-steps.md",
+			"tokens": 63,
 			"tags": [
 				"self-managed",
 				"quickstart",
 				"developer-quickstart",
 				"c8run",
-				"shut",
-				"down",
-				"camunda",
-				"run",
-				"shut-down-camunda-8-run",
 				"next",
 				"steps"
 			],
@@ -118161,7 +118529,7 @@
 		{
 			"id": "self-managed.quickstart.developer-quickstart.docker-compose.secondary-storage",
 			"file": "chunks/self-managed.quickstart.developer-quickstart.docker-compose.secondary-storage.md",
-			"tokens": 794,
+			"tokens": 793,
 			"tags": [
 				"self-managed",
 				"quickstart",
@@ -118392,7 +118760,7 @@
 		{
 			"id": "self-managed.quickstart.developer-quickstart.docker-compose.pages-in-this-section",
 			"file": "chunks/self-managed.quickstart.developer-quickstart.docker-compose.pages-in-this-section.md",
-			"tokens": 320,
+			"tokens": 360,
 			"tags": [
 				"self-managed",
 				"quickstart",
@@ -118401,28 +118769,19 @@
 				"pages",
 				"section",
 				"common",
-				"tasks",
-				"install",
-				"start",
-				"camunda",
-				"docker"
+				"tasks"
 			],
 			"entities": []
 		},
 		{
-			"id": "self-managed.quickstart.developer-quickstart.docker-compose.stop-camunda-8-with-docker-compose-stop-camunda-8-with-docker-compose",
-			"file": "chunks/self-managed.quickstart.developer-quickstart.docker-compose.stop-camunda-8-with-docker-compose-stop-camunda-8-with-docker-compose.md",
-			"tokens": 136,
+			"id": "self-managed.quickstart.developer-quickstart.docker-compose.next-steps",
+			"file": "chunks/self-managed.quickstart.developer-quickstart.docker-compose.next-steps.md",
+			"tokens": 96,
 			"tags": [
 				"self-managed",
 				"quickstart",
 				"developer-quickstart",
 				"docker-compose",
-				"stop",
-				"camunda",
-				"docker",
-				"compose",
-				"stop-camunda-8-with-docker-compose",
 				"next",
 				"steps"
 			],
@@ -118787,7 +119146,7 @@
 		{
 			"id": "self-managed.reference-architecture.manual.architecture",
 			"file": "chunks/self-managed.reference-architecture.manual.architecture.md",
-			"tokens": 461,
+			"tokens": 465,
 			"tags": [
 				"self-managed",
 				"reference-architecture",
@@ -118835,7 +119194,7 @@
 		{
 			"id": "self-managed.reference-architecture.reference-architecture.architecture-management-plane-vs-orchestration-cluster-camunda-hub-vs-orchestration-cluster",
 			"file": "chunks/self-managed.reference-architecture.reference-architecture.architecture-management-plane-vs-orchestration-cluster-camunda-hub-vs-orchestration-cluster.md",
-			"tokens": 1143,
+			"tokens": 1174,
 			"tags": [
 				"self-managed",
 				"reference-architecture",
@@ -118892,7 +119251,7 @@
 		{
 			"id": "self-managed.reference-architecture.reference-architecture.architecture-high-availability-ha",
 			"file": "chunks/self-managed.reference-architecture.reference-architecture.architecture-high-availability-ha.md",
-			"tokens": 187,
+			"tokens": 213,
 			"tags": [
 				"self-managed",
 				"reference-architecture",
@@ -119011,38 +119370,59 @@
 			]
 		},
 		{
-			"id": "self-managed.upgrade.components.890-to-8100.modeler-settings",
-			"file": "chunks/self-managed.upgrade.components.890-to-8100.modeler-settings.md",
-			"tokens": 56,
+			"id": "self-managed.upgrade.components.890-to-8100.migrate-web-modeler-settings",
+			"file": "chunks/self-managed.upgrade.components.890-to-8100.migrate-web-modeler-settings.md",
+			"tokens": 404,
 			"tags": [
 				"self-managed",
 				"upgrade",
 				"components",
 				"890-to-8100",
+				"migrate",
+				"web",
 				"modeler",
 				"settings"
 			],
 			"entities": []
 		},
 		{
-			"id": "self-managed.upgrade.components.890-to-8100.file-download-concurrency-configuration",
-			"file": "chunks/self-managed.upgrade.components.890-to-8100.file-download-concurrency-configuration.md",
-			"tokens": 271,
+			"id": "self-managed.upgrade.components.890-to-8100.application.yaml",
+			"file": "chunks/self-managed.upgrade.components.890-to-8100.application.yaml.md",
+			"tokens": 131,
 			"tags": [
 				"self-managed",
 				"upgrade",
 				"components",
 				"890-to-8100",
-				"file",
-				"download",
-				"concurrency",
-				"configuration"
+				"application.yaml"
 			],
 			"entities": [
-				"camunda.modeler.file-download.executor.core-pool-size",
-				"camunda.modeler.file-download.executor.max-pool-size",
-				"camunda.modeler.file-download.executor.queue-capacity",
-				"camunda.hub.file-download.max-concurrent-downloads"
+				"camunda.marketplace.enabled",
+				"camunda.hub.feature.marketplace-enabled",
+				"camunda.modeler.feature.play-enabled",
+				"camunda.hub.feature.test-mode-enabled",
+				"camunda.modeler.security.jwt.issuer.backend-url",
+				"camunda.identity.issuer-backend-url",
+				"camunda.modeler.oauth2.token.username-claim",
+				"camunda.identity.username-claim",
+				"logging.level.io.camunda.modeler",
+				"logging.level.io.camunda.hub"
+			]
+		},
+		{
+			"id": "self-managed.upgrade.components.890-to-8100.env",
+			"file": "chunks/self-managed.upgrade.components.890-to-8100.env.md",
+			"tokens": 255,
+			"tags": [
+				"self-managed",
+				"upgrade",
+				"components",
+				"890-to-8100",
+				"env"
+			],
+			"entities": [
+				"camunda-modeler.log",
+				"camunda-hub.log"
 			]
 		},
 		{
@@ -119106,9 +119486,37 @@
 			]
 		},
 		{
+			"id": "self-managed.upgrade.components.890-to-8100.broker-ping-configuration",
+			"file": "chunks/self-managed.upgrade.components.890-to-8100.broker-ping-configuration.md",
+			"tokens": 248,
+			"tags": [
+				"self-managed",
+				"upgrade",
+				"components",
+				"890-to-8100",
+				"broker",
+				"ping",
+				"configuration"
+			],
+			"entities": [
+				"camunda.console.ping",
+				"camunda.hub.ping",
+				"camunda.console.ping.enabled",
+				"camunda.hub.ping.enabled",
+				"camunda.console.ping.endpoint",
+				"camunda.hub.ping.endpoint",
+				"camunda.console.ping.clusterName",
+				"camunda.hub.ping.clusterName",
+				"camunda.console.ping.pingPeriod",
+				"camunda.hub.ping.pingPeriod",
+				"camunda.console.ping.properties",
+				"camunda.hub.ping.properties"
+			]
+		},
+		{
 			"id": "self-managed.upgrade.components.890-to-8100.dynamic-cluster-management",
 			"file": "chunks/self-managed.upgrade.components.890-to-8100.dynamic-cluster-management.md",
-			"tokens": 245,
+			"tokens": 251,
 			"tags": [
 				"self-managed",
 				"upgrade",
@@ -119118,7 +119526,9 @@
 				"cluster",
 				"management"
 			],
-			"entities": []
+			"entities": [
+				"camunda.hub.feature.dynamic-cluster-management-enabled"
+			]
 		},
 		{
 			"id": "self-managed.upgrade.components.890-to-8100.environments",
@@ -119484,23 +119894,38 @@
 			]
 		},
 		{
-			"id": "self-managed.upgrade.helm.890-to-8100.create-your-8.10-values-file",
-			"file": "chunks/self-managed.upgrade.helm.890-to-8100.create-your-8.10-values-file.md",
-			"tokens": 336,
+			"id": "self-managed.upgrade.helm.890-to-8100.upgrade-flow",
+			"file": "chunks/self-managed.upgrade.helm.890-to-8100.upgrade-flow.md",
+			"tokens": 362,
 			"tags": [
 				"self-managed",
 				"upgrade",
 				"helm",
 				"890-to-8100",
-				"create",
-				"8.10",
-				"values",
-				"file"
+				"flow",
+				"run",
+				"camunda",
+				"toolkit"
 			],
 			"entities": [
-				"values-8.10.yaml",
-				"values-8.10-default.yaml"
+				"values-8.10.yaml"
 			]
+		},
+		{
+			"id": "self-managed.upgrade.helm.890-to-8100.update-your-values-file-to-8.10",
+			"file": "chunks/self-managed.upgrade.helm.890-to-8100.update-your-values-file-to-8.10.md",
+			"tokens": 65,
+			"tags": [
+				"self-managed",
+				"upgrade",
+				"helm",
+				"890-to-8100",
+				"update",
+				"values",
+				"file",
+				"8.10"
+			],
+			"entities": []
 		},
 		{
 			"id": "self-managed.upgrade.helm.890-to-8100.update-your-values-file-to-8.10-consolidate-console-and-web-modeler-into-camunda-hub",
@@ -120012,9 +120437,25 @@
 			]
 		},
 		{
+			"id": "self-managed.upgrade.helm.890-to-8100.render-and-test-the-complete-configuration",
+			"file": "chunks/self-managed.upgrade.helm.890-to-8100.render-and-test-the-complete-configuration.md",
+			"tokens": 165,
+			"tags": [
+				"self-managed",
+				"upgrade",
+				"helm",
+				"890-to-8100",
+				"render",
+				"test",
+				"complete",
+				"configuration"
+			],
+			"entities": []
+		},
+		{
 			"id": "self-managed.upgrade.helm.890-to-8100.run-the-helm-upgrade",
 			"file": "chunks/self-managed.upgrade.helm.890-to-8100.run-the-helm-upgrade.md",
-			"tokens": 170,
+			"tokens": 217,
 			"tags": [
 				"self-managed",
 				"upgrade",
@@ -121076,6 +121517,19 @@
 			"entities": []
 		},
 		{
+			"id": "self-managed.upgrade.helm.index.upgrade-flow",
+			"file": "chunks/self-managed.upgrade.helm.index.upgrade-flow.md",
+			"tokens": 176,
+			"tags": [
+				"self-managed",
+				"upgrade",
+				"helm",
+				"index",
+				"flow"
+			],
+			"entities": []
+		},
+		{
 			"id": "self-managed.upgrade.helm.index.upgrade-guides",
 			"file": "chunks/self-managed.upgrade.helm.index.upgrade-guides.md",
 			"tokens": 216,
@@ -121157,7 +121611,7 @@
 		{
 			"id": "self-managed.upgrade.index.upgrade-sequence",
 			"file": "chunks/self-managed.upgrade.index.upgrade-sequence.md",
-			"tokens": 280,
+			"tokens": 366,
 			"tags": [
 				"self-managed",
 				"upgrade",

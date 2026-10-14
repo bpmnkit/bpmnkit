@@ -28,10 +28,10 @@ Multi-tenancy is disabled by default and is not covered further in this guide. I
 
 This guide supports two [secondary storage](https://docs.camunda.io/docs/next/self-managed/concepts/secondary-storage/index) backends. If you have not chosen a variant yet, refer to the [Terraform setup guide](https://docs.camunda.io/docs/next/self-managed/deployment/helm/cloud-providers/azure/microsoft-aks/terraform-setup#variants) for details.
 
-| Variant           | Secondary storage                                                                                                      | Optimize      | Reference architecture    |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------- |
-| **Elasticsearch** | [Elasticsearch via ECK](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/operator-based-infrastructure#deploy-elasticsearch) | Supported     | `aks-single-region`       |
-| **RDBMS**         | [Azure Database for PostgreSQL](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/rdbms)                             | Not available | `aks-single-region-rdbms` |
+| Variant           | Secondary storage                                                                                                          | Optimize      | Reference architecture    |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------- | ------------------------- |
+| **Elasticsearch** | [Elasticsearch via ECK](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/operator-based-infrastructure#elasticsearch-deployment) | Supported     | `aks-single-region`       |
+| **RDBMS**         | [Azure Database for PostgreSQL](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/rdbms)                                 | Not available | `aks-single-region-rdbms` |
 
 **Note**
 Select a variant using the **Elasticsearch**/**RDBMS** tabs throughout this guide. All tabbed sections will switch together automatically.

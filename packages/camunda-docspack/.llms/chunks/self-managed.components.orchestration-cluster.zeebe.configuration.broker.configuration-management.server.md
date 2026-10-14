@@ -12,7 +12,7 @@ The `management.server` configuration allows you to configure the management ser
 
 ```yaml
 management.server:
-  host: 0.0.0.0
+  address: 0.0.0.0
   port: 9600
   base-path: /
 ```

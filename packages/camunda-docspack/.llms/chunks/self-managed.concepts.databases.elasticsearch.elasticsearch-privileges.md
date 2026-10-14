@@ -6,7 +6,7 @@ If you implement Camunda 8 with Elasticsearch as a service provider, the followi
 ## Cluster privileges
 
 **Note: Running Elasticsearch with limited cluster privileges**
-If an application cannot be granted cluster privileges, the schema manager can be run as a standalone application separate from the main application. In this setup, the single application does not need cluster privileges.
+If an application cannot be granted cluster privileges, the schema manager can be run as a standalone application separate from the main application. In this setup, the single application does not need cluster privileges. To set this up, see [Elasticsearch without cluster privileges](https://docs.camunda.io/docs/next/self-managed/concepts/databases/elasticsearch/elasticsearch-without-cluster-privileges).
 
 - `monitor` - Required to check the Elasticsearch cluster health. This privilege provides read-only cluster operations permissions.
 - `manage_index_templates` - Creates the necessary index templates when the Orchestration Cluster and Optimize are started for the first time, or when upgrading to a newer version of Camunda 8. Once the index templates are created, you can stop the Component, remove this privilege, and then start Component again.

@@ -5,13 +5,14 @@ The default Camunda 8 Run configuration uses an H2 database for secondary storag
 File-based H2 example:
 
 ```yaml
-data:
-  secondary-storage:
-    type: rdbms
-    rdbms:
-      url: jdbc:h2:file:./camunda-data/h2db
-      username: sa
-      password:
+camunda:
+  data:
+    secondary-storage:
+      type: rdbms
+      rdbms:
+        url: jdbc:h2:file:./camunda-data/h2db
+        username: sa
+        password:
 ```
 
 Full example configuration

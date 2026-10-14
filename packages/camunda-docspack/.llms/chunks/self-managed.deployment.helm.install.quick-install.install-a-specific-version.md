@@ -9,6 +9,8 @@ helm install camunda camunda/camunda-platform \
     --values https://helm.camunda.io/camunda-platform/values/values-latest.yaml
 ```
 
+This command sets only the application image versions. Because the chart doesn't provision a secondary storage backend by default, also enable one, for example with the flags from step 3 of [Orchestration Cluster only](#orchestration-cluster-only).
+
 To install a specific chart version, use the `--version` flag with the chart version number. For example, the chart version for Camunda 8.8 is `13`:
 
 ```shell

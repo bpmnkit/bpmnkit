@@ -11,6 +11,7 @@ This guide provides a comprehensive walkthrough for installing the Camunda 8 Hel
 - [Helm CLI v4](https://helm.sh/docs/intro/install/) (recommended; see [supported versions](https://docs.camunda.io/docs/next/reference/supported-environments#clients)).
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) to interact with the cluster.
 - [jq](https://jqlang.github.io/jq/download/) to interact with some variables.
+- [yq](https://github.com/mikefarah/yq/#install) to merge the operator Helm values overlays into your `values.yml` file.
 - [GNU envsubst](https://www.man7.org/linux/man-pages/man1/envsubst.1.html) to generate manifests.
 - A namespace to host Camunda; in this guide we will reference `camunda` as the target namespace.
 - (optional) Custom domain name/[DNS zone](https://learn.microsoft.com/en-us/azure/dns/dns-zones-records) in Azure DNS. This allows you to expose Camunda 8 endpoints and connect via community-supported [zbctl](https://github.com/camunda-community-hub/zeebe-client-go/blob/main/cmd/zbctl/zbctl.md) or [Camunda Modeler](https://camunda.com/download/modeler/).

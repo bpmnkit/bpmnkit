@@ -7,6 +7,8 @@ See the [core settings documentation](https://docs.camunda.io/docs/next/self-man
 
 Zeebe uses Log4j2 framework for logging. In the distribution and the Docker image, find the default log configuration file in `config/log4j2.xml`.
 
+For details on logging, refer to the Orchestration Cluster [core settings and features](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/logging).
+
 ### Google Stackdriver (JSON) logging
 
 To enable Google Stackdriver compatible JSON logging, set the environment variable `ZEEBE_LOG_APPENDER=Stackdriver` before starting Zeebe.

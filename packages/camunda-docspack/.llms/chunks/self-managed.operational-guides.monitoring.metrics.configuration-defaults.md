@@ -25,7 +25,7 @@ Add the following scraping job:
   scheme: http
   static_configs:
   - targets:
-    - localhost: 9600
+    - localhost:9600
 ```
 
 **Warning**
@@ -48,7 +48,7 @@ Configure this via the following properties:
 ```yaml
 management:
   # Disable Prometheus
-  promethus.metrics.export.enabled: false
+  prometheus.metrics.export.enabled: false
   # Configure OpenTelemetry Metrics
   otlp:
     metrics:

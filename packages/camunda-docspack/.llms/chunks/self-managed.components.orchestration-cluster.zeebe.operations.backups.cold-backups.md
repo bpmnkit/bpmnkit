@@ -21,7 +21,7 @@ The `data` folder contains symbolic and hard links which may require special att
 
 To create the backup, take the following steps:
 
-1. Each broker has a data folder where all state is persisted. The location of the data folder is [configured](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/configuration/configuration) via `zeebe.broker.data.directory`. Create a copy of the data folder and store it in a safe location.
+1. Each broker has a data folder where all state is persisted. The location of the data folder is [configured](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/configuration/broker#camundadataprimary-storage) via `camunda.data.primary-storage.directory`. Create a copy of the data folder and store it in a safe location.
 
 If you have direct access to the broker, for example in a bare-metal setup, you can do this by creating a tarball like this: `tar caf backup.tar.gz data/`.
 

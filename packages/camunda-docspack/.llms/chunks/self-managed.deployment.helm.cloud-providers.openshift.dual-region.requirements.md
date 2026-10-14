@@ -1,11 +1,11 @@
 # Red Hat OpenShift Dual-Region — Requirements
 
 - You need access to the [Advanced Cluster Management operator](https://www.redhat.com/en/technologies/management/advanced-cluster-management) and the [Submariner operator](https://catalog.redhat.com/software/container-stacks/detail/5f0c67b7ce85fb9e399f3a12).
-- The clusters must be separated by a reasonable latency as outlined in the [installation environment guidelines](https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/dual-region#installation-environment).
-- Each of your OpenShift clusters must meet at least the minimum capacity requirements for a cluster. Refer to the [cluster specification guide](https://docs.camunda.io/docs/next/self-managed/deployment/helm/cloud-providers/openshift/redhat-openshift#cluster-specification) for details on resource allocation and infrastructure needs.
+- The clusters must be separated by a reasonable latency as outlined in the [network requirements](https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/dual-region#network-requirements).
+- Each of your OpenShift clusters must meet at least the minimum capacity requirements for a cluster. Refer to the [minimum cluster requirements](https://docs.camunda.io/docs/next/self-managed/reference-architecture/kubernetes#minimum-cluster-requirements-1) for details on resource allocation and infrastructure needs.
 - Administrative privileges are required for both clusters to perform configurations and operator deployments.
 - A reliable means of communication between the two clusters is necessary. Ensure that each cluster can establish network connections with the other.
-- The version of your OpenShift clusters must be included in the [supported versions list](https://docs.camunda.io/docs/next/self-managed/deployment/helm/cloud-providers/openshift/redhat-openshift#supported-versions).
+- The version of your OpenShift clusters must be included in the [supported versions list](https://docs.camunda.io/docs/next/self-managed/reference-architecture/kubernetes#supported-versions).
 - Review the [requirements of OpenShift Advanced Cluster Management](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.12/html/install/installing#installing) if it's not already configured.
 - Review the [requirements of OpenShift Submariner](https://docs.redhat.com/en/documentation/red_hat_advanced_cluster_management_for_kubernetes/2.12/html/networking/networking#submariner) if it's not already configured.
 - Review the [requirements of Submariner](https://submariner.io/getting-started/#prerequisites) if it's not already configured, especially the flows to open.

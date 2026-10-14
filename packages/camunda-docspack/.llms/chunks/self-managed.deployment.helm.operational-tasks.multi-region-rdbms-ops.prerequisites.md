@@ -10,6 +10,8 @@ https://github.com/camunda/camunda-deployment-references/blob/main/aws/kubernete
 
 The reference architecture is a starting point you own and extend, not a module you consume, so the workflow is to copy it into your own repository rather than reference it remotely.
 
+Size broker storage for the retained log generated during the replication outage you plan to tolerate, with headroom for recovery. Validate capacity with a failover test at representative load, including exporter catch-up.
+
 Source the environment before running any procedure. The scripts derive everything from the Terraform state, and refuse to run against an inconsistent topology:
 
 ```bash

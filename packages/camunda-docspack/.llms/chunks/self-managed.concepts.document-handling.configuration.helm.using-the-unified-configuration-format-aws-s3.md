@@ -7,9 +7,14 @@ global:
     type:
       aws:
         enabled: false # disable legacy env var generation
-        existingSecret: "aws-credentials"
-        accessKeyIdKey: "awsAccessKeyId"
-        secretAccessKeyKey: "awsSecretAccessKey"
+        accessKeyId:
+          secret:
+            existingSecret: "aws-credentials"
+            existingSecretKey: "awsAccessKeyId"
+        secretAccessKey:
+          secret:
+            existingSecret: "aws-credentials"
+            existingSecretKey: "awsSecretAccessKey"
 
 orchestration:
   extraConfiguration:
@@ -44,7 +49,7 @@ Camunda's AWS S3 store can also target self-hosted S3-compatible object stores s
 | `camunda.document.aws.<id>.force-path-style`         | Forces path-style bucket addressing on the S3 client. Most S3-compatible servers (MinIO, Garage) require this. Automatically enabled when `endpoint` is set, so explicit configuration is rarely needed.                                                                   |
 | `camunda.document.aws.<id>.chunked-encoding-enabled` | Controls AWS chunked transfer encoding. Some S3-compatible backends (notably Garage) do not implement the `aws-chunked` streaming-signed upload mode and require this to be `false`. When unset, the SDK default (`true`) is used, which is correct for MinIO and similar. |
 
-Credentials are configured the same way as AWS S3, via `existingSecret`/`accessKeyIdKey`/`secretAccessKeyKey` under `global.documentStore.type.aws`. The bucket must exist on the backend before Camunda starts — the chart does not create it.
+Credentials are configured the same way as AWS S3, via `accessKeyId.secret` and `secretAccessKey.secret` (each with `existingSecret` and `existingSecretKey`) under `global.documentStore.type.aws`. The bucket must exist on the backend before Camunda starts. The chart doesn't create it.
 
 ##### Example: in-cluster MinIO
 
@@ -55,9 +60,14 @@ global:
     type:
       aws:
         enabled: false
-        existingSecret: "minio-credentials"
-        accessKeyIdKey: "access-key-id"
-        secretAccessKeyKey: "secret-access-key"
+        accessKeyId:
+          secret:
+            existingSecret: "minio-credentials"
+            existingSecretKey: "access-key-id"
+        secretAccessKey:
+          secret:
+            existingSecret: "minio-credentials"
+            existingSecretKey: "secret-access-key"
 
 orchestration:
   extraConfiguration:
