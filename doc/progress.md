@@ -1,5 +1,17 @@
 # Progress
 
+## 2026-10-17 — Agent BPMN bake-off: analysis and plan
+
+- **Analysis** (`doc/agent-bpmn-bakeoff-analysis.md`) of the external "AI Agent BPMN Bake-off",
+  where BPMN Kit passed the gate first time but was slowest (172 s) and most expensive ($0.77).
+  Root causes found in the code: the builder cannot set a start-event form, a user-task input
+  mapping, a flow label apart from the branch id, or an explicit flow id; template values went
+  through `c8ctl` and shell quoting although `applyTemplateToElement` exists; `bpmnkit-docs`
+  does not resolve from the repo root; drop's line DSL cannot express ad-hoc sub-processes,
+  forms, mappings or annotations, and drop never says whether its output is executable.
+- **Plan** (`docs/superpowers/plans/2026-10-17-agent-bpmn-bakeoff.md`): 15 tasks in four
+  phases — builder gaps, findability (docs, CLI, skill), drop DSL and readiness verdict, rerun.
+
 ## 2026-10-09 — XML endpoints typed, proxy timer trigger removed, file-watch lookup fixed
 
 - **XML endpoints.** The API generator now reads `text/*` responses: `getProcessDefinitionXML`,
