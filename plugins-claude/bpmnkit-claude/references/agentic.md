@@ -1,6 +1,40 @@
 # AI Agent Sub-process (agentic generation)
 
-Camunda 8's **AI Agent Sub-process** lets a process delegate a step to an LLM that can call tools (other BPMN activities) in a loop until it produces a final answer. In this SDK it's authored via a plan's `aiAgent` step — never hand-built as raw ad-hoc-sub-process XML.
+Camunda 8's **AI Agent Sub-process** lets a process delegate a step to an LLM that can call tools (other BPMN activities) in a loop until it produces a final answer.
+
+**Target Camunda 8.10 with v2** (this page, first half). v2 is authored with the TypeScript builder and `applyTemplates`. The plan `aiAgent` step and `casen synth` compile only the older **v1** job-worker agent; that is described in the second half, "Older Camunda (v1)".
+
+## v2: AI Agent Sub-process on Camunda 8.10
+
+- It's a **`bpmn:AdHocSubProcess`** with template `io.camunda.connectors.agenticai.ai-agent-subprocess.v2` (version `1`, alias `ai-agent-subprocess`) and job type `io.camunda.agenticai:aiagent:subprocess:2`.
+- Build the sub-process with `adHocSubProcess(id, cb, { toolGrid: { columns, fill } })`, then call `applyTemplates(model.build(), [{ elementId, template: "io.camunda.connectors.agenticai.ai-agent-subprocess.v2@1", values }])` from `@bpmnkit/core/connectors`. It returns `{ definitions, problems }`; any problem is a failure.
+- Each **tool** is a root-node activity inside the sub-process with no incoming flow. Its element id is its name for the LLM, its `documentation` is the description the LLM reads. HTTP tools take `io.camunda.connectors.HttpJson.v2@18` through the same `applyTemplates` call.
+- Tool parameters the LLM supplies use `fromAi(toolCall.<param>, "<description>", ...)` inside the tool's template values (e.g. `queryParameters`); the first argument must reference `toolCall.<name>`.
+- Property keys are dotted template keys (`provider.type`, `data.systemPrompt.prompt`, `data.userPrompt.prompt`, `data.limits.maxModelCalls`, `resultVariable`, ...). Never guess them: `casen connector show <template> --filter <text> --condensed` lists them one per line.
+- CLI equivalent for an existing file: `casen connector apply <file> <elementId> <template[@v]> [--values file.json] [--set k=v]... [--dry-run]`.
+- Complete reference: `packages/core/tests/fixtures/bakeoff/build.ts` (a chat agent with four HttpJson tools in a 2 x 2 grid, start-event form, user-task input mapping and a labelled feedback loop). Recipe chunks, via `npx bpmnkit-docs ask <id>`:
+  - `guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-8.10-v2`
+  - `guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid`
+  - `guides.executable-camunda-process.which-keys-does-a-template-take`
+  - `guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests`
+
+Deploy gate: `casen lint lint <file> --categories deploy,connector,agentic` must be clean. `--profile deploy` also reports the `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary`, which Camunda's own gate does not flag on a spec-compliant model; fix them only if you want a clean profile.
+
+Scenario mock for v2 (the whole sub-process is one job):
+
+```json
+{
+  "name": "Agent resolves the ticket",
+  "mocks": {
+    "io.camunda.agenticai:aiagent:subprocess:2": { "outputs": { "agent": { "status": "resolved" } } }
+  },
+  "expect": { "path": ["AI_Agent"], "variables": { "agent": { "status": "resolved" } } }
+}
+```
+
+## Older Camunda (v1)
+
+Everything below describes the v1 job-worker agent produced by the plan `aiAgent` step and `casen synth` (the plan compiler emits only v1). Use it only for clusters before 8.10.
 
 ## How it's modeled (facts, not guesses — byte-verified against the bundled Camunda template)
 

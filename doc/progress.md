@@ -2,6 +2,7 @@
 
 ## 2026-10-17 — Phase B: `bpmnkit-docs` from the repo root, executable-process recipe
 
+- Claude plugin `agent` skill and `references/agentic.md` now target the AI Agent Sub-process v2 (`adHocSubProcess` + `applyTemplates`, job type `io.camunda.agenticai:aiagent:subprocess:2`), point at the recipe chunks, and carry a gate checklist (`--categories deploy,connector,agentic`, `renderBpmnAscii`, tests). The v1 job-worker agent stays as an "older Camunda" note, since the plan `aiAgent` step compiles only v1. The `connect` skill documents `casen connector apply` and `show --filter`.
 - The root `package.json` lists `@bpmnkit/docspack` and `@bpmnkit/camunda-docspack` as workspace
   devDependencies, so `npx bpmnkit-docs list` and `npx docspack list` find both packs at the root.
 - New guide `guides/executable-camunda-process`: one question-headed section per task (start-event

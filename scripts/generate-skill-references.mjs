@@ -107,7 +107,7 @@ Rules:
 - **Conditional fields**: some inputs only apply for a specific dropdown choice (e.g. Slack's \`data.channel\` only applies when \`method\` is \`chat.postMessage\`). A card lists only the inputs of its operation; \`casen connector show\` lists them all. Supplying a value for a field that doesn't apply is ignored, not an error.
 - **HTTP APIs without a connector** (Stripe, Notion, GitHub's workflow runs, …) use the REST connector (\`io.camunda.connectors.HttpJson.v2\`). Take the base URL, path, auth and required headers from \`casen connector api\`, never from memory; credentials are \`{{secrets.NAME}}\` here too.
 - **Prove it runs**: \`casen synth <plan> --check\` dry-runs the result with every connector mocked and lists the secrets to create in the cluster; a process that cannot reach its end fails the command.
-- Direction \`agentic\` connectors (the AI Agent Sub-process) are configured via the \`aiAgent\` plan step, not \`connector\` — see \`references/agentic.md\`.
+- Direction \`agentic\` connectors (the AI Agent Sub-process) are configured with \`applyTemplates\` (v2, Camunda 8.10) or the \`aiAgent\` plan step, not \`connector\` — see \`references/agentic.md\`.
 
 ## Full index
 

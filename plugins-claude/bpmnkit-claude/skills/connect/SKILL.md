@@ -19,11 +19,25 @@ Present the top match(es) to the user only if there's genuine ambiguity (e.g. mu
 
 ```sh
 casen connector show <template-id>
+casen connector show <template-id> --filter <text> --condensed   # one line per property (key, type, default, required, when)
 ```
+
+`--filter` narrows a large template (e.g. `--filter auth`); use it before guessing a key.
 
 For every **required** input: derive a value from context (process variables via FEEL, or ask the user for anything that can't be inferred — especially secrets, which always become `{{secrets.NAME}}` placeholders, never literal credentials). Note which secret names the user needs to provision in their target engine's secret store — don't try to set them yourself.
 
-## 3. Apply via a delta plan
+## 3. Apply
+
+**Directly on the file** (preferred, and the only route for AI Agent v2 and HttpJson.v2 on 8.10):
+
+```sh
+casen connector apply <file>.bpmn <step-id> <template[@version]> --values values.json --dry-run
+casen connector apply <file>.bpmn <step-id> <template[@version]> --values values.json
+```
+
+`--set key=value` (repeatable) overrides `--values`. Any problem exits 1 and leaves the file unchanged; `--dry-run` previews. Then skip to step 4's lint (no synth needed).
+
+**Or via a delta plan:**
 
 ```sh
 casen plan extract <file>.bpmn
@@ -42,7 +56,7 @@ casen synth <delta>.plan.json --merge <file>.bpmn --output <file>.bpmn
 casen lint lint <file>.bpmn --profile deploy
 ```
 
-Fix any `connector/missing-required` findings by filling in the missing value, then re-synth.
+Fix any `connector/missing-required` findings by filling in the missing value, then re-apply (or re-synth). `--profile deploy` can also report the `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary` on a spec-compliant model; gate deployability on `--categories deploy,connector,agentic`.
 
 ## 5. Summarize
 

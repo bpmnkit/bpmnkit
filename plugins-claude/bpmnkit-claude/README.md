@@ -71,7 +71,7 @@ Every skill that writes or changes a process goes through the same pipeline: **p
 |------|----------|
 | `references/plan-format.md` | The `ProcessPlan` JSON schema + annotated, tested examples |
 | `references/connectors.md` | The bundled connector catalog index + how to apply one |
-| `references/agentic.md` | The AI Agent Sub-process pattern — binding keys, `fromAi()`, a full example |
+| `references/agentic.md` | The AI Agent Sub-process: v2 builder flow for 8.10, v1 plan step for older clusters, `fromAi()`, examples |
 | `references/feel.md` | FEEL syntax crib sheet + the `"="`-means-expression convention |
 | `references/modeling-style.md` | Camunda naming/structure conventions for generated processes |
 
