@@ -1,5 +1,10 @@
 # Features
 
+## Branch flows take a label and an explicit id (2026-10-17)
+
+- `branch(id, b => b.label("Yes").flowId("Flow_Yes"))` names the branch's first flow and fixes its
+  id, also before `connectTo()`. Generated ids for other flows do not change.
+
 ## The builder sets a start-event form and user-task mappings (2026-10-17)
 
 - `startEvent(id, { formId })` puts a form on a start event, in the process, in a branch and in

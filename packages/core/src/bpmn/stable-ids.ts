@@ -47,6 +47,25 @@ function capLength(id: string): string {
 	return id.slice(0, MAX_ID_LENGTH - suffix.length) + suffix
 }
 
+/**
+ * Builder-side facts about a flow that must not leak into the XML: the branch
+ * id a branch flow is told apart by (its label is free text and may change
+ * without renaming the flow), and ids the caller chose. Keyed by the flow
+ * object, which the builder pushes into the scope by reference.
+ */
+const branchIds = new WeakMap<BpmnSequenceFlow, string>()
+const explicitIds = new WeakSet<BpmnSequenceFlow>()
+
+/** Records the branch id to build `flow`'s discriminator from, instead of its label. */
+export function setFlowDiscriminatorSource(flow: BpmnSequenceFlow, branchId: string): void {
+	branchIds.set(flow, branchId)
+}
+
+/** Marks `flow.id` as caller-chosen: `assignStableFlowIds` keeps it and reserves it. */
+export function markExplicitFlowId(flow: BpmnSequenceFlow): void {
+	explicitIds.add(flow)
+}
+
 /** The id a flow gets when it is the only one between its two endpoints. */
 function baseId(flow: BpmnSequenceFlow): string {
 	return capLength(`Flow_${ncName(flow.sourceRef)}_${ncName(flow.targetRef)}`)
@@ -58,7 +77,8 @@ function baseId(flow: BpmnSequenceFlow): string {
  * `uniqueId` to number genuinely identical edges.
  */
 function discriminator(flow: BpmnSequenceFlow): string | undefined {
-	if (flow.name !== undefined && flow.name.trim().length > 0) return ncName(slugify(flow.name))
+	const source = branchIds.get(flow) ?? flow.name
+	if (source !== undefined && source.trim().length > 0) return ncName(slugify(source))
 	const condition = flow.conditionExpression?.text
 	if (condition !== undefined && condition.trim().length > 0) return `c${shortHash(condition)}`
 	return undefined
@@ -83,15 +103,28 @@ export function assignStableFlowIds(
 	flows: BpmnSequenceFlow[],
 	preserve?: ReadonlySet<string>,
 ): void {
-	const renamable = preserve === undefined ? flows : flows.filter((flow) => !preserve.has(flow.id))
-	if (renamable.length === 0) return
-
+	const isFixed = (flow: BpmnSequenceFlow) => explicitIds.has(flow) || preserve?.has(flow.id)
 	// Reserved up front so a derived id can never land on an element id or on a
 	// flow id this pass is not allowed to touch.
-	const taken = new Set<string>(elements.map((element) => element.id))
-	if (preserve !== undefined) {
-		for (const flow of flows) if (preserve.has(flow.id)) taken.add(flow.id)
+	const taken = new Set<string>()
+	const owners = new Map<string, string>()
+	for (const element of elements) {
+		taken.add(element.id)
+		owners.set(element.id, `element "${element.id}"`)
 	}
+	for (const flow of flows) {
+		if (!isFixed(flow)) continue
+		if (explicitIds.has(flow) && taken.has(flow.id)) {
+			throw new Error(
+				`Flow id "${flow.id}" (${flow.sourceRef} -> ${flow.targetRef}) is already used by ${owners.get(flow.id) ?? "another flow"}. Pick a different flowId().`,
+			)
+		}
+		taken.add(flow.id)
+		owners.set(flow.id, `the flow ${flow.sourceRef} -> ${flow.targetRef}`)
+	}
+
+	const renamable = flows.filter((flow) => !isFixed(flow))
+	if (renamable.length === 0) return
 
 	// Flows sharing a base id all get a discriminator, so which one was built
 	// first — and so the order branches were declared in — does not decide who

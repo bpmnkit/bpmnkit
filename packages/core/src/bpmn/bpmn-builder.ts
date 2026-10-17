@@ -32,7 +32,12 @@ import {
 	restConnectorToIoMappingInputs,
 	restConnectorToTaskHeaders,
 } from "./rest-connector.js"
-import { assignStableFlowIds, rootDefinitionId } from "./stable-ids.js"
+import {
+	assignStableFlowIds,
+	markExplicitFlowId,
+	rootDefinitionId,
+	setFlowDiscriminatorSource,
+} from "./stable-ids.js"
 import {
 	type ZeebeExtensions,
 	ensureZeebeExtension,
@@ -1200,6 +1205,8 @@ export class BranchBuilder {
 	private readonly branchName: string
 	private isFirstElement = true
 	private pendingCondition: string | undefined
+	private pendingLabel: string | undefined
+	private pendingFlowId: string | undefined
 	private pendingDefault = false
 	/** @internal – true once connectTo() has been called, meaning the branch end is already wired */
 	_connected = false
@@ -1250,10 +1257,31 @@ export class BranchBuilder {
 		return this
 	}
 
+	/**
+	 * Set the name shown on this branch's first flow. Without it the branch id is
+	 * the name. The generated flow id still follows the branch id, not the label.
+	 */
+	label(text: string): this {
+		this.pendingLabel = text
+		return this
+	}
+
+	/** Use `id` for this branch's first flow instead of a generated one. */
+	flowId(id: string): this {
+		this.pendingFlowId = id
+		return this
+	}
+
 	/** Mark this branch as the gateway's default (no-condition) flow. */
 	defaultFlow(): this {
 		this.pendingDefault = true
 		return this
+	}
+
+	/** Keeps label() and flowId() out of the stable-id derivation; see stable-ids.ts. */
+	private registerFirstFlow(flow: BpmnSequenceFlow): void {
+		setFlowDiscriminatorSource(flow, this.branchName)
+		if (this.pendingFlowId !== undefined) markExplicitFlowId(flow)
 	}
 
 	private addElement(element: BpmnFlowElement): this {
@@ -1267,12 +1295,14 @@ export class BranchBuilder {
 		}
 
 		if (this.lastNodeId) {
-			const flowId = generateId("Flow")
+			const flowId = this.isFirstElement
+				? (this.pendingFlowId ?? generateId("Flow"))
+				: generateId("Flow")
 			const flow: BpmnSequenceFlow = {
 				id: flowId,
 				sourceRef: this.lastNodeId,
 				targetRef: element.id,
-				name: this.isFirstElement ? this.branchName : undefined,
+				name: this.isFirstElement ? (this.pendingLabel ?? this.branchName) : undefined,
 				conditionExpression:
 					this.isFirstElement && this.pendingCondition
 						? makeConditionExpression(this.pendingCondition)
@@ -1281,6 +1311,7 @@ export class BranchBuilder {
 				unknownAttributes: {},
 			}
 			this._flows.push(flow)
+			if (this.isFirstElement) this.registerFirstFlow(flow)
 			if (this.isFirstElement && this.pendingDefault) {
 				this._defaultFlowId = flowId
 			}
@@ -1307,13 +1338,15 @@ export class BranchBuilder {
 	 * Supports forward references (element created later) and backward references (loops).
 	 */
 	connectTo(targetId: string): this {
-		const flowId = generateId("Flow")
+		const flowId = this.isFirstElement
+			? (this.pendingFlowId ?? generateId("Flow"))
+			: generateId("Flow")
 		const flow: BpmnSequenceFlow = {
 			id: flowId,
 			// biome-ignore lint/style/noNonNullAssertion: lastNodeId starts as gatewayId and is always defined in pre-branch context
 			sourceRef: this.lastNodeId!,
 			targetRef: targetId,
-			name: this.isFirstElement ? this.branchName : undefined,
+			name: this.isFirstElement ? (this.pendingLabel ?? this.branchName) : undefined,
 			conditionExpression:
 				this.isFirstElement && this.pendingCondition
 					? makeConditionExpression(this.pendingCondition)
@@ -1322,6 +1355,7 @@ export class BranchBuilder {
 			unknownAttributes: {},
 		}
 		this._flows.push(flow)
+		if (this.isFirstElement) this.registerFirstFlow(flow)
 
 		if (this.isFirstElement && this.pendingDefault) {
 			this._defaultFlowId = flowId

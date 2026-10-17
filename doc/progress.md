@@ -7,6 +7,12 @@
   `ServiceTaskOptions`. The branch and event-sub-process `startEvent` methods used to drop
   `zeebeProperties` and `modelerTemplate*`; all three now share one factory.
 
+## 2026-10-17 — Builder: branch flow labels and explicit flow ids
+
+- `BranchBuilder.label(text)` names a branch's first flow (the branch id stays the default), and
+  `flowId(id)` sets its id; a clash with an element or another flow throws. Neither changes any
+  generated flow id: the stable-id discriminator still comes from the branch id.
+
 ## 2026-10-17 — Agent BPMN bake-off: analysis and plan
 
 - **Analysis** (`doc/agent-bpmn-bakeoff-analysis.md`) of the external "AI Agent BPMN Bake-off",
