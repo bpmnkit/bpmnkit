@@ -56,7 +56,8 @@ beforeAll(() => {
 	index = indexPacks([docs])
 	// The root CLI indexes the shipped Camunda pack beside this one; its AI Agent chunks compete.
 	bothPacks = indexPacks([docs, loadPack(join(here, "../../camunda-docspack"))])
-})
+	// Indexing the Camunda pack (~7,000 chunks) takes ~5 s alone and over 10 s on a busy CI runner.
+}, 60_000)
 
 afterAll(() => rmSync(root, { recursive: true, force: true }))
 
