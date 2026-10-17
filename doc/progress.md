@@ -9,6 +9,9 @@
   is written to the model. `layoutProcess` takes the grid hints as an optional fourth argument;
   the `grid` engine ignores them. Without hints, layout output is unchanged.
 
+- `buildAiAgentSubProcess` returns `id` (the doc example always fell back to "Agent_1"); its docs
+  say it builds the v1 job-worker agent and point v2 (8.10) users to `applyTemplates`.
+
 ## 2026-10-17 — Connectors: `applyTemplates` with version pinning and key suggestions
 
 - `applyTemplates(definitions, [{ elementId, template, values }])` in `@bpmnkit/core/connectors`
