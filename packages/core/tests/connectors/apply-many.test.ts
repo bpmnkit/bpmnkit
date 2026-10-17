@@ -142,6 +142,25 @@ describe("applyTemplates", () => {
 		)
 	})
 
+	it("reports a value its property's condition leaves unwritten", () => {
+		const { definitions, problems } = applyTemplates(fixture(), [
+			{
+				elementId: "LookupSampleUsers",
+				template: HTTP,
+				values: { method: "GET", ignoreNullValues: false },
+			},
+		])
+		expect(unexpected(problems)).toEqual([
+			{
+				elementId: "LookupSampleUsers",
+				key: "ignoreNullValues",
+				message:
+					'Value for "ignoreNullValues" was not written: the template only uses it when method is one of POST, PUT, PATCH',
+			},
+		])
+		expect(Bpmn.export(definitions)).not.toContain("ignoreNullValues")
+	})
+
 	it("resolves an alias and accepts a template object", () => {
 		const viaAlias = applyTemplates(fixture(), [
 			{ elementId: "LookupSampleUsers", template: "http", values: { retryCount: 2 } },

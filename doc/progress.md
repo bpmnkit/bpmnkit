@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-10-17 — Bake-off acceptance fixture
+
+- `applyTemplates` reports a value whose property the template's `condition` switches off (the
+  REST connector's `ignoreNullValues` on a GET) instead of dropping it silently; the problem names
+  the condition.
+
 ## 2026-10-17 — Auto layout: tool grid and annotation side hints
 
 - `AdHocSubProcessOptions.toolGrid: { columns?, fill?: "row" | "column" }` shapes the grid the

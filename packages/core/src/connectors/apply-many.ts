@@ -11,8 +11,9 @@ import { levenshtein } from "../bpmn/optimize/variable-flow.js"
 import type { BpmnDefinitions } from "../index.js"
 import { CONNECTOR_ALIASES } from "./aliases.js"
 import { applyTemplateToElement } from "./apply-element.js"
+import { resolveValues } from "./apply.js"
 import { getTemplate, propertyKey } from "./catalog.js"
-import type { ElementTemplate } from "./template-types.js"
+import type { ElementTemplate, TemplateCondition } from "./template-types.js"
 
 export interface TemplateApplication {
 	elementId: string
@@ -75,6 +76,42 @@ function suggestKey(template: ElementTemplate, key: string): string | undefined 
 	return best !== undefined && best.distance <= limit ? best.id : undefined
 }
 
+type SimpleCondition = Extract<TemplateCondition, { allMatch: unknown }>["allMatch"][number]
+
+function describeCondition(condition: TemplateCondition | SimpleCondition): string {
+	if ("allMatch" in condition) return condition.allMatch.map(describeCondition).join(" and ")
+	const c: SimpleCondition = condition
+	if (c.equals !== undefined) return `${c.property} is ${c.equals}`
+	if (c.oneOf !== undefined) return `${c.property} is one of ${c.oneOf.join(", ")}`
+	if (c.isActive !== undefined) return `${c.property} is ${c.isActive ? "" : "not "}set`
+	return `${c.property} is ${c.isEmpty ? "" : "not "}empty`
+}
+
+/**
+ * A problem for each given key whose property the template's conditions
+ * switch off for these values — `ignoreNullValues` on a GET — which the
+ * template would otherwise drop without a word.
+ */
+function unwrittenValues(
+	template: ElementTemplate,
+	elementId: string,
+	values: Record<string, string>,
+): TemplateApplicationProblem[] {
+	const active = resolveValues(template, values)
+	const problems: TemplateApplicationProblem[] = []
+	for (const key of Object.keys(values)) {
+		if (key in active) continue
+		const condition = template.properties.find((p) => propertyKey(p) === key)?.condition
+		if (condition === undefined) continue
+		problems.push({
+			elementId,
+			key,
+			message: `Value for "${key}" was not written: the template only uses it when ${describeCondition(condition)}`,
+		})
+	}
+	return problems
+}
+
 /**
  * Applies each entry in order with {@link applyTemplateToElement} and gathers
  * what went wrong, each problem naming its element.
@@ -89,6 +126,9 @@ function suggestKey(template: ElementTemplate, key: string): string | undefined 
  *   template's default.
  * - **Unknown keys.** Reported with a `suggestion` when a property id or
  *   binding name is close; the rest of the entry is still applied.
+ * - **Switched-off keys.** A value for a property whose `condition` does not
+ *   hold for the entry's values is not written, and is reported naming the
+ *   condition.
  *
  * @param definitions - The model; not mutated.
  * @param entries - Elements anywhere in the model, nested ones included.
@@ -131,6 +171,7 @@ export function applyTemplates(
 			}
 			problems.push(reported)
 		}
+		problems.push(...unwrittenValues(template, elementId, values))
 	}
 	return { definitions: current, problems }
 }

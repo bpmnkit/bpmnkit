@@ -438,6 +438,9 @@ const { definitions, problems } = applyTemplates(Bpmn.parse(xml), [
   connector, not the names of the extensions they write (`retries`). A key that does not match
   is reported with a `suggestion` when a property id or binding name is close; the rest of the
   entry is still applied.
+- **A value the template switches off is reported.** Some properties apply only under a
+  condition: the REST connector's `ignoreNullValues` exists only for POST, PUT and PATCH. A value
+  for such a property is not written, and the problem names the condition it needs.
 - **Properties you omit keep their template default.**
 - **Values** may be strings, numbers or booleans; the last two are written in string form.
   Strings are written as given, so pass a real newline (`"\n\n"` in code, never the two

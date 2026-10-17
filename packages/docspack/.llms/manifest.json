@@ -4503,7 +4503,7 @@
 		{
 			"id": "packages.connectors.applying-several-templates-by-name-applytemplates",
 			"file": "chunks/packages.connectors.applying-several-templates-by-name-applytemplates.md",
-			"tokens": 426,
+			"tokens": 488,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4517,7 +4517,8 @@
 				"applyTemplates",
 				"applyTemplateToElement",
 				"retryCount",
-				"retryBackoff"
+				"retryBackoff",
+				"ignoreNullValues"
 			]
 		},
 		{
