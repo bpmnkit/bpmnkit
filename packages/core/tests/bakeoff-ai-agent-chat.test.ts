@@ -16,6 +16,18 @@ const TOOLS = [
 	"ListSampleTechnologyProducts",
 ]
 
+// Copied from spec.md, not from build.ts, so a typo in the builder cannot pass.
+const SYSTEM_PROMPT_PARAGRAPHS = [
+	"You are **TaskAgent**, a helpful, generic chat agent that can handle a wide variety of customer requests using your own domain knowledge **and** any tools explicitly provided to you at runtime.",
+	"If tools are provided, you should prefer them instead of guessing an answer. You can call the same tool multiple times by providing different input values. Don't guess any tools which were not explicitly configured. If no tool matches the request, try to generate an answer. If you're not able to find a good answer, return with a message stating why you're not able to.",
+]
+const TOOL_DOCUMENTATION = [
+	"Lists available users. Use this tool to look up names, usernames, or IDs. Do not use it for details not returned by the service. Input: none. Returns: an array of user objects containing id, name, and username.",
+	'Searches the recipe catalog. Use this tool when a request asks for a recipe, dish, cuisine, or cooking instructions. Do not use it for unrelated food facts or guaranteed dietary safety. Input: searchQuery describing the desired dish or cuisine. Returns: matching recipe objects, or "No result found."',
+	"Fetches one random safe-mode joke. Use this tool when the user asks for a joke or humorous response. Do not use it when the request requires a specific factual answer or a particular joke topic. Input: none. Returns: the joke as plain text.",
+	"Lists technology products. Use this tool when a request asks which devices or technology products are available or needs their attributes. Do not use it for live inventory, pricing, or purchasing. Input: none. Returns: an array of product objects with identifiers, names, and available attribute data.",
+]
+
 // Facts are read from the exported XML parsed back, so they hold for the file a user gets.
 const xml = Bpmn.export(buildAiAgentChat())
 const defs: BpmnDefinitions = Bpmn.parse(xml)
@@ -120,9 +132,7 @@ describe("bake-off: AI Agent Chat With Tools (fixtures/bakeoff/spec.md)", () => 
 
 	it("configures the agent as the spec lists", () => {
 		const prompt = input("AI_Agent", "data.systemPrompt.prompt")
-		expect(prompt).toMatch(/^="You are \*\*TaskAgent\*\*.*at runtime\.\n\nIf tools are provided/s)
-		expect(prompt).toMatch(/why you're not able to\."$/)
-		expect(prompt?.split("\n\n")).toHaveLength(2)
+		expect(prompt).toBe(`="${SYSTEM_PROMPT_PARAGRAPHS.join("\n\n")}"`)
 		const expected: Record<string, string> = {
 			"provider.type": "openai",
 			"provider.openai.api.type": "responses",
@@ -169,7 +179,9 @@ describe("bake-off: AI Agent Chat With Tools (fixtures/bakeoff/spec.md)", () => 
 			expect(input(id, "connectionTimeoutInSeconds"), id).toBe("20")
 			expect(input(id, "readTimeoutInSeconds"), id).toBe("20")
 			expect(header(id, "resultExpression"), id).toMatch(/^=\{toolCallResult: /)
-			expect(element(id).documentation, id).toMatch(/Input: .* Returns: /)
+			expect(element(id).documentation, id).toBe(TOOL_DOCUMENTATION[i])
+			// HttpJson v18 offers ignoreNullValues only for POST, PUT and PATCH.
+			expect(input(id, "ignoreNullValues"), id).toBeUndefined()
 		})
 		expect(header("LookupSampleUsers", "resultExpression")).toBe(
 			"={toolCallResult: for user in response.body return {id: user.id, name: user.name, username: user.username}}",
