@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-10-17 — Auto layout: tool grid and annotation side hints
+
+- `AdHocSubProcessOptions.toolGrid: { columns?, fill?: "row" | "column" }` shapes the grid the
+  semantic layout packs unconnected children into; `annotate(id, text, { side })` fixes an
+  annotation's side. The builder collects both as `LayoutHints` (shared through the nested
+  builders' root definitions) and passes them to `applyAutoLayout(defs, engine, hints)`; nothing
+  is written to the model. `layoutProcess` takes the grid hints as an optional fourth argument;
+  the `grid` engine ignores them. Without hints, layout output is unchanged.
+
 ## 2026-10-17 — Connectors: `applyTemplates` with version pinning and key suggestions
 
 - `applyTemplates(definitions, [{ elementId, template, values }])` in `@bpmnkit/core/connectors`

@@ -1,5 +1,11 @@
 # Features
 
+## Auto layout takes a tool grid and annotation sides (2026-10-17)
+
+- `adHocSubProcess(id, tools, { toolGrid: { columns: 2, fill: "column" } })` lays the tools out in
+  a fixed number of columns, filled top to bottom or left to right.
+- `annotate(id, text, { side: "below" })` puts the annotation on the side asked for.
+
 ## `applyTemplates` configures connectors in-process (2026-10-17)
 
 - `applyTemplates(definitions, entries)` applies element templates by id, `id@version` or alias to

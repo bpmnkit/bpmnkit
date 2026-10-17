@@ -17,7 +17,14 @@ export type {
 export { assertNoOverlap } from "./overlap.js"
 export { checkDiCompleteness } from "../bpmn/di-check.js"
 export type { DiCompleteness } from "../bpmn/di-check.js"
-export type { Bounds, LayoutEdge, LayoutNode, LayoutResult, Waypoint } from "./types.js"
+export type {
+	Bounds,
+	LayoutEdge,
+	LayoutHints,
+	LayoutNode,
+	LayoutResult,
+	Waypoint,
+} from "./types.js"
 export {
 	ELEMENT_SIZES,
 	GRID_CELL_HEIGHT,

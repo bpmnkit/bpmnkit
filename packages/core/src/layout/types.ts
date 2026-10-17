@@ -107,6 +107,26 @@ export interface SubProcessChildResult {
 	parentY: number
 }
 
+/** How the unconnected children of an ad-hoc sub-process are arranged in their grid. */
+export interface GridHint {
+	/** Columns in the grid; defaults to `ceil(sqrt(n))`. */
+	columns?: number
+	/** `row` (default) reads declaration order left to right; `column` top to bottom. */
+	fill?: "row" | "column"
+}
+
+/**
+ * Placement requests the builder collects while it builds and hands to
+ * {@link applyAutoLayout}. They steer the layout only; nothing of them is
+ * written to the model or the XML.
+ */
+export interface LayoutHints {
+	/** Tool grid per ad-hoc sub-process id. */
+	grids?: Map<string, GridHint>
+	/** Side per text annotation id, overriding the side the packer would choose. */
+	annotationSides?: Map<string, "above" | "below">
+}
+
 /** Complete layout result for a process. */
 export interface LayoutResult {
 	nodes: LayoutNode[]

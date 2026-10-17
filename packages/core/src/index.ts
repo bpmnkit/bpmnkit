@@ -148,6 +148,7 @@ export type {
 	EndEventOptions,
 	BoundaryEventOptions,
 	AdHocSubProcessOptions,
+	AnnotateOptions,
 } from "./bpmn/bpmn-builder.js"
 export type {
 	BpmnDefinitions,
@@ -394,7 +395,14 @@ export type {
 	ElementPosition,
 	FlowOrderViolation,
 } from "./layout/index.js"
-export type { Bounds, LayoutEdge, LayoutNode, LayoutResult, Waypoint } from "./layout/index.js"
+export type {
+	Bounds,
+	LayoutEdge,
+	LayoutHints,
+	LayoutNode,
+	LayoutResult,
+	Waypoint,
+} from "./layout/index.js"
 export { ELEMENT_SIZES, GRID_CELL_HEIGHT, GRID_CELL_WIDTH } from "./layout/index.js"
 export { compactify, expand } from "./bpmn/compact.js"
 export { createCompactStream } from "./bpmn/compact-stream.js"

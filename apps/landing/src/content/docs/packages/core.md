@@ -701,6 +701,26 @@ s.serviceTask("listUsers", {
 });
 ```
 
+With `.withAutoLayout()`, unconnected children are packed into a grid in declaration order,
+row by row in `ceil(sqrt(n))` columns. `toolGrid` fixes the column count, and
+`fill: "column"` reads the order top to bottom instead. Like the annotation `side` below, it
+steers the layout only and is not written to the XML.
+
+```typescript
+.adHocSubProcess("agent", (s) => {
+  s.serviceTask("users",    { taskType: "x" });   // left column, top
+  s.serviceTask("recipes",  { taskType: "x" });   // left column, bottom
+  s.serviceTask("joke",     { taskType: "x" });   // right column, top
+  s.serviceTask("products", { taskType: "x" });   // right column, bottom
+}, { toolGrid: { columns: 2, fill: "column" } })
+.annotate("joke", "Each task is a capability of the agent.", { side: "below" })
+```
+
+`.annotate(elementId, text, { side: "above" | "below" })` overrides the side the layout picks
+for a text annotation; it still steps clear of shapes and other annotations on that side. Call
+it on the process builder, also for an element inside a sub-process: annotations added with
+`annotate()` inside a sub-process callback get no diagram shape from the auto layout.
+
 ### Joins: inferred by default, or declared
 
 Where several branches of one gateway reach the same element, `build()` inserts a matching

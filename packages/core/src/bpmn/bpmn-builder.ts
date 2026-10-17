@@ -1,4 +1,5 @@
 import { ValidationError } from "../errors.js"
+import type { LayoutHints } from "../layout/types.js"
 import { generateId } from "../types/id-generator.js"
 import type { XmlElement } from "../types/xml-element.js"
 import { applyAutoLayout } from "./auto-layout.js"
@@ -393,6 +394,21 @@ export interface AdHocSubProcessOptions extends ElementOptions {
 	completionCondition?: string
 	/** Whether still-running inner activity instances are cancelled once the completion condition is met (default true). */
 	cancelRemainingInstances?: boolean
+	/**
+	 * Shape of the grid `withAutoLayout()` packs the unconnected children (tools)
+	 * into: a fixed column count, and `fill: "column"` to read declaration order
+	 * top to bottom instead of left to right. Layout only; not written to the XML.
+	 */
+	toolGrid?: { columns?: number; fill?: "row" | "column" }
+}
+
+/** Options for `annotate()`. */
+export interface AnnotateOptions {
+	/**
+	 * Which side of the element `withAutoLayout()` puts the annotation on,
+	 * instead of the side it would choose. Layout only; not written to the XML.
+	 */
+	side?: "above" | "below"
 }
 
 // ---------------------------------------------------------------------------
@@ -1044,6 +1060,28 @@ interface RootDefinitions {
 	messages: BpmnMessage[]
 	signals: BpmnSignal[]
 	escalations: BpmnEscalation[]
+	/** Shared by every nested builder, so hints reach the process's `build()`. */
+	layoutHints: Required<LayoutHints>
+}
+
+function emptyLayoutHints(): Required<LayoutHints> {
+	return { grids: new Map(), annotationSides: new Map() }
+}
+
+/** Remembers an ad-hoc sub-process's `toolGrid` for the layout. */
+function recordToolGrid(
+	hints: Required<LayoutHints>,
+	id: string,
+	options: AdHocSubProcessOptions | undefined,
+): void {
+	const grid = options?.toolGrid
+	if (!grid) return
+	if (grid.columns !== undefined && !(Number.isInteger(grid.columns) && grid.columns > 0)) {
+		throw new Error(
+			`adHocSubProcess("${id}"): toolGrid.columns must be a positive integer, got ${grid.columns}`,
+		)
+	}
+	hints.grids.set(id, grid)
 }
 
 /**
@@ -1223,6 +1261,7 @@ export class BranchBuilder {
 	private readonly rootMessages: BpmnMessage[]
 	private readonly rootSignals: BpmnSignal[]
 	private readonly rootEscalations: BpmnEscalation[]
+	private readonly rootLayoutHints: Required<LayoutHints>
 
 	/** @internal */
 	constructor(
@@ -1232,6 +1271,7 @@ export class BranchBuilder {
 		rootMessages: BpmnMessage[] = [],
 		rootSignals: BpmnSignal[] = [],
 		rootEscalations: BpmnEscalation[] = [],
+		rootLayoutHints: Required<LayoutHints> = emptyLayoutHints(),
 	) {
 		this.gatewayId = gatewayId
 		this.branchName = branchName
@@ -1240,6 +1280,7 @@ export class BranchBuilder {
 		this.rootMessages = rootMessages
 		this.rootSignals = rootSignals
 		this.rootEscalations = rootEscalations
+		this.rootLayoutHints = rootLayoutHints
 	}
 
 	private roots(): RootDefinitions {
@@ -1248,6 +1289,7 @@ export class BranchBuilder {
 			messages: this.rootMessages,
 			signals: this.rootSignals,
 			escalations: this.rootEscalations,
+			layoutHints: this.rootLayoutHints,
 		}
 	}
 
@@ -1386,10 +1428,11 @@ export class BranchBuilder {
 	}
 
 	/** Attach a text annotation to an element by explicit ID. */
-	annotate(elementId: string, text: string): this {
+	annotate(elementId: string, text: string, options?: AnnotateOptions): this {
 		const n = (this._annCounters.get(elementId) ?? 0) + 1
 		this._annCounters.set(elementId, n)
 		const annId = `TextAnnotation_${elementId}_${n}`
+		if (options?.side) this.rootLayoutHints.annotationSides.set(annId, options.side)
 		this._textAnnotations.push({ id: annId, text, unknownAttributes: {} })
 		this._associations.push({
 			id: `Association_${elementId}_${n}`,
@@ -1679,6 +1722,7 @@ export class BranchBuilder {
 		options?: AdHocSubProcessOptions,
 	): this {
 		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(content, options)
+		recordToolGrid(this.rootLayoutHints, id, resolved.options)
 		// Ad-hoc sub-process children are unordered — see SubProcessContentBuilder.autoConnect.
 		const sub = new SubProcessContentBuilder(this.roots(), false)
 		resolved.content(sub)
@@ -1744,6 +1788,7 @@ export class BranchBuilder {
 			this.rootMessages,
 			this.rootSignals,
 			this.rootEscalations,
+			this.rootLayoutHints,
 		)
 		callback(b)
 
@@ -1807,6 +1852,7 @@ export class SubProcessContentBuilder {
 	private readonly rootMessages: BpmnMessage[]
 	private readonly rootSignals: BpmnSignal[]
 	private readonly rootEscalations: BpmnEscalation[]
+	private readonly rootLayoutHints: Required<LayoutHints>
 	/**
 	 * Whether sequential calls chain themselves with sequence flows.
 	 *
@@ -1822,13 +1868,20 @@ export class SubProcessContentBuilder {
 
 	/** @internal */
 	constructor(
-		roots: RootDefinitions = { errors: [], messages: [], signals: [], escalations: [] },
+		roots: RootDefinitions = {
+			errors: [],
+			messages: [],
+			signals: [],
+			escalations: [],
+			layoutHints: emptyLayoutHints(),
+		},
 		autoConnect = true,
 	) {
 		this.rootErrors = roots.errors
 		this.rootMessages = roots.messages
 		this.rootSignals = roots.signals
 		this.rootEscalations = roots.escalations
+		this.rootLayoutHints = roots.layoutHints
 		this.autoConnect = autoConnect
 	}
 
@@ -1838,6 +1891,7 @@ export class SubProcessContentBuilder {
 			messages: this.rootMessages,
 			signals: this.rootSignals,
 			escalations: this.rootEscalations,
+			layoutHints: this.rootLayoutHints,
 		}
 	}
 
@@ -2049,10 +2103,11 @@ export class SubProcessContentBuilder {
 	}
 
 	/** Attach a text annotation to an element by explicit ID. */
-	annotate(elementId: string, text: string): this {
+	annotate(elementId: string, text: string, options?: AnnotateOptions): this {
 		const n = (this._annCounters.get(elementId) ?? 0) + 1
 		this._annCounters.set(elementId, n)
 		const annId = `TextAnnotation_${elementId}_${n}`
+		if (options?.side) this.rootLayoutHints.annotationSides.set(annId, options.side)
 		this._textAnnotations.push({ id: annId, text, unknownAttributes: {} })
 		this._associations.push({
 			id: `Association_${elementId}_${n}`,
@@ -2077,6 +2132,7 @@ export class SubProcessContentBuilder {
 			this.rootMessages,
 			this.rootSignals,
 			this.rootEscalations,
+			this.rootLayoutHints,
 		)
 		callback(b)
 
@@ -2270,6 +2326,7 @@ export class SubProcessContentBuilder {
 		options?: AdHocSubProcessOptions,
 	): this {
 		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(content, options)
+		recordToolGrid(this.rootLayoutHints, id, resolved.options)
 		// Ad-hoc sub-process children are unordered — see SubProcessContentBuilder.autoConnect.
 		const sub = new SubProcessContentBuilder(this.roots(), false)
 		resolved.content(sub)
@@ -2338,6 +2395,7 @@ export class ProcessBuilder {
 	private readonly rootMessages: BpmnMessage[] = []
 	private readonly rootSignals: BpmnSignal[] = []
 	private readonly rootEscalations: BpmnEscalation[] = []
+	private readonly rootLayoutHints = emptyLayoutHints()
 	private readonly _textAnnotations: BpmnTextAnnotation[] = []
 	private readonly _associations: BpmnAssociation[] = []
 	private readonly _annCounters = new Map<string, number>()
@@ -2367,6 +2425,7 @@ export class ProcessBuilder {
 			messages: this.rootMessages,
 			signals: this.rootSignals,
 			escalations: this.rootEscalations,
+			layoutHints: this.rootLayoutHints,
 		}
 	}
 
@@ -2983,6 +3042,7 @@ export class ProcessBuilder {
 			this.rootMessages,
 			this.rootSignals,
 			this.rootEscalations,
+			this.rootLayoutHints,
 		)
 		callback(b)
 
@@ -3074,6 +3134,7 @@ export class ProcessBuilder {
 		options?: AdHocSubProcessOptions,
 	): this {
 		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(content, options)
+		recordToolGrid(this.rootLayoutHints, id, resolved.options)
 		// Ad-hoc sub-process children are unordered — see SubProcessContentBuilder.autoConnect.
 		const sub = new SubProcessContentBuilder(this.roots(), false)
 		resolved.content(sub)
@@ -3171,10 +3232,11 @@ export class ProcessBuilder {
 	}
 
 	/** Attach a text annotation to any flow element by explicit ID. */
-	annotate(elementId: string, text: string): this {
+	annotate(elementId: string, text: string, options?: AnnotateOptions): this {
 		const n = (this._annCounters.get(elementId) ?? 0) + 1
 		this._annCounters.set(elementId, n)
 		const annId = `TextAnnotation_${elementId}_${n}`
+		if (options?.side) this.rootLayoutHints.annotationSides.set(annId, options.side)
 		this._textAnnotations.push({ id: annId, text, unknownAttributes: {} })
 		this._associations.push({
 			id: `Association_${elementId}_${n}`,
@@ -3309,7 +3371,9 @@ export class ProcessBuilder {
 				: [],
 		}
 
-		return hoistMessageSubscriptions(this._autoLayout ? applyAutoLayout(defs) : defs)
+		return hoistMessageSubscriptions(
+			this._autoLayout ? applyAutoLayout(defs, "semantic", this.rootLayoutHints) : defs,
+		)
 	}
 
 	/**
@@ -3353,7 +3417,11 @@ export class ProcessBuilder {
 		definitions.signals = this.rootSignals
 		definitions.escalations = this.rootEscalations
 
-		return hoistMessageSubscriptions(this._autoLayout ? applyAutoLayout(definitions) : definitions)
+		return hoistMessageSubscriptions(
+			this._autoLayout
+				? applyAutoLayout(definitions, "semantic", this.rootLayoutHints)
+				: definitions,
+		)
 	}
 
 	/**

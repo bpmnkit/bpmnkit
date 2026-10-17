@@ -5080,7 +5080,7 @@
 		{
 			"id": "packages.core.installation-ad-hoc-sub-processes-children-are-a-set-not-a-chain",
 			"file": "chunks/packages.core.installation-ad-hoc-sub-processes-children-are-a-set-not-a-chain.md",
-			"tokens": 368,
+			"tokens": 642,
 			"tags": [
 				"packages",
 				"core",
@@ -5092,7 +5092,10 @@
 				"not",
 				"chain"
 			],
-			"entities": []
+			"entities": [
+				"toolGrid",
+				"annotate()"
+			]
 		},
 		{
 			"id": "packages.core.installation-joins-inferred-by-default-or-declared",
