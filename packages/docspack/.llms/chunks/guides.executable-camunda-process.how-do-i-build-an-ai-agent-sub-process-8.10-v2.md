@@ -20,7 +20,7 @@ when to call it. Give each tool its own template, such as HTTP JSON.
 ```
 
 ```typescript
-applyTemplates(model, [
+applyTemplates(model.build(), [
 	{
 		elementId: "AI_Agent",
 		template: "io.camunda.connectors.agenticai.ai-agent-subprocess.v2@1",

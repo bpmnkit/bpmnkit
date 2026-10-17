@@ -192,8 +192,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Build an Executable Camunda Process — How do I map a user task's input?](.llms/chunks/guides.executable-camunda-process.how-do-i-map-a-user-task-s-input.md) — 176 tokens
 - [Build an Executable Camunda Process — How do I label a gateway's Yes and No flows?](.llms/chunks/guides.executable-camunda-process.how-do-i-label-a-gateway-s-yes-and-no-flows.md) — 193 tokens
 - [Build an Executable Camunda Process — How do I apply an element template (connector) to a task?](.llms/chunks/guides.executable-camunda-process.how-do-i-apply-an-element-template-connector-to-a-task.md) — 220 tokens
-- [Build an Executable Camunda Process — Which keys does a template take?](.llms/chunks/guides.executable-camunda-process.which-keys-does-a-template-take.md) — 188 tokens
-- [Build an Executable Camunda Process — How do I build an AI Agent sub-process (8.10, v2)?](.llms/chunks/guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-8.10-v2.md) — 317 tokens
+- [Build an Executable Camunda Process — Which keys does a template take?](.llms/chunks/guides.executable-camunda-process.which-keys-does-a-template-take.md) — 233 tokens
+- [Build an Executable Camunda Process — How do I build an AI Agent sub-process (8.10, v2)?](.llms/chunks/guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-8.10-v2.md) — 318 tokens
 - [Build an Executable Camunda Process — How do I lay out the agent's tools in a grid?](.llms/chunks/guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid.md) — 169 tokens
 - [Build an Executable Camunda Process — How do I check the file is executable before tests?](.llms/chunks/guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests.md) — 214 tokens
 - [Gateways & Branching — Exclusive Gateway (XOR)](.llms/chunks/guides.gateways.exclusive-gateway-xor.md) — 218 tokens

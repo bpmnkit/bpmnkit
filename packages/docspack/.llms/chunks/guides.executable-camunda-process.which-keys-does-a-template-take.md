@@ -8,9 +8,11 @@ casen connector show io.camunda.connectors.HttpJson.v2
 ```
 
 Properties you omit keep their template default; you do not have to repeat them. If you
-mistype a key, `applyTemplates` reports it in `problems` with the key it thinks you meant. The
-output lists every property with its id, type and default, so copy the id from there, and set
-only the ones whose default is wrong for your process. Nested properties use dotted ids such
+mistype a key, `applyTemplates` reports it in `problems` with the key it thinks you meant.
+`casen connector show` prints the template's name and task type, then its required inputs and its optional
+inputs, one per line as `key — label`. Copy the `key` from there: it is the same id
+`applyTemplates` accepts, for example `retryCount`. It does not print types or defaults, so set
+only the keys whose template default is wrong for your process. Nested properties use dotted ids such
 as `authentication.type`, and the dot is part of the key, not a path into an object.
 
 ---
