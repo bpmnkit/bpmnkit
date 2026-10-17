@@ -17,6 +17,13 @@
   elements anywhere in a model, including inside ad-hoc sub-processes, and answers a wrong key
   with the property id it probably meant (`retries` -> `retryCount`).
 
+## `casen connector apply` and filtered `show` (2026-10-17)
+
+- `casen connector apply file.bpmn Call http --values call.json --set retryCount=5` configures an
+  element from the shell without quoting multi-line FEEL; a wrong key is reported with a suggestion.
+- `casen connector show <template> --filter timeout --condensed` prints one line per matching
+  property: key, type, default, required, condition.
+
 ## Branch flows take a label and an explicit id (2026-10-17)
 
 - `branch(id, b => b.label("Yes").flowId("Flow_Yes"))` names the branch's first flow and fixes its

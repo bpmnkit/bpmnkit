@@ -8,6 +8,11 @@
   form, user-task input mapping, gateway flow labels, element templates, template keys, AI Agent
   sub-process, tool grid, deployability check). Linked from the core and connectors pages.
 - `packages/docspack/tests/recipe-ranking.test.ts` pins the top hit for six agent questions.
+- `casen connector apply <file.bpmn> <elementId> <template> [--values f.json] [--set k=v]... [--dry-run]`
+  wraps `applyTemplates` for file-based workflows (`--set` overrides `--values`; any problem exits 1
+  and leaves the file unchanged). `casen connector show --filter <text> --condensed` lists one line
+  per property (`key  type  default  required  when ...`). `parseArgs` keeps every occurrence of a
+  repeated flag, read with `flagAll`.
 
 ## 2026-10-17 — Final review fixes (builder bake-off Phase A)
 

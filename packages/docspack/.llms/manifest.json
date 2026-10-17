@@ -104,7 +104,7 @@
 		{
 			"id": "cli.casen.bpmn-generation-pipeline",
 			"file": "chunks/cli.casen.bpmn-generation-pipeline.md",
-			"tokens": 474,
+			"tokens": 507,
 			"tags": [
 				"cli",
 				"casen",
@@ -2663,7 +2663,7 @@
 		{
 			"id": "guides.executable-camunda-process.which-keys-does-a-template-take",
 			"file": "chunks/guides.executable-camunda-process.which-keys-does-a-template-take.md",
-			"tokens": 233,
+			"tokens": 335,
 			"tags": [
 				"guides",
 				"executable-camunda-process",

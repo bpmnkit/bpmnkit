@@ -22,6 +22,14 @@ export function parseArgs(argv: string[]): ParseResult {
 	const flags: ParsedFlags = {}
 	let i = 0
 	let stopFlags = false
+	// Every occurrence of a flag, for the ones given more than once.
+	const seen = new Map<string, string[]>()
+	const set = (name: string, value: string | number | boolean): void => {
+		flags[name] = value
+		const all = [...(seen.get(name) ?? []), String(value)]
+		seen.set(name, all)
+		if (all.length > 1) flags[`${name}[]`] = JSON.stringify(all)
+	}
 
 	while (i < argv.length) {
 		const arg = argv[i] ?? ""
@@ -46,18 +54,18 @@ export function parseArgs(argv: string[]): ParseResult {
 				// --flag=value
 				const name = raw.slice(0, eqIdx)
 				const value = raw.slice(eqIdx + 1)
-				flags[name] = coerce(value)
+				set(name, coerce(value))
 			} else if (raw.startsWith("no-")) {
 				// --no-flag → false
-				flags[raw.slice(3)] = false
+				set(raw.slice(3), false)
 			} else {
 				// --flag [value?]
 				const next = argv[i + 1]
 				if (next !== undefined && !next.startsWith("-")) {
-					flags[raw] = coerce(next)
+					set(raw, coerce(next))
 					i++
 				} else {
-					flags[raw] = true
+					set(raw, true)
 				}
 			}
 		} else if (arg.startsWith("-") && arg.length === 2) {
@@ -65,16 +73,16 @@ export function parseArgs(argv: string[]): ParseResult {
 			const short = arg.slice(1)
 			const next = argv[i + 1]
 			if (next !== undefined && !next.startsWith("-")) {
-				flags[short] = coerce(next)
+				set(short, coerce(next))
 				i++
 			} else {
-				flags[short] = true
+				set(short, true)
 			}
 		} else if (arg.startsWith("-") && arg.length > 2 && arg[2] !== "-") {
 			// -fVALUE or -f=VALUE
 			const short = arg[1] ?? ""
 			const rest = arg.slice(2).replace(/^=/, "")
-			flags[short] = coerce(rest)
+			set(short, coerce(rest))
 		} else {
 			positional.push(arg)
 		}
@@ -98,6 +106,18 @@ function coerce(value: string): string | number | boolean {
 export function flagStr(flags: ParsedFlags, name: string, short?: string): string | undefined {
 	const v = flags[name] ?? (short ? flags[short] : undefined)
 	return v !== undefined ? String(v) : undefined
+}
+
+/**
+ * Every value a flag was given, in order — `--set a=1 --set b=2` yields both,
+ * where `flags.set` holds only the last. Empty when the flag is absent or a
+ * bare switch.
+ */
+export function flagAll(flags: ParsedFlags, name: string): string[] {
+	const repeated = flags[`${name}[]`]
+	if (typeof repeated === "string") return JSON.parse(repeated) as string[]
+	const single = flags[name]
+	return typeof single === "boolean" || single === undefined ? [] : [String(single)]
 }
 
 /** Resolve a flag value as a boolean. */

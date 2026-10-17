@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { parseArgs } from "./args.js"
+import { flagAll, parseArgs } from "./args.js"
 
 describe("parseArgs", () => {
 	it("parses positional arguments", () => {
@@ -66,5 +66,13 @@ describe("parseArgs", () => {
 		expect(positional).toEqual(["process-instance", "list"])
 		expect(flags.filter).toBe('{"state":"ACTIVE"}')
 		expect(flags.limit).toBe(10)
+	})
+
+	it("keeps every occurrence of a repeated flag for flagAll", () => {
+		const { flags } = parseArgs(["--set", "a=1", "--set=b=2", "--once", "x"])
+		expect(flagAll(flags, "set")).toEqual(["a=1", "b=2"])
+		expect(flags.set).toBe("b=2")
+		expect(flagAll(flags, "once")).toEqual(["x"])
+		expect(flagAll(flags, "absent")).toEqual([])
 	})
 })

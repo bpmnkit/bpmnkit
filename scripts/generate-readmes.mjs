@@ -2303,6 +2303,8 @@ casen pi list --filter '{"state":"ACTIVE"}'
 | Command | Description |
 |---------|-------------|
 | \`casen connector generate <spec>\` | Generate element templates from OpenAPI/Swagger |
+| \`casen connector show <template> [--filter <text>] [--condensed]\` | List a template's property keys, types and defaults |
+| \`casen connector apply <file.bpmn> <elementId> <template>\` | Apply a template from \`--values file.json\` and \`--set key=value\` |
 
 ### Typed code generation
 
