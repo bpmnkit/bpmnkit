@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest"
-import { applyTemplates, getTemplate } from "../../src/connectors/index.js"
+import {
+	applyTemplates,
+	clearRegisteredTemplates,
+	getTemplate,
+	registerElementTemplates,
+} from "../../src/connectors/index.js"
 import type { TemplateApplicationProblem } from "../../src/connectors/index.js"
 import { Bpmn, lintDiagram } from "../../src/index.js"
 import type { BpmnDefinitions } from "../../src/index.js"
@@ -181,6 +186,62 @@ describe("applyTemplates", () => {
 			{ elementId: "Ghost", template: HTTP, values: {} },
 		])
 		expect(problems.map((p) => p.elementId)).toEqual(["LookupSampleUsers", "Ghost"])
+	})
+
+	it("gives a refused entry one problem, not a second about its switched-off values", () => {
+		const { problems } = applyTemplates(fixture(), [
+			{
+				elementId: "Ghost",
+				template: HTTP,
+				values: { method: "GET", ignoreNullValues: false },
+			},
+		])
+		expect(problems).toHaveLength(1)
+		expect(problems[0]?.message).toContain('No flow element "Ghost"')
+	})
+
+	it("resolves an alias case-insensitively and through registered templates", () => {
+		const viaAlias = applyTemplates(fixture(), [
+			{ elementId: "LookupSampleUsers", template: "HTTP", values: {} },
+		])
+		expect(unexpected(viaAlias.problems)).toEqual([])
+		expect(Bpmn.export(viaAlias.definitions)).toContain('zeebe:modelerTemplate="')
+
+		const base = getTemplate(HTTP)
+		if (!base) throw new Error("bundled template missing")
+		registerElementTemplates([{ ...base, id: "acme.Custom.v1", version: 3 }])
+		try {
+			const custom = applyTemplates(fixture(), [
+				{ elementId: "LookupSampleUsers", template: "acme.Custom.v1@3", values: {} },
+			])
+			expect(unexpected(custom.problems)).toEqual([])
+		} finally {
+			clearRegisteredTemplates()
+		}
+	})
+
+	it("says so for an empty version after @", () => {
+		const { problems } = applyTemplates(fixture(), [
+			{ elementId: "LookupSampleUsers", template: "http@", values: {} },
+		])
+		expect(problems).toHaveLength(1)
+		expect(problems[0]?.message).toContain('empty version after "@"')
+	})
+
+	it("does not print undefined for a template without a version", () => {
+		const base = getTemplate(HTTP)
+		if (!base) throw new Error("bundled template missing")
+		const { version: _version, ...unversioned } = base
+		registerElementTemplates([{ ...unversioned, id: "acme.NoVersion" }])
+		try {
+			const { problems } = applyTemplates(fixture(), [
+				{ elementId: "LookupSampleUsers", template: "acme.NoVersion@5", values: {} },
+			])
+			expect(problems).toHaveLength(1)
+			expect(problems[0]?.message).not.toContain("undefined")
+		} finally {
+			clearRegisteredTemplates()
+		}
 	})
 
 	it("makes the ad-hoc sub-process agentic for the lint rules", () => {

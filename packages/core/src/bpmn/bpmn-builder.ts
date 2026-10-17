@@ -1,5 +1,5 @@
 import { ValidationError } from "../errors.js"
-import type { LayoutHints } from "../layout/types.js"
+import type { GridHint, LayoutHints } from "../layout/types.js"
 import { generateId } from "../types/id-generator.js"
 import type { XmlElement } from "../types/xml-element.js"
 import { applyAutoLayout } from "./auto-layout.js"
@@ -34,6 +34,7 @@ import {
 	restConnectorToTaskHeaders,
 } from "./rest-connector.js"
 import {
+	assertExplicitFlowIdsUnique,
 	assignStableFlowIds,
 	markExplicitFlowId,
 	rootDefinitionId,
@@ -78,7 +79,11 @@ export interface StartEventOptions extends ElementOptions {
 	timerCycle?: string
 	/** Message name — creates a message start event. */
 	messageName?: string
-	/** Form to show when the process is started (`zeebe:formDefinition formId`). */
+	/**
+	 * Form to show when the process is started (`zeebe:formDefinition formId`).
+	 * Camunda uses start forms only on the process's none start event, so set it
+	 * there and not on message, timer or signal start events.
+	 */
 	formId?: string
 	/** Zeebe properties (e.g. webhook connector config). */
 	zeebeProperties?: Array<{ name: string; value: string }>
@@ -399,7 +404,7 @@ export interface AdHocSubProcessOptions extends ElementOptions {
 	 * into: a fixed column count, and `fill: "column"` to read declaration order
 	 * top to bottom instead of left to right. Layout only; not written to the XML.
 	 */
-	toolGrid?: { columns?: number; fill?: "row" | "column" }
+	toolGrid?: GridHint
 }
 
 /** Options for `annotate()`. */
@@ -3305,6 +3310,7 @@ export class ProcessBuilder {
 			this.sequenceFlows,
 			this._source === undefined ? undefined : new Set(this._sourceFlowTargets.keys()),
 		)
+		assertExplicitFlowIdsUnique(this.flowElements, this.sequenceFlows)
 		recomputeIncomingOutgoing(this.flowElements, this.sequenceFlows)
 
 		if (this._source !== undefined) return this.buildOntoSource(this._source)

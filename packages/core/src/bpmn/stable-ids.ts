@@ -66,6 +66,54 @@ export function markExplicitFlowId(flow: BpmnSequenceFlow): void {
 	explicitIds.add(flow)
 }
 
+/** A scope's contents, as far as id checking needs: sub-processes carry both lists. */
+interface IdScope {
+	flowElements: BpmnFlowElement[]
+	sequenceFlows: BpmnSequenceFlow[]
+}
+
+function isIdScope(element: BpmnFlowElement): element is BpmnFlowElement & IdScope {
+	return "flowElements" in element && "sequenceFlows" in element
+}
+
+/**
+ * Throws when a caller-chosen flow id is also the id of another element or
+ * flow anywhere in the process, nested sub-processes included.
+ * `assignStableFlowIds` only sees one scope, and BPMN ids are unique per
+ * document; run this once the outermost scope is final.
+ */
+export function assertExplicitFlowIdsUnique(
+	elements: BpmnFlowElement[],
+	flows: BpmnSequenceFlow[],
+): void {
+	const owners = new Map<string, { owner: object; label: string }[]>()
+	const add = (id: string, owner: object, label: string) => {
+		const list = owners.get(id)
+		if (list) list.push({ owner, label })
+		else owners.set(id, [{ owner, label }])
+	}
+	const explicit: BpmnSequenceFlow[] = []
+	const walk = (scopeElements: BpmnFlowElement[], scopeFlows: BpmnSequenceFlow[]) => {
+		for (const element of scopeElements) {
+			add(element.id, element, `element "${element.id}"`)
+			if (isIdScope(element)) walk(element.flowElements, element.sequenceFlows)
+		}
+		for (const flow of scopeFlows) {
+			add(flow.id, flow, `the flow ${flow.sourceRef} -> ${flow.targetRef}`)
+			if (explicitIds.has(flow)) explicit.push(flow)
+		}
+	}
+	walk(elements, flows)
+	for (const flow of explicit) {
+		const other = owners.get(flow.id)?.find((entry) => entry.owner !== flow)
+		if (other) {
+			throw new Error(
+				`Flow id "${flow.id}" (${flow.sourceRef} -> ${flow.targetRef}) is already used by ${other.label}. Pick a different flowId().`,
+			)
+		}
+	}
+}
+
 /** The id a flow gets when it is the only one between its two endpoints. */
 function baseId(flow: BpmnSequenceFlow): string {
 	return capLength(`Flow_${ncName(flow.sourceRef)}_${ncName(flow.targetRef)}`)

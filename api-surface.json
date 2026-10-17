@@ -232,6 +232,7 @@
 			"GRID_CELL_HEIGHT": "value",
 			"GRID_CELL_WIDTH": "value",
 			"GatewayOptions": "type",
+			"GridHint": "type",
 			"GroupBuilder": "value",
 			"GroupOptions": "type",
 			"HitPolicy": "type",

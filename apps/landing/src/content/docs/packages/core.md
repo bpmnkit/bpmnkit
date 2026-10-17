@@ -647,7 +647,7 @@ All builder methods return `this` for chaining.
 | `.callActivity(id, options?)` | Add a call activity |
 | `.intermediateCatchEvent(id, options?)` | Add a catch event |
 | `.intermediateThrowEvent(id, options?)` | Add a throw event |
-| `.branch(id, builder)` | Define a gateway branch |
+| `.branch(id, builder)` | Define a gateway branch; inside it `.label(text)` names the first flow and `.flowId(id)` fixes its id |
 | `.boundaryEvent(id, options)` | Attach a boundary event to the previous task |
 | `.withBoundary(id, options, handler)` | Attach a boundary event and build its error/timeout path; cursor auto-restores to the main flow after the handler |
 | `.defaults(options)` | Set process-wide defaults (e.g. `{ serviceTask: { retries: "5" } }`) applied to all subsequent tasks |
@@ -660,6 +660,22 @@ data types (`dataObject`, `dataObjectReference`, `dataStoreReference`) — those
 data associations rather than sequence flows, so the chain has nowhere to put them. A
 compile-time table, `BUILDER_COVERAGE`, holds the SDK to that: adding an element type without
 a builder method fails the build. Run `pnpm --filter @bpmnkit/core check:builder` to print it.
+
+### Forms, mappings and branch flows
+
+- `startEvent(id, { formId })` writes `zeebe:formDefinition formId`. Camunda uses start forms
+  only on the process's none start event, so do not set it on message, timer or signal starts.
+- `userTask(id, { ioMapping, taskHeaders, zeebeProperties, modelerTemplate,
+  modelerTemplateVersion })` take the same shapes as `serviceTask`, for example
+  `ioMapping: { inputs: [{ source: "=order", target: "order" }] }`.
+- `.branch("no", (b) => b.label("No").flowId("Flow_No")...)`: `label()` sets the flow's name
+  (otherwise the branch id), `flowId()` keeps the id you chose. The build throws when a
+  `flowId` repeats another element or flow id anywhere in the process, nested sub-processes
+  included.
+- `buildAiAgentSubProcess` builds the v1 job-worker agent. For the v2 template of Camunda 8.10
+  (`io.camunda.connectors.agenticai.ai-agent-subprocess.v2`), build the ad-hoc sub-process
+  yourself and apply the template after `build()` with `applyTemplates` from
+  `@bpmnkit/core/connectors`.
 
 ### Ad-hoc sub-processes: children are a set, not a chain
 

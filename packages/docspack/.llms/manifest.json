@@ -5062,7 +5062,7 @@
 		{
 			"id": "packages.core.installation-processbuilder-methods",
 			"file": "chunks/packages.core.installation-processbuilder-methods.md",
-			"tokens": 698,
+			"tokens": 717,
 			"tags": [
 				"packages",
 				"core",
@@ -5076,6 +5076,30 @@
 				"dataObject",
 				"dataObjectReference",
 				"dataStoreReference"
+			]
+		},
+		{
+			"id": "packages.core.installation-forms-mappings-and-branch-flows",
+			"file": "chunks/packages.core.installation-forms-mappings-and-branch-flows.md",
+			"tokens": 224,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"forms",
+				"mappings",
+				"branch",
+				"flows"
+			],
+			"entities": [
+				"label()",
+				"flowId()",
+				"flowId",
+				"buildAiAgentSubProcess",
+				"io.camunda.connectors.agenticai.ai-agent-subprocess.v2",
+				"build()",
+				"applyTemplates",
+				"@bpmnkit/core/connectors"
 			]
 		},
 		{

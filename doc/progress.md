@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-10-17 — Final review fixes (builder bake-off Phase A)
+
+- An explicit `flowId()` that repeats an element or flow id in another scope (a nested sub-process) now throws at `build()`; `applyTemplates` resolves aliases through `templateIdForAlias`, reports `http@` and unversioned templates clearly, and no longer adds a second problem for a refused entry; `GridHint` is exported; core docs cover start forms, user-task mappings, `label()`/`flowId()` and the v2 agent template.
+
 ## 2026-10-17 — Bake-off acceptance fixture
 
 - `applyTemplates` reports a value whose property the template's `condition` switches off (the

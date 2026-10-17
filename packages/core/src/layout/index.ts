@@ -19,6 +19,7 @@ export { checkDiCompleteness } from "../bpmn/di-check.js"
 export type { DiCompleteness } from "../bpmn/di-check.js"
 export type {
 	Bounds,
+	GridHint,
 	LayoutEdge,
 	LayoutHints,
 	LayoutNode,

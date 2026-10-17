@@ -55,4 +55,32 @@ describe("branch flow labels and ids", () => {
 				.build(),
 		).toThrow(/Flow id "g" .*already used/)
 	})
+
+	it("throws when a branch flowId repeats an id inside a nested sub-process", () => {
+		expect(() =>
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.subProcess("sp", (c) => {
+					c.startEvent("inner").endEvent("innerEnd")
+				})
+				.exclusiveGateway("g")
+				.branch("a", (b) => b.flowId("inner").endEvent("e"))
+				.build(),
+		).toThrow(/Flow id "inner" .*already used by element "inner"/)
+	})
+
+	it("throws when two flows in different scopes share an explicit flowId", () => {
+		expect(() =>
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.subProcess("sp", (c) => {
+					c.startEvent("a")
+						.exclusiveGateway("ig")
+						.branch("x", (b) => b.flowId("Flow_Same").endEvent("ae"))
+				})
+				.exclusiveGateway("g")
+				.branch("y", (b) => b.flowId("Flow_Same").endEvent("e"))
+				.build(),
+		).toThrow(/Flow id "Flow_Same" .*already used/)
+	})
 })

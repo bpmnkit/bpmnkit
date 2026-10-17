@@ -9,9 +9,9 @@
 
 import { levenshtein } from "../bpmn/optimize/variable-flow.js"
 import type { BpmnDefinitions } from "../index.js"
-import { CONNECTOR_ALIASES } from "./aliases.js"
 import { applyTemplateToElement } from "./apply-element.js"
 import { resolveValues } from "./apply.js"
+import { templateIdForAlias } from "./cards.js"
 import { getTemplate, propertyKey } from "./catalog.js"
 import type { ElementTemplate, TemplateCondition } from "./template-types.js"
 
@@ -30,19 +30,25 @@ export interface TemplateApplicationProblem {
 	suggestion?: string
 }
 
-const ALIAS_TO_ID = new Map(Object.entries(CONNECTOR_ALIASES).map(([id, { alias }]) => [alias, id]))
-
 function resolveTemplate(reference: string): { template: ElementTemplate } | { problem: string } {
 	const at = reference.lastIndexOf("@")
 	const name = at === -1 ? reference : reference.slice(0, at)
 	const version = at === -1 ? undefined : reference.slice(at + 1)
 
-	const template = getTemplate(name) ?? getTemplate(ALIAS_TO_ID.get(name) ?? "")
+	const template = getTemplate(name) ?? getTemplate(templateIdForAlias(name) ?? "")
 	if (!template) return { problem: `Unknown connector template "${name}"` }
+	if (version === "") {
+		return { problem: `Template reference "${reference}": empty version after "@"` }
+	}
 	// The catalogue keeps one version of each id, so any other version is not there to apply.
-	if (version !== undefined && version !== String(template.version)) {
-		return {
-			problem: `Template "${template.id}" is not available at version ${version}; the available version is ${template.version}`,
+	if (version !== undefined) {
+		if (template.version === undefined) {
+			return { problem: `Template "${template.id}" has no version; drop "@${version}"` }
+		}
+		if (version !== String(template.version)) {
+			return {
+				problem: `Template "${template.id}" is not available at version ${version}; the available version is ${template.version}`,
+			}
 		}
 	}
 	return { template }
@@ -158,6 +164,8 @@ export function applyTemplates(
 			Object.entries(entry.values).map(([key, value]) => [key, String(value)]),
 		)
 		const result = applyTemplateToElement(current, elementId, template, values)
+		// A refusal returns the model it was given; its one problem says all there is.
+		const refused = result.definitions === current
 		current = result.definitions
 		for (const problem of result.problems) {
 			const reported: TemplateApplicationProblem = { elementId, message: problem.message }
@@ -171,7 +179,7 @@ export function applyTemplates(
 			}
 			problems.push(reported)
 		}
-		problems.push(...unwrittenValues(template, elementId, values))
+		if (!refused) problems.push(...unwrittenValues(template, elementId, values))
 	}
 	return { definitions: current, problems }
 }

@@ -397,6 +397,7 @@ export type {
 } from "./layout/index.js"
 export type {
 	Bounds,
+	GridHint,
 	LayoutEdge,
 	LayoutHints,
 	LayoutNode,
