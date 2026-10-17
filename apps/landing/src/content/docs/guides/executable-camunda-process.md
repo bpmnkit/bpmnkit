@@ -206,10 +206,7 @@ Lint the file before you write any test against it. `lintDiagram` is the library
 casen lint lint process.bpmn --categories deploy,connector,agentic
 ```
 
-Use the engine categories (`deploy`, `connector`, `agentic`) as the deployability gate: they
-hold the checks that decide whether Camunda accepts the file. `--profile deploy` runs every
-category and keeps the error-severity findings, so it also reports the `pattern` rules
-`gateway-no-default-flow` and `subprocess-no-error-boundary`. On the spec-compliant bake-off
-process those two are style advice that Camunda's own gate does not flag, and the reference
-file `expected.bpmn` trips both. Fix them if you want a clean deploy profile, or gate on the
-engine categories.
+`casen lint lint process.bpmn --profile deploy` runs every category and keeps the error-severity
+findings, so a correct model reports 0 errors. The `pattern` rules `gateway-no-default-flow` and
+`subprocess-no-error-boundary` are warnings (style advice): Camunda's own gate does not flag
+them, and the reference file `expected.bpmn` trips both.

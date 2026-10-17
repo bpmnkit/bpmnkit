@@ -2734,7 +2734,7 @@
 		{
 			"id": "guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests",
 			"file": "chunks/guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests.md",
-			"tokens": 216,
+			"tokens": 166,
 			"tags": [
 				"guides",
 				"executable-camunda-process",

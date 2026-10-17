@@ -244,17 +244,21 @@ describe("bake-off: AI Agent Chat With Tools (fixtures/bakeoff/spec.md)", () => 
 		expect(toolNote.y).toBeGreaterThanOrEqual(userTask.y + userTask.height)
 	})
 
-	it("has no lint errors under the engine rules beyond two advisory patterns", () => {
-		const errors = lintDiagram(defs, { forceEngineRules: true }).diagnostics.filter(
-			(d) => d.severity === "error",
-		)
+	it("has no lint errors under the engine rules; the two advisory patterns are warnings", () => {
+		const diagnostics = lintDiagram(defs, { forceEngineRules: true }).diagnostics
+		expect(diagnostics.filter((d) => d.severity === "error")).toEqual([])
 		// The spec, like Camunda's own blueprint, has neither a default flow on the
-		// Yes/No gateway nor an error boundary on the agent; the pattern rules call
-		// both errors. Pinned here so any other error fails the test.
-		expect(errors.map((d) => [d.id, d.elementIds])).toEqual([
-			["pattern/gateway-no-default-flow", ["Gateway_UserSatisfied"]],
-			["pattern/subprocess-no-error-boundary", ["AI_Agent"]],
-		])
+		// Yes/No gateway nor an error boundary on the agent; both stay visible as warnings.
+		expect(
+			diagnostics
+				.filter((d) => d.id.startsWith("pattern/") && d.severity === "warning")
+				.map((d) => [d.id, d.elementIds]),
+		).toEqual(
+			expect.arrayContaining([
+				["pattern/gateway-no-default-flow", ["Gateway_UserSatisfied"]],
+				["pattern/subprocess-no-error-boundary", ["AI_Agent"]],
+			]),
+		)
 	})
 
 	it("exports exactly fixtures/bakeoff/expected.bpmn", () => {

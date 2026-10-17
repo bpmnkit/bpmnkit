@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-10-17 — Lint: two `pattern` rules are warnings
+
+- `pattern/gateway-no-default-flow` and `pattern/subprocess-no-error-boundary` report warnings, not errors. Camunda's own AI Agent blueprint trips both and its lint gate flags neither, so `casen lint lint <file> --profile deploy` now reports 0 errors on a correct model. The recipe guide and the Claude plugin `agent` and `connect` skills and `references/agentic.md` say so.
+
 ## 2026-10-17 — Phase B: `bpmnkit-docs` from the repo root, executable-process recipe
 
 - Claude plugin `agent` skill and `references/agentic.md` now target the AI Agent Sub-process v2 (`adHocSubProcess` + `applyTemplates`, job type `io.camunda.agenticai:aiagent:subprocess:2`), point at the recipe chunks, and carry a gate checklist (`--categories deploy,connector,agentic`, `renderBpmnAscii`, tests). The v1 job-worker agent stays as an "older Camunda" note, since the plan `aiAgent` step compiles only v1. The `connect` skill documents `casen connector apply` and `show --filter`.

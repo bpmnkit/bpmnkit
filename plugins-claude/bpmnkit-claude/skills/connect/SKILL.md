@@ -56,7 +56,7 @@ casen synth <delta>.plan.json --merge <file>.bpmn --output <file>.bpmn
 casen lint lint <file>.bpmn --profile deploy
 ```
 
-Fix any `connector/missing-required` findings by filling in the missing value, then re-apply (or re-synth). `--profile deploy` can also report the `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary` on a spec-compliant model; gate deployability on `--categories deploy,connector,agentic`.
+Fix any `connector/missing-required` findings by filling in the missing value, then re-apply (or re-synth). `--profile deploy` must report 0 errors; the `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary` are warnings (style advice).
 
 ## 5. Summarize
 

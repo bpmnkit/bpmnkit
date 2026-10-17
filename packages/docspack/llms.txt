@@ -196,7 +196,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Build an Executable Camunda Process — Which keys does a template take?](.llms/chunks/guides.executable-camunda-process.which-keys-does-a-template-take.md) — 335 tokens
 - [Build an Executable Camunda Process — How do I build an AI Agent sub-process with tools in a BPMN Kit build script (8.10, v2)?](.llms/chunks/guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-with-tools-in-a-bpmn-kit-build-script-8.10-v2.md) — 396 tokens
 - [Build an Executable Camunda Process — How do I lay out the agent's tools in a grid?](.llms/chunks/guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid.md) — 169 tokens
-- [Build an Executable Camunda Process — How do I check the file is executable before tests?](.llms/chunks/guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests.md) — 216 tokens
+- [Build an Executable Camunda Process — How do I check the file is executable before tests?](.llms/chunks/guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests.md) — 166 tokens
 - [Gateways & Branching — Exclusive Gateway (XOR)](.llms/chunks/guides.gateways.exclusive-gateway-xor.md) — 218 tokens
 - [Gateways & Branching — Parallel Gateway (AND)](.llms/chunks/guides.gateways.parallel-gateway-and.md) — 143 tokens
 - [Gateways & Branching — Inclusive Gateway (OR)](.llms/chunks/guides.gateways.inclusive-gateway-or.md) — 208 tokens

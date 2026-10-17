@@ -19,7 +19,7 @@ Camunda 8's **AI Agent Sub-process** lets a process delegate a step to an LLM th
   - `guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests`
 - Complete reference script, in the bpmnkit repo: `packages/core/tests/fixtures/bakeoff/build.ts` (a chat agent with four HttpJson tools in a 2 x 2 grid, start-event form, user-task input mapping and a labelled feedback loop).
 
-Deploy gate: `casen lint lint <file> --categories deploy,connector,agentic` must be clean. `--profile deploy` also reports the `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary`, which Camunda's own gate does not flag on a spec-compliant model; fix them only if you want a clean profile.
+Deploy gate: `casen lint lint <file> --profile deploy` must report 0 errors. The `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary` are warnings (style advice), which Camunda's own gate does not flag.
 
 Scenario mock for v2 (the whole sub-process is one job):
 

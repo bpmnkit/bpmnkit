@@ -56,7 +56,7 @@ The sub-process job type is `io.camunda.agenticai:aiagent:subprocess:2`.
 
 Run in order; do not skip ahead.
 
-1. `casen lint lint <file>.bpmn --profile deploy` — expect 0 errors outside `pattern`. Known caveat: BPMN Kit's `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary` report on a spec-compliant model even though Camunda's own gate does not flag it. Gate deployability on the engine categories instead: `casen lint lint <file>.bpmn --categories deploy,connector,agentic` must be clean; fix the two `pattern` findings only if you want a clean deploy profile.
+1. `casen lint lint <file>.bpmn --profile deploy` — expect 0 errors. The `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary` may show as warnings (style advice; Camunda's own gate does not flag them).
 2. Render the file's XML with `renderBpmnAscii` (`@bpmnkit/ascii`) and check the layout: tools in the grid, no flow into a tool, labels on gateway flows.
 3. Run the tests (below).
 
