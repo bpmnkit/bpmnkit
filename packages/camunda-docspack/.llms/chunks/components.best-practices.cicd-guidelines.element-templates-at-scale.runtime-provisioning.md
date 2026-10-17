@@ -6,7 +6,7 @@ You can use sensitive information in your element templates without exposing it 
 
 These guides show you how to configure them depending on the environment you are using:
 
-- **SaaS**: Use the [Administration API](https://docs.camunda.io/docs/next/apis-tools/administration-api/administration-api-reference) or [Camunda Hub UI](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to configure secrets.
+- **SaaS**: Use the [Administration API](https://docs.camunda.io/docs/next/apis-tools/administration-api/administration-api-reference) or [Camunda Hub UI](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to configure secrets.
 - **Self-Managed/local development**: Configure secrets outside the pipeline. See [connector secrets](https://docs.camunda.io/docs/next/self-managed/components/connectors/connectors-configuration#secrets).
 
 ### Job Workers

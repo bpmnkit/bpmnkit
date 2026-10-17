@@ -2,12 +2,12 @@
 
 Camunda tags tenant-scoped metrics with a `physicalTenant` label. Filter by this label, and by `partition`, to isolate one tenant's behavior.
 
-| Metric or label                                   | Use for                                                            |
-| :------------------------------------------------ | :----------------------------------------------------------------- |
-| `physicalTenant` label                            | Scoping any tenant-aware metric to a single tenant.                |
-| `camunda.physical.tenant.secondary.storage.ready` | Detecting a degraded tenant. Reports `0` when storage is unusable. |
-| `camunda.schema.init.time`                        | Diagnosing slow or stuck schema initialization per tenant.         |
-| Hikari connection pool metrics                    | Spotting per-tenant connection pool exhaustion on RDBMS backends.  |
+| Metric or label                                   | Use for                                                                                                                                                                                                            |
+| :------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `physicalTenant` label                            | Scoping any tenant-aware metric to a single tenant.                                                                                                                                                                |
+| `camunda.physical.tenant.secondary.storage.ready` | Detecting a degraded tenant. Reports `0` when storage is unusable.                                                                                                                                                 |
+| `camunda.schema.init.time`                        | Diagnosing slow or stuck schema initialization per tenant.                                                                                                                                                         |
+| Hikari connection pool metrics                    | Spotting per-tenant connection pool exhaustion on RDBMS backends, and tracking total connections against the database's limit. See [database rejects new connections](#database-rejects-new-connections-on-rdbms). |
 
 The Zeebe dashboard aggregates over `(physicalTenant, partition)`, so you can filter it to one tenant without changing the queries.
 

@@ -1,9 +1,7 @@
 # Groups — Manage mapping rules
 
-Self-Managed only
-
 **Note**
-[Mapping rules](https://docs.camunda.io/docs/next/components/concepts/access-control/mapping-rules) are only available for OIDC authentication.
+[Mapping rules](https://docs.camunda.io/docs/next/components/concepts/access-control/mapping-rules) are only available for OIDC authentication. On SaaS, they become available after you [connect an external identity provider](https://docs.camunda.io/docs/next/components/saas/clusters/connect-external-identity-provider) to the cluster.
 
 ### Assign mapping rules to a group
 

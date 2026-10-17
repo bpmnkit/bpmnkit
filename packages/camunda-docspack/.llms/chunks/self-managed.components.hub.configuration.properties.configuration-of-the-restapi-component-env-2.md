@@ -1,15 +1,15 @@
 # Property reference — Configuration of the `restapi` component — env
 
-| Environment variable                            | Description                                                                                                         | Example value                                |
-| :---------------------------------------------- | :------------------------------------------------------------------------------------------------------------------ | :------------------------------------------- |
-| `CAMUNDA_HUB_CLUSTERS_0_ID`                     | An identifier for the cluster.                                                                                      | `camunda-platform`                           |
-| `CAMUNDA_HUB_CLUSTERS_0_NAME`                   | A readable name for the cluster.                                                                                    | `Camunda Platform`                           |
-| `CAMUNDA_HUB_CLUSTERS_0_VERSION`                | The cluster version.                                                                                                | `8.10.0`                                     |
-| `CAMUNDA_HUB_CLUSTERS_0_TAGS`                   | A list of tags.                                                                                                     | `['dev', 'test']`                            |
-| `CAMUNDA_HUB_CLUSTERS_0_AUTHENTICATION`         | The [authentication method](#available-authentication-methods).                                                     | `BEARER_TOKEN`                               |
-| `CAMUNDA_HUB_CLUSTERS_0_AUTHORIZATIONS_ENABLED` | Enables or disables authorizations for the cluster. If enabled, users see a hint when they deploy from Camunda Hub. | `true`                                       |
-| `CAMUNDA_HUB_CLUSTERS_0_CUSTOM_PROPERTIES`      | A list of custom properties.                                                                                        | See [custom properties](#custom-properties). |
-| `CAMUNDA_HUB_CLUSTERS_0_COMPONENTS`             | A list of components for the cluster.                                                                               | See [components](#components).               |
+| Environment variable                            | Description                                                                                                              | Example value                                |
+| :---------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------- | :------------------------------------------- |
+| `CAMUNDA_HUB_CLUSTERS_0_ID`                     | An identifier for the cluster.                                                                                           | `camunda-platform`                           |
+| `CAMUNDA_HUB_CLUSTERS_0_NAME`                   | A readable name for the cluster.                                                                                         | `Camunda Platform`                           |
+| `CAMUNDA_HUB_CLUSTERS_0_VERSION`                | The cluster version.                                                                                                     | `8.10.0`                                     |
+| `CAMUNDA_HUB_CLUSTERS_0_TAGS`                   | A list of tags. The tags appear on every [environment](https://docs.camunda.io/docs/next/self-managed/components/hub/configuration/environments) of the cluster. Use `prod` to mark production. | `['dev', 'test']`                            |
+| `CAMUNDA_HUB_CLUSTERS_0_AUTHENTICATION`         | The [authentication method](#available-authentication-methods).                                                          | `BEARER_TOKEN`                               |
+| `CAMUNDA_HUB_CLUSTERS_0_AUTHORIZATIONS_ENABLED` | Enables or disables authorizations for the cluster. If enabled, users see a hint when they deploy from Camunda Hub.      | `true`                                       |
+| `CAMUNDA_HUB_CLUSTERS_0_CUSTOMPROPERTIES`       | A list of custom properties.                                                                                             | See [custom properties](#custom-properties). |
+| `CAMUNDA_HUB_CLUSTERS_0_COMPONENTS`             | A list of components for the cluster.                                                                                    | See [components](#components).               |
 
 #### Available authentication methods
 

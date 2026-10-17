@@ -9,7 +9,7 @@
 This review capability is most useful for reviews on a business level.
 For technical reviews, you may instead [sync your Git repository](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/git-sync) to put changes into a technical context with related code changes.
 
-After the review is complete, you can promote the project snapshot to the next stage(s) of the [deployment pipeline](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/deploy-project). For example, promote to your testing cluster/stage, then to staging, and finally to production.
+After the review is complete, you can deploy the approved project snapshot to an [environment](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/deploy-project). For example, deploy to your testing environment, then to staging, and finally to production. If your organization requires approval for production, only an approved snapshot can be deployed to an environment tagged `prod`. See [production environments](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/deploy-project#production-environments).
 
 **Info**
 If you want to use your own deployment pipeline after the review is complete, you can [sync your Git repository](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/git-sync) at this point to deploy and promote the project through your own pipeline.

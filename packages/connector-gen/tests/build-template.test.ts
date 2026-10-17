@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { buildTemplate, buildTemplates } from "../src/build-template.js"
 import { detectDefaultAuth, getOperations, parseOpenApi } from "../src/parse-openapi.js"
-import type { GeneratorOptions, OperationWithMeta } from "../src/types.js"
+import type { GeneratorOptions, OpenApiDoc, OperationWithMeta } from "../src/types.js"
 
 // ─── Minimal spec fixture ─────────────────────────────────────────────────────
 
@@ -107,11 +107,9 @@ describe("parseOpenApi", () => {
 		expect(() => parseOpenApi("{bad json}")).toThrow("Failed to parse")
 	})
 
-	it("rejects Swagger 2.x via getOperations", () => {
-		const doc = parseOpenApi(
-			JSON.stringify({ swagger: "2.0", info: { title: "T", version: "1" }, paths: {} }),
-		)
-		expect(() => getOperations(doc)).toThrow("OpenAPI 2.x")
+	it("rejects an un-upgraded Swagger 2.x object in getOperations", () => {
+		const doc = { swagger: "2.0", info: { title: "T", version: "1" }, paths: {} }
+		expect(() => getOperations(doc as unknown as OpenApiDoc)).toThrow("OpenAPI 2.x")
 	})
 })
 
@@ -212,6 +210,17 @@ describe("buildTemplate", () => {
 		)
 		expect(url?.type).toBe("Hidden")
 		expect(url?.value).toBe("https://api.example.com/items")
+	})
+
+	it("uses opts.baseUrl in place of the spec's server", () => {
+		const tpl = buildTemplate(getOp("listItems"), {
+			...OPTS,
+			baseUrl: "https://staging.example.com/",
+		})
+		const url = tpl.properties.find(
+			(p) => p.binding.type === "zeebe:input" && p.binding.name === "url",
+		)
+		expect(url?.value).toBe("https://staging.example.com/items")
 	})
 
 	it("generates FEEL URL when path params exist", () => {

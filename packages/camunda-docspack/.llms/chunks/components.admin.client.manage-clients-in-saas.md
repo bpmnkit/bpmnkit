@@ -4,7 +4,7 @@ In Camunda 8 SaaS, client credentials are created and managed in [Camunda Hub](h
 
 ### Step 1: Create client credentials in Camunda Hub
 
-Follow the [guide for creating client credentials in Camunda Hub](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-api-clients#create-a-client).
+Follow the [guide for creating client credentials in Camunda Hub](https://docs.camunda.io/docs/next/components/saas/clusters/manage-api-clients#create-a-client).
 
 Copy the **client id** shown in the variables after you have created your client as this is required in the next step.
 

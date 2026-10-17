@@ -26,8 +26,9 @@ npx bpmnkit-docs list
 
 This repo also ships **`@bpmnkit/camunda-docspack`** (`packages/camunda-docspack`), the
 Camunda 8 documentation in the same format — BPMN and FEEL references, engine concepts,
-best practices, the web components, Self-Managed deployment and configuration, the client
-guides and the Orchestration Cluster API. Ask it for anything about *Camunda*
+best practices, the Modeler (DMN, forms, element templates), the web components, Self-Managed
+deployment and configuration, the client guides, the Camunda 7 migration guides, the glossary and
+the Orchestration Cluster API. Ask it for anything about *Camunda*
 rather than about BPMN Kit's own APIs, and use `--pack` when a question could match both:
 
 ```sh
@@ -52,3 +53,32 @@ npm i -D @bpmnkit/docspack
 - Verify with `pnpm turbo build typecheck check test`.
 - After editing `apps/landing/src/content/docs/`, rebuild the docs pack:
   `pnpm --filter @bpmnkit/docspack build`.
+
+<!-- docspack:start recipe=repo -->
+## Documentation for this project's dependencies
+
+Run `npx docspack ask "<question>"` for documentation on this project's
+dependencies. It answers from the installed versions.
+
+## Finding things in this repository
+
+Before reading files to find where something is, ask the index:
+
+- `npx docspack recall --name repo-code "<what the code does>"` answers with the `file:line`,
+  signature and doc comment of matching declarations. Then read only that range.
+- `npx docspack recall --name repo-docs "<question>"` answers from this repository's Markdown.
+
+An answer is a pointer: read the file before you edit it. If you already know a name,
+`grep` is as good. If `recall` says nothing is indexed, run `npx docspack index --repo`.
+
+## Working efficiently in this repository
+
+Every tool call is a turn, and every turn resends the whole conversation. Use fewer, larger calls:
+
+- Read several files, or several ranges of one file, in one shell command
+  (`sed -n '40,90p' a.ts; sed -n '1,60p' b.ts`) instead of one Read per file.
+- Search once, with a pattern that covers everything you are looking for.
+- Make related edits together, and run the tests once the change is complete.
+
+<!-- Written by `npx docspack agent install`. Re-run it to update this block. -->
+<!-- docspack:end -->

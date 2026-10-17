@@ -1,15 +1,15 @@
 # Upgrade Camunda 8.9 to 8.10 using Helm — Update your values file to 8.10 — Management Identity service account token is no longer mounted by default
 
-In chart 15.x (8.10), `identity.serviceAccount.automountServiceAccountToken` defaults to `false`, matching the other components. Management Identity does not call the Kubernetes API, so the application itself is not affected.
+In chart 15.x (8.10), `identity.serviceAccount.automountServiceAccountToken` defaults to `false`, like in the other components. Management Identity doesn't call the Kubernetes API, so this change doesn't affect the application itself.
 
-You are affected if anything in the Management Identity pod reads the default service account token at `/var/run/secrets/kubernetes.io/serviceaccount/token`, for example:
+The change affects you if anything in the Management Identity pod reads the default service account token at `/var/run/secrets/kubernetes.io/serviceaccount/token`. For example:
 
-- A sidecar or init container added through `identity.sidecars` or `identity.initContainers` that calls the Kubernetes API.
-- Vault Agent Injector using the Kubernetes auth method with the default token.
+- A sidecar or init container that you add through `identity.sidecars` or `identity.initContainers` and that calls the Kubernetes API.
+- Vault Agent Injector with the Kubernetes auth method and the default token.
 
-Integrations that inject their own projected token, such as AWS IRSA, EKS Pod Identity, and Azure Workload Identity, are not affected.
+The change doesn't affect integrations that inject their own projected token, such as AWS IRSA, EKS Pod Identity, and Azure Workload Identity.
 
-The ServiceAccount is updated during `helm upgrade`, but running pods keep their token until they are recreated. The change takes effect on the next pod restart or rollout. To keep the previous behavior, set:
+`helm upgrade` updates the ServiceAccount. However, running pods keep their token until Kubernetes creates them again. The change takes effect on the next pod restart or rollout. To keep the previous behavior, set:
 
 ```yaml
 identity:

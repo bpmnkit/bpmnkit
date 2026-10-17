@@ -19,12 +19,17 @@ orchestration:
 
 optimize:
   enabled: true
-# Choose one secondary storage for Optimize:
-# opensearch:
-#   enabled: true
-# elasticsearch:
-#   enabled: true
+  database:
+    elasticsearch:
+      enabled: true
+      external: true
+      url:
+        protocol: https
+        host: elastic.example.com
+        port: 443
 ```
+
+For OpenSearch, set `optimize.database.opensearch` instead. See [use external OpenSearch for Optimize with Helm](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/optimize/using-external-opensearch).
 
 Mixing storage types (RDBMS for Orchestration, Elasticsearch/OpenSearch for Optimize) is supported and tested.
 

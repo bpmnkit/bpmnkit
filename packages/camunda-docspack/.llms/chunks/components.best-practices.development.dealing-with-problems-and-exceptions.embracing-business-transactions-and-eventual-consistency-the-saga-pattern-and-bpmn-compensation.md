@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions — Embracing business transactions and eventual consistency — The Saga pattern and BPMN compensation
+# Deal with problems and exceptions — Embracing business transactions and eventual consistency — The Saga pattern and BPMN compensation
 
 The Saga pattern describes long-running transactions in distributed systems. The main idea is simple: when you can’t roll back tasks, you undo them. (The name Saga refers back to a paper written in the 1980s about long-lived transactions in databases.)
 

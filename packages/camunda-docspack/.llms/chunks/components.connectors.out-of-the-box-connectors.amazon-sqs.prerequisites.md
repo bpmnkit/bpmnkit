@@ -3,7 +3,7 @@
 Before using the Amazon SQS inbound connector, ensure you have the following:
 
 1. An active SQS Queue in your AWS account.
-2. IAM credentials with the necessary permissions to receive messages from the SQS Queue. Use secrets to store your AWS IAM credentials securely. Refer to the [secrets documentation](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) for more details.
+2. IAM credentials with the necessary permissions to receive messages from the SQS Queue. Use secrets to store your AWS IAM credentials securely. Refer to the [secrets documentation](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) for more details.
 
 
 ## Create an SQS inbound connector task

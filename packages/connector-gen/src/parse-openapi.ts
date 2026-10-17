@@ -1,4 +1,5 @@
 import { parse as parseYaml } from "yaml"
+import { isSwagger2, upgradeSwagger2 } from "./swagger2.js"
 import type {
 	ApiResponse,
 	Components,
@@ -54,17 +55,23 @@ export function resolve<T>(doc: OpenApiDoc, obj: T | Ref): T {
 // ─── Parse ────────────────────────────────────────────────────────────────────
 
 export function parseOpenApi(text: string): OpenApiDoc {
+	const doc = parseSpecText(text)
+	// Swagger 2.0 specs are upgraded here so every caller works with OpenAPI 3.
+	return (isSwagger2(doc) ? upgradeSwagger2(doc) : doc) as OpenApiDoc
+}
+
+function parseSpecText(text: string): unknown {
 	const trimmed = text.trimStart()
 	// JSON starts with { or [; everything else is treated as YAML
 	if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
 		try {
-			return JSON.parse(text) as OpenApiDoc
+			return JSON.parse(text)
 		} catch (e) {
 			throw new Error(`Failed to parse OpenAPI JSON: ${String(e)}`)
 		}
 	}
 	try {
-		return parseYaml(text) as OpenApiDoc
+		return parseYaml(text)
 	} catch (e) {
 		throw new Error(`Failed to parse OpenAPI YAML: ${String(e)}`)
 	}

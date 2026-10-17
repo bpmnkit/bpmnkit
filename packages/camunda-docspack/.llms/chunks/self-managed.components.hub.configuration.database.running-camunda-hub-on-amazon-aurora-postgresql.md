@@ -9,7 +9,7 @@ To connect, update the following environment variables:
    ```
 2. Set the driver class:
    ```bash
-   SPRING_DATASOURCE_DRIVER_CLASS_NAME="software.amazon.jdbc.Driver"
+   SPRING_DATASOURCE_DRIVERCLASSNAME="software.amazon.jdbc.Driver"
    ```
 
 For all available driver parameters, see the [AWS Advanced JDBC Driver documentation](https://github.com/awslabs/aws-advanced-jdbc-wrapper/wiki/UsingTheJdbcDriver#aws-advanced-jdbc-driver-parameters).

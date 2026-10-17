@@ -1,6 +1,6 @@
 # Deploy your project — Deployment errors
 
-If the deployment of a project fails (for example, because one or more of the contained resources has invalid implementation properties), a modal is shown containing the error message thrown by the Zeebe engine.
+If the deployment of a project fails (for example, because one or more of the contained resources has invalid implementation properties), a modal is shown containing the error message thrown by the Zeebe engine. If the cluster rejects the deployment because you lack the permissions to deploy to the environment, the message says so. Contact your organization admin to request them.
 
 The message typically provides the name of the affected resource, the ID of the invalid diagram element, and the error details.
 

@@ -7,7 +7,7 @@ Install Camunda 8 Self-Managed on Kubernetes using Helm charts. Two decisions sh
 
 ## Choose your topology
 
-A Camunda 8.10 deployment is one or more Helm releases, and each release declares its role with `global.topology.mode`. For the release roles and the reasoning behind them, see [Camunda 8.10 deployment topology](https://docs.camunda.io/docs/next/self-managed/reference-architecture/deployment-topology).
+A Camunda 8.10 deployment is one or more Helm releases, and each release declares its role with `global.topology.mode`. For the architecture, see [deployment topology](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#deployment-topology). For the release roles, see [release roles](https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/topology/index#release-roles).
 
 | Use case                                        | Topology                                                   | Installation guide                                                              |
 | ----------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------- |

@@ -13,7 +13,7 @@ Use this section to configure database layers for Helm deployments.
 This section is organized by component:
 
 - [Orchestration Cluster](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/non-sql): Configure Elasticsearch or OpenSearch as secondary storage, or use [RDBMS](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/rdbms).
-- [Management Identity and Web Modeler](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/using-existing-postgres): Configure PostgreSQL for management components.
+- [Management Identity and Camunda Hub](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/using-existing-postgres): Configure PostgreSQL for the management plane.
 - [Optimize](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/optimize/index): Configure Elasticsearch or OpenSearch for Optimize.
 
 Some Elasticsearch/OpenSearch tasks, such as custom headers and index prefixes, apply to both the Orchestration Cluster and Optimize. Those shared pages call that out explicitly.

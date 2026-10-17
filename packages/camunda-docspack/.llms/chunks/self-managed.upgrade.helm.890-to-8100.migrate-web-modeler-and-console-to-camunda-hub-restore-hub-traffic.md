@@ -1,6 +1,6 @@
 # Upgrade Camunda 8.9 to 8.10 using Helm — Migrate Web Modeler and Console to Camunda Hub — Restore Hub traffic
 
-After validating the migration, set the release to the `normal` phase:
+After you check the migration, set the release to the `normal` phase:
 
 ```bash
 helm upgrade <RELEASE> camunda/camunda-platform \
@@ -12,7 +12,7 @@ helm upgrade <RELEASE> camunda/camunda-platform \
   --timeout 10m
 ```
 
-Wait for both Hub workloads:
+Wait until both Hub workloads are ready:
 
 ```bash
 kubectl -n <NAMESPACE> rollout status \
@@ -24,9 +24,9 @@ kubectl -n <NAMESPACE> rollout status \
 ```
 
 **Note**
-The lifecycle phases currently rely on the operator to follow this sequence. The chart does not yet prevent you from selecting `normal` before migration completes.
+The lifecycle phases currently need you to follow this sequence. If you select `normal` before the migration completes, the chart doesn't yet prevent this.
 
-For a fresh 8.10 installation, leave `camundaHub.upgrade.phase` at its default value, `normal`. The `quiesce` and `migrate` phases apply only when upgrading an existing 8.9 Hub database.
+For a fresh 8.10 installation, leave `camundaHub.upgrade.phase` at its default value, `normal`. The `quiesce` and `migrate` phases apply only when you upgrade an existing 8.9 Web Modeler database. Console has no database in 8.9.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/upgrade/helm/890-to-8100

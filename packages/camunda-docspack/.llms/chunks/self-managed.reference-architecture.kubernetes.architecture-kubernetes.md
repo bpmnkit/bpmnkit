@@ -4,6 +4,14 @@ A production deployment is recommended. For more information, see the [productio
 
 The following visuals provide a simplified view of the deployed namespaces using the [Camunda 8 Helm chart](https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/quick-install). For clarity, ConfigMaps, Secrets, RBAC, and ReplicaSets are omitted.
 
+#### Management plane
+
+![Camunda Hub and Management Identity](./img/management-cluster.jpg)
+
+Camunda Hub and Management Identity form the management plane, which serves all Orchestration Clusters in the deployment. Both are stateless and deployed as **Deployments**, with data stored in an external SQL database. This makes it easy to scale each horizontally by running multiple replica pods behind a load balancer, improving availability and request throughput.
+
+Each namespace uses its own Ingress, as Ingress resources are namespace-scoped (not cluster-wide). This requires separate subdomains for each Ingress. For more details, see the [production deployment guide](https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/production/index).
+
 #### Orchestration Cluster
 
 ![Orchestration Cluster](./img/k8s-cluster-view-orchestration.jpg)
@@ -17,14 +25,6 @@ The Orchestration Cluster exposes two services:
 1. A [**headless service**](https://kubernetes.io/docs/concepts/services-networking/service/#headless-services) for internal communication between Zeebe brokers. This service skips load balancing and resolves to pod IPs for direct peer-to-peer communication.
 
 2. A **standard service** for external applications. This service distributes traffic randomly (via `kube-proxy`) and is suitable for clients or other services connecting to the cluster.
-
-#### Camunda Hub
-
-![Camunda Hub and Management Identity](./img/management-cluster.jpg)
-
-Camunda Hub and Management Identity form the Hub plane that serves all Orchestration Clusters. Both are stateless and deployed as **Deployments**, with data stored in an external SQL database. This makes it easy to scale each horizontally by running multiple replica pods behind a load balancer, improving availability and request throughput.
-
-Each namespace uses its own Ingress, as Ingress resources are namespace-scoped (not cluster-wide). This requires separate subdomains for each Ingress. For more details, see the [production deployment guide](https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/production/index).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/reference-architecture/kubernetes

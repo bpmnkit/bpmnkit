@@ -100,7 +100,9 @@ const jsonLd = breadcrumbJsonLd([
       <div class="integrations-byo">
         <h2>Don't see the API you need?</h2>
         <p>
-          Any OpenAPI or Swagger spec works — not just the ones in this catalog. Point
+          Any OpenAPI or Swagger spec works — not just the ones in this catalog.
+          <a class="integrations-sub-link" href="/connector-generator">Drop it into the connector generator</a>
+          to get templates right here in your browser, or point
           <code class="inline">@bpmnkit/connector-gen</code> at a spec URL and it generates a
           Camunda 8 element template, with typed input fields derived from the spec's request
           schema and auth type auto-detected from its security schemes.
@@ -115,6 +117,7 @@ const { templates } = await generateFromUrl(
 // templates is an array of Camunda 8 element templates,
 // one per matched operation — no manual authoring required`}</div>
         <div class="integrations-byo-links">
+          <a href="/connector-generator">Drop a spec into the in-browser generator →</a>
           <a href="/blog/building-camunda-connector-openapi">Full guide: generating a connector from a spec →</a>
           <a href="/docs/packages/connector-gen">@bpmnkit/connector-gen reference →</a>
         </div>

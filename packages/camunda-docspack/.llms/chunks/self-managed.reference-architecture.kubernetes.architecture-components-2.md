@@ -1,5 +1,13 @@
 # Kubernetes deployment overview — Architecture — Components (2)
 
+Also included in this namespace is the component that deploys with the cluster release:
+
+- [Connectors](https://docs.camunda.io/docs/next/components/connectors/introduction) — external system integrations
+
+[Optimize](https://docs.camunda.io/docs/next/components/optimize/what-is-optimize) serves this cluster but is deployed as its own release, one per Physical Tenant. See [Optimize releases](#optimize-releases).
+
+The Orchestration Cluster also depends on a **secondary storage** backend for Operate, Tasklist, and the v2 Orchestration Cluster REST API. This backend is a document store (Elasticsearch or OpenSearch) or a supported relational database management system (RDBMS). It is provisioned outside the `StatefulSet`, as a managed service or an operator-managed database. Optimize requires Elasticsearch or OpenSearch and cannot use an RDBMS. For the trade-offs and how to choose a backend, see [secondary storage architecture](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#secondary-storage-architecture).
+
 #### Optimize releases
 
 Each Physical Tenant in an Orchestration Cluster is served by one Optimize release, deployed with `global.topology.mode: optimize`. That release deploys Optimize and nothing else.

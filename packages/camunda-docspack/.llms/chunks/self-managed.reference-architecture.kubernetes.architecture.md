@@ -1,11 +1,10 @@
 # Kubernetes deployment overview — Architecture
 
-The [reference architecture overview](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#orchestration-cluster-vs-camunda-hub) explains the distinction between these components:
+The [reference architecture overview](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#deployment-topology) describes the deployment topology: one management plane serving one or more Orchestration Clusters, with one Optimize instance per Physical Tenant. It also explains the distinction between these components:
 
-- **Orchestration Cluster**: Core process execution engine (Zeebe, Operate, Tasklist, Admin) with tightly integrated components (Optimize, Connectors).
-- **Camunda Hub and Management Identity**: Manage organizational resources, analyze operations and business value, and deliver agentic processes at scale.
-
-See the reference architecture for details on how these components communicate.
+- **Management plane (Camunda Hub and Management Identity)**: Manage organizational resources, analyze operations and business value, and deliver agentic processes at scale.
+- **Orchestration Cluster**: Core process execution engine (Zeebe, Operate, Tasklist, Admin), including Connectors.
+- **Optimize**: Process analytics, deployed separately with one instance per Physical Tenant.
 
 _Infrastructure diagram for a single-region setup (click the image to open the PDF version)_
 

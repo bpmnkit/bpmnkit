@@ -2,11 +2,13 @@
 
 `@bpmnkit/camunda-docspack` packages the **Camunda 8 documentation** as a
 [docspack](https://docspack.dev/spec) pack you can search offline: BPMN and FEEL
-references, engine concepts, the best-practice pages, the web components
+references, engine concepts, the best-practice pages, the Modeler (DMN, forms,
+element templates, Desktop Modeler), the web components
 (Operate, Tasklist, Admin, Optimize, Hub, connectors, agentic orchestration),
 Self-Managed deployment and configuration, the client guides (Java client, Spring
-Boot starter, the SDKs, process testing), and one digest per Orchestration Cluster
-API operation. The SDKs' generated `api-reference/` pages are left out: one page
+Boot starter, the SDKs, process testing, c8ctl), the Camunda 7 migration guides,
+the getting-started guides, the glossary, the supported environments, and one digest
+per Orchestration Cluster API operation. The SDKs' generated `api-reference/` pages are left out: one page
 per type would outrank every guide.
 
 It is the companion to [`@bpmnkit/docspack`](/docs/packages/docspack), and the

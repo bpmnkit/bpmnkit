@@ -8,7 +8,7 @@ You must download and provide it manually for the application to load.
 2. If you are using Docker or Kubernetes, ensure that the folder with the library is properly mounted as a volume at this location:  
    `/driver-lib`. It will be automatically loaded by the application.
 
-To use a custom database driver, set `SPRING_DATASOURCE_DRIVER_CLASS_NAME` to the fully qualified class name of your driver.  
+To use a custom database driver, set `SPRING_DATASOURCE_DRIVERCLASSNAME` to the fully qualified class name of your driver.  
 Otherwise, omit this variable.
 
 ---

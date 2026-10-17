@@ -15,12 +15,9 @@ terraform/
 | Infra | `terraform/infra/` | Aurora Global Database, ECS clusters, ALB, NLB, KMS, S3, EFS, Secrets Manager, IAM            | Low              |
 | App   | `terraform/app/`   | Camunda orchestration cluster and Connectors task definitions, plus the matching ECS services | High             |
 
-By default, the paths between layers are relative:
+### Terraform state backend
 
-- `terraform/infra/` reads `../vpc/terraform.tfstate`.
-- `terraform/app/` reads `../infra/terraform.tfstate`.
-
-If you use S3 remote backends, override `vpc_state_path` in `terraform/infra/terraform.tfvars` and `infra_state_path` in `terraform/app/terraform.tfvars` to point to the correct S3 URIs.
+All three layers keep their state in one S3 bucket that you create beforehand. The state key of each layer is `<prefix><layer>/terraform.tfstate`, and the infra and app layers read the previous layer's state from that key through `terraform_remote_state`. All three layers must therefore use the same bucket and key prefix. [Step 1](#step-1--configure) sets them once for every layer.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/deployment/containers/cloud-providers/amazon/aws-ecs-dual-region

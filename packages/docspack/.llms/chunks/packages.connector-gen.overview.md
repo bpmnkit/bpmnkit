@@ -12,5 +12,8 @@ REST connector element templates — the `.json` files imported into Camunda Mod
 - **Body expansion** — optionally decompose request body properties into individual typed fields
 - Zero dependencies beyond `yaml` for YAML parsing
 
+To try it without installing anything, drop a spec into the
+[connector generator](/connector-generator) on this site — it runs this package in the browser.
+
 ---
 Source: https://bpmnkit.com/docs/packages/connector-gen

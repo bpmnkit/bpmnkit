@@ -1,6 +1,6 @@
 # Test your process — Use Test mode with Camunda Self-Managed
 
-After selecting the **Test** tab in Self-Managed, the Test view opens directly. The cluster setup and deployment flow is the same as in SaaS, see [opening the Test tab](#opening-the-test-tab).
+After selecting the **Test** tab in Self-Managed, the Test view opens directly. The environment selection and deployment flow is the same as in SaaS, see [opening the Test tab](#opening-the-test-tab).
 
 ### Limitations {#self-managed-limitations}
 

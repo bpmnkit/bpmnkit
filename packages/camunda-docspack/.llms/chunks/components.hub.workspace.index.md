@@ -19,7 +19,7 @@ Develop project releases through the stages of a typical development lifecycle:
 
 ## Manage workspace settings
 
-Manage workspace members, clusters, and general information:
+Manage workspace members, environments, and general information:
 
 [Get started](https://docs.camunda.io/docs/next/components/hub/workspace/manage-workspace/index)
 

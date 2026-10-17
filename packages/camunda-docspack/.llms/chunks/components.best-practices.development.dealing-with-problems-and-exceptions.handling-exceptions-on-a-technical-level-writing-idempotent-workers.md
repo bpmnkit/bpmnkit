@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions — Handling exceptions on a technical level — Writing idempotent workers
+# Deal with problems and exceptions — Handling exceptions on a technical level — Writing idempotent workers
 
 Zeebe uses the **at-least-once strategy** for job handlers, which is a typical choice in distributed systems. This means that the process instance only advances in the happy case (the job was completed, the workflow engine received the complete job request and committed it). A typical failure case occurs when the worker who polled the job crashes and cannot complete the job anymore. [In this case, the workflow engine gives the job to another worker after a configured timeout](https://docs.camunda.io/docs/next/components/concepts/job-workers#timeouts). This ensures that the job handler is executed at least once.
 

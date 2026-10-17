@@ -16,7 +16,7 @@ To use the **Amazon Bedrock AgentCore Long-Term Memory connector**, you need the
 Learn more about Amazon Bedrock AgentCore Long-Term Memory in the [official documentation](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/long-term-memory-long-term.html).
 
 **Note**
-Use secrets to store credentials and avoid exposing sensitive information directly from the process. Refer to [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Use secrets to store credentials and avoid exposing sensitive information directly from the process. Refer to [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/amazon-bedrock-agentcore-long-term-memory

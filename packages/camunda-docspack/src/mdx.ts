@@ -65,6 +65,8 @@ const DROPPED = new Set([
 	"ConnectorsGrid",
 	"ConnectorsGridSml",
 	"IdpGrid",
+	"UsingGrid",
+	"MigrationsGrid",
 	// Wrappers: the Markdown table or text between their tags stays.
 	"TableTextSmall",
 	"ExpandableTable",
@@ -117,6 +119,9 @@ const SVG_COMPONENT = /^[A-Z][A-Za-z0-9]*Svg$/
  * `Components` and `Installation`, which must not be dropped on every other page.
  */
 const DROPPED_IMPORT = /\.(svg|png|jpe?g|gif)$|^@site\/src\/components\/CamundaSelfManaged$/
+
+/** Docusaurus components shared by every page, named by their module: `@site/src/mdx/MarkerGuideline`. */
+const SHARED_COMPONENT = /^@site\/src\/mdx\/(\w+)$/
 
 /** `import RegionLoss from "./img/region-loss.svg"`, `import { Components } from "@site/…"` */
 const COMPONENT_IMPORT = /^import\s+(\{[^}]*\}|\w+)\s+from\s+["']([^"']+)["']/gm
@@ -176,7 +181,7 @@ export function stripMdx(source: string, options: StripOptions): string {
 	let inImport = false
 	let skipUntil = -1
 	const partials = partialImports(source)
-	const droppedImports = importsMatching(source, DROPPED_IMPORT)
+	const imports = importedModules(source)
 
 	const lines = source.split(/\r?\n/)
 	for (const [index, raw] of lines.entries()) {
@@ -267,7 +272,7 @@ export function stripMdx(source: string, options: StripOptions): string {
 			}
 		}
 
-		out.push(replaceComponents(line, options.file, number, droppedImports))
+		out.push(replaceComponents(line, options.file, number, imports))
 	}
 
 	return collapseBlankRuns(out.join("\n")).trim()
@@ -283,16 +288,16 @@ function replaceComponents(
 	line: string,
 	file: string,
 	number: number,
-	droppedImports: ReadonlySet<string>,
+	imports: ReadonlyMap<string, string>,
 ): string {
-	return outsideCode(line, (text) => replaceTags(text, file, number, droppedImports))
+	return outsideCode(line, (text) => replaceTags(text, file, number, imports))
 }
 
 function replaceTags(
 	text: string,
 	file: string,
 	number: number,
-	droppedImports: ReadonlySet<string>,
+	imports: ReadonlyMap<string, string>,
 ): string {
 	let out = ""
 	let from = 0
@@ -309,7 +314,7 @@ function replaceTags(
 			continue
 		}
 		const tag = text.slice(open, end + 1)
-		out += text.slice(from, open) + rewriteTag(tag, name[1], file, number, droppedImports)
+		out += text.slice(from, open) + rewriteTag(tag, name[1], file, number, imports)
 		from = end + 1
 	}
 }
@@ -337,10 +342,15 @@ function tagEnd(text: string, from: number): number {
 	return -1
 }
 
-/** A component's opening tag whose props run onto the next lines: `<Tabs values={[`. */
+/**
+ * An opening tag whose props run onto the next lines: `<Tabs values={[`, or an HTML tag such as
+ * `<a` with a `className={…}` of its own. Any other lowercase name is a placeholder in a sentence.
+ */
 function opensUnclosedTag(line: string): boolean {
 	return outsideCodeParts(line).some((part) => {
-		for (const match of part.matchAll(/(?<!\\)<([A-Z][\w.]*)\b/g)) {
+		for (const match of part.matchAll(/(?<!\\)<([A-Za-z][\w.]*)\b/g)) {
+			const name = match[1] ?? ""
+			if (name[0] === name[0]?.toLowerCase() && !DROPPED.has(name)) continue
 			if (tagEnd(part, match.index + match[0].length) < 0) return true
 		}
 		return false
@@ -348,21 +358,25 @@ function opensUnclosedTag(line: string): boolean {
 }
 
 /** How far a tag may run over lines before the `<` is taken for prose after all. */
-const MAX_TAG_LINES = 40
+const MAX_TAG_LINES = 80
 
 function rewriteTag(
 	tag: string,
 	rawName: string,
 	file: string,
 	number: number,
-	droppedImports: ReadonlySet<string>,
+	imports: ReadonlyMap<string, string>,
 ): string {
-	const name = rawName.split(".")[0] ?? rawName
+	const local = rawName.split(".")[0] ?? rawName
+	const module = imports.get(local)
+	// A page may import a shared component under its own name: `import GHIcon from
+	// "@site/src/mdx/GitHubInlineIcon"`. The module says what it is.
+	const name = (module !== undefined && SHARED_COMPONENT.exec(module)?.[1]) || local
 
 	const replacement = REPLACED[name]
 	if (replacement !== undefined) return replacement
 	if (SVG_COMPONENT.test(name)) return ""
-	if (DROPPED.has(name) || droppedImports.has(name)) return ""
+	if (DROPPED.has(name) || (module !== undefined && DROPPED_IMPORT.test(module))) return ""
 
 	// JSX components are capitalised by the language's own rule. A lowercase name that is
 	// not HTML is prose in angle brackets — `<your-token>`, `<version>` — and belongs to
@@ -380,13 +394,13 @@ function rewriteTag(
 	throw new UnknownConstructError(file, number, name)
 }
 
-/** The names a document imports from a module that `pattern` matches. */
-function importsMatching(source: string, pattern: RegExp): Set<string> {
-	const found = new Set<string>()
+/** Every name a document imports, with the module it comes from. */
+function importedModules(source: string): Map<string, string> {
+	const found = new Map<string, string>()
 	// Over the whole source, because `import {` lists its names on lines of their own.
 	for (const match of source.matchAll(COMPONENT_IMPORT)) {
-		if (!match[1] || !match[2] || !pattern.test(match[2])) continue
-		for (const name of match[1].match(/\w+/g) ?? []) found.add(name)
+		if (!match[1] || !match[2]) continue
+		for (const name of match[1].match(/\w+/g) ?? []) found.set(name, match[2])
 	}
 	return found
 }

@@ -17,7 +17,7 @@ Learn more about [creating, configuring, and authorizing a Microsoft app](https:
 
 **Note**
 Use secrets to avoid exposing your Microsoft credentials as plain text.
-Refer to our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Refer to our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/microsoft-o365-mail

@@ -9,10 +9,6 @@ For business-critical and higher-risk processes that require strict governance a
 
 You should be aware of the following limitations when working with projects.
 
-### General limitations
-
-- Self-Managed does not support defining cluster stages, identifying clusters by tags, or cluster promotion.
-
 ### Deployment limitations
 
 - Projects can only be deployed to a Zeebe cluster in version 8.4.0 or higher.

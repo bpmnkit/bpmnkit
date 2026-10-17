@@ -29,20 +29,7 @@ The Classic Load Balancer (CLB) is the previous generation and is not supported 
 
 AWS offers an [Application Load Balancer](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html) (ALB), which requires TLS termination in the load balancer and supports AWS Certificate Manager (ACM).
 
-To use an Application Load Balancer:
-
-- Deploy the [AWS Load Balancer Controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/)
-- Set up a [certificate in AWS Certificate Manager](https://docs.aws.amazon.com/acm/latest/userguide/gs-acm-request-public.html)
-- Configure Ingress for Camunda using the [AWS example](https://github.com/kubernetes-sigs/aws-load-balancer-controller/blob/main/docs/examples/grpc_server.md), which results in the following annotations on the Camunda Ingress:
-  ```yaml
-  alb.ingress.kubernetes.io/ssl-redirect: "443"
-  alb.ingress.kubernetes.io/backend-protocol-version: GRPC
-  alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
-  alb.ingress.kubernetes.io/scheme: internet-facing
-  alb.ingress.kubernetes.io/target-type: ip
-  ```
-
-The setup does not require configuration of [TLS on the Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls). If the AWS Load Balancer Controller is correctly configured, it automatically retrieves the appropriate certificate from ACM based on the host name.
+For the setup steps and Ingress annotations, see [use an AWS Application Load Balancer](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/ingress/ingress-setup#use-an-aws-application-load-balancer).
 
 **Note: AWS ALB known limitations**
 Application Load Balancers (ALB) support HTTP/2 over HTTPS listeners and allow a maximum of 128 streams per client HTTP/2 connection. The HTTP/2 server-push feature is not supported. For details, see [AWS ALB protocols](https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#target-group-protocol-version:~:text=The%20maximum%20number%20of%20streams,client%20HTTP%2F2%20connection%20is%20128).

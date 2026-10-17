@@ -2,7 +2,7 @@
 
 If you are using AWS as your cloud provider, add the following AWS connector secrets required for IDP.
 
-- **SaaS:** Create and configure as [connector secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+- **SaaS:** Create and configure as [connector secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 - **Self-Managed:** Connector secrets are generally provided as environment variables, set via `values.yaml` or the command line. Add these connector secrets as environment variables for the Tasklist and Zeebe components. To learn more about using connector secrets in Self-Managed, see [managing secrets in Helm charts](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/secret-management) and [secrets in manual installations](https://docs.camunda.io/docs/next/self-managed/components/connectors/connectors-configuration#secrets).
 
 | Connector secret Key  | Required | Description                                                                                                                                                                                               |

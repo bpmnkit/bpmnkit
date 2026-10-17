@@ -34,7 +34,7 @@ The recommended configuration is via the zero-configuration constructor, with al
 **The environment variables you must set are outlined below. Replace these with your secrets and URLs.**
 
 **Info**
-To configure a client and capture these values when creating the client, see [setting up client connection credentials](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-api-clients#create-a-client).
+To configure a client and capture these values when creating the client, see [setting up client connection credentials](https://docs.camunda.io/docs/next/components/saas/clusters/manage-api-clients#create-a-client).
 
 ### Self-managed configuration
 

@@ -15,7 +15,7 @@ Before enabling secure connectivity:
 
 - The cluster must be hosted in AWS.
 - The cluster must be version 8.8.0+.
-- You must have [sufficient permissions](https://docs.camunda.io/docs/next/components/hub/organization/manage-users/index#roles-and-permissions) to manage clusters in Camunda Hub.
+- You must have [sufficient permissions](https://docs.camunda.io/docs/next/components/hub/organization/users-and-roles#roles-and-permissions) to manage clusters in Camunda Hub.
 - You must know the AWS account IDs or ARNs that should be allowed to connect.
 - Your organization must be on an Enterprise plan.
 

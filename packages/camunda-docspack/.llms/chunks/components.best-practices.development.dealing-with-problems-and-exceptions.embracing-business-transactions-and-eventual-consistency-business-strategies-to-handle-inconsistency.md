@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions — Embracing business transactions and eventual consistency — Business strategies to handle inconsistency
+# Deal with problems and exceptions — Embracing business transactions and eventual consistency — Business strategies to handle inconsistency
 
 There are three basic strategies if a consistency problem occurs:
 

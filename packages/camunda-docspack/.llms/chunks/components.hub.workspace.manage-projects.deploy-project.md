@@ -1,36 +1,33 @@
 # Deploy your project
 
-Deploy your project to a testing, staging, or production environment.
+Deploy your project to an environment assigned to your workspace.
 
-Deploy your project to a testing, staging, or production environment.
+Deploy your project to an environment assigned to your workspace, for example a testing, staging, or production environment.
 
 
-## Deployment stages
+## Deployment environments
 
-The deployment pipeline has the following stages:
+You deploy a project to an [environment](https://docs.camunda.io/docs/next/components/concepts/environments), not to a cluster. The deploy dialog lists the environments that are assigned to the workspace of the project. Each entry shows the following details:
 
-| Stage       | Description                                                                                                     |
-| :---------- | :-------------------------------------------------------------------------------------------------------------- |
-| Development | Use to create and test new software features and changes.                                                       |
-| Testing     | Use for quality checks, ensuring software meets defined standards before release.                               |
-| Staging     | Use for controlled testing where changes are validated before deployment to production.                         |
-| Production  | The live system with the latest software. Only administrators and organization owners can deploy to this stage. |
+| Detail  | Description                                                                                                           |
+| :------ | :-------------------------------------------------------------------------------------------------------------------- |
+| Name    | The [name of the environment](https://docs.camunda.io/docs/next/components/concepts/environments#how-an-environment-maps-to-infrastructure).        |
+| Cluster | The cluster that hosts the environment. Camunda Hub shows the cluster only if it's needed to tell environments apart. |
+| Version | The Camunda version of the cluster, for example **Camunda 8.9**.                                                      |
+| Tags    | The tags of the cluster, for example `dev`, `test`, `stage`, or `prod`.                                               |
+| Status  | The [status](#environment-status) of the environment.                                                                 |
 
-To define your deployment pipeline stages, follow the [connect clusters](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/create-a-project#connect-clusters) instructions.
-
-**Note**
-
-- For each stage, an administrator must define the cluster to deploy to. Deployments can only be made to the pre-defined set of approved clusters. An **Undefined stages** warning is shown if no cluster is selected for at least one stage.
-- Each deployment action is logged with information on the user and stage it was deployed to.
+An organization admin decides which environments a workspace can use. Camunda Hub doesn't offer any other targets, and it doesn't select the next environment for you when you promote a project. You choose the environment you want to deploy to.
 
 ### Prerequisites
 
-Make sure you've [set up a project](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/create-a-project), including at least one cluster.
+Before you deploy a project:
 
-Only users with correct privileges can deploy:
+- An organization admin has [assigned at least one environment to the workspace](https://docs.camunda.io/docs/next/components/hub/organization/manage-environments/assign-environments).
+- You're a **Workspace Admin** or **Editor** in the workspace.
+- You have permission to deploy in the target environment. If the cluster or its Physical Tenant has [authorizations](https://docs.camunda.io/docs/next/components/admin/authorization) enabled, ensure you have the [`CREATE` permission to the `RESOURCE` resource type](https://docs.camunda.io/docs/next/components/admin/authorization#create-an-authorization-in-admin).
 
-- If the target cluster has [authorizations](https://docs.camunda.io/docs/next/components/admin/authorization) enabled, ensure deploying users have [`CREATE` permission to the `RESOURCE` resource type](https://docs.camunda.io/docs/next/components/admin/authorization#create-an-authorization-in-admin).
-- Configure your [deployment settings](https://docs.camunda.io/docs/next/components/hub/workspace/modeler/modeler-settings#project-deployment)
+Camunda Hub doesn't check your permissions before you deploy. The cluster decides whether you can deploy, and Camunda Hub shows you the result.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/deploy-project

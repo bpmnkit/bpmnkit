@@ -11,7 +11,7 @@ To use the **Email connector**, you must have an SMTP, POP3 or IMAP server avail
 
 **Note**
 Use secrets to avoid exposing your sensitive data as plain text.
-See [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+See [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 
 ---
 ---

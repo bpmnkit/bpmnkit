@@ -1,6 +1,6 @@
 # Dual-region setup (EKS) — 3. Deploy Camunda 8 via Helm charts — Deploy Elasticsearch using ECK
 
-Elasticsearch is managed using the [Elastic Cloud on Kubernetes (ECK)](https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html) operator instead of the Camunda Helm chart's built-in Elasticsearch subchart. This provides automated lifecycle management and built-in security with auto-generated credentials.
+Elasticsearch is managed using the [Elastic Cloud on Kubernetes (ECK)](https://www.elastic.co/guide/en/cloud-on-k8s/current/index.html) operator. This provides automated lifecycle management and built-in security with auto-generated credentials.
 
 For more details on ECK-based deployments, see [Elasticsearch deployment in the operator-based infrastructure guide](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/operator-based-infrastructure#elasticsearch-deployment).
 

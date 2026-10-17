@@ -34,15 +34,9 @@ orchestration:
                 # Optional: Configure history retention
                 history:
                   default-history-ttl: P30D
-
-# Disable default Elasticsearch subchart
-elasticsearch:
-  enabled: false
-# If deploying Optimize, you still need Elasticsearch/OpenSearch
-# Uncomment below and configure as needed:
-# opensearch:
-#   enabled: true
 ```
+
+If you deploy Optimize, set its connection under `optimize.database.elasticsearch` or `optimize.database.opensearch`. See [component storage requirements](#important-component-storage-requirements).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/helm-with-rdbms

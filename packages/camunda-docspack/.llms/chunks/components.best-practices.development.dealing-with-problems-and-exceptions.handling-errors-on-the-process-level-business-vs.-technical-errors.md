@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions — Handling errors on the process level — Business vs. technical errors
+# Deal with problems and exceptions — Handling errors on the process level — Business vs. technical errors
 
 Note that you have two different ways of dealing with problems at your disposal now:
 

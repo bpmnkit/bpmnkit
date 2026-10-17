@@ -15,9 +15,6 @@ orchestration:
           username: elastic
           secret:
             inlineSecret: pass
-
-elasticsearch:
-  enabled: false
 ```
 
 #### Connect to external Elasticsearch with a self-signed certificate
@@ -53,9 +50,6 @@ If the Elasticsearch cluster accepts only `https` requests with a self-signed ce
              secret:
                existingSecret: elastic-jks
                existingSecretKey: externaldb.jks
-
-   elasticsearch:
-     enabled: false
    ```
 
 ---

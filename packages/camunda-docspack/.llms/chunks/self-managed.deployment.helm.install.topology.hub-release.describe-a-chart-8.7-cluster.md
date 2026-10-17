@@ -1,9 +1,9 @@
 # Install the Camunda Hub release — Describe a chart 8.7 cluster
 
 **Note: Minimum chart versions**
-This page needs Helm chart 15.0.0 or later for 8.10 releases. For the minimum chart version per Camunda version, see [release roles](https://docs.camunda.io/docs/next/self-managed/reference-architecture/deployment-topology#release-roles).
+This page needs Helm chart 15.0.0 or later for 8.10 releases. For the minimum chart version per Camunda version, see [release roles](https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/topology/index#release-roles).
 
-An 8.10 Hub manages Orchestration Cluster releases on the 8.7, 8.8, 8.9, and 8.10 charts. Records for 8.8, 8.9, and 8.10 clusters all take the standard shape shown above.
+An 8.10 Hub manages Orchestration Cluster releases on the 8.7, 8.8, 8.9, and 8.10 charts. Records for 8.8, 8.9, and 8.10 clusters all take the standard shape shown above. To connect releases that already run, see [connect existing clusters to Hub](https://docs.camunda.io/docs/next/self-managed/upgrade/helm/connect-existing-clusters).
 
 Chart 8.7 predates the unified Orchestration Cluster, so it runs Zeebe, Zeebe Gateway, Operate, and Tasklist as separate workloads on separate services. Its record needs `architecture: legacy` and the names of those services:
 

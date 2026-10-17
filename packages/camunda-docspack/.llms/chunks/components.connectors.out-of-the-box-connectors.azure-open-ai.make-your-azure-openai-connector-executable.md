@@ -12,7 +12,7 @@ Fill the **API key** field with a valid Azure OpenAI API key.
 
 Keep your **API key** safe and avoid exposing it in the BPMN `xml` file by creating a secret:
 
-1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 2. Name your secret (for example, `AZURE_OAI_SECRET`) so you can reference it later in the connector.
 
 ---

@@ -19,7 +19,7 @@ Click **None** in the **Authentication** section. No extra authentication config
 
 We advise you to keep your **Password** safe and avoid exposing it in the BPMN `xml` file by creating a secret:
 
-1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 2. Name your secret (i.e `GRAPHQL_PASSWORD`) so you can reference it later in the connector.
 
 ### Configure Basic Authentication
@@ -36,7 +36,7 @@ Select the **GraphQL connector** and fill out the following properties under the
 
 We advise you to keep your **Bearer Token** safe and avoid exposing it in the BPMN `xml` file by creating a secret:
 
-1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 2. Name your secret (i.e `GRAPHQL_BEARER_TOKEN`) so you can reference it later in the connector.
 
 #### Configure the Bearer Token
@@ -52,7 +52,7 @@ Select the **GraphQL connector** and fill out the following properties under the
 
 We advise you to keep your **OAUTH_TOKEN_ENDPOINT** safe and avoid exposing it in the BPMN `xml` file by creating a secret:
 
-1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 2. Name your secret (i.e `OAUTH_TOKEN_ENDPOINT`) so you can reference it later in the connector.
 
 #### Configure the OAuth Token

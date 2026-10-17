@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions — Handling errors on the process level
+# Deal with problems and exceptions — Handling errors on the process level
 
 You often encounter deviations from the "happy path" (the default scenario with a positive outcome) which shall be modeled in the process model.
 

@@ -13,7 +13,7 @@ To use the **OpenAI connector**, create an OpenAI account and create an API key.
 Refer to the [OpenAI Platform](https://platform.openai.com/docs/quickstart) documentation for a detailed setup guide.
 
 **Note**
-Use secrets to avoid exposing your sensitive data, such as your OpenAI API key, as plain text. Follow our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Use secrets to avoid exposing your sensitive data, such as your OpenAI API key, as plain text. Follow our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/openai

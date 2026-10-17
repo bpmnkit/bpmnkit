@@ -16,7 +16,7 @@ Select **Client credentials** in the **Type** dropdown in the **Authentication**
 6. Click **Add**.
 7. Copy the secret value immediately. This value is only displayed once and cannot be retrieved later.
 
-Store your credentials securely using [secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+Store your credentials securely using [secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/microsoft-teams

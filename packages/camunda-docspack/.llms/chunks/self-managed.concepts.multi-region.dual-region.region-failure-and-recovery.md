@@ -4,6 +4,8 @@ In a dual-region setup, losing either region affects Camunda 8 processing becaus
 
 When a region becomes unavailable, the Zeebe cluster loses quorum (half of its brokers become unreachable) and **immediately stops processing** new data. All components stop processing until the failover procedure completes.
 
+This section covers the Orchestration Cluster. Failover doesn't recover Management Identity, Camunda Hub, or Optimize. For their behavior on region loss, see [Management platform and Orchestration Cluster](#management-platform-and-orchestration-cluster).
+
 ### Physical Tenant topology during failover
 
 A Physical Tenant removed from configuration is disabled, but it remains in the persisted cluster topology until it is logically removed. Multi-region failover operations require every tenant in the topology to be accounted for, so a disabled tenant can block failover. Before starting failover, compare configured tenants with the persisted topology and resolve any disabled tenants. See [logically remove a disabled tenant](https://docs.camunda.io/docs/next/self-managed/concepts/physical-tenants/provisioning-and-lifecycle#logically-remove-a-disabled-tenant) for lifecycle details.

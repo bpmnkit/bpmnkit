@@ -32,8 +32,8 @@ With [Operate](https://docs.camunda.io/docs/next/components/operate/operate-intr
 
 [Camunda Hub](https://docs.camunda.io/docs/next/components/hub/index) is a unified platform for managing organizational resources and delivering business processes. It's organized into two levels: organization and workspace.
 
-- **Organization level**: This is the management and governance layer. Center of excellence teams govern the infrastructure and tooling delivery teams need, including managing users, runtime environments, a catalog of shared reusable resources, and workspaces.
-- **Workspace level**: This is the process modeling and delivery layer. Delivery teams design business process and decision models, discover and use approved catalog assets, and deploy projects to development, testing, staging, and production environments.
+- **Organization level**: This is the management and governance layer. Center of excellence teams govern the infrastructure and tooling delivery teams need, including managing users, clusters, environments, a catalog of shared reusable resources, and workspaces.
+- **Workspace level**: This is the process modeling and delivery layer. Delivery teams design business process and decision models, discover and use approved catalog assets, and deploy projects to the [environments](https://docs.camunda.io/docs/next/components/concepts/environments) assigned to their workspace.
 
 With this separation, center of excellence teams govern infrastructure and standards at the organization level, while delivery teams work within organizational guardrails to design, test, and deploy business solutions at the workspace level.
 

@@ -7,10 +7,10 @@ Use the business value dashboard to track process outcomes using cycle time, aut
 To open the dashboard:
 
 1. In Camunda Hub, go to **Business Value** (`/business-value`).
-2. Use the environment picker to select an Orchestration Cluster.
+2. Use the **Environment** picker to select an [environment](https://docs.camunda.io/docs/next/components/concepts/environments).
 3. Review the portfolio view, then select a process to open its process view.
 
-The dashboard shows data for one cluster at a time and does not aggregate values across clusters. Each value therefore belongs to the environment currently selected in the picker.
+The dashboard shows data for one environment at a time and does not aggregate values across environments. Each value therefore belongs to the environment currently selected in the picker.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/hub/organization/analyze-operations/business-value-dashboard

@@ -46,7 +46,7 @@ The default `log4j2-spring.xml` used by Camunda Hub's `restapi` component is as 
   <Loggers>
 
     <Logger name="io.camunda" level="${env:CAMUNDA_LOG_LEVEL:-INFO}" />
-    <Logger name="io.camunda.modeler" level="${env:CAMUNDA_HUB_LOG_LEVEL:-${env:CAMUNDA_LOG_LEVEL:-INFO}}" />
+    <Logger name="io.camunda.hub" level="${env:CAMUNDA_HUB_LOG_LEVEL:-${env:CAMUNDA_LOG_LEVEL:-INFO}}" />
     <Logger name="org.springframework" level="INFO" />
 
     <Root level="INFO">

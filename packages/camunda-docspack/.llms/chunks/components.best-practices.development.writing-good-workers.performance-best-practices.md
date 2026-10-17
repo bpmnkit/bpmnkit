@@ -3,7 +3,7 @@
 Most of the business logic in your process models will likely end up being worked on as a job. As such, optimizing how jobs are handled in Zeebe can have
 a big impact on the performance of your system as a whole. Here are some best practices to keep things running smoothly.
 
-### Reduce latency by enabling job streaming
+### Reduce latency with job streaming
 
 We recommend enabling [job streaming](https://docs.camunda.io/docs/next/components/concepts/job-workers#job-streaming) in order to reduce latency to a maximum. Essentially, when using long polling,
 your job workers have to periodically poll every partition in your Zeebe cluster to check if there are new jobs available. Additionally, they have to

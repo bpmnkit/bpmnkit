@@ -1,7 +1,7 @@
 # Encryption at rest using external encryption keys — Step 1: Create a Camunda 8 SaaS Orchestration cluster
 
 1. Sign in to the [Camunda Hub](https://console.camunda.io/).
-1. In the left navigation under **Console**, click **Clusters**.
+1. In the left navigation, click **Environments**, and then click **Clusters**.
 1. Click **Create cluster**.
 1. Select an AWS Region for your cluster.
 1. Choose **Single region** or **Dual region backup**.

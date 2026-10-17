@@ -1,4 +1,4 @@
-# Dealing with problems and exceptions — Handling errors on the process level — Throwing and handling BPMN errors
+# Deal with problems and exceptions — Handling errors on the process level — Throwing and handling BPMN errors
 
 In BPMN process definitions, we can explicitly model an end event as an error.
 

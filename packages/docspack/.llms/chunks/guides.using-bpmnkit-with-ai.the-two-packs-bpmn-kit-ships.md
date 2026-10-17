@@ -10,8 +10,9 @@ project installed.
 
 **[`@bpmnkit/camunda-docspack`](/docs/packages/camunda-docspack)** carries the
 Camunda 8 documentation: BPMN and FEEL references, engine concepts, the
-best-practice pages with their diagrams rendered as text, the web components,
-Self-Managed deployment and configuration, the client guides, and one digest per
+best-practice pages with their diagrams rendered as text, the Modeler (DMN, forms,
+element templates), the web components, Self-Managed deployment and configuration,
+the client guides, the Camunda 7 migration guides, the glossary, and one digest per
 Orchestration Cluster API operation. It is Camunda's work, redistributed under
 CC BY-SA 3.0, not documentation BPMN Kit wrote.
 

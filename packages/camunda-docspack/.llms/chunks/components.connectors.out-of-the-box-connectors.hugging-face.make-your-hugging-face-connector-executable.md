@@ -11,7 +11,7 @@ Fill the **Hugging Face API key** field with a valid Hugging Face API key.
 
 Keep your **API key** safe and avoid exposing it in the BPMN `xml` file by creating a secret:
 
-1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 2. Name your secret (for example, `HUGGING_FACE_SECRET`) so you can reference it later in the connector.
 
 

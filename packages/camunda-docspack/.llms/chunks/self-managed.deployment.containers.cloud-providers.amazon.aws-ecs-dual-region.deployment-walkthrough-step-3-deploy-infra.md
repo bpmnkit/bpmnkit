@@ -2,7 +2,8 @@
 
 ```bash
 cd ../infra
-terraform init
+terraform init -backend-config=../../backend.hcl \
+  -backend-config="key=${TF_VAR_terraform_backend_key_prefix}infra/terraform.tfstate"
 terraform plan
 terraform apply
 ```

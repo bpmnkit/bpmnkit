@@ -1,6 +1,19 @@
 # Dual-region setup (ECS Fargate) — Deployment walkthrough — Step 1 — Configure
 
-Create a `terraform.tfvars` file in each of the three Terraform directories before running `apply`.
+Set the Terraform state backend once, from `aws/containers/ecs-dual-region-fargate`, in the shell you use for the following steps. The infra and app layers read the `TF_VAR_terraform_backend_*` variables, and `terraform init` reads `backend.hcl` in every layer:
+
+```bash
+export TF_VAR_terraform_backend_bucket="<your-tf-state-bucket>"
+export TF_VAR_terraform_backend_region="<tf-state-bucket-region>" # defaults to eu-central-1
+export TF_VAR_terraform_backend_key_prefix="<your-key-prefix>/"   # same prefix for all three layers
+
+cat > backend.hcl <<EOF
+bucket = "${TF_VAR_terraform_backend_bucket}"
+region = "${TF_VAR_terraform_backend_region}"
+EOF
+```
+
+Then create a `terraform.tfvars` file in each of the three Terraform directories.
 
 #### `terraform/vpc/terraform.tfvars`
 
@@ -38,26 +51,29 @@ region_1_private_route_table_ids = ["rtb-yyy"]
 #### `terraform/infra/terraform.tfvars`
 
 **Warning**
-The infra layer takes the `registry_username` and `registry_password` for `registry.camunda.cloud`. Do not commit `terraform.tfvars` to source control. Add `*.tfvars` to your `.gitignore`, or supply secrets via `TF_VAR_registry_username` / `TF_VAR_registry_password` environment variables or a secrets backend such as HashiCorp Vault.
+If you pull the Camunda image from `registry.camunda.cloud`, the infra layer takes your `registry_username` and `registry_password`. Do not commit `terraform.tfvars` to source control. Add `*.tfvars` to your `.gitignore`, or supply secrets via `TF_VAR_registry_username` / `TF_VAR_registry_password` environment variables or a secrets backend such as HashiCorp Vault.
 
 ```hcl
-cluster_name           = "<your-cluster-name>"   # must match vpc layer
-aws_profile            = "<your-aws-profile>"    # optional; omit when authenticating via env vars
-region_0               = "<primary-region>"
-region_1               = "<secondary-region>"
-s3_force_destroy       = true                    # default; flip to false before running real workloads — see Cleanup
-limit_access_to_cidrs  = ["<your-source-cidr>"]  # required; restrict to the CIDR range that should reach the ALB
-registry_username      = "<your-registry-user>"  # Camunda registry credentials for registry.camunda.cloud
-registry_password      = "<your-registry-pass>"
+cluster_name                 = "<your-cluster-name>"   # must match vpc layer
+aws_profile                  = "<your-aws-profile>"    # optional; omit when authenticating via env vars
+region_0                     = "<primary-region>"
+region_1                     = "<secondary-region>"
+db_engine                    = "postgresql"            # default; see Secondary storage engine
+s3_force_destroy             = true                    # default; flip to false before running real workloads (see Cleanup)
+limit_access_to_cidrs        = ["<your-source-cidr>"]  # defaults to 0.0.0.0/0; restrict to the CIDR range that should reach the load balancers
+registry_username            = "<your-registry-user>"  # optional; only needed for images from registry.camunda.cloud
+registry_password            = "<your-registry-pass>"
 ```
 
 #### `terraform/app/terraform.tfvars`
 
 ```hcl
-aws_profile      = "<your-aws-profile>" # optional; omit when authenticating via env vars
-camunda_image    = "registry.camunda.cloud/camunda/camunda:<camunda-version>"      # 8.10 or later
-connectors_image = "camunda/connectors-bundle:<connectors-bundle-version>"          # for example, 8.10.0-alpha2
-default_tags     = { Environment = "reference", Team = "<your-team>" }
+aws_profile                  = "<your-aws-profile>" # optional; omit when authenticating via env vars
+region_0                     = "<primary-region>"   # must match the vpc and infra layers
+region_1                     = "<secondary-region>"
+camunda_image                = "registry.camunda.cloud/camunda/camunda:<camunda-version>" # 8.10 or later
+connectors_image             = "camunda/connectors-bundle:<connectors-bundle-version>"     # pulled from Docker Hub without registry credentials
+default_tags                 = { Environment = "reference", Team = "<your-team>" }
 ```
 
 ---

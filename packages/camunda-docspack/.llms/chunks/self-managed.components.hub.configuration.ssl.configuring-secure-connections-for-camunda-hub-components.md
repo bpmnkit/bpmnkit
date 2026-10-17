@@ -7,11 +7,11 @@ SSL can be configured declaratively by setting the respective properties offered
 ### envVars
 
 ```
-RESTAPI_SERVER_URL=https://web-modeler.example.com
+CAMUNDA_HUB_SERVER_URL=https://hub.example.com
 
 SERVER_SSL_ENABLED=true
 SERVER_SSL_CERTIFICATE=file:/full/path/to/certificate.pem
-SERVER_SSL_CERTIFICATE_PRIVATE_KEY=file:/full/path/to/key.pem
+SERVER_SSL_CERTIFICATEPRIVATEKEY=file:/full/path/to/key.pem
 ```
 
 Additionally, you can configure SSL separately for the management routes of the `restapi` component:
@@ -19,13 +19,13 @@ Additionally, you can configure SSL separately for the management routes of the 
 ```
 MANAGEMENT_SERVER_SSL_ENABLED=true
 MANAGEMENT_SERVER_SSL_CERTIFICATE=file:/full/path/to/certificate.pem
-MANAGEMENT_SERVER_SSL_CERTIFICATE_PRIVATE_KEY=file:/full/path/to/key.pem
+MANAGEMENT_SERVER_SSL_CERTIFICATEPRIVATEKEY=file:/full/path/to/key.pem
 ```
 
 ### applicationYaml
 
 ```yaml
-camunda.hub.server.url: https://web-modeler.example.com
+camunda.hub.server.url: https://hub.example.com
 
 server:
   ssl:
@@ -54,7 +54,7 @@ To use secure connections between the `restapi` and `websocket` components:
 ### envVars
 
 ```
-RESTAPI_PUSHER_SSL_ENABLED=true
+CAMUNDA_HUB_PUSHER_SSLENABLED=true
 ```
 
 ### applicationYaml

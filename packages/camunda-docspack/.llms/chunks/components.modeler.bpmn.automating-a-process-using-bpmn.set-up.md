@@ -1,7 +1,7 @@
 # Design a process using BPMN — Set up
 
 Begin by building your BPMN diagrams with Camunda Hub.
-To get started, ensure you’ve [created a Camunda 8 account](https://docs.camunda.io/docs/next/components/hub/organization/manage-organization-settings/manage-plan/create-account).
+To get started, ensure you’ve [created a Camunda 8 account](https://docs.camunda.io/docs/next/components/saas/organization/manage-plan/create-account).
 
 
 ## Getting started with BPMN

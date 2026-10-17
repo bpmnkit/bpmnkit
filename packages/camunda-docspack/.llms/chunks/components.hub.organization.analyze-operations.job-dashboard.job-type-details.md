@@ -2,7 +2,7 @@
 
 The **Job type details** page shows metrics and errors for a single job type.
 
-![Job type details view](img/job-activity-log.png)
+![Job type details view in SaaS](img/job-activity-log.png)
 
 ### Job workload
 

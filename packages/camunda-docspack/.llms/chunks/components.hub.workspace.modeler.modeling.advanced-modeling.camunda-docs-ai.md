@@ -6,7 +6,7 @@ Camunda 8 only
 Alpha
 
 **Note**
-Camunda Docs AI is an alpha feature. To use this feature, enable the [AI-powered features](https://camunda.com/blog/2024/02/camunda-docs-ai-developer-experience-new-level/) through the [alpha features](https://docs.camunda.io/docs/next/components/hub/organization/manage-organization-settings/enable-alpha-features) menu. Learn more about [alpha features](https://docs.camunda.io/docs/next/components/early-access/alpha/alpha-features) and [general availability](https://docs.camunda.io/docs/next/reference/announcements-release-notes/release-policy#general-availability-ga).
+Camunda Docs AI is an alpha feature. To use this feature, enable the [AI-powered features](https://camunda.com/blog/2024/02/camunda-docs-ai-developer-experience-new-level/) through the [alpha features](https://docs.camunda.io/docs/next/components/saas/organization/enable-alpha-features) menu. Learn more about [alpha features](https://docs.camunda.io/docs/next/components/early-access/alpha/alpha-features) and [general availability](https://docs.camunda.io/docs/next/reference/announcements-release-notes/release-policy#general-availability-ga).
 
 Camunda Docs AI provides a smart AI-powered chatbot that helps you find answers to your technical and non-technical questions about Camunda within Hub, rather than navigating and searching across multiple sources of information like documentation, forums, blog posts, etc.
 

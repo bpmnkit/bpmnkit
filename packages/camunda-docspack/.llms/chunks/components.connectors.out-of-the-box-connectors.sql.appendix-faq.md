@@ -2,7 +2,7 @@
 
 ### How do I store secrets for my connector?
 
-Use secrets to avoid exposing your credentials. Follow our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Use secrets to avoid exposing your credentials. Follow our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 ### What is the output format of the SQL connector?
 

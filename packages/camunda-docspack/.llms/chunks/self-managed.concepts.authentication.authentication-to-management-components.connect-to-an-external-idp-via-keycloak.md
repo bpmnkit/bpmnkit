@@ -1,6 +1,6 @@
 # Management and modeling component authentication in Self-Managed — Connect to an external IdP via Keycloak
 
-You can configure the built-in Keycloak to act as an identity broker, connecting to an external corporate Identity Provider. This allows you to leverage your existing user base from providers that support protocols like **SAML**, **LDAP**, or **OpenID Connect**.
+You can configure Keycloak to act as an identity broker, connecting to an external corporate Identity Provider. This allows you to leverage your existing user base from providers that support protocols like **SAML**, **LDAP**, or **OpenID Connect**.
 
 In this setup, Keycloak remains the direct IdP for Camunda management and modeling components, but it delegates the authentication process to your configured external provider.
 

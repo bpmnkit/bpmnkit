@@ -7,10 +7,10 @@ When you deploy the diagram, it becomes available on the selected cluster and ne
 
 To execute your completed process diagram:
 
-1. Make sure you have [connected at least one cluster to your project](https://docs.camunda.io/docs/next/components/hub/workspace/manage-projects/create-a-project#connect-clusters).
+1. Make sure an [environment is assigned to your workspace](https://docs.camunda.io/docs/next/components/hub/organization/manage-environments/assign-environments).
 1. Reopen the BPMN diagram.
 1. At the top right of the modeling interface, click **Deploy & run**.
-1. Select a target **Stage**.
+1. Select a target **Deployment environment**.
 1. Click **Deploy & run**.
 
 You can now monitor your instances in [Operate](https://docs.camunda.io/docs/next/components/operate/userguide/basic-operate-navigation#open-operate).

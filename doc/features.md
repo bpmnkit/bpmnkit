@@ -24,6 +24,16 @@
 - `userTask(id, { ioMapping, taskHeaders, zeebeProperties, modelerTemplate })` takes the same
   options as a service task.
 
+## Camunda docspack covers the Modeler, the guides and the reference (2026-10-09)
+
+- **`@bpmnkit/camunda-docspack`** now also carries DMN, Camunda Forms, element templates, the
+  Desktop Modeler, the Camunda 7 migration guides, the getting-started guides, the glossary, the
+  supported environments, c8ctl, the integrations, the audit log and the MCP server guides. 7,134
+  chunks, up from 6,039. Questions about a decision table or a form field now find a Camunda
+  page; before, the pack had none.
+- The retrieval eval has 55 questions, 24 of them labelled by the pages the Camunda Docs MCP
+  server returns for them.
+
 ## Camunda docspack covers Self-Managed, the web components and the clients (2026-10-09)
 
 - **`@bpmnkit/camunda-docspack`** now also carries Self-Managed (deployment, configuration,
@@ -36,6 +46,12 @@
   TypeScript alone, would outrank every guide.
 - **Search ranks by tag as a field of its own**, so the page that is *about* a thing ranks above
   pages that only mention it. A fixed eval of 20 questions guards the ranking.
+
+## Connector generator on the website (2026-10-09)
+
+- **bpmnkit.com/connector-generator:** drag and drop an OpenAPI 3 or Swagger 2 spec and download
+  Camunda 8 REST connector element templates, generated in the browser.
+- **`@bpmnkit/connector-gen`** accepts Swagger 2.0 specs and honours the base-URL override.
 
 ## Drop: open a draft in the editor and chat with the AI (2026-10-06)
 

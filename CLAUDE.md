@@ -1,323 +1,90 @@
-# Instructions
+# BPMN Kit — instructions
 
-## Documentation Lookup — Do This Before Answering From Memory
+## Repository
 
-This repo ships its own documentation as an offline, searchable package:
-**`@bpmnkit/docspack`** (`packages/docspack`). Ask it before answering any question
-about BPMN Kit's own APIs, CLI or guides.
+pnpm workspaces + Turborepo, TypeScript strict, Biome (lint + format), Vitest.
+- `packages/`: the published `@bpmnkit/*` libraries (core, canvas, editor, engine, feel, ui, …) plus the docs packs.
+- `apps/`: cli, studio and demo (Preact + cascivo; studio state in Zustand), landing and learn (Astro), drop, proxy, desktop (Tauri), vscode, reebe / reebe-wasm / proxy-rs (Rust).
+- Backend/Node code: ESM only, `.js` extensions in relative imports, `node:` imports, native APIs (`fetch`, top-level `await`) over packages.
+
+## Commands
+
+- Build: `pnpm turbo build` · Typecheck: `pnpm turbo typecheck` · Lint/format: `pnpm biome check .` (or `pnpm turbo check`) · Test: `pnpm turbo test`
+- All at once: `pnpm verify`
+
+## Rules
+
+- State assumptions; ask when a request is ambiguous. Prefer the simplest change, touch only what the task needs, and don't refactor or reformat unrelated code.
+- Done means zero Biome warnings, zero type errors, and passing tests. New behaviour gets tests; bug fixes get a regression test. Never skip or delete tests.
+- All `devDependencies` go in the root `package.json`; runtime `dependencies` go in the package that uses them. Add a package only when it can't reasonably be written in-repo.
+- Frontend state lives in Zustand stores with narrow selectors, not scattered hooks. Prefer type-level guarantees (discriminated unions, branded types) over runtime checks.
+- Comments explain why, not what.
+- Use docspack (block below) before broad searches. A `PreToolUse` hook (`scripts/docspack-nudge.mjs`) nudges toward it; follow the nudge.
+
+## BPMN Kit's own docs: ask before answering from memory
+
+`@bpmnkit/docspack` (`packages/docspack`) indexes BPMN Kit's APIs, CLI and guides; `@bpmnkit/camunda-docspack`
+(`packages/camunda-docspack`) indexes Camunda 8 (BPMN/FEEL, engine, Modeler, Self-Managed, clients, APIs).
+A returned chunk beats memory; never blend the two. Ask narrow questions (answers cap at 3 chunks).
 
 ```sh
 npx bpmnkit-docs ask "how do I deploy a process to Camunda 8"
-```
-
-- **Ask a question, not a package name.** `ask "verify a worker's job type"` beats
-  `ask "workers"`. Answers cap at 3 chunks / 3,000 tokens, so prefer several narrow
-  questions over one broad one.
-- **A returned chunk beats recalled knowledge.** It describes the version in this
-  workspace; your memory describes some earlier release. If the two disagree, the chunk
-  is right. Do not blend them into one answer.
-- The next five matches follow an answer by id only. If one of them is what you wanted,
-  `bpmnkit-docs ask <chunk-id>` returns that chunk alone.
-- `bpmnkit-docs search "<query>"` ranks matches without printing them;
-  `bpmnkit-docs list` shows which packs are indexed.
-- Every command reads the filesystem only — no network call, no server, nothing resident.
-
-After changing anything under `apps/landing/src/content/docs/`, rebuild the pack so the
-index does not go stale: `pnpm --filter @bpmnkit/docspack build`.
-
-This repo also ships **`@bpmnkit/camunda-docspack`** (`packages/camunda-docspack`), the
-Camunda 8 documentation in the same format — BPMN and FEEL references, engine concepts,
-best practices, the web components, Self-Managed deployment and configuration, the client
-guides and the Orchestration Cluster API. Ask it for anything about *Camunda*
-rather than about BPMN Kit's own APIs, and use `--pack` when a question could match both:
-
-```sh
-npx bpmnkit-docs ask "how should I name an exclusive gateway" --pack @bpmnkit/camunda-docspack
 npx bpmnkit-docs ask "POST /jobs/activation" --pack @bpmnkit/camunda-docspack
+npx bpmnkit-docs ask <chunk-id>    # one of the follow-up ids
 ```
 
-It is rebuilt weekly from camunda-docs by `.github/workflows/camunda-docspack.yml`; to
-rebuild it by hand you need a camunda-docs checkout:
-`node packages/camunda-docspack/dist/cli.js --camunda-docs ../camunda-docs`.
+After changing `apps/landing/src/content/docs/`, run `pnpm --filter @bpmnkit/docspack build`. Rebuilding the
+Camunda pack is in `AGENTS.md`.
 
-<!-- Part 1 & 2: Portable across repos. Do NOT add repo-specific rules here. -->
-<!-- Repo-specific instructions go in .github/instructions/repo.instructions.md -->
+## Adding a published package
 
-## Part 1 — Behavioral Guidelines
+1. `package.json`: `description`, `keywords` (≥ 3), `license: "MIT"`, `repository.url` (`github.com/bpmnkit/bpmnkit`), `homepage: "https://bpmnkit.com"`, `bugs.url`, `publishConfig.access: "public"`, in the field order of existing packages (build config first, then metadata).
+2. `scripts/generate-readmes.mjs`: add an entry (`name`, `description`, `content`: Overview, Features, Installation, Quick Start, API Reference) and add it to `footer()`'s related packages.
+3. `scripts/published-packages.mjs`: add the path to `PUBLISHED` (the single list).
+4. Run `node scripts/sync-license.mjs`, `node scripts/generate-readmes.mjs`, `node scripts/check-packages.mjs` (must exit 0).
+5. After a build, `pnpm check:consumable --filter <package>`.
 
-### Think Before Coding
+Never hand-write a published package's `README.md` or `LICENSE`; the scripts overwrite them.
 
-Don't assume. Don't hide confusion. Surface tradeoffs.
+## Brand tokens
 
-Before implementing:
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them — don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+- Single source: `packages/ui/src/tokens.css` and `packages/ui/src/css.ts` (`UI_TOKENS_CSS`), kept in sync. Public tokens use `--bpmnkit-*`.
+- Never hardcode brand colours: `var(--bpmnkit-*, <hex fallback>)`. Semantic colours (success/warn/danger, execution state, syntax, DMN sections) are exempt.
+- `--bpmnkit-ds-*` (landing, drop, editor chrome only) is additive: `border-radius: 0`; no `box-shadow`, `linear-gradient` or `backdrop-filter`; 1px hairlines; one accent; mono for every label; card grids are one bordered box. Diagram rendering is out of scope.
+- Token table and the full design-system rules: `doc/brand-tokens.md`.
 
-### Simplicity First
+## Docs to update
 
-Minimum code that solves the problem. Nothing speculative.
+- `doc/progress.md`: a dated entry at the top for **every** change.
+- `doc/features.md`: when a feature is added.
+- `doc/roadmap.md`: tick `[x]` on completed items.
+- `README.md`: on significant changes.
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
+<!-- docspack:start recipe=repo -->
+## Documentation for this project's dependencies
 
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+Run `npx docspack ask "<question>"` for documentation on this project's
+dependencies. It answers from the installed versions.
 
-### Surgical Changes
+## Finding things in this repository
 
-Touch only what you must. Clean up only your own mess.
+Before reading files to find where something is, ask the index:
 
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it — don't delete it.
+- `npx docspack recall --name repo-code "<what the code does>"` answers with the `file:line`,
+  signature and doc comment of matching declarations. Then read only that range.
+- `npx docspack recall --name repo-docs "<question>"` answers from this repository's Markdown.
 
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
+An answer is a pointer: read the file before you edit it. If you already know a name,
+`grep` is as good. If `recall` says nothing is indexed, run `npx docspack index --repo`.
 
-The test: Every changed line should trace directly to the user's request.
+## Working efficiently in this repository
 
-### Goal-Driven Execution
+Every tool call is a turn, and every turn resends the whole conversation. Use fewer, larger calls:
 
-Define success criteria. Loop until verified.
+- Read several files, or several ranges of one file, in one shell command
+  (`sed -n '40,90p' a.ts; sed -n '1,60p' b.ts`) instead of one Read per file.
+- Search once, with a pattern that covers everything you are looking for.
+- Make related edits together, and run the tests once the change is complete.
 
-Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
-```
-
-## Part 2 — General Coding Quality
-
-### Code Correctness
-
-- Zero compiler/type errors. Always.
-- Zero linting warnings. Always.
-- All existing tests must pass after your changes.
-- If you change behavior, update or add tests to cover it.
-
-### Formatting & Linting
-
-- Run the project's formatter and linter before considering any task complete.
-- Never submit code that fails formatting or linting checks.
-- Match the project's existing formatting configuration — do not override it.
-
-### Testing
-
-- Write tests for new functionality.
-- Bug fixes must include a regression test.
-- Don't delete or skip existing tests unless explicitly asked.
-- Tests must be deterministic — no flaky assertions, no timing dependencies.
-
-### Error Handling
-
-- Handle errors at the appropriate level — don't swallow them silently.
-- Provide actionable error messages that help debugging.
-- Fail fast on invalid input — don't let bad data propagate.
-
-### Security
-
-- Never commit secrets, tokens, or credentials.
-- Validate and sanitize all external input.
-- Use parameterized queries for database access.
-- Prefer established security libraries over hand-rolled solutions.
-
-### Performance
-
-- Consider performance implications of your changes.
-- Avoid unnecessary allocations, copies, or iterations.
-- Don't optimize prematurely — but don't write obviously slow code either.
-
-### Documentation
-
-- Update documentation when your changes affect public APIs or user-facing behavior.
-- Code comments explain *why*, not *what*. The code itself should explain *what*.
-- Don't add comments that merely restate the code.
-
-### Pre-Completion Checklist
-
-Before finishing any task, verify:
-1. The project builds with zero warnings and zero errors.
-2. Formatting and linting pass.
-3. Type checking passes with zero errors.
-4. All tests pass.
-
-<!-- Part 3: Everything below is specific to THIS repository. -->
-<!-- Parts 1 & 2 (behavioral + coding quality) live in .github/copilot-instructions.md -->
-
-## Tech Stack
-
-- **Architecture:** Turborepo monorepo
-- **Language:** TypeScript (strict mode) — latest stable
-- **Runtime:** Node.js — latest LTS
-- **Package Manager:** pnpm (workspaces)
-- **Build System:** Turborepo
-- **Testing:** Vitest
-- **Linting & Formatting:** Biome
-- **Frontend:** React with Carbon Design System
-- **State Management:** Zustand (preferred over raw React hooks for all state management)
-- **Dependencies:** Latest versions only; prefer mature, well-maintained packages
-- **Dependency Policy:** Only add external packages when functionality cannot be reasonably implemented in-repo
-
-## Project Structure
-
-Follow Turborepo best practices:
-
-```
-apps/
-  backend/         # Node.js backend (ESM)
-  frontend/        # React frontend (Carbon Design System)
-packages/
-  shared/          # Shared types, utilities, constants
-  ui/              # Shared UI components (if needed)
-  config/          # Shared configuration (TypeScript, Biome, etc.)
-turbo.json         # Turborepo pipeline configuration
-package.json       # Root package.json (all devDependencies here)
-biome.json         # Biome configuration
-```
-
-## Adding a New Package
-
-When creating a new published package under `packages/` or `apps/`, complete all of the following before finishing:
-
-1. **`package.json` required fields** — must include: `description`, `keywords` (≥ 3 entries), `license: "MIT"`, `repository.url` (pointing to `github.com/bpmnkit/bpmnkit`), `homepage: "https://bpmnkit.com"`, `bugs.url`, `publishConfig.access: "public"`. Match the field order of existing packages (build config first, then metadata).
-
-2. **`scripts/generate-readmes.mjs`** — add an entry to the `packages` object with `name`, `description`, and `content` (Overview, Features, Installation, Quick Start, API Reference). Also add the package to the `footer()` function's related packages list.
-
-3. **`scripts/published-packages.mjs`** — add the package path to the `PUBLISHED` array. This
-   is the single list; `sync-license.mjs`, `check-packages.mjs` and
-   `check-package-consumable.mjs` all read it.
-
-4. **Run the scripts** to generate `LICENSE` and `README.md`:
-   ```sh
-   node scripts/sync-license.mjs
-   node scripts/generate-readmes.mjs
-   node scripts/check-packages.mjs   # must exit 0
-   ```
-
-5. **Check the tarball is usable** — `pnpm check:consumable --filter <your-package>`. This packs
-   the package, checks every path its manifest declares is actually in the tarball, installs it
-   into a throwaway project, imports it, and type-checks a strict `NodeNext` consumer against
-   the declarations it ships. Requires a build first. The full run is part of the release
-   workflow.
-
-Never hand-write a `README.md` or `LICENSE` for a published package — they are generated/synced by these scripts and will be overwritten on the next build.
-
-## Dependency Management
-
-- **All `devDependencies` must be declared in the root `package.json`** — never in individual app or package `package.json` files
-- Runtime `dependencies` belong in the respective app/package `package.json`
-
-## Build & Check Commands
-
-- Build: `pnpm turbo build`
-- Lint & Format: `pnpm turbo check` or `pnpm biome check .`
-- Typecheck: `pnpm turbo typecheck` or `pnpm tsc --noEmit`
-- Test: `pnpm turbo test`
-
-## Backend Guidelines
-
-- **ESM only** — use `"type": "module"` in `package.json`, use `.js` extensions in imports
-- Follow latest Node.js best practices and recommendations
-- Use modern APIs: `fetch`, `node:` protocol imports, top-level `await`
-- Prefer native Node.js APIs over third-party packages where possible
-- Structure code for testability and separation of concerns
-
-## Frontend Guidelines
-
-- **React** with **Carbon Design System** (`@carbon/react`) for all UI components
-- **Zustand** for state management — centralize state in stores, avoid scattering `useState`/`useEffect` across components
-- Only use raw React hooks (`useState`, `useEffect`, `useRef`, etc.) when Zustand or Carbon components do not cover the use case
-- Prefer Carbon's built-in component patterns and design tokens over custom styling
-- Optimize for render performance: minimize re-renders, use selectors in Zustand stores
-
-## Brand Tokens
-
-All brand colors and design tokens are defined in **`packages/ui`** (`@bpmnkit/ui`).
-
-- **Single source of truth**: edit `packages/ui/src/tokens.css` (CSS file) or `packages/ui/src/css.ts` (`UI_TOKENS_CSS` string) — both must stay in sync
-- **Token namespace**: all public tokens use `--bpmnkit-*` prefix
-- **Usage in packages**: call `injectUiStyles()` at runtime (editor, canvas, plugins), or `@import "@bpmnkit/ui/tokens.css"` in Astro apps via `packages/astro-shared`
-- **Never hardcode brand colors** — always use `var(--bpmnkit-*, <fallback>)` with a hex fallback so packages work standalone
-- **Semantic colors are exempt**: execution-state colors (token-highlight amber/green), syntax highlighting (feel-playground, dmn-viewer), and DMN semantic section colors must not be replaced with brand tokens
-
-### Key tokens
-
-| Token | Light | Dark | Purpose |
-|---|---|---|---|
-| `--bpmnkit-bg` | `#f4f4f8` | `#0d0d16` | Page background |
-| `--bpmnkit-surface` | `#ffffff` | `#161626` | Card / panel surface |
-| `--bpmnkit-surface-2` | `#eeeef8` | `#1e1e2e` | Elevated surface |
-| `--bpmnkit-border` | `#d0d0e8` | `#2a2a42` | Borders |
-| `--bpmnkit-fg` | `#1a1a2e` | `#cdd6f4` | Primary text |
-| `--bpmnkit-fg-muted` | `#6666a0` | `#8888a8` | Secondary text |
-| `--bpmnkit-accent` | `#1a56db` | `#6b9df7` | Primary accent / interactive |
-| `--bpmnkit-accent-bright` | `#3b82f6` | `#89b4fa` | Bright accent / links |
-| `--bpmnkit-accent-subtle` | `rgba(26,86,219,0.12)` | `rgba(107,157,247,0.15)` | Accent tint / hover bg |
-| `--bpmnkit-teal` | `#0d9488` | `#2dd4bf` | Secondary accent |
-| `--bpmnkit-panel-bg` | `rgba(255,255,255,0.92)` | `rgba(13,13,22,0.92)` | Floating panels |
-| `--bpmnkit-panel-border` | `rgba(0,0,0,0.08)` | `rgba(255,255,255,0.08)` | Panel borders |
-| `--bpmnkit-success` | `#16a34a` | `#22c55e` | Success state |
-| `--bpmnkit-warn` | `#d97706` | `#f59e0b` | Warning state |
-| `--bpmnkit-danger` | `#dc2626` | `#f87171` | Error / danger state |
-| `--bpmnkit-font` | `system-ui, -apple-system, sans-serif` | same | UI font |
-| `--bpmnkit-font-mono` | `ui-monospace, "Cascadia Code", "JetBrains Mono", monospace` | same | Monospace font |
-
-### Design-system tokens (`--bpmnkit-ds-*`)
-
-The bpmnkit.com landing system — flat, square, hairline-ruled, one terracotta accent — lives
-alongside the product palette in the same two files, under the `--bpmnkit-ds-` prefix. It is a
-**separate, additive set**: changing it never moves `--bpmnkit-accent` and friends.
-
-- Used by `apps/landing`, `apps/drop` and the `@bpmnkit/editor` chrome. Everything else stays
-  on the product palette above.
-- Rules the set encodes, and that consumers must keep: `border-radius: 0` on all chrome; no
-  `box-shadow`, `linear-gradient` or `backdrop-filter`; depth is 1px hairlines only; one
-  accent (`--bpmnkit-ds-accent`, `--bpmnkit-ds-accent-on-dark` on dark grounds); two type
-  roles — `--bpmnkit-ds-font-sans` for prose, `--bpmnkit-ds-font-mono` for every label,
-  eyebrow, filename, version and status readout, with any uppercase label in mono.
-- Card grids are **one** bordered box subdivided by `--bpmnkit-ds-line-soft`, never gapped
-  cards. Toolbars and palettes follow the same rule.
-- Diagram rendering is out of scope for the set: BPMN/DMN strokes, rounded task shapes and
-  labels belong to the renderer. Selection is a dashed accent halo *around* a shape, never a
-  recolour of it.
-- Semantic state (`--bpmnkit-success` / `-warn` / `-danger`, execution-state and syntax
-  colours) stays exempt, as above.
-- Drop serves Space Grotesk and Space Mono from `/drop/fonts/`, copied out of
-  `apps/landing/public/fonts` by `apps/drop/scripts/build-client.mjs`.
-
-## TypeScript Practices
-
-- Prefer compile-time (type-level) guarantees over runtime checks
-- Write idiomatic TypeScript: use discriminated unions, template literals, and branded types where appropriate
-- TypeScript strict mode — zero type errors across the entire monorepo
-- Biome — zero warnings, zero errors
-
-## Documentation Requirements
-
-| File                   | Purpose                                            | Update Frequency           |
-| ---------------------- | -------------------------------------------------- | -------------------------- |
-| `README.md`            | Brief intro, motivation, prerequisites, quickstart | On significant changes     |
-| `doc/progress.md`      | Historical changelog                               | **Every change**           |
-| `doc/features.md`      | High-level feature list with timestamps            | When features are added    |
-| `doc/documentation.md` | Detailed CLI usage documentation                   | When features change       |
-| `doc/roadmap.md`       | Implementation roadmap with action items           | Check items when completed |
-
-### Roadmap Tracking
-
-When completing action items from `doc/roadmap.md`:
-
-- Mark completed items with `[x]` instead of `[ ]`
-- Keep the roadmap up-to-date as features are implemented
+<!-- Written by `npx docspack agent install`. Re-run it to update this block. -->
+<!-- docspack:end -->

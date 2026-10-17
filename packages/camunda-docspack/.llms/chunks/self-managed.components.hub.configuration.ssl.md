@@ -10,7 +10,7 @@ However, you can enable TLS-encrypted communication by following the steps below
 
 ### Configure the Identity base URL
 
-For the `modeler-restapi` container, provide a URL that starts with `https://` (for example `https://identity.example.com`) as the base URL of the Identity instance.
+For the `restapi` container, provide a URL that starts with `https://` (for example `https://identity.example.com`) as the base URL of the Identity instance.
 
 ### envVars
 

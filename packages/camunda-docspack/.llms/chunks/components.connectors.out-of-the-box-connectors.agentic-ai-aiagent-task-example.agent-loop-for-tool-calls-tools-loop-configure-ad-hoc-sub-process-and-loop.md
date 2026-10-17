@@ -4,6 +4,8 @@
 
 1. A descriptive ID is configured for the ad-hoc sub-process. This can then be configured in the **Ad-hoc sub-process ID** field in the AI Agent connector [tools](https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task#tools) section.
 
+1. The ad-hoc sub-process is marked as a tool container. Open the **Extension properties** section in the properties panel and add a property named `io.camunda.agenticai.toolContainer` with the value `true`. This enables the Modeler's agent tool configuration features, such as linting and autofill, for the tools in the sub-process. See [declare a sub-process as agentic](https://docs.camunda.io/docs/next/components/modeler/reference/modeling-guidance/rules/agent-fromai-contract#declare-a-sub-process-as-agentic).
+
 1. A loop is modeled into the sub-process and back to the AI Agent connector.
    - The `no` flow of the `Contains tool calls?` gateway is marked as the default flow.
 

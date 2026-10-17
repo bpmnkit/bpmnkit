@@ -2,7 +2,7 @@
 
 ### How do I securely store AWS IAM credentials for my Comprehend connector?
 
-Store your AWS IAM credentials as **secrets** to avoid exposing sensitive information. Follow our [managing secrets guide](https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Store your AWS IAM credentials as **secrets** to avoid exposing sensitive information. Follow our [managing secrets guide](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 ### AWS authentication types
 

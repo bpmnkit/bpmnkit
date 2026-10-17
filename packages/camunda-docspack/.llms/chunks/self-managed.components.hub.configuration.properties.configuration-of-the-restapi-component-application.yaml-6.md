@@ -1,15 +1,12 @@
 # Property reference — Configuration of the `restapi` component — application.yaml
 
-```yaml
-spring:
-  datasource:
-    url: jdbc:postgresql://postgres.example.com:5432/hub-db
-    username: hub-user
-    password: "***"
-    # driver-class-name: software.amazon.jdbc.Driver  # optional
-    hikari:
-      schema: custom_schema # optional; only supported for PostgreSQL
-```
+| Property                              | Description                                                                                                                                                                                                                                                                                                        | Example value                                        |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
+| `spring.datasource.url`               | JDBC URL of the database                                                                                                                                                                                                                                                                                           | `jdbc:postgresql://postgres.example.com:5432/hub-db` |
+| `spring.datasource.username`          | Database user name                                                                                                                                                                                                                                                                                                 | `hub-user`                                           |
+| `spring.datasource.password`          | Database user password                                                                                                                                                                                                                                                                                             | \*\*\*                                               |
+| `spring.datasource.driver-class-name` | [optional]Java class name of the database driver                                                                                                                                                                                                                                                              | `software.amazon.jdbc.Driver`                        |
+| `spring.datasource.hikari.schema`     | [optional; only supported for PostgreSQL]Database schema.Defaults to the default schema of the database user (usually `public`) if not set.Refer to the [PostgreSQL documentation](https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS) for naming restrictions. | `custom_schema`                                      |
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/components/hub/configuration/properties

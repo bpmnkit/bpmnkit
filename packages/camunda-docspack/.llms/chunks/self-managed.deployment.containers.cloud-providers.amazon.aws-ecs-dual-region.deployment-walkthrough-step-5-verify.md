@@ -1,16 +1,17 @@
 # Dual-region setup (ECS Fargate) — Deployment walkthrough — Step 5 — Verify
 
-Run the helper script from the reference repository to validate that the deployment is healthy in both regions:
+Run the helper script from the reference repository to validate that the deployment is healthy in both regions. The script checks ECS service counts, the Zeebe topology, and Aurora Global Database status, and starts a test process instance. It sources `procedure/export_environment_prerequisites.sh` automatically to read the Terraform outputs:
 
 ```bash
-cd ../../  # back to the repo root
-./aws/containers/ecs-dual-region-fargate/procedure/verify_dual_region.sh
+cd ../../  # back to aws/containers/ecs-dual-region-fargate
+./procedure/verify_dual_region.sh
 ```
 
 When `enable_cross_region_dns_resolver = true`, also confirm that cross-region service-discovery DNS works:
 
 ```bash
-./aws/containers/ecs-dual-region-fargate/procedure/test_cross_region_dns.sh
+source ./procedure/export_environment_prerequisites.sh
+./procedure/test_cross_region_dns.sh
 ```
 
 To check the cluster yourself, retrieve the admin password and ALB endpoint from the infra layer, then call `/v2/topology` — Camunda 8.10 requires Basic authentication on all `/v2/*` endpoints:

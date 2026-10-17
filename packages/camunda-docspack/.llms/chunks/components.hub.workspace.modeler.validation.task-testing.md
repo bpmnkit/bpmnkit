@@ -1,6 +1,6 @@
 # Task testing
 
-Test and debug a single BPMN task directly in Camunda Hub using live data from your connected Camunda 8 cluster.
+Test and debug a single BPMN task directly in Camunda Hub using live data from your connected environment.
 
 You can test a single task directly within Camunda Hub to validate its configuration and logic without executing the entire process.  
 Task testing lets you quickly debug mappings, inputs, and outputs without leaving your implementation context.

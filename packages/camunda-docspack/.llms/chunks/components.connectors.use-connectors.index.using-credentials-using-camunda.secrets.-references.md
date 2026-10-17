@@ -2,7 +2,7 @@
 
 You can also reference a secret directly in a Connector input mapping by using `camunda.secrets.<name>` in a FEEL expression.
 
-In SaaS, use the [connector secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets#reference-connector-secrets-as-camundasecretsname) you manage on the cluster. No secret store configuration is required. In Self-Managed, an operator must [configure the secret store](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties#secrets). See [secret references in input mappings](https://docs.camunda.io/docs/next/components/concepts/variables#secret-references-in-input-mappings) for the syntax and its rules.
+In SaaS, use the [connector secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets#reference-connector-secrets-as-camundasecretsname) you manage on the cluster. No secret store configuration is required. In Self-Managed, an operator must [configure the secret store](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties#secrets). See [secret references in input mappings](https://docs.camunda.io/docs/next/components/concepts/variables#secret-references-in-input-mappings) for the syntax and its rules.
 
 These forms coexist and are handled differently:
 

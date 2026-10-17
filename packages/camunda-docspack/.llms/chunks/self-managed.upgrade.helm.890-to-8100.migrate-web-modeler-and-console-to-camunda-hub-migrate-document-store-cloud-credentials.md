@@ -1,13 +1,15 @@
 # Upgrade Camunda 8.9 to 8.10 using Helm — Migrate Web Modeler and Console to Camunda Hub — Migrate document-store cloud credentials
 
-This migration applies only when a component relies on credentials propagated from `global.documentStore.type.*` for a separate cloud integration. Configure replacement credentials only on each affected component; don't copy document-store credentials to components that don't independently need cloud access. The warning appears when `global.documentStore.activeStoreId` is `aws` or `gcp`.
+This migration applies only when a component uses credentials propagated from `global.documentStore.type.*` for a separate cloud integration. Configure replacement credentials only on each affected component. Don't copy document-store credentials to components that don't independently need cloud access. The migration applies when `global.documentStore.type.aws.enabled` or `global.documentStore.type.gcp.enabled` is `true`, or when `global.documentStore.activeStoreId` is `aws` or `gcp`. Chart 15.x emits no warning when these credentials disappear from a component.
 
 **Note**
-`<component>.env` supports Helm's `tpl` templating (for example, `{{ .Release.Name }}`); `<component>.envFrom` does not - it is rendered as plain YAML.
+`optimize.env`, `camundaHub.restapi.env`, and `identity.env` support Helm's `tpl` templating (for example, `{{ .Release.Name }}`). `connectors.env` and every `<component>.envFrom` don't support `tpl` templating. The chart renders them as plain YAML.
+
+For Camunda Hub, a list that you add under `camundaHub.restapi` replaces the matching `webModeler.restapi` list. Examples of such lists are `env`, `extraVolumes`, and `extraVolumeMounts`. Move your existing entries into the matching `camundaHub.restapi` list.
 
 #### AWS - Static access key / secret key
 
-**Connectors** - used by the AWS SDK default credentials chain for connector tasks (Lambda, SQS, SNS, DynamoDB, Bedrock, Textract):
+**Connectors**: The default credentials chain of the AWS SDK uses these credentials for connector tasks (Lambda, SQS, SNS, DynamoDB, Bedrock, Textract).
 
 ```yaml
 connectors:
@@ -22,14 +24,9 @@ connectors:
         secretKeyRef:
           name: connectors-aws-credentials
           key: secretAccessKey
-    - name: AWS_REGION
-      valueFrom:
-        secretKeyRef:
-          name: connectors-aws-credentials
-          key: region
 ```
 
-**Optimize** - used to sign AWS OpenSearch requests when `global.opensearch.aws.enabled` (or `optimize.database.opensearch.aws.enabled`) is `true`:
+**Optimize**: Optimize signs AWS OpenSearch requests with these credentials when `optimize.database.opensearch.aws.enabled` is `true`. In 8.9, the chart also accepted `global.opensearch.aws.enabled`. Chart 15.x rejects this key.
 
 ```yaml
 optimize:
@@ -52,7 +49,7 @@ optimize:
 ```
 
 **Note**
-Optimize's credential resolution failures are caught and silently fall back to Basic authentication - verify the OpenSearch connection after migrating rather than relying on a startup error.
+Optimize catches its credential resolution failures and silently uses Basic authentication instead. After you migrate, check the OpenSearch connection. Don't expect a startup error.
 
 **Camunda Hub**:
 
@@ -77,7 +74,7 @@ camundaHub:
             key: region
 ```
 
-Any of the three can load both keys at once via `envFrom` instead, if the secret's data keys are already named `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_REGION`:
+Any of the three components can load the variables at once through `envFrom` instead. This option works if the Secret's data keys already have the names `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`. Optimize and Hub also need a data key named `AWS_REGION`.
 
 ```yaml
 connectors: # (or optimize: / camundaHub.restapi:)
@@ -109,74 +106,17 @@ camundaHub:
 
 #### AWS - EKS Pod Identity
 
-Create an EKS Pod Identity association for each component service account instead of using the `eks.amazonaws.com/role-arn` annotation.
+Create an EKS Pod Identity association for each component service account instead of the `eks.amazonaws.com/role-arn` annotation. With the default names, the service accounts are `<RELEASE>-connectors`, `<RELEASE>-optimize`, `<RELEASE>-identity`, and `<RELEASE>-web-modeler` for Camunda Hub. The Hub REST API and WebSockets pods share the `<RELEASE>-web-modeler` service account.
 
-For both IRSA and EKS Pod Identity, set `AWS_REGION` explicitly for Optimize and Camunda Hub. The AWS identity integrations provide credentials, not the region. Connectors doesn't need `AWS_REGION` because its element templates carry the region per task.
+For both IRSA and EKS Pod Identity, set `AWS_REGION` explicitly for Optimize and Hub. EKS Pod Identity provides credentials but no region. The IRSA webhook injects only the region of the cluster. It injects this region only when the webhook has a region configured. Connectors doesn't need `AWS_REGION` because its element templates contain the region for each task.
 
 #### GCP
 
 **Connectors:**
 
-The examples below use `gcp-credentials` as the Secret name and expect its data key to be named `service-account.json`. Replace the name with the Secret you use. If your 8.9 `global.documentStore.type.gcp.credentialsKey` used another key, map that key to `service-account.json` with `secret.items`, or update `GOOGLE_APPLICATION_CREDENTIALS` to the mounted filename.
+The examples below use `gcp-credentials` as the Secret name. They expect the Secret's data key to have the name `service-account.json`. Replace `gcp-credentials` with the name of your Secret.
 
-```yaml
-connectors:
-  env:
-    - name: GOOGLE_APPLICATION_CREDENTIALS
-      value: /var/secrets/gcp/service-account.json
-  extraVolumeMounts:
-    - name: connectors-gcp-credentials
-      mountPath: /var/secrets/gcp
-      readOnly: true
-  extraVolumes:
-    - name: connectors-gcp-credentials
-      secret:
-        secretName: gcp-credentials
-```
-
-**Optimize:**
-
-```yaml
-optimize:
-  env:
-    - name: GOOGLE_APPLICATION_CREDENTIALS
-      value: /var/secrets/gcp/service-account.json
-  extraVolumeMounts:
-    - name: optimize-gcp-credentials
-      mountPath: /var/secrets/gcp
-      readOnly: true
-  extraVolumes:
-    - name: optimize-gcp-credentials
-      secret:
-        secretName: gcp-credentials
-```
-
-**Camunda Hub REST API:**
-
-```yaml
-camundaHub:
-  restapi:
-    env:
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /var/secrets/gcp/service-account.json
-    extraVolumeMounts:
-      - name: camunda-hub-gcp-credentials
-        mountPath: /var/secrets/gcp
-        readOnly: true
-    extraVolumes:
-      - name: camunda-hub-gcp-credentials
-        secret:
-          secretName: gcp-credentials
-```
-
-Workload Identity (GKE) is the annotation-based equivalent of IRSA, on `<component>.serviceAccount.annotations`:
-
-```yaml
-connectors: # (or optimize: / camundaHub:)
-  serviceAccount:
-    annotations:
-      iam.gke.io/gcp-service-account: <gsa-name>@<project-id>.iam.gserviceaccount.com
-```
+If your 8.9 `global.documentStore.type.gcp.secret.existingSecretKey` used another key, map that key to `service-account.json` with `secret.items`. Alternatively, update `GOOGLE_APPLICATION_CREDENTIALS` to the mounted filename. If you changed `global.documentStore.type.gcp.mountPath` or `global.documentStore.type.gcp.fileName`, use those values for `mountPath` and in `GOOGLE_APPLICATION_CREDENTIALS`.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/upgrade/helm/890-to-8100

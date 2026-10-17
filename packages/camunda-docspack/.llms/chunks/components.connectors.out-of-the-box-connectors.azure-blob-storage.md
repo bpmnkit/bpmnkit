@@ -22,7 +22,7 @@ To begin using the **Azure Blob Storage connector**, ensure you have created the
 
 Keep your secrets secure by avoiding direct inclusion in the BPMN `xml` file. Instead, create a secret:
 
-1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets).
+1. Follow our [guide for creating secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets).
 2. Name your secrets (for example, `AZURE_SAS_TOKEN`) so you can reference them later in the connector configuration.
 
 ### OAuth 2.0

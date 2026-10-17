@@ -12,15 +12,16 @@ This guide and [resolve incidents and update variables](https://docs.camunda.io/
 
 ## Open Operate
 
-From Camunda Hub, you can access all your clusters and navigate to any running instance of Operate:
+From Camunda Hub, you can open Operate in any [environment](https://docs.camunda.io/docs/next/components/concepts/environments) you have access to:
 
 1. Log in to Camunda Hub.
-1. In the left navigation under **Console**, click **Clusters**.
-1. Select a cluster. Each cluster contains its own instance of Operate.
-1. On the **Operate** card, click **Launch**. This opens the cluster's Operate instance.
+1. In the left navigation, click **Environments**, and then select an environment. Each environment has its own instance of Operate.
+1. Under **Applications**, on the **Operate** card, click **Open**. This opens Operate for the environment in a new tab.
+
+You can also expand an environment in the left navigation, and select Operate from its applications.
 
 **Tip**
-If the cluster is paused, you won't see a **Launch** button. You must [resume the cluster](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-cluster#resume-a-cluster) to access its components.
+If the environment is paused, you must [resume it](https://docs.camunda.io/docs/next/components/hub/organization/manage-environments/index#resume-a-paused-environment) to access its applications.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/operate/userguide/basic-operate-navigation

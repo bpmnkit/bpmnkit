@@ -1,5 +1,22 @@
 # @bpmnkit/camunda-docspack
 
+## 0.3.0
+
+### Minor Changes
+
+- 310c874: The pack now also covers the rest of the Modeler (DMN, forms, element templates, Desktop Modeler, the modeling rules), the Camunda 7 migration guides, the getting-started guides, the glossary, the supported environments, the public API and release policy pages, c8ctl, the integrations (SAP, ServiceNow, Teams, app integrations), the audit log, wait states, RPA, the frontend-development guides, the Operate, Tasklist, Optimize, Administration and Web Modeler API guides, and the MCP server guides: 7,134 chunks, up from 6,039. A page whose JSX tags span many lines, such as the Hub card grid, no longer leaves its props in the text, and a shared component imported under another name is now recognised.
+
+## 0.2.0
+
+### Minor Changes
+
+- 276b8db: The pack now also covers Self-Managed (deployment, configuration, upgrades), the web components (Operate, Tasklist, Admin, Optimize, Hub, connectors, agentic orchestration, document handling, Zeebe) and the client guides (Java client, Spring Boot starter, the C#, Go, PHP, Python, Rust and TypeScript SDKs, process testing, migration manuals, the Zeebe gRPC API): 5,877 chunks, up from 1,112. The SDKs' generated `api-reference/` pages stay out. Multi-line JSX tags no longer leave their props in the text, and a partial's own imports resolve from its own directory.
+
+### Patch Changes
+
+- Updated dependencies [276b8db]
+  - @bpmnkit/docspack@1.2.0
+
 ## 0.1.7
 
 ### Patch Changes

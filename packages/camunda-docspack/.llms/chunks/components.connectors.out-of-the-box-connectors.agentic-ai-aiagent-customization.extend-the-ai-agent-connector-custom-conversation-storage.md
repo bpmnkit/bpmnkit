@@ -1,6 +1,6 @@
 # Customize the AI Agent connector — Extend the AI Agent connector — Custom conversation storage
 
-The AI Agent connector includes a set of default storage backends for conversation history, but you can also implement your own to meet specific needs. Similar to the agent initialization example above, you can register a bean that implements the `ConversationStore` interface to provide your own storage implementation.
+The AI Agent connector includes a set of default storage backends for conversation history, but you can also implement your own to meet specific needs. Like other components, you can register a bean that implements the `ConversationStore` interface to provide your own storage implementation.
 
 A custom store needs three pieces:
 
@@ -81,12 +81,24 @@ public record MyConversationContext(String conversationId, UUID recordId)
         implements ConversationContext {}
 ```
 
-Register the subtype with the runtime `ObjectMapper` so the connector can deserialize the context back from the process variable. For example via a `Jackson2ObjectMapperBuilderCustomizer` bean calling `registerSubtypes(MyConversationContext.class)`.
+Register the subtype with the connector runtime's `ObjectMapper` instances so the connector can deserialize the context back from the process variable. The runtime builds its own mappers, which Spring Boot's `Jackson2ObjectMapperBuilderCustomizer` and `JsonMapperBuilderCustomizer` beans don't configure. Use a `BeanPostProcessor` that registers the subtype on every `ObjectMapper` bean instead:
 
-**Note: Storage contract**
-`storeMessages` must always write to a **new** record (or document, or branch) and return a `ConversationContext` pointing to it.
+```java
+@Component
+public class ConversationContextSubTypesBeanPostProcessor implements BeanPostProcessor {
 
-Never mutate or overwrite the data the previous context points at. If job completion fails, Zeebe retries with the old `AgentContext` (and therefore the old cursor); the old pointer must still resolve to the old data. The newly written record becomes an orphan, which the `onJobCompletionFailed` hook can clean up.
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) {
+        if (bean instanceof ObjectMapper objectMapper) {
+            objectMapper.registerSubtypes(MyConversationContext.class);
+        }
+        return bean;
+    }
+}
+```
+
+**Tip: Serialize with the connector object mapper**
+If your store serializes messages to JSON, use the connector runtime's `ObjectMapper` bean (qualifier `@ConnectorsObjectMapper`) instead of creating your own. It already supports the connector data types that messages can contain, such as document references.
 
 ---
 Source: https://docs.camunda.io/docs/next/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-customization

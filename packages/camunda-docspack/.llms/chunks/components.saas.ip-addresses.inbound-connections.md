@@ -1,6 +1,6 @@
 # Hostnames and IP addresses for Camunda connections — Inbound connections
 
-When you [create a cluster](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/create-cluster) in Camunda 8 SaaS, you will receive a set of hostnames for connecting to the different cluster components.
+When you [create a cluster](https://docs.camunda.io/docs/next/components/saas/clusters/create-cluster) in Camunda 8 SaaS, you will receive a set of hostnames for connecting to the different cluster components.
 
 The public IP addresses exposed for connecting to the cluster depends on the cloud provider and [region](https://docs.camunda.io/docs/next/components/saas/regions) the cluster was created in.
 

@@ -14,7 +14,7 @@ Your AWS IAM principal needs permissions for the following services in both targ
 - EFS (file systems, mount targets)
 - CloudWatch Logs (log groups)
 - Secrets Manager (secret creation)
-- Systems Manager Session Manager (`ssmmessages:*`) — required only for the [Session Manager access path](#method-b--session-manager-port-forward)
+- Systems Manager Session Manager (`ssm:StartSession`), required for the [Session Manager access path](#method-b--session-manager-port-forward) and the [failover and failback scripts](https://docs.camunda.io/docs/next/self-managed/deployment/containers/cloud-providers/amazon/aws-ecs-dual-region-ops)
 - Route 53 Resolver — required only when `enable_cross_region_dns_resolver = true`: `route53resolver:CreateResolverEndpoint`, `route53resolver:CreateResolverRule`, `route53resolver:AssociateResolverRule`
 
 ### AWS service quotas
@@ -29,14 +29,14 @@ Dual-region deployments may require quota increases. Before deploying, verify th
 
 ### Tooling
 
-| Tool                     | Purpose                                                                                                                                                                                            |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `terraform`              | Infrastructure provisioning. Pin to the version in [`.tool-versions`](https://github.com/camunda/camunda-deployment-references/blob/main/.tool-versions).                                          |
-| `aws` CLI v2             | AWS resource inspection and authentication.                                                                                                                                                        |
-| `jq`                     | JSON parsing in verification commands.                                                                                                                                                             |
-| `session-manager-plugin` | Required only for the [Session Manager access path](#method-b--session-manager-port-forward). Install with `brew install --cask session-manager-plugin` on macOS or follow the [AWS instructions]. |
-| `just` (optional)        | Task runner for common operations in the reference repository.                                                                                                                                     |
-| `asdf` (optional)        | Tool version management.                                                                                                                                                                           |
+| Tool                     | Purpose                                                                                                                                                                                                                                                                 |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `terraform`              | Infrastructure provisioning. The infra layer requires Terraform 1.9 or later. Pin to the version in [`.tool-versions`](https://github.com/camunda/camunda-deployment-references/blob/main/.tool-versions).                                                              |
+| `aws` CLI v2             | AWS resource inspection and authentication.                                                                                                                                                                                                                             |
+| `jq`                     | JSON parsing in verification commands and the failover and failback scripts.                                                                                                                                                                                            |
+| `session-manager-plugin` | Required for the [Session Manager access path](#method-b--session-manager-port-forward) and for the [failover and failback scripts](https://docs.camunda.io/docs/next/self-managed/deployment/containers/cloud-providers/amazon/aws-ecs-dual-region-ops). Install with `brew install --cask session-manager-plugin` on macOS or follow the [AWS instructions]. |
+| `just` (optional)        | Task runner for common operations in the reference repository.                                                                                                                                                                                                          |
+| `asdf` (optional)        | Tool version management.                                                                                                                                                                                                                                                |
 
 [AWS instructions]: https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html
 

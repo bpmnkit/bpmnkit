@@ -19,7 +19,7 @@ You can use an output mapping to map the response:
 
 ### How do I store secrets for my connector?
 
-Use secrets to avoid exposing your credentials. Follow our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to learn more.
+Use secrets to avoid exposing your credentials. Follow our documentation on [managing secrets](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to learn more.
 
 The **RabbitMQ connector** is an inbound connector that allows you to connect your BPMN process with [RabbitMQ](https://www.rabbitmq.com/) to receive messages from RabbitMQ.
 

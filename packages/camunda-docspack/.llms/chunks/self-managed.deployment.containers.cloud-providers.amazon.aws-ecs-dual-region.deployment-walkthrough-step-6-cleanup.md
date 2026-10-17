@@ -1,6 +1,6 @@
 # Dual-region setup (ECS Fargate) — Deployment walkthrough — Step 6 — Cleanup
 
-Destroy resources in reverse order to respect layer dependencies:
+If you failed over and the Aurora writer is still in region 1, move it back first with `./procedure/failback.sh --failed-region 0 --switch-writer` (see [Fail back to both regions](https://docs.camunda.io/docs/next/self-managed/deployment/containers/cloud-providers/amazon/aws-ecs-dual-region-ops#fail-back-to-both-regions)). Then destroy resources in reverse order to respect layer dependencies:
 
 ```bash
 cd terraform/app && terraform destroy

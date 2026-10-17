@@ -2,8 +2,9 @@
 
 ```yaml
 camunda:
-  hub.feature:
-    ui-user-invite-enabled: false
+  hub:
+    feature:
+      ui-user-invite-enabled: false
 ```
 
 ---

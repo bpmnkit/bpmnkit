@@ -160,4 +160,31 @@ describe("stripMdx", () => {
 		})
 		expect(out).toBe("Configure the response.\n\nProcess fields.")
 	})
+
+	it("removes an HTML tag whose props run over lines, keeping its text", () => {
+		const source = [
+			"<a",
+			"  className={clsx(",
+			'    "button button--lg"',
+			"  )}",
+			'  href="https://example.com">',
+			"  Sign up",
+			"</a>",
+		].join("\n")
+		expect(stripMdx(source, { file }).trim()).toBe("Sign up")
+	})
+
+	it("joins a card grid of a few dozen lines", () => {
+		const items = Array.from({ length: 12 }, (_, i) =>
+			[
+				"{",
+				`link: "./page-${i}",`,
+				`title: "Page ${i}",`,
+				`description: "About ${i}.",`,
+				"},",
+			].join("\n"),
+		)
+		const source = `<AoGrid ao={[\n${items.join("\n")}\n]} />\nAfter the grid.`
+		expect(stripMdx(source, { file })).toBe("After the grid.")
+	})
 })

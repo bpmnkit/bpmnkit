@@ -4,7 +4,7 @@ Install an execution plane: a Helm release with global.topology.mode set to orch
 
 An orchestration release is an execution plane. It runs one Orchestration Cluster and Connectors, and connects to the Management Identity service in the Hub release.
 
-Install it after the [Hub release](https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/topology/hub-release) is healthy. You can install any number of orchestration releases against one Hub.
+Install it after the [Hub release](https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/topology/hub-release) is healthy. The same Hub can serve orchestration releases in different environments.
 
 
 ## What an orchestration release deploys

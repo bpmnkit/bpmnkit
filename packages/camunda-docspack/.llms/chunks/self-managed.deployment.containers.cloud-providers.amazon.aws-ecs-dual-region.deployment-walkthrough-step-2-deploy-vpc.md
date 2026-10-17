@@ -2,7 +2,8 @@
 
 ```bash
 cd terraform/vpc
-terraform init
+terraform init -backend-config=../../backend.hcl \
+  -backend-config="key=${TF_VAR_terraform_backend_key_prefix}vpc/terraform.tfstate"
 terraform plan
 terraform apply
 ```

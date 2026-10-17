@@ -11,80 +11,23 @@ Note that this does not prevent the registration of connectors via Spring Beans 
 other mechanisms.
 
 
-## Secrets
+## Configure inbound webhook request limits
 
-Providing values for [legacy secret references](https://docs.camunda.io/docs/next/reference/glossary#secret-reference-legacy) to the runtime environment can be achieved in different ways, depending on your setup. To move to the recommended `camunda.secrets.<name>` syntax, resolved by the Orchestration Cluster from a configured secret store, see [Migrate to `camunda.secrets.<name>`](https://docs.camunda.io/docs/next/components/connectors/use-connectors/migrate-secrets).
+Use the following Spring properties or equivalent environment variables to configure HTTP Webhook request limits:
 
-Starting with Camunda 8.9, the environment-based secret provider applies the prefix `SECRET_` by default when resolving secrets. Only environment variables that start with this prefix are available as connector secrets.
+| Spring property                                           | Environment variable                                      | Default            | Description                                                                                                     |
+| --------------------------------------------------------- | --------------------------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `camunda.connector.webhook.max-request-body-bytes`        | `CAMUNDA_CONNECTOR_WEBHOOK_MAX_REQUEST_BODY_BYTES`        | `10485760` (10 MB) | Maximum request body size in bytes, except for `multipart/form-data`. The value must be a non-negative integer. |
+| `camunda.connector.webhook.rate-limit.enabled`            | `CAMUNDA_CONNECTOR_WEBHOOK_RATE_LIMIT_ENABLED`            | `true`             | Enables the global request rate limit shared by all webhook paths.                                              |
+| `camunda.connector.webhook.rate-limit.permits-per-second` | `CAMUNDA_CONNECTOR_WEBHOOK_RATE_LIMIT_PERMITS_PER_SECOND` | `1000`             | Maximum sustained requests per second across all webhook paths. The value must be positive and finite.          |
+| `spring.servlet.multipart.max-file-size`                  | `SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE`                  | `10MB`             | Maximum size of each file in a `multipart/form-data` request.                                                   |
+| `spring.servlet.multipart.max-request-size`               | `SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE`               | `10MB`             | Maximum total size of a `multipart/form-data` request.                                                          |
 
-This improves security by preventing all environment variables from being exposed as connector secrets. Existing secrets that do not use the configured prefix will no longer resolve until you update either the environment variables or the prefix configuration.
+Requests that exceed a body or multipart limit receive an HTTP `413` response. Requests that exceed the available rate-limit permits receive an HTTP `429` response. These responses have an empty body.
 
-#### Configure a custom prefix
+Spring parses `multipart/form-data` requests before the Connector Runtime applies `camunda.connector.webhook.max-request-body-bytes`, so configure multipart limits separately. The global rate limit also applies to multipart requests, but the servlet container can parse them before the rate limit is evaluated. Rate limiting controls sustained throughput across all webhook paths; it does not limit the number of concurrent requests.
 
-To use a custom prefix, configure it via the Java property or environment variable and name your secrets accordingly:
-
-```bash
-export CAMUNDA_CONNECTOR_SECRETPROVIDER_ENVIRONMENT_PREFIX='SUPER_SECRETS_'
-export SUPER_SECRETS_MY_SECRET='foo'   # Resolved via {{ secrets.MY_SECRET }}
-```
-
-#### Restore the previous behavior (unsafe)
-
-To restore the previous behavior where all environment variables can be used as connector secrets, set the prefix to an empty value:
-
-```
-camunda.connector.secret-provider.environment.prefix=
-```
-
-**Warning**
-When no prefix is configured, the connector runtime logs a warning that this mode is unsafe because all environment variables are exposed as connector secrets. Camunda does not recommend this mode for production environments.
-
-The following environment variables can be used to configure the default secret provider:
-
-| Name                                                       | Description                                                                                                                                                       | Default value |
-| ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
-| `CAMUNDA_CONNECTOR_SECRETPROVIDER_ENVIRONMENT_ENABLED`     | Whether the default secret provider is enabled.                                                                                                                   | `true`        |
-| `CAMUNDA_CONNECTOR_SECRETPROVIDER_ENVIRONMENT_PREFIX`      | Prefix applied to the secret name before lookup. Only environment variables starting with this prefix are available as secrets. Set to empty to disable (unsafe). | `SECRET_`     |
-| `CAMUNDA_CONNECTOR_SECRETPROVIDER_ENVIRONMENT_TENANTAWARE` | Whether the secret provider should be tenant-aware.                                                                                                               | `false`       |
-
-If the secret provider is set to be tenant-aware, the secret format will change to `${prefix}${tenantId}_${secretName}`:
-
-Example with empty prefix:
-
-```bash
-export CAMUNDA_CONNECTOR_SECRETPROVIDER_ENVIRONMENT_TENANTAWARE=true
-export tenant1_MY_SECRET='foo' # This will be resolved by using {{ secrets.MY_SECRET }} from tenant1
-```
-
-Example with prefix set:
-
-```bash
-export CAMUNDA_CONNECTOR_SECRETPROVIDER_ENVIRONMENT_TENANTAWARE=true
-export CAMUNDA_CONNECTOR_SECRETPROVIDER_ENVIRONMENT_PREFIX='SUPER_SECRETS_'
-export SUPER_SECRETS_tenant1_MY_SECRET='foo' # This will be resolved by using {{ secrets.MY_SECRET }} from tenant1
-```
-
-Connector secrets can be used in Helm charts, for example by referencing a [Kubernetes secret](https://kubernetes.io/docs/concepts/configuration/secret/):
-
-```yaml
-connectors:
-  envFrom:
-    - secretRef:
-        name: camunda-connector-secrets
-```
-
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: camunda-connector-secrets
-stringData:
-  MY_SECRET: foo
-```
-
-Review the documentation on [managing secrets in Helm charts](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/secret-management) for additional details.
-
-To inject secrets into the [Docker images of the runtime](https://docs.camunda.io/docs/next/self-managed/deployment/docker/docker#connectors), they must be available in the environment of the Docker container.
+The Connector Runtime fails to start if the request-body limit is negative or an enabled rate limit has an invalid permits-per-second value.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/components/connectors/connectors-configuration

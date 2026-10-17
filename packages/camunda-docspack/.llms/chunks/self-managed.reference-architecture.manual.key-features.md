@@ -5,7 +5,7 @@
 
 Other deployment options, such as containerized deployments or managed services, might offer more convenience and automation. However, VM based deployment gives you the flexibility to tailor the deployment to your exact needs, which can be beneficial for regulated or highly customized environments.
 
-For documentation on the Orchestration Cluster and Camunda Hub separation, refer to the [reference architecture overview](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#orchestration-cluster-vs-camunda-hub).
+For documentation on the Orchestration Cluster and Camunda Hub separation, refer to the [reference architecture overview](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#camunda-hub-vs-orchestration-cluster).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/reference-architecture/manual

@@ -16,11 +16,11 @@ Key changes of the dual-region setup:
 - `global.security.authentication.method: basic`
   - Uses Basic authentication for inter-component communication since Management Identity (Keycloak) is not deployed in dual-region.
 - `global.identity.auth.enabled: false`
-  - Management Identity is not currently supported. For more details, see the [limitations section](https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/dual-region#limitations) on the dual-region concept page.
+  - This reference uses Basic authentication instead of Management Identity. For more details, see [Management platform and Orchestration Cluster](https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/dual-region#management-platform-and-orchestration-cluster) on the dual-region concept page.
 - `identity.enabled: false`
-  - Management Identity is currently not supported.
+  - This reference doesn't deploy Management Identity.
 - `optimize.enabled: false`
-  - Optimize is not currently supported and depends on Management Identity.
+  - This reference doesn't deploy Optimize. You can run Optimize in a single region alongside a dual-region cluster, which requires OIDC authentication and Management Identity.
 - `orchestration.exporters.zeebe.enabled: false`
   - Disables the automatic Elasticsearch Exporter configuration in the Helm chart. This exporter was previously used with Optimize and earlier setups.
 - `orchestration.exporters.camunda.enabled: false`
@@ -44,7 +44,7 @@ Key changes of the dual-region setup:
   - `orchestration.clusterSize: 8`
   - `orchestration.partitionCount: 8`
   - `orchestration.replicationFactor: 4`
-- Elasticsearch is managed via the ECK operator and configured through a separate manifest (`elasticsearch-cluster-dual-region.yml`), not via the Helm chart's built-in Elasticsearch subchart. The Elasticsearch overlay (`camunda-elastic-values.yml`) disables the built-in Bitnami subchart and configures the **local** Elasticsearch connection (URL and authentication) for components that **read** data (orchestration secondary storage, Optimize). This is distinct from the cross-cluster Elasticsearch exporter URLs configured via environment variables above, which handle **writing** data across regions.
+- Elasticsearch is managed via the ECK operator and configured through a separate manifest (`elasticsearch-cluster-dual-region.yml`). The Elasticsearch overlay (`camunda-elastic-values.yml`) configures the **local** Elasticsearch connection (URL and authentication) for components that **read** data (orchestration secondary storage, Optimize). This is distinct from the cross-cluster Elasticsearch exporter URLs configured via environment variables above, which handle **writing** data across regions.
 
 ##### region0/camunda-values.yml
 

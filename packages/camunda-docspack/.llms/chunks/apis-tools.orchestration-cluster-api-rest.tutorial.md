@@ -9,8 +9,8 @@ In this tutorial, we'll step through examples to highlight the capabilities of t
 
 ## Prerequisites
 
-- If you haven't done so already, [create a cluster](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/create-cluster).
-- Upon cluster creation, [create your first client](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-api-clients#create-a-client). Ensure you check the `Orchestration Cluster API` client scope box.
+- If you haven't done so already, [create a cluster](https://docs.camunda.io/docs/next/components/saas/clusters/create-cluster).
+- Upon cluster creation, [create your first client](https://docs.camunda.io/docs/next/components/saas/clusters/manage-api-clients#create-a-client). Ensure you check the `Orchestration Cluster API` client scope box.
 
 **Note**
 Make sure you keep the generated client credentials in a safe place. The **Client secret** will not be shown again. For your convenience, you can download the client information to your computer.

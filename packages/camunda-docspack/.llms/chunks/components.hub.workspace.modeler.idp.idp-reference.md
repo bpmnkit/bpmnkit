@@ -24,7 +24,7 @@ The document extraction template integrates with Camunda document handling conne
 
 **Note**
 
-- You may encounter errors during extraction and validation if you have not added your Amazon AWS IAM account `access key` and `secret key` as a [connector secret](https://docs.camunda.io/docs/next/components/hub/organization/manage-clusters/manage-secrets) to your environment's cluster. See [configuring IDP](https://docs.camunda.io/docs/next/components/hub/workspace/modeler/idp/idp-configuration).
+- You may encounter errors during extraction and validation if you have not added your Amazon AWS IAM account `access key` and `secret key` as a [connector secret](https://docs.camunda.io/docs/next/components/saas/clusters/manage-secrets) to your environment's cluster. See [configuring IDP](https://docs.camunda.io/docs/next/components/hub/workspace/modeler/idp/idp-configuration).
 
 ### Document storage {#storage}
 

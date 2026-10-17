@@ -2,7 +2,7 @@
 
 Overview of the Camunda 8 container deployment reference architecture.
 
-With container-based deployments, you can run the [Camunda 8 Orchestration Cluster](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#orchestration-cluster-vs-camunda-hub) in a portable, consistent runtime with the benefits of containerization, without managing Kubernetes.
+With container-based deployments, you can run the [Camunda 8 Orchestration Cluster](https://docs.camunda.io/docs/next/self-managed/reference-architecture/reference-architecture#camunda-hub-vs-orchestration-cluster) in a portable, consistent runtime with the benefits of containerization, without managing Kubernetes.
 
 The following container deployment options are currently available:
 

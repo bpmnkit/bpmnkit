@@ -47,7 +47,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/api",
 		name: "@bpmnkit/api",
-		version: "1.0.1",
+		version: "1.0.2",
 		description: "TypeScript client for the Camunda 8 REST API — 180 typed operations, OAuth2, retries, and caching",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/api",
@@ -57,7 +57,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/ascii",
 		name: "@bpmnkit/ascii",
-		version: "1.0.1",
+		version: "1.0.2",
 		description: "Render BPMN diagrams as Unicode box-drawing ASCII art — perfect for terminals and docs",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/ascii",
@@ -67,7 +67,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/astro-shared",
 		name: "@bpmnkit/astro-shared",
-		version: "0.1.2",
+		version: "0.1.3",
 		description: "Shared CSS design tokens, page ground, and site metadata for BPMN Kit Astro apps",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/astro-shared",
@@ -77,7 +77,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/camunda-docspack",
 		name: "@bpmnkit/camunda-docspack",
-		version: "0.1.6",
+		version: "0.2.0",
 		description: "Camunda 8 documentation as an offline, version-locked docspack package for AI agents",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/camunda-docspack",
@@ -87,7 +87,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/canvas",
 		name: "@bpmnkit/canvas",
-		version: "1.0.1",
+		version: "1.0.2",
 		description: "Zero-dependency SVG BPMN viewer with pan/zoom, theming, and a plugin API",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/canvas",
@@ -97,7 +97,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "plugins-cli/casen-report",
 		name: "@bpmnkit/casen-report",
-		version: "0.1.12",
+		version: "0.1.13",
 		description: "Render HTML reports from Camunda 8 incident and SLA data",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/casen-report",
@@ -107,7 +107,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "plugins-cli/casen-worker-ai",
 		name: "@bpmnkit/casen-worker-ai",
-		version: "0.1.11",
+		version: "0.1.12",
 		description: "AI task worker plugin for casen — classify, summarize, extract, and decide using Claude",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/casen-worker-ai",
@@ -117,7 +117,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "plugins-cli/casen-worker-http",
 		name: "@bpmnkit/casen-worker-http",
-		version: "0.1.11",
+		version: "0.1.12",
 		description: "Example casen worker plugin — processes HTTP connector jobs using the JSONPlaceholder API",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/casen-worker-http",
@@ -127,7 +127,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "apps/cli",
 		name: "@bpmnkit/cli",
-		version: "1.3.0",
+		version: "1.3.1",
 		description: "Command-line interface for Camunda 8 — deploy, manage, and monitor processes from the terminal",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/cli",
@@ -137,7 +137,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/cli-sdk",
 		name: "@bpmnkit/cli-sdk",
-		version: "0.0.11",
+		version: "0.0.12",
 		description: "Plugin authoring SDK for the casen CLI",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/cli-sdk",
@@ -147,7 +147,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/connector-gen",
 		name: "@bpmnkit/connector-gen",
-		version: "1.1.0",
+		version: "1.1.2",
 		description: "Generate Camunda REST connector element templates from OpenAPI/Swagger specs",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/connector-gen",
@@ -157,7 +157,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/connectors",
 		name: "@bpmnkit/connectors",
-		version: "1.3.0",
+		version: "1.3.1",
 		description: "Camunda 8 out-of-the-box connector catalog and deterministic element-template application for @bpmnkit/core",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/connectors",
@@ -167,7 +167,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/core",
 		name: "@bpmnkit/core",
-		version: "1.4.0",
+		version: "1.5.0",
 		description: "TypeScript-first BPMN 2.0 SDK — parse, build, layout, and optimize diagrams",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/core",
@@ -177,7 +177,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/create-casen-plugin",
 		name: "@bpmnkit/create-casen-plugin",
-		version: "0.0.11",
+		version: "0.0.12",
 		description: "Scaffold a new casen CLI plugin in seconds",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/create-casen-plugin",
@@ -187,7 +187,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/docspack",
 		name: "@bpmnkit/docspack",
-		version: "1.1.0",
+		version: "1.2.0",
 		description: "BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/docspack",
@@ -197,7 +197,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/editor",
 		name: "@bpmnkit/editor",
-		version: "1.4.0",
+		version: "1.4.1",
 		description: "Full-featured interactive BPMN editor with undo/redo, HUD, and side-dock UI",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/editor",
@@ -207,7 +207,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/engine",
 		name: "@bpmnkit/engine",
-		version: "1.2.0",
+		version: "1.2.1",
 		description: "Lightweight BPMN 2.0 process simulator for tests and demos in browsers and Node.js — zero dependencies",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/engine",
@@ -217,7 +217,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/feel",
 		name: "@bpmnkit/feel",
-		version: "1.1.0",
+		version: "1.1.1",
 		description: "FEEL (Friendly Enough Expression Language) parser, evaluator, formatter and highlighter — 94% DMN TCK conformance",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/feel",
@@ -227,7 +227,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/flow",
 		name: "@bpmnkit/flow",
-		version: "0.2.0",
+		version: "0.2.1",
 		description: "Code-first durable flows — one TypeScript definition yields the BPMN, the job types, the message correlation and the worker",
 		tier: "experimental",
 		npm: "https://www.npmjs.com/package/@bpmnkit/flow",
@@ -237,7 +237,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/markdown",
 		name: "@bpmnkit/markdown",
-		version: "0.1.0",
+		version: "0.1.1",
 		description: "Real BPMN diagrams in Markdown — render bpmn and bpmn-compact code blocks to inline, themeable, accessible SVG",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/markdown",
@@ -247,7 +247,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/operate",
 		name: "@bpmnkit/operate",
-		version: "0.2.0",
+		version: "0.2.1",
 		description: "Lightweight monitoring and operations UI for Camunda 8 dev clusters, C8 Run and SaaS trials",
 		tier: "experimental",
 		npm: "https://www.npmjs.com/package/@bpmnkit/operate",
@@ -257,7 +257,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/patterns",
 		name: "@bpmnkit/patterns",
-		version: "0.1.0",
+		version: "0.1.1",
 		description: "Domain process patterns for BPMNKit AIKit — compact BPMN templates and worker specs for common business processes",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/patterns",
@@ -267,7 +267,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/plugins",
 		name: "@bpmnkit/plugins",
-		version: "1.2.1",
+		version: "1.2.2",
 		description: "34 composable canvas plugins for BPMN editors and viewers — minimap, AI chat, process simulation, storage, and more",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/plugins",
@@ -277,7 +277,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/profiles",
 		name: "@bpmnkit/profiles",
-		version: "0.0.21",
+		version: "0.0.22",
 		description: "Shared auth, profile storage, and client factories for the BPMN Kit CLI and proxy server",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/profiles",
@@ -287,7 +287,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "apps/proxy",
 		name: "@bpmnkit/proxy",
-		version: "0.5.0",
+		version: "0.5.1",
 		description: "Local proxy server for BPMN Kit — AI bridge (SSE/MCP) and Camunda API proxy using stored CLI profiles",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/proxy",
@@ -297,7 +297,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "apps/reebe-wasm",
 		name: "@bpmnkit/reebe-wasm",
-		version: "0.1.8",
+		version: "0.1.9",
 		description: "The Reebe dev/test BPMN engine, compiled to WebAssembly — not for production",
 		tier: "experimental",
 		npm: "https://www.npmjs.com/package/@bpmnkit/reebe-wasm",
@@ -307,7 +307,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/ui",
 		name: "@bpmnkit/ui",
-		version: "0.3.1",
+		version: "0.3.2",
 		description: "Shared design tokens, theme management, and UI components for BPMN Kit packages",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/ui",
@@ -317,7 +317,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/user-tasks",
 		name: "@bpmnkit/user-tasks",
-		version: "0.1.2",
+		version: "0.1.3",
 		description: "Embeddable user task widget for Camunda 8 — form rendering, claim/complete actions, zero dependencies",
 		tier: "experimental",
 		npm: "https://www.npmjs.com/package/@bpmnkit/user-tasks",
@@ -327,7 +327,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/worker-client",
 		name: "@bpmnkit/worker-client",
-		version: "0.2.0",
+		version: "0.2.1",
 		description: "Thin Zeebe REST client for standalone workers — no BPMNKit SDK required at runtime",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/worker-client",
@@ -352,7 +352,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/vscode",
 		name: "BPMN Kit for VS Code",
-		version: "0.5.4",
+		version: "0.5.6",
 		description: "View, edit, lint, diff and simulate BPMN, DMN and Forms in VS Code",
 		tier: "tools",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/vscode",
@@ -361,7 +361,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/drop",
 		name: "Drop",
-		version: "0.4.0",
+		version: "0.4.3",
 		description: "Share a BPMN, DMN or Form file as a link at bpmnkit.com/drop",
 		tier: "tools",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/drop",
@@ -379,7 +379,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/studio",
 		name: "Studio",
-		version: "0.2.1",
+		version: "0.2.3",
 		description: "Browser workspace for models, a local WASM engine and cluster monitoring",
 		tier: "experimental",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/studio",
@@ -388,7 +388,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/desktop",
 		name: "Desktop app",
-		version: "0.1.47",
+		version: "0.1.49",
 		description: "Tauri build of the editor for Windows, macOS and Linux",
 		tier: "experimental",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/desktop",
