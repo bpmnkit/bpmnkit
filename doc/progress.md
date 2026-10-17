@@ -6,6 +6,12 @@
   REST connector's `ignoreNullValues` on a GET) instead of dropping it silently; the problem names
   the condition.
 
+- `packages/core/tests/fixtures/bakeoff/`: the bake-off spec (MIT, attributed), `build.ts`
+  (`buildAiAgentChat()`: one builder chain plus one `applyTemplates` call, no problems) and the
+  committed `expected.bpmn` / `expected.txt`. `tests/bakeoff-ai-agent-chat.test.ts` asserts each
+  spec line on the parsed export; `packages/ascii/tests/bakeoff.test.ts` pins the ASCII render.
+  Core's `typecheck` now also runs `tsconfig.test.json`, which covers these two test files.
+
 ## 2026-10-17 — Auto layout: tool grid and annotation side hints
 
 - `AdHocSubProcessOptions.toolGrid: { columns?, fill?: "row" | "column" }` shapes the grid the
