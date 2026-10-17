@@ -1,5 +1,15 @@
 # Progress
 
+## 2026-10-17 — Connectors: `applyTemplates` with version pinning and key suggestions
+
+- `applyTemplates(definitions, [{ elementId, template, values }])` in `@bpmnkit/core/connectors`
+  (re-exported by `@bpmnkit/connectors`) applies several templates in-process through
+  `applyTemplateToElement`. `template` is an id, `id@version`, an alias or a template object;
+  numbers and booleans are stringified; every problem carries its `elementId`. A key that is not a
+  property id (`retries`) gets a `suggestion` (`retryCount`) from the property ids and binding
+  names. A version the catalogue does not hold is a problem naming the available one. `levenshtein`
+  in `variable-flow.ts` is now exported for it.
+
 ## 2026-10-17 — Builder: start-event forms and user-task mappings
 
 - `StartEventOptions.formId` emits `zeebe:formDefinition` on a start event; `UserTaskOptions`

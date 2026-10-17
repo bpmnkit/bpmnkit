@@ -1,5 +1,11 @@
 # Features
 
+## `applyTemplates` configures connectors in-process (2026-10-17)
+
+- `applyTemplates(definitions, entries)` applies element templates by id, `id@version` or alias to
+  elements anywhere in a model, including inside ad-hoc sub-processes, and answers a wrong key
+  with the property id it probably meant (`retries` -> `retryCount`).
+
 ## Branch flows take a label and an explicit id (2026-10-17)
 
 - `branch(id, b => b.label("Yes").flowId("Flow_Yes"))` names the branch's first flow and fixes its

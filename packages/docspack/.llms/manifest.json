@@ -4501,6 +4501,26 @@
 			]
 		},
 		{
+			"id": "packages.connectors.applying-several-templates-by-name-applytemplates",
+			"file": "chunks/packages.connectors.applying-several-templates-by-name-applytemplates.md",
+			"tokens": 426,
+			"tags": [
+				"packages",
+				"connectors",
+				"applying",
+				"several",
+				"templates",
+				"name",
+				"applytemplates"
+			],
+			"entities": [
+				"applyTemplates",
+				"applyTemplateToElement",
+				"retryCount",
+				"retryBackoff"
+			]
+		},
+		{
 			"id": "packages.connectors.workspace-templates",
 			"file": "chunks/packages.connectors.workspace-templates.md",
 			"tokens": 710,
@@ -4543,7 +4563,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 635,
+			"tokens": 667,
 			"tags": [
 				"packages",
 				"connectors",
