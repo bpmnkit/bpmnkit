@@ -1,49 +1,23 @@
 # Camunda 8 Deployment — Handling Jobs
 
-Register a long-poll job worker to process service tasks:
+Service tasks wait for a job worker. [`@bpmnkit/worker-client`](https://www.npmjs.com/package/@bpmnkit/worker-client)
+long-polls for jobs. Set `ZEEBE_ADDRESS` to the cluster's REST address (`ZEEBE_REST_ADDRESS`
+from the credentials file, without `/v2`), plus `ZEEBE_CLIENT_ID` and `ZEEBE_CLIENT_SECRET`.
+`ZEEBE_TOKEN_URL` defaults to the SaaS token endpoint.
 
 ```typescript
-const subscription = await client.jobs.activateAndProcess({
-  type: "send-email",
-  maxJobsToActivate: 5,
-  timeout: 30_000,
-  worker: "email-service",
+import { createWorkerClient } from "@bpmnkit/worker-client";
 
-  handler: async (job) => {
-    const { to, subject, body } = job.variables;
+const worker = createWorkerClient({ workerName: "email-service" });
 
-    await sendEmail({ to, subject, body });
-
-    await client.jobs.complete({
-      jobKey: job.key,
-      variables: { sent: true, sentAt: new Date().toISOString() },
-    });
-  },
-});
-
-// Stop the worker
-subscription.close();
-```
-
-
-## Querying Instances
-
-```typescript
-// List running instances
-const instances = await client.process.listInstances({
-  bpmnProcessId: "invoice-approval",
-  state: "ACTIVE",
-});
-
-// Get a specific instance
-const instance = await client.process.getInstance({
-  processInstanceKey: "2251799813685249",
-});
-
-// Get variables
-const variables = await client.variables.list({
-  processInstanceKey: instance.key,
-});
+for await (const job of worker.poll("send-email")) {
+  try {
+    await sendEmail(job.variables);
+    await job.complete({ sent: true, sentAt: new Date().toISOString() });
+  } catch (err) {
+    await job.fail(err instanceof Error ? err.message : String(err), job.retries - 1);
+  }
+}
 ```
 
 ---

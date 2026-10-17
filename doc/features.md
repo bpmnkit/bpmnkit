@@ -1,5 +1,41 @@
 # Features
 
+## Executable-process recipe and `bpmnkit-docs` at the repo root (2026-10-17)
+
+- `npx bpmnkit-docs ask "set a form on a start event"` answers from a task-shaped recipe page,
+  and works from the repo root.
+
+## Auto layout takes a tool grid and annotation sides (2026-10-17)
+
+- `adHocSubProcess(id, tools, { toolGrid: { columns: 2, fill: "column" } })` lays the tools out in
+  a fixed number of columns, filled top to bottom or left to right.
+- `annotate(id, text, { side: "below" })` puts the annotation on the side asked for.
+
+## `applyTemplates` configures connectors in-process (2026-10-17)
+
+- `applyTemplates(definitions, entries)` applies element templates by id, `id@version` or alias to
+  elements anywhere in a model, including inside ad-hoc sub-processes, and answers a wrong key
+  with the property id it probably meant (`retries` -> `retryCount`).
+
+## `casen connector apply` and filtered `show` (2026-10-17)
+
+- `casen connector apply file.bpmn Call http --values call.json --set retryCount=5` configures an
+  element from the shell without quoting multi-line FEEL; a wrong key is reported with a suggestion.
+- `casen connector show <template> --filter timeout --condensed` prints one line per matching
+  property: key, type, default, required, condition.
+
+## Branch flows take a label and an explicit id (2026-10-17)
+
+- `branch(id, b => b.label("Yes").flowId("Flow_Yes"))` names the branch's first flow and fixes its
+  id, also before `connectTo()`. Generated ids for other flows do not change.
+
+## The builder sets a start-event form and user-task mappings (2026-10-17)
+
+- `startEvent(id, { formId })` puts a form on a start event, in the process, in a branch and in
+  an event sub-process.
+- `userTask(id, { ioMapping, taskHeaders, zeebeProperties, modelerTemplate })` takes the same
+  options as a service task.
+
 ## Camunda docspack covers the Modeler, the guides and the reference (2026-10-09)
 
 - **`@bpmnkit/camunda-docspack`** now also carries DMN, Camunda Forms, element templates, the
@@ -1831,7 +1867,8 @@ Workflows now start automatically without a "Run" click.
 - Any HTTP client can start a process instance; request body becomes process variables
 - Optional `WEBHOOK_TOKEN` env var for Bearer token protection
 
-**Timer trigger** (scan + schedule):
+**Timer trigger** (scan + schedule) — *removed 2026-10-09: the engines fire timer start
+events themselves, so the trigger started each instance twice*:
 - Parses `<timeDuration>`, `<timeDate>`, `<timeCycle>` from deployed BPMN timer start events
 - ISO 8601 duration/date/repeating-interval support (`PT1H`, `R/PT30M`, `2026-01-01T00:00:00Z`)
 - Persists last-fired timestamps to `~/.bpmnkit/timer-state.json`

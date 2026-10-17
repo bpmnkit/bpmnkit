@@ -177,13 +177,14 @@ See the [`@bpmnkit/editor`](packages/editor/README.md) and [`@bpmnkit/plugins`](
 npm install -g @bpmnkit/cli
 
 # Connect to your Camunda cluster
-casen profile add production
+casen profile import production ./camunda-credentials.sh
+casen profile use production
 
 # Deploy a process
-casen deploy order-process.bpmn
+casen deploy deploy order-process.bpmn --target camunda8
 
 # Monitor running instances
-casen instances list --state active
+casen pi list --filter '{"state":"ACTIVE"}'
 
 # Generate connector templates from any OpenAPI spec
 casen connector generate https://api.example.com/openapi.json --out ./templates/

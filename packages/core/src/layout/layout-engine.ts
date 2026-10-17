@@ -1,7 +1,7 @@
 import type { BpmnFlowElement, BpmnProcess, BpmnSequenceFlow } from "../bpmn/bpmn-model.js"
 import { gridLayoutFlowNodes } from "./grid/grid-engine.js"
 import { semanticLayoutProcess } from "./semantic/index.js"
-import type { LayoutResult } from "./types.js"
+import type { LayoutHints, LayoutResult } from "./types.js"
 
 /**
  * Which layout algorithm to run.
@@ -23,9 +23,11 @@ export function layoutProcess(
 	engine: LayoutEngine = "semantic",
 	/** Sub-processes the diagram draws collapsed; their contents get their own plane. */
 	collapsed?: ReadonlySet<string>,
+	/** Tool-grid hints; only the `semantic` engine packs tools into a grid, so `grid` ignores them. */
+	grids?: LayoutHints["grids"],
 ): LayoutResult {
 	if (engine === "grid") return gridLayoutFlowNodes(process.flowElements, process.sequenceFlows)
-	return semanticLayoutProcess(process, collapsed)
+	return semanticLayoutProcess(process, collapsed, grids)
 }
 
 /** Layout a set of flow nodes and sequence flows (used by ascii, proxy, compact). */

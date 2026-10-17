@@ -1,3 +1,5 @@
+import { readFile } from "node:fs/promises"
+import { basename, resolve } from "node:path"
 import type { CamundaClient } from "@bpmnkit/api"
 import type { ColumnDef, Command, FlagSpec, JsonFieldSpec, RunContext } from "../types.js"
 
@@ -213,6 +215,49 @@ export function makeCreateCmd(opts: {
 			} else {
 				ctx.output.ok(opts.successMsg ?? "Created successfully.")
 			}
+		},
+	}
+}
+
+/**
+ * Factory for a "create" command whose request is a multipart file upload (deployments,
+ * documents). Every positional argument is a file, sent under the form field the spec names.
+ */
+export function makeUploadCmd(opts: {
+	name: string
+	description: string
+	/** The multipart field the files go under, e.g. `resources`. */
+	field: string
+	/** The endpoint takes exactly one file. */
+	single?: boolean
+	upload: (client: CamundaClient, form: FormData) => Promise<unknown>
+}): Command {
+	return {
+		name: opts.name,
+		description: opts.description,
+		args: [
+			{
+				name: "file",
+				description: opts.single ? "File to upload" : "Files to upload",
+				required: true,
+			},
+		],
+		async run(ctx) {
+			const paths = ctx.positional
+			if (paths.length === 0) throw new Error("Missing required argument: <file>")
+			if (opts.single && paths.length > 1) {
+				throw new Error(`${opts.name} takes one file, got ${paths.length}`)
+			}
+			const form = new FormData()
+			for (const path of paths) {
+				const absPath = resolve(path)
+				const content = await readFile(absPath).catch(() => {
+					throw new Error(`Cannot read file: ${absPath}`)
+				})
+				form.append(opts.field, new Blob([content]), basename(absPath))
+			}
+			const client = await ctx.getClient()
+			ctx.output.printItem(await opts.upload(client, form))
 		},
 	}
 }

@@ -181,9 +181,15 @@ importers:
       '@biomejs/biome':
         specifier: ^1.9.4
         version: 1.9.4
+      '@bpmnkit/camunda-docspack':
+        specifier: workspace:*
+        version: link:packages/camunda-docspack
       '@bpmnkit/canvas':
         specifier: workspace:*
         version: link:packages/canvas
+      '@bpmnkit/docspack':
+        specifier: workspace:*
+        version: link:packages/docspack
       '@bpmnkit/editor':
         specifier: workspace:*
         version: link:packages/editor

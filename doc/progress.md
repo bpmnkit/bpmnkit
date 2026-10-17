@@ -1,5 +1,138 @@
 # Progress
 
+## 2026-10-17 — Lint: two `pattern` rules are warnings
+
+- `pattern/gateway-no-default-flow` and `pattern/subprocess-no-error-boundary` report warnings, not errors. Camunda's own AI Agent blueprint trips both and its lint gate flags neither, so `casen lint lint <file> --profile deploy` now reports 0 errors on a correct model. The recipe guide and the Claude plugin `agent` and `connect` skills and `references/agentic.md` say so.
+
+## 2026-10-17 — Phase B: `bpmnkit-docs` from the repo root, executable-process recipe
+
+- Claude plugin `agent` skill and `references/agentic.md` now target the AI Agent Sub-process v2 (`adHocSubProcess` + `applyTemplates`, job type `io.camunda.agenticai:aiagent:subprocess:2`), point at the recipe chunks, and carry a gate checklist (`--categories deploy,connector,agentic`, `renderBpmnAscii`, tests). The v1 job-worker agent stays as an "older Camunda" note, since the plan `aiAgent` step compiles only v1. The `connect` skill documents `casen connector apply` and `show --filter`.
+- The root `package.json` lists `@bpmnkit/docspack` and `@bpmnkit/camunda-docspack` as workspace
+  devDependencies, so `npx bpmnkit-docs list` and `npx docspack list` find both packs at the root.
+- New guide `guides/executable-camunda-process`: one question-headed section per task (start-event
+  form, user-task input mapping, gateway flow labels, element templates, template keys, AI Agent
+  sub-process, tool grid, deployability check). Linked from the core and connectors pages.
+- `packages/docspack/tests/recipe-ranking.test.ts` pins the top hit for six agent questions.
+- `casen connector apply <file.bpmn> <elementId> <template> [--values f.json] [--set k=v]... [--dry-run]`
+  wraps `applyTemplates` for file-based workflows (`--set` overrides `--values`; any problem exits 1
+  and leaves the file unchanged). `casen connector show --filter <text> --condensed` lists one line
+  per property (`key  type  default  required  when ...`). `parseArgs` keeps every occurrence of a
+  repeated flag, read with `flagAll`.
+- Phase B final-review fixes: the recipe's AI Agent snippet now sets the provider credential and model (verified by `packages/core/tests/connectors/recipe-values.test.ts`), its heading and tags make it the first `ask` hit with both packs installed (`--pack @bpmnkit/docspack` for builder questions); `connector show` documents `--filter`/`--condensed` and reports an empty filter; `connector apply` no longer echoes a `--set` value, rejects a bare `--values`, and writes atomically; skills, `connector.md` and the connectors reference corrected.
+
+## 2026-10-17 — Final review fixes (builder bake-off Phase A)
+
+- An explicit `flowId()` that repeats an element or flow id in another scope (a nested sub-process) now throws at `build()`; `applyTemplates` resolves aliases through `templateIdForAlias`, reports `http@` and unversioned templates clearly, and no longer adds a second problem for a refused entry; `GridHint` is exported; core docs cover start forms, user-task mappings, `label()`/`flowId()` and the v2 agent template.
+
+## 2026-10-17 — Bake-off acceptance fixture
+
+- `applyTemplates` reports a value whose property the template's `condition` switches off (the
+  REST connector's `ignoreNullValues` on a GET) instead of dropping it silently; the problem names
+  the condition.
+
+- `packages/core/tests/fixtures/bakeoff/`: the bake-off spec (MIT, attributed), `build.ts`
+  (`buildAiAgentChat()`: one builder chain plus one `applyTemplates` call, no problems) and the
+  committed `expected.bpmn` / `expected.txt`. `tests/bakeoff-ai-agent-chat.test.ts` asserts each
+  spec line on the parsed export; `packages/ascii/tests/bakeoff.test.ts` pins the ASCII render.
+  Core's `typecheck` now also runs `tsconfig.test.json`, which covers these two test files.
+
+## 2026-10-17 — Auto layout: tool grid and annotation side hints
+
+- `AdHocSubProcessOptions.toolGrid: { columns?, fill?: "row" | "column" }` shapes the grid the
+  semantic layout packs unconnected children into; `annotate(id, text, { side })` fixes an
+  annotation's side. The builder collects both as `LayoutHints` (shared through the nested
+  builders' root definitions) and passes them to `applyAutoLayout(defs, engine, hints)`; nothing
+  is written to the model. `layoutProcess` takes the grid hints as an optional fourth argument;
+  the `grid` engine ignores them. Without hints, layout output is unchanged.
+
+- `buildAiAgentSubProcess` returns `id` (the doc example always fell back to "Agent_1"); its docs
+  say it builds the v1 job-worker agent and point v2 (8.10) users to `applyTemplates`.
+
+## 2026-10-17 — Connectors: `applyTemplates` with version pinning and key suggestions
+
+- `applyTemplates(definitions, [{ elementId, template, values }])` in `@bpmnkit/core/connectors`
+  (re-exported by `@bpmnkit/connectors`) applies several templates in-process through
+  `applyTemplateToElement`. `template` is an id, `id@version`, an alias or a template object;
+  numbers and booleans are stringified; every problem carries its `elementId`. A key that is not a
+  property id (`retries`) gets a `suggestion` (`retryCount`) from the property ids and binding
+  names. A version the catalogue does not hold is a problem naming the available one. `levenshtein`
+  in `variable-flow.ts` is now exported for it.
+
+## 2026-10-17 — Builder: start-event forms and user-task mappings
+
+- `StartEventOptions.formId` emits `zeebe:formDefinition` on a start event; `UserTaskOptions`
+  gains `ioMapping`, `taskHeaders`, `zeebeProperties` and `modelerTemplate*`, same shapes as
+  `ServiceTaskOptions`. The branch and event-sub-process `startEvent` methods used to drop
+  `zeebeProperties` and `modelerTemplate*`; all three now share one factory.
+
+## 2026-10-17 — Builder: branch flow labels and explicit flow ids
+
+- `BranchBuilder.label(text)` names a branch's first flow (the branch id stays the default), and
+  `flowId(id)` sets its id; a clash with an element or another flow throws. Neither changes any
+  generated flow id: the stable-id discriminator still comes from the branch id.
+
+## 2026-10-17 — Agent BPMN bake-off: analysis and plan
+
+- **Analysis** (`doc/agent-bpmn-bakeoff-analysis.md`) of the external "AI Agent BPMN Bake-off",
+  where BPMN Kit passed the gate first time but was slowest (172 s) and most expensive ($0.77).
+  Root causes found in the code: the builder cannot set a start-event form, a user-task input
+  mapping, a flow label apart from the branch id, or an explicit flow id; template values went
+  through `c8ctl` and shell quoting although `applyTemplateToElement` exists; `bpmnkit-docs`
+  does not resolve from the repo root; drop's line DSL cannot express ad-hoc sub-processes,
+  forms, mappings or annotations, and drop never says whether its output is executable.
+- **Plan** (`docs/superpowers/plans/2026-10-17-agent-bpmn-bakeoff.md`): 15 tasks in four
+  phases — builder gaps, findability (docs, CLI, skill), drop DSL and readiness verdict, rerun.
+
+## 2026-10-09 — XML endpoints typed, proxy timer trigger removed, file-watch lookup fixed
+
+- **XML endpoints.** The API generator now reads `text/*` responses: `getProcessDefinitionXML`,
+  `getDecisionDefinitionXML` and `getDecisionRequirementsXML` send `Accept: text/xml`, read the
+  body as text and return `string` (`string | undefined` for process definitions, which answer
+  204 when there is no XML). Before, they were typed `Promise<void>` and the body went through
+  `response.json()`, which throws on XML. The CLI's table output prints a string result as is,
+  so `casen pd get-x-m-l <key> > order.bpmn` writes the file.
+- **Timer trigger removed** (`apps/proxy/src/triggers/timer.ts`). Camunda 8 SaaS, Self-Managed
+  and Reebe fire timer start events themselves, so the proxy started a second instance for every
+  one it saw. It also never saw any: it fetched XML by process ID from an endpoint that takes the
+  definition key, and parsed the XML as JSON.
+- **File-watch trigger** had the same lookup, so it never found a `watchPath`. It now searches
+  with a valid query, keeps the latest version of each process, and reads the XML by key as text.
+- **Proxy operate stream.** The `as AnyQuery` casts and the `items()`/`total()` helpers are gone;
+  the search queries and results are typed. An unknown `state` filter from the URL is ignored
+  instead of being sent to the engine.
+- **Blog.** "Connect to Camunda 8 from Node.js" used `client.process.deploy` and the Console
+  API URL; it now uses the real API.
+
+## 2026-10-09 — Camunda SaaS path fixed; fast-start proposal
+
+- `doc/fast-start-proposal.md`: why n8n's first hour works, what Camunda 8 SaaS lacks for it,
+  and a four-phase plan for building on BPMN Kit and running on SaaS in ten minutes. Phase 0
+  is done:
+  - **Doubled `/v2`.** Profiles store the base URL with `/v2`. The CLI SaaS deploy
+    (`apps/cli/src/commands/deploy.ts`), the proxy worker daemon, webhook, timer and
+    file-watch triggers, run-history re-runs, the MCP deploy and the VS Code deploy added it
+    again. `clusterApiUrl()` in `@bpmnkit/profiles` joins the URL for all of them, with or
+    without `/v2` on the base.
+  - **Multipart bodies dropped.** The API generator read only `application/json` request
+    bodies, so `createDeployment`, `createDocument` and `createDocuments` sent nothing. They
+    now take `FormData`, `HttpClient` passes FormData through with fetch's own multipart
+    Content-Type, and the generated CLI commands take file arguments (`makeUploadCmd`).
+  - **`allOf` with its own `properties`.** The generator dropped a schema's own properties
+    when it also had `allOf`, and read only the direct properties of each member. So every
+    search query lacked `filter` and `sort`, every search result lacked `items`, and
+    `ProcessInstanceFilter` lacked `state`. `allOfMembers()` flattens nested `allOf` and counts
+    the schema's own properties as one more member.
+  - **Docs.** `getting-started/quick-start.md`, `guides/deployment.md`, `packages/api.md` and
+    the profile section of `cli/casen.md` used methods that do not exist
+    (`client.process.deploy`, `client.jobs.activateAndProcess`, `casen profile add`) and the
+    Console API URL as a cluster URL. Every TypeScript snippet now type-checks against the
+    built packages. The docspack is rebuilt.
+  - **READMEs and the CLI page.** The root and CLI READMEs (`scripts/generate-readmes.mjs`) and
+    `apps/landing/src/pages/cli.astro` listed commands the CLI does not have:
+    `casen profile add`, `profile remove`, `casen deploy <file>`, `casen instances`,
+    `casen processes`, `casen incidents` and `casen jobs`. Each was run against the built CLI,
+    and the real commands replace them.
+
 ## 2026-10-13 — docspack 1.5 repo recipe and a leaner CLAUDE.md
 
 - `docspack` dev dependency bumped to `^1.5.0`; `docspack agent install --recipe repo` added the

@@ -197,7 +197,7 @@ Resource
 
 | Command | Args | Flags | Description |
 |---------|------|-------|-------------|
-| `create-deployment` |  |  | Deploy resources |
+| `create-deployment` | `<file...>` |  | Deploy resources |
 | `get` | `<resourceKey>` |  | Get resource |
 | `get-content` | `<resourceKey>` |  | Get resource content |
 | `delete` | `<resourceKey>` | `--data` | Delete resource |
@@ -210,8 +210,8 @@ Document
 
 | Command | Args | Flags | Description |
 |---------|------|-------|-------------|
-| `create` |  |  | Upload document |
-| `create-2` |  |  | Upload multiple documents |
+| `create` | `<file>` |  | Upload document |
+| `create-2` | `<file...>` |  | Upload multiple documents |
 | `get` | `<documentId>` |  | Download document |
 | `delete` | `<documentId>` |  | Delete document |
 | `create-link` | `<documentId>` | `--data` | Create document link |

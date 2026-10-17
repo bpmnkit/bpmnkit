@@ -16,6 +16,7 @@ a real service), and **generate** brand-new connector element templates from Ope
 casen connector
 ├── search      — find a bundled OOTB connector template by name/keyword
 ├── show        — show a bundled template's required/optional inputs
+├── apply       — apply a template to an element of a .bpmn file, in place
 ├── cards       — one card per operation: only the inputs it needs, for a request
 ├── api         — real endpoints of an HTTP API, from the offline API index, for the REST connector
 ├── generate    — generate new templates from an OpenAPI spec file or catalog entry
@@ -48,6 +49,14 @@ Required inputs:
   ...
 ```
 
+Large templates have dozens of inputs. `--filter <text>` keeps the ones whose key or label contains
+the text, and `--condensed` prints one line each (`key  type  default  required  when …`, the last
+part naming the condition that switches the property on):
+
+```sh
+casen connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed
+```
+
 A field marked `(secret)` should be supplied as a `{{secrets.NAME}}` placeholder, never a literal
 credential. This is the same catalog `@bpmnkit/connectors`' `listConnectors()`/`searchConnectors()`
 expose programmatically.
@@ -65,6 +74,22 @@ github createIssue — GitHub Outbound Connector: Issues / Create an issue | own
 `*` marks a required input. A `mode=default: a | b(…)` part is a choice inside the operation, such
 as an authentication type, with the required inputs each choice adds. Retries, timeouts, TLS and
 other plumbing are left out unless you pass `--advanced`; `-o json` prints the cards as data.
+
+## Apply a template to a file
+
+`apply` configures one element of an existing `.bpmn` file with a template, using the same keys
+`show --condensed` prints. Values come from a JSON file (an object of key to string, number or
+boolean, best for multi-line or quoted FEEL), from repeated `--set key=value`, or both; `--set`
+wins. A value starting with `=` is FEEL, kept as written.
+
+```sh
+casen connector apply order.bpmn Call http --values call.json
+casen connector apply order.bpmn Call http --set method=GET --set retryCount=5 --dry-run
+```
+
+Properties you leave out keep the template default. Any problem, such as a misspelled key (with a
+suggestion), a missing required value or a value for a field that does not apply, exits non-zero
+and leaves the file unchanged. `--dry-run` checks the values without writing.
 
 ## Endpoints of an HTTP API
 

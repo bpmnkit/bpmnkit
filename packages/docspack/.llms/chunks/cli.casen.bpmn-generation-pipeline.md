@@ -17,6 +17,8 @@ casen synth synth delta.plan.json --merge order-process.bpmn --output order-proc
 # Find and inspect a Camunda connector template
 casen connector search slack
 casen connector show io.camunda.connectors.Slack.v1
+casen connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed
+casen connector apply order-process.bpmn Call http --values call.json   # --set k=v overrides the file
 
 # Deploy-readiness gate, then deploy
 # (a .bpmnlintrc in the diagram's folder or above is honoured; --no-bpmnlintrc ignores it)

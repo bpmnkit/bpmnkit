@@ -169,3 +169,49 @@ describe("unconnected children of an expanded sub-process (#221)", () => {
 		expect(get(top, "s2").y).toBeGreaterThan(get(top, "s1").y)
 	})
 })
+
+describe("toolGrid layout hint", () => {
+	beforeEach(() => resetIdCounter())
+
+	const spec = ["users", "recipes", "joke", "products"]
+
+	function buildWithGrid(toolGrid?: { columns?: number; fill?: "row" | "column" }) {
+		return Bpmn.createProcess("p")
+			.startEvent("s")
+			.adHocSubProcess("ah", tools(spec), toolGrid ? { toolGrid } : {})
+			.endEvent("e")
+			.withAutoLayout()
+			.build()
+	}
+
+	it("fills columns top to bottom in declaration order", () => {
+		const bounds = boundsOf(buildWithGrid({ columns: 2, fill: "column" }))
+		const [users, recipes, joke, products] = spec.map((id) => get(bounds, id))
+		expect(users?.x).toBe(recipes?.x)
+		expect(joke?.x).toBe(products?.x)
+		expect(users?.x).toBeLessThan(joke?.x as number)
+		expect(users?.y).toBe(joke?.y)
+		expect(recipes?.y).toBe(products?.y)
+		expect(users?.y).toBeLessThan(recipes?.y as number)
+		expectInsideAndApart(bounds, spec)
+	})
+
+	it("takes an explicit column count for row fill", () => {
+		const bounds = boundsOf(buildWithGrid({ columns: 4 }))
+		expect(new Set(spec.map((id) => get(bounds, id).y)).size).toBe(1)
+		expect(new Set(spec.map((id) => get(bounds, id).x)).size).toBe(4)
+		expectInsideAndApart(bounds, spec)
+	})
+
+	it("is not written to the model", () => {
+		const hinted = buildWithGrid({ columns: 2, fill: "column" })
+		resetIdCounter()
+		const plain = buildWithGrid()
+		expect(hinted.processes).toEqual(plain.processes)
+	})
+
+	it("rejects a column count that is not a positive integer", () => {
+		expect(() => buildWithGrid({ columns: 0 })).toThrow(/toolGrid\.columns/)
+		expect(() => buildWithGrid({ columns: 1.5 })).toThrow(/toolGrid\.columns/)
+	})
+})

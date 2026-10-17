@@ -18,3 +18,4 @@ export {
 } from "./profile.js"
 export { createAdminClientFromProfile, createClientFromProfile } from "./client.js"
 export { getAuthHeader } from "./token.js"
+export { clusterApiUrl } from "./url.js"

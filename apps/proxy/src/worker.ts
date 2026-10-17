@@ -4,7 +4,7 @@
  *
  * Activated on proxy startup; respects BPMNKIT_WORKERS=false to opt out.
  */
-import { getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
+import { clusterApiUrl, getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
 import { onJobComplete, onJobFail, onJobStart } from "./routes/run-history.js"
 import * as cliWorker from "./workers/cli.js"
 import * as emailWorker from "./workers/email.js"
@@ -87,7 +87,7 @@ async function activateJobs(
 	authHeader: string,
 	type: string,
 ): Promise<WorkerJob[]> {
-	const res = await fetch(`${baseUrl}/v2/jobs/activation`, {
+	const res = await fetch(clusterApiUrl(baseUrl, "/jobs/activation"), {
 		method: "POST",
 		headers: { authorization: authHeader, "content-type": "application/json" },
 		body: JSON.stringify({
@@ -115,7 +115,7 @@ async function completeJob(
 	jobKey: string,
 	variables: Record<string, unknown>,
 ): Promise<void> {
-	await fetch(`${baseUrl}/v2/jobs/${jobKey}/completion`, {
+	await fetch(clusterApiUrl(baseUrl, `/jobs/${jobKey}/completion`), {
 		method: "POST",
 		headers: { authorization: authHeader, "content-type": "application/json" },
 		body: JSON.stringify({ variables }),
@@ -129,7 +129,7 @@ async function failJob(
 	message: string,
 	retries: number,
 ): Promise<void> {
-	await fetch(`${baseUrl}/v2/jobs/${jobKey}/failure`, {
+	await fetch(clusterApiUrl(baseUrl, `/jobs/${jobKey}/failure`), {
 		method: "POST",
 		headers: { authorization: authHeader, "content-type": "application/json" },
 		body: JSON.stringify({ retries, errorMessage: message }),
