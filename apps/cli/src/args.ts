@@ -3,6 +3,8 @@ import type { ParsedFlags } from "./types.js"
 export interface ParseResult {
 	positional: string[]
 	flags: ParsedFlags
+	/** Every value of each flag given more than once, in order; `flags` keeps only the last. */
+	repeated: Record<string, string[]>
 }
 
 /**
@@ -26,9 +28,7 @@ export function parseArgs(argv: string[]): ParseResult {
 	const seen = new Map<string, string[]>()
 	const set = (name: string, value: string | number | boolean): void => {
 		flags[name] = value
-		const all = [...(seen.get(name) ?? []), String(value)]
-		seen.set(name, all)
-		if (all.length > 1) flags[`${name}[]`] = JSON.stringify(all)
+		seen.set(name, [...(seen.get(name) ?? []), String(value)])
 	}
 
 	while (i < argv.length) {
@@ -90,7 +90,9 @@ export function parseArgs(argv: string[]): ParseResult {
 		i++
 	}
 
-	return { positional, flags }
+	const repeated: Record<string, string[]> = {}
+	for (const [name, all] of seen) if (all.length > 1) repeated[name] = all
+	return { positional, flags, repeated }
 }
 
 /** Coerce string to number or boolean if it looks like one. */
@@ -113,11 +115,30 @@ export function flagStr(flags: ParsedFlags, name: string, short?: string): strin
  * where `flags.set` holds only the last. Empty when the flag is absent or a
  * bare switch.
  */
-export function flagAll(flags: ParsedFlags, name: string): string[] {
-	const repeated = flags[`${name}[]`]
-	if (typeof repeated === "string") return JSON.parse(repeated) as string[]
+export function flagAll(
+	flags: ParsedFlags,
+	repeated: Record<string, string[]> | undefined,
+	name: string,
+): string[] {
+	const all = repeated?.[name]
+	if (all) return all
 	const single = flags[name]
 	return typeof single === "boolean" || single === undefined ? [] : [String(single)]
+}
+
+const SECRET_FLAG_RE = /secret|password|token/i
+
+/**
+ * The flags as they may be written to the audit log. A flag named like a
+ * secret is masked, and so is `--set`: its values are `key=value` pairs
+ * whatever the flag is called, and a value can be a credential.
+ */
+export function redactFlagsForAudit(flags: ParsedFlags): ParsedFlags {
+	const out: ParsedFlags = {}
+	for (const [k, v] of Object.entries(flags)) {
+		out[k] = SECRET_FLAG_RE.test(k) || k === "set" ? "***" : v
+	}
+	return out
 }
 
 /** Resolve a flag value as a boolean. */

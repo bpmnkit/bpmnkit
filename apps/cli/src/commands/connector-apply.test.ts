@@ -31,9 +31,10 @@ async function run(
 	argv: string[],
 ): Promise<{ info: string[]; ok: string[] }> {
 	const captured = { info: [] as string[], ok: [] as string[] }
-	const { positional, flags } = parseArgs(argv)
+	const { positional, flags, repeated } = parseArgs(argv)
 	const ctx = {
 		positional,
+		repeated,
 		flags: { workspace: "/nonexistent-casen-workspace", ...flags },
 		output: {
 			format: "table",

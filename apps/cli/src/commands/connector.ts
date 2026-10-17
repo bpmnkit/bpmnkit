@@ -214,7 +214,7 @@ const showCmd: Command = {
 /** `key=value` pairs from repeated `--set`; a value starting with `=` is FEEL, kept as written. */
 function parseSetFlags(ctx: RunContext): Record<string, string> {
 	const values: Record<string, string> = {}
-	for (const pair of flagAll(ctx.flags, "set")) {
+	for (const pair of flagAll(ctx.flags, ctx.repeated, "set")) {
 		const eq = pair.indexOf("=")
 		if (eq < 1) throw new Error(`--set expects key=value, not "${pair}"`)
 		values[pair.slice(0, eq)] = pair.slice(eq + 1)

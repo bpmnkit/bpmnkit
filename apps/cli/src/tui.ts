@@ -12,6 +12,7 @@ import {
 	saveSettings,
 	useProfile,
 } from "@bpmnkit/profiles"
+import { redactFlagsForAudit } from "./args.js"
 import { type AskResult, runAskQuery } from "./commands/ask.js"
 import { type NpmSearchObject, pluginGroup, searchNpmRegistry } from "./commands/plugin.js"
 import { profileGroup } from "./commands/profile.js"
@@ -2163,11 +2164,7 @@ async function executeCommand(
 		return client
 	}
 	const ctx = buildContext(screen.cmd, screen.fields, writer, getClient, getAdminClient)
-	const SECRET_FLAG_RE = /secret|password|token/i
-	const auditFlags: Record<string, string | boolean | number> = {}
-	for (const [k, v] of Object.entries(ctx.flags)) {
-		auditFlags[k] = SECRET_FLAG_RE.test(k) ? "***" : v
-	}
+	const auditFlags = redactFlagsForAudit(ctx.flags)
 	try {
 		await screen.cmd.run(ctx)
 		appendAuditEntry(state.profile || "default", {

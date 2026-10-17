@@ -6,7 +6,7 @@ import {
 	getActiveName,
 	getProfile,
 } from "@bpmnkit/profiles"
-import { parseArgs } from "./args.js"
+import { parseArgs, redactFlagsForAudit } from "./args.js"
 import {
 	apiGroups,
 	commandGroups,
@@ -90,7 +90,7 @@ export async function run(argv: string[]): Promise<void> {
 	}
 
 	// ── Global parse ──────────────────────────────────────────────────────────
-	const { positional, flags } = parseArgs(argv)
+	const { positional, flags, repeated } = parseArgs(argv)
 
 	const noColor = flags["no-color"] === true
 	const colors = !noColor && process.stdout.isTTY === true && !process.env.NO_COLOR
@@ -281,11 +281,7 @@ export async function run(argv: string[]): Promise<void> {
 	const effectiveProfile = profileName ?? getActiveName() ?? "default"
 
 	// Redact secret-looking flag values before storing in audit log
-	const SECRET_FLAG_RE = /secret|password|token/i
-	const auditFlags: Record<string, string | boolean | number> = {}
-	for (const [k, v] of Object.entries(flags)) {
-		auditFlags[k] = SECRET_FLAG_RE.test(k) ? "***" : v
-	}
+	const auditFlags = redactFlagsForAudit(flags)
 	const auditPositional = positional.slice(2)
 
 	// Wrap client factories to capture the last raw HTTP response
@@ -310,6 +306,7 @@ export async function run(argv: string[]): Promise<void> {
 	const ctx: RunContext = {
 		positional: auditPositional,
 		flags,
+		repeated,
 		output,
 		getClient: instrumentedGetClient,
 		getAdminClient: instrumentedGetAdminClient,
