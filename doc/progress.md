@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-17 — Builder: start-event forms and user-task mappings
+
+- `StartEventOptions.formId` emits `zeebe:formDefinition` on a start event; `UserTaskOptions`
+  gains `ioMapping`, `taskHeaders`, `zeebeProperties` and `modelerTemplate*`, same shapes as
+  `ServiceTaskOptions`. The branch and event-sub-process `startEvent` methods used to drop
+  `zeebeProperties` and `modelerTemplate*`; all three now share one factory.
+
 ## 2026-10-17 — Agent BPMN bake-off: analysis and plan
 
 - **Analysis** (`doc/agent-bpmn-bakeoff-analysis.md`) of the external "AI Agent BPMN Bake-off",

@@ -1,5 +1,12 @@
 # Features
 
+## The builder sets a start-event form and user-task mappings (2026-10-17)
+
+- `startEvent(id, { formId })` puts a form on a start event, in the process, in a branch and in
+  an event sub-process.
+- `userTask(id, { ioMapping, taskHeaders, zeebeProperties, modelerTemplate })` takes the same
+  options as a service task.
+
 ## Camunda docspack covers Self-Managed, the web components and the clients (2026-10-09)
 
 - **`@bpmnkit/camunda-docspack`** now also carries Self-Managed (deployment, configuration,

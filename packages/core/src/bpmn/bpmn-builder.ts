@@ -72,6 +72,8 @@ export interface StartEventOptions extends ElementOptions {
 	timerCycle?: string
 	/** Message name — creates a message start event. */
 	messageName?: string
+	/** Form to show when the process is started (`zeebe:formDefinition formId`). */
+	formId?: string
 	/** Zeebe properties (e.g. webhook connector config). */
 	zeebeProperties?: Array<{ name: string; value: string }>
 	/** Zeebe modeler template ID. */
@@ -140,6 +142,21 @@ export interface UserTaskOptions {
 	formId?: string
 	/** Emit <zeebe:userTask /> to mark as a Camunda 8 native user task. */
 	zeebeUserTask?: boolean
+	/** Input/output variable mappings. */
+	ioMapping?: {
+		inputs?: Array<{ source: string; target: string }>
+		outputs?: Array<{ source: string; target: string }>
+	}
+	/** Task header key-value pairs. */
+	taskHeaders?: Record<string, string>
+	/** Zeebe property key-value pairs (`zeebe:properties`/`zeebe:property`). */
+	zeebeProperties?: Array<{ name: string; value: string }>
+	/** Zeebe modeler template ID. */
+	modelerTemplate?: string
+	/** Zeebe modeler template version. */
+	modelerTemplateVersion?: string
+	/** Zeebe modeler template icon (data URI). */
+	modelerTemplateIcon?: string
 	/** Mark this task as a compensation handler. */
 	isForCompensation?: boolean
 	/** Free-text documentation (`<bpmn:documentation>`). */
@@ -661,13 +678,11 @@ function recomputeIncomingOutgoing(elements: BpmnFlowElement[], flows: BpmnSeque
 	}
 }
 
-function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
-	const extensions: ZeebeExtensions = {
-		taskDefinition: {
-			type: options.taskType,
-			retries: options.retries,
-		},
-	}
+/** The ioMapping / taskHeaders / properties extensions shared by service and user tasks. */
+function buildMappingExtensions(
+	options: Pick<ServiceTaskOptions, "ioMapping" | "taskHeaders" | "zeebeProperties">,
+): ZeebeExtensions {
+	const extensions: ZeebeExtensions = {}
 
 	if (options.ioMapping) {
 		extensions.ioMapping = {
@@ -687,6 +702,18 @@ function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
 
 	if (options.zeebeProperties) {
 		extensions.properties = { properties: options.zeebeProperties }
+	}
+
+	return extensions
+}
+
+function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
+	const extensions: ZeebeExtensions = {
+		taskDefinition: {
+			type: options.taskType,
+			retries: options.retries,
+		},
+		...buildMappingExtensions(options),
 	}
 
 	if (options.agentDefinition) extensions.agentDefinition = options.agentDefinition
@@ -815,6 +842,37 @@ function makeScriptTaskEl(id: string, options: ScriptTaskOptions): BpmnFlowEleme
 	return el
 }
 
+function applyModelerTemplate(
+	el: BpmnFlowElement,
+	options: Pick<
+		StartEventOptions,
+		"modelerTemplate" | "modelerTemplateVersion" | "modelerTemplateIcon"
+	>,
+): void {
+	if (options.modelerTemplate)
+		el.unknownAttributes["zeebe:modelerTemplate"] = options.modelerTemplate
+	if (options.modelerTemplateVersion) {
+		el.unknownAttributes["zeebe:modelerTemplateVersion"] = options.modelerTemplateVersion
+	}
+	if (options.modelerTemplateIcon) {
+		el.unknownAttributes["zeebe:modelerTemplateIcon"] = options.modelerTemplateIcon
+	}
+}
+
+/** Start-event shell shared by all three builders; the caller adds event definitions. */
+function makeStartEventEl(id: string, options?: StartEventOptions): BpmnFlowElement {
+	const el = makeFlowElement(id, "startEvent", {
+		name: options?.name,
+		documentation: options?.documentation,
+		extensionElements: zeebeExtensionsToXmlElements({
+			...(options?.formId ? { formDefinition: { formId: options.formId } } : {}),
+			...(options?.zeebeProperties ? { properties: { properties: options.zeebeProperties } } : {}),
+		}),
+	})
+	if (options) applyModelerTemplate(el, options)
+	return el
+}
+
 function makeUserTaskEl(id: string, options?: UserTaskOptions): BpmnFlowElement {
 	const ext = zeebeExtensionsToXmlElements({
 		...(options?.zeebeUserTask ? { userTask: true } : {}),
@@ -834,12 +892,14 @@ function makeUserTaskEl(id: string, options?: UserTaskOptions): BpmnFlowElement 
 		...(options?.priority !== undefined
 			? { priorityDefinition: { priority: String(options.priority) } }
 			: {}),
+		...(options ? buildMappingExtensions(options) : {}),
 	})
 	const el = makeFlowElement(id, "userTask", {
 		name: options?.name,
 		documentation: options?.documentation,
 		extensionElements: ext,
 	})
+	if (options) applyModelerTemplate(el, options)
 	if (options?.isForCompensation) el.isForCompensation = true
 	return el
 }
@@ -1361,7 +1421,7 @@ export class BranchBuilder {
 	}
 
 	startEvent(id?: string, options?: StartEventOptions): this {
-		const el = makeFlowElement(id ?? generateId("StartEvent"), "startEvent", options)
+		const el = makeStartEventEl(id ?? generateId("StartEvent"), options)
 		if (el.type === "startEvent" && options) {
 			el.eventDefinitions = buildEventDefinitions(
 				options,
@@ -1800,7 +1860,7 @@ export class SubProcessContentBuilder {
 	// ---- Events ----
 
 	startEvent(id?: string, options?: StartEventOptions): this {
-		const el = makeFlowElement(id ?? generateId("StartEvent"), "startEvent", options)
+		const el = makeStartEventEl(id ?? generateId("StartEvent"), options)
 		if (el.type === "startEvent" && options) {
 			el.eventDefinitions = buildEventDefinitions(
 				options,
@@ -2547,20 +2607,7 @@ export class ProcessBuilder {
 
 	/** Add a start event. Start events never auto-connect from the previous element. */
 	startEvent(id?: string, options?: StartEventOptions): this {
-		const nodeId = id ?? generateId("StartEvent")
-		const extElements: XmlElement[] = []
-		if (options?.zeebeProperties) {
-			extElements.push(
-				...zeebeExtensionsToXmlElements({
-					properties: { properties: options.zeebeProperties },
-				}),
-			)
-		}
-		const element = makeFlowElement(nodeId, "startEvent", {
-			name: options?.name,
-			documentation: options?.documentation,
-			extensionElements: extElements,
-		})
+		const element = makeStartEventEl(id ?? generateId("StartEvent"), options)
 		if (element.type === "startEvent" && options) {
 			element.eventDefinitions = buildEventDefinitions(
 				options,
@@ -2570,15 +2617,6 @@ export class ProcessBuilder {
 				this.rootEscalations,
 			)
 			if (options.isInterrupting === false) element.isInterrupting = false
-		}
-		if (options?.modelerTemplate) {
-			element.unknownAttributes["zeebe:modelerTemplate"] = options.modelerTemplate
-		}
-		if (options?.modelerTemplateVersion) {
-			element.unknownAttributes["zeebe:modelerTemplateVersion"] = options.modelerTemplateVersion
-		}
-		if (options?.modelerTemplateIcon) {
-			element.unknownAttributes["zeebe:modelerTemplateIcon"] = options.modelerTemplateIcon
 		}
 		this.addFlowElement(element)
 		return this
