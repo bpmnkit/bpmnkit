@@ -1,5 +1,10 @@
 # Features
 
+## Executable-process recipe and `bpmnkit-docs` at the repo root (2026-10-17)
+
+- `npx bpmnkit-docs ask "set a form on a start event"` answers from a task-shaped recipe page,
+  and works from the repo root.
+
 ## Auto layout takes a tool grid and annotation sides (2026-10-17)
 
 - `adHocSubProcess(id, tools, { toolGrid: { columns: 2, fill: "column" } })` lays the tools out in

@@ -2580,6 +2580,159 @@
 			"entities": []
 		},
 		{
+			"id": "guides.executable-camunda-process",
+			"file": "chunks/guides.executable-camunda-process.md",
+			"tokens": 148,
+			"tags": [
+				"guides",
+				"executable-camunda-process"
+			],
+			"entities": [
+				"packages/core/tests/fixtures/bakeoff/build.ts"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-put-a-form-on-a-start-event",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-put-a-form-on-a-start-event.md",
+			"tokens": 209,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"put",
+				"form",
+				"start",
+				"event"
+			],
+			"entities": [
+				"formId",
+				"startEvent"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-map-a-user-task-s-input",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-map-a-user-task-s-input.md",
+			"tokens": 176,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"map",
+				"user",
+				"task",
+				"input"
+			],
+			"entities": [
+				"ioMapping",
+				"userTask"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-label-a-gateway-s-yes-and-no-flows",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-label-a-gateway-s-yes-and-no-flows.md",
+			"tokens": 193,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"label",
+				"gateway",
+				"yes",
+				"flows"
+			],
+			"entities": [
+				"flowId",
+				"connectTo"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-apply-an-element-template-connector-to-a-task",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-apply-an-element-template-connector-to-a-task.md",
+			"tokens": 220,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"apply",
+				"element",
+				"template",
+				"connector",
+				"task"
+			],
+			"entities": [
+				"applyTemplates",
+				"@bpmnkit/core/connectors"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.which-keys-does-a-template-take",
+			"file": "chunks/guides.executable-camunda-process.which-keys-does-a-template-take.md",
+			"tokens": 188,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"keys",
+				"template",
+				"take"
+			],
+			"entities": [
+				"retryCount",
+				"authentication.type",
+				"applyTemplates"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-8.10-v2",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-8.10-v2.md",
+			"tokens": 317,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"build",
+				"agent",
+				"sub-process",
+				"8.10"
+			],
+			"entities": [
+				"adHocSubProcess",
+				"resultVariable"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid.md",
+			"tokens": 169,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"lay",
+				"out",
+				"agent",
+				"tools",
+				"grid"
+			],
+			"entities": [
+				"toolGrid",
+				"adHocSubProcess"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests.md",
+			"tokens": 214,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"check",
+				"file",
+				"executable",
+				"before",
+				"tests"
+			],
+			"entities": [
+				"lintDiagram",
+				"renderBpmnAscii",
+				"@bpmnkit/ascii",
+				"expected.bpmn"
+			]
+		},
+		{
 			"id": "guides.gateways.exclusive-gateway-xor",
 			"file": "chunks/guides.gateways.exclusive-gateway-xor.md",
 			"tokens": 218,
@@ -4341,7 +4494,7 @@
 		{
 			"id": "packages.connectors.overview",
 			"file": "chunks/packages.connectors.overview.md",
-			"tokens": 256,
+			"tokens": 278,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4599,7 +4752,7 @@
 		{
 			"id": "packages.core.overview",
 			"file": "chunks/packages.core.overview.md",
-			"tokens": 136,
+			"tokens": 159,
 			"tags": [
 				"packages",
 				"core",

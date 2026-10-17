@@ -3,6 +3,8 @@
 `@bpmnkit/connectors` answers two questions about Camunda 8 connectors: **which ones exist**,
 and **what happens to a task when you apply one**.
 
+For applying a template inside a build script, see [Build an Executable Camunda Process](/docs/guides/executable-camunda-process).
+
 It bundles the 133 out-of-the-box Camunda connector templates as data, plus the
 [templates BPMN Kit maintains](#templates-maintained-by-bpmn-kit), so a catalog, a search box
 or an AI tool call can work offline. And it resolves a template plus a set of values into

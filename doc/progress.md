@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-10-17 — Phase B: `bpmnkit-docs` from the repo root, executable-process recipe
+
+- The root `package.json` lists `@bpmnkit/docspack` and `@bpmnkit/camunda-docspack` as workspace
+  devDependencies, so `npx bpmnkit-docs list` and `npx docspack list` find both packs at the root.
+- New guide `guides/executable-camunda-process`: one question-headed section per task (start-event
+  form, user-task input mapping, gateway flow labels, element templates, template keys, AI Agent
+  sub-process, tool grid, deployability check). Linked from the core and connectors pages.
+- `packages/docspack/tests/recipe-ranking.test.ts` pins the top hit for six agent questions.
+
 ## 2026-10-17 — Final review fixes (builder bake-off Phase A)
 
 - An explicit `flowId()` that repeats an element or flow id in another scope (a nested sub-process) now throws at `build()`; `applyTemplates` resolves aliases through `templateIdForAlias`, reports `http@` and unversioned templates clearly, and no longer adds a second problem for a refused entry; `GridHint` is exported; core docs cover start forms, user-task mappings, `label()`/`flowId()` and the v2 agent template.

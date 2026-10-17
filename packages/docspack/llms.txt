@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.2.0. 383 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.2.0. 392 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -187,6 +187,15 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Durable Agent Flows — 2. Start an engine and deploy](.llms/chunks/guides.durable-agent-flows.2.-start-an-engine-and-deploy.md) — 534 tokens
 - [Durable Agent Flows — 4. Run it](.llms/chunks/guides.durable-agent-flows.4.-run-it.md) — 276 tokens
 - [Durable Agent Flows — Durable waits](.llms/chunks/guides.durable-agent-flows.durable-waits.md) — 239 tokens
+- [Build an Executable Camunda Process](.llms/chunks/guides.executable-camunda-process.md) — 148 tokens
+- [Build an Executable Camunda Process — How do I put a form on a start event?](.llms/chunks/guides.executable-camunda-process.how-do-i-put-a-form-on-a-start-event.md) — 209 tokens
+- [Build an Executable Camunda Process — How do I map a user task's input?](.llms/chunks/guides.executable-camunda-process.how-do-i-map-a-user-task-s-input.md) — 176 tokens
+- [Build an Executable Camunda Process — How do I label a gateway's Yes and No flows?](.llms/chunks/guides.executable-camunda-process.how-do-i-label-a-gateway-s-yes-and-no-flows.md) — 193 tokens
+- [Build an Executable Camunda Process — How do I apply an element template (connector) to a task?](.llms/chunks/guides.executable-camunda-process.how-do-i-apply-an-element-template-connector-to-a-task.md) — 220 tokens
+- [Build an Executable Camunda Process — Which keys does a template take?](.llms/chunks/guides.executable-camunda-process.which-keys-does-a-template-take.md) — 188 tokens
+- [Build an Executable Camunda Process — How do I build an AI Agent sub-process (8.10, v2)?](.llms/chunks/guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-8.10-v2.md) — 317 tokens
+- [Build an Executable Camunda Process — How do I lay out the agent's tools in a grid?](.llms/chunks/guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid.md) — 169 tokens
+- [Build an Executable Camunda Process — How do I check the file is executable before tests?](.llms/chunks/guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests.md) — 214 tokens
 - [Gateways & Branching — Exclusive Gateway (XOR)](.llms/chunks/guides.gateways.exclusive-gateway-xor.md) — 218 tokens
 - [Gateways & Branching — Parallel Gateway (AND)](.llms/chunks/guides.gateways.parallel-gateway-and.md) — 143 tokens
 - [Gateways & Branching — Inclusive Gateway (OR)](.llms/chunks/guides.gateways.inclusive-gateway-or.md) — 208 tokens
@@ -303,7 +312,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/connector-gen — API index](.llms/chunks/packages.connector-gen.api-index.md) — 422 tokens
 - [@bpmnkit/connector-gen — Catalog reference](.llms/chunks/packages.connector-gen.catalog-reference.md) — 518 tokens
 - [@bpmnkit/connector-gen — `CatalogEntry` type](.llms/chunks/packages.connector-gen.catalogentry-type.md) — 86 tokens
-- [@bpmnkit/connectors — Overview](.llms/chunks/packages.connectors.overview.md) — 256 tokens
+- [@bpmnkit/connectors — Overview](.llms/chunks/packages.connectors.overview.md) — 278 tokens
 - [@bpmnkit/connectors — Installation](.llms/chunks/packages.connectors.installation.md) — 402 tokens
 - [@bpmnkit/connectors — Connector cards](.llms/chunks/packages.connectors.connector-cards.md) — 320 tokens
 - [@bpmnkit/connectors — Picking cards for a diagram](.llms/chunks/packages.connectors.picking-cards-for-a-diagram.md) — 548 tokens
@@ -317,7 +326,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/connectors — Validating a template](.llms/chunks/packages.connectors.validating-a-template.md) — 213 tokens
 - [@bpmnkit/connectors — API Reference](.llms/chunks/packages.connectors.api-reference.md) — 667 tokens
 - [@bpmnkit/connectors — Stability](.llms/chunks/packages.connectors.stability.md) — 137 tokens
-- [@bpmnkit/core — Overview](.llms/chunks/packages.core.overview.md) — 136 tokens
+- [@bpmnkit/core — Overview](.llms/chunks/packages.core.overview.md) — 159 tokens
 - [@bpmnkit/core — Installation](.llms/chunks/packages.core.installation.md) — 27 tokens
 - [@bpmnkit/core — Installation — `Bpmn.createProcess(id, name?)`](.llms/chunks/packages.core.installation-bpmn.createprocess-id-name.md) — 51 tokens
 - [@bpmnkit/core — Installation — `Bpmn.continueProcess(definitions, processId)`](.llms/chunks/packages.core.installation-bpmn.continueprocess-definitions-processid.md) — 517 tokens
