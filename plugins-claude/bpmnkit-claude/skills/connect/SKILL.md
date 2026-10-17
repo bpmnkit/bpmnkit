@@ -28,7 +28,7 @@ For every **required** input: derive a value from context (process variables via
 
 ## 3. Apply
 
-**Directly on the file** (preferred, and the only route for AI Agent v2 and HttpJson.v2 on 8.10):
+**Directly on the file** (preferred; the only route for AI Agent v2 on 8.10, and it works for any template, HttpJson.v2 included):
 
 ```sh
 casen connector apply <file>.bpmn <step-id> <template[@version]> --values values.json --dry-run

@@ -12,11 +12,12 @@ Camunda 8's **AI Agent Sub-process** lets a process delegate a step to an LLM th
 - Tool parameters the LLM supplies use `fromAi(toolCall.<param>, "<description>", ...)` inside the tool's template values (e.g. `queryParameters`); the first argument must reference `toolCall.<name>`.
 - Property keys are dotted template keys (`provider.type`, `data.systemPrompt.prompt`, `data.userPrompt.prompt`, `data.limits.maxModelCalls`, `resultVariable`, ...). Never guess them: `casen connector show <template> --filter <text> --condensed` lists them one per line.
 - CLI equivalent for an existing file: `casen connector apply <file> <elementId> <template[@v]> [--values file.json] [--set k=v]... [--dry-run]`.
-- Complete reference: `packages/core/tests/fixtures/bakeoff/build.ts` (a chat agent with four HttpJson tools in a 2 x 2 grid, start-event form, user-task input mapping and a labelled feedback loop). Recipe chunks, via `npx bpmnkit-docs ask <id>`:
-  - `guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-8.10-v2`
+- Recipe chunks, via `npx bpmnkit-docs ask <id> --pack @bpmnkit/docspack` (read these first):
+  - `guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-with-tools-in-a-bpmn-kit-build-script-8.10-v2`
   - `guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid`
   - `guides.executable-camunda-process.which-keys-does-a-template-take`
   - `guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests`
+- Complete reference script, in the bpmnkit repo: `packages/core/tests/fixtures/bakeoff/build.ts` (a chat agent with four HttpJson tools in a 2 x 2 grid, start-event form, user-task input mapping and a labelled feedback loop).
 
 Deploy gate: `casen lint lint <file> --categories deploy,connector,agentic` must be clean. `--profile deploy` also reports the `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary`, which Camunda's own gate does not flag on a spec-compliant model; fix them only if you want a clean profile.
 

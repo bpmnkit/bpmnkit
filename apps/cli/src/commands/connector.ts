@@ -1,5 +1,5 @@
-import { readFile, stat, writeFile } from "node:fs/promises"
-import { resolve } from "node:path"
+import { readFile, rename, rm, stat, writeFile } from "node:fs/promises"
+import { dirname, join, resolve } from "node:path"
 import { API_SERVICES, loadApiServices } from "@bpmnkit/connector-gen/api-index"
 import {
 	apiServicesIn,
@@ -146,11 +146,30 @@ const showCmd: Command = {
 			required: true,
 		},
 	],
-	flags: [WORKSPACE_FLAG, CONFIG_FOLDER_FLAG],
+	flags: [
+		WORKSPACE_FLAG,
+		CONFIG_FOLDER_FLAG,
+		{
+			name: "filter",
+			description: "Keep only the properties whose key or label contains this text",
+			type: "string",
+		},
+		{
+			name: "condensed",
+			description:
+				"One line per property: key, type, default, required and the condition that switches it on",
+			type: "boolean",
+		},
+	],
 	examples: [
 		{
 			description: "Show the Slack connector's inputs",
 			command: "casen connector show io.camunda.connectors.Slack.v1",
+		},
+		{
+			description: "Find the timeout properties, one line each",
+			command:
+				"casen connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed",
 		},
 	],
 	async run(ctx) {
@@ -190,6 +209,10 @@ const showCmd: Command = {
 
 		const required = summary.requiredInputs.filter(matches)
 		const optional = summary.optionalInputs.filter(matches)
+		if (filter !== undefined && required.length === 0 && optional.length === 0) {
+			ctx.output.info(`No inputs of ${summary.id} match "${String(ctx.flags.filter)}"`)
+			return
+		}
 
 		ctx.output.info(`${summary.name}  (${summary.id})`)
 		if (summary.taskType) ctx.output.info(`Task type: ${summary.taskType}`)
@@ -216,7 +239,7 @@ function parseSetFlags(ctx: RunContext): Record<string, string> {
 	const values: Record<string, string> = {}
 	for (const pair of flagAll(ctx.flags, ctx.repeated, "set")) {
 		const eq = pair.indexOf("=")
-		if (eq < 1) throw new Error(`--set expects key=value, not "${pair}"`)
+		if (eq < 1) throw new Error('--set expects key=value (an argument had no "=")')
 		values[pair.slice(0, eq)] = pair.slice(eq + 1)
 	}
 	return values
@@ -293,6 +316,7 @@ const applyCmd: Command = {
 		}
 		await includeWorkspaceTemplates(ctx)
 
+		if (ctx.flags.values === true) throw new Error("--values needs a file path")
 		const fromFile =
 			typeof ctx.flags.values === "string" ? await readValuesFile(ctx.flags.values) : {}
 		const values = { ...fromFile, ...parseSetFlags(ctx) }
@@ -312,7 +336,15 @@ const applyCmd: Command = {
 			ctx.output.ok(`Dry run: ${template} would apply to ${elementId} in ${file}`)
 			return
 		}
-		await writeFile(path, Bpmn.export(result.definitions), "utf-8")
+		// Write beside the target and rename, so an interrupted write cannot leave a half-written .bpmn.
+		const temp = join(dirname(path), `.${process.pid}.casen-apply.tmp`)
+		try {
+			await writeFile(temp, Bpmn.export(result.definitions), "utf-8")
+			await rename(temp, path)
+		} catch (err) {
+			await rm(temp, { force: true })
+			throw err
+		}
 		ctx.output.ok(`Applied ${template} to ${elementId} in ${file}`)
 	},
 }

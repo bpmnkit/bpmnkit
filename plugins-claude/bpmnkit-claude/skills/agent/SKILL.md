@@ -11,16 +11,16 @@ For Camunda 8.10 the agent is the **AI Agent Sub-process v2**: an `adHocSubProce
 
 ## 1. Look up the recipe
 
-Ask the docs, one narrow question at a time, instead of answering from memory:
+Ask the docs, one narrow question at a time, instead of answering from memory. For builder questions pass `--pack @bpmnkit/docspack`, so Camunda's own pages do not outrank the recipe:
 
 ```sh
-npx bpmnkit-docs ask guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-8.10-v2
+npx bpmnkit-docs ask guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-with-tools-in-a-bpmn-kit-build-script-8.10-v2
 npx bpmnkit-docs ask guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid
 npx bpmnkit-docs ask guides.executable-camunda-process.which-keys-does-a-template-take
 npx bpmnkit-docs ask guides.executable-camunda-process.how-do-i-apply-an-element-template-connector-to-a-task
 ```
 
-Related chunks: `...how-do-i-put-a-form-on-a-start-event`, `...how-do-i-map-a-user-task-s-input`, `...how-do-i-label-a-gateway-s-yes-and-no-flows` (all prefixed `guides.executable-camunda-process.`). A complete worked script is `packages/core/tests/fixtures/bakeoff/build.ts` — read it for the shape; don't copy it wholesale.
+Related chunks: `...how-do-i-put-a-form-on-a-start-event`, `...how-do-i-map-a-user-task-s-input`, `...how-do-i-label-a-gateway-s-yes-and-no-flows` (all prefixed `guides.executable-camunda-process.`). A complete worked script is `packages/core/tests/fixtures/bakeoff/build.ts` (in the bpmnkit repo) — read it for the shape; don't copy it wholesale.
 
 ## 2. Design the agent
 
@@ -56,8 +56,8 @@ The sub-process job type is `io.camunda.agenticai:aiagent:subprocess:2`.
 
 Run in order; do not skip ahead.
 
-1. `casen lint lint <file>.bpmn --profile deploy` — aim for 0 errors. Known caveat: BPMN Kit's `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary` report on a spec-compliant model even though Camunda's own gate does not flag it. Gate deployability on the engine categories instead: `casen lint lint <file>.bpmn --categories deploy,connector,agentic` must be clean; fix the two `pattern` findings only if you want a clean deploy profile.
-2. Render with `renderBpmnAscii` (`@bpmnkit/ascii`) and check the layout: tools in the grid, no flow into a tool, labels on gateway flows.
+1. `casen lint lint <file>.bpmn --profile deploy` — expect 0 errors outside `pattern`. Known caveat: BPMN Kit's `pattern` rules `gateway-no-default-flow` and `subprocess-no-error-boundary` report on a spec-compliant model even though Camunda's own gate does not flag it. Gate deployability on the engine categories instead: `casen lint lint <file>.bpmn --categories deploy,connector,agentic` must be clean; fix the two `pattern` findings only if you want a clean deploy profile.
+2. Render the file's XML with `renderBpmnAscii` (`@bpmnkit/ascii`) and check the layout: tools in the grid, no flow into a tool, labels on gateway flows.
 3. Run the tests (below).
 
 Ignore `data-flow` findings against the agent's own provider/model/prompt bindings — see "Known noisy finding" in `references/agentic.md`.

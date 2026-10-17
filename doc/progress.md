@@ -14,6 +14,7 @@
   and leaves the file unchanged). `casen connector show --filter <text> --condensed` lists one line
   per property (`key  type  default  required  when ...`). `parseArgs` keeps every occurrence of a
   repeated flag, read with `flagAll`.
+- Phase B final-review fixes: the recipe's AI Agent snippet now sets the provider credential and model (verified by `packages/core/tests/connectors/recipe-values.test.ts`), its heading and tags make it the first `ask` hit with both packs installed (`--pack @bpmnkit/docspack` for builder questions); `connector show` documents `--filter`/`--condensed` and reports an empty filter; `connector apply` no longer echoes a `--set` value, rejects a bare `--values`, and writes atomically; skills, `connector.md` and the connectors reference corrected.
 
 ## 2026-10-17 — Final review fixes (builder bake-off Phase A)
 

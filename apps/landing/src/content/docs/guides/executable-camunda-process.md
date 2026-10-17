@@ -10,6 +10,9 @@ that Camunda 8.10 has to run, not only draw. The snippets are cut from one refer
 `packages/core/tests/fixtures/bakeoff/build.ts` in the repository, which builds a chat agent
 with tools end to end. Run its output through the last section before you test anything.
 
+Ask for these sections with `npx bpmnkit-docs ask "<question>" --pack @bpmnkit/docspack`. Where the
+Camunda pack is installed too, the flag keeps its connector pages from outranking a builder answer.
+
 Every snippet assumes this setup:
 
 ```typescript
@@ -128,9 +131,11 @@ as `authentication.type`, and the dot is part of the key, not a path into an obj
 To configure a task in a `.bpmn` file from the command line, `casen connector apply order.bpmn Call http --values call.json`
 takes the same keys. Put multi-line or quoted FEEL in the JSON file rather than in a shell `--set`.
 
-## How do I build an AI Agent sub-process (8.10, v2)?
+## How do I build an AI Agent sub-process with tools in a BPMN Kit build script (8.10, v2)?
 
-Build an `adHocSubProcess` whose children are the tools, then apply the
+<!-- docspack: tags = ai, agent, tools, sub-process, ai-agent -->
+
+To build an AI agent sub-process with tools in a BPMN Kit script, make an `adHocSubProcess` whose children are the tools, then apply the
 `io.camunda.connectors.agenticai.ai-agent-subprocess.v2@1` template to it. Each tool is a
 service task inside the sub-process; its `documentation` is what the model reads to decide
 when to call it. Give each tool its own template, such as HTTP JSON.
@@ -150,12 +155,14 @@ when to call it. Give each tool its own template, such as HTTP JSON.
 ```
 
 ```typescript
-applyTemplates(model.build(), [
+const { definitions, problems } = applyTemplates(model.build(), [
 	{
 		elementId: "AI_Agent",
 		template: "io.camunda.connectors.agenticai.ai-agent-subprocess.v2@1",
 		values: {
 			"provider.type": "openai",
+			"provider.openai.backend.openai.apiKey": "=camunda.secrets.OPENAI_API_KEY",
+			"provider.openai.model.model": "gpt-4o",
 			"data.systemPrompt.prompt": SYSTEM_PROMPT,
 			"data.userPrompt.prompt": "=inputText",
 			"data.limits.maxModelCalls": 10,
@@ -163,10 +170,12 @@ applyTemplates(model.build(), [
 		},
 	},
 ])
+if (problems.length > 0)
+	throw new Error(problems.map((p) => `${p.elementId}: ${p.message}`).join("\n"))
 ```
 
 Omitted properties keep their defaults, so you can leave out everything you do not change.
-The agent needs a provider and a user prompt at least; the remaining defaults are workable for
+The agent needs a provider with its model and credentials, and a user prompt, at least; the remaining defaults are workable for
 a first run. The `resultVariable` is where the agent's answer lands, and a later task reads it
 as a FEEL variable, for example `=agent.responseText`. Pass the template's `values` on the
 sub-process itself, never on the tool tasks inside it.
@@ -190,7 +199,7 @@ edge it hangs from.
 ## How do I check the file is executable before tests?
 
 Lint the file before you write any test against it. `lintDiagram` is the library call, and
-`casen lint lint <file> --profile deploy` is the command; render the result with
+`casen lint lint <file> --profile deploy` is the command; render the file's XML with
 `renderBpmnAscii` from `@bpmnkit/ascii` to read the shape.
 
 ```sh

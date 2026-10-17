@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs"
+import { mkdtempSync, readFileSync, readdirSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { Bpmn } from "@bpmnkit/core"
@@ -131,9 +131,39 @@ describe("casen connector apply", () => {
 		expect(readFileSync(file, "utf-8")).toBe(PROCESS)
 	})
 
-	it("rejects a --set without an equals sign", async () => {
+	it("rejects a --set without an equals sign, without echoing the value", async () => {
 		const file = writeProcess()
-		await expect(run("apply", [file, "Call", "http", "--set", "oops"])).rejects.toThrow(/key=value/)
+		const err = await run("apply", [file, "Call", "http", "--set", "s3cr3t-token"]).catch(
+			(e: Error) => e,
+		)
+		expect(err).toBeInstanceOf(Error)
+		expect((err as Error).message).toMatch(/key=value/)
+		expect((err as Error).message).not.toContain("s3cr3t-token")
+	})
+
+	it.each([
+		["a bare --values", null, /--values needs a file path/],
+		["a JSON array", "[1]", /must hold a JSON object/],
+		["JSON null", "null", /must hold a JSON object/],
+		["a nested value", '{"url":{"a":1}}', /"url" must be a string, number or boolean/],
+	])("rejects %s", async (_name, content, message) => {
+		const file = writeProcess()
+		const values = join(dir, "v.json")
+		const argv = [file, "Call", "http", "--values"]
+		if (content === null) {
+			// A bare flag must be the last token, otherwise it would swallow the next one.
+		} else {
+			writeFileSync(values, content, "utf-8")
+			argv.push(values)
+		}
+		await expect(run("apply", argv)).rejects.toThrow(message)
+		expect(readFileSync(file, "utf-8")).toBe(PROCESS)
+	})
+
+	it("leaves no temp file behind after writing", async () => {
+		const file = writeProcess()
+		await run("apply", [file, "Call", "http", "--set", "method=GET", "--set", "url=https://x.test"])
+		expect(readdirSync(dir)).toEqual(["p.bpmn"])
 	})
 })
 
@@ -160,6 +190,24 @@ describe("casen connector show --filter / --condensed", () => {
 		const { info } = await run("show", [HTTP, "--filter", "RETRIES"])
 		expect(info.some((l) => l.includes("retryCount — Retries"))).toBe(true)
 		expect(info.some((l) => l.includes("connectionTimeoutInSeconds"))).toBe(false)
+	})
+
+	it("says so when nothing matches without --condensed", async () => {
+		const { info } = await run("show", [HTTP, "--filter", "zzzz"])
+		expect(info).toEqual(['No inputs of io.camunda.connectors.HttpJson.v2 match "zzzz"'])
+	})
+
+	it("documents --filter and --condensed in the command's flags and examples", () => {
+		const show = connectorGroup.commands.find((c) => c.name === "show")
+		expect(show?.flags?.map((f) => [f.name, f.type])).toEqual(
+			expect.arrayContaining([
+				["filter", "string"],
+				["condensed", "boolean"],
+			]),
+		)
+		expect(show?.examples?.map((e) => e.command)).toContain(
+			"casen connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed",
+		)
 	})
 
 	it("says so when nothing matches", async () => {

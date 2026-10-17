@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.2.0. 392 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.2.0. 393 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -24,8 +24,9 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [casen CLI — Local proxy](.llms/chunks/cli.casen.local-proxy.md) — 305 tokens
 - [casen CLI — Local proxy — Who can use the proxy](.llms/chunks/cli.casen.local-proxy-who-can-use-the-proxy.md) — 794 tokens
 - [casen CLI — MCP Server Mode](.llms/chunks/cli.casen.mcp-server-mode.md) — 204 tokens
-- [casen connector](.llms/chunks/cli.connector.md) — 224 tokens
-- [casen connector — Browse the bundled OOTB catalog](.llms/chunks/cli.connector.browse-the-bundled-ootb-catalog.md) — 416 tokens
+- [casen connector](.llms/chunks/cli.connector.md) — 245 tokens
+- [casen connector — Browse the bundled OOTB catalog](.llms/chunks/cli.connector.browse-the-bundled-ootb-catalog.md) — 491 tokens
+- [casen connector — Apply a template to a file](.llms/chunks/cli.connector.apply-a-template-to-a-file.md) — 202 tokens
 - [casen connector — Endpoints of an HTTP API](.llms/chunks/cli.connector.endpoints-of-an-http-api.md) — 181 tokens
 - [casen connector — Generate from the OpenAPI catalog](.llms/chunks/cli.connector.generate-from-the-openapi-catalog.md) — 174 tokens
 - [casen connector — All flags](.llms/chunks/cli.connector.all-flags.md) — 328 tokens
@@ -187,15 +188,15 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Durable Agent Flows — 2. Start an engine and deploy](.llms/chunks/guides.durable-agent-flows.2.-start-an-engine-and-deploy.md) — 534 tokens
 - [Durable Agent Flows — 4. Run it](.llms/chunks/guides.durable-agent-flows.4.-run-it.md) — 276 tokens
 - [Durable Agent Flows — Durable waits](.llms/chunks/guides.durable-agent-flows.durable-waits.md) — 239 tokens
-- [Build an Executable Camunda Process](.llms/chunks/guides.executable-camunda-process.md) — 148 tokens
+- [Build an Executable Camunda Process](.llms/chunks/guides.executable-camunda-process.md) — 190 tokens
 - [Build an Executable Camunda Process — How do I put a form on a start event?](.llms/chunks/guides.executable-camunda-process.how-do-i-put-a-form-on-a-start-event.md) — 209 tokens
 - [Build an Executable Camunda Process — How do I map a user task's input?](.llms/chunks/guides.executable-camunda-process.how-do-i-map-a-user-task-s-input.md) — 176 tokens
 - [Build an Executable Camunda Process — How do I label a gateway's Yes and No flows?](.llms/chunks/guides.executable-camunda-process.how-do-i-label-a-gateway-s-yes-and-no-flows.md) — 193 tokens
 - [Build an Executable Camunda Process — How do I apply an element template (connector) to a task?](.llms/chunks/guides.executable-camunda-process.how-do-i-apply-an-element-template-connector-to-a-task.md) — 220 tokens
 - [Build an Executable Camunda Process — Which keys does a template take?](.llms/chunks/guides.executable-camunda-process.which-keys-does-a-template-take.md) — 335 tokens
-- [Build an Executable Camunda Process — How do I build an AI Agent sub-process (8.10, v2)?](.llms/chunks/guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-8.10-v2.md) — 318 tokens
+- [Build an Executable Camunda Process — How do I build an AI Agent sub-process with tools in a BPMN Kit build script (8.10, v2)?](.llms/chunks/guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-with-tools-in-a-bpmn-kit-build-script-8.10-v2.md) — 396 tokens
 - [Build an Executable Camunda Process — How do I lay out the agent's tools in a grid?](.llms/chunks/guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid.md) — 169 tokens
-- [Build an Executable Camunda Process — How do I check the file is executable before tests?](.llms/chunks/guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests.md) — 214 tokens
+- [Build an Executable Camunda Process — How do I check the file is executable before tests?](.llms/chunks/guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests.md) — 216 tokens
 - [Gateways & Branching — Exclusive Gateway (XOR)](.llms/chunks/guides.gateways.exclusive-gateway-xor.md) — 218 tokens
 - [Gateways & Branching — Parallel Gateway (AND)](.llms/chunks/guides.gateways.parallel-gateway-and.md) — 143 tokens
 - [Gateways & Branching — Inclusive Gateway (OR)](.llms/chunks/guides.gateways.inclusive-gateway-or.md) — 208 tokens

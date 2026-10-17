@@ -15,6 +15,7 @@ import type { DocsIndex } from "../src/search.js"
  * the shipped pack, so a heading rewrite that costs a question its answer fails here.
  */
 const RECIPE = "guides.executable-camunda-process"
+const AGENT = `${RECIPE}.how-do-i-build-an-ai-agent-sub-process-with-tools-in-a-bpmn-kit-build-script-8.10-v2`
 const CASES: [question: string, chunkId: string][] = [
 	["set a form on a start event", `${RECIPE}.how-do-i-put-a-form-on-a-start-event`],
 	[
@@ -22,13 +23,14 @@ const CASES: [question: string, chunkId: string][] = [
 		`${RECIPE}.how-do-i-apply-an-element-template-connector-to-a-task`,
 	],
 	["user task input mapping", `${RECIPE}.how-do-i-map-a-user-task-s-input`],
-	["AI agent sub-process with tools", `${RECIPE}.how-do-i-build-an-ai-agent-sub-process-8.10-v2`],
+	["AI agent sub-process with tools", AGENT],
 	["flow label different from branch", `${RECIPE}.how-do-i-label-a-gateway-s-yes-and-no-flows`],
 	["lint before running tests", `${RECIPE}.how-do-i-check-the-file-is-executable-before-tests`],
 ]
 
 let root: string
 let index: DocsIndex
+let bothPacks: DocsIndex
 
 beforeAll(() => {
 	const here = dirname(fileURLToPath(import.meta.url))
@@ -50,7 +52,10 @@ beforeAll(() => {
 		version: "0.0.0",
 		documents: ["x"],
 	})
-	index = indexPacks([loadPack(root)])
+	const docs = loadPack(root)
+	index = indexPacks([docs])
+	// The root CLI indexes the shipped Camunda pack beside this one; its AI Agent chunks compete.
+	bothPacks = indexPacks([docs, loadPack(join(here, "../../camunda-docspack"))])
 })
 
 afterAll(() => rmSync(root, { recursive: true, force: true }))
@@ -59,5 +64,11 @@ describe("recipe ranking", () => {
 	it.each(CASES)("%s -> the recipe section that answers it", (question, chunkId) => {
 		const [top] = search(index, question, { limit: 1 })
 		expect(top?.chunkId.split("/").pop()).toBe(chunkId)
+	})
+
+	it("AI agent sub-process with tools -> the recipe section first, ahead of Camunda's own chunks", () => {
+		// `ask` shows the top 3 only; the recipe must lead them with both packs installed.
+		const top = search(bothPacks, "AI agent sub-process with tools", { limit: 3 })
+		expect(top[0]?.chunkId.split("/").pop()).toBe(AGENT)
 	})
 })

@@ -1,7 +1,7 @@
 # Build an Executable Camunda Process — How do I check the file is executable before tests?
 
 Lint the file before you write any test against it. `lintDiagram` is the library call, and
-`casen lint lint <file> --profile deploy` is the command; render the result with
+`casen lint lint <file> --profile deploy` is the command; render the file's XML with
 `renderBpmnAscii` from `@bpmnkit/ascii` to read the shape.
 
 ```sh

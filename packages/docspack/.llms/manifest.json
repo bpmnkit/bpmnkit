@@ -201,7 +201,7 @@
 		{
 			"id": "cli.connector",
 			"file": "chunks/cli.connector.md",
-			"tokens": 224,
+			"tokens": 245,
 			"tags": [
 				"cli",
 				"connector",
@@ -212,7 +212,7 @@
 		{
 			"id": "cli.connector.browse-the-bundled-ootb-catalog",
 			"file": "chunks/cli.connector.browse-the-bundled-ootb-catalog.md",
-			"tokens": 416,
+			"tokens": 491,
 			"tags": [
 				"cli",
 				"connector",
@@ -227,6 +227,19 @@
 				"listConnectors()",
 				"searchConnectors()"
 			]
+		},
+		{
+			"id": "cli.connector.apply-a-template-to-a-file",
+			"file": "chunks/cli.connector.apply-a-template-to-a-file.md",
+			"tokens": 202,
+			"tags": [
+				"cli",
+				"connector",
+				"apply",
+				"template",
+				"file"
+			],
+			"entities": []
 		},
 		{
 			"id": "cli.connector.endpoints-of-an-http-api",
@@ -2582,7 +2595,7 @@
 		{
 			"id": "guides.executable-camunda-process",
 			"file": "chunks/guides.executable-camunda-process.md",
-			"tokens": 148,
+			"tokens": 190,
 			"tags": [
 				"guides",
 				"executable-camunda-process"
@@ -2678,15 +2691,21 @@
 			]
 		},
 		{
-			"id": "guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-8.10-v2",
-			"file": "chunks/guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-8.10-v2.md",
-			"tokens": 318,
+			"id": "guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-with-tools-in-a-bpmn-kit-build-script-8.10-v2",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-with-tools-in-a-bpmn-kit-build-script-8.10-v2.md",
+			"tokens": 396,
 			"tags": [
+				"ai",
+				"agent",
+				"tools",
+				"sub-process",
+				"ai-agent",
 				"guides",
 				"executable-camunda-process",
 				"build",
-				"agent",
-				"sub-process",
+				"bpmn",
+				"kit",
+				"script",
 				"8.10"
 			],
 			"entities": [
@@ -2715,7 +2734,7 @@
 		{
 			"id": "guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests",
 			"file": "chunks/guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests.md",
-			"tokens": 214,
+			"tokens": 216,
 			"tags": [
 				"guides",
 				"executable-camunda-process",
