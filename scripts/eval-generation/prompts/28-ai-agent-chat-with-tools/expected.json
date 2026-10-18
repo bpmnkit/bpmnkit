@@ -29,5 +29,11 @@
 		"mustContainFlowNames": ["Yes", "No"],
 		"mustContainAnnotations": 3,
 		"mustBeReady": true
-	}
+	},
+	"knownPlanGaps": [
+		{ "assertion": "mustContainElementIds", "value": "Gateway_RunAgent" },
+		{ "assertion": "mustContainFormIds", "value": "ai-agent-chat-initial-request" },
+		{ "assertion": "mustContainInputTargets", "value": "responseText" },
+		{ "assertion": "mustContainAnnotations", "value": 3 }
+	]
 }
