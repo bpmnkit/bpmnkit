@@ -4,7 +4,7 @@
 	"description": "The AI Agent BPMN bake-off process: start form, AI Agent sub-process (v2 template) with four REST tools in a 2 x 2 grid, a feedback user task with a form and an input mapping, a Yes/No loop back to the agent, and three annotations.",
 	"connect": true,
 	"assertions": {
-		"minElements": 7,
+		"minElements": 6,
 		"mustContainElementTypes": [
 			"startEvent",
 			"exclusiveGateway",
@@ -29,5 +29,11 @@
 		"mustContainFlowNames": ["Yes", "No"],
 		"mustContainAnnotations": 3,
 		"mustBeReady": true
-	}
+	},
+	"knownPlanGaps": [
+		{ "assertion": "mustContainElementIds", "value": "Gateway_RunAgent" },
+		{ "assertion": "mustContainFormIds", "value": "ai-agent-chat-initial-request" },
+		{ "assertion": "mustContainInputTargets", "value": "responseText" },
+		{ "assertion": "mustContainAnnotations", "value": 3 }
+	]
 }

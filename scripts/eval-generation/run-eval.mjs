@@ -33,10 +33,11 @@
  *
  * A prompt whose expected.json asserts what the diagram says (form ids, input
  * targets, flow names, annotations, `mustBeReady`; see assertions.mjs) has them
- * checked on the compiled plan and reported as `assertions`. They are reported,
- * not gated on: a plan is a lossy view of a diagram (no start-event form, no
- * input mapping, no annotation, no loop back, the v1 AI Agent), so a miss there
- * is a gap in the plan format, not in the generated file.
+ * checked on the compiled plan and reported as `assertions`. A miss fails the run
+ * unless expected.json lists it in `knownPlanGaps`: a plan is a lossy view of a
+ * diagram (no start-event form, no input mapping, no annotation, no loop back, the
+ * v1 AI Agent), so some misses are gaps in the plan format, not in the generated
+ * file (see assertions.mjs).
  *
  * Output: scripts/eval-generation/eval-report.json + a markdown summary
  * printed to stdout (and written to eval-report.md).
@@ -48,7 +49,7 @@ import { tmpdir } from "node:os"
 import { dirname, join } from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
 
-import { hasSpecAssertions, scoreSpecAssertions } from "./assertions.mjs"
+import { hasSpecAssertions, specFailures, splitKnownGaps } from "./assertions.mjs"
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(HERE, "..", "..")
@@ -99,7 +100,7 @@ async function scoreCompiled(xml, assertions) {
 	const { readiness } = await import(
 		pathToFileURL(join(ROOT, "apps/drop/src/lib/readiness.ts")).href
 	)
-	return scoreSpecAssertions(Bpmn.parse(xml), assertions, readiness)
+	return specFailures(Bpmn.parse(xml), assertions, readiness)
 }
 
 // ── Plan-level pipeline ───────────────────────────────────────────────────────
@@ -160,10 +161,8 @@ async function runPlanLevel(promptDir, expected, reebeUp) {
 
 		if (hasSpecAssertions(expected.assertions ?? {})) {
 			try {
-				result.assertions = await scoreCompiled(
-					readFileSync(bpmnPath, "utf-8"),
-					expected.assertions,
-				)
+				const failures = await scoreCompiled(readFileSync(bpmnPath, "utf-8"), expected.assertions)
+				result.assertions = splitKnownGaps(failures, expected.knownPlanGaps)
 			} catch (err) {
 				result.errors.push(`assertions: ${err instanceof Error ? err.message : String(err)}`)
 			}
@@ -326,9 +325,23 @@ async function main() {
 			)
 			const a = entry.planLevel.assertions
 			if (a) {
+				for (const f of a.known)
+					console.log(`[plan-level] ${entry.id}: known plan-format gap: ${f.message}`)
+				for (const g of a.stale) {
+					console.log(
+						`[plan-level] ${entry.id}: stale known gap (no longer fails, remove it): ${g.assertion} ${JSON.stringify(g.value)}`,
+					)
+				}
+				for (const f of a.unexpected) {
+					console.log(`[plan-level] ${entry.id}: ASSERTION FAILED: ${f.message}`)
+				}
+				if (a.unexpected.length > 0) process.exitCode = 1
+			} else if (hasSpecAssertions(expected.assertions ?? {})) {
+				// The scorer itself threw (say, the build is missing): not a pass
 				console.log(
-					`[plan-level] ${entry.id}: spec assertions ${a.length === 0 ? "all hold" : `${a.length} failed (plan format gap, not gated): ${a.join("; ")}`}`,
+					`[plan-level] ${entry.id}: ASSERTIONS NOT SCORED: ${entry.planLevel.errors.join("; ")}`,
 				)
+				process.exitCode = 1
 			}
 		} else if (expected.expectClarification) {
 			entry.planLevel = { mode: "plan-level", skipped: "expects a clarifying question, not a plan" }
