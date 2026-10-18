@@ -183,7 +183,8 @@ describe("createDiagramLineFilter", () => {
 				parseProcessText(answer).diagram,
 			)
 		}
-	})
+		// Hundreds of recorded answers, each parsed twice: ~0.6 s alone, over 5 s on a busy CI runner.
+	}, 30_000)
 })
 
 describe("maxTokensFor", () => {
