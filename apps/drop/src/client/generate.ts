@@ -36,6 +36,7 @@ import {
 // Types only: the connect pass applies its answer on the server, so the page never loads the catalog.
 import { completes, draftGaps, gapChange } from "../lib/check.js"
 import type { ConnectEvent, ConnectResult } from "../lib/connect.js"
+import { dryRunVerdict } from "../lib/dry-run-verdict.js"
 import {
 	type GenerateEvent,
 	IMAGE_MAX_SIDE,
@@ -381,19 +382,9 @@ export function mountGenerator(): void {
 			const { check } = (await import(url)) as typeof DryRunModule
 			const outcome = await check(xml)
 			if (checking !== xml) return
-			const mocked =
-				outcome.connectors.length === 0
-					? ""
-					: ` · ${outcome.connectors.length} connector${outcome.connectors.length === 1 ? "" : "s"} mocked`
-			if (outcome.reachedEnd) {
-				const end = outcome.path.at(-1)
-				run.span.className = "ok"
-				run.span.textContent = `✓ runs to “${end ? nameOf(end) : "the end"}”${mocked}`
-			} else {
-				const at = outcome.stoppedAt[0] ?? outcome.path.at(-1)
-				run.span.className = "bad"
-				run.span.textContent = `✗ stops${at ? ` at “${nameOf(at)}”` : ""}${outcome.error ? `: ${outcome.error}` : ""}`
-			}
+			const verdict = dryRunVerdict(outcome, defs)
+			run.span.className = verdict.kind === "ok" ? "ok" : verdict.kind === "bad" ? "bad" : ""
+			run.span.textContent = verdict.text
 		} catch {
 			if (checking === xml) run.span.textContent = "could not run here"
 		}
@@ -763,6 +754,12 @@ export function mountGenerator(): void {
 		if (!outcome) {
 			setStatus(`${before}${note}`)
 			return
+		}
+		// A pass that worked after one that did not: the "not configured" note is stale
+		if (connectorsOff) {
+			if (outcome.connected.length > 0)
+				connectorsOff = false // redrawn below
+			else flagConnectorsOff(false)
 		}
 		if (outcome.connected.length > 0) {
 			connected.set(text, outcome.xml)
