@@ -22,6 +22,7 @@ import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connec
 import {
 	ALIASES,
 	KINDS,
+	NOTE_LINE,
 	type ProcessTextProblem,
 	TRIGGERS,
 	edgeLabel,
@@ -36,7 +37,6 @@ import {
  */
 export const FIXED_KINDS: Readonly<Record<string, BpmnElementType>> = {
 	sub: "subProcess",
-	adhoc: "adHocSubProcess",
 	transaction: "transaction",
 	complex: "complexGateway",
 }
@@ -90,6 +90,8 @@ export interface DeltaNode {
 	inputs?: Record<string, string>
 	/** Output mappings, from `out.<target>=`. */
 	outputs?: Record<string, string>
+	/** The ad-hoc sub-process the node lives in, from `inside=`. */
+	inside?: string
 	/** `nonint`: a non-interrupting boundary or start event. */
 	interrupting?: false
 	line: number
@@ -115,6 +117,8 @@ export interface ProcessDelta {
 	addressed: { item: number; ids: string[]; line: number }[]
 	/** `with` lines: connector configuration for a node, existing or new. */
 	connectors: ConnectorLine[]
+	/** `note` lines: a text annotation for a node, existing or new. */
+	notes: { id: string; text: string; line: number }[]
 	/** Lines, or parts of lines, that were left out. */
 	problems: ProcessTextProblem[]
 }
@@ -175,6 +179,7 @@ function readSpec(
 		else if (key === "job" && value) node.jobType = value
 		else if (key === "result" && value) node.resultVariable = value
 		else if (key === "form" && value) node.formId = value
+		else if (key === "inside" && value) node.inside = value
 		else if (key === "nonint" && value === undefined) node.interrupting = false
 		else problems.push({ line, message: `unknown attribute "${attr}" on "${id}"; ignored` })
 	}
@@ -196,6 +201,7 @@ export function parseProcessDelta(text: string): ProcessDelta {
 		removedFlows: [],
 		addressed: [],
 		connectors: [],
+		notes: [],
 		problems: [],
 	}
 	const declared = new Map<string, DeltaNode>()
@@ -310,6 +316,14 @@ export function parseProcessDelta(text: string): ProcessDelta {
 		if (CONNECTOR_LINE.test(line)) {
 			const connector = parseConnectorLine(line, n, delta.problems)
 			if (connector) delta.connectors.push(connector)
+			return
+		}
+		const note = NOTE_LINE.exec(line)
+		if (note) {
+			const text = (note[2] ?? "").trim()
+			if (text === "")
+				delta.problems.push({ line: n, message: `note ${note[1]}: has no text; ignored` })
+			else delta.notes.push({ id: note[1] as string, text, line: n })
 			return
 		}
 		// `- x` removes; `-> x` is an arrow a model wrote at the start of a line.

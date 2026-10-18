@@ -185,7 +185,8 @@ function buildLaneShapes(
 	})
 }
 
-function addAnnotationShapes(
+/** Also used by `expand`, which lays out one process without the pool handling above. */
+export function addAnnotationShapes(
 	process: BpmnProcess,
 	layoutNodes: LayoutNode[],
 	annLocalBounds: Map<string, Bounds>,

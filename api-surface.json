@@ -129,6 +129,7 @@
 			"CompactFlow": "type",
 			"CompactForm": "type",
 			"CompactFormField": "type",
+			"CompactNote": "type",
 			"CompactProcess": "type",
 			"CompactStream": "type",
 			"CompactStreamOptions": "type",

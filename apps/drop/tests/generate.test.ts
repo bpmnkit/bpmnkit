@@ -240,3 +240,30 @@ describe("createSseReader", () => {
 		expect(reader.push("event: ping\r\ndata: [DONE]\r\n")).toEqual(["[DONE]"])
 	})
 })
+
+describe("createDiagramLineFilter — ad-hoc sub-processes and notes", () => {
+	it("passes adhoc, inside= and note lines, cut anywhere", () => {
+		const answer = [
+			"Here it is:",
+			"# Agent | camunda=8.10",
+			"s[start Go] > agent[adhoc AI Agent] > e[end Done]",
+			"users[service Find users | inside=agent]",
+			"note agent: Runs tools, then answers [see docs]: yes >",
+			"note s: Starts here",
+			"Hope this helps!",
+		].join("\n")
+		const filter = createDiagramLineFilter()
+		let out = ""
+		for (let i = 0; i < answer.length; i += 6) out += filter.push(answer.slice(i, i + 6))
+		out += filter.end()
+		expect(out).toBe(`${answer.split("\n").slice(1, -1).join("\n")}\n`)
+	})
+
+	it("still passes no prose that only starts with the word note", () => {
+		const filter = createDiagramLineFilter()
+		const out =
+			filter.push("Note that the diagram is below.\nNote the following: it is long\n") +
+			filter.end()
+		expect(out).toBe("")
+	})
+})

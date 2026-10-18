@@ -106,9 +106,10 @@ export function feedbackMessages(
 
 /**
  * A line a change script can hold: a path or declaration (as in
- * `createDiagramLineFilter`), a `- ` removal or an `@n` line.
+ * `createDiagramLineFilter`), a `note <id>: text` line, a `- ` removal or an `@n` line.
  */
-const CHANGE_LINE = /^(#|-\s*[A-Za-z_]|@\s*\d|[A-Za-z_][\w.-]*( *\[|\s*-{0,2}>|$))/
+const CHANGE_LINE =
+	/^(#|note +[A-Za-z_][\w.-]*\s*:|-\s*[A-Za-z_]|@\s*\d|[A-Za-z_][\w.-]*( *\[|\s*-{0,2}>|$))/
 
 /**
  * Passes on only the lines of a model's answer that a change script can hold,

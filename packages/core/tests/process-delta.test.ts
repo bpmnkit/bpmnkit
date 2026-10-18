@@ -163,3 +163,30 @@ describe("parseProcessDelta forms and mappings", () => {
 		})
 	})
 })
+
+describe("parseProcessDelta — ad-hoc sub-processes and notes", () => {
+	it("reads adhoc, inside= and note lines", () => {
+		const delta = parseProcessDelta(
+			"box[adhoc Tools]\nt[service Search | inside=box]\nnote t: Looks things up\nnote box: Pick one",
+		)
+		expect(delta.problems).toEqual([])
+		expect(delta.nodes).toEqual([
+			{ id: "box", type: "adHocSubProcess", name: "Tools", line: 1 },
+			{ id: "t", type: "serviceTask", name: "Search", inside: "box", line: 2 },
+		])
+		expect(delta.notes).toEqual([
+			{ id: "t", text: "Looks things up", line: 3 },
+			{ id: "box", text: "Pick one", line: 4 },
+		])
+	})
+
+	it("reports a note with no text", () => {
+		const delta = parseProcessDelta("note t:")
+		expect(delta.notes).toEqual([])
+		expect(delta.problems.map((p) => p.message).join()).toContain("no text")
+	})
+
+	it("has no notes in the guide's example", () => {
+		expect(parseProcessDelta(EXAMPLE).notes).toEqual([])
+	})
+})

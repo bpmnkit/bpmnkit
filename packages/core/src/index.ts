@@ -500,6 +500,7 @@ export type {
 	CompactDiagram,
 	CompactElement,
 	CompactFlow,
+	CompactNote,
 	CompactProcess,
 } from "./bpmn/compact.js"
 export {

@@ -111,12 +111,13 @@ function aliasFor(element: CompactElement, taken: Set<string>): string {
 	return alias
 }
 
-function spec(element: CompactElement, host: string | undefined): string {
+function spec(element: CompactElement, host: string | undefined, container?: string): string {
 	const word = KIND_WORDS.get(element.type) ?? "task"
 	const trigger = element.eventType ? `:${element.eventType}` : ""
 	const name = element.name ? ` ${writableName(element.name)}` : ""
 	const attrs: string[] = []
 	if (host !== undefined) attrs.push(`on=${host}`)
+	if (container !== undefined) attrs.push(`inside=${container}`)
 	if (element.interrupting === false) attrs.push("nonint")
 	if (element.jobType) attrs.push(`job=${element.jobType}`)
 	if (element.formId) attrs.push(`form=${element.formId}`)
@@ -178,11 +179,23 @@ export function writeProcessText(
 	const outgoing = new Map<string, CompactFlow[]>()
 	for (const flow of flows) outgoing.set(flow.from, [...(outgoing.get(flow.from) ?? []), flow])
 
+	// Tasks inside an ad-hoc sub-process: written on lines of their own, without flows.
+	const inner = new Map<string, { element: CompactElement; container: string }>()
+	for (const el of elements) {
+		if (el.type !== "adHocSubProcess") continue
+		for (const child of el.children?.elements ?? []) {
+			if (KIND_WORDS.has(child.type) && child.type !== "boundaryEvent" && !byId.has(child.id)) {
+				inner.set(child.id, { element: child, container: el.id })
+			}
+		}
+	}
+
 	const taken = new Set<string>()
 	const alias = new Map<string, string>()
 	// Readable ids first, so a name-derived alias never takes one of them.
-	for (const el of elements) if (READABLE_ID.test(el.id)) alias.set(el.id, aliasFor(el, taken))
-	for (const el of elements) if (!alias.has(el.id)) alias.set(el.id, aliasFor(el, taken))
+	const named = [...elements, ...[...inner.values()].map((child) => child.element)]
+	for (const el of named) if (READABLE_ID.test(el.id)) alias.set(el.id, aliasFor(el, taken))
+	for (const el of named) if (!alias.has(el.id)) alias.set(el.id, aliasFor(el, taken))
 
 	const declared = new Set<string>()
 	const ref = (id: string): string => {
@@ -191,6 +204,13 @@ export function writeProcessText(
 		if (!el || declared.has(id)) return written
 		declared.add(id)
 		return `${written}${spec(el, el.attachedTo === undefined ? undefined : alias.get(el.attachedTo))}`
+	}
+	/** A task inside an ad-hoc sub-process, declared with `inside=` on a line of its own. */
+	const inside = (id: string): string => {
+		const child = inner.get(id)
+		if (!child || declared.has(id)) return alias.get(id) ?? id
+		declared.add(id)
+		return `${alias.get(id)}${spec(child.element, undefined, alias.get(child.container))}`
 	}
 
 	const lines: string[] = []
@@ -247,6 +267,22 @@ export function writeProcessText(
 		expand(el.id)
 		drain()
 		if (!declared.has(el.id)) lines.push(ref(el.id))
+	}
+
+	for (const id of inner.keys()) lines.push(inside(id))
+
+	// A note names an element it is associated with; one tied to nothing the format writes has no line.
+	const source = definitions.processes[0]
+	const annotations = new Map((source?.textAnnotations ?? []).map((a) => [a.id, a.text ?? ""]))
+	for (const assoc of source?.associations ?? []) {
+		const [annotation, target] = annotations.has(assoc.targetRef)
+			? [assoc.targetRef, assoc.sourceRef]
+			: [assoc.sourceRef, assoc.targetRef]
+		const text = (annotations.get(annotation) ?? "").replace(/\s+/g, " ").trim()
+		const written = alias.get(target)
+		if (annotations.has(annotation) && written !== undefined && text !== "") {
+			lines.push(`note ${written}: ${text}`)
+		}
 	}
 
 	if (options.connectorLine) {

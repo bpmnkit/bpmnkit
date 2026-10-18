@@ -149,3 +149,56 @@ describe("forms, mappings and platform version", () => {
 		expect(roundTrip(text)).toBe(text)
 	})
 })
+
+describe("writeProcessText — ad-hoc sub-processes and notes", () => {
+	const TEXT = `# Agent | camunda=8.10
+start[start Go] > run[xor Run agent] > agent[adhoc AI Agent] > done[xor Satisfied?]
+done >(Yes: ok) fin[end Done]
+done >(No: default) run
+users[service Find sample users | inside=agent]
+joke[service Get a safe joke | inside=agent]
+note start: Triggered by a user
+note agent: The agent picks a tool
+note joke: Each tool is a capability`
+
+	it("writes the container, its tools and the notes, and reads them back as the same diagram", () => {
+		const defs = definitionsOf(TEXT)
+		const { text, aliases } = writeProcessText(defs)
+		expect(text).toContain("agent[adhoc AI Agent]")
+		expect(text).toContain("users[service Find sample users | inside=agent")
+		expect(text).toContain("note agent: The agent picks a tool")
+		expect(aliases.users).toBe("users")
+		const read = parseProcessText(text)
+		expect(read.problems).toEqual([])
+		const original = parseProcessText(TEXT)
+		expect(read.diagram.processes[0]).toEqual(original.diagram.processes[0])
+	})
+
+	it("writes a note on one line, whatever the annotation's own text", () => {
+		const defs = definitionsOf("s[start S] > e[end E]\nnote s: one")
+		const annotation = defs.processes[0]?.textAnnotations[0]
+		if (annotation) annotation.text = "first line\n  second   line"
+		const { text } = writeProcessText(defs)
+		expect(text).toContain("note s: first line second line")
+		expect(parseProcessText(text).problems).toEqual([])
+	})
+
+	it("writes nothing for an annotation tied to no element", () => {
+		const defs = definitionsOf("s[start S] > e[end E]\nnote s: one")
+		if (defs.processes[0]) defs.processes[0].associations = []
+		expect(writeProcessText(defs).text).not.toContain("note")
+	})
+
+	it("writes the same text for a diagram with neither", () => {
+		const { text } = writeProcessText(definitionsOf(EXAMPLE))
+		expect(text).not.toContain("note ")
+		expect(text).not.toContain("inside=")
+	})
+
+	it("writes a change script's text a delta can restate quietly", () => {
+		const { text } = writeProcessText(definitionsOf(TEXT))
+		const delta = parseProcessDelta(text)
+		expect(delta.problems).toEqual([])
+		expect(delta.notes.map((n) => n.id)).toEqual(["start", "agent", "joke"])
+	})
+})

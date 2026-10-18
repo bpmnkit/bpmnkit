@@ -1,5 +1,9 @@
 # Features
 
+## Process text: ad-hoc sub-processes and notes (2026-10-18)
+
+- `adhoc` kind, `inside=<adhoc id>` on a flowless task, and `note <id>: text` in the line format, read by `parseProcessText`, expanded (with grid layout and laid-out annotations) by `expand`, written back by `writeProcessText` and applied or reported by change scripts.
+
 ## Process text: forms, mappings and platform version (2026-10-18)
 
 - `form=`, `in.x=`, `out.x=` and `# Name | camunda=8.10` in the line format, read by `parseProcessText`, expanded by `expand` and written back by `writeProcessText`.

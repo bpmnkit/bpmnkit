@@ -25,7 +25,7 @@ import { parseExpression } from "@bpmnkit/feel"
 import { slugify, uniqueId } from "../plan/slug.js"
 import type { BpmnDefinitions, BpmnElementType } from "./bpmn-model.js"
 import { expand } from "./compact.js"
-import type { CompactDiagram, CompactElement, CompactFlow } from "./compact.js"
+import type { CompactDiagram, CompactElement, CompactFlow, CompactNote } from "./compact.js"
 import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connector-line.js"
 
 /**
@@ -44,6 +44,7 @@ Kinds: start end task user service rule (DMN decision) send receive script manua
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate cancel)
 Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>, each=<list variable> (once per item), after=<ISO duration> (timer), result=<variable>, feel=<FEEL expression> (last)
 Also after |: form=<form id> (start, user), in.<name>=<FEEL> and out.<name>=<FEEL> map variables in and out of a step (value runs to the next word=; write comparisons with spaces: a = 1)
+Ad-hoc: agent[adhoc Name] is a container with flows like any node; tool[service Name | inside=agent] has no flows of its own; note <id>: text annotates a node
 Rules:
 - One start event. Every node is on a path from it to an end event: never a node nothing leads to.
 - An xor has two or more branches: exactly one is (Label: default), each other has a FEEL condition.
@@ -117,6 +118,7 @@ export const KINDS: Record<string, BpmnElementType> = {
 	script: "scriptTask",
 	manual: "manualTask",
 	call: "callActivity",
+	adhoc: "adHocSubProcess",
 	xor: "exclusiveGateway",
 	and: "parallelGateway",
 	or: "inclusiveGateway",
@@ -183,6 +185,8 @@ interface Node {
 	spec: string
 	/** Boundary host id, from `on=`. */
 	on?: string
+	/** The ad-hoc sub-process this node lives in, from `inside=`. */
+	inside?: string
 }
 
 interface Edge extends Omit<CompactFlow, "id"> {
@@ -190,6 +194,9 @@ interface Edge extends Omit<CompactFlow, "id"> {
 }
 
 const ID = /^[A-Za-z_][\w.-]*/
+
+/** `note <id>: text`, which is not a path and may hold any characters. */
+export const NOTE_LINE = /^note\s+([A-Za-z_][\w.-]*)\s*:\s*(.*)$/i
 
 /** A line that ends in an arrow, with or without a branch label: the path goes on below. */
 const DANGLING = /\s*-{0,2}>\s*(\([^()]*\))?\s*$/
@@ -449,6 +456,8 @@ class Reader {
 	readonly fixes: string[] = []
 	/** `with` lines, with the written id resolved to the node it meant when read. */
 	readonly connectors: ConnectorRef[] = []
+	/** `note` lines, with the written id resolved to the node it meant when read. */
+	readonly notes: { elementId: string; written: string; text: string; line: number }[] = []
 	/** Catch and boundary events written without a trigger, and made message events. */
 	readonly guessedMessage = new Set<string>()
 	title: string | undefined
@@ -498,6 +507,17 @@ class Reader {
 				})
 			}
 			return false
+		}
+		const note = NOTE_LINE.exec(text)
+		if (note) {
+			const written = note[1] as string
+			this.notes.push({
+				elementId: this.current.get(written) ?? written,
+				written,
+				text: (note[2] ?? "").trim(),
+				line: n,
+			})
+			return true
 		}
 		// `> stop[end Done]`: the path above wrapped before its arrow
 		if (/^-{0,2}>/.test(text) && this.tail !== undefined) {
@@ -625,7 +645,7 @@ class Reader {
 		// host is the earlier `pay`.
 		const meant = (ref: string) => this.current.get(ref) ?? ref
 		const hostOf = new Map<string, string>()
-		for (const match of spec.matchAll(/\bon=([\w.-]+)/g)) {
+		for (const match of spec.matchAll(/\b(?:on|inside)=([\w.-]+)/g)) {
 			if (match[1]) hostOf.set(match[1], meant(match[1]))
 		}
 		const id = uniqueId(written, this.taken)
@@ -737,6 +757,7 @@ class Reader {
 		for (const attr of plain.split(/[\s,|]+/).filter(Boolean)) {
 			const [key, value] = attr.split("=", 2)
 			if (key === "on" && value) node.on = hostOf.get(value) ?? value
+			else if (key === "inside" && value) node.inside = hostOf.get(value) ?? value
 			else if (key === "job" && value) element.jobType = value
 			else if (key === "nonint" && value === undefined) element.interrupting = false
 			else if (
@@ -974,6 +995,58 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		}
 	}
 
+	// `inside=<adhoc>`: a task that lives in an ad-hoc sub-process and takes no part in the flow, so
+	// it is taken out of the flow rules below. One that cannot live there stays where it is written.
+	const childNodes: Node[] = []
+	for (const [id, node] of [...nodes]) {
+		const parentId = node.inside
+		if (parentId === undefined) continue
+		const parent = nodes.get(parentId)
+		const type = node.element.type
+		if (parent === undefined && !final) {
+			nodes.delete(id) // container still to come
+			continue
+		}
+		const why =
+			parent === undefined
+				? `"${parentId}" is never declared`
+				: parent.element.type !== "adHocSubProcess"
+					? `"${parentId}" is not an ad-hoc sub-process`
+					: parent.inside !== undefined
+						? `"${parentId}" is itself inside another sub-process`
+						: EVENTS.has(type) || GATEWAYS.has(type) || type === "adHocSubProcess"
+							? `only a task can be inside an ad-hoc sub-process, not ${type}`
+							: undefined
+		if (why !== undefined) {
+			problems.push({
+				line: node.line,
+				message: `inside=${parentId} on "${id}": ${why}; "${id}" stays at the top level`,
+			})
+			node.inside = undefined
+			continue
+		}
+		nodes.delete(id)
+		childNodes.push(node)
+	}
+	const insideIds = new Set(childNodes.map((node) => node.element.id))
+	// Flows would make the task run in the main path, which an ad-hoc tool does not
+	const flowing: Edge[] = []
+	const outside: Edge[] = []
+	for (const edge of reader.edges) {
+		if (insideIds.has(edge.from) || insideIds.has(edge.to)) flowing.push(edge)
+		else outside.push(edge)
+	}
+	if (final) {
+		for (const edge of flowing) {
+			const child = insideIds.has(edge.from) ? edge.from : edge.to
+			const parent = reader.nodes.get(child)?.inside
+			problems.push({
+				line: edge.line,
+				message: `"${child}" is inside "${parent}", where a task has no flows; flow ${edge.from} > ${edge.to} left out`,
+			})
+		}
+	}
+
 	// Boundary events: a host that is an activity, in this process.
 	for (const [id, node] of nodes) {
 		if (node.element.type !== "boundaryEvent") continue
@@ -1010,7 +1083,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	// A branch drawn into a boundary event (`check >(No) failed[boundary:error … |
 	// on=pay] > notify`) means the path that boundary leads to. Nothing can flow
 	// into a boundary, so the branch goes to its handler instead of being lost.
-	const written = reader.edges.flatMap((edge) => {
+	const written = outside.flatMap((edge) => {
 		const target = reader.nodes.get(edge.to)
 		if (target?.element.type !== "boundaryEvent") return [edge]
 		// `poll > late[… | on=poll]`: the arrow from its own task only says where it sits
@@ -1633,6 +1706,11 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			element.name = GATEWAYS.has(element.type) ? `${nameFromId(id)}?` : nameFromId(id)
 			named++
 		}
+		for (const { element } of childNodes) {
+			if (element.name?.trim()) continue
+			element.name = nameFromId(element.id)
+			named++
+		}
 		if (named > 0) fixes.push(`named ${named} unnamed element(s) from their ids`)
 
 		for (const id of reader.guessedMessage) {
@@ -1660,7 +1738,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		}
 	}
 
-	for (const node of nodes.values()) {
+	for (const node of [...nodes.values(), ...childNodes]) {
 		if (JOB_TASKS.has(node.element.type) && node.element.jobType === undefined) {
 			node.element.jobType = node.element.id
 		}
@@ -1692,6 +1770,42 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		return flow
 	})
 
+	for (const child of childNodes) {
+		const parent = nodes.get(child.inside ?? "")
+		if (parent === undefined) {
+			// Its container was left out above; a child alone would be drawn loose
+			if (final) {
+				problems.push({
+					line: child.line,
+					message: `"${child.element.id}" is inside "${child.inside}", which was left out; left out`,
+				})
+			}
+			continue
+		}
+		const content = parent.element.children ?? { elements: [], flows: [] }
+		content.elements.push(child.element)
+		parent.element.children = content
+	}
+
+	const notes: CompactNote[] = []
+	for (const note of reader.notes) {
+		const present =
+			nodes.has(note.elementId) ||
+			childNodes.some(
+				(child) => child.element.id === note.elementId && nodes.has(child.inside ?? ""),
+			)
+		if (present && note.text !== "") notes.push({ elementId: note.elementId, text: note.text })
+		else if (final) {
+			problems.push({
+				line: note.line,
+				message:
+					note.text === ""
+						? `note ${note.written}: has no text; ignored`
+						: `note ${note.written}: names no node of the diagram; ignored`,
+			})
+		}
+	}
+
 	// A `with` line configures a node of the diagram; one whose node was left out, or
 	// never written, has nothing to configure.
 	const connectors: ConnectorRef[] = []
@@ -1715,6 +1829,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 					...(reader.title ? { name: reader.title } : {}),
 					elements: [...nodes.values()].map((node) => node.element),
 					flows,
+					...(notes.length > 0 ? { notes } : {}),
 				},
 			],
 		},

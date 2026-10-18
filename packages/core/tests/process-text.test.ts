@@ -1211,3 +1211,232 @@ describe("forms, mappings and platform version", () => {
 		expect(PROCESS_TEXT_GUIDE).toContain("| camunda=8.10")
 	})
 })
+
+describe("ad-hoc sub-processes and notes", () => {
+	const BAKEOFF = `# AI Agent Chat With Tools | camunda=8.10
+start[start Task to perform received] > run[xor Run agent] > agent[adhoc AI Agent] > fb[user User Feedback] > done[xor User satisfied?]
+done >(Yes: userSatisfied) fin[end User satisfied]
+done >(No: default) run
+users[service Find sample users | inside=agent]
+recipes[service Search recipes | inside=agent]
+joke[service Get a safe joke | inside=agent]
+products[service List sample technology products | inside=agent]
+note start: Triggered when a user submits a task for the AI agent.
+note agent: This is your agent running certain tasks to reach the goal it was given
+note joke: Each task you add represents a capability your agent will have.`
+
+	it("reads adhoc, inside= and note lines without problems", () => {
+		const { diagram, problems } = parseProcessText(BAKEOFF)
+		expect(problems).toEqual([])
+		const process = diagram.processes[0]
+		const agent = process?.elements.find((el) => el.id === "agent")
+		expect(agent?.type).toBe("adHocSubProcess")
+		expect(agent?.children?.elements.map((el) => el.id)).toEqual([
+			"users",
+			"recipes",
+			"joke",
+			"products",
+		])
+		expect(agent?.children?.flows).toEqual([])
+		// The children live in the container only, not beside it
+		expect(process?.elements.map((el) => el.id)).not.toContain("users")
+		expect(process?.notes?.map((n) => n.elementId)).toEqual(["start", "agent", "joke"])
+	})
+
+	it("lets the container have flows in and out of the main path", () => {
+		const { diagram } = parseProcessText(BAKEOFF)
+		const flows = diagram.processes[0]?.flows.map((f) => `${f.from}>${f.to}`)
+		expect(flows).toContain("run>agent")
+		expect(flows).toContain("agent>fb")
+	})
+
+	it("expands to an ad-hoc sub-process of four flowless tools and three associations", () => {
+		const defs = expand(parseProcessText(BAKEOFF).diagram)
+		const process = defs.processes[0]
+		const agent = process?.flowElements.find((el) => el.id === "agent")
+		expect(agent?.type).toBe("adHocSubProcess")
+		if (agent?.type !== "adHocSubProcess") return
+		expect(agent.flowElements.map((el) => el.id)).toEqual(["users", "recipes", "joke", "products"])
+		expect(
+			agent.flowElements.every((el) => el.incoming.length === 0 && el.outgoing.length === 0),
+		).toBe(true)
+		expect(agent.sequenceFlows).toEqual([])
+		expect(process?.textAnnotations).toHaveLength(3)
+		expect(process?.associations.map((a) => a.sourceRef)).toEqual(["start", "agent", "joke"])
+		const xml = Bpmn.export(defs)
+		expect(xml.match(/<bpmn:association /g)).toHaveLength(3)
+		expect(xml.match(/<bpmn:textAnnotation /g)).toHaveLength(3)
+		expect(Bpmn.parse(xml).processes[0]?.textAnnotations).toHaveLength(3)
+	})
+
+	it("lays the tools out as a grid inside the container, and the notes clear of every shape", () => {
+		const defs = expand(parseProcessText(BAKEOFF).diagram)
+		const bounds = new Map(
+			(defs.diagrams[0]?.plane.shapes ?? []).map((s) => [s.bpmnElement, s.bounds] as const),
+		)
+		const get = (id: string) => {
+			const b = bounds.get(id)
+			expect(b, id).toBeDefined()
+			return b as NonNullable<typeof b>
+		}
+		const overlaps = (a: ReturnType<typeof get>, b: ReturnType<typeof get>) =>
+			a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height
+		const tools = ["users", "recipes", "joke", "products"]
+		const container = get("agent")
+		for (const id of tools) {
+			const b = get(id)
+			expect(b.x, id).toBeGreaterThanOrEqual(container.x)
+			expect(b.y, id).toBeGreaterThanOrEqual(container.y)
+			expect(b.x + b.width, id).toBeLessThanOrEqual(container.x + container.width)
+			expect(b.y + b.height, id).toBeLessThanOrEqual(container.y + container.height)
+		}
+		// A landscape 2x2 grid, read row by row
+		expect(new Set(tools.map((id) => get(id).x)).size).toBe(2)
+		expect(new Set(tools.map((id) => get(id).y)).size).toBe(2)
+		expect(container.width).toBeGreaterThanOrEqual(container.height)
+		for (let i = 0; i < tools.length; i++) {
+			for (let j = i + 1; j < tools.length; j++) {
+				expect(overlaps(get(tools[i] as string), get(tools[j] as string))).toBe(false)
+			}
+		}
+		// Every annotation is drawn, apart from the other shapes, and its association is routed
+		const plane = defs.diagrams[0]?.plane
+		const annotations = (defs.processes[0]?.textAnnotations ?? []).map((a) => a.id)
+		expect(annotations).toHaveLength(3)
+		for (const id of annotations) {
+			for (const [other, b] of bounds) {
+				if (other === id || other === "agent") continue
+				expect(overlaps(get(id), b), `${id} overlaps ${other}`).toBe(false)
+			}
+		}
+		for (const assoc of defs.processes[0]?.associations ?? []) {
+			expect(plane?.edges.some((e) => e.bpmnElement === assoc.id)).toBe(true)
+		}
+		// Nothing is drawn at a negative coordinate
+		for (const b of bounds.values()) {
+			expect(b.x).toBeGreaterThanOrEqual(0)
+			expect(b.y).toBeGreaterThanOrEqual(0)
+		}
+	})
+
+	it("reads the children before or after their container alike", () => {
+		const text = "box[adhoc Box]\nt[service T | inside=box]\ns[start S] > box > e[end E]"
+		const { diagram, problems } = parseProcessText(text)
+		expect(problems).toEqual([])
+		expect(
+			diagram.processes[0]?.elements.find((el) => el.id === "box")?.children?.elements,
+		).toHaveLength(1)
+		const reordered = parseProcessText(
+			"s[start S] > box[adhoc Box] > e[end E]\nt[service T | inside=box]",
+		)
+		const byId = (d: typeof diagram) =>
+			[...(d.processes[0]?.elements ?? [])].sort((a, b) => a.id.localeCompare(b.id))
+		expect(byId(reordered.diagram)).toEqual(byId(diagram))
+	})
+
+	it("reports an inside= naming a task, and leaves the node at the top level", () => {
+		const { diagram, problems } = parseProcessText(
+			"s[start S] > x[service X | inside=pay] > pay[task Pay] > e[end E]",
+		)
+		expect(problems.map((p) => p.message).join()).toMatch(/inside=pay.*not an ad-hoc/)
+		const elements = diagram.processes[0]?.elements ?? []
+		expect(elements.map((el) => el.id)).toContain("x")
+		expect(elements.find((el) => el.id === "pay")?.children).toBeUndefined()
+	})
+
+	it("reports an inside= naming nothing, and leaves the node at the top level", () => {
+		const { diagram, problems } = parseProcessText(
+			"s[start S] > x[service X | inside=ghost] > e[end E]",
+		)
+		expect(problems.map((p) => p.message).join()).toMatch(/inside=ghost.*never declared/)
+		expect(diagram.processes[0]?.elements.map((el) => el.id)).toContain("x")
+	})
+
+	it("reports a child that has flows, and keeps it inside without them", () => {
+		const { diagram, problems } = parseProcessText(
+			"s[start S] > box[adhoc Box] > e[end E]\nt[service T | inside=box]\ns > t",
+		)
+		expect(problems.map((p) => p.message).join()).toMatch(/"t" is inside "box".*flow s > t/)
+		const process = diagram.processes[0]
+		expect(process?.elements.find((el) => el.id === "box")?.children?.elements[0]?.id).toBe("t")
+		expect(process?.flows.map((f) => `${f.from}>${f.to}`)).toEqual(["s>box", "box>e"])
+	})
+
+	it("reports a child inside a child, an event or a gateway", () => {
+		const nested = parseProcessText(
+			"s[start S] > a[adhoc A] > e[end E]\nb[adhoc B | inside=a]\nt[task T | inside=b]",
+		)
+		expect(nested.problems.map((p) => p.message).join()).toMatch(/inside=a on "b"/)
+		const event = parseProcessText(
+			"s[start S] > a[adhoc A] > e[end E]\nm[catch:timer Wait | inside=a]",
+		)
+		expect(event.problems.map((p) => p.message).join()).toMatch(/"m".*task/)
+	})
+
+	it("reports a note that names nothing", () => {
+		const { diagram, problems } = parseProcessText(
+			"s[start S] > e[end E]\nnote ghost: Nobody is here",
+		)
+		expect(problems.map((p) => p.message).join()).toMatch(/note ghost.*names no node/)
+		expect(diagram.processes[0]?.notes).toBeUndefined()
+	})
+
+	it("reports a note with no text", () => {
+		const { diagram, problems } = parseProcessText("s[start S] > e[end E]\nnote s:")
+		expect(problems.map((p) => p.message).join()).toMatch(/note s.*no text/)
+		expect(diagram.processes[0]?.notes).toBeUndefined()
+	})
+
+	it("keeps a note's text whole, arrows and brackets included", () => {
+		const { diagram, problems } = parseProcessText(
+			"s[start S] > e[end E]\nnote s: a > b [see c]: done >",
+		)
+		expect(problems).toEqual([])
+		expect(diagram.processes[0]?.notes).toEqual([{ elementId: "s", text: "a > b [see c]: done >" }])
+	})
+
+	it("numbers several notes on one element", () => {
+		const defs = expand(parseProcessText("s[start S] > e[end E]\nnote s: One\nnote s: Two").diagram)
+		const ids = defs.processes[0]?.textAnnotations.map((a) => a.id)
+		expect(new Set(ids).size).toBe(2)
+		expect(defs.processes[0]?.textAnnotations.map((a) => a.text)).toEqual(["One", "Two"])
+	})
+
+	it("writes a note on an element inside a container as part of the process", () => {
+		const defs = expand(
+			parseProcessText(
+				"s[start S] > box[adhoc Box] > e[end E]\nt[service T | inside=box]\nnote t: Tool",
+			).diagram,
+		)
+		expect(defs.processes[0]?.associations.map((a) => a.sourceRef)).toEqual(["t"])
+		const shapes = defs.diagrams[0]?.plane.shapes ?? []
+		expect(shapes.some((s) => s.bpmnElement === defs.processes[0]?.textAnnotations[0]?.id)).toBe(
+			true,
+		)
+	})
+
+	it("changes nothing for a text without the new syntax", () => {
+		const { diagram } = parseProcessText(EXAMPLE)
+		expect(diagram.processes[0]).not.toHaveProperty("notes")
+		expect(JSON.stringify(diagram)).not.toContain("children")
+		expect(Bpmn.export(expand(diagram))).not.toContain("textAnnotation")
+	})
+
+	it("streams to the same result as reading the whole text", () => {
+		const stream = createProcessTextStream()
+		let frames = 0
+		for (let i = 0; i < BAKEOFF.length; i += 17) {
+			if (stream.push(BAKEOFF.slice(i, i + 17)) !== null) frames++
+		}
+		expect(frames).toBeGreaterThan(0)
+		expect(stream.end()).toEqual(parseProcessText(BAKEOFF))
+	})
+
+	it("teaches the syntax in one guide line, and the example still parses", () => {
+		const lines = PROCESS_TEXT_GUIDE.split("\n").filter((line) => line.includes("inside="))
+		expect(lines).toHaveLength(1)
+		expect(PROCESS_TEXT_GUIDE).toContain("note <id>:")
+		expect(PROCESS_TEXT_GUIDE).toContain("adhoc")
+		expect(parseProcessText(EXAMPLE).problems).toEqual([])
+	})
+})
