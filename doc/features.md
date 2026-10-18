@@ -6,7 +6,7 @@
 
 ## Process text: ad-hoc sub-processes and notes (2026-10-18)
 
-- `adhoc` kind, `inside=<adhoc id>` on a flowless task, and `note <id>: text` in the line format, read by `parseProcessText`, expanded (with grid layout and laid-out annotations) by `expand`, written back by `writeProcessText` and applied or reported by change scripts.
+- `adhoc` kind, `inside=<adhoc id>` on a flowless task, and `note <id>: text` and `doc <id>: text` (the element's documentation, an AI agent tool's description) in the line format, read by `parseProcessText`, expanded (with grid layout and laid-out annotations) by `expand`, written back by `writeProcessText` and applied or reported by change scripts.
 
 ## Process text: forms, mappings and platform version (2026-10-18)
 

@@ -105,9 +105,10 @@ spec's literal values as `expected.json` (ids, form ids `ai-agent-chat-initial-r
 
 The plan fixture cannot say everything: a `ProcessPlan` has no start-event form, no user-task input
 mapping, no annotation and no loop back to an earlier gateway, and its `aiAgent` step compiles to
-the v1 job-worker agent. The eval therefore reports the assertions on the compiled plan and does not
-gate on them; the plan misses `Gateway_RunAgent`, the start form, `responseText` and the three
-annotations. The reference file (`packages/core/tests/fixtures/bakeoff/expected.bpmn`) meets all of
+the v1 job-worker agent. The eval therefore reports the assertions on the compiled plan: the known
+plan-format gaps it lists are reported, an unlisted miss fails the run, and a listed gap that no
+longer misses is flagged as stale. Today the plan misses `Gateway_RunAgent`, the start form,
+`responseText` and the three annotations. The reference file (`packages/core/tests/fixtures/bakeoff/expected.bpmn`) meets all of
 them (`apps/drop/tests/spec-assertions.test.ts`).
 
 Drop's bench no longer skips 03; it skips 04 and 09 only, so 03 and 28 run. Prompt 28 sets
