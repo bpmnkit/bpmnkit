@@ -1,5 +1,9 @@
 # Features
 
+## Drop connects the AI Agent and its tools (2026-10-18)
+
+- The connect pass offers the AI Agent Sub-process connector to any ad-hoc sub-process of a draft, and the REST connector to its `inside=` tools; `with <id>:` lines (also for `inside=` tools in `parseProcessText`) configure them. In a `==` FEEL value `\n` is a line break, so an agent's prompt can have paragraphs; `\\n` stays a literal backslash and n, and a literal (single `=`) value is never decoded.
+
 ## Process text: ad-hoc sub-processes and notes (2026-10-18)
 
 - `adhoc` kind, `inside=<adhoc id>` on a flowless task, and `note <id>: text` in the line format, read by `parseProcessText`, expanded (with grid layout and laid-out annotations) by `expand`, written back by `writeProcessText` and applied or reported by change scripts.

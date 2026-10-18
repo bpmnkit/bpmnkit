@@ -9,6 +9,7 @@
  * reported, and a required input still missing becomes a question.
  */
 
+import { findElement } from "../bpmn/utils.js"
 import type {
 	BpmnDefinitions,
 	BpmnFlowElement,
@@ -35,7 +36,7 @@ with <id>: <alias> <operation> | key=value | key==FEEL expression
 - <id> is a node of the diagram, written exactly as before the colon of its cards. <alias>, <operation> and the keys come from the connector cards.
 - When the request names a system, use that system's card.
 - Write every input marked *. Write a mode (key=choice) only to change its default, with the inputs that choice adds.
-- A value starting with = is FEEL: text== "Order " + orderId. Without =, it is literal text. A variable is FEEL too: to==email, never {{email}} or \${email}; {{…}} is only for secrets.
+- A value starting with = is FEEL: text== "Order " + orderId. Without =, it is literal text. In a FEEL value, \\n is a line break (one value is one line). A variable is FEEL too: to==email, never {{email}} or \${email}; {{…}} is only for secrets.
 - Credentials are never values: token={{secrets.SLACK_TOKEN}}.
 - result=name keeps the response in a variable; result=name: response.body keeps a part of it.
 - A plain task that becomes a connector needs no other change. Leave out nodes no card fits.
@@ -393,8 +394,17 @@ function feelHeaders(value: string, fixes: string[]): string {
 	return `={${entries.join(", ")}}`
 }
 
+/**
+ * `\n` in a FEEL value is a line break: a `with` line is one line, and an agent's prompt is
+ * paragraphs. `\\n` stays a backslash and n. Only `==` values: a literal value is taken as written.
+ */
+function feelLineBreaks(value: string): string {
+	return value.replace(/\\\\n|\\n/g, (m) => (m === "\\n" ? "\n" : "\\n"))
+}
+
 /** A variable written in another template syntax, as the FEEL expression it means. */
-function feelForVariable(key: string, value: string, fixes: string[]): string {
+function feelForVariable(key: string, rawValue: string, fixes: string[]): string {
+	const value = rawValue.startsWith("=") ? feelLineBreaks(rawValue) : rawValue
 	// `== "Order " + ${orderId} + " failed"`: a template variable inside FEEL is the variable
 	if (value.startsWith("=") && /\$\{\s*[A-Za-z_][\w.]*\s*\}/.test(value)) {
 		const feel = value.replace(/\$\{\s*([A-Za-z_][\w.]*)\s*\}/g, "$1")
@@ -579,7 +589,8 @@ export function applyConnectorLines(
 }
 
 function elementOf(definitions: BpmnDefinitions, id: string): BpmnFlowElement | undefined {
-	return definitions.processes.flatMap((p) => p.flowElements).find((el) => el.id === id)
+	// Nested too: the tools of an ad-hoc sub-process are configured by the same lines
+	return findElement(definitions, id)
 }
 
 function child(ext: readonly XmlElement[] | undefined, name: string): XmlElement | undefined {

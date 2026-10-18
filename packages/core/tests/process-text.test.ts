@@ -1440,3 +1440,16 @@ note joke: Each task you add represents a capability your agent will have.`
 		expect(parseProcessText(EXAMPLE).problems).toEqual([])
 	})
 })
+
+describe("with lines for tools inside an ad-hoc sub-process", () => {
+	it("keeps a with line for an inside= tool, and reports one for a missing node", () => {
+		const parsed = parseProcessText(`start[start Go] > agent[adhoc AI Agent] > done[end Done]
+joke[service Get a safe joke | inside=agent]
+with joke: http GET https://v2.jokeapi.dev/joke/Any
+with ghost: http GET https://x.example`)
+		expect(parsed.connectors.map((c) => c.elementId)).toEqual(["joke"])
+		expect(parsed.problems.map((p) => p.message)).toEqual([
+			'"with ghost:" names no node of the diagram; ignored',
+		])
+	})
+})

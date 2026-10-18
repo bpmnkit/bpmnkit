@@ -1810,7 +1810,11 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	// never written, has nothing to configure.
 	const connectors: ConnectorRef[] = []
 	for (const ref of reader.connectors) {
-		if (nodes.has(ref.elementId)) connectors.push(ref)
+		// A tool inside an ad-hoc sub-process is a node too, though it is not in `nodes`
+		const tool = childNodes.some(
+			(child) => child.element.id === ref.elementId && nodes.has(child.inside ?? ""),
+		)
+		if (nodes.has(ref.elementId) || tool) connectors.push(ref)
 		else if (final) {
 			problems.push({
 				line: ref.line,

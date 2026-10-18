@@ -2,8 +2,8 @@
  * `POST /drop/api/connect`: the gates, the cards it picks, the stream it
  * answers with, and the connected diagram it applies on the server.
  */
-import { Bpmn, expand, parseProcessText } from "@bpmnkit/core"
-import { type ApiService, connectorCards } from "@bpmnkit/core/connectors"
+import { Bpmn, expand, findElement, parseProcessText, writeProcessText } from "@bpmnkit/core"
+import { type ApiService, connectorCards, connectorLineFor } from "@bpmnkit/core/connectors"
 import { beforeEach, describe, expect, it } from "vitest"
 import type { Env } from "../src/env.js"
 import { getBudgetSpent } from "../src/lib/ai.js"
@@ -11,6 +11,7 @@ import {
 	CONNECT_SYSTEM_PROMPT,
 	type ConnectEvent,
 	type ConnectResult,
+	connectTasks,
 	createConnectLineFilter,
 	finishConnect,
 } from "../src/lib/connect.js"
@@ -568,5 +569,44 @@ describe("finishConnect", () => {
 			'"with notify:" configures a node an earlier line did; the first stands',
 		])
 		expect(result.xml).toContain('zeebe:modelerTemplate="io.camunda.connectors.Slack.v1"')
+	})
+})
+
+describe("an AI agent sub-process and its tools", () => {
+	const AGENT = Bpmn.parse(
+		Bpmn.export(
+			expand(
+				parseProcessText(`start[start Question] > agent[adhoc AI Agent] > done[end Answered]
+joke[service Get a safe joke | inside=agent]`).diagram,
+			),
+		),
+	)
+	const { aliases } = writeProcessText(AGENT, { connectorLine: connectorLineFor })
+	const LINES = `with agent: ai-agent-subprocess | provider.type=openai | provider.openai.backend.openai.apiKey==camunda.secrets.OPENAI_API_KEY | provider.openai.model.model=gpt-4o | data.systemPrompt.prompt=="You are helpful.\\n\\nUse the tools." | data.userPrompt.prompt==inputText | resultVariable=agent
+with joke: http GET https://v2.jokeapi.dev/joke/Any?format=txt | authentication.type=noAuth | result=toolCallResult: response.body`
+
+	it("offers the container and its tool to the connect pass", () => {
+		expect(connectTasks(AGENT, aliases)).toEqual([
+			{ id: "start", name: "Question", type: "startEvent" },
+			{ id: "agent", name: "AI Agent", type: "adHocSubProcess" },
+			{ id: "joke", name: "Get a safe joke", type: "serviceTask", inside: "agent" },
+			{ id: "done", name: "Answered", type: "endEvent" },
+		])
+	})
+
+	it("connects the agent and its tool with no problem, and a real blank line in the prompt", () => {
+		const result = finishConnect(AGENT, aliases, LINES)
+		expect(result.problems).toEqual([])
+		expect(result.questions).toEqual([])
+		expect(result.connected).toEqual(["agent", "joke"])
+		const again = Bpmn.parse(result.xml)
+		const io = findElement(again, "agent")?.extensionElements.find(
+			(x) => x.name === "zeebe:ioMapping",
+		)
+		const system = io?.children.find((c) => c.attributes.target === "data.systemPrompt.prompt")
+		expect(system?.attributes.source).toBe('="You are helpful.\n\nUse the tools."')
+		expect(findElement(again, "joke")?.unknownAttributes["zeebe:modelerTemplate"]).toBe(
+			"io.camunda.connectors.HttpJson.v2",
+		)
 	})
 })

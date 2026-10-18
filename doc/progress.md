@@ -1,5 +1,8 @@
 # Progress
 
+## 2026-10-18 — Phase C: drop connects the AI Agent and its tools
+
+- Drop's connect pass takes ad-hoc sub-processes (`CONNECTABLE`) and the tasks inside them (`connectTasks` recurses into ad-hoc containers; `ConnectorTask.inside`), and `connected` finds nested elements. `selectConnectors` offers the `ai-agent-subprocess` card first to every ad-hoc sub-process whatever its name, and `http` to its tools. `applyConnectorLines` finds nested elements; `parseProcessText` no longer drops a `with` line for an `inside=` tool. `\n` in a `==` value (only) is a line break, `\\n` a literal backslash-n; `CONNECT_GUIDE` says so in one sentence. Tests in core (`lines`, `select`, `process-text`) and drop (`connect-route`).
 ## 2026-10-18 — Phase C: drop says whether a draft is executable
 
 - `readiness()` (`apps/drop/src/lib/readiness.ts`) turns `lintDiagram` into `ready` / `shape-only` / `invalid`; the generator shows it as a badge for every draft, runs the dry run for every draft, shows the streamed process text in a collapsible "Diagram text" panel, and says "Connectors not configured" when the connect pass 404s or fails.
