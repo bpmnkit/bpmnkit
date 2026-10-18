@@ -1,5 +1,8 @@
 # Progress
 
+## 2026-10-18 — Phase C: process text takes forms, mappings and a platform version
+
+- The line format gains `form=<form id>` (start, user; a user with a form gets `zeebe:userTask`), `in.<name>=<FEEL>` and `out.<name>=<FEEL>` (value runs to the next ` word=` or the line end; write FEEL comparisons with spaces, `a = 1`), and `# Name | camunda=8.10` (sets `executionPlatformVersion` `8.10.0`). `CompactElement` gains `outputs` and `nativeUserTask`, `CompactDiagram` gains `executionPlatformVersion`; `expand` writes them. `writeProcessText` writes them back; a change script reads them from a restated node and ignores them. Two guide lines added. Drop's line filter already passes these lines (test added).
 ## 2026-10-17 — Lint: two `pattern` rules are warnings
 
 - `pattern/gateway-no-default-flow` and `pattern/subprocess-no-error-boundary` report warnings, not errors. Camunda's own AI Agent blueprint trips both and its lint gate flags neither, so `casen lint lint <file> --profile deploy` now reports 0 errors on a correct model. The recipe guide and the Claude plugin `agent` and `connect` skills and `references/agentic.md` say so.

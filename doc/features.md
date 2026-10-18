@@ -1,5 +1,9 @@
 # Features
 
+## Process text: forms, mappings and platform version (2026-10-18)
+
+- `form=`, `in.x=`, `out.x=` and `# Name | camunda=8.10` in the line format, read by `parseProcessText`, expanded by `expand` and written back by `writeProcessText`.
+
 ## Executable-process recipe and `bpmnkit-docs` at the repo root (2026-10-17)
 
 - `npx bpmnkit-docs ask "set a form on a start event"` answers from a task-shaped recipe page,

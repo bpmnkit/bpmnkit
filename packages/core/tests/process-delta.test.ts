@@ -148,3 +148,13 @@ describe("parseProcessDelta", () => {
 		expect(delta.problems.map((p) => p.line)).toEqual([1, 2])
 	})
 })
+
+describe("parseProcessDelta forms and mappings", () => {
+	it("reads a restated node's form= and mappings without noise", () => {
+		const delta = parseProcessDelta(
+			'review[user Review | form=f in.x=if a = 1 then "y" else "z" result=r]',
+		)
+		expect(delta.nodes[0]?.resultVariable).toBe("r")
+		expect(delta.problems).toEqual([])
+	})
+})

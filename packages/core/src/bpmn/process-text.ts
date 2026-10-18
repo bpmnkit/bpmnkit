@@ -35,7 +35,7 @@ import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connec
  * and expects no problems.
  */
 export const PROCESS_TEXT_GUIDE = `Format — one path per line, nothing else:
-# Process name            (first line)
+# Process name            (first line; add " | camunda=8.10" to target a Camunda version)
 a > b > c                 sequence flow
 id[kind Name]             declare a node the first time it appears; afterwards write only id
 gw >(Label: condition) x  conditional branch, condition in FEEL (amount > 1000, status = "ok")
@@ -43,6 +43,7 @@ gw >(Label: default) y    branch taken when no condition holds
 Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate cancel)
 Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>, each=<list variable> (once per item), after=<ISO duration> (timer), result=<variable>, feel=<FEEL expression> (last)
+Also after |: form=<form id> (start, user), in.<name>=<FEEL> and out.<name>=<FEEL> map variables in and out of a step (value runs to the next word=)
 Rules:
 - One start event. Every node is on a path from it to an end event: never a node nothing leads to.
 - An xor has two or more branches: exactly one is (Label: default), each other has a FEEL condition.
@@ -222,6 +223,36 @@ export function splitFeel(attrs: string): { plain: string; feel?: string } {
 	const feel = attrs.slice(at.index + at[0].length).trim()
 	if (feel === "") return { plain: attrs.slice(0, at.index) }
 	return { plain: attrs.slice(0, at.index), feel: feel.startsWith("=") ? feel : `= ${feel}` }
+}
+
+/**
+ * Takes the `in.<target>=<FEEL>` and `out.<target>=<FEEL>` mappings off a declaration's
+ * attributes. A value runs up to the next ` <word>=` or the end, so it may hold spaces,
+ * commas and `=` spaced as FEEL comparison is written (`if a = 1 then …`); an unspaced
+ * ` a=1` inside it reads as the next attribute. Call {@link splitFeel} first: `feel=`
+ * is last and takes the rest, mappings included.
+ *
+ * @returns The other attributes, and each mapping's target and FEEL, in order.
+ */
+export function splitMappings(attrs: string): {
+	plain: string
+	mappings: { direction: "in" | "out"; target: string; value: string }[]
+} {
+	const mappings: { direction: "in" | "out"; target: string; value: string }[] = []
+	let plain = attrs
+	for (;;) {
+		const at = /(?:^|[\s,|])(in|out)\.([A-Za-z_][\w.-]*)=/.exec(plain)
+		if (!at) return { plain, mappings }
+		const start = at.index + at[0].length
+		const next = /\s[A-Za-z_][\w.-]*=/.exec(plain.slice(start))
+		const end = next ? start + next.index : plain.length
+		mappings.push({
+			direction: at[1] as "in" | "out",
+			target: at[2] as string,
+			value: plain.slice(start, end).trim(),
+		})
+		plain = `${plain.slice(0, at.index)} ${plain.slice(end)}`
+	}
 }
 
 /** Words that name the handling of a failure, a timeout or a cancellation. */
@@ -421,10 +452,25 @@ class Reader {
 	/** Catch and boundary events written without a trigger, and made message events. */
 	readonly guessedMessage = new Set<string>()
 	title: string | undefined
+	/** `executionPlatformVersion` from `# Name | camunda=8.10`. */
+	platformVersion: string | undefined
 	/** A line that ended in an arrow, waiting for the line that continues it. */
 	private carry: { text: string; line: number } | undefined
 	/** The last node of the last path read, which a line starting with an arrow continues. */
 	private tail: string | undefined
+
+	/** Reads the attributes after the bar of the title line. */
+	private header(attrs: string, n: number): void {
+		for (const attr of attrs.split(/[\s,|]+/).filter(Boolean)) {
+			const [key, value = ""] = attr.split("=", 2)
+			const version = /^(\d+)\.(\d+)(?:\.(\d+))?$/.exec(value)
+			if (key === "camunda" && version) {
+				this.platformVersion = `${version[1]}.${version[2]}.${version[3] ?? "0"}`
+			} else {
+				this.problems.push({ line: n, message: `unknown title attribute "${attr}"; ignored` })
+			}
+		}
+	}
 
 	/** Reads one line. Returns whether it added anything. */
 	line(raw: string, n: number): boolean {
@@ -436,7 +482,11 @@ class Reader {
 		}
 		if (text === "" || text.startsWith("```") || text.startsWith("//")) return false
 		if (text.startsWith("#")) {
-			if (this.title === undefined) this.title = text.replace(/^#+/, "").trim() || undefined
+			if (this.title === undefined) {
+				const [name = "", ...rest] = text.replace(/^#+/, "").split("|")
+				this.title = name.trim() || undefined
+				this.header(rest.join("|"), n)
+			}
 			return false
 		}
 		if (CONNECTOR_LINE.test(text)) {
@@ -669,14 +719,39 @@ class Reader {
 		}
 
 		const node: Node = { element, line: n, spec }
-		const { plain, feel } = splitFeel(attrs)
+		const split = splitFeel(attrs)
+		const { feel } = split
+		const { plain, mappings } = splitMappings(split.plain)
+		for (const { direction, target, value } of mappings) {
+			const source = value.startsWith("=") ? value : `=${value}`
+			if (value === "" || parseExpression(source.slice(1)).errors.length > 0) {
+				this.problems.push({
+					line: n,
+					message: `${direction}.${target}= on "${id}" is not FEEL; kept for the reader to correct`,
+				})
+			}
+			const key = direction === "in" ? "inputs" : "outputs"
+			element[key] = { ...element[key], [target]: source }
+		}
 		// `| on=pay | nonint`: a second bar is only another separator.
 		for (const attr of plain.split(/[\s,|]+/).filter(Boolean)) {
 			const [key, value] = attr.split("=", 2)
 			if (key === "on" && value) node.on = hostOf.get(value) ?? value
 			else if (key === "job" && value) element.jobType = value
 			else if (key === "nonint" && value === undefined) element.interrupting = false
-			else if (key === "each" && value && GATEWAYS.has(element.type) && element.name) {
+			else if (
+				key === "form" &&
+				value &&
+				(element.type === "startEvent" || element.type === "userTask")
+			) {
+				element.formId = value
+				if (element.type === "userTask") element.nativeUserTask = true
+			} else if (key === "form" && value) {
+				this.problems.push({
+					line: n,
+					message: `form= takes a start or user node; ignored on "${id}"`,
+				})
+			} else if (key === "each" && value && GATEWAYS.has(element.type) && element.name) {
 				// `and[and Process every recipient | each=recipients]`: a step, run per item
 				this.problems.push({
 					line: n,
@@ -1633,6 +1708,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	return {
 		diagram: {
 			id: "Definitions_1",
+			...(reader.platformVersion ? { executionPlatformVersion: reader.platformVersion } : {}),
 			processes: [
 				{
 					id: processId,

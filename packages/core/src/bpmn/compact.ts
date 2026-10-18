@@ -47,6 +47,13 @@ export interface CompactElement {
 	 * optionally `headers`, `queryParameters`, `body`, `authentication.type`.
 	 */
 	inputs?: Record<string, string>
+	/** Zeebe output mappings (target→source), read like {@link inputs}. */
+	outputs?: Record<string, string>
+	/**
+	 * Marks a user task as a Camunda 8 native one (`zeebe:userTask`), which a linked
+	 * form needs from Camunda 8.10.
+	 */
+	nativeUserTask?: boolean
 	/** The element template applied to this element (`zeebe:modelerTemplate`). */
 	modelerTemplate?: { id: string; version?: number }
 	/** Called process ID (callActivity: zeebe:calledElement.processId) */
@@ -135,6 +142,11 @@ export interface CompactProcess {
  */
 export interface CompactDiagram {
 	id: string
+	/**
+	 * The Camunda 8 version the diagram targets, such as `8.10.0`. {@link expand}
+	 * writes it as `modeler:executionPlatformVersion`; without it none is written.
+	 */
+	executionPlatformVersion?: string
 	processes: CompactProcess[]
 }
 
@@ -254,6 +266,16 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		}
 	}
 	if (Object.keys(inputs).length > 0) result.inputs = inputs
+
+	// `source: "= response"` is the job worker's result, which expand writes back from `resultVariable`.
+	const outputs: Record<string, string> = {}
+	for (const output of ext.find((e) => e.name === "zeebe:ioMapping")?.children ?? []) {
+		const { source, target } = output.attributes
+		if (output.name !== "zeebe:output" || source === undefined || target === undefined) continue
+		if (result.jobType !== undefined && source === "= response") continue
+		outputs[target] = source
+	}
+	if (Object.keys(outputs).length > 0) result.outputs = outputs
 
 	const template = el.unknownAttributes["zeebe:modelerTemplate"]
 	if (template) {
@@ -541,6 +563,9 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 			children: [],
 		})
 	}
+	if (el.nativeUserTask && el.type === "userTask") {
+		ext.push({ name: "zeebe:userTask", attributes: {}, children: [] })
+	}
 	if (el.formId) {
 		ext.push({ name: "zeebe:formDefinition", attributes: { formId: el.formId }, children: [] })
 	}
@@ -566,7 +591,16 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 		attributes: { source, target },
 		children: [],
 	}))
-	if (el.resultVariable && el.jobType && !el.decisionId && !isConnectorJobType(el.jobType)) {
+	for (const [target, source] of Object.entries(el.outputs ?? {})) {
+		ioMapping.push({ name: "zeebe:output", attributes: { source, target }, children: [] })
+	}
+	if (
+		el.resultVariable &&
+		el.jobType &&
+		!el.decisionId &&
+		!isConnectorJobType(el.jobType) &&
+		el.outputs?.[el.resultVariable] === undefined
+	) {
 		// A job worker's result: map its `response` variable to the result variable
 		ioMapping.push({
 			name: "zeebe:output",
@@ -864,6 +898,7 @@ export function expand(compact: CompactDiagram): BpmnDefinitions {
 		processes.push(process)
 		diagrams.push(diagram)
 	}
+	const platform = compact.executionPlatformVersion
 	return {
 		id: compact.id,
 		targetNamespace: "http://bpmn.io/schema/bpmn",
@@ -873,8 +908,15 @@ export function expand(compact: CompactDiagram): BpmnDefinitions {
 			dc: "http://www.omg.org/spec/DD/20100524/DC",
 			di: "http://www.omg.org/spec/DD/20100524/DI",
 			zeebe: "http://camunda.org/schema/zeebe/1.0",
+			...(platform === undefined ? {} : { modeler: "http://camunda.org/schema/modeler/1.0" }),
 		},
-		unknownAttributes: {},
+		unknownAttributes:
+			platform === undefined
+				? {}
+				: {
+						"modeler:executionPlatform": "Camunda Cloud",
+						"modeler:executionPlatformVersion": platform,
+					},
 		errors: [],
 		escalations: [],
 		messages: [],

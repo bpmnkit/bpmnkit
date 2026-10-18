@@ -120,3 +120,32 @@ describe("writeProcessText", () => {
 		})
 	})
 })
+
+describe("forms, mappings and platform version", () => {
+	const roundTrip = (text: string) =>
+		writeProcessText(Bpmn.parse(Bpmn.export(expand(parseProcessText(text).diagram)))).text
+
+	it("writes form= and in. back as they were read", () => {
+		const text =
+			"start[start Task received | form=ai-agent-chat-initial-request] > fb[user User Feedback | form=ai-agent-chat-user-feedback in.responseText=agent.responseText] > e[end Done]"
+		expect(roundTrip(text)).toBe(text)
+	})
+
+	it("writes out. and a mapping value with spaces and =, before result and feel", () => {
+		const text =
+			'start[start A] > t[service T | job=work in.x=if a = 1 then "y" else "z" out.ok=resp.ok] > e[end E]'
+		expect(roundTrip(text)).toBe(text)
+		const scripted = "start[start A] > s[script S | in.l=items result=n feel=count(l)] > e[end E]"
+		expect(roundTrip(scripted)).toBe(scripted)
+	})
+
+	it("writes the platform version in the header", () => {
+		const text = "# Chat | camunda=8.10\nstart[start A] > e[end E]"
+		expect(roundTrip(text)).toBe(text)
+	})
+
+	it("writes no header version for a diagram without one", () => {
+		const text = "# Chat\nstart[start A] > e[end E]"
+		expect(roundTrip(text)).toBe(text)
+	})
+})

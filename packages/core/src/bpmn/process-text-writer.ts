@@ -21,7 +21,7 @@ import type { BpmnDefinitions, BpmnElementType, BpmnFlowElement } from "./bpmn-m
 import { compactify } from "./compact.js"
 import type { CompactElement, CompactFlow } from "./compact.js"
 import { FIXED_KINDS } from "./process-delta.js"
-import { KINDS } from "./process-text.js"
+import { KINDS, splitMappings } from "./process-text.js"
 
 /** Options for {@link writeProcessText}. */
 export interface WriteProcessTextOptions {
@@ -76,6 +76,21 @@ export function writableCondition(condition: string): string {
 	return condition.replace(/^\s*=/, "").replace(/\s+/g, " ").trim()
 }
 
+/** A mapping source as FEEL on one line; a literal (no leading `=`) is written as a string. */
+function writableMapping(source: string): string {
+	if (!source.startsWith("=")) return JSON.stringify(source)
+	return source.replace(/^=\s*/, "").replace(/\s+/g, " ").trim()
+}
+
+function platformVersion(definitions: BpmnDefinitions): string | undefined {
+	const platform = definitions.unknownAttributes["modeler:executionPlatform"]
+	if (!platform?.toLowerCase().includes("cloud")) return undefined
+	const version = /^\s*(\d+\.\d+)/.exec(
+		definitions.unknownAttributes["modeler:executionPlatformVersion"] ?? "",
+	)
+	return version?.[1]
+}
+
 function aliasFor(element: CompactElement, taken: Set<string>): string {
 	if (READABLE_ID.test(element.id) && !taken.has(element.id)) {
 		taken.add(element.id)
@@ -104,6 +119,19 @@ function spec(element: CompactElement, host: string | undefined): string {
 	if (host !== undefined) attrs.push(`on=${host}`)
 	if (element.interrupting === false) attrs.push("nonint")
 	if (element.jobType) attrs.push(`job=${element.jobType}`)
+	if (element.formId) attrs.push(`form=${element.formId}`)
+	// Mapping values run to the next ` word=`, so they are written before result= and feel=
+	for (const [direction, mappings] of [
+		["in", element.inputs],
+		["out", element.outputs],
+	] as const) {
+		for (const [target, source] of Object.entries(mappings ?? {})) {
+			const written = `${direction}.${target}=${writableMapping(source)}`
+			// A target with a space, or a value that reads back as another attribute, cannot be written
+			const back = splitMappings(written)
+			if (back.plain.trim() === "" && back.mappings.length === 1) attrs.push(written)
+		}
+	}
 	if (element.script) {
 		// Last: feel= takes the rest of the attributes
 		if (element.resultVariable) attrs.push(`result=${element.resultVariable}`)
@@ -166,7 +194,11 @@ export function writeProcessText(
 	}
 
 	const lines: string[] = []
-	if (process.name) lines.push(`# ${writableName(process.name)}`)
+	const camunda = platformVersion(definitions)
+	if (process.name || camunda) {
+		const title = process.name ? writableName(process.name) : ""
+		lines.push(`#${title ? ` ${title}` : ""}${camunda ? ` | camunda=${camunda}` : ""}`)
+	}
 	const written = new Set<CompactFlow>()
 	const expanded = new Set<string>()
 	const queue: string[] = []

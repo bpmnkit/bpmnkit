@@ -162,6 +162,12 @@ describe("createDiagramLineFilter", () => {
 		expect(filtered(answer, 3)).toBe("# Order\ns[start Go] > a[task Ship] >\ne[end Done]\n")
 	})
 
+	it("passes the platform-version header and form and mapping attributes", () => {
+		const answer =
+			'# Chat | camunda=8.10\ns[start Go | form=f] > u[user Ask | form=g in.x=if a = 1 then "y" else "z"] >\ne[end Done]\n'
+		expect(filtered(answer, 5)).toBe(answer)
+	})
+
 	it("reads every recorded answer to the same diagram as the unfiltered text", () => {
 		const root = new URL("../bench-results/", import.meta.url)
 		const answers = readdirSync(root).flatMap((run) =>

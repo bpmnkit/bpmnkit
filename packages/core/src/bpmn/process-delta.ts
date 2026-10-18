@@ -26,6 +26,7 @@ import {
 	TRIGGERS,
 	edgeLabel,
 	splitFeel,
+	splitMappings,
 	tokenizePath,
 } from "./process-text.js"
 
@@ -149,7 +150,12 @@ function readSpec(
 		}
 	}
 
-	const { plain, feel } = splitFeel(attrs)
+	const split = splitFeel(attrs)
+	const { feel } = split
+	// The writer shows form= and in./out. mappings, so a restated node carries them. A change
+	// script does not apply them: they are dropped here rather than reported as junk.
+	const { plain: withForm } = splitMappings(split.plain)
+	const plain = withForm.replace(/(^|[\s,|])form=\S*/g, "$1")
 	if (feel !== undefined) {
 		// A step that evaluates FEEL is a script task
 		if (node.type === undefined || node.type === "task") node.type = "scriptTask"

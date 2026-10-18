@@ -1093,3 +1093,121 @@ describe("createProcessTextStream", () => {
 		expect(stream.end()).toEqual(parseProcessText(EXAMPLE))
 	})
 })
+
+describe("forms, mappings and platform version", () => {
+	const CHAT =
+		"start[start Task received | form=ai-agent-chat-initial-request] > fb[user User Feedback | form=ai-agent-chat-user-feedback in.responseText=agent.responseText] > e[end Done]"
+
+	function xmlOf(text: string): string {
+		return Bpmn.export(expand(parseProcessText(text).diagram))
+	}
+
+	it("reads form= and in. into formId and inputs, with no problems", () => {
+		const { diagram, problems } = parseProcessText(CHAT)
+		expect(problems).toEqual([])
+		const [start, fb] = diagram.processes[0]?.elements ?? []
+		expect(start?.formId).toBe("ai-agent-chat-initial-request")
+		expect(fb?.formId).toBe("ai-agent-chat-user-feedback")
+		expect(fb?.inputs).toEqual({ responseText: "=agent.responseText" })
+	})
+
+	it("expands to form definitions, zeebe:userTask on the user task, and the input", () => {
+		const xml = xmlOf(CHAT)
+		expect(xml).toContain('<zeebe:formDefinition formId="ai-agent-chat-initial-request"')
+		expect(xml).toContain('<zeebe:formDefinition formId="ai-agent-chat-user-feedback"')
+		expect(xml).toContain('<zeebe:input source="=agent.responseText" target="responseText"')
+		expect(xml.match(/<zeebe:userTask/g)).toHaveLength(1)
+		expect(xml).not.toMatch(/<bpmn:startEvent[^>]*>\s*<bpmn:extensionElements>\s*<zeebe:userTask/)
+	})
+
+	it("emits no zeebe:userTask for a user task without a form", () => {
+		expect(xmlOf("start[start A] > u[user B] > e[end C]")).not.toContain("zeebe:userTask")
+	})
+
+	it("reads out. into outputs", () => {
+		const { diagram, problems } = parseProcessText(
+			"s[start A] > u[user B | form=f out.approved=decision.ok] > e[end C]",
+		)
+		expect(problems).toEqual([])
+		expect(diagram.processes[0]?.elements[1]?.outputs).toEqual({ approved: "=decision.ok" })
+		expect(xmlOf("s[start A] > u[user B | form=f out.approved=decision.ok] > e[end C]")).toContain(
+			'<zeebe:output source="=decision.ok" target="approved"',
+		)
+	})
+
+	it("takes a mapping value up to the next attribute, spaces and = included", () => {
+		const text =
+			'a[start A] > t[service T | job=work in.x=if a = 1 then "y" else "z" in.n=count(items) result=r] > e[end E]'
+		const { diagram, problems } = parseProcessText(text)
+		expect(problems).toEqual([])
+		const t = diagram.processes[0]?.elements[1]
+		expect(t?.inputs).toEqual({
+			x: '=if a = 1 then "y" else "z"',
+			n: "=count(items)",
+		})
+		expect(t?.resultVariable).toBe("r")
+		expect(t?.jobType).toBe("work")
+	})
+
+	it("keeps feel= and mapping values from swallowing each other", () => {
+		const { diagram, problems } = parseProcessText(
+			"a[start A] > s[script S | in.list=items result=n feel=count(items[state = 1])] > e[end E]",
+		)
+		expect(problems).toEqual([])
+		const s = diagram.processes[0]?.elements[1]
+		expect(s?.inputs).toEqual({ list: "=items" })
+		expect(s?.script).toBe("= count(items[state = 1])")
+		expect(s?.resultVariable).toBe("n")
+	})
+
+	it("reads an unspaced = in a mapping value as the next attribute (documented)", () => {
+		const { problems } = parseProcessText(
+			"a[start A] > t[task T | in.x=if a=1 then 2 else 3] > e[end E]",
+		)
+		expect(problems.map((p) => p.message).join()).toContain('unknown attribute "a=1"')
+	})
+
+	it("ignores form= on a kind that cannot have one", () => {
+		const { problems, diagram } = parseProcessText("a[start A] > t[service T | form=f] > e[end E]")
+		expect(problems.map((p) => p.message).join()).toContain("form=")
+		expect(diagram.processes[0]?.elements[1]?.formId).toBeUndefined()
+	})
+
+	it("reports a mapping value that is not FEEL, and keeps it", () => {
+		const { problems, diagram } = parseProcessText("a[start A] > t[task T | in.x=)(] > e[end E]")
+		expect(problems.map((p) => p.message).join()).toContain("in.x")
+		expect(diagram.processes[0]?.elements[1]?.inputs?.x).toBe("=)(")
+	})
+
+	it("reads the platform version from the header", () => {
+		const { diagram, problems } = parseProcessText("# Chat | camunda=8.10\na[start A] > e[end E]")
+		expect(problems).toEqual([])
+		expect(diagram.processes[0]?.name).toBe("Chat")
+		expect(diagram.executionPlatformVersion).toBe("8.10.0")
+		const defs = expand(diagram)
+		expect(defs.unknownAttributes["modeler:executionPlatform"]).toBe("Camunda Cloud")
+		expect(defs.unknownAttributes["modeler:executionPlatformVersion"]).toBe("8.10.0")
+		const xml = Bpmn.export(defs)
+		expect(xml).toContain('modeler:executionPlatformVersion="8.10.0"')
+		expect(xml).toContain("xmlns:modeler=")
+	})
+
+	it("leaves a diagram without a platform version as before", () => {
+		const { diagram } = parseProcessText("# Chat\na[start A] > e[end E]")
+		expect(diagram.executionPlatformVersion).toBeUndefined()
+		expect(Object.keys(expand(diagram).unknownAttributes)).toEqual([])
+	})
+
+	it("reports an unreadable platform version", () => {
+		const { problems, diagram } = parseProcessText("# Chat | camunda=latest\na[start A] > e[end E]")
+		expect(problems.map((p) => p.message).join()).toContain("camunda=latest")
+		expect(diagram.executionPlatformVersion).toBeUndefined()
+		expect(diagram.processes[0]?.name).toBe("Chat")
+	})
+
+	it("teaches the syntax in one guide line each, and the example still parses", () => {
+		expect(PROCESS_TEXT_GUIDE).toContain("form=<form id>")
+		expect(PROCESS_TEXT_GUIDE).toContain("in.<name>=<FEEL>")
+		expect(PROCESS_TEXT_GUIDE).toContain("| camunda=8.10")
+	})
+})
