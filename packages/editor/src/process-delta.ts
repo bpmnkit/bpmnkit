@@ -139,6 +139,48 @@ const GATEWAYS = new Set<BpmnElementType>([
 /** Task types that need a job type to deploy; as in `parseProcessText`, the id stands in. */
 const JOB_TASKS = new Set<BpmnElementType>(["serviceTask", "sendTask"])
 
+/**
+ * Adds what `form=` and `in.`/`out.` ask for to `patch`, as the script does for `job=`: only
+ * what differs from the element as it is, so a restated node patches nothing.
+ */
+function mappingPatch(
+	node: DeltaNode,
+	element: BpmnFlowElement,
+	patch: Partial<CompactElement>,
+	problem: (line: number, message: string) => void,
+): void {
+	const has = (name: string) => element.extensionElements.find((e) => e.name === name)
+	if (node.formId !== undefined) {
+		if (element.type !== "startEvent" && element.type !== "userTask") {
+			problem(node.line, `form= takes a start or user node; ignored on "${node.id}"`)
+		} else if (has("zeebe:formDefinition")?.attributes.formId !== node.formId) {
+			patch.formId = node.formId
+			if (element.type === "userTask" && !has("zeebe:userTask")) patch.nativeUserTask = true
+		}
+	}
+	const current = has("zeebe:ioMapping")?.children ?? []
+	// As `writeProcessText` writes a source, so a restated mapping compares equal to the one shown
+	const shown = (source: string) =>
+		source.startsWith("=")
+			? source.replace(/^=\s*/, "").replace(/\s+/g, " ").trim()
+			: JSON.stringify(source)
+	for (const [key, kind, wanted] of [
+		["inputs", "zeebe:input", node.inputs],
+		["outputs", "zeebe:output", node.outputs],
+	] as const) {
+		const changed = Object.entries(wanted ?? {}).filter(
+			([target, source]) =>
+				!current.some(
+					(c) =>
+						c.name === kind &&
+						c.attributes.target === target &&
+						shown(c.attributes.source ?? "") === shown(source),
+				),
+		)
+		if (changed.length > 0) patch[key] = Object.fromEntries(changed)
+	}
+}
+
 const sizeOf = (type: BpmnElementType) => ELEMENT_SIZES[type] ?? { width: 100, height: 80 }
 
 const right = (b: BpmnBounds) => b.x + b.width
@@ -325,6 +367,7 @@ export function applyProcessDelta(
 			if (current?.attributes.expression !== node.script) patch.script = node.script
 		}
 		if (node.resultVariable !== undefined) patch.resultVariable = node.resultVariable
+		if (now) mappingPatch(node, now, patch, problem)
 		if (node.interrupting === false && now && "cancelActivity" in now && now.cancelActivity) {
 			patch.interrupting = false
 		}
@@ -758,6 +801,8 @@ export function applyProcessDelta(
 		else deployable(id, written, type, patch)
 		if (node.script !== undefined) patch.script = node.script
 		if (node.resultVariable !== undefined) patch.resultVariable = node.resultVariable
+		const created = element(id)
+		if (created) mappingPatch(node, created, patch, problem)
 		if (Object.keys(patch).length > 0) {
 			patches.push({ line: node.line, op: { op: "update", id, patch } })
 		}

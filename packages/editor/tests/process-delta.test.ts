@@ -572,3 +572,37 @@ describe("applyProcessDelta — with lines", () => {
 		)
 	})
 })
+
+describe("applyProcessDelta forms and mappings", () => {
+	const ext = (defs: BpmnDefinitions, id: string, name: string) =>
+		element(defs, id)?.extensionElements.find((e) => e.name === name)
+
+	it("gives a new user task its form, zeebe:userTask and input", () => {
+		const out = apply(drawn(LOAN), "review > n[user Approve | form=f in.x=agent.x] > pay")
+		expect(out.problems).toEqual([])
+		const id = out.created[0] ?? ""
+		expect(ext(out.definitions, id, "zeebe:formDefinition")?.attributes.formId).toBe("f")
+		expect(ext(out.definitions, id, "zeebe:userTask")).toBeDefined()
+		expect(
+			ext(out.definitions, id, "zeebe:ioMapping")?.children.map((c) => [c.name, c.attributes]),
+		).toEqual([["zeebe:input", { source: "=agent.x", target: "x" }]])
+	})
+
+	it("sets the form and mapping of an existing node, and a restated one changes nothing", () => {
+		const defs = drawn(LOAN)
+		const out = apply(defs, "review[user Review application | form=g out.ok=resp.ok]")
+		expect(out.problems).toEqual([])
+		expect(ext(out.definitions, "review", "zeebe:formDefinition")?.attributes.formId).toBe("g")
+		expect(ext(out.definitions, "review", "zeebe:ioMapping")?.children[0]?.attributes).toEqual({
+			source: "=resp.ok",
+			target: "ok",
+		})
+		const again = apply(out.definitions, "review[user Review application | form=g out.ok=resp.ok]")
+		expect(again.changed).toEqual([])
+	})
+
+	it("reports form= on a node that cannot have one", () => {
+		const out = apply(drawn(LOAN), "pay[service Pay out | form=f]")
+		expect(out.problems.map((p) => p.message).join()).toContain("form=")
+	})
+})

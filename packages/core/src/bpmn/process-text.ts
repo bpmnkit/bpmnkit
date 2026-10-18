@@ -43,7 +43,7 @@ gw >(Label: default) y    branch taken when no condition holds
 Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate cancel)
 Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>, each=<list variable> (once per item), after=<ISO duration> (timer), result=<variable>, feel=<FEEL expression> (last)
-Also after |: form=<form id> (start, user), in.<name>=<FEEL> and out.<name>=<FEEL> map variables in and out of a step (value runs to the next word=)
+Also after |: form=<form id> (start, user), in.<name>=<FEEL> and out.<name>=<FEEL> map variables in and out of a step (value runs to the next word=; write comparisons with spaces: a = 1)
 Rules:
 - One start event. Every node is on a path from it to an end event: never a node nothing leads to.
 - An xor has two or more branches: exactly one is (Label: default), each other has a FEEL condition.
