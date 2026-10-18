@@ -143,6 +143,21 @@ describe("POST /drop/api/generate", () => {
 		expect((await handleGenerate(post("x".repeat(2001)), env, NOW)).status).toBe(400)
 	})
 
+	it("takes a description of any length with ?nolimit, and sends all of it", async () => {
+		const ai = fakeAi(ANSWER)
+		const long = `${DESCRIPTION} ${"Then check the stock again. ".repeat(400)}`.trim()
+		expect(long.length).toBeGreaterThan(10_000)
+		const req = new Request("http://drop/drop/api/generate?nolimit", {
+			method: "POST",
+			headers: { "Content-Type": "application/json", "X-Drop-AI-Code": CODE },
+			body: JSON.stringify({ description: long }),
+		})
+		const res = await handleGenerate(req, makeEnv(ai), NOW)
+		expect(res.status).toBe(200)
+		await res.text()
+		expect(JSON.stringify(ai.calls[0]?.inputs)).toContain(long)
+	})
+
 	it("streams the model's text, without its reasoning, then done", async () => {
 		const ai = fakeAi(ANSWER)
 		const env = makeEnv(ai)

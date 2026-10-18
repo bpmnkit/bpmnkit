@@ -15,6 +15,7 @@ import {
 	createDiagramLineFilter,
 	createSseReader,
 	generateMessages,
+	maxDescriptionChars,
 	maxTokensFor,
 	normaliseDiagram,
 	readAiEvent,
@@ -185,6 +186,15 @@ describe("createDiagramLineFilter", () => {
 		}
 		// Hundreds of recorded answers, each parsed twice: ~0.6 s alone, over 5 s on a busy CI runner.
 	}, 30_000)
+})
+
+describe("maxDescriptionChars", () => {
+	it("caps a description unless the page or request carries ?nolimit", () => {
+		expect(maxDescriptionChars(new URLSearchParams(""))).toBe(2000)
+		expect(maxDescriptionChars(new URLSearchParams("?v=2"))).toBe(2000)
+		expect(maxDescriptionChars(new URLSearchParams("?nolimit"))).toBe(Number.POSITIVE_INFINITY)
+		expect(maxDescriptionChars(new URLSearchParams("?nolimit=1"))).toBe(Number.POSITIVE_INFINITY)
+	})
 })
 
 describe("maxTokensFor", () => {

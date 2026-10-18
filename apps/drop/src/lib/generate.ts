@@ -118,6 +118,17 @@ export const MIN_DESCRIPTION_CHARS = 10
 /** Longest description accepted — a paragraph, not a specification. */
 export const MAX_DESCRIPTION_CHARS = 2000
 
+/**
+ * Query parameter that lifts {@link MAX_DESCRIPTION_CHARS}, on the page and on the
+ * route, for a whole specification. Budget and hourly caps still apply.
+ */
+export const NO_LIMIT_PARAM = "nolimit"
+
+/** Longest description accepted for a page or request with these query parameters. */
+export function maxDescriptionChars(params: URLSearchParams): number {
+	return params.has(NO_LIMIT_PARAM) ? Number.POSITIVE_INFINITY : MAX_DESCRIPTION_CHARS
+}
+
 /** Shortest change request worth a model call: "add QA". */
 export const MIN_CHANGE_CHARS = 3
 

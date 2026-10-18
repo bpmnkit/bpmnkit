@@ -24,6 +24,7 @@ import {
 	createDiagramLineFilter,
 	generateMessages,
 	imageMessages,
+	maxDescriptionChars,
 	maxTokensFor,
 	neuronsFor,
 	normaliseDescription,
@@ -151,10 +152,14 @@ async function answer(
 	}
 	// With an image, the description is an optional hint.
 	const minDescription = image ? 0 : MIN_DESCRIPTION_CHARS
-	if (description.length < minDescription || description.length > MAX_DESCRIPTION_CHARS) {
+	const maxDescription = maxDescriptionChars(new URL(request.url).searchParams)
+	if (description.length < minDescription || description.length > maxDescription) {
 		return json(
 			{
-				error: `describe the process in ${MIN_DESCRIPTION_CHARS}–${MAX_DESCRIPTION_CHARS} characters`,
+				error:
+					maxDescription === MAX_DESCRIPTION_CHARS
+						? `describe the process in ${MIN_DESCRIPTION_CHARS}–${MAX_DESCRIPTION_CHARS} characters`
+						: `describe the process in at least ${MIN_DESCRIPTION_CHARS} characters`,
 			},
 			{ status: 400 },
 		)

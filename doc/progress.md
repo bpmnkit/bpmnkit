@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-10-18 — Drop: `?nolimit` lifts the 2,000-character description cap
+
+- *Describe a process* opened with `?nolimit` drops the textarea's `maxlength`, shows a plain character count, and posts to `/drop/api/generate?nolimit`; the route then accepts a description of any length. Without the parameter the 2,000-character cap is unchanged.
+- `maxDescriptionChars(params)` and `NO_LIMIT_PARAM` in `apps/drop/src/lib/generate.ts` are the single source for both sides. Budget, hourly cap, passcode and Turnstile still apply.
+- Tests: the helper with and without the parameter; the route takes a 10,000+-character description with `?nolimit` and sends all of it to the model.
+
 ## 2026-10-18 — Final review fixes: `casen test` and the CPT validator
 
 - Validator: an instruction `type` that is a built-in object key (`constructor`, `__proto__`, `toString`) crashed with a TypeError, or was read as `ASSERT_PROCESS_INSTANCE`; lookups now use `Object.hasOwn`, `ASSERT_PROCESS_INSTANCE` is an explicit case, and a bad `activateElements[i].variables` reports its full path.

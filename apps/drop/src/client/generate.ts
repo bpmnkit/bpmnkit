@@ -43,7 +43,9 @@ import {
 	MAX_DESCRIPTION_CHARS,
 	MAX_IMAGE_CHARS,
 	MIN_CHANGE_CHARS,
+	NO_LIMIT_PARAM,
 	createSseReader,
+	maxDescriptionChars,
 } from "../lib/generate.js"
 import { badgeText, readiness } from "../lib/readiness.js"
 import { AI_CODE_STORAGE_KEY, AI_PASS_HEADER } from "../shared/constants.js"
@@ -150,6 +152,9 @@ function fileName(defs: BpmnDefinitions): string {
 }
 
 export function mountGenerator(): void {
+	// ?nolimit on the page lifts the description cap here and, passed on, on the route.
+	const noLimit = !Number.isFinite(maxDescriptionChars(new URLSearchParams(location.search)))
+	const generatePath = noLimit ? `/drop/api/generate?${NO_LIMIT_PARAM}` : "/drop/api/generate"
 	const input = $<HTMLTextAreaElement>("genInput")
 	const count = $("genCount")
 	const run = $<HTMLButtonElement>("genRun")
@@ -204,6 +209,7 @@ export function mountGenerator(): void {
 	) {
 		return
 	}
+	if (noLimit) input.removeAttribute("maxlength")
 
 	let canvas: BpmnCanvas | null = null
 	let running: AbortController | null = null
@@ -478,7 +484,7 @@ export function mountGenerator(): void {
 		body: Record<string, string>,
 		code: string,
 		signal: AbortSignal,
-		path = "/drop/api/generate",
+		path = generatePath,
 	): Promise<Response | null> {
 		const post = (token?: string) =>
 			fetch(path, {
@@ -862,7 +868,9 @@ export function mountGenerator(): void {
 	}
 
 	const updateCount = () => {
-		count.textContent = `${input.value.length} / ${MAX_DESCRIPTION_CHARS}`
+		count.textContent = noLimit
+			? `${input.value.length}`
+			: `${input.value.length} / ${MAX_DESCRIPTION_CHARS}`
 	}
 	input.addEventListener("input", updateCount)
 	input.addEventListener("keydown", (e) => {
