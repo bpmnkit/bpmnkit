@@ -3880,7 +3880,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -5505,9 +5505,9 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "email notification"
     ],
     "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail/",
-    "version": 6,
+    "version": 7,
     "engines": {
-      "camunda": "^8.4"
+      "camunda": "^8.11"
     },
     "appliesTo": [
       "bpmn:Task"
@@ -5561,6 +5561,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Authentication credential",
+        "description": "Note: Microsoft Graph accepts only a bearer, OAuth 2.0, or refresh-token credential; API key and Basic credentials are not supported and always fail at runtime, even though they pass template validation. For an OAuth 2.0 or refresh-token credential, the scope must be <code>https://graph.microsoft.com/.default</code>, and a refresh-token credential's token endpoint must be your tenant's Microsoft Entra endpoint (<code>https://login.microsoftonline.com/{tenantId}/oauth2/v2.0/token</code>); a credential missing these passes template and binding validation but fails at runtime against Microsoft Graph. A bearer credential has no scope to configure and is used as-is. The credential's own URL field is not used by this connector.",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rest-authentication:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
         "value": "oauth-client-credentials-flow",
@@ -5582,7 +5594,12 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "name": "Refresh token",
             "value": "oauth-refresh-token"
           }
-        ]
+        ],
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
+        }
       },
       {
         "id": "authentication.token",
@@ -5597,9 +5614,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "bearer",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5616,9 +5642,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5635,9 +5670,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5654,9 +5698,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5670,9 +5723,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         }
       },
       {
@@ -5683,9 +5745,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "Hidden"
       },
@@ -5702,9 +5773,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-refresh-token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5721,9 +5801,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-refresh-token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5738,9 +5827,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-refresh-token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5757,9 +5855,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-refresh-token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5771,9 +5878,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-refresh-token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "Hidden"
       },
@@ -5785,9 +5901,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-refresh-token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "Hidden"
       },
@@ -6349,7 +6474,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "6",
+        "value": "7",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -6443,13 +6568,423 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "operationId": "users.user.sendMail"
         }
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rest-authentication:1",
+        "kind": "CREDENTIAL",
+        "version": 2,
+        "name": "REST Authentication",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "API key",
+                "value": "apiKey"
+              },
+              {
+                "name": "Basic",
+                "value": "basic"
+              },
+              {
+                "name": "Bearer token",
+                "value": "bearer"
+              },
+              {
+                "name": "OAuth 2.0",
+                "value": "oauth-client-credentials-flow"
+              },
+              {
+                "name": "OAuth 2.0 Refresh Token",
+                "value": "oauth-refresh-token"
+              }
+            ]
+          },
+          {
+            "id": "authentication.apiKeyLocation",
+            "label": "Api key location",
+            "value": "headers",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.apiKeyLocation",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            "tooltip": "Send API key in header or as query parameter.",
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Headers",
+                "value": "headers"
+              },
+              {
+                "name": "Query parameters",
+                "value": "query"
+              }
+            ]
+          },
+          {
+            "id": "authentication.name",
+            "label": "API key name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.name",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.value",
+            "label": "API key value",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.value",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.username",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.username",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "basic",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "basic",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthTokenEndpoint",
+            "label": "OAuth 2.0 token endpoint",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthTokenEndpoint",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client ID from the OAuth client",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client secret from the OAuth client",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.audience",
+            "label": "Audience",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.audience",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "The unique identifier of the target API you want to access",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientAuthentication",
+            "label": "Client authentication",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientAuthentication",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Send client ID and client secret as a Basic Auth header, or as client credentials in the request body",
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Send client credentials in body",
+                "value": "credentialsBody"
+              },
+              {
+                "name": "Send as Basic Auth header",
+                "value": "basicAuthHeader"
+              }
+            ]
+          },
+          {
+            "id": "authentication.scopes",
+            "label": "Scopes",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.scopes",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "The scopes which you want to request authorization for",
+            "placeholder": "read:contacts",
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthRefreshToken.oauthTokenEndpoint",
+            "label": "OAuth 2.0 token endpoint",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthTokenEndpoint",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthRefreshToken.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client ID from the OAuth client",
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthRefreshToken.clientSecret",
+            "label": "Client secret",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client secret from the OAuth client",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthRefreshToken.refreshToken",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.refreshToken",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "The refresh token used to obtain a new access token",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthRefreshToken.scopes",
+            "label": "Scopes",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.scopes",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "The scopes to request authorization for (space-separated)",
+            "type": "String"
+          },
+          {
+            "id": "url",
+            "label": "URL",
+            "description": "The endpoint this credential is bound to. Required for basic, bearer and API key authentication; not shown for OAuth, which carries its own token endpoint.",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^((http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "endpoint",
+            "binding": {
+              "name": "url",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "oneOf": [
+                "apiKey",
+                "basic",
+                "bearer"
+              ],
+              "type": "simple"
+            },
+            "type": "String"
+          }
+        ]
+      }
     ]
   },
   {
     "name": "A2A Client Polling Receive Task Connector (early access)",
     "id": "io.camunda.connectors.agenticai.a2a.client.polling.receive.v0",
     "description": "Agent-to-Agent (A2A) polling inbound connector. Supports polling asynchronous tasks, but can also directly correlate messages and synchronously completed tasks.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/early-access/alpha/a2a-client/a2a-client-polling-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/early-access/alpha/a2a-client/a2a-client-polling-connector/",
     "version": 0,
     "appliesTo": [
       "bpmn:ReceiveTask"
@@ -6733,7 +7268,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "stream data",
       "kafka topic"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/kafka/?kafka=outbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=outbound",
     "version": 7,
     "appliesTo": [
       "bpmn:Task"
@@ -9479,6 +10014,13 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "label": "URL",
         "description": "Overrides the URL carried by the selected credential. Required when the credential carries none, as an OAuth credential need not.",
         "optional": true,
+        "constraints": {
+          "notEmpty": false,
+          "pattern": {
+            "value": "^($|=|(http://|https://|secrets|\\{\\{).*$)",
+            "message": "Must be a http(s) URL"
+          }
+        },
         "feel": "optional",
         "binding": {
           "name": "url",
@@ -18219,7 +18761,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "A2A Client (early access)",
     "id": "io.camunda.connectors.agenticai.a2a.client.v0",
     "description": "Agent-to-Agent (A2A) client, enabling discovering remote agents' Agent Cards as well as sending messages to remote agents.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/early-access/alpha/a2a-client/a2a-client-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/early-access/alpha/a2a-client/a2a-client-connector/",
     "version": 0,
     "appliesTo": [
       "bpmn:Task"
@@ -19257,7 +19799,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "MCP Client",
     "id": "io.camunda.connectors.agenticai.mcp.client.v0",
     "description": "MCP (Model Context Protocol) client using MCP connections configured on the connector runtime.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-mcp-client-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-mcp-client-connector/",
     "version": 3,
     "appliesTo": [
       "bpmn:Task"
@@ -21323,7 +21865,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     ],
     "id": "io.camunda.connectors.HubSpot.v1",
     "version": 4,
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/hubspot/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/hubspot/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -28565,7 +29107,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message queue",
       "stream data"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
     "version": 8,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
@@ -29574,7 +30116,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "asynchronous",
       "real-time"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/amazon-textract/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-textract/",
     "version": 8,
     "appliesTo": [
       "bpmn:Task"
@@ -30384,7 +30926,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message queue",
       "stream data"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
     "version": 8,
     "appliesTo": [
       "bpmn:BoundaryEvent"
@@ -30887,7 +31429,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "Ad-hoc tools schema",
     "id": "io.camunda.connectors.agenticai.adhoctoolsschema.v1",
     "description": "Connector to fetch tools schema information from an ad-hoc sub-process.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-ad-hoc-tools-schema-resolver/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-ad-hoc-tools-schema-resolver/",
     "version": 2,
     "appliesTo": [
       "bpmn:Task"
@@ -31190,7 +31732,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "bucket",
       "file storage"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/amazon-s3/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-s3/",
     "version": 8,
     "appliesTo": [
       "bpmn:Task"
@@ -31986,9 +32528,9 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "text generation"
     ],
     "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/azure-open-ai/",
-    "version": 4,
+    "version": 5,
     "engines": {
-      "camunda": "^8.6"
+      "camunda": "^8.11"
     },
     "appliesTo": [
       "bpmn:Task"
@@ -32006,6 +32548,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Authentication credential",
+        "description": "Note: Azure OpenAI accepts only an API key credential (location <code>headers</code>, key name exactly <code>api-key</code>) or a bearer/OAuth 2.0 credential sent as a standard <code>Authorization: Bearer</code> header — the latter is the only option when local API key authentication is disabled, and must use the scope <code>https://cognitiveservices.azure.com/.default</code>. Basic authentication is not supported. An API key credential with the key sent as a query parameter instead of a header, or with any key name other than <code>api-key</code>, and a Basic credential, all pass template and binding validation but silently send a malformed request, so they fail at runtime against Azure OpenAI. The credential's own URL field is not used by this connector.",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rest-authentication:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
         "description": "Choose the authentication type",
@@ -32014,7 +32568,12 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "name": "authentication.type",
           "type": "zeebe:input"
         },
-        "type": "Hidden"
+        "type": "Hidden",
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
+        }
       },
       {
         "id": "authentication.apiKeyLocation",
@@ -32023,7 +32582,12 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "name": "authentication.apiKeyLocation",
           "type": "zeebe:input"
         },
-        "type": "Hidden"
+        "type": "Hidden",
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
+        }
       },
       {
         "id": "authentication.name",
@@ -32034,9 +32598,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "apiKey",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "Hidden"
       },
@@ -32053,9 +32626,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "apiKey",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -33120,7 +33702,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "4",
+        "value": "5",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -33193,6 +33775,416 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "properties": {
           "operation": "completionsExtension"
         }
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rest-authentication:1",
+        "kind": "CREDENTIAL",
+        "version": 2,
+        "name": "REST Authentication",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "API key",
+                "value": "apiKey"
+              },
+              {
+                "name": "Basic",
+                "value": "basic"
+              },
+              {
+                "name": "Bearer token",
+                "value": "bearer"
+              },
+              {
+                "name": "OAuth 2.0",
+                "value": "oauth-client-credentials-flow"
+              },
+              {
+                "name": "OAuth 2.0 Refresh Token",
+                "value": "oauth-refresh-token"
+              }
+            ]
+          },
+          {
+            "id": "authentication.apiKeyLocation",
+            "label": "Api key location",
+            "value": "headers",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.apiKeyLocation",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            "tooltip": "Send API key in header or as query parameter.",
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Headers",
+                "value": "headers"
+              },
+              {
+                "name": "Query parameters",
+                "value": "query"
+              }
+            ]
+          },
+          {
+            "id": "authentication.name",
+            "label": "API key name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.name",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.value",
+            "label": "API key value",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.value",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.username",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.username",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "basic",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "basic",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthTokenEndpoint",
+            "label": "OAuth 2.0 token endpoint",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthTokenEndpoint",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client ID from the OAuth client",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client secret from the OAuth client",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.audience",
+            "label": "Audience",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.audience",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "The unique identifier of the target API you want to access",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientAuthentication",
+            "label": "Client authentication",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientAuthentication",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Send client ID and client secret as a Basic Auth header, or as client credentials in the request body",
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Send client credentials in body",
+                "value": "credentialsBody"
+              },
+              {
+                "name": "Send as Basic Auth header",
+                "value": "basicAuthHeader"
+              }
+            ]
+          },
+          {
+            "id": "authentication.scopes",
+            "label": "Scopes",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.scopes",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "The scopes which you want to request authorization for",
+            "placeholder": "read:contacts",
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthRefreshToken.oauthTokenEndpoint",
+            "label": "OAuth 2.0 token endpoint",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthTokenEndpoint",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthRefreshToken.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client ID from the OAuth client",
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthRefreshToken.clientSecret",
+            "label": "Client secret",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client secret from the OAuth client",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthRefreshToken.refreshToken",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.refreshToken",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "The refresh token used to obtain a new access token",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthRefreshToken.scopes",
+            "label": "Scopes",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.scopes",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "The scopes to request authorization for (space-separated)",
+            "type": "String"
+          },
+          {
+            "id": "url",
+            "label": "URL",
+            "description": "The endpoint this credential is bound to. Required for basic, bearer and API key authentication; not shown for OAuth, which carries its own token endpoint.",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^((http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "endpoint",
+            "binding": {
+              "name": "url",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "oneOf": [
+                "apiKey",
+                "basic",
+                "bearer"
+              ],
+              "type": "simple"
+            },
+            "type": "String"
+          }
+        ]
       }
     ]
   },
@@ -35739,7 +36731,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "A2A Client Webhook Intermediate Catch Event Connector (early access)",
     "id": "io.camunda.connectors.agenticai.a2a.client.webhook.intermediate.v0",
     "description": "Agent-to-Agent (A2A) webhook inbound connector that can be used to receive callbacks from remote A2A servers.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/early-access/alpha/a2a-client/a2a-client-webhook-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/early-access/alpha/a2a-client/a2a-client-webhook-connector/",
     "version": 1,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
@@ -35894,7 +36886,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -36598,7 +37590,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "MCP Remote Client",
     "id": "io.camunda.connectors.agenticai.mcp.remoteclient.v0",
     "description": "MCP (Model Context Protocol) client, operating on temporary remote connections.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-mcp-remote-client-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-mcp-remote-client-connector/",
     "version": 3,
     "appliesTo": [
       "bpmn:Task"
@@ -37967,7 +38959,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "file storage",
       "document management"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/box/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/box/",
     "version": 6,
     "appliesTo": [
       "bpmn:Task"
@@ -38978,7 +39970,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "poll email"
     ],
     "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/",
-    "version": 2,
+    "version": 3,
     "appliesTo": [
       "bpmn:BoundaryEvent"
     ],
@@ -38987,7 +39979,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "eventDefinition": "bpmn:MessageEventDefinition"
     },
     "engines": {
-      "camunda": "^8.9"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -38999,6 +39991,17 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Microsoft Entra ID credential",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:microsoft-entra:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
         "description": "Authentication type depends on your Microsoft Entra (Azure AD) configuration. See <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/'>connector documentation</a>",
@@ -39006,6 +40009,11 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -39035,11 +40043,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.credentials.clientId",
@@ -39054,9 +40072,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -39073,9 +40100,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -39092,11 +40128,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.token",
@@ -39111,11 +40157,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.clientId",
@@ -39130,9 +40186,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -39149,9 +40214,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -39165,11 +40239,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "pollingConfig.userId",
@@ -39643,6 +40727,189 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "type": "Text"
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:microsoft-entra:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Microsoft Entra ID",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "value": "clientCredentials",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Bearer token",
+                "value": "token"
+              },
+              {
+                "name": "Client credentials",
+                "value": "clientCredentials"
+              },
+              {
+                "name": "Refresh token",
+                "value": "refresh"
+              }
+            ]
+          },
+          {
+            "id": "authentication.bearer.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.credentials.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.token",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.clientSecret",
+            "label": "Client secret",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application; optional, depends on whether the client is public or private",
+            "type": "String",
+            "secret": true
+          }
+        ]
       }
     ]
   },
@@ -42261,6 +43528,13 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "label": "URL",
         "description": "Overrides the URL carried by the selected credential. Required when the credential carries none, as an OAuth credential need not.",
         "optional": true,
+        "constraints": {
+          "notEmpty": false,
+          "pattern": {
+            "value": "^($|=|(http://|https://|secrets|\\{\\{).*$)",
+            "message": "Must be a http(s) URL"
+          }
+        },
         "feel": "optional",
         "binding": {
           "name": "graphql.url",
@@ -45596,7 +46870,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message queue",
       "stream data"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
     "version": 8,
     "appliesTo": [
       "bpmn:ReceiveTask"
@@ -46732,6 +48006,13 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "label": "URL",
         "description": "Overrides the URL carried by the selected credential. Required when the credential carries none, as an OAuth credential need not.",
         "optional": true,
+        "constraints": {
+          "notEmpty": false,
+          "pattern": {
+            "value": "^($|=|(http://|https://|secrets|\\{\\{).*$)",
+            "message": "Must be a http(s) URL"
+          }
+        },
         "feel": "optional",
         "binding": {
           "name": "url",
@@ -47408,7 +48689,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "update",
       "delete"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/",
     "version": 6,
     "appliesTo": [
       "bpmn:Task"
@@ -47863,7 +49144,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
               "name": "database",
               "type": "property"
             },
-            "tooltip": "If you choose Oracle, make sure the Oracle JDBC driver is included. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#database\">Oracle JDBC driver setup</a>.",
+            "tooltip": "If you choose Oracle, make sure the Oracle JDBC driver is included. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#database\">Oracle JDBC driver setup</a>.",
             "type": "Dropdown",
             "choices": [
               {
@@ -48127,7 +49408,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "prompt",
       "multimodal"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/google-gemini/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-gemini/",
     "version": 3,
     "appliesTo": [
       "bpmn:Task"
@@ -57410,6 +58691,13 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "label": "URL",
         "description": "Overrides the URL carried by the selected credential. Required when the credential carries none, as an OAuth credential need not.",
         "optional": true,
+        "constraints": {
+          "notEmpty": false,
+          "pattern": {
+            "value": "^($|=|(http://|https://|secrets|\\{\\{).*$)",
+            "message": "Must be a http(s) URL"
+          }
+        },
         "feel": "optional",
         "binding": {
           "name": "url",
@@ -62561,7 +63849,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "predict",
       "AI"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/amazon-sagemaker/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sagemaker/",
     "version": 5,
     "appliesTo": [
       "bpmn:Task"
@@ -63332,7 +64620,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -64787,7 +66075,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "workflow",
       "automate task"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/introduction-to-connectors/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/introduction-to-connectors/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -65581,7 +66869,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -66076,8 +67364,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "file storage",
       "cloud storage"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/",
-    "version": 6,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/",
+    "version": 7,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -66085,7 +67373,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.10"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -66425,6 +67713,42 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "uploadOperationFileName",
+        "label": "Document file name",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "operation.fileName",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "operation_document_documentSource",
+              "equals": "camunda",
+              "type": "simple"
+            },
+            {
+              "property": "operationDiscriminator",
+              "equals": "uploadBlob",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "authenticationConfiguration",
+        "label": "Azure Blob Storage credential",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:azure-blobstorage:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
         "description": "Choose the authentication type.",
@@ -66432,6 +67756,11 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -66458,11 +67787,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "SAS",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "SAS",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.SASUrl",
@@ -66477,11 +67816,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "SAS",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "SAS",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.tenantId",
@@ -66496,9 +67845,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oAuth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -66515,9 +67873,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oAuth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -66534,11 +67901,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oAuth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.accountUrl",
@@ -66553,25 +67930,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oAuth-client-credentials-flow",
-          "type": "simple"
-        },
-        "type": "String"
-      },
-      {
-        "id": "uploadOperationFileName",
-        "label": "Document file name",
-        "optional": true,
-        "feel": "optional",
-        "binding": {
-          "name": "operation.fileName",
-          "type": "zeebe:input"
-        },
-        "condition": {
-          "property": "operationDiscriminator",
-          "equals": "uploadBlob",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -66599,7 +67969,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "6",
+        "value": "7",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -66722,6 +68092,155 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "properties": {
           "operationDiscriminator": "uploadBlob"
         }
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:azure-blobstorage:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Azure Blob Storage Credential",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "value": "SAS",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "SAS token",
+                "value": "SAS"
+              },
+              {
+                "name": "OAuth 2.0 (Microsoft Entra ID)",
+                "value": "oAuth-client-credentials-flow"
+              }
+            ]
+          },
+          {
+            "id": "authentication.SASToken",
+            "label": "SAS token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.SASToken",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "SAS",
+              "type": "simple"
+            },
+            "tooltip": "Shared access signature (SAS) token of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>.",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.SASUrl",
+            "label": "SAS URL",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.SASUrl",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "SAS",
+              "type": "simple"
+            },
+            "tooltip": "Shared access signature (SAS) URL of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>.",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.tenantId",
+            "label": "Tenant id",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "ID of the Microsoft Entra ID tenant that owns the application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>.",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientId",
+            "label": "Client id",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Application (client) ID of the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>.",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Client secret generated for the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>.",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.accountUrl",
+            "label": "Account url",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.accountUrl",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "URL of the Azure Blob Storage account to connect to. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>.",
+            "type": "String"
+          }
+        ]
       }
     ]
   },
@@ -68622,7 +70141,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -71722,6 +73241,10 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "value": "google-gemini"
           },
           {
+            "name": "Mistral AI",
+            "value": "mistral"
+          },
+          {
             "name": "Custom Implementation (Self-Managed/Hybrid only)",
             "value": "custom"
           }
@@ -73318,7 +74841,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "provider.openai.backend.custom.endpoint",
         "label": "API endpoint",
-        "description": "Base URL of the OpenAI-compatible API; <code>/chat/completions</code> or <code>/responses</code> will be appended depending on the selected API.",
+        "description": "Base URL of the OpenAI-compatible API. <code>/chat/completions</code> or <code>/responses</code> will be appended depending on the selected API.",
         "optional": false,
         "constraints": {
           "notEmpty": true
@@ -73882,6 +75405,410 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "condition": {
           "property": "provider.type",
           "equals": "google-gemini",
+          "type": "simple"
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.type",
+        "label": "Connection",
+        "description": "Specify how the Mistral API is reached.",
+        "value": "mistral-api",
+        "binding": {
+          "name": "provider.mistral.backend.type",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Mistral API",
+            "value": "mistral-api"
+          },
+          {
+            "name": "Custom / compatible endpoint",
+            "value": "custom"
+          }
+        ]
+      },
+      {
+        "id": "provider.mistral.backend.mistral.apiKey",
+        "label": "Mistral API key",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.mistral.apiKey",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.mistral.endpoint",
+        "label": "API endpoint",
+        "optional": true,
+        "value": "https://api.mistral.ai/v1",
+        "binding": {
+          "name": "provider.mistral.backend.mistral.endpoint",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.custom.endpoint",
+        "label": "API endpoint",
+        "description": "Base URL of the Mistral-compatible API. <code>/chat/completions</code> will be appended.",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.endpoint",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.type",
+        "label": "Authentication",
+        "description": "Authentication for the compatible API.",
+        "value": "none",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.type",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "None",
+            "value": "none"
+          },
+          {
+            "name": "API key",
+            "value": "apiKey"
+          },
+          {
+            "name": "OAuth 2.0",
+            "value": "oauth-client-credentials-flow"
+          }
+        ]
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.apiKey",
+        "label": "API key",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.apiKey",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.oauthTokenEndpoint",
+        "label": "OAuth 2.0 token endpoint",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true,
+          "pattern": {
+            "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+            "message": "Must be a http(s) URL"
+          }
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.oauthTokenEndpoint",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.clientId",
+        "label": "Client ID",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.clientId",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.clientSecret",
+        "label": "Client secret",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.clientSecret",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String",
+        "secret": true
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.audience",
+        "label": "Audience",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.audience",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.clientAuthentication",
+        "label": "Client authentication",
+        "optional": false,
+        "value": "BASIC_AUTH_HEADER",
+        "constraints": {
+          "notEmpty": true
+        },
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.clientAuthentication",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Send as Basic Auth header",
+            "value": "BASIC_AUTH_HEADER"
+          },
+          {
+            "name": "Send client credentials in body",
+            "value": "CREDENTIALS_BODY"
+          }
+        ]
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.scopes",
+        "label": "Scopes",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.scopes",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.timeouts.timeout",
+        "label": "Timeout",
+        "description": "Timeout specification for API calls to the model provider defined as ISO-8601 duration (example: <code>PT60S</code>).",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.timeouts.timeout",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
           "type": "simple"
         },
         "type": "String"
@@ -74528,6 +76455,156 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "String"
       },
       {
+        "id": "provider.mistral.backend.mistral.headers",
+        "label": "Headers",
+        "optional": true,
+        "binding": {
+          "name": "provider.mistral.backend.mistral.headers",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.mistral.queryParameters",
+        "label": "Query parameters",
+        "optional": true,
+        "binding": {
+          "name": "provider.mistral.backend.mistral.queryParameters",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.mistral.bodyProperties",
+        "label": "Body properties",
+        "optional": true,
+        "binding": {
+          "name": "provider.mistral.backend.mistral.bodyProperties",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.custom.headers",
+        "label": "Headers",
+        "description": "Map of HTTP headers to add to the request.",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.backend.custom.headers",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.queryParameters",
+        "label": "Query parameters",
+        "description": "Map of query parameters to add to the request URL.",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.backend.custom.queryParameters",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.bodyProperties",
+        "label": "Body properties",
+        "description": "Map of additional properties to include in the request body.",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.backend.custom.bodyProperties",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
         "id": "provider.anthropic.model.model",
         "label": "Model",
         "optional": false,
@@ -74947,6 +77024,55 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
+        "id": "provider.mistral.model.model",
+        "label": "Model",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.model.model",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.parameters.effort",
+        "label": "Effort",
+        "optional": false,
+        "value": "modelDefault",
+        "binding": {
+          "name": "provider.mistral.parameters.effort",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "default",
+            "value": "modelDefault"
+          },
+          {
+            "name": "none",
+            "value": "none"
+          },
+          {
+            "name": "high",
+            "value": "high"
+          }
+        ]
+      },
+      {
         "id": "provider.model",
         "label": "Model",
         "optional": false,
@@ -75287,6 +77413,54 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "condition": {
           "property": "provider.type",
           "equals": "google-gemini",
+          "type": "simple"
+        },
+        "type": "Number"
+      },
+      {
+        "id": "provider.mistral.parameters.maxTokens",
+        "label": "Max tokens",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.parameters.maxTokens",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Number"
+      },
+      {
+        "id": "provider.mistral.parameters.temperature",
+        "label": "Temperature",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.parameters.temperature",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Number"
+      },
+      {
+        "id": "provider.mistral.parameters.topP",
+        "label": "top P",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.parameters.topP",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
           "type": "simple"
         },
         "type": "Number"
@@ -75852,7 +78026,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message queue",
       "stream data"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
     "version": 8,
     "appliesTo": [
       "bpmn:StartEvent"
@@ -77050,7 +79224,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "natural language processing",
       "machine learning"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/amazon-comprehend/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-comprehend/",
     "version": 6,
     "appliesTo": [
       "bpmn:Task"
@@ -77868,7 +80042,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "process monitoring",
       "workflow status"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/protocol/rest/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/protocol/rest/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -78401,7 +80575,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "notification"
     ],
     "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/",
-    "version": 9,
+    "version": 10,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -78409,7 +80583,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.10"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -78538,6 +80712,17 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Microsoft Entra ID credential",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:microsoft-entra:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
         "description": "Authentication type depends on your Microsoft Entra (Azure AD) configuration. See <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/'>connector documentation</a>",
@@ -78545,6 +80730,11 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -78575,11 +80765,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.credentials.clientId",
@@ -78594,9 +80794,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -78613,9 +80822,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -78632,11 +80850,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.token",
@@ -78651,11 +80879,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.clientId",
@@ -78670,9 +80908,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -78689,9 +80936,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -78705,11 +80961,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "data.createChat.chatType",
@@ -80322,7 +82588,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "9",
+        "value": "10",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -80707,6 +82973,189 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "data.channelMethod": "listMembersInChannel"
         }
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:microsoft-entra:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Microsoft Entra ID",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "value": "clientCredentials",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Bearer token",
+                "value": "token"
+              },
+              {
+                "name": "Client credentials",
+                "value": "clientCredentials"
+              },
+              {
+                "name": "Refresh token",
+                "value": "refresh"
+              }
+            ]
+          },
+          {
+            "id": "authentication.bearer.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.credentials.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.token",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.clientSecret",
+            "label": "Client secret",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application; optional, depends on whether the client is public or private",
+            "type": "String",
+            "secret": true
+          }
+        ]
+      }
     ]
   },
   {
@@ -80726,7 +83175,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "poll email"
     ],
     "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/",
-    "version": 2,
+    "version": 3,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
       "bpmn:IntermediateThrowEvent"
@@ -80736,7 +83185,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "eventDefinition": "bpmn:MessageEventDefinition"
     },
     "engines": {
-      "camunda": "^8.9"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -80748,6 +83197,17 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Microsoft Entra ID credential",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:microsoft-entra:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
         "description": "Authentication type depends on your Microsoft Entra (Azure AD) configuration. See <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/'>connector documentation</a>",
@@ -80755,6 +83215,11 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -80784,11 +83249,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.credentials.clientId",
@@ -80803,9 +83278,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -80822,9 +83306,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -80841,11 +83334,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.token",
@@ -80860,11 +83363,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.clientId",
@@ -80879,9 +83392,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -80898,9 +83420,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -80914,11 +83445,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "pollingConfig.userId",
@@ -81393,6 +83934,189 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         },
         "type": "Text"
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:microsoft-entra:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Microsoft Entra ID",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "value": "clientCredentials",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Bearer token",
+                "value": "token"
+              },
+              {
+                "name": "Client credentials",
+                "value": "clientCredentials"
+              },
+              {
+                "name": "Refresh token",
+                "value": "refresh"
+              }
+            ]
+          },
+          {
+            "id": "authentication.bearer.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.credentials.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.token",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.clientSecret",
+            "label": "Client secret",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application; optional, depends on whether the client is public or private",
+            "type": "String",
+            "secret": true
+          }
+        ]
+      }
     ]
   },
   {
@@ -81413,7 +84137,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "object storage",
       "file storage"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/google-cloud-storage",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-cloud-storage",
     "version": 5,
     "appliesTo": [
       "bpmn:Task"
@@ -84930,7 +87654,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "A2A Client Webhook Receive Task Connector (early access)",
     "id": "io.camunda.connectors.agenticai.a2a.client.webhook.receive.v0",
     "description": "Agent-to-Agent (A2A) webhook inbound connector that can be used to receive callbacks from remote A2A servers.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/early-access/alpha/a2a-client/a2a-client-webhook-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/early-access/alpha/a2a-client/a2a-client-webhook-connector/",
     "version": 1,
     "appliesTo": [
       "bpmn:ReceiveTask"
@@ -85083,7 +87807,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -85556,6 +88280,10 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "name": "Google Gemini",
             "value": "google-gemini"
+          },
+          {
+            "name": "Mistral AI",
+            "value": "mistral"
           },
           {
             "name": "Custom Implementation (Self-Managed/Hybrid only)",
@@ -87154,7 +89882,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "provider.openai.backend.custom.endpoint",
         "label": "API endpoint",
-        "description": "Base URL of the OpenAI-compatible API; <code>/chat/completions</code> or <code>/responses</code> will be appended depending on the selected API.",
+        "description": "Base URL of the OpenAI-compatible API. <code>/chat/completions</code> or <code>/responses</code> will be appended depending on the selected API.",
         "optional": false,
         "constraints": {
           "notEmpty": true
@@ -87718,6 +90446,410 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "condition": {
           "property": "provider.type",
           "equals": "google-gemini",
+          "type": "simple"
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.type",
+        "label": "Connection",
+        "description": "Specify how the Mistral API is reached.",
+        "value": "mistral-api",
+        "binding": {
+          "name": "provider.mistral.backend.type",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Mistral API",
+            "value": "mistral-api"
+          },
+          {
+            "name": "Custom / compatible endpoint",
+            "value": "custom"
+          }
+        ]
+      },
+      {
+        "id": "provider.mistral.backend.mistral.apiKey",
+        "label": "Mistral API key",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.mistral.apiKey",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.mistral.endpoint",
+        "label": "API endpoint",
+        "optional": true,
+        "value": "https://api.mistral.ai/v1",
+        "binding": {
+          "name": "provider.mistral.backend.mistral.endpoint",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.custom.endpoint",
+        "label": "API endpoint",
+        "description": "Base URL of the Mistral-compatible API. <code>/chat/completions</code> will be appended.",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.endpoint",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.type",
+        "label": "Authentication",
+        "description": "Authentication for the compatible API.",
+        "value": "none",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.type",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "None",
+            "value": "none"
+          },
+          {
+            "name": "API key",
+            "value": "apiKey"
+          },
+          {
+            "name": "OAuth 2.0",
+            "value": "oauth-client-credentials-flow"
+          }
+        ]
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.apiKey",
+        "label": "API key",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.apiKey",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.oauthTokenEndpoint",
+        "label": "OAuth 2.0 token endpoint",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true,
+          "pattern": {
+            "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+            "message": "Must be a http(s) URL"
+          }
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.oauthTokenEndpoint",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.clientId",
+        "label": "Client ID",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.clientId",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.clientSecret",
+        "label": "Client secret",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.clientSecret",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String",
+        "secret": true
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.audience",
+        "label": "Audience",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.audience",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.clientAuthentication",
+        "label": "Client authentication",
+        "optional": false,
+        "value": "BASIC_AUTH_HEADER",
+        "constraints": {
+          "notEmpty": true
+        },
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.clientAuthentication",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Send as Basic Auth header",
+            "value": "BASIC_AUTH_HEADER"
+          },
+          {
+            "name": "Send client credentials in body",
+            "value": "CREDENTIALS_BODY"
+          }
+        ]
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.scopes",
+        "label": "Scopes",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.scopes",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.timeouts.timeout",
+        "label": "Timeout",
+        "description": "Timeout specification for API calls to the model provider defined as ISO-8601 duration (example: <code>PT60S</code>).",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.timeouts.timeout",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
           "type": "simple"
         },
         "type": "String"
@@ -88364,6 +91496,156 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "String"
       },
       {
+        "id": "provider.mistral.backend.mistral.headers",
+        "label": "Headers",
+        "optional": true,
+        "binding": {
+          "name": "provider.mistral.backend.mistral.headers",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.mistral.queryParameters",
+        "label": "Query parameters",
+        "optional": true,
+        "binding": {
+          "name": "provider.mistral.backend.mistral.queryParameters",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.mistral.bodyProperties",
+        "label": "Body properties",
+        "optional": true,
+        "binding": {
+          "name": "provider.mistral.backend.mistral.bodyProperties",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.custom.headers",
+        "label": "Headers",
+        "description": "Map of HTTP headers to add to the request.",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.backend.custom.headers",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.queryParameters",
+        "label": "Query parameters",
+        "description": "Map of query parameters to add to the request URL.",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.backend.custom.queryParameters",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.bodyProperties",
+        "label": "Body properties",
+        "description": "Map of additional properties to include in the request body.",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.backend.custom.bodyProperties",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
         "id": "provider.anthropic.model.model",
         "label": "Model",
         "optional": false,
@@ -88783,6 +92065,55 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
+        "id": "provider.mistral.model.model",
+        "label": "Model",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.model.model",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.parameters.effort",
+        "label": "Effort",
+        "optional": false,
+        "value": "modelDefault",
+        "binding": {
+          "name": "provider.mistral.parameters.effort",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "default",
+            "value": "modelDefault"
+          },
+          {
+            "name": "none",
+            "value": "none"
+          },
+          {
+            "name": "high",
+            "value": "high"
+          }
+        ]
+      },
+      {
         "id": "provider.model",
         "label": "Model",
         "optional": false,
@@ -89123,6 +92454,54 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "condition": {
           "property": "provider.type",
           "equals": "google-gemini",
+          "type": "simple"
+        },
+        "type": "Number"
+      },
+      {
+        "id": "provider.mistral.parameters.maxTokens",
+        "label": "Max tokens",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.parameters.maxTokens",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Number"
+      },
+      {
+        "id": "provider.mistral.parameters.temperature",
+        "label": "Temperature",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.parameters.temperature",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Number"
+      },
+      {
+        "id": "provider.mistral.parameters.topP",
+        "label": "top P",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.parameters.topP",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
           "type": "simple"
         },
         "type": "Number"
@@ -89675,7 +93054,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "Embeddings Vector DB Outbound Connector",
     "id": "io.camunda.connectors.EmbeddingsVectorDB.v1",
     "description": "Embed and download documents with vector databases",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/embeddings-vector-db/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/embeddings-vector-db/",
     "version": 3,
     "appliesTo": [
       "bpmn:Task"
@@ -91885,7 +95264,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -92382,7 +95761,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "poll email"
     ],
     "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/",
-    "version": 2,
+    "version": 3,
     "appliesTo": [
       "bpmn:StartEvent"
     ],
@@ -92391,7 +95770,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "eventDefinition": "bpmn:MessageEventDefinition"
     },
     "engines": {
-      "camunda": "^8.9"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -92403,6 +95782,17 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Microsoft Entra ID credential",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:microsoft-entra:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
         "description": "Authentication type depends on your Microsoft Entra (Azure AD) configuration. See <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/'>connector documentation</a>",
@@ -92410,6 +95800,11 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -92439,11 +95834,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.credentials.clientId",
@@ -92458,9 +95863,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -92477,9 +95891,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -92496,11 +95919,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.token",
@@ -92515,11 +95948,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.clientId",
@@ -92534,9 +95977,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -92553,9 +96005,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -92569,11 +96030,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "pollingConfig.userId",
@@ -93079,13 +96550,196 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         },
         "type": "Text"
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:microsoft-entra:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Microsoft Entra ID",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "value": "clientCredentials",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Bearer token",
+                "value": "token"
+              },
+              {
+                "name": "Client credentials",
+                "value": "clientCredentials"
+              },
+              {
+                "name": "Refresh token",
+                "value": "refresh"
+              }
+            ]
+          },
+          {
+            "id": "authentication.bearer.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.credentials.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.token",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.clientSecret",
+            "label": "Client secret",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application; optional, depends on whether the client is public or private",
+            "type": "String",
+            "secret": true
+          }
+        ]
+      }
     ]
   },
   {
     "name": "A2A Client Polling Intermediate Catch Event Connector (early access)",
     "id": "io.camunda.connectors.agenticai.a2a.client.polling.intermediate.v0",
     "description": "Agent-to-Agent (A2A) polling inbound connector. Supports polling asynchronous tasks, but can also directly correlate messages and synchronously completed tasks.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/early-access/alpha/a2a-client/a2a-client-polling-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/early-access/alpha/a2a-client/a2a-client-polling-connector/",
     "version": 0,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
