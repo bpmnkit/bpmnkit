@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-10-18 — Parity: `casen test` against real Camunda Process Test
+
+- Ran the AI agent tutorial's six CPT cases on 8 BPMN files (the bake-off fixture, the bk3 and bk4 rerun outputs, five broken variants) on CPT 8.10.0 and on `casen test`. 42 of 48 cells agree; the 6 that do not are the missing-form file, a documented difference (reebe does not check forms). Record: `doc/cpt-on-reebe-parity.md`.
+- Fix: the CPT runner no longer lets `COMPLETE_USER_TASK` match a user task without `zeebe:userTask`. Zeebe runs those as job-worker user tasks, which CPT's user-task selector cannot see; the failure says so. Regression test in `packages/engine/tests/cpt/run.test.ts`.
+
 ## 2026-10-18 — CLI: `casen test` runs CPT files
 
 - `casen test <file.bpmn>` detects a Camunda process-test JSON file (by its `$schema`) and runs it with `runCptTestCases` on reebe-wasm; the old `.bpmn.tests.json` array format still goes through `runScenarioWasm`. The scenarios file is the `--scenarios` value, else `<file>.bpmn.tests.json`, else `<name>.test.json` (`resolveScenariosPath`). Repeatable `--case <name>` selects test cases. Output is `PASS`/`FAIL` per case with `instruction <n> (<type>): <message>`, or just the message when no instruction ran; exit 1 on any failure. Tests in `apps/cli/src/commands/test.test.ts`.

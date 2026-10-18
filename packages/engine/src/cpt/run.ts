@@ -1,3 +1,4 @@
+import { type XmlElement, parseXml } from "@bpmnkit/core"
 import { ensureWasmInit } from "../wasm-init.js"
 import type {
 	CptCaseResult,
@@ -100,13 +101,52 @@ function findJob(snap: Snapshot, sel: CptJobSelector) {
 	return job ?? fail(`no open job matches ${describeSelector(sel)}\n${describeState(snap)}`)
 }
 
-function findUserTask(snap: Snapshot, sel: CptUserTaskSelector) {
-	const task = openUserTasks(snap).find(
+const localName = (el: XmlElement): string => el.name.slice(el.name.indexOf(":") + 1)
+
+/**
+ * Ids of `userTask`s without `<zeebe:userTask/>`. Zeebe runs those as job-worker
+ * user tasks, which Camunda's user-task API (and so CPT's user-task selector)
+ * never lists; reebe runs every user task as a Camunda user task.
+ */
+function jobWorkerUserTaskIds(bpmn: string): Set<string> {
+	const ids = new Set<string>()
+	const walk = (el: XmlElement): void => {
+		for (const child of el.children) {
+			if (localName(child) === "extensionElements") continue
+			if (localName(child) === "userTask") {
+				const native = child.children.some(
+					(c) =>
+						localName(c) === "extensionElements" &&
+						c.children.some((x) => localName(x) === "userTask"),
+				)
+				const id = child.attributes.id
+				if (!native && id !== undefined) ids.add(id)
+			}
+			walk(child)
+		}
+	}
+	try {
+		walk(parseXml(bpmn))
+	} catch {
+		// Unparseable XML fails at deploy with reebe's own message.
+	}
+	return ids
+}
+
+function findUserTask(snap: Snapshot, sel: CptUserTaskSelector, jobWorker: Set<string>) {
+	const matching = openUserTasks(snap).filter(
 		(t) =>
 			(sel.elementId === undefined || t.element_id === sel.elementId) &&
 			(sel.processDefinitionId === undefined || t.bpmn_process_id === sel.processDefinitionId),
 	)
-	return task ?? fail(`no open user task matches ${describeSelector(sel)}\n${describeState(snap)}`)
+	const task = matching.find((t) => !jobWorker.has(t.element_id))
+	if (task) return task
+	const hidden = matching.map((t) => t.element_id)
+	const note =
+		hidden.length > 0
+			? `\n  ${list(hidden)}: no zeebe:userTask, so Zeebe runs it as a job-worker user task, which the user-task API does not list`
+			: ""
+	return fail(`no open user task matches ${describeSelector(sel)}${note}\n${describeState(snap)}`)
 }
 
 function findInstance(snap: Snapshot, processDefinitionId: string) {
@@ -179,7 +219,7 @@ function assertElements(
 	}
 }
 
-function step(engine: Engine, ins: CptInstruction): void {
+function step(engine: Engine, ins: CptInstruction, jobWorker: Set<string>): void {
 	const snap = () => engine.snapshot() as Snapshot
 	switch (ins.type) {
 		case "CREATE_PROCESS_INSTANCE":
@@ -209,7 +249,7 @@ function step(engine: Engine, ins: CptInstruction): void {
 			return
 		}
 		case "COMPLETE_USER_TASK": {
-			const task = findUserTask(snap(), ins.userTaskSelector)
+			const task = findUserTask(snap(), ins.userTaskSelector, jobWorker)
 			engine.complete_user_task(task.key, JSON.stringify(ins.variables))
 			return
 		}
@@ -234,7 +274,12 @@ function step(engine: Engine, ins: CptInstruction): void {
 	}
 }
 
-function runCase(makeEngine: () => Engine, bpmn: string, tc: CptTestCase): CptCaseResult {
+function runCase(
+	makeEngine: () => Engine,
+	bpmn: string,
+	jobWorker: Set<string>,
+	tc: CptTestCase,
+): CptCaseResult {
 	const engine = makeEngine()
 	try {
 		try {
@@ -248,7 +293,7 @@ function runCase(makeEngine: () => Engine, bpmn: string, tc: CptTestCase): CptCa
 		}
 		for (const [index, ins] of tc.instructions.entries()) {
 			try {
-				step(engine, ins)
+				step(engine, ins, jobWorker)
 			} catch (e) {
 				return {
 					name: tc.name,
@@ -275,7 +320,10 @@ function runCase(makeEngine: () => Engine, bpmn: string, tc: CptTestCase): CptCa
  * - A `processInstanceSelector` matches the first-created (lowest-key) instance
  *   of that process id in the case.
  * - A job or user task selector matches the lowest-key open (activatable job /
- *   created user task) one whose given fields all match.
+ *   created user task) one whose given fields all match. A user task without
+ *   `zeebe:userTask` never matches: Zeebe runs it as a job-worker user task,
+ *   which CPT's user-task selector cannot see (reebe has no job-worker user
+ *   tasks, so a `COMPLETE_JOB` on `io.camunda.zeebe:userTask` finds nothing either).
  * - `IS_COMPLETED_IN_ORDER` passes when every listed element has completed at
  *   least once and the positions of each element's *first* completion are
  *   strictly increasing in the listed order. Loops therefore only constrain the
@@ -313,7 +361,10 @@ export async function runCptTestCases(input: {
 	const mod = await import("@bpmnkit/reebe-wasm")
 	const makeEngine = () => new mod.WasmEngine() as unknown as Engine
 
-	const cases: CptCaseResult[] = testCases.map((tc) => runCase(makeEngine, input.bpmn, tc))
+	const jobWorker = jobWorkerUserTaskIds(input.bpmn)
+	const cases: CptCaseResult[] = testCases.map((tc) =>
+		runCase(makeEngine, input.bpmn, jobWorker, tc),
+	)
 	for (const name of unknown) {
 		cases.push({
 			name,

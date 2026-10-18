@@ -123,6 +123,24 @@ describe("runCptTestCases", () => {
 		expect(caseNamed(report, HAPPY).passed).toBe(true)
 	})
 
+	// Parity run 2026-10-18: real CPT fails every case here with "no user task is available".
+	it("does not complete a user task without zeebe:userTask (a job-worker user task)", async () => {
+		const broken = BAKEOFF.replace(/\s*<zeebe:userTask\/>/, "")
+		expect(broken).not.toContain("<zeebe:userTask/>")
+		const report = await runCptTestCases({ bpmn: broken, cases: CASES })
+		expect(report.cases).toHaveLength(6)
+		for (const c of report.cases) {
+			const tc = CASES.testCases.find((x) => x.name === c.name)
+			expect(c.passed, c.name).toBe(false)
+			expect(c.failure?.type, c.name).toBe("COMPLETE_USER_TASK")
+			expect(c.failure?.index, c.name).toBe(
+				tc?.instructions.findIndex((ins) => ins.type === "COMPLETE_USER_TASK"),
+			)
+			expect(c.failure?.message).toContain("UserTask_ReviewAgentResponse")
+			expect(c.failure?.message).toContain("zeebe:userTask")
+		}
+	})
+
 	it("reports a selector that matches nothing, listing what is open", async () => {
 		const report = await runCptTestCases({
 			bpmn: SERVICE_TASK,
