@@ -2,8 +2,9 @@ import { copyFileSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { dirname, join, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
-import { beforeEach, describe, expect, it } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { parseArgs } from "../args.js"
+import { run as runCli } from "../run.js"
 import type { RunContext } from "../types.js"
 import { resolveScenariosPath, testGroup } from "./test.js"
 
@@ -150,5 +151,60 @@ describe("casen test with an old scenario file", () => {
 		const { lines, error } = await run([bpmn])
 		expect(error).toBeUndefined()
 		expect(lines.join("\n")).toContain("1/1 passed")
+	})
+})
+
+describe("casen test flags and routing", () => {
+	it("-s selects the scenarios file even when a sidecar exists", async () => {
+		const bpmn = bakeoff()
+		writeFileSync(`${bpmn}.tests.json`, "[]") // the sidecar a silent -s would run: a false pass
+		const cases = join(dir, "cases.json")
+		writeFileSync(cases, readFileSync(BAKEOFF_CPT, "utf8"))
+		const { lines, error } = await run([bpmn, "-s", cases])
+		expect(error).toBeUndefined()
+		expect(lines.some((l) => l.startsWith("PASS  "))).toBe(true)
+		expect(lines).not.toContain("No scenarios found.")
+	})
+
+	it("--case with a legacy scenario file prints a notice", async () => {
+		const bpmn = join(dir, "p.bpmn")
+		writeFileSync(bpmn, SIMPLE)
+		writeFileSync(`${bpmn}.tests.json`, "[]")
+		const { lines } = await run([bpmn, "--case", "x"])
+		expect(
+			lines.filter((l) => l.includes("--case applies only to Camunda test files")),
+		).toHaveLength(1)
+	})
+
+	describe("router", () => {
+		const capture = async (argv: string[]) => {
+			const out: string[] = []
+			const spy = vi.spyOn(process.stdout, "write").mockImplementation((c) => {
+				out.push(String(c))
+				return true
+			})
+			const code = process.exitCode
+			try {
+				await runCli(argv)
+			} finally {
+				spy.mockRestore()
+			}
+			const failed = process.exitCode
+			process.exitCode = code
+			return { out: out.join(""), failed }
+		}
+
+		it.each([["test"], []])("runs the command for `casen test %s<file>`", async (...pre) => {
+			const bpmn = bakeoff()
+			const { out, failed } = await capture(["test", ...pre.flat(), bpmn])
+			expect(out).toContain("PASS  ")
+			expect(failed).toBeUndefined()
+		})
+
+		it("`casen test --help` still shows help", async () => {
+			const { out } = await capture(["test", "--help"])
+			expect(out).toContain("test")
+			expect(out).not.toContain("PASS  ")
+		})
 	})
 })

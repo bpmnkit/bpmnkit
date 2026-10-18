@@ -170,3 +170,111 @@ describe("parseCptFile", () => {
 		expect("file" in r).toBe(true)
 	})
 })
+
+describe("parseCptFile: instruction validation", () => {
+	const W = 'case "c", instruction 0'
+	const CREATE = { type: "CREATE_PROCESS_INSTANCE", processDefinitionSelector: PD }
+	const adhoc = (extra: object) => ({
+		type: "COMPLETE_JOB_AD_HOC_SUB_PROCESS",
+		jobSelector: { jobType: "a" },
+		...extra,
+	})
+	const assertEls = (extra: object) => ({
+		type: "ASSERT_ELEMENT_INSTANCES",
+		processInstanceSelector: PD,
+		elementSelectors: [{ elementId: "e" }],
+		state: "IS_ACTIVE",
+		...extra,
+	})
+
+	it.each<[string, unknown, string]>([
+		[
+			"missing processDefinitionId",
+			{ type: "CREATE_PROCESS_INSTANCE", processDefinitionSelector: {} },
+			"processDefinitionSelector.processDefinitionId is required",
+		],
+		[
+			"missing elementId in activateElements",
+			adhoc({ activateElements: [{}] }),
+			"activateElements[0].elementId is required",
+		],
+		[
+			"missing state",
+			{ type: "ASSERT_PROCESS_INSTANCE", processInstanceSelector: PD },
+			"state is required",
+		],
+		[
+			"unsupported state",
+			{ type: "ASSERT_PROCESS_INSTANCE", processInstanceSelector: PD, state: "IS_GONE" },
+			"state IS_GONE is not supported by casen test yet",
+		],
+		[
+			"non-string selector value",
+			{ type: "COMPLETE_JOB", jobSelector: { jobType: 1 } },
+			"jobSelector.jobType must be a string",
+		],
+		[
+			"boolean given as string",
+			adhoc({ completionConditionFulfilled: "yes" }),
+			"completionConditionFulfilled must be a boolean",
+		],
+		[
+			"cancelRemainingInstances not boolean",
+			adhoc({ cancelRemainingInstances: 1 }),
+			"cancelRemainingInstances must be a boolean",
+		],
+		[
+			"variables not an object",
+			{ type: "COMPLETE_JOB", jobSelector: { jobType: "a" }, variables: [] },
+			"variables must be an object",
+		],
+		[
+			"empty elementSelectors",
+			assertEls({ elementSelectors: [] }),
+			"elementSelectors must be a non-empty array",
+		],
+		[
+			"bad elementSelectors entry",
+			assertEls({ elementSelectors: [{}] }),
+			"elementSelectors[0].elementId is required",
+		],
+		[
+			"activateElements not an array",
+			adhoc({ activateElements: "x" }),
+			"activateElements must be an array",
+		],
+		[
+			"activateElements entry not an object",
+			adhoc({ activateElements: ["x"] }),
+			"activateElements[0] must be an object",
+		],
+		[
+			"activateElements unknown key",
+			adhoc({ activateElements: [{ elementId: "e", foo: 1 }] }),
+			"activateElements[0].foo is not supported by casen test yet",
+		],
+		[
+			"activateElements variables not an object",
+			adhoc({ activateElements: [{ elementId: "e", variables: "x" }] }),
+			"activateElements[0].variables must be an object",
+		],
+		[
+			"type that is a built-in key",
+			{ type: "constructor" },
+			"constructor is not supported by casen test yet",
+		],
+		["type __proto__", { type: "__proto__" }, "__proto__ is not supported by casen test yet"],
+		["type toString", { type: "toString" }, "toString is not supported by casen test yet"],
+	])("%s", (_name, ins, message) => {
+		expect(errorsOf(ins)).toEqual([`${W}: ${message}`])
+	})
+
+	it("rejects empty instructions", () => {
+		const r = parseCptFile({ $schema: SCHEMA, testCases: [{ name: "c", instructions: [] }] })
+		expect(r).toEqual({ errors: ['case "c": instructions must be a non-empty array'] })
+	})
+
+	it("still accepts a plain create instruction", () => {
+		expect("file" in parseCptFile(file(CREATE))).toBe(true)
+	})
+})

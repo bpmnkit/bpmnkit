@@ -92,6 +92,13 @@ export async function run(argv: string[]): Promise<void> {
 	// ── Global parse ──────────────────────────────────────────────────────────
 	const { positional, flags, repeated } = parseArgs(argv)
 
+	// `casen test <file>`: the group has one command, so the file may follow directly (as with
+	// `dev`); `casen test test <file>` keeps working. Inserting the command name keeps the
+	// generic path (audit, error handling, help) in charge.
+	if (positional[0] === "test" && positional.length >= 2 && positional[1] !== "test") {
+		positional.splice(1, 0, "test")
+	}
+
 	const noColor = flags["no-color"] === true
 	const colors = !noColor && process.stdout.isTTY === true && !process.env.NO_COLOR
 	const wantVersion = flags.version === true || flags.v === true

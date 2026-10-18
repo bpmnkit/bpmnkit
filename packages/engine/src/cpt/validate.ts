@@ -47,7 +47,8 @@ function parseInstruction(raw: unknown, where: string, errors: string[]): CptIns
 		errors.push(`${where}: type must be a string`)
 		return null
 	}
-	const allowed = FIELDS[type]
+	// Own-property lookup: "constructor" or "__proto__" would otherwise find inherited members.
+	const allowed = Object.hasOwn(FIELDS, type) ? FIELDS[type] : undefined
 	if (!allowed) {
 		errors.push(`${where}: ${type} ${NOT_YET}`)
 		return null
@@ -84,11 +85,11 @@ function parseInstruction(raw: unknown, where: string, errors: string[]): CptIns
 	const requireId = (sel: Obj | null, key: string, field: string) => {
 		if (sel && typeof sel[field] !== "string") err(`${key}.${field} is required`)
 	}
-	const variables = (obj: Obj, key: string): Record<string, unknown> => {
+	const variables = (obj: Obj, key: string, prefix = ""): Record<string, unknown> => {
 		const v = obj[key]
 		if (v === undefined) return {}
 		if (!isObj(v)) {
-			err(`${key} must be an object`)
+			err(`${prefix}${key} must be an object`)
 			return {}
 		}
 		return v
@@ -108,7 +109,8 @@ function parseInstruction(raw: unknown, where: string, errors: string[]): CptIns
 			err("state is required")
 			return ""
 		}
-		if (!(STATES[type] ?? []).includes(s)) err(`state ${s} ${NOT_YET}`)
+		if (!((Object.hasOwn(STATES, type) ? STATES[type] : undefined) ?? []).includes(s))
+			err(`state ${s} ${NOT_YET}`)
 		return s
 	}
 
@@ -145,7 +147,7 @@ function parseInstruction(raw: unknown, where: string, errors: string[]): CptIns
 					const el: { elementId: string; variables?: Record<string, unknown> } = {
 						elementId: a.elementId,
 					}
-					if (a.variables !== undefined) el.variables = variables(a, "variables")
+					if (a.variables !== undefined) el.variables = variables(a, "variables", `${w}.`)
 					activateElements.push(el)
 				})
 			}
@@ -189,7 +191,7 @@ function parseInstruction(raw: unknown, where: string, errors: string[]): CptIns
 			}
 			break
 		}
-		default: {
+		case "ASSERT_PROCESS_INSTANCE": {
 			const sel = selector("processInstanceSelector", PI_SELECTOR, false)
 			requireId(sel, "processInstanceSelector", "processDefinitionId")
 			out = {
@@ -197,6 +199,7 @@ function parseInstruction(raw: unknown, where: string, errors: string[]): CptIns
 				processInstanceSelector: (sel ?? {}) as { processDefinitionId: string },
 				state: state() as "IS_ACTIVE",
 			}
+			break
 		}
 	}
 	return errors.length === before ? out : null

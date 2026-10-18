@@ -3,7 +3,7 @@ import { basename, dirname, extname, join } from "node:path"
 import { isCptFile, runCptTestCases } from "@bpmnkit/engine/cpt"
 import { runScenarioWasm } from "@bpmnkit/engine/wasm-runner"
 import type { ScenarioLike } from "@bpmnkit/engine/wasm-runner"
-import { flagAll } from "../args.js"
+import { flagAll, flagStr } from "../args.js"
 import type { Command, CommandGroup } from "../types.js"
 
 const exists = (path: string): Promise<boolean> =>
@@ -53,10 +53,7 @@ const testCmd: Command = {
 		const bpmnPath = ctx.positional[0]
 		if (bpmnPath === undefined) throw new Error("Missing required argument: <file>")
 
-		const scenariosPath = await resolveScenariosPath(
-			bpmnPath,
-			typeof ctx.flags.scenarios === "string" ? ctx.flags.scenarios : undefined,
-		)
+		const scenariosPath = await resolveScenariosPath(bpmnPath, flagStr(ctx.flags, "scenarios", "s"))
 
 		const bpmnXml = await readFile(bpmnPath, "utf8").catch(() => {
 			throw new Error(`Cannot read BPMN file: ${bpmnPath}`)
@@ -100,6 +97,11 @@ const testCmd: Command = {
 			ctx.output.info(`\n${report.cases.length - failedCases}/${report.cases.length} passed`)
 			if (failedCases > 0) throw new Error(`${failedCases} test case(s) failed`)
 			return
+		}
+
+		// Silently ignoring --case would run every scenario while the user thinks one ran.
+		if (flagAll(ctx.flags, ctx.repeated, "case").length > 0) {
+			ctx.output.info("--case applies only to Camunda test files; running all scenarios")
 		}
 
 		const scenarios = parsed as ScenarioLike[]

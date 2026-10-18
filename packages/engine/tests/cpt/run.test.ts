@@ -156,7 +156,20 @@ describe("runCptTestCases", () => {
 		expect(c?.failure?.index).toBe(1)
 		expect(c?.failure?.message).toContain('jobType "nope"')
 		expect(c?.failure?.message).toContain("work@Task")
-		expect(c?.failure?.message).toContain("Task")
+		expect(c?.failure?.message).toContain("active elements: Task")
+		expect(c?.failure?.message).toContain("open user tasks:")
+		expect(c?.failure?.message).toContain("incidents:")
+	})
+
+	it("fails the case, not the run, when the BPMN does not deploy", async () => {
+		const report = await runCptTestCases({
+			bpmn: "<not bpmn",
+			cases: file([{ name: "bad", instructions: [create("svc")] }]),
+		})
+		expect(report.cases).toHaveLength(1)
+		expect(report.cases[0]?.passed).toBe(false)
+		expect(report.cases[0]?.failure?.type).toBe("DEPLOY")
+		expect(report.cases[0]?.failure?.index).toBe(-1)
 	})
 
 	it("reports an incident's element on a failed completion assertion", async () => {
@@ -170,6 +183,7 @@ describe("runCptTestCases", () => {
 		expect(c?.passed).toBe(false)
 		expect(c?.failure?.index).toBe(1)
 		expect(c?.failure?.message).toContain("Gateway_Broken")
+		expect(c?.failure?.message).toMatch(/incidents: Gateway_Broken: .+/)
 	})
 
 	it("IS_COMPLETED_IN_ORDER checks the completion order", async () => {

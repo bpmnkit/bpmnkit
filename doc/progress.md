@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-10-18 — Final review fixes: `casen test` and the CPT validator
+
+- Validator: an instruction `type` that is a built-in object key (`constructor`, `__proto__`, `toString`) crashed with a TypeError, or was read as `ASSERT_PROCESS_INSTANCE`; lookups now use `Object.hasOwn`, `ASSERT_PROCESS_INSTANCE` is an explicit case, and a bad `activateElements[i].variables` reports its full path.
+- CLI: `-s` was declared but ignored, so a sidecar `<file>.bpmn.tests.json` ran instead of the named file (a false pass); `casen test <file>` now works as well as `casen test test <file>`; `--case` with a legacy scenario file prints a notice.
+- Tests: table-driven validator checks with exact messages, the incident and no-match state lines, the DEPLOY failure path, `-s`, both command spellings, `--case` notice.
+
 ## 2026-10-18 — Docs: `casen test test` runs Camunda process-test JSON
 
 - New recipe section "Does it run? Test it with casen test" in the executable-Camunda-process guide, a "Run process tests" entry in the casen CLI reference, a short subsection in the testing guide, and the agent skill's test step now uses `casen test test <file>.bpmn` (exit 0 = done). The real invocation is `casen test test`; every command line in the landing docs and the Claude plugin (guides, CLI reference, skills, agent, plan-format reference) that gave plain `casen test <file>` now uses `casen test test <file>`. Prose mentions of the name `casen test` are unchanged. Ranking case added to `packages/docspack/tests/recipe-ranking.test.ts`; docspack rebuilt.
