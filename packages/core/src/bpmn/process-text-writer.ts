@@ -271,6 +271,12 @@ export function writeProcessText(
 
 	for (const id of inner.keys()) lines.push(inside(id))
 
+	// Documentation, on one line like a note: it is the tool description of an agent's tool
+	for (const el of named) {
+		const text = el.documentation?.replace(/\s+/g, " ").trim()
+		if (text) lines.push(`doc ${alias.get(el.id)}: ${text}`)
+	}
+
 	// A note names an element it is associated with; one tied to nothing the format writes has no line.
 	const source = definitions.processes[0]
 	const annotations = new Map((source?.textAnnotations ?? []).map((a) => [a.id, a.text ?? ""]))

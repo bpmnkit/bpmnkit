@@ -728,3 +728,39 @@ note joke: Each tool is a capability`
 		expect(element(out.definitions, "box")).toBeUndefined()
 	})
 })
+
+describe("applyProcessDelta doc lines", () => {
+	const AGENT = `# Agent
+start[start Go] > agent[adhoc AI Agent] > fin[end Done]
+users[service Find sample users | inside=agent]
+doc users: Lists the sample users`
+
+	it("sets documentation on an existing node, one inside a container, and a new node", () => {
+		const defs = drawn(AGENT)
+		const out = apply(
+			defs,
+			"agent > review[user Review] > fin\ndoc review: Check it\ndoc agent: Runs tools\ndoc users: Finds people",
+		)
+		expect(out.problems).toEqual([])
+		const agent = element(out.definitions, "agent")
+		const tool =
+			agent && "flowElements" in agent
+				? agent.flowElements.find((e) => e.id === "users")
+				: undefined
+		expect(tool?.documentation).toBe("Finds people")
+		expect(element(out.definitions, "agent")?.documentation).toBe("Runs tools")
+		expect(element(out.definitions, out.created[0] ?? "")?.documentation).toBe("Check it")
+		expect(out.changed).toContain("users")
+	})
+
+	it("changes nothing when the documentation is restated", () => {
+		const out = apply(drawn(AGENT), "doc users: Lists the sample users")
+		expect(out.problems).toEqual([])
+		expect(out.changed).toEqual([])
+	})
+
+	it("reports a doc that names nothing", () => {
+		const out = apply(drawn(AGENT), "doc ghost: Nobody")
+		expect(out.problems.map((p) => p.message).join()).toMatch(/doc ghost.*not in the diagram/)
+	})
+})

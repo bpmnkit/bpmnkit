@@ -675,6 +675,24 @@ export function applyProcessDelta(
 		for (const line of connectorLines) changed.add(line.elementId)
 	}
 
+	// ── Documentation ────────────────────────────────────────────────────────
+	// Last, like notes, so it can name a node the script added or one inside an ad-hoc sub-process.
+	const documented: BpmnOperation[] = []
+	for (const doc of delta.docs) {
+		const target = real.get(doc.id) ?? options.aliases[doc.id]
+		const current = target === undefined ? undefined : element(target)
+		if (target === undefined || !current) {
+			problem(doc.line, `doc ${doc.id}: "${doc.id}" is not in the diagram; ignored`)
+		} else if ((current.documentation ?? "").replace(/\s+/g, " ").trim() !== doc.text) {
+			// Compared as the writer shows it (one line), so restating changes nothing
+			documented.push({ op: "update", id: target, patch: { documentation: doc.text } })
+			changed.add(target)
+		}
+	}
+	if (documented.length > 0) {
+		defs = applyBpmnOperations(defs, documented, { strict: false }).definitions
+	}
+
 	// ── Notes ────────────────────────────────────────────────────────────────
 	// Last, so a note can name a node the script added. A tool inside an ad-hoc sub-process has an
 	// alias too, and a shape of its own to be drawn beside.

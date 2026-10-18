@@ -45,6 +45,7 @@ Events take a trigger: start:message end:error catch:timer boundary:error (timer
 Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>, each=<list variable> (once per item), after=<ISO duration> (timer), result=<variable>, feel=<FEEL expression> (last)
 Also after |: form=<form id> (start, user), in.<name>=<FEEL> and out.<name>=<FEEL> map variables in and out of a step (value runs to the next word=; write comparisons with spaces: a = 1)
 Ad-hoc: agent[adhoc Name] is a container with flows like any node; tool[service Name | inside=agent] has no flows of its own; note <id>: text annotates a node
+doc <id>: text            the element's documentation; for a tool inside an ad-hoc agent it is the description the agent chooses the tool by
 Rules:
 - One start event. Every node is on a path from it to an end event: never a node nothing leads to.
 - An xor has two or more branches: exactly one is (Label: default), each other has a FEEL condition.
@@ -198,6 +199,12 @@ const ID = /^[A-Za-z_][\w.-]*/
 /** `note <id>: text`, which is not a path and may hold any characters. */
 export const NOTE_LINE = /^note\s+([A-Za-z_][\w.-]*)\s*:\s*(.*)$/i
 
+/** `doc <id>: text`, the element's documentation; free text like a note. */
+export const DOC_LINE = /^doc\s+([A-Za-z_][\w.-]*)\s*:\s*(.*)$/i
+
+/** A title segment that is only attributes of a known key: `camunda=8.10`. */
+const HEADER_SEGMENT = /^[\s,]*(?:camunda=[^\s,|]*[\s,]*)+$/
+
 /** A line that ends in an arrow, with or without a branch label: the path goes on below. */
 const DANGLING = /\s*-{0,2}>\s*(\([^()]*\))?\s*$/
 
@@ -256,7 +263,11 @@ export function splitMappings(attrs: string): {
 		mappings.push({
 			direction: at[1] as "in" | "out",
 			target: at[2] as string,
-			value: plain.slice(start, end).trim(),
+			// FEEL never ends in `|` or `,`: that is the separator before the next attribute
+			value: plain
+				.slice(start, end)
+				.replace(/[\s,|]+$/, "")
+				.trim(),
 		})
 		plain = `${plain.slice(0, at.index)} ${plain.slice(end)}`
 	}
@@ -458,6 +469,8 @@ class Reader {
 	readonly connectors: ConnectorRef[] = []
 	/** `note` lines, with the written id resolved to the node it meant when read. */
 	readonly notes: { elementId: string; written: string; text: string; line: number }[] = []
+	/** `doc` lines, with the written id resolved to the node it meant when read. */
+	readonly docs: { elementId: string; written: string; text: string; line: number }[] = []
 	/** Catch and boundary events written without a trigger, and made message events. */
 	readonly guessedMessage = new Set<string>()
 	title: string | undefined
@@ -492,9 +505,13 @@ class Reader {
 		if (text === "" || text.startsWith("```") || text.startsWith("//")) return false
 		if (text.startsWith("#")) {
 			if (this.title === undefined) {
-				const [name = "", ...rest] = text.replace(/^#+/, "").split("|")
-				this.title = name.trim() || undefined
-				this.header(rest.join("|"), n)
+				const parts = text.replace(/^#+/, "").split("|")
+				// Peel segments off the end while they are all `camunda=…`; anything else is
+				// part of the name (`# Order | Payment flow`).
+				let keep = parts.length
+				while (keep > 1 && HEADER_SEGMENT.test(parts[keep - 1] ?? "")) keep--
+				this.title = parts.slice(0, keep).join("|").trim() || undefined
+				this.header(parts.slice(keep).join("|"), n)
 			}
 			return false
 		}
@@ -515,6 +532,17 @@ class Reader {
 				elementId: this.current.get(written) ?? written,
 				written,
 				text: (note[2] ?? "").trim(),
+				line: n,
+			})
+			return true
+		}
+		const doc = DOC_LINE.exec(text)
+		if (doc) {
+			const written = doc[1] as string
+			this.docs.push({
+				elementId: this.current.get(written) ?? written,
+				written,
+				text: (doc[2] ?? "").trim(),
 				line: n,
 			})
 			return true
@@ -999,13 +1027,34 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	// it is taken out of the flow rules below. One that cannot live there stays where it is written.
 	const childNodes: Node[] = []
 	for (const [id, node] of [...nodes]) {
-		const parentId = node.inside
+		let parentId = node.inside
 		if (parentId === undefined) continue
-		const parent = nodes.get(parentId)
+		let parent = nodes.get(parentId)
 		const type = node.element.type
 		if (parent === undefined && !final) {
 			nodes.delete(id) // container still to come
 			continue
+		}
+		// `inside=agnet`: with one ad-hoc sub-process in the diagram there is no doubt which was meant
+		const only = [...nodes.values()].filter((n) => n.element.type === "adHocSubProcess")
+		const sole = only.length === 1 ? only[0] : undefined
+		if (parent === undefined && sole !== undefined && !sole.inside) {
+			const written = parentId
+			const name = node.element.name ?? nameFromId(id)
+			node.inside = parentId = sole.element.id
+			parent = sole
+			fixes.push(
+				`read inside=${written} on "${id}" as inside="${parentId}", the only ad-hoc sub-process`,
+			)
+			asks.push({
+				line: node.line,
+				ask: () => ({
+					elementId: id,
+					text: `inside=${written} on "${name}" names no ad-hoc sub-process, so it was put in "${nameOf(parentId ?? "")}", the only one. Is that where it belongs?`,
+					options: [],
+					draft: `Move "${name}" to `,
+				}),
+			})
 		}
 		const why =
 			parent === undefined
@@ -1018,9 +1067,11 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 							? `only a task can be inside an ad-hoc sub-process, not ${type}`
 							: undefined
 		if (why !== undefined) {
+			// A node nothing leads to is dropped later as unconnected; say so rather than "stays"
+			const drawn = reader.edges.some((edge) => edge.from === id || edge.to === id)
 			problems.push({
 				line: node.line,
-				message: `inside=${parentId} on "${id}": ${why}; "${id}" stays at the top level`,
+				message: `inside=${parentId} on "${id}": ${why}; "${id}" ${drawn ? "stays at the top level" : "has no flows, so it is left out"}`,
 			})
 			node.inside = undefined
 			continue
@@ -1802,6 +1853,26 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 					note.text === ""
 						? `note ${note.written}: has no text; ignored`
 						: `note ${note.written}: names no node of the diagram; ignored`,
+			})
+		}
+	}
+
+	// Documentation goes on the element itself, a tool inside an ad-hoc sub-process included
+	const everyElement = new Map<string, CompactElement>()
+	for (const node of nodes.values()) everyElement.set(node.element.id, node.element)
+	for (const child of childNodes) {
+		if (nodes.has(child.inside ?? "")) everyElement.set(child.element.id, child.element)
+	}
+	for (const doc of reader.docs) {
+		const element = everyElement.get(doc.elementId)
+		if (element !== undefined && doc.text !== "") element.documentation = doc.text
+		else if (final) {
+			problems.push({
+				line: doc.line,
+				message:
+					doc.text === ""
+						? `doc ${doc.written}: has no text; ignored`
+						: `doc ${doc.written}: names no node of the diagram; ignored`,
 			})
 		}
 	}

@@ -3,10 +3,12 @@ import { resolveBpmnlintConfig } from "../src/bpmn/bpmnlint.js"
 import { compactify, expand } from "../src/bpmn/compact.js"
 import { Bpmn } from "../src/bpmn/index.js"
 import { lintDiagram } from "../src/bpmn/lint.js"
+import { writeProcessText } from "../src/bpmn/process-text-writer.js"
 import {
 	PROCESS_TEXT_GUIDE,
 	createProcessTextStream,
 	parseProcessText,
+	splitMappings,
 } from "../src/bpmn/process-text.js"
 
 const EXAMPLE = PROCESS_TEXT_GUIDE.slice(
@@ -1451,5 +1453,87 @@ with ghost: http GET https://x.example`)
 		expect(parsed.problems.map((p) => p.message)).toEqual([
 			'"with ghost:" names no node of the diagram; ignored',
 		])
+	})
+})
+
+describe("Phase C final review: mappings, titles, inside= and doc", () => {
+	it("does not let a mapping value absorb a following bar or comma", () => {
+		const bar = parseProcessText("s[start S] > u[user U | in.a=x | form=f] > e[end E]")
+		expect(bar.diagram.processes[0]?.elements[1]).toMatchObject({
+			inputs: { a: "=x" },
+			formId: "f",
+		})
+		const comma = parseProcessText("s[start S] > u[user U | in.a=x, out.b=y] > e[end E]")
+		expect(comma.diagram.processes[0]?.elements[1]).toMatchObject({
+			inputs: { a: "=x" },
+			outputs: { b: "=y" },
+		})
+		expect(splitMappings("in.a=x | form=f").mappings[0]?.value).toBe("x")
+	})
+
+	it("keeps a title tail that is not an attribute list as part of the name", () => {
+		expect(
+			parseProcessText("# Order | Payment flow\ns[start S] > e[end E]").diagram.processes[0]?.name,
+		).toBe("Order | Payment flow")
+		const real = parseProcessText("# Order | camunda=8.10\ns[start S] > e[end E]")
+		expect(real.diagram.processes[0]?.name).toBe("Order")
+		expect(real.diagram.executionPlatformVersion).toBe("8.10.0")
+		const unknown = parseProcessText("# Order | colour=red\ns[start S] > e[end E]")
+		expect(unknown.diagram.processes[0]?.name).toBe("Order | colour=red")
+	})
+
+	it("resolves an unknown inside= to the only ad-hoc container, and says so", () => {
+		const r = parseProcessText(
+			"s[start S] > agent[adhoc A] > e[end E]\nt[service T | inside=agnet]",
+		)
+		expect(
+			r.diagram.processes[0]?.elements
+				.find((e) => e.id === "agent")
+				?.children?.elements.map((e) => e.id),
+		).toEqual(["t"])
+		expect(r.problems.map((p) => p.message).join()).not.toMatch(/stays at the top level/)
+		expect(r.fixes.join()).toMatch(/inside=agnet.*"agent"/)
+		expect(r.questions.map((q) => q.text).join()).toMatch(/agnet.*"A"/)
+	})
+
+	it("says the truth when inside= names nothing and no single container fits", () => {
+		const r = parseProcessText("s[start S] > e[end E]\nt[service T | inside=agnet]")
+		const text = r.problems.map((p) => p.message).join()
+		expect(text).toMatch(/never declared/)
+		expect(text).not.toMatch(/stays at the top level/)
+		expect(text).toMatch(/left out/)
+	})
+
+	it("reads doc lines onto top-level and inside nodes, and writes them back", () => {
+		const text = [
+			"s[start S] > agent[adhoc A] > e[end E]",
+			"t[service T | inside=agent]",
+			"doc t: Searches the recipe catalogue.",
+			"doc s: Starts it",
+		].join("\n")
+		const r = parseProcessText(text)
+		expect(r.problems).toEqual([])
+		const els = r.diagram.processes[0]?.elements ?? []
+		expect(els.find((e) => e.id === "s")?.documentation).toBe("Starts it")
+		expect(els.find((e) => e.id === "agent")?.children?.elements[0]?.documentation).toBe(
+			"Searches the recipe catalogue.",
+		)
+		const defs = Bpmn.parse(Bpmn.export(expand(r.diagram)))
+		const { text: back } = writeProcessText(defs)
+		expect(back).toMatch(/^doc \w+: Searches the recipe catalogue\.$/m)
+		expect(back).toMatch(/^doc \w+: Starts it$/m)
+		const again = parseProcessText(back)
+		expect(again.problems).toEqual([])
+	})
+
+	it("reports a doc that names nothing or has no text", () => {
+		const a = parseProcessText("s[start S] > e[end E]\ndoc ghost: Nobody")
+		expect(a.problems.map((p) => p.message).join()).toMatch(/doc ghost.*names no node/)
+		const b = parseProcessText("s[start S] > e[end E]\ndoc s:")
+		expect(b.problems.map((p) => p.message).join()).toMatch(/doc s.*no text/)
+	})
+
+	it("teaches doc in one guide line", () => {
+		expect(PROCESS_TEXT_GUIDE.split("\n").filter((l) => l.includes("doc <id>:"))).toHaveLength(1)
 	})
 })

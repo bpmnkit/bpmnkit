@@ -21,6 +21,7 @@ import type { CompactFlow } from "./compact.js"
 import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connector-line.js"
 import {
 	ALIASES,
+	DOC_LINE,
 	KINDS,
 	NOTE_LINE,
 	type ProcessTextProblem,
@@ -119,6 +120,8 @@ export interface ProcessDelta {
 	connectors: ConnectorLine[]
 	/** `note` lines: a text annotation for a node, existing or new. */
 	notes: { id: string; text: string; line: number }[]
+	/** `doc` lines: the documentation of a node, existing or new. */
+	docs: { id: string; text: string; line: number }[]
 	/** Lines, or parts of lines, that were left out. */
 	problems: ProcessTextProblem[]
 }
@@ -202,6 +205,7 @@ export function parseProcessDelta(text: string): ProcessDelta {
 		addressed: [],
 		connectors: [],
 		notes: [],
+		docs: [],
 		problems: [],
 	}
 	const declared = new Map<string, DeltaNode>()
@@ -324,6 +328,14 @@ export function parseProcessDelta(text: string): ProcessDelta {
 			if (text === "")
 				delta.problems.push({ line: n, message: `note ${note[1]}: has no text; ignored` })
 			else delta.notes.push({ id: note[1] as string, text, line: n })
+			return
+		}
+		const doc = DOC_LINE.exec(line)
+		if (doc) {
+			const text = (doc[2] ?? "").trim()
+			if (text === "")
+				delta.problems.push({ line: n, message: `doc ${doc[1]}: has no text; ignored` })
+			else delta.docs.push({ id: doc[1] as string, text, line: n })
 			return
 		}
 		// `- x` removes; `-> x` is an arrow a model wrote at the start of a line.

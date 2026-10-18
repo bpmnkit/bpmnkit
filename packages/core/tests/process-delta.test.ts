@@ -190,3 +190,18 @@ describe("parseProcessDelta — ad-hoc sub-processes and notes", () => {
 		expect(parseProcessDelta(EXAMPLE).notes).toEqual([])
 	})
 })
+
+describe("parseProcessDelta review fixes", () => {
+	it("does not let a mapping value absorb a following bar or comma", () => {
+		const bar = parseProcessDelta("u[user U | in.a=x | form=f]")
+		expect(bar.nodes[0]).toMatchObject({ inputs: { a: "=x" }, formId: "f" })
+		const comma = parseProcessDelta("u[user U | in.a=x, out.b=y]")
+		expect(comma.nodes[0]).toMatchObject({ inputs: { a: "=x" }, outputs: { b: "=y" } })
+	})
+
+	it("reads doc lines, and reports one with no text", () => {
+		const delta = parseProcessDelta("doc t: Looks things up\ndoc u:")
+		expect(delta.docs).toEqual([{ id: "t", text: "Looks things up", line: 1 }])
+		expect(delta.problems.map((p) => p.message).join()).toMatch(/doc u.*no text/)
+	})
+})
