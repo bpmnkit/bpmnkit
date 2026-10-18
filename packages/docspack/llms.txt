@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.2.0. 393 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.2.0. 394 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -17,7 +17,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [casen CLI — View BPMN, DMN, and Form files](.llms/chunks/cli.casen.view-bpmn-dmn-and-form-files.md) — 274 tokens
 - [casen CLI — Common Workflows](.llms/chunks/cli.casen.common-workflows.md) — 191 tokens
 - [casen CLI — Plugins](.llms/chunks/cli.casen.plugins.md) — 270 tokens
-- [casen CLI — BPMN generation pipeline](.llms/chunks/cli.casen.bpmn-generation-pipeline.md) — 507 tokens
+- [casen CLI — BPMN generation pipeline](.llms/chunks/cli.casen.bpmn-generation-pipeline.md) — 736 tokens
 - [casen CLI — AIKit Skills](.llms/chunks/cli.casen.aikit-skills.md) — 196 tokens
 - [casen CLI — Worker commands](.llms/chunks/cli.casen.worker-commands.md) — 233 tokens
 - [casen CLI — Local engine (Reebe)](.llms/chunks/cli.casen.local-engine-reebe.md) — 369 tokens
@@ -63,7 +63,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [AIKit Skills](.llms/chunks/cli.skills.md) — 166 tokens
 - [AIKit Skills — `/implement`](.llms/chunks/cli.skills.implement.md) — 220 tokens
 - [AIKit Skills — `/review`](.llms/chunks/cli.skills.review.md) — 184 tokens
-- [AIKit Skills — `/test`](.llms/chunks/cli.skills.test.md) — 193 tokens
+- [AIKit Skills — `/test`](.llms/chunks/cli.skills.test.md) — 194 tokens
 - [AIKit Skills — `/deploy`](.llms/chunks/cli.skills.deploy.md) — 183 tokens
 - [AIKit Skills — No MCP server required](.llms/chunks/cli.skills.no-mcp-server-required.md) — 83 tokens
 - [casen view](.llms/chunks/cli.view.md) — 357 tokens
@@ -197,6 +197,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Build an Executable Camunda Process — How do I build an AI Agent sub-process with tools in a BPMN Kit build script (8.10, v2)?](.llms/chunks/guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-with-tools-in-a-bpmn-kit-build-script-8.10-v2.md) — 396 tokens
 - [Build an Executable Camunda Process — How do I lay out the agent's tools in a grid?](.llms/chunks/guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid.md) — 169 tokens
 - [Build an Executable Camunda Process — How do I check the file is executable before tests?](.llms/chunks/guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests.md) — 166 tokens
+- [Build an Executable Camunda Process — Does it run? Test it with casen test](.llms/chunks/guides.executable-camunda-process.does-it-run-test-it-with-casen-test.md) — 371 tokens
 - [Gateways & Branching — Exclusive Gateway (XOR)](.llms/chunks/guides.gateways.exclusive-gateway-xor.md) — 218 tokens
 - [Gateways & Branching — Parallel Gateway (AND)](.llms/chunks/guides.gateways.parallel-gateway-and.md) — 143 tokens
 - [Gateways & Branching — Inclusive Gateway (OR)](.llms/chunks/guides.gateways.inclusive-gateway-or.md) — 208 tokens
@@ -249,8 +250,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Testing Processes — Messages](.llms/chunks/guides.testing-processes.messages.md) — 357 tokens
 - [Testing Processes — Coverage](.llms/chunks/guides.testing-processes.coverage.md) — 221 tokens
 - [Testing Processes — Matchers](.llms/chunks/guides.testing-processes.matchers.md) — 231 tokens
-- [Testing Processes — What the simulator does not execute](.llms/chunks/guides.testing-processes.what-the-simulator-does-not-execute.md) — 353 tokens
-- [Testing Processes — See also](.llms/chunks/guides.testing-processes.see-also.md) — 55 tokens
+- [Testing Processes — What the simulator does not execute](.llms/chunks/guides.testing-processes.what-the-simulator-does-not-execute.md) — 401 tokens
+- [Testing Processes — See also](.llms/chunks/guides.testing-processes.see-also.md) — 56 tokens
 - [Typed Workers](.llms/chunks/guides.typed-workers.md) — 413 tokens
 - [Typed Workers — Use the types with `@bpmnkit/worker-client`](.llms/chunks/guides.typed-workers.use-the-types-with-bpmnkit-worker-client.md) — 196 tokens
 - [Typed Workers — Use the types with another client](.llms/chunks/guides.typed-workers.use-the-types-with-another-client.md) — 314 tokens

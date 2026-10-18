@@ -67,8 +67,10 @@ Ignore `data-flow` findings against the agent's own provider/model/prompt bindin
 Add a scenario mocking `io.camunda.agenticai:aiagent:subprocess:2` with a plausible final response (see `references/agentic.md`'s scenario example), then:
 
 ```sh
-casen test <file>.bpmn
+casen test test <file>.bpmn
 ```
+
+Exit 0 means every case passed, and that is the done gate. Lint first (section 4), then run this.
 
 This verifies the process routes correctly around the agent — it does not exercise real model behavior or tool-calling, which is out of scope for `casen test`.
 

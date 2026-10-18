@@ -104,7 +104,7 @@
 		{
 			"id": "cli.casen.bpmn-generation-pipeline",
 			"file": "chunks/cli.casen.bpmn-generation-pipeline.md",
-			"tokens": 507,
+			"tokens": 736,
 			"tags": [
 				"cli",
 				"casen",
@@ -781,7 +781,7 @@
 		{
 			"id": "cli.skills.test",
 			"file": "chunks/cli.skills.test.md",
-			"tokens": 193,
+			"tokens": 194,
 			"tags": [
 				"cli",
 				"skills",
@@ -2752,6 +2752,22 @@
 			]
 		},
 		{
+			"id": "guides.executable-camunda-process.does-it-run-test-it-with-casen-test",
+			"file": "chunks/guides.executable-camunda-process.does-it-run-test-it-with-casen-test.md",
+			"tokens": 371,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"run",
+				"test",
+				"casen"
+			],
+			"entities": [
+				"process.bpmn.tests.json",
+				"process.test.json"
+			]
+		},
+		{
 			"id": "guides.gateways.exclusive-gateway-xor",
 			"file": "chunks/guides.gateways.exclusive-gateway-xor.md",
 			"tokens": 218,
@@ -3544,7 +3560,7 @@
 		{
 			"id": "guides.testing-processes.what-the-simulator-does-not-execute",
 			"file": "chunks/guides.testing-processes.what-the-simulator-does-not-execute.md",
-			"tokens": 353,
+			"tokens": 401,
 			"tags": [
 				"guides",
 				"testing-processes",
@@ -3563,7 +3579,7 @@
 		{
 			"id": "guides.testing-processes.see-also",
 			"file": "chunks/guides.testing-processes.see-also.md",
-			"tokens": 55,
+			"tokens": 56,
 			"tags": [
 				"guides",
 				"testing-processes",

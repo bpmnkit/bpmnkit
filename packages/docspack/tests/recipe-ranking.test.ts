@@ -26,6 +26,7 @@ const CASES: [question: string, chunkId: string][] = [
 	["AI agent sub-process with tools", AGENT],
 	["flow label different from branch", `${RECIPE}.how-do-i-label-a-gateway-s-yes-and-no-flows`],
 	["lint before running tests", `${RECIPE}.how-do-i-check-the-file-is-executable-before-tests`],
+	["run camunda process test json without java", `${RECIPE}.does-it-run-test-it-with-casen-test`],
 ]
 
 let root: string

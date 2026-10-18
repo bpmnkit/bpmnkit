@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-10-18 — Docs: `casen test test` runs Camunda process-test JSON
+
+- New recipe section "Does it run? Test it with casen test" in the executable-Camunda-process guide, a "Run process tests" entry in the casen CLI reference, a short subsection in the testing guide, and the agent skill's test step now uses `casen test test <file>.bpmn` (exit 0 = done). The real invocation is `casen test test`; doc lines that gave plain `casen test <file>` as a command are fixed. Ranking case added to `packages/docspack/tests/recipe-ranking.test.ts`; docspack rebuilt.
+
 ## 2026-10-18 — Parity: `casen test` against real Camunda Process Test
 
 - Ran the AI agent tutorial's six CPT cases on 8 BPMN files (the bake-off fixture, the bk3 and bk4 rerun outputs, five broken variants) on CPT 8.10.0 and on `casen test`. 42 of 48 cells agree; the 6 that do not are the missing-form file, a documented difference (reebe does not check forms). Record: `doc/cpt-on-reebe-parity.md`.
