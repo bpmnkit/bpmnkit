@@ -1,5 +1,9 @@
 # Features
 
+## casen test runs Camunda process-test JSON on reebe (2026-10-18)
+
+- `casen test <file.bpmn>` runs `<name>.test.json` (Camunda process-test format) on reebe-wasm, reports each case and the failing instruction, and `--case <name>` (repeatable) runs selected cases. Existing `.bpmn.tests.json` scenario files work unchanged.
+
 ## Drop connects the AI Agent and its tools (2026-10-18)
 
 - The connect pass offers the AI Agent Sub-process connector to any ad-hoc sub-process of a draft, and the REST connector to its `inside=` tools; `with <id>:` lines (also for `inside=` tools in `parseProcessText`) configure them. In a `==` FEEL value `\n` is a line break, so an agent's prompt can have paragraphs; `\\n` stays a literal backslash and n, and a literal (single `=`) value is never decoded.

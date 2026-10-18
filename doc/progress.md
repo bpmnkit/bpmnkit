@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-10-18 — CLI: `casen test` runs CPT files
+
+- `casen test <file.bpmn>` detects a Camunda process-test JSON file (by its `$schema`) and runs it with `runCptTestCases` on reebe-wasm; the old `.bpmn.tests.json` array format still goes through `runScenarioWasm`. The scenarios file is the `--scenarios` value, else `<file>.bpmn.tests.json`, else `<name>.test.json` (`resolveScenariosPath`). Repeatable `--case <name>` selects test cases. Output is `PASS`/`FAIL` per case with `instruction <n> (<type>): <message>`, or just the message when no instruction ran; exit 1 on any failure. Tests in `apps/cli/src/commands/test.test.ts`.
+
 ## 2026-10-18 — Engine: run Camunda process-test JSON on reebe-wasm
 
 - New `@bpmnkit/engine/cpt` export: `runCptTestCases({ bpmn, cases, select? })` validates a CPT JSON file, then runs each case on a fresh reebe-wasm engine (create instance, complete job, complete ad-hoc sub-process job with a result, complete user task, element and process-instance assertions). A selector that matches nothing fails at that instruction and lists active elements, open jobs, open user tasks and incidents; engine rejections fail their case without stopping the others. `IS_COMPLETED_IN_ORDER` compares each element's first completion. `ensureWasmInit` moved to the internal `src/wasm-init.ts`. Fixture `packages/engine/tests/cpt/fixtures/bakeoff.test.json` is BPMN Kit-authored (the tutorial repository states no licence); tests in `packages/engine/tests/cpt/run.test.ts`.
