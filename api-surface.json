@@ -1046,6 +1046,19 @@
 			"runScenario": "value",
 			"scheduleTimer": "value"
 		},
+		"./cpt": {
+			"CptCaseResult": "type",
+			"CptFailure": "type",
+			"CptFile": "type",
+			"CptInstruction": "type",
+			"CptJobSelector": "type",
+			"CptReport": "type",
+			"CptTestCase": "type",
+			"CptUserTaskSelector": "type",
+			"isCptFile": "value",
+			"parseCptFile": "value",
+			"runCptTestCases": "value"
+		},
 		"./testing": {
 			"AGENT_CASSETTE_VERSION": "value",
 			"AgentCassette": "type",

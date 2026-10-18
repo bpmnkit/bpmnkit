@@ -13,6 +13,10 @@
 			"types": "./dist/wasm-runner.d.ts",
 			"import": "./dist/wasm-runner.js"
 		},
+		"./cpt": {
+			"types": "./dist/cpt/index.d.ts",
+			"import": "./dist/cpt/index.js"
+		},
 		"./testing": {
 			"types": "./dist/testing/index.d.ts",
 			"import": "./dist/testing/index.js"

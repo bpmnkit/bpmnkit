@@ -1,8 +1,8 @@
 import { readFileSync } from "node:fs"
-import { createRequire } from "node:module"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
+import { ensureWasmInit } from "../../src/wasm-init.js"
 
 const here = dirname(fileURLToPath(import.meta.url))
 const AD_HOC_TOOLS = readFileSync(resolve(here, "fixtures/ad-hoc-tools.bpmn"), "utf8")
@@ -41,11 +41,9 @@ interface Engine {
 	snapshot(): unknown
 }
 
-// Node cannot fetch() the file:// URL wasm-bindgen generates, so read the bytes and initSync.
 async function start(xml: string, processId: string) {
+	await ensureWasmInit()
 	const mod = await import("@bpmnkit/reebe-wasm")
-	const jsPath = createRequire(import.meta.url).resolve("@bpmnkit/reebe-wasm")
-	mod.initSync({ module: readFileSync(resolve(dirname(jsPath), "reebe_wasm_bg.wasm")) })
 	const engine = new mod.WasmEngine() as unknown as Engine
 	engine.deploy(xml)
 	engine.create_process_instance(processId, "{}")

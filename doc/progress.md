@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-10-18 — Engine: run Camunda process-test JSON on reebe-wasm
+
+- New `@bpmnkit/engine/cpt` export: `runCptTestCases({ bpmn, cases, select? })` validates a CPT JSON file, then runs each case on a fresh reebe-wasm engine (create instance, complete job, complete ad-hoc sub-process job with a result, complete user task, element and process-instance assertions). A selector that matches nothing fails at that instruction and lists active elements, open jobs, open user tasks and incidents; engine rejections fail their case without stopping the others. `IS_COMPLETED_IN_ORDER` compares each element's first completion. `ensureWasmInit` moved to the internal `src/wasm-init.ts`. Fixture `packages/engine/tests/cpt/fixtures/bakeoff.test.json` is BPMN Kit-authored (the tutorial repository states no licence); tests in `packages/engine/tests/cpt/run.test.ts`.
+
 ## 2026-10-18 — Engine: validate Camunda process-test JSON files
 
 - New `packages/engine/src/cpt/` with CPT types (`CptInstruction`, `CptFile`, `CptReport`, …) and `isCptFile` / `parseCptFile`. The validator allow-lists the six supported instruction types and their fields, selectors and states, applies defaults (`variables` `{}`, booleans `false`, `activateElements` `[]`), and names anything else as "not supported by casen test yet" instead of ignoring it. Unknown top-level keys (`processId`, `_testNotes`) are ignored. Tests in `packages/engine/tests/cpt/validate.test.ts`.
