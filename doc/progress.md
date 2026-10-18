@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-10-18 — Engine: validate Camunda process-test JSON files
+
+- New `packages/engine/src/cpt/` with CPT types (`CptInstruction`, `CptFile`, `CptReport`, …) and `isCptFile` / `parseCptFile`. The validator allow-lists the six supported instruction types and their fields, selectors and states, applies defaults (`variables` `{}`, booleans `false`, `activateElements` `[]`), and names anything else as "not supported by casen test yet" instead of ignoring it. Unknown top-level keys (`processId`, `_testNotes`) are ignored. Tests in `packages/engine/tests/cpt/validate.test.ts`.
+
 ## 2026-10-18 — reebe-wasm: complete a job with a result
 
 - `@bpmnkit/reebe-wasm` gains `complete_job_with_result(key, variables, result)`, so a caller can complete an ad-hoc sub-process (AI agent) job with `{activateElements, isCompletionConditionFulfilled, isCancelRemainingInstances}`; the engine already applied such a result. `complete_job` shares the pure `job_complete_payload` helper (Rust unit tests) and an invalid result JSON is rejected. Vitest behaviour tests in `packages/engine/tests/cpt/wasm-job-result.test.ts`.
