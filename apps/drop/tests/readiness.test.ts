@@ -62,7 +62,54 @@ describe("readiness", () => {
 	})
 })
 
+describe("readiness, review fixes", () => {
+	it("calls a mapping whose FEEL does not parse invalid, naming the element", () => {
+		const result = readiness(
+			draft("# P | camunda=8.10\ns[start S | form=a] > u[user U | form=f in.x=)( ] > e[end E]"),
+		)
+		expect(result.state).toBe("invalid")
+		if (result.state !== "invalid") return
+		expect(result.errors[0]?.elementId).toBe("u")
+		expect(result.errors[0]?.message).toMatch(/in\.x|input.*x/)
+	})
+
+	it("keeps a mapping that parses ready", () => {
+		const result = readiness(
+			draft(
+				"# P | camunda=8.10\ns[start S | form=a] > u[user U | form=f in.x=if a = 1 then 2 else 3 | out.y=r.ok] > e[end E]",
+			),
+		)
+		expect(result.state).toBe("ready")
+	})
+
+	const AGENT = (doc: string) => {
+		const defs = draft(
+			`# P | camunda=8.10\ns[start S | form=a] > agent[adhoc Agent] > e[end E]\nt[script Tool | inside=agent feel=1]${doc}`,
+		)
+		const agent = defs.processes[0]?.flowElements.find((e) => e.id === "agent")
+		if (!agent) throw new Error("no agent")
+		agent.unknownAttributes["zeebe:modelerTemplate"] =
+			"io.camunda.connectors.agenticai.ai-agent-subprocess.v2"
+		return defs
+	}
+
+	it("lists an agent tool without documentation as shape-only", () => {
+		const result = readiness(AGENT(""))
+		expect(result.state).toBe("shape-only")
+		if (result.state !== "shape-only") return
+		expect(result.missing).toContainEqual({ elementId: "t", what: "needs a tool description" })
+	})
+
+	it("calls an agent tool with documentation ready", () => {
+		expect(readiness(AGENT("\ndoc t: Counts things")).state).toBe("ready")
+	})
+})
+
 describe("badgeText", () => {
+	it("shows major.minor of a full platform version", () => {
+		expect(badgeText({ state: "ready", version: "8.10.0" })).toBe("Ready to deploy (8.10)")
+	})
+
 	it("words each verdict", () => {
 		expect(badgeText({ state: "ready", version: "8.10" })).toBe("Ready to deploy (8.10)")
 		expect(

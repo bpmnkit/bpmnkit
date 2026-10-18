@@ -250,6 +250,7 @@ describe("createDiagramLineFilter — ad-hoc sub-processes and notes", () => {
 			"users[service Find users | inside=agent]",
 			"note agent: Runs tools, then answers [see docs]: yes >",
 			"note s: Starts here",
+			"doc users: Finds sample users, then returns them [json]: yes >",
 			"Hope this helps!",
 		].join("\n")
 		const filter = createDiagramLineFilter()
@@ -262,8 +263,9 @@ describe("createDiagramLineFilter — ad-hoc sub-processes and notes", () => {
 	it("still passes no prose that only starts with the word note", () => {
 		const filter = createDiagramLineFilter()
 		const out =
-			filter.push("Note that the diagram is below.\nNote the following: it is long\n") +
-			filter.end()
+			filter.push(
+				"Note that the diagram is below.\nNote the following: it is long\nDocs cover this: no\nDocument the following: it is long\nDoc the tool: it helps\n",
+			) + filter.end()
 		expect(out).toBe("")
 	})
 })

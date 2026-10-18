@@ -358,7 +358,7 @@ export function readAiEvent(data: string): AiDelta | null {
  * Prose, fences and comments start otherwise.
  */
 const DIAGRAM_LINE =
-	/^(#|note +[A-Za-z_][\w.-]*\s*:|(-{0,2}>\s*(\([^()]*\)\s*)?)?([A-Za-z_][\w.-]*|\d[\w-]*(?=\s*(?:\[|-{0,2}>)))((?: +[A-Za-z_][\w.-]*)* *\[|\s*-{0,2}>|$))/
+	/^(#|(?:note|doc) +[A-Za-z_][\w.-]*\s*:|(-{0,2}>\s*(\([^()]*\)\s*)?)?([A-Za-z_][\w.-]*|\d[\w-]*(?=\s*(?:\[|-{0,2}>)))((?: +[A-Za-z_][\w.-]*)* *\[|\s*-{0,2}>|$))/
 
 /**
  * Passes on only the lines of a model's answer that are in the line format.

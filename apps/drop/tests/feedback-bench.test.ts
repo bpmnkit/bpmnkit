@@ -124,10 +124,14 @@ describe("createChangeLineFilter — notes", () => {
 		const answer = [
 			"Here is the change:",
 			"note agent: Runs the tools it needs",
+			"doc users: Finds people: any of them",
 			"Note that this is long.",
+			"Document the following: it is long",
 			"@1 agent",
 		].join("\n")
 		const kept = filter.push(answer.slice(0, 30)) + filter.push(answer.slice(30)) + filter.end()
-		expect(kept).toBe("note agent: Runs the tools it needs\n@1 agent")
+		expect(kept).toBe(
+			"note agent: Runs the tools it needs\ndoc users: Finds people: any of them\n@1 agent",
+		)
 	})
 })
