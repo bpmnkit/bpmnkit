@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-10-18 — Phase C: drop says whether a draft is executable
+
+- `readiness()` (`apps/drop/src/lib/readiness.ts`) turns `lintDiagram` into `ready` / `shape-only` / `invalid`; the generator shows it as a badge for every draft, runs the dry run for every draft, shows the streamed process text in a collapsible "Diagram text" panel, and says "Connectors not configured" when the connect pass 404s or fails.
+
 ## 2026-10-18 — Phase C: process text takes ad-hoc sub-processes and notes
 
 - Kind `adhoc` (an ad-hoc sub-process, which has flows like any node), `tool[service Name | inside=agent]` for a task that lives in it with no flows, and `note <id>: text` for a text annotation. Rules: `inside=` naming a missing, non-ad-hoc or nested container, or a child that is not a task, is reported and the node stays at the top level; flows to or from an `inside=` child are reported and left out; a `note` naming nothing, or with no text, is reported. `CompactProcess` gains `notes` (new type `CompactNote`); `expand` builds the annotations and associations as the builder does and lays them out (the ad-hoc tools get the semantic grid). `writeProcessText` writes the container, its tools and the notes back. A change script parses `adhoc`, `inside=` and `note` (`ProcessDelta.notes`, `DeltaNode.inside`); the editor adds notes beside their node, restates tools inside a container (rename, attributes), and reports as problems what it cannot do: a new node or a move into a container, a new ad-hoc sub-process, a kind change or flow on a tool inside one. One guide line added. Drop's two line filters pass `note` lines (tests added).

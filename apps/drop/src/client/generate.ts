@@ -44,6 +44,7 @@ import {
 	MIN_CHANGE_CHARS,
 	createSseReader,
 } from "../lib/generate.js"
+import { badgeText, readiness } from "../lib/readiness.js"
 import { AI_CODE_STORAGE_KEY, AI_PASS_HEADER } from "../shared/constants.js"
 // Types only: the dry run is its own bundle, fetched once a draft has connectors.
 import type * as DryRunModule from "./dry-run.js"
@@ -168,6 +169,7 @@ export function mountGenerator(): void {
 	const refine = $("genRefine")
 	const questions = $("genQuestions")
 	const checkBox = $("genCheck")
+	const textBox = $("genText")
 	const changeInput = $<HTMLInputElement>("genChange")
 	const apply = $<HTMLButtonElement>("genApply")
 	const undo = $<HTMLButtonElement>("genUndo")
@@ -291,6 +293,7 @@ export function mountGenerator(): void {
 		name.textContent = result.file
 		parserQuestions = parsed.questions
 		showQuestions(parsed.questions)
+		showText(text)
 		void showCheck(defs, result.xml)
 		share.hidden = false
 		if (edit) edit.hidden = false
@@ -302,25 +305,36 @@ export function mountGenerator(): void {
 		}
 	}
 
+	/** Shows or clears the "Connectors not configured" note on the diagram on screen. */
+	function flagConnectorsOff(off: boolean): void {
+		connectorsOff = off
+		if (result && draft) void showCheck(Bpmn.parse(result.xml), result.xml)
+	}
+
 	/** The latest diagram checked: an older check finishing late is not shown. */
 	let checking = ""
 
+	/** Set when the connect pass could not run, so the page says so instead of staying quiet. */
+	let connectorsOff = false
+
+	/** The streamed process text, so a reader sees the notation the diagram came from. */
+	function showText(text: string): void {
+		const pre = textBox?.querySelector("pre")
+		if (!textBox || !pre) return
+		pre.textContent = text
+		textBox.hidden = false
+	}
+
 	/**
-	 * For a draft with connectors: the secrets to create before deploying, and
-	 * a dry run with every outside call mocked, which says whether the process
-	 * runs from start to end (`doc/ai-connector-generation-plan.md` WS7).
+	 * The verdict on whether the draft deploys (`src/lib/readiness.ts`), the
+	 * secrets to create before deploying, and a dry run with every outside call
+	 * mocked, which says whether the process runs from start to end
+	 * (`doc/ai-connector-generation-plan.md` WS7).
 	 */
 	async function showCheck(defs: BpmnDefinitions, xml: string): Promise<void> {
 		if (!checkBox) return
 		checking = xml
 		const elements = defs.processes.flatMap((p) => p.flowElements)
-		const connectors = elements.filter(
-			(el) => el.unknownAttributes["zeebe:modelerTemplate"] !== undefined,
-		)
-		if (connectors.length === 0) {
-			checkBox.hidden = true
-			return
-		}
 		const nameOf = (id: string) => elements.find((el) => el.id === id)?.name ?? id
 		const row = (label: string, ...content: (string | Node)[]) => {
 			const div = document.createElement("div")
@@ -331,8 +345,26 @@ export function mountGenerator(): void {
 			div.append(b, span)
 			return { div, span }
 		}
+		const verdict = readiness(defs)
+		const badge = row("Deploy", badgeText(verdict))
+		badge.span.className =
+			verdict.state === "ready" ? "ok" : verdict.state === "invalid" ? "bad" : "warn"
+		const details =
+			verdict.state === "shape-only"
+				? verdict.missing.map((m) => `${nameOf(m.elementId)}: ${m.what}`)
+				: verdict.state === "invalid"
+					? verdict.errors.map((e) => e.message)
+					: []
+		badge.span.title = details.join("\n")
+		const rows = [badge.div]
+		if (connectorsOff) {
+			rows.push(
+				row("Connectors", "Connectors not configured — the draft keeps its placeholder job types")
+					.div,
+			)
+		}
 		const run = row("Dry run", "running…")
-		const rows = [run.div]
+		rows.push(run.div)
 		const secrets = listSecrets(defs)
 		if (secrets.length > 0) {
 			const names = secrets.flatMap((s, i) => {
@@ -349,11 +381,14 @@ export function mountGenerator(): void {
 			const { check } = (await import(url)) as typeof DryRunModule
 			const outcome = await check(xml)
 			if (checking !== xml) return
-			const mocked = `${outcome.connectors.length} connector${outcome.connectors.length === 1 ? "" : "s"} mocked`
+			const mocked =
+				outcome.connectors.length === 0
+					? ""
+					: ` · ${outcome.connectors.length} connector${outcome.connectors.length === 1 ? "" : "s"} mocked`
 			if (outcome.reachedEnd) {
 				const end = outcome.path.at(-1)
 				run.span.className = "ok"
-				run.span.textContent = `✓ runs to “${end ? nameOf(end) : "the end"}” · ${mocked}`
+				run.span.textContent = `✓ runs to “${end ? nameOf(end) : "the end"}”${mocked}`
 			} else {
 				const at = outcome.stoppedAt[0] ?? outcome.path.at(-1)
 				run.span.className = "bad"
@@ -610,6 +645,7 @@ export function mountGenerator(): void {
 		earlier.length = 0
 		result = null
 		checking = ""
+		connectorsOff = false
 		share.hidden = true
 		if (edit) edit.hidden = true
 		refine.hidden = true
@@ -688,11 +724,15 @@ export function mountGenerator(): void {
 		if (lines) body.lines = lines
 		let outcome: ConnectResult | undefined
 		let note = ""
+		let failed = false
 		try {
 			const res = await send(body, code, controller.signal, "/drop/api/connect")
 			if (!res?.ok || !res.body) {
 				// Off (404), or a check the reader closed: the draft stands as it is.
-				if (!controller.signal.aborted) setStatus(before)
+				if (!controller.signal.aborted) {
+					setStatus(before)
+					if (res) flagConnectorsOff(true)
+				}
 				return
 			}
 			const sse = createSseReader()
@@ -702,12 +742,16 @@ export function mountGenerator(): void {
 				for (const data of sse.push(decoder.decode(chunk.value, { stream: true }))) {
 					const event = JSON.parse(data) as ConnectEvent
 					if ("result" in event) outcome = event.result
-					else if ("error" in event) note = " · connectors failed"
+					else if ("error" in event) {
+						note = " · connectors failed"
+						failed = true
+					}
 				}
 			}
 		} catch {
 			if (controller.signal.aborted) return
 			note = " · connectors failed"
+			failed = true
 		} finally {
 			if (!controller.signal.aborted) {
 				setBusy(false)
@@ -715,6 +759,7 @@ export function mountGenerator(): void {
 			}
 		}
 		if (controller.signal.aborted || draft?.text !== text) return
+		if (failed) flagConnectorsOff(true)
 		if (!outcome) {
 			setStatus(`${before}${note}`)
 			return

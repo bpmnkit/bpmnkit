@@ -102,6 +102,7 @@
 - **Proving it runs.** A generated diagram is dry-run with every outside call mocked, and
   the secrets it needs are listed.
   - Drop's generator shows both.
+  - Drop also gives every draft a deploy verdict (ready, shape only, or N deploy errors) and a collapsible "Diagram text" panel with the process text it was drawn from.
   - `casen synth --check` gates on the dry run.
   - Studio's **Try it** runs it on the local engine, sending only GET requests for real.
 - **CLI.** `casen connector cards "<request>"`, `casen connector api "<request>"` and
