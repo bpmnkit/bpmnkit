@@ -1,0 +1,33 @@
+{
+	"id": "ai-agent-chat-with-tools",
+	"category": "agentic",
+	"description": "The AI Agent BPMN bake-off process: start form, AI Agent sub-process (v2 template) with four REST tools in a 2 x 2 grid, a feedback user task with a form and an input mapping, a Yes/No loop back to the agent, and three annotations.",
+	"connect": true,
+	"assertions": {
+		"minElements": 7,
+		"mustContainElementTypes": [
+			"startEvent",
+			"exclusiveGateway",
+			"adHocSubProcess",
+			"userTask",
+			"endEvent"
+		],
+		"mustContainElementIds": [
+			"StartEvent_TaskReceived",
+			"Gateway_RunAgent",
+			"AI_Agent",
+			"UserTask_ReviewAgentResponse",
+			"Gateway_UserSatisfied",
+			"EndEvent_UserSatisfied",
+			"LookupSampleUsers",
+			"SearchRecipes",
+			"FetchSafeJoke",
+			"ListSampleTechnologyProducts"
+		],
+		"mustContainFormIds": ["ai-agent-chat-initial-request", "ai-agent-chat-user-feedback"],
+		"mustContainInputTargets": ["responseText"],
+		"mustContainFlowNames": ["Yes", "No"],
+		"mustContainAnnotations": 3,
+		"mustBeReady": true
+	}
+}

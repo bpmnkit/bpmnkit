@@ -26,6 +26,9 @@
  * connected diagram, so `mustContainTaskTypes` measures the connectors and
  * `mustCallUrls` the REST calls built from the API index, and a prompt whose
  * expected.json says `"connect": false` must be skipped without a model call.
+ * Besides those, `mustContainElementIds`, `mustContainFormIds`, `mustContainInputTargets`,
+ * `mustContainFlowNames`, `mustContainAnnotations` and `mustBeReady` are scored by
+ * scripts/eval-generation/assertions.mjs, as the eval harness scores them.
  * Each connected diagram is also dry-run with every call mocked (`dryRun` from
  * `@bpmnkit/engine/testing`), and its secrets are listed.
  *
@@ -72,6 +75,7 @@ import {
 } from "@bpmnkit/core"
 import { connectorLineFor, selectConnectors } from "@bpmnkit/core/connectors"
 import { dryRun as dryRunProcess } from "@bpmnkit/engine/testing"
+import { scoreSpecAssertions } from "../../../scripts/eval-generation/assertions.mjs"
 import { completes, draftGaps, gapChange } from "../src/lib/check.ts"
 import {
 	connectApis,
@@ -94,6 +98,7 @@ import {
 	readAiEvent,
 	refineMessages,
 } from "../src/lib/generate.ts"
+import { readiness } from "../src/lib/readiness.ts"
 
 const here = dirname(fileURLToPath(import.meta.url))
 const PROMPTS_DIR = resolve(here, "../../../scripts/eval-generation/prompts")
@@ -102,10 +107,12 @@ const FEEDBACK_FILE = resolve(here, "feedback-cases.json")
 const REPO = resolve(here, "../../..")
 
 /**
- * Not what describe-to-diagram does: 03 needs an AI-agent sub-process, 04 edits
- * an existing file, 09 expects a clarifying question instead of a diagram.
+ * Not what describe-to-diagram does: 04 edits an existing file, 09 expects a
+ * clarifying question instead of a diagram. 03 and 28 (the AI Agent prompts) run:
+ * the process text takes ad-hoc sub-processes, and the connect pass fills in the
+ * agent and its tools.
  */
-const SKIPPED = ["03", "04", "09"]
+const SKIPPED = ["04", "09"]
 
 const { values: args } = parseArgs({
 	// `pnpm bench:generate -- --runs 3` passes the `--` through, and parseArgs

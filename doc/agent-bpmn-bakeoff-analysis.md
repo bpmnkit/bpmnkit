@@ -94,3 +94,31 @@ agentic prompt, and the drop bench skips it.
 Fairness notes from the report worth keeping: means of two runs; the CLI was tuned over six
 iterations and ours not at all; the ProcessOS guide used different template ids than the
 spec. None of that changes the gaps above.
+
+## Golden prompt 28 (Phase C)
+
+`scripts/eval-generation/prompts/28-ai-agent-chat-with-tools` holds the spec as `prompt.md`, the
+spec's literal values as `expected.json` (ids, form ids `ai-agent-chat-initial-request` and
+`ai-agent-chat-user-feedback`, input target `responseText`, flow names Yes and No, three annotations,
+`mustBeReady`) and a `fixture.plan.json`. The assertions are scored by
+`scripts/eval-generation/assertions.mjs`, which both `run-eval.mjs` and drop's bench use.
+
+The plan fixture cannot say everything: a `ProcessPlan` has no start-event form, no user-task input
+mapping, no annotation and no loop back to an earlier gateway, and its `aiAgent` step compiles to
+the v1 job-worker agent. The eval therefore reports the assertions on the compiled plan and does not
+gate on them; the plan misses `Gateway_RunAgent`, the start form, `responseText` and the three
+annotations. The reference file (`packages/core/tests/fixtures/bakeoff/expected.bpmn`) meets all of
+them (`apps/drop/tests/spec-assertions.test.ts`).
+
+Drop's bench no longer skips 03; it skips 04 and 09 only, so 03 and 28 run. Prompt 28 sets
+`"connect": true`, so the connect pass must run for it. 03 still asserts the v1 job type, which the
+v2 agent card does not produce; a miss there is data.
+
+Drop bench: not run in the authoring sandbox (it needs Cloudflare credentials). Run it with:
+
+```sh
+CLOUDFLARE_ACCOUNT_ID=... CLOUDFLARE_API_TOKEN=... pnpm --filter @bpmnkit/drop bench:generate -- --only 28 --connect
+```
+
+It writes time to first shape, total time and the failed assertions to
+`apps/drop/bench-results/<timestamp>/` (`results.json`, `summary.md`). Add the numbers here.
