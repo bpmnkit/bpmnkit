@@ -49,7 +49,7 @@ Run `casen story story <slug>.bpmn` (or read the compiled plan back) to describe
 
 ### 7. Test
 
-Add scenarios to the plan's `tests` array covering the happy path and every branch/boundary, re-synth (writes `<slug>.bpmn.tests.json`), then `casen test <slug>.bpmn`. Fix any failures by adjusting the plan.
+Add scenarios to the plan's `tests` array covering the happy path and every branch/boundary, re-synth (writes `<slug>.bpmn.tests.json`), then `casen test test <slug>.bpmn`. Fix any failures by adjusting the plan.
 
 ### 8. Scaffold workers
 

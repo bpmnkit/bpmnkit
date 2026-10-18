@@ -2,7 +2,7 @@
 
 ## 2026-10-18 — Docs: `casen test test` runs Camunda process-test JSON
 
-- New recipe section "Does it run? Test it with casen test" in the executable-Camunda-process guide, a "Run process tests" entry in the casen CLI reference, a short subsection in the testing guide, and the agent skill's test step now uses `casen test test <file>.bpmn` (exit 0 = done). The real invocation is `casen test test`; doc lines that gave plain `casen test <file>` as a command are fixed. Ranking case added to `packages/docspack/tests/recipe-ranking.test.ts`; docspack rebuilt.
+- New recipe section "Does it run? Test it with casen test" in the executable-Camunda-process guide, a "Run process tests" entry in the casen CLI reference, a short subsection in the testing guide, and the agent skill's test step now uses `casen test test <file>.bpmn` (exit 0 = done). The real invocation is `casen test test`; every command line in the landing docs and the Claude plugin (guides, CLI reference, skills, agent, plan-format reference) that gave plain `casen test <file>` now uses `casen test test <file>`. Prose mentions of the name `casen test` are unchanged. Ranking case added to `packages/docspack/tests/recipe-ranking.test.ts`; docspack rebuilt.
 
 ## 2026-10-18 — Parity: `casen test` against real Camunda Process Test
 

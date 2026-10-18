@@ -110,7 +110,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [AI Agents — How it's modeled](.llms/chunks/guides.ai-agents.how-it-s-modeled.md) — 183 tokens
 - [AI Agents — The `aiAgent` plan step](.llms/chunks/guides.ai-agents.the-aiagent-plan-step.md) — 500 tokens
 - [AI Agents — Deploy-grade validation](.llms/chunks/guides.ai-agents.deploy-grade-validation.md) — 205 tokens
-- [AI Agents — Testing without a real LLM call](.llms/chunks/guides.ai-agents.testing-without-a-real-llm-call.md) — 201 tokens
+- [AI Agents — Testing without a real LLM call](.llms/chunks/guides.ai-agents.testing-without-a-real-llm-call.md) — 202 tokens
 - [AI Agents — See also](.llms/chunks/guides.ai-agents.see-also.md) — 49 tokens
 - [Connectors in AI Generation](.llms/chunks/guides.ai-connectors.md) — 284 tokens
 - [Connectors in AI Generation — Connector cards](.llms/chunks/guides.ai-connectors.connector-cards.md) — 200 tokens
@@ -125,7 +125,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [AI Decisions — Test the routing](.llms/chunks/guides.ai-decisions.test-the-routing.md) — 197 tokens
 - [AI Decisions — Use the template in the editor](.llms/chunks/guides.ai-decisions.use-the-template-in-the-editor.md) — 148 tokens
 - [AI Decisions — Limits](.llms/chunks/guides.ai-decisions.limits.md) — 144 tokens
-- [Building Processes with AI](.llms/chunks/guides.ai-implement.md) — 403 tokens
+- [Building Processes with AI](.llms/chunks/guides.ai-implement.md) — 404 tokens
 - [Building Processes with AI — The Claude Code plugin](.llms/chunks/guides.ai-implement.the-claude-code-plugin.md) — 231 tokens
 - [Building Processes with AI — Lightweight alternative: `casen skills install`](.llms/chunks/guides.ai-implement.lightweight-alternative-casen-skills-install.md) — 172 tokens
 - [Building Processes with AI — Deploying](.llms/chunks/guides.ai-implement.deploying.md) — 255 tokens
