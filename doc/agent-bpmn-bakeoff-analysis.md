@@ -123,3 +123,12 @@ CLOUDFLARE_ACCOUNT_ID=... CLOUDFLARE_API_TOKEN=... pnpm --filter @bpmnkit/drop b
 
 It writes time to first shape, total time and the failed assertions to
 `apps/drop/bench-results/<timestamp>/` (`results.json`, `summary.md`). Add the numbers here.
+
+## Results (rerun 2026-10-18)
+
+Two fresh agents ran the same spec, gate and scorer against the Phase A–C builder. Against the
+report's BPMN Kit baseline: time to first passing gate 132 s (was 172 s), 103,665 tokens (was
+158,788 harness total), closeness 87.3 (was 85.4), layout 7.7 (was 8.3). Targets: ≤ 100 s missed,
+closeness ≥ 90 missed, ≤ $0.45 not measurable (token totals only). Two runs, a different agent
+harness and a slower gate (about 43 s per CPT run), so indicative only. Details, per-run tables and
+proposed follow-ups: `doc/agent-bpmn-bakeoff-rerun.md`.

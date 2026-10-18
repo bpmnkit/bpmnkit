@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-10-18 — Bake-off rerun
+
+- Reran the AI Agent bake-off twice with Claude Code subagents on `@bpmnkit/core` (same spec, c8ctl lint + CPT 6/6 gate, same scorer). Mean 132 s to first passing gate (report: 172 s), 103,665 tokens, closeness 87.3 (report: 85.4), layout 7.7. Targets ≤ 100 s and closeness ≥ 90 missed; dollar cost not measurable (token totals only). Results and proposed follow-ups (not implemented) in `doc/agent-bpmn-bakeoff-rerun.md`; summary section added to `doc/agent-bpmn-bakeoff-analysis.md`.
+
 ## 2026-10-18 — Phase C: final review fixes
 
 - Process text: a mapping value no longer absorbs a following `|` or `,`; `# Order | Payment flow` keeps its whole title unless the tail is `camunda=…`; an unknown `inside=` resolves to the only ad-hoc sub-process (a fix and a question) or says the node is left out; new `doc <id>: text` line sets an element's documentation (an agent tool's description), written by `writeProcessText` and applied by change scripts (`DeltaNode` stays; `ProcessDelta.docs`). Drop: `readiness()` reports a mapping whose FEEL does not parse as `invalid`, an AI-agent tool with no documentation as `shape-only`, lints against 8.10 when the diagram names no platform (badge reads "8.10"); a dry run that loops through a user task reads "loops until a person answers" instead of a red failure; a later successful connect pass clears "Connectors not configured"; `doc` lines pass drop's line filters.
