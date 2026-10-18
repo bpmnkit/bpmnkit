@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-10-18 — reebe-wasm: complete a job with a result
+
+- `@bpmnkit/reebe-wasm` gains `complete_job_with_result(key, variables, result)`, so a caller can complete an ad-hoc sub-process (AI agent) job with `{activateElements, isCompletionConditionFulfilled, isCancelRemainingInstances}`; the engine already applied such a result. `complete_job` shares the pure `job_complete_payload` helper (Rust unit tests) and an invalid result JSON is rejected. Vitest behaviour tests in `packages/engine/tests/cpt/wasm-job-result.test.ts`.
+
 ## 2026-10-18 — Bake-off rerun
 
 - Reran the AI Agent bake-off twice with Claude Code subagents on `@bpmnkit/core` (same spec, c8ctl lint + CPT 6/6 gate, same scorer). Mean 132 s to first passing gate (report: 172 s), 103,665 tokens, closeness 87.3 (report: 85.4), layout 7.7. Targets ≤ 100 s and closeness ≥ 90 missed; dollar cost not measurable (token totals only). Results and proposed follow-ups (not implemented) in `doc/agent-bpmn-bakeoff-rerun.md`; summary section added to `doc/agent-bpmn-bakeoff-analysis.md`.
