@@ -68,8 +68,8 @@ unknown selector field. Forms are not filled by the tutorial; see "Forms" below.
    failure?: { index, type, message } }] }`.
 3. **CLI** (`apps/cli/src/commands/test.ts`): when the scenarios file's `$schema` contains
    `cpt-test-cases`, route to `runCptTestCases`; otherwise the existing BPMN Kit scenario path runs
-   unchanged. Default scenarios lookup adds `<name>.test.json` (CPT's naming) after the existing
-   `<file>.bpmn.tests.json`. New flag `--case <name>` (repeatable) selects cases. Sibling `*.form`
+   unchanged. Default scenarios lookup adds `<name>.test.json` (CPT's naming; `<name>` is the BPMN file name
+   without `.bpmn`) after the existing `<file>.bpmn.tests.json`. New flag `--case <name>` (repeatable) selects cases. Sibling `*.form`
    files of the BPMN are read and passed as `forms`.
 4. **Docs and agents:** recipe page (`guides/executable-camunda-process.md`) gains "Does it run?
    `casen test …`"; the Claude `agent` skill's gate checklist uses it; `casen.md` / CLI docs; the
@@ -89,7 +89,7 @@ Run the tutorial's 6 cases on real CPT (Java, in this sandbox) and on `casen tes
 | File | Expected (CPT) |
 |---|---|
 | `packages/core/tests/fixtures/bakeoff/expected.bpmn` | 6/6 pass (already measured) |
-| rerun outputs bk3, bk4 | 6/6 pass (already measured) |
+| rerun outputs bk3, bk4 (scratchpad, not committed) | 6/6 pass (already measured) |
 | broken: `Flow_No` condition always false | loop case fails |
 | broken: `SearchRecipes` tool removed | recipes case fails |
 | broken: agent job type changed | all cases fail |
@@ -118,10 +118,12 @@ fixture and keep the tutorial file out of the repo (the parity run uses it from 
 
 ## Constraints
 
-- No new runtime dependencies; dev tooling (wasm32 target, wasm-pack) only where CI already pins it.
+- No new runtime dependencies. The runner's tests need the built `@bpmnkit/reebe-wasm`; CI already
+  builds it (`ci.yml`: wasm32 target + wasm-pack). Locally the implementer installs the same two
+  tools; nothing new is added to CI.
 - Existing `casen test` scenario files and `runScenarioWasm` behave exactly as before.
-- Zero type errors, zero Biome findings, all tests green; changesets for published packages
-  (`@bpmnkit/engine`, `@bpmnkit/cli` if published); `doc/progress.md`, `doc/features.md`.
+- Zero type errors, zero Biome findings, all tests green; changesets for the published packages
+  touched (`@bpmnkit/engine`, `@bpmnkit/cli`, and `@bpmnkit/reebe-wasm` if it is published); `doc/progress.md`, `doc/features.md`.
 
 ## Not in scope
 
