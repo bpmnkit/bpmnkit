@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-19 — Drop: the connect pass runs for long descriptions and says why when it cannot
+
+- The connect route refused a `request` over 2,000 characters with a 400 the page swallowed, so a long spec (`?nolimit`) silently kept placeholder job types. `maxConnectRequestChars(params)` lifts that cap with `?nolimit`; the page calls `/drop/api/connect?nolimit` when its own URL has it. `lines` keeps its 2,000 cap.
+- `maxConnectTokens(tasks, agents)` adds 600 tokens per AI Agent card selected (an agent's `with` line carries provider, model and two prompts) and the cap rises from 1,500 to 3,000.
+- The "Connectors not configured" row now shows the server's `error` text (non-OK response or an `error` event), e.g. "(a request is at most 2000 characters)".
+- Tests: route 400 without / 200 with `?nolimit`, token budget with an agent, `maxConnectTokens` and `maxConnectRequestChars` units.
+
 ## 2026-10-19 — Drop: a long description gets output room and a visible cut-off
 
 - With `?nolimit` the route keeps the description's line breaks (headings, lists; only space runs and blank-line runs shrink), calls the model with `max_tokens` 2,048 instead of the profile's 600 (glm-4.7-flash cut the ~1,320-token diagram of the bake-off spec mid-way), and accepts a diagram of up to 16,000 characters for a change or completion (4,000 otherwise).

@@ -155,6 +155,8 @@ export function mountGenerator(): void {
 	// ?nolimit on the page lifts the description cap here and, passed on, on the route.
 	const noLimit = !Number.isFinite(maxDescriptionChars(new URLSearchParams(location.search)))
 	const generatePath = noLimit ? `/drop/api/generate?${NO_LIMIT_PARAM}` : "/drop/api/generate"
+	// The connect route reads the same parameter, or it would refuse the long description it follows
+	const connectPath = noLimit ? `/drop/api/connect?${NO_LIMIT_PARAM}` : "/drop/api/connect"
 	const input = $<HTMLTextAreaElement>("genInput")
 	const count = $("genCount")
 	const run = $<HTMLButtonElement>("genRun")
@@ -323,6 +325,8 @@ export function mountGenerator(): void {
 
 	/** Set when the connect pass could not run, so the page says so instead of staying quiet. */
 	let connectorsOff = false
+	/** The server's reason the pass could not run (a long request, a closed check), when it gave one. */
+	let connectorsWhy = ""
 
 	/** The streamed process text, so a reader sees the notation the diagram came from. */
 	function showText(text: string): void {
@@ -366,8 +370,10 @@ export function mountGenerator(): void {
 		const rows = [badge.div]
 		if (connectorsOff) {
 			rows.push(
-				row("Connectors", "Connectors not configured — the draft keeps its placeholder job types")
-					.div,
+				row(
+					"Connectors",
+					`Connectors not configured${connectorsWhy ? ` (${connectorsWhy})` : ""} — the draft keeps its placeholder job types`,
+				).div,
 			)
 		}
 		const run = row("Dry run", "running…")
@@ -724,6 +730,7 @@ export function mountGenerator(): void {
 		running?.abort()
 		const controller = new AbortController()
 		running = controller
+		connectorsWhy = ""
 		setStatus(lines ? "connecting…" : `${before} · connecting…`, true)
 		setBusy(true)
 		const body: Record<string, string> = { xml: result.xml, request: draft.description }
@@ -732,12 +739,16 @@ export function mountGenerator(): void {
 		let note = ""
 		let failed = false
 		try {
-			const res = await send(body, code, controller.signal, "/drop/api/connect")
+			const res = await send(body, code, controller.signal, connectPath)
 			if (!res?.ok || !res.body) {
 				// Off (404), or a check the reader closed: the draft stands as it is.
 				if (!controller.signal.aborted) {
 					setStatus(before)
-					if (res) flagConnectorsOff(true)
+					if (res) {
+						const payload = (await res.json().catch(() => ({}))) as { error?: unknown }
+						connectorsWhy = typeof payload.error === "string" ? payload.error : ""
+						flagConnectorsOff(true)
+					}
 				}
 				return
 			}
@@ -749,6 +760,7 @@ export function mountGenerator(): void {
 					const event = JSON.parse(data) as ConnectEvent
 					if ("result" in event) outcome = event.result
 					else if ("error" in event) {
+						connectorsWhy = event.error
 						note = " · connectors failed"
 						failed = true
 					}
@@ -756,6 +768,7 @@ export function mountGenerator(): void {
 			}
 		} catch {
 			if (controller.signal.aborted) return
+			connectorsWhy = ""
 			note = " · connectors failed"
 			failed = true
 		} finally {

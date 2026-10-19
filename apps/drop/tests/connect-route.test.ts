@@ -3,7 +3,12 @@
  * answers with, and the connected diagram it applies on the server.
  */
 import { Bpmn, expand, findElement, parseProcessText, writeProcessText } from "@bpmnkit/core"
-import { type ApiService, connectorCards, connectorLineFor } from "@bpmnkit/core/connectors"
+import {
+	type ApiService,
+	connectorCards,
+	connectorLineFor,
+	selectConnectors,
+} from "@bpmnkit/core/connectors"
 import { beforeEach, describe, expect, it } from "vitest"
 import type { Env } from "../src/env.js"
 import { getBudgetSpent } from "../src/lib/ai.js"
@@ -14,6 +19,8 @@ import {
 	connectTasks,
 	createConnectLineFilter,
 	finishConnect,
+	maxConnectRequestChars,
+	maxConnectTokens,
 } from "../src/lib/connect.js"
 import { sharePage } from "../src/lib/pages.js"
 import { handleConnect } from "../src/routes/connect.js"
@@ -84,8 +91,8 @@ function makeEnv(ai: ReturnType<typeof fakeAi>, over: Partial<Env> = {}): Env {
 	} as unknown as Env
 }
 
-const post = (body: unknown, code = CODE) =>
-	new Request("http://drop/drop/api/connect", {
+const post = (body: unknown, code = CODE, path = "/drop/api/connect") =>
+	new Request(`http://drop${path}`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json", "X-Drop-AI-Code": code },
 		body: JSON.stringify(body),
@@ -132,6 +139,22 @@ describe("POST /drop/api/connect", () => {
 		expect(
 			(await handleConnect(post({ xml: DRAFT, request: "x".repeat(2001) }), env, NOW)).status,
 		).toBe(400)
+	})
+
+	it("refuses a request over 2000 characters, unless the page has ?nolimit", async () => {
+		const long = { xml: DRAFT, request: `Tell ops in Slack. ${"x".repeat(6000)}` }
+		const strict = await handleConnect(post(long), makeEnv(fakeAi(ANSWER)), NOW)
+		expect(strict.status).toBe(400)
+		expect(await strict.text()).toContain("a request is at most 2000 characters")
+		const ai = fakeAi(ANSWER)
+		const open = await handleConnect(
+			post(long, CODE, "/drop/api/connect?nolimit"),
+			makeEnv(ai),
+			NOW,
+		)
+		expect(open.status).toBe(200)
+		await open.text()
+		expect(ai.calls).toHaveLength(1)
 	})
 
 	it("asks the model with the cards it picked, and streams only with lines", async () => {
@@ -572,6 +595,18 @@ describe("finishConnect", () => {
 	})
 })
 
+describe("maxConnectTokens", () => {
+	it("grows with tasks, 600 more per AI Agent, and stops at 3000", () => {
+		expect(maxConnectTokens(3)).toBe(450)
+		expect(maxConnectTokens(5, 1)).toBe(1250)
+		expect(maxConnectTokens(30, 5)).toBe(3000)
+	})
+	it("allows the long request only with ?nolimit", () => {
+		expect(maxConnectRequestChars(new URLSearchParams())).toBe(2000)
+		expect(maxConnectRequestChars(new URLSearchParams("nolimit"))).toBe(Number.POSITIVE_INFINITY)
+	})
+})
+
 describe("an AI agent sub-process and its tools", () => {
 	const AGENT = Bpmn.parse(
 		Bpmn.export(
@@ -592,6 +627,17 @@ with joke: http GET https://v2.jokeapi.dev/joke/Any?format=txt | authentication.
 			{ id: "joke", name: "Get a safe joke", type: "serviceTask", inside: "agent" },
 			{ id: "done", name: "Answered", type: "endEvent" },
 		])
+	})
+
+	it("gives the model room for the agent's long with line", async () => {
+		const xml = Bpmn.export(AGENT)
+		const ai = fakeAi(ANSWER)
+		await (await handleConnect(post({ xml, request: "Answer questions" }), makeEnv(ai), NOW)).text()
+		const picked = selectConnectors(
+			{ text: "Answer questions", tasks: connectTasks(AGENT, aliases) },
+			{ apis: [] },
+		).length
+		expect(ai.calls[0]?.inputs.max_tokens).toBe(maxConnectTokens(picked, 1))
 	})
 
 	it("connects the agent and its tool with no problem, and a real blank line in the prompt", () => {
