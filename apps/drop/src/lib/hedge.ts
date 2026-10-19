@@ -28,6 +28,8 @@ export class ModelStream {
 	text = ""
 	reasoningChars = 0
 	usage: AiUsage | undefined
+	/** Why the model stopped, when it said: `length` means it ran into the output cap. */
+	finish: string | undefined
 	/** The call failed, or its stream broke. */
 	failed = false
 	/** The model wrote only `!` — gpt-oss's token 0 over and over — and was given up on. */
@@ -126,6 +128,7 @@ export class ModelStream {
 			if (!delta) continue
 			if (delta.reasoning) this.reasoningChars += delta.reasoning.length
 			if (delta.usage) this.usage = delta.usage
+			if (delta.finish) this.finish = delta.finish
 			if (delta.content) {
 				this.text += delta.content
 				content.push(delta.content)

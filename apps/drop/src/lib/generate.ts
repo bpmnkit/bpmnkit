@@ -145,14 +145,39 @@ export const MAX_CHANGE_CHARS = 500
 export const MAX_DIAGRAM_CHARS = 4000
 
 /**
+ * Longest diagram text sent back for a change with `?nolimit`: a diagram drawn
+ * from a whole specification is several times the benchmark's longest (about
+ * 1,300 tokens, 5,000 characters, for the bake-off spec).
+ */
+export const MAX_LONG_DIAGRAM_CHARS = 16_000
+
+/** Longest diagram accepted for a change, for a request with these query parameters. */
+export function maxDiagramChars(params: URLSearchParams): number {
+	return params.has(NO_LIMIT_PARAM) ? MAX_LONG_DIAGRAM_CHARS : MAX_DIAGRAM_CHARS
+}
+
+/**
  * Output cap for a model without its own `maxTokens`, reasoning included: a
  * reasoning model can spend over a thousand tokens before its first line.
  */
 export const GENERATE_MAX_TOKENS = 2048
 
-/** Trims and collapses whitespace, so trivially different requests share a cache entry. */
-export function normaliseDescription(description: string): string {
-	return description.trim().replace(/\s+/g, " ")
+/**
+ * Trims and collapses whitespace, so trivially different requests share a cache entry.
+ *
+ * @param keepLines - For a pasted specification: its headings, lists and
+ * paragraphs are structure the model reads, so single line breaks stay and only
+ * runs of spaces and blank lines shrink.
+ */
+export function normaliseDescription(description: string, keepLines = false): string {
+	if (!keepLines) return description.trim().replace(/\s+/g, " ")
+	return description
+		.replace(/\r\n?/g, "\n")
+		.split("\n")
+		.map((line) => line.replace(/[ \t]+/g, " ").trim())
+		.join("\n")
+		.replace(/\n{3,}/g, "\n\n")
+		.trim()
 }
 
 /** What each model needs sent with it, and what it costs. */
@@ -205,9 +230,13 @@ export const MODEL_PROFILES: Readonly<Record<string, ModelProfile>> = {
 	},
 }
 
-/** The output cap to send with `model`. */
-export function maxTokensFor(model: string): number {
-	return MODEL_PROFILES[model]?.maxTokens ?? GENERATE_MAX_TOKENS
+/**
+ * The output cap to send with `model`. `long` is a description past the usual
+ * limit: its diagram is longer than the profile's cap (about 1,300 tokens for a
+ * whole specification, against 600), so it gets the full budget.
+ */
+export function maxTokensFor(model: string, long = false): number {
+	return long ? GENERATE_MAX_TOKENS : (MODEL_PROFILES[model]?.maxTokens ?? GENERATE_MAX_TOKENS)
 }
 
 /**
@@ -295,7 +324,11 @@ export function refineMessages(
  * than the model's: the client gets the diagram text and nothing else — no
  * reasoning, no per-model shapes to tell apart.
  */
-export type GenerateEvent = { text: string } | { done: true; cached: boolean } | { error: string }
+export type GenerateEvent =
+	| { text: string }
+	/** `truncated`: the model hit its output limit, so the diagram may be incomplete (and is not cached). */
+	| { done: true; cached: boolean; truncated?: true }
+	| { error: string }
 
 /** Token counts a Workers AI model reports on its last stream event. */
 export interface AiUsage {
@@ -312,6 +345,8 @@ export interface AiDelta {
 	content?: string
 	reasoning?: string
 	usage?: AiUsage
+	/** Why the model stopped, on its last chunk: `length` means it hit the output cap. */
+	finish?: string
 }
 
 function num(value: unknown): number | undefined {
@@ -344,6 +379,8 @@ export function readAiEvent(data: string): AiDelta | null {
 	if (typeof delta.content === "string" && delta.content !== "") out.content = delta.content
 	const reasoning = delta.reasoning_content ?? delta.reasoning
 	if (typeof reasoning === "string" && reasoning !== "") out.reasoning = reasoning
+
+	if (typeof choice?.finish_reason === "string") out.finish = choice.finish_reason
 
 	const usage = event.usage as Record<string, unknown> | undefined
 	const promptTokens = num(usage?.prompt_tokens)

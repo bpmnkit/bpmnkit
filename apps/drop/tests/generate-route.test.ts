@@ -40,6 +40,8 @@ interface FakeModel {
 	throws?: boolean
 	/** The stream breaks after its content. */
 	fail?: boolean
+	/** `finish_reason` on the last chunk, as the model reports it. */
+	finish?: string
 }
 
 /**
@@ -48,7 +50,7 @@ interface FakeModel {
  */
 function fakeAi(
 	chunks: string[],
-	options: { fail?: boolean; byModel?: Record<string, FakeModel> } = {},
+	options: { fail?: boolean; finish?: string; byModel?: Record<string, FakeModel> } = {},
 ) {
 	const calls: { model: string; inputs: Record<string, unknown>; options: unknown }[] = []
 	const cancelled: string[] = []
@@ -57,7 +59,12 @@ function fakeAi(
 		cancelled,
 		async run(model: string, inputs: Record<string, unknown>, opts: unknown) {
 			calls.push({ model, inputs, options: opts })
-			const behaviour: FakeModel = { chunks, fail: options.fail, ...options.byModel?.[model] }
+			const behaviour: FakeModel = {
+				chunks,
+				fail: options.fail,
+				finish: options.finish,
+				...options.byModel?.[model],
+			}
 			if (behaviour.throws) throw new Error("capacity")
 			const encoder = new TextEncoder()
 			let stopped = false
@@ -75,7 +82,12 @@ function fakeAi(
 						if (!stopped) controller.error(new Error("upstream reset"))
 						return
 					}
-					send({ choices: [{ delta: {} }], usage: USAGE })
+					send({
+						choices: [
+							{ delta: {}, ...(behaviour.finish ? { finish_reason: behaviour.finish } : {}) },
+						],
+						usage: USAGE,
+					})
 					if (!stopped) {
 						controller.enqueue(encoder.encode("data: [DONE]\n\n"))
 						controller.close()
@@ -156,6 +168,60 @@ describe("POST /drop/api/generate", () => {
 		expect(res.status).toBe(200)
 		await res.text()
 		expect(JSON.stringify(ai.calls[0]?.inputs)).toContain(long)
+	})
+
+	const GLM = "@cf/zai-org/glm-4.7-flash"
+	const postTo = (query: string, body: unknown) =>
+		new Request(`http://drop/drop/api/generate${query}`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json", "X-Drop-AI-Code": CODE },
+			body: JSON.stringify(body),
+		})
+	const SPEC = "# Order flow\n\n1. Receive the order\n2.  Check   the stock"
+
+	it("gives a long description the full output budget and its line breaks", async () => {
+		const ai = fakeAi(ANSWER)
+		const env = makeEnv(ai, { AI_GENERATE_MODEL: GLM })
+		await (await handleGenerate(postTo("?nolimit", { description: SPEC }), env, NOW)).text()
+		expect(ai.calls[0]?.inputs.max_tokens).toBe(2048)
+		expect(JSON.stringify(ai.calls[0]?.inputs)).toContain(
+			JSON.stringify("# Order flow\n\n1. Receive the order\n2. Check the stock").slice(1, -1),
+		)
+	})
+
+	it("keeps the model's cap and collapses whitespace without ?nolimit", async () => {
+		const ai = fakeAi(ANSWER)
+		const env = makeEnv(ai, { AI_GENERATE_MODEL: GLM })
+		await (await handleGenerate(postTo("", { description: SPEC }), env, NOW)).text()
+		expect(ai.calls[0]?.inputs.max_tokens).toBe(600)
+		expect(JSON.stringify(ai.calls[0]?.inputs)).toContain(
+			"# Order flow 1. Receive the order 2. Check the stock",
+		)
+	})
+
+	it("says a cut-off answer was cut off, and does not cache it", async () => {
+		const ai = fakeAi(ANSWER, { finish: "length" })
+		const env = makeEnv(ai)
+		const first = await events(await handleGenerate(post(DESCRIPTION), env, NOW))
+		expect(first.at(-1)).toEqual({ done: true, cached: false, truncated: true })
+		const second = await events(await handleGenerate(post(DESCRIPTION), env, NOW))
+		expect(second.at(-1)).toEqual({ done: true, cached: false, truncated: true })
+		expect(ai.calls).toHaveLength(2)
+	})
+
+	it("does not flag an answer that ended on its own", async () => {
+		const ai = fakeAi(ANSWER, { finish: "stop" })
+		const evs = await events(await handleGenerate(post(DESCRIPTION), makeEnv(ai), NOW))
+		expect(evs.at(-1)).toEqual({ done: true, cached: false })
+	})
+
+	it("takes a 10,000-character diagram to change only with ?nolimit", async () => {
+		const diagram = `${ANSWER.join("")}${"# padding\n".repeat(900)}`
+		expect(diagram.length).toBeGreaterThan(9_000)
+		const body = { description: DESCRIPTION, diagram, change: "add a QA step" }
+		const env = makeEnv(fakeAi(ANSWER))
+		expect((await handleGenerate(postTo("", body), env, NOW)).status).toBe(400)
+		expect((await handleGenerate(postTo("?nolimit", body), env, NOW)).status).toBe(200)
 	})
 
 	it("streams the model's text, without its reasoning, then done", async () => {

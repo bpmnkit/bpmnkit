@@ -11,12 +11,16 @@ import {
 	GENERATE_MAX_TOKENS,
 	GENERATE_SYSTEM_PROMPT,
 	IMAGE_SYSTEM_PROMPT,
+	MAX_DIAGRAM_CHARS,
+	MAX_LONG_DIAGRAM_CHARS,
 	REFINE_SYSTEM_PROMPT,
 	createDiagramLineFilter,
 	createSseReader,
 	generateMessages,
 	maxDescriptionChars,
+	maxDiagramChars,
 	maxTokensFor,
+	normaliseDescription,
 	normaliseDiagram,
 	readAiEvent,
 	refineMessages,
@@ -203,7 +207,31 @@ describe("maxDescriptionChars", () => {
 	})
 })
 
+describe("maxDiagramChars", () => {
+	it("is 4,000, or 16,000 with ?nolimit", () => {
+		expect(maxDiagramChars(new URLSearchParams(""))).toBe(MAX_DIAGRAM_CHARS)
+		expect(maxDiagramChars(new URLSearchParams("?nolimit"))).toBe(MAX_LONG_DIAGRAM_CHARS)
+		expect(MAX_LONG_DIAGRAM_CHARS).toBe(16_000)
+	})
+})
+
+describe("normaliseDescription", () => {
+	it("collapses all whitespace by default", () => {
+		expect(normaliseDescription("# A\n\n\n1.  x   y\n2. z")).toBe("# A 1. x y 2. z")
+	})
+
+	it("keeps line breaks for a pasted specification", () => {
+		expect(normaliseDescription("# A\n\n\n1.  x \t y\n2. z\n", true)).toBe("# A\n\n1. x y\n2. z")
+		expect(normaliseDescription("# A\n\n\n1.  x   y\n2. z", true)).toBe("# A\n\n1. x y\n2. z")
+	})
+})
+
 describe("maxTokensFor", () => {
+	it("gives a long description the full output budget", () => {
+		expect(maxTokensFor("@cf/zai-org/glm-4.7-flash", true)).toBe(GENERATE_MAX_TOKENS)
+		expect(maxTokensFor("@cf/zai-org/glm-4.7-flash", false)).toBe(600)
+	})
+
 	it("caps a model that does not reason far below one that does", () => {
 		expect(maxTokensFor("@cf/zai-org/glm-4.7-flash")).toBe(600)
 		expect(maxTokensFor("@cf/openai/gpt-oss-120b")).toBe(GENERATE_MAX_TOKENS)
@@ -212,6 +240,13 @@ describe("maxTokensFor", () => {
 })
 
 describe("readAiEvent", () => {
+	it("reads the finish reason", () => {
+		expect(readAiEvent('{"choices":[{"delta":{},"finish_reason":"length"}]}')).toEqual({
+			finish: "length",
+		})
+		expect(readAiEvent('{"choices":[{"delta":{},"finish_reason":null}]}')).toEqual({})
+	})
+
 	it("reads the legacy { response } shape", () => {
 		expect(readAiEvent('{"response":"a > b"}')).toEqual({ content: "a > b" })
 	})

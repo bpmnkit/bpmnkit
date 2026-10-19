@@ -524,7 +524,7 @@ export function mountGenerator(): void {
 	async function ask(
 		body: { description: string; diagram?: string; change?: string; image?: string },
 		verb: string,
-	): Promise<{ text: string; cached: boolean } | null> {
+	): Promise<{ text: string; cached: boolean; truncated: boolean } | null> {
 		if (!errors || !out || !passcode || !codeInput) return null
 		errors.classList.add("hidden")
 		out.classList.add("hidden")
@@ -618,7 +618,11 @@ export function mountGenerator(): void {
 				showError(outcome && "error" in outcome ? outcome.error : "No diagram came back.")
 				return null
 			}
-			return { text, cached: outcome.done && outcome.cached }
+			return {
+				text,
+				cached: outcome.done && outcome.cached,
+				truncated: outcome.done && outcome.truncated === true,
+			}
 		} finally {
 			clearInterval(ticker)
 			// A newer request took over and owns the indicator now.
@@ -627,6 +631,11 @@ export function mountGenerator(): void {
 	}
 
 	const repaired = (problems: number) => (problems > 0 ? ` · ${problems} problem(s) repaired` : "")
+	/** Said in the status line, since the diagram looks finished whatever its end. */
+	const cutOff = (answer: { truncated: boolean }) =>
+		answer.truncated
+			? " · The answer was cut off at the model's output limit — the diagram may be incomplete."
+			: ""
 
 	async function generate(): Promise<void> {
 		if (!input || !share || !refine) return
@@ -661,7 +670,7 @@ export function mountGenerator(): void {
 		setStatus(
 			answer.cached
 				? `ready (cached)${repaired(problems)}`
-				: `ready in ${seconds}s${repaired(problems)}`,
+				: `ready in ${seconds}s${repaired(problems)}${cutOff(answer)}`,
 		)
 		// A request with words to check against: an image alone has none
 		if (description.length >= 10) await complete()
@@ -689,7 +698,7 @@ export function mountGenerator(): void {
 			earlier.push(text)
 			draft.text = answer.text
 			const { problems } = show(answer.text)
-			setStatus(`${before} · completed${repaired(problems)}`)
+			setStatus(`${before} · completed${repaired(problems)}${cutOff(answer)}`)
 		} else {
 			// What streamed is not kept: the canvas shows the draft again
 			show(text)
@@ -815,7 +824,7 @@ export function mountGenerator(): void {
 		const removed = before.filter((e) => !ids.has(e.id)).length
 		const seconds = ((performance.now() - started) / 1000).toFixed(1)
 		setStatus(
-			`changed${answer.cached ? " (cached)" : ` in ${seconds}s`} · +${added} −${removed}${repaired(problems)}`,
+			`changed${answer.cached ? " (cached)" : ` in ${seconds}s`} · +${added} −${removed}${repaired(problems)}${cutOff(answer)}`,
 		)
 		await connect()
 	}

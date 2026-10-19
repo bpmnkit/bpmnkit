@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-19 — Drop: a long description gets output room and a visible cut-off
+
+- With `?nolimit` the route keeps the description's line breaks (headings, lists; only space runs and blank-line runs shrink), calls the model with `max_tokens` 2,048 instead of the profile's 600 (glm-4.7-flash cut the ~1,320-token diagram of the bake-off spec mid-way), and accepts a diagram of up to 16,000 characters for a change or completion (4,000 otherwise).
+- The model's `finish_reason` is read (`readAiEvent` -> `finish`). When it is `length`, `done` carries `truncated: true`, the answer is not cached, and the page adds "The answer was cut off at the model's output limit — the diagram may be incomplete." to its status line.
+- Cache key unchanged: it hashes the description, so a spec with line breaks differs from its collapsed form; an identical single-line description may share an entry across the two modes, which is fine because only complete answers are cached.
+- Tests: `normaliseDescription` keepLines, `maxTokensFor` long, `maxDiagramChars`, `readAiEvent` finish, route cases for token budget, line breaks, truncated not cached, 10,000-character change.
+
 ## 2026-10-19 — Drop: the prompt teaches agents, tools, notes and given ids; no blanket REST boundary
 
 - A pasted AI-agent spec came back as plain tasks with an invented "REST connection failed" path. The generate prompt no longer orders a `boundary:error` for every REST call (only where the description says what happens on failure), and now teaches: an AI agent is one `adhoc` node with `service` tools `inside=<agent id>` and `doc` lines; each requested annotation is a `note`; use the ids the description gives.
