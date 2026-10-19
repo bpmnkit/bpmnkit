@@ -1,8 +1,8 @@
 # Progress
 
-## 2026-10-19 — Drop: readiness names plain tasks and code-less error boundaries
+## 2026-10-19 — Drop: readiness names plain tasks
 
-- A drawn diagram with plain `task` steps and an error boundary without a code read only "Shape only — 2 steps need configuration" with nothing named. `readiness` now lists a plain task (anywhere, ad-hoc sub-process children included) as "a plain task does nothing when run — make it a service, user or script task", and an error boundary whose `errorRef` is missing or points at an error with no `errorCode` as "an error boundary needs an error code".
+- A drawn diagram with plain `task` steps read only "Shape only — 2 steps need configuration" with nothing named. `readiness` now lists a plain task (anywhere, ad-hoc sub-process children included) as "a plain task does nothing when run — make it a service, user or script task". An error boundary without a code is not flagged: Zeebe treats it as a catch-all.
 - The bake-off `expected.bpmn` still reads "Ready to deploy (8.10)".
 - Docs: the Drop guide's `?nolimit` paragraph covers the larger output budget, kept line breaks, the cut-off notice and the connector step.
 

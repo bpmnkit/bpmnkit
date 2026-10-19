@@ -60,6 +60,39 @@ describe("readiness", () => {
 		const result = readiness(defs)
 		expect(result.state).toBe("shape-only")
 	})
+
+	it("lists a plain task, at any depth, as one that does nothing when run", () => {
+		const result = readiness(draft("# P\nstart[start Go] > a[task Work] > f[end Done]"), "8.10")
+		expect(result.state).toBe("shape-only")
+		if (result.state !== "shape-only") return
+		expect(result.missing).toEqual([
+			{
+				elementId: "a",
+				what: "a plain task does nothing when run — make it a service, user or script task",
+			},
+		])
+		expect(badgeText(result)).toBe("Shape only — 1 step needs configuration")
+	})
+
+	it("lists a plain task inside an ad-hoc sub-process", () => {
+		const defs = draft("# P\nstart[start Go] > f[end Done]")
+		const process = defs.processes[0]
+		if (!process) throw new Error("no process")
+		const base = { incoming: [], outgoing: [], extensionElements: [], unknownAttributes: {} }
+		process.flowElements.push({
+			...base,
+			id: "adhoc",
+			type: "adHocSubProcess",
+			flowElements: [{ ...base, id: "inner", type: "task" }],
+			sequenceFlows: [],
+			textAnnotations: [],
+			associations: [],
+			groups: [],
+		} as never)
+		const result = readiness(defs, "8.10")
+		if (result.state !== "shape-only") throw new Error(result.state)
+		expect(result.missing.map((m) => m.elementId)).toContain("inner")
+	})
 })
 
 describe("readiness, review fixes", () => {
@@ -136,52 +169,5 @@ describe("badgeText", () => {
 				],
 			}),
 		).toBe("2 deploy errors")
-	})
-
-	it("lists a plain task, at any depth, as one that does nothing when run", () => {
-		const result = readiness(draft("# P\nstart[start Go] > a[task Work] > f[end Done]"), "8.10")
-		expect(result.state).toBe("shape-only")
-		if (result.state !== "shape-only") return
-		expect(result.missing).toEqual([
-			{
-				elementId: "a",
-				what: "a plain task does nothing when run — make it a service, user or script task",
-			},
-		])
-		expect(badgeText(result)).toBe("Shape only — 1 step needs configuration")
-	})
-
-	it("lists a plain task inside an ad-hoc sub-process", () => {
-		const defs = draft("# P\nstart[start Go] > f[end Done]")
-		const process = defs.processes[0]
-		if (!process) throw new Error("no process")
-		const base = { incoming: [], outgoing: [], extensionElements: [], unknownAttributes: {} }
-		process.flowElements.push({
-			...base,
-			id: "adhoc",
-			type: "adHocSubProcess",
-			flowElements: [{ ...base, id: "inner", type: "task" }],
-			sequenceFlows: [],
-			textAnnotations: [],
-			associations: [],
-			groups: [],
-		} as never)
-		const result = readiness(defs, "8.10")
-		if (result.state !== "shape-only") throw new Error(result.state)
-		expect(result.missing.map((m) => m.elementId)).toContain("inner")
-	})
-
-	it("lists an error boundary without an error code", () => {
-		const result = readiness(
-			draft(
-				"# P\ns[start Go] > r[service Read] > f[end Done]\nerr[boundary:error API error | on=r] > g[end Failed]",
-			),
-			"8.10",
-		)
-		if (result.state !== "shape-only") throw new Error(result.state)
-		expect(result.missing).toContainEqual({
-			elementId: "err",
-			what: "an error boundary needs an error code",
-		})
 	})
 })
