@@ -40,12 +40,17 @@ a > b > c                 sequence flow
 id[kind Name]             declare a node the first time it appears; afterwards write only id
 gw >(Label: condition) x  conditional branch, condition in FEEL (amount > 1000, status = "ok")
 gw >(Label: default) y    branch taken when no condition holds
-Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary
+Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary adhoc (an AI agent that chooses among tools)
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate cancel)
 Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>, each=<list variable> (once per item), after=<ISO duration> (timer), result=<variable>, feel=<FEEL expression> (last)
 Also after |: form=<form id> (start, user), in.<name>=<FEEL> and out.<name>=<FEEL> map variables in and out of a step (value runs to the next word=; write comparisons with spaces: a = 1)
 Ad-hoc: agent[adhoc Name] is a container with flows like any node; tool[service Name | inside=agent] has no flows of its own; note <id>: text annotates a node
 doc <id>: text            the element's documentation; for a tool inside an ad-hoc agent it is the description the agent chooses the tool by
+Ad-hoc example:
+ask[start Question asked] > agent[adhoc Answer with tools] > review[user Review answer] > done[end Answered]
+users[service Look up users | inside=agent]
+doc users: Returns the list of sample users
+note agent: Picks a tool by its description
 Rules:
 - One start event. Every node is on a path from it to an end event: never a node nothing leads to.
 - An xor has two or more branches: exactly one is (Label: default), each other has a FEEL condition.

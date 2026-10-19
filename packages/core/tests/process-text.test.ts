@@ -1435,11 +1435,29 @@ note joke: Each task you add represents a capability your agent will have.`
 	})
 
 	it("teaches the syntax in one guide line, and the example still parses", () => {
-		const lines = PROCESS_TEXT_GUIDE.split("\n").filter((line) => line.includes("inside="))
+		const lines = PROCESS_TEXT_GUIDE.split("\n").filter((line) => line.startsWith("Ad-hoc:"))
 		expect(lines).toHaveLength(1)
 		expect(PROCESS_TEXT_GUIDE).toContain("note <id>:")
 		expect(PROCESS_TEXT_GUIDE).toContain("adhoc")
 		expect(parseProcessText(EXAMPLE).problems).toEqual([])
+	})
+
+	it("lists adhoc among the kinds, and its example parses to an agent with a documented tool and a note", () => {
+		const kinds = PROCESS_TEXT_GUIDE.split("\n").find((line) => line.startsWith("Kinds:"))
+		expect(kinds).toMatch(/\badhoc\b/)
+		const start = PROCESS_TEXT_GUIDE.indexOf("Ad-hoc example:\n")
+		expect(start).toBeGreaterThan(-1)
+		const block = PROCESS_TEXT_GUIDE.slice(
+			start + "Ad-hoc example:\n".length,
+			PROCESS_TEXT_GUIDE.indexOf("Rules:"),
+		)
+		const { diagram, problems } = parseProcessText(`# Agent\n${block}`)
+		expect(problems).toEqual([])
+		const process = diagram.processes[0]
+		const agent = process?.elements.find((el) => el.type === "adHocSubProcess")
+		expect(agent?.children?.elements[0]).toMatchObject({ type: "serviceTask" })
+		expect(agent?.children?.elements[0]?.documentation).toBeTruthy()
+		expect(process?.notes).toHaveLength(1)
 	})
 })
 

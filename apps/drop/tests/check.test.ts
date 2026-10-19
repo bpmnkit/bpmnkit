@@ -44,6 +44,27 @@ describe("draftGaps", () => {
 		expect(kinds(request, draft)).toEqual(["failure"])
 	})
 
+	it("no longer asks for an error boundary on a REST call alone", () => {
+		const request = "Call the REST Outbound connector to list users."
+		const draft = "# B\ns[start Go] > call[service List users] > e[end Done]"
+		expect(kinds(request, draft)).toEqual([])
+	})
+
+	it("asks for an ad-hoc agent where the request names an AI agent", () => {
+		const request = "An AI agent answers questions using tools."
+		const draft = "# A\ns[start Go] > a[task Answer] > e[end Done]"
+		expect(kinds(request, draft)).toEqual(["agent"])
+		const agent = "# A\ns[start Go] > a[adhoc Answer] > e[end Done]\nt[service Look up | inside=a]"
+		expect(kinds(request, agent)).toEqual([])
+	})
+
+	it("asks for notes where the request asks for annotations", () => {
+		const request = "Add annotations explaining each step."
+		const draft = "# A\ns[start Go] > a[task Answer] > e[end Done]"
+		expect(kinds(request, draft)).toEqual(["note"])
+		expect(kinds(request, `${draft}\nnote a: Explains`)).toEqual([])
+	})
+
 	it("reads 'for each new ticket' as each instance, and 'every recipient in a list' as a list", () => {
 		const draft = "# N\ns[start Go] > send[send Send email] > e[end Done]"
 		expect(kinds("For each new support ticket, summarise it with OpenAI.", draft)).toEqual([])

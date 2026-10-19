@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-10-19 — Drop: the prompt teaches agents, tools, notes and given ids; no blanket REST boundary
+
+- A pasted AI-agent spec came back as plain tasks with an invented "REST connection failed" path. The generate prompt no longer orders a `boundary:error` for every REST call (only where the description says what happens on failure), and now teaches: an AI agent is one `adhoc` node with `service` tools `inside=<agent id>` and `doc` lines; each requested annotation is a `note`; use the ids the description gives.
+- `PROCESS_TEXT_GUIDE` lists `adhoc` among the kinds and has a four-line ad-hoc example. Draft check: the `rest` gap is gone; new `agent` and `note` gaps ask for an ad-hoc node or annotations the request names.
+- Tests: guide example parses to an ad-hoc agent with a documented tool and one note; prompt fragments; `agent`, `note` and no-`rest` gap cases.
+
 ## 2026-10-18 — Drop: `?nolimit` lifts the 2,000-character description cap
 
 - *Describe a process* opened with `?nolimit` drops the textarea's `maxlength`, shows a plain character count, and posts to `/drop/api/generate?nolimit`; the route then accepts a description of any length. Without the parameter the 2,000-character cap is unchanged.

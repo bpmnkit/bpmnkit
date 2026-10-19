@@ -24,6 +24,12 @@ import {
 } from "../src/lib/generate.js"
 
 describe("generate prompt", () => {
+	it("teaches agents, tools, notes and given ids, with no blanket REST boundary", () => {
+		expect(GENERATE_SYSTEM_PROMPT).not.toContain("A REST call gets a boundary:error")
+		expect(GENERATE_SYSTEM_PROMPT).toContain("inside=")
+		expect(GENERATE_SYSTEM_PROMPT).toContain("ids the description gives")
+	})
+
 	it("teaches the format the parser reads, and puts the description last", () => {
 		expect(GENERATE_SYSTEM_PROMPT).toContain(PROCESS_TEXT_GUIDE)
 		const messages = generateMessages("Approve expenses over 1000")
