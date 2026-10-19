@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-19 — Layout: gateway markers and kept DI attributes (#250)
+
+- `nodeToShape` sets `isMarkerVisible: true` on exclusive gateways. The bpmn-js Viewer and NavigatedViewer draw the "X" only when the shape says so (the Modeler assumes it), so gateways from `.withAutoLayout()` showed as empty diamonds there.
+- Re-layout rebuilt every shape and edge from scratch and lost what the input said besides geometry. `keepDiAttributes` now carries over, by `bpmnElement`: the DI id, an explicit `isMarkerVisible` (a source `false` wins over the default), `unknownAttributes` on shapes, edges and labels (colours, vendor attributes), and the diagram's and plane's attributes and label styles. Bounds, waypoints, label bounds, `isExpanded` and `isHorizontal` are still computed.
+- DI ids stay unique: a generated `X_di` never takes an id the source already gives another element (one renamed from `X` in a modeler that kept its DI id), and a source id is reused once. Kept attributes are copies, so the output shares no objects with the input.
+- Tests: `auto-layout-keeps-di.test.ts`; the bake-off `expected.bpmn` gains the marker on its two gateways.
+
 ## 2026-10-19 — Drop: config timeouts are not deadlines; quiet 404 connect row; narrower ad-hoc match
 
 - The `deadline` gap rule read the spec's connector settings ("connection timeout 20 s, read timeout 20 s") as a time limit, so even a perfect bake-off draft was asked for an invented boundary timer. A timeout preceded by connection/connect/read/request/socket/response, or followed by a number and unit, no longer counts; "if it times out" and "24h deadline" still do. Regression test: the bake-off spec against the reference diagram's text gives no gaps.

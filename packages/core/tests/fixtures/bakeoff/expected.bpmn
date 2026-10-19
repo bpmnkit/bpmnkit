@@ -187,7 +187,7 @@
           <dc:Bounds x="36" y="226" width="168" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_RunAgent_di" bpmnElement="Gateway_RunAgent">
+      <bpmndi:BPMNShape id="Gateway_RunAgent_di" bpmnElement="Gateway_RunAgent" isMarkerVisible="true">
         <dc:Bounds x="238" y="179" width="50" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="AI_Agent_di" bpmnElement="AI_Agent" isExpanded="true">
@@ -196,7 +196,7 @@
       <bpmndi:BPMNShape id="UserTask_ReviewAgentResponse_di" bpmnElement="UserTask_ReviewAgentResponse">
         <dc:Bounds x="888" y="164" width="100" height="80"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_UserSatisfied_di" bpmnElement="Gateway_UserSatisfied">
+      <bpmndi:BPMNShape id="Gateway_UserSatisfied_di" bpmnElement="Gateway_UserSatisfied" isMarkerVisible="true">
         <dc:Bounds x="1088" y="179" width="50" height="50"/>
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1061" y="233" width="105" height="14"/>
