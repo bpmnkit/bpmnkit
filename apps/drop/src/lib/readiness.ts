@@ -50,10 +50,19 @@ function walk(elements: readonly BpmnFlowElement[]): BpmnFlowElement[] {
  * have the same problem. A template-bound task (a connector) is configured by
  * its template, and lint already checks the template's required values.
  */
-function unconfigured(el: BpmnFlowElement): string | undefined {
+function unconfigured(el: BpmnFlowElement, defs: BpmnDefinitions): string | undefined {
 	if (el.unknownAttributes["zeebe:modelerTemplate"] !== undefined) return undefined
 	const type = ext(el).find((e) => e.name === "zeebe:taskDefinition")?.attributes.type
 	switch (el.type) {
+		// The model draws `task` when it has no better word; the engine passes straight through it.
+		case "task":
+			return "a plain task does nothing when run — make it a service, user or script task"
+		case "boundaryEvent": {
+			const def = el.eventDefinitions.find((d) => d.type === "error")
+			if (def?.type !== "error") return undefined
+			const code = defs.errors.find((e) => e.id === def.errorRef)?.errorCode
+			return code?.trim() ? undefined : "an error boundary needs an error code"
+		}
 		case "serviceTask":
 		case "sendTask":
 			return type === el.id ? "needs a job type or a connector" : undefined
@@ -146,7 +155,7 @@ export function readiness(defs: BpmnDefinitions, camundaVersion?: string): Readi
 			for (const tool of undescribedTools(el)) {
 				missing.push({ elementId: tool.id, what: "needs a tool description" })
 			}
-			const what = unconfigured(el)
+			const what = unconfigured(el, defs)
 			if (what !== undefined && !seen.has(el.id)) missing.push({ elementId: el.id, what })
 		}
 	}

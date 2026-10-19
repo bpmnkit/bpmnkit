@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-10-19 — Drop: readiness names plain tasks and code-less error boundaries
+
+- A drawn diagram with plain `task` steps and an error boundary without a code read only "Shape only — 2 steps need configuration" with nothing named. `readiness` now lists a plain task (anywhere, ad-hoc sub-process children included) as "a plain task does nothing when run — make it a service, user or script task", and an error boundary whose `errorRef` is missing or points at an error with no `errorCode` as "an error boundary needs an error code".
+- The bake-off `expected.bpmn` still reads "Ready to deploy (8.10)".
+- Docs: the Drop guide's `?nolimit` paragraph covers the larger output budget, kept line breaks, the cut-off notice and the connector step.
+
 ## 2026-10-19 — Drop: the connect pass runs for long descriptions and says why when it cannot
 
 - The connect route refused a `request` over 2,000 characters with a 400 the page swallowed, so a long spec (`?nolimit`) silently kept placeholder job types. `maxConnectRequestChars(params)` lifts that cap with `?nolimit`; the page calls `/drop/api/connect?nolimit` when its own URL has it. `lines` keeps its 2,000 cap.
