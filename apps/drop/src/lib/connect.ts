@@ -466,3 +466,8 @@ export type ConnectEvent =
 	| { result: ConnectResult }
 	| { done: true; cached: boolean; skipped?: true }
 	| { error: string }
+
+/** Why the connect route refused: a 404 is the feature being off, which needs no reason. */
+export function connectRefusal(status: number, error: unknown): string {
+	return status !== 404 && typeof error === "string" ? error : ""
+}

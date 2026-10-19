@@ -35,7 +35,7 @@ import {
 } from "@bpmnkit/core"
 // Types only: the connect pass applies its answer on the server, so the page never loads the catalog.
 import { completes, draftGaps, gapChange } from "../lib/check.js"
-import type { ConnectEvent, ConnectResult } from "../lib/connect.js"
+import { type ConnectEvent, type ConnectResult, connectRefusal } from "../lib/connect.js"
 import { dryRunVerdict } from "../lib/dry-run-verdict.js"
 import {
 	type GenerateEvent,
@@ -746,7 +746,7 @@ export function mountGenerator(): void {
 					setStatus(before)
 					if (res) {
 						const payload = (await res.json().catch(() => ({}))) as { error?: unknown }
-						connectorsWhy = typeof payload.error === "string" ? payload.error : ""
+						connectorsWhy = connectRefusal(res.status, payload.error)
 						flagConnectorsOff(true)
 					}
 				}

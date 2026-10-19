@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-10-19 — Drop: config timeouts are not deadlines; quiet 404 connect row; narrower ad-hoc match
+
+- The `deadline` gap rule read the spec's connector settings ("connection timeout 20 s, read timeout 20 s") as a time limit, so even a perfect bake-off draft was asked for an invented boundary timer. A timeout preceded by connection/connect/read/request/socket/response, or followed by a number and unit, no longer counts; "if it times out" and "24h deadline" still do. Regression test: the bake-off spec against the reference diagram's text gives no gaps.
+- A 404 from the connect route (feature off) no longer puts "(not found)" in the "Connectors not configured" row (`connectRefusal`); other errors keep their reason.
+- The `agent` gap rule matches `ad-hoc sub-process`, not any "ad-hoc" ("handle ad-hoc requests").
+
 ## 2026-10-19 — Drop: readiness names plain tasks
 
 - A drawn diagram with plain `task` steps read only "Shape only — 2 steps need configuration" with nothing named. `readiness` now lists a plain task (anywhere, ad-hoc sub-process children included) as "a plain task does nothing when run — make it a service, user or script task". An error boundary without a code is not flagged: Zeebe treats it as a catch-all.

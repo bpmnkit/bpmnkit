@@ -38,6 +38,14 @@ interface Rule {
 const DURATION =
 	/\b(?:within|after|in|for)\s+(\d+)\s*(seconds?|minutes?|mins?|hours?|days?|weeks?)\b/i
 
+/**
+ * A timeout is a deadline unless it is connector configuration: "connection
+ * timeout 20 s" is a setting on a call, not a limit the process waits out, and
+ * a timer path for it would be invented.
+ */
+const TIMEOUT =
+	/(?<!\b(?:connection|connect|read|request|socket|response) )\btime(?:s|d)?[ -]?out\b(?!:?\s*(?:of\s+)?\d+\s*(?:ms|s|sec|seconds?|milliseconds?)\b)/i
+
 const hasType = (type: CompactElement["type"]) => (elements: readonly CompactElement[]) =>
 	elements.some((e) => e.type === type)
 
@@ -71,7 +79,7 @@ const RULES: readonly Rule[] = [
 	},
 	{
 		kind: "deadline",
-		asks: new RegExp(`${DURATION.source}|\\btime(?:s|d)?[ -]?out\\b|\\bdeadline\\b`, "i"),
+		asks: new RegExp(`${DURATION.source}|${TIMEOUT.source}|\\bdeadline\\b`, "i"),
 		has: (elements) =>
 			elements.some((e) => e.eventType === "timer" && e.type !== "startEvent") ||
 			elements.some((e) => e.type === "eventBasedGateway"),
@@ -90,7 +98,7 @@ const RULES: readonly Rule[] = [
 	},
 	{
 		kind: "agent",
-		asks: /\bai agent\b|\bagentic\b|\bad-hoc\b/i,
+		asks: /\bai agent\b|\bagentic\b|\bad-hoc sub-?process\b/i,
 		has: hasType("adHocSubProcess"),
 		change: () =>
 			"Model the agent as an adhoc node, with its tools as service nodes inside it (inside=<agent id>).",
