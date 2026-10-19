@@ -9,7 +9,7 @@ import { layoutProcess } from "../layout/layout-engine.js"
 import type { Side } from "../layout/orthogonal.js"
 import type { ConnectionKind, PlaneEdge, PlaneShape } from "../layout/repair.js"
 import { repairRoutes } from "../layout/repair.js"
-import type { Bounds, LayoutEdge, LayoutNode, LayoutResult } from "../layout/types.js"
+import type { Bounds, LayoutEdge, LayoutHints, LayoutNode, LayoutResult } from "../layout/types.js"
 import type {
 	BpmnBounds,
 	BpmnCollaboration,
@@ -185,7 +185,8 @@ function buildLaneShapes(
 	})
 }
 
-function addAnnotationShapes(
+/** Also used by `expand`, which lays out one process without the pool handling above. */
+export function addAnnotationShapes(
 	process: BpmnProcess,
 	layoutNodes: LayoutNode[],
 	annLocalBounds: Map<string, Bounds>,
@@ -721,10 +722,13 @@ function ancestorIndex(defs: BpmnDefinitions, collab: BpmnCollaboration): Map<st
  *
  * @param engine - Which process layout algorithm to run. Defaults to `semantic`;
  *   `grid` runs the older cell-grid walk and is used to compare the two.
+ * @param hints - Tool-grid shapes and annotation sides the builder collected;
+ *   they steer placement only and are not written to `defs`.
  */
 export function applyAutoLayout(
 	defs: BpmnDefinitions,
 	engine: LayoutEngine = "semantic",
+	hints?: LayoutHints,
 ): BpmnDefinitions {
 	if (defs.processes.length === 0) return defs
 
@@ -759,7 +763,7 @@ export function applyAutoLayout(
 		// stack follows the message flows rather than the declaration order.
 		for (const pool of participantPools) {
 			if (pool.process && !layoutOf.has(pool.process)) {
-				layoutOf.set(pool.process, layoutProcess(pool.process, engine, collapsed))
+				layoutOf.set(pool.process, layoutProcess(pool.process, engine, collapsed, hints?.grids))
 			}
 		}
 		const depths = depthIndex(layoutOf.values())
@@ -782,7 +786,7 @@ export function applyAutoLayout(
 	// geometry is committed.
 	const layouts = pools.map((pool) =>
 		pool.process
-			? (layoutOf.get(pool.process) ?? layoutProcess(pool.process, engine, collapsed))
+			? (layoutOf.get(pool.process) ?? layoutProcess(pool.process, engine, collapsed, hints?.grids))
 			: { nodes: [], edges: [] },
 	)
 	const alignment = alignPools(
@@ -848,7 +852,7 @@ export function applyAutoLayout(
 
 		// Pre-compute annotation positions in layout space so they're included in the bbox
 		const annBounds = process
-			? packAnnotations(process, result.nodes, result.edges)
+			? packAnnotations(process, result.nodes, result.edges, hints?.annotationSides)
 			: new Map<string, Bounds>()
 
 		const { minX, minY, maxX, maxY } = contentBbox(result.nodes, annBounds.values())

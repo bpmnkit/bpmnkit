@@ -1,8 +1,29 @@
-import { readFile, readdir } from "node:fs/promises"
-import { dirname, extname, join } from "node:path"
+import { access, readFile, readdir } from "node:fs/promises"
+import { basename, dirname, extname, join } from "node:path"
+import { isCptFile, runCptTestCases } from "@bpmnkit/engine/cpt"
 import { runScenarioWasm } from "@bpmnkit/engine/wasm-runner"
 import type { ScenarioLike } from "@bpmnkit/engine/wasm-runner"
+import { flagAll, flagStr } from "../args.js"
 import type { Command, CommandGroup } from "../types.js"
+
+const exists = (path: string): Promise<boolean> =>
+	access(path).then(
+		() => true,
+		() => false,
+	)
+
+/**
+ * The scenarios file for a BPMN: the flag, else `<file>.bpmn.tests.json`, else
+ * `<name>.test.json` (the Camunda process-test convention). Falls back to the first
+ * so the "Cannot read scenarios file" message names the long-standing path.
+ */
+export async function resolveScenariosPath(bpmnPath: string, flag?: string): Promise<string> {
+	if (flag !== undefined) return flag
+	const sidecar = `${bpmnPath}.tests.json`
+	if (await exists(sidecar)) return sidecar
+	const cpt = join(dirname(bpmnPath), `${basename(bpmnPath, ".bpmn")}.test.json`)
+	return (await exists(cpt)) ? cpt : sidecar
+}
 
 const testCmd: Command = {
 	name: "test",
@@ -18,7 +39,13 @@ const testCmd: Command = {
 		{
 			name: "scenarios",
 			short: "s",
-			description: "Path to the .bpmn.tests.json scenarios file (default: <file>.tests.json)",
+			description:
+				"Scenarios file: .bpmn.tests.json or Camunda process-test JSON (default: <file>.tests.json, else <name>.test.json)",
+			type: "string",
+		},
+		{
+			name: "case",
+			description: "Run only the CPT test case with this name (repeatable)",
 			type: "string",
 		},
 	],
@@ -26,8 +53,7 @@ const testCmd: Command = {
 		const bpmnPath = ctx.positional[0]
 		if (bpmnPath === undefined) throw new Error("Missing required argument: <file>")
 
-		const scenariosPath =
-			typeof ctx.flags.scenarios === "string" ? ctx.flags.scenarios : `${bpmnPath}.tests.json`
+		const scenariosPath = await resolveScenariosPath(bpmnPath, flagStr(ctx.flags, "scenarios", "s"))
 
 		const bpmnXml = await readFile(bpmnPath, "utf8").catch(() => {
 			throw new Error(`Cannot read BPMN file: ${bpmnPath}`)
@@ -37,12 +63,48 @@ const testCmd: Command = {
 			throw new Error(`Cannot read scenarios file: ${scenariosPath}`)
 		})
 
-		let scenarios: ScenarioLike[]
+		let parsed: unknown
 		try {
-			scenarios = JSON.parse(scenariosRaw) as ScenarioLike[]
+			parsed = JSON.parse(scenariosRaw)
 		} catch {
 			throw new Error(`Invalid JSON in scenarios file: ${scenariosPath}`)
 		}
+
+		if (isCptFile(parsed)) {
+			const select = flagAll(ctx.flags, ctx.repeated, "case")
+			const report = await runCptTestCases({
+				bpmn: bpmnXml,
+				cases: parsed,
+				...(select.length > 0 ? { select } : {}),
+			})
+			let failedCases = 0
+			for (const c of report.cases) {
+				if (c.passed) {
+					ctx.output.ok(`PASS  ${c.name}`)
+					continue
+				}
+				failedCases++
+				ctx.output.info(`FAIL  ${c.name}`)
+				const f = c.failure
+				if (f === undefined) continue
+				// Index -1 means no instruction ran (bad file, unknown --case, deploy failure).
+				ctx.output.info(
+					f.index < 0
+						? `       ${f.message}`
+						: `       instruction ${f.index} (${f.type}): ${f.message}`,
+				)
+			}
+			ctx.output.info(`\n${report.cases.length - failedCases}/${report.cases.length} passed`)
+			if (failedCases > 0) throw new Error(`${failedCases} test case(s) failed`)
+			return
+		}
+
+		// Silently ignoring --case would run every scenario while the user thinks one ran.
+		if (flagAll(ctx.flags, ctx.repeated, "case").length > 0) {
+			ctx.output.info("--case applies only to Camunda test files; running all scenarios")
+		}
+
+		const scenarios = parsed as ScenarioLike[]
 
 		if (!Array.isArray(scenarios) || scenarios.length === 0) {
 			ctx.output.info("No scenarios found.")

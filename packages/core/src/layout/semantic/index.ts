@@ -5,7 +5,14 @@ import type {
 	BpmnSequenceFlow,
 } from "../../bpmn/bpmn-model.js"
 import { placeEdgeLabels } from "../grid/edge-labels.js"
-import type { Bounds, LayoutEdge, LayoutNode, LayoutResult } from "../types.js"
+import type {
+	Bounds,
+	GridHint,
+	LayoutEdge,
+	LayoutHints,
+	LayoutNode,
+	LayoutResult,
+} from "../types.js"
 import { LABEL_CHAR_WIDTH, LABEL_HEIGHT, LABEL_MIN_WIDTH, SUBPROCESS_PADDING } from "../types.js"
 import { assignBands } from "./bands.js"
 import { type SemanticGraph, buildSemanticGraph } from "./graph.js"
@@ -35,8 +42,16 @@ interface Container {
 export function semanticLayoutProcess(
 	process: BpmnProcess,
 	collapsed?: ReadonlySet<string>,
+	grids?: LayoutHints["grids"],
 ): LayoutResult {
-	return semanticLayout(process.flowElements, process.sequenceFlows, process.laneSet, collapsed)
+	return semanticLayout(
+		process.flowElements,
+		process.sequenceFlows,
+		process.laneSet,
+		collapsed,
+		false,
+		grids,
+	)
 }
 
 export function semanticLayout(
@@ -47,6 +62,10 @@ export function semanticLayout(
 	collapsed: ReadonlySet<string> = new Set(),
 	/** True for the contents of an expanded sub-process; see `place`'s `packLoose`. */
 	inContainer = false,
+	/** Tool-grid hints, by container id; applied to the containers in this scope and below. */
+	grids?: LayoutHints["grids"],
+	/** The hint for this scope's own grid, when it is a hinted container's interior. */
+	grid?: GridHint,
 ): LayoutResult {
 	if (flowElements.length === 0) return { nodes: [], edges: [] }
 
@@ -58,7 +77,7 @@ export function semanticLayout(
 	const planes: Array<{ elementId: string; result: LayoutResult }> = []
 	const sizes = new Map<string, { width: number; height: number }>()
 	for (const el of graph.nodes) {
-		const child = childLayoutOf(el, collapsed)
+		const child = childLayoutOf(el, collapsed, grids)
 		if (!child) {
 			sizes.set(el.id, sizeOf(el))
 			continue
@@ -79,7 +98,15 @@ export function semanticLayout(
 		[...childResults.keys()].filter((id) => graph.byId.get(id)?.name !== undefined),
 	)
 	const bandLayout = assignBands(graph, titled)
-	const { bounds, lanes, gutterX } = place(graph, bandLayout, sizes, laneSet, inContainer, titled)
+	const { bounds, lanes, gutterX } = place(
+		graph,
+		bandLayout,
+		sizes,
+		laneSet,
+		inContainer,
+		titled,
+		grid,
+	)
 	const besideStem = boundaryLabels(graph, bounds)
 
 	const nodes: LayoutNode[] = []
@@ -138,6 +165,7 @@ export function semanticLayout(
 function childLayoutOf(
 	el: BpmnFlowElement,
 	collapsed: ReadonlySet<string>,
+	grids: LayoutHints["grids"],
 ): { result: LayoutResult; size: { width: number; height: number } } | null {
 	if (!CONTAINER_TYPES.has(el.type)) return null
 	const container = el as unknown as Container
@@ -151,6 +179,8 @@ function childLayoutOf(
 		// A collapsed container's contents go on a plane of their own, laid out
 		// like any top-level scope.
 		!collapsed.has(el.id),
+		grids,
+		grids?.get(el.id),
 	)
 	const extent = extentOf(result)
 	if (!extent) return null

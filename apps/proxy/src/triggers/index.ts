@@ -4,7 +4,6 @@
  * Respects `BPMNKIT_TRIGGERS=false` to opt out of all triggers.
  */
 import { startFileWatchTrigger } from "./file-watcher.js"
-import { startTimerTrigger } from "./timer.js"
 
 export { matchWebhookRoute, handleWebhook } from "./webhook.js"
 
@@ -14,7 +13,8 @@ export function startTriggers(): void {
 		return
 	}
 
-	startTimerTrigger()
+	// No timer trigger: every engine the proxy talks to (Camunda 8 SaaS, Self-Managed, Reebe)
+	// fires timer start events itself, so one here would start each instance twice
 	startFileWatchTrigger()
-	console.log("[triggers] timer and file-watch triggers started")
+	console.log("[triggers] file-watch trigger started")
 }

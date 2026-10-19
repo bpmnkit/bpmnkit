@@ -118,6 +118,17 @@ export const MIN_DESCRIPTION_CHARS = 10
 /** Longest description accepted — a paragraph, not a specification. */
 export const MAX_DESCRIPTION_CHARS = 2000
 
+/**
+ * Query parameter that lifts {@link MAX_DESCRIPTION_CHARS}, on the page and on the
+ * route, for a whole specification. Budget and hourly caps still apply.
+ */
+export const NO_LIMIT_PARAM = "nolimit"
+
+/** Longest description accepted for a page or request with these query parameters. */
+export function maxDescriptionChars(params: URLSearchParams): number {
+	return params.has(NO_LIMIT_PARAM) ? Number.POSITIVE_INFINITY : MAX_DESCRIPTION_CHARS
+}
+
 /** Shortest change request worth a model call: "add QA". */
 export const MIN_CHANGE_CHARS = 3
 
@@ -353,11 +364,12 @@ export function readAiEvent(data: string): AiDelta | null {
  * A line the parser could read: a `# title`, or a node id followed by its
  * declaration, an arrow, or nothing (the continuation of a wrapped path). The id may
  * be a number (`1[service …]`) or words before a bracket (`call back[…]`), and the
- * line may start with the arrow of a wrapped path, when a node follows it. Prose,
- * fences and comments start otherwise.
+ * line may start with the arrow of a wrapped path, when a node follows it. A
+ * `note <id>: text` line is one too: its text is free, so only its head is checked.
+ * Prose, fences and comments start otherwise.
  */
 const DIAGRAM_LINE =
-	/^(#|(-{0,2}>\s*(\([^()]*\)\s*)?)?([A-Za-z_][\w.-]*|\d[\w-]*(?=\s*(?:\[|-{0,2}>)))((?: +[A-Za-z_][\w.-]*)* *\[|\s*-{0,2}>|$))/
+	/^(#|(?:note|doc) +[A-Za-z_][\w.-]*\s*:|(-{0,2}>\s*(\([^()]*\)\s*)?)?([A-Za-z_][\w.-]*|\d[\w-]*(?=\s*(?:\[|-{0,2}>)))((?: +[A-Za-z_][\w.-]*)* *\[|\s*-{0,2}>|$))/
 
 /**
  * Passes on only the lines of a model's answer that are in the line format.

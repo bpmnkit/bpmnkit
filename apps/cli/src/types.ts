@@ -90,6 +90,8 @@ export interface Example {
 export interface RunContext {
 	positional: string[]
 	flags: ParsedFlags
+	/** Every value of a flag given more than once (see `flagAll`); absent outside the CLI parser. */
+	repeated?: Record<string, string[]>
 	output: OutputWriter
 	/** Lazily creates a CamundaClient (C8 API) from the active profile. */
 	getClient(): Promise<CamundaClient>

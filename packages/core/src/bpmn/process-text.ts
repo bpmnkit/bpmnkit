@@ -25,7 +25,7 @@ import { parseExpression } from "@bpmnkit/feel"
 import { slugify, uniqueId } from "../plan/slug.js"
 import type { BpmnDefinitions, BpmnElementType } from "./bpmn-model.js"
 import { expand } from "./compact.js"
-import type { CompactDiagram, CompactElement, CompactFlow } from "./compact.js"
+import type { CompactDiagram, CompactElement, CompactFlow, CompactNote } from "./compact.js"
 import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connector-line.js"
 
 /**
@@ -35,7 +35,7 @@ import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connec
  * and expects no problems.
  */
 export const PROCESS_TEXT_GUIDE = `Format — one path per line, nothing else:
-# Process name            (first line)
+# Process name            (first line; add " | camunda=8.10" to target a Camunda version)
 a > b > c                 sequence flow
 id[kind Name]             declare a node the first time it appears; afterwards write only id
 gw >(Label: condition) x  conditional branch, condition in FEEL (amount > 1000, status = "ok")
@@ -43,6 +43,9 @@ gw >(Label: default) y    branch taken when no condition holds
 Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate cancel)
 Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>, each=<list variable> (once per item), after=<ISO duration> (timer), result=<variable>, feel=<FEEL expression> (last)
+Also after |: form=<form id> (start, user), in.<name>=<FEEL> and out.<name>=<FEEL> map variables in and out of a step (value runs to the next word=; write comparisons with spaces: a = 1)
+Ad-hoc: agent[adhoc Name] is a container with flows like any node; tool[service Name | inside=agent] has no flows of its own; note <id>: text annotates a node
+doc <id>: text            the element's documentation; for a tool inside an ad-hoc agent it is the description the agent chooses the tool by
 Rules:
 - One start event. Every node is on a path from it to an end event: never a node nothing leads to.
 - An xor has two or more branches: exactly one is (Label: default), each other has a FEEL condition.
@@ -116,6 +119,7 @@ export const KINDS: Record<string, BpmnElementType> = {
 	script: "scriptTask",
 	manual: "manualTask",
 	call: "callActivity",
+	adhoc: "adHocSubProcess",
 	xor: "exclusiveGateway",
 	and: "parallelGateway",
 	or: "inclusiveGateway",
@@ -182,6 +186,8 @@ interface Node {
 	spec: string
 	/** Boundary host id, from `on=`. */
 	on?: string
+	/** The ad-hoc sub-process this node lives in, from `inside=`. */
+	inside?: string
 }
 
 interface Edge extends Omit<CompactFlow, "id"> {
@@ -189,6 +195,15 @@ interface Edge extends Omit<CompactFlow, "id"> {
 }
 
 const ID = /^[A-Za-z_][\w.-]*/
+
+/** `note <id>: text`, which is not a path and may hold any characters. */
+export const NOTE_LINE = /^note\s+([A-Za-z_][\w.-]*)\s*:\s*(.*)$/i
+
+/** `doc <id>: text`, the element's documentation; free text like a note. */
+export const DOC_LINE = /^doc\s+([A-Za-z_][\w.-]*)\s*:\s*(.*)$/i
+
+/** A title segment that is only attributes of a known key: `camunda=8.10`. */
+const HEADER_SEGMENT = /^[\s,]*(?:camunda=[^\s,|]*[\s,]*)+$/
 
 /** A line that ends in an arrow, with or without a branch label: the path goes on below. */
 const DANGLING = /\s*-{0,2}>\s*(\([^()]*\))?\s*$/
@@ -222,6 +237,40 @@ export function splitFeel(attrs: string): { plain: string; feel?: string } {
 	const feel = attrs.slice(at.index + at[0].length).trim()
 	if (feel === "") return { plain: attrs.slice(0, at.index) }
 	return { plain: attrs.slice(0, at.index), feel: feel.startsWith("=") ? feel : `= ${feel}` }
+}
+
+/**
+ * Takes the `in.<target>=<FEEL>` and `out.<target>=<FEEL>` mappings off a declaration's
+ * attributes. A value runs up to the next ` <word>=` or the end, so it may hold spaces,
+ * commas and `=` spaced as FEEL comparison is written (`if a = 1 then …`); an unspaced
+ * ` a=1` inside it reads as the next attribute. Call {@link splitFeel} first: `feel=`
+ * is last and takes the rest, mappings included.
+ *
+ * @returns The other attributes, and each mapping's target and FEEL, in order.
+ */
+export function splitMappings(attrs: string): {
+	plain: string
+	mappings: { direction: "in" | "out"; target: string; value: string }[]
+} {
+	const mappings: { direction: "in" | "out"; target: string; value: string }[] = []
+	let plain = attrs
+	for (;;) {
+		const at = /(?:^|[\s,|])(in|out)\.([A-Za-z_][\w.-]*)=/.exec(plain)
+		if (!at) return { plain, mappings }
+		const start = at.index + at[0].length
+		const next = /\s[A-Za-z_][\w.-]*=/.exec(plain.slice(start))
+		const end = next ? start + next.index : plain.length
+		mappings.push({
+			direction: at[1] as "in" | "out",
+			target: at[2] as string,
+			// FEEL never ends in `|` or `,`: that is the separator before the next attribute
+			value: plain
+				.slice(start, end)
+				.replace(/[\s,|]+$/, "")
+				.trim(),
+		})
+		plain = `${plain.slice(0, at.index)} ${plain.slice(end)}`
+	}
 }
 
 /** Words that name the handling of a failure, a timeout or a cancellation. */
@@ -418,13 +467,32 @@ class Reader {
 	readonly fixes: string[] = []
 	/** `with` lines, with the written id resolved to the node it meant when read. */
 	readonly connectors: ConnectorRef[] = []
+	/** `note` lines, with the written id resolved to the node it meant when read. */
+	readonly notes: { elementId: string; written: string; text: string; line: number }[] = []
+	/** `doc` lines, with the written id resolved to the node it meant when read. */
+	readonly docs: { elementId: string; written: string; text: string; line: number }[] = []
 	/** Catch and boundary events written without a trigger, and made message events. */
 	readonly guessedMessage = new Set<string>()
 	title: string | undefined
+	/** `executionPlatformVersion` from `# Name | camunda=8.10`. */
+	platformVersion: string | undefined
 	/** A line that ended in an arrow, waiting for the line that continues it. */
 	private carry: { text: string; line: number } | undefined
 	/** The last node of the last path read, which a line starting with an arrow continues. */
 	private tail: string | undefined
+
+	/** Reads the attributes after the bar of the title line. */
+	private header(attrs: string, n: number): void {
+		for (const attr of attrs.split(/[\s,|]+/).filter(Boolean)) {
+			const [key, value = ""] = attr.split("=", 2)
+			const version = /^(\d+)\.(\d+)(?:\.(\d+))?$/.exec(value)
+			if (key === "camunda" && version) {
+				this.platformVersion = `${version[1]}.${version[2]}.${version[3] ?? "0"}`
+			} else {
+				this.problems.push({ line: n, message: `unknown title attribute "${attr}"; ignored` })
+			}
+		}
+	}
 
 	/** Reads one line. Returns whether it added anything. */
 	line(raw: string, n: number): boolean {
@@ -436,7 +504,15 @@ class Reader {
 		}
 		if (text === "" || text.startsWith("```") || text.startsWith("//")) return false
 		if (text.startsWith("#")) {
-			if (this.title === undefined) this.title = text.replace(/^#+/, "").trim() || undefined
+			if (this.title === undefined) {
+				const parts = text.replace(/^#+/, "").split("|")
+				// Peel segments off the end while they are all `camunda=…`; anything else is
+				// part of the name (`# Order | Payment flow`).
+				let keep = parts.length
+				while (keep > 1 && HEADER_SEGMENT.test(parts[keep - 1] ?? "")) keep--
+				this.title = parts.slice(0, keep).join("|").trim() || undefined
+				this.header(parts.slice(keep).join("|"), n)
+			}
 			return false
 		}
 		if (CONNECTOR_LINE.test(text)) {
@@ -448,6 +524,28 @@ class Reader {
 				})
 			}
 			return false
+		}
+		const note = NOTE_LINE.exec(text)
+		if (note) {
+			const written = note[1] as string
+			this.notes.push({
+				elementId: this.current.get(written) ?? written,
+				written,
+				text: (note[2] ?? "").trim(),
+				line: n,
+			})
+			return true
+		}
+		const doc = DOC_LINE.exec(text)
+		if (doc) {
+			const written = doc[1] as string
+			this.docs.push({
+				elementId: this.current.get(written) ?? written,
+				written,
+				text: (doc[2] ?? "").trim(),
+				line: n,
+			})
+			return true
 		}
 		// `> stop[end Done]`: the path above wrapped before its arrow
 		if (/^-{0,2}>/.test(text) && this.tail !== undefined) {
@@ -575,7 +673,7 @@ class Reader {
 		// host is the earlier `pay`.
 		const meant = (ref: string) => this.current.get(ref) ?? ref
 		const hostOf = new Map<string, string>()
-		for (const match of spec.matchAll(/\bon=([\w.-]+)/g)) {
+		for (const match of spec.matchAll(/\b(?:on|inside)=([\w.-]+)/g)) {
 			if (match[1]) hostOf.set(match[1], meant(match[1]))
 		}
 		const id = uniqueId(written, this.taken)
@@ -669,14 +767,40 @@ class Reader {
 		}
 
 		const node: Node = { element, line: n, spec }
-		const { plain, feel } = splitFeel(attrs)
+		const split = splitFeel(attrs)
+		const { feel } = split
+		const { plain, mappings } = splitMappings(split.plain)
+		for (const { direction, target, value } of mappings) {
+			const source = value.startsWith("=") ? value : `=${value}`
+			if (value === "" || parseExpression(source.slice(1)).errors.length > 0) {
+				this.problems.push({
+					line: n,
+					message: `${direction}.${target}= on "${id}" is not FEEL; kept for the reader to correct`,
+				})
+			}
+			const key = direction === "in" ? "inputs" : "outputs"
+			element[key] = { ...element[key], [target]: source }
+		}
 		// `| on=pay | nonint`: a second bar is only another separator.
 		for (const attr of plain.split(/[\s,|]+/).filter(Boolean)) {
 			const [key, value] = attr.split("=", 2)
 			if (key === "on" && value) node.on = hostOf.get(value) ?? value
+			else if (key === "inside" && value) node.inside = hostOf.get(value) ?? value
 			else if (key === "job" && value) element.jobType = value
 			else if (key === "nonint" && value === undefined) element.interrupting = false
-			else if (key === "each" && value && GATEWAYS.has(element.type) && element.name) {
+			else if (
+				key === "form" &&
+				value &&
+				(element.type === "startEvent" || element.type === "userTask")
+			) {
+				element.formId = value
+				if (element.type === "userTask") element.nativeUserTask = true
+			} else if (key === "form" && value) {
+				this.problems.push({
+					line: n,
+					message: `form= takes a start or user node; ignored on "${id}"`,
+				})
+			} else if (key === "each" && value && GATEWAYS.has(element.type) && element.name) {
 				// `and[and Process every recipient | each=recipients]`: a step, run per item
 				this.problems.push({
 					line: n,
@@ -899,6 +1023,81 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		}
 	}
 
+	// `inside=<adhoc>`: a task that lives in an ad-hoc sub-process and takes no part in the flow, so
+	// it is taken out of the flow rules below. One that cannot live there stays where it is written.
+	const childNodes: Node[] = []
+	for (const [id, node] of [...nodes]) {
+		let parentId = node.inside
+		if (parentId === undefined) continue
+		let parent = nodes.get(parentId)
+		const type = node.element.type
+		if (parent === undefined && !final) {
+			nodes.delete(id) // container still to come
+			continue
+		}
+		// `inside=agnet`: with one ad-hoc sub-process in the diagram there is no doubt which was meant
+		const only = [...nodes.values()].filter((n) => n.element.type === "adHocSubProcess")
+		const sole = only.length === 1 ? only[0] : undefined
+		if (parent === undefined && sole !== undefined && !sole.inside) {
+			const written = parentId
+			const name = node.element.name ?? nameFromId(id)
+			node.inside = parentId = sole.element.id
+			parent = sole
+			fixes.push(
+				`read inside=${written} on "${id}" as inside="${parentId}", the only ad-hoc sub-process`,
+			)
+			asks.push({
+				line: node.line,
+				ask: () => ({
+					elementId: id,
+					text: `inside=${written} on "${name}" names no ad-hoc sub-process, so it was put in "${nameOf(parentId ?? "")}", the only one. Is that where it belongs?`,
+					options: [],
+					draft: `Move "${name}" to `,
+				}),
+			})
+		}
+		const why =
+			parent === undefined
+				? `"${parentId}" is never declared`
+				: parent.element.type !== "adHocSubProcess"
+					? `"${parentId}" is not an ad-hoc sub-process`
+					: parent.inside !== undefined
+						? `"${parentId}" is itself inside another sub-process`
+						: EVENTS.has(type) || GATEWAYS.has(type) || type === "adHocSubProcess"
+							? `only a task can be inside an ad-hoc sub-process, not ${type}`
+							: undefined
+		if (why !== undefined) {
+			// A node nothing leads to is dropped later as unconnected; say so rather than "stays"
+			const drawn = reader.edges.some((edge) => edge.from === id || edge.to === id)
+			problems.push({
+				line: node.line,
+				message: `inside=${parentId} on "${id}": ${why}; "${id}" ${drawn ? "stays at the top level" : "has no flows, so it is left out"}`,
+			})
+			node.inside = undefined
+			continue
+		}
+		nodes.delete(id)
+		childNodes.push(node)
+	}
+	const insideIds = new Set(childNodes.map((node) => node.element.id))
+	// Flows would make the task run in the main path, which an ad-hoc tool does not
+	const flowing: Edge[] = []
+	const outside: Edge[] = []
+	for (const edge of reader.edges) {
+		if (insideIds.has(edge.from) || insideIds.has(edge.to)) flowing.push(edge)
+		else outside.push(edge)
+	}
+	if (final) {
+		for (const edge of flowing) {
+			const child = insideIds.has(edge.from) ? edge.from : edge.to
+			const parent = reader.nodes.get(child)?.inside
+			problems.push({
+				line: edge.line,
+				message: `"${child}" is inside "${parent}", where a task has no flows; flow ${edge.from} > ${edge.to} left out`,
+			})
+		}
+	}
+
 	// Boundary events: a host that is an activity, in this process.
 	for (const [id, node] of nodes) {
 		if (node.element.type !== "boundaryEvent") continue
@@ -935,7 +1134,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	// A branch drawn into a boundary event (`check >(No) failed[boundary:error … |
 	// on=pay] > notify`) means the path that boundary leads to. Nothing can flow
 	// into a boundary, so the branch goes to its handler instead of being lost.
-	const written = reader.edges.flatMap((edge) => {
+	const written = outside.flatMap((edge) => {
 		const target = reader.nodes.get(edge.to)
 		if (target?.element.type !== "boundaryEvent") return [edge]
 		// `poll > late[… | on=poll]`: the arrow from its own task only says where it sits
@@ -1558,6 +1757,11 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 			element.name = GATEWAYS.has(element.type) ? `${nameFromId(id)}?` : nameFromId(id)
 			named++
 		}
+		for (const { element } of childNodes) {
+			if (element.name?.trim()) continue
+			element.name = nameFromId(element.id)
+			named++
+		}
 		if (named > 0) fixes.push(`named ${named} unnamed element(s) from their ids`)
 
 		for (const id of reader.guessedMessage) {
@@ -1585,7 +1789,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		}
 	}
 
-	for (const node of nodes.values()) {
+	for (const node of [...nodes.values(), ...childNodes]) {
 		if (JOB_TASKS.has(node.element.type) && node.element.jobType === undefined) {
 			node.element.jobType = node.element.id
 		}
@@ -1617,11 +1821,71 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		return flow
 	})
 
+	for (const child of childNodes) {
+		const parent = nodes.get(child.inside ?? "")
+		if (parent === undefined) {
+			// Its container was left out above; a child alone would be drawn loose
+			if (final) {
+				problems.push({
+					line: child.line,
+					message: `"${child.element.id}" is inside "${child.inside}", which was left out; left out`,
+				})
+			}
+			continue
+		}
+		const content = parent.element.children ?? { elements: [], flows: [] }
+		content.elements.push(child.element)
+		parent.element.children = content
+	}
+
+	const notes: CompactNote[] = []
+	for (const note of reader.notes) {
+		const present =
+			nodes.has(note.elementId) ||
+			childNodes.some(
+				(child) => child.element.id === note.elementId && nodes.has(child.inside ?? ""),
+			)
+		if (present && note.text !== "") notes.push({ elementId: note.elementId, text: note.text })
+		else if (final) {
+			problems.push({
+				line: note.line,
+				message:
+					note.text === ""
+						? `note ${note.written}: has no text; ignored`
+						: `note ${note.written}: names no node of the diagram; ignored`,
+			})
+		}
+	}
+
+	// Documentation goes on the element itself, a tool inside an ad-hoc sub-process included
+	const everyElement = new Map<string, CompactElement>()
+	for (const node of nodes.values()) everyElement.set(node.element.id, node.element)
+	for (const child of childNodes) {
+		if (nodes.has(child.inside ?? "")) everyElement.set(child.element.id, child.element)
+	}
+	for (const doc of reader.docs) {
+		const element = everyElement.get(doc.elementId)
+		if (element !== undefined && doc.text !== "") element.documentation = doc.text
+		else if (final) {
+			problems.push({
+				line: doc.line,
+				message:
+					doc.text === ""
+						? `doc ${doc.written}: has no text; ignored`
+						: `doc ${doc.written}: names no node of the diagram; ignored`,
+			})
+		}
+	}
+
 	// A `with` line configures a node of the diagram; one whose node was left out, or
 	// never written, has nothing to configure.
 	const connectors: ConnectorRef[] = []
 	for (const ref of reader.connectors) {
-		if (nodes.has(ref.elementId)) connectors.push(ref)
+		// A tool inside an ad-hoc sub-process is a node too, though it is not in `nodes`
+		const tool = childNodes.some(
+			(child) => child.element.id === ref.elementId && nodes.has(child.inside ?? ""),
+		)
+		if (nodes.has(ref.elementId) || tool) connectors.push(ref)
 		else if (final) {
 			problems.push({
 				line: ref.line,
@@ -1633,12 +1897,14 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	return {
 		diagram: {
 			id: "Definitions_1",
+			...(reader.platformVersion ? { executionPlatformVersion: reader.platformVersion } : {}),
 			processes: [
 				{
 					id: processId,
 					...(reader.title ? { name: reader.title } : {}),
 					elements: [...nodes.values()].map((node) => node.element),
 					flows,
+					...(notes.length > 0 ? { notes } : {}),
 				},
 			],
 		},

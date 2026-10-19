@@ -21,11 +21,14 @@ import type { CompactFlow } from "./compact.js"
 import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connector-line.js"
 import {
 	ALIASES,
+	DOC_LINE,
 	KINDS,
+	NOTE_LINE,
 	type ProcessTextProblem,
 	TRIGGERS,
 	edgeLabel,
 	splitFeel,
+	splitMappings,
 	tokenizePath,
 } from "./process-text.js"
 
@@ -35,7 +38,6 @@ import {
  */
 export const FIXED_KINDS: Readonly<Record<string, BpmnElementType>> = {
 	sub: "subProcess",
-	adhoc: "adHocSubProcess",
 	transaction: "transaction",
 	complex: "complexGateway",
 }
@@ -49,6 +51,7 @@ export const PROCESS_DELTA_GUIDE = `Change script — write only what changes, o
 a > new[kind Name] > b    add nodes and flows; an existing node is written by its id only
 a >(Label: condition) b   add a flow; restating an existing flow with a new label changes it
 x[kind Name]              an existing id declared again changes its kind or name
+x[user Name | form=f in.a=b]  form and in./out. mappings (FEEL; write a = 1 with spaces) go after the bar
 - a > b                   remove the flow from a to b
 - x                       remove node x and its flows
 @2 x y                    feedback item 2 is answered by the changes to x and y
@@ -82,6 +85,14 @@ export interface DeltaNode {
 	script?: string
 	/** The variable a script task's or a job's result goes to, from `result=`. */
 	resultVariable?: string
+	/** The linked form, from `form=`. */
+	formId?: string
+	/** Input mappings (target to FEEL with its leading `=`), from `in.<target>=`. */
+	inputs?: Record<string, string>
+	/** Output mappings, from `out.<target>=`. */
+	outputs?: Record<string, string>
+	/** The ad-hoc sub-process the node lives in, from `inside=`. */
+	inside?: string
 	/** `nonint`: a non-interrupting boundary or start event. */
 	interrupting?: false
 	line: number
@@ -107,6 +118,10 @@ export interface ProcessDelta {
 	addressed: { item: number; ids: string[]; line: number }[]
 	/** `with` lines: connector configuration for a node, existing or new. */
 	connectors: ConnectorLine[]
+	/** `note` lines: a text annotation for a node, existing or new. */
+	notes: { id: string; text: string; line: number }[]
+	/** `doc` lines: the documentation of a node, existing or new. */
+	docs: { id: string; text: string; line: number }[]
 	/** Lines, or parts of lines, that were left out. */
 	problems: ProcessTextProblem[]
 }
@@ -149,7 +164,13 @@ function readSpec(
 		}
 	}
 
-	const { plain, feel } = splitFeel(attrs)
+	const split = splitFeel(attrs)
+	const { feel } = split
+	const { plain, mappings } = splitMappings(split.plain)
+	for (const { direction, target, value } of mappings) {
+		const key = direction === "in" ? "inputs" : "outputs"
+		node[key] = { ...node[key], [target]: value.startsWith("=") ? value : `=${value}` }
+	}
 	if (feel !== undefined) {
 		// A step that evaluates FEEL is a script task
 		if (node.type === undefined || node.type === "task") node.type = "scriptTask"
@@ -160,6 +181,8 @@ function readSpec(
 		if (key === "on" && value) node.on = value
 		else if (key === "job" && value) node.jobType = value
 		else if (key === "result" && value) node.resultVariable = value
+		else if (key === "form" && value) node.formId = value
+		else if (key === "inside" && value) node.inside = value
 		else if (key === "nonint" && value === undefined) node.interrupting = false
 		else problems.push({ line, message: `unknown attribute "${attr}" on "${id}"; ignored` })
 	}
@@ -181,6 +204,8 @@ export function parseProcessDelta(text: string): ProcessDelta {
 		removedFlows: [],
 		addressed: [],
 		connectors: [],
+		notes: [],
+		docs: [],
 		problems: [],
 	}
 	const declared = new Map<string, DeltaNode>()
@@ -295,6 +320,22 @@ export function parseProcessDelta(text: string): ProcessDelta {
 		if (CONNECTOR_LINE.test(line)) {
 			const connector = parseConnectorLine(line, n, delta.problems)
 			if (connector) delta.connectors.push(connector)
+			return
+		}
+		const note = NOTE_LINE.exec(line)
+		if (note) {
+			const text = (note[2] ?? "").trim()
+			if (text === "")
+				delta.problems.push({ line: n, message: `note ${note[1]}: has no text; ignored` })
+			else delta.notes.push({ id: note[1] as string, text, line: n })
+			return
+		}
+		const doc = DOC_LINE.exec(line)
+		if (doc) {
+			const text = (doc[2] ?? "").trim()
+			if (text === "")
+				delta.problems.push({ line: n, message: `doc ${doc[1]}: has no text; ignored` })
+			else delta.docs.push({ id: doc[1] as string, text, line: n })
 			return
 		}
 		// `- x` removes; `-> x` is an arrow a model wrote at the start of a line.

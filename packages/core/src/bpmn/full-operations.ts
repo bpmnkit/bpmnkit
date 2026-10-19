@@ -168,6 +168,9 @@ const PATCH_EXTENSIONS: ReadonlyArray<[keyof CompactElement, string]> = [
 	["calledProcess", "zeebe:calledElement"],
 	["decisionId", "zeebe:calledDecision"],
 	["script", "zeebe:script"],
+	["inputs", "zeebe:ioMapping"],
+	["outputs", "zeebe:ioMapping"],
+	["nativeUserTask", "zeebe:userTask"],
 	["taskHeaders", "zeebe:taskHeaders"],
 ]
 
@@ -218,6 +221,22 @@ function setTaskHeaders(element: BpmnFlowElement, headers: Record<string, string
 		attributes: { key, value },
 		children: [],
 	}))
+}
+
+/** Sets the named mappings of one kind, keeping the others of the `zeebe:ioMapping`. */
+function setMappings(
+	element: BpmnFlowElement,
+	kind: "zeebe:input" | "zeebe:output",
+	mappings: Record<string, string>,
+): void {
+	const ioMapping = ensureExtension(element, "zeebe:ioMapping")
+	for (const [target, source] of Object.entries(mappings)) {
+		const existing = ioMapping.children.find(
+			(child) => child.name === kind && child.attributes.target === target,
+		)
+		if (existing) existing.attributes.source = source
+		else ioMapping.children.push({ name: kind, attributes: { source, target }, children: [] })
+	}
 }
 
 /**
@@ -301,6 +320,10 @@ function patchElement(
 		script.attributes.resultVariable ??= patch.resultVariable ?? "result"
 	}
 	if (patch.resultVariable !== undefined) setResultVariable(element, patch.resultVariable)
+	if (patch.inputs !== undefined) setMappings(element, "zeebe:input", patch.inputs)
+	if (patch.outputs !== undefined) setMappings(element, "zeebe:output", patch.outputs)
+	if (patch.nativeUserTask && element.type === "userTask")
+		ensureExtension(element, "zeebe:userTask")
 	if (patch.taskHeaders !== undefined) setTaskHeaders(element, patch.taskHeaders)
 
 	if (patch.eventType !== undefined && "eventDefinitions" in element) {

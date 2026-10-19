@@ -15,6 +15,7 @@ import {
 	createDiagramLineFilter,
 	createSseReader,
 	generateMessages,
+	maxDescriptionChars,
 	maxTokensFor,
 	normaliseDiagram,
 	readAiEvent,
@@ -162,6 +163,12 @@ describe("createDiagramLineFilter", () => {
 		expect(filtered(answer, 3)).toBe("# Order\ns[start Go] > a[task Ship] >\ne[end Done]\n")
 	})
 
+	it("passes the platform-version header and form and mapping attributes", () => {
+		const answer =
+			'# Chat | camunda=8.10\ns[start Go | form=f] > u[user Ask | form=g in.x=if a = 1 then "y" else "z"] >\ne[end Done]\n'
+		expect(filtered(answer, 5)).toBe(answer)
+	})
+
 	it("reads every recorded answer to the same diagram as the unfiltered text", () => {
 		const root = new URL("../bench-results/", import.meta.url)
 		const answers = readdirSync(root).flatMap((run) =>
@@ -177,6 +184,16 @@ describe("createDiagramLineFilter", () => {
 				parseProcessText(answer).diagram,
 			)
 		}
+		// Hundreds of recorded answers, each parsed twice: ~0.6 s alone, over 5 s on a busy CI runner.
+	}, 30_000)
+})
+
+describe("maxDescriptionChars", () => {
+	it("caps a description unless the page or request carries ?nolimit", () => {
+		expect(maxDescriptionChars(new URLSearchParams(""))).toBe(2000)
+		expect(maxDescriptionChars(new URLSearchParams("?v=2"))).toBe(2000)
+		expect(maxDescriptionChars(new URLSearchParams("?nolimit"))).toBe(Number.POSITIVE_INFINITY)
+		expect(maxDescriptionChars(new URLSearchParams("?nolimit=1"))).toBe(Number.POSITIVE_INFINITY)
 	})
 })
 
@@ -232,5 +249,34 @@ describe("createSseReader", () => {
 		expect(reader.push('data: {"response":"a"}\n\ndata: {"resp')).toEqual(['{"response":"a"}'])
 		expect(reader.push('onse":"b"}\n\n')).toEqual(['{"response":"b"}'])
 		expect(reader.push("event: ping\r\ndata: [DONE]\r\n")).toEqual(["[DONE]"])
+	})
+})
+
+describe("createDiagramLineFilter — ad-hoc sub-processes and notes", () => {
+	it("passes adhoc, inside= and note lines, cut anywhere", () => {
+		const answer = [
+			"Here it is:",
+			"# Agent | camunda=8.10",
+			"s[start Go] > agent[adhoc AI Agent] > e[end Done]",
+			"users[service Find users | inside=agent]",
+			"note agent: Runs tools, then answers [see docs]: yes >",
+			"note s: Starts here",
+			"doc users: Finds sample users, then returns them [json]: yes >",
+			"Hope this helps!",
+		].join("\n")
+		const filter = createDiagramLineFilter()
+		let out = ""
+		for (let i = 0; i < answer.length; i += 6) out += filter.push(answer.slice(i, i + 6))
+		out += filter.end()
+		expect(out).toBe(`${answer.split("\n").slice(1, -1).join("\n")}\n`)
+	})
+
+	it("still passes no prose that only starts with the word note", () => {
+		const filter = createDiagramLineFilter()
+		const out =
+			filter.push(
+				"Note that the diagram is below.\nNote the following: it is long\nDocs cover this: no\nDocument the following: it is long\nDoc the tool: it helps\n",
+			) + filter.end()
+		expect(out).toBe("")
 	})
 })

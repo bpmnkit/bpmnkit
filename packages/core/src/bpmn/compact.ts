@@ -1,6 +1,8 @@
+import { packAnnotations } from "../layout/annotations.js"
 import { layoutProcess } from "../layout/index.js"
 import type { XmlElement } from "../types/xml-element.js"
 import { assertBpmnDefinitions, assertCompactDiagram } from "./argument-guards.js"
+import { addAnnotationShapes } from "./auto-layout.js"
 import type {
 	BpmnAssociation,
 	BpmnDefinitions,
@@ -47,6 +49,13 @@ export interface CompactElement {
 	 * optionally `headers`, `queryParameters`, `body`, `authentication.type`.
 	 */
 	inputs?: Record<string, string>
+	/** Zeebe output mappings (target→source), read like {@link inputs}. */
+	outputs?: Record<string, string>
+	/**
+	 * Marks a user task as a Camunda 8 native one (`zeebe:userTask`), which a linked
+	 * form needs from Camunda 8.10.
+	 */
+	nativeUserTask?: boolean
 	/** The element template applied to this element (`zeebe:modelerTemplate`). */
 	modelerTemplate?: { id: string; version?: number }
 	/** Called process ID (callActivity: zeebe:calledElement.processId) */
@@ -108,6 +117,13 @@ export interface CompactFlow {
 	isDefault?: boolean
 }
 
+/** A text annotation and the element it is associated with. */
+export interface CompactNote {
+	/** The annotated element, at any depth of the process. */
+	elementId: string
+	text: string
+}
+
 /** A single process in compact form. */
 export interface CompactProcess {
 	id: string
@@ -116,6 +132,12 @@ export interface CompactProcess {
 	documentation?: string
 	elements: CompactElement[]
 	flows: CompactFlow[]
+	/**
+	 * Text annotations, each tied to an element by an association. {@link expand}
+	 * puts them on the process and lays them out; {@link compactify} does not
+	 * produce them.
+	 */
+	notes?: CompactNote[]
 }
 
 /**
@@ -135,6 +157,11 @@ export interface CompactProcess {
  */
 export interface CompactDiagram {
 	id: string
+	/**
+	 * The Camunda 8 version the diagram targets, such as `8.10.0`. {@link expand}
+	 * writes it as `modeler:executionPlatformVersion`; without it none is written.
+	 */
+	executionPlatformVersion?: string
 	processes: CompactProcess[]
 }
 
@@ -254,6 +281,16 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		}
 	}
 	if (Object.keys(inputs).length > 0) result.inputs = inputs
+
+	// `source: "= response"` is the job worker's result, which expand writes back from `resultVariable`.
+	const outputs: Record<string, string> = {}
+	for (const output of ext.find((e) => e.name === "zeebe:ioMapping")?.children ?? []) {
+		const { source, target } = output.attributes
+		if (output.name !== "zeebe:output" || source === undefined || target === undefined) continue
+		if (result.jobType !== undefined && source === "= response") continue
+		outputs[target] = source
+	}
+	if (Object.keys(outputs).length > 0) result.outputs = outputs
 
 	const template = el.unknownAttributes["zeebe:modelerTemplate"]
 	if (template) {
@@ -391,6 +428,8 @@ const EVENT_TYPES = new Set([
 function compactProblems(compact: CompactDiagram): string[] {
 	const problems: string[] = []
 	const seen = new Set<string>()
+	/** Every element id, at any depth: what a note may name. */
+	const elementIds = new Set<string>()
 	const claim = (id: string, what: string): void => {
 		if (seen.has(id)) problems.push(`duplicate id "${id}" (${what})`)
 		seen.add(id)
@@ -409,6 +448,7 @@ function compactProblems(compact: CompactDiagram): string[] {
 			}
 			claim(el.id, el.type)
 			ids.add(el.id)
+			elementIds.add(el.id)
 			if (el.eventType !== undefined && !EVENT_TYPES.has(el.eventType)) {
 				problems.push(
 					`element "${el.id}" has unknown eventType "${el.eventType}" (expected one of ${[...EVENT_TYPES].join(", ")})`,
@@ -439,6 +479,11 @@ function compactProblems(compact: CompactDiagram): string[] {
 	for (const process of compact.processes) {
 		claim(process.id, "process")
 		checkScope(process.elements, process.flows, `process "${process.id}"`)
+		for (const note of process.notes ?? []) {
+			if (!elementIds.has(note.elementId)) {
+				problems.push(`a note is on "${note.elementId}", which is not an element in the diagram`)
+			}
+		}
 	}
 	return problems
 }
@@ -541,6 +586,9 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 			children: [],
 		})
 	}
+	if (el.nativeUserTask && el.type === "userTask") {
+		ext.push({ name: "zeebe:userTask", attributes: {}, children: [] })
+	}
 	if (el.formId) {
 		ext.push({ name: "zeebe:formDefinition", attributes: { formId: el.formId }, children: [] })
 	}
@@ -566,7 +614,16 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 		attributes: { source, target },
 		children: [],
 	}))
-	if (el.resultVariable && el.jobType && !el.decisionId && !isConnectorJobType(el.jobType)) {
+	for (const [target, source] of Object.entries(el.outputs ?? {})) {
+		ioMapping.push({ name: "zeebe:output", attributes: { source, target }, children: [] })
+	}
+	if (
+		el.resultVariable &&
+		el.jobType &&
+		!el.decisionId &&
+		!isConnectorJobType(el.jobType) &&
+		el.outputs?.[el.resultVariable] === undefined
+	) {
 		// A job worker's result: map its `response` variable to the result variable
 		ioMapping.push({
 			name: "zeebe:output",
@@ -780,6 +837,23 @@ function buildDiagram(processId: string, process: BpmnProcess): BpmnDiagram {
 		waypoints: e.waypoints,
 		unknownAttributes: {},
 	}))
+	if (process.textAnnotations.length > 0) {
+		// An annotation may sit above the topmost shape; the plane keeps to the positive quadrant.
+		const placed = packAnnotations(process, layout.nodes, layout.edges)
+		addAnnotationShapes(process, layout.nodes, placed, shapes, edges, 0, 0)
+		const dx = -Math.min(0, ...shapes.map((s) => s.bounds.x))
+		const dy = -Math.min(0, ...shapes.map((s) => s.bounds.y))
+		if (dx !== 0 || dy !== 0) {
+			for (const shape of shapes) {
+				shape.bounds = { ...shape.bounds, x: shape.bounds.x + dx, y: shape.bounds.y + dy }
+				const label = shape.label?.bounds
+				if (label) shape.label = { bounds: { ...label, x: label.x + dx, y: label.y + dy } }
+			}
+			for (const edge of edges) {
+				edge.waypoints = edge.waypoints.map((w) => ({ x: w.x + dx, y: w.y + dy }))
+			}
+		}
+	}
 	return {
 		id: `BPMNDiagram_${processId}`,
 		plane: {
@@ -818,6 +892,24 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
 		unknownAttributes: {},
 	}))
 
+	// Ids as the builder's `annotate` makes them, numbered per element
+	const textAnnotations: BpmnTextAnnotation[] = []
+	const associations: BpmnAssociation[] = []
+	const noted = new Map<string, number>()
+	for (const note of compact.notes ?? []) {
+		const n = (noted.get(note.elementId) ?? 0) + 1
+		noted.set(note.elementId, n)
+		const id = `TextAnnotation_${note.elementId}_${n}`
+		textAnnotations.push({ id, text: note.text, unknownAttributes: {} })
+		associations.push({
+			id: `Association_${note.elementId}_${n}`,
+			sourceRef: note.elementId,
+			targetRef: id,
+			associationDirection: "None",
+			unknownAttributes: {},
+		})
+	}
+
 	const process: BpmnProcess = {
 		id: compact.id,
 		name: compact.name,
@@ -826,8 +918,8 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
 		extensionElements: [],
 		flowElements,
 		sequenceFlows,
-		textAnnotations: [],
-		associations: [],
+		textAnnotations,
+		associations,
 		groups: [],
 		unknownAttributes: {},
 	}
@@ -864,6 +956,7 @@ export function expand(compact: CompactDiagram): BpmnDefinitions {
 		processes.push(process)
 		diagrams.push(diagram)
 	}
+	const platform = compact.executionPlatformVersion
 	return {
 		id: compact.id,
 		targetNamespace: "http://bpmn.io/schema/bpmn",
@@ -873,8 +966,15 @@ export function expand(compact: CompactDiagram): BpmnDefinitions {
 			dc: "http://www.omg.org/spec/DD/20100524/DC",
 			di: "http://www.omg.org/spec/DD/20100524/DI",
 			zeebe: "http://camunda.org/schema/zeebe/1.0",
+			...(platform === undefined ? {} : { modeler: "http://camunda.org/schema/modeler/1.0" }),
 		},
-		unknownAttributes: {},
+		unknownAttributes:
+			platform === undefined
+				? {}
+				: {
+						"modeler:executionPlatform": "Camunda Cloud",
+						"modeler:executionPlatformVersion": platform,
+					},
 		errors: [],
 		escalations: [],
 		messages: [],

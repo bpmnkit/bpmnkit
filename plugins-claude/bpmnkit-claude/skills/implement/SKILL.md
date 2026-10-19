@@ -52,7 +52,7 @@ If problems are reported, they're keyed by JSON path (e.g. `steps[2].connector.v
 If the plan didn't already include a `tests` array, add scenarios covering the happy path and every gateway branch / error boundary, then re-run step 5 (synth writes `<slug>.bpmn.tests.json` from `plan.tests` automatically). Run:
 
 ```sh
-casen test <slug>.bpmn
+casen test test <slug>.bpmn
 ```
 
 ## 7. Scaffold missing workers

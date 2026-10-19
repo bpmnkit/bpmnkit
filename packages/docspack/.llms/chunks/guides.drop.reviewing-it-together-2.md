@@ -1,5 +1,13 @@
 # Drop — Share & Co-edit — Reviewing it together (2)
 
+**@mentions.** Type `@` in a comment to pick from the names this drop has seen: the people
+who have it open now and everyone who has commented on it. A mentioned name is highlighted
+in the comment. If the mentioned person has the drop open, a notice appears at the top of
+their page with a button that opens the thread. Drop has no accounts and stores no email
+addresses, so **a mention sends no email and no push notification**. Someone who does not
+have the drop open sees the mention the next time they open it. If it matters, send them
+the link yourself.
+
 **Who you are, without an account.** Your display name is whatever you type into the
 comment box. The browser remembers it and shows it to the other people viewing the drop.
 Nothing checks it, so two people can both call themselves Anna. Your first comment on a

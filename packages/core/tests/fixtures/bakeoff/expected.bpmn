@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="ai-agent-chat-with-tools" name="AI Agent Chat With Tools" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_TaskReceived" name="Task to perform received">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formId="ai-agent-chat-initial-request"/>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_StartEvent_TaskReceived_Gateway_RunAgent</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_RunAgent">
+      <bpmn:incoming>Flow_StartEvent_TaskReceived_Gateway_RunAgent</bpmn:incoming>
+      <bpmn:incoming>Flow_No</bpmn:incoming>
+      <bpmn:outgoing>Flow_Gateway_RunAgent_AI_Agent</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:adHocSubProcess id="AI_Agent" zeebe:modelerTemplate="io.camunda.connectors.agenticai.ai-agent-subprocess.v2" zeebe:modelerTemplateVersion="1" name="AI Agent">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda.agenticai:aiagent:subprocess:2" retries="3"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="openai" target="provider.type"/>
+          <zeebe:input source="responses" target="provider.openai.api.type"/>
+          <zeebe:input source="custom" target="provider.openai.backend.type"/>
+          <zeebe:input source="=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_ENDPOINT" target="provider.openai.backend.custom.endpoint"/>
+          <zeebe:input source="apiKey" target="provider.openai.backend.custom.authentication.type"/>
+          <zeebe:input source="=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_KEY" target="provider.openai.backend.custom.authentication.apiKey"/>
+          <zeebe:input source="=camunda.secrets.CAMUNDA_PROVIDED_LLM_DEFAULT_MODEL" target="provider.openai.model.model"/>
+          <zeebe:input source="modelDefault" target="provider.openai.api.responses.effort"/>
+          <zeebe:input source="=&quot;You are **TaskAgent**, a helpful, generic chat agent that can handle a wide variety of customer requests using your own domain knowledge **and** any tools explicitly provided to you at runtime.&#10;&#10;If tools are provided, you should prefer them instead of guessing an answer. You can call the same tool multiple times by providing different input values. Don't guess any tools which were not explicitly configured. If no tool matches the request, try to generate an answer. If you're not able to find a good answer, return with a message stating why you're not able to.&quot;" target="data.systemPrompt.prompt"/>
+          <zeebe:input source="=if is defined(followUpInput) then followUpInput else inputText" target="data.userPrompt.prompt"/>
+          <zeebe:input source="=if is defined(followUpInput) or is defined(followUpDocuments) then followUpDocuments else inputDocuments" target="data.userPrompt.documents"/>
+          <zeebe:input source="=agent.context" target="agentContext"/>
+          <zeebe:input source="in-process" target="data.memory.storage.type"/>
+          <zeebe:input source="20" target="data.memory.contextWindowSize"/>
+          <zeebe:input source="10" target="data.limits.maxModelCalls"/>
+          <zeebe:input source="WAIT_FOR_TOOL_CALL_RESULTS" target="data.events.behavior"/>
+          <zeebe:input source="text" target="data.response.format.type"/>
+          <zeebe:input source="false" target="data.response.format.parseJson"/>
+          <zeebe:input source="false" target="data.response.includeAssistantMessage"/>
+          <zeebe:input source="true" target="data.response.includeAgentContext"/>
+          <zeebe:output source="=agent" target="agent"/>
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="elementTemplateVersion" value="1"/>
+          <zeebe:header key="elementTemplateId" value="io.camunda.connectors.agenticai.ai-agent-subprocess.v2"/>
+          <zeebe:header key="retryBackoff" value="PT0S"/>
+        </zeebe:taskHeaders>
+        <zeebe:properties>
+          <zeebe:property name="io.camunda.agenticai.toolContainer" value="true"/>
+        </zeebe:properties>
+        <zeebe:adHoc outputCollection="toolCallResults" outputElement="={&#10;  id: toolCall._meta.id,&#10;  name: toolCall._meta.name,&#10;  content: toolCallResult,&#10;  completedAt: now()&#10;}"/>
+        <zeebe:agentDefinition agentType="aiAgentSubProcess"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Gateway_RunAgent_AI_Agent</bpmn:incoming>
+      <bpmn:outgoing>Flow_AI_Agent_UserTask_ReviewAgentResponse</bpmn:outgoing>
+      <bpmn:serviceTask id="LookupSampleUsers" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="18" name="Find sample users">
+        <bpmn:documentation>Lists available users. Use this tool to look up names, usernames, or IDs. Do not use it for details not returned by the service. Input: none. Returns: an array of user objects containing id, name, and username.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="io.camunda:http-json:1" retries="3"/>
+          <zeebe:ioMapping>
+            <zeebe:input source="noAuth" target="authentication.type"/>
+            <zeebe:input source="GET" target="method"/>
+            <zeebe:input source="https://jsonplaceholder.typicode.com/users" target="url"/>
+            <zeebe:input source="false" target="followRedirects"/>
+            <zeebe:input source="JSON" target="documentReturnFormat.choice"/>
+            <zeebe:input source="20" target="connectionTimeoutInSeconds"/>
+            <zeebe:input source="20" target="readTimeoutInSeconds"/>
+          </zeebe:ioMapping>
+          <zeebe:taskHeaders>
+            <zeebe:header key="elementTemplateVersion" value="18"/>
+            <zeebe:header key="elementTemplateId" value="io.camunda.connectors.HttpJson.v2"/>
+            <zeebe:header key="resultExpression" value="={toolCallResult: for user in response.body return {id: user.id, name: user.name, username: user.username}}"/>
+            <zeebe:header key="retryBackoff" value="PT0S"/>
+          </zeebe:taskHeaders>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="SearchRecipes" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="18" name="Search recipes">
+        <bpmn:documentation>Searches the recipe catalog. Use this tool when a request asks for a recipe, dish, cuisine, or cooking instructions. Do not use it for unrelated food facts or guaranteed dietary safety. Input: searchQuery describing the desired dish or cuisine. Returns: matching recipe objects, or "No result found."</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="io.camunda:http-json:1" retries="3"/>
+          <zeebe:ioMapping>
+            <zeebe:input source="noAuth" target="authentication.type"/>
+            <zeebe:input source="GET" target="method"/>
+            <zeebe:input source="https://dummyjson.com/recipes/search" target="url"/>
+            <zeebe:input source="={q: fromAi(toolCall.searchQuery, &quot;The query describing which recipe to search (e.g. a specific dish or the cuisine).&quot;)}" target="queryParameters"/>
+            <zeebe:input source="false" target="followRedirects"/>
+            <zeebe:input source="JSON" target="documentReturnFormat.choice"/>
+            <zeebe:input source="20" target="connectionTimeoutInSeconds"/>
+            <zeebe:input source="20" target="readTimeoutInSeconds"/>
+          </zeebe:ioMapping>
+          <zeebe:taskHeaders>
+            <zeebe:header key="elementTemplateVersion" value="18"/>
+            <zeebe:header key="elementTemplateId" value="io.camunda.connectors.HttpJson.v2"/>
+            <zeebe:header key="resultExpression" value="={toolCallResult: if count(response.body.recipes) > 0 then response.body.recipes else &quot;No result found.&quot;}"/>
+            <zeebe:header key="retryBackoff" value="PT0S"/>
+          </zeebe:taskHeaders>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="FetchSafeJoke" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="18" name="Get a safe joke">
+        <bpmn:documentation>Fetches one random safe-mode joke. Use this tool when the user asks for a joke or humorous response. Do not use it when the request requires a specific factual answer or a particular joke topic. Input: none. Returns: the joke as plain text.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="io.camunda:http-json:1" retries="3"/>
+          <zeebe:ioMapping>
+            <zeebe:input source="noAuth" target="authentication.type"/>
+            <zeebe:input source="GET" target="method"/>
+            <zeebe:input source="https://v2.jokeapi.dev/joke/Any?format=txt&amp;safe-mode" target="url"/>
+            <zeebe:input source="false" target="followRedirects"/>
+            <zeebe:input source="JSON" target="documentReturnFormat.choice"/>
+            <zeebe:input source="20" target="connectionTimeoutInSeconds"/>
+            <zeebe:input source="20" target="readTimeoutInSeconds"/>
+          </zeebe:ioMapping>
+          <zeebe:taskHeaders>
+            <zeebe:header key="elementTemplateVersion" value="18"/>
+            <zeebe:header key="elementTemplateId" value="io.camunda.connectors.HttpJson.v2"/>
+            <zeebe:header key="resultExpression" value="={toolCallResult: response.body}"/>
+            <zeebe:header key="retryBackoff" value="PT0S"/>
+          </zeebe:taskHeaders>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="ListSampleTechnologyProducts" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="18" name="List sample technology products">
+        <bpmn:documentation>Lists technology products. Use this tool when a request asks which devices or technology products are available or needs their attributes. Do not use it for live inventory, pricing, or purchasing. Input: none. Returns: an array of product objects with identifiers, names, and available attribute data.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="io.camunda:http-json:1" retries="3"/>
+          <zeebe:ioMapping>
+            <zeebe:input source="noAuth" target="authentication.type"/>
+            <zeebe:input source="GET" target="method"/>
+            <zeebe:input source="https://api.restful-api.dev/objects" target="url"/>
+            <zeebe:input source="false" target="followRedirects"/>
+            <zeebe:input source="JSON" target="documentReturnFormat.choice"/>
+            <zeebe:input source="20" target="connectionTimeoutInSeconds"/>
+            <zeebe:input source="20" target="readTimeoutInSeconds"/>
+          </zeebe:ioMapping>
+          <zeebe:taskHeaders>
+            <zeebe:header key="elementTemplateVersion" value="18"/>
+            <zeebe:header key="elementTemplateId" value="io.camunda.connectors.HttpJson.v2"/>
+            <zeebe:header key="resultExpression" value="={toolCallResult: response.body}"/>
+            <zeebe:header key="retryBackoff" value="PT0S"/>
+          </zeebe:taskHeaders>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:userTask id="UserTask_ReviewAgentResponse" name="User Feedback">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:input source="=agent.responseText" target="responseText"/>
+        </zeebe:ioMapping>
+        <zeebe:userTask/>
+        <zeebe:formDefinition formId="ai-agent-chat-user-feedback"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_AI_Agent_UserTask_ReviewAgentResponse</bpmn:incoming>
+      <bpmn:outgoing>Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_UserSatisfied" name="User satisfied?">
+      <bpmn:incoming>Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied</bpmn:incoming>
+      <bpmn:outgoing>Flow_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="EndEvent_UserSatisfied" name="User satisfied">
+      <bpmn:incoming>Flow_Yes</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_StartEvent_TaskReceived_Gateway_RunAgent" sourceRef="StartEvent_TaskReceived" targetRef="Gateway_RunAgent"/>
+    <bpmn:sequenceFlow id="Flow_Gateway_RunAgent_AI_Agent" sourceRef="Gateway_RunAgent" targetRef="AI_Agent"/>
+    <bpmn:sequenceFlow id="Flow_AI_Agent_UserTask_ReviewAgentResponse" sourceRef="AI_Agent" targetRef="UserTask_ReviewAgentResponse"/>
+    <bpmn:sequenceFlow id="Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied" sourceRef="UserTask_ReviewAgentResponse" targetRef="Gateway_UserSatisfied"/>
+    <bpmn:sequenceFlow id="Flow_Yes" sourceRef="Gateway_UserSatisfied" targetRef="EndEvent_UserSatisfied" name="Yes">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=userSatisfied</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_No" sourceRef="Gateway_UserSatisfied" targetRef="Gateway_RunAgent" name="No">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=userSatisfied = null or userSatisfied = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:textAnnotation id="TextAnnotation_StartEvent_TaskReceived_1">
+      <bpmn:text>Triggered when a user submits a task for the AI agent to perform. The agent uses available tools to complete the task, and the process ends once the user confirms they are satisfied.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_AI_Agent_1">
+      <bpmn:text>This is your agent running certain tasks to reach the goal it was given</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_FetchSafeJoke_1">
+      <bpmn:text>Each task you add represents a capability your agent will have. You can add new tasks and the agent will know what it's good for based on its documentation.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_StartEvent_TaskReceived_1" sourceRef="StartEvent_TaskReceived" targetRef="TextAnnotation_StartEvent_TaskReceived_1" associationDirection="None"/>
+    <bpmn:association id="Association_AI_Agent_1" sourceRef="AI_Agent" targetRef="TextAnnotation_AI_Agent_1" associationDirection="None"/>
+    <bpmn:association id="Association_FetchSafeJoke_1" sourceRef="FetchSafeJoke" targetRef="TextAnnotation_FetchSafeJoke_1" associationDirection="None"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="ai-agent-chat-with-tools_di">
+    <bpmndi:BPMNPlane id="ai-agent-chat-with-tools_di_plane" bpmnElement="ai-agent-chat-with-tools">
+      <bpmndi:BPMNShape id="StartEvent_TaskReceived_di" bpmnElement="StartEvent_TaskReceived">
+        <dc:Bounds x="102" y="186" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="36" y="226" width="168" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_RunAgent_di" bpmnElement="Gateway_RunAgent">
+        <dc:Bounds x="238" y="179" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="AI_Agent_di" bpmnElement="AI_Agent" isExpanded="true">
+        <dc:Bounds x="388" y="20" width="400" height="368"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_ReviewAgentResponse_di" bpmnElement="UserTask_ReviewAgentResponse">
+        <dc:Bounds x="888" y="164" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_UserSatisfied_di" bpmnElement="Gateway_UserSatisfied">
+        <dc:Bounds x="1088" y="179" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1061" y="233" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_UserSatisfied_di" bpmnElement="EndEvent_UserSatisfied">
+        <dc:Bounds x="1238" y="186" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1207" y="226" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LookupSampleUsers_di" bpmnElement="LookupSampleUsers">
+        <dc:Bounds x="438" y="98" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SearchRecipes_di" bpmnElement="SearchRecipes">
+        <dc:Bounds x="438" y="258" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="FetchSafeJoke_di" bpmnElement="FetchSafeJoke">
+        <dc:Bounds x="638" y="98" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ListSampleTechnologyProducts_di" bpmnElement="ListSampleTechnologyProducts">
+        <dc:Bounds x="638" y="258" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_StartEvent_TaskReceived_1_di" bpmnElement="TextAnnotation_StartEvent_TaskReceived_1">
+        <dc:Bounds x="20" y="21" width="200" height="115"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_AI_Agent_1_di" bpmnElement="TextAnnotation_AI_Agent_1">
+        <dc:Bounds x="488" y="448" width="200" height="58"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_FetchSafeJoke_1_di" bpmnElement="TextAnnotation_FetchSafeJoke_1">
+        <dc:Bounds x="828" y="274" width="200" height="101"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_StartEvent_TaskReceived_Gateway_RunAgent_di" bpmnElement="Flow_StartEvent_TaskReceived_Gateway_RunAgent">
+        <di:waypoint x="138" y="204"/>
+        <di:waypoint x="238" y="204"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Gateway_RunAgent_AI_Agent_di" bpmnElement="Flow_Gateway_RunAgent_AI_Agent">
+        <di:waypoint x="288" y="204"/>
+        <di:waypoint x="388" y="204"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_AI_Agent_UserTask_ReviewAgentResponse_di" bpmnElement="Flow_AI_Agent_UserTask_ReviewAgentResponse">
+        <di:waypoint x="788" y="204"/>
+        <di:waypoint x="888" y="204"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied_di" bpmnElement="Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied">
+        <di:waypoint x="988" y="204"/>
+        <di:waypoint x="1088" y="204"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Yes_di" bpmnElement="Flow_Yes">
+        <di:waypoint x="1138" y="204"/>
+        <di:waypoint x="1238" y="204"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1168" y="180" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_No_di" bpmnElement="Flow_No">
+        <di:waypoint x="1113" y="229"/>
+        <di:waypoint x="1113" y="428"/>
+        <di:waypoint x="263" y="428"/>
+        <di:waypoint x="263" y="229"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="668" y="404" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_StartEvent_TaskReceived_1_di" bpmnElement="Association_StartEvent_TaskReceived_1">
+        <di:waypoint x="120" y="186"/>
+        <di:waypoint x="120" y="136"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_AI_Agent_1_di" bpmnElement="Association_AI_Agent_1">
+        <di:waypoint x="588" y="388"/>
+        <di:waypoint x="588" y="448"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_FetchSafeJoke_1_di" bpmnElement="Association_FetchSafeJoke_1">
+        <di:waypoint x="738" y="178"/>
+        <di:waypoint x="828" y="274"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

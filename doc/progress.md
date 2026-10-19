@@ -1,5 +1,200 @@
 # Progress
 
+## 2026-10-18 — Drop: `?nolimit` lifts the 2,000-character description cap
+
+- *Describe a process* opened with `?nolimit` drops the textarea's `maxlength`, shows a plain character count, and posts to `/drop/api/generate?nolimit`; the route then accepts a description of any length. Without the parameter the 2,000-character cap is unchanged.
+- `maxDescriptionChars(params)` and `NO_LIMIT_PARAM` in `apps/drop/src/lib/generate.ts` are the single source for both sides. Budget, hourly cap, passcode and Turnstile still apply.
+- Tests: the helper with and without the parameter; the route takes a 10,000+-character description with `?nolimit` and sends all of it to the model.
+
+## 2026-10-18 — Final review fixes: `casen test` and the CPT validator
+
+- Validator: an instruction `type` that is a built-in object key (`constructor`, `__proto__`, `toString`) crashed with a TypeError, or was read as `ASSERT_PROCESS_INSTANCE`; lookups now use `Object.hasOwn`, `ASSERT_PROCESS_INSTANCE` is an explicit case, and a bad `activateElements[i].variables` reports its full path.
+- CLI: `-s` was declared but ignored, so a sidecar `<file>.bpmn.tests.json` ran instead of the named file (a false pass); `casen test <file>` now works as well as `casen test test <file>`; `--case` with a legacy scenario file prints a notice.
+- Tests: table-driven validator checks with exact messages, the incident and no-match state lines, the DEPLOY failure path, `-s`, both command spellings, `--case` notice.
+
+## 2026-10-18 — Docs: `casen test test` runs Camunda process-test JSON
+
+- New recipe section "Does it run? Test it with casen test" in the executable-Camunda-process guide, a "Run process tests" entry in the casen CLI reference, a short subsection in the testing guide, and the agent skill's test step now uses `casen test test <file>.bpmn` (exit 0 = done). The real invocation is `casen test test`; every command line in the landing docs and the Claude plugin (guides, CLI reference, skills, agent, plan-format reference) that gave plain `casen test <file>` now uses `casen test test <file>`. Prose mentions of the name `casen test` are unchanged. Ranking case added to `packages/docspack/tests/recipe-ranking.test.ts`; docspack rebuilt.
+
+## 2026-10-18 — Parity: `casen test` against real Camunda Process Test
+
+- Ran the AI agent tutorial's six CPT cases on 8 BPMN files (the bake-off fixture, the bk3 and bk4 rerun outputs, five broken variants) on CPT 8.10.0 and on `casen test`. 42 of 48 cells agree; the 6 that do not are the missing-form file, a documented difference (reebe does not check forms). Record: `doc/cpt-on-reebe-parity.md`.
+- Fix: the CPT runner no longer lets `COMPLETE_USER_TASK` match a user task without `zeebe:userTask`. Zeebe runs those as job-worker user tasks, which CPT's user-task selector cannot see; the failure says so. Regression test in `packages/engine/tests/cpt/run.test.ts`.
+
+## 2026-10-18 — CLI: `casen test` runs CPT files
+
+- `casen test <file.bpmn>` detects a Camunda process-test JSON file (by its `$schema`) and runs it with `runCptTestCases` on reebe-wasm; the old `.bpmn.tests.json` array format still goes through `runScenarioWasm`. The scenarios file is the `--scenarios` value, else `<file>.bpmn.tests.json`, else `<name>.test.json` (`resolveScenariosPath`). Repeatable `--case <name>` selects test cases. Output is `PASS`/`FAIL` per case with `instruction <n> (<type>): <message>`, or just the message when no instruction ran; exit 1 on any failure. Tests in `apps/cli/src/commands/test.test.ts`.
+
+## 2026-10-18 — Engine: run Camunda process-test JSON on reebe-wasm
+
+- New `@bpmnkit/engine/cpt` export: `runCptTestCases({ bpmn, cases, select? })` validates a CPT JSON file, then runs each case on a fresh reebe-wasm engine (create instance, complete job, complete ad-hoc sub-process job with a result, complete user task, element and process-instance assertions). A selector that matches nothing fails at that instruction and lists active elements, open jobs, open user tasks and incidents; engine rejections fail their case without stopping the others. `IS_COMPLETED_IN_ORDER` compares each element's first completion. `ensureWasmInit` moved to the internal `src/wasm-init.ts`. Fixture `packages/engine/tests/cpt/fixtures/bakeoff.test.json` is BPMN Kit-authored (the tutorial repository states no licence); tests in `packages/engine/tests/cpt/run.test.ts`.
+
+## 2026-10-18 — Engine: validate Camunda process-test JSON files
+
+- New `packages/engine/src/cpt/` with CPT types (`CptInstruction`, `CptFile`, `CptReport`, …) and `isCptFile` / `parseCptFile`. The validator allow-lists the six supported instruction types and their fields, selectors and states, applies defaults (`variables` `{}`, booleans `false`, `activateElements` `[]`), and names anything else as "not supported by casen test yet" instead of ignoring it. Unknown top-level keys (`processId`, `_testNotes`) are ignored. Tests in `packages/engine/tests/cpt/validate.test.ts`.
+
+## 2026-10-18 — reebe-wasm: complete a job with a result
+
+- `@bpmnkit/reebe-wasm` gains `complete_job_with_result(key, variables, result)`, so a caller can complete an ad-hoc sub-process (AI agent) job with `{activateElements, isCompletionConditionFulfilled, isCancelRemainingInstances}`; the engine already applied such a result. `complete_job` shares the pure `job_complete_payload` helper (Rust unit tests) and an invalid result JSON is rejected. Vitest behaviour tests in `packages/engine/tests/cpt/wasm-job-result.test.ts`.
+
+## 2026-10-18 — Bake-off rerun
+
+- Reran the AI Agent bake-off twice with Claude Code subagents on `@bpmnkit/core` (same spec, c8ctl lint + CPT 6/6 gate, same scorer). Mean 132 s to first passing gate (report: 172 s), 103,665 tokens, closeness 87.3 (report: 85.4), layout 7.7. Targets ≤ 100 s and closeness ≥ 90 missed; dollar cost not measurable (token totals only). Results and proposed follow-ups (not implemented) in `doc/agent-bpmn-bakeoff-rerun.md`; summary section added to `doc/agent-bpmn-bakeoff-analysis.md`.
+
+## 2026-10-18 — Phase C: final review fixes
+
+- Process text: a mapping value no longer absorbs a following `|` or `,`; `# Order | Payment flow` keeps its whole title unless the tail is `camunda=…`; an unknown `inside=` resolves to the only ad-hoc sub-process (a fix and a question) or says the node is left out; new `doc <id>: text` line sets an element's documentation (an agent tool's description), written by `writeProcessText` and applied by change scripts (`DeltaNode` stays; `ProcessDelta.docs`). Drop: `readiness()` reports a mapping whose FEEL does not parse as `invalid`, an AI-agent tool with no documentation as `shape-only`, lints against 8.10 when the diagram names no platform (badge reads "8.10"); a dry run that loops through a user task reads "loops until a person answers" instead of a red failure; a later successful connect pass clears "Connectors not configured"; `doc` lines pass drop's line filters.
+
+## 2026-10-18 — Phase C: golden prompt 28, AI Agent Chat With Tools
+
+- New golden prompt `28-ai-agent-chat-with-tools` (spec prose, spec-literal `expected.json`, best-effort `fixture.plan.json`). `scripts/eval-generation/assertions.mjs` scores `mustContainElementIds`, `mustContainFormIds`, `mustContainInputTargets`, `mustContainFlowNames`, `mustContainAnnotations` and `mustBeReady` (via drop's `readiness()`); `run-eval.mjs` reports them for the plan fixture (the listed known plan-format gaps — no start form, mapping, annotation or loop back — are reported; an unlisted miss fails the run; a stale gap is flagged) and gains `--only <prefixes>` (no report files written for a subset); drop's bench scores them too and now runs 03 (skips 04 and 09 only). Test: `apps/drop/tests/spec-assertions.test.ts`. Prompt 28 lists its `knownPlanGaps` in expected.json: `run-eval.mjs` prints those, fails on any other assertion miss and flags a stale entry; the bench's `score()` is `scoreGolden` from `assertions.mjs`. The drop bench run for 28 needs Cloudflare credentials and is not run here; command in `doc/agent-bpmn-bakeoff-analysis.md`.
+## 2026-10-18 — Phase C: drop connects the AI Agent and its tools
+
+- Drop's connect pass takes ad-hoc sub-processes (`CONNECTABLE`) and the tasks inside them (`connectTasks` recurses into ad-hoc containers; `ConnectorTask.inside`), and `connected` finds nested elements. `selectConnectors` offers the `ai-agent-subprocess` card first to every ad-hoc sub-process whatever its name, and `http` to its tools. `applyConnectorLines` finds nested elements; `parseProcessText` no longer drops a `with` line for an `inside=` tool. `\n` in a `==` value (only) is a line break, `\\n` a literal backslash-n; `CONNECT_GUIDE` says so in one sentence. Tests in core (`lines`, `select`, `process-text`) and drop (`connect-route`).
+## 2026-10-18 — Phase C: drop says whether a draft is executable
+
+- `readiness()` (`apps/drop/src/lib/readiness.ts`) turns `lintDiagram` into `ready` / `shape-only` / `invalid`; the generator shows it as a badge for every draft, runs the dry run for every draft, shows the streamed process text in a collapsible "Diagram text" panel, and says "Connectors not configured" when the connect pass 404s or fails.
+
+## 2026-10-18 — Phase C: process text takes ad-hoc sub-processes and notes
+
+- Kind `adhoc` (an ad-hoc sub-process, which has flows like any node), `tool[service Name | inside=agent]` for a task that lives in it with no flows, and `note <id>: text` for a text annotation. Rules: `inside=` naming a missing, non-ad-hoc or nested container, or a child that is not a task, is reported and the node stays at the top level; flows to or from an `inside=` child are reported and left out; a `note` naming nothing, or with no text, is reported. `CompactProcess` gains `notes` (new type `CompactNote`); `expand` builds the annotations and associations as the builder does and lays them out (the ad-hoc tools get the semantic grid). `writeProcessText` writes the container, its tools and the notes back. A change script parses `adhoc`, `inside=` and `note` (`ProcessDelta.notes`, `DeltaNode.inside`); the editor adds notes beside their node, restates tools inside a container (rename, attributes), and reports as problems what it cannot do: a new node or a move into a container, a new ad-hoc sub-process, a kind change or flow on a tool inside one. One guide line added. Drop's two line filters pass `note` lines (tests added).
+
+## 2026-10-18 — Phase C: process text takes forms, mappings and a platform version
+
+- The line format gains `form=<form id>` (start, user; a user with a form gets `zeebe:userTask`), `in.<name>=<FEEL>` and `out.<name>=<FEEL>` (value runs to the next ` word=` or the line end; the guide says to write comparisons with spaces, `a = 1`), and `# Name | camunda=8.10` (sets `executionPlatformVersion` `8.10.0`). `CompactElement` gains `outputs` and `nativeUserTask`, `CompactDiagram` gains `executionPlatformVersion`; `expand` writes them. `writeProcessText` writes them back; a change script carries them (`DeltaNode.formId`/`inputs`/`outputs`), and the editor applies them to new and changed nodes (`patchElement` gains `inputs`, `outputs`, `nativeUserTask`). Two guide lines added. Drop's line filter already passes these lines (test added).
+## 2026-10-17 — Lint: two `pattern` rules are warnings
+
+- `pattern/gateway-no-default-flow` and `pattern/subprocess-no-error-boundary` report warnings, not errors. Camunda's own AI Agent blueprint trips both and its lint gate flags neither, so `casen lint lint <file> --profile deploy` now reports 0 errors on a correct model. The recipe guide and the Claude plugin `agent` and `connect` skills and `references/agentic.md` say so.
+
+## 2026-10-17 — Phase B: `bpmnkit-docs` from the repo root, executable-process recipe
+
+- Claude plugin `agent` skill and `references/agentic.md` now target the AI Agent Sub-process v2 (`adHocSubProcess` + `applyTemplates`, job type `io.camunda.agenticai:aiagent:subprocess:2`), point at the recipe chunks, and carry a gate checklist (`--categories deploy,connector,agentic`, `renderBpmnAscii`, tests). The v1 job-worker agent stays as an "older Camunda" note, since the plan `aiAgent` step compiles only v1. The `connect` skill documents `casen connector apply` and `show --filter`.
+- The root `package.json` lists `@bpmnkit/docspack` and `@bpmnkit/camunda-docspack` as workspace
+  devDependencies, so `npx bpmnkit-docs list` and `npx docspack list` find both packs at the root.
+- New guide `guides/executable-camunda-process`: one question-headed section per task (start-event
+  form, user-task input mapping, gateway flow labels, element templates, template keys, AI Agent
+  sub-process, tool grid, deployability check). Linked from the core and connectors pages.
+- `packages/docspack/tests/recipe-ranking.test.ts` pins the top hit for six agent questions.
+- `casen connector apply <file.bpmn> <elementId> <template> [--values f.json] [--set k=v]... [--dry-run]`
+  wraps `applyTemplates` for file-based workflows (`--set` overrides `--values`; any problem exits 1
+  and leaves the file unchanged). `casen connector show --filter <text> --condensed` lists one line
+  per property (`key  type  default  required  when ...`). `parseArgs` keeps every occurrence of a
+  repeated flag, read with `flagAll`.
+- Phase B final-review fixes: the recipe's AI Agent snippet now sets the provider credential and model (verified by `packages/core/tests/connectors/recipe-values.test.ts`), its heading and tags make it the first `ask` hit with both packs installed (`--pack @bpmnkit/docspack` for builder questions); `connector show` documents `--filter`/`--condensed` and reports an empty filter; `connector apply` no longer echoes a `--set` value, rejects a bare `--values`, and writes atomically; skills, `connector.md` and the connectors reference corrected.
+
+## 2026-10-17 — Final review fixes (builder bake-off Phase A)
+
+- An explicit `flowId()` that repeats an element or flow id in another scope (a nested sub-process) now throws at `build()`; `applyTemplates` resolves aliases through `templateIdForAlias`, reports `http@` and unversioned templates clearly, and no longer adds a second problem for a refused entry; `GridHint` is exported; core docs cover start forms, user-task mappings, `label()`/`flowId()` and the v2 agent template.
+
+## 2026-10-17 — Bake-off acceptance fixture
+
+- `applyTemplates` reports a value whose property the template's `condition` switches off (the
+  REST connector's `ignoreNullValues` on a GET) instead of dropping it silently; the problem names
+  the condition.
+
+- `packages/core/tests/fixtures/bakeoff/`: the bake-off spec (MIT, attributed), `build.ts`
+  (`buildAiAgentChat()`: one builder chain plus one `applyTemplates` call, no problems) and the
+  committed `expected.bpmn` / `expected.txt`. `tests/bakeoff-ai-agent-chat.test.ts` asserts each
+  spec line on the parsed export; `packages/ascii/tests/bakeoff.test.ts` pins the ASCII render.
+  Core's `typecheck` now also runs `tsconfig.test.json`, which covers these two test files.
+
+## 2026-10-17 — Auto layout: tool grid and annotation side hints
+
+- `AdHocSubProcessOptions.toolGrid: { columns?, fill?: "row" | "column" }` shapes the grid the
+  semantic layout packs unconnected children into; `annotate(id, text, { side })` fixes an
+  annotation's side. The builder collects both as `LayoutHints` (shared through the nested
+  builders' root definitions) and passes them to `applyAutoLayout(defs, engine, hints)`; nothing
+  is written to the model. `layoutProcess` takes the grid hints as an optional fourth argument;
+  the `grid` engine ignores them. Without hints, layout output is unchanged.
+
+- `buildAiAgentSubProcess` returns `id` (the doc example always fell back to "Agent_1"); its docs
+  say it builds the v1 job-worker agent and point v2 (8.10) users to `applyTemplates`.
+
+## 2026-10-17 — Connectors: `applyTemplates` with version pinning and key suggestions
+
+- `applyTemplates(definitions, [{ elementId, template, values }])` in `@bpmnkit/core/connectors`
+  (re-exported by `@bpmnkit/connectors`) applies several templates in-process through
+  `applyTemplateToElement`. `template` is an id, `id@version`, an alias or a template object;
+  numbers and booleans are stringified; every problem carries its `elementId`. A key that is not a
+  property id (`retries`) gets a `suggestion` (`retryCount`) from the property ids and binding
+  names. A version the catalogue does not hold is a problem naming the available one. `levenshtein`
+  in `variable-flow.ts` is now exported for it.
+
+## 2026-10-17 — Builder: start-event forms and user-task mappings
+
+- `StartEventOptions.formId` emits `zeebe:formDefinition` on a start event; `UserTaskOptions`
+  gains `ioMapping`, `taskHeaders`, `zeebeProperties` and `modelerTemplate*`, same shapes as
+  `ServiceTaskOptions`. The branch and event-sub-process `startEvent` methods used to drop
+  `zeebeProperties` and `modelerTemplate*`; all three now share one factory.
+
+## 2026-10-17 — Builder: branch flow labels and explicit flow ids
+
+- `BranchBuilder.label(text)` names a branch's first flow (the branch id stays the default), and
+  `flowId(id)` sets its id; a clash with an element or another flow throws. Neither changes any
+  generated flow id: the stable-id discriminator still comes from the branch id.
+
+## 2026-10-17 — Agent BPMN bake-off: analysis and plan
+
+- **Analysis** (`doc/agent-bpmn-bakeoff-analysis.md`) of the external "AI Agent BPMN Bake-off",
+  where BPMN Kit passed the gate first time but was slowest (172 s) and most expensive ($0.77).
+  Root causes found in the code: the builder cannot set a start-event form, a user-task input
+  mapping, a flow label apart from the branch id, or an explicit flow id; template values went
+  through `c8ctl` and shell quoting although `applyTemplateToElement` exists; `bpmnkit-docs`
+  does not resolve from the repo root; drop's line DSL cannot express ad-hoc sub-processes,
+  forms, mappings or annotations, and drop never says whether its output is executable.
+- **Plan** (`docs/superpowers/plans/2026-10-17-agent-bpmn-bakeoff.md`): 15 tasks in four
+  phases — builder gaps, findability (docs, CLI, skill), drop DSL and readiness verdict, rerun.
+
+## 2026-10-09 — XML endpoints typed, proxy timer trigger removed, file-watch lookup fixed
+
+- **XML endpoints.** The API generator now reads `text/*` responses: `getProcessDefinitionXML`,
+  `getDecisionDefinitionXML` and `getDecisionRequirementsXML` send `Accept: text/xml`, read the
+  body as text and return `string` (`string | undefined` for process definitions, which answer
+  204 when there is no XML). Before, they were typed `Promise<void>` and the body went through
+  `response.json()`, which throws on XML. The CLI's table output prints a string result as is,
+  so `casen pd get-x-m-l <key> > order.bpmn` writes the file.
+- **Timer trigger removed** (`apps/proxy/src/triggers/timer.ts`). Camunda 8 SaaS, Self-Managed
+  and Reebe fire timer start events themselves, so the proxy started a second instance for every
+  one it saw. It also never saw any: it fetched XML by process ID from an endpoint that takes the
+  definition key, and parsed the XML as JSON.
+- **File-watch trigger** had the same lookup, so it never found a `watchPath`. It now searches
+  with a valid query, keeps the latest version of each process, and reads the XML by key as text.
+- **Proxy operate stream.** The `as AnyQuery` casts and the `items()`/`total()` helpers are gone;
+  the search queries and results are typed. An unknown `state` filter from the URL is ignored
+  instead of being sent to the engine.
+- **Blog.** "Connect to Camunda 8 from Node.js" used `client.process.deploy` and the Console
+  API URL; it now uses the real API.
+
+## 2026-10-09 — Camunda SaaS path fixed; fast-start proposal
+
+- `doc/fast-start-proposal.md`: why n8n's first hour works, what Camunda 8 SaaS lacks for it,
+  and a four-phase plan for building on BPMN Kit and running on SaaS in ten minutes. Phase 0
+  is done:
+  - **Doubled `/v2`.** Profiles store the base URL with `/v2`. The CLI SaaS deploy
+    (`apps/cli/src/commands/deploy.ts`), the proxy worker daemon, webhook, timer and
+    file-watch triggers, run-history re-runs, the MCP deploy and the VS Code deploy added it
+    again. `clusterApiUrl()` in `@bpmnkit/profiles` joins the URL for all of them, with or
+    without `/v2` on the base.
+  - **Multipart bodies dropped.** The API generator read only `application/json` request
+    bodies, so `createDeployment`, `createDocument` and `createDocuments` sent nothing. They
+    now take `FormData`, `HttpClient` passes FormData through with fetch's own multipart
+    Content-Type, and the generated CLI commands take file arguments (`makeUploadCmd`).
+  - **`allOf` with its own `properties`.** The generator dropped a schema's own properties
+    when it also had `allOf`, and read only the direct properties of each member. So every
+    search query lacked `filter` and `sort`, every search result lacked `items`, and
+    `ProcessInstanceFilter` lacked `state`. `allOfMembers()` flattens nested `allOf` and counts
+    the schema's own properties as one more member.
+  - **Docs.** `getting-started/quick-start.md`, `guides/deployment.md`, `packages/api.md` and
+    the profile section of `cli/casen.md` used methods that do not exist
+    (`client.process.deploy`, `client.jobs.activateAndProcess`, `casen profile add`) and the
+    Console API URL as a cluster URL. Every TypeScript snippet now type-checks against the
+    built packages. The docspack is rebuilt.
+  - **READMEs and the CLI page.** The root and CLI READMEs (`scripts/generate-readmes.mjs`) and
+    `apps/landing/src/pages/cli.astro` listed commands the CLI does not have:
+    `casen profile add`, `profile remove`, `casen deploy <file>`, `casen instances`,
+    `casen processes`, `casen incidents` and `casen jobs`. Each was run against the built CLI,
+    and the real commands replace them.
+
 ## 2026-10-13 — docspack 1.5 repo recipe and a leaner CLAUDE.md
 
 - `docspack` dev dependency bumped to `^1.5.0`; `docspack agent install --recipe repo` added the

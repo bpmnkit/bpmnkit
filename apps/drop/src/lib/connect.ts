@@ -3,8 +3,10 @@ import {
 	Bpmn,
 	type BpmnDefinitions,
 	type BpmnElementType,
+	type BpmnFlowElement,
 	type ConnectorRef,
 	type ProcessTextQuestion,
+	findElement,
 	parseProcessDelta,
 } from "@bpmnkit/core"
 import {
@@ -53,6 +55,7 @@ const CONNECTABLE = new Set<BpmnElementType>([
 	"intermediateCatchEvent",
 	"intermediateThrowEvent",
 	"boundaryEvent",
+	"adHocSubProcess",
 ])
 
 /**
@@ -65,12 +68,23 @@ export function connectTasks(
 ): ConnectorTask[] {
 	const written = new Map(Object.entries(aliases).map(([alias, id]) => [id, alias]))
 	const tasks: ConnectorTask[] = []
-	for (const el of defs.processes[0]?.flowElements ?? []) {
-		const id = written.get(el.id)
-		if (id === undefined || !CONNECTABLE.has(el.type)) continue
-		if (el.unknownAttributes["zeebe:modelerTemplate"] !== undefined) continue
-		tasks.push(el.name ? { id, name: el.name, type: el.type } : { id, type: el.type })
+	const visit = (elements: readonly BpmnFlowElement[], inside?: string) => {
+		for (const el of elements) {
+			const id = written.get(el.id)
+			if (id !== undefined && CONNECTABLE.has(el.type)) {
+				if (el.unknownAttributes["zeebe:modelerTemplate"] === undefined) {
+					const task: ConnectorTask = el.name
+						? { id, name: el.name, type: el.type }
+						: { id, type: el.type }
+					if (inside !== undefined) task.inside = inside
+					tasks.push(task)
+				}
+			}
+			// Only an ad-hoc sub-process's tools: other containers' contents are not in the text
+			if (el.type === "adHocSubProcess" && id !== undefined) visit(el.flowElements, id)
+		}
 	}
+	visit(defs.processes[0]?.flowElements ?? [])
 	return tasks
 }
 
@@ -406,10 +420,10 @@ export function finishConnect(
 		...new Set(
 			lines
 				.map((l) => l.elementId)
-				.filter((id) =>
-					applied.definitions.processes[0]?.flowElements.some(
-						(el) => el.id === id && el.unknownAttributes["zeebe:modelerTemplate"] !== undefined,
-					),
+				.filter(
+					(id) =>
+						findElement(applied.definitions, id)?.unknownAttributes["zeebe:modelerTemplate"] !==
+						undefined,
 				),
 		),
 	]

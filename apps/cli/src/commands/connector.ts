@@ -1,20 +1,24 @@
-import { readFile, stat } from "node:fs/promises"
-import { resolve } from "node:path"
+import { readFile, rename, rm, stat, writeFile } from "node:fs/promises"
+import { dirname, join, resolve } from "node:path"
 import { API_SERVICES, loadApiServices } from "@bpmnkit/connector-gen/api-index"
 import {
 	apiServicesIn,
+	applyTemplates,
 	findApiOperations,
 	findConnectorCards,
 	formatApiCard,
 	formatConnectorCard,
 	getTemplate,
 	listConnectors,
+	propertyKey,
 	readTemplateDocument,
 	registerElementTemplates,
 	searchConnectors,
 } from "@bpmnkit/connectors"
-import type { TemplateProblem } from "@bpmnkit/connectors"
+import type { TemplateCondition, TemplateProblem, TemplateProperty } from "@bpmnkit/connectors"
 import { collectElementTemplates, discoverElementTemplates } from "@bpmnkit/connectors/node"
+import { Bpmn } from "@bpmnkit/core"
+import { flagAll } from "../args.js"
 import type { Command, CommandGroup, RunContext } from "../types.js"
 
 /** Shared by every command that can be pointed at a project other than the cwd. */
@@ -106,6 +110,32 @@ const listCatalogCmd: Command = {
 	},
 }
 
+/** `method=GET`, `method in GET|POST`, `x set`, `x empty` — the condition as a reader would say it. */
+function describeCondition(condition: TemplateCondition): string {
+	if ("allMatch" in condition) {
+		return condition.allMatch.map((c) => describeCondition(c as TemplateCondition)).join(" and ")
+	}
+	if ("equals" in condition) return `${condition.property}=${condition.equals}`
+	if ("oneOf" in condition) return `${condition.property} in ${condition.oneOf.join("|")}`
+	if ("isActive" in condition)
+		return `${condition.property} ${condition.isActive ? "set" : "unset"}`
+	return `${condition.property} ${condition.isEmpty ? "empty" : "not empty"}`
+}
+
+/** A default on one line: a multi-line value shows its newlines as \\n and is cut short. */
+function defaultText(value: TemplateProperty["value"]): string {
+	if (value === undefined || value === "") return "-"
+	const flat = String(value).replace(/\n/g, "\\n")
+	return flat.length > 40 ? `${flat.slice(0, 37)}...` : flat
+}
+
+function condensedLine(prop: TemplateProperty): string {
+	const parts = [propertyKey(prop), prop.type, defaultText(prop.value)]
+	if (prop.constraints?.notEmpty === true) parts.push("required")
+	if (prop.condition) parts.push(`when ${describeCondition(prop.condition)}`)
+	return parts.join("  ")
+}
+
 const showCmd: Command = {
 	name: "show",
 	description: "Show a connector template's required/optional input keys",
@@ -116,11 +146,30 @@ const showCmd: Command = {
 			required: true,
 		},
 	],
-	flags: [WORKSPACE_FLAG, CONFIG_FOLDER_FLAG],
+	flags: [
+		WORKSPACE_FLAG,
+		CONFIG_FOLDER_FLAG,
+		{
+			name: "filter",
+			description: "Keep only the properties whose key or label contains this text",
+			type: "string",
+		},
+		{
+			name: "condensed",
+			description:
+				"One line per property: key, type, default, required and the condition that switches it on",
+			type: "boolean",
+		},
+	],
 	examples: [
 		{
 			description: "Show the Slack connector's inputs",
 			command: "casen connector show io.camunda.connectors.Slack.v1",
+		},
+		{
+			description: "Find the timeout properties, one line each",
+			command:
+				"casen connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed",
 		},
 	],
 	async run(ctx) {
@@ -137,23 +186,166 @@ const showCmd: Command = {
 			)
 		}
 
+		const filter =
+			ctx.flags.filter === undefined ? undefined : String(ctx.flags.filter).toLowerCase()
+		const matches = (i: { key: string; label: string }): boolean =>
+			filter === undefined ||
+			i.key.toLowerCase().includes(filter) ||
+			i.label.toLowerCase().includes(filter)
+
+		if (ctx.flags.condensed === true) {
+			const template = getTemplate(templateId)
+			const lines = (template?.properties ?? [])
+				.filter((p) => p.type !== "Hidden")
+				.filter((p) => matches({ key: propertyKey(p), label: p.label ?? propertyKey(p) }))
+				.map(condensedLine)
+			if (lines.length === 0) {
+				ctx.output.info(`No properties of ${summary.id} match "${String(ctx.flags.filter ?? "")}"`)
+				return
+			}
+			for (const line of lines) ctx.output.info(line)
+			return
+		}
+
+		const required = summary.requiredInputs.filter(matches)
+		const optional = summary.optionalInputs.filter(matches)
+		if (filter !== undefined && required.length === 0 && optional.length === 0) {
+			ctx.output.info(`No inputs of ${summary.id} match "${String(ctx.flags.filter)}"`)
+			return
+		}
+
 		ctx.output.info(`${summary.name}  (${summary.id})`)
 		if (summary.taskType) ctx.output.info(`Task type: ${summary.taskType}`)
 		ctx.output.info(`Direction: ${summary.direction}`)
 		if (summary.description) ctx.output.info(summary.description)
 
-		if (summary.requiredInputs.length > 0) {
+		if (required.length > 0) {
 			ctx.output.info("\nRequired inputs:")
-			for (const i of summary.requiredInputs) {
+			for (const i of required) {
 				ctx.output.info(`  ${i.key}${i.isSecret ? " (secret)" : ""} — ${i.label}`)
 			}
 		}
-		if (summary.optionalInputs.length > 0) {
+		if (optional.length > 0) {
 			ctx.output.info("\nOptional inputs:")
-			for (const i of summary.optionalInputs) {
+			for (const i of optional) {
 				ctx.output.info(`  ${i.key}${i.isSecret ? " (secret)" : ""} — ${i.label}`)
 			}
 		}
+	},
+}
+
+/** `key=value` pairs from repeated `--set`; a value starting with `=` is FEEL, kept as written. */
+function parseSetFlags(ctx: RunContext): Record<string, string> {
+	const values: Record<string, string> = {}
+	for (const pair of flagAll(ctx.flags, ctx.repeated, "set")) {
+		const eq = pair.indexOf("=")
+		if (eq < 1) throw new Error('--set expects key=value (an argument had no "=")')
+		values[pair.slice(0, eq)] = pair.slice(eq + 1)
+	}
+	return values
+}
+
+async function readValuesFile(path: string): Promise<Record<string, string | number | boolean>> {
+	let parsed: unknown
+	try {
+		parsed = JSON.parse(await readFile(resolve(path), "utf-8"))
+	} catch (err) {
+		throw new Error(
+			`--values ${path} is not readable JSON: ${err instanceof Error ? err.message : String(err)}`,
+		)
+	}
+	if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+		throw new Error(`--values ${path} must hold a JSON object of key to value`)
+	}
+	for (const [key, value] of Object.entries(parsed)) {
+		if (typeof value !== "string" && typeof value !== "number" && typeof value !== "boolean") {
+			throw new Error(`--values ${path}: "${key}" must be a string, number or boolean`)
+		}
+	}
+	return parsed as Record<string, string | number | boolean>
+}
+
+const applyCmd: Command = {
+	name: "apply",
+	description:
+		"Apply a connector template to an element of a .bpmn file, in place — the keys are the ones 'connector show --condensed' lists",
+	args: [
+		{ name: "file", description: "The .bpmn file to change", required: true },
+		{ name: "elementId", description: "Id of the task or event to apply it to", required: true },
+		{
+			name: "template",
+			description: "Template id, id@version, or alias such as http",
+			required: true,
+		},
+	],
+	flags: [
+		WORKSPACE_FLAG,
+		CONFIG_FOLDER_FLAG,
+		{
+			name: "values",
+			description:
+				"JSON file holding an object of key to string|number|boolean. Prefer it for multi-line or quoted FEEL",
+			type: "string",
+		},
+		{
+			name: "set",
+			description:
+				"key=value, repeatable; a value starting with = is FEEL as written. Overrides the same key in --values. Omitted properties keep the template default",
+			type: "string",
+		},
+		{
+			name: "dry-run",
+			description: "Check the values and report problems without writing the file",
+			type: "boolean",
+		},
+	],
+	examples: [
+		{
+			description: "Apply the REST connector with values from a file",
+			command: "casen connector apply order.bpmn Call http --values call.json",
+		},
+		{
+			description: "Set single keys inline",
+			command: "casen connector apply order.bpmn Call http --set method=GET --set retryCount=5",
+		},
+	],
+	async run(ctx) {
+		const [file, elementId, template] = ctx.positional
+		if (!file || !elementId || !template) {
+			throw new Error("Usage: casen connector apply <file.bpmn> <elementId> <template>")
+		}
+		await includeWorkspaceTemplates(ctx)
+
+		if (ctx.flags.values === true) throw new Error("--values needs a file path")
+		const fromFile =
+			typeof ctx.flags.values === "string" ? await readValuesFile(ctx.flags.values) : {}
+		const values = { ...fromFile, ...parseSetFlags(ctx) }
+
+		const path = resolve(file)
+		const definitions = Bpmn.parse(await readFile(path, "utf-8"))
+		const result = applyTemplates(definitions, [{ elementId, template, values }])
+
+		if (result.problems.length > 0) {
+			// Nothing is written: a half-applied element is harder to spot than a refusal.
+			const lines = result.problems.map((p) => `  ${p.elementId}: ${p.message}`)
+			throw new Error(
+				`${result.problems.length} problem${result.problems.length === 1 ? "" : "s"} applying ${template} — ${file} not changed\n${lines.join("\n")}`,
+			)
+		}
+		if (ctx.flags["dry-run"] === true) {
+			ctx.output.ok(`Dry run: ${template} would apply to ${elementId} in ${file}`)
+			return
+		}
+		// Write beside the target and rename, so an interrupted write cannot leave a half-written .bpmn.
+		const temp = join(dirname(path), `.${process.pid}.casen-apply.tmp`)
+		try {
+			await writeFile(temp, Bpmn.export(result.definitions), "utf-8")
+			await rename(temp, path)
+		} catch (err) {
+			await rm(temp, { force: true })
+			throw err
+		}
+		ctx.output.ok(`Applied ${template} to ${elementId} in ${file}`)
 	},
 }
 
@@ -627,6 +819,7 @@ export const connectorGroup: CommandGroup = {
 		searchCmd,
 		listCatalogCmd,
 		showCmd,
+		applyCmd,
 		cardsCmd,
 		apiCmd,
 		validateCmd,

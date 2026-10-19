@@ -95,8 +95,16 @@ function computeMainFlowY(layoutNodes: LayoutNode[]): number {
 	return bestKey
 }
 
-/** Elements at or above the main flow keep their annotation "above"; elements clearly below get "below". */
-function naturalSide(elemBounds: Bounds, mainFlowY: number): "above" | "below" {
+/**
+ * Elements at or above the main flow keep their annotation "above"; elements
+ * clearly below get "below". A side the author asked for wins.
+ */
+function naturalSide(
+	elemBounds: Bounds,
+	mainFlowY: number,
+	hint?: "above" | "below",
+): "above" | "below" {
+	if (hint) return hint
 	const cy = elemBounds.y + elemBounds.height / 2
 	return cy > mainFlowY + 60 ? "below" : "above"
 }
@@ -135,6 +143,8 @@ export function packAnnotations(
 	layoutNodes: LayoutNode[],
 	/** Routed connections: an annotation box must not sit on top of one. */
 	layoutEdges: LayoutEdge[] = [],
+	/** Sides the author asked for, by annotation id. */
+	sides?: ReadonlyMap<string, "above" | "below">,
 ): Map<string, Bounds> {
 	const result = new Map<string, Bounds>()
 	if (process.textAnnotations.length === 0) return result
@@ -162,7 +172,7 @@ export function packAnnotations(
 			unlinked.push({ id: ann.id, width, height })
 			continue
 		}
-		const side = naturalSide(linked.bounds, mainFlowY)
+		const side = naturalSide(linked.bounds, mainFlowY, sides?.get(ann.id))
 		const lc = center(linked.bounds)
 		items.push({
 			id: ann.id,

@@ -22,6 +22,10 @@ elements first to make the request about them — and the change is made in the 
 layout kept, as one edit that **Undo** reverts. A diagram drafted with *Describe a process* on
 the Drop landing page has **Open in editor**: it is stored as a drop like a share link, and
 opens straight into the editor with this chat, so you can keep refining it there.
+*Describe a process* takes up to 2,000 characters. To paste a whole specification, open the
+page with `?nolimit` (`/drop?nolimit`): the description then has no length limit. The daily
+budget and the hourly cap still apply, and a description longer than the model's context
+window fails with the model's error.
 
 **Version history.** Every file keeps the original it was uploaded as, pinned and never
 overwritten, plus its ten most recent milestones. Repeated saves inside an hour collapse
@@ -48,14 +52,6 @@ when the element moves, and survives any number of edits. If a later edit delete
 element, the comment is still listed, marked **on a removed element** with the name the
 element had when the comment was written. While you preview an older version from
 **History**, the same label reads **not in this version**.
-
-**@mentions.** Type `@` in a comment to pick from the names this drop has seen: the people
-who have it open now and everyone who has commented on it. A mentioned name is highlighted
-in the comment. If the mentioned person has the drop open, a notice appears at the top of
-their page with a button that opens the thread. Drop has no accounts and stores no email
-addresses, so **a mention sends no email and no push notification**. Someone who does not
-have the drop open sees the mention the next time they open it. If it matters, send them
-the link yourself.
 
 ---
 Source: https://bpmnkit.com/docs/guides/drop

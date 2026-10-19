@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { parseArgs } from "./args.js"
+import { flagAll, parseArgs, redactFlagsForAudit } from "./args.js"
 
 describe("parseArgs", () => {
 	it("parses positional arguments", () => {
@@ -66,5 +66,33 @@ describe("parseArgs", () => {
 		expect(positional).toEqual(["process-instance", "list"])
 		expect(flags.filter).toBe('{"state":"ACTIVE"}')
 		expect(flags.limit).toBe(10)
+	})
+
+	it("keeps every occurrence of a repeated flag in `repeated`, not in `flags`", () => {
+		const { flags, repeated } = parseArgs(["--set", "a=1", "--set=b=2", "--once", "x"])
+		expect(flagAll(flags, repeated, "set")).toEqual(["a=1", "b=2"])
+		expect(flags.set).toBe("b=2")
+		expect(Object.keys(flags).sort()).toEqual(["once", "set"])
+		expect(repeated).toEqual({ set: ["a=1", "b=2"] })
+		expect(flagAll(flags, repeated, "once")).toEqual(["x"])
+		expect(flagAll(flags, repeated, "absent")).toEqual([])
+	})
+
+	it("never lets --set values into the audit flags", () => {
+		const { flags } = parseArgs([
+			"--set",
+			"authentication.token=abc",
+			"--set",
+			"url=https://x.test",
+			"--api-secret",
+			"zzz",
+			"--limit",
+			"5",
+		])
+		const audit = JSON.stringify(redactFlagsForAudit(flags))
+		expect(audit).not.toContain("abc")
+		expect(audit).not.toContain("zzz")
+		expect(audit).not.toContain("x.test")
+		expect(redactFlagsForAudit(flags).limit).toBe(5)
 	})
 })
