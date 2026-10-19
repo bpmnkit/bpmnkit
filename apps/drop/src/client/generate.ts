@@ -35,7 +35,7 @@ import {
 } from "@bpmnkit/core"
 // Types only: the connect pass applies its answer on the server, so the page never loads the catalog.
 import { completes, draftGaps, gapChange } from "../lib/check.js"
-import type { ConnectEvent, ConnectResult } from "../lib/connect.js"
+import { type ConnectEvent, type ConnectResult, connectRefusal } from "../lib/connect.js"
 import { dryRunVerdict } from "../lib/dry-run-verdict.js"
 import {
 	type GenerateEvent,
@@ -155,6 +155,8 @@ export function mountGenerator(): void {
 	// ?nolimit on the page lifts the description cap here and, passed on, on the route.
 	const noLimit = !Number.isFinite(maxDescriptionChars(new URLSearchParams(location.search)))
 	const generatePath = noLimit ? `/drop/api/generate?${NO_LIMIT_PARAM}` : "/drop/api/generate"
+	// The connect route reads the same parameter, or it would refuse the long description it follows
+	const connectPath = noLimit ? `/drop/api/connect?${NO_LIMIT_PARAM}` : "/drop/api/connect"
 	const input = $<HTMLTextAreaElement>("genInput")
 	const count = $("genCount")
 	const run = $<HTMLButtonElement>("genRun")
@@ -323,6 +325,8 @@ export function mountGenerator(): void {
 
 	/** Set when the connect pass could not run, so the page says so instead of staying quiet. */
 	let connectorsOff = false
+	/** The server's reason the pass could not run (a long request, a closed check), when it gave one. */
+	let connectorsWhy = ""
 
 	/** The streamed process text, so a reader sees the notation the diagram came from. */
 	function showText(text: string): void {
@@ -366,8 +370,10 @@ export function mountGenerator(): void {
 		const rows = [badge.div]
 		if (connectorsOff) {
 			rows.push(
-				row("Connectors", "Connectors not configured — the draft keeps its placeholder job types")
-					.div,
+				row(
+					"Connectors",
+					`Connectors not configured${connectorsWhy ? ` (${connectorsWhy})` : ""} — the draft keeps its placeholder job types`,
+				).div,
 			)
 		}
 		const run = row("Dry run", "running…")
@@ -524,7 +530,7 @@ export function mountGenerator(): void {
 	async function ask(
 		body: { description: string; diagram?: string; change?: string; image?: string },
 		verb: string,
-	): Promise<{ text: string; cached: boolean } | null> {
+	): Promise<{ text: string; cached: boolean; truncated: boolean } | null> {
 		if (!errors || !out || !passcode || !codeInput) return null
 		errors.classList.add("hidden")
 		out.classList.add("hidden")
@@ -618,7 +624,11 @@ export function mountGenerator(): void {
 				showError(outcome && "error" in outcome ? outcome.error : "No diagram came back.")
 				return null
 			}
-			return { text, cached: outcome.done && outcome.cached }
+			return {
+				text,
+				cached: outcome.done && outcome.cached,
+				truncated: outcome.done && outcome.truncated === true,
+			}
 		} finally {
 			clearInterval(ticker)
 			// A newer request took over and owns the indicator now.
@@ -627,6 +637,11 @@ export function mountGenerator(): void {
 	}
 
 	const repaired = (problems: number) => (problems > 0 ? ` · ${problems} problem(s) repaired` : "")
+	/** Said in the status line, since the diagram looks finished whatever its end. */
+	const cutOff = (answer: { truncated: boolean }) =>
+		answer.truncated
+			? " · The answer was cut off at the model's output limit — the diagram may be incomplete."
+			: ""
 
 	async function generate(): Promise<void> {
 		if (!input || !share || !refine) return
@@ -661,7 +676,7 @@ export function mountGenerator(): void {
 		setStatus(
 			answer.cached
 				? `ready (cached)${repaired(problems)}`
-				: `ready in ${seconds}s${repaired(problems)}`,
+				: `ready in ${seconds}s${repaired(problems)}${cutOff(answer)}`,
 		)
 		// A request with words to check against: an image alone has none
 		if (description.length >= 10) await complete()
@@ -689,7 +704,7 @@ export function mountGenerator(): void {
 			earlier.push(text)
 			draft.text = answer.text
 			const { problems } = show(answer.text)
-			setStatus(`${before} · completed${repaired(problems)}`)
+			setStatus(`${before} · completed${repaired(problems)}${cutOff(answer)}`)
 		} else {
 			// What streamed is not kept: the canvas shows the draft again
 			show(text)
@@ -715,6 +730,7 @@ export function mountGenerator(): void {
 		running?.abort()
 		const controller = new AbortController()
 		running = controller
+		connectorsWhy = ""
 		setStatus(lines ? "connecting…" : `${before} · connecting…`, true)
 		setBusy(true)
 		const body: Record<string, string> = { xml: result.xml, request: draft.description }
@@ -723,12 +739,16 @@ export function mountGenerator(): void {
 		let note = ""
 		let failed = false
 		try {
-			const res = await send(body, code, controller.signal, "/drop/api/connect")
+			const res = await send(body, code, controller.signal, connectPath)
 			if (!res?.ok || !res.body) {
 				// Off (404), or a check the reader closed: the draft stands as it is.
 				if (!controller.signal.aborted) {
 					setStatus(before)
-					if (res) flagConnectorsOff(true)
+					if (res) {
+						const payload = (await res.json().catch(() => ({}))) as { error?: unknown }
+						connectorsWhy = connectRefusal(res.status, payload.error)
+						flagConnectorsOff(true)
+					}
 				}
 				return
 			}
@@ -740,6 +760,7 @@ export function mountGenerator(): void {
 					const event = JSON.parse(data) as ConnectEvent
 					if ("result" in event) outcome = event.result
 					else if ("error" in event) {
+						connectorsWhy = event.error
 						note = " · connectors failed"
 						failed = true
 					}
@@ -747,6 +768,7 @@ export function mountGenerator(): void {
 			}
 		} catch {
 			if (controller.signal.aborted) return
+			connectorsWhy = ""
 			note = " · connectors failed"
 			failed = true
 		} finally {
@@ -815,7 +837,7 @@ export function mountGenerator(): void {
 		const removed = before.filter((e) => !ids.has(e.id)).length
 		const seconds = ((performance.now() - started) / 1000).toFixed(1)
 		setStatus(
-			`changed${answer.cached ? " (cached)" : ` in ${seconds}s`} · +${added} −${removed}${repaired(problems)}`,
+			`changed${answer.cached ? " (cached)" : ` in ${seconds}s`} · +${added} −${removed}${repaired(problems)}${cutOff(answer)}`,
 		)
 		await connect()
 	}

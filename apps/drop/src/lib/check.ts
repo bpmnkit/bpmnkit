@@ -1,4 +1,4 @@
-import { type CompactElement, parseProcessText } from "@bpmnkit/core"
+import { type CompactElement, type CompactNote, parseProcessText } from "@bpmnkit/core"
 
 /**
  * The check after a draft: what the request names that the draft has no
@@ -11,7 +11,17 @@ import { type CompactElement, parseProcessText } from "@bpmnkit/core"
 
 /** Something the request asks for that the draft does not have. */
 export interface DraftGap {
-	kind: "dmn" | "deadline" | "failure" | "rest" | "parallel" | "each" | "user" | "message" | "feel"
+	kind:
+		| "dmn"
+		| "deadline"
+		| "failure"
+		| "agent"
+		| "note"
+		| "parallel"
+		| "each"
+		| "user"
+		| "message"
+		| "feel"
 	/** One line of the change request that adds it. */
 	change: string
 }
@@ -21,12 +31,20 @@ interface Rule {
 	/** What in the request asks for it. */
 	asks: RegExp
 	/** Whether the draft already has it. */
-	has: (elements: readonly CompactElement[]) => boolean
+	has: (elements: readonly CompactElement[], notes: readonly CompactNote[]) => boolean
 	change: (request: string, elements: readonly CompactElement[]) => string
 }
 
 const DURATION =
 	/\b(?:within|after|in|for)\s+(\d+)\s*(seconds?|minutes?|mins?|hours?|days?|weeks?)\b/i
+
+/**
+ * A timeout is a deadline unless it is connector configuration: "connection
+ * timeout 20 s" is a setting on a call, not a limit the process waits out, and
+ * a timer path for it would be invented.
+ */
+const TIMEOUT =
+	/(?<!\b(?:connection|connect|read|request|socket|response) )\btime(?:s|d)?[ -]?out\b(?!:?\s*(?:of\s+)?\d+\s*(?:ms|s|sec|seconds?|milliseconds?)\b)/i
 
 const hasType = (type: CompactElement["type"]) => (elements: readonly CompactElement[]) =>
 	elements.some((e) => e.type === type)
@@ -61,7 +79,7 @@ const RULES: readonly Rule[] = [
 	},
 	{
 		kind: "deadline",
-		asks: new RegExp(`${DURATION.source}|\\btime(?:s|d)?[ -]?out\\b|\\bdeadline\\b`, "i"),
+		asks: new RegExp(`${DURATION.source}|${TIMEOUT.source}|\\bdeadline\\b`, "i"),
 		has: (elements) =>
 			elements.some((e) => e.eventType === "timer" && e.type !== "startEvent") ||
 			elements.some((e) => e.type === "eventBasedGateway"),
@@ -79,10 +97,17 @@ const RULES: readonly Rule[] = [
 			"Handle the failure the description names with a boundary:error on the task that may fail, leading to what happens then.",
 	},
 	{
-		kind: "rest",
-		asks: /\b(?:rest|http)\b|\bexternal api\b/i,
-		has: errorBoundary,
-		change: () => "Give the REST call a boundary:error leading to a task that handles the failure.",
+		kind: "agent",
+		asks: /\bai agent\b|\bagentic\b|\bad-hoc sub-?process\b/i,
+		has: hasType("adHocSubProcess"),
+		change: () =>
+			"Model the agent as an adhoc node, with its tools as service nodes inside it (inside=<agent id>).",
+	},
+	{
+		kind: "note",
+		asks: /\bannotat(?:e|ion|ions)\b/i,
+		has: (_elements, notes) => notes.length > 0,
+		change: () => "Add each annotation the description asks for as a note line (note <id>: text).",
 	},
 	{
 		kind: "parallel",
@@ -132,13 +157,12 @@ const RULES: readonly Rule[] = [
 
 /** What `request` asks for that the line-format draft `text` has no element for. */
 export function draftGaps(request: string, text: string): DraftGap[] {
-	const elements = parseProcessText(text).diagram.processes[0]?.elements ?? []
-	const gaps = RULES.filter((rule) => rule.asks.test(request) && !rule.has(elements))
-	// One error boundary answers both a failure the request names and a REST call
-	const kinds = new Set(gaps.map((g) => g.kind))
-	return gaps
-		.filter((rule) => !(rule.kind === "rest" && kinds.has("failure")))
-		.map((rule) => ({ kind: rule.kind, change: rule.change(request, elements) }))
+	const process = parseProcessText(text).diagram.processes[0]
+	const elements = process?.elements ?? []
+	const notes = process?.notes ?? []
+	return RULES.filter((rule) => rule.asks.test(request) && !rule.has(elements, notes)).map(
+		(rule) => ({ kind: rule.kind, change: rule.change(request, elements) }),
+	)
 }
 
 /** The one change request that fills `gaps`, or `undefined` when there are none. */

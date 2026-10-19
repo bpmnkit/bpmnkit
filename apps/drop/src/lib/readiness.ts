@@ -54,6 +54,9 @@ function unconfigured(el: BpmnFlowElement): string | undefined {
 	if (el.unknownAttributes["zeebe:modelerTemplate"] !== undefined) return undefined
 	const type = ext(el).find((e) => e.name === "zeebe:taskDefinition")?.attributes.type
 	switch (el.type) {
+		// The model draws `task` when it has no better word; the engine passes straight through it.
+		case "task":
+			return "a plain task does nothing when run — make it a service, user or script task"
 		case "serviceTask":
 		case "sendTask":
 			return type === el.id ? "needs a job type or a connector" : undefined

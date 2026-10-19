@@ -1,5 +1,37 @@
 # Progress
 
+## 2026-10-19 — Drop: config timeouts are not deadlines; quiet 404 connect row; narrower ad-hoc match
+
+- The `deadline` gap rule read the spec's connector settings ("connection timeout 20 s, read timeout 20 s") as a time limit, so even a perfect bake-off draft was asked for an invented boundary timer. A timeout preceded by connection/connect/read/request/socket/response, or followed by a number and unit, no longer counts; "if it times out" and "24h deadline" still do. Regression test: the bake-off spec against the reference diagram's text gives no gaps.
+- A 404 from the connect route (feature off) no longer puts "(not found)" in the "Connectors not configured" row (`connectRefusal`); other errors keep their reason.
+- The `agent` gap rule matches `ad-hoc sub-process`, not any "ad-hoc" ("handle ad-hoc requests").
+
+## 2026-10-19 — Drop: readiness names plain tasks
+
+- A drawn diagram with plain `task` steps read only "Shape only — 2 steps need configuration" with nothing named. `readiness` now lists a plain task (anywhere, ad-hoc sub-process children included) as "a plain task does nothing when run — make it a service, user or script task". An error boundary without a code is not flagged: Zeebe treats it as a catch-all.
+- The bake-off `expected.bpmn` still reads "Ready to deploy (8.10)".
+- Docs: the Drop guide's `?nolimit` paragraph covers the larger output budget, kept line breaks, the cut-off notice and the connector step.
+
+## 2026-10-19 — Drop: the connect pass runs for long descriptions and says why when it cannot
+
+- The connect route refused a `request` over 2,000 characters with a 400 the page swallowed, so a long spec (`?nolimit`) silently kept placeholder job types. `maxConnectRequestChars(params)` lifts that cap with `?nolimit`; the page calls `/drop/api/connect?nolimit` when its own URL has it. `lines` keeps its 2,000 cap.
+- `maxConnectTokens(tasks, agents)` adds 600 tokens per AI Agent card selected (an agent's `with` line carries provider, model and two prompts) and the cap rises from 1,500 to 3,000.
+- The "Connectors not configured" row now shows the server's `error` text (non-OK response or an `error` event), e.g. "(a request is at most 2000 characters)".
+- Tests: route 400 without / 200 with `?nolimit`, token budget with an agent, `maxConnectTokens` and `maxConnectRequestChars` units.
+
+## 2026-10-19 — Drop: a long description gets output room and a visible cut-off
+
+- With `?nolimit` the route keeps the description's line breaks (headings, lists; only space runs and blank-line runs shrink), calls the model with `max_tokens` 2,048 instead of the profile's 600 (glm-4.7-flash cut the ~1,320-token diagram of the bake-off spec mid-way), and accepts a diagram of up to 16,000 characters for a change or completion (4,000 otherwise).
+- The model's `finish_reason` is read (`readAiEvent` -> `finish`). When it is `length`, `done` carries `truncated: true`, the answer is not cached, and the page adds "The answer was cut off at the model's output limit — the diagram may be incomplete." to its status line.
+- Cache key unchanged: it hashes the description, so a spec with line breaks differs from its collapsed form; an identical single-line description may share an entry across the two modes, which is fine because only complete answers are cached.
+- Tests: `normaliseDescription` keepLines, `maxTokensFor` long, `maxDiagramChars`, `readAiEvent` finish, route cases for token budget, line breaks, truncated not cached, 10,000-character change.
+
+## 2026-10-19 — Drop: the prompt teaches agents, tools, notes and given ids; no blanket REST boundary
+
+- A pasted AI-agent spec came back as plain tasks with an invented "REST connection failed" path. The generate prompt no longer orders a `boundary:error` for every REST call (only where the description says what happens on failure), and now teaches: an AI agent is one `adhoc` node with `service` tools `inside=<agent id>` and `doc` lines; each requested annotation is a `note`; use the ids the description gives.
+- `PROCESS_TEXT_GUIDE` lists `adhoc` among the kinds and has a four-line ad-hoc example. Draft check: the `rest` gap is gone; new `agent` and `note` gaps ask for an ad-hoc node or annotations the request names.
+- Tests: guide example parses to an ad-hoc agent with a documented tool and one note; prompt fragments; `agent`, `note` and no-`rest` gap cases.
+
 ## 2026-10-18 — Drop: `?nolimit` lifts the 2,000-character description cap
 
 - *Describe a process* opened with `?nolimit` drops the textarea's `maxlength`, shows a plain character count, and posts to `/drop/api/generate?nolimit`; the route then accepts a description of any length. Without the parameter the 2,000-character cap is unchanged.

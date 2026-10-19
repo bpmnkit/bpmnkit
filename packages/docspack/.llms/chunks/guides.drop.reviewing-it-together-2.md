@@ -1,5 +1,11 @@
 # Drop — Share & Co-edit — Reviewing it together (2)
 
+A comment is anchored by the element's id, not by its position. It stays with the element
+when the element moves, and survives any number of edits. If a later edit deletes the
+element, the comment is still listed, marked **on a removed element** with the name the
+element had when the comment was written. While you preview an older version from
+**History**, the same label reads **not in this version**.
+
 **@mentions.** Type `@` in a comment to pick from the names this drop has seen: the people
 who have it open now and everyone who has commented on it. A mentioned name is highlighted
 in the comment. If the mentioned person has the drop open, a notice appears at the top of

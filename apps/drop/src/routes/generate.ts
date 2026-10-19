@@ -16,15 +16,16 @@ import {
 	IMAGE_TOKEN_ESTIMATE,
 	MAX_CHANGE_CHARS,
 	MAX_DESCRIPTION_CHARS,
-	MAX_DIAGRAM_CHARS,
 	MIN_CHANGE_CHARS,
 	MIN_DESCRIPTION_CHARS,
 	MODEL_PROFILES,
+	NO_LIMIT_PARAM,
 	REFINE_SYSTEM_PROMPT,
 	createDiagramLineFilter,
 	generateMessages,
 	imageMessages,
 	maxDescriptionChars,
+	maxDiagramChars,
 	maxTokensFor,
 	neuronsFor,
 	normaliseDescription,
@@ -107,7 +108,10 @@ export async function handleGenerate(request: Request, env: Env, now: number): P
 			token?: unknown
 		}
 		if (typeof body.token === "string") token = body.token
-		description = typeof body.description === "string" ? normaliseDescription(body.description) : ""
+		// A pasted specification keeps its line breaks; a sentence has none worth keeping.
+		const long = new URL(request.url).searchParams.has(NO_LIMIT_PARAM)
+		description =
+			typeof body.description === "string" ? normaliseDescription(body.description, long) : ""
 		if (body.image !== undefined) image = normaliseImage(body.image)
 		if (body.diagram !== undefined || body.change !== undefined) {
 			refine = {
@@ -152,7 +156,9 @@ async function answer(
 	}
 	// With an image, the description is an optional hint.
 	const minDescription = image ? 0 : MIN_DESCRIPTION_CHARS
-	const maxDescription = maxDescriptionChars(new URL(request.url).searchParams)
+	const params = new URL(request.url).searchParams
+	const long = params.has(NO_LIMIT_PARAM)
+	const maxDescription = maxDescriptionChars(params)
 	if (description.length < minDescription || description.length > maxDescription) {
 		return json(
 			{
@@ -164,7 +170,7 @@ async function answer(
 			{ status: 400 },
 		)
 	}
-	if (refine && (refine.diagram === "" || refine.diagram.length > MAX_DIAGRAM_CHARS)) {
+	if (refine && (refine.diagram === "" || refine.diagram.length > maxDiagramChars(params))) {
 		return json({ error: "the diagram to change is missing or too long" }, { status: 400 })
 	}
 	if (
@@ -232,7 +238,7 @@ async function answer(
 				{
 					messages,
 					stream: true,
-					max_tokens: maxTokensFor(name),
+					max_tokens: maxTokensFor(name, long),
 					...(MODEL_PROFILES[name]?.options ?? {}),
 				},
 				// One instance per model, so the fixed system prompt can stay in its prefix cache.
@@ -282,6 +288,9 @@ async function answer(
 				const usable = winner !== null && !winner.failed && isUsable(text)
 				// A small model sometimes writes the draft back as it was (2 of 30 changes
 				// in the §16 run). Not cached, so asking again gets a fresh answer.
+				// A cut-off answer is worth showing, with a warning, but not keeping:
+				// asking again may fit, and a cached stump would answer every repeat.
+				const truncated = usable && winner.finish === "length"
 				const unchanged =
 					usable && refine !== undefined && normaliseDiagram(text) === refine.diagram
 				console.log(
@@ -295,6 +304,7 @@ async function answer(
 						firstContentMs: winner?.firstContentMs ?? null,
 						neurons,
 						usable,
+						truncated,
 						unchanged,
 					}),
 				)
@@ -316,8 +326,10 @@ async function answer(
 					)
 				} else {
 					// Cached under the request, whichever model answered it.
-					await putCachedGeneration(env.DB, requestHash, winner.model, text, neurons, now)
-					controller.enqueue(sse({ done: true, cached: false }))
+					if (!truncated) {
+						await putCachedGeneration(env.DB, requestHash, winner.model, text, neurons, now)
+					}
+					controller.enqueue(sse({ done: true, cached: false, ...(truncated && { truncated }) }))
 				}
 				controller.close()
 			},

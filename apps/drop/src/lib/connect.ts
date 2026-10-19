@@ -19,6 +19,7 @@ import {
 	formatConnectorSelection,
 	isConnectorAlias,
 } from "@bpmnkit/core/connectors"
+import { NO_LIMIT_PARAM } from "./generate.js"
 
 /**
  * System prompt for the connect pass, which configures the connectors of a
@@ -38,9 +39,26 @@ export const MAX_CONNECT_DIAGRAM_CHARS = 12_000
 /** Longest request text sent with a diagram. */
 export const MAX_CONNECT_REQUEST_CHARS = 2000
 
-/** Output budget: a `with` line is 25–60 tokens, and a model may restate a few. */
-export function maxConnectTokens(tasks: number): number {
-	return Math.min(1500, 150 + 100 * tasks)
+/** The card an ad-hoc sub-process becomes (also named in core's select.ts, which does not export it). */
+const AGENT_TEMPLATE = "io.camunda.connectors.agenticai.ai-agent-subprocess.v2"
+
+/** How many tasks of a selection are offered the AI Agent card. */
+export function countAgents(selection: readonly TaskCards[]): number {
+	return selection.filter((t) => t.cards.some((c) => c.templateId === AGENT_TEMPLATE)).length
+}
+
+/** Longest request for a page or call with these query parameters; `?nolimit` lifts it, as for generate. */
+export function maxConnectRequestChars(params: URLSearchParams): number {
+	return params.has(NO_LIMIT_PARAM) ? Number.POSITIVE_INFINITY : MAX_CONNECT_REQUEST_CHARS
+}
+
+/**
+ * Output budget: a `with` line is 25–60 tokens, and a model may restate a few.
+ * An AI Agent's line carries provider, model, both prompts and result mapping,
+ * so each agent adds room for one more long line.
+ */
+export function maxConnectTokens(tasks: number, agents = 0): number {
+	return Math.min(3000, 150 + 100 * tasks + 600 * agents)
 }
 
 /** Element types a connector can be put on. */
@@ -448,3 +466,8 @@ export type ConnectEvent =
 	| { result: ConnectResult }
 	| { done: true; cached: boolean; skipped?: true }
 	| { error: string }
+
+/** Why the connect route refused: a 404 is the feature being off, which needs no reason. */
+export function connectRefusal(status: number, error: unknown): string {
+	return status !== 404 && typeof error === "string" ? error : ""
+}

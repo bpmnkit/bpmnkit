@@ -25,7 +25,11 @@ opens straight into the editor with this chat, so you can keep refining it there
 *Describe a process* takes up to 2,000 characters. To paste a whole specification, open the
 page with `?nolimit` (`/drop?nolimit`): the description then has no length limit. The daily
 budget and the hourly cap still apply, and a description longer than the model's context
-window fails with the model's error.
+window fails with the model's error. With `?nolimit` the model also gets a larger output
+budget and the description keeps its line breaks, so headings and lists reach it. If the answer
+still hits the model's output limit, the page shows "The answer was cut off at the model's output
+limit — the diagram may be incomplete." The connector step takes the long description too. The
+readiness badge names the steps that keep a draft from running, including plain tasks.
 
 **Version history.** Every file keeps the original it was uploaded as, pinned and never
 overwritten, plus its ten most recent milestones. Repeated saves inside an hour collapse
@@ -46,12 +50,6 @@ threads gets a small numbered marker on the canvas; click it to jump to its thre
 Threads take replies, and anyone who has commented on the drop can **Resolve** a thread or
 **Reopen** it. New comments, edits and resolutions reach everyone who has the drop open
 as they happen.
-
-A comment is anchored by the element's id, not by its position. It stays with the element
-when the element moves, and survives any number of edits. If a later edit deletes the
-element, the comment is still listed, marked **on a removed element** with the name the
-element had when the comment was written. While you preview an older version from
-**History**, the same label reads **not in this version**.
 
 ---
 Source: https://bpmnkit.com/docs/guides/drop
