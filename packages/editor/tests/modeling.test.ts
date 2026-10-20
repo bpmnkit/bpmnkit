@@ -429,6 +429,49 @@ describe("changeElementType", () => {
 	})
 })
 
+describe("exclusive gateway marker (#251)", () => {
+	const B = { x: 0, y: 0, width: 50, height: 50 }
+	const shapeOf = (defs: ReturnType<typeof createEmptyDefinitions>, id: string) =>
+		defs.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === id)
+
+	it("createShape marks an exclusive gateway's shape with isMarkerVisible", () => {
+		const r = createShape(createEmptyDefinitions(), "exclusiveGateway", B)
+		expect(shapeOf(r.defs, r.id)?.isMarkerVisible).toBe(true)
+	})
+
+	it("createShape leaves other types without the field", () => {
+		for (const type of ["serviceTask", "parallelGateway"] as const) {
+			const r = createShape(createEmptyDefinitions(), type, B)
+			expect("isMarkerVisible" in (shapeOf(r.defs, r.id) ?? {})).toBe(false)
+		}
+	})
+
+	it("changeElementType to exclusiveGateway sets isMarkerVisible without mutating input", () => {
+		const r = createShape(createEmptyDefinitions(), "serviceTask", B)
+		const changed = changeElementType(r.defs, r.id, "exclusiveGateway")
+		expect(shapeOf(changed, r.id)?.isMarkerVisible).toBe(true)
+		expect("isMarkerVisible" in (shapeOf(r.defs, r.id) ?? {})).toBe(false)
+	})
+
+	it("changeElementType keeps an explicit isMarkerVisible: false", () => {
+		const r = createShape(createEmptyDefinitions(), "exclusiveGateway", B)
+		const shape = shapeOf(r.defs, r.id)
+		if (!shape) throw new Error("no shape")
+		shape.isMarkerVisible = false
+		const changed = changeElementType(r.defs, r.id, "exclusiveGateway")
+		expect(shapeOf(changed, r.id)?.isMarkerVisible).toBe(false)
+	})
+
+	it("changeElementType away from exclusiveGateway leaves the DI untouched", () => {
+		const r = createShape(createEmptyDefinitions(), "exclusiveGateway", B)
+		const changed = changeElementType(r.defs, r.id, "serviceTask")
+		expect(shapeOf(changed, r.id)).toEqual(shapeOf(r.defs, r.id))
+		const p = createShape(createEmptyDefinitions(), "serviceTask", B)
+		const toParallel = changeElementType(p.defs, p.id, "parallelGateway")
+		expect("isMarkerVisible" in (shapeOf(toParallel, p.id) ?? {})).toBe(false)
+	})
+})
+
 describe("insertShapeOnEdge", () => {
 	it("splits the edge into two connections", () => {
 		let defs = createEmptyDefinitions()

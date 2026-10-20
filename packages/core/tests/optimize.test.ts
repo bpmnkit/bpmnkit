@@ -521,6 +521,52 @@ describe("optimize()", () => {
 			expect(joinFlow).toBeDefined()
 		})
 
+		it("applyFix for flow/multi-incoming-task marks the inserted gateway's DI shape", () => {
+			const proc = makeProcess(
+				"proc",
+				[
+					startEl("s"),
+					taskEl("task_a", ["f0"], ["f1"]),
+					taskEl("task_c", ["f0b"], ["f2"]),
+					taskEl("task_b", ["f1", "f2"], ["f3"]),
+					endEl("e", ["f3"]),
+				],
+				[
+					flow("f0", "s", "task_a"),
+					flow("f0b", "s", "task_c"),
+					flow("f1", "task_a", "task_b"),
+					flow("f2", "task_c", "task_b"),
+					flow("f3", "task_b", "e"),
+				],
+			)
+			const diagram: BpmnDiagram = {
+				id: "d",
+				plane: {
+					id: "p",
+					bpmnElement: "proc",
+					shapes: [
+						{
+							id: "task_b_di",
+							bpmnElement: "task_b",
+							bounds: { x: 400, y: 100, width: 100, height: 80 },
+							unknownAttributes: {},
+						},
+					],
+					edges: [],
+				},
+			}
+			const defs = makeDefs(proc, [diagram])
+			const finding = optimize(defs).findings.find((f) => f.id === "flow/multi-incoming-task")
+			if (!finding || !finding.applyFix) throw new Error("Missing applyFix")
+
+			finding.applyFix(defs)
+
+			const gateway = defs.processes[0]?.flowElements.find((e) => e.type === "exclusiveGateway")
+			if (!gateway) throw new Error("Gateway not inserted")
+			const shape = defs.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === gateway.id)
+			expect(shape?.isMarkerVisible).toBe(true)
+		})
+
 		it("reports flow/empty-subprocess", () => {
 			const sub: BpmnFlowElement = {
 				type: "subProcess",

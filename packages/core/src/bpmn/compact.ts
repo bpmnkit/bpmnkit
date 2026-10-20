@@ -829,6 +829,9 @@ function buildDiagram(processId: string, process: BpmnProcess): BpmnDiagram {
 		isExpanded: n.isExpanded,
 		bounds: n.bounds,
 		label: n.labelBounds ? { bounds: n.labelBounds } : undefined,
+		// The bpmn-js Viewer draws the "X" only when the shape says so; the Modeler
+		// assumes it. Spread so other shapes keep no `isMarkerVisible` key.
+		...(n.type === "exclusiveGateway" ? { isMarkerVisible: true } : {}),
 		unknownAttributes: {},
 	}))
 	const edges: BpmnDiEdge[] = layout.edges.map((e) => ({
