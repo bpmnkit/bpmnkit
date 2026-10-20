@@ -1,5 +1,12 @@
 # @bpmnkit/demo
 
+## 0.1.9
+
+### Patch Changes
+
+- Updated dependencies [ab10779]
+  - @bpmnkit/core@1.6.1
+
 ## 0.1.8
 
 ### Patch Changes

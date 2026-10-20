@@ -1,5 +1,13 @@
 # @bpmnkit/desktop
 
+## 0.1.51
+
+### Patch Changes
+
+- Updated dependencies [ab10779]
+  - @bpmnkit/core@1.6.1
+  - @bpmnkit/editor@1.5.1
+
 ## 0.1.50
 
 ### Patch Changes
