@@ -234,6 +234,8 @@ export function analyzeFlow(p: BpmnProcess, _opts: ResolvedOptions): Optimizatio
 								id: `${gatewayId}_di`,
 								bpmnElement: gatewayId,
 								bounds: { x: gwX, y: gwY, width: gwWidth, height: gwHeight },
+								// The bpmn-js Viewer draws the "X" only when the shape says so.
+								isMarkerVisible: true,
 								unknownAttributes: {},
 							})
 							for (const inFlowId of oldIncomingIds) {
