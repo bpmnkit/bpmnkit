@@ -1,5 +1,19 @@
 # @bpmnkit/engine
 
+## 1.3.0
+
+### Minor Changes
+
+- fbd45f8: New `@bpmnkit/engine/cpt` export: `runCptTestCases({ bpmn, cases, select? })` runs a Camunda process-test (CPT) JSON file on reebe-wasm, one fresh engine per test case, and reports each case's pass/fail with the failing instruction's index, type and reason. Also exports `isCptFile`, `parseCptFile` and the CPT types. A user-task selector skips user tasks without `zeebe:userTask`, as CPT does: Zeebe runs those as job-worker user tasks. The validator no longer crashes on instruction types such as `constructor` or `__proto__`, and reports the full path of a bad `activateElements[i].variables`.
+
+### Patch Changes
+
+- Updated dependencies [8bcc25a]
+- Updated dependencies [ca2129e]
+- Updated dependencies [fbd45f8]
+- Updated dependencies [fbd45f8]
+  - @bpmnkit/core@1.6.0
+
 ## 1.2.1
 
 ### Patch Changes
