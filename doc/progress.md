@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-20 — Layout: kept DI tolerates missing ids; marker only on exclusive gateways (#250)
+
+- `keepDiAttributes` matches diagrams by the element their plane draws, falling back to a non-empty id. Id-less `BPMNDiagram`s no longer all pick up the first one's name, plane attributes and label styles (which duplicated `BPMNLabelStyle` ids).
+- A source shape or edge with an empty id gets a generated `X_di` id instead of keeping the empty one.
+- A source `isMarkerVisible` carries over only onto exclusive gateways, so a stale marker from an element whose type changed is dropped.
+- Tests: three more cases in `auto-layout-keeps-di.test.ts`.
+
 ## 2026-10-19 — Layout: gateway markers and kept DI attributes (#250)
 
 - `nodeToShape` sets `isMarkerVisible: true` on exclusive gateways. The bpmn-js Viewer and NavigatedViewer draw the "X" only when the shape says so (the Modeler assumes it), so gateways from `.withAutoLayout()` showed as empty diamonds there.

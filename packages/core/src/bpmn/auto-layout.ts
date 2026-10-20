@@ -1094,12 +1094,18 @@ export function applyAutoLayout(
  * parse and export would keep it.
  */
 function keepDiAttributes(source: BpmnDiagram[], laidOut: BpmnDiagram[]): BpmnDiagram[] {
+	// Diagrams match by the element their plane draws; `id` is optional in DI,
+	// and matching on an empty one would hand every diagram the first one's
+	// attributes and label styles (duplicate XML ids).
+	const diagramByElement = new Map<string, BpmnDiagram>()
 	const diagramById = new Map<string, BpmnDiagram>()
 	const shapeByElement = new Map<string, BpmnDiShape>()
 	const edgeByElement = new Map<string, BpmnDiEdge>()
 	const sourceIds = new Set<string>()
 	for (const diagram of source) {
-		if (!diagramById.has(diagram.id)) diagramById.set(diagram.id, diagram)
+		const element = diagram.plane.bpmnElement
+		if (element && !diagramByElement.has(element)) diagramByElement.set(element, diagram)
+		if (diagram.id && !diagramById.has(diagram.id)) diagramById.set(diagram.id, diagram)
 		for (const shape of diagram.plane.shapes) {
 			if (!shapeByElement.has(shape.bpmnElement)) shapeByElement.set(shape.bpmnElement, shape)
 			sourceIds.add(shape.id)
@@ -1115,8 +1121,9 @@ function keepDiAttributes(source: BpmnDiagram[], laidOut: BpmnDiagram[]): BpmnDi
 	// already be the source id of another element (one renamed from `X`), so
 	// generated ids steer clear of every source id.
 	const used = new Set<string>()
+	// An empty source id means the source omitted it; that is not one to keep.
 	const keepId = (generated: string, previous: string | undefined): string => {
-		let id = previous !== undefined && !used.has(previous) ? previous : generated
+		let id = previous && !used.has(previous) ? previous : generated
 		if (id !== previous) {
 			for (let n = 2; sourceIds.has(id) || used.has(id); n++) id = `${generated}_${n}`
 		}
@@ -1126,11 +1133,15 @@ function keepDiAttributes(source: BpmnDiagram[], laidOut: BpmnDiagram[]): BpmnDi
 	const keepLabel = <T extends BpmnDiShape | BpmnDiEdge>(item: T, previous: T): T => {
 		const attrs = previous.label?.unknownAttributes
 		if (!attrs) return item
+		// When layout gives the element no label bounds, the label still carries
+		// its style; BPMN DI allows a `BPMNLabel` without bounds.
 		return { ...item, label: { ...item.label, unknownAttributes: { ...attrs } } }
 	}
 
 	return laidOut.map((diagram) => {
-		const previousDiagram = diagramById.get(diagram.id)
+		const previousDiagram =
+			(diagram.plane.bpmnElement && diagramByElement.get(diagram.plane.bpmnElement)) ||
+			(diagram.id ? diagramById.get(diagram.id) : undefined)
 		const shapes = diagram.plane.shapes.map((shape) => {
 			const previous = shapeByElement.get(shape.bpmnElement)
 			if (!previous) return { ...shape, id: keepId(shape.id, undefined) }
@@ -1139,7 +1150,10 @@ function keepDiAttributes(source: BpmnDiagram[], laidOut: BpmnDiagram[]): BpmnDi
 				id: keepId(shape.id, previous.id),
 				unknownAttributes: { ...previous.unknownAttributes },
 			}
-			if (previous.isMarkerVisible !== undefined) kept.isMarkerVisible = previous.isMarkerVisible
+			// Layout sets the marker only on exclusive gateways; a source value on
+			// any other shape is stale (left from an element whose type changed).
+			if (shape.isMarkerVisible !== undefined && previous.isMarkerVisible !== undefined)
+				kept.isMarkerVisible = previous.isMarkerVisible
 			return keepLabel(kept, previous)
 		})
 		const edges = diagram.plane.edges.map((edge) => {

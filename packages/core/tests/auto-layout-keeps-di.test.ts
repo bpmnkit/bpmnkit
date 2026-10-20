@@ -181,3 +181,54 @@ describe("auto-layout — output is independent of the input (#250)", () => {
 		expect(diagram.unknownAttributes).toEqual({ name: "Approval" })
 	})
 })
+
+describe("auto-layout — source DI without ids (#250)", () => {
+	it("does not give every diagram the attributes of an id-less source diagram", () => {
+		const built = Bpmn.createProcess("p")
+			.startEvent("s")
+			.subProcess("sub", (c) => {
+				c.startEvent("ss").task("inner").endEvent("se")
+			})
+			.endEvent("e")
+			.withAutoLayout()
+			.build()
+		const sub = built.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === "sub")
+		if (!sub) throw new Error("fixture lost the sub-process shape")
+		sub.isExpanded = false
+		const collapsed = applyAutoLayout(built)
+		for (const diagram of collapsed.diagrams) diagram.id = ""
+		const main = collapsed.diagrams.find((d) => d.plane.bpmnElement !== "sub")
+		if (!main || collapsed.diagrams.length < 2) throw new Error("expected a child plane")
+		main.unknownAttributes = { name: "Main" }
+		main.plane.unknownAttributes = { "vendor:zoom": "1.5" }
+
+		const out = applyAutoLayout(collapsed)
+		const outMain = out.diagrams.find((d) => d.plane.bpmnElement !== "sub")
+		const child = out.diagrams.find((d) => d.plane.bpmnElement === "sub")
+		expect(outMain?.unknownAttributes).toEqual({ name: "Main" })
+		expect(child?.unknownAttributes).toBeUndefined()
+		expect(child?.plane.unknownAttributes).toBeUndefined()
+	})
+
+	it("generates an id for every shape whose source DI had none", () => {
+		const defs = Bpmn.parse(gatewayProcess())
+		for (const shape of defs.diagrams[0]?.plane.shapes ?? []) shape.id = ""
+
+		const shapes = applyAutoLayout(defs).diagrams[0]?.plane.shapes ?? []
+		expect(shapes.length).toBeGreaterThan(0)
+		for (const shape of shapes) expect(shape.id).toBe(`${shape.bpmnElement}_di`)
+	})
+})
+
+describe("auto-layout — marker only where it applies (#250)", () => {
+	it("drops a source isMarkerVisible from a shape that is no longer an exclusive gateway", () => {
+		const defs = Bpmn.parse(gatewayProcess())
+		const t1 = defs.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === "t1")
+		if (!t1) throw new Error("fixture lost its DI")
+		// As left behind when an exclusive gateway is replaced by a task.
+		t1.isMarkerVisible = true
+
+		const out = applyAutoLayout(defs).diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === "t1")
+		expect(out?.isMarkerVisible).toBeUndefined()
+	})
+})
