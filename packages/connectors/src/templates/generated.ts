@@ -449,7 +449,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "name": "Connectors"
       },
       "icon": {
-        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTc5IiBoZWlnaHQ9IjMyMyIgdmlld0JveD0iMCAwIDU3OSAzMjMiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMF8xOTg0XzczMCkiPgo8cGF0aCBkPSJNMzU5LjQgNzUuM0wyODQgMTE3LjdMMjAzLjMgNzIuM0wxOTkuNSA3NC41VjEwNy41TDI4NCAxNTVMMzU5LjQgMTEyLjVWMTMwLjFMMjg0IDE3Mi41TDIwMy4zIDEyNy4yTDE5OS41IDEyOS4zVjEzNC45TDI4NCAxODIuNEwzNjguNSAxMzQuOVYxMDEuOUwzNjQuNiA5OS44TDI4NCAxNDUuMUwyMDguNSAxMDIuN1Y4NS4yTDI4NCAxMjcuNkwzNjguNSA4MC4xVjQ3LjZMMzY0LjIgNDUuMkwyODQgOTAuM0wyMTIuNSA1MC4xTDI4NCA5LjlMMzQyLjggNDNMMzQ4LjEgNDAuMVYzNi4xTDI4NCAwTDE5OS41IDQ3LjZWNTIuN0wyODQgMTAwLjJMMzU5LjQgNTcuN1Y3NS4zWiIgZmlsbD0iI0ZGMzYyMSIvPgo8cGF0aCBkPSJNNjYuNiAzMjAuN1YyMzAuN0g1Mi43VjI2NC40QzUyLjcgMjY0LjkgNTIuNCAyNjUuMyA1MS45IDI2NS41QzUxLjQgMjY1LjcgNTAuOSAyNjUuNSA1MC42IDI2NS4yQzQ1LjkgMjU5LjcgMzguNiAyNTYuNSAzMC41IDI1Ni41QzEzLjQgMjU2LjUgMCAyNzAuOSAwIDI4OS40QzAgMjk4LjQgMy4xIDMwNi44IDguOCAzMTIuOUMxNC41IDMxOSAyMi4yIDMyMi4zIDMwLjYgMzIyLjNDMzguNSAzMjIuMyA0NS44IDMxOSA1MC43IDMxMy4zQzUxIDMxMi45IDUxLjYgMzEyLjggNTIgMzEyLjlDNTIuNSAzMTMuMSA1Mi44IDMxMy41IDUyLjggMzE0VjMyMC43SDY2LjZaTTMzLjcgMzA5LjdDMjIuNyAzMDkuNyAxNCAzMDAuOCAxNCAyODkuNEMxNCAyNzggMjIuNyAyNjkuMSAzMy43IDI2OS4xQzQ0LjcgMjY5LjEgNTMuNCAyNzggNTMuNCAyODkuNEM1My40IDMwMC44IDQ0LjcgMzA5LjcgMzMuNyAzMDkuN1pNMTQwLjcgMzIwLjZWMjU4SDEyN1YyNjQuM0MxMjcgMjY0LjggMTI2LjcgMjY1LjIgMTI2LjIgMjY1LjRDMTI1LjcgMjY1LjYgMTI1LjIgMjY1LjQgMTI0LjkgMjY1QzEyMC4yIDI1OS40IDExMy4xIDI1Ni40IDEwNC44IDI1Ni40Qzg3LjcgMjU2LjQgNzQuMiAyNzAuOSA3NC4yIDI4OS4zQzc0LjIgMzA3LjcgODcuNiAzMjIuMiAxMDQuOCAzMjIuMkMxMTIuNyAzMjIuMiAxMjAuMSAzMTguOSAxMjQuOSAzMTMuMUMxMjUuMiAzMTIuNyAxMjUuOCAzMTIuNiAxMjYuMiAzMTIuN0MxMjYuNyAzMTIuOSAxMjcgMzEzLjMgMTI3IDMxMy44VjMyMC42SDE0MC43Wk0xMDcuOSAzMDkuN0M5Ni45IDMwOS43IDg4LjIgMzAwLjggODguMiAyODkuNEM4OC4yIDI3OCA5Ni45IDI2OS4xIDEwNy45IDI2OS4xQzExOC45IDI2OS4xIDEyNy42IDI3OCAxMjcuNiAyODkuNEMxMjcuNiAzMDAuOCAxMTguOSAzMDkuNyAxMDcuOSAzMDkuN1pNMjU4LjIgMzIwLjZWMjU4SDI0NC41VjI2NC4zQzI0NC41IDI2NC44IDI0NC4yIDI2NS4yIDI0My43IDI2NS40QzI0My4yIDI2NS42IDI0Mi43IDI2NS40IDI0Mi40IDI2NUMyMzcuNyAyNTkuNCAyMzAuNiAyNTYuNCAyMjIuMyAyNTYuNEMyMDUuMiAyNTYuNCAxOTEuNyAyNzAuOSAxOTEuNyAyODkuM0MxOTEuNyAzMDcuNyAyMDUuMSAzMjIuMiAyMjIuMyAzMjIuMkMyMzAuMiAzMjIuMiAyMzcuNiAzMTguOSAyNDIuNCAzMTMuMUMyNDIuNyAzMTIuNyAyNDMuMyAzMTIuNiAyNDMuNyAzMTIuN0MyNDQuMiAzMTIuOSAyNDQuNSAzMTMuMyAyNDQuNSAzMTMuOFYzMjAuNkgyNTguMlpNMjI1LjQgMzA5LjdDMjE0LjQgMzA5LjcgMjA1LjcgMzAwLjggMjA1LjcgMjg5LjRDMjA1LjcgMjc4IDIxNC40IDI2OS4xIDIyNS40IDI2OS4xQzIzNi40IDI2OS4xIDI0NS4xIDI3OCAyNDUuMSAyODkuNEMyNDUuMSAzMDAuOCAyMzYuNCAzMDkuNyAyMjUuNCAzMDkuN1pNMjgzLjQgMzEzLjNDMjgzLjUgMzEzLjMgMjgzLjcgMzEzLjIgMjgzLjggMzEzLjJDMjg0LjEgMzEzLjIgMjg0LjUgMzEzLjQgMjg0LjcgMzEzLjZDMjg5LjQgMzE5LjEgMjk2LjcgMzIyLjMgMzA0LjggMzIyLjNDMzIxLjkgMzIyLjMgMzM1LjQgMzA3LjggMzM1LjQgMjg5LjRDMzM1LjQgMjgwLjQgMzMyLjMgMjcyIDMyNi42IDI2NS45QzMyMC45IDI1OS44IDMxMy4yIDI1Ni41IDMwNC44IDI1Ni41QzI5Ni45IDI1Ni41IDI4OS42IDI1OS44IDI4NC43IDI2NS41QzI4NC40IDI2NS45IDI4My45IDI2NiAyODMuNCAyNjUuOUMyODIuOSAyNjUuNyAyODIuNiAyNjUuMyAyODIuNiAyNjQuOFYyMzAuOEgyNjguN1YzMjAuOUgyODIuNlYzMTQuNkMyODIuNiAzMTMuOSAyODIuOSAzMTMuNSAyODMuNCAzMTMuM1pNMjgyIDI4OS40QzI4MiAyNzggMjkwLjcgMjY5LjEgMzAxLjcgMjY5LjFDMzEyLjcgMjY5LjEgMzIxLjQgMjc4IDMyMS40IDI4OS40QzMyMS40IDMwMC44IDMxMi43IDMwOS43IDMwMS43IDMwOS43QzI5MC42IDMwOS43IDI4MiAzMDAuOCAyODIgMjg5LjRaTTM1Ni45IDI5My4yVjMyMC44SDM0M1YyNThIMzU2LjdWMjY1LjdDMzU2LjcgMjY2LjIgMzU3LjEgMjY2LjcgMzU3LjYgMjY2LjhDMzU4LjEgMjY2LjkgMzU4LjcgMjY2LjcgMzU4LjkgMjY2LjNDMzYyLjQgMjYwLjQgMzY5LjEgMjU2LjcgMzc2LjIgMjU2LjdDMzc3LjEgMjU2LjcgMzc4LjEgMjU2LjggMzc4LjUgMjU2LjlWMjcxLjFDMzc3LjcgMjcwLjkgMzc2LjQgMjcwLjggMzc1LjEgMjcwLjhDMzYzLjkgMjcwLjkgMzU2LjkgMjc5LjQgMzU2LjkgMjkzLjJaTTQwMS4zIDI1OFYzMjAuN0gzODcuM1YyNThINDAxLjNaTTQwMi42IDIzOS4zQzQwMi42IDI0NCAzOTguOCAyNDcuOCAzOTQuMSAyNDcuOEMzODkuNCAyNDcuOCAzODUuNiAyNDQgMzg1LjYgMjM5LjNDMzg1LjYgMjM0LjYgMzg5LjQgMjMwLjggMzk0LjEgMjMwLjhDMzk4LjggMjMwLjggNDAyLjYgMjM0LjYgNDAyLjYgMjM5LjNaTTQ2OC4yIDI2Ni40TDQ1OS40IDI3NC43QzQ1NC40IDI3MSA0NDkuMiAyNjkuMiA0NDMuNyAyNjkuMkM0MzIuMSAyNjkuMiA0MjMuNCAyNzcuOSA0MjMuNCAyODkuNEM0MjMuNCAzMDAuOSA0MzIuMSAzMDkuNiA0NDMuNyAzMDkuNkM0NDguOCAzMDkuNiA0NTQgMzA3LjggNDU5LjcgMzA0LjFMNDY3LjYgMzEyLjRDNDU2LjIgMzIwLjggNDUwLjEgMzIyLjMgNDQyLjMgMzIyLjNDNDMyLjkgMzIyLjMgNDI0LjQgMzE5IDQxOC41IDMxM0M0MTIuNiAzMDcgNDA5LjMgMjk4LjcgNDA5LjMgMjg5LjRDNDA5LjMgMjcwLjMgNDIzLjMgMjU2LjUgNDQyLjUgMjU2LjVDNDQ4LjYgMjU2LjUgNDU4IDI1Ny41IDQ2OC4yIDI2Ni40Wk00ODkuNCAyOTUuNEM0ODkuMiAyOTUuNiA0ODkgMjk1LjkgNDg5IDI5Ni4zVjMyMC43SDQ3NS4xVjIzMC42SDQ4OVYyNzkuOUM0ODkgMjgwLjQgNDg5LjMgMjgwLjggNDg5LjcgMjgxQzQ5MC4yIDI4MS4yIDQ5MC43IDI4MS4xIDQ5MSAyODAuN0w1MTMuNyAyNTcuOUg1MzAuNkw1MDQuMiAyODQuM0M1MDMuOCAyODQuNyA1MDMuNyAyODUuNCA1MDQuMSAyODUuOUw1MzIuOCAzMjAuNkg1MTUuN0w0OTMuNSAyOTMuMUM0OTMuMyAyOTIuOCA0OTMgMjkyLjcgNDkyLjYgMjkyLjdINDkyLjVDNDkyLjIgMjkyLjcgNDkxLjkgMjkyLjggNDkxLjcgMjkzTDQ4OS40IDI5NS40Wk01MzEuNSAzMDYuOEw1NDIuNyAzMDAuOUM1NDUuMSAzMDYuOCA1NTAuMSAzMTAuNCA1NTUuNyAzMTAuNEM1NTkuOSAzMTAuNCA1NjQuOCAzMDguNSA1NjQuOCAzMDMuMkM1NjQuOCAyOTkuNiA1NjIuNiAyOTcuNSA1NTcuMSAyOTUuOEw1NDkuNCAyOTMuM0M1MzguNyAyODkuOSA1MzMuNSAyODQgNTMzLjUgMjc1LjNDNTMzLjUgMjY0LjMgNTQyLjUgMjU2LjMgNTU1IDI1Ni4zQzU2NC44IDI1Ni4zIDU3My40IDI2MS41IDU3Ny41IDI3MEw1NjYuNCAyNzZDNTYzLjggMjcwLjcgNTU5LjcgMjY3LjcgNTU1LjEgMjY3LjdDNTUwLjMgMjY3LjcgNTQ2LjkgMjcwLjMgNTQ2LjkgMjc0LjFDNTQ2LjkgMjc3LjQgNTQ5LjQgMjc5LjggNTU0LjQgMjgxLjVMNTYyIDI4NEM1NzMgMjg3LjYgNTc4LjQgMjkzLjUgNTc4LjQgMzAyLjFDNTc4LjQgMzE1LjIgNTY2LjkgMzIyLjEgNTU1LjUgMzIyLjFDNTQ0LjQgMzIyLjMgNTM1LjMgMzE2LjQgNTMxLjUgMzA2LjhaTTE1OSAyOTkuN1YyNzAuNUMxNTkgMjY5LjggMTU4LjUgMjY5LjMgMTU3LjggMjY5LjNIMTQ4LjFWMjU4SDE1Ny44QzE1OC41IDI1OCAxNTkgMjU3LjUgMTU5IDI1Ni44VjIzOC42SDE3Mi44VjI1Ni44QzE3Mi44IDI1Ny41IDE3My4zIDI1OCAxNzQgMjU4SDE4Ny41VjI2OS4zSDE3NEMxNzMuMyAyNjkuMyAxNzIuOCAyNjkuOCAxNzIuOCAyNzAuNVYyOTYuM0MxNzIuOCAzMDguNCAxNzcuMSAzMDkuNCAxODIuNyAzMDkuNEMxODQuNyAzMDkuNCAxODcuOCAzMDkuMiAxODkuNyAzMDguOVYzMjAuOUMxODcuNSAzMjEuMiAxODMuNSAzMjEuNiAxNzkuMiAzMjEuNkMxNzMuNiAzMjEuNyAxNTkgMzIxLjcgMTU5IDI5OS43WiIgZmlsbD0iIzBCMjAyNiIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE5ODRfNzMwIj4KPHJlY3Qgd2lkdGg9IjU3OC41IiBoZWlnaHQ9IjMyMi4zIiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo="
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMzMSIgdmlld0JveD0iMCAwIDMwMCAzMzEiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0yODMuOTIzIDEzNi40NDlMMTUwLjE0NCAyMTMuNjI0TDYuODg5OTUgMTMxLjE2OEwwIDEzNC45ODJWMTk0Ljg0NEwxNTAuMTQ0IDI4MS4xMTVMMjgzLjkyMyAyMDQuMjM0VjIzNS45MjZMMTUwLjE0NCAzMTMuMUw2Ljg4OTk1IDIzMC42NDRMMCAyMzQuNDU4VjI0NC43MjlMMTUwLjE0NCAzMzFMMzAwIDI0NC43MjlWMTg0Ljg2N0wyOTMuMTEgMTgxLjA1MkwxNTAuMTQ0IDI2My4yMTVMMTYuMDc2NiAxODYuMzM0VjE1NC42NDNMMTUwLjE0NCAyMzEuNTI0TDMwMCAxNDUuMjUzVjg2LjI3MTNMMjkyLjUzNiA4MS44Njk3TDE1MC4xNDQgMTYzLjczOUwyMi45NjY1IDkwLjk2NjNMMTUwLjE0NCAxNy44OTk4TDI1NC42NDEgNzguMDU1TDI2My44MjggNzIuNzczVjY1LjQzNzFMMTUwLjE0NCAwTDAgODYuMjcxM1Y5NS42NjEzTDE1MC4xNDQgMTgxLjkzM0wyODMuOTIzIDEwNC43NThWMTM2LjQ0OVoiIGZpbGw9IiNGRjM2MjEiLz4KPC9zdmc+Cg=="
       },
       "groups": [
         {
@@ -1361,6 +1361,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operation"
+      },
+      {
+        "tooltip": "Choose a reusable authentication credential, or configure one-time authentication parameters below.",
+        "group": "authentication"
       },
       {
         "tooltip": "Authentication type",
@@ -2574,7 +2578,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "response",
           "label": "Response",
-          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/#response\">documentation</a> for details.",
+          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/#response\">documentation</a> for details.",
           "openByDefault": false
         },
         {
@@ -2816,19 +2820,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "userPrompt",
-        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details and supported file types."
+        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details and supported file types."
       },
       {
         "group": "tools",
-        "tooltip": "Add an ad-hoc sub-process ID to attach the AI agent to the tools. Ensure your process includes a tools feedback loop routing into the ad-hoc sub-process and back to the AI agent connector. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Add an ad-hoc sub-process ID to attach the AI agent to the tools. Ensure your process includes a tools feedback loop routing into the ad-hoc sub-process and back to the AI agent connector. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "tools",
-        "tooltip": "This defines where to handle tool call results returned by the ad-hoc sub-process. Model this as part of your process and route it into the tools feedback loop. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "This defines where to handle tool call results returned by the ad-hoc sub-process. Model this as part of your process and route it into the tools feedback loop. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory",
-        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory"
@@ -2870,7 +2874,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "memory",
-        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "limits"
@@ -3411,7 +3415,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "response",
           "label": "Response",
-          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/#response\">documentation</a> for details.",
+          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/#response\">documentation</a> for details.",
           "openByDefault": false
         },
         {
@@ -3656,11 +3660,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "userPrompt",
-        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details and supported file types."
+        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details and supported file types."
       },
       {
         "group": "memory",
-        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory"
@@ -3702,7 +3706,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "memory",
-        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "limits"
@@ -7115,6 +7119,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
+        "tooltip": "Choose a reusable authentication credential, or configure a one-time API key below.",
+        "group": "authentication"
+      },
+      {
         "group": "authentication"
       },
       {
@@ -8674,6 +8682,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
+      {
+        "group": "authentication",
+        "tooltip": "Choose a reusable Microsoft Entra ID credential, or configure one-time authentication parameters below."
+      },
       {
         "group": "authentication"
       },
@@ -10339,18 +10351,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "connection",
-        "tooltip": "If you choose Oracle, make sure the Oracle JDBC driver is included. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#database\">Oracle JDBC driver setup</a>."
+        "tooltip": "If you choose Oracle, make sure the Oracle JDBC driver is included. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#database\">Oracle JDBC driver setup</a>."
       },
       {
         "group": "connection"
       },
       {
         "group": "connection",
-        "tooltip": "URI should contain JDBC driver, host name, and port number. See the <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#uri-connection\" target=\"_blank\">URI connection</a> reference."
+        "tooltip": "URI should contain JDBC driver, host name, and port number. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#uri-connection\" target=\"_blank\">URI connection</a> reference."
       },
       {
         "group": "connection",
-        "tooltip": "Additional properties for the connection ('user' and 'password' for instance). See the <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#connection\" target=\"_blank\">SQL connection properties</a> reference."
+        "tooltip": "Additional properties for the connection ('user' and 'password' for instance). See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#connection\" target=\"_blank\">SQL connection properties</a> reference."
       },
       {
         "group": "connection"
@@ -10369,7 +10381,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "connection",
-        "tooltip": "Additional properties for the connection. See the <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#connection\" target=\"_blank\">SQL connection properties</a> reference."
+        "tooltip": "Additional properties for the connection. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#connection\" target=\"_blank\">SQL connection properties</a> reference."
       },
       {
         "group": "query",
@@ -10377,11 +10389,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "query",
-        "tooltip": "You can use named, positional or binding <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#variables\" target=\"_blank\">parameters</a>"
+        "tooltip": "You can use named, positional or binding <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#variables\" target=\"_blank\">parameters</a>"
       },
       {
         "group": "query",
-        "tooltip": "The <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#variables\" target=\"_blank\">variables</a> to use in the SQL query."
+        "tooltip": "The <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#variables\" target=\"_blank\">variables</a> to use in the SQL query."
       },
       {
         "group": "connector"
@@ -14684,35 +14696,39 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
+        "group": "operation",
+        "tooltip": "By default, the file's metadata name is used unless a custom name is specified."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Choose a reusable Azure Blob Storage credential, or configure one-time authentication parameters below."
+      },
+      {
         "group": "authentication"
       },
       {
         "group": "authentication",
-        "tooltip": "Shared access signature (SAS) token of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>."
+        "tooltip": "Shared access signature (SAS) token of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>."
       },
       {
         "group": "authentication",
-        "tooltip": "Shared access signature (SAS) URL of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>."
+        "tooltip": "Shared access signature (SAS) URL of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>."
       },
       {
         "group": "authentication",
-        "tooltip": "ID of the Microsoft Entra ID tenant that owns the application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
+        "tooltip": "ID of the Microsoft Entra ID tenant that owns the application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
       },
       {
         "group": "authentication",
-        "tooltip": "Application (client) ID of the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
+        "tooltip": "Application (client) ID of the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
       },
       {
         "group": "authentication",
-        "tooltip": "Client secret generated for the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
+        "tooltip": "Client secret generated for the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
       },
       {
         "group": "authentication",
-        "tooltip": "URL of the Azure Blob Storage account to connect to. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
-      },
-      {
-        "group": "additionalProperties",
-        "tooltip": "By default, the file's metadata name is used unless a custom name is specified."
+        "tooltip": "URL of the Azure Blob Storage account to connect to. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
       },
       {
         "group": "additionalProperties"
@@ -15839,7 +15855,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "response",
           "label": "Response",
-          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/#response\">documentation</a> for details.",
+          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/#response\">documentation</a> for details.",
           "openByDefault": false
         },
         {
@@ -16105,11 +16121,75 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "provider"
       },
       {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "placeholder": "https://api.mistral.ai/v1"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The OAuth token endpoint"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The unique identifier of the target API you want to access"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Send client ID and client secret as Basic Auth request in the header, or as client credentials in the request body"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The scopes which you want to request authorization for (e.g., read:contacts)"
+      },
+      {
+        "group": "provider"
+      },
+      {
         "group": "provider",
         "tooltip": "Must match the identifier configured for the custom implementation."
       },
       {
         "group": "provider"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
       },
       {
         "group": "advanced-provider-options"
@@ -16248,6 +16328,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "model",
+        "tooltip": "Specify the model ID. See the <a href=\"https://docs.mistral.ai/getting-started/models/models_overview/\" target=\"_blank\">models documentation</a>.",
+        "placeholder": "mistral-medium-latest"
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls how many tokens the model spends thinking before responding. Only supported on reasoning-capable models.<br><br>See the <a href=\"https://docs.mistral.ai/capabilities/reasoning/\" target=\"_blank\">Mistral reasoning documentation</a>."
+      },
+      {
+        "group": "model",
         "tooltip": "Specify the model ID."
       },
       {
@@ -16319,6 +16408,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Integer greater than 0. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://ai.google.dev/api/generate-content#v1beta.GenerationConfig\" target=\"_blank\">documentation</a>."
       },
       {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://docs.mistral.ai/api/endpoint/chat\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 1.5. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://docs.mistral.ai/api/endpoint/chat\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.mistral.ai/api/endpoint/chat\" target=\"_blank\">documentation</a>."
+      },
+      {
         "group": "systemPrompt"
       },
       {
@@ -16326,11 +16427,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "userPrompt",
-        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details and supported file types."
+        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details and supported file types."
       },
       {
         "group": "memory",
-        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory"
@@ -16372,7 +16473,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "memory",
-        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "limits"
@@ -17097,6 +17198,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
+        "group": "authentication",
+        "tooltip": "Choose a reusable Microsoft Entra ID credential, or configure one-time authentication parameters below."
+      },
+      {
         "group": "authentication"
       },
       {
@@ -17366,6 +17471,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
+        "group": "authentication",
+        "tooltip": "Choose a reusable Microsoft Entra ID credential, or configure one-time authentication parameters below."
+      },
+      {
         "group": "authentication"
       },
       {
@@ -17593,7 +17702,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "authentication",
-        "tooltip": "Service account key in JSON format. See the <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/google-cloud-storage/#authentication\" target=\"_blank\">Google Cloud Storage authentication guide</a> for details."
+        "tooltip": "Service account key in JSON format. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-cloud-storage/#authentication\" target=\"_blank\">Google Cloud Storage authentication guide</a> for details."
       },
       {
         "group": "additionalProperties",
@@ -18506,7 +18615,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "response",
           "label": "Response",
-          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/#response\">documentation</a> for details.",
+          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/#response\">documentation</a> for details.",
           "openByDefault": false
         },
         {
@@ -18769,11 +18878,75 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "provider"
       },
       {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "placeholder": "https://api.mistral.ai/v1"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The OAuth token endpoint"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The unique identifier of the target API you want to access"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Send client ID and client secret as Basic Auth request in the header, or as client credentials in the request body"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The scopes which you want to request authorization for (e.g., read:contacts)"
+      },
+      {
+        "group": "provider"
+      },
+      {
         "group": "provider",
         "tooltip": "Must match the identifier configured for the custom implementation."
       },
       {
         "group": "provider"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
       },
       {
         "group": "advanced-provider-options"
@@ -18912,6 +19085,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "model",
+        "tooltip": "Specify the model ID. See the <a href=\"https://docs.mistral.ai/getting-started/models/models_overview/\" target=\"_blank\">models documentation</a>.",
+        "placeholder": "mistral-medium-latest"
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls how many tokens the model spends thinking before responding. Only supported on reasoning-capable models.<br><br>See the <a href=\"https://docs.mistral.ai/capabilities/reasoning/\" target=\"_blank\">Mistral reasoning documentation</a>."
+      },
+      {
+        "group": "model",
         "tooltip": "Specify the model ID."
       },
       {
@@ -18983,6 +19165,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Integer greater than 0. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://ai.google.dev/api/generate-content#v1beta.GenerationConfig\" target=\"_blank\">documentation</a>."
       },
       {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://docs.mistral.ai/api/endpoint/chat\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 1.5. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://docs.mistral.ai/api/endpoint/chat\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.mistral.ai/api/endpoint/chat\" target=\"_blank\">documentation</a>."
+      },
+      {
         "group": "systemPrompt"
       },
       {
@@ -18990,19 +19184,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "userPrompt",
-        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details and supported file types."
+        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details and supported file types."
       },
       {
         "group": "tools",
-        "tooltip": "Add an ad-hoc sub-process ID to attach the AI agent to the tools. Ensure your process includes a tools feedback loop routing into the ad-hoc sub-process and back to the AI agent connector. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Add an ad-hoc sub-process ID to attach the AI agent to the tools. Ensure your process includes a tools feedback loop routing into the ad-hoc sub-process and back to the AI agent connector. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "tools",
-        "tooltip": "This defines where to handle tool call results returned by the ad-hoc sub-process. Model this as part of your process and route it into the tools feedback loop. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "This defines where to handle tool call results returned by the ad-hoc sub-process. Model this as part of your process and route it into the tools feedback loop. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory",
-        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory"
@@ -19044,7 +19238,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "memory",
-        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "limits"
@@ -19621,6 +19815,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
+      {
+        "group": "authentication",
+        "tooltip": "Choose a reusable Microsoft Entra ID credential, or configure one-time authentication parameters below."
+      },
       {
         "group": "authentication"
       },
