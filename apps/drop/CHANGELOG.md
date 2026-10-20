@@ -1,5 +1,19 @@
 # @bpmnkit/drop
 
+## 0.4.4
+
+### Patch Changes
+
+- Updated dependencies [fbd45f8]
+- Updated dependencies [fbd45f8]
+- Updated dependencies [8bcc25a]
+- Updated dependencies [ca2129e]
+- Updated dependencies [fbd45f8]
+- Updated dependencies [fbd45f8]
+  - @bpmnkit/editor@1.5.0
+  - @bpmnkit/engine@1.3.0
+  - @bpmnkit/core@1.6.0
+
 ## 0.4.3
 
 ### Patch Changes

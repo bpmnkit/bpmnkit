@@ -1,5 +1,19 @@
 # @bpmnkit/editor
 
+## 1.5.0
+
+### Minor Changes
+
+- fbd45f8: Change scripts (`applyProcessDelta`) apply `form=`, `in.`/`out.` mappings, `note <id>: text` and `doc <id>: text` to existing and new nodes, including tools inside an ad-hoc sub-process; restating what a node already has changes nothing.
+
+### Patch Changes
+
+- Updated dependencies [8bcc25a]
+- Updated dependencies [ca2129e]
+- Updated dependencies [fbd45f8]
+- Updated dependencies [fbd45f8]
+  - @bpmnkit/core@1.6.0
+
 ## 1.4.1
 
 ### Patch Changes
