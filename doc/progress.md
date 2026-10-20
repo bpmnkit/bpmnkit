@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-10-20 — Exclusive-gateway markers outside auto-layout (#251)
+
+- Follow-up to #250, which marked exclusive gateways in auto-layout only. Four more paths created an exclusive-gateway shape without `isMarkerVisible`, so the bpmn-js Viewer drew an empty diamond:
+  - `expand()` from the compact format (`buildDiagram` in `compact.ts`), used by `casen generate`, Drop and the desktop editor.
+  - The `flow/multi-incoming-task` auto-fix's inserted merge gateway (`optimize/flow.ts`), reached through `casen lint --fix` and the editor's optimize and pattern-advisor plugins.
+  - The editor's `createShape` (palette, HUD and AI process-delta create ops).
+  - The editor's `changeElementType` (replace menu, process delta): changing into an exclusive gateway sets the marker unless the shape already has a value; an explicit `false` is kept.
+- Tests: `compact-marker-visible.test.ts`, a case in `optimize.test.ts`, and an `isMarkerVisible` block in the editor's `modeling.test.ts`.
+
 ## 2026-10-20 — Layout: kept DI tolerates missing ids; marker only on exclusive gateways (#250)
 
 - `keepDiAttributes` matches diagrams by the element their plane draws, falling back to a non-empty id. Id-less `BPMNDiagram`s no longer all pick up the first one's name, plane attributes and label styles (which duplicated `BPMNLabelStyle` ids).
