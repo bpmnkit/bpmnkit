@@ -3,10 +3,12 @@ import { resolveBpmnlintConfig } from "../src/bpmn/bpmnlint.js"
 import { compactify, expand } from "../src/bpmn/compact.js"
 import { Bpmn } from "../src/bpmn/index.js"
 import { lintDiagram } from "../src/bpmn/lint.js"
+import { writeProcessText } from "../src/bpmn/process-text-writer.js"
 import {
 	PROCESS_TEXT_GUIDE,
 	createProcessTextStream,
 	parseProcessText,
+	splitMappings,
 } from "../src/bpmn/process-text.js"
 
 const EXAMPLE = PROCESS_TEXT_GUIDE.slice(
@@ -1091,5 +1093,465 @@ describe("createProcessTextStream", () => {
 		const stream = createProcessTextStream()
 		for (const ch of EXAMPLE) stream.push(ch)
 		expect(stream.end()).toEqual(parseProcessText(EXAMPLE))
+	})
+})
+
+describe("forms, mappings and platform version", () => {
+	const CHAT =
+		"start[start Task received | form=ai-agent-chat-initial-request] > fb[user User Feedback | form=ai-agent-chat-user-feedback in.responseText=agent.responseText] > e[end Done]"
+
+	function xmlOf(text: string): string {
+		return Bpmn.export(expand(parseProcessText(text).diagram))
+	}
+
+	it("reads form= and in. into formId and inputs, with no problems", () => {
+		const { diagram, problems } = parseProcessText(CHAT)
+		expect(problems).toEqual([])
+		const [start, fb] = diagram.processes[0]?.elements ?? []
+		expect(start?.formId).toBe("ai-agent-chat-initial-request")
+		expect(fb?.formId).toBe("ai-agent-chat-user-feedback")
+		expect(fb?.inputs).toEqual({ responseText: "=agent.responseText" })
+	})
+
+	it("expands to form definitions, zeebe:userTask on the user task, and the input", () => {
+		const xml = xmlOf(CHAT)
+		expect(xml).toContain('<zeebe:formDefinition formId="ai-agent-chat-initial-request"')
+		expect(xml).toContain('<zeebe:formDefinition formId="ai-agent-chat-user-feedback"')
+		expect(xml).toContain('<zeebe:input source="=agent.responseText" target="responseText"')
+		expect(xml.match(/<zeebe:userTask/g)).toHaveLength(1)
+		expect(xml).not.toMatch(/<bpmn:startEvent[^>]*>\s*<bpmn:extensionElements>\s*<zeebe:userTask/)
+	})
+
+	it("emits no zeebe:userTask for a user task without a form", () => {
+		expect(xmlOf("start[start A] > u[user B] > e[end C]")).not.toContain("zeebe:userTask")
+	})
+
+	it("reads out. into outputs", () => {
+		const { diagram, problems } = parseProcessText(
+			"s[start A] > u[user B | form=f out.approved=decision.ok] > e[end C]",
+		)
+		expect(problems).toEqual([])
+		expect(diagram.processes[0]?.elements[1]?.outputs).toEqual({ approved: "=decision.ok" })
+		expect(xmlOf("s[start A] > u[user B | form=f out.approved=decision.ok] > e[end C]")).toContain(
+			'<zeebe:output source="=decision.ok" target="approved"',
+		)
+	})
+
+	it("takes a mapping value up to the next attribute, spaces and = included", () => {
+		const text =
+			'a[start A] > t[service T | job=work in.x=if a = 1 then "y" else "z" in.n=count(items) result=r] > e[end E]'
+		const { diagram, problems } = parseProcessText(text)
+		expect(problems).toEqual([])
+		const t = diagram.processes[0]?.elements[1]
+		expect(t?.inputs).toEqual({
+			x: '=if a = 1 then "y" else "z"',
+			n: "=count(items)",
+		})
+		expect(t?.resultVariable).toBe("r")
+		expect(t?.jobType).toBe("work")
+	})
+
+	it("keeps feel= and mapping values from swallowing each other", () => {
+		const { diagram, problems } = parseProcessText(
+			"a[start A] > s[script S | in.list=items result=n feel=count(items[state = 1])] > e[end E]",
+		)
+		expect(problems).toEqual([])
+		const s = diagram.processes[0]?.elements[1]
+		expect(s?.inputs).toEqual({ list: "=items" })
+		expect(s?.script).toBe("= count(items[state = 1])")
+		expect(s?.resultVariable).toBe("n")
+	})
+
+	it("reads an unspaced = in a mapping value as the next attribute (documented)", () => {
+		const { problems } = parseProcessText(
+			"a[start A] > t[task T | in.x=if a=1 then 2 else 3] > e[end E]",
+		)
+		expect(problems.map((p) => p.message).join()).toContain('unknown attribute "a=1"')
+	})
+
+	it("ignores form= on a kind that cannot have one", () => {
+		const { problems, diagram } = parseProcessText("a[start A] > t[service T | form=f] > e[end E]")
+		expect(problems.map((p) => p.message).join()).toContain("form=")
+		expect(diagram.processes[0]?.elements[1]?.formId).toBeUndefined()
+	})
+
+	it("reports a mapping value that is not FEEL, and keeps it", () => {
+		const { problems, diagram } = parseProcessText("a[start A] > t[task T | in.x=)(] > e[end E]")
+		expect(problems.map((p) => p.message).join()).toContain("in.x")
+		expect(diagram.processes[0]?.elements[1]?.inputs?.x).toBe("=)(")
+	})
+
+	it("reads the platform version from the header", () => {
+		const { diagram, problems } = parseProcessText("# Chat | camunda=8.10\na[start A] > e[end E]")
+		expect(problems).toEqual([])
+		expect(diagram.processes[0]?.name).toBe("Chat")
+		expect(diagram.executionPlatformVersion).toBe("8.10.0")
+		const defs = expand(diagram)
+		expect(defs.unknownAttributes["modeler:executionPlatform"]).toBe("Camunda Cloud")
+		expect(defs.unknownAttributes["modeler:executionPlatformVersion"]).toBe("8.10.0")
+		const xml = Bpmn.export(defs)
+		expect(xml).toContain('modeler:executionPlatformVersion="8.10.0"')
+		expect(xml).toContain("xmlns:modeler=")
+	})
+
+	it("leaves a diagram without a platform version as before", () => {
+		const { diagram } = parseProcessText("# Chat\na[start A] > e[end E]")
+		expect(diagram.executionPlatformVersion).toBeUndefined()
+		expect(Object.keys(expand(diagram).unknownAttributes)).toEqual([])
+	})
+
+	it("reports an unreadable platform version", () => {
+		const { problems, diagram } = parseProcessText("# Chat | camunda=latest\na[start A] > e[end E]")
+		expect(problems.map((p) => p.message).join()).toContain("camunda=latest")
+		expect(diagram.executionPlatformVersion).toBeUndefined()
+		expect(diagram.processes[0]?.name).toBe("Chat")
+	})
+
+	it("teaches the syntax in one guide line each, and the example still parses", () => {
+		expect(PROCESS_TEXT_GUIDE).toContain("form=<form id>")
+		expect(PROCESS_TEXT_GUIDE).toContain("in.<name>=<FEEL>")
+		expect(PROCESS_TEXT_GUIDE).toContain("| camunda=8.10")
+	})
+})
+
+describe("ad-hoc sub-processes and notes", () => {
+	const BAKEOFF = `# AI Agent Chat With Tools | camunda=8.10
+start[start Task to perform received] > run[xor Run agent] > agent[adhoc AI Agent] > fb[user User Feedback] > done[xor User satisfied?]
+done >(Yes: userSatisfied) fin[end User satisfied]
+done >(No: default) run
+users[service Find sample users | inside=agent]
+recipes[service Search recipes | inside=agent]
+joke[service Get a safe joke | inside=agent]
+products[service List sample technology products | inside=agent]
+note start: Triggered when a user submits a task for the AI agent.
+note agent: This is your agent running certain tasks to reach the goal it was given
+note joke: Each task you add represents a capability your agent will have.`
+
+	it("reads adhoc, inside= and note lines without problems", () => {
+		const { diagram, problems } = parseProcessText(BAKEOFF)
+		expect(problems).toEqual([])
+		const process = diagram.processes[0]
+		const agent = process?.elements.find((el) => el.id === "agent")
+		expect(agent?.type).toBe("adHocSubProcess")
+		expect(agent?.children?.elements.map((el) => el.id)).toEqual([
+			"users",
+			"recipes",
+			"joke",
+			"products",
+		])
+		expect(agent?.children?.flows).toEqual([])
+		// The children live in the container only, not beside it
+		expect(process?.elements.map((el) => el.id)).not.toContain("users")
+		expect(process?.notes?.map((n) => n.elementId)).toEqual(["start", "agent", "joke"])
+	})
+
+	it("lets the container have flows in and out of the main path", () => {
+		const { diagram } = parseProcessText(BAKEOFF)
+		const flows = diagram.processes[0]?.flows.map((f) => `${f.from}>${f.to}`)
+		expect(flows).toContain("run>agent")
+		expect(flows).toContain("agent>fb")
+	})
+
+	it("expands to an ad-hoc sub-process of four flowless tools and three associations", () => {
+		const defs = expand(parseProcessText(BAKEOFF).diagram)
+		const process = defs.processes[0]
+		const agent = process?.flowElements.find((el) => el.id === "agent")
+		expect(agent?.type).toBe("adHocSubProcess")
+		if (agent?.type !== "adHocSubProcess") return
+		expect(agent.flowElements.map((el) => el.id)).toEqual(["users", "recipes", "joke", "products"])
+		expect(
+			agent.flowElements.every((el) => el.incoming.length === 0 && el.outgoing.length === 0),
+		).toBe(true)
+		expect(agent.sequenceFlows).toEqual([])
+		expect(process?.textAnnotations).toHaveLength(3)
+		expect(process?.associations.map((a) => a.sourceRef)).toEqual(["start", "agent", "joke"])
+		const xml = Bpmn.export(defs)
+		expect(xml.match(/<bpmn:association /g)).toHaveLength(3)
+		expect(xml.match(/<bpmn:textAnnotation /g)).toHaveLength(3)
+		expect(Bpmn.parse(xml).processes[0]?.textAnnotations).toHaveLength(3)
+	})
+
+	it("lays the tools out as a grid inside the container, and the notes clear of every shape", () => {
+		const defs = expand(parseProcessText(BAKEOFF).diagram)
+		const bounds = new Map(
+			(defs.diagrams[0]?.plane.shapes ?? []).map((s) => [s.bpmnElement, s.bounds] as const),
+		)
+		const get = (id: string) => {
+			const b = bounds.get(id)
+			expect(b, id).toBeDefined()
+			return b as NonNullable<typeof b>
+		}
+		const overlaps = (a: ReturnType<typeof get>, b: ReturnType<typeof get>) =>
+			a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height
+		const tools = ["users", "recipes", "joke", "products"]
+		const container = get("agent")
+		for (const id of tools) {
+			const b = get(id)
+			expect(b.x, id).toBeGreaterThanOrEqual(container.x)
+			expect(b.y, id).toBeGreaterThanOrEqual(container.y)
+			expect(b.x + b.width, id).toBeLessThanOrEqual(container.x + container.width)
+			expect(b.y + b.height, id).toBeLessThanOrEqual(container.y + container.height)
+		}
+		// A landscape 2x2 grid, read row by row
+		expect(new Set(tools.map((id) => get(id).x)).size).toBe(2)
+		expect(new Set(tools.map((id) => get(id).y)).size).toBe(2)
+		expect(container.width).toBeGreaterThanOrEqual(container.height)
+		for (let i = 0; i < tools.length; i++) {
+			for (let j = i + 1; j < tools.length; j++) {
+				expect(overlaps(get(tools[i] as string), get(tools[j] as string))).toBe(false)
+			}
+		}
+		// Every annotation is drawn, apart from the other shapes, and its association is routed
+		const plane = defs.diagrams[0]?.plane
+		const annotations = (defs.processes[0]?.textAnnotations ?? []).map((a) => a.id)
+		expect(annotations).toHaveLength(3)
+		for (const id of annotations) {
+			for (const [other, b] of bounds) {
+				if (other === id || other === "agent") continue
+				expect(overlaps(get(id), b), `${id} overlaps ${other}`).toBe(false)
+			}
+		}
+		for (const assoc of defs.processes[0]?.associations ?? []) {
+			expect(plane?.edges.some((e) => e.bpmnElement === assoc.id)).toBe(true)
+		}
+		// Nothing is drawn at a negative coordinate
+		for (const b of bounds.values()) {
+			expect(b.x).toBeGreaterThanOrEqual(0)
+			expect(b.y).toBeGreaterThanOrEqual(0)
+		}
+	})
+
+	it("reads the children before or after their container alike", () => {
+		const text = "box[adhoc Box]\nt[service T | inside=box]\ns[start S] > box > e[end E]"
+		const { diagram, problems } = parseProcessText(text)
+		expect(problems).toEqual([])
+		expect(
+			diagram.processes[0]?.elements.find((el) => el.id === "box")?.children?.elements,
+		).toHaveLength(1)
+		const reordered = parseProcessText(
+			"s[start S] > box[adhoc Box] > e[end E]\nt[service T | inside=box]",
+		)
+		const byId = (d: typeof diagram) =>
+			[...(d.processes[0]?.elements ?? [])].sort((a, b) => a.id.localeCompare(b.id))
+		expect(byId(reordered.diagram)).toEqual(byId(diagram))
+	})
+
+	it("reports an inside= naming a task, and leaves the node at the top level", () => {
+		const { diagram, problems } = parseProcessText(
+			"s[start S] > x[service X | inside=pay] > pay[task Pay] > e[end E]",
+		)
+		expect(problems.map((p) => p.message).join()).toMatch(/inside=pay.*not an ad-hoc/)
+		const elements = diagram.processes[0]?.elements ?? []
+		expect(elements.map((el) => el.id)).toContain("x")
+		expect(elements.find((el) => el.id === "pay")?.children).toBeUndefined()
+	})
+
+	it("reports an inside= naming nothing, and leaves the node at the top level", () => {
+		const { diagram, problems } = parseProcessText(
+			"s[start S] > x[service X | inside=ghost] > e[end E]",
+		)
+		expect(problems.map((p) => p.message).join()).toMatch(/inside=ghost.*never declared/)
+		expect(diagram.processes[0]?.elements.map((el) => el.id)).toContain("x")
+	})
+
+	it("reports a child that has flows, and keeps it inside without them", () => {
+		const { diagram, problems } = parseProcessText(
+			"s[start S] > box[adhoc Box] > e[end E]\nt[service T | inside=box]\ns > t",
+		)
+		expect(problems.map((p) => p.message).join()).toMatch(/"t" is inside "box".*flow s > t/)
+		const process = diagram.processes[0]
+		expect(process?.elements.find((el) => el.id === "box")?.children?.elements[0]?.id).toBe("t")
+		expect(process?.flows.map((f) => `${f.from}>${f.to}`)).toEqual(["s>box", "box>e"])
+	})
+
+	it("reports a child inside a child, an event or a gateway", () => {
+		const nested = parseProcessText(
+			"s[start S] > a[adhoc A] > e[end E]\nb[adhoc B | inside=a]\nt[task T | inside=b]",
+		)
+		expect(nested.problems.map((p) => p.message).join()).toMatch(/inside=a on "b"/)
+		const event = parseProcessText(
+			"s[start S] > a[adhoc A] > e[end E]\nm[catch:timer Wait | inside=a]",
+		)
+		expect(event.problems.map((p) => p.message).join()).toMatch(/"m".*task/)
+	})
+
+	it("reports a note that names nothing", () => {
+		const { diagram, problems } = parseProcessText(
+			"s[start S] > e[end E]\nnote ghost: Nobody is here",
+		)
+		expect(problems.map((p) => p.message).join()).toMatch(/note ghost.*names no node/)
+		expect(diagram.processes[0]?.notes).toBeUndefined()
+	})
+
+	it("reports a note with no text", () => {
+		const { diagram, problems } = parseProcessText("s[start S] > e[end E]\nnote s:")
+		expect(problems.map((p) => p.message).join()).toMatch(/note s.*no text/)
+		expect(diagram.processes[0]?.notes).toBeUndefined()
+	})
+
+	it("keeps a note's text whole, arrows and brackets included", () => {
+		const { diagram, problems } = parseProcessText(
+			"s[start S] > e[end E]\nnote s: a > b [see c]: done >",
+		)
+		expect(problems).toEqual([])
+		expect(diagram.processes[0]?.notes).toEqual([{ elementId: "s", text: "a > b [see c]: done >" }])
+	})
+
+	it("numbers several notes on one element", () => {
+		const defs = expand(parseProcessText("s[start S] > e[end E]\nnote s: One\nnote s: Two").diagram)
+		const ids = defs.processes[0]?.textAnnotations.map((a) => a.id)
+		expect(new Set(ids).size).toBe(2)
+		expect(defs.processes[0]?.textAnnotations.map((a) => a.text)).toEqual(["One", "Two"])
+	})
+
+	it("writes a note on an element inside a container as part of the process", () => {
+		const defs = expand(
+			parseProcessText(
+				"s[start S] > box[adhoc Box] > e[end E]\nt[service T | inside=box]\nnote t: Tool",
+			).diagram,
+		)
+		expect(defs.processes[0]?.associations.map((a) => a.sourceRef)).toEqual(["t"])
+		const shapes = defs.diagrams[0]?.plane.shapes ?? []
+		expect(shapes.some((s) => s.bpmnElement === defs.processes[0]?.textAnnotations[0]?.id)).toBe(
+			true,
+		)
+	})
+
+	it("changes nothing for a text without the new syntax", () => {
+		const { diagram } = parseProcessText(EXAMPLE)
+		expect(diagram.processes[0]).not.toHaveProperty("notes")
+		expect(JSON.stringify(diagram)).not.toContain("children")
+		expect(Bpmn.export(expand(diagram))).not.toContain("textAnnotation")
+	})
+
+	it("streams to the same result as reading the whole text", () => {
+		const stream = createProcessTextStream()
+		let frames = 0
+		for (let i = 0; i < BAKEOFF.length; i += 17) {
+			if (stream.push(BAKEOFF.slice(i, i + 17)) !== null) frames++
+		}
+		expect(frames).toBeGreaterThan(0)
+		expect(stream.end()).toEqual(parseProcessText(BAKEOFF))
+	})
+
+	it("teaches the syntax in one guide line, and the example still parses", () => {
+		const lines = PROCESS_TEXT_GUIDE.split("\n").filter((line) => line.startsWith("Ad-hoc:"))
+		expect(lines).toHaveLength(1)
+		expect(PROCESS_TEXT_GUIDE).toContain("note <id>:")
+		expect(PROCESS_TEXT_GUIDE).toContain("adhoc")
+		expect(parseProcessText(EXAMPLE).problems).toEqual([])
+	})
+
+	it("lists adhoc among the kinds, and its example parses to an agent with a documented tool and a note", () => {
+		const kinds = PROCESS_TEXT_GUIDE.split("\n").find((line) => line.startsWith("Kinds:"))
+		expect(kinds).toMatch(/\badhoc\b/)
+		const start = PROCESS_TEXT_GUIDE.indexOf("Ad-hoc example:\n")
+		expect(start).toBeGreaterThan(-1)
+		const block = PROCESS_TEXT_GUIDE.slice(
+			start + "Ad-hoc example:\n".length,
+			PROCESS_TEXT_GUIDE.indexOf("Rules:"),
+		)
+		const { diagram, problems } = parseProcessText(`# Agent\n${block}`)
+		expect(problems).toEqual([])
+		const process = diagram.processes[0]
+		const agent = process?.elements.find((el) => el.type === "adHocSubProcess")
+		expect(agent?.children?.elements[0]).toMatchObject({ type: "serviceTask" })
+		expect(agent?.children?.elements[0]?.documentation).toBeTruthy()
+		expect(process?.notes).toHaveLength(1)
+	})
+})
+
+describe("with lines for tools inside an ad-hoc sub-process", () => {
+	it("keeps a with line for an inside= tool, and reports one for a missing node", () => {
+		const parsed = parseProcessText(`start[start Go] > agent[adhoc AI Agent] > done[end Done]
+joke[service Get a safe joke | inside=agent]
+with joke: http GET https://v2.jokeapi.dev/joke/Any
+with ghost: http GET https://x.example`)
+		expect(parsed.connectors.map((c) => c.elementId)).toEqual(["joke"])
+		expect(parsed.problems.map((p) => p.message)).toEqual([
+			'"with ghost:" names no node of the diagram; ignored',
+		])
+	})
+})
+
+describe("Phase C final review: mappings, titles, inside= and doc", () => {
+	it("does not let a mapping value absorb a following bar or comma", () => {
+		const bar = parseProcessText("s[start S] > u[user U | in.a=x | form=f] > e[end E]")
+		expect(bar.diagram.processes[0]?.elements[1]).toMatchObject({
+			inputs: { a: "=x" },
+			formId: "f",
+		})
+		const comma = parseProcessText("s[start S] > u[user U | in.a=x, out.b=y] > e[end E]")
+		expect(comma.diagram.processes[0]?.elements[1]).toMatchObject({
+			inputs: { a: "=x" },
+			outputs: { b: "=y" },
+		})
+		expect(splitMappings("in.a=x | form=f").mappings[0]?.value).toBe("x")
+	})
+
+	it("keeps a title tail that is not an attribute list as part of the name", () => {
+		expect(
+			parseProcessText("# Order | Payment flow\ns[start S] > e[end E]").diagram.processes[0]?.name,
+		).toBe("Order | Payment flow")
+		const real = parseProcessText("# Order | camunda=8.10\ns[start S] > e[end E]")
+		expect(real.diagram.processes[0]?.name).toBe("Order")
+		expect(real.diagram.executionPlatformVersion).toBe("8.10.0")
+		const unknown = parseProcessText("# Order | colour=red\ns[start S] > e[end E]")
+		expect(unknown.diagram.processes[0]?.name).toBe("Order | colour=red")
+	})
+
+	it("resolves an unknown inside= to the only ad-hoc container, and says so", () => {
+		const r = parseProcessText(
+			"s[start S] > agent[adhoc A] > e[end E]\nt[service T | inside=agnet]",
+		)
+		expect(
+			r.diagram.processes[0]?.elements
+				.find((e) => e.id === "agent")
+				?.children?.elements.map((e) => e.id),
+		).toEqual(["t"])
+		expect(r.problems.map((p) => p.message).join()).not.toMatch(/stays at the top level/)
+		expect(r.fixes.join()).toMatch(/inside=agnet.*"agent"/)
+		expect(r.questions.map((q) => q.text).join()).toMatch(/agnet.*"A"/)
+	})
+
+	it("says the truth when inside= names nothing and no single container fits", () => {
+		const r = parseProcessText("s[start S] > e[end E]\nt[service T | inside=agnet]")
+		const text = r.problems.map((p) => p.message).join()
+		expect(text).toMatch(/never declared/)
+		expect(text).not.toMatch(/stays at the top level/)
+		expect(text).toMatch(/left out/)
+	})
+
+	it("reads doc lines onto top-level and inside nodes, and writes them back", () => {
+		const text = [
+			"s[start S] > agent[adhoc A] > e[end E]",
+			"t[service T | inside=agent]",
+			"doc t: Searches the recipe catalogue.",
+			"doc s: Starts it",
+		].join("\n")
+		const r = parseProcessText(text)
+		expect(r.problems).toEqual([])
+		const els = r.diagram.processes[0]?.elements ?? []
+		expect(els.find((e) => e.id === "s")?.documentation).toBe("Starts it")
+		expect(els.find((e) => e.id === "agent")?.children?.elements[0]?.documentation).toBe(
+			"Searches the recipe catalogue.",
+		)
+		const defs = Bpmn.parse(Bpmn.export(expand(r.diagram)))
+		const { text: back } = writeProcessText(defs)
+		expect(back).toMatch(/^doc \w+: Searches the recipe catalogue\.$/m)
+		expect(back).toMatch(/^doc \w+: Starts it$/m)
+		const again = parseProcessText(back)
+		expect(again.problems).toEqual([])
+	})
+
+	it("reports a doc that names nothing or has no text", () => {
+		const a = parseProcessText("s[start S] > e[end E]\ndoc ghost: Nobody")
+		expect(a.problems.map((p) => p.message).join()).toMatch(/doc ghost.*names no node/)
+		const b = parseProcessText("s[start S] > e[end E]\ndoc s:")
+		expect(b.problems.map((p) => p.message).join()).toMatch(/doc s.*no text/)
+	})
+
+	it("teaches doc in one guide line", () => {
+		expect(PROCESS_TEXT_GUIDE.split("\n").filter((l) => l.includes("doc <id>:"))).toHaveLength(1)
 	})
 })

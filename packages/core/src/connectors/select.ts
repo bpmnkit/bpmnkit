@@ -25,6 +25,8 @@ export interface ConnectorTask {
 	id: string
 	name?: string
 	type: BpmnElementType
+	/** The ad-hoc sub-process this task is a tool of, which makes the REST connector a candidate. */
+	inside?: string
 }
 
 /** The cards picked for one task, best first. */
@@ -48,10 +50,14 @@ const BPMN_TYPE: Partial<Record<BpmnElementType, string>> = {
 	intermediateCatchEvent: "bpmn:IntermediateCatchEvent",
 	intermediateThrowEvent: "bpmn:IntermediateThrowEvent",
 	boundaryEvent: "bpmn:BoundaryEvent",
+	adHocSubProcess: "bpmn:AdHocSubProcess",
 }
 
 /** Tasks a template written for `bpmn:Task` turns into its own type. */
 const TASKS = new Set<BpmnElementType>(["task", "serviceTask", "sendTask", "scriptTask"])
+
+/** The connector an ad-hoc sub-process becomes: the AI agent, whatever the container is called. */
+const AGENT_TEMPLATE = "io.camunda.connectors.agenticai.ai-agent-subprocess.v2"
 
 /** Template element types that turn a task into an outbound call. */
 const OUTBOUND_TASKS = new Set(["bpmn:ServiceTask", "bpmn:SendTask", "bpmn:Task"])
@@ -399,6 +405,13 @@ export function selectConnectors(
 				// "check the stock with a REST call": Check stock names no system, the request says how
 				scored.push({ card: http, score: 5 })
 			}
+		}
+		// A draft's ad-hoc container is the agent's: "Support helper" names no AI system, and
+		// its tools are free-named tasks that most often call a REST endpoint
+		const agent = task.type === "adHocSubProcess" ? connectorCards(AGENT_TEMPLATE)[0] : undefined
+		if (agent && !scored.some((s) => s.card === agent)) scored.push({ card: agent, score: 100 })
+		if (task.inside !== undefined && http && !scored.some((s) => s.card === http)) {
+			scored.push({ card: http, score: 1 })
 		}
 		scored.sort((a, b) => b.score - a.score)
 		return { task, scored: varied(scored), apiCards }

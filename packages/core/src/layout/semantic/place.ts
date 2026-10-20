@@ -1,5 +1,5 @@
 import type { BpmnBoundaryEvent, BpmnFlowElement, BpmnLaneSet } from "../../bpmn/bpmn-model.js"
-import type { Bounds } from "../types.js"
+import type { Bounds, GridHint } from "../types.js"
 import { ELEMENT_SIZES, LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH } from "../types.js"
 import { type BandLayout, boundarySide } from "./bands.js"
 import type { SemanticGraph } from "./graph.js"
@@ -80,6 +80,8 @@ export function place(
 	 * sub-processes. Boundary events stay off that border.
 	 */
 	titled: ReadonlySet<string> = new Set(),
+	/** Shape of the `packLoose` grid, when the builder asked for one. */
+	grid?: GridHint,
 ): Placement {
 	const bounds = new Map<string, Bounds>()
 	const componentOf = new Map<string, number>()
@@ -112,7 +114,7 @@ export function place(
 		if (members.length === 0) continue
 		if (members.length === 1 && looseSet.has(members[0] as string)) {
 			// The whole grid takes the place of the first loose node; the rest are in it.
-			if (members[0] === loose[0]) cursorY = placeGrid(graph, loose, sizes, cursorY, bounds)
+			if (members[0] === loose[0]) cursorY = placeGrid(graph, loose, sizes, cursorY, bounds, grid)
 			continue
 		}
 
@@ -172,8 +174,8 @@ function looseNodes(graph: SemanticGraph): string[] {
 
 /**
  * Place `ids` row by row in `ceil(sqrt(n))` columns of equal cells, starting at
- * `top`, so the set grows roughly square. Returns the cursor for whatever is
- * stacked below.
+ * `top`, so the set grows roughly square. A hint can fix the column count and
+ * fill column by column instead. Returns the cursor for whatever is stacked below.
  */
 function placeGrid(
 	graph: SemanticGraph,
@@ -181,8 +183,11 @@ function placeGrid(
 	sizes: Map<string, { width: number; height: number }>,
 	top: number,
 	bounds: Map<string, Bounds>,
+	hint?: GridHint,
 ): number {
-	const columns = Math.ceil(Math.sqrt(ids.length))
+	const columns = hint?.columns ?? Math.ceil(Math.sqrt(ids.length))
+	const rows = Math.ceil(ids.length / columns)
+	const byColumn = hint?.fill === "column"
 	let cellWidth = 0
 	let cellHeight = 0
 	for (const id of ids) {
@@ -196,8 +201,8 @@ function placeGrid(
 	}
 	ids.forEach((id, i) => {
 		const size = sizes.get(id) ?? DEFAULT_SIZE
-		const column = i % columns
-		const row = Math.floor(i / columns)
+		const column = byColumn ? Math.floor(i / rows) : i % columns
+		const row = byColumn ? i % rows : Math.floor(i / columns)
 		bounds.set(id, {
 			x: column * (cellWidth + H_GAP) + (cellWidth - size.width) / 2,
 			y: top + row * (cellHeight + V_GAP) + (cellHeight - size.height) / 2,
@@ -205,7 +210,6 @@ function placeGrid(
 			height: size.height,
 		})
 	})
-	const rows = Math.ceil(ids.length / columns)
 	return top + rows * (cellHeight + V_GAP) - V_GAP + COMPONENT_GAP
 }
 

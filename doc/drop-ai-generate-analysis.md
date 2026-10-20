@@ -149,8 +149,8 @@ The model and prompt choice cannot be settled on paper, so they are measured wit
 - `createProcessTextStream` from core
 
 It runs the golden prompts in `scripts/eval-generation/prompts` against each candidate model
-through the Workers AI REST API. Three prompts are skipped by default: 03 (AI agent), 04 (edits an
-existing file) and 09 (expects a clarifying question).
+through the Workers AI REST API. Two prompts are skipped by default: 04 (edits an
+existing file) and 09 (expects a clarifying question). 03 and 28 (the AI Agent prompts) run.
 
 It records, for each model:
 
@@ -160,7 +160,9 @@ It records, for each model:
 - estimated neurons
 - parser problems and fixes
 - `optimize()` errors and warnings
-- the `minElements` and `mustContainElementTypes` assertions (connector job types are out of v1)
+- the `minElements` and `mustContainElementTypes` assertions (connector job types are out of v1), and
+  `mustContainElementIds`, `mustContainFormIds`, `mustContainInputTargets`, `mustContainFlowNames`,
+  `mustContainAnnotations` and `mustBeReady` (`scripts/eval-generation/assertions.mjs`)
 
 It writes each model's raw text and BPMN, `results.json` and a `summary.md` table.
 

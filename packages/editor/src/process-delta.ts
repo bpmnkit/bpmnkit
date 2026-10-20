@@ -44,6 +44,7 @@ import { computeWaypointsAvoiding } from "./geometry.js"
 import { type IdFactory, genId } from "./id.js"
 import {
 	changeElementType,
+	createAnnotationWithLink,
 	createBoundaryEvent,
 	createConnection,
 	createShape,
@@ -139,6 +140,48 @@ const GATEWAYS = new Set<BpmnElementType>([
 /** Task types that need a job type to deploy; as in `parseProcessText`, the id stands in. */
 const JOB_TASKS = new Set<BpmnElementType>(["serviceTask", "sendTask"])
 
+/**
+ * Adds what `form=` and `in.`/`out.` ask for to `patch`, as the script does for `job=`: only
+ * what differs from the element as it is, so a restated node patches nothing.
+ */
+function mappingPatch(
+	node: DeltaNode,
+	element: BpmnFlowElement,
+	patch: Partial<CompactElement>,
+	problem: (line: number, message: string) => void,
+): void {
+	const has = (name: string) => element.extensionElements.find((e) => e.name === name)
+	if (node.formId !== undefined) {
+		if (element.type !== "startEvent" && element.type !== "userTask") {
+			problem(node.line, `form= takes a start or user node; ignored on "${node.id}"`)
+		} else if (has("zeebe:formDefinition")?.attributes.formId !== node.formId) {
+			patch.formId = node.formId
+			if (element.type === "userTask" && !has("zeebe:userTask")) patch.nativeUserTask = true
+		}
+	}
+	const current = has("zeebe:ioMapping")?.children ?? []
+	// As `writeProcessText` writes a source, so a restated mapping compares equal to the one shown
+	const shown = (source: string) =>
+		source.startsWith("=")
+			? source.replace(/^=\s*/, "").replace(/\s+/g, " ").trim()
+			: JSON.stringify(source)
+	for (const [key, kind, wanted] of [
+		["inputs", "zeebe:input", node.inputs],
+		["outputs", "zeebe:output", node.outputs],
+	] as const) {
+		const changed = Object.entries(wanted ?? {}).filter(
+			([target, source]) =>
+				!current.some(
+					(c) =>
+						c.name === kind &&
+						c.attributes.target === target &&
+						shown(c.attributes.source ?? "") === shown(source),
+				),
+		)
+		if (changed.length > 0) patch[key] = Object.fromEntries(changed)
+	}
+}
+
 const sizeOf = (type: BpmnElementType) => ELEMENT_SIZES[type] ?? { width: 100, height: 80 }
 
 const right = (b: BpmnBounds) => b.x + b.width
@@ -161,6 +204,30 @@ function idsIn(definitions: BpmnDefinitions): Set<string> {
 		if (match[1]) taken.add(match[1])
 	}
 	return taken
+}
+
+/** The element with `id` at any depth, and the container it sits in (absent: the process itself). */
+function findDeep(
+	elements: readonly BpmnFlowElement[],
+	id: string,
+	container?: BpmnFlowElement,
+): { element: BpmnFlowElement; container?: BpmnFlowElement } | undefined {
+	for (const el of elements) {
+		if (el.id === id) return container ? { element: el, container } : { element: el }
+		const inner = "flowElements" in el ? el.flowElements : undefined
+		const found = inner ? findDeep(inner, id, el) : undefined
+		if (found) return found
+	}
+	return undefined
+}
+
+/** Ids of everything inside `elements`, at any depth. */
+function deepIds(elements: readonly BpmnFlowElement[], out = new Set<string>()): Set<string> {
+	for (const el of elements) {
+		out.add(el.id)
+		if ("flowElements" in el) deepIds(el.flowElements, out)
+	}
+	return out
 }
 
 /** A factory whose first id is `id`, for the element; later ones come from `ids`. */
@@ -251,7 +318,9 @@ export function applyProcessDelta(
 
 	const proc = () => defs.processes[0] as BpmnProcess
 	const plane = () => (defs.diagrams[0] as NonNullable<BpmnDefinitions["diagrams"][0]>).plane
-	const element = (id: string) => proc().flowElements.find((el) => el.id === id)
+	// At any depth: the tools of an ad-hoc sub-process are written, so a script may restate them
+	const element = (id: string) => findDeep(proc().flowElements, id)?.element
+	const containerOf = (id: string) => findDeep(proc().flowElements, id)?.container
 	const shape = (id: string) => plane().shapes.find((s) => s.bpmnElement === id)
 	const flowsOut = (id: string) => proc().sequenceFlows.filter((f) => f.sourceRef === id)
 	const flowsIn = (id: string) => proc().sequenceFlows.filter((f) => f.targetRef === id)
@@ -278,7 +347,12 @@ export function applyProcessDelta(
 	const fresh = new Map<string, DeltaNode>()
 	for (const node of delta.nodes) {
 		if (real.has(node.id)) continue
-		if (node.type === undefined) {
+		if (node.inside !== undefined) {
+			problem(
+				node.line,
+				`inside=${node.inside} on "${node.id}": a change script cannot add a new node inside an ad-hoc sub-process; left out`,
+			)
+		} else if (node.type === undefined) {
 			problem(node.line, `"${node.id}" is not in the diagram; a new node needs a kind`)
 		} else if (node.type === "boundaryEvent") {
 			if (node.on === undefined) problem(node.line, `boundary "${node.id}" needs on=<task>`)
@@ -300,8 +374,17 @@ export function applyProcessDelta(
 		const el = id === undefined ? undefined : element(id)
 		if (id === undefined || !el) continue
 		const patch: Partial<CompactElement> = {}
+		const holder = containerOf(id)
+		if (node.inside !== undefined && real.get(node.inside) !== holder?.id) {
+			problem(
+				node.line,
+				`inside=${node.inside} on "${node.id}": a change script cannot move a node into or out of an ad-hoc sub-process; left where it is`,
+			)
+		}
 		if (node.type !== undefined && node.type !== el.type) {
-			if (el.type === "boundaryEvent" || node.type === "boundaryEvent") {
+			if (holder) {
+				problem(node.line, `"${node.id}" is inside "${holder.id}"; its kind cannot change here`)
+			} else if (el.type === "boundaryEvent" || node.type === "boundaryEvent") {
 				problem(node.line, `"${node.id}" cannot become or stop being a boundary event`)
 			} else if (!CREATABLE.has(node.type) || !CREATABLE.has(el.type)) {
 				problem(node.line, `"${node.id}" cannot change from ${el.type} to ${node.type}`)
@@ -325,6 +408,7 @@ export function applyProcessDelta(
 			if (current?.attributes.expression !== node.script) patch.script = node.script
 		}
 		if (node.resultVariable !== undefined) patch.resultVariable = node.resultVariable
+		if (now) mappingPatch(node, now, patch, problem)
 		if (node.interrupting === false && now && "cancelActivity" in now && now.cancelActivity) {
 			patch.interrupting = false
 		}
@@ -396,9 +480,20 @@ export function applyProcessDelta(
 		}
 	}
 	if (removedIds.length > 0) {
-		const before = new Set(proc().flowElements.map((el) => el.id))
-		defs = deleteElements(defs, removedIds)
-		const after = new Set(proc().flowElements.map((el) => el.id))
+		const before = deepIds(proc().flowElements)
+		// A note goes with the node it is on; `deleteElements` leaves it behind
+		const going = new Set(removedIds)
+		for (const id of removedIds) {
+			const inside = element(id)
+			if (inside && "flowElements" in inside)
+				for (const inner of deepIds(inside.flowElements)) going.add(inner)
+		}
+		const noteIds = proc()
+			.associations.filter((a) => going.has(a.sourceRef) || going.has(a.targetRef))
+			.flatMap((a) => [a.sourceRef, a.targetRef])
+			.filter((id) => proc().textAnnotations.some((t) => t.id === id))
+		defs = deleteElements(defs, [...removedIds, ...noteIds])
+		const after = deepIds(proc().flowElements)
 		result.removed = [...before].filter((id) => !after.has(id))
 		for (const [written, id] of real) {
 			if (after.has(id)) continue
@@ -410,6 +505,17 @@ export function applyProcessDelta(
 	// ── Flows: restatements, and the ones to add ─────────────────────────────
 	const toAdd: DeltaFlow[] = []
 	for (const flow of delta.flows) {
+		const tool = [flow.from, flow.to].find((w) => {
+			const id = real.get(w)
+			return id !== undefined && containerOf(id) !== undefined
+		})
+		if (tool !== undefined) {
+			problem(
+				flow.line,
+				`"${tool}" is inside an ad-hoc sub-process, where a task has no flows; flow ${flow.from} > ${flow.to} left out`,
+			)
+			continue
+		}
 		const missing = [flow.from, flow.to].filter((w) => !known(w))
 		if (missing.length > 0) {
 			problem(
@@ -537,7 +643,7 @@ export function applyProcessDelta(
 	}
 
 	// ── Tidy references the removals left behind ─────────────────────────────
-	const present = new Set(proc().flowElements.map((el) => el.id))
+	const present = deepIds(proc().flowElements)
 	const flowSet = new Set(proc().sequenceFlows.map((f) => f.id))
 	for (const lane of allLanes(proc().laneSet?.lanes)) {
 		lane.flowNodeRefs = lane.flowNodeRefs.filter((ref) => present.has(ref))
@@ -567,6 +673,50 @@ export function applyProcessDelta(
 		result.fixes.push(...applied.fixes)
 		result.questions.push(...applied.questions)
 		for (const line of connectorLines) changed.add(line.elementId)
+	}
+
+	// ── Documentation ────────────────────────────────────────────────────────
+	// Last, like notes, so it can name a node the script added or one inside an ad-hoc sub-process.
+	const documented: BpmnOperation[] = []
+	for (const doc of delta.docs) {
+		const target = real.get(doc.id) ?? options.aliases[doc.id]
+		const current = target === undefined ? undefined : element(target)
+		if (target === undefined || !current) {
+			problem(doc.line, `doc ${doc.id}: "${doc.id}" is not in the diagram; ignored`)
+		} else if ((current.documentation ?? "").replace(/\s+/g, " ").trim() !== doc.text) {
+			// Compared as the writer shows it (one line), so restating changes nothing
+			documented.push({ op: "update", id: target, patch: { documentation: doc.text } })
+			changed.add(target)
+		}
+	}
+	if (documented.length > 0) {
+		defs = applyBpmnOperations(defs, documented, { strict: false }).definitions
+	}
+
+	// ── Notes ────────────────────────────────────────────────────────────────
+	// Last, so a note can name a node the script added. A tool inside an ad-hoc sub-process has an
+	// alias too, and a shape of its own to be drawn beside.
+	for (const note of delta.notes) {
+		const target = real.get(note.id) ?? options.aliases[note.id]
+		const bounds = target === undefined || !element(target) ? undefined : shape(target)?.bounds
+		if (target === undefined || !bounds) {
+			problem(note.line, `note ${note.id}: "${note.id}" is not in the diagram; ignored`)
+			continue
+		}
+		// Restating a note the node already has changes nothing
+		const annotations = new Map(proc().textAnnotations.map((t) => [t.id, t.text ?? ""]))
+		const held = proc().associations.some((a) => {
+			const other = a.sourceRef === target ? a.targetRef : a.targetRef === target ? a.sourceRef : ""
+			return annotations.get(other) === note.text
+		})
+		if (held) continue
+		const size = { width: 200, height: 60 }
+		const above = slot({
+			x: bounds.x + bounds.width / 2 - size.width / 2,
+			y: bounds.y - 30 - size.height,
+			...size,
+		})
+		defs = createAnnotationWithLink(defs, above, target, bounds, note.text, ids).defs
 	}
 
 	for (const entry of delta.addressed) {
@@ -758,6 +908,8 @@ export function applyProcessDelta(
 		else deployable(id, written, type, patch)
 		if (node.script !== undefined) patch.script = node.script
 		if (node.resultVariable !== undefined) patch.resultVariable = node.resultVariable
+		const created = element(id)
+		if (created) mappingPatch(node, created, patch, problem)
 		if (Object.keys(patch).length > 0) {
 			patches.push({ line: node.line, op: { op: "update", id, patch } })
 		}

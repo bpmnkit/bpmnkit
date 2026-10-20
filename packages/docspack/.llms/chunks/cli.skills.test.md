@@ -9,7 +9,7 @@ Run scenario tests on a BPMN process and report path/branch coverage.
 **What it does:**
 
 1. Looks for the `<file>.bpmn.tests.json` sidecar (written automatically by `casen synth` from a plan's `tests` array); writes one if missing
-2. Runs `casen test <file>.bpmn`
+2. Runs `casen test test <file>.bpmn`
 3. Cross-references gateway branches and error/timer boundaries against which scenarios exercise them
 4. Reports pass/fail counts and any uncovered paths
 

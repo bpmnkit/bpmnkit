@@ -29,6 +29,15 @@
  * Usage:
  *   node scripts/eval-generation/run-eval.mjs             # plan-level subset only
  *   node scripts/eval-generation/run-eval.mjs --full      # + full LLM run
+ *   node scripts/eval-generation/run-eval.mjs --only 28   # prompt directory prefixes, comma-separated
+ *
+ * A prompt whose expected.json asserts what the diagram says (form ids, input
+ * targets, flow names, annotations, `mustBeReady`; see assertions.mjs) has them
+ * checked on the compiled plan and reported as `assertions`. A miss fails the run
+ * unless expected.json lists it in `knownPlanGaps`: a plan is a lossy view of a
+ * diagram (no start-event form, no input mapping, no annotation, no loop back, the
+ * v1 AI Agent), so some misses are gaps in the plan format, not in the generated
+ * file (see assertions.mjs).
  *
  * Output: scripts/eval-generation/eval-report.json + a markdown summary
  * printed to stdout (and written to eval-report.md).
@@ -38,7 +47,9 @@ import { execFileSync, spawnSync } from "node:child_process"
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { dirname, join } from "node:path"
-import { fileURLToPath } from "node:url"
+import { fileURLToPath, pathToFileURL } from "node:url"
+
+import { hasSpecAssertions, specFailures, splitKnownGaps } from "./assertions.mjs"
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(HERE, "..", "..")
@@ -47,6 +58,9 @@ const CLI = join(ROOT, "apps/cli/dist/index.js")
 const PLUGIN_DIR = join(ROOT, "plugins-claude/bpmnkit-claude")
 
 const FULL_MODE = process.argv.includes("--full")
+const onlyIdx = process.argv.indexOf("--only")
+const ONLY =
+	onlyIdx === -1 ? null : (process.argv[onlyIdx + 1] ?? "").split(",").map((p) => p.trim())
 const ZEEBE_ADDRESS = (process.env.ZEEBE_ADDRESS ?? "http://localhost:26500").replace(/\/$/, "")
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -76,6 +90,19 @@ function claudeAvailable() {
 	return res.status === 0
 }
 
+/**
+ * Scores the new-style assertions on the compiled file. `readiness()` is drop
+ * app code (TypeScript, which Node loads directly); it resolves `@bpmnkit/core`
+ * from apps/drop, so the built core is what both read.
+ */
+async function scoreCompiled(xml, assertions) {
+	const { Bpmn } = await import(pathToFileURL(join(ROOT, "packages/core/dist/index.js")).href)
+	const { readiness } = await import(
+		pathToFileURL(join(ROOT, "apps/drop/src/lib/readiness.ts")).href
+	)
+	return specFailures(Bpmn.parse(xml), assertions, readiness)
+}
+
 // ── Plan-level pipeline ───────────────────────────────────────────────────────
 
 async function runPlanLevel(promptDir, expected, reebeUp) {
@@ -87,6 +114,7 @@ async function runPlanLevel(promptDir, expected, reebeUp) {
 		lintDeployErrors: null,
 		testPassRate: null,
 		deploy: "not-attempted",
+		assertions: null,
 		wallTimeMs: 0,
 		errors: [],
 	}
@@ -129,6 +157,15 @@ async function runPlanLevel(promptDir, expected, reebeUp) {
 			result.lintDeployErrors = findings.filter((f) => f.severity === "error").length
 		} catch {
 			result.lintDeployErrors = lint.ok ? 0 : null
+		}
+
+		if (hasSpecAssertions(expected.assertions ?? {})) {
+			try {
+				const failures = await scoreCompiled(readFileSync(bpmnPath, "utf-8"), expected.assertions)
+				result.assertions = splitKnownGaps(failures, expected.knownPlanGaps)
+			} catch (err) {
+				result.errors.push(`assertions: ${err instanceof Error ? err.message : String(err)}`)
+			}
 		}
 
 		if (existsSync(`${bpmnPath}.tests.json`)) {
@@ -270,6 +307,7 @@ async function main() {
 	const promptDirs = readdirSync(PROMPTS_DIR, { withFileTypes: true })
 		.filter((e) => e.isDirectory())
 		.map((e) => e.name)
+		.filter((name) => !ONLY || ONLY.includes(name.slice(0, 2)))
 		.sort()
 
 	const results = []
@@ -285,6 +323,26 @@ async function main() {
 			console.log(
 				`[plan-level] ${entry.id}: synthProblems=${entry.planLevel.synthProblems} lintErrors=${entry.planLevel.lintDeployErrors} deploy=${entry.planLevel.deploy}`,
 			)
+			const a = entry.planLevel.assertions
+			if (a) {
+				for (const f of a.known)
+					console.log(`[plan-level] ${entry.id}: known plan-format gap: ${f.message}`)
+				for (const g of a.stale) {
+					console.log(
+						`[plan-level] ${entry.id}: stale known gap (no longer fails, remove it): ${g.assertion} ${JSON.stringify(g.value)}`,
+					)
+				}
+				for (const f of a.unexpected) {
+					console.log(`[plan-level] ${entry.id}: ASSERTION FAILED: ${f.message}`)
+				}
+				if (a.unexpected.length > 0) process.exitCode = 1
+			} else if (hasSpecAssertions(expected.assertions ?? {})) {
+				// The scorer itself threw (say, the build is missing): not a pass
+				console.log(
+					`[plan-level] ${entry.id}: ASSERTIONS NOT SCORED: ${entry.planLevel.errors.join("; ")}`,
+				)
+				process.exitCode = 1
+			}
 		} else if (expected.expectClarification) {
 			entry.planLevel = { mode: "plan-level", skipped: "expects a clarifying question, not a plan" }
 			console.log(`[plan-level] ${entry.id}: skipped (expects clarification, LLM-only)`)
@@ -329,7 +387,9 @@ async function main() {
 	}
 
 	const report = { summary, results }
-	writeFileSync(join(HERE, "eval-report.json"), JSON.stringify(report, null, "\t"), "utf-8")
+	// A subset run would replace the tracked full report with a partial one
+	if (!ONLY)
+		writeFileSync(join(HERE, "eval-report.json"), JSON.stringify(report, null, "\t"), "utf-8")
 
 	const md = [
 		"# BPMN generation eval report",
@@ -349,7 +409,7 @@ async function main() {
 			return `| ${r.id} | ${r.category ?? ""} | ${p.synthProblems} | ${p.lintDeployErrors} | ${p.testPassRate ?? "—"} | ${p.deploy} |`
 		}),
 	].join("\n")
-	writeFileSync(join(HERE, "eval-report.md"), md, "utf-8")
+	if (!ONLY) writeFileSync(join(HERE, "eval-report.md"), md, "utf-8")
 	console.log(`\n${md}`)
 
 	if (planLevelAttempted.length > 0 && zeroSynthProblems < planLevelAttempted.length) {

@@ -26,6 +26,9 @@
  * connected diagram, so `mustContainTaskTypes` measures the connectors and
  * `mustCallUrls` the REST calls built from the API index, and a prompt whose
  * expected.json says `"connect": false` must be skipped without a model call.
+ * Besides those, `mustContainElementIds`, `mustContainFormIds`, `mustContainInputTargets`,
+ * `mustContainFlowNames`, `mustContainAnnotations` and `mustBeReady` are scored by
+ * scripts/eval-generation/assertions.mjs, as the eval harness scores them.
  * Each connected diagram is also dry-run with every call mocked (`dryRun` from
  * `@bpmnkit/engine/testing`), and its secrets are listed.
  *
@@ -72,6 +75,7 @@ import {
 } from "@bpmnkit/core"
 import { connectorLineFor, selectConnectors } from "@bpmnkit/core/connectors"
 import { dryRun as dryRunProcess } from "@bpmnkit/engine/testing"
+import { scoreGolden } from "../../../scripts/eval-generation/assertions.mjs"
 import { completes, draftGaps, gapChange } from "../src/lib/check.ts"
 import {
 	connectApis,
@@ -94,6 +98,7 @@ import {
 	readAiEvent,
 	refineMessages,
 } from "../src/lib/generate.ts"
+import { readiness } from "../src/lib/readiness.ts"
 
 const here = dirname(fileURLToPath(import.meta.url))
 const PROMPTS_DIR = resolve(here, "../../../scripts/eval-generation/prompts")
@@ -102,10 +107,12 @@ const FEEDBACK_FILE = resolve(here, "feedback-cases.json")
 const REPO = resolve(here, "../../..")
 
 /**
- * Not what describe-to-diagram does: 03 needs an AI-agent sub-process, 04 edits
- * an existing file, 09 expects a clarifying question instead of a diagram.
+ * Not what describe-to-diagram does: 04 edits an existing file, 09 expects a
+ * clarifying question instead of a diagram. 03 and 28 (the AI Agent prompts) run:
+ * the process text takes ad-hoc sub-processes, and the connect pass fills in the
+ * agent and its tools.
  */
-const SKIPPED = ["03", "04", "09"]
+const SKIPPED = ["04", "09"]
 
 const { values: args } = parseArgs({
 	// `pnpm bench:generate -- --runs 3` passes the `--` through, and parseArgs
@@ -264,52 +271,11 @@ function dryRun(cases) {
 }
 
 /**
- * Checks a golden prompt's assertions. Connector job types are scored too, so the
- * connector prompts show what generation still misses (doc/ai-connector-generation-plan.md).
+ * Checks a golden prompt's assertions (scripts/eval-generation/assertions.mjs).
+ * Connector job types are scored too, so the connector prompts show what
+ * generation still misses (doc/ai-connector-generation-plan.md).
  */
-function score(defs, assertions) {
-	const elements = defs.processes.flatMap((p) => p.flowElements)
-	const types = new Set(elements.map((e) => e.type))
-	const jobTypes = new Set(
-		elements.flatMap((e) =>
-			e.extensionElements
-				.filter((x) => x.name === "zeebe:taskDefinition" && x.attributes.type)
-				.map((x) => x.attributes.type),
-		),
-	)
-	const failed = []
-	if (assertions.minElements !== undefined && elements.length < assertions.minElements) {
-		failed.push(`${elements.length} < ${assertions.minElements} elements`)
-	}
-	for (const type of assertions.mustContainElementTypes ?? []) {
-		if (!types.has(type)) failed.push(`no ${type}`)
-	}
-	for (const alternatives of assertions.mustContainAnyOf ?? []) {
-		if (!alternatives.some((type) => types.has(type)))
-			failed.push(`no ${alternatives.join(" or ")}`)
-	}
-	// A step that runs once per item of a list: a multi-instance task or sub-process
-	if (assertions.mustContainMultiInstance && !elements.some((e) => e.loopCharacteristics)) {
-		failed.push("no multi-instance step")
-	}
-	// An entry may list alternatives: any one of its job types meets it
-	for (const entry of assertions.mustContainTaskTypes ?? []) {
-		const any = Array.isArray(entry) ? entry : [entry]
-		if (!any.some((t) => jobTypes.has(t))) failed.push(`no task type ${any.join(" or ")}`)
-	}
-	// A REST call's URL, literal or FEEL: each expected part must be in one of them
-	const urls = elements.flatMap((e) =>
-		e.extensionElements
-			.filter((x) => x.name === "zeebe:ioMapping")
-			.flatMap((x) => x.children)
-			.filter((c) => c.name === "zeebe:input" && c.attributes.target === "url")
-			.map((c) => c.attributes.source ?? ""),
-	)
-	for (const part of assertions.mustCallUrls ?? []) {
-		if (!urls.some((url) => url.includes(part))) failed.push(`no call to ${part}`)
-	}
-	return { elements: elements.length, failed }
-}
+const score = (defs, assertions) => scoreGolden(defs, assertions, readiness)
 
 async function runOne(model, prompt) {
 	const body = {

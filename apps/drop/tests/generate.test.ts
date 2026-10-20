@@ -11,11 +11,16 @@ import {
 	GENERATE_MAX_TOKENS,
 	GENERATE_SYSTEM_PROMPT,
 	IMAGE_SYSTEM_PROMPT,
+	MAX_DIAGRAM_CHARS,
+	MAX_LONG_DIAGRAM_CHARS,
 	REFINE_SYSTEM_PROMPT,
 	createDiagramLineFilter,
 	createSseReader,
 	generateMessages,
+	maxDescriptionChars,
+	maxDiagramChars,
 	maxTokensFor,
+	normaliseDescription,
 	normaliseDiagram,
 	readAiEvent,
 	refineMessages,
@@ -23,6 +28,12 @@ import {
 } from "../src/lib/generate.js"
 
 describe("generate prompt", () => {
+	it("teaches agents, tools, notes and given ids, with no blanket REST boundary", () => {
+		expect(GENERATE_SYSTEM_PROMPT).not.toContain("A REST call gets a boundary:error")
+		expect(GENERATE_SYSTEM_PROMPT).toContain("inside=")
+		expect(GENERATE_SYSTEM_PROMPT).toContain("ids the description gives")
+	})
+
 	it("teaches the format the parser reads, and puts the description last", () => {
 		expect(GENERATE_SYSTEM_PROMPT).toContain(PROCESS_TEXT_GUIDE)
 		const messages = generateMessages("Approve expenses over 1000")
@@ -162,6 +173,12 @@ describe("createDiagramLineFilter", () => {
 		expect(filtered(answer, 3)).toBe("# Order\ns[start Go] > a[task Ship] >\ne[end Done]\n")
 	})
 
+	it("passes the platform-version header and form and mapping attributes", () => {
+		const answer =
+			'# Chat | camunda=8.10\ns[start Go | form=f] > u[user Ask | form=g in.x=if a = 1 then "y" else "z"] >\ne[end Done]\n'
+		expect(filtered(answer, 5)).toBe(answer)
+	})
+
 	it("reads every recorded answer to the same diagram as the unfiltered text", () => {
 		const root = new URL("../bench-results/", import.meta.url)
 		const answers = readdirSync(root).flatMap((run) =>
@@ -177,10 +194,44 @@ describe("createDiagramLineFilter", () => {
 				parseProcessText(answer).diagram,
 			)
 		}
+		// Hundreds of recorded answers, each parsed twice: ~0.6 s alone, over 5 s on a busy CI runner.
+	}, 30_000)
+})
+
+describe("maxDescriptionChars", () => {
+	it("caps a description unless the page or request carries ?nolimit", () => {
+		expect(maxDescriptionChars(new URLSearchParams(""))).toBe(2000)
+		expect(maxDescriptionChars(new URLSearchParams("?v=2"))).toBe(2000)
+		expect(maxDescriptionChars(new URLSearchParams("?nolimit"))).toBe(Number.POSITIVE_INFINITY)
+		expect(maxDescriptionChars(new URLSearchParams("?nolimit=1"))).toBe(Number.POSITIVE_INFINITY)
+	})
+})
+
+describe("maxDiagramChars", () => {
+	it("is 4,000, or 16,000 with ?nolimit", () => {
+		expect(maxDiagramChars(new URLSearchParams(""))).toBe(MAX_DIAGRAM_CHARS)
+		expect(maxDiagramChars(new URLSearchParams("?nolimit"))).toBe(MAX_LONG_DIAGRAM_CHARS)
+		expect(MAX_LONG_DIAGRAM_CHARS).toBe(16_000)
+	})
+})
+
+describe("normaliseDescription", () => {
+	it("collapses all whitespace by default", () => {
+		expect(normaliseDescription("# A\n\n\n1.  x   y\n2. z")).toBe("# A 1. x y 2. z")
+	})
+
+	it("keeps line breaks for a pasted specification", () => {
+		expect(normaliseDescription("# A\n\n\n1.  x \t y\n2. z\n", true)).toBe("# A\n\n1. x y\n2. z")
+		expect(normaliseDescription("# A\n\n\n1.  x   y\n2. z", true)).toBe("# A\n\n1. x y\n2. z")
 	})
 })
 
 describe("maxTokensFor", () => {
+	it("gives a long description the full output budget", () => {
+		expect(maxTokensFor("@cf/zai-org/glm-4.7-flash", true)).toBe(GENERATE_MAX_TOKENS)
+		expect(maxTokensFor("@cf/zai-org/glm-4.7-flash", false)).toBe(600)
+	})
+
 	it("caps a model that does not reason far below one that does", () => {
 		expect(maxTokensFor("@cf/zai-org/glm-4.7-flash")).toBe(600)
 		expect(maxTokensFor("@cf/openai/gpt-oss-120b")).toBe(GENERATE_MAX_TOKENS)
@@ -189,6 +240,13 @@ describe("maxTokensFor", () => {
 })
 
 describe("readAiEvent", () => {
+	it("reads the finish reason", () => {
+		expect(readAiEvent('{"choices":[{"delta":{},"finish_reason":"length"}]}')).toEqual({
+			finish: "length",
+		})
+		expect(readAiEvent('{"choices":[{"delta":{},"finish_reason":null}]}')).toEqual({})
+	})
+
 	it("reads the legacy { response } shape", () => {
 		expect(readAiEvent('{"response":"a > b"}')).toEqual({ content: "a > b" })
 	})
@@ -232,5 +290,34 @@ describe("createSseReader", () => {
 		expect(reader.push('data: {"response":"a"}\n\ndata: {"resp')).toEqual(['{"response":"a"}'])
 		expect(reader.push('onse":"b"}\n\n')).toEqual(['{"response":"b"}'])
 		expect(reader.push("event: ping\r\ndata: [DONE]\r\n")).toEqual(["[DONE]"])
+	})
+})
+
+describe("createDiagramLineFilter — ad-hoc sub-processes and notes", () => {
+	it("passes adhoc, inside= and note lines, cut anywhere", () => {
+		const answer = [
+			"Here it is:",
+			"# Agent | camunda=8.10",
+			"s[start Go] > agent[adhoc AI Agent] > e[end Done]",
+			"users[service Find users | inside=agent]",
+			"note agent: Runs tools, then answers [see docs]: yes >",
+			"note s: Starts here",
+			"doc users: Finds sample users, then returns them [json]: yes >",
+			"Hope this helps!",
+		].join("\n")
+		const filter = createDiagramLineFilter()
+		let out = ""
+		for (let i = 0; i < answer.length; i += 6) out += filter.push(answer.slice(i, i + 6))
+		out += filter.end()
+		expect(out).toBe(`${answer.split("\n").slice(1, -1).join("\n")}\n`)
+	})
+
+	it("still passes no prose that only starts with the word note", () => {
+		const filter = createDiagramLineFilter()
+		const out =
+			filter.push(
+				"Note that the diagram is below.\nNote the following: it is long\nDocs cover this: no\nDocument the following: it is long\nDoc the tool: it helps\n",
+			) + filter.end()
+		expect(out).toBe("")
 	})
 })

@@ -397,8 +397,13 @@ select.ed-select{height:28px;border:1px solid var(--bpmnkit-ds-line);background:
 .gen-check div+div{border-top:1px solid var(--bpmnkit-ds-line-soft)}
 .gen-check b{font-family:var(--bpmnkit-ds-font-mono);font-size:11px;font-weight:400;text-transform:uppercase;letter-spacing:.06em;color:var(--bpmnkit-ds-ink-3);min-width:64px}
 .gen-check .ok{color:var(--bpmnkit-success,#16a34a)}
+.gen-check .warn{color:var(--bpmnkit-warn,#d97706)}
 .gen-check .bad{color:var(--bpmnkit-danger,#dc2626)}
 .gen-check code{font-family:var(--bpmnkit-ds-font-mono);font-size:12px}
+.gen-text{border-bottom:1px solid var(--bpmnkit-ds-line-soft)}
+.gen-text[hidden]{display:none}
+.gen-text summary{cursor:pointer;padding:8px 12px;font-family:var(--bpmnkit-ds-font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--bpmnkit-ds-ink-3)}
+.gen-text pre{margin:0;padding:8px 12px;max-height:240px;overflow:auto;border-top:1px solid var(--bpmnkit-ds-line-soft);font-family:var(--bpmnkit-ds-font-mono);font-size:12px;color:var(--bpmnkit-ds-ink-2);white-space:pre-wrap}
 .gen-questions{list-style:none;margin:0;padding:0}
 .gen-questions li{padding:10px 12px;border-bottom:1px solid var(--bpmnkit-ds-line-soft);font-size:var(--bpmnkit-ds-t-body-sm);color:var(--bpmnkit-ds-ink-2)}
 .gen-questions .fc-examples{margin-top:8px}
@@ -565,6 +570,7 @@ export function dropPage(
 			<div id="genCanvas" class="gen-canvas"><div class="hero-canvas-msg">The diagram appears here as it is written.</div></div>
 			<div id="genRefine" class="gen-refine" hidden>
 				<div id="genCheck" class="gen-check" hidden></div>
+				<details id="genText" class="gen-text" hidden><summary>Diagram text</summary><pre></pre></details>
 				<ul id="genQuestions" class="gen-questions"></ul>
 				<div class="gen-change"><input id="genChange" maxlength="${MAX_CHANGE_CHARS}" autocomplete="off" aria-label="Change the diagram" placeholder="Change something, e.g. a manager approves anything over 5000"><button id="genApply" class="btn-ghost" type="button">Apply</button><button id="genUndo" class="btn-ghost" type="button" hidden>Undo</button></div>
 			</div>

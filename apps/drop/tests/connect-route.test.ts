@@ -2,8 +2,13 @@
  * `POST /drop/api/connect`: the gates, the cards it picks, the stream it
  * answers with, and the connected diagram it applies on the server.
  */
-import { Bpmn, expand, parseProcessText } from "@bpmnkit/core"
-import { type ApiService, connectorCards } from "@bpmnkit/core/connectors"
+import { Bpmn, expand, findElement, parseProcessText, writeProcessText } from "@bpmnkit/core"
+import {
+	type ApiService,
+	connectorCards,
+	connectorLineFor,
+	selectConnectors,
+} from "@bpmnkit/core/connectors"
 import { beforeEach, describe, expect, it } from "vitest"
 import type { Env } from "../src/env.js"
 import { getBudgetSpent } from "../src/lib/ai.js"
@@ -11,8 +16,11 @@ import {
 	CONNECT_SYSTEM_PROMPT,
 	type ConnectEvent,
 	type ConnectResult,
+	connectTasks,
 	createConnectLineFilter,
 	finishConnect,
+	maxConnectRequestChars,
+	maxConnectTokens,
 } from "../src/lib/connect.js"
 import { sharePage } from "../src/lib/pages.js"
 import { handleConnect } from "../src/routes/connect.js"
@@ -83,8 +91,8 @@ function makeEnv(ai: ReturnType<typeof fakeAi>, over: Partial<Env> = {}): Env {
 	} as unknown as Env
 }
 
-const post = (body: unknown, code = CODE) =>
-	new Request("http://drop/drop/api/connect", {
+const post = (body: unknown, code = CODE, path = "/drop/api/connect") =>
+	new Request(`http://drop${path}`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json", "X-Drop-AI-Code": code },
 		body: JSON.stringify(body),
@@ -131,6 +139,22 @@ describe("POST /drop/api/connect", () => {
 		expect(
 			(await handleConnect(post({ xml: DRAFT, request: "x".repeat(2001) }), env, NOW)).status,
 		).toBe(400)
+	})
+
+	it("refuses a request over 2000 characters, unless the page has ?nolimit", async () => {
+		const long = { xml: DRAFT, request: `Tell ops in Slack. ${"x".repeat(6000)}` }
+		const strict = await handleConnect(post(long), makeEnv(fakeAi(ANSWER)), NOW)
+		expect(strict.status).toBe(400)
+		expect(await strict.text()).toContain("a request is at most 2000 characters")
+		const ai = fakeAi(ANSWER)
+		const open = await handleConnect(
+			post(long, CODE, "/drop/api/connect?nolimit"),
+			makeEnv(ai),
+			NOW,
+		)
+		expect(open.status).toBe(200)
+		await open.text()
+		expect(ai.calls).toHaveLength(1)
 	})
 
 	it("asks the model with the cards it picked, and streams only with lines", async () => {
@@ -568,5 +592,67 @@ describe("finishConnect", () => {
 			'"with notify:" configures a node an earlier line did; the first stands',
 		])
 		expect(result.xml).toContain('zeebe:modelerTemplate="io.camunda.connectors.Slack.v1"')
+	})
+})
+
+describe("maxConnectTokens", () => {
+	it("grows with tasks, 600 more per AI Agent, and stops at 3000", () => {
+		expect(maxConnectTokens(3)).toBe(450)
+		expect(maxConnectTokens(5, 1)).toBe(1250)
+		expect(maxConnectTokens(30, 5)).toBe(3000)
+	})
+	it("allows the long request only with ?nolimit", () => {
+		expect(maxConnectRequestChars(new URLSearchParams())).toBe(2000)
+		expect(maxConnectRequestChars(new URLSearchParams("nolimit"))).toBe(Number.POSITIVE_INFINITY)
+	})
+})
+
+describe("an AI agent sub-process and its tools", () => {
+	const AGENT = Bpmn.parse(
+		Bpmn.export(
+			expand(
+				parseProcessText(`start[start Question] > agent[adhoc AI Agent] > done[end Answered]
+joke[service Get a safe joke | inside=agent]`).diagram,
+			),
+		),
+	)
+	const { aliases } = writeProcessText(AGENT, { connectorLine: connectorLineFor })
+	const LINES = `with agent: ai-agent-subprocess | provider.type=openai | provider.openai.backend.openai.apiKey==camunda.secrets.OPENAI_API_KEY | provider.openai.model.model=gpt-4o | data.systemPrompt.prompt=="You are helpful.\\n\\nUse the tools." | data.userPrompt.prompt==inputText | resultVariable=agent
+with joke: http GET https://v2.jokeapi.dev/joke/Any?format=txt | authentication.type=noAuth | result=toolCallResult: response.body`
+
+	it("offers the container and its tool to the connect pass", () => {
+		expect(connectTasks(AGENT, aliases)).toEqual([
+			{ id: "start", name: "Question", type: "startEvent" },
+			{ id: "agent", name: "AI Agent", type: "adHocSubProcess" },
+			{ id: "joke", name: "Get a safe joke", type: "serviceTask", inside: "agent" },
+			{ id: "done", name: "Answered", type: "endEvent" },
+		])
+	})
+
+	it("gives the model room for the agent's long with line", async () => {
+		const xml = Bpmn.export(AGENT)
+		const ai = fakeAi(ANSWER)
+		await (await handleConnect(post({ xml, request: "Answer questions" }), makeEnv(ai), NOW)).text()
+		const picked = selectConnectors(
+			{ text: "Answer questions", tasks: connectTasks(AGENT, aliases) },
+			{ apis: [] },
+		).length
+		expect(ai.calls[0]?.inputs.max_tokens).toBe(maxConnectTokens(picked, 1))
+	})
+
+	it("connects the agent and its tool with no problem, and a real blank line in the prompt", () => {
+		const result = finishConnect(AGENT, aliases, LINES)
+		expect(result.problems).toEqual([])
+		expect(result.questions).toEqual([])
+		expect(result.connected).toEqual(["agent", "joke"])
+		const again = Bpmn.parse(result.xml)
+		const io = findElement(again, "agent")?.extensionElements.find(
+			(x) => x.name === "zeebe:ioMapping",
+		)
+		const system = io?.children.find((c) => c.attributes.target === "data.systemPrompt.prompt")
+		expect(system?.attributes.source).toBe('="You are helpful.\n\nUse the tools."')
+		expect(findElement(again, "joke")?.unknownAttributes["zeebe:modelerTemplate"]).toBe(
+			"io.camunda.connectors.HttpJson.v2",
+		)
 	})
 })

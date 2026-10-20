@@ -91,8 +91,14 @@ export class HttpClient {
 			headers.Authorization = authHeader
 		}
 
-		const body = options.body !== undefined ? JSON.stringify(options.body) : undefined
-		if (body === undefined) {
+		// FormData goes through as is: fetch writes its multipart Content-Type with the boundary
+		const body =
+			options.body instanceof FormData
+				? options.body
+				: options.body !== undefined
+					? JSON.stringify(options.body)
+					: undefined
+		if (body === undefined || body instanceof FormData) {
 			// biome-ignore lint/performance/noDelete: removing the header key is correct here
 			delete headers["Content-Type"]
 		}
@@ -161,7 +167,7 @@ export class HttpClient {
 				headers: rawHeaders,
 				body: rawBody,
 				requestHeaders: headers,
-				requestBody: body,
+				requestBody: typeof body === "string" ? body : undefined,
 			})
 		}
 

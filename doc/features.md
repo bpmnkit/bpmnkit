@@ -1,5 +1,57 @@
 # Features
 
+## casen test runs Camunda process-test JSON on reebe (2026-10-18)
+
+- `casen test <file.bpmn>` runs `<name>.test.json` (Camunda process-test format) on reebe-wasm, reports each case and the failing instruction, and `--case <name>` (repeatable) runs selected cases. Existing `.bpmn.tests.json` scenario files work unchanged.
+
+## Drop connects the AI Agent and its tools (2026-10-18)
+
+- The connect pass offers the AI Agent Sub-process connector to any ad-hoc sub-process of a draft, and the REST connector to its `inside=` tools; `with <id>:` lines (also for `inside=` tools in `parseProcessText`) configure them. In a `==` FEEL value `\n` is a line break, so an agent's prompt can have paragraphs; `\\n` stays a literal backslash and n, and a literal (single `=`) value is never decoded.
+
+## Process text: ad-hoc sub-processes and notes (2026-10-18)
+
+- `adhoc` kind, `inside=<adhoc id>` on a flowless task, and `note <id>: text` and `doc <id>: text` (the element's documentation, an AI agent tool's description) in the line format, read by `parseProcessText`, expanded (with grid layout and laid-out annotations) by `expand`, written back by `writeProcessText` and applied or reported by change scripts.
+
+## Process text: forms, mappings and platform version (2026-10-18)
+
+- `form=`, `in.x=`, `out.x=` and `# Name | camunda=8.10` in the line format, read by `parseProcessText`, expanded by `expand` and written back by `writeProcessText`.
+
+## Executable-process recipe and `bpmnkit-docs` at the repo root (2026-10-17)
+
+- `npx bpmnkit-docs ask "set a form on a start event"` answers from a task-shaped recipe page,
+  and works from the repo root.
+
+## Auto layout takes a tool grid and annotation sides (2026-10-17)
+
+- `adHocSubProcess(id, tools, { toolGrid: { columns: 2, fill: "column" } })` lays the tools out in
+  a fixed number of columns, filled top to bottom or left to right.
+- `annotate(id, text, { side: "below" })` puts the annotation on the side asked for.
+
+## `applyTemplates` configures connectors in-process (2026-10-17)
+
+- `applyTemplates(definitions, entries)` applies element templates by id, `id@version` or alias to
+  elements anywhere in a model, including inside ad-hoc sub-processes, and answers a wrong key
+  with the property id it probably meant (`retries` -> `retryCount`).
+
+## `casen connector apply` and filtered `show` (2026-10-17)
+
+- `casen connector apply file.bpmn Call http --values call.json --set retryCount=5` configures an
+  element from the shell without quoting multi-line FEEL; a wrong key is reported with a suggestion.
+- `casen connector show <template> --filter timeout --condensed` prints one line per matching
+  property: key, type, default, required, condition.
+
+## Branch flows take a label and an explicit id (2026-10-17)
+
+- `branch(id, b => b.label("Yes").flowId("Flow_Yes"))` names the branch's first flow and fixes its
+  id, also before `connectTo()`. Generated ids for other flows do not change.
+
+## The builder sets a start-event form and user-task mappings (2026-10-17)
+
+- `startEvent(id, { formId })` puts a form on a start event, in the process, in a branch and in
+  an event sub-process.
+- `userTask(id, { ioMapping, taskHeaders, zeebeProperties, modelerTemplate })` takes the same
+  options as a service task.
+
 ## Camunda docspack covers the Modeler, the guides and the reference (2026-10-09)
 
 - **`@bpmnkit/camunda-docspack`** now also carries DMN, Camunda Forms, element templates, the
@@ -58,6 +110,7 @@
 - **Proving it runs.** A generated diagram is dry-run with every outside call mocked, and
   the secrets it needs are listed.
   - Drop's generator shows both.
+  - Drop also gives every draft a deploy verdict (ready, shape only, or N deploy errors) and a collapsible "Diagram text" panel with the process text it was drawn from.
   - `casen synth --check` gates on the dry run.
   - Studio's **Try it** runs it on the local engine, sending only GET requests for real.
 - **CLI.** `casen connector cards "<request>"`, `casen connector api "<request>"` and
@@ -1831,7 +1884,8 @@ Workflows now start automatically without a "Run" click.
 - Any HTTP client can start a process instance; request body becomes process variables
 - Optional `WEBHOOK_TOKEN` env var for Bearer token protection
 
-**Timer trigger** (scan + schedule):
+**Timer trigger** (scan + schedule) — *removed 2026-10-09: the engines fire timer start
+events themselves, so the trigger started each instance twice*:
 - Parses `<timeDuration>`, `<timeDate>`, `<timeCycle>` from deployed BPMN timer start events
 - ISO 8601 duration/date/repeating-interval support (`PT1H`, `R/PT30M`, `2026-01-01T00:00:00Z`)
 - Persists last-fired timestamps to `~/.bpmnkit/timer-state.json`

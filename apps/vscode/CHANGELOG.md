@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.5.7
+
+### Patch Changes
+
+- Updated dependencies [fbd45f8]
+- Updated dependencies [fbd45f8]
+- Updated dependencies [8bcc25a]
+- Updated dependencies [ca2129e]
+- Updated dependencies [fbd45f8]
+- Updated dependencies [fbd45f8]
+- Updated dependencies [fbd45f8]
+  - @bpmnkit/editor@1.5.0
+  - @bpmnkit/engine@1.3.0
+  - @bpmnkit/core@1.6.0
+  - @bpmnkit/profiles@0.1.0
+
 ## 0.5.6
 
 ### Patch Changes

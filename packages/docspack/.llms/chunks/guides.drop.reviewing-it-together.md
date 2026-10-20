@@ -22,6 +22,14 @@ elements first to make the request about them — and the change is made in the 
 layout kept, as one edit that **Undo** reverts. A diagram drafted with *Describe a process* on
 the Drop landing page has **Open in editor**: it is stored as a drop like a share link, and
 opens straight into the editor with this chat, so you can keep refining it there.
+*Describe a process* takes up to 2,000 characters. To paste a whole specification, open the
+page with `?nolimit` (`/drop?nolimit`): the description then has no length limit. The daily
+budget and the hourly cap still apply, and a description longer than the model's context
+window fails with the model's error. With `?nolimit` the model also gets a larger output
+budget and the description keeps its line breaks, so headings and lists reach it. If the answer
+still hits the model's output limit, the page shows "The answer was cut off at the model's output
+limit — the diagram may be incomplete." The connector step takes the long description too. The
+readiness badge names the steps that keep a draft from running, including plain tasks.
 
 **Version history.** Every file keeps the original it was uploaded as, pinned and never
 overwritten, plus its ten most recent milestones. Repeated saves inside an hour collapse
@@ -42,20 +50,6 @@ threads gets a small numbered marker on the canvas; click it to jump to its thre
 Threads take replies, and anyone who has commented on the drop can **Resolve** a thread or
 **Reopen** it. New comments, edits and resolutions reach everyone who has the drop open
 as they happen.
-
-A comment is anchored by the element's id, not by its position. It stays with the element
-when the element moves, and survives any number of edits. If a later edit deletes the
-element, the comment is still listed, marked **on a removed element** with the name the
-element had when the comment was written. While you preview an older version from
-**History**, the same label reads **not in this version**.
-
-**@mentions.** Type `@` in a comment to pick from the names this drop has seen: the people
-who have it open now and everyone who has commented on it. A mentioned name is highlighted
-in the comment. If the mentioned person has the drop open, a notice appears at the top of
-their page with a button that opens the thread. Drop has no accounts and stores no email
-addresses, so **a mention sends no email and no push notification**. Someone who does not
-have the drop open sees the mention the next time they open it. If it matters, send them
-the link yourself.
 
 ---
 Source: https://bpmnkit.com/docs/guides/drop

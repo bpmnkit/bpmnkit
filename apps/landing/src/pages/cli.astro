@@ -581,9 +581,10 @@ import Nav from "../components/Nav.astro"
           <table class="cli-cmd-table" aria-label="Profile commands">
             <tbody>
               <tr><td>casen profile list</td><td>List all saved profiles</td></tr>
-              <tr><td>casen profile add &lt;name&gt;</td><td>Add a profile interactively</td></tr>
+              <tr><td>casen profile import &lt;name&gt; &lt;file&gt;</td><td>Add a profile from a Camunda credentials file</td></tr>
+              <tr><td>casen profile create &lt;name&gt;</td><td>Add a profile from flags</td></tr>
               <tr><td>casen profile use &lt;name&gt;</td><td>Switch the active profile</td></tr>
-              <tr><td>casen profile remove &lt;name&gt;</td><td>Delete a profile</td></tr>
+              <tr><td>casen profile delete &lt;name&gt;</td><td>Delete a profile</td></tr>
             </tbody>
           </table>
         </div>
@@ -596,10 +597,10 @@ import Nav from "../components/Nav.astro"
           </div>
           <table class="cli-cmd-table" aria-label="Process commands">
             <tbody>
-              <tr><td>casen processes list</td><td>List deployed process definitions</td></tr>
-              <tr><td>casen instances list</td><td>List process instances</td></tr>
-              <tr><td>casen instances cancel &lt;key&gt;</td><td>Cancel a running instance</td></tr>
-              <tr><td>casen deploy &lt;file&gt;</td><td>Deploy a BPMN, DMN, or form file</td></tr>
+              <tr><td>casen pd list</td><td>List deployed process definitions</td></tr>
+              <tr><td>casen pi list</td><td>List process instances</td></tr>
+              <tr><td>casen pi cancel &lt;key&gt;</td><td>Cancel a running instance</td></tr>
+              <tr><td>casen deploy deploy &lt;file&gt;</td><td>Deploy a BPMN, DMN, or form file</td></tr>
             </tbody>
           </table>
         </div>
@@ -612,9 +613,9 @@ import Nav from "../components/Nav.astro"
           </div>
           <table class="cli-cmd-table" aria-label="Incident and job commands">
             <tbody>
-              <tr><td>casen incidents list</td><td>List open incidents</td></tr>
-              <tr><td>casen incidents resolve &lt;key&gt;</td><td>Resolve an incident</td></tr>
-              <tr><td>casen jobs list</td><td>List active jobs</td></tr>
+              <tr><td>casen incident list</td><td>List incidents</td></tr>
+              <tr><td>casen incident resolve &lt;key&gt;</td><td>Resolve an incident</td></tr>
+              <tr><td>casen job list</td><td>List jobs</td></tr>
             </tbody>
           </table>
         </div>
@@ -661,7 +662,7 @@ import Nav from "../components/Nav.astro"
         <div class="cli-output-card">
           <div class="cli-output-card-header">
             <span class="cli-output-card-title">Table (default)</span>
-            <span class="cli-output-flag">casen processes list</span>
+            <span class="cli-output-flag">casen pd list</span>
           </div>
           <pre>  <span class="h">Name                  Version  Deployed</span>
   <span class="h">─────────────────────────────────────────────</span>

@@ -1,4 +1,5 @@
 import { ValidationError } from "../errors.js"
+import type { GridHint, LayoutHints } from "../layout/types.js"
 import { generateId } from "../types/id-generator.js"
 import type { XmlElement } from "../types/xml-element.js"
 import { applyAutoLayout } from "./auto-layout.js"
@@ -32,7 +33,13 @@ import {
 	restConnectorToIoMappingInputs,
 	restConnectorToTaskHeaders,
 } from "./rest-connector.js"
-import { assignStableFlowIds, rootDefinitionId } from "./stable-ids.js"
+import {
+	assertExplicitFlowIdsUnique,
+	assignStableFlowIds,
+	markExplicitFlowId,
+	rootDefinitionId,
+	setFlowDiscriminatorSource,
+} from "./stable-ids.js"
 import {
 	type ZeebeExtensions,
 	ensureZeebeExtension,
@@ -72,6 +79,12 @@ export interface StartEventOptions extends ElementOptions {
 	timerCycle?: string
 	/** Message name — creates a message start event. */
 	messageName?: string
+	/**
+	 * Form to show when the process is started (`zeebe:formDefinition formId`).
+	 * Camunda uses start forms only on the process's none start event, so set it
+	 * there and not on message, timer or signal start events.
+	 */
+	formId?: string
 	/** Zeebe properties (e.g. webhook connector config). */
 	zeebeProperties?: Array<{ name: string; value: string }>
 	/** Zeebe modeler template ID. */
@@ -140,6 +153,21 @@ export interface UserTaskOptions {
 	formId?: string
 	/** Emit <zeebe:userTask /> to mark as a Camunda 8 native user task. */
 	zeebeUserTask?: boolean
+	/** Input/output variable mappings. */
+	ioMapping?: {
+		inputs?: Array<{ source: string; target: string }>
+		outputs?: Array<{ source: string; target: string }>
+	}
+	/** Task header key-value pairs. */
+	taskHeaders?: Record<string, string>
+	/** Zeebe property key-value pairs (`zeebe:properties`/`zeebe:property`). */
+	zeebeProperties?: Array<{ name: string; value: string }>
+	/** Zeebe modeler template ID. */
+	modelerTemplate?: string
+	/** Zeebe modeler template version. */
+	modelerTemplateVersion?: string
+	/** Zeebe modeler template icon (data URI). */
+	modelerTemplateIcon?: string
 	/** Mark this task as a compensation handler. */
 	isForCompensation?: boolean
 	/** Free-text documentation (`<bpmn:documentation>`). */
@@ -371,6 +399,21 @@ export interface AdHocSubProcessOptions extends ElementOptions {
 	completionCondition?: string
 	/** Whether still-running inner activity instances are cancelled once the completion condition is met (default true). */
 	cancelRemainingInstances?: boolean
+	/**
+	 * Shape of the grid `withAutoLayout()` packs the unconnected children (tools)
+	 * into: a fixed column count, and `fill: "column"` to read declaration order
+	 * top to bottom instead of left to right. Layout only; not written to the XML.
+	 */
+	toolGrid?: GridHint
+}
+
+/** Options for `annotate()`. */
+export interface AnnotateOptions {
+	/**
+	 * Which side of the element `withAutoLayout()` puts the annotation on,
+	 * instead of the side it would choose. Layout only; not written to the XML.
+	 */
+	side?: "above" | "below"
 }
 
 // ---------------------------------------------------------------------------
@@ -661,13 +704,11 @@ function recomputeIncomingOutgoing(elements: BpmnFlowElement[], flows: BpmnSeque
 	}
 }
 
-function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
-	const extensions: ZeebeExtensions = {
-		taskDefinition: {
-			type: options.taskType,
-			retries: options.retries,
-		},
-	}
+/** The ioMapping / taskHeaders / properties extensions shared by service and user tasks. */
+function buildMappingExtensions(
+	options: Pick<ServiceTaskOptions, "ioMapping" | "taskHeaders" | "zeebeProperties">,
+): ZeebeExtensions {
+	const extensions: ZeebeExtensions = {}
 
 	if (options.ioMapping) {
 		extensions.ioMapping = {
@@ -687,6 +728,18 @@ function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
 
 	if (options.zeebeProperties) {
 		extensions.properties = { properties: options.zeebeProperties }
+	}
+
+	return extensions
+}
+
+function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
+	const extensions: ZeebeExtensions = {
+		taskDefinition: {
+			type: options.taskType,
+			retries: options.retries,
+		},
+		...buildMappingExtensions(options),
 	}
 
 	if (options.agentDefinition) extensions.agentDefinition = options.agentDefinition
@@ -815,6 +868,37 @@ function makeScriptTaskEl(id: string, options: ScriptTaskOptions): BpmnFlowEleme
 	return el
 }
 
+function applyModelerTemplate(
+	el: BpmnFlowElement,
+	options: Pick<
+		StartEventOptions,
+		"modelerTemplate" | "modelerTemplateVersion" | "modelerTemplateIcon"
+	>,
+): void {
+	if (options.modelerTemplate)
+		el.unknownAttributes["zeebe:modelerTemplate"] = options.modelerTemplate
+	if (options.modelerTemplateVersion) {
+		el.unknownAttributes["zeebe:modelerTemplateVersion"] = options.modelerTemplateVersion
+	}
+	if (options.modelerTemplateIcon) {
+		el.unknownAttributes["zeebe:modelerTemplateIcon"] = options.modelerTemplateIcon
+	}
+}
+
+/** Start-event shell shared by all three builders; the caller adds event definitions. */
+function makeStartEventEl(id: string, options?: StartEventOptions): BpmnFlowElement {
+	const el = makeFlowElement(id, "startEvent", {
+		name: options?.name,
+		documentation: options?.documentation,
+		extensionElements: zeebeExtensionsToXmlElements({
+			...(options?.formId ? { formDefinition: { formId: options.formId } } : {}),
+			...(options?.zeebeProperties ? { properties: { properties: options.zeebeProperties } } : {}),
+		}),
+	})
+	if (options) applyModelerTemplate(el, options)
+	return el
+}
+
 function makeUserTaskEl(id: string, options?: UserTaskOptions): BpmnFlowElement {
 	const ext = zeebeExtensionsToXmlElements({
 		...(options?.zeebeUserTask ? { userTask: true } : {}),
@@ -834,12 +918,14 @@ function makeUserTaskEl(id: string, options?: UserTaskOptions): BpmnFlowElement 
 		...(options?.priority !== undefined
 			? { priorityDefinition: { priority: String(options.priority) } }
 			: {}),
+		...(options ? buildMappingExtensions(options) : {}),
 	})
 	const el = makeFlowElement(id, "userTask", {
 		name: options?.name,
 		documentation: options?.documentation,
 		extensionElements: ext,
 	})
+	if (options) applyModelerTemplate(el, options)
 	if (options?.isForCompensation) el.isForCompensation = true
 	return el
 }
@@ -979,6 +1065,28 @@ interface RootDefinitions {
 	messages: BpmnMessage[]
 	signals: BpmnSignal[]
 	escalations: BpmnEscalation[]
+	/** Shared by every nested builder, so hints reach the process's `build()`. */
+	layoutHints: Required<LayoutHints>
+}
+
+function emptyLayoutHints(): Required<LayoutHints> {
+	return { grids: new Map(), annotationSides: new Map() }
+}
+
+/** Remembers an ad-hoc sub-process's `toolGrid` for the layout. */
+function recordToolGrid(
+	hints: Required<LayoutHints>,
+	id: string,
+	options: AdHocSubProcessOptions | undefined,
+): void {
+	const grid = options?.toolGrid
+	if (!grid) return
+	if (grid.columns !== undefined && !(Number.isInteger(grid.columns) && grid.columns > 0)) {
+		throw new Error(
+			`adHocSubProcess("${id}"): toolGrid.columns must be a positive integer, got ${grid.columns}`,
+		)
+	}
+	hints.grids.set(id, grid)
 }
 
 /**
@@ -1140,6 +1248,8 @@ export class BranchBuilder {
 	private readonly branchName: string
 	private isFirstElement = true
 	private pendingCondition: string | undefined
+	private pendingLabel: string | undefined
+	private pendingFlowId: string | undefined
 	private pendingDefault = false
 	/** @internal – true once connectTo() has been called, meaning the branch end is already wired */
 	_connected = false
@@ -1156,6 +1266,7 @@ export class BranchBuilder {
 	private readonly rootMessages: BpmnMessage[]
 	private readonly rootSignals: BpmnSignal[]
 	private readonly rootEscalations: BpmnEscalation[]
+	private readonly rootLayoutHints: Required<LayoutHints>
 
 	/** @internal */
 	constructor(
@@ -1165,6 +1276,7 @@ export class BranchBuilder {
 		rootMessages: BpmnMessage[] = [],
 		rootSignals: BpmnSignal[] = [],
 		rootEscalations: BpmnEscalation[] = [],
+		rootLayoutHints: Required<LayoutHints> = emptyLayoutHints(),
 	) {
 		this.gatewayId = gatewayId
 		this.branchName = branchName
@@ -1173,6 +1285,7 @@ export class BranchBuilder {
 		this.rootMessages = rootMessages
 		this.rootSignals = rootSignals
 		this.rootEscalations = rootEscalations
+		this.rootLayoutHints = rootLayoutHints
 	}
 
 	private roots(): RootDefinitions {
@@ -1181,6 +1294,7 @@ export class BranchBuilder {
 			messages: this.rootMessages,
 			signals: this.rootSignals,
 			escalations: this.rootEscalations,
+			layoutHints: this.rootLayoutHints,
 		}
 	}
 
@@ -1190,10 +1304,31 @@ export class BranchBuilder {
 		return this
 	}
 
+	/**
+	 * Set the name shown on this branch's first flow. Without it the branch id is
+	 * the name. The generated flow id still follows the branch id, not the label.
+	 */
+	label(text: string): this {
+		this.pendingLabel = text
+		return this
+	}
+
+	/** Use `id` for this branch's first flow instead of a generated one. */
+	flowId(id: string): this {
+		this.pendingFlowId = id
+		return this
+	}
+
 	/** Mark this branch as the gateway's default (no-condition) flow. */
 	defaultFlow(): this {
 		this.pendingDefault = true
 		return this
+	}
+
+	/** Keeps label() and flowId() out of the stable-id derivation; see stable-ids.ts. */
+	private registerFirstFlow(flow: BpmnSequenceFlow): void {
+		setFlowDiscriminatorSource(flow, this.branchName)
+		if (this.pendingFlowId !== undefined) markExplicitFlowId(flow)
 	}
 
 	private addElement(element: BpmnFlowElement): this {
@@ -1207,12 +1342,14 @@ export class BranchBuilder {
 		}
 
 		if (this.lastNodeId) {
-			const flowId = generateId("Flow")
+			const flowId = this.isFirstElement
+				? (this.pendingFlowId ?? generateId("Flow"))
+				: generateId("Flow")
 			const flow: BpmnSequenceFlow = {
 				id: flowId,
 				sourceRef: this.lastNodeId,
 				targetRef: element.id,
-				name: this.isFirstElement ? this.branchName : undefined,
+				name: this.isFirstElement ? (this.pendingLabel ?? this.branchName) : undefined,
 				conditionExpression:
 					this.isFirstElement && this.pendingCondition
 						? makeConditionExpression(this.pendingCondition)
@@ -1221,6 +1358,7 @@ export class BranchBuilder {
 				unknownAttributes: {},
 			}
 			this._flows.push(flow)
+			if (this.isFirstElement) this.registerFirstFlow(flow)
 			if (this.isFirstElement && this.pendingDefault) {
 				this._defaultFlowId = flowId
 			}
@@ -1247,13 +1385,15 @@ export class BranchBuilder {
 	 * Supports forward references (element created later) and backward references (loops).
 	 */
 	connectTo(targetId: string): this {
-		const flowId = generateId("Flow")
+		const flowId = this.isFirstElement
+			? (this.pendingFlowId ?? generateId("Flow"))
+			: generateId("Flow")
 		const flow: BpmnSequenceFlow = {
 			id: flowId,
 			// biome-ignore lint/style/noNonNullAssertion: lastNodeId starts as gatewayId and is always defined in pre-branch context
 			sourceRef: this.lastNodeId!,
 			targetRef: targetId,
-			name: this.isFirstElement ? this.branchName : undefined,
+			name: this.isFirstElement ? (this.pendingLabel ?? this.branchName) : undefined,
 			conditionExpression:
 				this.isFirstElement && this.pendingCondition
 					? makeConditionExpression(this.pendingCondition)
@@ -1262,6 +1402,7 @@ export class BranchBuilder {
 			unknownAttributes: {},
 		}
 		this._flows.push(flow)
+		if (this.isFirstElement) this.registerFirstFlow(flow)
 
 		if (this.isFirstElement && this.pendingDefault) {
 			this._defaultFlowId = flowId
@@ -1292,10 +1433,11 @@ export class BranchBuilder {
 	}
 
 	/** Attach a text annotation to an element by explicit ID. */
-	annotate(elementId: string, text: string): this {
+	annotate(elementId: string, text: string, options?: AnnotateOptions): this {
 		const n = (this._annCounters.get(elementId) ?? 0) + 1
 		this._annCounters.set(elementId, n)
 		const annId = `TextAnnotation_${elementId}_${n}`
+		if (options?.side) this.rootLayoutHints.annotationSides.set(annId, options.side)
 		this._textAnnotations.push({ id: annId, text, unknownAttributes: {} })
 		this._associations.push({
 			id: `Association_${elementId}_${n}`,
@@ -1361,7 +1503,7 @@ export class BranchBuilder {
 	}
 
 	startEvent(id?: string, options?: StartEventOptions): this {
-		const el = makeFlowElement(id ?? generateId("StartEvent"), "startEvent", options)
+		const el = makeStartEventEl(id ?? generateId("StartEvent"), options)
 		if (el.type === "startEvent" && options) {
 			el.eventDefinitions = buildEventDefinitions(
 				options,
@@ -1585,6 +1727,7 @@ export class BranchBuilder {
 		options?: AdHocSubProcessOptions,
 	): this {
 		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(content, options)
+		recordToolGrid(this.rootLayoutHints, id, resolved.options)
 		// Ad-hoc sub-process children are unordered — see SubProcessContentBuilder.autoConnect.
 		const sub = new SubProcessContentBuilder(this.roots(), false)
 		resolved.content(sub)
@@ -1650,6 +1793,7 @@ export class BranchBuilder {
 			this.rootMessages,
 			this.rootSignals,
 			this.rootEscalations,
+			this.rootLayoutHints,
 		)
 		callback(b)
 
@@ -1713,6 +1857,7 @@ export class SubProcessContentBuilder {
 	private readonly rootMessages: BpmnMessage[]
 	private readonly rootSignals: BpmnSignal[]
 	private readonly rootEscalations: BpmnEscalation[]
+	private readonly rootLayoutHints: Required<LayoutHints>
 	/**
 	 * Whether sequential calls chain themselves with sequence flows.
 	 *
@@ -1728,13 +1873,20 @@ export class SubProcessContentBuilder {
 
 	/** @internal */
 	constructor(
-		roots: RootDefinitions = { errors: [], messages: [], signals: [], escalations: [] },
+		roots: RootDefinitions = {
+			errors: [],
+			messages: [],
+			signals: [],
+			escalations: [],
+			layoutHints: emptyLayoutHints(),
+		},
 		autoConnect = true,
 	) {
 		this.rootErrors = roots.errors
 		this.rootMessages = roots.messages
 		this.rootSignals = roots.signals
 		this.rootEscalations = roots.escalations
+		this.rootLayoutHints = roots.layoutHints
 		this.autoConnect = autoConnect
 	}
 
@@ -1744,6 +1896,7 @@ export class SubProcessContentBuilder {
 			messages: this.rootMessages,
 			signals: this.rootSignals,
 			escalations: this.rootEscalations,
+			layoutHints: this.rootLayoutHints,
 		}
 	}
 
@@ -1800,7 +1953,7 @@ export class SubProcessContentBuilder {
 	// ---- Events ----
 
 	startEvent(id?: string, options?: StartEventOptions): this {
-		const el = makeFlowElement(id ?? generateId("StartEvent"), "startEvent", options)
+		const el = makeStartEventEl(id ?? generateId("StartEvent"), options)
 		if (el.type === "startEvent" && options) {
 			el.eventDefinitions = buildEventDefinitions(
 				options,
@@ -1955,10 +2108,11 @@ export class SubProcessContentBuilder {
 	}
 
 	/** Attach a text annotation to an element by explicit ID. */
-	annotate(elementId: string, text: string): this {
+	annotate(elementId: string, text: string, options?: AnnotateOptions): this {
 		const n = (this._annCounters.get(elementId) ?? 0) + 1
 		this._annCounters.set(elementId, n)
 		const annId = `TextAnnotation_${elementId}_${n}`
+		if (options?.side) this.rootLayoutHints.annotationSides.set(annId, options.side)
 		this._textAnnotations.push({ id: annId, text, unknownAttributes: {} })
 		this._associations.push({
 			id: `Association_${elementId}_${n}`,
@@ -1983,6 +2137,7 @@ export class SubProcessContentBuilder {
 			this.rootMessages,
 			this.rootSignals,
 			this.rootEscalations,
+			this.rootLayoutHints,
 		)
 		callback(b)
 
@@ -2176,6 +2331,7 @@ export class SubProcessContentBuilder {
 		options?: AdHocSubProcessOptions,
 	): this {
 		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(content, options)
+		recordToolGrid(this.rootLayoutHints, id, resolved.options)
 		// Ad-hoc sub-process children are unordered — see SubProcessContentBuilder.autoConnect.
 		const sub = new SubProcessContentBuilder(this.roots(), false)
 		resolved.content(sub)
@@ -2244,6 +2400,7 @@ export class ProcessBuilder {
 	private readonly rootMessages: BpmnMessage[] = []
 	private readonly rootSignals: BpmnSignal[] = []
 	private readonly rootEscalations: BpmnEscalation[] = []
+	private readonly rootLayoutHints = emptyLayoutHints()
 	private readonly _textAnnotations: BpmnTextAnnotation[] = []
 	private readonly _associations: BpmnAssociation[] = []
 	private readonly _annCounters = new Map<string, number>()
@@ -2273,6 +2430,7 @@ export class ProcessBuilder {
 			messages: this.rootMessages,
 			signals: this.rootSignals,
 			escalations: this.rootEscalations,
+			layoutHints: this.rootLayoutHints,
 		}
 	}
 
@@ -2547,20 +2705,7 @@ export class ProcessBuilder {
 
 	/** Add a start event. Start events never auto-connect from the previous element. */
 	startEvent(id?: string, options?: StartEventOptions): this {
-		const nodeId = id ?? generateId("StartEvent")
-		const extElements: XmlElement[] = []
-		if (options?.zeebeProperties) {
-			extElements.push(
-				...zeebeExtensionsToXmlElements({
-					properties: { properties: options.zeebeProperties },
-				}),
-			)
-		}
-		const element = makeFlowElement(nodeId, "startEvent", {
-			name: options?.name,
-			documentation: options?.documentation,
-			extensionElements: extElements,
-		})
+		const element = makeStartEventEl(id ?? generateId("StartEvent"), options)
 		if (element.type === "startEvent" && options) {
 			element.eventDefinitions = buildEventDefinitions(
 				options,
@@ -2570,15 +2715,6 @@ export class ProcessBuilder {
 				this.rootEscalations,
 			)
 			if (options.isInterrupting === false) element.isInterrupting = false
-		}
-		if (options?.modelerTemplate) {
-			element.unknownAttributes["zeebe:modelerTemplate"] = options.modelerTemplate
-		}
-		if (options?.modelerTemplateVersion) {
-			element.unknownAttributes["zeebe:modelerTemplateVersion"] = options.modelerTemplateVersion
-		}
-		if (options?.modelerTemplateIcon) {
-			element.unknownAttributes["zeebe:modelerTemplateIcon"] = options.modelerTemplateIcon
 		}
 		this.addFlowElement(element)
 		return this
@@ -2911,6 +3047,7 @@ export class ProcessBuilder {
 			this.rootMessages,
 			this.rootSignals,
 			this.rootEscalations,
+			this.rootLayoutHints,
 		)
 		callback(b)
 
@@ -3002,6 +3139,7 @@ export class ProcessBuilder {
 		options?: AdHocSubProcessOptions,
 	): this {
 		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(content, options)
+		recordToolGrid(this.rootLayoutHints, id, resolved.options)
 		// Ad-hoc sub-process children are unordered — see SubProcessContentBuilder.autoConnect.
 		const sub = new SubProcessContentBuilder(this.roots(), false)
 		resolved.content(sub)
@@ -3099,10 +3237,11 @@ export class ProcessBuilder {
 	}
 
 	/** Attach a text annotation to any flow element by explicit ID. */
-	annotate(elementId: string, text: string): this {
+	annotate(elementId: string, text: string, options?: AnnotateOptions): this {
 		const n = (this._annCounters.get(elementId) ?? 0) + 1
 		this._annCounters.set(elementId, n)
 		const annId = `TextAnnotation_${elementId}_${n}`
+		if (options?.side) this.rootLayoutHints.annotationSides.set(annId, options.side)
 		this._textAnnotations.push({ id: annId, text, unknownAttributes: {} })
 		this._associations.push({
 			id: `Association_${elementId}_${n}`,
@@ -3171,6 +3310,7 @@ export class ProcessBuilder {
 			this.sequenceFlows,
 			this._source === undefined ? undefined : new Set(this._sourceFlowTargets.keys()),
 		)
+		assertExplicitFlowIdsUnique(this.flowElements, this.sequenceFlows)
 		recomputeIncomingOutgoing(this.flowElements, this.sequenceFlows)
 
 		if (this._source !== undefined) return this.buildOntoSource(this._source)
@@ -3237,7 +3377,9 @@ export class ProcessBuilder {
 				: [],
 		}
 
-		return hoistMessageSubscriptions(this._autoLayout ? applyAutoLayout(defs) : defs)
+		return hoistMessageSubscriptions(
+			this._autoLayout ? applyAutoLayout(defs, "semantic", this.rootLayoutHints) : defs,
+		)
 	}
 
 	/**
@@ -3281,7 +3423,11 @@ export class ProcessBuilder {
 		definitions.signals = this.rootSignals
 		definitions.escalations = this.rootEscalations
 
-		return hoistMessageSubscriptions(this._autoLayout ? applyAutoLayout(definitions) : definitions)
+		return hoistMessageSubscriptions(
+			this._autoLayout
+				? applyAutoLayout(definitions, "semantic", this.rootLayoutHints)
+				: definitions,
+		)
 	}
 
 	/**

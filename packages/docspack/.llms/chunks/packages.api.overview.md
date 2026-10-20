@@ -20,30 +20,37 @@ pnpm add @bpmnkit/api
 
 ## Client Configuration
 
+`baseUrl` is the cluster's Orchestration Cluster REST address, ending in `/v2`. On Camunda
+SaaS that is `ZEEBE_REST_ADDRESS` from a cluster's API client credentials file.
+
 ```typescript
 import { CamundaClient } from "@bpmnkit/api";
 
 const client = new CamundaClient({
-  baseUrl: "https://api.cloud.camunda.io",
+  baseUrl: `${process.env.ZEEBE_REST_ADDRESS}/v2`,
   auth: {
     type: "oauth2",
-    clientId: process.env.CAMUNDA_CLIENT_ID,
-    clientSecret: process.env.CAMUNDA_CLIENT_SECRET,
-    audience: process.env.CAMUNDA_AUDIENCE,
-    tokenUrl: process.env.CAMUNDA_TOKEN_URL,
+    clientId: process.env.ZEEBE_CLIENT_ID ?? "",
+    clientSecret: process.env.ZEEBE_CLIENT_SECRET ?? "",
+    tokenUrl: process.env.ZEEBE_AUTHORIZATION_SERVER_URL ?? "",
+    audience: "zeebe.camunda.io",
   },
   // Optional:
   cache: {
-    maxSize: 500,     // LRU cache size (default: 200)
-    ttlMs: 30_000,    // cache TTL in ms (default: 60_000)
+    enabled: true,    // cache eventually-consistent reads (default: false)
+    maxSize: 500,     // entries (default: 500)
+    ttl: 30_000,      // ms (default: 30_000)
   },
   retry: {
     maxAttempts: 3,   // default: 3
-    initialDelayMs: 200,
-    maxDelayMs: 5_000,
+    initialDelay: 100,
+    maxDelay: 5_000,
   },
 });
 ```
+
+With no arguments, `new CamundaClient()` reads `CAMUNDA_BASE_URL` and the `CAMUNDA_AUTH_*`
+variables, or a config file named by `CAMUNDA_CONFIG_FILE`.
 
 ---
 Source: https://bpmnkit.com/docs/packages/api

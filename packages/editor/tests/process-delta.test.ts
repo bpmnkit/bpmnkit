@@ -572,3 +572,195 @@ describe("applyProcessDelta — with lines", () => {
 		)
 	})
 })
+
+describe("applyProcessDelta forms and mappings", () => {
+	const ext = (defs: BpmnDefinitions, id: string, name: string) =>
+		element(defs, id)?.extensionElements.find((e) => e.name === name)
+
+	it("gives a new user task its form, zeebe:userTask and input", () => {
+		const out = apply(drawn(LOAN), "review > n[user Approve | form=f in.x=agent.x] > pay")
+		expect(out.problems).toEqual([])
+		const id = out.created[0] ?? ""
+		expect(ext(out.definitions, id, "zeebe:formDefinition")?.attributes.formId).toBe("f")
+		expect(ext(out.definitions, id, "zeebe:userTask")).toBeDefined()
+		expect(
+			ext(out.definitions, id, "zeebe:ioMapping")?.children.map((c) => [c.name, c.attributes]),
+		).toEqual([["zeebe:input", { source: "=agent.x", target: "x" }]])
+	})
+
+	it("sets the form and mapping of an existing node, and a restated one changes nothing", () => {
+		const defs = drawn(LOAN)
+		const out = apply(defs, "review[user Review application | form=g out.ok=resp.ok]")
+		expect(out.problems).toEqual([])
+		expect(ext(out.definitions, "review", "zeebe:formDefinition")?.attributes.formId).toBe("g")
+		expect(ext(out.definitions, "review", "zeebe:ioMapping")?.children[0]?.attributes).toEqual({
+			source: "=resp.ok",
+			target: "ok",
+		})
+		const again = apply(out.definitions, "review[user Review application | form=g out.ok=resp.ok]")
+		expect(again.changed).toEqual([])
+	})
+
+	it("reports form= on a node that cannot have one", () => {
+		const out = apply(drawn(LOAN), "pay[service Pay out | form=f]")
+		expect(out.problems.map((p) => p.message).join()).toContain("form=")
+	})
+})
+
+describe("applyProcessDelta ad-hoc sub-processes and notes", () => {
+	const AGENT = `# Agent
+start[start Go] > agent[adhoc AI Agent] > fin[end Done]
+users[service Find sample users | inside=agent]
+joke[service Get a safe joke | inside=agent]
+note joke: Each tool is a capability`
+
+	const messages = (out: { problems: { message: string }[] }) =>
+		out.problems.map((p) => p.message).join(" | ")
+	const container = (defs: BpmnDefinitions) => {
+		const agent = element(defs, "agent")
+		return agent?.type === "adHocSubProcess" ? agent : undefined
+	}
+	const notesOf = (defs: BpmnDefinitions) => defs.processes[0]?.textAnnotations ?? []
+
+	it("adds a note to an element, with its association and shapes", () => {
+		const defs = drawn(AGENT)
+		const out = apply(defs, "note agent: Runs the tools it needs")
+		expect(out.problems).toEqual([])
+		const added = notesOf(out.definitions).filter((a) => a.text === "Runs the tools it needs")
+		expect(added).toHaveLength(1)
+		const id = added[0]?.id ?? ""
+		const assoc = out.definitions.processes[0]?.associations.find(
+			(a) => a.sourceRef === "agent" && a.targetRef === id,
+		)
+		expect(assoc).toBeDefined()
+		const plane = out.definitions.diagrams[0]?.plane
+		expect(plane?.shapes.some((s) => s.bpmnElement === id)).toBe(true)
+		expect(plane?.edges.some((e) => e.bpmnElement === assoc?.id)).toBe(true)
+		expect(notesOf(defs)).toHaveLength(1)
+		// the note clears the shapes already there
+		const note = boundsOf(out.definitions, id)
+		for (const shape of plane?.shapes ?? []) {
+			if (shape.bpmnElement === id) continue
+			const b = shape.bounds
+			const apart =
+				note.x + note.width <= b.x ||
+				b.x + b.width <= note.x ||
+				note.y + note.height <= b.y ||
+				b.y + b.height <= note.y
+			const holdsIt = shape.bpmnElement === "agent"
+			expect(apart || holdsIt, shape.bpmnElement).toBe(true)
+		}
+	})
+
+	it("adds a note to a node the same script adds, and to a node inside a container", () => {
+		const out = apply(
+			drawn(AGENT),
+			"agent > review[user Review] > fin\nnote review: Check it\nnote users: Lists users",
+		)
+		expect(out.problems).toEqual([])
+		const created = out.created[0] ?? ""
+		const refs = out.definitions.processes[0]?.associations.map((a) => a.sourceRef) ?? []
+		expect(refs).toContain(created)
+		expect(refs).toContain("users")
+	})
+
+	it("reports a note that names nothing, and one with no element to hold it", () => {
+		const out = apply(drawn(AGENT), "note ghost: Nobody")
+		expect(messages(out)).toMatch(/note ghost.*not in the diagram/)
+		expect(notesOf(out.definitions)).toHaveLength(1)
+	})
+
+	it("leaves a restated note alone", () => {
+		const defs = drawn(AGENT)
+		const out = apply(defs, "note joke: Each tool is a capability")
+		expect(out.problems).toEqual([])
+		expect(notesOf(out.definitions)).toHaveLength(1)
+	})
+
+	it("answers a restated container and tools with nothing to change", () => {
+		const defs = drawn(AGENT)
+		const out = apply(defs, writeProcessText(defs).text)
+		expect(out.problems).toEqual([])
+		expect(out.changed).toEqual([])
+		expect(out.created).toEqual([])
+		expect(out.definitions).toEqual(defs)
+	})
+
+	it("renames and re-attributes a tool inside a container", () => {
+		const out = apply(drawn(AGENT), "users[service Look up users | inside=agent job=lookup]")
+		expect(out.problems).toEqual([])
+		const tool = container(out.definitions)?.flowElements.find((el) => el.id === "users")
+		expect(tool?.name).toBe("Look up users")
+		expect(
+			tool?.extensionElements.find((e) => e.name === "zeebe:taskDefinition")?.attributes.type,
+		).toBe("lookup")
+		expect(out.changed).toContain("users")
+	})
+
+	it("reports a change of kind for a tool inside a container", () => {
+		const out = apply(drawn(AGENT), "users[user Find sample users | inside=agent]")
+		expect(messages(out)).toMatch(/users.*inside/)
+		expect(container(out.definitions)?.flowElements.find((el) => el.id === "users")?.type).toBe(
+			"serviceTask",
+		)
+	})
+
+	it("reports an inside= that would move a node, and one on a node it adds", () => {
+		const moved = apply(drawn(AGENT), "start[start Go | inside=agent]")
+		expect(messages(moved)).toMatch(/inside=agent.*start/)
+		expect(container(moved.definitions)?.flowElements.map((el) => el.id)).toEqual(["users", "joke"])
+		const added = apply(drawn(AGENT), "extra[service Extra | inside=agent]")
+		expect(messages(added)).toMatch(/inside=agent on "extra".*cannot add/)
+		expect(added.created).toEqual([])
+		expect(element(added.definitions, "extra")).toBeUndefined()
+		expect(container(added.definitions)?.flowElements).toHaveLength(2)
+	})
+
+	it("reports a flow to or from a node inside a container", () => {
+		const out = apply(drawn(AGENT), "start > users")
+		expect(messages(out)).toMatch(/users.*inside/)
+		expect(flowsOf(out.definitions)).toEqual(["agent>fin", "start>agent"])
+	})
+
+	it("reports a new ad-hoc sub-process, which a script cannot add", () => {
+		const out = apply(drawn(AGENT), "agent > box[adhoc Box] > fin")
+		expect(messages(out)).toMatch(/adHocSubProcess/)
+		expect(element(out.definitions, "box")).toBeUndefined()
+	})
+})
+
+describe("applyProcessDelta doc lines", () => {
+	const AGENT = `# Agent
+start[start Go] > agent[adhoc AI Agent] > fin[end Done]
+users[service Find sample users | inside=agent]
+doc users: Lists the sample users`
+
+	it("sets documentation on an existing node, one inside a container, and a new node", () => {
+		const defs = drawn(AGENT)
+		const out = apply(
+			defs,
+			"agent > review[user Review] > fin\ndoc review: Check it\ndoc agent: Runs tools\ndoc users: Finds people",
+		)
+		expect(out.problems).toEqual([])
+		const agent = element(out.definitions, "agent")
+		const tool =
+			agent && "flowElements" in agent
+				? agent.flowElements.find((e) => e.id === "users")
+				: undefined
+		expect(tool?.documentation).toBe("Finds people")
+		expect(element(out.definitions, "agent")?.documentation).toBe("Runs tools")
+		expect(element(out.definitions, out.created[0] ?? "")?.documentation).toBe("Check it")
+		expect(out.changed).toContain("users")
+	})
+
+	it("changes nothing when the documentation is restated", () => {
+		const out = apply(drawn(AGENT), "doc users: Lists the sample users")
+		expect(out.problems).toEqual([])
+		expect(out.changed).toEqual([])
+	})
+
+	it("reports a doc that names nothing", () => {
+		const out = apply(drawn(AGENT), "doc ghost: Nobody")
+		expect(out.problems.map((p) => p.message).join()).toMatch(/doc ghost.*not in the diagram/)
+	})
+})

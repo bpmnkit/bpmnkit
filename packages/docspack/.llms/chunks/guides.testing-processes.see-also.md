@@ -1,7 +1,7 @@
 # Testing Processes — See also
 
 - [Simulation](/docs/guides/simulation): the `Engine` API under these helpers.
-- `casen test`: runs the `.bpmn.tests.json` scenario sidecars that `casen synth` writes,
+- `casen test test`: runs the `.bpmn.tests.json` scenario sidecars that `casen synth` writes,
   without a test runner.
 
 ---

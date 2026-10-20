@@ -151,17 +151,18 @@ impl WasmEngine {
 
     /// Complete a job. `variables` is a JSON string.
     pub fn complete_job(&mut self, key: f64, variables: &str) -> Result<JsValue, JsValue> {
-        let job_key = key as i64;
-        let vars: serde_json::Value = serde_json::from_str(variables)
-            .unwrap_or(serde_json::Value::Object(Default::default()));
-        let result = self.submit_and_drain(
-            "JOB", "COMPLETE",
-            serde_json::json!({
-                "jobKey": job_key.to_string(),
-                "variables": vars,
-            }),
-            "<default>",
-        ).map_err(|e| JsValue::from_str(&e))?;
+        let payload = job_complete_payload(key as i64, variables, None).map_err(|e| JsValue::from_str(&e))?;
+        let result = self.submit_and_drain("JOB", "COMPLETE", payload, "<default>")
+            .map_err(|e| JsValue::from_str(&e))?;
+        to_js_result(&result)
+    }
+
+    /// Complete a job with a completion result (JSON string), as an ad-hoc
+    /// sub-process job does to activate elements or fulfil its completion condition.
+    pub fn complete_job_with_result(&mut self, key: f64, variables: &str, result: &str) -> Result<JsValue, JsValue> {
+        let payload = job_complete_payload(key as i64, variables, Some(result)).map_err(|e| JsValue::from_str(&e))?;
+        let result = self.submit_and_drain("JOB", "COMPLETE", payload, "<default>")
+            .map_err(|e| JsValue::from_str(&e))?;
         to_js_result(&result)
     }
 
@@ -310,6 +311,24 @@ impl WasmEngine {
     }
 }
 
+/// Build the JOB COMPLETE command payload. Unparseable `variables` fall back to
+/// `{}` (long-standing `complete_job` behaviour); a malformed `result` is an error
+/// because silently dropping it would complete an ad-hoc job with no effect.
+fn job_complete_payload(job_key: i64, variables: &str, result: Option<&str>) -> Result<serde_json::Value, String> {
+    let vars: serde_json::Value = serde_json::from_str(variables)
+        .unwrap_or(serde_json::Value::Object(Default::default()));
+    let mut payload = serde_json::json!({
+        "jobKey": job_key.to_string(),
+        "variables": vars,
+    });
+    if let Some(r) = result {
+        let parsed: serde_json::Value = serde_json::from_str(r)
+            .map_err(|e| format!("invalid job result JSON: {e}"))?;
+        payload["result"] = parsed;
+    }
+    Ok(payload)
+}
+
 impl WasmEngine {
     /// Submit a command and synchronously drain all follow-up commands until
     /// the engine reaches a waiting state (no more pending commands).
@@ -430,5 +449,39 @@ impl WasmEngine {
 
         // No processor matched — not an error
         Ok(None)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn payload_without_result_matches_complete_job() {
+        let p = job_complete_payload(7, "{\"a\":1}", None).unwrap();
+        assert_eq!(p, json!({"jobKey":"7","variables":{"a":1}}));
+    }
+
+    #[test]
+    fn payload_carries_result() {
+        let p = job_complete_payload(
+            7,
+            "{}",
+            Some("{\"activateElements\":[{\"elementId\":\"T1\"}]}"),
+        )
+        .unwrap();
+        assert_eq!(p["result"]["activateElements"][0]["elementId"], "T1");
+    }
+
+    #[test]
+    fn payload_rejects_invalid_result_json() {
+        assert!(job_complete_payload(7, "{}", Some("{")).is_err());
+    }
+
+    #[test]
+    fn payload_defaults_bad_variables_to_empty_object() {
+        let p = job_complete_payload(7, "not json", None).unwrap();
+        assert_eq!(p["variables"], json!({}));
     }
 }

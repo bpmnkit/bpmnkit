@@ -62,7 +62,7 @@
 		{
 			"id": "cli.casen.view-bpmn-dmn-and-form-files",
 			"file": "chunks/cli.casen.view-bpmn-dmn-and-form-files.md",
-			"tokens": 186,
+			"tokens": 274,
 			"tags": [
 				"cli",
 				"casen",
@@ -74,7 +74,9 @@
 				"connection",
 				"profiles"
 			],
-			"entities": []
+			"entities": [
+				"config.json"
+			]
 		},
 		{
 			"id": "cli.casen.common-workflows",
@@ -102,7 +104,7 @@
 		{
 			"id": "cli.casen.bpmn-generation-pipeline",
 			"file": "chunks/cli.casen.bpmn-generation-pipeline.md",
-			"tokens": 474,
+			"tokens": 736,
 			"tags": [
 				"cli",
 				"casen",
@@ -199,7 +201,7 @@
 		{
 			"id": "cli.connector",
 			"file": "chunks/cli.connector.md",
-			"tokens": 224,
+			"tokens": 245,
 			"tags": [
 				"cli",
 				"connector",
@@ -210,7 +212,7 @@
 		{
 			"id": "cli.connector.browse-the-bundled-ootb-catalog",
 			"file": "chunks/cli.connector.browse-the-bundled-ootb-catalog.md",
-			"tokens": 416,
+			"tokens": 491,
 			"tags": [
 				"cli",
 				"connector",
@@ -225,6 +227,19 @@
 				"listConnectors()",
 				"searchConnectors()"
 			]
+		},
+		{
+			"id": "cli.connector.apply-a-template-to-a-file",
+			"file": "chunks/cli.connector.apply-a-template-to-a-file.md",
+			"tokens": 202,
+			"tags": [
+				"cli",
+				"connector",
+				"apply",
+				"template",
+				"file"
+			],
+			"entities": []
 		},
 		{
 			"id": "cli.connector.endpoints-of-an-http-api",
@@ -766,7 +781,7 @@
 		{
 			"id": "cli.skills.test",
 			"file": "chunks/cli.skills.test.md",
-			"tokens": 193,
+			"tokens": 194,
 			"tags": [
 				"cli",
 				"skills",
@@ -1198,7 +1213,7 @@
 		{
 			"id": "getting-started.quick-start.step-3-deploy-to-camunda-8",
 			"file": "chunks/getting-started.quick-start.step-3-deploy-to-camunda-8.md",
-			"tokens": 151,
+			"tokens": 321,
 			"tags": [
 				"getting-started",
 				"quick-start",
@@ -1443,7 +1458,7 @@
 		{
 			"id": "guides.ai-agents.testing-without-a-real-llm-call",
 			"file": "chunks/guides.ai-agents.testing-without-a-real-llm-call.md",
-			"tokens": 201,
+			"tokens": 202,
 			"tags": [
 				"guides",
 				"ai-agents",
@@ -1651,7 +1666,7 @@
 		{
 			"id": "guides.ai-implement",
 			"file": "chunks/guides.ai-implement.md",
-			"tokens": 403,
+			"tokens": 404,
 			"tags": [
 				"guides",
 				"ai-implement",
@@ -2312,20 +2327,21 @@
 		{
 			"id": "guides.deployment",
 			"file": "chunks/guides.deployment.md",
-			"tokens": 192,
+			"tokens": 318,
 			"tags": [
 				"guides",
 				"deployment",
 				"setup"
 			],
 			"entities": [
-				"@bpmnkit/api"
+				"@bpmnkit/api",
+				"baseUrl"
 			]
 		},
 		{
 			"id": "guides.deployment.deploying-a-process",
 			"file": "chunks/guides.deployment.deploying-a-process.md",
-			"tokens": 195,
+			"tokens": 203,
 			"tags": [
 				"guides",
 				"deployment",
@@ -2339,35 +2355,48 @@
 		{
 			"id": "guides.deployment.handling-jobs",
 			"file": "chunks/guides.deployment.handling-jobs.md",
-			"tokens": 195,
+			"tokens": 164,
 			"tags": [
 				"guides",
 				"deployment",
 				"handling",
-				"jobs",
+				"jobs"
+			],
+			"entities": [
+				"@bpmnkit/worker-client"
+			]
+		},
+		{
+			"id": "guides.deployment.querying-instances",
+			"file": "chunks/guides.deployment.querying-instances.md",
+			"tokens": 158,
+			"tags": [
+				"guides",
+				"deployment",
 				"querying",
-				"instances"
+				"instances",
+				"managing",
+				"incidents"
 			],
 			"entities": []
 		},
 		{
-			"id": "guides.deployment.managing-incidents",
-			"file": "chunks/guides.deployment.managing-incidents.md",
-			"tokens": 143,
+			"id": "guides.deployment.lifecycle-events",
+			"file": "chunks/guides.deployment.lifecycle-events.md",
+			"tokens": 182,
 			"tags": [
 				"guides",
 				"deployment",
-				"managing",
-				"incidents",
 				"lifecycle",
-				"events"
+				"events",
+				"cli"
 			],
 			"entities": []
 		},
 		{
 			"id": "guides.deployment.ci-cd-deploy-on-push",
 			"file": "chunks/guides.deployment.ci-cd-deploy-on-push.md",
-			"tokens": 222,
+			"tokens": 216,
 			"tags": [
 				"guides",
 				"deployment",
@@ -2430,7 +2459,7 @@
 		{
 			"id": "guides.drop.reviewing-it-together",
 			"file": "chunks/guides.drop.reviewing-it-together.md",
-			"tokens": 949,
+			"tokens": 877,
 			"tags": [
 				"guides",
 				"drop",
@@ -2444,7 +2473,7 @@
 		{
 			"id": "guides.drop.reviewing-it-together-2",
 			"file": "chunks/guides.drop.reviewing-it-together-2.md",
-			"tokens": 412,
+			"tokens": 654,
 			"tags": [
 				"guides",
 				"drop",
@@ -2562,6 +2591,181 @@
 				"security"
 			],
 			"entities": []
+		},
+		{
+			"id": "guides.executable-camunda-process",
+			"file": "chunks/guides.executable-camunda-process.md",
+			"tokens": 190,
+			"tags": [
+				"guides",
+				"executable-camunda-process"
+			],
+			"entities": [
+				"packages/core/tests/fixtures/bakeoff/build.ts"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-put-a-form-on-a-start-event",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-put-a-form-on-a-start-event.md",
+			"tokens": 209,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"put",
+				"form",
+				"start",
+				"event"
+			],
+			"entities": [
+				"formId",
+				"startEvent"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-map-a-user-task-s-input",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-map-a-user-task-s-input.md",
+			"tokens": 176,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"map",
+				"user",
+				"task",
+				"input"
+			],
+			"entities": [
+				"ioMapping",
+				"userTask"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-label-a-gateway-s-yes-and-no-flows",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-label-a-gateway-s-yes-and-no-flows.md",
+			"tokens": 193,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"label",
+				"gateway",
+				"yes",
+				"flows"
+			],
+			"entities": [
+				"flowId",
+				"connectTo"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-apply-an-element-template-connector-to-a-task",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-apply-an-element-template-connector-to-a-task.md",
+			"tokens": 220,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"apply",
+				"element",
+				"template",
+				"connector",
+				"task"
+			],
+			"entities": [
+				"applyTemplates",
+				"@bpmnkit/core/connectors"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.which-keys-does-a-template-take",
+			"file": "chunks/guides.executable-camunda-process.which-keys-does-a-template-take.md",
+			"tokens": 335,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"keys",
+				"template",
+				"take"
+			],
+			"entities": [
+				"retryCount",
+				"authentication.type",
+				"applyTemplates"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-with-tools-in-a-bpmn-kit-build-script-8.10-v2",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-build-an-ai-agent-sub-process-with-tools-in-a-bpmn-kit-build-script-8.10-v2.md",
+			"tokens": 396,
+			"tags": [
+				"ai",
+				"agent",
+				"tools",
+				"sub-process",
+				"ai-agent",
+				"guides",
+				"executable-camunda-process",
+				"build",
+				"bpmn",
+				"kit",
+				"script",
+				"8.10"
+			],
+			"entities": [
+				"adHocSubProcess",
+				"resultVariable"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-lay-out-the-agent-s-tools-in-a-grid.md",
+			"tokens": 169,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"lay",
+				"out",
+				"agent",
+				"tools",
+				"grid"
+			],
+			"entities": [
+				"toolGrid",
+				"adHocSubProcess"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests",
+			"file": "chunks/guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests.md",
+			"tokens": 166,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"check",
+				"file",
+				"executable",
+				"before",
+				"tests"
+			],
+			"entities": [
+				"lintDiagram",
+				"renderBpmnAscii",
+				"@bpmnkit/ascii",
+				"expected.bpmn"
+			]
+		},
+		{
+			"id": "guides.executable-camunda-process.does-it-run-test-it-with-casen-test",
+			"file": "chunks/guides.executable-camunda-process.does-it-run-test-it-with-casen-test.md",
+			"tokens": 371,
+			"tags": [
+				"guides",
+				"executable-camunda-process",
+				"run",
+				"test",
+				"casen"
+			],
+			"entities": [
+				"process.bpmn.tests.json",
+				"process.test.json"
+			]
 		},
 		{
 			"id": "guides.gateways.exclusive-gateway-xor",
@@ -3356,7 +3560,7 @@
 		{
 			"id": "guides.testing-processes.what-the-simulator-does-not-execute",
 			"file": "chunks/guides.testing-processes.what-the-simulator-does-not-execute.md",
-			"tokens": 353,
+			"tokens": 401,
 			"tags": [
 				"guides",
 				"testing-processes",
@@ -3375,7 +3579,7 @@
 		{
 			"id": "guides.testing-processes.see-also",
 			"file": "chunks/guides.testing-processes.see-also.md",
-			"tokens": 55,
+			"tokens": 56,
 			"tags": [
 				"guides",
 				"testing-processes",
@@ -3890,7 +4094,7 @@
 		{
 			"id": "packages.api.overview",
 			"file": "chunks/packages.api.overview.md",
-			"tokens": 218,
+			"tokens": 298,
 			"tags": [
 				"packages",
 				"api",
@@ -3900,13 +4104,14 @@
 				"configuration"
 			],
 			"entities": [
-				"@bpmnkit/api"
+				"@bpmnkit/api",
+				"baseUrl"
 			]
 		},
 		{
 			"id": "packages.api.resource-namespaces",
 			"file": "chunks/packages.api.resource-namespaces.md",
-			"tokens": 172,
+			"tokens": 191,
 			"tags": [
 				"packages",
 				"api",
@@ -3914,23 +4119,24 @@
 				"namespaces"
 			],
 			"entities": [
-				"client.process",
-				"client.jobs",
-				"client.incidents",
-				"client.variables",
-				"client.decisions",
-				"client.messages",
-				"client.signals",
-				"client.userTasks",
-				"client.users",
-				"client.groups",
-				"client.authorizations"
+				"client.resource",
+				"client.processInstance",
+				"client.processDefinition",
+				"client.job",
+				"client.incident",
+				"client.variable",
+				"client.message",
+				"client.signal",
+				"client.decisionDefinition",
+				"client.userTask",
+				"client.user",
+				"client.group"
 			]
 		},
 		{
 			"id": "packages.api.process-operations",
 			"file": "chunks/packages.api.process-operations.md",
-			"tokens": 238,
+			"tokens": 251,
 			"tags": [
 				"packages",
 				"api",
@@ -3939,12 +4145,14 @@
 				"job",
 				"workers"
 			],
-			"entities": []
+			"entities": [
+				"@bpmnkit/worker-client"
+			]
 		},
 		{
 			"id": "packages.api.incident-resolution",
 			"file": "chunks/packages.api.incident-resolution.md",
-			"tokens": 137,
+			"tokens": 143,
 			"tags": [
 				"packages",
 				"api",
@@ -3958,14 +4166,19 @@
 		{
 			"id": "packages.api.observability-events",
 			"file": "chunks/packages.api.observability-events.md",
-			"tokens": 94,
+			"tokens": 87,
 			"tags": [
 				"packages",
 				"api",
 				"observability",
 				"events"
 			],
-			"entities": []
+			"entities": [
+				"rawResponse",
+				"tokenRefresh",
+				"cacheHit",
+				"cacheMiss"
+			]
 		},
 		{
 			"id": "packages.ascii.overview",
@@ -4316,7 +4529,7 @@
 		{
 			"id": "packages.connectors.overview",
 			"file": "chunks/packages.connectors.overview.md",
-			"tokens": 256,
+			"tokens": 278,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4476,6 +4689,27 @@
 			]
 		},
 		{
+			"id": "packages.connectors.applying-several-templates-by-name-applytemplates",
+			"file": "chunks/packages.connectors.applying-several-templates-by-name-applytemplates.md",
+			"tokens": 488,
+			"tags": [
+				"packages",
+				"connectors",
+				"applying",
+				"several",
+				"templates",
+				"name",
+				"applytemplates"
+			],
+			"entities": [
+				"applyTemplates",
+				"applyTemplateToElement",
+				"retryCount",
+				"retryBackoff",
+				"ignoreNullValues"
+			]
+		},
+		{
 			"id": "packages.connectors.workspace-templates",
 			"file": "chunks/packages.connectors.workspace-templates.md",
 			"tokens": 710,
@@ -4518,7 +4752,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 635,
+			"tokens": 667,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4553,7 +4787,7 @@
 		{
 			"id": "packages.core.overview",
 			"file": "chunks/packages.core.overview.md",
-			"tokens": 136,
+			"tokens": 159,
 			"tags": [
 				"packages",
 				"core",
@@ -5016,7 +5250,7 @@
 		{
 			"id": "packages.core.installation-processbuilder-methods",
 			"file": "chunks/packages.core.installation-processbuilder-methods.md",
-			"tokens": 698,
+			"tokens": 717,
 			"tags": [
 				"packages",
 				"core",
@@ -5033,9 +5267,33 @@
 			]
 		},
 		{
+			"id": "packages.core.installation-forms-mappings-and-branch-flows",
+			"file": "chunks/packages.core.installation-forms-mappings-and-branch-flows.md",
+			"tokens": 224,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"forms",
+				"mappings",
+				"branch",
+				"flows"
+			],
+			"entities": [
+				"label()",
+				"flowId()",
+				"flowId",
+				"buildAiAgentSubProcess",
+				"io.camunda.connectors.agenticai.ai-agent-subprocess.v2",
+				"build()",
+				"applyTemplates",
+				"@bpmnkit/core/connectors"
+			]
+		},
+		{
 			"id": "packages.core.installation-ad-hoc-sub-processes-children-are-a-set-not-a-chain",
 			"file": "chunks/packages.core.installation-ad-hoc-sub-processes-children-are-a-set-not-a-chain.md",
-			"tokens": 368,
+			"tokens": 642,
 			"tags": [
 				"packages",
 				"core",
@@ -5047,7 +5305,10 @@
 				"not",
 				"chain"
 			],
-			"entities": []
+			"entities": [
+				"toolGrid",
+				"annotate()"
+			]
 		},
 		{
 			"id": "packages.core.installation-joins-inferred-by-default-or-declared",

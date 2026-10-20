@@ -26,7 +26,7 @@ All builder methods return `this` for chaining.
 | `.callActivity(id, options?)` | Add a call activity |
 | `.intermediateCatchEvent(id, options?)` | Add a catch event |
 | `.intermediateThrowEvent(id, options?)` | Add a throw event |
-| `.branch(id, builder)` | Define a gateway branch |
+| `.branch(id, builder)` | Define a gateway branch; inside it `.label(text)` names the first flow and `.flowId(id)` fixes its id |
 | `.boundaryEvent(id, options)` | Attach a boundary event to the previous task |
 | `.withBoundary(id, options, handler)` | Attach a boundary event and build its error/timeout path; cursor auto-restores to the main flow after the handler |
 | `.defaults(options)` | Set process-wide defaults (e.g. `{ serviceTask: { retries: "5" } }`) applied to all subsequent tasks |

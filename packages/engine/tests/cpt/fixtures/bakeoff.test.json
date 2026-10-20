@@ -1,0 +1,617 @@
+{
+	"$schema": "https://camunda.com/json-schema/cpt-test-cases/8.10/schema.json",
+	"processId": "ai-agent-chat-with-tools",
+	"testCases": [
+		{
+			"name": "Happy path — user satisfied on first response (no tool calls)",
+			"description": "The agent answers without tools; the reviewer is satisfied and the process ends.",
+			"instructions": [
+				{
+					"type": "CREATE_PROCESS_INSTANCE",
+					"processDefinitionSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"variables": {
+						"inputText": "How many legs does a spider have?"
+					}
+				},
+				{
+					"type": "COMPLETE_JOB_AD_HOC_SUB_PROCESS",
+					"jobSelector": {
+						"jobType": "io.camunda.agenticai:aiagent:subprocess:2"
+					},
+					"variables": {
+						"agent": {
+							"context": {
+								"state": "READY",
+								"metrics": {
+									"modelCalls": 1
+								}
+							},
+							"responseText": "A spider has eight legs."
+						}
+					},
+					"completionConditionFulfilled": true
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "UserTask_ReviewAgentResponse"
+						}
+					],
+					"state": "IS_ACTIVE"
+				},
+				{
+					"type": "COMPLETE_USER_TASK",
+					"userTaskSelector": {
+						"elementId": "UserTask_ReviewAgentResponse"
+					},
+					"variables": {
+						"userSatisfied": true
+					}
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "StartEvent_TaskReceived"
+						},
+						{
+							"elementId": "AI_Agent"
+						},
+						{
+							"elementId": "UserTask_ReviewAgentResponse"
+						},
+						{
+							"elementId": "EndEvent_UserSatisfied"
+						}
+					],
+					"state": "IS_COMPLETED_IN_ORDER"
+				},
+				{
+					"type": "ASSERT_PROCESS_INSTANCE",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"state": "IS_COMPLETED"
+				}
+			]
+		},
+		{
+			"name": "Loop path — user not satisfied, then satisfied on second try",
+			"description": "The reviewer asks a follow-up; the agent runs a second time and the reviewer is then satisfied.",
+			"instructions": [
+				{
+					"type": "CREATE_PROCESS_INSTANCE",
+					"processDefinitionSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"variables": {
+						"inputText": "Name a prime number."
+					}
+				},
+				{
+					"type": "COMPLETE_JOB_AD_HOC_SUB_PROCESS",
+					"jobSelector": {
+						"jobType": "io.camunda.agenticai:aiagent:subprocess:2"
+					},
+					"variables": {
+						"agent": {
+							"context": {
+								"state": "READY",
+								"metrics": {
+									"modelCalls": 1
+								}
+							},
+							"responseText": "7 is a prime number."
+						}
+					},
+					"completionConditionFulfilled": true
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "UserTask_ReviewAgentResponse"
+						}
+					],
+					"state": "IS_ACTIVE"
+				},
+				{
+					"type": "COMPLETE_USER_TASK",
+					"userTaskSelector": {
+						"elementId": "UserTask_ReviewAgentResponse"
+					},
+					"variables": {
+						"userSatisfied": false,
+						"followUpInput": "Name a larger one."
+					}
+				},
+				{
+					"type": "COMPLETE_JOB_AD_HOC_SUB_PROCESS",
+					"jobSelector": {
+						"jobType": "io.camunda.agenticai:aiagent:subprocess:2"
+					},
+					"variables": {
+						"agent": {
+							"context": {
+								"state": "READY",
+								"metrics": {
+									"modelCalls": 2
+								}
+							},
+							"responseText": "104729 is a prime number."
+						}
+					},
+					"completionConditionFulfilled": true
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "UserTask_ReviewAgentResponse"
+						}
+					],
+					"state": "IS_ACTIVE"
+				},
+				{
+					"type": "COMPLETE_USER_TASK",
+					"userTaskSelector": {
+						"elementId": "UserTask_ReviewAgentResponse"
+					},
+					"variables": {
+						"userSatisfied": true
+					}
+				},
+				{
+					"type": "ASSERT_PROCESS_INSTANCE",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"state": "IS_COMPLETED"
+				}
+			]
+		},
+		{
+			"name": "LookupSampleUsers tool — agent calls LookupSampleUsers then responds",
+			"description": "The agent calls LookupSampleUsers, gets its result and answers.",
+			"instructions": [
+				{
+					"type": "CREATE_PROCESS_INSTANCE",
+					"processDefinitionSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"variables": {
+						"inputText": "Who are the sample users?"
+					}
+				},
+				{
+					"type": "COMPLETE_JOB_AD_HOC_SUB_PROCESS",
+					"jobSelector": {
+						"jobType": "io.camunda.agenticai:aiagent:subprocess:2"
+					},
+					"variables": {
+						"agent": {
+							"context": {
+								"state": "WAITING_FOR_TOOL_CALL_RESULTS",
+								"metrics": {
+									"modelCalls": 1
+								}
+							}
+						}
+					},
+					"completionConditionFulfilled": false,
+					"activateElements": [
+						{
+							"elementId": "LookupSampleUsers",
+							"variables": {
+								"toolCall": {
+									"_meta": {
+										"id": "call-LookupSampleUsers",
+										"name": "LookupSampleUsers"
+									}
+								}
+							}
+						}
+					]
+				},
+				{
+					"type": "COMPLETE_JOB",
+					"jobSelector": {
+						"elementId": "LookupSampleUsers"
+					},
+					"variables": {
+						"toolCallResult": [
+							{
+								"id": 1,
+								"name": "Ada Example",
+								"username": "ada"
+							},
+							{
+								"id": 2,
+								"name": "Bo Example",
+								"username": "bo"
+							}
+						]
+					}
+				},
+				{
+					"type": "COMPLETE_JOB_AD_HOC_SUB_PROCESS",
+					"jobSelector": {
+						"jobType": "io.camunda.agenticai:aiagent:subprocess:2"
+					},
+					"variables": {
+						"agent": {
+							"context": {
+								"state": "READY",
+								"metrics": {
+									"modelCalls": 2
+								}
+							},
+							"responseText": "There are two users: ada and bo."
+						}
+					},
+					"completionConditionFulfilled": true
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "UserTask_ReviewAgentResponse"
+						}
+					],
+					"state": "IS_ACTIVE"
+				},
+				{
+					"type": "COMPLETE_USER_TASK",
+					"userTaskSelector": {
+						"elementId": "UserTask_ReviewAgentResponse"
+					},
+					"variables": {
+						"userSatisfied": true
+					}
+				},
+				{
+					"type": "ASSERT_PROCESS_INSTANCE",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"state": "IS_COMPLETED"
+				}
+			]
+		},
+		{
+			"name": "SearchRecipes tool — agent searches for a recipe",
+			"description": "The agent calls SearchRecipes with a search query, gets a recipe and answers.",
+			"instructions": [
+				{
+					"type": "CREATE_PROCESS_INSTANCE",
+					"processDefinitionSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"variables": {
+						"inputText": "Give me a lentil soup recipe."
+					}
+				},
+				{
+					"type": "COMPLETE_JOB_AD_HOC_SUB_PROCESS",
+					"jobSelector": {
+						"jobType": "io.camunda.agenticai:aiagent:subprocess:2"
+					},
+					"variables": {
+						"agent": {
+							"context": {
+								"state": "WAITING_FOR_TOOL_CALL_RESULTS",
+								"metrics": {
+									"modelCalls": 1
+								}
+							}
+						}
+					},
+					"completionConditionFulfilled": false,
+					"activateElements": [
+						{
+							"elementId": "SearchRecipes",
+							"variables": {
+								"toolCall": {
+									"_meta": {
+										"id": "call-SearchRecipes",
+										"name": "SearchRecipes"
+									},
+									"searchQuery": "lentil soup"
+								}
+							}
+						}
+					]
+				},
+				{
+					"type": "COMPLETE_JOB",
+					"jobSelector": {
+						"elementId": "SearchRecipes"
+					},
+					"variables": {
+						"toolCallResult": [
+							{
+								"id": 7,
+								"name": "Red Lentil Soup",
+								"prepTimeMinutes": 10,
+								"cookTimeMinutes": 25
+							}
+						]
+					}
+				},
+				{
+					"type": "COMPLETE_JOB_AD_HOC_SUB_PROCESS",
+					"jobSelector": {
+						"jobType": "io.camunda.agenticai:aiagent:subprocess:2"
+					},
+					"variables": {
+						"agent": {
+							"context": {
+								"state": "READY",
+								"metrics": {
+									"modelCalls": 2
+								}
+							},
+							"responseText": "Try Red Lentil Soup: 10 minutes prep, 25 minutes cooking."
+						}
+					},
+					"completionConditionFulfilled": true
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "UserTask_ReviewAgentResponse"
+						}
+					],
+					"state": "IS_ACTIVE"
+				},
+				{
+					"type": "COMPLETE_USER_TASK",
+					"userTaskSelector": {
+						"elementId": "UserTask_ReviewAgentResponse"
+					},
+					"variables": {
+						"userSatisfied": true
+					}
+				},
+				{
+					"type": "ASSERT_PROCESS_INSTANCE",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"state": "IS_COMPLETED"
+				}
+			]
+		},
+		{
+			"name": "FetchSafeJoke tool — agent fetches a random joke",
+			"description": "The agent calls FetchSafeJoke and passes the joke on.",
+			"instructions": [
+				{
+					"type": "CREATE_PROCESS_INSTANCE",
+					"processDefinitionSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"variables": {
+						"inputText": "Make me laugh."
+					}
+				},
+				{
+					"type": "COMPLETE_JOB_AD_HOC_SUB_PROCESS",
+					"jobSelector": {
+						"jobType": "io.camunda.agenticai:aiagent:subprocess:2"
+					},
+					"variables": {
+						"agent": {
+							"context": {
+								"state": "WAITING_FOR_TOOL_CALL_RESULTS",
+								"metrics": {
+									"modelCalls": 1
+								}
+							}
+						}
+					},
+					"completionConditionFulfilled": false,
+					"activateElements": [
+						{
+							"elementId": "FetchSafeJoke",
+							"variables": {
+								"toolCall": {
+									"_meta": {
+										"id": "call-FetchSafeJoke",
+										"name": "FetchSafeJoke"
+									}
+								}
+							}
+						}
+					]
+				},
+				{
+					"type": "COMPLETE_JOB",
+					"jobSelector": {
+						"elementId": "FetchSafeJoke"
+					},
+					"variables": {
+						"toolCallResult": "I would tell a UDP joke, but you might not get it."
+					}
+				},
+				{
+					"type": "COMPLETE_JOB_AD_HOC_SUB_PROCESS",
+					"jobSelector": {
+						"jobType": "io.camunda.agenticai:aiagent:subprocess:2"
+					},
+					"variables": {
+						"agent": {
+							"context": {
+								"state": "READY",
+								"metrics": {
+									"modelCalls": 2
+								}
+							},
+							"responseText": "Here is one: I would tell a UDP joke, but you might not get it."
+						}
+					},
+					"completionConditionFulfilled": true
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "UserTask_ReviewAgentResponse"
+						}
+					],
+					"state": "IS_ACTIVE"
+				},
+				{
+					"type": "COMPLETE_USER_TASK",
+					"userTaskSelector": {
+						"elementId": "UserTask_ReviewAgentResponse"
+					},
+					"variables": {
+						"userSatisfied": true
+					}
+				},
+				{
+					"type": "ASSERT_PROCESS_INSTANCE",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"state": "IS_COMPLETED"
+				}
+			]
+		},
+		{
+			"name": "ListSampleTechnologyProducts tool — agent gets list of tech stuff",
+			"description": "The agent calls ListSampleTechnologyProducts and summarises the list.",
+			"instructions": [
+				{
+					"type": "CREATE_PROCESS_INSTANCE",
+					"processDefinitionSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"variables": {
+						"inputText": "Which gadgets are listed?"
+					}
+				},
+				{
+					"type": "COMPLETE_JOB_AD_HOC_SUB_PROCESS",
+					"jobSelector": {
+						"jobType": "io.camunda.agenticai:aiagent:subprocess:2"
+					},
+					"variables": {
+						"agent": {
+							"context": {
+								"state": "WAITING_FOR_TOOL_CALL_RESULTS",
+								"metrics": {
+									"modelCalls": 1
+								}
+							}
+						}
+					},
+					"completionConditionFulfilled": false,
+					"activateElements": [
+						{
+							"elementId": "ListSampleTechnologyProducts",
+							"variables": {
+								"toolCall": {
+									"_meta": {
+										"id": "call-ListSampleTechnologyProducts",
+										"name": "ListSampleTechnologyProducts"
+									}
+								}
+							}
+						}
+					]
+				},
+				{
+					"type": "COMPLETE_JOB",
+					"jobSelector": {
+						"elementId": "ListSampleTechnologyProducts"
+					},
+					"variables": {
+						"toolCallResult": [
+							{
+								"id": "a1",
+								"name": "Example Phone"
+							},
+							{
+								"id": "a2",
+								"name": "Example Tablet"
+							}
+						]
+					}
+				},
+				{
+					"type": "COMPLETE_JOB_AD_HOC_SUB_PROCESS",
+					"jobSelector": {
+						"jobType": "io.camunda.agenticai:aiagent:subprocess:2"
+					},
+					"variables": {
+						"agent": {
+							"context": {
+								"state": "READY",
+								"metrics": {
+									"modelCalls": 2
+								}
+							},
+							"responseText": "Two gadgets: Example Phone and Example Tablet."
+						}
+					},
+					"completionConditionFulfilled": true
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "UserTask_ReviewAgentResponse"
+						}
+					],
+					"state": "IS_ACTIVE"
+				},
+				{
+					"type": "COMPLETE_USER_TASK",
+					"userTaskSelector": {
+						"elementId": "UserTask_ReviewAgentResponse"
+					},
+					"variables": {
+						"userSatisfied": true
+					}
+				},
+				{
+					"type": "ASSERT_PROCESS_INSTANCE",
+					"processInstanceSelector": {
+						"processDefinitionId": "ai-agent-chat-with-tools"
+					},
+					"state": "IS_COMPLETED"
+				}
+			]
+		}
+	]
+}

@@ -121,7 +121,7 @@ mechanism as any other task:
 ```
 
 ```sh
-casen test support-triage.bpmn
+casen test test support-triage.bpmn
 ```
 
 This verifies the process routes correctly through and around the agent step. It does not

@@ -1,6 +1,6 @@
 {
 	"name": "@bpmnkit/core",
-	"version": "1.5.0",
+	"version": "1.6.0",
 	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -24,7 +24,7 @@
 	},
 	"scripts": {
 		"build": "tsc",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsc --noEmit && tsc -p tsconfig.test.json",
 		"check": "biome check .",
 		"test": "vitest run",
 		"check:descriptors": "tsx scripts/descriptor-report.ts",
