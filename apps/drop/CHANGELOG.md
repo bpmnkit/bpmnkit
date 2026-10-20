@@ -1,5 +1,13 @@
 # @bpmnkit/drop
 
+## 0.4.5
+
+### Patch Changes
+
+- Updated dependencies [ab10779]
+  - @bpmnkit/core@1.6.1
+  - @bpmnkit/editor@1.5.1
+
 ## 0.4.4
 
 ### Patch Changes
