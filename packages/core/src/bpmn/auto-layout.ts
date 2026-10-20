@@ -74,6 +74,9 @@ function nodeToShape(node: LayoutNode, dx: number, dy: number): BpmnDiShape {
 		unknownAttributes: {},
 	}
 	if (node.isExpanded !== undefined) shape.isExpanded = node.isExpanded
+	// The bpmn-js Viewer draws the "X" only when the shape says so; the Modeler
+	// assumes it. `keepDiAttributes` lets an explicit value in the source win.
+	if (node.type === "exclusiveGateway") shape.isMarkerVisible = true
 	if (node.labelBounds) {
 		shape.label = {
 			bounds: {
@@ -1056,7 +1059,7 @@ export function applyAutoLayout(
 
 	return {
 		...defs,
-		diagrams: [
+		diagrams: keepDiAttributes(defs.diagrams, [
 			{
 				id: existingDiagram?.id ?? "BPMNDiagram_1",
 				plane: {
@@ -1079,8 +1082,101 @@ export function applyAutoLayout(
 				}
 			}),
 			...childPlaneDiagrams(childPlanes, defs, collapsed),
-		],
+		]),
 	}
+}
+
+/**
+ * Layout recomputes geometry only: bounds, waypoints, label bounds, and the
+ * `isExpanded` / `isHorizontal` that describe them. Everything else the source
+ * diagram said carries over by `bpmnElement` (DI ids, gateway markers, colours
+ * and other vendor attributes, diagram names and label styles), as a plain
+ * parse and export would keep it.
+ */
+function keepDiAttributes(source: BpmnDiagram[], laidOut: BpmnDiagram[]): BpmnDiagram[] {
+	// Diagrams match by the element their plane draws; `id` is optional in DI,
+	// and matching on an empty one would hand every diagram the first one's
+	// attributes and label styles (duplicate XML ids).
+	const diagramByElement = new Map<string, BpmnDiagram>()
+	const diagramById = new Map<string, BpmnDiagram>()
+	const shapeByElement = new Map<string, BpmnDiShape>()
+	const edgeByElement = new Map<string, BpmnDiEdge>()
+	const sourceIds = new Set<string>()
+	for (const diagram of source) {
+		const element = diagram.plane.bpmnElement
+		if (element && !diagramByElement.has(element)) diagramByElement.set(element, diagram)
+		if (diagram.id && !diagramById.has(diagram.id)) diagramById.set(diagram.id, diagram)
+		for (const shape of diagram.plane.shapes) {
+			if (!shapeByElement.has(shape.bpmnElement)) shapeByElement.set(shape.bpmnElement, shape)
+			sourceIds.add(shape.id)
+		}
+		for (const edge of diagram.plane.edges) {
+			if (!edgeByElement.has(edge.bpmnElement)) edgeByElement.set(edge.bpmnElement, edge)
+			sourceIds.add(edge.id)
+		}
+	}
+
+	// A source id is reused only once, so a malformed source with two shapes
+	// for one element cannot produce duplicate ids. A generated `X_di` may
+	// already be the source id of another element (one renamed from `X`), so
+	// generated ids steer clear of every source id.
+	const used = new Set<string>()
+	// An empty source id means the source omitted it; that is not one to keep.
+	const keepId = (generated: string, previous: string | undefined): string => {
+		let id = previous && !used.has(previous) ? previous : generated
+		if (id !== previous) {
+			for (let n = 2; sourceIds.has(id) || used.has(id); n++) id = `${generated}_${n}`
+		}
+		used.add(id)
+		return id
+	}
+	const keepLabel = <T extends BpmnDiShape | BpmnDiEdge>(item: T, previous: T): T => {
+		const attrs = previous.label?.unknownAttributes
+		if (!attrs) return item
+		// When layout gives the element no label bounds, the label still carries
+		// its style; BPMN DI allows a `BPMNLabel` without bounds.
+		return { ...item, label: { ...item.label, unknownAttributes: { ...attrs } } }
+	}
+
+	return laidOut.map((diagram) => {
+		const previousDiagram =
+			(diagram.plane.bpmnElement && diagramByElement.get(diagram.plane.bpmnElement)) ||
+			(diagram.id ? diagramById.get(diagram.id) : undefined)
+		const shapes = diagram.plane.shapes.map((shape) => {
+			const previous = shapeByElement.get(shape.bpmnElement)
+			if (!previous) return { ...shape, id: keepId(shape.id, undefined) }
+			const kept: BpmnDiShape = {
+				...shape,
+				id: keepId(shape.id, previous.id),
+				unknownAttributes: { ...previous.unknownAttributes },
+			}
+			// Layout sets the marker only on exclusive gateways; a source value on
+			// any other shape is stale (left from an element whose type changed).
+			if (shape.isMarkerVisible !== undefined && previous.isMarkerVisible !== undefined)
+				kept.isMarkerVisible = previous.isMarkerVisible
+			return keepLabel(kept, previous)
+		})
+		const edges = diagram.plane.edges.map((edge) => {
+			const previous = edgeByElement.get(edge.bpmnElement)
+			if (!previous) return { ...edge, id: keepId(edge.id, undefined) }
+			const kept: BpmnDiEdge = {
+				...edge,
+				id: keepId(edge.id, previous.id),
+				unknownAttributes: { ...previous.unknownAttributes },
+			}
+			return keepLabel(kept, previous)
+		})
+		const plane = { ...diagram.plane, shapes, edges }
+		const planeAttrs = previousDiagram?.plane.unknownAttributes
+		if (planeAttrs) plane.unknownAttributes = { ...planeAttrs }
+
+		const result: BpmnDiagram = { ...diagram, plane }
+		if (previousDiagram?.unknownAttributes)
+			result.unknownAttributes = { ...previousDiagram.unknownAttributes }
+		if (previousDiagram?.unknownChildren)
+			result.unknownChildren = structuredClone(previousDiagram.unknownChildren)
+		return result
+	})
 }
 
 /**
