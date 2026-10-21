@@ -92,6 +92,14 @@ aiLocal.stop();
 otherwise. To serve the feature on your own site, register the origin for the Prompt API origin trial
 and add the token in an `origin-trial` meta tag.
 
+## In Drop
+
+Add `?ai=on-device` to Drop's page (`/drop?ai=on-device`) and "Describe a process" drafts on the
+device: no access code, no challenge, no request to Drop's server. The follow-up steps that call
+the server stay off in this mode: the check for missing elements, connector configuration,
+drafting from an image and change requests. Share still works. Where the model isn't available,
+the page says so and keeps using Drop's server as usual.
+
 ## Manual test checklist
 
 - Generate three different descriptions; each opens a new tab with a valid diagram.

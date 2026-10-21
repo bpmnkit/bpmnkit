@@ -2,7 +2,7 @@
 
 ## On-device diagram generation in the web editor (2026-10-21)
 
-- `@bpmnkit/plugins/ai-local` (`createAiLocalPlugin`) and a Generate dock tab and HUD button in the landing editor turn a description into a new diagram with Chrome's built-in model (Gemini Nano, Prompt API): English only, generate only, nothing leaves the device, hidden where the model is unavailable. Opt-in on bpmnkit.com via `/editor?ai=on-device`. Maintainer step: register the origin trial and set `PUBLIC_CHROME_AI_OT_TOKEN`.
+- `@bpmnkit/plugins/ai-local` (`createAiLocalPlugin`) and a Generate dock tab and HUD button in the landing editor turn a description into a new diagram with Chrome's built-in model (Gemini Nano, Prompt API): English only, generate only, nothing leaves the device, hidden where the model is unavailable. Opt-in on bpmnkit.com via `/editor?ai=on-device`, and on Drop's describe-to-diagram page via `/drop?ai=on-device` (first draft only; server-side follow-ups off). Maintainer step: register the origin trial and set `PUBLIC_CHROME_AI_OT_TOKEN`.
 
 ## casen test runs Camunda process-test JSON on reebe (2026-10-18)
 

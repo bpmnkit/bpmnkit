@@ -1782,12 +1782,13 @@
 			"entities": []
 		},
 		{
-			"id": "guides.ai-on-device.manual-test-checklist",
-			"file": "chunks/guides.ai-on-device.manual-test-checklist.md",
-			"tokens": 111,
+			"id": "guides.ai-on-device.in-drop",
+			"file": "chunks/guides.ai-on-device.in-drop.md",
+			"tokens": 214,
 			"tags": [
 				"guides",
 				"ai-on-device",
+				"drop",
 				"manual",
 				"test",
 				"checklist"
@@ -2519,7 +2520,7 @@
 		{
 			"id": "guides.drop.reviewing-it-together",
 			"file": "chunks/guides.drop.reviewing-it-together.md",
-			"tokens": 877,
+			"tokens": 907,
 			"tags": [
 				"guides",
 				"drop",

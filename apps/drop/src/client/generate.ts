@@ -51,6 +51,14 @@ import { badgeText, readiness } from "../lib/readiness.js"
 import { AI_CODE_STORAGE_KEY, AI_PASS_HEADER } from "../shared/constants.js"
 // Types only: the dry run is its own bundle, fetched once a draft has connectors.
 import type * as DryRunModule from "./dry-run.js"
+import {
+	addOriginTrialToken,
+	downloadStatus,
+	onDeviceAvailable,
+	onDeviceFailure,
+	onDeviceRequested,
+	onDeviceText,
+} from "./on-device.js"
 
 // Short on purpose: a starting point for describing your own process.
 const EXAMPLES: readonly { label: string; text: string }[] = [
@@ -213,6 +221,27 @@ export function mountGenerator(): void {
 	}
 	if (noLimit) input.removeAttribute("maxlength")
 
+	// ?ai=on-device drafts with Chrome's built-in model while it is an origin trial.
+	// True only once the probe says the model is there; until then Drop is unchanged.
+	let onDevice = false
+	if (onDeviceRequested(location.search)) {
+		// Before the probe: the token only matters to pages that carry it.
+		addOriginTrialToken(document, __CHROME_AI_OT_TOKEN__)
+		void onDeviceAvailable().then((ok) => {
+			if (!ok) {
+				if (status.textContent === "draft") {
+					setStatus("On-device AI isn't available in this browser — using Drop's server.")
+				}
+				return
+			}
+			onDevice = true
+			// Nothing leaves the device in this mode: the AI steps that call the server go away.
+			for (const el of [imagePick?.parentElement, changeInput.parentElement]) {
+				if (el) el.hidden = true
+			}
+		})
+	}
+
 	let canvas: BpmnCanvas | null = null
 	let running: AbortController | null = null
 	/** Set when the deployment challenges describe-to-diagram; the page then carries the widget. */
@@ -230,7 +259,7 @@ export function mountGenerator(): void {
 	/** Earlier texts of this draft, newest last, for Undo. */
 	const earlier: string[] = []
 	/** The image the next draft is read from, as the JPEG data URL sent. */
-	let image: string | null = null
+	let picked: string | null = null
 	/** The latest frame not yet drawn: frames arrive faster than a screen refreshes. */
 	let pending: BpmnDefinitions | null = null
 	/** The draft with its connectors, by the draft text it was connected from, so Undo keeps them. */
@@ -534,6 +563,7 @@ export function mountGenerator(): void {
 		if (!errors || !out || !passcode || !codeInput) return null
 		errors.classList.add("hidden")
 		out.classList.add("hidden")
+		if (onDevice) return askOnDevice(body.description)
 		const typed = codeInput.value.trim()
 		if (typed) writeCode(typed)
 		const code = readCode()
@@ -636,6 +666,56 @@ export function mountGenerator(): void {
 		}
 	}
 
+	/**
+	 * The on-device source for `ask`: the same drawing and status as the server's stream,
+	 * fed by Chrome's model. Called straight from the Draw click with no await before the
+	 * first `next()`, because Chrome only creates a session under user activation.
+	 */
+	async function askOnDevice(
+		description: string,
+	): Promise<{ text: string; cached: boolean; truncated: boolean } | null> {
+		running?.abort()
+		const controller = new AbortController()
+		running = controller
+		const verb = "drafting on this device"
+		setStatus(`${verb}…`, true)
+		setBusy(true)
+		const lines = onDeviceText(description, {
+			signal: controller.signal,
+			onDownloadProgress: (loaded) => {
+				if (!controller.signal.aborted) setStatus(downloadStatus(loaded), true)
+			},
+		})
+		const stream = createProcessTextStream()
+		let text = ""
+		try {
+			for (let chunk = await lines.next(); !chunk.done; chunk = await lines.next()) {
+				text += chunk.value
+				const frame = stream.push(chunk.value)
+				if (frame) {
+					draw(frame)
+					setStatus(`${verb}… ${frame.processes[0]?.flowElements.length ?? 0} elements`, true)
+				}
+			}
+		} catch (e) {
+			if (!controller.signal.aborted) {
+				setStatus("draft")
+				showError(onDeviceFailure(e))
+			}
+			return null
+		} finally {
+			if (!controller.signal.aborted) setBusy(false)
+		}
+		if (controller.signal.aborted) return null
+		running = null
+		if (!text.trim()) {
+			setStatus("draft")
+			showError("No diagram came back.")
+			return null
+		}
+		return { text, cached: false, truncated: false }
+	}
+
 	const repaired = (problems: number) => (problems > 0 ? ` · ${problems} problem(s) repaired` : "")
 	/** Said in the status line, since the diagram looks finished whatever its end. */
 	const cutOff = (answer: { truncated: boolean }) =>
@@ -646,6 +726,8 @@ export function mountGenerator(): void {
 	async function generate(): Promise<void> {
 		if (!input || !share || !refine) return
 		const description = input.value.trim()
+		// An image goes to the server's vision model, so on the device it is not used.
+		const image = onDevice ? null : picked
 		if (!image && description.length < 10) {
 			return showError(
 				imagePick
@@ -678,6 +760,8 @@ export function mountGenerator(): void {
 				? `ready (cached)${repaired(problems)}`
 				: `ready in ${seconds}s${repaired(problems)}${cutOff(answer)}`,
 		)
+		// Both ask the server: skipped on the device, where nothing is sent anywhere.
+		if (onDevice) return
 		// A request with words to check against: an image alone has none
 		if (description.length >= 10) await complete()
 		await connect()
@@ -939,7 +1023,7 @@ export function mountGenerator(): void {
 				imageNote.textContent = note
 				return showError("That image could not be read. Try a PNG or JPEG.")
 			}
-			image = url
+			picked = url
 			imagePreview.src = url
 			imagePreview.hidden = false
 			imageClear.hidden = false
@@ -958,7 +1042,7 @@ export function mountGenerator(): void {
 			void setImage(file)
 		})
 		imageClear.addEventListener("click", () => {
-			image = null
+			picked = null
 			imagePreview.hidden = true
 			imagePreview.removeAttribute("src")
 			imageClear.hidden = true

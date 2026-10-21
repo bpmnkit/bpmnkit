@@ -1,5 +1,13 @@
 import { afterEach, describe, expect, it } from "vitest"
-import { OnDeviceError, onDeviceAvailable, onDeviceText } from "../src/client/on-device.js"
+import {
+	OnDeviceError,
+	addOriginTrialToken,
+	downloadStatus,
+	onDeviceAvailable,
+	onDeviceFailure,
+	onDeviceRequested,
+	onDeviceText,
+} from "../src/client/on-device.js"
 
 const PROCESS = "# Order\nstart[start Order received] > ship[task Ship order] > done[end Shipped]\n"
 
@@ -130,5 +138,38 @@ describe("onDeviceText", () => {
 		await expect(collect(onDeviceText("x", { signal: signal() }))).rejects.toThrow(
 			"Generation failed: boom",
 		)
+	})
+})
+
+describe("opt-in helpers", () => {
+	it("reads ?ai=on-device and nothing else", () => {
+		expect(onDeviceRequested("?ai=on-device")).toBe(true)
+		expect(onDeviceRequested("?nolimit&ai=on-device")).toBe(true)
+		expect(onDeviceRequested("")).toBe(false)
+		expect(onDeviceRequested("?ai=server")).toBe(false)
+	})
+
+	it("adds the origin-trial meta tag only with a token", () => {
+		const added: { httpEquiv?: string; content?: string }[] = []
+		const doc = {
+			createElement: () => ({}) as { httpEquiv?: string; content?: string },
+			head: { append: (m: { httpEquiv?: string; content?: string }) => added.push(m) },
+		} as never
+		addOriginTrialToken(doc, "")
+		expect(added).toEqual([])
+		addOriginTrialToken(doc, "tok")
+		expect(added).toEqual([{ httpEquiv: "origin-trial", content: "tok" }])
+	})
+
+	it("shows OnDeviceError copy as is and prefixes other errors", () => {
+		expect(onDeviceFailure(new OnDeviceError("Description too long."))).toBe(
+			"Description too long.",
+		)
+		expect(onDeviceFailure(new Error("boom"))).toBe("Generation failed: boom")
+		expect(onDeviceFailure("odd")).toBe("Generation failed: odd")
+	})
+
+	it("words download progress as a percentage", () => {
+		expect(downloadStatus(0.426)).toBe("downloading the on-device model… 43%")
 	})
 })

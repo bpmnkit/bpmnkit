@@ -62,3 +62,35 @@ export async function* onDeviceText(
 		session?.destroy()
 	}
 }
+
+/** True for `?ai=on-device`: the page opts in, nothing else triggers the probe. */
+export function onDeviceRequested(search: string): boolean {
+	return new URLSearchParams(search).get("ai") === "on-device"
+}
+
+/** The slice of `Document` used: this file is also compiled where there is no DOM lib. */
+interface MetaHost<M> {
+	createElement(tag: "meta"): M
+	head: { append(meta: M): void }
+}
+
+/**
+ * The trial token only switches the Prompt API on for pages that carry it, so it is added
+ * here, before the availability check, instead of on every page. No token, no tag.
+ */
+export function addOriginTrialToken<M>(doc: MetaHost<M>, token: string): void {
+	if (!token) return
+	const meta = doc.createElement("meta")
+	Object.assign(meta as object, { httpEquiv: "origin-trial", content: token })
+	doc.head.append(meta)
+}
+
+/** The line shown for a failure: OnDeviceError carries its own copy, anything else gets a prefix. */
+export function onDeviceFailure(e: unknown): string {
+	return e instanceof OnDeviceError ? e.message : `Generation failed: ${reason(e)}`
+}
+
+/** The status shown while Chrome fetches the model; `loaded` is a fraction. */
+export function downloadStatus(loaded: number): string {
+	return `downloading the on-device model… ${Math.round(loaded * 100)}%`
+}

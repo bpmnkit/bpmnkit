@@ -30,6 +30,7 @@ budget and the description keeps its line breaks, so headings and lists reach it
 still hits the model's output limit, the page shows "The answer was cut off at the model's output
 limit — the diagram may be incomplete." The connector step takes the long description too. The
 readiness badge names the steps that keep a draft from running, including plain tasks.
+*Describe a process* can also draft on your device with Chrome's built-in model: open `/drop?ai=on-device`. See [On-device generation](/docs/guides/ai-on-device).
 
 **Version history.** Every file keeps the original it was uploaded as, pinned and never
 overwritten, plus its ten most recent milestones. Repeated saves inside an hour collapse
