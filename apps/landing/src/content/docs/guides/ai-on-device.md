@@ -58,9 +58,16 @@ import { createAiLocalPlugin } from "@bpmnkit/plugins/ai-local";
 
 const aiLocal = createAiLocalPlugin({
   // First streamed frame: open a new tab.
-  openDiagram: (xml, name) => openTab({ type: "bpmn", xml, name }),
-  // Later frames and the final result: redraw that tab.
-  updateDiagram: (defs) => editor.loadDefinitions(defs),
+  openDiagram: (xml, name) => {
+    generatedTabId = openTab({ type: "bpmn", xml, name });
+  },
+  // Later frames and the final result: redraw that tab. Guard on the active
+  // tab so a frame never lands in a diagram the user switched to.
+  updateDiagram: (defs) => {
+    if (getActiveTabId() !== generatedTabId) return;
+    editor.loadDefinitions(defs);
+    hud.hideOnboarding(); // loadDefinitions does not lift the onboarding overlay
+  },
   container: dock.generatePane, // optional; defaults to document.body
   onOpen: () => dock.switchTab("generate"), // optional; runs when the button is clicked
 });
@@ -68,8 +75,10 @@ const aiLocal = createAiLocalPlugin({
 // `ready` is true when the model is available or can be downloaded.
 if (await aiLocal.ready) {
   dock.setGenerateTabVisible(true);
-  hud.append(aiLocal.button);
 }
+
+// The button stays hidden until `ready` resolves true; the HUD places it.
+const hud = initEditorHud(editor, { generateButton: aiLocal.button });
 
 // Call stop() when the user switches tabs mid-run.
 aiLocal.stop();
