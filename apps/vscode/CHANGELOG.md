@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.9
+
+### Patch Changes
+
+- Updated dependencies [939d06a]
+  - @bpmnkit/plugins@1.3.0
+  - @bpmnkit/editor@1.6.0
+
 ## 0.5.8
 
 ### Patch Changes

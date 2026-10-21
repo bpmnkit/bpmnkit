@@ -1,5 +1,13 @@
 # @bpmnkit/landing
 
+## 0.0.55
+
+### Patch Changes
+
+- Updated dependencies [939d06a]
+  - @bpmnkit/plugins@1.3.0
+  - @bpmnkit/editor@1.6.0
+
 ## 0.0.54
 
 ### Patch Changes
