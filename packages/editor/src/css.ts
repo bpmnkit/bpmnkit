@@ -315,6 +315,10 @@ export const HUD_CSS = `
   /* Never let a Unicode glyph be promoted to a colour emoji. */
   font-variant-emoji: text;
 }
+/* Our display:flex outranks the UA stylesheet's [hidden] rule, and a hidden
+   plugin button would otherwise still show (and keep its separator). */
+.hud-btn[hidden] { display: none; }
+.hud-sep:has(+ [hidden]) { display: none; }
 .hud-btn:hover  { background: var(--bpmnkit-chrome-hover); color: var(--bpmnkit-chrome-ink); }
 .hud-btn.active { background: var(--bpmnkit-chrome-accent); color: var(--bpmnkit-chrome-accent-fg); }
 .hud-btn:disabled { opacity: 0.3; cursor: default; }

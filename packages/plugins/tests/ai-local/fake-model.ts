@@ -14,6 +14,8 @@ export interface FakeOptions {
 export interface FakeHandle {
 	created: unknown[]
 	destroyed: number
+	/** The download monitor's target, so a test can fire progress after the fact. */
+	progressTarget?: EventTarget
 }
 
 type SessionOptions = Pick<FakeOptions, "chunks" | "contextWindow" | "usage" | "streamError">
@@ -71,6 +73,7 @@ export function installFakeModel(o: FakeOptions = {}): FakeHandle {
 			if (opts.monitor) {
 				const target = new EventTarget()
 				opts.monitor(target)
+				handle.progressTarget = target
 				for (const loaded of o.progress ?? []) {
 					target.dispatchEvent(Object.assign(new Event("downloadprogress"), { loaded }))
 				}

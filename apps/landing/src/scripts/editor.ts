@@ -317,6 +317,8 @@ document.body.appendChild(processRunnerPlugin.toolbar)
 // assigned after it returns, so the activation openTab itself triggers never
 // counts as the user leaving it.
 let generatedTabId: string | null = null
+// openTab activates the tab before it returns the id, so onTabActivate needs this to recognise it.
+let openingGeneratedTab = false
 
 const bridge = createStorageTabsBridge({
 	mainMenu: mainMenuPlugin,
@@ -383,7 +385,10 @@ const bridge = createStorageTabsBridge({
 			generatedTabId = null
 		}
 		const isBpmn = config.type === "bpmn"
-		const showOnboard = isBpmn && !!config.xml && isNewEmptyDiagram(config.xml)
+		// A first frame can be a lone start event, which looks like a new empty diagram;
+		// onboarding would cover the stream and skip loading it.
+		const isGenerated = openingGeneratedTab || id === generatedTabId
+		const showOnboard = isBpmn && !isGenerated && !!config.xml && isNewEmptyDiagram(config.xml)
 		setHudVisible(true)
 		hudRef?.setActive(isBpmn)
 		if (isBpmn && config.xml && !showOnboard) {
@@ -487,10 +492,18 @@ const aiLocalPlugin = createAiLocalPlugin({
 	openDiagram: (xml, name) => {
 		// A previous run's id would make openTab's own activation stop this run.
 		generatedTabId = null
-		generatedTabId = bridge.tabsPlugin.api.openTab({ type: "bpmn", xml, name })
+		openingGeneratedTab = true
+		try {
+			generatedTabId = bridge.tabsPlugin.api.openTab({ type: "bpmn", xml, name })
+		} finally {
+			openingGeneratedTab = false
+		}
 	},
 	updateDiagram: (defs) => {
-		if (bridge.tabsPlugin.api.getActiveTabId() === generatedTabId) editorRef?.loadDefinitions(defs)
+		if (bridge.tabsPlugin.api.getActiveTabId() !== generatedTabId) return
+		editorRef?.loadDefinitions(defs)
+		// loadDefinitions emits diagram:load only, which does not lift the onboarding overlay.
+		hudRef?.hideOnboarding()
 	},
 	container: dock.generatePane,
 	onOpen: () => {

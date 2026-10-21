@@ -115,6 +115,26 @@ describe("HUD control inventory", () => {
 	})
 })
 
+describe("hidden plugin buttons", () => {
+	// .hud-btn sets display:flex, which beats the UA [hidden] rule; without these
+	// rules a plugin button hidden until its feature is ready shows in every browser.
+	it("declares CSS that keeps a hidden button and its separator out of layout", () => {
+		expect(HUD_CSS).toMatch(/\.hud-btn\[hidden\]\s*\{\s*display:\s*none/)
+		expect(HUD_CSS).toMatch(/\.hud-sep:has\(\+ \[hidden\]\)\s*\{\s*display:\s*none/)
+	})
+
+	it("leaves a hidden generateButton hidden, right after its separator", () => {
+		const container = makeContainer()
+		const editor = new BpmnEditor({ container, xml: XML, grid: false })
+		const generateButton = document.createElement("button")
+		generateButton.hidden = true
+		initEditorHud(editor, { generateButton })
+		expect(generateButton.hidden).toBe(true)
+		expect(generateButton.previousElementSibling?.classList.contains("hud-sep")).toBe(true)
+		editor.destroy()
+	})
+})
+
 describe("design-system invariants", () => {
 	const sheets: ReadonlyArray<[string, string]> = [
 		["EDITOR_CSS", EDITOR_CSS],

@@ -168,6 +168,18 @@ describe("createAiLocalPlugin", () => {
 		expect(s.status.textContent).toBe("Stopped")
 		expect(handle.destroyed).toBe(1)
 	})
+	it("ignores a download progress event that arrives after Stop", async () => {
+		const s = await setup()
+		s.type("x")
+		s.run.click()
+		s.run.click()
+		await settle()
+		expect(s.status.textContent).toBe("Stopped")
+		const target = handle.progressTarget
+		expect(target).toBeDefined()
+		target?.dispatchEvent(Object.assign(new Event("downloadprogress"), { loaded: 0.5 }))
+		expect(s.status.textContent).toBe("Stopped")
+	})
 	it("explains a quota error", async () => {
 		const s = await setup({
 			chunks: [lines[0] ?? "", lines[1] ?? ""],

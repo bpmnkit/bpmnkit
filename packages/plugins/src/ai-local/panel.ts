@@ -79,8 +79,12 @@ export function createAiLocalPanel(o: PanelOptions): {
 			try {
 				session = await createSession({
 					signal: ac.signal,
-					onDownloadProgress: (loaded) =>
-						setStatus(`Downloading the on-device model… ${Math.round(loaded * 100)}%`),
+					// A late event must not overwrite "Stopped" (or a newer run's status).
+					onDownloadProgress: (loaded) => {
+						if (controller === ac && !ac.signal.aborted) {
+							setStatus(`Downloading the on-device model… ${Math.round(loaded * 100)}%`)
+						}
+					},
 				})
 			} catch (e) {
 				if (ac.signal.aborted) return setStatus("Stopped")
@@ -96,7 +100,7 @@ export function createAiLocalPanel(o: PanelOptions): {
 				onFrame(defs) {
 					if (opened) return o.updateDiagram(defs)
 					opened = true
-					o.openDiagram(Bpmn.export(defs), defs.processes[0]?.name ?? "Generated process")
+					o.openDiagram(Bpmn.export(defs), defs.processes[0]?.name || "Generated process")
 				},
 			})
 			if (!result) {

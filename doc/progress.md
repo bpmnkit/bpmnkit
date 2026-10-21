@@ -9,6 +9,7 @@
 - Guide: `guides/ai-on-device.md` (requirements, enabling the `#prompt-api-for-gemini-nano` flag, embedding, manual test checklist).
 - Tests: `packages/plugins/tests/ai-local/*` (prompt, model, generate, plugin, with a fake model) and `packages/editor/tests/dock.test.ts`.
 - Maintainer step: register bpmnkit.com for the Prompt API origin trial and set `PUBLIC_CHROME_AI_OT_TOKEN` at build time.
+- Fixes: the hidden Generate HUD button (and its separator) now stay hidden (`.hud-btn[hidden]` / `.hud-sep:has(+ [hidden])` in the HUD CSS, which our `display:flex` had overridden); the generated tab never shows the onboarding overlay; late download-progress events no longer overwrite "Stopped"; the integrator guide shows the `generateButton` option.
 
 ## 2026-10-20 — Exclusive-gateway markers outside auto-layout (#251)
 
