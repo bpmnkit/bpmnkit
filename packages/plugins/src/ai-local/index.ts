@@ -1,9 +1,11 @@
 import type { BpmnDefinitions } from "@bpmnkit/core"
 import { generateProcess } from "./generate.js"
-import { checkAvailability } from "./model.js"
+import { checkAvailability, createSession, fitsContext } from "./model.js"
+import type { Availability, LocalSession } from "./model.js"
 import { createAiLocalPanel } from "./panel.js"
 
-export { generateProcess, checkAvailability }
+export { generateProcess, checkAvailability, createSession, fitsContext }
+export type { Availability, LocalSession }
 
 export interface AiLocalPluginOptions {
 	/** Called with the first streamed frame; opens a new diagram tab. */
