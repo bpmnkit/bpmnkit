@@ -7,6 +7,8 @@ export interface FakeOptions {
 	usage?: number
 	createError?: Error
 	progress?: number[]
+	/** The stream errors with this after the chunks, like a mid-run quota failure. */
+	streamError?: Error
 }
 
 export interface FakeHandle {
@@ -14,7 +16,7 @@ export interface FakeHandle {
 	destroyed: number
 }
 
-type SessionOptions = Pick<FakeOptions, "chunks" | "contextWindow" | "usage">
+type SessionOptions = Pick<FakeOptions, "chunks" | "contextWindow" | "usage" | "streamError">
 
 /** A session that streams one chunk per pull and errors with `signal.reason` on abort. */
 export function fakeSession(
@@ -40,8 +42,10 @@ export function fakeSession(
 				pull(controller) {
 					if (signal?.aborted) return
 					const chunk = chunks[i++]
-					if (chunk === undefined) controller.close()
-					else controller.enqueue(chunk)
+					if (chunk === undefined) {
+						if (o.streamError) controller.error(o.streamError)
+						else controller.close()
+					} else controller.enqueue(chunk)
 				},
 			})
 		},

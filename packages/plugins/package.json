@@ -8,6 +8,10 @@
 			"import": "./dist/ai-bridge/index.js",
 			"types": "./dist/ai-bridge/index.d.ts"
 		},
+		"./ai-local": {
+			"import": "./dist/ai-local/index.js",
+			"types": "./dist/ai-local/index.d.ts"
+		},
 		"./ascii-view": {
 			"import": "./dist/ascii-view/index.js",
 			"types": "./dist/ascii-view/index.d.ts"
