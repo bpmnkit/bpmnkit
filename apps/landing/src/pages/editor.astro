@@ -1,5 +1,7 @@
 ---
 import Seo from "@bpmnkit/astro-shared/Seo.astro"
+
+const otToken = import.meta.env.PUBLIC_CHROME_AI_OT_TOKEN
 ---
 
 <!doctype html>
@@ -8,6 +10,7 @@ import Seo from "@bpmnkit/astro-shared/Seo.astro"
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {otToken && <meta http-equiv="origin-trial" content={otToken} />}
     <Seo
       title="BPMN Editor — BPMN Kit"
       description="Design and edit BPMN 2.0 diagrams in the browser — a drag-and-drop editor with a properties panel and AI bridge, powered by @bpmnkit/editor."

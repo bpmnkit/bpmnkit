@@ -4,6 +4,7 @@ import { AVAILABLE_LOCALES, BpmnEditor, createSideDock, initEditorHud } from "@b
 import type { Tool } from "@bpmnkit/editor"
 import { Engine } from "@bpmnkit/engine"
 import { createAiBridgePlugin } from "@bpmnkit/plugins/ai-bridge"
+import { createAiLocalPlugin } from "@bpmnkit/plugins/ai-local"
 import { createAsciiViewPlugin } from "@bpmnkit/plugins/ascii-view"
 import { createCommandPalettePlugin } from "@bpmnkit/plugins/command-palette"
 import { createCommandPaletteEditorPlugin } from "@bpmnkit/plugins/command-palette-editor"
@@ -312,6 +313,10 @@ document.body.appendChild(processRunnerPlugin.toolbar)
 
 // ── Storage + Tabs bridge ─────────────────────────────────────────────────────
 
+// Tab opened by the on-device Generate run; null before openTab returns, so the
+// activation openTab itself triggers never counts as the user leaving it.
+let generatedTabId: string | null = null
+
 const bridge = createStorageTabsBridge({
 	mainMenu: mainMenuPlugin,
 	translate,
@@ -372,6 +377,10 @@ const bridge = createStorageTabsBridge({
 		}
 	},
 	onTabActivate(id, config) {
+		if (generatedTabId !== null && id !== generatedTabId) {
+			aiLocalPlugin.stop()
+			generatedTabId = null
+		}
 		const isBpmn = config.type === "bpmn"
 		const showOnboard = isBpmn && !!config.xml && isNewEmptyDiagram(config.xml)
 		setHudVisible(true)
@@ -472,6 +481,21 @@ const aiBridgePlugin = createAiBridgePlugin({
 	},
 })
 _aiPlugin = aiBridgePlugin
+
+const aiLocalPlugin = createAiLocalPlugin({
+	openDiagram: (xml, name) => {
+		generatedTabId = bridge.tabsPlugin.api.openTab({ type: "bpmn", xml, name })
+	},
+	updateDiagram: (defs) => {
+		if (bridge.tabsPlugin.api.getActiveTabId() === generatedTabId) editorRef?.loadDefinitions(defs)
+	},
+	container: dock.generatePane,
+	onOpen: () => {
+		if (dock.collapsed) dock.expand()
+		dock.switchTab("generate")
+	},
+})
+void aiLocalPlugin.ready.then((ok) => dock.setGenerateTabVisible(ok))
 
 // Wire AI tab click to initialize+open the panel (it's lazily created on first use)
 dock.setAiTabClickHandler(() => {
@@ -607,6 +631,7 @@ editorOn("diagram:change", () => {
 })
 
 hudRef = initEditorHud(editor, {
+	generateButton: aiLocalPlugin.button,
 	openProcess: (processId) => bridge.tabsPlugin.api.navigateToProcess(processId),
 	getAvailableProcesses: () => bridge.tabsPlugin.api.getAvailableProcesses(),
 	createProcess: (name, onCreated) => {
