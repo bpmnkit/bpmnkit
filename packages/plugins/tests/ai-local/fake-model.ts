@@ -32,6 +32,8 @@ export function fakeSession(
 			let i = 0
 			return new ReadableStream<string>({
 				start(controller) {
+					// The real API rejects at once for a signal that is already aborted.
+					if (signal?.aborted) return controller.error(signal.reason)
 					// Abort must surface as a stream error, like the real API.
 					signal?.addEventListener("abort", () => controller.error(signal.reason), { once: true })
 				},
