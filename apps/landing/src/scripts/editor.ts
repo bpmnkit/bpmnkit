@@ -381,7 +381,7 @@ const bridge = createStorageTabsBridge({
 	},
 	onTabActivate(id, config) {
 		if (generatedTabId !== null && id !== generatedTabId) {
-			aiLocalPlugin.stop()
+			aiLocalPlugin?.stop()
 			generatedTabId = null
 		}
 		const isBpmn = config.type === "bpmn"
@@ -488,30 +488,47 @@ const aiBridgePlugin = createAiBridgePlugin({
 })
 _aiPlugin = aiBridgePlugin
 
-const aiLocalPlugin = createAiLocalPlugin({
-	openDiagram: (xml, name) => {
-		// A previous run's id would make openTab's own activation stop this run.
-		generatedTabId = null
-		openingGeneratedTab = true
-		try {
-			generatedTabId = bridge.tabsPlugin.api.openTab({ type: "bpmn", xml, name })
-		} finally {
-			openingGeneratedTab = false
-		}
-	},
-	updateDiagram: (defs) => {
-		if (bridge.tabsPlugin.api.getActiveTabId() !== generatedTabId) return
-		editorRef?.loadDefinitions(defs)
-		// loadDefinitions emits diagram:load only, which does not lift the onboarding overlay.
-		hudRef?.hideOnboarding()
-	},
-	container: dock.generatePane,
-	onOpen: () => {
-		if (dock.collapsed) dock.expand()
-		dock.switchTab("generate")
-	},
-})
-void aiLocalPlugin.ready.then((ok) => dock.setGenerateTabVisible(ok))
+// On-device generation is opt-in while it is an origin trial: /editor?ai=on-device.
+const onDeviceAi = new URLSearchParams(location.search).get("ai") === "on-device"
+
+if (onDeviceAi) {
+	// The trial token only switches the Prompt API on for pages that carry it, so it is added
+	// here, before the plugin checks availability, instead of on every editor page.
+	const token = import.meta.env.PUBLIC_CHROME_AI_OT_TOKEN
+	if (token) {
+		const meta = document.createElement("meta")
+		meta.httpEquiv = "origin-trial"
+		meta.content = token
+		document.head.append(meta)
+	}
+}
+
+const aiLocalPlugin = onDeviceAi
+	? createAiLocalPlugin({
+			openDiagram: (xml, name) => {
+				// A previous run's id would make openTab's own activation stop this run.
+				generatedTabId = null
+				openingGeneratedTab = true
+				try {
+					generatedTabId = bridge.tabsPlugin.api.openTab({ type: "bpmn", xml, name })
+				} finally {
+					openingGeneratedTab = false
+				}
+			},
+			updateDiagram: (defs) => {
+				if (bridge.tabsPlugin.api.getActiveTabId() !== generatedTabId) return
+				editorRef?.loadDefinitions(defs)
+				// loadDefinitions emits diagram:load only, which does not lift the onboarding overlay.
+				hudRef?.hideOnboarding()
+			},
+			container: dock.generatePane,
+			onOpen: () => {
+				if (dock.collapsed) dock.expand()
+				dock.switchTab("generate")
+			},
+		})
+	: null
+void aiLocalPlugin?.ready.then((ok) => dock.setGenerateTabVisible(ok))
 
 // Wire AI tab click to initialize+open the panel (it's lazily created on first use)
 dock.setAiTabClickHandler(() => {
@@ -647,7 +664,7 @@ editorOn("diagram:change", () => {
 })
 
 hudRef = initEditorHud(editor, {
-	generateButton: aiLocalPlugin.button,
+	generateButton: aiLocalPlugin?.button ?? null,
 	openProcess: (processId) => bridge.tabsPlugin.api.navigateToProcess(processId),
 	getAvailableProcesses: () => bridge.tabsPlugin.api.getAvailableProcesses(),
 	createProcess: (name, onCreated) => {

@@ -11,6 +11,7 @@
 1. Open `chrome://flags` and set **Prompt API for Gemini Nano** (`#prompt-api-for-gemini-nano`) to Enabled.
 2. Restart Chrome.
 3. Optional: open `chrome://on-device-internals` to check whether the model is available on this device.
+4. Open the editor at `/editor?ai=on-device`.
 
 The first Generate downloads the model once; the panel shows the progress. If Chrome cannot prepare
 the model (for example, no disk space), the panel says why.

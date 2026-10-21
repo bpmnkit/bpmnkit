@@ -130,8 +130,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Building Processes with AI — Lightweight alternative: `casen skills install`](.llms/chunks/guides.ai-implement.lightweight-alternative-casen-skills-install.md) — 172 tokens
 - [Building Processes with AI — Deploying](.llms/chunks/guides.ai-implement.deploying.md) — 255 tokens
 - [Building Processes with AI — Extending an existing process](.llms/chunks/guides.ai-implement.extending-an-existing-process.md) — 100 tokens
-- [On-device generation in Chrome](.llms/chunks/guides.ai-on-device.md) — 288 tokens
-- [On-device generation in Chrome — Requirements](.llms/chunks/guides.ai-on-device.requirements.md) — 193 tokens
+- [On-device generation in Chrome](.llms/chunks/guides.ai-on-device.md) — 328 tokens
+- [On-device generation in Chrome — Requirements](.llms/chunks/guides.ai-on-device.requirements.md) — 204 tokens
 - [On-device generation in Chrome — Messages](.llms/chunks/guides.ai-on-device.messages.md) — 158 tokens
 - [On-device generation in Chrome — Embed it](.llms/chunks/guides.ai-on-device.embed-it.md) — 315 tokens
 - [On-device generation in Chrome — Manual test checklist](.llms/chunks/guides.ai-on-device.manual-test-checklist.md) — 111 tokens

@@ -10,6 +10,9 @@ The model never writes BPMN XML. It writes BPMN Kit's line-based process text, w
 
 ## What it does
 
+While the Prompt API is an origin trial, the feature is opt-in: open the editor at
+[`/editor?ai=on-device`](/editor?ai=on-device). Without that parameter the editor does not load it.
+
 - A **Generate** button and a **Generate** dock tab appear in the editor. Where the browser has no
   on-device model, neither appears and nothing is logged.
 - Type a description (up to 2,000 characters) and press Generate. A **new tab** opens, named from the

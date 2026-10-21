@@ -2,6 +2,7 @@
 
 ## 2026-10-21 — On-device diagram generation in the web editor (Chrome Prompt API)
 
+- Opt-in on bpmnkit.com: the web editor creates the `ai-local` plugin only for `/editor?ai=on-device`, and only then adds the `origin-trial` meta tag (token from `PUBLIC_CHROME_AI_OT_TOKEN`) from the script; `editor.astro` no longer emits it statically.
 - New `@bpmnkit/plugins/ai-local`: `createAiLocalPlugin({ openDiagram, updateDiagram, container?, onOpen? })` describes a process to Chrome's on-device model (Gemini Nano, Prompt API) and streams BPMN Kit's process text through `createProcessTextStream`, so the diagram grows as lines arrive. The model never writes XML. Nothing leaves the device and nothing is called in CI.
 - `@bpmnkit/editor`: a hidden `generate` dock tab and pane (`setGenerateTabVisible`, following the Tests tab) and a `generateButton` HUD slot.
 - `apps/landing`: the web editor creates the plugin; Generate opens a new tab, frames land only while that tab is active, and switching tabs calls `stop()`. The tab and HUD button show only when the model is available, downloadable or downloading; elsewhere nothing appears. `editor.astro` emits the `origin-trial` meta tag when `PUBLIC_CHROME_AI_OT_TOKEN` is set at build time.

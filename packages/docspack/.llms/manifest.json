@@ -1737,7 +1737,7 @@
 		{
 			"id": "guides.ai-on-device",
 			"file": "chunks/guides.ai-on-device.md",
-			"tokens": 288,
+			"tokens": 328,
 			"tags": [
 				"guides",
 				"ai-on-device"
@@ -1749,7 +1749,7 @@
 		{
 			"id": "guides.ai-on-device.requirements",
 			"file": "chunks/guides.ai-on-device.requirements.md",
-			"tokens": 193,
+			"tokens": 204,
 			"tags": [
 				"guides",
 				"ai-on-device",
