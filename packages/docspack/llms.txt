@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.2.0. 394 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.2.1. 399 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -130,6 +130,11 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Building Processes with AI — Lightweight alternative: `casen skills install`](.llms/chunks/guides.ai-implement.lightweight-alternative-casen-skills-install.md) — 172 tokens
 - [Building Processes with AI — Deploying](.llms/chunks/guides.ai-implement.deploying.md) — 255 tokens
 - [Building Processes with AI — Extending an existing process](.llms/chunks/guides.ai-implement.extending-an-existing-process.md) — 100 tokens
+- [On-device generation in Chrome](.llms/chunks/guides.ai-on-device.md) — 288 tokens
+- [On-device generation in Chrome — Requirements](.llms/chunks/guides.ai-on-device.requirements.md) — 193 tokens
+- [On-device generation in Chrome — Messages](.llms/chunks/guides.ai-on-device.messages.md) — 158 tokens
+- [On-device generation in Chrome — Embed it](.llms/chunks/guides.ai-on-device.embed-it.md) — 229 tokens
+- [On-device generation in Chrome — Manual test checklist](.llms/chunks/guides.ai-on-device.manual-test-checklist.md) — 111 tokens
 - [AI Integration](.llms/chunks/guides.ai.md) — 478 tokens
 - [AI Integration — Minimal Empty Diagram](.llms/chunks/guides.ai.minimal-empty-diagram.md) — 247 tokens
 - [AI Integration — Claude API Example](.llms/chunks/guides.ai.claude-api-example.md) — 226 tokens

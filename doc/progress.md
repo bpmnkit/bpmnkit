@@ -1,5 +1,15 @@
 # Progress
 
+## 2026-10-21 — On-device diagram generation in the web editor (Chrome Prompt API)
+
+- New `@bpmnkit/plugins/ai-local`: `createAiLocalPlugin({ openDiagram, updateDiagram, container?, onOpen? })` describes a process to Chrome's on-device model (Gemini Nano, Prompt API) and streams BPMN Kit's process text through `createProcessTextStream`, so the diagram grows as lines arrive. The model never writes XML. Nothing leaves the device and nothing is called in CI.
+- `@bpmnkit/editor`: a hidden `generate` dock tab and pane (`setGenerateTabVisible`, following the Tests tab) and a `generateButton` HUD slot.
+- `apps/landing`: the web editor creates the plugin; Generate opens a new tab, frames land only while that tab is active, and switching tabs calls `stop()`. The tab and HUD button show only when the model is available, downloadable or downloading; elsewhere nothing appears. `editor.astro` emits the `origin-trial` meta tag when `PUBLIC_CHROME_AI_OT_TOKEN` is set at build time.
+- Behaviour: description up to 2,000 characters, English only, generate only. Stop keeps the partial diagram. Each failure (too long, model not prepared, context overflow, stream error, prose answer) shows one message and leaves open tabs untouched.
+- Guide: `guides/ai-on-device.md` (requirements, enabling the `#prompt-api-for-gemini-nano` flag, embedding, manual test checklist).
+- Tests: `packages/plugins/tests/ai-local/*` (prompt, model, generate, plugin, with a fake model) and `packages/editor/tests/dock.test.ts`.
+- Maintainer step: register bpmnkit.com for the Prompt API origin trial and set `PUBLIC_CHROME_AI_OT_TOKEN` at build time.
+
 ## 2026-10-20 — Exclusive-gateway markers outside auto-layout (#251)
 
 - Follow-up to #250, which marked exclusive gateways in auto-layout only. Four more paths created an exclusive-gateway shape without `isMarkerVisible`, so the bpmn-js Viewer drew an empty diamond:
