@@ -1,7 +1,7 @@
 {
 	"$schema": "https://docspack.dev/schema/v1.json",
 	"name": "@bpmnkit/docspack",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"documents": [
 		"@bpmnkit/core",
 		"@bpmnkit/canvas",
@@ -1735,6 +1735,67 @@
 			"entities": []
 		},
 		{
+			"id": "guides.ai-on-device",
+			"file": "chunks/guides.ai-on-device.md",
+			"tokens": 328,
+			"tags": [
+				"guides",
+				"ai-on-device"
+			],
+			"entities": [
+				"parseProcessText"
+			]
+		},
+		{
+			"id": "guides.ai-on-device.requirements",
+			"file": "chunks/guides.ai-on-device.requirements.md",
+			"tokens": 204,
+			"tags": [
+				"guides",
+				"ai-on-device",
+				"requirements",
+				"enable",
+				"locally"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-on-device.messages",
+			"file": "chunks/guides.ai-on-device.messages.md",
+			"tokens": 158,
+			"tags": [
+				"guides",
+				"ai-on-device",
+				"messages"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-on-device.embed-it",
+			"file": "chunks/guides.ai-on-device.embed-it.md",
+			"tokens": 315,
+			"tags": [
+				"guides",
+				"ai-on-device",
+				"embed"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-on-device.in-drop",
+			"file": "chunks/guides.ai-on-device.in-drop.md",
+			"tokens": 214,
+			"tags": [
+				"guides",
+				"ai-on-device",
+				"drop",
+				"manual",
+				"test",
+				"checklist"
+			],
+			"entities": []
+		},
+		{
 			"id": "guides.ai",
 			"file": "chunks/guides.ai.md",
 			"tokens": 478,
@@ -2459,7 +2520,7 @@
 		{
 			"id": "guides.drop.reviewing-it-together",
 			"file": "chunks/guides.drop.reviewing-it-together.md",
-			"tokens": 877,
+			"tokens": 907,
 			"tags": [
 				"guides",
 				"drop",

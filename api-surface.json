@@ -751,6 +751,16 @@
 			"createAiBridgePlugin": "value",
 			"createAiPanel": "value"
 		},
+		"./ai-local": {
+			"AiLocalPluginOptions": "type",
+			"Availability": "type",
+			"LocalSession": "type",
+			"checkAvailability": "value",
+			"createAiLocalPlugin": "value",
+			"createSession": "value",
+			"fitsContext": "value",
+			"generateProcess": "value"
+		},
 		"./ascii-view": {
 			"ASCII_VIEW_CSS": "value",
 			"ASCII_VIEW_STYLE_ID": "value",

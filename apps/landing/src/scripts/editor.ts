@@ -4,6 +4,7 @@ import { AVAILABLE_LOCALES, BpmnEditor, createSideDock, initEditorHud } from "@b
 import type { Tool } from "@bpmnkit/editor"
 import { Engine } from "@bpmnkit/engine"
 import { createAiBridgePlugin } from "@bpmnkit/plugins/ai-bridge"
+import { createAiLocalPlugin } from "@bpmnkit/plugins/ai-local"
 import { createAsciiViewPlugin } from "@bpmnkit/plugins/ascii-view"
 import { createCommandPalettePlugin } from "@bpmnkit/plugins/command-palette"
 import { createCommandPaletteEditorPlugin } from "@bpmnkit/plugins/command-palette-editor"
@@ -312,6 +313,13 @@ document.body.appendChild(processRunnerPlugin.toolbar)
 
 // ── Storage + Tabs bridge ─────────────────────────────────────────────────────
 
+// Tab opened by the on-device Generate run; reset to null before each openTab and
+// assigned after it returns, so the activation openTab itself triggers never
+// counts as the user leaving it.
+let generatedTabId: string | null = null
+// openTab activates the tab before it returns the id, so onTabActivate needs this to recognise it.
+let openingGeneratedTab = false
+
 const bridge = createStorageTabsBridge({
 	mainMenu: mainMenuPlugin,
 	translate,
@@ -372,8 +380,15 @@ const bridge = createStorageTabsBridge({
 		}
 	},
 	onTabActivate(id, config) {
+		if (generatedTabId !== null && id !== generatedTabId) {
+			aiLocalPlugin?.stop()
+			generatedTabId = null
+		}
 		const isBpmn = config.type === "bpmn"
-		const showOnboard = isBpmn && !!config.xml && isNewEmptyDiagram(config.xml)
+		// A first frame can be a lone start event, which looks like a new empty diagram;
+		// onboarding would cover the stream and skip loading it.
+		const isGenerated = openingGeneratedTab || id === generatedTabId
+		const showOnboard = isBpmn && !isGenerated && !!config.xml && isNewEmptyDiagram(config.xml)
 		setHudVisible(true)
 		hudRef?.setActive(isBpmn)
 		if (isBpmn && config.xml && !showOnboard) {
@@ -472,6 +487,48 @@ const aiBridgePlugin = createAiBridgePlugin({
 	},
 })
 _aiPlugin = aiBridgePlugin
+
+// On-device generation is opt-in while it is an origin trial: /editor?ai=on-device.
+const onDeviceAi = new URLSearchParams(location.search).get("ai") === "on-device"
+
+if (onDeviceAi) {
+	// The trial token only switches the Prompt API on for pages that carry it, so it is added
+	// here, before the plugin checks availability, instead of on every editor page.
+	const token = import.meta.env.PUBLIC_CHROME_AI_OT_TOKEN
+	if (token) {
+		const meta = document.createElement("meta")
+		meta.httpEquiv = "origin-trial"
+		meta.content = token
+		document.head.append(meta)
+	}
+}
+
+const aiLocalPlugin = onDeviceAi
+	? createAiLocalPlugin({
+			openDiagram: (xml, name) => {
+				// A previous run's id would make openTab's own activation stop this run.
+				generatedTabId = null
+				openingGeneratedTab = true
+				try {
+					generatedTabId = bridge.tabsPlugin.api.openTab({ type: "bpmn", xml, name })
+				} finally {
+					openingGeneratedTab = false
+				}
+			},
+			updateDiagram: (defs) => {
+				if (bridge.tabsPlugin.api.getActiveTabId() !== generatedTabId) return
+				editorRef?.loadDefinitions(defs)
+				// loadDefinitions emits diagram:load only, which does not lift the onboarding overlay.
+				hudRef?.hideOnboarding()
+			},
+			container: dock.generatePane,
+			onOpen: () => {
+				if (dock.collapsed) dock.expand()
+				dock.switchTab("generate")
+			},
+		})
+	: null
+void aiLocalPlugin?.ready.then((ok) => dock.setGenerateTabVisible(ok))
 
 // Wire AI tab click to initialize+open the panel (it's lazily created on first use)
 dock.setAiTabClickHandler(() => {
@@ -607,6 +664,7 @@ editorOn("diagram:change", () => {
 })
 
 hudRef = initEditorHud(editor, {
+	generateButton: aiLocalPlugin?.button ?? null,
 	openProcess: (processId) => bridge.tabsPlugin.api.navigateToProcess(processId),
 	getAvailableProcesses: () => bridge.tabsPlugin.api.getAvailableProcesses(),
 	createProcess: (name, onCreated) => {

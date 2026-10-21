@@ -16,6 +16,8 @@ const shared = {
 	sourcemap: false,
 	outdir: "public/drop/assets",
 	logLevel: "info",
+	// The Prompt API origin-trial token, baked in so only a build that has one adds the meta tag.
+	define: { __CHROME_AI_OT_TOKEN__: JSON.stringify(process.env.PUBLIC_CHROME_AI_OT_TOKEN ?? "") },
 }
 
 await build({
