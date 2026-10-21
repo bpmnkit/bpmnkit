@@ -54,6 +54,9 @@ import type * as DryRunModule from "./dry-run.js"
 import {
 	addOriginTrialToken,
 	downloadStatus,
+	initialMode,
+	mayCallServer,
+	mayDraft,
 	onDeviceAvailable,
 	onDeviceFailure,
 	onDeviceRequested,
@@ -222,21 +225,22 @@ export function mountGenerator(): void {
 	if (noLimit) input.removeAttribute("maxlength")
 
 	// ?ai=on-device drafts with Chrome's built-in model while it is an origin trial.
-	// True only once the probe says the model is there; until then Drop is unchanged.
-	let onDevice = false
-	if (onDeviceRequested(location.search)) {
+	// "probing" until the check settles, so nothing reaches the server in the meantime.
+	let mode = initialMode(onDeviceRequested(location.search))
+	const CHECKING = "checking for the on-device model…"
+	if (mode === "probing") {
 		// Before the probe: the token only matters to pages that carry it.
 		addOriginTrialToken(document, __CHROME_AI_OT_TOKEN__)
 		void onDeviceAvailable().then((ok) => {
+			mode = ok ? "device" : "server"
+			const idle = status.textContent === "draft" || status.textContent === CHECKING
 			if (!ok) {
-				if (status.textContent === "draft") {
-					setStatus("On-device AI isn't available in this browser — using Drop's server.")
-				}
+				if (idle) setStatus("On-device AI isn't available in this browser — using Drop's server.")
 				return
 			}
-			onDevice = true
+			if (status.textContent === CHECKING) setStatus("draft")
 			// Nothing leaves the device in this mode: the AI steps that call the server go away.
-			for (const el of [imagePick?.parentElement, changeInput.parentElement]) {
+			for (const el of [imagePick?.parentElement, changeInput.parentElement, questions]) {
 				if (el) el.hidden = true
 			}
 		})
@@ -563,7 +567,7 @@ export function mountGenerator(): void {
 		if (!errors || !out || !passcode || !codeInput) return null
 		errors.classList.add("hidden")
 		out.classList.add("hidden")
-		if (onDevice) return askOnDevice(body.description)
+		if (mode === "device") return askOnDevice(body.description)
 		const typed = codeInput.value.trim()
 		if (typed) writeCode(typed)
 		const code = readCode()
@@ -699,6 +703,7 @@ export function mountGenerator(): void {
 			}
 		} catch (e) {
 			if (!controller.signal.aborted) {
+				running = null
 				setStatus("draft")
 				showError(onDeviceFailure(e))
 			}
@@ -725,9 +730,10 @@ export function mountGenerator(): void {
 
 	async function generate(): Promise<void> {
 		if (!input || !share || !refine) return
+		if (!mayDraft(mode)) return setStatus(CHECKING)
 		const description = input.value.trim()
 		// An image goes to the server's vision model, so on the device it is not used.
-		const image = onDevice ? null : picked
+		const image = mode === "device" ? null : picked
 		if (!image && description.length < 10) {
 			return showError(
 				imagePick
@@ -761,7 +767,7 @@ export function mountGenerator(): void {
 				: `ready in ${seconds}s${repaired(problems)}${cutOff(answer)}`,
 		)
 		// Both ask the server: skipped on the device, where nothing is sent anywhere.
-		if (onDevice) return
+		if (!mayCallServer(mode)) return
 		// A request with words to check against: an image alone has none
 		if (description.length >= 10) await complete()
 		await connect()
@@ -806,6 +812,7 @@ export function mountGenerator(): void {
 	 * task a connector fits, or a failure leave the draft as it is.
 	 */
 	async function connect(lines?: string): Promise<void> {
+		if (!mayCallServer(mode)) return
 		if (!draft || !result || !status) return
 		const code = readCode()
 		if (!code) return
@@ -890,6 +897,7 @@ export function mountGenerator(): void {
 
 	/** Asks for `request` to be made to the draft on screen, and draws the result. */
 	async function change(request: string): Promise<void> {
+		if (!mayCallServer(mode)) return
 		if (!draft || !changeInput) return
 		const text = request.trim()
 		if (text.length < MIN_CHANGE_CHARS) {
@@ -1037,7 +1045,8 @@ export function mountGenerator(): void {
 		})
 		input.addEventListener("paste", (e) => {
 			const file = [...(e.clipboardData?.files ?? [])].find((f) => f.type.startsWith("image/"))
-			if (!file) return
+			// The image row is hidden on the device: leave the paste to the textarea.
+			if (!file || mode === "device") return
 			e.preventDefault()
 			void setImage(file)
 		})

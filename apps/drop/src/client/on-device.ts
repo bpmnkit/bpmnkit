@@ -94,3 +94,17 @@ export function onDeviceFailure(e: unknown): string {
 export function downloadStatus(loaded: number): string {
 	return `downloading the on-device model… ${Math.round(loaded * 100)}%`
 }
+
+/**
+ * Where drafting runs. "probing" only while `?ai=on-device` waits for the availability
+ * check; "device" once the model is there; "server" otherwise (today's behaviour).
+ */
+export type DraftMode = "probing" | "device" | "server"
+
+export const initialMode = (requested: boolean): DraftMode => (requested ? "probing" : "server")
+
+/** The probe never gates a click on an await (that would spend the user activation), so a Draw during it waits. */
+export const mayDraft = (mode: DraftMode): boolean => mode !== "probing"
+
+/** Every request to Drop's server (draft, gap check, connectors, changes, images): never on the device. */
+export const mayCallServer = (mode: DraftMode): boolean => mode === "server"

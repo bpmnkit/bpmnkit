@@ -3,6 +3,9 @@ import {
 	OnDeviceError,
 	addOriginTrialToken,
 	downloadStatus,
+	initialMode,
+	mayCallServer,
+	mayDraft,
 	onDeviceAvailable,
 	onDeviceFailure,
 	onDeviceRequested,
@@ -171,5 +174,27 @@ describe("opt-in helpers", () => {
 
 	it("words download progress as a percentage", () => {
 		expect(downloadStatus(0.426)).toBe("downloading the on-device model… 43%")
+	})
+})
+
+describe("draft mode", () => {
+	it("probes only when the page opted in", () => {
+		expect(initialMode(true)).toBe("probing")
+		expect(initialMode(false)).toBe("server")
+	})
+
+	it("sends nothing while probing", () => {
+		expect(mayDraft("probing")).toBe(false)
+		expect(mayCallServer("probing")).toBe(false)
+	})
+
+	it("never calls the server on the device", () => {
+		expect(mayDraft("device")).toBe(true)
+		expect(mayCallServer("device")).toBe(false)
+	})
+
+	it("keeps today's behaviour on the server", () => {
+		expect(mayDraft("server")).toBe(true)
+		expect(mayCallServer("server")).toBe(true)
 	})
 })
