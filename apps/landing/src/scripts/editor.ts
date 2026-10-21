@@ -313,8 +313,9 @@ document.body.appendChild(processRunnerPlugin.toolbar)
 
 // ── Storage + Tabs bridge ─────────────────────────────────────────────────────
 
-// Tab opened by the on-device Generate run; null before openTab returns, so the
-// activation openTab itself triggers never counts as the user leaving it.
+// Tab opened by the on-device Generate run; reset to null before each openTab and
+// assigned after it returns, so the activation openTab itself triggers never
+// counts as the user leaving it.
 let generatedTabId: string | null = null
 
 const bridge = createStorageTabsBridge({
@@ -484,6 +485,8 @@ _aiPlugin = aiBridgePlugin
 
 const aiLocalPlugin = createAiLocalPlugin({
 	openDiagram: (xml, name) => {
+		// A previous run's id would make openTab's own activation stop this run.
+		generatedTabId = null
 		generatedTabId = bridge.tabsPlugin.api.openTab({ type: "bpmn", xml, name })
 	},
 	updateDiagram: (defs) => {
