@@ -1,5 +1,13 @@
 # @bpmnkit/studio
 
+## 0.2.6
+
+### Patch Changes
+
+- Updated dependencies [939d06a]
+  - @bpmnkit/plugins@1.3.0
+  - @bpmnkit/editor@1.6.0
+
 ## 0.2.5
 
 ### Patch Changes
