@@ -42,6 +42,9 @@ import {
 } from "./stable-ids.js"
 import {
 	type ZeebeExtensions,
+	type ZeebeListener,
+	assertZeebePlacement,
+	bpmnElementName,
 	ensureZeebeExtension,
 	zeebeExtensionsToXmlElements,
 } from "./zeebe-extensions.js"
@@ -59,10 +62,14 @@ export interface ElementOptions {
 	isForCompensation?: boolean
 	/** Free-text documentation (`<bpmn:documentation>`). Used by the AI Agent connector as a tool description. */
 	documentation?: string
+	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
+	executionListeners?: ZeebeListener[]
 }
 
 /** Options for send/receive task elements. */
 export interface MessageTaskOptions extends ElementOptions {
+	/** Runs the activity once per item of a list. */
+	multiInstance?: MultiInstanceOptions
 	/** Message name — generates or reuses a root <bpmn:message> and sets messageRef. */
 	messageName?: string
 	/** FEEL expression correlating this message to a specific process instance (`zeebe:subscription`). */
@@ -102,6 +109,10 @@ export interface StartEventOptions extends ElementOptions {
 
 /** Options for creating a service task. */
 export interface ServiceTaskOptions {
+	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
+	executionListeners?: ZeebeListener[]
+	/** Runs the activity once per item of a list. */
+	multiInstance?: MultiInstanceOptions
 	/** Display name (required for BPMN canvas visibility). */
 	name: string
 	/** Zeebe job type for this task. */
@@ -133,6 +144,10 @@ export interface ServiceTaskOptions {
 
 /** Options for creating a script task. */
 export interface ScriptTaskOptions {
+	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
+	executionListeners?: ZeebeListener[]
+	/** Runs the activity once per item of a list. */
+	multiInstance?: MultiInstanceOptions
 	/** Display name. */
 	name?: string
 	/** FEEL expression for the script. */
@@ -147,6 +162,12 @@ export interface ScriptTaskOptions {
 
 /** Options for creating a user task. */
 export interface UserTaskOptions {
+	/** Listeners on the user task's own lifecycle (`zeebe:taskListeners`); needs `zeebeUserTask`. */
+	taskListeners?: ZeebeListener[]
+	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
+	executionListeners?: ZeebeListener[]
+	/** Runs the activity once per item of a list. */
+	multiInstance?: MultiInstanceOptions
 	/** Display name. */
 	name?: string
 	/** Form key or form reference. */
@@ -188,6 +209,10 @@ export interface UserTaskOptions {
 
 /** Options for creating a call activity. */
 export interface CallActivityOptions {
+	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
+	executionListeners?: ZeebeListener[]
+	/** Runs the activity once per item of a list. */
+	multiInstance?: MultiInstanceOptions
 	/** Display name. */
 	name?: string
 	/** Process ID to call. */
@@ -222,6 +247,10 @@ export interface CallActivityOptions {
 
 /** Options for creating a business rule task. */
 export interface BusinessRuleTaskOptions {
+	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
+	executionListeners?: ZeebeListener[]
+	/** Runs the activity once per item of a list. */
+	multiInstance?: MultiInstanceOptions
 	/** Display name. */
 	name?: string
 	/** Zeebe job type. */
@@ -369,6 +398,10 @@ export interface MultiInstanceOptions {
 	isSequential?: boolean
 	collection?: string
 	elementVariable?: string
+	/** Variable that collects each instance's output element (`zeebe:loopCharacteristics`). */
+	outputCollection?: string
+	/** FEEL expression evaluated per instance and appended to `outputCollection`. */
+	outputElement?: string
 	completionCondition?: string
 }
 
@@ -652,25 +685,38 @@ function isLinkEvent(
 function makeFlowElement(
 	id: string,
 	type: BpmnElementType,
-	options?: { name?: string; extensionElements?: XmlElement[]; documentation?: string },
+	options?: {
+		name?: string
+		extensionElements?: XmlElement[]
+		documentation?: string
+		executionListeners?: ZeebeListener[]
+		taskListeners?: ZeebeListener[]
+	},
 ): BpmnFlowElement {
-	return createFlowElement(id, type, options)
+	const el = createFlowElement(id, type, options)
+	el.extensionElements = [...el.extensionElements]
+	// Placement is checked here, so a listener on an element the schema forbids it on
+	// fails at build time, not at deploy time.
+	const listeners = zeebeExtensionsToXmlElements({
+		...(options?.executionListeners ? { executionListeners: options.executionListeners } : {}),
+		...(options?.taskListeners ? { taskListeners: options.taskListeners } : {}),
+	})
+	for (const listener of listeners) {
+		assertZeebePlacement(bpmnElementName(el), listener.name)
+		el.extensionElements.push(listener)
+	}
+	return el
 }
 
 function buildMultiInstance(options: MultiInstanceOptions): BpmnMultiInstanceLoopCharacteristics {
 	const extChildren: XmlElement[] = []
+	// Zeebe needs inputCollection, so output-only options emit nothing (as before).
 	if (options.collection) {
-		const attrs: Record<string, string> = {
-			inputCollection: options.collection,
-		}
-		if (options.elementVariable) {
-			attrs.inputElement = options.elementVariable
-		}
-		extChildren.push({
-			name: "zeebe:loopCharacteristics",
-			attributes: attrs,
-			children: [],
-		})
+		const attrs: Record<string, string> = { inputCollection: options.collection }
+		if (options.elementVariable) attrs.inputElement = options.elementVariable
+		if (options.outputCollection) attrs.outputCollection = options.outputCollection
+		if (options.outputElement) attrs.outputElement = options.outputElement
+		extChildren.push({ name: "zeebe:loopCharacteristics", attributes: attrs, children: [] })
 	}
 	return {
 		isSequential: options.isSequential || undefined,
@@ -682,6 +728,25 @@ function buildMultiInstance(options: MultiInstanceOptions): BpmnMultiInstanceLoo
 			: undefined,
 		extensionElements: extChildren,
 	}
+}
+
+/** Sets `multiInstance` on an activity; the one place every task type shares. */
+function withMultiInstance(
+	el: BpmnFlowElement,
+	mi: MultiInstanceOptions | undefined,
+): BpmnFlowElement {
+	if (!mi) return el
+	switch (el.type) {
+		case "serviceTask":
+		case "userTask":
+		case "scriptTask":
+		case "sendTask":
+		case "receiveTask":
+		case "businessRuleTask":
+		case "callActivity":
+			el.loopCharacteristics = buildMultiInstance(mi)
+	}
+	return el
 }
 
 function buildAdHocLoopCharacteristics(lc: {
@@ -873,16 +938,20 @@ function makeServiceTaskEl(id: string, options: ServiceTaskOptions): BpmnFlowEle
 		name: options.name,
 		documentation: options.documentation,
 		extensionElements: buildServiceTaskExtensions(options),
+		executionListeners: options.executionListeners,
+		// Not in ServiceTaskOptions; forwarded so an untyped caller gets the placement error, not a silent drop.
+		taskListeners: (options as { taskListeners?: ZeebeListener[] }).taskListeners,
 	})
 	el.unknownAttributes = unknownAttributes
 	if (options.isForCompensation) el.isForCompensation = true
-	return el
+	return withMultiInstance(el, options.multiInstance)
 }
 
 function makeScriptTaskEl(id: string, options: ScriptTaskOptions): BpmnFlowElement {
 	const el = makeFlowElement(id, "scriptTask", {
 		name: options.name,
 		documentation: options.documentation,
+		executionListeners: options.executionListeners,
 		extensionElements: zeebeExtensionsToXmlElements({
 			unknownElements: [
 				{
@@ -894,7 +963,7 @@ function makeScriptTaskEl(id: string, options: ScriptTaskOptions): BpmnFlowEleme
 		}),
 	})
 	if (options.isForCompensation) el.isForCompensation = true
-	return el
+	return withMultiInstance(el, options.multiInstance)
 }
 
 function applyModelerTemplate(
@@ -919,6 +988,7 @@ function makeStartEventEl(id: string, options?: StartEventOptions): BpmnFlowElem
 	const el = makeFlowElement(id, "startEvent", {
 		name: options?.name,
 		documentation: options?.documentation,
+		executionListeners: options?.executionListeners,
 		extensionElements: zeebeExtensionsToXmlElements({
 			...(options?.formId ? { formDefinition: { formId: options.formId } } : {}),
 			...(options?.zeebeProperties ? { properties: { properties: options.zeebeProperties } } : {}),
@@ -952,11 +1022,13 @@ function makeUserTaskEl(id: string, options?: UserTaskOptions): BpmnFlowElement 
 	const el = makeFlowElement(id, "userTask", {
 		name: options?.name,
 		documentation: options?.documentation,
+		executionListeners: options?.executionListeners,
+		taskListeners: options?.taskListeners,
 		extensionElements: ext,
 	})
 	if (options) applyModelerTemplate(el, options)
 	if (options?.isForCompensation) el.isForCompensation = true
-	return el
+	return withMultiInstance(el, options?.multiInstance)
 }
 
 function makeBusinessRuleTaskEl(id: string, options?: BusinessRuleTaskOptions): BpmnFlowElement {
@@ -977,10 +1049,11 @@ function makeBusinessRuleTaskEl(id: string, options?: BusinessRuleTaskOptions): 
 	const el = makeFlowElement(id, "businessRuleTask", {
 		name: options?.name,
 		documentation: options?.documentation,
+		executionListeners: options?.executionListeners,
 		extensionElements: ext,
 	})
 	if (options?.isForCompensation) el.isForCompensation = true
-	return el
+	return withMultiInstance(el, options?.multiInstance)
 }
 
 function makeCallActivityEl(id: string, options: CallActivityOptions): BpmnFlowElement {
@@ -1003,10 +1076,11 @@ function makeCallActivityEl(id: string, options: CallActivityOptions): BpmnFlowE
 	const el = makeFlowElement(id, "callActivity", {
 		name: options.name,
 		documentation: options.documentation,
+		executionListeners: options.executionListeners,
 		extensionElements: zeebeExtensionsToXmlElements(extensions),
 	})
 	if (options.isForCompensation) el.isForCompensation = true
-	return el
+	return withMultiInstance(el, options.multiInstance)
 }
 
 function makeExclusiveGatewayEl(id: string, options?: GatewayOptions): BpmnFlowElement {
@@ -1506,7 +1580,7 @@ export class BranchBuilder {
 		const el = makeFlowElement(id, "sendTask", options) as BpmnSendTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
-		return this.addElement(el)
+		return this.addElement(withMultiInstance(el, options?.multiInstance))
 	}
 
 	receiveTask(id: string, options?: MessageTaskOptions): this {
@@ -1516,7 +1590,7 @@ export class BranchBuilder {
 		}) as BpmnReceiveTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
-		return this.addElement(el)
+		return this.addElement(withMultiInstance(el, options?.multiInstance))
 	}
 
 	businessRuleTask(id: string, options?: BusinessRuleTaskOptions): this {
@@ -1778,6 +1852,7 @@ export class BranchBuilder {
 		const element = makeFlowElement(id, "adHocSubProcess", {
 			name: resolved.options?.name,
 			documentation: resolved.options?.documentation,
+			executionListeners: resolved.options?.executionListeners,
 			extensionElements,
 		})
 		finalizeAdHocSubProcessEl(element, resolved.options, sub, completionCondition)
@@ -2082,7 +2157,7 @@ export class SubProcessContentBuilder {
 		const el = makeFlowElement(id, "sendTask", options) as BpmnSendTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
-		return this.addElement(el)
+		return this.addElement(withMultiInstance(el, options?.multiInstance))
 	}
 
 	receiveTask(id: string, options?: MessageTaskOptions): this {
@@ -2092,7 +2167,7 @@ export class SubProcessContentBuilder {
 		}) as BpmnReceiveTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
-		return this.addElement(el)
+		return this.addElement(withMultiInstance(el, options?.multiInstance))
 	}
 
 	/** Add a manual task — work performed outside the engine, with no job worker. */
@@ -2382,6 +2457,7 @@ export class SubProcessContentBuilder {
 		const element = makeFlowElement(id, "adHocSubProcess", {
 			name: resolved.options?.name,
 			documentation: resolved.options?.documentation,
+			executionListeners: resolved.options?.executionListeners,
 			extensionElements,
 		})
 		finalizeAdHocSubProcessEl(element, resolved.options, sub, completionCondition)
@@ -2975,7 +3051,7 @@ export class ProcessBuilder {
 		const el = makeFlowElement(id, "sendTask", options) as BpmnSendTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
-		this.addFlowElement(el)
+		this.addFlowElement(withMultiInstance(el, options?.multiInstance))
 		return this
 	}
 
@@ -2987,7 +3063,7 @@ export class ProcessBuilder {
 		}) as BpmnReceiveTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
-		this.addFlowElement(el)
+		this.addFlowElement(withMultiInstance(el, options?.multiInstance))
 		return this
 	}
 
@@ -3190,6 +3266,7 @@ export class ProcessBuilder {
 		const element = makeFlowElement(id, "adHocSubProcess", {
 			name: resolved.options?.name,
 			documentation: resolved.options?.documentation,
+			executionListeners: resolved.options?.executionListeners,
 			extensionElements,
 		})
 		finalizeAdHocSubProcessEl(element, resolved.options, sub, completionCondition)

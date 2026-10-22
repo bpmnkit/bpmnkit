@@ -5345,7 +5345,7 @@
 		{
 			"id": "packages.core.installation-forms-mappings-and-branch-flows",
 			"file": "chunks/packages.core.installation-forms-mappings-and-branch-flows.md",
-			"tokens": 224,
+			"tokens": 341,
 			"tags": [
 				"packages",
 				"core",
@@ -5356,14 +5356,18 @@
 				"flows"
 			],
 			"entities": [
+				"serviceTask",
+				"userTask",
+				"scriptTask",
+				"sendTask",
+				"receiveTask",
+				"businessRuleTask",
+				"callActivity",
+				"taskListeners",
+				"ZeebePlacementError",
 				"label()",
 				"flowId()",
-				"flowId",
-				"buildAiAgentSubProcess",
-				"io.camunda.connectors.agenticai.ai-agent-subprocess.v2",
-				"build()",
-				"applyTemplates",
-				"@bpmnkit/core/connectors"
+				"flowId"
 			]
 		},
 		{

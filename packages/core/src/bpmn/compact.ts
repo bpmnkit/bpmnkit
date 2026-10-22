@@ -105,7 +105,16 @@ export interface CompactElement {
 	 * `collection` is the FEEL expression of the list, `element` the variable each
 	 * instance gets its item in. In parallel unless `sequential`.
 	 */
-	multiInstance?: { collection: string; element?: string; sequential?: boolean }
+	multiInstance?: {
+		collection: string
+		element?: string
+		sequential?: boolean
+		/** Variable collecting each instance's `outputElement`. */
+		outputCollection?: string
+		outputElement?: string
+		/** FEEL expression that ends the loop early. */
+		completionCondition?: string
+	}
 	/** A timer event's ISO 8601 duration (`PT5M`): how long it waits once reached. */
 	timerDuration?: string
 }
@@ -347,6 +356,12 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		if (zeebeLoop.attributes.inputElement)
 			result.multiInstance.element = zeebeLoop.attributes.inputElement
 		if (loop.isSequential) result.multiInstance.sequential = true
+		if (zeebeLoop.attributes.outputCollection)
+			result.multiInstance.outputCollection = zeebeLoop.attributes.outputCollection
+		if (zeebeLoop.attributes.outputElement)
+			result.multiInstance.outputElement = zeebeLoop.attributes.outputElement
+		if (loop.completionCondition?.text)
+			result.multiInstance.completionCondition = loop.completionCondition.text
 	}
 
 	if (el.type === "boundaryEvent") {
@@ -795,12 +810,24 @@ export function buildFlowElement(
 	const loop = el.multiInstance && {
 		loopCharacteristics: {
 			isSequential: el.multiInstance.sequential || undefined,
+			completionCondition: el.multiInstance.completionCondition
+				? {
+						text: el.multiInstance.completionCondition,
+						attributes: { "xsi:type": "bpmn:tFormalExpression" },
+					}
+				: undefined,
 			extensionElements: [
 				{
 					name: "zeebe:loopCharacteristics",
 					attributes: {
 						inputCollection: el.multiInstance.collection,
 						...(el.multiInstance.element ? { inputElement: el.multiInstance.element } : {}),
+						...(el.multiInstance.outputCollection
+							? { outputCollection: el.multiInstance.outputCollection }
+							: {}),
+						...(el.multiInstance.outputElement
+							? { outputElement: el.multiInstance.outputElement }
+							: {}),
 					},
 					children: [],
 				},

@@ -10,9 +10,12 @@ import {
 } from "./compact.js"
 import type { BpmnOperation, ElementPatch } from "./operations.js"
 import {
+	type ZeebeListener,
+	assertZeebePlacement,
 	bpmnElementName,
 	ensureZeebeExtension,
 	isZeebePlacementAllowed,
+	zeebeExtensionsToXmlElements,
 } from "./zeebe-extensions.js"
 
 /**
@@ -162,7 +165,7 @@ function ensureExtension(element: BpmnFlowElement, name: string): XmlElement {
 }
 
 /** The Zeebe extension each patch field writes to, for the placement check. */
-const PATCH_EXTENSIONS: ReadonlyArray<[keyof CompactElement, string]> = [
+const PATCH_EXTENSIONS: ReadonlyArray<[keyof ElementPatch, string]> = [
 	["jobType", "zeebe:taskDefinition"],
 	["formId", "zeebe:formDefinition"],
 	["calledProcess", "zeebe:calledElement"],
@@ -179,6 +182,8 @@ const PATCH_EXTENSIONS: ReadonlyArray<[keyof CompactElement, string]> = [
 	["followUpDate", "zeebe:taskSchedule"],
 	["priority", "zeebe:priorityDefinition"],
 	["properties", "zeebe:properties"],
+	["executionListeners", "zeebe:executionListeners"],
+	["taskListeners", "zeebe:taskListeners"],
 ]
 
 /**
@@ -248,6 +253,23 @@ function setTaskHeaders(element: BpmnFlowElement, headers: Record<string, string
 		attributes: { key, value },
 		children: [],
 	}))
+}
+
+/** Replaces the listener container wholesale, like headers; an empty list removes it. */
+function setListeners(
+	element: BpmnFlowElement,
+	extensionName: "zeebe:executionListeners" | "zeebe:taskListeners",
+	listeners: ZeebeListener[],
+): void {
+	if (listeners.length > 0) assertZeebePlacement(bpmnElementName(element), extensionName)
+	element.extensionElements = element.extensionElements.filter((e) => e.name !== extensionName)
+	if (listeners.length === 0) return
+	const [rebuilt] = zeebeExtensionsToXmlElements(
+		extensionName === "zeebe:executionListeners"
+			? { executionListeners: listeners }
+			: { taskListeners: listeners },
+	)
+	if (rebuilt) element.extensionElements.push(rebuilt)
 }
 
 /** Replaces the `zeebe:properties` children, which, like headers, are a map. */
@@ -421,6 +443,12 @@ function patchElement(
 		setOrClearAttribute(element, "zeebe:priorityDefinition", "priority", String(patch.priority))
 	}
 	if (patch.properties !== undefined) setProperties(element, patch.properties)
+	if (patch.executionListeners !== undefined) {
+		setListeners(element, "zeebe:executionListeners", patch.executionListeners)
+	}
+	if (patch.taskListeners !== undefined) {
+		setListeners(element, "zeebe:taskListeners", patch.taskListeners)
+	}
 	if (subscription && patch.correlationKey !== undefined) {
 		subscription.attributes.correlationKey = patch.correlationKey
 	}

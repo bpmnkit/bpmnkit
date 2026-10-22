@@ -1,5 +1,6 @@
 import { assertCompactDiagram } from "./argument-guards.js"
 import type { CompactDiagram, CompactElement, CompactFlow, CompactProcess } from "./compact.js"
+import type { ZeebeListener } from "./zeebe-extensions.js"
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -15,6 +16,13 @@ export type ElementPatch = Partial<CompactElement> & {
 	 * applies it: the compact form has no messages to hold it.
 	 */
 	correlationKey?: string
+	/**
+	 * Replaces the element's `zeebe:executionListeners`; `[]` removes them. Only
+	 * {@link applyBpmnOperations} applies it: the compact form carries no listeners.
+	 */
+	executionListeners?: ZeebeListener[]
+	/** Replaces a user task's `zeebe:taskListeners`; `[]` removes them. Same scope as above. */
+	taskListeners?: ZeebeListener[]
 }
 
 /**

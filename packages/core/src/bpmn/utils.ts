@@ -15,6 +15,7 @@ import type {
 	ZeebeFormDefinition,
 	ZeebeIoMapping,
 	ZeebeIoMappingEntry,
+	ZeebeListener,
 	ZeebeProperties,
 	ZeebeTaskDefinition,
 	ZeebeTaskHeaders,
@@ -170,6 +171,24 @@ function findChild(elements: XmlElement[], tag: string): XmlElement | undefined 
 	return elements.find((c) => localName(c.name) === tag)
 }
 
+function readListeners(container: XmlElement, tag: string): ZeebeListener[] {
+	return findChildren(container.children, tag).map((c) => {
+		const listener: ZeebeListener = {
+			eventType: c.attributes.eventType ?? "",
+			type: c.attributes.type ?? "",
+		}
+		if (c.attributes.retries !== undefined) listener.retries = c.attributes.retries
+		const headers = findChild(c.children, "taskHeaders")
+		if (headers) {
+			listener.headers = findChildren(headers.children, "header").map((h) => ({
+				key: h.attributes.key ?? "",
+				value: h.attributes.value ?? "",
+			}))
+		}
+		return listener
+	})
+}
+
 /**
  * Extracts Zeebe extension data from the raw `extensionElements` array of a
  * flow element. This is the inverse of {@link zeebeExtensionsToXmlElements}.
@@ -319,6 +338,14 @@ export function getZeebeExtensions(extensionElements: XmlElement[]): ZeebeExtens
 		ext.subscription = { correlationKey: subscriptionEl.attributes.correlationKey ?? "" }
 	}
 
+	const execListenersEl = findChild(extensionElements, "executionListeners")
+	if (execListenersEl) {
+		ext.executionListeners = readListeners(execListenersEl, "executionListener")
+	}
+
+	const taskListenersEl = findChild(extensionElements, "taskListeners")
+	if (taskListenersEl) ext.taskListeners = readListeners(taskListenersEl, "taskListener")
+
 	// Anything we have no typed field for must survive a read-modify-write.
 	const unknownElements = extensionElements.filter(
 		(c) => !KNOWN_ZEEBE_ELEMENTS.has(localName(c.name)),
@@ -343,4 +370,6 @@ const KNOWN_ZEEBE_ELEMENTS: ReadonlySet<string> = new Set([
 	"taskSchedule",
 	"priorityDefinition",
 	"subscription",
+	"executionListeners",
+	"taskListeners",
 ])

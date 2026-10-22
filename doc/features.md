@@ -1,5 +1,10 @@
 # Features
 
+## Multi-instance and listeners in the builder (2026-10-22)
+
+- `multiInstance` (with `outputCollection` / `outputElement`) works on every task type, not just sub-processes; the compact format keeps it.
+- `executionListeners` on activities, events and gateways and `taskListeners` on user tasks are builder options and `update` patch fields; placement is checked against the Zeebe schema.
+
 ## Edit user-task configuration and correlation keys (2026-10-22)
 
 - `applyBpmnOperations` `update` patches (and the compact format) carry `assignee`, `candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate`, `priority` and `properties`; `correlationKey` sets the message subscription of the referenced message. Editing an existing diagram's user-task configuration no longer needs raw extension elements.

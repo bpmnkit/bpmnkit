@@ -684,6 +684,14 @@ a builder method fails the build. Run `pnpm --filter @bpmnkit/core check:builder
 
 ### Forms, mappings and branch flows
 
+- `multiInstance: { collection, elementVariable, outputCollection, outputElement, completionCondition, isSequential }`
+  runs any activity once per item: `serviceTask`, `userTask`, `scriptTask`, `sendTask`,
+  `receiveTask`, `businessRuleTask`, `callActivity` and sub-processes. The output options need
+  `collection`.
+- `executionListeners: [{ eventType: "start", type: "audit", retries: "3" }]` on any activity,
+  event or gateway writes `zeebe:executionListeners`; `taskListeners` does the same for a
+  `userTask` (`zeebe:taskListeners`) and throws a `ZeebePlacementError` anywhere else. The
+  `update` patch replaces either list; `[]` removes it.
 - `startEvent(id, { formId })` writes `zeebe:formDefinition formId`. Camunda uses start forms
   only on the process's none start event, so do not set it on message, timer or signal starts.
 - `userTask(id, { ioMapping, taskHeaders, zeebeProperties, modelerTemplate,

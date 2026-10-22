@@ -109,6 +109,21 @@ export interface ZeebeCalledElement {
 	versionTag?: string
 }
 
+/** A job-worker listener (`zeebe:executionListener` / `zeebe:taskListener`). */
+export interface ZeebeListener {
+	/** Lifecycle event, such as `start`, `end` (execution) or `completing` (task). */
+	eventType: string
+	/** Job type the listener's worker subscribes to. */
+	type: string
+	retries?: string
+	/**
+	 * Listener headers (`zeebe:taskHeaders`). Read and written back so a
+	 * read-modify-write of a diagram that has them does not drop them; the
+	 * builder does not offer them.
+	 */
+	headers?: ZeebeTaskHeaderEntry[]
+}
+
 /** Collected Zeebe extensions on a service task. */
 export interface ZeebeExtensions {
 	taskDefinition?: ZeebeTaskDefinition
@@ -134,8 +149,44 @@ export interface ZeebeExtensions {
 	priorityDefinition?: ZeebePriorityDefinition
 	/** Message correlation key for a message catch/boundary/receive element (zeebe:subscription). */
 	subscription?: ZeebeSubscription
+	/** Execution listeners (zeebe:executionListeners). */
+	executionListeners?: ZeebeListener[]
+	/** User task listeners (zeebe:taskListeners). */
+	taskListeners?: ZeebeListener[]
 	/** Unrecognized extension elements preserved for roundtrip. */
 	unknownElements?: XmlElement[]
+}
+
+function listenersToXml(
+	container: string,
+	child: string,
+	listeners: readonly ZeebeListener[],
+): XmlElement {
+	return {
+		name: `zeebe:${container}`,
+		attributes: {},
+		children: listeners.map((l) => ({
+			name: `zeebe:${child}`,
+			attributes: {
+				eventType: l.eventType,
+				type: l.type,
+				...(l.retries !== undefined ? { retries: l.retries } : {}),
+			},
+			children: l.headers?.length
+				? [
+						{
+							name: "zeebe:taskHeaders",
+							attributes: {},
+							children: l.headers.map((h) => ({
+								name: "zeebe:header",
+								attributes: { key: h.key, value: h.value },
+								children: [],
+							})),
+						},
+					]
+				: [],
+		})),
+	}
 }
 
 /** Convert Zeebe extensions to XmlElement array for the BPMN model. */
@@ -297,6 +348,16 @@ export function zeebeExtensionsToXmlElements(extensions: ZeebeExtensions): XmlEl
 			attributes: { correlationKey: extensions.subscription.correlationKey },
 			children: [],
 		})
+	}
+
+	if (extensions.executionListeners?.length) {
+		elements.push(
+			listenersToXml("executionListeners", "executionListener", extensions.executionListeners),
+		)
+	}
+
+	if (extensions.taskListeners?.length) {
+		elements.push(listenersToXml("taskListeners", "taskListener", extensions.taskListeners))
 	}
 
 	if (extensions.unknownElements) {
