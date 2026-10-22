@@ -38,7 +38,7 @@ console.log(Bpmn.export(definitions))
 
 The call is deterministic and idempotent. It refuses (returns `problems`, model unchanged) when
 the template's `appliesTo` does not cover the element. A template id such as
-`io.camunda.connectors.HttpJson.v2` is a key into `BUNDLED_CONNECTOR_TEMPLATES`;
+`io.camunda.connectors.HttpJson.v2` is the `id` of one entry in `BUNDLED_CONNECTOR_TEMPLATES`;
 `searchConnectors("http")` finds ids by keyword.
 
 ---

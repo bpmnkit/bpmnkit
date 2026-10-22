@@ -1,6 +1,6 @@
 # Recipes: Element Templates and Connectors — How do I find a connector template's property ids?
 
-Use the `casen` CLI. `connector show` with `--condensed` prints one line per property: the id you
+Use the `casen` CLI. `connector show` with `--condensed` prints one line per non-hidden property: the id you
 pass as a value, its type, default, whether it is required and the condition that switches it on.
 `--filter` keeps the properties whose key or label contains the text.
 

@@ -29,7 +29,7 @@ console.log(Bpmn.export(defs))
 
 While building, pass `assignee`, `candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate`
 and `priority` to `userTask`. They write `zeebe:assignmentDefinition`, `zeebe:taskSchedule` and
-`zeebe:priorityDefinition`. A FEEL expression must start with `=`; `priority` is 0 to 100.
+`zeebe:priorityDefinition`. A FEEL expression must start with `=`; `priority` should be 0 to 100 (not validated).
 
 ```typescript
 import { Bpmn } from "@bpmnkit/core"
