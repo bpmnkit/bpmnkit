@@ -10,7 +10,7 @@
 import { levenshtein } from "../bpmn/optimize/variable-flow.js"
 import type { BpmnDefinitions } from "../index.js"
 import { applyTemplateToElement } from "./apply-element.js"
-import { resolveValues } from "./apply.js"
+import { type ApplyOptions, resolveValues } from "./apply.js"
 import { templateIdForAlias } from "./cards.js"
 import { getTemplate, propertyKey } from "./catalog.js"
 import type { ElementTemplate, TemplateCondition } from "./template-types.js"
@@ -138,10 +138,14 @@ function unwrittenValues(
  *
  * @param definitions - The model; not mutated.
  * @param entries - Elements anywhere in the model, nested ones included.
+ * @param options - `omitDefaults: true` leaves out properties whose value would only be the
+ *   template's default (a key the entry does not give, on a property that is neither Hidden nor
+ *   required), so the element carries what the caller chose. Default `false`.
  */
 export function applyTemplates(
 	definitions: BpmnDefinitions,
 	entries: TemplateApplication[],
+	options: ApplyOptions = {},
 ): { definitions: BpmnDefinitions; problems: TemplateApplicationProblem[] } {
 	const problems: TemplateApplicationProblem[] = []
 	let current = definitions
@@ -163,7 +167,7 @@ export function applyTemplates(
 		const values = Object.fromEntries(
 			Object.entries(entry.values).map(([key, value]) => [key, String(value)]),
 		)
-		const result = applyTemplateToElement(current, elementId, template, values)
+		const result = applyTemplateToElement(current, elementId, template, values, options)
 		// A refusal returns the model it was given; its one problem says all there is.
 		const refused = result.definitions === current
 		current = result.definitions
