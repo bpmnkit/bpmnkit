@@ -41,29 +41,9 @@ const FIXTURES = {
 	},
 } satisfies Record<keyof ZeebeExtensions, ZeebeExtensions>
 
-const ALL_KEYS: (keyof ZeebeExtensions)[] = [
-	"taskDefinition",
-	"ioMapping",
-	"taskHeaders",
-	"properties",
-	"adHoc",
-	"agentDefinition",
-	"formDefinition",
-	"calledDecision",
-	"calledElement",
-	"userTask",
-	"assignmentDefinition",
-	"taskSchedule",
-	"priorityDefinition",
-	"subscription",
-	"unknownElements",
-]
+const ALL_KEYS = Object.keys(FIXTURES) as (keyof ZeebeExtensions)[]
 
 describe("getZeebeExtensions is the inverse of zeebeExtensionsToXmlElements", () => {
-	it("has a fixture for every ZeebeExtensions key", () => {
-		expect(Object.keys(FIXTURES).sort()).toEqual([...ALL_KEYS].sort())
-	})
-
 	it.each(ALL_KEYS)("roundtrips %s", (key) => {
 		const ext: ZeebeExtensions = FIXTURES[key]
 		expect(getZeebeExtensions(zeebeExtensionsToXmlElements(ext))).toEqual(ext)
