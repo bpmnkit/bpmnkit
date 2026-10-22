@@ -1,6 +1,6 @@
 # Zeebe coverage gaps, agent performance and a same-input comparison page — analysis and plan
 
-Date: 2026-10-22. Status: Part A, week 1 (B1, B2, B4, C1, C2) and week 2 (B3, B5, C3, C5, the D1 scorer) are **done**; C6 was dropped (see its row). Everything else is open.
+Date: 2026-10-22. Status: Part A, week 1 (B1, B2, B4, C1, C2) week 2 (B3, B5, C3, C5, the D1 scorer) and week 3 (B7, B8, C4, D1) are **done**, but the D1 page must not ship until D1b below is fixed; C6 was dropped (see its row). Everything else is open.
 
 Effort scale: **S** < ½ day, **M** ½–2 days, **L** > 2 days. Paths are relative to the repo root;
 `core/` means `packages/core/src/`.
@@ -211,6 +211,14 @@ page should say so; that candour is what makes the page credible.
   as one bordered box. Diagrams are out of scope for the token rules.
 
 ### Phases
+
+**D1b — blocker found in week 3: the scorer cannot compare free-form runs (M).** The scorer
+matches elements by id, then by type and name. The recordings come from free-form prompts, so models
+choose their own ids and names, and every AI route lands on the scorer's floor (~15/100) while the
+reference scores 100. That measures naming, not modelling. Fix before publishing the page: match by
+graph structure instead (element type, position in flow order, gateway fan-out and fan-in, and the
+event definition), with name similarity only as a tie-breaker. Re-score, and keep the id/name mode for
+bake-off-style specs where ids are given.
 
 **D1 — no new LLM spend (M + M + M).**
 - A TS closeness scorer: element type, id/name matching, flow matching, and an optional

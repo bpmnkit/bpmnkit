@@ -55,6 +55,11 @@ const SKIP_FIELDS = new Set([
 	"queryParameters",
 	"connectionTimeoutInSeconds",
 	"readTimeoutInSeconds",
+	// Deployment pinning; the defaults (latest form, any variable change) suit generated processes.
+	"formKey",
+	"formBindingType",
+	"formVersionTag",
+	"conditionVariableEvents",
 ])
 
 /**

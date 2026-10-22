@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-10-22 — Week-3 merge: builder reference regenerated; comparison page held back
+
+- Regenerated `packages/core/builder-reference.md` after merging the form-variant and conditional-event options. Its budget rose from 3,000 to 3,200 tokens (still about a third of the ~10k-token README it replaced). `formKey` (legacy), `formBindingType`, `formVersionTag` and `conditionVariableEvents` joined the generator's skip list.
+- `/compare/same-input` is merged but must not ship yet: the closeness scorer matches by id and name, so every free-form AI run scores ~15/100. See D1b in `doc/plan-agent-gaps-performance-compare.md`.
+
 ## 2026-10-22 — User task forms and conditional events in the builder (B7, B8)
 
 - B7: `ZeebeFormDefinition` is now `{ formId; bindingType?; versionTag? } | { formKey } | { externalReference }`, read and written symmetrically (round-trip table extended). `UserTaskOptions` gains `formKey`, `externalReference`, `formBindingType`, `formVersionTag` and `embeddedForm: { id, schema }`; more than one of formId / formKey / externalReference / embeddedForm throws. An embedded form writes `formKey="camunda-forms:bpmn:<id>"` and a process-level `zeebe:userTaskForm` (also from sub-processes and when continuing a parsed process; same id twice is written once, two schemas for one id throw). Existing compat gates cover it (`formId` 8.4, `bindingType` 8.6, `zeebe:userTask` 8.5).
