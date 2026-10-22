@@ -7,6 +7,12 @@
 - C6: `subProcess`, `transaction`, `eventSubProcess` and `adHocSubProcess` throw an error showing the correct call (`subProcess("sp", (sub) => ..., { name: "X" })`) when the callback and options are swapped. This replaces the old silent tolerance; the swapped example in `guides/building-processes.md` is fixed and tests that relied on the swap use the correct order.
 - C2: annotations (and their associations) inside sub-processes get a `BPMNShape` and association edge: `layoutProcess` merges nested annotations through `withNestedAnnotations` before packing. They are packed in diagram space, so one may sit outside the sub-process box. Regression test `subprocess-annotation-di.test.ts`.
 
+## 2026-10-22 — Edits through MCP `update_element`; clearing values in `update` patches
+
+- `applyBpmnOperations` `update` patches: an empty string for `assignee`, `candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate` or `priority` removes the attribute; an extension left empty is removed; `properties: {}` removes `zeebe:properties`. Previously `""` was written as a value.
+- Proxy MCP `update_element` forwards any patch field to `applyBpmnOperations` (strict): unknown keys and misplaced fields (`assignee` on a service task, naming `zeebe:assignmentDefinition`) come back as tool errors. The description says `correlationKey` changes every element sharing the message. `ELEMENT_SCHEMA` and `sdk-spec.ts` list the user-task fields and `properties`; stale "ELK layout" wording fixed.
+- Tests: `full-operations.test.ts` (shared message key, clearing, extension removal, partial clear) and `apps/proxy/tests/mcp-update-element.test.ts` (assignee, correlation key, clear, misplaced, unknown key).
+
 ## 2026-10-22 — Multi-instance completion condition; user-task and subscription edit fields; gap plan
 
 - Fix: the builder's `multiInstance.completionCondition` was accepted and silently dropped (`buildMultiInstance` wrote only the collection and element). It is now written as `bpmn:completionCondition` (`tFormalExpression`). Regression test in `builder-zeebe-options.test.ts`.

@@ -1145,8 +1145,9 @@ matching the command CI already runs, alongside the one `apps/drop` had. A relea
   its id, name, documentation and its incoming/outgoing sequence flows. Carries nested content
   between containers and a multi-instance marker between types that allow one; drops Zeebe
   extensions the new type cannot legally hold, using the `ZEEBE_PLACEMENT` table.
-- **MCP `update_element` applies `name` and `type`**, and refuses any other key instead of
-  accepting it and doing nothing.
+- **MCP `update_element` applies `name`, `type` and the Zeebe patch fields** (user-task
+  assignment, schedule, priority, `properties`, `correlationKey`, job type, …) through
+  `applyBpmnOperations`; `""` clears a value, and unknown or misplaced keys are tool errors.
 - **`createFlowElement(id, type, options?)`** — the one place that knows each type's shape; the
   fluent builder uses it too.
 - **Data elements survive the compact format.** `dataObject`, `dataObjectReference` and

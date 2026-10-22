@@ -217,6 +217,29 @@ function setExtensionAttribute(
 	ensureExtension(element, extensionName).attributes[attribute] = value
 }
 
+/**
+ * Like {@link setExtensionAttribute}, but an empty string removes the attribute
+ * and an extension left with nothing in it. The only way for a patch to unset a
+ * value, since `""` is never a meaningful assignee, schedule or priority.
+ */
+function setOrClearAttribute(
+	element: BpmnFlowElement,
+	extensionName: string,
+	attribute: string,
+	value: string,
+): void {
+	if (value !== "") {
+		setExtensionAttribute(element, extensionName, attribute, value)
+		return
+	}
+	const extension = element.extensionElements.find((candidate) => candidate.name === extensionName)
+	if (!extension) return
+	delete extension.attributes[attribute]
+	if (Object.keys(extension.attributes).length === 0 && extension.children.length === 0) {
+		element.extensionElements.splice(element.extensionElements.indexOf(extension), 1)
+	}
+}
+
 /** Replaces the `zeebe:taskHeaders` children, which are a map and move together. */
 function setTaskHeaders(element: BpmnFlowElement, headers: Record<string, string>): void {
 	const extension = ensureExtension(element, "zeebe:taskHeaders")
@@ -229,6 +252,12 @@ function setTaskHeaders(element: BpmnFlowElement, headers: Record<string, string
 
 /** Replaces the `zeebe:properties` children, which, like headers, are a map. */
 function setProperties(element: BpmnFlowElement, properties: Record<string, string>): void {
+	if (Object.keys(properties).length === 0) {
+		element.extensionElements = element.extensionElements.filter(
+			(e) => e.name !== "zeebe:properties",
+		)
+		return
+	}
 	const extension = ensureExtension(element, "zeebe:properties")
 	extension.children = Object.entries(properties).map(([name, value]) => ({
 		name: "zeebe:property",
@@ -381,15 +410,15 @@ function patchElement(
 	for (const key of ["assignee", "candidateGroups", "candidateUsers"] as const) {
 		const value = patch[key]
 		if (value !== undefined) {
-			setExtensionAttribute(element, "zeebe:assignmentDefinition", key, value)
+			setOrClearAttribute(element, "zeebe:assignmentDefinition", key, value)
 		}
 	}
 	for (const key of ["dueDate", "followUpDate"] as const) {
 		const value = patch[key]
-		if (value !== undefined) setExtensionAttribute(element, "zeebe:taskSchedule", key, value)
+		if (value !== undefined) setOrClearAttribute(element, "zeebe:taskSchedule", key, value)
 	}
 	if (patch.priority !== undefined) {
-		setExtensionAttribute(element, "zeebe:priorityDefinition", "priority", String(patch.priority))
+		setOrClearAttribute(element, "zeebe:priorityDefinition", "priority", String(patch.priority))
 	}
 	if (patch.properties !== undefined) setProperties(element, patch.properties)
 	if (subscription && patch.correlationKey !== undefined) {

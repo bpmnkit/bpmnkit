@@ -20,7 +20,10 @@ Each sets one attribute, so an existing `assignee` survives a patch that only ad
 `candidateGroups`. `correlationKey` writes the `zeebe:subscription` of the `bpmn:message` the
 element references, so every element sharing that message gets it; an element that references
 no message is reported. A field whose extension the Zeebe schema does not allow on the element
-(`assignee` on a service task) is reported rather than written.
+(`assignee` on a service task) is reported rather than written. An empty string for `assignee`,
+`candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate` or `priority` removes that
+attribute, an extension left with nothing in it is removed, and `properties: {}` removes
+`zeebe:properties`.
 
 ```typescript
 applyBpmnOperations(parsed, [
