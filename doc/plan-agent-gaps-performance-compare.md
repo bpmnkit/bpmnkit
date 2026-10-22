@@ -1,6 +1,6 @@
 # Zeebe coverage gaps, agent performance and a same-input comparison page — analysis and plan
 
-Date: 2026-10-22. Status: Part A and week 1 (B1, B2, B4, C1, C2) are **done**; C6 was dropped (see its row). Everything else is open.
+Date: 2026-10-22. Status: Part A, week 1 (B1, B2, B4, C1, C2) and week 2 (B3, B5, C3, C5, the D1 scorer) are **done**; C6 was dropped (see its row). Everything else is open.
 
 Effort scale: **S** < ½ day, **M** ½–2 days, **L** > 2 days. Paths are relative to the repo root;
 `core/` means `packages/core/src/`.
