@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-10-22 — AI benchmark replay refreshed against current core (plan item C1)
+
+- Re-ran the 12 frozen `with-sdk` recordings with `scripts/bench-ai-replay.mjs` against `@bpmnkit/core` 1.6.1 (was 0.4.0 in the generated file). Result unchanged: 9/12 → 12/12 usable, quote-to-cash 2/5 → 5/5, 3 recovered, 0 regressed. All three failures now compile (two `subProcess is not a function` on a branch, one swapped `subProcess` arguments).
+- Homepage section 09 now names the two failure kinds and states that the figure is a replay against the current library, not a new recording. No model calls were made; re-recording remains the only way to measure fresh-generation time and tokens.
+
 ## 2026-10-22 — Multi-instance completion condition; user-task and subscription edit fields; gap plan
 
 - Fix: the builder's `multiInstance.completionCondition` was accepted and silently dropped (`buildMultiInstance` wrote only the collection and element). It is now written as `bpmn:completionCondition` (`tFormalExpression`). Regression test in `builder-zeebe-options.test.ts`.
