@@ -1045,7 +1045,7 @@ function assertCallbackFirst(method: string, id: string, content: unknown, optio
 	const got =
 		typeof content === "function"
 			? "a function as the options argument"
-			: "no callback as the 2nd argument"
+			: `${typeof content} as the 2nd argument instead of a callback`
 	throw new Error(
 		`${method}("${id}", ...) expects the content callback second and options third: ${method}("${id}", (sub) => ..., { name: "X" }). Got ${got}.`,
 	)
