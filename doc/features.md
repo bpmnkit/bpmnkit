@@ -35,6 +35,12 @@
   a fixed number of columns, filled top to bottom or left to right.
 - `annotate(id, text, { side: "below" })` puts the annotation on the side asked for.
 
+## `omitDefaults` for template application (2026-10-22)
+
+- `applyTemplates(definitions, entries, { omitDefaults: true })` (also `applyTemplateToElement` and
+  `applyElementTemplate`) skips properties that would only carry the template's default, unless
+  they are Hidden or required. Off by default.
+
 ## `applyTemplates` configures connectors in-process (2026-10-17)
 
 - `applyTemplates(definitions, entries)` applies element templates by id, `id@version` or alias to

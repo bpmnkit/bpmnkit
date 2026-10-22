@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-10-22 — `omitDefaults` option for template application (C3)
+
+- `applyTemplates(..., { omitDefaults: true })`, `applyTemplateToElement` and `applyElementTemplate` skip a property whose value is only the template default (key not given, not Hidden, no `constraints.notEmpty`, no `generatedValue`). Defaults still feed `condition` evaluation, so gating is unchanged; hidden bindings and the `zeebe:modelerTemplate` stamp are always written. Default stays `false`.
+- Re-apply leaves no stale default: extensions are already replaced wholesale per declared binding kind. Tests use the real HttpJson v2 (`followRedirects`, `documentReturnFormat.choice`) and agent (`responses.effort`) templates.
+
 ## 2026-10-22 — Zeebe reader symmetry, call-activity options, builder argument guard, sub-process annotation shapes
 
 - B1: `getZeebeExtensions` is now the inverse of `zeebeExtensionsToXmlElements`: it also reads `adHoc`, `userTask`, `assignmentDefinition`, `taskSchedule`, `priorityDefinition`, `subscription`, a new typed `calledElement` (`ZeebeCalledElement`) and any unrecognised elements as `unknownElements`. A table-driven round-trip test (`zeebe-extensions-roundtrip.test.ts`) fails when a field is added to the writer without a reader.

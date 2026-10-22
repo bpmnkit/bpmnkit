@@ -25,7 +25,7 @@ import {
 	sha256Hex,
 	zeebeExtensionsToXmlElements,
 } from "../index.js"
-import { type Accumulator, type ApplyProblem, resolveBindings } from "./apply.js"
+import { type Accumulator, type ApplyOptions, type ApplyProblem, resolveBindings } from "./apply.js"
 import type { ElementTemplate, TemplateBinding } from "./template-types.js"
 
 /** The one `elementType.eventDefinition` this toolkit writes. */
@@ -325,12 +325,15 @@ function ownedExtensions(
  * @param elementId - A flow element anywhere in its processes, sub-processes included.
  * @param template - Any element template, bundled or a workspace's own.
  * @param values - Keyed as in {@link applyElementTemplate}; `name` sets the element's name.
+ * @param options - `omitDefaults` leaves out properties carrying only the template's default;
+ *   re-applying replaces the extensions wholesale, so an earlier apply's default does not survive.
  */
 export function applyTemplateToElement(
 	definitions: BpmnDefinitions,
 	elementId: string,
 	template: ElementTemplate,
 	values: Record<string, string> = {},
+	options: ApplyOptions = {},
 ): ApplyToElementResult {
 	const refuse = (message: string): ApplyToElementResult => ({
 		definitions,
@@ -359,12 +362,16 @@ export function applyTemplateToElement(
 	const currentMessageId = messageRefOf(originalElement)
 	const currentMessage = next.messages.find((message) => message.id === currentMessageId)
 
-	const { accum, problems } = resolveBindings(template, values, (key, prop) =>
-		prop.binding.type === "bpmn:Message#property" &&
-		prop.binding.name === "name" &&
-		currentMessage?.name !== undefined
-			? currentMessage.name
-			: derivedUuid(`${template.id}\n${elementId}\n${key}`),
+	const { accum, problems } = resolveBindings(
+		template,
+		values,
+		(key, prop) =>
+			prop.binding.type === "bpmn:Message#property" &&
+			prop.binding.name === "name" &&
+			currentMessage?.name !== undefined
+				? currentMessage.name
+				: derivedUuid(`${template.id}\n${elementId}\n${key}`),
+		options,
 	)
 
 	let element = location.siblings[location.index] as BpmnFlowElement

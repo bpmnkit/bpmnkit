@@ -4752,7 +4752,7 @@
 		{
 			"id": "packages.connectors.applying-several-templates-by-name-applytemplates",
 			"file": "chunks/packages.connectors.applying-several-templates-by-name-applytemplates.md",
-			"tokens": 488,
+			"tokens": 632,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4765,6 +4765,11 @@
 			"entities": [
 				"applyTemplates",
 				"applyTemplateToElement",
+				"constraints.notEmpty",
+				"followRedirects",
+				"documentReturnFormat.choice",
+				"provider.openai.api.responses.effort",
+				"applyElementTemplate",
 				"retryCount",
 				"retryBackoff",
 				"ignoreNullValues"
@@ -4813,7 +4818,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 667,
+			"tokens": 672,
 			"tags": [
 				"packages",
 				"connectors",
