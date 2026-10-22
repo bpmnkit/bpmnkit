@@ -207,11 +207,7 @@ describe("builder zeebe options", () => {
 
 describe("user task forms", () => {
 	const form = (opts: Record<string, unknown>) => {
-		const defs = Bpmn.createProcess("p")
-			.startEvent("s")
-			.userTask("u", opts)
-			.endEvent("e")
-			.build()
+		const defs = Bpmn.createProcess("p").startEvent("s").userTask("u", opts).endEvent("e").build()
 		return { defs, xml: Bpmn.export(defs) }
 	}
 
@@ -256,7 +252,10 @@ describe("user task forms", () => {
 			Bpmn.createProcess("p")
 				.startEvent("s")
 				.subProcess("sp", (sub) =>
-					sub.startEvent("ss").userTask("u", { embeddedForm: { id: "in", schema: "{}" } }).endEvent("se"),
+					sub
+						.startEvent("ss")
+						.userTask("u", { embeddedForm: { id: "in", schema: "{}" } })
+						.endEvent("se"),
 				)
 				.endEvent("e")
 				.build(),

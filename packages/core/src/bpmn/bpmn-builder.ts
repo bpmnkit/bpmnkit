@@ -41,12 +41,13 @@ import {
 	setFlowDiscriminatorSource,
 } from "./stable-ids.js"
 import {
-	type ZeebeFormDefinition,
 	type ZeebeExtensions,
+	type ZeebeFormDefinition,
 	type ZeebeListener,
 	assertZeebePlacement,
 	bpmnElementName,
 	ensureZeebeExtension,
+	makeConditionalDefinition,
 	zeebeExtensionsToXmlElements,
 } from "./zeebe-extensions.js"
 
@@ -77,8 +78,16 @@ export interface MessageTaskOptions extends ElementOptions {
 	correlationKey?: string
 }
 
+/** Variable change that re-evaluates a conditional event's condition. */
+export type ConditionVariableEvent = "create" | "update"
+
 /** Options for creating a start event. */
 export interface StartEventOptions extends ElementOptions {
+	/** FEEL condition — creates a conditional start event (Camunda 8.9+). */
+	condition?: string
+	/** Variable events that re-evaluate `condition` (`zeebe:conditionalFilter`); default is both. */
+	conditionVariableEvents?: ConditionVariableEvent[]
+
 	/** Timer duration (ISO 8601) — creates a timer start event. */
 	timerDuration?: string
 	/** Timer date (ISO 8601) — creates a timer start event. */
@@ -345,6 +354,10 @@ export interface IntermediateCatchEventOptions extends ElementOptions {
 	 * connected from the current position.
 	 */
 	linkName?: string
+	/** FEEL condition — creates a conditional catch event (Camunda 8.9+). */
+	condition?: string
+	/** Variable events that re-evaluate `condition` (`zeebe:conditionalFilter`); default is both. */
+	conditionVariableEvents?: ConditionVariableEvent[]
 }
 
 /** Options for an intermediate throw event. */
@@ -405,6 +418,10 @@ export interface BoundaryEventOptions extends ElementOptions {
 	signalName?: string
 	/** Creates a compensation boundary event. */
 	compensation?: boolean
+	/** FEEL condition — creates a conditional boundary event (Camunda 8.9+). */
+	condition?: string
+	/** Variable events that re-evaluate `condition` (`zeebe:conditionalFilter`); default is both. */
+	conditionVariableEvents?: ConditionVariableEvent[]
 }
 
 /** Multi-instance loop configuration. */
@@ -596,6 +613,8 @@ function buildEventDefinitions(
 		compensation?: boolean
 		activityRef?: string
 		linkName?: string
+		condition?: string
+		conditionVariableEvents?: ConditionVariableEvent[]
 	},
 	rootErrors?: BpmnError[],
 	rootMessages?: BpmnMessage[],
@@ -672,6 +691,9 @@ function buildEventDefinitions(
 	}
 	if (opts.linkName !== undefined) {
 		defs.push({ type: "link", name: opts.linkName })
+	}
+	if (opts.condition !== undefined) {
+		defs.push(makeConditionalDefinition(opts.condition, opts.conditionVariableEvents))
 	}
 	return defs
 }
@@ -1020,9 +1042,7 @@ function userTaskFormDefinition(options?: UserTaskOptions): ZeebeFormDefinition 
 	const { formId, formKey, externalReference, embeddedForm } = options
 	const set = [formId, formKey, externalReference, embeddedForm].filter((v) => v !== undefined)
 	if (set.length > 1) {
-		throw new Error(
-			"userTask: set only one of formId, formKey, externalReference or embeddedForm",
-		)
+		throw new Error("userTask: set only one of formId, formKey, externalReference or embeddedForm")
 	}
 	if (embeddedForm) return { formKey: `camunda-forms:bpmn:${embeddedForm.id}` }
 	if (formKey) return { formKey }

@@ -18,6 +18,7 @@ import type {
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
 import { restConnectorTaskType } from "./rest-connector.js"
+import { makeConditionalDefinition } from "./zeebe-extensions.js"
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -117,6 +118,8 @@ export interface CompactElement {
 	}
 	/** A timer event's ISO 8601 duration (`PT5M`): how long it waits once reached. */
 	timerDuration?: string
+	/** A conditional event's FEEL condition (Camunda 8.9+). */
+	condition?: string
 }
 
 /** A sequence flow in compact form. */
@@ -346,6 +349,7 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		const def = el.eventDefinitions[0]
 		result.eventType = def?.type
 		if (def?.type === "timer" && def.timeDuration) result.timerDuration = def.timeDuration
+		if (def?.type === "conditional" && def.condition) result.condition = def.condition
 	}
 
 	const loop = "loopCharacteristics" in el ? el.loopCharacteristics : undefined
@@ -804,7 +808,11 @@ export function buildFlowElement(
 	}
 	const made = el.eventType ? makeEventDef(el.eventType) : undefined
 	const eventDef =
-		made?.type === "timer" && el.timerDuration ? { ...made, timeDuration: el.timerDuration } : made
+		made?.type === "timer" && el.timerDuration
+			? { ...made, timeDuration: el.timerDuration }
+			: made?.type === "conditional" && el.condition !== undefined
+				? makeConditionalDefinition(el.condition)
+				: made
 	const eventDefs: BpmnEventDefinition[] = eventDef ? [eventDef] : []
 	const subContent = buildSubContent(el.children)
 	const loop = el.multiInstance && {

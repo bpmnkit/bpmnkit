@@ -263,7 +263,11 @@ export function getZeebeExtensions(extensionElements: XmlElement[]): ZeebeExtens
 			formDefinition = { externalReference }
 		} else {
 			formDefinition = { formId: formId ?? "" }
-			if (bindingType === "latest" || bindingType === "deployment" || bindingType === "versionTag") {
+			if (
+				bindingType === "latest" ||
+				bindingType === "deployment" ||
+				bindingType === "versionTag"
+			) {
 				formDefinition.bindingType = bindingType
 			}
 			if (versionTag !== undefined) formDefinition.versionTag = versionTag

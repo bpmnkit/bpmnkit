@@ -147,6 +147,7 @@ export type {
 	IntermediateThrowEventOptions,
 	EndEventOptions,
 	BoundaryEventOptions,
+	ConditionVariableEvent,
 	AdHocSubProcessOptions,
 	AnnotateOptions,
 } from "./bpmn/bpmn-builder.js"

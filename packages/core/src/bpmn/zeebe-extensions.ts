@@ -1,4 +1,5 @@
 import type { XmlElement } from "../types/xml-element.js"
+import type { BpmnConditionalEventDefinition } from "./bpmn-model.js"
 import { ZEEBE_PLACEMENT } from "./zeebe-placement.js"
 
 /** Zeebe task definition extension. */
@@ -463,4 +464,30 @@ export function ensureZeebeExtension(
 	const created: XmlElement = { name: extension, attributes: {}, children: [] }
 	owner.extensionElements.push(created)
 	return created
+}
+
+/**
+ * A conditional event definition with a FEEL `condition` and, when `variableEvents`
+ * is given, a `zeebe:conditionalFilter` limiting which variable changes re-evaluate it.
+ */
+export function makeConditionalDefinition(
+	condition: string,
+	variableEvents?: readonly ("create" | "update")[],
+): BpmnConditionalEventDefinition {
+	return {
+		type: "conditional",
+		condition,
+		conditionAttributes: { "xsi:type": "bpmn:tFormalExpression" },
+		...(variableEvents && variableEvents.length > 0
+			? {
+					extensionElements: [
+						{
+							name: "zeebe:conditionalFilter",
+							attributes: { variableEvents: variableEvents.join(",") },
+							children: [],
+						},
+					],
+				}
+			: {}),
+	}
 }
