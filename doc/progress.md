@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-10-22 — C5: `bpmnkit-docs` works in a fresh checkout; task-shaped recipe pages
+
+- Root cause: the `bpmnkit-docs` bin pointed at `packages/docspack/dist/cli.js`, which is gitignored and never built by `pnpm install --ignore-scripts`, so `npx bpmnkit-docs` died before reading any pack. Fix: the bin is now the committed shim `bin/bpmnkit-docs.mjs`, which builds `dist/` with `tsc` on first use and then loads the CLI. Regression test `tests/bin.test.ts` (bin target exists and is not git-ignored; failed before).
+- New guides `recipes-element-templates`, `recipes-forms-and-user-tasks`, `recipes-message-correlation`: apply an element template and find its property ids, set a start-event form, configure a user task when building and when editing (`applyBpmnOperations`, MCP `update_element`, empty string clears), set a message correlation key. Every sample was run against the current API.
+- `recipe-ranking.test.ts`: `ask("apply an element template")` and `ask("set the assignee of a user task")` return the recipe first with both packs installed; the start-event-form and element-template cases of the build-script guide now resolve to the dedicated recipe pages. Pack rebuilt.
+
 ## 2026-10-22 — Zeebe reader symmetry, call-activity options, builder argument guard, sub-process annotation shapes
 
 - B1: `getZeebeExtensions` is now the inverse of `zeebeExtensionsToXmlElements`: it also reads `adHoc`, `userTask`, `assignmentDefinition`, `taskSchedule`, `priorityDefinition`, `subscription`, a new typed `calledElement` (`ZeebeCalledElement`) and any unrecognised elements as `unknownElements`. A table-driven round-trip test (`zeebe-extensions-roundtrip.test.ts`) fails when a field is added to the writer without a reader.
