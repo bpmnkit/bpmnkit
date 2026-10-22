@@ -725,36 +725,33 @@ describe("Builder → auto-layout integration", () => {
 			Bpmn.createProcess("proc")
 				.withAutoLayout()
 				.startEvent("s")
-				.subProcess(
-					"dunning",
-					(d) =>
-						d
-							.startEvent("dunStart", { name: "Invoice Overdue" })
-							.receiveTask("reminder1", { name: "Reminder 1", message: { name: "P1" } })
-							.connectTo("dunPaid")
-							.boundaryEvent("timer1", {
-								attachedTo: "reminder1",
-								timerDuration: "P7D",
-								cancelActivity: true,
-							})
-							.receiveTask("reminder2", { name: "Reminder 2", message: { name: "P2" } })
-							.connectTo("dunPaid")
-							.boundaryEvent("timer2", {
-								attachedTo: "reminder2",
-								timerDuration: "P7D",
-								cancelActivity: true,
-							})
-							.receiveTask("reminder3", { name: "Reminder 3", message: { name: "P3" } })
-							.connectTo("dunPaid")
-							.boundaryEvent("timer3", {
-								attachedTo: "reminder3",
-								timerDuration: "P14D",
-								cancelActivity: true,
-							})
-							.serviceTask("collectionsAgency", { name: "Escalate", taskType: "collections" })
-							.endEvent("dunWrittenOff", { name: "Uncollectible" })
-							.endEvent("dunPaid", { name: "Payment Collected" }),
-					{ name: "Dunning" },
+				.subProcess("dunning", { name: "Dunning" }, (d) =>
+					d
+						.startEvent("dunStart", { name: "Invoice Overdue" })
+						.receiveTask("reminder1", { name: "Reminder 1", message: { name: "P1" } })
+						.connectTo("dunPaid")
+						.boundaryEvent("timer1", {
+							attachedTo: "reminder1",
+							timerDuration: "P7D",
+							cancelActivity: true,
+						})
+						.receiveTask("reminder2", { name: "Reminder 2", message: { name: "P2" } })
+						.connectTo("dunPaid")
+						.boundaryEvent("timer2", {
+							attachedTo: "reminder2",
+							timerDuration: "P7D",
+							cancelActivity: true,
+						})
+						.receiveTask("reminder3", { name: "Reminder 3", message: { name: "P3" } })
+						.connectTo("dunPaid")
+						.boundaryEvent("timer3", {
+							attachedTo: "reminder3",
+							timerDuration: "P14D",
+							cancelActivity: true,
+						})
+						.serviceTask("collectionsAgency", { name: "Escalate", taskType: "collections" })
+						.endEvent("dunWrittenOff", { name: "Uncollectible" })
+						.endEvent("dunPaid", { name: "Payment Collected" }),
 				)
 				.endEvent("e")
 				.build(),

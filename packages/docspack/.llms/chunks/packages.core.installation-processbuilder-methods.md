@@ -19,7 +19,7 @@ All builder methods return `this` for chaining.
 | `.inclusiveGateway(id, options?)` | Add an inclusive gateway |
 | `.eventBasedGateway(id, options?)` | Add an event-based gateway |
 | `.complexGateway(id, options?)` | Add a complex gateway (aspirational — Zeebe does not execute these) |
-| `.subProcess(id, builder, options?)` | Add an embedded sub-process. The callback comes second and the options third; a swapped call throws an error showing the correct form (the same holds for `adHocSubProcess`, `eventSubProcess` and `transaction`) |
+| `.subProcess(id, builder, options?)` | Add an embedded sub-process. The callback comes second and the options third; a call with the two swapped is accepted too (as for `adHocSubProcess`, `eventSubProcess` and `transaction`) |
 | `.adHocSubProcess(id, builder, options?)` | Add an ad-hoc sub-process — its children are **not** auto-chained, see below |
 | `.eventSubProcess(id, builder, options?)` | Add an event sub-process (emits `subProcess triggeredByEvent="true"`) |
 | `.transaction(id, builder, options?)` | Add a transaction sub-process (atomic scope) |

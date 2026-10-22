@@ -1,6 +1,6 @@
 # Zeebe coverage gaps, agent performance and a same-input comparison page — analysis and plan
 
-Date: 2026-10-22. Status: analysis and plan only; nothing below is implemented unless marked **done**.
+Date: 2026-10-22. Status: Part A and week 1 (B1, B2, B4, C1, C2) are **done**; C6 was dropped (see its row). Everything else is open.
 
 Effort scale: **S** < ½ day, **M** ½–2 days, **L** > 2 days. Paths are relative to the repo root;
 `core/` means `packages/core/src/`.
@@ -164,7 +164,7 @@ Phase B-2 (next): B7, B8, then B6, then B9, in that order. B10 and B11 only on r
 | C3 | `applyTemplates({ omitDefaults: true })` | `core/connectors/apply-element.ts` and the builder's `applyTemplates` | Recovers config closeness points | S–M | bake-off scorer |
 | C4 | Builder prompt: a generated short API reference (signatures plus one example per element) instead of the README | `scripts/generate-readmes.mjs` or a new generator; demo prompt assembly | ~10k → ~2–3k input tokens | M | `bench-ai-generation.mjs` |
 | C5 | `bpmnkit-docs ask` works in a fresh checkout; add task-shaped recipe chunks (apply a template, set a start form, set an assignee) | `packages/docspack`, `apps/landing/src/content/docs/` | Biggest time lever according to the bake-off analysis | M | bake-off rerun |
-| C6 | Builder argument-order guard: detect `subProcess(id, options, fn)` and throw a message showing the correct call | `core/bpmn/bpmn-builder.ts` | One retry instead of a dead end | S | unit test |
+| C6 | ~~Builder argument-order guard~~ — not needed: the builder already accepts the swapped order (`resolveSubProcessArgs`); the July failure predates that | — | — | — | — |
 | C7 | Annotation sides `left` / `right` | `core/layout/annotations.ts`, `AnnotateOptions` | Layout score | M | bake-off layout score |
 | C8 | Layout closeness research: per-element offset diagnosis against the canonical layout, then `placeGrid` order hints | `core/layout/semantic/place.ts`, `core/layout/bench.ts` | Layout 7.7 → ~9 | L | `scripts/bench-layout.mjs` |
 | C9 | Cost re-measure, ≥ 5 runs per side, tokens split in and out | external harness | Needed before any ≤ $0.45 claim | M (paid) | bake-off scorer |

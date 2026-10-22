@@ -1034,34 +1034,32 @@ function makeComplexGatewayEl(id: string, options?: GatewayOptions): BpmnFlowEle
 }
 
 /**
- * `subProcess`/`transaction`/`eventSubProcess`/`adHocSubProcess` take the content
- * callback 2nd and the options 3rd. Callers that see only the parameter names
- * (generated code run without type-checking) tend to guess "options before
- * callback"; fail loudly with the correct call rather than accepting the swap,
- * so the wrong shape never spreads.
+ * `subProcess`/`eventSubProcess`/`adHocSubProcess` all take a required content
+ * callback as their 2nd argument and an optional options object as their 3rd.
+ * That shape isn't demonstrated anywhere in this SDK's docs/examples, and
+ * callers that only see the parameter *names* (not enforced types — e.g.
+ * generated code run without type-checking) sometimes guess the common
+ * "options before callback" order instead. Detect that by runtime type and
+ * swap, so a reversed call still succeeds instead of throwing on `content`
+ * not being callable.
  */
-function assertCallbackFirst(method: string, id: string, content: unknown, options: unknown): void {
-	if (typeof content === "function" && typeof options !== "function") return
-	const got =
-		typeof content === "function"
-			? "a function as the options argument"
-			: `${typeof content} as the 2nd argument instead of a callback`
-	throw new Error(
-		`${method}("${id}", ...) expects the content callback second and options third: ${method}("${id}", (sub) => ..., { name: "X" }). Got ${got}.`,
-	)
-}
-
 function resolveSubProcessArgs<TOptions>(
-	method: string,
-	id: string,
 	content: unknown,
 	options: unknown,
 ): { content: (b: SubProcessContentBuilder) => void; options: TOptions | undefined } {
-	assertCallbackFirst(method, id, content, options)
-	return {
-		content: content as (b: SubProcessContentBuilder) => void,
-		options: options as TOptions | undefined,
+	if (typeof content === "function") {
+		return {
+			content: content as (b: SubProcessContentBuilder) => void,
+			options: options as TOptions | undefined,
+		}
 	}
+	if (typeof options === "function") {
+		return {
+			content: options as (b: SubProcessContentBuilder) => void,
+			options: content as TOptions | undefined,
+		}
+	}
+	throw new TypeError("subProcess() requires a content callback function")
 }
 
 /**
@@ -1145,7 +1143,7 @@ function makeTransactionEl(
 	options: unknown,
 	roots: RootDefinitions,
 ): BpmnFlowElement {
-	const resolved = resolveSubProcessArgs<SubProcessOptions>("transaction", id, content, options)
+	const resolved = resolveSubProcessArgs<SubProcessOptions>(content, options)
 	const sub = new SubProcessContentBuilder(roots)
 	resolved.content(sub)
 	finalizeScope(sub._elements, sub._flows)
@@ -1727,7 +1725,7 @@ export class BranchBuilder {
 		content: (b: SubProcessContentBuilder) => void,
 		options?: SubProcessOptions,
 	): this {
-		const resolved = resolveSubProcessArgs<SubProcessOptions>("subProcess", id, content, options)
+		const resolved = resolveSubProcessArgs<SubProcessOptions>(content, options)
 		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
@@ -1767,12 +1765,7 @@ export class BranchBuilder {
 		content: (b: SubProcessContentBuilder) => void,
 		options?: AdHocSubProcessOptions,
 	): this {
-		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(
-			"adHocSubProcess",
-			id,
-			content,
-			options,
-		)
+		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(content, options)
 		recordToolGrid(this.rootLayoutHints, id, resolved.options)
 		// Ad-hoc sub-process children are unordered — see SubProcessContentBuilder.autoConnect.
 		const sub = new SubProcessContentBuilder(this.roots(), false)
@@ -1797,7 +1790,7 @@ export class BranchBuilder {
 		content: (b: SubProcessContentBuilder) => void,
 		options?: ElementOptions,
 	): this {
-		const resolved = resolveSubProcessArgs<ElementOptions>("eventSubProcess", id, content, options)
+		const resolved = resolveSubProcessArgs<ElementOptions>(content, options)
 		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
@@ -2336,7 +2329,7 @@ export class SubProcessContentBuilder {
 		content: (b: SubProcessContentBuilder) => void,
 		options?: SubProcessOptions,
 	): this {
-		const resolved = resolveSubProcessArgs<SubProcessOptions>("subProcess", id, content, options)
+		const resolved = resolveSubProcessArgs<SubProcessOptions>(content, options)
 		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
@@ -2376,12 +2369,7 @@ export class SubProcessContentBuilder {
 		content: (b: SubProcessContentBuilder) => void,
 		options?: AdHocSubProcessOptions,
 	): this {
-		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(
-			"adHocSubProcess",
-			id,
-			content,
-			options,
-		)
+		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(content, options)
 		recordToolGrid(this.rootLayoutHints, id, resolved.options)
 		// Ad-hoc sub-process children are unordered — see SubProcessContentBuilder.autoConnect.
 		const sub = new SubProcessContentBuilder(this.roots(), false)
@@ -2406,7 +2394,7 @@ export class SubProcessContentBuilder {
 		content: (b: SubProcessContentBuilder) => void,
 		options?: ElementOptions,
 	): this {
-		const resolved = resolveSubProcessArgs<ElementOptions>("eventSubProcess", id, content, options)
+		const resolved = resolveSubProcessArgs<ElementOptions>(content, options)
 		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
@@ -3189,12 +3177,7 @@ export class ProcessBuilder {
 		content: (b: SubProcessContentBuilder) => void,
 		options?: AdHocSubProcessOptions,
 	): this {
-		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(
-			"adHocSubProcess",
-			id,
-			content,
-			options,
-		)
+		const resolved = resolveSubProcessArgs<AdHocSubProcessOptions>(content, options)
 		recordToolGrid(this.rootLayoutHints, id, resolved.options)
 		// Ad-hoc sub-process children are unordered — see SubProcessContentBuilder.autoConnect.
 		const sub = new SubProcessContentBuilder(this.roots(), false)
@@ -3220,7 +3203,7 @@ export class ProcessBuilder {
 		content: (b: SubProcessContentBuilder) => void,
 		options?: SubProcessOptions,
 	): this {
-		const resolved = resolveSubProcessArgs<SubProcessOptions>("subProcess", id, content, options)
+		const resolved = resolveSubProcessArgs<SubProcessOptions>(content, options)
 		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
@@ -3255,7 +3238,7 @@ export class ProcessBuilder {
 		content: (b: SubProcessContentBuilder) => void,
 		options?: ElementOptions,
 	): this {
-		const resolved = resolveSubProcessArgs<ElementOptions>("eventSubProcess", id, content, options)
+		const resolved = resolveSubProcessArgs<ElementOptions>(content, options)
 		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
