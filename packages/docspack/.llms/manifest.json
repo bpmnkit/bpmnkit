@@ -2256,7 +2256,7 @@
 		{
 			"id": "guides.building-processes.sub-processes",
 			"file": "chunks/guides.building-processes.sub-processes.md",
-			"tokens": 181,
+			"tokens": 180,
 			"tags": [
 				"guides",
 				"building-processes",
@@ -5319,7 +5319,7 @@
 		{
 			"id": "packages.core.installation-processbuilder-methods",
 			"file": "chunks/packages.core.installation-processbuilder-methods.md",
-			"tokens": 717,
+			"tokens": 792,
 			"tags": [
 				"packages",
 				"core",
@@ -5328,11 +5328,18 @@
 				"methods"
 			],
 			"entities": [
+				"adHocSubProcess",
+				"eventSubProcess",
+				"processId",
+				"propagateAllChildVariables",
+				"propagateAllParentVariables",
+				"bindingType",
+				"versionTag",
+				"ioMapping",
+				"zeebeProperties",
+				"taskHeaders",
 				"addStartEvent",
-				"BpmnDefinitions",
-				"dataObject",
-				"dataObjectReference",
-				"dataStoreReference"
+				"BpmnDefinitions"
 			]
 		},
 		{

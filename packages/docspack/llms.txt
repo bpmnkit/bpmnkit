@@ -164,7 +164,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [bpmnlint Compatibility — From your own code](.llms/chunks/guides.bpmnlint.from-your-own-code.md) — 233 tokens
 - [Building Processes — Service Tasks](.llms/chunks/guides.building-processes.service-tasks.md) — 202 tokens
 - [Building Processes — Events](.llms/chunks/guides.building-processes.events.md) — 378 tokens
-- [Building Processes — Sub-Processes](.llms/chunks/guides.building-processes.sub-processes.md) — 181 tokens
+- [Building Processes — Sub-Processes](.llms/chunks/guides.building-processes.sub-processes.md) — 180 tokens
 - [Building Processes — Boundary Events](.llms/chunks/guides.building-processes.boundary-events.md) — 294 tokens
 - [Building Processes — Call Activities](.llms/chunks/guides.building-processes.call-activities.md) — 216 tokens
 - [Building Processes — Task Defaults](.llms/chunks/guides.building-processes.task-defaults.md) — 141 tokens
@@ -361,7 +361,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `createFlowElement(id, type, options?)`](.llms/chunks/packages.core.installation-createflowelement-id-type-options.md) — 61 tokens
 - [@bpmnkit/core — Installation — Element catalog](.llms/chunks/packages.core.installation-element-catalog.md) — 96 tokens
 - [@bpmnkit/core — Installation — `layoutProcess(process)`](.llms/chunks/packages.core.installation-layoutprocess-process.md) — 85 tokens
-- [@bpmnkit/core — Installation — ProcessBuilder methods](.llms/chunks/packages.core.installation-processbuilder-methods.md) — 717 tokens
+- [@bpmnkit/core — Installation — ProcessBuilder methods](.llms/chunks/packages.core.installation-processbuilder-methods.md) — 792 tokens
 - [@bpmnkit/core — Installation — Forms, mappings and branch flows](.llms/chunks/packages.core.installation-forms-mappings-and-branch-flows.md) — 224 tokens
 - [@bpmnkit/core — Installation — Ad-hoc sub-processes: children are a set, not a chain](.llms/chunks/packages.core.installation-ad-hoc-sub-processes-children-are-a-set-not-a-chain.md) — 642 tokens
 - [@bpmnkit/core — Installation — Joins: inferred by default, or declared](.llms/chunks/packages.core.installation-joins-inferred-by-default-or-declared.md) — 324 tokens

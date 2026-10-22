@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-22 — Zeebe reader symmetry, call-activity options, builder argument guard, sub-process annotation shapes
+
+- B1: `getZeebeExtensions` is now the inverse of `zeebeExtensionsToXmlElements`: it also reads `adHoc`, `userTask`, `assignmentDefinition`, `taskSchedule`, `priorityDefinition`, `subscription`, a new typed `calledElement` (`ZeebeCalledElement`) and any unrecognised elements as `unknownElements`. A table-driven round-trip test (`zeebe-extensions-roundtrip.test.ts`) fails when a field is added to the writer without a reader.
+- B2: `callActivity` takes `ioMapping`, `zeebeProperties`, `propagateAllParentVariables`, `bindingType` and `versionTag` (plus the existing `propagateAllChildVariables`), written through the typed writer. Deviation from the plan: no `taskHeaders` option, because the Zeebe schema does not allow `zeebe:taskHeaders` on `bpmn:callActivity` (`zeebe-placement.ts`); an untyped caller's headers are dropped. Compat rules fire at 8.1 (`compat/no-propagate-all-parent-variables`, needs 8.2) and 8.5 (`compat/no-binding-type`, needs 8.6), not at 8.7, so the tests assert them there.
+- C6: `subProcess`, `transaction`, `eventSubProcess` and `adHocSubProcess` throw an error showing the correct call (`subProcess("sp", (sub) => ..., { name: "X" })`) when the callback and options are swapped. This replaces the old silent tolerance; the swapped example in `guides/building-processes.md` is fixed and tests that relied on the swap use the correct order.
+- C2: annotations (and their associations) inside sub-processes get a `BPMNShape` and association edge: `layoutProcess` merges nested annotations through `withNestedAnnotations` before packing. They are packed in diagram space, so one may sit outside the sub-process box. Regression test `subprocess-annotation-di.test.ts`.
+
 ## 2026-10-22 — Multi-instance completion condition; user-task and subscription edit fields; gap plan
 
 - Fix: the builder's `multiInstance.completionCondition` was accepted and silently dropped (`buildMultiInstance` wrote only the collection and element). It is now written as `bpmn:completionCondition` (`tFormalExpression`). Regression test in `builder-zeebe-options.test.ts`.
