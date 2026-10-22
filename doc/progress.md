@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-22 — Generated builder reference for the demo "with-sdk" prompt (C4)
+
+- `scripts/generate-builder-reference.mjs` writes `packages/core/builder-reference.md` (about 3,000 tokens, chars/4 under 3,000) from `bpmn-builder.ts` with the TypeScript compiler API: public (non-private, non-`@internal`) `ProcessBuilder` methods grouped by family, the `BranchBuilder`/`SubProcessContentBuilder` extras and what is top-level only, and every option interface the signatures reach (fields, types, first JSDoc sentence; shared `ElementOptions` printed once). Hand-written in the script: the skip lists (`SKIP_FIELDS`, `SKIP_METHODS`), the family patterns (unknown methods land in "Other"), the rules and six runnable examples (`EXAMPLES`).
+- `buildSdkSystemPrompt` embeds it under "## Builder Reference" instead of the 20 KB `packages/core/README.md`; `builder-reference.md` is in core's `files`.
+- Tests: `packages/core/tests/builder-reference.test.ts` (drift against the committed file, token budget, every example type-checks against the source, builds, round-trips and has a complete diagram); `apps/demo/server/system-prompt.test.ts`.
+- Rerun after the builder changes: `node scripts/generate-builder-reference.mjs` (`--check` exits 1 when stale). The maintainer should rerun it after merging the parallel session's builder options (form variants, conditional events); the drift test fails until then.
+
 ## 2026-10-22 — Multi-instance on every task type; execution and task listeners
 
 - B3: `multiInstance` (`collection`, `elementVariable`, `outputCollection`, `outputElement`, `completionCondition`, `isSequential`) is accepted by `serviceTask`, `userTask`, `scriptTask`, `sendTask`, `receiveTask`, `businessRuleTask` and `callActivity` in all three builders, through one `withMultiInstance` helper. `CompactElement.multiInstance` carries `outputCollection`, `outputElement` and `completionCondition`, so `compactify`/`expand` keep them. Deviations: output options are written only together with `collection` (Zeebe needs `inputCollection`; that was already the rule); the process-text `each=` attribute is unchanged (no new syntax for outputs).

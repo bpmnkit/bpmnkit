@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
@@ -29,6 +30,22 @@ describe("buildSdkSystemPrompt", () => {
 	it("includes the output instruction", () => {
 		const prompt = buildSdkSystemPrompt(REPO_ROOT)
 		expect(prompt).toContain("process.stdout.write")
+	})
+
+	it("embeds the generated builder reference, not the package README", () => {
+		const prompt = buildSdkSystemPrompt(REPO_ROOT)
+		expect(prompt).toContain("## Builder Reference")
+		expect(prompt).toContain("withBoundary(")
+		expect(prompt).toContain("timerDuration")
+		// A README-only heading: the README is what the reference replaces.
+		expect(prompt).not.toContain("## Related Packages")
+		expect(prompt).not.toContain("## SDK Overview")
+	})
+
+	it("is much smaller than the README-based prompt", () => {
+		const readme = readFileSync(join(REPO_ROOT, "packages/core/README.md"), "utf-8")
+		const reference = readFileSync(join(REPO_ROOT, "packages/core/builder-reference.md"), "utf-8")
+		expect(reference.length).toBeLessThan(readme.length * 0.7)
 	})
 })
 
