@@ -460,6 +460,57 @@ describe("applyBpmnOperations user-task and subscription patches", () => {
 		expect(Bpmn.export(definitions)).toContain('correlationKey="=customerId"')
 	})
 
+	it("changes the key for every element that shares the message", () => {
+		const shared = USER_TASK.replace(
+			'<bpmn:receiveTask id="R" messageRef="M2" />',
+			'<bpmn:receiveTask id="R" messageRef="M" />',
+		)
+		const { definitions } = applyBpmnOperations(Bpmn.parse(shared), [
+			{ op: "update", id: "C", patch: { correlationKey: "=order.id" } },
+		])
+		const key = (id: string) =>
+			definitions.messages.find((m) => m.id === id)?.extensionElements?.[0]?.attributes
+				.correlationKey
+		// C and R both reference M, so editing one edits what the other reads
+		expect(key("M")).toBe("=order.id")
+		const receive = definitions.processes[0]?.flowElements.find((e) => e.id === "R")
+		expect(receive && "messageRef" in receive ? receive.messageRef : undefined).toBe("M")
+	})
+
+	it("removes an attribute set to an empty string, and the empty extension with it", () => {
+		const { definitions } = applyBpmnOperations(Bpmn.parse(USER_TASK), [
+			{ op: "update", id: "U", patch: { assignee: "" } },
+		])
+		expect(extensionOf(definitions, "U", "zeebe:assignmentDefinition")).toBeUndefined()
+		expect(Bpmn.export(definitions)).not.toContain("assignmentDefinition")
+	})
+
+	it("keeps the extension while it still has other attributes", () => {
+		const { definitions } = applyBpmnOperations(Bpmn.parse(USER_TASK), [
+			{ op: "update", id: "U", patch: { candidateGroups: "ops" } },
+			{ op: "update", id: "U", patch: { assignee: "" } },
+		])
+		expect(extensionOf(definitions, "U", "zeebe:assignmentDefinition")?.attributes).toEqual({
+			candidateGroups: "ops",
+		})
+	})
+
+	it("clears schedule, priority and properties", () => {
+		const { definitions } = applyBpmnOperations(Bpmn.parse(USER_TASK), [
+			{
+				op: "update",
+				id: "U",
+				patch: { dueDate: "PT1H", followUpDate: "PT2H", priority: 80, properties: { a: "b" } },
+			},
+			{ op: "update", id: "U", patch: { dueDate: "", priority: "", properties: {} } },
+		])
+		expect(extensionOf(definitions, "U", "zeebe:taskSchedule")?.attributes).toEqual({
+			followUpDate: "PT2H",
+		})
+		expect(extensionOf(definitions, "U", "zeebe:priorityDefinition")).toBeUndefined()
+		expect(extensionOf(definitions, "U", "zeebe:properties")).toBeUndefined()
+	})
+
 	it("reports a correlation key on an element with no message", () => {
 		expect(() =>
 			applyBpmnOperations(Bpmn.parse(USER_TASK), [

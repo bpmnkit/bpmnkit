@@ -347,7 +347,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `projectSemantics(definitions)`](.llms/chunks/packages.core.installation-projectsemantics-definitions.md) — 54 tokens
 - [@bpmnkit/core — Installation — `diffSemantics(before, after)`](.llms/chunks/packages.core.installation-diffsemantics-before-after.md) — 121 tokens
 - [@bpmnkit/core — Installation — `diffDiagram(before, after)`](.llms/chunks/packages.core.installation-diffdiagram-before-after.md) — 331 tokens
-- [@bpmnkit/core — Installation — `applyBpmnOperations(definitions, operations, options?)`](.llms/chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md) — 432 tokens
+- [@bpmnkit/core — Installation — `applyBpmnOperations(definitions, operations, options?)`](.llms/chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md) — 477 tokens
 - [@bpmnkit/core — Installation — `ensureZeebeExtension(owner, extension)`](.llms/chunks/packages.core.installation-ensurezeebeextension-owner-extension.md) — 323 tokens
 - [@bpmnkit/core — Installation — `reconcileCompact(definitions, compact, options?)`](.llms/chunks/packages.core.installation-reconcilecompact-definitions-compact-options.md) — 129 tokens
 - [@bpmnkit/core — Installation — `compactify(definitions)`](.llms/chunks/packages.core.installation-compactify-definitions.md) — 342 tokens

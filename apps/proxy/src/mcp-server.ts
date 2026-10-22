@@ -34,6 +34,7 @@ import {
 	type FormDefinition,
 	type RestConnectorConfig,
 	allElementTypes,
+	applyBpmnOperations,
 	compactify,
 	compactifyDmn,
 	compactifyForm,
@@ -46,7 +47,9 @@ import {
 	retypeElement,
 	semanticHash,
 } from "@bpmnkit/core"
-import type { BpmnElementType, CompactDmn, CompactForm } from "@bpmnkit/core"
+import type { BpmnElementType, BpmnOperation, CompactDmn, CompactForm } from "@bpmnkit/core"
+
+type ElementPatch = Extract<BpmnOperation, { op: "update" }>["patch"]
 import { elementTypeDescription } from "./element-vocabulary.js"
 import { addConnector, findConnectors } from "./mcp-connectors.js"
 import { runSandboxedSync } from "./sandbox.js"
@@ -218,6 +221,26 @@ function ensureProcess(processId: string): BpmnProcess {
 
 // ── Tool definitions ──────────────────────────────────────────────────────────
 
+/** Edit-only fields, shared by `ELEMENT_SCHEMA` and `update_element`. */
+const PATCH_PROPERTIES = {
+	candidateGroups: {
+		type: "string",
+		description: "userTask only: comma-separated candidate groups",
+	},
+	candidateUsers: { type: "string", description: "userTask only: comma-separated candidate users" },
+	assignee: { type: "string", description: 'userTask only: assignee; "" clears it' },
+	dueDate: { type: "string", description: 'userTask only: due date (ISO 8601 or FEEL); "" clears' },
+	followUpDate: { type: "string", description: 'userTask only: follow-up date; "" clears' },
+	priority: {
+		description: 'userTask only: priority 0-100 or a FEEL expression; "" clears',
+	},
+	properties: {
+		type: "object",
+		additionalProperties: { type: "string" },
+		description: "Extension properties (zeebe:properties); replaces the set, {} clears",
+	},
+}
+
 const ELEMENT_SCHEMA = {
 	type: "object",
 	properties: {
@@ -251,9 +274,38 @@ const ELEMENT_SCHEMA = {
 			type: "string",
 			description: "businessRuleTask / serviceTask: process variable to store the task output",
 		},
+		...PATCH_PROPERTIES,
 	},
 	required: ["id", "type"],
 }
+
+/** Every key `update_element` applies: `type` retypes, the rest is a core patch. */
+const UPDATE_KEYS: ReadonlySet<string> = new Set([
+	"type",
+	"name",
+	"documentation",
+	"attachedTo",
+	"interrupting",
+	"eventType",
+	"jobType",
+	"formId",
+	"calledProcess",
+	"decisionId",
+	"script",
+	"resultVariable",
+	"inputs",
+	"outputs",
+	"taskHeaders",
+	"nativeUserTask",
+	"assignee",
+	"candidateGroups",
+	"candidateUsers",
+	"dueDate",
+	"followUpDate",
+	"priority",
+	"properties",
+	"correlationKey",
+])
 
 const FLOW_SCHEMA = {
 	type: "object",
@@ -404,9 +456,15 @@ const BPMN_TOOLS = [
 	{
 		name: "update_element",
 		description:
-			"Change an existing BPMN element's display name or its element type. " +
+			"Change an existing BPMN element: display name, element type, or Zeebe settings " +
+			"(jobType, formId, assignee, candidateGroups, candidateUsers, dueDate, followUpDate, priority, " +
+			"properties, taskHeaders, inputs, outputs, script, correlationKey, …). " +
 			"Retyping keeps the element's id and its incoming/outgoing sequence flows, " +
-			"so use this instead of removing and re-adding — that would drop the wiring.",
+			"so use this instead of removing and re-adding — that would drop the wiring. " +
+			"An empty string clears assignee, candidateGroups, candidateUsers, dueDate, followUpDate or priority; " +
+			"properties: {} clears the properties. A field the element type cannot carry is an error " +
+			"(assignee on a service task). " +
+			"⚠️ correlationKey is stored on the referenced message, so it changes for EVERY element that shares that message.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -420,6 +478,12 @@ const BPMN_TOOLS = [
 							type: "string",
 							enum: allElementTypes(),
 							description: `New element type. ${elementTypeDescription()}`,
+						},
+						...PATCH_PROPERTIES,
+						correlationKey: {
+							type: "string",
+							description:
+								"Message events and receive tasks: correlation key. Stored on the message, so every element sharing that message changes",
 						},
 					},
 				},
@@ -673,9 +737,11 @@ function callTool(name: string, args: Record<string, unknown>): string {
 
 			// Refuse keys this tool does not apply rather than accepting them and
 			// doing nothing — a silent no-op reads as success to the caller.
-			const unsupported = Object.keys(changes).filter((key) => key !== "name" && key !== "type")
+			const unsupported = Object.keys(changes).filter((key) => !UPDATE_KEYS.has(key))
 			if (unsupported.length > 0) {
-				return `update_element does not change ${unsupported.join(", ")}. It applies "name" and "type" only.`
+				throw new Error(
+					`update_element does not change ${unsupported.join(", ")}. Supported: ${[...UPDATE_KEYS].join(", ")}.`,
+				)
 			}
 
 			const applied: string[] = []
@@ -693,17 +759,24 @@ function callTool(name: string, args: Record<string, unknown>): string {
 				}
 			}
 
-			if (changes.name !== undefined) {
-				const target = proc.flowElements[index]
-				if (target) {
-					target.name = changes.name as string
-					applied.push("name")
-				}
+			// name and the extension fields go through the core edit API, which
+			// keeps unmodelled Zeebe detail and (strict) refuses misplaced fields.
+			// Throws, so the caller sees a tool error and nothing is written.
+			const { type: _type, ...patch } = changes
+			if (Object.keys(patch).length > 0) {
+				if (state.kind !== "bpmn") throw new Error("Current file is not a BPMN diagram")
+				const edited = applyBpmnOperations(state.data, [
+					{ op: "update", id: elementId, patch: patch as ElementPatch },
+				])
+				state = { kind: "bpmn", data: edited.definitions }
+				applied.push(Object.keys(patch).join(", "))
 			}
 
 			if (applied.length === 0) return `Element ${elementId} already matches those changes.`
 
-			recomputeIncomingOutgoing(proc)
+			// `state.data` may have been replaced above, so look the process up again.
+			const edited = findProcess(args.processId as string)
+			if (edited) recomputeIncomingOutgoing(edited)
 			saveState()
 			return `Updated element ${elementId}: ${applied.join(", ")}.`
 		}
