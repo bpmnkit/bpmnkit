@@ -61,10 +61,23 @@ export interface ZeebeAgentDefinition {
 }
 
 /** Zeebe form definition extension for user tasks. */
-export interface ZeebeFormDefinition {
-	/** ID of the Camunda Form linked to this user task. */
-	formId: string
-}
+export type ZeebeFormDefinition =
+	| {
+			/** ID of the Camunda Form linked to this user task. */
+			formId: string
+			/** What `formId` resolves against (`bindingType`, Camunda 8.6+ unless `latest`). */
+			bindingType?: "latest" | "deployment" | "versionTag"
+			/** Version tag of the form; only meaningful with `bindingType: "versionTag"`. */
+			versionTag?: string
+	  }
+	| {
+			/** Embedded form (`camunda-forms:bpmn:<id>`) or a legacy form key. */
+			formKey: string
+	  }
+	| {
+			/** External form URL, for a Camunda user task (`zeebe:userTask`). */
+			externalReference: string
+	  }
 
 /** Zeebe called decision extension for business rule tasks. */
 export interface ZeebeCalledDecision {
@@ -280,7 +293,7 @@ export function zeebeExtensionsToXmlElements(extensions: ZeebeExtensions): XmlEl
 	if (extensions.formDefinition) {
 		elements.push({
 			name: "zeebe:formDefinition",
-			attributes: { formId: extensions.formDefinition.formId },
+			attributes: { ...extensions.formDefinition },
 			children: [],
 		})
 	}

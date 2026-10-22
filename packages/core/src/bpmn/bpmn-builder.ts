@@ -41,6 +41,7 @@ import {
 	setFlowDiscriminatorSource,
 } from "./stable-ids.js"
 import {
+	type ZeebeFormDefinition,
 	type ZeebeExtensions,
 	type ZeebeListener,
 	assertZeebePlacement,
@@ -172,6 +173,19 @@ export interface UserTaskOptions {
 	name?: string
 	/** Form key or form reference. */
 	formId?: string
+	/** Legacy form key (`zeebe:formDefinition formKey`), e.g. `camunda-forms:bpmn:<id>`. */
+	formKey?: string
+	/** External form URL (`zeebe:formDefinition externalReference`); for a `zeebeUserTask`. */
+	externalReference?: string
+	/** What `formId` resolves against; anything but `latest` needs Camunda 8.6+. */
+	formBindingType?: "latest" | "deployment" | "versionTag"
+	/** Version tag of the form; use with `formBindingType: "versionTag"`. */
+	formVersionTag?: string
+	/**
+	 * Embeds a Camunda Form: writes a process-level `zeebe:userTaskForm` holding `schema`
+	 * (the form's JSON) and links it with `formKey="camunda-forms:bpmn:<id>"`.
+	 */
+	embeddedForm?: { id: string; schema: string }
 	/** Emit <zeebe:userTask /> to mark as a Camunda 8 native user task. */
 	zeebeUserTask?: boolean
 	/** Input/output variable mappings. */
@@ -998,10 +1012,34 @@ function makeStartEventEl(id: string, options?: StartEventOptions): BpmnFlowElem
 	return el
 }
 
+/** Embedded forms by the user task that declared them; `build()` hoists them to the process. */
+const embeddedForms = new WeakMap<BpmnFlowElement, { id: string; schema: string }>()
+
+function userTaskFormDefinition(options?: UserTaskOptions): ZeebeFormDefinition | undefined {
+	if (!options) return undefined
+	const { formId, formKey, externalReference, embeddedForm } = options
+	const set = [formId, formKey, externalReference, embeddedForm].filter((v) => v !== undefined)
+	if (set.length > 1) {
+		throw new Error(
+			"userTask: set only one of formId, formKey, externalReference or embeddedForm",
+		)
+	}
+	if (embeddedForm) return { formKey: `camunda-forms:bpmn:${embeddedForm.id}` }
+	if (formKey) return { formKey }
+	if (externalReference) return { externalReference }
+	if (!formId) return undefined
+	return {
+		formId,
+		...(options.formBindingType !== undefined && { bindingType: options.formBindingType }),
+		...(options.formVersionTag !== undefined && { versionTag: options.formVersionTag }),
+	}
+}
+
 function makeUserTaskEl(id: string, options?: UserTaskOptions): BpmnFlowElement {
+	const formDefinition = userTaskFormDefinition(options)
 	const ext = zeebeExtensionsToXmlElements({
 		...(options?.zeebeUserTask ? { userTask: true } : {}),
-		...(options?.formId ? { formDefinition: { formId: options.formId } } : {}),
+		...(formDefinition ? { formDefinition } : {}),
 		...(options?.assignee || options?.candidateGroups || options?.candidateUsers
 			? {
 					assignmentDefinition: {
@@ -1027,8 +1065,27 @@ function makeUserTaskEl(id: string, options?: UserTaskOptions): BpmnFlowElement 
 		extensionElements: ext,
 	})
 	if (options) applyModelerTemplate(el, options)
+	if (options?.embeddedForm) embeddedForms.set(el, options.embeddedForm)
 	if (options?.isForCompensation) el.isForCompensation = true
 	return withMultiInstance(el, options?.multiInstance)
+}
+
+/** `zeebe:userTaskForm` elements for every embedded form under `elements`, nested scopes included. */
+function embeddedFormElements(elements: BpmnFlowElement[]): XmlElement[] {
+	const out: XmlElement[] = []
+	for (const el of elements) {
+		const form = embeddedForms.get(el)
+		if (form) {
+			out.push({
+				name: "zeebe:userTaskForm",
+				attributes: { id: form.id },
+				children: [],
+				text: form.schema,
+			})
+		}
+		if ("flowElements" in el) out.push(...embeddedFormElements(el.flowElements))
+	}
+	return out
 }
 
 function makeBusinessRuleTaskEl(id: string, options?: BusinessRuleTaskOptions): BpmnFlowElement {
@@ -3431,7 +3488,7 @@ export class ProcessBuilder {
 
 		if (this._source !== undefined) return this.buildOntoSource(this._source)
 
-		const extensionElements: XmlElement[] = []
+		const extensionElements: XmlElement[] = embeddedFormElements(this.flowElements)
 		if (this._versionTag) {
 			extensionElements.push({
 				name: "zeebe:versionTag",

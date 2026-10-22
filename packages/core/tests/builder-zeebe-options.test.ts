@@ -204,3 +204,63 @@ describe("builder zeebe options", () => {
 		})
 	})
 })
+
+describe("user task forms", () => {
+	const form = (opts: Record<string, unknown>) => {
+		const defs = Bpmn.createProcess("p")
+			.startEvent("s")
+			.userTask("u", opts)
+			.endEvent("e")
+			.build()
+		return { defs, xml: Bpmn.export(defs) }
+	}
+
+	it("emits formKey and externalReference", () => {
+		expect(form({ formKey: "camunda-forms:bpmn:x" }).xml).toContain(
+			'<zeebe:formDefinition formKey="camunda-forms:bpmn:x"',
+		)
+		expect(form({ externalReference: "https://e.com/f" }).xml).toContain(
+			'<zeebe:formDefinition externalReference="https://e.com/f"',
+		)
+	})
+
+	it("emits bindingType and versionTag next to formId", () => {
+		const { xml } = form({ formId: "f", formBindingType: "versionTag", formVersionTag: "v1" })
+		expect(xml).toContain('formId="f"')
+		expect(xml).toContain('bindingType="versionTag"')
+		expect(xml).toContain('versionTag="v1"')
+	})
+
+	it("throws when more than one form reference is set", () => {
+		expect(() => form({ formId: "f", formKey: "k" })).toThrow(/only one/i)
+		expect(() => form({ formKey: "k", externalReference: "r" })).toThrow(/only one/i)
+	})
+
+	it("writes an embedded form as a process-level zeebe:userTaskForm", () => {
+		const schema = '{"components":[]}'
+		const { defs, xml } = form({ embeddedForm: { id: "emb", schema } })
+		expect(xml).toContain('formKey="camunda-forms:bpmn:emb"')
+		expect(xml).toMatch(/<zeebe:userTaskForm id="emb">/)
+		expect(xml).toContain("components")
+		const roundTrip = Bpmn.parse(xml)
+		expect(analyzeCamundaCompat(roundTrip, "8.6").filter((f) => f.id === "user-task-form")).toEqual(
+			[],
+		)
+		expect(defs.processes[0]?.extensionElements.some((e) => e.name === "zeebe:userTaskForm")).toBe(
+			true,
+		)
+	})
+
+	it("collects an embedded form from a user task inside a sub-process", () => {
+		const xml = Bpmn.export(
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.subProcess("sp", (sub) =>
+					sub.startEvent("ss").userTask("u", { embeddedForm: { id: "in", schema: "{}" } }).endEvent("se"),
+				)
+				.endEvent("e")
+				.build(),
+		)
+		expect(xml).toMatch(/<zeebe:userTaskForm id="in">/)
+	})
+})

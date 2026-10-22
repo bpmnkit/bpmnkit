@@ -256,7 +256,18 @@ export function getZeebeExtensions(extensionElements: XmlElement[]): ZeebeExtens
 
 	const formDefEl = findChild(extensionElements, "formDefinition")
 	if (formDefEl) {
-		const formDefinition: ZeebeFormDefinition = { formId: formDefEl.attributes.formId ?? "" }
+		const { formId, formKey, externalReference, bindingType, versionTag } = formDefEl.attributes
+		let formDefinition: ZeebeFormDefinition
+		if (formKey !== undefined && formId === undefined) formDefinition = { formKey }
+		else if (externalReference !== undefined && formId === undefined) {
+			formDefinition = { externalReference }
+		} else {
+			formDefinition = { formId: formId ?? "" }
+			if (bindingType === "latest" || bindingType === "deployment" || bindingType === "versionTag") {
+				formDefinition.bindingType = bindingType
+			}
+			if (versionTag !== undefined) formDefinition.versionTag = versionTag
+		}
 		ext.formDefinition = formDefinition
 	}
 

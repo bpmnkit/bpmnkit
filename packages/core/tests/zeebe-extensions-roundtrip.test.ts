@@ -43,9 +43,19 @@ const FIXTURES = {
 
 const ALL_KEYS = Object.keys(FIXTURES) as (keyof ZeebeExtensions)[]
 
+const FORM_VARIANTS: ZeebeExtensions[] = [
+	{ formDefinition: { formId: "f", bindingType: "versionTag", versionTag: "v2" } },
+	{ formDefinition: { formKey: "camunda-forms:bpmn:emb" } },
+	{ formDefinition: { externalReference: "https://example.com/form" } },
+]
+
 describe("getZeebeExtensions is the inverse of zeebeExtensionsToXmlElements", () => {
 	it.each(ALL_KEYS)("roundtrips %s", (key) => {
 		const ext: ZeebeExtensions = FIXTURES[key]
+		expect(getZeebeExtensions(zeebeExtensionsToXmlElements(ext))).toEqual(ext)
+	})
+
+	it.each(FORM_VARIANTS)("roundtrips form definition %j", (ext) => {
 		expect(getZeebeExtensions(zeebeExtensionsToXmlElements(ext))).toEqual(ext)
 	})
 
