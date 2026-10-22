@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-22 — Same-input comparison page (D1)
+
+- `/compare/same-input`: per scenario, the prompt, a hand-written no-AI reference row and one row per recorded route (raw XML, compact JSON, builder script) with tokens, time, parses, DI, lint errors and closeness to the reference; all runs in a collapsible table; failed runs stay as rows
+- `scripts/build-compare-data.mjs` scores the 12 recordings with `scripts/lib/closeness.mjs` and writes `apps/landing/src/generated/compare/` (committed; no recordings copied). Row extraction is `scripts/lib/compare-rows.mjs`, with a fixture test
+- References are hand-authored from the prompt only (`scripts/compare/references/`)
+- `pnpm test:scripts` (docspack nudge, closeness, compare rows) now runs in CI
+- Closeness is near the floor (15–22) for every route: the scorer matches by id or type+name and the models chose other names. The page says so rather than tuning the reference
 ## 2026-10-22 — Multi-instance on every task type; execution and task listeners
 
 - B3: `multiInstance` (`collection`, `elementVariable`, `outputCollection`, `outputElement`, `completionCondition`, `isSequential`) is accepted by `serviceTask`, `userTask`, `scriptTask`, `sendTask`, `receiveTask`, `businessRuleTask` and `callActivity` in all three builders, through one `withMultiInstance` helper. `CompactElement.multiInstance` carries `outputCollection`, `outputElement` and `completionCondition`, so `compactify`/`expand` keep them. Deviations: output options are written only together with `collection` (Zeebe needs `inputCollection`; that was already the rule); the process-text `each=` attribute is unchanged (no new syntax for outputs).

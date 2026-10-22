@@ -1,5 +1,9 @@
 # Features
 
+## Same-input comparison page (2026-10-22)
+
+`/compare/same-input` shows one prompt through the recorded LLM routes and a hand-written no-AI reference, with the rendered diagram, tokens, time, validity and closeness for each. Data comes from `node scripts/build-compare-data.mjs` and is committed.
+
 ## Multi-instance and listeners in the builder (2026-10-22)
 
 - `multiInstance` (with `outputCollection` / `outputElement`) works on every task type, not just sub-processes; the compact format keeps it.
