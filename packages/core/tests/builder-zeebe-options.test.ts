@@ -165,10 +165,9 @@ describe("builder zeebe options", () => {
 			expect(ext.ioMapping?.outputs).toEqual([{ source: "=c", target: "d" }])
 		})
 
-		it("writes taskHeaders", () => {
-			const { xml, ext } = callActivity({ taskHeaders: { k: "v" } })
-			expect(xml).toContain("<zeebe:header")
-			expect(ext.taskHeaders?.headers).toEqual([{ key: "k", value: "v" }])
+		it("never emits taskHeaders, which the schema forbids on a call activity", () => {
+			const { xml } = callActivity({ taskHeaders: { k: "v" } })
+			expect(xml).not.toContain("zeebe:taskHeaders")
 		})
 
 		it("writes zeebeProperties", () => {

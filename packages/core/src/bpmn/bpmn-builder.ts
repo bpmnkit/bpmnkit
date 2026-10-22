@@ -211,8 +211,7 @@ export interface CallActivityOptions {
 		inputs?: Array<{ source: string; target: string }>
 		outputs?: Array<{ source: string; target: string }>
 	}
-	/** Task header key-value pairs. */
-	taskHeaders?: Record<string, string>
+	// No taskHeaders: the Zeebe schema does not allow zeebe:taskHeaders on bpmn:callActivity.
 	/** Zeebe property key-value pairs (`zeebe:properties`/`zeebe:property`). */
 	zeebeProperties?: Array<{ name: string; value: string }>
 	/** Mark this activity as a compensation handler. */
@@ -734,7 +733,7 @@ function recomputeIncomingOutgoing(elements: BpmnFlowElement[], flows: BpmnSeque
 	}
 }
 
-/** The ioMapping / taskHeaders / properties extensions shared by service and user tasks. */
+/** The ioMapping / taskHeaders / properties extensions shared by service tasks, user tasks and call activities. */
 function buildMappingExtensions(
 	options: Pick<ServiceTaskOptions, "ioMapping" | "taskHeaders" | "zeebeProperties">,
 ): ZeebeExtensions {
@@ -985,7 +984,11 @@ function makeBusinessRuleTaskEl(id: string, options?: BusinessRuleTaskOptions): 
 }
 
 function makeCallActivityEl(id: string, options: CallActivityOptions): BpmnFlowElement {
-	const extensions = buildMappingExtensions(options)
+	// Pick explicitly so a stray taskHeaders from an untyped caller is dropped, not emitted.
+	const extensions = buildMappingExtensions({
+		ioMapping: options.ioMapping,
+		zeebeProperties: options.zeebeProperties,
+	})
 	extensions.calledElement = {
 		processId: options.processId,
 		...(options.propagateAllChildVariables !== undefined && {
