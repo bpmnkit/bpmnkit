@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { getZeebeExtensions } from "../src/bpmn/utils.js"
-import { Bpmn, analyzeCamundaCompat } from "../src/index.js"
+import { Bpmn, ProcessBuilder, analyzeCamundaCompat } from "../src/index.js"
 
 describe("builder zeebe options", () => {
 	it("emits zeebe:formDefinition on a top-level start event", () => {
@@ -261,5 +261,29 @@ describe("user task forms", () => {
 				.build(),
 		)
 		expect(xml).toMatch(/<zeebe:userTaskForm id="in">/)
+	})
+
+	it("hoists an embedded form when continuing a parsed process", () => {
+		const base = Bpmn.parse(Bpmn.export(Bpmn.createProcess("p").startEvent("s").build()))
+		const xml = Bpmn.export(
+			ProcessBuilder.from(base, "p")
+				.at("s")
+				.userTask("u", { embeddedForm: { id: "emb", schema: "{}" } })
+				.build(),
+		)
+		expect(xml).toMatch(/<zeebe:userTaskForm id="emb">/)
+	})
+
+	it("writes one zeebe:userTaskForm per id and rejects a conflicting schema", () => {
+		const two = (a: string, b: string) =>
+			Bpmn.export(
+				Bpmn.createProcess("p")
+					.startEvent("s")
+					.userTask("u1", { embeddedForm: { id: "f", schema: a } })
+					.userTask("u2", { embeddedForm: { id: "f", schema: b } })
+					.build(),
+			)
+		expect(two("{}", "{}").match(/<zeebe:userTaskForm/g)).toHaveLength(1)
+		expect(() => two("{}", '{"a":1}')).toThrow(/embedded form "f"/)
 	})
 })

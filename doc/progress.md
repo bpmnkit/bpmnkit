@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-10-22 — User task forms and conditional events in the builder (B7, B8)
+
+- B7: `ZeebeFormDefinition` is now `{ formId; bindingType?; versionTag? } | { formKey } | { externalReference }`, read and written symmetrically (round-trip table extended). `UserTaskOptions` gains `formKey`, `externalReference`, `formBindingType`, `formVersionTag` and `embeddedForm: { id, schema }`; more than one of formId / formKey / externalReference / embeddedForm throws. An embedded form writes `formKey="camunda-forms:bpmn:<id>"` and a process-level `zeebe:userTaskForm` (also from sub-processes and when continuing a parsed process; same id twice is written once, two schemas for one id throw). Existing compat gates cover it (`formId` 8.4, `bindingType` 8.6, `zeebe:userTask` 8.5).
+- B8: `BpmnConditionalEventDefinition.extensionElements` (parser, serializer, round-trip test). Start, intermediate-catch and boundary options take `condition` and `conditionVariableEvents`; `CompactElement.condition` is used by `expand` and `compactify`, so `eventType: "conditional"` no longer yields an empty definition. Conditional events were already gated at 8.9 in `ELEMENT_SUPPORT`.
+- Deviation: no `conditionVariableNames`. The Camunda docs pack lists only `variableEvents` on `zeebe:conditionalFilter` (the engine derives variables from the FEEL). Compact keeps `condition` only; the filter is dropped on a compact round-trip. `camunda7/migrate.ts` still hints "variableNames"; left alone.
+
 ## 2026-10-22 — Multi-instance on every task type; execution and task listeners
 
 - B3: `multiInstance` (`collection`, `elementVariable`, `outputCollection`, `outputElement`, `completionCondition`, `isSequential`) is accepted by `serviceTask`, `userTask`, `scriptTask`, `sendTask`, `receiveTask`, `businessRuleTask` and `callActivity` in all three builders, through one `withMultiInstance` helper. `CompactElement.multiInstance` carries `outputCollection`, `outputElement` and `completionCondition`, so `compactify`/`expand` keep them. Deviations: output options are written only together with `collection` (Zeebe needs `inputCollection`; that was already the rule); the process-text `each=` attribute is unchanged (no new syntax for outputs).

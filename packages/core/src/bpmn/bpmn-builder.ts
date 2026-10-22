@@ -1092,20 +1092,28 @@ function makeUserTaskEl(id: string, options?: UserTaskOptions): BpmnFlowElement 
 
 /** `zeebe:userTaskForm` elements for every embedded form under `elements`, nested scopes included. */
 function embeddedFormElements(elements: BpmnFlowElement[]): XmlElement[] {
-	const out: XmlElement[] = []
-	for (const el of elements) {
-		const form = embeddedForms.get(el)
-		if (form) {
-			out.push({
-				name: "zeebe:userTaskForm",
-				attributes: { id: form.id },
-				children: [],
-				text: form.schema,
-			})
+	const byId = new Map<string, XmlElement>()
+	const visit = (list: BpmnFlowElement[]): void => {
+		for (const el of list) {
+			const form = embeddedForms.get(el)
+			if (form) {
+				const seen = byId.get(form.id)
+				// Two tasks may share a form, but one id can't hold two schemas.
+				if (seen !== undefined && seen.text !== form.schema) {
+					throw new Error(`embedded form "${form.id}" is declared with two different schemas`)
+				}
+				byId.set(form.id, {
+					name: "zeebe:userTaskForm",
+					attributes: { id: form.id },
+					children: [],
+					text: form.schema,
+				})
+			}
+			if ("flowElements" in el) visit(el.flowElements)
 		}
-		if ("flowElements" in el) out.push(...embeddedFormElements(el.flowElements))
 	}
-	return out
+	visit(elements)
+	return [...byId.values()]
 }
 
 function makeBusinessRuleTaskEl(id: string, options?: BusinessRuleTaskOptions): BpmnFlowElement {
@@ -3609,6 +3617,14 @@ export class ProcessBuilder {
 				{ type: "process", extensionElements: process.extensionElements },
 				"zeebe:versionTag",
 			).attributes.value = this._versionTag
+		}
+
+		for (const form of embeddedFormElements(this.flowElements)) {
+			const at = process.extensionElements.findIndex(
+				(e) => e.name === form.name && e.attributes.id === form.attributes.id,
+			)
+			if (at >= 0) process.extensionElements[at] = form
+			else process.extensionElements.push(form)
 		}
 
 		definitions.errors = this.rootErrors

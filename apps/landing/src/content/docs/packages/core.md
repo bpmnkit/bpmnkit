@@ -694,6 +694,13 @@ a builder method fails the build. Run `pnpm --filter @bpmnkit/core check:builder
   `update` patch replaces either list; `[]` removes it.
 - `startEvent(id, { formId })` writes `zeebe:formDefinition formId`. Camunda uses start forms
   only on the process's none start event, so do not set it on message, timer or signal starts.
+- `userTask(id, { formId, formBindingType, formVersionTag })`, `{ formKey }` and
+  `{ externalReference }` write the matching `zeebe:formDefinition` attributes (`bindingType` other
+  than `latest` needs Camunda 8.6+). `{ embeddedForm: { id, schema } }` writes a process-level
+  `zeebe:userTaskForm` and `formKey="camunda-forms:bpmn:<id>"`. Setting more than one of these throws.
+- `startEvent`, `intermediateCatchEvent` and `boundaryEvent` take `condition` (FEEL) to make a
+  conditional event (Camunda 8.9+) and `conditionVariableEvents: ["create", "update"]` for the
+  `zeebe:conditionalFilter`. Compact elements take `condition` with `eventType: "conditional"`.
 - `userTask(id, { ioMapping, taskHeaders, zeebeProperties, modelerTemplate,
   modelerTemplateVersion })` take the same shapes as `serviceTask`, for example
   `ioMapping: { inputs: [{ source: "=order", target: "order" }] }`.

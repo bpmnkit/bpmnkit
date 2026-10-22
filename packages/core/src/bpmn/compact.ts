@@ -349,7 +349,7 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		const def = el.eventDefinitions[0]
 		result.eventType = def?.type
 		if (def?.type === "timer" && def.timeDuration) result.timerDuration = def.timeDuration
-		if (def?.type === "conditional" && def.condition) result.condition = def.condition
+		if (def?.type === "conditional" && def.condition !== undefined) result.condition = def.condition
 	}
 
 	const loop = "loopCharacteristics" in el ? el.loopCharacteristics : undefined

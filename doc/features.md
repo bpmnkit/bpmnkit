@@ -4,6 +4,8 @@
 
 - `multiInstance` (with `outputCollection` / `outputElement`) works on every task type, not just sub-processes; the compact format keeps it.
 - `executionListeners` on activities, events and gateways and `taskListeners` on user tasks are builder options and `update` patch fields; placement is checked against the Zeebe schema.
+- `userTask` forms: `formId` (+ `formBindingType`, `formVersionTag`), `formKey`, `externalReference` or `embeddedForm: { id, schema }` (process-level `zeebe:userTaskForm`); setting more than one throws.
+- Conditional events: `condition` and `conditionVariableEvents` (`zeebe:conditionalFilter`) on start, catch and boundary events; compact `condition`.
 
 ## Edit user-task configuration and correlation keys (2026-10-22)
 
