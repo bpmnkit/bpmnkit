@@ -192,8 +192,29 @@ export interface CallActivityOptions {
 	name?: string
 	/** Process ID to call. */
 	processId: string
-	/** Whether to propagate all child variables. */
+	/** Whether to propagate all child variables back to the parent on completion. */
 	propagateAllChildVariables?: boolean
+	/**
+	 * Whether the child process receives all parent variables (default true in the engine).
+	 * Set `false` to pass only `ioMapping` inputs; `false` needs Camunda 8.2+.
+	 */
+	propagateAllParentVariables?: boolean
+	/**
+	 * How the called process version is resolved: the `latest` deployed version, the version
+	 * deployed together with this process (`deployment`), or by `versionTag`. Needs Camunda 8.6+.
+	 */
+	bindingType?: "latest" | "deployment" | "versionTag"
+	/** Version tag of the called process; only meaningful with `bindingType: "versionTag"`. */
+	versionTag?: string
+	/** Input/output variable mappings between parent and child scope. */
+	ioMapping?: {
+		inputs?: Array<{ source: string; target: string }>
+		outputs?: Array<{ source: string; target: string }>
+	}
+	/** Task header key-value pairs. */
+	taskHeaders?: Record<string, string>
+	/** Zeebe property key-value pairs (`zeebe:properties`/`zeebe:property`). */
+	zeebeProperties?: Array<{ name: string; value: string }>
 	/** Mark this activity as a compensation handler. */
 	isForCompensation?: boolean
 	/** Free-text documentation (`<bpmn:documentation>`). */
@@ -964,16 +985,22 @@ function makeBusinessRuleTaskEl(id: string, options?: BusinessRuleTaskOptions): 
 }
 
 function makeCallActivityEl(id: string, options: CallActivityOptions): BpmnFlowElement {
-	const attrs: Record<string, string> = { processId: options.processId }
-	if (options.propagateAllChildVariables !== undefined) {
-		attrs.propagateAllChildVariables = String(options.propagateAllChildVariables)
+	const extensions = buildMappingExtensions(options)
+	extensions.calledElement = {
+		processId: options.processId,
+		...(options.propagateAllChildVariables !== undefined && {
+			propagateAllChildVariables: options.propagateAllChildVariables,
+		}),
+		...(options.propagateAllParentVariables !== undefined && {
+			propagateAllParentVariables: options.propagateAllParentVariables,
+		}),
+		...(options.bindingType !== undefined && { bindingType: options.bindingType }),
+		...(options.versionTag !== undefined && { versionTag: options.versionTag }),
 	}
 	const el = makeFlowElement(id, "callActivity", {
 		name: options.name,
 		documentation: options.documentation,
-		extensionElements: zeebeExtensionsToXmlElements({
-			unknownElements: [{ name: "zeebe:calledElement", attributes: attrs, children: [] }],
-		}),
+		extensionElements: zeebeExtensionsToXmlElements(extensions),
 	})
 	if (options.isForCompensation) el.isForCompensation = true
 	return el

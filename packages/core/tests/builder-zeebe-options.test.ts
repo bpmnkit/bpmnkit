@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { Bpmn } from "../src/bpmn/index.js"
+import { getZeebeExtensions } from "../src/bpmn/utils.js"
+import { Bpmn, analyzeCamundaCompat } from "../src/index.js"
 
 describe("builder zeebe options", () => {
 	it("emits zeebe:formDefinition on a top-level start event", () => {
@@ -130,5 +131,77 @@ describe("builder zeebe options", () => {
 		const sub = process?.flowElements.find((element) => element.id === "sub")
 		const loop = sub && "loopCharacteristics" in sub ? sub.loopCharacteristics : undefined
 		expect(loop?.completionCondition?.text).toBe("=approved")
+	})
+	describe("call activity options", () => {
+		function callActivity(options: Record<string, unknown>, version = "8.7.0") {
+			const xml = Bpmn.export(
+				Bpmn.createProcess("p")
+					.startEvent("s")
+					.callActivity("c", { processId: "child", ...options } as never)
+					.endEvent("e")
+					.build(),
+			).replace(
+				"<bpmn:definitions ",
+				`<bpmn:definitions xmlns:modeler="http://camunda.org/schema/modeler/1.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="${version}" `,
+			)
+			const defs = Bpmn.parse(xml)
+			const el = defs.processes[0]?.flowElements.find((e) => e.id === "c")
+			const ext = getZeebeExtensions(el?.extensionElements)
+			return { xml, defs, ext }
+		}
+		const ids = (defs: ReturnType<typeof Bpmn.parse>, version: string) =>
+			analyzeCamundaCompat(defs, version).map((f) => f.id)
+
+		it("writes ioMapping", () => {
+			const { xml, ext } = callActivity({
+				ioMapping: {
+					inputs: [{ source: "=a", target: "b" }],
+					outputs: [{ source: "=c", target: "d" }],
+				},
+			})
+			expect(xml).toContain("<zeebe:input")
+			expect(xml).toContain("<zeebe:output")
+			expect(ext.ioMapping?.inputs).toEqual([{ source: "=a", target: "b" }])
+			expect(ext.ioMapping?.outputs).toEqual([{ source: "=c", target: "d" }])
+		})
+
+		it("writes taskHeaders", () => {
+			const { xml, ext } = callActivity({ taskHeaders: { k: "v" } })
+			expect(xml).toContain("<zeebe:header")
+			expect(ext.taskHeaders?.headers).toEqual([{ key: "k", value: "v" }])
+		})
+
+		it("writes zeebeProperties", () => {
+			const { xml, ext } = callActivity({ zeebeProperties: [{ name: "n", value: "v" }] })
+			expect(xml).toContain("<zeebe:property")
+			expect(ext.properties?.properties).toEqual([{ name: "n", value: "v" }])
+		})
+
+		it("writes propagateAllParentVariables and keeps propagateAllChildVariables", () => {
+			const { xml, ext, defs } = callActivity({
+				propagateAllParentVariables: false,
+				propagateAllChildVariables: false,
+			})
+			expect(xml).toContain('propagateAllParentVariables="false"')
+			expect(xml).toContain('propagateAllChildVariables="false"')
+			expect(ext.calledElement?.propagateAllParentVariables).toBe(false)
+			expect(ext.calledElement?.propagateAllChildVariables).toBe(false)
+			expect(ids(defs, "8.7")).not.toContain("compat/no-propagate-all-parent-variables")
+			expect(ids(defs, "8.1")).toContain("compat/no-propagate-all-parent-variables")
+		})
+
+		it("writes bindingType", () => {
+			const { xml, ext, defs } = callActivity({ bindingType: "deployment" })
+			expect(xml).toContain('bindingType="deployment"')
+			expect(ext.calledElement?.bindingType).toBe("deployment")
+			expect(ids(defs, "8.5")).toContain("compat/no-binding-type")
+			expect(ids(defs, "8.7")).not.toContain("compat/no-binding-type")
+		})
+
+		it("writes versionTag", () => {
+			const { xml, ext } = callActivity({ bindingType: "versionTag", versionTag: "v1" })
+			expect(xml).toContain('versionTag="v1"')
+			expect(ext.calledElement?.versionTag).toBe("v1")
+		})
 	})
 })
