@@ -7,7 +7,10 @@ import type {
 	BpmnSequenceFlow,
 } from "./bpmn-model.js"
 import type {
+	ZeebeAdHoc,
+	ZeebeAssignmentDefinition,
 	ZeebeCalledDecision,
+	ZeebeCalledElement,
 	ZeebeExtensions,
 	ZeebeFormDefinition,
 	ZeebeIoMapping,
@@ -15,6 +18,7 @@ import type {
 	ZeebeProperties,
 	ZeebeTaskDefinition,
 	ZeebeTaskHeaders,
+	ZeebeTaskSchedule,
 } from "./zeebe-extensions.js"
 
 // ── Process / element lookup ──────────────────────────────────────────────────
@@ -251,5 +255,92 @@ export function getZeebeExtensions(extensionElements: XmlElement[]): ZeebeExtens
 		ext.calledDecision = calledDecision
 	}
 
+	const calledElEl = findChild(extensionElements, "calledElement")
+	if (calledElEl) {
+		const a = calledElEl.attributes
+		const calledElement: ZeebeCalledElement = { processId: a.processId ?? "" }
+		if (a.propagateAllChildVariables !== undefined) {
+			calledElement.propagateAllChildVariables = a.propagateAllChildVariables === "true"
+		}
+		if (a.propagateAllParentVariables !== undefined) {
+			calledElement.propagateAllParentVariables = a.propagateAllParentVariables === "true"
+		}
+		if (
+			a.bindingType === "latest" ||
+			a.bindingType === "deployment" ||
+			a.bindingType === "versionTag"
+		) {
+			calledElement.bindingType = a.bindingType
+		}
+		if (a.versionTag !== undefined) calledElement.versionTag = a.versionTag
+		ext.calledElement = calledElement
+	}
+
+	const adHocEl = findChild(extensionElements, "adHoc")
+	if (adHocEl) {
+		const { outputCollection, outputElement, activeElementsCollection } = adHocEl.attributes
+		const adHoc: ZeebeAdHoc = {}
+		if (outputCollection !== undefined) adHoc.outputCollection = outputCollection
+		if (outputElement !== undefined) adHoc.outputElement = outputElement
+		if (activeElementsCollection !== undefined) {
+			adHoc.activeElementsCollection = activeElementsCollection
+		}
+		ext.adHoc = adHoc
+	}
+
+	if (findChild(extensionElements, "userTask")) ext.userTask = true
+
+	const assignEl = findChild(extensionElements, "assignmentDefinition")
+	if (assignEl) {
+		const { assignee, candidateGroups, candidateUsers } = assignEl.attributes
+		const assignmentDefinition: ZeebeAssignmentDefinition = {}
+		if (assignee !== undefined) assignmentDefinition.assignee = assignee
+		if (candidateGroups !== undefined) assignmentDefinition.candidateGroups = candidateGroups
+		if (candidateUsers !== undefined) assignmentDefinition.candidateUsers = candidateUsers
+		ext.assignmentDefinition = assignmentDefinition
+	}
+
+	const scheduleEl = findChild(extensionElements, "taskSchedule")
+	if (scheduleEl) {
+		const { dueDate, followUpDate } = scheduleEl.attributes
+		const taskSchedule: ZeebeTaskSchedule = {}
+		if (dueDate !== undefined) taskSchedule.dueDate = dueDate
+		if (followUpDate !== undefined) taskSchedule.followUpDate = followUpDate
+		ext.taskSchedule = taskSchedule
+	}
+
+	const priorityEl = findChild(extensionElements, "priorityDefinition")
+	if (priorityEl) {
+		ext.priorityDefinition = { priority: priorityEl.attributes.priority ?? "" }
+	}
+
+	const subscriptionEl = findChild(extensionElements, "subscription")
+	if (subscriptionEl) {
+		ext.subscription = { correlationKey: subscriptionEl.attributes.correlationKey ?? "" }
+	}
+
+	// Anything we have no typed field for must survive a read-modify-write.
+	const unknownElements = extensionElements.filter(
+		(c) => !KNOWN_ZEEBE_ELEMENTS.has(localName(c.name)),
+	)
+	if (unknownElements.length > 0) ext.unknownElements = unknownElements
+
 	return ext
 }
+
+const KNOWN_ZEEBE_ELEMENTS: ReadonlySet<string> = new Set([
+	"taskDefinition",
+	"ioMapping",
+	"taskHeaders",
+	"properties",
+	"adHoc",
+	"agentDefinition",
+	"formDefinition",
+	"calledDecision",
+	"calledElement",
+	"userTask",
+	"assignmentDefinition",
+	"taskSchedule",
+	"priorityDefinition",
+	"subscription",
+])

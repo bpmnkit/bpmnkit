@@ -97,6 +97,18 @@ export interface ZeebeSubscription {
 	correlationKey: string
 }
 
+/** Zeebe called element extension for call activities (zeebe:calledElement). */
+export interface ZeebeCalledElement {
+	/** ID of the process to call. */
+	processId: string
+	/** Held as booleans; the XML attributes are the strings "true"/"false". */
+	propagateAllChildVariables?: boolean
+	propagateAllParentVariables?: boolean
+	bindingType?: "latest" | "deployment" | "versionTag"
+	/** Only meaningful with `bindingType: "versionTag"`. */
+	versionTag?: string
+}
+
 /** Collected Zeebe extensions on a service task. */
 export interface ZeebeExtensions {
 	taskDefinition?: ZeebeTaskDefinition
@@ -110,6 +122,8 @@ export interface ZeebeExtensions {
 	formDefinition?: ZeebeFormDefinition
 	/** DMN decision invoked by a business rule task (zeebe:calledDecision). */
 	calledDecision?: ZeebeCalledDecision
+	/** Process invoked by a call activity (zeebe:calledElement). */
+	calledElement?: ZeebeCalledElement
 	/** Marks this as a Camunda 8 native user task (zeebe:userTask). */
 	userTask?: true
 	/** User task assignee/candidates (zeebe:assignmentDefinition). */
@@ -229,6 +243,22 @@ export function zeebeExtensionsToXmlElements(extensions: ZeebeExtensions): XmlEl
 			},
 			children: [],
 		})
+	}
+
+	if (extensions.calledElement) {
+		const { processId, propagateAllChildVariables, propagateAllParentVariables } =
+			extensions.calledElement
+		const { bindingType, versionTag } = extensions.calledElement
+		const attrs: Record<string, string> = { processId }
+		if (propagateAllChildVariables !== undefined) {
+			attrs.propagateAllChildVariables = String(propagateAllChildVariables)
+		}
+		if (propagateAllParentVariables !== undefined) {
+			attrs.propagateAllParentVariables = String(propagateAllParentVariables)
+		}
+		if (bindingType !== undefined) attrs.bindingType = bindingType
+		if (versionTag !== undefined) attrs.versionTag = versionTag
+		elements.push({ name: "zeebe:calledElement", attributes: attrs, children: [] })
 	}
 
 	if (extensions.assignmentDefinition) {
