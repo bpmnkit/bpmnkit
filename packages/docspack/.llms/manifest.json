@@ -3160,6 +3160,127 @@
 			]
 		},
 		{
+			"id": "guides.recipes-element-templates",
+			"file": "chunks/guides.recipes-element-templates.md",
+			"tokens": 360,
+			"tags": [
+				"guides",
+				"recipes-element-templates",
+				"apply",
+				"element",
+				"template",
+				"service",
+				"task"
+			],
+			"entities": [
+				"applyTemplateToElement",
+				"@bpmnkit/core/connectors",
+				"retryCount",
+				"appliesTo",
+				"io.camunda.connectors.HttpJson.v2"
+			]
+		},
+		{
+			"id": "guides.recipes-element-templates.how-do-i-find-a-connector-template-s-property-ids",
+			"file": "chunks/guides.recipes-element-templates.how-do-i-find-a-connector-template-s-property-ids.md",
+			"tokens": 181,
+			"tags": [
+				"guides",
+				"recipes-element-templates",
+				"find",
+				"connector",
+				"template",
+				"property",
+				"ids"
+			],
+			"entities": [
+				"@bpmnkit/core/connectors"
+			]
+		},
+		{
+			"id": "guides.recipes-forms-and-user-tasks",
+			"file": "chunks/guides.recipes-forms-and-user-tasks.md",
+			"tokens": 138,
+			"tags": [
+				"guides",
+				"recipes-forms-and-user-tasks",
+				"set",
+				"start",
+				"event",
+				"form"
+			],
+			"entities": [
+				"formId",
+				"startEvent"
+			]
+		},
+		{
+			"id": "guides.recipes-forms-and-user-tasks.how-do-i-set-the-assignee-of-a-user-task",
+			"file": "chunks/guides.recipes-forms-and-user-tasks.how-do-i-set-the-assignee-of-a-user-task.md",
+			"tokens": 368,
+			"tags": [
+				"guides",
+				"recipes-forms-and-user-tasks",
+				"set",
+				"assignee",
+				"user",
+				"task",
+				"change",
+				"due",
+				"date",
+				"priority",
+				"existing"
+			],
+			"entities": [
+				"candidateGroups",
+				"candidateUsers",
+				"dueDate",
+				"followUpDate",
+				"userTask",
+				"applyBpmnOperations",
+				"processId",
+				"elementId"
+			]
+		},
+		{
+			"id": "guides.recipes-message-correlation.how-do-i-set-a-message-correlation-key",
+			"file": "chunks/guides.recipes-message-correlation.how-do-i-set-a-message-correlation-key.md",
+			"tokens": 146,
+			"tags": [
+				"guides",
+				"recipes-message-correlation",
+				"set",
+				"message",
+				"correlation",
+				"key"
+			],
+			"entities": [
+				"messageName",
+				"correlationKey",
+				"intermediateCatchEvent",
+				"receiveTask"
+			]
+		},
+		{
+			"id": "guides.recipes-message-correlation.how-do-i-change-the-correlation-key-of-an-existing-message-event",
+			"file": "chunks/guides.recipes-message-correlation.how-do-i-change-the-correlation-key-of-an-existing-message-event.md",
+			"tokens": 171,
+			"tags": [
+				"guides",
+				"recipes-message-correlation",
+				"change",
+				"correlation",
+				"key",
+				"existing",
+				"message",
+				"event"
+			],
+			"entities": [
+				"correlationKey",
+				"applyBpmnOperations"
+			]
+		},
+		{
 			"id": "guides.simulation",
 			"file": "chunks/guides.simulation.md",
 			"tokens": 261,
