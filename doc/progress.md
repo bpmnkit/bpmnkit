@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-22 — D1b: structure-matching closeness scorer; comparison page may ship
+
+- `scoreCloseness(..., { match: "structure" })` pairs elements by graph structure (kind = type + event definition, normalised longest-path depth, in/out degree; greedy by cost, ties by id; names only add 0.2 × dissimilarity). Configuration compares the kind of Zeebe setting, layout compares positions in the unit square. Default stays `"id"`; existing tests unchanged. Header comment of `scripts/lib/closeness.mjs` is the definition.
+- `scripts/build-compare-data.mjs` uses structure mode and the committed `generated/compare/` data is regenerated. Median closeness (structure mode) raw-xml / compact-json / builder-script: kyc 53 / 44.5 / 48.1, loan-approval 65.9 / 39.6 / 38.8, quote-to-cash 61.2 / 61.2 / 53.1; the reference is 100 by construction (it is the comparand), so it "wins" on everything by definition.
+- `/compare/same-input`: scorer text updated, a note on failed July builder runs that now compile (numbers from `ai-benchmark-replay.ts`), and routes with fewer than 3 runs are marked indicative.
+- Deviation from the plan: a pure rewiring costs ~10 points, not 15, because structure is 25 of 100 points and the elements still match; the weights are unchanged.
+
 ## 2026-10-22 — Week-3 merge: builder reference regenerated; comparison page held back
 
 - Regenerated `packages/core/builder-reference.md` after merging the form-variant and conditional-event options. Its budget rose from 3,000 to 3,200 tokens (still about a third of the ~10k-token README it replaced). `formKey` (legacy), `formBindingType`, `formVersionTag` and `conditionVariableEvents` joined the generator's skip list.

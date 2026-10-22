@@ -3,7 +3,7 @@
 	"prompt": "Generate a Loan Approval BPMN process for Camunda 8. It should include:\n- Credit score check via REST connector\n- Exclusive gateway for pre-screening (reject below 580)\n- DMN business rule task for risk scoring\n- User task for manual underwriter review\n- Separate end events for approved and rejected outcomes\n\nOutput code only. No explanation. No markdown prose outside the code block.",
 	"model": "claude-opus-4-8",
 	"reference": {
-		"durationMs": 3,
+		"durationMs": 4,
 		"parses": true,
 		"diComplete": true,
 		"lintErrors": 0,
@@ -15,10 +15,10 @@
 			"parsed": 5,
 			"diComplete": 5,
 			"zeroLintErrors": 0,
-			"featuredRunId": "loan-approval-2026-07-01c",
-			"closenessMedian": 17.7,
-			"closenessBest": 19.1,
-			"closenessWorst": 15,
+			"featuredRunId": "loan-approval-2026-07-01b",
+			"closenessMedian": 65.9,
+			"closenessBest": 66.1,
+			"closenessWorst": 62.4,
 			"durationMsMedian": 49425,
 			"inputTokensMedian": 355,
 			"outputTokensMedian": 5079
@@ -29,9 +29,9 @@
 			"diComplete": 2,
 			"zeroLintErrors": 0,
 			"featuredRunId": "loan-approval-2026-07-02",
-			"closenessMedian": 15,
-			"closenessBest": 15,
-			"closenessWorst": 15,
+			"closenessMedian": 39.6,
+			"closenessBest": 43.5,
+			"closenessWorst": 39.6,
 			"durationMsMedian": 11625,
 			"inputTokensMedian": 2283,
 			"outputTokensMedian": 644
@@ -41,10 +41,10 @@
 			"parsed": 5,
 			"diComplete": 5,
 			"zeroLintErrors": 0,
-			"featuredRunId": "loan-approval-2026-07-01c",
-			"closenessMedian": 15,
-			"closenessBest": 15,
-			"closenessWorst": 15,
+			"featuredRunId": "loan-approval-2026-07-02",
+			"closenessMedian": 38.8,
+			"closenessBest": 39.2,
+			"closenessWorst": 38.8,
 			"durationMsMedian": 17724,
 			"inputTokensMedian": 10467,
 			"outputTokensMedian": 1519
@@ -63,7 +63,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 3,
-			"closeness": 15
+			"closeness": 38.8
 		},
 		{
 			"scenario": "loan-approval",
@@ -77,7 +77,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 3,
-			"closeness": 15
+			"closeness": 38.8
 		},
 		{
 			"scenario": "loan-approval",
@@ -91,7 +91,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 3,
-			"closeness": 15
+			"closeness": 39
 		},
 		{
 			"scenario": "loan-approval",
@@ -105,7 +105,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 3,
-			"closeness": 15
+			"closeness": 38.8
 		},
 		{
 			"scenario": "loan-approval",
@@ -119,7 +119,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 3,
-			"closeness": 15
+			"closeness": 39.2
 		},
 		{
 			"scenario": "loan-approval",
@@ -133,7 +133,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 4,
-			"closeness": 15
+			"closeness": 39.6
 		},
 		{
 			"scenario": "loan-approval",
@@ -147,7 +147,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 2,
-			"closeness": 15
+			"closeness": 43.5
 		},
 		{
 			"scenario": "loan-approval",
@@ -161,7 +161,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 2,
-			"closeness": 17.8
+			"closeness": 66.1
 		},
 		{
 			"scenario": "loan-approval",
@@ -175,7 +175,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 2,
-			"closeness": 19.1
+			"closeness": 65.9
 		},
 		{
 			"scenario": "loan-approval",
@@ -189,7 +189,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 2,
-			"closeness": 17.7
+			"closeness": 62.4
 		},
 		{
 			"scenario": "loan-approval",
@@ -203,7 +203,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 2,
-			"closeness": 15
+			"closeness": 63
 		},
 		{
 			"scenario": "loan-approval",
@@ -217,7 +217,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 2,
-			"closeness": 16.1
+			"closeness": 66
 		}
 	]
 }

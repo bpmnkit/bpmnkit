@@ -3,7 +3,7 @@
 	"prompt": "Generate a KYC (Know Your Customer) onboarding BPMN process for Camunda 8. It\nshould include:\n- Identity document upload and verification via a REST connector to an OCR\n  service\n- Exclusive gateway on document quality: reject and loop back to re-upload\n  (up to 2 retries) if verification fails\n- Sanctions and PEP (politically exposed person) screening via a REST\n  connector\n- Risk-based gateway routing to standard due diligence or enhanced due\n  diligence based on the screening result\n- User task for enhanced due diligence manual review by a compliance officer\n- DMN business rule task for final risk classification\n- Separate end events for approved, rejected, and escalated-to-compliance\n  outcomes\n\nOutput code only. No explanation. No markdown prose outside the code block.",
 	"model": "claude-opus-4-8",
 	"reference": {
-		"durationMs": 42,
+		"durationMs": 30,
 		"parses": true,
 		"diComplete": true,
 		"lintErrors": 0,
@@ -15,10 +15,10 @@
 			"parsed": 2,
 			"diComplete": 2,
 			"zeroLintErrors": 0,
-			"featuredRunId": "kyc-2026-07-03",
-			"closenessMedian": 15.6,
-			"closenessBest": 17,
-			"closenessWorst": 15.6,
+			"featuredRunId": "kyc-2026-07-02",
+			"closenessMedian": 53,
+			"closenessBest": 53.7,
+			"closenessWorst": 53,
 			"durationMsMedian": 115620,
 			"inputTokensMedian": 487,
 			"outputTokensMedian": 12092
@@ -28,10 +28,10 @@
 			"parsed": 2,
 			"diComplete": 2,
 			"zeroLintErrors": 0,
-			"featuredRunId": "kyc-2026-07-03",
-			"closenessMedian": 15,
-			"closenessBest": 15.6,
-			"closenessWorst": 15,
+			"featuredRunId": "kyc-2026-07-02",
+			"closenessMedian": 44.5,
+			"closenessBest": 45.2,
+			"closenessWorst": 44.5,
 			"durationMsMedian": 16170,
 			"inputTokensMedian": 2415,
 			"outputTokensMedian": 1020
@@ -41,10 +41,10 @@
 			"parsed": 2,
 			"diComplete": 2,
 			"zeroLintErrors": 0,
-			"featuredRunId": "kyc-2026-07-02",
-			"closenessMedian": 15,
-			"closenessBest": 15,
-			"closenessWorst": 15,
+			"featuredRunId": "kyc-2026-07-03",
+			"closenessMedian": 48.1,
+			"closenessBest": 49.8,
+			"closenessWorst": 48.1,
 			"durationMsMedian": 28274,
 			"inputTokensMedian": 10599,
 			"outputTokensMedian": 2273
@@ -63,7 +63,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 4,
-			"closeness": 15
+			"closeness": 49.8
 		},
 		{
 			"scenario": "kyc",
@@ -77,7 +77,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 4,
-			"closeness": 15
+			"closeness": 48.1
 		},
 		{
 			"scenario": "kyc",
@@ -91,7 +91,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 6,
-			"closeness": 15.6
+			"closeness": 44.5
 		},
 		{
 			"scenario": "kyc",
@@ -105,7 +105,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 4,
-			"closeness": 15
+			"closeness": 45.2
 		},
 		{
 			"scenario": "kyc",
@@ -119,7 +119,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 5,
-			"closeness": 17
+			"closeness": 53
 		},
 		{
 			"scenario": "kyc",
@@ -133,7 +133,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 4,
-			"closeness": 15.6
+			"closeness": 53.7
 		}
 	]
 }

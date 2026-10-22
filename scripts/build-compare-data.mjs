@@ -36,7 +36,7 @@ function metrics(xml, referenceXml) {
 	const lint = lintDiagram(defs)
 	let closeness = null
 	try {
-		closeness = scoreCloseness(xml, referenceXml).total
+		closeness = scoreCloseness(xml, referenceXml, { match: "structure" }).total
 	} catch {
 		// Parses but cannot be scored (e.g. no process): leave closeness empty rather than 0.
 	}

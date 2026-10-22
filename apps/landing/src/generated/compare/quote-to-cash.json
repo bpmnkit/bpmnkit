@@ -15,10 +15,10 @@
 			"parsed": 5,
 			"diComplete": 3,
 			"zeroLintErrors": 0,
-			"featuredRunId": "quote-to-cash-2026-07-02",
-			"closenessMedian": 18.1,
-			"closenessBest": 22.2,
-			"closenessWorst": 15.8,
+			"featuredRunId": "quote-to-cash-2026-07-03",
+			"closenessMedian": 61.2,
+			"closenessBest": 65.5,
+			"closenessWorst": 58,
 			"durationMsMedian": 307300,
 			"inputTokensMedian": 603,
 			"outputTokensMedian": 31772
@@ -29,9 +29,9 @@
 			"diComplete": 1,
 			"zeroLintErrors": 0,
 			"featuredRunId": "quote-to-cash-2026-07-03",
-			"closenessMedian": 15,
-			"closenessBest": 15,
-			"closenessWorst": 15,
+			"closenessMedian": 61.2,
+			"closenessBest": 61.2,
+			"closenessWorst": 61.2,
 			"durationMsMedian": 67936,
 			"inputTokensMedian": 2531,
 			"outputTokensMedian": 6006
@@ -41,10 +41,10 @@
 			"parsed": 2,
 			"diComplete": 2,
 			"zeroLintErrors": 0,
-			"featuredRunId": "quote-to-cash-2026-07-02c",
-			"closenessMedian": 15,
-			"closenessBest": 15,
-			"closenessWorst": 15,
+			"featuredRunId": "quote-to-cash-2026-07-03",
+			"closenessMedian": 53.1,
+			"closenessBest": 55.1,
+			"closenessWorst": 53.1,
 			"durationMsMedian": 130996,
 			"inputTokensMedian": 10715,
 			"outputTokensMedian": 11793
@@ -105,7 +105,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 8,
-			"closeness": 15
+			"closeness": 55.1
 		},
 		{
 			"scenario": "quote-to-cash",
@@ -119,7 +119,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 10,
-			"closeness": 15
+			"closeness": 53.1
 		},
 		{
 			"scenario": "quote-to-cash",
@@ -133,7 +133,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 4,
-			"closeness": 15
+			"closeness": 61.2
 		},
 		{
 			"scenario": "quote-to-cash",
@@ -147,7 +147,7 @@
 			"parses": true,
 			"diComplete": false,
 			"lintErrors": 3,
-			"closeness": 15.8
+			"closeness": 58
 		},
 		{
 			"scenario": "quote-to-cash",
@@ -161,7 +161,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 3,
-			"closeness": 18.1
+			"closeness": 65.5
 		},
 		{
 			"scenario": "quote-to-cash",
@@ -175,7 +175,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 3,
-			"closeness": 21.2
+			"closeness": 63.9
 		},
 		{
 			"scenario": "quote-to-cash",
@@ -189,7 +189,7 @@
 			"parses": true,
 			"diComplete": false,
 			"lintErrors": 3,
-			"closeness": 16.6
+			"closeness": 58.5
 		},
 		{
 			"scenario": "quote-to-cash",
@@ -203,7 +203,7 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 3,
-			"closeness": 22.2
+			"closeness": 61.2
 		}
 	]
 }

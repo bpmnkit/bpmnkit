@@ -1,6 +1,6 @@
 # Zeebe coverage gaps, agent performance and a same-input comparison page — analysis and plan
 
-Date: 2026-10-22. Status: Part A, week 1 (B1, B2, B4, C1, C2) week 2 (B3, B5, C3, C5, the D1 scorer) and week 3 (B7, B8, C4, D1) are **done**, but the D1 page must not ship until D1b below is fixed; C6 was dropped (see its row). Everything else is open.
+Date: 2026-10-22. Status: Part A, week 1 (B1, B2, B4, C1, C2) week 2 (B3, B5, C3, C5, the D1 scorer) and week 3 (B7, B8, C4, D1) are **done**, and D1b (structure-matching scorer) is **done**, so the D1 page may ship; C6 was dropped (see its row). Everything else is open.
 
 Effort scale: **S** < ½ day, **M** ½–2 days, **L** > 2 days. Paths are relative to the repo root;
 `core/` means `packages/core/src/`.
@@ -212,7 +212,7 @@ page should say so; that candour is what makes the page credible.
 
 ### Phases
 
-**D1b — blocker found in week 3: the scorer cannot compare free-form runs (M).** The scorer
+**D1b — done 2026-10-22: the scorer could not compare free-form runs (M).** Implemented as `match: "structure"` in `scripts/lib/closeness.mjs`; the AI routes now score 39–66 against a reference at 100. The scorer
 matches elements by id, then by type and name. The recordings come from free-form prompts, so models
 choose their own ids and names, and every AI route lands on the scorer's floor (~15/100) while the
 reference scores 100. That measures naming, not modelling. Fix before publishing the page: match by
