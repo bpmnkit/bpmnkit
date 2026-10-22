@@ -187,8 +187,11 @@ describe("stable sequence flow ids", () => {
 		const process = firstProcess(
 			Bpmn.createProcess("p")
 				.startEvent("start")
-				.subProcess("sub", {}, (s) =>
-					s.startEvent("subStart").serviceTask("inner", { taskType: "inner" }).endEvent("subEnd"),
+				.subProcess(
+					"sub",
+					(s) =>
+						s.startEvent("subStart").serviceTask("inner", { taskType: "inner" }).endEvent("subEnd"),
+					{},
 				)
 				.endEvent("done")
 				.build(),

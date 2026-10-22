@@ -1352,9 +1352,9 @@ describe("Auto-layout determinism", () => {
 			.branch("a", (b) => b.serviceTask("t1", { name: "A", taskType: "a" }))
 			.branch("b", (b) => b.serviceTask("t2", { name: "B", taskType: "b" }))
 			.exclusiveGateway("merge")
-			.subProcess("sub", { name: "Sub" }, (d) =>
-				d.startEvent("subStart").userTask("subTask").endEvent("subEnd"),
-			)
+			.subProcess("sub", (d) => d.startEvent("subStart").userTask("subTask").endEvent("subEnd"), {
+				name: "Sub",
+			})
 			.textAnnotation("Needs review")
 			.endEvent("e")
 			.build()

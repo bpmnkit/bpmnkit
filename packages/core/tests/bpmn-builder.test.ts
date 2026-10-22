@@ -883,26 +883,12 @@ describe("BpmnProcessBuilder", () => {
 			}
 		})
 
-		it("tolerates content and options passed in reversed order (options second, callback third)", () => {
-			const process = firstProcess(
+		it("rejects content and options passed in reversed order (options second, callback third)", () => {
+			expect(() =>
 				Bpmn.createProcess("proc")
-					.startEvent("s")
-					.adHocSubProcess("adhoc1", { name: "Review Steps" }, (sub) => {
-						sub
-							.startEvent("sub-start")
-							.serviceTask("sub-task", { taskType: "sub-work" })
-							.endEvent("sub-end")
-					})
-					.endEvent("e")
+					.adHocSubProcess("adhoc1", { name: "X" } as never, ((sub: unknown) => sub) as never)
 					.build(),
-			)
-
-			const adhoc = defined(process.flowElements.find((n) => n.id === "adhoc1"))
-			expect(adhoc.type).toBe("adHocSubProcess")
-			expect(adhoc.name).toBe("Review Steps")
-			if (adhoc.type === "adHocSubProcess") {
-				expect(adhoc.flowElements).toHaveLength(3)
-			}
+			).toThrow('adHocSubProcess("adhoc1", (sub) => ..., { name: "X" })')
 		})
 
 		// Camunda 8 reads a child *with* an incoming flow as part of an internal
@@ -1084,22 +1070,12 @@ describe("BpmnProcessBuilder", () => {
 			}
 		})
 
-		it("tolerates content and options passed in reversed order (options second, callback third)", () => {
-			const process = firstProcess(
+		it("rejects content and options passed in reversed order (options second, callback third)", () => {
+			expect(() =>
 				Bpmn.createProcess("proc")
-					.subProcess("sub1", { name: "Embedded Sub" }, (sub) => {
-						sub.startEvent("sub-s").serviceTask("sub-t", { taskType: "inner" }).endEvent("sub-e")
-					})
+					.subProcess("sub1", { name: "X" } as never, ((sub: unknown) => sub) as never)
 					.build(),
-			)
-
-			const sub = defined(process.flowElements.find((n) => n.id === "sub1"))
-			expect(sub.type).toBe("subProcess")
-			expect(sub.name).toBe("Embedded Sub")
-			if (sub.type === "subProcess") {
-				expect(sub.flowElements).toHaveLength(3)
-				expect(sub.sequenceFlows).toHaveLength(2)
-			}
+			).toThrow('subProcess("sub1", (sub) => ..., { name: "X" })')
 		})
 	})
 
@@ -1246,27 +1222,12 @@ describe("BpmnProcessBuilder", () => {
 			expect(flows.every((f) => f.sourceRef !== "esp" && f.targetRef !== "esp")).toBe(true)
 		})
 
-		it("tolerates content and options passed in reversed order (options second, callback third)", () => {
-			const process = firstProcess(
+		it("rejects content and options passed in reversed order (options second, callback third)", () => {
+			expect(() =>
 				Bpmn.createProcess("proc")
-					.startEvent("s")
-					.eventSubProcess("evtsub1", { name: "Error Handler" }, (sub) => {
-						sub
-							.startEvent("err-start", { name: "Error Start" })
-							.serviceTask("handle-err", { taskType: "error-handler" })
-							.endEvent("err-end")
-					})
-					.endEvent("e")
+					.eventSubProcess("evtsub1", { name: "X" } as never, ((sub: unknown) => sub) as never)
 					.build(),
-			)
-
-			const evtSub = defined(process.flowElements.find((n) => n.id === "evtsub1"))
-			expect(evtSub.type).toBe("subProcess")
-			expect(evtSub.name).toBe("Error Handler")
-			if (evtSub.type === "subProcess") {
-				expect(evtSub.triggeredByEvent).toBe(true)
-				expect(evtSub.flowElements).toHaveLength(3)
-			}
+			).toThrow('eventSubProcess("evtsub1", (sub) => ..., { name: "X" })')
 		})
 	})
 
@@ -1559,32 +1520,12 @@ describe("BpmnProcessBuilder", () => {
 			}
 		})
 
-		it("tolerates content and options passed in reversed order (options second, callback third)", () => {
-			const process = firstProcess(
+		it("rejects content and options passed in reversed order (options second, callback third)", () => {
+			expect(() =>
 				Bpmn.createProcess("proc")
-					.startEvent("s")
-					.exclusiveGateway("gw")
-					.branch("bundled", (b) =>
-						b
-							.defaultFlow()
-							.subProcess("sub1", { name: "Embedded Sub" }, (sub) => {
-								sub
-									.startEvent("sub-s")
-									.serviceTask("sub-t", { taskType: "inner" })
-									.endEvent("sub-e")
-							})
-							.connectTo("end"),
-					)
-					.endEvent("end")
+					.subProcess("sub1", { name: "X" } as never, ((sub: unknown) => sub) as never)
 					.build(),
-			)
-
-			const sub = defined(process.flowElements.find((n) => n.id === "sub1"))
-			expect(sub.type).toBe("subProcess")
-			expect(sub.name).toBe("Embedded Sub")
-			if (sub.type === "subProcess") {
-				expect(sub.flowElements).toHaveLength(3)
-			}
+			).toThrow('subProcess("sub1", (sub) => ..., { name: "X" })')
 		})
 	})
 
