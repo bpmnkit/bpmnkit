@@ -38,7 +38,7 @@ export interface ReplayDataset {
 
 export const AI_BENCHMARK_REPLAY: ReplayDataset = {
 	"generatedBy": "scripts/bench-ai-replay.mjs",
-	"coreVersion": "0.4.0",
+	"coreVersion": "1.6.1",
 	"totalRuns": 12,
 	"originallyUsable": 9,
 	"usable": 12,

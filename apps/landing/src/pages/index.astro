@@ -769,8 +769,9 @@ const CAPABILITIES = [
         <div class="panel-label panel-label--accent">Since measured</div>
         <p>
           The builder column is the weakest here, and the reason was ours, not the model's: all
-          three quote-to-cash failures were the same API surface — a sub-process or boundary event
-          inside a branch — and the prompt the model was given, which is
+          three quote-to-cash failures were the same API surface — a sub-process inside a branch
+          (<code>.subProcess</code> was missing on a branch builder, twice) or a sub-process called
+          with its arguments swapped (once) — and the prompt the model was given, which is
           <code>@bpmnkit/core</code>'s README, documented none of those constructs.
           That has been fixed, and so has the builder: it now accepts a boundary event's host
           positionally and refuses one with no host, rather than exporting a diagram its own parser
@@ -779,7 +780,7 @@ const CAPABILITIES = [
         <p>
           Re-running <strong>the same recorded code</strong> against
           <code>@bpmnkit/core {REPLAY.coreVersion}</code> — the model's output is frozen in the
-          recordings, so this isolates the library's contribution — takes the builder from
+          recordings, so this isolates the library's contribution — (a replay against the current library, not a new recording) takes the builder from
           {" "}{REPLAY.originallyUsable}/{REPLAY.totalRuns} to {REPLAY.usable}/{REPLAY.totalRuns}
           usable, and quote-to-cash from {REPLAY.quoteToCash?.originallyUsable}/{REPLAY.quoteToCash?.runs}
           {" "}to {REPLAY.quoteToCash?.usable}/{REPLAY.quoteToCash?.runs}. {REPLAY.recovered} runs
