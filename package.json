@@ -12,6 +12,7 @@
 		"lint": "biome check .",
 		"format": "biome check --write .",
 		"test": "pnpm turbo test",
+		"test:scripts": "node --test scripts/docspack-nudge.test.mjs scripts/lib/closeness.test.mjs scripts/lib/compare-rows.test.mjs",
 		"check": "pnpm turbo check",
 		"verify": "pnpm turbo build typecheck check test",
 		"changeset": "changeset",

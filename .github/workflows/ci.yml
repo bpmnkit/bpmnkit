@@ -59,6 +59,9 @@ jobs:
       - name: Test
         run: pnpm test
 
+      - name: Test scripts
+        run: pnpm test:scripts
+
       # Packs every published package and checks the tarball contains each path
       # its manifest declares. The release workflow runs the full check, which
       # also installs and type-checks each tarball from the network — far too
