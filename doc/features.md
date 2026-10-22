@@ -1,5 +1,9 @@
 # Features
 
+## Edit user-task configuration and correlation keys (2026-10-22)
+
+- `applyBpmnOperations` `update` patches (and the compact format) carry `assignee`, `candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate`, `priority` and `properties`; `correlationKey` sets the message subscription of the referenced message. Editing an existing diagram's user-task configuration no longer needs raw extension elements.
+
 ## On-device diagram generation in the web editor (2026-10-21)
 
 - `@bpmnkit/plugins/ai-local` (`createAiLocalPlugin`) and a Generate dock tab and HUD button in the landing editor turn a description into a new diagram with Chrome's built-in model (Gemini Nano, Prompt API): English only, generate only, nothing leaves the device, hidden where the model is unavailable. Opt-in on bpmnkit.com via `/editor?ai=on-device`, and on Drop's describe-to-diagram page via `/drop?ai=on-device` (first draft only; server-side follow-ups off). Maintainer step: register the origin trial and set `PUBLIC_CHROME_AI_OT_TOKEN`.

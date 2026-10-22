@@ -5057,7 +5057,7 @@
 		{
 			"id": "packages.core.installation-applybpmnoperations-definitions-operations-options",
 			"file": "chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md",
-			"tokens": 235,
+			"tokens": 432,
 			"tags": [
 				"packages",
 				"core",
@@ -5069,6 +5069,14 @@
 			],
 			"entities": [
 				"CompactDiagram",
+				"jobType",
+				"formId",
+				"taskHeaders",
+				"candidateGroups",
+				"candidateUsers",
+				"dueDate",
+				"followUpDate",
+				"correlationKey",
 				"OperationError"
 			]
 		},

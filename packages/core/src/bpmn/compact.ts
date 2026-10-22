@@ -62,6 +62,20 @@ export interface CompactElement {
 	calledProcess?: string
 	/** Linked form ID (userTask: zeebe:formDefinition.formId) */
 	formId?: string
+	/** userTask: who the task is assigned to (`zeebe:assignmentDefinition`); FEEL with `=`. */
+	assignee?: string
+	/** userTask: comma-separated candidate groups, or a FEEL list expression. */
+	candidateGroups?: string
+	/** userTask: comma-separated candidate users, or a FEEL list expression. */
+	candidateUsers?: string
+	/** userTask: due date (`zeebe:taskSchedule`), ISO 8601 or FEEL. */
+	dueDate?: string
+	/** userTask: follow-up date (`zeebe:taskSchedule`), ISO 8601 or FEEL. */
+	followUpDate?: string
+	/** userTask: priority 0–100 (`zeebe:priorityDefinition`), or a FEEL expression. */
+	priority?: number | string
+	/** Zeebe extension properties (`zeebe:properties`, name→value). */
+	properties?: Record<string, string>
 	/** Linked decision ID (businessRuleTask: zeebe:calledDecision.decisionId) */
 	decisionId?: string
 	/**
@@ -248,6 +262,27 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 
 	const formId = findAttr(ext, "zeebe:formDefinition", "formId")
 	if (formId) result.formId = formId
+
+	for (const key of ["assignee", "candidateGroups", "candidateUsers"] as const) {
+		const value = findAttr(ext, "zeebe:assignmentDefinition", key)
+		if (value) result[key] = value
+	}
+	for (const key of ["dueDate", "followUpDate"] as const) {
+		const value = findAttr(ext, "zeebe:taskSchedule", key)
+		if (value) result[key] = value
+	}
+	const priority = findAttr(ext, "zeebe:priorityDefinition", "priority")
+	if (priority) result.priority = /^\d+$/.test(priority) ? Number(priority) : priority
+
+	const propertiesEl = ext.find((e) => e.name === "zeebe:properties")
+	if (propertiesEl && propertiesEl.children.length > 0) {
+		const properties: Record<string, string> = {}
+		for (const child of propertiesEl.children) {
+			const { name, value } = child.attributes
+			if (name !== undefined) properties[name] = value ?? ""
+		}
+		result.properties = properties
+	}
 
 	const decisionId = findAttr(ext, "zeebe:calledDecision", "decisionId")
 	const script = findAttr(ext, "zeebe:script", "expression")
@@ -562,6 +597,16 @@ function zeebeConfig(el: CompactElement): {
 	return { inputs, headers }
 }
 
+/** The given attributes without the unset ones, or `undefined` if none is set. */
+function definedAttributes(
+	attributes: Record<string, string | undefined>,
+): Record<string, string> | undefined {
+	const set = Object.entries(attributes).filter(
+		(entry): entry is [string, string] => entry[1] !== undefined,
+	)
+	return set.length > 0 ? Object.fromEntries(set) : undefined
+}
+
 export function makeExtensions(el: CompactElement): XmlElement[] {
 	const ext: XmlElement[] = []
 	const { inputs, headers } = zeebeConfig(el)
@@ -591,6 +636,34 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 	}
 	if (el.formId) {
 		ext.push({ name: "zeebe:formDefinition", attributes: { formId: el.formId }, children: [] })
+	}
+	const assignment = definedAttributes({
+		assignee: el.assignee,
+		candidateGroups: el.candidateGroups,
+		candidateUsers: el.candidateUsers,
+	})
+	if (assignment) {
+		ext.push({ name: "zeebe:assignmentDefinition", attributes: assignment, children: [] })
+	}
+	const schedule = definedAttributes({ dueDate: el.dueDate, followUpDate: el.followUpDate })
+	if (schedule) ext.push({ name: "zeebe:taskSchedule", attributes: schedule, children: [] })
+	if (el.priority !== undefined) {
+		ext.push({
+			name: "zeebe:priorityDefinition",
+			attributes: { priority: String(el.priority) },
+			children: [],
+		})
+	}
+	if (el.properties && Object.keys(el.properties).length > 0) {
+		ext.push({
+			name: "zeebe:properties",
+			attributes: {},
+			children: Object.entries(el.properties).map(([name, value]) => ({
+				name: "zeebe:property",
+				attributes: { name, value },
+				children: [],
+			})),
+		})
 	}
 	if (el.decisionId) {
 		ext.push({

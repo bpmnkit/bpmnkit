@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-10-22 — Multi-instance completion condition; user-task and subscription edit fields; gap plan
+
+- Fix: the builder's `multiInstance.completionCondition` was accepted and silently dropped (`buildMultiInstance` wrote only the collection and element). It is now written as `bpmn:completionCondition` (`tFormalExpression`). Regression test in `builder-zeebe-options.test.ts`.
+- `applyBpmnOperations` `update` patches set `assignee`, `candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate`, `priority` and `properties`, one attribute at a time and placement-checked (assignment on a service task is refused). `correlationKey` writes the `zeebe:subscription` on the referenced `bpmn:message` (or on the element if it still carries its own); an element without a message is a problem. New `ElementPatch` type in `operations.ts`.
+- The compact format carries the same user-task fields and `properties` both ways (`compactify`/`expand`), so the compact `applyOperations` path keeps them too. `correlationKey` is patch-only there: compact elements have no messages.
+- Docs: `packages/core.md` lists what `update` can patch. Analysis and phased plan for the remaining Zeebe gaps, agent performance and a same-input comparison page: `doc/plan-agent-gaps-performance-compare.md`.
+- Tests: `full-operations.test.ts` (user-task, properties, placement refusal, correlation key on message and receive task, missing message, compact round trip).
+
 ## 2026-10-21 — On-device diagram generation in the web editor (Chrome Prompt API)
 
 - Opt-in on bpmnkit.com: the web editor creates the `ai-local` plugin only for `/editor?ai=on-device`, and only then adds the `origin-trial` meta tag (token from `PUBLIC_CHROME_AI_OT_TOKEN`) from the script; `editor.astro` no longer emits it statically.

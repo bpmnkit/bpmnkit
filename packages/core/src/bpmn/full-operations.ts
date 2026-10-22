@@ -8,7 +8,7 @@ import {
 	defaultFlows,
 	makeEventDef,
 } from "./compact.js"
-import type { BpmnOperation } from "./operations.js"
+import type { BpmnOperation, ElementPatch } from "./operations.js"
 import {
 	bpmnElementName,
 	ensureZeebeExtension,
@@ -172,6 +172,13 @@ const PATCH_EXTENSIONS: ReadonlyArray<[keyof CompactElement, string]> = [
 	["outputs", "zeebe:ioMapping"],
 	["nativeUserTask", "zeebe:userTask"],
 	["taskHeaders", "zeebe:taskHeaders"],
+	["assignee", "zeebe:assignmentDefinition"],
+	["candidateGroups", "zeebe:assignmentDefinition"],
+	["candidateUsers", "zeebe:assignmentDefinition"],
+	["dueDate", "zeebe:taskSchedule"],
+	["followUpDate", "zeebe:taskSchedule"],
+	["priority", "zeebe:priorityDefinition"],
+	["properties", "zeebe:properties"],
 ]
 
 /**
@@ -183,10 +190,7 @@ const PATCH_EXTENSIONS: ReadonlyArray<[keyof CompactElement, string]> = [
  * lets a non-strict caller apply the rest of the batch and show the user what
  * was rejected.
  */
-function misplacedExtensions(
-	element: BpmnFlowElement,
-	patch: Partial<CompactElement>,
-): string | undefined {
+function misplacedExtensions(element: BpmnFlowElement, patch: ElementPatch): string | undefined {
 	const owner = bpmnElementName(element)
 	for (const [field, extension] of PATCH_EXTENSIONS) {
 		if (patch[field] === undefined) continue
@@ -221,6 +225,45 @@ function setTaskHeaders(element: BpmnFlowElement, headers: Record<string, string
 		attributes: { key, value },
 		children: [],
 	}))
+}
+
+/** Replaces the `zeebe:properties` children, which, like headers, are a map. */
+function setProperties(element: BpmnFlowElement, properties: Record<string, string>): void {
+	const extension = ensureExtension(element, "zeebe:properties")
+	extension.children = Object.entries(properties).map(([name, value]) => ({
+		name: "zeebe:property",
+		attributes: { name, value },
+		children: [],
+	}))
+}
+
+/**
+ * The `zeebe:subscription` that holds this element's correlation key, created
+ * if missing. An element still carrying its own subscription keeps it there;
+ * otherwise it belongs on the referenced `bpmn:message`, where Camunda reads it.
+ */
+function subscriptionFor(
+	definitions: BpmnDefinitions,
+	element: BpmnFlowElement,
+): XmlElement | undefined {
+	const own = element.extensionElements.find((e) => e.name === "zeebe:subscription")
+	if (own) return own
+
+	const ref =
+		"messageRef" in element && typeof element.messageRef === "string"
+			? element.messageRef
+			: "eventDefinitions" in element
+				? element.eventDefinitions.find((d) => d.type === "message")?.messageRef
+				: undefined
+	const message = ref === undefined ? undefined : definitions.messages.find((m) => m.id === ref)
+	if (!message) return undefined
+
+	message.extensionElements ??= []
+	const existing = message.extensionElements.find((e) => e.name === "zeebe:subscription")
+	if (existing) return existing
+	const created: XmlElement = { name: "zeebe:subscription", attributes: {}, children: [] }
+	message.extensionElements.push(created)
+	return created
 }
 
 /** Sets the named mappings of one kind, keeping the others of the `zeebe:ioMapping`. */
@@ -283,8 +326,9 @@ function setResultVariable(element: BpmnFlowElement, resultVariable: string): vo
  * does not model stays exactly as it was.
  */
 function patchElement(
+	definitions: BpmnDefinitions,
 	element: BpmnFlowElement,
-	patch: Partial<CompactElement>,
+	patch: ElementPatch,
 ): string | undefined {
 	if (patch.type !== undefined && patch.type !== element.type) {
 		return `changing type (${element.type} → ${patch.type}) needs a delete and an insert, so that what the new element should carry is explicit`
@@ -292,6 +336,15 @@ function patchElement(
 
 	const misplaced = misplacedExtensions(element, patch)
 	if (misplaced !== undefined) return misplaced
+
+	// Resolved before anything is written, so a failure leaves the element as it was.
+	let subscription: XmlElement | undefined
+	if (patch.correlationKey !== undefined) {
+		subscription = subscriptionFor(definitions, element)
+		if (!subscription) {
+			return "correlationKey needs a message, and this element references no message"
+		}
+	}
 
 	if (patch.name !== undefined) element.name = patch.name
 	if (patch.documentation !== undefined) element.documentation = patch.documentation
@@ -325,6 +378,23 @@ function patchElement(
 	if (patch.nativeUserTask && element.type === "userTask")
 		ensureExtension(element, "zeebe:userTask")
 	if (patch.taskHeaders !== undefined) setTaskHeaders(element, patch.taskHeaders)
+	for (const key of ["assignee", "candidateGroups", "candidateUsers"] as const) {
+		const value = patch[key]
+		if (value !== undefined) {
+			setExtensionAttribute(element, "zeebe:assignmentDefinition", key, value)
+		}
+	}
+	for (const key of ["dueDate", "followUpDate"] as const) {
+		const value = patch[key]
+		if (value !== undefined) setExtensionAttribute(element, "zeebe:taskSchedule", key, value)
+	}
+	if (patch.priority !== undefined) {
+		setExtensionAttribute(element, "zeebe:priorityDefinition", "priority", String(patch.priority))
+	}
+	if (patch.properties !== undefined) setProperties(element, patch.properties)
+	if (subscription && patch.correlationKey !== undefined) {
+		subscription.attributes.correlationKey = patch.correlationKey
+	}
 
 	if (patch.eventType !== undefined && "eventDefinitions" in element) {
 		const current = element.eventDefinitions[0]?.type
@@ -391,7 +461,7 @@ function applyOne(definitions: BpmnDefinitions, operation: BpmnOperation): strin
 		case "update": {
 			const found = findElement(definitions, operation.id)
 			if (!found) return `no element with id "${operation.id}"`
-			return patchElement(found.element, operation.patch)
+			return patchElement(definitions, found.element, operation.patch)
 		}
 
 		case "delete": {

@@ -110,4 +110,25 @@ describe("builder zeebe options", () => {
 		expect(xml).toContain('zeebe:modelerTemplate="tpl.sub"')
 		expect(xml).toContain('<zeebe:property name="pn" value="pv"')
 	})
+
+	it("keeps a multi-instance completion condition", () => {
+		const process = Bpmn.parse(
+			Bpmn.export(
+				Bpmn.createProcess("p")
+					.startEvent("s")
+					.subProcess("sub", (inner) => inner.startEvent("is").endEvent("ie"), {
+						multiInstance: {
+							collection: "=items",
+							elementVariable: "item",
+							completionCondition: "=approved",
+						},
+					})
+					.endEvent("e")
+					.build(),
+			),
+		).processes[0]
+		const sub = process?.flowElements.find((element) => element.id === "sub")
+		const loop = sub && "loopCharacteristics" in sub ? sub.loopCharacteristics : undefined
+		expect(loop?.completionCondition?.text).toBe("=approved")
+	})
 })

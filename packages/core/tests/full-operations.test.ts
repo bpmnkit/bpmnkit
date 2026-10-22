@@ -355,3 +355,141 @@ describe("reconcileCompact", () => {
 		).toEqual(["S2"])
 	})
 })
+
+const USER_TASK = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="D" targetNamespace="x">
+  <bpmn:message id="M" name="payment-received">
+    <bpmn:extensionElements><zeebe:subscription correlationKey="=orderId" /></bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="M2" name="no-key" />
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:userTask id="U" name="Review">
+      <bpmn:extensionElements>
+        <zeebe:userTask />
+        <zeebe:formDefinition formId="review-form" />
+        <zeebe:assignmentDefinition assignee="=initiator" />
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="T"><bpmn:extensionElements><zeebe:taskDefinition type="work" /></bpmn:extensionElements></bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="C"><bpmn:messageEventDefinition id="MD" messageRef="M" /></bpmn:intermediateCatchEvent>
+    <bpmn:receiveTask id="R" messageRef="M2" />
+    <bpmn:intermediateCatchEvent id="N"><bpmn:timerEventDefinition id="TD" /></bpmn:intermediateCatchEvent>
+  </bpmn:process>
+</bpmn:definitions>`
+
+const extensionOf = (definitions: ReturnType<typeof Bpmn.parse>, id: string, name: string) =>
+	definitions.processes[0]?.flowElements
+		.find((e) => e.id === id)
+		?.extensionElements.find((e) => e.name === name)
+
+describe("applyBpmnOperations user-task and subscription patches", () => {
+	it("sets candidates without dropping the existing assignee", () => {
+		const { definitions } = applyBpmnOperations(Bpmn.parse(USER_TASK), [
+			{
+				op: "update",
+				id: "U",
+				patch: { candidateGroups: "reviewers", candidateUsers: "anna, ben" },
+			},
+		])
+		expect(extensionOf(definitions, "U", "zeebe:assignmentDefinition")?.attributes).toEqual({
+			assignee: "=initiator",
+			candidateGroups: "reviewers",
+			candidateUsers: "anna, ben",
+		})
+		expect(extensionOf(definitions, "U", "zeebe:formDefinition")?.attributes.formId).toBe(
+			"review-form",
+		)
+	})
+
+	it("sets the assignee, schedule and priority", () => {
+		const { definitions } = applyBpmnOperations(Bpmn.parse(USER_TASK), [
+			{
+				op: "update",
+				id: "U",
+				patch: {
+					assignee: "=manager",
+					dueDate: '=now() + duration("P2D")',
+					followUpDate: "2026-12-01T09:00:00Z",
+					priority: 80,
+				},
+			},
+		])
+		expect(extensionOf(definitions, "U", "zeebe:assignmentDefinition")?.attributes.assignee).toBe(
+			"=manager",
+		)
+		expect(extensionOf(definitions, "U", "zeebe:taskSchedule")?.attributes).toEqual({
+			dueDate: '=now() + duration("P2D")',
+			followUpDate: "2026-12-01T09:00:00Z",
+		})
+		expect(extensionOf(definitions, "U", "zeebe:priorityDefinition")?.attributes.priority).toBe(
+			"80",
+		)
+	})
+
+	it("replaces the zeebe:properties", () => {
+		const { definitions } = applyBpmnOperations(Bpmn.parse(USER_TASK), [
+			{ op: "update", id: "T", patch: { properties: { owner: "billing", tier: "gold" } } },
+		])
+		const properties = extensionOf(definitions, "T", "zeebe:properties")
+		expect(properties?.children.map((c) => c.attributes)).toEqual([
+			{ name: "owner", value: "billing" },
+			{ name: "tier", value: "gold" },
+		])
+	})
+
+	it("refuses user-task assignment on a service task", () => {
+		expect(() =>
+			applyBpmnOperations(Bpmn.parse(USER_TASK), [
+				{ op: "update", id: "T", patch: { assignee: "anna" } },
+			]),
+		).toThrow(/zeebe:assignmentDefinition/)
+	})
+
+	it("writes the correlation key onto the referenced message", () => {
+		const { definitions } = applyBpmnOperations(Bpmn.parse(USER_TASK), [
+			{ op: "update", id: "C", patch: { correlationKey: "=order.id" } },
+			{ op: "update", id: "R", patch: { correlationKey: "=customerId" } },
+		])
+		const subscription = (id: string) =>
+			definitions.messages
+				.find((m) => m.id === id)
+				?.extensionElements?.find((e) => e.name === "zeebe:subscription")
+		expect(subscription("M")?.attributes.correlationKey).toBe("=order.id")
+		expect(subscription("M2")?.attributes.correlationKey).toBe("=customerId")
+		expect(definitions.messages.find((m) => m.id === "M")?.name).toBe("payment-received")
+		expect(Bpmn.export(definitions)).toContain('correlationKey="=customerId"')
+	})
+
+	it("reports a correlation key on an element with no message", () => {
+		expect(() =>
+			applyBpmnOperations(Bpmn.parse(USER_TASK), [
+				{ op: "update", id: "N", patch: { correlationKey: "=x" } },
+			]),
+		).toThrow(/references no message/)
+	})
+})
+
+describe("compact user-task fields", () => {
+	it("round-trip through compactify and expand", () => {
+		const compact = compactify(Bpmn.parse(USER_TASK))
+		const task = compact.processes[0]?.elements.find((e) => e.id === "U")
+		expect(task?.assignee).toBe("=initiator")
+
+		const edited = applyOperations(compact, [
+			{
+				op: "update",
+				id: "U",
+				patch: { candidateGroups: "reviewers", dueDate: "=due", priority: 10 },
+			},
+			{ op: "update", id: "T", patch: { properties: { owner: "billing" } } },
+		])
+		const back = compactify(expand(edited)).processes[0]?.elements
+		expect(back?.find((e) => e.id === "U")).toMatchObject({
+			assignee: "=initiator",
+			candidateGroups: "reviewers",
+			dueDate: "=due",
+			priority: 10,
+		})
+		expect(back?.find((e) => e.id === "T")?.properties).toEqual({ owner: "billing" })
+	})
+})

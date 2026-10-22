@@ -652,7 +652,16 @@ function buildMultiInstance(options: MultiInstanceOptions): BpmnMultiInstanceLoo
 			children: [],
 		})
 	}
-	return { isSequential: options.isSequential || undefined, extensionElements: extChildren }
+	return {
+		isSequential: options.isSequential || undefined,
+		completionCondition: options.completionCondition
+			? {
+					text: options.completionCondition,
+					attributes: { "xsi:type": "bpmn:tFormalExpression" },
+				}
+			: undefined,
+		extensionElements: extChildren,
+	}
 }
 
 function buildAdHocLoopCharacteristics(lc: {
