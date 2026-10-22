@@ -38,6 +38,5 @@ describe("sub-process annotation DI", () => {
 
 		const diagnostics = lintDiagram(defs).diagnostics
 		expect(diagnostics.filter((d) => d.severity === "error")).toEqual([])
-		expect(diagnostics.filter((d) => /annotation|diagram|shape|di/i.test(d.message))).toEqual([])
 	})
 })

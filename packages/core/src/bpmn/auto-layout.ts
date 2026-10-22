@@ -194,7 +194,7 @@ function buildLaneShapes(
  * element, so packing only the process-level lists left them without a shape
  * or edge. Layout nodes are already flat in diagram space, so one pass suffices.
  */
-export function withNestedAnnotations(process: BpmnProcess): BpmnProcess {
+function withNestedAnnotations(process: BpmnProcess): BpmnProcess {
 	const textAnnotations = [...process.textAnnotations]
 	const associations = [...process.associations]
 	const walk = (elements: BpmnFlowElement[]): void => {
@@ -210,7 +210,12 @@ export function withNestedAnnotations(process: BpmnProcess): BpmnProcess {
 		}
 	}
 	walk(process.flowElements)
-	if (textAnnotations.length === process.textAnnotations.length) return process
+	if (
+		textAnnotations.length === process.textAnnotations.length &&
+		associations.length === process.associations.length
+	) {
+		return process
+	}
 	return { ...process, textAnnotations, associations }
 }
 
