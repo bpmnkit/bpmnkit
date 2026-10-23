@@ -1,5 +1,20 @@
 # Features
 
+## Same-input comparison page (2026-10-22)
+
+`/compare/same-input` shows one prompt through the recorded LLM routes and a hand-written no-AI reference, with the rendered diagram, tokens, time, validity and closeness for each. Data comes from `node scripts/build-compare-data.mjs` and is committed.
+
+## Multi-instance and listeners in the builder (2026-10-22)
+
+- `multiInstance` (with `outputCollection` / `outputElement`) works on every task type, not just sub-processes; the compact format keeps it.
+- `executionListeners` on activities, events and gateways and `taskListeners` on user tasks are builder options and `update` patch fields; placement is checked against the Zeebe schema.
+- `userTask` forms: `formId` (+ `formBindingType`, `formVersionTag`), `formKey`, `externalReference` or `embeddedForm: { id, schema }` (process-level `zeebe:userTaskForm`); setting more than one throws.
+- Conditional events: `condition` and `conditionVariableEvents` (`zeebe:conditionalFilter`) on start, catch and boundary events; compact `condition`.
+
+## Edit user-task configuration and correlation keys (2026-10-22)
+
+- `applyBpmnOperations` `update` patches (and the compact format) carry `assignee`, `candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate`, `priority` and `properties`; `correlationKey` sets the message subscription of the referenced message. Editing an existing diagram's user-task configuration no longer needs raw extension elements.
+
 ## On-device diagram generation in the web editor (2026-10-21)
 
 - `@bpmnkit/plugins/ai-local` (`createAiLocalPlugin`) and a Generate dock tab and HUD button in the landing editor turn a description into a new diagram with Chrome's built-in model (Gemini Nano, Prompt API): English only, generate only, nothing leaves the device, hidden where the model is unavailable. Opt-in on bpmnkit.com via `/editor?ai=on-device`, and on Drop's describe-to-diagram page via `/drop?ai=on-device` (first draft only; server-side follow-ups off). Maintainer step: register the origin trial and set `PUBLIC_CHROME_AI_OT_TOKEN`.
@@ -30,6 +45,12 @@
 - `adHocSubProcess(id, tools, { toolGrid: { columns: 2, fill: "column" } })` lays the tools out in
   a fixed number of columns, filled top to bottom or left to right.
 - `annotate(id, text, { side: "below" })` puts the annotation on the side asked for.
+
+## `omitDefaults` for template application (2026-10-22)
+
+- `applyTemplates(definitions, entries, { omitDefaults: true })` (also `applyTemplateToElement` and
+  `applyElementTemplate`) skips properties that would only carry the template's default, unless
+  they are Hidden or required. Off by default.
 
 ## `applyTemplates` configures connectors in-process (2026-10-17)
 
@@ -1141,8 +1162,9 @@ matching the command CI already runs, alongside the one `apps/drop` had. A relea
   its id, name, documentation and its incoming/outgoing sequence flows. Carries nested content
   between containers and a multi-instance marker between types that allow one; drops Zeebe
   extensions the new type cannot legally hold, using the `ZEEBE_PLACEMENT` table.
-- **MCP `update_element` applies `name` and `type`**, and refuses any other key instead of
-  accepting it and doing nothing.
+- **MCP `update_element` applies `name`, `type` and the Zeebe patch fields** (user-task
+  assignment, schedule, priority, `properties`, `correlationKey`, job type, …) through
+  `applyBpmnOperations`; `""` clears a value, and unknown or misplaced keys are tool errors.
 - **`createFlowElement(id, type, options?)`** — the one place that knows each type's shape; the
   fluent builder uses it too.
 - **Data elements survive the compact format.** `dataObject`, `dataObjectReference` and
@@ -2503,6 +2525,7 @@ New package that wires storage and tabs together so client apps don't need to ma
 ## BPMN Element Config — Call Activity, Script Task, Sequence Flow (2026-02-26, updated 2026-02-26)
 
 - **Call activity** — configure `zeebe:calledElement processId` and `propagateAllChildVariables` in the config panel; "Select process…" button picks from open BPMN tabs; "New process" button creates a new blank BPMN and auto-links it; optional "Open Process ↗" action button navigates to the matching BPMN tab; navigate icon button in the element toolbar (HUD) above a selected call activity
+- **Call activity builder options** — `callActivity` accepts `ioMapping`, `zeebeProperties`, `propagateAllParentVariables`, `bindingType` (`latest` / `deployment` / `versionTag`) and `versionTag`, alongside `propagateAllChildVariables`; `getZeebeExtensions` reads `calledElement` back (typed `ZeebeCalledElement`)
 - **Script task** — configure `zeebe:script expression` (FEEL expression, textarea) and `resultVariable`; replaces the generic name-only panel
 - **Sequence flow condition expression** — clicking any sequence flow (edge) opens the config panel showing an editable `conditionExpression` FEEL textarea; works for gateway outgoing edges and any other flows; empty expression removes the condition element from the XML
 

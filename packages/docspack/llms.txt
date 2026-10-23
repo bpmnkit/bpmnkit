@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.2.1. 399 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.2.1. 405 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -164,7 +164,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [bpmnlint Compatibility — From your own code](.llms/chunks/guides.bpmnlint.from-your-own-code.md) — 233 tokens
 - [Building Processes — Service Tasks](.llms/chunks/guides.building-processes.service-tasks.md) — 202 tokens
 - [Building Processes — Events](.llms/chunks/guides.building-processes.events.md) — 378 tokens
-- [Building Processes — Sub-Processes](.llms/chunks/guides.building-processes.sub-processes.md) — 181 tokens
+- [Building Processes — Sub-Processes](.llms/chunks/guides.building-processes.sub-processes.md) — 180 tokens
 - [Building Processes — Boundary Events](.llms/chunks/guides.building-processes.boundary-events.md) — 294 tokens
 - [Building Processes — Call Activities](.llms/chunks/guides.building-processes.call-activities.md) — 216 tokens
 - [Building Processes — Task Defaults](.llms/chunks/guides.building-processes.task-defaults.md) — 141 tokens
@@ -226,6 +226,12 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Process documentation — From the editor](.llms/chunks/guides.process-documentation.from-the-editor.md) — 246 tokens
 - [Process documentation — From Drop](.llms/chunks/guides.process-documentation.from-drop.md) — 273 tokens
 - [Process documentation — From code](.llms/chunks/guides.process-documentation.from-code.md) — 344 tokens
+- [Recipes: Element Templates and Connectors](.llms/chunks/guides.recipes-element-templates.md) — 360 tokens
+- [Recipes: Element Templates and Connectors — How do I find a connector template's property ids?](.llms/chunks/guides.recipes-element-templates.how-do-i-find-a-connector-template-s-property-ids.md) — 181 tokens
+- [Recipes: Forms and User Tasks](.llms/chunks/guides.recipes-forms-and-user-tasks.md) — 138 tokens
+- [Recipes: Forms and User Tasks — How do I set the assignee of a user task?](.llms/chunks/guides.recipes-forms-and-user-tasks.how-do-i-set-the-assignee-of-a-user-task.md) — 368 tokens
+- [Recipes: Message Correlation — How do I set a message correlation key?](.llms/chunks/guides.recipes-message-correlation.how-do-i-set-a-message-correlation-key.md) — 146 tokens
+- [Recipes: Message Correlation — How do I change the correlation key of an existing message event?](.llms/chunks/guides.recipes-message-correlation.how-do-i-change-the-correlation-key-of-an-existing-message-event.md) — 171 tokens
 - [Simulation](.llms/chunks/guides.simulation.md) — 261 tokens
 - [Simulation — Instance State](.llms/chunks/guides.simulation.instance-state.md) — 136 tokens
 - [Simulation — Message Correlation](.llms/chunks/guides.simulation.message-correlation.md) — 144 tokens
@@ -328,10 +334,10 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/connectors — `with` lines (2)](.llms/chunks/packages.connectors.with-lines-2.md) — 78 tokens
 - [@bpmnkit/connectors — Applying a template](.llms/chunks/packages.connectors.applying-a-template.md) — 503 tokens
 - [@bpmnkit/connectors — Applying to an element — inbound connectors and linked resources](.llms/chunks/packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources.md) — 667 tokens
-- [@bpmnkit/connectors — Applying several templates by name — `applyTemplates`](.llms/chunks/packages.connectors.applying-several-templates-by-name-applytemplates.md) — 488 tokens
+- [@bpmnkit/connectors — Applying several templates by name — `applyTemplates`](.llms/chunks/packages.connectors.applying-several-templates-by-name-applytemplates.md) — 632 tokens
 - [@bpmnkit/connectors — Workspace templates](.llms/chunks/packages.connectors.workspace-templates.md) — 710 tokens
 - [@bpmnkit/connectors — Validating a template](.llms/chunks/packages.connectors.validating-a-template.md) — 213 tokens
-- [@bpmnkit/connectors — API Reference](.llms/chunks/packages.connectors.api-reference.md) — 667 tokens
+- [@bpmnkit/connectors — API Reference](.llms/chunks/packages.connectors.api-reference.md) — 672 tokens
 - [@bpmnkit/connectors — Stability](.llms/chunks/packages.connectors.stability.md) — 137 tokens
 - [@bpmnkit/core — Overview](.llms/chunks/packages.core.overview.md) — 159 tokens
 - [@bpmnkit/core — Installation](.llms/chunks/packages.core.installation.md) — 27 tokens
@@ -347,7 +353,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `projectSemantics(definitions)`](.llms/chunks/packages.core.installation-projectsemantics-definitions.md) — 54 tokens
 - [@bpmnkit/core — Installation — `diffSemantics(before, after)`](.llms/chunks/packages.core.installation-diffsemantics-before-after.md) — 121 tokens
 - [@bpmnkit/core — Installation — `diffDiagram(before, after)`](.llms/chunks/packages.core.installation-diffdiagram-before-after.md) — 331 tokens
-- [@bpmnkit/core — Installation — `applyBpmnOperations(definitions, operations, options?)`](.llms/chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md) — 235 tokens
+- [@bpmnkit/core — Installation — `applyBpmnOperations(definitions, operations, options?)`](.llms/chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md) — 477 tokens
 - [@bpmnkit/core — Installation — `ensureZeebeExtension(owner, extension)`](.llms/chunks/packages.core.installation-ensurezeebeextension-owner-extension.md) — 323 tokens
 - [@bpmnkit/core — Installation — `reconcileCompact(definitions, compact, options?)`](.llms/chunks/packages.core.installation-reconcilecompact-definitions-compact-options.md) — 129 tokens
 - [@bpmnkit/core — Installation — `compactify(definitions)`](.llms/chunks/packages.core.installation-compactify-definitions.md) — 342 tokens
@@ -361,8 +367,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `createFlowElement(id, type, options?)`](.llms/chunks/packages.core.installation-createflowelement-id-type-options.md) — 61 tokens
 - [@bpmnkit/core — Installation — Element catalog](.llms/chunks/packages.core.installation-element-catalog.md) — 96 tokens
 - [@bpmnkit/core — Installation — `layoutProcess(process)`](.llms/chunks/packages.core.installation-layoutprocess-process.md) — 85 tokens
-- [@bpmnkit/core — Installation — ProcessBuilder methods](.llms/chunks/packages.core.installation-processbuilder-methods.md) — 717 tokens
-- [@bpmnkit/core — Installation — Forms, mappings and branch flows](.llms/chunks/packages.core.installation-forms-mappings-and-branch-flows.md) — 224 tokens
+- [@bpmnkit/core — Installation — ProcessBuilder methods](.llms/chunks/packages.core.installation-processbuilder-methods.md) — 788 tokens
+- [@bpmnkit/core — Installation — Forms, mappings and branch flows](.llms/chunks/packages.core.installation-forms-mappings-and-branch-flows.md) — 466 tokens
 - [@bpmnkit/core — Installation — Ad-hoc sub-processes: children are a set, not a chain](.llms/chunks/packages.core.installation-ad-hoc-sub-processes-children-are-a-set-not-a-chain.md) — 642 tokens
 - [@bpmnkit/core — Installation — Joins: inferred by default, or declared](.llms/chunks/packages.core.installation-joins-inferred-by-default-or-declared.md) — 324 tokens
 - [@bpmnkit/core — Writing files — `@bpmnkit/core/node`](.llms/chunks/packages.core.writing-files-bpmnkit-core-node.md) — 52 tokens

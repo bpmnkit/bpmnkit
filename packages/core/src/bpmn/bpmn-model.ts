@@ -119,6 +119,8 @@ export interface BpmnConditionalEventDefinition {
 	condition?: string
 	/** Attributes of the `<condition>` element, e.g. `xsi:type` and `language`. */
 	conditionAttributes?: Record<string, string>
+	/** `<extensionElements>` of the definition, e.g. `zeebe:conditionalFilter`. */
+	extensionElements?: XmlElement[]
 	/** Attributes the SDK does not model (e.g. `camunda:type`), kept for round-trip. */
 	unknownAttributes?: Record<string, string>
 }

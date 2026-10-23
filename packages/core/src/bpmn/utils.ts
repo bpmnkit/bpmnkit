@@ -7,14 +7,19 @@ import type {
 	BpmnSequenceFlow,
 } from "./bpmn-model.js"
 import type {
+	ZeebeAdHoc,
+	ZeebeAssignmentDefinition,
 	ZeebeCalledDecision,
+	ZeebeCalledElement,
 	ZeebeExtensions,
 	ZeebeFormDefinition,
 	ZeebeIoMapping,
 	ZeebeIoMappingEntry,
+	ZeebeListener,
 	ZeebeProperties,
 	ZeebeTaskDefinition,
 	ZeebeTaskHeaders,
+	ZeebeTaskSchedule,
 } from "./zeebe-extensions.js"
 
 // ── Process / element lookup ──────────────────────────────────────────────────
@@ -166,6 +171,24 @@ function findChild(elements: XmlElement[], tag: string): XmlElement | undefined 
 	return elements.find((c) => localName(c.name) === tag)
 }
 
+function readListeners(container: XmlElement, tag: string): ZeebeListener[] {
+	return findChildren(container.children, tag).map((c) => {
+		const listener: ZeebeListener = {
+			eventType: c.attributes.eventType ?? "",
+			type: c.attributes.type ?? "",
+		}
+		if (c.attributes.retries !== undefined) listener.retries = c.attributes.retries
+		const headers = findChild(c.children, "taskHeaders")
+		if (headers) {
+			listener.headers = findChildren(headers.children, "header").map((h) => ({
+				key: h.attributes.key ?? "",
+				value: h.attributes.value ?? "",
+			}))
+		}
+		return listener
+	})
+}
+
 /**
  * Extracts Zeebe extension data from the raw `extensionElements` array of a
  * flow element. This is the inverse of {@link zeebeExtensionsToXmlElements}.
@@ -233,7 +256,22 @@ export function getZeebeExtensions(extensionElements: XmlElement[]): ZeebeExtens
 
 	const formDefEl = findChild(extensionElements, "formDefinition")
 	if (formDefEl) {
-		const formDefinition: ZeebeFormDefinition = { formId: formDefEl.attributes.formId ?? "" }
+		const { formId, formKey, externalReference, bindingType, versionTag } = formDefEl.attributes
+		let formDefinition: ZeebeFormDefinition
+		if (formKey !== undefined && formId === undefined) formDefinition = { formKey }
+		else if (externalReference !== undefined && formId === undefined) {
+			formDefinition = { externalReference }
+		} else {
+			formDefinition = { formId: formId ?? "" }
+			if (
+				bindingType === "latest" ||
+				bindingType === "deployment" ||
+				bindingType === "versionTag"
+			) {
+				formDefinition.bindingType = bindingType
+			}
+			if (versionTag !== undefined) formDefinition.versionTag = versionTag
+		}
 		ext.formDefinition = formDefinition
 	}
 
@@ -251,5 +289,102 @@ export function getZeebeExtensions(extensionElements: XmlElement[]): ZeebeExtens
 		ext.calledDecision = calledDecision
 	}
 
+	const calledElEl = findChild(extensionElements, "calledElement")
+	if (calledElEl) {
+		const a = calledElEl.attributes
+		const calledElement: ZeebeCalledElement = { processId: a.processId ?? "" }
+		if (a.propagateAllChildVariables !== undefined) {
+			calledElement.propagateAllChildVariables = a.propagateAllChildVariables === "true"
+		}
+		if (a.propagateAllParentVariables !== undefined) {
+			calledElement.propagateAllParentVariables = a.propagateAllParentVariables === "true"
+		}
+		if (
+			a.bindingType === "latest" ||
+			a.bindingType === "deployment" ||
+			a.bindingType === "versionTag"
+		) {
+			calledElement.bindingType = a.bindingType
+		}
+		if (a.versionTag !== undefined) calledElement.versionTag = a.versionTag
+		ext.calledElement = calledElement
+	}
+
+	const adHocEl = findChild(extensionElements, "adHoc")
+	if (adHocEl) {
+		const { outputCollection, outputElement, activeElementsCollection } = adHocEl.attributes
+		const adHoc: ZeebeAdHoc = {}
+		if (outputCollection !== undefined) adHoc.outputCollection = outputCollection
+		if (outputElement !== undefined) adHoc.outputElement = outputElement
+		if (activeElementsCollection !== undefined) {
+			adHoc.activeElementsCollection = activeElementsCollection
+		}
+		ext.adHoc = adHoc
+	}
+
+	if (findChild(extensionElements, "userTask")) ext.userTask = true
+
+	const assignEl = findChild(extensionElements, "assignmentDefinition")
+	if (assignEl) {
+		const { assignee, candidateGroups, candidateUsers } = assignEl.attributes
+		const assignmentDefinition: ZeebeAssignmentDefinition = {}
+		if (assignee !== undefined) assignmentDefinition.assignee = assignee
+		if (candidateGroups !== undefined) assignmentDefinition.candidateGroups = candidateGroups
+		if (candidateUsers !== undefined) assignmentDefinition.candidateUsers = candidateUsers
+		ext.assignmentDefinition = assignmentDefinition
+	}
+
+	const scheduleEl = findChild(extensionElements, "taskSchedule")
+	if (scheduleEl) {
+		const { dueDate, followUpDate } = scheduleEl.attributes
+		const taskSchedule: ZeebeTaskSchedule = {}
+		if (dueDate !== undefined) taskSchedule.dueDate = dueDate
+		if (followUpDate !== undefined) taskSchedule.followUpDate = followUpDate
+		ext.taskSchedule = taskSchedule
+	}
+
+	const priorityEl = findChild(extensionElements, "priorityDefinition")
+	if (priorityEl) {
+		ext.priorityDefinition = { priority: priorityEl.attributes.priority ?? "" }
+	}
+
+	const subscriptionEl = findChild(extensionElements, "subscription")
+	if (subscriptionEl) {
+		ext.subscription = { correlationKey: subscriptionEl.attributes.correlationKey ?? "" }
+	}
+
+	const execListenersEl = findChild(extensionElements, "executionListeners")
+	if (execListenersEl) {
+		ext.executionListeners = readListeners(execListenersEl, "executionListener")
+	}
+
+	const taskListenersEl = findChild(extensionElements, "taskListeners")
+	if (taskListenersEl) ext.taskListeners = readListeners(taskListenersEl, "taskListener")
+
+	// Anything we have no typed field for must survive a read-modify-write.
+	const unknownElements = extensionElements.filter(
+		(c) => !KNOWN_ZEEBE_ELEMENTS.has(localName(c.name)),
+	)
+	if (unknownElements.length > 0) ext.unknownElements = unknownElements
+
 	return ext
 }
+
+const KNOWN_ZEEBE_ELEMENTS: ReadonlySet<string> = new Set([
+	"taskDefinition",
+	"ioMapping",
+	"taskHeaders",
+	"properties",
+	"adHoc",
+	"agentDefinition",
+	"formDefinition",
+	"calledDecision",
+	"calledElement",
+	"userTask",
+	"assignmentDefinition",
+	"taskSchedule",
+	"priorityDefinition",
+	"subscription",
+	"executionListeners",
+	"taskListeners",
+])

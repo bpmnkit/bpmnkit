@@ -1091,6 +1091,7 @@ class ConditionalDefinitionFrame extends Frame implements TextOwner {
 	private conditionSeen = false
 	private condition: string | undefined
 	private conditionAttributes: Attrs | undefined
+	private extensionElements: XmlElement[] | null = null
 
 	constructor(
 		private readonly attrs: Attrs,
@@ -1100,6 +1101,11 @@ class ConditionalDefinitionFrame extends Frame implements TextOwner {
 	}
 
 	override child(local: string, _name: string, attrs: Attrs): Frame | null {
+		if (local === "extensionElements") {
+			if (this.extensionElements !== null) return null
+			this.extensionElements = []
+			return new TreeFrame(this.extensionElements)
+		}
 		if (local !== "condition" || this.conditionSeen) return null
 		this.conditionSeen = true
 		if (Object.keys(attrs).length > 0) this.conditionAttributes = { ...attrs }
@@ -1117,6 +1123,7 @@ class ConditionalDefinitionFrame extends Frame implements TextOwner {
 			// Present but empty stays "", like a timer part: the element is still there.
 			condition: this.conditionSeen ? (this.condition?.trim() ?? "") : undefined,
 			...(this.conditionAttributes ? { conditionAttributes: this.conditionAttributes } : {}),
+			...(this.extensionElements ? { extensionElements: this.extensionElements } : {}),
 			...definitionExtras(this.attrs, ID_ATTRS),
 		})
 	}

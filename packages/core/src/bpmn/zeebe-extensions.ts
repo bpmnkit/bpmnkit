@@ -1,4 +1,5 @@
 import type { XmlElement } from "../types/xml-element.js"
+import type { BpmnConditionalEventDefinition } from "./bpmn-model.js"
 import { ZEEBE_PLACEMENT } from "./zeebe-placement.js"
 
 /** Zeebe task definition extension. */
@@ -61,10 +62,23 @@ export interface ZeebeAgentDefinition {
 }
 
 /** Zeebe form definition extension for user tasks. */
-export interface ZeebeFormDefinition {
-	/** ID of the Camunda Form linked to this user task. */
-	formId: string
-}
+export type ZeebeFormDefinition =
+	| {
+			/** ID of the Camunda Form linked to this user task. */
+			formId: string
+			/** What `formId` resolves against (`bindingType`, Camunda 8.6+ unless `latest`). */
+			bindingType?: "latest" | "deployment" | "versionTag"
+			/** Version tag of the form; only meaningful with `bindingType: "versionTag"`. */
+			versionTag?: string
+	  }
+	| {
+			/** Embedded form (`camunda-forms:bpmn:<id>`) or a legacy form key. */
+			formKey: string
+	  }
+	| {
+			/** External form URL, for a Camunda user task (`zeebe:userTask`). */
+			externalReference: string
+	  }
 
 /** Zeebe called decision extension for business rule tasks. */
 export interface ZeebeCalledDecision {
@@ -97,6 +111,33 @@ export interface ZeebeSubscription {
 	correlationKey: string
 }
 
+/** Zeebe called element extension for call activities (zeebe:calledElement). */
+export interface ZeebeCalledElement {
+	/** ID of the process to call. */
+	processId: string
+	/** Held as booleans; the XML attributes are the strings "true"/"false". */
+	propagateAllChildVariables?: boolean
+	propagateAllParentVariables?: boolean
+	bindingType?: "latest" | "deployment" | "versionTag"
+	/** Only meaningful with `bindingType: "versionTag"`. */
+	versionTag?: string
+}
+
+/** A job-worker listener (`zeebe:executionListener` / `zeebe:taskListener`). */
+export interface ZeebeListener {
+	/** Lifecycle event, such as `start`, `end` (execution) or `completing` (task). */
+	eventType: string
+	/** Job type the listener's worker subscribes to. */
+	type: string
+	retries?: string
+	/**
+	 * Listener headers (`zeebe:taskHeaders`). Read and written back so a
+	 * read-modify-write of a diagram that has them does not drop them; the
+	 * builder does not offer them.
+	 */
+	headers?: ZeebeTaskHeaderEntry[]
+}
+
 /** Collected Zeebe extensions on a service task. */
 export interface ZeebeExtensions {
 	taskDefinition?: ZeebeTaskDefinition
@@ -110,6 +151,8 @@ export interface ZeebeExtensions {
 	formDefinition?: ZeebeFormDefinition
 	/** DMN decision invoked by a business rule task (zeebe:calledDecision). */
 	calledDecision?: ZeebeCalledDecision
+	/** Process invoked by a call activity (zeebe:calledElement). */
+	calledElement?: ZeebeCalledElement
 	/** Marks this as a Camunda 8 native user task (zeebe:userTask). */
 	userTask?: true
 	/** User task assignee/candidates (zeebe:assignmentDefinition). */
@@ -120,8 +163,44 @@ export interface ZeebeExtensions {
 	priorityDefinition?: ZeebePriorityDefinition
 	/** Message correlation key for a message catch/boundary/receive element (zeebe:subscription). */
 	subscription?: ZeebeSubscription
+	/** Execution listeners (zeebe:executionListeners). */
+	executionListeners?: ZeebeListener[]
+	/** User task listeners (zeebe:taskListeners). */
+	taskListeners?: ZeebeListener[]
 	/** Unrecognized extension elements preserved for roundtrip. */
 	unknownElements?: XmlElement[]
+}
+
+function listenersToXml(
+	container: string,
+	child: string,
+	listeners: readonly ZeebeListener[],
+): XmlElement {
+	return {
+		name: `zeebe:${container}`,
+		attributes: {},
+		children: listeners.map((l) => ({
+			name: `zeebe:${child}`,
+			attributes: {
+				eventType: l.eventType,
+				type: l.type,
+				...(l.retries !== undefined ? { retries: l.retries } : {}),
+			},
+			children: l.headers?.length
+				? [
+						{
+							name: "zeebe:taskHeaders",
+							attributes: {},
+							children: l.headers.map((h) => ({
+								name: "zeebe:header",
+								attributes: { key: h.key, value: h.value },
+								children: [],
+							})),
+						},
+					]
+				: [],
+		})),
+	}
 }
 
 /** Convert Zeebe extensions to XmlElement array for the BPMN model. */
@@ -215,7 +294,7 @@ export function zeebeExtensionsToXmlElements(extensions: ZeebeExtensions): XmlEl
 	if (extensions.formDefinition) {
 		elements.push({
 			name: "zeebe:formDefinition",
-			attributes: { formId: extensions.formDefinition.formId },
+			attributes: { ...extensions.formDefinition },
 			children: [],
 		})
 	}
@@ -229,6 +308,22 @@ export function zeebeExtensionsToXmlElements(extensions: ZeebeExtensions): XmlEl
 			},
 			children: [],
 		})
+	}
+
+	if (extensions.calledElement) {
+		const { processId, propagateAllChildVariables, propagateAllParentVariables } =
+			extensions.calledElement
+		const { bindingType, versionTag } = extensions.calledElement
+		const attrs: Record<string, string> = { processId }
+		if (propagateAllChildVariables !== undefined) {
+			attrs.propagateAllChildVariables = String(propagateAllChildVariables)
+		}
+		if (propagateAllParentVariables !== undefined) {
+			attrs.propagateAllParentVariables = String(propagateAllParentVariables)
+		}
+		if (bindingType !== undefined) attrs.bindingType = bindingType
+		if (versionTag !== undefined) attrs.versionTag = versionTag
+		elements.push({ name: "zeebe:calledElement", attributes: attrs, children: [] })
 	}
 
 	if (extensions.assignmentDefinition) {
@@ -267,6 +362,16 @@ export function zeebeExtensionsToXmlElements(extensions: ZeebeExtensions): XmlEl
 			attributes: { correlationKey: extensions.subscription.correlationKey },
 			children: [],
 		})
+	}
+
+	if (extensions.executionListeners?.length) {
+		elements.push(
+			listenersToXml("executionListeners", "executionListener", extensions.executionListeners),
+		)
+	}
+
+	if (extensions.taskListeners?.length) {
+		elements.push(listenersToXml("taskListeners", "taskListener", extensions.taskListeners))
 	}
 
 	if (extensions.unknownElements) {
@@ -359,4 +464,30 @@ export function ensureZeebeExtension(
 	const created: XmlElement = { name: extension, attributes: {}, children: [] }
 	owner.extensionElements.push(created)
 	return created
+}
+
+/**
+ * A conditional event definition with a FEEL `condition` and, when `variableEvents`
+ * is given, a `zeebe:conditionalFilter` limiting which variable changes re-evaluate it.
+ */
+export function makeConditionalDefinition(
+	condition: string,
+	variableEvents?: readonly ("create" | "update")[],
+): BpmnConditionalEventDefinition {
+	return {
+		type: "conditional",
+		condition,
+		conditionAttributes: { "xsi:type": "bpmn:tFormalExpression" },
+		...(variableEvents && variableEvents.length > 0
+			? {
+					extensionElements: [
+						{
+							name: "zeebe:conditionalFilter",
+							attributes: { variableEvents: variableEvents.join(",") },
+							children: [],
+						},
+					],
+				}
+			: {}),
+	}
 }

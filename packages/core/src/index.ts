@@ -147,6 +147,7 @@ export type {
 	IntermediateThrowEventOptions,
 	EndEventOptions,
 	BoundaryEventOptions,
+	ConditionVariableEvent,
 	AdHocSubProcessOptions,
 	AnnotateOptions,
 } from "./bpmn/bpmn-builder.js"
@@ -232,6 +233,7 @@ export type {
 	ZeebePropertyEntry,
 	ZeebeFormDefinition,
 	ZeebeCalledDecision,
+	ZeebeCalledElement,
 	ZeebeAssignmentDefinition,
 	ZeebeTaskSchedule,
 	ZeebePriorityDefinition,

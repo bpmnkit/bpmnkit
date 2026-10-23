@@ -132,17 +132,17 @@ gateways and branching:
 An event sub-process starts when a boundary event fires:
 
 ```typescript
-.eventSubProcess("compensation", {
+.eventSubProcess("compensation", (sub) =>
+  sub
+    .serviceTask("refund", { taskType: "issue-refund" })
+    .endEvent("refunded"),
+{
   triggeredByEvent: true,
   startEvent: {
     interrupting: false,
     error: { code: "PAYMENT_FAILED" },
   },
-}, (sub) =>
-  sub
-    .serviceTask("refund", { taskType: "issue-refund" })
-    .endEvent("refunded")
-)
+})
 ```
 
 ## Boundary Events

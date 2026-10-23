@@ -188,6 +188,37 @@ function buildLaneShapes(
 	})
 }
 
+/**
+ * A view of `process` whose annotations and associations include those declared
+ * inside (nested) sub-processes. The builder stores them on the sub-process
+ * element, so packing only the process-level lists left them without a shape
+ * or edge. Layout nodes are already flat in diagram space, so one pass suffices.
+ */
+function withNestedAnnotations(process: BpmnProcess): BpmnProcess {
+	const textAnnotations = [...process.textAnnotations]
+	const associations = [...process.associations]
+	const walk = (elements: BpmnFlowElement[]): void => {
+		for (const el of elements) {
+			const scope = el as unknown as {
+				flowElements?: BpmnFlowElement[]
+				textAnnotations?: BpmnProcess["textAnnotations"]
+				associations?: BpmnProcess["associations"]
+			}
+			if (scope.textAnnotations) textAnnotations.push(...scope.textAnnotations)
+			if (scope.associations) associations.push(...scope.associations)
+			if (scope.flowElements) walk(scope.flowElements)
+		}
+	}
+	walk(process.flowElements)
+	if (
+		textAnnotations.length === process.textAnnotations.length &&
+		associations.length === process.associations.length
+	) {
+		return process
+	}
+	return { ...process, textAnnotations, associations }
+}
+
 /** Also used by `expand`, which lays out one process without the pool handling above. */
 export function addAnnotationShapes(
 	process: BpmnProcess,
@@ -854,8 +885,9 @@ export function applyAutoLayout(
 		const engineLanes = result.lanes
 
 		// Pre-compute annotation positions in layout space so they're included in the bbox
-		const annBounds = process
-			? packAnnotations(process, result.nodes, result.edges, hints?.annotationSides)
+		const annProcess = process ? withNestedAnnotations(process) : undefined
+		const annBounds = annProcess
+			? packAnnotations(annProcess, result.nodes, result.edges, hints?.annotationSides)
 			: new Map<string, Bounds>()
 
 		const { minX, minY, maxX, maxY } = contentBbox(result.nodes, annBounds.values())
@@ -891,7 +923,7 @@ export function applyAutoLayout(
 			const edges: BpmnDiEdge[] = []
 			for (const node of result.nodes) shapes.push(nodeToShape(node, dx, dy))
 			for (const edge of result.edges) edges.push(edgeToShape(edge, dx, dy))
-			addAnnotationShapes(process, result.nodes, annBounds, shapes, edges, dx, dy)
+			addAnnotationShapes(annProcess ?? process, result.nodes, annBounds, shapes, edges, dx, dy)
 			rootPlanes.push({ elementId: process.id, shapes, edges })
 			continue
 		}
@@ -899,7 +931,15 @@ export function applyAutoLayout(
 		for (const node of result.nodes) allShapes.push(nodeToShape(node, dx, dy))
 		for (const edge of result.edges) allEdges.push(edgeToShape(edge, dx, dy))
 		if (process) {
-			addAnnotationShapes(process, result.nodes, annBounds, allShapes, allEdges, dx, dy)
+			addAnnotationShapes(
+				annProcess ?? process,
+				result.nodes,
+				annBounds,
+				allShapes,
+				allEdges,
+				dx,
+				dy,
+			)
 		}
 
 		if (participantId) {
