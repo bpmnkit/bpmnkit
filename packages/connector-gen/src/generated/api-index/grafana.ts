@@ -180,7 +180,7 @@ const service: ApiService = {"id":"grafana","name":"Grafana API","auth":{"type":
 	{"method":"GET","path":"/reports","summary":"List reports"},
 	{"method":"POST","path":"/reports","summary":"Create a report","body":["name","message","dashboards","enableCsv","enableDashboardUrl","formats"]},
 	{"method":"GET","path":"/reports/dashboards/{uid}","summary":"List reports by dashboard uid"},
-	{"method":"POST","path":"/reports/email","summary":"Send a report","body":["emails","id","useEmailsFromReport"]},
+	{"method":"POST","path":"/reports/email","summary":"Send a report","body":["emails","id","uid","useEmailsFromReport"]},
 	{"method":"GET","path":"/reports/images/:image","summary":"Get custom branding report image"},
 	{"method":"GET","path":"/reports/render/csvs","summary":"Download a CSV report","query":["title","dashboards"]},
 	{"method":"GET","path":"/reports/render/pdfs","summary":"Render report for multiple dashboards","query":["title","dashboards","orientation","layout","scaleFactor","includeTables"]},
