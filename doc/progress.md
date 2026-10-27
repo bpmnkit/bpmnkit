@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-10-27 — Swimlane helpers and nested-lane layout
+
+- Second step of lane and pool write support (WP1, WP2). Nothing writes lanes yet; the builder, compact, process text, change scripts and editor will build on these.
+- New in `@bpmnkit/core` (`swimlanes.ts`): `allLanes`, `leafLanes`, `laneOf`, `assignLane`, `pruneLaneRefs`, `buildLaneSet` (`LaneSpec`), `laneForNewNode` (a node added to a laned process joins its predecessor's lane, else its successor's, else the first lane), `primaryProcess`, `poolLanedProcesses` ("lanes imply a pool"; a partner process it pools gets an explicit `isExecutable: false`, because Flowable reads an absent attribute as executable), `laneProblems` and `collaborationProblems`. All pure; lane walks fail explicitly on a cycle. Ancestor lanes listing their descendants' refs (the Flowable/Camunda Modeler convention) and leaf-only refs are both accepted.
+- `DiagramBuilder` validates through the shared `collaborationProblems`, with the same messages. New: once a diagram has a collaboration, a process with content that no participant references is refused (it used to build).
+- Auto-layout: a nested lane sits one 30px header further in than its parent, siblings tile their parent, and the content offset reserves a header per level. Message-flow routing no longer treats nested lanes as obstacles. A top-level flow node in no lane stays inside its pool (data elements, which no lane can hold, do not grow it). A laned process with no flow nodes gets lane bands instead of a black box. Lane DI is written pool first, then by depth. Lane-free and flat-lane layouts are unchanged apart from pools that now contain their unassigned flow nodes.
+- Tests: `swimlanes.test.ts` (54), `nested-lanes-layout.test.ts` (12).
+
 ## 2026-10-27 — Round trip: Flowable Modeler files, `isExecutable="false"`, nested lanes
 
 - First step of lane and pool write support; the saved XML is deployed to Flowable, so the round trip must not change what the engine reads.

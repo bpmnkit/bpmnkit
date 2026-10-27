@@ -9,6 +9,7 @@ import { layoutProcess } from "../layout/layout-engine.js"
 import type { Side } from "../layout/orthogonal.js"
 import type { ConnectionKind, PlaneEdge, PlaneShape } from "../layout/repair.js"
 import { repairRoutes } from "../layout/repair.js"
+import { MIN_LANE_HEIGHT } from "../layout/semantic/place.js"
 import type { Bounds, LayoutEdge, LayoutHints, LayoutNode, LayoutResult } from "../layout/types.js"
 import type {
 	BpmnBounds,
@@ -19,6 +20,7 @@ import type {
 	BpmnDiagram,
 	BpmnFlowElement,
 	BpmnLane,
+	BpmnLaneSet,
 	BpmnProcess,
 	BpmnWaypoint,
 } from "./bpmn-model.js"
@@ -59,6 +61,26 @@ function contentBbox(
 		}
 	}
 	return { minX, minY, maxX, maxY }
+}
+
+/**
+ * Where a laned pool has to end so the nodes no lane claims stay inside it.
+ * The engine stacks those nodes below the lane bands, so they are the ones
+ * whose top lies at or under `bandBottom`; with none, `bandBottom` itself.
+ */
+/**
+ * Data elements are never lane members, and the engine stacks them below the
+ * bands; growing the pool for them leaves tall empty tails, so only flow nodes
+ * count.
+ */
+const NOT_LANE_MEMBERS = new Set(["dataObject", "dataObjectReference", "dataStoreReference"])
+
+function orphanExtent(nodes: LayoutNode[], bandBottom: number): number {
+	const orphans = nodes.filter(
+		(node) => node.bounds.y >= bandBottom && !NOT_LANE_MEMBERS.has(node.type),
+	)
+	if (orphans.length === 0) return bandBottom
+	return contentBbox(orphans).maxY + PADDING
 }
 
 function nodeToShape(node: LayoutNode, dx: number, dy: number): BpmnDiShape {
@@ -281,6 +303,114 @@ const MESSAGE_FLOW_STEM_STEP = 8
 const MESSAGE_FLOW_JOG = 20
 const MESSAGE_FLOW_MAX_JOG = 2400
 const EMPTY_POOL_WIDTH = 300
+
+/** One lane of a lane set, with where it sits in the nesting. */
+interface LaneLevel {
+	lane: BpmnLane
+	/** 0 for a lane directly in the pool, one more per `childLaneSet` level. */
+	depth: number
+	/** The lane whose `childLaneSet` holds this one; absent at the top level. */
+	parentId?: string
+	/** True when the lane has no child lanes, so nodes sit in it directly. */
+	leaf: boolean
+}
+
+/**
+ * Every lane of a lane set, each parent before its children (pre-order).
+ * Empty for an absent lane set.
+ *
+ * @throws Error when one lane object occurs twice, as a lane set that contains
+ *   itself does; walking it would never end.
+ */
+function laneLevels(laneSet: BpmnLaneSet | undefined): LaneLevel[] {
+	const levels: LaneLevel[] = []
+	const seen = new Set<BpmnLane>()
+	const walk = (set: BpmnLaneSet, depth: number, parentId?: string): void => {
+		for (const lane of set.lanes) {
+			if (seen.has(lane)) throw new Error(`Lane ${lane.id} occurs twice in its lane set`)
+			seen.add(lane)
+			const leaf = (lane.childLaneSet?.lanes.length ?? 0) === 0
+			levels.push(parentId === undefined ? { lane, depth, leaf } : { lane, depth, parentId, leaf })
+			if (lane.childLaneSet) walk(lane.childLaneSet, depth + 1, lane.id)
+		}
+	}
+	if (laneSet) walk(laneSet, 0)
+	return levels
+}
+
+/**
+ * Width the lane headers take at the left of a pool: one header per nesting
+ * level, since each level is inset by one header; 0 without lanes.
+ */
+function laneHeadersWidth(levels: LaneLevel[]): number {
+	if (levels.length === 0) return 0
+	return (Math.max(...levels.map((level) => level.depth)) + 1) * LANE_HEADER
+}
+
+/**
+ * Pool and lane shapes for a laned process with no flow nodes. Each leaf lane
+ * gets a band of {@link MIN_LANE_HEIGHT} and each parent spans its children, so
+ * every lane keeps DI to draw and to drop into. Lanes come outermost first.
+ *
+ * @returns the shapes, pool first, and the pool height.
+ */
+function emptyLanedPool(
+	participantId: string,
+	levels: LaneLevel[],
+	poolY: number,
+): { shapes: BpmnDiShape[]; height: number } {
+	const span = new Map<string, { top: number; bottom: number }>()
+	let top = 0
+	for (const level of levels) {
+		if (!level.leaf) continue
+		span.set(level.lane.id, { top, bottom: top + MIN_LANE_HEIGHT })
+		top += MIN_LANE_HEIGHT
+	}
+	// Reversed pre-order reaches every child before its parent.
+	for (const level of [...levels].reverse()) {
+		const own = span.get(level.lane.id)
+		if (level.parentId === undefined || !own) continue
+		const parent = span.get(level.parentId)
+		span.set(
+			level.parentId,
+			parent
+				? { top: Math.min(parent.top, own.top), bottom: Math.max(parent.bottom, own.bottom) }
+				: own,
+		)
+	}
+
+	const shapes: BpmnDiShape[] = [
+		{
+			id: `${participantId}_di`,
+			bpmnElement: participantId,
+			isHorizontal: true,
+			bounds: { x: 0, y: poolY, width: EMPTY_POOL_WIDTH, height: top },
+			unknownAttributes: {},
+		},
+	]
+	const ordered = [...levels].sort(
+		(a, b) =>
+			a.depth - b.depth || (span.get(a.lane.id)?.top ?? 0) - (span.get(b.lane.id)?.top ?? 0),
+	)
+	for (const { lane, depth } of ordered) {
+		const band = span.get(lane.id)
+		if (!band) continue
+		const inset = POOL_HEADER + depth * LANE_HEADER
+		shapes.push({
+			id: `${lane.id}_di`,
+			bpmnElement: lane.id,
+			isHorizontal: true,
+			bounds: {
+				x: inset,
+				y: poolY + band.top,
+				width: EMPTY_POOL_WIDTH - inset,
+				height: band.bottom - band.top,
+			},
+			unknownAttributes: {},
+		})
+	}
+	return { shapes, height: top }
+}
 
 /**
  * Sub-processes the source diagram draws collapsed. A collapsed sub-process
@@ -674,8 +804,7 @@ function messageLinks(
 		const pool = pools[index]
 		if (!layout || !pool?.participantId || layout.nodes.length === 0) continue
 		const { minX } = contentBbox(layout.nodes)
-		const hasLanes = (pool.process?.laneSet?.lanes.length ?? 0) > 0
-		const elemX = POOL_HEADER + (hasLanes ? LANE_HEADER : 0) + PADDING
+		const elemX = POOL_HEADER + laneHeadersWidth(laneLevels(pool.process?.laneSet)) + PADDING
 		for (const node of layout.nodes) {
 			centres.set(node.id, {
 				pool: index,
@@ -810,6 +939,8 @@ export function applyAutoLayout(
 		const { participantId, process } = pool
 		const lanes = process?.laneSet?.lanes ?? []
 		const hasLanes = lanes.length > 0
+		const levels = laneLevels(process?.laneSet)
+		const headersWidth = laneHeadersWidth(levels)
 
 		const result: LayoutResult = layouts[poolIndex] ?? { nodes: [], edges: [] }
 		const alignDx = alignment[poolIndex] ?? 0
@@ -831,6 +962,13 @@ export function applyAutoLayout(
 					PADDING - bbox.minX,
 					PADDING - bbox.minY,
 				)
+				continue
+			}
+			// Lanes with nothing in them still need bands, or they have no DI at all.
+			if (participantId && hasLanes) {
+				const empty = emptyLanedPool(participantId, levels, poolY)
+				allShapes.push(...empty.shapes)
+				poolY += empty.height + POOL_GAP
 				continue
 			}
 			if (participantId) {
@@ -876,7 +1014,7 @@ export function applyAutoLayout(
 		let dx: number
 		let dy: number
 		if (participantId) {
-			const elemX = POOL_HEADER + (hasLanes ? LANE_HEADER : 0) + PADDING
+			const elemX = POOL_HEADER + headersWidth + PADDING
 			dx = elemX - minX + alignDx
 			dy = laneBands ? poolY - bandTop : poolY + PADDING - minY
 		} else {
@@ -903,9 +1041,13 @@ export function applyAutoLayout(
 		}
 
 		if (participantId) {
-			const innerW = (hasLanes ? LANE_HEADER : 0) + contentW + 2 * PADDING + alignDx
-			// Lanes must tile the pool exactly, so the pool takes their height.
-			const innerH = laneBands ? bandHeight : contentH + 2 * PADDING
+			const innerW = headersWidth + contentW + 2 * PADDING + alignDx
+			// Lanes must tile the pool exactly, so the pool takes their height, and
+			// grows past them only for nodes no lane claims, which the engine
+			// places below the bands.
+			const innerH = laneBands
+				? Math.max(bandHeight, orphanExtent(result.nodes, bandTop + bandHeight) - bandTop)
+				: contentH + 2 * PADDING
 			const poolW = POOL_HEADER + innerW
 
 			allShapes.push({
@@ -917,19 +1059,24 @@ export function applyAutoLayout(
 			})
 
 			if (hasLanes) {
+				const depthOf = new Map(levels.map((level) => [level.lane.id, level.depth]))
 				const laneShapes = laneBands
-					? laneBands.map((lane) => ({
-							id: `${lane.id}_di`,
-							bpmnElement: lane.id,
-							isHorizontal: true,
-							bounds: {
-								x: Math.round(POOL_HEADER),
-								y: Math.round(lane.bounds.y + dy),
-								width: Math.round(innerW),
-								height: Math.round(lane.bounds.height),
-							},
-							unknownAttributes: {},
-						}))
+					? laneBands.map((lane) => {
+							// Each nesting level sits one header further in, right edges aligned.
+							const inset = (depthOf.get(lane.id) ?? 0) * LANE_HEADER
+							return {
+								id: `${lane.id}_di`,
+								bpmnElement: lane.id,
+								isHorizontal: true,
+								bounds: {
+									x: Math.round(POOL_HEADER + inset),
+									y: Math.round(lane.bounds.y + dy),
+									width: Math.round(innerW - inset),
+									height: Math.round(lane.bounds.height),
+								},
+								unknownAttributes: {},
+							}
+						})
 					: buildLaneShapes(lanes, result.nodes, dx, dy, poolY, POOL_HEADER, innerW, innerH)
 				allShapes.push(...laneShapes)
 			}
@@ -962,7 +1109,7 @@ export function applyAutoLayout(
 		}
 		const participantIds = new Set(collab.participants.map((p) => p.id))
 		const laneIds = new Set(
-			defs.processes.flatMap((p) => (p.laneSet?.lanes ?? []).map((lane) => lane.id)),
+			defs.processes.flatMap((p) => laneLevels(p.laneSet).map((level) => level.lane.id)),
 		)
 		// Pools and lanes are containers; message flows cross them by design. It is
 		// the elements inside that a route has to miss.
@@ -1240,13 +1387,7 @@ function routeRepair(defs: BpmnDefinitions): (shapes: BpmnDiShape[], edges: Bpmn
 			connections.set(a.id, { kind: "association", source: a.sourceRef, target: a.targetRef })
 		}
 		for (const group of process.groups ?? []) containers.add(group.id)
-		const lanes = (set: BpmnProcess["laneSet"]): void => {
-			for (const lane of set?.lanes ?? []) {
-				containers.add(lane.id)
-				lanes(lane.childLaneSet)
-			}
-		}
-		lanes(process.laneSet)
+		for (const level of laneLevels(process.laneSet)) containers.add(level.lane.id)
 	}
 
 	const related = (id: string): string[] => {

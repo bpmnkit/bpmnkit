@@ -40,6 +40,7 @@ import {
 	rootDefinitionId,
 	setFlowDiscriminatorSource,
 } from "./stable-ids.js"
+import { collaborationProblems } from "./swimlanes.js"
 import {
 	type ZeebeExtensions,
 	ensureZeebeExtension,
@@ -3670,100 +3671,6 @@ export class DiagramBuilder {
 		return this
 	}
 
-	/**
-	 * Reports every way the declared collaboration would not survive contact with
-	 * a modeler, so `build()` can refuse rather than emit a file that opens broken.
-	 */
-	private collaborationProblems(): string[] {
-		const problems: string[] = []
-
-		const seen = new Set<string>()
-		for (const id of [
-			...this._participants.map((p) => p.id),
-			...this._messageFlows.map((f) => f.id),
-		]) {
-			if (seen.has(id)) problems.push(`Duplicate element ID "${id}"`)
-			seen.add(id)
-		}
-
-		const processIds = new Set(this._processes.map((process) => process.id))
-		const claimed = new Map<string, string>()
-		for (const participant of this._participants) {
-			const processId = participant.processRef
-			if (processId === undefined) continue
-			if (!processIds.has(processId)) {
-				problems.push(
-					`Participant "${participant.id}" references process "${processId}", which this diagram does not contain`,
-				)
-				continue
-			}
-			const owner = claimed.get(processId)
-			if (owner !== undefined) {
-				problems.push(
-					`Participants "${owner}" and "${participant.id}" both reference process "${processId}"; a process belongs to one pool`,
-				)
-			}
-			claimed.set(processId, participant.id)
-		}
-
-		const owningParticipant = this.participantIndex()
-		const messageIds = new Set(this._messages.map((message) => message.id))
-		for (const flow of this._messageFlows) {
-			for (const [role, ref] of [
-				["source", flow.sourceRef],
-				["target", flow.targetRef],
-			] as const) {
-				if (!owningParticipant.has(ref)) {
-					problems.push(
-						`Message flow "${flow.id}" names ${role} "${ref}", which is not a participant or a flow node in one`,
-					)
-				}
-			}
-
-			const from = owningParticipant.get(flow.sourceRef)
-			const to = owningParticipant.get(flow.targetRef)
-			if (from !== undefined && from === to) {
-				problems.push(
-					`Message flow "${flow.id}" starts and ends in participant "${from}"; a message flow crosses pools, a sequence flow stays inside one`,
-				)
-			}
-
-			if (flow.messageRef !== undefined && !messageIds.has(flow.messageRef)) {
-				problems.push(
-					`Message flow "${flow.id}" references message "${flow.messageRef}", which this diagram does not declare`,
-				)
-			}
-		}
-
-		return problems
-	}
-
-	/** Maps every participant id and every flow node id to its owning participant. */
-	private participantIndex(): Map<string, string> {
-		const index = new Map<string, string>()
-		const byProcess = new Map<string, string>()
-		for (const participant of this._participants) {
-			index.set(participant.id, participant.id)
-			if (participant.processRef !== undefined)
-				byProcess.set(participant.processRef, participant.id)
-		}
-
-		const walk = (elements: BpmnFlowElement[], owner: string): void => {
-			for (const element of elements) {
-				index.set(element.id, owner)
-				if ("flowElements" in element && Array.isArray(element.flowElements)) {
-					walk(element.flowElements, owner)
-				}
-			}
-		}
-
-		for (const process of this._processes) {
-			const owner = byProcess.get(process.id)
-			if (owner !== undefined) walk(process.flowElements, owner)
-		}
-		return index
-	}
-
 	build(): BpmnDefinitions {
 		return hoistMessageSubscriptions({
 			id: this._id,
@@ -3801,12 +3708,7 @@ export class DiagramBuilder {
 	private buildCollaborations(): BpmnCollaboration[] {
 		if (this._participants.length === 0 && this._messageFlows.length === 0) return []
 
-		const problems = this.collaborationProblems()
-		if (problems.length > 0) {
-			throw new Error(`Invalid collaboration:\n  ${problems.join("\n  ")}`)
-		}
-
-		return [
+		const collaborations: BpmnCollaboration[] = [
 			{
 				id: this._collaborationId,
 				participants: this._participants,
@@ -3818,5 +3720,15 @@ export class DiagramBuilder {
 				unknownAttributes: {},
 			},
 		]
+		// Refuse rather than emit a file that opens broken in a modeler.
+		const problems = collaborationProblems({
+			collaborations,
+			processes: this._processes,
+			messages: this._messages,
+		})
+		if (problems.length > 0) {
+			throw new Error(`Invalid collaboration:\n  ${problems.join("\n  ")}`)
+		}
+		return collaborations
 	}
 }

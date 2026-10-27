@@ -1,4 +1,9 @@
-import type { BpmnBoundaryEvent, BpmnFlowElement, BpmnLaneSet } from "../../bpmn/bpmn-model.js"
+import type {
+	BpmnBoundaryEvent,
+	BpmnFlowElement,
+	BpmnLane,
+	BpmnLaneSet,
+} from "../../bpmn/bpmn-model.js"
 import type { Bounds, GridHint } from "../types.js"
 import { ELEMENT_SIZES, LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH } from "../types.js"
 import { type BandLayout, boundarySide } from "./bands.js"
@@ -10,6 +15,8 @@ export const V_GAP = 80
 export const COMPONENT_GAP = 80
 export const LANE_PADDING = 40
 export const BOUNDARY_SIZE = 36
+/** Height of a lane band with nothing in it: room for one boundary-sized row. */
+export const MIN_LANE_HEIGHT = 2 * LANE_PADDING + BOUNDARY_SIZE
 
 const DEFAULT_SIZE = { width: 100, height: 80 }
 
@@ -308,7 +315,7 @@ function applyLanes(
 		const own = (members.get(leaf.id) ?? [])
 			.map((n) => bounds.get(n))
 			.filter((b): b is Bounds => b !== undefined)
-		let height = 2 * LANE_PADDING + BOUNDARY_SIZE
+		let height = MIN_LANE_HEIGHT
 		if (own.length > 0) {
 			const lowest = Math.min(...own.map((b) => b.y))
 			height = Math.max(...own.map((b) => b.y + b.height)) - lowest + 2 * LANE_PADDING
@@ -329,7 +336,7 @@ function applyLanes(
 		}
 	}
 
-	const slots: Array<{ id: string; bounds: Bounds }> = []
+	const slots: Array<{ id: string; depth: number; bounds: Bounds }> = []
 	const emit = (nodes: LaneNode[]): { top: number; bottom: number } | null => {
 		let extent: { top: number; bottom: number } | null = null
 		for (const node of nodes) {
@@ -338,6 +345,7 @@ function applyLanes(
 			if (node.children.length > 0) span.set(node.id, own)
 			slots.push({
 				id: node.id,
+				depth: node.depth,
 				bounds: { x: left, y: own.top, width, height: own.bottom - own.top },
 			})
 			extent = extent
@@ -348,22 +356,41 @@ function applyLanes(
 	}
 	emit(tree)
 
-	// Outermost first, so a parent lane is drawn behind the lanes it contains.
-	return slots.sort((a, b) => b.bounds.height - a.bounds.height || a.bounds.y - b.bounds.y)
+	// Outermost first, so a parent lane is drawn behind the lanes it contains. A
+	// parent with one child has the child's exact bounds, so depth decides; the
+	// height and y keys keep the order flat lane sets have always had.
+	return slots
+		.sort(
+			(a, b) => a.depth - b.depth || b.bounds.height - a.bounds.height || a.bounds.y - b.bounds.y,
+		)
+		.map(({ id, bounds }) => ({ id, bounds }))
 }
 
 interface LaneNode {
 	id: string
+	/** 0 for a lane directly in the lane set, one more per `childLaneSet` level. */
+	depth: number
 	refs: string[]
 	children: LaneNode[]
 }
 
-function laneTree(laneSet: BpmnLaneSet): LaneNode[] {
-	return laneSet.lanes.map((lane) => ({
-		id: lane.id,
-		refs: lane.flowNodeRefs,
-		children: lane.childLaneSet ? laneTree(lane.childLaneSet) : [],
-	}))
+/**
+ * The lane set as a tree of ids and refs.
+ *
+ * @throws Error when one lane object occurs twice, as a lane set that contains
+ *   itself does; walking it would never end.
+ */
+function laneTree(laneSet: BpmnLaneSet, depth = 0, seen: Set<BpmnLane> = new Set()): LaneNode[] {
+	return laneSet.lanes.map((lane) => {
+		if (seen.has(lane)) throw new Error(`Lane ${lane.id} occurs twice in its lane set`)
+		seen.add(lane)
+		return {
+			id: lane.id,
+			depth,
+			refs: lane.flowNodeRefs,
+			children: lane.childLaneSet ? laneTree(lane.childLaneSet, depth + 1, seen) : [],
+		}
+	})
 }
 
 /**

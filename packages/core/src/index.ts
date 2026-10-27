@@ -126,6 +126,20 @@ export { checkDiCompleteness } from "./bpmn/di-check.js"
 export type { DiCompleteness } from "./bpmn/di-check.js"
 export { planeForElement, listPlaneElementIds } from "./bpmn/di-planes.js"
 export { DiagramBuilder, ProcessBuilder } from "./bpmn/bpmn-builder.js"
+export {
+	allLanes,
+	assignLane,
+	buildLaneSet,
+	collaborationProblems,
+	laneForNewNode,
+	laneOf,
+	laneProblems,
+	leafLanes,
+	poolLanedProcesses,
+	primaryProcess,
+	pruneLaneRefs,
+} from "./bpmn/swimlanes.js"
+export type { LaneSpec } from "./bpmn/swimlanes.js"
 export type {
 	BranchBuilder,
 	BuildOptions,
