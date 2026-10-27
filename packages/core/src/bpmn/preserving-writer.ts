@@ -16,7 +16,7 @@
  * a file written by another tool comes back reshuffled even when nothing
  * changed. Keeping the original order is therefore worth more than keeping the
  * indentation. The same goes for an attribute set to its schema default:
- * `isExecutable="false"` disappears from a file that said it out loud.
+ * `isSequential="false"` disappears from a file that said it out loud.
  *
  * Neither is safe to assume in general, so neither is assumed. Each strategy is
  * tried, the result is **parsed back and compared against a plain write**, and

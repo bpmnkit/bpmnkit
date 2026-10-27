@@ -630,6 +630,10 @@ export interface BpmnLaneSet {
 export interface BpmnProcess {
 	id: string
 	name?: string
+	/**
+	 * As the file says it; `undefined` when it says nothing. Kept apart from `false`
+	 * because engines read an absent attribute differently (Flowable: executable).
+	 */
 	isExecutable?: boolean
 	documentation?: string
 	/** Attributes of the `<documentation>` element (`id`, `textFormat`), kept for round-trip. */
@@ -829,6 +833,7 @@ export interface BpmnDiagram {
  * ```
  */
 export interface BpmnDefinitions {
+	/** Empty when the file has none: the schema makes it optional and the Flowable Modeler omits it. */
 	id: string
 	targetNamespace: string
 	exporter?: string

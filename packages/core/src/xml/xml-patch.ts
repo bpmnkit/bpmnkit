@@ -46,7 +46,7 @@ export interface PreserveOptions {
 	 *
 	 * - `"remove"` (default) — take it out, because the update says so.
 	 * - `"keep"` — leave it. A serializer omits an attribute set to its schema
-	 *   default, so `isExecutable="false"` disappears from a file that said it
+	 *   default, so `isSequential="false"` disappears from a file that said it
 	 *   out loud. Keeping it is only safe when re-reading the result gives the
 	 *   same model, which is a check the caller has to make; see
 	 *   `exportPreserving` in the BPMN module.

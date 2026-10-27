@@ -75,7 +75,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Core Concepts — The Fluent Builder](.llms/chunks/getting-started.concepts.the-fluent-builder.md) — 251 tokens
 - [Core Concepts — Auto-Layout](.llms/chunks/getting-started.concepts.auto-layout.md) — 150 tokens
 - [Core Concepts — Parsing and Serializing](.llms/chunks/getting-started.concepts.parsing-and-serializing.md) — 116 tokens
-- [Core Concepts — Parsing and Serializing — Round-trip fidelity](.llms/chunks/getting-started.concepts.parsing-and-serializing-round-trip-fidelity.md) — 801 tokens
+- [Core Concepts — Parsing and Serializing — Round-trip fidelity](.llms/chunks/getting-started.concepts.parsing-and-serializing-round-trip-fidelity.md) — 829 tokens
 - [Core Concepts — AI-Compact Format](.llms/chunks/getting-started.concepts.ai-compact-format.md) — 359 tokens
 - [Core Concepts — Zeebe Extensions](.llms/chunks/getting-started.concepts.zeebe-extensions.md) — 134 tokens
 - [Conformance](.llms/chunks/getting-started.conformance.md) — 523 tokens
@@ -336,7 +336,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Overview](.llms/chunks/packages.core.overview.md) — 159 tokens
 - [@bpmnkit/core — Installation](.llms/chunks/packages.core.installation.md) — 27 tokens
 - [@bpmnkit/core — Installation — `Bpmn.createProcess(id, name?)`](.llms/chunks/packages.core.installation-bpmn.createprocess-id-name.md) — 51 tokens
-- [@bpmnkit/core — Installation — `Bpmn.continueProcess(definitions, processId)`](.llms/chunks/packages.core.installation-bpmn.continueprocess-definitions-processid.md) — 517 tokens
+- [@bpmnkit/core — Installation — `Bpmn.continueProcess(definitions, processId)`](.llms/chunks/packages.core.installation-bpmn.continueprocess-definitions-processid.md) — 525 tokens
 - [@bpmnkit/core — Installation — `Bpmn.createDiagram(id?)`](.llms/chunks/packages.core.installation-bpmn.creatediagram-id.md) — 107 tokens
 - [@bpmnkit/core — Installation — DiagramBuilder — collaborations](.llms/chunks/packages.core.installation-diagrambuilder-collaborations.md) — 404 tokens
 - [@bpmnkit/core — Installation — `Bpmn.export(definitions)`](.llms/chunks/packages.core.installation-bpmn.export-definitions.md) — 43 tokens

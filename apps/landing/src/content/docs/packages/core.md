@@ -76,8 +76,9 @@ document already had.
 you add have none until `.withAutoLayout()` or a later `applyAutoLayout()` gives them one.
 
 `isExecutable` and the process name are left as they were unless you call `.executable()` or
-`.name()`. BPMN reads an absent `isExecutable` as false, so writing the builder's default onto
-a process that never carried it would make a non-executable process executable.
+`.name()`. Engines disagree on an absent `isExecutable` (Camunda: not executable, Flowable:
+executable), so writing the builder's default onto a process that never carried it would be a
+change nobody asked for.
 
 ### `Bpmn.createDiagram(id?)`
 

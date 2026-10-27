@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-10-27 — Round trip: Flowable Modeler files, `isExecutable="false"`, nested lanes
+
+- First step of lane and pool write support; the saved XML is deployed to Flowable, so the round trip must not change what the engine reads.
+- `<definitions>` without an `id` (the Flowable Modeler omits it; the schema makes it optional) parses, with `id: ""`, and is written back without one. It used to throw `ParseError`.
+- `isExecutable` is kept as the file says it: `"false"` parses to `false` and is written back. Flowable reads an absent attribute as executable, so dropping `false` made a partner pool's process deployable. Absent stays absent. Files that say `false` get a new `semanticHash`.
+- A nested lane set is written as `<childLaneSet>`, not `<laneSet>`: the output was schema-invalid and the nested lanes were lost on the next read. Files saved that way are read back (a nested `<laneSet>` is accepted as `<childLaneSet>`).
+- Tests: `flowable-roundtrip.test.ts`; corpus fixture `08-flowable-lanes-pools.bpmn` (Flowable extensions, nested lanes, a partner pool, a message flow, `omgdc`/`omgdi` DI); 13 stale `isExecutable` entries removed from the round-trip ratchet; golden hashes regenerated for the files that say `false`.
+- Known, not changed here: `continueProcess().build()` and bpmnlint fill in `<incoming>`/`<outgoing>` on files that leave them out; comments are dropped and CDATA is written as escaped text (equivalent for an XML reader).
+
 ## 2026-10-21 — On-device diagram generation in the web editor (Chrome Prompt API)
 
 - Opt-in on bpmnkit.com: the web editor creates the `ai-local` plugin only for `/editor?ai=on-device`, and only then adds the `origin-trial` meta tag (token from `PUBLIC_CHROME_AI_OT_TOKEN`) from the script; `editor.astro` no longer emits it statically.

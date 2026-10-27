@@ -538,17 +538,21 @@ function serializeLane(lane: BpmnLane, bp: string): XmlElement {
 	const children: XmlElement[] = serializeBaseChildren(lane, bp)
 	children.push(...lane.flowNodeRefs.map((ref) => el(`${bp}flowNodeRef`, {}, [], ref)))
 	if (lane.childLaneSet) {
-		children.push(serializeLaneSet(lane.childLaneSet, bp))
+		children.push(serializeLaneSet(lane.childLaneSet, bp, "childLaneSet"))
 	}
 	return el(`${bp}lane`, attrs, children)
 }
 
-function serializeLaneSet(laneSet: BpmnLaneSet, bp: string): XmlElement {
+function serializeLaneSet(
+	laneSet: BpmnLaneSet,
+	bp: string,
+	tag: "laneSet" | "childLaneSet" = "laneSet",
+): XmlElement {
 	const attrs: Record<string, string> = { ...laneSet.unknownAttributes }
 	if (laneSet.id) attrs.id = laneSet.id
 	if (laneSet.name !== undefined) attrs.name = laneSet.name
 	return el(
-		`${bp}laneSet`,
+		`${bp}${tag}`,
 		attrs,
 		laneSet.lanes.map((l) => serializeLane(l, bp)),
 	)
@@ -562,7 +566,9 @@ function serializeProcess(process: BpmnProcess, ns: Record<string, string>): Xml
 	const bp = bpmnPrefix(ns)
 	const attrs: Record<string, string> = { id: process.id, ...process.unknownAttributes }
 	if (process.name !== undefined) attrs.name = process.name
-	if (process.isExecutable) attrs.isExecutable = "true"
+	// Written as given: Flowable reads an absent attribute as executable, Camunda
+	// as not, so `false` and absent are different documents.
+	if (process.isExecutable !== undefined) attrs.isExecutable = String(process.isExecutable)
 
 	const children: XmlElement[] = serializeBaseChildren(
 		{
@@ -796,7 +802,7 @@ export function serializeBpmn(definitions: BpmnDefinitions): string {
 		}
 	}
 
-	attrs.id = definitions.id
+	if (definitions.id !== "") attrs.id = definitions.id
 	attrs.targetNamespace = definitions.targetNamespace
 	if (definitions.exporter !== undefined) attrs.exporter = definitions.exporter
 	if (definitions.exporterVersion !== undefined) attrs.exporterVersion = definitions.exporterVersion

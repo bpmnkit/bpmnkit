@@ -899,7 +899,7 @@
 		{
 			"id": "getting-started.concepts.parsing-and-serializing-round-trip-fidelity",
 			"file": "chunks/getting-started.concepts.parsing-and-serializing-round-trip-fidelity.md",
-			"tokens": 801,
+			"tokens": 829,
 			"tags": [
 				"getting-started",
 				"concepts",
@@ -920,7 +920,7 @@
 				"bpmnElement",
 				"packages/core/tests/roundtrip-corpus.test.ts",
 				"packages/core/tests/descriptor-coverage.test.ts",
-				"isExecutable"
+				"isSequential"
 			]
 		},
 		{
@@ -4889,7 +4889,7 @@
 		{
 			"id": "packages.core.installation-bpmn.continueprocess-definitions-processid",
 			"file": "chunks/packages.core.installation-bpmn.continueprocess-definitions-processid.md",
-			"tokens": 517,
+			"tokens": 525,
 			"tags": [
 				"packages",
 				"core",

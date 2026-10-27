@@ -3405,9 +3405,9 @@ export class ProcessBuilder {
 		process.textAnnotations = this._textAnnotations
 		process.associations = this._associations
 		if (this.processName !== undefined) process.name = this.processName
-		// Only when asked. BPMN reads an absent `isExecutable` as false, so writing
-		// the builder's `true` default onto a process that never carried it makes a
-		// non-executable process executable — a change nobody requested.
+		// Only when asked. Engines disagree on an absent `isExecutable` (Camunda:
+		// not executable, Flowable: executable), so writing the builder's `true`
+		// default onto a process that never carried it is a change nobody requested.
 		if (this._executableSet) process.isExecutable = this._isExecutable
 		if (this._versionTag !== undefined) {
 			// Set the attribute on the existing element rather than replacing the
