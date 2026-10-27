@@ -143,6 +143,7 @@ export type { LaneSpec } from "./bpmn/swimlanes.js"
 export type {
 	BranchBuilder,
 	BuildOptions,
+	LaneOptions,
 	MessageFlowOptions,
 	ParticipantOptions,
 	DiagramMessageOptions,
@@ -514,7 +515,10 @@ export type {
 	CompactDiagram,
 	CompactElement,
 	CompactFlow,
+	CompactLane,
+	CompactMessageFlow,
 	CompactNote,
+	CompactParticipant,
 	CompactProcess,
 } from "./bpmn/compact.js"
 export {

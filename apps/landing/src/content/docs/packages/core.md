@@ -75,6 +75,13 @@ document already had.
 **Diagram interchange is not regenerated.** Existing shapes keep their positions, and elements
 you add have none until `.withAutoLayout()` or a later `applyAutoLayout()` gives them one.
 
+**Lanes follow the flow.** A node you add joins the lane of its first predecessor that has one
+(a boundary event joins its host's lane), so a laned document stays laned. `.lane(existingId,
+{ flowNodes, name? })` moves nodes into one of the document's existing leaf lanes and renames it;
+declaring a new lane or changing a `parent` is refused. Existing lane refs are never rewritten,
+and `.participant(existingPoolId, { name })` renames the process's pool. `flowable:*`
+attributes and extension elements are kept as they are.
+
 `isExecutable` and the process name are left as they were unless you call `.executable()` or
 `.name()`. Engines disagree on an absent `isExecutable` (Camunda: not executable, Flowable:
 executable), so writing the builder's default onto a process that never carried it would be a
@@ -122,12 +129,51 @@ pooled" and renders every process pool-less.
 
 `.collaborationId(id)` renames the collaboration, which defaults to `"Collaboration_1"`.
 
+A process keeps the pool its own builder gave it, from `.participant()` or implied by lanes
+(see below); a diagram-level `.participant(…, { processId })` for the same process replaces it.
+`.withAutoLayout()` lays out the whole diagram — pools, lanes, message flows — on one
+collaboration plane.
+
+**Partner pools and `isExecutable`.** Flowable reads an absent `isExecutable` as executable,
+so a partner process must say `false`. A process with no flow elements and no lanes whose
+builder never called `.executable()` is written `isExecutable="false"` (the Flowable Modeler
+form of a black-box partner); every other process keeps the default `true`. Call
+`.executable(false)` on a partner process that has content.
+
 `build()` refuses a collaboration a modeler would not open, reporting every problem at once:
 a participant naming a process the diagram does not contain, two participants claiming the
 same process, a duplicate id, a message flow whose endpoint does not exist or which names an
 undeclared message, and — the one that is easy to write by accident — a message flow that
 starts and ends in the same pool. A message flow is what crosses a pool boundary; one that
 stays inside a pool should be a sequence flow.
+
+### ProcessBuilder — lanes and pools
+
+```typescript
+const defs = Bpmn.createProcess("order")
+  .name("Order")
+  .startEvent("start").userTask("review").serviceTask("ship", { taskType: "ship" }).endEvent("end")
+  .lane("Lane_sales", { name: "Sales" })
+  .lane("Lane_inside", { name: "Inside sales", parent: "Lane_sales", flowNodes: ["start", "review"] })
+  .lane("Lane_ops", { name: "Operations", flowNodes: ["ship", "end"] })
+  .participant("Pool_company", { name: "Company" })   // optional
+  .withAutoLayout()
+  .build();
+```
+
+`.lane(id, { name?, flowNodes?, parent? })` declares a lane; `parent` makes it a child lane, and
+only leaf lanes take `flowNodes`. Refs are written verbatim, boundary events follow their host,
+an inferred join gateway follows its first predecessor, and parent lanes list the union of their
+children's refs. Once any lane exists every top-level flow node must sit in exactly one leaf
+lane: `build()` throws `Invalid lanes:` listing every problem at once — an unknown or
+sub-process ref, a node in two lanes, flow nodes on a parent lane, an undeclared or cyclic
+parent, an id already in use, an unassigned node.
+
+Lanes imply a pool: without `.participant(id, { name? })` the build adds
+`Participant_<processId>` named after the process. `.participant()` without lanes just pools
+the process. With neither call the output is exactly what it was before lanes existed — no
+collaboration. With `.withAutoLayout()` nodes sit inside their lanes, lanes tile the pool, and
+the plane draws the collaboration.
 
 ### `Bpmn.export(definitions)`
 
@@ -655,6 +701,9 @@ All builder methods return `this` for chaining.
 | `.withBoundary(id, options, handler)` | Attach a boundary event and build its error/timeout path; cursor auto-restores to the main flow after the handler |
 | `.defaults(options)` | Set process-wide defaults (e.g. `{ serviceTask: { retries: "5" } }`) applied to all subsequent tasks |
 | `.disconnectedStartEvent(id?, options?)` | Add a start event with no auto-connection to the current cursor — alias for `addStartEvent` |
+| `.lane(id, options?)` | Declare a lane (`name`, `flowNodes`, `parent`) — see "lanes and pools" above |
+| `.participant(id, options?)` | Name the pool this process is drawn in |
+| `.executable(value)` | Set `isExecutable`; pass `false` for a partner pool Flowable must not deploy |
 | `.withAutoLayout()` | Apply Sugiyama layout before building |
 | `.build(options?)` | Return the completed `BpmnDefinitions`. Pass `{ explicitJoins: true }` to refuse inferred join gateways — see below |
 

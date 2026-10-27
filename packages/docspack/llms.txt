@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.2.1. 399 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.2.1. 400 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -336,9 +336,10 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Overview](.llms/chunks/packages.core.overview.md) — 159 tokens
 - [@bpmnkit/core — Installation](.llms/chunks/packages.core.installation.md) — 27 tokens
 - [@bpmnkit/core — Installation — `Bpmn.createProcess(id, name?)`](.llms/chunks/packages.core.installation-bpmn.createprocess-id-name.md) — 51 tokens
-- [@bpmnkit/core — Installation — `Bpmn.continueProcess(definitions, processId)`](.llms/chunks/packages.core.installation-bpmn.continueprocess-definitions-processid.md) — 525 tokens
+- [@bpmnkit/core — Installation — `Bpmn.continueProcess(definitions, processId)`](.llms/chunks/packages.core.installation-bpmn.continueprocess-definitions-processid.md) — 646 tokens
 - [@bpmnkit/core — Installation — `Bpmn.createDiagram(id?)`](.llms/chunks/packages.core.installation-bpmn.creatediagram-id.md) — 107 tokens
-- [@bpmnkit/core — Installation — DiagramBuilder — collaborations](.llms/chunks/packages.core.installation-diagrambuilder-collaborations.md) — 404 tokens
+- [@bpmnkit/core — Installation — DiagramBuilder — collaborations](.llms/chunks/packages.core.installation-diagrambuilder-collaborations.md) — 560 tokens
+- [@bpmnkit/core — Installation — ProcessBuilder — lanes and pools](.llms/chunks/packages.core.installation-processbuilder-lanes-and-pools.md) — 345 tokens
 - [@bpmnkit/core — Installation — `Bpmn.export(definitions)`](.llms/chunks/packages.core.installation-bpmn.export-definitions.md) — 43 tokens
 - [@bpmnkit/core — Installation — `Bpmn.parse(xml)`](.llms/chunks/packages.core.installation-bpmn.parse-xml.md) — 45 tokens
 - [@bpmnkit/core — Installation — `Bpmn.makeEmpty(processId?, processName?)`](.llms/chunks/packages.core.installation-bpmn.makeempty-processid-processname.md) — 65 tokens
@@ -361,7 +362,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `createFlowElement(id, type, options?)`](.llms/chunks/packages.core.installation-createflowelement-id-type-options.md) — 61 tokens
 - [@bpmnkit/core — Installation — Element catalog](.llms/chunks/packages.core.installation-element-catalog.md) — 96 tokens
 - [@bpmnkit/core — Installation — `layoutProcess(process)`](.llms/chunks/packages.core.installation-layoutprocess-process.md) — 85 tokens
-- [@bpmnkit/core — Installation — ProcessBuilder methods](.llms/chunks/packages.core.installation-processbuilder-methods.md) — 717 tokens
+- [@bpmnkit/core — Installation — ProcessBuilder methods](.llms/chunks/packages.core.installation-processbuilder-methods.md) — 790 tokens
 - [@bpmnkit/core — Installation — Forms, mappings and branch flows](.llms/chunks/packages.core.installation-forms-mappings-and-branch-flows.md) — 224 tokens
 - [@bpmnkit/core — Installation — Ad-hoc sub-processes: children are a set, not a chain](.llms/chunks/packages.core.installation-ad-hoc-sub-processes-children-are-a-set-not-a-chain.md) — 642 tokens
 - [@bpmnkit/core — Installation — Joins: inferred by default, or declared](.llms/chunks/packages.core.installation-joins-inferred-by-default-or-declared.md) — 324 tokens

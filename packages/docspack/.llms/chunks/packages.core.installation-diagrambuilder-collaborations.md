@@ -24,6 +24,17 @@ pooled" and renders every process pool-less.
 
 `.collaborationId(id)` renames the collaboration, which defaults to `"Collaboration_1"`.
 
+A process keeps the pool its own builder gave it, from `.participant()` or implied by lanes
+(see below); a diagram-level `.participant(…, { processId })` for the same process replaces it.
+`.withAutoLayout()` lays out the whole diagram — pools, lanes, message flows — on one
+collaboration plane.
+
+**Partner pools and `isExecutable`.** Flowable reads an absent `isExecutable` as executable,
+so a partner process must say `false`. A process with no flow elements and no lanes whose
+builder never called `.executable()` is written `isExecutable="false"` (the Flowable Modeler
+form of a black-box partner); every other process keeps the default `true`. Call
+`.executable(false)` on a partner process that has content.
+
 `build()` refuses a collaboration a modeler would not open, reporting every problem at once:
 a participant naming a process the diagram does not contain, two participants claiming the
 same process, a duplicate id, a message flow whose endpoint does not exist or which names an

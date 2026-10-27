@@ -25,6 +25,8 @@ export const COMPACT_FORMAT = [
 	"Containers: subProcess, adHocSubProcess, eventSubProcess, transaction",
 	"Data: dataObject, dataObjectReference (add dataObjectRef), dataStoreReference (add dataStoreRef) — wired by data associations, not sequence flows",
 	'HTTP REST calls: always use jobType: "io.camunda:http-json:1" with inputs {url, method, headers?, body?} and resultVariable.',
+	'Swimlanes (only when roles are named): on the process, "lanes": [{ "id": "Lane_sales", "name": "Sales", "members": ["start", "task1"] }]; every node in one lane, nested lanes via "lanes" instead of "members".',
+	'Other parties: top-level "participants": [{ "id": "Pool_bank", "name": "Bank" }] (add processId for a modelled pool) and "messageFlows": [{ "id": "m1", "source": "task1", "target": "Pool_bank", "name": "Payment" }]. A partner process sets "executable": false.',
 ].join("\n")
 
 // ── MCP prompt builders (for Claude + Copilot with MCP tools) ─────────────────

@@ -13,6 +13,7 @@ import type {
 	BpmnEscalation,
 	BpmnEventDefinition,
 	BpmnFlowElement,
+	BpmnLaneSet,
 	BpmnMessage,
 	BpmnMessageFlow,
 	BpmnMultiInstanceLoopCharacteristics,
@@ -40,7 +41,16 @@ import {
 	rootDefinitionId,
 	setFlowDiscriminatorSource,
 } from "./stable-ids.js"
-import { collaborationProblems } from "./swimlanes.js"
+import {
+	type LaneSpec,
+	allLanes,
+	assignLane,
+	buildLaneSet,
+	collaborationProblems,
+	laneForNewNode,
+	laneProblems,
+	poolLanedProcesses,
+} from "./swimlanes.js"
 import {
 	type ZeebeExtensions,
 	ensureZeebeExtension,
@@ -415,6 +425,25 @@ export interface AnnotateOptions {
 	 * instead of the side it would choose. Layout only; not written to the XML.
 	 */
 	side?: "above" | "below"
+}
+
+/** Options for `ProcessBuilder.lane()`. */
+export interface LaneOptions {
+	/** Lane label. */
+	name?: string
+	/**
+	 * Ids of the top-level flow nodes in this lane, written verbatim and in this
+	 * order. Only a leaf lane (one no other lane names as `parent`) holds nodes;
+	 * a boundary event follows its host and need not be listed.
+	 */
+	flowNodes?: string[]
+	/** Id of the lane this one is a child lane of. */
+	parent?: string
+}
+
+/** A `lane()` call as recorded, in call order. */
+interface LaneDeclaration extends LaneOptions {
+	id: string
 }
 
 // ---------------------------------------------------------------------------
@@ -1073,6 +1102,142 @@ interface RootDefinitions {
 function emptyLayoutHints(): Required<LayoutHints> {
 	return { grids: new Map(), annotationSides: new Map() }
 }
+
+/** Copies every hint of `from` into `into`; ids are document-wide, so nothing clashes. */
+function mergeLayoutHints(into: Required<LayoutHints>, from: Required<LayoutHints>): void {
+	for (const [id, grid] of from.grids) into.grids.set(id, grid)
+	for (const [id, side] of from.annotationSides) into.annotationSides.set(id, side)
+}
+
+/**
+ * Every id `process` already uses at any depth: the process, its flow elements
+ * (sub-process children included), sequence flows, annotations and associations.
+ * A new lane or pool id must not take one of them.
+ *
+ * @throws Error when one element object is reached twice, the only way an
+ *   element tree assembled by hand can loop.
+ */
+function processIds(process: BpmnProcess): Set<string> {
+	const ids = new Set<string>([process.id])
+	const seen = new Set<BpmnFlowElement>()
+	const visit = (scope: {
+		flowElements: readonly BpmnFlowElement[]
+		sequenceFlows: readonly BpmnSequenceFlow[]
+		textAnnotations?: readonly BpmnTextAnnotation[]
+		associations?: readonly BpmnAssociation[]
+	}): void => {
+		for (const item of [
+			...scope.sequenceFlows,
+			...(scope.textAnnotations ?? []),
+			...(scope.associations ?? []),
+		]) {
+			ids.add(item.id)
+		}
+		for (const element of scope.flowElements) {
+			if (seen.has(element)) {
+				throw new Error(`Flow element "${element.id}" appears twice in one element tree`)
+			}
+			seen.add(element)
+			ids.add(element.id)
+			if ("flowElements" in element) visit(element)
+		}
+	}
+	visit(process)
+	return ids
+}
+
+/**
+ * The lane set a fresh build writes for `declarations`, and every reason the
+ * build must refuse it: a lane id already in `usedIds` or declared twice (the
+ * second declaration is dropped), an undeclared or looping `parent`, flow nodes
+ * on a lane that has child lanes, and a node listed in two lanes. Lanes cut off
+ * from the tree by a bad `parent` are left out. What the lane set itself gets
+ * wrong (unknown refs, unassigned nodes) is for {@link laneProblems}.
+ */
+function declaredLaneSet(
+	process: BpmnProcess,
+	declarations: readonly LaneDeclaration[],
+	usedIds: ReadonlySet<string>,
+): { laneSet: BpmnLaneSet; problems: string[] } {
+	const problems: string[] = []
+	const byId = new Map<string, LaneDeclaration>()
+	for (const lane of declarations) {
+		if (byId.has(lane.id) || usedIds.has(lane.id)) {
+			problems.push(`Lane id "${lane.id}" is already used in process "${process.id}"`)
+			continue
+		}
+		byId.set(lane.id, lane)
+	}
+
+	const roots: LaneDeclaration[] = []
+	const childrenOf = new Map<string, LaneDeclaration[]>()
+	for (const lane of byId.values()) {
+		if (lane.parent === undefined) roots.push(lane)
+		else if (!byId.has(lane.parent)) {
+			problems.push(`Lane "${lane.id}" names parent "${lane.parent}", which is not declared`)
+		} else childrenOf.set(lane.parent, [...(childrenOf.get(lane.parent) ?? []), lane])
+	}
+	for (const lane of byId.values()) {
+		// A chain longer than the number of lanes has revisited one.
+		let current: LaneDeclaration | undefined = lane
+		for (let steps = 0; current?.parent !== undefined; steps++) {
+			if (steps > byId.size) {
+				problems.push(`Lane "${lane.id}" has a parent chain that loops back on itself`)
+				break
+			}
+			current = byId.get(current.parent)
+		}
+	}
+
+	// Every lane reached from a root has a parent chain ending at that root, so
+	// none of them sits on a loop and this recursion terminates.
+	const inTree = new Set<string>()
+	const toSpec = (lane: LaneDeclaration): LaneSpec => {
+		inTree.add(lane.id)
+		const spec: LaneSpec = { id: lane.id }
+		if (lane.name !== undefined) spec.name = lane.name
+		const children = childrenOf.get(lane.id) ?? []
+		if (children.length > 0) spec.lanes = children.map(toSpec)
+		return spec
+	}
+	const specs = roots.map(toSpec)
+
+	const leafOf = new Map<string, string>()
+	for (const lane of byId.values()) {
+		const nodes = lane.flowNodes ?? []
+		if (!inTree.has(lane.id) || nodes.length === 0) continue
+		if (childrenOf.has(lane.id)) {
+			problems.push(
+				`Lane "${lane.id}" has child lanes; its flow nodes (${nodes.map((id) => `"${id}"`).join(", ")}) must go in one of its leaf lanes`,
+			)
+			continue
+		}
+		for (const nodeId of nodes) {
+			const owner = leafOf.get(nodeId)
+			if (owner === undefined) leafOf.set(nodeId, lane.id)
+			else if (owner !== lane.id) {
+				problems.push(
+					`Flow node "${nodeId}" is listed in lanes "${owner}" and "${lane.id}"; a node belongs to one leaf lane`,
+				)
+			}
+		}
+	}
+
+	return { laneSet: buildLaneSet(process, specs, leafOf), problems }
+}
+
+/** What a `DiagramBuilder` reads from a `ProcessBuilder` beyond the public API. */
+interface ProcessBuilderInternals {
+	/** Whether `executable()` was called. */
+	executableSet: boolean
+	layoutHints: Required<LayoutHints>
+}
+
+/**
+ * Assigned in `ProcessBuilder`'s static block, the one place allowed to read its
+ * private fields, so `DiagramBuilder` can see them without making them public API.
+ */
+let processBuilderInternals: (builder: ProcessBuilder) => ProcessBuilderInternals
 
 /** Remembers an ad-hoc sub-process's `toolGrid` for the layout. */
 function recordToolGrid(
@@ -2420,6 +2585,17 @@ export class ProcessBuilder {
 	private _pendingSpliceFlowId: string | undefined
 	/** Flows the caller deliberately spliced, exempt from the rewiring guard. */
 	private readonly _splicedFlowIds = new Set<string>()
+	/** `lane()` calls, in call order. */
+	private readonly _lanes: LaneDeclaration[] = []
+	/** Set by `participant()`: the pool this process is drawn in. */
+	private _participant?: { id: string; name?: string }
+
+	static {
+		processBuilderInternals = (builder) => ({
+			executableSet: builder._executableSet,
+			layoutHints: builder.rootLayoutHints,
+		})
+	}
 
 	constructor(processId: string) {
 		this.processId = processId
@@ -2606,7 +2782,11 @@ export class ProcessBuilder {
 		return this
 	}
 
-	/** Set whether this process is executable. */
+	/**
+	 * Set whether this process is executable. Pass `false` for a partner pool the
+	 * engine must not deploy: Flowable reads an absent `isExecutable` as
+	 * executable, so a partner process has to say so explicitly.
+	 */
 	executable(value: boolean): this {
 		this._isExecutable = value
 		this._executableSet = true
@@ -3254,6 +3434,199 @@ export class ProcessBuilder {
 		return this
 	}
 
+	// ---- Lanes and pool ----
+
+	/**
+	 * Declares a swimlane, or a child lane of `options.parent`.
+	 *
+	 * Once any lane is declared, a fresh build puts every top-level flow node in
+	 * exactly one leaf lane and refuses otherwise, listing every problem at once
+	 * (`Invalid lanes:` …): an unknown or sub-process ref, a node listed twice,
+	 * flow nodes on a lane with child lanes, an undeclared or looping parent, a
+	 * lane id already in use, an unassigned node. Boundary events follow their
+	 * host, and an inferred join gateway the lane of its first predecessor.
+	 * Parent lanes list the union of their descendants' refs. Lanes imply a
+	 * pool: without {@link participant} the build adds `Participant_<processId>`,
+	 * named after the process.
+	 *
+	 * Continuing a document ({@link ProcessBuilder.from}) instead names one of its
+	 * existing leaf lanes: the listed nodes move there, `name` renames it, and a
+	 * new lane or a `parent` is refused. Nodes added in continue mode join the lane
+	 * of their predecessor (see `laneForNewNode`) without any `lane()` call.
+	 *
+	 * @param id - The lane's element id, used verbatim.
+	 * @example
+	 * ```typescript
+	 * Bpmn.createProcess("order")
+	 *   .startEvent("start").userTask("review").serviceTask("ship", { taskType: "ship" }).endEvent("end")
+	 *   .lane("Lane_sales", { name: "Sales", flowNodes: ["start", "review"] })
+	 *   .lane("Lane_ops", { name: "Operations", flowNodes: ["ship", "end"] })
+	 * ```
+	 */
+	lane(id: string, options: LaneOptions = {}): this {
+		this._lanes.push({ ...options, id })
+		return this
+	}
+
+	/**
+	 * Names the pool this process is drawn in: the build writes a collaboration
+	 * with one participant `id` referencing this process, named `options.name`,
+	 * else the process name, else the process id. Without this call a process
+	 * gets a pool only when it has lanes.
+	 *
+	 * Continuing a document, `id` must be the process's existing pool, which
+	 * `name` renames; adding or replacing a pool there is refused.
+	 *
+	 * @param id - The participant's element id, used verbatim.
+	 */
+	participant(id: string, options: Omit<ParticipantOptions, "processId"> = {}): this {
+		this._participant = { id, ...options }
+		return this
+	}
+
+	/**
+	 * Lanes and pool of a fresh build: `process` with its lane set, and the
+	 * collaboration `participant()` asked for. Both are returned untouched when
+	 * neither `lane()` nor `participant()` was called.
+	 *
+	 * @throws Error listing every lane and pool problem at once.
+	 */
+	private freshSwimlanes(
+		process: BpmnProcess,
+		inferredIds: readonly string[],
+	): {
+		process: BpmnProcess
+		collaborations: BpmnCollaboration[]
+	} {
+		const pool = this._participant
+		if (this._lanes.length === 0 && pool === undefined) return { process, collaborations: [] }
+
+		const used = processIds(process)
+		const problems: string[] = []
+		if (pool !== undefined) {
+			if (used.has(pool.id)) {
+				problems.push(`Participant id "${pool.id}" is already used in process "${process.id}"`)
+			}
+			used.add(pool.id)
+		}
+		let laned = process
+		if (this._lanes.length > 0) {
+			const plan = declaredLaneSet(process, this._lanes, used)
+			problems.push(...plan.problems)
+			laned = { ...process, laneSet: plan.laneSet }
+			// The caller never saw an inferred join gateway, so could not list it.
+			for (const id of inferredIds) {
+				const lane = laneForNewNode(laned, id)
+				if (lane !== undefined) laned = assignLane(laned, id, lane.id)
+			}
+			problems.push(...laneProblems(laned))
+		}
+		if (problems.length > 0) {
+			const what = this._lanes.length > 0 ? "lanes" : "pool"
+			throw new Error(`Invalid ${what}:\n  ${problems.join("\n  ")}`)
+		}
+		if (pool === undefined) return { process: laned, collaborations: [] }
+
+		const participant: BpmnParticipant = {
+			id: pool.id,
+			// A pool without a label is a lint finding; the process name is what a reader expects there.
+			name: pool.name ?? process.name ?? process.id,
+			processRef: process.id,
+			unknownAttributes: {},
+		}
+		const collaboration: BpmnCollaboration = {
+			id: "Collaboration_1",
+			participants: [participant],
+			messageFlows: [],
+			textAnnotations: [],
+			associations: [],
+			groups: [],
+			extensionElements: [],
+			unknownAttributes: {},
+		}
+		return { process: laned, collaborations: [collaboration] }
+	}
+
+	/**
+	 * Continue mode: new nodes join the lane `laneForNewNode` picks, then each
+	 * `lane()` call moves its nodes into, and renames, an existing leaf lane.
+	 * Existing refs are kept as they are, even ones a fresh build would refuse:
+	 * the document is the caller's.
+	 *
+	 * @throws Error listing every `lane()` call that cannot be applied.
+	 */
+	private continueLanes(process: BpmnProcess, sourceIds: ReadonlySet<string>): void {
+		let next = process
+		for (const element of this.flowElements) {
+			if (sourceIds.has(element.id)) continue
+			const lane = laneForNewNode(next, element.id)
+			if (lane !== undefined) next = assignLane(next, element.id, lane.id)
+		}
+
+		const problems: string[] = []
+		for (const declaration of this._lanes) {
+			if (!allLanes(next.laneSet).some((lane) => lane.id === declaration.id)) {
+				problems.push(
+					`Lane "${declaration.id}" is not declared in process "${process.id}"; continuing a document moves nodes between its lanes but does not add lanes`,
+				)
+				continue
+			}
+			if (declaration.parent !== undefined) {
+				problems.push(
+					`Lane "${declaration.id}": its parent cannot be changed when continuing a document`,
+				)
+			}
+			for (const nodeId of declaration.flowNodes ?? []) {
+				if (!this.elementIds.has(nodeId)) {
+					problems.push(
+						`Lane "${declaration.id}" lists "${nodeId}", which is not a flow node of process "${process.id}"`,
+					)
+					continue
+				}
+				try {
+					next = assignLane(next, nodeId, declaration.id)
+				} catch (error) {
+					// Collected so one build reports every bad lane() call; the rest of this
+					// call's nodes would fail for the same reason.
+					problems.push((error as Error).message)
+					break
+				}
+			}
+		}
+		if (problems.length > 0) throw new Error(`Invalid lanes:\n  ${problems.join("\n  ")}`)
+
+		if (next.laneSet !== undefined) process.laneSet = next.laneSet
+		for (const declaration of this._lanes) {
+			const lane = allLanes(process.laneSet).find((candidate) => candidate.id === declaration.id)
+			if (lane !== undefined && declaration.name !== undefined) lane.name = declaration.name
+		}
+	}
+
+	/**
+	 * Continue mode: `participant()` renames the pool that already references this
+	 * process.
+	 *
+	 * @throws Error when the process has no pool, or one with another id.
+	 */
+	private continuePool(definitions: BpmnDefinitions): void {
+		const pool = this._participant
+		if (pool === undefined) return
+		const existing = definitions.collaborations
+			.flatMap((collaboration) => collaboration.participants)
+			.find((participant) => participant.processRef === this.processId)
+		if (existing === undefined) {
+			throw new Error(
+				`Process "${this.processId}" has no pool; continuing a document can rename a pool but not add one`,
+			)
+		}
+		if (existing.id !== pool.id) {
+			throw new Error(
+				`Process "${this.processId}" is drawn in pool "${existing.id}"; continuing a document can rename it with participant("${existing.id}", { name }) but not replace it`,
+			)
+		}
+		if (pool.name !== undefined) existing.name = pool.name
+	}
+
 	// ---- Build ----
 
 	/**
@@ -3325,18 +3698,22 @@ export class ProcessBuilder {
 			})
 		}
 
-		const process: BpmnProcess = {
-			id: this.processId,
-			name: this.processName,
-			isExecutable: this._isExecutable,
-			extensionElements,
-			flowElements: this.flowElements,
-			sequenceFlows: this.sequenceFlows,
-			textAnnotations: this._textAnnotations,
-			associations: this._associations,
-			groups: [],
-			unknownAttributes: {},
-		}
+		const inferredIds = this.flowElements.slice(beforeCount).map((element) => element.id)
+		const { process, collaborations } = this.freshSwimlanes(
+			{
+				id: this.processId,
+				name: this.processName,
+				isExecutable: this._isExecutable,
+				extensionElements,
+				flowElements: this.flowElements,
+				sequenceFlows: this.sequenceFlows,
+				textAnnotations: this._textAnnotations,
+				associations: this._associations,
+				groups: [],
+				unknownAttributes: {},
+			},
+			inferredIds,
+		)
 
 		const defs: BpmnDefinitions = {
 			id: "Definitions_1",
@@ -3360,26 +3737,26 @@ export class ProcessBuilder {
 			escalations: this.rootEscalations,
 			messages: this.rootMessages,
 			signals: this.rootSignals,
-			collaborations: [],
+			collaborations,
 			processes: [process],
-			// Seed diagram stub so applyAutoLayout preserves process-specific IDs.
-			diagrams: this._autoLayout
-				? [
-						{
-							id: `${this.processId}_di`,
-							plane: {
-								id: `${this.processId}_di_plane`,
-								bpmnElement: this.processId,
-								shapes: [],
-								edges: [],
-							},
-						},
-					]
-				: [],
+			diagrams: [],
 		}
+		const pooled = poolLanedProcesses(defs)
+		if (!this._autoLayout) return hoistMessageSubscriptions(pooled)
 
+		// Seed diagram stub so applyAutoLayout preserves process-specific IDs. A
+		// pooled diagram's plane draws the collaboration, not the process.
+		const stub = {
+			id: `${this.processId}_di`,
+			plane: {
+				id: `${this.processId}_di_plane`,
+				bpmnElement: pooled.collaborations[0]?.id ?? this.processId,
+				shapes: [],
+				edges: [],
+			},
+		}
 		return hoistMessageSubscriptions(
-			this._autoLayout ? applyAutoLayout(defs, "semantic", this.rootLayoutHints) : defs,
+			applyAutoLayout({ ...pooled, diagrams: [stub] }, "semantic", this.rootLayoutHints),
 		)
 	}
 
@@ -3387,9 +3764,11 @@ export class ProcessBuilder {
 	 * Writes this process's contents back into the document it came from.
 	 *
 	 * Everything not listed here is kept by identity — other processes, the
-	 * collaboration, diagram interchange, root elements, the process's own lanes,
-	 * documentation, extensions and unmodelled content. That is the whole point of
-	 * continuing rather than regenerating.
+	 * collaboration, diagram interchange, root elements, the process's existing
+	 * lane refs, documentation, extensions and unmodelled content. That is the
+	 * whole point of continuing rather than regenerating. The lanes change only
+	 * where nodes were added (each joins its predecessor's lane) or moved with
+	 * `lane()`; the pool only where `participant()` renames it.
 	 *
 	 * Diagram interchange is *not* regenerated: existing shapes keep their
 	 * positions, and elements added here have none until `withAutoLayout()` or a
@@ -3400,6 +3779,7 @@ export class ProcessBuilder {
 		process: BpmnProcess
 	}): BpmnDefinitions {
 		const { definitions, process } = source
+		const sourceIds = new Set(process.flowElements.map((element) => element.id))
 
 		process.flowElements = this.flowElements
 		process.sequenceFlows = this.sequenceFlows
@@ -3418,6 +3798,9 @@ export class ProcessBuilder {
 				"zeebe:versionTag",
 			).attributes.value = this._versionTag
 		}
+
+		this.continueLanes(process, sourceIds)
+		this.continuePool(definitions)
 
 		definitions.errors = this.rootErrors
 		definitions.messages = this.rootMessages
@@ -3576,6 +3959,10 @@ export class DiagramBuilder {
 	private readonly _messages: BpmnMessage[] = []
 	private readonly _participants: BpmnParticipant[] = []
 	private readonly _messageFlows: BpmnMessageFlow[] = []
+	/** Pools the processes brought along: `participant()` on the process, or the one lanes imply. */
+	private readonly _processPools: BpmnParticipant[] = []
+	private readonly _layoutHints = emptyLayoutHints()
+	private _autoLayout = false
 	private _collaborationId = "Collaboration_1"
 	private _executionPlatformVersion = "8.9.0"
 
@@ -3589,11 +3976,32 @@ export class DiagramBuilder {
 		return this
 	}
 
+	/**
+	 * Adds a process built by `callback`.
+	 *
+	 * The process keeps its lanes, and its pool: the one `participant()` named on
+	 * the process builder, or the one its lanes imply. A `participant()` on this
+	 * diagram that references the same process replaces that pool.
+	 *
+	 * A process with no flow elements and no lanes, whose builder never called
+	 * `executable()`, is written `isExecutable: false`: it can only be the
+	 * process of a black-box partner pool, and Flowable would otherwise deploy
+	 * it, since it reads an absent attribute as executable. Every other process
+	 * keeps the builder's default, `true`; call `.executable(false)` on a partner
+	 * that has content.
+	 */
 	process(id: string, callback: (b: ProcessBuilder) => void): this {
 		const builder = new ProcessBuilder(id)
 		callback(builder)
 		const defs = builder.build()
+		const internals = processBuilderInternals(builder)
+		for (const process of defs.processes) {
+			const empty = process.flowElements.length === 0 && process.laneSet === undefined
+			if (empty && !internals.executableSet) process.isExecutable = false
+		}
 		this._processes.push(...defs.processes)
+		this._processPools.push(...(defs.collaborations[0]?.participants ?? []))
+		mergeLayoutHints(this._layoutHints, internals.layoutHints)
 		// Root definitions are named after the message or error code they carry, so
 		// two pools declaring the same one produce the same definition twice. The
 		// document needs it once.
@@ -3671,8 +4079,18 @@ export class DiagramBuilder {
 		return this
 	}
 
+	/**
+	 * Enable auto-layout: `build()` lays out the whole diagram (pools, lanes,
+	 * message flows and every process) and writes its diagram interchange, using
+	 * the layout hints each process builder recorded.
+	 */
+	withAutoLayout(): this {
+		this._autoLayout = true
+		return this
+	}
+
 	build(): BpmnDefinitions {
-		return hoistMessageSubscriptions({
+		const defs: BpmnDefinitions = {
 			id: this._id,
 			targetNamespace: "http://bpmn.io/schema/bpmn",
 			exporter: "@bpmnkit/core",
@@ -3697,7 +4115,10 @@ export class DiagramBuilder {
 			collaborations: this.buildCollaborations(),
 			processes: this._processes,
 			diagrams: [],
-		})
+		}
+		return hoistMessageSubscriptions(
+			this._autoLayout ? applyAutoLayout(defs, "semantic", this._layoutHints) : defs,
+		)
 	}
 
 	/**
@@ -3706,12 +4127,17 @@ export class DiagramBuilder {
 	 * pool-less participant in a modeler.
 	 */
 	private buildCollaborations(): BpmnCollaboration[] {
-		if (this._participants.length === 0 && this._messageFlows.length === 0) return []
+		const declared = new Set(this._participants.map((participant) => participant.processRef))
+		const participants = [
+			...this._processPools.filter((pool) => !declared.has(pool.processRef)),
+			...this._participants,
+		]
+		if (participants.length === 0 && this._messageFlows.length === 0) return []
 
 		const collaborations: BpmnCollaboration[] = [
 			{
 				id: this._collaborationId,
-				participants: this._participants,
+				participants,
 				messageFlows: this._messageFlows,
 				textAnnotations: [],
 				associations: [],

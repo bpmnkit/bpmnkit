@@ -2,9 +2,10 @@ import { packAnnotations } from "../layout/annotations.js"
 import { layoutProcess } from "../layout/index.js"
 import type { XmlElement } from "../types/xml-element.js"
 import { assertBpmnDefinitions, assertCompactDiagram } from "./argument-guards.js"
-import { addAnnotationShapes } from "./auto-layout.js"
+import { addAnnotationShapes, applyAutoLayout } from "./auto-layout.js"
 import type {
 	BpmnAssociation,
+	BpmnCollaboration,
 	BpmnDefinitions,
 	BpmnDiEdge,
 	BpmnDiShape,
@@ -13,11 +14,23 @@ import type {
 	BpmnEventDefinition,
 	BpmnFlowElement,
 	BpmnGroup,
+	BpmnLane,
+	BpmnMessageFlow,
+	BpmnParticipant,
 	BpmnProcess,
 	BpmnSequenceFlow,
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
 import { restConnectorTaskType } from "./rest-connector.js"
+import {
+	assignLane,
+	buildLaneSet,
+	collaborationProblems,
+	laneForNewNode,
+	laneOf,
+	poolLanedProcesses,
+	primaryProcess,
+} from "./swimlanes.js"
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -138,22 +151,79 @@ export interface CompactProcess {
 	 * produce them.
 	 */
 	notes?: CompactNote[]
+	/**
+	 * Whether an engine deploys this process (`isExecutable`). Flowable reads an
+	 * absent attribute as executable, so a partner pool's process must say `false`.
+	 *
+	 * When absent, {@link expand} makes the process executable, except in a diagram
+	 * with pools or lanes: there only the first process without the key is
+	 * executable and every later one is not. {@link compactify} writes the key for
+	 * every process that rule would get wrong, and only for those, so lane-free
+	 * output is unchanged.
+	 */
+	executable?: boolean
+	/**
+	 * The swimlanes of this process, outermost first. Every top-level flow node
+	 * belongs to exactly one leaf lane, listed in that lane's `members`; data
+	 * references and sub-process children belong to none. {@link expand} puts a
+	 * node no lane lists in the lane of its first sequence-flow predecessor (else
+	 * successor, else the first leaf) rather than refusing the diagram, and gives
+	 * a laned process a pool when no participant names it.
+	 */
+	lanes?: CompactLane[]
+}
+
+/**
+ * A swimlane in compact form: a leaf lists its `members`, a parent lists its
+ * child `lanes` and no members. Assignable to {@link LaneSpec}.
+ */
+export interface CompactLane {
+	id: string
+	name?: string
+	/** Ids of the top-level flow nodes in this lane. Leaf lanes only. */
+	members?: string[]
+	/** Child lanes, outermost first. A lane with children has no members of its own. */
+	lanes?: CompactLane[]
+}
+
+/** A pool in compact form. */
+export interface CompactParticipant {
+	id: string
+	name?: string
+	/** The process drawn in this pool. Absent for a black box: a partner whose internals are not modelled. */
+	processId?: string
+}
+
+/**
+ * A message flow in compact form. `source` and `target` are each a participant
+ * id or a flow node id, in different pools. Not `from`/`to`: those mark a
+ * sequence flow, which is what a streamed preview turns them into.
+ */
+export interface CompactMessageFlow {
+	id: string
+	source: string
+	target: string
+	name?: string
 }
 
 /**
  * Token-efficient representation of a {@link BpmnDefinitions} document.
  *
- * **A read-only view, not a model.** It carries topology, names and the common
- * Zeebe bindings and drops everything else — collaborations, participants,
- * message flows, lanes, data stores, artifacts, root-level messages and errors,
- * multi-instance loop characteristics, full `zeebe:ioMapping` entries and the
- * diagram. Use it to show a model to a language model, and
- * {@link expand} to build a *new* model from one.
+ * **A read-only view, not a model.** It carries topology, names, the common
+ * Zeebe bindings, lanes, pools (the participants and message flows of the first
+ * collaboration) and each process's executability, and drops everything else:
+ * every extension element and foreign attribute it does not name (`flowable:*`
+ * among them, on nodes, lanes, pools and processes alike), artifacts,
+ * root-level messages, errors, signals and escalations, a message flow's
+ * `messageRef`, collaborations after the first, and the diagram. Use it to show
+ * a model to a language model, and {@link expand} to build a *new* model from
+ * one.
  *
  * Do not use it as an edit path for a file you need to keep:
  * `expand(compactify(defs))` is not `defs`. Edit the {@link BpmnDefinitions}
  * instead — `applyBpmnOperations` applies the same operation vocabulary to the
- * full model without going through this projection.
+ * full model without going through this projection, and `reconcileCompact`
+ * applies a whole edited compact view as changes.
  */
 export interface CompactDiagram {
 	id: string
@@ -163,6 +233,13 @@ export interface CompactDiagram {
 	 */
 	executionPlatformVersion?: string
 	processes: CompactProcess[]
+	/**
+	 * The pools, in drawing order. A process with content that no participant
+	 * names gets a pool of its own from {@link expand} once the diagram has any.
+	 */
+	participants?: CompactParticipant[]
+	/** Messages between pools. */
+	messageFlows?: CompactMessageFlow[]
 }
 
 // ── Default flows ────────────────────────────────────────────────────────────
@@ -386,16 +463,82 @@ function compactifyFlows(
  */
 export function compactify(defs: BpmnDefinitions): CompactDiagram {
 	assertBpmnDefinitions(defs, "compactify")
+	const pooled = defs.collaborations.length > 0 || defs.processes.some((p) => p.laneSet)
+	const primary = primaryProcess(defs)
+	const collaboration = defs.collaborations[0]
+	const participants = (collaboration?.participants ?? []).map(compactifyParticipant)
+	const messageFlows = (collaboration?.messageFlows ?? []).map(compactifyMessageFlow)
 	return {
 		id: defs.id,
-		processes: defs.processes.map((process) => ({
-			id: process.id,
-			name: process.name,
-			documentation: process.documentation,
-			elements: process.flowElements.map(compactifyElement),
-			flows: compactifyFlows(process.flowElements, process.sequenceFlows),
-		})),
+		processes: defs.processes.map((process) => {
+			const lanes = compactifyLanes(process)
+			// Flowable reads an absent isExecutable as true. Every non-primary pool says
+			// what it is, because expand gives only the first keyless pool the default.
+			const executable = process.isExecutable !== false
+			const written = !executable || (pooled && process !== primary)
+			return {
+				id: process.id,
+				name: process.name,
+				documentation: process.documentation,
+				...(written ? { executable } : {}),
+				...(lanes.length > 0 ? { lanes } : {}),
+				elements: process.flowElements.map(compactifyElement),
+				flows: compactifyFlows(process.flowElements, process.sequenceFlows),
+			}
+		}),
+		...(participants.length > 0 ? { participants } : {}),
+		...(messageFlows.length > 0 ? { messageFlows } : {}),
 	}
+}
+
+/** Element types that are not flow nodes: they sit in no lane. */
+export const DATA_ELEMENT_TYPES: ReadonlySet<BpmnElementType> = new Set([
+	"dataObject",
+	"dataObjectReference",
+	"dataStoreReference",
+])
+
+/**
+ * The lane tree of `process`, members on leaves only. A member is kept only
+ * when it is a top-level flow node, so what `expand` would refuse (a dangling
+ * ref, a data reference, a sub-process child) is not passed on; a parent's own
+ * refs, which repeat its children's under the union convention, are dropped.
+ */
+export function compactifyLanes(process: BpmnProcess): CompactLane[] {
+	const nodeIds = new Set(
+		process.flowElements.filter((e) => !DATA_ELEMENT_TYPES.has(e.type)).map((e) => e.id),
+	)
+	const seen = new Set<BpmnLane>()
+	const toCompact = (lane: BpmnLane): CompactLane => {
+		if (seen.has(lane)) throw new Error(`Lane "${lane.id}" appears twice in one lane tree`)
+		seen.add(lane)
+		const result: CompactLane = { id: lane.id }
+		if (lane.name) result.name = lane.name
+		const children = lane.childLaneSet?.lanes ?? []
+		if (children.length > 0) {
+			result.lanes = children.map(toCompact)
+			return result
+		}
+		const members = [...new Set(lane.flowNodeRefs)].filter((ref) => nodeIds.has(ref))
+		if (members.length > 0) result.members = members
+		return result
+	}
+	return (process.laneSet?.lanes ?? []).map(toCompact)
+}
+
+/** A pool as compact writes it; a black box has no `processId`. */
+export function compactifyParticipant(participant: BpmnParticipant): CompactParticipant {
+	const result: CompactParticipant = { id: participant.id }
+	if (participant.name) result.name = participant.name
+	if (participant.processRef !== undefined) result.processId = participant.processRef
+	return result
+}
+
+/** A message flow as compact writes it, with `source`/`target` so streams never read it as a sequence flow. */
+export function compactifyMessageFlow(flow: BpmnMessageFlow): CompactMessageFlow {
+	const result: CompactMessageFlow = { id: flow.id, source: flow.sourceRef, target: flow.targetRef }
+	if (flow.name) result.name = flow.name
+	return result
 }
 
 // ── Expand ───────────────────────────────────────────────────────────────────
@@ -425,7 +568,7 @@ const EVENT_TYPES = new Set([
  * mistakes, so the check is total and reports them together — one error that
  * lists every problem is what a caller can hand back for a repair.
  */
-function compactProblems(compact: CompactDiagram): string[] {
+function compactProblems(compact: CompactDiagram): { problems: string[]; ids: Set<string> } {
 	const problems: string[] = []
 	const seen = new Set<string>()
 	/** Every element id, at any depth: what a note may name. */
@@ -484,8 +627,70 @@ function compactProblems(compact: CompactDiagram): string[] {
 				problems.push(`a note is on "${note.elementId}", which is not an element in the diagram`)
 			}
 		}
+		problems.push(...compactLaneProblems(process, claim))
 	}
+	for (const participant of compact.participants ?? []) claim(participant.id, "participant")
+	for (const flow of compact.messageFlows ?? []) claim(flow.id, "message flow")
+	return { problems, ids: seen }
+}
+
+/**
+ * What is wrong with the lanes of `process`: a lane tree that loops, members on
+ * a lane with child lanes, a member that is not a top-level flow node of this
+ * process, and a node listed in two lanes. Lane ids are claimed through `claim`.
+ * A node in no lane is not a problem; `expand` places it.
+ */
+function compactLaneProblems(
+	process: CompactProcess,
+	claim: (id: string, what: string) => void,
+): string[] {
+	const problems: string[] = []
+	const nodes = new Map(process.elements.map((element) => [element.id, element]))
+	const laneOfMember = new Map<string, string>()
+	const seen = new Set<CompactLane>()
+	const visit = (lanes: readonly CompactLane[]): void => {
+		for (const lane of lanes) {
+			if (seen.has(lane)) {
+				problems.push(`lane "${lane.id}" appears twice in the lane tree of "${process.id}"`)
+				continue
+			}
+			seen.add(lane)
+			claim(lane.id, "lane")
+			const children = lane.lanes ?? []
+			if (children.length > 0 && (lane.members?.length ?? 0) > 0) {
+				problems.push(`lane "${lane.id}" has child lanes and members; members go on its leaf lanes`)
+			}
+			for (const member of lane.members ?? []) {
+				const problem = memberProblem(process, lane.id, member, nodes.get(member), laneOfMember)
+				if (problem !== undefined) problems.push(problem)
+			}
+			visit(children)
+		}
+	}
+	visit(process.lanes ?? [])
 	return problems
+}
+
+/** Why `member` cannot sit in lane `laneId`, or `undefined`; records the lane of a valid member. */
+function memberProblem(
+	process: CompactProcess,
+	laneId: string,
+	member: string,
+	element: CompactElement | undefined,
+	laneOfMember: Map<string, string>,
+): string | undefined {
+	if (element === undefined) {
+		return `lane "${laneId}" lists "${member}", which is not a top-level flow node of process "${process.id}"`
+	}
+	if (DATA_ELEMENT_TYPES.has(element.type)) {
+		return `lane "${laneId}" lists "${member}", a ${element.type}; lanes hold flow nodes only`
+	}
+	const other = laneOfMember.get(member)
+	if (other !== undefined && other !== laneId) {
+		return `"${member}" is in lanes "${other}" and "${laneId}"; a node belongs to one lane`
+	}
+	laneOfMember.set(member, laneId)
+	return undefined
 }
 
 export function makeEventDef(eventType: string): BpmnEventDefinition | undefined {
@@ -868,7 +1073,7 @@ function buildDiagram(processId: string, process: BpmnProcess): BpmnDiagram {
 	}
 }
 
-function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram: BpmnDiagram } {
+function expandProcess(compact: CompactProcess, isExecutable: boolean): BpmnProcess {
 	const incoming = new Map<string, string[]>()
 	const outgoing = new Map<string, string[]>()
 	for (const f of compact.flows) {
@@ -917,7 +1122,7 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
 		id: compact.id,
 		name: compact.name,
 		documentation: compact.documentation,
-		isExecutable: true,
+		isExecutable,
 		extensionElements: [],
 		flowElements,
 		sequenceFlows,
@@ -927,16 +1132,144 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
 		unknownAttributes: {},
 	}
 
-	return { process, diagram: buildDiagram(compact.id, process) }
+	return process
+}
+
+/**
+ * True when the compact describes pools or lanes, which switches `expand` to
+ * the collaboration path: pools, lanes, and a layout of the whole diagram.
+ */
+export function isPooled(compact: CompactDiagram): boolean {
+	return (
+		(compact.participants?.length ?? 0) > 0 ||
+		(compact.messageFlows?.length ?? 0) > 0 ||
+		compact.processes.some((process) => (process.lanes?.length ?? 0) > 0)
+	)
+}
+
+/**
+ * `isExecutable` per process of `compact`, in order, by the rule documented on
+ * {@link CompactProcess.executable}. `pooled` is {@link isPooled} of `compact`.
+ */
+export function executability(compact: CompactDiagram, pooled: boolean): boolean[] {
+	let defaultTaken = false
+	return compact.processes.map((process) => {
+		if (process.executable !== undefined) return process.executable
+		if (!pooled) return true
+		const executable = !defaultTaken
+		defaultTaken = true
+		return executable
+	})
+}
+
+/**
+ * `process` with the lane set `lanes` describes, replacing any it had. Members
+ * are taken from leaf lanes only and written verbatim; a node no lane lists goes
+ * in the lane {@link laneForNewNode} picks for it. `lanes` must not loop back
+ * on itself. Returns `process` unchanged when `lanes` is absent or empty.
+ */
+export function withLanes(
+	process: BpmnProcess,
+	lanes: readonly CompactLane[] | undefined,
+): BpmnProcess {
+	if (lanes === undefined || lanes.length === 0) return process
+	const leafOf = new Map<string, string>()
+	// compactProblems has rejected a looping lane tree, so this recursion terminates.
+	const collect = (children: readonly CompactLane[]): void => {
+		for (const lane of children) {
+			if ((lane.lanes?.length ?? 0) > 0) collect(lane.lanes ?? [])
+			else for (const member of lane.members ?? []) leafOf.set(member, lane.id)
+		}
+	}
+	collect(lanes)
+
+	const laned: BpmnProcess = { ...process, laneSet: buildLaneSet(process, lanes, leafOf) }
+	return fillLanes(
+		laned,
+		process.flowElements.map((element) => element.id),
+	)
+}
+
+/**
+ * Puts each of `nodeIds` that is a top-level flow node of laned `process` and in
+ * no lane yet into the lane {@link laneForNewNode} picks, in the order given.
+ * Other ids are skipped. Returns `process` itself when it has no lanes.
+ */
+export function fillLanes(process: BpmnProcess, nodeIds: readonly string[]): BpmnProcess {
+	if (process.laneSet === undefined) return process
+	const types = new Map(process.flowElements.map((element) => [element.id, element.type]))
+	let laned = process
+	// ponytail: one pass in the order given, so an unlisted node whose only
+	// neighbours are later unlisted nodes lands in the first leaf; iterate to a
+	// fixpoint if models start leaving whole chains unlisted.
+	for (const id of nodeIds) {
+		const type = types.get(id)
+		if (type === undefined || DATA_ELEMENT_TYPES.has(type) || laneOf(laned, id) !== undefined) {
+			continue
+		}
+		const lane = laneForNewNode(laned, id)
+		if (lane !== undefined) laned = assignLane(laned, id, lane.id)
+	}
+	return laned
+}
+
+/**
+ * The first collaboration `compact` describes, under the first free
+ * `Collaboration_<n>` id given the ids already taken. Empty without
+ * participants or message flows.
+ */
+export function expandCollaborations(
+	compact: CompactDiagram,
+	ids: ReadonlySet<string>,
+): BpmnCollaboration[] {
+	const participants = compact.participants ?? []
+	const messageFlows = compact.messageFlows ?? []
+	if (participants.length === 0 && messageFlows.length === 0) return []
+	// Bounded: at most ids.size candidates can be taken.
+	let n = 1
+	while (ids.has(`Collaboration_${n}`) && n <= ids.size) n++
+	return [
+		{
+			id: `Collaboration_${n}`,
+			participants: participants.map((participant) => ({
+				id: participant.id,
+				name: participant.name,
+				processRef: participant.processId,
+				unknownAttributes: {},
+			})),
+			messageFlows: messageFlows.map((flow) => ({
+				id: flow.id,
+				name: flow.name,
+				sourceRef: flow.source,
+				targetRef: flow.target,
+				unknownAttributes: {},
+			})),
+			textAnnotations: [],
+			associations: [],
+			groups: [],
+			extensionElements: [],
+			unknownAttributes: {},
+		},
+	]
 }
 
 /**
  * Restores a {@link CompactDiagram} (produced by {@link compactify} or an AI
  * model) back to a full {@link BpmnDefinitions} with auto-generated layout.
  *
+ * A diagram with lanes, participants or message flows becomes one collaboration:
+ * every process with content gets a pool (a synthesized `Participant_<processId>`
+ * when none names it), and the whole diagram is laid out on one plane bound to
+ * the collaboration. Without them, each process is laid out on its own plane,
+ * exactly as before lanes existed.
+ *
  * @throws {Error} When the diagram cannot be valid BPMN — a flow or boundary
  * event naming an element that is not in its scope, a duplicate or missing id,
- * or an unknown `eventType`. The message lists every problem at once.
+ * an unknown `eventType`, or a lane member that is not a top-level flow node of
+ * its process, sits in two lanes or sits on a lane with child lanes. The message
+ * lists every such problem at once. Pool problems (a participant naming a
+ * missing process, a message-flow end in no pool, a message flow inside one
+ * pool) are reported by a second check once those pass.
  *
  * @example
  * ```typescript
@@ -948,17 +1281,38 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
  */
 export function expand(compact: CompactDiagram): BpmnDefinitions {
 	assertCompactDiagram(compact, "expand")
-	const problems = compactProblems(compact)
+	const { problems, ids } = compactProblems(compact)
 	if (problems.length > 0) {
 		throw new Error(`expand: invalid CompactDiagram — ${problems.join("; ")}`)
 	}
-	const processes: BpmnProcess[] = []
-	const diagrams: BpmnDiagram[] = []
-	for (const cp of compact.processes) {
-		const { process, diagram } = expandProcess(cp)
-		processes.push(process)
-		diagrams.push(diagram)
+	const pooled = isPooled(compact)
+	const executable = executability(compact, pooled)
+	const processes = compact.processes.map((cp, index) =>
+		expandProcess(cp, executable[index] ?? true),
+	)
+	const defs = expandDefinitions(compact, processes)
+	if (!pooled) {
+		return { ...defs, diagrams: processes.map((process) => buildDiagram(process.id, process)) }
 	}
+
+	const withPools = poolLanedProcesses({
+		...defs,
+		collaborations: expandCollaborations(compact, ids),
+		processes: processes.map((process, index) =>
+			withLanes(process, compact.processes[index]?.lanes),
+		),
+	})
+	// Checked on the built model: a message flow's ends and a pool's process
+	// can only be judged once every pool, synthesized ones included, exists.
+	const poolProblems = collaborationProblems(withPools)
+	if (poolProblems.length > 0) {
+		throw new Error(`expand: invalid CompactDiagram — ${poolProblems.join("; ")}`)
+	}
+	return applyAutoLayout(withPools)
+}
+
+/** The definitions around `processes`, with no collaborations and no diagram. */
+function expandDefinitions(compact: CompactDiagram, processes: BpmnProcess[]): BpmnDefinitions {
 	const platform = compact.executionPlatformVersion
 	return {
 		id: compact.id,
@@ -984,6 +1338,6 @@ export function expand(compact: CompactDiagram): BpmnDefinitions {
 		signals: [],
 		collaborations: [],
 		processes,
-		diagrams,
+		diagrams: [],
 	}
 }

@@ -34,6 +34,7 @@ import {
 	type FormDefinition,
 	type RestConnectorConfig,
 	allElementTypes,
+	applyAutoLayout,
 	compactify,
 	compactifyDmn,
 	compactifyForm,
@@ -131,6 +132,20 @@ function buildBpmnDiagram(proc: BpmnProcess): BpmnDiagram {
 }
 
 /**
+ * The diagrams to write for `defs`. Pools and lanes are drawn only by the
+ * whole-diagram layout, on a plane bound to the collaboration, so a diagram
+ * with either goes through it; a lane-free diagram keeps the per-process layout
+ * it always had.
+ */
+function layoutDiagrams(defs: BpmnDefinitions): BpmnDiagram[] {
+	const pooled =
+		defs.collaborations.length > 0 || defs.processes.some((proc) => proc.laneSet !== undefined)
+	return pooled
+		? applyAutoLayout({ ...defs, diagrams: [] }).diagrams
+		: defs.processes.map(buildBpmnDiagram)
+}
+
+/**
  * Writes the current model out.
  *
  * BPMN goes through the same check `writeBpmn` makes — serialise, parse back,
@@ -159,7 +174,7 @@ function writeFileAtomic(path: string, text: string): void {
 function saveState(): void {
 	if (!outputFile) return
 	if (state.kind === "bpmn") {
-		state.data.diagrams = state.data.processes.map((proc) => buildBpmnDiagram(proc))
+		state.data.diagrams = layoutDiagrams(state.data)
 		const xml = Bpmn.export(state.data)
 		const expected = semanticHash(state.data)
 		if (semanticHash(Bpmn.parse(xml)) !== expected) {
@@ -449,7 +464,7 @@ const BPMN_TOOLS = [
 				diagram: {
 					type: "object",
 					description:
-						"CompactDiagram: { id, processes: [{ id, name?, elements: [...], flows: [...] }] }",
+						"CompactDiagram: { id, processes: [{ id, name?, executable?, lanes?: [{ id, name?, members?: [elementId], lanes? }], elements: [...], flows: [...] }], participants?: [{ id, name?, processId? }], messageFlows?: [{ id, source, target, name? }] }",
 				},
 			},
 			required: ["diagram"],
@@ -826,7 +841,7 @@ function buildBridge(): Record<string, unknown> {
 			if (state.kind === "form") {
 				return Form.export(state.data)
 			}
-			state.data.diagrams = state.data.processes.map((proc) => buildBpmnDiagram(proc))
+			state.data.diagrams = layoutDiagrams(state.data)
 			return Bpmn.export(state.data)
 		},
 	}

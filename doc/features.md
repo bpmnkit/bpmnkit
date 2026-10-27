@@ -1,5 +1,9 @@
 # Features
 
+## Lanes and pools in the builder and the compact format (2026-10-27)
+
+- `ProcessBuilder.lane()` / `.participant()` write lanes (nested included) and pools, validated at build time; `DiagramBuilder.withAutoLayout()`. The compact format carries `lanes`, `participants`, `messageFlows` and `executable` both ways, so `casen generate`, the proxy and `reconcileCompact` keep swimlanes. Partner pools are written `isExecutable="false"`, as Flowable needs. Round trips keep Flowable Modeler files (no definitions id), `isExecutable="false"` and nested lanes (`childLaneSet`).
+
 ## On-device diagram generation in the web editor (2026-10-21)
 
 - `@bpmnkit/plugins/ai-local` (`createAiLocalPlugin`) and a Generate dock tab and HUD button in the landing editor turn a description into a new diagram with Chrome's built-in model (Gemini Nano, Prompt API): English only, generate only, nothing leaves the device, hidden where the model is unavailable. Opt-in on bpmnkit.com via `/editor?ai=on-device`, and on Drop's describe-to-diagram page via `/drop?ai=on-device` (first draft only; server-side follow-ups off). Maintainer step: register the origin trial and set `PUBLIC_CHROME_AI_OT_TOKEN`.

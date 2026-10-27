@@ -1,14 +1,36 @@
 import type { XmlElement } from "../types/xml-element.js"
 import { assertBpmnDefinitions, assertCompactDiagram } from "./argument-guards.js"
-import type { BpmnDefinitions, BpmnFlowElement, BpmnSequenceFlow } from "./bpmn-model.js"
+import type {
+	BpmnCollaboration,
+	BpmnDefinitions,
+	BpmnFlowElement,
+	BpmnLane,
+	BpmnLaneSet,
+	BpmnMessageFlow,
+	BpmnParticipant,
+	BpmnProcess,
+	BpmnSequenceFlow,
+} from "./bpmn-model.js"
 import {
 	type CompactDiagram,
 	type CompactElement,
+	type CompactLane,
+	type CompactMessageFlow,
+	type CompactParticipant,
 	buildFlowElement,
+	compactifyLanes,
+	compactifyMessageFlow,
+	compactifyParticipant,
 	defaultFlows,
+	executability,
+	expandCollaborations,
+	fillLanes,
+	isPooled,
 	makeEventDef,
+	withLanes,
 } from "./compact.js"
 import type { BpmnOperation } from "./operations.js"
+import { allLanes, poolLanedProcesses, pruneLaneRefs } from "./swimlanes.js"
 import {
 	bpmnElementName,
 	ensureZeebeExtension,
@@ -365,17 +387,24 @@ export function applyBpmnOperations(
 	const draft = structuredClone(definitions) as BpmnDefinitions
 	const problems: OperationProblem[] = []
 	let applied = 0
+	const inserted: string[] = []
 
 	operations.forEach((operation, index) => {
 		const reason = applyOne(draft, operation)
-		if (reason === undefined) applied++
-		else problems.push({ index, operation, reason })
+		if (reason !== undefined) problems.push({ index, operation, reason })
+		else {
+			applied++
+			if (operation.op === "insert") inserted.push(operation.element.id)
+		}
 	})
 
 	if ((options.strict ?? true) && problems.length > 0) {
 		throw new OperationError(problems)
 	}
 
+	// After every operation rather than at the insert, so the flows a batch adds
+	// next to a new node decide its lane.
+	draft.processes = draft.processes.map((process) => fillLanes(process, inserted))
 	return { definitions: draft, applied, problems }
 }
 
@@ -405,6 +434,15 @@ function applyOne(definitions: BpmnDefinitions, operation: BpmnOperation): strin
 				(flow) => flow.sourceRef !== operation.id && flow.targetRef !== operation.id,
 			)
 			recomputeRefs(found.container)
+			// A lane ref or a message flow naming the removed node would dangle too.
+			definitions.processes = definitions.processes.map((process) =>
+				process === found.container ? pruneLaneRefs(process) : process,
+			)
+			for (const collaboration of definitions.collaborations) {
+				collaboration.messageFlows = collaboration.messageFlows.filter(
+					(flow) => flow.sourceRef !== operation.id && flow.targetRef !== operation.id,
+				)
+			}
 			return undefined
 		}
 
@@ -517,6 +555,19 @@ function recomputeRefs(container: Container): void {
  * a multi-process document means "this is how that process should look", not
  * "delete the others".
  *
+ * Lanes, pools and executability follow the same rule: a key the compact leaves
+ * out leaves that part of the model alone. A process's `lanes` rebuilds its
+ * membership (an empty list removes the lane set), keeping the attributes and
+ * extensions of every lane whose id survives; members that are not top-level
+ * flow nodes are dropped and unlisted nodes are placed as {@link expand} places
+ * them. `participants` and `messageFlows` replace those of the first
+ * collaboration, keeping what the compact form does not carry (`messageRef`,
+ * extensions, foreign attributes) on every id that survives. A laned process
+ * without a pool then gets one. A process the compact adds gets the
+ * `isExecutable` {@link expand} would give it, so a keyless partner pool is
+ * not executable. Without the keys, a deleted node still leaves
+ * its lanes and message flows, and an inserted one joins its predecessor's lane.
+ *
  * @param definitions - The model to update. Never mutated.
  * @param compact - The intended topology.
  * @param options - `strict` (default `true`) throws instead of returning problems.
@@ -531,11 +582,16 @@ export function reconcileCompact(
 	assertCompactDiagram(compact, "reconcileCompact")
 	const draft = structuredClone(definitions) as BpmnDefinitions
 
-	for (const compactProcess of compact.processes) {
+	// A new process gets the executability expand would give it: Flowable deploys
+	// a process with no isExecutable, so a keyless partner pool must say false.
+	// poolLanedProcesses cannot, as it only marks the pools it creates itself.
+	const executable = executability(compact, isPooled(compact))
+	compact.processes.forEach((compactProcess, index) => {
 		if (!draft.processes.some((process) => process.id === compactProcess.id)) {
 			draft.processes.push({
 				id: compactProcess.id,
 				name: compactProcess.name,
+				...(executable[index] === false ? { isExecutable: false } : {}),
 				extensionElements: [],
 				flowElements: [],
 				sequenceFlows: [],
@@ -545,11 +601,156 @@ export function reconcileCompact(
 				unknownAttributes: {},
 			})
 		}
-	}
+	})
 
 	const result = applyBpmnOperations(draft, operationsForCompact(draft, compact), options)
 	reconcileDefaultFlows(result.definitions, compact)
-	return result
+	return { ...result, definitions: reconcilePools(result.definitions, compact) }
+}
+
+/**
+ * Applies the `executable`, `lanes`, `participants` and `messageFlows` keys
+ * `compact` carries. A key that says what the model already says changes
+ * nothing, so reconciling `compactify(defs)` onto `defs` stays a no-op.
+ */
+function reconcilePools(definitions: BpmnDefinitions, compact: CompactDiagram): BpmnDefinitions {
+	const wanted = new Map(compact.processes.map((process) => [process.id, process]))
+	let changed = false
+	const processes = definitions.processes.map((process) => {
+		const compactProcess = wanted.get(process.id)
+		let next = process
+		const executable = compactProcess?.executable
+		// An absent attribute already means executable (Flowable), so `true` leaves it absent.
+		if (executable !== undefined && executable !== (next.isExecutable !== false)) {
+			next = { ...next, isExecutable: executable }
+		}
+		const lanes = compactProcess?.lanes
+		if (lanes !== undefined && !sameJson(compactifyLanes(next), lanes)) {
+			next = relane(next, lanes)
+			changed = true
+		}
+		return next
+	})
+	const first = definitions.collaborations[0]
+	const poolsChanged =
+		(compact.participants !== undefined &&
+			!sameJson(first?.participants.map(compactifyParticipant) ?? [], compact.participants)) ||
+		(compact.messageFlows !== undefined &&
+			!sameJson(first?.messageFlows.map(compactifyMessageFlow) ?? [], compact.messageFlows))
+	if (!changed && !poolsChanged) return { ...definitions, processes }
+
+	return poolLanedProcesses({
+		...definitions,
+		processes,
+		collaborations: poolsChanged
+			? reconcileCollaborations({ ...definitions, processes }, compact)
+			: definitions.collaborations,
+	})
+}
+
+/** Equal as JSON: key order counts, so a reordered but equal input reads as a change, which is safe. */
+function sameJson(a: unknown, b: unknown): boolean {
+	return JSON.stringify(a) === JSON.stringify(b)
+}
+
+/** `process` with the membership `lanes` describes, keeping what each surviving lane carries. */
+function relane(process: BpmnProcess, lanes: readonly CompactLane[]): BpmnProcess {
+	const { laneSet: previous, ...bare } = process
+	if (lanes.length === 0) return bare
+	const rebuilt = pruneLaneRefs(withLanes(bare, lanes)).laneSet
+	if (rebuilt === undefined) return bare
+
+	const before = new Map(allLanes(previous).map((lane) => [lane.id, lane]))
+	// `rebuilt` comes from buildLaneSet, which refuses a looping tree, so this terminates.
+	const mergeSet = (built: BpmnLaneSet, old: BpmnLaneSet | undefined): BpmnLaneSet => ({
+		...built,
+		...old,
+		lanes: built.lanes.map(mergeLane),
+	})
+	const mergeLane = (built: BpmnLane): BpmnLane => {
+		const old = before.get(built.id)
+		const { childLaneSet: _oldChildren, ...kept } = old ?? { unknownAttributes: {} }
+		const lane: BpmnLane = { ...kept, id: built.id, flowNodeRefs: built.flowNodeRefs }
+		if (built.name !== undefined) lane.name = built.name
+		if (built.childLaneSet !== undefined) {
+			lane.childLaneSet = mergeSet(built.childLaneSet, old?.childLaneSet)
+		}
+		return lane
+	}
+	return { ...bare, laneSet: mergeSet(rebuilt, previous) }
+}
+
+/** The collaborations once the compact's `participants` and `messageFlows` keys are applied. */
+function reconcileCollaborations(
+	definitions: BpmnDefinitions,
+	compact: CompactDiagram,
+): BpmnCollaboration[] {
+	if (compact.participants === undefined && compact.messageFlows === undefined) {
+		return definitions.collaborations
+	}
+	const [first, ...rest] = definitions.collaborations
+	if (first === undefined) return expandCollaborations(compact, documentIds(definitions, compact))
+	return [
+		{
+			...first,
+			participants:
+				compact.participants?.map((participant) =>
+					mergeParticipant(
+						first.participants.find((p) => p.id === participant.id),
+						participant,
+					),
+				) ?? first.participants,
+			messageFlows:
+				compact.messageFlows?.map((flow) =>
+					mergeMessageFlow(
+						first.messageFlows.find((f) => f.id === flow.id),
+						flow,
+					),
+				) ?? first.messageFlows,
+		},
+		...rest,
+	]
+}
+
+function mergeParticipant(
+	old: BpmnParticipant | undefined,
+	wanted: CompactParticipant,
+): BpmnParticipant {
+	const { processRef: _oldRef, ...kept } = old ?? { unknownAttributes: {} }
+	const participant: BpmnParticipant = { ...kept, id: wanted.id }
+	if (wanted.name !== undefined) participant.name = wanted.name
+	if (wanted.processId !== undefined) participant.processRef = wanted.processId
+	return participant
+}
+
+function mergeMessageFlow(
+	old: BpmnMessageFlow | undefined,
+	wanted: CompactMessageFlow,
+): BpmnMessageFlow {
+	const flow: BpmnMessageFlow = {
+		...(old ?? { unknownAttributes: {} }),
+		id: wanted.id,
+		sourceRef: wanted.source,
+		targetRef: wanted.target,
+	}
+	if (wanted.name !== undefined) flow.name = wanted.name
+	return flow
+}
+
+/** Ids a new collaboration must not take: every process, element, flow and lane, and the compact's pool ids. */
+function documentIds(definitions: BpmnDefinitions, compact: CompactDiagram): Set<string> {
+	const ids = new Set<string>()
+	for (const container of containersOf(definitions)) {
+		for (const item of [...container.flowElements, ...container.sequenceFlows]) ids.add(item.id)
+	}
+	for (const process of definitions.processes) {
+		ids.add(process.id)
+		for (const lane of allLanes(process.laneSet)) ids.add(lane.id)
+	}
+	for (const item of [...(compact.participants ?? []), ...(compact.messageFlows ?? [])]) {
+		ids.add(item.id)
+	}
+	return ids
 }
 
 /**

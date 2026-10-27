@@ -1,5 +1,17 @@
 # Progress
 
+## 2026-10-27 — Lanes and pools in the builder and the compact format
+
+- Third step of lane and pool write support (WP3, WP4).
+- Builder: `ProcessBuilder.lane(id, { name?, flowNodes?, parent? })` and `ProcessBuilder.participant(id, { name? })`. A fresh build is strict: every top-level flow node in exactly one leaf lane, every problem reported at once (`Invalid lanes:`). Lanes imply a pool (`Participant_<processId>`). Without lane or participant calls the output is byte-identical. Continue mode keeps every existing ref, puts an inserted node in its predecessor's lane (`continue-process.test.ts` updated for this), and `lane(existingId, { flowNodes })` moves nodes into an existing lane; `flowable:*` content is untouched.
+- `DiagramBuilder` adopts a child process's pool instead of discarding it, gains `withAutoLayout()`, and writes `isExecutable: false` for a process with no flow elements that never called `.executable()` (a black-box partner; Flowable would deploy it otherwise).
+- Compact: `CompactProcess.lanes` (`{ id, name?, members?, lanes? }`, members on leaf lanes), `CompactProcess.executable`, `CompactDiagram.participants` (`processId` absent for a black box) and `messageFlows` (`source`/`target`). `compactify` omits empty keys (lane-free output byte-identical to a captured baseline); `expand` builds the lane set, fills unlisted nodes from their neighbours, pools, and lays out the collaboration. `compactProblems` checks lane, participant and message-flow ids and membership.
+- `reconcileCompact` rebuilds membership only when the compact's lanes differ from the model's, keeps attributes of surviving lanes, pools and message flows, and marks a partner process it adds non-executable, as `expand` does. Full operations: `delete` prunes lane refs and message flows that named the node; `insert` puts the node in its neighbour's lane.
+- Consumers: `casen generate` schema help, the proxy's compact prompt, and the proxy MCP save and export, which now lay out with `applyAutoLayout` when there is a collaboration or a lane set (they used to drop lane and pool DI).
+- New types exported: `LaneOptions`, `CompactLane`, `CompactParticipant`, `CompactMessageFlow`.
+- Tests: `lane-builder.test.ts` (24), `compact-lanes.test.ts` (32), `apps/proxy/tests/mcp-lanes.test.ts`.
+- Known, not changed: the compact stream preview shows lanes and pools only with the final result; a compact edit cannot remove a lane or pool name; `operationsForCompact` emits `redirect_flow` before `insert`, so splicing a new node into a chain through `reconcileCompact` fails (pre-existing).
+
 ## 2026-10-27 — Swimlane helpers and nested-lane layout
 
 - Second step of lane and pool write support (WP1, WP2). Nothing writes lanes yet; the builder, compact, process text, change scripts and editor will build on these.
