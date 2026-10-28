@@ -73,7 +73,9 @@ and pan.
   be deleted.
 - Connecting a node to another pool, or to a node in it, draws a message flow with no
   `messageRef`; BPMN's rules for message ends apply. Message flows show their name and are
-  renamed like any label. A black box's context bar has Connect too, for incoming messages.
+  renamed like any label. A partner pool's context bar, a black box's or one drawing a process,
+  has Connect too, for incoming messages; a connection dropped on such a pool's body docks on the
+  pool. A partner's nodes stay locked: no sequence flow starts or ends at them.
 - The pool tool wraps a process that has no pool in its first one (a collaboration is added
   and the process is left as it is); with a pool drawn, it adds a black-box partner. A lane's
   or pool's context bar adds a lane above or below it (the first add on a pool makes two),

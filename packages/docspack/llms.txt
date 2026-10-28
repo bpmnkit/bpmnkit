@@ -381,7 +381,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/docspack — Trust](.llms/chunks/packages.docspack.trust.md) — 118 tokens
 - [@bpmnkit/editor — Overview](.llms/chunks/packages.editor.overview.md) — 135 tokens
 - [@bpmnkit/editor — Basic Setup](.llms/chunks/packages.editor.basic-setup.md) — 149 tokens
-- [@bpmnkit/editor — Basic Setup — Collaborations](.llms/chunks/packages.editor.basic-setup-collaborations.md) — 839 tokens
+- [@bpmnkit/editor — Basic Setup — Collaborations](.llms/chunks/packages.editor.basic-setup-collaborations.md) — 884 tokens
 - [@bpmnkit/editor — Basic Setup — Collaborations (2)](.llms/chunks/packages.editor.basic-setup-collaborations-2.md) — 445 tokens
 - [@bpmnkit/editor — With Side Dock](.llms/chunks/packages.editor.with-side-dock.md) — 168 tokens
 - [@bpmnkit/editor — SideDock API](.llms/chunks/packages.editor.sidedock-api.md) — 861 tokens

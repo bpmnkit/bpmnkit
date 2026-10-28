@@ -16,6 +16,7 @@ import {
 	lockedPartnerXml,
 	poolLessFlowable,
 	poolLessWithOther,
+	verticalPoolBesideXml,
 	verticalPoolXml,
 } from "./swimlane-helpers.js"
 
@@ -300,7 +301,7 @@ describe("WP8d in the editor", () => {
 
 	it("offers no Delete for a partner pool whose process has content", () => {
 		const { ed } = mount(true, lockedPartnerXml())
-		expect(menuFor(ed, ["Participant_partner"])).toEqual(["Edit label"])
+		expect(menuFor(ed, ["Participant_partner"])).toEqual(["Connect", "Edit label"])
 	})
 
 	it("ignores Delete on the own pool: no undo step", () => {
@@ -428,6 +429,111 @@ describe("WP8d message flows in the editor", () => {
 		}
 		expect(document.querySelector(".bpmnkit-label-editor")?.textContent).toBe("Payment")
 	})
+
+	it("offers Connect on a partner pool that draws a process, not on the own pool", () => {
+		const { ed } = mount(true, lockedPartnerXml())
+		const bar = (id: string) => {
+			ed.setSelection([id])
+			ed.container.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true }))
+			return [...(document.getElementById("ctx-toolbar")?.children ?? [])].map(
+				(b) => (b as HTMLElement).title,
+			)
+		}
+		expect(bar("Participant_partner")).toEqual(["Connect to element (click target)", "Edit label"])
+		expect(bar("Participant_own")).not.toContain("Connect to element (click target)")
+	})
+
+	it("draws a message flow from an own node dropped on a partner pool's body, and back", () => {
+		const { ed, inner } = mount(false, lockedPartnerXml())
+		const pool = drawnGroup(inner, "Participant_partner")
+		const clickAt = (target: Element, x: number, y: number) => {
+			const original = document.elementFromPoint
+			document.elementFromPoint = () => target
+			try {
+				inner._onPointerDown(new PointerEvent("pointerdown", { clientX: x, clientY: y }))
+			} finally {
+				document.elementFromPoint = original
+			}
+		}
+		ed.startConnectionFrom("Task_review")
+		clickAt(pool, 400, 430)
+		expect(messages(ed).map((f) => [f.sourceRef, f.targetRef])).toContainEqual([
+			"Task_review",
+			"Participant_partner",
+		])
+		const task = inner._svg.querySelector('[data-bpmnkit-id="Task_review"]')
+		if (!task) throw new Error("no Task_review")
+		ed.startConnectionFrom("Participant_partner")
+		clickAt(task, 210, 60)
+		expect(messages(ed).map((f) => [f.sourceRef, f.targetRef])).toContainEqual([
+			"Participant_partner",
+			"Task_review",
+		])
+		// A partner's locked node takes no sequence flow from its pool: no op at all.
+		const before = ed.getDefinitions()
+		ed.startConnectionFrom("Participant_partner")
+		expect(inner._isConnectTargetInvalid("Task_p")).toBe(true)
+		inner._doConnect("Participant_partner", "Task_p")
+		expect(ed.getDefinitions()).toBe(before)
+	})
+
+	/**
+	 * {@link lockedPartnerXml} with lane `Lane_p` over the partner's body; when
+	 * `vertical`, the partner is drawn so and 30 taller, its lane under the header.
+	 */
+	function lanedPartnerXml(vertical: boolean): string {
+		const horizontal = vertical ? "false" : "true"
+		const lane = vertical
+			? 'x="0" y="430" width="640" height="60"'
+			: 'x="30" y="400" width="610" height="60"'
+		return lockedPartnerXml()
+			.replace(
+				'<process id="Process_partner" name="Partner" isExecutable="false">',
+				`<process id="Process_partner" name="Partner" isExecutable="false">
+    <laneSet id="LaneSet_p"><lane id="Lane_p" name="Desk"><flowNodeRef>Start_p</flowNodeRef><flowNodeRef>Task_p</flowNodeRef></lane></laneSet>`,
+			)
+			.replace(
+				'bpmnElement="Participant_partner" isHorizontal="true"><omgdc:Bounds x="0" y="400" width="640" height="60"/>',
+				`bpmnElement="Participant_partner" isHorizontal="${horizontal}"><omgdc:Bounds x="0" y="400" width="640" height="${vertical ? 90 : 60}"/>`,
+			)
+			.replace(
+				'<bpmndi:BPMNShape id="Start_p_di"',
+				`<bpmndi:BPMNShape id="Lane_p_di" bpmnElement="Lane_p" isHorizontal="${horizontal}"><omgdc:Bounds ${lane}/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_p_di"`,
+			)
+	}
+
+	for (const vertical of [false, true]) {
+		it(`docks a connection dropped on a laned partner's body on its pool (${vertical ? "vertical" : "horizontal"})`, () => {
+			const { ed, inner } = mount(false, lanedPartnerXml(vertical))
+			const lane = drawnGroup(inner, "Lane_p")
+			ed.startConnectionFrom("Task_review")
+			// The lane's body, and its name strip (left, or top when vertical).
+			const [x, y] = vertical ? [400, 475] : [400, 445]
+			const [sx, sy] = vertical ? [400, 440] : [45, 445]
+			expect(hitAt(inner, lane, x, y)).toEqual({ type: "shape", id: "Participant_partner" })
+			expect(hitAt(inner, lane, sx, sy)).toEqual({
+				type: "shape",
+				id: "Participant_partner",
+			})
+			expect(inner._isConnectTargetInvalid("Participant_partner")).toBe(false)
+			const original = document.elementFromPoint
+			document.elementFromPoint = () => lane
+			try {
+				inner._onPointerDown(new PointerEvent("pointerdown", { clientX: x, clientY: y }))
+			} finally {
+				document.elementFromPoint = original
+			}
+			expect(messages(ed).map((f) => [f.sourceRef, f.targetRef])).toContainEqual([
+				"Task_review",
+				"Participant_partner",
+			])
+			// Not connecting, the lane is still grabbed by its strip and its body is canvas.
+			const redrawn = drawnGroup(inner, "Lane_p")
+			expect(hitAt(inner, redrawn, x, y)).toEqual({ type: "canvas" })
+			expect(hitAt(inner, redrawn, sx, sy)).toEqual({ type: "shape", id: "Lane_p" })
+		})
+	}
 
 	it("offers a locked node no Connect, quick add or annotation", () => {
 		const { ed } = mount(true, lockedPartnerXml())
@@ -1049,6 +1155,24 @@ describe("WP8c moving pools and making space in the editor", () => {
 		expect(vertical.inner._svg.querySelector(".bpmnkit-space-stretch")).toBeNull()
 		vertical.inner._commitSpace({ x: 0, y: 200 }, { x: 0, y: 240 }, "v")
 		expect(vertical.ed.canUndo()).toBe(false)
+	})
+
+	it("previews and applies a space past a vertical pool, which moves whole", () => {
+		const { ed, inner } = mount(false, verticalPoolBesideXml())
+		inner._previewSpace({ x: 450, y: 0 }, { x: 490, y: 0 }, "h")
+		expect(group(inner, "Q")?.getAttribute("transform")).toBe("translate(540 700)")
+		expect(group(inner, "P")?.getAttribute("transform")).toBe("translate(0 0)")
+		inner._previewSpace({ x: -20, y: 0 }, { x: 20, y: 0 }, "h")
+		expect(group(inner, "P")?.getAttribute("transform")).toBe("translate(40 0)")
+		expect(inner._svg.querySelector(".bpmnkit-space-stretch")).toBeNull()
+		inner._commitSpace({ x: -20, y: 0 }, { x: 20, y: 0 }, "h")
+		expect(ed.canUndo()).toBe(true)
+		// A line through the vertical pool still shows the line only and adds nothing.
+		ed.undo()
+		inner._previewSpace({ x: 200, y: 0 }, { x: 240, y: 0 }, "h")
+		expect(group(inner, "Q")?.getAttribute("transform")).toBe("translate(500 700)")
+		inner._commitSpace({ x: 200, y: 0 }, { x: 240, y: 0 }, "h")
+		expect(ed.canUndo()).toBe(false)
 	})
 })
 

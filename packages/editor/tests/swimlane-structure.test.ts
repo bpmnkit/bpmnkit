@@ -567,6 +567,231 @@ describe("8b.3 add lane", () => {
 	}
 })
 
+describe("8b.3 a lane band keeps routes orthogonal", () => {
+	type Point = { x: number; y: number }
+	const waypointsOf = (defs: BpmnDefinitions, id: string) =>
+		defs.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === id)?.waypoints ?? []
+	const straight = (p: Point, q: Point) => Math.abs(p.x - q.x) < 1 || Math.abs(p.y - q.y) < 1
+	/** Every segment drawn horizontal or vertical in `before` still is in `after`. */
+	const expectNoKinks = (before: BpmnDefinitions, after: BpmnDefinitions, op: string) => {
+		for (const edge of before.diagrams[0]?.plane.edges ?? []) {
+			const now = waypointsOf(after, edge.bpmnElement)
+			const was = edge.waypoints
+			for (let k = 1; k < Math.min(was.length, now.length); k++) {
+				const [p, q, r, s] = [was[k - 1], was[k], now[k - 1], now[k]]
+				if (p && q && r && s && straight(p, q)) {
+					expect(straight(r, s), `${op} ${edge.bpmnElement} ${JSON.stringify(now)}`).toBe(true)
+				}
+			}
+		}
+	}
+	/** Every segment of `id` is horizontal or vertical, from on `source`'s bounds to on `target`'s. */
+	const expectDocked = (defs: BpmnDefinitions, id: string, source: string, target: string) => {
+		const points = waypointsOf(defs, id)
+		const on = (p: Point | undefined, b: { x: number; y: number; width: number; height: number }) =>
+			p !== undefined &&
+			p.x >= b.x - 0.5 &&
+			p.x <= b.x + b.width + 0.5 &&
+			p.y >= b.y - 0.5 &&
+			p.y <= b.y + b.height + 0.5
+		expect(points.length).toBeGreaterThanOrEqual(2)
+		for (let k = 1; k < points.length; k++) {
+			const [p, q] = [points[k - 1], points[k]]
+			expect(p && q && straight(p, q), `${id} ${JSON.stringify(points)}`).toBe(true)
+		}
+		expect(on(points[0], boundsOf(defs, source)), JSON.stringify(points)).toBe(true)
+		expect(on(points.at(-1), boundsOf(defs, target)), JSON.stringify(points)).toBe(true)
+	}
+
+	it("keeps every route of 02-collaboration, 08 and the Flowable file orthogonal on every add and divide", () => {
+		const docs = [fixture("02-collaboration.bpmn"), fixture(FIXTURE_08), flowableFixture()]
+		let ops = 0
+		for (const defs of docs.map(primaryFirst)) {
+			const adds = lanesOf(defs)
+				.filter((l) => canAddLane(defs, l.id))
+				.flatMap((l) => [lane(l.id, "above"), lane(l.id, "below")])
+			const divides = participants(defs)
+				.filter((p) => canDivideLanes(defs, p.id))
+				.flatMap((p) => [2, 3].map((count) => ({ ...lane(p.id, "below"), count }) as EditorOp))
+			for (const op of [...adds, ...divides]) {
+				expectNoKinks(defs, primaryFirst(run(defs, op).defs), JSON.stringify(op))
+				ops++
+			}
+		}
+		expect(ops).toBeGreaterThanOrEqual(10)
+	})
+
+	it("keeps the bends of a route crossing the line, those below it moved down", () => {
+		const defs = Bpmn.parse(
+			flowableXml().replace(
+				'<omgdi:waypoint x="260" y="60"/><omgdi:waypoint x="325" y="60"/><omgdi:waypoint x="325" y="155"/>',
+				'<omgdi:waypoint x="210" y="100"/><omgdi:waypoint x="210" y="140"/><omgdi:waypoint x="280" y="140"/><omgdi:waypoint x="280" y="180"/><omgdi:waypoint x="300" y="180"/>',
+			),
+		)
+		const r = run(defs, lane("Lane_finance", "above"))
+		expect(waypointsOf(r.defs, "Flow_2")).toEqual([
+			{ x: 210, y: 100 },
+			{ x: 210, y: 260 },
+			{ x: 280, y: 260 },
+			{ x: 280, y: 300 },
+			{ x: 300, y: 300 },
+		])
+		expectSwimlanesSound(r.defs)
+	})
+
+	/**
+	 * {@link flowableXml} with Review straddling the Sales/Finance line (centre
+	 * 125, in Finance) and its flows docked above its centre: Flow_1 straight
+	 * from Start at y 100, Flow_2 out of its right side at y 100 down to the gateway.
+	 */
+	const straddling = () =>
+		Bpmn.parse(
+			flowableXml()
+				.replace(
+					"<flowNodeRef>Start_1</flowNodeRef><flowNodeRef>Task_review</flowNodeRef>",
+					"<flowNodeRef>Start_1</flowNodeRef>",
+				)
+				.replace(
+					"<flowNodeRef>Gateway_ok</flowNodeRef>",
+					"<flowNodeRef>Task_review</flowNodeRef><flowNodeRef>Gateway_ok</flowNodeRef>",
+				)
+				.replace('x="80" y="42"', 'x="80" y="82"')
+				.replace('x="160" y="20"', 'x="160" y="85"')
+				.replace(
+					'<omgdi:waypoint x="116" y="60"/><omgdi:waypoint x="160" y="60"/>',
+					'<omgdi:waypoint x="116" y="100"/><omgdi:waypoint x="160" y="100"/>',
+				)
+				.replace(
+					'<omgdi:waypoint x="260" y="60"/><omgdi:waypoint x="325" y="60"/>',
+					'<omgdi:waypoint x="260" y="100"/><omgdi:waypoint x="325" y="100"/>',
+				),
+		)
+
+	it("re-routes a flow from a node that stays to a straddling node that moves", () => {
+		const defs = straddling()
+		const r = run(defs, lane("Lane_finance", "above"))
+		expect(boundsOf(r.defs, "Task_review").y).toBe(205)
+		expect(boundsOf(r.defs, "Start_1").y).toBe(82)
+		expectDocked(r.defs, "Flow_1", "Start_1", "Task_review")
+		expectSwimlanesSound(r.defs)
+	})
+
+	it("straightens the same kink for the space tool, which pushes by the same rule", () => {
+		const r = run(straddling(), { kind: "space", origin: 120, axis: "v", delta: 50 })
+		expect(boundsOf(r.defs, "Task_review").y).toBe(135)
+		expectDocked(r.defs, "Flow_1", "Start_1", "Task_review")
+	})
+
+	it("translates whole a flow whose ends both move but whose bend sits above the line", () => {
+		const r = run(straddling(), lane("Lane_finance", "above"))
+		expect(waypointsOf(r.defs, "Flow_2")).toEqual([
+			{ x: 260, y: 220 },
+			{ x: 325, y: 220 },
+			{ x: 325, y: 275 },
+		])
+	})
+
+	it("re-routes a message from a node that moves to a pool beside that stays", () => {
+		const defs = Bpmn.parse(
+			flowableXml()
+				.replace(
+					'<omgdc:Bounds x="0" y="490" width="640" height="60"/>',
+					'<omgdc:Bounds x="680" y="-100" width="300" height="400"/>',
+				)
+				.replace(
+					'<omgdi:waypoint x="450" y="220"/><omgdi:waypoint x="450" y="490"/>',
+					'<omgdi:waypoint x="500" y="180"/><omgdi:waypoint x="680" y="180"/>',
+				),
+		)
+		const r = run(defs, lane("Lane_finance", "above"))
+		expect(boundsOf(r.defs, "Participant_bank").y).toBe(-100)
+		expect(waypointsOf(r.defs, "Message_pay")).toEqual([
+			{ x: 500, y: 300 },
+			{ x: 680, y: 300 },
+		])
+		expectSwimlanesSound(r.defs)
+	})
+
+	/** {@link flowableXml} with Task_pay at y `taskY` and Message_pay drawn by `waypoints` (an XML fragment). */
+	const payAt = (taskY: number, waypoints: string, xml = flowableXml()) =>
+		xml
+			.replace('x="400" y="140"', `x="400" y="${taskY}"`)
+			.replace('<omgdi:waypoint x="450" y="220"/><omgdi:waypoint x="450" y="490"/>', waypoints)
+
+	it("re-routes a kinked message in the space tool against the pool it stretches, not its old bounds", () => {
+		// The bank beside spans the line (300) and stretches to y 520; Task_pay (centre 300) moves.
+		const xml = flowableXml().replace(
+			'<omgdc:Bounds x="0" y="490" width="640" height="60"/>',
+			'<omgdc:Bounds x="680" y="-100" width="300" height="420"/>',
+		)
+		const defs = Bpmn.parse(
+			payAt(260, '<omgdi:waypoint x="500" y="290"/><omgdi:waypoint x="680" y="290"/>', xml),
+		)
+		const r = run(defs, { kind: "space", origin: 300, axis: "v", delta: 200 })
+		expect(boundsOf(r.defs, "Task_pay").y).toBe(460)
+		expect(bottomOf(boundsOf(r.defs, "Participant_bank"))).toBe(520)
+		expect(waypointsOf(r.defs, "Message_pay")).toEqual([
+			{ x: 500, y: 500 },
+			{ x: 680, y: 500 },
+		])
+	})
+
+	it("keeps a message end on its node that moved when the other end is not drawn", () => {
+		const defs = Bpmn.parse(
+			payAt(
+				200,
+				'<omgdi:waypoint x="500" y="210"/><omgdi:waypoint x="680" y="210"/>',
+				flowableXml().replace('targetRef="Participant_bank"', 'targetRef="Ghost"'),
+			),
+		)
+		const r = applyOp(defs, lane("Lane_ops", "above"))
+		expect(boundsOf(r.defs, "Task_pay").y).toBe(320)
+		expect(waypointsOf(r.defs, "Message_pay")[0]).toEqual({ x: 500, y: 330 })
+	})
+
+	it("re-routes on the h axis a flow whose vertical segment the space tool splits", () => {
+		const defs = Bpmn.parse(
+			flowableXml()
+				.replace(
+					'<sequenceFlow id="Flow_4"',
+					'<sequenceFlow id="Flow_x" sourceRef="Task_review" targetRef="End_1"/><sequenceFlow id="Flow_4"',
+				)
+				.replace(
+					'<bpmndi:BPMNEdge id="Flow_1_di"',
+					'<bpmndi:BPMNEdge id="Flow_x_di" bpmnElement="Flow_x"><omgdi:waypoint x="240" y="100"/><omgdi:waypoint x="240" y="300"/><omgdi:waypoint x="532" y="300"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id="Flow_1_di"',
+				),
+		)
+		const r = run(defs, { kind: "space", origin: 230, axis: "h", delta: 100 })
+		expect(boundsOf(r.defs, "Task_review").x).toBe(160)
+		expect(boundsOf(r.defs, "End_1").x).toBe(632)
+		expectDocked(r.defs, "Flow_x", "Task_review", "End_1")
+	})
+
+	it("re-routes a message a pool growing down kinks (pushBelow), to the black box below the line", () => {
+		// The bank beside reaches below the pool's bottom (360) with its centre, so it moves.
+		const defs = Bpmn.parse(
+			payAt(
+				140,
+				'<omgdi:waypoint x="500" y="180"/><omgdi:waypoint x="600" y="180"/><omgdi:waypoint x="600" y="350"/><omgdi:waypoint x="680" y="350"/>',
+				flowableXml().replace(
+					'<omgdc:Bounds x="0" y="490" width="640" height="60"/>',
+					'<omgdc:Bounds x="680" y="340" width="300" height="100"/>',
+				),
+			),
+		)
+		const pool = boundsOf(defs, "Participant_own")
+		const r = run(defs, {
+			kind: "resize",
+			id: "Participant_own",
+			bounds: { ...pool, height: pool.height + 100 },
+		})
+		expect(boundsOf(r.defs, "Participant_bank").y).toBe(440)
+		expectDocked(r.defs, "Message_pay", "Task_pay", "Participant_bank")
+	})
+})
+
+const bottomOf = (b: { y: number; height: number }) => b.y + b.height
+
 describe("8b.3 divide into lanes", () => {
 	const divide = (refId: string, count: 2 | 3, seed = "divide"): EditorOp => ({
 		kind: "addLane",

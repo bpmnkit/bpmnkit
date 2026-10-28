@@ -1286,8 +1286,9 @@ export function initEditorHud(
 	 * What a pool or lane is offered, in bar and menu order, each only when the
 	 * edit would be made (critique: no refused actions): Add lane above and below
 	 * where `addLane` takes it (the own pool, top-level leaf lanes), Divide on an
-	 * own pool without lanes (U6), Connect on a black box so a message flow can
-	 * start there, Edit label, and Delete where a delete would take it (U2).
+	 * own pool without lanes (U6), Connect on a partner pool (a black box or one
+	 * drawing a process) so a message flow can start there, Edit label, and
+	 * Delete where a delete would take it (U2).
 	 */
 	function swimlaneActions(id: string): SwimlaneAction[] {
 		const defs = editor.getDefinitions()
@@ -1310,7 +1311,9 @@ export function initEditorHud(
 			)
 		}
 		const pool = defs.collaborations.flatMap((c) => c.participants).find((p) => p.id === id)
-		if (pool && isBlackBox(defs, pool)) {
+		// A partner drawing a process too: its nodes are locked, so its pool is where a message starts.
+		const own = pool?.processRef !== undefined && pool.processRef === primaryProcess(defs)?.id
+		if (pool && !own) {
 			actions.push({
 				icon: IC.arrow,
 				label: "Connect",

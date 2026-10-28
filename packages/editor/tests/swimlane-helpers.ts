@@ -259,6 +259,21 @@ export function verticalPoolXml(laned: boolean): string {
 </definitions>`
 }
 
+/**
+ * {@link verticalPoolXml} with its two column lanes and a black-box partner
+ * `Q` drawn horizontally (300 by 60) right of and below it, at 500, 700: a
+ * space line can pass the vertical pool without crossing it.
+ */
+export function verticalPoolBesideXml(): string {
+	return verticalPoolXml(true)
+		.replace('processRef="Proc"/>', 'processRef="Proc"/><participant id="Q" name="Partner"/>')
+		.replace(
+			"</bpmndi:BPMNPlane>",
+			`<bpmndi:BPMNShape id="Q_di" bpmnElement="Q" isHorizontal="true"><omgdc:Bounds x="500" y="700" width="300" height="60"/></bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>`,
+		)
+}
+
 /** {@link flowableXml} whose partner process has content: a start event, a task and a flow. */
 export function lockedPartnerXml(): string {
 	return flowableXml()

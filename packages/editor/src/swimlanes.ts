@@ -31,7 +31,7 @@ import {
 	leafLanes,
 	primaryProcess,
 } from "@bpmnkit/core"
-import { edgeLabelBounds } from "./geometry.js"
+import { computeWaypointsAvoiding, edgeLabelBounds } from "./geometry.js"
 import type { IdFactory } from "./id.js"
 
 /** Width of a pool's name strip; a top-level lane starts this far right of its pool. */
@@ -545,7 +545,14 @@ function shapesBeyond(
  * does to the lanes and nodes below it, and what the space tool does. `side`
  * picks the other side of the line for a pull: a positive `side` with a
  * negative `delta` moves what is below the line up, what a pool that shrinks
- * from its bottom does. Returns the ids of the shapes it moved.
+ * from its bottom does. An edge the push would kink (a segment drawn
+ * horizontal or vertical left askew: a node straddling the line, or ends on
+ * either side of it joined straight) moves whole when both its ends went, as
+ * a pool carries its flows; one with a single end moved is returned in
+ * `kinked`, for the caller to re-route with {@link straighten} once the shapes
+ * in `keep` have grown: routed now, it would go round their old bounds.
+ * `ends` are the edges' docked shapes ({@link edgeEnds} of `defs`). Returns
+ * the ids of the shapes it moved, and those edges.
  */
 function pushBeyond(
 	plane: BpmnDiPlane,
@@ -554,9 +561,10 @@ function pushBeyond(
 	delta: number,
 	keep: ReadonlySet<string>,
 	anchor: ReadonlyMap<string, string>,
-	ends: ReadonlyMap<string, readonly [string, string]>,
+	defs: BpmnDefinitions,
 	side: 1 | -1 = delta > 0 ? 1 : -1,
-): Set<string> {
+): { moved: Set<string>; kinked: Kinked[] } {
+	const ends = edgeEnds(defs)
 	const a = ALONG[axis]
 	const beyond = beyondLine(line, side)
 	const middle = (b: BpmnBounds) => a.start(b) + a.size(b) / 2
@@ -567,7 +575,6 @@ function pushBeyond(
 		return b && beyond(middle(b))
 	}
 	const moved = shapesBeyond(plane, axis, line, side, keep, anchor)
-	// ponytail: a straddling node's inner bends stay on their side of the line, so its flows kink there.
 	for (const s of plane.shapes) {
 		if (!moved.has(s.bpmnElement)) continue
 		s.bounds = a.shift(s.bounds, delta)
@@ -581,22 +588,89 @@ function pushBeyond(
 		const fixed = side > 0 ? a.start(b) : a.start(b) + a.size(b)
 		return keep.has(id) ? beyond(c) && !sameEdge(c, fixed) : moved.has(id)
 	}
+	const kinked: Kinked[] = []
 	for (const edge of plane.edges) {
 		if (keep.has(edge.bpmnElement)) continue
 		const whole = anchorGoes(edge.bpmnElement)
 		const [source, target] = ends.get(edge.bpmnElement) ?? []
-		const last = edge.waypoints.length - 1
-		edge.waypoints = edge.waypoints.map((p, k) => {
+		const was = { waypoints: edge.waypoints, label: edge.label?.bounds }
+		const last = was.waypoints.length - 1
+		const goes = was.waypoints.map((p, k) => {
 			const docked = k === 0 ? source : k === last ? target : undefined
-			const go = whole ?? dockGoes(docked, a.at(p)) ?? beyond(a.at(p))
-			return go ? a.shiftPoint(p, delta) : p
+			return whole ?? dockGoes(docked, a.at(p)) ?? beyond(a.at(p))
 		})
-		const label = edge.label?.bounds
+		edge.waypoints = was.waypoints.map((p, k) => (goes[k] ? a.shiftPoint(p, delta) : p))
+		const label = was.label
 		if (edge.label && label && (whole ?? beyond(a.start(label)))) {
 			edge.label.bounds = a.shift(label, delta)
 		}
+		if (whole !== undefined || !askew(was.waypoints, edge.waypoints)) continue
+		if (goes[0] === true && goes[last] === true) {
+			edge.waypoints = was.waypoints.map((p) => a.shiftPoint(p, delta))
+			if (edge.label && label) edge.label.bounds = a.shift(label, delta)
+		} else kinked.push({ id: edge.bpmnElement, ends: ends.get(edge.bpmnElement), ...was })
 	}
-	return moved
+	return { moved, kinked }
+}
+
+/**
+ * An edge {@link pushBeyond} kinked with a single end moved: its id, the
+ * shapes it is docked on, and its waypoints and label before the push.
+ */
+interface Kinked {
+	id: string
+	ends: readonly [string, string] | undefined
+	waypoints: BpmnWaypoint[]
+	label: BpmnBounds | undefined
+}
+
+/** Whether a segment of `before` drawn horizontal or vertical runs askew in `after`, the same edge pushed. */
+function askew(before: readonly BpmnWaypoint[], after: readonly BpmnWaypoint[]): boolean {
+	const straight = (p: BpmnWaypoint, q: BpmnWaypoint) =>
+		Math.abs(p.x - q.x) < 1 || Math.abs(p.y - q.y) < 1
+	return after.some((q, k) => {
+		const [p, was, wasNext] = [after[k - 1], before[k - 1], before[k]]
+		return p && was && wasNext ? straight(was, wasNext) && !straight(p, q) : false
+	})
+}
+
+/**
+ * Routes afresh, in place, the edges {@link pushBeyond} kinked on `plane` of
+ * `defs` between their ends as `plane` now draws them, as the move op does: a
+ * message flow by `rerouteMessage`, any other edge around the shapes but
+ * swimlanes. Called once the shapes that grow from the line have their new
+ * bounds. An edge with an end not drawn keeps its pushed waypoints: there is
+ * nothing to route to, and the end that is drawn stays on its shape.
+ */
+function straighten(defs: BpmnDefinitions, plane: BpmnDiPlane, kinked: readonly Kinked[]): void {
+	if (kinked.length === 0) return
+	const flows = new Map(defs.collaborations.flatMap((c) => c.messageFlows).map((f) => [f.id, f]))
+	const pools = new Set(defs.collaborations.flatMap((c) => c.participants.map((p) => p.id)))
+	const swimlanes = swimlaneIds(defs)
+	const boundsOf = new Map(plane.shapes.map((s) => [s.bpmnElement, s.bounds]))
+	for (const { id, ends, waypoints, label } of kinked) {
+		// By id: a caller may have replaced the edge object since the push.
+		const edge = plane.edges.find((e) => e.bpmnElement === id)
+		if (!edge) continue
+		const flow = flows.get(id)
+		if (flow) {
+			const before = {
+				...edge,
+				waypoints,
+				...(edge.label ? { label: { ...edge.label, bounds: label } } : {}),
+			}
+			const routed = rerouteMessage(before, flow, plane.shapes, pools)
+			if (routed !== before) Object.assign(edge, routed)
+			continue
+		}
+		const [source = "", target = ""] = ends ?? []
+		const [from, to] = [boundsOf.get(source), boundsOf.get(target)]
+		if (!from || !to) continue
+		const obstacles = plane.shapes
+			.filter((s) => ![source, target].includes(s.bpmnElement) && !swimlanes.has(s.bpmnElement))
+			.map((s) => s.bounds)
+		edge.waypoints = computeWaypointsAvoiding(from, to, obstacles)
+	}
 }
 
 /**
@@ -622,7 +696,7 @@ export function insertLaneBand(
 	const { plane, shape: pool } = found
 	const height = LANE_BAND_HEIGHT
 	const line = at ?? bottom(pool.bounds)
-	pushBeyond(plane, "v", line, height, new Set([poolId]), anchors(defs), edgeEnds(defs))
+	const { kinked } = pushBeyond(plane, "v", line, height, new Set([poolId]), anchors(defs), defs)
 	const band: BpmnDiShape = {
 		id: shapeId,
 		bpmnElement: laneId,
@@ -638,6 +712,7 @@ export function insertLaneBand(
 	pool.bounds = { ...pool.bounds, height: pool.bounds.height + height }
 	// Right after the pool: a lane drawn after the nodes would paint over them.
 	plane.shapes.splice(plane.shapes.indexOf(pool) + 1, 0, band)
+	straighten(defs, plane, kinked)
 	return next
 }
 
@@ -1079,7 +1154,7 @@ function growPool(
 	}
 	const keep = poolContent(process, poolId, lanes)
 	for (const id of placed) keep.add(id)
-	if (deepen > 0) pushBelow(defs, next, found.plane, bottom(old), deepen, keep)
+	const kinked = deepen > 0 ? pushBelow(defs, next, found.plane, bottom(old), deepen, keep) : []
 	const grown = {
 		x: old.x - dx,
 		y: old.y - dy,
@@ -1087,6 +1162,7 @@ function growPool(
 		height: old.height + dy + Math.max(deepen, 0),
 	}
 	if (found.pool) found.pool.bounds = grown
+	straighten(defs, found.plane, kinked)
 	pushRight(defs, next, found.plane, old, grown, keep)
 	if (poolId && (dx > 0 || dy > 0)) redockMessages(next, found.plane, poolId)
 	return next
@@ -1282,7 +1358,8 @@ function poolContent(
  * down by `height` ({@link pushBeyond}), or up for a negative `height`, except
  * `keep`, the pool that grows or shrinks from `line` and its content, and
  * re-routes the message flows that would come off an end in `keep`. Adds the
- * message flows with both ends in `keep` to it.
+ * message flows with both ends in `keep` to it. Returns the edges the push
+ * kinked, for {@link straighten} once `keep` has grown.
  */
 function pushBelow(
 	defs: BpmnDefinitions,
@@ -1291,7 +1368,7 @@ function pushBelow(
 	line: number,
 	height: number,
 	keep: Set<string>,
-): void {
+): Kinked[] {
 	// A message with one end staying put and its waypoint there below the line
 	// would come off that end; with both ends staying put it stays as it is.
 	const loose: BpmnMessageFlow[] = []
@@ -1303,12 +1380,13 @@ function pushBelow(
 		const docked = from ? points?.[0] : points?.at(-1)
 		if (docked && docked.y >= line - 0.5) loose.push(flow)
 	}
-	pushBeyond(plane, "v", line, height, keep, anchors(defs), edgeEnds(defs), 1)
+	const { kinked } = pushBeyond(plane, "v", line, height, keep, anchors(defs), defs, 1)
 	const pools = new Set(next.collaborations.flatMap((c) => c.participants.map((p) => p.id)))
 	plane.edges = plane.edges.map((edge) => {
 		const flow = loose.find((f) => f.id === edge.bpmnElement)
 		return flow ? rerouteMessage(edge, flow, plane.shapes, pools) : edge
 	})
+	return kinked
 }
 
 // ── Resizing pools and lanes ──────────────────────────────────────────────────
@@ -1645,11 +1723,12 @@ export function resizeSwimlane(
 	// A shrink pulls up what a grow by as much would have pushed, as far as the shapes above let it.
 	const shift =
 		deepen < 0 ? -Math.min(-deepen, roomAbove(defs, plane, bottom(oldPool), keep, after)) : deepen
-	if (shift !== 0) pushBelow(defs, next, plane, bottom(oldPool), shift, keep)
+	const kinked = shift !== 0 ? pushBelow(defs, next, plane, bottom(oldPool), shift, keep) : []
 	for (const shape of plane.shapes) {
 		const bounds = after.get(shape.bpmnElement)
 		if (bounds) shape.bounds = bounds
 	}
+	straighten(defs, plane, kinked)
 	if (stack.process) pushRight(defs, next, plane, oldPool, newPool, keep)
 	if (!same(newPool, oldPool)) redockMessages(next, plane, stack.pool.id)
 	return next
@@ -1726,8 +1805,9 @@ export interface Spaced {
  * header strip), the lane chain and pool the line crosses deepen for `v`, and
  * a band that ends on the line grows too, so the bands still tile. No node
  * changes band. Only the diagram is copied. `undefined`, refused, for a
- * `delta` of 0, on a plane that draws a pool or lane vertically (the bands are
- * laid out horizontally only), and when nothing lies beyond the line.
+ * `delta` of 0, when the line crosses a pool or lane drawn vertically (the
+ * bands are laid out horizontally only; a vertical one the line passes moves
+ * whole or stays), and when nothing lies beyond the line.
  */
 export function makeSpace(
 	defs: BpmnDefinitions,
@@ -1740,8 +1820,6 @@ export function makeSpace(
 	if (delta === 0 || !source) return undefined
 	const swimlanes = swimlaneIds(defs)
 	const shapes = source.plane.shapes
-	// ponytail: any vertical band refuses the whole plane; check only the bands the line touches if that bites.
-	if (shapes.some((s) => swimlanes.has(s.bpmnElement) && s.isHorizontal === false)) return undefined
 	const a = ALONG[axis]
 	const crossed = (b: BpmnBounds) => {
 		const [start, end] = [a.start(b), a.start(b) + a.size(b)]
@@ -1749,11 +1827,14 @@ export function makeSpace(
 			? start < line - 0.5 && end >= line - 0.5
 			: end > line + 0.5 && start <= line + 0.5
 	}
-	const grows = new Set(
-		shapes
-			.filter((s) => (swimlanes.has(s.bpmnElement) || s.isExpanded === true) && crossed(s.bounds))
-			.map((s) => s.bpmnElement),
+	const growing = shapes.filter(
+		(s) => (swimlanes.has(s.bpmnElement) || s.isExpanded === true) && crossed(s.bounds),
 	)
+	// Stretching a vertical pool or lane would lay its bands out the wrong way; one the line
+	// passes moves whole or stays, like any shape.
+	if (growing.some((s) => swimlanes.has(s.bpmnElement) && s.isHorizontal === false))
+		return undefined
+	const grows = new Set(growing.map((s) => s.bpmnElement))
 	if (axis === "h") {
 		for (const pool of defs.collaborations.flatMap((c) => c.participants)) {
 			if (!grows.has(pool.id)) continue
@@ -1768,7 +1849,7 @@ export function makeSpace(
 	// on its far edge moves with that edge, the one on its near edge stays.
 	const hosts = hostAnchors(defs)
 	for (const [event, host] of hosts) if (grows.has(host)) hosts.delete(event)
-	const moved = pushBeyond(plane, axis, line, delta, grows, hosts, edgeEnds(defs))
+	const { moved, kinked } = pushBeyond(plane, axis, line, delta, grows, hosts, defs)
 	if (moved.size === 0 && grows.size === 0) return undefined
 	for (const s of plane.shapes) {
 		if (!grows.has(s.bpmnElement)) continue
@@ -1778,6 +1859,7 @@ export function makeSpace(
 				? a.span(s.bounds, start, size + delta)
 				: a.span(s.bounds, start + delta, size - delta)
 	}
+	straighten(defs, plane, kinked)
 	return { defs: next, moved: [...moved] }
 }
 

@@ -139,6 +139,32 @@ describe("8d.4 connecting across pools adds a message flow", () => {
 		expectSwimlanesSound(after)
 	})
 
+	it("connects an own node and a partner pool that draws a process, its process untouched", () => {
+		const before = Bpmn.parse(lockedPartnerXml())
+		const there = run(before, connect("Task_review", "Participant_partner"))
+		const flow = addedMessage(before, there)
+		expect(flow).toMatchObject({ sourceRef: "Task_review", targetRef: "Participant_partner" })
+		expect(routeOf(there, flow.id)).toEqual([
+			{ x: 210, y: 100 },
+			{ x: 210, y: 400 },
+		])
+		const back = run(before, connect("Participant_partner", "Task_review"))
+		expect(addedMessage(before, back)).toMatchObject({
+			sourceRef: "Participant_partner",
+			targetRef: "Task_review",
+		})
+		for (const after of [there, back]) {
+			expect(after.processes.find((p) => p.id === "Process_partner")).toEqual(
+				before.processes.find((p) => p.id === "Process_partner"),
+			)
+			expectSwimlanesSound(after)
+		}
+		// The same end rules as a black box (messageEndProblem), and nothing into its own nodes.
+		expectRefused(before, connect("Gateway_ok", "Participant_partner"))
+		expectRefused(before, connect("Participant_partner", "End_1"))
+		expectRefused(before, connect("Participant_partner", "Task_p"))
+	})
+
 	it("adds the message to the collaboration that holds the own pool", () => {
 		const before = flowableFixture()
 		const own = before.collaborations[0]

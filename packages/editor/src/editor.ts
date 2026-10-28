@@ -22,6 +22,7 @@ import type {
 } from "@bpmnkit/canvas"
 import {
 	Bpmn,
+	allLanes,
 	applyAutoLayout,
 	checkDiCompleteness,
 	collectLabelStyles,
@@ -2792,12 +2793,30 @@ export class BpmnEditor {
 			if (id && this._swimlanes.has(id) && !this._onHeaderStrip(id, clientX, clientY)) {
 				// Except as a connection's end: a black box's body is all of it a message can reach (I6).
 				const end = this._connectSourceId() ? this._innermostShapeAt(clientX, clientY) : null
-				return end ? { type: "shape", id: end } : { type: "canvas" }
+				return end ? { type: "shape", id: this._connectEnd(end) } : { type: "canvas" }
 			}
-			if (id) return { type: "shape", id }
+			if (id) return { type: "shape", id: this._connectEnd(id) }
 		}
 
 		return { type: "canvas" }
+	}
+
+	/**
+	 * While connecting, a partner's lane stands for its pool: a lane is no
+	 * message end, and a partner's lanes cover all of its body but the name
+	 * strip. An own lane stays itself, as a sequence flow is judged there.
+	 */
+	private _connectEnd(id: string): string {
+		const defs = this._defs
+		if (!defs || !this._connectSourceId() || !this._swimlanes.has(id)) return id
+		const primary = primaryProcess(defs)
+		const process = defs.processes.find(
+			(p) => p !== primary && allLanes(p.laneSet).some((lane) => lane.id === id),
+		)
+		const pool = defs.collaborations
+			.flatMap((c) => c.participants)
+			.find((p) => process !== undefined && p.processRef === process.id)
+		return pool?.id ?? id
 	}
 
 	/** The id of the smallest shape whose bounds hold the client point: the innermost lane, pool or node there. */

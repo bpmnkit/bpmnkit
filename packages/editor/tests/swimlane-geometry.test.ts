@@ -30,6 +30,7 @@ import {
 	lockedPartnerXml,
 	overlapping,
 	poolLessFlowable,
+	verticalPoolBesideXml,
 	verticalPoolXml,
 } from "./swimlane-helpers.js"
 
@@ -1015,6 +1016,42 @@ describe("8c.3 space: vertical", () => {
 	}
 })
 
+describe("8c.3 space: past a vertical pool", () => {
+	const VERTICAL = ["P", "LA", "LB", "s"]
+
+	it("leaves a vertical pool before the line where it is", () => {
+		const defs = Bpmn.parse(verticalPoolBesideXml())
+		for (const [axis, origin] of [
+			["h", 450],
+			["v", 650],
+		] as const) {
+			const next = run(defs, { kind: "space", origin, axis, delta: 40 })
+			const [dx, dy] = axis === "h" ? [40, 0] : [0, 40]
+			expect(boundsOf(next, "Q"), axis).toEqual(shift(boundsOf(defs, "Q"), dx, dy))
+			expectUnmoved(defs, next, ["Q"])
+		}
+	})
+
+	it("moves a vertical pool beyond the line whole, its lanes and nodes along", () => {
+		const defs = Bpmn.parse(verticalPoolBesideXml())
+		for (const [axis, origin, delta] of [
+			["h", -20, 40],
+			["v", -20, 40],
+			["h", 450, -40],
+			["v", 650, -40],
+		] as const) {
+			const next = run(defs, { kind: "space", origin, axis, delta })
+			const [dx, dy] = axis === "h" ? [delta, 0] : [0, delta]
+			for (const id of VERTICAL) {
+				expect(boundsOf(next, id), `${axis} ${delta} ${id}`).toEqual(
+					shift(boundsOf(defs, id), dx, dy),
+				)
+			}
+			expect(refsOf(next)).toEqual(refsOf(defs))
+		}
+	})
+})
+
 describe("8c.3 space: refused", () => {
 	it("refuses a line across a vertical pool, and a space of nothing", () => {
 		for (const laned of [true, false]) {
@@ -1023,6 +1060,14 @@ describe("8c.3 space: refused", () => {
 			expectRefused(vertical, { kind: "space", origin: 300, axis: "v", delta: 50 })
 		}
 		expectRefused(flowableFixture(), { kind: "space", origin: 200, axis: "v", delta: 0 })
+	})
+
+	it("refuses a line through a vertical pool beside a pool it would pass", () => {
+		const defs = Bpmn.parse(verticalPoolBesideXml())
+		expectRefused(defs, { kind: "space", origin: 200, axis: "h", delta: 50 })
+		expectRefused(defs, { kind: "space", origin: 300, axis: "v", delta: 50 })
+		// A line on the pool's far edge would stretch it too.
+		expectRefused(defs, { kind: "space", origin: 400, axis: "h", delta: 50 })
 	})
 
 	it("moves everything below a line above a pool-less laned process", () => {
