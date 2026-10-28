@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-10-28 — Docs: stale editor, canvas and compactify references
+
+- `packages/editor.md` and `packages/canvas.md` called `loadXML`, which neither class has (the method is `load`); the canvas table listed `getXML()` and `off()`, which do not exist, and the generated canvas README listed `fit()` and plugin-only `getShapes()`/`getEdges()` as `BpmnCanvas` methods. Tables now list `load`, `loadDefinitions`, `fitView`, `zoom`, `setTheme`, `on` (returns the unsubscribe function) and `destroy`; `scripts/generate-readmes.mjs` fixed and READMEs regenerated (`check-packages` passes). `packages/core.md`: `compactify` said it drops participants, message flows and lanes; it has carried `lanes`, `participants`, `messageFlows` and `executable` since the lane/pool work.
+
 ## 2026-10-28 — Editor: a black box's bar says why it has no lanes
 
 - The context bar of a black-box partner pool now starts with an info mark (`IC.info`, `.hud-info`, a `span` with `role="img"`, not a button) whose tooltip and `aria-label` read "Partner pool: no lanes or nodes in this version", translated in the nine locales and listed in `i18n/en.json`. The own pool and lanes show none. Landing `packages/editor.md` how-to step 5 mentions it; docspack rebuilt. Changeset `black-box-hint.md`. Editor 653 tests pass.

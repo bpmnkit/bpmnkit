@@ -39,7 +39,7 @@ const editor = new BpmnEditor({
 const hud = initEditorHud(editor);
 
 // Load a diagram
-await editor.loadXML(bpmnXml);
+editor.load(bpmnXml);
 ```
 
 A file with flow nodes but no diagram interchange is laid out on load, which fires one

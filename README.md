@@ -166,7 +166,7 @@ const editor = new BpmnEditor({
 })
 
 initEditorHud(editor)
-editor.loadXML(bpmnXml)
+editor.load(bpmnXml)
 ```
 
 See the [`@bpmnkit/editor`](packages/editor/README.md) and [`@bpmnkit/plugins`](packages/plugins/README.md) READMEs for all options.

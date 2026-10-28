@@ -344,8 +344,10 @@ the input document already had that problem.
 ### `compactify(definitions)`
 
 Projects a `BpmnDefinitions` object onto a `CompactDiagram` — a small JSON object suitable
-for LLM prompts. **Lossy:** it keeps topology, names, `<bpmn:documentation>` and the common
-Zeebe bindings, and drops collaborations, participants, message flows, lanes, data stores,
+for LLM prompts. **Lossy:** it keeps topology, names, `<bpmn:documentation>`, the common
+Zeebe bindings, lanes (`lanes`, members on leaf lanes only), pools (`participants`; a black box
+has no `processId`), message flows (`messageFlows`, without `messageRef`) and `isExecutable`
+(`executable`, written only where `expand`'s default would differ). It drops data stores,
 artifacts, root-level messages and errors, multi-instance loop characteristics, full
 `zeebe:ioMapping` entries and diagram interchange.
 

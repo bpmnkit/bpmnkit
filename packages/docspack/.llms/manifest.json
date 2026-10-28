@@ -4400,7 +4400,7 @@
 		{
 			"id": "packages.canvas.overview",
 			"file": "chunks/packages.canvas.overview.md",
-			"tokens": 161,
+			"tokens": 160,
 			"tags": [
 				"packages",
 				"canvas",
@@ -4416,7 +4416,7 @@
 		{
 			"id": "packages.canvas.options",
 			"file": "chunks/packages.canvas.options.md",
-			"tokens": 147,
+			"tokens": 159,
 			"tags": [
 				"packages",
 				"canvas",
@@ -4424,7 +4424,7 @@
 				"api"
 			],
 			"entities": [
-				"canvas.getXML()",
+				"BpmnDefinitions",
 				"canvas.destroy()"
 			]
 		},
@@ -5133,7 +5133,7 @@
 		{
 			"id": "packages.core.installation-compactify-definitions",
 			"file": "chunks/packages.core.installation-compactify-definitions.md",
-			"tokens": 342,
+			"tokens": 382,
 			"tags": [
 				"packages",
 				"core",
@@ -5144,6 +5144,10 @@
 			"entities": [
 				"BpmnDefinitions",
 				"CompactDiagram",
+				"processId",
+				"messageFlows",
+				"messageRef",
+				"isExecutable",
 				"isDefault"
 			]
 		},
@@ -5647,7 +5651,7 @@
 		{
 			"id": "packages.editor.basic-setup",
 			"file": "chunks/packages.editor.basic-setup.md",
-			"tokens": 150,
+			"tokens": 149,
 			"tags": [
 				"packages",
 				"editor",
