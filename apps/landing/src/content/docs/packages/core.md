@@ -478,6 +478,25 @@ An attribute written before the `|` (`late[boundary:timer on=pay]`) is read all 
 task is drawn into (`send > wait[boundary:timer …]`) goes on that task.
 Change scripts read `result=` and `feel=`, but not `each=` and `after=` yet.
 
+**Lanes and pools.** Three line kinds, written after the paths:
+
+```text
+lane sales[Sales team]: start, review, ok    the lane a role works in; one line per role
+pool bank[Bank]                              another party, drawn as an empty pool
+msg pay >(Payment) bank                      a message to that party; msg bank > paid one from it
+```
+
+The parser writes them as the compact `lanes`, `participants` and `messageFlows`, and `expand`
+draws the process in its own pool with its lanes. A node no lane lists — a join or end event the
+parser added, a boundary event, a node the model forgot — goes into its predecessor's lane (a
+boundary into its host's), else its successor's, else the first lane, and is listed in `fixes`.
+A node listed in two lanes stays in the later one; a member that is not a top-level node is left
+out. A message has one end in the process and the other on a `pool` line: a message between two
+pools, between two nodes of the process, out of a start or catch event, into an end or throw
+event, or touching a gateway is left out with a problem. Its label is kept as written, colons
+included. A bare `lane back_office: …` or `pool tax_office` is named from its id. Ids such as
+`lane_check[…]` still start paths: the keyword needs a space after it.
+
 ```typescript
 import { expand, Bpmn, parseProcessText, PROCESS_TEXT_GUIDE } from "@bpmnkit/core";
 

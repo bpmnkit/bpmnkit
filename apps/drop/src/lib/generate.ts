@@ -1,4 +1,4 @@
-import { PROCESS_TEXT_GUIDE } from "@bpmnkit/core"
+import { MESSAGE_LINE, POOL_LINE, PROCESS_TEXT_GUIDE } from "@bpmnkit/core"
 
 /**
  * System prompt for describe-to-diagram. Kept short and fixed: it is the whole
@@ -411,6 +411,13 @@ const DIAGRAM_LINE =
 	/^(#|(?:note|doc) +[A-Za-z_][\w.-]*\s*:|(-{0,2}>\s*(\([^()]*\)\s*)?)?([A-Za-z_][\w.-]*|\d[\w-]*(?=\s*(?:\[|-{0,2}>)))((?: +[A-Za-z_][\w.-]*)* *\[|\s*-{0,2}>|$))/
 
 /**
+ * A `lane` line whose members are ids separated by commas. Stricter than the
+ * parser, which also reads spaces: a list of words would let prose through.
+ */
+const LANE_DIAGRAM_LINE =
+	/^lane\s+[A-Za-z_][\w.-]*\s*(?:\[[^\]]*\])?\s*:\s*[A-Za-z_][\w.-]*(?:\s*,\s*[A-Za-z_][\w.-]*)*\s*$/i
+
+/**
  * Passes on only the lines of a model's answer that are in the line format.
  *
  * The route streams the answer to the reader as it arrives. Unfiltered, a
@@ -421,7 +428,16 @@ const DIAGRAM_LINE =
  */
 export function createDiagramLineFilter(): { push(chunk: string): string; end(): string } {
 	let pending = ""
-	const keep = (line: string) => DIAGRAM_LINE.test(line.trim())
+	const keep = (line: string) => {
+		const text = line.trim()
+		// `pool` and `msg` lines hold only ids and a label, so the parser's own patterns do.
+		return (
+			DIAGRAM_LINE.test(text) ||
+			LANE_DIAGRAM_LINE.test(text) ||
+			POOL_LINE.test(text) ||
+			MESSAGE_LINE.test(text)
+		)
+	}
 	return {
 		push(chunk: string): string {
 			pending += chunk

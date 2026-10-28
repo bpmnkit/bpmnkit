@@ -5188,7 +5188,7 @@
 		{
 			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream",
 			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md",
-			"tokens": 1923,
+			"tokens": 1011,
 			"tags": [
 				"packages",
 				"core",
@@ -5199,13 +5199,29 @@
 			],
 			"entities": [
 				"glm-4.7-flash",
-				"parseProcessText",
-				"lintDiagram"
+				"messageFlows"
 			]
 		},
 		{
 			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2",
 			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2.md",
+			"tokens": 1255,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"parseprocesstext",
+				"text",
+				"createprocesstextstream"
+			],
+			"entities": [
+				"parseProcessText",
+				"lintDiagram"
+			]
+		},
+		{
+			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream-3",
+			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream-3.md",
 			"tokens": 397,
 			"tags": [
 				"packages",

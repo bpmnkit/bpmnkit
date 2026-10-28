@@ -424,6 +424,9 @@ export { compactify, expand } from "./bpmn/compact.js"
 export { createCompactStream } from "./bpmn/compact-stream.js"
 export type { CompactStream, CompactStreamOptions } from "./bpmn/compact-stream.js"
 export {
+	LANE_LINE,
+	MESSAGE_LINE,
+	POOL_LINE,
 	PROCESS_TEXT_GUIDE,
 	conditionOrLabel,
 	createProcessTextStream,

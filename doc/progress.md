@@ -1,5 +1,15 @@
 # Progress
 
+## 2026-10-28 — Process text: lanes, pools and message flows
+
+- Fourth step of lane and pool write support (WP5): the line format a model writes in gains `lane sales[Sales team]: a, b`, `pool bank[Bank]` and `msg pay >(Payment) bank` / `msg bank > paid`, parsed into the compact `lanes`, `participants` and `messageFlows`; `expand` draws the process in its own pool with its lanes.
+- A member already declared means the node it named when the line was read (reused ids stay right); a lane written twice gathers both; a node in two lanes stays in the later one. Unlisted nodes, the parser's own joins and ends included, join their neighbour's lane (a boundary its host's) and are listed in `fixes`. A message needs one end on a `pool` line and the other in the process; one out of a start or catch event, into an end or throw event, or touching a gateway is left out with a problem.
+- `PROCESS_TEXT_GUIDE` gains two syntax lines and one rule (lanes and pools only when the description names roles or parties); the example is unchanged. The on-device guide stays without them (tested).
+- Drop: the generate line filter passes `lane` (comma-separated ids only, so prose cannot pass as a member list), `pool` and `msg` lines. `LANE_LINE`, `POOL_LINE`, `MESSAGE_LINE` exported from `@bpmnkit/core`.
+- From the review: a boundary event a lane line puts apart from its host moves to the host's lane (layout draws it on the host); a message to or from a timer, signal or other non-message event is refused; an id naming both a node and a renamed pool is read by the other end of the `msg` line; clash problems say whether a node or a lane holds the id. `buildLaneSet` gives lane-set ids a suffix when a lane or node already holds `LaneSet_<id>`.
+- Tests: `process-text-lanes.test.ts` (29), a `buildLaneSet` id case, a Drop filter case, the on-device prompt exclusion list.
+- Not run: the generation bench (needs model access); a `29-lanes-roles` case is still to add.
+
 ## 2026-10-27 — Lanes and pools in the builder and the compact format
 
 - Third step of lane and pool write support (WP3, WP4).

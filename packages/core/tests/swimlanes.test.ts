@@ -286,6 +286,19 @@ describe("buildLaneSet", () => {
 	})
 })
 
+describe("buildLaneSet ids", () => {
+	it("gives the lane set an id no lane or node already has", () => {
+		const p = process("order", [node("t")])
+		const set = buildLaneSet(
+			p,
+			[{ id: "LaneSet_order", lanes: [{ id: "a" }, { id: "LaneSet_a" }] }],
+			new Map([["t", "a"]]),
+		)
+		const ids = [set.id, set.lanes[0]?.id, set.lanes[0]?.childLaneSet?.id, "t", "order"]
+		expect(new Set(ids).size).toBe(ids.length)
+	})
+})
+
 describe("laneForNewNode", () => {
 	const laned = (flows: BpmnSequenceFlow[], extra: BpmnFlowElement[] = []): BpmnProcess =>
 		process(

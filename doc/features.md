@@ -1,5 +1,9 @@
 # Features
 
+## Lanes, pools and message flows in the process text format (2026-10-28)
+
+- A model writing process text (Drop, `casen`, AI plugins) can write `lane id[Name]: a, b`, `pool id[Name]` and `msg a >(Label) pool`; the parser places unlisted nodes in a neighbour's lane, refuses message flows BPMN does not allow, and `expand` draws pools and lanes. Taught by `PROCESS_TEXT_GUIDE`; not by the on-device guide.
+
 ## Lanes and pools in the builder and the compact format (2026-10-27)
 
 - `ProcessBuilder.lane()` / `.participant()` write lanes (nested included) and pools, validated at build time; `DiagramBuilder.withAutoLayout()`. The compact format carries `lanes`, `participants`, `messageFlows` and `executable` both ways, so `casen generate`, the proxy and `reconcileCompact` keep swimlanes. Partner pools are written `isExecutable="false"`, as Flowable needs. Round trips keep Flowable Modeler files (no definitions id), `isExecutable="false"` and nested lanes (`childLaneSet`).

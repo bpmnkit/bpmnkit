@@ -240,7 +240,7 @@ function specIds(specs: readonly LaneSpec[]): { all: Set<string>; leaves: Set<st
  * {@link laneProblems} can still report a ref to an unknown node. A boundary
  * event always joins its host's lane when the host is mapped. Parent lanes list
  * the union of their descendants' refs. Ids: `LaneSet_<processId>` for the set,
- * `LaneSet_<laneId>` for a child set.
+ * `LaneSet_<laneId>` for a child set, with a numeric suffix when already in use.
  *
  * @throws Error listing every `leafOf` entry that names an undeclared lane or a
  *   lane with child lanes, or when `specs` loops back on itself.
@@ -277,6 +277,15 @@ export function buildLaneSet(
 		for (const eventId of boundaryEventIds(process, nodeId)) place(laneId, eventId)
 	}
 
+	// A lane may be named `LaneSet_<id>` too; the set ids step around every id in use.
+	const taken = new Set<string>([
+		process.id,
+		...ids.all,
+		...process.flowElements.map((element) => element.id),
+		...process.sequenceFlows.map((flow) => flow.id),
+	])
+	const setId = (owner: string) =>
+		freshId(`LaneSet_${owner}`, (n) => `LaneSet_${owner}_${n}`, taken)
 	// specIds has rejected a looping spec tree, so this recursion terminates.
 	const toLane = (spec: LaneSpec): BpmnLane => {
 		const children = (spec.lanes ?? []).map(toLane)
@@ -290,11 +299,12 @@ export function buildLaneSet(
 		}
 		if (spec.name !== undefined) lane.name = spec.name
 		if (children.length > 0) {
-			lane.childLaneSet = { id: `LaneSet_${spec.id}`, lanes: children, unknownAttributes: {} }
+			lane.childLaneSet = { id: setId(spec.id), lanes: children, unknownAttributes: {} }
 		}
 		return lane
 	}
-	return { id: `LaneSet_${process.id}`, lanes: specs.map(toLane), unknownAttributes: {} }
+	const rootId = setId(process.id)
+	return { id: rootId, lanes: specs.map(toLane), unknownAttributes: {} }
 }
 
 /**
