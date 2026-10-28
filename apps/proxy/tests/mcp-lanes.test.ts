@@ -5,7 +5,7 @@
  * in-process.
  */
 import { spawn } from "node:child_process"
-import { mkdtempSync, readFileSync, rmSync } from "node:fs"
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -76,6 +76,20 @@ describe("saving a diagram with pools and lanes", () => {
 		const saved = Bpmn.parse(readFileSync(output, "utf8"))
 		expectPoolAndLaneDi(saved)
 		expect(saved.processes.find((p) => p.id === "customer")?.isExecutable).toBe(false)
+	}, 30000)
+
+	it("refuses a compact whose message names no pool or node, and saves nothing", async () => {
+		// REV-20261028-010: replace_diagram used to save the dangling message as valid BPMN.
+		const output = join(dir, "refused.bpmn")
+		const compact = compactify(Bpmn.parse(readFileSync(LANED, "utf8")))
+		compact.messageFlows = [
+			...(compact.messageFlows ?? []),
+			{ id: "Message_dangling", source: "missing", target: "Participant_customer" },
+		]
+		const text = await callTool("replace_diagram", { diagram: compact }, LANED, output)
+
+		expect(text).toMatch(/invalid CompactDiagram.*source "missing"/)
+		expect(existsSync(output)).toBe(false)
 	}, 30000)
 
 	it("keeps lane and pool DI when the bridge exports XML", async () => {

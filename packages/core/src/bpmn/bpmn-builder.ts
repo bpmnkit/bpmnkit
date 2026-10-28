@@ -47,6 +47,7 @@ import {
 	assignLane,
 	buildLaneSet,
 	collaborationProblems,
+	freshId,
 	laneForNewNode,
 	laneProblems,
 	poolLanedProcesses,
@@ -3534,8 +3535,14 @@ export class ProcessBuilder {
 			processRef: process.id,
 			unknownAttributes: {},
 		}
+		// The caller's ids are theirs: the collaboration steps around every one, lane sets included.
+		const taken = new Set(used)
+		for (const set of [laned.laneSet, ...allLanes(laned.laneSet).map((l) => l.childLaneSet)]) {
+			if (set?.id !== undefined) taken.add(set.id)
+		}
+		for (const lane of allLanes(laned.laneSet)) taken.add(lane.id)
 		const collaboration: BpmnCollaboration = {
-			id: "Collaboration_1",
+			id: freshId("Collaboration_1", (n) => `Collaboration_${n}`, taken),
 			participants: [participant],
 			messageFlows: [],
 			textAnnotations: [],

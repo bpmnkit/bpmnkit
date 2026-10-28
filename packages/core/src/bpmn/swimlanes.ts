@@ -60,7 +60,8 @@ function laneEntries(laneSet: BpmnLaneSet | undefined): LaneEntry[] {
 	return entries
 }
 
-function revisitMessage(laneId: string): string {
+/** The error a lane tree that loops back on itself is refused with. */
+export function revisitMessage(laneId: string): string {
 	return `Lane "${laneId}" appears twice in one lane tree; a lane tree must not loop back on itself`
 }
 
@@ -339,10 +340,17 @@ export function laneForNewNode(process: BpmnProcess, nodeId: string): BpmnLane |
  * executable), or all of them when every one is; among them the one whose pool
  * is drawn largest, else the first. Modeler files do not always put the
  * executable pool first.
+ *
+ * {@link BpmnDefinitions.primaryProcessId}, while it names a process of
+ * `defs`, comes right after the explicitly executable process: it breaks the
+ * tie the semantics cannot, as an emptied own pool next to a partner's pool
+ * with content and `isExecutable="false"` reads exactly like a partner's empty
+ * pool next to a file's only process. An explicit `isExecutable="true"`, which
+ * another tool may have set since, is no tie and still wins.
  */
 export function primaryProcess(
 	defs: Pick<BpmnDefinitions, "collaborations" | "processes"> &
-		Partial<Pick<BpmnDefinitions, "diagrams">>,
+		Partial<Pick<BpmnDefinitions, "diagrams" | "primaryProcessId">>,
 ): BpmnProcess | undefined {
 	const byId = new Map(defs.processes.map((process) => [process.id, process]))
 	for (const participant of defs.collaborations[0]?.participants ?? []) {
@@ -350,13 +358,33 @@ export function primaryProcess(
 			participant.processRef === undefined ? undefined : byId.get(participant.processRef)
 		if (process?.isExecutable === true) return process
 	}
+	const pinned = defs.primaryProcessId === undefined ? undefined : byId.get(defs.primaryProcessId)
 	return (
 		defs.processes.find((process) => process.isExecutable === true) ??
+		pinned ??
 		// An empty process is a partner's; picking it would mark the real one
 		// non-executable in poolLanedProcesses, and Flowable would deploy nothing.
-		defs.processes.find((process) => process.flowElements.length > 0 || process.laneSet) ??
+		defs.processes.find(hasContent) ??
 		emptiedPrimary(defs)
 	)
+}
+
+/** The namespace of the `primaryProcess` attribute {@link pinnedPrimaryToWrite} puts on `<definitions>`. */
+export const BPMNKIT_NAMESPACE = "https://bpmnkit.com/schema/bpmn"
+
+/**
+ * The {@link BpmnDefinitions.primaryProcessId} a file must carry, or
+ * `undefined` when the file alone already leads {@link primaryProcess} there,
+ * so a document nobody emptied stays byte-identical.
+ */
+export function pinnedPrimaryToWrite(defs: BpmnDefinitions): string | undefined {
+	const pinned = defs.primaryProcessId
+	if (pinned === undefined || !defs.processes.some((process) => process.id === pinned)) {
+		return undefined
+	}
+	return primaryProcess({ ...defs, primaryProcessId: undefined })?.id === pinned
+		? undefined
+		: pinned
 }
 
 /**
@@ -417,7 +445,7 @@ function documentIds(defs: BpmnDefinitions): Set<string> {
  * Bounded: at most `taken.size` candidates can be taken, so one of the first
  * `taken.size + 1` distinct candidates is free.
  */
-function freshId(first: string, nth: (n: number) => string, taken: Set<string>): string {
+export function freshId(first: string, nth: (n: number) => string, taken: Set<string>): string {
 	let id = first
 	for (let n = 2; taken.has(id) && n <= taken.size + 2; n++) id = nth(n)
 	taken.add(id)

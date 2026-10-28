@@ -30,6 +30,7 @@ import {
 	laneOf,
 	poolLanedProcesses,
 	primaryProcess,
+	revisitMessage,
 } from "./swimlanes.js"
 
 // ── Types ───────────────────────────────────────────────────────────────────
@@ -1167,6 +1168,8 @@ export function executability(compact: CompactDiagram, pooled: boolean): boolean
  * are taken from leaf lanes only and written verbatim; a node no lane lists goes
  * in the lane {@link laneForNewNode} picks for it. `lanes` must not loop back
  * on itself. Returns `process` unchanged when `lanes` is absent or empty.
+ *
+ * @throws Error when `lanes` loops back on itself, or as {@link buildLaneSet} does.
  */
 export function withLanes(
 	process: BpmnProcess,
@@ -1174,9 +1177,13 @@ export function withLanes(
 ): BpmnProcess {
 	if (lanes === undefined || lanes.length === 0) return process
 	const leafOf = new Map<string, string>()
-	// compactProblems has rejected a looping lane tree, so this recursion terminates.
+	// Callers validate first, but this one is exported: a looping tree must fail
+	// as one rather than overflow the stack.
+	const seen = new Set<CompactLane>()
 	const collect = (children: readonly CompactLane[]): void => {
 		for (const lane of children) {
+			if (seen.has(lane)) throw new Error(revisitMessage(lane.id))
+			seen.add(lane)
 			if ((lane.lanes?.length ?? 0) > 0) collect(lane.lanes ?? [])
 			else for (const member of lane.members ?? []) leafOf.set(member, lane.id)
 		}

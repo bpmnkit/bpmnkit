@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
 
+import { withLanes } from "../src/bpmn/compact.js"
 import {
 	Bpmn,
 	allLanes,
@@ -535,5 +536,98 @@ describe("reconcileCompact and full operations keep lanes consistent", () => {
 			{ op: "add_flow", id: "toAudit", from: "review", to: "audit", parent: "order" },
 		])
 		expect(laneOf(processOf(definitions, "order"), "audit")?.id).toBe("Lane_inside")
+	})
+})
+
+describe("REV-20261028-010: reconcileCompact refuses broken pool, message and lane ids", () => {
+	const plain = () => Bpmn.createProcess("p").startEvent("a").endEvent("b").build()
+	const refused = /reconcileCompact: invalid CompactDiagram/
+
+	it("rejects a message flow whose end is neither a pool nor a node in one", () => {
+		const defs = plain()
+		const compact = compactify(defs)
+		compact.participants = [{ id: "own", processId: "p" }, { id: "bank" }]
+		compact.messageFlows = [{ id: "m", source: "missing", target: "bank" }]
+		for (const strict of [true, false]) {
+			expect(() => reconcileCompact(defs, compact, { strict })).toThrow(/source "missing"/)
+		}
+	})
+
+	it("rejects a participant naming a missing process and a message inside one pool", () => {
+		const defs = plain()
+		const missing = compactify(defs)
+		missing.participants = [
+			{ id: "own", processId: "p" },
+			{ id: "ghost", processId: "nowhere" },
+		]
+		expect(() => reconcileCompact(defs, missing)).toThrow(/process "nowhere"/)
+		const inside = compactify(defs)
+		inside.participants = [{ id: "own", processId: "p" }]
+		inside.messageFlows = [{ id: "m", source: "a", target: "b" }]
+		expect(() => reconcileCompact(defs, inside)).toThrow(/starts and ends in participant "own"/)
+	})
+
+	it("rejects a lane, pool or message id another element already has", () => {
+		const defs = plain()
+		const lane = compactify(defs)
+		const process = lane.processes[0]
+		if (!process) throw new Error("no process")
+		process.lanes = [{ id: "a", members: ["a", "b"] }]
+		expect(() => reconcileCompact(defs, lane)).toThrow(/Duplicate element ID "a"/)
+		const pool = compactify(defs)
+		pool.participants = [{ id: "b", processId: "p" }]
+		expect(() => reconcileCompact(defs, pool, { strict: false })).toThrow(refused)
+	})
+
+	it("rejects a lane named like a root message, and a new clash on an id already used twice", () => {
+		const defs = plain()
+		defs.messages.push({ id: "Message_1", name: "Order", unknownAttributes: {} })
+		const lane = compactify(defs)
+		const process = lane.processes[0]
+		if (!process) throw new Error("no process")
+		process.lanes = [{ id: "Message_1", members: ["a", "b"] }]
+		expect(() => reconcileCompact(defs, lane)).toThrow(/Duplicate element ID "Message_1"/)
+
+		const twice = structuredClone(defs)
+		twice.messages.push({ id: "Message_1", name: "Again", unknownAttributes: {} })
+		expect(() => reconcileCompact(twice, compactify(twice))).not.toThrow()
+		expect(() => reconcileCompact(twice, lane)).toThrow(/Duplicate element ID "Message_1"/)
+	})
+
+	it("still accepts a valid edit, and a no-op on a document that was already broken", () => {
+		const defs = plain()
+		const compact = compactify(defs)
+		compact.participants = [{ id: "own", processId: "p" }, { id: "bank" }]
+		compact.messageFlows = [{ id: "m", source: "a", target: "bank" }]
+		const pooled = reconcileCompact(defs, compact).definitions
+		expect(collaborationProblems(pooled)).toEqual([])
+
+		const broken = structuredClone(pooled)
+		const flow = broken.collaborations[0]?.messageFlows[0]
+		if (!flow) throw new Error("no message flow")
+		flow.sourceRef = "missing"
+		expect(() => reconcileCompact(broken, compactify(broken))).not.toThrow()
+	})
+})
+
+describe("REV-20261028-012: withLanes refuses a looping lane tree", () => {
+	const process = () =>
+		Bpmn.createProcess("p").startEvent("a").endEvent("b").build().processes[0] as BpmnProcess
+
+	it("throws an explicit cycle error for a self-loop and a two-lane loop", () => {
+		const self: CompactLane = { id: "l", lanes: [] }
+		self.lanes?.push(self)
+		expect(() => withLanes(process(), [self])).toThrow(/must not loop back on itself/)
+		const x: CompactLane = { id: "x", lanes: [] }
+		const y: CompactLane = { id: "y", lanes: [x] }
+		x.lanes?.push(y)
+		expect(() => withLanes(process(), [x])).toThrow(/must not loop back on itself/)
+	})
+
+	it("still builds nested lanes", () => {
+		const laned = withLanes(process(), [
+			{ id: "outer", lanes: [{ id: "inner", members: ["a", "b"] }] },
+		])
+		expect(laneOf(laned, "a")?.id).toBe("inner")
 	})
 })

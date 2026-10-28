@@ -52,7 +52,7 @@ import {
 	writableMessageLabel,
 	writableName,
 } from "@bpmnkit/core"
-import { computeWaypointsAvoiding } from "./geometry.js"
+import { computeWaypointsAvoiding, edgeLabelBounds } from "./geometry.js"
 import { type IdFactory, genId } from "./id.js"
 import {
 	changeElementType,
@@ -1443,6 +1443,10 @@ function applyMessageLine(run: SwimlaneRun, line: ProcessDelta["messageFlows"][n
 	if (existing) {
 		if (line.name === undefined || line.name === writableMessageLabel(existing.name ?? "")) return
 		existing.name = line.name
+		const edge = planeOf(run).edges.find((e) => e.bpmnElement === existing.id)
+		// The canvas draws an edge's name only inside label bounds; a user's own position stays.
+		const bounds = edge && !edge.label?.bounds ? edgeLabelBounds(edge.waypoints) : undefined
+		if (edge && bounds) edge.label = { ...edge.label, bounds }
 		run.changed.add(ends.node.id)
 		return
 	}
@@ -1457,10 +1461,13 @@ function applyMessageLine(run: SwimlaneRun, line: ProcessDelta["messageFlows"][n
 	const node = shapeOf(run, ends.node.id)?.bounds
 	const pool = shapeOf(run, ends.pool.id)?.bounds
 	if (node && pool) {
+		const waypoints = messageWaypoints(node, pool, ends.nodeSends)
+		const bounds = line.name ? edgeLabelBounds(waypoints) : undefined
 		planeOf(run).edges.push({
 			id: claim(run, undefined, "MessageFlow_di"),
 			bpmnElement: id,
-			waypoints: messageWaypoints(node, pool, ends.nodeSends),
+			waypoints,
+			...(bounds ? { label: { bounds } } : {}),
 			unknownAttributes: {},
 		})
 	}

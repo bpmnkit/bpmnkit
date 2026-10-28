@@ -186,6 +186,14 @@ const diagramKey = (diagram: BpmnDiagram) => diagram.id || diagram.plane.bpmnEle
  * what makes them edit the executable process of a file that lists a
  * partner's process or diagram first, without reordering the saved XML.
  *
+ * When the result would lead {@link primaryProcess} to another process, it
+ * names the one `fn` edited in `primaryProcessId`, and otherwise carries no
+ * `primaryProcessId` at all: once an edit empties the
+ * user's own pool, the document can read like a file whose only content is the
+ * partner's, and the pin keeps the next edit where this one went.
+ * It is part of the result, so every replica that applies the same edit to the
+ * same document (a Drop room, its watchers) keeps the same pin.
+ *
  * Returns `defs` itself when `fn` returns the view it was given, so a caller
  * can still tell a no-op by identity. `fn` must therefore not change the view
  * in place and then return it: the view's top-level arrays are its own, and
@@ -196,20 +204,30 @@ export function withPrimaryFirst(
 	fn: (first: BpmnDefinitions) => BpmnDefinitions,
 ): BpmnDefinitions {
 	const view = primaryFirst(defs)
-	if (view === defs) return fn(defs)
+	// Before `fn`: a change script edits the view in place.
+	const edited = primaryProcess(defs)?.id
 	const out = fn(view)
 	if (out === view) return defs
 	const primary = view.processes[0]
 	const drawing = view.diagrams[0]
-	return {
-		...out,
-		processes: primary
-			? putBack(defs.processes, out.processes, (p) => p.id, primary.id)
-			: out.processes,
-		diagrams: drawing
-			? putBack(defs.diagrams, out.diagrams, diagramKey, diagramKey(drawing))
-			: out.diagrams,
-	}
+	const placed =
+		view === defs
+			? out
+			: {
+					...out,
+					processes: primary
+						? putBack(defs.processes, out.processes, (p) => p.id, primary.id)
+						: out.processes,
+					diagrams: drawing
+						? putBack(defs.diagrams, out.diagrams, diagramKey, diagramKey(drawing))
+						: out.diagrams,
+				}
+	// Only where the edit made the document point elsewhere, and dropped once it
+	// no longer does: the pin is then exactly what the XML carries, so a session
+	// and a reload of its file agree whatever the edit history.
+	const { primaryProcessId: _held, ...bare } = placed
+	if (edited === undefined || primaryProcess(bare)?.id === edited) return bare
+	return { ...bare, primaryProcessId: edited }
 }
 
 // ── What an edit leaves alone ─────────────────────────────────────────────────

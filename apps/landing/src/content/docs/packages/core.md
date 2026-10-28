@@ -336,6 +336,11 @@ discard everything the compact form cannot describe.
 Processes are only added, never removed: sending one process of a multi-process document means
 "this is how that process should look", not "delete the others".
 
+The `lanes`, `participants` and `messageFlows` keys are checked on the result. A message whose
+end is neither a pool nor a node in one, a pool naming a missing process, a message inside one
+pool, or an id that two elements, lanes or pools share throws, with `strict: false` too, unless
+the input document already had that problem.
+
 ### `compactify(definitions)`
 
 Projects a `BpmnDefinitions` object onto a `CompactDiagram` — a small JSON object suitable

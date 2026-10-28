@@ -350,7 +350,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `diffDiagram(before, after)`](.llms/chunks/packages.core.installation-diffdiagram-before-after.md) — 331 tokens
 - [@bpmnkit/core — Installation — `applyBpmnOperations(definitions, operations, options?)`](.llms/chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md) — 235 tokens
 - [@bpmnkit/core — Installation — `ensureZeebeExtension(owner, extension)`](.llms/chunks/packages.core.installation-ensurezeebeextension-owner-extension.md) — 323 tokens
-- [@bpmnkit/core — Installation — `reconcileCompact(definitions, compact, options?)`](.llms/chunks/packages.core.installation-reconcilecompact-definitions-compact-options.md) — 129 tokens
+- [@bpmnkit/core — Installation — `reconcileCompact(definitions, compact, options?)`](.llms/chunks/packages.core.installation-reconcilecompact-definitions-compact-options.md) — 209 tokens
 - [@bpmnkit/core — Installation — `compactify(definitions)`](.llms/chunks/packages.core.installation-compactify-definitions.md) — 342 tokens
 - [@bpmnkit/core — Installation — `expand(compact)`](.llms/chunks/packages.core.installation-expand-compact.md) — 301 tokens
 - [@bpmnkit/core — Installation — `createCompactStream(options?)`](.llms/chunks/packages.core.installation-createcompactstream-options.md) — 502 tokens
@@ -380,7 +380,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/docspack — Using the index directly](.llms/chunks/packages.docspack.using-the-index-directly.md) — 320 tokens
 - [@bpmnkit/docspack — Trust](.llms/chunks/packages.docspack.trust.md) — 118 tokens
 - [@bpmnkit/editor — Overview](.llms/chunks/packages.editor.overview.md) — 135 tokens
-- [@bpmnkit/editor — Basic Setup](.llms/chunks/packages.editor.basic-setup.md) — 682 tokens
+- [@bpmnkit/editor — Basic Setup](.llms/chunks/packages.editor.basic-setup.md) — 763 tokens
 - [@bpmnkit/editor — With Side Dock](.llms/chunks/packages.editor.with-side-dock.md) — 168 tokens
 - [@bpmnkit/editor — SideDock API](.llms/chunks/packages.editor.sidedock-api.md) — 861 tokens
 - [@bpmnkit/editor — Full Editor with All Plugins](.llms/chunks/packages.editor.full-editor-with-all-plugins.md) — 157 tokens

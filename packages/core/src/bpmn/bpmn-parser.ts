@@ -35,6 +35,7 @@ import type {
 	BpmnTextAnnotation,
 	BpmnWaypoint,
 } from "./bpmn-model.js"
+import { BPMNKIT_NAMESPACE } from "./swimlanes.js"
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -1895,6 +1896,23 @@ class DefinitionsFrame extends Frame implements TextOwner {
 				unknownAttributes[key] = value
 			}
 		}
+		const prefix = Object.keys(namespaces).find(
+			(p) => p !== "" && namespaces[p] === BPMNKIT_NAMESPACE,
+		)
+		const pinKey = prefix === undefined ? undefined : `${prefix}:primaryProcess`
+		const primaryProcessId = pinKey === undefined ? undefined : unknownAttributes[pinKey]
+		if (prefix !== undefined && pinKey !== undefined && primaryProcessId !== undefined) {
+			Reflect.deleteProperty(unknownAttributes, pinKey)
+			// The serializer declares the namespace with the pin it writes. Kept, it
+			// would move the declaration, and a replica parsed from this file would
+			// no longer export the bytes the writer does.
+			// ponytail: only <definitions>' own attributes are checked for other uses
+			// of the prefix; bpmnkit writes nothing else in its namespace, so a use on
+			// any other element (third-party files only) is left unbound. Scan the
+			// whole document if bpmnkit ever writes more under it.
+			const used = Object.keys(unknownAttributes).some((key) => key.startsWith(`${prefix}:`))
+			if (!used) Reflect.deleteProperty(namespaces, prefix)
+		}
 
 		this.sink.result = {
 			// Optional in the schema, and the Flowable Modeler leaves it out.
@@ -1917,6 +1935,7 @@ class DefinitionsFrame extends Frame implements TextOwner {
 			processes: this.processes,
 			diagrams: this.diagrams,
 			...(this.unknownChildren.length > 0 ? { unknownChildren: this.unknownChildren } : {}),
+			...(primaryProcessId !== undefined ? { primaryProcessId } : {}),
 		}
 	}
 }

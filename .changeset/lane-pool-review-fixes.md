@@ -1,0 +1,6 @@
+---
+"@bpmnkit/core": patch
+"@bpmnkit/editor": patch
+---
+
+Lane and pool fixes from the branch review. `BpmnDefinitions` gains an optional `primaryProcessId`, which `primaryProcess` returns while it names a process and no process is explicitly executable, read from and written to `<definitions bpmnkit:primaryProcess>` (namespace `https://bpmnkit.com/schema/bpmn`) only when the file alone would lead `primaryProcess` elsewhere. Editor ops and change scripts set it when their result would otherwise point at another process, so deleting the last nodes of the own pool no longer hands the next edit to a partner's process, in the editor, in a Drop room replaying the op, or after a reload. `reconcileCompact` throws, in strict and non-strict mode, when its pool, message or lane keys would leave a dangling message end or process reference, a message inside one pool, or an id used twice (root elements and artifacts included), unless the input already had that problem. A built process with an explicit `participant()` gets a collaboration id no caller id takes. `withLanes` refuses a looping lane tree with an explicit error. In the editor, a change script's named `msg` line gives the message edge label bounds, so the canvas shows the name.

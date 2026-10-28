@@ -50,7 +50,11 @@ not draw. A file that draws some of its nodes keeps its layout.
 
 The editor edits the primary process (`primaryProcess` from `@bpmnkit/core`: the executable
 one) and the diagram that draws it, even when the file lists a partner first, as Flowable
-Modeler files can. The canvas shows that process; nodes of other processes are locked. Pools
+Modeler files can. The canvas shows that process; nodes of other processes are locked. An
+edit that would make the document point at another process (deleting every node of the own pool
+next to a partner's pool with content) records the one it edited in `primaryProcessId`, saved
+as `bpmnkit:primaryProcess` on `<definitions>` only in that case, so the next edit, a Drop room
+replaying it and a reload all stay on the own pool. Pools
 and lanes are renamed from their header strip (Edit label); their body is canvas, for lasso
 and pan.
 

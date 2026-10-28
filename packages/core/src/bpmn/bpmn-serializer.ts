@@ -28,6 +28,7 @@ import type {
 	BpmnSignal,
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
+import { BPMNKIT_NAMESPACE, pinnedPrimaryToWrite } from "./swimlanes.js"
 
 // ---------------------------------------------------------------------------
 // Namespace prefix resolution
@@ -786,6 +787,18 @@ function serializeDiagram(diagram: BpmnDiagram, ns: Record<string, string>): Xml
 // Public API
 // ---------------------------------------------------------------------------
 
+/** The prefix `ns` gives {@link BPMNKIT_NAMESPACE}, else `bpmnkit`, else the first free `bpmnkit<n>`. */
+function bpmnkitPrefix(ns: Record<string, string>): string {
+	const declared = Object.keys(ns).find(
+		(prefix) => prefix !== "" && ns[prefix] === BPMNKIT_NAMESPACE,
+	)
+	if (declared !== undefined) return declared
+	let prefix = "bpmnkit"
+	// Bounded: at most every declared prefix is taken.
+	for (let n = 2; prefix in ns && n <= Object.keys(ns).length + 2; n++) prefix = `bpmnkit${n}`
+	return prefix
+}
+
 /** Serialize a BpmnDefinitions model to a BPMN XML string. */
 export function serializeBpmn(definitions: BpmnDefinitions): string {
 	const ns = definitions.namespaces
@@ -810,6 +823,13 @@ export function serializeBpmn(definitions: BpmnDefinitions): string {
 	// Unknown attributes (modeler:*, camunda:*, etc.)
 	for (const [key, value] of Object.entries(definitions.unknownAttributes)) {
 		attrs[key] = value
+	}
+
+	const pinned = pinnedPrimaryToWrite(definitions)
+	if (pinned !== undefined) {
+		const prefix = bpmnkitPrefix(ns)
+		attrs[`xmlns:${prefix}`] = BPMNKIT_NAMESPACE
+		attrs[`${prefix}:primaryProcess`] = pinned
 	}
 
 	const children: XmlElement[] = []

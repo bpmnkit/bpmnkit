@@ -5115,7 +5115,7 @@
 		{
 			"id": "packages.core.installation-reconcilecompact-definitions-compact-options",
 			"file": "chunks/packages.core.installation-reconcilecompact-definitions-compact-options.md",
-			"tokens": 129,
+			"tokens": 209,
 			"tags": [
 				"packages",
 				"core",
@@ -5126,7 +5126,8 @@
 				"options"
 			],
 			"entities": [
-				"CompactDiagram"
+				"CompactDiagram",
+				"messageFlows"
 			]
 		},
 		{
@@ -5646,7 +5647,7 @@
 		{
 			"id": "packages.editor.basic-setup",
 			"file": "chunks/packages.editor.basic-setup.md",
-			"tokens": 682,
+			"tokens": 763,
 			"tags": [
 				"packages",
 				"editor",
@@ -5656,6 +5657,7 @@
 			"entities": [
 				"primaryProcess",
 				"@bpmnkit/core",
+				"primaryProcessId",
 				"flowNodeRef",
 				"messageRef"
 			]

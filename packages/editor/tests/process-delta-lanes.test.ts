@@ -735,3 +735,50 @@ describe("applyProcessDelta lanes on a pool drawn vertically", () => {
 		}
 	})
 })
+
+describe("REV-20261028-009: a named message shows its name", () => {
+	const laidOut = () =>
+		Bpmn.createProcess("p")
+			.startEvent("a")
+			.serviceTask("pay", { name: "Pay", taskType: "pay" })
+			.endEvent("e")
+			.withAutoLayout()
+			.build()
+
+	function edgeOf(defs: BpmnDefinitions, name: string) {
+		const flow = messageFlows(defs).find((f) => f.name === name)
+		return defs.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === flow?.id)
+	}
+
+	it("gives a new named message label bounds, which survive XML", () => {
+		const result = apply(laidOut(), "pool bank[Bank]\nmsg pay >(Payment) bank")
+		expect(result.problems).toEqual([])
+		expect(edgeOf(result.definitions, "Payment")?.label?.bounds).toBeDefined()
+		const reparsed = Bpmn.parse(Bpmn.export(result.definitions))
+		expect(edgeOf(reparsed, "Payment")?.label?.bounds).toEqual(
+			edgeOf(result.definitions, "Payment")?.label?.bounds,
+		)
+	})
+
+	it("leaves an unnamed new message without a label", () => {
+		const result = apply(laidOut(), "pool bank[Bank]\nmsg pay > bank")
+		const flow = messageFlows(result.definitions)[0]
+		const edge = result.definitions.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === flow?.id)
+		expect(edge?.label).toBeUndefined()
+	})
+
+	it("gives a message named later label bounds, and keeps a label the user placed", () => {
+		const unnamed = apply(laidOut(), "pool bank[Bank]\nmsg pay > bank").definitions
+		const named = apply(unnamed, "msg pay >(Payment) bank")
+		expect(named.problems).toEqual([])
+		const bounds = edgeOf(named.definitions, "Payment")?.label?.bounds
+		expect(bounds).toBeDefined()
+
+		const placed = { x: 1, y: 2, width: 90, height: 20 }
+		const edge = edgeOf(named.definitions, "Payment")
+		if (!edge) throw new Error("no edge")
+		edge.label = { bounds: placed }
+		const renamed = apply(named.definitions, "msg pay >(Refund) bank")
+		expect(edgeOf(renamed.definitions, "Refund")?.label?.bounds).toEqual(placed)
+	})
+})

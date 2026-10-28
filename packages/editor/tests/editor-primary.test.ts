@@ -1,8 +1,9 @@
 // @vitest-environment happy-dom
-import { Bpmn, type BpmnDefinitions } from "@bpmnkit/core"
+import { Bpmn, type BpmnDefinitions, primaryProcess } from "@bpmnkit/core"
 import { afterEach, describe, expect, it } from "vitest"
 import { BpmnEditor } from "../src/editor.js"
 import type { EditorOp } from "../src/ops.js"
+import { lockedIds } from "../src/swimlanes.js"
 import { documentOrder, flowableFixture, flowableXml } from "./swimlane-helpers.js"
 
 const editors: BpmnEditor[] = []
@@ -131,5 +132,63 @@ describe("loading a file without diagram interchange", () => {
 		ed.loadDefinitions(defs)
 		ed.updateColor("Task_review", { fill: "#e0f2f1", stroke: "#00695c" })
 		expect(seen.missingShapes).toEqual([])
+	})
+})
+
+describe("REV-20261028-008: the process the edits go to stays put when its pool is emptied", () => {
+	/** A pool `own` drawing `main`, and a pool `other` drawing `partner`. */
+	function twoPoolsXml(main: string, partner: string): string {
+		const defs = Bpmn.createDiagram("d")
+			.process("main", (p) => p.startEvent("a").endEvent("b").participant("own"))
+			.process("partner", (p) => p.startEvent("c").endEvent("e").participant("other"))
+			.withAutoLayout()
+			.build()
+		const xml = Bpmn.export(defs)
+		return xml
+			.replace(/(<bpmn:process id="main")[^>]*>/, `$1${main}>`)
+			.replace(/(<bpmn:process id="partner")[^>]*>/, `$1${partner}>`)
+	}
+
+	it("keeps the emptied own pool editable, and undo brings its nodes back", () => {
+		const ed = mount(twoPoolsXml("", ' isExecutable="false"'))
+		executeOp(ed, { kind: "delete", ids: ["a", "b"] })
+		const emptied = ed.getDefinitions()
+		if (!emptied) throw new Error("no document")
+		expect(primaryProcess(emptied)?.id).toBe("main")
+		expect(lockedIds(emptied).has("c")).toBe(true)
+
+		const own = emptied.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === "own")?.bounds
+		if (!own) throw new Error("no own pool")
+		const [created] = executeOp(ed, {
+			kind: "createShape",
+			type: "task",
+			bounds: { x: own.x + 60, y: own.y + 20, width: 100, height: 80 },
+			seed: "probe",
+		})
+		const after = ed.getDefinitions()
+		const home = after?.processes.find((p) => p.flowElements.some((e) => e.id === created))
+		expect(home?.id).toBe("main")
+
+		ed.undo()
+		ed.undo()
+		const restored = ed.getDefinitions()
+		expect(restored?.processes.map((p) => p.flowElements.map((e) => e.id))).toEqual([
+			["a", "b"],
+			["c", "e"],
+		])
+		expect(restored?.processes.map((p) => p.isExecutable)).toEqual([undefined, false])
+	})
+
+	it("opens a file whose only process with content is marked non-executable as editable", () => {
+		// bpmn.io writes Process_1 isExecutable="false" and a new pool's process without the attribute.
+		const xml = twoPoolsXml(' isExecutable="false"', "")
+			.replace(/<bpmn:startEvent id="c"[\s\S]*?<\/bpmn:endEvent>/, "")
+			.replace(/<bpmn:sequenceFlow id="[^"]*" sourceRef="c"[^>]*\/>/, "")
+		const ed = mount(xml)
+		const defs = ed.getDefinitions()
+		if (!defs) throw new Error("no document")
+		expect(defs.processes.find((p) => p.id === "partner")?.flowElements).toEqual([])
+		expect(primaryProcess(defs)?.id).toBe("main")
+		expect(lockedIds(defs).has("a")).toBe(false)
 	})
 })

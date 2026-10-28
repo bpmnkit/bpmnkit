@@ -30,7 +30,7 @@ import {
 	withLanes,
 } from "./compact.js"
 import type { BpmnOperation } from "./operations.js"
-import { allLanes, poolLanedProcesses, pruneLaneRefs } from "./swimlanes.js"
+import { allLanes, collaborationProblems, poolLanedProcesses, pruneLaneRefs } from "./swimlanes.js"
 import {
 	bpmnElementName,
 	ensureZeebeExtension,
@@ -572,6 +572,10 @@ function recomputeRefs(container: Container): void {
  * @param compact - The intended topology.
  * @param options - `strict` (default `true`) throws instead of returning problems.
  * @returns The updated model, plus what applied and what did not.
+ * @throws Error, in either mode, when the result would carry an id used twice
+ *   or a collaboration problem (a dangling message end or process reference, a
+ *   message inside one pool) that `definitions` did not already have: the
+ *   input is invalid, as {@link expand} would find it.
  */
 export function reconcileCompact(
 	definitions: BpmnDefinitions,
@@ -605,7 +609,76 @@ export function reconcileCompact(
 
 	const result = applyBpmnOperations(draft, operationsForCompact(draft, compact), options)
 	reconcileDefaultFlows(result.definitions, compact)
-	return { ...result, definitions: reconcilePools(result.definitions, compact) }
+	const reconciled = reconcilePools(result.definitions, compact)
+	const broken = newStructureProblems(definitions, reconciled)
+	if (broken.length > 0) {
+		throw new Error(`reconcileCompact: invalid CompactDiagram — ${broken.join("; ")}`)
+	}
+	return { ...result, definitions: reconciled }
+}
+
+/**
+ * What `after` gets wrong that `before` did not: {@link collaborationProblems}
+ * and ids used twice across the document. The pool and lane keys are merged in
+ * after the operations, so nothing else checks that their ids and references
+ * hold. A problem the input already had is the caller's document, not this edit.
+ */
+function newStructureProblems(before: BpmnDefinitions, after: BpmnDefinitions): string[] {
+	const had = new Set(collaborationProblems(before))
+	const found = collaborationProblems(after).filter((problem) => !had.has(problem))
+	// Counted rather than compared as messages, so a new clash on an id the
+	// input already used twice is still caught.
+	const wasUsed = idCounts(before)
+	for (const [id, count] of idCounts(after)) {
+		if (count > 1 && count > (wasUsed.get(id) ?? 0)) found.push(`Duplicate element ID "${id}"`)
+	}
+	return [...new Set(found)]
+}
+
+/** How many times each id is used by a process, element, flow, lane, artifact (sub-processes included), pool or root element. */
+function idCounts(definitions: BpmnDefinitions): Map<string, number> {
+	const roots = [
+		...definitions.messages,
+		...definitions.errors,
+		...definitions.signals,
+		...definitions.escalations,
+	]
+	const ids: string[] = roots.map((root) => root.id)
+	for (const container of containersOf(definitions)) {
+		for (const item of [...container.flowElements, ...container.sequenceFlows]) ids.push(item.id)
+		// Processes and sub-processes carry artifacts; other containers do not.
+		const scope = container as Partial<
+			Pick<BpmnProcess, "textAnnotations" | "associations" | "groups">
+		>
+		for (const item of [
+			...(scope.textAnnotations ?? []),
+			...(scope.associations ?? []),
+			...(scope.groups ?? []),
+		]) {
+			ids.push(item.id)
+		}
+	}
+	// Lane-set ids are left out: buildLaneSet generates them per process, so a
+	// clash there would be this module's own doing, not the caller's input.
+	for (const process of definitions.processes) {
+		ids.push(process.id)
+		for (const lane of allLanes(process.laneSet)) ids.push(lane.id)
+	}
+	for (const collaboration of definitions.collaborations) {
+		ids.push(collaboration.id)
+		for (const item of [
+			...collaboration.participants,
+			...collaboration.messageFlows,
+			...collaboration.textAnnotations,
+			...collaboration.associations,
+			...collaboration.groups,
+		]) {
+			ids.push(item.id)
+		}
+	}
+	const counts = new Map<string, number>()
+	for (const id of ids) counts.set(id, (counts.get(id) ?? 0) + 1)
+	return counts
 }
 
 /**

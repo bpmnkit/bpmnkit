@@ -16,7 +16,13 @@ import { describe, expect, it } from "vitest"
 import { copyElements } from "../src/modeling.js"
 import { type EditorOp, applyOp } from "../src/ops.js"
 import { applyProcessDelta } from "../src/process-delta.js"
-import { canDeleteSwimlane, isBlackBox, primaryFirst, primaryPlane } from "../src/swimlanes.js"
+import {
+	canDeleteSwimlane,
+	isBlackBox,
+	lockedIds,
+	primaryFirst,
+	primaryPlane,
+} from "../src/swimlanes.js"
 import {
 	boundsOf,
 	documentOrder,
@@ -731,5 +737,95 @@ describe("final review: what a growing pool and a deleted swimlane leave behind"
 			expect(hasEdge(result.definitions, gone), line).toBe(false)
 			expectNoDanglingAssociation(result.definitions)
 		}
+	})
+})
+
+describe("REV-20261028-008: emptying the own pool next to a non-executable partner", () => {
+	/** `main` with no isExecutable (Flowable reads it as executable), `partner` marked false. */
+	function twoPools(): BpmnDefinitions {
+		const defs = Bpmn.createDiagram("d")
+			.process("main", (p) => p.startEvent("a").endEvent("b").participant("own"))
+			.process("partner", (p) => p.startEvent("c").endEvent("e").participant("other"))
+			.withAutoLayout()
+			.build()
+		const [main, partner] = defs.processes
+		if (!main || !partner) throw new Error("two processes expected")
+		main.isExecutable = undefined
+		partner.isExecutable = false
+		return defs
+	}
+
+	it("keeps editing the emptied own process, and the partner locked", () => {
+		const defs = twoPools()
+		const emptied = run(defs, { kind: "delete", ids: ["a", "b"] })
+		expect(emptied.primaryProcessId).toBe("main")
+		expect(primaryProcess(emptied)?.id).toBe("main")
+		expect([...lockedIds(emptied)]).toEqual(expect.arrayContaining(["c", "e"]))
+
+		const own = boundsOf(emptied, "own")
+		const r = applyOp(emptied, task(own.x + 60, own.y + 20, "probe"))
+		expectFlowableKept(emptied, r.defs)
+		const created = r.created[0]
+		const home = r.defs.processes.find((p) => p.flowElements.some((e) => e.id === created))
+		expect(home?.id).toBe("main")
+		expect(r.defs.processes.find((p) => p.id === "partner")?.flowElements.map((e) => e.id)).toEqual(
+			["c", "e"],
+		)
+	})
+
+	it("leads a replica parsed from the same XML, and a reload, to the same process", () => {
+		// A Drop room and its watchers apply the writer's ops to a document parsed from XML.
+		const writer = twoPools()
+		const room = Bpmn.parse(Bpmn.export(writer))
+		const emptied = run(writer, { kind: "delete", ids: ["a", "b"] })
+		const roomEmptied = run(room, { kind: "delete", ids: ["a", "b"] })
+		expect(Bpmn.export(roomEmptied)).toBe(Bpmn.export(emptied))
+		expect(Bpmn.export(emptied)).toContain('bpmnkit:primaryProcess="main"')
+
+		const own = boundsOf(emptied, "own")
+		const op = task(own.x + 60, own.y + 20, "probe")
+		const reloaded = Bpmn.parse(Bpmn.export(emptied))
+		for (const replica of [emptied, roomEmptied, reloaded]) {
+			const r = applyOp(replica, op)
+			expect(r.created).toHaveLength(1)
+			expect(Bpmn.export(r.defs)).toBe(Bpmn.export(applyOp(emptied, op).defs))
+		}
+	})
+
+	it("drops the pin once the own pool is refilled, so the session and a reload agree", () => {
+		const emptied = run(twoPools(), { kind: "delete", ids: ["a", "b"] })
+		const own = boundsOf(emptied, "own")
+		const refilled = run(emptied, task(own.x + 60, own.y + 20, "refill"))
+		expect(refilled.primaryProcessId).toBeUndefined()
+		expect(Bpmn.export(refilled)).not.toContain("bpmnkit:primaryProcess")
+
+		// The properties panel replaces the document with a snapshot.
+		const executable = (defs: BpmnDefinitions): BpmnDefinitions => ({
+			...defs,
+			processes: defs.processes.map((p) => (p.id === "partner" ? { ...p, isExecutable: true } : p)),
+		})
+		const session = applyOp(refilled, { kind: "snapshot", defs: executable(refilled) }).defs
+		const reloaded = Bpmn.parse(Bpmn.export(refilled))
+		const reload = applyOp(reloaded, { kind: "snapshot", defs: executable(reloaded) }).defs
+		expect(primaryProcess(session)?.id).toBe(primaryProcess(reload)?.id)
+		expect(Bpmn.export(session)).toBe(Bpmn.export(reload))
+	})
+
+	it("pins through a change script, and a later script on the saved XML edits the own pool", () => {
+		const defs = twoPools()
+		const { aliases } = writeProcessText(defs)
+		const result = applyProcessDelta(defs, parseProcessDelta("- a\n- b"), { aliases })
+		expect(result.problems).toEqual([])
+		expect(primaryProcess(result.definitions)?.id).toBe("main")
+
+		// Drop's AI paths start from Bpmn.parse(currentXml).
+		const saved = Bpmn.parse(Bpmn.export(result.definitions))
+		const next = applyProcessDelta(saved, parseProcessDelta("s[start] > f[end]"), {
+			aliases: writeProcessText(saved).aliases,
+		})
+		expect(next.problems).toEqual([])
+		const main = next.definitions.processes.find((p) => p.id === "main")
+		expect(main?.flowElements.length).toBe(2)
+		expect(next.definitions.processes.find((p) => p.id === "partner")?.flowElements.length).toBe(2)
 	})
 })

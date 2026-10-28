@@ -412,6 +412,93 @@ describe("primaryProcess", () => {
 		})
 	})
 
+	describe("REV-20261028-008: primaryProcessId", () => {
+		const withContent = process("b", [node("t")], undefined, [], { id: "b", isExecutable: false })
+
+		it("picks the only process with content although it is marked non-executable", () => {
+			// bpmn.io writes Process_1 isExecutable="false" and a new pool's process without the attribute.
+			expect(primaryProcess(defsOf([exec("a"), withContent]))?.id).toBe("b")
+		})
+
+		it("keeps the pinned process, even emptied next to a partner with content", () => {
+			const defs = { ...defsOf([exec("a"), withContent]), primaryProcessId: "a" }
+			expect(primaryProcess(defs)?.id).toBe("a")
+		})
+
+		it("ignores a pin naming no process of the document", () => {
+			const defs = { ...defsOf([exec("a"), withContent]), primaryProcessId: "gone" }
+			expect(primaryProcess(defs)?.id).toBe("b")
+		})
+
+		it("is not written when the file alone picks the same process", () => {
+			const defs = Bpmn.createProcess("p").startEvent("s").endEvent("e").build()
+			const xml = Bpmn.export({ ...defs, primaryProcessId: "p" })
+			expect(xml).toBe(Bpmn.export(defs))
+			expect(Bpmn.parse(xml).primaryProcessId).toBeUndefined()
+			expect(Bpmn.export({ ...defs, primaryProcessId: "gone" })).toBe(Bpmn.export(defs))
+		})
+
+		it("is written, and read back, when the file alone would pick another process", () => {
+			const defs = Bpmn.createDiagram("d")
+				.process("main", (p) => p.participant("own"))
+				.process("partner", (p) => p.startEvent("c").endEvent("e").participant("other"))
+				.build()
+			const [, partner] = defs.processes
+			if (!partner) throw new Error("two processes expected")
+			partner.isExecutable = false
+			defs.processes[0] = { ...defs.processes[0], isExecutable: undefined } as BpmnProcess
+			expect(primaryProcess(defs)?.id).toBe("partner")
+
+			const xml = Bpmn.export({ ...defs, primaryProcessId: "main" })
+			expect(xml).toContain('xmlns:bpmnkit="https://bpmnkit.com/schema/bpmn"')
+			expect(xml).toContain('bpmnkit:primaryProcess="main"')
+			const parsed = Bpmn.parse(xml)
+			expect(parsed.primaryProcessId).toBe("main")
+			expect(Object.keys(parsed.unknownAttributes).some((k) => k.endsWith(":primaryProcess"))).toBe(
+				false,
+			)
+			expect(primaryProcess(parsed)?.id).toBe("main")
+			expect(Bpmn.export(parsed)).toBe(xml)
+		})
+
+		it("yields to a process another tool has since made explicitly executable", () => {
+			const defs = {
+				...defsOf([
+					exec("a"),
+					process("b", [node("t")], undefined, [], { id: "b", isExecutable: true }),
+				]),
+				primaryProcessId: "a",
+			}
+			expect(primaryProcess(defs)?.id).toBe("b")
+		})
+
+		it("keeps the namespace declaration when the file carries no pin", () => {
+			const xml = Bpmn.export(Bpmn.createProcess("p").startEvent("s").endEvent("e").build())
+				.replace(
+					"<bpmn:definitions ",
+					'<bpmn:definitions xmlns:bpmnkit="https://bpmnkit.com/schema/bpmn" ',
+				)
+				.replace('<bpmn:process id="p"', '<bpmn:process id="p" bpmnkit:note="x"')
+			const out = Bpmn.export(Bpmn.parse(xml))
+			expect(out).toContain('xmlns:bpmnkit="https://bpmnkit.com/schema/bpmn"')
+			expect(out).toContain('bpmnkit:note="x"')
+		})
+
+		it("reads the attribute under whatever prefix the file gives the namespace", () => {
+			const xml = Bpmn.export(
+				Bpmn.createProcess("p").startEvent("s").endEvent("e").build(),
+			).replace(
+				"<bpmn:definitions ",
+				'<bpmn:definitions xmlns:kit="https://bpmnkit.com/schema/bpmn" kit:primaryProcess="p" ',
+			)
+			const parsed = Bpmn.parse(xml)
+			expect(parsed.primaryProcessId).toBe("p")
+			expect(Object.keys(parsed.unknownAttributes).some((k) => k.endsWith(":primaryProcess"))).toBe(
+				false,
+			)
+		})
+	})
+
 	it("prefers a process with content over an empty one when none says it is executable", () => {
 		const laned = process("b", [node("t")], [lane("L", ["t"])])
 		expect(primaryProcess(defsOf([exec("a"), laned]))?.id).toBe("b")
