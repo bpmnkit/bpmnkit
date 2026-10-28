@@ -2,18 +2,20 @@ import type {
 	BpmnAssociation,
 	BpmnBoundaryEvent,
 	BpmnBounds,
+	BpmnCollaboration,
 	BpmnDefinitions,
 	BpmnDiEdge,
 	BpmnDiShape,
 	BpmnEventDefinition,
 	BpmnFlowElement,
+	BpmnLaneSet,
 	BpmnMultiInstanceLoopCharacteristics,
 	BpmnSequenceFlow,
 	BpmnTextAnnotation,
 	BpmnWaypoint,
 	DiColor,
 } from "@bpmnkit/core"
-import { BIOC_NS, COLOR_NS, writeDiColor } from "@bpmnkit/core"
+import { BIOC_NS, COLOR_NS, allLanes, primaryProcess, writeDiColor } from "@bpmnkit/core"
 import {
 	computeWaypoints,
 	computeWaypointsAvoiding,
@@ -24,6 +26,7 @@ import {
 	waypointsIntersectObstacles,
 } from "./geometry.js"
 import { type IdFactory, genId } from "./id.js"
+import { lockedIds, swimlaneIds, unmovableIds } from "./swimlanes.js"
 import type { CreateShapeType, PortDir } from "./types.js"
 
 // ── Empty definitions ─────────────────────────────────────────────────────────
@@ -504,6 +507,8 @@ export function createBoundaryEvent(
 ): { defs: BpmnDefinitions; id: string } {
 	const id = ids("BoundaryEvent")
 	const shapeId = ids("BoundaryEvent_di")
+	// The event lands in `processes[0]`; Flowable rejects one attached to another scope.
+	if (!canEndFlow(defs, hostId)) return { defs, id }
 
 	const process = defs.processes[0]
 	if (!process) return { defs, id }
@@ -566,6 +571,7 @@ export function createConnection(
 ): { defs: BpmnDefinitions; id: string } {
 	const id = ids("Flow")
 	const edgeId = ids("Flow_di")
+	if (!canEndFlow(defs, sourceId) || !canEndFlow(defs, targetId)) return { defs, id }
 
 	const process = defs.processes[0]
 	if (!process) return { defs, id }
@@ -625,6 +631,15 @@ export function createConnection(
 	return { defs: newDefs, id }
 }
 
+/**
+ * Whether a sequence flow of `processes[0]` may start or end at `id`: not at a
+ * pool or a lane (a sequence flow to a participant is invalid BPMN) and not at
+ * a node of another process ({@link lockedIds}).
+ */
+export function canEndFlow(defs: BpmnDefinitions, id: string): boolean {
+	return !swimlaneIds(defs).has(id) && !lockedIds(defs).has(id)
+}
+
 // ── Move shapes ───────────────────────────────────────────────────────────────
 
 /** Returns true if the boundary event center is within the host bounds (with a margin). */
@@ -644,17 +659,22 @@ export function moveShapes(
 	defs: BpmnDefinitions,
 	moves: Array<{ id: string; dx: number; dy: number }>,
 ): BpmnDefinitions {
-	if (moves.length === 0) return defs
+	// Here, not where the editor builds the op, so a replayed op agrees.
+	const frozen = unmovableIds(defs)
+	const movable = moves.filter((m) => !frozen.has(m.id))
+	if (movable.length === 0) return defs
 
-	const moveMap = new Map(moves.map((m) => [m.id, m]))
+	const moveMap = new Map(movable.map((m) => [m.id, m]))
 
 	const process = defs.processes[0]
 	const diagram = defs.diagrams[0]
 	if (!process || !diagram) return defs
+	// Pools and lanes hold the shapes; as obstacles they would re-route every edge inside them.
+	const containers = swimlaneIds(defs)
 
 	// Cascade: boundary events attached to moved shapes also move, but only if they
 	// are currently positioned on/near the host boundary (not moved away by the user).
-	const extendedMoves = [...moves]
+	const extendedMoves = [...movable]
 	for (const el of process.flowElements) {
 		if (el.type === "boundaryEvent" && moveMap.has(el.attachedToRef) && !moveMap.has(el.id)) {
 			const hostShape = diagram.plane.shapes.find((s) => s.bpmnElement === el.attachedToRef)
@@ -733,7 +753,7 @@ export function moveShapes(
 	// Build a lookup of post-move shape bounds
 	const shapeBoundsMap = new Map<string, BpmnBounds>()
 	for (const s of newShapes) {
-		shapeBoundsMap.set(s.bpmnElement, s.bounds)
+		if (!containers.has(s.bpmnElement)) shapeBoundsMap.set(s.bpmnElement, s.bounds)
 	}
 
 	const newEdges = diagram.plane.edges.map((edge) => {
@@ -750,7 +770,12 @@ export function moveShapes(
 
 			// Obstacles = all shapes except this edge's source and target
 			const obstacles = newShapes
-				.filter((s) => s.bpmnElement !== flow.sourceRef && s.bpmnElement !== flow.targetRef)
+				.filter(
+					(s) =>
+						s.bpmnElement !== flow.sourceRef &&
+						s.bpmnElement !== flow.targetRef &&
+						!containers.has(s.bpmnElement),
+				)
 				.map((s) => s.bounds)
 
 			if (srcMove || tgtMove) {
@@ -962,6 +987,8 @@ export function resizeShape(
 	id: string,
 	newBounds: BpmnBounds,
 ): BpmnDefinitions {
+	// A partner's node is not in processes[0]: only its drawing would change.
+	if (lockedIds(defs).has(id)) return defs
 	const process = defs.processes[0]
 	const diagram = defs.diagrams[0]
 	if (!process || !diagram) return defs
@@ -1005,38 +1032,33 @@ export function resizeShape(
 
 // ── Delete elements ───────────────────────────────────────────────────────────
 
+/** Deep enough for any lane tree or sub-process the parser builds; a deeper walk means a cycle. */
+const MAX_NESTING = 64
+
+/**
+ * Removes `ids` from `processes[0]` and its diagram, with what depends on them:
+ * boundary events of a removed host, the content of a removed sub-process, the
+ * sequence flows, associations and message flows that touch a removed element,
+ * and the removed nodes' refs in every lane.
+ *
+ * Pools and lanes are not deleted here yet, and the {@link lockedIds} of other
+ * processes cannot be: both are left out, so their shapes never go without
+ * their model. `defs` itself when nothing is left to remove.
+ */
 export function deleteElements(defs: BpmnDefinitions, ids: string[]): BpmnDefinitions {
-	if (ids.length === 0) return defs
-
-	const idSet = new Set(ids)
-
-	// Cascade: boundary events whose host is deleted are also deleted
-	const process0 = defs.processes[0]
-	if (process0) {
-		for (const el of process0.flowElements) {
-			if (el.type === "boundaryEvent" && idSet.has(el.attachedToRef)) {
-				idSet.add(el.id)
-			}
-		}
-	}
-
-	// Cascade: descendants of deleted container elements are also deleted
-	if (process0) {
-		for (const el of process0.flowElements) {
-			if (idSet.has(el.id)) collectDescendantIds(el, idSet)
-		}
-	}
-
+	const kept = new Set([...swimlaneIds(defs), ...lockedIds(defs)])
+	const idSet = new Set(ids.filter((id) => !kept.has(id)))
 	const process = defs.processes[0]
 	const diagram = defs.diagrams[0]
-	if (!process || !diagram) return defs
+	if (idSet.size === 0 || !process || !diagram) return defs
 
-	// Find associations to remove (directly specified, or whose source/target is deleted)
-	const assocsToRemove = new Set(
-		process.associations
-			.filter((a) => idSet.has(a.id) || idSet.has(a.sourceRef) || idSet.has(a.targetRef))
-			.map((a) => a.id),
-	)
+	// Cascade: boundary events whose host is deleted, and the content of deleted containers
+	for (const el of process.flowElements) {
+		if (el.type === "boundaryEvent" && idSet.has(el.attachedToRef)) idSet.add(el.id)
+	}
+	for (const el of process.flowElements) {
+		if (idSet.has(el.id)) collectDescendantIds(el, idSet)
+	}
 
 	// Recursively remove elements and collect all removed flow IDs into allRemovedIds
 	const allRemovedIds = new Set<string>(idSet)
@@ -1046,27 +1068,24 @@ export function deleteElements(defs: BpmnDefinitions, ids: string[]): BpmnDefini
 		idSet,
 		allRemovedIds,
 	)
+	// Associations of the process, then of the collaborations: they may point at a removed flow too.
+	const newAssociations = withoutDangling(process.associations, allRemovedIds)
+	const collaborations = defs.collaborations.map((c) => pruneCollaboration(c, allRemovedIds))
 
-	// Add association IDs for DI edge cleanup
-	for (const aid of assocsToRemove) allRemovedIds.add(aid)
-
-	// Remove text annotations and associations
-	const newTextAnnotations = process.textAnnotations.filter((ta) => !idSet.has(ta.id))
-	const newAssociations = process.associations.filter((a) => !assocsToRemove.has(a.id))
-
-	// Remove DI shapes and edges
 	const newDiShapes = diagram.plane.shapes.filter((s) => !idSet.has(s.bpmnElement))
 	const newDiEdges = diagram.plane.edges.filter((e) => !allRemovedIds.has(e.bpmnElement))
 
 	return {
 		...defs,
+		collaborations,
 		processes: [
 			{
 				...process,
 				flowElements: newFlowElements,
 				sequenceFlows: newSequenceFlows,
-				textAnnotations: newTextAnnotations,
+				textAnnotations: process.textAnnotations.filter((ta) => !idSet.has(ta.id)),
 				associations: newAssociations,
+				laneSet: withoutLaneRefs(process.laneSet, idSet, 0),
 			},
 			...defs.processes.slice(1),
 		],
@@ -1080,8 +1099,77 @@ export function deleteElements(defs: BpmnDefinitions, ids: string[]): BpmnDefini
 	}
 }
 
+/**
+ * `links` without those that are, or start or end at, a `removed` id. The ids
+ * of the links it drops are added to `removed`, so their DI edges go as well.
+ */
+function withoutDangling<T extends { id: string; sourceRef: string; targetRef: string }>(
+	links: T[],
+	removed: Set<string>,
+): T[] {
+	const gone = links.filter(
+		(l) => removed.has(l.id) || removed.has(l.sourceRef) || removed.has(l.targetRef),
+	)
+	if (gone.length === 0) return links
+	for (const link of gone) removed.add(link.id)
+	return links.filter((l) => !removed.has(l.id))
+}
+
+/**
+ * `collaboration` without the message flows and associations that touch a
+ * `removed` id and without removed text annotations; the same object when it
+ * names none. Dropped link ids are added to `removed`, as {@link withoutDangling} does.
+ */
+function pruneCollaboration(
+	collaboration: BpmnCollaboration,
+	removed: Set<string>,
+): BpmnCollaboration {
+	const textAnnotations = collaboration.textAnnotations.filter((ta) => !removed.has(ta.id))
+	const messageFlows = withoutDangling(collaboration.messageFlows, removed)
+	const associations = withoutDangling(collaboration.associations, removed)
+	if (
+		textAnnotations.length === collaboration.textAnnotations.length &&
+		messageFlows === collaboration.messageFlows &&
+		associations === collaboration.associations
+	) {
+		return collaboration
+	}
+	return { ...collaboration, textAnnotations, messageFlows, associations }
+}
+
+/**
+ * `laneSet` without flow node refs to `removed`, at every depth. Only the
+ * lanes that listed a removed node are copied, so a third party's lane
+ * layout, ref order included, is kept everywhere else.
+ */
+function withoutLaneRefs(
+	laneSet: BpmnLaneSet | undefined,
+	removed: ReadonlySet<string>,
+	depth: number,
+): BpmnLaneSet | undefined {
+	if (!laneSet) return laneSet
+	if (depth > MAX_NESTING) throw new Error("lanes nested too deep, or cyclic")
+	let changed = false
+	const lanes = laneSet.lanes.map((lane) => {
+		const flowNodeRefs = lane.flowNodeRefs.filter((ref) => !removed.has(ref))
+		const childLaneSet = withoutLaneRefs(lane.childLaneSet, removed, depth + 1)
+		if (flowNodeRefs.length === lane.flowNodeRefs.length && childLaneSet === lane.childLaneSet) {
+			return lane
+		}
+		changed = true
+		return childLaneSet ? { ...lane, flowNodeRefs, childLaneSet } : { ...lane, flowNodeRefs }
+	})
+	return changed ? { ...laneSet, lanes } : laneSet
+}
+
 // ── Update label ──────────────────────────────────────────────────────────────
 
+/**
+ * Sets the label of `id`: the name of a flow element or sequence flow of
+ * `processes[0]` (at any sub-process depth), of a lane of any process, of a
+ * pool, or the text of a process or collaboration text annotation. `defs`
+ * itself when no element has that id.
+ */
 export function updateLabel(defs: BpmnDefinitions, id: string, name: string): BpmnDefinitions {
 	const process = defs.processes[0]
 	if (!process) return defs
@@ -1112,7 +1200,105 @@ export function updateLabel(defs: BpmnDefinitions, id: string, name: string): Bp
 		}
 	}
 
-	return defs
+	return renameLane(defs, id, name) ?? renameInCollaborations(defs, id, name) ?? defs
+}
+
+/** `defs` with lane `id` of whichever process has it renamed, or undefined when none has. */
+function renameLane(defs: BpmnDefinitions, id: string, name: string): BpmnDefinitions | undefined {
+	for (const [k, process] of defs.processes.entries()) {
+		const laneSet = renamedLaneSet(process.laneSet, id, name, 0)
+		if (!laneSet) continue
+		const processes = [...defs.processes]
+		processes[k] = { ...process, laneSet }
+		return { ...defs, processes }
+	}
+	return undefined
+}
+
+/** A copy of `laneSet` with lane `id`, at any depth, renamed; undefined when it has no such lane. */
+function renamedLaneSet(
+	laneSet: BpmnLaneSet | undefined,
+	id: string,
+	name: string,
+	depth: number,
+): BpmnLaneSet | undefined {
+	if (!laneSet) return undefined
+	if (depth > MAX_NESTING) throw new Error("lanes nested too deep, or cyclic")
+	for (const [k, lane] of laneSet.lanes.entries()) {
+		const child =
+			lane.id === id ? undefined : renamedLaneSet(lane.childLaneSet, id, name, depth + 1)
+		if (lane.id !== id && !child) continue
+		const lanes = [...laneSet.lanes]
+		lanes[k] = child ? { ...lane, childLaneSet: child } : { ...lane, name }
+		return { ...laneSet, lanes }
+	}
+	return undefined
+}
+
+/** `defs` with pool or collaboration text annotation `id` relabelled, or undefined when none is. */
+function renameInCollaborations(
+	defs: BpmnDefinitions,
+	id: string,
+	name: string,
+): BpmnDefinitions | undefined {
+	for (const [k, c] of defs.collaborations.entries()) {
+		let next: BpmnCollaboration | undefined
+		if (c.participants.some((p) => p.id === id)) {
+			next = { ...c, participants: c.participants.map((p) => (p.id === id ? { ...p, name } : p)) }
+		} else if (c.textAnnotations.some((ta) => ta.id === id)) {
+			const textAnnotations = c.textAnnotations.map((ta) =>
+				ta.id === id ? { ...ta, text: name } : ta,
+			)
+			next = { ...c, textAnnotations }
+		}
+		if (!next) continue
+		const collaborations = [...defs.collaborations]
+		collaborations[k] = next
+		return { ...defs, collaborations }
+	}
+	return undefined
+}
+
+/**
+ * The label {@link updateLabel} would change for `id`, read from the
+ * {@link primaryProcess} rather than `processes[0]`, so the editor can call it
+ * on the document as loaded. Undefined when the element has no label or there
+ * is no such element.
+ */
+export function nameOf(defs: BpmnDefinitions, id: string): string | undefined {
+	const process = primaryProcess(defs)
+	if (process) {
+		const flows = new Map<string, BpmnSequenceFlow>()
+		collectAllSequenceFlows(process.flowElements, process.sequenceFlows, flows)
+		const named = findDeep(process.flowElements, id, 0) ?? flows.get(id)
+		if (named) return named.name
+		const note = process.textAnnotations.find((ta) => ta.id === id)
+		if (note) return note.text
+	}
+	const lane = defs.processes.flatMap((p) => allLanes(p.laneSet)).find((l) => l.id === id)
+	if (lane) return lane.name
+	for (const c of defs.collaborations) {
+		const pool = c.participants.find((p) => p.id === id)
+		if (pool) return pool.name
+		const note = c.textAnnotations.find((ta) => ta.id === id)
+		if (note) return note.text
+	}
+	return undefined
+}
+
+/** The flow element `id` among `elements`, at any sub-process depth. */
+function findDeep(
+	elements: readonly BpmnFlowElement[],
+	id: string,
+	depth: number,
+): BpmnFlowElement | undefined {
+	if (depth > MAX_NESTING) throw new Error("sub-processes nested too deep, or cyclic")
+	for (const el of elements) {
+		if (el.id === id) return el
+		const inner = "flowElements" in el ? findDeep(el.flowElements, id, depth + 1) : undefined
+		if (inner) return inner
+	}
+	return undefined
 }
 
 // ── Update label position ─────────────────────────────────────────────────────
@@ -1573,7 +1759,9 @@ export function changeElementType(
 /**
  * Splits an existing sequence flow by inserting a shape between its source and
  * target: removes the original edge and creates two new connections
- * (source → shapeId and shapeId → target).
+ * (source → shapeId and shapeId → target). Returns `defs` unchanged when
+ * `shapeId` cannot end a flow ({@link canEndFlow}): both connections would be
+ * refused and the flow lost.
  */
 export function insertShapeOnEdge(
 	defs: BpmnDefinitions,
@@ -1582,7 +1770,7 @@ export function insertShapeOnEdge(
 ): BpmnDefinitions {
 	const process = defs.processes[0]
 	const diagram = defs.diagrams[0]
-	if (!process || !diagram) return defs
+	if (!process || !diagram || !canEndFlow(defs, shapeId)) return defs
 
 	const flow = process.sequenceFlows.find((sf) => sf.id === edgeId)
 	if (!flow) return defs

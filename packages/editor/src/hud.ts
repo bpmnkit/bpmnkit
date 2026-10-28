@@ -1,5 +1,5 @@
 import type { ViewportState } from "@bpmnkit/canvas"
-import { type DocumentationOptions, readDiColor } from "@bpmnkit/core"
+import { type DocumentationOptions, primaryProcess, readDiColor } from "@bpmnkit/core"
 import { injectHudStyles } from "./css.js"
 import { type DocumentationFormat, exportDocumentation } from "./doc-export.js"
 import type { BpmnEditor } from "./editor.js"
@@ -13,6 +13,7 @@ import {
 } from "./element-groups.js"
 import { IC } from "./icons.js"
 import { showHudChoiceModal, showHudInputModal } from "./modal.js"
+import { primaryPlane } from "./swimlanes.js"
 import type { CreateShapeType, LabelPosition, Tool } from "./types.js"
 
 interface GroupDef {
@@ -161,6 +162,9 @@ const GATEWAY_TYPES = new Set([
 	"eventBasedGateway",
 	"complexGateway",
 ])
+
+/** What `getElementType` calls a pool and a lane. */
+const SWIMLANE_TYPES: ReadonlySet<string> = new Set(["participant", "lane"])
 
 const SHORTCUTS: ReadonlyArray<[string, string]> = [
 	["Ctrl+Z", "Undo"],
@@ -1101,6 +1105,10 @@ export function initEditorHud(
 
 	function buildCtxToolbar(sourceId: string, sourceType: string): void {
 		ctxToolbar.innerHTML = ""
+		if (SWIMLANE_TYPES.has(sourceType)) {
+			buildSwimlaneToolbar(sourceId)
+			return
+		}
 		const isAnnotation = sourceType === "textAnnotation"
 		const canAddElements = !isAnnotation && sourceType !== "endEvent"
 
@@ -1178,7 +1186,8 @@ export function initEditorHud(
 
 			// Get current shape color
 			const defs = editor.getDefinitions()
-			const diShape = defs?.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === sourceId)
+			const plane = defs ? primaryPlane(defs) : undefined
+			const diShape = plane?.shapes.find((s) => s.bpmnElement === sourceId)
 			const currentColor = diShape ? readDiColor(diShape.unknownAttributes) : {}
 			const currentFill = currentColor.fill
 
@@ -1221,6 +1230,32 @@ export function initEditorHud(
 				ctxToolbar.appendChild(aiBtn)
 			}
 		}
+	}
+
+	/**
+	 * A pool or lane is a container, not a step: it gets Edit label and Delete,
+	 * and nothing that would duplicate it, connect it or colour it.
+	 */
+	function buildSwimlaneToolbar(sourceId: string): void {
+		const labelBtn = document.createElement("button")
+		labelBtn.className = "hud-btn"
+		labelBtn.innerHTML = IC.labelPos
+		labelBtn.title = t("Edit label")
+		labelBtn.addEventListener("click", () => {
+			editor.editLabel(sourceId)
+			hideCtxToolbar()
+		})
+		ctxToolbar.appendChild(labelBtn)
+
+		const delBtn = document.createElement("button")
+		delBtn.className = "hud-btn"
+		delBtn.innerHTML = IC.trash
+		delBtn.title = t("Delete (Del)")
+		delBtn.addEventListener("click", () => {
+			editor.deleteSelected()
+			hideCtxToolbar()
+		})
+		ctxToolbar.appendChild(delBtn)
 	}
 
 	// ── Configure toolbar ──────────────────────────────────────────────────────
@@ -1797,7 +1832,7 @@ export function initEditorHud(
 		if (!_onboardingShown) return
 		const defs = editor.getDefinitions()
 		if (!defs) return
-		const proc = defs.processes[0]
+		const proc = primaryProcess(defs)
 		if (!proc) return
 		const isEmpty = proc.flowElements.length <= 1 && proc.sequenceFlows.length === 0
 		if (!isEmpty) hideOnboarding()
@@ -1939,7 +1974,8 @@ export function initEditorHud(
 		const elemType = editor.getElementType(id)
 		if (!elemType) return
 
-		if (elemType !== "sequenceFlow") {
+		// Neither kind of flow has a label editor on the canvas yet.
+		if (elemType !== "sequenceFlow" && elemType !== "messageFlow") {
 			ctxMenuEl.appendChild(
 				makeCtxItem(IC.labelPos, "Edit label", () => {
 					editor.editLabel(id)
@@ -1951,6 +1987,19 @@ export function initEditorHud(
 			ctxMenuEl.appendChild(sep)
 		}
 
+		if (!SWIMLANE_TYPES.has(elemType)) appendCopyItems()
+		ctxMenuEl.appendChild(
+			makeCtxItem(IC.trash, "Delete", () => {
+				editor.deleteSelected()
+				closeAllDropdowns()
+			}),
+		)
+
+		openCtxMenu(e.clientX, e.clientY)
+	})
+
+	/** Duplicate and Cut: offered for anything but a pool or lane, which cannot be copied. */
+	function appendCopyItems(): void {
 		ctxMenuEl.appendChild(
 			makeCtxItem(IC.duplicate, "Duplicate", () => {
 				editor.duplicate()
@@ -1963,15 +2012,7 @@ export function initEditorHud(
 				closeAllDropdowns()
 			}),
 		)
-		ctxMenuEl.appendChild(
-			makeCtxItem(IC.trash, "Delete", () => {
-				editor.deleteSelected()
-				closeAllDropdowns()
-			}),
-		)
-
-		openCtxMenu(e.clientX, e.clientY)
-	})
+	}
 
 	// Touch: a long-press opens the same context menu (dispatched as a synthetic
 	// contextmenu event at the press point, so the handler above is reused).

@@ -12,13 +12,18 @@ import {
 	type BpmnDefinitions,
 	type BpmnDiPlane,
 	type BpmnDiShape,
+	type BpmnDiagram,
+	type BpmnFlowElement,
 	type BpmnLane,
 	type BpmnLaneSet,
+	type BpmnParticipant,
 	type BpmnProcess,
+	type BpmnSequenceFlow,
 	type BpmnWaypoint,
 	allLanes,
 	assignLane,
 	leafLanes,
+	primaryProcess,
 } from "@bpmnkit/core"
 
 /** Width of a pool's name strip; a top-level lane starts this far right of its pool. */
@@ -40,6 +45,191 @@ function drawn(
 		if (shape) return { plane: diagram.plane, shape }
 	}
 	return undefined
+}
+
+// ── The primary process first ─────────────────────────────────────────────────
+
+/** `items` with the one at `from` moved to `to`; unchanged when either is out of range. */
+function moveItem<T>(items: T[], from: number, to: number): T[] {
+	if (from === to || from < 0 || to < 0 || from >= items.length) return items
+	const rest = items.filter((_, k) => k !== from)
+	rest.splice(to, 0, items[from] as T)
+	return rest
+}
+
+/**
+ * The index of the diagram that draws `process`: its plane names the process,
+ * or draws its pool or one of its nodes. 0 when none does.
+ */
+export function diagramIndexOf(defs: BpmnDefinitions, process: BpmnProcess | undefined): number {
+	if (!process) return 0
+	const pools = defs.collaborations.flatMap((c) => c.participants)
+	const ids = new Set([
+		...pools.filter((p) => p.processRef === process.id).map((p) => p.id),
+		...process.flowElements.map((el) => el.id),
+	])
+	const at = defs.diagrams.findIndex(
+		(d) => d.plane.bpmnElement === process.id || d.plane.shapes.some((s) => ids.has(s.bpmnElement)),
+	)
+	return Math.max(at, 0)
+}
+
+/**
+ * The plane the editor shows and edits: the one that draws the
+ * {@link primaryProcess}, which a modeler file does not always put first.
+ */
+export function primaryPlane(defs: BpmnDefinitions): BpmnDiPlane | undefined {
+	return defs.diagrams[diagramIndexOf(defs, primaryProcess(defs))]?.plane
+}
+
+/**
+ * A shallow view of `defs` with the {@link primaryProcess} at `processes[0]`
+ * and the diagram that draws it at `diagrams[0]`, which is where the modeling
+ * helpers look. `defs` itself when both are already first.
+ */
+export function primaryFirst(defs: BpmnDefinitions): BpmnDefinitions {
+	const primary = primaryProcess(defs)
+	const processes = moveItem(defs.processes, primary ? defs.processes.indexOf(primary) : -1, 0)
+	const diagrams = moveItem(defs.diagrams, diagramIndexOf(defs, primary), 0)
+	if (processes === defs.processes && diagrams === defs.diagrams) return defs
+	return { ...defs, processes, diagrams }
+}
+
+/**
+ * `after` with the item keyed `key` put back right behind the nearest item that
+ * preceded it in `before` and is still there, or first when none is. By key,
+ * not by index: the edit may have removed or added items around it.
+ */
+function putBack<T>(before: T[], after: T[], keyOf: (item: T) => string, key: string): T[] {
+	const at = after.findIndex((item) => keyOf(item) === key)
+	if (at < 0) return after
+	const rest = after.filter((_, k) => k !== at)
+	let to = 0
+	for (let j = before.findIndex((item) => keyOf(item) === key) - 1; j >= 0; j--) {
+		const predecessor = keyOf(before[j] as T)
+		const found = rest.findIndex((item) => keyOf(item) === predecessor)
+		if (found >= 0) {
+			to = found + 1
+			break
+		}
+	}
+	rest.splice(to, 0, after[at] as T)
+	return rest
+}
+
+/** A diagram's identity: its id, or the element its plane draws when the file left the id out. */
+const diagramKey = (diagram: BpmnDiagram) => diagram.id || diagram.plane.bpmnElement
+
+/**
+ * Runs `fn` on {@link primaryFirst}`(defs)` and puts the primary process and
+ * its diagram back where they were in the file, by id. The modeling helpers
+ * and core auto-layout edit `processes[0]` and draw on `diagrams[0]`; this is
+ * what makes them edit the executable process of a file that lists a
+ * partner's process or diagram first, without reordering the saved XML.
+ *
+ * Returns `defs` itself when `fn` returns the view it was given, so a caller
+ * can still tell a no-op by identity. `fn` must therefore not change the view
+ * in place and then return it: the view's top-level arrays are its own, and
+ * such a change would be dropped.
+ */
+export function withPrimaryFirst(
+	defs: BpmnDefinitions,
+	fn: (first: BpmnDefinitions) => BpmnDefinitions,
+): BpmnDefinitions {
+	const view = primaryFirst(defs)
+	if (view === defs) return fn(defs)
+	const out = fn(view)
+	if (out === view) return defs
+	const primary = view.processes[0]
+	const drawing = view.diagrams[0]
+	return {
+		...out,
+		processes: primary
+			? putBack(defs.processes, out.processes, (p) => p.id, primary.id)
+			: out.processes,
+		diagrams: drawing
+			? putBack(defs.diagrams, out.diagrams, diagramKey, diagramKey(drawing))
+			: out.diagrams,
+	}
+}
+
+// ── What an edit leaves alone ─────────────────────────────────────────────────
+
+/** Deep enough for any model the parser builds; a deeper walk means a cycle. */
+const MAX_DEPTH = 64
+
+/**
+ * The ids of every pool and every lane of every process, at any depth: drawn
+ * as shapes, but containers, so never an obstacle, an end of a flow or a
+ * member of a select-all.
+ */
+export function swimlaneIds(defs: BpmnDefinitions): Set<string> {
+	return new Set([
+		...defs.collaborations.flatMap((c) => c.participants.map((p) => p.id)),
+		...defs.processes.flatMap((p) => allLanes(p.laneSet).map((lane) => lane.id)),
+	])
+}
+
+/**
+ * Whether `participant` draws nothing but its own band: it has no
+ * `processRef`, or its process is not the {@link primaryProcess} and has no
+ * flow element and no lane set (the Flowable Modeler writes partner pools so).
+ * Moving such a pool changes its drawing only, so it is safe.
+ */
+export function isBlackBox(defs: BpmnDefinitions, participant: BpmnParticipant): boolean {
+	if (participant.processRef === undefined) return true
+	const process = defs.processes.find((p) => p.id === participant.processRef)
+	if (!process) return true
+	return process !== primaryProcess(defs) && process.flowElements.length === 0 && !process.laneSet
+}
+
+/** Adds the ids of `elements` and of their sequence flows, at every sub-process depth, to `out`. */
+function collectContent(
+	elements: readonly BpmnFlowElement[],
+	flows: readonly BpmnSequenceFlow[],
+	out: Set<string>,
+	depth: number,
+): void {
+	if (depth > MAX_DEPTH) throw new Error("sub-processes nested too deep, or cyclic")
+	for (const flow of flows) out.add(flow.id)
+	for (const el of elements) {
+		out.add(el.id)
+		if ("flowElements" in el) collectContent(el.flowElements, el.sequenceFlows, out, depth + 1)
+	}
+}
+
+/**
+ * The nodes, flows, annotations and associations of every process other than
+ * the {@link primaryProcess}. The modeling helpers only edit the primary one,
+ * so an edit of these would change their drawing and not their model: moves,
+ * deletes, resizes, connections and type changes skip them instead.
+ */
+export function lockedIds(defs: BpmnDefinitions): Set<string> {
+	const primary = primaryProcess(defs)
+	const locked = new Set<string>()
+	for (const process of defs.processes) {
+		if (process === primary) continue
+		collectContent(process.flowElements, process.sequenceFlows, locked, 0)
+		for (const note of process.textAnnotations) locked.add(note.id)
+		for (const association of process.associations) locked.add(association.id)
+	}
+	return locked
+}
+
+/**
+ * The ids a `move` leaves where they are: every lane (dragging one would lay
+ * it over its neighbour), every pool but a black box (its content would stay
+ * behind) and the {@link lockedIds}.
+ */
+export function unmovableIds(defs: BpmnDefinitions): Set<string> {
+	const frozen = new Set([
+		...defs.processes.flatMap((p) => allLanes(p.laneSet).map((lane) => lane.id)),
+		...lockedIds(defs),
+	])
+	for (const participant of defs.collaborations.flatMap((c) => c.participants)) {
+		if (!isBlackBox(defs, participant)) frozen.add(participant.id)
+	}
+	return frozen
 }
 
 /** The leaf lane of `process` whose shape contains `point`, if any. */

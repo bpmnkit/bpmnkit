@@ -1,12 +1,7 @@
-import { readFileSync } from "node:fs"
-import { join } from "node:path"
 import {
 	Bpmn,
 	type BpmnBounds,
 	type BpmnDefinitions,
-	allLanes,
-	applyAutoLayout,
-	collaborationProblems,
 	expand,
 	laneProblems,
 	parseProcessDelta,
@@ -17,19 +12,24 @@ import {
 import { describe, expect, it } from "vitest"
 import { createIdFactory } from "../src/id.js"
 import { applyProcessDelta } from "../src/process-delta.js"
-
-const ROUNDTRIP = join(__dirname, "..", "..", "core", "tests", "fixtures", "roundtrip")
+import {
+	boundsOf,
+	expectSwimlanesSound,
+	expectUnmoved,
+	fixture,
+	hasEdge,
+	hasShape,
+	inBand,
+	laneNamed,
+	lanesOf,
+	messageFlows,
+	participants,
+} from "./swimlane-helpers.js"
 
 const LOAN = `# Loan
 start[start Application received] > check[xor Amount over 10k?]
 check >(Yes: amount > 10000) review[user Review application] > pay[service Pay out | job=payout] > done[end Paid]
 check >(No: default) auto[service Approve automatically | job=approve] > pay`
-
-function fixture(file: string): BpmnDefinitions {
-	const defs = Bpmn.parse(readFileSync(join(ROUNDTRIP, file), "utf8"))
-	// 02-collaboration has no diagram; drawn once, it stands in for one a person laid out.
-	return defs.diagrams.length > 0 ? defs : Bpmn.parse(Bpmn.export(applyAutoLayout(defs)))
-}
 
 function apply(defs: BpmnDefinitions, script: string) {
 	const { aliases } = writeProcessText(defs)
@@ -37,57 +37,6 @@ function apply(defs: BpmnDefinitions, script: string) {
 		aliases,
 		ids: createIdFactory("lanes"),
 	})
-}
-
-function boundsOf(defs: BpmnDefinitions, id: string): BpmnBounds {
-	const shape = defs.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === id)
-	if (!shape) throw new Error(`no shape for ${id}`)
-	return shape.bounds
-}
-
-const hasShape = (defs: BpmnDefinitions, id: string) =>
-	defs.diagrams[0]?.plane.shapes.some((s) => s.bpmnElement === id) ?? false
-const hasEdge = (defs: BpmnDefinitions, id: string) =>
-	defs.diagrams[0]?.plane.edges.some((e) => e.bpmnElement === id) ?? false
-
-function lanesOf(defs: BpmnDefinitions) {
-	return allLanes(primaryProcess(defs)?.laneSet)
-}
-
-function laneNamed(defs: BpmnDefinitions, id: string) {
-	return lanesOf(defs).find((lane) => lane.id === id)
-}
-
-function messageFlows(defs: BpmnDefinitions) {
-	return defs.collaborations.flatMap((c) => c.messageFlows)
-}
-
-function participants(defs: BpmnDefinitions) {
-	return defs.collaborations.flatMap((c) => c.participants)
-}
-
-/** The centre of `inner` lies within the vertical extent of `band`. */
-function inBand(inner: BpmnBounds, band: BpmnBounds): boolean {
-	const cy = inner.y + inner.height / 2
-	return cy >= band.y && cy <= band.y + band.height
-}
-
-/** Lanes, pools and messages stay well formed, and the document exports and parses back. */
-function expectSwimlanesSound(defs: BpmnDefinitions): void {
-	const process = primaryProcess(defs)
-	if (process) expect(laneProblems(process)).toEqual([])
-	expect(collaborationProblems(defs)).toEqual([])
-	for (const flow of messageFlows(defs)) expect(hasEdge(defs, flow.id), flow.id).toBe(true)
-	for (const lane of lanesOf(defs)) expect(hasShape(defs, lane.id), lane.id).toBe(true)
-	expect(() => Bpmn.parse(Bpmn.export(defs))).not.toThrow()
-}
-
-/** Every shape whose element is not in `except` has the bounds it had in `before`. */
-function expectUnmoved(before: BpmnDefinitions, after: BpmnDefinitions, except: string[]): void {
-	for (const s of before.diagrams[0]?.plane.shapes ?? []) {
-		if (except.includes(s.bpmnElement)) continue
-		expect(boundsOf(after, s.bpmnElement), s.bpmnElement).toEqual(s.bounds)
-	}
 }
 
 describe("applyProcessDelta lanes and pools: 08-flowable-lanes-pools.bpmn", () => {

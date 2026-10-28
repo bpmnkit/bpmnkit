@@ -1,4 +1,22 @@
-# @bpmnkit/editor — Applying a change script
+# @bpmnkit/editor — SideDock API
+
+```typescript
+type SideDock = {
+  el: HTMLElement;
+  propertiesPane: HTMLElement;
+  aiPane: { button: HTMLElement; el: HTMLElement };
+  switchTab(tab: "properties" | "ai"): void;
+  expand(): void;
+  collapse(): void;
+  collapsed: boolean;
+  showPanel(): void;
+  hidePanel(): void;
+  setDiagramInfo(processName: string, fileName: string): void;
+};
+```
+
+
+## Applying a change script
 
 `applyProcessDelta` applies a change script (`parseProcessDelta` from `@bpmnkit/core`) to a
 diagram someone drew, without laying it out again. It goes through the same modelling functions

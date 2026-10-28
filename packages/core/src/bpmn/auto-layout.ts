@@ -210,6 +210,45 @@ function buildLaneShapes(
 	})
 }
 
+/**
+ * The lane shapes of a laid-out process, outermost lanes first: the engine's
+ * bands when it placed the nodes by lane, each nesting level one header
+ * further in with right edges aligned; else top-level bands tiled in
+ * proportion to the nodes each lane holds. The outermost lanes start at
+ * `frame.left` and span `frame.width`; `frame.top` and `frame.height` are the
+ * extent the proportional bands tile. `dx` and `dy` shift layout space onto
+ * the plane.
+ */
+function laneShapesOf(
+	lanes: BpmnLane[],
+	levels: LaneLevel[],
+	laneBands: Array<{ id: string; bounds: Bounds }> | undefined,
+	nodes: LayoutNode[],
+	dx: number,
+	dy: number,
+	frame: { left: number; top: number; width: number; height: number },
+): BpmnDiShape[] {
+	if (!laneBands) {
+		return buildLaneShapes(lanes, nodes, dx, dy, frame.top, frame.left, frame.width, frame.height)
+	}
+	const depthOf = new Map(levels.map((level) => [level.lane.id, level.depth]))
+	return laneBands.map((lane) => {
+		const inset = (depthOf.get(lane.id) ?? 0) * LANE_HEADER
+		return {
+			id: `${lane.id}_di`,
+			bpmnElement: lane.id,
+			isHorizontal: true,
+			bounds: {
+				x: Math.round(frame.left + inset),
+				y: Math.round(lane.bounds.y + dy),
+				width: Math.round(frame.width - inset),
+				height: Math.round(lane.bounds.height),
+			},
+			unknownAttributes: {},
+		}
+	})
+}
+
 /** Also used by `expand`, which lays out one process without the pool handling above. */
 export function addAnnotationShapes(
 	process: BpmnProcess,
@@ -1003,7 +1042,7 @@ export function applyAutoLayout(
 		// Engine lane bands already stack the content vertically, so the pool
 		// aligns to the band space rather than to the content bounding box —
 		// otherwise the shapes drift out of the lanes drawn around them.
-		const laneBands = participantId && hasLanes ? engineLanes : undefined
+		const laneBands = hasLanes ? engineLanes : undefined
 		// Bands arrive outermost first and nested lanes overlap their parent, so the
 		// pool spans their extent rather than the first band or the sum of heights.
 		const bandTop = laneBands ? Math.min(...laneBands.map((lane) => lane.bounds.y)) : 0
@@ -1011,25 +1050,50 @@ export function applyAutoLayout(
 			? Math.max(...laneBands.map((lane) => lane.bounds.y + lane.bounds.height)) - bandTop
 			: 0
 
+		// Only the primary process shares the root plane; any other root process
+		// owns one, instead of being stacked on top of the first at the origin.
+		const ownPlane = !participantId && process !== undefined && process.id !== primaryProcessId
+		const top = ownPlane ? 0 : poolY
+		// A laned process with no pool keeps its lane bands, starting at the left
+		// edge: wrapping it in a pool would add a participant and a collaboration.
+		const framed = participantId !== undefined || hasLanes
+		const frameLeft = participantId ? POOL_HEADER : 0
+
 		let dx: number
 		let dy: number
-		if (participantId) {
-			const elemX = POOL_HEADER + headersWidth + PADDING
-			dx = elemX - minX + alignDx
-			dy = laneBands ? poolY - bandTop : poolY + PADDING - minY
+		if (framed) {
+			const elemX = frameLeft + headersWidth + PADDING
+			dx = elemX - minX + (participantId ? alignDx : 0)
+			dy = laneBands ? top - bandTop : top + PADDING - minY
 		} else {
 			dx = PADDING - minX
 			dy = PADDING - minY
 		}
 
-		// Only the primary process shares the root plane; any other root process
-		// owns one, instead of being stacked on top of the first at the origin.
-		if (!participantId && process && process.id !== primaryProcessId) {
+		const innerW = headersWidth + contentW + 2 * PADDING + (participantId ? alignDx : 0)
+		// Lanes must tile the pool exactly, so the pool takes their height, and
+		// grows past them only for nodes no lane claims, which the engine
+		// places below the bands.
+		const innerH = laneBands
+			? Math.max(bandHeight, orphanExtent(result.nodes, bandTop + bandHeight) - bandTop)
+			: contentH + 2 * PADDING
+		const laneShapes = (): BpmnDiShape[] =>
+			hasLanes
+				? laneShapesOf(lanes, levels, laneBands, result.nodes, dx, dy, {
+						left: frameLeft,
+						top,
+						width: innerW,
+						height: innerH,
+					})
+				: []
+
+		if (ownPlane && process) {
 			const shapes: BpmnDiShape[] = []
 			const edges: BpmnDiEdge[] = []
 			for (const node of result.nodes) shapes.push(nodeToShape(node, dx, dy))
 			for (const edge of result.edges) edges.push(edgeToShape(edge, dx, dy))
 			addAnnotationShapes(process, result.nodes, annBounds, shapes, edges, dx, dy)
+			shapes.push(...laneShapes())
 			rootPlanes.push({ elementId: process.id, shapes, edges })
 			continue
 		}
@@ -1041,46 +1105,16 @@ export function applyAutoLayout(
 		}
 
 		if (participantId) {
-			const innerW = headersWidth + contentW + 2 * PADDING + alignDx
-			// Lanes must tile the pool exactly, so the pool takes their height, and
-			// grows past them only for nodes no lane claims, which the engine
-			// places below the bands.
-			const innerH = laneBands
-				? Math.max(bandHeight, orphanExtent(result.nodes, bandTop + bandHeight) - bandTop)
-				: contentH + 2 * PADDING
-			const poolW = POOL_HEADER + innerW
-
 			allShapes.push({
 				id: `${participantId}_di`,
 				bpmnElement: participantId,
 				isHorizontal: true,
-				bounds: { x: 0, y: poolY, width: poolW, height: innerH },
+				bounds: { x: 0, y: poolY, width: POOL_HEADER + innerW, height: innerH },
 				unknownAttributes: {},
 			})
-
-			if (hasLanes) {
-				const depthOf = new Map(levels.map((level) => [level.lane.id, level.depth]))
-				const laneShapes = laneBands
-					? laneBands.map((lane) => {
-							// Each nesting level sits one header further in, right edges aligned.
-							const inset = (depthOf.get(lane.id) ?? 0) * LANE_HEADER
-							return {
-								id: `${lane.id}_di`,
-								bpmnElement: lane.id,
-								isHorizontal: true,
-								bounds: {
-									x: Math.round(POOL_HEADER + inset),
-									y: Math.round(lane.bounds.y + dy),
-									width: Math.round(innerW - inset),
-									height: Math.round(lane.bounds.height),
-								},
-								unknownAttributes: {},
-							}
-						})
-					: buildLaneShapes(lanes, result.nodes, dx, dy, poolY, POOL_HEADER, innerW, innerH)
-				allShapes.push(...laneShapes)
-			}
-
+		}
+		if (framed) {
+			allShapes.push(...laneShapes())
 			poolY += innerH + POOL_GAP
 		}
 	}

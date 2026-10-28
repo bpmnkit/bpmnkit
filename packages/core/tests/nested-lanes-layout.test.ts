@@ -275,7 +275,9 @@ describe("auto-layout without nested lanes", () => {
 	// a layout change for diagrams the feature must not touch.
 	it.each([
 		["02-collaboration.bpmn", "ad05977e9ae0d6cbeba9dfab462a20d4e4ea977c18f04fbf1e8dc901b0d4ed07"],
-		["miwg-A.4.0.bpmn", "23eff3452d72d5b9fb3f74b76bdbf5d30eff23c35b53388d4d00d55e7cd0e015"],
+		// Re-captured for WP8a.11: its laned process WFP-6-2 has no pool, and its
+		// own plane now keeps the lane bands (and their source DI ids) it dropped.
+		["miwg-A.4.0.bpmn", "de109f0f6b9d9ff584f91a5e24be022800d2c913d9cbb2306a0cbfb227b03b8a"],
 	])("lays out %s byte for byte as before", (name, hash) => {
 		expect(sha256Hex(serializeBpmn(applyAutoLayout(fixture(name))))).toBe(hash)
 	})

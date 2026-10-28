@@ -88,6 +88,17 @@ export type EditorOptions = CanvasOptions & {
 }
 
 export interface EditorEvents extends CanvasEvents {
+	/**
+	 * The document changed: an edit, an undo or a redo.
+	 *
+	 * Loading says nothing, with one exception: a document that has flow nodes
+	 * but draws none of them (no diagram interchange at all) is laid out on load,
+	 * and that changes what `exportXml` writes, so `loadDefinitions` fires this
+	 * once with the laid-out document. It fires synchronously, so a host that
+	 * passes `xml` to the constructor has no listener yet; it can compare
+	 * `exportXml()` with what it loaded. No `diagram:op` goes with it: the layout
+	 * is a property of the file, and every editor that loads it makes the same.
+	 */
 	"diagram:change": (defs: BpmnDefinitions) => void
 	/**
 	 * The same change, described rather than materialised.
@@ -98,7 +109,8 @@ export interface EditorEvents extends CanvasEvents {
 	 * never heard about an undo would be silently wrong from then on.
 	 *
 	 * The exception is `loadDefinitions`, which is the host replacing the
-	 * document rather than the user changing it, and says nothing.
+	 * document rather than the user changing it, and says nothing here, even
+	 * when it lays out a file without diagram interchange.
 	 *
 	 * A listener relaying edits to other people wants this event; a listener that
 	 * just needs the current document wants `diagram:change`.

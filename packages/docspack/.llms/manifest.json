@@ -5646,39 +5646,42 @@
 		{
 			"id": "packages.editor.basic-setup",
 			"file": "chunks/packages.editor.basic-setup.md",
-			"tokens": 166,
+			"tokens": 239,
 			"tags": [
 				"packages",
 				"editor",
 				"basic",
-				"setup",
-				"side",
-				"dock"
+				"setup"
 			],
-			"entities": []
+			"entities": [
+				"primaryProcess",
+				"@bpmnkit/core"
+			]
 		},
 		{
-			"id": "packages.editor.hud-options",
-			"file": "chunks/packages.editor.hud-options.md",
-			"tokens": 164,
+			"id": "packages.editor.with-side-dock",
+			"file": "chunks/packages.editor.with-side-dock.md",
+			"tokens": 168,
 			"tags": [
 				"packages",
 				"editor",
+				"side",
+				"dock",
 				"hud",
 				"options",
-				"editoroptions",
-				"sidedock",
-				"api"
+				"editoroptions"
 			],
 			"entities": []
 		},
 		{
-			"id": "packages.editor.applying-a-change-script",
-			"file": "chunks/packages.editor.applying-a-change-script.md",
-			"tokens": 790,
+			"id": "packages.editor.sidedock-api",
+			"file": "chunks/packages.editor.sidedock-api.md",
+			"tokens": 861,
 			"tags": [
 				"packages",
 				"editor",
+				"sidedock",
+				"api",
 				"applying",
 				"change",
 				"script"

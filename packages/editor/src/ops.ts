@@ -19,6 +19,7 @@ import { applyAutoLayout } from "@bpmnkit/core"
 import { createIdFactory } from "./id.js"
 import {
 	type Clipboard,
+	canEndFlow,
 	changeElementType,
 	createAnnotation,
 	createAnnotationWithLink,
@@ -39,6 +40,7 @@ import {
 	updateLabelPosition,
 	updateShapeColor,
 } from "./modeling.js"
+import { withPrimaryFirst } from "./swimlanes.js"
 import type { CreateShapeType, PortDir } from "./types.js"
 
 /** One shape's displacement. */
@@ -131,8 +133,27 @@ export interface OpResult {
 	created: string[]
 }
 
-/** Performs an op. The same op, on the same document, anywhere. */
+/**
+ * Performs an op. The same op, on the same document, anywhere.
+ *
+ * Edits land in the primary process and on the diagram that draws it, wherever
+ * the file lists them (see `withPrimaryFirst`). An op that changes nothing
+ * returns `defs` itself.
+ */
 export function applyOp(defs: BpmnDefinitions, op: EditorOp): OpResult {
+	// A snapshot replaces the document; there is nothing in it to reorder.
+	if (op.kind === "snapshot") return { defs: op.defs, created: [] }
+	let created: string[] = []
+	const next = withPrimaryFirst(defs, (first) => {
+		const r = applyEdit(first, op)
+		created = r.created
+		return r.defs
+	})
+	return { defs: next, created }
+}
+
+/** Performs an edit on a document whose primary process and its diagram come first. */
+function applyEdit(defs: BpmnDefinitions, op: Exclude<EditorOp, { kind: "snapshot" }>): OpResult {
 	switch (op.kind) {
 		case "createShape": {
 			const r = createShape(defs, op.type, op.bounds, op.name, createIdFactory(op.seed))
@@ -149,7 +170,7 @@ export function applyOp(defs: BpmnDefinitions, op: EditorOp): OpResult {
 				true,
 				createIdFactory(op.seed),
 			)
-			return { defs: r.defs, created: [r.id] }
+			return { defs: r.defs, created: r.defs === defs ? [] : [r.id] }
 		}
 		case "createAnnotation": {
 			const r = createAnnotation(defs, op.bounds, op.text, createIdFactory(op.seed))
@@ -174,9 +195,11 @@ export function applyOp(defs: BpmnDefinitions, op: EditorOp): OpResult {
 				op.waypoints,
 				createIdFactory(op.seed),
 			)
-			return { defs: r.defs, created: [r.id] }
+			return { defs: r.defs, created: r.defs === defs ? [] : [r.id] }
 		}
 		case "createConnected": {
+			// Refused whole: a shape without the flow that was its reason would be half an edit.
+			if (!canEndFlow(defs, op.sourceId)) return { defs, created: [] }
 			// One factory for both halves, so the pair of ids is one sequence.
 			const ids = createIdFactory(op.seed)
 			const shape = createShape(defs, op.type, op.bounds, op.name, ids)
@@ -234,7 +257,5 @@ export function applyOp(defs: BpmnDefinitions, op: EditorOp): OpResult {
 			}
 		case "autoLayout":
 			return { defs: applyAutoLayout(defs), created: [] }
-		case "snapshot":
-			return { defs: op.defs, created: [] }
 	}
 }

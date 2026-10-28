@@ -45,7 +45,6 @@ import {
 	conditionOrLabel,
 	laneForNewNode,
 	leafLanes,
-	primaryProcess,
 	writableCondition,
 	writableLabel,
 	writableName,
@@ -69,6 +68,8 @@ import {
 	messageWaypoints,
 	poolAround,
 	removeLaneBand,
+	swimlaneIds,
+	withPrimaryFirst,
 } from "./swimlanes.js"
 import type { CreateShapeType } from "./types.js"
 
@@ -262,31 +263,6 @@ function startingWith(id: string, ids: IdFactory): IdFactory {
 	}
 }
 
-/** `items` with the one at `from` moved to `to`; unchanged when either is out of range. */
-function moveItem<T>(items: T[], from: number, to: number): T[] {
-	if (from === to || from < 0 || to < 0 || from >= items.length) return items
-	const rest = items.filter((_, k) => k !== from)
-	rest.splice(to, 0, items[from] as T)
-	return rest
-}
-
-/**
- * The index of the diagram that draws `process`: its plane names the process,
- * or draws its pool or one of its nodes. 0 when none does.
- */
-function diagramIndexOf(defs: BpmnDefinitions, process: BpmnProcess | undefined): number {
-	if (!process) return 0
-	const pools = defs.collaborations.flatMap((c) => c.participants)
-	const ids = new Set([
-		...pools.filter((p) => p.processRef === process.id).map((p) => p.id),
-		...process.flowElements.map((el) => el.id),
-	])
-	const at = defs.diagrams.findIndex(
-		(d) => d.plane.bpmnElement === process.id || d.plane.shapes.some((s) => ids.has(s.bpmnElement)),
-	)
-	return Math.max(at, 0)
-}
-
 function hasDefault(element: BpmnFlowElement): element is BpmnFlowElement & { default?: string } {
 	return (
 		element.type === "exclusiveGateway" ||
@@ -334,6 +310,34 @@ export function applyProcessDelta(
 	delta: ProcessDelta,
 	options: ApplyProcessDeltaOptions,
 ): ApplyProcessDeltaResult {
+	// Nothing to edit: the inner function reports it and hands back the caller's model.
+	if (!definitions.processes[0] || !definitions.diagrams[0]) {
+		return applyToPrimaryFirst(definitions, delta, options)
+	}
+	// One copy up front, so the direct edits never reach the caller's model. The
+	// modeling helpers edit processes[0] and draw on diagrams[0], and the script was
+	// written against the primary process (writeProcessText): it goes first while
+	// applying, and back after.
+	const held: { result?: ApplyProcessDeltaResult } = {}
+	const restored = withPrimaryFirst(structuredClone(definitions), (first) => {
+		held.result = applyToPrimaryFirst(first, delta, options)
+		// A new object: the delta edits the view in place (lane refs go straight
+		// into its processes), and handing the view back would read as "unchanged".
+		return { ...held.result.definitions }
+	})
+	if (!held.result) throw new Error("withPrimaryFirst did not run the delta")
+	return { ...held.result, definitions: restored }
+}
+
+/**
+ * {@link applyProcessDelta} on `definitions`, a private copy whose primary
+ * process and the diagram that draws it come first. Edits the copy in place.
+ */
+function applyToPrimaryFirst(
+	definitions: BpmnDefinitions,
+	delta: ProcessDelta,
+	options: ApplyProcessDeltaOptions,
+): ApplyProcessDeltaResult {
 	const result: ApplyProcessDeltaResult = {
 		definitions,
 		created: [],
@@ -349,15 +353,7 @@ export function applyProcessDelta(
 		problem(0, "the document has no process with a diagram to change")
 		return result
 	}
-	// One copy up front, so the direct edits below never reach the caller's model.
-	let defs = structuredClone(definitions)
-	// The modeling helpers edit processes[0]; the script was written against the
-	// primary process (writeProcessText). Put it first while applying, and back after.
-	const primaryIndex = defs.processes.findIndex((p) => p.id === primaryProcess(defs)?.id)
-	defs.processes = moveItem(defs.processes, primaryIndex, 0)
-	// Likewise the diagram that draws it: the helpers draw on diagrams[0].
-	const diagramIndex = diagramIndexOf(defs, defs.processes[0])
-	defs.diagrams = moveItem(defs.diagrams, diagramIndex, 0)
+	let defs = definitions
 	const ids = options.ids ?? genId
 	const taken = idsIn(defs)
 
@@ -373,10 +369,7 @@ export function applyProcessDelta(
 		proc().sequenceFlows.find((f) => f.sourceRef === from && f.targetRef === to)
 
 	/** Pools and lanes: drawn as shapes, but containers rather than obstacles. */
-	const containerIds = new Set<string>([
-		...defs.collaborations.flatMap((c) => c.participants.map((p) => p.id)),
-		...defs.processes.flatMap((p) => allLanes(p.laneSet)).map((lane) => lane.id),
-	])
+	const containerIds = swimlaneIds(defs)
 	const obstacles = (except: readonly string[] = []) =>
 		plane()
 			.shapes.filter((s) => !containerIds.has(s.bpmnElement) && !except.includes(s.bpmnElement))
@@ -815,8 +808,6 @@ export function applyProcessDelta(
 		...defs.collaborations.flatMap((c) => c.participants.map((p) => p.id)),
 	])
 	result.changed = [...changed].filter((id) => reportable.has(id) && !result.created.includes(id))
-	defs.processes = moveItem(defs.processes, 0, primaryIndex)
-	defs.diagrams = moveItem(defs.diagrams, 0, diagramIndex)
 	result.definitions = defs
 	return result
 

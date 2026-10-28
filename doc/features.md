@@ -1,5 +1,9 @@
 # Features
 
+## Editor edits the executable process of a collaboration (2026-10-28)
+
+- The editor edits the executable process and its diagram even when a Flowable Modeler file lists a black-box partner first; the canvas shows that process. Pools and lanes can be renamed in place, and a file without diagram interchange is laid out on load. Auto-layout keeps lane bands on a laned process without a pool.
+
 ## Change scripts edit lanes, pools and messages (2026-10-28)
 
 - A model's change script (Drop suggestions, AI chat) can move nodes between lanes, add, rename and remove lanes, add and remove black-box partner pools and messages to them; `applyProcessDelta` keeps the layout. Works on Flowable Modeler collaborations, whose executable process need not be first.

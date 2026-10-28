@@ -13,13 +13,22 @@ import type {
 	CanvasEvents,
 	CanvasPlugin,
 	FitMode,
+	ImportWarnings,
 	RenderedEdge,
 	RenderedShape,
 	ScreenBox,
 	Theme,
 	ViewportState,
 } from "@bpmnkit/canvas"
-import { Bpmn, collectLabelStyles, labelFontCss, resolveLabelFont } from "@bpmnkit/core"
+import {
+	Bpmn,
+	applyAutoLayout,
+	checkDiCompleteness,
+	collectLabelStyles,
+	labelFontCss,
+	primaryProcess,
+	resolveLabelFont,
+} from "@bpmnkit/core"
 import type {
 	BpmnBounds,
 	BpmnDefinitions,
@@ -49,6 +58,7 @@ import {
 	insertEdgeWaypoint,
 	moveEdgeSegment,
 	moveEdgeWaypoint,
+	nameOf,
 } from "./modeling.js"
 import type { Clipboard } from "./modeling.js"
 import { type EditorOp, applyOp } from "./ops.js"
@@ -56,6 +66,15 @@ import { OverlayRenderer } from "./overlay.js"
 import { canAttach, canConnect, canMorph, canResize } from "./rules.js"
 import { EditorStateMachine } from "./state-machine.js"
 import type { Callbacks } from "./state-machine.js"
+import {
+	POOL_HEADER,
+	lockedIds,
+	primaryFirst,
+	primaryPlane,
+	swimlaneIds,
+	unmovableIds,
+	withPrimaryFirst,
+} from "./swimlanes.js"
 import type {
 	CreateShapeType,
 	DiagPoint,
@@ -346,6 +365,12 @@ export class BpmnEditor {
 	private readonly _flowById = new Map<string, BpmnSequenceFlow>()
 	/** Equal-spacing snap candidates for the current drag; see _spacingCandidates. */
 	private _spacingIndex: SpacingIndex | null = null
+	/** Pools and lanes of the rendered document: containers, never obstacles or flow ends. */
+	private _swimlanes = new Set<string>()
+	/** Nodes and flows of other processes, which edits skip (see `lockedIds`). */
+	private _locked = new Set<string>()
+	/** What a move op leaves in place, so the drag preview leaves it too. */
+	private _unmovable = new Set<string>()
 	private _edges: RenderedEdge[] = []
 	private _defs: BpmnDefinitions | null = null
 	private _selectedIds: string[] = []
@@ -524,7 +549,8 @@ export class BpmnEditor {
 			previewWaypointInsert: (edgeId, segIdx, pt) => {
 				if (!this._defs) return
 				const snap = this._snapWaypoint(pt)
-				const preview = insertEdgeWaypoint(this._defs, edgeId, segIdx, snap.pt)
+				// The same view applyOp edits, so the preview is the edge that will move.
+				const preview = insertEdgeWaypoint(primaryFirst(this._defs), edgeId, segIdx, snap.pt)
 				const edge = preview.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === edgeId)
 				this._overlay.setEndpointDragGhost(edge?.waypoints ?? null)
 				this._overlay.setAlignmentGuides(snap.guides)
@@ -545,7 +571,7 @@ export class BpmnEditor {
 			previewWaypointMove: (edgeId, wpIdx, pt) => {
 				if (!this._defs) return
 				const snap = this._snapWaypoint(pt)
-				const preview = moveEdgeWaypoint(this._defs, edgeId, wpIdx, snap.pt)
+				const preview = moveEdgeWaypoint(primaryFirst(this._defs), edgeId, wpIdx, snap.pt)
 				const edge = preview.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === edgeId)
 				this._overlay.setEndpointDragGhost(edge?.waypoints ?? null)
 				this._overlay.setAlignmentGuides(snap.guides)
@@ -565,7 +591,7 @@ export class BpmnEditor {
 			},
 			previewSegmentMove: (edgeId, segIdx, isHoriz, delta) => {
 				if (!this._defs) return
-				const preview = moveEdgeSegment(this._defs, edgeId, segIdx, isHoriz, delta)
+				const preview = moveEdgeSegment(primaryFirst(this._defs), edgeId, segIdx, isHoriz, delta)
 				const edge = preview.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === edgeId)
 				this._overlay.setEndpointDragGhost(edge?.waypoints ?? null)
 			},
@@ -687,16 +713,29 @@ export class BpmnEditor {
 		this.fitView()
 	}
 
+	/**
+	 * Replaces the document and clears the undo history.
+	 *
+	 * A document with flow nodes that draws none of them is laid out first, so
+	 * the first undo step already has shapes; that fires `diagram:change` once
+	 * (see {@link EditorEvents}). One that draws some but not all keeps its
+	 * layout, because laying out everything would throw away what a person drew:
+	 * the missing elements are listed in the `diagram:load` warnings instead.
+	 */
 	loadDefinitions(defs: BpmnDefinitions): void {
+		// Warnings describe the document as given, even once it is laid out.
+		const warnings = checkDiCompleteness(defs)
+		const loaded = drawsNoFlowNode(defs) ? withPrimaryFirst(defs, (d) => applyAutoLayout(d)) : defs
 		this._commandStack.clear()
-		this._commandStack.push(defs)
+		this._commandStack.push(loaded)
 		this._selectedIds = []
 		this._htmlOverlays.clear()
-		this._renderDefs(defs)
+		this._renderDefs(loaded, warnings)
 		if (this._fit !== "none") {
 			requestAnimationFrame(() => this.fitView())
 		}
-		this._setDuplicateIdWarning(this._getDuplicateIds(defs))
+		this._setDuplicateIdWarning(this._getDuplicateIds(loaded))
+		if (loaded !== defs) this._emit("diagram:change", loaded)
 	}
 
 	exportXml(): string {
@@ -948,7 +987,7 @@ export class BpmnEditor {
 
 	fitView(padding = 40): void {
 		if (!this._defs) return
-		const bounds = computeDiagramBounds(this._defs)
+		const bounds = computeDiagramBounds(this._defs, primaryPlane(this._defs))
 		if (!bounds) return
 		const svgW = this._svg.clientWidth
 		const svgH = this._svg.clientHeight
@@ -1012,8 +1051,9 @@ export class BpmnEditor {
 		this._viewport.set({ tx: width / 2 - cx * scale, ty: height / 2 - cy * scale, scale })
 	}
 
+	/** Selects every shape but the pools and lanes, which would only drag their content along. */
 	selectAll(): void {
-		this._setSelection(this._shapes.map((s) => s.id))
+		this._setSelection(this._shapes.filter((s) => !this._swimlanes.has(s.id)).map((s) => s.id))
 	}
 
 	paste(): void {
@@ -1123,7 +1163,11 @@ export class BpmnEditor {
 		)}`
 	}
 
-	private _renderDefs(defs: BpmnDefinitions): void {
+	/**
+	 * Draws `defs` and fires `diagram:load` with `warnings`: what a freshly
+	 * loaded document lacked in diagram interchange, none for an edit.
+	 */
+	private _renderDefs(defs: BpmnDefinitions, warnings: ImportWarnings = NO_WARNINGS): void {
 		this._containersG.innerHTML = ""
 		this._edgesG.innerHTML = ""
 		this._shapesG.innerHTML = ""
@@ -1136,6 +1180,9 @@ export class BpmnEditor {
 			this._labelsG,
 			this._markerId,
 			this._id,
+			// The plane the edits land on (see withPrimaryFirst), which a modeler
+			// file does not always list first.
+			primaryPlane(defs),
 		)
 		this._shapes = result.shapes
 		this._edges = result.edges
@@ -1145,8 +1192,11 @@ export class BpmnEditor {
 		this._edgeById.clear()
 		for (const edge of this._edges) this._edgeById.set(edge.id, edge)
 		this._flowById.clear()
-		for (const flow of defs.processes[0]?.sequenceFlows ?? []) this._flowById.set(flow.id, flow)
+		for (const flow of primaryProcess(defs)?.sequenceFlows ?? []) this._flowById.set(flow.id, flow)
 		this._spacingIndex = null
+		this._swimlanes = swimlaneIds(defs)
+		this._locked = lockedIds(defs)
+		this._unmovable = unmovableIds(defs)
 
 		// Add transparent hit-area polylines for edge clicking
 		for (const edge of this._edges) {
@@ -1174,7 +1224,7 @@ export class BpmnEditor {
 			}
 		}
 
-		this._emit("diagram:load", defs, { missingShapes: [], missingEdges: [] })
+		this._emit("diagram:load", defs, warnings)
 	}
 
 	/**
@@ -1191,6 +1241,8 @@ export class BpmnEditor {
 	): string[] {
 		if (this._readOnly || !this._defs) return []
 		const { defs, created } = applyOp(this._defs, op)
+		// applyOp hands back the same document when nothing changed: no undo step for it.
+		if (defs === this._defs) return created
 		// Selection is set before the render so the new element comes up selected.
 		const select =
 			options.select === "all" ? created : options.select === "first" ? created.slice(0, 1) : null
@@ -1273,6 +1325,8 @@ export class BpmnEditor {
 
 		this._snapDelta = { dx: finalDx, dy: finalDy }
 		for (const id of this._selectedIds) {
+			// The move op leaves these in place; dragging them here would jump back on drop.
+			if (this._unmovable.has(id)) continue
 			const shape = this._shapeById.get(id)
 			if (!shape) continue
 			const { x, y } = shape.shape.bounds
@@ -1343,6 +1397,8 @@ export class BpmnEditor {
 		const dy = current.y - origin.y
 
 		for (const shape of this._shapes) {
+			// The move op leaves these in place (see unmovableIds); so does the preview.
+			if (this._unmovable.has(shape.id)) continue
 			const b = shape.shape.bounds
 			const cx = b.x + b.width / 2
 			const cy = b.y + b.height / 2
@@ -1467,12 +1523,11 @@ export class BpmnEditor {
 		const srcShape = this._shapeById.get(srcId)
 		const tgtShape = this._shapeById.get(tgtId)
 		if (!srcShape || !tgtShape) return
+		if (!this._canEndFlow(srcId) || !this._canEndFlow(tgtId)) return
 		const srcType = srcShape.flowElement?.type
 		const tgtType = tgtShape.flowElement?.type
 		if (srcType && tgtType && !canConnect(srcType, tgtType)) return
-		const obstacles = this._shapes
-			.filter((s) => s.id !== srcId && s.id !== tgtId)
-			.map((s) => s.shape.bounds)
+		const obstacles = this._obstacleBounds([srcId, tgtId])
 		const waypoints = computeWaypointsAvoiding(
 			srcShape.shape.bounds,
 			tgtShape.shape.bounds,
@@ -1486,7 +1541,7 @@ export class BpmnEditor {
 
 	private _doCopy(): void {
 		if (!this._defs || this._selectedIds.length === 0) return
-		this._clipboard = copyElements(this._defs, this._selectedIds)
+		this._clipboard = copyElements(primaryFirst(this._defs), this._selectedIds)
 	}
 
 	private _doPaste(): void {
@@ -1511,18 +1566,19 @@ export class BpmnEditor {
 		if (!shape) return
 		const defs = this._defs
 		if (!defs) return
-		const process = defs.processes[0]
-		const currentText =
-			process?.flowElements.find((el) => el.id === id)?.name ??
-			process?.sequenceFlows.find((sf) => sf.id === id)?.name ??
-			process?.textAnnotations.find((ta) => ta.id === id)?.text ??
-			""
 		// Edit in the font the canvas draws the label in (its DI label style).
 		const font = resolveLabelFont(shape.shape.label, collectLabelStyles(defs))
+		const b = shape.shape.bounds
+		// A pool's or lane's name sits in its header strip, not in the middle of the band.
+		const anchor = !this._swimlanes.has(id)
+			? b
+			: shape.shape.isHorizontal === false
+				? { ...b, height: POOL_HEADER }
+				: { ...b, width: POOL_HEADER }
 		this._labelEditor.start(
 			id,
-			currentText,
-			shape.shape.bounds,
+			nameOf(defs, id) ?? "",
+			anchor,
 			this._viewport.state,
 			this._svg.getBoundingClientRect(),
 			font ? labelFontCss(font, LABEL_FONT_FAMILY, LABEL_FONT_SIZE) : undefined,
@@ -1549,9 +1605,28 @@ export class BpmnEditor {
 		const sourceId = this._connectSourceId()
 		if (!sourceId) return false
 		if (targetId === sourceId) return true
+		if (!this._canEndFlow(targetId)) return true
 		const srcType = this._shapeById.get(sourceId)?.flowElement?.type
 		const tgtType = this._shapeById.get(targetId)?.flowElement?.type
 		return srcType !== undefined && tgtType !== undefined && !canConnect(srcType, tgtType)
+	}
+
+	/** Whether a boundary event may attach to `id`: an activity of the primary process. */
+	private _canHostBoundary(id: string): boolean {
+		const type = this._shapeById.get(id)?.flowElement?.type
+		return type !== undefined && canAttach(type) && this._canEndFlow(id)
+	}
+
+	/** Whether a sequence flow may start or end at `id`: not at a pool, a lane or another process's node. */
+	private _canEndFlow(id: string): boolean {
+		return !this._swimlanes.has(id) && !this._locked.has(id)
+	}
+
+	/** Bounds of every shape a route must go around: all but pools, lanes and `except`. */
+	private _obstacleBounds(except: readonly string[]): BpmnBounds[] {
+		return this._shapes
+			.filter((s) => !this._swimlanes.has(s.id) && !except.includes(s.id))
+			.map((s) => s.shape.bounds)
 	}
 
 	// ── New public helpers ─────────────────────────────────────────────
@@ -1567,14 +1642,26 @@ export class BpmnEditor {
 		return { x, y, width: b.width * vp.scale, height: b.height * vp.scale }
 	}
 
-	/** Returns the BPMN element type for a given id, or null if not found. */
+	/**
+	 * Returns the BPMN element type for a given id, or null if not found:
+	 * "participant" for a pool, "lane" for a lane and, for an edge,
+	 * "messageFlow" or "sequenceFlow".
+	 */
 	getElementType(id: string): string | null {
 		const shape = this._shapeById.get(id)
 		if (!shape) {
-			if (this._edges.some((e) => e.id === id)) return "sequenceFlow"
-			return null
+			if (!this._edgeById.has(id)) return null
+			const isMessage = this._defs?.collaborations.some((c) =>
+				c.messageFlows.some((m) => m.id === id),
+			)
+			return isMessage ? "messageFlow" : "sequenceFlow"
 		}
 		if (shape.annotation !== undefined) return "textAnnotation"
+		if (this._swimlanes.has(id)) {
+			return this._defs?.collaborations.some((c) => c.participants.some((p) => p.id === id))
+				? "participant"
+				: "lane"
+		}
 		const bpmnType = shape.flowElement?.type ?? null
 		if (!bpmnType) return null
 		// For events, resolve to specific palette type based on event definition
@@ -1621,7 +1708,7 @@ export class BpmnEditor {
 		}
 
 		const newBounds = this._smartPlaceBounds(srcBounds, sourceId, w, h)
-		const obstacles = this._shapes.filter((s) => s.id !== sourceId).map((s) => s.shape.bounds)
+		const obstacles = this._obstacleBounds([sourceId])
 		const waypoints = computeWaypointsAvoiding(srcBounds, newBounds, obstacles)
 		const [id] = this._executeOp(
 			{
@@ -1650,7 +1737,7 @@ export class BpmnEditor {
 
 		// Find directions already occupied by outgoing connections
 		const takenDirs = new Set<string>()
-		const process = this._defs?.processes[0]
+		const process = this._defs ? primaryProcess(this._defs) : undefined
 		if (process) {
 			for (const flow of process.sequenceFlows) {
 				if (flow.sourceRef !== sourceId) continue
@@ -1722,6 +1809,8 @@ export class BpmnEditor {
 	private _overlapsAny(bounds: BpmnBounds): boolean {
 		const MARGIN = 10
 		for (const shape of this._shapes) {
+			// A new node goes inside a pool; overlapping its band is the point.
+			if (this._swimlanes.has(shape.id)) continue
 			const b = shape.shape.bounds
 			if (
 				bounds.x < b.x + b.width + MARGIN &&
@@ -1840,7 +1929,8 @@ export class BpmnEditor {
 	private _findEdgeDropTarget(dx: number, dy: number): string | null {
 		if (this._selectedIds.length !== 1) return null
 		const id = this._selectedIds[0]
-		if (!id || !this._defs) return null
+		// insertShapeOnEdge refuses these, so no split is offered for them.
+		if (!id || !this._defs || !this._canEndFlow(id)) return null
 		const shape = this._shapeById.get(id)
 		if (!shape) return null
 
@@ -1848,7 +1938,7 @@ export class BpmnEditor {
 		const cx = b.x + dx + b.width / 2
 		const cy = b.y + dy + b.height / 2
 
-		const process = this._defs.processes[0]
+		const process = primaryProcess(this._defs)
 		if (!process) return null
 
 		const TOLERANCE = 20
@@ -1894,9 +1984,9 @@ export class BpmnEditor {
 		if (!this._defs) return
 		const edge = this._edgeById.get(edgeId)
 		if (!edge) return
-		const flow = this._defs.processes[0]?.sequenceFlows.find((sf) => sf.id === edgeId)
+		const flow = primaryProcess(this._defs)?.sequenceFlows.find((sf) => sf.id === edgeId)
 		if (!flow) return
-		const plane = this._defs.diagrams[0]?.plane
+		const plane = primaryPlane(this._defs)
 		if (!plane) return
 		const srcDi = plane.shapes.find((s) => s.bpmnElement === flow.sourceRef)
 		const tgtDi = plane.shapes.find((s) => s.bpmnElement === flow.targetRef)
@@ -1922,9 +2012,9 @@ export class BpmnEditor {
 		this._overlay.setEndpointDragGhost(null)
 		const edge = this._edgeById.get(edgeId)
 		if (!edge) return
-		const flow = this._defs.processes[0]?.sequenceFlows.find((sf) => sf.id === edgeId)
+		const flow = primaryProcess(this._defs)?.sequenceFlows.find((sf) => sf.id === edgeId)
 		if (!flow) return
-		const plane = this._defs.diagrams[0]?.plane
+		const plane = primaryPlane(this._defs)
 		if (!plane) return
 		const srcDi = plane.shapes.find((s) => s.bpmnElement === flow.sourceRef)
 		const tgtDi = plane.shapes.find((s) => s.bpmnElement === flow.targetRef)
@@ -2269,7 +2359,7 @@ export class BpmnEditor {
 		if (!this._defs) return null
 		const cx = bounds.x + bounds.width / 2
 		const cy = bounds.y + bounds.height / 2
-		const process = this._defs.processes[0]
+		const process = primaryProcess(this._defs)
 		if (!process) return null
 		const TOLERANCE = 20
 		for (const edge of this._edges) {
@@ -2344,8 +2434,7 @@ export class BpmnEditor {
 
 			// Detect boundary event attachment target for intermediate event types
 			if (isIntermediateEventType(mode.elementType) && hit.type === "shape") {
-				const shape = this._shapeById.get(hit.id)
-				if (shape?.flowElement && canAttach(shape.flowElement.type)) {
+				if (this._canHostBoundary(hit.id)) {
 					this._setBoundaryHost(hit.id)
 				} else {
 					this._setBoundaryHost(null)
@@ -2426,7 +2515,7 @@ export class BpmnEditor {
 					break
 				case "a":
 					e.preventDefault()
-					this._setSelection(this._shapes.map((s) => s.id))
+					this.selectAll()
 					break
 				case "c":
 					e.preventDefault()
@@ -2510,10 +2599,25 @@ export class BpmnEditor {
 		const shapeEl = el.closest("[data-bpmnkit-id]")
 		if (shapeEl && (this._shapesG.contains(shapeEl) || this._containersG.contains(shapeEl))) {
 			const id = shapeEl.getAttribute("data-bpmnkit-id")
+			// A pool or lane is grabbed by its header; its body is canvas, for lasso and pan.
+			if (id && this._swimlanes.has(id) && !this._onHeaderStrip(id, clientX, clientY)) {
+				return { type: "canvas" }
+			}
 			if (id) return { type: "shape", id }
 		}
 
 		return { type: "canvas" }
+	}
+
+	/** Whether the client point lies on the name strip of pool or lane `id`: left, or top when vertical. */
+	private _onHeaderStrip(id: string, clientX: number, clientY: number): boolean {
+		const shape = this._shapeById.get(id)?.shape
+		if (!shape) return false
+		const rect = this._svg.getBoundingClientRect()
+		const pt = screenToDiagram(clientX, clientY, this._viewport.state, rect)
+		return shape.isHorizontal === false
+			? pt.y - shape.bounds.y <= POOL_HEADER
+			: pt.x - shape.bounds.x <= POOL_HEADER
 	}
 
 	/** Returns the nearest edge segment across all edges for the given diagram point. */
@@ -2716,11 +2820,11 @@ export class BpmnEditor {
 			scrollToElement(id) {
 				self.scrollToElement(id)
 			},
-			// The editor works on one plane — `diagrams[0]` — and has no drill-in.
-			// Saying so honestly is what lets a navigation plugin decline to drill
-			// here, rather than appearing to and doing nothing.
+			// The editor works on one plane — the primary process's — and has no
+			// drill-in. Saying so honestly is what lets a navigation plugin decline
+			// to drill here, rather than appearing to and doing nothing.
 			getPlanes() {
-				const plane = self._defs?.diagrams[0]?.plane
+				const plane = self._defs ? primaryPlane(self._defs) : undefined
 				return plane === undefined ? [] : [{ id: plane.bpmnElement, name: plane.bpmnElement }]
 			},
 			showPlane() {},
@@ -2750,4 +2854,20 @@ export class BpmnEditor {
 			;(h as (...a: typeof args) => void)(...args)
 		}
 	}
+}
+
+/** The `diagram:load` warnings of a render that is not a load. */
+const NO_WARNINGS: ImportWarnings = { missingShapes: [], missingEdges: [] }
+
+/**
+ * Whether `defs` has processes and draws none of their flow nodes: a file
+ * written without diagram interchange, which would otherwise open blank.
+ */
+function drawsNoFlowNode(defs: BpmnDefinitions): boolean {
+	if (defs.processes.length === 0) return false
+	if (defs.diagrams.length === 0) return true
+	const nodes = defs.processes.flatMap((p) => p.flowElements)
+	if (nodes.length === 0) return false
+	const drawn = new Set(defs.diagrams.flatMap((d) => d.plane.shapes.map((s) => s.bpmnElement)))
+	return !nodes.some((node) => drawn.has(node.id))
 }
