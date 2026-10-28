@@ -8,7 +8,9 @@
  * @packageDocumentation
  */
 import {
+	type BpmnAssociation,
 	type BpmnBounds,
+	type BpmnCollaboration,
 	type BpmnDefinitions,
 	type BpmnDiEdge,
 	type BpmnDiPlane,
@@ -29,12 +31,17 @@ import {
 	leafLanes,
 	primaryProcess,
 } from "@bpmnkit/core"
+import { edgeLabelBounds } from "./geometry.js"
+import type { IdFactory } from "./id.js"
 
 /** Width of a pool's name strip; a top-level lane starts this far right of its pool. */
 export const POOL_HEADER = 30
 
 /** Height of a lane band added to a pool. */
 export const LANE_BAND_HEIGHT = 120
+
+/** Height of a new partner pool: an empty band, like auto-layout's black box. */
+export const BLACK_BOX_HEIGHT = 60
 
 const right = (b: BpmnBounds) => b.x + b.width
 const bottom = (b: BpmnBounds) => b.y + b.height
@@ -60,6 +67,43 @@ function drawn(
 		if (shape) return { plane: diagram.plane, shape }
 	}
 	return undefined
+}
+
+// ── Copying what an edit changes ──────────────────────────────────────────────
+
+/** What an edit changes in place, so {@link copyTouched} copies it first. */
+interface Touched {
+	processes?: readonly BpmnProcess[]
+	collaborations?: readonly BpmnCollaboration[]
+	diagrams?: readonly BpmnDiagram[]
+}
+
+/**
+ * A copy of `defs` in which the processes, collaborations and diagrams listed
+ * in `touched` are deep copies and every other one is the very object of
+ * `defs`. The command stack keeps up to 100 documents, so an edit that copied
+ * the whole document would keep 100 copies of the processes it never touched
+ * (8b.6). The caller must list everything it changes in place.
+ */
+function copyTouched(defs: BpmnDefinitions, touched: Touched): BpmnDefinitions {
+	const copy = <T>(items: T[], picked: readonly T[] = []): T[] =>
+		items.map((item) => (picked.includes(item) ? structuredClone(item) : item))
+	return {
+		...defs,
+		processes: copy(defs.processes, touched.processes),
+		collaborations: copy(defs.collaborations, touched.collaborations),
+		diagrams: copy(defs.diagrams, touched.diagrams),
+	}
+}
+
+/** Whether the plane of `diagram` draws one of `ids`, as a shape or an edge. */
+const drawsAny = (diagram: BpmnDiagram, ids: ReadonlySet<string>) =>
+	diagram.plane.shapes.some((s) => ids.has(s.bpmnElement)) ||
+	diagram.plane.edges.some((e) => ids.has(e.bpmnElement))
+
+/** The diagrams of `defs` whose plane draws one of `ids`. */
+function diagramsDrawing(defs: BpmnDefinitions, ids: ReadonlySet<string>): BpmnDiagram[] {
+	return defs.diagrams.filter((d) => drawsAny(d, ids))
 }
 
 // ── The primary process first ─────────────────────────────────────────────────
@@ -272,52 +316,154 @@ export function laneAt(
 }
 
 /**
- * Moves every shape, label and waypoint of `plane` at or below `line` down by
- * `height`, in place, except the shapes and edges of the elements in `keep`.
- * What a pool that grows downwards does to the pools and messages below it.
+ * For every element of `defs` that must move with another when a band opens
+ * under it, the top-level shape it follows, by element id: a boundary event
+ * follows its host, and whatever an expanded sub-process holds (nodes, flows,
+ * notes, associations, at any depth) follows the top-level sub-process, so a
+ * container straddling the line is not torn from its children.
+ */
+function anchors(defs: BpmnDefinitions): Map<string, string> {
+	const anchor = new Map<string, string>()
+	const hosts = new Map<string, string>()
+	const walk = (
+		elements: readonly BpmnFlowElement[],
+		top: string | undefined,
+		depth: number,
+	): void => {
+		if (depth > MAX_DEPTH) throw new Error("sub-processes nested too deep, or cyclic")
+		for (const el of elements) {
+			if (top !== undefined) anchor.set(el.id, top)
+			if (el.type === "boundaryEvent") hosts.set(el.id, el.attachedToRef)
+			if (!("flowElements" in el)) continue
+			const owner = top ?? el.id
+			for (const inner of [...el.sequenceFlows, ...el.textAnnotations, ...el.associations]) {
+				anchor.set(inner.id, owner)
+			}
+			walk(el.flowElements, owner, depth + 1)
+		}
+	}
+	for (const process of defs.processes) walk(process.flowElements, undefined, 0)
+	// A nested host has its container as anchor, a top-level one is its own.
+	for (const [event, host] of hosts) anchor.set(event, anchor.get(host) ?? host)
+	return anchor
+}
+
+/**
+ * The source and target of every sequence flow, association and message flow
+ * of `defs`, at any sub-process depth, by flow id: what an edge's first and
+ * last waypoint are docked on.
+ */
+function edgeEnds(defs: BpmnDefinitions): Map<string, readonly [string, string]> {
+	const ends = new Map<string, readonly [string, string]>()
+	const add = (flows: readonly { id: string; sourceRef: string; targetRef: string }[]) => {
+		for (const f of flows) ends.set(f.id, [f.sourceRef, f.targetRef])
+	}
+	const walk = (elements: readonly BpmnFlowElement[], depth: number): void => {
+		if (depth > MAX_DEPTH) throw new Error("sub-processes nested too deep, or cyclic")
+		for (const el of elements) {
+			if (!("flowElements" in el)) continue
+			add(el.sequenceFlows)
+			add(el.associations)
+			walk(el.flowElements, depth + 1)
+		}
+	}
+	for (const process of defs.processes) {
+		add(process.sequenceFlows)
+		add(process.associations)
+		walk(process.flowElements, 0)
+	}
+	for (const collaboration of defs.collaborations) {
+		add(collaboration.messageFlows)
+		add(collaboration.associations)
+	}
+	return ends
+}
+
+/**
+ * Moves every shape whose centre lies at or below `line` down by `height`, in
+ * place, with its label, and every waypoint and edge label of `plane` at or
+ * below it, except the shapes and edges of the elements in `keep`. An edge's
+ * first and last waypoint go with the drawn shape they are docked on
+ * (`ends`), so an end on the line stays on a shape that stays above it; on a
+ * shape in `keep`, which grows down from its top instead, they go by the line
+ * unless they sit on its top edge. By centre,
+ * so a node straddling the line moves with the band its centre (and its lane
+ * ref) is in; what has an anchor (`anchors`: boundary events, a sub-process's
+ * content) goes whole with its anchor, by the anchor's centre before the move.
+ * What a pool that grows downwards does to the pools and messages below it,
+ * and what a lane band inserted at `line` does to the lanes and nodes below it.
  */
 function pushDown(
 	plane: BpmnDiPlane,
 	line: number,
 	height: number,
 	keep: ReadonlySet<string>,
+	anchor: ReadonlyMap<string, string>,
+	ends: ReadonlyMap<string, readonly [string, string]>,
 ): void {
 	// Half a pixel: a waypoint written on the edge itself belongs to what is below it.
 	const below = (y: number) => y >= line - 0.5
+	const before = new Map(plane.shapes.map((s) => [s.bpmnElement, s.bounds]))
+	/** Whether the anchor of `id` goes; `undefined` when `id` has no drawn anchor. */
+	const anchorGoes = (id: string) => {
+		const b = before.get(anchor.get(id) ?? "")
+		return b && below(b.y + b.height / 2)
+	}
+	const moved = new Set<string>()
+	// ponytail: a straddling node's inner bends stay on their side of the line, so its flows kink there.
 	for (const s of plane.shapes) {
-		if (keep.has(s.bpmnElement) || !below(s.bounds.y)) continue
+		if (keep.has(s.bpmnElement)) continue
+		if (!(anchorGoes(s.bpmnElement) ?? below(s.bounds.y + s.bounds.height / 2))) continue
+		moved.add(s.bpmnElement)
 		s.bounds = { ...s.bounds, y: s.bounds.y + height }
 		if (s.label?.bounds) s.label.bounds = { ...s.label.bounds, y: s.label.bounds.y + height }
 	}
+	/** Whether a waypoint at `y` docked on `id` goes; `undefined` when `id` is not drawn. */
+	const dockGoes = (id: string | undefined, y: number) => {
+		const b = before.get(id ?? "")
+		if (!b || id === undefined) return undefined
+		return keep.has(id) ? below(y) && !sameEdge(y, b.y) : moved.has(id)
+	}
 	for (const edge of plane.edges) {
 		if (keep.has(edge.bpmnElement)) continue
-		edge.waypoints = edge.waypoints.map((p) => (below(p.y) ? { ...p, y: p.y + height } : p))
+		const whole = anchorGoes(edge.bpmnElement)
+		const goes = (y: number) => whole ?? below(y)
+		const [source, target] = ends.get(edge.bpmnElement) ?? []
+		const last = edge.waypoints.length - 1
+		edge.waypoints = edge.waypoints.map((p, k) => {
+			const docked = k === 0 ? source : k === last ? target : undefined
+			const go = whole ?? dockGoes(docked, p.y) ?? below(p.y)
+			return go ? { ...p, y: p.y + height } : p
+		})
 		const label = edge.label?.bounds
-		if (edge.label && label && below(label.y)) edge.label.bounds = { ...label, y: label.y + height }
+		if (edge.label && label && goes(label.y)) edge.label.bounds = { ...label, y: label.y + height }
 	}
 }
 
 /**
- * Returns a copy of `defs` with a band for the top-level lane `laneId` drawn at
- * the bottom of pool `poolId`: the pool grows by `height`, and every shape,
- * label and waypoint at or below the pool's old bottom edge moves down by as
- * much, so other pools and the messages to them keep their places relative to
- * it. The lane itself must already be in the model. Unchanged when the pool
- * has no shape.
+ * Returns a copy of `defs` with a {@link LANE_BAND_HEIGHT} band for the
+ * top-level lane `laneId` drawn across pool `poolId` at `at`, an edge between
+ * two of its top-level lanes or one of its own (by default its bottom edge):
+ * the pool grows by the band, and every shape whose centre is at or below `at`
+ * (`pushDown`), lanes and other pools included, moves down by as much, with
+ * labels and waypoints, so nothing changes band and the pools below keep their
+ * messages. The lane itself must already be in the model. Only the diagram
+ * that draws the pool is copied. Unchanged when the pool has no shape.
  */
 export function insertLaneBand(
 	defs: BpmnDefinitions,
 	poolId: string,
 	laneId: string,
 	shapeId: string,
-	height = LANE_BAND_HEIGHT,
+	at?: number,
 ): BpmnDefinitions {
-	const next = structuredClone(defs)
+	const next = copyTouched(defs, { diagrams: diagramsDrawing(defs, new Set([poolId])) })
 	const found = drawn(next, poolId)
 	if (!found) return defs
 	const { plane, shape: pool } = found
-	const line = bottom(pool.bounds)
-	pushDown(plane, line, height, new Set([poolId]))
+	const height = LANE_BAND_HEIGHT
+	const line = at ?? bottom(pool.bounds)
+	pushDown(plane, line, height, new Set([poolId]), anchors(defs), edgeEnds(defs))
 	const band: BpmnDiShape = {
 		id: shapeId,
 		bpmnElement: laneId,
@@ -397,15 +543,19 @@ function growOver(
  * `processIndex`. The sibling drawn above takes its band (the one below when it
  * is the top one) along with its nodes, so no node moves; an only child hands both
  * to its parent; the last lane of the process takes the lane set with it and
- * leaves the pool as it is. The lane's shape is deleted. `undefined` when the
- * lane is not in that process or has child lanes.
+ * leaves the pool as it is. The lane's shape is deleted. Only that process and
+ * the diagrams that draw its lanes are copied. `undefined` when the lane is not
+ * in that process or has child lanes.
  */
 export function removeLaneBand(
 	defs: BpmnDefinitions,
 	processIndex: number,
 	laneId: string,
 ): BpmnDefinitions | undefined {
-	const next = structuredClone(defs)
+	const owner = defs.processes[processIndex]
+	if (!owner) return undefined
+	const bands = new Set(allLanes(owner.laneSet).map((candidate) => candidate.id))
+	const next = copyTouched(defs, { processes: [owner], diagrams: diagramsDrawing(defs, bands) })
 	const process = next.processes[processIndex]
 	const lane = allLanes(process?.laneSet).find((candidate) => candidate.id === laneId)
 	const holder = process === undefined ? undefined : siblingsOf(process, laneId)
@@ -433,8 +583,7 @@ export function removeLaneBand(
 	let result = process
 	for (const ref of heir ? lane.flowNodeRefs : []) result = assignLane(result, ref, heir?.id ?? "")
 	next.processes[processIndex] = result
-	dropAssociationsTo(next, new Set([laneId]))
-	return next
+	return dropAssociationsTo(next, new Set([laneId]))
 }
 
 /**
@@ -523,7 +672,14 @@ export function rerouteMessage(
 		pools.has(flow.sourceRef),
 		pools.has(flow.targetRef),
 	)
-	return { ...edge, waypoints }
+	// The label goes where the route goes, keeping its offset from the spot
+	// `edgeLabelBounds` picks, as a translated edge's label keeps its own.
+	const label = edge.label?.bounds
+	const from = label && edgeLabelBounds(edge.waypoints)
+	const to = label && edgeLabelBounds(waypoints)
+	if (!edge.label || !label || !from || !to) return { ...edge, waypoints }
+	const bounds = { ...label, x: label.x + to.x - from.x, y: label.y + to.y - from.y }
+	return { ...edge, waypoints, label: { ...edge.label, bounds } }
 }
 
 /**
@@ -684,7 +840,8 @@ export function settlePlaced(
  * `content` where `content` crosses that edge. Shapes and waypoints below the
  * pool that are neither the process's own nor among `placed` (what the op
  * moved, already where it wants it) move down by as much, so the pools below
- * keep their distance and their messages. `defs` itself when nothing crosses.
+ * keep their distance and their messages. Only the diagrams that draw the pool
+ * and its lanes are copied. `defs` itself when nothing crosses.
  */
 function growPool(
 	defs: BpmnDefinitions,
@@ -700,11 +857,14 @@ function growPool(
 	const deepen = Math.max(...content.map(bottom)) > bottom(old) ? bottom(reach) - bottom(old) : 0
 	if (widen <= 0 && deepen <= 0) return defs
 
-	const next = structuredClone(defs)
-	const found = drawn(next, poolId)
-	const process = next.processes.find((p) => p.id === processId)
-	if (!found || !process) return defs
+	const process = defs.processes.find((p) => p.id === processId)
+	if (!process) return defs
 	const lanes = allLanes(process.laneSet)
+	const bands = new Set([poolId, ...lanes.map((lane) => lane.id)])
+	// DI only: the process and the collaborations are read, never changed.
+	const next = copyTouched(defs, { diagrams: diagramsDrawing(defs, bands) })
+	const found = drawn(next, poolId)
+	if (!found) return defs
 	for (const lane of lanes) {
 		const shape = drawn(next, lane.id)?.shape
 		if (!shape) continue
@@ -732,7 +892,7 @@ function growPool(
 			const docked = from ? points?.[0] : points?.at(-1)
 			if (docked && docked.y >= line - 0.5) loose.push(flow)
 		}
-		pushDown(found.plane, line, deepen, keep)
+		pushDown(found.plane, line, deepen, keep, anchors(defs), edgeEnds(defs))
 		const pools = new Set(next.collaborations.flatMap((c) => c.participants.map((p) => p.id)))
 		found.plane.edges = found.plane.edges.map((edge) => {
 			const flow = loose.find((f) => f.id === edge.bpmnElement)
@@ -747,27 +907,482 @@ function growPool(
 	return next
 }
 
+// ── Creating pools and lanes ──────────────────────────────────────────────────
+
+/**
+ * Returns `defs` with `lane` as the only lane of the primary process
+ * (`processes[0]`), listing every flow node but data references and drawn
+ * across the whole of pool `poolId`, its shape `shapeId` right after the
+ * pool's. The lane set is the process's own when it has one with no lanes,
+ * else a new one with the id `setId` mints. `lane`'s own refs are replaced.
+ * The process and the diagram that draws the pool are copied, nothing else.
+ */
+export function addFirstLane(
+	defs: BpmnDefinitions,
+	poolId: string,
+	lane: BpmnLane,
+	shapeId: string,
+	setId: () => string,
+): BpmnDefinitions {
+	const process = defs.processes[0]
+	if (!process) return defs
+	const only: BpmnLane = {
+		...lane,
+		flowNodeRefs: process.flowElements.filter((el) => !DATA_TYPES.has(el.type)).map((el) => el.id),
+	}
+	const laneSet: BpmnLaneSet = process.laneSet
+		? { ...process.laneSet, lanes: [...process.laneSet.lanes, only] }
+		: { id: setId(), lanes: [only], unknownAttributes: {} }
+	const next = copyTouched(defs, { diagrams: diagramsDrawing(defs, new Set([poolId])) })
+	next.processes[0] = { ...process, laneSet }
+	const pool = drawn(next, poolId)
+	if (!pool) return next
+	const { x, y, width, height } = pool.shape.bounds
+	pool.plane.shapes.splice(pool.plane.shapes.indexOf(pool.shape) + 1, 0, {
+		id: shapeId,
+		bpmnElement: only.id,
+		isHorizontal: true,
+		bounds: { x: x + POOL_HEADER, y, width: width - POOL_HEADER, height },
+		unknownAttributes: {},
+	})
+	return next
+}
+
+/** Mints the ids of what {@link poolPrimary} makes, each only when it makes it, in this order. */
+export interface FirstPoolIds {
+	collaboration: () => string
+	participant: () => string
+	shape: (participantId: string) => string
+}
+
+/** What {@link poolPrimary} did. */
+export interface PooledPrimary {
+	defs: BpmnDefinitions
+	/** The primary process's participant, found or made. */
+	pool: BpmnParticipant
+	/** The participant and the collaboration when made, in that order. */
+	made: string[]
+	/** Whether the pool got a shape, which it had not. */
+	drew: boolean
+}
+
+/**
+ * A process other than `process` with content (flow elements or a lane set)
+ * that no participant references. Once a collaboration exists every such
+ * process needs a pool (core's `collaborationProblems`), and pooling it along
+ * with `process` would decide its `isExecutable` for it, so a first pool for
+ * `process` alone is refused while one exists.
+ */
+export function unpooledOther(
+	defs: BpmnDefinitions,
+	process: BpmnProcess,
+): BpmnProcess | undefined {
+	const pooled = new Set(
+		defs.collaborations.flatMap((c) => c.participants.flatMap((p) => p.processRef ?? [])),
+	)
+	return defs.processes.find(
+		(p) =>
+			p !== process && !pooled.has(p.id) && (p.flowElements.length > 0 || p.laneSet !== undefined),
+	)
+}
+
+/** A collaboration with nothing in it. */
+function emptyCollaboration(id: string): BpmnCollaboration {
+	return {
+		id,
+		participants: [],
+		messageFlows: [],
+		textAnnotations: [],
+		associations: [],
+		groups: [],
+		extensionElements: [],
+		unknownAttributes: {},
+	}
+}
+
+/**
+ * The bounds of a pool drawn around what `plane` draws of `process`: tight
+ * around its top-level lane bands, with the header strip on their left, when
+ * they are drawn (they tile the pool), else {@link poolAround} its shapes,
+ * labels and routes, or `fallback` when it has none.
+ */
+function poolBoundsFor(
+	process: BpmnProcess,
+	plane: BpmnDiPlane,
+	fallback: BpmnBounds | undefined,
+): BpmnBounds {
+	const shapeOf = (id: string) => plane.shapes.find((s) => s.bpmnElement === id)
+	const bands = (process.laneSet?.lanes ?? []).flatMap((lane) => shapeOf(lane.id)?.bounds ?? [])
+	if (bands.length > 0) {
+		const x = Math.min(...bands.map((b) => b.x)) - POOL_HEADER
+		const y = Math.min(...bands.map((b) => b.y))
+		return {
+			x,
+			y,
+			width: Math.max(...bands.map(right)) - x,
+			height: Math.max(...bands.map(bottom)) - y,
+		}
+	}
+	const inside = new Set<string>()
+	collectContent(process.flowElements, process.sequenceFlows, inside, 0)
+	for (const note of process.textAnnotations) inside.add(note.id)
+	for (const association of process.associations) inside.add(association.id)
+	const content: BpmnBounds[] = []
+	for (const s of plane.shapes.filter((candidate) => inside.has(candidate.bpmnElement))) {
+		content.push(s.bounds, ...(s.label?.bounds ? [s.label.bounds] : []))
+	}
+	for (const edge of plane.edges.filter((candidate) => inside.has(candidate.bpmnElement))) {
+		content.push(...edge.waypoints.map((p) => ({ ...p, width: 0, height: 0 })))
+	}
+	return content.length === 0 && fallback ? fallback : poolAround(content)
+}
+
+/**
+ * The participant of the primary process (`processes[0]`, drawn on
+ * `diagrams[0]`), made when missing: a collaboration when the file has none
+ * (else the first one takes it), a participant named `name` for this process
+ * only, and a pool shape drawn behind everything around the process (see
+ * `poolBoundsFor`) on a plane that then draws the collaboration (critique X8).
+ * The process itself is not touched, so its `isExecutable` and `flowable:*`
+ * stay as they are, and other processes are not pooled: pooling one would mark
+ * it non-executable. `undefined` when there is no process or no diagram, and
+ * when a participant would be made while another process with content has
+ * none ({@link unpooledOther}).
+ */
+export function poolPrimary(
+	defs: BpmnDefinitions,
+	ids: FirstPoolIds,
+	name?: string,
+	fallback?: BpmnBounds,
+): PooledPrimary | undefined {
+	const process = defs.processes[0]
+	const diagram = defs.diagrams[0]
+	if (!process || !diagram) return undefined
+	const made: string[] = []
+	let collaborations = defs.collaborations
+	let holder = collaborations.find((c) => c.participants.some((p) => p.processRef === process.id))
+	let pool = holder?.participants.find((p) => p.processRef === process.id)
+	if (!holder || !pool) {
+		if (unpooledOther(defs, process)) return undefined
+		const madeCollaboration = collaborations.length === 0
+		const target = collaborations[0] ?? emptyCollaboration(ids.collaboration())
+		pool = {
+			id: ids.participant(),
+			...(name === undefined ? {} : { name }),
+			processRef: process.id,
+			unknownAttributes: {},
+		}
+		holder = { ...target, participants: [...target.participants, pool] }
+		collaborations = madeCollaboration
+			? [holder]
+			: collaborations.map((c) => (c === target ? (holder as BpmnCollaboration) : c))
+		made.push(pool.id, ...(madeCollaboration ? [holder.id] : []))
+	}
+	if (drawn(defs, pool.id)) {
+		return { defs: made.length > 0 ? { ...defs, collaborations } : defs, pool, made, drew: false }
+	}
+	const plane = diagram.plane
+	const shape: BpmnDiShape = {
+		id: ids.shape(pool.id),
+		bpmnElement: pool.id,
+		isHorizontal: true,
+		bounds: poolBoundsFor(process, plane, fallback),
+		unknownAttributes: {},
+	}
+	const rebound = { ...plane, bpmnElement: holder.id, shapes: [shape, ...plane.shapes] }
+	return {
+		defs: {
+			...defs,
+			collaborations,
+			diagrams: defs.diagrams.map((d) => (d === diagram ? { ...d, plane: rebound } : d)),
+		},
+		pool,
+		made,
+		drew: true,
+	}
+}
+
+/**
+ * Returns `defs` with `participant`, a black box, in the collaboration that
+ * holds pool `ownPoolId` (the first one when none does), and its shape
+ * `shapeId` at `bounds` on the plane that draws that pool (else the first),
+ * after everything there. Only that collaboration and that diagram are copied.
+ */
+export function addBlackBox(
+	defs: BpmnDefinitions,
+	ownPoolId: string,
+	participant: BpmnParticipant,
+	shapeId: string,
+	bounds: BpmnBounds,
+): BpmnDefinitions {
+	const holder =
+		defs.collaborations.find((c) => c.participants.some((p) => p.id === ownPoolId)) ??
+		defs.collaborations[0]
+	const diagram = diagramsDrawing(defs, new Set([ownPoolId]))[0] ?? defs.diagrams[0]
+	if (!holder || !diagram) return defs
+	const shape: BpmnDiShape = {
+		id: shapeId,
+		bpmnElement: participant.id,
+		isHorizontal: true,
+		bounds,
+		unknownAttributes: {},
+	}
+	return {
+		...defs,
+		collaborations: defs.collaborations.map((c) =>
+			c === holder ? { ...c, participants: [...c.participants, participant] } : c,
+		),
+		diagrams: defs.diagrams.map((d) =>
+			d === diagram ? { ...d, plane: { ...d.plane, shapes: [...d.plane.shapes, shape] } } : d,
+		),
+	}
+}
+
+/**
+ * Where a new partner pool goes when the person only points at `point`: as
+ * wide as the own pool and aligned with it, {@link BLACK_BOX_HEIGHT} high,
+ * centred on `point`'s y. `undefined` when the {@link primaryProcess} has no
+ * drawn pool, where a new pool wraps the process instead.
+ */
+export function blackBoxBounds(
+	defs: BpmnDefinitions,
+	point: { x: number; y: number },
+): BpmnBounds | undefined {
+	const primary = primaryProcess(defs)
+	const own = defs.collaborations
+		.flatMap((c) => c.participants)
+		.find((p) => primary !== undefined && p.processRef === primary.id)
+	const bounds = own && drawn(defs, own.id)?.shape.bounds
+	if (!bounds) return undefined
+	const height = BLACK_BOX_HEIGHT
+	return { x: bounds.x, y: point.y - height / 2, width: bounds.width, height }
+}
+
+/** The size of a pool the pool tool puts on a process with nothing drawn, as bpmn-js draws one. */
+const EMPTY_POOL = { width: 600, height: 250 }
+
+/**
+ * Where the pool tool's `addParticipant` puts a pool when the person clicks at
+ * `point`, so its ghost shows it: a black box beside the own pool
+ * ({@link blackBoxBounds}) when the primary process has a drawn pool, else the
+ * pool the op draws around the process (`poolBoundsFor`), which only falls
+ * back to a 600 by 250 pool centred on `point` when nothing is drawn.
+ * `undefined` where the op refuses a first pool ({@link unpooledOther}), so
+ * the tool shows no ghost there.
+ */
+export function newPoolBounds(
+	defs: BpmnDefinitions,
+	point: { x: number; y: number },
+): BpmnBounds | undefined {
+	const box = blackBoxBounds(defs, point)
+	if (box) return box
+	const fallback = {
+		x: point.x - EMPTY_POOL.width / 2,
+		y: point.y - EMPTY_POOL.height / 2,
+		...EMPTY_POOL,
+	}
+	const first = primaryFirst(defs)
+	const process = first.processes[0]
+	if (process && !poolOf(first, process) && unpooledOther(first, process)) return undefined
+	const plane = first.diagrams[0]?.plane
+	return process && plane ? poolBoundsFor(process, plane, fallback) : fallback
+}
+
+/** What a creating edit made: the new document and the new ids. */
+export interface Made {
+	defs: BpmnDefinitions
+	created: string[]
+}
+
+/** The participant of `process` in `defs`, if one draws it. */
+function poolOf(defs: BpmnDefinitions, process: BpmnProcess): BpmnParticipant | undefined {
+	return defs.collaborations.flatMap((c) => c.participants).find((p) => p.processRef === process.id)
+}
+
+/**
+ * The `addParticipant` op, on a document whose primary process is
+ * `processes[0]` drawn on `diagrams[0]`. When that process has no drawn pool
+ * it gets one ({@link poolPrimary}), named `name`, around its content: `bounds`
+ * only place the pool of a process with nothing drawn. Otherwise a black box
+ * named `name`, with no `processRef` (decision U8), is drawn at `bounds`
+ * ({@link addBlackBox}); refused when that overlaps the own pool, as a black
+ * box moved there is (critique I4). `created`: the participant, then the
+ * collaboration when one was made. `undefined` when refused.
+ */
+export function addPool(
+	defs: BpmnDefinitions,
+	bounds: BpmnBounds,
+	name: string | undefined,
+	ids: IdFactory,
+): Made | undefined {
+	const process = defs.processes[0]
+	if (!process) return undefined
+	const own = poolOf(defs, process)
+	const ownBounds = own && drawn(defs, own.id)?.shape.bounds
+	if (!own || !ownBounds) {
+		const pooled = poolPrimary(
+			defs,
+			{
+				collaboration: () => ids("Collaboration"),
+				participant: () => ids("Participant"),
+				shape: () => ids("Participant_di"),
+			},
+			name,
+			bounds,
+		)
+		return pooled && { defs: pooled.defs, created: pooled.made }
+	}
+	if (overlaps(bounds, ownBounds)) return undefined
+	const id = ids("Participant")
+	const participant: BpmnParticipant = {
+		id,
+		...(name === undefined ? {} : { name }),
+		unknownAttributes: {},
+	}
+	return {
+		defs: addBlackBox(defs, own.id, participant, ids("Participant_di"), bounds),
+		created: [id],
+	}
+}
+
+/**
+ * The `addLane` op, on a document whose primary process is `processes[0]`: a
+ * new, unnamed top-level lane (as bpmn-js makes them) whose
+ * {@link LANE_BAND_HEIGHT} band goes `where` `refId`, the own pool or one of
+ * its top-level leaf lanes, through {@link insertLaneBand}. In the lane set it
+ * comes next to `refId`, or first or last for the pool. On a pool without
+ * lanes the first add makes two (decision U5): the one asked for and one over
+ * the whole old pool holding every node ({@link addFirstLane}). Existing lane
+ * refs never change, as the band goes in at an edge and what is below moves
+ * by it. `created`: the new lane, then the lane that took the old pool and the
+ * new lane set when made. `undefined`, refused, for a child lane, a lane with
+ * child lanes (nested lane editing is out of v1, critique I8), any other pool
+ * (black boxes, other processes' pools), an undrawn pool, a pool drawn
+ * vertically (`isHorizontal="false"`, not supported yet) and unknown ids.
+ */
+export function addLaneBeside(
+	defs: BpmnDefinitions,
+	refId: string,
+	where: "above" | "below",
+	ids: IdFactory,
+): Made | undefined {
+	const process = defs.processes[0]
+	const own = process && poolOf(defs, process)
+	const poolShape = own && drawn(defs, own.id)?.shape
+	// The bands are horizontal: on a vertical pool one would go below its lane columns.
+	if (!process || !own || !poolShape || poolShape.isHorizontal === false) return undefined
+	const pool = poolShape.bounds
+	const above = where === "above"
+	const lanes = process.laneSet?.lanes ?? []
+	let line: number
+	let index: number
+	if (refId === own.id) {
+		line = above ? pool.y : bottom(pool)
+		const order = topToBottom(defs, lanes)
+		const edge = above ? order[0] : order.at(-1)
+		index = edge ? lanes.indexOf(edge) + (above ? 0 : 1) : 0
+	} else {
+		const ref = lanes.find((lane) => lane.id === refId)
+		const band = ref && drawn(defs, ref.id)?.shape.bounds
+		if (!ref || !band || (ref.childLaneSet?.lanes.length ?? 0) > 0) return undefined
+		line = above ? band.y : bottom(band)
+		index = lanes.indexOf(ref) + (above ? 0 : 1)
+	}
+	const id = ids("Lane")
+	const shapeId = ids("Lane_di")
+	const lane: BpmnLane = { id, flowNodeRefs: [], unknownAttributes: {} }
+	const created = [id]
+	let next = defs
+	if (lanes.length === 0) {
+		const existing = ids("Lane")
+		const existingShape = ids("Lane_di")
+		const blank: BpmnLane = { id: existing, flowNodeRefs: [], unknownAttributes: {} }
+		next = addFirstLane(defs, own.id, blank, existingShape, () => {
+			const setId = ids("LaneSet")
+			created.push(setId)
+			return setId
+		})
+		created.splice(1, 0, existing)
+		index = above ? 0 : 1
+	}
+	const holder = next.processes[0]
+	if (!holder?.laneSet) return undefined
+	const laneSet = {
+		...holder.laneSet,
+		lanes: [...holder.laneSet.lanes.slice(0, index), lane, ...holder.laneSet.lanes.slice(index)],
+	}
+	next = insertLaneBand(next, own.id, id, shapeId, line)
+	return {
+		defs: { ...next, processes: next.processes.map((p, k) => (k === 0 ? { ...p, laneSet } : p)) },
+		created,
+	}
+}
+
+/**
+ * Whether `addLane` takes `refId` (either side): the drawn, horizontal own
+ * pool of the {@link primaryProcess}, or one of its drawn top-level lanes with
+ * no child lanes. Mirrors the refusals of {@link addLaneBeside}, so the
+ * context bar offers Add lane only where it does something.
+ */
+export function canAddLane(defs: BpmnDefinitions, refId: string): boolean {
+	const process = primaryProcess(defs)
+	const own = process && poolOf(defs, process)
+	const poolShape = own && drawn(defs, own.id)?.shape
+	if (!process || !own || !poolShape || poolShape.isHorizontal === false) return false
+	if (refId === own.id) return true
+	const ref = process.laneSet?.lanes.find((lane) => lane.id === refId)
+	return (
+		ref !== undefined &&
+		drawn(defs, ref.id) !== undefined &&
+		(ref.childLaneSet?.lanes.length ?? 0) === 0
+	)
+}
+
+/**
+ * Whether "Divide into lanes" applies to `poolId`: the drawn own pool of a
+ * primary process with no lanes yet (decision U6; dividing a lane would make
+ * child lanes, out of v1).
+ */
+export function canDivideLanes(defs: BpmnDefinitions, poolId: string): boolean {
+	const process = primaryProcess(defs)
+	const own = process && poolOf(defs, process)
+	return (
+		own?.id === poolId && canAddLane(defs, poolId) && (process?.laneSet?.lanes.length ?? 0) === 0
+	)
+}
+
 // ── Deleting pools and lanes ──────────────────────────────────────────────────
 
 /**
- * Drops, in place, the associations of every process and collaboration of
- * `defs` that start or end at a `gone` id, and their edges. A deleted node's
- * go in deleteContent; a deleted swimlane's go here, so the change scripts,
- * which come here directly, drop them too.
+ * Returns `defs` without the associations of every process and collaboration
+ * that start or end at a `gone` id, and their edges; only what holds one is
+ * copied. A deleted node's go in deleteContent; a deleted swimlane's go here,
+ * so the change scripts, which come here directly, drop them too. `defs`
+ * itself when none does.
  */
-function dropAssociationsTo(defs: BpmnDefinitions, gone: ReadonlySet<string>): void {
+function dropAssociationsTo(defs: BpmnDefinitions, gone: ReadonlySet<string>): BpmnDefinitions {
 	const dropped = new Set<string>()
-	for (const holder of [...defs.processes, ...defs.collaborations]) {
-		const dangling = holder.associations.filter(
-			(a) => gone.has(a.sourceRef) || gone.has(a.targetRef),
-		)
-		if (dangling.length === 0) continue
-		for (const a of dangling) dropped.add(a.id)
-		holder.associations = holder.associations.filter((a) => !dropped.has(a.id))
+	const prune = <T extends { associations: BpmnAssociation[] }>(holder: T): T => {
+		const kept = holder.associations.filter((a) => !gone.has(a.sourceRef) && !gone.has(a.targetRef))
+		if (kept.length === holder.associations.length) return holder
+		for (const a of holder.associations) if (!kept.includes(a)) dropped.add(a.id)
+		return { ...holder, associations: kept }
 	}
-	if (dropped.size === 0) return
-	for (const diagram of defs.diagrams) {
-		diagram.plane.edges = diagram.plane.edges.filter((e) => !dropped.has(e.bpmnElement))
+	const processes = defs.processes.map(prune)
+	const collaborations = defs.collaborations.map(prune)
+	if (dropped.size === 0) return defs
+	return {
+		...defs,
+		processes,
+		collaborations,
+		diagrams: defs.diagrams.map((d) =>
+			d.plane.edges.some((e) => dropped.has(e.bpmnElement))
+				? {
+						...d,
+						plane: { ...d.plane, edges: d.plane.edges.filter((e) => !dropped.has(e.bpmnElement)) },
+					}
+				: d,
+		),
 	}
 }
 
@@ -796,20 +1411,36 @@ export function canDeleteSwimlane(defs: BpmnDefinitions, id: string): boolean {
 export function removeBlackBox(defs: BpmnDefinitions, poolId: string): BpmnDefinitions | undefined {
 	const pool = defs.collaborations.flatMap((c) => c.participants).find((p) => p.id === poolId)
 	if (!pool || !isBlackBox(defs, pool)) return undefined
-	const next = structuredClone(defs)
 	const gone = new Set([poolId])
-	for (const collaboration of next.collaborations) {
-		collaboration.participants = collaboration.participants.filter((p) => p.id !== poolId)
-		for (const flow of collaboration.messageFlows) {
-			if (flow.sourceRef === poolId || flow.targetRef === poolId) gone.add(flow.id)
-		}
-		collaboration.messageFlows = collaboration.messageFlows.filter((f) => !gone.has(f.id))
+	for (const flow of defs.collaborations.flatMap((c) => c.messageFlows)) {
+		if (flow.sourceRef === poolId || flow.targetRef === poolId) gone.add(flow.id)
 	}
-	for (const diagram of next.diagrams) {
-		diagram.plane.shapes = diagram.plane.shapes.filter((s) => !gone.has(s.bpmnElement))
-		diagram.plane.edges = diagram.plane.edges.filter((e) => !gone.has(e.bpmnElement))
+	// Only what held the pool or its messages is copied (8b.6).
+	let next: BpmnDefinitions = {
+		...defs,
+		collaborations: defs.collaborations.map((c) =>
+			c.participants.some((p) => gone.has(p.id)) || c.messageFlows.some((f) => gone.has(f.id))
+				? {
+						...c,
+						participants: c.participants.filter((p) => !gone.has(p.id)),
+						messageFlows: c.messageFlows.filter((f) => !gone.has(f.id)),
+					}
+				: c,
+		),
+		diagrams: defs.diagrams.map((d) =>
+			drawsAny(d, gone)
+				? {
+						...d,
+						plane: {
+							...d.plane,
+							shapes: d.plane.shapes.filter((s) => !gone.has(s.bpmnElement)),
+							edges: d.plane.edges.filter((e) => !gone.has(e.bpmnElement)),
+						},
+					}
+				: d,
+		),
 	}
-	dropAssociationsTo(next, gone)
+	next = dropAssociationsTo(next, gone)
 
 	const process = next.processes.find((p) => p.id === pool.processRef)
 	const stillDrawn = next.collaborations.some((c) =>

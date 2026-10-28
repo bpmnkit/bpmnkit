@@ -64,7 +64,19 @@ export const RESIZABLE_TYPES: ReadonlySet<string> = new Set([
 	"textAnnotation",
 ])
 
-export type Tool = "default" | "select" | "pan" | "space" | `create:${CreateShapeType}`
+/**
+ * The pointer tool. `create:participant` places a pool: the first wraps the
+ * executable process, later ones are black boxes. It is not a
+ * `CreateShapeType`, which names flow nodes and annotations the palette groups
+ * and plugins list.
+ */
+export type Tool =
+	| "default"
+	| "select"
+	| "pan"
+	| "space"
+	| `create:${CreateShapeType}`
+	| "create:participant"
 
 export type HandleDir = "nw" | "n" | "ne" | "e" | "se" | "s" | "sw" | "w"
 export type PortDir = "top" | "right" | "bottom" | "left"

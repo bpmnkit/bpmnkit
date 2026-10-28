@@ -1,6 +1,7 @@
 import type { RenderedShape } from "@bpmnkit/canvas"
 import type { BpmnBounds, BpmnWaypoint } from "@bpmnkit/core"
 import { handlePositions } from "./geometry.js"
+import { POOL_HEADER } from "./swimlanes.js"
 import type { CreateShapeType, DiagPoint, HandleDir } from "./types.js"
 
 const NS = "http://www.w3.org/2000/svg"
@@ -401,6 +402,31 @@ export class OverlayRenderer {
 			g.appendChild(rect)
 		}
 
+		this._ghostCreateG.appendChild(g)
+	}
+
+	/**
+	 * The pool tool's ghost: the pool a click would place, at `bounds`, with its
+	 * name strip. It shares the create ghost's layer, so `setGhostCreate(null)`
+	 * clears it too.
+	 */
+	setGhostPool(bounds: BpmnBounds | null): void {
+		this._ghostCreateG.innerHTML = ""
+		if (!bounds) return
+		const { x, y, width, height } = bounds
+		const g = svgEl("g")
+		attr(g, { class: "bpmnkit-ghost", transform: `translate(${x} ${y})` })
+		const rect = svgEl("rect")
+		attr(rect, { x: 0, y: 0, width, height, class: "bpmnkit-shape-body" })
+		const strip = svgEl("line")
+		attr(strip, {
+			x1: POOL_HEADER,
+			y1: 0,
+			x2: POOL_HEADER,
+			y2: height,
+			class: "bpmnkit-shape-body",
+		})
+		g.append(rect, strip)
 		this._ghostCreateG.appendChild(g)
 	}
 

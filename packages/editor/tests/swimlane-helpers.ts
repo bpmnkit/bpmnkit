@@ -186,6 +186,59 @@ export function flowableFixture(order: FlowableOrder = "first"): BpmnDefinitions
 	return Bpmn.parse(flowableXml(order))
 }
 
+/**
+ * The executable process of {@link flowableXml} on its own, with no
+ * collaboration, laid out by auto-layout: with its three lanes (drawn as bands
+ * without a pool) when `laned`, else without a lane set.
+ */
+export function poolLessFlowable(laned: boolean): BpmnDefinitions {
+	const process = laned ? EXECUTABLE : EXECUTABLE.replace(/<laneSet[\s\S]*<\/laneSet>/, "")
+	const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:flowable="http://flowable.org/bpmn" targetNamespace="http://www.flowable.org/processdef">${process}
+</definitions>`
+	return Bpmn.parse(Bpmn.export(applyAutoLayout(Bpmn.parse(xml))))
+}
+
+/**
+ * {@link poolLessFlowable} (no lanes) plus a second process, `Other`, with a
+ * start event and no pool, laid out by auto-layout: no collaboration yet, so
+ * nothing is wrong with it until one exists.
+ */
+export function poolLessWithOther(): BpmnDefinitions {
+	const xml = Bpmn.export(poolLessFlowable(false)).replace(
+		"</definitions>",
+		'<process id="Other" isExecutable="false"><startEvent id="o1"/></process></definitions>',
+	)
+	return Bpmn.parse(Bpmn.export(applyAutoLayout(Bpmn.parse(xml))))
+}
+
+/**
+ * A pool `P` drawn vertically (`isHorizontal="false"`, 400 by 600) over the
+ * executable process `Proc`: with two column lanes `LA` and `LB` when `laned`,
+ * else without a lane set.
+ */
+export function verticalPoolXml(laned: boolean): string {
+	const laneSet = laned
+		? '<laneSet id="LS"><lane id="LA"><flowNodeRef>s</flowNodeRef></lane><lane id="LB"/></laneSet>'
+		: ""
+	const laneShapes = laned
+		? `<bpmndi:BPMNShape id="LA_di" bpmnElement="LA" isHorizontal="false"><omgdc:Bounds x="0" y="30" width="200" height="570"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LB_di" bpmnElement="LB" isHorizontal="false"><omgdc:Bounds x="200" y="30" width="200" height="570"/></bpmndi:BPMNShape>`
+		: ""
+	return `<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" targetNamespace="t">
+  <collaboration id="C"><participant id="P" name="Vertical" processRef="Proc"/></collaboration>
+  <process id="Proc" isExecutable="true">${laneSet}<startEvent id="s"/></process>
+  <bpmndi:BPMNDiagram id="D">
+    <bpmndi:BPMNPlane id="PL" bpmnElement="C">
+      <bpmndi:BPMNShape id="P_di" bpmnElement="P" isHorizontal="false"><omgdc:Bounds x="0" y="0" width="400" height="600"/></bpmndi:BPMNShape>
+      ${laneShapes}
+      <bpmndi:BPMNShape id="s_di" bpmnElement="s"><omgdc:Bounds x="82" y="100" width="36" height="36"/></bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>`
+}
+
 /** {@link flowableXml} whose partner process has content: a start event, a task and a flow. */
 export function lockedPartnerXml(): string {
 	return flowableXml()

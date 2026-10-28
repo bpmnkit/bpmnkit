@@ -38,7 +38,17 @@ and pan.
   be deleted.
 - Connecting a node to another pool, or to a node in it, draws a message flow with no
   `messageRef`; BPMN's rules for message ends apply. Message flows show their name and are
-  renamed like any label.
+  renamed like any label. A black box's context bar has Connect too, for incoming messages.
+- The pool tool wraps a process that has no pool in its first one (a collaboration is added
+  and the process is left as it is); with a pool drawn, it adds a black-box partner. A lane's
+  or pool's context bar adds a lane above or below it (the first add on a pool makes two),
+  and divides a pool without lanes into two or three. Child lanes and vertical pools are left
+  as they are.
+
+```typescript
+editor.addLane("Lane_sales", "below");   // id of the new lane, or null when refused
+editor.divideLanes("Participant_1", 3);  // one undo step
+```
 
 ---
 Source: https://bpmnkit.com/docs/packages/editor

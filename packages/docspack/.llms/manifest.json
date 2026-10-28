@@ -5646,7 +5646,7 @@
 		{
 			"id": "packages.editor.basic-setup",
 			"file": "chunks/packages.editor.basic-setup.md",
-			"tokens": 435,
+			"tokens": 589,
 			"tags": [
 				"packages",
 				"editor",

@@ -445,6 +445,34 @@ describe("connection docking", () => {
 		// …and is no longer the raw bounding-box corner (200,200).
 		expect(Math.abs(ex - 200)).toBeGreaterThan(1)
 	})
+
+	// A message flow into a wide pool is drawn straight down at the node's x.
+	// Docking every end by a ray from the shape's centre bent such a route
+	// towards the pool's middle, though the DI was already on both borders.
+	it("keeps an endpoint that already lies on a rectangle's border", () => {
+		const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="d" targetNamespace="t">
+  <bpmn:collaboration id="c">
+    <bpmn:participant id="p1" processRef="pr1"/>
+    <bpmn:participant id="bank"/>
+    <bpmn:messageFlow id="mf" sourceRef="a" targetRef="bank"/>
+  </bpmn:collaboration>
+  <bpmn:process id="pr1"><bpmn:task id="a"/></bpmn:process>
+  <bpmndi:BPMNDiagram id="c_diag"><bpmndi:BPMNPlane id="c_plane" bpmnElement="c">
+    <bpmndi:BPMNShape id="p1_di" bpmnElement="p1" isHorizontal="true"><dc:Bounds x="0" y="0" width="800" height="120"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="a_di" bpmnElement="a"><dc:Bounds x="60" y="40" width="80" height="50"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="bank_di" bpmnElement="bank" isHorizontal="true"><dc:Bounds x="0" y="160" width="800" height="60"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNEdge id="mf_di" bpmnElement="mf"><di:waypoint x="100" y="90"/><di:waypoint x="100" y="160"/></bpmndi:BPMNEdge>
+  </bpmndi:BPMNPlane></bpmndi:BPMNDiagram>
+</bpmn:definitions>`
+		const d = renderXml(xml)
+			.querySelector('[data-bpmnkit-id="mf"] path.bpmnkit-msgflow-path')
+			?.getAttribute("d")
+		expect(d).toBe("M100,90 L100,160")
+	})
 })
 
 // ── Marker API (P1-3) ───────────────────────────────────────────────────────────

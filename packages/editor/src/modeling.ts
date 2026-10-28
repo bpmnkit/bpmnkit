@@ -1351,11 +1351,13 @@ function withoutLaneRefs(
  * pool or a message flow, or the text of a process or collaboration text
  * annotation. A message flow given a name its edge has no label for gets one
  * (`edgeLabelBounds`), or the canvas would not show it. `defs` itself when no
- * element has that id.
+ * element has that id or its label already reads `name`.
  */
 export function updateLabel(defs: BpmnDefinitions, id: string, name: string): BpmnDefinitions {
 	const process = defs.processes[0]
 	if (!process) return defs
+	// A label committed as it was (an empty one on an unnamed element too) is no edit: no undo step.
+	if ((nameOf(defs, id) ?? "") === name) return defs
 
 	// Check flow elements and sequence flows (recursive — handles subprocess children)
 	const r = updateNameInElements(process.flowElements, process.sequenceFlows, id, name)

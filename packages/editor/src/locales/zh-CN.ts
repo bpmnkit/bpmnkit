@@ -25,6 +25,13 @@ export const zhCN: Locale = {
 	name: "简体中文",
 	messages: {
 		".docx for Word and LibreOffice": "适用于 Word 和 LibreOffice 的 .docx",
+		"Add lane": "添加泳道",
+		"Add lane above": "在上方添加泳道",
+		"Add lane below": "在下方添加泳道",
+		"Add pool": "添加池",
+		"Create pool": "创建池",
+		"Divide into three lanes": "拆分为三个泳道",
+		"Divide into two lanes": "拆分为两个泳道",
 		"Download HTML": "下载 HTML",
 		"Download Markdown": "下载 Markdown",
 		"Download Word": "下载 Word",

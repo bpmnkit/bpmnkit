@@ -66,14 +66,17 @@ import {
 } from "./modeling.js"
 import { eventTrigger } from "./rules.js"
 import {
-	POOL_HEADER,
+	BLACK_BOX_HEIGHT,
+	addBlackBox,
+	addFirstLane,
 	insertLaneBand,
 	laneAt,
 	messageWaypoints,
-	poolAround,
+	poolPrimary,
 	removeBlackBox,
 	removeLaneBand,
 	swimlaneIds,
+	unpooledOther,
 	withPrimaryFirst,
 } from "./swimlanes.js"
 import type { CreateShapeType } from "./types.js"
@@ -1064,8 +1067,6 @@ function applyToPrimaryFirst(
 
 /** Gap between a partner pool added by a script and the lowest shape above it. */
 const POOL_GAP = 30
-/** Height of a partner pool added by a script: an empty band, like auto-layout's black box. */
-const BLACK_BOX_HEIGHT = 60
 
 /** Elements a lane never lists. */
 const DATA_TYPES = new Set<BpmnElementType>([
@@ -1269,8 +1270,12 @@ function addLane(
 		laneSet.lanes.push(lane)
 		run.defs = insertLaneBand(run.defs, pool.id, id, shapeId)
 	} else {
-		firstLane(run, lane, shapeId, pool.id)
-		for (const nodeId of lane.flowNodeRefs) {
+		const process = primaryOf(run)
+		run.defs = addFirstLane(run.defs, pool.id, lane, shapeId, () =>
+			claim(run, `LaneSet_${process.id}`, "LaneSet"),
+		)
+		const placed = allLanes(primaryOf(run).laneSet).find((candidate) => candidate.id === id)
+		for (const nodeId of placed?.flowNodeRefs ?? []) {
 			const written = writtenOf(run, nodeId)
 			const boundary = primaryOf(run).flowElements.some(
 				(el) => el.id === nodeId && el.type === "boundaryEvent",
@@ -1286,35 +1291,13 @@ function addLane(
 	return id
 }
 
-/** Makes `lane` the only lane of the primary process: it lists every flow node and fills the pool. */
-function firstLane(run: SwimlaneRun, lane: BpmnLane, shapeId: string, poolId: string): void {
-	const process = primaryOf(run)
-	lane.flowNodeRefs = process.flowElements
-		.filter((el) => !DATA_TYPES.has(el.type))
-		.map((el) => el.id)
-	if (process.laneSet) process.laneSet.lanes.push(lane)
-	else {
-		const setId = claim(run, `LaneSet_${process.id}`, "LaneSet")
-		process.laneSet = { id: setId, lanes: [lane], unknownAttributes: {} }
-	}
-	const pool = shapeOf(run, poolId)
-	if (!pool) return
-	const { x, y, width, height } = pool.bounds
-	planeOf(run).shapes.splice(planeOf(run).shapes.indexOf(pool) + 1, 0, {
-		id: shapeId,
-		bpmnElement: lane.id,
-		isHorizontal: true,
-		bounds: { x: x + POOL_HEADER, y, width: width - POOL_HEADER, height },
-		unknownAttributes: {},
-	})
-}
-
 /**
- * The participant of the primary process, made when missing: a collaboration
- * if there is none, a participant for this process only, and a pool shape
- * drawn around the process on a plane that then draws the collaboration.
- * Other processes are left as they are: a script edits one process, and
- * pooling another would mark it non-executable.
+ * The participant of the primary process, made when missing (`poolPrimary`):
+ * a collaboration if there is none, a participant for this process only, and
+ * a pool shape drawn around the process on a plane that then draws the
+ * collaboration. Other processes are left as they are: a script edits one
+ * process, and pooling another would mark it non-executable. Reported and
+ * left out while another process with content has no pool (`unpooledOther`).
  */
 function ownPool(run: SwimlaneRun, line: number): BpmnParticipant | undefined {
 	const process = primaryOf(run)
@@ -1322,64 +1305,33 @@ function ownPool(run: SwimlaneRun, line: number): BpmnParticipant | undefined {
 		run.problem(line, "the process has nothing in it to draw a pool around; left out")
 		return undefined
 	}
-	if (run.defs.collaborations.length === 0) {
-		const id = claim(run, "Collaboration_1", "Collaboration")
-		run.defs = { ...run.defs, collaborations: [emptyCollaboration(id)] }
+	const pooled = poolPrimary(
+		run.defs,
+		{
+			collaboration: () => claim(run, "Collaboration_1", "Collaboration"),
+			participant: () => claim(run, `Participant_${process.id}`, "Participant"),
+			shape: (poolId) => claim(run, `${poolId}_di`, "Participant_di"),
+		},
+		process.name ?? process.id,
+	)
+	if (!pooled) {
+		const other = unpooledOther(run.defs, process)
+		if (other) {
+			run.problem(
+				line,
+				`process "${other.id}" has content and no pool, and once there is a pool every such process needs one; left out`,
+			)
+		}
+		return undefined
 	}
-	const pooled = run.defs.collaborations
-		.flatMap((collaboration) => collaboration.participants)
-		.find((participant) => participant.processRef === process.id)
-	const pool = pooled ?? {
-		id: claim(run, `Participant_${process.id}`, "Participant"),
-		name: process.name ?? process.id,
-		processRef: process.id,
-		unknownAttributes: {},
+	run.defs = pooled.defs
+	run.containerIds.add(pooled.pool.id)
+	if (pooled.drew) {
+		run.result.fixes.push(
+			`drew the pool "${pooled.pool.name ?? pooled.pool.id}" around the process`,
+		)
 	}
-	if (!pooled) run.defs.collaborations[0]?.participants.push(pool)
-	run.containerIds.add(pool.id)
-	if (!shapeOf(run, pool.id)) drawPoolAround(run, pool)
-	return pool
-}
-
-function emptyCollaboration(id: string): BpmnDefinitions["collaborations"][number] {
-	return {
-		id,
-		participants: [],
-		messageFlows: [],
-		textAnnotations: [],
-		associations: [],
-		groups: [],
-		extensionElements: [],
-		unknownAttributes: {},
-	}
-}
-
-/** Draws `pool` around every shape, label and route of the primary process, behind them. */
-function drawPoolAround(run: SwimlaneRun, pool: BpmnParticipant): void {
-	const process = primaryOf(run)
-	const plane = planeOf(run)
-	const inside = new Set([
-		...deepIds(process.flowElements),
-		...process.textAnnotations.map((t) => t.id),
-		...process.sequenceFlows.map((f) => f.id),
-		...process.associations.map((a) => a.id),
-	])
-	const content: BpmnBounds[] = []
-	for (const s of plane.shapes.filter((candidate) => inside.has(candidate.bpmnElement))) {
-		content.push(s.bounds, ...(s.label?.bounds ? [s.label.bounds] : []))
-	}
-	for (const edge of plane.edges.filter((candidate) => inside.has(candidate.bpmnElement))) {
-		content.push(...edge.waypoints.map((p) => ({ ...p, width: 0, height: 0 })))
-	}
-	plane.shapes.unshift({
-		id: claim(run, `${pool.id}_di`, "Participant_di"),
-		bpmnElement: pool.id,
-		isHorizontal: true,
-		bounds: poolAround(content),
-		unknownAttributes: {},
-	})
-	plane.bpmnElement = run.defs.collaborations[0]?.id ?? plane.bpmnElement
-	run.result.fixes.push(`drew the pool "${pool.name ?? pool.id}" around the process`)
+	return pooled.pool
 }
 
 /** A `pool` line: renames a pool, or adds an empty partner pool below everything. */
@@ -1397,31 +1349,20 @@ function applyPoolLine(run: SwimlaneRun, line: ProcessDelta["pools"][number]): v
 	}
 	const own = ownPool(run, line.line)
 	const ownBounds = own === undefined ? undefined : shapeOf(run, own.id)?.bounds
-	if (!ownBounds) return
+	if (!own || !ownBounds) return
 	const id = claim(run, line.id, "Participant")
-	run.defs.collaborations[0]?.participants.push({
-		id,
-		name: line.name ?? nameFromId(line.id),
-		unknownAttributes: {},
-	})
-	const plane = planeOf(run)
 	const lowest = Math.max(
-		...plane.shapes.flatMap((s) => [
+		...planeOf(run).shapes.flatMap((s) => [
 			bottom(s.bounds),
 			...(s.label?.bounds ? [bottom(s.label.bounds)] : []),
 		]),
 	)
-	plane.shapes.push({
-		id: claim(run, `${id}_di`, "Participant_di"),
-		bpmnElement: id,
-		isHorizontal: true,
-		bounds: {
-			x: ownBounds.x,
-			y: lowest + POOL_GAP,
-			width: ownBounds.width,
-			height: BLACK_BOX_HEIGHT,
-		},
-		unknownAttributes: {},
+	const participant = { id, name: line.name ?? nameFromId(line.id), unknownAttributes: {} }
+	run.defs = addBlackBox(run.defs, own.id, participant, claim(run, `${id}_di`, "Participant_di"), {
+		x: ownBounds.x,
+		y: lowest + POOL_GAP,
+		width: ownBounds.width,
+		height: BLACK_BOX_HEIGHT,
 	})
 	run.created.set(line.id, id)
 	run.containerIds.add(id)

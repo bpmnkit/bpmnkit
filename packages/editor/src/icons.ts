@@ -22,6 +22,13 @@ export const IC = {
 	// ── Space tool (two vertical bars with outward arrows) ─────────────────
 	space: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="2.5" height="8" rx="0.8"/><rect x="12.5" y="4" width="2.5" height="8" rx="0.8"/><path d="M4 8h8"/><path d="M5.5 6.5 4 8 5.5 9.5"/><path d="M10.5 6.5 12 8 10.5 9.5"/></svg>`,
 
+	// ── Pools and lanes (a band with its name strip on the left) ──────────
+	pool: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="0.75" y="2.75" width="14.5" height="10.5" rx="1"/><line x1="4.25" y1="2.75" x2="4.25" y2="13.25"/></svg>`,
+	laneAbove: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="0.75" y="7.75" width="14.5" height="6.5" rx="1"/><path d="M8 1.5v4.5M5.75 3.75h4.5"/></svg>`,
+	laneBelow: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="0.75" y="1.75" width="14.5" height="6.5" rx="1"/><path d="M8 10v4.5M5.75 12.25h4.5"/></svg>`,
+	lanesTwo: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="0.75" y="2.75" width="14.5" height="10.5" rx="1"/><line x1="4.25" y1="2.75" x2="4.25" y2="13.25"/><line x1="4.25" y1="8" x2="15.25" y2="8"/></svg>`,
+	lanesThree: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="0.75" y="2.75" width="14.5" height="10.5" rx="1"/><line x1="4.25" y1="2.75" x2="4.25" y2="13.25"/><line x1="4.25" y1="6.25" x2="15.25" y2="6.25"/><line x1="4.25" y1="9.75" x2="15.25" y2="9.75"/></svg>`,
+
 	// ── BPMN Events (circles: thin=start, thick=end, double-ring=intermediate) ─
 	startEvent: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.5"/></svg>`,
 	endEvent: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="3"><circle cx="8" cy="8" r="5.5"/></svg>`,

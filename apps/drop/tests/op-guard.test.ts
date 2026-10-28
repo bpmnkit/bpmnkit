@@ -1,0 +1,35 @@
+import { describe, expect, it } from "vitest"
+import { parseOp } from "../src/lib/op-guard.js"
+
+const bounds = { x: 0, y: 0, width: 600, height: 60 }
+
+describe("parseOp", () => {
+	it("accepts the pool and lane ops", () => {
+		expect(parseOp({ kind: "addParticipant", bounds, seed: "s" })).not.toBeNull()
+		expect(parseOp({ kind: "addParticipant", bounds, name: "Bank", seed: "s" })).not.toBeNull()
+		expect(parseOp({ kind: "addLane", refId: "Lane_1", where: "above", seed: "s" })).not.toBeNull()
+		expect(parseOp({ kind: "addLane", refId: "Lane_1", where: "below", seed: "s" })).not.toBeNull()
+	})
+
+	it("refuses them with fields of the wrong shape", () => {
+		expect(parseOp({ kind: "addParticipant", bounds: { x: 0 }, seed: "s" })).toBeNull()
+		expect(parseOp({ kind: "addParticipant", bounds, name: 3, seed: "s" })).toBeNull()
+		expect(parseOp({ kind: "addLane", refId: "Lane_1", where: "left", seed: "s" })).toBeNull()
+		expect(parseOp({ kind: "addLane", where: "above", seed: "s" })).toBeNull()
+	})
+
+	it("accepts a space-tool move and refuses a grow that is not a boolean", () => {
+		const moves = [{ id: "a", dx: 10, dy: 0 }]
+		expect(parseOp({ kind: "move", moves, grow: true })).not.toBeNull()
+		expect(parseOp({ kind: "move", moves })).not.toBeNull()
+		expect(parseOp({ kind: "move", moves, grow: "yes" })).toBeNull()
+	})
+
+	// A kind looked up on a plain object finds its prototype too: `constructor`
+	// is `Object`, which returns the value itself and so read as a pass.
+	it("refuses a kind that names an Object.prototype member", () => {
+		for (const kind of ["constructor", "toString", "hasOwnProperty", "__proto__"]) {
+			expect(parseOp({ kind }), kind).toBeNull()
+		}
+	})
+})

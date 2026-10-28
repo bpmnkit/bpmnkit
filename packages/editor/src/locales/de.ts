@@ -25,6 +25,13 @@ export const de: Locale = {
 	name: "Deutsch",
 	messages: {
 		".docx for Word and LibreOffice": ".docx für Word und LibreOffice",
+		"Add lane": "Lane hinzufügen",
+		"Add lane above": "Lane oberhalb hinzufügen",
+		"Add lane below": "Lane unterhalb hinzufügen",
+		"Add pool": "Pool hinzufügen",
+		"Create pool": "Pool erstellen",
+		"Divide into three lanes": "In drei Lanes teilen",
+		"Divide into two lanes": "In zwei Lanes teilen",
 		"Download HTML": "HTML herunterladen",
 		"Download Markdown": "Markdown herunterladen",
 		"Download Word": "Word herunterladen",

@@ -25,6 +25,13 @@ export const nl: Locale = {
 	name: "Nederlands",
 	messages: {
 		".docx for Word and LibreOffice": ".docx voor Word en LibreOffice",
+		"Add lane": "Lane toevoegen",
+		"Add lane above": "Lane erboven toevoegen",
+		"Add lane below": "Lane eronder toevoegen",
+		"Add pool": "Pool toevoegen",
+		"Create pool": "Pool maken",
+		"Divide into three lanes": "Verdelen in drie lanes",
+		"Divide into two lanes": "Verdelen in twee lanes",
 		"Download HTML": "HTML downloaden",
 		"Download Markdown": "Markdown downloaden",
 		"Download Word": "Word downloaden",

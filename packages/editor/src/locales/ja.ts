@@ -25,6 +25,13 @@ export const ja: Locale = {
 	name: "日本語",
 	messages: {
 		".docx for Word and LibreOffice": "Word と LibreOffice 用の .docx",
+		"Add lane": "レーンを追加",
+		"Add lane above": "上にレーンを追加",
+		"Add lane below": "下にレーンを追加",
+		"Add pool": "プールを追加",
+		"Create pool": "プールを作成",
+		"Divide into three lanes": "3つのレーンに分割",
+		"Divide into two lanes": "2つのレーンに分割",
 		"Download HTML": "HTML をダウンロード",
 		"Download Markdown": "Markdown をダウンロード",
 		"Download Word": "Word をダウンロード",

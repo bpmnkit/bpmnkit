@@ -203,14 +203,32 @@ function cropWaypoints(
 	if (source) {
 		const next = out[1]
 		const first = out[0]
-		if (next && first) out[0] = dockPoint(source, next)
+		if (next && first && !onRectBorder(source, first)) out[0] = dockPoint(source, next)
 	}
 	if (target) {
 		const prev = out[out.length - 2]
 		const last = out[out.length - 1]
-		if (prev && last) out[out.length - 1] = dockPoint(target, prev)
+		if (prev && last && !onRectBorder(target, last)) out[out.length - 1] = dockPoint(target, prev)
 	}
 	return out
+}
+
+/**
+ * Whether `p` already lies on the border of rectangle `geom`. Such an end is
+ * where the DI docks it; re-docking by a ray from the centre would bend an
+ * orthogonal route that does not pass through the centre, as a message flow
+ * into a wide pool never does.
+ */
+function onRectBorder(geom: ShapeGeom, p: Point): boolean {
+	if (geom.kind !== "rect") return false
+	const EPS = 0.5
+	const right = geom.x + geom.width
+	const bottom = geom.y + geom.height
+	const inX = p.x >= geom.x - EPS && p.x <= right + EPS
+	const inY = p.y >= geom.y - EPS && p.y <= bottom + EPS
+	const onVertical = inY && (Math.abs(p.x - geom.x) <= EPS || Math.abs(p.x - right) <= EPS)
+	const onHorizontal = inX && (Math.abs(p.y - geom.y) <= EPS || Math.abs(p.y - bottom) <= EPS)
+	return onVertical || onHorizontal
 }
 
 /** Classifies a shape's docking outline from its BPMN element type. */

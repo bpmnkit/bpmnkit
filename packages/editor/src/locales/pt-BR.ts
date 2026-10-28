@@ -25,6 +25,13 @@ export const ptBR: Locale = {
 	name: "Português (Brasil)",
 	messages: {
 		".docx for Word and LibreOffice": ".docx para Word e LibreOffice",
+		"Add lane": "Adicionar raia",
+		"Add lane above": "Adicionar raia acima",
+		"Add lane below": "Adicionar raia abaixo",
+		"Add pool": "Adicionar pool",
+		"Create pool": "Criar pool",
+		"Divide into three lanes": "Dividir em três raias",
+		"Divide into two lanes": "Dividir em duas raias",
 		"Download HTML": "Baixar HTML",
 		"Download Markdown": "Baixar Markdown",
 		"Download Word": "Baixar Word",

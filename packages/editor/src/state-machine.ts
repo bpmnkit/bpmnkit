@@ -76,6 +76,8 @@ export type EditorMode =
 	| { mode: "default"; sub: SelectSub }
 	| { mode: "select"; sub: SelectSub }
 	| { mode: "create"; elementType: CreateShapeType }
+	/** The pool tool: a click places a pool (`commitCreatePool`), not a shape. */
+	| { mode: "create"; elementType: "participant" }
 	| { mode: "pan" }
 	| { mode: "space"; sub: SpaceSub }
 
@@ -102,6 +104,7 @@ export interface Callbacks {
 	previewRubberBand(origin: DiagPoint, current: DiagPoint): void
 	cancelRubberBand(): void
 	commitCreate(type: CreateShapeType, diagPoint: DiagPoint): void
+	commitCreatePool(diagPoint: DiagPoint): void
 	startLabelEdit(id: string): void
 	setHovered(id: string | null): void
 	executeDelete(ids: string[]): void
@@ -175,7 +178,8 @@ export class EditorStateMachine {
 
 		// Create mode: place shape and revert to default
 		if (mode.mode === "create") {
-			this._cb.commitCreate(mode.elementType, diag)
+			if (mode.elementType === "participant") this._cb.commitCreatePool(diag)
+			else this._cb.commitCreate(mode.elementType, diag)
 			this._mode = { mode: "default", sub: { name: "idle", hoveredId: null } }
 			this._cb.setTool("default")
 			return

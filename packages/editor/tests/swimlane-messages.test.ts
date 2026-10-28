@@ -328,3 +328,17 @@ const bank = (defs: BpmnDefinitions) => boundsIn(defs, "Participant_bank")
 
 const routeLabel = (defs: BpmnDefinitions) =>
 	defs.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === "Message_pay")?.label?.bounds
+
+describe("WP8d leftover: a re-routed message edge keeps its label beside the route", () => {
+	it("moves the label with the route when one end moves, as a translate does", () => {
+		const defs = structuredClone(flowableFixture())
+		const edge = defs.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === "Message_pay")
+		if (!edge) throw new Error("no message edge")
+		const label = { x: 455, y: 345, width: 90, height: 20 }
+		edge.label = { bounds: label }
+		const after = run(defs, { kind: "move", moves: [{ id: "Task_pay", dx: 40, dy: 0 }] })
+		const moved = after.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === "Message_pay")
+		expect(moved?.waypoints.map((p) => p.x)).toEqual([490, 490])
+		expect(moved?.label?.bounds).toEqual({ ...label, x: label.x + 40 })
+	})
+})

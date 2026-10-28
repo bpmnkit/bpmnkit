@@ -40,7 +40,7 @@ import {
 	updateLabelPosition,
 	updateShapeColor,
 } from "./modeling.js"
-import { settlePlaced, withPrimaryFirst } from "./swimlanes.js"
+import { addLaneBeside, addPool, settlePlaced, withPrimaryFirst } from "./swimlanes.js"
 import type { CreateShapeType, PortDir } from "./types.js"
 
 /** One shape's displacement. */
@@ -127,6 +127,21 @@ export type EditorOp =
 	| { kind: "moveWaypoint"; edgeId: string; wpIdx: number; point: BpmnWaypoint }
 	| { kind: "moveSegment"; edgeId: string; segIdx: number; isHoriz: boolean; delta: number }
 	| { kind: "autoLayout" }
+	/**
+	 * A pool. The first one wraps the primary process, drawn around its content
+	 * (`bounds` only place it when nothing is drawn), with a new collaboration
+	 * when the file has none; later ones are black boxes with no `processRef`,
+	 * at `bounds`, refused over the own pool. `created`: the participant, then
+	 * the collaboration when one was made.
+	 */
+	| { kind: "addParticipant"; bounds: BpmnBounds; name?: string; seed: string }
+	/**
+	 * An unnamed lane band `where` `refId`: the own pool or one of its top-level
+	 * leaf lanes. The first on a pool without lanes makes two. Refused for nested
+	 * lanes and other pools. `created`: the new lane, then the lane over the old
+	 * pool and the lane set when made.
+	 */
+	| { kind: "addLane"; refId: string; where: "above" | "below"; seed: string }
 	/**
 	 * The escape hatch: a whole document, for edits that have no description.
 	 *
@@ -299,5 +314,9 @@ function applyEdit(defs: BpmnDefinitions, op: Exclude<EditorOp, { kind: "snapsho
 			}
 		case "autoLayout":
 			return { defs: applyAutoLayout(defs), created: [] }
+		case "addParticipant":
+			return addPool(defs, op.bounds, op.name, createIdFactory(op.seed)) ?? refused(defs)
+		case "addLane":
+			return addLaneBeside(defs, op.refId, op.where, createIdFactory(op.seed)) ?? refused(defs)
 	}
 }

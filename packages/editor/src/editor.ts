@@ -70,7 +70,10 @@ import { EditorStateMachine } from "./state-machine.js"
 import type { Callbacks } from "./state-machine.js"
 import {
 	POOL_HEADER,
+	canAddLane,
+	canDivideLanes,
 	lockedIds,
+	newPoolBounds,
 	primaryFirst,
 	primaryPlane,
 	swimlaneIds,
@@ -526,6 +529,7 @@ export class BpmnEditor {
 			previewRubberBand: (origin, current) => this._overlay.setRubberBand(origin, current),
 			cancelRubberBand: () => this._overlay.setRubberBand(null),
 			commitCreate: (type, diagPoint) => this._doCreate(type, diagPoint),
+			commitCreatePool: (diagPoint) => this._doCreatePool(diagPoint),
 			startLabelEdit: (id) => this._startLabelEdit(id),
 			setHovered: (id) => this._overlay.setHovered(id, this._shapes),
 			executeDelete: (ids) => {
@@ -779,6 +783,8 @@ export class BpmnEditor {
 			this._stateMachine.setMode({ mode: "pan" })
 		} else if (tool === "space") {
 			this._stateMachine.setMode({ mode: "space", sub: { name: "idle" } })
+		} else if (tool === "create:participant") {
+			this._stateMachine.setMode({ mode: "create", elementType: "participant" })
 		} else {
 			const elementType = tool.slice(7) as CreateShapeType
 			this._stateMachine.setMode({ mode: "create", elementType })
@@ -1524,6 +1530,22 @@ export class BpmnEditor {
 		)
 	}
 
+	/**
+	 * The pool tool's click: a pool where its ghost showed it (`newPoolBounds`),
+	 * then its name editor, as a new annotation gets one. Refused over the own
+	 * pool, and where no ghost shows (`newPoolBounds`), with no undo step.
+	 */
+	private _doCreatePool(diagPoint: DiagPoint): void {
+		this._overlay.setGhostCreate(null)
+		const bounds = this._defs && newPoolBounds(this._defs, diagPoint)
+		if (!bounds) return
+		const [id] = this._executeOp(
+			{ kind: "addParticipant", bounds, seed: newIdSeed() },
+			{ label: "Add pool", select: "first" },
+		)
+		if (id) this._startLabelEdit(id)
+	}
+
 	private _doConnect(srcId: string, tgtId: string): void {
 		const srcShape = this._shapeById.get(srcId)
 		const tgtShape = this._shapeById.get(tgtId)
@@ -1556,8 +1578,16 @@ export class BpmnEditor {
 
 	private _doCut(): void {
 		if (!this._defs || this._selectedIds.length === 0) return
-		this._doCopy()
-		const ids = [...this._selectedIds]
+		// Paste brings back only what the clipboard holds, which has no pools,
+		// lanes or other processes' nodes: a cut leaves them, as deleting them
+		// (a black box with its messages) could not be pasted back. A cut whose
+		// clipboard would be empty (annotations only) still deletes, but keeps
+		// what was copied before.
+		const left = new Set([...swimlaneIds(this._defs), ...lockedIds(this._defs)])
+		const ids = this._selectedIds.filter((id) => !left.has(id))
+		if (ids.length === 0) return
+		const clipboard = copyElements(primaryFirst(this._defs), ids)
+		if (clipboard.elements.length > 0) this._clipboard = clipboard
 		this._executeOp({ kind: "delete", ids }, { label: "Cut" })
 		this._setSelection([])
 	}
@@ -1895,6 +1925,43 @@ export class BpmnEditor {
 			mode: "select",
 			sub: { name: "connecting", sourceId, ghostEnd: { x: 0, y: 0 } },
 		})
+	}
+
+	/**
+	 * Adds an unnamed lane `where` `refId`, the own pool or one of its top-level
+	 * lanes, and selects it; the first on a pool without lanes makes two
+	 * (decision U5). Returns the new lane's id, or null when refused (nested
+	 * lanes, other pools), which adds no undo step.
+	 */
+	addLane(refId: string, where: "above" | "below"): string | null {
+		if (!this._defs || !canAddLane(this._defs, refId)) return null
+		const [id] = this._executeOp(
+			{ kind: "addLane", refId, where, seed: newIdSeed() },
+			{ label: "Add lane", select: "first" },
+		)
+		return id ?? null
+	}
+
+	/**
+	 * Divides the own pool `poolId`, which has no lanes, into `count` sibling
+	 * lanes (decision U6): `count - 1` `addLane` ops, each its own `diagram:op`,
+	 * so a relay replays them as they are, coalesced by one fresh key into a
+	 * single undo step. Does nothing on a pool that has lanes or is not the own.
+	 */
+	divideLanes(poolId: string, count: 2 | 3): void {
+		if (!this._defs || !canDivideLanes(this._defs, poolId)) return
+		const label = count === 2 ? "Divide into two lanes" : "Divide into three lanes"
+		const options = { label, coalesceKey: `divide:${newIdSeed()}` }
+		let [last] = this._executeOp(
+			{ kind: "addLane", refId: poolId, where: "below", seed: newIdSeed() },
+			options,
+		)
+		for (let made = 2; made < count && last; made++) {
+			;[last] = this._executeOp(
+				{ kind: "addLane", refId: last, where: "below", seed: newIdSeed() },
+				options,
+			)
+		}
 	}
 
 	/** Creates a text annotation linked to the given source shape via an association. */
@@ -2455,7 +2522,9 @@ export class BpmnEditor {
 		const hit = this._hitTest(e.clientX, e.clientY)
 		this._stateMachine.onPointerMove(e, diag, hit)
 		const mode = this._stateMachine.mode
-		if (mode.mode === "create") {
+		if (mode.mode === "create" && mode.elementType === "participant") {
+			this._overlay.setGhostPool((this._defs && newPoolBounds(this._defs, diag)) ?? null)
+		} else if (mode.mode === "create") {
 			const rawBounds = defaultBounds(mode.elementType, diag.x, diag.y)
 			const snapped = this._computeCreateSnap(rawBounds)
 			const snappedCenter: DiagPoint = {

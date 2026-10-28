@@ -35,7 +35,7 @@ function seededWithFlow() {
 		{ x: 200, y: 140 },
 		{ x: 300, y: 140 },
 	])
-	return { defs: flow.defs, taskId, gatewayId, flowId: flow.id }
+	return { defs: flow.defs, taskId, gatewayId, flowId: flow.id, laneId: "" }
 }
 
 /** What {@link everyOp} edits: a document and three of its elements. */
@@ -44,6 +44,8 @@ interface OpTarget {
 	taskId: string
 	gatewayId: string
 	flowId: string
+	/** A lane to add a lane beside; none on a document without lanes. */
+	laneId: string
 }
 
 /** The laned Flowable fixture in `order`, as an {@link OpTarget}. */
@@ -53,6 +55,7 @@ function seededLaned(order: FlowableOrder = "first"): OpTarget {
 		taskId: "Task_review",
 		gatewayId: "Gateway_ok",
 		flowId: "Flow_3",
+		laneId: "Lane_finance",
 	}
 }
 
@@ -82,10 +85,12 @@ const EVERY_KIND: Record<EditorOp["kind"], true> = {
 	moveSegment: true,
 	autoLayout: true,
 	snapshot: true,
+	addParticipant: true,
+	addLane: true,
 }
 
 /** Every op kind, against `target`, each with a fixed seed. */
-function everyOp({ defs, taskId, gatewayId, flowId }: OpTarget): EditorOp[] {
+function everyOp({ defs, taskId, gatewayId, flowId, laneId }: OpTarget): EditorOp[] {
 	const bounds = { x: 400, y: 200, width: 100, height: 80 }
 	const waypoints = [
 		{ x: 200, y: 140 },
@@ -125,6 +130,9 @@ function everyOp({ defs, taskId, gatewayId, flowId }: OpTarget): EditorOp[] {
 		{ kind: "moveWaypoint", edgeId: flowId, wpIdx: 0, point: { x: 205, y: 150 } },
 		{ kind: "moveSegment", edgeId: flowId, segIdx: 0, isHoriz: true, delta: 10 },
 		{ kind: "changeType", id: gatewayId, type: "parallelGateway" },
+		// Below the laned file's pools; on a pool-less document it is the first pool.
+		{ kind: "addParticipant", bounds: { x: 0, y: 700, width: 640, height: 60 }, seed: "s8" },
+		{ kind: "addLane", refId: laneId, where: "above", seed: "s9" },
 		{ kind: "snapshot", defs: structuredClone(defs) },
 		{ kind: "autoLayout" },
 		// Last, so a replayed session still has the gateway the ops before it name.
@@ -186,6 +194,37 @@ describe("applyOp determinism", () => {
 		const process = r.defs.processes[0]
 		expect(process?.flowElements.some((e) => e.id === r.created[0])).toBe(true)
 		expect(process?.sequenceFlows.some((f) => f.id === r.created[1])).toBe(true)
+	})
+
+	it("reports the pool, the collaboration and the lanes it created", () => {
+		const { defs } = seeded()
+		const bounds = { x: 0, y: 700, width: 640, height: 60 }
+		const pooled = applyOp(defs, { kind: "addParticipant", bounds, seed: "p" })
+		const [poolId, collaborationId] = pooled.created
+		expect(pooled.created).toHaveLength(2)
+		expect(pooled.defs.collaborations[0]?.id).toBe(collaborationId)
+		expect(pooled.defs.collaborations[0]?.participants[0]?.id).toBe(poolId)
+		const box = applyOp(pooled.defs, { kind: "addParticipant", bounds, seed: "b" })
+		expect(box.created).toHaveLength(1)
+		expect(box.defs.collaborations[0]?.participants[1]?.id).toBe(box.created[0])
+		const laned = applyOp(pooled.defs, {
+			kind: "addLane",
+			refId: poolId ?? "",
+			where: "below",
+			seed: "l",
+		})
+		const [added, existing, setId] = laned.created
+		const laneSet = laned.defs.processes[0]?.laneSet
+		expect(laneSet?.id).toBe(setId)
+		expect(laneSet?.lanes.map((l) => l.id)).toEqual([existing, added])
+		const more = applyOp(laned.defs, {
+			kind: "addLane",
+			refId: added ?? "",
+			where: "below",
+			seed: "m",
+		})
+		expect(more.created).toHaveLength(1)
+		expect(more.defs.processes[0]?.laneSet?.lanes.at(-1)?.id).toBe(more.created[0])
 	})
 
 	it("splices a shape onto a flow when the op says so", () => {

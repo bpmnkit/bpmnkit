@@ -1,5 +1,9 @@
 # Features
 
+## Editor: create pools and add lanes (2026-10-28)
+
+- A pool tool wraps a process in its first pool or adds a black-box partner; lanes are added above or below, and an unlaned pool is divided into two or three lanes. A black box can start a message flow, so incoming messages can be drawn.
+
 ## Editor: lanes, black-box pools and message flows (2026-10-28)
 
 - Moving or creating a node in a lane makes it a member of that lane; drops into a partner pool or outside the own pool are refused, and quick add grows the pool. Lanes and black-box partner pools can be deleted (the own pool cannot). Connecting to another pool draws a message flow, whose name the canvas shows and which can be renamed.
