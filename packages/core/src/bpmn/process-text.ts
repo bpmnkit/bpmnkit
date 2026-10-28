@@ -227,12 +227,14 @@ export const DOC_LINE = /^doc\s+([A-Za-z_][\w.-]*)\s*:\s*(.*)$/i
 
 /**
  * `lane <id>[Name]: a, b`, the swimlane a role works in. Whitespace after the
- * keyword is required, so `lane_check[user …] > x` is still a path.
+ * keyword is required, so `lane_check[user …] > x` is still a path. The keywords
+ * of this and the next two lines are lowercase only, as the guides teach them:
+ * prose such as "Lane changes: move review into sales" starts with a capital.
  */
-export const LANE_LINE = /^lane\s+([A-Za-z_][\w.-]*)\s*(?:\[([^\]]*)\])?\s*:\s*(.*)$/i
+export const LANE_LINE = /^lane\s+([A-Za-z_][\w.-]*)\s*(?:\[([^\]]*)\])?\s*:\s*(.*)$/
 
 /** `pool <id>[Name]`, another party drawn as an empty pool. */
-export const POOL_LINE = /^pool\s+([A-Za-z_][\w.-]*)\s*(?:\[([^\]]*)\])?\s*$/i
+export const POOL_LINE = /^pool\s+([A-Za-z_][\w.-]*)\s*(?:\[([^\]]*)\])?\s*$/
 
 /**
  * `msg a >(Label) b`, a message between a node and a pool. Its own keyword, so a
@@ -240,7 +242,7 @@ export const POOL_LINE = /^pool\s+([A-Za-z_][\w.-]*)\s*(?:\[([^\]]*)\])?\s*$/i
  * colons included, because a message has no condition.
  */
 export const MESSAGE_LINE =
-	/^msg\s+([A-Za-z_][\w.-]*)\s*-{0,2}>\s*(?:\(([^()]*)\)\s*)?([A-Za-z_][\w.-]*)\s*$/i
+	/^msg\s+([A-Za-z_][\w.-]*)\s*-{0,2}>\s*(?:\(([^()]*)\)\s*)?([A-Za-z_][\w.-]*)\s*$/
 
 /** A title segment that is only attributes of a known key: `camunda=8.10`. */
 const HEADER_SEGMENT = /^[\s,]*(?:camunda=[^\s,|]*[\s,]*)+$/

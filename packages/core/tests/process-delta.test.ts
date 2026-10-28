@@ -205,3 +205,103 @@ describe("parseProcessDelta review fixes", () => {
 		expect(delta.problems.map((p) => p.message).join()).toMatch(/doc u.*no text/)
 	})
 })
+
+describe("parseProcessDelta — lanes, pools and messages", () => {
+	it("reads lane lines, named and bare, with members split on commas and spaces", () => {
+		const delta = parseProcessDelta("lane sales[Sales team]: a, b\nlane ops: c d,e")
+		expect(delta.problems).toEqual([])
+		expect(delta.lanes).toEqual([
+			{ id: "sales", name: "Sales team", nodes: ["a", "b"], line: 1 },
+			{ id: "ops", nodes: ["c", "d", "e"], line: 2 },
+		])
+		expect(delta.nodes).toEqual([])
+		expect(delta.flows).toEqual([])
+	})
+
+	it("keeps a named lane line with no members, and ignores a bare one", () => {
+		const delta = parseProcessDelta("lane sales[Sales]:\nlane ops:")
+		expect(delta.lanes).toEqual([{ id: "sales", name: "Sales", nodes: [], line: 1 }])
+		expect(delta.problems.map((p) => p.message).join()).toMatch(/lane ops.*nothing/)
+	})
+
+	it("leaves out a lane member that is not an id", () => {
+		const delta = parseProcessDelta("lane sales[Sales]: a > b")
+		expect(delta.lanes).toEqual([{ id: "sales", name: "Sales", nodes: ["a", "b"], line: 1 }])
+		expect(delta.problems.map((p) => p.message).join()).toContain('">"')
+	})
+
+	it("reads pool lines with and without a name", () => {
+		const delta = parseProcessDelta("pool bank[Bank]\npool shop")
+		expect(delta.problems).toEqual([])
+		expect(delta.pools).toEqual([
+			{ id: "bank", name: "Bank", line: 1 },
+			{ id: "shop", line: 2 },
+		])
+		expect(delta.nodes).toEqual([])
+	})
+
+	it("reads msg lines, keeping colons in the label", () => {
+		const delta = parseProcessDelta("msg pay >(Payment: EUR) bank\nmsg bank > paid")
+		expect(delta.problems).toEqual([])
+		expect(delta.messageFlows).toEqual([
+			{ from: "pay", to: "bank", name: "Payment: EUR", line: 1 },
+			{ from: "bank", to: "paid", line: 2 },
+		])
+		expect(delta.flows).toEqual([])
+	})
+
+	it("reads - msg a > b as a message removal, not a flow removal", () => {
+		const delta = parseProcessDelta("- msg pay > bank\n- msg pay >(Payment) bank")
+		expect(delta.removedMessageFlows).toEqual([
+			{ from: "pay", to: "bank", line: 1 },
+			{ from: "pay", to: "bank", line: 2 },
+		])
+		expect(delta.removedFlows).toEqual([])
+		expect(delta.removedNodes).toEqual([])
+		expect(delta.problems.map((p) => p.message).join()).toContain("label")
+	})
+
+	it("still removes any id with - x, a lane or pool included", () => {
+		const delta = parseProcessDelta("- sales\n- msg")
+		expect(delta.removedNodes).toEqual([
+			{ id: "sales", line: 1 },
+			{ id: "msg", line: 2 },
+		])
+	})
+
+	it("reads ids that start with lane, pool or msg as paths", () => {
+		const delta = parseProcessDelta("lane_x > y\npool_a[user Check] > msg_b\nmsgx > poolside")
+		expect(delta.problems).toEqual([])
+		expect(delta.flows.map((f) => [f.from, f.to])).toEqual([
+			["lane_x", "y"],
+			["pool_a", "msg_b"],
+			["msgx", "poolside"],
+		])
+		expect(delta.lanes).toEqual([])
+		expect(delta.pools).toEqual([])
+		expect(delta.messageFlows).toEqual([])
+	})
+
+	it("has no lanes, pools or messages in the guide's example", () => {
+		const delta = parseProcessDelta(EXAMPLE)
+		expect(delta.lanes).toEqual([])
+		expect(delta.pools).toEqual([])
+		expect(delta.messageFlows).toEqual([])
+		expect(delta.removedMessageFlows).toEqual([])
+	})
+
+	it("parses every line the guide teaches without problems", () => {
+		const taught = PROCESS_DELTA_GUIDE.slice(0, PROCESS_DELTA_GUIDE.indexOf("Rules:"))
+			.split("\n")
+			.slice(1)
+			.map((line) => line.split(/\s{2,}/)[0] ?? "")
+		expect(taught.some((line) => line.startsWith("lane "))).toBe(true)
+		expect(taught.some((line) => line.startsWith("pool "))).toBe(true)
+		expect(taught.some((line) => line.startsWith("- msg "))).toBe(true)
+		for (const line of [...taught, "lane ops[Operations]: c", "msg pay >(Payment) bank"]) {
+			expect(parseProcessDelta(line).problems, line).toEqual([])
+		}
+		expect(PROCESS_DELTA_GUIDE).toContain("lane ops[Operations]: c")
+		expect(PROCESS_DELTA_GUIDE).toContain("msg pay >(Payment) bank")
+	})
+})

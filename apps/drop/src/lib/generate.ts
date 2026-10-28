@@ -415,7 +415,7 @@ const DIAGRAM_LINE =
  * parser, which also reads spaces: a list of words would let prose through.
  */
 const LANE_DIAGRAM_LINE =
-	/^lane\s+[A-Za-z_][\w.-]*\s*(?:\[[^\]]*\])?\s*:\s*[A-Za-z_][\w.-]*(?:\s*,\s*[A-Za-z_][\w.-]*)*\s*$/i
+	/^lane\s+[A-Za-z_][\w.-]*\s*(?:\[[^\]]*\])?\s*:\s*[A-Za-z_][\w.-]*(?:\s*,\s*[A-Za-z_][\w.-]*)*\s*$/
 
 /**
  * Passes on only the lines of a model's answer that are in the line format.

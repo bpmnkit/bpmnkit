@@ -216,6 +216,15 @@ describe("process text: lanes", () => {
 		expect(p?.lanes).toBeUndefined()
 	})
 
+	it("reads a capitalised Lane, Pool or Msg as prose, not as a line of its kind", () => {
+		const { diagram } = parseProcessText(
+			"s[start] > t[send Ask] > e[end]\nLane changes: move review into sales\nPool overview\nMsg t > overview",
+		)
+		expect(diagram.processes[0]?.lanes).toBeUndefined()
+		expect(diagram.participants).toBeUndefined()
+		expect(diagram.messageFlows).toBeUndefined()
+	})
+
 	it("adds no lanes, pools or message flows to text without them", () => {
 		const { diagram } = parseProcessText("s[start] > e[end]")
 		expect(diagram.participants).toBeUndefined()

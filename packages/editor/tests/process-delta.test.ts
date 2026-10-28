@@ -8,6 +8,7 @@ import {
 	expand,
 	parseProcessDelta,
 	parseProcessText,
+	primaryProcess,
 	writeProcessText,
 } from "@bpmnkit/core"
 import { applyConnectorLines } from "@bpmnkit/core/connectors"
@@ -54,12 +55,13 @@ function flowsOf(defs: BpmnDefinitions) {
 	return (defs.processes[0]?.sequenceFlows ?? []).map((f) => `${f.sourceRef}>${f.targetRef}`).sort()
 }
 
-/** Whether every node of the first process is drawn on the first diagram: what an editable drop has. */
+/** Whether every node of the edited process is drawn on the first diagram: what an editable drop has. */
 function drawnInFull(defs: BpmnDefinitions): boolean {
 	const shapes = new Set(defs.diagrams[0]?.plane.shapes.map((s) => s.bpmnElement))
 	return (
-		defs.processes[0]?.flowElements.every((el) => el.type === "dataObject" || shapes.has(el.id)) ??
-		false
+		primaryProcess(defs)?.flowElements.every(
+			(el) => el.type === "dataObject" || shapes.has(el.id),
+		) ?? false
 	)
 }
 
@@ -74,7 +76,7 @@ function duplicateIds(defs: BpmnDefinitions): string[] {
  * already have one, and a change must only not add another.
  */
 function expectSound(defs: BpmnDefinitions, before?: BpmnDefinitions): void {
-	const process = defs.processes[0]
+	const process = primaryProcess(defs)
 	const plane = defs.diagrams[0]?.plane
 	const nodes = new Set(process?.flowElements.map((el) => el.id))
 	const flows = new Set(process?.sequenceFlows.map((f) => f.id))
@@ -481,6 +483,18 @@ describe("applyProcessDelta", () => {
 			expect(boundsOf(next, id).width, id).toBe(boundsOf(defs, id).width + dx)
 		}
 		expectSound(result.definitions)
+	})
+
+	it("edits the executable process when it is not the first, and keeps the order", () => {
+		const defs = fixture("miwg-C.1.0.bpmn")
+		const order = defs.processes.map((p) => p.id)
+		const { aliases } = writeProcessText(defs)
+		const removed = Object.entries(aliases).find(([, id]) => id === "approveInvoice")?.[0]
+		const result = apply(defs, `- ${removed}`)
+		expect(result.definitions.processes.map((p) => p.id)).toEqual(order)
+		const ids = (i: number) => result.definitions.processes[i]?.flowElements.map((e) => e.id)
+		expect(ids(1)).not.toContain("approveInvoice")
+		expect(ids(0)).toEqual(defs.processes[0]?.flowElements.map((e) => e.id))
 	})
 
 	describe.each(readdirSync(ROUNDTRIP).filter((f) => f.endsWith(".bpmn")))("%s", (file) => {

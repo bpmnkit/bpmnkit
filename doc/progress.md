@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-10-28 — Writer and change scripts: lanes, pools and message flows
+
+- Fifth step of lane and pool write support (WP6). `writeProcessText` writes the primary process (`primaryProcess`: the executable one, which Modeler collaborations do not always list first) and, after its paths, one `lane alias[Name]: …` line per leaf lane, one `pool alias[Name]` line per other participant, and a `msg` line per message between a written node and such a pool. Lane and pool aliases come after every node alias, so a diagram without lanes or other pools is written exactly as before. Parent lanes of nested lanes, other pools' content and messages touching the own pool are not written; an unnamed lane holding nothing gets no line, and a note on a lane none.
+- `parseProcessDelta` reads `lane`, `pool` and `msg` lines (`lanes`, `pools`, `messageFlows`) and `- msg a > b` (`removedMessageFlows`); `- x` still removes any id. `PROCESS_DELTA_GUIDE` gains three lines; its example is unchanged. A bare lane line with no members is ignored as prose.
+- The `lane`, `pool` and `msg` keywords are lowercase only in both parsers and both Drop filters, so prose such as "Lane changes: …" is not read as one.
+- Editor: `applyProcessDelta` applies a script to the primary process (moved first while applying, put back after), so it changes the process the writer wrote. Lane, pool and message lines are read but not applied yet (WP7).
+- Drop: the change filter passes the new lines; a suggestion made only of them counts as a change.
+- Tests: writer lane/pool/msg cases, delta parser cases, `process-text-lanes-roundtrip.test.ts` (writer output read back by both parsers on every fixture with lanes or a collaboration, and the two guides agreeing), an editor regression on miwg-C.1.0 (executable process second), Drop filter and suggestion cases.
+
 ## 2026-10-28 — Process text: lanes, pools and message flows
 
 - Fourth step of lane and pool write support (WP5): the line format a model writes in gains `lane sales[Sales team]: a, b`, `pool bank[Bank]` and `msg pay >(Payment) bank` / `msg bank > paid`, parsed into the compact `lanes`, `participants` and `messageFlows`; `expand` draws the process in its own pool with its lanes.

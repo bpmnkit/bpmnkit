@@ -4,24 +4,37 @@
  * ({@link PROCESS_DELTA_GUIDE}) that names its nodes by id.
  *
  * Written ids are short aliases: a Modeler id such as `Activity_0x9k2lm` costs
- * several tokens and tells the model nothing, so each node is written under a
- * name-derived alias (`review_application`) and the map back to the real id is
- * returned beside the text. An id that is already short and readable is kept.
+ * several tokens and tells the model nothing, so each node, lane and pool is
+ * written under a name-derived alias (`review_application`) and the map back to
+ * the real id is returned beside the text. An id that is already short and
+ * readable is kept.
  *
- * Only what the format can express is written: the first process's flow nodes
- * and sequence flows. Lanes, data objects, annotations, event sub-processes and
- * the inside of a sub-process are left out. A script cannot name what it was
+ * Only what the format can express is written, for one process: the
+ * {@link primaryProcess} (the executable one, which need not come first in a
+ * Modeler collaboration). That is its flow nodes, sequence flows, the tasks of
+ * an ad-hoc sub-process, documentation, notes and connectors; its leaf lanes;
+ * every other pool of the first collaboration, as a black box; and the message
+ * flows between one of its top-level nodes and such a pool. Data objects, event
+ * sub-processes, the inside of any other sub-process, parent lanes of nested
+ * lanes, the content of other pools, and messages that touch the process's own
+ * pool or a node of another pool are left out. A script cannot name what it was
  * never shown, so those parts cannot be changed by it either.
  *
  * @packageDocumentation
  */
 
 import { assertBpmnDefinitions } from "./argument-guards.js"
-import type { BpmnDefinitions, BpmnElementType, BpmnFlowElement } from "./bpmn-model.js"
+import type {
+	BpmnDefinitions,
+	BpmnElementType,
+	BpmnFlowElement,
+	BpmnProcess,
+} from "./bpmn-model.js"
 import { compactify } from "./compact.js"
 import type { CompactElement, CompactFlow } from "./compact.js"
 import { FIXED_KINDS } from "./process-delta.js"
 import { KINDS, splitMappings } from "./process-text.js"
+import { leafLanes, primaryProcess } from "./swimlanes.js"
 
 /** Options for {@link writeProcessText}. */
 export interface WriteProcessTextOptions {
@@ -91,24 +104,98 @@ function platformVersion(definitions: BpmnDefinitions): string | undefined {
 	return version?.[1]
 }
 
-function aliasFor(element: CompactElement, taken: Set<string>): string {
-	if (READABLE_ID.test(element.id) && !taken.has(element.id)) {
-		taken.add(element.id)
-		return element.id
+/** The alias of `id`: the id when readable and free, else derived from `name`, else from `kind`. */
+function aliasFor(id: string, name: string | undefined, kind: string, taken: Set<string>): string {
+	if (READABLE_ID.test(id) && !taken.has(id)) {
+		taken.add(id)
+		return id
 	}
-	const words = (element.name ?? "")
+	const words = (name ?? "")
 		.replace(/([a-z0-9])([A-Z])/g, "$1 $2")
 		.toLowerCase()
 		.split(/[^a-z0-9]+/)
 		.filter(Boolean)
 		.slice(0, ALIAS_WORDS)
 	let base = words.join("_")
-	if (!/^[a-z]/.test(base))
-		base = (KIND_WORDS.get(element.type) ?? "node") + (base ? `_${base}` : "")
+	if (!/^[a-z]/.test(base)) base = kind + (base ? `_${base}` : "")
 	let alias = base
 	for (let n = 2; taken.has(alias); n++) alias = `${base}_${n}`
 	taken.add(alias)
 	return alias
+}
+
+/** A lane's or pool's name in brackets, or nothing for one without a name. */
+function bracketed(name: string | undefined): string {
+	const written = name ? writableName(name) : ""
+	return written ? `[${written}]` : ""
+}
+
+/** A message label: raw like a note, so colons stay, but a parenthesis would end it. */
+function messageLabel(name: string): string {
+	return name.replace(/[()]/g, " ").replace(/\s+/g, " ").trim()
+}
+
+/**
+ * The `lane`, `pool` and `msg` lines of `source`, whose written top-level nodes
+ * are `nodes`. Lane and pool aliases are claimed here, after every node alias,
+ * so a diagram that gains a lane keeps the node aliases it had.
+ *
+ * Only leaf lanes are written, each with the nodes it lists in their ref order
+ * (a node two leaves list goes to the first): a script can move a node between
+ * leaf lanes but cannot create a nested lane. Every participant of the first
+ * collaboration but the one that draws `source` is a `pool` line, its content
+ * unwritten. A message is written only between a node of `nodes` and such a
+ * pool, the two ends the line format can name.
+ */
+function swimlaneLines(
+	definitions: BpmnDefinitions,
+	source: BpmnProcess,
+	nodes: ReadonlyMap<string, CompactElement>,
+	alias: Map<string, string>,
+	taken: Set<string>,
+): string[] {
+	const collaboration = definitions.collaborations[0]
+	// A node two leaves list is written in the first only, or the reader would move it.
+	const placed = new Set<string>()
+	const membersOf = new Map<string, string[]>()
+	for (const lane of leafLanes(source.laneSet)) {
+		const members = [...new Set(lane.flowNodeRefs)].filter((id) => nodes.has(id) && !placed.has(id))
+		for (const id of members) placed.add(id)
+		membersOf.set(lane.id, members)
+	}
+	// An unnamed lane holding nothing has nothing to say, and `lane x:` reads as prose.
+	const lanes = leafLanes(source.laneSet).filter(
+		(lane) => lane.name || (membersOf.get(lane.id) ?? []).length > 0,
+	)
+	const pools = (collaboration?.participants ?? []).filter((p) => p.processRef !== source.id)
+	const named = [
+		...lanes.map((lane) => ({ item: lane, kind: "lane" })),
+		...pools.map((pool) => ({ item: pool, kind: "pool" })),
+	]
+	// Readable ids first, as for nodes.
+	for (const { item, kind } of named) {
+		if (READABLE_ID.test(item.id)) alias.set(item.id, aliasFor(item.id, item.name, kind, taken))
+	}
+	for (const { item, kind } of named) {
+		if (!alias.has(item.id)) alias.set(item.id, aliasFor(item.id, item.name, kind, taken))
+	}
+
+	const lines: string[] = []
+	for (const lane of lanes) {
+		const list = (membersOf.get(lane.id) ?? []).map((id) => alias.get(id)).join(", ")
+		lines.push(`lane ${alias.get(lane.id)}${bracketed(lane.name)}: ${list}`.trimEnd())
+	}
+	for (const pool of pools) lines.push(`pool ${alias.get(pool.id)}${bracketed(pool.name)}`)
+	const poolIds = new Set(pools.map((pool) => pool.id))
+	for (const flow of collaboration?.messageFlows ?? []) {
+		const nodeToPool = nodes.has(flow.sourceRef) && poolIds.has(flow.targetRef)
+		const poolToNode = poolIds.has(flow.sourceRef) && nodes.has(flow.targetRef)
+		if (!nodeToPool && !poolToNode) continue
+		const name = flow.name ? messageLabel(flow.name) : ""
+		const arrow = name ? `>(${name})` : ">"
+		lines.push(`msg ${alias.get(flow.sourceRef)} ${arrow} ${alias.get(flow.targetRef)}`)
+	}
+	return lines
 }
 
 function spec(element: CompactElement, host: string | undefined, container?: string): string {
@@ -149,7 +236,9 @@ function label(flow: CompactFlow): string {
 }
 
 /**
- * Writes the first process of `definitions` in the line format.
+ * Writes the {@link primaryProcess} of `definitions` in the line format, with
+ * its leaf lanes, the other pools and their messages (see the module comment
+ * for what is left out).
  *
  * Paths start at the start events and follow the flows; each flow is written
  * once and each node is declared where it first appears. A boundary event
@@ -169,8 +258,10 @@ export function writeProcessText(
 	options: WriteProcessTextOptions = {},
 ): WrittenProcessText {
 	assertBpmnDefinitions(definitions, "writeProcessText")
-	const process = compactify(definitions).processes[0]
-	if (!process) return { text: "", aliases: {} }
+	const source = primaryProcess(definitions)
+	// compactify keeps the process order, so the index finds the compact twin.
+	const process = source && compactify(definitions).processes[definitions.processes.indexOf(source)]
+	if (!source || !process) return { text: "", aliases: {} }
 
 	// What the format can write: flow nodes with a kind word, outside any event sub-process.
 	const elements = process.elements.filter((el) => KIND_WORDS.has(el.type))
@@ -194,8 +285,10 @@ export function writeProcessText(
 	const alias = new Map<string, string>()
 	// Readable ids first, so a name-derived alias never takes one of them.
 	const named = [...elements, ...[...inner.values()].map((child) => child.element)]
-	for (const el of named) if (READABLE_ID.test(el.id)) alias.set(el.id, aliasFor(el, taken))
-	for (const el of named) if (!alias.has(el.id)) alias.set(el.id, aliasFor(el, taken))
+	const nodeAlias = (el: CompactElement) =>
+		aliasFor(el.id, el.name, KIND_WORDS.get(el.type) ?? "node", taken)
+	for (const el of named) if (READABLE_ID.test(el.id)) alias.set(el.id, nodeAlias(el))
+	for (const el of named) if (!alias.has(el.id)) alias.set(el.id, nodeAlias(el))
 
 	const declared = new Set<string>()
 	const ref = (id: string): string => {
@@ -270,6 +363,7 @@ export function writeProcessText(
 	}
 
 	for (const id of inner.keys()) lines.push(inside(id))
+	lines.push(...swimlaneLines(definitions, source, byId, alias, taken))
 
 	// Documentation, on one line like a note: it is the tool description of an agent's tool
 	for (const el of named) {
@@ -278,23 +372,21 @@ export function writeProcessText(
 	}
 
 	// A note names an element it is associated with; one tied to nothing the format writes has no line.
-	const source = definitions.processes[0]
-	const annotations = new Map((source?.textAnnotations ?? []).map((a) => [a.id, a.text ?? ""]))
-	for (const assoc of source?.associations ?? []) {
+	const annotations = new Map((source.textAnnotations ?? []).map((a) => [a.id, a.text ?? ""]))
+	for (const assoc of source.associations ?? []) {
 		const [annotation, target] = annotations.has(assoc.targetRef)
 			? [assoc.targetRef, assoc.sourceRef]
 			: [assoc.sourceRef, assoc.targetRef]
 		const text = (annotations.get(annotation) ?? "").replace(/\s+/g, " ").trim()
-		const written = alias.get(target)
+		// Nodes only: the alias map also holds lanes and pools, which have no note line.
+		const written = byId.has(target) || inner.has(target) ? alias.get(target) : undefined
 		if (annotations.has(annotation) && written !== undefined && text !== "") {
 			lines.push(`note ${written}: ${text}`)
 		}
 	}
 
 	if (options.connectorLine) {
-		const real = new Map(
-			(definitions.processes[0]?.flowElements ?? []).map((el) => [el.id, el] as const),
-		)
+		const real = new Map(source.flowElements.map((el) => [el.id, el] as const))
 		for (const el of elements) {
 			const element = real.get(el.id)
 			const line = element && options.connectorLine(element, definitions)

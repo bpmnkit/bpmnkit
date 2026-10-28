@@ -23,7 +23,10 @@ import {
 	ALIASES,
 	DOC_LINE,
 	KINDS,
+	LANE_LINE,
+	MESSAGE_LINE,
 	NOTE_LINE,
+	POOL_LINE,
 	type ProcessTextProblem,
 	TRIGGERS,
 	edgeLabel,
@@ -54,6 +57,9 @@ x[kind Name]              an existing id declared again changes its kind or name
 x[user Name | form=f in.a=b]  form and in./out. mappings (FEEL; write a = 1 with spaces) go after the bar
 - a > b                   remove the flow from a to b
 - x                       remove node x and its flows
+lane sales: a, b          move a and b into lane sales; lane ops[Operations]: c adds or renames a lane
+pool bank[Bank]           add or rename a partner pool; msg pay >(Payment) bank sends it a message
+- msg pay > bank          remove that message
 @2 x y                    feedback item 2 is answered by the changes to x and y
 Rules:
 - Use the ids of the diagram you were given. Never repeat a line that changes nothing.
@@ -122,6 +128,19 @@ export interface ProcessDelta {
 	notes: { id: string; text: string; line: number }[]
 	/** `doc` lines: the documentation of a node, existing or new. */
 	docs: { id: string; text: string; line: number }[]
+	/**
+	 * `lane` lines, in the order written; a lane written twice appears twice. An
+	 * absent `name` keeps an existing lane's name, and a new lane is named from its
+	 * id. `nodes` move into the lane and may be empty: the line then only renames
+	 * or adds the lane.
+	 */
+	lanes: { id: string; name?: string; nodes: string[]; line: number }[]
+	/** `pool` lines: a partner pool added, or an existing one renamed. */
+	pools: { id: string; name?: string; line: number }[]
+	/** `msg` lines: message flows between a node and a pool, label as written. */
+	messageFlows: { from: string; to: string; name?: string; line: number }[]
+	/** `- msg a > b` lines. */
+	removedMessageFlows: { from: string; to: string; line: number }[]
 	/** Lines, or parts of lines, that were left out. */
 	problems: ProcessTextProblem[]
 }
@@ -134,6 +153,44 @@ const ID_LIST = /^[A-Za-z_][\w.-]*(\s*,\s*[A-Za-z_][\w.-]*)*$/
 
 /** A line that ends in an arrow: the path goes on below, as in the line format. */
 const DANGLING = /\s*-{0,2}>\s*(\([^()]*\))?\s*$/
+
+const ID = /^[A-Za-z_][\w.-]*$/
+
+/**
+ * Reads a `lane`, `pool` or `msg` line into `delta`. Returns whether the line was
+ * one, so the caller does not read it as a path.
+ */
+function readSwimlaneLine(line: string, n: number, delta: ProcessDelta): boolean {
+	const lane = LANE_LINE.exec(line)
+	if (lane) {
+		const id = lane[1] as string
+		const name = lane[2]?.trim()
+		const nodes: string[] = []
+		for (const word of (lane[3] ?? "").split(/[\s,]+/).filter(Boolean)) {
+			if (ID.test(word)) nodes.push(word)
+			else delta.problems.push({ line: n, message: `lane ${id}: "${word}" is not an id; left out` })
+		}
+		// A bare, empty lane line changes nothing; it is more likely prose than a lane.
+		if (!name && nodes.length === 0) {
+			delta.problems.push({ line: n, message: `lane ${id}: names nothing to change; ignored` })
+		} else delta.lanes.push({ id, ...(name ? { name } : {}), nodes, line: n })
+		return true
+	}
+	const pool = POOL_LINE.exec(line)
+	if (pool) {
+		const name = pool[2]?.trim()
+		delta.pools.push({ id: pool[1] as string, ...(name ? { name } : {}), line: n })
+		return true
+	}
+	const message = MESSAGE_LINE.exec(line)
+	if (message) {
+		const name = message[2]?.trim()
+		const flow = { from: message[1] as string, to: message[3] as string }
+		delta.messageFlows.push({ ...flow, ...(name ? { name } : {}), line: n })
+		return true
+	}
+	return false
+}
 
 /** Reads one declaration's bracket text. */
 function readSpec(
@@ -206,6 +263,10 @@ export function parseProcessDelta(text: string): ProcessDelta {
 		connectors: [],
 		notes: [],
 		docs: [],
+		lanes: [],
+		pools: [],
+		messageFlows: [],
+		removedMessageFlows: [],
 		problems: [],
 	}
 	const declared = new Map<string, DeltaNode>()
@@ -266,6 +327,18 @@ export function parseProcessDelta(text: string): ProcessDelta {
 	}
 
 	const removal = (rest: string, n: number) => {
+		const message = MESSAGE_LINE.exec(rest)
+		if (message) {
+			delta.removedMessageFlows.push({
+				from: message[1] as string,
+				to: message[3] as string,
+				line: n,
+			})
+			if (message[2] !== undefined) {
+				delta.problems.push({ line: n, message: "a removal names ids only; ignored the label" })
+			}
+			return
+		}
 		if (ID_LIST.test(rest) && !rest.includes(">")) {
 			for (const id of rest.split(/[\s,]+/).filter(Boolean)) {
 				delta.removedNodes.push({ id, line: n })
@@ -338,6 +411,7 @@ export function parseProcessDelta(text: string): ProcessDelta {
 			else delta.docs.push({ id: doc[1] as string, text, line: n })
 			return
 		}
+		if (readSwimlaneLine(line, n, delta)) return
 		// `- x` removes; `-> x` is an arrow a model wrote at the start of a line.
 		const removed = /^-(?![->])\s*(.*)$/.exec(line)
 		if (removed) {

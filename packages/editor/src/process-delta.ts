@@ -36,6 +36,7 @@ import {
 	type ProcessTextQuestion,
 	applyBpmnOperations,
 	conditionOrLabel,
+	primaryProcess,
 	writableCondition,
 	writableLabel,
 	writableName,
@@ -240,6 +241,14 @@ function startingWith(id: string, ids: IdFactory): IdFactory {
 	}
 }
 
+/** `processes` with the one at `from` moved to `to`; unchanged when either is out of range. */
+function moveProcess(processes: BpmnProcess[], from: number, to: number): BpmnProcess[] {
+	if (from === to || from < 0 || to < 0 || from >= processes.length) return processes
+	const rest = processes.filter((_, k) => k !== from)
+	rest.splice(to, 0, processes[from] as BpmnProcess)
+	return rest
+}
+
 function leafLanes(lanes: readonly BpmnLane[] | undefined, out: BpmnLane[] = []): BpmnLane[] {
 	for (const lane of lanes ?? []) {
 		const children = lane.childLaneSet?.lanes ?? []
@@ -313,6 +322,10 @@ export function applyProcessDelta(
 	}
 	// One copy up front, so the direct edits below never reach the caller's model.
 	let defs = structuredClone(definitions)
+	// The modeling helpers edit processes[0]; the script was written against the
+	// primary process (writeProcessText). Put it first while applying, and back after.
+	const primaryIndex = defs.processes.findIndex((p) => p.id === primaryProcess(defs)?.id)
+	defs.processes = moveProcess(defs.processes, primaryIndex, 0)
 	const ids = options.ids ?? genId
 	const taken = idsIn(defs)
 
@@ -732,6 +745,7 @@ export function applyProcessDelta(
 
 	result.problems.sort((a, b) => a.line - b.line)
 	result.changed = [...changed].filter((id) => present.has(id) && !result.created.includes(id))
+	defs.processes = moveProcess(defs.processes, 0, primaryIndex)
 	result.definitions = defs
 	return result
 
