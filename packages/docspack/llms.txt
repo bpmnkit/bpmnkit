@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.2.1. 401 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.2.1. 403 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -380,7 +380,9 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/docspack — Using the index directly](.llms/chunks/packages.docspack.using-the-index-directly.md) — 320 tokens
 - [@bpmnkit/docspack — Trust](.llms/chunks/packages.docspack.trust.md) — 118 tokens
 - [@bpmnkit/editor — Overview](.llms/chunks/packages.editor.overview.md) — 135 tokens
-- [@bpmnkit/editor — Basic Setup](.llms/chunks/packages.editor.basic-setup.md) — 763 tokens
+- [@bpmnkit/editor — Basic Setup](.llms/chunks/packages.editor.basic-setup.md) — 150 tokens
+- [@bpmnkit/editor — Basic Setup — Collaborations](.llms/chunks/packages.editor.basic-setup-collaborations.md) — 961 tokens
+- [@bpmnkit/editor — Basic Setup — Collaborations (2)](.llms/chunks/packages.editor.basic-setup-collaborations-2.md) — 58 tokens
 - [@bpmnkit/editor — With Side Dock](.llms/chunks/packages.editor.with-side-dock.md) — 168 tokens
 - [@bpmnkit/editor — SideDock API](.llms/chunks/packages.editor.sidedock-api.md) — 861 tokens
 - [@bpmnkit/editor — Full Editor with All Plugins](.llms/chunks/packages.editor.full-editor-with-all-plugins.md) — 157 tokens

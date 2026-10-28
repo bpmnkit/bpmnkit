@@ -5647,12 +5647,25 @@
 		{
 			"id": "packages.editor.basic-setup",
 			"file": "chunks/packages.editor.basic-setup.md",
-			"tokens": 763,
+			"tokens": 150,
 			"tags": [
 				"packages",
 				"editor",
 				"basic",
 				"setup"
+			],
+			"entities": []
+		},
+		{
+			"id": "packages.editor.basic-setup-collaborations",
+			"file": "chunks/packages.editor.basic-setup-collaborations.md",
+			"tokens": 961,
+			"tags": [
+				"packages",
+				"editor",
+				"basic",
+				"setup",
+				"collaborations"
 			],
 			"entities": [
 				"primaryProcess",
@@ -5661,6 +5674,19 @@
 				"flowNodeRef",
 				"messageRef"
 			]
+		},
+		{
+			"id": "packages.editor.basic-setup-collaborations-2",
+			"file": "chunks/packages.editor.basic-setup-collaborations-2.md",
+			"tokens": 58,
+			"tags": [
+				"packages",
+				"editor",
+				"basic",
+				"setup",
+				"collaborations"
+			],
+			"entities": []
 		},
 		{
 			"id": "packages.editor.with-side-dock",
