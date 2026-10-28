@@ -1905,12 +1905,11 @@ class DefinitionsFrame extends Frame implements TextOwner {
 			Reflect.deleteProperty(unknownAttributes, pinKey)
 			// The serializer declares the namespace with the pin it writes. Kept, it
 			// would move the declaration, and a replica parsed from this file would
-			// no longer export the bytes the writer does.
-			// ponytail: only <definitions>' own attributes are checked for other uses
-			// of the prefix; bpmnkit writes nothing else in its namespace, so a use on
-			// any other element (third-party files only) is left unbound. Scan the
-			// whole document if bpmnkit ever writes more under it.
-			const used = Object.keys(unknownAttributes).some((key) => key.startsWith(`${prefix}:`))
+			// no longer export the bytes the writer does. Any other use of the prefix
+			// keeps it, or the export would leave that use unbound.
+			const used =
+				this.sink.usesPrefix(prefix) ||
+				Object.keys(unknownAttributes).some((key) => key.startsWith(`${prefix}:`))
 			if (!used) Reflect.deleteProperty(namespaces, prefix)
 		}
 
@@ -1946,6 +1945,14 @@ class BpmnSink implements XmlSink {
 	/** Set when the root element is not <definitions>; reported once scanning is done. */
 	rootName: string | undefined
 	private readonly stack: Frame[] = []
+	/** The prefix <definitions> gives the bpmnkit namespace, until a descendant is seen using it. */
+	private watched: string | undefined
+	private watchedUsed = false
+
+	/** Whether an element below <definitions>, or one of its attributes, is named under `prefix`. */
+	usesPrefix(prefix: string): boolean {
+		return this.watchedUsed && prefix === this.watched
+	}
 
 	start(name: string, local: string, attrs: Attrs): Visit {
 		const top = this.stack[this.stack.length - 1]
@@ -1955,13 +1962,23 @@ class BpmnSink implements XmlSink {
 				this.rootName = name
 				return Visit.Skip
 			}
+			this.watched = Object.keys(attrs)
+				.find((key) => key.startsWith("xmlns:") && attrs[key] === BPMNKIT_NAMESPACE)
+				?.slice(6)
 			next = new DefinitionsFrame(name, attrs, this)
 		} else {
+			if (this.watched !== undefined && !this.watchedUsed) this.watch(name, attrs)
 			next = top.child(local, name, attrs)
 		}
 		if (next === null) return Visit.Skip
 		this.stack.push(next)
 		return next.wantsText ? Visit.All : Visit.ElementsOnly
+	}
+
+	private watch(name: string, attrs: Attrs): void {
+		const qualified = `${this.watched}:`
+		this.watchedUsed =
+			name.startsWith(qualified) || Object.keys(attrs).some((key) => key.startsWith(qualified))
 	}
 
 	text(text: string): void {

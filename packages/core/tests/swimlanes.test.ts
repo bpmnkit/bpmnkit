@@ -484,6 +484,33 @@ describe("primaryProcess", () => {
 			expect(out).toContain('bpmnkit:note="x"')
 		})
 
+		it("keeps the namespace declaration a descendant still uses once the pin is dropped", () => {
+			const base = Bpmn.export(Bpmn.createProcess("p").startEvent("s").endEvent("e").build())
+			const pinned = base.replace(
+				"<bpmn:definitions ",
+				'<bpmn:definitions xmlns:bk="https://bpmnkit.com/schema/bpmn" bk:primaryProcess="p" ',
+			)
+			const uses = [
+				(xml: string) =>
+					xml.replace('<bpmn:process id="p"', '<bpmn:process id="p" bk:custom="kept"'),
+				(xml: string) =>
+					xml.replace(
+						'<bpmn:process id="p" isExecutable="true">',
+						'<bpmn:process id="p" isExecutable="true"><bpmn:extensionElements><bk:note/></bpmn:extensionElements>',
+					),
+			]
+			for (const use of uses) {
+				const input = use(pinned)
+				expect(input).not.toBe(pinned)
+				const out = Bpmn.export(Bpmn.parse(input))
+				expect(out).toContain('xmlns:bk="https://bpmnkit.com/schema/bpmn"')
+				expect(out).not.toContain("bk:primaryProcess")
+				expect(out).toMatch(/bk:custom="kept"|<bk:note\/>/)
+			}
+			// A pin-only declaration still goes, so a replica exports what the writer does.
+			expect(Bpmn.export(Bpmn.parse(pinned))).toBe(base)
+		})
+
 		it("reads the attribute under whatever prefix the file gives the namespace", () => {
 			const xml = Bpmn.export(
 				Bpmn.createProcess("p").startEvent("s").endEvent("e").build(),

@@ -77,6 +77,7 @@ import {
 	poolPrimary,
 	removeBlackBox,
 	removeLaneBand,
+	resizeSwimlane,
 	swimlaneIds,
 	unpooledOther,
 	withPrimaryFirst,
@@ -990,16 +991,29 @@ function applyToPrimaryFirst(
 	/**
 	 * Widens by `dx` the own pool and its lanes whose right edge is at `edge`, so
 	 * a node placed past that edge stays inside; nothing when `dx` is not positive.
+	 * A drawn pool is resized as a resize gesture would, pushing the pools beside
+	 * it right; bands without a pool, or a pool the resize refuses, just widen.
 	 */
 	function widenOwnPool(dx: number, edge: number): void {
 		if (dx <= 0) return
-		const own = new Set([
-			...allLanes(proc().laneSet).map((lane) => lane.id),
-			...defs.collaborations
-				.flatMap((c) => c.participants)
-				.filter((p) => p.processRef === proc().id)
-				.map((p) => p.id),
-		])
+		const pools = defs.collaborations
+			.flatMap((c) => c.participants)
+			.filter((p) => p.processRef === proc().id)
+			.map((p) => p.id)
+		const pool = plane().shapes.find(
+			(s) => pools.includes(s.bpmnElement) && Math.abs(right(s.bounds) - edge) <= 1,
+		)
+		if (pool) {
+			const resized = resizeSwimlane(defs, pool.bpmnElement, {
+				...pool.bounds,
+				width: pool.bounds.width + dx,
+			})
+			if (resized !== defs) {
+				defs = resized
+				return
+			}
+		}
+		const own = new Set([...allLanes(proc().laneSet).map((lane) => lane.id), ...pools])
 		for (const s of plane().shapes) {
 			if (own.has(s.bpmnElement) && Math.abs(right(s.bounds) - edge) <= 1) {
 				s.bounds = { ...s.bounds, width: s.bounds.width + dx }

@@ -878,3 +878,35 @@ describe("unconnected nodes past the first band's room", () => {
 		expectSwimlanesSound(next)
 	})
 })
+
+describe("REV-20261028-014: an unconnected node at the pool's right edge", () => {
+	const ns =
+		'xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"'
+	const shape = (id: string, x: number, y: number, width: number, height: number) =>
+		`<bpmndi:BPMNShape id="${id}_di" bpmnElement="${id}" isHorizontal="true"><dc:Bounds x="${x}" y="${y}" width="${width}" height="${height}"/></bpmndi:BPMNShape>`
+	const shapes = [
+		shape("own", 0, 0, 200, 120),
+		shape("l", 30, 0, 170, 120),
+		shape("a", 65, 20, 100, 80),
+		shape("bank", 230, 0, 200, 120),
+	].join("")
+	const defs = Bpmn.parse(
+		`<definitions ${ns} targetNamespace="t"><collaboration id="co"><participant id="own" processRef="p"/><participant id="bank"/></collaboration><process id="p" isExecutable="true"><laneSet id="ls"><lane id="l"><flowNodeRef>a</flowNodeRef></lane></laneSet><task id="a"/></process><bpmndi:BPMNDiagram id="d"><bpmndi:BPMNPlane id="pl" bpmnElement="co">${shapes}</bpmndi:BPMNPlane></bpmndi:BPMNDiagram></definitions>`,
+	)
+
+	it("pushes the partner beside the pool right instead of growing over it", () => {
+		const result = apply(defs, "loose[user Another]")
+		expect(result.problems).toEqual([])
+		const next = result.definitions
+		const own = boundsOf(next, "own")
+		const bank = boundsOf(next, "bank")
+		const [id] = result.created
+		if (id === undefined) throw new Error("nothing created")
+		const node = boundsOf(next, id)
+		expect(node.x + node.width).toBeLessThanOrEqual(own.x + own.width)
+		expect(bank.x).toBeGreaterThanOrEqual(own.x + own.width)
+		expect(bank.width).toBe(200)
+		expect(boundsOf(next, "l").x + boundsOf(next, "l").width).toBe(own.x + own.width)
+		expectSwimlanesSound(next)
+	})
+})

@@ -637,7 +637,7 @@ function newStructureProblems(before: BpmnDefinitions, after: BpmnDefinitions): 
 	return [...new Set(found)]
 }
 
-/** How many times each id is used by a process, element, flow, lane, artifact (sub-processes included), pool or root element. */
+/** How many times each id is used by a process, element, flow, lane, lane set, artifact (sub-processes included), pool or root element. */
 function idCounts(definitions: BpmnDefinitions): Map<string, number> {
 	const roots = [
 		...definitions.messages,
@@ -660,10 +660,11 @@ function idCounts(definitions: BpmnDefinitions): Map<string, number> {
 			ids.push(item.id)
 		}
 	}
-	// Lane-set ids are left out: buildLaneSet generates them per process, so a
-	// clash there would be this module's own doing, not the caller's input.
+	// Lane-set ids count too: relane keeps a set's old id, which a compact lane may claim.
 	for (const process of definitions.processes) {
 		ids.push(process.id)
+		const sets = [process.laneSet, ...allLanes(process.laneSet).map((lane) => lane.childLaneSet)]
+		for (const set of sets) if (set?.id !== undefined) ids.push(set.id)
 		for (const lane of allLanes(process.laneSet)) ids.push(lane.id)
 	}
 	for (const collaboration of definitions.collaborations) {

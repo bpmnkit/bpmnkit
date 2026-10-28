@@ -594,6 +594,22 @@ describe("REV-20261028-010: reconcileCompact refuses broken pool, message and la
 		expect(() => reconcileCompact(twice, lane)).toThrow(/Duplicate element ID "Message_1"/)
 	})
 
+	it("rejects a lane named like a lane set the document keeps, at any depth", () => {
+		const defs = Bpmn.parse(
+			'<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" targetNamespace="t"><process id="p"><laneSet id="ExistingSet"><lane id="old"><flowNodeRef>a</flowNodeRef><flowNodeRef>b</flowNodeRef><childLaneSet id="ChildSet"><lane id="inner"><flowNodeRef>a</flowNodeRef><flowNodeRef>b</flowNodeRef></lane></childLaneSet></lane></laneSet><startEvent id="a"/><endEvent id="b"/></process></definitions>',
+		)
+		expect(() => reconcileCompact(defs, compactify(defs))).not.toThrow()
+		for (const id of ["ExistingSet", "ChildSet"]) {
+			const compact = compactify(defs)
+			const process = compact.processes[0]
+			if (!process) throw new Error("no process")
+			process.lanes = [{ id: "old", lanes: [{ id, members: ["a", "b"] }] }]
+			expect(() => reconcileCompact(defs, compact)).toThrow(
+				new RegExp(`Duplicate element ID "${id}"`),
+			)
+		}
+	})
+
 	it("still accepts a valid edit, and a no-op on a document that was already broken", () => {
 		const defs = plain()
 		const compact = compactify(defs)
