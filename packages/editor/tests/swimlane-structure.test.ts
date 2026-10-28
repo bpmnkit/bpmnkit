@@ -24,6 +24,8 @@ import {
 	canDivideLanes,
 	newPoolBounds,
 	primaryFirst,
+	resizeSwimlane,
+	swimlaneResizeBounds,
 } from "../src/swimlanes.js"
 import {
 	boundsOf,
@@ -33,6 +35,7 @@ import {
 	expectUnmoved,
 	fixture,
 	flowableFixture,
+	flowableXml,
 	inBand,
 	laneNamed,
 	lanesOf,
@@ -562,6 +565,175 @@ describe("8b.3 add lane", () => {
 			expectTiled(r.defs, "Participant_own")
 		})
 	}
+})
+
+describe("8b.3 divide into lanes", () => {
+	const divide = (refId: string, count: 2 | 3, seed = "divide"): EditorOp => ({
+		kind: "addLane",
+		refId,
+		where: "below",
+		count,
+		seed,
+	})
+	/** {@link flowableFixture} without its lanes: a 640 by 360 own pool, the partner pools below. */
+	const unlanedXml = (order: Parameters<typeof flowableXml>[0] = "first") =>
+		flowableXml(order)
+			.replace(/<laneSet[\s\S]*?<\/laneSet>/, "")
+			.replace(/\s*<bpmndi:BPMNShape id="Lane_[^"]*"[\s\S]*?<\/bpmndi:BPMNShape>/g, "")
+	const unlanedFlowable = (order?: Parameters<typeof flowableXml>[0]) =>
+		Bpmn.parse(unlanedXml(order))
+	/** {@link poolLessFlowable} (no lanes) in its first pool, 143 high. */
+	const pooled = () => applyOp(poolLessFlowable(false), add())
+
+	it("splits a pool tall enough into equal bands: nothing moves, nodes join their centre's band", () => {
+		const defs = unlanedFlowable()
+		const r = run(defs, divide("Participant_own", 3))
+		const [top = "", middle = "", low = "", setId] = r.created
+		expect(r.created).toHaveLength(4)
+		const process = primaryProcess(r.defs)
+		expect(process?.laneSet?.id).toBe(setId)
+		expect(process?.laneSet?.lanes.map((l) => l.id)).toEqual([top, middle, low])
+		expect([top, middle, low].map((id) => boundsOf(r.defs, id).height)).toEqual([120, 120, 120])
+		expectUnmoved(defs, r.defs, [])
+		expect(refsOf(r.defs)).toEqual({
+			[top]: ["Start_1", "Task_review"],
+			[middle]: ["Gateway_ok", "Task_pay"],
+			[low]: ["End_1"],
+		})
+		// Lane DI stays before the nodes, right after the pool.
+		const shapes = r.defs.diagrams[0]?.plane.shapes.map((s) => s.bpmnElement) ?? []
+		expect(shapes.slice(1, 4)).toEqual([top, middle, low])
+		expectTiled(r.defs, "Participant_own")
+		expectSwimlanesSound(r.defs)
+	})
+
+	it("gives the last band the remainder, so the bands tile the pool exactly", () => {
+		const { defs, created } = pooled()
+		const poolId = created[0] ?? ""
+		expect(boundsOf(defs, poolId).height).toBe(143)
+		const r = run(defs, divide(poolId, 2))
+		const [top = "", low = ""] = r.created
+		expect(r.created).toHaveLength(3)
+		expect([top, low].map((id) => boundsOf(r.defs, id).height)).toEqual([71, 72])
+		expectUnmoved(defs, r.defs, [])
+		const process = primaryProcess(r.defs)
+		for (const el of process?.flowElements ?? []) {
+			const owner = lanesOf(r.defs).find((l) => l.flowNodeRefs.includes(el.id))
+			expect(inBand(boundsOf(r.defs, el.id), boundsOf(r.defs, owner?.id ?? "")), el.id).toBe(true)
+		}
+		expectTiled(r.defs, poolId)
+		expectSwimlanesSound(r.defs)
+	})
+
+	it("grows a pool too small for the bands by one band per new lane, as before", () => {
+		const { defs, created } = pooled()
+		const poolId = created[0] ?? ""
+		const r = run(defs, divide(poolId, 3))
+		const [top = "", second = "", third = ""] = r.created
+		expect(r.created).toHaveLength(4)
+		expect(primaryProcess(r.defs)?.laneSet?.lanes.map((l) => l.id)).toEqual([top, second, third])
+		expect([top, second, third].map((id) => boundsOf(r.defs, id).height)).toEqual([
+			143,
+			LANE_BAND_HEIGHT,
+			LANE_BAND_HEIGHT,
+		])
+		expect(boundsOf(r.defs, poolId).height).toBe(143 + 2 * LANE_BAND_HEIGHT)
+		expect(laneNamed(r.defs, top)?.flowNodeRefs).toEqual(
+			primaryProcess(r.defs)?.flowElements.map((el) => el.id),
+		)
+		expectTiled(r.defs, poolId)
+		expectSwimlanesSound(r.defs)
+	})
+
+	it("cuts through a node row without freezing the line: the row stays in one lane", () => {
+		// Every node centred on y = 180, the line a split into two draws.
+		const defs = Bpmn.parse(
+			unlanedXml()
+				.replace('x="160" y="20" width="100"', 'x="160" y="140" width="100"')
+				.replace('x="80" y="42"', 'x="80" y="162"')
+				.replace('x="532" y="282"', 'x="532" y="162"'),
+		)
+		const r = run(defs, divide("Participant_own", 2))
+		const [top = "", low = ""] = r.created
+		expect(boundsOf(r.defs, top)).toMatchObject({ y: 0, height: 180 })
+		expect(refsOf(r.defs)[low]).toEqual([])
+		const band = boundsOf(r.defs, top)
+		// Down keeps the row in its lane; up would take it out, so it is clamped.
+		const down = { ...band, height: 210 }
+		expect(swimlaneResizeBounds(r.defs, top, down)).toEqual(down)
+		expect(swimlaneResizeBounds(r.defs, top, { ...band, height: 150 })).toEqual(band)
+		const moved = resizeSwimlane(r.defs, top, down)
+		for (const id of refsOf(moved)[top] ?? []) {
+			expect(inBand(boundsOf(moved, id), boundsOf(moved, top)), id).toBe(true)
+		}
+		expectSwimlanesSound(moved)
+	})
+
+	it("holds when the process is drawn on the second diagram, order kept", () => {
+		const defs = unlanedFlowable("second-diagram")
+		const r = run(defs, divide("Participant_own", 3))
+		const [top = "", middle = "", low = ""] = r.created
+		expect(refsOf(r.defs)).toEqual({
+			[top]: ["Start_1", "Task_review"],
+			[middle]: ["Gateway_ok", "Task_pay"],
+			[low]: ["End_1"],
+		})
+		expect(documentOrder(r.defs)).toEqual(documentOrder(defs))
+		expectTiled(r.defs, "Participant_own")
+		expectSwimlanesSound(primaryFirst(r.defs))
+	})
+
+	it("puts a boundary event in its host's lane, wherever its own centre lies", () => {
+		const defs = Bpmn.parse(
+			unlanedXml()
+				.replace(
+					'<endEvent id="End_1"',
+					'<boundaryEvent id="B1" attachedToRef="Task_pay"/><endEvent id="End_1"',
+				)
+				.replace(
+					'<bpmndi:BPMNShape id="End_1_di"',
+					'<bpmndi:BPMNShape id="B1_di" bpmnElement="B1"><omgdc:Bounds x="432" y="230" width="36" height="36"/></bpmndi:BPMNShape><bpmndi:BPMNShape id="End_1_di"',
+				),
+		)
+		const r = run(defs, divide("Participant_own", 3))
+		const [, middle = ""] = r.created
+		expect(refsOf(r.defs)[middle]).toEqual(expect.arrayContaining(["Task_pay", "B1"]))
+		expectSwimlanesSound(r.defs)
+	})
+
+	it("fills an empty lane set rather than making one", () => {
+		const defs = Bpmn.parse(
+			unlanedXml().replace(
+				'<startEvent id="Start_1"',
+				'<laneSet id="LS_empty"/><startEvent id="Start_1"',
+			),
+		)
+		const r = run(defs, divide("Participant_own", 2))
+		expect(r.created).toHaveLength(2)
+		expect(primaryProcess(r.defs)?.laneSet?.id).toBe("LS_empty")
+		expectTiled(r.defs, "Participant_own")
+		expectSwimlanesSound(r.defs)
+	})
+
+	it("is refused where Divide is not offered", () => {
+		expectRefused(flowableFixture(), divide("Participant_own", 2))
+		expectRefused(flowableFixture(), divide("Lane_sales", 2))
+		expectRefused(unlanedFlowable(), divide("Participant_bank", 2))
+		expectRefused(Bpmn.parse(verticalPoolXml(false)), divide("P", 2))
+	})
+
+	it("replays to the same document and ids", () => {
+		for (const [defs, poolId] of [
+			[unlanedFlowable(), "Participant_own"],
+			[pooled().defs, pooled().created[0] ?? ""],
+		] as const) {
+			for (const count of [2, 3] as const) {
+				const [a, b] = [applyOp(defs, divide(poolId, count)), applyOp(defs, divide(poolId, count))]
+				expect(b.created).toEqual(a.created)
+				expect(Bpmn.export(b.defs)).toBe(Bpmn.export(a.defs))
+			}
+		}
+	})
 })
 
 describe("8b.6 edits copy only what they change", () => {

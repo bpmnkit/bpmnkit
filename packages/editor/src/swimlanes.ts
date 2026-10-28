@@ -495,11 +495,45 @@ const ALONG: Record<SpaceAxis, Along> = {
 }
 
 /**
+ * Whether a coordinate lies at or past `line` on `side` of it: after it for a
+ * positive `side`. Half a pixel: what is written on the line itself is beyond it.
+ */
+function beyondLine(line: number, side: 1 | -1): (c: number) => boolean {
+	return (c) => (side > 0 ? c >= line - 0.5 : c <= line + 0.5)
+}
+
+/**
+ * The ids of the shapes of `plane` that {@link pushBeyond} moves: those not
+ * in `keep` whose centre along `axis`, or their anchor's (`anchor`), lies
+ * beyond `line` on `side` ({@link beyondLine}).
+ */
+function shapesBeyond(
+	plane: BpmnDiPlane,
+	axis: SpaceAxis,
+	line: number,
+	side: 1 | -1,
+	keep: ReadonlySet<string>,
+	anchor: ReadonlyMap<string, string>,
+): Set<string> {
+	const a = ALONG[axis]
+	const beyond = beyondLine(line, side)
+	const middle = (b: BpmnBounds) => a.start(b) + a.size(b) / 2
+	const before = new Map(plane.shapes.map((s) => [s.bpmnElement, s.bounds]))
+	const goes = (s: BpmnDiShape) => {
+		const host = before.get(anchor.get(s.bpmnElement) ?? "")
+		return beyond(middle(host ?? s.bounds))
+	}
+	return new Set(
+		plane.shapes.filter((s) => !keep.has(s.bpmnElement) && goes(s)).map((s) => s.bpmnElement),
+	)
+}
+
+/**
  * Moves every shape whose centre lies beyond `line` by `delta` along `axis`,
  * in place, with its label, and every waypoint and edge label of `plane`
  * beyond it, except the shapes and edges of the elements in `keep`. Beyond
- * means at or past the line in the direction of `delta`: below it for a
- * positive `v`, left of it for a negative `h`. An edge's first and last
+ * means at or past the line on `side`, by default the direction of `delta`:
+ * below it for a positive `v`, left of it for a negative `h`. An edge's first and last
  * waypoint go with the drawn shape they are docked on (`ends`), so an end on
  * the line stays on a shape that stays; on a shape in `keep`, which grows from
  * its edge on this side of the line instead, they go by the line unless they
@@ -508,8 +542,10 @@ const ALONG: Record<SpaceAxis, Along> = {
  * boundary events, a sub-process's content) goes whole with its anchor, by
  * the anchor's centre before the move. What a pool that grows downwards does
  * to the pools and messages below it, what a lane band inserted at `line`
- * does to the lanes and nodes below it, and what the space tool does. Returns
- * the ids of the shapes it moved.
+ * does to the lanes and nodes below it, and what the space tool does. `side`
+ * picks the other side of the line for a pull: a positive `side` with a
+ * negative `delta` moves what is below the line up, what a pool that shrinks
+ * from its bottom does. Returns the ids of the shapes it moved.
  */
 function pushBeyond(
 	plane: BpmnDiPlane,
@@ -519,10 +555,10 @@ function pushBeyond(
 	keep: ReadonlySet<string>,
 	anchor: ReadonlyMap<string, string>,
 	ends: ReadonlyMap<string, readonly [string, string]>,
+	side: 1 | -1 = delta > 0 ? 1 : -1,
 ): Set<string> {
 	const a = ALONG[axis]
-	// Half a pixel: a waypoint written on the line itself belongs to what is beyond it.
-	const beyond = (c: number) => (delta > 0 ? c >= line - 0.5 : c <= line + 0.5)
+	const beyond = beyondLine(line, side)
 	const middle = (b: BpmnBounds) => a.start(b) + a.size(b) / 2
 	const before = new Map(plane.shapes.map((s) => [s.bpmnElement, s.bounds]))
 	/** Whether the anchor of `id` goes; `undefined` when `id` has no drawn anchor. */
@@ -530,12 +566,10 @@ function pushBeyond(
 		const b = before.get(anchor.get(id) ?? "")
 		return b && beyond(middle(b))
 	}
-	const moved = new Set<string>()
+	const moved = shapesBeyond(plane, axis, line, side, keep, anchor)
 	// ponytail: a straddling node's inner bends stay on their side of the line, so its flows kink there.
 	for (const s of plane.shapes) {
-		if (keep.has(s.bpmnElement)) continue
-		if (!(anchorGoes(s.bpmnElement) ?? beyond(middle(s.bounds)))) continue
-		moved.add(s.bpmnElement)
+		if (!moved.has(s.bpmnElement)) continue
 		s.bounds = a.shift(s.bounds, delta)
 		if (s.label?.bounds) s.label.bounds = a.shift(s.label.bounds, delta)
 	}
@@ -544,7 +578,7 @@ function pushBeyond(
 		const b = before.get(id ?? "")
 		if (!b || id === undefined) return undefined
 		// The edge a shape in `keep` grows from stays: its top for a downward push.
-		const fixed = delta > 0 ? a.start(b) : a.start(b) + a.size(b)
+		const fixed = side > 0 ? a.start(b) : a.start(b) + a.size(b)
 		return keep.has(id) ? beyond(c) && !sameEdge(c, fixed) : moved.has(id)
 	}
 	for (const edge of plane.edges) {
@@ -903,16 +937,22 @@ export function reassignLanes(
  *
  * Refused: a flow element of the {@link primaryProcess} whose centre lands in another
  * process's pool (a black box or not: it would be saved in one process and
- * drawn in another), or, when the primary has a pool, outside it. Boundary
+ * drawn in another), or, when the primary has a pool, outside it. Lane bands
+ * drawn without a pool ({@link bareBands}) frame the process as its pool would,
+ * and grow as it would, but only for what lanes hold: data elements and a node
+ * no lane lists (auto-layout draws both below the bands) move freely outside
+ * them and are never taken in by `outward`. Boundary
  * events are not checked, their host is. With `outward`, a node placed right of
  * the own pool or below it (not off a corner) is taken in rather than refused: a
- * quick-add chain walks off the pool's right edge. Otherwise the own pool and the lanes
- * along its right and bottom edges grow to contain a node that crosses those
- * edges, what lies below moves down by as much, and the lane refs follow the
- * drawing ({@link reassignLanes}); what the op itself moved stays where it put
- * it. Also refused: a pool among `ids` (the own pool or a black box) that
- * ends up over a pool the op left in place, which would draw one process over
- * the other's nodes. `defs` itself when nothing changes.
+ * quick-add chain walks off the pool's right edge. Otherwise the own pool and its
+ * lanes grow to contain a node that crosses one of its edges ({@link growPool}):
+ * what lies below moves down and the pools beside it right by as much, and the
+ * lane refs follow the drawing ({@link reassignLanes}); what the op itself moved
+ * stays where it put it. Also refused: a pool among `ids` (the own pool or a
+ * black box) that ends up over a pool the op left in place, which would draw one
+ * process over the other's nodes, and growth of the own pool or the bare bands
+ * up or left onto another pool (a resize stops there instead; here stopping
+ * would leave the node outside the pool). `defs` itself when nothing changes.
  */
 export function settlePlaced(
 	defs: BpmnDefinitions,
@@ -929,104 +969,307 @@ export function settlePlaced(
 			return bounds ? [{ id: p.id, own: p.processRef === primary.id, bounds }] : []
 		})
 	const own = pools.find((pool) => pool.own)
+	const frame = own?.bounds ?? bareBands(defs, primary)?.bounds
 	// Annotations are left out: a note beside the pool says nothing about the process.
 	const types = new Map(primary.flowElements.map((el) => [el.id, el.type]))
 	const inside: BpmnBounds[] = []
 	for (const id of ids) {
 		const type = types.get(id)
 		const bounds = type === undefined ? undefined : drawn(defs, id)?.shape.bounds
-		if (!bounds) continue
+		if (!type || !bounds) continue
 		const centre = centreOf(bounds)
+		// Bare bands frame only what lanes hold: auto-layout draws data and laneless nodes below them.
+		const loose = !own && (DATA_TYPES.has(type) || (!created && !laneOf(primary, id)))
 		const ownsIt =
-			own !== undefined &&
-			(contains(own.bounds, centre) || (outward && besideOrBelow(own.bounds, centre)))
+			frame !== undefined &&
+			(contains(frame, centre) || (outward && !loose && besideOrBelow(frame, centre)))
 		if (type !== "boundaryEvent") {
 			if (pools.some((pool) => !pool.own && contains(pool.bounds, centre))) return undefined
-			if (own && !ownsIt) return undefined
+			if (frame && !ownsIt && !loose) return undefined
 		}
 		if (ownsIt) inside.push(bounds)
 	}
 	const frozen = unmovableIds(defs)
 	const placed = ids.filter((id) => !frozen.has(id))
-	const grown = own && inside.length > 0 ? growPool(defs, own.id, primary.id, inside, placed) : defs
+	const grown =
+		frame && inside.length > 0 ? growPool(defs, own?.id, primary.id, inside, placed) : defs
 	// A pool moved onto another would draw one process over the other's nodes.
 	const after = pools.map((pool) => drawn(grown, pool.id)?.shape.bounds ?? pool.bounds)
 	for (const [k, pool] of pools.entries()) {
 		const bounds = after[k]
-		if (!bounds || !placed.includes(pool.id)) continue
+		if (!bounds || !(placed.includes(pool.id) || pool.own)) continue
 		const onto = pools.some(
 			(other, j) =>
-				j !== k && !placed.includes(other.id) && overlaps(bounds, after[j] ?? other.bounds),
+				j !== k &&
+				!placed.includes(other.id) &&
+				overlaps(bounds, after[j] ?? other.bounds) &&
+				// The own pool, when the op did not move it, only for what its growth runs into: a
+				// file may draw pools overlapping already.
+				(placed.includes(pool.id) || !overlaps(pool.bounds, other.bounds)),
 		)
 		if (onto) return undefined
 	}
+	// Bare bands may not grow onto a pool either; one a file already draws over them is let be.
+	const bands = own ? undefined : bareBands(grown, primary)?.bounds
+	const hit = (pool: { bounds: BpmnBounds }, k: number) =>
+		!!bands && overlaps(bands, after[k] ?? pool.bounds) && !!frame && !overlaps(frame, pool.bounds)
+	if (pools.some(hit)) return undefined
 	return reassignLanes(grown, primary.id, ids, created)
 }
 
 /**
- * Returns a copy of `defs` in which pool `poolId` of process `processId`, and
- * its lanes on the pool's right or bottom edge, reach {@link poolAround}
- * `content` where `content` crosses that edge. Shapes and waypoints below the
- * pool that are neither the process's own nor among `placed` (what the op
- * moved, already where it wants it) move down by as much, so the pools below
- * keep their distance and their messages. Only the diagrams that draw the pool
- * and its lanes are copied. `defs` itself when nothing crosses.
+ * Returns a copy of `defs` in which pool `poolId` of process `processId` and
+ * its lanes reach {@link poolAround} `content` where `content` crosses an edge:
+ * the pool's right or bottom edge, its top, or the left edge of its innermost
+ * lane (a node over a name strip). Growing right or down takes the lanes on
+ * that edge along, up the lanes on the top edge, left every lane, each keeping
+ * its inset. Shapes and waypoints below the pool that are neither the
+ * process's own nor among `placed` (what the op moved, already where it wants
+ * it) move down by as much, so the pools below keep their distance and their
+ * messages, and the pools beside it move right by what it grows into them
+ * ({@link pushRight}). Growing up or left moves nothing else but the
+ * messages docked on the pool, routed again. Only right and down for a pool
+ * {@link bandStack} leaves out (a vertical one: its header is on top and its
+ * lanes are columns). With no `poolId`, the process's {@link bareBands} grow
+ * the same way, framed by their outer edges. Only the diagrams that draw the
+ * pool and its lanes are copied. `defs` itself when nothing crosses.
  */
 function growPool(
 	defs: BpmnDefinitions,
-	poolId: string,
+	poolId: string | undefined,
 	processId: string,
 	content: readonly BpmnBounds[],
 	placed: readonly string[],
 ): BpmnDefinitions {
-	const old = drawn(defs, poolId)?.shape.bounds
-	if (!old) return defs
+	const process = defs.processes.find((p) => p.id === processId)
+	const before = process && frameOf(defs, poolId, process)
+	if (!process || !before) return defs
+	const old = before.bounds
+	const lanes = allLanes(process.laneSet)
+	// The deepest inset, as a resize keeps nodes clear of it: no node is left on a name strip.
+	const inset = Math.max(
+		POOL_HEADER,
+		...lanes.map((lane) => (drawn(defs, lane.id)?.shape.bounds.x ?? old.x) - old.x),
+	)
 	const reach = poolAround(content)
+	const [minX, minY] = [Math.min(...content.map((b) => b.x)), Math.min(...content.map((b) => b.y))]
 	const widen = Math.max(...content.map(right)) > right(old) ? right(reach) - right(old) : 0
 	const deepen = Math.max(...content.map(bottom)) > bottom(old) ? bottom(reach) - bottom(old) : 0
-	if (widen <= 0 && deepen <= 0) return defs
+	const lift = before.sideways && minY < old.y ? old.y - reach.y : 0
+	const extend = before.sideways && minX < old.x + inset ? old.x + inset + POOL_PADDING - minX : 0
+	if (widen <= 0 && deepen <= 0 && lift <= 0 && extend <= 0) return defs
 
-	const process = defs.processes.find((p) => p.id === processId)
-	if (!process) return defs
-	const lanes = allLanes(process.laneSet)
-	const bands = new Set([poolId, ...lanes.map((lane) => lane.id)])
+	const bands = new Set([...(poolId ? [poolId] : []), ...lanes.map((lane) => lane.id)])
 	// DI only: the process and the collaborations are read, never changed.
 	const next = copyTouched(defs, { diagrams: diagramsDrawing(defs, bands) })
-	const found = drawn(next, poolId)
+	const found = frameOf(next, poolId, process)
 	if (!found) return defs
+	const [dx, dy] = [Math.max(extend, 0), Math.max(lift, 0)]
 	for (const lane of lanes) {
 		const shape = drawn(next, lane.id)?.shape
 		if (!shape) continue
 		const b = shape.bounds
+		const up = found.tops.has(lane.id) ? dy : 0
 		shape.bounds = {
-			...b,
-			width: b.width + (widen > 0 && sameEdge(right(b), right(old)) ? widen : 0),
-			height: b.height + (deepen > 0 && sameEdge(bottom(b), bottom(old)) ? deepen : 0),
+			x: b.x - dx,
+			y: b.y - up,
+			width: b.width + dx + (widen > 0 && sameEdge(right(b), right(old)) ? widen : 0),
+			height: b.height + up + (deepen > 0 && sameEdge(bottom(b), bottom(old)) ? deepen : 0),
 		}
 	}
-	if (deepen > 0) {
-		const keep = poolContent(process, poolId, lanes)
-		for (const id of placed) keep.add(id)
-		pushBelow(defs, next, found.plane, bottom(old), deepen, keep)
+	const keep = poolContent(process, poolId, lanes)
+	for (const id of placed) keep.add(id)
+	if (deepen > 0) pushBelow(defs, next, found.plane, bottom(old), deepen, keep)
+	const grown = {
+		x: old.x - dx,
+		y: old.y - dy,
+		width: old.width + dx + Math.max(widen, 0),
+		height: old.height + dy + Math.max(deepen, 0),
 	}
-	found.shape.bounds = {
-		...old,
-		width: old.width + Math.max(widen, 0),
-		height: old.height + Math.max(deepen, 0),
-	}
+	if (found.pool) found.pool.bounds = grown
+	pushRight(defs, next, found.plane, old, grown, keep)
+	if (poolId && (dx > 0 || dy > 0)) redockMessages(next, found.plane, poolId)
 	return next
 }
 
+/** What {@link growPool} grows: a pool, or lane bands drawn without one. */
+interface GrowFrame {
+	plane: BpmnDiPlane
+	/** The outer bounds: the pool's, or those of the bands together. */
+	bounds: BpmnBounds
+	/** The pool's shape; none for bands without a pool. */
+	pool?: BpmnDiShape
+	/** Whether it may grow up and left too: drawn horizontally, its header on the left. */
+	sideways: boolean
+	/** The lanes whose top is the frame's top. */
+	tops: ReadonlySet<string>
+}
+
+/** The {@link GrowFrame} of pool `poolId`, or of `process`'s {@link bareBands} with no `poolId`. */
+function frameOf(
+	defs: BpmnDefinitions,
+	poolId: string | undefined,
+	process: BpmnProcess,
+): GrowFrame | undefined {
+	if (poolId === undefined) {
+		const bare = bareBands(defs, process)
+		if (!bare) return undefined
+		const tops = new Set<string>()
+		// The first band at each depth; the depth bound stops a lane tree that loops.
+		let level = process.laneSet?.lanes ?? []
+		for (let depth = 0; depth < MAX_DEPTH; depth++) {
+			const first = topToBottom(defs, level)[0]
+			if (!first) break
+			tops.add(first.id)
+			level = first.childLaneSet?.lanes ?? []
+		}
+		return { ...bare, sideways: true, tops }
+	}
+	const found = drawn(defs, poolId)
+	if (!found) return undefined
+	const stack = bandStack(defs, poolId)
+	// By the lane tree, as a resize does: a file may draw its top lane a pixel off the pool's top.
+	const tops = new Set(stack ? lineOf(defs, stack, poolId, "top").map(([band]) => band) : [])
+	return {
+		plane: found.plane,
+		bounds: found.shape.bounds,
+		pool: found.shape,
+		sideways: !!stack,
+		tops,
+	}
+}
+
 /**
- * The ids that stay put when pool `poolId` grows down: the pool, its `lanes`,
- * and what `process` (its process, if any) draws inside it.
+ * The plane that draws the lanes of `process` and their outer bounds, when no
+ * pool draws the process (core's auto-layout draws such lane bands) and every
+ * lane is a horizontal band on that plane; else `undefined`.
+ */
+function bareBands(
+	defs: BpmnDefinitions,
+	process: BpmnProcess,
+): { plane: BpmnDiPlane; bounds: BpmnBounds } | undefined {
+	const lanes = allLanes(process.laneSet)
+	const plane = lanes[0] && drawn(defs, lanes[0].id)?.plane
+	if (!plane || poolOf(defs, process)) return undefined
+	const shapes = lanes.map((lane) => plane.shapes.find((s) => s.bpmnElement === lane.id))
+	const bands = shapes.flatMap((s) => (s && s.isHorizontal !== false ? [s.bounds] : []))
+	if (bands.length < lanes.length) return undefined
+	const [x, y] = [Math.min(...bands.map((b) => b.x)), Math.min(...bands.map((b) => b.y))]
+	const width = Math.max(...bands.map(right)) - x
+	return { plane, bounds: { x, y, width, height: Math.max(...bands.map(bottom)) - y } }
+}
+
+/** Routes the message flows docked on pool `poolId` afresh on `plane` of `next`: an edge of the pool moved. */
+function redockMessages(next: BpmnDefinitions, plane: BpmnDiPlane, poolId: string): void {
+	const pools = new Set(next.collaborations.flatMap((c) => c.participants.map((p) => p.id)))
+	const docked = next.collaborations
+		.flatMap((c) => c.messageFlows)
+		.filter((f) => f.sourceRef === poolId || f.targetRef === poolId)
+	plane.edges = plane.edges.map((edge) => {
+		const flow = docked.find((f) => f.id === edge.bpmnElement)
+		return flow ? rerouteMessage(edge, flow, plane.shapes, pools) : edge
+	})
+}
+
+/**
+ * Moves the pools of `plane` (in `next`, a copy of `defs`) that stand right of
+ * `old`, a pool's bounds before it widened to `grown`, and share rows with
+ * `grown`, right by as much as `grown` runs into the nearest of them, and with
+ * them the pools that stand right of a moved one in its rows, so none lands on
+ * another: each with what its process draws inside it and the collaboration
+ * notes whose centre lies in it, all by the same distance, so they keep their
+ * spacing. Pools in `keep` stay. Edges with both ends moved (sequence flows,
+ * associations, data associations, messages) are translated, the message flows
+ * with one end moved routed again. Nothing when `grown` runs into none of them.
+ */
+function pushRight(
+	defs: BpmnDefinitions,
+	next: BpmnDefinitions,
+	plane: BpmnDiPlane,
+	old: BpmnBounds,
+	grown: BpmnBounds,
+	keep: ReadonlySet<string>,
+): void {
+	const shapeOf = new Map(plane.shapes.map((s) => [s.bpmnElement, s.bounds]))
+	const pools = next.collaborations.flatMap((c) => c.participants)
+	const pushed = poolsPushed(pools, shapeOf, old, grown, keep)
+	const dx = right(grown) - (pushed[0]?.bounds.x ?? Number.POSITIVE_INFINITY)
+	if (!(dx > 0)) return
+	const notes = next.collaborations.flatMap((c) => c.textAnnotations)
+	const moved = new Set<string>()
+	for (const { pool, bounds } of pushed) {
+		const process = defs.processes.find((p) => p.id === pool.processRef)
+		for (const id of poolContent(process, pool.id, allLanes(process?.laneSet))) moved.add(id)
+		for (const note of notes) {
+			const b = shapeOf.get(note.id)
+			if (b && !keep.has(note.id) && contains(bounds, centreOf(b))) moved.add(note.id)
+		}
+	}
+	const h = ALONG.h
+	for (const s of plane.shapes) {
+		if (!moved.has(s.bpmnElement)) continue
+		s.bounds = h.shift(s.bounds, dx)
+		if (s.label?.bounds) s.label.bounds = h.shift(s.label.bounds, dx)
+	}
+	const flows = new Map(next.collaborations.flatMap((c) => c.messageFlows).map((f) => [f.id, f]))
+	const ends = edgeEnds(defs)
+	const ids = new Set(pools.map((p) => p.id))
+	plane.edges = plane.edges.map((edge) => {
+		const [source = "", target = ""] = ends.get(edge.bpmnElement) ?? []
+		if (moved.has(edge.bpmnElement) || (moved.has(source) && moved.has(target))) {
+			const label = edge.label?.bounds
+			const waypoints = edge.waypoints.map((p) => h.shiftPoint(p, dx))
+			if (!edge.label || !label) return { ...edge, waypoints }
+			return { ...edge, waypoints, label: { ...edge.label, bounds: h.shift(label, dx) } }
+		}
+		const flow = flows.get(edge.bpmnElement)
+		const loose = flow && (moved.has(flow.sourceRef) || moved.has(flow.targetRef))
+		return loose ? rerouteMessage(edge, flow, plane.shapes, ids) : edge
+	})
+}
+
+/**
+ * The pools {@link pushRight} moves, with their bounds before the push: the
+ * nearest of those in `grown`'s rows first, then the rest of them, then, a
+ * moved pool at a time, every pool right of it in its rows. Only pools right
+ * of `old` and not in `keep`.
+ */
+function poolsPushed(
+	pools: readonly BpmnParticipant[],
+	shapeOf: ReadonlyMap<string, BpmnBounds>,
+	old: BpmnBounds,
+	grown: BpmnBounds,
+	keep: ReadonlySet<string>,
+): { pool: BpmnParticipant; bounds: BpmnBounds }[] {
+	const rows = (a: BpmnBounds, b: BpmnBounds) => a.y < bottom(b) && b.y < bottom(a)
+	const rightOf = (a: BpmnBounds, b: BpmnBounds) => a.x >= right(b) - 0.5
+	const candidates = pools.flatMap((pool) => {
+		const bounds = shapeOf.get(pool.id)
+		return bounds && !keep.has(pool.id) && rightOf(bounds, old) ? [{ pool, bounds }] : []
+	})
+	const pushed = candidates
+		.filter((c) => rows(c.bounds, grown))
+		.sort((a, b) => a.bounds.x - b.bounds.x)
+	// A worklist over the candidates: each joins once, so it ends after at most that many rounds.
+	for (let k = 0; k < pushed.length; k++) {
+		const by = pushed[k]?.bounds
+		for (const c of candidates) {
+			if (by && !pushed.includes(c) && rows(c.bounds, by) && rightOf(c.bounds, by)) pushed.push(c)
+		}
+	}
+	return pushed
+}
+
+/**
+ * The ids that stay put when pool `poolId` (none for bare bands) grows down:
+ * the pool, its `lanes`, and what `process` (its process, if any) draws inside it.
  */
 function poolContent(
 	process: BpmnProcess | undefined,
-	poolId: string,
+	poolId: string | undefined,
 	lanes: readonly BpmnLane[],
 ): Set<string> {
-	const keep = new Set([poolId, ...lanes.map((lane) => lane.id)])
+	const keep = new Set([...(poolId ? [poolId] : []), ...lanes.map((lane) => lane.id)])
 	if (!process) return keep
 	collectContent(process.flowElements, process.sequenceFlows, keep, 0)
 	for (const note of process.textAnnotations) keep.add(note.id)
@@ -1036,9 +1279,10 @@ function poolContent(
 
 /**
  * Moves what `plane` of `next` (a copy of `defs`) draws at or below `line`
- * down by `height` ({@link pushBeyond}), except `keep`, the pool that grows down
- * from `line` and its content, and re-routes the message flows that would come
- * off an end in `keep`. Adds the message flows with both ends in `keep` to it.
+ * down by `height` ({@link pushBeyond}), or up for a negative `height`, except
+ * `keep`, the pool that grows or shrinks from `line` and its content, and
+ * re-routes the message flows that would come off an end in `keep`. Adds the
+ * message flows with both ends in `keep` to it.
  */
 function pushBelow(
 	defs: BpmnDefinitions,
@@ -1059,7 +1303,7 @@ function pushBelow(
 		const docked = from ? points?.[0] : points?.at(-1)
 		if (docked && docked.y >= line - 0.5) loose.push(flow)
 	}
-	pushBeyond(plane, "v", line, height, keep, anchors(defs), edgeEnds(defs))
+	pushBeyond(plane, "v", line, height, keep, anchors(defs), edgeEnds(defs), 1)
 	const pools = new Set(next.collaborations.flatMap((c) => c.participants.map((p) => p.id)))
 	plane.edges = plane.edges.map((edge) => {
 		const flow = loose.find((f) => f.id === edge.bpmnElement)
@@ -1141,6 +1385,8 @@ interface BandWork {
 	held: ReadonlyMap<string, readonly BpmnBounds[]>
 	/** The bounds of every other pool on the plane. */
 	others: readonly BpmnBounds[]
+	/** The own pool pushes the pools its right edge reaches; a black box stops at them. */
+	pushes: boolean
 }
 
 /** A band's top or bottom edge, as `[band id, side]`. */
@@ -1196,25 +1442,30 @@ function lineOf(
 /**
  * Moves the pool's left edge to `left` and its right edge to `rightEdge`, as
  * far as the limits let them: its nodes stay clear of the header strips, every
- * band keeps {@link MIN_BAND} right of its own, and it stops at a pool beside
- * it. Every lane keeps its inset and reaches the pool's right edge.
+ * band keeps {@link MIN_BAND} right of its own, and the left edge stops at a
+ * pool beside it. The right edge of the own pool does not: {@link resizeSwimlane}
+ * pushes the pools beside it instead; a black box's stops too, so widening a
+ * partner never shoves the process being edited. Every lane keeps its inset
+ * and reaches the pool's right edge.
  */
 function resizeAcross(work: BandWork, left: number, rightEdge: number): void {
 	const pool = work.before.get(work.poolId)
 	if (!pool) return
 	const nodes = work.held.get(work.poolId) ?? []
 	const inset = Math.max(POOL_HEADER, ...[...work.before.values()].map((b) => b.x - pool.x))
-	// ponytail: walls by the height before the resize, so a corner drag that also grows up can
-	// overlap a pool beside the new top; check the final bounds against every pool if that bites.
+	// The wall by the height before the resize suffices: a pool off a corner the drag grows
+	// past is above (moveLine stops the top under it) or below (pushed down with the bottom).
 	const beside = work.others.filter((o) => o.y < bottom(pool) && pool.y < bottom(o))
 	const leftWall = Math.max(
 		Number.NEGATIVE_INFINITY,
 		...beside.filter((o) => right(o) <= pool.x + 0.5).map(right),
 	)
-	const rightWall = Math.min(
-		Number.POSITIVE_INFINITY,
-		...beside.filter((o) => o.x >= right(pool) - 0.5).map((o) => o.x),
-	)
+	const rightWall = work.pushes
+		? Number.POSITIVE_INFINITY
+		: Math.min(
+				Number.POSITIVE_INFINITY,
+				...beside.filter((o) => o.x >= right(pool) - 0.5).map((o) => o.x),
+			)
 	const leftLimit = Math.min(right(pool) - inset - MIN_BAND, ...nodes.map((n) => n.x - inset))
 	const x = Math.max(Math.min(left, Math.max(pool.x, leftLimit)), Math.min(pool.x, leftWall))
 	const rightLimit = Math.max(x + inset + MIN_BAND, ...nodes.map(right))
@@ -1304,17 +1555,32 @@ function planResize(
 	const old = before.get(id)
 	if (!poolBefore || !old) return undefined
 
-	const nodes = (stack.process?.flowElements ?? []).flatMap((el) => shapeOf.get(el.id) ?? [])
+	const nodes = (stack.process?.flowElements ?? []).flatMap((el) => {
+		const bounds = shapeOf.get(el.id)
+		return bounds ? [{ id: el.id, bounds }] : []
+	})
+	const refs = new Map(stack.lanes.map((lane) => [lane.id, lane.flowNodeRefs]))
+	// A centre on a shared edge lies in both bands (Divide can cut through a node row): only the
+	// band whose lane lists the node holds it, else neither could move the edge off the row.
+	const holds = (band: string, b: BpmnBounds, n: (typeof nodes)[number]) => {
+		const c = centreOf(n.bounds)
+		if (!contains(b, c)) return false
+		return (c.y !== b.y && c.y !== bottom(b)) || (refs.get(band)?.includes(n.id) ?? true)
+	}
 	const work: BandWork = {
 		poolId: pool.id,
 		before,
 		after: new Map(before),
 		held: new Map(
-			[...before].map(([band, b]) => [band, nodes.filter((n) => contains(b, centreOf(n)))]),
+			[...before].map(([band, b]) => [
+				band,
+				nodes.filter((n) => holds(band, b, n)).map((n) => n.bounds),
+			]),
 		),
 		others: defs.collaborations
 			.flatMap((c) => c.participants)
 			.flatMap((p) => (p.id === pool.id ? [] : (shapeOf.get(p.id) ?? []))),
+		pushes: stack.process !== undefined,
 	}
 	resizeAcross(
 		work,
@@ -1349,8 +1615,11 @@ export function swimlaneResizeBounds(
  * gives, and an outer edge grows or shrinks the pool and its outer lanes.
  * Clamped, never refused, so no node changes band (critique I9: no lane ref
  * goes stale) and nothing moves but the bands. A pool growing down pushes
- * what is below it down, as {@link growPool} does; messages docked on the
- * pool are re-docked. Only the diagram that draws the pool is copied. `defs`
+ * what is below it down, one shrinking from its bottom pulls the same up by
+ * as much, as far as the shapes above leave room ({@link roomAbove}), and the
+ * own pool widening pushes the pools beside it right ({@link pushRight}), as
+ * {@link growPool} does, where a black box stops at them; messages docked on the pool
+ * are re-docked. Only the diagram that draws the pool is copied. `defs`
  * itself when `id` may not be resized or nothing changes.
  */
 export function resizeSwimlane(
@@ -1372,25 +1641,50 @@ export function resizeSwimlane(
 	if (!found || !oldPool || !newPool) return defs
 	const { plane } = found
 	const deepen = bottom(newPool) - bottom(oldPool)
-	if (deepen > 0) {
-		const keep = poolContent(stack.process, stack.pool.id, stack.lanes)
-		pushBelow(defs, next, plane, bottom(oldPool), deepen, keep)
-	}
+	const keep = poolContent(stack.process, stack.pool.id, stack.lanes)
+	// A shrink pulls up what a grow by as much would have pushed, as far as the shapes above let it.
+	const shift =
+		deepen < 0 ? -Math.min(-deepen, roomAbove(defs, plane, bottom(oldPool), keep, after)) : deepen
+	if (shift !== 0) pushBelow(defs, next, plane, bottom(oldPool), shift, keep)
 	for (const shape of plane.shapes) {
 		const bounds = after.get(shape.bpmnElement)
 		if (bounds) shape.bounds = bounds
 	}
-	if (!same(newPool, oldPool)) {
-		const pools = new Set(next.collaborations.flatMap((c) => c.participants.map((p) => p.id)))
-		const docked = next.collaborations
-			.flatMap((c) => c.messageFlows)
-			.filter((f) => f.sourceRef === stack.pool.id || f.targetRef === stack.pool.id)
-		plane.edges = plane.edges.map((edge) => {
-			const flow = docked.find((f) => f.id === edge.bpmnElement)
-			return flow ? rerouteMessage(edge, flow, plane.shapes, pools) : edge
-		})
-	}
+	if (stack.process) pushRight(defs, next, plane, oldPool, newPool, keep)
+	if (!same(newPool, oldPool)) redockMessages(next, plane, stack.pool.id)
 	return next
+}
+
+/**
+ * How far up what {@link pushBelow} moves from `line` on `plane` (all but
+ * `keep`) may go before it lands on a shape that stays: the least gap between
+ * one of them and a staying shape above it in its columns. A staying shape is
+ * any other one, `keep` included, so the shrunk pool's annotations that now
+ * hang below it count too; a band in `bands` (the shrunk pool and its lanes)
+ * counts at its new bounds there. 0 when one of them already starts under a
+ * staying shape's bottom.
+ */
+function roomAbove(
+	defs: BpmnDefinitions,
+	plane: BpmnDiPlane,
+	line: number,
+	keep: ReadonlySet<string>,
+	bands: ReadonlyMap<string, BpmnBounds>,
+): number {
+	const moving = shapesBeyond(plane, "v", line, 1, keep, anchors(defs))
+	const stays = plane.shapes
+		.filter((s) => !moving.has(s.bpmnElement))
+		.map((s) => bands.get(s.bpmnElement) ?? s.bounds)
+	let room = Number.POSITIVE_INFINITY
+	// ponytail: every moving shape against every staying one, O(n²); sort by x if large planes lag.
+	for (const s of plane.shapes) {
+		if (!moving.has(s.bpmnElement)) continue
+		const m = s.bounds
+		for (const k of stays) {
+			if (k.y < m.y && k.x < right(m) && m.x < right(k)) room = Math.min(room, m.y - bottom(k))
+		}
+	}
+	return Math.max(0, room)
 }
 
 // ── Making space ──────────────────────────────────────────────────────────────
@@ -1919,6 +2213,93 @@ export function addLaneBeside(
 		defs: { ...next, processes: next.processes.map((p, k) => (k === 0 ? { ...p, laneSet } : p)) },
 		created,
 	}
+}
+
+/**
+ * The `addLane` op with a `count`, "Divide into lanes" (decision U6), on a
+ * document whose primary process is `processes[0]`: the own pool `poolId`,
+ * which has no lanes, becomes `count` top-level lanes. When each band keeps
+ * {@link MIN_BAND}, the pool's height is split as bpmn-js splits it: equal
+ * integer bands, the last taking the remainder so they tile the pool, which
+ * keeps its bounds; nothing moves, and every node joins the lane its centre
+ * lies in ({@link reassignLanes}). On a smaller pool it grows as `count - 1`
+ * adds below would ({@link addLaneBeside}), the first lane over the old pool
+ * holding every node. `created`: the lanes top to bottom, then the new lane
+ * set when made. `undefined`, refused, wherever {@link canDivideLanes} is false.
+ */
+export function divideLanes(
+	defs: BpmnDefinitions,
+	poolId: string,
+	count: 2 | 3,
+	ids: IdFactory,
+): Made | undefined {
+	const pool = drawn(defs, poolId)?.shape.bounds
+	if (!pool || !canDivideLanes(defs, poolId)) return undefined
+	if (pool.height < count * MIN_BAND) return divideByGrowing(defs, poolId, count, ids)
+	const lanes = Array.from({ length: count }, () => ({ lane: ids("Lane"), shape: ids("Lane_di") }))
+	const [first, ...rest] = lanes
+	if (!first) return undefined
+	const sets: string[] = []
+	const blank = (id: string): BpmnLane => ({ id, flowNodeRefs: [], unknownAttributes: {} })
+	const next = addFirstLane(defs, poolId, blank(first.lane), first.shape, () => {
+		const setId = ids("LaneSet")
+		sets.push(setId)
+		return setId
+	})
+	const holder = next.processes[0]
+	const top = drawn(next, first.lane)
+	if (!holder?.laneSet || !top) return undefined
+	next.processes[0] = {
+		...holder,
+		laneSet: {
+			...holder.laneSet,
+			lanes: [...holder.laneSet.lanes, ...rest.map((l) => blank(l.lane))],
+		},
+	}
+	const band = Math.floor(pool.height / count)
+	top.shape.bounds = { ...top.shape.bounds, height: band }
+	const at = top.plane.shapes.indexOf(top.shape)
+	for (const [k, { lane, shape }] of rest.entries()) {
+		const y = pool.y + (k + 1) * band
+		const height = k === rest.length - 1 ? bottom(pool) - y : band
+		top.plane.shapes.splice(at + k + 1, 0, {
+			id: shape,
+			bpmnElement: lane,
+			isHorizontal: true,
+			bounds: { ...top.shape.bounds, y, height },
+			unknownAttributes: {},
+		})
+	}
+	const nodes = holder.flowElements.map((el) => el.id)
+	return {
+		defs: reassignLanes(next, holder.id, nodes),
+		created: [...lanes.map((l) => l.lane), ...sets],
+	}
+}
+
+/**
+ * {@link divideLanes} on a pool too small to split: `count - 1` lanes added
+ * below ({@link addLaneBeside}), each growing the pool by a band.
+ */
+function divideByGrowing(
+	defs: BpmnDefinitions,
+	poolId: string,
+	count: 2 | 3,
+	ids: IdFactory,
+): Made | undefined {
+	const made = addLaneBeside(defs, poolId, "below", ids)
+	const [added, existing, ...sets] = made?.created ?? []
+	if (!made || !added || !existing) return undefined
+	const lanes = [existing, added]
+	let next = made.defs
+	for (let k = 2; k < count; k++) {
+		const more = addLaneBeside(next, lanes.at(-1) ?? "", "below", ids)
+		const [lane] = more?.created ?? []
+		if (!more || !lane) return undefined
+		lanes.push(lane)
+		next = more.defs
+	}
+	return { defs: next, created: [...lanes, ...sets] }
 }
 
 /**

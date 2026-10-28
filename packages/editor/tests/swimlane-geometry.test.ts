@@ -23,10 +23,12 @@ import {
 	expectUnmoved,
 	fixture,
 	flowableFixture,
+	flowableWithBankAt,
 	flowableXml,
 	hasShape,
 	lanesOf,
 	lockedPartnerXml,
+	overlapping,
 	poolLessFlowable,
 	verticalPoolXml,
 } from "./swimlane-helpers.js"
@@ -140,10 +142,12 @@ describe("8c.1 lane resize: outer edges move the pool", () => {
 		])
 	})
 
-	it("shrinks the pool with the last lane, leaving the pools below where they are", () => {
+	it("shrinks the pool with the last lane and pulls the pools below up, messages docked", () => {
 		const next = resize(flowableFixture(), "Lane_ops", { x: 30, y: 240, width: 610, height: 100 })
 		expect(boundsOf(next, "Participant_own").height).toBe(340)
-		expect(boundsOf(next, "Participant_partner").y).toBe(400)
+		expect(boundsOf(next, "Participant_partner").y).toBe(380)
+		expect(boundsOf(next, "Participant_bank").y).toBe(470)
+		expect(waypointsOf(next, "Message_pay")?.at(-1)).toEqual({ x: 450, y: 470 })
 	})
 
 	it("moves the pool's top with the first lane's", () => {
@@ -162,6 +166,154 @@ describe("8c.1 lane resize: outer edges move the pool", () => {
 		for (const lane of ["Lane_sales", "Lane_finance", "Lane_ops"]) {
 			expect(boundsOf(next, lane)).toMatchObject({ x: 30, width: 700 })
 		}
+	})
+})
+
+/** `after` draws every shape and edge of `before` where `before` does, but for float noise. */
+function expectSameDrawing(before: BpmnDefinitions, after: BpmnDefinitions): void {
+	const plane = before.diagrams[0]?.plane
+	for (const s of plane?.shapes ?? []) {
+		const b = boundsOf(after, s.bpmnElement)
+		for (const key of ["x", "y", "width", "height"] as const) {
+			expect(b[key], `${s.bpmnElement}.${key}`).toBeCloseTo(s.bounds[key], 6)
+		}
+	}
+	for (const edge of plane?.edges ?? []) {
+		const points = waypointsOf(after, edge.bpmnElement) ?? []
+		expect(points.length, edge.bpmnElement).toBe(edge.waypoints.length)
+		edge.waypoints.forEach((p, k) => {
+			expect(points[k]?.x, `${edge.bpmnElement}[${k}].x`).toBeCloseTo(p.x, 6)
+			expect(points[k]?.y, `${edge.bpmnElement}[${k}].y`).toBeCloseTo(p.y, 6)
+		})
+	}
+}
+
+/** No shape of `after` overlaps one it did not overlap in `before`: nothing landed on anything. */
+function expectNothingLanded(before: BpmnDefinitions, after: BpmnDefinitions): void {
+	const shapes = after.diagrams[0]?.plane.shapes ?? []
+	for (const a of shapes) {
+		for (const b of shapes) {
+			if (a.bpmnElement >= b.bpmnElement || !overlapping(a.bounds, b.bounds)) continue
+			const was = overlapping(boundsOf(before, a.bpmnElement), boundsOf(before, b.bpmnElement))
+			expect(was, `${a.bpmnElement} landed on ${b.bpmnElement}`).toBe(true)
+		}
+	}
+}
+
+/**
+ * {@link flowableXml} with `End_1` raised to y 250, so Operations can shrink to
+ * 60, and the own process's annotation `Note_own` in Operations below it, at
+ * y 320..355: below the pool's bottom once Operations shrinks.
+ */
+function flowableWithLowNote(): BpmnDefinitions {
+	return Bpmn.parse(
+		flowableXml()
+			.replace('x="532" y="282"', 'x="532" y="250"')
+			.replace(
+				'<sequenceFlow id="Flow_4" sourceRef="Task_pay" targetRef="End_1"/>',
+				'<sequenceFlow id="Flow_4" sourceRef="Task_pay" targetRef="End_1"/><textAnnotation id="Note_own"><text>Note</text></textAnnotation>',
+			)
+			.replace(
+				'<bpmndi:BPMNEdge id="Message_pay_di"',
+				'<bpmndi:BPMNShape id="Note_own_di" bpmnElement="Note_own"><omgdc:Bounds x="100" y="320" width="100" height="35"/></bpmndi:BPMNShape><bpmndi:BPMNEdge id="Message_pay_di"',
+			),
+	)
+}
+
+/** No two pools of `defs` overlap. */
+function expectPoolsApart(defs: BpmnDefinitions): void {
+	const pools = defs.collaborations.flatMap((c) => c.participants).map((p) => p.id)
+	for (const a of pools) {
+		for (const b of pools) {
+			if (a < b) expect(overlapping(boundsOf(defs, a), boundsOf(defs, b)), `${a} ${b}`).toBe(false)
+		}
+	}
+}
+
+describe("8c.1 shrinking a band pulls up what is below", () => {
+	/** Resizes `id` to `bounds`, checking the preview shows what the op does. */
+	const previewed = (defs: BpmnDefinitions, id: string, bounds: BpmnBounds) => {
+		const next = resize(defs, id, bounds)
+		expect(swimlaneResizeBounds(defs, id, bounds)).toEqual(boundsOf(next, id))
+		expectPoolsApart(next)
+		expectNothingLanded(defs, next)
+		return next
+	}
+
+	it("returns the own pool's grow-and-shrink to the original drawing", () => {
+		const defs = flowableFixture()
+		const grown = previewed(defs, "Participant_own", { x: 0, y: 0, width: 640, height: 437.5 })
+		expect(boundsOf(grown, "Participant_bank").y).toBe(567.5)
+		const back = previewed(grown, "Participant_own", { x: 0, y: 0, width: 640, height: 360 })
+		expectSameDrawing(defs, back)
+	})
+
+	it("returns a last lane's grow-and-shrink to the original drawing, nested lanes too", () => {
+		const flat = flowableFixture()
+		const grown = previewed(flat, "Lane_ops", { x: 30, y: 240, width: 610, height: 180 })
+		expectSameDrawing(
+			flat,
+			previewed(grown, "Lane_ops", { x: 30, y: 240, width: 610, height: 120 }),
+		)
+		const nested = primaryFirst(fixture(FIXTURE_08))
+		const ops = boundsOf(nested, "Lane_ops")
+		const deep = previewed(nested, "Lane_ops", { ...ops, height: ops.height + 55 })
+		expectSameDrawing(nested, previewed(deep, "Lane_ops", ops))
+	})
+
+	it("pulls up what is below a black box that shrinks, its message following", () => {
+		const defs = flowableFixture()
+		const tall = previewed(defs, "Participant_partner", { x: 0, y: 400, width: 640, height: 110 })
+		const back = previewed(tall, "Participant_partner", { x: 0, y: 400, width: 640, height: 60 })
+		expect(boundsOf(back, "Participant_bank")).toEqual({ x: 0, y: 490, width: 640, height: 60 })
+		expect(waypointsOf(back, "Message_pay")?.at(-1)).toEqual({ x: 450, y: 490 })
+	})
+
+	it("pulls up no further than the shapes above leave room for", () => {
+		// The bank stands beside the own pool, its bottom at 390 over a partner widened under it.
+		const defs = flowableWithBankAt({ x: 660, y: 300, width: 300, height: 90 })
+		const partner = defs.diagrams[0]?.plane.shapes.find(
+			(s) => s.bpmnElement === "Participant_partner",
+		)
+		if (partner) partner.bounds = { x: 0, y: 420, width: 1000, height: 60 }
+		const next = previewed(defs, "Participant_own", { x: 0, y: 0, width: 640, height: 320 })
+		expect(boundsOf(next, "Participant_own").height).toBe(320)
+		expect(boundsOf(next, "Participant_partner").y).toBe(390)
+		expect(boundsOf(next, "Participant_bank")).toEqual({ x: 660, y: 300, width: 300, height: 90 })
+	})
+
+	it("pulls up no further than an annotation the shrunk pool leaves below it", () => {
+		const next = previewed(flowableWithLowNote(), "Lane_ops", {
+			x: 30,
+			y: 240,
+			width: 610,
+			height: 60,
+		})
+		expect(boundsOf(next, "Participant_own").height).toBe(300)
+		expect(boundsOf(next, "Note_own").y).toBe(320)
+		expect(boundsOf(next, "Participant_partner").y).toBe(355)
+		expect(boundsOf(next, "Participant_bank").y).toBe(445)
+	})
+
+	it("pulls nothing up while a shape below already stands under one that stays", () => {
+		// The partner stands beside the own pool, its start event above the line and its task below.
+		const defs = Bpmn.parse(
+			lockedPartnerXml()
+				.replace(
+					'x="0" y="400" width="640" height="60"',
+					'x="660" y="200" width="400" height="400"',
+				)
+				.replace('x="80" y="412" width="36" height="36"', 'x="680" y="210" width="36" height="36"')
+				.replace(
+					'x="160" y="410" width="100" height="40"',
+					'x="760" y="450" width="100" height="40"',
+				),
+		)
+		const grown = previewed(defs, "Participant_own", { x: 0, y: 0, width: 640, height: 400 })
+		expect(boundsOf(grown, "Participant_bank").y).toBe(530)
+		// ponytail: one clamp for every shape below; the partner pushed under its own start event blocks the whole pull.
+		const back = previewed(grown, "Participant_own", { x: 0, y: 0, width: 640, height: 360 })
+		expect(boundsOf(back, "Participant_bank").y).toBe(530)
 	})
 })
 
@@ -243,6 +395,87 @@ describe("8c.1 pool resize", () => {
 		expect(boundsOf(up, "Participant_bank")).toEqual({ x: 0, y: 460, width: 640, height: 90 })
 		const own = resize(defs, "Participant_partner", { x: 0, y: 300, width: 640, height: 160 })
 		expect(boundsOf(own, "Participant_partner")).toEqual({ x: 0, y: 360, width: 640, height: 100 })
+	})
+
+	it("pushes a pool beside it right when it widens into it, and previews the full width", () => {
+		const defs = flowableWithBankAt({ x: 660, y: 100, width: 300, height: 60 })
+		const wide = { x: 0, y: 0, width: 800, height: 360 }
+		expect(swimlaneResizeBounds(defs, "Participant_own", wide)).toEqual(wide)
+		const next = resize(defs, "Participant_own", wide)
+		expect(boundsOf(next, "Participant_own")).toEqual(wide)
+		expect(boundsOf(next, "Participant_bank")).toEqual({ x: 800, y: 100, width: 300, height: 60 })
+		expect(waypointsOf(next, "Message_pay")?.at(-1)).toEqual({ x: 800, y: 160 })
+	})
+
+	it("stops a black box widening into the own pool, which stays where it is", () => {
+		const defs = flowableWithBankAt({ x: -400, y: 100, width: 300, height: 60 })
+		const own = boundsOf(defs, "Participant_own")
+		const wide = { x: -400, y: 100, width: 600, height: 60 }
+		const stopped = { ...wide, width: own.x + 400 }
+		expect(swimlaneResizeBounds(defs, "Participant_bank", wide)).toEqual(stopped)
+		const next = resize(defs, "Participant_bank", wide)
+		expect(boundsOf(next, "Participant_bank")).toEqual(stopped)
+		expect(boundsOf(next, "Participant_own")).toEqual(own)
+		expect(boundsOf(next, "Task_review")).toEqual(boundsOf(defs, "Task_review"))
+	})
+
+	it("pushes the pools beyond a pool it pushes, so none lands on another", () => {
+		const defs = Bpmn.parse(
+			flowableXml()
+				.replace(
+					'<omgdc:Bounds x="0" y="490" width="640" height="60"/>',
+					'<omgdc:Bounds x="660" y="300" width="300" height="200"/>',
+				)
+				.replace(
+					'<omgdc:Bounds x="0" y="400" width="640" height="60"/>',
+					'<omgdc:Bounds x="965" y="420" width="300" height="60"/>',
+				),
+		)
+		const next = resize(defs, "Participant_own", { x: 0, y: 0, width: 800, height: 360 })
+		expect(boundsOf(next, "Participant_bank").x).toBe(800)
+		expect(boundsOf(next, "Participant_partner").x).toBe(1105)
+		expect(
+			overlapping(boundsOf(next, "Participant_bank"), boundsOf(next, "Participant_partner")),
+		).toBe(false)
+	})
+
+	it("stops a corner drag at every pool around the final rectangle, as its preview shows", () => {
+		const banks: BpmnBounds[] = [
+			{ x: -400, y: -200, width: 380, height: 160 },
+			{ x: 700, y: -200, width: 300, height: 160 },
+			{ x: 700, y: -100, width: 300, height: 150 },
+			{ x: -400, y: -100, width: 380, height: 150 },
+			{ x: -400, y: 380, width: 380, height: 60 },
+		]
+		const drags: BpmnBounds[] = [
+			{ x: -300, y: -150, width: 940, height: 510 },
+			{ x: 0, y: -150, width: 900, height: 510 },
+			{ x: -300, y: 0, width: 940, height: 460 },
+		]
+		for (const bank of banks) {
+			const defs = flowableWithBankAt(bank)
+			for (const drag of drags) {
+				const next = resize(defs, "Participant_own", drag)
+				const own = boundsOf(next, "Participant_own")
+				const label = JSON.stringify({ bank, drag })
+				expect(swimlaneResizeBounds(defs, "Participant_own", drag), label).toEqual(own)
+				for (const other of ["Participant_partner", "Participant_bank"]) {
+					expect(overlapping(own, boundsOf(next, other)), `${other} ${label}`).toBe(false)
+				}
+			}
+		}
+		// Up and left past a pool off the top-left corner: the left edge goes, the top stops under it.
+		const corner = resize(
+			flowableWithBankAt({ x: -400, y: -200, width: 380, height: 160 }),
+			"Participant_own",
+			{ x: -300, y: -150, width: 940, height: 510 },
+		)
+		expect(boundsOf(corner, "Participant_own")).toEqual({
+			x: -300,
+			y: -40,
+			width: 940,
+			height: 400,
+		})
 	})
 
 	it("pushes what is below a black box that grows down", () => {

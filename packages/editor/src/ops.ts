@@ -51,6 +51,7 @@ import {
 	type SpaceAxis,
 	addLaneBeside,
 	addPool,
+	divideLanes,
 	lockedIds,
 	makeSpace,
 	settlePlaced,
@@ -154,9 +155,12 @@ export type EditorOp =
 	 * An unnamed lane band `where` `refId`: the own pool or one of its top-level
 	 * leaf lanes. The first on a pool without lanes makes two. Refused for nested
 	 * lanes and other pools. `created`: the new lane, then the lane over the old
-	 * pool and the lane set when made.
+	 * pool and the lane set when made. With `count` it is "Divide into lanes":
+	 * the own pool without lanes becomes `count` lanes, its height split when
+	 * it is tall enough, `where` ignored; `created`: the lanes top to bottom,
+	 * then the lane set when made.
 	 */
-	| { kind: "addLane"; refId: string; where: "above" | "below"; seed: string }
+	| { kind: "addLane"; refId: string; where: "above" | "below"; count?: 2 | 3; seed: string }
 	/**
 	 * The escape hatch: a whole document, for edits that have no description.
 	 *
@@ -352,7 +356,8 @@ function applyEdit(defs: BpmnDefinitions, op: Exclude<EditorOp, { kind: "snapsho
 			const r = makeSpace(defs, op.axis, op.origin, op.delta)
 			if (!r) return refused(defs)
 			// Only nodes whose drawing already disagreed with their refs change lane; growth is the
-			// point of the op, so a node past the pool's edge (`outward`) is taken in, not refused.
+			// point of the op, so a node past the pool's edge (`outward`) is taken in, not refused;
+			// one that no lane of pool-less bands holds stays out, as auto-layout drew it.
 			return settled(defs, { defs: r.defs, created: [] }, r.moved, false, true)
 		}
 		case "resize":
@@ -403,6 +408,10 @@ function applyEdit(defs: BpmnDefinitions, op: Exclude<EditorOp, { kind: "snapsho
 		case "addParticipant":
 			return addPool(defs, op.bounds, op.name, createIdFactory(op.seed)) ?? refused(defs)
 		case "addLane":
-			return addLaneBeside(defs, op.refId, op.where, createIdFactory(op.seed)) ?? refused(defs)
+			return (
+				(op.count === undefined
+					? addLaneBeside(defs, op.refId, op.where, createIdFactory(op.seed))
+					: divideLanes(defs, op.refId, op.count, createIdFactory(op.seed))) ?? refused(defs)
+			)
 	}
 }

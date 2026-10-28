@@ -200,6 +200,26 @@ export function poolLessFlowable(laned: boolean): BpmnDefinitions {
 }
 
 /**
+ * An executable process `P` with nested lanes and no pool, laid out by
+ * auto-layout: `LA` (0-276, split into `LA1` 0-116 holding `s` and `LA2`
+ * holding `t`, both inset 30) over `LB` (276-392, holding `e`), 536 wide from
+ * x 0. Auto-layout draws below the bands what no lane holds: the task `loose`
+ * (y 432, left out without `loose`) and the data reference `dor` that `t`
+ * writes to (y 592).
+ */
+export function poolLessNested(loose = true): BpmnDefinitions {
+	const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" targetNamespace="t">
+<process id="P" isExecutable="true">
+<laneSet id="LS"><lane id="LA"><childLaneSet id="CS"><lane id="LA1"><flowNodeRef>s</flowNodeRef></lane><lane id="LA2"><flowNodeRef>t</flowNodeRef></lane></childLaneSet></lane><lane id="LB"><flowNodeRef>e</flowNodeRef></lane></laneSet>
+<startEvent id="s"/><task id="t"><dataOutputAssociation id="da"><targetRef>dor</targetRef></dataOutputAssociation></task><endEvent id="e"/>${loose ? '<task id="loose"/>' : ""}
+<dataObjectReference id="dor" dataObjectRef="do"/><dataObject id="do"/>
+<sequenceFlow id="f1" sourceRef="s" targetRef="t"/><sequenceFlow id="f2" sourceRef="t" targetRef="e"/>
+</process></definitions>`
+	return Bpmn.parse(Bpmn.export(applyAutoLayout(Bpmn.parse(xml))))
+}
+
+/**
  * {@link poolLessFlowable} (no lanes) plus a second process, `Other`, with a
  * start event and no pool, laid out by auto-layout: no collaboration yet, so
  * nothing is wrong with it until one exists.
@@ -319,4 +339,24 @@ export function expectFlowableKept(before: BpmnDefinitions, after: BpmnDefinitio
 /** The process ids, and the diagram ids, in document order. */
 export function documentOrder(defs: BpmnDefinitions): { processes: string[]; diagrams: string[] } {
 	return { processes: defs.processes.map((p) => p.id), diagrams: defs.diagrams.map((d) => d.id) }
+}
+
+/**
+ * {@link flowableFixture} with the black box `Participant_bank` drawn at
+ * `bounds` instead of below the partner pool: beside the own pool, above it or
+ * off one of its corners. `Message_pay` keeps its old waypoints.
+ */
+export function flowableWithBankAt(bounds: BpmnBounds): BpmnDefinitions {
+	const { x, y, width, height } = bounds
+	return Bpmn.parse(
+		flowableXml().replace(
+			'<omgdc:Bounds x="0" y="490" width="640" height="60"/>',
+			`<omgdc:Bounds x="${x}" y="${y}" width="${width}" height="${height}"/>`,
+		),
+	)
+}
+
+/** Whether `a` and `b` share more than an edge. */
+export function overlapping(a: BpmnBounds, b: BpmnBounds): boolean {
+	return a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height
 }

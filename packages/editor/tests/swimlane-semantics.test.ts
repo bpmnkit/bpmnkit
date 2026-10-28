@@ -31,6 +31,7 @@ import {
 	expectUnmoved,
 	fixture,
 	flowableFixture,
+	flowableWithBankAt,
 	flowableXml,
 	hasEdge,
 	hasShape,
@@ -38,6 +39,9 @@ import {
 	lockedPartnerXml,
 	messageFlows,
 	participants,
+	poolLessFlowable,
+	poolLessNested,
+	verticalPoolXml,
 } from "./swimlane-helpers.js"
 
 const FIXTURE_08 = "08-flowable-lanes-pools.bpmn"
@@ -94,11 +98,12 @@ describe("8d.1 lane refs follow a moved node", () => {
 		expect(primaryProcess(after)?.laneSet).toBe(primaryProcess(defs)?.laneSet)
 	})
 
-	it("keeps the lane of a node dropped outside every lane", () => {
+	it("keeps the lane of a node dropped over the name strip, the pool growing left past it", () => {
 		const defs = flowableFixture()
-		// Centre x 15: inside the pool, in its header strip, in no lane.
+		// Centre x 15: inside the pool, in its header strip; the lanes grow left under it.
 		const after = run(defs, move("Task_review", -195, 0))
 		expect(boundsOf(after, "Task_review").x).toBe(-35)
+		expect(boundsOf(after, "Participant_own").x).toBe(-95)
 		expect(primaryProcess(after)?.laneSet).toBe(primaryProcess(defs)?.laneSet)
 	})
 
@@ -174,19 +179,20 @@ describe("8d.1 lane refs of new nodes", () => {
 		expectFlowableKept(flowableFixture(), r.defs)
 	})
 
-	it("puts a new node drawn outside every lane in the lane of what it follows", () => {
+	it("puts a new node drawn over the name strip in the lane it lies in once the pool grows left", () => {
 		const defs = flowableFixture()
 		const r = applyOp(defs, {
 			kind: "createConnected",
 			sourceId: "Task_pay",
 			type: "task",
-			// Centre (15, 300): in the pool's header strip.
+			// Centre (15, 300): in the pool's header strip, in no lane until the pool grows past it.
 			bounds: { x: -35, y: 260, width: 100, height: 80 },
 			waypoints: [],
 			seed: "c",
 		})
 		const [id] = r.created
-		expect(leafOf(r.defs, id ?? "")).toBe("Lane_finance")
+		expect(boundsOf(r.defs, "Participant_own").x).toBe(-95)
+		expect(leafOf(r.defs, id ?? "")).toBe("Lane_ops")
 		expectLanesSound(r.defs)
 		expectFlowableKept(defs, r.defs)
 	})
@@ -350,6 +356,315 @@ describe("I4 nodes stay inside the own pool", () => {
 		expectSwimlanesSound(after)
 	})
 })
+
+describe("growth: a node crossing the own pool's top, left or right edge", () => {
+	it("grows the pool and its top lane up for a node that crosses its top edge", () => {
+		const defs = flowableFixture()
+		// Task_review lands at y=-30, its centre inside the pool; the pool reaches 30 above it.
+		const after = run(defs, move("Task_review", 0, -50))
+		expect(boundsOf(after, "Participant_own")).toEqual({ x: 0, y: -60, width: 640, height: 420 })
+		expect(boundsOf(after, "Lane_sales")).toEqual({ x: 30, y: -60, width: 610, height: 180 })
+		expect(leafOf(after, "Task_review")).toBe("Lane_sales")
+		expectUnmoved(defs, after, ["Task_review", "Participant_own", "Lane_sales"])
+		expectSwimlanesSound(after)
+	})
+
+	it("grows the pool and every lane left, keeping each nesting inset, for a node in the name strips", () => {
+		const defs = fixture(FIXTURE_08)
+		// start lands at x=20, over the strips (the deepest lane starts 60 in); it gets 30 past them.
+		const after = run(defs, move("start", -80, 0))
+		expect(boundsOf(after, "Participant_company")).toEqual({
+			x: -70,
+			y: 0,
+			width: 790,
+			height: 360,
+		})
+		for (const [lane, x] of [
+			["Lane_sales", -40],
+			["Lane_inside", -10],
+			["Lane_desk", -10],
+			["Lane_ops", -40],
+		] as const) {
+			expect(boundsOf(after, lane), lane).toMatchObject({ x, width: 720 - x })
+		}
+		expect(leafOf(after, "start")).toBe(leafOf(defs, "start"))
+		expectUnmoved(defs, after, [
+			"start",
+			"Participant_company",
+			"Lane_sales",
+			"Lane_inside",
+			"Lane_desk",
+			"Lane_ops",
+		])
+		expectSwimlanesSound(after)
+	})
+
+	it("refuses a node whose growth up or left would run into another pool", () => {
+		const above = flowableWithBankAt({ x: 0, y: -80, width: 640, height: 60 })
+		expect(run(above, move("Task_review", 0, -50))).toBe(above)
+		const left = flowableWithBankAt({ x: -200, y: 0, width: 180, height: 60 })
+		expect(run(left, move("Start_1", -60, 0))).toBe(left)
+		// Without a pool in the way the same moves grow the pool.
+		expect(boundsOf(run(flowableFixture(), move("Start_1", -60, 0)), "Participant_own").x).toBe(-40)
+	})
+
+	it("pushes a pool beside the own pool right by what the widened pool overlaps", () => {
+		const defs = flowableWithBankAt({ x: 660, y: 100, width: 300, height: 60 })
+		// End_1 crosses the right edge: the pool reaches 678, 18 into the bank.
+		const after = run(defs, move("End_1", 80, 0))
+		expect(boundsOf(after, "Participant_own").width).toBe(678)
+		expect(boundsOf(after, "Participant_bank")).toEqual({ x: 678, y: 100, width: 300, height: 60 })
+		const edge = after.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === "Message_pay")
+		expect(edge?.waypoints.at(-1)).toEqual({ x: 678, y: 160 })
+		expect(boundsOf(after, "Participant_partner")).toEqual(boundsOf(defs, "Participant_partner"))
+		expectSwimlanesSound(after)
+	})
+
+	it("leaves a vertical own pool as it is for a move inside a lane column", () => {
+		const defs = Bpmn.parse(verticalPoolXml(true))
+		const after = run(defs, move("s", 10, 0))
+		expectUnmoved(defs, after, ["s"])
+	})
+
+	it("pushes the pools beyond a pushed pool too, so none lands on another", () => {
+		// The partner shares the bank's rows only: the bank pushed 18 right would reach into it.
+		const defs = Bpmn.parse(
+			flowableXml()
+				.replace(
+					'<omgdc:Bounds x="0" y="490" width="640" height="60"/>',
+					'<omgdc:Bounds x="660" y="300" width="300" height="200"/>',
+				)
+				.replace(
+					'<omgdc:Bounds x="0" y="400" width="640" height="60"/>',
+					'<omgdc:Bounds x="965" y="420" width="300" height="60"/>',
+				),
+		)
+		const after = run(defs, move("End_1", 80, 0))
+		expect(boundsOf(after, "Participant_bank").x).toBe(678)
+		expect(boundsOf(after, "Participant_partner").x).toBe(983)
+		expectSwimlanesSound(after)
+	})
+
+	it("pushes a partner pool's content with it: data associations and the notes in it", () => {
+		const defs = Bpmn.parse(partnerBesideXml())
+		const after = run(defs, move("End_1", 80, 0))
+		expect(boundsOf(after, "Participant_partner").x).toBe(678)
+		for (const id of ["Task_p", "DOR_1", "Note_p"]) {
+			expect(boundsOf(after, id).x, id).toBe(boundsOf(defs, id).x + 18)
+		}
+		const points = (d: BpmnDefinitions, id: string) =>
+			d.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === id)?.waypoints
+		for (const id of ["DA_1", "Assoc_p"]) {
+			expect(points(after, id), id).toEqual(points(defs, id)?.map((p) => ({ ...p, x: p.x + 18 })))
+		}
+		expectSwimlanesSound(after)
+	})
+
+	it("re-docks a message on the own pool's top when the pool grows up", () => {
+		const defs = Bpmn.parse(
+			flowableXml()
+				.replace(
+					'<omgdc:Bounds x="0" y="490" width="640" height="60"/>',
+					'<omgdc:Bounds x="0" y="-200" width="640" height="60"/>',
+				)
+				.replace(
+					"</collaboration>",
+					'<messageFlow id="M2" sourceRef="Participant_bank" targetRef="Participant_own"/></collaboration>',
+				)
+				.replace(
+					'<bpmndi:BPMNEdge id="Message_pay_di"',
+					'<bpmndi:BPMNEdge id="M2_di" bpmnElement="M2"><omgdi:waypoint x="600" y="-140"/><omgdi:waypoint x="600" y="0"/></bpmndi:BPMNEdge><bpmndi:BPMNEdge id="Message_pay_di"',
+				),
+		)
+		const after = run(defs, move("Task_review", 0, -50))
+		expect(boundsOf(after, "Participant_own").y).toBe(-60)
+		const edge = after.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === "M2")
+		expect(edge?.waypoints.at(-1)?.y).toBe(-60)
+		expectSwimlanesSound(after)
+	})
+
+	it("grows a top lane drawn a pixel below the pool's top up with the pool", () => {
+		const defs = Bpmn.parse(
+			flowableXml().replace(
+				'<omgdc:Bounds x="30" y="0" width="610" height="120"/>',
+				'<omgdc:Bounds x="30" y="1" width="610" height="119"/>',
+			),
+		)
+		const after = run(defs, move("Task_review", 0, -50))
+		expect(boundsOf(after, "Participant_own").y).toBe(-60)
+		expect(boundsOf(after, "Lane_sales")).toEqual({ x: 30, y: -59, width: 610, height: 179 })
+		expectSwimlanesSound(after)
+	})
+})
+
+describe("growth: lane bands drawn without a pool frame the process as a pool does", () => {
+	// poolLessFlowable(true): Sales 0-160, Finance 160-320, Operations 320-436, all 825 wide from x 0.
+	const lanes = ["Lane_sales", "Lane_finance", "Lane_ops"]
+
+	it("widens every band for a node that crosses their right edge, the node in its lane", () => {
+		const defs = poolLessFlowable(true)
+		// Task_pay lands at x 767..867, its centre inside; the bands reach 30 past it.
+		const after = run(defs, move("Task_pay", 200, 0))
+		for (const lane of lanes)
+			expect(boundsOf(after, lane), lane).toMatchObject({ x: 0, width: 897 })
+		expect(leafOf(after, "Task_pay")).toBe("Lane_finance")
+		expect(participants(after)).toEqual([])
+		expectUnmoved(defs, after, ["Task_pay", ...lanes])
+		expectSwimlanesSound(after)
+	})
+
+	it("deepens the bottom band for a node that crosses the bottom edge, its ref following", () => {
+		const defs = poolLessFlowable(true)
+		// Task_pay lands at y 380..460, its centre in Operations; the band reaches 30 below it.
+		const after = run(defs, move("Task_pay", 0, 180))
+		expect(boundsOf(after, "Lane_ops")).toEqual({ x: 0, y: 320, width: 825, height: 170 })
+		expect(boundsOf(after, "Lane_finance")).toEqual(boundsOf(defs, "Lane_finance"))
+		expect(leafOf(after, "Task_pay")).toBe("Lane_ops")
+		expectUnmoved(defs, after, ["Task_pay", "Lane_ops"])
+		expectSwimlanesSound(after)
+	})
+
+	it("grows the top band up and every band left, as a pool's", () => {
+		const defs = poolLessFlowable(true)
+		const up = run(defs, move("Task_review", 0, -70))
+		expect(boundsOf(up, "Lane_sales")).toEqual({ x: 0, y: -60, width: 825, height: 220 })
+		expect(leafOf(up, "Task_review")).toBe("Lane_sales")
+		// Start_1 lands at x 11, over the name strip: every band moves 30 past it to the left.
+		const left = run(defs, move("Start_1", -70, 0))
+		for (const lane of lanes)
+			expect(boundsOf(left, lane), lane).toMatchObject({ x: -49, width: 874 })
+		expectSwimlanesSound(up)
+		expectSwimlanesSound(left)
+	})
+
+	it("refuses a node whose centre leaves the bands, and takes in one added beside them", () => {
+		const defs = poolLessFlowable(true)
+		expectRefused(defs, move("Task_pay", 800, 0))
+		const r = applyOp(defs, {
+			kind: "createConnected",
+			sourceId: "End_1",
+			type: "task",
+			bounds: { x: 850, y: 338, width: 100, height: 80 },
+			waypoints: [
+				{ x: 803, y: 378 },
+				{ x: 850, y: 378 },
+			],
+			seed: "q",
+		})
+		const [id = ""] = r.created
+		for (const lane of lanes) expect(boundsOf(r.defs, lane), lane).toMatchObject({ width: 980 })
+		expect(leafOf(r.defs, id)).toBe("Lane_ops")
+		expectSwimlanesSound(r.defs)
+	})
+
+	const nestedLanes = ["LA", "LA1", "LA2", "LB"]
+
+	it("grows the top lane chain up and every nested band left, keeping the inset", () => {
+		const defs = poolLessNested(false)
+		// s lands at y -10, its centre still in LA1; the bands reach 30 above it.
+		const up = run(defs, move("s", 0, -50))
+		expect(boundsOf(up, "LA")).toEqual({ ...boundsOf(defs, "LA"), y: -40, height: 316 })
+		expect(boundsOf(up, "LA1")).toEqual({ ...boundsOf(defs, "LA1"), y: -40, height: 156 })
+		expect(boundsOf(up, "LA2")).toEqual(boundsOf(defs, "LA2"))
+		expect(leafOf(up, "s")).toBe("LA1")
+		// s lands at x 10, over LA1's name strip (x 0-60): every band moves 50 left.
+		const left = run(defs, move("s", -70, 0))
+		for (const [lane, x] of [
+			["LA", -50],
+			["LA1", -20],
+			["LB", -50],
+		] as const)
+			expect(boundsOf(left, lane), lane).toMatchObject({
+				x,
+				width: boundsOf(defs, lane).width + 50,
+			})
+		expectSwimlanesSound(up)
+		expectSwimlanesSound(left)
+	})
+
+	it("lets data and nodes no lane holds move outside the bands, where auto-layout draws them", () => {
+		const defs = poolLessNested()
+		for (const op of [move("dor", 3, 3), move("loose", 5, 5)]) {
+			const after = run(defs, op)
+			expect(after).not.toBe(defs)
+			for (const lane of nestedLanes)
+				expect(boundsOf(after, lane), lane).toEqual(boundsOf(defs, lane))
+			expect(leafOf(after, "loose")).toBeUndefined()
+		}
+		// Moved into a band, a node no lane held joins that band's lane.
+		expect(leafOf(run(defs, move("loose", 0, -100)), "loose")).toBe("LB")
+	})
+
+	it("leaves a laneless node out of the bands when a space drag moves it", () => {
+		const defs = poolLessNested()
+		for (const op of [
+			{ kind: "space", axis: "v", origin: 400, delta: 50 },
+			{ kind: "space", axis: "h", origin: 60, delta: 100 },
+		] satisfies EditorOp[]) {
+			const after = run(defs, op)
+			expect(boundsOf(after, "LB"), op.axis).toMatchObject({ y: 276, height: 116 })
+			expect(leafOf(after, "loose"), op.axis).toBeUndefined()
+		}
+	})
+
+	it("refuses growth up onto a black box drawn above the bands", () => {
+		const xml = Bpmn.export(poolLessNested())
+			.replace(
+				/(<process )/,
+				'<collaboration id="C"><participant id="BB" name="Partner"/></collaboration>$1',
+			)
+			.replace(
+				/(<bpmndi:BPMNShape )/,
+				'<bpmndi:BPMNShape id="BB_di" bpmnElement="BB" isHorizontal="true"><omgdc:Bounds x="0" y="-105" width="536" height="60"/></bpmndi:BPMNShape>$1',
+			)
+		const defs = Bpmn.parse(xml)
+		expect(participants(defs).map((p) => p.id)).toEqual(["BB"])
+		// The black box ends at y -45: growing LA's top to -46 runs onto it, to -40 does not.
+		expectRefused(defs, move("s", 0, -56))
+		expect(boundsOf(run(defs, move("s", 0, -50)), "LA")).toMatchObject({ y: -40 })
+	})
+})
+
+/**
+ * {@link lockedPartnerXml} with the partner pool beside the own pool, at
+ * x 660, and more content: a data object its task writes to (`DA_1`) and a
+ * collaboration note `Note_p` inside it, tied to the task (`Assoc_p`).
+ */
+function partnerBesideXml(): string {
+	return lockedPartnerXml()
+		.replace(
+			'<omgdc:Bounds x="0" y="400" width="640" height="60"/>',
+			'<omgdc:Bounds x="660" y="0" width="400" height="200"/>',
+		)
+		.replace(
+			'<omgdc:Bounds x="80" y="412" width="36" height="36"/>',
+			'<omgdc:Bounds x="700" y="42" width="36" height="36"/>',
+		)
+		.replace(
+			'<omgdc:Bounds x="160" y="410" width="100" height="40"/>',
+			'<omgdc:Bounds x="780" y="40" width="100" height="40"/>',
+		)
+		.replace(
+			'<omgdi:waypoint x="116" y="430"/><omgdi:waypoint x="160" y="430"/>',
+			'<omgdi:waypoint x="736" y="60"/><omgdi:waypoint x="780" y="60"/>',
+		)
+		.replace(
+			'<task id="Task_p" name="Answer"/>',
+			'<task id="Task_p" name="Answer"><dataOutputAssociation id="DA_1"><targetRef>DOR_1</targetRef></dataOutputAssociation></task><dataObjectReference id="DOR_1" dataObjectRef="DO_1"/><dataObject id="DO_1"/>',
+		)
+		.replace(
+			"</collaboration>",
+			'<textAnnotation id="Note_p"><text>Note</text></textAnnotation><association id="Assoc_p" sourceRef="Note_p" targetRef="Task_p"/></collaboration>',
+		)
+		.replace(
+			'<bpmndi:BPMNEdge id="Message_pay_di"',
+			`<bpmndi:BPMNShape id="DOR_1_di" bpmnElement="DOR_1"><omgdc:Bounds x="900" y="120" width="36" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Note_p_di" bpmnElement="Note_p"><omgdc:Bounds x="960" y="20" width="80" height="30"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DA_1_di" bpmnElement="DA_1"><omgdi:waypoint x="830" y="80"/><omgdi:waypoint x="900" y="140"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Assoc_p_di" bpmnElement="Assoc_p"><omgdi:waypoint x="960" y="40"/><omgdi:waypoint x="880" y="50"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Message_pay_di"`,
+		)
+}
 
 describe("8d.2 black boxes", () => {
 	const pool = (defs: BpmnDefinitions, id: string) => {

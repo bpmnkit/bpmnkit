@@ -2020,24 +2020,18 @@ export class BpmnEditor {
 
 	/**
 	 * Divides the own pool `poolId`, which has no lanes, into `count` sibling
-	 * lanes (decision U6): `count - 1` `addLane` ops, each its own `diagram:op`,
-	 * so a relay replays them as they are, coalesced by one fresh key into a
-	 * single undo step. Does nothing on a pool that has lanes or is not the own.
+	 * lanes (decision U6): one `addLane` op with `count`, which splits the
+	 * pool's height when it is tall enough and grows it otherwise, so a relay
+	 * replays it as it is, in one undo step. Does nothing on a pool that has
+	 * lanes or is not the own.
 	 */
 	divideLanes(poolId: string, count: 2 | 3): void {
 		if (!this._defs || !canDivideLanes(this._defs, poolId)) return
 		const label = count === 2 ? "Divide into two lanes" : "Divide into three lanes"
-		const options = { label, coalesceKey: `divide:${newIdSeed()}` }
-		let [last] = this._executeOp(
-			{ kind: "addLane", refId: poolId, where: "below", seed: newIdSeed() },
-			options,
+		this._executeOp(
+			{ kind: "addLane", refId: poolId, where: "below", count, seed: newIdSeed() },
+			{ label },
 		)
-		for (let made = 2; made < count && last; made++) {
-			;[last] = this._executeOp(
-				{ kind: "addLane", refId: last, where: "below", seed: newIdSeed() },
-				options,
-			)
-		}
 	}
 
 	/** Creates a text annotation linked to the given source shape via an association. */

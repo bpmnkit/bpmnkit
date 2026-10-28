@@ -644,9 +644,14 @@ describe("WP8b in the editor", () => {
 			])
 			const ops: string[] = []
 			ed.on("diagram:op", (op) => ops.push(op.kind))
+			const pool = boundsOf(Bpmn.parse(unlanedXml()), "Participant_own")
 			choose(label)
 			expect(lanes(ed)).toHaveLength(count)
-			expect(ops).toEqual(Array.from({ length: count - 1 }, () => "addLane"))
+			// One op: a relay replays the split as it is.
+			expect(ops).toEqual(["addLane"])
+			const defs = ed.getDefinitions()
+			if (!defs) throw new Error("no definitions")
+			expect(boundsOf(defs, "Participant_own")).toEqual(pool)
 			expect(ed.getUndoLabel()).toBe(label)
 			ed.undo()
 			expect(lanes(ed)).toEqual([])

@@ -95,7 +95,11 @@ const SHAPES: Record<EditorOp["kind"], (op: Json) => boolean> = {
 	moveSegment: (o) =>
 		str(o.edgeId) && int(o.segIdx) && typeof o.isHoriz === "boolean" && num(o.delta),
 	addParticipant: (o) => bounds(o.bounds) && optStr(o.name) && str(o.seed),
-	addLane: (o) => str(o.refId) && (o.where === "above" || o.where === "below") && str(o.seed),
+	addLane: (o) =>
+		str(o.refId) &&
+		(o.where === "above" || o.where === "below") &&
+		(o.count === undefined || o.count === 2 || o.count === 3) &&
+		str(o.seed),
 	autoLayout: () => true,
 	// A whole document, which `checkIntegrity` is the real gate for. Accepting
 	// one is not a privilege escalation: the holder could reach any document it

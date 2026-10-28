@@ -9,6 +9,9 @@ describe("parseOp", () => {
 		expect(parseOp({ kind: "addParticipant", bounds, name: "Bank", seed: "s" })).not.toBeNull()
 		expect(parseOp({ kind: "addLane", refId: "Lane_1", where: "above", seed: "s" })).not.toBeNull()
 		expect(parseOp({ kind: "addLane", refId: "Lane_1", where: "below", seed: "s" })).not.toBeNull()
+		expect(
+			parseOp({ kind: "addLane", refId: "P", where: "below", count: 3, seed: "s" }),
+		).not.toBeNull()
 	})
 
 	it("refuses them with fields of the wrong shape", () => {
@@ -16,6 +19,7 @@ describe("parseOp", () => {
 		expect(parseOp({ kind: "addParticipant", bounds, name: 3, seed: "s" })).toBeNull()
 		expect(parseOp({ kind: "addLane", refId: "Lane_1", where: "left", seed: "s" })).toBeNull()
 		expect(parseOp({ kind: "addLane", where: "above", seed: "s" })).toBeNull()
+		expect(parseOp({ kind: "addLane", refId: "P", where: "below", count: 4, seed: "s" })).toBeNull()
 	})
 
 	it("accepts the space op on either axis and refuses it with fields of the wrong shape", () => {
