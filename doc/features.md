@@ -1,5 +1,9 @@
 # Features
 
+## Change scripts edit lanes, pools and messages (2026-10-28)
+
+- A model's change script (Drop suggestions, AI chat) can move nodes between lanes, add, rename and remove lanes, add and remove black-box partner pools and messages to them; `applyProcessDelta` keeps the layout. Works on Flowable Modeler collaborations, whose executable process need not be first.
+
 ## Lanes, pools and message flows in the process text format (2026-10-28)
 
 - A model writing process text (Drop, `casen`, AI plugins) can write `lane id[Name]: a, b`, `pool id[Name]` and `msg a >(Label) pool`; the parser places unlisted nodes in a neighbour's lane, refuses message flows BPMN does not allow, and `expand` draws pools and lanes. Taught by `PROCESS_TEXT_GUIDE`; not by the on-device guide.

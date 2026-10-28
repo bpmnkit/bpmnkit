@@ -5675,7 +5675,7 @@
 		{
 			"id": "packages.editor.applying-a-change-script",
 			"file": "chunks/packages.editor.applying-a-change-script.md",
-			"tokens": 465,
+			"tokens": 790,
 			"tags": [
 				"packages",
 				"editor",
@@ -5687,6 +5687,9 @@
 				"applyProcessDelta",
 				"parseProcessDelta",
 				"@bpmnkit/core",
+				"primaryProcess",
+				"writeProcessText",
+				"isExecutable",
 				"applyConnectorLines",
 				"@bpmnkit/core/connectors",
 				"applyConnectors",

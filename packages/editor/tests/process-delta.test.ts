@@ -4,7 +4,9 @@ import {
 	Bpmn,
 	type BpmnBounds,
 	type BpmnDefinitions,
+	type BpmnFlowElement,
 	type BpmnLane,
+	allLanes as coreAllLanes,
 	expand,
 	parseProcessDelta,
 	parseProcessText,
@@ -101,11 +103,29 @@ function expectSound(defs: BpmnDefinitions, before?: BpmnDefinitions): void {
 		if ("default" in el && el.default !== undefined) expect(flows.has(el.default)).toBe(true)
 		if (el.type === "boundaryEvent") expect(nodes.has(el.attachedToRef)).toBe(true)
 	}
-	for (const lane of process?.laneSet?.lanes ?? []) {
-		for (const ref of lane.flowNodeRefs) expect(nodes.has(ref), ref).toBe(true)
+	for (const lane of coreAllLanes(process?.laneSet)) {
+		for (const ref of lane.flowNodeRefs)
+			expect(nodes.has(ref), `${lane.id} lists ${ref}`).toBe(true)
+	}
+	// A message flow ends on a participant or on a flow node of some pool, at any depth.
+	const ends = new Set([
+		...defs.collaborations.flatMap((c) => c.participants.map((p) => p.id)),
+		...defs.processes.flatMap((p) => [...deepIds(p.flowElements)]),
+	])
+	for (const flow of defs.collaborations.flatMap((c) => c.messageFlows)) {
+		expect(ends.has(flow.sourceRef), `${flow.id} from ${flow.sourceRef}`).toBe(true)
+		expect(ends.has(flow.targetRef), `${flow.id} to ${flow.targetRef}`).toBe(true)
 	}
 	expect(duplicateIds(defs)).toEqual(before ? duplicateIds(before) : [])
 	expect(() => Bpmn.parse(Bpmn.export(defs))).not.toThrow()
+}
+
+/** Ids of `elements` and everything inside them. */
+function deepIds(elements: readonly BpmnFlowElement[]): string[] {
+	return elements.flatMap((el) => [
+		el.id,
+		...("flowElements" in el ? deepIds(el.flowElements) : []),
+	])
 }
 
 /** Every lane, nested ones included. */
@@ -536,6 +556,8 @@ describe("applyProcessDelta", () => {
 			const result = apply(defs, writeProcessText(defs).text)
 			expect(result.definitions).toEqual(defs)
 			expect([result.created, result.changed, result.removed]).toEqual([[], [], []])
+			// A file with no diagram is refused as a whole, with one problem that says so.
+			if (defs.diagrams.length > 0) expect(result.problems).toEqual([])
 		})
 	})
 })
