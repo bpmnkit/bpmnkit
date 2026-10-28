@@ -51,8 +51,9 @@ content is not supported yet.
    lanes). On a lane of the own pool, *Add lane above* / *Add lane below* add one next to it.
 4. **Put nodes in a lane** by drawing, moving or pasting them inside its band.
 5. **Add a partner.** With a pool already drawn, the pool tool adds a black-box partner. Its
-   bar has *Connect* (to draw a message flow to one of your nodes), *Edit label* and *Delete*,
-   and no lane actions. Message flows can also start from a node of yours: connect it to the
+   bar starts with an info mark whose tooltip says it holds no lanes or nodes, then has
+   *Connect* (to draw a message flow to one of your nodes), *Edit label* and *Delete*, and no
+   lane actions. Message flows can also start from a node of yours: connect it to the
    partner pool.
 
 ---

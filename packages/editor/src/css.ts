@@ -336,6 +336,7 @@ export const HUD_CSS = `
 .hud-btn.active { background: var(--bpmnkit-chrome-accent); color: var(--bpmnkit-chrome-accent-fg); }
 .hud-btn:disabled { opacity: 0.3; cursor: default; }
 .hud-btn:disabled:hover { background: transparent; color: var(--bpmnkit-chrome-ink-2); }
+.hud-info, .hud-info:hover { cursor: help; background: transparent; color: var(--bpmnkit-chrome-ink-2); }
 .hud-btn svg { width: 16px; height: 16px; pointer-events: none; }
 
 /* The palette's targets are a touch larger than the toolbar's; the zoom

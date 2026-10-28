@@ -382,6 +382,8 @@ export const de: Locale = {
 		"Optimize diagram": "Diagramm optimieren",
 		"Parallel (for each, all at once)": "Parallel (für jedes, alle gleichzeitig)",
 		"Parallel Gateway": "Paralleles Gateway",
+		"Partner pool: no lanes or nodes in this version":
+			"Partner-Pool: in dieser Version ohne Lanes und Knoten",
 		Paste: "Einfügen",
 		Pattern: "Muster",
 		Play: "Spielen",

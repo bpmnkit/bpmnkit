@@ -383,6 +383,8 @@ export const it: Locale = {
 		"Optimize diagram": "Ottimizza diagramma",
 		"Parallel (for each, all at once)": "Parallelo (per ciascuno, tutti insieme)",
 		"Parallel Gateway": "Gateway parallelo",
+		"Partner pool: no lanes or nodes in this version":
+			"Pool partner: senza lane né nodi in questa versione",
 		Paste: "Incolla",
 		Pattern: "Pattern",
 		Play: "Riproduci",

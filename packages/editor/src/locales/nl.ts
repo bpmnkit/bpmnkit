@@ -384,6 +384,8 @@ export const nl: Locale = {
 		"Optimize diagram": "Diagram optimaliseren",
 		"Parallel (for each, all at once)": "Parallel (voor elk, allemaal tegelijk)",
 		"Parallel Gateway": "Parallelle gateway",
+		"Partner pool: no lanes or nodes in this version":
+			"Partnerpool: in deze versie zonder lanes en knooppunten",
 		Paste: "Plakken",
 		Pattern: "Patroon",
 		Play: "Afspelen",

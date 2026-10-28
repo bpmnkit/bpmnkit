@@ -384,6 +384,8 @@ export const ptBR: Locale = {
 		"Optimize diagram": "Otimizar diagrama",
 		"Parallel (for each, all at once)": "Paralelo (para cada um, todos de uma vez)",
 		"Parallel Gateway": "Gateway paralelo",
+		"Partner pool: no lanes or nodes in this version":
+			"Pool parceiro: sem raias nem nós nesta versão",
 		Paste: "Colar",
 		Pattern: "Padrão",
 		Play: "Executar",

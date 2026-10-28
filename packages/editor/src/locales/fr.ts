@@ -391,6 +391,8 @@ export const fr: Locale = {
 		"Optimize diagram": "Optimiser le diagramme",
 		"Parallel (for each, all at once)": "Parallèle (pour chaque élément, tous à la fois)",
 		"Parallel Gateway": "Passerelle parallèle",
+		"Partner pool: no lanes or nodes in this version":
+			"Pool partenaire : sans couloirs ni nœuds dans cette version",
 		Paste: "Coller",
 		Pattern: "Motif",
 		Play: "Lecture",

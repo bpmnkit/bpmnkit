@@ -377,6 +377,8 @@ export const pl: Locale = {
 		"Optimize diagram": "Optymalizuj diagram",
 		"Parallel (for each, all at once)": "Równolegle (dla każdego, wszystkie naraz)",
 		"Parallel Gateway": "Bramka równoległa",
+		"Partner pool: no lanes or nodes in this version":
+			"Pula partnera: w tej wersji bez torów i węzłów",
 		Paste: "Wklej",
 		Pattern: "Wzorzec",
 		Play: "Odtwarzaj",

@@ -364,6 +364,7 @@ export const zhCN: Locale = {
 		"Optimize diagram": "优化图",
 		"Parallel (for each, all at once)": "并行 (逐项，同时进行)",
 		"Parallel Gateway": "并行网关",
+		"Partner pool: no lanes or nodes in this version": "合作方池：此版本中没有泳道和节点",
 		Paste: "粘贴",
 		Pattern: "模式",
 		Play: "运行",

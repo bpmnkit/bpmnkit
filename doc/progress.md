@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-10-28 — Editor: a black box's bar says why it has no lanes
+
+- The context bar of a black-box partner pool now starts with an info mark (`IC.info`, `.hud-info`, a `span` with `role="img"`, not a button) whose tooltip and `aria-label` read "Partner pool: no lanes or nodes in this version", translated in the nine locales and listed in `i18n/en.json`. The own pool and lanes show none. Landing `packages/editor.md` how-to step 5 mentions it; docspack rebuilt. Changeset `black-box-hint.md`. Editor 653 tests pass.
+
 ## 2026-10-28 — Editor docs: pools and lanes how-to
 
 - `apps/landing/src/content/docs/packages/editor.md`: new "Pools and lanes: how to" under Collaborations. It covers the v1 limit (one own pool with lanes plus black-box partners, no lanes or nodes in a partner), selecting by the header strip, the context-bar actions for adding and dividing lanes, putting nodes in a lane, adding a partner and connecting it, and what is not offered. Prompted by a manual try in which lanes on a newly added pool could not be found. Docspack rebuilt.

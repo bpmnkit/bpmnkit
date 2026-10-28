@@ -134,11 +134,27 @@ describe("8a.4 element types and the context bar and menu", () => {
 		expect(menuFor(ed, ["Participant_bank"])).toEqual(["Connect", "Edit label", "Delete"])
 		const bar = [...(document.getElementById("ctx-toolbar")?.children ?? [])]
 		expect(bar.map((b) => (b as HTMLElement).title)).toEqual([
+			"Partner pool: no lanes or nodes in this version",
 			"Connect to element (click target)",
 			"Edit label",
 			"Delete (Del)",
 		])
 		expect(document.getElementById("cfg-toolbar")?.children).toHaveLength(0)
+	})
+
+	it("says on a black box's bar why it offers no lanes, and only there", () => {
+		const { ed } = mount(true)
+		const hint = () => document.querySelector<HTMLElement>("#ctx-toolbar .hud-info")
+		menuFor(ed, ["Participant_bank"])
+		expect(hint()?.tagName).toBe("SPAN")
+		expect(hint()?.getAttribute("role")).toBe("img")
+		expect(hint()?.getAttribute("aria-label")).toBe(
+			"Partner pool: no lanes or nodes in this version",
+		)
+		for (const id of ["Lane_finance", "Participant_own"]) {
+			menuFor(ed, [id])
+			expect(hint(), id).toBeNull()
+		}
 	})
 
 	it("offers a label edit for a message flow (8d.6)", () => {

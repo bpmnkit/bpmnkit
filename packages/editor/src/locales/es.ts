@@ -383,6 +383,8 @@ export const es: Locale = {
 		"Optimize diagram": "Optimizar diagrama",
 		"Parallel (for each, all at once)": "Paralelo (para cada uno, todos a la vez)",
 		"Parallel Gateway": "Compuerta paralela",
+		"Partner pool: no lanes or nodes in this version":
+			"Pool asociado: sin carriles ni nodos en esta versión",
 		Paste: "Pegar",
 		Pattern: "Patrón",
 		Play: "Reproducir",

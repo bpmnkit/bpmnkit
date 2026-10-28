@@ -374,6 +374,8 @@ export const ja: Locale = {
 		"Optimize diagram": "図を最適化",
 		"Parallel (for each, all at once)": "並列 (各項目を同時に)",
 		"Parallel Gateway": "並列ゲートウェイ",
+		"Partner pool: no lanes or nodes in this version":
+			"パートナープール: このバージョンではレーンもノードも持てません",
 		Paste: "貼り付け",
 		Pattern: "パターン",
 		Play: "プレイ",

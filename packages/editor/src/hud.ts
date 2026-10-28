@@ -1335,6 +1335,10 @@ export function initEditorHud(
 	 * {@link swimlaneActions}, nothing that would duplicate or colour it.
 	 */
 	function buildSwimlaneToolbar(sourceId: string): void {
+		const defs = editor.getDefinitions()
+		const pool = defs?.collaborations.flatMap((c) => c.participants).find((p) => p.id === sourceId)
+		// A partner offers no lane actions; say why rather than leave the user looking for them.
+		if (defs && pool && isBlackBox(defs, pool)) ctxToolbar.appendChild(blackBoxHint())
 		for (const action of swimlaneActions(sourceId)) {
 			const btn = document.createElement("button")
 			btn.className = "hud-btn"
@@ -1346,6 +1350,17 @@ export function initEditorHud(
 			})
 			ctxToolbar.appendChild(btn)
 		}
+	}
+
+	/** A non-interactive mark whose tooltip says what a black-box partner pool cannot hold. */
+	function blackBoxHint(): HTMLElement {
+		const hint = document.createElement("span")
+		hint.className = "hud-btn hud-info"
+		hint.innerHTML = IC.info
+		hint.title = t("Partner pool: no lanes or nodes in this version")
+		hint.setAttribute("role", "img")
+		hint.setAttribute("aria-label", hint.title)
+		return hint
 	}
 
 	// ── Configure toolbar ──────────────────────────────────────────────────────
