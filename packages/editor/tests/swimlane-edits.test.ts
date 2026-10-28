@@ -197,13 +197,16 @@ describe("8a.7 delete cleans up lanes, message flows and associations", () => {
 })
 
 describe("8a.8 moves leave the own pool and its lanes where they are", () => {
-	it("ignores a move of the own pool or of a lane", () => {
+	it("ignores a move of a lane, and moves the own pool with what it holds (8c.2)", () => {
 		const defs = flowableFixture()
+		expect(run(defs, { kind: "move", moves: [{ id: "Lane_finance", dx: 0, dy: 40 }] })).toBe(defs)
 		const moves = [
 			{ id: "Participant_own", dx: 0, dy: 40 },
 			{ id: "Lane_finance", dx: 0, dy: 40 },
 		]
-		expect(run(defs, { kind: "move", moves })).toBe(defs)
+		const after = run(defs, { kind: "move", moves })
+		expect(boundsOf(after, "Lane_finance").y).toBe(160)
+		expect(boundsOf(after, "Task_review").y).toBe(60)
 	})
 
 	it("moves the nodes of a mixed selection and not the lane", () => {

@@ -592,11 +592,7 @@ describe("8b.6 edits copy only what they change", () => {
 
 	it("shares the partner process and its diagram when the pool grows", () => {
 		const defs = flowableFixture("second-diagram")
-		const next = run(defs, {
-			kind: "move",
-			moves: [{ id: "End_1", dx: 200, dy: 0 }],
-			grow: true,
-		}).defs
+		const next = run(defs, { kind: "space", origin: 500, axis: "h", delta: 200 }).defs
 		expect(boundsOf(primaryFirst(next), "Participant_own").width).toBeGreaterThan(640)
 		expect(next.processes[0]).toBe(defs.processes[0])
 		expect(next.diagrams[0]).toBe(defs.diagrams[0])

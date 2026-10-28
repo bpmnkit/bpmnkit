@@ -18,6 +18,7 @@ import {
 	canAddLane,
 	canDeleteSwimlane,
 	canDivideLanes,
+	firstPoolRefused,
 	isBlackBox,
 	lockedIds,
 	primaryPlane,
@@ -806,6 +807,19 @@ export function initEditorHud(
 		editor.setTool(_currentTool === "create:participant" ? "default" : "create:participant")
 		collapseOnMobile(hudBottomCenter)
 	})
+
+	/** Disables the pool tool, saying why, where every click of it would be refused. */
+	function updatePoolButton(): void {
+		const defs = editor.getDefinitions()
+		const refused = defs !== null && firstPoolRefused(defs)
+		btnPool.disabled = refused
+		btnPool.title = t(
+			refused ? "Cannot create a pool: another process with content has no pool" : "Create pool",
+		)
+	}
+	updatePoolButton()
+	editor.on("diagram:load", updatePoolButton)
+	editor.on("diagram:change", updatePoolButton)
 
 	// ── Dropdown management ────────────────────────────────────────────────────
 

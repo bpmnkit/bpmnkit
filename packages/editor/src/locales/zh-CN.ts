@@ -29,6 +29,8 @@ export const zhCN: Locale = {
 		"Add lane above": "在上方添加泳道",
 		"Add lane below": "在下方添加泳道",
 		"Add pool": "添加池",
+		"Cannot create a pool: another process with content has no pool":
+			"无法创建池：另一个有内容的流程没有池",
 		"Create pool": "创建池",
 		"Divide into three lanes": "拆分为三个泳道",
 		"Divide into two lanes": "拆分为两个泳道",

@@ -96,7 +96,7 @@ export interface Callbacks {
 	previewTranslate(dx: number, dy: number): void
 	commitTranslate(dx: number, dy: number): void
 	cancelTranslate(): void
-	previewResize(bounds: BpmnBounds): void
+	previewResize(bounds: BpmnBounds, id: string): void
 	commitResize(id: string, bounds: BpmnBounds): void
 	previewConnect(ghostEnd: DiagPoint, targetId: string | null): void
 	cancelConnect(): void
@@ -427,7 +427,7 @@ export class EditorStateMachine {
 						original: shape.shape.bounds,
 						current: diag,
 					})
-					this._cb.previewResize(newBounds)
+					this._cb.previewResize(newBounds, sub.id)
 				}
 				break
 			}
@@ -435,7 +435,7 @@ export class EditorStateMachine {
 			case "resizing": {
 				const newBounds = applyResize(sub.original, sub.handle, diag.x, diag.y)
 				this._mode = this._withSub({ ...sub, current: diag })
-				this._cb.previewResize(newBounds)
+				this._cb.previewResize(newBounds, sub.id)
 				break
 			}
 

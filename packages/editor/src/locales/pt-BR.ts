@@ -29,6 +29,8 @@ export const ptBR: Locale = {
 		"Add lane above": "Adicionar raia acima",
 		"Add lane below": "Adicionar raia abaixo",
 		"Add pool": "Adicionar pool",
+		"Cannot create a pool: another process with content has no pool":
+			"Não é possível criar um pool: outro processo com conteúdo não tem pool",
 		"Create pool": "Criar pool",
 		"Divide into three lanes": "Dividir em três raias",
 		"Divide into two lanes": "Dividir em duas raias",

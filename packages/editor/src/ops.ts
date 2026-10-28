@@ -40,7 +40,15 @@ import {
 	updateLabelPosition,
 	updateShapeColor,
 } from "./modeling.js"
-import { addLaneBeside, addPool, settlePlaced, withPrimaryFirst } from "./swimlanes.js"
+import {
+	type SpaceAxis,
+	addLaneBeside,
+	addPool,
+	lockedIds,
+	makeSpace,
+	settlePlaced,
+	withPrimaryFirst,
+} from "./swimlanes.js"
 import type { CreateShapeType, PortDir } from "./types.js"
 
 /** One shape's displacement. */
@@ -105,17 +113,17 @@ export type EditorOp =
 	  }
 	| { kind: "paste"; clipboard: Clipboard; offsetX: number; offsetY: number; seed: string }
 	/**
-	 * `grow`: the space tool's push, which may carry nodes of the own pool past
-	 * its right or bottom edge; the pool grows to take them in, as it does for a
-	 * quick-add, where a plain drag out of it is refused. Until the space op
-	 * (U10) exists.
+	 * Moving the own pool takes its lanes, nodes and the notes inside it along
+	 * (`poolHolds`); lanes alone stay where they are (decision U4).
 	 */
-	| {
-			kind: "move"
-			moves: ShapeMove[]
-			onEdge?: { edgeId: string; shapeId: string }
-			grow?: boolean
-	  }
+	| { kind: "move"; moves: ShapeMove[]; onEdge?: { edgeId: string; shapeId: string } }
+	/**
+	 * The space tool (decision U10): room for `delta` at the line `origin` (an x
+	 * for `h`, a y for `v`) on the side `delta` points to. What lies beyond
+	 * moves, the pools, lanes and sub-processes the line crosses grow, and the
+	 * lane refs follow (`makeSpace`). One undo step.
+	 */
+	| { kind: "space"; origin: number; axis: SpaceAxis; delta: number }
 	| { kind: "resize"; id: string; bounds: BpmnBounds }
 	| { kind: "delete"; ids: string[] }
 	| { kind: "rename"; id: string; name: string }
@@ -266,11 +274,20 @@ function applyEdit(defs: BpmnDefinitions, op: Exclude<EditorOp, { kind: "snapsho
 			return settled(defs, { defs: r.defs, created: r.topLevelIds }, r.topLevelIds, true)
 		}
 		case "move": {
+			// A drag snapped back to where it started: moveShapes would still copy what it cascades.
+			if (!op.onEdge && op.moves.every((m) => m.dx === 0 && m.dy === 0)) return refused(defs)
 			const moved = moveShapes(defs, op.moves)
 			if (moved === defs) return refused(defs)
 			const next = op.onEdge ? insertShapeOnEdge(moved, op.onEdge.edgeId, op.onEdge.shapeId) : moved
 			const ids = op.moves.map((m) => m.id)
-			return settled(defs, { defs: next, created: [] }, ids, false, op.grow === true)
+			return settled(defs, { defs: next, created: [] }, ids, false)
+		}
+		case "space": {
+			const r = makeSpace(defs, op.axis, op.origin, op.delta)
+			if (!r) return refused(defs)
+			// Only nodes whose drawing already disagreed with their refs change lane; growth is the
+			// point of the op, so a node past the pool's edge (`outward`) is taken in, not refused.
+			return settled(defs, { defs: r.defs, created: [] }, r.moved, false, true)
 		}
 		case "resize":
 			return { defs: resizeShape(defs, op.id, op.bounds), created: [] }
@@ -278,9 +295,12 @@ function applyEdit(defs: BpmnDefinitions, op: Exclude<EditorOp, { kind: "snapsho
 			return { defs: deleteElements(defs, op.ids), created: [] }
 		case "rename":
 			return { defs: updateLabel(defs, op.id, op.name), created: [] }
+		// A partner's node is drawn only; its drawing is the partner's too (lockedIds).
 		case "labelPosition":
+			if (lockedIds(defs).has(op.id)) return refused(defs)
 			return { defs: updateLabelPosition(defs, op.id, op.bounds), created: [] }
 		case "color":
+			if (lockedIds(defs).has(op.id)) return refused(defs)
 			return { defs: updateShapeColor(defs, op.id, op.color), created: [] }
 		case "changeType":
 			return { defs: changeElementType(defs, op.id, op.type), created: [] }

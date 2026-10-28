@@ -44,6 +44,10 @@ and pan.
   or pool's context bar adds a lane above or below it (the first add on a pool makes two),
   and divides a pool without lanes into two or three. Child lanes and vertical pools are left
   as they are.
+- Pools and lanes are resized by their handles: a lane's edge moves its neighbour's, an outer
+  edge moves the pool, and no band shrinks past its nodes or below 60px, so no node changes
+  lane. The own pool is dragged by its header with everything in it; lanes do not drag. The
+  space tool widens or deepens the pools and lanes its line crosses (the `space` op).
 
 ```typescript
 editor.addLane("Lane_sales", "below");   // id of the new lane, or null when refused

@@ -81,7 +81,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Conformance](.llms/chunks/getting-started.conformance.md) — 523 tokens
 - [Conformance — BPMN 2.0 — model and round trip](.llms/chunks/getting-started.conformance.bpmn-2.0-model-and-round-trip.md) — 241 tokens
 - [Conformance — BPMN Model Interchange (MIWG)](.llms/chunks/getting-started.conformance.bpmn-model-interchange-miwg.md) — 508 tokens
-- [Conformance — BPMN elements by component](.llms/chunks/getting-started.conformance.bpmn-elements-by-component.md) — 1916 tokens
+- [Conformance — BPMN elements by component](.llms/chunks/getting-started.conformance.bpmn-elements-by-component.md) — 1922 tokens
 - [Conformance — BPMN elements by component (2)](.llms/chunks/getting-started.conformance.bpmn-elements-by-component-2.md) — 96 tokens
 - [Conformance — Zeebe extensions](.llms/chunks/getting-started.conformance.zeebe-extensions.md) — 226 tokens
 - [Conformance — Linting — bpmnlint compatibility](.llms/chunks/getting-started.conformance.linting-bpmnlint-compatibility.md) — 140 tokens
@@ -380,7 +380,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/docspack — Using the index directly](.llms/chunks/packages.docspack.using-the-index-directly.md) — 320 tokens
 - [@bpmnkit/docspack — Trust](.llms/chunks/packages.docspack.trust.md) — 118 tokens
 - [@bpmnkit/editor — Overview](.llms/chunks/packages.editor.overview.md) — 135 tokens
-- [@bpmnkit/editor — Basic Setup](.llms/chunks/packages.editor.basic-setup.md) — 589 tokens
+- [@bpmnkit/editor — Basic Setup](.llms/chunks/packages.editor.basic-setup.md) — 682 tokens
 - [@bpmnkit/editor — With Side Dock](.llms/chunks/packages.editor.with-side-dock.md) — 168 tokens
 - [@bpmnkit/editor — SideDock API](.llms/chunks/packages.editor.sidedock-api.md) — 861 tokens
 - [@bpmnkit/editor — Full Editor with All Plugins](.llms/chunks/packages.editor.full-editor-with-all-plugins.md) — 157 tokens

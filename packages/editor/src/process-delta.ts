@@ -1257,6 +1257,14 @@ function addLane(
 ): string | undefined {
 	const pool = ownPool(run, line.line)
 	if (!pool) return undefined
+	// The bands are laid out horizontally only; one across a column pool would cover its lanes.
+	if (shapeOf(run, pool.id)?.isHorizontal === false) {
+		run.problem(
+			line.line,
+			`lane ${line.id}: pool "${pool.id}" is drawn vertically; lanes are added to horizontal pools only; left out`,
+		)
+		return undefined
+	}
 	const id = claim(run, line.id, "Lane")
 	const shapeId = claim(run, `${id}_di`, "Lane_di")
 	const lane: BpmnLane = {

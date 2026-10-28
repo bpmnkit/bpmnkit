@@ -44,6 +44,8 @@ interface EditorInternals {
 	_onDblClick(e: MouseEvent): void
 	_onPointerDown(e: PointerEvent): void
 	_onPointerMove(e: PointerEvent): void
+	_onPointerUp(e: PointerEvent): void
+	_getResizableIds(): Set<string>
 	_stateMachine: EditorStateMachine
 	_svg: SVGSVGElement
 }
@@ -218,12 +220,16 @@ describe("8a.8 presses and drags on pools and lanes", () => {
 		expect(lane.getAttribute("transform")).toBe(before)
 	})
 
-	it("does not shift a lane in the space tool preview either", () => {
+	it("shifts the lanes below in the space tool preview and outlines the ones it stretches (8c.3)", () => {
 		const { inner } = mount()
 		const lane = drawnGroup(inner, "Lane_ops")
-		const before = lane.getAttribute("transform")
 		inner._previewSpace({ x: 0, y: 200 }, { x: 0, y: 240 }, "v")
-		expect(lane.getAttribute("transform")).toBe(before)
+		expect(lane.getAttribute("transform")).toBe("translate(30 280)")
+		const outlines = [...inner._svg.querySelectorAll(".bpmnkit-space-stretch")].map((r) =>
+			["x", "y", "width", "height"].map((k) => Number(r.getAttribute(k))),
+		)
+		expect(outlines).toContainEqual([0, 0, 640, 400])
+		expect(outlines).toContainEqual([30, 120, 610, 160])
 	})
 })
 
@@ -438,12 +444,16 @@ describe("final review: drags the model refuses", () => {
 
 	it("lets the space tool push nodes past the own pool's right edge, which grows", () => {
 		const { ed, inner } = mount()
+		const ops: unknown[] = []
+		ed.on("diagram:op", (op) => ops.push(op))
 		inner._commitSpace({ x: 380, y: 0 }, { x: 580, y: 0 }, "h")
-		expect(ed.canUndo()).toBe(true)
+		expect(ops).toEqual([{ kind: "space", origin: 380, axis: "h", delta: 200 }])
 		const defs = ed.getDefinitions()
 		if (!defs) throw new Error("no definitions")
 		expect(boundsOf(defs, "Task_pay").x).toBe(600)
-		expect(boundsOf(defs, "Participant_own").width).toBe(798)
+		expect(boundsOf(defs, "Participant_own").width).toBe(840)
+		ed.undo()
+		expect(ed.canUndo()).toBe(false)
 	})
 })
 
@@ -790,5 +800,215 @@ describe("WP8b in the editor", () => {
 			div?.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter" }))
 			expect(ed.canUndo(), id).toBe(false)
 		}
+	})
+})
+
+describe("WP8c resizing pools and lanes in the editor", () => {
+	const pointer = (type: string, x: number, y: number) =>
+		new PointerEvent(type, { clientX: x, clientY: y, button: 0 })
+
+	/** The resize handle `dir` the overlay drew for the selected `id`. */
+	function handle(inner: EditorInternals, id: string, dir: string): Element {
+		const el = inner._svg.querySelector(`[data-bpmnkit-handle="${dir}"][data-bpmnkit-id="${id}"]`)
+		if (!el) throw new Error(`no ${dir} handle on ${id}`)
+		return el
+	}
+
+	/** Drags handle `dir` of `id` from `from` through `path`, the browser finding the handle throughout. */
+	function drag(
+		inner: EditorInternals,
+		id: string,
+		dir: string,
+		from: { x: number; y: number },
+		path: { x: number; y: number }[],
+	): void {
+		const target = handle(inner, id, dir)
+		const original = document.elementFromPoint
+		document.elementFromPoint = () => target
+		try {
+			inner._onPointerDown(pointer("pointerdown", from.x, from.y))
+			for (const p of path) inner._onPointerMove(pointer("pointermove", p.x, p.y))
+			const end = path.at(-1) ?? from
+			inner._onPointerUp(pointer("pointerup", end.x, end.y))
+		} finally {
+			document.elementFromPoint = original
+		}
+	}
+
+	it("offers resize handles on the own pool, its lanes and black boxes only", () => {
+		const { inner } = mount()
+		const ids = inner._getResizableIds()
+		for (const id of SWIMLANES) expect(ids.has(id), id).toBe(true)
+		const locked = mount(false, lockedPartnerXml()).inner._getResizableIds()
+		for (const id of ["Participant_partner", "Start_p", "Task_p"])
+			expect(locked.has(id), id).toBe(false)
+		expect(locked.has("Participant_bank")).toBe(true)
+		const vertical = mount(false, verticalPoolXml(true)).inner._getResizableIds()
+		for (const id of ["P", "LA", "LB"]) expect(vertical.has(id), id).toBe(false)
+	})
+
+	it("resizes a lane from its bottom handle: one resize op, the lane below shrinks", () => {
+		const { ed, inner } = mount()
+		const ops: unknown[] = []
+		ed.on("diagram:op", (op) => ops.push(op))
+		ed.setSelection(["Lane_finance"])
+		drag(inner, "Lane_finance", "s", { x: 335, y: 240 }, [
+			{ x: 335, y: 260 },
+			{ x: 335, y: 280 },
+		])
+		expect(ops).toEqual([
+			{ kind: "resize", id: "Lane_finance", bounds: { x: 30, y: 120, width: 610, height: 160 } },
+		])
+		const defs = ed.getDefinitions()
+		if (!defs) throw new Error("no definitions")
+		expect(boundsOf(defs, "Lane_ops")).toEqual({ x: 30, y: 280, width: 610, height: 80 })
+		ed.undo()
+		expect(ed.canUndo()).toBe(false)
+	})
+
+	it("previews the clamped bounds while dragging", () => {
+		const { ed, inner } = mount()
+		ed.setSelection(["Lane_finance"])
+		const target = handle(inner, "Lane_finance", "s")
+		const original = document.elementFromPoint
+		document.elementFromPoint = () => target
+		try {
+			inner._onPointerDown(pointer("pointerdown", 335, 240))
+			inner._onPointerMove(pointer("pointermove", 335, 160))
+		} finally {
+			document.elementFromPoint = original
+		}
+		// Task_pay reaches y=220 in Finance, so the bottom edge stops there.
+		const preview = inner._svg.querySelector(".bpmnkit-resize-preview")
+		expect(preview?.getAttribute("height")).toBe("100")
+	})
+
+	it("adds no undo step for a drag that ends where it started", () => {
+		const { ed, inner } = mount()
+		ed.setSelection(["Lane_finance"])
+		drag(inner, "Lane_finance", "s", { x: 335, y: 240 }, [
+			{ x: 335, y: 280 },
+			{ x: 335, y: 240 },
+		])
+		expect(ed.canUndo()).toBe(false)
+		expect(inner._svg.querySelector(".bpmnkit-resize-preview")).toBeNull()
+	})
+})
+
+describe("WP8c moving pools and making space in the editor", () => {
+	/** The `<g>` the canvas draws for `id`: containers and nodes alike. */
+	const group = (inner: EditorInternals, id: string) =>
+		inner._svg.querySelector(`[data-bpmnkit-id="${id}"]`)
+
+	it("drags the own pool's lanes, nodes and notes along in the preview (8c.2)", () => {
+		const { ed, inner } = mount()
+		ed.setSelection(["Participant_own"])
+		inner._previewTranslate(40, 20)
+		const [dx, dy] = (group(inner, "Participant_own")?.getAttribute("transform") ?? "")
+			.match(/-?[\d.]+/g)
+			?.map(Number) ?? [0, 0]
+		expect([dx, dy]).not.toEqual([0, 0])
+		expect(group(inner, "Lane_finance")?.getAttribute("transform")).toBe(
+			`translate(${30 + (dx ?? 0)} ${120 + (dy ?? 0)})`,
+		)
+		expect(group(inner, "Task_review")?.getAttribute("transform")).toBe(
+			`translate(${160 + (dx ?? 0)} ${20 + (dy ?? 0)})`,
+		)
+		// The partner stays.
+		expect(group(inner, "Participant_partner")?.getAttribute("transform")).toBe("translate(0 400)")
+	})
+
+	it("moves the pool as one undo step, and puts everything back when the drop is refused", () => {
+		const { ed, inner } = mount()
+		ed.setSelection(["Participant_own"])
+		inner._previewTranslate(0, 100)
+		inner._commitTranslate(0, 100)
+		// Onto the partner pool: refused, no undo step, the preview reset.
+		expect(ed.canUndo()).toBe(false)
+		expect(group(inner, "Participant_own")?.getAttribute("transform")).toBe("translate(0 0)")
+		expect(group(inner, "Task_review")?.getAttribute("transform")).toBe("translate(160 20)")
+		expect(group(inner, "Lane_ops")?.getAttribute("transform")).toBe("translate(30 240)")
+		inner._previewTranslate(700, 0)
+		inner._commitTranslate(700, 0)
+		expect(ed.canUndo()).toBe(true)
+		const defs = ed.getDefinitions()
+		if (!defs) throw new Error("no definitions")
+		expect(boundsOf(defs, "Task_review").x).toBe(860)
+		ed.undo()
+		expect(ed.canUndo()).toBe(false)
+	})
+
+	it("adds no undo step and emits no op for a pool drag that snaps back to where it was", () => {
+		const { ed, inner } = mount()
+		const ops: unknown[] = []
+		ed.on("diagram:op", (op) => ops.push(op))
+		ed.setSelection(["Participant_own"])
+		inner._previewTranslate(-6, 4)
+		inner._commitTranslate(-6, 4)
+		expect(ops).toEqual([])
+		expect(ed.canUndo()).toBe(false)
+		expect(group(inner, "Participant_own")?.getAttribute("transform")).toBe("translate(0 0)")
+	})
+
+	it("adds no undo step for a space drag of nothing or across a vertical pool", () => {
+		const { ed, inner } = mount()
+		inner._commitSpace({ x: 380, y: 0 }, { x: 380, y: 0 }, "h")
+		expect(ed.canUndo()).toBe(false)
+		const vertical = mount(false, verticalPoolXml(true))
+		vertical.inner._previewSpace({ x: 0, y: 200 }, { x: 0, y: 240 }, "v")
+		expect(vertical.inner._svg.querySelector(".bpmnkit-space-stretch")).toBeNull()
+		vertical.inner._commitSpace({ x: 0, y: 200 }, { x: 0, y: 240 }, "v")
+		expect(vertical.ed.canUndo()).toBe(false)
+	})
+})
+
+describe("WP8b leftovers", () => {
+	const pointer = (type: string, x: number, y: number) =>
+		new PointerEvent(type, { clientX: x, clientY: y, button: 0 })
+	const reviews = (ed: BpmnEditor) =>
+		ed
+			.getDefinitions()
+			?.processes.find((p) => p.id === "Process_exec")
+			?.flowElements.filter((el) => el.name === "Review") ?? []
+
+	it("keeps the clipboard on a Ctrl+C or Duplicate of only swimlanes or locked nodes", () => {
+		const { ed, inner } = mount(false, lockedPartnerXml())
+		const copy = () =>
+			inner._host.dispatchEvent(
+				new KeyboardEvent("keydown", { key: "c", ctrlKey: true, bubbles: true }),
+			)
+		ed.setSelection(["Task_review"])
+		copy()
+		for (const id of ["Lane_ops", "Participant_bank", "Task_p"]) {
+			ed.setSelection([id])
+			copy()
+			ed.duplicate()
+			expect(ed.canUndo(), id).toBe(false)
+		}
+		ed.paste()
+		expect(reviews(ed)).toHaveLength(2)
+	})
+
+	it("draws the pool tool's ghost in the refused style over the own pool", () => {
+		const { ed, inner } = mount()
+		ed.setTool("create:participant")
+		inner._onPointerMove(pointer("pointermove", 300, 100))
+		expect(
+			document.querySelector(".bpmnkit-ghost")?.classList.contains("bpmnkit-ghost-refused"),
+		).toBe(true)
+		inner._onPointerMove(pointer("pointermove", 300, 630))
+		const ghost = document.querySelector(".bpmnkit-ghost")
+		expect(ghost).not.toBeNull()
+		expect(ghost?.classList.contains("bpmnkit-ghost-refused")).toBe(false)
+	})
+
+	it("disables the pool button, saying why, where the first pool would be refused", () => {
+		const { ed } = mount(true, Bpmn.export(poolLessWithOther()))
+		const button = document.getElementById("btn-pool") as HTMLButtonElement | null
+		expect(button?.disabled).toBe(true)
+		expect(button?.title).toBe("Cannot create a pool: another process with content has no pool")
+		ed.load(Bpmn.export(poolLessFlowable(false)))
+		expect(button?.disabled).toBe(false)
+		expect(button?.title).toBe("Create pool")
 	})
 })

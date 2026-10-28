@@ -30,11 +30,14 @@ import {
 import { type IdFactory, genId } from "./id.js"
 import { type MessageEnd, canMessageFlow, eventTrigger } from "./rules.js"
 import {
+	dataAssociationEnds,
 	lockedIds,
 	messageRoute,
 	participantOf,
+	poolHolds,
 	removeSwimlanes,
 	rerouteMessage,
+	resizeSwimlane,
 	swimlaneIds,
 	unmovableIds,
 } from "./swimlanes.js"
@@ -770,17 +773,17 @@ function redockMessage(
 	if (!from || !to || from.dx !== to.dx || from.dy !== to.dy) {
 		return rerouteMessage(edge, flow, shapes, pools)
 	}
+	return translateEdge(edge, from.dx, from.dy)
+}
+
+/** `edge` moved by `dx`, `dy`, waypoints and label: a route whose ends moved together keeps its bends. */
+function translateEdge(edge: BpmnDiEdge, dx: number, dy: number): BpmnDiEdge {
 	const label = edge.label?.bounds
 	return {
 		...edge,
-		waypoints: edge.waypoints.map((p) => ({ ...p, x: p.x + from.dx, y: p.y + from.dy })),
+		waypoints: edge.waypoints.map((p) => ({ ...p, x: p.x + dx, y: p.y + dy })),
 		...(edge.label && label
-			? {
-					label: {
-						...edge.label,
-						bounds: { ...label, x: label.x + from.dx, y: label.y + from.dy },
-					},
-				}
+			? { label: { ...edge.label, bounds: { ...label, x: label.x + dx, y: label.y + dy } } }
 			: {}),
 	}
 }
@@ -809,6 +812,14 @@ function isOnHostBoundary(eventBounds: BpmnBounds, hostBounds: BpmnBounds): bool
 	)
 }
 
+/**
+ * Moves the shapes `moves` names, re-routing the flows they end and re-docking
+ * their messages. What the op leaves in place ({@link unmovableIds}) is
+ * dropped first; boundary events on a moved host, a moved sub-process's
+ * content and the own pool's content ({@link poolHolds}, 8c.2) come along,
+ * each once. A flow the own pool carried with both ends is translated, bends
+ * and ports kept, instead of re-routed.
+ */
 export function moveShapes(
 	defs: BpmnDefinitions,
 	moves: Array<{ id: string; dx: number; dy: number }>,
@@ -828,22 +839,38 @@ export function moveShapes(
 	const messages = messageFlowsById(defs)
 	const pools = participantIds(defs)
 
+	// Every cascade below adds an id once: the selection may already hold it (critique I10).
+	const extendedMoves = [...movable]
+	const seenIds = new Set(movable.map((m) => m.id))
+	const follow = (id: string, move: { dx: number; dy: number }) => {
+		if (seenIds.has(id)) return
+		seenIds.add(id)
+		extendedMoves.push({ id, dx: move.dx, dy: move.dy })
+	}
+
+	// Cascade: the own pool takes what it holds (8c.2). Its flows keep their routes, translated.
+	const rigid = new Set<string>()
+	for (const move of movable) {
+		for (const id of poolHolds(defs, move.id)) {
+			rigid.add(id)
+			follow(id, move)
+		}
+	}
+
 	// Cascade: boundary events attached to moved shapes also move, but only if they
 	// are currently positioned on/near the host boundary (not moved away by the user).
-	const extendedMoves = [...movable]
 	for (const el of process.flowElements) {
 		if (el.type === "boundaryEvent" && moveMap.has(el.attachedToRef) && !moveMap.has(el.id)) {
 			const hostShape = diagram.plane.shapes.find((s) => s.bpmnElement === el.attachedToRef)
 			const eventShape = diagram.plane.shapes.find((s) => s.bpmnElement === el.id)
 			if (hostShape && eventShape && isOnHostBoundary(eventShape.bounds, hostShape.bounds)) {
 				const hostMove = moveMap.get(el.attachedToRef)
-				if (hostMove) extendedMoves.push({ id: el.id, dx: hostMove.dx, dy: hostMove.dy })
+				if (hostMove) follow(el.id, hostMove)
 			}
 		}
 	}
 
 	// Cascade: descendants of moving container elements (subprocesses) also move.
-	const seenIds = new Set(extendedMoves.map((m) => m.id))
 	const cascadeDescendants = (elements: BpmnFlowElement[]): void => {
 		for (const el of elements) {
 			if (
@@ -857,12 +884,7 @@ export function moveShapes(
 					if (move) {
 						const descIds = new Set<string>()
 						collectDescendantIds(el, descIds)
-						for (const descId of descIds) {
-							if (!seenIds.has(descId)) {
-								seenIds.add(descId)
-								extendedMoves.push({ id: descId, dx: move.dx, dy: move.dy })
-							}
-						}
+						for (const descId of descIds) follow(descId, move)
 					}
 				}
 				cascadeDescendants(el.flowElements)
@@ -905,6 +927,11 @@ export function moveShapes(
 	//  2. Never share the same connection point on an element (port deconfliction)
 	const allFlows = new Map<string, BpmnSequenceFlow>()
 	collectAllSequenceFlows(process.flowElements, process.sequenceFlows, allFlows)
+	const associations = [
+		...process.associations,
+		...defs.collaborations.flatMap((c) => c.associations),
+	]
+	const dataEnds = dataAssociationEnds(defs)
 
 	// Build a lookup of post-move shape bounds
 	const shapeBoundsMap = new Map<string, BpmnBounds>()
@@ -933,6 +960,18 @@ export function moveShapes(
 						!containers.has(s.bpmnElement),
 				)
 				.map((s) => s.bounds)
+
+			// Carried by the pool with both ends: the route the person drew moves whole.
+			if (
+				srcMove &&
+				tgtMove &&
+				rigid.has(flow.sourceRef) &&
+				rigid.has(flow.targetRef) &&
+				srcMove.dx === tgtMove.dx &&
+				srcMove.dy === tgtMove.dy
+			) {
+				return translateEdge(edge, srcMove.dx, srcMove.dy)
+			}
 
 			if (srcMove || tgtMove) {
 				// At least one endpoint moved — always re-route from port midpoints so that
@@ -964,21 +1003,20 @@ export function moveShapes(
 		const message = messages.get(edge.bpmnElement)
 		if (message) return redockMessage(edge, message, extendedMoveMap, newShapes, pools)
 
-		// Handle association edges
-		const assoc = process.associations.find((a) => a.id === edge.bpmnElement)
-		if (assoc) {
-			const srcMove = extendedMoveMap.get(assoc.sourceRef)
-			const tgtMove = extendedMoveMap.get(assoc.targetRef)
+		// Association edges, of the process or of a collaboration (a note on a pool), and data
+		// associations, which a pool move carries with the data references it holds.
+		const assoc = associations.find((a) => a.id === edge.bpmnElement)
+		const [sourceRef, targetRef] = assoc
+			? [assoc.sourceRef, assoc.targetRef]
+			: (dataEnds.get(edge.bpmnElement) ?? [])
+		if (sourceRef !== undefined && targetRef !== undefined) {
+			const srcMove = extendedMoveMap.get(sourceRef)
+			const tgtMove = extendedMoveMap.get(targetRef)
 			if (!srcMove && !tgtMove) return edge
 
-			if (srcMove && tgtMove) {
-				return {
-					...edge,
-					waypoints: edge.waypoints.map((wp) => ({ x: wp.x + srcMove.dx, y: wp.y + srcMove.dy })),
-				}
-			}
-			const srcShape = newShapes.find((s) => s.bpmnElement === assoc.sourceRef)
-			const tgtShape = newShapes.find((s) => s.bpmnElement === assoc.targetRef)
+			if (srcMove && tgtMove) return translateEdge(edge, srcMove.dx, srcMove.dy)
+			const srcShape = newShapes.find((s) => s.bpmnElement === sourceRef)
+			const tgtShape = newShapes.find((s) => s.bpmnElement === targetRef)
 			if (srcShape && tgtShape) {
 				return { ...edge, waypoints: computeWaypoints(srcShape.bounds, tgtShape.bounds) }
 			}
@@ -987,8 +1025,14 @@ export function moveShapes(
 		return edge
 	})
 
-	// Port deconfliction: spread edges that share the same connection point on a shape
-	const deconflictedEdges = deconflictPorts(newEdges, shapeBoundsMap, allFlows)
+	// Port deconfliction: spread edges that share the same connection point on a shape.
+	// Routes a pool carried whole keep their ports, as they keep their bends.
+	const carried = new Set(
+		[...allFlows.values()]
+			.filter((f) => rigid.has(f.sourceRef) && rigid.has(f.targetRef))
+			.map((f) => f.id),
+	)
+	const deconflictedEdges = deconflictPorts(newEdges, shapeBoundsMap, allFlows, carried)
 
 	return {
 		...defs,
@@ -1013,6 +1057,7 @@ function deconflictPorts(
 	edges: BpmnDiEdge[],
 	shapeBoundsMap: Map<string, BpmnBounds>,
 	allFlows: Map<string, BpmnSequenceFlow>,
+	fixed: ReadonlySet<string> = new Set(),
 ): BpmnDiEdge[] {
 	type TermRef = { edgeIdx: number; isSource: boolean; port: PortDir }
 	const groups = new Map<string, TermRef[]>()
@@ -1021,7 +1066,7 @@ function deconflictPorts(
 		const edge = edges[i]
 		if (!edge || edge.waypoints.length < 2) continue
 		const flow = allFlows.get(edge.bpmnElement)
-		if (!flow) continue
+		if (!flow || fixed.has(flow.id)) continue
 		const srcBounds = shapeBoundsMap.get(flow.sourceRef)
 		const tgtBounds = shapeBoundsMap.get(flow.targetRef)
 		if (!srcBounds || !tgtBounds) continue
@@ -1146,6 +1191,8 @@ export function resizeShape(
 	id: string,
 	newBounds: BpmnBounds,
 ): BpmnDefinitions {
+	// A band's neighbours and pool follow it; that geometry lives with the other band edits.
+	if (swimlaneIds(defs).has(id)) return resizeSwimlane(defs, id, newBounds)
 	// A partner's node is not in processes[0]: only its drawing would change.
 	if (lockedIds(defs).has(id)) return defs
 	const process = defs.processes[0]

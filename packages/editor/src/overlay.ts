@@ -289,9 +289,29 @@ export class OverlayRenderer {
 
 	// ── Space tool split line ──────────────────────────────────────────
 
-	setSpacePreview(axis: "h" | "v" | null, splitValue?: number): void {
+	/**
+	 * The space tool's split line along `axis` at `splitValue`, and an outline
+	 * of each of `stretched`, the bounds the pools, lanes and sub-processes the
+	 * line crosses will grow to.
+	 */
+	setSpacePreview(
+		axis: "h" | "v" | null,
+		splitValue?: number,
+		stretched: readonly BpmnBounds[] = [],
+	): void {
 		this._spaceG.innerHTML = ""
 		if (!axis || splitValue === undefined) return
+		for (const b of stretched) {
+			const rect = svgEl("rect")
+			attr(rect, {
+				class: "bpmnkit-space-stretch",
+				x: b.x,
+				y: b.y,
+				width: b.width,
+				height: b.height,
+			})
+			this._spaceG.appendChild(rect)
+		}
 
 		const EXTENT = 10000
 		const line = svgEl("line")
@@ -407,15 +427,18 @@ export class OverlayRenderer {
 
 	/**
 	 * The pool tool's ghost: the pool a click would place, at `bounds`, with its
-	 * name strip. It shares the create ghost's layer, so `setGhostCreate(null)`
-	 * clears it too.
+	 * name strip, drawn as refused where the click adds nothing. It shares the
+	 * create ghost's layer, so `setGhostCreate(null)` clears it too.
 	 */
-	setGhostPool(bounds: BpmnBounds | null): void {
+	setGhostPool(bounds: BpmnBounds | null, refused = false): void {
 		this._ghostCreateG.innerHTML = ""
 		if (!bounds) return
 		const { x, y, width, height } = bounds
 		const g = svgEl("g")
-		attr(g, { class: "bpmnkit-ghost", transform: `translate(${x} ${y})` })
+		attr(g, {
+			class: refused ? "bpmnkit-ghost bpmnkit-ghost-refused" : "bpmnkit-ghost",
+			transform: `translate(${x} ${y})`,
+		})
 		const rect = svgEl("rect")
 		attr(rect, { x: 0, y: 0, width, height, class: "bpmnkit-shape-body" })
 		const strip = svgEl("line")

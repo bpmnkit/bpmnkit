@@ -633,40 +633,31 @@ describe("final review: what a growing pool and a deleted swimlane leave behind"
 
 	it("moves what the space tool moves by the space tool's offset only", () => {
 		const defs = flowableFixture()
-		const after = run(defs, {
-			kind: "move",
-			moves: ["End_1", "Participant_partner", "Participant_bank"].map((id) => ({
-				id,
-				dx: 0,
-				dy: 60,
-			})),
-			grow: true,
-		})
+		const after = run(defs, { kind: "space", origin: 270, axis: "v", delta: 60 })
 		expect(boundsOf(after, "Participant_partner").y).toBe(460)
 		expect(boundsOf(after, "Participant_bank").y).toBe(550)
 		expectSwimlanesSound(after)
 	})
 
-	it("grows the pool for a space-tool move past its right or bottom edge, not for a drag", () => {
+	it("grows the pool by the space tool's room past its right or bottom edge, not for a drag", () => {
 		const defs = flowableFixture()
-		const space = (dx: number, dy: number, ids: string[]): EditorOp => ({
-			kind: "move",
-			moves: ids.map((id) => ({ id, dx, dy })),
-			grow: true,
+		const space = (axis: "h" | "v", origin: number, delta: number): EditorOp => ({
+			kind: "space",
+			origin,
+			axis,
+			delta,
 		})
-		const wider = run(defs, space(200, 0, ["Task_pay", "End_1"]))
+		const wider = run(defs, space("h", 380, 200))
 		expect(boundsOf(wider, "Task_pay").x).toBe(600)
-		expect(boundsOf(wider, "Participant_own").width).toBe(798)
+		expect(boundsOf(wider, "Participant_own").width).toBe(840)
 		expectSwimlanesSound(wider)
-		const deeper = run(defs, space(0, 200, ["End_1", "Participant_partner", "Participant_bank"]))
+		const deeper = run(defs, space("v", 270, 200))
 		expect(boundsOf(deeper, "End_1").y).toBe(482)
-		expect(bottomOf(deeper, "Participant_own")).toBe(548)
+		expect(bottomOf(deeper, "Participant_own")).toBe(560)
 		expect(boundsOf(deeper, "Participant_partner").y).toBe(600)
 		expectSwimlanesSound(deeper)
 		// A plain drag still may not leave the pool.
 		expect(run(defs, move("Task_pay", 200, 0))).toBe(defs)
-		// Nor may a space-tool move put a node in a partner pool.
-		expect(run(defs, space(0, 390, ["Task_review"]))).toBe(defs)
 	})
 
 	it("refuses to move a black box over the own pool", () => {

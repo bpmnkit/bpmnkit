@@ -24,6 +24,7 @@ import {
 	lanesOf,
 	messageFlows,
 	participants,
+	verticalPoolXml,
 } from "./swimlane-helpers.js"
 
 const LOAN = `# Loan
@@ -553,11 +554,14 @@ describe("applyProcessDelta lanes and pools: review findings", () => {
 		expectMessagesAttached(result.definitions, ["assignApprover"])
 	})
 
-	it("miwg-A.4.1: a node moved into a new lane keeps its messages", () => {
+	// A.4.1's pools are drawn vertically: a new lane is reported, not drawn across them (WP8c).
+	it("miwg-A.4.1: a new lane on its vertical pool is reported and its messages stay", () => {
 		const defs = fixture("miwg-A.4.1.bpmn")
 		const { aliases } = writeProcessText(defs)
 		const result = apply(defs, "lane x: task_1")
-		expect(result.problems).toEqual([])
+		expect(result.problems.map((p) => p.message)).toEqual([
+			expect.stringMatching(/^lane x: pool ".*" is drawn vertically; .*; left out$/),
+		])
 		expectMessagesAttached(result.definitions, [aliases.task_1 ?? "task_1"])
 	})
 
@@ -609,8 +613,49 @@ describe("applyProcessDelta lanes and pools: review findings", () => {
 		const defs = fixture("miwg-A.4.1.bpmn")
 		const { aliases } = writeProcessText(defs)
 		const result = apply(defs, "lane zzl: task_1")
-		expect(result.problems).toEqual([])
+		expect(result.problems.map((p) => p.message)).toEqual([
+			expect.stringMatching(/drawn vertically/),
+		])
 		expectMessagesOrthogonal(result.definitions, [aliases.task_1 ?? "task_1"])
+	})
+
+	// A.4.1, which covered this, is drawn vertically and now refuses new lanes:
+	// two horizontal pools side by side give the same horizontal message.
+	it("a horizontal message keeps its right angles when its node changes lane", () => {
+		const defs = Bpmn.parse(`<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" targetNamespace="t">
+  <collaboration id="c">
+    <participant id="own" name="Own" processRef="p"/>
+    <participant id="bank" name="Bank"/>
+    <messageFlow id="m" sourceRef="t" targetRef="bank"/>
+  </collaboration>
+  <process id="p" isExecutable="true">
+    <laneSet id="ls"><lane id="l1" name="One"><flowNodeRef>t</flowNodeRef></lane><lane id="l2" name="Two"/></laneSet>
+    <task id="t" name="Send"/>
+  </process>
+  <bpmndi:BPMNDiagram id="d">
+    <bpmndi:BPMNPlane id="pl" bpmnElement="c">
+      <bpmndi:BPMNShape id="own_di" bpmnElement="own" isHorizontal="true"><omgdc:Bounds x="0" y="0" width="600" height="240"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="l1_di" bpmnElement="l1" isHorizontal="true"><omgdc:Bounds x="30" y="0" width="570" height="120"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="l2_di" bpmnElement="l2" isHorizontal="true"><omgdc:Bounds x="30" y="120" width="570" height="120"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_di" bpmnElement="t"><omgdc:Bounds x="200" y="30" width="100" height="60"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="bank_di" bpmnElement="bank" isHorizontal="true"><omgdc:Bounds x="700" y="0" width="300" height="240"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="m_di" bpmnElement="m"><omgdi:waypoint x="300" y="60"/><omgdi:waypoint x="700" y="60"/></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>`)
+		const { aliases } = writeProcessText(defs)
+		const lane = Object.entries(aliases).find(([, id]) => id === "l2")?.[0] ?? "l2"
+		const result = apply(defs, `lane ${lane}: t`)
+		expect(result.problems).toEqual([])
+		expect(drawnBounds(result.definitions, "t").y).toBeGreaterThanOrEqual(120)
+		const points =
+			result.definitions.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === "m")?.waypoints ??
+			[]
+		const [first, last] = [points[0], points.at(-1)]
+		expect(first && touches(drawnBounds(result.definitions, "t"), first, 0.5)).toBe(true)
+		expect(last && touches(drawnBounds(result.definitions, "bank"), last, 0.5)).toBe(true)
+		expectMessagesOrthogonal(result.definitions, ["t"])
 	})
 
 	it("08: a boundary event that moves with its host keeps its message", () => {
@@ -675,5 +720,18 @@ describe("applyProcessDelta lanes and pools: review findings", () => {
 			expect(result.problems).toEqual([])
 			expectNodesInTheirLanes(result.definitions)
 		})
+	})
+})
+
+describe("applyProcessDelta lanes on a pool drawn vertically", () => {
+	it("reports a new lane instead of drawing a horizontal band across a vertical pool", () => {
+		for (const laned of [false, true]) {
+			const defs = Bpmn.parse(verticalPoolXml(laned))
+			const result = apply(defs, "lane review[Review]: s")
+			expect(result.problems.map((p) => p.message)).toEqual([
+				'lane review: pool "P" is drawn vertically; lanes are added to horizontal pools only; left out',
+			])
+			expect(Bpmn.export(result.definitions)).toBe(Bpmn.export(defs))
+		}
 	})
 })

@@ -1021,7 +1021,7 @@
 		{
 			"id": "getting-started.conformance.bpmn-elements-by-component",
 			"file": "chunks/getting-started.conformance.bpmn-elements-by-component.md",
-			"tokens": 1916,
+			"tokens": 1922,
 			"tags": [
 				"getting-started",
 				"conformance",
@@ -5646,7 +5646,7 @@
 		{
 			"id": "packages.editor.basic-setup",
 			"file": "chunks/packages.editor.basic-setup.md",
-			"tokens": 589,
+			"tokens": 682,
 			"tags": [
 				"packages",
 				"editor",

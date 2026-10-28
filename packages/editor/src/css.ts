@@ -86,6 +86,11 @@ export const EDITOR_CSS = `
   pointer-events: none;
 }
 
+/* Pool tool ghost where the click adds nothing */
+.bpmnkit-ghost-refused .bpmnkit-shape-body {
+  stroke: var(--bpmnkit-danger, #dc2626);
+}
+
 /* Ghost connection line */
 .bpmnkit-ghost-conn {
   stroke: var(--bpmnkit-ds-accent, #a8503a);
@@ -176,6 +181,14 @@ export const EDITOR_CSS = `
   stroke: var(--bpmnkit-warn, #f97316);
   stroke-width: 1;
   fill: none;
+  pointer-events: none;
+}
+
+/* Space tool: the pools and lanes the drop will stretch */
+.bpmnkit-space-stretch {
+  fill: none;
+  stroke: var(--bpmnkit-warn, #f59e0b);
+  stroke-dasharray: 4 2;
   pointer-events: none;
 }
 

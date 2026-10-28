@@ -29,6 +29,8 @@ export const es: Locale = {
 		"Add lane above": "Añadir carril encima",
 		"Add lane below": "Añadir carril debajo",
 		"Add pool": "Añadir pool",
+		"Cannot create a pool: another process with content has no pool":
+			"No se puede crear un pool: otro proceso con contenido no tiene pool",
 		"Create pool": "Crear pool",
 		"Divide into three lanes": "Dividir en tres carriles",
 		"Divide into two lanes": "Dividir en dos carriles",

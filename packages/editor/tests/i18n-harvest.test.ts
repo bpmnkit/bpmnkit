@@ -208,6 +208,16 @@ function harvest(): { keys: string[]; placeholders: (key: string) => string[] } 
 	editor.setSelection(["pool"])
 	rightClick()
 	press()
+	// The pool tool says why it is off when a first pool would leave a process out.
+	editor.load(
+		XML.replace(/<bpmn:collaboration[\s\S]*<\/bpmn:collaboration>/, "")
+			.replace(/<bpmndi:BPMNShape id="s_(?:pool|lane\d|bank)"[^\n]*\n/g, "")
+			.replace(
+				"</bpmn:definitions>",
+				'<bpmn:process id="other"><bpmn:task id="o1"/></bpmn:process></bpmn:definitions>',
+			)
+			.replace('bpmnElement="collab"', 'bpmnElement="proc"'),
+	)
 	// A document that reuses an id gets a warning banner.
 	editor.load(
 		XML.replace('id="end"', 'id="task"').replace('bpmnElement="end"', 'bpmnElement="task"'),

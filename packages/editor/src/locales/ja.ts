@@ -29,6 +29,8 @@ export const ja: Locale = {
 		"Add lane above": "上にレーンを追加",
 		"Add lane below": "下にレーンを追加",
 		"Add pool": "プールを追加",
+		"Cannot create a pool: another process with content has no pool":
+			"プールを作成できません: 内容のある別のプロセスにプールがありません",
 		"Create pool": "プールを作成",
 		"Divide into three lanes": "3つのレーンに分割",
 		"Divide into two lanes": "2つのレーンに分割",

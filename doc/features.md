@@ -1,5 +1,9 @@
 # Features
 
+## Editor: resize and move pools and lanes (2026-10-28)
+
+- Pools and lanes are resized by their handles (neighbouring lanes balance, nodes never leave their lane), the own pool is dragged with everything in it, and the space tool widens or deepens the pools and lanes it crosses.
+
 ## Editor: create pools and add lanes (2026-10-28)
 
 - A pool tool wraps a process in its first pool or adds a black-box partner; lanes are added above or below, and an unlaned pool is divided into two or three lanes. A black box can start a message flow, so incoming messages can be drawn.

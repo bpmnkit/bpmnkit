@@ -80,8 +80,8 @@ const SHAPES: Record<EditorOp["kind"], (op: Json) => boolean> = {
 	move: (o) =>
 		list(o.moves, move) &&
 		(o.onEdge === undefined ||
-			(isObject(o.onEdge) && str(o.onEdge.edgeId) && str(o.onEdge.shapeId))) &&
-		(o.grow === undefined || typeof o.grow === "boolean"),
+			(isObject(o.onEdge) && str(o.onEdge.edgeId) && str(o.onEdge.shapeId))),
+	space: (o) => num(o.origin) && (o.axis === "h" || o.axis === "v") && num(o.delta),
 	resize: (o) => str(o.id) && bounds(o.bounds),
 	delete: (o) => list(o.ids, str),
 	rename: (o) => str(o.id) && str(o.name),

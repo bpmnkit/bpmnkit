@@ -29,6 +29,8 @@ export const pl: Locale = {
 		"Add lane above": "Dodaj tor powyżej",
 		"Add lane below": "Dodaj tor poniżej",
 		"Add pool": "Dodaj pulę",
+		"Cannot create a pool: another process with content has no pool":
+			"Nie można utworzyć puli: inny proces z zawartością nie ma puli",
 		"Create pool": "Utwórz pulę",
 		"Divide into three lanes": "Podziel na trzy tory",
 		"Divide into two lanes": "Podziel na dwa tory",

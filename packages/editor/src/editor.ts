@@ -74,9 +74,13 @@ import {
 	canDivideLanes,
 	lockedIds,
 	newPoolBounds,
+	poolHolds,
+	poolRefused,
 	primaryFirst,
 	primaryPlane,
+	resizableSwimlanes,
 	swimlaneIds,
+	swimlaneResizeBounds,
 	unmovableIds,
 	withPrimaryFirst,
 } from "./swimlanes.js"
@@ -374,6 +378,8 @@ export class BpmnEditor {
 	private _swimlanes = new Set<string>()
 	/** Nodes and flows of other processes, which edits skip (see `lockedIds`). */
 	private _locked = new Set<string>()
+	/** The pools and lanes a resize may change (`resizableSwimlanes`), refreshed on every render. */
+	private _resizableSwimlanes = new Set<string>()
 	/** What a move op leaves in place, so the drag preview leaves it too. */
 	private _unmovable = new Set<string>()
 	private _edges: RenderedEdge[] = []
@@ -504,7 +510,8 @@ export class BpmnEditor {
 			previewTranslate: (dx, dy) => this._previewTranslate(dx, dy),
 			commitTranslate: (dx, dy) => this._commitTranslate(dx, dy),
 			cancelTranslate: () => this._cancelTranslate(),
-			previewResize: (bounds) => this._overlay.setResizePreview(bounds),
+			previewResize: (bounds, id) =>
+				this._overlay.setResizePreview(this._resizePreview(id, bounds)),
 			commitResize: (id, bounds) => {
 				this._overlay.setResizePreview(null)
 				this._executeOp({ kind: "resize", id, bounds }, { label: "Resize" })
@@ -1205,6 +1212,7 @@ export class BpmnEditor {
 		this._swimlanes = swimlaneIds(defs)
 		this._locked = lockedIds(defs)
 		this._unmovable = unmovableIds(defs)
+		this._resizableSwimlanes = resizableSwimlanes(defs)
 
 		// Add transparent hit-area polylines for edge clicking
 		for (const edge of this._edges) {
@@ -1332,9 +1340,7 @@ export class BpmnEditor {
 		const finalDy = useSpacingY ? spacingResult.dy : alignSnap.dy
 
 		this._snapDelta = { dx: finalDx, dy: finalDy }
-		for (const id of this._selectedIds) {
-			// The move op leaves these in place; dragging them here would jump back on drop.
-			if (this._unmovable.has(id)) continue
+		for (const id of this._dragged()) {
 			const shape = this._shapeById.get(id)
 			if (!shape) continue
 			const { x, y } = shape.shape.bounds
@@ -1350,12 +1356,23 @@ export class BpmnEditor {
 		this._setEdgeDropHighlight(this._findEdgeDropTarget(finalDx, finalDy))
 	}
 
+	/**
+	 * What a move of the selection moves, so the drag preview moves it too: the
+	 * selection without what the op leaves in place (a lane, a partner's node),
+	 * and what the own pool takes along (`poolHolds`).
+	 */
+	private _dragged(): Set<string> {
+		const ids = this._selectedIds.filter((id) => !this._unmovable.has(id))
+		const defs = this._defs
+		return new Set([...ids, ...(defs ? ids.flatMap((id) => poolHolds(defs, id)) : [])])
+	}
+
 	private _cancelTranslate(): void {
 		this._snapDelta = null
 		this._overlay.setAlignmentGuides([])
 		this._overlay.setDistanceGuides([])
 		this._setEdgeDropHighlight(null)
-		for (const id of this._selectedIds) {
+		for (const id of this._dragged()) {
 			const shape = this._shapeById.get(id)
 			if (!shape) continue
 			const { x, y } = shape.shape.bounds
@@ -1396,79 +1413,66 @@ export class BpmnEditor {
 		}
 	}
 
-	private _previewSpace(origin: DiagPoint, current: DiagPoint, axis: "h" | "v" | null): void {
-		// Reset all shapes to their original positions first
+	/** The `space` op a space drag from `origin` to `current` along `axis` makes; null for no room. */
+	private _spaceOp(
+		origin: DiagPoint,
+		current: DiagPoint,
+		axis: "h" | "v" | null,
+	): Extract<EditorOp, { kind: "space" }> | null {
+		if (!axis) return null
+		const delta = axis === "h" ? current.x - origin.x : current.y - origin.y
+		if (delta === 0) return null
+		return { kind: "space", origin: axis === "h" ? origin.x : origin.y, axis, delta }
+	}
+
+	/** Puts every shape back where the document draws it, after a preview moved some. */
+	private _resetShapes(): void {
 		for (const shape of this._shapes) {
 			const { x, y } = shape.shape.bounds
 			shape.element.setAttribute("transform", `translate(${x} ${y})`)
 		}
-		if (!axis) return
+	}
 
-		const dx = current.x - origin.x
-		const dy = current.y - origin.y
-
+	/**
+	 * Shows what the space op would do: the shapes it moves, moved, and outlines
+	 * of the pools, lanes and sub-processes it stretches. The op itself works it
+	 * out, so the preview cannot disagree with the drop; a refused space shows
+	 * the line only.
+	 */
+	private _previewSpace(origin: DiagPoint, current: DiagPoint, axis: "h" | "v" | null): void {
+		this._resetShapes()
+		const op = this._spaceOp(origin, current, axis)
+		if (!axis || !op || !this._defs) {
+			this._overlay.setSpacePreview(axis, axis === "h" ? origin.x : origin.y)
+			return
+		}
+		// ponytail: the whole op per pointer move (one diagram copied); preview a shift list if large files lag.
+		const spaced = applyOp(this._defs, op).defs
+		const after = new Map(
+			(primaryPlane(spaced)?.shapes ?? []).map((s) => [s.bpmnElement, s.bounds] as const),
+		)
+		const stretched: BpmnBounds[] = []
 		for (const shape of this._shapes) {
-			// The move op leaves these in place (see unmovableIds); so does the preview.
-			if (this._unmovable.has(shape.id)) continue
 			const b = shape.shape.bounds
-			const cx = b.x + b.width / 2
-			const cy = b.y + b.height / 2
-			let moveDx = 0
-			let moveDy = 0
-			if (axis === "h") {
-				if (dx > 0 && cx > origin.x) moveDx = dx
-				else if (dx < 0 && cx < origin.x) moveDx = dx
-			} else {
-				if (dy > 0 && cy > origin.y) moveDy = dy
-				else if (dy < 0 && cy < origin.y) moveDy = dy
-			}
-			if (moveDx !== 0 || moveDy !== 0) {
-				shape.element.setAttribute("transform", `translate(${b.x + moveDx} ${b.y + moveDy})`)
+			const next = after.get(shape.id)
+			if (!next) continue
+			if (next.width !== b.width || next.height !== b.height) stretched.push(next)
+			else if (next.x !== b.x || next.y !== b.y) {
+				shape.element.setAttribute("transform", `translate(${next.x} ${next.y})`)
 			}
 		}
-
-		const splitValue = axis === "h" ? origin.x : origin.y
-		this._overlay.setSpacePreview(axis, splitValue)
+		this._overlay.setSpacePreview(axis, op.origin, stretched)
 	}
 
 	private _commitSpace(origin: DiagPoint, current: DiagPoint, axis: "h" | "v" | null): void {
-		// Reset visual preview
-		for (const shape of this._shapes) {
-			const { x, y } = shape.shape.bounds
-			shape.element.setAttribute("transform", `translate(${x} ${y})`)
-		}
+		this._resetShapes()
 		this._overlay.setSpacePreview(null)
-
-		if (!axis || !this._defs) return
-
-		const dx = current.x - origin.x
-		const dy = current.y - origin.y
-		if (dx === 0 && dy === 0) return
-
-		const moves: Array<{ id: string; dx: number; dy: number }> = []
-		for (const shape of this._shapes) {
-			const b = shape.shape.bounds
-			const cx = b.x + b.width / 2
-			const cy = b.y + b.height / 2
-			if (axis === "h") {
-				if (dx > 0 && cx > origin.x) moves.push({ id: shape.id, dx, dy: 0 })
-				else if (dx < 0 && cx < origin.x) moves.push({ id: shape.id, dx, dy: 0 })
-			} else {
-				if (dy > 0 && cy > origin.y) moves.push({ id: shape.id, dx: 0, dy })
-				else if (dy < 0 && cy < origin.y) moves.push({ id: shape.id, dx: 0, dy })
-			}
-		}
-
-		if (moves.length > 0) {
-			this._executeOp({ kind: "move", moves, grow: true }, { label: "Move" })
-		}
+		const op = this._spaceOp(origin, current, axis)
+		if (op) this._executeOp(op, { label: "Space tool" })
 	}
 
 	private _cancelSpace(): void {
-		for (const shape of this._shapes) {
-			const { x, y } = shape.shape.bounds
-			shape.element.setAttribute("transform", `translate(${x} ${y})`)
-		}
+		this._resetShapes()
 		this._overlay.setSpacePreview(null)
 	}
 
@@ -1563,9 +1567,17 @@ export class BpmnEditor {
 		)
 	}
 
-	private _doCopy(): void {
-		if (!this._defs || this._selectedIds.length === 0) return
-		this._clipboard = copyElements(primaryFirst(this._defs), this._selectedIds)
+	/**
+	 * Copies the selection; whether anything was copied. A selection of only
+	 * pools, lanes, notes or a partner's nodes copies nothing, and keeps what was
+	 * copied before.
+	 */
+	private _doCopy(): boolean {
+		if (!this._defs || this._selectedIds.length === 0) return false
+		const clipboard = copyElements(primaryFirst(this._defs), this._selectedIds)
+		if (clipboard.elements.length === 0) return false
+		this._clipboard = clipboard
+		return true
 	}
 
 	private _doPaste(): void {
@@ -1909,8 +1921,8 @@ export class BpmnEditor {
 
 	/** Copies then pastes the current selection with a small offset. */
 	duplicate(): void {
-		this._doCopy()
-		this._doPaste()
+		// Nothing copied would paste the clipboard from before.
+		if (this._doCopy()) this._doPaste()
 	}
 
 	/**
@@ -2127,24 +2139,29 @@ export class BpmnEditor {
 		this._executeOp({ kind: "reconnect", edgeId, isStart, port: newPort }, { label: "Reconnect" })
 	}
 
+	/**
+	 * Whether `id` gets resize handles: an annotation, a resizable node of the
+	 * primary process, or a pool or lane a resize may change. Pools and lanes
+	 * have no `flowElement`, so they are asked by id.
+	 */
 	private _isResizable(id: string): boolean {
 		const shape = this._shapeById.get(id)
 		if (!shape) return false
 		if (shape.annotation !== undefined) return true
-		return shape.flowElement !== undefined && canResize(shape.flowElement.type)
+		if (this._swimlanes.has(id)) return this._resizableSwimlanes.has(id)
+		return (
+			shape.flowElement !== undefined && canResize(shape.flowElement.type) && !this._locked.has(id)
+		)
 	}
 
 	private _getResizableIds(): Set<string> {
-		const ids = new Set<string>()
-		for (const shape of this._shapes) {
-			if (
-				shape.annotation !== undefined ||
-				(shape.flowElement && canResize(shape.flowElement.type))
-			) {
-				ids.add(shape.id)
-			}
-		}
-		return ids
+		return new Set(this._shapes.map((shape) => shape.id).filter((id) => this._isResizable(id)))
+	}
+
+	/** The bounds a resize of `id` to `bounds` will give it: a pool or lane stops where its limits do. */
+	private _resizePreview(id: string, bounds: BpmnBounds): BpmnBounds {
+		if (!this._defs || !this._resizableSwimlanes.has(id)) return bounds
+		return swimlaneResizeBounds(this._defs, id, bounds) ?? bounds
 	}
 
 	// ── Snap / alignment guides ───────────────────────────────────────
@@ -2523,7 +2540,9 @@ export class BpmnEditor {
 		this._stateMachine.onPointerMove(e, diag, hit)
 		const mode = this._stateMachine.mode
 		if (mode.mode === "create" && mode.elementType === "participant") {
-			this._overlay.setGhostPool((this._defs && newPoolBounds(this._defs, diag)) ?? null)
+			const bounds = (this._defs && newPoolBounds(this._defs, diag)) ?? null
+			const refused = bounds !== null && this._defs !== null && poolRefused(this._defs, bounds)
+			this._overlay.setGhostPool(bounds, refused)
 		} else if (mode.mode === "create") {
 			const rawBounds = defaultBounds(mode.elementType, diag.x, diag.y)
 			const snapped = this._computeCreateSnap(rawBounds)

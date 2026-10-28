@@ -18,11 +18,13 @@ describe("parseOp", () => {
 		expect(parseOp({ kind: "addLane", where: "above", seed: "s" })).toBeNull()
 	})
 
-	it("accepts a space-tool move and refuses a grow that is not a boolean", () => {
-		const moves = [{ id: "a", dx: 10, dy: 0 }]
-		expect(parseOp({ kind: "move", moves, grow: true })).not.toBeNull()
-		expect(parseOp({ kind: "move", moves })).not.toBeNull()
-		expect(parseOp({ kind: "move", moves, grow: "yes" })).toBeNull()
+	it("accepts the space op on either axis and refuses it with fields of the wrong shape", () => {
+		expect(parseOp({ kind: "space", origin: 380, axis: "h", delta: 200 })).not.toBeNull()
+		expect(parseOp({ kind: "space", origin: 200, axis: "v", delta: -60 })).not.toBeNull()
+		expect(parseOp({ kind: "space", origin: 200, axis: "x", delta: 60 })).toBeNull()
+		expect(parseOp({ kind: "space", origin: "200", axis: "v", delta: 60 })).toBeNull()
+		expect(parseOp({ kind: "space", origin: 200, axis: "v" })).toBeNull()
+		expect(parseOp({ kind: "move", moves: [{ id: "a", dx: 10, dy: 0 }] })).not.toBeNull()
 	})
 
 	// A kind looked up on a plain object finds its prototype too: `constructor`
