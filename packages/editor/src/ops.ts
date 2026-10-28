@@ -14,7 +14,14 @@
  * the other half of that promise — creating ops carry a seed rather than
  * inventing ids at random, so a replay mints the same ones (see `id.ts`).
  */
-import type { BpmnBounds, BpmnDefinitions, BpmnWaypoint, DiColor } from "@bpmnkit/core"
+import type {
+	BpmnBounds,
+	BpmnDefinitions,
+	BpmnDiEdge,
+	BpmnDiShape,
+	BpmnWaypoint,
+	DiColor,
+} from "@bpmnkit/core"
 import { applyAutoLayout } from "@bpmnkit/core"
 import { createIdFactory } from "./id.js"
 import {
@@ -187,7 +194,66 @@ export function applyOp(defs: BpmnDefinitions, op: EditorOp): OpResult {
 		created = r.created
 		return r.defs === base ? first : r.defs
 	})
-	return { defs: next, created }
+	return { defs: next === defs ? defs : withoutFloatNoise(defs, next), created }
+}
+
+/**
+ * Rounds away the binary noise (`110.20000000000002`) that adding fractional
+ * deltas leaves on the DI values `after` changed. Fifteen significant digits
+ * keep every value a file can state exactly. A value is compared with the one
+ * the shape or edge of the same DI id had in `before`, not by object identity:
+ * swimlane edits deep-copy the whole diagram, and a moved shape keeps its label
+ * size. What the op left alone keeps its digits, so a file that already carries
+ * long decimals exports unchanged where it was not edited.
+ */
+function withoutFloatNoise(before: BpmnDefinitions, after: BpmnDefinitions): BpmnDefinitions {
+	const kept = new Set<object>()
+	const shapesBefore = new Map<string, BpmnDiShape>()
+	const edgesBefore = new Map<string, BpmnDiEdge>()
+	for (const diagram of before.diagrams) {
+		for (const item of [...diagram.plane.shapes, ...diagram.plane.edges]) kept.add(item)
+		for (const shape of diagram.plane.shapes) shapesBefore.set(shape.id, shape)
+		for (const edge of diagram.plane.edges) edgesBefore.set(edge.id, edge)
+	}
+	const clean = (v: number, old: number | undefined) => (v === old ? v : Number(v.toPrecision(15)))
+	const box = (b: BpmnBounds, old: BpmnBounds | undefined): BpmnBounds => ({
+		...b,
+		x: clean(b.x, old?.x),
+		y: clean(b.y, old?.y),
+		width: clean(b.width, old?.width),
+		height: clean(b.height, old?.height),
+	})
+	const point = (p: BpmnWaypoint, old: BpmnWaypoint | undefined): BpmnWaypoint => ({
+		...p,
+		x: clean(p.x, old?.x),
+		y: clean(p.y, old?.y),
+	})
+	let changed = false
+	const diagrams = after.diagrams.map((diagram) => {
+		const { plane } = diagram
+		// A diagram the op did not touch stays the same object: edits share what they leave alone.
+		if ([...plane.shapes, ...plane.edges].every((item) => kept.has(item))) return diagram
+		changed = true
+		const shapes = plane.shapes.map((shape) => {
+			if (kept.has(shape)) return shape
+			const old = shapesBefore.get(shape.id)
+			const label = shape.label?.bounds
+				? { ...shape.label, bounds: box(shape.label.bounds, old?.label?.bounds) }
+				: shape.label
+			return { ...shape, bounds: box(shape.bounds, old?.bounds), ...(label ? { label } : {}) }
+		})
+		const edges = plane.edges.map((edge) => {
+			if (kept.has(edge)) return edge
+			const old = edgesBefore.get(edge.id)
+			const label = edge.label?.bounds
+				? { ...edge.label, bounds: box(edge.label.bounds, old?.label?.bounds) }
+				: edge.label
+			const waypoints = edge.waypoints.map((p, i) => point(p, old?.waypoints[i]))
+			return { ...edge, waypoints, ...(label ? { label } : {}) }
+		})
+		return { ...diagram, plane: { ...plane, shapes, edges } }
+	})
+	return changed ? { ...after, diagrams } : after
 }
 
 /** Nothing happened: what an edit returns when it refuses the whole op. */

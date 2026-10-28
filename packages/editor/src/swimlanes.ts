@@ -401,7 +401,7 @@ function anchors(defs: BpmnDefinitions): Map<string, string> {
  * of `defs`, at any sub-process depth, by flow id: what an edge's first and
  * last waypoint are docked on.
  */
-function edgeEnds(defs: BpmnDefinitions): Map<string, readonly [string, string]> {
+export function edgeEnds(defs: BpmnDefinitions): Map<string, readonly [string, string]> {
 	const ends = new Map<string, readonly [string, string]>()
 	const add = (flows: readonly { id: string; sourceRef: string; targetRef: string }[]) => {
 		for (const f of flows) ends.set(f.id, [f.sourceRef, f.targetRef])

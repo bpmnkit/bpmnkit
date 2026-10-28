@@ -4,6 +4,7 @@ import {
 	type BpmnDefinitions,
 	expand,
 	laneProblems,
+	leafLanes,
 	parseProcessDelta,
 	parseProcessText,
 	primaryProcess,
@@ -780,5 +781,46 @@ describe("REV-20261028-009: a named message shows its name", () => {
 		edge.label = { bounds: placed }
 		const renamed = apply(named.definitions, "msg pay >(Refund) bank")
 		expect(edgeOf(renamed.definitions, "Refund")?.label?.bounds).toEqual(placed)
+	})
+})
+
+describe("a new node with no flows in a laned process", () => {
+	it("goes in the first leaf lane's band, inside the pool, and joins that lane", () => {
+		const defs = fixture("08-flowable-lanes-pools.bpmn")
+		const result = apply(defs, "loose[user Check by hand]")
+		expect(result.problems).toEqual([])
+		const id = result.created[0] ?? ""
+		const next = result.definitions
+		const process = primaryProcess(next)
+		if (!process) throw new Error("no primary process")
+		const first = leafLanes(process.laneSet)[0]
+		if (!first) throw new Error("no lanes")
+		const band = boundsOf(next, first.id)
+		const node = boundsOf(next, id)
+		const pool = boundsOf(next, "Participant_company")
+		expect(inBand(node, band)).toBe(true)
+		expect(node.x + node.width).toBeLessThanOrEqual(pool.x + pool.width)
+		expect(first.flowNodeRefs).toContain(id)
+		expectSwimlanesSound(next)
+	})
+})
+
+describe("unconnected nodes past the first band's room", () => {
+	it("widens the own pool and its lanes to keep them all inside", () => {
+		const defs = fixture("08-flowable-lanes-pools.bpmn")
+		const script = Array.from({ length: 8 }, (_, k) => `loose${k}[user Check ${k}]`).join("\n")
+		const result = apply(defs, script)
+		expect(result.problems).toEqual([])
+		const next = result.definitions
+		const pool = boundsOf(next, "Participant_company")
+		expect(pool.width).toBeGreaterThan(boundsOf(defs, "Participant_company").width)
+		for (const id of result.created) {
+			const node = boundsOf(next, id)
+			expect(node.x + node.width, id).toBeLessThanOrEqual(pool.x + pool.width)
+		}
+		const process = primaryProcess(next)
+		if (!process) throw new Error("no primary process")
+		expect(laneProblems(process)).toEqual([])
+		expectSwimlanesSound(next)
 	})
 })

@@ -72,6 +72,8 @@ import {
 	POOL_HEADER,
 	canAddLane,
 	canDivideLanes,
+	dataAssociationEnds,
+	edgeEnds,
 	lockedIds,
 	newPoolBounds,
 	poolHolds,
@@ -395,6 +397,10 @@ export class BpmnEditor {
 	private _createEdgeDropTarget: string | null = null
 	private _readOnly = false
 	private _isDragging = false
+	/** {@link _dragged} for the drag in progress; null between drags. */
+	private _dragSet: Set<string> | null = null
+	/** {@link _carriedEdges} for the drag in progress; null between drags. */
+	private _carriedEdgeSet: RenderedEdge[] | null = null
 	private _boundaryHostId: string | null = null
 	private readonly _t: Translate
 	private readonly _liveRegion: HTMLDivElement
@@ -512,6 +518,7 @@ export class BpmnEditor {
 			cancelTranslate: () => this._cancelTranslate(),
 			previewResize: (bounds, id) =>
 				this._overlay.setResizePreview(this._resizePreview(id, bounds)),
+			cancelResize: () => this._overlay.setResizePreview(null),
 			commitResize: (id, bounds) => {
 				this._overlay.setResizePreview(null)
 				this._executeOp({ kind: "resize", id, bounds }, { label: "Resize" })
@@ -1183,6 +1190,9 @@ export class BpmnEditor {
 	 * loaded document lacked in diagram interchange, none for an edit.
 	 */
 	private _renderDefs(defs: BpmnDefinitions, warnings: ImportWarnings = NO_WARNINGS): void {
+		// An undo or a load during a drag replaces the edge elements and what the drag holds.
+		this._dragSet = null
+		this._carriedEdgeSet = null
 		this._containersG.innerHTML = ""
 		this._edgesG.innerHTML = ""
 		this._shapesG.innerHTML = ""
@@ -1284,6 +1294,9 @@ export class BpmnEditor {
 
 	private _setSelection(ids: string[]): void {
 		this._selectedIds = ids
+		// Select all during a drag changes what it moves.
+		this._resetCarriedEdges()
+		this._dragSet = null
 		// Clear edge selection whenever shape selection changes
 		if (this._selectedEdgeId) {
 			this._selectedEdgeId = null
@@ -1346,6 +1359,9 @@ export class BpmnEditor {
 			const { x, y } = shape.shape.bounds
 			shape.element.setAttribute("transform", `translate(${x + finalDx} ${y + finalDy})`)
 		}
+		for (const edge of this._carriedEdges()) {
+			edge.element.setAttribute("transform", `translate(${finalDx} ${finalDy})`)
+		}
 		this._overlay.setAlignmentGuides(this._computeAlignGuides(finalDx, finalDy))
 		this._overlay.setDistanceGuides(
 			spacingResult.guides.filter((g) => {
@@ -1362,12 +1378,57 @@ export class BpmnEditor {
 	 * and what the own pool takes along (`poolHolds`).
 	 */
 	private _dragged(): Set<string> {
+		if (this._dragSet) return this._dragSet
 		const ids = this._selectedIds.filter((id) => !this._unmovable.has(id))
 		const defs = this._defs
-		return new Set([...ids, ...(defs ? ids.flatMap((id) => poolHolds(defs, id)) : [])])
+		const dragged = new Set([...ids, ...(defs ? ids.flatMap((id) => poolHolds(defs, id)) : [])])
+		// Asked several times per pointer move; a new selection or render clears it.
+		if (this._isDragging) this._dragSet = dragged
+		return dragged
+	}
+
+	/**
+	 * The edges a pool drag carries whole, as the move op translates them with
+	 * their bends: a sequence flow with both ends held by a dragged pool
+	 * (`poolHolds`), an association with both ends dragged. Message flows are
+	 * re-docked on drop, other edges re-routed. Empty for a drag that carries no
+	 * pool content.
+	 */
+	private _carriedEdges(): RenderedEdge[] {
+		if (this._carriedEdgeSet) return this._carriedEdgeSet
+		const defs = this._defs
+		const dragged = this._dragged()
+		const held = new Set(defs ? this._selectedIds.flatMap((id) => poolHolds(defs, id)) : [])
+		const ends = held.size > 0 && defs ? edgeEnds(defs) : new Map()
+		const messages = new Set(defs?.collaborations.flatMap((c) => c.messageFlows.map((f) => f.id)))
+		const associations = new Set(
+			defs
+				? [
+						...dataAssociationEnds(defs).keys(),
+						...[...defs.processes, ...defs.collaborations].flatMap((c) =>
+							c.associations.map((a) => a.id),
+						),
+					]
+				: [],
+		)
+		const carried = this._edges.filter((edge) => {
+			const flow = ends.get(edge.id)
+			if (flow === undefined || messages.has(edge.id)) return false
+			const within = associations.has(edge.id) ? dragged : held
+			return within.has(flow[0]) && within.has(flow[1])
+		})
+		if (this._isDragging) this._carriedEdgeSet = carried
+		return carried
+	}
+
+	/** Takes the preview's translation off the carried edges; the op or a re-render draws them. */
+	private _resetCarriedEdges(): void {
+		for (const edge of this._carriedEdgeSet ?? []) edge.element.removeAttribute("transform")
+		this._carriedEdgeSet = null
 	}
 
 	private _cancelTranslate(): void {
+		this._resetCarriedEdges()
 		this._snapDelta = null
 		this._overlay.setAlignmentGuides([])
 		this._overlay.setDistanceGuides([])
@@ -1384,9 +1445,11 @@ export class BpmnEditor {
 			this._overlay.setSelection(this._selectedIds, this._shapes, this._getResizableIds())
 			this._emit("editor:drag", false)
 		}
+		this._dragSet = null
 	}
 
 	private _commitTranslate(dx: number, dy: number): void {
+		this._resetCarriedEdges()
 		const snap = this._snapDelta ?? { dx, dy }
 		this._snapDelta = null
 		this._overlay.setAlignmentGuides([])
@@ -1411,6 +1474,7 @@ export class BpmnEditor {
 			this._overlay.setDragging(false)
 			this._emit("editor:drag", false)
 		}
+		this._dragSet = null
 	}
 
 	/** The `space` op a space drag from `origin` to `current` along `axis` makes; null for no room. */
@@ -2166,10 +2230,22 @@ export class BpmnEditor {
 
 	// ── Snap / alignment guides ───────────────────────────────────────
 
+	/**
+	 * What a drag snaps and what it snaps to: the selected shapes it moves, and
+	 * every shape it neither moves nor holds. The content a pool carries along
+	 * is neither, so its old positions are not a target for its own pool.
+	 */
+	private _snapShapes(): { movingShapes: RenderedShape[]; staticShapes: RenderedShape[] } {
+		const dragged = this._dragged()
+		const selected = new Set(this._selectedIds)
+		return {
+			movingShapes: this._shapes.filter((s) => selected.has(s.id) && dragged.has(s.id)),
+			staticShapes: this._shapes.filter((s) => !selected.has(s.id) && !dragged.has(s.id)),
+		}
+	}
+
 	private _computeSnap(dx: number, dy: number): { dx: number; dy: number } {
-		const selectedSet = new Set(this._selectedIds)
-		const movingShapes = this._shapes.filter((s) => selectedSet.has(s.id))
-		const staticShapes = this._shapes.filter((s) => !selectedSet.has(s.id))
+		const { movingShapes, staticShapes } = this._snapShapes()
 		if (movingShapes.length === 0) return { dx, dy }
 
 		const scale = this._viewport.state.scale
@@ -2229,9 +2305,7 @@ export class BpmnEditor {
 		dx: number,
 		dy: number,
 	): Array<{ x1: number; y1: number; x2: number; y2: number }> {
-		const selectedSet = new Set(this._selectedIds)
-		const movingShapes = this._shapes.filter((s) => selectedSet.has(s.id))
-		const staticShapes = this._shapes.filter((s) => !selectedSet.has(s.id))
+		const { movingShapes, staticShapes } = this._snapShapes()
 		if (movingShapes.length === 0) return []
 
 		const guides: Array<{ x1: number; y1: number; x2: number; y2: number }> = []
@@ -2275,9 +2349,7 @@ export class BpmnEditor {
 		dx: number,
 		dy: number,
 	): { dx: number; dy: number; guides: Array<{ x1: number; y1: number; x2: number; y2: number }> } {
-		const selectedSet = new Set(this._selectedIds)
-		const movingShapes = this._shapes.filter((s) => selectedSet.has(s.id))
-		const staticShapes = this._shapes.filter((s) => !selectedSet.has(s.id))
+		const { movingShapes, staticShapes } = this._snapShapes()
 		if (movingShapes.length !== 1 || staticShapes.length < 2) {
 			return { dx, dy, guides: [] }
 		}

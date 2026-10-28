@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-10-28 — Editor: lane/pool follow-ups, gesture cancel, float noise, pool drag preview
+
+- Escape and a pointercancel share `_cancelGesture` in the state machine: Escape also takes back a rubber band, the connection ghost and a dragged segment, and both drop the resize outline (new `cancelResize` callback; Escape during a resize used to leave the dashed preview).
+- `applyOp` rounds binary noise (`110.20000000000002`) to 15 significant digits on the DI shapes and edges an op changed, recognised by object identity; untouched diagrams stay the same object and untouched values keep their digits (miwg label bounds stated to 16 digits export unchanged).
+- Pool drag preview: edges with both ends carried move with the pool (the move op translates them whole); snapping and alignment guides use what the drag moves and holds (`_snapShapes`), so a pool no longer snaps to its own content's old positions; the dragged set and carried edges are computed once per drag.
+- Change scripts: a new node with no flows in a laned process goes in the first leaf lane's band, from its left, instead of below everything and outside the pool; when the band is full the own pool and its right-edge lanes widen to keep it inside.
+- Task review fixes: the noise rounding compares each value with the one the shape or edge of the same DI id had, since swimlane edits deep-copy the diagram (a lane resize rounded every shape of a file with 16-digit DI); the drag caches are cleared on render and on a new selection (undo or select all mid-drag); the preview carries what the move op translates (sequence flows held by the pool, associations with both ends dragged, never message flows).
+- Tests: `gesture-cancel.test.ts` (incl. a dragged segment), `float-noise.test.ts` (incl. a lane resize), editor-swimlanes (Escape during a resize, carried edges and their reset on cancel, refused drop and select all, no self-snap), process-delta-lanes (unconnected node, full band). Editor 669 pass. Changeset `editor-lane-followups.md`.
+
 ## 2026-10-28 — Docs: stale editor, canvas and compactify references
 
 - `packages/editor.md` and `packages/canvas.md` called `loadXML`, which neither class has (the method is `load`); the canvas table listed `getXML()` and `off()`, which do not exist, and the generated canvas README listed `fit()` and plugin-only `getShapes()`/`getEdges()` as `BpmnCanvas` methods. Tables now list `load`, `loadDefinitions`, `fitView`, `zoom`, `setTheme`, `on` (returns the unsubscribe function) and `destroy`; `scripts/generate-readmes.mjs` fixed and READMEs regenerated (`check-packages` passes). `packages/core.md`: `compactify` said it drops participants, message flows and lanes; it has carried `lanes`, `participants`, `messageFlows` and `executable` since the lane/pool work.

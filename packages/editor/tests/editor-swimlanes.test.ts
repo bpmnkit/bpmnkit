@@ -22,6 +22,7 @@ import {
 /** The private members these tests reach; they are the paths a pointer or key takes. */
 interface EditorInternals {
 	_host: HTMLElement
+	_edgeById: Map<string, { element: SVGGElement }>
 	_containersG: SVGGElement
 	_viewport: { set(state: { tx: number; ty: number; scale: number }): void }
 	_hitTest(clientX: number, clientY: number): { type: string; id?: string }
@@ -899,6 +900,27 @@ describe("WP8c resizing pools and lanes in the editor", () => {
 		expect(preview?.getAttribute("height")).toBe("100")
 	})
 
+	it("drops the resize outline and changes nothing when Escape ends the drag", () => {
+		const { ed, inner } = mount()
+		ed.setSelection(["Lane_finance"])
+		const before = ed.exportXml()
+		const target = handle(inner, "Lane_finance", "s")
+		const original = document.elementFromPoint
+		document.elementFromPoint = () => target
+		try {
+			inner._onPointerDown(pointer("pointerdown", 335, 240))
+			inner._onPointerMove(pointer("pointermove", 335, 280))
+		} finally {
+			document.elementFromPoint = original
+		}
+		expect(inner._svg.querySelector(".bpmnkit-resize-preview")).not.toBeNull()
+		inner._host.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }))
+		expect(inner._svg.querySelector(".bpmnkit-resize-preview")).toBeNull()
+		inner._onPointerUp(pointer("pointerup", 335, 280))
+		expect(ed.canUndo()).toBe(false)
+		expect(ed.exportXml()).toBe(before)
+	})
+
 	it("adds no undo step for a drag that ends where it started", () => {
 		const { ed, inner } = mount()
 		ed.setSelection(["Lane_finance"])
@@ -932,6 +954,53 @@ describe("WP8c moving pools and making space in the editor", () => {
 		)
 		// The partner stays.
 		expect(group(inner, "Participant_partner")?.getAttribute("transform")).toBe("translate(0 400)")
+	})
+
+	it("carries the flows inside the pool in the preview, and leaves the rest to the drop", () => {
+		const { ed, inner } = mount()
+		const edge = (id: string) => inner._edgeById.get(id)?.element
+		ed.setSelection(["Participant_own"])
+		inner._previewTranslate(40, 20)
+		const shift = (group(inner, "Task_review")?.getAttribute("transform") ?? "")
+			.match(/-?[\d.]+/g)
+			?.map(Number)
+		const delta = `translate(${(shift?.[0] ?? 0) - 160} ${(shift?.[1] ?? 0) - 20})`
+		for (const id of ["Flow_1", "Flow_2", "Flow_3", "Flow_4"]) {
+			expect(edge(id)?.getAttribute("transform"), id).toBe(delta)
+		}
+		// One end outside the pool: re-docked by the op, not translated.
+		expect(edge("Message_pay")?.hasAttribute("transform")).toBe(false)
+		inner._commitTranslate(40, 20)
+		for (const id of ["Flow_1", "Flow_2"]) {
+			expect(edge(id)?.hasAttribute("transform"), id).toBe(false)
+		}
+	})
+
+	it("takes the carried flows' translation back on cancel, on a refused drop and on select all", () => {
+		const { ed, inner } = mount()
+		const edge = (id: string) => inner._edgeById.get(id)?.element
+		const end = [
+			() => inner._cancelTranslate(),
+			// Onto the partner pool: refused.
+			() => inner._commitTranslate(0, 100),
+			() => ed.setSelection(["Participant_own", "Participant_partner"]),
+		]
+		for (const [k, finish] of end.entries()) {
+			ed.setSelection(["Participant_own"])
+			inner._previewTranslate(0, 100)
+			expect(edge("Flow_1")?.hasAttribute("transform"), String(k)).toBe(true)
+			finish()
+			expect(edge("Flow_1")?.hasAttribute("transform"), String(k)).toBe(false)
+			inner._cancelTranslate()
+		}
+	})
+
+	it("does not snap the pool to its own content's old positions", () => {
+		const { ed, inner } = mount()
+		ed.setSelection(["Participant_own"])
+		// Task_review's top is at 20: counted as a target, it pulled a 22px drag to 20.
+		inner._previewTranslate(0, 22)
+		expect(group(inner, "Participant_own")?.getAttribute("transform")).toBe("translate(0 22)")
 	})
 
 	it("moves the pool as one undo step, and puts everything back when the drop is refused", () => {

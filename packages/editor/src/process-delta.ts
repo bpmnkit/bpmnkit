@@ -67,6 +67,7 @@ import {
 import { eventTrigger } from "./rules.js"
 import {
 	BLACK_BOX_HEIGHT,
+	POOL_HEADER,
 	addBlackBox,
 	addFirstLane,
 	insertLaneBand,
@@ -650,11 +651,7 @@ function applyToPrimaryFirst(
 	}
 	for (const [written, node] of fresh) {
 		if (real.has(written) || node.type === "boundaryEvent") continue
-		const all = obstacles()
-		const size = sizeOf(node.type as BpmnElementType)
-		const x = all.length > 0 ? Math.min(...all.map((b) => b.x)) : 0
-		const y = (all.length > 0 ? Math.max(...all.map(bottom)) : 0) + ROW / 2
-		create(written, node, slot({ x, y, ...size }))
+		create(written, node, looseSpot(sizeOf(node.type as BpmnElementType)))
 	}
 	for (const [written, node] of fresh) {
 		if (!real.has(written)) problem(node.line, `"${written}" has no host to attach to; left out`)
@@ -954,6 +951,55 @@ function applyToPrimaryFirst(
 			})
 		}
 		return undefined
+	}
+
+	/**
+	 * Where a new node with nothing to follow or lead to goes. In a process with
+	 * drawn lanes: the first free spot, from the left, in the band of the first
+	 * leaf lane, which is the lane `laneForNewNode` gives a node without flows;
+	 * below everything it would sit outside the pool. Otherwise below the
+	 * drawing, at its left edge.
+	 */
+	function looseSpot(size: { width: number; height: number }): BpmnBounds {
+		const all = obstacles()
+		const lane = leafLanes(proc().laneSet)[0]
+		const band = lane === undefined ? undefined : shape(lane.id)?.bounds
+		if (band) {
+			let candidate = {
+				x: band.x + POOL_HEADER + GAP / 2,
+				y: centreY(band) - size.height / 2,
+				...size,
+			}
+			// ponytail: one row; a full band widens the pool rather than wrapping inside the band.
+			for (let k = 0; k < TRIES && all.some((o) => overlaps(candidate, o)); k++) {
+				candidate = { ...candidate, x: candidate.x + size.width + GAP / 2 }
+			}
+			widenOwnPool(right(candidate) + GAP / 2 - right(band), right(band))
+			return candidate
+		}
+		const x = all.length > 0 ? Math.min(...all.map((b) => b.x)) : 0
+		const y = (all.length > 0 ? Math.max(...all.map(bottom)) : 0) + ROW / 2
+		return slot({ x, y, ...size })
+	}
+
+	/**
+	 * Widens by `dx` the own pool and its lanes whose right edge is at `edge`, so
+	 * a node placed past that edge stays inside; nothing when `dx` is not positive.
+	 */
+	function widenOwnPool(dx: number, edge: number): void {
+		if (dx <= 0) return
+		const own = new Set([
+			...allLanes(proc().laneSet).map((lane) => lane.id),
+			...defs.collaborations
+				.flatMap((c) => c.participants)
+				.filter((p) => p.processRef === proc().id)
+				.map((p) => p.id),
+		])
+		for (const s of plane().shapes) {
+			if (own.has(s.bpmnElement) && Math.abs(right(s.bounds) - edge) <= 1) {
+				s.bounds = { ...s.bounds, width: s.bounds.width + dx }
+			}
+		}
 	}
 
 	/** `bounds`, or the first spot below it that overlaps nothing. */
