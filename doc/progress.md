@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-10-28 — Change scripts and compact: lane, pool and message follow-ups
+
+- Core `reconcileCompact`: a lane, pool or message flow its compact entry lists without `name` loses its name (`mergeLane`, `mergeParticipant`, `mergeMessageFlow`), as `compactify` writes one without a name, so a compact edit can remove a name; everything else the old element carried stays. `writeProcessText` writes the `pool` and `msg` lines of the collaboration that holds the process's own pool (else the first), not always `collaborations[0]`.
+- Editor change scripts read and write the same collaboration (`ownCollaboration` in `process-delta.ts`, for `swimlaneOf`, `msg` and `- msg` lines); a file whose first collaboration is not the own pool's used to report its pools as unknown and add messages to the wrong collaboration. A `- x` line can remove a lane or pool added earlier in the same script (it was routed as an unknown node); such a lane or pool is in neither `created` nor `removed`. The own pool a script draws around a pool-less process is listed in `created`.
+- Not done, by design: the compact stream still shows lanes only once complete (rationale in the `compact-stream.ts` header). Still open: `reconcileCompact` replaces participants and messages of the first collaboration.
+- Tests: core compact-lanes (41), editor process-delta-lanes (three new). Core 2877 (+2 skipped), editor 665; tsc and Biome clean. Changesets `compact-lane-names.md`, `editor-script-swimlanes.md`.
+
 ## 2026-10-28 — Editor: lane/pool follow-ups, gesture cancel, float noise, pool drag preview
 
 - Escape and a pointercancel share `_cancelGesture` in the state machine: Escape also takes back a rubber band, the connection ghost and a dragged segment, and both drop the resize outline (new `cancelResize` callback; Escape during a resize used to leave the dashed preview).

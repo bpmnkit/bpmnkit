@@ -20,6 +20,7 @@
  */
 import {
 	type BpmnBounds,
+	type BpmnCollaboration,
 	type BpmnConditionExpression,
 	type BpmnDefinitions,
 	type BpmnElementType,
@@ -506,7 +507,11 @@ function applyToPrimaryFirst(
 	const swimlaneRemovals: { id: string; line: number }[] = []
 	for (const removal of delta.removedNodes) {
 		const id = real.get(removal.id)
-		if (id === undefined && swimlaneOf(defs, options.aliases, new Map(), removal.id)) {
+		const madeHere = [...delta.lanes, ...delta.pools].some((line) => line.id === removal.id)
+		if (
+			id === undefined &&
+			(madeHere || swimlaneOf(defs, options.aliases, new Map(), removal.id))
+		) {
 			swimlaneRemovals.push(removal)
 			continue
 		}
@@ -1143,8 +1148,20 @@ interface SwimlaneRun {
 type Swimlane = { kind: "lane"; lane: BpmnLane } | { kind: "pool"; pool: BpmnParticipant }
 
 /**
- * The lane of the primary process (`defs.processes[0]`) or the pool of the
- * first collaboration that `written` names: through the lanes and pools the
+ * The collaboration that holds the primary process's pool, else the first: the
+ * one whose pools and messages the script's lines name, as the writer writes them.
+ */
+function ownCollaboration(defs: BpmnDefinitions): BpmnCollaboration | undefined {
+	const id = defs.processes[0]?.id
+	return (
+		defs.collaborations.find((c) => c.participants.some((p) => p.processRef === id)) ??
+		defs.collaborations[0]
+	)
+}
+
+/**
+ * The lane of the primary process (`defs.processes[0]`) or the pool of
+ * {@link ownCollaboration} that `written` names: through the lanes and pools the
  * script created, then the aliases, then as a real id.
  */
 function swimlaneOf(
@@ -1156,7 +1173,7 @@ function swimlaneOf(
 	const id = created.get(written) ?? aliases[written] ?? written
 	const lane = allLanes(defs.processes[0]?.laneSet).find((candidate) => candidate.id === id)
 	if (lane) return { kind: "lane", lane }
-	const pool = defs.collaborations[0]?.participants.find((candidate) => candidate.id === id)
+	const pool = ownCollaboration(defs)?.participants.find((candidate) => candidate.id === id)
 	return pool ? { kind: "pool", pool } : undefined
 }
 
@@ -1380,6 +1397,7 @@ function ownPool(run: SwimlaneRun, line: number): BpmnParticipant | undefined {
 	}
 	run.defs = pooled.defs
 	run.containerIds.add(pooled.pool.id)
+	if (pooled.made.includes(pooled.pool.id)) run.result.created.push(pooled.pool.id)
 	if (pooled.drew) {
 		run.result.fixes.push(
 			`drew the pool "${pooled.pool.name ?? pooled.pool.id}" around the process`,
@@ -1478,7 +1496,7 @@ function applyMessageLine(run: SwimlaneRun, line: ProcessDelta["messageFlows"][n
 					eventTrigger(ends.node),
 					ends.nodeSends ? "source" : "target",
 				)
-	const collaboration = run.defs.collaborations[0]
+	const collaboration = ownCollaboration(run.defs)
 	if (typeof ends === "string" || reason !== undefined || !collaboration) {
 		run.problem(line.line, `msg ${line.from} > ${line.to}: ${reason}; left out`)
 		return
@@ -1529,7 +1547,7 @@ function removeMessageLine(
 	const flow =
 		typeof ends === "string"
 			? undefined
-			: run.defs.collaborations[0]?.messageFlows.find(
+			: ownCollaboration(run.defs)?.messageFlows.find(
 					(f) => f.sourceRef === ends.source && f.targetRef === ends.target,
 				)
 	if (!flow) {
@@ -1559,7 +1577,7 @@ function removeSwimlane(run: SwimlaneRun, removal: { id: string; line: number })
 			return
 		}
 		run.defs = next
-		run.result.removed.push(found.lane.id)
+		gone(run, found.lane.id)
 		return
 	}
 	const { pool } = found
@@ -1574,5 +1592,12 @@ function removeSwimlane(run: SwimlaneRun, removal: { id: string; line: number })
 		return
 	}
 	run.defs = next
-	run.result.removed.push(pool.id)
+	gone(run, pool.id)
+}
+
+/** Records a removed lane or pool: one the script made itself was never there. */
+function gone(run: SwimlaneRun, id: string): void {
+	const made = run.result.created.indexOf(id)
+	if (made >= 0) run.result.created.splice(made, 1)
+	else run.result.removed.push(id)
 }

@@ -562,7 +562,9 @@ function recomputeRefs(container: Container): void {
  * flow nodes are dropped and unlisted nodes are placed as {@link expand} places
  * them. `participants` and `messageFlows` replace those of the first
  * collaboration, keeping what the compact form does not carry (`messageRef`,
- * extensions, foreign attributes) on every id that survives. A laned process
+ * extensions, foreign attributes) on every id that survives. A lane, pool or
+ * message flow listed without a `name` has none, as {@link compactify} writes
+ * it, so a compact edit can remove a name. A laned process
  * without a pool then gets one. A process the compact adds gets the
  * `isExecutable` {@link expand} would give it, so a keyless partner pool is
  * not executable. Without the keys, a deleted node still leaves
@@ -742,9 +744,10 @@ function relane(process: BpmnProcess, lanes: readonly CompactLane[]): BpmnProces
 	})
 	const mergeLane = (built: BpmnLane): BpmnLane => {
 		const old = before.get(built.id)
-		const { childLaneSet: _oldChildren, ...kept } = old ?? { unknownAttributes: {} }
+		// The compact lane states its name the way compactify writes it: none when it has none.
+		const { childLaneSet: _oldChildren, name: _oldName, ...kept } = old ?? { unknownAttributes: {} }
 		const lane: BpmnLane = { ...kept, id: built.id, flowNodeRefs: built.flowNodeRefs }
-		if (built.name !== undefined) lane.name = built.name
+		if (built.name) lane.name = built.name
 		if (built.childLaneSet !== undefined) {
 			lane.childLaneSet = mergeSet(built.childLaneSet, old?.childLaneSet)
 		}
@@ -789,9 +792,9 @@ function mergeParticipant(
 	old: BpmnParticipant | undefined,
 	wanted: CompactParticipant,
 ): BpmnParticipant {
-	const { processRef: _oldRef, ...kept } = old ?? { unknownAttributes: {} }
+	const { processRef: _oldRef, name: _oldName, ...kept } = old ?? { unknownAttributes: {} }
 	const participant: BpmnParticipant = { ...kept, id: wanted.id }
-	if (wanted.name !== undefined) participant.name = wanted.name
+	if (wanted.name) participant.name = wanted.name
 	if (wanted.processId !== undefined) participant.processRef = wanted.processId
 	return participant
 }
@@ -800,13 +803,14 @@ function mergeMessageFlow(
 	old: BpmnMessageFlow | undefined,
 	wanted: CompactMessageFlow,
 ): BpmnMessageFlow {
+	const { name: _oldName, ...kept } = old ?? { unknownAttributes: {} }
 	const flow: BpmnMessageFlow = {
-		...(old ?? { unknownAttributes: {} }),
+		...kept,
 		id: wanted.id,
 		sourceRef: wanted.source,
 		targetRef: wanted.target,
 	}
-	if (wanted.name !== undefined) flow.name = wanted.name
+	if (wanted.name) flow.name = wanted.name
 	return flow
 }
 

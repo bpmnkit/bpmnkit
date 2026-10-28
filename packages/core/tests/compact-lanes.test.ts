@@ -631,3 +631,37 @@ describe("REV-20261028-012: withLanes refuses a looping lane tree", () => {
 		expect(laneOf(laned, "a")?.id).toBe("inner")
 	})
 })
+
+describe("reconcileCompact removes a name the compact leaves out", () => {
+	it("drops the name of a lane, a pool and a message flow, and keeps the rest", () => {
+		const defs = fixture("08-flowable-lanes-pools.bpmn")
+		const compact = compactify(defs)
+		const process = compact.processes.find((p) => (p.lanes?.length ?? 0) > 0)
+		const lane = process?.lanes?.[0]
+		const pool = compact.participants?.[0]
+		const message = compact.messageFlows?.[0]
+		if (!lane?.name || !pool?.name || !message?.name) throw new Error("fixture names")
+		lane.name = undefined
+		pool.name = undefined
+		message.name = undefined
+
+		const after = reconcileCompact(defs, compact).definitions
+		const lanes = after.processes.flatMap((p) => allLanes(p.laneSet))
+		expect(lanes.find((l) => l.id === lane.id)?.name).toBeUndefined()
+		const collaboration = after.collaborations[0]
+		expect(collaboration?.participants.find((p) => p.id === pool.id)?.name).toBeUndefined()
+		expect(collaboration?.messageFlows.find((f) => f.id === message.id)?.name).toBeUndefined()
+		// Everything else round-trips as it was.
+		const others = compactify(after)
+		const named = compactify(defs)
+		expect(others.participants?.slice(1)).toEqual(named.participants?.slice(1))
+		expect(Bpmn.export(after)).toContain("flowable:")
+	})
+
+	it("is still a no-op for compactify's own output", () => {
+		const defs = fixture("08-flowable-lanes-pools.bpmn")
+		expect(Bpmn.export(reconcileCompact(defs, compactify(defs)).definitions)).toBe(
+			Bpmn.export(defs),
+		)
+	})
+})

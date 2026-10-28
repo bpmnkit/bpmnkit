@@ -142,8 +142,9 @@ export function writableMessageLabel(name: string): string {
  *
  * Only leaf lanes are written, each with the nodes it lists in their ref order
  * (a node two leaves list goes to the first): a script can move a node between
- * leaf lanes but cannot create a nested lane. Every participant of the first
- * collaboration but the one that draws `source` is a `pool` line, its content
+ * leaf lanes but cannot create a nested lane. Every participant of the
+ * collaboration that holds `source`'s pool (else the first collaboration) but
+ * that pool is a `pool` line, its content
  * unwritten. A message is written only between a node of `nodes` and such a
  * pool, the two ends the line format can name.
  */
@@ -154,7 +155,10 @@ function swimlaneLines(
 	alias: Map<string, string>,
 	taken: Set<string>,
 ): string[] {
-	const collaboration = definitions.collaborations[0]
+	const collaboration =
+		definitions.collaborations.find((c) =>
+			c.participants.some((p) => p.processRef === source.id),
+		) ?? definitions.collaborations[0]
 	// A node two leaves list is written in the first only, or the reader would move it.
 	const placed = new Set<string>()
 	const membersOf = new Map<string, string[]>()

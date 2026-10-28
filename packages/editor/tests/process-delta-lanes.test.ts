@@ -805,6 +805,60 @@ describe("a new node with no flows in a laned process", () => {
 	})
 })
 
+describe("pools, messages and lanes a script both makes and names", () => {
+	/** 02-collaboration with an empty collaboration ahead of the one that holds its pools. */
+	const behindAnother = (): BpmnDefinitions => {
+		const defs = fixture("02-collaboration.bpmn")
+		const first = defs.collaborations[0]
+		if (!first) throw new Error("no collaboration")
+		const other = { ...structuredClone(first), id: "Other", participants: [], messageFlows: [] }
+		return { ...defs, collaborations: [other, ...defs.collaborations] }
+	}
+
+	it("finds the pools and messages of the collaboration that holds the own pool", () => {
+		const defs = behindAnother()
+		const { text } = writeProcessText(defs)
+		expect(text).toMatch(/^pool carrier/m)
+		const added = apply(
+			defs,
+			"pool bank[Bank]\nmsg place_order >(Pay) bank\nmsg place_order > carrier",
+		)
+		expect(added.problems).toEqual([])
+		const holder = added.definitions.collaborations[1]
+		expect(added.definitions.collaborations[0]?.messageFlows).toEqual([])
+		expect(holder?.messageFlows.map((f) => f.targetRef)).toEqual(
+			expect.arrayContaining(["bank", "Participant_carrier"]),
+		)
+		const removed = apply(added.definitions, "- msg place_order > bank\n- carrier")
+		expect(removed.problems).toEqual([])
+		expect(messageFlows(removed.definitions).some((f) => f.targetRef === "bank")).toBe(false)
+		expect(participants(removed.definitions).map((p) => p.id)).not.toContain("Participant_carrier")
+	})
+
+	it("removes a lane and a pool the same script added, and reports neither as created", () => {
+		const defs = fixture("02-collaboration.bpmn")
+		const result = apply(defs, "lane shipping: ordered\npool bank\n- shipping\n- bank")
+		expect(result.problems).toEqual([])
+		expect(laneNamed(result.definitions, "shipping")).toBeUndefined()
+		expect(participants(result.definitions).map((p) => p.id)).toEqual(
+			participants(defs).map((p) => p.id),
+		)
+		expect(result.created).toEqual([])
+		expect(result.removed).toEqual([])
+		expectSwimlanesSound(result.definitions)
+	})
+
+	it("lists the own pool it draws around the process as created", () => {
+		const defs = Bpmn.parse(Bpmn.export(expand(parseProcessText(LOAN).diagram)))
+		const result = apply(defs, "pool bank")
+		expect(result.problems).toEqual([])
+		const own = participants(result.definitions).find(
+			(p) => p.processRef === primaryProcess(result.definitions)?.id,
+		)
+		expect(result.created).toEqual(expect.arrayContaining([own?.id, "bank"]))
+	})
+})
+
 describe("unconnected nodes past the first band's room", () => {
 	it("widens the own pool and its lanes to keep them all inside", () => {
 		const defs = fixture("08-flowable-lanes-pools.bpmn")
