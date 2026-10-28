@@ -38,6 +38,7 @@ const readCatalogue = (path: string): string[] =>
  * gesture makes — a headless harvest cannot drag, so they are listed here.
  */
 const POINTER_ONLY = [
+	"Add pool",
 	"Add waypoint",
 	"Connect",
 	"Insert on flow",

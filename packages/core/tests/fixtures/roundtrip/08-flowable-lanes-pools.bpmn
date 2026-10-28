@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:flowable="http://flowable.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.flowable.org/processdef" exporter="Flowable Open Source Modeler" exporterVersion="6.8.0">
+  <collaboration id="Collaboration_order">
+    <participant id="Participant_company" name="Company" processRef="order"/>
+    <participant id="Participant_customer" name="Customer" processRef="customer"/>
+    <messageFlow id="MessageFlow_confirm" name="Confirmation" sourceRef="ship" targetRef="Participant_customer"/>
+  </collaboration>
+  <process id="order" name="Order" isExecutable="true" flowable:candidateStarterGroups="sales">
+    <extensionElements>
+      <flowable:executionListener event="start" class="com.acme.StartListener"/>
+    </extensionElements>
+    <laneSet id="LaneSet_order">
+      <lane id="Lane_sales" name="Sales">
+        <flowNodeRef>start</flowNodeRef>
+        <flowNodeRef>review</flowNodeRef>
+        <flowNodeRef>decide</flowNodeRef>
+        <childLaneSet id="LaneSet_sales">
+          <lane id="Lane_inside" name="Inside sales">
+            <flowNodeRef>start</flowNodeRef>
+            <flowNodeRef>review</flowNodeRef>
+          </lane>
+          <lane id="Lane_desk" name="Sales desk">
+            <flowNodeRef>decide</flowNodeRef>
+          </lane>
+        </childLaneSet>
+      </lane>
+      <lane id="Lane_ops" name="Operations">
+        <flowNodeRef>ship</flowNodeRef>
+        <flowNodeRef>rejected</flowNodeRef>
+        <flowNodeRef>done</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="start" name="Order received" flowable:initiator="initiator" flowable:formKey="orderForm">
+      <outgoing>toReview</outgoing>
+    </startEvent>
+    <userTask id="review" name="Review order" flowable:assignee="${initiator}" flowable:candidateGroups="sales" flowable:formKey="reviewForm" flowable:dueDate="P2D">
+      <extensionElements>
+        <flowable:taskListener event="create" delegateExpression="${reviewListener}"/>
+        <flowable:formProperty id="approved" name="Approved" type="boolean" required="true"/>
+      </extensionElements>
+      <incoming>toReview</incoming>
+      <outgoing>toDecide</outgoing>
+    </userTask>
+    <exclusiveGateway id="decide" name="Approved?" default="toRejected">
+      <incoming>toDecide</incoming>
+      <outgoing>toShip</outgoing>
+      <outgoing>toRejected</outgoing>
+    </exclusiveGateway>
+    <serviceTask id="ship" name="Ship order" flowable:async="true" flowable:class="com.acme.ShipDelegate">
+      <extensionElements>
+        <flowable:field name="carrier">
+          <flowable:string>ACME</flowable:string>
+        </flowable:field>
+        <flowable:failedJobRetryTimeCycle>R3/PT10M</flowable:failedJobRetryTimeCycle>
+      </extensionElements>
+      <incoming>toShip</incoming>
+      <outgoing>toDone</outgoing>
+    </serviceTask>
+    <endEvent id="rejected" name="Rejected">
+      <incoming>toRejected</incoming>
+    </endEvent>
+    <endEvent id="done" name="Shipped">
+      <incoming>toDone</incoming>
+    </endEvent>
+    <sequenceFlow id="toReview" sourceRef="start" targetRef="review"/>
+    <sequenceFlow id="toDecide" sourceRef="review" targetRef="decide"/>
+    <sequenceFlow id="toShip" name="yes" sourceRef="decide" targetRef="ship">
+      <conditionExpression xsi:type="tFormalExpression">${approved &amp;&amp; amount &lt; 1000}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="toRejected" name="no" sourceRef="decide" targetRef="rejected"/>
+    <sequenceFlow id="toDone" sourceRef="ship" targetRef="done"/>
+  </process>
+  <process id="customer" name="Customer" isExecutable="false"/>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_order">
+    <bpmndi:BPMNPlane id="BPMNPlane_order" bpmnElement="Collaboration_order">
+      <bpmndi:BPMNShape id="BPMNShape_company" bpmnElement="Participant_company" isHorizontal="true">
+        <omgdc:Bounds x="0" y="0" width="720" height="360"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_sales" bpmnElement="Lane_sales" isHorizontal="true">
+        <omgdc:Bounds x="30" y="0" width="690" height="240"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_inside" bpmnElement="Lane_inside" isHorizontal="true">
+        <omgdc:Bounds x="60" y="0" width="660" height="120"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_desk" bpmnElement="Lane_desk" isHorizontal="true">
+        <omgdc:Bounds x="60" y="120" width="660" height="120"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ops" bpmnElement="Lane_ops" isHorizontal="true">
+        <omgdc:Bounds x="30" y="240" width="690" height="120"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_start" bpmnElement="start">
+        <omgdc:Bounds x="100" y="45" width="30" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_review" bpmnElement="review">
+        <omgdc:Bounds x="180" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_decide" bpmnElement="decide" isMarkerVisible="true">
+        <omgdc:Bounds x="330" y="160" width="40" height="40"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_ship" bpmnElement="ship">
+        <omgdc:Bounds x="420" y="260" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_rejected" bpmnElement="rejected">
+        <omgdc:Bounds x="600" y="165" width="28" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_done" bpmnElement="done">
+        <omgdc:Bounds x="600" y="286" width="28" height="28"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_customer" bpmnElement="Participant_customer" isHorizontal="true">
+        <omgdc:Bounds x="0" y="400" width="720" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_toReview" bpmnElement="toReview">
+        <omgdi:waypoint x="130" y="60"/>
+        <omgdi:waypoint x="180" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_toDecide" bpmnElement="toDecide">
+        <omgdi:waypoint x="280" y="60"/>
+        <omgdi:waypoint x="350" y="60"/>
+        <omgdi:waypoint x="350" y="160"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_toShip" bpmnElement="toShip">
+        <omgdi:waypoint x="350" y="200"/>
+        <omgdi:waypoint x="350" y="300"/>
+        <omgdi:waypoint x="420" y="300"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_toRejected" bpmnElement="toRejected">
+        <omgdi:waypoint x="370" y="180"/>
+        <omgdi:waypoint x="600" y="179"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_toDone" bpmnElement="toDone">
+        <omgdi:waypoint x="520" y="300"/>
+        <omgdi:waypoint x="600" y="300"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_confirm" bpmnElement="MessageFlow_confirm">
+        <omgdi:waypoint x="470" y="340"/>
+        <omgdi:waypoint x="470" y="400"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

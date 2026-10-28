@@ -28,6 +28,7 @@ import type {
 	BpmnSignal,
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
+import { BPMNKIT_NAMESPACE, pinnedPrimaryToWrite } from "./swimlanes.js"
 
 // ---------------------------------------------------------------------------
 // Namespace prefix resolution
@@ -538,17 +539,21 @@ function serializeLane(lane: BpmnLane, bp: string): XmlElement {
 	const children: XmlElement[] = serializeBaseChildren(lane, bp)
 	children.push(...lane.flowNodeRefs.map((ref) => el(`${bp}flowNodeRef`, {}, [], ref)))
 	if (lane.childLaneSet) {
-		children.push(serializeLaneSet(lane.childLaneSet, bp))
+		children.push(serializeLaneSet(lane.childLaneSet, bp, "childLaneSet"))
 	}
 	return el(`${bp}lane`, attrs, children)
 }
 
-function serializeLaneSet(laneSet: BpmnLaneSet, bp: string): XmlElement {
+function serializeLaneSet(
+	laneSet: BpmnLaneSet,
+	bp: string,
+	tag: "laneSet" | "childLaneSet" = "laneSet",
+): XmlElement {
 	const attrs: Record<string, string> = { ...laneSet.unknownAttributes }
 	if (laneSet.id) attrs.id = laneSet.id
 	if (laneSet.name !== undefined) attrs.name = laneSet.name
 	return el(
-		`${bp}laneSet`,
+		`${bp}${tag}`,
 		attrs,
 		laneSet.lanes.map((l) => serializeLane(l, bp)),
 	)
@@ -562,7 +567,9 @@ function serializeProcess(process: BpmnProcess, ns: Record<string, string>): Xml
 	const bp = bpmnPrefix(ns)
 	const attrs: Record<string, string> = { id: process.id, ...process.unknownAttributes }
 	if (process.name !== undefined) attrs.name = process.name
-	if (process.isExecutable) attrs.isExecutable = "true"
+	// Written as given: Flowable reads an absent attribute as executable, Camunda
+	// as not, so `false` and absent are different documents.
+	if (process.isExecutable !== undefined) attrs.isExecutable = String(process.isExecutable)
 
 	const children: XmlElement[] = serializeBaseChildren(
 		{
@@ -780,6 +787,18 @@ function serializeDiagram(diagram: BpmnDiagram, ns: Record<string, string>): Xml
 // Public API
 // ---------------------------------------------------------------------------
 
+/** The prefix `ns` gives {@link BPMNKIT_NAMESPACE}, else `bpmnkit`, else the first free `bpmnkit<n>`. */
+function bpmnkitPrefix(ns: Record<string, string>): string {
+	const declared = Object.keys(ns).find(
+		(prefix) => prefix !== "" && ns[prefix] === BPMNKIT_NAMESPACE,
+	)
+	if (declared !== undefined) return declared
+	let prefix = "bpmnkit"
+	// Bounded: at most every declared prefix is taken.
+	for (let n = 2; prefix in ns && n <= Object.keys(ns).length + 2; n++) prefix = `bpmnkit${n}`
+	return prefix
+}
+
 /** Serialize a BpmnDefinitions model to a BPMN XML string. */
 export function serializeBpmn(definitions: BpmnDefinitions): string {
 	const ns = definitions.namespaces
@@ -796,7 +815,7 @@ export function serializeBpmn(definitions: BpmnDefinitions): string {
 		}
 	}
 
-	attrs.id = definitions.id
+	if (definitions.id !== "") attrs.id = definitions.id
 	attrs.targetNamespace = definitions.targetNamespace
 	if (definitions.exporter !== undefined) attrs.exporter = definitions.exporter
 	if (definitions.exporterVersion !== undefined) attrs.exporterVersion = definitions.exporterVersion
@@ -804,6 +823,13 @@ export function serializeBpmn(definitions: BpmnDefinitions): string {
 	// Unknown attributes (modeler:*, camunda:*, etc.)
 	for (const [key, value] of Object.entries(definitions.unknownAttributes)) {
 		attrs[key] = value
+	}
+
+	const pinned = pinnedPrimaryToWrite(definitions)
+	if (pinned !== undefined) {
+		const prefix = bpmnkitPrefix(ns)
+		attrs[`xmlns:${prefix}`] = BPMNKIT_NAMESPACE
+		attrs[`${prefix}:primaryProcess`] = pinned
 	}
 
 	const children: XmlElement[] = []

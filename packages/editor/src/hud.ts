@@ -1,5 +1,5 @@
 import type { ViewportState } from "@bpmnkit/canvas"
-import { type DocumentationOptions, readDiColor } from "@bpmnkit/core"
+import { type DocumentationOptions, primaryProcess, readDiColor } from "@bpmnkit/core"
 import { injectHudStyles } from "./css.js"
 import { type DocumentationFormat, exportDocumentation } from "./doc-export.js"
 import type { BpmnEditor } from "./editor.js"
@@ -13,6 +13,16 @@ import {
 } from "./element-groups.js"
 import { IC } from "./icons.js"
 import { showHudChoiceModal, showHudInputModal } from "./modal.js"
+import {
+	POOL_HEADER,
+	canAddLane,
+	canDeleteSwimlane,
+	canDivideLanes,
+	firstPoolRefused,
+	isBlackBox,
+	lockedIds,
+	primaryPlane,
+} from "./swimlanes.js"
 import type { CreateShapeType, LabelPosition, Tool } from "./types.js"
 
 interface GroupDef {
@@ -162,6 +172,9 @@ const GATEWAY_TYPES = new Set([
 	"complexGateway",
 ])
 
+/** What `getElementType` calls a pool and a lane. */
+const SWIMLANE_TYPES: ReadonlySet<string> = new Set(["participant", "lane"])
+
 const SHORTCUTS: ReadonlyArray<[string, string]> = [
 	["Ctrl+Z", "Undo"],
 	["Ctrl+Y / Ctrl+Shift+Z", "Redo"],
@@ -299,6 +312,7 @@ export function initEditorHud(
 	const btnSelect = hudBtn("btn-select", "Select (V)")
 	const btnPan = hudBtn("btn-pan", "Hand (H)")
 	const btnSpace = hudBtn("btn-space", "Space tool")
+	const btnPool = hudBtn("btn-pool", "Create pool")
 
 	const toolGroupsEl = document.createElement("div")
 	toolGroupsEl.id = "tool-groups"
@@ -306,7 +320,7 @@ export function initEditorHud(
 	const hudBottomCenter = document.createElement("div")
 	hudBottomCenter.id = "hud-bottom-center"
 	hudBottomCenter.className = "hud panel"
-	hudBottomCenter.append(btnSelect, btnPan, btnSpace, hudSep(), toolGroupsEl)
+	hudBottomCenter.append(btnSelect, btnPan, btnSpace, btnPool, hudSep(), toolGroupsEl)
 
 	// Mobile collapse toggle — bottom center (hidden on desktop via CSS)
 	const btnBcToggle = hudBtn("btn-bc-toggle", "Tools")
@@ -476,6 +490,7 @@ export function initEditorHud(
 	btnSelect.innerHTML = IC.select
 	btnPan.innerHTML = IC.hand
 	btnSpace.innerHTML = IC.space
+	btnPool.innerHTML = IC.pool
 	btnUndo.innerHTML = IC.undo
 	btnRedo.innerHTML = IC.redo
 	btnDelete.innerHTML = IC.trash
@@ -738,6 +753,7 @@ export function initEditorHud(
 		btnSelect.classList.toggle("active", tool === "select")
 		btnPan.classList.toggle("active", tool === "pan")
 		btnSpace.classList.toggle("active", tool === "space")
+		btnPool.classList.toggle("active", tool === "create:participant")
 
 		for (const group of GROUPS) {
 			const btn = groupBtns[group.id]
@@ -758,6 +774,7 @@ export function initEditorHud(
 		if (tool === "select") btnBcToggle.innerHTML = IC.select
 		else if (tool === "pan") btnBcToggle.innerHTML = IC.hand
 		else if (tool === "space") btnBcToggle.innerHTML = IC.space
+		else if (tool === "create:participant") btnBcToggle.innerHTML = IC.pool
 		else {
 			for (const group of GROUPS) {
 				if (group.items.some((item) => tool === `create:${item.type}`)) {
@@ -786,6 +803,23 @@ export function initEditorHud(
 		editor.setTool("space")
 		collapseOnMobile(hudBottomCenter)
 	})
+	btnPool.addEventListener("click", () => {
+		editor.setTool(_currentTool === "create:participant" ? "default" : "create:participant")
+		collapseOnMobile(hudBottomCenter)
+	})
+
+	/** Disables the pool tool, saying why, where every click of it would be refused. */
+	function updatePoolButton(): void {
+		const defs = editor.getDefinitions()
+		const refused = defs !== null && firstPoolRefused(defs)
+		btnPool.disabled = refused
+		btnPool.title = t(
+			refused ? "Cannot create a pool: another process with content has no pool" : "Create pool",
+		)
+	}
+	updatePoolButton()
+	editor.on("diagram:load", updatePoolButton)
+	editor.on("diagram:change", updatePoolButton)
 
 	// ── Dropdown management ────────────────────────────────────────────────────
 
@@ -1101,6 +1135,12 @@ export function initEditorHud(
 
 	function buildCtxToolbar(sourceId: string, sourceType: string): void {
 		ctxToolbar.innerHTML = ""
+		if (SWIMLANE_TYPES.has(sourceType)) {
+			buildSwimlaneToolbar(sourceId)
+			return
+		}
+		// A partner's node is read-only: every action here would change nothing.
+		if (isLocked(sourceId)) return
 		const isAnnotation = sourceType === "textAnnotation"
 		const canAddElements = !isAnnotation && sourceType !== "endEvent"
 
@@ -1178,7 +1218,8 @@ export function initEditorHud(
 
 			// Get current shape color
 			const defs = editor.getDefinitions()
-			const diShape = defs?.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === sourceId)
+			const plane = defs ? primaryPlane(defs) : undefined
+			const diShape = plane?.shapes.find((s) => s.bpmnElement === sourceId)
 			const currentColor = diShape ? readDiColor(diShape.unknownAttributes) : {}
 			const currentFill = currentColor.fill
 
@@ -1196,7 +1237,9 @@ export function initEditorHud(
 				showColorPicker(singleSwatch, sourceId, currentFill),
 			)
 			ctxToolbar.appendChild(singleSwatch)
+		}
 
+		if (!isAnnotation) {
 			// Add annotation button
 			const annotBtn = document.createElement("button")
 			annotBtn.className = "hud-btn"
@@ -1223,10 +1266,112 @@ export function initEditorHud(
 		}
 	}
 
+	/** Whether `id` is a node of a process other than the primary one, which edits leave alone. */
+	function isLocked(id: string): boolean {
+		const defs = editor.getDefinitions()
+		return defs !== null && lockedIds(defs).has(id)
+	}
+
+	/** One thing the bar and the menu offer a pool or lane. */
+	interface SwimlaneAction {
+		icon: string
+		/** The menu item's text. */
+		label: string
+		/** The bar button's tooltip, when it says more than `label`. */
+		title?: string
+		run: () => void
+	}
+
+	/**
+	 * What a pool or lane is offered, in bar and menu order, each only when the
+	 * edit would be made (critique: no refused actions): Add lane above and below
+	 * where `addLane` takes it (the own pool, top-level leaf lanes), Divide on an
+	 * own pool without lanes (U6), Connect on a partner pool (a black box or one
+	 * drawing a process) so a message flow can start there, Edit label, and
+	 * Delete where a delete would take it (U2).
+	 */
+	function swimlaneActions(id: string): SwimlaneAction[] {
+		const defs = editor.getDefinitions()
+		if (!defs) return []
+		const actions: SwimlaneAction[] = []
+		if (canAddLane(defs, id)) {
+			actions.push(
+				{ icon: IC.laneAbove, label: "Add lane above", run: () => editor.addLane(id, "above") },
+				{ icon: IC.laneBelow, label: "Add lane below", run: () => editor.addLane(id, "below") },
+			)
+		}
+		if (canDivideLanes(defs, id)) {
+			actions.push(
+				{ icon: IC.lanesTwo, label: "Divide into two lanes", run: () => editor.divideLanes(id, 2) },
+				{
+					icon: IC.lanesThree,
+					label: "Divide into three lanes",
+					run: () => editor.divideLanes(id, 3),
+				},
+			)
+		}
+		const pool = defs.collaborations.flatMap((c) => c.participants).find((p) => p.id === id)
+		// A partner drawing a process too: its nodes are locked, so its pool is where a message starts.
+		const own = pool?.processRef !== undefined && pool.processRef === primaryProcess(defs)?.id
+		if (pool && !own) {
+			actions.push({
+				icon: IC.arrow,
+				label: "Connect",
+				title: "Connect to element (click target)",
+				run: () => editor.startConnectionFrom(id),
+			})
+		}
+		actions.push({ icon: IC.labelPos, label: "Edit label", run: () => editor.editLabel(id) })
+		if (canDeleteSwimlane(defs, id)) {
+			actions.push({
+				icon: IC.trash,
+				label: "Delete",
+				title: "Delete (Del)",
+				run: () => editor.deleteSelected(),
+			})
+		}
+		return actions
+	}
+
+	/**
+	 * A pool or lane is a container, not a step: its bar holds
+	 * {@link swimlaneActions}, nothing that would duplicate or colour it.
+	 */
+	function buildSwimlaneToolbar(sourceId: string): void {
+		const defs = editor.getDefinitions()
+		const pool = defs?.collaborations.flatMap((c) => c.participants).find((p) => p.id === sourceId)
+		// A partner offers no lane actions; say why rather than leave the user looking for them.
+		if (defs && pool && isBlackBox(defs, pool)) ctxToolbar.appendChild(blackBoxHint())
+		for (const action of swimlaneActions(sourceId)) {
+			const btn = document.createElement("button")
+			btn.className = "hud-btn"
+			btn.innerHTML = action.icon
+			btn.title = t(action.title ?? action.label)
+			btn.addEventListener("click", () => {
+				action.run()
+				hideCtxToolbar()
+			})
+			ctxToolbar.appendChild(btn)
+		}
+	}
+
+	/** A non-interactive mark whose tooltip says what a black-box partner pool cannot hold. */
+	function blackBoxHint(): HTMLElement {
+		const hint = document.createElement("span")
+		hint.className = "hud-btn hud-info"
+		hint.innerHTML = IC.info
+		hint.title = t("Partner pool: no lanes or nodes in this version")
+		hint.setAttribute("role", "img")
+		hint.setAttribute("aria-label", hint.title)
+		return hint
+	}
+
 	// ── Configure toolbar ──────────────────────────────────────────────────────
 
 	function buildCfgToolbar(sourceId: string, sourceType: string): void {
 		cfgToolbar.innerHTML = ""
+		// A partner's node keeps its type and links; changing them would change nothing.
+		if (isLocked(sourceId)) return
 
 		const eGroup = getElementGroup(sourceType as CreateShapeType)
 		const group = eGroup ? GROUPS.find((g) => g.id === eGroup.id) : undefined
@@ -1656,10 +1801,22 @@ export function initEditorHud(
 			return
 		}
 		const containerRect = editor.container.getBoundingClientRect()
-		const cx = bounds.x + bounds.width / 2 - containerRect.left
-		const top = bounds.y + bounds.height + 10 - containerRect.top
-		ctxToolbar.style.left = `${cx}px`
-		ctxToolbar.style.top = `${top}px`
+		if (SWIMLANE_TYPES.has(editor.getElementType(ctxSourceId) ?? "")) {
+			// At the top of the header strip, just inside the band (critique I17): a
+			// tall pool's bottom centre is off-screen. Kept on screen while the band is.
+			const left = bounds.x + POOL_HEADER * editor.getViewport().scale + 4 - containerRect.left
+			const top = bounds.y + 4 - containerRect.top
+			const lowest = bounds.y + bounds.height - 4 - containerRect.top
+			ctxToolbar.style.left = `${left}px`
+			ctxToolbar.style.top = `${Math.min(Math.max(top, 4), lowest)}px`
+			ctxToolbar.style.transform = "none"
+		} else {
+			const cx = bounds.x + bounds.width / 2 - containerRect.left
+			const top = bounds.y + bounds.height + 10 - containerRect.top
+			ctxToolbar.style.left = `${cx}px`
+			ctxToolbar.style.top = `${top}px`
+			ctxToolbar.style.transform = ""
+		}
 		ctxToolbar.style.display = ctxToolbar.children.length > 0 ? "flex" : "none"
 	}
 
@@ -1797,7 +1954,7 @@ export function initEditorHud(
 		if (!_onboardingShown) return
 		const defs = editor.getDefinitions()
 		if (!defs) return
-		const proc = defs.processes[0]
+		const proc = primaryProcess(defs)
 		if (!proc) return
 		const isEmpty = proc.flowElements.length <= 1 && proc.sequenceFlows.length === 0
 		if (!isEmpty) hideOnboarding()
@@ -1939,6 +2096,28 @@ export function initEditorHud(
 		const elemType = editor.getElementType(id)
 		if (!elemType) return
 
+		// A partner's node offers nothing: every edit here would change nothing.
+		if (isLocked(id)) return
+
+		if (SWIMLANE_TYPES.has(elemType)) {
+			for (const action of swimlaneActions(id)) {
+				if (action.label === "Delete") {
+					const sep = document.createElement("div")
+					sep.className = "drop-sep"
+					ctxMenuEl.appendChild(sep)
+				}
+				ctxMenuEl.appendChild(
+					makeCtxItem(action.icon, action.label, () => {
+						action.run()
+						closeAllDropdowns()
+					}),
+				)
+			}
+			openCtxMenu(e.clientX, e.clientY)
+			return
+		}
+
+		// A sequence flow has no label editor on the canvas yet.
 		if (elemType !== "sequenceFlow") {
 			ctxMenuEl.appendChild(
 				makeCtxItem(IC.labelPos, "Edit label", () => {
@@ -1951,6 +2130,19 @@ export function initEditorHud(
 			ctxMenuEl.appendChild(sep)
 		}
 
+		appendCopyItems()
+		ctxMenuEl.appendChild(
+			makeCtxItem(IC.trash, "Delete", () => {
+				editor.deleteSelected()
+				closeAllDropdowns()
+			}),
+		)
+
+		openCtxMenu(e.clientX, e.clientY)
+	})
+
+	/** Duplicate and Cut: offered for anything but a pool or lane, which cannot be copied. */
+	function appendCopyItems(): void {
 		ctxMenuEl.appendChild(
 			makeCtxItem(IC.duplicate, "Duplicate", () => {
 				editor.duplicate()
@@ -1963,15 +2155,7 @@ export function initEditorHud(
 				closeAllDropdowns()
 			}),
 		)
-		ctxMenuEl.appendChild(
-			makeCtxItem(IC.trash, "Delete", () => {
-				editor.deleteSelected()
-				closeAllDropdowns()
-			}),
-		)
-
-		openCtxMenu(e.clientX, e.clientY)
-	})
+	}
 
 	// Touch: a long-press opens the same context menu (dispatched as a synthetic
 	// contextmenu event at the press point, so the handler above is reused).

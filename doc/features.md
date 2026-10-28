@@ -1,5 +1,33 @@
 # Features
 
+## Editor: resize and move pools and lanes (2026-10-28)
+
+- Pools and lanes are resized by their handles (neighbouring lanes balance, nodes never leave their lane), the own pool is dragged with everything in it, and the space tool widens or deepens the pools and lanes it crosses.
+
+## Editor: create pools and add lanes (2026-10-28)
+
+- A pool tool wraps a process in its first pool or adds a black-box partner; lanes are added above or below, and an unlaned pool is divided into two or three lanes. A black box can start a message flow, so incoming messages can be drawn.
+
+## Editor: lanes, black-box pools and message flows (2026-10-28)
+
+- Moving or creating a node in a lane makes it a member of that lane; drops into a partner pool or outside the own pool are refused, and quick add grows the pool. Lanes and black-box partner pools can be deleted (the own pool cannot). Connecting to another pool draws a message flow, whose name the canvas shows and which can be renamed.
+
+## Editor edits the executable process of a collaboration (2026-10-28)
+
+- The editor edits the executable process and its diagram even when a Flowable Modeler file lists a black-box partner first; the canvas shows that process. Pools and lanes can be renamed in place, and a file without diagram interchange is laid out on load. Auto-layout keeps lane bands on a laned process without a pool.
+
+## Change scripts edit lanes, pools and messages (2026-10-28)
+
+- A model's change script (Drop suggestions, AI chat) can move nodes between lanes, add, rename and remove lanes, add and remove black-box partner pools and messages to them; `applyProcessDelta` keeps the layout. Works on Flowable Modeler collaborations, whose executable process need not be first.
+
+## Lanes, pools and message flows in the process text format (2026-10-28)
+
+- A model writing process text (Drop, `casen`, AI plugins) can write `lane id[Name]: a, b`, `pool id[Name]` and `msg a >(Label) pool`; the parser places unlisted nodes in a neighbour's lane, refuses message flows BPMN does not allow, and `expand` draws pools and lanes. Taught by `PROCESS_TEXT_GUIDE`; not by the on-device guide.
+
+## Lanes and pools in the builder and the compact format (2026-10-27)
+
+- `ProcessBuilder.lane()` / `.participant()` write lanes (nested included) and pools, validated at build time; `DiagramBuilder.withAutoLayout()`. The compact format carries `lanes`, `participants`, `messageFlows` and `executable` both ways, so `casen generate`, the proxy and `reconcileCompact` keep swimlanes. Partner pools are written `isExecutable="false"`, as Flowable needs. Round trips keep Flowable Modeler files (no definitions id), `isExecutable="false"` and nested lanes (`childLaneSet`).
+
 ## On-device diagram generation in the web editor (2026-10-21)
 
 - `@bpmnkit/plugins/ai-local` (`createAiLocalPlugin`) and a Generate dock tab and HUD button in the landing editor turn a description into a new diagram with Chrome's built-in model (Gemini Nano, Prompt API): English only, generate only, nothing leaves the device, hidden where the model is unavailable. Opt-in on bpmnkit.com via `/editor?ai=on-device`, and on Drop's describe-to-diagram page via `/drop?ai=on-device` (first draft only; server-side follow-ups off). Maintainer step: register the origin trial and set `PUBLIC_CHROME_AI_OT_TOKEN`.

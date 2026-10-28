@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.2.1. 399 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.2.1. 403 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -75,13 +75,13 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Core Concepts — The Fluent Builder](.llms/chunks/getting-started.concepts.the-fluent-builder.md) — 251 tokens
 - [Core Concepts — Auto-Layout](.llms/chunks/getting-started.concepts.auto-layout.md) — 150 tokens
 - [Core Concepts — Parsing and Serializing](.llms/chunks/getting-started.concepts.parsing-and-serializing.md) — 116 tokens
-- [Core Concepts — Parsing and Serializing — Round-trip fidelity](.llms/chunks/getting-started.concepts.parsing-and-serializing-round-trip-fidelity.md) — 801 tokens
+- [Core Concepts — Parsing and Serializing — Round-trip fidelity](.llms/chunks/getting-started.concepts.parsing-and-serializing-round-trip-fidelity.md) — 829 tokens
 - [Core Concepts — AI-Compact Format](.llms/chunks/getting-started.concepts.ai-compact-format.md) — 359 tokens
 - [Core Concepts — Zeebe Extensions](.llms/chunks/getting-started.concepts.zeebe-extensions.md) — 134 tokens
 - [Conformance](.llms/chunks/getting-started.conformance.md) — 523 tokens
 - [Conformance — BPMN 2.0 — model and round trip](.llms/chunks/getting-started.conformance.bpmn-2.0-model-and-round-trip.md) — 241 tokens
 - [Conformance — BPMN Model Interchange (MIWG)](.llms/chunks/getting-started.conformance.bpmn-model-interchange-miwg.md) — 508 tokens
-- [Conformance — BPMN elements by component](.llms/chunks/getting-started.conformance.bpmn-elements-by-component.md) — 1916 tokens
+- [Conformance — BPMN elements by component](.llms/chunks/getting-started.conformance.bpmn-elements-by-component.md) — 1922 tokens
 - [Conformance — BPMN elements by component (2)](.llms/chunks/getting-started.conformance.bpmn-elements-by-component-2.md) — 96 tokens
 - [Conformance — Zeebe extensions](.llms/chunks/getting-started.conformance.zeebe-extensions.md) — 226 tokens
 - [Conformance — Linting — bpmnlint compatibility](.llms/chunks/getting-started.conformance.linting-bpmnlint-compatibility.md) — 140 tokens
@@ -307,8 +307,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/camunda-docspack — What makes this corpus different](.llms/chunks/packages.camunda-docspack.what-makes-this-corpus-different.md) — 192 tokens
 - [@bpmnkit/camunda-docspack — Rebuilding it](.llms/chunks/packages.camunda-docspack.rebuilding-it.md) — 227 tokens
 - [@bpmnkit/camunda-docspack — A note on the pack's name](.llms/chunks/packages.camunda-docspack.a-note-on-the-pack-s-name.md) — 165 tokens
-- [@bpmnkit/canvas — Overview](.llms/chunks/packages.canvas.overview.md) — 161 tokens
-- [@bpmnkit/canvas — Options](.llms/chunks/packages.canvas.options.md) — 147 tokens
+- [@bpmnkit/canvas — Overview](.llms/chunks/packages.canvas.overview.md) — 160 tokens
+- [@bpmnkit/canvas — Options](.llms/chunks/packages.canvas.options.md) — 159 tokens
 - [@bpmnkit/canvas — Events](.llms/chunks/packages.canvas.events.md) — 269 tokens
 - [@bpmnkit/connector-gen — Overview](.llms/chunks/packages.connector-gen.overview.md) — 216 tokens
 - [@bpmnkit/connector-gen — Installation](.llms/chunks/packages.connector-gen.installation.md) — 159 tokens
@@ -336,9 +336,10 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Overview](.llms/chunks/packages.core.overview.md) — 159 tokens
 - [@bpmnkit/core — Installation](.llms/chunks/packages.core.installation.md) — 27 tokens
 - [@bpmnkit/core — Installation — `Bpmn.createProcess(id, name?)`](.llms/chunks/packages.core.installation-bpmn.createprocess-id-name.md) — 51 tokens
-- [@bpmnkit/core — Installation — `Bpmn.continueProcess(definitions, processId)`](.llms/chunks/packages.core.installation-bpmn.continueprocess-definitions-processid.md) — 517 tokens
+- [@bpmnkit/core — Installation — `Bpmn.continueProcess(definitions, processId)`](.llms/chunks/packages.core.installation-bpmn.continueprocess-definitions-processid.md) — 646 tokens
 - [@bpmnkit/core — Installation — `Bpmn.createDiagram(id?)`](.llms/chunks/packages.core.installation-bpmn.creatediagram-id.md) — 107 tokens
-- [@bpmnkit/core — Installation — DiagramBuilder — collaborations](.llms/chunks/packages.core.installation-diagrambuilder-collaborations.md) — 404 tokens
+- [@bpmnkit/core — Installation — DiagramBuilder — collaborations](.llms/chunks/packages.core.installation-diagrambuilder-collaborations.md) — 560 tokens
+- [@bpmnkit/core — Installation — ProcessBuilder — lanes and pools](.llms/chunks/packages.core.installation-processbuilder-lanes-and-pools.md) — 345 tokens
 - [@bpmnkit/core — Installation — `Bpmn.export(definitions)`](.llms/chunks/packages.core.installation-bpmn.export-definitions.md) — 43 tokens
 - [@bpmnkit/core — Installation — `Bpmn.parse(xml)`](.llms/chunks/packages.core.installation-bpmn.parse-xml.md) — 45 tokens
 - [@bpmnkit/core — Installation — `Bpmn.makeEmpty(processId?, processName?)`](.llms/chunks/packages.core.installation-bpmn.makeempty-processid-processname.md) — 65 tokens
@@ -349,19 +350,20 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `diffDiagram(before, after)`](.llms/chunks/packages.core.installation-diffdiagram-before-after.md) — 331 tokens
 - [@bpmnkit/core — Installation — `applyBpmnOperations(definitions, operations, options?)`](.llms/chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md) — 235 tokens
 - [@bpmnkit/core — Installation — `ensureZeebeExtension(owner, extension)`](.llms/chunks/packages.core.installation-ensurezeebeextension-owner-extension.md) — 323 tokens
-- [@bpmnkit/core — Installation — `reconcileCompact(definitions, compact, options?)`](.llms/chunks/packages.core.installation-reconcilecompact-definitions-compact-options.md) — 129 tokens
-- [@bpmnkit/core — Installation — `compactify(definitions)`](.llms/chunks/packages.core.installation-compactify-definitions.md) — 342 tokens
+- [@bpmnkit/core — Installation — `reconcileCompact(definitions, compact, options?)`](.llms/chunks/packages.core.installation-reconcilecompact-definitions-compact-options.md) — 209 tokens
+- [@bpmnkit/core — Installation — `compactify(definitions)`](.llms/chunks/packages.core.installation-compactify-definitions.md) — 382 tokens
 - [@bpmnkit/core — Installation — `expand(compact)`](.llms/chunks/packages.core.installation-expand-compact.md) — 301 tokens
 - [@bpmnkit/core — Installation — `createCompactStream(options?)`](.llms/chunks/packages.core.installation-createcompactstream-options.md) — 502 tokens
-- [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()`](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md) — 1923 tokens
-- [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()` (2)](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2.md) — 397 tokens
-- [@bpmnkit/core — Installation — `writeProcessText(defs)` and `parseProcessDelta(text)`](.llms/chunks/packages.core.installation-writeprocesstext-defs-and-parseprocessdelta-text.md) — 317 tokens
+- [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()`](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md) — 1011 tokens
+- [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()` (2)](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2.md) — 1255 tokens
+- [@bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()` (3)](.llms/chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream-3.md) — 397 tokens
+- [@bpmnkit/core — Installation — `writeProcessText(defs)` and `parseProcessDelta(text)`](.llms/chunks/packages.core.installation-writeprocesstext-defs-and-parseprocessdelta-text.md) — 654 tokens
 - [@bpmnkit/core — Installation — Connectors: `with` lines](.llms/chunks/packages.core.installation-connectors-with-lines.md) — 347 tokens
 - [@bpmnkit/core — Installation — `retypeElement(element, type)`](.llms/chunks/packages.core.installation-retypeelement-element-type.md) — 189 tokens
 - [@bpmnkit/core — Installation — `createFlowElement(id, type, options?)`](.llms/chunks/packages.core.installation-createflowelement-id-type-options.md) — 61 tokens
 - [@bpmnkit/core — Installation — Element catalog](.llms/chunks/packages.core.installation-element-catalog.md) — 96 tokens
 - [@bpmnkit/core — Installation — `layoutProcess(process)`](.llms/chunks/packages.core.installation-layoutprocess-process.md) — 85 tokens
-- [@bpmnkit/core — Installation — ProcessBuilder methods](.llms/chunks/packages.core.installation-processbuilder-methods.md) — 717 tokens
+- [@bpmnkit/core — Installation — ProcessBuilder methods](.llms/chunks/packages.core.installation-processbuilder-methods.md) — 790 tokens
 - [@bpmnkit/core — Installation — Forms, mappings and branch flows](.llms/chunks/packages.core.installation-forms-mappings-and-branch-flows.md) — 224 tokens
 - [@bpmnkit/core — Installation — Ad-hoc sub-processes: children are a set, not a chain](.llms/chunks/packages.core.installation-ad-hoc-sub-processes-children-are-a-set-not-a-chain.md) — 642 tokens
 - [@bpmnkit/core — Installation — Joins: inferred by default, or declared](.llms/chunks/packages.core.installation-joins-inferred-by-default-or-declared.md) — 324 tokens
@@ -378,9 +380,11 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/docspack — Using the index directly](.llms/chunks/packages.docspack.using-the-index-directly.md) — 320 tokens
 - [@bpmnkit/docspack — Trust](.llms/chunks/packages.docspack.trust.md) — 118 tokens
 - [@bpmnkit/editor — Overview](.llms/chunks/packages.editor.overview.md) — 135 tokens
-- [@bpmnkit/editor — Basic Setup](.llms/chunks/packages.editor.basic-setup.md) — 166 tokens
-- [@bpmnkit/editor — HUD Options](.llms/chunks/packages.editor.hud-options.md) — 164 tokens
-- [@bpmnkit/editor — Applying a change script](.llms/chunks/packages.editor.applying-a-change-script.md) — 465 tokens
+- [@bpmnkit/editor — Basic Setup](.llms/chunks/packages.editor.basic-setup.md) — 149 tokens
+- [@bpmnkit/editor — Basic Setup — Collaborations](.llms/chunks/packages.editor.basic-setup-collaborations.md) — 884 tokens
+- [@bpmnkit/editor — Basic Setup — Collaborations (2)](.llms/chunks/packages.editor.basic-setup-collaborations-2.md) — 445 tokens
+- [@bpmnkit/editor — With Side Dock](.llms/chunks/packages.editor.with-side-dock.md) — 168 tokens
+- [@bpmnkit/editor — SideDock API](.llms/chunks/packages.editor.sidedock-api.md) — 861 tokens
 - [@bpmnkit/editor — Full Editor with All Plugins](.llms/chunks/packages.editor.full-editor-with-all-plugins.md) — 157 tokens
 - [@bpmnkit/editor — Internationalisation](.llms/chunks/packages.editor.internationalisation.md) — 837 tokens
 - [@bpmnkit/engine — Overview](.llms/chunks/packages.engine.overview.md) — 955 tokens

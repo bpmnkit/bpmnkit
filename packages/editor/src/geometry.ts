@@ -192,6 +192,46 @@ export function computeWaypoints(src: BpmnBounds, tgt: BpmnBounds): BpmnWaypoint
 
 // ── Label position ────────────────────────────────────────────────────────────
 
+const EDGE_LABEL_W = 90
+const EDGE_LABEL_H = 20
+const EDGE_LABEL_GAP = 5
+
+/**
+ * Where a flow's label goes when its diagram interchange places none: beside
+ * the middle of its longest segment, right of it when that segment is
+ * vertical, above it otherwise. Undefined for fewer than two waypoints.
+ */
+export function edgeLabelBounds(waypoints: readonly BpmnWaypoint[]): BpmnBounds | undefined {
+	let longest: [BpmnWaypoint, BpmnWaypoint] | undefined
+	let length = -1
+	for (let i = 1; i < waypoints.length; i++) {
+		const a = waypoints[i - 1]
+		const b = waypoints[i]
+		if (!a || !b) continue
+		const l = Math.hypot(b.x - a.x, b.y - a.y)
+		if (l > length) {
+			length = l
+			longest = [a, b]
+		}
+	}
+	if (!longest) return undefined
+	const [a, b] = longest
+	const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }
+	return a.x === b.x
+		? {
+				x: mid.x + EDGE_LABEL_GAP,
+				y: mid.y - EDGE_LABEL_H / 2,
+				width: EDGE_LABEL_W,
+				height: EDGE_LABEL_H,
+			}
+		: {
+				x: mid.x - EDGE_LABEL_W / 2,
+				y: mid.y - EDGE_LABEL_H - EDGE_LABEL_GAP,
+				width: EDGE_LABEL_W,
+				height: EDGE_LABEL_H,
+			}
+}
+
 const LABEL_W = 80
 const LABEL_H = 20
 const LABEL_GAP = 6

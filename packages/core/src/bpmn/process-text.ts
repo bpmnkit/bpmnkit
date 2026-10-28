@@ -25,8 +25,17 @@ import { parseExpression } from "@bpmnkit/feel"
 import { slugify, uniqueId } from "../plan/slug.js"
 import type { BpmnDefinitions, BpmnElementType } from "./bpmn-model.js"
 import { expand } from "./compact.js"
-import type { CompactDiagram, CompactElement, CompactFlow, CompactNote } from "./compact.js"
+import type {
+	CompactDiagram,
+	CompactElement,
+	CompactFlow,
+	CompactLane,
+	CompactMessageFlow,
+	CompactNote,
+	CompactParticipant,
+} from "./compact.js"
 import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connector-line.js"
+import { messageEndProblem } from "./swimlanes.js"
 
 /**
  * How to write the format — the part of a system prompt that teaches it.
@@ -46,6 +55,8 @@ Attributes after |: on=<task id> (required on boundary), nonint (non-interruptin
 Also after |: form=<form id> (start, user), in.<name>=<FEEL> and out.<name>=<FEEL> map variables in and out of a step (value runs to the next word=; write comparisons with spaces: a = 1)
 Ad-hoc: agent[adhoc Name] is a container with flows like any node; tool[service Name | inside=agent] has no flows of its own; note <id>: text annotates a node
 doc <id>: text            the element's documentation; for a tool inside an ad-hoc agent it is the description the agent chooses the tool by
+lane sales[Sales team]: a, b  a and b are done by the Sales team: one line per role, after the paths
+pool bank[Bank]           another party; msg pay >(Payment) bank is a message to it, msg bank > paid one from it
 Ad-hoc example:
 ask[start Question asked] > agent[adhoc Answer with tools] > review[user Review answer] > done[end Answered]
 users[service Look up users | inside=agent]
@@ -58,6 +69,7 @@ Rules:
 - A boundary leads only to the handling. What happens next when nothing fails follows the task itself (read > count), never the boundary.
 - A step that only works on process data (count, sum, filter, compare, pick, format a message) is a script task, never a service or plain task: its FEEL reads the variables earlier steps set with result=. read[service Read issues | result=issues] > count[script Count open issues | result=openCount feel=count(issues[state = "open"])]
 - Branches that meet again are joined automatically; join parallel branches with an and node.
+- Lanes and pools only when the description names roles or other parties; then every node is in one lane.
 - Steps done at the same time start from an and node and meet at another. A deadline is a boundary:timer with after= on the task that may run late. A step done for every item of a list takes each=<list>; use it only when the description says every or each.
 
 Example:
@@ -195,6 +207,13 @@ interface Node {
 	inside?: string
 }
 
+/** An id written on a `lane` or `msg` line. */
+interface Ref {
+	written: string
+	/** The node it meant when the line was read; absent when it was not declared yet. */
+	resolved?: string
+}
+
 interface Edge extends Omit<CompactFlow, "id"> {
 	line: number
 }
@@ -206,6 +225,25 @@ export const NOTE_LINE = /^note\s+([A-Za-z_][\w.-]*)\s*:\s*(.*)$/i
 
 /** `doc <id>: text`, the element's documentation; free text like a note. */
 export const DOC_LINE = /^doc\s+([A-Za-z_][\w.-]*)\s*:\s*(.*)$/i
+
+/**
+ * `lane <id>[Name]: a, b`, the swimlane a role works in. Whitespace after the
+ * keyword is required, so `lane_check[user …] > x` is still a path. The keywords
+ * of this and the next two lines are lowercase only, as the guides teach them:
+ * prose such as "Lane changes: move review into sales" starts with a capital.
+ */
+export const LANE_LINE = /^lane\s+([A-Za-z_][\w.-]*)\s*(?:\[([^\]]*)\])?\s*:\s*(.*)$/
+
+/** `pool <id>[Name]`, another party drawn as an empty pool. */
+export const POOL_LINE = /^pool\s+([A-Za-z_][\w.-]*)\s*(?:\[([^\]]*)\])?\s*$/
+
+/**
+ * `msg a >(Label) b`, a message between a node and a pool. Its own keyword, so a
+ * path can never mix sequence and message flows; the label is kept as written,
+ * colons included, because a message has no condition.
+ */
+export const MESSAGE_LINE =
+	/^msg\s+([A-Za-z_][\w.-]*)\s*-{0,2}>\s*(?:\(([^()]*)\)\s*)?([A-Za-z_][\w.-]*)\s*$/
 
 /** A title segment that is only attributes of a known key: `camunda=8.10`. */
 const HEADER_SEGMENT = /^[\s,]*(?:camunda=[^\s,|]*[\s,]*)+$/
@@ -298,8 +336,11 @@ function typeFromId(id: string): BpmnElementType {
 	return "task"
 }
 
-/** `send_email` / `sendEmail` → "Send email": a readable name for a node the model never named. */
-function nameFromId(id: string): string {
+/**
+ * `send_email` / `sendEmail` → "Send email": a readable name for a node, lane
+ * or pool the model never named.
+ */
+export function nameFromId(id: string): string {
 	const words = id
 		.replace(/([a-z0-9])([A-Z])/g, "$1 $2")
 		.replace(/[_.-]+/g, " ")
@@ -476,6 +517,12 @@ class Reader {
 	readonly notes: { elementId: string; written: string; text: string; line: number }[] = []
 	/** `doc` lines, with the written id resolved to the node it meant when read. */
 	readonly docs: { elementId: string; written: string; text: string; line: number }[] = []
+	/** `lane` lines. A member already declared is resolved when read, as a note is. */
+	readonly lanes: { written: string; name?: string; members: Ref[]; line: number }[] = []
+	/** `pool` lines. */
+	readonly pools: { written: string; name?: string; line: number }[] = []
+	/** `msg` lines. */
+	readonly messages: { from: Ref; to: Ref; name?: string; line: number }[] = []
 	/** Catch and boundary events written without a trigger, and made message events. */
 	readonly guessedMessage = new Set<string>()
 	title: string | undefined
@@ -485,6 +532,52 @@ class Reader {
 	private carry: { text: string; line: number } | undefined
 	/** The last node of the last path read, which a line starting with an arrow continues. */
 	private tail: string | undefined
+
+	/** An id as written, and the node it meant when its line was read, if it was declared by then. */
+	ref(written: string): Ref {
+		const resolved = this.current.get(written)
+		return resolved === undefined ? { written } : { written, resolved }
+	}
+
+	/**
+	 * The node a reference means. One read before its node was declared means the
+	 * first node declared under that id, as the line came before any reuse.
+	 */
+	resolve(ref: Ref): string {
+		return ref.resolved ?? this.declared.get(ref.written)?.[0] ?? ref.written
+	}
+
+	/** Reads `lane`, `pool` and `msg` lines. Returns whether the line was one. */
+	private swimlane(text: string, n: number): boolean {
+		const lane = LANE_LINE.exec(text)
+		if (lane) {
+			const name = lane[2]?.trim()
+			const members = (lane[3] ?? "")
+				.split(/[\s,]+/)
+				.filter(Boolean)
+				.map((id) => this.ref(id))
+			this.lanes.push({ written: lane[1] as string, ...(name ? { name } : {}), members, line: n })
+			return true
+		}
+		const pool = POOL_LINE.exec(text)
+		if (pool) {
+			const name = pool[2]?.trim()
+			this.pools.push({ written: pool[1] as string, ...(name ? { name } : {}), line: n })
+			return true
+		}
+		const message = MESSAGE_LINE.exec(text)
+		if (message) {
+			const name = message[2]?.trim()
+			this.messages.push({
+				from: this.ref(message[1] as string),
+				to: this.ref(message[3] as string),
+				...(name ? { name } : {}),
+				line: n,
+			})
+			return true
+		}
+		return false
+	}
 
 	/** Reads the attributes after the bar of the title line. */
 	private header(attrs: string, n: number): void {
@@ -552,6 +645,7 @@ class Reader {
 			})
 			return true
 		}
+		if (this.swimlane(text, n)) return true
 		// `> stop[end Done]`: the path above wrapped before its arrow
 		if (/^-{0,2}>/.test(text) && this.tail !== undefined) {
 			this.problems.push({
@@ -1808,6 +1902,12 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		}
 	}
 
+	// Before the process and flow ids are chosen, so those step around lane and pool ids.
+	const lanes = readLanes(reader, nodes, childNodes, taken, final, problems)
+	if (lanes.length > 0) fillLanes(lanes, nodes, edges, fixes)
+	const pools = readPools(reader, nodes, lanes, taken, problems)
+	const messageFlows = readMessages(reader, nodes, pools, taken, final, problems)
+
 	const processBase = reader.title ? slugify(reader.title) : "Process_1"
 	const processId = uniqueId(
 		/^[A-Za-z_]/.test(processBase) ? processBase : `Process_${processBase}`,
@@ -1910,14 +2010,298 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 					elements: [...nodes.values()].map((node) => node.element),
 					flows,
 					...(notes.length > 0 ? { notes } : {}),
+					...(lanes.length > 0 ? { lanes } : {}),
 				},
 			],
+			...(pools.size > 0 ? { participants: [...pools.values()] } : {}),
+			...(messageFlows.length > 0 ? { messageFlows } : {}),
 		},
 		problems: problems.sort((a, b) => a.line - b.line),
 		fixes,
 		questions: asks.sort((a, b) => a.line - b.line).map(({ ask }) => ask()),
 		connectors,
 	}
+}
+
+/**
+ * The `lane` lines as compact lanes, in the order first written. A lane written
+ * twice gathers both lines' members; a node listed in two lanes stays in the
+ * later one. Members that are not top-level nodes are left out: while streaming
+ * silently, since they may yet be declared.
+ */
+function readLanes(
+	reader: Reader,
+	nodes: ReadonlyMap<string, Node>,
+	childNodes: readonly Node[],
+	taken: Set<string>,
+	final: boolean,
+	problems: ProcessTextProblem[],
+): CompactLane[] {
+	const byWritten = new Map<string, CompactLane & { members: string[] }>()
+	const laneOfNode = new Map<string, CompactLane & { members: string[] }>()
+	const listedOn = new Map<string, number>()
+	for (const line of reader.lanes) {
+		let lane = byWritten.get(line.written)
+		if (lane === undefined) {
+			let id = line.written
+			if (taken.has(id)) {
+				id = uniqueId(`${line.written}_lane`, taken)
+				problems.push({
+					line: line.line,
+					message: `lane ${line.written}: the id is ${clashOwner(line.written, nodes, byWritten.values())}; wrote the lane as "${id}"`,
+				})
+			} else taken.add(id)
+			lane = { id, name: line.name ?? nameFromId(line.written), members: [] }
+			byWritten.set(line.written, lane)
+		} else if (line.name !== undefined) lane.name = line.name
+		for (const ref of line.members) {
+			const id = reader.resolve(ref)
+			if (!nodes.has(id)) {
+				const container = childNodes.find((child) => child.element.id === id)?.inside
+				if (container !== undefined) {
+					problems.push({
+						line: line.line,
+						message: `lane ${line.written}: "${ref.written}" is inside "${container}", and a lane holds only top-level nodes; left out`,
+					})
+				} else if (final) {
+					problems.push({
+						line: line.line,
+						message: `lane ${line.written}: "${ref.written}" is not a node of the diagram; left out`,
+					})
+				}
+				continue
+			}
+			const before = laneOfNode.get(id)
+			if (before === lane) continue
+			if (before !== undefined) {
+				before.members = before.members.filter((member) => member !== id)
+				problems.push({
+					line: line.line,
+					message: `lane ${line.written}: "${ref.written}" is already in lane ${before.id}; moved it to ${lane.id}`,
+				})
+			}
+			lane.members.push(id)
+			laneOfNode.set(id, lane)
+			listedOn.set(id, line.line)
+		}
+	}
+	const lanes = [...byWritten.values()]
+	keepBoundariesWithHosts(lanes, laneOfNode, nodes, listedOn, problems)
+	return lanes
+}
+
+/** What an id already in use names, for a problem: "a node's" or "a lane's". */
+function clashOwner(
+	id: string,
+	nodes: ReadonlyMap<string, Node>,
+	lanes: Iterable<CompactLane>,
+): string {
+	if (nodes.has(id)) return "a node's"
+	for (const lane of lanes) if (lane.id === id) return "a lane's"
+	return "already used"
+}
+
+/**
+ * Moves a boundary event a lane line put apart from its host into the host's
+ * lane. Layout draws it on the host's border, so any other lane would claim a
+ * node it does not contain.
+ */
+function keepBoundariesWithHosts(
+	lanes: readonly (CompactLane & { members: string[] })[],
+	laneOfNode: Map<string, CompactLane & { members: string[] }>,
+	nodes: ReadonlyMap<string, Node>,
+	listedOn: ReadonlyMap<string, number>,
+	problems: ProcessTextProblem[],
+): void {
+	for (const lane of lanes) {
+		for (const id of [...lane.members]) {
+			const host = nodes.get(id)?.element.attachedTo
+			const hostLane = host === undefined ? undefined : laneOfNode.get(host)
+			if (hostLane === undefined || hostLane === lane) continue
+			lane.members = lane.members.filter((member) => member !== id)
+			hostLane.members.push(id)
+			laneOfNode.set(id, hostLane)
+			problems.push({
+				line: listedOn.get(id) ?? 0,
+				message: `lane ${lane.id}: "${id}" is a boundary event on "${host}"; put it in ${host}'s lane ${hostLane.id}`,
+			})
+		}
+	}
+}
+
+/**
+ * Puts every node no lane names in a neighbour's lane: a boundary event in its
+ * host's, anything else in its first predecessor's, else its first
+ * successor's, else the first lane. Join gateways and end events the parser
+ * added are such nodes, so they land beside what they connect.
+ */
+function fillLanes(
+	lanes: readonly CompactLane[],
+	nodes: ReadonlyMap<string, Node>,
+	edges: readonly Edge[],
+	fixes: string[],
+): void {
+	const laneOf = new Map<string, CompactLane>()
+	for (const lane of lanes) for (const id of lane.members ?? []) laneOf.set(id, lane)
+	const put = (id: string, lane: CompactLane) => {
+		lane.members = [...(lane.members ?? []), id]
+		laneOf.set(id, lane)
+		fixes.push(`put "${id}", which no lane named, in lane ${lane.id}`)
+	}
+	const unassigned = () => [...nodes.keys()].filter((id) => !laneOf.has(id))
+	const byNeighbour = (id: string, side: "from" | "to"): CompactLane | undefined => {
+		const other = side === "from" ? "to" : "from"
+		for (const edge of edges) {
+			if (edge[other] !== id) continue
+			const lane = laneOf.get(edge[side])
+			if (lane !== undefined) return lane
+		}
+		return undefined
+	}
+	// Each pass places at least one node or stops, so this ends within nodes.size passes.
+	for (let pass = 0; pass <= nodes.size; pass++) {
+		let placed = false
+		for (const id of unassigned()) {
+			const host = nodes.get(id)?.element.attachedTo
+			const lane = host !== undefined ? laneOf.get(host) : byNeighbour(id, "from")
+			if (lane !== undefined) {
+				put(id, lane)
+				placed = true
+			}
+		}
+		if (placed) continue
+		for (const id of unassigned()) {
+			const lane = byNeighbour(id, "to")
+			if (lane !== undefined) {
+				put(id, lane)
+				placed = true
+				break
+			}
+		}
+		if (!placed) break
+	}
+	const first = lanes[0]
+	if (first !== undefined) for (const id of unassigned()) put(id, first)
+}
+
+/** The `pool` lines as black-box participants, keyed by the id they were written with. */
+function readPools(
+	reader: Reader,
+	nodes: ReadonlyMap<string, Node>,
+	lanes: readonly CompactLane[],
+	taken: Set<string>,
+	problems: ProcessTextProblem[],
+): Map<string, CompactParticipant> {
+	const pools = new Map<string, CompactParticipant>()
+	for (const line of reader.pools) {
+		const known = pools.get(line.written)
+		if (known !== undefined) {
+			if (line.name !== undefined) known.name = line.name
+			continue
+		}
+		let id = line.written
+		if (taken.has(id)) {
+			id = uniqueId(`${line.written}_pool`, taken)
+			problems.push({
+				line: line.line,
+				message: `pool ${line.written}: the id is ${clashOwner(line.written, nodes, lanes)}; wrote the pool as "${id}"`,
+			})
+		} else taken.add(id)
+		pools.set(line.written, { id, name: line.name ?? nameFromId(line.written) })
+	}
+	return pools
+}
+
+/** One end of a `msg` line, resolved. */
+type MessageEnd =
+	| { kind: "pool"; id: string }
+	| { kind: "node"; id: string; element: CompactElement }
+
+/**
+ * Resolves the two ends of a `msg` line. An id that names both a node and a
+ * pool (the pool was renamed `<id>_pool`) means whichever makes one end a node
+ * and the other a pool; when both ends are such ids, a node sends to a pool.
+ */
+function messageEnds(
+	reader: Reader,
+	nodes: ReadonlyMap<string, Node>,
+	pools: ReadonlyMap<string, CompactParticipant>,
+	from: Ref,
+	to: Ref,
+): [MessageEnd | undefined, MessageEnd | undefined] {
+	const candidates = (ref: Ref) => {
+		const pool = pools.get(ref.written)
+		const id = reader.resolve(ref)
+		const element = nodes.get(id)?.element
+		return {
+			pool: pool === undefined ? undefined : ({ kind: "pool", id: pool.id } as const),
+			node: element === undefined ? undefined : ({ kind: "node", id, element } as const),
+		}
+	}
+	const a = candidates(from)
+	const b = candidates(to)
+	if (a.pool && a.node && b.pool && b.node) return [a.node, b.pool]
+	if (a.pool && a.node) return [b.pool && !b.node ? a.node : a.pool, b.pool ?? b.node]
+	if (b.pool && b.node) return [a.pool ?? a.node, a.pool && !a.node ? b.node : b.pool]
+	return [a.pool ?? a.node, b.pool ?? b.node]
+}
+
+/**
+ * The `msg` lines as message flows. One end is a node of the process and the
+ * other a pool: the process's own pool has no line, so a message inside it
+ * would be a sequence flow drawn the wrong way.
+ */
+function readMessages(
+	reader: Reader,
+	nodes: ReadonlyMap<string, Node>,
+	pools: ReadonlyMap<string, CompactParticipant>,
+	taken: Set<string>,
+	final: boolean,
+	problems: ProcessTextProblem[],
+): CompactMessageFlow[] {
+	const flows: CompactMessageFlow[] = []
+	const seen = new Set<string>()
+	let number = 0
+	for (const line of reader.messages) {
+		const what = `msg ${line.from.written} > ${line.to.written}`
+		const [from, to] = messageEnds(reader, nodes, pools, line.from, line.to)
+		const refuse = (reason: string) =>
+			problems.push({ line: line.line, message: `${what}: ${reason}; left out` })
+		if (from === undefined || to === undefined) {
+			const missing = from === undefined ? line.from.written : line.to.written
+			if (final) refuse(`"${missing}" is not a node or a pool`)
+			continue
+		}
+		if (from.kind === "pool" && to.kind === "pool") {
+			refuse("both ends are pools; one end must be a node of the process")
+			continue
+		}
+		if (from.kind === "node" && to.kind === "node") {
+			refuse("both ends are in this process; a message goes to or comes from a pool line")
+			continue
+		}
+		const reason =
+			(from.kind === "node"
+				? messageEndProblem(from.element.type, from.element.eventType, "source")
+				: undefined) ??
+			(to.kind === "node"
+				? messageEndProblem(to.element.type, to.element.eventType, "target")
+				: undefined)
+		if (reason !== undefined) {
+			refuse(reason)
+			continue
+		}
+		const source = from.id
+		const target = to.id
+		if (seen.has(`${source}>${target}`)) continue
+		seen.add(`${source}>${target}`)
+		let id: string
+		do id = `MessageFlow_${++number}`
+		while (taken.has(id))
+		taken.add(id)
+		flows.push({ id, source, target, ...(line.name !== undefined ? { name: line.name } : {}) })
+	}
+	return flows
 }
 
 /**

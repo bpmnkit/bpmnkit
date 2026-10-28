@@ -11,11 +11,25 @@ const SCHEMA_HELP = `CompactDiagram JSON schema — for --definition and stdin i
 ==============================================================
 
 TOP-LEVEL
-  { "id": "Definitions_<unique>", "processes": [CompactProcess] }
+  { "id": "Definitions_<unique>", "processes": [CompactProcess],
+    "participants"?: [CompactParticipant], "messageFlows"?: [CompactMessageFlow] }
 
 CompactProcess
   { "id": "proc-id", "name"?: "Human Name",
+    "executable"?: false for a partner process (absent: executable),
+    "lanes"?: [CompactLane],
     "elements": [CompactElement], "flows": [CompactFlow] }
+
+CompactLane — swimlane; every top-level node in exactly one leaf lane
+  { "id": "Lane_sales", "name"?: "Sales",
+    "members"?: [element IDs]  (leaf lanes),  "lanes"?: [CompactLane]  (nested) }
+
+CompactParticipant — a pool
+  { "id": "Pool_bank", "name"?: "Bank", "processId"?: process in it (absent: black box) }
+
+CompactMessageFlow — between pools
+  { "id": "m1", "source": element or participant ID,
+    "target": element or participant ID, "name"?: label }
 
 CompactElement — all fields except id+type are optional
   {

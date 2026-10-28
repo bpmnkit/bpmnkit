@@ -34,7 +34,15 @@ const XML = `<?xml version="1.0" encoding="UTF-8"?>
   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
   xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
   id="d" targetNamespace="x">
+  <bpmn:collaboration id="collab">
+    <bpmn:participant id="pool" name="Company" processRef="proc"/>
+    <bpmn:participant id="bank" name="Bank"/>
+  </bpmn:collaboration>
   <bpmn:process id="proc" isExecutable="true">
+    <bpmn:laneSet id="lanes">
+      <bpmn:lane id="lane1" name="Sales"><bpmn:flowNodeRef>start</bpmn:flowNodeRef><bpmn:flowNodeRef>task</bpmn:flowNodeRef><bpmn:flowNodeRef>gw</bpmn:flowNodeRef><bpmn:flowNodeRef>end</bpmn:flowNodeRef></bpmn:lane>
+      <bpmn:lane id="lane2" name="Back office"><bpmn:flowNodeRef>wait</bpmn:flowNodeRef><bpmn:flowNodeRef>call</bpmn:flowNodeRef><bpmn:flowNodeRef>user</bpmn:flowNodeRef><bpmn:flowNodeRef>rule</bpmn:flowNodeRef><bpmn:flowNodeRef>call2</bpmn:flowNodeRef><bpmn:flowNodeRef>user2</bpmn:flowNodeRef><bpmn:flowNodeRef>rule2</bpmn:flowNodeRef></bpmn:lane>
+    </bpmn:laneSet>
     <bpmn:startEvent id="start" name="Start"/>
     <bpmn:serviceTask id="task" name="Do Work"/>
     <bpmn:exclusiveGateway id="gw" name="Which?"/>
@@ -50,7 +58,11 @@ const XML = `<?xml version="1.0" encoding="UTF-8"?>
     <bpmn:sequenceFlow id="f2" sourceRef="task" targetRef="gw"/>
     <bpmn:sequenceFlow id="f3" sourceRef="gw" targetRef="end"/>
   </bpmn:process>
-  <bpmndi:BPMNDiagram id="d1"><bpmndi:BPMNPlane id="p1" bpmnElement="proc">
+  <bpmndi:BPMNDiagram id="d1"><bpmndi:BPMNPlane id="p1" bpmnElement="collab">
+    <bpmndi:BPMNShape id="s_pool" bpmnElement="pool" isHorizontal="true"><dc:Bounds x="40" y="20" width="620" height="440"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="s_lane1" bpmnElement="lane1" isHorizontal="true"><dc:Bounds x="70" y="20" width="590" height="170"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="s_lane2" bpmnElement="lane2" isHorizontal="true"><dc:Bounds x="70" y="190" width="590" height="270"/></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="s_bank" bpmnElement="bank" isHorizontal="true"><dc:Bounds x="40" y="500" width="620" height="60"/></bpmndi:BPMNShape>
     <bpmndi:BPMNShape id="s1" bpmnElement="start"><dc:Bounds x="100" y="80" width="36" height="36"/></bpmndi:BPMNShape>
     <bpmndi:BPMNShape id="s2" bpmnElement="task"><dc:Bounds x="200" y="60" width="100" height="80"/></bpmndi:BPMNShape>
     <bpmndi:BPMNShape id="s3" bpmnElement="gw"><dc:Bounds x="360" y="75" width="50" height="50"/></bpmndi:BPMNShape>
@@ -110,7 +122,8 @@ function harvest(): { keys: string[]; placeholders: (key: string) => string[] } 
 		}
 	}
 	const rightClick = (): void => {
-		container.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true }))
+		// The menu listens on the editor's own host, inside `container`.
+		editor.container.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true }))
 	}
 	const search = (query: string): void => {
 		const input = document.querySelector<HTMLInputElement>("#bpmnkit-search-input")
@@ -134,6 +147,9 @@ function harvest(): { keys: string[]; placeholders: (key: string) => string[] } 
 		"call2",
 		"user2",
 		"rule2",
+		"pool",
+		"lane1",
+		"bank",
 	]
 	for (const id of ids) {
 		editor.setSelection([id])
@@ -182,6 +198,26 @@ function harvest(): { keys: string[]; placeholders: (key: string) => string[] } 
 	press()
 	editor.setSelection([])
 	press()
+	// Divide is offered only on a pool without lanes.
+	editor.load(
+		XML.replace(/<bpmn:laneSet[\s\S]*<\/bpmn:laneSet>/, "").replace(
+			/<bpmndi:BPMNShape id="s_lane\d"[^\n]*\n/g,
+			"",
+		),
+	)
+	editor.setSelection(["pool"])
+	rightClick()
+	press()
+	// The pool tool says why it is off when a first pool would leave a process out.
+	editor.load(
+		XML.replace(/<bpmn:collaboration[\s\S]*<\/bpmn:collaboration>/, "")
+			.replace(/<bpmndi:BPMNShape id="s_(?:pool|lane\d|bank)"[^\n]*\n/g, "")
+			.replace(
+				"</bpmn:definitions>",
+				'<bpmn:process id="other"><bpmn:task id="o1"/></bpmn:process></bpmn:definitions>',
+			)
+			.replace('bpmnElement="collab"', 'bpmnElement="proc"'),
+	)
 	// A document that reuses an id gets a warning banner.
 	editor.load(
 		XML.replace('id="end"', 'id="task"').replace('bpmnElement="end"', 'bpmnElement="task"'),

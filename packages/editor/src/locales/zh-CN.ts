@@ -25,6 +25,15 @@ export const zhCN: Locale = {
 	name: "简体中文",
 	messages: {
 		".docx for Word and LibreOffice": "适用于 Word 和 LibreOffice 的 .docx",
+		"Add lane": "添加泳道",
+		"Add lane above": "在上方添加泳道",
+		"Add lane below": "在下方添加泳道",
+		"Add pool": "添加池",
+		"Cannot create a pool: another process with content has no pool":
+			"无法创建池：另一个有内容的流程没有池",
+		"Create pool": "创建池",
+		"Divide into three lanes": "拆分为三个泳道",
+		"Divide into two lanes": "拆分为两个泳道",
 		"Download HTML": "下载 HTML",
 		"Download Markdown": "下载 Markdown",
 		"Download Word": "下载 Word",
@@ -355,6 +364,7 @@ export const zhCN: Locale = {
 		"Optimize diagram": "优化图",
 		"Parallel (for each, all at once)": "并行 (逐项，同时进行)",
 		"Parallel Gateway": "并行网关",
+		"Partner pool: no lanes or nodes in this version": "合作方池：此版本中没有泳道和节点",
 		Paste: "粘贴",
 		Pattern: "模式",
 		Play: "运行",

@@ -16,6 +16,7 @@ import {
 	type CompactElement,
 	type CompactFlow,
 	type RestConnectorConfig,
+	applyAutoLayout,
 	compactify,
 	expand,
 	layoutProcess,
@@ -53,6 +54,20 @@ function buildDiagram(proc: BpmnProcess): BpmnDiagram {
 			edges,
 		},
 	}
+}
+
+/**
+ * The diagrams to write for `defs`. Pools and lanes are drawn only by the
+ * whole-diagram layout, on a plane bound to the collaboration, so a diagram
+ * with either goes through it; a lane-free diagram keeps the per-process layout
+ * it always had.
+ */
+function layoutDiagrams(defs: BpmnDefinitions): BpmnDiagram[] {
+	const pooled =
+		defs.collaborations.length > 0 || defs.processes.some((proc) => proc.laneSet !== undefined)
+	return pooled
+		? applyAutoLayout({ ...defs, diagrams: [] }).diagrams
+		: defs.processes.map(buildDiagram)
 }
 
 function recomputeIncomingOutgoing(proc: BpmnProcess): void {
@@ -131,7 +146,7 @@ function ensureProcess(processId: string): BpmnProcess {
 	/** Export current state as BPMN XML (rebuilds diagrams before export). */
 	mcpExportXml(): string {
 		if (!__state) throw new Error("mcpInit not called")
-		__state.diagrams = __state.processes.map(buildDiagram)
+		__state.diagrams = layoutDiagrams(__state)
 		return Bpmn.export(__state)
 	},
 

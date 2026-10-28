@@ -35,6 +35,7 @@ import type {
 	BpmnTextAnnotation,
 	BpmnWaypoint,
 } from "./bpmn-model.js"
+import { BPMNKIT_NAMESPACE } from "./swimlanes.js"
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -1426,6 +1427,9 @@ class LaneFrame extends BaseElementFrame implements LaneSetOwner {
 			case "flowNodeRef":
 				return new TextFrame(this, SLOT_FLOW_NODE_REF, attrs)
 			case "childLaneSet":
+			// Before 2026-10-27 the serializer wrote nested lanes as <laneSet>; read those
+			// files back rather than drop their lanes.
+			case "laneSet":
 				if (this.childLaneSetSeen) return null
 				this.childLaneSetSeen = true
 				return new LaneSetFrame(attrs, this)
@@ -1515,7 +1519,10 @@ class ProcessFrame extends Frame implements LaneSetOwner, TextOwner {
 		this.target.push({
 			id: this.id,
 			name: attr(attrs, "name"),
-			isExecutable: attr(attrs, "isExecutable") === "true" ? true : undefined,
+			isExecutable:
+				attr(attrs, "isExecutable") !== undefined
+					? attr(attrs, "isExecutable") === "true"
+					: undefined,
 			...(this.documentation !== undefined ? { documentation: this.documentation } : {}),
 			...(this.documentationAttributes
 				? { documentationAttributes: this.documentationAttributes }
@@ -1889,9 +1896,26 @@ class DefinitionsFrame extends Frame implements TextOwner {
 				unknownAttributes[key] = value
 			}
 		}
+		const prefix = Object.keys(namespaces).find(
+			(p) => p !== "" && namespaces[p] === BPMNKIT_NAMESPACE,
+		)
+		const pinKey = prefix === undefined ? undefined : `${prefix}:primaryProcess`
+		const primaryProcessId = pinKey === undefined ? undefined : unknownAttributes[pinKey]
+		if (prefix !== undefined && pinKey !== undefined && primaryProcessId !== undefined) {
+			Reflect.deleteProperty(unknownAttributes, pinKey)
+			// The serializer declares the namespace with the pin it writes. Kept, it
+			// would move the declaration, and a replica parsed from this file would
+			// no longer export the bytes the writer does. Any other use of the prefix
+			// keeps it, or the export would leave that use unbound.
+			const used =
+				this.sink.usesPrefix(prefix) ||
+				Object.keys(unknownAttributes).some((key) => key.startsWith(`${prefix}:`))
+			if (!used) Reflect.deleteProperty(namespaces, prefix)
+		}
 
 		this.sink.result = {
-			id: requiredAttr(attrs, "id", this.name),
+			// Optional in the schema, and the Flowable Modeler leaves it out.
+			id: attr(attrs, "id") ?? "",
 			targetNamespace: requiredAttr(attrs, "targetNamespace", this.name),
 			exporter: attr(attrs, "exporter"),
 			exporterVersion: attr(attrs, "exporterVersion"),
@@ -1910,6 +1934,7 @@ class DefinitionsFrame extends Frame implements TextOwner {
 			processes: this.processes,
 			diagrams: this.diagrams,
 			...(this.unknownChildren.length > 0 ? { unknownChildren: this.unknownChildren } : {}),
+			...(primaryProcessId !== undefined ? { primaryProcessId } : {}),
 		}
 	}
 }
@@ -1920,6 +1945,14 @@ class BpmnSink implements XmlSink {
 	/** Set when the root element is not <definitions>; reported once scanning is done. */
 	rootName: string | undefined
 	private readonly stack: Frame[] = []
+	/** The prefix <definitions> gives the bpmnkit namespace, until a descendant is seen using it. */
+	private watched: string | undefined
+	private watchedUsed = false
+
+	/** Whether an element below <definitions>, or one of its attributes, is named under `prefix`. */
+	usesPrefix(prefix: string): boolean {
+		return this.watchedUsed && prefix === this.watched
+	}
 
 	start(name: string, local: string, attrs: Attrs): Visit {
 		const top = this.stack[this.stack.length - 1]
@@ -1929,13 +1962,23 @@ class BpmnSink implements XmlSink {
 				this.rootName = name
 				return Visit.Skip
 			}
+			this.watched = Object.keys(attrs)
+				.find((key) => key.startsWith("xmlns:") && attrs[key] === BPMNKIT_NAMESPACE)
+				?.slice(6)
 			next = new DefinitionsFrame(name, attrs, this)
 		} else {
+			if (this.watched !== undefined && !this.watchedUsed) this.watch(name, attrs)
 			next = top.child(local, name, attrs)
 		}
 		if (next === null) return Visit.Skip
 		this.stack.push(next)
 		return next.wantsText ? Visit.All : Visit.ElementsOnly
+	}
+
+	private watch(name: string, attrs: Attrs): void {
+		const qualified = `${this.watched}:`
+		this.watchedUsed =
+			name.startsWith(qualified) || Object.keys(attrs).some((key) => key.startsWith(qualified))
 	}
 
 	text(text: string): void {

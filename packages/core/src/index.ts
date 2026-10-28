@@ -126,9 +126,25 @@ export { checkDiCompleteness } from "./bpmn/di-check.js"
 export type { DiCompleteness } from "./bpmn/di-check.js"
 export { planeForElement, listPlaneElementIds } from "./bpmn/di-planes.js"
 export { DiagramBuilder, ProcessBuilder } from "./bpmn/bpmn-builder.js"
+export {
+	allLanes,
+	assignLane,
+	buildLaneSet,
+	collaborationProblems,
+	laneForNewNode,
+	laneOf,
+	laneProblems,
+	leafLanes,
+	messageEndProblem,
+	poolLanedProcesses,
+	primaryProcess,
+	pruneLaneRefs,
+} from "./bpmn/swimlanes.js"
+export type { LaneSpec } from "./bpmn/swimlanes.js"
 export type {
 	BranchBuilder,
 	BuildOptions,
+	LaneOptions,
 	MessageFlowOptions,
 	ParticipantOptions,
 	DiagramMessageOptions,
@@ -409,9 +425,13 @@ export { compactify, expand } from "./bpmn/compact.js"
 export { createCompactStream } from "./bpmn/compact-stream.js"
 export type { CompactStream, CompactStreamOptions } from "./bpmn/compact-stream.js"
 export {
+	LANE_LINE,
+	MESSAGE_LINE,
+	POOL_LINE,
 	PROCESS_TEXT_GUIDE,
 	conditionOrLabel,
 	createProcessTextStream,
+	nameFromId,
 	parseProcessText,
 } from "./bpmn/process-text.js"
 export type {
@@ -428,6 +448,7 @@ export type { DeltaFlow, DeltaNode, ProcessDelta } from "./bpmn/process-delta.js
 export {
 	writableCondition,
 	writableLabel,
+	writableMessageLabel,
 	writableName,
 	writeProcessText,
 } from "./bpmn/process-text-writer.js"
@@ -500,7 +521,10 @@ export type {
 	CompactDiagram,
 	CompactElement,
 	CompactFlow,
+	CompactLane,
+	CompactMessageFlow,
 	CompactNote,
+	CompactParticipant,
 	CompactProcess,
 } from "./bpmn/compact.js"
 export {

@@ -630,6 +630,10 @@ export interface BpmnLaneSet {
 export interface BpmnProcess {
 	id: string
 	name?: string
+	/**
+	 * As the file says it; `undefined` when it says nothing. Kept apart from `false`
+	 * because engines read an absent attribute differently (Flowable: executable).
+	 */
 	isExecutable?: boolean
 	documentation?: string
 	/** Attributes of the `<documentation>` element (`id`, `textFormat`), kept for round-trip. */
@@ -829,6 +833,7 @@ export interface BpmnDiagram {
  * ```
  */
 export interface BpmnDefinitions {
+	/** Empty when the file has none: the schema makes it optional and the Flowable Modeler omits it. */
 	id: string
 	targetNamespace: string
 	exporter?: string
@@ -854,4 +859,14 @@ export interface BpmnDefinitions {
 	 * modelled ones so a round trip cannot silently discard them.
 	 */
 	unknownChildren?: XmlElement[]
+	/**
+	 * The process the edits go to, once one has been chosen: `primaryProcess`
+	 * returns it while `processes` holds it and no process is explicitly
+	 * executable. The editor's ops and change scripts
+	 * set it to the process they edited, so deleting the last nodes of the
+	 * user's own pool does not hand the next edit to a partner's process. Read
+	 * from and written to `<definitions bpmnkit:primaryProcess>`, but written
+	 * only when the file alone would lead `primaryProcess` elsewhere.
+	 */
+	primaryProcessId?: string
 }

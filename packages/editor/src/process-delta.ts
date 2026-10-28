@@ -11,21 +11,27 @@
  * person's edit does, and only what the change touches moves
  * (`doc/drop-ai-feedback-edits-analysis.md` §5).
  *
- * Like every modelling function here, this acts on the first process and its
- * diagram — the only kind of document the Drop room lets anyone edit.
+ * Like every modelling function here, this acts on one process and its
+ * diagram — the only kind of document the Drop room lets anyone edit: the
+ * executable one (`primaryProcess`), with its lanes, the partner pools beside
+ * it and the messages between them.
  *
  * @packageDocumentation
  */
 import {
 	type BpmnBounds,
+	type BpmnCollaboration,
 	type BpmnConditionExpression,
 	type BpmnDefinitions,
 	type BpmnElementType,
 	type BpmnFlowElement,
 	type BpmnLane,
+	type BpmnMessageFlow,
 	type BpmnOperation,
+	type BpmnParticipant,
 	type BpmnProcess,
 	type BpmnSequenceFlow,
+	type BpmnWaypoint,
 	type CompactElement,
 	type ConnectorRef,
 	type DeltaFlow,
@@ -34,13 +40,20 @@ import {
 	type ProcessDelta,
 	type ProcessTextProblem,
 	type ProcessTextQuestion,
+	allLanes,
 	applyBpmnOperations,
+	assignLane,
 	conditionOrLabel,
+	laneForNewNode,
+	leafLanes,
+	messageEndProblem,
+	nameFromId,
 	writableCondition,
 	writableLabel,
+	writableMessageLabel,
 	writableName,
 } from "@bpmnkit/core"
-import { computeWaypointsAvoiding } from "./geometry.js"
+import { computeWaypointsAvoiding, edgeLabelBounds } from "./geometry.js"
 import { type IdFactory, genId } from "./id.js"
 import {
 	changeElementType,
@@ -52,6 +65,23 @@ import {
 	moveShapes,
 	updateLabel,
 } from "./modeling.js"
+import { eventTrigger } from "./rules.js"
+import {
+	BLACK_BOX_HEIGHT,
+	POOL_HEADER,
+	addBlackBox,
+	addFirstLane,
+	insertLaneBand,
+	laneAt,
+	messageWaypoints,
+	poolPrimary,
+	removeBlackBox,
+	removeLaneBand,
+	resizeSwimlane,
+	swimlaneIds,
+	unpooledOther,
+	withPrimaryFirst,
+} from "./swimlanes.js"
 import type { CreateShapeType } from "./types.js"
 
 export interface ApplyProcessDeltaOptions {
@@ -83,11 +113,15 @@ export interface ApplyProcessDeltaOptions {
 export interface ApplyProcessDeltaResult {
 	/** The changed document. The input is never mutated. */
 	definitions: BpmnDefinitions
-	/** Element ids of the nodes the script added. */
+	/** Element ids of the nodes, lanes, pools and message flows the script added. */
 	created: string[]
-	/** Element ids of existing nodes it renamed, retyped or gave new attributes, or whose outgoing flow it relabelled. */
+	/**
+	 * Element ids of existing nodes it renamed, retyped, gave new attributes or
+	 * moved to another lane, or whose outgoing flow or message it relabelled; and
+	 * of the lanes and pools it renamed.
+	 */
 	changed: string[]
-	/** Element ids of the nodes it removed. */
+	/** Element ids of the nodes, lanes and pools it removed. */
 	removed: string[]
 	/** Feedback item → the element ids its `@` line names, resolved. */
 	addressed: Map<number, string[]>
@@ -240,23 +274,6 @@ function startingWith(id: string, ids: IdFactory): IdFactory {
 	}
 }
 
-function leafLanes(lanes: readonly BpmnLane[] | undefined, out: BpmnLane[] = []): BpmnLane[] {
-	for (const lane of lanes ?? []) {
-		const children = lane.childLaneSet?.lanes ?? []
-		if (children.length > 0) leafLanes(children, out)
-		else out.push(lane)
-	}
-	return out
-}
-
-function allLanes(lanes: readonly BpmnLane[] | undefined, out: BpmnLane[] = []): BpmnLane[] {
-	for (const lane of lanes ?? []) {
-		out.push(lane)
-		allLanes(lane.childLaneSet?.lanes, out)
-	}
-	return out
-}
-
 function hasDefault(element: BpmnFlowElement): element is BpmnFlowElement & { default?: string } {
 	return (
 		element.type === "exclusiveGateway" ||
@@ -277,6 +294,14 @@ function hasDefault(element: BpmnFlowElement): element is BpmnFlowElement & { de
  * - A flow between two existing nodes that are already connected is a
  *   restatement: a label it states replaces the old one, an unstated part stays.
  * - `- x` and `- a > b` remove.
+ * - `lane l[Name]: a, b` moves `a` and `b` into leaf lane `l`, straight down or
+ *   up into its band; a name that differs renames it. A new lane is a band at
+ *   the bottom of the process's pool, drawn first when there is none; the
+ *   first lane of a pool takes every node. A script never nests a lane.
+ * - `pool p[Name]` renames a pool, or adds an empty partner pool below
+ *   everything; `msg a > p` adds a message between a node and such a pool, and
+ *   `- msg a > p` removes it. `- x` removes a lane (the one above takes its
+ *   band and nodes) or an empty partner pool with its messages.
  *
  * Two rules fill in what a reviewer means and a small model leaves out. Both
  * are listed in `fixes`:
@@ -296,6 +321,34 @@ export function applyProcessDelta(
 	delta: ProcessDelta,
 	options: ApplyProcessDeltaOptions,
 ): ApplyProcessDeltaResult {
+	// Nothing to edit: the inner function reports it and hands back the caller's model.
+	if (!definitions.processes[0] || !definitions.diagrams[0]) {
+		return applyToPrimaryFirst(definitions, delta, options)
+	}
+	// One copy up front, so the direct edits never reach the caller's model. The
+	// modeling helpers edit processes[0] and draw on diagrams[0], and the script was
+	// written against the primary process (writeProcessText): it goes first while
+	// applying, and back after.
+	const held: { result?: ApplyProcessDeltaResult } = {}
+	const restored = withPrimaryFirst(structuredClone(definitions), (first) => {
+		held.result = applyToPrimaryFirst(first, delta, options)
+		// A new object: the delta edits the view in place (lane refs go straight
+		// into its processes), and handing the view back would read as "unchanged".
+		return { ...held.result.definitions }
+	})
+	if (!held.result) throw new Error("withPrimaryFirst did not run the delta")
+	return { ...held.result, definitions: restored }
+}
+
+/**
+ * {@link applyProcessDelta} on `definitions`, a private copy whose primary
+ * process and the diagram that draws it come first. Edits the copy in place.
+ */
+function applyToPrimaryFirst(
+	definitions: BpmnDefinitions,
+	delta: ProcessDelta,
+	options: ApplyProcessDeltaOptions,
+): ApplyProcessDeltaResult {
 	const result: ApplyProcessDeltaResult = {
 		definitions,
 		created: [],
@@ -311,8 +364,7 @@ export function applyProcessDelta(
 		problem(0, "the document has no process with a diagram to change")
 		return result
 	}
-	// One copy up front, so the direct edits below never reach the caller's model.
-	let defs = structuredClone(definitions)
+	let defs = definitions
 	const ids = options.ids ?? genId
 	const taken = idsIn(defs)
 
@@ -328,10 +380,7 @@ export function applyProcessDelta(
 		proc().sequenceFlows.find((f) => f.sourceRef === from && f.targetRef === to)
 
 	/** Pools and lanes: drawn as shapes, but containers rather than obstacles. */
-	const containerIds = new Set<string>([
-		...defs.collaborations.flatMap((c) => c.participants.map((p) => p.id)),
-		...defs.processes.flatMap((p) => allLanes(p.laneSet?.lanes)).map((lane) => lane.id),
-	])
+	const containerIds = swimlaneIds(defs)
 	const obstacles = (except: readonly string[] = []) =>
 		plane()
 			.shapes.filter((s) => !containerIds.has(s.bpmnElement) && !except.includes(s.bpmnElement))
@@ -455,8 +504,18 @@ export function applyProcessDelta(
 	/** For the bridge rule: each removed node's one way in and one way out. */
 	const bridges: { removed: string; into: BpmnSequenceFlow; to: string; wasDefault: boolean }[] = []
 	const removedIds: string[] = []
+	/** `- x` lines that name a lane or a pool, removed with the other swimlane lines. */
+	const swimlaneRemovals: { id: string; line: number }[] = []
 	for (const removal of delta.removedNodes) {
 		const id = real.get(removal.id)
+		const madeHere = [...delta.lanes, ...delta.pools].some((line) => line.id === removal.id)
+		if (
+			id === undefined &&
+			(madeHere || swimlaneOf(defs, options.aliases, new Map(), removal.id))
+		) {
+			swimlaneRemovals.push(removal)
+			continue
+		}
 		if (id === undefined) {
 			problem(removal.line, `there is no "${removal.id}" to remove`)
 			continue
@@ -543,6 +602,8 @@ export function applyProcessDelta(
 		(inn.get(w)?.length ?? 0) === 1 &&
 		(out.get(w)?.length ?? 0) === 1
 	const placed = new Map<string, BpmnBounds>()
+	/** New nodes of a laned process that no lane band holds; they join a lane once their flows exist. */
+	const unlaned: string[] = []
 	/** Conditions a new flow takes over from one it replaces, copied as they were. */
 	const carried = new Map<Pick<DeltaFlow, "line">, BpmnConditionExpression>()
 
@@ -596,11 +657,7 @@ export function applyProcessDelta(
 	}
 	for (const [written, node] of fresh) {
 		if (real.has(written) || node.type === "boundaryEvent") continue
-		const all = obstacles()
-		const size = sizeOf(node.type as BpmnElementType)
-		const x = all.length > 0 ? Math.min(...all.map((b) => b.x)) : 0
-		const y = (all.length > 0 ? Math.max(...all.map(bottom)) : 0) + ROW / 2
-		create(written, node, slot({ x, y, ...size }))
+		create(written, node, looseSpot(sizeOf(node.type as BpmnElementType)))
 	}
 	for (const [written, node] of fresh) {
 		if (!real.has(written)) problem(node.line, `"${written}" has no host to attach to; left out`)
@@ -642,12 +699,37 @@ export function applyProcessDelta(
 		result.fixes.push(`joined ${from} > ${to} where ${removed} was removed`)
 	}
 
+	// New nodes drawn outside every lane: now that their flows exist, the lane of what they follow.
+	for (const id of unlaned) {
+		const lane = laneForNewNode(proc(), id)
+		if (lane) defs.processes[0] = assignLane(proc(), id, lane.id)
+	}
+
+	// ── Lanes, pools and messages ────────────────────────────────────────────
+	// After every node exists, so a lane or msg line can name one the script added.
+	const run: SwimlaneRun = {
+		defs,
+		real,
+		aliases: options.aliases,
+		ids,
+		taken,
+		containerIds,
+		result,
+		changed,
+		problem,
+		created: new Map(),
+	}
+	applySwimlaneLines(run, delta, swimlaneRemovals)
+	defs = run.defs
+
 	// ── Tidy references the removals left behind ─────────────────────────────
 	const present = deepIds(proc().flowElements)
 	const flowSet = new Set(proc().sequenceFlows.map((f) => f.id))
-	for (const lane of allLanes(proc().laneSet?.lanes)) {
+	for (const lane of allLanes(proc().laneSet)) {
 		lane.flowNodeRefs = lane.flowNodeRefs.filter((ref) => present.has(ref))
 	}
+	const removedNodes = new Set(result.removed)
+	dropMessageFlows(defs, (f) => removedNodes.has(f.sourceRef) || removedNodes.has(f.targetRef))
 	for (const el of proc().flowElements) {
 		if (hasDefault(el) && el.default !== undefined && !flowSet.has(el.default))
 			el.default = undefined
@@ -731,7 +813,12 @@ export function applyProcessDelta(
 	}
 
 	result.problems.sort((a, b) => a.line - b.line)
-	result.changed = [...changed].filter((id) => present.has(id) && !result.created.includes(id))
+	const reportable = new Set([
+		...present,
+		...allLanes(proc().laneSet).map((lane) => lane.id),
+		...defs.collaborations.flatMap((c) => c.participants.map((p) => p.id)),
+	])
+	result.changed = [...changed].filter((id) => reportable.has(id) && !result.created.includes(id))
 	result.definitions = defs
 	return result
 
@@ -872,6 +959,68 @@ export function applyProcessDelta(
 		return undefined
 	}
 
+	/**
+	 * Where a new node with nothing to follow or lead to goes. In a process with
+	 * drawn lanes: the first free spot, from the left, in the band of the first
+	 * leaf lane, which is the lane `laneForNewNode` gives a node without flows;
+	 * below everything it would sit outside the pool. Otherwise below the
+	 * drawing, at its left edge.
+	 */
+	function looseSpot(size: { width: number; height: number }): BpmnBounds {
+		const all = obstacles()
+		const lane = leafLanes(proc().laneSet)[0]
+		const band = lane === undefined ? undefined : shape(lane.id)?.bounds
+		if (band) {
+			let candidate = {
+				x: band.x + POOL_HEADER + GAP / 2,
+				y: centreY(band) - size.height / 2,
+				...size,
+			}
+			// ponytail: one row; a full band widens the pool rather than wrapping inside the band.
+			for (let k = 0; k < TRIES && all.some((o) => overlaps(candidate, o)); k++) {
+				candidate = { ...candidate, x: candidate.x + size.width + GAP / 2 }
+			}
+			widenOwnPool(right(candidate) + GAP / 2 - right(band), right(band))
+			return candidate
+		}
+		const x = all.length > 0 ? Math.min(...all.map((b) => b.x)) : 0
+		const y = (all.length > 0 ? Math.max(...all.map(bottom)) : 0) + ROW / 2
+		return slot({ x, y, ...size })
+	}
+
+	/**
+	 * Widens by `dx` the own pool and its lanes whose right edge is at `edge`, so
+	 * a node placed past that edge stays inside; nothing when `dx` is not positive.
+	 * A drawn pool is resized as a resize gesture would, pushing the pools beside
+	 * it right; bands without a pool, or a pool the resize refuses, just widen.
+	 */
+	function widenOwnPool(dx: number, edge: number): void {
+		if (dx <= 0) return
+		const pools = defs.collaborations
+			.flatMap((c) => c.participants)
+			.filter((p) => p.processRef === proc().id)
+			.map((p) => p.id)
+		const pool = plane().shapes.find(
+			(s) => pools.includes(s.bpmnElement) && Math.abs(right(s.bounds) - edge) <= 1,
+		)
+		if (pool) {
+			const resized = resizeSwimlane(defs, pool.bpmnElement, {
+				...pool.bounds,
+				width: pool.bounds.width + dx,
+			})
+			if (resized !== defs) {
+				defs = resized
+				return
+			}
+		}
+		const own = new Set([...allLanes(proc().laneSet).map((lane) => lane.id), ...pools])
+		for (const s of plane().shapes) {
+			if (own.has(s.bpmnElement) && Math.abs(right(s.bounds) - edge) <= 1) {
+				s.bounds = { ...s.bounds, width: s.bounds.width + dx }
+			}
+		}
+	}
+
 	/** `bounds`, or the first spot below it that overlaps nothing. */
 	function slot(bounds: BpmnBounds): BpmnBounds {
 		const all = obstacles()
@@ -938,15 +1087,18 @@ export function applyProcessDelta(
 		}
 	}
 
-	/** Adds a new node to the lane it was drawn in. */
+	/**
+	 * Adds a new node to the leaf lane it was drawn in. One drawn outside every
+	 * lane, and a boundary event (its host's lane, not the band its centre
+	 * crosses), is left to `unlaned`.
+	 */
 	function joinLane(id: string, bounds: BpmnBounds): void {
-		const cx = bounds.x + bounds.width / 2
-		const cy = centreY(bounds)
-		const lane = leafLanes(proc().laneSet?.lanes).find((candidate) => {
-			const b = shape(candidate.id)?.bounds
-			return b !== undefined && cx >= b.x && cx <= right(b) && cy >= b.y && cy <= bottom(b)
-		})
-		lane?.flowNodeRefs.push(id)
+		if (leafLanes(proc().laneSet).length === 0) return
+		const centre = { x: bounds.x + bounds.width / 2, y: centreY(bounds) }
+		const boundary = element(id)?.type === "boundaryEvent"
+		const lane = boundary ? undefined : laneAt(defs, proc(), centre)
+		if (lane) defs.processes[0] = assignLane(proc(), id, lane.id)
+		else unlaned.push(id)
 	}
 
 	/** Draws a flow from `from` to `to` with the label it was written with. */
@@ -974,4 +1126,492 @@ export function applyProcessDelta(
 		else if (label.condition) flow.conditionExpression = { text: label.condition, attributes: {} }
 		return flow.id
 	}
+}
+
+// ── Lanes, pools and messages ────────────────────────────────────────────────
+
+/** Gap between a partner pool added by a script and the lowest shape above it. */
+const POOL_GAP = 30
+
+/** Elements a lane never lists. */
+const DATA_TYPES = new Set<BpmnElementType>([
+	"dataObject",
+	"dataObjectReference",
+	"dataStoreReference",
+])
+
+/** What the lane, pool and msg lines read and write while they apply. */
+interface SwimlaneRun {
+	/** The document, with the primary process first. */
+	defs: BpmnDefinitions
+	/** Written id → node id, for every node of the primary process the script may name. */
+	real: ReadonlyMap<string, string>
+	aliases: Readonly<Record<string, string>>
+	ids: IdFactory
+	/** Every id in use; new ones are claimed here. */
+	taken: Set<string>
+	/** Pools and lanes, which placement treats as containers rather than obstacles. */
+	containerIds: Set<string>
+	result: ApplyProcessDeltaResult
+	changed: Set<string>
+	problem: (line: number, message: string) => void
+	/** Lanes and pools the script created, by written id. */
+	created: Map<string, string>
+}
+
+type Swimlane = { kind: "lane"; lane: BpmnLane } | { kind: "pool"; pool: BpmnParticipant }
+
+/**
+ * The collaboration that holds the primary process's pool, else the first: the
+ * one whose pools and messages the script's lines name, as the writer writes them.
+ */
+function ownCollaboration(defs: BpmnDefinitions): BpmnCollaboration | undefined {
+	const id = defs.processes[0]?.id
+	return (
+		defs.collaborations.find((c) => c.participants.some((p) => p.processRef === id)) ??
+		defs.collaborations[0]
+	)
+}
+
+/**
+ * The lane of the primary process (`defs.processes[0]`) or the pool of
+ * {@link ownCollaboration} that `written` names: through the lanes and pools the
+ * script created, then the aliases, then as a real id.
+ */
+function swimlaneOf(
+	defs: BpmnDefinitions,
+	aliases: Readonly<Record<string, string>>,
+	created: ReadonlyMap<string, string>,
+	written: string,
+): Swimlane | undefined {
+	const id = created.get(written) ?? aliases[written] ?? written
+	const lane = allLanes(defs.processes[0]?.laneSet).find((candidate) => candidate.id === id)
+	if (lane) return { kind: "lane", lane }
+	const pool = ownCollaboration(defs)?.participants.find((candidate) => candidate.id === id)
+	return pool ? { kind: "pool", pool } : undefined
+}
+
+/**
+ * Removes from `defs`, in place, the message flows `drop` picks and the
+ * diagram edges that draw them.
+ */
+function dropMessageFlows(defs: BpmnDefinitions, drop: (flow: BpmnMessageFlow) => boolean): void {
+	const gone = new Set<string>()
+	for (const collaboration of defs.collaborations) {
+		for (const flow of collaboration.messageFlows) if (drop(flow)) gone.add(flow.id)
+		collaboration.messageFlows = collaboration.messageFlows.filter((flow) => !gone.has(flow.id))
+	}
+	if (gone.size === 0) return
+	for (const diagram of defs.diagrams) {
+		diagram.plane.edges = diagram.plane.edges.filter((edge) => !gone.has(edge.bpmnElement))
+	}
+}
+
+/**
+ * Applies the lane, pool and msg lines, in an order where each can use what the
+ * one before made: lanes, pools, message removals, messages, then the `- x`
+ * lines that name a lane or a pool.
+ */
+function applySwimlaneLines(
+	run: SwimlaneRun,
+	delta: ProcessDelta,
+	removals: readonly { id: string; line: number }[],
+): void {
+	const listed = new Set(delta.lanes.flatMap((line) => line.nodes))
+	for (const line of delta.lanes) applyLaneLine(run, line, listed)
+	for (const line of delta.pools) applyPoolLine(run, line)
+	for (const line of delta.removedMessageFlows) removeMessageLine(run, line)
+	for (const line of delta.messageFlows) applyMessageLine(run, line)
+	for (const removal of removals) removeSwimlane(run, removal)
+}
+
+const primaryOf = (run: SwimlaneRun) => run.defs.processes[0] as BpmnProcess
+const planeOf = (run: SwimlaneRun) =>
+	(run.defs.diagrams[0] as NonNullable<BpmnDefinitions["diagrams"][0]>).plane
+const shapeOf = (run: SwimlaneRun, id: string) =>
+	planeOf(run).shapes.find((s) => s.bpmnElement === id)
+
+function setPrimary(run: SwimlaneRun, process: BpmnProcess): void {
+	run.defs = { ...run.defs, processes: [process, ...run.defs.processes.slice(1)] }
+}
+
+/** `wanted` when it is free, else a new id from the factory; claimed either way. */
+function claim(run: SwimlaneRun, wanted: string | undefined, prefix: string): string {
+	let id = wanted !== undefined && !run.taken.has(wanted) ? wanted : run.ids(prefix)
+	for (let k = 0; k < TRIES && run.taken.has(id); k++) id = run.ids(prefix)
+	run.taken.add(id)
+	return id
+}
+
+/** The id the script knows `id` by, for messages: its alias, else the id itself. */
+function writtenOf(run: SwimlaneRun, id: string): string {
+	for (const [written, real] of run.real) if (real === id) return written
+	return id
+}
+
+/** A `lane` line: moves its nodes into an existing leaf lane, renaming it, or into a new one. */
+function applyLaneLine(
+	run: SwimlaneRun,
+	line: ProcessDelta["lanes"][number],
+	listed: ReadonlySet<string>,
+): void {
+	const found = swimlaneOf(run.defs, run.aliases, run.created, line.id)
+	if (found?.kind === "pool") {
+		run.problem(line.line, `lane ${line.id}: "${line.id}" is a pool, not a lane; ignored`)
+		return
+	}
+	let laneId = found?.lane.id
+	if (laneId !== undefined && !leafLanes(primaryOf(run).laneSet).some((l) => l.id === laneId)) {
+		run.problem(line.line, `lane ${line.id}: it has lanes inside it; name one of those; ignored`)
+		return
+	}
+	if (found === undefined) laneId = addLane(run, line, listed)
+	else renameLane(run, found.lane.id, line.name)
+	if (laneId === undefined) return
+	for (const written of line.nodes) moveIntoLane(run, written, laneId, line)
+}
+
+function renameLane(run: SwimlaneRun, laneId: string, name: string | undefined): void {
+	const lane = allLanes(primaryOf(run).laneSet).find((candidate) => candidate.id === laneId)
+	if (!lane || name === undefined || name === writableName(lane.name ?? "")) return
+	lane.name = name
+	run.changed.add(laneId)
+}
+
+/** Puts a top-level node in leaf lane `laneId`, and its shape in the lane's band. */
+function moveIntoLane(
+	run: SwimlaneRun,
+	written: string,
+	laneId: string,
+	line: ProcessDelta["lanes"][number],
+): void {
+	const refuse = (why: string) => run.problem(line.line, `lane ${line.id}: "${written}" ${why}`)
+	const id = run.real.get(written)
+	const node = primaryOf(run).flowElements.find((el) => el.id === id)
+	if (id === undefined) {
+		refuse("is not in the diagram; left out")
+		return
+	}
+	if (!node) {
+		refuse("is inside a sub-process; only top-level nodes go in a lane")
+		return
+	}
+	const lane = allLanes(primaryOf(run).laneSet).find((candidate) => candidate.id === laneId)
+	// Restating where a node already is changes nothing, wherever it is drawn.
+	if (lane?.flowNodeRefs.includes(id)) return
+	if (node.type === "boundaryEvent") {
+		// The writer lists a boundary event beside its host; the host's move carries it.
+		const hostListed = line.nodes.some((other) => run.real.get(other) === node.attachedToRef)
+		if (!hostListed) refuse("is a boundary event; it stays in its host's lane")
+		return
+	}
+	setPrimary(run, assignLane(primaryOf(run), id, laneId))
+	run.changed.add(id)
+	moveIntoBand(run, id, laneId)
+}
+
+/** Moves a node straight up or down to the middle of a lane's band, unless its centre is already in it. */
+function moveIntoBand(run: SwimlaneRun, id: string, laneId: string): void {
+	const band = shapeOf(run, laneId)?.bounds
+	const node = shapeOf(run, id)?.bounds
+	if (!band || !node) return
+	const cy = centreY(node)
+	if (cy >= band.y && cy <= bottom(band)) return
+	// ponytail: the middle of the band, not a free spot in it; slot() there if crowded lanes overlap
+	const dy = centreY(band) - cy
+	// moveShapes carries boundary events and sub-process content along, and re-docks their messages.
+	run.defs = moveShapes(run.defs, [{ id, dx: 0, dy }])
+}
+
+/**
+ * Adds a top-level lane for a `lane` line with a new id, at the bottom of the
+ * primary process's pool (drawn first if there is none). Returns its id.
+ */
+function addLane(
+	run: SwimlaneRun,
+	line: ProcessDelta["lanes"][number],
+	listed: ReadonlySet<string>,
+): string | undefined {
+	const pool = ownPool(run, line.line)
+	if (!pool) return undefined
+	// The bands are laid out horizontally only; one across a column pool would cover its lanes.
+	if (shapeOf(run, pool.id)?.isHorizontal === false) {
+		run.problem(
+			line.line,
+			`lane ${line.id}: pool "${pool.id}" is drawn vertically; lanes are added to horizontal pools only; left out`,
+		)
+		return undefined
+	}
+	const id = claim(run, line.id, "Lane")
+	const shapeId = claim(run, `${id}_di`, "Lane_di")
+	const lane: BpmnLane = {
+		id,
+		name: line.name ?? nameFromId(line.id),
+		flowNodeRefs: [],
+		unknownAttributes: {},
+	}
+	const laneSet = primaryOf(run).laneSet
+	if (laneSet && laneSet.lanes.length > 0) {
+		laneSet.lanes.push(lane)
+		run.defs = insertLaneBand(run.defs, pool.id, id, shapeId)
+	} else {
+		const process = primaryOf(run)
+		run.defs = addFirstLane(run.defs, pool.id, lane, shapeId, () =>
+			claim(run, `LaneSet_${process.id}`, "LaneSet"),
+		)
+		const placed = allLanes(primaryOf(run).laneSet).find((candidate) => candidate.id === id)
+		for (const nodeId of placed?.flowNodeRefs ?? []) {
+			const written = writtenOf(run, nodeId)
+			const boundary = primaryOf(run).flowElements.some(
+				(el) => el.id === nodeId && el.type === "boundaryEvent",
+			)
+			if (!boundary && !listed.has(written)) {
+				run.result.fixes.push(`put "${written}", which no lane named, in lane ${line.id}`)
+			}
+		}
+	}
+	run.created.set(line.id, id)
+	run.containerIds.add(id)
+	run.result.created.push(id)
+	return id
+}
+
+/**
+ * The participant of the primary process, made when missing (`poolPrimary`):
+ * a collaboration if there is none, a participant for this process only, and
+ * a pool shape drawn around the process on a plane that then draws the
+ * collaboration. Other processes are left as they are: a script edits one
+ * process, and pooling another would mark it non-executable. Reported and
+ * left out while another process with content has no pool (`unpooledOther`).
+ */
+function ownPool(run: SwimlaneRun, line: number): BpmnParticipant | undefined {
+	const process = primaryOf(run)
+	if (process.flowElements.length === 0 && !process.laneSet) {
+		run.problem(line, "the process has nothing in it to draw a pool around; left out")
+		return undefined
+	}
+	const pooled = poolPrimary(
+		run.defs,
+		{
+			collaboration: () => claim(run, "Collaboration_1", "Collaboration"),
+			participant: () => claim(run, `Participant_${process.id}`, "Participant"),
+			shape: (poolId) => claim(run, `${poolId}_di`, "Participant_di"),
+		},
+		process.name ?? process.id,
+	)
+	if (!pooled) {
+		const other = unpooledOther(run.defs, process)
+		if (other) {
+			run.problem(
+				line,
+				`process "${other.id}" has content and no pool, and once there is a pool every such process needs one; left out`,
+			)
+		}
+		return undefined
+	}
+	run.defs = pooled.defs
+	run.containerIds.add(pooled.pool.id)
+	if (pooled.made.includes(pooled.pool.id)) run.result.created.push(pooled.pool.id)
+	if (pooled.drew) {
+		run.result.fixes.push(
+			`drew the pool "${pooled.pool.name ?? pooled.pool.id}" around the process`,
+		)
+	}
+	return pooled.pool
+}
+
+/** A `pool` line: renames a pool, or adds an empty partner pool below everything. */
+function applyPoolLine(run: SwimlaneRun, line: ProcessDelta["pools"][number]): void {
+	const found = swimlaneOf(run.defs, run.aliases, run.created, line.id)
+	if (found?.kind === "lane") {
+		run.problem(line.line, `pool ${line.id}: "${line.id}" is a lane, not a pool; ignored`)
+		return
+	}
+	if (found) {
+		if (line.name === undefined || line.name === writableName(found.pool.name ?? "")) return
+		found.pool.name = line.name
+		run.changed.add(found.pool.id)
+		return
+	}
+	const own = ownPool(run, line.line)
+	const ownBounds = own === undefined ? undefined : shapeOf(run, own.id)?.bounds
+	if (!own || !ownBounds) return
+	const id = claim(run, line.id, "Participant")
+	const lowest = Math.max(
+		...planeOf(run).shapes.flatMap((s) => [
+			bottom(s.bounds),
+			...(s.label?.bounds ? [bottom(s.label.bounds)] : []),
+		]),
+	)
+	const participant = { id, name: line.name ?? nameFromId(line.id), unknownAttributes: {} }
+	run.defs = addBlackBox(run.defs, own.id, participant, claim(run, `${id}_di`, "Participant_di"), {
+		x: ownBounds.x,
+		y: lowest + POOL_GAP,
+		width: ownBounds.width,
+		height: BLACK_BOX_HEIGHT,
+	})
+	run.created.set(line.id, id)
+	run.containerIds.add(id)
+	run.result.created.push(id)
+}
+
+/** The two ends of a `msg` line, resolved: a node of the primary process and another pool. */
+interface MessageEnds {
+	source: string
+	target: string
+	node: BpmnFlowElement
+	pool: BpmnParticipant
+	nodeSends: boolean
+}
+
+/** Resolves a `msg` line's ends, or says why they are not a node and another pool. */
+function messageEnds(run: SwimlaneRun, line: { from: string; to: string }): MessageEnds | string {
+	const nodeOf = (written: string) => {
+		const id = run.real.get(written)
+		return id === undefined ? undefined : findDeep(primaryOf(run).flowElements, id)?.element
+	}
+	const poolOf = (written: string) => {
+		const found = swimlaneOf(run.defs, run.aliases, run.created, written)
+		return found?.kind === "pool" ? found.pool : undefined
+	}
+	const fromNode = nodeOf(line.from)
+	const toNode = nodeOf(line.to)
+	if (fromNode && toNode) {
+		return "both ends are in this process; a message goes to or comes from a pool line"
+	}
+	const fromPool = fromNode ? undefined : poolOf(line.from)
+	const toPool = toNode ? undefined : poolOf(line.to)
+	if (fromPool && toPool) return "both ends are pools; one end must be a node of the process"
+	const node = fromNode ?? toNode
+	const pool = fromPool ?? toPool
+	if (!node || !pool)
+		return `"${fromNode || fromPool ? line.to : line.from}" is not a node or a pool`
+	if (pool.processRef === primaryOf(run).id) {
+		return "that is this process's own pool; a message goes to another pool"
+	}
+	const nodeSends = node === fromNode
+	return {
+		source: nodeSends ? node.id : pool.id,
+		target: nodeSends ? pool.id : node.id,
+		node,
+		pool,
+		nodeSends,
+	}
+}
+
+/** A `msg` line: adds the message, relabels one the diagram has, or restates it. */
+function applyMessageLine(run: SwimlaneRun, line: ProcessDelta["messageFlows"][number]): void {
+	const ends = messageEnds(run, line)
+	const reason =
+		typeof ends === "string"
+			? ends
+			: messageEndProblem(
+					ends.node.type,
+					eventTrigger(ends.node),
+					ends.nodeSends ? "source" : "target",
+				)
+	const collaboration = ownCollaboration(run.defs)
+	if (typeof ends === "string" || reason !== undefined || !collaboration) {
+		run.problem(line.line, `msg ${line.from} > ${line.to}: ${reason}; left out`)
+		return
+	}
+	const existing = collaboration.messageFlows.find(
+		(f) => f.sourceRef === ends.source && f.targetRef === ends.target,
+	)
+	if (existing) {
+		if (line.name === undefined || line.name === writableMessageLabel(existing.name ?? "")) return
+		existing.name = line.name
+		const edge = planeOf(run).edges.find((e) => e.bpmnElement === existing.id)
+		// The canvas draws an edge's name only inside label bounds; a user's own position stays.
+		const bounds = edge && !edge.label?.bounds ? edgeLabelBounds(edge.waypoints) : undefined
+		if (edge && bounds) edge.label = { ...edge.label, bounds }
+		run.changed.add(ends.node.id)
+		return
+	}
+	const id = claim(run, undefined, "MessageFlow")
+	collaboration.messageFlows.push({
+		id,
+		...(line.name !== undefined ? { name: line.name } : {}),
+		sourceRef: ends.source,
+		targetRef: ends.target,
+		unknownAttributes: {},
+	})
+	const node = shapeOf(run, ends.node.id)?.bounds
+	const pool = shapeOf(run, ends.pool.id)?.bounds
+	if (node && pool) {
+		const waypoints = messageWaypoints(node, pool, ends.nodeSends)
+		const bounds = line.name ? edgeLabelBounds(waypoints) : undefined
+		planeOf(run).edges.push({
+			id: claim(run, undefined, "MessageFlow_di"),
+			bpmnElement: id,
+			waypoints,
+			...(bounds ? { label: { bounds } } : {}),
+			unknownAttributes: {},
+		})
+	}
+	run.result.created.push(id)
+}
+
+/** A `- msg a > b` line: removes that message and its edge. */
+function removeMessageLine(
+	run: SwimlaneRun,
+	line: ProcessDelta["removedMessageFlows"][number],
+): void {
+	const ends = messageEnds(run, line)
+	const flow =
+		typeof ends === "string"
+			? undefined
+			: ownCollaboration(run.defs)?.messageFlows.find(
+					(f) => f.sourceRef === ends.source && f.targetRef === ends.target,
+				)
+	if (!flow) {
+		run.problem(line.line, `there is no message ${line.from} > ${line.to} to remove`)
+		return
+	}
+	dropMessageFlows(run.defs, (f) => f === flow)
+}
+
+/**
+ * A `- x` line naming a lane or a pool. A lane goes, its band and nodes to its
+ * neighbour; a black box (`isBlackBox`) goes with its messages and its empty
+ * process. The process's own pool and a pool that draws a process with content
+ * stay: a script edits one process.
+ */
+function removeSwimlane(run: SwimlaneRun, removal: { id: string; line: number }): void {
+	const found = swimlaneOf(run.defs, run.aliases, run.created, removal.id)
+	const refuse = (why: string) => run.problem(removal.line, `cannot remove "${removal.id}": ${why}`)
+	if (!found) {
+		refuse("it is not in the diagram")
+		return
+	}
+	if (found.kind === "lane") {
+		const next = removeLaneBand(run.defs, 0, found.lane.id)
+		if (!next) {
+			refuse("it has lanes inside it; remove those first")
+			return
+		}
+		run.defs = next
+		gone(run, found.lane.id)
+		return
+	}
+	const { pool } = found
+	if (pool.processRef === primaryOf(run).id) {
+		refuse("it is the pool of this process")
+		return
+	}
+	// A black box goes with its messages, and with its process when that is empty (U3).
+	const next = removeBlackBox(run.defs, pool.id)
+	if (!next) {
+		refuse("it draws a process of its own")
+		return
+	}
+	run.defs = next
+	gone(run, pool.id)
+}
+
+/** Records a removed lane or pool: one the script made itself was never there. */
+function gone(run: SwimlaneRun, id: string): void {
+	const made = run.result.created.indexOf(id)
+	if (made >= 0) run.result.created.splice(made, 1)
+	else run.result.removed.push(id)
 }

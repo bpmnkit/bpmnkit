@@ -203,14 +203,32 @@ function cropWaypoints(
 	if (source) {
 		const next = out[1]
 		const first = out[0]
-		if (next && first) out[0] = dockPoint(source, next)
+		if (next && first && !onRectBorder(source, first)) out[0] = dockPoint(source, next)
 	}
 	if (target) {
 		const prev = out[out.length - 2]
 		const last = out[out.length - 1]
-		if (prev && last) out[out.length - 1] = dockPoint(target, prev)
+		if (prev && last && !onRectBorder(target, last)) out[out.length - 1] = dockPoint(target, prev)
 	}
 	return out
+}
+
+/**
+ * Whether `p` already lies on the border of rectangle `geom`. Such an end is
+ * where the DI docks it; re-docking by a ray from the centre would bend an
+ * orthogonal route that does not pass through the centre, as a message flow
+ * into a wide pool never does.
+ */
+function onRectBorder(geom: ShapeGeom, p: Point): boolean {
+	if (geom.kind !== "rect") return false
+	const EPS = 0.5
+	const right = geom.x + geom.width
+	const bottom = geom.y + geom.height
+	const inX = p.x >= geom.x - EPS && p.x <= right + EPS
+	const inY = p.y >= geom.y - EPS && p.y <= bottom + EPS
+	const onVertical = inY && (Math.abs(p.x - geom.x) <= EPS || Math.abs(p.x - right) <= EPS)
+	const onHorizontal = inX && (Math.abs(p.y - geom.y) <= EPS || Math.abs(p.y - bottom) <= EPS)
+	return onVertical || onHorizontal
 }
 
 /** Classifies a shape's docking outline from its BPMN element type. */
@@ -1010,6 +1028,19 @@ function renderExternalLabel(
 
 // ── Edge renderer ─────────────────────────────────────────────────────────────
 
+/** Appends to `g` a wide transparent stroke along path `d`, so a thin edge is easy to click. */
+function appendHitPath(g: SVGGElement, d: string): void {
+	const hitPath = svgEl("path")
+	attr(hitPath, {
+		d,
+		fill: "none",
+		stroke: "transparent",
+		"stroke-width": "12",
+		"pointer-events": "stroke",
+	})
+	g.appendChild(hitPath)
+}
+
 function renderEdge(
 	edge: BpmnDiEdge,
 	flow: BpmnSequenceFlow | undefined,
@@ -1041,16 +1072,7 @@ function renderEdge(
 	attr(path, pathAttrs)
 	g.appendChild(path)
 
-	// Wide transparent stroke so the edge is easy to click
-	const hitPath = svgEl("path")
-	attr(hitPath, {
-		d,
-		fill: "none",
-		stroke: "transparent",
-		"stroke-width": "12",
-		"pointer-events": "stroke",
-	})
-	g.appendChild(hitPath)
+	appendHitPath(g, d)
 
 	// Default-flow slash mark near the source end
 	if (isDefault) {
@@ -1307,13 +1329,21 @@ export function renderEdgeGroup(edge: BpmnDiEdge, ctx: RenderContext): SVGGEleme
 			)
 			const ids = markerIds(instanceId)
 			const path = svgEl("path")
+			const d = waypointsToRoundedPath(wps)
 			attr(path, {
-				d: waypointsToRoundedPath(wps),
+				d,
 				class: "bpmnkit-msgflow-path",
 				"marker-start": `url(#${ids.messageStart})`,
 				"marker-end": `url(#${ids.openArrow})`,
 			})
 			g.appendChild(path)
+			appendHitPath(g, d)
+			if (mf?.name && edge.label?.bounds) {
+				const { x, y, width, height } = edge.label.bounds
+				g.appendChild(
+					renderExternalLabel(x, y, width, height, mf.name, false, labelFont(edge.label, ctx)),
+				)
+			}
 		}
 		return g
 	}

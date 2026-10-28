@@ -179,6 +179,15 @@ describe("createDiagramLineFilter", () => {
 		expect(filtered(answer, 5)).toBe(answer)
 	})
 
+	it("passes lane, pool and message lines, and no prose dressed as one", () => {
+		const answer =
+			"# Pay\ns[start Go] > p[send Pay] > e[end Done]\nlane desk[Front desk]: s, p, e\npool bank[Bank]\nmsg p >(Payment: due) bank\n"
+		expect(filtered(answer, 4)).toBe(answer)
+		expect(filtered("lane story: Once upon a time there was a process\n")).toBe("")
+		expect(filtered("pool party tonight, bring snacks\n")).toBe("")
+		expect(filtered("msg me > later please\n")).toBe("")
+	})
+
 	it("reads every recorded answer to the same diagram as the unfiltered text", () => {
 		const root = new URL("../bench-results/", import.meta.url)
 		const answers = readdirSync(root).flatMap((run) =>

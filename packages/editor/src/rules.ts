@@ -1,7 +1,8 @@
+import { type BpmnFlowElement, messageEndProblem } from "@bpmnkit/core"
 import { RESIZABLE_TYPES } from "./types.js"
 
 /**
- * BPMN modeling rules — a small, dependency-free rule set matching the intent of
+ * BPMN modeling rules — a small rule set matching the intent of
  * bpmn-js's `BpmnRules`. Each predicate answers a single yes/no question and is
  * consulted by the editor (state machine + HUD) before enabling or committing an
  * action, so illegal edits are refused both visually and at commit time.
@@ -87,6 +88,34 @@ export function canConnect(sourceType: string, targetType: string): boolean {
 	}
 
 	return true
+}
+
+/**
+ * One end of a message flow: a pool (`type` "participant") or a flow node, with
+ * the first event definition (`trigger`, e.g. "message" or "timer") of an event.
+ */
+export interface MessageEnd {
+	type: string
+	trigger?: string
+}
+
+/**
+ * Returns true if a message flow from `source` to `target` is valid. Only the
+ * ends' kinds are checked, by core's `messageEndProblem` (the rule change
+ * scripts and the process text apply too); that they lie in different pools
+ * is the caller's to decide. A lane or an annotation is never an end.
+ */
+export function canMessageFlow(source: MessageEnd, target: MessageEnd): boolean {
+	const ok = (end: MessageEnd, side: "source" | "target") =>
+		end.type !== "lane" &&
+		end.type !== "textAnnotation" &&
+		messageEndProblem(end.type, end.trigger, side) === undefined
+	return ok(source, "source") && ok(target, "target")
+}
+
+/** The first event definition of `element` ("message", "timer", …), undefined for anything else. */
+export function eventTrigger(element: BpmnFlowElement): string | undefined {
+	return "eventDefinitions" in element ? element.eventDefinitions[0]?.type : undefined
 }
 
 /** Returns true if a boundary event may attach to a host of `hostType` (activities only). */

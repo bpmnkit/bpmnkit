@@ -114,10 +114,14 @@ describe("semanticHash", () => {
 	 * Regenerating a value is a reviewed change: it means either a fixture or
 	 * what counts as semantics has changed, and one of those should be in the
 	 * commit message.
+	 *
+	 * 2026-10-27: `isExecutable="false"` became semantics. Flowable reads an
+	 * absent attribute as executable, so `false` and absent are different models;
+	 * the fixtures that say `false` got new values.
 	 */
 	const GOLDEN: Record<string, string> = {
 		"01-root-elements.bpmn": "cb299a10ca6a31810963b5bb48a5ddbf0ebdfdd3ab9e0756d881de3d6e72a097",
-		"02-collaboration.bpmn": "031ce680fad40fc8befb3d9ff13ca031c24c97a323173410feeb8ba2c5340e1e",
+		"02-collaboration.bpmn": "c97ef9241690c1ae0372af1e1d860666fc562506997e93c4e70a8f8168b99e12",
 		"03-data-elements.bpmn": "4f9e9d0fbd41a55fc260641b2f253b1cddfcd59f4c8529e8cc321ca893c78222",
 		"04-artifacts.bpmn": "dc1506d309f7ca7f5dcca3f0efb84d3b00f1bfc2064768bcf83b3633701013b3",
 		"05-zeebe-extensions.bpmn": "cc7d33a3c0a5dda3cd7e086689f4e1f8e4132855870181ab066a99845e407aa6",
@@ -125,25 +129,28 @@ describe("semanticHash", () => {
 			"89c79344d77e365cabe3d0e257ae8074880e3cf292d3a790dc5a0389ab74177f",
 		"07-unmodelled-content.bpmn":
 			"950b8ea3610bcce9f8d25162eddc0f5ad2648a884d1a28c3cb2d51bf0af2797e",
+		// Flowable Modeler style: no definitions id, nested lanes, a partner pool. Added 2026-10-27.
+		"08-flowable-lanes-pools.bpmn":
+			"556f9e0189b4b4eb514ce27b91b15b3441df26fa24e63ec630ccbef20bc7c88b",
 		// The MIWG reference models, added 2026-09-24.
-		"miwg-A.1.0.bpmn": "7bc850291c0de2be333df1c998390fd9775cbb0c87d81745c6e14b4055602e43",
-		"miwg-A.2.0.bpmn": "c3cacd6461a92ec4fe3bd02f97bb1857ebecf05cb9cba56e2d61c62a32b17c5f",
-		"miwg-A.2.1.bpmn": "8e05fa1392431e07edbfaf3a46868701e6657952583d4d5a66d93e223cdfa683",
-		"miwg-A.3.0.bpmn": "bab63b30cddf2b073ad9e0dc094bda4cdb2b6b18cf0588dd630dac1fffcddb04",
-		"miwg-A.4.0.bpmn": "c5f724742ac91350293cdb7355ff8c4bbc6e170917a2f341470ec8460b1c9ae5",
-		"miwg-A.4.1.bpmn": "6ca0f0d8c13b3836d7d577718aed27e9742e2733eb3b833fe3cd57c35656c314",
-		"miwg-B.1.0.bpmn": "b378b34cb33e2a68e3a625c18a6a549cfdd89196e7236d7b485bcf93abd58744",
-		"miwg-B.2.0.bpmn": "c1418a51710aaf02f083ed4ead30070d77a096df33969cfcc57ddb1496e41c2c",
-		"miwg-C.1.0.bpmn": "a52f7f51a9e3893f8435e540142bf4a3b7a48ba4e6c568cc66f7cfc900e240e8",
+		"miwg-A.1.0.bpmn": "f267ee5c74bfaefcc2d020811450628c4ae16a764582926d20396ba6c2fa0dc0",
+		"miwg-A.2.0.bpmn": "3b2672b2a6ebd7657bbacba2c6b2d0fc91c419cde13aa68cc2da200a43ed41d0",
+		"miwg-A.2.1.bpmn": "2a6b1177cbc11cd531a5a2c79909b411e94e96550274923bcde9ea24104f6a78",
+		"miwg-A.3.0.bpmn": "26ffa1110de4cef88b75923d7d09d682b52777da75ac59734b04633106639033",
+		"miwg-A.4.0.bpmn": "ab0b15d835a7544b784b2a966982e566376bd65de66eded701dd18bee412c611",
+		"miwg-A.4.1.bpmn": "fe152cb944197a64ef42cfa666a1971679f9472b016e53832ea6fa74ba7d2a75",
+		"miwg-B.1.0.bpmn": "0c0f0bda84afd4a4865b1957117f9b4ee2c35af24d43dca2539bb7aa4aa38207",
+		"miwg-B.2.0.bpmn": "dfb21576c28e74cbf5bd385f9f70fbfe974aed2b704ea57bed217fcbd759dd4a",
+		"miwg-C.1.0.bpmn": "669535f4bf3759cbc31bfd98649659518babe873ab808e0ff34533efb33684a4",
 		"miwg-C.1.1.bpmn": "467e93ab9d4d82139e6dbb10b3721cd159d11980164e18cb091efb4580a05172",
-		"miwg-C.10.0.bpmn": "5d2a74fdff19365fab27d9b7bc77353a4e97e186c47dfb2be8bfb63076cef6b8",
-		"miwg-C.2.0.bpmn": "da6a098a2735faa49afa1f6a853ae322fc519c2017a4365d63ae304e1ad0716e",
+		"miwg-C.10.0.bpmn": "da719f8f328ba69ea1b627ce3c475de4924350cd4010ed2a0a60acaac2bab8fe",
+		"miwg-C.2.0.bpmn": "62d9eecf9d58bea1ff379de475f37fc8ab08e9a0bb966263559106ee93a1c924",
 		"miwg-C.3.0.bpmn": "9a86bc1ba55fdb19ce8b87ffc2cec0cbc7bd70af45e5702a670b8b53e2c914da",
 		"miwg-C.4.0.bpmn": "3496338d073c9b418c230272f6b333dc37b603443ecef2463eba8561723fdae2",
 		"miwg-C.5.0.bpmn": "b7f1b6638ba56a0821d1230e5f2f5f995f589358851e0a94dd029198c003550f",
 		"miwg-C.6.0.bpmn": "48db82c84648615e9b23061829c6ecb4bb5c9c17dd8ac3d1704f319b72dfa192",
 		"miwg-C.7.0.bpmn": "90342bb3600d9df4ddc669f7d330bb50df8ae187e9abbb23b89d2d1439f733fd",
-		"miwg-C.8.0.bpmn": "a48670976df5eb29344b305249b3615a55c7d02643e97480c0ad0ec8fcbb1ff5",
+		"miwg-C.8.0.bpmn": "8206b3c865821ec7a253ebd2299be0bb2dfa0c6bfe73af33ee6e24f46265602c",
 		"miwg-C.8.1.bpmn": "61c4c6f4ae291db36832fa5144457889c51a8f61ff350dd95851a46156b43856",
 		"miwg-C.9.0.bpmn": "56a06e19b6e06095ca7e91368a02d1ef657f94184fb3df85a78dd7e88f9709c2",
 		"miwg-C.9.1.bpmn": "ab5ccf901fbadf9c35c39be95460c81875663e338e08b35ebfc023c81e2731e2",

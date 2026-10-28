@@ -75,9 +75,17 @@ document already had.
 **Diagram interchange is not regenerated.** Existing shapes keep their positions, and elements
 you add have none until `.withAutoLayout()` or a later `applyAutoLayout()` gives them one.
 
+**Lanes follow the flow.** A node you add joins the lane of its first predecessor that has one
+(a boundary event joins its host's lane), so a laned document stays laned. `.lane(existingId,
+{ flowNodes, name? })` moves nodes into one of the document's existing leaf lanes and renames it;
+declaring a new lane or changing a `parent` is refused. Existing lane refs are never rewritten,
+and `.participant(existingPoolId, { name })` renames the process's pool. `flowable:*`
+attributes and extension elements are kept as they are.
+
 `isExecutable` and the process name are left as they were unless you call `.executable()` or
-`.name()`. BPMN reads an absent `isExecutable` as false, so writing the builder's default onto
-a process that never carried it would make a non-executable process executable.
+`.name()`. Engines disagree on an absent `isExecutable` (Camunda: not executable, Flowable:
+executable), so writing the builder's default onto a process that never carried it would be a
+change nobody asked for.
 
 ### `Bpmn.createDiagram(id?)`
 
@@ -121,12 +129,51 @@ pooled" and renders every process pool-less.
 
 `.collaborationId(id)` renames the collaboration, which defaults to `"Collaboration_1"`.
 
+A process keeps the pool its own builder gave it, from `.participant()` or implied by lanes
+(see below); a diagram-level `.participant(…, { processId })` for the same process replaces it.
+`.withAutoLayout()` lays out the whole diagram — pools, lanes, message flows — on one
+collaboration plane.
+
+**Partner pools and `isExecutable`.** Flowable reads an absent `isExecutable` as executable,
+so a partner process must say `false`. A process with no flow elements and no lanes whose
+builder never called `.executable()` is written `isExecutable="false"` (the Flowable Modeler
+form of a black-box partner); every other process keeps the default `true`. Call
+`.executable(false)` on a partner process that has content.
+
 `build()` refuses a collaboration a modeler would not open, reporting every problem at once:
 a participant naming a process the diagram does not contain, two participants claiming the
 same process, a duplicate id, a message flow whose endpoint does not exist or which names an
 undeclared message, and — the one that is easy to write by accident — a message flow that
 starts and ends in the same pool. A message flow is what crosses a pool boundary; one that
 stays inside a pool should be a sequence flow.
+
+### ProcessBuilder — lanes and pools
+
+```typescript
+const defs = Bpmn.createProcess("order")
+  .name("Order")
+  .startEvent("start").userTask("review").serviceTask("ship", { taskType: "ship" }).endEvent("end")
+  .lane("Lane_sales", { name: "Sales" })
+  .lane("Lane_inside", { name: "Inside sales", parent: "Lane_sales", flowNodes: ["start", "review"] })
+  .lane("Lane_ops", { name: "Operations", flowNodes: ["ship", "end"] })
+  .participant("Pool_company", { name: "Company" })   // optional
+  .withAutoLayout()
+  .build();
+```
+
+`.lane(id, { name?, flowNodes?, parent? })` declares a lane; `parent` makes it a child lane, and
+only leaf lanes take `flowNodes`. Refs are written verbatim, boundary events follow their host,
+an inferred join gateway follows its first predecessor, and parent lanes list the union of their
+children's refs. Once any lane exists every top-level flow node must sit in exactly one leaf
+lane: `build()` throws `Invalid lanes:` listing every problem at once — an unknown or
+sub-process ref, a node in two lanes, flow nodes on a parent lane, an undeclared or cyclic
+parent, an id already in use, an unassigned node.
+
+Lanes imply a pool: without `.participant(id, { name? })` the build adds
+`Participant_<processId>` named after the process. `.participant()` without lanes just pools
+the process. With neither call the output is exactly what it was before lanes existed — no
+collaboration. With `.withAutoLayout()` nodes sit inside their lanes, lanes tile the pool, and
+the plane draws the collaboration.
 
 ### `Bpmn.export(definitions)`
 
@@ -289,11 +336,18 @@ discard everything the compact form cannot describe.
 Processes are only added, never removed: sending one process of a multi-process document means
 "this is how that process should look", not "delete the others".
 
+The `lanes`, `participants` and `messageFlows` keys are checked on the result. A message whose
+end is neither a pool nor a node in one, a pool naming a missing process, a message inside one
+pool, or an id that two elements, lanes or pools share throws, with `strict: false` too, unless
+the input document already had that problem.
+
 ### `compactify(definitions)`
 
 Projects a `BpmnDefinitions` object onto a `CompactDiagram` — a small JSON object suitable
-for LLM prompts. **Lossy:** it keeps topology, names, `<bpmn:documentation>` and the common
-Zeebe bindings, and drops collaborations, participants, message flows, lanes, data stores,
+for LLM prompts. **Lossy:** it keeps topology, names, `<bpmn:documentation>`, the common
+Zeebe bindings, lanes (`lanes`, members on leaf lanes only), pools (`participants`; a black box
+has no `processId`), message flows (`messageFlows`, without `messageRef`) and `isExecutable`
+(`executable`, written only where `expand`'s default would differ). It drops data stores,
 artifacts, root-level messages and errors, multi-instance loop characteristics, full
 `zeebe:ioMapping` entries and diagram interchange.
 
@@ -431,6 +485,25 @@ An attribute written before the `|` (`late[boundary:timer on=pay]`) is read all 
 task is drawn into (`send > wait[boundary:timer …]`) goes on that task.
 Change scripts read `result=` and `feel=`, but not `each=` and `after=` yet.
 
+**Lanes and pools.** Three line kinds, written after the paths:
+
+```text
+lane sales[Sales team]: start, review, ok    the lane a role works in; one line per role
+pool bank[Bank]                              another party, drawn as an empty pool
+msg pay >(Payment) bank                      a message to that party; msg bank > paid one from it
+```
+
+The parser writes them as the compact `lanes`, `participants` and `messageFlows`, and `expand`
+draws the process in its own pool with its lanes. A node no lane lists — a join or end event the
+parser added, a boundary event, a node the model forgot — goes into its predecessor's lane (a
+boundary into its host's), else its successor's, else the first lane, and is listed in `fixes`.
+A node listed in two lanes stays in the later one; a member that is not a top-level node is left
+out. A message has one end in the process and the other on a `pool` line: a message between two
+pools, between two nodes of the process, out of a start or catch event, into an end or throw
+event, or touching a gateway is left out with a problem. Its label is kept as written, colons
+included. A bare `lane back_office: …` or `pool tax_office` is named from its id. Ids such as
+`lane_check[…]` still start paths: the keyword needs a space after it.
+
 ```typescript
 import { expand, Bpmn, parseProcessText, PROCESS_TEXT_GUIDE } from "@bpmnkit/core";
 
@@ -526,16 +599,36 @@ or `null` when nothing new is drawable. `end()` returns what `parseProcessText` 
 
 ### `writeProcessText(defs)` and `parseProcessDelta(text)`
 
-The other direction, for changing a diagram that already exists. `writeProcessText` writes the
-first process of a document in the line format, so a model can read it. Each node is written
-under a short readable alias (`review_application` for `Activity_0x9k2lm`), and the map back to
-the real ids comes with the text. Only what the format can express is written: flow nodes and
-sequence flows, with names, triggers, `job=` and conditions. Lanes, data objects, annotations
-and the inside of a sub-process are left out, so a change cannot reach them.
+The other direction, for changing a diagram that already exists. `writeProcessText` writes one
+process of a document in the line format, so a model can read it: the executable one
+(`primaryProcess`), which in a Modeler collaboration is not always first. Each node, lane and
+pool is written under a short readable alias (`review_application` for `Activity_0x9k2lm`), and
+the map back to the real ids comes with the text. Only what the format can express is written:
+flow nodes and sequence flows, with names, triggers, `job=` and conditions, the tasks of an
+ad-hoc sub-process, notes and documentation; one `lane` line per leaf lane with the nodes it
+holds; one `pool` line per other participant of the collaboration, as a black box; and a `msg`
+line for each message flow between a node of the process and such a pool. Parent lanes of nested
+lanes, the content of other pools, messages that touch the process's own pool or another pool's
+nodes, data objects and the inside of other sub-processes are left out, so a change cannot reach
+them. A diagram without lanes or other pools is written exactly as before.
+
+```
+lane inside_sales[Inside sales]: start, review
+lane operations[Operations]: ship, done
+pool customer[Customer]
+msg ship >(Confirmation) customer
+```
 
 The model answers with a **change script** (`PROCESS_DELTA_GUIDE`): the same line format, but
 only what changes. An existing node is named by its id; declaring it again changes its kind or
 name; `- x` and `- a > b` remove; `@2 x y` says which feedback item a change answers.
+Swimlanes take their own lines: `lane sales: a, b` moves `a` and `b` into lane `sales`, and
+`lane ops[Operations]: c` adds the lane or renames it (a bare lane line keeps the name; a lane
+line with a name and no members only adds or renames). `pool bank[Bank]` adds or renames a partner
+pool, `msg pay >(Payment) bank` adds a message flow between a node and a pool (the label is kept
+as written, colons included), and `- msg pay > bank` removes one. `- x` removes any id, a lane or
+a pool included. Lane lines are flat: nested lanes are not written, and the applier keeps the
+ones a diagram already has.
 
 ```typescript
 import { PROCESS_DELTA_GUIDE, PROCESS_TEXT_GUIDE, parseProcessDelta, writeProcessText } from "@bpmnkit/core";
@@ -543,7 +636,8 @@ import { PROCESS_DELTA_GUIDE, PROCESS_TEXT_GUIDE, parseProcessDelta, writeProces
 const { text, aliases } = writeProcessText(defs);
 // system: PROCESS_TEXT_GUIDE + PROCESS_DELTA_GUIDE; user: text + the feedback
 const delta = parseProcessDelta(modelOutput);
-// { nodes, flows, removedNodes, removedFlows, addressed, problems }
+// { nodes, flows, removedNodes, removedFlows, addressed, lanes, pools,
+//   messageFlows, removedMessageFlows, connectors, notes, docs, problems }
 ```
 
 `parseProcessDelta` never throws and resolves nothing: it reads the script. Apply it with
@@ -654,6 +748,9 @@ All builder methods return `this` for chaining.
 | `.withBoundary(id, options, handler)` | Attach a boundary event and build its error/timeout path; cursor auto-restores to the main flow after the handler |
 | `.defaults(options)` | Set process-wide defaults (e.g. `{ serviceTask: { retries: "5" } }`) applied to all subsequent tasks |
 | `.disconnectedStartEvent(id?, options?)` | Add a start event with no auto-connection to the current cursor — alias for `addStartEvent` |
+| `.lane(id, options?)` | Declare a lane (`name`, `flowNodes`, `parent`) — see "lanes and pools" above |
+| `.participant(id, options?)` | Name the pool this process is drawn in |
+| `.executable(value)` | Set `isExecutable`; pass `false` for a partner pool Flowable must not deploy |
 | `.withAutoLayout()` | Apply Sugiyama layout before building |
 | `.build(options?)` | Return the completed `BpmnDefinitions`. Pass `{ explicitJoins: true }` to refuse inferred join gateways — see below |
 

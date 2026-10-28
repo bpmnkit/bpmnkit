@@ -25,6 +25,15 @@ export const ptBR: Locale = {
 	name: "Português (Brasil)",
 	messages: {
 		".docx for Word and LibreOffice": ".docx para Word e LibreOffice",
+		"Add lane": "Adicionar raia",
+		"Add lane above": "Adicionar raia acima",
+		"Add lane below": "Adicionar raia abaixo",
+		"Add pool": "Adicionar pool",
+		"Cannot create a pool: another process with content has no pool":
+			"Não é possível criar um pool: outro processo com conteúdo não tem pool",
+		"Create pool": "Criar pool",
+		"Divide into three lanes": "Dividir em três raias",
+		"Divide into two lanes": "Dividir em duas raias",
 		"Download HTML": "Baixar HTML",
 		"Download Markdown": "Baixar Markdown",
 		"Download Word": "Baixar Word",
@@ -375,6 +384,8 @@ export const ptBR: Locale = {
 		"Optimize diagram": "Otimizar diagrama",
 		"Parallel (for each, all at once)": "Paralelo (para cada um, todos de uma vez)",
 		"Parallel Gateway": "Gateway paralelo",
+		"Partner pool: no lanes or nodes in this version":
+			"Pool parceiro: sem raias nem nós nesta versão",
 		Paste: "Colar",
 		Pattern: "Padrão",
 		Play: "Executar",
