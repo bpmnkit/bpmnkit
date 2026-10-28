@@ -13,7 +13,7 @@ import {
 } from "./element-groups.js"
 import { IC } from "./icons.js"
 import { showHudChoiceModal, showHudInputModal } from "./modal.js"
-import { primaryPlane } from "./swimlanes.js"
+import { canDeleteSwimlane, lockedIds, primaryPlane } from "./swimlanes.js"
 import type { CreateShapeType, LabelPosition, Tool } from "./types.js"
 
 interface GroupDef {
@@ -1110,7 +1110,10 @@ export function initEditorHud(
 			return
 		}
 		const isAnnotation = sourceType === "textAnnotation"
-		const canAddElements = !isAnnotation && sourceType !== "endEvent"
+		// A partner's node is read-only: nothing may be added to its process from here.
+		const defsNow = editor.getDefinitions()
+		const locked = defsNow !== null && lockedIds(defsNow).has(sourceId)
+		const canAddElements = !isAnnotation && sourceType !== "endEvent" && !locked
 
 		// Delete and Duplicate buttons always present
 		const dupBtn = document.createElement("button")
@@ -1205,7 +1208,9 @@ export function initEditorHud(
 				showColorPicker(singleSwatch, sourceId, currentFill),
 			)
 			ctxToolbar.appendChild(singleSwatch)
+		}
 
+		if (!isAnnotation && !locked) {
 			// Add annotation button
 			const annotBtn = document.createElement("button")
 			annotBtn.className = "hud-btn"
@@ -1233,8 +1238,19 @@ export function initEditorHud(
 	}
 
 	/**
-	 * A pool or lane is a container, not a step: it gets Edit label and Delete,
-	 * and nothing that would duplicate it, connect it or colour it.
+	 * Whether Delete is offered for pool or lane `id`: not for the own pool, a
+	 * pool that draws a process with content, or a lane with child lanes, which
+	 * a delete leaves in place (decision U2).
+	 */
+	function swimlaneDeletable(id: string): boolean {
+		const defs = editor.getDefinitions()
+		return defs !== null && canDeleteSwimlane(defs, id)
+	}
+
+	/**
+	 * A pool or lane is a container, not a step: it gets Edit label and, when a
+	 * delete would take it, Delete; nothing that would duplicate it, connect it
+	 * or colour it.
 	 */
 	function buildSwimlaneToolbar(sourceId: string): void {
 		const labelBtn = document.createElement("button")
@@ -1246,6 +1262,7 @@ export function initEditorHud(
 			hideCtxToolbar()
 		})
 		ctxToolbar.appendChild(labelBtn)
+		if (!swimlaneDeletable(sourceId)) return
 
 		const delBtn = document.createElement("button")
 		delBtn.className = "hud-btn"
@@ -1974,26 +1991,32 @@ export function initEditorHud(
 		const elemType = editor.getElementType(id)
 		if (!elemType) return
 
-		// Neither kind of flow has a label editor on the canvas yet.
-		if (elemType !== "sequenceFlow" && elemType !== "messageFlow") {
+		const swimlane = SWIMLANE_TYPES.has(elemType)
+		const offersDelete = !swimlane || swimlaneDeletable(id)
+		// A sequence flow has no label editor on the canvas yet.
+		if (elemType !== "sequenceFlow") {
 			ctxMenuEl.appendChild(
 				makeCtxItem(IC.labelPos, "Edit label", () => {
 					editor.editLabel(id)
 					closeAllDropdowns()
 				}),
 			)
-			const sep = document.createElement("div")
-			sep.className = "drop-sep"
-			ctxMenuEl.appendChild(sep)
+			if (offersDelete) {
+				const sep = document.createElement("div")
+				sep.className = "drop-sep"
+				ctxMenuEl.appendChild(sep)
+			}
 		}
 
-		if (!SWIMLANE_TYPES.has(elemType)) appendCopyItems()
-		ctxMenuEl.appendChild(
-			makeCtxItem(IC.trash, "Delete", () => {
-				editor.deleteSelected()
-				closeAllDropdowns()
-			}),
-		)
+		if (!swimlane) appendCopyItems()
+		if (offersDelete) {
+			ctxMenuEl.appendChild(
+				makeCtxItem(IC.trash, "Delete", () => {
+					editor.deleteSelected()
+					closeAllDropdowns()
+				}),
+			)
+		}
 
 		openCtxMenu(e.clientX, e.clientY)
 	})

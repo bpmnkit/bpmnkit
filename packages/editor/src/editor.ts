@@ -44,6 +44,7 @@ import {
 	computeWaypointsAvoiding,
 	computeWaypointsWithPorts,
 	diagramToScreen,
+	edgeLabelBounds,
 	labelBoundsForPosition,
 	portFromWaypoint,
 	screenToDiagram,
@@ -53,6 +54,7 @@ import type { Translate } from "./i18n.js"
 import { newIdSeed } from "./id.js"
 import { LABEL_FONT_FAMILY, LABEL_FONT_SIZE, LabelEditor } from "./label-editor.js"
 import {
+	connectionKind,
 	copyElements,
 	createEmptyDefinitions,
 	insertEdgeWaypoint,
@@ -1370,6 +1372,7 @@ export class BpmnEditor {
 		this._setEdgeDropHighlight(null)
 		const moves = this._selectedIds.map((id) => ({ id, dx: snap.dx, dy: snap.dy }))
 		const shapeId = this._selectedIds.length === 1 ? this._selectedIds[0] : undefined
+		const before = this._defs
 		if (edgeDropId && shapeId) {
 			this._executeOp(
 				{ kind: "move", moves, onEdge: { edgeId: edgeDropId, shapeId } },
@@ -1378,6 +1381,8 @@ export class BpmnEditor {
 		} else {
 			this._executeOp({ kind: "move", moves }, { label: "Move" })
 		}
+		// A refused move renders nothing, so the preview would stay where it was dropped.
+		if (this._defs === before) this._cancelTranslate()
 		if (this._isDragging) {
 			this._isDragging = false
 			this._overlay.setDragging(false)
@@ -1449,7 +1454,7 @@ export class BpmnEditor {
 		}
 
 		if (moves.length > 0) {
-			this._executeOp({ kind: "move", moves }, { label: "Move" })
+			this._executeOp({ kind: "move", moves, grow: true }, { label: "Move" })
 		}
 	}
 
@@ -1522,11 +1527,8 @@ export class BpmnEditor {
 	private _doConnect(srcId: string, tgtId: string): void {
 		const srcShape = this._shapeById.get(srcId)
 		const tgtShape = this._shapeById.get(tgtId)
-		if (!srcShape || !tgtShape) return
-		if (!this._canEndFlow(srcId) || !this._canEndFlow(tgtId)) return
-		const srcType = srcShape.flowElement?.type
-		const tgtType = tgtShape.flowElement?.type
-		if (srcType && tgtType && !canConnect(srcType, tgtType)) return
+		if (!srcShape || !tgtShape || this._isConnectionRefused(srcId, tgtId)) return
+		// A message flow routes itself (createConnection); these waypoints serve a sequence flow.
 		const obstacles = this._obstacleBounds([srcId, tgtId])
 		const waypoints = computeWaypointsAvoiding(
 			srcShape.shape.bounds,
@@ -1563,7 +1565,10 @@ export class BpmnEditor {
 	private _startLabelEdit(id: string): void {
 		if (this._readOnly || !id) return
 		const shape = this._shapeById.get(id)
-		if (!shape) return
+		if (!shape) {
+			this._startEdgeLabelEdit(id)
+			return
+		}
 		const defs = this._defs
 		if (!defs) return
 		// Edit in the font the canvas draws the label in (its DI label style).
@@ -1575,6 +1580,27 @@ export class BpmnEditor {
 			: shape.shape.isHorizontal === false
 				? { ...b, height: POOL_HEADER }
 				: { ...b, width: POOL_HEADER }
+		this._labelEditor.start(
+			id,
+			nameOf(defs, id) ?? "",
+			anchor,
+			this._viewport.state,
+			this._svg.getBoundingClientRect(),
+			font ? labelFontCss(font, LABEL_FONT_FAMILY, LABEL_FONT_SIZE) : undefined,
+		)
+	}
+
+	/**
+	 * Label editing on a message flow, over its label or where `updateLabel`
+	 * puts one. Sequence flows have none on the canvas yet.
+	 */
+	private _startEdgeLabelEdit(id: string): void {
+		const edge = this._edgeById.get(id)?.edge
+		const defs = this._defs
+		if (!edge || !defs || this.getElementType(id) !== "messageFlow") return
+		const anchor = edge.label?.bounds ?? edgeLabelBounds(edge.waypoints)
+		if (!anchor) return
+		const font = resolveLabelFont(edge.label, collectLabelStyles(defs))
 		this._labelEditor.start(
 			id,
 			nameOf(defs, id) ?? "",
@@ -1604,8 +1630,17 @@ export class BpmnEditor {
 		if (!targetId) return false
 		const sourceId = this._connectSourceId()
 		if (!sourceId) return false
-		if (targetId === sourceId) return true
-		if (!this._canEndFlow(targetId)) return true
+		return targetId === sourceId || this._isConnectionRefused(sourceId, targetId)
+	}
+
+	/**
+	 * Whether connecting `sourceId` to `targetId` would add nothing: neither a
+	 * message flow nor a sequence flow may join them (`connectionKind`, which
+	 * also judges a locked source), or `canConnect` forbids the sequence flow.
+	 */
+	private _isConnectionRefused(sourceId: string, targetId: string): boolean {
+		const kind = this._defs ? connectionKind(this._defs, sourceId, targetId) : undefined
+		if (kind !== "sequence") return kind === undefined
 		const srcType = this._shapeById.get(sourceId)?.flowElement?.type
 		const tgtType = this._shapeById.get(targetId)?.flowElement?.type
 		return srcType !== undefined && tgtType !== undefined && !canConnect(srcType, tgtType)
@@ -2601,12 +2636,31 @@ export class BpmnEditor {
 			const id = shapeEl.getAttribute("data-bpmnkit-id")
 			// A pool or lane is grabbed by its header; its body is canvas, for lasso and pan.
 			if (id && this._swimlanes.has(id) && !this._onHeaderStrip(id, clientX, clientY)) {
-				return { type: "canvas" }
+				// Except as a connection's end: a black box's body is all of it a message can reach (I6).
+				const end = this._connectSourceId() ? this._innermostShapeAt(clientX, clientY) : null
+				return end ? { type: "shape", id: end } : { type: "canvas" }
 			}
 			if (id) return { type: "shape", id }
 		}
 
 		return { type: "canvas" }
+	}
+
+	/** The id of the smallest shape whose bounds hold the client point: the innermost lane, pool or node there. */
+	private _innermostShapeAt(clientX: number, clientY: number): string | null {
+		const rect = this._svg.getBoundingClientRect()
+		const pt = screenToDiagram(clientX, clientY, this._viewport.state, rect)
+		let best: RenderedShape | null = null
+		for (const shape of this._shapes) {
+			const b = shape.shape.bounds
+			const inside = pt.x >= b.x && pt.x <= b.x + b.width && pt.y >= b.y && pt.y <= b.y + b.height
+			const area = b.width * b.height
+			const bestArea = best
+				? best.shape.bounds.width * best.shape.bounds.height
+				: Number.POSITIVE_INFINITY
+			if (inside && area < bestArea) best = shape
+		}
+		return best?.id ?? null
 	}
 
 	/** Whether the client point lies on the name strip of pool or lane `id`: left, or top when vertical. */
@@ -2860,14 +2914,14 @@ export class BpmnEditor {
 const NO_WARNINGS: ImportWarnings = { missingShapes: [], missingEdges: [] }
 
 /**
- * Whether `defs` has processes and draws none of their flow nodes: a file
- * written without diagram interchange, which would otherwise open blank.
+ * Whether `defs` has flow nodes and draws none of them: a file written without
+ * diagram interchange, which would otherwise open blank. An empty one has
+ * nothing to lay out; its first edit draws the plane (`applyOp`).
  */
 function drawsNoFlowNode(defs: BpmnDefinitions): boolean {
-	if (defs.processes.length === 0) return false
-	if (defs.diagrams.length === 0) return true
 	const nodes = defs.processes.flatMap((p) => p.flowElements)
 	if (nodes.length === 0) return false
+	if (defs.diagrams.length === 0) return true
 	const drawn = new Set(defs.diagrams.flatMap((d) => d.plane.shapes.map((s) => s.bpmnElement)))
 	return !nodes.some((node) => drawn.has(node.id))
 }

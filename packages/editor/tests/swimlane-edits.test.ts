@@ -124,9 +124,10 @@ describe("8a.6 no sequence flow to a pool or a lane", () => {
 		seed: "s",
 	})
 
-	it("refuses a connection that ends on a lane or a pool", () => {
+	it("refuses a connection that ends on a lane or the own pool", () => {
 		const defs = flowableFixture()
-		for (const target of ["Lane_finance", "Participant_bank", "Participant_own"]) {
+		// Participant_bank takes a message flow since 8d.4 (swimlane-messages.test.ts).
+		for (const target of ["Lane_finance", "Participant_own"]) {
 			expect(run(defs, connect(target)), target).toBe(defs)
 		}
 	})
@@ -182,14 +183,16 @@ describe("8a.7 delete cleans up lanes, message flows and associations", () => {
 		expect(hasEdge(after, "Assoc_c")).toBe(false)
 	})
 
-	it("ignores lane and pool ids instead of deleting their shapes only", () => {
+	it("never deletes a lane's or a pool's shape without its model (lifted in WP8d)", () => {
 		const defs = flowableFixture()
-		for (const id of ["Lane_sales", "Participant_own", "Participant_bank"]) {
-			expect(run(defs, { kind: "delete", ids: [id] }), id).toBe(defs)
-		}
-		const mixed = run(defs, { kind: "delete", ids: ["Lane_ops", "End_1"] })
-		expect(hasShape(mixed, "Lane_ops")).toBe(true)
+		expect(run(defs, { kind: "delete", ids: ["Participant_own"] })).toBe(defs)
+		const mixed = run(defs, { kind: "delete", ids: ["Lane_ops", "End_1", "Participant_bank"] })
+		expect(hasShape(mixed, "Lane_ops")).toBe(false)
+		expect(laneNamed(mixed, "Lane_ops")).toBeUndefined()
 		expect(hasShape(mixed, "End_1")).toBe(false)
+		expect(hasShape(mixed, "Participant_bank")).toBe(false)
+		expect(participants(mixed).some((p) => p.id === "Participant_bank")).toBe(false)
+		expectSwimlanesSound(mixed)
 	})
 })
 
@@ -243,6 +246,7 @@ describe("8a.9 the content of a partner process is read-only", () => {
 
 	it("refuses move, delete, resize, connect and retype on a locked node", () => {
 		const defs = withLockedPartner()
+		// A message flow from Task_review to Task_p is allowed since 8d.4 (swimlane-messages.test.ts).
 		const ops: EditorOp[] = [
 			{ kind: "move", moves: [{ id: "Task_p", dx: 10, dy: 0 }] },
 			{ kind: "delete", ids: ["Task_p"] },
@@ -250,8 +254,8 @@ describe("8a.9 the content of a partner process is read-only", () => {
 			{ kind: "resize", id: "Task_p", bounds: { x: 160, y: 410, width: 140, height: 40 } },
 			{
 				kind: "createConnection",
-				sourceId: "Task_review",
-				targetId: "Task_p",
+				sourceId: "Task_p",
+				targetId: "Start_p",
 				waypoints: [],
 				seed: "s",
 			},

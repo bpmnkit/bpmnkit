@@ -5646,7 +5646,7 @@
 		{
 			"id": "packages.editor.basic-setup",
 			"file": "chunks/packages.editor.basic-setup.md",
-			"tokens": 239,
+			"tokens": 435,
 			"tags": [
 				"packages",
 				"editor",
@@ -5655,7 +5655,9 @@
 			],
 			"entities": [
 				"primaryProcess",
-				"@bpmnkit/core"
+				"@bpmnkit/core",
+				"flowNodeRef",
+				"messageRef"
 			]
 		},
 		{

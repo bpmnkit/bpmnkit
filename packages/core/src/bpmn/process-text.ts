@@ -35,6 +35,7 @@ import type {
 	CompactParticipant,
 } from "./compact.js"
 import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connector-line.js"
+import { messageEndProblem } from "./swimlanes.js"
 
 /**
  * How to write the format — the part of a system prompt that teaches it.
@@ -335,8 +336,11 @@ function typeFromId(id: string): BpmnElementType {
 	return "task"
 }
 
-/** `send_email` / `sendEmail` → "Send email": a readable name for a node the model never named. */
-function nameFromId(id: string): string {
+/**
+ * `send_email` / `sendEmail` → "Send email": a readable name for a node, lane
+ * or pool the model never named.
+ */
+export function nameFromId(id: string): string {
 	const words = id
 		.replace(/([a-z0-9])([A-Z])/g, "$1 $2")
 		.replace(/[_.-]+/g, " ")
@@ -2213,26 +2217,6 @@ type MessageEnd =
 	| { kind: "pool"; id: string }
 	| { kind: "node"; id: string; element: CompactElement }
 
-/** Why a node cannot be the `side` end of a message flow, or undefined when it can. */
-function messageEndProblem(element: CompactElement, side: "source" | "target"): string | undefined {
-	const { type, eventType } = element
-	if (GATEWAYS.has(type)) return "a gateway cannot send or receive a message"
-	if (side === "source") {
-		if (type === "startEvent") return "a start event cannot send a message"
-		if (type === "intermediateCatchEvent" || type === "boundaryEvent") {
-			return "a catch event cannot send a message"
-		}
-	} else {
-		if (type === "endEvent") return "an end event cannot receive a message"
-		if (type === "intermediateThrowEvent") return "a throw event cannot receive a message"
-	}
-	// A timer or a signal waits for, or sends, something else; only a plain event can be made a message one.
-	if (EVENTS.has(type) && eventType !== undefined && eventType !== "message") {
-		return `a ${eventType} event cannot ${side === "source" ? "send" : "receive"} a message`
-	}
-	return undefined
-}
-
 /**
  * Resolves the two ends of a `msg` line. An id that names both a node and a
  * pool (the pool was renamed `<id>_pool`) means whichever makes one end a node
@@ -2297,8 +2281,12 @@ function readMessages(
 			continue
 		}
 		const reason =
-			(from.kind === "node" ? messageEndProblem(from.element, "source") : undefined) ??
-			(to.kind === "node" ? messageEndProblem(to.element, "target") : undefined)
+			(from.kind === "node"
+				? messageEndProblem(from.element.type, from.element.eventType, "source")
+				: undefined) ??
+			(to.kind === "node"
+				? messageEndProblem(to.element.type, to.element.eventType, "target")
+				: undefined)
 		if (reason !== undefined) {
 			refuse(reason)
 			continue

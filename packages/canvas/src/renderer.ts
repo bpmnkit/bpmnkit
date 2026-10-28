@@ -1010,6 +1010,19 @@ function renderExternalLabel(
 
 // ── Edge renderer ─────────────────────────────────────────────────────────────
 
+/** Appends to `g` a wide transparent stroke along path `d`, so a thin edge is easy to click. */
+function appendHitPath(g: SVGGElement, d: string): void {
+	const hitPath = svgEl("path")
+	attr(hitPath, {
+		d,
+		fill: "none",
+		stroke: "transparent",
+		"stroke-width": "12",
+		"pointer-events": "stroke",
+	})
+	g.appendChild(hitPath)
+}
+
 function renderEdge(
 	edge: BpmnDiEdge,
 	flow: BpmnSequenceFlow | undefined,
@@ -1041,16 +1054,7 @@ function renderEdge(
 	attr(path, pathAttrs)
 	g.appendChild(path)
 
-	// Wide transparent stroke so the edge is easy to click
-	const hitPath = svgEl("path")
-	attr(hitPath, {
-		d,
-		fill: "none",
-		stroke: "transparent",
-		"stroke-width": "12",
-		"pointer-events": "stroke",
-	})
-	g.appendChild(hitPath)
+	appendHitPath(g, d)
 
 	// Default-flow slash mark near the source end
 	if (isDefault) {
@@ -1307,13 +1311,21 @@ export function renderEdgeGroup(edge: BpmnDiEdge, ctx: RenderContext): SVGGEleme
 			)
 			const ids = markerIds(instanceId)
 			const path = svgEl("path")
+			const d = waypointsToRoundedPath(wps)
 			attr(path, {
-				d: waypointsToRoundedPath(wps),
+				d,
 				class: "bpmnkit-msgflow-path",
 				"marker-start": `url(#${ids.messageStart})`,
 				"marker-end": `url(#${ids.openArrow})`,
 			})
 			g.appendChild(path)
+			appendHitPath(g, d)
+			if (mf?.name && edge.label?.bounds) {
+				const { x, y, width, height } = edge.label.bounds
+				g.appendChild(
+					renderExternalLabel(x, y, width, height, mf.name, false, labelFont(edge.label, ctx)),
+				)
+			}
 		}
 		return g
 	}

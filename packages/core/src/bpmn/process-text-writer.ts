@@ -130,8 +130,8 @@ function bracketed(name: string | undefined): string {
 	return written ? `[${written}]` : ""
 }
 
-/** A message label: raw like a note, so colons stay, but a parenthesis would end it. */
-function messageLabel(name: string): string {
+/** A message label as a `msg` line writes it: raw like a note, so colons stay, but a parenthesis would end it. */
+export function writableMessageLabel(name: string): string {
 	return name.replace(/[()]/g, " ").replace(/\s+/g, " ").trim()
 }
 
@@ -191,7 +191,7 @@ function swimlaneLines(
 		const nodeToPool = nodes.has(flow.sourceRef) && poolIds.has(flow.targetRef)
 		const poolToNode = poolIds.has(flow.sourceRef) && nodes.has(flow.targetRef)
 		if (!nodeToPool && !poolToNode) continue
-		const name = flow.name ? messageLabel(flow.name) : ""
+		const name = flow.name ? writableMessageLabel(flow.name) : ""
 		const arrow = name ? `>(${name})` : ">"
 		lines.push(`msg ${alias.get(flow.sourceRef)} ${arrow} ${alias.get(flow.targetRef)}`)
 	}

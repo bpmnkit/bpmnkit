@@ -187,11 +187,13 @@ describe("applyProcessDelta lanes and pools: 08-flowable-lanes-pools.bpmn", () =
 		expectSwimlanesSound(result.definitions)
 	})
 
-	it("refuses to remove the own pool or a pool that draws a process", () => {
+	it("refuses to remove the own pool, and removes the partner pool over an empty process", () => {
 		const defs = fixture(file)
+		expect(apply(defs, "- Participant_company").definitions).toEqual(defs)
+		// The partner's empty, non-executable process makes it a black box (WP8d.2).
 		const result = apply(defs, "- customer\n- Participant_company")
-		expect(result.problems.map((p) => p.line)).toEqual([1, 2])
-		expect(result.definitions).toEqual(defs)
+		expect(result.problems.map((p) => p.line)).toEqual([2])
+		expect(participants(result.definitions).map((p) => p.id)).toEqual(["Participant_company"])
 	})
 
 	it("renames a pool, and a pool line restating one changes nothing", () => {

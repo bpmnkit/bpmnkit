@@ -29,5 +29,16 @@ Modeler files can. The canvas shows that process; nodes of other processes are l
 and lanes are renamed from their header strip (Edit label); their body is canvas, for lasso
 and pan.
 
+- A node moved, created or pasted into a lane becomes a member of it (`flowNodeRef`); one
+  dropped outside every lane keeps its lane. A drop into a partner's pool or outside the own
+  pool is refused; a quick-added node past the pool's right or bottom edge grows the pool.
+- Deleting a lane hands its band and nodes to the lane next to it (a lane with child lanes goes
+  only with all of them). Deleting a black-box partner removes its message flows and, when it
+  is empty and no other pool draws it, its process. The own pool and pools with content cannot
+  be deleted.
+- Connecting a node to another pool, or to a node in it, draws a message flow with no
+  `messageRef`; BPMN's rules for message ends apply. Message flows show their name and are
+  renamed like any label.
+
 ---
 Source: https://bpmnkit.com/docs/packages/editor

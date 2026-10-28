@@ -19,6 +19,7 @@ import {
 	laneOf,
 	laneProblems,
 	leafLanes,
+	messageEndProblem,
 	poolLanedProcesses,
 	primaryProcess,
 	pruneLaneRefs,
@@ -356,6 +357,61 @@ describe("primaryProcess", () => {
 		expect(primaryProcess(defsOf([]))).toBeUndefined()
 	})
 
+	it("prefers an empty process Flowable reads as executable over one marked non-executable", () => {
+		// Emptying the content process must not hand the edits to the partner's.
+		expect(primaryProcess(defsOf([exec("a", false), exec("b")]))?.id).toBe("b")
+	})
+
+	describe("once every process is empty", () => {
+		const pool = (id: string, height: number, y: number) => ({
+			id: `S_${id}`,
+			bpmnElement: id,
+			bounds: { x: 0, y, width: 600, height },
+			unknownAttributes: {},
+		})
+		/** A partner band drawn first and small, the user's pool below and large. */
+		const drawn = (isExecutable?: boolean): BpmnDefinitions => ({
+			...defsOf(
+				[exec("a", isExecutable), exec("b", isExecutable)],
+				[
+					collaboration([
+						["P_a", "a"],
+						["P_b", "b"],
+					]),
+				],
+			),
+			diagrams: [
+				{
+					id: "D",
+					plane: {
+						id: "Plane",
+						bpmnElement: "Collaboration_1",
+						shapes: [pool("P_a", 60, 0), pool("P_b", 250, 100)],
+						edges: [],
+					},
+				},
+			],
+		})
+
+		// The emptied pool is still the one drawn as a working pool, not a band.
+		it("picks the largest pool when no process says whether it is executable", () => {
+			expect(primaryProcess(drawn())?.id).toBe("b")
+		})
+
+		it("picks the largest pool when every process is marked non-executable", () => {
+			expect(primaryProcess(drawn(false))?.id).toBe("b")
+		})
+
+		it("lets isExecutable win over the pool size", () => {
+			const defs = drawn()
+			const marked = {
+				...defs,
+				processes: defs.processes.map((p) => (p.id === "b" ? { ...p, isExecutable: false } : p)),
+			}
+			expect(primaryProcess(marked)?.id).toBe("a")
+		})
+	})
+
 	it("prefers a process with content over an empty one when none says it is executable", () => {
 		const laned = process("b", [node("t")], [lane("L", ["t"])])
 		expect(primaryProcess(defsOf([exec("a"), laned]))?.id).toBe("b")
@@ -595,5 +651,30 @@ describe("collaborationProblems", () => {
 		expect(problems).toEqual([
 			'Message flow "MessageFlow_order" references message "Msg_Ghost", which this diagram does not declare',
 		])
+	})
+})
+
+describe("messageEndProblem", () => {
+	it("lets activities, pools and plain or message events be the ends they can be", () => {
+		expect(messageEndProblem("serviceTask", undefined, "source")).toBeUndefined()
+		expect(messageEndProblem("receiveTask", undefined, "target")).toBeUndefined()
+		expect(messageEndProblem("participant", undefined, "target")).toBeUndefined()
+		expect(messageEndProblem("endEvent", "message", "source")).toBeUndefined()
+		expect(messageEndProblem("startEvent", undefined, "target")).toBeUndefined()
+		expect(messageEndProblem("boundaryEvent", "message", "target")).toBeUndefined()
+	})
+
+	it("refuses gateways, data and events that point the wrong way or wait for something else", () => {
+		expect(messageEndProblem("exclusiveGateway", undefined, "source")).toMatch(/gateway/)
+		expect(messageEndProblem("complexGateway", undefined, "target")).toMatch(/gateway/)
+		expect(messageEndProblem("dataObjectReference", undefined, "source")).toMatch(/data/)
+		expect(messageEndProblem("dataStoreReference", undefined, "target")).toMatch(/data/)
+		expect(messageEndProblem("startEvent", undefined, "source")).toMatch(/start event/)
+		expect(messageEndProblem("intermediateCatchEvent", "message", "source")).toMatch(/catch/)
+		expect(messageEndProblem("endEvent", undefined, "target")).toMatch(/end event/)
+		expect(messageEndProblem("intermediateThrowEvent", undefined, "target")).toMatch(/throw/)
+		expect(messageEndProblem("startEvent", "timer", "target")).toBe(
+			"a timer event cannot receive a message",
+		)
 	})
 })

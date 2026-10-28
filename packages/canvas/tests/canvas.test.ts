@@ -381,6 +381,25 @@ describe("connection decorations", () => {
 		expect(path?.getAttribute("marker-end")).toContain("open-arrow")
 	})
 
+	it("draws a message flow's name at its label bounds, and a wide hit path", () => {
+		const named = MSGFLOW_XML.replace(
+			'<bpmn:messageFlow id="mf" sourceRef="a" targetRef="b"/>',
+			'<bpmn:messageFlow id="mf" name="Invoice" sourceRef="a" targetRef="b"/>',
+		).replace(
+			'<di:waypoint x="100" y="200"/></bpmndi:BPMNEdge>',
+			'<di:waypoint x="100" y="200"/><bpmndi:BPMNLabel><dc:Bounds x="105" y="135" width="90" height="20"/></bpmndi:BPMNLabel></bpmndi:BPMNEdge>',
+		)
+		const g = renderXml(named).querySelector('[data-bpmnkit-id="mf"]')
+		expect(g?.textContent).toContain("Invoice")
+		const hit = [...(g?.querySelectorAll("path") ?? [])].find(
+			(p) => p.getAttribute("stroke-width") === "12",
+		)
+		expect(hit?.getAttribute("pointer-events")).toBe("stroke")
+		expect(hit?.getAttribute("d")).toBe(
+			g?.querySelector("path.bpmnkit-msgflow-path")?.getAttribute("d"),
+		)
+	})
+
 	it("draws a source circle and open arrowhead on a message flow", () => {
 		const container = renderXml(MSGFLOW_XML)
 		const path = container.querySelector('[data-bpmnkit-id="mf"] path')

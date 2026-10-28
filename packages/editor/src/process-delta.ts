@@ -45,8 +45,11 @@ import {
 	conditionOrLabel,
 	laneForNewNode,
 	leafLanes,
+	messageEndProblem,
+	nameFromId,
 	writableCondition,
 	writableLabel,
+	writableMessageLabel,
 	writableName,
 } from "@bpmnkit/core"
 import { computeWaypointsAvoiding } from "./geometry.js"
@@ -61,12 +64,14 @@ import {
 	moveShapes,
 	updateLabel,
 } from "./modeling.js"
+import { eventTrigger } from "./rules.js"
 import {
 	POOL_HEADER,
 	insertLaneBand,
 	laneAt,
 	messageWaypoints,
 	poolAround,
+	removeBlackBox,
 	removeLaneBand,
 	swimlaneIds,
 	withPrimaryFirst,
@@ -1069,14 +1074,6 @@ const DATA_TYPES = new Set<BpmnElementType>([
 	"dataStoreReference",
 ])
 
-const EVENT_TYPES = new Set<BpmnElementType>([
-	"startEvent",
-	"endEvent",
-	"intermediateCatchEvent",
-	"intermediateThrowEvent",
-	"boundaryEvent",
-])
-
 /** What the lane, pool and msg lines read and write while they apply. */
 interface SwimlaneRun {
 	/** The document, with the primary process first. */
@@ -1174,20 +1171,6 @@ function writtenOf(run: SwimlaneRun, id: string): string {
 	return id
 }
 
-/**
- * `send_email` / `sendEmail` → "Send email". A copy of `nameFromId` in core's
- * `process-text.ts`, which is not exported: a lane or pool the script did not
- * name is named the way the reader names it.
- */
-function nameFromId(id: string): string {
-	const words = id
-		.replace(/([a-z0-9])([A-Z])/g, "$1 $2")
-		.replace(/[_.-]+/g, " ")
-		.trim()
-		.toLowerCase()
-	return words.charAt(0).toUpperCase() + words.slice(1)
-}
-
 /** A `lane` line: moves its nodes into an existing leaf lane, renaming it, or into a new one. */
 function applyLaneLine(
 	run: SwimlaneRun,
@@ -1258,50 +1241,8 @@ function moveIntoBand(run: SwimlaneRun, id: string, laneId: string): void {
 	if (cy >= band.y && cy <= bottom(band)) return
 	// ponytail: the middle of the band, not a free spot in it; slot() there if crowded lanes overlap
 	const dy = centreY(band) - cy
-	const before = new Map(planeOf(run).shapes.map((s) => [s.bpmnElement, s.bounds.y]))
+	// moveShapes carries boundary events and sub-process content along, and re-docks their messages.
 	run.defs = moveShapes(run.defs, [{ id, dx: 0, dy }])
-	// moveShapes routes sequence flows only, and carries boundary events and sub-process content along.
-	const moved = new Set(
-		planeOf(run)
-			.shapes.filter((s) => before.get(s.bpmnElement) !== s.bounds.y)
-			.map((s) => s.bpmnElement),
-	)
-	shiftMessageEnds(run, moved, dy)
-}
-
-/**
- * Moves the ends of the message edges on `moved` shapes by `dy`, with the bend
- * next to an end that leaves it sideways, so each edge stays on its shape and
- * keeps its right angles. Only vertical moves inside a pool happen here, so an
- * end keeps facing the other pool.
- */
-function shiftMessageEnds(run: SwimlaneRun, moved: ReadonlySet<string>, dy: number): void {
-	const edges = new Map(planeOf(run).edges.map((edge) => [edge.bpmnElement, edge]))
-	for (const flow of run.defs.collaborations.flatMap((c) => c.messageFlows)) {
-		const edge = edges.get(flow.id)
-		if (!edge || edge.waypoints.length < 2) continue
-		let points = edge.waypoints
-		if (moved.has(flow.sourceRef)) points = shiftFirstEnd(points, dy)
-		if (moved.has(flow.targetRef)) points = shiftFirstEnd([...points].reverse(), dy).reverse()
-		edge.waypoints = points
-	}
-}
-
-/**
- * `points` with the first one moved down by `dy`, and the second too when the
- * segment between them is horizontal. A straight horizontal edge gets two bends
- * half way instead, so it keeps its right angles.
- */
-function shiftFirstEnd(points: readonly BpmnWaypoint[], dy: number): BpmnWaypoint[] {
-	const [first, second] = points
-	if (points.length === 2 && first && second && first.y === second.y && dy !== 0) {
-		const x = (first.x + second.x) / 2
-		return [{ ...first, y: first.y + dy }, { x, y: first.y + dy }, { x, y: second.y }, second]
-	}
-	return points.map((p, k) => {
-		const sideways = k === 1 && points.length > 2 && first !== undefined && second?.y === first.y
-		return k === 0 || sideways ? { ...p, y: p.y + dy } : p
-	})
 }
 
 /**
@@ -1531,45 +1472,17 @@ function messageEnds(run: SwimlaneRun, line: { from: string; to: string }): Mess
 	}
 }
 
-/**
- * Why `element` cannot be the `side` end of a message flow, or undefined when it
- * can. A copy of `messageEndProblem` in core's `process-text.ts`, which is not
- * exported: a change script must refuse what a written diagram refuses.
- */
-function messageEndProblem(
-	element: BpmnFlowElement,
-	side: "source" | "target",
-): string | undefined {
-	const { type } = element
-	const trigger = "eventDefinitions" in element ? element.eventDefinitions[0]?.type : undefined
-	if (GATEWAYS.has(type)) return "a gateway cannot send or receive a message"
-	if (side === "source") {
-		if (type === "startEvent") return "a start event cannot send a message"
-		if (type === "intermediateCatchEvent" || type === "boundaryEvent") {
-			return "a catch event cannot send a message"
-		}
-	} else {
-		if (type === "endEvent") return "an end event cannot receive a message"
-		if (type === "intermediateThrowEvent") return "a throw event cannot receive a message"
-	}
-	if (EVENT_TYPES.has(type) && trigger !== undefined && trigger !== "message") {
-		return `a ${trigger} event cannot ${side === "source" ? "send" : "receive"} a message`
-	}
-	return undefined
-}
-
-/** A message label as the writer shows it: parentheses would end the label, so they are spaces. */
-function messageLabel(name: string): string {
-	return name.replace(/[()]/g, " ").replace(/\s+/g, " ").trim()
-}
-
 /** A `msg` line: adds the message, relabels one the diagram has, or restates it. */
 function applyMessageLine(run: SwimlaneRun, line: ProcessDelta["messageFlows"][number]): void {
 	const ends = messageEnds(run, line)
 	const reason =
 		typeof ends === "string"
 			? ends
-			: messageEndProblem(ends.node, ends.nodeSends ? "source" : "target")
+			: messageEndProblem(
+					ends.node.type,
+					eventTrigger(ends.node),
+					ends.nodeSends ? "source" : "target",
+				)
 	const collaboration = run.defs.collaborations[0]
 	if (typeof ends === "string" || reason !== undefined || !collaboration) {
 		run.problem(line.line, `msg ${line.from} > ${line.to}: ${reason}; left out`)
@@ -1579,7 +1492,7 @@ function applyMessageLine(run: SwimlaneRun, line: ProcessDelta["messageFlows"][n
 		(f) => f.sourceRef === ends.source && f.targetRef === ends.target,
 	)
 	if (existing) {
-		if (line.name === undefined || line.name === messageLabel(existing.name ?? "")) return
+		if (line.name === undefined || line.name === writableMessageLabel(existing.name ?? "")) return
 		existing.name = line.name
 		run.changed.add(ends.node.id)
 		return
@@ -1626,8 +1539,9 @@ function removeMessageLine(
 
 /**
  * A `- x` line naming a lane or a pool. A lane goes, its band and nodes to its
- * neighbour; an empty partner pool goes with its messages. The process's own
- * pool and a pool that draws a process stay: a script edits one process.
+ * neighbour; a black box (`isBlackBox`) goes with its messages and its empty
+ * process. The process's own pool and a pool that draws a process with content
+ * stay: a script edits one process.
  */
 function removeSwimlane(run: SwimlaneRun, removal: { id: string; line: number }): void {
 	const found = swimlaneOf(run.defs, run.aliases, run.created, removal.id)
@@ -1651,16 +1565,12 @@ function removeSwimlane(run: SwimlaneRun, removal: { id: string; line: number })
 		refuse("it is the pool of this process")
 		return
 	}
-	if (pool.processRef !== undefined) {
+	// A black box goes with its messages, and with its process when that is empty (U3).
+	const next = removeBlackBox(run.defs, pool.id)
+	if (!next) {
 		refuse("it draws a process of its own")
 		return
 	}
-	for (const collaboration of run.defs.collaborations) {
-		collaboration.participants = collaboration.participants.filter((p) => p.id !== pool.id)
-	}
-	dropMessageFlows(run.defs, (f) => f.sourceRef === pool.id || f.targetRef === pool.id)
-	for (const diagram of run.defs.diagrams) {
-		diagram.plane.shapes = diagram.plane.shapes.filter((s) => s.bpmnElement !== pool.id)
-	}
+	run.defs = next
 	run.result.removed.push(pool.id)
 }

@@ -15,6 +15,12 @@ interface EditorInternals {
 	_viewport: { set(state: { tx: number; ty: number; scale: number }): void }
 	_hitTest(clientX: number, clientY: number): { type: string; id?: string }
 	_previewTranslate(dx: number, dy: number): void
+	_commitTranslate(dx: number, dy: number): void
+	_commitSpace(
+		origin: { x: number; y: number },
+		current: { x: number; y: number },
+		axis: "h" | "v",
+	): void
 	_previewSpace(
 		origin: { x: number; y: number },
 		current: { x: number; y: number },
@@ -24,6 +30,8 @@ interface EditorInternals {
 	_doConnect(srcId: string, tgtId: string): void
 	_findEdgeDropTarget(dx: number, dy: number): string | null
 	_canHostBoundary(id: string): boolean
+	_onDblClick(e: MouseEvent): void
+	_svg: SVGSVGElement
 }
 
 const editors: BpmnEditor[] = []
@@ -108,9 +116,10 @@ describe("8a.4 element types and the context bar and menu", () => {
 		expect(document.getElementById("cfg-toolbar")?.children).toHaveLength(0)
 	})
 
-	it("offers no label edit for a message flow, which has no label to edit yet", () => {
+	it("offers a label edit for a message flow (8d.6)", () => {
 		const { ed } = mount(true)
-		expect(menuFor(ed, ["Message_pay"])).not.toContain("Edit label")
+		expect(menuFor(ed, ["Message_pay"])).toContain("Edit label")
+		expect(menuFor(ed, ["Flow_1"])).not.toContain("Edit label")
 	})
 })
 
@@ -130,7 +139,9 @@ describe("8a.6 connecting to a pool or a lane", () => {
 		const { ed, inner } = mount()
 		ed.startConnectionFrom("Task_review")
 		expect(inner._isConnectTargetInvalid("Lane_finance")).toBe(true)
-		expect(inner._isConnectTargetInvalid("Participant_bank")).toBe(true)
+		expect(inner._isConnectTargetInvalid("Participant_own")).toBe(true)
+		// A partner pool takes a message flow since 8d.4.
+		expect(inner._isConnectTargetInvalid("Participant_bank")).toBe(false)
 		expect(inner._isConnectTargetInvalid("Task_pay")).toBe(false)
 		inner._doConnect("Task_review", "Lane_finance")
 		inner._doConnect("Task_review", "Participant_own")
@@ -213,5 +224,198 @@ describe("8a.6 and 8a.9 drops on a flow and on a boundary host", () => {
 		const { inner } = mount(false, lockedPartnerXml())
 		expect(inner._canHostBoundary("Task_p")).toBe(false)
 		expect(inner._canHostBoundary("Task_review")).toBe(true)
+	})
+})
+
+describe("WP8d in the editor", () => {
+	/** The labels of the right-click menu for the selection `ids`. */
+	function menuFor(ed: BpmnEditor, ids: string[]): string[] {
+		ed.setSelection(ids)
+		ed.container.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true }))
+		const items = document.querySelectorAll("#bpmnkit-ctx-menu .drop-item")
+		return [...items].map((item) => item.textContent ?? "")
+	}
+
+	const barTitles = () =>
+		[...(document.getElementById("ctx-toolbar")?.children ?? [])].map(
+			(b) => (b as HTMLElement).title,
+		)
+
+	it("offers no Delete for the own pool, and offers it for a black box", () => {
+		const { ed } = mount(true)
+		expect(menuFor(ed, ["Participant_own"])).toEqual(["Edit label"])
+		expect(barTitles()).toEqual(["Edit label"])
+		expect(menuFor(ed, ["Participant_partner"])).toEqual(["Edit label", "Delete"])
+	})
+
+	it("offers no Delete for a partner pool whose process has content", () => {
+		const { ed } = mount(true, lockedPartnerXml())
+		expect(menuFor(ed, ["Participant_partner"])).toEqual(["Edit label"])
+	})
+
+	it("ignores Delete on the own pool: no undo step", () => {
+		const { ed } = mount()
+		ed.setSelection(["Participant_own"])
+		ed.deleteSelected()
+		expect(ed.canUndo()).toBe(false)
+	})
+
+	it("moves an aligned node's lane ref with it", () => {
+		const { ed } = mount()
+		ed.setSelection(["Task_review", "Task_pay"])
+		ed.alignSelected("top")
+		const lane = ed
+			.getDefinitions()
+			?.processes[0]?.laneSet?.lanes.find((candidate) => candidate.id === "Lane_sales")
+		expect(lane?.flowNodeRefs).toContain("Task_pay")
+	})
+
+	it("adds no undo step for a Duplicate of only a lane or a locked node", () => {
+		const { ed } = mount(false, lockedPartnerXml())
+		for (const id of ["Lane_ops", "Task_p"]) {
+			ed.setSelection([id])
+			ed.duplicate()
+			expect(ed.canUndo(), id).toBe(false)
+		}
+	})
+
+	it("opens an empty file without diagram interchange untouched, and draws on the first edit", () => {
+		const { ed } = mount()
+		let changes = 0
+		ed.on("diagram:change", () => changes++)
+		ed.load(
+			'<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" targetNamespace="t"><process id="p" isExecutable="true"/></definitions>',
+		)
+		expect(changes).toBe(0)
+		expect(ed.exportXml()).not.toContain("BPMNDiagram")
+		const inner = ed as unknown as {
+			_executeOp(op: unknown, options: { label: string }): string[]
+		}
+		const [created] = inner._executeOp(
+			{
+				kind: "createShape",
+				type: "task",
+				bounds: { x: 100, y: 100, width: 100, height: 80 },
+				seed: "s",
+			},
+			{ label: "Create" },
+		)
+		expect(ed.getShapeBounds(created ?? "")).not.toBeNull()
+		expect(changes).toBe(1)
+	})
+})
+
+describe("WP8d message flows in the editor", () => {
+	/** Hit-tests `(x, y)` as if the browser found `target` there. */
+	function hitAt(inner: EditorInternals, target: Element, x: number, y: number) {
+		const original = document.elementFromPoint
+		document.elementFromPoint = () => target
+		try {
+			return inner._hitTest(x, y)
+		} finally {
+			document.elementFromPoint = original
+		}
+	}
+
+	const messages = (ed: BpmnEditor) =>
+		ed.getDefinitions()?.collaborations.flatMap((c) => c.messageFlows) ?? []
+
+	it("connects a task to a black box with a message flow, one undo step", () => {
+		const { ed, inner } = mount()
+		inner._doConnect("Task_review", "Participant_bank")
+		expect(messages(ed).map((f) => [f.sourceRef, f.targetRef])).toContainEqual([
+			"Task_review",
+			"Participant_bank",
+		])
+		expect(ed.canUndo()).toBe(true)
+		ed.undo()
+		expect(messages(ed)).toHaveLength(1)
+	})
+
+	it("adds no undo step for ends a message flow cannot have", () => {
+		const { ed, inner } = mount()
+		inner._doConnect("Gateway_ok", "Participant_bank")
+		inner._doConnect("Participant_bank", "End_1")
+		expect(ed.canUndo()).toBe(false)
+	})
+
+	it("reds the ghost for a locked source inside its own pool, not for a message out of it", () => {
+		const { ed, inner } = mount(false, lockedPartnerXml())
+		ed.startConnectionFrom("Task_p")
+		expect(inner._isConnectTargetInvalid("Start_p")).toBe(true)
+		expect(inner._isConnectTargetInvalid("Task_review")).toBe(false)
+		ed.startConnectionFrom("Gateway_ok")
+		expect(inner._isConnectTargetInvalid("Participant_bank")).toBe(true)
+	})
+
+	it("targets the innermost pool or lane under the pointer while connecting (I6)", () => {
+		const { ed, inner } = mount()
+		const pool = drawnGroup(inner, "Participant_bank")
+		const lane = drawnGroup(inner, "Lane_finance")
+		expect(hitAt(inner, pool, 300, 520)).toEqual({ type: "canvas" })
+		ed.startConnectionFrom("Task_review")
+		expect(hitAt(inner, pool, 300, 520)).toEqual({ type: "shape", id: "Participant_bank" })
+		expect(hitAt(inner, lane, 600, 200)).toEqual({ type: "shape", id: "Lane_finance" })
+		expect(hitAt(inner, lane, 320, 180)).toEqual({ type: "shape", id: "Gateway_ok" })
+	})
+
+	it("edits a message flow's label from the menu and on a double-click", () => {
+		const { ed, inner } = mount()
+		ed.editLabel("Message_pay")
+		const div = document.querySelector<HTMLElement>(".bpmnkit-label-editor")
+		expect(div?.textContent).toBe("Payment")
+		expect([div?.style.left, div?.style.top]).toEqual(["455px", "345px"])
+		div?.remove()
+
+		const hit = inner._svg.querySelector('[data-bpmnkit-edge-hit="Message_pay"]')
+		if (!hit) throw new Error("no hit area")
+		const original = document.elementFromPoint
+		document.elementFromPoint = () => hit
+		try {
+			inner._onDblClick(new MouseEvent("dblclick", { clientX: 450, clientY: 300 }))
+		} finally {
+			document.elementFromPoint = original
+		}
+		expect(document.querySelector(".bpmnkit-label-editor")?.textContent).toBe("Payment")
+	})
+
+	it("offers a locked node no Connect, quick add or annotation", () => {
+		const { ed } = mount(true, lockedPartnerXml())
+		ed.setSelection(["Task_p"])
+		ed.container.dispatchEvent(new MouseEvent("contextmenu", { bubbles: true }))
+		const titles = [...(document.getElementById("ctx-toolbar")?.children ?? [])].map(
+			(b) => (b as HTMLElement).title,
+		)
+		expect(titles).not.toContain("Connect to element (click target)")
+		expect(titles).not.toContain("Add text annotation")
+		expect(titles.some((title) => title.startsWith("Add "))).toBe(false)
+		ed.setSelection(["Task_review"])
+		const own = [...(document.getElementById("ctx-toolbar")?.children ?? [])].map(
+			(b) => (b as HTMLElement).title,
+		)
+		expect(own).toContain("Connect to element (click target)")
+		expect(own).toContain("Add text annotation")
+	})
+})
+
+describe("final review: drags the model refuses", () => {
+	it("puts a dragged node back where it was when the move is refused", () => {
+		const { ed, inner } = mount()
+		const group = inner._svg.querySelector('[data-bpmnkit-id="Task_review"]')
+		ed.setSelection(["Task_review"])
+		inner._previewTranslate(0, 420)
+		inner._commitTranslate(0, 420)
+		expect(ed.canUndo()).toBe(false)
+		expect(group?.getAttribute("transform")).toBe("translate(160 20)")
+	})
+
+	it("lets the space tool push nodes past the own pool's right edge, which grows", () => {
+		const { ed, inner } = mount()
+		inner._commitSpace({ x: 380, y: 0 }, { x: 580, y: 0 }, "h")
+		expect(ed.canUndo()).toBe(true)
+		const defs = ed.getDefinitions()
+		if (!defs) throw new Error("no definitions")
+		expect(boundsOf(defs, "Task_pay").x).toBe(600)
+		expect(boundsOf(defs, "Participant_own").width).toBe(798)
 	})
 })

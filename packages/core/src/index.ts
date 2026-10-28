@@ -135,6 +135,7 @@ export {
 	laneOf,
 	laneProblems,
 	leafLanes,
+	messageEndProblem,
 	poolLanedProcesses,
 	primaryProcess,
 	pruneLaneRefs,
@@ -430,6 +431,7 @@ export {
 	PROCESS_TEXT_GUIDE,
 	conditionOrLabel,
 	createProcessTextStream,
+	nameFromId,
 	parseProcessText,
 } from "./bpmn/process-text.js"
 export type {
@@ -446,6 +448,7 @@ export type { DeltaFlow, DeltaNode, ProcessDelta } from "./bpmn/process-delta.js
 export {
 	writableCondition,
 	writableLabel,
+	writableMessageLabel,
 	writableName,
 	writeProcessText,
 } from "./bpmn/process-text-writer.js"

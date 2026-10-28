@@ -723,6 +723,9 @@ export class EditorStateMachine {
 		if (hit.type === "shape") {
 			this._mode = { mode: "select", sub: { name: "editing-label", id: hit.id } }
 			this._cb.startLabelEdit(hit.id)
+		} else if (hit.type === "edge-segment") {
+			// The mode stays: only some flows have a label editor, and editing-label would wait for one.
+			this._cb.startLabelEdit(hit.id)
 		}
 	}
 

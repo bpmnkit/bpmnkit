@@ -334,11 +334,15 @@ export function laneForNewNode(process: BpmnProcess, nodeId: string): BpmnLane |
  * The process a single-process writer edits: the first process, in the
  * participant order of `collaborations[0]`, that is explicitly executable; else
  * the first explicitly executable process; else the first process with flow
- * elements or lanes; else `processes[0]`. Modeler files
- * do not always put the executable pool first.
+ * elements or lanes. When every process is empty, the candidates are the ones
+ * not marked `isExecutable="false"` (Flowable reads an absent attribute as
+ * executable), or all of them when every one is; among them the one whose pool
+ * is drawn largest, else the first. Modeler files do not always put the
+ * executable pool first.
  */
 export function primaryProcess(
-	defs: Pick<BpmnDefinitions, "collaborations" | "processes">,
+	defs: Pick<BpmnDefinitions, "collaborations" | "processes"> &
+		Partial<Pick<BpmnDefinitions, "diagrams">>,
 ): BpmnProcess | undefined {
 	const byId = new Map(defs.processes.map((process) => [process.id, process]))
 	for (const participant of defs.collaborations[0]?.participants ?? []) {
@@ -351,8 +355,41 @@ export function primaryProcess(
 		// An empty process is a partner's; picking it would mark the real one
 		// non-executable in poolLanedProcesses, and Flowable would deploy nothing.
 		defs.processes.find((process) => process.flowElements.length > 0 || process.laneSet) ??
-		defs.processes[0]
+		emptiedPrimary(defs)
 	)
+}
+
+/**
+ * Once an edit empties the process the user works on, nothing in the semantics
+ * may tell it from an empty partner, and a switch would lock the user out of
+ * their own pool. The drawing still does: a partner is a thin band.
+ * ponytail: a file without pool DI falls back to document order.
+ */
+function emptiedPrimary(
+	defs: Pick<BpmnDefinitions, "collaborations" | "processes"> &
+		Partial<Pick<BpmnDefinitions, "diagrams">>,
+): BpmnProcess | undefined {
+	const runnable = defs.processes.filter((process) => process.isExecutable !== false)
+	const candidates = runnable.length > 0 ? runnable : defs.processes
+	const area = new Map<string, number>()
+	for (const diagram of defs.diagrams ?? []) {
+		for (const shape of diagram.plane.shapes) {
+			area.set(shape.bpmnElement, shape.bounds.width * shape.bounds.height)
+		}
+	}
+	const poolArea = (process: BpmnProcess): number => {
+		let largest = 0
+		for (const participant of defs.collaborations.flatMap((c) => c.participants)) {
+			if (participant.processRef !== process.id) continue
+			largest = Math.max(largest, area.get(participant.id) ?? 0)
+		}
+		return largest
+	}
+	let best = candidates[0]
+	for (const candidate of candidates) {
+		if (best === undefined || poolArea(candidate) > poolArea(best)) best = candidate
+	}
+	return best
 }
 
 /** Every id the document already uses at the levels a new collaboration or participant could clash with. */
@@ -513,6 +550,50 @@ function refProblem(
 		return `Lane "${laneId}" lists "${ref}", which sits inside a sub-process; only top-level flow nodes belong in a lane`
 	}
 	return `Lane "${laneId}" lists "${ref}", which is not a flow node of process "${process.id}"`
+}
+
+const MESSAGE_EVENTS: ReadonlySet<string> = new Set([
+	"startEvent",
+	"endEvent",
+	"intermediateCatchEvent",
+	"intermediateThrowEvent",
+	"boundaryEvent",
+])
+
+const DATA_TYPES: ReadonlySet<string> = new Set([
+	"dataObject",
+	"dataObjectReference",
+	"dataStoreReference",
+])
+
+/**
+ * Why an element of `type` cannot be the `side` end of a message flow, or
+ * undefined when it can. `trigger` is an event's first event definition
+ * (`"message"`, `"timer"`, …), undefined for a plain event or anything else.
+ * A pool can be either end. One rule for every writer, so a change script, the
+ * process text reader and the editor refuse the same messages.
+ */
+export function messageEndProblem(
+	type: string,
+	trigger: string | undefined,
+	side: "source" | "target",
+): string | undefined {
+	if (type.endsWith("Gateway")) return "a gateway cannot send or receive a message"
+	if (DATA_TYPES.has(type)) return "a data object or store cannot send or receive a message"
+	if (side === "source") {
+		if (type === "startEvent") return "a start event cannot send a message"
+		if (type === "intermediateCatchEvent" || type === "boundaryEvent") {
+			return "a catch event cannot send a message"
+		}
+	} else {
+		if (type === "endEvent") return "an end event cannot receive a message"
+		if (type === "intermediateThrowEvent") return "a throw event cannot receive a message"
+	}
+	// A timer or a signal waits for, or sends, something else; only a plain event can be made a message one.
+	if (MESSAGE_EVENTS.has(type) && trigger !== undefined && trigger !== "message") {
+		return `a ${trigger} event cannot ${side === "source" ? "send" : "receive"} a message`
+	}
+	return undefined
 }
 
 /**

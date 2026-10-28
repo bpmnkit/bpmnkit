@@ -40,7 +40,7 @@ import {
 	updateLabelPosition,
 	updateShapeColor,
 } from "./modeling.js"
-import { withPrimaryFirst } from "./swimlanes.js"
+import { settlePlaced, withPrimaryFirst } from "./swimlanes.js"
 import type { CreateShapeType, PortDir } from "./types.js"
 
 /** One shape's displacement. */
@@ -104,7 +104,18 @@ export type EditorOp =
 			seed: string
 	  }
 	| { kind: "paste"; clipboard: Clipboard; offsetX: number; offsetY: number; seed: string }
-	| { kind: "move"; moves: ShapeMove[]; onEdge?: { edgeId: string; shapeId: string } }
+	/**
+	 * `grow`: the space tool's push, which may carry nodes of the own pool past
+	 * its right or bottom edge; the pool grows to take them in, as it does for a
+	 * quick-add, where a plain drag out of it is refused. Until the space op
+	 * (U10) exists.
+	 */
+	| {
+			kind: "move"
+			moves: ShapeMove[]
+			onEdge?: { edgeId: string; shapeId: string }
+			grow?: boolean
+	  }
 	| { kind: "resize"; id: string; bounds: BpmnBounds }
 	| { kind: "delete"; ids: string[] }
 	| { kind: "rename"; id: string; name: string }
@@ -145,11 +156,34 @@ export function applyOp(defs: BpmnDefinitions, op: EditorOp): OpResult {
 	if (op.kind === "snapshot") return { defs: op.defs, created: [] }
 	let created: string[] = []
 	const next = withPrimaryFirst(defs, (first) => {
-		const r = applyEdit(first, op)
+		// A file without diagram interchange and with nothing to lay out opens
+		// without a plane; the first edit that changes something draws one.
+		const base =
+			first.diagrams.length === 0 && first.processes.length > 0 ? applyAutoLayout(first) : first
+		const r = applyEdit(base, op)
 		created = r.created
-		return r.defs
+		return r.defs === base ? first : r.defs
 	})
 	return { defs: next, created }
+}
+
+/** Nothing happened: what an edit returns when it refuses the whole op. */
+const refused = (defs: BpmnDefinitions): OpResult => ({ defs, created: [] })
+
+/**
+ * `r` once `settlePlaced` has kept the shapes `placed` inside the own pool and
+ * their lane refs in step with the drawing; {@link refused} when it will not.
+ */
+function settled(
+	before: BpmnDefinitions,
+	r: OpResult,
+	placed: readonly string[],
+	created: boolean,
+	outward = false,
+): OpResult {
+	if (r.defs === before) return r
+	const next = settlePlaced(r.defs, placed, created, outward)
+	return next ? { defs: next, created: r.created } : refused(before)
 }
 
 /** Performs an edit on a document whose primary process and its diagram come first. */
@@ -157,9 +191,10 @@ function applyEdit(defs: BpmnDefinitions, op: Exclude<EditorOp, { kind: "snapsho
 	switch (op.kind) {
 		case "createShape": {
 			const r = createShape(defs, op.type, op.bounds, op.name, createIdFactory(op.seed))
+			if (r.defs === defs) return refused(defs)
 			// Dropping a shape onto a flow splices it into that flow.
 			const next = op.onEdge ? insertShapeOnEdge(r.defs, op.onEdge, r.id) : r.defs
-			return { defs: next, created: [r.id] }
+			return settled(defs, { defs: next, created: [r.id] }, [r.id], true)
 		}
 		case "createBoundaryEvent": {
 			const r = createBoundaryEvent(
@@ -170,7 +205,8 @@ function applyEdit(defs: BpmnDefinitions, op: Exclude<EditorOp, { kind: "snapsho
 				true,
 				createIdFactory(op.seed),
 			)
-			return { defs: r.defs, created: r.defs === defs ? [] : [r.id] }
+			if (r.defs === defs) return refused(defs)
+			return settled(defs, { defs: r.defs, created: [r.id] }, [r.id], true)
 		}
 		case "createAnnotation": {
 			const r = createAnnotation(defs, op.bounds, op.text, createIdFactory(op.seed))
@@ -185,6 +221,7 @@ function applyEdit(defs: BpmnDefinitions, op: Exclude<EditorOp, { kind: "snapsho
 				undefined,
 				createIdFactory(op.seed),
 			)
+			if (r.defs === defs) return refused(defs)
 			return { defs: r.defs, created: [r.annotationId, r.associationId] }
 		}
 		case "createConnection": {
@@ -204,16 +241,21 @@ function applyEdit(defs: BpmnDefinitions, op: Exclude<EditorOp, { kind: "snapsho
 			const ids = createIdFactory(op.seed)
 			const shape = createShape(defs, op.type, op.bounds, op.name, ids)
 			const flow = createConnection(shape.defs, op.sourceId, shape.id, op.waypoints, ids)
-			return { defs: flow.defs, created: [shape.id, flow.id] }
+			if (shape.defs === defs) return refused(defs)
+			// Placed by the editor beside its source, which may sit at the pool's edge: the pool grows.
+			const result = { defs: flow.defs, created: [shape.id, flow.id] }
+			return settled(defs, result, [shape.id], true, true)
 		}
 		case "paste": {
 			const r = pasteElements(defs, op.clipboard, op.offsetX, op.offsetY, createIdFactory(op.seed))
-			return { defs: r.defs, created: r.topLevelIds }
+			return settled(defs, { defs: r.defs, created: r.topLevelIds }, r.topLevelIds, true)
 		}
 		case "move": {
 			const moved = moveShapes(defs, op.moves)
+			if (moved === defs) return refused(defs)
 			const next = op.onEdge ? insertShapeOnEdge(moved, op.onEdge.edgeId, op.onEdge.shapeId) : moved
-			return { defs: next, created: [] }
+			const ids = op.moves.map((m) => m.id)
+			return settled(defs, { defs: next, created: [] }, ids, false, op.grow === true)
 		}
 		case "resize":
 			return { defs: resizeShape(defs, op.id, op.bounds), created: [] }
