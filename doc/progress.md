@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-04 — Fix the plugins build after the form-definition union
+
+- `ZeebeFormDefinition` became a union (form id, form key or external reference) with the week-3 form variants, and the BPMN config panel's user-task adapter still read `.formId` directly, so `@bpmnkit/plugins` failed to build in CI. The adapter now narrows the type; a task linked by form key or external reference shows an empty form id, since the panel edits only linked forms.
+- Tests: `packages/plugins/tests/config-panel-bpmn/index.test.ts` (linked form id, form key).
+
 ## 2026-10-22 — D1b: structure-matching closeness scorer; comparison page may ship
 
 - `scoreCloseness(..., { match: "structure" })` pairs elements by graph structure (kind = type + event definition, normalised longest-path depth, in/out degree; greedy by cost, ties by id; names only add 0.2 × dissimilarity). Configuration compares the kind of Zeebe setting, layout compares positions in the unit square. Default stays `"id"`; existing tests unchanged. Header comment of `scripts/lib/closeness.mjs` is the definition.
