@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-04 — Rust core proposal: phase 0 measured
+
+- `doc/rust-rewrite-proposal.md` §9: the WASM size gate passes (395 KB gzip). Speed is 1.1–2.7× slower than TS for BPMN parse and 1.4–8× slower for FEEL, so browser speed is dropped as a goal. Verdict: conditional go for shared code and native tools. No code changed.
+
 ## 2026-11-04 — Rust core proposal: decisions recorded
 
 - `doc/rust-rewrite-proposal.md` §8: goal is both, crates are dual MIT OR Apache-2.0, a Rust CLI is wanted (after the core, starting with a plugin-bridge spike). No code changed.

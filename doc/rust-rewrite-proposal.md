@@ -1,6 +1,6 @@
 # Proposal: Rust core for BPMN Kit
 
-Status: analysis only, 2026-11-04. Nothing implemented. Figures are from line and test counts, not benchmarks.
+Status: analysis only, 2026-11-04. Nothing implemented. Phase 0 measured (§9).
 
 ## TL;DR
 
@@ -116,3 +116,31 @@ The phases from gate through builder/ops are about 41–54 person-weeks. Each ph
 1. **Goal: both** native tooling and browser speed. Do the full core port (phases 0–8). Phase 0 still gates it.
 2. **License: dual `MIT OR Apache-2.0`** for the shared crates, which is the Rust ecosystem norm. MIT keeps the npm packages as they are. Apache-2.0 adds a patent grant. Reebe has a single author, so it can be relicensed to the dual license with no outside consent. Do this before code moves (phase 1).
 3. **Rust CLI: yes.** It stays in "Later", after the core. Its first step is a plugin-bridge spike. Option A: the Rust binary runs TS plugins in a Node subprocess over JSON-RPC. Option B: plugins are WASM components. Pick one before the port. Keep TS `casen` until the Rust CLI reaches parity.
+
+## 9. Phase 0 results (2026-11-04)
+
+Measured in scratch builds with Node 22. No tracked files changed.
+
+**Size: PASS.** The `reebe-wasm` size profile (`opt-level=z`, lto, `codegen-units=1`, `panic=abort`) plus `wasm-opt -Oz` is 1.04 MB raw, **395 KB gzip** and 304 KB brotli. The current release build is 630 KB gzip. Most of the module is `reebe_engine` (26% of code). FEEL is 6% and BPMN is 4%. Further cuts: strip the names section and `__wasm_bindgen_unstable` (~1 MB raw), split the large engine async closures, use a smaller replacement for `chrono`.
+
+**Speed: FAIL as a reason to port.**
+
+| Case | TS | WASM | Ratio (WASM/TS) |
+|---|---|---|---|
+| FEEL, 32 expressions, warm, TS cached | 1.05 µs | 8.3 µs | 7.9× |
+| FEEL, warm, uncached | 2.95 µs | 8.3 µs | 2.8× |
+| FEEL, no context marshalling | 2.95 µs | 4.2 µs | 1.4× |
+| BPMN 5 KB, model returned to JS | 52 µs | 103 µs | 2.0× |
+| BPMN 65 KB, returned | 503 µs | 560 µs | 1.1× |
+| BPMN 235 KB, returned | 1.48 ms | 1.74 ms | 1.2× |
+
+- WASM init takes 3–8 ms.
+- Native Rust is about 1.7–2× faster than WASM, so a native binary is about as fast as TS on small files and about 2× faster on large ones.
+- Returning the model as a JSON string costs about the same as serde-wasm-bindgen.
+- FEEL disagreed on 3 of 32 expressions. Reebe has no `**` and no date or datetime + duration. This confirms the drift risk in §1.
+
+**Verdict: conditional go.** WASM will not make the browser faster, so drop "browser speed" as a goal. The extra cost is small in absolute terms (under 0.3 ms on the largest diagram), so it is acceptable for one shared implementation and native tools. Conditions:
+
+1. The facade must not round-trip whole models or contexts per call. Use handles or batch calls, and cache parsed FEEL on the Rust side.
+2. Phase 2 (FEEL) starts by closing the TCK gaps and ships behind the TS/WASM flag. Switch the default only when WASM is within 1.5× of TS on the bench.
+3. Keep the bench (FEEL + 4 BPMN sizes) and a 500 KB gzip budget as CI checks from phase 1.
