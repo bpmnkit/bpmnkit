@@ -647,8 +647,7 @@ const USER_TASK_ADAPTER: PanelAdapter = {
 			name: el.name ?? "",
 			documentation: el.documentation ?? "",
 			// The panel edits only a linked form id; a form key or external reference shows as empty.
-			formId:
-				ext.formDefinition && "formId" in ext.formDefinition ? ext.formDefinition.formId : "",
+			formId: ext.formDefinition && "formId" in ext.formDefinition ? ext.formDefinition.formId : "",
 			exampleOutputJson: getExampleOutputJson(ext),
 		}
 	},

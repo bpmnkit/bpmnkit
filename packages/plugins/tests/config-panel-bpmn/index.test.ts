@@ -652,7 +652,10 @@ describe("BPMN Kit connector templates", () => {
 
 describe("user task adapter form reference", () => {
 	function readUserTask(formAttributes: Record<string, string>): Record<string, unknown> {
-		const adapters = new Map<string, (defs: BpmnDefinitions, id: string) => Record<string, unknown>>()
+		const adapters = new Map<
+			string,
+			(defs: BpmnDefinitions, id: string) => Record<string, unknown>
+		>()
 		const plugin = createConfigPanelBpmnPlugin({
 			name: "config-panel",
 			install: vi.fn(),
