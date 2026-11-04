@@ -12,6 +12,11 @@ const REPO = join(HERE, "../../..")
 const TSC = join(REPO, "node_modules/typescript/bin/tsc")
 /** tsx, resolved from here: the scaffolder runs with a temp dir as its cwd. */
 const TSX = pathToFileURL(createRequire(import.meta.url).resolve("tsx")).href
+/**
+ * Node 26 deprecates `module.register()` (DEP0205), which the tsx loader still calls, and prints the
+ * warning on stderr. Silence that one code: the tests assert on what the scaffolder itself writes.
+ */
+const LOADER = ["--disable-warning=DEP0205", "--import", TSX]
 
 let tmp = ""
 beforeAll(() => {
@@ -24,7 +29,7 @@ afterAll(() => {
 /** Runs the scaffolder in its own directory under the temp dir. */
 function scaffold(args: string[], input?: string) {
 	const cwd = mkdtempSync(join(tmp, "run-"))
-	const res = spawnSync(process.execPath, ["--import", TSX, CLI, ...args], {
+	const res = spawnSync(process.execPath, [...LOADER, CLI, ...args], {
 		cwd,
 		input: input ?? "",
 		encoding: "utf8",
@@ -131,7 +136,7 @@ describe("non-interactive scaffold", () => {
  */
 function scaffoldInteractive(answers: string[]) {
 	const cwd = mkdtempSync(join(tmp, "run-"))
-	const child = spawn(process.execPath, ["--import", TSX, CLI], { cwd })
+	const child = spawn(process.execPath, [...LOADER, CLI], { cwd })
 	let stdout = ""
 	let asked = 0
 	child.stdout.setEncoding("utf8")
@@ -180,7 +185,7 @@ describe("bad input", () => {
 		writeFileSync(join(cwd, "casen-mine", "package.json"), '{"name":"mine"}')
 		const res = spawnSync(
 			process.execPath,
-			["--import", TSX, CLI, "--name", "casen-mine", "--description", "d", "--no-git"],
+			[...LOADER, CLI, "--name", "casen-mine", "--description", "d", "--no-git"],
 			{ cwd, encoding: "utf8" },
 		)
 		expect(res.status).toBe(1)

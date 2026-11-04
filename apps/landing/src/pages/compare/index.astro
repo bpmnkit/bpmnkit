@@ -16,6 +16,12 @@ const pages = [
 		tagline: "Code-first generation vs. desktop GUI authoring",
 	},
 ]
+
+const evidence = {
+	href: "/compare/same-input",
+	name: "Same input, four routes",
+	tagline: "One prompt through recorded LLM routes and a hand-written no-AI reference",
+}
 ---
 
 <!DOCTYPE html>
@@ -53,6 +59,10 @@ const pages = [
             <span>→</span>
           </a>
         ))}
+        <a href={evidence.href}>
+          <div><h3>{evidence.name}</h3><p>{evidence.tagline}</p></div>
+          <span>→</span>
+        </a>
       </div>
     </main>
     <Footer />

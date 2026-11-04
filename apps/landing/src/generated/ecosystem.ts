@@ -47,7 +47,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/api",
 		name: "@bpmnkit/api",
-		version: "1.0.2",
+		version: "1.1.0",
 		description: "TypeScript client for the Camunda 8 REST API — 180 typed operations, OAuth2, retries, and caching",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/api",
@@ -77,7 +77,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/camunda-docspack",
 		name: "@bpmnkit/camunda-docspack",
-		version: "0.2.0",
+		version: "0.3.0",
 		description: "Camunda 8 documentation as an offline, version-locked docspack package for AI agents",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/camunda-docspack",
@@ -127,7 +127,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "apps/cli",
 		name: "@bpmnkit/cli",
-		version: "1.3.1",
+		version: "1.4.0",
 		description: "Command-line interface for Camunda 8 — deploy, manage, and monitor processes from the terminal",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/cli",
@@ -167,7 +167,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/core",
 		name: "@bpmnkit/core",
-		version: "1.5.0",
+		version: "1.6.1",
 		description: "TypeScript-first BPMN 2.0 SDK — parse, build, layout, and optimize diagrams",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/core",
@@ -187,7 +187,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/docspack",
 		name: "@bpmnkit/docspack",
-		version: "1.2.0",
+		version: "1.2.1",
 		description: "BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/docspack",
@@ -197,7 +197,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/editor",
 		name: "@bpmnkit/editor",
-		version: "1.4.1",
+		version: "1.5.1",
 		description: "Full-featured interactive BPMN editor with undo/redo, HUD, and side-dock UI",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/editor",
@@ -207,7 +207,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/engine",
 		name: "@bpmnkit/engine",
-		version: "1.2.1",
+		version: "1.3.0",
 		description: "Lightweight BPMN 2.0 process simulator for tests and demos in browsers and Node.js — zero dependencies",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/engine",
@@ -277,7 +277,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/profiles",
 		name: "@bpmnkit/profiles",
-		version: "0.0.22",
+		version: "0.1.0",
 		description: "Shared auth, profile storage, and client factories for the BPMN Kit CLI and proxy server",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/profiles",
@@ -287,7 +287,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "apps/proxy",
 		name: "@bpmnkit/proxy",
-		version: "0.5.1",
+		version: "0.5.2",
 		description: "Local proxy server for BPMN Kit — AI bridge (SSE/MCP) and Camunda API proxy using stored CLI profiles",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/proxy",
@@ -297,7 +297,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "apps/reebe-wasm",
 		name: "@bpmnkit/reebe-wasm",
-		version: "0.1.9",
+		version: "0.2.0",
 		description: "The Reebe dev/test BPMN engine, compiled to WebAssembly — not for production",
 		tier: "experimental",
 		npm: "https://www.npmjs.com/package/@bpmnkit/reebe-wasm",
@@ -352,7 +352,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/vscode",
 		name: "BPMN Kit for VS Code",
-		version: "0.5.6",
+		version: "0.5.8",
 		description: "View, edit, lint, diff and simulate BPMN, DMN and Forms in VS Code",
 		tier: "tools",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/vscode",
@@ -361,7 +361,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/drop",
 		name: "Drop",
-		version: "0.4.3",
+		version: "0.4.5",
 		description: "Share a BPMN, DMN or Form file as a link at bpmnkit.com/drop",
 		tier: "tools",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/drop",
@@ -379,7 +379,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/studio",
 		name: "Studio",
-		version: "0.2.3",
+		version: "0.2.5",
 		description: "Browser workspace for models, a local WASM engine and cluster monitoring",
 		tier: "experimental",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/studio",
@@ -388,7 +388,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/desktop",
 		name: "Desktop app",
-		version: "0.1.49",
+		version: "0.1.51",
 		description: "Tauri build of the editor for Windows, macOS and Linux",
 		tier: "experimental",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/desktop",

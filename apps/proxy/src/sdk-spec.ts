@@ -24,7 +24,7 @@ export const SDK_SPEC = {
 		},
 		"sdk.layout": {
 			description:
-				"Apply automatic ELK layout to a CompactDiagram. Returns updated CompactDiagram JSON.",
+				"Apply automatic layout to a CompactDiagram. Returns updated CompactDiagram JSON.",
 			params: "compactJson: string",
 			returns: "string (CompactDiagram JSON)",
 			example: "const laidOut = JSON.parse(sdk.layout(compact))",
@@ -54,6 +54,13 @@ export const SDK_SPEC = {
 							decisionId: "string? — DMN decision id (businessRuleTask only)",
 							formId: "string? — Camunda form id (userTask only)",
 							calledElement: "string? — process id of called process (callActivity only)",
+							assignee: 'string? — userTask assignee ("" clears on edit)',
+							candidateGroups: "string? — userTask candidate groups, comma-separated",
+							candidateUsers: "string? — userTask candidate users, comma-separated",
+							dueDate: "string? — userTask due date",
+							followUpDate: "string? — userTask follow-up date",
+							priority: "number | string? — userTask priority 0-100, or a FEEL expression",
+							properties: "Record<string,string>? — zeebe:properties",
 						},
 					],
 					flows: [

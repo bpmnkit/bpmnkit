@@ -18,7 +18,7 @@
 			"import": "./dist/connectors/index.js"
 		}
 	},
-	"files": ["LICENSE", "README.md", "dist/**/*.js", "dist/**/*.d.ts"],
+	"files": ["LICENSE", "README.md", "builder-reference.md", "dist/**/*.js", "dist/**/*.d.ts"],
 	"engines": {
 		"node": ">=20"
 	},

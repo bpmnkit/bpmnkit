@@ -27,6 +27,14 @@ const { definitions, problems } = applyTemplates(Bpmn.parse(xml), [
 // { elementId: "SearchRecipes", key: "retries", suggestion: "retryCount", message: "…" }
 ```
 
+- **`{ omitDefaults: true }`** (third argument, default `false`) leaves out any property whose value
+  would only be the template's default: a key the entry does not give, on a property that is not
+  Hidden and not required (`constraints.notEmpty`). The REST connector then carries no
+  `followRedirects` or `documentReturnFormat.choice`, and an OpenAI agent no
+  `provider.openai.api.responses.effort`. Hidden bindings (the task type) and the
+  `zeebe:modelerTemplate` stamp are always written, and a value you pass is written even when it
+  equals the default. Re-applying replaces the element's extensions, so an earlier apply's default
+  does not survive. `applyTemplateToElement` and `applyElementTemplate` take the same option.
 - **`template`** is a template id, `id@version`, an alias from `CONNECTOR_ALIASES` (`http`), or a
   template object. The catalog holds one version of each id, so a different `@version` is a
   problem naming the version available, and that element is left unchanged.

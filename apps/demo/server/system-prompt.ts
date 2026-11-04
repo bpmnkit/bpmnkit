@@ -5,7 +5,8 @@ export const WITHOUT_SDK_SYSTEM_PROMPT = `You are a BPMN expert. Output only val
 No explanation, no markdown, no code fences. Raw XML only, starting with <?xml.`
 
 export function buildSdkSystemPrompt(repoRoot: string): string {
-	const readme = readFileSync(join(repoRoot, "packages/core/README.md"), "utf-8")
+	// Generated from the builder types (scripts/generate-builder-reference.mjs); the README was 20 KB of prose.
+	const reference = readFileSync(join(repoRoot, "packages/core/builder-reference.md"), "utf-8")
 	const example = readFileSync(join(repoRoot, "apps/examples/src/03-loan-approval.ts"), "utf-8")
 
 	// Grab the top-level index exports as a type reference
@@ -13,8 +14,8 @@ export function buildSdkSystemPrompt(repoRoot: string): string {
 
 	return `You are an expert at using the @bpmnkit/core TypeScript SDK to generate Camunda 8 BPMN processes.
 
-## SDK Overview
-${readme}
+## Builder Reference
+${reference}
 
 ## Exported API (from packages/core/src/index.ts)
 \`\`\`typescript

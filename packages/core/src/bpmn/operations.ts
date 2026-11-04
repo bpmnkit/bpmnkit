@@ -1,7 +1,29 @@
 import { assertCompactDiagram } from "./argument-guards.js"
 import type { CompactDiagram, CompactElement, CompactFlow, CompactProcess } from "./compact.js"
+import type { ZeebeListener } from "./zeebe-extensions.js"
 
 // ── Types ────────────────────────────────────────────────────────────────────
+
+/**
+ * The fields an `update` operation may set: any {@link CompactElement} field,
+ * plus the ones that live outside the element itself.
+ */
+export type ElementPatch = Partial<CompactElement> & {
+	/**
+	 * The message correlation key (`zeebe:subscription`). It is written onto the
+	 * `bpmn:message` the element references, where Camunda reads it, so every
+	 * element sharing that message gets it. Only {@link applyBpmnOperations}
+	 * applies it: the compact form has no messages to hold it.
+	 */
+	correlationKey?: string
+	/**
+	 * Replaces the element's `zeebe:executionListeners`; `[]` removes them. Only
+	 * {@link applyBpmnOperations} applies it: the compact form carries no listeners.
+	 */
+	executionListeners?: ZeebeListener[]
+	/** Replaces a user task's `zeebe:taskListeners`; `[]` removes them. Same scope as above. */
+	taskListeners?: ZeebeListener[]
+}
 
 /**
  * An atomic edit operation on a {@link CompactDiagram}.
@@ -14,7 +36,7 @@ export type BpmnOperation =
 	/** Rename an element. */
 	| { op: "rename"; id: string; name: string }
 	/** Patch arbitrary fields of an element (type-safe subset of CompactElement). */
-	| { op: "update"; id: string; patch: Partial<CompactElement> }
+	| { op: "update"; id: string; patch: ElementPatch }
 	/** Remove an element by ID. */
 	| { op: "delete"; id: string }
 	/**
@@ -109,7 +131,10 @@ function applyOne(diagram: CompactDiagram, op: BpmnOperation): void {
 			}
 			case "update": {
 				const found = findElementIn(process, op.id)
-				if (found) Object.assign(found.element, op.patch)
+				if (found) {
+					const { correlationKey: _messageLevel, ...patch } = op.patch
+					Object.assign(found.element, patch)
+				}
 				break
 			}
 			case "delete": {

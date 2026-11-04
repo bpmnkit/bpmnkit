@@ -19,11 +19,11 @@ All builder methods return `this` for chaining.
 | `.inclusiveGateway(id, options?)` | Add an inclusive gateway |
 | `.eventBasedGateway(id, options?)` | Add an event-based gateway |
 | `.complexGateway(id, options?)` | Add a complex gateway (aspirational — Zeebe does not execute these) |
-| `.subProcess(id, builder, options?)` | Add an embedded sub-process |
+| `.subProcess(id, builder, options?)` | Add an embedded sub-process. The callback comes second and the options third; a call with the two swapped is accepted too (as for `adHocSubProcess`, `eventSubProcess` and `transaction`) |
 | `.adHocSubProcess(id, builder, options?)` | Add an ad-hoc sub-process — its children are **not** auto-chained, see below |
 | `.eventSubProcess(id, builder, options?)` | Add an event sub-process (emits `subProcess triggeredByEvent="true"`) |
 | `.transaction(id, builder, options?)` | Add a transaction sub-process (atomic scope) |
-| `.callActivity(id, options?)` | Add a call activity |
+| `.callActivity(id, options)` | Add a call activity. Options: `processId`, `propagateAllChildVariables`, `propagateAllParentVariables`, `bindingType` (`"latest" \| "deployment" \| "versionTag"`), `versionTag`, `ioMapping`, `zeebeProperties` (no `taskHeaders`: the schema forbids them here) |
 | `.intermediateCatchEvent(id, options?)` | Add a catch event |
 | `.intermediateThrowEvent(id, options?)` | Add a throw event |
 | `.branch(id, builder)` | Define a gateway branch; inside it `.label(text)` names the first flow and `.flowId(id)` fixes its id |

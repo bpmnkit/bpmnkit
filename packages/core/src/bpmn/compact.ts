@@ -18,6 +18,7 @@ import type {
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
 import { restConnectorTaskType } from "./rest-connector.js"
+import { makeConditionalDefinition } from "./zeebe-extensions.js"
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -62,6 +63,20 @@ export interface CompactElement {
 	calledProcess?: string
 	/** Linked form ID (userTask: zeebe:formDefinition.formId) */
 	formId?: string
+	/** userTask: who the task is assigned to (`zeebe:assignmentDefinition`); FEEL with `=`. */
+	assignee?: string
+	/** userTask: comma-separated candidate groups, or a FEEL list expression. */
+	candidateGroups?: string
+	/** userTask: comma-separated candidate users, or a FEEL list expression. */
+	candidateUsers?: string
+	/** userTask: due date (`zeebe:taskSchedule`), ISO 8601 or FEEL. */
+	dueDate?: string
+	/** userTask: follow-up date (`zeebe:taskSchedule`), ISO 8601 or FEEL. */
+	followUpDate?: string
+	/** userTask: priority 0–100 (`zeebe:priorityDefinition`), or a FEEL expression. */
+	priority?: number | string
+	/** Zeebe extension properties (`zeebe:properties`, name→value). */
+	properties?: Record<string, string>
 	/** Linked decision ID (businessRuleTask: zeebe:calledDecision.decisionId) */
 	decisionId?: string
 	/**
@@ -91,9 +106,20 @@ export interface CompactElement {
 	 * `collection` is the FEEL expression of the list, `element` the variable each
 	 * instance gets its item in. In parallel unless `sequential`.
 	 */
-	multiInstance?: { collection: string; element?: string; sequential?: boolean }
+	multiInstance?: {
+		collection: string
+		element?: string
+		sequential?: boolean
+		/** Variable collecting each instance's `outputElement`. */
+		outputCollection?: string
+		outputElement?: string
+		/** FEEL expression that ends the loop early. */
+		completionCondition?: string
+	}
 	/** A timer event's ISO 8601 duration (`PT5M`): how long it waits once reached. */
 	timerDuration?: string
+	/** A conditional event's FEEL condition (Camunda 8.9+). */
+	condition?: string
 }
 
 /** A sequence flow in compact form. */
@@ -249,6 +275,27 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 	const formId = findAttr(ext, "zeebe:formDefinition", "formId")
 	if (formId) result.formId = formId
 
+	for (const key of ["assignee", "candidateGroups", "candidateUsers"] as const) {
+		const value = findAttr(ext, "zeebe:assignmentDefinition", key)
+		if (value) result[key] = value
+	}
+	for (const key of ["dueDate", "followUpDate"] as const) {
+		const value = findAttr(ext, "zeebe:taskSchedule", key)
+		if (value) result[key] = value
+	}
+	const priority = findAttr(ext, "zeebe:priorityDefinition", "priority")
+	if (priority) result.priority = /^\d+$/.test(priority) ? Number(priority) : priority
+
+	const propertiesEl = ext.find((e) => e.name === "zeebe:properties")
+	if (propertiesEl && propertiesEl.children.length > 0) {
+		const properties: Record<string, string> = {}
+		for (const child of propertiesEl.children) {
+			const { name, value } = child.attributes
+			if (name !== undefined) properties[name] = value ?? ""
+		}
+		result.properties = properties
+	}
+
 	const decisionId = findAttr(ext, "zeebe:calledDecision", "decisionId")
 	const script = findAttr(ext, "zeebe:script", "expression")
 	if (decisionId) {
@@ -302,6 +349,7 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		const def = el.eventDefinitions[0]
 		result.eventType = def?.type
 		if (def?.type === "timer" && def.timeDuration) result.timerDuration = def.timeDuration
+		if (def?.type === "conditional" && def.condition !== undefined) result.condition = def.condition
 	}
 
 	const loop = "loopCharacteristics" in el ? el.loopCharacteristics : undefined
@@ -312,6 +360,12 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		if (zeebeLoop.attributes.inputElement)
 			result.multiInstance.element = zeebeLoop.attributes.inputElement
 		if (loop.isSequential) result.multiInstance.sequential = true
+		if (zeebeLoop.attributes.outputCollection)
+			result.multiInstance.outputCollection = zeebeLoop.attributes.outputCollection
+		if (zeebeLoop.attributes.outputElement)
+			result.multiInstance.outputElement = zeebeLoop.attributes.outputElement
+		if (loop.completionCondition?.text)
+			result.multiInstance.completionCondition = loop.completionCondition.text
 	}
 
 	if (el.type === "boundaryEvent") {
@@ -562,6 +616,16 @@ function zeebeConfig(el: CompactElement): {
 	return { inputs, headers }
 }
 
+/** The given attributes without the unset ones, or `undefined` if none is set. */
+function definedAttributes(
+	attributes: Record<string, string | undefined>,
+): Record<string, string> | undefined {
+	const set = Object.entries(attributes).filter(
+		(entry): entry is [string, string] => entry[1] !== undefined,
+	)
+	return set.length > 0 ? Object.fromEntries(set) : undefined
+}
+
 export function makeExtensions(el: CompactElement): XmlElement[] {
 	const ext: XmlElement[] = []
 	const { inputs, headers } = zeebeConfig(el)
@@ -591,6 +655,34 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 	}
 	if (el.formId) {
 		ext.push({ name: "zeebe:formDefinition", attributes: { formId: el.formId }, children: [] })
+	}
+	const assignment = definedAttributes({
+		assignee: el.assignee,
+		candidateGroups: el.candidateGroups,
+		candidateUsers: el.candidateUsers,
+	})
+	if (assignment) {
+		ext.push({ name: "zeebe:assignmentDefinition", attributes: assignment, children: [] })
+	}
+	const schedule = definedAttributes({ dueDate: el.dueDate, followUpDate: el.followUpDate })
+	if (schedule) ext.push({ name: "zeebe:taskSchedule", attributes: schedule, children: [] })
+	if (el.priority !== undefined) {
+		ext.push({
+			name: "zeebe:priorityDefinition",
+			attributes: { priority: String(el.priority) },
+			children: [],
+		})
+	}
+	if (el.properties && Object.keys(el.properties).length > 0) {
+		ext.push({
+			name: "zeebe:properties",
+			attributes: {},
+			children: Object.entries(el.properties).map(([name, value]) => ({
+				name: "zeebe:property",
+				attributes: { name, value },
+				children: [],
+			})),
+		})
 	}
 	if (el.decisionId) {
 		ext.push({
@@ -716,18 +808,34 @@ export function buildFlowElement(
 	}
 	const made = el.eventType ? makeEventDef(el.eventType) : undefined
 	const eventDef =
-		made?.type === "timer" && el.timerDuration ? { ...made, timeDuration: el.timerDuration } : made
+		made?.type === "timer" && el.timerDuration
+			? { ...made, timeDuration: el.timerDuration }
+			: made?.type === "conditional" && el.condition !== undefined
+				? makeConditionalDefinition(el.condition)
+				: made
 	const eventDefs: BpmnEventDefinition[] = eventDef ? [eventDef] : []
 	const subContent = buildSubContent(el.children)
 	const loop = el.multiInstance && {
 		loopCharacteristics: {
 			isSequential: el.multiInstance.sequential || undefined,
+			completionCondition: el.multiInstance.completionCondition
+				? {
+						text: el.multiInstance.completionCondition,
+						attributes: { "xsi:type": "bpmn:tFormalExpression" },
+					}
+				: undefined,
 			extensionElements: [
 				{
 					name: "zeebe:loopCharacteristics",
 					attributes: {
 						inputCollection: el.multiInstance.collection,
 						...(el.multiInstance.element ? { inputElement: el.multiInstance.element } : {}),
+						...(el.multiInstance.outputCollection
+							? { outputCollection: el.multiInstance.outputCollection }
+							: {}),
+						...(el.multiInstance.outputElement
+							? { outputElement: el.multiInstance.outputElement }
+							: {}),
 					},
 					children: [],
 				},

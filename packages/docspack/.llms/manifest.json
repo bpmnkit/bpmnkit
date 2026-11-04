@@ -2256,7 +2256,7 @@
 		{
 			"id": "guides.building-processes.sub-processes",
 			"file": "chunks/guides.building-processes.sub-processes.md",
-			"tokens": 181,
+			"tokens": 180,
 			"tags": [
 				"guides",
 				"building-processes",
@@ -3157,6 +3157,127 @@
 				"documentationToMarkdown",
 				"documentationToDocx",
 				"exportSvg"
+			]
+		},
+		{
+			"id": "guides.recipes-element-templates",
+			"file": "chunks/guides.recipes-element-templates.md",
+			"tokens": 360,
+			"tags": [
+				"guides",
+				"recipes-element-templates",
+				"apply",
+				"element",
+				"template",
+				"service",
+				"task"
+			],
+			"entities": [
+				"applyTemplateToElement",
+				"@bpmnkit/core/connectors",
+				"retryCount",
+				"appliesTo",
+				"io.camunda.connectors.HttpJson.v2"
+			]
+		},
+		{
+			"id": "guides.recipes-element-templates.how-do-i-find-a-connector-template-s-property-ids",
+			"file": "chunks/guides.recipes-element-templates.how-do-i-find-a-connector-template-s-property-ids.md",
+			"tokens": 181,
+			"tags": [
+				"guides",
+				"recipes-element-templates",
+				"find",
+				"connector",
+				"template",
+				"property",
+				"ids"
+			],
+			"entities": [
+				"@bpmnkit/core/connectors"
+			]
+		},
+		{
+			"id": "guides.recipes-forms-and-user-tasks",
+			"file": "chunks/guides.recipes-forms-and-user-tasks.md",
+			"tokens": 138,
+			"tags": [
+				"guides",
+				"recipes-forms-and-user-tasks",
+				"set",
+				"start",
+				"event",
+				"form"
+			],
+			"entities": [
+				"formId",
+				"startEvent"
+			]
+		},
+		{
+			"id": "guides.recipes-forms-and-user-tasks.how-do-i-set-the-assignee-of-a-user-task",
+			"file": "chunks/guides.recipes-forms-and-user-tasks.how-do-i-set-the-assignee-of-a-user-task.md",
+			"tokens": 368,
+			"tags": [
+				"guides",
+				"recipes-forms-and-user-tasks",
+				"set",
+				"assignee",
+				"user",
+				"task",
+				"change",
+				"due",
+				"date",
+				"priority",
+				"existing"
+			],
+			"entities": [
+				"candidateGroups",
+				"candidateUsers",
+				"dueDate",
+				"followUpDate",
+				"userTask",
+				"applyBpmnOperations",
+				"processId",
+				"elementId"
+			]
+		},
+		{
+			"id": "guides.recipes-message-correlation.how-do-i-set-a-message-correlation-key",
+			"file": "chunks/guides.recipes-message-correlation.how-do-i-set-a-message-correlation-key.md",
+			"tokens": 146,
+			"tags": [
+				"guides",
+				"recipes-message-correlation",
+				"set",
+				"message",
+				"correlation",
+				"key"
+			],
+			"entities": [
+				"messageName",
+				"correlationKey",
+				"intermediateCatchEvent",
+				"receiveTask"
+			]
+		},
+		{
+			"id": "guides.recipes-message-correlation.how-do-i-change-the-correlation-key-of-an-existing-message-event",
+			"file": "chunks/guides.recipes-message-correlation.how-do-i-change-the-correlation-key-of-an-existing-message-event.md",
+			"tokens": 171,
+			"tags": [
+				"guides",
+				"recipes-message-correlation",
+				"change",
+				"correlation",
+				"key",
+				"existing",
+				"message",
+				"event"
+			],
+			"entities": [
+				"correlationKey",
+				"applyBpmnOperations"
 			]
 		},
 		{
@@ -4752,7 +4873,7 @@
 		{
 			"id": "packages.connectors.applying-several-templates-by-name-applytemplates",
 			"file": "chunks/packages.connectors.applying-several-templates-by-name-applytemplates.md",
-			"tokens": 488,
+			"tokens": 632,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4765,6 +4886,11 @@
 			"entities": [
 				"applyTemplates",
 				"applyTemplateToElement",
+				"constraints.notEmpty",
+				"followRedirects",
+				"documentReturnFormat.choice",
+				"provider.openai.api.responses.effort",
+				"applyElementTemplate",
 				"retryCount",
 				"retryBackoff",
 				"ignoreNullValues"
@@ -4813,7 +4939,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 667,
+			"tokens": 672,
 			"tags": [
 				"packages",
 				"connectors",
@@ -5057,7 +5183,7 @@
 		{
 			"id": "packages.core.installation-applybpmnoperations-definitions-operations-options",
 			"file": "chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md",
-			"tokens": 235,
+			"tokens": 477,
 			"tags": [
 				"packages",
 				"core",
@@ -5069,6 +5195,14 @@
 			],
 			"entities": [
 				"CompactDiagram",
+				"jobType",
+				"formId",
+				"taskHeaders",
+				"candidateGroups",
+				"candidateUsers",
+				"dueDate",
+				"followUpDate",
+				"correlationKey",
 				"OperationError"
 			]
 		},
@@ -5311,7 +5445,7 @@
 		{
 			"id": "packages.core.installation-processbuilder-methods",
 			"file": "chunks/packages.core.installation-processbuilder-methods.md",
-			"tokens": 717,
+			"tokens": 788,
 			"tags": [
 				"packages",
 				"core",
@@ -5320,17 +5454,24 @@
 				"methods"
 			],
 			"entities": [
+				"adHocSubProcess",
+				"eventSubProcess",
+				"processId",
+				"propagateAllChildVariables",
+				"propagateAllParentVariables",
+				"bindingType",
+				"versionTag",
+				"ioMapping",
+				"zeebeProperties",
+				"taskHeaders",
 				"addStartEvent",
-				"BpmnDefinitions",
-				"dataObject",
-				"dataObjectReference",
-				"dataStoreReference"
+				"BpmnDefinitions"
 			]
 		},
 		{
 			"id": "packages.core.installation-forms-mappings-and-branch-flows",
 			"file": "chunks/packages.core.installation-forms-mappings-and-branch-flows.md",
-			"tokens": 224,
+			"tokens": 466,
 			"tags": [
 				"packages",
 				"core",
@@ -5341,14 +5482,18 @@
 				"flows"
 			],
 			"entities": [
-				"label()",
-				"flowId()",
-				"flowId",
-				"buildAiAgentSubProcess",
-				"io.camunda.connectors.agenticai.ai-agent-subprocess.v2",
-				"build()",
-				"applyTemplates",
-				"@bpmnkit/core/connectors"
+				"serviceTask",
+				"userTask",
+				"scriptTask",
+				"sendTask",
+				"receiveTask",
+				"businessRuleTask",
+				"callActivity",
+				"taskListeners",
+				"ZeebePlacementError",
+				"bindingType",
+				"startEvent",
+				"intermediateCatchEvent"
 			]
 		},
 		{

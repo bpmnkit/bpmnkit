@@ -204,6 +204,15 @@ function directionOf(template: ElementTemplate): string {
 	return template.elementType?.value ?? template.appliesTo[0] ?? ""
 }
 
+export interface ApplyOptions {
+	/**
+	 * Leave out properties that would only carry the template's default, so the
+	 * element holds what the caller chose. Hidden and required properties are
+	 * always written. Default `false`.
+	 */
+	omitDefaults?: boolean
+}
+
 /**
  * Resolves a template and a set of values into the bindings its active
  * properties write — the half of applying a template that does not depend on
@@ -213,11 +222,16 @@ function directionOf(template: ElementTemplate): string {
  * @param generate - Supplies a value for an active property that declares a
  *   `generatedValue` and was given none. Returning `undefined` leaves the
  *   binding unwritten; the callback reports that however suits its caller.
+ * @param options.omitDefaults - Skip a property whose value is only the
+ *   template's default: not in `values`, not Hidden, not `notEmpty`, with no
+ *   `generatedValue`. The default still counts when other properties'
+ *   conditions are evaluated, so the template's own gating is unchanged.
  */
 export function resolveBindings(
 	template: ElementTemplate,
 	values: Record<string, string>,
 	generate: (key: string, prop: TemplateProperty) => string | undefined,
+	options: ApplyOptions = {},
 ): { accum: Accumulator; problems: ApplyProblem[] } {
 	const resolved = resolveValues(template, values)
 	const problems: ApplyProblem[] = []
@@ -248,6 +262,15 @@ export function resolveBindings(
 	for (const prop of template.properties) {
 		const key = propertyKey(prop)
 		if (prop.condition && !evalCondition(prop.condition, resolved)) continue
+		if (
+			options.omitDefaults &&
+			!(key in values) &&
+			prop.type !== "Hidden" &&
+			!prop.constraints?.notEmpty &&
+			!prop.generatedValue
+		) {
+			continue
+		}
 
 		let value = resolved[key]
 		if ((value === undefined || value === "") && prop.generatedValue) {
@@ -310,12 +333,18 @@ export function resolveBindings(
 export function applyElementTemplate(
 	template: ElementTemplate,
 	values: Record<string, string> = {},
+	options: ApplyOptions = {},
 ): ApplyResult {
 	const ungenerated: string[] = []
-	const { accum, problems } = resolveBindings(template, values, (key) => {
-		ungenerated.push(key)
-		return undefined
-	})
+	const { accum, problems } = resolveBindings(
+		template,
+		values,
+		(key) => {
+			ungenerated.push(key)
+			return undefined
+		},
+		options,
+	)
 	// Builder options name no element, so there is nothing to derive a per-element value from.
 	for (const key of ungenerated) {
 		problems.push({

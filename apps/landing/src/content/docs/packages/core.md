@@ -243,6 +243,25 @@ const { definitions, applied } = applyBpmnOperations(parsed, [
 ]);
 ```
 
+**What `update` can patch.** Any compact field (`name`, `jobType`, `formId`, `inputs`,
+`outputs`, `taskHeaders`, …) plus the user-task configuration — `assignee`, `candidateGroups`,
+`candidateUsers`, `dueDate`, `followUpDate`, `priority` — and `properties` (`zeebe:properties`).
+Each sets one attribute, so an existing `assignee` survives a patch that only adds
+`candidateGroups`. `correlationKey` writes the `zeebe:subscription` of the `bpmn:message` the
+element references, so every element sharing that message gets it; an element that references
+no message is reported. A field whose extension the Zeebe schema does not allow on the element
+(`assignee` on a service task) is reported rather than written. An empty string for `assignee`,
+`candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate` or `priority` removes that
+attribute, an extension left with nothing in it is removed, and `properties: {}` removes
+`zeebe:properties`.
+
+```typescript
+applyBpmnOperations(parsed, [
+  { op: "update", id: "Review", patch: { candidateGroups: "reviewers", priority: 80 } },
+  { op: "update", id: "WaitForPayment", patch: { correlationKey: "=order.id" } },
+]);
+```
+
 **Strict by default.** An operation naming an element that does not exist throws an
 `OperationError` and nothing is applied — the previous implementation skipped such operations
 silently, so a patch with a misspelled id reported success and changed nothing. Pass
@@ -642,11 +661,11 @@ All builder methods return `this` for chaining.
 | `.inclusiveGateway(id, options?)` | Add an inclusive gateway |
 | `.eventBasedGateway(id, options?)` | Add an event-based gateway |
 | `.complexGateway(id, options?)` | Add a complex gateway (aspirational — Zeebe does not execute these) |
-| `.subProcess(id, builder, options?)` | Add an embedded sub-process |
+| `.subProcess(id, builder, options?)` | Add an embedded sub-process. The callback comes second and the options third; a call with the two swapped is accepted too (as for `adHocSubProcess`, `eventSubProcess` and `transaction`) |
 | `.adHocSubProcess(id, builder, options?)` | Add an ad-hoc sub-process — its children are **not** auto-chained, see below |
 | `.eventSubProcess(id, builder, options?)` | Add an event sub-process (emits `subProcess triggeredByEvent="true"`) |
 | `.transaction(id, builder, options?)` | Add a transaction sub-process (atomic scope) |
-| `.callActivity(id, options?)` | Add a call activity |
+| `.callActivity(id, options)` | Add a call activity. Options: `processId`, `propagateAllChildVariables`, `propagateAllParentVariables`, `bindingType` (`"latest" \| "deployment" \| "versionTag"`), `versionTag`, `ioMapping`, `zeebeProperties` (no `taskHeaders`: the schema forbids them here) |
 | `.intermediateCatchEvent(id, options?)` | Add a catch event |
 | `.intermediateThrowEvent(id, options?)` | Add a throw event |
 | `.branch(id, builder)` | Define a gateway branch; inside it `.label(text)` names the first flow and `.flowId(id)` fixes its id |
@@ -665,8 +684,23 @@ a builder method fails the build. Run `pnpm --filter @bpmnkit/core check:builder
 
 ### Forms, mappings and branch flows
 
+- `multiInstance: { collection, elementVariable, outputCollection, outputElement, completionCondition, isSequential }`
+  runs any activity once per item: `serviceTask`, `userTask`, `scriptTask`, `sendTask`,
+  `receiveTask`, `businessRuleTask`, `callActivity` and sub-processes. The output options need
+  `collection`.
+- `executionListeners: [{ eventType: "start", type: "audit", retries: "3" }]` on any activity,
+  event or gateway writes `zeebe:executionListeners`; `taskListeners` does the same for a
+  `userTask` (`zeebe:taskListeners`) and throws a `ZeebePlacementError` anywhere else. The
+  `update` patch replaces either list; `[]` removes it.
 - `startEvent(id, { formId })` writes `zeebe:formDefinition formId`. Camunda uses start forms
   only on the process's none start event, so do not set it on message, timer or signal starts.
+- `userTask(id, { formId, formBindingType, formVersionTag })`, `{ formKey }` and
+  `{ externalReference }` write the matching `zeebe:formDefinition` attributes (`bindingType` other
+  than `latest` needs Camunda 8.6+). `{ embeddedForm: { id, schema } }` writes a process-level
+  `zeebe:userTaskForm` and `formKey="camunda-forms:bpmn:<id>"`. Setting more than one of these throws.
+- `startEvent`, `intermediateCatchEvent` and `boundaryEvent` take `condition` (FEEL) to make a
+  conditional event (Camunda 8.9+) and `conditionVariableEvents: ["create", "update"]` for the
+  `zeebe:conditionalFilter`. Compact elements take `condition` with `eventType: "conditional"`.
 - `userTask(id, { ioMapping, taskHeaders, zeebeProperties, modelerTemplate,
   modelerTemplateVersion })` take the same shapes as `serviceTask`, for example
   `ioMapping: { inputs: [{ source: "=order", target: "order" }] }`.

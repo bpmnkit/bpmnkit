@@ -11,9 +11,9 @@
 		}
 	},
 	"bin": {
-		"bpmnkit-docs": "./dist/cli.js"
+		"bpmnkit-docs": "./bin/bpmnkit-docs.mjs"
 	},
-	"files": ["LICENSE", "README.md", "llms.txt", ".llms", "dist/**/*.js", "dist/**/*.d.ts"],
+	"files": ["bin", "LICENSE", "README.md", "llms.txt", ".llms", "dist/**/*.js", "dist/**/*.d.ts"],
 	"engines": {
 		"node": ">=20"
 	},
