@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-04 — Rust core proposal: decisions recorded
+
+- `doc/rust-rewrite-proposal.md` §8: goal is both, crates are dual MIT OR Apache-2.0, a Rust CLI is wanted (after the core, starting with a plugin-bridge spike). No code changed.
+
 ## 2026-11-04 — Proposal: Rust core for BPMN Kit (analysis only)
 
 - New `doc/rust-rewrite-proposal.md`: what moves to Rust, what stays TS, crate layout, WASM-for-browser-and-Node bindings, parity strategy, phased plan with estimates, risks and open decisions. No code changed.

@@ -104,15 +104,15 @@ The phases from gate through builder/ops are about 41–54 person-weeks. Each ph
 
 ## 7. Risks
 
-- **License.** Reebe is Apache-2.0, while the rest of the repo and the `@bpmnkit/reebe-wasm` npm package are MIT. Settle the license of the shared crates before moving code between them.
+- **License.** Reebe is Apache-2.0, while the rest of the repo and the `@bpmnkit/reebe-wasm` npm package are MIT. Resolved by the dual license (§8).
 - **Contributors.** The repo is mostly TS, Preact and Astro. Rust work narrows the pool of contributors. Reebe gives some base.
 - **Dev loop and release.** A WASM rebuild is slower than `tsc`. Every core consumer gets a build step, so turbo inputs must include the Rust paths.
 - **Plugins.** TS plugins are sync today. Any plugin API that moves behind WASM and becomes async is a breaking change, so keep the plugin surface in TS.
 - **CLI plugins.** A Rust `casen` would need a Node bridge for TS plugins, or would have to drop them. This is the reason the CLI stays in TS for now.
 - **Bundle and cold start.** Not measured yet. That is why phase 0 exists.
 
-## 8. Open decisions
+## 8. Decisions (2026-11-04)
 
-1. Main goal: native tooling and other languages, or browser speed? The first favours the full core port. The second may stop after FEEL and parsing.
-2. License for the shared crates: MIT, Apache-2.0, or dual?
-3. Is a Rust CLI wanted, given the cost of the TS plugin bridge?
+1. **Goal: both** native tooling and browser speed. Do the full core port (phases 0–8). Phase 0 still gates it.
+2. **License: dual `MIT OR Apache-2.0`** for the shared crates, which is the Rust ecosystem norm. MIT keeps the npm packages as they are. Apache-2.0 adds a patent grant. Reebe has a single author, so it can be relicensed to the dual license with no outside consent. Do this before code moves (phase 1).
+3. **Rust CLI: yes.** It stays in "Later", after the core. Its first step is a plugin-bridge spike. Option A: the Rust binary runs TS plugins in a Node subprocess over JSON-RPC. Option B: plugins are WASM components. Pick one before the port. Keep TS `casen` until the Rust CLI reaches parity.
