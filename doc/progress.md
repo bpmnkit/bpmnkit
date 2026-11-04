@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-04 — CI on Node 26: DOM storage in tests, tsx deprecation warning, API snapshot
+
+- CI installs `lts/*`, which now resolves to Node 26. Node 25+ defines its own `localStorage`/`sessionStorage` globals, undefined unless started with `--localstorage-file`, and Vitest's DOM environment does not replace them, so the storage tests in `@bpmnkit/ui` and `apps/drop` failed. `scripts/vitest-dom-storage.mjs` (a `setupFiles` entry in both configs) gives DOM tests happy-dom `Storage` objects when Node's globals are undefined. Both suites pass on Node 22 and 26.
+- `create-casen-plugin`'s scaffold tests assert an empty stderr; on Node 26 the tsx loader's `module.register()` call prints DEP0205. The tests now start the child with `--disable-warning=DEP0205`, so they still assert on the scaffolder's own output.
+- `api-surface.json` refreshed for the three type exports this PR adds (`ConditionVariableEvent`, `ZeebeCalledElement`, `ApplyOptions` in `@bpmnkit/core/connectors`): additions only, a minor.
+
 ## 2026-11-04 — Fix the plugins build after the form-definition union
 
 - `ZeebeFormDefinition` became a union (form id, form key or external reference) with the week-3 form variants, and the BPMN config panel's user-task adapter still read `.formId` directly, so `@bpmnkit/plugins` failed to build in CI. The adapter now narrows the type; a task linked by form key or external reference shows an empty form id, since the panel edits only linked forms.
