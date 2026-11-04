@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-04 — Proposal: Rust core for BPMN Kit (analysis only)
+
+- New `doc/rust-rewrite-proposal.md`: what moves to Rust, what stays TS, crate layout, WASM-for-browser-and-Node bindings, parity strategy, phased plan with estimates, risks and open decisions. No code changed.
+
 ## 2026-10-21 — On-device diagram generation in the web editor (Chrome Prompt API)
 
 - Opt-in on bpmnkit.com: the web editor creates the `ai-local` plugin only for `/editor?ai=on-device`, and only then adds the `origin-trial` meta tag (token from `PUBLIC_CHROME_AI_OT_TOKEN`) from the script; `editor.astro` no longer emits it statically.
