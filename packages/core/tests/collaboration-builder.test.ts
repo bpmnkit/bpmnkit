@@ -230,3 +230,43 @@ describe("collaboration builder — refusals", () => {
 		).not.toThrow()
 	})
 })
+
+describe("REV-20261028-011: an explicit pool's collaboration id never collides", () => {
+	const ids = (defs: BpmnDefinitions): string[] => [
+		...defs.processes.flatMap((p) => [
+			p.id,
+			...p.flowElements.map((e) => e.id),
+			...p.sequenceFlows.map((f) => f.id),
+			...(p.laneSet ? [p.laneSet.id, ...p.laneSet.lanes.map((l) => l.id)] : []),
+		]),
+		...defs.collaborations.flatMap((c) => [c.id, ...c.participants.map((p) => p.id)]),
+	]
+
+	it.each([
+		["process", () => Bpmn.createProcess("Collaboration_1").startEvent("s").endEvent("e")],
+		["node", () => Bpmn.createProcess("p").startEvent("Collaboration_1").endEvent("e")],
+	])("steps around a %s named Collaboration_1", (_role, start) => {
+		const defs = start().participant("pool").withAutoLayout().build()
+		expect(new Set(ids(defs)).size).toBe(ids(defs).length)
+		const reparsed = Bpmn.parse(Bpmn.export(defs))
+		expect(reparsed.diagrams[0]?.plane.bpmnElement).toBe(reparsed.collaborations[0]?.id)
+	})
+
+	it("steps around a pool or a lane named Collaboration_1", () => {
+		const pool = Bpmn.createProcess("p")
+			.startEvent("s")
+			.endEvent("e")
+			.participant("Collaboration_1")
+			.withAutoLayout()
+			.build()
+		expect(pool.collaborations[0]?.id).not.toBe("Collaboration_1")
+		const lane = Bpmn.createProcess("p")
+			.startEvent("s")
+			.endEvent("e")
+			.lane("Collaboration_1", { flowNodes: ["s", "e"] })
+			.participant("pool")
+			.withAutoLayout()
+			.build()
+		expect(new Set(ids(lane)).size).toBe(ids(lane).length)
+	})
+})

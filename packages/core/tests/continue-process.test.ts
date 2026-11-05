@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
 import { ProcessBuilder } from "../src/bpmn/bpmn-builder.js"
 import type { BpmnDefinitions } from "../src/bpmn/bpmn-model.js"
-import { Bpmn, diffSemantics, semanticHash } from "../src/index.js"
+import { Bpmn, diffSemantics, laneProblems, semanticHash } from "../src/index.js"
 
 /**
  * Extending an existing file used to mean regenerating it, which meant losing
@@ -50,9 +50,20 @@ describe("continueProcess — the untouched remainder", () => {
 		expect(after.processes.find((p) => p.id === "Process_seller")).toEqual(
 			before.processes.find((p) => p.id === "Process_seller"),
 		)
-		expect(after.processes.find((p) => p.id === "Process_buyer")?.laneSet).toEqual(
-			before.processes.find((p) => p.id === "Process_buyer")?.laneSet,
+		// The lanes stay as they were, except that the new node joins the lane of
+		// the node it was inserted after.
+		const buyer = after.processes.find((p) => p.id === "Process_buyer")
+		expect(buyer?.laneSet?.lanes.map((lane) => [lane.id, lane.flowNodeRefs])).toEqual(
+			before.processes
+				.find((p) => p.id === "Process_buyer")
+				?.laneSet?.lanes.map((lane) => [
+					lane.id,
+					lane.flowNodeRefs.includes("Task_place_order")
+						? [...lane.flowNodeRefs, "Task_notify"]
+						: lane.flowNodeRefs,
+				]),
 		)
+		expect(buyer && laneProblems(buyer)).toEqual([])
 	})
 
 	it("keeps diagram interchange and unmodelled content", () => {
@@ -85,10 +96,11 @@ describe("continueProcess — the untouched remainder", () => {
 		const { added, removed, changed } = diffSemantics(before, after)
 		expect(removed).toEqual([])
 		expect(added).toContain("Task_notify")
-		// The spliced flow, the node it now leaves, and the process that gained a
-		// child. Nothing else may move.
+		// The spliced flow, the node it now leaves, the process that gained a
+		// child, and the lane the child joined. Nothing else may move.
 		expect(changed.map((entry) => entry.id).sort()).toEqual([
 			"Flow_b2",
+			"Lane_ordering",
 			"Process_buyer",
 			"Task_place_order",
 		])
