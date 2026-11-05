@@ -1,6 +1,10 @@
 # DMN agent card — Validate
 
-The script re-parses the file and checks the decision id, which is what the process depends on. Before deploying, check that every `decisionId` in your `.bpmn` files names a decision in a `.dmn` file. A dedicated DMN lint may ship in your `casen` version: see `casen --help`.
+```sh
+casen check risk.dmn order.bpmn --deploy   # DMN lint + every decisionId in the BPMN resolves
+```
+
+`casen check <files...>` takes `.bpmn`, `.dmn` and `.form` together and exits 1 on errors; add `--json` for an agent loop. The script above also re-parses the file and checks the decision id.
 
 Related cards: `casen agent-card bpmn`, `casen agent-card form`. More: `npx bpmnkit-docs ask "decision table hit policy"`.
 

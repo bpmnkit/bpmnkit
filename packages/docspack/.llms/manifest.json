@@ -84,7 +84,7 @@
 		{
 			"id": "agent-cards.bpmn.lint-before-you-deploy-or-test",
 			"file": "chunks/agent-cards.bpmn.lint-before-you-deploy-or-test.md",
-			"tokens": 155,
+			"tokens": 183,
 			"tags": [
 				"agent-cards",
 				"bpmn",
@@ -125,6 +125,24 @@
 			]
 		},
 		{
+			"id": "agent-cards.dmn.several-decisions-in-one-file-dmn.drd",
+			"file": "chunks/agent-cards.dmn.several-decisions-in-one-file-dmn.drd.md",
+			"tokens": 299,
+			"tags": [
+				"agent-cards",
+				"dmn",
+				"several",
+				"decisions",
+				"one",
+				"file",
+				"dmn.drd"
+			],
+			"entities": [
+				"build()",
+				"toXml()"
+			]
+		},
+		{
 			"id": "agent-cards.dmn.top-builder-options",
 			"file": "chunks/agent-cards.dmn.top-builder-options.md",
 			"tokens": 188,
@@ -157,15 +175,13 @@
 		{
 			"id": "agent-cards.dmn.validate",
 			"file": "chunks/agent-cards.dmn.validate.md",
-			"tokens": 109,
+			"tokens": 116,
 			"tags": [
 				"agent-cards",
 				"dmn",
 				"validate"
 			],
-			"entities": [
-				"decisionId"
-			]
+			"entities": []
 		},
 		{
 			"id": "agent-cards.form",
@@ -225,7 +241,7 @@
 		{
 			"id": "agent-cards.form.validate",
 			"file": "chunks/agent-cards.form.validate.md",
-			"tokens": 113,
+			"tokens": 107,
 			"tags": [
 				"agent-cards",
 				"form",

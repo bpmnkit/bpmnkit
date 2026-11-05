@@ -61,6 +61,15 @@ describe("casen agent-card", () => {
 		expect(fence).toBe(readFileSync(join(CARDS, "scripts", `${kind}.ts`), "utf8"))
 	})
 
+	it("points each card at the concrete casen check gate", () => {
+		for (const kind of AGENT_CARD_KINDS) expect(readAgentCard(kind)).toContain("casen check ")
+	})
+
+	it("shows the multi-decision DRD script exactly as the tested file", () => {
+		const fences = [...readAgentCard("dmn").matchAll(/```ts\n([\s\S]*?)```/g)].map((m) => m[1])
+		expect(fences[1]).toBe(readFileSync(join(CARDS, "scripts", "dmn-drd.ts"), "utf8"))
+	})
+
 	it("has its docs page and plugin skill copies in sync", () => {
 		const result = spawnSync(
 			process.execPath,
@@ -74,6 +83,11 @@ describe("casen agent-card", () => {
 	})
 })
 
+function stripFlags(): string[] {
+	const features = process.features as { typescript?: unknown }
+	return features.typescript ? [] : ["--experimental-strip-types"]
+}
+
 describe("agent card scripts run as printed", () => {
 	let dir: string
 	const runs = new Map<AgentCardKind, ReturnType<typeof spawnSync>>()
@@ -81,8 +95,7 @@ describe("agent card scripts run as printed", () => {
 	beforeAll(() => {
 		dir = mkdtempSync(join(tmpdir(), "agent-card-"))
 		// Node 23.6+ strips types by default; 22.6+ needs the flag the cards tell agents to pass.
-		const features = process.features as { typescript?: unknown }
-		const flags = features.typescript ? [] : ["--experimental-strip-types"]
+		const flags = stripFlags()
 		for (const kind of AGENT_CARD_KINDS) {
 			const script = join(CARDS, "scripts", `${kind}.ts`)
 			runs.set(
@@ -111,6 +124,22 @@ describe("agent card scripts run as printed", () => {
 		)
 		expect(definitions.diagrams[0]?.plane.shapes.length).toBeGreaterThan(5)
 		expect(xml).toContain("<zeebe:userTask")
+	})
+
+	it("writes a DRD whose approval decision requires riskScore", () => {
+		const run = spawnSync(
+			process.execPath,
+			[...stripFlags(), "--no-warnings", join(CARDS, "scripts", "dmn-drd.ts")],
+			{
+				cwd: dir,
+				encoding: "utf8",
+			},
+		)
+		expect(run.stderr).toBe("")
+		const defs = Dmn.parse(readFileSync(join(dir, "approval.dmn"), "utf8"))
+		expect(
+			defs.decisions.find((d) => d.id === "approval")?.informationRequirements[0]?.requiredDecision,
+		).toBe("riskScore")
 	})
 
 	it("links the three files by the ids the traps name", () => {

@@ -18,6 +18,7 @@ import type {
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
 import { restConnectorTaskType } from "./rest-connector.js"
+import { assignEventDefinitionIds } from "./stable-ids.js"
 import { makeConditionalDefinition } from "./zeebe-extensions.js"
 
 // ── Types ───────────────────────────────────────────────────────────────────
@@ -814,6 +815,8 @@ export function buildFlowElement(
 				? makeConditionalDefinition(el.condition)
 				: made
 	const eventDefs: BpmnEventDefinition[] = eventDef ? [eventDef] : []
+	// Zeebe rejects an id-less definition at deploy time; the builder derives the same ids.
+	assignEventDefinitionIds(el.id, eventDefs)
 	const subContent = buildSubContent(el.children)
 	const loop = el.multiInstance && {
 		loopCharacteristics: {

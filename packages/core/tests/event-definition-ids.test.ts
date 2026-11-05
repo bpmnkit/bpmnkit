@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { Bpmn, optimize } from "../src/index.js"
+import { Bpmn, expand, optimize, parseProcessText } from "../src/index.js"
 
 const ids = (xml: string) =>
 	[...xml.matchAll(/<bpmn:\w+EventDefinition id="([^"]+)"/g)].map((m) => m[1])
@@ -27,5 +27,18 @@ describe("event definition ids", () => {
 </bpmn:definitions>`)
 		const found = optimize(bare, { categories: ["deploy"] } as never)
 		expect(JSON.stringify(found)).toContain("deploy/event-definition-no-id")
+	})
+})
+
+describe("compact expand", () => {
+	it("derives ids for event definitions it creates", () => {
+		const parsed = parseProcessText(
+			"work[service Work] > late[boundary:timer 5 days passed | on=work nonint] > done[end Done]",
+		)
+		const defs = expand(parsed.diagram)
+		const late = defs.processes[0]?.flowElements.find((e) => e.id === "late")
+		expect(late && "eventDefinitions" in late ? late.eventDefinitions[0]?.id : undefined).toBe(
+			"late_TimerEventDefinition",
+		)
 	})
 })

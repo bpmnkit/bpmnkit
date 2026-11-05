@@ -6,11 +6,11 @@
 
 Writing a BPMN process, DMN decision or form? Read its agent card first: a runnable script, the top options and the traps (`casen agent-card bpmn|dmn|form` prints the same card).
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 4 chunks, 1236 tokens
-- [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 4 chunks, 1025 tokens
-- [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 885 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 4 chunks, 1264 tokens
+- [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 5 chunks, 1331 tokens
+- [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 879 tokens
 
-Version 1.2.2. 420 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.2.2. 428 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -22,31 +22,38 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 464 tokens
 - [BPMN agent card — Top builder options](.llms/chunks/agent-cards.bpmn.top-builder-options.md) — 299 tokens
 - [BPMN agent card — Traps](.llms/chunks/agent-cards.bpmn.traps.md) — 318 tokens
-- [BPMN agent card — Lint before you deploy or test](.llms/chunks/agent-cards.bpmn.lint-before-you-deploy-or-test.md) — 155 tokens
+- [BPMN agent card — Lint before you deploy or test](.llms/chunks/agent-cards.bpmn.lint-before-you-deploy-or-test.md) — 183 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 433 tokens
+- [DMN agent card — Several decisions in one file: `Dmn.drd()`](.llms/chunks/agent-cards.dmn.several-decisions-in-one-file-dmn.drd.md) — 299 tokens
 - [DMN agent card — Top builder options](.llms/chunks/agent-cards.dmn.top-builder-options.md) — 188 tokens
 - [DMN agent card — Traps](.llms/chunks/agent-cards.dmn.traps.md) — 295 tokens
-- [DMN agent card — Validate](.llms/chunks/agent-cards.dmn.validate.md) — 109 tokens
+- [DMN agent card — Validate](.llms/chunks/agent-cards.dmn.validate.md) — 116 tokens
 - [Form agent card](.llms/chunks/agent-cards.form.md) — 400 tokens
 - [Form agent card — Top builder options](.llms/chunks/agent-cards.form.top-builder-options.md) — 145 tokens
 - [Form agent card — Traps](.llms/chunks/agent-cards.form.traps.md) — 227 tokens
-- [Form agent card — Validate](.llms/chunks/agent-cards.form.validate.md) — 113 tokens
+- [Form agent card — Validate](.llms/chunks/agent-cards.form.validate.md) — 107 tokens
 
 ## cli
 
-- [casen CLI](.llms/chunks/cli.casen.md) — 732 tokens
+- [casen CLI](.llms/chunks/cli.casen.md) — 756 tokens
 - [casen CLI — Generate BPMN files](.llms/chunks/cli.casen.generate-bpmn-files.md) — 195 tokens
 - [casen CLI — Start from a gallery template](.llms/chunks/cli.casen.start-from-a-gallery-template.md) — 151 tokens
 - [casen CLI — View BPMN, DMN, and Form files](.llms/chunks/cli.casen.view-bpmn-dmn-and-form-files.md) — 274 tokens
 - [casen CLI — Common Workflows](.llms/chunks/cli.casen.common-workflows.md) — 191 tokens
 - [casen CLI — Plugins](.llms/chunks/cli.casen.plugins.md) — 270 tokens
-- [casen CLI — BPMN generation pipeline](.llms/chunks/cli.casen.bpmn-generation-pipeline.md) — 736 tokens
+- [casen CLI — BPMN generation pipeline](.llms/chunks/cli.casen.bpmn-generation-pipeline.md) — 333 tokens
+- [casen CLI — BPMN generation pipeline — Run process tests](.llms/chunks/cli.casen.bpmn-generation-pipeline-run-process-tests.md) — 507 tokens
 - [casen CLI — AIKit Skills](.llms/chunks/cli.casen.aikit-skills.md) — 293 tokens
 - [casen CLI — Worker commands](.llms/chunks/cli.casen.worker-commands.md) — 233 tokens
 - [casen CLI — Local engine (Reebe)](.llms/chunks/cli.casen.local-engine-reebe.md) — 369 tokens
 - [casen CLI — Local proxy](.llms/chunks/cli.casen.local-proxy.md) — 305 tokens
 - [casen CLI — Local proxy — Who can use the proxy](.llms/chunks/cli.casen.local-proxy-who-can-use-the-proxy.md) — 794 tokens
 - [casen CLI — MCP Server Mode](.llms/chunks/cli.casen.mcp-server-mode.md) — 204 tokens
+- [casen check](.llms/chunks/cli.check.md) — 224 tokens
+- [casen check — Options](.llms/chunks/cli.check.options.md) — 241 tokens
+- [casen check — Profiles](.llms/chunks/cli.check.profiles.md) — 280 tokens
+- [casen check — What is checked](.llms/chunks/cli.check.what-is-checked.md) — 891 tokens
+- [casen check — What is checked (2)](.llms/chunks/cli.check.what-is-checked-2.md) — 36 tokens
 - [casen connector](.llms/chunks/cli.connector.md) — 245 tokens
 - [casen connector — Browse the bundled OOTB catalog](.llms/chunks/cli.connector.browse-the-bundled-ootb-catalog.md) — 491 tokens
 - [casen connector — Apply a template to a file](.llms/chunks/cli.connector.apply-a-template-to-a-file.md) — 202 tokens
@@ -401,7 +408,8 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Writing files — `@bpmnkit/core/node` — `writeBpmn(definitions, options)`](.llms/chunks/packages.core.writing-files-bpmnkit-core-node-writebpmn-definitions-options.md) — 440 tokens
 - [@bpmnkit/core — Writing files — `@bpmnkit/core/node` — `exportPreserving(original, definitions)`](.llms/chunks/packages.core.writing-files-bpmnkit-core-node-exportpreserving-original-definitions.md) — 598 tokens
 - [@bpmnkit/core — Connectors — `@bpmnkit/core/connectors`](.llms/chunks/packages.core.connectors-bpmnkit-core-connectors.md) — 333 tokens
-- [@bpmnkit/core — DMN Support](.llms/chunks/packages.core.dmn-support.md) — 113 tokens
+- [@bpmnkit/core — DMN Support](.llms/chunks/packages.core.dmn-support.md) — 342 tokens
+- [@bpmnkit/core — TypeScript Types](.llms/chunks/packages.core.typescript-types.md) — 52 tokens
 - [@bpmnkit/docspack — Overview](.llms/chunks/packages.docspack.overview.md) — 275 tokens
 - [@bpmnkit/docspack — The other pack](.llms/chunks/packages.docspack.the-other-pack.md) — 139 tokens
 - [@bpmnkit/docspack — Installation](.llms/chunks/packages.docspack.installation.md) — 148 tokens

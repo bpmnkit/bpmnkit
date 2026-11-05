@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-05 — Integration of the Camunda eval branches (fix-ids-conditional, agent-cards, casen-check, dmn-drd)
+
+- Merged the four branches with history. Agent cards now name `casen check` and show a tested `Dmn.drd()` script (`scripts/dmn-drd.ts`).
+- MCP `replace_diagram` on a DMN returns a plain tool error for a dangling `requires` (test: `apps/proxy/tests/mcp-replace-dmn.test.ts`).
+- Fix: compact `expand` now derives event-definition ids, so applied drop feedback no longer trips `deploy/event-definition-no-id`.
+
 ## 2026-11-05 — core: event-definition ids and form `conditional` (Camunda eval fixes)
 
 - Event definitions built with the fluent builder now get deterministic ids (`<ElementId>_<Kind>EventDefinition`, counter for repeats; `eventDefinitionId` in `stable-ids.ts`). Zeebe 8.10 rejects a definition without one. Parsed files are not rewritten: serializing keeps them byte-faithful, and a continued document keeps its untouched part as is.

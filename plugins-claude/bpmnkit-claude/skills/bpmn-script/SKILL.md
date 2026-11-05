@@ -86,7 +86,8 @@ if (report.counts.error > 0) process.exit(1)
 ## Lint before you deploy or test
 
 ```sh
-casen lint lint order.bpmn --profile deploy   # errors only: the deploy gate
+casen check order.bpmn risk.dmn review-order.form --deploy   # one gate: BPMN + DMN + forms, and the ids that link them
+casen lint lint order.bpmn --profile deploy   # BPMN only, errors only
 casen deploy deploy order.bpmn                # local Reebe; --target camunda8 for a cluster
 ```
 
