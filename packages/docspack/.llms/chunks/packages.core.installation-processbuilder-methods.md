@@ -31,6 +31,9 @@ All builder methods return `this` for chaining.
 | `.withBoundary(id, options, handler)` | Attach a boundary event and build its error/timeout path; cursor auto-restores to the main flow after the handler |
 | `.defaults(options)` | Set process-wide defaults (e.g. `{ serviceTask: { retries: "5" } }`) applied to all subsequent tasks |
 | `.disconnectedStartEvent(id?, options?)` | Add a start event with no auto-connection to the current cursor — alias for `addStartEvent` |
+| `.lane(id, options?)` | Declare a lane (`name`, `flowNodes`, `parent`) — see "lanes and pools" above |
+| `.participant(id, options?)` | Name the pool this process is drawn in |
+| `.executable(value)` | Set `isExecutable`; pass `false` for a partner pool Flowable must not deploy |
 | `.withAutoLayout()` | Apply Sugiyama layout before building |
 | `.build(options?)` | Return the completed `BpmnDefinitions`. Pass `{ explicitJoins: true }` to refuse inferred join gateways — see below |
 
