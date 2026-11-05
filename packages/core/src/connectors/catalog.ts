@@ -60,6 +60,10 @@ export function propertyKey(prop: TemplateProperty): string {
 	if (b.type === "zeebe:property") return b.name
 	if (b.type === "zeebe:adHoc") return `adHoc.${b.property}`
 	if (b.type === "zeebe:agentDefinition") return `agentDefinition.${b.property}`
+	if (b.type === "zeebe:userTask") return "userTask"
+	if ("property" in b && b.type.startsWith("zeebe:") && b.type !== "zeebe:linkedResource") {
+		return `${b.type.slice("zeebe:".length)}.${b.property}`
+	}
 	if (b.type === "bpmn:Message#property") return `message.${b.name}`
 	if (b.type === "bpmn:Message#zeebe:subscription#property") return `message.${b.name}`
 	if (b.type === "zeebe:linkedResource") return `linkedResource.${b.linkName}.${b.property}`

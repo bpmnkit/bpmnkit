@@ -1,8 +1,13 @@
 # Features
 
+## Builder: data elements and linked resources (2026-11-05)
+
+- `.dataObject()`, `.dataObjectReference()`, `.dataStoreReference()` and `.dataAssociation(activityId, dataRefId, "input" | "output")` sit beside the chain and add no sequence flows.
+- `serviceTask({ linkedResources })` writes `zeebe:linkedResources` (RPA scripts).
+
 ## Same-input comparison page (2026-10-22)
 
-`/compare/same-input` shows one prompt through the recorded LLM routes and a hand-written no-AI reference, with the rendered diagram, tokens, time, validity and closeness for each. Data comes from `node scripts/build-compare-data.mjs` and is committed.
+`/compare/same-input` shows one prompt through the recorded LLM routes and a hand-written no-AI reference, with the rendered diagram, tokens, time, validity and closeness for each. Data comes from `node scripts/build-compare-data.mjs` and is committed. Since 2026-11-05 each run also shows its model, a list-price cost (only with a recorded model and token split) and a `casen test` result on reebe-wasm; `node scripts/record-compare.mjs` records compact-JSON and plan routes (see the plan doc for the maintainer command).
 
 ## Multi-instance and listeners in the builder (2026-10-22)
 
@@ -14,6 +19,7 @@
 ## Edit user-task configuration and correlation keys (2026-10-22)
 
 - `applyBpmnOperations` `update` patches (and the compact format) carry `assignee`, `candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate`, `priority` and `properties`; `correlationKey` sets the message subscription of the referenced message. Editing an existing diagram's user-task configuration no longer needs raw extension elements.
+- `applyBpmnOperations` `update` patches edit event definitions (`messageName`, `errorCode`, `escalationCode`, `signalName` on the referenced root element, created if missing and refused when shared; `timerDuration`/`timerDate`/`timerCycle`; `condition`) and multi-instance (`multiInstance`, per field). The MCP `update_element` tool exposes these and the listener lists.
 
 ## On-device diagram generation in the web editor (2026-10-21)
 
@@ -45,6 +51,13 @@
 - `adHocSubProcess(id, tools, { toolGrid: { columns: 2, fill: "column" } })` lays the tools out in
   a fixed number of columns, filled top to bottom or left to right.
 - `annotate(id, text, { side: "below" })` puts the annotation on the side asked for.
+- `side: "left"` / `"right"` (2026-11-05) put it beside the element, preferably level with its centre.
+
+## Task-level template bindings (2026-11-05)
+
+- Element templates may bind `zeebe:calledElement`, `calledDecision`, `userTask`, `formDefinition`,
+  `assignmentDefinition`, `taskSchedule`, `priorityDefinition` and `script`. `applyTemplateToElement`
+  writes them and, on re-apply, removes the ones a newer version of the same template dropped.
 
 ## `omitDefaults` for template application (2026-10-22)
 

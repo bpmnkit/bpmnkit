@@ -148,11 +148,11 @@ export function App() {
 	function replay(recording: Recording) {
 		setSelectedRecording(recording)
 		setRunResults({ "with-sdk": null, "with-sdk-compact": null, "without-sdk": null })
-		const compactPanel = recording.panels["with-sdk-compact"]
+		const replayOf = (p: Recording["panels"][Variant]) => (p ? new ReplaySource(p) : null)
 		setSources({
-			"with-sdk": new ReplaySource(recording.panels["with-sdk"]),
-			"with-sdk-compact": compactPanel ? new ReplaySource(compactPanel) : null,
-			"without-sdk": new ReplaySource(recording.panels["without-sdk"]),
+			"with-sdk": replayOf(recording.panels["with-sdk"]),
+			"with-sdk-compact": replayOf(recording.panels["with-sdk-compact"]),
+			"without-sdk": replayOf(recording.panels["without-sdk"]),
 		})
 	}
 

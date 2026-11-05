@@ -63,7 +63,32 @@ export interface Accumulator {
 	subscription: Record<string, string>
 	/** `zeebe:linkedResource` bindings, by `linkName` in template order. */
 	linkedResources: Map<string, Record<string, string>>
+	/** `zeebe:userTask` — a flag binding, set by the property being active, not by a value. */
+	userTask: boolean
+	/** Task-extension bindings (`zeebe:calledElement` …), attribute name to value, by binding type. */
+	taskExtensions: Map<TaskExtensionBinding["type"], Record<string, string>>
 }
+
+export type TaskExtensionBinding = Extract<
+	TemplateBinding,
+	{
+		type:
+			| "zeebe:calledElement"
+			| "zeebe:calledDecision"
+			| "zeebe:formDefinition"
+			| "zeebe:assignmentDefinition"
+			| "zeebe:taskSchedule"
+			| "zeebe:priorityDefinition"
+			| "zeebe:script"
+	}
+>
+
+/** `bindingType` values Zeebe accepts on a called element, called decision or form. */
+export const RESOURCE_BINDING_TYPES: ReadonlySet<string> = new Set([
+	"latest",
+	"deployment",
+	"versionTag",
+])
 
 export function evalCondition(cond: TemplateCondition, values: Record<string, string>): boolean {
 	if ("allMatch" in cond) {
@@ -138,6 +163,14 @@ export const APPLIED_BINDING_TYPES: ReadonlySet<string> = new Set([
 	"zeebe:property",
 	"zeebe:adHoc",
 	"zeebe:agentDefinition",
+	"zeebe:userTask",
+	"zeebe:calledElement",
+	"zeebe:calledDecision",
+	"zeebe:formDefinition",
+	"zeebe:assignmentDefinition",
+	"zeebe:taskSchedule",
+	"zeebe:priorityDefinition",
+	"zeebe:script",
 	"property",
 	"bpmn:Message#property",
 	"bpmn:Message#zeebe:subscription#property",
@@ -173,6 +206,18 @@ function applyBinding(binding: TemplateBinding, value: string, accum: Accumulato
 		case "zeebe:agentDefinition":
 			accum.agentDefinition[binding.property] = value
 			return
+		case "zeebe:calledElement":
+		case "zeebe:calledDecision":
+		case "zeebe:formDefinition":
+		case "zeebe:assignmentDefinition":
+		case "zeebe:taskSchedule":
+		case "zeebe:priorityDefinition":
+		case "zeebe:script": {
+			const attributes = accum.taskExtensions.get(binding.type) ?? {}
+			attributes[binding.property] = value
+			accum.taskExtensions.set(binding.type, attributes)
+			return
+		}
 		case "property":
 			// "name" binds to the element's display name — handled by the caller, not here.
 			return
@@ -191,6 +236,37 @@ function applyBinding(binding: TemplateBinding, value: string, accum: Accumulato
 		default:
 			return
 	}
+}
+
+/** An extension whose required attribute resolved to nothing is not written; say so. */
+function incompleteTaskExtensions(accum: Accumulator): ApplyProblem[] {
+	const required: Array<[TaskExtensionBinding["type"], string[]]> = [
+		["zeebe:calledElement", ["processId"]],
+		["zeebe:calledDecision", ["decisionId", "resultVariable"]],
+		["zeebe:script", ["expression"]],
+		["zeebe:priorityDefinition", ["priority"]],
+	]
+	const problems: ApplyProblem[] = []
+	for (const [type, names] of required) {
+		const written = accum.taskExtensions.get(type)
+		const missing = written === undefined ? [] : names.filter((name) => written[name] === undefined)
+		if (missing.length > 0) {
+			problems.push({ message: `<${type}> needs ${missing.join(", ")}; it was not written` })
+		}
+	}
+	const form = accum.taskExtensions.get("zeebe:formDefinition")
+	if (form?.externalReference !== undefined && form.formId !== undefined) {
+		problems.push({
+			message:
+				"<zeebe:formDefinition> has both formId and externalReference; only externalReference was written",
+		})
+	}
+	if (form && form.formId === undefined && form.externalReference === undefined) {
+		problems.push({
+			message: "<zeebe:formDefinition> needs formId or externalReference; it was not written",
+		})
+	}
+	return problems
 }
 
 /** A binding the template resolved but the builder options have no field for. */
@@ -257,6 +333,8 @@ export function resolveBindings(
 		message: {},
 		subscription: {},
 		linkedResources: new Map(),
+		userTask: false,
+		taskExtensions: new Map(),
 	}
 
 	for (const prop of template.properties) {
@@ -269,6 +347,12 @@ export function resolveBindings(
 			!prop.constraints?.notEmpty &&
 			!prop.generatedValue
 		) {
+			continue
+		}
+
+		// A flag binding has no value of its own: the property being active is the signal.
+		if (prop.binding.type === "zeebe:userTask") {
+			if (resolved[key] !== "false") accum.userTask = true
 			continue
 		}
 
@@ -298,9 +382,35 @@ export function resolveBindings(
 			}
 		}
 
+		if (
+			"property" in prop.binding &&
+			prop.binding.property === "bindingType" &&
+			!RESOURCE_BINDING_TYPES.has(value)
+		) {
+			problems.push({
+				key,
+				message: `Invalid bindingType "${value}" for "${key}": expected one of ${[...RESOURCE_BINDING_TYPES].join(", ")}; it was not written`,
+			})
+			continue
+		}
+
+		if (
+			"property" in prop.binding &&
+			/^propagateAll(Parent|Child)Variables$/.test(prop.binding.property) &&
+			value !== "true" &&
+			value !== "false"
+		) {
+			problems.push({
+				key,
+				message: `Invalid value "${value}" for "${key}": expected true or false; it was not written`,
+			})
+			continue
+		}
+
 		applyBinding(prop.binding, value, accum)
 	}
 
+	problems.push(...incompleteTaskExtensions(accum))
 	return { accum, problems }
 }
 
@@ -356,6 +466,12 @@ export function applyElementTemplate(
 	}
 	if (accum.linkedResources.size > 0) {
 		problems.push(notExpressible("zeebe:linkedResource bindings"))
+	}
+	for (const type of [
+		...(accum.userTask ? ["zeebe:userTask"] : []),
+		...accum.taskExtensions.keys(),
+	]) {
+		problems.push(notExpressible(`${type} bindings`))
 	}
 
 	const modelerTemplate = template.id

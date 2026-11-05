@@ -4871,6 +4871,36 @@
 			]
 		},
 		{
+			"id": "packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources-task-level-bindings",
+			"file": "chunks/packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources-task-level-bindings.md",
+			"tokens": 266,
+			"tags": [
+				"packages",
+				"connectors",
+				"applying",
+				"element",
+				"inbound",
+				"linked",
+				"resources",
+				"task-level",
+				"bindings"
+			],
+			"entities": [
+				"applyTemplateToElement",
+				"applyElementTemplate",
+				"processId",
+				"bindingType",
+				"versionTag",
+				"propagateAllParentVariables",
+				"propagateAllChildVariables",
+				"decisionId",
+				"resultVariable",
+				"formId",
+				"externalReference",
+				"candidateGroups"
+			]
+		},
+		{
 			"id": "packages.connectors.applying-several-templates-by-name-applytemplates",
 			"file": "chunks/packages.connectors.applying-several-templates-by-name-applytemplates.md",
 			"tokens": 632,
@@ -5183,7 +5213,7 @@
 		{
 			"id": "packages.core.installation-applybpmnoperations-definitions-operations-options",
 			"file": "chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md",
-			"tokens": 477,
+			"tokens": 642,
 			"tags": [
 				"packages",
 				"core",
@@ -5203,7 +5233,9 @@
 				"dueDate",
 				"followUpDate",
 				"correlationKey",
-				"OperationError"
+				"messageName",
+				"errorCode",
+				"escalationCode"
 			]
 		},
 		{
@@ -5515,6 +5547,21 @@
 				"toolGrid",
 				"annotate()"
 			]
+		},
+		{
+			"id": "packages.core.installation-data-elements-and-linked-resources",
+			"file": "chunks/packages.core.installation-data-elements-and-linked-resources.md",
+			"tokens": 159,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"data",
+				"elements",
+				"linked",
+				"resources"
+			],
+			"entities": []
 		},
 		{
 			"id": "packages.core.installation-joins-inferred-by-default-or-declared",

@@ -64,6 +64,14 @@ const BINDING_FIELDS: Record<string, readonly string[]> = {
 	"zeebe:property": ["name"],
 	"zeebe:adHoc": ["property"],
 	"zeebe:agentDefinition": ["property"],
+	"zeebe:userTask": [],
+	"zeebe:calledElement": ["property"],
+	"zeebe:calledDecision": ["property"],
+	"zeebe:formDefinition": ["property"],
+	"zeebe:assignmentDefinition": ["property"],
+	"zeebe:taskSchedule": ["property"],
+	"zeebe:priorityDefinition": ["property"],
+	"zeebe:script": ["property"],
 	"bpmn:Message#property": ["name"],
 	"bpmn:Message#zeebe:subscription#property": ["name"],
 	"zeebe:linkedResource": ["property", "linkName"],
@@ -72,6 +80,22 @@ const BINDING_FIELDS: Record<string, readonly string[]> = {
 const TASK_DEFINITION_PROPERTIES = new Set(["type", "retries"])
 const AD_HOC_PROPERTIES = new Set(["outputCollection", "outputElement", "activeElementsCollection"])
 const AGENT_DEFINITION_PROPERTIES = new Set(["agentType"])
+/** The `property` values the schema allows per task-extension binding. */
+const TASK_EXTENSION_PROPERTIES: Record<string, ReadonlySet<string>> = {
+	"zeebe:calledElement": new Set([
+		"processId",
+		"bindingType",
+		"versionTag",
+		"propagateAllParentVariables",
+		"propagateAllChildVariables",
+	]),
+	"zeebe:calledDecision": new Set(["decisionId", "resultVariable", "bindingType", "versionTag"]),
+	"zeebe:formDefinition": new Set(["formId", "externalReference", "bindingType", "versionTag"]),
+	"zeebe:assignmentDefinition": new Set(["assignee", "candidateGroups", "candidateUsers"]),
+	"zeebe:taskSchedule": new Set(["dueDate", "followUpDate"]),
+	"zeebe:priorityDefinition": new Set(["priority"]),
+	"zeebe:script": new Set(["expression", "resultVariable"]),
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === "object" && value !== null && !Array.isArray(value)
@@ -132,6 +156,15 @@ function checkBinding(
 			problems.push({
 				path: `${path}.property`,
 				message: `expected one of ${[...AD_HOC_PROPERTIES].join(", ")}`,
+			})
+		}
+	}
+	const taskProperties = TASK_EXTENSION_PROPERTIES[type]
+	if (taskProperties !== undefined && isNonEmptyString(binding.property)) {
+		if (!taskProperties.has(binding.property)) {
+			problems.push({
+				path: `${path}.property`,
+				message: `expected one of ${[...taskProperties].join(", ")}`,
 			})
 		}
 	}

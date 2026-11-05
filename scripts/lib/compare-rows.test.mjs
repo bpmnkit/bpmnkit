@@ -54,3 +54,25 @@ test("median is the lower median, skips nulls and is stable on ties", () => {
 	)
 	assert.equal(medianBy([], "v"), null)
 })
+
+test("compact-json and plan panels become their own routes; the old notation is compact-dsl", () => {
+	const rec = {
+		recordedAt: "2026-11-06T10:00:00.000Z",
+		scenarioId: "kyc",
+		panels: {
+			"with-sdk-compact": { durationMs: 1, result: { type: "bpmn", xml: "<a/>" } },
+			"compact-json": {
+				model: "m-1",
+				durationMs: 2,
+				usage: { inputTokens: 7, outputTokens: 3 },
+				result: { type: "bpmn", xml: "<b/>" },
+			},
+			plan: { durationMs: 3, result: { type: "error", message: "Plan did not compile: version" } },
+		},
+	}
+	const rows = extractRows(rec, "kyc-2026-11-06.json")
+	assert.deepEqual(rows.map((r) => r.route).sort(), ["compact-dsl", "compact-json", "plan"])
+	assert.equal(rows.find((r) => r.route === "compact-json").model, "m-1")
+	assert.equal(rows.find((r) => r.route === "compact-dsl").model, null)
+	assert.equal(rows.find((r) => r.route === "plan").error, "Plan did not compile: version")
+})

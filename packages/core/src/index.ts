@@ -233,6 +233,7 @@ export type {
 	ZeebePropertyEntry,
 	ZeebeFormDefinition,
 	ZeebeCalledDecision,
+	ZeebeLinkedResource,
 	ZeebeCalledElement,
 	ZeebeAssignmentDefinition,
 	ZeebeTaskSchedule,

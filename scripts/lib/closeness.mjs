@@ -38,7 +38,8 @@
  * same matched element, else 0. Score = 15 × Σ ÷ max(reference count, candidate count); none on
  * either side = 15.
  *
- * Layout (15): the mean distance between the centres of matched shapes. A reference shape whose
+ * Layout (15): the mean distance between the centres of matched shapes, after aligning both
+ * diagrams on the top-left corner of the shapes they share (a uniform shift costs nothing). A reference shape whose
  * element is unmatched or has no candidate shape counts as the cap of 400 px; each distance is
  * capped at 400 px. Points = 15 × (1 − mean ÷ 400). (Calibrated: 193.6 px → 7.7, as in the rerun.)
  *
@@ -458,7 +459,30 @@ function layoutUnit(ref, cand, nodes) {
 	return { score: MAX.layout * (1 - mean / cap), meanOffsetUnit: Math.round(mean * 1000) / 1000 }
 }
 
+/** Top-left corner of the given shapes' bounds. */
+function origin(side, ids) {
+	const bs = ids.map((id) => side.bounds.get(id))
+	return bs.length
+		? { x: Math.min(...bs.map((b) => b.x)), y: Math.min(...bs.map((b) => b.y)) }
+		: { x: 0, y: 0 }
+}
+
 function layout(ref, cand, nodes) {
+	// Where a diagram sits on the canvas is not part of its layout: both sides are aligned on the
+	// top-left corner of the shapes they share, as closeness.py does.
+	const pairs = []
+	for (const r of ref.nodes) {
+		const c = nodes.map.get(r)
+		if (ref.centres.has(r.id) && c && cand.centres.has(c.id)) pairs.push([r.id, c.id])
+	}
+	const ro = origin(
+		ref,
+		pairs.map(([r]) => r),
+	)
+	const co = origin(
+		cand,
+		pairs.map(([, c]) => c),
+	)
 	let sum = 0
 	let n = 0
 	for (const r of ref.nodes) {
@@ -466,7 +490,8 @@ function layout(ref, cand, nodes) {
 		if (!rc) continue
 		const c = nodes.map.get(r)
 		const cc = c && cand.centres.get(c.id)
-		sum += cc ? Math.min(LAYOUT_CAP, Math.hypot(rc.x - cc.x, rc.y - cc.y)) : LAYOUT_CAP
+		const d = cc && Math.hypot(rc.x - ro.x - (cc.x - co.x), rc.y - ro.y - (cc.y - co.y))
+		sum += cc ? Math.min(LAYOUT_CAP, d) : LAYOUT_CAP
 		n++
 	}
 	const mean = n ? sum / n : 0

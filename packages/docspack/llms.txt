@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.2.1. 405 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.2.1. 407 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -334,6 +334,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/connectors — `with` lines (2)](.llms/chunks/packages.connectors.with-lines-2.md) — 78 tokens
 - [@bpmnkit/connectors — Applying a template](.llms/chunks/packages.connectors.applying-a-template.md) — 503 tokens
 - [@bpmnkit/connectors — Applying to an element — inbound connectors and linked resources](.llms/chunks/packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources.md) — 667 tokens
+- [@bpmnkit/connectors — Applying to an element — inbound connectors and linked resources — Task-level bindings](.llms/chunks/packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources-task-level-bindings.md) — 266 tokens
 - [@bpmnkit/connectors — Applying several templates by name — `applyTemplates`](.llms/chunks/packages.connectors.applying-several-templates-by-name-applytemplates.md) — 632 tokens
 - [@bpmnkit/connectors — Workspace templates](.llms/chunks/packages.connectors.workspace-templates.md) — 710 tokens
 - [@bpmnkit/connectors — Validating a template](.llms/chunks/packages.connectors.validating-a-template.md) — 213 tokens
@@ -353,7 +354,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `projectSemantics(definitions)`](.llms/chunks/packages.core.installation-projectsemantics-definitions.md) — 54 tokens
 - [@bpmnkit/core — Installation — `diffSemantics(before, after)`](.llms/chunks/packages.core.installation-diffsemantics-before-after.md) — 121 tokens
 - [@bpmnkit/core — Installation — `diffDiagram(before, after)`](.llms/chunks/packages.core.installation-diffdiagram-before-after.md) — 331 tokens
-- [@bpmnkit/core — Installation — `applyBpmnOperations(definitions, operations, options?)`](.llms/chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md) — 477 tokens
+- [@bpmnkit/core — Installation — `applyBpmnOperations(definitions, operations, options?)`](.llms/chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md) — 642 tokens
 - [@bpmnkit/core — Installation — `ensureZeebeExtension(owner, extension)`](.llms/chunks/packages.core.installation-ensurezeebeextension-owner-extension.md) — 323 tokens
 - [@bpmnkit/core — Installation — `reconcileCompact(definitions, compact, options?)`](.llms/chunks/packages.core.installation-reconcilecompact-definitions-compact-options.md) — 129 tokens
 - [@bpmnkit/core — Installation — `compactify(definitions)`](.llms/chunks/packages.core.installation-compactify-definitions.md) — 342 tokens
@@ -370,6 +371,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — ProcessBuilder methods](.llms/chunks/packages.core.installation-processbuilder-methods.md) — 788 tokens
 - [@bpmnkit/core — Installation — Forms, mappings and branch flows](.llms/chunks/packages.core.installation-forms-mappings-and-branch-flows.md) — 466 tokens
 - [@bpmnkit/core — Installation — Ad-hoc sub-processes: children are a set, not a chain](.llms/chunks/packages.core.installation-ad-hoc-sub-processes-children-are-a-set-not-a-chain.md) — 642 tokens
+- [@bpmnkit/core — Installation — Data elements and linked resources](.llms/chunks/packages.core.installation-data-elements-and-linked-resources.md) — 159 tokens
 - [@bpmnkit/core — Installation — Joins: inferred by default, or declared](.llms/chunks/packages.core.installation-joins-inferred-by-default-or-declared.md) — 324 tokens
 - [@bpmnkit/core — Writing files — `@bpmnkit/core/node`](.llms/chunks/packages.core.writing-files-bpmnkit-core-node.md) — 52 tokens
 - [@bpmnkit/core — Writing files — `@bpmnkit/core/node` — `writeBpmn(definitions, options)`](.llms/chunks/packages.core.writing-files-bpmnkit-core-node-writebpmn-definitions-options.md) — 440 tokens

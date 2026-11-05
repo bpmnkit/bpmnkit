@@ -78,6 +78,32 @@ describe("unconnected children of an expanded sub-process (#221)", () => {
 		expectInsideAndApart(bounds, ids)
 	})
 
+	it("sits neighbouring tool cells 40 px apart horizontally and 20 px vertically", () => {
+		const bounds = boundsOf(layoutAdHoc(tools(["A", "B", "C", "D"])))
+		const [a, b, c] = ["A", "B", "C"].map((id) => get(bounds, id))
+		expect((b as Bounds).x - ((a as Bounds).x + (a as Bounds).width)).toBe(40)
+		expect((c as Bounds).y - ((a as Bounds).y + (a as Bounds).height)).toBe(20)
+	})
+
+	it("hangs a tall sub-process from the task line so the flows stay straight", () => {
+		const defs = Bpmn.createProcess("p")
+			.startEvent("s")
+			.adHocSubProcess("ah", tools(["A", "B", "C", "D"]))
+			.userTask("u", { name: "Review" })
+			.endEvent("e")
+			.withAutoLayout()
+			.build()
+		const bounds = boundsOf(defs)
+		const cy = (id: string) => get(bounds, id).y + get(bounds, id).height / 2
+		expect(cy("u")).toBe(cy("s"))
+		expect(cy("e")).toBe(cy("s"))
+		expect(get(bounds, "ah").y).toBe(cy("s") - 40)
+		expect(get(bounds, "ah").height).toBeGreaterThan(80)
+		const edges = defs.diagrams[0]?.plane.edges ?? []
+		expect(edges).toHaveLength(3)
+		for (const edge of edges) expect(edge.waypoints, edge.bpmnElement).toHaveLength(2)
+	})
+
 	it("packs nine unconnected tools into a 3x3 grid", () => {
 		const ids = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
 		const bounds = boundsOf(layoutAdHoc(tools(ids)))

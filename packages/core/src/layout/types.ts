@@ -1,4 +1,5 @@
 import type { BpmnElementType } from "../bpmn/bpmn-model.js"
+import type { AnnotationSide } from "./annotations.js"
 
 /** Fixed element dimensions by type. */
 export const ELEMENT_SIZES: Record<string, { width: number; height: number }> = {
@@ -124,7 +125,7 @@ export interface LayoutHints {
 	/** Tool grid per ad-hoc sub-process id. */
 	grids?: Map<string, GridHint>
 	/** Side per text annotation id, overriding the side the packer would choose. */
-	annotationSides?: Map<string, "above" | "below">
+	annotationSides?: Map<string, AnnotationSide>
 }
 
 /** Complete layout result for a process. */

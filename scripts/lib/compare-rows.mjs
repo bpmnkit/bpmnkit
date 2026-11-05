@@ -6,7 +6,9 @@
 /** Recording panel key → the route name shown on the page. */
 export const ROUTES = {
 	"without-sdk": "raw-xml",
-	"with-sdk-compact": "compact-json",
+	"with-sdk-compact": "compact-dsl", // the line-based notation, recorded since July
+	"compact-json": "compact-json", // CompactDiagram JSON, recorded since November
+	plan: "plan", // ProcessPlan JSON compiled by compilePlan (casen synth)
 	"with-sdk": "builder-script",
 }
 
@@ -33,6 +35,7 @@ export function extractRows(recording, fileName) {
 			runId,
 			route,
 			recordedAt: recording.recordedAt,
+			model: panel.model ?? null,
 			durationMs: panel.durationMs ?? null,
 			inputTokens: panel.usage?.inputTokens ?? null,
 			outputTokens: panel.usage?.outputTokens ?? null,

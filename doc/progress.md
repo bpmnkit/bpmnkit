@@ -1,5 +1,44 @@
 # Progress
 
+## 2026-11-05 — Examples typecheck clean; root tsconfig drops missing plugin references
+
+- `apps/examples`: `businessRuleTask` takes `decisionId`, not `decisionRef`, in `01-employee-onboarding.ts` and `03-loan-approval.ts` (TS2353). The package now has a `typecheck` script (`tsc --noEmit`), and the folder typechecks clean.
+- Root `tsconfig.json`: the seven `canvas-plugins/*` references pointed at a directory that does not exist. Vite's tsconfig lookup for a `.ts` file that falls back to the root config failed with `TSConfckParseError … ENOENT`. Only the `packages/core`, `canvas` and `editor` references remain. Verified with a scratch Vitest import from `packages/ascii`, removed afterwards.
+
+## 2026-11-05 — Builder: linked resources and data elements (B10, B11)
+
+- `ServiceTaskOptions.linkedResources` writes `zeebe:linkedResources` > `zeebe:linkedResource` through the typed writer (`ZeebeExtensions.linkedResources`, new `ZeebeLinkedResource` type); `getZeebeExtensions` reads it back and the round-trip table covers it. `connectors/apply-element.ts` is unchanged (its writer is inline, not a reusable helper).
+- `dataObject`, `dataObjectReference`, `dataStoreReference` and `dataAssociation(activityId, dataRefId, "input" | "output")` on all three flow builders. They add no sequence flow and leave the chain cursor alone; auto-layout packs them as unconnected shapes. Association edges are not drawn (needs `layout/**`). `builder-coverage.ts` no longer exempts the three types.
+- Tests: `tests/builder-data-elements.test.ts`, `tests/builder-zeebe-options.test.ts`, `tests/zeebe-extensions-roundtrip.test.ts`.
+
+## 2026-11-05 — B6: edit patches for event definitions and multi-instance
+
+- `applyBpmnOperations` `update` patches now write event definitions (`messageName`, `errorCode`, `escalationCode`, `signalName` on the referenced root element — created if missing, reported when several elements share it; `timerDuration`/`timerDate`/`timerCycle`; `condition`) and multi-instance (`multiInstance`, one field at a time; empty string clears, empty `collection` removes the loop). `timerDuration`, `condition` and `multiInstance` were already in the patch type but silently ignored.
+- MCP `update_element` accepts these plus `executionListeners` / `taskListeners` (already supported by core, never exposed).
+- Tests: `packages/core/tests/full-operations-events.test.ts`, `apps/proxy/tests/mcp-update-element.test.ts`.
+
+## 2026-11-05 — B9: task-level template bindings; C10: `ignoreNullValues` on GET pinned
+
+- B9: `zeebe:calledElement`, `calledDecision`, `userTask` (flag), `formDefinition`, `assignmentDefinition`, `taskSchedule`, `priorityDefinition` and `script` are valid template bindings (properties checked against the Camunda element-template docs; `formKey` is not a schema property and stays a validation error). `applyTemplateToElement` writes them with the typed writers in `zeebe-extensions.ts`; `zeebe:script` has no writer there (and `bpmn/**` is out of scope), so its element is built in `apply-element.ts`. `calledDecision`'s `bindingType`/`versionTag` are merged onto the writer's element for the same reason.
+- Ownership: a template owns the bindings it declares; re-applying a template whose id the element already carries (a new version) owns all eight, so a binding v2 dropped is removed. An extension missing a required attribute (`processId`, `decisionId`+`resultVariable`, `expression`, `priority`, `formId`/`externalReference`) is not written and is reported; an invalid `bindingType` is reported. `applyElementTemplate` (builder options) reports these bindings as not expressible.
+- C10: already correct (a hidden, condition-gated property is never resolved); no code change. `tests/connectors/apply.test.ts` now pins GET without and with an explicit value, and POST with it. The closeness gap against the blueprint is accepted, per the plan decision.
+- Tests: `tests/connectors/bindings-b9.test.ts` (26), one in `apply.test.ts`.
+
+## 2026-11-05 — Comparison page: recording support, cost column, test column
+
+- **D2 (support only; no recordings made, no API key here).** `Recording` panels gain `compact-json` (a `CompactDiagram` JSON, expanded by `expand()`) and `plan` (a `ProcessPlan`, compiled by `compilePlan()` as `casen synth` does) plus a per-panel `model`; the `with-sdk` / `without-sdk` panels became optional so a recording can hold any subset of routes. The demo server has `/stream/compact-json` and `/stream/plan`, reports the model id from the CLI's init line, and `GET /prompts` lists the two new prompts. `scripts/record-compare.mjs --scenario --routes --runs [--dry-run]` records the matrix through the server; the dry run validates and prints the plan without a server or key. The maintainer's command for quote-to-cash × 4 routes × 3 runs is in the D2 section of `doc/plan-agent-gaps-performance-compare.md`. The July line notation is now route `compact-dsl`, so `compact-json` means the new JSON route.
+- **C9.** `scripts/lib/model-prices.mjs`: dated list prices (source: the `claude-api` skill's table, cached 2026-10-06; docspack had no pricing indexed). Haiku 5.5 and Mythos left out (tiered / access-programme). The data script computes cost only for a run with a recorded model in the table and an in/out token split; none of the 12 July recordings has a model, so every cost shows "—" until new runs are recorded. Cached input is priced as plain input, which the page says.
+- **D3 (test column).** `scripts/compare/references/{kyc,loan-approval,quote-to-cash}.test.json` (Camunda process-test format, happy path from the prompt); `scripts/lib/cpt-run.mjs` runs them on reebe-wasm; the page shows pass/fail per run, "not run" where the engine is unavailable, never a guess. Reebe-wasm built in this sandbox (wasm-pack from npm, `wasm32-unknown-unknown`); the references pass their own tests. Model outputs fail at the first instruction (their process/element ids differ), which the page states.
+- Page: freshness warning after 90 days, per-run model, cost and tests columns, up to five routes.
+- Tests: `scripts/lib/{record-compare,model-prices,cpt-run}.test.mjs` (added to `test:scripts`), `compare-rows.test.mjs`, and `apps/demo/server/{route-executors,stream-parsers,system-prompt}.test.*`.
+
+## 2026-11-05 — C7: annotation sides left/right; C8: layout closeness diagnosis
+
+- C7: `AnnotateOptions.side` also takes `"left" | "right"`. `packAnnotations` places the box beside the element and pushes it sideways out of shapes, routes and every annotation already placed (any side), with the same cost model as above/below. The default side is unchanged. Tests: `packages/core/tests/annotation-side.test.ts` (left of the start event, right of the end event). `builder-reference.md` regenerated.
+- C8: diagnosis in `doc/layout-closeness-diagnosis.md`. Two of its three general rules shipped. R3: a loose-node grid (ad-hoc tools) uses 40/20 px gaps, plus label room. R1: a container taller than its row hangs from the task line, and `route.ts` docks the flow straight at the other end's centre. Corpus (roundtrip, 29 files): avg 330.7 → 330.1 px, P90 555.1 → 553.4 px, 0 order violations. Bake-off layout: 7.7 → 10.5/15 (193.6 → 120.9 px). `expected.bpmn` was regenerated (36 `dc:Bounds` and 40 `di:waypoint` lines, nothing else); `expected.txt` is unchanged.
+- `scripts/lib/closeness.mjs`: the layout part aligns both diagrams on their shared top-left corner, as `closeness.py` does, so a uniform shift scores full points. The old "move every shape" test now moves one shape. `apps/landing/src/generated/compare/` is not regenerated (out of this change's scope).
+- Deviation: R2 (main-column gap 100 → 50) is not shipped. It breaks the spec check in `bakeoff-ai-agent-chat.test.ts` that the tool note sits right of the agent and below the user task: with the tighter gap, `"below"` lands under the agent and `"right"` lands above the user task's bottom. R2 would give corpus avg 326.7 px, P90 534.6 px and bake-off 11.4 px.
+
 ## 2026-11-04 — CI on Node 26: DOM storage in tests, tsx deprecation warning, API snapshot
 
 - CI installs `lts/*`, which now resolves to Node 26. Node 25+ defines its own `localStorage`/`sessionStorage` globals, undefined unless started with `--localstorage-file`, and Vitest's DOM environment does not replace them, so the storage tests in `@bpmnkit/ui` and `apps/drop` failed. `scripts/vitest-dom-storage.mjs` (a `setupFiles` entry in both configs) gives DOM tests happy-dom `Storage` objects when Node's globals are undefined. Both suites pass on Node 22 and 26.

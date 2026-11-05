@@ -65,6 +65,11 @@ Process settings and misc:
 - textAnnotation(text: string)
 - annotate(elementId: string, text: string, options?: AnnotateOptions)
 - build(options?: BuildOptions)
+Other:
+- dataObject(id: string, options?: DataElementOptions)
+- dataObjectReference(id: string, dataObjectRef: string, options?: DataElementOptions)
+- dataStoreReference(id: string, dataStoreRef: string, options?: Pick<DataElementOptions, "name">)
+- dataAssociation(activityId: string, dataRefId: string, direction: "input" | "output")
 
 Only inside `.branch()` callbacks (BranchBuilder), applied to the flow leaving the gateway:
 - condition(expression: string)
@@ -84,7 +89,7 @@ Not available inside callbacks (top-level only): at, insertAfter, withAutoLayout
 - IntermediateThrowEventOptions +El: messageName?: string; signalName?: string; escalationCode?: string; compensation?: boolean (Emit a compensateEventDefinition); linkName?: string (Link name)
 - IntermediateCatchEventOptions +El: timerDuration?: string; timerDate?: string; timerCycle?: string; messageName?: string; correlationKey?: string (FEEL expression correlating this…); signalName?: string; linkName?: string; condition?: string
 - BoundaryEventOptions +El: attachedTo: string (ID of the activity this boundary…); cancelActivity?: boolean (Whether the host activity is…); errorCode?: string; timerDuration?: string; timerDate?: string; timerCycle?: string; messageName?: string; correlationKey?: string; signalName?: string; compensation?: boolean; condition?: string
-- ServiceTaskOptions: multiInstance?: MultiInstanceOptions (Runs the activity once per item…); name: string; taskType: string (Zeebe job type for this task); retries?: string (Number of retries…); ioMapping?: ioMapping shape (Input/output variable mappings); taskHeaders?: Record<string, string> (Task header key-value pairs); documentation?: string
+- ServiceTaskOptions: multiInstance?: MultiInstanceOptions (Runs the activity once per item…); name: string; taskType: string (Zeebe job type for this task); retries?: string (Number of retries…); ioMapping?: ioMapping shape (Input/output variable mappings); taskHeaders?: Record<string, string> (Task header key-value pairs); linkedResources?: ZeebeLinkedResource[] (Resources the task runs, e.g. an…); documentation?: string
 - MultiInstanceOptions: isSequential?: boolean; collection?: string; elementVariable?: string; outputCollection?: string (Variable that collects each…); outputElement?: string (FEEL expression evaluated per…); completionCondition?: string
 - RestConnectorConfig: name?: string; method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" (HTTP method…); url: string (Target URL); authentication?: {type: "noAuth"} | {type: "bearer"; token: string} (Authentication configuration); headers?: Record<string, string> | string (HTTP headers as key-value pairs…); body?: string (Request body); retries?: string; resultVariable?: string (Variable name to store the full…); resultExpression?: string (FEEL expression to extract values…)
 - ScriptTaskOptions: multiInstance?: MultiInstanceOptions; name?: string; expression: string (FEEL expression for the script); resultVariable: string; documentation?: string
@@ -95,7 +100,8 @@ Not available inside callbacks (top-level only): at, insertAfter, withAutoLayout
 - GatewayOptions +El: defaultFlow?: string (ID of the default sequence flow…)
 - AdHocSubProcessOptions +El: activeElementsCollection?: string (FEEL expression for determining…); outputCollection?: string; outputElement?: string; taskDefinition?: {type: string; retries?: string} (Zeebe task definition…); ioMapping?: ioMapping shape; taskHeaders?: Record<string, string>; multiInstance?: MultiInstanceOptions; completionCondition?: string
 - SubProcessOptions +El: multiInstance?: MultiInstanceOptions
-- AnnotateOptions: side?: "above" | "below" (Which side of the element…)
+- DataElementOptions: name?: string; isCollection?: boolean (Draws the collection…)
+- AnnotateOptions: side?: "above" | "below" | "left" | "right" (Which side of the element…)
 - BuildOptions: explicitJoins?: boolean (Refuse to infer join gateways, so…)
 - ioMapping shape = {inputs?: Array<{source: string; target: string}>; outputs?: Array<{source: string; target: string}>}
 

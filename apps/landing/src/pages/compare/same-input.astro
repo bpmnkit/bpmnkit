@@ -26,6 +26,15 @@ interface Run {
 	lintErrors: number | null
 	closeness: number | null
 	error: string | null
+	model: string | null
+	costUsd: number | null
+	tests: TestResult
+}
+interface TestResult {
+	status: "pass" | "fail" | "unavailable"
+	passed: number
+	total: number
+	failure: string | null
 }
 interface RouteSummary {
 	runs: number
@@ -39,17 +48,22 @@ interface RouteSummary {
 	durationMsMedian: number | null
 	inputTokensMedian: number | null
 	outputTokensMedian: number | null
+	costUsdMedian: number | null
+	costedRuns: number
+	testsRan: number
+	testsPassed: number
 }
 interface Scenario {
 	scenario: string
 	prompt: string
-	model: string
+	pricesAsOf: string
 	reference: {
 		durationMs: number
 		parses: boolean
 		diComplete: boolean
 		lintErrors: number
 		closeness: number
+		tests: TestResult
 	}
 	routes: Record<string, RouteSummary>
 	runs: Run[]
@@ -58,9 +72,11 @@ interface Scenario {
 const ROUTE_LABEL: Record<string, string> = {
 	"raw-xml": "LLM → raw XML",
 	"compact-json": "LLM → compact JSON",
+	"compact-dsl": "LLM → compact notation",
 	"builder-script": "LLM → builder script",
+	plan: "LLM → plan (casen synth)",
 }
-const ORDER = ["raw-xml", "compact-json", "builder-script"]
+const ORDER = ["raw-xml", "compact-json", "compact-dsl", "builder-script", "plan"]
 
 const scenarios = (Object.values(data) as Scenario[]).sort((a, b) =>
 	a.scenario.localeCompare(b.scenario),
@@ -76,6 +92,16 @@ const tokens = (r: RouteSummary) =>
 		? "—"
 		: `${fmt(r.inputTokensMedian)} in / ${fmt(r.outputTokensMedian)} out`
 const day = (iso: string) => iso.slice(0, 10)
+const usd = (n: number | null | undefined) =>
+	n == null ? "—" : `$${n < 0.1 ? n.toFixed(3) : n.toFixed(2)}`
+const testCell = (t: TestResult) =>
+	t.status === "unavailable" ? "not run" : t.status === "pass" ? "pass" : "fail"
+const routeCost = (r: RouteSummary) =>
+	r.costedRuns === 0
+		? "—"
+		: `${usd(r.costUsdMedian)} median (${r.costedRuns} of ${r.runs} runs priced)`
+const routeTests = (r: RouteSummary) =>
+	r.testsRan === 0 ? "not run" : `${r.testsPassed} / ${r.testsRan} runs pass`
 
 // Builder-script runs that failed when recorded, joined to the replay of the same recording.
 const replayById = new Map(AI_BENCHMARK_REPLAY.runs.map((r) => [r.recording, r]))
@@ -93,7 +119,15 @@ const allRuns = scenarios.flatMap((s) => s.runs)
 const dates = allRuns.map((r) => r.recordedAt).sort()
 const firstDate = dates.length ? day(dates[0]) : "—"
 const lastDate = dates.length ? day(dates[dates.length - 1]) : "—"
-const model = scenarios[0]?.model ?? "—"
+const models = [
+	...new Set(allRuns.map((r) => r.model).filter((m): m is string => m != null)),
+].sort()
+const unrecorded = allRuns.filter((r) => r.model == null).length
+const pricesAsOf = scenarios[0]?.pricesAsOf ?? "—"
+// Stale numbers are the page's main risk; warn once the newest recording is ~90 days old.
+const newest = dates[dates.length - 1]
+const ageDays = newest ? (Date.now() - Date.parse(newest)) / 864e5 : 0
+const stale = ageDays > 90
 ---
 
 <!DOCTYPE html>
@@ -103,7 +137,7 @@ const model = scenarios[0]?.model ?? "—"
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <Seo
-    title="Same input, four routes — BPMN Kit comparison"
+    title="Same input, up to five routes — BPMN Kit comparison"
     description="One prompt, recorded LLM runs and a hand-written no-AI reference, side by side: tokens, time, validity and closeness to the reference."
   />
   <style is:global>
@@ -147,21 +181,29 @@ const model = scenarios[0]?.model ?? "—"
   <div class="si-wrap">
     <main class="si-main">
       <p class="si-label">Compare</p>
-      <h1>Same input, four routes</h1>
+      <h1>Same input, up to five routes</h1>
       <div class="si-intro">
         <p>
-          Each scenario below is one prompt. It was given through three routes — raw BPMN
-          XML, compact JSON and a <code>@bpmnkit/core</code> builder script — and recorded between
-          {firstDate} and {lastDate}. The recording server was configured for {model}. The fourth row, labelled <strong>no AI</strong>, is a
-          builder script written by hand from the prompt alone.
+          Each scenario below is one prompt. It was given through up to five routes — raw BPMN
+          XML, compact JSON, a compact line notation, a <code>@bpmnkit/core</code> builder script
+          and a plan compiled by <code>casen synth</code> — and recorded between
+          {firstDate} and {lastDate}. Only the July recordings have the line notation, and
+          only recordings made since November 2026 have compact JSON and plan rows. The first row,
+          labelled <strong>no AI</strong>, is a builder script written by hand from the prompt alone.
         </p>
         <p>
           These are <strong>recordings, not live runs</strong>. Each recording stores the model's
           output; the builder-script and compact-JSON outputs are re-executed against the current
           library, as on the <a href="/#ai-benchmark">homepage benchmark</a>, so a replay says what
-          the library does with that output today, not what the model would write now. The model id
-          is the recording server's setting; the recording files do not store it.
+          the library does with that output today, not what the model would write now. Recordings
+          made since November 2026 store the model id ({models.length ? models.join(", ") : "none yet"});
+          {unrecorded} older runs do not, so they show no model and no cost.
         </p>
+        {stale && (
+          <p class="si-note si-bad">
+            The newest recording is {Math.round(ageDays)} days old. Models change; treat these numbers as history.
+          </p>
+        )}
         <p>
           <strong>Closeness</strong> (0–100) is how near an output is to the reference:
           structure 25, configuration 45, annotations 15, layout 15 points. Because each model picks its
@@ -181,7 +223,27 @@ const model = scenarios[0]?.model ?? "—"
           tokens and builds in milliseconds. What it cannot show is what writing it cost the person
           who wrote it, and it was written for exactly these three prompts. Runs per route range from 1 to 5, so treat the medians as anecdotal. Failed runs are kept as
           rows. Tokens and time are medians over all runs of a route; closeness is the median over
-          the runs that parse. No cost column: this repository has no dated price table.
+          the runs that parse.
+        </p>
+        <p class="si-note">
+          <strong>Cost</strong> is tokens × Anthropic list prices per million input and output
+          tokens from <a href="https://github.com/bpmnkit/bpmnkit/blob/main/scripts/lib/model-prices.mjs"><code>scripts/lib/model-prices.mjs</code></a>
+          (table dated {pricesAsOf}). It is shown only for a run whose model is in that table and
+          that recorded an input/output token split, and is "—" otherwise. Recorded input tokens
+          include cache reads and writes, which this prices as plain input, so a cached prompt is
+          overstated.
+        </p>
+        <p class="si-note">
+          <strong>Tests</strong> run the scenario's Camunda process-test file
+          (<code>scripts/compare/references/&lt;scenario&gt;.test.json</code>, the main happy path
+          from the prompt) on reebe-wasm, as <code>casen test</code> does. The test addresses the
+          hand-written reference's process id, element ids and job types, and the prompts do not
+          fix those, so a model's output fails at its first instruction for naming alone, whatever
+          its logic. Read "fail" as "does not match this reference's names", not as "wrong process".
+          Where the data build could not run the engine the column says "not run"; it is never
+          filled in by hand. Test files cannot publish a message and no DMN is deployed, so the
+          happy paths supply the decision outcome as a variable (loan approval, KYC) and stop at the
+          signature wait (quote-to-cash).
         </p>
       </div>
 
@@ -202,6 +264,8 @@ const model = scenarios[0]?.model ?? "—"
                     <dt>Parses</dt><dd>{s.reference.parses ? "yes" : "no"}</dd>
                     <dt>DI</dt><dd>{s.reference.diComplete ? "complete" : "incomplete"}</dd>
                     <dt>Lint errors</dt><dd>{s.reference.lintErrors}</dd>
+                    <dt>Cost</dt><dd>$0</dd>
+                    <dt>Tests</dt><dd>{testCell(s.reference.tests)}</dd>
                     <dt>Closeness</dt><dd>{fmt(s.reference.closeness, 1)} (by definition)</dd>
                   </dl>
                 </div>
@@ -219,7 +283,9 @@ const model = scenarios[0]?.model ?? "—"
                       <dl>
                         <dt>Tokens</dt><dd>{tokens(r)}</dd>
                         <dt>Time</dt><dd>{secs(r.durationMsMedian)}</dd>
+                        <dt>Cost</dt><dd>{routeCost(r)}</dd>
                         <dt>Parses</dt><dd>{r.parsed} / {r.runs} runs</dd>
+                        <dt>Tests</dt><dd>{routeTests(r)}</dd>
                         <dt>DI</dt><dd>{r.diComplete} / {r.runs} complete</dd>
                         <dt>Lint errors</dt><dd>{r.zeroLintErrors} / {r.runs} with none</dd>
                         <dt>Closeness</dt>
@@ -241,18 +307,21 @@ const model = scenarios[0]?.model ?? "—"
                 <table class="si-table">
                   <tbody>
                     <tr>
-                      <th>Route</th><th>Run</th><th>Recorded</th><th>Time</th><th>In</th><th>Out</th>
-                      <th>Parses</th><th>DI</th><th>Lint err</th><th>Closeness</th>
+                      <th>Route</th><th>Run</th><th>Recorded</th><th>Model</th><th>Time</th><th>In</th><th>Out</th><th>Cost</th>
+                      <th>Parses</th><th>Tests</th><th>DI</th><th>Lint err</th><th>Closeness</th>
                     </tr>
                     {s.runs.map((r) => (
                       <tr>
                         <td>{ROUTE_LABEL[r.route]}</td>
                         <td>{r.runId}</td>
                         <td>{day(r.recordedAt)}</td>
+                        <td>{r.model ?? "not recorded"}</td>
                         <td>{secs(r.durationMs)}</td>
                         <td>{fmt(r.inputTokens)}</td>
                         <td>{fmt(r.outputTokens)}</td>
+                        <td>{usd(r.costUsd)}</td>
                         <td class={r.parses ? "" : "si-bad"}>{r.parses ? "yes" : "no"}</td>
+                        <td title={r.tests.failure ?? ""}>{testCell(r.tests)}</td>
                         <td>{r.diComplete == null ? "—" : r.diComplete ? "yes" : "no"}</td>
                         <td>{fmt(r.lintErrors)}</td>
                         <td title={r.error ?? ""} class={r.error ? "si-bad" : ""}>

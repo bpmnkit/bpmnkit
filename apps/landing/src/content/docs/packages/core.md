@@ -255,6 +255,16 @@ no message is reported. A field whose extension the Zeebe schema does not allow 
 attribute, an extension left with nothing in it is removed, and `properties: {}` removes
 `zeebe:properties`.
 
+`update` also edits event definitions, listeners and multi-instance. `messageName`, `errorCode`,
+`escalationCode` and `signalName` are written on the root `bpmn:message` / `bpmn:error` /
+`bpmn:escalation` / `bpmn:signal` the event references, which is created when the reference is
+missing; a root shared by several elements is reported, not changed for all of them.
+`timerDuration`, `timerDate`, `timerCycle` and `condition` set the timer or conditional event
+definition. `multiInstance` changes only the parts it names (`collection`, `element`, `sequential`,
+`outputCollection`, `outputElement`, `completionCondition`) and keeps the rest of the loop; an empty
+string clears one, and an empty `collection` removes the loop. `executionListeners` and
+`taskListeners` replace the whole list. An empty string clears these event fields too.
+
 ```typescript
 applyBpmnOperations(parsed, [
   { op: "update", id: "Review", patch: { candidateGroups: "reviewers", priority: 80 } },
@@ -772,6 +782,22 @@ steers the layout only and is not written to the XML.
 for a text annotation; it still steps clear of shapes and other annotations on that side. Call
 it on the process builder, also for an element inside a sub-process: annotations added with
 `annotate()` inside a sub-process callback get no diagram shape from the auto layout.
+
+### Data elements and linked resources
+
+Data elements sit beside the chain: they add no sequence flow and do not move the cursor.
+
+```typescript
+.serviceTask("t", { name: "T", taskType: "work",
+  linkedResources: [{ resourceType: "RPA", resourceId: "script-1", linkName: "script" }] })
+.dataObject("order", { name: "Order" })
+.dataObjectReference("orderRef", "order", { name: "Order" })
+.dataStoreReference("dbRef", "db", { name: "DB" })
+.dataAssociation("t", "orderRef", "input")   // the task reads it
+.dataAssociation("t", "dbRef", "output")     // the task writes it
+```
+
+Auto layout gives the data shapes a place but draws no association edges.
 
 ### Joins: inferred by default, or declared
 

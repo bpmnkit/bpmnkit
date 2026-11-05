@@ -57,7 +57,7 @@ const definitions = Bpmn.createProcess("LoanApproval")
 	// DMN-based risk scoring combining multiple applicant factors
 	.businessRuleTask("riskScoring", {
 		name: "Calculate Risk Score",
-		decisionRef: "loan-risk-scoring",
+		decisionId: "loan-risk-scoring",
 		resultVariable: "riskAssessment",
 	})
 

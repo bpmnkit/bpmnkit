@@ -3,6 +3,25 @@ import { getZeebeExtensions } from "../src/bpmn/utils.js"
 import { Bpmn, ProcessBuilder, analyzeCamundaCompat } from "../src/index.js"
 
 describe("builder zeebe options", () => {
+	it("writes linkedResources on a service task and reads them back", () => {
+		const linkedResources = [
+			{ resourceType: "RPA", resourceId: "r1", linkName: "script", bindingType: "latest" as const },
+		]
+		const xml = Bpmn.export(
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.serviceTask("t", { name: "T", taskType: "rpa", linkedResources })
+				.endEvent("e")
+				.build(),
+		)
+		expect(xml).toContain("<zeebe:linkedResources>")
+		expect(xml).toContain('linkName="script"')
+		const task = Bpmn.parse(xml).processes[0]?.flowElements.find((e) => e.id === "t")
+		expect(getZeebeExtensions(task?.extensionElements ?? []).linkedResources).toEqual(
+			linkedResources,
+		)
+	})
+
 	it("emits zeebe:formDefinition on a top-level start event", () => {
 		const xml = Bpmn.export(
 			Bpmn.createProcess("p")

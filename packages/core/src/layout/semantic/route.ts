@@ -383,6 +383,22 @@ function forwardCandidates(
 		]
 	}
 
+	// A tall container hangs from the task line, so the other end's centre falls
+	// within its height: dock there and the flow stays straight.
+	if (rightOf) {
+		const inTarget = from.y > target.y && from.y < target.y + target.height
+		const inSource = to.y > source.y && to.y < source.y + source.height
+		if (inTarget !== inSource) {
+			const y = inTarget ? from.y : to.y
+			return [
+				[
+					{ x: source.x + source.width, y },
+					{ x: target.x, y },
+				],
+			]
+		}
+	}
+
 	// Same column, different band: drop straight between the two.
 	if (sourceRank !== undefined && sourceRank === targetRank) {
 		const down = to.y > from.y
