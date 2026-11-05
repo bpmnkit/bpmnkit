@@ -33,6 +33,7 @@ Every process is authored as a `ProcessPlan` JSON file, never hand-written BPMN 
 | `casen connector show <template-id>` | Required/optional input keys, task type, direction |
 | `casen lint lint <file>.bpmn` | Full static analysis (all categories) |
 | `casen lint lint <file>.bpmn --profile deploy` | Deploy-readiness gate — errors only |
+| `casen check <file>.bpmn <name>.dmn <name>.form [--deploy] --json` | Check BPMN, DMN and forms in one call, with a fix hint per finding |
 | `casen lint lint <file>.bpmn --fix` | Apply auto-fixable findings, write back |
 | `casen test <file>.bpmn` | Run scenarios from `<file>.bpmn.tests.json` |
 | `casen deploy deploy <file>.bpmn [--target camunda8]` | Deploy to local Reebe (default) or Camunda 8 |

@@ -73,6 +73,13 @@ export interface OptimizeOptions {
 	 * `compat` reports nothing.
 	 */
 	camundaVersion?: string
+	/**
+	 * Whether a user task with no `zeebe:formDefinition` is reported
+	 * (`compat/user-task-definition`). Default `"require"`. Zeebe deploys such a
+	 * task fine; `"off"` suits a sketch or a gate that should not push an author
+	 * to invent a form reference.
+	 */
+	userTaskForms?: "require" | "off"
 }
 
 export interface ResolvedOptions {

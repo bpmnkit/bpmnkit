@@ -18,6 +18,7 @@ import {
 	getXmlCmd,
 	renderBpmnCmd,
 } from "./bpmn.js"
+import { checkGroup } from "./check.js"
 import { completionGroup } from "./completion.js"
 import { connectorGroup } from "./connector.js"
 import { deployGroup } from "./deploy.js"
@@ -88,6 +89,7 @@ const workerGroup: CommandGroup = {
 export const pinnedGroups: CommandGroup[] = [
 	agentGroup,
 	askGroup,
+	checkGroup,
 	deployGroup,
 	devGroup,
 	diffGroup,

@@ -1,5 +1,9 @@
 # Features
 
+## `casen check`: BPMN, DMN and forms in one gate (2026-11-05)
+
+`casen check <file...>` checks any mix of `.bpmn`, `.dmn` and `.form` files and the references between them (a user task's `formId`, a business rule task's `decisionId`). Every finding has a rule id, element id, message and a concrete fix; `--json` for agent loops; non-zero exit on errors. DMN: duplicate ids, requirement hrefs, cycles, FEEL syntax, hit policy, aggregation, types, rule shape. Forms: form-js schema, unique ids and keys, FEEL in conditions and expressions, validation. Profiles: default, `--sketch` (no Camunda 8 rules), `--deploy` (errors only, forms required). The "user task needs a form" rule is off outside the deploy profile. Library: `lintDmn`, `lintForm` in `@bpmnkit/core`.
+
 ## Vendor-neutral export: `stripCamunda8` (2026-11-05)
 
 `stripCamunda8(definitions)` returns a copy without Camunda 8 vendor bits (`zeebe:*`, `modeler:*`, their `xmlns`) plus a list of what was dropped, as a base for Camunda 7/Operaton export. Opt-in; Camunda 8 output is unchanged.

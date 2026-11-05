@@ -34,6 +34,7 @@ casen
 │   ├── bpmn        — BPMN diagrams rendered as SVG
 │   ├── dmn         — DMN decision tables
 │   └── form        — Camunda form layouts
+├── check           — check .bpmn, .dmn and .form files in one call (casen check <file...>)
 ├── lint            — static analysis and auto-fix for BPMN files
 │   ├── lint        — run all checks, report findings
 │   └── improve     — AI-assisted improvement suggestions
@@ -276,6 +277,7 @@ casen connector apply order-process.bpmn Call http --values call.json   # --set 
 # Deploy-readiness gate, then deploy
 # (a .bpmnlintrc in the diagram's folder or above is honoured; --no-bpmnlintrc ignores it)
 casen lint lint order-process.bpmn --profile deploy
+casen check order-process.bpmn review.form discount.dmn --deploy   # BPMN, DMN and forms together
 casen deploy deploy order-process.bpmn                   # local Reebe
 casen deploy deploy order-process.bpmn --target camunda8 # active Camunda 8 profile
 ```
@@ -321,6 +323,11 @@ Secrets to create in the cluster before deploying:
 With `--json`, the findings are in the output's `check` field.
 
 See [Building Processes with AI](/docs/guides/ai-implement) and [AI Agents](/docs/guides/ai-agents) for full walkthroughs.
+
+`casen lint lint --profile sketch` skips every Camunda 8 deployability rule, for a process
+that does not target an engine yet. A user task without a form is reported only under
+`--profile deploy` or with `--user-task-forms require`. To check DMN and form files too, use
+[`casen check`](/docs/cli/check).
 
 `casen lint` reads a `.bpmnlintrc` if your project has one. See
 [bpmnlint Compatibility](/docs/guides/bpmnlint) for how the rules map and how to run your
