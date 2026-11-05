@@ -35,6 +35,7 @@ import type {
 	BpmnTextAnnotation,
 	BpmnWaypoint,
 } from "./bpmn-model.js"
+import { BPMNKIT_NAMESPACE } from "./swimlanes.js"
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -61,6 +62,17 @@ function attr(attributes: Attrs, name: string): string | undefined {
 	for (const key in attributes) {
 		if (key.length > name.length && hasLocalName(key, name)) return attributes[key]
 	}
+	return undefined
+}
+
+/**
+ * An `xsd:boolean` attribute: `true`/`1` or `false`/`0`, surrounding whitespace
+ * ignored. Undefined when absent or not a boolean, so it is not written back.
+ */
+function xsdBoolean(value: string | undefined): boolean | undefined {
+	const v = value?.trim()
+	if (v === "true" || v === "1") return true
+	if (v === "false" || v === "0") return false
 	return undefined
 }
 
@@ -1433,6 +1445,9 @@ class LaneFrame extends BaseElementFrame implements LaneSetOwner {
 			case "flowNodeRef":
 				return new TextFrame(this, SLOT_FLOW_NODE_REF, attrs)
 			case "childLaneSet":
+			// Before 2026-10-27 the serializer wrote nested lanes as <laneSet>; read those
+			// files back rather than drop their lanes.
+			case "laneSet":
 				if (this.childLaneSetSeen) return null
 				this.childLaneSetSeen = true
 				return new LaneSetFrame(attrs, this)
@@ -1522,7 +1537,7 @@ class ProcessFrame extends Frame implements LaneSetOwner, TextOwner {
 		this.target.push({
 			id: this.id,
 			name: attr(attrs, "name"),
-			isExecutable: attr(attrs, "isExecutable") === "true" ? true : undefined,
+			isExecutable: xsdBoolean(attr(attrs, "isExecutable")),
 			...(this.documentation !== undefined ? { documentation: this.documentation } : {}),
 			...(this.documentationAttributes
 				? { documentationAttributes: this.documentationAttributes }
@@ -1896,9 +1911,23 @@ class DefinitionsFrame extends Frame implements TextOwner {
 				unknownAttributes[key] = value
 			}
 		}
+		// Two prefixes may name the namespace; the pin is under the one that carries it.
+		const prefix = Object.keys(namespaces).find(
+			(p) =>
+				p !== "" &&
+				namespaces[p] === BPMNKIT_NAMESPACE &&
+				unknownAttributes[`${p}:primaryProcess`] !== undefined,
+		)
+		const pinKey = `${prefix}:primaryProcess`
+		const primaryProcessId = prefix === undefined ? undefined : unknownAttributes[pinKey]
+		// The declaration stays: it is the model's, like any other (see pinPrimaryProcess).
+		if (prefix !== undefined && primaryProcessId !== undefined) {
+			Reflect.deleteProperty(unknownAttributes, pinKey)
+		}
 
 		this.sink.result = {
-			id: requiredAttr(attrs, "id", this.name),
+			// Optional in the schema, and the Flowable Modeler leaves it out.
+			id: attr(attrs, "id") ?? "",
 			targetNamespace: requiredAttr(attrs, "targetNamespace", this.name),
 			exporter: attr(attrs, "exporter"),
 			exporterVersion: attr(attrs, "exporterVersion"),
@@ -1917,6 +1946,7 @@ class DefinitionsFrame extends Frame implements TextOwner {
 			processes: this.processes,
 			diagrams: this.diagrams,
 			...(this.unknownChildren.length > 0 ? { unknownChildren: this.unknownChildren } : {}),
+			...(primaryProcessId !== undefined ? { primaryProcessId } : {}),
 		}
 	}
 }

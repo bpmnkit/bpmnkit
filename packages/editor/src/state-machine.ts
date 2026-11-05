@@ -76,6 +76,8 @@ export type EditorMode =
 	| { mode: "default"; sub: SelectSub }
 	| { mode: "select"; sub: SelectSub }
 	| { mode: "create"; elementType: CreateShapeType }
+	/** The pool tool: a click places a pool (`commitCreatePool`), not a shape. */
+	| { mode: "create"; elementType: "participant" }
 	| { mode: "pan" }
 	| { mode: "space"; sub: SpaceSub }
 
@@ -94,7 +96,9 @@ export interface Callbacks {
 	previewTranslate(dx: number, dy: number): void
 	commitTranslate(dx: number, dy: number): void
 	cancelTranslate(): void
-	previewResize(bounds: BpmnBounds): void
+	previewResize(bounds: BpmnBounds, id: string): void
+	/** Removes the resize outline: the resize was abandoned. */
+	cancelResize(): void
 	commitResize(id: string, bounds: BpmnBounds): void
 	previewConnect(ghostEnd: DiagPoint, targetId: string | null): void
 	cancelConnect(): void
@@ -102,6 +106,7 @@ export interface Callbacks {
 	previewRubberBand(origin: DiagPoint, current: DiagPoint): void
 	cancelRubberBand(): void
 	commitCreate(type: CreateShapeType, diagPoint: DiagPoint): void
+	commitCreatePool(diagPoint: DiagPoint): void
 	startLabelEdit(id: string): void
 	setHovered(id: string | null): void
 	executeDelete(ids: string[]): void
@@ -175,7 +180,8 @@ export class EditorStateMachine {
 
 		// Create mode: place shape and revert to default
 		if (mode.mode === "create") {
-			this._cb.commitCreate(mode.elementType, diag)
+			if (mode.elementType === "participant") this._cb.commitCreatePool(diag)
+			else this._cb.commitCreate(mode.elementType, diag)
 			this._mode = { mode: "default", sub: { name: "idle", hoveredId: null } }
 			this._cb.setTool("default")
 			return
@@ -423,7 +429,7 @@ export class EditorStateMachine {
 						original: shape.shape.bounds,
 						current: diag,
 					})
-					this._cb.previewResize(newBounds)
+					this._cb.previewResize(newBounds, sub.id)
 				}
 				break
 			}
@@ -431,7 +437,7 @@ export class EditorStateMachine {
 			case "resizing": {
 				const newBounds = applyResize(sub.original, sub.handle, diag.x, diag.y)
 				this._mode = this._withSub({ ...sub, current: diag })
-				this._cb.previewResize(newBounds)
+				this._cb.previewResize(newBounds, sub.id)
 				break
 			}
 
@@ -723,10 +729,57 @@ export class EditorStateMachine {
 		if (hit.type === "shape") {
 			this._mode = { mode: "select", sub: { name: "editing-label", id: hit.id } }
 			this._cb.startLabelEdit(hit.id)
+		} else if (hit.type === "edge-segment") {
+			// The mode stays: only some flows have a label editor, and editing-label would wait for one.
+			this._cb.startLabelEdit(hit.id)
 		}
 	}
 
 	// ── Cancel (pointercancel / system gesture) ───────────────────────
+
+	/**
+	 * Takes back the preview of the gesture `sub` is in and unlocks the
+	 * viewport; the next mode is the caller's. Escape and a pointercancel share
+	 * it, so neither leaves a ghost, a rubber band or a resize outline behind.
+	 */
+	private _cancelGesture(sub: SelectSub): void {
+		switch (sub.name) {
+			case "translating":
+				this._cb.cancelTranslate()
+				break
+			case "rubber-band":
+				this._cb.cancelRubberBand()
+				break
+			case "resizing":
+				this._cb.cancelResize()
+				break
+			case "connecting":
+				this._cb.cancelConnect()
+				break
+			case "pointing-edge-endpoint":
+			case "dragging-edge-endpoint":
+				this._cb.cancelEndpointMove()
+				break
+			case "dragging-edge-waypoint-new":
+				this._cb.cancelWaypointInsert()
+				break
+			case "dragging-edge-waypoint":
+				this._cb.cancelWaypointMove()
+				break
+			case "dragging-edge-segment":
+				this._cb.cancelSegmentMove()
+				break
+			case "pointing-handle":
+			case "pointing-port":
+			case "pointing-edge-segment":
+			case "pointing-edge-waypoint":
+				break
+			default:
+				// Idle, hovering, pointing at the canvas or a shape, label editing: nothing was locked or drawn.
+				return
+		}
+		this._cb.lockViewport(false)
+	}
 
 	cancel(): void {
 		const mode = this._mode
@@ -736,37 +789,7 @@ export class EditorStateMachine {
 				this._cb.cancelSpace()
 			}
 		} else if (mode.mode === "select" || mode.mode === "default") {
-			const sub = mode.sub
-			if (sub.name === "translating") {
-				this._cb.cancelTranslate()
-				this._cb.lockViewport(false)
-			} else if (sub.name === "rubber-band") {
-				this._cb.cancelRubberBand()
-				this._cb.lockViewport(false)
-			} else if (
-				sub.name === "pointing-handle" ||
-				sub.name === "resizing" ||
-				sub.name === "pointing-port"
-			) {
-				this._cb.lockViewport(false)
-			} else if (sub.name === "connecting") {
-				this._cb.cancelConnect()
-				this._cb.lockViewport(false)
-			} else if (sub.name === "pointing-edge-endpoint" || sub.name === "dragging-edge-endpoint") {
-				this._cb.cancelEndpointMove()
-				this._cb.lockViewport(false)
-			} else if (sub.name === "pointing-edge-segment" || sub.name === "pointing-edge-waypoint") {
-				this._cb.lockViewport(false)
-			} else if (sub.name === "dragging-edge-waypoint-new") {
-				this._cb.cancelWaypointInsert()
-				this._cb.lockViewport(false)
-			} else if (sub.name === "dragging-edge-waypoint") {
-				this._cb.cancelWaypointMove()
-				this._cb.lockViewport(false)
-			} else if (sub.name === "dragging-edge-segment") {
-				this._cb.cancelSegmentMove()
-				this._cb.lockViewport(false)
-			}
+			this._cancelGesture(mode.sub)
 		}
 		this._mode = { mode: "default", sub: { name: "idle", hoveredId: null } }
 	}
@@ -799,30 +822,7 @@ export class EditorStateMachine {
 
 		if (e.key === "Escape") {
 			e.preventDefault()
-			// Cancel in-progress operations
-			if (sub.name === "translating") {
-				this._cb.cancelTranslate()
-				this._cb.lockViewport(false)
-			} else if (
-				sub.name === "rubber-band" ||
-				sub.name === "pointing-handle" ||
-				sub.name === "resizing" ||
-				sub.name === "connecting" ||
-				sub.name === "pointing-port"
-			) {
-				this._cb.lockViewport(false)
-			} else if (sub.name === "pointing-edge-endpoint" || sub.name === "dragging-edge-endpoint") {
-				this._cb.lockViewport(false)
-				this._cb.cancelEndpointMove()
-			} else if (sub.name === "pointing-edge-segment" || sub.name === "pointing-edge-waypoint") {
-				this._cb.lockViewport(false)
-			} else if (sub.name === "dragging-edge-waypoint-new") {
-				this._cb.lockViewport(false)
-				this._cb.cancelWaypointInsert()
-			} else if (sub.name === "dragging-edge-waypoint") {
-				this._cb.lockViewport(false)
-				this._cb.cancelWaypointMove()
-			}
+			this._cancelGesture(sub)
 			this._cb.setSelection([])
 			this._mode = this._idle()
 			return

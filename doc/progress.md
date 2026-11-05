@@ -1,5 +1,24 @@
 # Progress
 
+## 2026-11-05 — Lanes and pools: write support (#258, rebuilt on main)
+
+- Stacked on #263 (round-trip fidelity, split out of this PR). One editable process with lanes; partner pools are black boxes.
+- Core: `swimlanes.ts` helpers; builder `.lane()` / `.participant()`, `DiagramBuilder.withAutoLayout()`; compact `lanes` / `participants` / `messageFlows` / `executable`, checked by `reconcileCompact`; process text and change-script `lane` / `pool` / `msg` lines; nested-lane layout and pool-less lane bands; `BpmnDefinitions.primaryProcessId` (`bpmnkit:primaryProcess`, written only when the file alone would lead `primaryProcess` elsewhere).
+- Editor: edits go to the primary process wherever the file lists it (`withPrimaryFirst` puts it back by id, so the saved order is the file's); pool tool, add and divide lanes, resize, move and space across pools and lanes, lane membership by drawing, message flows across pools, delete of lanes and black boxes; `applyProcessDelta` applies swimlane lines keeping the layout. Pool and lane geometry lives in `swimlanes.ts` (model, primary process, what an edit leaves alone) and `swimlane-{placement,resize,space,create,delete}.ts`.
+- Canvas: message-flow labels (default position sized by the name) and wide hit paths; edge ends on a border stay where the DI puts them. Drop, proxy and CLI pass the new lines and compact keys.
+- Review of #258: round-trip changes split into #263; the pin's namespace declaration now stays in the model (`pinPrimaryProcess`), so the parser no longer tracks prefix use; `LANE_LINE`, `buildLaneSet`, `poolLanedProcesses`, `pruneLaneRefs` and `LaneSpec` no longer exported; every editor test is typechecked (`tsconfig.test.json` includes `tests`, plus `DOM.Iterable`); one changeset per package; the builder reference leaves `lane` / `participant` out to stay in its token budget.
+- Rebased on 906ec99e: golden values re-captured from main's output (`compact-lanes` baseline from core 1.7.0; `miwg-A.4.0` layout hash, which differs from 1.7.0 only by the lane bands, their +30/+20 header shift and `isExecutable`).
+- Verified: round trip of the 50 repo `.bpmn` files against core 1.7.0 differs only by #263 (27 kept `isExecutable="false"`, 2 `childLaneSet` lines, the Flowable fixture parses); the saved XML keeps process and diagram order for every op kind. Known, not changed: re-routed message flows can overlap, a reroute leaves the label behind, comments and CDATA are not preserved.
+
+## 2026-11-05 — Round trip: Flowable Modeler files, `isExecutable`, nested lanes
+
+- Split out of the lane and pool PR (#258). The saved XML is deployed to Flowable, so the round trip must not change what the engine reads.
+- `<definitions>` without an `id` (the Flowable Modeler omits it; the schema makes it optional) parses, with `id: ""`, and is written back without one. It used to throw `ParseError`.
+- `isExecutable` is read as an `xsd:boolean` (`true`/`1`, `false`/`0`, whitespace ignored) and written back as the file says it. Flowable reads an absent attribute as executable, so dropping `false` made a partner pool's process deployable. Absent stays absent. Files that say `false` get a new `semanticHash`.
+- A nested lane set is written as `<childLaneSet>`, not `<laneSet>`: the output was schema-invalid and the nested lanes were lost on the next read. Files saved that way are read back.
+- Round-trip diff of the 50 `.bpmn` files in the repo, `@bpmnkit/core@1.7.0` vs this change: 33 identical; 15 differ only by keeping the `isExecutable="false"` they declare, 1 by `<childLaneSet>`, and the Flowable fixture now parses.
+- Tests: `flowable-roundtrip.test.ts`; corpus fixture `08-flowable-lanes-pools.bpmn`; 13 stale `isExecutable` entries removed from the round-trip ratchet; golden hashes regenerated for the files that say `false`.
+
 ## 2026-11-05 — Camunda 8 → Camunda 7/Operaton export (issue #259, step 2)
 
 - `convertCamunda8To7(defs)` in `packages/core/src/bpmn/camunda7/export.ts`, exported from `@bpmnkit/core`: non-mutating, returns `{ definitions, findings }` (same finding shape as `convertCamunda7`). Maps job type → `camunda:type="external"` + `camunda:topic`, I/O mapping → `camunda:inputOutput`, assignment, `formKey`, `calledElement` (+ `camunda:in`/`out variables="all"`), version tag. Removes all `zeebe:`/`modeler:` content and namespaces itself (does not use the serializer). FEEL is kept raw with a `manual` finding; message correlation keys, connectors and Zeebe-only features are dropped with findings.

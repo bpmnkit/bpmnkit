@@ -25,6 +25,15 @@ export const it: Locale = {
 	name: "Italiano",
 	messages: {
 		".docx for Word and LibreOffice": ".docx per Word e LibreOffice",
+		"Add lane": "Aggiungi lane",
+		"Add lane above": "Aggiungi lane sopra",
+		"Add lane below": "Aggiungi lane sotto",
+		"Add pool": "Aggiungi pool",
+		"Cannot create a pool: another process with content has no pool":
+			"Impossibile creare un pool: un altro processo con contenuto non ha un pool",
+		"Create pool": "Crea pool",
+		"Divide into three lanes": "Dividi in tre lane",
+		"Divide into two lanes": "Dividi in due lane",
 		"Download HTML": "Scarica HTML",
 		"Download Markdown": "Scarica Markdown",
 		"Download Word": "Scarica Word",
@@ -374,6 +383,8 @@ export const it: Locale = {
 		"Optimize diagram": "Ottimizza diagramma",
 		"Parallel (for each, all at once)": "Parallelo (per ciascuno, tutti insieme)",
 		"Parallel Gateway": "Gateway parallelo",
+		"Partner pool: no lanes or nodes in this version":
+			"Pool partner: senza lane né nodi in questa versione",
 		Paste: "Incolla",
 		Pattern: "Pattern",
 		Play: "Riproduci",

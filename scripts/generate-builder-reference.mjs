@@ -72,6 +72,9 @@ const SKIP_METHODS = new Set([
 	// Variants of startEvent for multi-start layouts; the plain call covers generation.
 	"addStartEvent",
 	"disconnectedStartEvent",
+	// Lanes and pools stay out, as in the on-device guide: the token budget goes to flow.
+	"lane",
+	"participant",
 ])
 
 /** Method families, first match wins. A method that matches none is listed under "other". */

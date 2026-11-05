@@ -145,6 +145,15 @@ describe("sharing a suggestion", () => {
 		expect(json.suggestions.map((s) => s.id)).toEqual([res.json.suggestion?.id])
 	})
 
+	it.each([
+		["a lane move", "lane sales: task\n@1 task"],
+		["a new partner pool and its message", "pool bank[Bank]\nmsg task >(Payment) bank\n@1 task"],
+		["a message removal", "- msg task > bank\n@1 task"],
+	])("takes a script that is only %s", async (_label, script) => {
+		const { comment } = await thread()
+		expect((await suggest({ ...valid([comment.id]), script })).status).toBe(201)
+	})
+
 	it("uses the comment author token, so a commenter is not given a second one", async () => {
 		const { comment, token } = await thread()
 		const res = await suggest(valid([comment.id]), { author: token })

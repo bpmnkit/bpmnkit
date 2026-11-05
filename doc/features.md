@@ -1,5 +1,12 @@
 # Features
 
+## Lanes and pools: write support (2026-11-05)
+
+- Core: `ProcessBuilder.lane()` / `.participant()` write lanes (nested included) and pools, validated at build time; `DiagramBuilder.withAutoLayout()`. The compact format carries `lanes`, `participants`, `messageFlows` and `executable` both ways, so `casen generate`, the proxy and `reconcileCompact` keep swimlanes. Process text reads and writes `lane id[Name]: a, b`, `pool id[Name]` and `msg a >(Label) pool` (taught by `PROCESS_TEXT_GUIDE`, not by the on-device guide). Auto-layout insets nested lanes and keeps lane bands on a laned process without a pool.
+- Editor: edits the executable process and its diagram even when a partner pool comes first. Pool tool, add lane above or below, divide a pool into lanes, resize and move pools and lanes, space tool across them; membership follows the drawing; connecting two pools draws a message flow; pools, lanes and message flows are renamed in place; lanes and black-box pools can be deleted (the own pool cannot). Change scripts (Drop suggestions, AI chat) apply `lane`, `pool` and `msg` lines and keep the layout.
+- Canvas: message flows show their name, placed beside the longest segment when the file gives no position.
+- Scope: one editable process with lanes; partner pools are black boxes.
+
 ## Vendor-neutral export: `stripCamunda8` (2026-11-05)
 
 `stripCamunda8(definitions)` returns a copy without Camunda 8 vendor bits (`zeebe:*`, `modeler:*`, their `xmlns`) plus a list of what was dropped, as a base for Camunda 7/Operaton export. Opt-in; Camunda 8 output is unchanged.

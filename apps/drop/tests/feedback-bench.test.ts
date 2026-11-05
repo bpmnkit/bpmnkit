@@ -135,3 +135,37 @@ describe("createChangeLineFilter — notes", () => {
 		)
 	})
 })
+
+describe("createChangeLineFilter — lanes, pools and messages", () => {
+	it("passes lane, pool and msg lines and - msg removals, and no prose dressed as one", () => {
+		const filter = createChangeLineFilter()
+		const answer = [
+			"Lane changes:",
+			"lane sales[Sales team]: a, b",
+			"lane ops: c",
+			"lane ops[Operations]:",
+			"lane ops:",
+			"Lane sales: moves the review to the sales team",
+			"pool bank[Bank]",
+			"Pool the requests before sending them.",
+			"msg pay >(Payment: EUR) bank",
+			"msg bank > paid",
+			"Msg the bank about it",
+			"- msg pay > bank",
+			"lane_x > y",
+		].join("\n")
+		const kept = filter.push(answer.slice(0, 50)) + filter.push(answer.slice(50)) + filter.end()
+		expect(kept).toBe(
+			[
+				"lane sales[Sales team]: a, b",
+				"lane ops: c",
+				"lane ops[Operations]:",
+				"pool bank[Bank]",
+				"msg pay >(Payment: EUR) bank",
+				"msg bank > paid",
+				"- msg pay > bank",
+				"lane_x > y",
+			].join("\n"),
+		)
+	})
+})
