@@ -36,6 +36,7 @@ import {
 } from "./rest-connector.js"
 import {
 	assertExplicitFlowIdsUnique,
+	assignEventDefinitionIds,
 	assignStableFlowIds,
 	markExplicitFlowId,
 	rootDefinitionId,
@@ -1458,6 +1459,9 @@ function insertJoinGateways(elements: BpmnFlowElement[], flows: BpmnSequenceFlow
  * final until join inference has run, and its id is not final until this pass.
  */
 function finalizeScope(elements: BpmnFlowElement[], flows: BpmnSequenceFlow[]): void {
+	for (const el of elements) {
+		if ("eventDefinitions" in el) assignEventDefinitionIds(el.id, el.eventDefinitions)
+	}
 	insertJoinGateways(elements, flows)
 	assignStableFlowIds(elements, flows)
 	recomputeIncomingOutgoing(elements, flows)
@@ -3691,6 +3695,12 @@ export class ProcessBuilder {
 			this._source === undefined ? undefined : new Set(this._sourceFlowTargets.keys()),
 		)
 		assertExplicitFlowIdsUnique(this.flowElements, this.sequenceFlows)
+		// A continued document keeps its untouched part byte-for-byte, ids included.
+		if (this._source === undefined) {
+			for (const el of this.flowElements) {
+				if ("eventDefinitions" in el) assignEventDefinitionIds(el.id, el.eventDefinitions)
+			}
+		}
 		recomputeIncomingOutgoing(this.flowElements, this.sequenceFlows)
 
 		if (this._source !== undefined) return this.buildOntoSource(this._source)

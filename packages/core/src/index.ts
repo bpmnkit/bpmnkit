@@ -293,6 +293,7 @@ export type {
 	FormDefinition,
 	FormExporter,
 	FormGroupComponent,
+	FormConditional,
 	FormLayout,
 	FormLayoutInput,
 	FormRadioComponent,
