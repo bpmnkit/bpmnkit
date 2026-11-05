@@ -4871,6 +4871,36 @@
 			]
 		},
 		{
+			"id": "packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources-task-level-bindings",
+			"file": "chunks/packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources-task-level-bindings.md",
+			"tokens": 266,
+			"tags": [
+				"packages",
+				"connectors",
+				"applying",
+				"element",
+				"inbound",
+				"linked",
+				"resources",
+				"task-level",
+				"bindings"
+			],
+			"entities": [
+				"applyTemplateToElement",
+				"applyElementTemplate",
+				"processId",
+				"bindingType",
+				"versionTag",
+				"propagateAllParentVariables",
+				"propagateAllChildVariables",
+				"decisionId",
+				"resultVariable",
+				"formId",
+				"externalReference",
+				"candidateGroups"
+			]
+		},
+		{
 			"id": "packages.connectors.applying-several-templates-by-name-applytemplates",
 			"file": "chunks/packages.connectors.applying-several-templates-by-name-applytemplates.md",
 			"tokens": 632,

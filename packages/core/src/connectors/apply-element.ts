@@ -25,7 +25,13 @@ import {
 	sha256Hex,
 	zeebeExtensionsToXmlElements,
 } from "../index.js"
-import { type Accumulator, type ApplyOptions, type ApplyProblem, resolveBindings } from "./apply.js"
+import {
+	type Accumulator,
+	type ApplyOptions,
+	type ApplyProblem,
+	type TaskExtensionBinding,
+	resolveBindings,
+} from "./apply.js"
 import type { ElementTemplate, TemplateBinding } from "./template-types.js"
 
 /** The one `elementType.eventDefinition` this toolkit writes. */
@@ -226,6 +232,116 @@ function zeebeElement(extensions: ZeebeExtensions): XmlElement | undefined {
 	return zeebeExtensionsToXmlElements(extensions)[0]
 }
 
+const TASK_EXTENSION_TYPES: ReadonlyArray<TemplateBinding["type"]> = [
+	"zeebe:userTask",
+	"zeebe:calledElement",
+	"zeebe:calledDecision",
+	"zeebe:formDefinition",
+	"zeebe:assignmentDefinition",
+	"zeebe:taskSchedule",
+	"zeebe:priorityDefinition",
+	"zeebe:script",
+]
+
+/** The booleans `zeebe:calledElement` holds as booleans and the XML carries as strings. */
+const isTrue = (value: string | undefined): boolean | undefined =>
+	value === undefined ? undefined : value === "true"
+
+/**
+ * Task-level extensions (`zeebe:calledElement` … `zeebe:script`), via the typed writers in
+ * `zeebe-extensions.ts`. `zeebe:script` has no writer there, so it is built by hand.
+ */
+function ownedTaskExtensions(
+	declared: ReadonlySet<TemplateBinding["type"]>,
+	accum: Accumulator,
+): Array<[string, XmlElement | undefined]> {
+	const owned: Array<[string, XmlElement | undefined]> = []
+	const props = (type: TaskExtensionBinding["type"]) => accum.taskExtensions.get(type) ?? {}
+	const withAttributes = (element: XmlElement | undefined, extra: Record<string, string>) =>
+		element && { ...element, attributes: { ...element.attributes, ...extra } }
+
+	if (declared.has("zeebe:userTask")) {
+		owned.push(["zeebe:userTask", accum.userTask ? zeebeElement({ userTask: true }) : undefined])
+	}
+	if (declared.has("zeebe:calledElement")) {
+		const p = props("zeebe:calledElement")
+		owned.push([
+			"zeebe:calledElement",
+			p.processId === undefined
+				? undefined
+				: zeebeElement({
+						calledElement: {
+							processId: p.processId,
+							bindingType: p.bindingType as "latest" | "deployment" | "versionTag" | undefined,
+							versionTag: p.versionTag,
+							propagateAllParentVariables: isTrue(p.propagateAllParentVariables),
+							propagateAllChildVariables: isTrue(p.propagateAllChildVariables),
+						},
+					}),
+		])
+	}
+	if (declared.has("zeebe:calledDecision")) {
+		const p = props("zeebe:calledDecision")
+		const base =
+			p.decisionId === undefined || p.resultVariable === undefined
+				? undefined
+				: zeebeElement({
+						calledDecision: { decisionId: p.decisionId, resultVariable: p.resultVariable },
+					})
+		// The writer's type has no resource-binding fields; they belong on the same element.
+		owned.push([
+			"zeebe:calledDecision",
+			withAttributes(base, {
+				...(p.bindingType === undefined ? {} : { bindingType: p.bindingType }),
+				...(p.versionTag === undefined ? {} : { versionTag: p.versionTag }),
+			}),
+		])
+	}
+	if (declared.has("zeebe:formDefinition")) {
+		const p = props("zeebe:formDefinition")
+		const form =
+			p.externalReference !== undefined
+				? { externalReference: p.externalReference }
+				: p.formId === undefined
+					? undefined
+					: {
+							formId: p.formId,
+							bindingType: p.bindingType as "latest" | "deployment" | "versionTag" | undefined,
+							versionTag: p.versionTag,
+						}
+		owned.push([
+			"zeebe:formDefinition",
+			form === undefined ? undefined : zeebeElement({ formDefinition: form }),
+		])
+	}
+	if (declared.has("zeebe:assignmentDefinition")) {
+		owned.push([
+			"zeebe:assignmentDefinition",
+			zeebeElement({ assignmentDefinition: props("zeebe:assignmentDefinition") }),
+		])
+	}
+	if (declared.has("zeebe:taskSchedule")) {
+		owned.push(["zeebe:taskSchedule", zeebeElement({ taskSchedule: props("zeebe:taskSchedule") })])
+	}
+	if (declared.has("zeebe:priorityDefinition")) {
+		const { priority } = props("zeebe:priorityDefinition")
+		owned.push([
+			"zeebe:priorityDefinition",
+			priority === undefined ? undefined : zeebeElement({ priorityDefinition: { priority } }),
+		])
+	}
+	if (declared.has("zeebe:script")) {
+		const p = props("zeebe:script")
+		owned.push([
+			"zeebe:script",
+			p.expression === undefined
+				? undefined
+				: { name: "zeebe:script", attributes: { ...p }, children: [] },
+		])
+	}
+	return owned
+}
+
 /**
  * The element-level extensions a template owns, each with what it now holds.
  *
@@ -280,6 +396,7 @@ function ownedExtensions(
 			agentType === undefined ? undefined : zeebeElement({ agentDefinition: { agentType } }),
 		])
 	}
+	owned.push(...ownedTaskExtensions(declared, accum))
 	if (declared.has("zeebe:linkedResource")) {
 		const children: XmlElement[] = [...accum.linkedResources].map(([linkName, attributes]) => ({
 			name: "zeebe:linkedResource",
@@ -314,7 +431,9 @@ function ownedExtensions(
  *   references, and is otherwise derived from the template and element ids,
  *   never from a clock or random source.
  * - **Extensions.** `zeebe:taskDefinition`, `ioMapping`, `taskHeaders`,
- *   `properties`, `adHoc` and `linkedResources` are replaced wholesale when the
+ *   `properties`, `adHoc`, `linkedResources` and the task-level ones (`calledElement`,
+ *   `calledDecision`, `userTask`, `formDefinition`, `assignmentDefinition`, `taskSchedule`,
+ *   `priorityDefinition`, `script`) are replaced wholesale when the
  *   template declares a binding of that kind, in place, and left alone when it
  *   does not. `zeebe:modelerTemplate`, `…Version` and `…Icon` are stamped.
  *
@@ -393,7 +512,15 @@ export function applyTemplateToElement(
 		...stamps,
 	}
 
-	const declared = new Set(template.properties.map((prop) => prop.binding.type))
+	const declared = new Set<TemplateBinding["type"]>(
+		template.properties.map((prop) => prop.binding.type),
+	)
+	// Re-applying the template this element already carries (a new version, say) owns every
+	// task-level extension: the old version's bindings are not in hand, and one the new
+	// version dropped must not survive.
+	if (originalElement.unknownAttributes["zeebe:modelerTemplate"] === template.id) {
+		for (const type of TASK_EXTENSION_TYPES) declared.add(type)
+	}
 	const owner = bpmnElementName(element)
 	for (const [name, extension] of ownedExtensions(declared, accum)) {
 		if (extension && !isZeebePlacementAllowed(owner, name)) {
