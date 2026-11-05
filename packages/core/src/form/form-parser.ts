@@ -91,6 +91,28 @@ export function parseForm(json: string): FormDefinition {
 }
 
 function parseComponent(raw: unknown, path: string): FormComponent {
+	const component = parseKnownComponent(raw, path)
+	const obj = raw as Record<string, unknown>
+	const cond = obj.conditional
+	if (typeof cond === "object" && cond !== null && !Array.isArray(cond)) {
+		const { hide, ...rest } = cond as Record<string, unknown>
+		// A conditional form-js adds keys to later is kept whole, never narrowed to `hide`.
+		if (typeof hide === "string" && Object.keys(rest).length === 0) {
+			component.conditional = { hide }
+		}
+	}
+	const known = component as unknown as Record<string, unknown>
+	const extra: Record<string, unknown> = {}
+	for (const [key, value] of Object.entries(obj)) {
+		if (!(key in known) && !(key === "conditional" && component.conditional)) extra[key] = value
+	}
+	if (Object.keys(extra).length > 0 && component.extraProps === undefined) {
+		component.extraProps = extra
+	}
+	return component
+}
+
+function parseKnownComponent(raw: unknown, path: string): FormComponent {
 	if (typeof raw !== "object" || raw === null || Array.isArray(raw)) {
 		throw new ParseError(`${path}: component must be an object`)
 	}

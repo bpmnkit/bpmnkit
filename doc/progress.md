@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-05 — core: event-definition ids and form `conditional` (Camunda eval fixes)
+
+- Event definitions built with the fluent builder now get deterministic ids (`<ElementId>_<Kind>EventDefinition`, counter for repeats; `eventDefinitionId` in `stable-ids.ts`). Zeebe 8.10 rejects a definition without one. Parsed files are not rewritten: serializing keeps them byte-faithful, and a continued document keeps its untouched part as is.
+- New lint rule `deploy/event-definition-no-id` (deploy profile) flags definitions without an id.
+- Forms: `conditional: { hide }` added to the model, `Form` builder options, parser and exporter; component props the model does not know are kept in `extraProps` and written back, so `Form.export(parse(x))` is lossless. Tests: `tests/event-definition-ids.test.ts`, `tests/form/conditional.test.ts`.
+
 ## 2026-11-05 — Camunda 8 → Camunda 7/Operaton export (issue #259, step 2)
 
 - `convertCamunda8To7(defs)` in `packages/core/src/bpmn/camunda7/export.ts`, exported from `@bpmnkit/core`: non-mutating, returns `{ definitions, findings }` (same finding shape as `convertCamunda7`). Maps job type → `camunda:type="external"` + `camunda:topic`, I/O mapping → `camunda:inputOutput`, assignment, `formKey`, `calledElement` (+ `camunda:in`/`out variables="all"`), version tag. Removes all `zeebe:`/`modeler:` content and namespaces itself (does not use the serializer). FEEL is kept raw with a `manual` finding; message correlation keys, connectors and Zeebe-only features are dropped with findings.

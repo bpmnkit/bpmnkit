@@ -34,11 +34,19 @@ export interface FormValueOption {
 	value: string
 }
 
+/** form-js `conditional` block: the component is hidden while the FEEL expression is true. */
+export interface FormConditional {
+	hide: string
+}
+
 /** Base properties shared by all form components. */
 interface FormComponentBase {
 	id: string
 	type: string
 	layout?: FormLayout
+	conditional?: FormConditional
+	/** Properties the model does not know, kept verbatim so a round trip is lossless. */
+	extraProps?: Record<string, unknown>
 }
 
 /** Static text/markdown display component. */
