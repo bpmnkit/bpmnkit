@@ -1,8 +1,7 @@
 # Layout closeness diagnosis (C8)
 
 2026-11-05. Diagnosis of the bake-off layout gap (7.7/15 against 9.5; mean shape offset 194 px,
-`doc/agent-bpmn-bakeoff-rerun.md`). Outcome: there are three general causes, but no code change shipped.
-The fixture that every candidate fix must change is frozen on purpose (see "Why no fix shipped").
+`doc/agent-bpmn-bakeoff-rerun.md`). Outcome: R3 and R1 shipped (see "Status"); R2 is blocked by a spec test.
 
 ## Premise corrections
 
@@ -49,7 +48,18 @@ R1-R3 apply. It is not a general rule.
 R3 was tried: corpus avg 330.7 → 330.1 px, P90 555.1 → 553.4 px (only `miwg-C.6.0` changes:
 775.4 → 760.0 px), all core tests green except the byte-exact fixture test.
 
-## Why no fix shipped
+## Status (2026-11-05)
+
+- Shipped R3 and R1, after the parent decided that `expected.bpmn` may be regenerated for coordinates-only diffs
+  (36 `dc:Bounds` and 40 `di:waypoint` lines). Corpus: avg 330.7 → 330.1 px, P90 555.1 → 553.4 px, 0 order
+  violations. Bake-off: 193.6 → 120.9 px, layout 7.7 → 10.5/15.
+- Shipped: `closeness.mjs` `layout()` is translation-invariant (next step 2), so it now gives 193.6 px / 7.7 for
+  the baseline, the same as `closeness.py`.
+- Not shipped: R2. With the 50 px gap, `bakeoff-ai-agent-chat.test.ts` ("the tool note right of the agent, below
+  the user task") fails, with `"below"` and with `"right"` alike. R2 measured: corpus avg 326.7 px, P90 534.6 px;
+  bake-off 11.4 px. To ship it, either relax that spec check or add a corner side to the annotation packer.
+
+## Why no fix shipped at first
 
 All three rules change the layout of `build.ts`, so `expected.bpmn` would have to be regenerated. That
 fixture is frozen on purpose and shared: `packages/engine/tests/cpt/run.test.ts`
