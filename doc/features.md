@@ -52,6 +52,12 @@
   a fixed number of columns, filled top to bottom or left to right.
 - `annotate(id, text, { side: "below" })` puts the annotation on the side asked for.
 
+## Task-level template bindings (2026-11-05)
+
+- Element templates may bind `zeebe:calledElement`, `calledDecision`, `userTask`, `formDefinition`,
+  `assignmentDefinition`, `taskSchedule`, `priorityDefinition` and `script`. `applyTemplateToElement`
+  writes them and, on re-apply, removes the ones a newer version of the same template dropped.
+
 ## `omitDefaults` for template application (2026-10-22)
 
 - `applyTemplates(definitions, entries, { omitDefaults: true })` (also `applyTemplateToElement` and

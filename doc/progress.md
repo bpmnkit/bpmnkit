@@ -17,6 +17,13 @@
 - MCP `update_element` accepts these plus `executionListeners` / `taskListeners` (already supported by core, never exposed).
 - Tests: `packages/core/tests/full-operations-events.test.ts`, `apps/proxy/tests/mcp-update-element.test.ts`.
 
+## 2026-11-05 — B9: task-level template bindings; C10: `ignoreNullValues` on GET pinned
+
+- B9: `zeebe:calledElement`, `calledDecision`, `userTask` (flag), `formDefinition`, `assignmentDefinition`, `taskSchedule`, `priorityDefinition` and `script` are valid template bindings (properties checked against the Camunda element-template docs; `formKey` is not a schema property and stays a validation error). `applyTemplateToElement` writes them with the typed writers in `zeebe-extensions.ts`; `zeebe:script` has no writer there (and `bpmn/**` is out of scope), so its element is built in `apply-element.ts`. `calledDecision`'s `bindingType`/`versionTag` are merged onto the writer's element for the same reason.
+- Ownership: a template owns the bindings it declares; re-applying a template whose id the element already carries (a new version) owns all eight, so a binding v2 dropped is removed. An extension missing a required attribute (`processId`, `decisionId`+`resultVariable`, `expression`, `priority`, `formId`/`externalReference`) is not written and is reported; an invalid `bindingType` is reported. `applyElementTemplate` (builder options) reports these bindings as not expressible.
+- C10: already correct (a hidden, condition-gated property is never resolved); no code change. `tests/connectors/apply.test.ts` now pins GET without and with an explicit value, and POST with it. The closeness gap against the blueprint is accepted, per the plan decision.
+- Tests: `tests/connectors/bindings-b9.test.ts` (26), one in `apply.test.ts`.
+
 ## 2026-11-04 — CI on Node 26: DOM storage in tests, tsx deprecation warning, API snapshot
 
 - CI installs `lts/*`, which now resolves to Node 26. Node 25+ defines its own `localStorage`/`sessionStorage` globals, undefined unless started with `--localstorage-file`, and Vitest's DOM environment does not replace them, so the storage tests in `@bpmnkit/ui` and `apps/drop` failed. `scripts/vitest-dom-storage.mjs` (a `setupFiles` entry in both configs) gives DOM tests happy-dom `Storage` objects when Node's globals are undefined. Both suites pass on Node 22 and 26.

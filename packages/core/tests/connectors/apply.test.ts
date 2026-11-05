@@ -217,4 +217,20 @@ describe("conditions on hidden dropdowns", () => {
 		expect(targets.filter((t) => t === "url")).toHaveLength(1)
 		expect(targets.filter((t) => t === "method")).toHaveLength(1)
 	})
+
+	// C10: the template offers ignoreNullValues only for POST, PUT and PATCH (HttpJson v18),
+	// so a GET must never carry it — neither by default nor when a caller passes a value.
+	it("never writes ignoreNullValues for a GET, but does for a POST", () => {
+		const inputs = (values: Record<string, string>) =>
+			(
+				applyConnectorTemplate("io.camunda.connectors.HttpJson.v2", {
+					url: "https://example.com",
+					...values,
+				}).serviceTask?.ioMapping?.inputs ?? []
+			).map((input) => input.target)
+
+		expect(inputs({ method: "GET" })).not.toContain("ignoreNullValues")
+		expect(inputs({ method: "GET", ignoreNullValues: "true" })).not.toContain("ignoreNullValues")
+		expect(inputs({ method: "POST" })).toContain("ignoreNullValues")
+	})
 })
