@@ -36,6 +36,7 @@ import type {
 	BpmnTextAnnotation,
 	BpmnWaypoint,
 } from "./bpmn-model.js"
+import { BPMNKIT_NAMESPACE } from "./swimlanes.js"
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -1904,6 +1905,19 @@ class DefinitionsFrame extends Frame implements TextOwner {
 				unknownAttributes[key] = value
 			}
 		}
+		// Two prefixes may name the namespace; the pin is under the one that carries it.
+		const prefix = Object.keys(namespaces).find(
+			(p) =>
+				p !== "" &&
+				namespaces[p] === BPMNKIT_NAMESPACE &&
+				unknownAttributes[`${p}:primaryProcess`] !== undefined,
+		)
+		const pinKey = `${prefix}:primaryProcess`
+		const primaryProcessId = prefix === undefined ? undefined : unknownAttributes[pinKey]
+		// The declaration stays: it is the model's, like any other (see pinPrimaryProcess).
+		if (prefix !== undefined && primaryProcessId !== undefined) {
+			Reflect.deleteProperty(unknownAttributes, pinKey)
+		}
 
 		this.sink.result = {
 			// Optional in the schema, and the Flowable Modeler leaves it out.
@@ -1926,6 +1940,7 @@ class DefinitionsFrame extends Frame implements TextOwner {
 			processes: this.processes,
 			diagrams: this.diagrams,
 			...(this.unknownChildren.length > 0 ? { unknownChildren: this.unknownChildren } : {}),
+			...(primaryProcessId !== undefined ? { primaryProcessId } : {}),
 		}
 	}
 }

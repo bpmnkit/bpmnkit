@@ -1,2 +1,6 @@
 # Buyer
 need_identified[start Need identified] > place_order[service Place order | job=place-order] > ordered[end Ordered]
+lane ordering[Ordering]: need_identified, place_order
+lane receiving[Receiving]: ordered
+pool seller[Seller]
+pool carrier[Carrier]

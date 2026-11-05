@@ -1,5 +1,44 @@
 {
   "id": "sid-bdb880ac-c464-4e5c-aa56-569d709436e0",
+  "messageFlows": [
+    {
+      "id": "sid-915AC9A0-CD35-4DF2-93F7-4535397622F8",
+      "source": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+      "target": "reviewInvoice"
+    },
+    {
+      "id": "sid-AB6EB7C8-DF5E-42C2-88D0-FA166583AF15",
+      "source": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+      "target": "assignApprover"
+    },
+    {
+      "id": "sid-7A070DED-8B83-48E1-88A1-5543C481E7BC",
+      "source": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+      "target": "StartEvent_1"
+    },
+    {
+      "id": "sid-90902E27-C1CD-4F90-A8F2-486DA4F42117",
+      "source": "assignApprover",
+      "target": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520"
+    },
+    {
+      "id": "sid-0518A412-1ED3-4CFD-A75C-69FF37EFFC16",
+      "source": "reviewInvoice",
+      "target": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D"
+    }
+  ],
+  "participants": [
+    {
+      "id": "sid-46891B57-A9D3-4A8B-AEBF-D4BA5F3961AD",
+      "name": "Team-Assistant",
+      "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57"
+    },
+    {
+      "id": "Process_Engine_1",
+      "name": "Process Engine - Invoice Receipt",
+      "processId": "bpmn-miwg-test-case-c.1.0"
+    }
+  ],
   "processes": [
     {
       "elements": [
@@ -60,6 +99,7 @@
           "type": "endEvent"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
@@ -113,6 +153,24 @@
         }
       ],
       "id": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+      "lanes": [
+        {
+          "id": "sid-744AEFB3-C93D-46A3-8976-EFA91784A51F",
+          "members": [
+            "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B",
+            "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+            "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44",
+            "sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D",
+            "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+            "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+            "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+            "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+            "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+            "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+            "sid-282524E6-660F-431D-8F19-1C3E9E9DE817"
+          ]
+        }
+      ],
       "name": "Team-Assistant"
     },
     {
@@ -231,6 +289,36 @@
         }
       ],
       "id": "bpmn-miwg-test-case-c.1.0",
+      "lanes": [
+        {
+          "id": "Approver",
+          "members": [
+            "approveInvoice",
+            "invoice_approved"
+          ],
+          "name": "Approver"
+        },
+        {
+          "id": "teamAssistant",
+          "members": [
+            "assignApprover",
+            "reviewInvoice",
+            "reviewSuccessful_gw",
+            "invoiceNotProcessed",
+            "StartEvent_1"
+          ],
+          "name": "Team Assistant"
+        },
+        {
+          "id": "Accountant",
+          "members": [
+            "prepareBankTransfer",
+            "invoiceProcessed",
+            "archiveInvoice"
+          ],
+          "name": "Accountant"
+        }
+      ],
       "name": "BPMN MIWG Test Case C.1.0"
     }
   ]

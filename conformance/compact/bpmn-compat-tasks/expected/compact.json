@@ -242,6 +242,7 @@
           "type": "complexGateway"
         }
       ],
+      "executable": false,
       "flows": [],
       "id": "notExecutable"
     }

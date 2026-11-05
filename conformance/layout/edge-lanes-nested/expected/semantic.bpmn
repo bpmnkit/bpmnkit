@@ -44,55 +44,55 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="P">
       <bpmndi:BPMNShape id="S_di" bpmnElement="S">
-        <dc:Bounds x="52" y="62" width="36" height="36"/>
+        <dc:Bounds x="82" y="62" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="50" y="102" width="40" height="14"/>
+          <dc:Bounds x="80" y="102" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="A_di" bpmnElement="A">
-        <dc:Bounds x="148" y="40" width="100" height="80"/>
+        <dc:Bounds x="178" y="40" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="B_di" bpmnElement="B">
-        <dc:Bounds x="308" y="200" width="100" height="80"/>
+        <dc:Bounds x="338" y="200" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="C_di" bpmnElement="C">
-        <dc:Bounds x="468" y="360" width="100" height="80"/>
+        <dc:Bounds x="498" y="360" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="E_di" bpmnElement="E">
-        <dc:Bounds x="628" y="382" width="36" height="36"/>
+        <dc:Bounds x="658" y="382" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="626" y="422" width="40" height="14"/>
+          <dc:Bounds x="656" y="422" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Outer1_di" bpmnElement="Outer1" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="686" height="320"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="In1_di" bpmnElement="In1" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="686" height="160"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="In2_di" bpmnElement="In2" isHorizontal="true">
-        <dc:Bounds x="0" y="160" width="686" height="160"/>
+        <dc:Bounds x="0" y="0" width="716" height="320"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Outer2_di" bpmnElement="Outer2" isHorizontal="true">
-        <dc:Bounds x="0" y="320" width="686" height="160"/>
+        <dc:Bounds x="0" y="320" width="716" height="160"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="In1_di" bpmnElement="In1" isHorizontal="true">
+        <dc:Bounds x="30" y="0" width="686" height="160"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="In2_di" bpmnElement="In2" isHorizontal="true">
+        <dc:Bounds x="30" y="160" width="686" height="160"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
-        <di:waypoint x="88" y="80"/>
-        <di:waypoint x="148" y="80"/>
+        <di:waypoint x="118" y="80"/>
+        <di:waypoint x="178" y="80"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
-        <di:waypoint x="198" y="120"/>
-        <di:waypoint x="198" y="240"/>
-        <di:waypoint x="308" y="240"/>
+        <di:waypoint x="228" y="120"/>
+        <di:waypoint x="228" y="240"/>
+        <di:waypoint x="338" y="240"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
-        <di:waypoint x="358" y="280"/>
-        <di:waypoint x="358" y="400"/>
-        <di:waypoint x="468" y="400"/>
+        <di:waypoint x="388" y="280"/>
+        <di:waypoint x="388" y="400"/>
+        <di:waypoint x="498" y="400"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4">
-        <di:waypoint x="568" y="400"/>
-        <di:waypoint x="628" y="400"/>
+        <di:waypoint x="598" y="400"/>
+        <di:waypoint x="658" y="400"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

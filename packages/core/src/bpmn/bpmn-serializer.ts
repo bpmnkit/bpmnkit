@@ -28,6 +28,7 @@ import type {
 	BpmnSignal,
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
+import { pinnedPrimaryToWrite, withBpmnkitNamespace } from "./swimlanes.js"
 
 // ---------------------------------------------------------------------------
 // Namespace prefix resolution
@@ -820,7 +821,10 @@ function serializeDiagram(diagram: BpmnDiagram, ns: Record<string, string>): Xml
 
 /** Serialize a BpmnDefinitions model to a BPMN XML string. */
 export function serializeBpmn(definitions: BpmnDefinitions): string {
-	const ns = definitions.namespaces
+	const pinned = pinnedPrimaryToWrite(definitions)
+	// Declared with the others, so a parsed copy writes the same bytes.
+	const pin = pinned === undefined ? undefined : withBpmnkitNamespace(definitions.namespaces)
+	const ns = pin?.namespaces ?? definitions.namespaces
 	const bp = bpmnPrefix(ns)
 
 	const attrs: Record<string, string> = {}
@@ -843,6 +847,8 @@ export function serializeBpmn(definitions: BpmnDefinitions): string {
 	for (const [key, value] of Object.entries(definitions.unknownAttributes)) {
 		attrs[key] = value
 	}
+
+	if (pin !== undefined && pinned !== undefined) attrs[`${pin.prefix}:primaryProcess`] = pinned
 
 	const children: XmlElement[] = []
 

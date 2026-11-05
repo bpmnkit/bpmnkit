@@ -1,5 +1,43 @@
 {
   "id": "Definitions__3",
+  "messageFlows": [
+    {
+      "id": "_76",
+      "source": "_5",
+      "target": "_33"
+    },
+    {
+      "id": "_80",
+      "source": "_5",
+      "target": "_38"
+    },
+    {
+      "id": "_77",
+      "source": "_45",
+      "target": "_5"
+    },
+    {
+      "id": "_78",
+      "source": "_18",
+      "target": "_5"
+    },
+    {
+      "id": "_79",
+      "source": "_31",
+      "target": "_5"
+    }
+  ],
+  "participants": [
+    {
+      "id": "_5",
+      "name": "Client"
+    },
+    {
+      "id": "_7",
+      "name": "Travel Planning",
+      "processId": "_8"
+    }
+  ],
   "processes": [
     {
       "elements": [
@@ -145,6 +183,7 @@
           "type": "dataObject"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "_18",
@@ -227,6 +266,36 @@
         }
       ],
       "id": "_8",
+      "lanes": [
+        {
+          "id": "_15",
+          "members": [
+            "_39",
+            "_41",
+            "_22",
+            "_29",
+            "_21",
+            "_38",
+            "_45"
+          ],
+          "name": "Employee"
+        },
+        {
+          "id": "_16",
+          "members": [
+            "_19",
+            "_36",
+            "_31",
+            "_18",
+            "_34",
+            "_33",
+            "_24",
+            "_27",
+            "_25"
+          ],
+          "name": "Project Office"
+        }
+      ],
       "name": "Travel Planning"
     },
     {
@@ -261,6 +330,7 @@
           "type": "dataObjectReference"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "ID-ee745c80-43de-11f1-744d-b02628b36240",
