@@ -191,15 +191,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "timeout"
       },
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "error"
       },
       {
@@ -270,7 +270,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "tooltip": "Your Twilio account SID. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">Twilio outbound connector documentation</a>",
+        "tooltip": "Your Twilio account SID. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">Twilio outbound connector documentation</a>",
         "group": "authentication"
       },
       {},
@@ -278,16 +278,16 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
-        "tooltip": "Your Twilio API key. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">Twilio outbound connector documentation</a>",
+        "tooltip": "Your Twilio API key. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">Twilio outbound connector documentation</a>",
         "group": "authentication"
       },
       {
-        "tooltip": "Your Twilio API secret. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">Twilio outbound connector documentation</a>",
+        "tooltip": "Your Twilio API secret. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">Twilio outbound connector documentation</a>",
         "group": "authentication"
       },
       {},
       {
-        "tooltip": "Your Twilio auth token. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">Twilio outbound connector documentation</a>",
+        "tooltip": "Your Twilio auth token. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">Twilio outbound connector documentation</a>",
         "group": "authentication"
       },
       {
@@ -334,15 +334,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "filter"
       },
       {
-        "tooltip": "The date and time the message was sent (<a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">in UTC format</a>)",
+        "tooltip": "The date and time the message was sent (<a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">in UTC format</a>)",
         "group": "filter"
       },
       {
-        "tooltip": "The date and time before which messages were sent (<a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">in UTC format</a>)",
+        "tooltip": "The date and time before which messages were sent (<a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">in UTC format</a>)",
         "group": "filter"
       },
       {
-        "tooltip": "The date and time after which messages were sent (<a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">in UTC format</a>)",
+        "tooltip": "The date and time after which messages were sent (<a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound\" target=\"_blank\">in UTC format</a>)",
         "group": "filter"
       },
       {
@@ -357,11 +357,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
@@ -369,7 +369,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "errors"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
       },
       {
@@ -449,7 +449,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "name": "Connectors"
       },
       "icon": {
-        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTc5IiBoZWlnaHQ9IjMyMyIgdmlld0JveD0iMCAwIDU3OSAzMjMiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMF8xOTg0XzczMCkiPgo8cGF0aCBkPSJNMzU5LjQgNzUuM0wyODQgMTE3LjdMMjAzLjMgNzIuM0wxOTkuNSA3NC41VjEwNy41TDI4NCAxNTVMMzU5LjQgMTEyLjVWMTMwLjFMMjg0IDE3Mi41TDIwMy4zIDEyNy4yTDE5OS41IDEyOS4zVjEzNC45TDI4NCAxODIuNEwzNjguNSAxMzQuOVYxMDEuOUwzNjQuNiA5OS44TDI4NCAxNDUuMUwyMDguNSAxMDIuN1Y4NS4yTDI4NCAxMjcuNkwzNjguNSA4MC4xVjQ3LjZMMzY0LjIgNDUuMkwyODQgOTAuM0wyMTIuNSA1MC4xTDI4NCA5LjlMMzQyLjggNDNMMzQ4LjEgNDAuMVYzNi4xTDI4NCAwTDE5OS41IDQ3LjZWNTIuN0wyODQgMTAwLjJMMzU5LjQgNTcuN1Y3NS4zWiIgZmlsbD0iI0ZGMzYyMSIvPgo8cGF0aCBkPSJNNjYuNiAzMjAuN1YyMzAuN0g1Mi43VjI2NC40QzUyLjcgMjY0LjkgNTIuNCAyNjUuMyA1MS45IDI2NS41QzUxLjQgMjY1LjcgNTAuOSAyNjUuNSA1MC42IDI2NS4yQzQ1LjkgMjU5LjcgMzguNiAyNTYuNSAzMC41IDI1Ni41QzEzLjQgMjU2LjUgMCAyNzAuOSAwIDI4OS40QzAgMjk4LjQgMy4xIDMwNi44IDguOCAzMTIuOUMxNC41IDMxOSAyMi4yIDMyMi4zIDMwLjYgMzIyLjNDMzguNSAzMjIuMyA0NS44IDMxOSA1MC43IDMxMy4zQzUxIDMxMi45IDUxLjYgMzEyLjggNTIgMzEyLjlDNTIuNSAzMTMuMSA1Mi44IDMxMy41IDUyLjggMzE0VjMyMC43SDY2LjZaTTMzLjcgMzA5LjdDMjIuNyAzMDkuNyAxNCAzMDAuOCAxNCAyODkuNEMxNCAyNzggMjIuNyAyNjkuMSAzMy43IDI2OS4xQzQ0LjcgMjY5LjEgNTMuNCAyNzggNTMuNCAyODkuNEM1My40IDMwMC44IDQ0LjcgMzA5LjcgMzMuNyAzMDkuN1pNMTQwLjcgMzIwLjZWMjU4SDEyN1YyNjQuM0MxMjcgMjY0LjggMTI2LjcgMjY1LjIgMTI2LjIgMjY1LjRDMTI1LjcgMjY1LjYgMTI1LjIgMjY1LjQgMTI0LjkgMjY1QzEyMC4yIDI1OS40IDExMy4xIDI1Ni40IDEwNC44IDI1Ni40Qzg3LjcgMjU2LjQgNzQuMiAyNzAuOSA3NC4yIDI4OS4zQzc0LjIgMzA3LjcgODcuNiAzMjIuMiAxMDQuOCAzMjIuMkMxMTIuNyAzMjIuMiAxMjAuMSAzMTguOSAxMjQuOSAzMTMuMUMxMjUuMiAzMTIuNyAxMjUuOCAzMTIuNiAxMjYuMiAzMTIuN0MxMjYuNyAzMTIuOSAxMjcgMzEzLjMgMTI3IDMxMy44VjMyMC42SDE0MC43Wk0xMDcuOSAzMDkuN0M5Ni45IDMwOS43IDg4LjIgMzAwLjggODguMiAyODkuNEM4OC4yIDI3OCA5Ni45IDI2OS4xIDEwNy45IDI2OS4xQzExOC45IDI2OS4xIDEyNy42IDI3OCAxMjcuNiAyODkuNEMxMjcuNiAzMDAuOCAxMTguOSAzMDkuNyAxMDcuOSAzMDkuN1pNMjU4LjIgMzIwLjZWMjU4SDI0NC41VjI2NC4zQzI0NC41IDI2NC44IDI0NC4yIDI2NS4yIDI0My43IDI2NS40QzI0My4yIDI2NS42IDI0Mi43IDI2NS40IDI0Mi40IDI2NUMyMzcuNyAyNTkuNCAyMzAuNiAyNTYuNCAyMjIuMyAyNTYuNEMyMDUuMiAyNTYuNCAxOTEuNyAyNzAuOSAxOTEuNyAyODkuM0MxOTEuNyAzMDcuNyAyMDUuMSAzMjIuMiAyMjIuMyAzMjIuMkMyMzAuMiAzMjIuMiAyMzcuNiAzMTguOSAyNDIuNCAzMTMuMUMyNDIuNyAzMTIuNyAyNDMuMyAzMTIuNiAyNDMuNyAzMTIuN0MyNDQuMiAzMTIuOSAyNDQuNSAzMTMuMyAyNDQuNSAzMTMuOFYzMjAuNkgyNTguMlpNMjI1LjQgMzA5LjdDMjE0LjQgMzA5LjcgMjA1LjcgMzAwLjggMjA1LjcgMjg5LjRDMjA1LjcgMjc4IDIxNC40IDI2OS4xIDIyNS40IDI2OS4xQzIzNi40IDI2OS4xIDI0NS4xIDI3OCAyNDUuMSAyODkuNEMyNDUuMSAzMDAuOCAyMzYuNCAzMDkuNyAyMjUuNCAzMDkuN1pNMjgzLjQgMzEzLjNDMjgzLjUgMzEzLjMgMjgzLjcgMzEzLjIgMjgzLjggMzEzLjJDMjg0LjEgMzEzLjIgMjg0LjUgMzEzLjQgMjg0LjcgMzEzLjZDMjg5LjQgMzE5LjEgMjk2LjcgMzIyLjMgMzA0LjggMzIyLjNDMzIxLjkgMzIyLjMgMzM1LjQgMzA3LjggMzM1LjQgMjg5LjRDMzM1LjQgMjgwLjQgMzMyLjMgMjcyIDMyNi42IDI2NS45QzMyMC45IDI1OS44IDMxMy4yIDI1Ni41IDMwNC44IDI1Ni41QzI5Ni45IDI1Ni41IDI4OS42IDI1OS44IDI4NC43IDI2NS41QzI4NC40IDI2NS45IDI4My45IDI2NiAyODMuNCAyNjUuOUMyODIuOSAyNjUuNyAyODIuNiAyNjUuMyAyODIuNiAyNjQuOFYyMzAuOEgyNjguN1YzMjAuOUgyODIuNlYzMTQuNkMyODIuNiAzMTMuOSAyODIuOSAzMTMuNSAyODMuNCAzMTMuM1pNMjgyIDI4OS40QzI4MiAyNzggMjkwLjcgMjY5LjEgMzAxLjcgMjY5LjFDMzEyLjcgMjY5LjEgMzIxLjQgMjc4IDMyMS40IDI4OS40QzMyMS40IDMwMC44IDMxMi43IDMwOS43IDMwMS43IDMwOS43QzI5MC42IDMwOS43IDI4MiAzMDAuOCAyODIgMjg5LjRaTTM1Ni45IDI5My4yVjMyMC44SDM0M1YyNThIMzU2LjdWMjY1LjdDMzU2LjcgMjY2LjIgMzU3LjEgMjY2LjcgMzU3LjYgMjY2LjhDMzU4LjEgMjY2LjkgMzU4LjcgMjY2LjcgMzU4LjkgMjY2LjNDMzYyLjQgMjYwLjQgMzY5LjEgMjU2LjcgMzc2LjIgMjU2LjdDMzc3LjEgMjU2LjcgMzc4LjEgMjU2LjggMzc4LjUgMjU2LjlWMjcxLjFDMzc3LjcgMjcwLjkgMzc2LjQgMjcwLjggMzc1LjEgMjcwLjhDMzYzLjkgMjcwLjkgMzU2LjkgMjc5LjQgMzU2LjkgMjkzLjJaTTQwMS4zIDI1OFYzMjAuN0gzODcuM1YyNThINDAxLjNaTTQwMi42IDIzOS4zQzQwMi42IDI0NCAzOTguOCAyNDcuOCAzOTQuMSAyNDcuOEMzODkuNCAyNDcuOCAzODUuNiAyNDQgMzg1LjYgMjM5LjNDMzg1LjYgMjM0LjYgMzg5LjQgMjMwLjggMzk0LjEgMjMwLjhDMzk4LjggMjMwLjggNDAyLjYgMjM0LjYgNDAyLjYgMjM5LjNaTTQ2OC4yIDI2Ni40TDQ1OS40IDI3NC43QzQ1NC40IDI3MSA0NDkuMiAyNjkuMiA0NDMuNyAyNjkuMkM0MzIuMSAyNjkuMiA0MjMuNCAyNzcuOSA0MjMuNCAyODkuNEM0MjMuNCAzMDAuOSA0MzIuMSAzMDkuNiA0NDMuNyAzMDkuNkM0NDguOCAzMDkuNiA0NTQgMzA3LjggNDU5LjcgMzA0LjFMNDY3LjYgMzEyLjRDNDU2LjIgMzIwLjggNDUwLjEgMzIyLjMgNDQyLjMgMzIyLjNDNDMyLjkgMzIyLjMgNDI0LjQgMzE5IDQxOC41IDMxM0M0MTIuNiAzMDcgNDA5LjMgMjk4LjcgNDA5LjMgMjg5LjRDNDA5LjMgMjcwLjMgNDIzLjMgMjU2LjUgNDQyLjUgMjU2LjVDNDQ4LjYgMjU2LjUgNDU4IDI1Ny41IDQ2OC4yIDI2Ni40Wk00ODkuNCAyOTUuNEM0ODkuMiAyOTUuNiA0ODkgMjk1LjkgNDg5IDI5Ni4zVjMyMC43SDQ3NS4xVjIzMC42SDQ4OVYyNzkuOUM0ODkgMjgwLjQgNDg5LjMgMjgwLjggNDg5LjcgMjgxQzQ5MC4yIDI4MS4yIDQ5MC43IDI4MS4xIDQ5MSAyODAuN0w1MTMuNyAyNTcuOUg1MzAuNkw1MDQuMiAyODQuM0M1MDMuOCAyODQuNyA1MDMuNyAyODUuNCA1MDQuMSAyODUuOUw1MzIuOCAzMjAuNkg1MTUuN0w0OTMuNSAyOTMuMUM0OTMuMyAyOTIuOCA0OTMgMjkyLjcgNDkyLjYgMjkyLjdINDkyLjVDNDkyLjIgMjkyLjcgNDkxLjkgMjkyLjggNDkxLjcgMjkzTDQ4OS40IDI5NS40Wk01MzEuNSAzMDYuOEw1NDIuNyAzMDAuOUM1NDUuMSAzMDYuOCA1NTAuMSAzMTAuNCA1NTUuNyAzMTAuNEM1NTkuOSAzMTAuNCA1NjQuOCAzMDguNSA1NjQuOCAzMDMuMkM1NjQuOCAyOTkuNiA1NjIuNiAyOTcuNSA1NTcuMSAyOTUuOEw1NDkuNCAyOTMuM0M1MzguNyAyODkuOSA1MzMuNSAyODQgNTMzLjUgMjc1LjNDNTMzLjUgMjY0LjMgNTQyLjUgMjU2LjMgNTU1IDI1Ni4zQzU2NC44IDI1Ni4zIDU3My40IDI2MS41IDU3Ny41IDI3MEw1NjYuNCAyNzZDNTYzLjggMjcwLjcgNTU5LjcgMjY3LjcgNTU1LjEgMjY3LjdDNTUwLjMgMjY3LjcgNTQ2LjkgMjcwLjMgNTQ2LjkgMjc0LjFDNTQ2LjkgMjc3LjQgNTQ5LjQgMjc5LjggNTU0LjQgMjgxLjVMNTYyIDI4NEM1NzMgMjg3LjYgNTc4LjQgMjkzLjUgNTc4LjQgMzAyLjFDNTc4LjQgMzE1LjIgNTY2LjkgMzIyLjEgNTU1LjUgMzIyLjFDNTQ0LjQgMzIyLjMgNTM1LjMgMzE2LjQgNTMxLjUgMzA2LjhaTTE1OSAyOTkuN1YyNzAuNUMxNTkgMjY5LjggMTU4LjUgMjY5LjMgMTU3LjggMjY5LjNIMTQ4LjFWMjU4SDE1Ny44QzE1OC41IDI1OCAxNTkgMjU3LjUgMTU5IDI1Ni44VjIzOC42SDE3Mi44VjI1Ni44QzE3Mi44IDI1Ny41IDE3My4zIDI1OCAxNzQgMjU4SDE4Ny41VjI2OS4zSDE3NEMxNzMuMyAyNjkuMyAxNzIuOCAyNjkuOCAxNzIuOCAyNzAuNVYyOTYuM0MxNzIuOCAzMDguNCAxNzcuMSAzMDkuNCAxODIuNyAzMDkuNEMxODQuNyAzMDkuNCAxODcuOCAzMDkuMiAxODkuNyAzMDguOVYzMjAuOUMxODcuNSAzMjEuMiAxODMuNSAzMjEuNiAxNzkuMiAzMjEuNkMxNzMuNiAzMjEuNyAxNTkgMzIxLjcgMTU5IDI5OS43WiIgZmlsbD0iIzBCMjAyNiIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE5ODRfNzMwIj4KPHJlY3Qgd2lkdGg9IjU3OC41IiBoZWlnaHQ9IjMyMi4zIiBmaWxsPSJ3aGl0ZSIvPgo8L2NsaXBQYXRoPgo8L2RlZnM+Cjwvc3ZnPgo="
+        "contents": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMzMSIgdmlld0JveD0iMCAwIDMwMCAzMzEiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0yODMuOTIzIDEzNi40NDlMMTUwLjE0NCAyMTMuNjI0TDYuODg5OTUgMTMxLjE2OEwwIDEzNC45ODJWMTk0Ljg0NEwxNTAuMTQ0IDI4MS4xMTVMMjgzLjkyMyAyMDQuMjM0VjIzNS45MjZMMTUwLjE0NCAzMTMuMUw2Ljg4OTk1IDIzMC42NDRMMCAyMzQuNDU4VjI0NC43MjlMMTUwLjE0NCAzMzFMMzAwIDI0NC43MjlWMTg0Ljg2N0wyOTMuMTEgMTgxLjA1MkwxNTAuMTQ0IDI2My4yMTVMMTYuMDc2NiAxODYuMzM0VjE1NC42NDNMMTUwLjE0NCAyMzEuNTI0TDMwMCAxNDUuMjUzVjg2LjI3MTNMMjkyLjUzNiA4MS44Njk3TDE1MC4xNDQgMTYzLjczOUwyMi45NjY1IDkwLjk2NjNMMTUwLjE0NCAxNy44OTk4TDI1NC42NDEgNzguMDU1TDI2My44MjggNzIuNzczVjY1LjQzNzFMMTUwLjE0NCAwTDAgODYuMjcxM1Y5NS42NjEzTDE1MC4xNDQgMTgxLjkzM0wyODMuOTIzIDEwNC43NThWMTM2LjQ0OVoiIGZpbGw9IiNGRjM2MjEiLz4KPC9zdmc+Cg=="
       },
       "groups": [
         {
@@ -659,11 +659,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {
         "group": "output",
         "placeholder": "databricksResponse",
-        "tooltip": "Name of the process variable that receives the whole response. See <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\">result variable</a>."
+        "tooltip": "Name of the process variable that receives the whole response. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\">result variable</a>."
       },
       {
         "group": "output",
-        "tooltip": "Maps the response into process variables, and the shape differs per operation. Execute statement returns status.state plus result.data_array, Run job now returns run_id, Get run returns state.life_cycle_state and state.result_state, and chat returns choices, where FEEL lists are 1-indexed. See <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\">result expression</a>."
+        "tooltip": "Maps the response into process variables, and the shape differs per operation. Execute statement returns status.state plus result.data_array, Run job now returns run_id, Get run returns state.life_cycle_state and state.result_state, and chat returns choices, where FEEL lists are 1-indexed. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\">result expression</a>."
       },
       {
         "group": "error",
@@ -888,7 +888,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "synchronousResponse",
-        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
+        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
       },
       {
         "group": "deduplication"
@@ -1045,6 +1045,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "configuration"
       },
       {
+        "group": "configuration"
+      },
+      {
         "group": "authentication"
       },
       {
@@ -1070,7 +1073,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "input",
-        "tooltip": "JSON data for the work item, mapping queue column names to values. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/automation-anywhere/\" target=\"_blank\">Automation Anywhere connector documentation</a>"
+        "tooltip": "JSON data for the work item, mapping queue column names to values. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/automation-anywhere/\" target=\"_blank\">Automation Anywhere connector documentation</a>"
       },
       {
         "group": "input"
@@ -1227,7 +1230,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -1279,7 +1282,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -1361,6 +1364,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operation"
+      },
+      {
+        "tooltip": "Choose a reusable authentication credential, or configure one-time authentication parameters below.",
+        "group": "authentication"
       },
       {
         "tooltip": "Authentication type",
@@ -1505,7 +1512,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "output"
       },
       {
-        "tooltip": "<a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "<a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "error"
       },
       {
@@ -1559,7 +1566,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -1613,7 +1620,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -1718,7 +1725,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "schema",
-        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
+        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
       },
       {
         "group": "schema"
@@ -1800,7 +1807,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "endpoint",
-        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
+        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
       },
       {
         "tooltip": "Shared secret key used to verify the HMAC signature.",
@@ -1825,7 +1832,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "activation",
-        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events. See the <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound#make-your-twilio-webhook-connector-for-receiving-messages-executable' target='_blank'>Twilio webhook activation guide</a>."
+        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events. See the <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound#make-your-twilio-webhook-connector-for-receiving-messages-executable' target='_blank'>Twilio webhook activation guide</a>."
       },
       {
         "group": "variable-mapping",
@@ -1921,23 +1928,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "input",
-        "tooltip": "Attribute name of the table's partition key. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+        "tooltip": "Attribute name of the table's partition key. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
       },
       {
         "group": "input",
-        "tooltip": "The role that this key attribute will assume. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
-      },
-      {
-        "group": "input",
-        "tooltip": "S = String, N = Number, B = Binary"
-      },
-      {
-        "group": "input",
-        "tooltip": "Attribute name of the table's sort key. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
-      },
-      {
-        "group": "input",
-        "tooltip": "The role that this key attribute will assume. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+        "tooltip": "The role that this key attribute will assume. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
       },
       {
         "group": "input",
@@ -1945,15 +1940,27 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "input",
-        "tooltip": "Total number of read capacity units. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+        "tooltip": "Attribute name of the table's sort key. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
       },
       {
         "group": "input",
-        "tooltip": "Total number of write capacity units. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+        "tooltip": "The role that this key attribute will assume. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
       },
       {
         "group": "input",
-        "tooltip": "Controls how you are charged for read and write throughput. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+        "tooltip": "S = String, N = Number, B = Binary"
+      },
+      {
+        "group": "input",
+        "tooltip": "Total number of read capacity units. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "Total number of write capacity units. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+      },
+      {
+        "group": "input",
+        "tooltip": "Controls how you are charged for read and write throughput. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
       },
       {
         "group": "input",
@@ -1970,7 +1977,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "input",
-        "tooltip": "Filter expressions for scan. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+        "tooltip": "Filter expressions for scan. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
       },
       {
         "group": "input",
@@ -1979,11 +1986,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "input",
-        "tooltip": "A placeholder that you use as an alternative to an actual attribute name. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+        "tooltip": "A placeholder that you use as an alternative to an actual attribute name. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
       },
       {
         "group": "input",
-        "tooltip": "Substitution values for placeholders used in the filter or projection expression. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+        "tooltip": "Substitution values for placeholders used in the filter or projection expression. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
       },
       {
         "group": "input"
@@ -2015,7 +2022,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "input",
-        "tooltip": "Attribute values to write to the item. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
+        "tooltip": "Attribute values to write to the item. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-dynamodb/\" target=\"_blank\">Amazon DynamoDB connector documentation</a>"
       },
       {
         "group": "input",
@@ -2328,19 +2335,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "eventDetails",
-        "tooltip": "Value that identifies the service that generated the event. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound\" target=\"_blank\">Amazon EventBridge documentation</a>."
+        "tooltip": "Value that identifies the service that generated the event. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound\" target=\"_blank\">Amazon EventBridge documentation</a>."
       },
       {
         "group": "eventDetails",
-        "tooltip": "Type of event being sent. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound\" target=\"_blank\">Amazon EventBridge documentation</a>."
+        "tooltip": "Type of event being sent. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound\" target=\"_blank\">Amazon EventBridge documentation</a>."
       },
       {
         "group": "eventDetails",
-        "tooltip": "Name of the destination event bus. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound\" target=\"_blank\">Amazon EventBridge documentation</a>."
+        "tooltip": "Name of the destination event bus. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound\" target=\"_blank\">Amazon EventBridge documentation</a>."
       },
       {
         "group": "eventPayload",
-        "tooltip": "Payload must be provided as JSON. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound\" target=\"_blank\">Amazon EventBridge event payload</a> documentation.",
+        "tooltip": "Payload must be provided as JSON. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound\" target=\"_blank\">Amazon EventBridge event payload</a> documentation.",
         "placeholder": "{\"key\": \"value\"}"
       },
       {
@@ -2501,15 +2508,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "connector"
       },
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
       },
       {
@@ -2574,7 +2581,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "response",
           "label": "Response",
-          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/#response\">documentation</a> for details.",
+          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/#response\">documentation</a> for details.",
           "openByDefault": false
         },
         {
@@ -2816,19 +2823,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "userPrompt",
-        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details and supported file types."
+        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details and supported file types."
       },
       {
         "group": "tools",
-        "tooltip": "Add an ad-hoc sub-process ID to attach the AI agent to the tools. Ensure your process includes a tools feedback loop routing into the ad-hoc sub-process and back to the AI agent connector. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Add an ad-hoc sub-process ID to attach the AI agent to the tools. Ensure your process includes a tools feedback loop routing into the ad-hoc sub-process and back to the AI agent connector. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "tools",
-        "tooltip": "This defines where to handle tool call results returned by the ad-hoc sub-process. Model this as part of your process and route it into the tools feedback loop. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "This defines where to handle tool call results returned by the ad-hoc sub-process. Model this as part of your process and route it into the tools feedback loop. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory",
-        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory"
@@ -2870,7 +2877,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "memory",
-        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "limits"
@@ -2955,7 +2962,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -3047,7 +3054,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -3238,6 +3245,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
         "group": "authentication",
         "tooltip": "Your application's client ID from the OAuth client"
       },
@@ -3351,7 +3361,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "errors",
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>"
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>"
       }
     ]
   },
@@ -3411,7 +3421,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "response",
           "label": "Response",
-          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/#response\">documentation</a> for details.",
+          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/#response\">documentation</a> for details.",
           "openByDefault": false
         },
         {
@@ -3656,11 +3666,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "userPrompt",
-        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details and supported file types."
+        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details and supported file types."
       },
       {
         "group": "memory",
-        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory"
@@ -3702,7 +3712,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "memory",
-        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "limits"
@@ -3995,7 +4005,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -4042,15 +4052,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "messagePollingProperties",
-        "tooltip": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>. A value of 0 is automatically overridden to 1."
+        "tooltip": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>. A value of 0 is automatically overridden to 1."
       },
       {
         "group": "input",
-        "tooltip": "Array of queue attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
+        "tooltip": "Array of queue attribute names. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
       },
       {
         "group": "input",
-        "tooltip": "Array of message attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
+        "tooltip": "Array of message attribute names. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
       },
       {
         "group": "activation"
@@ -4076,7 +4086,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -4491,7 +4501,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -4524,15 +4534,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "subscription",
@@ -4568,7 +4578,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -4609,7 +4619,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -4665,7 +4675,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -4706,7 +4716,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -4759,7 +4769,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -4808,7 +4818,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -4841,15 +4851,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "subscription",
@@ -4885,7 +4895,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -5344,15 +5354,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "url"
       },
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "error"
       },
       {
@@ -5910,107 +5920,107 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
@@ -6044,7 +6054,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
       },
       {
@@ -6194,7 +6204,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -6260,7 +6270,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "schema",
-        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
+        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
       },
       {
         "group": "schema"
@@ -6286,7 +6296,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -6343,7 +6353,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -6390,15 +6400,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "messagePollingProperties",
-        "tooltip": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>. A value of 0 is automatically overridden to 1."
+        "tooltip": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>. A value of 0 is automatically overridden to 1."
       },
       {
         "group": "input",
-        "tooltip": "Array of queue attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
+        "tooltip": "Array of queue attribute names. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
       },
       {
         "group": "input",
-        "tooltip": "Array of message attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
+        "tooltip": "Array of message attribute names. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
       },
       {
         "group": "activation"
@@ -6421,7 +6431,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -6548,7 +6558,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "input",
-        "tooltip": "How the document should be processed. See more info in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-textract/#input-parameters\" target=\"_blank\">Amazon Textract execution types documentation</a>."
+        "tooltip": "How the document should be processed. See more info in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-textract/#input-parameters\" target=\"_blank\">Amazon Textract execution types documentation</a>."
       },
       {
         "group": "input",
@@ -6664,7 +6674,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -6730,7 +6740,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "schema",
-        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
+        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
       },
       {
         "group": "schema"
@@ -6756,7 +6766,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -6877,7 +6887,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {},
       {
-        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
+        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
         "group": "endpoint"
       },
       {},
@@ -6896,7 +6906,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "activation",
-        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
+        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
       },
       {
         "group": "variable-mapping",
@@ -7114,6 +7124,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
+      {
+        "tooltip": "Choose a reusable authentication credential, or configure a one-time API key below.",
+        "group": "authentication"
+      },
       {
         "group": "authentication"
       },
@@ -7356,7 +7370,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "output"
       },
       {
-        "tooltip": "Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">connector error handling documentation</a>.",
+        "tooltip": "Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">connector error handling documentation</a>.",
         "group": "error"
       },
       {
@@ -8010,7 +8024,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -8103,7 +8117,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -8144,7 +8158,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -8197,7 +8211,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -8496,20 +8510,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
-        "group": "operation"
+        "group": "operation",
+        "tooltip": "Path must start with /, e.g. /Invoices/2026. Use / for the root folder."
       },
       {
-        "group": "operation"
+        "group": "operation",
+        "tooltip": "Path must start with /, e.g. /Invoices/2026. Use / for the root folder."
       },
       {
         "group": "operation",
         "tooltip": "Deletes all items contained by the folder"
       },
       {
-        "group": "operation"
-      },
-      {
-        "group": "operation"
+        "group": "operation",
+        "tooltip": "Path must start with /, e.g. /Invoices/2026. Use / for the root folder."
       },
       {
         "group": "operation",
@@ -8538,6 +8552,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operation",
+        "tooltip": "Name of the uploaded file. If empty, the file name of the Camunda document is used."
+      },
+      {
+        "group": "operation",
         "tooltip": "Path to the file item to download"
       },
       {
@@ -8551,7 +8569,8 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
-        "group": "operation"
+        "group": "operation",
+        "tooltip": "Path must start with /, e.g. /Invoices/2026. Use / for the root folder."
       },
       {
         "group": "operation"
@@ -8656,7 +8675,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -8674,6 +8693,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
+      {
+        "group": "authentication",
+        "tooltip": "Choose a reusable Microsoft Entra ID credential, or configure one-time authentication parameters below."
+      },
       {
         "group": "authentication"
       },
@@ -8705,7 +8728,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "pollingConfig",
-        "tooltip": "The email address or user ID of the mailbox to monitor. <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/#mailbox-configuration\" target=\"_blank\">Microsoft O365 Mail connector configuration</a>",
+        "tooltip": "The email address or user ID of the mailbox to monitor. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/#mailbox-configuration\" target=\"_blank\">Microsoft O365 Mail connector configuration</a>",
         "placeholder": "user@example.com"
       },
       {
@@ -8721,7 +8744,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "pollingConfig",
-        "tooltip": "The interval between email polling requests, in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
+        "tooltip": "The interval between email polling requests, in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/8.10/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
       },
       {
         "group": "pollingConfig"
@@ -8780,7 +8803,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -9088,15 +9111,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
       },
       {
@@ -9254,7 +9277,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "graphql",
-        "tooltip": "The GraphQL query or mutation to execute. See the <a href=\"https://docs.camunda.io/docs/components/connectors/protocol/graphql/#querymutation\" target=\"_blank\">GraphQL query/mutation syntax</a>."
+        "tooltip": "The GraphQL query or mutation to execute. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/protocol/graphql/#querymutation\" target=\"_blank\">GraphQL query/mutation syntax</a>."
       },
       {
         "group": "graphql"
@@ -9320,7 +9343,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -9353,15 +9376,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "subscription",
@@ -9397,7 +9420,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -9454,7 +9477,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {},
       {
-        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
+        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
         "group": "endpoint"
       },
       {},
@@ -9473,7 +9496,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "activation",
-        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
+        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
       },
       {
         "group": "variable-mapping",
@@ -9558,6 +9581,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
         "group": "message"
       },
       {
@@ -9569,7 +9595,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "message",
-        "tooltip": "<a href=\"https://docs.camunda.io/docs/apis-tools/camunda-api-rest/specifications/upload-document-alpha/\">Camunda documents</a> can be added as attachments"
+        "tooltip": "<a href=\"https://docs.camunda.io/docs/8.10/apis-tools/camunda-api-rest/specifications/upload-document-alpha/\">Camunda documents</a> can be added as attachments"
       },
       {
         "group": "message"
@@ -9796,15 +9822,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "errors"
       },
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
@@ -9814,7 +9840,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "connector"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
       },
       {},
@@ -9882,6 +9908,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
         "group": "sender"
       },
       {
@@ -9913,7 +9942,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "content",
-        "tooltip": "Files to attach to the email, referenced as <a href=\"https://docs.camunda.io/docs/apis-tools/camunda-api-rest/specifications/upload-document-alpha/\">Camunda documents</a>."
+        "tooltip": "Files to attach to the email, referenced as <a href=\"https://docs.camunda.io/docs/8.10/apis-tools/camunda-api-rest/specifications/upload-document-alpha/\">Camunda documents</a>."
       },
       {
         "group": "content"
@@ -9995,7 +10024,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -10061,7 +10090,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "schema",
-        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
+        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
       },
       {
         "group": "schema"
@@ -10087,7 +10116,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -10144,7 +10173,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "output",
@@ -10255,7 +10284,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "interval",
-        "tooltip": "The delay between HTTP requests, defined in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
+        "tooltip": "The delay between HTTP requests, defined in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/8.10/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
       },
       {
         "group": "interval"
@@ -10285,7 +10314,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "output"
@@ -10339,18 +10368,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "connection",
-        "tooltip": "If you choose Oracle, make sure the Oracle JDBC driver is included. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#database\">Oracle JDBC driver setup</a>."
+        "tooltip": "If you choose Oracle, make sure the Oracle JDBC driver is included. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#database\">Oracle JDBC driver setup</a>."
       },
       {
         "group": "connection"
       },
       {
         "group": "connection",
-        "tooltip": "URI should contain JDBC driver, host name, and port number. See the <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#uri-connection\" target=\"_blank\">URI connection</a> reference."
+        "tooltip": "URI should contain JDBC driver, host name, and port number. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#uri-connection\" target=\"_blank\">URI connection</a> reference."
       },
       {
         "group": "connection",
-        "tooltip": "Additional properties for the connection ('user' and 'password' for instance). See the <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#connection\" target=\"_blank\">SQL connection properties</a> reference."
+        "tooltip": "Additional properties for the connection ('user' and 'password' for instance). See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#connection\" target=\"_blank\">SQL connection properties</a> reference."
       },
       {
         "group": "connection"
@@ -10369,7 +10398,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "connection",
-        "tooltip": "Additional properties for the connection. See the <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#connection\" target=\"_blank\">SQL connection properties</a> reference."
+        "tooltip": "Additional properties for the connection. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#connection\" target=\"_blank\">SQL connection properties</a> reference."
       },
       {
         "group": "query",
@@ -10377,11 +10406,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "query",
-        "tooltip": "You can use named, positional or binding <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#variables\" target=\"_blank\">parameters</a>"
+        "tooltip": "You can use named, positional or binding <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#variables\" target=\"_blank\">parameters</a>"
       },
       {
         "group": "query",
-        "tooltip": "The <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#variables\" target=\"_blank\">variables</a> to use in the SQL query."
+        "tooltip": "The <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#variables\" target=\"_blank\">variables</a> to use in the SQL query."
       },
       {
         "group": "connector"
@@ -10444,7 +10473,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {},
       {
-        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
+        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
         "group": "endpoint"
       },
       {},
@@ -10463,7 +10492,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "activation",
-        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
+        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
       },
       {
         "group": "variable-mapping",
@@ -10514,6 +10543,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
+      {
+        "group": "authentication"
+      },
       {
         "group": "authentication"
       },
@@ -10721,14 +10753,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
-        "group": "operationDetails"
-      },
-      {
-        "group": "operationDetails",
-        "tooltip": "Your resources will be created here. If left empty, a new resource will appear in the root folder."
-      },
-      {
-        "group": "operationDetails"
+        "group": "authentication"
       },
       {
         "group": "operationDetails"
@@ -10748,8 +10773,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Your resources will be created here. If left empty, a new resource will appear in the root folder."
       },
       {
+        "group": "operationDetails"
+      },
+      {
+        "group": "operationDetails"
+      },
+      {
         "group": "operationDetails",
-        "tooltip": "Upload a Camunda document. See the <a href=\"https://docs.camunda.io/docs/apis-tools/camunda-api-rest/specifications/upload-document-alpha/\">Camunda document upload API</a>."
+        "tooltip": "Your resources will be created here. If left empty, a new resource will appear in the root folder."
+      },
+      {
+        "group": "operationDetails",
+        "tooltip": "Upload a Camunda document. See the <a href=\"https://docs.camunda.io/docs/8.10/apis-tools/camunda-api-rest/specifications/upload-document-alpha/\">Camunda document upload API</a>."
       },
       {
         "group": "operationDetails"
@@ -10849,7 +10884,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "endpoint",
-        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
+        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
       },
       {
         "tooltip": "Shared secret key used to verify the HMAC signature.",
@@ -10874,7 +10909,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "activation",
-        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events. See the <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound#make-your-twilio-webhook-connector-for-receiving-messages-executable' target='_blank'>Twilio webhook activation guide</a>."
+        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events. See the <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound#make-your-twilio-webhook-connector-for-receiving-messages-executable' target='_blank'>Twilio webhook activation guide</a>."
       },
       {
         "group": "variable-mapping",
@@ -11022,15 +11057,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Null values will not be sent"
       },
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "error"
       },
       {
@@ -11063,7 +11098,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -11115,7 +11150,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -11172,7 +11207,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -11264,7 +11299,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -11384,11 +11419,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
@@ -11396,7 +11431,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "errors"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
       },
       {
@@ -11568,7 +11603,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {
         "group": "operation",
-        "tooltip": "Orchestration Cluster API v2 entity. See the <a href=\"https://docs.camunda.io/docs/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview/\" target=\"_blank\">API reference</a>."
+        "tooltip": "Orchestration Cluster API v2 entity. See the <a href=\"https://docs.camunda.io/docs/8.10/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview/\" target=\"_blank\">API reference</a>."
       },
       {
         "group": "operation",
@@ -11596,7 +11631,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "cluster",
-        "tooltip": "SaaS cluster ID (UUID). Accepts <code>{{secrets.NAME}}</code> or a FEEL expression. See <a href=\"https://docs.camunda.io/docs/guides/setup-client-connection-credentials\" target=\"_blank\">creating API client credentials</a>."
+        "tooltip": "SaaS cluster ID (UUID). Accepts <code>{{secrets.NAME}}</code> or a FEEL expression. See <a href=\"https://docs.camunda.io/docs/8.10/guides/setup-client-connection-credentials\" target=\"_blank\">creating API client credentials</a>."
       },
       {},
       {},
@@ -11635,7 +11670,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "parameters",
-        "tooltip": "FEEL expression evaluating to a context with per-entity filter fields. Example: <code>{state: \"ACTIVE\", processDefinitionId: \"order-process\"}</code>. See the <a href=\"https://docs.camunda.io/docs/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview/\" target=\"_blank\">API reference</a> for fields supported by each entity."
+        "tooltip": "FEEL expression evaluating to a context with per-entity filter fields. Example: <code>{state: \"ACTIVE\", processDefinitionId: \"order-process\"}</code>. See the <a href=\"https://docs.camunda.io/docs/8.10/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview/\" target=\"_blank\">API reference</a> for fields supported by each entity."
       },
       {
         "group": "parameters",
@@ -11660,11 +11695,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {
         "group": "output",
-        "tooltip": "Name of a process variable to store the full response in. Skip if you only want to map specific fields via Result expression. See <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable docs</a>."
+        "tooltip": "Name of a process variable to store the full response in. Skip if you only want to map specific fields via Result expression. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable docs</a>."
       },
       {
         "group": "output",
-        "tooltip": "FEEL expression returning a context whose keys become process variables. Example: <code>={items: response.body.items, total: response.body.page.totalItems}</code>. See <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression docs</a>."
+        "tooltip": "FEEL expression returning a context whose keys become process variables. Example: <code>={items: response.body.items, total: response.body.page.totalItems}</code>. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression docs</a>."
       },
       {
         "group": "errors",
@@ -11672,7 +11707,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "errors",
-        "tooltip": "FEEL expression that maps connector errors to a BPMN error. Example: <code>=if error.code = \"404\" then bpmnError(\"NOT_FOUND\", error.message) else null</code>. See <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN errors docs</a>."
+        "tooltip": "FEEL expression that maps connector errors to a BPMN error. Example: <code>=if error.code = \"404\" then bpmnError(\"NOT_FOUND\", error.message) else null</code>. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN errors docs</a>."
       },
       {
         "group": "connector",
@@ -11733,7 +11768,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {},
       {
-        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
+        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
         "group": "endpoint"
       },
       {},
@@ -11744,7 +11779,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "activation",
-        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
+        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
       },
       {
         "group": "correlation"
@@ -11804,7 +11839,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {
         "group": "endpoint",
-        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
+        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
       },
       {},
       {
@@ -11818,7 +11853,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "activation",
-        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events. See the <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound#make-your-twilio-webhook-connector-for-receiving-messages-executable' target='_blank'>Twilio webhook activation guide</a>."
+        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events. See the <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound#make-your-twilio-webhook-connector-for-receiving-messages-executable' target='_blank'>Twilio webhook activation guide</a>."
       },
       {
         "group": "variable-mapping",
@@ -11849,7 +11884,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -11904,7 +11939,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -11988,6 +12023,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
         "group": "operationDetails"
       },
       {
@@ -12002,7 +12040,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operationDetails",
-        "tooltip": "Target cell in ColumnRow format. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#add-values-to-spreadsheet\" target=\"_blank\">add values to spreadsheet</a> operation.",
+        "tooltip": "Target cell in ColumnRow format. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-sheets/#add-values-to-spreadsheet\" target=\"_blank\">add values to spreadsheet</a> operation.",
         "placeholder": "A1"
       },
       {
@@ -12020,11 +12058,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operationDetails",
-        "tooltip": "Leave empty to add to the end of the sheet. Count starts from 0. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#create-empty-column-or-row\" target=\"_blank\">create empty column or row</a> operation."
+        "tooltip": "Leave empty to add to the end of the sheet. Count starts from 0. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-sheets/#create-empty-column-or-row\" target=\"_blank\">create empty column or row</a> operation."
       },
       {
         "group": "operationDetails",
-        "tooltip": "Leave empty to add to the end of the sheet. Count starts from 0. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#create-empty-column-or-row\" target=\"_blank\">create empty column or row</a> operation."
+        "tooltip": "Leave empty to add to the end of the sheet. Count starts from 0. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-sheets/#create-empty-column-or-row\" target=\"_blank\">create empty column or row</a> operation."
       },
       {
         "group": "operationDetails"
@@ -12034,11 +12072,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operationDetails",
-        "tooltip": "Position of the row, shown to the left of each row. If left empty, a new row is appended to the end. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#what-is-a-row-index\" target=\"_blank\">what is a row index</a>."
+        "tooltip": "Position of the row, shown to the left of each row. If left empty, a new row is appended to the end. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-sheets/#what-is-a-row-index\" target=\"_blank\">what is a row index</a>."
       },
       {
         "group": "operationDetails",
-        "tooltip": "List of cell values to add as a new row. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#create-row\" target=\"_blank\">create row</a> operation."
+        "tooltip": "List of cell values to add as a new row. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-sheets/#create-row\" target=\"_blank\">create row</a> operation."
       },
       {
         "group": "operationDetails"
@@ -12048,7 +12086,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operationDetails",
-        "tooltip": "Position of the new worksheet; count starts from 0. Leave empty to add it to the end of the sheet list. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#what-is-a-worksheet-index\" target=\"_blank\">what is a worksheet index</a>."
+        "tooltip": "Position of the new worksheet; count starts from 0. Leave empty to add it to the end of the sheet list. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-sheets/#what-is-a-worksheet-index\" target=\"_blank\">what is a worksheet index</a>."
       },
       {
         "group": "operationDetails"
@@ -12058,15 +12096,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operationDetails",
-        "tooltip": "How the column to delete is identified: Numbers (numeric index at the top of the column, starting from 0) or Letters (the column letter). See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#how-can-i-define-which-column-will-be-deleted\" target=\"_blank\">defining which column will be deleted</a>."
+        "tooltip": "How the column to delete is identified: Numbers (numeric index at the top of the column, starting from 0) or Letters (the column letter). See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-sheets/#how-can-i-define-which-column-will-be-deleted\" target=\"_blank\">defining which column will be deleted</a>."
       },
       {
         "group": "operationDetails",
-        "tooltip": "Numeric position of the column to delete; count starts from 0 (column A is 0, B is 1). See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#how-can-i-define-which-column-will-be-deleted\" target=\"_blank\">defining which column will be deleted</a>."
+        "tooltip": "Numeric position of the column to delete; count starts from 0 (column A is 0, B is 1). See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-sheets/#how-can-i-define-which-column-will-be-deleted\" target=\"_blank\">defining which column will be deleted</a>."
       },
       {
         "group": "operationDetails",
-        "tooltip": "Letter of the column to delete, as shown at the top of the column. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#how-can-i-define-which-column-will-be-deleted\" target=\"_blank\">defining which column will be deleted</a>.",
+        "tooltip": "Letter of the column to delete, as shown at the top of the column. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-sheets/#how-can-i-define-which-column-will-be-deleted\" target=\"_blank\">defining which column will be deleted</a>.",
         "placeholder": "A"
       },
       {
@@ -12083,7 +12121,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operationDetails",
-        "tooltip": "Position of the row to retrieve, shown to the left of each row. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/#what-is-a-row-index\" target=\"_blank\">what is a row index</a>."
+        "tooltip": "Position of the row to retrieve, shown to the left of each row. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-sheets/#what-is-a-row-index\" target=\"_blank\">what is a row index</a>."
       },
       {
         "group": "operationDetails"
@@ -12303,15 +12341,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "timeout"
       },
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "error"
       },
       {
@@ -12360,7 +12398,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "output",
@@ -12471,7 +12509,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "interval",
-        "tooltip": "The delay between HTTP requests, defined in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
+        "tooltip": "The delay between HTTP requests, defined in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/8.10/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
       },
       {
         "group": "interval"
@@ -12501,7 +12539,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "output"
@@ -12661,14 +12699,14 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {},
       {
-        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
+        "tooltip": "Shared secret key. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>",
         "group": "endpoint"
       },
       {},
       {},
       {
         "group": "activation",
-        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
+        "tooltip": "Condition under which the connector triggers. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound' target='_blank'>GitHub webhook inbound connector documentation</a>"
       },
       {
         "group": "variable-mapping",
@@ -12823,7 +12861,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -12870,15 +12908,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "messagePollingProperties",
-        "tooltip": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>. A value of 0 is automatically overridden to 1."
+        "tooltip": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>. A value of 0 is automatically overridden to 1."
       },
       {
         "group": "input",
-        "tooltip": "Array of queue attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
+        "tooltip": "Array of queue attribute names. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
       },
       {
         "group": "input",
-        "tooltip": "Array of message attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
+        "tooltip": "Array of message attribute names. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
       },
       {
         "group": "activation"
@@ -12901,7 +12939,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -13004,7 +13042,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "operation",
-        "tooltip": "<a href=\"https://docs.camunda.io/docs/components/modeler/feel/what-is-feel/\">FEEL</a> function that allows to map each <code>record</code>. Returning <code>null</code> will exclude a record from the final results.",
+        "tooltip": "<a href=\"https://docs.camunda.io/docs/8.10/components/modeler/feel/what-is-feel/\">FEEL</a> function that allows to map each <code>record</code>. Returning <code>null</code> will exclude a record from the final results.",
         "placeholder": ""
       },
       {
@@ -13104,7 +13142,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
-        "tooltip": "Google Maps Platform API key. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-maps-platform/' target='_blank'>Google Maps Platform connector documentation</a>",
+        "tooltip": "Google Maps Platform API key. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-maps-platform/' target='_blank'>Google Maps Platform connector documentation</a>",
         "group": "authentication"
       },
       {
@@ -13116,11 +13154,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
-        "tooltip": "Unstructured address. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-maps-platform/' target='_blank'>Google Maps Platform connector documentation</a>",
+        "tooltip": "Unstructured address. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-maps-platform/' target='_blank'>Google Maps Platform connector documentation</a>",
         "group": "input"
       },
       {
-        "tooltip": "Complete address. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-maps-platform/' target='_blank'>Google Maps Platform connector documentation</a>",
+        "tooltip": "Complete address. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-maps-platform/' target='_blank'>Google Maps Platform connector documentation</a>",
         "group": "input"
       },
       {
@@ -13147,23 +13185,23 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "errors"
       },
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
       },
       {
@@ -13225,7 +13263,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "endpoint",
-        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
+        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
       },
       {
         "tooltip": "Shared secret key used to verify the HMAC signature.",
@@ -13250,7 +13288,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "activation",
-        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events. See the <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound#make-your-twilio-webhook-connector-for-receiving-messages-executable' target='_blank'>Twilio webhook activation guide</a>."
+        "tooltip": "Condition under which the connector triggers. Leave empty to catch all events. See the <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound#make-your-twilio-webhook-connector-for-receiving-messages-executable' target='_blank'>Twilio webhook activation guide</a>."
       },
       {
         "group": "variable-mapping",
@@ -13297,7 +13335,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -13389,7 +13427,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -13538,15 +13576,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
@@ -13561,7 +13599,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "configuration"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
       },
       {
@@ -13858,7 +13896,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -13948,7 +13986,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "synchronousResponse",
-        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
+        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
       },
       {
         "group": "correlation"
@@ -13967,7 +14005,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -14139,7 +14177,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -14186,15 +14224,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "messagePollingProperties",
-        "tooltip": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>. A value of 0 is automatically overridden to 1."
+        "tooltip": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>. A value of 0 is automatically overridden to 1."
       },
       {
         "group": "input",
-        "tooltip": "Array of queue attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
+        "tooltip": "Array of queue attribute names. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
       },
       {
         "group": "input",
-        "tooltip": "Array of message attribute names. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
+        "tooltip": "Array of message attribute names. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">Amazon SQS connector guide</a>."
       },
       {
         "group": "activation"
@@ -14217,7 +14255,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -14350,7 +14388,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
-        "tooltip": "URL that will be called once the desktop flow script is complete. You can use the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/http-webhook/\">webhook connector</a> for this purpose.",
+        "tooltip": "URL that will be called once the desktop flow script is complete. You can use the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/http-webhook/\">webhook connector</a> for this purpose.",
         "group": "input"
       },
       {
@@ -14360,19 +14398,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "input"
       },
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
@@ -14383,7 +14421,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
       },
       {
@@ -14464,7 +14502,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -14554,7 +14592,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "synchronousResponse",
-        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
+        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
       },
       {
         "group": "correlation"
@@ -14570,7 +14608,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -14684,35 +14722,39 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
+        "group": "operation",
+        "tooltip": "By default, the file's metadata name is used unless a custom name is specified."
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Choose a reusable Azure Blob Storage credential, or configure one-time authentication parameters below."
+      },
+      {
         "group": "authentication"
       },
       {
         "group": "authentication",
-        "tooltip": "Shared access signature (SAS) token of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>."
+        "tooltip": "Shared access signature (SAS) token of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>."
       },
       {
         "group": "authentication",
-        "tooltip": "Shared access signature (SAS) URL of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>."
+        "tooltip": "Shared access signature (SAS) URL of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>."
       },
       {
         "group": "authentication",
-        "tooltip": "ID of the Microsoft Entra ID tenant that owns the application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
+        "tooltip": "ID of the Microsoft Entra ID tenant that owns the application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
       },
       {
         "group": "authentication",
-        "tooltip": "Application (client) ID of the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
+        "tooltip": "Application (client) ID of the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
       },
       {
         "group": "authentication",
-        "tooltip": "Client secret generated for the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
+        "tooltip": "Client secret generated for the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
       },
       {
         "group": "authentication",
-        "tooltip": "URL of the Azure Blob Storage account to connect to. Learn more in our <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
-      },
-      {
-        "group": "additionalProperties",
-        "tooltip": "By default, the file's metadata name is used unless a custom name is specified."
+        "tooltip": "URL of the Azure Blob Storage account to connect to. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>."
       },
       {
         "group": "additionalProperties"
@@ -14762,7 +14804,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -14815,7 +14857,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -15037,7 +15079,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -15070,15 +15112,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "subscription",
@@ -15117,7 +15159,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -15197,23 +15239,23 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "routing",
-        "tooltip": "Topic exchange to publish to. Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Topic exchange to publish to. Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "routing",
-        "tooltip": "A binding is a \"link\" that was set up to bind a queue to an exchange. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "A binding is a \"link\" that was set up to bind a queue to an exchange. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "routing",
-        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
+        "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>"
       },
       {
         "group": "message",
@@ -15284,7 +15326,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -15374,7 +15416,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "synchronousResponse",
-        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
+        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
       },
       {
         "group": "correlation"
@@ -15390,7 +15432,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -15600,7 +15642,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "searchEmailsPop3",
-        "tooltip": "Define the search criteria using supported keywords and syntax to filter emails. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/email/\">Email connector search syntax</a>."
+        "tooltip": "Define the search criteria using supported keywords and syntax to filter emails. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/email/\">Email connector search syntax</a>."
       },
       {
         "group": "deleteEmailPop3",
@@ -15628,7 +15670,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "searchEmailsImap",
-        "tooltip": "Define the search criteria using supported keywords and syntax to filter emails. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/email/\">Email connector search syntax</a>."
+        "tooltip": "Define the search criteria using supported keywords and syntax to filter emails. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/email/\">Email connector search syntax</a>."
       },
       {
         "group": "searchEmailsImap",
@@ -15775,6 +15817,467 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
   "io.camunda.connectors.agenticai.ai-agent-subprocess.v2": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "metadata": {
+        "migratesFrom": {
+          "schemaVersion": 1,
+          "sources": [
+            {
+              "kind": "change",
+              "sourceTemplateId": "io.camunda.connectors.agenticai.aiagent.jobworker.v1",
+              "minSourceVersion": 12,
+              "paths": [
+                {
+                  "from": "provider.type",
+                  "to": "provider.type",
+                  "valueMap": {
+                    "rules": [
+                      {
+                        "match": "anthropic",
+                        "value": "anthropic"
+                      },
+                      {
+                        "match": "bedrock",
+                        "value": "bedrock"
+                      },
+                      {
+                        "match": "openai",
+                        "value": "openai"
+                      },
+                      {
+                        "match": "azureOpenAi",
+                        "value": "openai"
+                      },
+                      {
+                        "match": "openaiCompatible",
+                        "value": "openai"
+                      },
+                      {
+                        "match": "google-vertex-ai",
+                        "value": "google-gemini"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "when": {
+                    "path": "provider.type",
+                    "equals": "anthropic"
+                  },
+                  "rules": [
+                    {
+                      "to": "provider.anthropic.model.parameters.promptCaching.enabled",
+                      "set": true,
+                      "note": "Anthropic prompt caching is now enabled, and effort and thinking use the model default. v1 sent no caching or reasoning settings."
+                    },
+                    {
+                      "when": {
+                        "path": "provider.anthropic.endpoint",
+                        "exists": false
+                      },
+                      "rules": [
+                        {
+                          "to": "provider.anthropic.backend.type",
+                          "set": "anthropic-api"
+                        },
+                        {
+                          "from": "provider.anthropic.authentication.apiKey",
+                          "to": "provider.anthropic.backend.anthropic.apiKey"
+                        }
+                      ]
+                    },
+                    {
+                      "when": {
+                        "path": "provider.anthropic.endpoint",
+                        "matches": "*.azure.com*"
+                      },
+                      "rules": [
+                        {
+                          "to": "provider.anthropic.backend.type",
+                          "set": "foundry"
+                        },
+                        {
+                          "to": "provider.anthropic.backend.foundry.authentication.type",
+                          "set": "apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.authentication.apiKey",
+                          "to": "provider.anthropic.backend.foundry.authentication.apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.endpoint",
+                          "to": "provider.anthropic.backend.foundry.endpoint",
+                          "note": {
+                            "level": "warning",
+                            "message": "The Anthropic endpoint was copied as-is to the Microsoft Foundry backend. v2 adds /anthropic if missing and appends /v1/messages, so remove a trailing /anthropic/v1 or /v1."
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "when": {
+                        "path": "provider.anthropic.endpoint",
+                        "matches": "*.azure.us*"
+                      },
+                      "rules": [
+                        {
+                          "to": "provider.anthropic.backend.type",
+                          "set": "foundry"
+                        },
+                        {
+                          "to": "provider.anthropic.backend.foundry.authentication.type",
+                          "set": "apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.authentication.apiKey",
+                          "to": "provider.anthropic.backend.foundry.authentication.apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.endpoint",
+                          "to": "provider.anthropic.backend.foundry.endpoint",
+                          "note": {
+                            "level": "warning",
+                            "message": "The Anthropic endpoint was copied as-is to the Microsoft Foundry backend. v2 adds /anthropic if missing and appends /v1/messages, so remove a trailing /anthropic/v1 or /v1."
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "when": {
+                        "path": "provider.anthropic.endpoint",
+                        "matches": "*.azure.cn*"
+                      },
+                      "rules": [
+                        {
+                          "to": "provider.anthropic.backend.type",
+                          "set": "foundry"
+                        },
+                        {
+                          "to": "provider.anthropic.backend.foundry.authentication.type",
+                          "set": "apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.authentication.apiKey",
+                          "to": "provider.anthropic.backend.foundry.authentication.apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.endpoint",
+                          "to": "provider.anthropic.backend.foundry.endpoint",
+                          "note": {
+                            "level": "warning",
+                            "message": "The Anthropic endpoint was copied as-is to the Microsoft Foundry backend. v2 adds /anthropic if missing and appends /v1/messages, so remove a trailing /anthropic/v1 or /v1."
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "when": [
+                        {
+                          "path": "provider.anthropic.endpoint",
+                          "exists": true
+                        },
+                        {
+                          "path": "provider.anthropic.endpoint",
+                          "matches": "*.azure.com*",
+                          "not": true
+                        },
+                        {
+                          "path": "provider.anthropic.endpoint",
+                          "matches": "*.azure.us*",
+                          "not": true
+                        },
+                        {
+                          "path": "provider.anthropic.endpoint",
+                          "matches": "*.azure.cn*",
+                          "not": true
+                        }
+                      ],
+                      "rules": [
+                        {
+                          "to": "provider.anthropic.backend.type",
+                          "set": "custom"
+                        },
+                        {
+                          "to": "provider.anthropic.backend.custom.authentication.type",
+                          "set": "apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.authentication.apiKey",
+                          "to": "provider.anthropic.backend.custom.authentication.apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.endpoint",
+                          "to": "provider.anthropic.backend.custom.endpoint",
+                          "note": {
+                            "level": "warning",
+                            "message": "The Anthropic endpoint was copied as-is to the custom backend. v2 appends /v1/messages, so remove a trailing /v1."
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "path": "provider.type",
+                    "equals": "bedrock"
+                  },
+                  "rules": [
+                    {
+                      "to": "provider.bedrock.model.parameters.promptCaching.enabled",
+                      "set": true,
+                      "note": "AWS Bedrock prompt caching is now enabled. v1 sent no caching settings."
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "path": "provider.type",
+                    "equals": "openai"
+                  },
+                  "rules": [
+                    {
+                      "to": "provider.openai.api.type",
+                      "set": "completions"
+                    },
+                    {
+                      "to": "provider.openai.backend.type",
+                      "set": "openai-api"
+                    },
+                    {
+                      "from": "provider.openai.authentication.apiKey",
+                      "to": "provider.openai.backend.openai.apiKey"
+                    },
+                    {
+                      "from": "provider.openai.authentication.organizationId",
+                      "to": "provider.openai.backend.openai.organizationId"
+                    },
+                    {
+                      "from": "provider.openai.authentication.projectId",
+                      "to": "provider.openai.backend.openai.projectId"
+                    },
+                    {
+                      "from": "provider.openai.model.parameters.maxCompletionTokens",
+                      "to": "provider.openai.api.completions.maxCompletionTokens"
+                    },
+                    {
+                      "from": "provider.openai.model.parameters.temperature",
+                      "to": "provider.openai.api.completions.temperature"
+                    },
+                    {
+                      "from": "provider.openai.model.parameters.topP",
+                      "to": "provider.openai.api.completions.topP"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "path": "provider.type",
+                    "equals": "azureOpenAi"
+                  },
+                  "rules": [
+                    {
+                      "to": "provider.openai.api.type",
+                      "set": "completions"
+                    },
+                    {
+                      "to": "provider.openai.backend.type",
+                      "set": "foundry"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.endpoint",
+                      "to": "provider.openai.backend.foundry.endpoint"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.authentication.type",
+                      "to": "provider.openai.backend.foundry.authentication.type"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.authentication.apiKey",
+                      "to": "provider.openai.backend.foundry.authentication.apiKey"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.authentication.clientId",
+                      "to": "provider.openai.backend.foundry.authentication.clientId"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.authentication.clientSecret",
+                      "to": "provider.openai.backend.foundry.authentication.clientSecret"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.authentication.tenantId",
+                      "to": "provider.openai.backend.foundry.authentication.tenantId"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.authentication.authorityHost",
+                      "to": "provider.openai.backend.foundry.authentication.authorityHost"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.timeouts.timeout",
+                      "to": "provider.openai.timeouts.timeout"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.model.deploymentName",
+                      "to": "provider.openai.model.model"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.model.parameters.maxTokens",
+                      "to": "provider.openai.api.completions.maxCompletionTokens"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.model.parameters.temperature",
+                      "to": "provider.openai.api.completions.temperature"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.model.parameters.topP",
+                      "to": "provider.openai.api.completions.topP"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "path": "provider.type",
+                    "equals": "openaiCompatible"
+                  },
+                  "rules": [
+                    {
+                      "to": "provider.openai.api.type",
+                      "set": "completions"
+                    },
+                    {
+                      "to": "provider.openai.backend.type",
+                      "set": "custom"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.endpoint",
+                      "to": "provider.openai.backend.custom.endpoint"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.headers",
+                      "to": "provider.openai.backend.custom.headers"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.queryParameters",
+                      "to": "provider.openai.backend.custom.queryParameters"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.timeouts.timeout",
+                      "to": "provider.openai.timeouts.timeout"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.model.model",
+                      "to": "provider.openai.model.model"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.model.parameters.maxCompletionTokens",
+                      "to": "provider.openai.api.completions.maxCompletionTokens"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.model.parameters.temperature",
+                      "to": "provider.openai.api.completions.temperature"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.model.parameters.topP",
+                      "to": "provider.openai.api.completions.topP"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.model.parameters.customParameters",
+                      "to": "provider.openai.backend.custom.bodyProperties"
+                    },
+                    {
+                      "when": {
+                        "path": "provider.openaiCompatible.authentication.apiKey",
+                        "exists": true
+                      },
+                      "rules": [
+                        {
+                          "to": "provider.openai.backend.custom.authentication.type",
+                          "set": "apiKey"
+                        },
+                        {
+                          "from": "provider.openaiCompatible.authentication.apiKey",
+                          "to": "provider.openai.backend.custom.authentication.apiKey"
+                        }
+                      ]
+                    },
+                    {
+                      "when": {
+                        "path": "provider.openaiCompatible.authentication.apiKey",
+                        "exists": false
+                      },
+                      "rules": [
+                        {
+                          "to": "provider.openai.backend.custom.authentication.type",
+                          "set": "none"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "path": "provider.type",
+                    "equals": "google-vertex-ai"
+                  },
+                  "rules": [
+                    {
+                      "to": "provider.googleGemini.backend.type",
+                      "set": "google-vertex-ai"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.projectId",
+                      "to": "provider.googleGemini.backend.googleVertexAi.projectId"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.region",
+                      "to": "provider.googleGemini.backend.googleVertexAi.region"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.endpoint",
+                      "to": "provider.googleGemini.backend.googleVertexAi.endpoint",
+                      "note": {
+                        "level": "warning",
+                        "message": "The custom Vertex AI endpoint was moved to a hidden v2 field. It applies at runtime, but Modeler no longer shows or edits it."
+                      }
+                    },
+                    {
+                      "from": "provider.googleVertexAi.authentication.type",
+                      "to": "provider.googleGemini.backend.googleVertexAi.authentication.type"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.authentication.jsonKey",
+                      "to": "provider.googleGemini.backend.googleVertexAi.authentication.jsonKey"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.timeouts.timeout",
+                      "to": "provider.googleGemini.timeouts.timeout"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.model.model",
+                      "to": "provider.googleGemini.model.model"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.model.parameters.maxOutputTokens",
+                      "to": "provider.googleGemini.model.parameters.maxTokens"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.model.parameters.temperature",
+                      "to": "provider.googleGemini.model.parameters.temperature"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.model.parameters.topP",
+                      "to": "provider.googleGemini.model.parameters.topP"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.model.parameters.topK",
+                      "to": "provider.googleGemini.model.parameters.topK"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
       "category": {
         "id": "aiTools",
         "name": "AI Tools"
@@ -15839,7 +16342,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "response",
           "label": "Response",
-          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/#response\">documentation</a> for details.",
+          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/#response\">documentation</a> for details.",
           "openByDefault": false
         },
         {
@@ -16105,11 +16608,75 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "provider"
       },
       {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "placeholder": "https://api.mistral.ai/v1"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The OAuth token endpoint"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The unique identifier of the target API you want to access"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Send client ID and client secret as Basic Auth request in the header, or as client credentials in the request body"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The scopes which you want to request authorization for (e.g., read:contacts)"
+      },
+      {
+        "group": "provider"
+      },
+      {
         "group": "provider",
         "tooltip": "Must match the identifier configured for the custom implementation."
       },
       {
         "group": "provider"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
       },
       {
         "group": "advanced-provider-options"
@@ -16240,11 +16807,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "model",
-        "tooltip": "Gemini 2.5 models: token budget for extended thinking. -1 = dynamic, 0 = disabled. Mutually exclusive with Thinking level (Gemini 3.x). <br><br>Details in the <a href=\"https://ai.google.dev/gemini-api/docs/thinking\" target=\"_blank\">documentation</a>."
+        "tooltip": "Gemini 2.5 models: token budget for extended thinking. Supported ranges and whether 0 disables thinking vary by model; -1 enables dynamic thinking. Mutually exclusive with Thinking level (Gemini 3.x). <br><br>Details in the <a href=\"https://ai.google.dev/gemini-api/docs/thinking\" target=\"_blank\">documentation</a>."
       },
       {
         "group": "model",
         "tooltip": "Gemini 3.x models: qualitative thinking effort. \"default\" lets the model choose its own reasoning depth. Mutually exclusive with Thinking budget (Gemini 2.5). <br><br>Details in the <a href=\"https://ai.google.dev/gemini-api/docs/thinking\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Specify the model ID. See the <a href=\"https://docs.mistral.ai/getting-started/models/models_overview/\" target=\"_blank\">models documentation</a>.",
+        "placeholder": "mistral-medium-latest"
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls how many tokens the model spends thinking before responding. Only supported on reasoning-capable models.<br><br>See the <a href=\"https://docs.mistral.ai/capabilities/reasoning/\" target=\"_blank\">Mistral reasoning documentation</a>."
       },
       {
         "group": "model",
@@ -16319,6 +16895,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Integer greater than 0. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://ai.google.dev/api/generate-content#v1beta.GenerationConfig\" target=\"_blank\">documentation</a>."
       },
       {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://docs.mistral.ai/api/endpoint/chat\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 1.5. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://docs.mistral.ai/api/endpoint/chat\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.mistral.ai/api/endpoint/chat\" target=\"_blank\">documentation</a>."
+      },
+      {
         "group": "systemPrompt"
       },
       {
@@ -16326,11 +16914,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "userPrompt",
-        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details and supported file types."
+        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details and supported file types."
       },
       {
         "group": "memory",
-        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory"
@@ -16372,7 +16960,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "memory",
-        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "limits"
@@ -16452,7 +17040,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -16518,7 +17106,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "schema",
-        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
+        "tooltip": "Format used to (de)serialize the message value: JSON or Avro. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound\" target=\"_blank\">Kafka connector</a> guide."
       },
       {
         "group": "schema"
@@ -16547,7 +17135,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -16604,7 +17192,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -16699,7 +17287,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -16956,7 +17544,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "cluster"
       },
       {
-        "tooltip": "SaaS cluster region and ID. <a href=\"https://docs.camunda.io/docs/guides/setup-client-connection-credentials\" target=\"_blank\">API client credentials documentation</a>",
+        "tooltip": "SaaS cluster region and ID. <a href=\"https://docs.camunda.io/docs/8.10/guides/setup-client-connection-credentials\" target=\"_blank\">API client credentials documentation</a>",
         "group": "cluster"
       },
       {},
@@ -16994,11 +17582,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "parameters"
       },
       {
-        "tooltip": "Search filter in <a href=\"https://docs.camunda.io/docs/apis-tools/operate-api/specifications/search/\" target=\"_blank\">Operate format</a>",
+        "tooltip": "Search filter in <a href=\"https://docs.camunda.io/docs/8.10/apis-tools/operate-api/specifications/search/\" target=\"_blank\">Operate format</a>",
         "group": "parameters"
       },
       {
-        "tooltip": "List of sort objects in <a href=\"https://docs.camunda.io/docs/apis-tools/operate-api/specifications/search\" target=\"_blank\">Operate format</a>",
+        "tooltip": "List of sort objects in <a href=\"https://docs.camunda.io/docs/8.10/apis-tools/operate-api/specifications/search\" target=\"_blank\">Operate format</a>",
         "group": "parameters"
       },
       {
@@ -17011,11 +17599,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {},
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
@@ -17023,7 +17611,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "errors"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
       },
       {
@@ -17097,6 +17685,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
+        "group": "authentication",
+        "tooltip": "Choose a reusable Microsoft Entra ID credential, or configure one-time authentication parameters below."
+      },
+      {
         "group": "authentication"
       },
       {
@@ -17134,14 +17726,14 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "data",
-        "tooltip": "See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/#members-property\">Members property</a> reference."
+        "tooltip": "See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-teams/#members-property\">Members property</a> reference."
       },
       {
         "group": "data"
       },
       {
         "group": "data",
-        "tooltip": "See the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/#expand-response\">expand response</a> reference."
+        "tooltip": "See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-teams/#expand-response\">expand response</a> reference."
       },
       {
         "group": "data"
@@ -17347,7 +17939,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -17365,6 +17957,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
+      {
+        "group": "authentication",
+        "tooltip": "Choose a reusable Microsoft Entra ID credential, or configure one-time authentication parameters below."
+      },
       {
         "group": "authentication"
       },
@@ -17396,7 +17992,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "pollingConfig",
-        "tooltip": "The email address or user ID of the mailbox to monitor. <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/#mailbox-configuration\" target=\"_blank\">Microsoft O365 Mail connector configuration</a>",
+        "tooltip": "The email address or user ID of the mailbox to monitor. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/#mailbox-configuration\" target=\"_blank\">Microsoft O365 Mail connector configuration</a>",
         "placeholder": "user@example.com"
       },
       {
@@ -17412,7 +18008,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "pollingConfig",
-        "tooltip": "The interval between email polling requests, in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
+        "tooltip": "The interval between email polling requests, in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/8.10/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
       },
       {
         "group": "pollingConfig"
@@ -17471,7 +18067,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -17508,10 +18104,6 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "authentication",
           "label": "Authentication"
-        },
-        {
-          "id": "additionalProperties",
-          "label": "Additional properties"
         },
         {
           "id": "connector",
@@ -17592,12 +18184,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "operation"
       },
       {
-        "group": "authentication",
-        "tooltip": "Service account key in JSON format. See the <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/google-cloud-storage/#authentication\" target=\"_blank\">Google Cloud Storage authentication guide</a> for details."
+        "group": "operation",
+        "tooltip": "By default, the file's metadata name is used unless a custom name is specified."
       },
       {
-        "group": "additionalProperties",
-        "tooltip": "By default, the file's metadata name is used unless a custom name is specified."
+        "group": "authentication"
+      },
+      {
+        "group": "authentication",
+        "tooltip": "Service account key in JSON format. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-cloud-storage/#authentication\" target=\"_blank\">Google Cloud Storage authentication guide</a> for details."
       },
       {
         "group": "connector"
@@ -18330,7 +18925,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -18423,7 +19018,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -18448,6 +19043,467 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
   "io.camunda.connectors.agenticai.ai-agent-task.v2": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "metadata": {
+        "migratesFrom": {
+          "schemaVersion": 1,
+          "sources": [
+            {
+              "kind": "change",
+              "sourceTemplateId": "io.camunda.connectors.agenticai.aiagent.v1",
+              "minSourceVersion": 12,
+              "paths": [
+                {
+                  "from": "provider.type",
+                  "to": "provider.type",
+                  "valueMap": {
+                    "rules": [
+                      {
+                        "match": "anthropic",
+                        "value": "anthropic"
+                      },
+                      {
+                        "match": "bedrock",
+                        "value": "bedrock"
+                      },
+                      {
+                        "match": "openai",
+                        "value": "openai"
+                      },
+                      {
+                        "match": "azureOpenAi",
+                        "value": "openai"
+                      },
+                      {
+                        "match": "openaiCompatible",
+                        "value": "openai"
+                      },
+                      {
+                        "match": "google-vertex-ai",
+                        "value": "google-gemini"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "when": {
+                    "path": "provider.type",
+                    "equals": "anthropic"
+                  },
+                  "rules": [
+                    {
+                      "to": "provider.anthropic.model.parameters.promptCaching.enabled",
+                      "set": true,
+                      "note": "Anthropic prompt caching is now enabled, and effort and thinking use the model default. v1 sent no caching or reasoning settings."
+                    },
+                    {
+                      "when": {
+                        "path": "provider.anthropic.endpoint",
+                        "exists": false
+                      },
+                      "rules": [
+                        {
+                          "to": "provider.anthropic.backend.type",
+                          "set": "anthropic-api"
+                        },
+                        {
+                          "from": "provider.anthropic.authentication.apiKey",
+                          "to": "provider.anthropic.backend.anthropic.apiKey"
+                        }
+                      ]
+                    },
+                    {
+                      "when": {
+                        "path": "provider.anthropic.endpoint",
+                        "matches": "*.azure.com*"
+                      },
+                      "rules": [
+                        {
+                          "to": "provider.anthropic.backend.type",
+                          "set": "foundry"
+                        },
+                        {
+                          "to": "provider.anthropic.backend.foundry.authentication.type",
+                          "set": "apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.authentication.apiKey",
+                          "to": "provider.anthropic.backend.foundry.authentication.apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.endpoint",
+                          "to": "provider.anthropic.backend.foundry.endpoint",
+                          "note": {
+                            "level": "warning",
+                            "message": "The Anthropic endpoint was copied as-is to the Microsoft Foundry backend. v2 adds /anthropic if missing and appends /v1/messages, so remove a trailing /anthropic/v1 or /v1."
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "when": {
+                        "path": "provider.anthropic.endpoint",
+                        "matches": "*.azure.us*"
+                      },
+                      "rules": [
+                        {
+                          "to": "provider.anthropic.backend.type",
+                          "set": "foundry"
+                        },
+                        {
+                          "to": "provider.anthropic.backend.foundry.authentication.type",
+                          "set": "apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.authentication.apiKey",
+                          "to": "provider.anthropic.backend.foundry.authentication.apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.endpoint",
+                          "to": "provider.anthropic.backend.foundry.endpoint",
+                          "note": {
+                            "level": "warning",
+                            "message": "The Anthropic endpoint was copied as-is to the Microsoft Foundry backend. v2 adds /anthropic if missing and appends /v1/messages, so remove a trailing /anthropic/v1 or /v1."
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "when": {
+                        "path": "provider.anthropic.endpoint",
+                        "matches": "*.azure.cn*"
+                      },
+                      "rules": [
+                        {
+                          "to": "provider.anthropic.backend.type",
+                          "set": "foundry"
+                        },
+                        {
+                          "to": "provider.anthropic.backend.foundry.authentication.type",
+                          "set": "apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.authentication.apiKey",
+                          "to": "provider.anthropic.backend.foundry.authentication.apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.endpoint",
+                          "to": "provider.anthropic.backend.foundry.endpoint",
+                          "note": {
+                            "level": "warning",
+                            "message": "The Anthropic endpoint was copied as-is to the Microsoft Foundry backend. v2 adds /anthropic if missing and appends /v1/messages, so remove a trailing /anthropic/v1 or /v1."
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "when": [
+                        {
+                          "path": "provider.anthropic.endpoint",
+                          "exists": true
+                        },
+                        {
+                          "path": "provider.anthropic.endpoint",
+                          "matches": "*.azure.com*",
+                          "not": true
+                        },
+                        {
+                          "path": "provider.anthropic.endpoint",
+                          "matches": "*.azure.us*",
+                          "not": true
+                        },
+                        {
+                          "path": "provider.anthropic.endpoint",
+                          "matches": "*.azure.cn*",
+                          "not": true
+                        }
+                      ],
+                      "rules": [
+                        {
+                          "to": "provider.anthropic.backend.type",
+                          "set": "custom"
+                        },
+                        {
+                          "to": "provider.anthropic.backend.custom.authentication.type",
+                          "set": "apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.authentication.apiKey",
+                          "to": "provider.anthropic.backend.custom.authentication.apiKey"
+                        },
+                        {
+                          "from": "provider.anthropic.endpoint",
+                          "to": "provider.anthropic.backend.custom.endpoint",
+                          "note": {
+                            "level": "warning",
+                            "message": "The Anthropic endpoint was copied as-is to the custom backend. v2 appends /v1/messages, so remove a trailing /v1."
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "path": "provider.type",
+                    "equals": "bedrock"
+                  },
+                  "rules": [
+                    {
+                      "to": "provider.bedrock.model.parameters.promptCaching.enabled",
+                      "set": true,
+                      "note": "AWS Bedrock prompt caching is now enabled. v1 sent no caching settings."
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "path": "provider.type",
+                    "equals": "openai"
+                  },
+                  "rules": [
+                    {
+                      "to": "provider.openai.api.type",
+                      "set": "completions"
+                    },
+                    {
+                      "to": "provider.openai.backend.type",
+                      "set": "openai-api"
+                    },
+                    {
+                      "from": "provider.openai.authentication.apiKey",
+                      "to": "provider.openai.backend.openai.apiKey"
+                    },
+                    {
+                      "from": "provider.openai.authentication.organizationId",
+                      "to": "provider.openai.backend.openai.organizationId"
+                    },
+                    {
+                      "from": "provider.openai.authentication.projectId",
+                      "to": "provider.openai.backend.openai.projectId"
+                    },
+                    {
+                      "from": "provider.openai.model.parameters.maxCompletionTokens",
+                      "to": "provider.openai.api.completions.maxCompletionTokens"
+                    },
+                    {
+                      "from": "provider.openai.model.parameters.temperature",
+                      "to": "provider.openai.api.completions.temperature"
+                    },
+                    {
+                      "from": "provider.openai.model.parameters.topP",
+                      "to": "provider.openai.api.completions.topP"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "path": "provider.type",
+                    "equals": "azureOpenAi"
+                  },
+                  "rules": [
+                    {
+                      "to": "provider.openai.api.type",
+                      "set": "completions"
+                    },
+                    {
+                      "to": "provider.openai.backend.type",
+                      "set": "foundry"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.endpoint",
+                      "to": "provider.openai.backend.foundry.endpoint"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.authentication.type",
+                      "to": "provider.openai.backend.foundry.authentication.type"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.authentication.apiKey",
+                      "to": "provider.openai.backend.foundry.authentication.apiKey"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.authentication.clientId",
+                      "to": "provider.openai.backend.foundry.authentication.clientId"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.authentication.clientSecret",
+                      "to": "provider.openai.backend.foundry.authentication.clientSecret"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.authentication.tenantId",
+                      "to": "provider.openai.backend.foundry.authentication.tenantId"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.authentication.authorityHost",
+                      "to": "provider.openai.backend.foundry.authentication.authorityHost"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.timeouts.timeout",
+                      "to": "provider.openai.timeouts.timeout"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.model.deploymentName",
+                      "to": "provider.openai.model.model"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.model.parameters.maxTokens",
+                      "to": "provider.openai.api.completions.maxCompletionTokens"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.model.parameters.temperature",
+                      "to": "provider.openai.api.completions.temperature"
+                    },
+                    {
+                      "from": "provider.azureOpenAi.model.parameters.topP",
+                      "to": "provider.openai.api.completions.topP"
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "path": "provider.type",
+                    "equals": "openaiCompatible"
+                  },
+                  "rules": [
+                    {
+                      "to": "provider.openai.api.type",
+                      "set": "completions"
+                    },
+                    {
+                      "to": "provider.openai.backend.type",
+                      "set": "custom"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.endpoint",
+                      "to": "provider.openai.backend.custom.endpoint"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.headers",
+                      "to": "provider.openai.backend.custom.headers"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.queryParameters",
+                      "to": "provider.openai.backend.custom.queryParameters"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.timeouts.timeout",
+                      "to": "provider.openai.timeouts.timeout"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.model.model",
+                      "to": "provider.openai.model.model"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.model.parameters.maxCompletionTokens",
+                      "to": "provider.openai.api.completions.maxCompletionTokens"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.model.parameters.temperature",
+                      "to": "provider.openai.api.completions.temperature"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.model.parameters.topP",
+                      "to": "provider.openai.api.completions.topP"
+                    },
+                    {
+                      "from": "provider.openaiCompatible.model.parameters.customParameters",
+                      "to": "provider.openai.backend.custom.bodyProperties"
+                    },
+                    {
+                      "when": {
+                        "path": "provider.openaiCompatible.authentication.apiKey",
+                        "exists": true
+                      },
+                      "rules": [
+                        {
+                          "to": "provider.openai.backend.custom.authentication.type",
+                          "set": "apiKey"
+                        },
+                        {
+                          "from": "provider.openaiCompatible.authentication.apiKey",
+                          "to": "provider.openai.backend.custom.authentication.apiKey"
+                        }
+                      ]
+                    },
+                    {
+                      "when": {
+                        "path": "provider.openaiCompatible.authentication.apiKey",
+                        "exists": false
+                      },
+                      "rules": [
+                        {
+                          "to": "provider.openai.backend.custom.authentication.type",
+                          "set": "none"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "when": {
+                    "path": "provider.type",
+                    "equals": "google-vertex-ai"
+                  },
+                  "rules": [
+                    {
+                      "to": "provider.googleGemini.backend.type",
+                      "set": "google-vertex-ai"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.projectId",
+                      "to": "provider.googleGemini.backend.googleVertexAi.projectId"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.region",
+                      "to": "provider.googleGemini.backend.googleVertexAi.region"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.endpoint",
+                      "to": "provider.googleGemini.backend.googleVertexAi.endpoint",
+                      "note": {
+                        "level": "warning",
+                        "message": "The custom Vertex AI endpoint was moved to a hidden v2 field. It applies at runtime, but Modeler no longer shows or edits it."
+                      }
+                    },
+                    {
+                      "from": "provider.googleVertexAi.authentication.type",
+                      "to": "provider.googleGemini.backend.googleVertexAi.authentication.type"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.authentication.jsonKey",
+                      "to": "provider.googleGemini.backend.googleVertexAi.authentication.jsonKey"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.timeouts.timeout",
+                      "to": "provider.googleGemini.timeouts.timeout"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.model.model",
+                      "to": "provider.googleGemini.model.model"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.model.parameters.maxOutputTokens",
+                      "to": "provider.googleGemini.model.parameters.maxTokens"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.model.parameters.temperature",
+                      "to": "provider.googleGemini.model.parameters.temperature"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.model.parameters.topP",
+                      "to": "provider.googleGemini.model.parameters.topP"
+                    },
+                    {
+                      "from": "provider.googleVertexAi.model.parameters.topK",
+                      "to": "provider.googleGemini.model.parameters.topK"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
       "category": {
         "id": "aiTools",
         "name": "AI Tools"
@@ -18506,7 +19562,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "response",
           "label": "Response",
-          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/#response\">documentation</a> for details.",
+          "tooltip": "Configuration of the model response format and how to map the model response to the connector result.<br><br>Depending on the selection, the model response will be available as <code>response.responseText</code> or <code>response.responseJson</code>.<br><br>See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/#response\">documentation</a> for details.",
           "openByDefault": false
         },
         {
@@ -18769,11 +19825,75 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "provider"
       },
       {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "placeholder": "https://api.mistral.ai/v1"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The OAuth token endpoint"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client ID from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Your application's client secret from the OAuth client"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The unique identifier of the target API you want to access"
+      },
+      {
+        "group": "provider",
+        "tooltip": "Send client ID and client secret as Basic Auth request in the header, or as client credentials in the request body"
+      },
+      {
+        "group": "provider",
+        "tooltip": "The scopes which you want to request authorization for (e.g., read:contacts)"
+      },
+      {
+        "group": "provider"
+      },
+      {
         "group": "provider",
         "tooltip": "Must match the identifier configured for the custom implementation."
       },
       {
         "group": "provider"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
+      },
+      {
+        "group": "advanced-provider-options"
       },
       {
         "group": "advanced-provider-options"
@@ -18904,11 +20024,20 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "model",
-        "tooltip": "Gemini 2.5 models: token budget for extended thinking. -1 = dynamic, 0 = disabled. Mutually exclusive with Thinking level (Gemini 3.x). <br><br>Details in the <a href=\"https://ai.google.dev/gemini-api/docs/thinking\" target=\"_blank\">documentation</a>."
+        "tooltip": "Gemini 2.5 models: token budget for extended thinking. Supported ranges and whether 0 disables thinking vary by model; -1 enables dynamic thinking. Mutually exclusive with Thinking level (Gemini 3.x). <br><br>Details in the <a href=\"https://ai.google.dev/gemini-api/docs/thinking\" target=\"_blank\">documentation</a>."
       },
       {
         "group": "model",
         "tooltip": "Gemini 3.x models: qualitative thinking effort. \"default\" lets the model choose its own reasoning depth. Mutually exclusive with Thinking budget (Gemini 2.5). <br><br>Details in the <a href=\"https://ai.google.dev/gemini-api/docs/thinking\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model",
+        "tooltip": "Specify the model ID. See the <a href=\"https://docs.mistral.ai/getting-started/models/models_overview/\" target=\"_blank\">models documentation</a>.",
+        "placeholder": "mistral-medium-latest"
+      },
+      {
+        "group": "model",
+        "tooltip": "Controls how many tokens the model spends thinking before responding. Only supported on reasoning-capable models.<br><br>See the <a href=\"https://docs.mistral.ai/capabilities/reasoning/\" target=\"_blank\">Mistral reasoning documentation</a>."
       },
       {
         "group": "model",
@@ -18983,6 +20112,18 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "tooltip": "Integer greater than 0. Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://ai.google.dev/api/generate-content#v1beta.GenerationConfig\" target=\"_blank\">documentation</a>."
       },
       {
+        "group": "model-options",
+        "tooltip": "The maximum number of tokens per request to generate before stopping. <br><br>Details in the <a href=\"https://docs.mistral.ai/api/endpoint/chat\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Floating point number between 0 and 1.5. The higher the number, the more randomness will be injected into the response. <br><br>Details in the <a href=\"https://docs.mistral.ai/api/endpoint/chat\" target=\"_blank\">documentation</a>."
+      },
+      {
+        "group": "model-options",
+        "tooltip": "Recommended for advanced use cases only (you usually only need to use temperature). <br><br>Details in the <a href=\"https://docs.mistral.ai/api/endpoint/chat\" target=\"_blank\">documentation</a>."
+      },
+      {
         "group": "systemPrompt"
       },
       {
@@ -18990,19 +20131,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "userPrompt",
-        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details and supported file types."
+        "tooltip": "Referenced documents will be automatically added to the user prompt. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details and supported file types."
       },
       {
         "group": "tools",
-        "tooltip": "Add an ad-hoc sub-process ID to attach the AI agent to the tools. Ensure your process includes a tools feedback loop routing into the ad-hoc sub-process and back to the AI agent connector. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Add an ad-hoc sub-process ID to attach the AI agent to the tools. Ensure your process includes a tools feedback loop routing into the ad-hoc sub-process and back to the AI agent connector. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "tools",
-        "tooltip": "This defines where to handle tool call results returned by the ad-hoc sub-process. Model this as part of your process and route it into the tools feedback loop. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "This defines where to handle tool call results returned by the ad-hoc sub-process. Model this as part of your process and route it into the tools feedback loop. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory",
-        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "The agent context variable containing all relevant data for the agent to support the feedback loop between user requests, tool calls and LLM responses. Make sure this variable points to the <code>context</code> variable which is returned from the agent response. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "memory"
@@ -19044,7 +20185,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "memory",
-        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
+        "tooltip": "Use this to limit the number of messages which are sent to the model. The agent will only send the most recent messages up to the configured limit to the LLM. Older messages will be kept in the conversation store, but not sent to the model. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/\" target=\"_blank\">See documentation</a> for details."
       },
       {
         "group": "limits"
@@ -19447,7 +20588,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -19537,7 +20678,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "synchronousResponse",
-        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
+        "tooltip": "Select synchronous to wait for the result of the correlation. This is either the result of the created process or the process instance key that matched the correlated message subscription. Select asynchronous to trigger the correlation and return immediately without waiting for a result. This affects the data available in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/connectors/protocol/http-webhook/#use-the-correlation-object\">correlation</a> object for the response expression."
       },
       {
         "group": "correlation"
@@ -19553,7 +20694,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -19603,7 +20744,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -19621,6 +20762,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
+      {
+        "group": "authentication",
+        "tooltip": "Choose a reusable Microsoft Entra ID credential, or configure one-time authentication parameters below."
+      },
       {
         "group": "authentication"
       },
@@ -19652,7 +20797,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "pollingConfig",
-        "tooltip": "The email address or user ID of the mailbox to monitor. <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/#mailbox-configuration\" target=\"_blank\">Microsoft O365 Mail connector configuration</a>",
+        "tooltip": "The email address or user ID of the mailbox to monitor. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/#mailbox-configuration\" target=\"_blank\">Microsoft O365 Mail connector configuration</a>",
         "placeholder": "user@example.com"
       },
       {
@@ -19668,7 +20813,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "pollingConfig",
-        "tooltip": "The interval between email polling requests, in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
+        "tooltip": "The interval between email polling requests, in ISO 8601 duration format. <a href='https://docs.camunda.io/docs/8.10/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>"
       },
       {
         "group": "pollingConfig"
@@ -19730,7 +20875,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -19785,7 +20930,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -19839,7 +20984,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -19918,11 +21063,11 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. For chat completion, use: =response.body.choices[1].message.content to get the AI response. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. For chat completion, use: =response.body.choices[1].message.content to get the AI response. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
@@ -19930,7 +21075,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "errors"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
       },
       {
@@ -20090,7 +21235,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {
         "group": "endpoint",
-        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
+        "tooltip": "Enabled verifies the HMAC signature on incoming requests; disabled skips verification. See the <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>HMAC configuration</a> and <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#example' target='_blank'>HMAC example</a> for how to use the HMAC-related fields."
       },
       {},
       {
@@ -20151,7 +21296,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         {
           "id": "correlation",
           "label": "Correlation",
-          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-correlation-overview\">documentation</a>."
+          "tooltip": "Learn more about message correlation in the <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-correlation-overview\">documentation</a>."
         },
         {
           "id": "deduplication",
@@ -20203,7 +21348,7 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       },
       {
         "group": "correlation",
-        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
+        "tooltip": "By default, this is an auto-generated random UUID. We recommend using a unique message name for each connector element in the diagram. Override to set a custom message name. Learn more about <a href=\"https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-subscriptions\">message subscriptions</a> that power inbound connectors."
       },
       {
         "group": "deduplication"
@@ -20475,19 +21620,19 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
-        "tooltip": "Temporary or permanent WhatsApp application access token. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/whatsapp/' target='_blank'>WhatsApp connector documentation</a>",
+        "tooltip": "Temporary or permanent WhatsApp application access token. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/whatsapp/' target='_blank'>WhatsApp connector documentation</a>",
         "group": "authentication"
       },
       {
-        "tooltip": "A phone number ID registered in your WhatsApp application. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/whatsapp/' target='_blank'>WhatsApp connector documentation</a>",
+        "tooltip": "A phone number ID registered in your WhatsApp application. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/whatsapp/' target='_blank'>WhatsApp connector documentation</a>",
         "group": "input"
       },
       {
-        "tooltip": "A phone number that should receive a message. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/whatsapp/' target='_blank'>WhatsApp connector documentation</a>",
+        "tooltip": "A phone number that should receive a message. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/whatsapp/' target='_blank'>WhatsApp connector documentation</a>",
         "group": "input"
       },
       {
-        "tooltip": "Choose whether to send arbitrary plain text or an approved WhatsApp message template. <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/whatsapp/' target='_blank'>WhatsApp connector documentation</a>",
+        "tooltip": "Choose whether to send arbitrary plain text or an approved WhatsApp message template. <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/whatsapp/' target='_blank'>WhatsApp connector documentation</a>",
         "group": "operation"
       },
       {
@@ -20517,15 +21662,15 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       {},
       {},
       {
-        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "tooltip": "Name of variable to store the response in. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "tooltip": "Expression to map the response into process variables. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "group": "output"
       },
       {
-        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
+        "tooltip": "Expression to handle errors. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#bpmn-errors\" target=\"_blank\">BPMN error handling documentation</a>",
         "group": "errors"
       },
       {
