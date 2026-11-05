@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-05 — CI: install wasm-pack without jetli/wasm-pack-action
+
+- The deploy job failed in "Install wasm-pack": the action renames the binary from `/tmp` to `~/.cargo/bin`, and the runner now has them on different filesystems (`EXDEV: cross-device link not permitted`). All seven workflows that used it now download the pinned v0.15.0 release into `$RUNNER_TEMP` and `install` it into `~/.cargo/bin`.
+
 ## 2026-11-05 — Examples typecheck clean; root tsconfig drops missing plugin references
 
 - `apps/examples`: `businessRuleTask` takes `decisionId`, not `decisionRef`, in `01-employee-onboarding.ts` and `03-loan-approval.ts` (TS2353). The package now has a `typecheck` script (`tsc --noEmit`), and the folder typechecks clean.
