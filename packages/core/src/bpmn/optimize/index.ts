@@ -18,6 +18,9 @@ import type {
 } from "./types.js"
 import { analyzeVariableFlow } from "./variable-flow.js"
 
+/** The finding a user task with no form raises; see `OptimizeOptions.userTaskForms`. */
+export const USER_TASK_FORM_RULE = "compat/user-task-definition"
+
 const ALL_CATEGORIES: OptimizationCategory[] = [
 	"feel",
 	"feel-syntax",
@@ -97,6 +100,9 @@ export function optimize(defs: BpmnDefinitions, options?: OptimizeOptions): Opti
 	if (resolved.categories.includes("deploy") || options?.camundaVersion !== undefined) {
 		findings.push(...analyzeCamundaCompat(defs, resolved.camundaVersion))
 		findings = dedupeCamundaCompat(findings)
+		if (options?.userTaskForms === "off") {
+			findings = findings.filter((f) => f.id !== USER_TASK_FORM_RULE)
+		}
 	}
 
 	const byCategory = Object.fromEntries(

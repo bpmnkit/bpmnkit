@@ -70,6 +70,9 @@ const DEFAULT_SERVER = "http://localhost:3033"
 /** Real bpmnlint's findings are listed under this category, and selected by it in `--categories`. */
 const BPMNLINT_CATEGORY = "bpmnlint"
 
+/** What the sketch profile leaves out: everything that only means something to a Camunda 8 engine. */
+const SKETCH_SKIPPED: readonly OptimizationCategory[] = ["deploy", "connector", "agentic"]
+
 /** One line of `casen lint` output — a BPMN Kit finding or a report from real bpmnlint. */
 export interface LintRow {
 	id: string
@@ -120,6 +123,17 @@ export interface LintBpmnOptions {
 	categories?: string[]
 	/** The deploy-readiness gate: every category, error-severity findings only. */
 	deployProfile?: boolean
+	/**
+	 * The sketch profile: judge the model as an engine-neutral drawing, skipping
+	 * every Camunda 8 deployability rule even when it names a platform.
+	 */
+	sketch?: boolean
+	/**
+	 * Report user tasks with no form (`compat/user-task-definition`). Default:
+	 * only under the deploy profile. Zeebe deploys a user task without a form,
+	 * so outside that gate the rule only pushes authors to invent form ids.
+	 */
+	userTaskForms?: "require" | "off"
 	/** Honour the nearest `.bpmnlintrc`. Default `true`. */
 	bpmnlintrc?: boolean
 	/**
@@ -146,6 +160,8 @@ export async function lintBpmn(
 	const defs = Bpmn.parse(xml)
 	const categories = options.categories as OptimizationCategory[] | undefined
 	const deployProfile = options.deployProfile === true
+	const sketch = options.sketch === true && !deployProfile
+	const userTaskForms = options.userTaskForms ?? (deployProfile ? "require" : "off")
 
 	// A .bpmnlintrc governs the findings that stand in for bpmnlint rules. When
 	// the project has bpmnlint installed, it runs the configured rules itself
@@ -162,7 +178,7 @@ export async function lintBpmn(
 	// Extending `plugin:camunda-compat/camunda-cloud-X-Y` pins the Camunda version
 	// the `compat/…` findings check; BPMN Kit's own check stands in for the plugin.
 	const split = setup === undefined ? undefined : splitCamundaCompatConfig(setup.config)
-	const camundaVersion = split?.compat?.version
+	const camundaVersion = sketch ? undefined : split?.compat?.version
 
 	// A model that names no execution platform is not judged against Camunda 8
 	// deployability — otherwise a diagram authored in a neutral tool opens
@@ -170,11 +186,12 @@ export async function lintBpmn(
 	// the deploy gate is asking for those rules anyway, so the profile forces
 	// them back on. The canvas plugin asks `lintCategories` the same question.
 	const platform = detectExecutionPlatform(defs)
-	const resolvedCategories = lintCategories(defs, {
+	const linted = lintCategories(defs, {
 		...(categories !== undefined ? { categories } : {}),
 		forceEngineRules: deployProfile,
 		...(camundaVersion !== undefined ? { camundaVersion } : {}),
 	})
+	const resolvedCategories = sketch ? linted.filter((c) => !SKETCH_SKIPPED.includes(c)) : linted
 
 	// The templates this diagram sees. A broken template file is `casen connector
 	// validate`'s to report; here it simply is not one of the diagram's templates.
@@ -187,6 +204,7 @@ export async function lintBpmn(
 	const report = optimize(defs, {
 		categories: resolvedCategories,
 		resolveConnectorRequirements: connectorRequirementsResolver(workspace),
+		userTaskForms,
 		...(camundaVersion !== undefined ? { camundaVersion } : {}),
 	})
 
@@ -241,8 +259,16 @@ const lintCmd: Command = {
 		{
 			name: "profile",
 			description:
-				'Lint profile. "deploy" runs every category and shows only error-severity findings — the deploy-readiness gate.',
+				'Lint profile. "deploy" runs every category and shows only error-severity findings — the deploy-readiness gate. "sketch" skips every Camunda 8 deployability rule, as for a model that names no platform.',
 			type: "string",
+			enum: ["deploy", "sketch"],
+		},
+		{
+			name: "user-task-forms",
+			description:
+				'"require" reports user tasks with no form; "off" does not. Default: "require" under --profile deploy, "off" otherwise.',
+			type: "string",
+			enum: ["require", "off"],
 		},
 		{
 			name: "format",
@@ -284,9 +310,12 @@ const lintCmd: Command = {
 				? categoriesFlag.split(",").map((s) => s.trim())
 				: undefined
 		const deployProfile = ctx.flags.profile === "deploy"
+		const formsFlag = ctx.flags["user-task-forms"]
 		const { defs, findings, notices, platform } = await lintBpmn(filePath, xml, {
 			...(categories !== undefined ? { categories } : {}),
 			deployProfile,
+			sketch: ctx.flags.profile === "sketch",
+			...(formsFlag === "require" || formsFlag === "off" ? { userTaskForms: formsFlag } : {}),
 			bpmnlintrc: ctx.flags.bpmnlintrc !== false,
 		})
 

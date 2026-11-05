@@ -238,7 +238,7 @@
 		{
 			"id": "cli.casen",
 			"file": "chunks/cli.casen.md",
-			"tokens": 732,
+			"tokens": 756,
 			"tags": [
 				"cli",
 				"casen",
@@ -321,7 +321,7 @@
 		{
 			"id": "cli.casen.bpmn-generation-pipeline",
 			"file": "chunks/cli.casen.bpmn-generation-pipeline.md",
-			"tokens": 736,
+			"tokens": 333,
 			"tags": [
 				"cli",
 				"casen",
@@ -332,6 +332,22 @@
 			"entities": [
 				"ProcessPlan"
 			]
+		},
+		{
+			"id": "cli.casen.bpmn-generation-pipeline-run-process-tests",
+			"file": "chunks/cli.casen.bpmn-generation-pipeline-run-process-tests.md",
+			"tokens": 507,
+			"tags": [
+				"cli",
+				"casen",
+				"bpmn",
+				"generation",
+				"pipeline",
+				"run",
+				"process",
+				"tests"
+			],
+			"entities": []
 		},
 		{
 			"id": "cli.casen.aikit-skills",
@@ -415,6 +431,83 @@
 			],
 			"entities": [
 				"claude_desktop_config.json"
+			]
+		},
+		{
+			"id": "cli.check",
+			"file": "chunks/cli.check.md",
+			"tokens": 224,
+			"tags": [
+				"cli",
+				"check"
+			],
+			"entities": []
+		},
+		{
+			"id": "cli.check.options",
+			"file": "chunks/cli.check.options.md",
+			"tokens": 241,
+			"tags": [
+				"cli",
+				"check",
+				"options"
+			],
+			"entities": []
+		},
+		{
+			"id": "cli.check.profiles",
+			"file": "chunks/cli.check.profiles.md",
+			"tokens": 280,
+			"tags": [
+				"cli",
+				"check",
+				"profiles"
+			],
+			"entities": [
+				"deploy/",
+				"compat/",
+				"connector/",
+				"agentic/",
+				"compat/user-task-definition",
+				"formId",
+				"decisionId"
+			]
+		},
+		{
+			"id": "cli.check.what-is-checked",
+			"file": "chunks/cli.check.what-is-checked.md",
+			"tokens": 891,
+			"tags": [
+				"cli",
+				"check",
+				"checked"
+			],
+			"entities": [
+				"dmn/malformed-xml",
+				"dmn/not-dmn",
+				"dmn/duplicate-id",
+				"dmn/missing-id",
+				"dmn/no-decision",
+				"dmn/unresolved-requirement",
+				"requiredDecision",
+				"requiredInput",
+				"requiredKnowledge",
+				"requiredAuthority",
+				"dmn/requirement-cycle",
+				"dmn/decision-no-logic"
+			]
+		},
+		{
+			"id": "cli.check.what-is-checked-2",
+			"file": "chunks/cli.check.what-is-checked-2.md",
+			"tokens": 36,
+			"tags": [
+				"cli",
+				"check",
+				"checked"
+			],
+			"entities": [
+				"@bpmnkit/core"
 			]
 		},
 		{

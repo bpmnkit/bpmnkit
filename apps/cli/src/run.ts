@@ -159,7 +159,8 @@ export async function run(argv: string[]): Promise<void> {
 	}
 
 	// ── dev: `casen dev [dir]` — the one positional is a directory, not a subcommand ──
-	if (group.name === "dev") {
+	// ── check: `casen check <file...>` — every positional is a file ──
+	if (group.name === "dev" || group.name === "check") {
 		const cmd = group.commands[0]
 		if (wantHelp) {
 			if (cmd) printCommandHelp(group, cmd, colors)
