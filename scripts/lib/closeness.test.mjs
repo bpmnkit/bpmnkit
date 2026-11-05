@@ -11,6 +11,7 @@ const model = ({
 	taskName = "Check",
 	jobType = "check",
 	dx = 0,
+	dxEnd = 0,
 	withEnd = true,
 } = {}) => `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="x">
@@ -24,7 +25,7 @@ ${withEnd ? '<bpmn:sequenceFlow id="f2" sourceRef="t" targetRef="e"/>' : ""}
 <bpmn:association id="as" sourceRef="t" targetRef="a"/>
 </bpmn:process>
 <bpmndi:BPMNDiagram id="g"><bpmndi:BPMNPlane id="pl" bpmnElement="p">
-${shape("s", 0 + dx)}${shape("t", 200 + dx)}${withEnd ? shape("e", 400 + dx) : ""}
+${shape("s", 0 + dx)}${shape("t", 200 + dx)}${withEnd ? shape("e", 400 + dx + dxEnd) : ""}
 </bpmndi:BPMNPlane></bpmndi:BPMNDiagram>
 </bpmn:definitions>`
 
@@ -57,9 +58,15 @@ test("changing the job type lowers only configuration", () => {
 	assert.equal(p.layout, base.layout)
 })
 
-test("moving every shape by 200 px lowers only layout", () => {
+test("a uniformly shifted diagram scores full layout", () => {
+	const r = scoreCloseness(model({ dx: 200 }), ref)
+	assert.equal(r.parts.layout.score, r.parts.layout.max)
+	assert.equal(r.total, 100)
+})
+
+test("moving a shape by 200 px lowers only layout", () => {
 	const base = parts(scoreCloseness(ref, ref))
-	const p = parts(scoreCloseness(model({ dx: 200 }), ref))
+	const p = parts(scoreCloseness(model({ dxEnd: 200 }), ref))
 	assert.ok(p.layout < base.layout)
 	assert.equal(p.structure, base.structure)
 	assert.equal(p.configuration, base.configuration)
