@@ -1,4 +1,4 @@
-import { PROCESS_DELTA_GUIDE, PROCESS_TEXT_GUIDE } from "@bpmnkit/core"
+import { MESSAGE_LINE, POOL_LINE, PROCESS_DELTA_GUIDE, PROCESS_TEXT_GUIDE } from "@bpmnkit/core"
 
 /**
  * System prompt for changing a shared diagram from review feedback. Fixed, like
@@ -107,9 +107,18 @@ export function feedbackMessages(
 /**
  * A line a change script can hold: a path or declaration (as in
  * `createDiagramLineFilter`), a `note <id>: text` or `doc <id>: text` line, a `- ` removal or an `@n` line.
+ * `- msg a > b` passes as a removal.
  */
 const CHANGE_LINE =
 	/^(#|(?:note|doc) +[A-Za-z_][\w.-]*\s*:|-\s*[A-Za-z_]|@\s*\d|[A-Za-z_][\w.-]*( *\[|\s*-{0,2}>|$))/
+
+/**
+ * `lane x: a, b` with ids only, as `LANE_DIAGRAM_LINE` in generate.ts, so
+ * "Lane sales: moves the review" is refused. A lane with no members must carry a
+ * name, since only a rename or a new lane needs one: a bare `Lane changes:` is a heading.
+ */
+const LANE_CHANGE_LINE =
+	/^lane\s+[A-Za-z_][\w.-]*\s*(?:\[[^\]]*\]\s*:\s*|:\s*(?=\S))(?:[A-Za-z_][\w.-]*(?:\s*,\s*[A-Za-z_][\w.-]*)*)?\s*$/
 
 /**
  * Passes on only the lines of a model's answer that a change script can hold,
@@ -118,7 +127,15 @@ const CHANGE_LINE =
  */
 export function createChangeLineFilter(): { push(chunk: string): string; end(): string } {
 	let pending = ""
-	const keep = (line: string) => CHANGE_LINE.test(line.trim())
+	const keep = (line: string) => {
+		const text = line.trim()
+		return (
+			CHANGE_LINE.test(text) ||
+			LANE_CHANGE_LINE.test(text) ||
+			POOL_LINE.test(text) ||
+			MESSAGE_LINE.test(text)
+		)
+	}
 	return {
 		push(chunk: string): string {
 			pending += chunk
