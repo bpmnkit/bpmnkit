@@ -289,9 +289,9 @@ bake-off-style specs where ids are given.
 5. **Comparison-page circularity.** A reference script tuned to beat the recorded runs. Mitigation:
    write it from the prompt and commit it before scoring.
 
-## Open questions for the maintainer
+## Decisions (2026-11-05)
 
-- Should the comparison page launch with competitors, or only after D3?
-- Who writes the reference scripts, and is the closeness definition acceptable?
-- `ignoreNullValues` on GET: follow the canonical blueprint or the connector's v18 schema?
-- Budget for re-recording: C1, and D2's ≥ 3 runs × 5 routes × 3 scenarios = 45 runs.
+- **Competitors on the comparison page:** not at launch. D3 adds only the `casen test` column. A competitor lane needs a reproducible run of each tool under its own documented usage, and its author's review, first.
+- **Reference scripts and closeness:** the hand-authored reference scripts and structure-mode closeness (D1b) stand.
+- **`ignoreNullValues` on GET (C10):** follow the connector's v18 schema. Never write a property the template does not offer for GET, and accept the closeness gap against the blueprint.
+- **Recording budget (D2, C9):** this cloud environment has no API key. Build the recording support and a dry run here. The maintainer records locally with a key, using a minimal matrix first: quote-to-cash × 4 routes × 3 runs = 12 runs. Cost (C9) comes from in/out token counts and a dated price table committed in the repo.
