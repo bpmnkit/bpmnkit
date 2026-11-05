@@ -7,13 +7,13 @@
 	"bin": {
 		"casen": "./dist/index.js"
 	},
-	"files": ["LICENSE", "README.md", "dist/**/*.js", "skills/**/*.md"],
+	"files": ["LICENSE", "README.md", "dist/**/*.js", "skills/**/*.md", "agent-cards/*.md"],
 	"engines": {
 		"node": ">=20"
 	},
 	"scripts": {
 		"build": "tsc && node scripts/build-dev-ui.mjs",
-		"typecheck": "tsc --noEmit && tsc -p tsconfig.dev-ui.json",
+		"typecheck": "tsc --noEmit && tsc -p tsconfig.dev-ui.json && tsc -p agent-cards",
 		"check": "biome check .",
 		"test": "vitest run"
 	},

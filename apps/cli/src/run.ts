@@ -246,7 +246,7 @@ export async function run(argv: string[]): Promise<void> {
 			await runProfileManager()
 		} else if (group.name === "settings") {
 			await runSettingsManager()
-		} else if (group.name !== "completion") {
+		} else if (group.name !== "completion" && group.name !== "agent-card") {
 			const { name: pName, info: pInfo } = buildProfileInfo(profileName)
 			await runGroupTui(group, allGroups, getClient, getAdminClient, {
 				profile: pName,

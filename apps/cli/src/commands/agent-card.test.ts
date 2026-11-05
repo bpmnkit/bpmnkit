@@ -1,0 +1,126 @@
+import { spawnSync } from "node:child_process"
+import { mkdtempSync, readFileSync, rmSync } from "node:fs"
+import { tmpdir } from "node:os"
+import { join } from "node:path"
+import { fileURLToPath } from "node:url"
+import { Bpmn, Dmn, Form, PROCESS_TEXT_GUIDE } from "@bpmnkit/core"
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest"
+import type { RunContext } from "../types.js"
+import {
+	AGENT_CARD_KINDS,
+	type AgentCardKind,
+	agentCardGroup,
+	readAgentCard,
+} from "./agent-card.js"
+import { commandGroups } from "./index.js"
+
+const CARDS = fileURLToPath(new URL("../../agent-cards/", import.meta.url))
+const ROOT = fileURLToPath(new URL("../../../../", import.meta.url))
+
+async function print(kind: AgentCardKind, flags: Record<string, boolean> = {}): Promise<string> {
+	const cmd = agentCardGroup.commands.find((c) => c.name === kind)
+	if (!cmd) throw new Error(`no ${kind} card command`)
+	let out = ""
+	const spy = vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+		out += String(chunk)
+		return true
+	})
+	try {
+		await cmd.run({ positional: [], flags } as unknown as RunContext)
+	} finally {
+		spy.mockRestore()
+	}
+	return out
+}
+
+describe("casen agent-card", () => {
+	it("is routed as a pinned group with one command per file type", () => {
+		const group = commandGroups.find((g) => g.name === "agent-card")
+		expect(group?.commands.map((c) => c.name)).toEqual(["bpmn", "dmn", "form"])
+	})
+
+	it.each(AGENT_CARD_KINDS)("prints the %s card without the docs-pack directive", async (kind) => {
+		const out = await print(kind)
+		expect(out).not.toContain("<!-- docspack:")
+		expect(out).toBe(readAgentCard(kind).replace(/^<!-- docspack:.*-->\n\n/m, ""))
+	})
+
+	it("appends the process text guide with --text", async () => {
+		const out = await print("bpmn", { text: true })
+		expect(out.startsWith(await print("bpmn"))).toBe(true)
+		expect(out).toContain(PROCESS_TEXT_GUIDE)
+	})
+
+	it.each(AGENT_CARD_KINDS)("keeps the %s card near 2k tokens", (kind) => {
+		// The same 4-characters-a-token estimate docspack uses; the cards exist to be cheap.
+		expect(readAgentCard(kind).length / 4).toBeLessThan(2000)
+	})
+
+	it.each(AGENT_CARD_KINDS)("shows the %s script exactly as the tested file", (kind) => {
+		const fence = readAgentCard(kind).match(/```ts\n([\s\S]*?)```/)?.[1]
+		expect(fence).toBe(readFileSync(join(CARDS, "scripts", `${kind}.ts`), "utf8"))
+	})
+
+	it("has its docs page and plugin skill copies in sync", () => {
+		const result = spawnSync(
+			process.execPath,
+			[join(ROOT, "scripts/sync-agent-cards.mjs"), "--check"],
+			{
+				encoding: "utf8",
+			},
+		)
+		expect(result.stderr).toBe("")
+		expect(result.status).toBe(0)
+	})
+})
+
+describe("agent card scripts run as printed", () => {
+	let dir: string
+	const runs = new Map<AgentCardKind, ReturnType<typeof spawnSync>>()
+
+	beforeAll(() => {
+		dir = mkdtempSync(join(tmpdir(), "agent-card-"))
+		// Node 23.6+ strips types by default; 22.6+ needs the flag the cards tell agents to pass.
+		const features = process.features as { typescript?: unknown }
+		const flags = features.typescript ? [] : ["--experimental-strip-types"]
+		for (const kind of AGENT_CARD_KINDS) {
+			const script = join(CARDS, "scripts", `${kind}.ts`)
+			runs.set(
+				kind,
+				spawnSync(process.execPath, [...flags, "--no-warnings", script], {
+					cwd: dir,
+					encoding: "utf8",
+				}),
+			)
+		}
+	}, 60_000)
+	afterAll(() => rmSync(dir, { recursive: true, force: true }))
+
+	it.each(AGENT_CARD_KINDS)("%s exits 0", (kind) => {
+		const run = runs.get(kind)
+		expect(run?.stderr).toBe("")
+		expect(run?.status).toBe(0)
+	})
+
+	it("writes a process that lints clean and keeps its layout through the edit", () => {
+		const xml = readFileSync(join(dir, "order.bpmn"), "utf8")
+		const definitions = Bpmn.parse(xml)
+		expect(definitions.unknownAttributes["modeler:executionPlatformVersion"]).toBe("8.10.0")
+		expect(definitions.processes[0]?.flowElements.find((e) => e.id === "ship")?.name).toBe(
+			"Ship parcel",
+		)
+		expect(definitions.diagrams[0]?.plane.shapes.length).toBeGreaterThan(5)
+		expect(xml).toContain("<zeebe:userTask")
+	})
+
+	it("links the three files by the ids the traps name", () => {
+		const bpmn = readFileSync(join(dir, "order.bpmn"), "utf8")
+		const decision = Dmn.parse(readFileSync(join(dir, "risk.dmn"), "utf8")).decisions[0]
+		const form = Form.parse(readFileSync(join(dir, "review-order.form"), "utf8"))
+		expect(bpmn).toContain(`decisionId="${decision?.id}"`)
+		expect(bpmn).toContain(`formId="${form.id}"`)
+		expect(decision?.name).toBe("Order risk level")
+		expect(form.executionPlatformVersion).toBe("8.10.0")
+		expect(form.components.at(-1)?.id).toBe("Field_note")
+	})
+})

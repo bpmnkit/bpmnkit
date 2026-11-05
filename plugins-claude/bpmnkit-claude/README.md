@@ -60,6 +60,9 @@ On first enable, Claude Code prompts for two optional values:
 | `/bpmnkit:review [file]` | Full static analysis, grouped by severity, with an explicit deploy-ready verdict |
 | `/bpmnkit:test [file]` | Run scenario tests, report path/branch coverage |
 | `/bpmnkit:deploy [file] [--local\|--camunda]` | Deploy-readiness gate, then deploy to Reebe or Camunda 8 |
+| `/bpmnkit:bpmn-script <description>` | Write a process as a TypeScript build script (BPMN agent card) |
+| `/bpmnkit:dmn <description>` | Write a DMN decision table (DMN agent card) |
+| `/bpmnkit:form <description>` | Write a Camunda form (form agent card) |
 | `/bpmnkit:instances [id] [--active\|--failed]` | List running process instances |
 | `/bpmnkit:incidents [--process-id X]` | List open incidents with suggested actions |
 
@@ -116,6 +119,9 @@ skills/
   review/           /bpmnkit:review
   test/             /bpmnkit:test
   deploy/           /bpmnkit:deploy
+  bpmn-script/      /bpmnkit:bpmn-script  (generated from apps/cli/agent-cards)
+  dmn/              /bpmnkit:dmn          (generated)
+  form/             /bpmnkit:form         (generated)
   instances/        /bpmnkit:instances
   incidents/        /bpmnkit:incidents
 agents/
