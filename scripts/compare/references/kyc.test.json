@@ -1,0 +1,76 @@
+{
+	"$schema": "https://camunda.com/json-schema/cpt-test-cases/8.10/schema.json",
+	"testCases": [
+		{
+			"name": "Happy path: valid document, low-risk screening, approved",
+			"description": "Written from the scenario prompt. The DMN decision is not deployed here, so the final classification is supplied as an input variable.",
+			"instructions": [
+				{
+					"type": "CREATE_PROCESS_INSTANCE",
+					"processDefinitionSelector": {
+						"processDefinitionId": "kyc-onboarding"
+					},
+					"variables": {
+						"uploadAttempts": 1,
+						"riskClassification": "approved"
+					}
+				},
+				{
+					"type": "COMPLETE_USER_TASK",
+					"userTaskSelector": {
+						"elementId": "UserTask_UploadIdDocument"
+					},
+					"variables": {}
+				},
+				{
+					"type": "COMPLETE_JOB",
+					"jobSelector": {
+						"elementId": "ServiceTask_VerifyDocumentOcr"
+					},
+					"variables": {
+						"ocrResult": {
+							"documentValid": true
+						}
+					}
+				},
+				{
+					"type": "COMPLETE_JOB",
+					"jobSelector": {
+						"elementId": "ServiceTask_ScreenSanctionsPep"
+					},
+					"variables": {
+						"screeningResult": {
+							"riskLevel": "low"
+						}
+					}
+				},
+				{
+					"type": "COMPLETE_JOB",
+					"jobSelector": {
+						"elementId": "ServiceTask_StandardDueDiligence"
+					},
+					"variables": {}
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "kyc-onboarding"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "EndEvent_Approved"
+						}
+					],
+					"state": "IS_COMPLETED"
+				},
+				{
+					"type": "ASSERT_PROCESS_INSTANCE",
+					"processInstanceSelector": {
+						"processDefinitionId": "kyc-onboarding"
+					},
+					"state": "IS_COMPLETED"
+				}
+			]
+		}
+	]
+}

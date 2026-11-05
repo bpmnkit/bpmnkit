@@ -7,7 +7,7 @@
 
 ## Same-input comparison page (2026-10-22)
 
-`/compare/same-input` shows one prompt through the recorded LLM routes and a hand-written no-AI reference, with the rendered diagram, tokens, time, validity and closeness for each. Data comes from `node scripts/build-compare-data.mjs` and is committed.
+`/compare/same-input` shows one prompt through the recorded LLM routes and a hand-written no-AI reference, with the rendered diagram, tokens, time, validity and closeness for each. Data comes from `node scripts/build-compare-data.mjs` and is committed. Since 2026-11-05 each run also shows its model, a list-price cost (only with a recorded model and token split) and a `casen test` result on reebe-wasm; `node scripts/record-compare.mjs` records compact-JSON and plan routes (see the plan doc for the maintainer command).
 
 ## Multi-instance and listeners in the builder (2026-10-22)
 

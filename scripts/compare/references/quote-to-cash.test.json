@@ -1,0 +1,63 @@
+{
+	"$schema": "https://camunda.com/json-schema/cpt-test-cases/8.10/schema.json",
+	"testCases": [
+		{
+			"name": "Happy path to the signature wait: no discount, contract sent for e-signature",
+			"description": "Written from the scenario prompt. Test files cannot publish a message, so the run stops at the receive task that waits for the signature outcome.",
+			"instructions": [
+				{
+					"type": "CREATE_PROCESS_INSTANCE",
+					"processDefinitionSelector": {
+						"processDefinitionId": "quote-to-cash"
+					},
+					"variables": {
+						"orderId": "O-1",
+						"discountPercent": 0,
+						"orderType": "standard"
+					}
+				},
+				{
+					"type": "COMPLETE_JOB",
+					"jobSelector": {
+						"elementId": "ServiceTask_GenerateQuote"
+					},
+					"variables": {
+						"discountPercent": 0
+					}
+				},
+				{
+					"type": "COMPLETE_JOB",
+					"jobSelector": {
+						"elementId": "ServiceTask_GenerateContract"
+					},
+					"variables": {
+						"contractId": "C-1"
+					}
+				},
+				{
+					"type": "COMPLETE_JOB",
+					"jobSelector": {
+						"elementId": "ServiceTask_RequestESignature"
+					},
+					"variables": {
+						"signature": {
+							"status": "sent"
+						}
+					}
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "quote-to-cash"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "ReceiveTask_AwaitSignature"
+						}
+					],
+					"state": "IS_ACTIVE"
+				}
+			]
+		}
+	]
+}

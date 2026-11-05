@@ -60,3 +60,14 @@ export function extractCompactBlock(text: string): string | null {
 	// Plain text, not compact notation
 	return null
 }
+
+/**
+ * Extracts a JSON object from LLM output: the first ```json block, else the whole text when it is
+ * a bare object. Returns null for prose.
+ */
+export function extractJsonBlock(text: string): string | null {
+	const trimmed = text.trim()
+	const fenced = trimmed.match(/```json\n([\s\S]*?)\n```/)
+	if (fenced) return (fenced[1] as string).trim()
+	return trimmed.startsWith("{") && trimmed.endsWith("}") ? trimmed : null
+}
