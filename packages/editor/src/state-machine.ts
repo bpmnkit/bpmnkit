@@ -76,6 +76,8 @@ export type EditorMode =
 	| { mode: "default"; sub: SelectSub }
 	| { mode: "select"; sub: SelectSub }
 	| { mode: "create"; elementType: CreateShapeType }
+	/** The pool tool: a click places a pool (`commitCreatePool`), not a shape. */
+	| { mode: "create"; elementType: "participant" }
 	| { mode: "pan" }
 	| { mode: "space"; sub: SpaceSub }
 
@@ -94,7 +96,7 @@ export interface Callbacks {
 	previewTranslate(dx: number, dy: number): void
 	commitTranslate(dx: number, dy: number): void
 	cancelTranslate(): void
-	previewResize(bounds: BpmnBounds): void
+	previewResize(bounds: BpmnBounds, id: string): void
 	/** Removes the resize outline: the resize was abandoned. */
 	cancelResize(): void
 	commitResize(id: string, bounds: BpmnBounds): void
@@ -104,6 +106,7 @@ export interface Callbacks {
 	previewRubberBand(origin: DiagPoint, current: DiagPoint): void
 	cancelRubberBand(): void
 	commitCreate(type: CreateShapeType, diagPoint: DiagPoint): void
+	commitCreatePool(diagPoint: DiagPoint): void
 	startLabelEdit(id: string): void
 	setHovered(id: string | null): void
 	executeDelete(ids: string[]): void
@@ -177,7 +180,8 @@ export class EditorStateMachine {
 
 		// Create mode: place shape and revert to default
 		if (mode.mode === "create") {
-			this._cb.commitCreate(mode.elementType, diag)
+			if (mode.elementType === "participant") this._cb.commitCreatePool(diag)
+			else this._cb.commitCreate(mode.elementType, diag)
 			this._mode = { mode: "default", sub: { name: "idle", hoveredId: null } }
 			this._cb.setTool("default")
 			return
@@ -425,7 +429,7 @@ export class EditorStateMachine {
 						original: shape.shape.bounds,
 						current: diag,
 					})
-					this._cb.previewResize(newBounds)
+					this._cb.previewResize(newBounds, sub.id)
 				}
 				break
 			}
@@ -433,7 +437,7 @@ export class EditorStateMachine {
 			case "resizing": {
 				const newBounds = applyResize(sub.original, sub.handle, diag.x, diag.y)
 				this._mode = this._withSub({ ...sub, current: diag })
-				this._cb.previewResize(newBounds)
+				this._cb.previewResize(newBounds, sub.id)
 				break
 			}
 
@@ -724,6 +728,9 @@ export class EditorStateMachine {
 	onDblClick(_e: MouseEvent, _diag: DiagPoint, hit: HitResult): void {
 		if (hit.type === "shape") {
 			this._mode = { mode: "select", sub: { name: "editing-label", id: hit.id } }
+			this._cb.startLabelEdit(hit.id)
+		} else if (hit.type === "edge-segment") {
+			// The mode stays: only some flows have a label editor, and editing-label would wait for one.
 			this._cb.startLabelEdit(hit.id)
 		}
 	}
