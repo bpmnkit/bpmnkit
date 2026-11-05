@@ -44,3 +44,11 @@ export function extractResultUsage(event: unknown): TokenUsage | null {
 		outputTokens: usage.output_tokens,
 	}
 }
+
+/** The model id from the `claude` CLI's `system`/`init` line; null for any other line. */
+export function extractInitModel(event: unknown): string | null {
+	if (typeof event !== "object" || event === null) return null
+	const e = event as Record<string, unknown>
+	if (e.type !== "system" || e.subtype !== "init") return null
+	return typeof e.model === "string" ? e.model : null
+}

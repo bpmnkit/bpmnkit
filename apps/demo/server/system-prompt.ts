@@ -123,3 +123,44 @@ ${example}
 - Wrap your output in a single \`\`\`compact code block.
 - Use the exact same scenario logic you would use for the full SDK.`
 }
+
+/** Every `export interface|type <prefix>…` declaration of a core source file, doc comments kept. */
+function typeDeclarations(repoRoot: string, file: string, pick: RegExp): string {
+	const src = readFileSync(join(repoRoot, file), "utf-8")
+	const blocks = src.match(
+		/(?:\/\*\*(?:(?!\*\/)[\s\S])*\*\/\n)?export (?:interface|type) [\s\S]*?\n}\n/g,
+	)
+	return (blocks ?? []).filter((b) => pick.test(b)).join("\n")
+}
+
+export function buildCompactJsonSystemPrompt(repoRoot: string): string {
+	const types = typeDeclarations(repoRoot, "packages/core/src/bpmn/compact.ts", /interface Compact/)
+	return `You are an expert at writing Camunda 8 BPMN processes as compact JSON that @bpmnkit/core decodes
+into full BPMN with \`expand()\`. Ids, names, flows and conditions are yours to write; the diagram
+layout is generated.
+
+## Types
+\`\`\`typescript
+${types}
+\`\`\`
+
+## Output Instructions
+- Output one JSON object matching \`CompactDiagram\`. No explanation, no prose outside the block.
+- Wrap it in a single \`\`\`json code block.`
+}
+
+export function buildPlanSystemPrompt(repoRoot: string): string {
+	const types = typeDeclarations(repoRoot, "packages/core/src/plan/types.ts", /./)
+	return `You are an expert at planning Camunda 8 BPMN processes as a \`ProcessPlan\`: a typed JSON
+description that \`compilePlan()\` (the \`casen synth\` step) turns into valid, laid-out BPMN. You
+never write XML, diagram coordinates or flow ids.
+
+## Types
+\`\`\`typescript
+${types}
+\`\`\`
+
+## Output Instructions
+- Output one JSON object matching \`ProcessPlan\` (\`"version": 1\`). No explanation, no prose outside the block.
+- Wrap it in a single \`\`\`json code block.`
+}

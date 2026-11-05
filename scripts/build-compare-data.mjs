@@ -5,23 +5,26 @@
  * (median-closeness run) and for the reference to `apps/landing/src/generated/compare/`.
  * Outputs are committed so CI never needs a recording or an LLM. No XML or recording is copied.
  *
+ * Each run's BPMN also runs the scenario's `scripts/compare/references/<scenario>.test.json` on
+ * reebe-wasm (`casen test`'s engine). That needs `packages/engine` and `pnpm build:wasm`; without
+ * them the tests column is written as "unavailable", never as a pass. Cost comes from the run's
+ * recorded model and token split and `scripts/lib/model-prices.mjs`; either missing gives null.
+ *
  * Requires a core build: `pnpm --filter @bpmnkit/core build`.
  * Run: `node scripts/build-compare-data.mjs`
  */
-import { mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs"
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
 import { Bpmn, checkDiCompleteness, exportSvg, lintDiagram } from "../packages/core/dist/index.js"
 import { scoreCloseness } from "./lib/closeness.mjs"
 import { ROUTES, extractRows, medianBy } from "./lib/compare-rows.mjs"
+import { runCompareTests } from "./lib/cpt-run.mjs"
+import { PRICES_AS_OF, costUsd } from "./lib/model-prices.mjs"
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..")
 const recordingsDir = join(root, "apps/demo/recordings")
 const outDir = join(root, "apps/landing/src/generated/compare")
-
-// The recording server (apps/demo/server/index.ts) passes this model to `claude -p`; the
-// recordings themselves do not store it, so it is the server's setting, not a per-file fact.
-const MODEL = "claude-opus-4-8"
 
 const round1 = (n) => Math.round(n * 10) / 10
 
@@ -54,6 +57,14 @@ function median(nums) {
 	return s.length ? s[Math.floor((s.length - 1) / 2)] : null
 }
 
+const UNAVAILABLE = { status: "unavailable", passed: 0, total: 0, failure: null }
+
+async function testsFor(scenario, xml) {
+	const file = join(root, "scripts/compare/references", `${scenario}.test.json`)
+	if (!xml || !existsSync(file)) return UNAVAILABLE
+	return runCompareTests(xml, JSON.parse(readFileSync(file, "utf8")))
+}
+
 export async function build() {
 	const rows = []
 	const prompts = {}
@@ -74,16 +85,23 @@ export async function build() {
 		const referenceXml = refModule.default()
 		const referenceMs = Math.round(performance.now() - t0)
 		const ref = metrics(referenceXml, referenceXml)
+		const referenceTests = await testsFor(scenario, referenceXml)
 
-		const scoped = rows
-			.filter((r) => r.scenario === scenario)
-			.map((r) => {
-				const m = r.xml
-					? metrics(r.xml, referenceXml)
-					: { parses: false, diComplete: null, lintErrors: null, closeness: null, defs: null }
-				const { xml, ...rest } = r
-				return { ...rest, ...m, svgSource: m.defs, defs: undefined }
+		const scoped = []
+		for (const r of rows.filter((x) => x.scenario === scenario)) {
+			const m = r.xml
+				? metrics(r.xml, referenceXml)
+				: { parses: false, diComplete: null, lintErrors: null, closeness: null, defs: null }
+			const { xml, ...rest } = r
+			scoped.push({
+				...rest,
+				...m,
+				costUsd: costUsd(r.model, r.inputTokens, r.outputTokens),
+				tests: await testsFor(scenario, xml),
+				svgSource: m.defs,
+				defs: undefined,
 			})
+		}
 		const dir = join(outDir, scenario)
 		mkdirSync(dir, { recursive: true })
 		writeFileSync(join(dir, "reference.svg"), exportSvg(ref.defs))
@@ -107,18 +125,23 @@ export async function build() {
 				durationMsMedian: median(runs.map((r) => r.durationMs)),
 				inputTokensMedian: median(runs.map((r) => r.inputTokens)),
 				outputTokensMedian: median(runs.map((r) => r.outputTokens)),
+				costUsdMedian: median(runs.map((r) => r.costUsd)),
+				costedRuns: runs.filter((r) => r.costUsd != null).length,
+				testsRan: runs.filter((r) => r.tests.status !== "unavailable").length,
+				testsPassed: runs.filter((r) => r.tests.status === "pass").length,
 			}
 		}
 		const out = {
 			scenario,
 			prompt: prompts[scenario],
-			model: MODEL,
+			pricesAsOf: PRICES_AS_OF,
 			reference: {
 				durationMs: referenceMs,
 				parses: ref.parses,
 				diComplete: ref.diComplete,
 				lintErrors: ref.lintErrors,
 				closeness: ref.closeness,
+				tests: referenceTests,
 			},
 			routes,
 			runs: scoped

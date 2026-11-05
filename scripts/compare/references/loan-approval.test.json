@@ -1,0 +1,84 @@
+{
+	"$schema": "https://camunda.com/json-schema/cpt-test-cases/8.10/schema.json",
+	"testCases": [
+		{
+			"name": "Happy path: score above 580, underwriter approves",
+			"description": "Written from the scenario prompt. The DMN decision is not deployed here, so the risk score is not computed; the underwriter's approval is supplied as a variable.",
+			"instructions": [
+				{
+					"type": "CREATE_PROCESS_INSTANCE",
+					"processDefinitionSelector": {
+						"processDefinitionId": "loan-approval"
+					},
+					"variables": {
+						"applicant": {
+							"id": "A-1"
+						},
+						"approved": true
+					}
+				},
+				{
+					"type": "COMPLETE_JOB",
+					"jobSelector": {
+						"elementId": "Task_CheckCreditScore"
+					},
+					"variables": {
+						"creditScore": 720
+					}
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "loan-approval"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "Task_ScoreRisk"
+						}
+					],
+					"state": "IS_COMPLETED"
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "loan-approval"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "Task_UnderwriterReview"
+						}
+					],
+					"state": "IS_ACTIVE"
+				},
+				{
+					"type": "COMPLETE_USER_TASK",
+					"userTaskSelector": {
+						"elementId": "Task_UnderwriterReview"
+					},
+					"variables": {
+						"approved": true
+					}
+				},
+				{
+					"type": "ASSERT_ELEMENT_INSTANCES",
+					"processInstanceSelector": {
+						"processDefinitionId": "loan-approval"
+					},
+					"elementSelectors": [
+						{
+							"elementId": "EndEvent_LoanApproved"
+						}
+					],
+					"state": "IS_COMPLETED"
+				},
+				{
+					"type": "ASSERT_PROCESS_INSTANCE",
+					"processInstanceSelector": {
+						"processDefinitionId": "loan-approval"
+					},
+					"state": "IS_COMPLETED"
+				}
+			]
+		}
+	]
+}

@@ -4,7 +4,9 @@ import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
 import {
 	WITHOUT_SDK_SYSTEM_PROMPT,
+	buildCompactJsonSystemPrompt,
 	buildCompactSystemPrompt,
+	buildPlanSystemPrompt,
 	buildSdkSystemPrompt,
 } from "./system-prompt.js"
 
@@ -76,5 +78,21 @@ describe("buildCompactSystemPrompt", () => {
 	it("includes the output instruction", () => {
 		const prompt = buildCompactSystemPrompt(REPO_ROOT)
 		expect(prompt).toContain("```compact")
+	})
+})
+
+describe("buildCompactJsonSystemPrompt", () => {
+	it("documents the CompactDiagram shape and the output block", () => {
+		const prompt = buildCompactJsonSystemPrompt(REPO_ROOT)
+		expect(prompt).toContain("interface CompactDiagram")
+		expect(prompt).toContain("```json")
+	})
+})
+
+describe("buildPlanSystemPrompt", () => {
+	it("documents ProcessPlan and the output block", () => {
+		const prompt = buildPlanSystemPrompt(REPO_ROOT)
+		expect(prompt).toContain("interface ProcessPlan")
+		expect(prompt).toContain("```json")
 	})
 })
