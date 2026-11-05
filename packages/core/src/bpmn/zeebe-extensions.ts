@@ -61,6 +61,15 @@ export interface ZeebeAgentDefinition {
 	agentType: string
 }
 
+/** One `zeebe:linkedResource` (e.g. the RPA script a service task runs). */
+export interface ZeebeLinkedResource {
+	resourceType: string
+	resourceId: string
+	linkName: string
+	bindingType?: "latest" | "deployment" | "versionTag"
+	versionTag?: string
+}
+
 /** Zeebe form definition extension for user tasks. */
 export type ZeebeFormDefinition =
 	| {
@@ -147,6 +156,8 @@ export interface ZeebeExtensions {
 	adHoc?: ZeebeAdHoc
 	/** AI agent marker (zeebe:agentDefinition). */
 	agentDefinition?: ZeebeAgentDefinition
+	/** Resources linked to a service task (zeebe:linkedResources). */
+	linkedResources?: ZeebeLinkedResource[]
 	/** Camunda Form linked to a user task (zeebe:formDefinition). */
 	formDefinition?: ZeebeFormDefinition
 	/** DMN decision invoked by a business rule task (zeebe:calledDecision). */
@@ -284,6 +295,24 @@ export function zeebeExtensionsToXmlElements(extensions: ZeebeExtensions): XmlEl
 			name: "zeebe:agentDefinition",
 			attributes: { agentType: extensions.agentDefinition.agentType },
 			children: [],
+		})
+	}
+
+	if (extensions.linkedResources?.length) {
+		elements.push({
+			name: "zeebe:linkedResources",
+			attributes: {},
+			children: extensions.linkedResources.map((r) => ({
+				name: "zeebe:linkedResource",
+				attributes: {
+					resourceType: r.resourceType,
+					resourceId: r.resourceId,
+					linkName: r.linkName,
+					...(r.bindingType !== undefined ? { bindingType: r.bindingType } : {}),
+					...(r.versionTag !== undefined ? { versionTag: r.versionTag } : {}),
+				},
+				children: [],
+			})),
 		})
 	}
 

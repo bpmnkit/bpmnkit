@@ -1,5 +1,10 @@
 # Features
 
+## Builder: data elements and linked resources (2026-11-05)
+
+- `.dataObject()`, `.dataObjectReference()`, `.dataStoreReference()` and `.dataAssociation(activityId, dataRefId, "input" | "output")` sit beside the chain and add no sequence flows.
+- `serviceTask({ linkedResources })` writes `zeebe:linkedResources` (RPA scripts).
+
 ## Same-input comparison page (2026-10-22)
 
 `/compare/same-input` shows one prompt through the recorded LLM routes and a hand-written no-AI reference, with the rendered diagram, tokens, time, validity and closeness for each. Data comes from `node scripts/build-compare-data.mjs` and is committed.

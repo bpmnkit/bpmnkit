@@ -7,6 +7,7 @@ import type {
 	BpmnAssociation,
 	BpmnCollaboration,
 	BpmnConditionExpression,
+	BpmnDataAssociation,
 	BpmnDefinitions,
 	BpmnElementType,
 	BpmnError,
@@ -43,6 +44,7 @@ import {
 import {
 	type ZeebeExtensions,
 	type ZeebeFormDefinition,
+	type ZeebeLinkedResource,
 	type ZeebeListener,
 	assertZeebePlacement,
 	bpmnElementName,
@@ -140,6 +142,8 @@ export interface ServiceTaskOptions {
 	zeebeProperties?: Array<{ name: string; value: string }>
 	/** Marks the task as an AI agent the engine runs (`zeebe:agentDefinition`, Camunda 8.10+). */
 	agentDefinition?: { agentType: string }
+	/** Resources the task runs, e.g. an RPA script (`zeebe:linkedResources`). */
+	linkedResources?: ZeebeLinkedResource[]
 	/** Zeebe modeler template ID. */
 	modelerTemplate?: string
 	/** Zeebe modeler template version. */
@@ -489,6 +493,61 @@ export interface AdHocSubProcessOptions extends ElementOptions {
 	 * top to bottom instead of left to right. Layout only; not written to the XML.
 	 */
 	toolGrid?: GridHint
+}
+
+/** Options for `dataObject()` / `dataObjectReference()`. */
+export interface DataElementOptions {
+	name?: string
+	/** Draws the collection (parallel-bars) marker. */
+	isCollection?: boolean
+}
+
+/**
+ * Data elements sit beside the chain: no sequence flow in or out, and the flow
+ * cursor does not move. They are linked to activities by data associations.
+ */
+function addDataElement(
+	elements: BpmnFlowElement[],
+	ids: Set<string>,
+	element: BpmnFlowElement,
+): void {
+	if (ids.has(element.id)) throw new Error(`Duplicate element ID "${element.id}"`)
+	elements.push(element)
+	ids.add(element.id)
+}
+
+function makeDataElement(
+	id: string,
+	type: "dataObject" | "dataObjectReference" | "dataStoreReference",
+	ref: string | undefined,
+	options?: DataElementOptions,
+): BpmnFlowElement {
+	const el = createFlowElement(id, type, { name: options?.name })
+	if (el.type === "dataObjectReference") el.dataObjectRef = ref
+	if (el.type === "dataStoreReference") el.dataStoreRef = ref
+	if (options?.isCollection && (el.type === "dataObject" || el.type === "dataObjectReference"))
+		el.isCollection = true
+	return el
+}
+
+/**
+ * Input: the data reference is the association's source. Output: it is the
+ * target. Either way the activity owns the association element.
+ */
+function addDataAssociation(
+	elements: readonly BpmnFlowElement[],
+	activityId: string,
+	dataRefId: string,
+	direction: "input" | "output",
+): void {
+	const activity = elements.find((e) => e.id === activityId)
+	if (!activity) throw new Error(`dataAssociation(): no element "${activityId}" in this scope`)
+	const association: BpmnDataAssociation =
+		direction === "input"
+			? { sourceRefs: [dataRefId], unknownAttributes: {} }
+			: { sourceRefs: [], targetRef: dataRefId, unknownAttributes: {} }
+	const key = direction === "input" ? "dataInputAssociations" : "dataOutputAssociations"
+	activity[key] = [...(activity[key] ?? []), association]
 }
 
 /** Options for `annotate()`. */
@@ -873,6 +932,7 @@ function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
 	}
 
 	if (options.agentDefinition) extensions.agentDefinition = options.agentDefinition
+	if (options.linkedResources) extensions.linkedResources = options.linkedResources
 
 	return zeebeExtensionsToXmlElements(extensions)
 }
@@ -1622,6 +1682,44 @@ export class BranchBuilder {
 		return this.openBranchEnds
 	}
 
+	// ---- Data elements (beside the chain; no sequence flows) ----
+
+	/** Declares a data object. Link it to an activity via a `dataObjectReference()`. */
+	dataObject(id: string, options?: DataElementOptions): this {
+		addDataElement(this._elements, this._ids, makeDataElement(id, "dataObject", undefined, options))
+		return this
+	}
+
+	/** Draws a reference to the data object `dataObjectRef`. */
+	dataObjectReference(id: string, dataObjectRef: string, options?: DataElementOptions): this {
+		addDataElement(
+			this._elements,
+			this._ids,
+			makeDataElement(id, "dataObjectReference", dataObjectRef, options),
+		)
+		return this
+	}
+
+	/** Draws a reference to the data store `dataStoreRef`. */
+	dataStoreReference(
+		id: string,
+		dataStoreRef: string,
+		options?: Pick<DataElementOptions, "name">,
+	): this {
+		addDataElement(
+			this._elements,
+			this._ids,
+			makeDataElement(id, "dataStoreReference", dataStoreRef, options),
+		)
+		return this
+	}
+
+	/** Links an activity to a data reference: `input` reads it, `output` writes it. */
+	dataAssociation(activityId: string, dataRefId: string, direction: "input" | "output"): this {
+		addDataAssociation(this._elements, activityId, dataRefId, direction)
+		return this
+	}
+
 	// ---- Annotations ----
 
 	/** Attach a text annotation to the element at the current cursor position. */
@@ -2294,6 +2392,44 @@ export class SubProcessContentBuilder {
 	complexGateway(id: string, options?: GatewayOptions): this {
 		this.currentGatewayId = id
 		return this.addElement(makeComplexGatewayEl(id, options))
+	}
+
+	// ---- Data elements (beside the chain; no sequence flows) ----
+
+	/** Declares a data object. Link it to an activity via a `dataObjectReference()`. */
+	dataObject(id: string, options?: DataElementOptions): this {
+		addDataElement(this._elements, this._ids, makeDataElement(id, "dataObject", undefined, options))
+		return this
+	}
+
+	/** Draws a reference to the data object `dataObjectRef`. */
+	dataObjectReference(id: string, dataObjectRef: string, options?: DataElementOptions): this {
+		addDataElement(
+			this._elements,
+			this._ids,
+			makeDataElement(id, "dataObjectReference", dataObjectRef, options),
+		)
+		return this
+	}
+
+	/** Draws a reference to the data store `dataStoreRef`. */
+	dataStoreReference(
+		id: string,
+		dataStoreRef: string,
+		options?: Pick<DataElementOptions, "name">,
+	): this {
+		addDataElement(
+			this._elements,
+			this._ids,
+			makeDataElement(id, "dataStoreReference", dataStoreRef, options),
+		)
+		return this
+	}
+
+	/** Links an activity to a data reference: `input` reads it, `output` writes it. */
+	dataAssociation(activityId: string, dataRefId: string, direction: "input" | "output"): this {
+		addDataAssociation(this._elements, activityId, dataRefId, direction)
+		return this
 	}
 
 	// ---- Annotations ----
@@ -3424,6 +3560,48 @@ export class ProcessBuilder {
 		this._savedMainFlowId = undefined
 		this.flowElements.push(element)
 		this.elementIds.add(element.id)
+		return this
+	}
+
+	// ---- Data elements (beside the chain; no sequence flows) ----
+
+	/** Declares a data object. Link it to an activity via a `dataObjectReference()`. */
+	dataObject(id: string, options?: DataElementOptions): this {
+		addDataElement(
+			this.flowElements,
+			this.elementIds,
+			makeDataElement(id, "dataObject", undefined, options),
+		)
+		return this
+	}
+
+	/** Draws a reference to the data object `dataObjectRef`. */
+	dataObjectReference(id: string, dataObjectRef: string, options?: DataElementOptions): this {
+		addDataElement(
+			this.flowElements,
+			this.elementIds,
+			makeDataElement(id, "dataObjectReference", dataObjectRef, options),
+		)
+		return this
+	}
+
+	/** Draws a reference to the data store `dataStoreRef`. */
+	dataStoreReference(
+		id: string,
+		dataStoreRef: string,
+		options?: Pick<DataElementOptions, "name">,
+	): this {
+		addDataElement(
+			this.flowElements,
+			this.elementIds,
+			makeDataElement(id, "dataStoreReference", dataStoreRef, options),
+		)
+		return this
+	}
+
+	/** Links an activity to a data reference: `input` reads it, `output` writes it. */
+	dataAssociation(activityId: string, dataRefId: string, direction: "input" | "output"): this {
+		addDataAssociation(this.flowElements, activityId, dataRefId, direction)
 		return this
 	}
 

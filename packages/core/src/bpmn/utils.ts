@@ -15,6 +15,7 @@ import type {
 	ZeebeFormDefinition,
 	ZeebeIoMapping,
 	ZeebeIoMappingEntry,
+	ZeebeLinkedResource,
 	ZeebeListener,
 	ZeebeProperties,
 	ZeebeTaskDefinition,
@@ -280,6 +281,29 @@ export function getZeebeExtensions(extensionElements: XmlElement[]): ZeebeExtens
 		ext.agentDefinition = { agentType: agentDefEl.attributes.agentType ?? "" }
 	}
 
+	const linkedEl = findChild(extensionElements, "linkedResources")
+	if (linkedEl) {
+		const linked = linkedEl.children
+			.filter((c) => localName(c.name) === "linkedResource")
+			.map((c): ZeebeLinkedResource => {
+				const { resourceType, resourceId, linkName, bindingType, versionTag } = c.attributes
+				const r: ZeebeLinkedResource = {
+					resourceType: resourceType ?? "",
+					resourceId: resourceId ?? "",
+					linkName: linkName ?? "",
+				}
+				if (
+					bindingType === "latest" ||
+					bindingType === "deployment" ||
+					bindingType === "versionTag"
+				)
+					r.bindingType = bindingType
+				if (versionTag !== undefined) r.versionTag = versionTag
+				return r
+			})
+		if (linked.length > 0) ext.linkedResources = linked
+	}
+
 	const calledDecEl = findChild(extensionElements, "calledDecision")
 	if (calledDecEl) {
 		const calledDecision: ZeebeCalledDecision = {
@@ -377,6 +401,7 @@ const KNOWN_ZEEBE_ELEMENTS: ReadonlySet<string> = new Set([
 	"properties",
 	"adHoc",
 	"agentDefinition",
+	"linkedResources",
 	"formDefinition",
 	"calledDecision",
 	"calledElement",

@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-05 — Builder: linked resources and data elements (B10, B11)
+
+- `ServiceTaskOptions.linkedResources` writes `zeebe:linkedResources` > `zeebe:linkedResource` through the typed writer (`ZeebeExtensions.linkedResources`, new `ZeebeLinkedResource` type); `getZeebeExtensions` reads it back and the round-trip table covers it. `connectors/apply-element.ts` is unchanged (its writer is inline, not a reusable helper).
+- `dataObject`, `dataObjectReference`, `dataStoreReference` and `dataAssociation(activityId, dataRefId, "input" | "output")` on all three flow builders. They add no sequence flow and leave the chain cursor alone; auto-layout packs them as unconnected shapes. Association edges are not drawn (needs `layout/**`). `builder-coverage.ts` no longer exempts the three types.
+- Tests: `tests/builder-data-elements.test.ts`, `tests/builder-zeebe-options.test.ts`, `tests/zeebe-extensions-roundtrip.test.ts`.
+
 ## 2026-11-04 — CI on Node 26: DOM storage in tests, tsx deprecation warning, API snapshot
 
 - CI installs `lts/*`, which now resolves to Node 26. Node 25+ defines its own `localStorage`/`sessionStorage` globals, undefined unless started with `--localstorage-file`, and Vitest's DOM environment does not replace them, so the storage tests in `@bpmnkit/ui` and `apps/drop` failed. `scripts/vitest-dom-storage.mjs` (a `setupFiles` entry in both configs) gives DOM tests happy-dom `Storage` objects when Node's globals are undefined. Both suites pass on Node 22 and 26.
