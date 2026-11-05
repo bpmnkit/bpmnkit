@@ -14,6 +14,7 @@ import {
 	makeEventDef,
 } from "./compact.js"
 import type { BpmnOperation, ElementPatch } from "./operations.js"
+import { assignEventDefinitionIds } from "./stable-ids.js"
 import {
 	type ZeebeListener,
 	assertZeebePlacement,
@@ -704,6 +705,7 @@ function patchElement(
 		if (current !== patch.eventType) {
 			const replacement = makeEventDef(patch.eventType)
 			element.eventDefinitions = replacement ? [replacement] : []
+			assignEventDefinitionIds(element.id, element.eventDefinitions)
 		}
 	}
 

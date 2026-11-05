@@ -4,7 +4,7 @@
 
 - Merged the four branches with history. Agent cards now name `casen check` and show a tested `Dmn.drd()` script (`scripts/dmn-drd.ts`).
 - MCP `replace_diagram` on a DMN returns a plain tool error for a dangling `requires` (test: `apps/proxy/tests/mcp-replace-dmn.test.ts`).
-- Fix: compact `expand` now derives event-definition ids, so applied drop feedback no longer trips `deploy/event-definition-no-id`.
+- Fix: compact `expand` and the element `eventType` patch now derive event-definition ids, so applied drop feedback no longer trips `deploy/event-definition-no-id`.
 
 ## 2026-11-05 — core: event-definition ids and form `conditional` (Camunda eval fixes)
 
