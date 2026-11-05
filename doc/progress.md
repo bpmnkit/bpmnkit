@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-11-05 — Round trip: Flowable Modeler files, `isExecutable`, nested lanes
+
+- Split out of the lane and pool PR (#258). The saved XML is deployed to Flowable, so the round trip must not change what the engine reads.
+- `<definitions>` without an `id` (the Flowable Modeler omits it; the schema makes it optional) parses, with `id: ""`, and is written back without one. It used to throw `ParseError`.
+- `isExecutable` is read as an `xsd:boolean` (`true`/`1`, `false`/`0`, whitespace ignored) and written back as the file says it. Flowable reads an absent attribute as executable, so dropping `false` made a partner pool's process deployable. Absent stays absent. Files that say `false` get a new `semanticHash`.
+- A nested lane set is written as `<childLaneSet>`, not `<laneSet>`: the output was schema-invalid and the nested lanes were lost on the next read. Files saved that way are read back.
+- Round-trip diff of the 50 `.bpmn` files in the repo, `@bpmnkit/core@1.7.0` vs this change: 33 identical; 15 differ only by keeping the `isExecutable="false"` they declare, 1 by `<childLaneSet>`, and the Flowable fixture now parses.
+- Tests: `flowable-roundtrip.test.ts`; corpus fixture `08-flowable-lanes-pools.bpmn`; 13 stale `isExecutable` entries removed from the round-trip ratchet; golden hashes regenerated for the files that say `false`.
+
 ## 2026-11-05 — Camunda 8 → Camunda 7/Operaton export (issue #259, step 2)
 
 - `convertCamunda8To7(defs)` in `packages/core/src/bpmn/camunda7/export.ts`, exported from `@bpmnkit/core`: non-mutating, returns `{ definitions, findings }` (same finding shape as `convertCamunda7`). Maps job type → `camunda:type="external"` + `camunda:topic`, I/O mapping → `camunda:inputOutput`, assignment, `formKey`, `calledElement` (+ `camunda:in`/`out variables="all"`), version tag. Removes all `zeebe:`/`modeler:` content and namespaces itself (does not use the serializer). FEEL is kept raw with a `manual` finding; message correlation keys, connectors and Zeebe-only features are dropped with findings.
