@@ -1,5 +1,18 @@
 # @bpmnkit/cli
 
+## 1.4.1
+
+### Patch Changes
+
+- Updated dependencies [1ecde83]
+- Updated dependencies [1ecde83]
+- Updated dependencies [9ba0c65]
+- Updated dependencies [1ecde83]
+- Updated dependencies [1ecde83]
+- Updated dependencies [1ecde83]
+  - @bpmnkit/core@1.7.0
+  - @bpmnkit/proxy@0.6.0
+
 ## 1.4.0
 
 ### Minor Changes
