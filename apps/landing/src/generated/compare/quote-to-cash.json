@@ -3,16 +3,16 @@
 	"prompt": "Generate a Quote-to-Cash BPMN process for Camunda 8. It should include:\n- Quote/offer generation from a product catalog with tiered pricing\n- Exclusive gateway for discount approval: manager approval above one threshold,\n  escalating to VP approval above a higher threshold\n- Contract generation and e-signature via a REST connector to an external\n  e-signature service\n- Exclusive gateway routing standard orders directly to provisioning, or complex\n  bundled orders through a dedicated multi-line provisioning subprocess\n- Multi-instance subprocess provisioning each ordered line item in parallel\n- Invoice generation triggered once provisioning completes\n- Payment processing via a REST connector to a payment gateway\n- Event-based gateway for payment outcome: paid immediately, or move to a\n  dunning subprocess\n- Dunning/cash-collection subprocess with escalating reminder cycles (timer\n  boundary events on each reminder) before escalating to a collections agency\n- Separate end events for: contract rejected, payment received, and written\n  off after collections failure\n\nOutput code only. No explanation. No markdown prose outside the code block.",
 	"pricesAsOf": "2026-11-05",
 	"reference": {
-		"durationMs": 10,
+		"durationMs": 7,
 		"parses": true,
 		"diComplete": true,
 		"lintErrors": 0,
 		"closeness": 100,
 		"tests": {
-			"status": "pass",
-			"passed": 1,
-			"total": 1,
-			"failure": null
+			"status": "unavailable",
+			"passed": 0,
+			"total": 0,
+			"failure": "reebe-wasm not built"
 		}
 	},
 	"routes": {
@@ -23,14 +23,14 @@
 			"zeroLintErrors": 0,
 			"featuredRunId": "quote-to-cash-2026-07-03",
 			"closenessMedian": 61.2,
-			"closenessBest": 65.5,
+			"closenessBest": 65.6,
 			"closenessWorst": 58,
 			"durationMsMedian": 307300,
 			"inputTokensMedian": 603,
 			"outputTokensMedian": 31772,
 			"costUsdMedian": null,
 			"costedRuns": 0,
-			"testsRan": 5,
+			"testsRan": 0,
 			"testsPassed": 0
 		},
 		"compact-dsl": {
@@ -39,15 +39,15 @@
 			"diComplete": 1,
 			"zeroLintErrors": 0,
 			"featuredRunId": "quote-to-cash-2026-07-03",
-			"closenessMedian": 61.2,
-			"closenessBest": 61.2,
-			"closenessWorst": 61.2,
+			"closenessMedian": 61.3,
+			"closenessBest": 61.3,
+			"closenessWorst": 61.3,
 			"durationMsMedian": 67936,
 			"inputTokensMedian": 2531,
 			"outputTokensMedian": 6006,
 			"costUsdMedian": null,
 			"costedRuns": 0,
-			"testsRan": 1,
+			"testsRan": 0,
 			"testsPassed": 0
 		},
 		"builder-script": {
@@ -56,15 +56,15 @@
 			"diComplete": 2,
 			"zeroLintErrors": 0,
 			"featuredRunId": "quote-to-cash-2026-07-03",
-			"closenessMedian": 53.1,
-			"closenessBest": 55.1,
-			"closenessWorst": 53.1,
+			"closenessMedian": 53.3,
+			"closenessBest": 55.2,
+			"closenessWorst": 53.3,
 			"durationMsMedian": 130996,
 			"inputTokensMedian": 10715,
 			"outputTokensMedian": 11793,
 			"costUsdMedian": null,
 			"costedRuns": 0,
-			"testsRan": 2,
+			"testsRan": 0,
 			"testsPassed": 0
 		}
 	},
@@ -148,13 +148,13 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 8,
-			"closeness": 55.1,
+			"closeness": 55.2,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "BPMN parse error: Element 'paymentOverdue' in process 'QuoteToCash': Intermediate catch event must have an event definition; Element 'paymentConfirmed' in process 'QuoteToCash': Intermediate catch event must have an event definition"
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		},
 		{
@@ -170,13 +170,13 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 10,
-			"closeness": 53.1,
+			"closeness": 53.3,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "BPMN parse error: Element 'paymentConfirmed' in process 'QuoteToCash': Intermediate catch event must have an event definition; Element 'paymentWindowElapsed' in process 'QuoteToCash': Intermediate catch event must have an event definition"
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		},
 		{
@@ -192,13 +192,13 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 4,
-			"closeness": 61.2,
+			"closeness": 61.3,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "BPMN parse error: Element 'paymentConfirmed' in process 'QuoteToCash': Message catch event must reference a message with a name; Element 'paymentTimeout' in process 'QuoteToCash': Timer event must have a time expression; Element 'dunningOutcome' in process 'QuoteToCash': Exclusive gateway outgoing flow 'Flow_compact_41' must have a condition expression (unless it's the default flow)"
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		},
 		{
@@ -217,10 +217,10 @@
 			"closeness": 58,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "instruction 0 (CREATE_PROCESS_INSTANCE): Database error: Record not found: No process definition for quote-to-cash"
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		},
 		{
@@ -236,13 +236,13 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 3,
-			"closeness": 65.5,
+			"closeness": 65.6,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "instruction 1 (COMPLETE_JOB): no open job matches elementId \"ServiceTask_GenerateQuote\""
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		},
 		{
@@ -258,13 +258,13 @@
 			"parses": true,
 			"diComplete": true,
 			"lintErrors": 3,
-			"closeness": 63.9,
+			"closeness": 64,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "instruction 1 (COMPLETE_JOB): no open job matches elementId \"ServiceTask_GenerateQuote\""
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		},
 		{
@@ -280,13 +280,13 @@
 			"parses": true,
 			"diComplete": false,
 			"lintErrors": 3,
-			"closeness": 58.5,
+			"closeness": 58.4,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "instruction 1 (COMPLETE_JOB): no open job matches elementId \"ServiceTask_GenerateQuote\""
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		},
 		{
@@ -305,10 +305,10 @@
 			"closeness": 61.2,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "instruction 0 (CREATE_PROCESS_INSTANCE): Database error: Record not found: No process definition for quote-to-cash"
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		}
 	]

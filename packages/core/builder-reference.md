@@ -101,8 +101,6 @@ Not available inside callbacks (top-level only): at, insertAfter, withAutoLayout
 - AdHocSubProcessOptions +El: activeElementsCollection?: string (FEEL expression for determining…); outputCollection?: string; outputElement?: string; taskDefinition?: {type: string; retries?: string} (Zeebe task definition…); ioMapping?: ioMapping shape; taskHeaders?: Record<string, string>; multiInstance?: MultiInstanceOptions; completionCondition?: string
 - SubProcessOptions +El: multiInstance?: MultiInstanceOptions
 - DataElementOptions: name?: string; isCollection?: boolean (Draws the collection…)
-- AnnotateOptions: side?: "above" | "below" (Which side of the element…)
-
 - AnnotateOptions: side?: "above" | "below" | "left" | "right" (Which side of the element…)
 - BuildOptions: explicitJoins?: boolean (Refuse to infer join gateways, so…)
 - ioMapping shape = {inputs?: Array<{source: string; target: string}>; outputs?: Array<{source: string; target: string}>}

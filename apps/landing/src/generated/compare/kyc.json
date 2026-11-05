@@ -3,16 +3,16 @@
 	"prompt": "Generate a KYC (Know Your Customer) onboarding BPMN process for Camunda 8. It\nshould include:\n- Identity document upload and verification via a REST connector to an OCR\n  service\n- Exclusive gateway on document quality: reject and loop back to re-upload\n  (up to 2 retries) if verification fails\n- Sanctions and PEP (politically exposed person) screening via a REST\n  connector\n- Risk-based gateway routing to standard due diligence or enhanced due\n  diligence based on the screening result\n- User task for enhanced due diligence manual review by a compliance officer\n- DMN business rule task for final risk classification\n- Separate end events for approved, rejected, and escalated-to-compliance\n  outcomes\n\nOutput code only. No explanation. No markdown prose outside the code block.",
 	"pricesAsOf": "2026-11-05",
 	"reference": {
-		"durationMs": 33,
+		"durationMs": 25,
 		"parses": true,
 		"diComplete": true,
 		"lintErrors": 0,
 		"closeness": 100,
 		"tests": {
-			"status": "pass",
-			"passed": 1,
-			"total": 1,
-			"failure": null
+			"status": "unavailable",
+			"passed": 0,
+			"total": 0,
+			"failure": "reebe-wasm not built"
 		}
 	},
 	"routes": {
@@ -30,7 +30,7 @@
 			"outputTokensMedian": 12092,
 			"costUsdMedian": null,
 			"costedRuns": 0,
-			"testsRan": 2,
+			"testsRan": 0,
 			"testsPassed": 0
 		},
 		"compact-dsl": {
@@ -47,7 +47,7 @@
 			"outputTokensMedian": 1020,
 			"costUsdMedian": null,
 			"costedRuns": 0,
-			"testsRan": 2,
+			"testsRan": 0,
 			"testsPassed": 0
 		},
 		"builder-script": {
@@ -64,7 +64,7 @@
 			"outputTokensMedian": 2273,
 			"costUsdMedian": null,
 			"costedRuns": 0,
-			"testsRan": 2,
+			"testsRan": 0,
 			"testsPassed": 0
 		}
 	},
@@ -85,10 +85,10 @@
 			"closeness": 49.8,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "instruction 0 (CREATE_PROCESS_INSTANCE): Database error: Record not found: No process definition for kyc-onboarding"
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		},
 		{
@@ -107,10 +107,10 @@
 			"closeness": 48.1,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "BPMN parse error: Element 'sanctionsScreening' in process 'KycOnboarding': Input mapping source expression must not be empty; Element 'verifyDocument' in process 'KycOnboarding': Input mapping source expression must not be empty"
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		},
 		{
@@ -129,10 +129,10 @@
 			"closeness": 44.5,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "instruction 0 (CREATE_PROCESS_INSTANCE): Database error: Record not found: No process definition for kyc-onboarding"
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		},
 		{
@@ -151,10 +151,10 @@
 			"closeness": 45.2,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "instruction 0 (CREATE_PROCESS_INSTANCE): Database error: Record not found: No process definition for kyc-onboarding"
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		},
 		{
@@ -173,10 +173,10 @@
 			"closeness": 53,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "instruction 1 (COMPLETE_USER_TASK): no open user task matches elementId \"UserTask_UploadIdDocument\""
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		},
 		{
@@ -195,10 +195,10 @@
 			"closeness": 53.7,
 			"costUsd": null,
 			"tests": {
-				"status": "fail",
+				"status": "unavailable",
 				"passed": 0,
-				"total": 1,
-				"failure": "instruction 1 (COMPLETE_USER_TASK): no open user task matches elementId \"UserTask_UploadIdDocument\""
+				"total": 0,
+				"failure": "reebe-wasm not built"
 			}
 		}
 	]
