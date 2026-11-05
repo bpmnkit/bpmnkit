@@ -4,10 +4,13 @@ import {
 	Bpmn,
 	type BpmnBounds,
 	type BpmnDefinitions,
+	type BpmnFlowElement,
 	type BpmnLane,
+	allLanes as coreAllLanes,
 	expand,
 	parseProcessDelta,
 	parseProcessText,
+	primaryProcess,
 	writeProcessText,
 } from "@bpmnkit/core"
 import { applyConnectorLines } from "@bpmnkit/core/connectors"
@@ -54,12 +57,13 @@ function flowsOf(defs: BpmnDefinitions) {
 	return (defs.processes[0]?.sequenceFlows ?? []).map((f) => `${f.sourceRef}>${f.targetRef}`).sort()
 }
 
-/** Whether every node of the first process is drawn on the first diagram: what an editable drop has. */
+/** Whether every node of the edited process is drawn on the first diagram: what an editable drop has. */
 function drawnInFull(defs: BpmnDefinitions): boolean {
 	const shapes = new Set(defs.diagrams[0]?.plane.shapes.map((s) => s.bpmnElement))
 	return (
-		defs.processes[0]?.flowElements.every((el) => el.type === "dataObject" || shapes.has(el.id)) ??
-		false
+		primaryProcess(defs)?.flowElements.every(
+			(el) => el.type === "dataObject" || shapes.has(el.id),
+		) ?? false
 	)
 }
 
@@ -74,7 +78,7 @@ function duplicateIds(defs: BpmnDefinitions): string[] {
  * already have one, and a change must only not add another.
  */
 function expectSound(defs: BpmnDefinitions, before?: BpmnDefinitions): void {
-	const process = defs.processes[0]
+	const process = primaryProcess(defs)
 	const plane = defs.diagrams[0]?.plane
 	const nodes = new Set(process?.flowElements.map((el) => el.id))
 	const flows = new Set(process?.sequenceFlows.map((f) => f.id))
@@ -99,11 +103,29 @@ function expectSound(defs: BpmnDefinitions, before?: BpmnDefinitions): void {
 		if ("default" in el && el.default !== undefined) expect(flows.has(el.default)).toBe(true)
 		if (el.type === "boundaryEvent") expect(nodes.has(el.attachedToRef)).toBe(true)
 	}
-	for (const lane of process?.laneSet?.lanes ?? []) {
-		for (const ref of lane.flowNodeRefs) expect(nodes.has(ref), ref).toBe(true)
+	for (const lane of coreAllLanes(process?.laneSet)) {
+		for (const ref of lane.flowNodeRefs)
+			expect(nodes.has(ref), `${lane.id} lists ${ref}`).toBe(true)
+	}
+	// A message flow ends on a participant or on a flow node of some pool, at any depth.
+	const ends = new Set([
+		...defs.collaborations.flatMap((c) => c.participants.map((p) => p.id)),
+		...defs.processes.flatMap((p) => [...deepIds(p.flowElements)]),
+	])
+	for (const flow of defs.collaborations.flatMap((c) => c.messageFlows)) {
+		expect(ends.has(flow.sourceRef), `${flow.id} from ${flow.sourceRef}`).toBe(true)
+		expect(ends.has(flow.targetRef), `${flow.id} to ${flow.targetRef}`).toBe(true)
 	}
 	expect(duplicateIds(defs)).toEqual(before ? duplicateIds(before) : [])
 	expect(() => Bpmn.parse(Bpmn.export(defs))).not.toThrow()
+}
+
+/** Ids of `elements` and everything inside them. */
+function deepIds(elements: readonly BpmnFlowElement[]): string[] {
+	return elements.flatMap((el) => [
+		el.id,
+		...("flowElements" in el ? deepIds(el.flowElements) : []),
+	])
 }
 
 /** Every lane, nested ones included. */
@@ -483,6 +505,18 @@ describe("applyProcessDelta", () => {
 		expectSound(result.definitions)
 	})
 
+	it("edits the executable process when it is not the first, and keeps the order", () => {
+		const defs = fixture("miwg-C.1.0.bpmn")
+		const order = defs.processes.map((p) => p.id)
+		const { aliases } = writeProcessText(defs)
+		const removed = Object.entries(aliases).find(([, id]) => id === "approveInvoice")?.[0]
+		const result = apply(defs, `- ${removed}`)
+		expect(result.definitions.processes.map((p) => p.id)).toEqual(order)
+		const ids = (i: number) => result.definitions.processes[i]?.flowElements.map((e) => e.id)
+		expect(ids(1)).not.toContain("approveInvoice")
+		expect(ids(0)).toEqual(defs.processes[0]?.flowElements.map((e) => e.id))
+	})
+
 	describe.each(readdirSync(ROUNDTRIP).filter((f) => f.endsWith(".bpmn")))("%s", (file) => {
 		it("takes an insert, a new branch and a removal, and stays sound", () => {
 			const defs = fixture(file)
@@ -522,6 +556,8 @@ describe("applyProcessDelta", () => {
 			const result = apply(defs, writeProcessText(defs).text)
 			expect(result.definitions).toEqual(defs)
 			expect([result.created, result.changed, result.removed]).toEqual([[], [], []])
+			// A file with no diagram is refused as a whole, with one problem that says so.
+			if (defs.diagrams.length > 0) expect(result.problems).toEqual([])
 		})
 	})
 })

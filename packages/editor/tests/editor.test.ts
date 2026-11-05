@@ -5,6 +5,7 @@ import { EDITOR_CSS } from "../src/css.js"
 import { BpmnEditor } from "../src/editor.js"
 import { defaultTranslate, interpolate } from "../src/i18n.js"
 import { type EditorOp, applyOp } from "../src/ops.js"
+import { boundsOf, expectFlowableKept, lanesOf, poolLessFlowable } from "./swimlane-helpers.js"
 
 // ── Fixture ───────────────────────────────────────────────────────────────────
 
@@ -650,6 +651,66 @@ describe("the op stream", () => {
 		expect(ops.length).toBe(8)
 		const replayed = ops.reduce((defs, op) => applyOp(defs, op).defs, start)
 		expect(Bpmn.export(replayed)).toBe(ed.exportXml())
+		ed.destroy()
+	})
+
+	it("replays a pool and lane session to byte-identical XML (WP8c)", () => {
+		const xml = Bpmn.export(poolLessFlowable(false))
+		const ed = new BpmnEditor({ container: makeContainer(), xml, grid: false })
+		const ops = recorder(ed)
+		/** The paths a pointer and the label editor take; private, so reached through a cast. */
+		const inner = ed as unknown as {
+			_doCreatePool(at: { x: number; y: number }): void
+			_commitTranslate(dx: number, dy: number): void
+			_commitSpace(
+				origin: { x: number; y: number },
+				current: { x: number; y: number },
+				axis: "h" | "v",
+			): void
+			_executeOp(op: EditorOp, options: { label: string }): string[]
+		}
+		const doc = () => {
+			const defs = ed.getDefinitions()
+			if (!defs) throw new Error("no definitions")
+			return defs
+		}
+
+		inner._doCreatePool({ x: 0, y: 0 })
+		const pool = doc().collaborations[0]?.participants[0]?.id ?? ""
+		ed.addLane(pool, "below")
+		const [upper, lower] = lanesOf(doc()).map((lane) => lane.id)
+		if (!upper || !lower) throw new Error("no lanes")
+		// Task_pay from the upper lane down into the middle of the lower one.
+		const band = boundsOf(doc(), lower)
+		const pay = boundsOf(doc(), "Task_pay")
+		ed.setSelection(["Task_pay"])
+		inner._commitTranslate(0, band.y + band.height / 2 - (pay.y + pay.height / 2))
+		const top = boundsOf(doc(), upper)
+		inner._executeOp(
+			{ kind: "resize", id: upper, bounds: { ...top, height: top.height + 40 } },
+			{ label: "Resize" },
+		)
+		inner._commitSpace({ x: pay.x, y: 0 }, { x: pay.x + 80, y: 0 }, "h")
+		inner._executeOp({ kind: "rename", id: lower, name: "Finance" }, { label: "Rename" })
+		ed.setSelection([upper])
+		ed.deleteSelected()
+		ed.autoLayout()
+
+		expect(ops.map((op) => op.kind)).toEqual([
+			"addParticipant",
+			// The first lane on a pool makes two.
+			"addLane",
+			"move",
+			"resize",
+			"space",
+			"rename",
+			"delete",
+			"autoLayout",
+		])
+		const start = Bpmn.parse(xml)
+		const replayed = ops.reduce((defs, op) => applyOp(defs, op).defs, start)
+		expect(Bpmn.export(replayed)).toBe(ed.exportXml())
+		expectFlowableKept(start, replayed)
 		ed.destroy()
 	})
 
