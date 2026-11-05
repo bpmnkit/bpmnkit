@@ -5183,7 +5183,7 @@
 		{
 			"id": "packages.core.installation-applybpmnoperations-definitions-operations-options",
 			"file": "chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md",
-			"tokens": 477,
+			"tokens": 642,
 			"tags": [
 				"packages",
 				"core",
@@ -5203,7 +5203,9 @@
 				"dueDate",
 				"followUpDate",
 				"correlationKey",
-				"OperationError"
+				"messageName",
+				"errorCode",
+				"escalationCode"
 			]
 		},
 		{

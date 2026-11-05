@@ -11,6 +11,12 @@
 - `dataObject`, `dataObjectReference`, `dataStoreReference` and `dataAssociation(activityId, dataRefId, "input" | "output")` on all three flow builders. They add no sequence flow and leave the chain cursor alone; auto-layout packs them as unconnected shapes. Association edges are not drawn (needs `layout/**`). `builder-coverage.ts` no longer exempts the three types.
 - Tests: `tests/builder-data-elements.test.ts`, `tests/builder-zeebe-options.test.ts`, `tests/zeebe-extensions-roundtrip.test.ts`.
 
+## 2026-11-05 — B6: edit patches for event definitions and multi-instance
+
+- `applyBpmnOperations` `update` patches now write event definitions (`messageName`, `errorCode`, `escalationCode`, `signalName` on the referenced root element — created if missing, reported when several elements share it; `timerDuration`/`timerDate`/`timerCycle`; `condition`) and multi-instance (`multiInstance`, one field at a time; empty string clears, empty `collection` removes the loop). `timerDuration`, `condition` and `multiInstance` were already in the patch type but silently ignored.
+- MCP `update_element` accepts these plus `executionListeners` / `taskListeners` (already supported by core, never exposed).
+- Tests: `packages/core/tests/full-operations-events.test.ts`, `apps/proxy/tests/mcp-update-element.test.ts`.
+
 ## 2026-11-04 — CI on Node 26: DOM storage in tests, tsx deprecation warning, API snapshot
 
 - CI installs `lts/*`, which now resolves to Node 26. Node 25+ defines its own `localStorage`/`sessionStorage` globals, undefined unless started with `--localstorage-file`, and Vitest's DOM environment does not replace them, so the storage tests in `@bpmnkit/ui` and `apps/drop` failed. `scripts/vitest-dom-storage.mjs` (a `setupFiles` entry in both configs) gives DOM tests happy-dom `Storage` objects when Node's globals are undefined. Both suites pass on Node 22 and 26.

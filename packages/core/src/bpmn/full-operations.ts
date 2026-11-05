@@ -1,6 +1,11 @@
 import type { XmlElement } from "../types/xml-element.js"
 import { assertBpmnDefinitions, assertCompactDiagram } from "./argument-guards.js"
-import type { BpmnDefinitions, BpmnFlowElement, BpmnSequenceFlow } from "./bpmn-model.js"
+import type {
+	BpmnDefinitions,
+	BpmnFlowElement,
+	BpmnMultiInstanceLoopCharacteristics,
+	BpmnSequenceFlow,
+} from "./bpmn-model.js"
 import {
 	type CompactDiagram,
 	type CompactElement,
@@ -185,6 +190,238 @@ const PATCH_EXTENSIONS: ReadonlyArray<[keyof ElementPatch, string]> = [
 	["executionListeners", "zeebe:executionListeners"],
 	["taskListeners", "zeebe:taskListeners"],
 ]
+
+/** Activities that can carry a `bpmn:multiInstanceLoopCharacteristics`. */
+const LOOPABLE: ReadonlySet<string> = new Set([
+	"serviceTask",
+	"scriptTask",
+	"userTask",
+	"businessRuleTask",
+	"callActivity",
+	"sendTask",
+	"receiveTask",
+	"manualTask",
+	"task",
+	"subProcess",
+	"adHocSubProcess",
+	"transaction",
+])
+
+/** Event-definition fields: the definition type each needs, and where the value lands. */
+type RootKind = "message" | "error" | "escalation" | "signal"
+const ROOT_FIELDS = [
+	["messageName", "message", "name"],
+	["errorCode", "error", "errorCode"],
+	["escalationCode", "escalation", "escalationCode"],
+	["signalName", "signal", "name"],
+] as const
+const TIMER_FIELDS = [
+	["timerDuration", "timeDuration"],
+	["timerDate", "timeDate"],
+	["timerCycle", "timeCycle"],
+] as const
+
+type RootElement = {
+	id: string
+	name?: string
+	errorCode?: string
+	escalationCode?: string
+	unknownAttributes?: Record<string, string>
+}
+
+function rootsOf(definitions: BpmnDefinitions, kind: RootKind): RootElement[] {
+	return kind === "message"
+		? definitions.messages
+		: kind === "error"
+			? definitions.errors
+			: kind === "escalation"
+				? definitions.escalations
+				: definitions.signals
+}
+
+function refKey(kind: RootKind): "messageRef" | "errorRef" | "escalationRef" | "signalRef" {
+	return `${kind}Ref`
+}
+
+function eventDefinitionOf(element: BpmnFlowElement, type: string) {
+	return "eventDefinitions" in element
+		? element.eventDefinitions.find((d) => d.type === type)
+		: undefined
+}
+
+/** How many events reference the root element, so a shared one is not edited for all. */
+function referenceCount(definitions: BpmnDefinitions, kind: RootKind, id: string): number {
+	let count = 0
+	for (const container of containersOf(definitions)) {
+		for (const candidate of container.flowElements) {
+			// A send/receive task points at its message directly.
+			if (asRecord(candidate)[refKey(kind)] === id) count++
+			if (!("eventDefinitions" in candidate)) continue
+			for (const definition of candidate.eventDefinitions) {
+				if (definition.type === kind && asRecord(definition)[refKey(kind)] === id) count++
+			}
+		}
+	}
+	return count
+}
+
+/**
+ * Checks the event-definition fields of a patch without writing, so a failure
+ * leaves the element as it was. Returns the reason, or nothing.
+ */
+function misplacedEventFields(
+	definitions: BpmnDefinitions,
+	element: BpmnFlowElement,
+	patch: ElementPatch,
+): string | undefined {
+	for (const [field, kind] of ROOT_FIELDS) {
+		if (patch[field] === undefined) continue
+		const definition = eventDefinitionOf(element, kind)
+		if (!definition)
+			return `${field} needs a ${kind} event definition, and "${element.id}" has none`
+		const ref = asRecord(definition)[refKey(kind)]
+		if (
+			typeof ref === "string" &&
+			rootsOf(definitions, kind).some((root) => root.id === ref) &&
+			referenceCount(definitions, kind, ref) > 1
+		) {
+			return `${field}: the ${kind} "${ref}" is shared by ${referenceCount(definitions, kind, ref)} elements; changing it would change them all`
+		}
+	}
+	for (const [field] of TIMER_FIELDS) {
+		if (patch[field] !== undefined && !eventDefinitionOf(element, "timer")) {
+			return `${field} needs a timer event definition, and "${element.id}" has none`
+		}
+	}
+	if (patch.condition !== undefined && !eventDefinitionOf(element, "conditional")) {
+		return `condition needs a conditional event definition, and "${element.id}" has none`
+	}
+	if (patch.messageName === "" && patch.correlationKey !== undefined) {
+		return 'correlationKey needs a message, and messageName: "" clears it'
+	}
+	if (patch.multiInstance !== undefined) {
+		if (!LOOPABLE.has(element.type)) {
+			return `multiInstance is not allowed on <${bpmnElementName(element)}>: only activities can run multi-instance`
+		}
+		const current = "loopCharacteristics" in element ? element.loopCharacteristics : undefined
+		if (!current && !patch.multiInstance.collection && patch.multiInstance.collection !== "") {
+			return "multiInstance needs a collection to add a loop to this element"
+		}
+	}
+	return undefined
+}
+
+function idTaken(definitions: BpmnDefinitions, id: string): boolean {
+	return (
+		findElement(definitions, id) !== undefined ||
+		definitions.processes.some((p) => p.id === id) ||
+		[
+			...definitions.messages,
+			...definitions.errors,
+			...definitions.escalations,
+			...definitions.signals,
+		].some((root) => root.id === id)
+	)
+}
+
+/** Index access on a model object, for fields chosen by name at runtime. */
+function asRecord(value: object): Record<string, unknown> {
+	return value as Record<string, unknown>
+}
+
+/** Sets or, for `""`, removes a field on a plain record. */
+function setOrDelete(target: object, key: string, value: string): void {
+	const record = asRecord(target)
+	if (value === "") delete record[key]
+	else record[key] = value
+}
+
+function applyEventFields(
+	definitions: BpmnDefinitions,
+	element: BpmnFlowElement,
+	patch: ElementPatch,
+): void {
+	for (const [field, kind, target] of ROOT_FIELDS) {
+		const value = patch[field]
+		if (value === undefined) continue
+		const found = eventDefinitionOf(element, kind)
+		if (!found) continue
+		const definition = asRecord(found)
+		const roots = rootsOf(definitions, kind)
+		let root = roots.find((candidate) => candidate.id === definition[refKey(kind)])
+		if (!root) {
+			if (value === "") continue
+			let id = `${kind[0]?.toUpperCase()}${kind.slice(1)}_${element.id}`
+			// Ids are unique across the whole document, not per kind.
+			while (idTaken(definitions, id)) id += "_"
+			root = { id, unknownAttributes: {} }
+			;(roots as RootElement[]).push(root)
+			definition[refKey(kind)] = id
+		}
+		setOrDelete(root, target, value)
+	}
+
+	const timer = eventDefinitionOf(element, "timer")
+	if (timer) {
+		for (const [field, key] of TIMER_FIELDS) {
+			const value = patch[field]
+			if (value === undefined) continue
+			setOrDelete(timer, key, value)
+			if (value === "") delete asRecord(timer)[`${key}Attributes`]
+		}
+	}
+
+	const conditional = eventDefinitionOf(element, "conditional")
+	if (conditional?.type === "conditional" && patch.condition !== undefined) {
+		// "" stays "" rather than deleting the key: that is how the parser
+		// represents an empty condition, so a no-change reconcile stays a no-op.
+		conditional.condition = patch.condition
+		if (patch.condition !== "") {
+			conditional.conditionAttributes ??= { "xsi:type": "bpmn:tFormalExpression" }
+		}
+	}
+}
+
+/** Applies the named parts of a multi-instance loop; see {@link ElementPatch.multiInstance}. */
+function applyMultiInstance(
+	element: BpmnFlowElement,
+	patch: NonNullable<ElementPatch["multiInstance"]>,
+): void {
+	if (!("loopCharacteristics" in element) && !LOOPABLE.has(element.type)) return
+	const holder = element as { loopCharacteristics?: BpmnMultiInstanceLoopCharacteristics }
+	if (patch.collection === "") {
+		Reflect.deleteProperty(holder, "loopCharacteristics")
+		return
+	}
+	holder.loopCharacteristics ??= { extensionElements: [] }
+	const loop = holder.loopCharacteristics
+	const zeebe = ensureLoopExtension(loop)
+	if (patch.collection !== undefined) zeebe.attributes.inputCollection = patch.collection
+	if (patch.sequential !== undefined) loop.isSequential = patch.sequential || undefined
+	for (const key of ["element", "outputCollection", "outputElement"] as const) {
+		const value = patch[key]
+		if (value === undefined) continue
+		setOrDelete(zeebe.attributes, key === "element" ? "inputElement" : key, value)
+	}
+	const wanted = patch.completionCondition
+	if (wanted === "") loop.completionCondition = undefined
+	// Keeps the existing attributes (namespace declarations) when only the text changes.
+	else if (wanted !== undefined && loop.completionCondition) loop.completionCondition.text = wanted
+	else if (wanted !== undefined) {
+		loop.completionCondition = {
+			text: wanted,
+			attributes: { "xsi:type": "bpmn:tFormalExpression" },
+		}
+	}
+}
+
+function ensureLoopExtension(loop: BpmnMultiInstanceLoopCharacteristics): XmlElement {
+	const existing = loop.extensionElements.find((e) => e.name === "zeebe:loopCharacteristics")
+	if (existing) return existing
+	const created: XmlElement = { name: "zeebe:loopCharacteristics", attributes: {}, children: [] }
+	loop.extensionElements.push(created)
+	return created
+}
 
 /**
  * Reports a patch field that would write an extension the Zeebe schema does not
@@ -387,10 +624,14 @@ function patchElement(
 
 	const misplaced = misplacedExtensions(element, patch)
 	if (misplaced !== undefined) return misplaced
+	const misplacedEvent = misplacedEventFields(definitions, element, patch)
+	if (misplacedEvent !== undefined) return misplacedEvent
 
 	// Resolved before anything is written, so a failure leaves the element as it was.
 	let subscription: XmlElement | undefined
-	if (patch.correlationKey !== undefined) {
+	// With messageName in the same patch the message may not exist yet; it is
+	// looked up again once messageName has created it.
+	if (patch.correlationKey !== undefined && patch.messageName === undefined) {
 		subscription = subscriptionFor(definitions, element)
 		if (!subscription) {
 			return "correlationKey needs a message, and this element references no message"
@@ -448,6 +689,11 @@ function patchElement(
 	}
 	if (patch.taskListeners !== undefined) {
 		setListeners(element, "zeebe:taskListeners", patch.taskListeners)
+	}
+	applyEventFields(definitions, element, patch)
+	if (patch.multiInstance !== undefined) applyMultiInstance(element, patch.multiInstance)
+	if (patch.correlationKey !== undefined && patch.messageName !== undefined) {
+		subscription = subscriptionFor(definitions, element)
 	}
 	if (subscription && patch.correlationKey !== undefined) {
 		subscription.attributes.correlationKey = patch.correlationKey

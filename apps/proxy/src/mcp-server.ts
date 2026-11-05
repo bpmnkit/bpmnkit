@@ -221,6 +221,19 @@ function ensureProcess(processId: string): BpmnProcess {
 
 // ── Tool definitions ──────────────────────────────────────────────────────────
 
+const LISTENER_SCHEMA = {
+	type: "object",
+	properties: {
+		eventType: {
+			type: "string",
+			description: "start | end (execution); creating | assigning | completing | … (task)",
+		},
+		type: { type: "string", description: "Job type of the listener worker" },
+		retries: { type: "string" },
+	},
+	required: ["eventType", "type"],
+}
+
 /** Edit-only fields, shared by `ELEMENT_SCHEMA` and `update_element`. */
 const PATCH_PROPERTIES = {
 	candidateGroups: {
@@ -239,6 +252,52 @@ const PATCH_PROPERTIES = {
 		additionalProperties: { type: "string" },
 		description: "Extension properties (zeebe:properties); replaces the set, {} clears",
 	},
+	executionListeners: {
+		type: "array",
+		items: LISTENER_SCHEMA,
+		description: "Execution listeners (zeebe:executionListeners); replaces the list, [] removes it",
+	},
+	taskListeners: {
+		type: "array",
+		items: LISTENER_SCHEMA,
+		description:
+			"userTask only: task listeners (zeebe:taskListeners); replaces the list, [] removes it",
+	},
+	multiInstance: {
+		type: "object",
+		properties: {
+			collection: { type: "string", description: 'FEEL list to loop over; "" removes the loop' },
+			element: { type: "string", description: 'Variable holding each item; "" clears' },
+			sequential: { type: "boolean" },
+			outputCollection: { type: "string", description: 'Variable collecting results; "" clears' },
+			outputElement: { type: "string", description: 'FEEL result of each instance; "" clears' },
+			completionCondition: { type: "string", description: 'FEEL early-exit condition; "" clears' },
+		},
+		description:
+			"Multi-instance loop on an activity. Only the fields given change; adding a loop needs collection",
+	},
+}
+
+/** Event-definition fields of `update_element`; "" clears each. */
+const EVENT_PATCH_PROPERTIES = {
+	messageName: {
+		type: "string",
+		description:
+			"Message events: name of the referenced message (created if missing). Error if several elements share that message",
+	},
+	errorCode: { type: "string", description: "Error events: error code on the referenced error" },
+	escalationCode: {
+		type: "string",
+		description: "Escalation events: code on the referenced escalation",
+	},
+	signalName: { type: "string", description: "Signal events: name of the referenced signal" },
+	timerDuration: { type: "string", description: "Timer events: ISO 8601 duration (PT5M)" },
+	timerDate: { type: "string", description: "Timer events: ISO 8601 date or FEEL" },
+	timerCycle: {
+		type: "string",
+		description: "Timer events: ISO 8601 repeating interval (R3/PT1H)",
+	},
+	condition: { type: "string", description: "Conditional events: FEEL condition" },
 }
 
 const ELEMENT_SCHEMA = {
@@ -305,6 +364,17 @@ const UPDATE_KEYS: ReadonlySet<string> = new Set([
 	"priority",
 	"properties",
 	"correlationKey",
+	"executionListeners",
+	"taskListeners",
+	"multiInstance",
+	"messageName",
+	"errorCode",
+	"escalationCode",
+	"signalName",
+	"timerDuration",
+	"timerDate",
+	"timerCycle",
+	"condition",
 ])
 
 const FLOW_SCHEMA = {
@@ -458,12 +528,16 @@ const BPMN_TOOLS = [
 		description:
 			"Change an existing BPMN element: display name, element type, or Zeebe settings " +
 			"(jobType, formId, assignee, candidateGroups, candidateUsers, dueDate, followUpDate, priority, " +
-			"properties, taskHeaders, inputs, outputs, script, correlationKey, …). " +
+			"properties, taskHeaders, inputs, outputs, script, correlationKey, executionListeners, taskListeners, " +
+			"multiInstance, and event definitions: messageName, errorCode, escalationCode, signalName, " +
+			"timerDuration/timerDate/timerCycle, condition). " +
 			"Retyping keeps the element's id and its incoming/outgoing sequence flows, " +
 			"so use this instead of removing and re-adding — that would drop the wiring. " +
 			"An empty string clears assignee, candidateGroups, candidateUsers, dueDate, followUpDate or priority; " +
-			"properties: {} clears the properties. A field the element type cannot carry is an error " +
+			"properties: {} clears the properties; listeners replace the whole list. A field the element type cannot carry is an error " +
 			"(assignee on a service task). " +
+			"messageName / errorCode / escalationCode / signalName are written on the referenced root element " +
+			"(created if missing) and are refused when other elements share it. " +
 			"⚠️ correlationKey is stored on the referenced message, so it changes for EVERY element that shares that message.",
 		inputSchema: {
 			type: "object",
@@ -480,6 +554,7 @@ const BPMN_TOOLS = [
 							description: `New element type. ${elementTypeDescription()}`,
 						},
 						...PATCH_PROPERTIES,
+						...EVENT_PATCH_PROPERTIES,
 						correlationKey: {
 							type: "string",
 							description:

@@ -255,6 +255,16 @@ no message is reported. A field whose extension the Zeebe schema does not allow 
 attribute, an extension left with nothing in it is removed, and `properties: {}` removes
 `zeebe:properties`.
 
+`update` also edits event definitions, listeners and multi-instance. `messageName`, `errorCode`,
+`escalationCode` and `signalName` are written on the root `bpmn:message` / `bpmn:error` /
+`bpmn:escalation` / `bpmn:signal` the event references, which is created when the reference is
+missing; a root shared by several elements is reported, not changed for all of them.
+`timerDuration`, `timerDate`, `timerCycle` and `condition` set the timer or conditional event
+definition. `multiInstance` changes only the parts it names (`collection`, `element`, `sequential`,
+`outputCollection`, `outputElement`, `completionCondition`) and keeps the rest of the loop; an empty
+string clears one, and an empty `collection` removes the loop. `executionListeners` and
+`taskListeners` replace the whole list. An empty string clears these event fields too.
+
 ```typescript
 applyBpmnOperations(parsed, [
   { op: "update", id: "Review", patch: { candidateGroups: "reviewers", priority: 80 } },

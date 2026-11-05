@@ -19,6 +19,7 @@
 ## Edit user-task configuration and correlation keys (2026-10-22)
 
 - `applyBpmnOperations` `update` patches (and the compact format) carry `assignee`, `candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate`, `priority` and `properties`; `correlationKey` sets the message subscription of the referenced message. Editing an existing diagram's user-task configuration no longer needs raw extension elements.
+- `applyBpmnOperations` `update` patches edit event definitions (`messageName`, `errorCode`, `escalationCode`, `signalName` on the referenced root element, created if missing and refused when shared; `timerDuration`/`timerDate`/`timerCycle`; `condition`) and multi-instance (`multiInstance`, per field). The MCP `update_element` tool exposes these and the listener lists.
 
 ## On-device diagram generation in the web editor (2026-10-21)
 
