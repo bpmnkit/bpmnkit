@@ -1,5 +1,9 @@
 # Features
 
+## Agent cards (2026-11-05)
+
+`casen agent-card bpmn|dmn|form` prints a ~1–1.5k-token cheat sheet for an AI agent: a runnable create/export/edit/validate script, the top builder options and the known traps. The same cards are docs pages under "Agent Cards", ranked first by `@bpmnkit/docspack` (whose `llms.txt` opens with them), and Claude plugin skills (`/bpmnkit:bpmn-script`, `:dmn`, `:form`). Every script is typechecked and run in CI.
+
 ## Vendor-neutral export: `stripCamunda8` (2026-11-05)
 
 `stripCamunda8(definitions)` returns a copy without Camunda 8 vendor bits (`zeebe:*`, `modeler:*`, their `xmlns`) plus a list of what was dropped, as a base for Camunda 7/Operaton export. Opt-in; Camunda 8 output is unchanged.

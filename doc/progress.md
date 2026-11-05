@@ -5,6 +5,16 @@
 - Event definitions built with the fluent builder now get deterministic ids (`<ElementId>_<Kind>EventDefinition`, counter for repeats; `eventDefinitionId` in `stable-ids.ts`). Zeebe 8.10 rejects a definition without one. Parsed files are not rewritten: serializing keeps them byte-faithful, and a continued document keeps its untouched part as is.
 - New lint rule `deploy/event-definition-no-id` (deploy profile) flags definitions without an id.
 - Forms: `conditional: { hide }` added to the model, `Form` builder options, parser and exporter; component props the model does not know are kept in `extraProps` and written back, so `Form.export(parse(x))` is lossless. Tests: `tests/event-definition-ids.test.ts`, `tests/form/conditional.test.ts`.
+## 2026-11-05 — Agent cards: one ~2k-token cheat sheet per BPMN, DMN and form
+
+Camunda eval (900 runs): agents spent 32–49% of their cost reading bpmnkit docs. Each file type now has one card an agent reads instead.
+
+- Source: `apps/cli/agent-cards/{bpmn,dmn,form}.md`. Each embeds a runnable script from `apps/cli/agent-cards/scripts/` (create, export, edit with the preserving writer, validate), the top options and the traps: Camunda 8.10 is not the builder default (BPMN `8.9.0`, form `8.7.0`), user tasks default to job-worker tasks (`zeebeUserTask: true`), deploy ids (process id, decision id, form id), DMN hit policy and FEEL quoting, keeping layout on edit.
+- CLI: `casen agent-card bpmn|dmn|form` (alias `card`); `bpmn --text` appends `PROCESS_TEXT_GUIDE`. `casen skills install` adds `/dmn` and `/form`.
+- `scripts/sync-agent-cards.mjs` copies the cards to `apps/landing/src/content/docs/agent-cards/` (new "Agent Cards" docs section) and to new plugin skills `bpmn-script`, `dmn`, `form`; `implement` links them.
+- docspack: `docspack.startHere` build option; `@bpmnkit/docspack`'s `llms.txt` now opens with a "Start here" list of the cards. Rebuilt the pack.
+- Tests: `apps/cli/src/commands/agent-card.test.ts` typechecks (`tsc -p agent-cards`), runs every script, checks the card shows it verbatim, the copies are in sync and each card stays under 2k tokens; `recipe-ranking.test.ts` checks each card is the top chunk for its task; `pack.test.ts` covers `startHere`.
+- Sizes (docspack estimate): BPMN 1,236, DMN 1,025, form 885 tokens. DMN/form lint and a DRD builder are in progress elsewhere; the cards only point at `casen --help`.
 
 ## 2026-11-05 — Camunda 8 → Camunda 7/Operaton export (issue #259, step 2)
 

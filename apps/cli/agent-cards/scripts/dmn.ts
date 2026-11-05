@@ -1,0 +1,31 @@
+import { readFileSync, writeFileSync } from "node:fs"
+import { Dmn, exportDmnPreserving } from "@bpmnkit/core"
+
+// 1. Create. "risk" is the decision id a BPMN businessRuleTask references as decisionId.
+const definitions = Dmn.createDecisionTable("risk")
+	.name("Order risk")
+	.hitPolicy("FIRST")
+	.input({ label: "Amount", expression: "amount", typeRef: "number" })
+	.input({ label: "Country", expression: "country", typeRef: "string" })
+	.output({ label: "Risk", name: "risk", typeRef: "string" })
+	.rule({ inputs: ["> 1000", "-"], outputs: ['"high"'], description: "Large order" })
+	.rule({ inputs: ["-", 'not("DE", "AT")'], outputs: ['"medium"'] })
+	.rule({ inputs: ["-", "-"], outputs: ['"low"'] })
+	.build()
+
+// 2. Export.
+writeFileSync("risk.dmn", Dmn.export(definitions))
+
+// 3. Edit an existing file: parse, change, write with exportDmnPreserving to keep the diagram.
+const original = readFileSync("risk.dmn", "utf8")
+const edited = Dmn.parse(original)
+const decision = edited.decisions.find((d) => d.id === "risk")
+if (decision) decision.name = "Order risk level"
+writeFileSync("risk.dmn", exportDmnPreserving(original, edited))
+
+// 4. Validate: it parses back and the decision id the process calls is there.
+const check = Dmn.parse(readFileSync("risk.dmn", "utf8"))
+if (!check.decisions.some((d) => d.id === "risk")) {
+	console.error("decision 'risk' missing")
+	process.exit(1)
+}

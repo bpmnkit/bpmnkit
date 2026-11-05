@@ -26,6 +26,7 @@ Every process is authored as a `ProcessPlan` JSON file, never hand-written BPMN 
 | Command | Does |
 |---|---|
 | `casen plan schema` | Print the `ProcessPlan` JSON format reference |
+| `casen agent-card bpmn\|dmn\|form` | Print a ~2k-token cheat sheet: runnable build script, top options, traps, lint |
 | `casen plan extract <file>.bpmn` | Lift an existing process into `<file>.plan.json` |
 | `casen synth <plan>.json --output <file>.bpmn` | Compile a plan to laid-out, deployable BPMN |
 | `casen synth <plan>.json --merge <file>.bpmn --output <file>.bpmn` | Compile a delta plan and merge it into an existing process |

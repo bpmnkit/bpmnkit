@@ -28,6 +28,10 @@
 		"siteUrl": "https://bpmnkit.com/docs",
 		"maxTokens": 800,
 		"minTokens": 120,
+		"startHere": {
+			"intro": "Writing a BPMN process, DMN decision or form? Read its agent card first: a runnable script, the top options and the traps (`casen agent-card bpmn|dmn|form` prints the same card).",
+			"docs": ["agent-cards/bpmn", "agent-cards/dmn", "agent-cards/form"]
+		},
 		"documents": [
 			"@bpmnkit/core",
 			"@bpmnkit/canvas",

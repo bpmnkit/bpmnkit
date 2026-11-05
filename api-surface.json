@@ -1771,6 +1771,7 @@
 			"SearchHit": "type",
 			"SearchOptions": "type",
 			"SourceDoc": "type",
+			"StartHere": "type",
 			"answer": "value",
 			"buildIndex": "value",
 			"buildPack": "value",
