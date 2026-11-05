@@ -102,6 +102,8 @@ Not available inside callbacks (top-level only): at, insertAfter, withAutoLayout
 - SubProcessOptions +El: multiInstance?: MultiInstanceOptions
 - DataElementOptions: name?: string; isCollection?: boolean (Draws the collection…)
 - AnnotateOptions: side?: "above" | "below" (Which side of the element…)
+
+- AnnotateOptions: side?: "above" | "below" | "left" | "right" (Which side of the element…)
 - BuildOptions: explicitJoins?: boolean (Refuse to infer join gateways, so…)
 - ioMapping shape = {inputs?: Array<{source: string; target: string}>; outputs?: Array<{source: string; target: string}>}
 

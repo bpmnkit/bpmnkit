@@ -51,6 +51,7 @@
 - `adHocSubProcess(id, tools, { toolGrid: { columns: 2, fill: "column" } })` lays the tools out in
   a fixed number of columns, filled top to bottom or left to right.
 - `annotate(id, text, { side: "below" })` puts the annotation on the side asked for.
+- `side: "left"` / `"right"` (2026-11-05) put it beside the element, preferably level with its centre.
 
 ## Task-level template bindings (2026-11-05)
 

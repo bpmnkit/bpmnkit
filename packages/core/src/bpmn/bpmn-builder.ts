@@ -554,9 +554,10 @@ function addDataAssociation(
 export interface AnnotateOptions {
 	/**
 	 * Which side of the element `withAutoLayout()` puts the annotation on,
-	 * instead of the side it would choose. Layout only; not written to the XML.
+	 * instead of the side it would choose. `"left"` / `"right"` put it beside
+	 * the element, preferably level with its centre. Layout only; not written to the XML.
 	 */
-	side?: "above" | "below"
+	side?: "above" | "below" | "left" | "right"
 }
 
 // ---------------------------------------------------------------------------

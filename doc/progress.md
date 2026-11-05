@@ -32,6 +32,13 @@
 - Page: freshness warning after 90 days, per-run model, cost and tests columns, up to five routes.
 - Tests: `scripts/lib/{record-compare,model-prices,cpt-run}.test.mjs` (added to `test:scripts`), `compare-rows.test.mjs`, and `apps/demo/server/{route-executors,stream-parsers,system-prompt}.test.*`.
 
+## 2026-11-05 — C7: annotation sides left/right; C8: layout closeness diagnosis
+
+- C7: `AnnotateOptions.side` also takes `"left" | "right"`. `packAnnotations` places the box beside the element and pushes it sideways out of shapes, routes and every annotation already placed (any side), with the same cost model as above/below. The default side is unchanged. Tests: `packages/core/tests/annotation-side.test.ts` (left of the start event, right of the end event). `builder-reference.md` regenerated.
+- C8: diagnosis in `doc/layout-closeness-diagnosis.md`. Two of its three general rules shipped. R3: a loose-node grid (ad-hoc tools) uses 40/20 px gaps, plus label room. R1: a container taller than its row hangs from the task line, and `route.ts` docks the flow straight at the other end's centre. Corpus (roundtrip, 29 files): avg 330.7 → 330.1 px, P90 555.1 → 553.4 px, 0 order violations. Bake-off layout: 7.7 → 10.5/15 (193.6 → 120.9 px). `expected.bpmn` was regenerated (36 `dc:Bounds` and 40 `di:waypoint` lines, nothing else); `expected.txt` is unchanged.
+- `scripts/lib/closeness.mjs`: the layout part aligns both diagrams on their shared top-left corner, as `closeness.py` does, so a uniform shift scores full points. The old "move every shape" test now moves one shape. `apps/landing/src/generated/compare/` is not regenerated (out of this change's scope).
+- Deviation: R2 (main-column gap 100 → 50) is not shipped. It breaks the spec check in `bakeoff-ai-agent-chat.test.ts` that the tool note sits right of the agent and below the user task: with the tighter gap, `"below"` lands under the agent and `"right"` lands above the user task's bottom. R2 would give corpus avg 326.7 px, P90 534.6 px and bake-off 11.4 px.
+
 ## 2026-11-04 — CI on Node 26: DOM storage in tests, tsx deprecation warning, API snapshot
 
 - CI installs `lts/*`, which now resolves to Node 26. Node 25+ defines its own `localStorage`/`sessionStorage` globals, undefined unless started with `--localstorage-file`, and Vitest's DOM environment does not replace them, so the storage tests in `@bpmnkit/ui` and `apps/drop` failed. `scripts/vitest-dom-storage.mjs` (a `setupFiles` entry in both configs) gives DOM tests happy-dom `Storage` objects when Node's globals are undefined. Both suites pass on Node 22 and 26.
