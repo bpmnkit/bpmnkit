@@ -8,7 +8,27 @@ import type { ZeebeListener } from "./zeebe-extensions.js"
  * The fields an `update` operation may set: any {@link CompactElement} field,
  * plus the ones that live outside the element itself.
  */
-export type ElementPatch = Partial<CompactElement> & {
+export type ElementPatch = Partial<Omit<CompactElement, "multiInstance">> & {
+	/**
+	 * Changes only the named parts of the element's multi-instance loop; an empty
+	 * string clears one, and an empty `collection` removes the loop. Adding a loop
+	 * needs a `collection`. Only {@link applyBpmnOperations} applies it.
+	 */
+	multiInstance?: Partial<NonNullable<CompactElement["multiInstance"]>>
+	/**
+	 * Names the `bpmn:message` / sets the error, escalation or signal the element's
+	 * event definition references: they are written on that root element, created
+	 * if the reference is missing. A root shared by several elements is reported
+	 * rather than changed for all of them. `""` clears. Only
+	 * {@link applyBpmnOperations} applies these.
+	 */
+	messageName?: string
+	errorCode?: string
+	escalationCode?: string
+	signalName?: string
+	/** A timer's date (`timeDate`) and cycle (`timeCycle`); `timerDuration` is the duration. */
+	timerDate?: string
+	timerCycle?: string
 	/**
 	 * The message correlation key (`zeebe:subscription`). It is written onto the
 	 * `bpmn:message` the element references, where Camunda reads it, so every
@@ -132,8 +152,25 @@ function applyOne(diagram: CompactDiagram, op: BpmnOperation): void {
 			case "update": {
 				const found = findElementIn(process, op.id)
 				if (found) {
-					const { correlationKey: _messageLevel, ...patch } = op.patch
+					// Root-element fields have no home in the compact form.
+					const {
+						correlationKey: _messageLevel,
+						messageName: _m,
+						errorCode: _e,
+						escalationCode: _x,
+						signalName: _s,
+						timerDate: _d,
+						timerCycle: _c,
+						multiInstance,
+						...patch
+					} = op.patch
 					Object.assign(found.element, patch)
+					if (multiInstance?.collection === "") found.element.multiInstance = undefined
+					else if (multiInstance) {
+						const merged = { ...found.element.multiInstance, ...multiInstance }
+						if (merged.collection)
+							found.element.multiInstance = { ...merged, collection: merged.collection }
+					}
 				}
 				break
 			}

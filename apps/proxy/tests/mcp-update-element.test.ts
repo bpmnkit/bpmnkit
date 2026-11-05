@@ -100,4 +100,37 @@ describe("update_element patches", () => {
 		expect(r.isError).toBe(true)
 		expect(r.text).toContain("assgnee")
 	}, 30000)
+
+	it("renames the message an event references", async () => {
+		const r = await updateElement("C", { messageName: "payment-confirmed" }, "msgname")
+		expect(r.isError).toBe(false)
+		expect(r.xml).toContain('name="payment-confirmed"')
+		expect(r.xml).toContain('correlationKey="=orderId"')
+	}, 30000)
+
+	it("adds multi-instance to a task", async () => {
+		const r = await updateElement(
+			"T",
+			{ multiInstance: { collection: "=items", element: "item" } },
+			"mi",
+		)
+		expect(r.isError).toBe(false)
+		expect(r.xml).toContain('inputCollection="=items"')
+	}, 30000)
+
+	it("replaces the execution listeners", async () => {
+		const r = await updateElement(
+			"T",
+			{ executionListeners: [{ eventType: "start", type: "audit" }] },
+			"listeners",
+		)
+		expect(r.isError).toBe(false)
+		expect(r.xml).toContain('type="audit"')
+	}, 30000)
+
+	it("reports an event field on an element without that event definition", async () => {
+		const r = await updateElement("T", { timerDuration: "PT1M" }, "notimer")
+		expect(r.isError).toBe(true)
+		expect(r.text).toContain("needs a timer event definition")
+	}, 30000)
 })
