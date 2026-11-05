@@ -1,12 +1,20 @@
 import type { BpmnBoundaryEvent, BpmnFlowElement, BpmnLaneSet } from "../../bpmn/bpmn-model.js"
 import type { Bounds, GridHint } from "../types.js"
-import { ELEMENT_SIZES, LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH } from "../types.js"
+import {
+	ELEMENT_SIZES,
+	LABEL_CHAR_WIDTH,
+	LABEL_HEIGHT,
+	LABEL_MIN_WIDTH,
+	LABEL_VERTICAL_OFFSET,
+} from "../types.js"
 import { type BandLayout, boundarySide } from "./bands.js"
 import type { SemanticGraph } from "./graph.js"
 
 /** Geometry constants. Layout may add space beyond these; it never takes any back. */
 export const H_GAP = 100
 export const V_GAP = 80
+const GRID_GAP_X = 40
+const GRID_GAP_Y = 20
 export const COMPONENT_GAP = 80
 export const LANE_PADDING = 40
 export const BOUNDARY_SIZE = 36
@@ -137,9 +145,19 @@ export function place(
 			const band = bandLayout.bands.get(id) ?? 0
 			const cw = colWidth.get(rank) ?? size.width
 			const rh = rowHeight.get(band) ?? size.height
+			// A container taller than the row's ordinary nodes hangs from the task
+			// line (top = line - half a task) instead of being centred, so the
+			// flows into and out of it stay straight.
+			const top = rowY.get(band) ?? 0
+			const y =
+				rh > DEFAULT_SIZE.height
+					? size.height > DEFAULT_SIZE.height
+						? top
+						: top + (DEFAULT_SIZE.height - size.height) / 2
+					: top + (rh - size.height) / 2
 			bounds.set(id, {
 				x: (colX.get(rank) ?? 0) + (cw - size.width) / 2,
-				y: (rowY.get(band) ?? 0) + (rh - size.height) / 2,
+				y,
 				width: size.width,
 				height: size.height,
 			})
@@ -190,27 +208,33 @@ function placeGrid(
 	const byColumn = hint?.fill === "column"
 	let cellWidth = 0
 	let cellHeight = 0
+	let labelled = false
 	for (const id of ids) {
 		const size = sizes.get(id) ?? DEFAULT_SIZE
 		// An event's or gateway's label is centred below it and can be wider than the
 		// shape; the cell holds it so neighbouring columns' labels never meet.
 		const el = graph.byId.get(id)
 		const label = el?.name ? externalLabelWidth(el.type, el.name) : undefined
+		if (label !== undefined) labelled = true
 		cellWidth = Math.max(cellWidth, size.width, label ?? 0)
 		cellHeight = Math.max(cellHeight, size.height)
 	}
+	// Loose nodes carry no flows, so the routing gutters are not needed between
+	// them; only a label below a cell needs vertical room.
+	const gapX = GRID_GAP_X
+	const gapY = GRID_GAP_Y + (labelled ? LABEL_VERTICAL_OFFSET + LABEL_HEIGHT : 0)
 	ids.forEach((id, i) => {
 		const size = sizes.get(id) ?? DEFAULT_SIZE
 		const column = byColumn ? Math.floor(i / rows) : i % columns
 		const row = byColumn ? i % rows : Math.floor(i / columns)
 		bounds.set(id, {
-			x: column * (cellWidth + H_GAP) + (cellWidth - size.width) / 2,
-			y: top + row * (cellHeight + V_GAP) + (cellHeight - size.height) / 2,
+			x: column * (cellWidth + gapX) + (cellWidth - size.width) / 2,
+			y: top + row * (cellHeight + gapY) + (cellHeight - size.height) / 2,
 			width: size.width,
 			height: size.height,
 		})
 	})
-	return top + rows * (cellHeight + V_GAP) - V_GAP + COMPONENT_GAP
+	return top + rows * (cellHeight + gapY) - gapY + COMPONENT_GAP
 }
 
 /**
