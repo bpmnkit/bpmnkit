@@ -4,9 +4,19 @@ import { layoutDmn } from "./dmn-layout.js"
 import type { DmnDefinitions } from "./dmn-model.js"
 import { parseDmn } from "./dmn-parser.js"
 import { serializeDmn } from "./dmn-serializer.js"
+import { DrdBuilder } from "./drd-builder.js"
 
 export { layoutDmn, benchmarkDmnLayout } from "./dmn-layout.js"
 export type { DmnBenchmarkResult, DmnElementPosition } from "./dmn-layout.js"
+export { drgId } from "./drd-builder.js"
+export type {
+	DecisionHandle,
+	DrdBuilder,
+	DrdDecisionOptions,
+	DrgId,
+	DrgRef,
+	InputDataHandle,
+} from "./drd-builder.js"
 export { compactifyDmn, expandDmn } from "./compact.js"
 export type {
 	CompactDmn,
@@ -21,6 +31,14 @@ export const Dmn = {
 	/** Create a new DMN decision table using the fluent builder API. */
 	createDecisionTable(decisionId: string): DecisionTableBuilder {
 		return new DecisionTableBuilder(decisionId)
+	},
+
+	/**
+	 * Create a multi-decision DRD. `decision()` returns a handle; pass it (or a
+	 * `drgId()`) in `requires` of a later decision. Labels are rejected at build time.
+	 */
+	drd(name?: string): DrdBuilder {
+		return new DrdBuilder(name)
 	},
 
 	/** Parse a DMN XML string into a typed model. */

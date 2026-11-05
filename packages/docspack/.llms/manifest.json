@@ -1,7 +1,7 @@
 {
 	"$schema": "https://docspack.dev/schema/v1.json",
 	"name": "@bpmnkit/docspack",
-	"version": "1.2.1",
+	"version": "1.2.2",
 	"documents": [
 		"@bpmnkit/core",
 		"@bpmnkit/canvas",
@@ -5682,12 +5682,29 @@
 		{
 			"id": "packages.core.dmn-support",
 			"file": "chunks/packages.core.dmn-support.md",
-			"tokens": 113,
+			"tokens": 342,
 			"tags": [
 				"packages",
 				"core",
 				"dmn",
-				"support",
+				"support"
+			],
+			"entities": [
+				"Dmn.drd()",
+				"decision()",
+				"ValidationError",
+				"build()",
+				"informationRequirement",
+				"Dmn.expand()"
+			]
+		},
+		{
+			"id": "packages.core.typescript-types",
+			"file": "chunks/packages.core.typescript-types.md",
+			"tokens": 52,
+			"tags": [
+				"packages",
+				"core",
 				"typescript",
 				"types"
 			],
