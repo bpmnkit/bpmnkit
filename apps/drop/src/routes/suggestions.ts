@@ -129,7 +129,14 @@ async function create(request: Request, shareId: string, env: Env, now: number):
 	const script = (filter.push(payload.script) + filter.end()).trim()
 	const delta = parseProcessDelta(script)
 	const changes =
-		delta.nodes.length + delta.flows.length + delta.removedNodes.length + delta.removedFlows.length
+		delta.nodes.length +
+		delta.flows.length +
+		delta.removedNodes.length +
+		delta.removedFlows.length +
+		delta.lanes.length +
+		delta.pools.length +
+		delta.messageFlows.length +
+		delta.removedMessageFlows.length
 	if (changes === 0) return fail(400, "a suggestion has to change something")
 
 	const aliases = readAliases(payload.aliases)
