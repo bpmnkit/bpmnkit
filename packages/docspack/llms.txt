@@ -2,7 +2,7 @@
 
 > BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents
 
-Version 1.2.1. 407 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.2.1. 408 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -214,6 +214,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Migrate from Camunda 7 — What is not converted, and why](.llms/chunks/guides.migrate-from-camunda-7.what-is-not-converted-and-why.md) — 491 tokens
 - [Migrate from Camunda 7 — JUEL to FEEL](.llms/chunks/guides.migrate-from-camunda-7.juel-to-feel.md) — 397 tokens
 - [Migrate from Camunda 7 — Before and after](.llms/chunks/guides.migrate-from-camunda-7.before-and-after.md) — 249 tokens
+- [Migrate from Camunda 7 — Going back: Camunda 8 to Camunda 7](.llms/chunks/guides.migrate-from-camunda-7.going-back-camunda-8-to-camunda-7.md) — 183 tokens
 - [Migrate from Camunda 7 — Camunda's own tools](.llms/chunks/guides.migrate-from-camunda-7.camunda-s-own-tools.md) — 233 tokens
 - [Migrate from Camunda 7 — Sources](.llms/chunks/guides.migrate-from-camunda-7.sources.md) — 274 tokens
 - [Pattern Library](.llms/chunks/guides.patterns.md) — 304 tokens

@@ -7,6 +7,7 @@ import {
 	type Camunda7Report,
 	type Camunda7Severity,
 	convertCamunda7,
+	convertCamunda8To7,
 	exportPreserving,
 } from "@bpmnkit/core"
 import type { Command, CommandGroup } from "../types.js"
@@ -28,6 +29,17 @@ export function migratedPath(file: string, outDir: string | undefined): string {
 	if (outDir !== undefined) return join(outDir, basename(file))
 	const stem = file.endsWith(".bpmn") ? file.slice(0, -".bpmn".length) : file
 	return `${stem}.c8.bpmn`
+}
+
+/** Camunda 8 → 7 findings use the same shape; fold them into a report so one printer serves both. */
+function exportToC7(xml: string): {
+	definitions: ReturnType<typeof Bpmn.parse>
+	report: Camunda7Report
+} {
+	const { definitions, findings } = convertCamunda8To7(Bpmn.parse(xml))
+	const counts = { convertible: 0, manual: 0, unsupported: 0 }
+	for (const finding of findings) counts[finding.severity]++
+	return { definitions, report: { findings, counts, total: findings.length } }
 }
 
 function formatText(results: FileResult[], check: boolean): string {
@@ -91,6 +103,13 @@ const c7Cmd: Command = {
 			default: "text",
 		},
 		{
+			name: "to",
+			description:
+				"Direction: omit to migrate Camunda 7 → 8; camunda7 exports a Camunda 8 model to Camunda 7/Operaton (best effort, writes <name>.c7.bpmn)",
+			type: "string",
+			enum: ["camunda7"],
+		},
+		{
 			name: "force",
 			description: "Overwrite converted files that already exist",
 			type: "boolean",
@@ -129,12 +148,15 @@ const c7Cmd: Command = {
 		const outFlag = ctx.flags.out
 		const outDir = typeof outFlag === "string" && outFlag.length > 0 ? outFlag : undefined
 
+		const toC7 = ctx.flags.to === "camunda7"
 		const results: FileResult[] = []
 		for (const file of files) {
-			const output = migratedPath(file, outDir)
+			const output = toC7
+				? migratedPath(file, outDir).replace(/\.c8\.bpmn$/, ".c7.bpmn")
+				: migratedPath(file, outDir)
 			try {
 				const xml = await readFile(file, "utf-8")
-				const { definitions, report } = convertCamunda7(Bpmn.parse(xml))
+				const { definitions, report } = toC7 ? exportToC7(xml) : convertCamunda7(Bpmn.parse(xml))
 				const result: FileResult = {
 					file,
 					output: null,
@@ -146,7 +168,12 @@ const c7Cmd: Command = {
 						throw new Error(`${output} already exists — pass --force to overwrite it`)
 					}
 					await mkdir(dirname(output), { recursive: true })
-					await writeFile(output, exportPreserving(xml, definitions), "utf-8")
+					// Preserving the source bytes would bring the removed zeebe: content back.
+					await writeFile(
+						output,
+						toC7 ? Bpmn.export(definitions) : exportPreserving(xml, definitions),
+						"utf-8",
+					)
 					result.output = output
 				}
 				results.push(result)

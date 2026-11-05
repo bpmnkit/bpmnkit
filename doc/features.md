@@ -277,6 +277,10 @@
   inside its ad-hoc sub-process, with record/replay cassettes, a `toHaveCalledTools` matcher
   and tool coverage. The simulator runs ad-hoc sub-processes driven by a job worker.
 
+## Camunda 8 → 7 export (2026-11-05)
+
+- `convertCamunda8To7` / `casen migrate c7 --to camunda7`: best-effort export of a Camunda 8 model to Camunda 7/Operaton. Maps job types, I/O mappings, assignment, form keys, call activities and version tags; reports FEEL expressions, correlation keys, connectors and Zeebe-only features as findings.
+
 ## Camunda 7 → 8 migration (2026-09-24)
 
 - `convertCamunda7` / `analyzeCamunda7` / `translateJuelToFeel` in `@bpmnkit/core` and

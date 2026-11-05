@@ -467,6 +467,8 @@ export type {
 	ValidationVariableType,
 } from "./bpmn/input-validation.js"
 export { analyzeCamunda7, convertCamunda7 } from "./bpmn/camunda7/migrate.js"
+export { convertCamunda8To7 } from "./bpmn/camunda7/export.js"
+export type { Camunda8ExportFinding, Camunda8To7Conversion } from "./bpmn/camunda7/export.js"
 export type {
 	Camunda7Conversion,
 	Camunda7ConvertOptions,
