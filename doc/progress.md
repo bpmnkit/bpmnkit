@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-05 — C7: annotation sides left/right; C8: layout closeness diagnosis
+
+- C7: `AnnotateOptions.side` also takes `"left" | "right"`. `packAnnotations` places the box beside the element and pushes it sideways out of shapes, routes and every annotation already placed (any side), with the same cost model as above/below. The default side is unchanged. Tests: `packages/core/tests/annotation-side.test.ts` (left of the start event, right of the end event). `builder-reference.md` regenerated.
+- C8: diagnosis only, in `doc/layout-closeness-diagnosis.md`. The offset comes from tall containers centred on their row (main flow, 62%), the 100 px main-column gap, and routing-sized gaps in the loose tool grid (30%). `placeGrid` order is already right. Deviation: no layout change shipped. Every general fix changes `build.ts`'s output, and the byte-exact `expected.bpmn` fixture is frozen and shared by the engine, ascii and CLI tests. The R3 trial gave corpus avg 330.7 → 330.1 px, P90 555.1 → 553.4 px.
+
 ## 2026-11-04 — CI on Node 26: DOM storage in tests, tsx deprecation warning, API snapshot
 
 - CI installs `lts/*`, which now resolves to Node 26. Node 25+ defines its own `localStorage`/`sessionStorage` globals, undefined unless started with `--localstorage-file`, and Vitest's DOM environment does not replace them, so the storage tests in `@bpmnkit/ui` and `apps/drop` failed. `scripts/vitest-dom-storage.mjs` (a `setupFiles` entry in both configs) gives DOM tests happy-dom `Storage` objects when Node's globals are undefined. Both suites pass on Node 22 and 26.

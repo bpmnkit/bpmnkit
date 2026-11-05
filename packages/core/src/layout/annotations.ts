@@ -225,13 +225,20 @@ export function packAnnotations(
 		)
 	}
 
-	/** Left/right: mirror of packSide, shifting vertically and pushing out horizontally. */
+	const placedSideways: PackItem[] = []
+
+	/** Left/right: mirror of packSide; the box may shift off the element's centre to stay clear. */
 	function packHorizontal(side: "left" | "right") {
 		const list = items
 			.filter((it) => it.side === side)
 			.sort((a, b) => center(a.linked.bounds).cy - center(b.linked.bounds).cy)
 
-		const placed: PackItem[] = []
+		// Above/below annotations are already final, and the left pass fills
+		// `placedSideways` before the right pass runs.
+		const placed: PackItem[] = [
+			...items.filter((it) => it.side === "above" || it.side === "below"),
+			...placedSideways,
+		]
 		for (const item of list) {
 			const linked = item.linked
 			const { width, height } = item.bounds
@@ -274,6 +281,7 @@ export function packAnnotations(
 			item.bounds.x = Math.round(best.x)
 			item.bounds.y = Math.round(best.y)
 			placed.push(item)
+			placedSideways.push(item)
 		}
 	}
 

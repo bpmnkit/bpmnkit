@@ -104,4 +104,25 @@ describe("annotate side hint", () => {
 			}
 		})
 	}
+
+	it("keeps annotations on different sides of one element apart", () => {
+		const sides = ["above", "below", "left", "right"] as const
+		const defs = agent((p) => {
+			for (const side of sides) p.annotate("e", TEXT, { side })
+		})
+		const anns = (defs.diagrams[0]?.plane.shapes ?? []).filter((s) =>
+			s.bpmnElement?.startsWith("TextAnnotation_"),
+		)
+		expect(anns).toHaveLength(4)
+		for (const [i, a] of anns.entries()) {
+			for (const b of anns.slice(i + 1)) {
+				const apart =
+					a.bounds.x + a.bounds.width + 20 <= b.bounds.x ||
+					b.bounds.x + b.bounds.width + 20 <= a.bounds.x ||
+					a.bounds.y + a.bounds.height + 20 <= b.bounds.y ||
+					b.bounds.y + b.bounds.height + 20 <= a.bounds.y
+				expect(apart, `${a.bpmnElement} vs ${b.bpmnElement}`).toBe(true)
+			}
+		}
+	})
 })
