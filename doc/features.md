@@ -1,5 +1,9 @@
 # Features
 
+## Vendor-neutral export: `stripCamunda8` (2026-11-05)
+
+`stripCamunda8(definitions)` returns a copy without Camunda 8 vendor bits (`zeebe:*`, `modeler:*`, their `xmlns`) plus a list of what was dropped, as a base for Camunda 7/Operaton export. Opt-in; Camunda 8 output is unchanged.
+
 ## Builder: data elements and linked resources (2026-11-05)
 
 - `.dataObject()`, `.dataObjectReference()`, `.dataStoreReference()` and `.dataAssociation(activityId, dataRefId, "input" | "output")` sit beside the chain and add no sequence flows.
@@ -272,6 +276,10 @@
 - `mockAiAgent` in `@bpmnkit/engine/testing` scripts an AI Agent's tool calls turn by turn
   inside its ad-hoc sub-process, with record/replay cassettes, a `toHaveCalledTools` matcher
   and tool coverage. The simulator runs ad-hoc sub-processes driven by a job worker.
+
+## Camunda 8 → 7 export (2026-11-05)
+
+- `convertCamunda8To7` / `casen migrate c7 --to camunda7`: best-effort export of a Camunda 8 model to Camunda 7/Operaton. Maps job types, I/O mappings, assignment, form keys, call activities and version tags; reports FEEL expressions, correlation keys, connectors and Zeebe-only features as findings.
 
 ## Camunda 7 → 8 migration (2026-09-24)
 

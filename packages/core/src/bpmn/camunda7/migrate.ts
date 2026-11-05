@@ -68,9 +68,9 @@ export interface Camunda7Conversion {
 	report: Camunda7Report
 }
 
-const CAMUNDA7_NS = "http://camunda.org/schema/1.0/bpmn"
-const ZEEBE_NS = "http://camunda.org/schema/zeebe/1.0"
-const MODELER_NS = "http://camunda.org/schema/modeler/1.0"
+export const CAMUNDA7_NS = "http://camunda.org/schema/1.0/bpmn"
+export const ZEEBE_NS = "http://camunda.org/schema/zeebe/1.0"
+export const MODELER_NS = "http://camunda.org/schema/modeler/1.0"
 const DEFAULT_PLATFORM_VERSION = "8.8.0"
 
 /** Something that can carry Camunda 7 attributes and extension elements. */

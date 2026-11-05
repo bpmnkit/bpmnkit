@@ -2985,6 +2985,19 @@
 			"entities": []
 		},
 		{
+			"id": "guides.migrate-from-camunda-7.going-back-camunda-8-to-camunda-7",
+			"file": "chunks/guides.migrate-from-camunda-7.going-back-camunda-8-to-camunda-7.md",
+			"tokens": 183,
+			"tags": [
+				"guides",
+				"migrate-from-camunda-7",
+				"going",
+				"back",
+				"camunda"
+			],
+			"entities": []
+		},
+		{
 			"id": "guides.migrate-from-camunda-7.camunda-s-own-tools",
 			"file": "chunks/guides.migrate-from-camunda-7.camunda-s-own-tools.md",
 			"tokens": 233,

@@ -47,6 +47,8 @@ export {
 	getZeebeExtensions,
 } from "./bpmn/utils.js"
 export { Bpmn, SAMPLE_BPMN_XML } from "./bpmn/index.js"
+export { stripCamunda8 } from "./bpmn/strip-camunda8.js"
+export type { DroppedCamunda8Item, StripCamunda8Result } from "./bpmn/strip-camunda8.js"
 export { applyAutoLayout } from "./bpmn/auto-layout.js"
 export { diffSemantics, projectSemantics, semanticHash } from "./bpmn/semantic-hash.js"
 export type { JsonValue, SemanticDiff, SemanticProjection } from "./bpmn/semantic-hash.js"
@@ -465,6 +467,8 @@ export type {
 	ValidationVariableType,
 } from "./bpmn/input-validation.js"
 export { analyzeCamunda7, convertCamunda7 } from "./bpmn/camunda7/migrate.js"
+export { convertCamunda8To7 } from "./bpmn/camunda7/export.js"
+export type { Camunda8ExportFinding, Camunda8To7Conversion } from "./bpmn/camunda7/export.js"
 export type {
 	Camunda7Conversion,
 	Camunda7ConvertOptions,
