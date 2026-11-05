@@ -18,10 +18,14 @@ const ELEMENT_GAP = 30 // min gap between annotation and a non-annotation shape
 const PREFERRED_OFFSET = 50 // preferred gap to associated element
 const MIN_HEIGHT = 30
 const HORIZONTAL_SHIFTS = [0, 60, -60, 120, -120, 180, -180, 240, -240]
+const VERTICAL_SHIFTS = [0, 40, -40, 80, -80, 120, -120, 160, -160, 200, -200]
 /** Cost added to a candidate whose association line would cross a shape. */
 const BLOCKED_LINE_COST = 10_000
 /** Cost added per routed connection the association line would cut across. */
 const CROSSED_ROUTE_COST = 200
+
+/** Side of the linked element an annotation is placed on. */
+export type AnnotationSide = "above" | "below" | "left" | "right"
 
 function computeHeight(text: string, width: number): number {
 	if (!text || !text.trim()) return MIN_HEIGHT
@@ -99,11 +103,7 @@ function computeMainFlowY(layoutNodes: LayoutNode[]): number {
  * Elements at or above the main flow keep their annotation "above"; elements
  * clearly below get "below". A side the author asked for wins.
  */
-function naturalSide(
-	elemBounds: Bounds,
-	mainFlowY: number,
-	hint?: "above" | "below",
-): "above" | "below" {
+function naturalSide(elemBounds: Bounds, mainFlowY: number, hint?: AnnotationSide): AnnotationSide {
 	if (hint) return hint
 	const cy = elemBounds.y + elemBounds.height / 2
 	return cy > mainFlowY + 60 ? "below" : "above"
@@ -112,7 +112,7 @@ function naturalSide(
 interface PackItem {
 	id: string
 	bounds: Bounds
-	side: "above" | "below"
+	side: AnnotationSide
 	linked: LayoutNode
 }
 
@@ -144,7 +144,7 @@ export function packAnnotations(
 	/** Routed connections: an annotation box must not sit on top of one. */
 	layoutEdges: LayoutEdge[] = [],
 	/** Sides the author asked for, by annotation id. */
-	sides?: ReadonlyMap<string, "above" | "below">,
+	sides?: ReadonlyMap<string, AnnotationSide>,
 ): Map<string, Bounds> {
 	const result = new Map<string, Bounds>()
 	if (process.textAnnotations.length === 0) return result
@@ -204,6 +204,79 @@ export function packAnnotations(
 		}
 	}
 
+	// A clear box is not enough: the association line drawn back to the
+	// element must not cut through anything either.
+	function candidateCost(
+		item: PackItem,
+		x: number,
+		y: number,
+		naturalX: number,
+		naturalY: number,
+	): number {
+		const linked = item.linked
+		const candidate: Bounds = { x, y, width: item.bounds.width, height: item.bounds.height }
+		const { pElem, pAnn } = associationWaypoints(linked.bounds, candidate)
+		const crosses = obstacles.some((sh) => sh !== linked.bounds && segmentHitsBox(pElem, pAnn, sh))
+		const cuts = routeObstacles.filter((r) => segmentHitsBox(pElem, pAnn, r)).length
+		return (
+			Math.hypot(x - naturalX, y - naturalY) +
+			(crosses ? BLOCKED_LINE_COST : 0) +
+			cuts * CROSSED_ROUTE_COST
+		)
+	}
+
+	/** Left/right: mirror of packSide, shifting vertically and pushing out horizontally. */
+	function packHorizontal(side: "left" | "right") {
+		const list = items
+			.filter((it) => it.side === side)
+			.sort((a, b) => center(a.linked.bounds).cy - center(b.linked.bounds).cy)
+
+		const placed: PackItem[] = []
+		for (const item of list) {
+			const linked = item.linked
+			const { width, height } = item.bounds
+			const naturalX =
+				side === "left"
+					? linked.bounds.x - PREFERRED_OFFSET - width
+					: linked.bounds.x + linked.bounds.width + PREFERRED_OFFSET
+			const naturalY = Math.round(center(linked.bounds).cy - height / 2)
+
+			let best = { x: naturalX, y: naturalY, cost: Number.POSITIVE_INFINITY }
+			for (const dy of VERTICAL_SHIFTS) {
+				const candidateY = naturalY + dy
+				const ay2 = candidateY + height
+
+				const intervals: Array<{ left: number; right: number }> = []
+				const collect = (b: Bounds, gap: number) => {
+					if (ay2 + gap <= b.y || b.y + b.height + gap <= candidateY) return
+					intervals.push({ left: b.x - gap, right: b.x + b.width + gap })
+				}
+				for (const other of placed) collect(other.bounds, ANN_GAP)
+				for (const sh of obstacles) collect(sh, ELEMENT_GAP)
+				for (const r of routeObstacles) collect(r, ANN_GAP)
+
+				let x = naturalX
+				let changed = true
+				while (changed) {
+					changed = false
+					for (const iv of intervals) {
+						if (x + width > iv.left && x < iv.right) {
+							x = side === "left" ? iv.left - width : iv.right
+							changed = true
+						}
+					}
+				}
+
+				const cost = candidateCost(item, x, candidateY, naturalX, naturalY)
+				if (cost < best.cost) best = { x, y: candidateY, cost }
+			}
+
+			item.bounds.x = Math.round(best.x)
+			item.bounds.y = Math.round(best.y)
+			placed.push(item)
+		}
+	}
+
 	function packSide(side: "above" | "below") {
 		const list = items
 			.filter((it) => it.side === side)
@@ -258,23 +331,7 @@ export function packAnnotations(
 					}
 				}
 
-				// A clear box is not enough: the association line drawn back to the
-				// element must not cut through anything either.
-				const candidate: Bounds = {
-					x: candidateX,
-					y,
-					width: item.bounds.width,
-					height: item.bounds.height,
-				}
-				const { pElem, pAnn } = associationWaypoints(linked.bounds, candidate)
-				const crosses = obstacles.some(
-					(sh) => sh !== linked.bounds && segmentHitsBox(pElem, pAnn, sh),
-				)
-				const cuts = routeObstacles.filter((r) => segmentHitsBox(pElem, pAnn, r)).length
-				const cost =
-					Math.hypot(candidateX - naturalX, y - naturalY) +
-					(crosses ? BLOCKED_LINE_COST : 0) +
-					cuts * CROSSED_ROUTE_COST
+				const cost = candidateCost(item, candidateX, y, naturalX, naturalY)
 				if (cost < best.cost) best = { x: candidateX, y, cost }
 			}
 
@@ -286,6 +343,8 @@ export function packAnnotations(
 
 	packSide("above")
 	packSide("below")
+	packHorizontal("left")
+	packHorizontal("right")
 
 	for (const item of items) result.set(item.id, item.bounds)
 
