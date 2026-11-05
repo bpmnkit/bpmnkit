@@ -1,5 +1,9 @@
 # Features
 
+## Vendor-neutral export: `stripCamunda8` (2026-11-05)
+
+`stripCamunda8(definitions)` returns a copy without Camunda 8 vendor bits (`zeebe:*`, `modeler:*`, their `xmlns`) plus a list of what was dropped, as a base for Camunda 7/Operaton export. Opt-in; Camunda 8 output is unchanged.
+
 ## Builder: data elements and linked resources (2026-11-05)
 
 - `.dataObject()`, `.dataObjectReference()`, `.dataStoreReference()` and `.dataAssociation(activityId, dataRefId, "input" | "output")` sit beside the chain and add no sequence flows.

@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-05 — core: `stripCamunda8` for vendor-neutral export (#259 step 1)
+
+- New `stripCamunda8(defs)` (`packages/core/src/bpmn/strip-camunda8.ts`, exported from core): non-mutating copy without `zeebe:*` extension elements/attributes, `modeler:*` attributes and their unused `xmlns` declarations; returns `{ definitions, dropped }` with `{ elementId, kind, name }` per item. `camunda:*` is kept. Opt-in; `serializeBpmn` is unchanged.
+- The namespace helper in `bpmn-serializer.ts` already declares only prefixes in use, so no change was needed. Regression test added: a Camunda 7 file round-trips with `camunda:*` kept and no zeebe/modeler namespace (`tests/strip-camunda8.test.ts`).
+
 ## 2026-11-05 — CI: install wasm-pack without jetli/wasm-pack-action
 
 - The deploy job failed in "Install wasm-pack": the action renames the binary from `/tmp` to `~/.cargo/bin`, and the runner now has them on different filesystems (`EXDEV: cross-device link not permitted`). All seven workflows that used it now download the pinned v0.15.0 release into `$RUNNER_TEMP` and `install` it into `~/.cargo/bin`.
