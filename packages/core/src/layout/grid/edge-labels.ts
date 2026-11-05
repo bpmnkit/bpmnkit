@@ -4,6 +4,9 @@ import type { Bounds, LayoutEdge, LayoutNode, Waypoint } from "../types.js"
 /** Collision tolerance in pixels — small overlap allowed for rounding. */
 const LABEL_COLLISION_TOLERANCE = 2
 
+/** Distance between a source's exit and a label placed beside it. */
+const LABEL_SOURCE_GAP = 6
+
 /** Number of slide steps along a segment when searching for clear space. */
 const LABEL_SLIDE_STEPS = 10
 
@@ -21,8 +24,25 @@ function boundsOverlap(a: Bounds, b: Bounds): boolean {
  * For each labeled edge, generates candidate positions on the longest segment
  * and picks the first one that doesn't overlap nodes or already-placed labels.
  */
-export function placeEdgeLabels(edges: LayoutEdge[], nodeMap: Map<string, LayoutNode>): void {
+export function placeEdgeLabels(
+	edges: LayoutEdge[],
+	nodeMap: Map<string, LayoutNode>,
+	/**
+	 * Edges whose label belongs next to their source — a gateway's branch
+	 * conditions. These try the first segment, just past the exit, before the
+	 * usual spots, and only where no other flow runs through the label.
+	 */
+	nearSource: ReadonlySet<string> = new Set(),
+): void {
 	const occupied: Bounds[] = []
+	const segments: Array<{ edge: LayoutEdge; a: Waypoint; b: Waypoint }> = []
+	for (const edge of edges) {
+		for (let i = 0; i + 1 < edge.waypoints.length; i++) {
+			const a = edge.waypoints[i]
+			const b = edge.waypoints[i + 1]
+			if (a && b) segments.push({ edge, a, b })
+		}
+	}
 
 	// Collect all node bounds as obstacles
 	for (const node of nodeMap.values()) {
@@ -35,6 +55,19 @@ export function placeEdgeLabels(edges: LayoutEdge[], nodeMap: Map<string, Layout
 
 		const labelWidth = Math.max(edge.label.length * LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH)
 		const labelHeight = LABEL_HEIGHT
+
+		if (nearSource.has(edge.id)) {
+			const spot = sourceCandidates(edge.waypoints, labelWidth, labelHeight).find(
+				(c) =>
+					!occupied.some((ob) => boundsOverlap(c, ob)) &&
+					!segments.some((s) => s.edge !== edge && segmentThrough(s.a, s.b, c)),
+			)
+			if (spot) {
+				edge.labelBounds = spot
+				occupied.push(spot)
+				continue
+			}
+		}
 
 		// Find the longest segment
 		const { segStart, segEnd } = findLongestSegment(edge.waypoints)
@@ -63,6 +96,42 @@ export function placeEdgeLabels(edges: LayoutEdge[], nodeMap: Map<string, Layout
 			// If no clear position exists, leave labelBounds undefined (text preserved in edge.label)
 		}
 	}
+}
+
+/**
+ * Spots on an edge's first segment, just past where it leaves its source:
+ * above a horizontal exit, beside a vertical one (right first, then left).
+ * The first segment has to be long enough to hold the label.
+ */
+function sourceCandidates(waypoints: Waypoint[], width: number, height: number): Bounds[] {
+	const a = waypoints[0]
+	const b = waypoints[1]
+	if (!a || !b) return []
+	const gap = LABEL_SOURCE_GAP
+	if (Math.abs(a.y - b.y) < 1) {
+		if (Math.abs(b.x - a.x) < width + 2 * gap) return []
+		const x = b.x > a.x ? a.x + gap : a.x - gap - width
+		return [
+			{ x, y: a.y - LABEL_SOURCE_GAP / 2 - height, width, height },
+			{ x, y: a.y + LABEL_SOURCE_GAP / 2, width, height },
+		]
+	}
+	if (Math.abs(b.y - a.y) < height + 2 * gap) return []
+	const y = b.y > a.y ? a.y + gap : a.y - gap - height
+	return [
+		{ x: a.x + gap, y, width, height },
+		{ x: a.x - gap - width, y, width, height },
+	]
+}
+
+/** True when the axis-parallel segment a→b passes through the box. */
+function segmentThrough(a: Waypoint, b: Waypoint, box: Bounds): boolean {
+	return (
+		Math.max(a.x, b.x) > box.x &&
+		Math.min(a.x, b.x) < box.x + box.width &&
+		Math.max(a.y, b.y) > box.y &&
+		Math.min(a.y, b.y) < box.y + box.height
+	)
 }
 
 function findLongestSegment(waypoints: Waypoint[]): { segStart: Waypoint; segEnd: Waypoint } {

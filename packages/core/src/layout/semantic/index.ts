@@ -12,6 +12,7 @@ import type {
 	LayoutHints,
 	LayoutNode,
 	LayoutResult,
+	Waypoint,
 } from "../types.js"
 import { LABEL_CHAR_WIDTH, LABEL_HEIGHT, LABEL_MIN_WIDTH, SUBPROCESS_PADDING } from "../types.js"
 import { assignBands } from "./bands.js"
@@ -76,6 +77,7 @@ export function semanticLayout(
 	const childResults = new Map<string, LayoutResult>()
 	const planes: Array<{ elementId: string; result: LayoutResult }> = []
 	const sizes = new Map<string, { width: number; height: number }>()
+	const axes = new Map<string, number>()
 	for (const el of graph.nodes) {
 		const child = childLayoutOf(el, collapsed, grids)
 		if (!child) {
@@ -90,6 +92,7 @@ export function semanticLayout(
 			childResults.set(el.id, child.result)
 			planes.push(...(child.result.planes ?? []))
 			sizes.set(el.id, child.size)
+			if (child.axis !== undefined) axes.set(el.id, child.axis)
 		}
 	}
 
@@ -106,6 +109,7 @@ export function semanticLayout(
 		inContainer,
 		titled,
 		grid,
+		axes,
 	)
 	const besideStem = boundaryLabels(graph, bounds)
 
@@ -157,7 +161,15 @@ export function semanticLayout(
 	const result: LayoutResult = { nodes, edges }
 	if (lanes.length > 0) result.lanes = lanes
 	if (planes.length > 0) result.planes = planes
-	placeEdgeLabels(edges, new Map(nodes.map((n) => [n.id, n])))
+	clearExternalLabels(nodes, edges)
+	// A gateway's branch labels read as the answer to its question, so they go
+	// right at its exit rather than halfway along the flow.
+	const gateways = new Set(nodes.filter((n) => n.type.endsWith("Gateway")).map((n) => n.id))
+	placeEdgeLabels(
+		edges,
+		new Map(nodes.map((n) => [n.id, n])),
+		new Set(edges.filter((e) => gateways.has(e.sourceRef)).map((e) => e.id)),
+	)
 	return result
 }
 
@@ -166,7 +178,12 @@ function childLayoutOf(
 	el: BpmnFlowElement,
 	collapsed: ReadonlySet<string>,
 	grids: LayoutHints["grids"],
-): { result: LayoutResult; size: { width: number; height: number } } | null {
+): {
+	result: LayoutResult
+	size: { width: number; height: number }
+	/** Distance from the container's top to its inner spine, when it has a flow. */
+	axis?: number
+} | null {
 	if (!CONTAINER_TYPES.has(el.type)) return null
 	const container = el as unknown as Container
 	if (!container.flowElements || container.flowElements.length === 0) return null
@@ -186,13 +203,18 @@ function childLayoutOf(
 	if (!extent) return null
 
 	const titleBand = el.name !== undefined ? TITLE_BAND : 0
-	return {
-		result,
-		size: {
-			width: extent.width + 2 * SUB_PADDING,
-			height: extent.height + 2 * SUB_PADDING + titleBand,
-		},
+	// The inner spine is band 0; its first node sets the line the parent row continues.
+	const spineNode =
+		result.edges.length > 0
+			? result.nodes.find((n) => n.position === 0 && n.type !== "boundaryEvent")
+			: undefined
+	const size = {
+		width: extent.width + 2 * SUB_PADDING,
+		height: extent.height + 2 * SUB_PADDING + titleBand,
 	}
+	if (!spineNode) return { result, size }
+	const axis = spineNode.bounds.y + spineNode.bounds.height / 2 - extent.y + SUB_PADDING + titleBand
+	return { result, size, axis }
 }
 
 function extentOf(result: LayoutResult): Bounds | null {
@@ -309,6 +331,72 @@ function boundaryLabels(graph: SemanticGraph, bounds: Map<string, Bounds>): Map<
 		}
 	}
 	return labels
+}
+
+/**
+ * Move an event's or gateway's label off the flows that leave or pass it.
+ *
+ * The label starts centred below the shape, where a branch leaving through the
+ * bottom would cut through it. It then tries above, and beside the vertical
+ * stems on either side, keeping the first spot clear of every flow, shape and
+ * label; with none clear it stays below.
+ */
+function clearExternalLabels(nodes: LayoutNode[], edges: LayoutEdge[]): void {
+	const segments: Array<[Waypoint, Waypoint]> = []
+	for (const edge of edges) {
+		for (let i = 0; i + 1 < edge.waypoints.length; i++) {
+			segments.push([edge.waypoints[i] as Waypoint, edge.waypoints[i + 1] as Waypoint])
+		}
+	}
+	const contains = (outer: Bounds, inner: Bounds): boolean =>
+		outer.x <= inner.x &&
+		outer.y <= inner.y &&
+		outer.x + outer.width >= inner.x + inner.width &&
+		outer.y + outer.height >= inner.y + inner.height
+	const labels = nodes.filter((n) => n.labelBounds).map((n) => n.labelBounds as Bounds)
+	for (const node of nodes) {
+		const label = node.labelBounds
+		if (!label || node.type === "boundaryEvent") continue
+		const clear = (b: Bounds): boolean =>
+			!segments.some(([p, q]) => segmentCuts(p, q, b)) &&
+			!nodes.some(
+				(other) =>
+					other !== node && !contains(other.bounds, node.bounds) && overlapsBox(other.bounds, b),
+			) &&
+			!labels.some((other) => other !== label && overlapsBox(other, b))
+		if (clear(label)) continue
+		const b = node.bounds
+		const cx = b.x + b.width / 2
+		const below = b.y + b.height + LABEL_OFFSET
+		const above = b.y - LABEL_OFFSET - label.height
+		const beside = 2 * LABEL_OFFSET
+		const candidates: Bounds[] = [
+			{ ...label, y: above },
+			{ ...label, x: cx + beside, y: below },
+			{ ...label, x: cx - beside - label.width, y: below },
+			{ ...label, x: cx + beside, y: above },
+			{ ...label, x: cx - beside - label.width, y: above },
+		]
+		const spot = candidates.find(clear)
+		if (spot) {
+			label.x = spot.x
+			label.y = spot.y
+		}
+	}
+}
+
+function overlapsBox(a: Bounds, b: Bounds): boolean {
+	return a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height
+}
+
+/** True when the axis-parallel segment p→q runs through the box. */
+function segmentCuts(p: Waypoint, q: Waypoint, b: Bounds): boolean {
+	return (
+		Math.max(p.x, q.x) > b.x &&
+		Math.min(p.x, q.x) < b.x + b.width &&
+		Math.max(p.y, q.y) > b.y &&
+		Math.min(p.y, q.y) < b.y + b.height
+	)
 }
 
 /** Events and gateways carry their name outside the shape; activities do not. */

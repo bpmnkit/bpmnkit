@@ -10,9 +10,22 @@ import {
 import { type BandLayout, boundarySide } from "./bands.js"
 import type { SemanticGraph } from "./graph.js"
 
-/** Geometry constants. Layout may add space beyond these; it never takes any back. */
-export const H_GAP = 100
-export const V_GAP = 80
+/**
+ * Geometry constants. Layout may add space beyond these; it never takes any back.
+ * Hand-drawn diagrams keep about 50-60 px between neighbouring shapes; wider
+ * gaps only where a flow label or a long event label needs the room.
+ */
+export const H_GAP = 60
+export const V_GAP = 60
+/**
+ * Gap beside a column holding an expanded container. The container's border,
+ * its title and the notes on its children crowd that gap, so it keeps more air.
+ */
+export const CONTAINER_GAP = 100
+/** Clear space either side of a flow label inside a column gap. */
+const LABEL_MARGIN = 10
+/** Gap between an event or gateway and its external label (mirrors `index.ts`). */
+const EXTERNAL_LABEL_OFFSET = 4
 const GRID_GAP_X = 40
 const GRID_GAP_Y = 20
 export const COMPONENT_GAP = 80
@@ -90,6 +103,12 @@ export function place(
 	titled: ReadonlySet<string> = new Set(),
 	/** Shape of the `packLoose` grid, when the builder asked for one. */
 	grid?: GridHint,
+	/**
+	 * For expanded containers with a flow inside: the distance from the
+	 * container's top to its inner spine. The container is hung so that spine
+	 * continues the row's line, and the flow runs straight through it.
+	 */
+	axes: ReadonlyMap<string, number> = new Map(),
 ): Placement {
 	const bounds = new Map<string, Bounds>()
 	const componentOf = new Map<string, number>()
@@ -104,16 +123,27 @@ export function place(
 		const size = sizes.get(node.id) ?? DEFAULT_SIZE
 		colWidth.set(rank, Math.max(colWidth.get(rank) ?? 0, size.width))
 	}
+	const ranks = [...colWidth.keys()].sort((a, b) => a - b)
+	const gaps = columnGaps(graph, sizes, colWidth, ranks)
 	const colX = new Map<number, number>()
 	const gutterX = new Map<number, number>()
 	let x = 0
-	for (const rank of [...colWidth.keys()].sort((a, b) => a - b)) {
+	for (const [i, rank] of ranks.entries()) {
+		const gap = gaps.get(rank) ?? H_GAP
+		if (i > 0) x += gap
 		colX.set(rank, x)
-		gutterX.set(rank, x - H_GAP / 2)
-		x += (colWidth.get(rank) ?? 0) + H_GAP
+		gutterX.set(rank, x - gap / 2)
+		x += colWidth.get(rank) ?? 0
+	}
+	const xOf = (id: string): { left: number; right: number; width: number } => {
+		const size = sizes.get(id) ?? DEFAULT_SIZE
+		const rank = graph.ranks.get(id) ?? 0
+		const cw = colWidth.get(rank) ?? size.width
+		const left = (colX.get(rank) ?? 0) + (cw - size.width) / 2
+		return { left, right: left + size.width, width: size.width }
 	}
 
-	// ── Rows: one per band, laid out per component then stacked ──
+	// ── Rows: one line per band, laid out per component then stacked ──
 	const loose = packLoose ? looseNodes(graph) : []
 	const looseSet = new Set(loose)
 	let cursorY = 0
@@ -126,50 +156,232 @@ export function place(
 			continue
 		}
 
-		const rowHeight = new Map<number, number>()
+		const lines = bandLines(graph, bandLayout, members, sizes, xOf, axes, titled)
+		let top = Number.POSITIVE_INFINITY
+		let bottom = Number.NEGATIVE_INFINITY
 		for (const id of members) {
-			const band = bandLayout.bands.get(id) ?? 0
-			const size = sizes.get(id) ?? DEFAULT_SIZE
-			rowHeight.set(band, Math.max(rowHeight.get(band) ?? 0, size.height))
+			const line = lines.line.get(bandLayout.bands.get(id) ?? 0) ?? 0
+			const extent = lines.extent.get(id)
+			if (!extent) continue
+			top = Math.min(top, line - extent.above)
+			bottom = Math.max(bottom, line + extent.below)
 		}
-		const rowY = new Map<number, number>()
-		let y = cursorY
-		for (const band of [...rowHeight.keys()].sort((a, b) => a - b)) {
-			rowY.set(band, y)
-			y += (rowHeight.get(band) ?? 0) + V_GAP
-		}
-
+		const dy = cursorY - top
 		for (const id of members) {
 			const size = sizes.get(id) ?? DEFAULT_SIZE
-			const rank = graph.ranks.get(id) ?? 0
-			const band = bandLayout.bands.get(id) ?? 0
-			const cw = colWidth.get(rank) ?? size.width
-			const rh = rowHeight.get(band) ?? size.height
-			// A container taller than the row's ordinary nodes hangs from the task
-			// line (top = line - half a task) instead of being centred, so the
-			// flows into and out of it stay straight.
-			const top = rowY.get(band) ?? 0
-			const y =
-				rh > DEFAULT_SIZE.height
-					? size.height > DEFAULT_SIZE.height
-						? top
-						: top + (DEFAULT_SIZE.height - size.height) / 2
-					: top + (rh - size.height) / 2
+			const line = lines.line.get(bandLayout.bands.get(id) ?? 0) ?? 0
+			const { left } = xOf(id)
 			bounds.set(id, {
-				x: (colX.get(rank) ?? 0) + (cw - size.width) / 2,
-				y,
+				x: left,
+				y: line + dy - centreOffset(id, size, axes),
 				width: size.width,
 				height: size.height,
 			})
 		}
 
-		cursorY = y - V_GAP + COMPONENT_GAP
+		cursorY = bottom + dy + COMPONENT_GAP
 	}
 
 	separateSameCell(graph, bandLayout, bounds)
 	const lanes = laneSet ? applyLanes(graph, laneSet, bounds) : []
 	dockBoundaryEvents(graph, bounds, titled)
 	return { bounds, lanes, gutterX }
+}
+
+/**
+ * The gap in front of each rank. At least {@link H_GAP}; wider where a flow
+ * label sits between two neighbouring columns, or where events' and gateways'
+ * labels, centred below shapes narrower than themselves, would meet.
+ */
+function columnGaps(
+	graph: SemanticGraph,
+	sizes: Map<string, { width: number; height: number }>,
+	colWidth: Map<number, number>,
+	ranks: number[],
+): Map<number, number> {
+	const rankOf = (id: string): number => {
+		const el = graph.byId.get(id)
+		const host = el?.type === "boundaryEvent" ? (el as BpmnBoundaryEvent).attachedToRef : id
+		return graph.ranks.get(host) ?? 0
+	}
+	const position = new Map(ranks.map((rank, i) => [rank, i]))
+	const tall = new Set<number>()
+	for (const node of graph.nodes) {
+		if ((sizes.get(node.id) ?? DEFAULT_SIZE).height > DEFAULT_SIZE.height) {
+			tall.add(graph.ranks.get(node.id) ?? 0)
+		}
+	}
+	const overhang = new Map<number, number>()
+	for (const node of graph.nodes) {
+		if (!node.name) continue
+		const width = externalLabelWidth(node.type, node.name)
+		if (width === undefined) continue
+		const rank = graph.ranks.get(node.id) ?? 0
+		const cw = colWidth.get(rank) ?? (sizes.get(node.id) ?? DEFAULT_SIZE).width
+		overhang.set(rank, Math.max(overhang.get(rank) ?? 0, (width - cw) / 2))
+	}
+	const gaps = new Map<number, number>()
+	for (const [i, rank] of ranks.entries()) {
+		if (i === 0) continue
+		const previous = ranks[i - 1] as number
+		const labels = Math.max(0, overhang.get(previous) ?? 0) + Math.max(0, overhang.get(rank) ?? 0)
+		const base = tall.has(rank) || tall.has(previous) ? CONTAINER_GAP : H_GAP
+		gaps.set(rank, Math.max(base, labels + 2 * EXTERNAL_LABEL_OFFSET + LABEL_MARGIN))
+	}
+	for (const flows of graph.outgoing.values()) {
+		for (const flow of flows) {
+			if (!flow.name || graph.backEdges.has(flow.id)) continue
+			const target = rankOf(flow.targetRef)
+			const at = position.get(target)
+			if (at === undefined || at === 0) continue
+			// Only a flow between neighbouring columns has nowhere else to put its label.
+			if (position.get(rankOf(flow.sourceRef)) !== at - 1) continue
+			const need = Math.max(flow.name.length * LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH) + 2 * LABEL_MARGIN
+			gaps.set(target, Math.max(gaps.get(target) ?? H_GAP, need))
+		}
+	}
+	return gaps
+}
+
+/** How far a node's centre line sits below its top. */
+function centreOffset(
+	id: string,
+	size: { width: number; height: number },
+	axes: ReadonlyMap<string, number>,
+): number {
+	if (size.height <= DEFAULT_SIZE.height) return size.height / 2
+	// A tall container carries its inner spine on the row's line; one without an
+	// inner flow (a tool grid) hangs from the task line instead.
+	return axes.get(id) ?? DEFAULT_SIZE.height / 2
+}
+
+interface Extent {
+	above: number
+	below: number
+}
+
+/**
+ * Space a node needs above and below its band's line: its shape, the label
+ * below an event or gateway, and the boundary events docked on its borders
+ * together with their labels.
+ */
+function extentOf(
+	graph: SemanticGraph,
+	id: string,
+	size: { width: number; height: number },
+	axes: ReadonlyMap<string, number>,
+	titled: ReadonlySet<string>,
+): Extent {
+	const offset = centreOffset(id, size, axes)
+	let above = offset
+	let below = size.height - offset
+	const el = graph.byId.get(id)
+	if (el?.name && externalLabelWidth(el.type, el.name) !== undefined) {
+		below = Math.max(below, size.height / 2 + EXTERNAL_LABEL_OFFSET + LABEL_HEIGHT)
+	}
+	for (const event of graph.attachers.get(id) ?? []) {
+		const reach = BOUNDARY_SIZE / 2 + (event.name ? EXTERNAL_LABEL_OFFSET + LABEL_HEIGHT : 0)
+		if (boundarySide(event, titled.has(id)) === -1) above = Math.max(above, offset + reach)
+		else below = Math.max(below, size.height - offset + reach)
+	}
+	return { above, below }
+}
+
+/**
+ * The y of each band's line, relative to the spine at 0.
+ *
+ * Bands keep their order, but a band only clears what it actually sits under
+ * or over: the shapes above it in its own columns, and those its connecting
+ * flows run past. A tall sub-process therefore pushes down only the branches
+ * beneath it, not every branch in the diagram.
+ */
+function bandLines(
+	graph: SemanticGraph,
+	bandLayout: BandLayout,
+	members: string[],
+	sizes: Map<string, { width: number; height: number }>,
+	xOf: (id: string) => { left: number; right: number; width: number },
+	axes: ReadonlyMap<string, number>,
+	titled: ReadonlySet<string>,
+): { line: Map<number, number>; extent: Map<string, Extent> } {
+	const extent = new Map<string, Extent>()
+	const byBand = new Map<number, string[]>()
+	for (const id of members) {
+		extent.set(id, extentOf(graph, id, sizes.get(id) ?? DEFAULT_SIZE, axes, titled))
+		const band = bandLayout.bands.get(id) ?? 0
+		const list = byBand.get(band)
+		if (list) list.push(id)
+		else byBand.set(band, [id])
+	}
+	const line = new Map<number, number>()
+	/** Placed boxes: x-range and how far they reach above / below their line. */
+	const placed: Array<{ left: number; right: number; top: number; bottom: number }> = []
+	const place = (band: number, y: number): void => {
+		line.set(band, y)
+		for (const id of byBand.get(band) ?? []) {
+			const { left, right } = xOf(id)
+			const e = extent.get(id) as Extent
+			placed.push({ left, right, top: y - e.above, bottom: y + e.below })
+		}
+	}
+	/** Centre x of every node a band's members connect to, so the band clears its own flows. */
+	const span = (band: number): { left: number; right: number } => {
+		let left = Number.POSITIVE_INFINITY
+		let right = Number.NEGATIVE_INFINITY
+		const memberSet = new Set(byBand.get(band) ?? [])
+		const take = (id: string): void => {
+			const el = graph.byId.get(id)
+			const host = el?.type === "boundaryEvent" ? (el as BpmnBoundaryEvent).attachedToRef : id
+			if (!graph.byId.has(host)) return
+			const b = xOf(host)
+			const mid = b.left + b.width / 2
+			left = Math.min(left, memberSet.has(host) ? b.left : mid)
+			right = Math.max(right, memberSet.has(host) ? b.right : mid)
+		}
+		for (const id of memberSet) {
+			take(id)
+			for (const f of graph.outgoing.get(id) ?? [])
+				if (!graph.backEdges.has(f.id)) take(f.targetRef)
+			for (const f of graph.incoming.get(id) ?? [])
+				if (!graph.backEdges.has(f.id)) take(f.sourceRef)
+		}
+		return { left, right }
+	}
+	const xOverlap = (a: { left: number; right: number }, b: { left: number; right: number }) =>
+		a.left < b.right && b.left < a.right
+
+	const bands = [...byBand.keys()]
+	if (byBand.has(0)) place(0, 0)
+	const below = bands.filter((b) => b > 0).sort((a, b) => a - b)
+	const above = bands.filter((b) => b < 0).sort((a, b) => b - a)
+	for (const [list, dir] of [
+		[below, 1],
+		[above, -1],
+	] as const) {
+		let previous = 0
+		for (const band of list) {
+			const wide = span(band)
+			let y = previous + dir
+			for (const box of placed) {
+				if (xOverlap(box, wide)) {
+					y = dir === 1 ? Math.max(y, box.bottom + V_GAP) : Math.min(y, box.top - V_GAP)
+				}
+				for (const id of byBand.get(band) ?? []) {
+					const b = xOf(id)
+					const e = extent.get(id) as Extent
+					const reach = { left: b.left - H_GAP / 2, right: b.right + H_GAP / 2 }
+					if (!xOverlap(box, reach)) continue
+					y =
+						dir === 1
+							? Math.max(y, box.bottom + V_GAP + e.above)
+							: Math.min(y, box.top - V_GAP - e.below)
+				}
+			}
+			place(band, y)
+			previous = y
+		}
+	}
+	return { line, extent }
 }
 
 /**

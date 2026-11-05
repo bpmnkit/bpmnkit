@@ -226,10 +226,12 @@ describe("exportSvg", () => {
 
 		const svg = exportSvg(defs)
 
-		// The sub-process marker (plus-in-square icon, unique to subProcess/
-		// adHocSubProcess/eventSubProcess/transaction) locates the sub-process's own
-		// render block, since its body rect uses the same `rx="10"` as every task.
-		const subProcessMarkerIdx = svg.indexOf("M0 -4v8M-4 0h8")
+		// The sub-process's body rect, found by its size, locates its own render block
+		// (an expanded sub-process draws no "+" marker to search for).
+		const sub = defs.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === "sub")
+		const subProcessMarkerIdx = svg.indexOf(
+			`width="${sub?.bounds.width}" height="${sub?.bounds.height}" rx="10"`,
+		)
 		const innerTaskLabelIdx = svg.indexOf(">Inner Task<")
 		const innerEdgeIdx = svg.lastIndexOf('marker-end="url(#arr)"', innerTaskLabelIdx)
 
@@ -240,5 +242,24 @@ describe("exportSvg", () => {
 		// internal edges and its internal child shapes.
 		expect(subProcessMarkerIdx).toBeLessThan(innerEdgeIdx)
 		expect(subProcessMarkerIdx).toBeLessThan(innerTaskLabelIdx)
+	})
+
+	it("draws the collapsed marker only on a collapsed sub-process", () => {
+		const build = () =>
+			Bpmn.createProcess("proc")
+				.startEvent("start")
+				.subProcess("sub", (b) => {
+					b.startEvent("sub-start").userTask("sub-task", { name: "Inner Task" }).endEvent("sub-end")
+				})
+				.endEvent("end")
+				.withAutoLayout()
+				.build()
+		const plus = "M0 -4v8M-4 0h8"
+		const expanded = build()
+		expect(exportSvg(expanded)).not.toContain(plus)
+		const collapsed = build()
+		const shape = collapsed.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === "sub")
+		if (shape) shape.isExpanded = false
+		expect(exportSvg(collapsed)).toContain(plus)
 	})
 })

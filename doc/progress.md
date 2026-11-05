@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-05 — Auto-layout aesthetics for new diagrams
+
+- Benchmark `scripts/layout-aesthetics/` (10 scenarios, deterministic aesthetic metrics, PNG renders); results and before/after in `doc/layout-aesthetics.md`.
+- Semantic layout: 60 px column/row gaps (wider only for labels; 100 beside containers), band lines that clear only what they sit under, sub-processes aligned on their inner spine, gateway/event labels moved off exit flows, branch conditions at the gateway exit, routes avoid running along unrelated flows. Participant-less primary process stacked below pools. `exportSvg`: no label wrap at box width, no "+" on expanded sub-processes.
+- Scenario means: width 1170 → 945 px, aspect 4.77 → 4.05, label collisions 0.8 → 0.2, density 0.16 → 0.21; blind Opus judge 3.4 → 4.2. `bakeoff/expected.bpmn` regenerated (coordinates only). Tests: `tests/layout-aesthetics.test.ts`, svg marker test.
+
 ## 2026-11-05 — Camunda 8 → Camunda 7/Operaton export (issue #259, step 2)
 
 - `convertCamunda8To7(defs)` in `packages/core/src/bpmn/camunda7/export.ts`, exported from `@bpmnkit/core`: non-mutating, returns `{ definitions, findings }` (same finding shape as `convertCamunda7`). Maps job type → `camunda:type="external"` + `camunda:topic`, I/O mapping → `camunda:inputOutput`, assignment, `formKey`, `calledElement` (+ `camunda:in`/`out variables="all"`), version tag. Removes all `zeebe:`/`modeler:` content and namespaces itself (does not use the serializer). FEEL is kept raw with a `manual` finding; message correlation keys, connectors and Zeebe-only features are dropped with findings.
