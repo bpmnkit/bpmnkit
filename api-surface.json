@@ -354,6 +354,7 @@
 			"ZeebeFormDefinition": "type",
 			"ZeebeIoMapping": "type",
 			"ZeebeIoMappingEntry": "type",
+			"ZeebeLinkedResource": "type",
 			"ZeebePlacementError": "value",
 			"ZeebePriorityDefinition": "type",
 			"ZeebeProperties": "type",

@@ -36,6 +36,18 @@ const FIXTURES = {
 	taskSchedule: { taskSchedule: { dueDate: "2030-01-01", followUpDate: "2030-02-01" } },
 	priorityDefinition: { priorityDefinition: { priority: "75" } },
 	subscription: { subscription: { correlationKey: "=key" } },
+	linkedResources: {
+		linkedResources: [
+			{
+				resourceType: "RPA",
+				resourceId: "rpa-1",
+				linkName: "script",
+				bindingType: "versionTag",
+				versionTag: "v1",
+			},
+			{ resourceType: "RPA", resourceId: "rpa-2", linkName: "other" },
+		],
+	},
 	unknownElements: {
 		unknownElements: [{ name: "zeebe:future", attributes: { a: "1" }, children: [] }],
 	},

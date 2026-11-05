@@ -773,6 +773,22 @@ for a text annotation; it still steps clear of shapes and other annotations on t
 it on the process builder, also for an element inside a sub-process: annotations added with
 `annotate()` inside a sub-process callback get no diagram shape from the auto layout.
 
+### Data elements and linked resources
+
+Data elements sit beside the chain: they add no sequence flow and do not move the cursor.
+
+```typescript
+.serviceTask("t", { name: "T", taskType: "work",
+  linkedResources: [{ resourceType: "RPA", resourceId: "script-1", linkName: "script" }] })
+.dataObject("order", { name: "Order" })
+.dataObjectReference("orderRef", "order", { name: "Order" })
+.dataStoreReference("dbRef", "db", { name: "DB" })
+.dataAssociation("t", "orderRef", "input")   // the task reads it
+.dataAssociation("t", "dbRef", "output")     // the task writes it
+```
+
+Auto layout gives the data shapes a place but draws no association edges.
+
 ### Joins: inferred by default, or declared
 
 Where several branches of one gateway reach the same element, `build()` inserts a matching
