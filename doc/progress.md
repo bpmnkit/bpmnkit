@@ -22,6 +22,11 @@ Camunda eval (900 runs): agents spent 32–49% of their cost reading bpmnkit doc
 - The "user task needs a form" rule (`compat/user-task-definition`) is now configurable: `OptimizeOptions.userTaskForms: "require" | "off"` (default `require`, library behaviour unchanged; `USER_TASK_FORM_RULE` exported). `casen lint` and `casen check` default it to `off` outside the deploy profile — Zeebe deploys a user task without a form, and agents in the eval disabled the rule in 71/324 runs to stop inventing form refs.
 - `casen lint lint --profile sketch` (and `casen check --sketch`): skip every Camunda 8 deployability category even when the model names a platform.
 - Docs: `apps/landing/src/content/docs/cli/check.md`, `casen.md`. Tests: `packages/core/tests/dmn-lint.test.ts`, `form-lint.test.ts`, `camunda-compat.test.ts` (userTaskForms), `apps/cli/src/commands/check.test.ts`.
+## 2026-11-05 — `Dmn.drd()` multi-decision builder (eval D04)
+
+- Eval D04: agents referenced the required decision by name, not id (Haiku 0/18, Sonnet 12/18). New `Dmn.drd()` in `packages/core/src/dmn/drd-builder.ts`: `decision()` returns a handle, `requires` takes a handle or branded `drgId()`; unknown ref throws `ValidationError` listing valid ids, a matching label suggests the id. Emits `informationRequirement` hrefs and DMNDI shapes/edges (auto layout).
+- `expandDmn` (compact.ts) now throws on a dangling `requires` instead of dropping it silently.
+- Tests: `packages/core/tests/dmn-drd.test.ts`. Docs: landing `packages/core.md`.
 
 ## 2026-11-05 — Camunda 8 → Camunda 7/Operaton export (issue #259, step 2)
 

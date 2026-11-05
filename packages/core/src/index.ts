@@ -265,7 +265,7 @@ export type {
 	AiAgentToolParamType,
 	AiAgentBuild,
 } from "./bpmn/agentic.js"
-export { Dmn, layoutDmn, benchmarkDmnLayout, compactifyDmn, expandDmn } from "./dmn/index.js"
+export { Dmn, drgId, layoutDmn, benchmarkDmnLayout, compactifyDmn, expandDmn } from "./dmn/index.js"
 export type {
 	DmnBenchmarkResult,
 	DmnElementPosition,
@@ -322,6 +322,14 @@ export type {
 	FormFilepickerComponent,
 	FormUnknownComponent,
 } from "./form/form-model.js"
+export type {
+	DecisionHandle,
+	DrdBuilder,
+	DrdDecisionOptions,
+	DrgId,
+	DrgRef,
+	InputDataHandle,
+} from "./dmn/drd-builder.js"
 export type {
 	DecisionTableBuilder,
 	InputOptions,

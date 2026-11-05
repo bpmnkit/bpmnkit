@@ -1,3 +1,4 @@
+import { ValidationError } from "../errors.js"
 import { generateId } from "../types/id-generator.js"
 import { layoutDmn } from "./dmn-layout.js"
 import type {
@@ -116,11 +117,21 @@ export function expandDmn(compact: CompactDmn): DmnDefinitions {
 
 	const decisions: DmnDecision[] = compact.decisions.map((cd) => {
 		// Build requirement links
-		const informationRequirements = (cd.requires ?? []).map((srcId) => ({
-			id: generateId("InformationRequirement"),
-			requiredDecision: compact.decisions.some((d) => d.id === srcId) ? srcId : undefined,
-			requiredInput: compact.inputData.some((d) => d.id === srcId) ? srcId : undefined,
-		}))
+		const informationRequirements = (cd.requires ?? []).map((srcId) => {
+			const isDecision = compact.decisions.some((d) => d.id === srcId)
+			const isInput = compact.inputData.some((d) => d.id === srcId)
+			if (!isDecision && !isInput) {
+				const valid = [...compact.decisions, ...compact.inputData].map((d) => d.id).join(", ")
+				throw new ValidationError(
+					`Decision "${cd.id}" requires unknown id "${srcId}". Valid ids: ${valid || "(none)"}. Use ids, not names.`,
+				)
+			}
+			return {
+				id: generateId("InformationRequirement"),
+				requiredDecision: isDecision ? srcId : undefined,
+				requiredInput: isInput ? srcId : undefined,
+			}
+		})
 
 		// Build decision table
 		let decisionTable: DmnDecisionTable | undefined

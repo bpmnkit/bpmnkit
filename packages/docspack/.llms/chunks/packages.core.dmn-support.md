@@ -13,24 +13,38 @@ const empty = Dmn.makeEmpty();
 const dmnXml = Dmn.export(dmnDefs);
 ```
 
+### Multi-decision DRDs: `Dmn.drd()`
 
-## TypeScript Types
-
-Key types exported from `@bpmnkit/core`:
+`decision()` returns a typed handle. A decision that depends on another lists the handle
+(or a `drgId("id")`) in `requires`. Use ids, never names or labels: an unknown ref throws a
+`ValidationError` at `build()` that lists the valid ids, and a label that matches a decision
+name gets the right id suggested. The output has `informationRequirement` hrefs and DMNDI
+shapes and edges with automatic layout.
 
 ```typescript
-import type {
-  BpmnDefinitions,
-  BpmnProcess,
-  CompactDiagram,
-  LayoutResult,
-  ProcessBuilder,
-  DiagramBuilder,
-  ServiceTaskOptions,
-  UserTaskOptions,
-  GatewayOptions,
-} from "@bpmnkit/core";
+import { Dmn } from "@bpmnkit/core";
+
+const drd = Dmn.drd("Approval");
+const risk = drd.decision("riskScore", (t) =>
+  t.name("Risk Score")
+    .input({ expression: "age", typeRef: "number" })
+    .output({ name: "risk", typeRef: "string" })
+    .rule({ inputs: ["< 18"], outputs: ['"low"'] }),
+);
+drd.decision(
+  "approval",
+  (t) =>
+    t.name("Approval")
+      .input({ expression: "risk" })
+      .output({ name: "approved" })
+      .rule({ inputs: ['"low"'], outputs: ["true"] }),
+  { requires: [risk] }, // handle or drgId("riskScore"), not "Risk Score"
+);
+const xml = drd.toXml();
 ```
+
+`Dmn.expand()` (compact DMN) also throws on a `requires` entry that is not a decision or
+input data id.
 
 ---
 Source: https://bpmnkit.com/docs/packages/core
