@@ -1,5 +1,12 @@
 {
   "id": "_e7ccc12c-2987-48ae-92aa-08112101d9c9",
+  "participants": [
+    {
+      "id": "_06745dd2-cbc6-4742-b11c-69281e5dcbdb",
+      "name": "Money Bank",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e"
+    }
+  ],
   "processes": [
     {
       "elements": [
@@ -265,6 +272,43 @@
         }
       ],
       "id": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "lanes": [
+        {
+          "id": "_ff7ff8f6-a4f1-4e93-84e1-01cdb85eb755",
+          "members": [
+            "_a4220c17-364f-4a08-ae9c-757a6468b295",
+            "_f8973a92-3d84-4672-a1a3-b0df154121e1",
+            "_f9e3cd76-809a-48b5-be1c-e84fc4324268",
+            "_aa275782-c989-49ba-bf94-c58916ca7bb5",
+            "_987b9b74-333a-4043-a72a-daadf667acc7",
+            "_305ddf53-49a8-4105-ad06-70272a2332aa",
+            "_0e71ed63-93f9-44b6-a89d-da9628652926",
+            "_eba690b9-34ef-49e4-b265-1411809d9302",
+            "_67944b4c-4950-45a2-a131-1c4679c6b433",
+            "_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5",
+            "_82da02ca-ee9a-4403-9f3b-aad030e089b9"
+          ],
+          "name": "HR Department"
+        },
+        {
+          "id": "_937b5086-463f-4c8c-837d-f5eee5cbc1f4",
+          "members": [
+            "_986cf801-0780-49d3-91cd-2cc6d3c1aac3",
+            "_855451b0-5298-48b2-a81d-84ecbcca0a85",
+            "_72da5cee-0456-4c3c-ba8d-6dd085d6f52d",
+            "_e3d3ac43-74a3-48ff-9a02-e64b1358cc34",
+            "_80f70d22-fb42-403f-8bdb-6805e9467bb7",
+            "_fe77c2f2-278f-4752-9d03-aa0c8a12af1e",
+            "_db9147a9-7fbc-4657-a506-15e777f2cfd9",
+            "_74e2cc7b-99ca-426b-ad53-ad70a56506aa",
+            "_19808f32-dfb5-462d-aaa6-e662f9932dba",
+            "_351b058e-c37c-4fb7-9d32-24075f53ce02",
+            "_52401cbb-02b8-4eaf-84f1-1edbc0854a4a",
+            "_36baf139-fb74-43ef-8936-d490238c2825"
+          ],
+          "name": "Responsible Department"
+        }
+      ],
       "name": "Money Bank - Process"
     },
     {
@@ -320,6 +364,7 @@
           "type": "dataStoreReference"
         }
       ],
+      "executable": true,
       "flows": [
         {
           "from": "_e9306b3f-3a77-42e1-b53e-2ed8ee45486d",
@@ -403,6 +448,7 @@
           "type": "dataStoreReference"
         }
       ],
+      "executable": true,
       "flows": [
         {
           "from": "_3d4130c6-48c9-47fe-8e95-2eeb56060e2b",
@@ -472,6 +518,7 @@
           "type": "dataStoreReference"
         }
       ],
+      "executable": true,
       "flows": [
         {
           "from": "_94a62738-dc7a-49f6-81d8-f5642f7ae850",

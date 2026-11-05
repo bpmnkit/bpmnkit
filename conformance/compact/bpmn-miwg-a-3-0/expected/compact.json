@@ -59,6 +59,7 @@
           "type": "endEvent"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "_1ac4b759-40e3-4dfb-b0e3-ad1d201d6c3d",

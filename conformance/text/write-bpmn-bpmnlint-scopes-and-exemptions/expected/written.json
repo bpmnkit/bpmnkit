@@ -3,6 +3,7 @@
     "adhoc": "adhoc",
     "adhoc_tool": "adhoc_tool",
     "adhoc_unnamed": "adhoc_unnamed",
+    "blackbox": "blackbox",
     "boundary_comp": "boundary_comp",
     "boundary_timer": "boundary_timer",
     "end": "end",

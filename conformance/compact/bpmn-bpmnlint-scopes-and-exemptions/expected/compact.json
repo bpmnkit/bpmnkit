@@ -1,5 +1,15 @@
 {
   "id": "Definitions_parity",
+  "participants": [
+    {
+      "id": "pool",
+      "processId": "proc"
+    },
+    {
+      "id": "blackbox",
+      "name": "  "
+    }
+  ],
   "processes": [
     {
       "elements": [
@@ -391,7 +401,21 @@
           "to": "end"
         }
       ],
-      "id": "proc"
+      "id": "proc",
+      "lanes": [
+        {
+          "id": "lane_unnamed"
+        },
+        {
+          "id": "lane_named",
+          "lanes": [
+            {
+              "id": "lane_child"
+            }
+          ],
+          "name": "Clerks"
+        }
+      ]
     }
   ]
 }
