@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-05 — Examples typecheck clean; root tsconfig drops missing plugin references
+
+- `apps/examples`: `businessRuleTask` takes `decisionId`, not `decisionRef`, in `01-employee-onboarding.ts` and `03-loan-approval.ts` (TS2353). The package now has a `typecheck` script (`tsc --noEmit`), and the folder typechecks clean.
+- Root `tsconfig.json`: the seven `canvas-plugins/*` references pointed at a directory that does not exist. Vite's tsconfig lookup for a `.ts` file that falls back to the root config failed with `TSConfckParseError … ENOENT`. Only the `packages/core`, `canvas` and `editor` references remain. Verified with a scratch Vitest import from `packages/ascii`, removed afterwards.
+
 ## 2026-11-04 — CI on Node 26: DOM storage in tests, tsx deprecation warning, API snapshot
 
 - CI installs `lts/*`, which now resolves to Node 26. Node 25+ defines its own `localStorage`/`sessionStorage` globals, undefined unless started with `--localstorage-file`, and Vitest's DOM environment does not replace them, so the storage tests in `@bpmnkit/ui` and `apps/drop` failed. `scripts/vitest-dom-storage.mjs` (a `setupFiles` entry in both configs) gives DOM tests happy-dom `Storage` objects when Node's globals are undefined. Both suites pass on Node 22 and 26.
