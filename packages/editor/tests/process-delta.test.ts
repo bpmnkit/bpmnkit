@@ -4,6 +4,7 @@ import {
 	Bpmn,
 	type BpmnBounds,
 	type BpmnDefinitions,
+	type BpmnLane,
 	expand,
 	parseProcessDelta,
 	parseProcessText,
@@ -103,6 +104,11 @@ function expectSound(defs: BpmnDefinitions, before?: BpmnDefinitions): void {
 	}
 	expect(duplicateIds(defs)).toEqual(before ? duplicateIds(before) : [])
 	expect(() => Bpmn.parse(Bpmn.export(defs))).not.toThrow()
+}
+
+/** Every lane, nested ones included. */
+function allLanes(lanes: readonly BpmnLane[] = []): BpmnLane[] {
+	return lanes.flatMap((lane) => [lane, ...allLanes(lane.childLaneSet?.lanes)])
 }
 
 function overlap(a: BpmnBounds, b: BpmnBounds): boolean {
@@ -500,7 +506,7 @@ describe("applyProcessDelta", () => {
 			const shapes = result.definitions.diagrams[0]?.plane.shapes ?? []
 			const containers = new Set([
 				...result.definitions.collaborations.flatMap((c) => c.participants.map((p) => p.id)),
-				...result.definitions.processes.flatMap((p) => (p.laneSet?.lanes ?? []).map((l) => l.id)),
+				...result.definitions.processes.flatMap((p) => allLanes(p.laneSet?.lanes).map((l) => l.id)),
 			])
 			for (const id of result.created) {
 				const mine = boundsOf(result.definitions, id)
