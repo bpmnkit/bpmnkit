@@ -1,1 +1,1235 @@
-{"cases":[{"file":"artifacts","process":{"id":"Process_artifacts","textAnnotations":[{"id":"TextAnnotation_sla","text":"Must complete within one business day.","unknownAttributes":{}}],"associations":[{"id":"Association_sla","sourceRef":"Task_review","targetRef":"TextAnnotation_sla","associationDirection":"None","unknownAttributes":{}}]},"nodes":[{"id":"Start_art","bounds":{"x":0,"y":22,"width":36,"height":36}},{"id":"Task_review","bounds":{"x":96,"y":0,"width":100,"height":80}},{"id":"End_art","bounds":{"x":256,"y":22,"width":36,"height":36}}],"edges":[{"id":"Flow_a1","waypoints":[{"x":36,"y":40},{"x":96,"y":40}]},{"id":"Flow_a2","waypoints":[{"x":196,"y":40},{"x":256,"y":40}]}],"expected":{"TextAnnotation_sla":{"x":46,"y":-93,"width":200,"height":43}},"sides":{"TextAnnotation_sla":"left"},"expectedSides":{"TextAnnotation_sla":{"x":-154,"y":99,"width":200,"height":43}}},{"file":"bakeoff-expected","process":{"id":"ai-agent-chat-with-tools","textAnnotations":[{"id":"TextAnnotation_StartEvent_TaskReceived_1","text":"Triggered when a user submits a task for the AI agent to perform. The agent uses available tools to complete the task, and the process ends once the user confirms they are satisfied.","unknownAttributes":{}},{"id":"TextAnnotation_AI_Agent_1","text":"This is your agent running certain tasks to reach the goal it was given","unknownAttributes":{}},{"id":"TextAnnotation_FetchSafeJoke_1","text":"Each task you add represents a capability your agent will have. You can add new tasks and the agent will know what it's good for based on its documentation.","unknownAttributes":{}}],"associations":[{"id":"Association_StartEvent_TaskReceived_1","sourceRef":"StartEvent_TaskReceived","targetRef":"TextAnnotation_StartEvent_TaskReceived_1","associationDirection":"None","unknownAttributes":{}},{"id":"Association_AI_Agent_1","sourceRef":"AI_Agent","targetRef":"TextAnnotation_AI_Agent_1","associationDirection":"None","unknownAttributes":{}},{"id":"Association_FetchSafeJoke_1","sourceRef":"FetchSafeJoke","targetRef":"TextAnnotation_FetchSafeJoke_1","associationDirection":"None","unknownAttributes":{}}]},"nodes":[{"id":"StartEvent_TaskReceived","bounds":{"x":0,"y":22,"width":36,"height":36},"labelBounds":{"x":-66,"y":62,"width":168,"height":14}},{"id":"Gateway_RunAgent","bounds":{"x":120,"y":15,"width":50,"height":50}},{"id":"AI_Agent","bounds":{"x":270,"y":0,"width":340,"height":308}},{"id":"UserTask_ReviewAgentResponse","bounds":{"x":710,"y":0,"width":100,"height":80}},{"id":"Gateway_UserSatisfied","bounds":{"x":870,"y":15,"width":50,"height":50},"labelBounds":{"x":842.5,"y":-3,"width":105,"height":14}},{"id":"EndEvent_UserSatisfied","bounds":{"x":996.5,"y":22,"width":36,"height":36},"labelBounds":{"x":965.5,"y":62,"width":98,"height":14}},{"id":"LookupSampleUsers","bounds":{"x":320,"y":78,"width":100,"height":80}},{"id":"SearchRecipes","bounds":{"x":460,"y":78,"width":100,"height":80}},{"id":"FetchSafeJoke","bounds":{"x":320,"y":178,"width":100,"height":80}},{"id":"ListSampleTechnologyProducts","bounds":{"x":460,"y":178,"width":100,"height":80}}],"edges":[{"id":"Flow_StartEvent_TaskReceived_Gateway_RunAgent","waypoints":[{"x":36,"y":40},{"x":120,"y":40}]},{"id":"Flow_Gateway_RunAgent_AI_Agent","waypoints":[{"x":170,"y":40},{"x":270,"y":40}]},{"id":"Flow_AI_Agent_UserTask_ReviewAgentResponse","waypoints":[{"x":610,"y":40},{"x":710,"y":40}]},{"id":"Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied","waypoints":[{"x":810,"y":40},{"x":870,"y":40}]},{"id":"Flow_Yes","waypoints":[{"x":920,"y":40},{"x":996.5,"y":40}]},{"id":"Flow_No","waypoints":[{"x":895,"y":65},{"x":895,"y":348},{"x":145,"y":348},{"x":145,"y":65}]}],"expected":{"TextAnnotation_StartEvent_TaskReceived_1":{"x":-82,"y":-143,"width":200,"height":115},"TextAnnotation_AI_Agent_1":{"x":340,"y":-108,"width":200,"height":58},"TextAnnotation_FetchSafeJoke_1":{"x":270,"y":368,"width":200,"height":101}},"sides":{"TextAnnotation_StartEvent_TaskReceived_1":"left","TextAnnotation_AI_Agent_1":"right","TextAnnotation_FetchSafeJoke_1":"above"},"expectedSides":{"TextAnnotation_StartEvent_TaskReceived_1":{"x":-296,"y":-17,"width":200,"height":115},"TextAnnotation_AI_Agent_1":{"x":660,"y":125,"width":200,"height":58},"TextAnnotation_FetchSafeJoke_1":{"x":270,"y":-131,"width":200,"height":101}}},{"file":"miwg-b-1-0","process":{"id":"WFP-6-2","textAnnotations":[{"id":"_4815ea6a-ede2-489b-8b37-2cdb2835b02c","text":"Text Annotation","unknownAttributes":{}}],"associations":[{"id":"_5362a7ef-ce7e-4a91-9c38-66c07b1b5f49","sourceRef":"_1237e756-d53c-4591-a731-dafffbf0b3f9","targetRef":"_4815ea6a-ede2-489b-8b37-2cdb2835b02c","associationDirection":"None","unknownAttributes":{}}]},"nodes":[{"id":"DF1373655174778","bounds":{"x":7,"y":1003,"width":36,"height":50}},{"id":"_2ee553a1-cb03-41e3-b285-345c826fc88d","bounds":{"x":1559,"y":337,"width":36,"height":36},"labelBounds":{"x":1517.5,"y":377,"width":119,"height":14}},{"id":"_fa3a8e53-5be0-4f0b-8680-d2498e255209","bounds":{"x":599.5,"y":455,"width":100,"height":80}},{"id":"_ba16239e-181e-4b9f-bc5b-0bb2ee973450","bounds":{"x":772.5,"y":315,"width":100,"height":80}},{"id":"_93021cd0-6f49-485d-966f-209744c748de","bounds":{"x":1186.5,"y":330,"width":50,"height":50},"labelBounds":{"x":1103,"y":384,"width":217,"height":14}},{"id":"_3c8c32c3-089a-4643-bf42-6c37c0dac7e0","bounds":{"x":396.5,"y":330,"width":50,"height":50},"labelBounds":{"x":316.5,"y":312,"width":210,"height":14}},{"id":"_a38484e2-7bdb-48b1-b62e-139d51d6a147","bounds":{"x":7,"y":47,"width":36,"height":36},"labelBounds":{"x":-41.5,"y":87,"width":133,"height":14}},{"id":"_be29f267-9d56-46ef-8bbc-e13513b25fce","bounds":{"x":179,"y":40,"width":50,"height":50},"labelBounds":{"x":109.5,"y":22,"width":189,"height":14}},{"id":"_1237e756-d53c-4591-a731-dafffbf0b3f9","bounds":{"x":599.5,"y":315,"width":100,"height":80}},{"id":"_1eb62392-1f21-4a63-bbcb-c78880c3165e","bounds":{"x":772.5,"y":693,"width":100,"height":80}},{"id":"_7706e700-2aed-4b94-8070-961f118aab8f","bounds":{"x":371.5,"y":693,"width":100,"height":80}},{"id":"_ad81e6ba-40f5-43c1-9602-47d2e58804c8","bounds":{"x":624.5,"y":708,"width":50,"height":50},"labelBounds":{"x":544.5,"y":690,"width":210,"height":14}},{"id":"_33f30031-2e29-46b6-b080-30a192a36b45","bounds":{"x":1552,"y":708,"width":50,"height":50},"labelBounds":{"x":1468.5,"y":690,"width":217,"height":14}},{"id":"_7e6ccf38-e740-4537-a439-a8e984d066de","bounds":{"x":972.5,"y":615,"width":478,"height":208}},{"id":"_fea1c5af-6c76-403f-809e-26d476d92741","bounds":{"x":772.5,"y":843,"width":100,"height":80}},{"id":"_ae916437-d9aa-4e3d-a7c3-34998c410beb","bounds":{"x":1752,"y":715,"width":36,"height":36},"labelBounds":{"x":1703.5,"y":755,"width":133,"height":14}},{"id":"_3d35229f-2c75-4d5d-a066-2d14e46e442e","bounds":{"x":7,"y":1801,"width":36,"height":50}},{"id":"_b9385abf-d293-40b7-848b-8add4db48415","bounds":{"x":0,"y":1931,"width":50,"height":50}},{"id":"_1df01cbc-5d8c-444e-b1db-da3efdee254a","bounds":{"x":1067.5,"y":715,"width":36,"height":36},"labelBounds":{"x":1022.5,"y":755,"width":126,"height":14}},{"id":"_6936f794-7bbb-4aa1-ae48-3a35bab4e2f4","bounds":{"x":1166.5,"y":693,"width":100,"height":80}},{"id":"_4f744697-3643-41a9-9d07-84c78e2df64b","bounds":{"x":1326.5,"y":715,"width":36,"height":36},"labelBounds":{"x":1288.5,"y":755,"width":112,"height":14}}],"edges":[{"id":"_a63c8cd6-eee8-4fbe-be5e-f6980b180b52","waypoints":[{"x":43,"y":65},{"x":179,"y":65}]},{"id":"_ab34472d-95a4-459c-a13b-5ed8b8b75eca","waypoints":[{"x":204,"y":90},{"x":204,"y":733},{"x":371.5,"y":733}]},{"id":"_8f68b889-83a4-44ad-9777-d39acdd5415e","waypoints":[{"x":1450.5,"y":733},{"x":1552,"y":733}]},{"id":"_d30f7fb3-ec91-4a60-b73e-42419417f3be","waypoints":[{"x":229,"y":65},{"x":300.25,"y":65},{"x":300.25,"y":355},{"x":396.5,"y":355}]},{"id":"_10a16fd5-0d56-4fdb-8529-0a0610a573be","waypoints":[{"x":699.5,"y":355},{"x":772.5,"y":355}]},{"id":"_d234800f-72d3-46cb-b603-30f1da7b1205","waypoints":[{"x":872.5,"y":733},{"x":972.5,"y":733}]},{"id":"_61abe245-5604-46ba-8152-94d6e68ffda4","waypoints":[{"x":699.5,"y":495},{"x":922.5,"y":495},{"x":922.5,"y":355},{"x":1186.5,"y":355}]},{"id":"_00d30c39-29a7-4c36-86e3-bc6e893efb42","waypoints":[{"x":471.5,"y":733},{"x":624.5,"y":733}]},{"id":"_6ee42e88-3d90-4259-83c0-9abd4574a15a","waypoints":[{"x":674.5,"y":733},{"x":772.5,"y":733}]},{"id":"_6a248585-952e-40ff-82ec-b6d8f410b73a","waypoints":[{"x":649.5,"y":758},{"x":649.5,"y":883},{"x":772.5,"y":883}]},{"id":"_f5c5d52a-204f-4f97-b872-817d63cf36ab","waypoints":[{"x":822.5,"y":315},{"x":822.5,"y":275},{"x":1211.5,"y":275},{"x":1211.5,"y":330}]},{"id":"_657f30ba-0690-4a14-8b8e-d8939efcc7bd","waypoints":[{"x":822.5,"y":923},{"x":822.5,"y":963},{"x":1577,"y":963},{"x":1577,"y":758}]},{"id":"_54f45351-aa18-4c65-b0d0-edc3aa0a140d","waypoints":[{"x":1602,"y":733},{"x":1752,"y":733}]},{"id":"_9d489bd9-9435-4692-bc98-4cdda4a61569","waypoints":[{"x":446.5,"y":355},{"x":599.5,"y":355}]},{"id":"_eeb6812d-d182-489f-aea2-493ab8732cfd","waypoints":[{"x":421.5,"y":380},{"x":421.5,"y":495},{"x":599.5,"y":495}]},{"id":"_994697ca-8927-4c84-a9a6-8682f8dee032","waypoints":[{"x":1236.5,"y":355},{"x":1559,"y":355}]},{"id":"_2d1047ce-fdd5-4cb6-9f0c-0ee8d6d3044a","waypoints":[{"x":1103.5,"y":733},{"x":1166.5,"y":733}]},{"id":"_062ae395-4aba-408b-ac64-4987752be95b","waypoints":[{"x":1266.5,"y":733},{"x":1326.5,"y":733}]}],"expected":{"_4815ea6a-ede2-489b-8b37-2cdb2835b02c":{"x":550,"y":235,"width":200,"height":30}},"sides":{"_4815ea6a-ede2-489b-8b37-2cdb2835b02c":"left"},"expectedSides":{"_4815ea6a-ede2-489b-8b37-2cdb2835b02c":{"x":350,"y":220,"width":200,"height":30}}},{"file":"miwg-b-2-0","process":{"id":"WFP-6-1","textAnnotations":[{"id":"_4815ea6a-ede2-489b-8b37-2cdb2835b02c","text":"Annotation","unknownAttributes":{}}],"associations":[{"id":"_5362a7ef-ce7e-4a91-9c38-66c07b1b5f49","sourceRef":"_303e68ec-dbb3-4d90-8a96-26e0be44f5f3","targetRef":"_4815ea6a-ede2-489b-8b37-2cdb2835b02c","associationDirection":"None","unknownAttributes":{}}]},"nodes":[{"id":"DF1373638080458","bounds":{"x":0,"y":0,"width":36,"height":50}},{"id":"_c9870992-6643-4094-acfd-d76e5e37941b","bounds":{"x":1567.5,"y":255,"width":100,"height":80}},{"id":"_708d55c8-684a-4e3b-a69d-69c620cd0ac0","bounds":{"x":1599.5,"y":237,"width":36,"height":36}},{"id":"_2a08c361-be51-437e-a86d-c62798c14e83","bounds":{"x":1727.5,"y":423,"width":100,"height":80}},{"id":"_732c0641-b12f-448b-b9f8-a68b355782e3","bounds":{"x":1759.5,"y":485,"width":36,"height":36},"labelBounds":{"x":1381.5,"y":525,"width":392,"height":14}},{"id":"_8f41085a-3302-4cfc-9231-23bb4b43c7a1","bounds":{"x":1727.5,"y":130,"width":100,"height":80}},{"id":"_4e71bf73-1719-401e-a9a2-85dc89fc1150","bounds":{"x":0,"y":277,"width":36,"height":36},"labelBounds":{"x":-48.5,"y":317,"width":133,"height":14}},{"id":"_5cc02d0f-c090-4e48-8da3-f32cbbca9565","bounds":{"x":2308,"y":152,"width":36,"height":36},"labelBounds":{"x":2263,"y":192,"width":126,"height":14}},{"id":"_b67ba682-c8d6-465b-b538-c287db18d1be","bounds":{"x":2308,"y":277,"width":36,"height":36},"labelBounds":{"x":2259.5,"y":317,"width":133,"height":14}},{"id":"_0e87da16-736e-45b2-95e5-8f45940f3adf","bounds":{"x":422.5,"y":255,"width":100,"height":80}},{"id":"_ac1fde31-c0cd-4a8a-9728-a5fb49602de7","bounds":{"x":827.5,"y":423,"width":100,"height":80}},{"id":"_dec393e7-f182-4d31-b05f-e33ac3a5e35f","bounds":{"x":582.5,"y":270,"width":50,"height":50},"labelBounds":{"x":541,"y":252,"width":133,"height":14}},{"id":"_397c783e-ad6a-4cf3-8266-9b41962c83bd","bounds":{"x":2153.5,"y":270,"width":50,"height":50},"labelBounds":{"x":2115.5,"y":252,"width":126,"height":14}},{"id":"_c9cb2415-6a2e-49d6-84b9-27babcde4088","bounds":{"x":1953.5,"y":152,"width":36,"height":36},"labelBounds":{"x":1845.5,"y":192,"width":252,"height":14}},{"id":"_a01498ae-086c-4adc-9229-ec3135bc2bcf","bounds":{"x":2128.5,"y":130,"width":100,"height":80}},{"id":"_76ee26df-2c95-495b-9d9a-cb806aea6baf","bounds":{"x":262.5,"y":255,"width":100,"height":80}},{"id":"_149a6e1d-0385-4d0f-a90c-c2150a291a67","bounds":{"x":1567.5,"y":423,"width":100,"height":80}},{"id":"_303e68ec-dbb3-4d90-8a96-26e0be44f5f3","bounds":{"x":1027.5,"y":177,"width":440,"height":208}},{"id":"_0326fdf5-7c71-41d9-838c-ab141a1b1ed0","bounds":{"x":1229.5,"y":445,"width":36,"height":36},"labelBounds":{"x":1132,"y":485,"width":231,"height":14}},{"id":"_a74c1d4d-db90-43ff-8920-139a300b39a5","bounds":{"x":827.5,"y":255,"width":100,"height":80}},{"id":"_f3698a93-fe0b-4f49-bfa6-68d055936af3","bounds":{"x":1921.5,"y":423,"width":100,"height":80}},{"id":"_d84e5824-7bb7-4057-9dba-6c8794f7948c","bounds":{"x":102.5,"y":255,"width":100,"height":80}},{"id":"_aa8c769a-276c-4589-b182-7c7bbd0a9e1e","bounds":{"x":0,"y":619,"width":36,"height":50}},{"id":"_ef372c4d-6c65-4ad2-bc22-5c25e5d0870e","bounds":{"x":1105,"y":277,"width":36,"height":36},"labelBounds":{"x":1077.5,"y":317,"width":91,"height":14}},{"id":"_b9343536-6490-4559-8365-71d5c4cbb7cb","bounds":{"x":1201,"y":255,"width":100,"height":80}},{"id":"_a9b9c08d-377a-49a8-a869-f82308702018","bounds":{"x":1361,"y":277,"width":36,"height":36},"labelBounds":{"x":1340.5,"y":317,"width":77,"height":14}}],"edges":[{"id":"_2c124731-3338-46e0-81b5-b435f34941c8","waypoints":[{"x":36,"y":295},{"x":102.5,"y":295}]},{"id":"_19a7094a-7bdf-4819-af86-be22d2cfdc49","waypoints":[{"x":202.5,"y":295},{"x":262.5,"y":295}]},{"id":"_e1f948a6-db76-4c35-ba36-e430eecb63a4","waypoints":[{"x":362.5,"y":295},{"x":422.5,"y":295}]},{"id":"_dbae7e12-67c2-4256-8c50-5811c207ba55","waypoints":[{"x":1667.5,"y":463},{"x":1727.5,"y":463}]},{"id":"_4474c77a-01bb-435e-929a-7eb71bd824a8","waypoints":[{"x":522.5,"y":295},{"x":582.5,"y":295}]},{"id":"_a9966baf-d9b9-4be1-a4d9-2906ab5add30","waypoints":[{"x":607.5,"y":320},{"x":607.5,"y":463},{"x":827.5,"y":463}]},{"id":"_be19c2da-316a-47f6-ad7b-eb6c82bf8609","waypoints":[{"x":632.5,"y":295},{"x":827.5,"y":295}]},{"id":"_b8694c28-408b-4394-b476-41e2a5bcfd94","waypoints":[{"x":927.5,"y":463},{"x":1229.5,"y":463}]},{"id":"_ce63770e-9f4b-4bc0-a56c-88401c59f0bf","waypoints":[{"x":927.5,"y":295},{"x":1027.5,"y":295}]},{"id":"_e0fbb051-0e07-43cc-a8bf-158492541c0f","waypoints":[{"x":1265.5,"y":463},{"x":1567.5,"y":463}]},{"id":"_2752e07c-f2e4-4384-8721-70e4abea9765","waypoints":[{"x":2203.5,"y":295},{"x":2308,"y":295}]},{"id":"_e6537f9d-e5ea-4abc-a6e8-add13a11b536","waypoints":[{"x":1467.5,"y":295},{"x":1567.5,"y":295}]},{"id":"_da47ac6a-4ea1-4bf6-ad3e-8cc60c0ea8a9","waypoints":[{"x":1617.5,"y":237},{"x":1617.5,"y":170},{"x":1727.5,"y":170}]},{"id":"_8321494b-9c3c-483a-b4d2-79e6254211c0","waypoints":[{"x":1667.5,"y":295},{"x":2153.5,"y":295}]},{"id":"_54574511-c29e-4157-bb8f-8b26f15faaf5","waypoints":[{"x":1777.5,"y":521},{"x":1777.5,"y":541},{"x":1874.5,"y":541},{"x":1874.5,"y":463},{"x":1921.5,"y":463}]},{"id":"_b41b9c86-bc41-4b6e-ac32-70e1342e6128","waypoints":[{"x":1777.5,"y":423},{"x":1777.5,"y":371.5},{"x":2178.5,"y":371.5},{"x":2178.5,"y":320}]},{"id":"_de249cbe-d431-4e1f-bc8c-a90aec438683","waypoints":[{"x":1971.5,"y":423},{"x":1971.5,"y":295},{"x":2153.5,"y":295}]},{"id":"_5f52bb2a-c49d-43ae-9253-7b89a8251b2b","waypoints":[{"x":1827.5,"y":170},{"x":1953.5,"y":170}]},{"id":"_875031ae-f87c-45a3-ae60-ba0cb0ce0bc1","waypoints":[{"x":2228.5,"y":170},{"x":2308,"y":170}]},{"id":"_e503a157-f034-4a8a-ae12-aa524a8ebeee","waypoints":[{"x":1989.5,"y":170},{"x":2128.5,"y":170}]},{"id":"_c68194b4-3618-4655-b128-7eec67483c84","waypoints":[{"x":1141,"y":295},{"x":1201,"y":295}]},{"id":"_87ffa0fa-1a2d-4149-bbe9-04e20bc1014b","waypoints":[{"x":1301,"y":295},{"x":1361,"y":295}]}],"expected":{"_4815ea6a-ede2-489b-8b37-2cdb2835b02c":{"x":1148,"y":97,"width":200,"height":30}},"sides":{"_4815ea6a-ede2-489b-8b37-2cdb2835b02c":"left"},"expectedSides":{"_4815ea6a-ede2-489b-8b37-2cdb2835b02c":{"x":778,"y":186,"width":200,"height":30}}},{"file":"miwg-c-4-0","process":{"id":"_f0035388-f829-470c-b82b-0b15c3da3399","textAnnotations":[{"id":"_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e","text":"With PowerShell","unknownAttributes":{}}],"associations":[{"id":"_fa0de585-aa40-40bb-a3a5-965d956e884d","sourceRef":"_9db2d136-aa33-4de2-be76-554e7843363d","targetRef":"_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e","associationDirection":"None","unknownAttributes":{}}]},"nodes":[{"id":"_e9306b3f-3a77-42e1-b53e-2ed8ee45486d","bounds":{"x":7,"y":22,"width":36,"height":36},"labelBounds":{"x":-41.5,"y":62,"width":133,"height":14}},{"id":"_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c","bounds":{"x":110,"y":0,"width":100,"height":80}},{"id":"_c29af228-0768-4dfe-945a-17755e173674","bounds":{"x":270,"y":0,"width":100,"height":80}},{"id":"_912f731a-fb6b-499b-a3f4-4c1632d606bd","bounds":{"x":430,"y":0,"width":100,"height":80}},{"id":"_9db2d136-aa33-4de2-be76-554e7843363d","bounds":{"x":590,"y":0,"width":100,"height":80}},{"id":"_ad173aff-cfe3-4098-8c65-02f783ad9e1f","bounds":{"x":750,"y":0,"width":100,"height":80}},{"id":"_c82dd8eb-ce54-4aa7-b8c4-b8d3e8fd654e","bounds":{"x":965.5,"y":22,"width":36,"height":36},"labelBounds":{"x":868,"y":62,"width":231,"height":14}},{"id":"_e355b511-e181-4e7b-a9b1-30cb48dd6cab","bounds":{"x":0,"y":160,"width":50,"height":50}},{"id":"_b60be020-1f04-46c2-b1a9-19bfc66ead82","bounds":{"x":0,"y":290,"width":50,"height":50}}],"edges":[{"id":"_495f04a4-ed17-4e7b-a952-11c06c2230d1","waypoints":[{"x":43,"y":40},{"x":110,"y":40}]},{"id":"_0bccc7f6-0f56-49bc-98df-59d70433c043","waypoints":[{"x":210,"y":40},{"x":270,"y":40}]},{"id":"_dcec1142-90eb-41a8-b809-458b713ab94c","waypoints":[{"x":370,"y":40},{"x":430,"y":40}]},{"id":"_be72815e-ed18-4d77-9252-1ab0a7438dc9","waypoints":[{"x":530,"y":40},{"x":590,"y":40}]},{"id":"_ba635734-5672-4f1b-b753-3b08c778c64e","waypoints":[{"x":690,"y":40},{"x":750,"y":40}]},{"id":"_c904a36b-64f6-46e3-8ef1-9f2ecc3faaff","waypoints":[{"x":850,"y":40},{"x":965.5,"y":40}]}],"expected":{"_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e":{"x":540,"y":-80,"width":200,"height":30}},"sides":{"_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e":"left"},"expectedSides":{"_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e":{"x":340,"y":145,"width":200,"height":30}}},{"file":"synthetic-0","process":{"id":"synth","textAnnotations":[{"id":"A0","text":"Short"},{"id":"A1","text":"A much longer annotation text that wraps across several lines in the box width of two hundred px"},{"id":"A2","text":"line1\r\nline2\n\nline4 with nbsp and﻿bom words"},{"id":"A3","text":"Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious end"},{"id":"A4","text":"   \t "},{"id":"A5"},{"id":"A6","text":"lone\rcr andnel  em space ᠎ mongolian"},{"id":"A7","text":"emoji 😀😀😀 words words words words words words words words words words"},{"id":"A8","text":"orphan one"},{"id":"A9","text":"orphan two with a rather long text that needs wrapping over a few lines of the fixed width box"}],"associations":[{"id":"As0","sourceRef":"T0","targetRef":"A0"},{"id":"As1","sourceRef":"A1","targetRef":"T1"},{"id":"As2","sourceRef":"T1","targetRef":"A2"},{"id":"As3","sourceRef":"A3","targetRef":"T2"},{"id":"As4","sourceRef":"T2","targetRef":"A4"},{"id":"As5","sourceRef":"A5","targetRef":"T3"},{"id":"As6","sourceRef":"T4","targetRef":"A6"},{"id":"As7","sourceRef":"A7","targetRef":"T5"},{"id":"AsX","sourceRef":"A8","targetRef":"GHOST"}]},"nodes":[{"id":"T0","bounds":{"x":100,"y":100,"width":100,"height":80}},{"id":"T1","bounds":{"x":250,"y":100,"width":100,"height":80}},{"id":"T2","bounds":{"x":400,"y":100,"width":100,"height":80},"labelBounds":{"x":395,"y":185,"width":110,"height":14}},{"id":"T3","bounds":{"x":550,"y":100,"width":100,"height":80}},{"id":"T4","bounds":{"x":250,"y":300,"width":100,"height":80}},{"id":"T5","bounds":{"x":400,"y":300,"width":100,"height":80}}],"edges":[{"id":"f0","waypoints":[{"x":200,"y":140},{"x":250,"y":140}]},{"id":"f1","waypoints":[{"x":350,"y":140},{"x":375,"y":140},{"x":375,"y":340},{"x":400,"y":340}]},{"id":"f2","waypoints":[{"x":500,"y":140},{"x":550,"y":160}]}],"expected":{"A0":{"x":50,"y":20,"width":200,"height":30},"A1":{"x":200,"y":-72,"width":200,"height":72},"A2":{"x":200,"y":-178,"width":200,"height":86},"A3":{"x":470,"y":-22,"width":200,"height":72},"A4":{"x":470,"y":-72,"width":200,"height":30},"A5":{"x":500,"y":-122,"width":200,"height":30},"A6":{"x":200,"y":430,"width":200,"height":43},"A7":{"x":350,"y":493,"width":200,"height":58},"A8":{"x":0,"y":250,"width":200,"height":30},"A9":{"x":0,"y":552,"width":200,"height":72}},"sides":{},"expectedSides":{"A0":{"x":50,"y":20,"width":200,"height":30},"A1":{"x":200,"y":-72,"width":200,"height":72},"A2":{"x":200,"y":-178,"width":200,"height":86},"A3":{"x":470,"y":-22,"width":200,"height":72},"A4":{"x":470,"y":-72,"width":200,"height":30},"A5":{"x":500,"y":-122,"width":200,"height":30},"A6":{"x":200,"y":430,"width":200,"height":43},"A7":{"x":350,"y":493,"width":200,"height":58},"A8":{"x":0,"y":250,"width":200,"height":30},"A9":{"x":0,"y":552,"width":200,"height":72}}},{"file":"synthetic-1","process":{"id":"synth","textAnnotations":[{"id":"A0","text":"Short"},{"id":"A1","text":"A much longer annotation text that wraps across several lines in the box width of two hundred px"},{"id":"A2","text":"line1\r\nline2\n\nline4 with nbsp and﻿bom words"},{"id":"A3","text":"Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious end"},{"id":"A4","text":"   \t "},{"id":"A5"},{"id":"A6","text":"lone\rcr andnel  em space ᠎ mongolian"},{"id":"A7","text":"emoji 😀😀😀 words words words words words words words words words words"},{"id":"A8","text":"orphan one"},{"id":"A9","text":"orphan two with a rather long text that needs wrapping over a few lines of the fixed width box"}],"associations":[{"id":"As0","sourceRef":"T0","targetRef":"A0"},{"id":"As1","sourceRef":"A1","targetRef":"T1"},{"id":"As2","sourceRef":"T1","targetRef":"A2"},{"id":"As3","sourceRef":"A3","targetRef":"T2"},{"id":"As4","sourceRef":"T2","targetRef":"A4"},{"id":"As5","sourceRef":"A5","targetRef":"T3"},{"id":"As6","sourceRef":"T4","targetRef":"A6"},{"id":"As7","sourceRef":"A7","targetRef":"T5"},{"id":"AsX","sourceRef":"A8","targetRef":"GHOST"}]},"nodes":[{"id":"T0","bounds":{"x":100,"y":100,"width":100,"height":80}},{"id":"T1","bounds":{"x":250,"y":100,"width":100,"height":80}},{"id":"T2","bounds":{"x":400,"y":100,"width":100,"height":80},"labelBounds":{"x":395,"y":185,"width":110,"height":14}},{"id":"T3","bounds":{"x":550,"y":100,"width":100,"height":80}},{"id":"T4","bounds":{"x":250,"y":300,"width":100,"height":80}},{"id":"T5","bounds":{"x":400,"y":300,"width":100,"height":80}}],"edges":[{"id":"f0","waypoints":[{"x":200,"y":140},{"x":250,"y":140}]},{"id":"f1","waypoints":[{"x":350,"y":140},{"x":375,"y":140},{"x":375,"y":340},{"x":400,"y":340}]},{"id":"f2","waypoints":[{"x":500,"y":140},{"x":550,"y":160}]}],"expected":{"A0":{"x":50,"y":20,"width":200,"height":30},"A1":{"x":200,"y":-72,"width":200,"height":72},"A2":{"x":200,"y":-178,"width":200,"height":86},"A3":{"x":470,"y":-22,"width":200,"height":72},"A4":{"x":470,"y":-72,"width":200,"height":30},"A5":{"x":500,"y":-122,"width":200,"height":30},"A6":{"x":200,"y":430,"width":200,"height":43},"A7":{"x":350,"y":493,"width":200,"height":58},"A8":{"x":0,"y":250,"width":200,"height":30},"A9":{"x":0,"y":552,"width":200,"height":72}},"sides":{"A0":"right","A1":"above","A2":"below","A3":"left","A4":"right","A5":"above","A6":"below","A7":"left","A8":"right","A9":"above"},"expectedSides":{"A0":{"x":250,"y":-75,"width":200,"height":30},"A1":{"x":200,"y":-22,"width":200,"height":72},"A2":{"x":20,"y":230,"width":200,"height":86},"A3":{"x":-20,"y":-16,"width":200,"height":72},"A4":{"x":680,"y":205,"width":200,"height":30},"A5":{"x":500,"y":20,"width":200,"height":30},"A6":{"x":200,"y":430,"width":200,"height":43},"A7":{"x":-20,"y":391,"width":200,"height":58},"A8":{"x":0,"y":500,"width":200,"height":30},"A9":{"x":0,"y":552,"width":200,"height":72}}},{"file":"synthetic-2","process":{"id":"synth","textAnnotations":[{"id":"A0","text":"Short"},{"id":"A1","text":"A much longer annotation text that wraps across several lines in the box width of two hundred px"},{"id":"A2","text":"line1\r\nline2\n\nline4 with nbsp and﻿bom words"},{"id":"A3","text":"Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious end"},{"id":"A4","text":"   \t "},{"id":"A5"},{"id":"A6","text":"lone\rcr andnel  em space ᠎ mongolian"},{"id":"A7","text":"emoji 😀😀😀 words words words words words words words words words words"},{"id":"A8","text":"orphan one"},{"id":"A9","text":"orphan two with a rather long text that needs wrapping over a few lines of the fixed width box"}],"associations":[{"id":"As0","sourceRef":"T0","targetRef":"A0"},{"id":"As1","sourceRef":"A1","targetRef":"T1"},{"id":"As2","sourceRef":"T1","targetRef":"A2"},{"id":"As3","sourceRef":"A3","targetRef":"T2"},{"id":"As4","sourceRef":"T2","targetRef":"A4"},{"id":"As5","sourceRef":"A5","targetRef":"T3"},{"id":"As6","sourceRef":"T4","targetRef":"A6"},{"id":"As7","sourceRef":"A7","targetRef":"T5"},{"id":"AsX","sourceRef":"A8","targetRef":"GHOST"}]},"nodes":[{"id":"T0","bounds":{"x":100,"y":100,"width":100,"height":80}},{"id":"T1","bounds":{"x":250,"y":100,"width":100,"height":80}},{"id":"T2","bounds":{"x":400,"y":100,"width":100,"height":80},"labelBounds":{"x":395,"y":185,"width":110,"height":14}},{"id":"T3","bounds":{"x":550,"y":100,"width":100,"height":80}},{"id":"T4","bounds":{"x":250,"y":300,"width":100,"height":80}},{"id":"T5","bounds":{"x":400,"y":300,"width":100,"height":80}}],"edges":[{"id":"f0","waypoints":[{"x":200,"y":140},{"x":250,"y":140}]},{"id":"f1","waypoints":[{"x":350,"y":140},{"x":375,"y":140},{"x":375,"y":340},{"x":400,"y":340}]},{"id":"f2","waypoints":[{"x":500,"y":140},{"x":550,"y":160}]}],"expected":{"A0":{"x":50,"y":20,"width":200,"height":30},"A1":{"x":200,"y":-72,"width":200,"height":72},"A2":{"x":200,"y":-178,"width":200,"height":86},"A3":{"x":470,"y":-22,"width":200,"height":72},"A4":{"x":470,"y":-72,"width":200,"height":30},"A5":{"x":500,"y":-122,"width":200,"height":30},"A6":{"x":200,"y":430,"width":200,"height":43},"A7":{"x":350,"y":493,"width":200,"height":58},"A8":{"x":0,"y":250,"width":200,"height":30},"A9":{"x":0,"y":552,"width":200,"height":72}},"sides":{"A0":"right","A1":"right","A2":"right","A3":"right","A4":"right","A5":"right","A6":"right","A7":"right","A8":"right","A9":"right"},"expectedSides":{"A0":{"x":250,"y":5,"width":200,"height":30},"A1":{"x":470,"y":-16,"width":200,"height":72},"A2":{"x":690,"y":-23,"width":200,"height":86},"A3":{"x":550,"y":224,"width":200,"height":72},"A4":{"x":550,"y":-75,"width":200,"height":30},"A5":{"x":700,"y":125,"width":200,"height":30},"A6":{"x":400,"y":439,"width":200,"height":43},"A7":{"x":550,"y":351,"width":200,"height":58},"A8":{"x":0,"y":0,"width":200,"height":30},"A9":{"x":0,"y":276,"width":200,"height":72}}},{"file":"synthetic-3","process":{"id":"synth","textAnnotations":[{"id":"A0","text":"Short"},{"id":"A1","text":"A much longer annotation text that wraps across several lines in the box width of two hundred px"},{"id":"A2","text":"line1\r\nline2\n\nline4 with nbsp and﻿bom words"},{"id":"A3","text":"Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious end"},{"id":"A4","text":"   \t "},{"id":"A5"},{"id":"A6","text":"lone\rcr andnel  em space ᠎ mongolian"},{"id":"A7","text":"emoji 😀😀😀 words words words words words words words words words words"},{"id":"A8","text":"orphan one"},{"id":"A9","text":"orphan two with a rather long text that needs wrapping over a few lines of the fixed width box"}],"associations":[{"id":"As0","sourceRef":"T0","targetRef":"A0"},{"id":"As1","sourceRef":"A1","targetRef":"T1"},{"id":"As2","sourceRef":"T1","targetRef":"A2"},{"id":"As3","sourceRef":"A3","targetRef":"T2"},{"id":"As4","sourceRef":"T2","targetRef":"A4"},{"id":"As5","sourceRef":"A5","targetRef":"T3"},{"id":"As6","sourceRef":"T4","targetRef":"A6"},{"id":"As7","sourceRef":"A7","targetRef":"T5"},{"id":"AsX","sourceRef":"A8","targetRef":"GHOST"}]},"nodes":[{"id":"T0","bounds":{"x":100,"y":100,"width":100,"height":80}},{"id":"T1","bounds":{"x":250,"y":100,"width":100,"height":80}},{"id":"T2","bounds":{"x":400,"y":100,"width":100,"height":80},"labelBounds":{"x":395,"y":185,"width":110,"height":14}},{"id":"T3","bounds":{"x":550,"y":100,"width":100,"height":80}},{"id":"T4","bounds":{"x":250,"y":300,"width":100,"height":80}},{"id":"T5","bounds":{"x":400,"y":300,"width":100,"height":80}}],"edges":[{"id":"f0","waypoints":[{"x":200,"y":140},{"x":250,"y":140}]},{"id":"f1","waypoints":[{"x":350,"y":140},{"x":375,"y":140},{"x":375,"y":340},{"x":400,"y":340}]},{"id":"f2","waypoints":[{"x":500,"y":140},{"x":550,"y":160}]}],"expected":{"A0":{"x":50,"y":20,"width":200,"height":30},"A1":{"x":200,"y":-72,"width":200,"height":72},"A2":{"x":200,"y":-178,"width":200,"height":86},"A3":{"x":470,"y":-22,"width":200,"height":72},"A4":{"x":470,"y":-72,"width":200,"height":30},"A5":{"x":500,"y":-122,"width":200,"height":30},"A6":{"x":200,"y":430,"width":200,"height":43},"A7":{"x":350,"y":493,"width":200,"height":58},"A8":{"x":0,"y":250,"width":200,"height":30},"A9":{"x":0,"y":552,"width":200,"height":72}},"sides":{"A0":"left","A1":"left","A2":"left","A3":"left","A4":"left","A5":"left","A6":"left","A7":"left","A8":"left","A9":"left"},"expectedSides":{"A0":{"x":-150,"y":125,"width":200,"height":30},"A1":{"x":0,"y":224,"width":200,"height":72},"A2":{"x":0,"y":-23,"width":200,"height":86},"A3":{"x":-220,"y":24,"width":200,"height":72},"A4":{"x":150,"y":-75,"width":200,"height":30},"A5":{"x":300,"y":5,"width":200,"height":30},"A6":{"x":0,"y":319,"width":200,"height":43},"A7":{"x":150,"y":431,"width":200,"height":58},"A8":{"x":0,"y":550,"width":200,"height":30},"A9":{"x":0,"y":644,"width":200,"height":72}}}],"assoc":[{"element":{"x":96,"y":0,"width":100,"height":80},"annotation":{"x":46,"y":-93,"width":200,"height":43},"expected":{"pElem":{"x":146,"y":0},"pAnn":{"x":146,"y":-50}}},{"element":{"x":96,"y":0,"width":100,"height":80},"annotation":{"x":-154,"y":99,"width":200,"height":43},"expected":{"pElem":{"x":96,"y":80},"pAnn":{"x":46,"y":99}}},{"element":{"x":0,"y":22,"width":36,"height":36},"annotation":{"x":-82,"y":-143,"width":200,"height":115},"expected":{"pElem":{"x":18,"y":22},"pAnn":{"x":18,"y":-28}}},{"element":{"x":270,"y":0,"width":340,"height":308},"annotation":{"x":340,"y":-108,"width":200,"height":58},"expected":{"pElem":{"x":440,"y":0},"pAnn":{"x":440,"y":-50}}},{"element":{"x":320,"y":178,"width":100,"height":80},"annotation":{"x":270,"y":368,"width":200,"height":101},"expected":{"pElem":{"x":370,"y":258},"pAnn":{"x":370,"y":368}}},{"element":{"x":0,"y":22,"width":36,"height":36},"annotation":{"x":-296,"y":-17,"width":200,"height":115},"expected":{"pElem":{"x":0,"y":40.5},"pAnn":{"x":-96,"y":40}}},{"element":{"x":270,"y":0,"width":340,"height":308},"annotation":{"x":660,"y":125,"width":200,"height":58},"expected":{"pElem":{"x":610,"y":154},"pAnn":{"x":660,"y":154}}},{"element":{"x":320,"y":178,"width":100,"height":80},"annotation":{"x":270,"y":-131,"width":200,"height":101},"expected":{"pElem":{"x":370,"y":178},"pAnn":{"x":370,"y":-30}}},{"element":{"x":599.5,"y":315,"width":100,"height":80},"annotation":{"x":550,"y":235,"width":200,"height":30},"expected":{"pElem":{"x":650,"y":315},"pAnn":{"x":649.5,"y":265}}},{"element":{"x":599.5,"y":315,"width":100,"height":80},"annotation":{"x":350,"y":220,"width":200,"height":30},"expected":{"pElem":{"x":599.5,"y":315},"pAnn":{"x":550,"y":250}}},{"element":{"x":1027.5,"y":177,"width":440,"height":208},"annotation":{"x":1148,"y":97,"width":200,"height":30},"expected":{"pElem":{"x":1248,"y":177},"pAnn":{"x":1247.5,"y":127}}},{"element":{"x":1027.5,"y":177,"width":440,"height":208},"annotation":{"x":778,"y":186,"width":200,"height":30},"expected":{"pElem":{"x":1027.5,"y":201},"pAnn":{"x":978,"y":216}}},{"element":{"x":590,"y":0,"width":100,"height":80},"annotation":{"x":540,"y":-80,"width":200,"height":30},"expected":{"pElem":{"x":640,"y":0},"pAnn":{"x":640,"y":-50}}},{"element":{"x":590,"y":0,"width":100,"height":80},"annotation":{"x":340,"y":145,"width":200,"height":30},"expected":{"pElem":{"x":590,"y":80},"pAnn":{"x":540,"y":145}}},{"element":{"x":100,"y":100,"width":100,"height":80},"annotation":{"x":0,"y":0,"width":200,"height":30},"expected":{"pElem":{"x":100,"y":100},"pAnn":{"x":150,"y":30}}},{"element":{"x":100,"y":100,"width":100,"height":80},"annotation":{"x":120,"y":300,"width":200,"height":30},"expected":{"pElem":{"x":200,"y":180},"pAnn":{"x":150,"y":300}}},{"element":{"x":100,"y":100,"width":100,"height":80},"annotation":{"x":300,"y":90,"width":200,"height":50},"expected":{"pElem":{"x":200,"y":115},"pAnn":{"x":300,"y":140}}},{"element":{"x":100,"y":100,"width":100,"height":80},"annotation":{"x":-200,"y":90,"width":150,"height":50},"expected":{"pElem":{"x":100,"y":115},"pAnn":{"x":-50,"y":140}}},{"element":{"x":100,"y":100,"width":100,"height":80},"annotation":{"x":150,"y":150,"width":20,"height":20},"expected":{"pElem":{"x":100,"y":160},"pAnn":{"x":170,"y":150}}}]}
+{
+	"cases": [
+		{
+			"file": "artifacts",
+			"process": {
+				"id": "Process_artifacts",
+				"textAnnotations": [
+					{
+						"id": "TextAnnotation_sla",
+						"text": "Must complete within one business day.",
+						"unknownAttributes": {}
+					}
+				],
+				"associations": [
+					{
+						"id": "Association_sla",
+						"sourceRef": "Task_review",
+						"targetRef": "TextAnnotation_sla",
+						"associationDirection": "None",
+						"unknownAttributes": {}
+					}
+				]
+			},
+			"nodes": [
+				{ "id": "Start_art", "bounds": { "x": 0, "y": 22, "width": 36, "height": 36 } },
+				{ "id": "Task_review", "bounds": { "x": 96, "y": 0, "width": 100, "height": 80 } },
+				{ "id": "End_art", "bounds": { "x": 256, "y": 22, "width": 36, "height": 36 } }
+			],
+			"edges": [
+				{ "id": "Flow_a1", "waypoints": [{ "x": 36, "y": 40 }, { "x": 96, "y": 40 }] },
+				{ "id": "Flow_a2", "waypoints": [{ "x": 196, "y": 40 }, { "x": 256, "y": 40 }] }
+			],
+			"expected": { "TextAnnotation_sla": { "x": 46, "y": -93, "width": 200, "height": 43 } },
+			"sides": { "TextAnnotation_sla": "left" },
+			"expectedSides": { "TextAnnotation_sla": { "x": -154, "y": 99, "width": 200, "height": 43 } }
+		},
+		{
+			"file": "bakeoff-expected",
+			"process": {
+				"id": "ai-agent-chat-with-tools",
+				"textAnnotations": [
+					{
+						"id": "TextAnnotation_StartEvent_TaskReceived_1",
+						"text": "Triggered when a user submits a task for the AI agent to perform. The agent uses available tools to complete the task, and the process ends once the user confirms they are satisfied.",
+						"unknownAttributes": {}
+					},
+					{
+						"id": "TextAnnotation_AI_Agent_1",
+						"text": "This is your agent running certain tasks to reach the goal it was given",
+						"unknownAttributes": {}
+					},
+					{
+						"id": "TextAnnotation_FetchSafeJoke_1",
+						"text": "Each task you add represents a capability your agent will have. You can add new tasks and the agent will know what it's good for based on its documentation.",
+						"unknownAttributes": {}
+					}
+				],
+				"associations": [
+					{
+						"id": "Association_StartEvent_TaskReceived_1",
+						"sourceRef": "StartEvent_TaskReceived",
+						"targetRef": "TextAnnotation_StartEvent_TaskReceived_1",
+						"associationDirection": "None",
+						"unknownAttributes": {}
+					},
+					{
+						"id": "Association_AI_Agent_1",
+						"sourceRef": "AI_Agent",
+						"targetRef": "TextAnnotation_AI_Agent_1",
+						"associationDirection": "None",
+						"unknownAttributes": {}
+					},
+					{
+						"id": "Association_FetchSafeJoke_1",
+						"sourceRef": "FetchSafeJoke",
+						"targetRef": "TextAnnotation_FetchSafeJoke_1",
+						"associationDirection": "None",
+						"unknownAttributes": {}
+					}
+				]
+			},
+			"nodes": [
+				{
+					"id": "StartEvent_TaskReceived",
+					"bounds": { "x": 0, "y": 22, "width": 36, "height": 36 },
+					"labelBounds": { "x": -66, "y": 62, "width": 168, "height": 14 }
+				},
+				{ "id": "Gateway_RunAgent", "bounds": { "x": 120, "y": 15, "width": 50, "height": 50 } },
+				{ "id": "AI_Agent", "bounds": { "x": 270, "y": 0, "width": 340, "height": 308 } },
+				{
+					"id": "UserTask_ReviewAgentResponse",
+					"bounds": { "x": 710, "y": 0, "width": 100, "height": 80 }
+				},
+				{
+					"id": "Gateway_UserSatisfied",
+					"bounds": { "x": 870, "y": 15, "width": 50, "height": 50 },
+					"labelBounds": { "x": 842.5, "y": -3, "width": 105, "height": 14 }
+				},
+				{
+					"id": "EndEvent_UserSatisfied",
+					"bounds": { "x": 996.5, "y": 22, "width": 36, "height": 36 },
+					"labelBounds": { "x": 965.5, "y": 62, "width": 98, "height": 14 }
+				},
+				{ "id": "LookupSampleUsers", "bounds": { "x": 320, "y": 78, "width": 100, "height": 80 } },
+				{ "id": "SearchRecipes", "bounds": { "x": 460, "y": 78, "width": 100, "height": 80 } },
+				{ "id": "FetchSafeJoke", "bounds": { "x": 320, "y": 178, "width": 100, "height": 80 } },
+				{
+					"id": "ListSampleTechnologyProducts",
+					"bounds": { "x": 460, "y": 178, "width": 100, "height": 80 }
+				}
+			],
+			"edges": [
+				{
+					"id": "Flow_StartEvent_TaskReceived_Gateway_RunAgent",
+					"waypoints": [{ "x": 36, "y": 40 }, { "x": 120, "y": 40 }]
+				},
+				{
+					"id": "Flow_Gateway_RunAgent_AI_Agent",
+					"waypoints": [{ "x": 170, "y": 40 }, { "x": 270, "y": 40 }]
+				},
+				{
+					"id": "Flow_AI_Agent_UserTask_ReviewAgentResponse",
+					"waypoints": [{ "x": 610, "y": 40 }, { "x": 710, "y": 40 }]
+				},
+				{
+					"id": "Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied",
+					"waypoints": [{ "x": 810, "y": 40 }, { "x": 870, "y": 40 }]
+				},
+				{ "id": "Flow_Yes", "waypoints": [{ "x": 920, "y": 40 }, { "x": 996.5, "y": 40 }] },
+				{
+					"id": "Flow_No",
+					"waypoints": [
+						{ "x": 895, "y": 65 },
+						{ "x": 895, "y": 348 },
+						{ "x": 145, "y": 348 },
+						{ "x": 145, "y": 65 }
+					]
+				}
+			],
+			"expected": {
+				"TextAnnotation_StartEvent_TaskReceived_1": {
+					"x": -82,
+					"y": -143,
+					"width": 200,
+					"height": 115
+				},
+				"TextAnnotation_AI_Agent_1": { "x": 340, "y": -108, "width": 200, "height": 58 },
+				"TextAnnotation_FetchSafeJoke_1": { "x": 270, "y": 368, "width": 200, "height": 101 }
+			},
+			"sides": {
+				"TextAnnotation_StartEvent_TaskReceived_1": "left",
+				"TextAnnotation_AI_Agent_1": "right",
+				"TextAnnotation_FetchSafeJoke_1": "above"
+			},
+			"expectedSides": {
+				"TextAnnotation_StartEvent_TaskReceived_1": {
+					"x": -296,
+					"y": -17,
+					"width": 200,
+					"height": 115
+				},
+				"TextAnnotation_AI_Agent_1": { "x": 660, "y": 125, "width": 200, "height": 58 },
+				"TextAnnotation_FetchSafeJoke_1": { "x": 270, "y": -131, "width": 200, "height": 101 }
+			}
+		},
+		{
+			"file": "miwg-b-1-0",
+			"process": {
+				"id": "WFP-6-2",
+				"textAnnotations": [
+					{
+						"id": "_4815ea6a-ede2-489b-8b37-2cdb2835b02c",
+						"text": "Text Annotation",
+						"unknownAttributes": {}
+					}
+				],
+				"associations": [
+					{
+						"id": "_5362a7ef-ce7e-4a91-9c38-66c07b1b5f49",
+						"sourceRef": "_1237e756-d53c-4591-a731-dafffbf0b3f9",
+						"targetRef": "_4815ea6a-ede2-489b-8b37-2cdb2835b02c",
+						"associationDirection": "None",
+						"unknownAttributes": {}
+					}
+				]
+			},
+			"nodes": [
+				{ "id": "DF1373655174778", "bounds": { "x": 7, "y": 1003, "width": 36, "height": 50 } },
+				{
+					"id": "_2ee553a1-cb03-41e3-b285-345c826fc88d",
+					"bounds": { "x": 1559, "y": 337, "width": 36, "height": 36 },
+					"labelBounds": { "x": 1517.5, "y": 377, "width": 119, "height": 14 }
+				},
+				{
+					"id": "_fa3a8e53-5be0-4f0b-8680-d2498e255209",
+					"bounds": { "x": 599.5, "y": 455, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+					"bounds": { "x": 772.5, "y": 315, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_93021cd0-6f49-485d-966f-209744c748de",
+					"bounds": { "x": 1186.5, "y": 330, "width": 50, "height": 50 },
+					"labelBounds": { "x": 1103, "y": 384, "width": 217, "height": 14 }
+				},
+				{
+					"id": "_3c8c32c3-089a-4643-bf42-6c37c0dac7e0",
+					"bounds": { "x": 396.5, "y": 330, "width": 50, "height": 50 },
+					"labelBounds": { "x": 316.5, "y": 312, "width": 210, "height": 14 }
+				},
+				{
+					"id": "_a38484e2-7bdb-48b1-b62e-139d51d6a147",
+					"bounds": { "x": 7, "y": 47, "width": 36, "height": 36 },
+					"labelBounds": { "x": -41.5, "y": 87, "width": 133, "height": 14 }
+				},
+				{
+					"id": "_be29f267-9d56-46ef-8bbc-e13513b25fce",
+					"bounds": { "x": 179, "y": 40, "width": 50, "height": 50 },
+					"labelBounds": { "x": 109.5, "y": 22, "width": 189, "height": 14 }
+				},
+				{
+					"id": "_1237e756-d53c-4591-a731-dafffbf0b3f9",
+					"bounds": { "x": 599.5, "y": 315, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_1eb62392-1f21-4a63-bbcb-c78880c3165e",
+					"bounds": { "x": 772.5, "y": 693, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_7706e700-2aed-4b94-8070-961f118aab8f",
+					"bounds": { "x": 371.5, "y": 693, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_ad81e6ba-40f5-43c1-9602-47d2e58804c8",
+					"bounds": { "x": 624.5, "y": 708, "width": 50, "height": 50 },
+					"labelBounds": { "x": 544.5, "y": 690, "width": 210, "height": 14 }
+				},
+				{
+					"id": "_33f30031-2e29-46b6-b080-30a192a36b45",
+					"bounds": { "x": 1552, "y": 708, "width": 50, "height": 50 },
+					"labelBounds": { "x": 1468.5, "y": 690, "width": 217, "height": 14 }
+				},
+				{
+					"id": "_7e6ccf38-e740-4537-a439-a8e984d066de",
+					"bounds": { "x": 972.5, "y": 615, "width": 478, "height": 208 }
+				},
+				{
+					"id": "_fea1c5af-6c76-403f-809e-26d476d92741",
+					"bounds": { "x": 772.5, "y": 843, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_ae916437-d9aa-4e3d-a7c3-34998c410beb",
+					"bounds": { "x": 1752, "y": 715, "width": 36, "height": 36 },
+					"labelBounds": { "x": 1703.5, "y": 755, "width": 133, "height": 14 }
+				},
+				{
+					"id": "_3d35229f-2c75-4d5d-a066-2d14e46e442e",
+					"bounds": { "x": 7, "y": 1801, "width": 36, "height": 50 }
+				},
+				{
+					"id": "_b9385abf-d293-40b7-848b-8add4db48415",
+					"bounds": { "x": 0, "y": 1931, "width": 50, "height": 50 }
+				},
+				{
+					"id": "_1df01cbc-5d8c-444e-b1db-da3efdee254a",
+					"bounds": { "x": 1067.5, "y": 715, "width": 36, "height": 36 },
+					"labelBounds": { "x": 1022.5, "y": 755, "width": 126, "height": 14 }
+				},
+				{
+					"id": "_6936f794-7bbb-4aa1-ae48-3a35bab4e2f4",
+					"bounds": { "x": 1166.5, "y": 693, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_4f744697-3643-41a9-9d07-84c78e2df64b",
+					"bounds": { "x": 1326.5, "y": 715, "width": 36, "height": 36 },
+					"labelBounds": { "x": 1288.5, "y": 755, "width": 112, "height": 14 }
+				}
+			],
+			"edges": [
+				{
+					"id": "_a63c8cd6-eee8-4fbe-be5e-f6980b180b52",
+					"waypoints": [{ "x": 43, "y": 65 }, { "x": 179, "y": 65 }]
+				},
+				{
+					"id": "_ab34472d-95a4-459c-a13b-5ed8b8b75eca",
+					"waypoints": [{ "x": 204, "y": 90 }, { "x": 204, "y": 733 }, { "x": 371.5, "y": 733 }]
+				},
+				{
+					"id": "_8f68b889-83a4-44ad-9777-d39acdd5415e",
+					"waypoints": [{ "x": 1450.5, "y": 733 }, { "x": 1552, "y": 733 }]
+				},
+				{
+					"id": "_d30f7fb3-ec91-4a60-b73e-42419417f3be",
+					"waypoints": [
+						{ "x": 229, "y": 65 },
+						{ "x": 300.25, "y": 65 },
+						{ "x": 300.25, "y": 355 },
+						{ "x": 396.5, "y": 355 }
+					]
+				},
+				{
+					"id": "_10a16fd5-0d56-4fdb-8529-0a0610a573be",
+					"waypoints": [{ "x": 699.5, "y": 355 }, { "x": 772.5, "y": 355 }]
+				},
+				{
+					"id": "_d234800f-72d3-46cb-b603-30f1da7b1205",
+					"waypoints": [{ "x": 872.5, "y": 733 }, { "x": 972.5, "y": 733 }]
+				},
+				{
+					"id": "_61abe245-5604-46ba-8152-94d6e68ffda4",
+					"waypoints": [
+						{ "x": 699.5, "y": 495 },
+						{ "x": 922.5, "y": 495 },
+						{ "x": 922.5, "y": 355 },
+						{ "x": 1186.5, "y": 355 }
+					]
+				},
+				{
+					"id": "_00d30c39-29a7-4c36-86e3-bc6e893efb42",
+					"waypoints": [{ "x": 471.5, "y": 733 }, { "x": 624.5, "y": 733 }]
+				},
+				{
+					"id": "_6ee42e88-3d90-4259-83c0-9abd4574a15a",
+					"waypoints": [{ "x": 674.5, "y": 733 }, { "x": 772.5, "y": 733 }]
+				},
+				{
+					"id": "_6a248585-952e-40ff-82ec-b6d8f410b73a",
+					"waypoints": [
+						{ "x": 649.5, "y": 758 },
+						{ "x": 649.5, "y": 883 },
+						{ "x": 772.5, "y": 883 }
+					]
+				},
+				{
+					"id": "_f5c5d52a-204f-4f97-b872-817d63cf36ab",
+					"waypoints": [
+						{ "x": 822.5, "y": 315 },
+						{ "x": 822.5, "y": 275 },
+						{ "x": 1211.5, "y": 275 },
+						{ "x": 1211.5, "y": 330 }
+					]
+				},
+				{
+					"id": "_657f30ba-0690-4a14-8b8e-d8939efcc7bd",
+					"waypoints": [
+						{ "x": 822.5, "y": 923 },
+						{ "x": 822.5, "y": 963 },
+						{ "x": 1577, "y": 963 },
+						{ "x": 1577, "y": 758 }
+					]
+				},
+				{
+					"id": "_54f45351-aa18-4c65-b0d0-edc3aa0a140d",
+					"waypoints": [{ "x": 1602, "y": 733 }, { "x": 1752, "y": 733 }]
+				},
+				{
+					"id": "_9d489bd9-9435-4692-bc98-4cdda4a61569",
+					"waypoints": [{ "x": 446.5, "y": 355 }, { "x": 599.5, "y": 355 }]
+				},
+				{
+					"id": "_eeb6812d-d182-489f-aea2-493ab8732cfd",
+					"waypoints": [
+						{ "x": 421.5, "y": 380 },
+						{ "x": 421.5, "y": 495 },
+						{ "x": 599.5, "y": 495 }
+					]
+				},
+				{
+					"id": "_994697ca-8927-4c84-a9a6-8682f8dee032",
+					"waypoints": [{ "x": 1236.5, "y": 355 }, { "x": 1559, "y": 355 }]
+				},
+				{
+					"id": "_2d1047ce-fdd5-4cb6-9f0c-0ee8d6d3044a",
+					"waypoints": [{ "x": 1103.5, "y": 733 }, { "x": 1166.5, "y": 733 }]
+				},
+				{
+					"id": "_062ae395-4aba-408b-ac64-4987752be95b",
+					"waypoints": [{ "x": 1266.5, "y": 733 }, { "x": 1326.5, "y": 733 }]
+				}
+			],
+			"expected": {
+				"_4815ea6a-ede2-489b-8b37-2cdb2835b02c": { "x": 550, "y": 235, "width": 200, "height": 30 }
+			},
+			"sides": { "_4815ea6a-ede2-489b-8b37-2cdb2835b02c": "left" },
+			"expectedSides": {
+				"_4815ea6a-ede2-489b-8b37-2cdb2835b02c": { "x": 350, "y": 220, "width": 200, "height": 30 }
+			}
+		},
+		{
+			"file": "miwg-b-2-0",
+			"process": {
+				"id": "WFP-6-1",
+				"textAnnotations": [
+					{
+						"id": "_4815ea6a-ede2-489b-8b37-2cdb2835b02c",
+						"text": "Annotation",
+						"unknownAttributes": {}
+					}
+				],
+				"associations": [
+					{
+						"id": "_5362a7ef-ce7e-4a91-9c38-66c07b1b5f49",
+						"sourceRef": "_303e68ec-dbb3-4d90-8a96-26e0be44f5f3",
+						"targetRef": "_4815ea6a-ede2-489b-8b37-2cdb2835b02c",
+						"associationDirection": "None",
+						"unknownAttributes": {}
+					}
+				]
+			},
+			"nodes": [
+				{ "id": "DF1373638080458", "bounds": { "x": 0, "y": 0, "width": 36, "height": 50 } },
+				{
+					"id": "_c9870992-6643-4094-acfd-d76e5e37941b",
+					"bounds": { "x": 1567.5, "y": 255, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_708d55c8-684a-4e3b-a69d-69c620cd0ac0",
+					"bounds": { "x": 1599.5, "y": 237, "width": 36, "height": 36 }
+				},
+				{
+					"id": "_2a08c361-be51-437e-a86d-c62798c14e83",
+					"bounds": { "x": 1727.5, "y": 423, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_732c0641-b12f-448b-b9f8-a68b355782e3",
+					"bounds": { "x": 1759.5, "y": 485, "width": 36, "height": 36 },
+					"labelBounds": { "x": 1381.5, "y": 525, "width": 392, "height": 14 }
+				},
+				{
+					"id": "_8f41085a-3302-4cfc-9231-23bb4b43c7a1",
+					"bounds": { "x": 1727.5, "y": 130, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_4e71bf73-1719-401e-a9a2-85dc89fc1150",
+					"bounds": { "x": 0, "y": 277, "width": 36, "height": 36 },
+					"labelBounds": { "x": -48.5, "y": 317, "width": 133, "height": 14 }
+				},
+				{
+					"id": "_5cc02d0f-c090-4e48-8da3-f32cbbca9565",
+					"bounds": { "x": 2308, "y": 152, "width": 36, "height": 36 },
+					"labelBounds": { "x": 2263, "y": 192, "width": 126, "height": 14 }
+				},
+				{
+					"id": "_b67ba682-c8d6-465b-b538-c287db18d1be",
+					"bounds": { "x": 2308, "y": 277, "width": 36, "height": 36 },
+					"labelBounds": { "x": 2259.5, "y": 317, "width": 133, "height": 14 }
+				},
+				{
+					"id": "_0e87da16-736e-45b2-95e5-8f45940f3adf",
+					"bounds": { "x": 422.5, "y": 255, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_ac1fde31-c0cd-4a8a-9728-a5fb49602de7",
+					"bounds": { "x": 827.5, "y": 423, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_dec393e7-f182-4d31-b05f-e33ac3a5e35f",
+					"bounds": { "x": 582.5, "y": 270, "width": 50, "height": 50 },
+					"labelBounds": { "x": 541, "y": 252, "width": 133, "height": 14 }
+				},
+				{
+					"id": "_397c783e-ad6a-4cf3-8266-9b41962c83bd",
+					"bounds": { "x": 2153.5, "y": 270, "width": 50, "height": 50 },
+					"labelBounds": { "x": 2115.5, "y": 252, "width": 126, "height": 14 }
+				},
+				{
+					"id": "_c9cb2415-6a2e-49d6-84b9-27babcde4088",
+					"bounds": { "x": 1953.5, "y": 152, "width": 36, "height": 36 },
+					"labelBounds": { "x": 1845.5, "y": 192, "width": 252, "height": 14 }
+				},
+				{
+					"id": "_a01498ae-086c-4adc-9229-ec3135bc2bcf",
+					"bounds": { "x": 2128.5, "y": 130, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_76ee26df-2c95-495b-9d9a-cb806aea6baf",
+					"bounds": { "x": 262.5, "y": 255, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_149a6e1d-0385-4d0f-a90c-c2150a291a67",
+					"bounds": { "x": 1567.5, "y": 423, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_303e68ec-dbb3-4d90-8a96-26e0be44f5f3",
+					"bounds": { "x": 1027.5, "y": 177, "width": 440, "height": 208 }
+				},
+				{
+					"id": "_0326fdf5-7c71-41d9-838c-ab141a1b1ed0",
+					"bounds": { "x": 1229.5, "y": 445, "width": 36, "height": 36 },
+					"labelBounds": { "x": 1132, "y": 485, "width": 231, "height": 14 }
+				},
+				{
+					"id": "_a74c1d4d-db90-43ff-8920-139a300b39a5",
+					"bounds": { "x": 827.5, "y": 255, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_f3698a93-fe0b-4f49-bfa6-68d055936af3",
+					"bounds": { "x": 1921.5, "y": 423, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_d84e5824-7bb7-4057-9dba-6c8794f7948c",
+					"bounds": { "x": 102.5, "y": 255, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_aa8c769a-276c-4589-b182-7c7bbd0a9e1e",
+					"bounds": { "x": 0, "y": 619, "width": 36, "height": 50 }
+				},
+				{
+					"id": "_ef372c4d-6c65-4ad2-bc22-5c25e5d0870e",
+					"bounds": { "x": 1105, "y": 277, "width": 36, "height": 36 },
+					"labelBounds": { "x": 1077.5, "y": 317, "width": 91, "height": 14 }
+				},
+				{
+					"id": "_b9343536-6490-4559-8365-71d5c4cbb7cb",
+					"bounds": { "x": 1201, "y": 255, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_a9b9c08d-377a-49a8-a869-f82308702018",
+					"bounds": { "x": 1361, "y": 277, "width": 36, "height": 36 },
+					"labelBounds": { "x": 1340.5, "y": 317, "width": 77, "height": 14 }
+				}
+			],
+			"edges": [
+				{
+					"id": "_2c124731-3338-46e0-81b5-b435f34941c8",
+					"waypoints": [{ "x": 36, "y": 295 }, { "x": 102.5, "y": 295 }]
+				},
+				{
+					"id": "_19a7094a-7bdf-4819-af86-be22d2cfdc49",
+					"waypoints": [{ "x": 202.5, "y": 295 }, { "x": 262.5, "y": 295 }]
+				},
+				{
+					"id": "_e1f948a6-db76-4c35-ba36-e430eecb63a4",
+					"waypoints": [{ "x": 362.5, "y": 295 }, { "x": 422.5, "y": 295 }]
+				},
+				{
+					"id": "_dbae7e12-67c2-4256-8c50-5811c207ba55",
+					"waypoints": [{ "x": 1667.5, "y": 463 }, { "x": 1727.5, "y": 463 }]
+				},
+				{
+					"id": "_4474c77a-01bb-435e-929a-7eb71bd824a8",
+					"waypoints": [{ "x": 522.5, "y": 295 }, { "x": 582.5, "y": 295 }]
+				},
+				{
+					"id": "_a9966baf-d9b9-4be1-a4d9-2906ab5add30",
+					"waypoints": [
+						{ "x": 607.5, "y": 320 },
+						{ "x": 607.5, "y": 463 },
+						{ "x": 827.5, "y": 463 }
+					]
+				},
+				{
+					"id": "_be19c2da-316a-47f6-ad7b-eb6c82bf8609",
+					"waypoints": [{ "x": 632.5, "y": 295 }, { "x": 827.5, "y": 295 }]
+				},
+				{
+					"id": "_b8694c28-408b-4394-b476-41e2a5bcfd94",
+					"waypoints": [{ "x": 927.5, "y": 463 }, { "x": 1229.5, "y": 463 }]
+				},
+				{
+					"id": "_ce63770e-9f4b-4bc0-a56c-88401c59f0bf",
+					"waypoints": [{ "x": 927.5, "y": 295 }, { "x": 1027.5, "y": 295 }]
+				},
+				{
+					"id": "_e0fbb051-0e07-43cc-a8bf-158492541c0f",
+					"waypoints": [{ "x": 1265.5, "y": 463 }, { "x": 1567.5, "y": 463 }]
+				},
+				{
+					"id": "_2752e07c-f2e4-4384-8721-70e4abea9765",
+					"waypoints": [{ "x": 2203.5, "y": 295 }, { "x": 2308, "y": 295 }]
+				},
+				{
+					"id": "_e6537f9d-e5ea-4abc-a6e8-add13a11b536",
+					"waypoints": [{ "x": 1467.5, "y": 295 }, { "x": 1567.5, "y": 295 }]
+				},
+				{
+					"id": "_da47ac6a-4ea1-4bf6-ad3e-8cc60c0ea8a9",
+					"waypoints": [
+						{ "x": 1617.5, "y": 237 },
+						{ "x": 1617.5, "y": 170 },
+						{ "x": 1727.5, "y": 170 }
+					]
+				},
+				{
+					"id": "_8321494b-9c3c-483a-b4d2-79e6254211c0",
+					"waypoints": [{ "x": 1667.5, "y": 295 }, { "x": 2153.5, "y": 295 }]
+				},
+				{
+					"id": "_54574511-c29e-4157-bb8f-8b26f15faaf5",
+					"waypoints": [
+						{ "x": 1777.5, "y": 521 },
+						{ "x": 1777.5, "y": 541 },
+						{ "x": 1874.5, "y": 541 },
+						{ "x": 1874.5, "y": 463 },
+						{ "x": 1921.5, "y": 463 }
+					]
+				},
+				{
+					"id": "_b41b9c86-bc41-4b6e-ac32-70e1342e6128",
+					"waypoints": [
+						{ "x": 1777.5, "y": 423 },
+						{ "x": 1777.5, "y": 371.5 },
+						{ "x": 2178.5, "y": 371.5 },
+						{ "x": 2178.5, "y": 320 }
+					]
+				},
+				{
+					"id": "_de249cbe-d431-4e1f-bc8c-a90aec438683",
+					"waypoints": [
+						{ "x": 1971.5, "y": 423 },
+						{ "x": 1971.5, "y": 295 },
+						{ "x": 2153.5, "y": 295 }
+					]
+				},
+				{
+					"id": "_5f52bb2a-c49d-43ae-9253-7b89a8251b2b",
+					"waypoints": [{ "x": 1827.5, "y": 170 }, { "x": 1953.5, "y": 170 }]
+				},
+				{
+					"id": "_875031ae-f87c-45a3-ae60-ba0cb0ce0bc1",
+					"waypoints": [{ "x": 2228.5, "y": 170 }, { "x": 2308, "y": 170 }]
+				},
+				{
+					"id": "_e503a157-f034-4a8a-ae12-aa524a8ebeee",
+					"waypoints": [{ "x": 1989.5, "y": 170 }, { "x": 2128.5, "y": 170 }]
+				},
+				{
+					"id": "_c68194b4-3618-4655-b128-7eec67483c84",
+					"waypoints": [{ "x": 1141, "y": 295 }, { "x": 1201, "y": 295 }]
+				},
+				{
+					"id": "_87ffa0fa-1a2d-4149-bbe9-04e20bc1014b",
+					"waypoints": [{ "x": 1301, "y": 295 }, { "x": 1361, "y": 295 }]
+				}
+			],
+			"expected": {
+				"_4815ea6a-ede2-489b-8b37-2cdb2835b02c": { "x": 1148, "y": 97, "width": 200, "height": 30 }
+			},
+			"sides": { "_4815ea6a-ede2-489b-8b37-2cdb2835b02c": "left" },
+			"expectedSides": {
+				"_4815ea6a-ede2-489b-8b37-2cdb2835b02c": { "x": 778, "y": 186, "width": 200, "height": 30 }
+			}
+		},
+		{
+			"file": "miwg-c-4-0",
+			"process": {
+				"id": "_f0035388-f829-470c-b82b-0b15c3da3399",
+				"textAnnotations": [
+					{
+						"id": "_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e",
+						"text": "With PowerShell",
+						"unknownAttributes": {}
+					}
+				],
+				"associations": [
+					{
+						"id": "_fa0de585-aa40-40bb-a3a5-965d956e884d",
+						"sourceRef": "_9db2d136-aa33-4de2-be76-554e7843363d",
+						"targetRef": "_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e",
+						"associationDirection": "None",
+						"unknownAttributes": {}
+					}
+				]
+			},
+			"nodes": [
+				{
+					"id": "_e9306b3f-3a77-42e1-b53e-2ed8ee45486d",
+					"bounds": { "x": 7, "y": 22, "width": 36, "height": 36 },
+					"labelBounds": { "x": -41.5, "y": 62, "width": 133, "height": 14 }
+				},
+				{
+					"id": "_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c",
+					"bounds": { "x": 110, "y": 0, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_c29af228-0768-4dfe-945a-17755e173674",
+					"bounds": { "x": 270, "y": 0, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_912f731a-fb6b-499b-a3f4-4c1632d606bd",
+					"bounds": { "x": 430, "y": 0, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_9db2d136-aa33-4de2-be76-554e7843363d",
+					"bounds": { "x": 590, "y": 0, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_ad173aff-cfe3-4098-8c65-02f783ad9e1f",
+					"bounds": { "x": 750, "y": 0, "width": 100, "height": 80 }
+				},
+				{
+					"id": "_c82dd8eb-ce54-4aa7-b8c4-b8d3e8fd654e",
+					"bounds": { "x": 965.5, "y": 22, "width": 36, "height": 36 },
+					"labelBounds": { "x": 868, "y": 62, "width": 231, "height": 14 }
+				},
+				{
+					"id": "_e355b511-e181-4e7b-a9b1-30cb48dd6cab",
+					"bounds": { "x": 0, "y": 160, "width": 50, "height": 50 }
+				},
+				{
+					"id": "_b60be020-1f04-46c2-b1a9-19bfc66ead82",
+					"bounds": { "x": 0, "y": 290, "width": 50, "height": 50 }
+				}
+			],
+			"edges": [
+				{
+					"id": "_495f04a4-ed17-4e7b-a952-11c06c2230d1",
+					"waypoints": [{ "x": 43, "y": 40 }, { "x": 110, "y": 40 }]
+				},
+				{
+					"id": "_0bccc7f6-0f56-49bc-98df-59d70433c043",
+					"waypoints": [{ "x": 210, "y": 40 }, { "x": 270, "y": 40 }]
+				},
+				{
+					"id": "_dcec1142-90eb-41a8-b809-458b713ab94c",
+					"waypoints": [{ "x": 370, "y": 40 }, { "x": 430, "y": 40 }]
+				},
+				{
+					"id": "_be72815e-ed18-4d77-9252-1ab0a7438dc9",
+					"waypoints": [{ "x": 530, "y": 40 }, { "x": 590, "y": 40 }]
+				},
+				{
+					"id": "_ba635734-5672-4f1b-b753-3b08c778c64e",
+					"waypoints": [{ "x": 690, "y": 40 }, { "x": 750, "y": 40 }]
+				},
+				{
+					"id": "_c904a36b-64f6-46e3-8ef1-9f2ecc3faaff",
+					"waypoints": [{ "x": 850, "y": 40 }, { "x": 965.5, "y": 40 }]
+				}
+			],
+			"expected": {
+				"_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e": { "x": 540, "y": -80, "width": 200, "height": 30 }
+			},
+			"sides": { "_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e": "left" },
+			"expectedSides": {
+				"_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e": { "x": 340, "y": 145, "width": 200, "height": 30 }
+			}
+		},
+		{
+			"file": "synthetic-0",
+			"process": {
+				"id": "synth",
+				"textAnnotations": [
+					{ "id": "A0", "text": "Short" },
+					{
+						"id": "A1",
+						"text": "A much longer annotation text that wraps across several lines in the box width of two hundred px"
+					},
+					{ "id": "A2", "text": "line1\r\nline2\n\nline4 with nbsp and﻿bom words" },
+					{
+						"id": "A3",
+						"text": "Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious end"
+					},
+					{ "id": "A4", "text": "   \t " },
+					{ "id": "A5" },
+					{ "id": "A6", "text": "lone\rcr andnel  em space ᠎ mongolian" },
+					{
+						"id": "A7",
+						"text": "emoji 😀😀😀 words words words words words words words words words words"
+					},
+					{ "id": "A8", "text": "orphan one" },
+					{
+						"id": "A9",
+						"text": "orphan two with a rather long text that needs wrapping over a few lines of the fixed width box"
+					}
+				],
+				"associations": [
+					{ "id": "As0", "sourceRef": "T0", "targetRef": "A0" },
+					{ "id": "As1", "sourceRef": "A1", "targetRef": "T1" },
+					{ "id": "As2", "sourceRef": "T1", "targetRef": "A2" },
+					{ "id": "As3", "sourceRef": "A3", "targetRef": "T2" },
+					{ "id": "As4", "sourceRef": "T2", "targetRef": "A4" },
+					{ "id": "As5", "sourceRef": "A5", "targetRef": "T3" },
+					{ "id": "As6", "sourceRef": "T4", "targetRef": "A6" },
+					{ "id": "As7", "sourceRef": "A7", "targetRef": "T5" },
+					{ "id": "AsX", "sourceRef": "A8", "targetRef": "GHOST" }
+				]
+			},
+			"nodes": [
+				{ "id": "T0", "bounds": { "x": 100, "y": 100, "width": 100, "height": 80 } },
+				{ "id": "T1", "bounds": { "x": 250, "y": 100, "width": 100, "height": 80 } },
+				{
+					"id": "T2",
+					"bounds": { "x": 400, "y": 100, "width": 100, "height": 80 },
+					"labelBounds": { "x": 395, "y": 185, "width": 110, "height": 14 }
+				},
+				{ "id": "T3", "bounds": { "x": 550, "y": 100, "width": 100, "height": 80 } },
+				{ "id": "T4", "bounds": { "x": 250, "y": 300, "width": 100, "height": 80 } },
+				{ "id": "T5", "bounds": { "x": 400, "y": 300, "width": 100, "height": 80 } }
+			],
+			"edges": [
+				{ "id": "f0", "waypoints": [{ "x": 200, "y": 140 }, { "x": 250, "y": 140 }] },
+				{
+					"id": "f1",
+					"waypoints": [
+						{ "x": 350, "y": 140 },
+						{ "x": 375, "y": 140 },
+						{ "x": 375, "y": 340 },
+						{ "x": 400, "y": 340 }
+					]
+				},
+				{ "id": "f2", "waypoints": [{ "x": 500, "y": 140 }, { "x": 550, "y": 160 }] }
+			],
+			"expected": {
+				"A0": { "x": 50, "y": 20, "width": 200, "height": 30 },
+				"A1": { "x": 200, "y": -72, "width": 200, "height": 72 },
+				"A2": { "x": 200, "y": -178, "width": 200, "height": 86 },
+				"A3": { "x": 470, "y": -22, "width": 200, "height": 72 },
+				"A4": { "x": 470, "y": -72, "width": 200, "height": 30 },
+				"A5": { "x": 500, "y": -122, "width": 200, "height": 30 },
+				"A6": { "x": 200, "y": 430, "width": 200, "height": 43 },
+				"A7": { "x": 350, "y": 493, "width": 200, "height": 58 },
+				"A8": { "x": 0, "y": 250, "width": 200, "height": 30 },
+				"A9": { "x": 0, "y": 552, "width": 200, "height": 72 }
+			},
+			"sides": {},
+			"expectedSides": {
+				"A0": { "x": 50, "y": 20, "width": 200, "height": 30 },
+				"A1": { "x": 200, "y": -72, "width": 200, "height": 72 },
+				"A2": { "x": 200, "y": -178, "width": 200, "height": 86 },
+				"A3": { "x": 470, "y": -22, "width": 200, "height": 72 },
+				"A4": { "x": 470, "y": -72, "width": 200, "height": 30 },
+				"A5": { "x": 500, "y": -122, "width": 200, "height": 30 },
+				"A6": { "x": 200, "y": 430, "width": 200, "height": 43 },
+				"A7": { "x": 350, "y": 493, "width": 200, "height": 58 },
+				"A8": { "x": 0, "y": 250, "width": 200, "height": 30 },
+				"A9": { "x": 0, "y": 552, "width": 200, "height": 72 }
+			}
+		},
+		{
+			"file": "synthetic-1",
+			"process": {
+				"id": "synth",
+				"textAnnotations": [
+					{ "id": "A0", "text": "Short" },
+					{
+						"id": "A1",
+						"text": "A much longer annotation text that wraps across several lines in the box width of two hundred px"
+					},
+					{ "id": "A2", "text": "line1\r\nline2\n\nline4 with nbsp and﻿bom words" },
+					{
+						"id": "A3",
+						"text": "Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious end"
+					},
+					{ "id": "A4", "text": "   \t " },
+					{ "id": "A5" },
+					{ "id": "A6", "text": "lone\rcr andnel  em space ᠎ mongolian" },
+					{
+						"id": "A7",
+						"text": "emoji 😀😀😀 words words words words words words words words words words"
+					},
+					{ "id": "A8", "text": "orphan one" },
+					{
+						"id": "A9",
+						"text": "orphan two with a rather long text that needs wrapping over a few lines of the fixed width box"
+					}
+				],
+				"associations": [
+					{ "id": "As0", "sourceRef": "T0", "targetRef": "A0" },
+					{ "id": "As1", "sourceRef": "A1", "targetRef": "T1" },
+					{ "id": "As2", "sourceRef": "T1", "targetRef": "A2" },
+					{ "id": "As3", "sourceRef": "A3", "targetRef": "T2" },
+					{ "id": "As4", "sourceRef": "T2", "targetRef": "A4" },
+					{ "id": "As5", "sourceRef": "A5", "targetRef": "T3" },
+					{ "id": "As6", "sourceRef": "T4", "targetRef": "A6" },
+					{ "id": "As7", "sourceRef": "A7", "targetRef": "T5" },
+					{ "id": "AsX", "sourceRef": "A8", "targetRef": "GHOST" }
+				]
+			},
+			"nodes": [
+				{ "id": "T0", "bounds": { "x": 100, "y": 100, "width": 100, "height": 80 } },
+				{ "id": "T1", "bounds": { "x": 250, "y": 100, "width": 100, "height": 80 } },
+				{
+					"id": "T2",
+					"bounds": { "x": 400, "y": 100, "width": 100, "height": 80 },
+					"labelBounds": { "x": 395, "y": 185, "width": 110, "height": 14 }
+				},
+				{ "id": "T3", "bounds": { "x": 550, "y": 100, "width": 100, "height": 80 } },
+				{ "id": "T4", "bounds": { "x": 250, "y": 300, "width": 100, "height": 80 } },
+				{ "id": "T5", "bounds": { "x": 400, "y": 300, "width": 100, "height": 80 } }
+			],
+			"edges": [
+				{ "id": "f0", "waypoints": [{ "x": 200, "y": 140 }, { "x": 250, "y": 140 }] },
+				{
+					"id": "f1",
+					"waypoints": [
+						{ "x": 350, "y": 140 },
+						{ "x": 375, "y": 140 },
+						{ "x": 375, "y": 340 },
+						{ "x": 400, "y": 340 }
+					]
+				},
+				{ "id": "f2", "waypoints": [{ "x": 500, "y": 140 }, { "x": 550, "y": 160 }] }
+			],
+			"expected": {
+				"A0": { "x": 50, "y": 20, "width": 200, "height": 30 },
+				"A1": { "x": 200, "y": -72, "width": 200, "height": 72 },
+				"A2": { "x": 200, "y": -178, "width": 200, "height": 86 },
+				"A3": { "x": 470, "y": -22, "width": 200, "height": 72 },
+				"A4": { "x": 470, "y": -72, "width": 200, "height": 30 },
+				"A5": { "x": 500, "y": -122, "width": 200, "height": 30 },
+				"A6": { "x": 200, "y": 430, "width": 200, "height": 43 },
+				"A7": { "x": 350, "y": 493, "width": 200, "height": 58 },
+				"A8": { "x": 0, "y": 250, "width": 200, "height": 30 },
+				"A9": { "x": 0, "y": 552, "width": 200, "height": 72 }
+			},
+			"sides": {
+				"A0": "right",
+				"A1": "above",
+				"A2": "below",
+				"A3": "left",
+				"A4": "right",
+				"A5": "above",
+				"A6": "below",
+				"A7": "left",
+				"A8": "right",
+				"A9": "above"
+			},
+			"expectedSides": {
+				"A0": { "x": 250, "y": -75, "width": 200, "height": 30 },
+				"A1": { "x": 200, "y": -22, "width": 200, "height": 72 },
+				"A2": { "x": 20, "y": 230, "width": 200, "height": 86 },
+				"A3": { "x": -20, "y": -16, "width": 200, "height": 72 },
+				"A4": { "x": 680, "y": 205, "width": 200, "height": 30 },
+				"A5": { "x": 500, "y": 20, "width": 200, "height": 30 },
+				"A6": { "x": 200, "y": 430, "width": 200, "height": 43 },
+				"A7": { "x": -20, "y": 391, "width": 200, "height": 58 },
+				"A8": { "x": 0, "y": 500, "width": 200, "height": 30 },
+				"A9": { "x": 0, "y": 552, "width": 200, "height": 72 }
+			}
+		},
+		{
+			"file": "synthetic-2",
+			"process": {
+				"id": "synth",
+				"textAnnotations": [
+					{ "id": "A0", "text": "Short" },
+					{
+						"id": "A1",
+						"text": "A much longer annotation text that wraps across several lines in the box width of two hundred px"
+					},
+					{ "id": "A2", "text": "line1\r\nline2\n\nline4 with nbsp and﻿bom words" },
+					{
+						"id": "A3",
+						"text": "Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious end"
+					},
+					{ "id": "A4", "text": "   \t " },
+					{ "id": "A5" },
+					{ "id": "A6", "text": "lone\rcr andnel  em space ᠎ mongolian" },
+					{
+						"id": "A7",
+						"text": "emoji 😀😀😀 words words words words words words words words words words"
+					},
+					{ "id": "A8", "text": "orphan one" },
+					{
+						"id": "A9",
+						"text": "orphan two with a rather long text that needs wrapping over a few lines of the fixed width box"
+					}
+				],
+				"associations": [
+					{ "id": "As0", "sourceRef": "T0", "targetRef": "A0" },
+					{ "id": "As1", "sourceRef": "A1", "targetRef": "T1" },
+					{ "id": "As2", "sourceRef": "T1", "targetRef": "A2" },
+					{ "id": "As3", "sourceRef": "A3", "targetRef": "T2" },
+					{ "id": "As4", "sourceRef": "T2", "targetRef": "A4" },
+					{ "id": "As5", "sourceRef": "A5", "targetRef": "T3" },
+					{ "id": "As6", "sourceRef": "T4", "targetRef": "A6" },
+					{ "id": "As7", "sourceRef": "A7", "targetRef": "T5" },
+					{ "id": "AsX", "sourceRef": "A8", "targetRef": "GHOST" }
+				]
+			},
+			"nodes": [
+				{ "id": "T0", "bounds": { "x": 100, "y": 100, "width": 100, "height": 80 } },
+				{ "id": "T1", "bounds": { "x": 250, "y": 100, "width": 100, "height": 80 } },
+				{
+					"id": "T2",
+					"bounds": { "x": 400, "y": 100, "width": 100, "height": 80 },
+					"labelBounds": { "x": 395, "y": 185, "width": 110, "height": 14 }
+				},
+				{ "id": "T3", "bounds": { "x": 550, "y": 100, "width": 100, "height": 80 } },
+				{ "id": "T4", "bounds": { "x": 250, "y": 300, "width": 100, "height": 80 } },
+				{ "id": "T5", "bounds": { "x": 400, "y": 300, "width": 100, "height": 80 } }
+			],
+			"edges": [
+				{ "id": "f0", "waypoints": [{ "x": 200, "y": 140 }, { "x": 250, "y": 140 }] },
+				{
+					"id": "f1",
+					"waypoints": [
+						{ "x": 350, "y": 140 },
+						{ "x": 375, "y": 140 },
+						{ "x": 375, "y": 340 },
+						{ "x": 400, "y": 340 }
+					]
+				},
+				{ "id": "f2", "waypoints": [{ "x": 500, "y": 140 }, { "x": 550, "y": 160 }] }
+			],
+			"expected": {
+				"A0": { "x": 50, "y": 20, "width": 200, "height": 30 },
+				"A1": { "x": 200, "y": -72, "width": 200, "height": 72 },
+				"A2": { "x": 200, "y": -178, "width": 200, "height": 86 },
+				"A3": { "x": 470, "y": -22, "width": 200, "height": 72 },
+				"A4": { "x": 470, "y": -72, "width": 200, "height": 30 },
+				"A5": { "x": 500, "y": -122, "width": 200, "height": 30 },
+				"A6": { "x": 200, "y": 430, "width": 200, "height": 43 },
+				"A7": { "x": 350, "y": 493, "width": 200, "height": 58 },
+				"A8": { "x": 0, "y": 250, "width": 200, "height": 30 },
+				"A9": { "x": 0, "y": 552, "width": 200, "height": 72 }
+			},
+			"sides": {
+				"A0": "right",
+				"A1": "right",
+				"A2": "right",
+				"A3": "right",
+				"A4": "right",
+				"A5": "right",
+				"A6": "right",
+				"A7": "right",
+				"A8": "right",
+				"A9": "right"
+			},
+			"expectedSides": {
+				"A0": { "x": 250, "y": 5, "width": 200, "height": 30 },
+				"A1": { "x": 470, "y": -16, "width": 200, "height": 72 },
+				"A2": { "x": 690, "y": -23, "width": 200, "height": 86 },
+				"A3": { "x": 550, "y": 224, "width": 200, "height": 72 },
+				"A4": { "x": 550, "y": -75, "width": 200, "height": 30 },
+				"A5": { "x": 700, "y": 125, "width": 200, "height": 30 },
+				"A6": { "x": 400, "y": 439, "width": 200, "height": 43 },
+				"A7": { "x": 550, "y": 351, "width": 200, "height": 58 },
+				"A8": { "x": 0, "y": 0, "width": 200, "height": 30 },
+				"A9": { "x": 0, "y": 276, "width": 200, "height": 72 }
+			}
+		},
+		{
+			"file": "synthetic-3",
+			"process": {
+				"id": "synth",
+				"textAnnotations": [
+					{ "id": "A0", "text": "Short" },
+					{
+						"id": "A1",
+						"text": "A much longer annotation text that wraps across several lines in the box width of two hundred px"
+					},
+					{ "id": "A2", "text": "line1\r\nline2\n\nline4 with nbsp and﻿bom words" },
+					{
+						"id": "A3",
+						"text": "Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious_Supercalifragilisticexpialidocious end"
+					},
+					{ "id": "A4", "text": "   \t " },
+					{ "id": "A5" },
+					{ "id": "A6", "text": "lone\rcr andnel  em space ᠎ mongolian" },
+					{
+						"id": "A7",
+						"text": "emoji 😀😀😀 words words words words words words words words words words"
+					},
+					{ "id": "A8", "text": "orphan one" },
+					{
+						"id": "A9",
+						"text": "orphan two with a rather long text that needs wrapping over a few lines of the fixed width box"
+					}
+				],
+				"associations": [
+					{ "id": "As0", "sourceRef": "T0", "targetRef": "A0" },
+					{ "id": "As1", "sourceRef": "A1", "targetRef": "T1" },
+					{ "id": "As2", "sourceRef": "T1", "targetRef": "A2" },
+					{ "id": "As3", "sourceRef": "A3", "targetRef": "T2" },
+					{ "id": "As4", "sourceRef": "T2", "targetRef": "A4" },
+					{ "id": "As5", "sourceRef": "A5", "targetRef": "T3" },
+					{ "id": "As6", "sourceRef": "T4", "targetRef": "A6" },
+					{ "id": "As7", "sourceRef": "A7", "targetRef": "T5" },
+					{ "id": "AsX", "sourceRef": "A8", "targetRef": "GHOST" }
+				]
+			},
+			"nodes": [
+				{ "id": "T0", "bounds": { "x": 100, "y": 100, "width": 100, "height": 80 } },
+				{ "id": "T1", "bounds": { "x": 250, "y": 100, "width": 100, "height": 80 } },
+				{
+					"id": "T2",
+					"bounds": { "x": 400, "y": 100, "width": 100, "height": 80 },
+					"labelBounds": { "x": 395, "y": 185, "width": 110, "height": 14 }
+				},
+				{ "id": "T3", "bounds": { "x": 550, "y": 100, "width": 100, "height": 80 } },
+				{ "id": "T4", "bounds": { "x": 250, "y": 300, "width": 100, "height": 80 } },
+				{ "id": "T5", "bounds": { "x": 400, "y": 300, "width": 100, "height": 80 } }
+			],
+			"edges": [
+				{ "id": "f0", "waypoints": [{ "x": 200, "y": 140 }, { "x": 250, "y": 140 }] },
+				{
+					"id": "f1",
+					"waypoints": [
+						{ "x": 350, "y": 140 },
+						{ "x": 375, "y": 140 },
+						{ "x": 375, "y": 340 },
+						{ "x": 400, "y": 340 }
+					]
+				},
+				{ "id": "f2", "waypoints": [{ "x": 500, "y": 140 }, { "x": 550, "y": 160 }] }
+			],
+			"expected": {
+				"A0": { "x": 50, "y": 20, "width": 200, "height": 30 },
+				"A1": { "x": 200, "y": -72, "width": 200, "height": 72 },
+				"A2": { "x": 200, "y": -178, "width": 200, "height": 86 },
+				"A3": { "x": 470, "y": -22, "width": 200, "height": 72 },
+				"A4": { "x": 470, "y": -72, "width": 200, "height": 30 },
+				"A5": { "x": 500, "y": -122, "width": 200, "height": 30 },
+				"A6": { "x": 200, "y": 430, "width": 200, "height": 43 },
+				"A7": { "x": 350, "y": 493, "width": 200, "height": 58 },
+				"A8": { "x": 0, "y": 250, "width": 200, "height": 30 },
+				"A9": { "x": 0, "y": 552, "width": 200, "height": 72 }
+			},
+			"sides": {
+				"A0": "left",
+				"A1": "left",
+				"A2": "left",
+				"A3": "left",
+				"A4": "left",
+				"A5": "left",
+				"A6": "left",
+				"A7": "left",
+				"A8": "left",
+				"A9": "left"
+			},
+			"expectedSides": {
+				"A0": { "x": -150, "y": 125, "width": 200, "height": 30 },
+				"A1": { "x": 0, "y": 224, "width": 200, "height": 72 },
+				"A2": { "x": 0, "y": -23, "width": 200, "height": 86 },
+				"A3": { "x": -220, "y": 24, "width": 200, "height": 72 },
+				"A4": { "x": 150, "y": -75, "width": 200, "height": 30 },
+				"A5": { "x": 300, "y": 5, "width": 200, "height": 30 },
+				"A6": { "x": 0, "y": 319, "width": 200, "height": 43 },
+				"A7": { "x": 150, "y": 431, "width": 200, "height": 58 },
+				"A8": { "x": 0, "y": 550, "width": 200, "height": 30 },
+				"A9": { "x": 0, "y": 644, "width": 200, "height": 72 }
+			}
+		}
+	],
+	"assoc": [
+		{
+			"element": { "x": 96, "y": 0, "width": 100, "height": 80 },
+			"annotation": { "x": 46, "y": -93, "width": 200, "height": 43 },
+			"expected": { "pElem": { "x": 146, "y": 0 }, "pAnn": { "x": 146, "y": -50 } }
+		},
+		{
+			"element": { "x": 96, "y": 0, "width": 100, "height": 80 },
+			"annotation": { "x": -154, "y": 99, "width": 200, "height": 43 },
+			"expected": { "pElem": { "x": 96, "y": 80 }, "pAnn": { "x": 46, "y": 99 } }
+		},
+		{
+			"element": { "x": 0, "y": 22, "width": 36, "height": 36 },
+			"annotation": { "x": -82, "y": -143, "width": 200, "height": 115 },
+			"expected": { "pElem": { "x": 18, "y": 22 }, "pAnn": { "x": 18, "y": -28 } }
+		},
+		{
+			"element": { "x": 270, "y": 0, "width": 340, "height": 308 },
+			"annotation": { "x": 340, "y": -108, "width": 200, "height": 58 },
+			"expected": { "pElem": { "x": 440, "y": 0 }, "pAnn": { "x": 440, "y": -50 } }
+		},
+		{
+			"element": { "x": 320, "y": 178, "width": 100, "height": 80 },
+			"annotation": { "x": 270, "y": 368, "width": 200, "height": 101 },
+			"expected": { "pElem": { "x": 370, "y": 258 }, "pAnn": { "x": 370, "y": 368 } }
+		},
+		{
+			"element": { "x": 0, "y": 22, "width": 36, "height": 36 },
+			"annotation": { "x": -296, "y": -17, "width": 200, "height": 115 },
+			"expected": { "pElem": { "x": 0, "y": 40.5 }, "pAnn": { "x": -96, "y": 40 } }
+		},
+		{
+			"element": { "x": 270, "y": 0, "width": 340, "height": 308 },
+			"annotation": { "x": 660, "y": 125, "width": 200, "height": 58 },
+			"expected": { "pElem": { "x": 610, "y": 154 }, "pAnn": { "x": 660, "y": 154 } }
+		},
+		{
+			"element": { "x": 320, "y": 178, "width": 100, "height": 80 },
+			"annotation": { "x": 270, "y": -131, "width": 200, "height": 101 },
+			"expected": { "pElem": { "x": 370, "y": 178 }, "pAnn": { "x": 370, "y": -30 } }
+		},
+		{
+			"element": { "x": 599.5, "y": 315, "width": 100, "height": 80 },
+			"annotation": { "x": 550, "y": 235, "width": 200, "height": 30 },
+			"expected": { "pElem": { "x": 650, "y": 315 }, "pAnn": { "x": 649.5, "y": 265 } }
+		},
+		{
+			"element": { "x": 599.5, "y": 315, "width": 100, "height": 80 },
+			"annotation": { "x": 350, "y": 220, "width": 200, "height": 30 },
+			"expected": { "pElem": { "x": 599.5, "y": 315 }, "pAnn": { "x": 550, "y": 250 } }
+		},
+		{
+			"element": { "x": 1027.5, "y": 177, "width": 440, "height": 208 },
+			"annotation": { "x": 1148, "y": 97, "width": 200, "height": 30 },
+			"expected": { "pElem": { "x": 1248, "y": 177 }, "pAnn": { "x": 1247.5, "y": 127 } }
+		},
+		{
+			"element": { "x": 1027.5, "y": 177, "width": 440, "height": 208 },
+			"annotation": { "x": 778, "y": 186, "width": 200, "height": 30 },
+			"expected": { "pElem": { "x": 1027.5, "y": 201 }, "pAnn": { "x": 978, "y": 216 } }
+		},
+		{
+			"element": { "x": 590, "y": 0, "width": 100, "height": 80 },
+			"annotation": { "x": 540, "y": -80, "width": 200, "height": 30 },
+			"expected": { "pElem": { "x": 640, "y": 0 }, "pAnn": { "x": 640, "y": -50 } }
+		},
+		{
+			"element": { "x": 590, "y": 0, "width": 100, "height": 80 },
+			"annotation": { "x": 340, "y": 145, "width": 200, "height": 30 },
+			"expected": { "pElem": { "x": 590, "y": 80 }, "pAnn": { "x": 540, "y": 145 } }
+		},
+		{
+			"element": { "x": 100, "y": 100, "width": 100, "height": 80 },
+			"annotation": { "x": 0, "y": 0, "width": 200, "height": 30 },
+			"expected": { "pElem": { "x": 100, "y": 100 }, "pAnn": { "x": 150, "y": 30 } }
+		},
+		{
+			"element": { "x": 100, "y": 100, "width": 100, "height": 80 },
+			"annotation": { "x": 120, "y": 300, "width": 200, "height": 30 },
+			"expected": { "pElem": { "x": 200, "y": 180 }, "pAnn": { "x": 150, "y": 300 } }
+		},
+		{
+			"element": { "x": 100, "y": 100, "width": 100, "height": 80 },
+			"annotation": { "x": 300, "y": 90, "width": 200, "height": 50 },
+			"expected": { "pElem": { "x": 200, "y": 115 }, "pAnn": { "x": 300, "y": 140 } }
+		},
+		{
+			"element": { "x": 100, "y": 100, "width": 100, "height": 80 },
+			"annotation": { "x": -200, "y": 90, "width": 150, "height": 50 },
+			"expected": { "pElem": { "x": 100, "y": 115 }, "pAnn": { "x": -50, "y": 140 } }
+		},
+		{
+			"element": { "x": 100, "y": 100, "width": 100, "height": 80 },
+			"annotation": { "x": 150, "y": 150, "width": 20, "height": 20 },
+			"expected": { "pElem": { "x": 100, "y": 160 }, "pAnn": { "x": 170, "y": 150 } }
+		}
+	]
+}

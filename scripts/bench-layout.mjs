@@ -10,8 +10,8 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
-import { Bpmn, applyAutoLayout, layoutDmn } from "../packages/core/dist/index.js"
 import { parseDmn } from "../packages/core/dist/dmn/dmn-parser.js"
+import { Bpmn, applyAutoLayout, layoutDmn } from "../packages/core/dist/index.js"
 
 const root = fileURLToPath(new URL("../conformance/", import.meta.url))
 const iterations = Number(process.argv[2] ?? 50)

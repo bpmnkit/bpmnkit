@@ -1,1 +1,155 @@
-{"nodes":[{"id":"sid-36EA43D1-0FE6-4197-AC57-7A43785B784B","type":"startEvent","bounds":{"x":57,"y":52,"width":36,"height":36},"layer":0,"position":0,"label":"Invoice\nreceived","labelBounds":{"x":19,"y":92,"width":112,"height":14}},{"id":"sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF","type":"task","bounds":{"x":175,"y":30,"width":100,"height":80},"layer":1,"position":0,"label":"Scan Invoice"},{"id":"sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44","type":"task","bounds":{"x":325,"y":30,"width":100,"height":80},"layer":2,"position":0,"label":"Archive\noriginal"},{"id":"sid-40EC6574-E644-425C-8CE7-EE384F0C3520","type":"intermediateCatchEvent","bounds":{"x":507,"y":52,"width":36,"height":36},"layer":3,"position":0,"label":"Approver to \nbe assigned","labelBounds":{"x":450,"y":92,"width":150,"height":14}},{"id":"sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD","type":"task","bounds":{"x":625,"y":30,"width":100,"height":80},"layer":4,"position":0,"label":"Assign approver"},{"id":"sid-F0D29912-929D-491C-8D23-73BD80CF980A","type":"eventBasedGateway","bounds":{"x":800,"y":45,"width":50,"height":50},"layer":5,"position":0},{"id":"sid-0E349B8B-14A7-4565-988A-38F3A9B624D2","type":"intermediateCatchEvent","bounds":{"x":957,"y":52,"width":36,"height":36},"layer":6,"position":0,"label":"7 days","labelBounds":{"x":954,"y":92,"width":42,"height":14}},{"id":"sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D","type":"endEvent","bounds":{"x":1107,"y":52,"width":36,"height":36},"layer":7,"position":0},{"id":"sid-B548B980-12E3-408E-9AC4-7031B85A8F2D","type":"intermediateCatchEvent","bounds":{"x":957,"y":192,"width":36,"height":36},"layer":6,"position":1,"label":"Invoice review\n needed","labelBounds":{"x":900,"y":232,"width":150,"height":14}},{"id":"sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D","type":"task","bounds":{"x":1075,"y":170,"width":100,"height":80},"layer":7,"position":1,"label":"Review and document result"},{"id":"sid-282524E6-660F-431D-8F19-1C3E9E9DE817","type":"endEvent","bounds":{"x":1257,"y":192,"width":36,"height":36},"layer":8,"position":1}],"edges":[{"id":"sid-71EF9530-A32A-49BC-A783-9B98A5801362","sourceRef":"sid-F0D29912-929D-491C-8D23-73BD80CF980A","targetRef":"sid-0E349B8B-14A7-4565-988A-38F3A9B624D2","waypoints":[{"x":850,"y":70},{"x":957,"y":70}]},{"id":"sid-4686AFBC-E33A-4657-95A0-B2E27E704152","sourceRef":"sid-F0D29912-929D-491C-8D23-73BD80CF980A","targetRef":"sid-B548B980-12E3-408E-9AC4-7031B85A8F2D","waypoints":[{"x":825,"y":95},{"x":825,"y":210},{"x":957,"y":210}]},{"id":"sid-C0540F47-C3C0-4FA8-B000-6D87640A6178","sourceRef":"sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44","targetRef":"sid-40EC6574-E644-425C-8CE7-EE384F0C3520","waypoints":[{"x":425,"y":70},{"x":507,"y":70}]},{"id":"sid-4AD2006C-9290-42B0-A904-DD8076B791C4","sourceRef":"sid-40EC6574-E644-425C-8CE7-EE384F0C3520","targetRef":"sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD","waypoints":[{"x":543,"y":70},{"x":625,"y":70}]},{"id":"sid-3E8B2FCF-E408-4A5D-9455-8FDE7BB3EF96","sourceRef":"sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF","targetRef":"sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44","waypoints":[{"x":275,"y":70},{"x":325,"y":70}]},{"id":"sid-6CB8539C-E02A-4496-94E7-17FAECB0D4B1","sourceRef":"sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D","targetRef":"sid-282524E6-660F-431D-8F19-1C3E9E9DE817","waypoints":[{"x":1175,"y":210},{"x":1257,"y":210}]},{"id":"sid-D03CC374-8575-4F38-98B4-4DFF014C43CB","sourceRef":"sid-B548B980-12E3-408E-9AC4-7031B85A8F2D","targetRef":"sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D","waypoints":[{"x":993,"y":210},{"x":1075,"y":210}]},{"id":"sid-3019478F-48D5-4B85-95B1-E192B9BE4183","sourceRef":"sid-0E349B8B-14A7-4565-988A-38F3A9B624D2","targetRef":"sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D","waypoints":[{"x":993,"y":70},{"x":1107,"y":70}]},{"id":"sid-26030150-7369-4B7F-8264-B3ABC62BA735","sourceRef":"sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD","targetRef":"sid-F0D29912-929D-491C-8D23-73BD80CF980A","waypoints":[{"x":725,"y":70},{"x":800,"y":70}]},{"id":"sid-7971C38C-2EF5-41F2-A24E-3FFCA069EDBF","sourceRef":"sid-36EA43D1-0FE6-4197-AC57-7A43785B784B","targetRef":"sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF","waypoints":[{"x":93,"y":70},{"x":175,"y":70}]}]}
+{
+	"nodes": [
+		{
+			"id": "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B",
+			"type": "startEvent",
+			"bounds": { "x": 57, "y": 52, "width": 36, "height": 36 },
+			"layer": 0,
+			"position": 0,
+			"label": "Invoice\nreceived",
+			"labelBounds": { "x": 19, "y": 92, "width": 112, "height": 14 }
+		},
+		{
+			"id": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+			"type": "task",
+			"bounds": { "x": 175, "y": 30, "width": 100, "height": 80 },
+			"layer": 1,
+			"position": 0,
+			"label": "Scan Invoice"
+		},
+		{
+			"id": "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44",
+			"type": "task",
+			"bounds": { "x": 325, "y": 30, "width": 100, "height": 80 },
+			"layer": 2,
+			"position": 0,
+			"label": "Archive\noriginal"
+		},
+		{
+			"id": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+			"type": "intermediateCatchEvent",
+			"bounds": { "x": 507, "y": 52, "width": 36, "height": 36 },
+			"layer": 3,
+			"position": 0,
+			"label": "Approver to \nbe assigned",
+			"labelBounds": { "x": 450, "y": 92, "width": 150, "height": 14 }
+		},
+		{
+			"id": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+			"type": "task",
+			"bounds": { "x": 625, "y": 30, "width": 100, "height": 80 },
+			"layer": 4,
+			"position": 0,
+			"label": "Assign approver"
+		},
+		{
+			"id": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+			"type": "eventBasedGateway",
+			"bounds": { "x": 800, "y": 45, "width": 50, "height": 50 },
+			"layer": 5,
+			"position": 0
+		},
+		{
+			"id": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+			"type": "intermediateCatchEvent",
+			"bounds": { "x": 957, "y": 52, "width": 36, "height": 36 },
+			"layer": 6,
+			"position": 0,
+			"label": "7 days",
+			"labelBounds": { "x": 954, "y": 92, "width": 42, "height": 14 }
+		},
+		{
+			"id": "sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D",
+			"type": "endEvent",
+			"bounds": { "x": 1107, "y": 52, "width": 36, "height": 36 },
+			"layer": 7,
+			"position": 0
+		},
+		{
+			"id": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+			"type": "intermediateCatchEvent",
+			"bounds": { "x": 957, "y": 192, "width": 36, "height": 36 },
+			"layer": 6,
+			"position": 1,
+			"label": "Invoice review\n needed",
+			"labelBounds": { "x": 900, "y": 232, "width": 150, "height": 14 }
+		},
+		{
+			"id": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+			"type": "task",
+			"bounds": { "x": 1075, "y": 170, "width": 100, "height": 80 },
+			"layer": 7,
+			"position": 1,
+			"label": "Review and document result"
+		},
+		{
+			"id": "sid-282524E6-660F-431D-8F19-1C3E9E9DE817",
+			"type": "endEvent",
+			"bounds": { "x": 1257, "y": 192, "width": 36, "height": 36 },
+			"layer": 8,
+			"position": 1
+		}
+	],
+	"edges": [
+		{
+			"id": "sid-71EF9530-A32A-49BC-A783-9B98A5801362",
+			"sourceRef": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+			"targetRef": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+			"waypoints": [{ "x": 850, "y": 70 }, { "x": 957, "y": 70 }]
+		},
+		{
+			"id": "sid-4686AFBC-E33A-4657-95A0-B2E27E704152",
+			"sourceRef": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+			"targetRef": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+			"waypoints": [{ "x": 825, "y": 95 }, { "x": 825, "y": 210 }, { "x": 957, "y": 210 }]
+		},
+		{
+			"id": "sid-C0540F47-C3C0-4FA8-B000-6D87640A6178",
+			"sourceRef": "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44",
+			"targetRef": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+			"waypoints": [{ "x": 425, "y": 70 }, { "x": 507, "y": 70 }]
+		},
+		{
+			"id": "sid-4AD2006C-9290-42B0-A904-DD8076B791C4",
+			"sourceRef": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+			"targetRef": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+			"waypoints": [{ "x": 543, "y": 70 }, { "x": 625, "y": 70 }]
+		},
+		{
+			"id": "sid-3E8B2FCF-E408-4A5D-9455-8FDE7BB3EF96",
+			"sourceRef": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+			"targetRef": "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44",
+			"waypoints": [{ "x": 275, "y": 70 }, { "x": 325, "y": 70 }]
+		},
+		{
+			"id": "sid-6CB8539C-E02A-4496-94E7-17FAECB0D4B1",
+			"sourceRef": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+			"targetRef": "sid-282524E6-660F-431D-8F19-1C3E9E9DE817",
+			"waypoints": [{ "x": 1175, "y": 210 }, { "x": 1257, "y": 210 }]
+		},
+		{
+			"id": "sid-D03CC374-8575-4F38-98B4-4DFF014C43CB",
+			"sourceRef": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+			"targetRef": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+			"waypoints": [{ "x": 993, "y": 210 }, { "x": 1075, "y": 210 }]
+		},
+		{
+			"id": "sid-3019478F-48D5-4B85-95B1-E192B9BE4183",
+			"sourceRef": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+			"targetRef": "sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D",
+			"waypoints": [{ "x": 993, "y": 70 }, { "x": 1107, "y": 70 }]
+		},
+		{
+			"id": "sid-26030150-7369-4B7F-8264-B3ABC62BA735",
+			"sourceRef": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+			"targetRef": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+			"waypoints": [{ "x": 725, "y": 70 }, { "x": 800, "y": 70 }]
+		},
+		{
+			"id": "sid-7971C38C-2EF5-41F2-A24E-3FFCA069EDBF",
+			"sourceRef": "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B",
+			"targetRef": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+			"waypoints": [{ "x": 93, "y": 70 }, { "x": 175, "y": 70 }]
+		}
+	]
+}

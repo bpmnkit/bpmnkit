@@ -1,1 +1,1722 @@
-[{"file":"artifacts","process":"Process_artifacts","shapes":[{"id":"Start_art","bounds":{"x":0,"y":22,"width":36,"height":36},"container":false},{"id":"Task_review","bounds":{"x":96,"y":0,"width":100,"height":80},"container":false},{"id":"End_art","bounds":{"x":256,"y":22,"width":36,"height":36},"container":false},{"id":"TextAnnotation_sla","bounds":{"x":46,"y":-93,"width":200,"height":43},"container":false},{"id":"BLOCK","bounds":{"x":46,"y":20,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"Start_art","targetRef":"Task_review","waypoints":[{"x":36,"y":40},{"x":96,"y":40}]},{"kind":"sequence","sourceRef":"Task_review","targetRef":"End_art","waypoints":[{"x":196,"y":40},{"x":256,"y":40}]},{"kind":"association","sourceRef":"Task_review","targetRef":"TextAnnotation_sla","waypoints":[{"x":146,"y":0},{"x":146,"y":-50}]}],"expected":[[{"x":18,"y":58},{"x":18,"y":92},{"x":146,"y":92},{"x":146,"y":80}],[{"x":196,"y":40},{"x":256,"y":40}],[{"x":146,"y":0},{"x":146,"y":-50}]]},{"file":"bakeoff-expected","process":"ai-agent-chat-with-tools","shapes":[{"id":"StartEvent_TaskReceived","bounds":{"x":0,"y":22,"width":36,"height":36},"container":false},{"id":"Gateway_RunAgent","bounds":{"x":120,"y":15,"width":50,"height":50},"container":false},{"id":"AI_Agent","bounds":{"x":270,"y":0,"width":340,"height":308},"container":false},{"id":"UserTask_ReviewAgentResponse","bounds":{"x":710,"y":0,"width":100,"height":80},"container":false},{"id":"Gateway_UserSatisfied","bounds":{"x":870,"y":15,"width":50,"height":50},"container":false},{"id":"EndEvent_UserSatisfied","bounds":{"x":996.5,"y":22,"width":36,"height":36},"container":false},{"id":"LookupSampleUsers","bounds":{"x":320,"y":78,"width":100,"height":80},"container":false},{"id":"SearchRecipes","bounds":{"x":460,"y":78,"width":100,"height":80},"container":false},{"id":"FetchSafeJoke","bounds":{"x":320,"y":178,"width":100,"height":80},"container":false},{"id":"ListSampleTechnologyProducts","bounds":{"x":460,"y":178,"width":100,"height":80},"container":false},{"id":"TextAnnotation_StartEvent_TaskReceived_1","bounds":{"x":-82,"y":-143,"width":200,"height":115},"container":false},{"id":"TextAnnotation_AI_Agent_1","bounds":{"x":340,"y":-108,"width":200,"height":58},"container":false},{"id":"TextAnnotation_FetchSafeJoke_1","bounds":{"x":270,"y":368,"width":200,"height":101},"container":false},{"id":"BLOCK","bounds":{"x":58,"y":20,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"StartEvent_TaskReceived","targetRef":"Gateway_RunAgent","waypoints":[{"x":36,"y":40},{"x":120,"y":40}]},{"kind":"sequence","sourceRef":"Gateway_RunAgent","targetRef":"AI_Agent","waypoints":[{"x":170,"y":40},{"x":270,"y":40}]},{"kind":"sequence","sourceRef":"AI_Agent","targetRef":"UserTask_ReviewAgentResponse","waypoints":[{"x":610,"y":40},{"x":710,"y":40}]},{"kind":"sequence","sourceRef":"UserTask_ReviewAgentResponse","targetRef":"Gateway_UserSatisfied","waypoints":[{"x":810,"y":40},{"x":870,"y":40}]},{"kind":"sequence","sourceRef":"Gateway_UserSatisfied","targetRef":"EndEvent_UserSatisfied","waypoints":[{"x":920,"y":40},{"x":996.5,"y":40}]},{"kind":"sequence","sourceRef":"Gateway_UserSatisfied","targetRef":"Gateway_RunAgent","waypoints":[{"x":895,"y":65},{"x":895,"y":348},{"x":145,"y":348},{"x":145,"y":65}]},{"kind":"association","sourceRef":"StartEvent_TaskReceived","targetRef":"TextAnnotation_StartEvent_TaskReceived_1","waypoints":[{"x":18,"y":22},{"x":18,"y":-28}]},{"kind":"association","sourceRef":"AI_Agent","targetRef":"TextAnnotation_AI_Agent_1","waypoints":[{"x":440,"y":0},{"x":440,"y":-50}]},{"kind":"association","sourceRef":"FetchSafeJoke","targetRef":"TextAnnotation_FetchSafeJoke_1","waypoints":[{"x":370,"y":258},{"x":370,"y":368}]}],"expected":[[{"x":18,"y":58},{"x":18,"y":77},{"x":145,"y":77},{"x":145,"y":65}],[{"x":170,"y":40},{"x":270,"y":40}],[{"x":610,"y":40},{"x":710,"y":40}],[{"x":810,"y":40},{"x":870,"y":40}],[{"x":920,"y":40},{"x":996.5,"y":40}],[{"x":895,"y":65},{"x":895,"y":348},{"x":145,"y":348},{"x":145,"y":65}],[{"x":18,"y":22},{"x":18,"y":-28}],[{"x":440,"y":0},{"x":440,"y":-50}],[{"x":370,"y":258},{"x":370,"y":368}]]},{"file":"miwg-b-1-0","process":"Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450","shapes":[{"id":"_200f43e7-1385-46e2-a380-3ef16ebe7847","bounds":{"x":0,"y":22,"width":36,"height":36},"container":false},{"id":"_c57a5344-213f-4834-a6c3-94ce878b413c","bounds":{"x":99,"y":0,"width":100,"height":80},"container":false},{"id":"_ed405919-9fd6-47d0-bb00-9be7d5467efb","bounds":{"x":259,"y":22,"width":36,"height":36},"container":false},{"id":"BLOCK","bounds":{"x":48,"y":20,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"_200f43e7-1385-46e2-a380-3ef16ebe7847","targetRef":"_c57a5344-213f-4834-a6c3-94ce878b413c","waypoints":[{"x":36,"y":40},{"x":99,"y":40}]},{"kind":"sequence","sourceRef":"_c57a5344-213f-4834-a6c3-94ce878b413c","targetRef":"_ed405919-9fd6-47d0-bb00-9be7d5467efb","waypoints":[{"x":199,"y":40},{"x":259,"y":40}]}],"expected":[[{"x":18,"y":58},{"x":18,"y":92},{"x":149,"y":92},{"x":149,"y":80}],[{"x":199,"y":40},{"x":259,"y":40}]]},{"file":"miwg-b-1-0","process":"WFP-6-1","shapes":[{"id":"_e314751e-5c3a-41f2-a1ae-4cb99efa0916","bounds":{"x":0,"y":22,"width":36,"height":36},"container":false},{"id":"_94efa7e0-2322-4fc3-a5bf-6c6296488927","bounds":{"x":576,"y":22,"width":36,"height":36},"container":false},{"id":"_219b9ca1-d4c5-497d-a4f7-06a44a6da20e","bounds":{"x":96,"y":0,"width":100,"height":80},"container":false},{"id":"_f7eade87-bb98-47d3-85c7-66033a62b124","bounds":{"x":256,"y":0,"width":100,"height":80},"container":false},{"id":"_ec919941-53ec-403d-97e1-6a163a063f21","bounds":{"x":416,"y":0,"width":100,"height":80},"container":false},{"id":"BLOCK","bounds":{"x":46,"y":20,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"_e314751e-5c3a-41f2-a1ae-4cb99efa0916","targetRef":"_219b9ca1-d4c5-497d-a4f7-06a44a6da20e","waypoints":[{"x":36,"y":40},{"x":96,"y":40}]},{"kind":"sequence","sourceRef":"_219b9ca1-d4c5-497d-a4f7-06a44a6da20e","targetRef":"_f7eade87-bb98-47d3-85c7-66033a62b124","waypoints":[{"x":196,"y":40},{"x":256,"y":40}]},{"kind":"sequence","sourceRef":"_f7eade87-bb98-47d3-85c7-66033a62b124","targetRef":"_ec919941-53ec-403d-97e1-6a163a063f21","waypoints":[{"x":356,"y":40},{"x":416,"y":40}]},{"kind":"sequence","sourceRef":"_ec919941-53ec-403d-97e1-6a163a063f21","targetRef":"_94efa7e0-2322-4fc3-a5bf-6c6296488927","waypoints":[{"x":516,"y":40},{"x":576,"y":40}]}],"expected":[[{"x":18,"y":58},{"x":18,"y":92},{"x":146,"y":92},{"x":146,"y":80}],[{"x":196,"y":40},{"x":256,"y":40}],[{"x":356,"y":40},{"x":416,"y":40}],[{"x":516,"y":40},{"x":576,"y":40}]]},{"file":"miwg-b-1-0","process":"WFP-6-2","shapes":[{"id":"DF1373655174778","bounds":{"x":7,"y":1003,"width":36,"height":50},"container":false},{"id":"_2ee553a1-cb03-41e3-b285-345c826fc88d","bounds":{"x":1559,"y":337,"width":36,"height":36},"container":false},{"id":"_fa3a8e53-5be0-4f0b-8680-d2498e255209","bounds":{"x":599.5,"y":455,"width":100,"height":80},"container":false},{"id":"_ba16239e-181e-4b9f-bc5b-0bb2ee973450","bounds":{"x":772.5,"y":315,"width":100,"height":80},"container":false},{"id":"_93021cd0-6f49-485d-966f-209744c748de","bounds":{"x":1186.5,"y":330,"width":50,"height":50},"container":false},{"id":"_3c8c32c3-089a-4643-bf42-6c37c0dac7e0","bounds":{"x":396.5,"y":330,"width":50,"height":50},"container":false},{"id":"_a38484e2-7bdb-48b1-b62e-139d51d6a147","bounds":{"x":7,"y":47,"width":36,"height":36},"container":false},{"id":"_be29f267-9d56-46ef-8bbc-e13513b25fce","bounds":{"x":179,"y":40,"width":50,"height":50},"container":false},{"id":"_1237e756-d53c-4591-a731-dafffbf0b3f9","bounds":{"x":599.5,"y":315,"width":100,"height":80},"container":false},{"id":"_1eb62392-1f21-4a63-bbcb-c78880c3165e","bounds":{"x":772.5,"y":693,"width":100,"height":80},"container":false},{"id":"_7706e700-2aed-4b94-8070-961f118aab8f","bounds":{"x":371.5,"y":693,"width":100,"height":80},"container":false},{"id":"_ad81e6ba-40f5-43c1-9602-47d2e58804c8","bounds":{"x":624.5,"y":708,"width":50,"height":50},"container":false},{"id":"_33f30031-2e29-46b6-b080-30a192a36b45","bounds":{"x":1552,"y":708,"width":50,"height":50},"container":false},{"id":"_7e6ccf38-e740-4537-a439-a8e984d066de","bounds":{"x":972.5,"y":615,"width":478,"height":208},"container":false},{"id":"_fea1c5af-6c76-403f-809e-26d476d92741","bounds":{"x":772.5,"y":843,"width":100,"height":80},"container":false},{"id":"_ae916437-d9aa-4e3d-a7c3-34998c410beb","bounds":{"x":1752,"y":715,"width":36,"height":36},"container":false},{"id":"_3d35229f-2c75-4d5d-a066-2d14e46e442e","bounds":{"x":7,"y":1801,"width":36,"height":50},"container":false},{"id":"_b9385abf-d293-40b7-848b-8add4db48415","bounds":{"x":0,"y":1931,"width":50,"height":50},"container":false},{"id":"_1df01cbc-5d8c-444e-b1db-da3efdee254a","bounds":{"x":1067.5,"y":715,"width":36,"height":36},"container":false},{"id":"_6936f794-7bbb-4aa1-ae48-3a35bab4e2f4","bounds":{"x":1166.5,"y":693,"width":100,"height":80},"container":false},{"id":"_4f744697-3643-41a9-9d07-84c78e2df64b","bounds":{"x":1326.5,"y":715,"width":36,"height":36},"container":false},{"id":"_4815ea6a-ede2-489b-8b37-2cdb2835b02c","bounds":{"x":550,"y":235,"width":200,"height":30},"container":false},{"id":"BLOCK","bounds":{"x":91,"y":45,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"_a38484e2-7bdb-48b1-b62e-139d51d6a147","targetRef":"_be29f267-9d56-46ef-8bbc-e13513b25fce","waypoints":[{"x":43,"y":65},{"x":179,"y":65}]},{"kind":"sequence","sourceRef":"_be29f267-9d56-46ef-8bbc-e13513b25fce","targetRef":"_7706e700-2aed-4b94-8070-961f118aab8f","waypoints":[{"x":204,"y":90},{"x":204,"y":733},{"x":371.5,"y":733}]},{"kind":"sequence","sourceRef":"_7e6ccf38-e740-4537-a439-a8e984d066de","targetRef":"_33f30031-2e29-46b6-b080-30a192a36b45","waypoints":[{"x":1450.5,"y":733},{"x":1552,"y":733}]},{"kind":"sequence","sourceRef":"_be29f267-9d56-46ef-8bbc-e13513b25fce","targetRef":"_3c8c32c3-089a-4643-bf42-6c37c0dac7e0","waypoints":[{"x":229,"y":65},{"x":300.25,"y":65},{"x":300.25,"y":355},{"x":396.5,"y":355}]},{"kind":"sequence","sourceRef":"_1237e756-d53c-4591-a731-dafffbf0b3f9","targetRef":"_ba16239e-181e-4b9f-bc5b-0bb2ee973450","waypoints":[{"x":699.5,"y":355},{"x":772.5,"y":355}]},{"kind":"sequence","sourceRef":"_1eb62392-1f21-4a63-bbcb-c78880c3165e","targetRef":"_7e6ccf38-e740-4537-a439-a8e984d066de","waypoints":[{"x":872.5,"y":733},{"x":972.5,"y":733}]},{"kind":"sequence","sourceRef":"_fa3a8e53-5be0-4f0b-8680-d2498e255209","targetRef":"_93021cd0-6f49-485d-966f-209744c748de","waypoints":[{"x":699.5,"y":495},{"x":922.5,"y":495},{"x":922.5,"y":355},{"x":1186.5,"y":355}]},{"kind":"sequence","sourceRef":"_7706e700-2aed-4b94-8070-961f118aab8f","targetRef":"_ad81e6ba-40f5-43c1-9602-47d2e58804c8","waypoints":[{"x":471.5,"y":733},{"x":624.5,"y":733}]},{"kind":"sequence","sourceRef":"_ad81e6ba-40f5-43c1-9602-47d2e58804c8","targetRef":"_1eb62392-1f21-4a63-bbcb-c78880c3165e","waypoints":[{"x":674.5,"y":733},{"x":772.5,"y":733}]},{"kind":"sequence","sourceRef":"_ad81e6ba-40f5-43c1-9602-47d2e58804c8","targetRef":"_fea1c5af-6c76-403f-809e-26d476d92741","waypoints":[{"x":649.5,"y":758},{"x":649.5,"y":883},{"x":772.5,"y":883}]},{"kind":"sequence","sourceRef":"_ba16239e-181e-4b9f-bc5b-0bb2ee973450","targetRef":"_93021cd0-6f49-485d-966f-209744c748de","waypoints":[{"x":822.5,"y":315},{"x":822.5,"y":275},{"x":1211.5,"y":275},{"x":1211.5,"y":330}]},{"kind":"sequence","sourceRef":"_fea1c5af-6c76-403f-809e-26d476d92741","targetRef":"_33f30031-2e29-46b6-b080-30a192a36b45","waypoints":[{"x":822.5,"y":923},{"x":822.5,"y":963},{"x":1577,"y":963},{"x":1577,"y":758}]},{"kind":"sequence","sourceRef":"_33f30031-2e29-46b6-b080-30a192a36b45","targetRef":"_ae916437-d9aa-4e3d-a7c3-34998c410beb","waypoints":[{"x":1602,"y":733},{"x":1752,"y":733}]},{"kind":"sequence","sourceRef":"_3c8c32c3-089a-4643-bf42-6c37c0dac7e0","targetRef":"_1237e756-d53c-4591-a731-dafffbf0b3f9","waypoints":[{"x":446.5,"y":355},{"x":599.5,"y":355}]},{"kind":"sequence","sourceRef":"_3c8c32c3-089a-4643-bf42-6c37c0dac7e0","targetRef":"_fa3a8e53-5be0-4f0b-8680-d2498e255209","waypoints":[{"x":421.5,"y":380},{"x":421.5,"y":495},{"x":599.5,"y":495}]},{"kind":"sequence","sourceRef":"_93021cd0-6f49-485d-966f-209744c748de","targetRef":"_2ee553a1-cb03-41e3-b285-345c826fc88d","waypoints":[{"x":1236.5,"y":355},{"x":1559,"y":355}]},{"kind":"sequence","sourceRef":"_1df01cbc-5d8c-444e-b1db-da3efdee254a","targetRef":"_6936f794-7bbb-4aa1-ae48-3a35bab4e2f4","waypoints":[{"x":1103.5,"y":733},{"x":1166.5,"y":733}]},{"kind":"sequence","sourceRef":"_6936f794-7bbb-4aa1-ae48-3a35bab4e2f4","targetRef":"_4f744697-3643-41a9-9d07-84c78e2df64b","waypoints":[{"x":1266.5,"y":733},{"x":1326.5,"y":733}]},{"kind":"association","sourceRef":"_1237e756-d53c-4591-a731-dafffbf0b3f9","targetRef":"_4815ea6a-ede2-489b-8b37-2cdb2835b02c","waypoints":[{"x":650,"y":315},{"x":649.5,"y":265}]}],"expected":[[{"x":25,"y":47},{"x":25,"y":28},{"x":204,"y":28},{"x":204,"y":40}],[{"x":204,"y":90},{"x":204,"y":733},{"x":371.5,"y":733}],[{"x":1450.5,"y":733},{"x":1552,"y":733}],[{"x":229,"y":65},{"x":300.25,"y":65},{"x":300.25,"y":355},{"x":396.5,"y":355}],[{"x":699.5,"y":355},{"x":772.5,"y":355}],[{"x":872.5,"y":733},{"x":972.5,"y":733}],[{"x":699.5,"y":495},{"x":922.5,"y":495},{"x":922.5,"y":355},{"x":1186.5,"y":355}],[{"x":471.5,"y":733},{"x":624.5,"y":733}],[{"x":674.5,"y":733},{"x":772.5,"y":733}],[{"x":649.5,"y":758},{"x":649.5,"y":883},{"x":772.5,"y":883}],[{"x":822.5,"y":315},{"x":822.5,"y":275},{"x":1211.5,"y":275},{"x":1211.5,"y":330}],[{"x":822.5,"y":923},{"x":822.5,"y":963},{"x":1577,"y":963},{"x":1577,"y":758}],[{"x":1602,"y":733},{"x":1752,"y":733}],[{"x":446.5,"y":355},{"x":599.5,"y":355}],[{"x":421.5,"y":380},{"x":421.5,"y":495},{"x":599.5,"y":495}],[{"x":1236.5,"y":355},{"x":1559,"y":355}],[{"x":1103.5,"y":733},{"x":1166.5,"y":733}],[{"x":1266.5,"y":733},{"x":1326.5,"y":733}],[{"x":650,"y":315},{"x":649.5,"y":265}]]},{"file":"miwg-b-1-0","process":"WFP-0-","shapes":[{"id":"_18770c5c-c117-4570-aaf2-8c7a6910c34d","bounds":{"x":0,"y":22,"width":36,"height":36},"container":false},{"id":"_47207d3b-8dc2-4679-bf33-c1e7e677765b","bounds":{"x":99,"y":0,"width":100,"height":80},"container":false},{"id":"_ab12c75c-eaf3-4ae1-9021-ee556711757f","bounds":{"x":259,"y":22,"width":36,"height":36},"container":false},{"id":"BLOCK","bounds":{"x":48,"y":20,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"_18770c5c-c117-4570-aaf2-8c7a6910c34d","targetRef":"_47207d3b-8dc2-4679-bf33-c1e7e677765b","waypoints":[{"x":36,"y":40},{"x":99,"y":40}]},{"kind":"sequence","sourceRef":"_47207d3b-8dc2-4679-bf33-c1e7e677765b","targetRef":"_ab12c75c-eaf3-4ae1-9021-ee556711757f","waypoints":[{"x":199,"y":40},{"x":259,"y":40}]}],"expected":[[{"x":18,"y":58},{"x":18,"y":92},{"x":149,"y":92},{"x":149,"y":80}],[{"x":199,"y":40},{"x":259,"y":40}]]},{"file":"miwg-c-4-0","process":"_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e","shapes":[{"id":"_a4220c17-364f-4a08-ae9c-757a6468b295","bounds":{"x":7,"y":62,"width":36,"height":36},"container":false},{"id":"_f8973a92-3d84-4672-a1a3-b0df154121e1","bounds":{"x":127,"y":40,"width":100,"height":80},"container":false},{"id":"_f9e3cd76-809a-48b5-be1c-e84fc4324268","bounds":{"x":307.5,"y":55,"width":50,"height":50},"container":false},{"id":"_aa275782-c989-49ba-bf94-c58916ca7bb5","bounds":{"x":438,"y":40,"width":100,"height":80},"container":false},{"id":"_987b9b74-333a-4043-a72a-daadf667acc7","bounds":{"x":438,"y":180,"width":100,"height":80},"container":false},{"id":"_305ddf53-49a8-4105-ad06-70272a2332aa","bounds":{"x":604.5,"y":55,"width":50,"height":50},"container":false},{"id":"_0e71ed63-93f9-44b6-a89d-da9628652926","bounds":{"x":721,"y":40,"width":100,"height":80},"container":false},{"id":"_eba690b9-34ef-49e4-b265-1411809d9302","bounds":{"x":887,"y":40,"width":100,"height":80},"container":false},{"id":"_67944b4c-4950-45a2-a131-1c4679c6b433","bounds":{"x":1053,"y":40,"width":100,"height":80},"container":false},{"id":"_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5","bounds":{"x":1213,"y":40,"width":100,"height":80},"container":false},{"id":"_82da02ca-ee9a-4403-9f3b-aad030e089b9","bounds":{"x":1379.5,"y":55,"width":50,"height":50},"container":false},{"id":"_f00a95f6-043e-4ec1-8731-153a707e950c","bounds":{"x":0,"y":732,"width":50,"height":50},"container":false},{"id":"_986cf801-0780-49d3-91cd-2cc6d3c1aac3","bounds":{"x":721,"y":572,"width":100,"height":80},"container":false},{"id":"_855451b0-5298-48b2-a81d-84ecbcca0a85","bounds":{"x":919,"y":594,"width":36,"height":36},"container":false},{"id":"_72da5cee-0456-4c3c-ba8d-6dd085d6f52d","bounds":{"x":1496,"y":432,"width":100,"height":80},"container":false},{"id":"_e3d3ac43-74a3-48ff-9a02-e64b1358cc34","bounds":{"x":1656,"y":432,"width":100,"height":80},"container":false},{"id":"_80f70d22-fb42-403f-8bdb-6805e9467bb7","bounds":{"x":1822.5,"y":447,"width":50,"height":50},"container":false},{"id":"_fe77c2f2-278f-4752-9d03-aa0c8a12af1e","bounds":{"x":2015.5,"y":594,"width":36,"height":36},"container":false},{"id":"_db9147a9-7fbc-4657-a506-15e777f2cfd9","bounds":{"x":2015.5,"y":340,"width":36,"height":36},"container":false},{"id":"_74e2cc7b-99ca-426b-ad53-ad70a56506aa","bounds":{"x":2015.5,"y":454,"width":36,"height":36},"container":false},{"id":"_19808f32-dfb5-462d-aaa6-e662f9932dba","bounds":{"x":2194.5,"y":447,"width":50,"height":50},"container":false},{"id":"_351b058e-c37c-4fb7-9d32-24075f53ce02","bounds":{"x":2311,"y":432,"width":100,"height":80},"container":false},{"id":"_52401cbb-02b8-4eaf-84f1-1edbc0854a4a","bounds":{"x":2471,"y":432,"width":100,"height":80},"container":false},{"id":"_36baf139-fb74-43ef-8936-d490238c2825","bounds":{"x":2631,"y":454,"width":36,"height":36},"container":false},{"id":"BLOCK","bounds":{"x":65,"y":60,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"_a4220c17-364f-4a08-ae9c-757a6468b295","targetRef":"_f8973a92-3d84-4672-a1a3-b0df154121e1","waypoints":[{"x":43,"y":80},{"x":127,"y":80}]},{"kind":"sequence","sourceRef":"_f8973a92-3d84-4672-a1a3-b0df154121e1","targetRef":"_f9e3cd76-809a-48b5-be1c-e84fc4324268","waypoints":[{"x":227,"y":80},{"x":307.5,"y":80}]},{"kind":"sequence","sourceRef":"_f9e3cd76-809a-48b5-be1c-e84fc4324268","targetRef":"_aa275782-c989-49ba-bf94-c58916ca7bb5","waypoints":[{"x":357.5,"y":80},{"x":438,"y":80}]},{"kind":"sequence","sourceRef":"_f9e3cd76-809a-48b5-be1c-e84fc4324268","targetRef":"_987b9b74-333a-4043-a72a-daadf667acc7","waypoints":[{"x":332.5,"y":105},{"x":332.5,"y":220},{"x":438,"y":220}]},{"kind":"sequence","sourceRef":"_aa275782-c989-49ba-bf94-c58916ca7bb5","targetRef":"_305ddf53-49a8-4105-ad06-70272a2332aa","waypoints":[{"x":538,"y":80},{"x":604.5,"y":80}]},{"kind":"sequence","sourceRef":"_305ddf53-49a8-4105-ad06-70272a2332aa","targetRef":"_0e71ed63-93f9-44b6-a89d-da9628652926","waypoints":[{"x":654.5,"y":80},{"x":721,"y":80}]},{"kind":"sequence","sourceRef":"_0e71ed63-93f9-44b6-a89d-da9628652926","targetRef":"_eba690b9-34ef-49e4-b265-1411809d9302","waypoints":[{"x":821,"y":80},{"x":887,"y":80}]},{"kind":"sequence","sourceRef":"_eba690b9-34ef-49e4-b265-1411809d9302","targetRef":"_67944b4c-4950-45a2-a131-1c4679c6b433","waypoints":[{"x":987,"y":80},{"x":1053,"y":80}]},{"kind":"sequence","sourceRef":"_67944b4c-4950-45a2-a131-1c4679c6b433","targetRef":"_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5","waypoints":[{"x":1153,"y":80},{"x":1213,"y":80}]},{"kind":"sequence","sourceRef":"_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5","targetRef":"_82da02ca-ee9a-4403-9f3b-aad030e089b9","waypoints":[{"x":1313,"y":80},{"x":1379.5,"y":80}]},{"kind":"sequence","sourceRef":"_305ddf53-49a8-4105-ad06-70272a2332aa","targetRef":"_986cf801-0780-49d3-91cd-2cc6d3c1aac3","waypoints":[{"x":629.5,"y":105},{"x":629.5,"y":612},{"x":721,"y":612}]},{"kind":"sequence","sourceRef":"_986cf801-0780-49d3-91cd-2cc6d3c1aac3","targetRef":"_855451b0-5298-48b2-a81d-84ecbcca0a85","waypoints":[{"x":821,"y":612},{"x":919,"y":612}]},{"kind":"sequence","sourceRef":"_855451b0-5298-48b2-a81d-84ecbcca0a85","targetRef":"_82da02ca-ee9a-4403-9f3b-aad030e089b9","waypoints":[{"x":955,"y":612},{"x":1346.25,"y":612},{"x":1346.25,"y":80},{"x":1379.5,"y":80}]},{"kind":"sequence","sourceRef":"_82da02ca-ee9a-4403-9f3b-aad030e089b9","targetRef":"_72da5cee-0456-4c3c-ba8d-6dd085d6f52d","waypoints":[{"x":1404.5,"y":105},{"x":1404.5,"y":472},{"x":1496,"y":472}]},{"kind":"sequence","sourceRef":"_72da5cee-0456-4c3c-ba8d-6dd085d6f52d","targetRef":"_e3d3ac43-74a3-48ff-9a02-e64b1358cc34","waypoints":[{"x":1596,"y":472},{"x":1656,"y":472}]},{"kind":"sequence","sourceRef":"_e3d3ac43-74a3-48ff-9a02-e64b1358cc34","targetRef":"_80f70d22-fb42-403f-8bdb-6805e9467bb7","waypoints":[{"x":1756,"y":472},{"x":1822.5,"y":472}]},{"kind":"sequence","sourceRef":"_80f70d22-fb42-403f-8bdb-6805e9467bb7","targetRef":"_74e2cc7b-99ca-426b-ad53-ad70a56506aa","waypoints":[{"x":1872.5,"y":472},{"x":2015.5,"y":472}]},{"kind":"sequence","sourceRef":"_80f70d22-fb42-403f-8bdb-6805e9467bb7","targetRef":"_fe77c2f2-278f-4752-9d03-aa0c8a12af1e","waypoints":[{"x":1847.5,"y":497},{"x":1847.5,"y":612},{"x":2015.5,"y":612}]},{"kind":"sequence","sourceRef":"_80f70d22-fb42-403f-8bdb-6805e9467bb7","targetRef":"_db9147a9-7fbc-4657-a506-15e777f2cfd9","waypoints":[{"x":1847.5,"y":447},{"x":1847.5,"y":358},{"x":2015.5,"y":358}]},{"kind":"sequence","sourceRef":"_fe77c2f2-278f-4752-9d03-aa0c8a12af1e","targetRef":"_19808f32-dfb5-462d-aaa6-e662f9932dba","waypoints":[{"x":2051.5,"y":612},{"x":2123,"y":612},{"x":2123,"y":472},{"x":2194.5,"y":472}]},{"kind":"sequence","sourceRef":"_74e2cc7b-99ca-426b-ad53-ad70a56506aa","targetRef":"_19808f32-dfb5-462d-aaa6-e662f9932dba","waypoints":[{"x":2033.5,"y":454},{"x":2033.5,"y":411.5},{"x":2219.5,"y":411.5},{"x":2219.5,"y":447}]},{"kind":"sequence","sourceRef":"_db9147a9-7fbc-4657-a506-15e777f2cfd9","targetRef":"_19808f32-dfb5-462d-aaa6-e662f9932dba","waypoints":[{"x":2033.5,"y":376},{"x":2033.5,"y":391.5},{"x":2219.5,"y":391.5},{"x":2219.5,"y":447}]},{"kind":"sequence","sourceRef":"_19808f32-dfb5-462d-aaa6-e662f9932dba","targetRef":"_351b058e-c37c-4fb7-9d32-24075f53ce02","waypoints":[{"x":2244.5,"y":472},{"x":2311,"y":472}]},{"kind":"sequence","sourceRef":"_351b058e-c37c-4fb7-9d32-24075f53ce02","targetRef":"_52401cbb-02b8-4eaf-84f1-1edbc0854a4a","waypoints":[{"x":2411,"y":472},{"x":2471,"y":472}]},{"kind":"sequence","sourceRef":"_52401cbb-02b8-4eaf-84f1-1edbc0854a4a","targetRef":"_36baf139-fb74-43ef-8936-d490238c2825","waypoints":[{"x":2571,"y":472},{"x":2631,"y":472}]},{"kind":"sequence","sourceRef":"_987b9b74-333a-4043-a72a-daadf667acc7","targetRef":"_f8973a92-3d84-4672-a1a3-b0df154121e1","waypoints":[{"x":488,"y":260},{"x":488,"y":300},{"x":177,"y":300},{"x":177,"y":120}]}],"expected":[[{"x":25,"y":98},{"x":25,"y":110},{"x":115,"y":110},{"x":115,"y":80},{"x":127,"y":80}],[{"x":227,"y":80},{"x":307.5,"y":80}],[{"x":357.5,"y":80},{"x":438,"y":80}],[{"x":332.5,"y":105},{"x":332.5,"y":220},{"x":438,"y":220}],[{"x":538,"y":80},{"x":604.5,"y":80}],[{"x":654.5,"y":80},{"x":721,"y":80}],[{"x":821,"y":80},{"x":887,"y":80}],[{"x":987,"y":80},{"x":1053,"y":80}],[{"x":1153,"y":80},{"x":1213,"y":80}],[{"x":1313,"y":80},{"x":1379.5,"y":80}],[{"x":629.5,"y":105},{"x":629.5,"y":612},{"x":721,"y":612}],[{"x":821,"y":612},{"x":919,"y":612}],[{"x":955,"y":612},{"x":1346.25,"y":612},{"x":1346.25,"y":80},{"x":1379.5,"y":80}],[{"x":1404.5,"y":105},{"x":1404.5,"y":472},{"x":1496,"y":472}],[{"x":1596,"y":472},{"x":1656,"y":472}],[{"x":1756,"y":472},{"x":1822.5,"y":472}],[{"x":1872.5,"y":472},{"x":2015.5,"y":472}],[{"x":1847.5,"y":497},{"x":1847.5,"y":612},{"x":2015.5,"y":612}],[{"x":1847.5,"y":447},{"x":1847.5,"y":358},{"x":2015.5,"y":358}],[{"x":2051.5,"y":612},{"x":2123,"y":612},{"x":2123,"y":472},{"x":2194.5,"y":472}],[{"x":2033.5,"y":454},{"x":2033.5,"y":411.5},{"x":2219.5,"y":411.5},{"x":2219.5,"y":447}],[{"x":2033.5,"y":376},{"x":2033.5,"y":391.5},{"x":2219.5,"y":391.5},{"x":2219.5,"y":447}],[{"x":2244.5,"y":472},{"x":2311,"y":472}],[{"x":2411,"y":472},{"x":2471,"y":472}],[{"x":2571,"y":472},{"x":2631,"y":472}],[{"x":488,"y":260},{"x":488,"y":300},{"x":177,"y":300},{"x":177,"y":120}]]},{"file":"miwg-c-4-0","process":"_f0035388-f829-470c-b82b-0b15c3da3399","shapes":[{"id":"_e9306b3f-3a77-42e1-b53e-2ed8ee45486d","bounds":{"x":7,"y":22,"width":36,"height":36},"container":false},{"id":"_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c","bounds":{"x":110,"y":0,"width":100,"height":80},"container":false},{"id":"_c29af228-0768-4dfe-945a-17755e173674","bounds":{"x":270,"y":0,"width":100,"height":80},"container":false},{"id":"_912f731a-fb6b-499b-a3f4-4c1632d606bd","bounds":{"x":430,"y":0,"width":100,"height":80},"container":false},{"id":"_9db2d136-aa33-4de2-be76-554e7843363d","bounds":{"x":590,"y":0,"width":100,"height":80},"container":false},{"id":"_ad173aff-cfe3-4098-8c65-02f783ad9e1f","bounds":{"x":750,"y":0,"width":100,"height":80},"container":false},{"id":"_c82dd8eb-ce54-4aa7-b8c4-b8d3e8fd654e","bounds":{"x":965.5,"y":22,"width":36,"height":36},"container":false},{"id":"_e355b511-e181-4e7b-a9b1-30cb48dd6cab","bounds":{"x":0,"y":160,"width":50,"height":50},"container":false},{"id":"_b60be020-1f04-46c2-b1a9-19bfc66ead82","bounds":{"x":0,"y":290,"width":50,"height":50},"container":false},{"id":"_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e","bounds":{"x":540,"y":-80,"width":200,"height":30},"container":false},{"id":"BLOCK","bounds":{"x":57,"y":20,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"_e9306b3f-3a77-42e1-b53e-2ed8ee45486d","targetRef":"_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c","waypoints":[{"x":43,"y":40},{"x":110,"y":40}]},{"kind":"sequence","sourceRef":"_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c","targetRef":"_c29af228-0768-4dfe-945a-17755e173674","waypoints":[{"x":210,"y":40},{"x":270,"y":40}]},{"kind":"sequence","sourceRef":"_c29af228-0768-4dfe-945a-17755e173674","targetRef":"_912f731a-fb6b-499b-a3f4-4c1632d606bd","waypoints":[{"x":370,"y":40},{"x":430,"y":40}]},{"kind":"sequence","sourceRef":"_912f731a-fb6b-499b-a3f4-4c1632d606bd","targetRef":"_9db2d136-aa33-4de2-be76-554e7843363d","waypoints":[{"x":530,"y":40},{"x":590,"y":40}]},{"kind":"sequence","sourceRef":"_9db2d136-aa33-4de2-be76-554e7843363d","targetRef":"_ad173aff-cfe3-4098-8c65-02f783ad9e1f","waypoints":[{"x":690,"y":40},{"x":750,"y":40}]},{"kind":"sequence","sourceRef":"_ad173aff-cfe3-4098-8c65-02f783ad9e1f","targetRef":"_c82dd8eb-ce54-4aa7-b8c4-b8d3e8fd654e","waypoints":[{"x":850,"y":40},{"x":965.5,"y":40}]},{"kind":"association","sourceRef":"_9db2d136-aa33-4de2-be76-554e7843363d","targetRef":"_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e","waypoints":[{"x":640,"y":0},{"x":640,"y":-50}]}],"expected":[[{"x":25,"y":22},{"x":25,"y":10},{"x":98,"y":10},{"x":98,"y":40},{"x":110,"y":40}],[{"x":210,"y":40},{"x":270,"y":40}],[{"x":370,"y":40},{"x":430,"y":40}],[{"x":530,"y":40},{"x":590,"y":40}],[{"x":690,"y":40},{"x":750,"y":40}],[{"x":850,"y":40},{"x":965.5,"y":40}],[{"x":640,"y":0},{"x":640,"y":-50}]]},{"file":"miwg-c-4-0","process":"_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4","shapes":[{"id":"_3d4130c6-48c9-47fe-8e95-2eeb56060e2b","bounds":{"x":7,"y":22,"width":36,"height":36},"container":false},{"id":"_ae47ce79-bd91-452b-be68-47a2ea589e75","bounds":{"x":110,"y":0,"width":100,"height":80},"container":false},{"id":"_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1","bounds":{"x":304.5,"y":15,"width":50,"height":50},"container":false},{"id":"_788443d9-65f0-43a4-96a8-63e8d6f380a7","bounds":{"x":449,"y":0,"width":100,"height":80},"container":false},{"id":"_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0","bounds":{"x":609,"y":0,"width":100,"height":80},"container":false},{"id":"_efbd0983-76cd-4a4c-acf3-6dde71d7c760","bounds":{"x":769,"y":22,"width":36,"height":36},"container":false},{"id":"_16498c9e-c33f-4f92-9033-714b89582a7c","bounds":{"x":0,"y":163,"width":50,"height":50},"container":false},{"id":"_a9cffac5-6e03-41de-83bf-d34304f28b1a","bounds":{"x":0,"y":293,"width":50,"height":50},"container":false},{"id":"BLOCK","bounds":{"x":57,"y":20,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"_3d4130c6-48c9-47fe-8e95-2eeb56060e2b","targetRef":"_ae47ce79-bd91-452b-be68-47a2ea589e75","waypoints":[{"x":43,"y":40},{"x":110,"y":40}]},{"kind":"sequence","sourceRef":"_ae47ce79-bd91-452b-be68-47a2ea589e75","targetRef":"_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1","waypoints":[{"x":210,"y":40},{"x":304.5,"y":40}]},{"kind":"sequence","sourceRef":"_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1","targetRef":"_788443d9-65f0-43a4-96a8-63e8d6f380a7","waypoints":[{"x":354.5,"y":40},{"x":449,"y":40}]},{"kind":"sequence","sourceRef":"_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1","targetRef":"_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0","waypoints":[{"x":329.5,"y":15},{"x":329.5,"y":-40},{"x":659,"y":-40},{"x":659,"y":0}]},{"kind":"sequence","sourceRef":"_788443d9-65f0-43a4-96a8-63e8d6f380a7","targetRef":"_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0","waypoints":[{"x":549,"y":40},{"x":609,"y":40}]},{"kind":"sequence","sourceRef":"_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0","targetRef":"_efbd0983-76cd-4a4c-acf3-6dde71d7c760","waypoints":[{"x":709,"y":40},{"x":769,"y":40}]}],"expected":[[{"x":25,"y":58},{"x":25,"y":70},{"x":98,"y":70},{"x":98,"y":40},{"x":110,"y":40}],[{"x":210,"y":40},{"x":304.5,"y":40}],[{"x":354.5,"y":40},{"x":449,"y":40}],[{"x":329.5,"y":15},{"x":329.5,"y":-40},{"x":659,"y":-40},{"x":659,"y":0}],[{"x":549,"y":40},{"x":609,"y":40}],[{"x":709,"y":40},{"x":769,"y":40}]]},{"file":"miwg-c-4-0","process":"_3486bf55-0a7f-4ff1-be15-1555669f58ad","shapes":[{"id":"_94a62738-dc7a-49f6-81d8-f5642f7ae850","bounds":{"x":7,"y":22,"width":36,"height":36},"container":false},{"id":"_2bf94039-15a1-44bb-9d14-81358777466c","bounds":{"x":113,"y":0,"width":100,"height":80},"container":false},{"id":"_737503c8-10bc-483f-8871-5461d822b469","bounds":{"x":273,"y":0,"width":100,"height":80},"container":false},{"id":"_5ee09fe4-f38f-454d-b6e4-1c3703a6a239","bounds":{"x":439.5,"y":22,"width":36,"height":36},"container":false},{"id":"_9931ba94-ede8-4f53-8081-878c549ba1c8","bounds":{"x":0,"y":160,"width":50,"height":50},"container":false},{"id":"BLOCK","bounds":{"x":58,"y":20,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"_94a62738-dc7a-49f6-81d8-f5642f7ae850","targetRef":"_2bf94039-15a1-44bb-9d14-81358777466c","waypoints":[{"x":43,"y":40},{"x":113,"y":40}]},{"kind":"sequence","sourceRef":"_2bf94039-15a1-44bb-9d14-81358777466c","targetRef":"_737503c8-10bc-483f-8871-5461d822b469","waypoints":[{"x":213,"y":40},{"x":273,"y":40}]},{"kind":"sequence","sourceRef":"_737503c8-10bc-483f-8871-5461d822b469","targetRef":"_5ee09fe4-f38f-454d-b6e4-1c3703a6a239","waypoints":[{"x":373,"y":40},{"x":439.5,"y":40}]}],"expected":[[{"x":25,"y":22},{"x":25,"y":10},{"x":101,"y":10},{"x":101,"y":40},{"x":113,"y":40}],[{"x":213,"y":40},{"x":273,"y":40}],[{"x":373,"y":40},{"x":439.5,"y":40}]]},{"file":"layout-kyc-onboarding","process":"KycOnboarding","shapes":[{"id":"start","bounds":{"x":0,"y":22,"width":36,"height":36},"container":false},{"id":"uploadDocument","bounds":{"x":130.5,"y":0,"width":100,"height":80},"container":false},{"id":"verifyDocument","bounds":{"x":290.5,"y":0,"width":100,"height":80},"container":false},{"id":"qualityGateway","bounds":{"x":450.5,"y":15,"width":50,"height":50},"container":false},{"id":"incrementRetry","bounds":{"x":653.5,"y":0,"width":100,"height":80},"container":false},{"id":"retryGateway","bounds":{"x":816.5,"y":15,"width":50,"height":50},"container":false},{"id":"sendVerificationRejection","bounds":{"x":1005.5,"y":0,"width":100,"height":80},"container":false},{"id":"endRejectedVerification","bounds":{"x":1210.5,"y":22,"width":36,"height":36},"container":false},{"id":"screening","bounds":{"x":653.5,"y":140,"width":100,"height":80},"container":false},{"id":"dueDiligenceGateway","bounds":{"x":816.5,"y":155,"width":50,"height":50},"container":false},{"id":"standardDueDiligence","bounds":{"x":1005.5,"y":140,"width":100,"height":80},"container":false},{"id":"complianceReview","bounds":{"x":1005.5,"y":280,"width":100,"height":80},"container":false},{"id":"riskClassification","bounds":{"x":1351.5,"y":140,"width":100,"height":80},"container":false},{"id":"outcomeGateway","bounds":{"x":1525,"y":155,"width":50,"height":50},"container":false},{"id":"activateAccount","bounds":{"x":1658,"y":140,"width":100,"height":80},"container":false},{"id":"endApproved","bounds":{"x":1838.5,"y":162,"width":36,"height":36},"container":false},{"id":"escalateToCompliance","bounds":{"x":1658,"y":280,"width":100,"height":80},"container":false},{"id":"endEscalated","bounds":{"x":1838.5,"y":302,"width":36,"height":36},"container":false},{"id":"sendFinalRejection","bounds":{"x":1658,"y":420,"width":100,"height":80},"container":false},{"id":"endRejected","bounds":{"x":1838.5,"y":442,"width":36,"height":36},"container":false},{"id":"dueDiligenceGateway_join","bounds":{"x":1203.5,"y":155,"width":50,"height":50},"container":false},{"id":"BLOCK","bounds":{"x":63,"y":20,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"start","targetRef":"uploadDocument","waypoints":[{"x":36,"y":40},{"x":130.5,"y":40}]},{"kind":"sequence","sourceRef":"uploadDocument","targetRef":"verifyDocument","waypoints":[{"x":230.5,"y":40},{"x":290.5,"y":40}]},{"kind":"sequence","sourceRef":"verifyDocument","targetRef":"qualityGateway","waypoints":[{"x":390.5,"y":40},{"x":450.5,"y":40}]},{"kind":"sequence","sourceRef":"qualityGateway","targetRef":"screening","waypoints":[{"x":475.5,"y":65},{"x":475.5,"y":180},{"x":653.5,"y":180}]},{"kind":"sequence","sourceRef":"qualityGateway","targetRef":"incrementRetry","waypoints":[{"x":500.5,"y":40},{"x":653.5,"y":40}]},{"kind":"sequence","sourceRef":"incrementRetry","targetRef":"retryGateway","waypoints":[{"x":753.5,"y":40},{"x":816.5,"y":40}]},{"kind":"sequence","sourceRef":"retryGateway","targetRef":"uploadDocument","waypoints":[{"x":841.5,"y":15},{"x":841.5,"y":-40},{"x":180.5,"y":-40},{"x":180.5,"y":0}]},{"kind":"sequence","sourceRef":"retryGateway","targetRef":"sendVerificationRejection","waypoints":[{"x":866.5,"y":40},{"x":1005.5,"y":40}]},{"kind":"sequence","sourceRef":"sendVerificationRejection","targetRef":"endRejectedVerification","waypoints":[{"x":1105.5,"y":40},{"x":1210.5,"y":40}]},{"kind":"sequence","sourceRef":"screening","targetRef":"dueDiligenceGateway","waypoints":[{"x":753.5,"y":180},{"x":816.5,"y":180}]},{"kind":"sequence","sourceRef":"dueDiligenceGateway","targetRef":"standardDueDiligence","waypoints":[{"x":866.5,"y":180},{"x":1005.5,"y":180}]},{"kind":"sequence","sourceRef":"standardDueDiligence","targetRef":"dueDiligenceGateway_join","waypoints":[{"x":1105.5,"y":180},{"x":1203.5,"y":180}]},{"kind":"sequence","sourceRef":"dueDiligenceGateway","targetRef":"complianceReview","waypoints":[{"x":841.5,"y":205},{"x":841.5,"y":320},{"x":1005.5,"y":320}]},{"kind":"sequence","sourceRef":"complianceReview","targetRef":"dueDiligenceGateway_join","waypoints":[{"x":1055.5,"y":280},{"x":1055.5,"y":250},{"x":1228.5,"y":250},{"x":1228.5,"y":205}]},{"kind":"sequence","sourceRef":"riskClassification","targetRef":"outcomeGateway","waypoints":[{"x":1451.5,"y":180},{"x":1525,"y":180}]},{"kind":"sequence","sourceRef":"outcomeGateway","targetRef":"activateAccount","waypoints":[{"x":1575,"y":180},{"x":1658,"y":180}]},{"kind":"sequence","sourceRef":"activateAccount","targetRef":"endApproved","waypoints":[{"x":1758,"y":180},{"x":1838.5,"y":180}]},{"kind":"sequence","sourceRef":"outcomeGateway","targetRef":"escalateToCompliance","waypoints":[{"x":1550,"y":205},{"x":1550,"y":320},{"x":1658,"y":320}]},{"kind":"sequence","sourceRef":"escalateToCompliance","targetRef":"endEscalated","waypoints":[{"x":1758,"y":320},{"x":1838.5,"y":320}]},{"kind":"sequence","sourceRef":"outcomeGateway","targetRef":"sendFinalRejection","waypoints":[{"x":1550,"y":205},{"x":1550,"y":460},{"x":1658,"y":460}]},{"kind":"sequence","sourceRef":"sendFinalRejection","targetRef":"endRejected","waypoints":[{"x":1758,"y":460},{"x":1838.5,"y":460}]},{"kind":"sequence","sourceRef":"dueDiligenceGateway_join","targetRef":"riskClassification","waypoints":[{"x":1253.5,"y":180},{"x":1351.5,"y":180}]}],"expected":[[{"x":18,"y":58},{"x":18,"y":70},{"x":118.5,"y":70},{"x":118.5,"y":40},{"x":130.5,"y":40}],[{"x":230.5,"y":40},{"x":290.5,"y":40}],[{"x":390.5,"y":40},{"x":450.5,"y":40}],[{"x":475.5,"y":65},{"x":475.5,"y":180},{"x":653.5,"y":180}],[{"x":500.5,"y":40},{"x":653.5,"y":40}],[{"x":753.5,"y":40},{"x":816.5,"y":40}],[{"x":841.5,"y":15},{"x":841.5,"y":-40},{"x":180.5,"y":-40},{"x":180.5,"y":0}],[{"x":866.5,"y":40},{"x":1005.5,"y":40}],[{"x":1105.5,"y":40},{"x":1210.5,"y":40}],[{"x":753.5,"y":180},{"x":816.5,"y":180}],[{"x":866.5,"y":180},{"x":1005.5,"y":180}],[{"x":1105.5,"y":180},{"x":1203.5,"y":180}],[{"x":841.5,"y":205},{"x":841.5,"y":320},{"x":1005.5,"y":320}],[{"x":1055.5,"y":280},{"x":1055.5,"y":250},{"x":1228.5,"y":250},{"x":1228.5,"y":205}],[{"x":1451.5,"y":180},{"x":1525,"y":180}],[{"x":1575,"y":180},{"x":1658,"y":180}],[{"x":1758,"y":180},{"x":1838.5,"y":180}],[{"x":1550,"y":205},{"x":1550,"y":320},{"x":1658,"y":320}],[{"x":1758,"y":320},{"x":1838.5,"y":320}],[{"x":1550,"y":205},{"x":1550,"y":460},{"x":1658,"y":460}],[{"x":1758,"y":460},{"x":1838.5,"y":460}],[{"x":1253.5,"y":180},{"x":1351.5,"y":180}]]},{"file":"collaboration","process":"Process_buyer","shapes":[{"id":"Start_buyer","bounds":{"x":0,"y":62,"width":36,"height":36},"container":false},{"id":"Task_place_order","bounds":{"x":96,"y":40,"width":100,"height":80},"container":false},{"id":"End_buyer","bounds":{"x":256,"y":200,"width":36,"height":36},"container":false},{"id":"BLOCK","bounds":{"x":46,"y":60,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"Start_buyer","targetRef":"Task_place_order","waypoints":[{"x":36,"y":80},{"x":96,"y":80}]},{"kind":"sequence","sourceRef":"Task_place_order","targetRef":"End_buyer","waypoints":[{"x":146,"y":120},{"x":146,"y":218},{"x":256,"y":218}]}],"expected":[[{"x":18,"y":98},{"x":18,"y":132},{"x":146,"y":132},{"x":146,"y":120}],[{"x":146,"y":120},{"x":146,"y":218},{"x":256,"y":218}]]},{"file":"collaboration","process":"Process_seller","shapes":[{"id":"Start_seller","bounds":{"x":0,"y":0,"width":36,"height":36},"container":false},{"id":"End_seller","bounds":{"x":96,"y":0,"width":36,"height":36},"container":false},{"id":"BLOCK","bounds":{"x":46,"y":-2,"width":40,"height":40},"container":false}],"input":[{"kind":"sequence","sourceRef":"Start_seller","targetRef":"End_seller","waypoints":[{"x":36,"y":18},{"x":96,"y":18}]}],"expected":[[{"x":18,"y":0},{"x":18,"y":-12},{"x":114,"y":-12},{"x":114,"y":0}]]}]
+[
+	{
+		"file": "artifacts",
+		"process": "Process_artifacts",
+		"shapes": [
+			{
+				"id": "Start_art",
+				"bounds": { "x": 0, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "Task_review",
+				"bounds": { "x": 96, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "End_art",
+				"bounds": { "x": 256, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "TextAnnotation_sla",
+				"bounds": { "x": 46, "y": -93, "width": 200, "height": 43 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 46, "y": 20, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "Start_art",
+				"targetRef": "Task_review",
+				"waypoints": [{ "x": 36, "y": 40 }, { "x": 96, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "Task_review",
+				"targetRef": "End_art",
+				"waypoints": [{ "x": 196, "y": 40 }, { "x": 256, "y": 40 }]
+			},
+			{
+				"kind": "association",
+				"sourceRef": "Task_review",
+				"targetRef": "TextAnnotation_sla",
+				"waypoints": [{ "x": 146, "y": 0 }, { "x": 146, "y": -50 }]
+			}
+		],
+		"expected": [
+			[{ "x": 18, "y": 58 }, { "x": 18, "y": 92 }, { "x": 146, "y": 92 }, { "x": 146, "y": 80 }],
+			[{ "x": 196, "y": 40 }, { "x": 256, "y": 40 }],
+			[{ "x": 146, "y": 0 }, { "x": 146, "y": -50 }]
+		]
+	},
+	{
+		"file": "bakeoff-expected",
+		"process": "ai-agent-chat-with-tools",
+		"shapes": [
+			{
+				"id": "StartEvent_TaskReceived",
+				"bounds": { "x": 0, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "Gateway_RunAgent",
+				"bounds": { "x": 120, "y": 15, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "AI_Agent",
+				"bounds": { "x": 270, "y": 0, "width": 340, "height": 308 },
+				"container": false
+			},
+			{
+				"id": "UserTask_ReviewAgentResponse",
+				"bounds": { "x": 710, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "Gateway_UserSatisfied",
+				"bounds": { "x": 870, "y": 15, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "EndEvent_UserSatisfied",
+				"bounds": { "x": 996.5, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "LookupSampleUsers",
+				"bounds": { "x": 320, "y": 78, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "SearchRecipes",
+				"bounds": { "x": 460, "y": 78, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "FetchSafeJoke",
+				"bounds": { "x": 320, "y": 178, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "ListSampleTechnologyProducts",
+				"bounds": { "x": 460, "y": 178, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "TextAnnotation_StartEvent_TaskReceived_1",
+				"bounds": { "x": -82, "y": -143, "width": 200, "height": 115 },
+				"container": false
+			},
+			{
+				"id": "TextAnnotation_AI_Agent_1",
+				"bounds": { "x": 340, "y": -108, "width": 200, "height": 58 },
+				"container": false
+			},
+			{
+				"id": "TextAnnotation_FetchSafeJoke_1",
+				"bounds": { "x": 270, "y": 368, "width": 200, "height": 101 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 58, "y": 20, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "StartEvent_TaskReceived",
+				"targetRef": "Gateway_RunAgent",
+				"waypoints": [{ "x": 36, "y": 40 }, { "x": 120, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "Gateway_RunAgent",
+				"targetRef": "AI_Agent",
+				"waypoints": [{ "x": 170, "y": 40 }, { "x": 270, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "AI_Agent",
+				"targetRef": "UserTask_ReviewAgentResponse",
+				"waypoints": [{ "x": 610, "y": 40 }, { "x": 710, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "UserTask_ReviewAgentResponse",
+				"targetRef": "Gateway_UserSatisfied",
+				"waypoints": [{ "x": 810, "y": 40 }, { "x": 870, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "Gateway_UserSatisfied",
+				"targetRef": "EndEvent_UserSatisfied",
+				"waypoints": [{ "x": 920, "y": 40 }, { "x": 996.5, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "Gateway_UserSatisfied",
+				"targetRef": "Gateway_RunAgent",
+				"waypoints": [
+					{ "x": 895, "y": 65 },
+					{ "x": 895, "y": 348 },
+					{ "x": 145, "y": 348 },
+					{ "x": 145, "y": 65 }
+				]
+			},
+			{
+				"kind": "association",
+				"sourceRef": "StartEvent_TaskReceived",
+				"targetRef": "TextAnnotation_StartEvent_TaskReceived_1",
+				"waypoints": [{ "x": 18, "y": 22 }, { "x": 18, "y": -28 }]
+			},
+			{
+				"kind": "association",
+				"sourceRef": "AI_Agent",
+				"targetRef": "TextAnnotation_AI_Agent_1",
+				"waypoints": [{ "x": 440, "y": 0 }, { "x": 440, "y": -50 }]
+			},
+			{
+				"kind": "association",
+				"sourceRef": "FetchSafeJoke",
+				"targetRef": "TextAnnotation_FetchSafeJoke_1",
+				"waypoints": [{ "x": 370, "y": 258 }, { "x": 370, "y": 368 }]
+			}
+		],
+		"expected": [
+			[{ "x": 18, "y": 58 }, { "x": 18, "y": 77 }, { "x": 145, "y": 77 }, { "x": 145, "y": 65 }],
+			[{ "x": 170, "y": 40 }, { "x": 270, "y": 40 }],
+			[{ "x": 610, "y": 40 }, { "x": 710, "y": 40 }],
+			[{ "x": 810, "y": 40 }, { "x": 870, "y": 40 }],
+			[{ "x": 920, "y": 40 }, { "x": 996.5, "y": 40 }],
+			[
+				{ "x": 895, "y": 65 },
+				{ "x": 895, "y": 348 },
+				{ "x": 145, "y": 348 },
+				{ "x": 145, "y": 65 }
+			],
+			[{ "x": 18, "y": 22 }, { "x": 18, "y": -28 }],
+			[{ "x": 440, "y": 0 }, { "x": 440, "y": -50 }],
+			[{ "x": 370, "y": 258 }, { "x": 370, "y": 368 }]
+		]
+	},
+	{
+		"file": "miwg-b-1-0",
+		"process": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+		"shapes": [
+			{
+				"id": "_200f43e7-1385-46e2-a380-3ef16ebe7847",
+				"bounds": { "x": 0, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_c57a5344-213f-4834-a6c3-94ce878b413c",
+				"bounds": { "x": 99, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_ed405919-9fd6-47d0-bb00-9be7d5467efb",
+				"bounds": { "x": 259, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 48, "y": 20, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "_200f43e7-1385-46e2-a380-3ef16ebe7847",
+				"targetRef": "_c57a5344-213f-4834-a6c3-94ce878b413c",
+				"waypoints": [{ "x": 36, "y": 40 }, { "x": 99, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_c57a5344-213f-4834-a6c3-94ce878b413c",
+				"targetRef": "_ed405919-9fd6-47d0-bb00-9be7d5467efb",
+				"waypoints": [{ "x": 199, "y": 40 }, { "x": 259, "y": 40 }]
+			}
+		],
+		"expected": [
+			[{ "x": 18, "y": 58 }, { "x": 18, "y": 92 }, { "x": 149, "y": 92 }, { "x": 149, "y": 80 }],
+			[{ "x": 199, "y": 40 }, { "x": 259, "y": 40 }]
+		]
+	},
+	{
+		"file": "miwg-b-1-0",
+		"process": "WFP-6-1",
+		"shapes": [
+			{
+				"id": "_e314751e-5c3a-41f2-a1ae-4cb99efa0916",
+				"bounds": { "x": 0, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_94efa7e0-2322-4fc3-a5bf-6c6296488927",
+				"bounds": { "x": 576, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_219b9ca1-d4c5-497d-a4f7-06a44a6da20e",
+				"bounds": { "x": 96, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_f7eade87-bb98-47d3-85c7-66033a62b124",
+				"bounds": { "x": 256, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_ec919941-53ec-403d-97e1-6a163a063f21",
+				"bounds": { "x": 416, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 46, "y": 20, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "_e314751e-5c3a-41f2-a1ae-4cb99efa0916",
+				"targetRef": "_219b9ca1-d4c5-497d-a4f7-06a44a6da20e",
+				"waypoints": [{ "x": 36, "y": 40 }, { "x": 96, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_219b9ca1-d4c5-497d-a4f7-06a44a6da20e",
+				"targetRef": "_f7eade87-bb98-47d3-85c7-66033a62b124",
+				"waypoints": [{ "x": 196, "y": 40 }, { "x": 256, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_f7eade87-bb98-47d3-85c7-66033a62b124",
+				"targetRef": "_ec919941-53ec-403d-97e1-6a163a063f21",
+				"waypoints": [{ "x": 356, "y": 40 }, { "x": 416, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_ec919941-53ec-403d-97e1-6a163a063f21",
+				"targetRef": "_94efa7e0-2322-4fc3-a5bf-6c6296488927",
+				"waypoints": [{ "x": 516, "y": 40 }, { "x": 576, "y": 40 }]
+			}
+		],
+		"expected": [
+			[{ "x": 18, "y": 58 }, { "x": 18, "y": 92 }, { "x": 146, "y": 92 }, { "x": 146, "y": 80 }],
+			[{ "x": 196, "y": 40 }, { "x": 256, "y": 40 }],
+			[{ "x": 356, "y": 40 }, { "x": 416, "y": 40 }],
+			[{ "x": 516, "y": 40 }, { "x": 576, "y": 40 }]
+		]
+	},
+	{
+		"file": "miwg-b-1-0",
+		"process": "WFP-6-2",
+		"shapes": [
+			{
+				"id": "DF1373655174778",
+				"bounds": { "x": 7, "y": 1003, "width": 36, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_2ee553a1-cb03-41e3-b285-345c826fc88d",
+				"bounds": { "x": 1559, "y": 337, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_fa3a8e53-5be0-4f0b-8680-d2498e255209",
+				"bounds": { "x": 599.5, "y": 455, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+				"bounds": { "x": 772.5, "y": 315, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_93021cd0-6f49-485d-966f-209744c748de",
+				"bounds": { "x": 1186.5, "y": 330, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_3c8c32c3-089a-4643-bf42-6c37c0dac7e0",
+				"bounds": { "x": 396.5, "y": 330, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_a38484e2-7bdb-48b1-b62e-139d51d6a147",
+				"bounds": { "x": 7, "y": 47, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_be29f267-9d56-46ef-8bbc-e13513b25fce",
+				"bounds": { "x": 179, "y": 40, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_1237e756-d53c-4591-a731-dafffbf0b3f9",
+				"bounds": { "x": 599.5, "y": 315, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_1eb62392-1f21-4a63-bbcb-c78880c3165e",
+				"bounds": { "x": 772.5, "y": 693, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_7706e700-2aed-4b94-8070-961f118aab8f",
+				"bounds": { "x": 371.5, "y": 693, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_ad81e6ba-40f5-43c1-9602-47d2e58804c8",
+				"bounds": { "x": 624.5, "y": 708, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_33f30031-2e29-46b6-b080-30a192a36b45",
+				"bounds": { "x": 1552, "y": 708, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_7e6ccf38-e740-4537-a439-a8e984d066de",
+				"bounds": { "x": 972.5, "y": 615, "width": 478, "height": 208 },
+				"container": false
+			},
+			{
+				"id": "_fea1c5af-6c76-403f-809e-26d476d92741",
+				"bounds": { "x": 772.5, "y": 843, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_ae916437-d9aa-4e3d-a7c3-34998c410beb",
+				"bounds": { "x": 1752, "y": 715, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_3d35229f-2c75-4d5d-a066-2d14e46e442e",
+				"bounds": { "x": 7, "y": 1801, "width": 36, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_b9385abf-d293-40b7-848b-8add4db48415",
+				"bounds": { "x": 0, "y": 1931, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_1df01cbc-5d8c-444e-b1db-da3efdee254a",
+				"bounds": { "x": 1067.5, "y": 715, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_6936f794-7bbb-4aa1-ae48-3a35bab4e2f4",
+				"bounds": { "x": 1166.5, "y": 693, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_4f744697-3643-41a9-9d07-84c78e2df64b",
+				"bounds": { "x": 1326.5, "y": 715, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_4815ea6a-ede2-489b-8b37-2cdb2835b02c",
+				"bounds": { "x": 550, "y": 235, "width": 200, "height": 30 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 91, "y": 45, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "_a38484e2-7bdb-48b1-b62e-139d51d6a147",
+				"targetRef": "_be29f267-9d56-46ef-8bbc-e13513b25fce",
+				"waypoints": [{ "x": 43, "y": 65 }, { "x": 179, "y": 65 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_be29f267-9d56-46ef-8bbc-e13513b25fce",
+				"targetRef": "_7706e700-2aed-4b94-8070-961f118aab8f",
+				"waypoints": [{ "x": 204, "y": 90 }, { "x": 204, "y": 733 }, { "x": 371.5, "y": 733 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_7e6ccf38-e740-4537-a439-a8e984d066de",
+				"targetRef": "_33f30031-2e29-46b6-b080-30a192a36b45",
+				"waypoints": [{ "x": 1450.5, "y": 733 }, { "x": 1552, "y": 733 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_be29f267-9d56-46ef-8bbc-e13513b25fce",
+				"targetRef": "_3c8c32c3-089a-4643-bf42-6c37c0dac7e0",
+				"waypoints": [
+					{ "x": 229, "y": 65 },
+					{ "x": 300.25, "y": 65 },
+					{ "x": 300.25, "y": 355 },
+					{ "x": 396.5, "y": 355 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_1237e756-d53c-4591-a731-dafffbf0b3f9",
+				"targetRef": "_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+				"waypoints": [{ "x": 699.5, "y": 355 }, { "x": 772.5, "y": 355 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_1eb62392-1f21-4a63-bbcb-c78880c3165e",
+				"targetRef": "_7e6ccf38-e740-4537-a439-a8e984d066de",
+				"waypoints": [{ "x": 872.5, "y": 733 }, { "x": 972.5, "y": 733 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_fa3a8e53-5be0-4f0b-8680-d2498e255209",
+				"targetRef": "_93021cd0-6f49-485d-966f-209744c748de",
+				"waypoints": [
+					{ "x": 699.5, "y": 495 },
+					{ "x": 922.5, "y": 495 },
+					{ "x": 922.5, "y": 355 },
+					{ "x": 1186.5, "y": 355 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_7706e700-2aed-4b94-8070-961f118aab8f",
+				"targetRef": "_ad81e6ba-40f5-43c1-9602-47d2e58804c8",
+				"waypoints": [{ "x": 471.5, "y": 733 }, { "x": 624.5, "y": 733 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_ad81e6ba-40f5-43c1-9602-47d2e58804c8",
+				"targetRef": "_1eb62392-1f21-4a63-bbcb-c78880c3165e",
+				"waypoints": [{ "x": 674.5, "y": 733 }, { "x": 772.5, "y": 733 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_ad81e6ba-40f5-43c1-9602-47d2e58804c8",
+				"targetRef": "_fea1c5af-6c76-403f-809e-26d476d92741",
+				"waypoints": [{ "x": 649.5, "y": 758 }, { "x": 649.5, "y": 883 }, { "x": 772.5, "y": 883 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+				"targetRef": "_93021cd0-6f49-485d-966f-209744c748de",
+				"waypoints": [
+					{ "x": 822.5, "y": 315 },
+					{ "x": 822.5, "y": 275 },
+					{ "x": 1211.5, "y": 275 },
+					{ "x": 1211.5, "y": 330 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_fea1c5af-6c76-403f-809e-26d476d92741",
+				"targetRef": "_33f30031-2e29-46b6-b080-30a192a36b45",
+				"waypoints": [
+					{ "x": 822.5, "y": 923 },
+					{ "x": 822.5, "y": 963 },
+					{ "x": 1577, "y": 963 },
+					{ "x": 1577, "y": 758 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_33f30031-2e29-46b6-b080-30a192a36b45",
+				"targetRef": "_ae916437-d9aa-4e3d-a7c3-34998c410beb",
+				"waypoints": [{ "x": 1602, "y": 733 }, { "x": 1752, "y": 733 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_3c8c32c3-089a-4643-bf42-6c37c0dac7e0",
+				"targetRef": "_1237e756-d53c-4591-a731-dafffbf0b3f9",
+				"waypoints": [{ "x": 446.5, "y": 355 }, { "x": 599.5, "y": 355 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_3c8c32c3-089a-4643-bf42-6c37c0dac7e0",
+				"targetRef": "_fa3a8e53-5be0-4f0b-8680-d2498e255209",
+				"waypoints": [{ "x": 421.5, "y": 380 }, { "x": 421.5, "y": 495 }, { "x": 599.5, "y": 495 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_93021cd0-6f49-485d-966f-209744c748de",
+				"targetRef": "_2ee553a1-cb03-41e3-b285-345c826fc88d",
+				"waypoints": [{ "x": 1236.5, "y": 355 }, { "x": 1559, "y": 355 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_1df01cbc-5d8c-444e-b1db-da3efdee254a",
+				"targetRef": "_6936f794-7bbb-4aa1-ae48-3a35bab4e2f4",
+				"waypoints": [{ "x": 1103.5, "y": 733 }, { "x": 1166.5, "y": 733 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_6936f794-7bbb-4aa1-ae48-3a35bab4e2f4",
+				"targetRef": "_4f744697-3643-41a9-9d07-84c78e2df64b",
+				"waypoints": [{ "x": 1266.5, "y": 733 }, { "x": 1326.5, "y": 733 }]
+			},
+			{
+				"kind": "association",
+				"sourceRef": "_1237e756-d53c-4591-a731-dafffbf0b3f9",
+				"targetRef": "_4815ea6a-ede2-489b-8b37-2cdb2835b02c",
+				"waypoints": [{ "x": 650, "y": 315 }, { "x": 649.5, "y": 265 }]
+			}
+		],
+		"expected": [
+			[{ "x": 25, "y": 47 }, { "x": 25, "y": 28 }, { "x": 204, "y": 28 }, { "x": 204, "y": 40 }],
+			[{ "x": 204, "y": 90 }, { "x": 204, "y": 733 }, { "x": 371.5, "y": 733 }],
+			[{ "x": 1450.5, "y": 733 }, { "x": 1552, "y": 733 }],
+			[
+				{ "x": 229, "y": 65 },
+				{ "x": 300.25, "y": 65 },
+				{ "x": 300.25, "y": 355 },
+				{ "x": 396.5, "y": 355 }
+			],
+			[{ "x": 699.5, "y": 355 }, { "x": 772.5, "y": 355 }],
+			[{ "x": 872.5, "y": 733 }, { "x": 972.5, "y": 733 }],
+			[
+				{ "x": 699.5, "y": 495 },
+				{ "x": 922.5, "y": 495 },
+				{ "x": 922.5, "y": 355 },
+				{ "x": 1186.5, "y": 355 }
+			],
+			[{ "x": 471.5, "y": 733 }, { "x": 624.5, "y": 733 }],
+			[{ "x": 674.5, "y": 733 }, { "x": 772.5, "y": 733 }],
+			[{ "x": 649.5, "y": 758 }, { "x": 649.5, "y": 883 }, { "x": 772.5, "y": 883 }],
+			[
+				{ "x": 822.5, "y": 315 },
+				{ "x": 822.5, "y": 275 },
+				{ "x": 1211.5, "y": 275 },
+				{ "x": 1211.5, "y": 330 }
+			],
+			[
+				{ "x": 822.5, "y": 923 },
+				{ "x": 822.5, "y": 963 },
+				{ "x": 1577, "y": 963 },
+				{ "x": 1577, "y": 758 }
+			],
+			[{ "x": 1602, "y": 733 }, { "x": 1752, "y": 733 }],
+			[{ "x": 446.5, "y": 355 }, { "x": 599.5, "y": 355 }],
+			[{ "x": 421.5, "y": 380 }, { "x": 421.5, "y": 495 }, { "x": 599.5, "y": 495 }],
+			[{ "x": 1236.5, "y": 355 }, { "x": 1559, "y": 355 }],
+			[{ "x": 1103.5, "y": 733 }, { "x": 1166.5, "y": 733 }],
+			[{ "x": 1266.5, "y": 733 }, { "x": 1326.5, "y": 733 }],
+			[{ "x": 650, "y": 315 }, { "x": 649.5, "y": 265 }]
+		]
+	},
+	{
+		"file": "miwg-b-1-0",
+		"process": "WFP-0-",
+		"shapes": [
+			{
+				"id": "_18770c5c-c117-4570-aaf2-8c7a6910c34d",
+				"bounds": { "x": 0, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_47207d3b-8dc2-4679-bf33-c1e7e677765b",
+				"bounds": { "x": 99, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_ab12c75c-eaf3-4ae1-9021-ee556711757f",
+				"bounds": { "x": 259, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 48, "y": 20, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "_18770c5c-c117-4570-aaf2-8c7a6910c34d",
+				"targetRef": "_47207d3b-8dc2-4679-bf33-c1e7e677765b",
+				"waypoints": [{ "x": 36, "y": 40 }, { "x": 99, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_47207d3b-8dc2-4679-bf33-c1e7e677765b",
+				"targetRef": "_ab12c75c-eaf3-4ae1-9021-ee556711757f",
+				"waypoints": [{ "x": 199, "y": 40 }, { "x": 259, "y": 40 }]
+			}
+		],
+		"expected": [
+			[{ "x": 18, "y": 58 }, { "x": 18, "y": 92 }, { "x": 149, "y": 92 }, { "x": 149, "y": 80 }],
+			[{ "x": 199, "y": 40 }, { "x": 259, "y": 40 }]
+		]
+	},
+	{
+		"file": "miwg-c-4-0",
+		"process": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+		"shapes": [
+			{
+				"id": "_a4220c17-364f-4a08-ae9c-757a6468b295",
+				"bounds": { "x": 7, "y": 62, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_f8973a92-3d84-4672-a1a3-b0df154121e1",
+				"bounds": { "x": 127, "y": 40, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_f9e3cd76-809a-48b5-be1c-e84fc4324268",
+				"bounds": { "x": 307.5, "y": 55, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_aa275782-c989-49ba-bf94-c58916ca7bb5",
+				"bounds": { "x": 438, "y": 40, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_987b9b74-333a-4043-a72a-daadf667acc7",
+				"bounds": { "x": 438, "y": 180, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_305ddf53-49a8-4105-ad06-70272a2332aa",
+				"bounds": { "x": 604.5, "y": 55, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_0e71ed63-93f9-44b6-a89d-da9628652926",
+				"bounds": { "x": 721, "y": 40, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_eba690b9-34ef-49e4-b265-1411809d9302",
+				"bounds": { "x": 887, "y": 40, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_67944b4c-4950-45a2-a131-1c4679c6b433",
+				"bounds": { "x": 1053, "y": 40, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5",
+				"bounds": { "x": 1213, "y": 40, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_82da02ca-ee9a-4403-9f3b-aad030e089b9",
+				"bounds": { "x": 1379.5, "y": 55, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_f00a95f6-043e-4ec1-8731-153a707e950c",
+				"bounds": { "x": 0, "y": 732, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_986cf801-0780-49d3-91cd-2cc6d3c1aac3",
+				"bounds": { "x": 721, "y": 572, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_855451b0-5298-48b2-a81d-84ecbcca0a85",
+				"bounds": { "x": 919, "y": 594, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_72da5cee-0456-4c3c-ba8d-6dd085d6f52d",
+				"bounds": { "x": 1496, "y": 432, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_e3d3ac43-74a3-48ff-9a02-e64b1358cc34",
+				"bounds": { "x": 1656, "y": 432, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_80f70d22-fb42-403f-8bdb-6805e9467bb7",
+				"bounds": { "x": 1822.5, "y": 447, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_fe77c2f2-278f-4752-9d03-aa0c8a12af1e",
+				"bounds": { "x": 2015.5, "y": 594, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_db9147a9-7fbc-4657-a506-15e777f2cfd9",
+				"bounds": { "x": 2015.5, "y": 340, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_74e2cc7b-99ca-426b-ad53-ad70a56506aa",
+				"bounds": { "x": 2015.5, "y": 454, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_19808f32-dfb5-462d-aaa6-e662f9932dba",
+				"bounds": { "x": 2194.5, "y": 447, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_351b058e-c37c-4fb7-9d32-24075f53ce02",
+				"bounds": { "x": 2311, "y": 432, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_52401cbb-02b8-4eaf-84f1-1edbc0854a4a",
+				"bounds": { "x": 2471, "y": 432, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_36baf139-fb74-43ef-8936-d490238c2825",
+				"bounds": { "x": 2631, "y": 454, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 65, "y": 60, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "_a4220c17-364f-4a08-ae9c-757a6468b295",
+				"targetRef": "_f8973a92-3d84-4672-a1a3-b0df154121e1",
+				"waypoints": [{ "x": 43, "y": 80 }, { "x": 127, "y": 80 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_f8973a92-3d84-4672-a1a3-b0df154121e1",
+				"targetRef": "_f9e3cd76-809a-48b5-be1c-e84fc4324268",
+				"waypoints": [{ "x": 227, "y": 80 }, { "x": 307.5, "y": 80 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_f9e3cd76-809a-48b5-be1c-e84fc4324268",
+				"targetRef": "_aa275782-c989-49ba-bf94-c58916ca7bb5",
+				"waypoints": [{ "x": 357.5, "y": 80 }, { "x": 438, "y": 80 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_f9e3cd76-809a-48b5-be1c-e84fc4324268",
+				"targetRef": "_987b9b74-333a-4043-a72a-daadf667acc7",
+				"waypoints": [{ "x": 332.5, "y": 105 }, { "x": 332.5, "y": 220 }, { "x": 438, "y": 220 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_aa275782-c989-49ba-bf94-c58916ca7bb5",
+				"targetRef": "_305ddf53-49a8-4105-ad06-70272a2332aa",
+				"waypoints": [{ "x": 538, "y": 80 }, { "x": 604.5, "y": 80 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_305ddf53-49a8-4105-ad06-70272a2332aa",
+				"targetRef": "_0e71ed63-93f9-44b6-a89d-da9628652926",
+				"waypoints": [{ "x": 654.5, "y": 80 }, { "x": 721, "y": 80 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_0e71ed63-93f9-44b6-a89d-da9628652926",
+				"targetRef": "_eba690b9-34ef-49e4-b265-1411809d9302",
+				"waypoints": [{ "x": 821, "y": 80 }, { "x": 887, "y": 80 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_eba690b9-34ef-49e4-b265-1411809d9302",
+				"targetRef": "_67944b4c-4950-45a2-a131-1c4679c6b433",
+				"waypoints": [{ "x": 987, "y": 80 }, { "x": 1053, "y": 80 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_67944b4c-4950-45a2-a131-1c4679c6b433",
+				"targetRef": "_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5",
+				"waypoints": [{ "x": 1153, "y": 80 }, { "x": 1213, "y": 80 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5",
+				"targetRef": "_82da02ca-ee9a-4403-9f3b-aad030e089b9",
+				"waypoints": [{ "x": 1313, "y": 80 }, { "x": 1379.5, "y": 80 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_305ddf53-49a8-4105-ad06-70272a2332aa",
+				"targetRef": "_986cf801-0780-49d3-91cd-2cc6d3c1aac3",
+				"waypoints": [{ "x": 629.5, "y": 105 }, { "x": 629.5, "y": 612 }, { "x": 721, "y": 612 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_986cf801-0780-49d3-91cd-2cc6d3c1aac3",
+				"targetRef": "_855451b0-5298-48b2-a81d-84ecbcca0a85",
+				"waypoints": [{ "x": 821, "y": 612 }, { "x": 919, "y": 612 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_855451b0-5298-48b2-a81d-84ecbcca0a85",
+				"targetRef": "_82da02ca-ee9a-4403-9f3b-aad030e089b9",
+				"waypoints": [
+					{ "x": 955, "y": 612 },
+					{ "x": 1346.25, "y": 612 },
+					{ "x": 1346.25, "y": 80 },
+					{ "x": 1379.5, "y": 80 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_82da02ca-ee9a-4403-9f3b-aad030e089b9",
+				"targetRef": "_72da5cee-0456-4c3c-ba8d-6dd085d6f52d",
+				"waypoints": [{ "x": 1404.5, "y": 105 }, { "x": 1404.5, "y": 472 }, { "x": 1496, "y": 472 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_72da5cee-0456-4c3c-ba8d-6dd085d6f52d",
+				"targetRef": "_e3d3ac43-74a3-48ff-9a02-e64b1358cc34",
+				"waypoints": [{ "x": 1596, "y": 472 }, { "x": 1656, "y": 472 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_e3d3ac43-74a3-48ff-9a02-e64b1358cc34",
+				"targetRef": "_80f70d22-fb42-403f-8bdb-6805e9467bb7",
+				"waypoints": [{ "x": 1756, "y": 472 }, { "x": 1822.5, "y": 472 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_80f70d22-fb42-403f-8bdb-6805e9467bb7",
+				"targetRef": "_74e2cc7b-99ca-426b-ad53-ad70a56506aa",
+				"waypoints": [{ "x": 1872.5, "y": 472 }, { "x": 2015.5, "y": 472 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_80f70d22-fb42-403f-8bdb-6805e9467bb7",
+				"targetRef": "_fe77c2f2-278f-4752-9d03-aa0c8a12af1e",
+				"waypoints": [
+					{ "x": 1847.5, "y": 497 },
+					{ "x": 1847.5, "y": 612 },
+					{ "x": 2015.5, "y": 612 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_80f70d22-fb42-403f-8bdb-6805e9467bb7",
+				"targetRef": "_db9147a9-7fbc-4657-a506-15e777f2cfd9",
+				"waypoints": [
+					{ "x": 1847.5, "y": 447 },
+					{ "x": 1847.5, "y": 358 },
+					{ "x": 2015.5, "y": 358 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_fe77c2f2-278f-4752-9d03-aa0c8a12af1e",
+				"targetRef": "_19808f32-dfb5-462d-aaa6-e662f9932dba",
+				"waypoints": [
+					{ "x": 2051.5, "y": 612 },
+					{ "x": 2123, "y": 612 },
+					{ "x": 2123, "y": 472 },
+					{ "x": 2194.5, "y": 472 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_74e2cc7b-99ca-426b-ad53-ad70a56506aa",
+				"targetRef": "_19808f32-dfb5-462d-aaa6-e662f9932dba",
+				"waypoints": [
+					{ "x": 2033.5, "y": 454 },
+					{ "x": 2033.5, "y": 411.5 },
+					{ "x": 2219.5, "y": 411.5 },
+					{ "x": 2219.5, "y": 447 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_db9147a9-7fbc-4657-a506-15e777f2cfd9",
+				"targetRef": "_19808f32-dfb5-462d-aaa6-e662f9932dba",
+				"waypoints": [
+					{ "x": 2033.5, "y": 376 },
+					{ "x": 2033.5, "y": 391.5 },
+					{ "x": 2219.5, "y": 391.5 },
+					{ "x": 2219.5, "y": 447 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_19808f32-dfb5-462d-aaa6-e662f9932dba",
+				"targetRef": "_351b058e-c37c-4fb7-9d32-24075f53ce02",
+				"waypoints": [{ "x": 2244.5, "y": 472 }, { "x": 2311, "y": 472 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_351b058e-c37c-4fb7-9d32-24075f53ce02",
+				"targetRef": "_52401cbb-02b8-4eaf-84f1-1edbc0854a4a",
+				"waypoints": [{ "x": 2411, "y": 472 }, { "x": 2471, "y": 472 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_52401cbb-02b8-4eaf-84f1-1edbc0854a4a",
+				"targetRef": "_36baf139-fb74-43ef-8936-d490238c2825",
+				"waypoints": [{ "x": 2571, "y": 472 }, { "x": 2631, "y": 472 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_987b9b74-333a-4043-a72a-daadf667acc7",
+				"targetRef": "_f8973a92-3d84-4672-a1a3-b0df154121e1",
+				"waypoints": [
+					{ "x": 488, "y": 260 },
+					{ "x": 488, "y": 300 },
+					{ "x": 177, "y": 300 },
+					{ "x": 177, "y": 120 }
+				]
+			}
+		],
+		"expected": [
+			[
+				{ "x": 25, "y": 98 },
+				{ "x": 25, "y": 110 },
+				{ "x": 115, "y": 110 },
+				{ "x": 115, "y": 80 },
+				{ "x": 127, "y": 80 }
+			],
+			[{ "x": 227, "y": 80 }, { "x": 307.5, "y": 80 }],
+			[{ "x": 357.5, "y": 80 }, { "x": 438, "y": 80 }],
+			[{ "x": 332.5, "y": 105 }, { "x": 332.5, "y": 220 }, { "x": 438, "y": 220 }],
+			[{ "x": 538, "y": 80 }, { "x": 604.5, "y": 80 }],
+			[{ "x": 654.5, "y": 80 }, { "x": 721, "y": 80 }],
+			[{ "x": 821, "y": 80 }, { "x": 887, "y": 80 }],
+			[{ "x": 987, "y": 80 }, { "x": 1053, "y": 80 }],
+			[{ "x": 1153, "y": 80 }, { "x": 1213, "y": 80 }],
+			[{ "x": 1313, "y": 80 }, { "x": 1379.5, "y": 80 }],
+			[{ "x": 629.5, "y": 105 }, { "x": 629.5, "y": 612 }, { "x": 721, "y": 612 }],
+			[{ "x": 821, "y": 612 }, { "x": 919, "y": 612 }],
+			[
+				{ "x": 955, "y": 612 },
+				{ "x": 1346.25, "y": 612 },
+				{ "x": 1346.25, "y": 80 },
+				{ "x": 1379.5, "y": 80 }
+			],
+			[{ "x": 1404.5, "y": 105 }, { "x": 1404.5, "y": 472 }, { "x": 1496, "y": 472 }],
+			[{ "x": 1596, "y": 472 }, { "x": 1656, "y": 472 }],
+			[{ "x": 1756, "y": 472 }, { "x": 1822.5, "y": 472 }],
+			[{ "x": 1872.5, "y": 472 }, { "x": 2015.5, "y": 472 }],
+			[{ "x": 1847.5, "y": 497 }, { "x": 1847.5, "y": 612 }, { "x": 2015.5, "y": 612 }],
+			[{ "x": 1847.5, "y": 447 }, { "x": 1847.5, "y": 358 }, { "x": 2015.5, "y": 358 }],
+			[
+				{ "x": 2051.5, "y": 612 },
+				{ "x": 2123, "y": 612 },
+				{ "x": 2123, "y": 472 },
+				{ "x": 2194.5, "y": 472 }
+			],
+			[
+				{ "x": 2033.5, "y": 454 },
+				{ "x": 2033.5, "y": 411.5 },
+				{ "x": 2219.5, "y": 411.5 },
+				{ "x": 2219.5, "y": 447 }
+			],
+			[
+				{ "x": 2033.5, "y": 376 },
+				{ "x": 2033.5, "y": 391.5 },
+				{ "x": 2219.5, "y": 391.5 },
+				{ "x": 2219.5, "y": 447 }
+			],
+			[{ "x": 2244.5, "y": 472 }, { "x": 2311, "y": 472 }],
+			[{ "x": 2411, "y": 472 }, { "x": 2471, "y": 472 }],
+			[{ "x": 2571, "y": 472 }, { "x": 2631, "y": 472 }],
+			[
+				{ "x": 488, "y": 260 },
+				{ "x": 488, "y": 300 },
+				{ "x": 177, "y": 300 },
+				{ "x": 177, "y": 120 }
+			]
+		]
+	},
+	{
+		"file": "miwg-c-4-0",
+		"process": "_f0035388-f829-470c-b82b-0b15c3da3399",
+		"shapes": [
+			{
+				"id": "_e9306b3f-3a77-42e1-b53e-2ed8ee45486d",
+				"bounds": { "x": 7, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c",
+				"bounds": { "x": 110, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_c29af228-0768-4dfe-945a-17755e173674",
+				"bounds": { "x": 270, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_912f731a-fb6b-499b-a3f4-4c1632d606bd",
+				"bounds": { "x": 430, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_9db2d136-aa33-4de2-be76-554e7843363d",
+				"bounds": { "x": 590, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_ad173aff-cfe3-4098-8c65-02f783ad9e1f",
+				"bounds": { "x": 750, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_c82dd8eb-ce54-4aa7-b8c4-b8d3e8fd654e",
+				"bounds": { "x": 965.5, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_e355b511-e181-4e7b-a9b1-30cb48dd6cab",
+				"bounds": { "x": 0, "y": 160, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_b60be020-1f04-46c2-b1a9-19bfc66ead82",
+				"bounds": { "x": 0, "y": 290, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e",
+				"bounds": { "x": 540, "y": -80, "width": 200, "height": 30 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 57, "y": 20, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "_e9306b3f-3a77-42e1-b53e-2ed8ee45486d",
+				"targetRef": "_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c",
+				"waypoints": [{ "x": 43, "y": 40 }, { "x": 110, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c",
+				"targetRef": "_c29af228-0768-4dfe-945a-17755e173674",
+				"waypoints": [{ "x": 210, "y": 40 }, { "x": 270, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_c29af228-0768-4dfe-945a-17755e173674",
+				"targetRef": "_912f731a-fb6b-499b-a3f4-4c1632d606bd",
+				"waypoints": [{ "x": 370, "y": 40 }, { "x": 430, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_912f731a-fb6b-499b-a3f4-4c1632d606bd",
+				"targetRef": "_9db2d136-aa33-4de2-be76-554e7843363d",
+				"waypoints": [{ "x": 530, "y": 40 }, { "x": 590, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_9db2d136-aa33-4de2-be76-554e7843363d",
+				"targetRef": "_ad173aff-cfe3-4098-8c65-02f783ad9e1f",
+				"waypoints": [{ "x": 690, "y": 40 }, { "x": 750, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_ad173aff-cfe3-4098-8c65-02f783ad9e1f",
+				"targetRef": "_c82dd8eb-ce54-4aa7-b8c4-b8d3e8fd654e",
+				"waypoints": [{ "x": 850, "y": 40 }, { "x": 965.5, "y": 40 }]
+			},
+			{
+				"kind": "association",
+				"sourceRef": "_9db2d136-aa33-4de2-be76-554e7843363d",
+				"targetRef": "_246c3cf7-fb4b-4c05-8ece-55c77fb4dc1e",
+				"waypoints": [{ "x": 640, "y": 0 }, { "x": 640, "y": -50 }]
+			}
+		],
+		"expected": [
+			[
+				{ "x": 25, "y": 22 },
+				{ "x": 25, "y": 10 },
+				{ "x": 98, "y": 10 },
+				{ "x": 98, "y": 40 },
+				{ "x": 110, "y": 40 }
+			],
+			[{ "x": 210, "y": 40 }, { "x": 270, "y": 40 }],
+			[{ "x": 370, "y": 40 }, { "x": 430, "y": 40 }],
+			[{ "x": 530, "y": 40 }, { "x": 590, "y": 40 }],
+			[{ "x": 690, "y": 40 }, { "x": 750, "y": 40 }],
+			[{ "x": 850, "y": 40 }, { "x": 965.5, "y": 40 }],
+			[{ "x": 640, "y": 0 }, { "x": 640, "y": -50 }]
+		]
+	},
+	{
+		"file": "miwg-c-4-0",
+		"process": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+		"shapes": [
+			{
+				"id": "_3d4130c6-48c9-47fe-8e95-2eeb56060e2b",
+				"bounds": { "x": 7, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_ae47ce79-bd91-452b-be68-47a2ea589e75",
+				"bounds": { "x": 110, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1",
+				"bounds": { "x": 304.5, "y": 15, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_788443d9-65f0-43a4-96a8-63e8d6f380a7",
+				"bounds": { "x": 449, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0",
+				"bounds": { "x": 609, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_efbd0983-76cd-4a4c-acf3-6dde71d7c760",
+				"bounds": { "x": 769, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_16498c9e-c33f-4f92-9033-714b89582a7c",
+				"bounds": { "x": 0, "y": 163, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "_a9cffac5-6e03-41de-83bf-d34304f28b1a",
+				"bounds": { "x": 0, "y": 293, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 57, "y": 20, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "_3d4130c6-48c9-47fe-8e95-2eeb56060e2b",
+				"targetRef": "_ae47ce79-bd91-452b-be68-47a2ea589e75",
+				"waypoints": [{ "x": 43, "y": 40 }, { "x": 110, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_ae47ce79-bd91-452b-be68-47a2ea589e75",
+				"targetRef": "_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1",
+				"waypoints": [{ "x": 210, "y": 40 }, { "x": 304.5, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1",
+				"targetRef": "_788443d9-65f0-43a4-96a8-63e8d6f380a7",
+				"waypoints": [{ "x": 354.5, "y": 40 }, { "x": 449, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1",
+				"targetRef": "_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0",
+				"waypoints": [
+					{ "x": 329.5, "y": 15 },
+					{ "x": 329.5, "y": -40 },
+					{ "x": 659, "y": -40 },
+					{ "x": 659, "y": 0 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_788443d9-65f0-43a4-96a8-63e8d6f380a7",
+				"targetRef": "_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0",
+				"waypoints": [{ "x": 549, "y": 40 }, { "x": 609, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0",
+				"targetRef": "_efbd0983-76cd-4a4c-acf3-6dde71d7c760",
+				"waypoints": [{ "x": 709, "y": 40 }, { "x": 769, "y": 40 }]
+			}
+		],
+		"expected": [
+			[
+				{ "x": 25, "y": 58 },
+				{ "x": 25, "y": 70 },
+				{ "x": 98, "y": 70 },
+				{ "x": 98, "y": 40 },
+				{ "x": 110, "y": 40 }
+			],
+			[{ "x": 210, "y": 40 }, { "x": 304.5, "y": 40 }],
+			[{ "x": 354.5, "y": 40 }, { "x": 449, "y": 40 }],
+			[
+				{ "x": 329.5, "y": 15 },
+				{ "x": 329.5, "y": -40 },
+				{ "x": 659, "y": -40 },
+				{ "x": 659, "y": 0 }
+			],
+			[{ "x": 549, "y": 40 }, { "x": 609, "y": 40 }],
+			[{ "x": 709, "y": 40 }, { "x": 769, "y": 40 }]
+		]
+	},
+	{
+		"file": "miwg-c-4-0",
+		"process": "_3486bf55-0a7f-4ff1-be15-1555669f58ad",
+		"shapes": [
+			{
+				"id": "_94a62738-dc7a-49f6-81d8-f5642f7ae850",
+				"bounds": { "x": 7, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_2bf94039-15a1-44bb-9d14-81358777466c",
+				"bounds": { "x": 113, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_737503c8-10bc-483f-8871-5461d822b469",
+				"bounds": { "x": 273, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "_5ee09fe4-f38f-454d-b6e4-1c3703a6a239",
+				"bounds": { "x": 439.5, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "_9931ba94-ede8-4f53-8081-878c549ba1c8",
+				"bounds": { "x": 0, "y": 160, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 58, "y": 20, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "_94a62738-dc7a-49f6-81d8-f5642f7ae850",
+				"targetRef": "_2bf94039-15a1-44bb-9d14-81358777466c",
+				"waypoints": [{ "x": 43, "y": 40 }, { "x": 113, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_2bf94039-15a1-44bb-9d14-81358777466c",
+				"targetRef": "_737503c8-10bc-483f-8871-5461d822b469",
+				"waypoints": [{ "x": 213, "y": 40 }, { "x": 273, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "_737503c8-10bc-483f-8871-5461d822b469",
+				"targetRef": "_5ee09fe4-f38f-454d-b6e4-1c3703a6a239",
+				"waypoints": [{ "x": 373, "y": 40 }, { "x": 439.5, "y": 40 }]
+			}
+		],
+		"expected": [
+			[
+				{ "x": 25, "y": 22 },
+				{ "x": 25, "y": 10 },
+				{ "x": 101, "y": 10 },
+				{ "x": 101, "y": 40 },
+				{ "x": 113, "y": 40 }
+			],
+			[{ "x": 213, "y": 40 }, { "x": 273, "y": 40 }],
+			[{ "x": 373, "y": 40 }, { "x": 439.5, "y": 40 }]
+		]
+	},
+	{
+		"file": "layout-kyc-onboarding",
+		"process": "KycOnboarding",
+		"shapes": [
+			{
+				"id": "start",
+				"bounds": { "x": 0, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "uploadDocument",
+				"bounds": { "x": 130.5, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "verifyDocument",
+				"bounds": { "x": 290.5, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "qualityGateway",
+				"bounds": { "x": 450.5, "y": 15, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "incrementRetry",
+				"bounds": { "x": 653.5, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "retryGateway",
+				"bounds": { "x": 816.5, "y": 15, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "sendVerificationRejection",
+				"bounds": { "x": 1005.5, "y": 0, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "endRejectedVerification",
+				"bounds": { "x": 1210.5, "y": 22, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "screening",
+				"bounds": { "x": 653.5, "y": 140, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "dueDiligenceGateway",
+				"bounds": { "x": 816.5, "y": 155, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "standardDueDiligence",
+				"bounds": { "x": 1005.5, "y": 140, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "complianceReview",
+				"bounds": { "x": 1005.5, "y": 280, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "riskClassification",
+				"bounds": { "x": 1351.5, "y": 140, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "outcomeGateway",
+				"bounds": { "x": 1525, "y": 155, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "activateAccount",
+				"bounds": { "x": 1658, "y": 140, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "endApproved",
+				"bounds": { "x": 1838.5, "y": 162, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "escalateToCompliance",
+				"bounds": { "x": 1658, "y": 280, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "endEscalated",
+				"bounds": { "x": 1838.5, "y": 302, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "sendFinalRejection",
+				"bounds": { "x": 1658, "y": 420, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "endRejected",
+				"bounds": { "x": 1838.5, "y": 442, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "dueDiligenceGateway_join",
+				"bounds": { "x": 1203.5, "y": 155, "width": 50, "height": 50 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 63, "y": 20, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "start",
+				"targetRef": "uploadDocument",
+				"waypoints": [{ "x": 36, "y": 40 }, { "x": 130.5, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "uploadDocument",
+				"targetRef": "verifyDocument",
+				"waypoints": [{ "x": 230.5, "y": 40 }, { "x": 290.5, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "verifyDocument",
+				"targetRef": "qualityGateway",
+				"waypoints": [{ "x": 390.5, "y": 40 }, { "x": 450.5, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "qualityGateway",
+				"targetRef": "screening",
+				"waypoints": [{ "x": 475.5, "y": 65 }, { "x": 475.5, "y": 180 }, { "x": 653.5, "y": 180 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "qualityGateway",
+				"targetRef": "incrementRetry",
+				"waypoints": [{ "x": 500.5, "y": 40 }, { "x": 653.5, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "incrementRetry",
+				"targetRef": "retryGateway",
+				"waypoints": [{ "x": 753.5, "y": 40 }, { "x": 816.5, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "retryGateway",
+				"targetRef": "uploadDocument",
+				"waypoints": [
+					{ "x": 841.5, "y": 15 },
+					{ "x": 841.5, "y": -40 },
+					{ "x": 180.5, "y": -40 },
+					{ "x": 180.5, "y": 0 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "retryGateway",
+				"targetRef": "sendVerificationRejection",
+				"waypoints": [{ "x": 866.5, "y": 40 }, { "x": 1005.5, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "sendVerificationRejection",
+				"targetRef": "endRejectedVerification",
+				"waypoints": [{ "x": 1105.5, "y": 40 }, { "x": 1210.5, "y": 40 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "screening",
+				"targetRef": "dueDiligenceGateway",
+				"waypoints": [{ "x": 753.5, "y": 180 }, { "x": 816.5, "y": 180 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "dueDiligenceGateway",
+				"targetRef": "standardDueDiligence",
+				"waypoints": [{ "x": 866.5, "y": 180 }, { "x": 1005.5, "y": 180 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "standardDueDiligence",
+				"targetRef": "dueDiligenceGateway_join",
+				"waypoints": [{ "x": 1105.5, "y": 180 }, { "x": 1203.5, "y": 180 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "dueDiligenceGateway",
+				"targetRef": "complianceReview",
+				"waypoints": [{ "x": 841.5, "y": 205 }, { "x": 841.5, "y": 320 }, { "x": 1005.5, "y": 320 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "complianceReview",
+				"targetRef": "dueDiligenceGateway_join",
+				"waypoints": [
+					{ "x": 1055.5, "y": 280 },
+					{ "x": 1055.5, "y": 250 },
+					{ "x": 1228.5, "y": 250 },
+					{ "x": 1228.5, "y": 205 }
+				]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "riskClassification",
+				"targetRef": "outcomeGateway",
+				"waypoints": [{ "x": 1451.5, "y": 180 }, { "x": 1525, "y": 180 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "outcomeGateway",
+				"targetRef": "activateAccount",
+				"waypoints": [{ "x": 1575, "y": 180 }, { "x": 1658, "y": 180 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "activateAccount",
+				"targetRef": "endApproved",
+				"waypoints": [{ "x": 1758, "y": 180 }, { "x": 1838.5, "y": 180 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "outcomeGateway",
+				"targetRef": "escalateToCompliance",
+				"waypoints": [{ "x": 1550, "y": 205 }, { "x": 1550, "y": 320 }, { "x": 1658, "y": 320 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "escalateToCompliance",
+				"targetRef": "endEscalated",
+				"waypoints": [{ "x": 1758, "y": 320 }, { "x": 1838.5, "y": 320 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "outcomeGateway",
+				"targetRef": "sendFinalRejection",
+				"waypoints": [{ "x": 1550, "y": 205 }, { "x": 1550, "y": 460 }, { "x": 1658, "y": 460 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "sendFinalRejection",
+				"targetRef": "endRejected",
+				"waypoints": [{ "x": 1758, "y": 460 }, { "x": 1838.5, "y": 460 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "dueDiligenceGateway_join",
+				"targetRef": "riskClassification",
+				"waypoints": [{ "x": 1253.5, "y": 180 }, { "x": 1351.5, "y": 180 }]
+			}
+		],
+		"expected": [
+			[
+				{ "x": 18, "y": 58 },
+				{ "x": 18, "y": 70 },
+				{ "x": 118.5, "y": 70 },
+				{ "x": 118.5, "y": 40 },
+				{ "x": 130.5, "y": 40 }
+			],
+			[{ "x": 230.5, "y": 40 }, { "x": 290.5, "y": 40 }],
+			[{ "x": 390.5, "y": 40 }, { "x": 450.5, "y": 40 }],
+			[{ "x": 475.5, "y": 65 }, { "x": 475.5, "y": 180 }, { "x": 653.5, "y": 180 }],
+			[{ "x": 500.5, "y": 40 }, { "x": 653.5, "y": 40 }],
+			[{ "x": 753.5, "y": 40 }, { "x": 816.5, "y": 40 }],
+			[
+				{ "x": 841.5, "y": 15 },
+				{ "x": 841.5, "y": -40 },
+				{ "x": 180.5, "y": -40 },
+				{ "x": 180.5, "y": 0 }
+			],
+			[{ "x": 866.5, "y": 40 }, { "x": 1005.5, "y": 40 }],
+			[{ "x": 1105.5, "y": 40 }, { "x": 1210.5, "y": 40 }],
+			[{ "x": 753.5, "y": 180 }, { "x": 816.5, "y": 180 }],
+			[{ "x": 866.5, "y": 180 }, { "x": 1005.5, "y": 180 }],
+			[{ "x": 1105.5, "y": 180 }, { "x": 1203.5, "y": 180 }],
+			[{ "x": 841.5, "y": 205 }, { "x": 841.5, "y": 320 }, { "x": 1005.5, "y": 320 }],
+			[
+				{ "x": 1055.5, "y": 280 },
+				{ "x": 1055.5, "y": 250 },
+				{ "x": 1228.5, "y": 250 },
+				{ "x": 1228.5, "y": 205 }
+			],
+			[{ "x": 1451.5, "y": 180 }, { "x": 1525, "y": 180 }],
+			[{ "x": 1575, "y": 180 }, { "x": 1658, "y": 180 }],
+			[{ "x": 1758, "y": 180 }, { "x": 1838.5, "y": 180 }],
+			[{ "x": 1550, "y": 205 }, { "x": 1550, "y": 320 }, { "x": 1658, "y": 320 }],
+			[{ "x": 1758, "y": 320 }, { "x": 1838.5, "y": 320 }],
+			[{ "x": 1550, "y": 205 }, { "x": 1550, "y": 460 }, { "x": 1658, "y": 460 }],
+			[{ "x": 1758, "y": 460 }, { "x": 1838.5, "y": 460 }],
+			[{ "x": 1253.5, "y": 180 }, { "x": 1351.5, "y": 180 }]
+		]
+	},
+	{
+		"file": "collaboration",
+		"process": "Process_buyer",
+		"shapes": [
+			{
+				"id": "Start_buyer",
+				"bounds": { "x": 0, "y": 62, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "Task_place_order",
+				"bounds": { "x": 96, "y": 40, "width": 100, "height": 80 },
+				"container": false
+			},
+			{
+				"id": "End_buyer",
+				"bounds": { "x": 256, "y": 200, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 46, "y": 60, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "Start_buyer",
+				"targetRef": "Task_place_order",
+				"waypoints": [{ "x": 36, "y": 80 }, { "x": 96, "y": 80 }]
+			},
+			{
+				"kind": "sequence",
+				"sourceRef": "Task_place_order",
+				"targetRef": "End_buyer",
+				"waypoints": [{ "x": 146, "y": 120 }, { "x": 146, "y": 218 }, { "x": 256, "y": 218 }]
+			}
+		],
+		"expected": [
+			[{ "x": 18, "y": 98 }, { "x": 18, "y": 132 }, { "x": 146, "y": 132 }, { "x": 146, "y": 120 }],
+			[{ "x": 146, "y": 120 }, { "x": 146, "y": 218 }, { "x": 256, "y": 218 }]
+		]
+	},
+	{
+		"file": "collaboration",
+		"process": "Process_seller",
+		"shapes": [
+			{
+				"id": "Start_seller",
+				"bounds": { "x": 0, "y": 0, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "End_seller",
+				"bounds": { "x": 96, "y": 0, "width": 36, "height": 36 },
+				"container": false
+			},
+			{
+				"id": "BLOCK",
+				"bounds": { "x": 46, "y": -2, "width": 40, "height": 40 },
+				"container": false
+			}
+		],
+		"input": [
+			{
+				"kind": "sequence",
+				"sourceRef": "Start_seller",
+				"targetRef": "End_seller",
+				"waypoints": [{ "x": 36, "y": 18 }, { "x": 96, "y": 18 }]
+			}
+		],
+		"expected": [
+			[{ "x": 18, "y": 0 }, { "x": 18, "y": -12 }, { "x": 114, "y": -12 }, { "x": 114, "y": 0 }]
+		]
+	}
+]
