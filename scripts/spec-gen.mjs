@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url"
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..")
 
 /** Area modules, in generation order. */
-const AREAS = ["feel-builtins", "lint-rules", "compat-rules"]
+const AREAS = ["feel-builtins", "lint-rules", "compat-rules", "connector-templates"]
 
 const readJson = (path) => JSON.parse(readFileSync(join(ROOT, path), "utf8"))
 

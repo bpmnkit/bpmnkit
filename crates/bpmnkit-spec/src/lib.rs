@@ -5,6 +5,7 @@
 pub mod compat;
 pub mod feel;
 pub mod lint;
+pub mod templates;
 
 #[rustfmt::skip]
 mod generated {

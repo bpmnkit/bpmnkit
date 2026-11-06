@@ -17,6 +17,7 @@ Behaviour (evaluation, rule logic) stays hand-written on each side; only data li
 | `feel-builtins.json` | `schema/feel-builtins.schema.json` | `packages/feel/src/generated/builtin-signatures.ts` | `bpmnkit_spec::feel` |
 | `lint-rules.json` | `schema/lint-rules.schema.json` | `packages/core/src/generated/lint-rules.ts` | `bpmnkit_spec::lint` |
 | `compat-rules.json` | `schema/compat-rules.schema.json` | `packages/core/src/generated/camunda-compat-data.ts` | `bpmnkit_spec::compat` |
+| `templates/connectors.json` | `schema/connector-templates.schema.json` | `packages/core/src/connectors/templates/generated.ts`, `packages/connectors/src/templates/generated.ts` | `bpmnkit_spec::templates::CONNECTOR_TEMPLATES_JSON` (raw JSON) |
 
 `lint-rules.json` holds bpmnlint's rule names, the `correctness` / `recommended` presets, and each native
 rule's category and `standard-size` defaults. The check functions and their messages (template literals)
@@ -26,6 +27,11 @@ stay in `bpmnlint-rules.ts`: messages are behaviour, not data. `all` is derived 
 built-in and inbound-connector support per version, and the plugin's rules), with the plugin/feel-builtins
 `source` attribution. Timer support is a 2x2 table per property (interrupting x in an event sub-process);
 `camunda-compat-data.ts` stays a facade that rebuilds the `TIMER_SUPPORT` functions from it.
+
+`templates/connectors.json` is the Camunda marketplace's connector templates, whole (about 3.5 MB, Biome-ignored).
+`pnpm update-connectors` fetches the registry and writes this file (plus `catalog-meta.json`), then runs spec-gen,
+which splits each template into the core file (binding/validation keys) and the connectors file (panel-only keys).
+Edit the JSON, not the two TS files. Rust embeds the JSON text rather than generating literals.
 
 ## Adding an area
 
