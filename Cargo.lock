@@ -73,6 +73,7 @@ version = "0.1.0"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-feel",
+ "bpmnkit-form",
  "serde",
  "serde_json",
 ]
@@ -87,6 +88,16 @@ dependencies = [
  "indexmap",
  "regex",
  "rust_decimal",
+ "serde_json",
+]
+
+[[package]]
+name = "bpmnkit-form"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-spec",
+ "indexmap",
+ "serde",
  "serde_json",
 ]
 

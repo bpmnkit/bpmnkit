@@ -1,0 +1,1 @@
+{"id":"approve-form","type":"default","schemaVersion":16,"components":[{"id":"f1","type":"textfield","key":"approver","label":"Approver"},{"id":"f2","type":"checkbox","key":"approved","label":"Approved"}]}

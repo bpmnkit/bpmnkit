@@ -1,0 +1,96 @@
+{
+  "components": [
+    {
+      "id": "a",
+      "key": "a",
+      "label": "A",
+      "type": "select",
+      "values": []
+    },
+    {
+      "id": "b",
+      "key": "b",
+      "label": "B",
+      "type": "select",
+      "values": [
+        {
+          "label": "x",
+          "value": "y"
+        }
+      ],
+      "valuesKey": "src"
+    },
+    {
+      "id": "c",
+      "key": "c",
+      "label": "C",
+      "type": "select",
+      "values": [
+        {
+          "label": "1",
+          "value": "true"
+        },
+        {
+          "label": "",
+          "value": ""
+        },
+        {
+          "label": "1,2,",
+          "value": "[object Object]"
+        },
+        {
+          "label": "",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "d",
+      "key": "d",
+      "label": "D",
+      "type": "radio",
+      "values": [
+        {
+          "label": "Yes",
+          "value": "1"
+        },
+        {
+          "label": "No",
+          "value": "0"
+        }
+      ],
+      "valuesExpression": "=expr"
+    },
+    {
+      "id": "e",
+      "key": "e",
+      "label": "E",
+      "type": "checklist",
+      "valuesExpression": "=list"
+    },
+    {
+      "id": "f",
+      "key": "f",
+      "label": "F",
+      "type": "taglist",
+      "values": [
+        {
+          "label": "α",
+          "value": "β"
+        }
+      ]
+    },
+    {
+      "extraProps": {
+        "values": "not-an-array"
+      },
+      "id": "g",
+      "key": "g",
+      "label": "G",
+      "type": "select"
+    }
+  ],
+  "id": "f",
+  "schemaVersion": 16,
+  "type": "default"
+}

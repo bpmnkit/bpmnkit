@@ -1,0 +1,71 @@
+{
+  "components": [
+    {
+      "id": "a",
+      "key": "a",
+      "label": "A",
+      "type": "textfield",
+      "validate": {}
+    },
+    {
+      "id": "b",
+      "key": "b",
+      "label": "B",
+      "type": "textfield",
+      "validate": {
+        "maxLength": 9
+      }
+    },
+    {
+      "id": "c",
+      "key": "c",
+      "label": "C",
+      "type": "number",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "id": "d",
+      "key": "d",
+      "label": "D",
+      "type": "textarea",
+      "validate": {
+        "minLength": 1.5
+      }
+    },
+    {
+      "extraProps": {
+        "validate": null
+      },
+      "id": "e",
+      "key": "e",
+      "label": "E",
+      "type": "select"
+    },
+    {
+      "extraProps": {
+        "validate": {
+          "required": true
+        }
+      },
+      "id": "f",
+      "key": "f",
+      "type": "datetime"
+    },
+    {
+      "extraProps": {
+        "validate": {
+          "required": true
+        }
+      },
+      "id": "g",
+      "key": "g",
+      "label": "G",
+      "type": "taglist"
+    }
+  ],
+  "id": "f",
+  "schemaVersion": 16,
+  "type": "default"
+}

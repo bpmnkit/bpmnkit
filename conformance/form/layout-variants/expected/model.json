@@ -1,0 +1,67 @@
+{
+  "components": [
+    {
+      "id": "a",
+      "key": "a",
+      "label": "A",
+      "layout": {},
+      "type": "textfield"
+    },
+    {
+      "id": "b",
+      "key": "b",
+      "label": "B",
+      "layout": {
+        "row": "r1"
+      },
+      "type": "textfield"
+    },
+    {
+      "id": "c",
+      "key": "c",
+      "label": "C",
+      "layout": {
+        "columns": 4
+      },
+      "type": "textfield"
+    },
+    {
+      "id": "d",
+      "key": "d",
+      "label": "D",
+      "layout": {
+        "columns": null,
+        "row": "r2"
+      },
+      "type": "textfield"
+    },
+    {
+      "id": "e",
+      "key": "e",
+      "label": "E",
+      "layout": {},
+      "type": "textfield"
+    },
+    {
+      "extraProps": {
+        "layout": null
+      },
+      "id": "f",
+      "key": "f",
+      "label": "F",
+      "type": "textfield"
+    },
+    {
+      "id": "g",
+      "label": "G",
+      "layout": {
+        "columns": 0,
+        "row": "r3"
+      },
+      "type": "button"
+    }
+  ],
+  "id": "f",
+  "schemaVersion": 16,
+  "type": "default"
+}

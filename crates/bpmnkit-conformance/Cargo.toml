@@ -1,6 +1,6 @@
 [package]
 name = "bpmnkit-conformance"
-description = "Shared conformance cases (FEEL, BPMN) and runner for the BPMN Kit Rust crates"
+description = "Shared conformance cases (FEEL, BPMN, forms) and runner for the BPMN Kit Rust crates"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -12,3 +12,4 @@ serde = { workspace = true }
 serde_json = { workspace = true, features = ["float_roundtrip"] }
 bpmnkit-feel = { path = "../bpmnkit-feel" }
 bpmnkit-bpmn = { path = "../bpmnkit-bpmn" }
+bpmnkit-form = { path = "../bpmnkit-form" }

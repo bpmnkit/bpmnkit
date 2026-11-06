@@ -1,0 +1,1 @@
+{"id":"f","type":"default","schemaVersion":16,"components":[{"type":"dynamiclist","id":"dl","components":[{"type":"group","id":"g","label":"G","components":[{"type":"button","id":"ok","label":"ok"},{"type":"textfield","id":"t","key":"k"}]}]}]}

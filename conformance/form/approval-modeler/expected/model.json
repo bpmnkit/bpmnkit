@@ -1,0 +1,36 @@
+{
+  "components": [
+    {
+      "id": "Field_reason",
+      "key": "reason",
+      "label": "Reason for approval",
+      "layout": {
+        "columns": null,
+        "row": "Row_0abc123"
+      },
+      "type": "textfield",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "id": "Field_amount",
+      "key": "amount",
+      "label": "Amount",
+      "layout": {
+        "columns": null,
+        "row": "Row_0def456"
+      },
+      "type": "number"
+    }
+  ],
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.6.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.28.0"
+  },
+  "id": "approval-form",
+  "schemaVersion": 17,
+  "type": "default"
+}

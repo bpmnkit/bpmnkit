@@ -85,6 +85,42 @@ Provenance of the cases added from existing fixtures and samples (paths from the
 | `sample-order-process` | `bpmn-samples/order-process.bpmn` |
 | `sample-parallel-approval` | `bpmn-samples/parallel-approval.bpmn` |
 
+## Form: `form/<case>/`
+
+- `input.form`: source form JSON.
+- `expected/model.json`: `parseForm(input)` as JSON, keys sorted, 2-space indent, trailing newline.
+- `expected/roundtrip.form`: `exportForm(parseForm(input))`, as written (no trailing newline).
+- `expected/error.txt`: instead of the two above, when `parseForm` throws a `ParseError`: its
+  message plus a newline. Cases named `error-*` all take this path. Only the messages of
+  validation errors are pinned; V8's wording of a JSON syntax error is not, so none is recorded.
+
+The recorder is `packages/core/tests/conformance-form.test.ts`; the Rust runner is
+`crates/bpmnkit-conformance/src/form.rs`. Provenance of the cases seeded from existing forms
+(paths from the repo root); the rest are written by hand to cover what the parser does with
+every component type, unknown components and keys, odd JSON values and each error message:
+
+| Case | Source |
+|---|---|
+| `docs-schema-example` | `packages/camunda-docspack/.llms/chunks/apis-tools.frontend-development.03-forms.02-embed-forms.01-concepts.the-form-schema.md` |
+| `approval-modeler` | `FORM` in `packages/core/tests/form-preserving-writer.test.ts` |
+| `drop-sample-minified` | `SAMPLE_FORM_JSON` in `apps/drop/tests/fixtures.ts` |
+| `drop-demo-loan` | `DEMO_FORM` in `apps/drop/src/lib/demo.ts` |
+| `user-tasks-widget` | `FORM` in `packages/user-tasks/tests/widget.test.ts` |
+| `conditional-group` | `src` in `packages/core/tests/form/conditional.test.ts` |
+| `builder-output` | the shape `FormBuilder` + `exportForm` produce (`packages/core/tests/form/builder.test.ts`) |
+| `all-components` | one of every type in `spec/elements/form.json`, every modelled field set |
+| `nested-group-dynamiclist` | hand-written: groups and dynamic lists three levels deep |
+| `layout-variants`, `validation-variants`, `options-variants`, `display-components` | hand-written: valid and malformed values of the modelled fields |
+| `unknown-components`, `unknown-keys`, `prototype-keys` | hand-written: types and keys the model does not know |
+| `numbers`, `string-escapes`, `coercions` | hand-written: JS number printing, JSON escapes, `String(x)` coercions |
+| `tab-indented-reordered`, `metadata-minimal`, `metadata-ignored` | hand-written: input formatting and root keys that differ from `exportForm` |
+| `error-*` | hand-written: one per `ParseError` the parser can throw |
+
+Known gaps (cases were left out rather than pending): a `layout: null` on an unknown component
+makes TS `exportForm` throw a `TypeError`, a raw `extraProps` key on an unknown component is
+spread character by character, and object keys that look like integers are reordered by JS. Rust
+does not model these.
+
 ## `pending.json`
 
 `{"<case id or bpmn/<case>>": "<reason or issue link>"}`: cases a non-TS runner knows it does
