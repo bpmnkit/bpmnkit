@@ -2,8 +2,8 @@
 //! (named in its doc comment) for a bug fixed on both sides.
 
 use bpmnkit_bpmn::model::{BpmnBounds, BpmnDefinitions, BpmnWaypoint};
-use bpmnkit_bpmn::parse_bpmn;
-use bpmnkit_layout::{apply_auto_layout, LayoutEngine};
+use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn};
+use bpmnkit_layout::{apply_auto_layout, apply_auto_layout_owned, LayoutEngine};
 use indexmap::IndexMap;
 
 fn laid_out(xml: &str) -> BpmnDefinitions {
@@ -274,4 +274,39 @@ fn association_between_two_annotations_is_drawn_in_an_annotation_only_pool() {
     for (x, y) in edge_points(&laid, "a") {
         assert!(inside(x, y, 0.0, 0.0, pool), "({x}, {y}) outside the pool");
     }
+}
+
+/// `apply_auto_layout_owned` moves the model instead of copying it; the output must
+/// not change. Covers a plain process, pools with lanes and message flows, nested
+/// sub-processes, existing DI with several diagrams, and a model with no process.
+#[test]
+fn owned_variant_matches_borrowing_variant() {
+    let root = std::path::Path::new(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../conformance/bpmn"
+    ));
+    for case in [
+        "sample-order-process",
+        "collaboration",
+        "miwg-a-4-0",
+        "miwg-c-10-0",
+        "compensation-subprocess",
+        "root-elements",
+    ] {
+        let xml = std::fs::read_to_string(root.join(case).join("input.bpmn")).unwrap();
+        let defs = parse_bpmn(&xml).unwrap_or_else(|e| panic!("{case}: {e:?}"));
+        for engine in [LayoutEngine::Semantic, LayoutEngine::Grid] {
+            let borrowed = serialize_bpmn(&apply_auto_layout(&defs, engine, None));
+            let owned = serialize_bpmn(&apply_auto_layout_owned(defs.clone(), engine, None));
+            assert_eq!(owned, borrowed, "{case} {engine:?}");
+        }
+    }
+    let empty = parse_bpmn(
+        r#"<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="D" targetNamespace="t" />"#,
+    )
+    .expect("parse");
+    assert_eq!(
+        apply_auto_layout_owned(empty.clone(), LayoutEngine::Semantic, None),
+        apply_auto_layout(&empty, LayoutEngine::Semantic, None)
+    );
 }

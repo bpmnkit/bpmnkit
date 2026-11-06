@@ -219,9 +219,44 @@ fn assign_layers(ids: &IndexSet<&str>, nodes: &[DrgNode], edges: &[RequirementEd
 /// Assigns DMNDI diagram positions to all DRG elements using a left-to-right layered
 /// layout based on the requirement DAG. Returns a new model; the input is untouched.
 pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
+    let Some(diagram) = laid_out_diagram(defs) else {
+        return defs.clone();
+    };
+    // Field by field so the source diagram, replaced wholesale, is never cloned.
+    DmnDefinitions {
+        id: defs.id.clone(),
+        name: defs.name.clone(),
+        namespace: defs.namespace.clone(),
+        exporter: defs.exporter.clone(),
+        exporter_version: defs.exporter_version.clone(),
+        namespaces: defs.namespaces.clone(),
+        modeler_attributes: defs.modeler_attributes.clone(),
+        decisions: defs.decisions.clone(),
+        input_data: defs.input_data.clone(),
+        knowledge_sources: defs.knowledge_sources.clone(),
+        business_knowledge_models: defs.business_knowledge_models.clone(),
+        text_annotations: defs.text_annotations.clone(),
+        associations: defs.associations.clone(),
+        diagram: Some(diagram),
+        extension_elements: defs.extension_elements.clone(),
+    }
+}
+
+/// [`layout_dmn`] for a caller that owns `defs` and no longer needs it: the decision
+/// model moves into the result instead of being copied. Same output.
+pub fn layout_dmn_owned(mut defs: DmnDefinitions) -> DmnDefinitions {
+    if let Some(diagram) = laid_out_diagram(&defs) {
+        defs.diagram = Some(diagram);
+    }
+    defs
+}
+
+/// The diagram that replaces `defs.diagram`, or `None` when there is no DRG element
+/// (the model is returned as is).
+fn laid_out_diagram(defs: &DmnDefinitions) -> Option<DmnDiagram> {
     let nodes = collect_nodes(defs);
     if nodes.is_empty() {
-        return defs.clone();
+        return None;
     }
 
     let edges = collect_edges(defs);
@@ -328,25 +363,8 @@ pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
         });
     }
 
-    // Field by field so the source diagram, replaced wholesale, is never cloned.
-    DmnDefinitions {
-        id: defs.id.clone(),
-        name: defs.name.clone(),
-        namespace: defs.namespace.clone(),
-        exporter: defs.exporter.clone(),
-        exporter_version: defs.exporter_version.clone(),
-        namespaces: defs.namespaces.clone(),
-        modeler_attributes: defs.modeler_attributes.clone(),
-        decisions: defs.decisions.clone(),
-        input_data: defs.input_data.clone(),
-        knowledge_sources: defs.knowledge_sources.clone(),
-        business_knowledge_models: defs.business_knowledge_models.clone(),
-        text_annotations: defs.text_annotations.clone(),
-        associations: defs.associations.clone(),
-        diagram: Some(DmnDiagram {
-            shapes,
-            edges: diagram_edges,
-        }),
-        extension_elements: defs.extension_elements.clone(),
-    }
+    Some(DmnDiagram {
+        shapes,
+        edges: diagram_edges,
+    })
 }

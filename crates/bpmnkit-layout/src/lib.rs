@@ -19,7 +19,7 @@ pub mod repair;
 pub mod semantic;
 pub mod types;
 
-pub use auto_layout::apply_auto_layout;
-pub use dmn::layout_dmn;
+pub use auto_layout::{apply_auto_layout, apply_auto_layout_owned};
+pub use dmn::{layout_dmn, layout_dmn_owned};
 pub use engine::{layout_flow_nodes, layout_process, LayoutEngine};
 pub use types::*;

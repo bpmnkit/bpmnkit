@@ -1064,8 +1064,53 @@ pub fn apply_auto_layout(
     engine: LayoutEngine,
     hints: Option<&LayoutHints>,
 ) -> BpmnDefinitions {
-    if defs.processes.is_empty() {
+    let Some(diagrams) = laid_out_diagrams(defs, engine, hints) else {
         return defs.clone();
+    };
+    // Field by field so the source diagrams, replaced wholesale, are never cloned.
+    BpmnDefinitions {
+        id: defs.id.clone(),
+        target_namespace: defs.target_namespace.clone(),
+        exporter: defs.exporter.clone(),
+        exporter_version: defs.exporter_version.clone(),
+        namespaces: defs.namespaces.clone(),
+        unknown_attributes: defs.unknown_attributes.clone(),
+        documentation: defs.documentation.clone(),
+        documentation_attributes: defs.documentation_attributes.clone(),
+        categories: defs.categories.clone(),
+        errors: defs.errors.clone(),
+        escalations: defs.escalations.clone(),
+        messages: defs.messages.clone(),
+        signals: defs.signals.clone(),
+        collaborations: defs.collaborations.clone(),
+        processes: defs.processes.clone(),
+        diagrams,
+        unknown_children: defs.unknown_children.clone(),
+    }
+}
+
+/// [`apply_auto_layout`] for a caller that owns `defs` and no longer needs it: the
+/// semantic model moves into the result instead of being copied. Same output.
+pub fn apply_auto_layout_owned(
+    mut defs: BpmnDefinitions,
+    engine: LayoutEngine,
+    hints: Option<&LayoutHints>,
+) -> BpmnDefinitions {
+    if let Some(diagrams) = laid_out_diagrams(&defs, engine, hints) {
+        defs.diagrams = diagrams;
+    }
+    defs
+}
+
+/// The laid-out diagrams that replace `defs.diagrams`, or `None` when there is no
+/// process to lay out (the model is returned as is).
+fn laid_out_diagrams(
+    defs: &BpmnDefinitions,
+    engine: LayoutEngine,
+    hints: Option<&LayoutHints>,
+) -> Option<Vec<BpmnDiagram>> {
+    if defs.processes.is_empty() {
+        return None;
     }
 
     let collab = defs.collaborations.first();
@@ -1647,26 +1692,7 @@ pub fn apply_auto_layout(
     }
     laid_out.extend(child_plane_diagrams(&child_planes, defs, &collapsed));
 
-    // Field by field so the source diagrams, replaced wholesale, are never cloned.
-    BpmnDefinitions {
-        id: defs.id.clone(),
-        target_namespace: defs.target_namespace.clone(),
-        exporter: defs.exporter.clone(),
-        exporter_version: defs.exporter_version.clone(),
-        namespaces: defs.namespaces.clone(),
-        unknown_attributes: defs.unknown_attributes.clone(),
-        documentation: defs.documentation.clone(),
-        documentation_attributes: defs.documentation_attributes.clone(),
-        categories: defs.categories.clone(),
-        errors: defs.errors.clone(),
-        escalations: defs.escalations.clone(),
-        messages: defs.messages.clone(),
-        signals: defs.signals.clone(),
-        collaborations: defs.collaborations.clone(),
-        processes: defs.processes.clone(),
-        diagrams: keep_di_attributes(&defs.diagrams, laid_out),
-        unknown_children: defs.unknown_children.clone(),
-    }
+    Some(keep_di_attributes(&defs.diagrams, laid_out))
 }
 
 /// `keepDiAttributes(source, laidOut)`: layout recomputes geometry only — bounds,

@@ -1,13 +1,16 @@
 //! Times `apply_auto_layout` (both engines) over conformance/bpmn/<case>/input.bpmn and
 //! `layout_dmn` over conformance/dmn/<case>/input.dmn, the files `scripts/bench-layout.mjs`
-//! times for TS. Plain loop, no harness.
+//! times for TS. Plain loop, no harness. The `owned` rows time `*_owned` on models
+//! copied before the clock starts, as a caller that already owns its model would.
 
 use bpmnkit_bpmn::parse_bpmn;
 use bpmnkit_dmn::parse_dmn;
-use bpmnkit_layout::{apply_auto_layout, layout_dmn, LayoutEngine};
+use bpmnkit_layout::{
+    apply_auto_layout, apply_auto_layout_owned, layout_dmn, layout_dmn_owned, LayoutEngine,
+};
 use std::hint::black_box;
 use std::path::PathBuf;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 fn time(label: &str, iterations: u32, mut run: impl FnMut()) {
     for _ in 0..iterations / 10 {
@@ -18,6 +21,25 @@ fn time(label: &str, iterations: u32, mut run: impl FnMut()) {
         run();
     }
     let us = start.elapsed().as_secs_f64() * 1e6 / f64::from(iterations);
+    println!("{label:<18} {us:>9.1} µs per pass");
+}
+
+/// Like [`time`], but each pass consumes its own copy of `models`, made untimed just
+/// before the pass so it is as warm in cache as the borrowed rows' inputs.
+fn time_owned<T: Clone>(label: &str, iterations: u32, models: &[T], mut run: impl FnMut(T)) {
+    let mut pass = || {
+        let copy = models.to_vec();
+        let start = Instant::now();
+        for m in copy {
+            run(m);
+        }
+        start.elapsed()
+    };
+    for _ in 0..iterations / 10 {
+        pass();
+    }
+    let total: Duration = (0..iterations).map(|_| pass()).sum();
+    let us = total.as_secs_f64() * 1e6 / f64::from(iterations);
     println!("{label:<18} {us:>9.1} µs per pass");
 }
 
@@ -68,5 +90,22 @@ fn main() {
         for m in &dmn {
             black_box(layout_dmn(black_box(m)));
         }
+    });
+    time_owned("owned semantic", iterations, &bpmn, |m| {
+        black_box(apply_auto_layout_owned(
+            black_box(m),
+            LayoutEngine::Semantic,
+            None,
+        ));
+    });
+    time_owned("owned grid", iterations, &bpmn, |m| {
+        black_box(apply_auto_layout_owned(
+            black_box(m),
+            LayoutEngine::Grid,
+            None,
+        ));
+    });
+    time_owned("owned dmn", iterations, &dmn, |m| {
+        black_box(layout_dmn_owned(black_box(m)));
     });
 }

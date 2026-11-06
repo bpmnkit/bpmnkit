@@ -5,7 +5,8 @@ use bpmnkit_bpmn::ids::reset_id_counter;
 use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn};
 use bpmnkit_dmn::{parse_dmn, serialize_dmn};
 use bpmnkit_layout::{
-    apply_auto_layout, layout_dmn, AnnotationSide, GridFill, GridHint, LayoutEngine, LayoutHints,
+    apply_auto_layout_owned, layout_dmn_owned, AnnotationSide, GridFill, GridHint, LayoutEngine,
+    LayoutHints,
 };
 use indexmap::IndexMap;
 use serde_json::{Map, Value as Json};
@@ -139,10 +140,10 @@ fn produce(input: &Path, options: &Json) -> Result<String, String> {
     reset_id_counter();
     if input.extension().is_some_and(|x| x == "dmn") {
         let defs = parse_dmn(&text).map_err(|e| e.to_string())?;
-        return Ok(serialize_dmn(&layout_dmn(&defs)));
+        return Ok(serialize_dmn(&layout_dmn_owned(defs)));
     }
     let defs = parse_bpmn(&text).map_err(|e| e.to_string())?;
-    let laid = apply_auto_layout(&defs, engine(options)?, hints(options)?.as_ref());
+    let laid = apply_auto_layout_owned(defs, engine(options)?, hints(options)?.as_ref());
     Ok(serialize_bpmn(&laid))
 }
 
