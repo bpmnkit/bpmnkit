@@ -5,6 +5,7 @@ use crate::collaboration::alignment::{align_pools, MessageLink};
 use crate::collaboration::ordering::{order_pools, PoolLink};
 use crate::engine::{layout_process, LayoutEngine};
 use crate::grid::router::collapse_collinear;
+use crate::hash::{IndexMap as FxIndexMap, IndexSet as FxIndexSet};
 use crate::js;
 use crate::orthogonal::Side;
 use crate::repair::{repair_routes, ConnectionKind, PlaneEdge, PlaneShape};
@@ -1605,9 +1606,26 @@ pub fn apply_auto_layout(
     }
     laid_out.extend(child_plane_diagrams(&child_planes, defs, &collapsed));
 
-    let mut out = defs.clone();
-    out.diagrams = keep_di_attributes(&defs.diagrams, laid_out);
-    out
+    // Field by field so the source diagrams, replaced wholesale, are never cloned.
+    BpmnDefinitions {
+        id: defs.id.clone(),
+        target_namespace: defs.target_namespace.clone(),
+        exporter: defs.exporter.clone(),
+        exporter_version: defs.exporter_version.clone(),
+        namespaces: defs.namespaces.clone(),
+        unknown_attributes: defs.unknown_attributes.clone(),
+        documentation: defs.documentation.clone(),
+        documentation_attributes: defs.documentation_attributes.clone(),
+        categories: defs.categories.clone(),
+        errors: defs.errors.clone(),
+        escalations: defs.escalations.clone(),
+        messages: defs.messages.clone(),
+        signals: defs.signals.clone(),
+        collaborations: defs.collaborations.clone(),
+        processes: defs.processes.clone(),
+        diagrams: keep_di_attributes(&defs.diagrams, laid_out),
+        unknown_children: defs.unknown_children.clone(),
+    }
 }
 
 /// `keepDiAttributes(source, laidOut)`: layout recomputes geometry only — bounds,
@@ -1619,11 +1637,11 @@ pub fn keep_di_attributes(source: &[BpmnDiagram], laid_out: Vec<BpmnDiagram>) ->
     // Diagrams match by the element their plane draws; `id` is optional in DI,
     // and matching on an empty one would hand every diagram the first one's
     // attributes and label styles (duplicate XML ids).
-    let mut diagram_by_element: IndexMap<&str, &BpmnDiagram> = IndexMap::new();
-    let mut diagram_by_id: IndexMap<&str, &BpmnDiagram> = IndexMap::new();
-    let mut shape_by_element: IndexMap<&str, &BpmnDiShape> = IndexMap::new();
-    let mut edge_by_element: IndexMap<&str, &BpmnDiEdge> = IndexMap::new();
-    let mut source_ids: IndexSet<&str> = IndexSet::new();
+    let mut diagram_by_element: FxIndexMap<&str, &BpmnDiagram> = FxIndexMap::default();
+    let mut diagram_by_id: FxIndexMap<&str, &BpmnDiagram> = FxIndexMap::default();
+    let mut shape_by_element: FxIndexMap<&str, &BpmnDiShape> = FxIndexMap::default();
+    let mut edge_by_element: FxIndexMap<&str, &BpmnDiEdge> = FxIndexMap::default();
+    let mut source_ids: FxIndexSet<&str> = FxIndexSet::default();
     for diagram in source {
         let element = diagram.plane.bpmn_element.as_str();
         if !element.is_empty() && !diagram_by_element.contains_key(element) {
@@ -1650,7 +1668,7 @@ pub fn keep_di_attributes(source: &[BpmnDiagram], laid_out: Vec<BpmnDiagram>) ->
     // for one element cannot produce duplicate ids. A generated `X_di` may
     // already be the source id of another element (one renamed from `X`), so
     // generated ids steer clear of every source id.
-    let mut used: IndexSet<String> = IndexSet::new();
+    let mut used: FxIndexSet<String> = FxIndexSet::default();
     // An empty source id means the source omitted it; that is not one to keep.
     let mut keep_id = |generated: &str, previous: Option<&str>| -> String {
         if let Some(p) = previous.filter(|p| !p.is_empty() && !used.contains(*p)) {
@@ -1761,38 +1779,38 @@ pub fn keep_di_attributes(source: &[BpmnDiagram], laid_out: Vec<BpmnDiagram>) ->
         .collect()
 }
 
-struct Connection {
+struct Connection<'a> {
     kind: ConnectionKind,
-    source: String,
-    target: String,
+    source: &'a str,
+    target: &'a str,
 }
 
 /// `routeRepair(defs)`: the final pass over a finished plane: any connection still
 /// running through a shape it is unrelated to gets an obstacle-aware route.
 /// Relatedness is what a route may touch — its endpoints, the scopes and pools
 /// holding them, and a boundary event's host (or a host's boundary events).
-struct RouteRepair {
-    parent: IndexMap<String, String>,
-    attached_to: IndexMap<String, String>,
-    attachers: IndexMap<String, Vec<String>>,
-    connections: IndexMap<String, Connection>,
-    containers: IndexSet<String>,
+struct RouteRepair<'a> {
+    parent: FxIndexMap<&'a str, &'a str>,
+    attached_to: FxIndexMap<&'a str, &'a str>,
+    attachers: FxIndexMap<&'a str, Vec<&'a str>>,
+    connections: FxIndexMap<&'a str, Connection<'a>>,
+    containers: FxIndexSet<&'a str>,
 }
 
-impl RouteRepair {
-    fn new(defs: &BpmnDefinitions) -> Self {
+impl<'a> RouteRepair<'a> {
+    fn new(defs: &'a BpmnDefinitions) -> Self {
         let mut me = RouteRepair {
-            parent: IndexMap::new(),
-            attached_to: IndexMap::new(),
-            attachers: IndexMap::new(),
-            connections: IndexMap::new(),
-            containers: IndexSet::new(),
+            parent: FxIndexMap::default(),
+            attached_to: FxIndexMap::default(),
+            attachers: FxIndexMap::default(),
+            connections: FxIndexMap::default(),
+            containers: FxIndexSet::default(),
         };
 
-        let mut participant_of: IndexMap<&str, &str> = IndexMap::new();
+        let mut participant_of: FxIndexMap<&str, &'a str> = FxIndexMap::default();
         for collab in &defs.collaborations {
             for participant in &collab.participants {
-                me.containers.insert(participant.id.clone());
+                me.containers.insert(&participant.id);
                 if let Some(r) = participant.process_ref.as_deref().filter(|r| !r.is_empty()) {
                     participant_of.insert(r, &participant.id);
                 }
@@ -1814,7 +1832,7 @@ impl RouteRepair {
                 );
             }
             for group in &collab.groups {
-                me.containers.insert(group.id.clone());
+                me.containers.insert(&group.id);
             }
         }
 
@@ -1841,47 +1859,46 @@ impl RouteRepair {
                 );
             }
             for group in &process.contents.groups {
-                me.containers.insert(group.id.clone());
+                me.containers.insert(&group.id);
             }
             me.lanes(process.lane_set.as_ref());
         }
         me
     }
 
-    fn connect(&mut self, id: &str, kind: ConnectionKind, source: &str, target: &str) {
+    fn connect(&mut self, id: &'a str, kind: ConnectionKind, source: &'a str, target: &'a str) {
         self.connections.insert(
-            id.to_string(),
+            id,
             Connection {
                 kind,
-                source: source.to_string(),
-                target: target.to_string(),
+                source,
+                target,
             },
         );
     }
 
-    fn lanes(&mut self, set: Option<&BpmnLaneSet>) {
+    fn lanes(&mut self, set: Option<&'a BpmnLaneSet>) {
         let Some(set) = set else {
             return;
         };
         for lane in &set.lanes {
-            self.containers.insert(lane.id.clone());
+            self.containers.insert(&lane.id);
             self.lanes(lane.child_lane_set.as_ref());
         }
     }
 
-    fn walk(&mut self, elements: &[BpmnFlowElement], owner: Option<&str>) {
+    fn walk(&mut self, elements: &'a [BpmnFlowElement], owner: Option<&'a str>) {
         for element in elements {
-            let id = &element.base().id;
+            let id = element.base().id.as_str();
             if let Some(owner) = owner {
-                self.parent.insert(id.clone(), owner.to_string());
+                self.parent.insert(id, owner);
             }
             if let BpmnFlowElement::BoundaryEvent(b) = element {
-                self.attached_to
-                    .insert(id.clone(), b.attached_to_ref.clone());
+                self.attached_to.insert(id, &b.attached_to_ref);
                 self.attachers
-                    .entry(b.attached_to_ref.clone())
+                    .entry(&b.attached_to_ref)
                     .or_default()
-                    .push(id.clone());
+                    .push(id);
             }
             if let Some(c) = element.contents() {
                 for flow in &c.sequence_flows {
@@ -1907,15 +1924,15 @@ impl RouteRepair {
         }
     }
 
-    fn related(&self, id: &str) -> Vec<String> {
-        let mut out: Vec<String> = self.attachers.get(id).cloned().unwrap_or_default();
-        if let Some(host) = self.attached_to.get(id).filter(|h| !h.is_empty()) {
-            out.push(host.clone());
+    fn related(&self, id: &str) -> Vec<&'a str> {
+        let mut out: Vec<&'a str> = self.attachers.get(id).cloned().unwrap_or_default();
+        if let Some(&host) = self.attached_to.get(id).filter(|h| !h.is_empty()) {
+            out.push(host);
         }
         let mut p = self.parent.get(id);
-        while let Some(cur) = p {
-            out.push(cur.clone());
-            p = self.parent.get(cur.as_str());
+        while let Some(&cur) = p {
+            out.push(cur);
+            p = self.parent.get(cur);
         }
         out
     }
@@ -1924,7 +1941,7 @@ impl RouteRepair {
         if edges.is_empty() {
             return;
         }
-        let mut on_plane: IndexMap<&str, &BpmnBounds> = IndexMap::new();
+        let mut on_plane: FxIndexMap<&str, &BpmnBounds> = FxIndexMap::default();
         for s in shapes {
             on_plane.insert(&s.bpmn_element, &s.bounds);
         }
@@ -1934,7 +1951,7 @@ impl RouteRepair {
                 if on_plane.contains_key(c) {
                     break;
                 }
-                current = self.parent.get(c).map(|s| s.as_str());
+                current = self.parent.get(c).copied();
             }
             current.unwrap_or(id).to_string()
         };
@@ -1955,8 +1972,8 @@ impl RouteRepair {
             };
             plane_edges.push(PlaneEdge {
                 kind: connection.kind,
-                source_ref: visible(&connection.source),
-                target_ref: visible(&connection.target),
+                source_ref: visible(connection.source),
+                target_ref: visible(connection.target),
                 waypoints: di
                     .waypoints
                     .iter()
@@ -1968,7 +1985,7 @@ impl RouteRepair {
         let boundary_side = |id: &str| -> Option<Side> {
             let host = self.attached_to.get(id).filter(|h| !h.is_empty());
             let own = on_plane.get(id);
-            let host_bounds = host.and_then(|h| on_plane.get(h.as_str()));
+            let host_bounds = host.and_then(|h| on_plane.get(*h));
             let (Some(own), Some(host_bounds)) = (own, host_bounds) else {
                 return None;
             };

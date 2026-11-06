@@ -3,11 +3,11 @@
 use super::bands::BandLayout;
 use super::graph::SemanticGraph;
 use super::place::H_GAP;
+use crate::hash::{IndexMap, IndexSet};
 use crate::js;
 use crate::orthogonal::{route_orthogonal, side_ports, OrthogonalRequest, Port, SideCost};
 use crate::types::{Bounds, LayoutEdge, Waypoint};
 use bpmnkit_bpmn::model::BpmnSequenceFlow;
-use indexmap::{IndexMap, IndexSet};
 use std::cell::Cell;
 
 /// Clearance kept between a routed segment and the shapes it passes.
@@ -53,7 +53,7 @@ fn cell_range(min_x: f64, max_x: f64) -> Option<(i64, i64)> {
 impl<T> XIndex<T> {
     fn new() -> Self {
         XIndex {
-            cells: IndexMap::new(),
+            cells: IndexMap::default(),
             entries: Vec::new(),
             stamp: Cell::new(0),
         }
@@ -197,7 +197,7 @@ pub fn route_flows(
         reserved: Vec::new(),
         routed: XIndex::new(),
     };
-    let mut routed: IndexMap<&str, Vec<Waypoint>> = IndexMap::new();
+    let mut routed: IndexMap<&str, Vec<Waypoint>> = IndexMap::default();
     let mut pending: Vec<Pending> = Vec::new();
 
     for flow in flows {
@@ -506,7 +506,7 @@ fn hit_count(
     source_id: &str,
     target_id: &str,
 ) -> usize {
-    let mut hit: IndexSet<usize> = IndexSet::new();
+    let mut hit: IndexSet<usize> = IndexSet::default();
     for pair in waypoints.windows(2) {
         let (a, b) = (&pair[0], &pair[1]);
         ctx.obstacles

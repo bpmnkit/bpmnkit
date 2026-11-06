@@ -1,7 +1,7 @@
 //! Twin of `layout/semantic/graph.ts`.
 
+use crate::hash::{IndexMap, IndexSet};
 use bpmnkit_bpmn::model::{BpmnBoundaryEvent, BpmnFlowElement, BpmnSequenceFlow};
-use indexmap::{IndexMap, IndexSet};
 use std::cell::RefCell;
 
 /// Flow-node types that end a path (`END_TYPES`), used to score candidate spine edges.
@@ -49,13 +49,13 @@ pub fn build_semantic_graph<'a>(
     flow_elements: &'a [BpmnFlowElement],
     sequence_flows: &'a [BpmnSequenceFlow],
 ) -> SemanticGraph<'a> {
-    let mut by_id: IndexMap<String, &'a BpmnFlowElement> = IndexMap::new();
+    let mut by_id: IndexMap<String, &'a BpmnFlowElement> = IndexMap::default();
     for el in flow_elements {
         by_id.insert(el.base().id.clone(), el);
     }
 
     let mut nodes: Vec<&'a BpmnFlowElement> = Vec::new();
-    let mut attachers: IndexMap<String, Vec<&'a BpmnBoundaryEvent>> = IndexMap::new();
+    let mut attachers: IndexMap<String, Vec<&'a BpmnBoundaryEvent>> = IndexMap::default();
     for el in flow_elements {
         if let BpmnFlowElement::BoundaryEvent(be) = el {
             attachers
@@ -67,8 +67,8 @@ pub fn build_semantic_graph<'a>(
         }
     }
 
-    let mut outgoing: IndexMap<String, Vec<&'a BpmnSequenceFlow>> = IndexMap::new();
-    let mut incoming: IndexMap<String, Vec<&'a BpmnSequenceFlow>> = IndexMap::new();
+    let mut outgoing: IndexMap<String, Vec<&'a BpmnSequenceFlow>> = IndexMap::default();
+    let mut incoming: IndexMap<String, Vec<&'a BpmnSequenceFlow>> = IndexMap::default();
     for flow in sequence_flows {
         let from = effective_source(flow, &by_id);
         if !by_id.contains_key(&from) || !by_id.contains_key(&flow.target_ref) {
@@ -87,10 +87,10 @@ pub fn build_semantic_graph<'a>(
         outgoing,
         incoming,
         attachers,
-        back_edges: IndexSet::new(),
+        back_edges: IndexSet::default(),
         components: Vec::new(),
         starts: Vec::new(),
-        ranks: IndexMap::new(),
+        ranks: IndexMap::default(),
         end_reach: RefCell::new(None),
     };
 
@@ -102,10 +102,10 @@ pub fn build_semantic_graph<'a>(
 
 /// `findComponents`: weakly connected components, discovered in declaration order.
 fn find_components(graph: &mut SemanticGraph) {
-    let mut seen: IndexSet<String> = IndexSet::new();
+    let mut seen: IndexSet<String> = IndexSet::default();
     // Declaration order within the component keeps ties deterministic. Built once:
     // the TS rebuilds the same map per component.
-    let mut order: IndexMap<&str, usize> = IndexMap::new();
+    let mut order: IndexMap<&str, usize> = IndexMap::default();
     for (i, n) in graph.nodes.iter().enumerate() {
         order.insert(n.base().id.as_str(), i);
     }
@@ -198,7 +198,7 @@ fn mark_back_edges(graph: &mut SemanticGraph) {
         state.insert(id.to_string(), VisitState::Done);
     }
 
-    let mut state: IndexMap<String, VisitState> = IndexMap::new();
+    let mut state: IndexMap<String, VisitState> = IndexMap::default();
     for start in &graph.starts {
         if !start.is_empty() && !state.contains_key(start) {
             visit(&graph.outgoing, &mut graph.back_edges, &mut state, start);
@@ -247,7 +247,7 @@ fn shares_rank(graph: &SemanticGraph, flow: &BpmnSequenceFlow) -> bool {
 
 /// `assignRanks`: longest-path ranks over the acyclic remainder.
 fn assign_ranks(graph: &mut SemanticGraph) {
-    let mut ranks: IndexMap<String, i64> = IndexMap::new();
+    let mut ranks: IndexMap<String, i64> = IndexMap::default();
     for node in &graph.nodes {
         ranks.insert(node.base().id.clone(), 0);
     }
@@ -329,7 +329,7 @@ pub fn reaches_end(graph: &SemanticGraph, id: &str) -> bool {
 /// `buildEndReach`: every node from which a path along non-back edges reaches an
 /// end event or a node with no outgoing flow (both inclusive), by one reverse walk.
 fn build_end_reach(graph: &SemanticGraph) -> IndexSet<String> {
-    let mut reach: IndexSet<String> = IndexSet::new();
+    let mut reach: IndexSet<String> = IndexSet::default();
     let mut stack: Vec<String> = Vec::new();
     for node in graph.by_id.values() {
         let id = &node.base().id;

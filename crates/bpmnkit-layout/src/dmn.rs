@@ -1,9 +1,9 @@
 //! Twin of `dmn/dmn-layout.ts` (`layoutDmn` and its helpers; the benchmark is not ported).
 
+use crate::hash::IndexMap;
 use bpmnkit_dmn::model::{
     DmnBounds, DmnDefinitions, DmnDiagram, DmnDiagramEdge, DmnDiagramShape, DmnWaypoint,
 };
-use indexmap::IndexMap;
 
 // ── Element sizes (matches Camunda Modeler defaults) ──────────────────────────
 
@@ -159,8 +159,8 @@ fn collect_edges(defs: &DmnDefinitions) -> Vec<RequirementEdge> {
 // ── Layer assignment (longest-path / BFS) ────────────────────────────────────
 
 fn assign_layers(nodes: &[DrgNode], edges: &[RequirementEdge]) -> IndexMap<String, i64> {
-    let mut outgoing: IndexMap<String, Vec<String>> = IndexMap::new();
-    let mut in_degree: IndexMap<String, i64> = IndexMap::new();
+    let mut outgoing: IndexMap<String, Vec<String>> = IndexMap::default();
+    let mut in_degree: IndexMap<String, i64> = IndexMap::default();
 
     for n in nodes {
         outgoing.insert(n.id.clone(), Vec::new());
@@ -175,7 +175,7 @@ fn assign_layers(nodes: &[DrgNode], edges: &[RequirementEdge]) -> IndexMap<Strin
         in_degree.insert(e.target_id.clone(), d);
     }
 
-    let mut layers: IndexMap<String, i64> = IndexMap::new();
+    let mut layers: IndexMap<String, i64> = IndexMap::default();
     let mut queue: Vec<String> = Vec::new();
 
     for n in nodes {
@@ -228,7 +228,7 @@ pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
     let layer_map = assign_layers(&nodes, &edges);
 
     // Group nodes by layer
-    let mut by_layer: IndexMap<i64, Vec<&DrgNode>> = IndexMap::new();
+    let mut by_layer: IndexMap<i64, Vec<&DrgNode>> = IndexMap::default();
     for n in &nodes {
         let layer = layer_map.get(&n.id).copied().unwrap_or(0);
         by_layer.entry(layer).or_default().push(n);
@@ -239,7 +239,7 @@ pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
 
     // Compute x per layer (left = upstream/leaf, right = final decision)
     let mut x = MARGIN_X;
-    let mut x_by_layer: IndexMap<i64, f64> = IndexMap::new();
+    let mut x_by_layer: IndexMap<i64, f64> = IndexMap::default();
     for &layer_idx in &sorted_layers {
         let layer_nodes = &by_layer[&layer_idx];
         let max_width = layer_nodes
@@ -251,7 +251,7 @@ pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
     }
 
     // Compute total height per layer (for vertical centering)
-    let mut height_by_layer: IndexMap<i64, f64> = IndexMap::new();
+    let mut height_by_layer: IndexMap<i64, f64> = IndexMap::default();
     for &layer_idx in &sorted_layers {
         let layer_nodes = &by_layer[&layer_idx];
         let mut h = 0.0;
@@ -265,7 +265,7 @@ pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
     let max_height = height_by_layer.values().copied().fold(0.0, f64::max);
 
     // Position nodes
-    let mut positioned: IndexMap<String, PositionedNode> = IndexMap::new();
+    let mut positioned: IndexMap<String, PositionedNode> = IndexMap::default();
     for &layer_idx in &sorted_layers {
         let layer_nodes = &by_layer[&layer_idx];
         let layer_x = x_by_layer.get(&layer_idx).copied().unwrap_or(MARGIN_X);

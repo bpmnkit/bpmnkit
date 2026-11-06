@@ -6,6 +6,7 @@ pub mod place;
 pub mod route;
 
 use crate::grid::edge_labels::place_edge_labels;
+use crate::hash::{IndexMap, IndexSet};
 use crate::js;
 use crate::types::{
     Bounds, GridHint, LayoutEdge, LayoutNode, LayoutResult, Plane, Waypoint, LABEL_CHAR_WIDTH,
@@ -14,7 +15,6 @@ use crate::types::{
 use bands::assign_bands;
 use bpmnkit_bpmn::model::{BpmnFlowElement, BpmnLaneSet, BpmnProcess, BpmnSequenceFlow};
 use graph::build_semantic_graph;
-use indexmap::{IndexMap, IndexSet};
 use place::{external_label_width, place, size_of};
 use route::route_flows;
 
@@ -39,8 +39,8 @@ fn is_container_type(kind: &str) -> bool {
 /// both.
 pub fn semantic_layout_process(
     process: &BpmnProcess,
-    collapsed: &IndexSet<String>,
-    grids: Option<&IndexMap<String, GridHint>>,
+    collapsed: &indexmap::IndexSet<String>,
+    grids: Option<&indexmap::IndexMap<String, GridHint>>,
 ) -> LayoutResult {
     semantic_layout(
         &process.contents.flow_elements,
@@ -64,9 +64,9 @@ pub fn semantic_layout(
     flow_elements: &[BpmnFlowElement],
     sequence_flows: &[BpmnSequenceFlow],
     lane_set: Option<&BpmnLaneSet>,
-    collapsed: &IndexSet<String>,
+    collapsed: &indexmap::IndexSet<String>,
     in_container: bool,
-    grids: Option<&IndexMap<String, GridHint>>,
+    grids: Option<&indexmap::IndexMap<String, GridHint>>,
     grid: Option<&GridHint>,
 ) -> LayoutResult {
     if flow_elements.is_empty() {
@@ -77,10 +77,10 @@ pub fn semantic_layout(
 
     // Children first: an expanded sub-process is sized by what it contains, while
     // a collapsed one stays activity-sized and its contents move to their own plane.
-    let mut child_results: IndexMap<String, LayoutResult> = IndexMap::new();
+    let mut child_results: IndexMap<String, LayoutResult> = IndexMap::default();
     let mut planes: Vec<Plane> = Vec::new();
-    let mut sizes: IndexMap<String, (f64, f64)> = IndexMap::new();
-    let mut axes: IndexMap<String, f64> = IndexMap::new();
+    let mut sizes: IndexMap<String, (f64, f64)> = IndexMap::default();
+    let mut axes: IndexMap<String, f64> = IndexMap::default();
     for el in &graph.nodes {
         let id = &el.base().id;
         let Some(child) = child_layout_of(el, collapsed, grids) else {
@@ -221,7 +221,7 @@ pub fn semantic_layout(
         .filter(|e| gateways.contains(e.source_ref.as_str()))
         .map(|e| e.id.clone())
         .collect();
-    let mut node_map: IndexMap<String, &LayoutNode> = IndexMap::new();
+    let mut node_map: IndexMap<String, &LayoutNode> = IndexMap::default();
     for n in &nodes {
         node_map.insert(n.id.clone(), n);
     }
@@ -250,8 +250,8 @@ struct ChildLayout {
 /// Lay out a container's children and report the size its border needs.
 fn child_layout_of(
     el: &BpmnFlowElement,
-    collapsed: &IndexSet<String>,
-    grids: Option<&IndexMap<String, GridHint>>,
+    collapsed: &indexmap::IndexSet<String>,
+    grids: Option<&indexmap::IndexMap<String, GridHint>>,
 ) -> Option<ChildLayout> {
     if !is_container_type(el.type_name()) {
         return None;
@@ -362,7 +362,7 @@ fn boundary_labels(
     graph: &graph::SemanticGraph,
     bounds: &IndexMap<String, Bounds>,
 ) -> IndexMap<String, Bounds> {
-    let mut labels: IndexMap<String, Bounds> = IndexMap::new();
+    let mut labels: IndexMap<String, Bounds> = IndexMap::default();
     for (host_id, events) in &graph.attachers {
         let Some(host) = bounds.get(host_id) else {
             continue;

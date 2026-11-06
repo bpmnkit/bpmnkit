@@ -1,7 +1,7 @@
 //! Twin of `layout/overlap.ts` (`assertNoOverlap`).
 
+use crate::hash::IndexSet;
 use crate::types::{Bounds, LayoutResult};
-use indexmap::IndexSet;
 
 struct Item {
     id: String,
@@ -37,7 +37,7 @@ pub fn assert_no_overlap(result: &LayoutResult) -> Result<(), String> {
     }
 
     // Track which nodes are connected to which edges
-    let mut edge_endpoints: IndexSet<String> = IndexSet::new();
+    let mut edge_endpoints: IndexSet<String> = IndexSet::default();
     for edge in &result.edges {
         if let Some(lb) = edge.label_bounds {
             all.push(Item {

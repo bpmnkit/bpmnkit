@@ -7,12 +7,12 @@ use super::router::{
     collapse_collinear, connect_elements, ensure_exit_bottom, GridDims, RoutableNode,
 };
 use super::walker::create_grid_layout;
+use crate::hash::{IndexMap, IndexSet};
 use crate::js;
 use crate::types::{
     element_size, Bounds, LayoutEdge, LayoutNode, LayoutResult, GRID_CELL_HEIGHT, GRID_CELL_WIDTH,
 };
 use bpmnkit_bpmn::model::{BpmnFlowElement, BpmnSequenceFlow};
-use indexmap::{IndexMap, IndexSet};
 
 const DEFAULT_SIZE: (f64, f64) = (100.0, 80.0);
 const CHILD_SHIFT_X: f64 = 50.0; // upstream: CELL_W/2 - baseW/4
@@ -44,7 +44,7 @@ pub fn grid_layout_flow_nodes(
     emit_level(&root, (0.0, 0.0), &mut out);
     let node_map: IndexMap<String, &LayoutNode> =
         out.nodes.iter().map(|n| (n.id.clone(), n)).collect();
-    place_edge_labels(&mut out.edges, &node_map, &IndexSet::new());
+    place_edge_labels(&mut out.edges, &node_map, &IndexSet::default());
     out
 }
 
@@ -54,7 +54,7 @@ fn build_level<'a>(
     compact: bool,
 ) -> LevelLayout<'a> {
     let graph = build_flow_graph(flow_nodes, sequence_flows);
-    let mut children: IndexMap<String, LevelLayout<'a>> = IndexMap::new();
+    let mut children: IndexMap<String, LevelLayout<'a>> = IndexMap::default();
     for &idx in &graph.elements {
         let el = graph.node(idx);
         if !is_sub_type(el.type_name()) {
@@ -134,9 +134,9 @@ fn label_width_for(name: &str) -> f64 {
 
 fn emit_level(level: &LevelLayout, shift: (f64, f64), out: &mut LayoutResult) {
     let graph = &level.graph;
-    let mut routables: IndexMap<String, RoutableNode> = IndexMap::new();
-    let mut expanded_rows_by_row: IndexMap<i64, usize> = IndexMap::new();
-    let mut boundary_bounds: IndexMap<String, Bounds> = IndexMap::new();
+    let mut routables: IndexMap<String, RoutableNode> = IndexMap::default();
+    let mut expanded_rows_by_row: IndexMap<i64, usize> = IndexMap::default();
+    let mut boundary_bounds: IndexMap<String, Bounds> = IndexMap::default();
 
     // Pass 1: shapes (+ boundary events + recursion into children)
     for (idx, row, col) in level.grid.elements_by_position() {

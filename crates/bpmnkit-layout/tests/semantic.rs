@@ -8,12 +8,12 @@ use bpmnkit_bpmn::model::{
     BpmnBoundaryEvent, BpmnDefinitions, BpmnFlowElement, BpmnProcessContents, BpmnSequenceFlow,
 };
 use bpmnkit_bpmn::parse_bpmn;
+use bpmnkit_layout::hash::{IndexMap, IndexSet};
 use bpmnkit_layout::semantic::bands::BandLayout;
 use bpmnkit_layout::semantic::graph::SemanticGraph;
 use bpmnkit_layout::semantic::route::route_flows;
 use bpmnkit_layout::semantic::semantic_layout_process;
 use bpmnkit_layout::{Bounds, LaneBand, LayoutEdge, LayoutNode, LayoutResult, Plane, Waypoint};
-use indexmap::{IndexMap, IndexSet};
 use serde_json::Value;
 use std::cell::RefCell;
 
@@ -151,7 +151,7 @@ fn walk<'a>(
 }
 
 fn flow_map<'a>(scopes: &[&'a BpmnProcessContents]) -> IndexMap<String, &'a BpmnSequenceFlow> {
-    let mut out = IndexMap::new();
+    let mut out = IndexMap::default();
     for s in scopes {
         for f in &s.sequence_flows {
             out.insert(f.id.clone(), f);
@@ -243,7 +243,7 @@ fn route_flows_matches_ts() {
             .iter()
             .find(|p| p.id == str_of(&case["process"]))
             .expect("process");
-        let mut elements = IndexMap::new();
+        let mut elements = IndexMap::default();
         let mut scopes = Vec::new();
         walk(&process.contents, &mut elements, &mut scopes);
         let flows = flow_map(&scopes);
@@ -309,7 +309,7 @@ fn semantic_layout_process_matches_ts() {
             .iter()
             .find(|p| p.id == str_of(&case["process"]))
             .expect("process");
-        let actual = semantic_layout_process(process, &IndexSet::new(), None);
+        let actual = semantic_layout_process(process, &indexmap::IndexSet::default(), None);
         assert_eq!(
             actual,
             result(&case["result"]),

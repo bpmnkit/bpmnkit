@@ -4,7 +4,7 @@
 //! travel vertically. Small collaborations use an exhaustive search; larger ones use
 //! repeated remove-and-reinsert.
 
-use indexmap::IndexMap;
+use crate::hash::IndexMap;
 
 /// Above this many pools, permuting every order costs more than it is worth.
 const EXHAUSTIVE_LIMIT: usize = 8;
@@ -35,7 +35,7 @@ struct PairCost {
 }
 
 fn pair_costs(links: &[PoolLink]) -> Vec<PairCost> {
-    let mut pairs: IndexMap<(usize, usize), PairCost> = IndexMap::new();
+    let mut pairs: IndexMap<(usize, usize), PairCost> = IndexMap::default();
     for link in links {
         if link.from == link.to {
             continue;

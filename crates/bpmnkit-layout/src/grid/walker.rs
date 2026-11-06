@@ -4,7 +4,7 @@ use super::flow_graph::{
     forms_loop, has_other_incoming, is_future_incoming, is_task_like, FlowGraph,
 };
 use super::grid::Grid;
-use indexmap::IndexSet;
+use crate::hash::IndexSet;
 
 const COMPACT_MAX_COLS: usize = 4;
 
@@ -21,7 +21,7 @@ pub fn create_grid_layout(graph: &FlowGraph, compact: bool) -> Grid<usize> {
         return grid;
     }
 
-    let mut visited: IndexSet<String> = IndexSet::new();
+    let mut visited: IndexSet<String> = IndexSet::default();
 
     while visited.len() < graph.elements.len() {
         let mut starts: Vec<usize> = graph

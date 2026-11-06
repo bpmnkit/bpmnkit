@@ -1,10 +1,10 @@
 //! Twin of `layout/semantic/bands.ts`.
 
 use super::graph::{reaches_end, SemanticGraph};
+use crate::hash::{IndexMap, IndexSet};
 use bpmnkit_bpmn::model::{
     BpmnBoundaryEvent, BpmnEventDefinition, BpmnFlowElement, BpmnSequenceFlow,
 };
-use indexmap::{IndexMap, IndexSet};
 
 /// `BandLayout`: vertical narrative roles for one process scope.
 ///
@@ -74,9 +74,9 @@ pub fn boundary_side(event: &BpmnBoundaryEvent, host_titled: bool) -> i64 {
 /// `assignBands(graph, titled)`. `titled` are hosts whose title is drawn along
 /// their top border; see [`boundary_side`].
 pub fn assign_bands(graph: &SemanticGraph, titled: &IndexSet<String>) -> BandLayout {
-    let mut bands: IndexMap<String, i64> = IndexMap::new();
-    let mut spine: IndexSet<String> = IndexSet::new();
-    let mut straight_flows: IndexSet<String> = IndexSet::new();
+    let mut bands: IndexMap<String, i64> = IndexMap::default();
+    let mut spine: IndexSet<String> = IndexSet::default();
+    let mut straight_flows: IndexSet<String> = IndexSet::default();
     let mut branches: Vec<Branch> = Vec::new();
 
     for start in &graph.starts {
@@ -207,7 +207,7 @@ fn reduce_crossings(graph: &SemanticGraph, bands: &mut IndexMap<String, i64>) {
                 continue;
             }
 
-            let mut moved: IndexMap<String, i64> = IndexMap::new();
+            let mut moved: IndexMap<String, i64> = IndexMap::default();
             for (id, band) in bands.iter() {
                 if *band == lower {
                     moved.insert(id.clone(), upper);
@@ -219,7 +219,7 @@ fn reduce_crossings(graph: &SemanticGraph, bands: &mut IndexMap<String, i64>) {
                 continue;
             }
 
-            let mut previous: IndexMap<String, i64> = IndexMap::new();
+            let mut previous: IndexMap<String, i64> = IndexMap::default();
             for (id, band) in &moved {
                 previous.insert(id.clone(), bands.get(id).copied().unwrap_or(0));
                 bands.insert(id.clone(), *band);
@@ -249,7 +249,7 @@ fn place_unassigned(
     bands: &mut IndexMap<String, i64>,
     assigned: &IndexSet<String>,
 ) {
-    let mut taken: IndexSet<String> = IndexSet::new();
+    let mut taken: IndexSet<String> = IndexSet::default();
     for node in &graph.nodes {
         let id = &node.base().id;
         if !assigned.contains(id) {
@@ -457,7 +457,7 @@ fn follow(
     assigned: &IndexSet<String>,
 ) -> Option<Branch> {
     let mut nodes: Vec<String> = Vec::new();
-    let mut local: IndexSet<String> = IndexSet::new();
+    let mut local: IndexSet<String> = IndexSet::default();
     let mut current: Option<String> = Some(entry.to_string());
     let mut min_rank = i64::MAX;
     let mut max_rank = i64::MIN;
@@ -510,7 +510,7 @@ fn follow(
 /// ranks the branch spans, so two branches that never overlap horizontally can
 /// share one band; overlapping narratives cannot.
 fn compact(branches: &[Branch]) -> IndexMap<String, i64> {
-    let mut bands: IndexMap<String, i64> = IndexMap::new();
+    let mut bands: IndexMap<String, i64> = IndexMap::default();
 
     for side in [1i64, -1] {
         let mut mine: Vec<&Branch> = branches.iter().filter(|b| b.side == side).collect();

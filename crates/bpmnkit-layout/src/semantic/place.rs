@@ -2,13 +2,13 @@
 
 use super::bands::{boundary_side, BandLayout};
 use super::graph::SemanticGraph;
+use crate::hash::{IndexMap, IndexSet};
 use crate::js::cmp_num;
 use crate::types::{
     element_size, Bounds, GridFill, GridHint, LaneBand, LABEL_CHAR_WIDTH, LABEL_HEIGHT,
     LABEL_MIN_WIDTH, LABEL_VERTICAL_OFFSET,
 };
 use bpmnkit_bpmn::model::{BpmnBoundaryEvent, BpmnFlowElement, BpmnLaneSet};
-use indexmap::{IndexMap, IndexSet};
 
 /// Geometry constants. Layout may add space beyond these; it never takes any back.
 /// Hand-drawn diagrams keep about 50-60 px between neighbouring shapes; wider
@@ -116,10 +116,10 @@ pub fn place(
     grid: Option<&GridHint>,
     axes: &IndexMap<String, f64>,
 ) -> Placement {
-    let mut bounds: IndexMap<String, Bounds> = IndexMap::new();
+    let mut bounds: IndexMap<String, Bounds> = IndexMap::default();
 
     // Columns: one per rank, shared across components so flow stays aligned.
-    let mut col_width: IndexMap<i64, f64> = IndexMap::new();
+    let mut col_width: IndexMap<i64, f64> = IndexMap::default();
     for node in &graph.nodes {
         let id = &node.base().id;
         let rank = graph.ranks.get(id).copied().unwrap_or(0);
@@ -130,8 +130,8 @@ pub fn place(
     let mut ranks: Vec<i64> = col_width.keys().copied().collect();
     ranks.sort();
     let gaps = column_gaps(graph, sizes, &col_width, &ranks);
-    let mut col_x: IndexMap<i64, f64> = IndexMap::new();
-    let mut gutter_x: IndexMap<i64, f64> = IndexMap::new();
+    let mut col_x: IndexMap<i64, f64> = IndexMap::default();
+    let mut gutter_x: IndexMap<i64, f64> = IndexMap::default();
     let mut x = 0.0;
     for (i, rank) in ranks.iter().enumerate() {
         let gap = gaps.get(rank).copied().unwrap_or(H_GAP);
@@ -247,14 +247,14 @@ fn column_gaps(
         graph.ranks.get(host).copied().unwrap_or(0)
     };
     let position: IndexMap<i64, usize> = ranks.iter().enumerate().map(|(i, r)| (*r, i)).collect();
-    let mut tall: IndexSet<i64> = IndexSet::new();
+    let mut tall: IndexSet<i64> = IndexSet::default();
     for node in &graph.nodes {
         let id = &node.base().id;
         if size_in(sizes, id).1 > DEFAULT_SIZE.1 {
             tall.insert(graph.ranks.get(id).copied().unwrap_or(0));
         }
     }
-    let mut overhang: IndexMap<i64, f64> = IndexMap::new();
+    let mut overhang: IndexMap<i64, f64> = IndexMap::default();
     for node in &graph.nodes {
         let Some(name) = name_of(node) else { continue };
         let Some(width) = external_label_width(node.type_name(), name) else {
@@ -273,7 +273,7 @@ fn column_gaps(
             .max((width - cw) / 2.0);
         overhang.insert(rank, o);
     }
-    let mut gaps: IndexMap<i64, f64> = IndexMap::new();
+    let mut gaps: IndexMap<i64, f64> = IndexMap::default();
     for (i, rank) in ranks.iter().enumerate() {
         if i == 0 {
             continue;
@@ -404,8 +404,8 @@ fn band_lines(
     axes: &IndexMap<String, f64>,
     titled: &IndexSet<String>,
 ) -> BandLines {
-    let mut extent: IndexMap<String, Extent> = IndexMap::new();
-    let mut by_band: IndexMap<i64, Vec<String>> = IndexMap::new();
+    let mut extent: IndexMap<String, Extent> = IndexMap::default();
+    let mut by_band: IndexMap<i64, Vec<String>> = IndexMap::default();
     for id in members {
         extent.insert(
             id.clone(),
@@ -414,7 +414,7 @@ fn band_lines(
         let band = band_layout.bands.get(id).copied().unwrap_or(0);
         by_band.entry(band).or_default().push(id.clone());
     }
-    let mut line: IndexMap<i64, f64> = IndexMap::new();
+    let mut line: IndexMap<i64, f64> = IndexMap::default();
     // Placed boxes: x-range and how far they reach above / below their line.
     let mut placed: Vec<Placed> = Vec::new();
     let place_band =
@@ -620,7 +620,7 @@ fn separate_same_cell(
     band_layout: &BandLayout,
     bounds: &mut IndexMap<String, Bounds>,
 ) {
-    let mut component_of: IndexMap<&str, usize> = IndexMap::new();
+    let mut component_of: IndexMap<&str, usize> = IndexMap::default();
     for (i, comp) in graph.components.iter().enumerate() {
         for id in comp {
             component_of.insert(id.as_str(), i);
@@ -629,7 +629,7 @@ fn separate_same_cell(
 
     // Scoped per component: components occupy their own vertical space already,
     // so two nodes sharing a rank and band across components do not collide.
-    let mut cells: IndexMap<String, Vec<&str>> = IndexMap::new();
+    let mut cells: IndexMap<String, Vec<&str>> = IndexMap::default();
     for node in &graph.nodes {
         let id = node.base().id.as_str();
         let rank = graph.ranks.get(id).copied().unwrap_or(0);
@@ -744,14 +744,14 @@ fn apply_lanes(
     let mut leaves: Vec<&LaneNode> = Vec::new();
     collect_leaves(&tree, &mut leaves);
 
-    let mut lane_of: IndexMap<&str, &LaneNode> = IndexMap::new();
+    let mut lane_of: IndexMap<&str, &LaneNode> = IndexMap::default();
     for leaf in &leaves {
         for r in leaf.refs {
             lane_of.insert(r.as_str(), leaf);
         }
     }
 
-    let mut members: IndexMap<&str, Vec<&str>> = IndexMap::new();
+    let mut members: IndexMap<&str, Vec<&str>> = IndexMap::default();
     for leaf in &leaves {
         members.insert(leaf.id, Vec::new());
     }
@@ -777,7 +777,7 @@ fn apply_lanes(
 
     let width = max_x - min_x + 2.0 * LANE_PADDING;
     let left = min_x - LANE_PADDING;
-    let mut span: IndexMap<String, (f64, f64)> = IndexMap::new();
+    let mut span: IndexMap<String, (f64, f64)> = IndexMap::default();
     let mut top = 0.0;
 
     for leaf in &leaves {
@@ -862,7 +862,7 @@ fn dock_boundary_events(
             continue;
         };
 
-        let mut sides: IndexMap<bool, Vec<&BpmnBoundaryEvent>> = IndexMap::new();
+        let mut sides: IndexMap<bool, Vec<&BpmnBoundaryEvent>> = IndexMap::default();
         for event in events {
             // `true` is the top border.
             let top = boundary_side(event, titled.contains(host_id)) == -1;

@@ -1,9 +1,9 @@
 //! Twin of `layout/grid/grid-router.ts`.
 
 use super::grid::Grid;
+use crate::hash::IndexMap;
 use crate::js;
 use crate::types::{Bounds, Waypoint, GRID_CELL_HEIGHT, GRID_CELL_WIDTH};
-use indexmap::IndexMap;
 
 /// Child grid dimensions of an expanded subprocess.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

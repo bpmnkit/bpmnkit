@@ -3,11 +3,11 @@
 //! with maps compared as ordered entry lists so insertion order is checked too.
 
 use bpmnkit_bpmn::parse_bpmn;
+use bpmnkit_layout::hash::{IndexMap, IndexSet};
 use bpmnkit_layout::semantic::bands::assign_bands;
 use bpmnkit_layout::semantic::graph::build_semantic_graph;
 use bpmnkit_layout::semantic::place::{place, size_of};
 use bpmnkit_layout::{GridFill, GridHint};
-use indexmap::{IndexMap, IndexSet};
 use serde_json::Value;
 use std::path::PathBuf;
 
@@ -138,7 +138,7 @@ fn semantic_graph_bands_and_place_match_ts() {
             case["packLoose"].as_bool().unwrap(),
             &titled,
             grid.as_ref(),
-            &IndexMap::new(),
+            &IndexMap::default(),
         );
         let p = &case["place"];
         let bounds: Vec<(String, [f64; 4])> = placement

@@ -1,9 +1,9 @@
 //! Twin of `layout/repair.ts`.
 
+use crate::hash::IndexMap;
 use crate::js;
 use crate::orthogonal::{route_orthogonal, side_ports, OrthogonalRequest, Port, Side, SideCost};
 use crate::types::{Bounds, Waypoint};
-use indexmap::{IndexMap, IndexSet};
 
 /// `ConnectionKind`: what a connection is, which decides the sides it may leave and enter by.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -42,46 +42,41 @@ const OWN_END_TOLERANCE: f64 = 2.0;
 /// Re-routes every connection on a plane that runs through a shape it has nothing to do
 /// with. The layout's own routers place the common cases cheaply; this pass is the
 /// guarantee behind them, so it only spends a search on the edges that need one.
-pub fn repair_routes(
+pub fn repair_routes<'r>(
     shapes: &[PlaneShape],
     edges: &mut [PlaneEdge],
-    related: &dyn Fn(&str) -> Vec<String>,
+    related: &dyn Fn(&str) -> Vec<&'r str>,
     boundary_side: &dyn Fn(&str) -> Option<Side>,
 ) {
     // `new Map(entries)`: the last duplicate id wins.
-    let mut by_id: IndexMap<&str, &PlaneShape> = IndexMap::new();
+    let mut by_id: IndexMap<&str, &PlaneShape> = IndexMap::default();
     for s in shapes {
         by_id.insert(s.id.as_str(), s);
     }
     let obstacles: Vec<&PlaneShape> = shapes.iter().filter(|s| !s.container).collect();
 
     for ei in 0..edges.len() {
-        let (source_ref, target_ref) = (edges[ei].source_ref.clone(), edges[ei].target_ref.clone());
-        let mut exempt: IndexSet<String> = IndexSet::new();
-        exempt.insert(source_ref.clone());
-        exempt.insert(target_ref.clone());
-        for id in related(&source_ref) {
-            exempt.insert(id);
-        }
-        for id in related(&target_ref) {
-            exempt.insert(id);
-        }
-        let blocking: Vec<&PlaneShape> = obstacles
-            .iter()
-            .copied()
-            .filter(|s| !exempt.contains(&s.id))
-            .collect();
-        let (Some(&source), Some(&target)) = (
-            by_id.get(source_ref.as_str()),
-            by_id.get(target_ref.as_str()),
-        ) else {
+        let edge = &edges[ei];
+        let (source_ref, target_ref) = (edge.source_ref.as_str(), edge.target_ref.as_str());
+        let (Some(&source), Some(&target)) = (by_id.get(source_ref), by_id.get(target_ref)) else {
             continue;
         };
-        if !route_hits(&edges[ei].waypoints, &blocking)
-            && !through_own_end(&edges[ei].waypoints, source, target)
+        // A handful of ids: a linear scan beats hashing every obstacle's id.
+        let mut exempt: Vec<&str> = vec![source_ref, target_ref];
+        let related_source = related(source_ref);
+        let related_target = related(target_ref);
+        exempt.extend(related_source.iter().chain(related_target.iter()).copied());
+        let blocks = |s: &PlaneShape| !exempt.contains(&s.id.as_str());
+        if !route_hits(&edge.waypoints, &obstacles, &blocks)
+            && !through_own_end(&edge.waypoints, source, target)
         {
             continue;
         }
+        let blocking: Vec<Bounds> = obstacles
+            .iter()
+            .filter(|s| blocks(s))
+            .map(|s| s.bounds)
+            .collect();
 
         let others = SegmentIndex::new(
             edges
@@ -99,17 +94,17 @@ pub fn repair_routes(
         let from_filter = clear_of(target);
         let to_filter = clear_of(source);
         let crossings = |a: &Waypoint, b: &Waypoint| others.crossings(a, b);
-        let kind = edges[ei].kind;
+        let kind = edge.kind;
         let route = route_orthogonal(&OrthogonalRequest {
-            from: ports(kind, source, target, true, boundary_side(&source_ref))
+            from: ports(kind, source, target, true, boundary_side(source_ref))
                 .into_iter()
                 .filter(|p| from_filter(p))
                 .collect(),
-            to: ports(kind, target, source, false, boundary_side(&target_ref))
+            to: ports(kind, target, source, false, boundary_side(target_ref))
                 .into_iter()
                 .filter(|p| to_filter(p))
                 .collect(),
-            obstacles: blocking.iter().map(|s| s.bounds).collect(),
+            obstacles: blocking,
             crossings: Some(&crossings),
             margin: None,
         });
@@ -222,11 +217,15 @@ fn inside(p: &Waypoint, b: &Bounds) -> bool {
     p.x > b.x && p.x < b.x + b.width && p.y > b.y && p.y < b.y + b.height
 }
 
-/// True when any segment passes through the interior of one of `shapes`.
-fn route_hits(waypoints: &[Waypoint], shapes: &[&PlaneShape]) -> bool {
+/// True when any segment passes through the interior of one of `shapes` that `blocks`.
+fn route_hits(
+    waypoints: &[Waypoint],
+    shapes: &[&PlaneShape],
+    blocks: &dyn Fn(&PlaneShape) -> bool,
+) -> bool {
     for w in waypoints.windows(2) {
         for s in shapes {
-            if segment_hits(&w[0], &w[1], &s.bounds, TOLERANCE) {
+            if segment_hits(&w[0], &w[1], &s.bounds, TOLERANCE) && blocks(s) {
                 return true;
             }
         }
@@ -285,14 +284,48 @@ const CELL: f64 = 128.0;
 /// many crossing queries each touch only the segments nearby.
 struct SegmentIndex {
     coords: Vec<f64>,
-    cells: IndexMap<i64, Vec<usize>>,
+    /// First cell of each segment, by segment index / 4.
+    first_cell: Vec<i64>,
+    /// Buckets per [`Direction`]: a horizontal query skips the horizontal
+    /// segments and a vertical one the vertical, since two parallel segments
+    /// never properly cross.
+    cells: [IndexMap<i64, Vec<usize>>; 3],
+}
+
+/// Coordinates this small keep every product in `properly_cross` finite, which
+/// is what makes two parallel segments' sides compare equal.
+const SAFE: f64 = 1e150;
+
+fn safe(p: &Waypoint) -> bool {
+    p.x.abs() < SAFE && p.y.abs() < SAFE
+}
+
+/// Which bucket set a segment goes in.
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Direction {
+    Horizontal = 0,
+    Vertical = 1,
+    Other = 2,
+}
+
+fn direction(a: &Waypoint, b: &Waypoint) -> Direction {
+    if !safe(a) || !safe(b) {
+        Direction::Other
+    } else if a.y == b.y {
+        Direction::Horizontal
+    } else if a.x == b.x {
+        Direction::Vertical
+    } else {
+        Direction::Other
+    }
 }
 
 impl SegmentIndex {
     fn new<'a>(routes: impl Iterator<Item = &'a [Waypoint]>) -> Self {
         let mut idx = SegmentIndex {
             coords: Vec::new(),
-            cells: IndexMap::new(),
+            first_cell: Vec::new(),
+            cells: Default::default(),
         };
         for wps in routes {
             for w in wps.windows(2) {
@@ -301,8 +334,10 @@ impl SegmentIndex {
                 idx.coords.extend([a.x, a.y, b.x, b.y]);
                 let lo = (js::min(a.x, b.x) / CELL).floor() as i64;
                 let hi = (js::max(a.x, b.x) / CELL).floor() as i64;
+                idx.first_cell.push(lo);
+                let cells = &mut idx.cells[direction(a, b) as usize];
                 for c in lo..=hi {
-                    idx.cells.entry(c).or_default().push(index);
+                    cells.entry(c).or_default().push(index);
                 }
             }
         }
@@ -317,28 +352,39 @@ impl SegmentIndex {
         let max_y = js::max(a.y, b.y);
         let lo = (min_x / CELL).floor() as i64;
         let hi = (max_x / CELL).floor() as i64;
-        let mut seen: Option<IndexSet<usize>> = if hi > lo { Some(IndexSet::new()) } else { None };
         let c = &self.coords;
         let mut count = 0;
-        for cell in lo..=hi {
-            let Some(list) = self.cells.get(&cell) else {
+        let parallel = match direction(a, b) {
+            Direction::Horizontal => Some(Direction::Horizontal),
+            Direction::Vertical => Some(Direction::Vertical),
+            Direction::Other => None,
+        };
+        for (d, cells) in self.cells.iter().enumerate() {
+            if parallel.is_some_and(|p| p as usize == d) {
                 continue;
-            };
-            for &i in list {
-                if let Some(seen) = seen.as_mut() {
-                    if !seen.insert(i) {
+            }
+            for cell in lo..=hi {
+                let Some(list) = cells.get(&cell) else {
+                    continue;
+                };
+                for &i in list {
+                    // A segment spans consecutive cells, so it was already counted
+                    // in the previous cell exactly when it starts before this one
+                    // and this is not the first cell visited.
+                    if cell > lo && self.first_cell[i / 4] < cell {
                         continue;
                     }
-                }
-                let (x1, y1, x2, y2) = (c[i], c[i + 1], c[i + 2], c[i + 3]);
-                if js::max(x1, x2) < min_x || js::min(x1, x2) > max_x {
-                    continue;
-                }
-                if js::max(y1, y2) < min_y || js::min(y1, y2) > max_y {
-                    continue;
-                }
-                if properly_cross(a, b, &Waypoint { x: x1, y: y1 }, &Waypoint { x: x2, y: y2 }) {
-                    count += 1;
+                    let (x1, y1, x2, y2) = (c[i], c[i + 1], c[i + 2], c[i + 3]);
+                    if js::max(x1, x2) < min_x || js::min(x1, x2) > max_x {
+                        continue;
+                    }
+                    if js::max(y1, y2) < min_y || js::min(y1, y2) > max_y {
+                        continue;
+                    }
+                    if properly_cross(a, b, &Waypoint { x: x1, y: y1 }, &Waypoint { x: x2, y: y2 })
+                    {
+                        count += 1;
+                    }
                 }
             }
         }

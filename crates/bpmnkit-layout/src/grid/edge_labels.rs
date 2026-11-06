@@ -1,11 +1,11 @@
 //! Twin of `layout/grid/edge-labels.ts`. Shared by both engines.
 
+use crate::hash::{IndexMap, IndexSet};
 use crate::js;
 use crate::types::{
     Bounds, LayoutEdge, LayoutNode, Waypoint, LABEL_CHAR_WIDTH, LABEL_HEIGHT, LABEL_MIN_WIDTH,
     LABEL_VERTICAL_OFFSET,
 };
-use indexmap::{IndexMap, IndexSet};
 
 /// Collision tolerance in pixels: small overlap allowed for rounding.
 const LABEL_COLLISION_TOLERANCE: f64 = 2.0;
@@ -273,7 +273,7 @@ mod tests {
     #[test]
     fn horizontal_edge_label_goes_above_midpoint() {
         let mut edges = vec![edge("e", Some("yes"), &[(0.0, 100.0), (200.0, 100.0)])];
-        place_edge_labels(&mut edges, &IndexMap::new(), &IndexSet::new());
+        place_edge_labels(&mut edges, &IndexMap::default(), &IndexSet::default());
         assert_eq!(
             edges[0].label_bounds,
             Some(Bounds {
@@ -298,9 +298,9 @@ mod tests {
             },
             ..Default::default()
         };
-        let mut map = IndexMap::new();
+        let mut map = IndexMap::default();
         map.insert("n".to_string(), &node);
-        place_edge_labels(&mut edges, &map, &IndexSet::new());
+        place_edge_labels(&mut edges, &map, &IndexSet::default());
         assert_eq!(
             edges[0].label_bounds.map(|b| (b.x, b.y)),
             Some((80.0, 110.0))
@@ -315,7 +315,7 @@ mod tests {
             &[(0.0, 50.0), (150.0, 50.0), (150.0, 400.0)],
         )];
         let ns: IndexSet<String> = ["e".to_string()].into_iter().collect();
-        place_edge_labels(&mut edges, &IndexMap::new(), &ns);
+        place_edge_labels(&mut edges, &IndexMap::default(), &ns);
         assert_eq!(
             edges[0].label_bounds,
             Some(Bounds {
@@ -338,7 +338,7 @@ mod tests {
             edge("other", None, &[(20.0, 0.0), (20.0, 100.0)]),
         ];
         let ns: IndexSet<String> = ["e".to_string()].into_iter().collect();
-        place_edge_labels(&mut edges, &IndexMap::new(), &ns);
+        place_edge_labels(&mut edges, &IndexMap::default(), &ns);
         // falls back to the longest segment (the vertical one)
         let b = edges[0].label_bounds.expect("placed");
         assert!(b.x > 100.0);
@@ -347,7 +347,7 @@ mod tests {
     #[test]
     fn unlabelled_edges_untouched() {
         let mut edges = vec![edge("e", Some(""), &[(0.0, 0.0), (100.0, 0.0)])];
-        place_edge_labels(&mut edges, &IndexMap::new(), &IndexSet::new());
+        place_edge_labels(&mut edges, &IndexMap::default(), &IndexSet::default());
         assert!(edges[0].label_bounds.is_none());
     }
 }

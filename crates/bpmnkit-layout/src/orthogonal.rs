@@ -2,7 +2,7 @@
 
 use crate::js;
 use crate::types::{Bounds, Waypoint};
-use indexmap::IndexMap;
+use std::cell::RefCell;
 
 /// Which side of a shape a route leaves or enters by.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -209,7 +209,45 @@ struct End {
     stub: Waypoint,
 }
 
+/// The search's per-state arrays, kept between searches: they run to hundreds of
+/// kilobytes, and allocating them afresh each time costs more than the search.
+#[derive(Default)]
+struct Scratch {
+    h_blocked: Vec<bool>,
+    v_blocked: Vec<bool>,
+    dist: Vec<f64>,
+    prev: Vec<i64>,
+    step_crossings: Vec<f64>,
+    heap: MinHeap,
+}
+
+thread_local! {
+    static SCRATCH: RefCell<Scratch> = RefCell::default();
+}
+
+fn refill<T: Copy>(v: &mut Vec<T>, n: usize, value: T) {
+    v.clear();
+    v.resize(n, value);
+}
+
 fn search(request: &OrthogonalRequest, obstacles: &[Bounds], margin: f64) -> Option<Vec<Waypoint>> {
+    SCRATCH.with_borrow_mut(|scratch| search_in(scratch, request, obstacles, margin))
+}
+
+fn search_in(
+    scratch: &mut Scratch,
+    request: &OrthogonalRequest,
+    obstacles: &[Bounds],
+    margin: f64,
+) -> Option<Vec<Waypoint>> {
+    let Scratch {
+        h_blocked,
+        v_blocked,
+        dist,
+        prev,
+        step_crossings,
+        heap,
+    } = scratch;
     let clear_ends = |ports: &[Port]| -> Vec<End> {
         ports
             .iter()
@@ -248,8 +286,8 @@ fn search(request: &OrthogonalRequest, obstacles: &[Bounds], margin: f64) -> Opt
     // Blocked grid steps: h_blocked[j * nx + i] is the step (i, j) → (i + 1, j),
     // v_blocked[j * nx + i] the step (i, j) → (i, j + 1). Every obstacle marks the
     // steps that would pass through it, so no step is tested against every shape.
-    let mut h_blocked = vec![false; nx * ny];
-    let mut v_blocked = vec![false; nx * ny];
+    refill(h_blocked, nx * ny, false);
+    refill(v_blocked, nx * ny, false);
     for o in &request.obstacles {
         let left = o.x + TOLERANCE;
         let right = o.x + o.width - TOLERANCE;
@@ -281,7 +319,8 @@ fn search(request: &OrthogonalRequest, obstacles: &[Bounds], margin: f64) -> Opt
         }
     }
 
-    let mut goal: IndexMap<usize, f64> = IndexMap::new();
+    // A few ports at most, looked up four times per popped state: a scan beats hashing.
+    let mut goal: Vec<(usize, f64)> = Vec::new();
     for e in &ends {
         let i = index_of(&xs, e.stub.x);
         let j = index_of(&ys, e.stub.y);
@@ -292,8 +331,10 @@ fn search(request: &OrthogonalRequest, obstacles: &[Bounds], margin: f64) -> Opt
         let inward = (e.port.side.dir() + 2) % 4;
         let key = (j as usize * nx + i as usize) * 4 + inward;
         let cost = e.port.cost.unwrap_or(0.0) + STUB;
-        let prior = goal.get(&key).copied().unwrap_or(f64::INFINITY);
-        goal.insert(key, js::min(prior, cost));
+        match goal.iter_mut().find(|(k, _)| *k == key) {
+            Some((_, prior)) => *prior = js::min(*prior, cost),
+            None => goal.push((key, js::min(f64::INFINITY, cost))),
+        }
     }
     if goal.is_empty() {
         return None;
@@ -309,9 +350,14 @@ fn search(request: &OrthogonalRequest, obstacles: &[Bounds], margin: f64) -> Opt
     };
 
     let states = nx * ny * 4;
-    let mut dist = vec![f64::INFINITY; states];
-    let mut prev = vec![-1i64; states];
-    let mut heap = MinHeap::default();
+    refill(dist, states, f64::INFINITY);
+    refill(prev, states, -1i64);
+    heap.clear();
+    // Crossings of the step leaving cell * 4 + direction. A cell is reached from
+    // up to three directions and each re-asks the same pure question.
+    if request.crossings.is_some() {
+        refill(step_crossings, states, f64::NAN);
+    }
 
     for e in &starts {
         let i = index_of(&xs, e.stub.x);
@@ -350,7 +396,8 @@ fn search(request: &OrthogonalRequest, obstacles: &[Bounds], margin: f64) -> Opt
 
         // Arrive at a goal stub: finish, turning in if needed.
         for final_dir in 0..4 {
-            let Some(&extra) = goal.get(&(cell * 4 + final_dir)) else {
+            let key = cell * 4 + final_dir;
+            let Some(&(_, extra)) = goal.iter().find(|(k, _)| *k == key) else {
                 continue;
             };
             if final_dir == (dir + 2) % 4 {
@@ -388,7 +435,11 @@ fn search(request: &OrthogonalRequest, obstacles: &[Bounds], margin: f64) -> Opt
                 cost += BEND_COST;
             }
             if let Some(crossings) = request.crossings {
-                cost += CROSSING_COST * crossings(&Waypoint { x, y }, &Waypoint { x: nxv, y: nyv });
+                let slot = &mut step_crossings[cell * 4 + nd];
+                if slot.is_nan() {
+                    *slot = crossings(&Waypoint { x, y }, &Waypoint { x: nxv, y: nyv });
+                }
+                cost += CROSSING_COST * *slot;
             }
             let next = (nj * nx + ni) * 4 + nd;
             if cost < dist[next] {
@@ -466,6 +517,11 @@ struct MinHeap {
 impl MinHeap {
     fn size(&self) -> usize {
         self.items.len()
+    }
+
+    fn clear(&mut self) {
+        self.items.clear();
+        self.keys.clear();
     }
 
     fn push(&mut self, item: usize, key: f64) {

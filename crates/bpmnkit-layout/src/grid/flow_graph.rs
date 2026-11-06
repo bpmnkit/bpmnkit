@@ -1,7 +1,7 @@
 //! Twin of `layout/grid/flow-graph.ts`.
 
+use crate::hash::{IndexMap, IndexSet};
 use bpmnkit_bpmn::model::{BpmnFlowElement, BpmnSequenceFlow};
-use indexmap::{IndexMap, IndexSet};
 
 /// Resolved adjacency for one nesting level of a process.
 ///
@@ -66,19 +66,19 @@ pub fn build_flow_graph<'a>(
     flow_nodes: &'a [BpmnFlowElement],
     sequence_flows: &'a [BpmnSequenceFlow],
 ) -> FlowGraph<'a> {
-    let mut by_id: IndexMap<String, usize> = IndexMap::new();
+    let mut by_id: IndexMap<String, usize> = IndexMap::default();
     for (i, n) in flow_nodes.iter().enumerate() {
         by_id.insert(n.base().id.clone(), i);
     }
 
-    let mut outgoing: IndexMap<String, Vec<&BpmnSequenceFlow>> = IndexMap::new();
-    let mut incoming: IndexMap<String, Vec<&BpmnSequenceFlow>> = IndexMap::new();
+    let mut outgoing: IndexMap<String, Vec<&BpmnSequenceFlow>> = IndexMap::default();
+    let mut incoming: IndexMap<String, Vec<&BpmnSequenceFlow>> = IndexMap::default();
     for f in sequence_flows {
         outgoing.entry(f.source_ref.clone()).or_default().push(f);
         incoming.entry(f.target_ref.clone()).or_default().push(f);
     }
 
-    let mut attachers: IndexMap<String, Vec<usize>> = IndexMap::new();
+    let mut attachers: IndexMap<String, Vec<usize>> = IndexMap::default();
     let mut elements = Vec::new();
     for (i, n) in flow_nodes.iter().enumerate() {
         if let BpmnFlowElement::BoundaryEvent(be) = n {
@@ -160,7 +160,7 @@ pub fn forms_loop(el: usize, visited: &IndexSet<String>, graph: &FlowGraph) -> b
 }
 
 fn is_reachable(from_id: &str, target_id: &str, graph: &FlowGraph) -> bool {
-    let mut seen: IndexSet<&str> = IndexSet::new();
+    let mut seen: IndexSet<&str> = IndexSet::default();
     let mut stack: Vec<&str> = vec![from_id];
     while let Some(id) = stack.pop() {
         if seen.contains(id) {

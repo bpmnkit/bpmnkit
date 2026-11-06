@@ -11,6 +11,7 @@ pub mod collaboration;
 pub mod dmn;
 pub mod engine;
 pub mod grid;
+pub mod hash;
 pub mod js;
 pub mod orthogonal;
 pub mod overlap;
