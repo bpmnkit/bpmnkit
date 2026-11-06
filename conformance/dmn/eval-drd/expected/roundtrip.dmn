@@ -30,61 +30,47 @@
     </decisionTable>
   </decision>
   <decision id="rate" name="Rate">
-    <extensionElements>
-      <literalExpression id="rate_expr">
-      
-    
-        <text>if Customer Tier = "gold" then 0.15 else 0.05</text>
-      </literalExpression>
-    </extensionElements>
     <informationRequirement id="ir_rate">
       <requiredDecision href="#tier"/>
     </informationRequirement>
+    <literalExpression id="rate_expr">
+      <text>if Customer Tier = "gold" then 0.15 else 0.05</text>
+    </literalExpression>
   </decision>
   <decision id="discount" name="Discount">
-    <extensionElements>
-      <literalExpression id="discount_expr">
-      
-    
-        <text>{ amount: spend * Rate, tier: Customer Tier }</text>
-      </literalExpression>
-    </extensionElements>
     <informationRequirement id="ir_d1">
       <requiredDecision href="#rate"/>
     </informationRequirement>
     <informationRequirement id="ir_d2">
       <requiredDecision href="#tier"/>
     </informationRequirement>
+    <literalExpression id="discount_expr">
+      <text>{ amount: spend * Rate, tier: Customer Tier }</text>
+    </literalExpression>
   </decision>
   <decision id="loop_a" name="A">
-    <extensionElements>
-      <literalExpression id="la_expr">
-        <text>B</text>
-      </literalExpression>
-    </extensionElements>
     <informationRequirement id="ir_la">
       <requiredDecision href="#loop_b"/>
     </informationRequirement>
+    <literalExpression id="la_expr">
+      <text>B</text>
+    </literalExpression>
   </decision>
   <decision id="loop_b" name="B">
-    <extensionElements>
-      <literalExpression id="lb_expr">
-        <text>A</text>
-      </literalExpression>
-    </extensionElements>
     <informationRequirement id="ir_lb">
       <requiredDecision href="#loop_a"/>
     </informationRequirement>
+    <literalExpression id="lb_expr">
+      <text>A</text>
+    </literalExpression>
   </decision>
   <decision id="missing_req" name="Missing">
-    <extensionElements>
-      <literalExpression id="m_expr">
-        <text>1</text>
-      </literalExpression>
-    </extensionElements>
     <informationRequirement id="ir_m">
       <requiredDecision href="#nowhere"/>
     </informationRequirement>
+    <literalExpression id="m_expr">
+      <text>1</text>
+    </literalExpression>
   </decision>
   <decision id="no_body" name="Empty"/>
   <inputData id="customer" name="customer"/>

@@ -173,7 +173,7 @@ describe("evaluateDecisionGraph", () => {
 		expect(r.result).toEqual({ amount: 0.5, tier: "basic" })
 	})
 
-	it("reads the literal expression the parser keeps in extensionElements", () => {
+	it("reads the parsed literal expression", () => {
 		const rate = defs.decisions.find((d) => d.id === "rate")
 		expect(rate && literalExpressionText(rate)).toBe(
 			'if Customer Tier = "gold" then 0.15 else 0.05',

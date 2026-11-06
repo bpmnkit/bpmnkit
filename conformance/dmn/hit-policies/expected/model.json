@@ -224,7 +224,8 @@
         "outputs": [
           {
             "id": "o5",
-            "name": "y"
+            "name": "y",
+            "outputValues": "\"high\",\"low\""
           }
         ],
         "rules": [

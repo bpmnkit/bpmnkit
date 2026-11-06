@@ -27,6 +27,12 @@ export interface DmnOutput {
 	label?: string
 	name?: string
 	typeRef?: DmnTypeRef
+	/**
+	 * Allowed output values, the text of `<outputValues><text>`: a comma-separated
+	 * list of FEEL literals in decreasing priority (`"high","medium","low"`).
+	 * PRIORITY and OUTPUT ORDER rank by it.
+	 */
+	outputValues?: string
 }
 
 /** An input entry (unary test) within a rule. */
@@ -88,12 +94,26 @@ export interface DmnAuthorityRequirement {
 
 // ── DRG Elements ──────────────────────────────────────────────────────────────
 
+/**
+ * A decision's `<literalExpression>`: the FEEL expression of a decision without
+ * a table. Only the attributes below and `<text>` are modelled; other children
+ * (such as `importedValues`) are not kept.
+ */
+export interface DmnLiteralExpression {
+	id?: string
+	typeRef?: string
+	expressionLanguage?: string
+	text?: string
+}
+
 /** A top-level decision element. */
 export interface DmnDecision {
 	id: string
 	name?: string
 	/** Decision table (optional — a decision may contain a literal expression instead). */
 	decisionTable?: DmnDecisionTable
+	/** Literal expression (a decision has either this or a decision table). */
+	literalExpression?: DmnLiteralExpression
 	informationRequirements: DmnInformationRequirement[]
 	knowledgeRequirements: DmnKnowledgeRequirement[]
 	authorityRequirements: DmnAuthorityRequirement[]

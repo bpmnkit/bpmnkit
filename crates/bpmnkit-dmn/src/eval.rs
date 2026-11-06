@@ -10,7 +10,6 @@ use bpmnkit_feel::{
     parse_partial, parse_unary_tests_partial, Context, Decimal, Expression, ParseError,
     ParseOptions, Partial, UnaryTests, Value, Warning,
 };
-use bpmnkit_xml::local_name;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
@@ -319,19 +318,9 @@ fn table(ev: &mut Evaluator, decision: &DmnDecision) -> Value {
     }
 }
 
-/// The text of a decision's `<literalExpression>`, which the parser keeps in
-/// `extension_elements` (TS `literalExpressionText`).
+/// The text of a decision's `<literalExpression>` (TS `literalExpressionText`).
 pub fn literal_expression_text(decision: &DmnDecision) -> Option<&str> {
-    decision
-        .extension_elements
-        .as_deref()?
-        .iter()
-        .find(|c| local_name(&c.name) == "literalExpression")?
-        .children
-        .iter()
-        .find(|c| local_name(&c.name) == "text")?
-        .text
-        .as_deref()
+    decision.literal_expression.as_ref()?.text.as_deref()
 }
 
 /// Evaluates a decision with the decisions it requires (TS `evaluateDecisionGraph`). Each

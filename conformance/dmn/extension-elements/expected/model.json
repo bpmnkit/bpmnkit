@@ -49,13 +49,16 @@
               "text": "b"
             }
           ],
-          "name": "custom:tags",
-          "text": "\n        \n        \n      "
+          "name": "custom:tags"
         }
       ],
       "id": "with_extension",
       "informationRequirements": [],
       "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "ignored",
+        "text": "1 + 1"
+      },
       "name": "Own extensionElements"
     },
     {
@@ -81,22 +84,6 @@
           },
           "children": [],
           "name": "variable"
-        },
-        {
-          "attributes": {
-            "id": "le1",
-            "typeRef": "number"
-          },
-          "children": [
-            {
-              "attributes": {},
-              "children": [],
-              "name": "text",
-              "text": "x + 1"
-            }
-          ],
-          "name": "literalExpression",
-          "text": "\n      \n    "
         }
       ],
       "id": "literal",
@@ -107,14 +94,22 @@
         }
       ],
       "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "le1",
+        "text": "x + 1",
+        "typeRef": "number"
+      },
       "name": "Literal expression"
     },
     {
       "authorityRequirements": [],
-      "extensionElements": [],
       "id": "empty_extension",
       "informationRequirements": [],
       "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "le2",
+        "text": "2"
+      },
       "name": "Empty extensionElements"
     },
     {

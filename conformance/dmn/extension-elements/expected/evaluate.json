@@ -29,13 +29,15 @@
   },
   {
     "result": {
-      "t": "null"
+      "t": "number",
+      "v": "2"
     },
     "evaluated": [
       {
         "decision": "empty_extension",
         "result": {
-          "t": "null"
+          "t": "number",
+          "v": "2"
         }
       }
     ]

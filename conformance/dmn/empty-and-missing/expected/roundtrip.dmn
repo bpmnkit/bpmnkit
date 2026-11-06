@@ -1,30 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions id="Definitions_quirks" name="Quirks" namespace="https://www.omg.org/spec/DMN/20191111/MODEL/">
   <decision id="d1">
-    <informationRequirement id="ir_empty">
-      <requiredInput href="#undefined"/>
-    </informationRequirement>
-    <informationRequirement id="ir_hash">
-      <requiredInput href="#undefined"/>
-    </informationRequirement>
-    <informationRequirement id="ir_blank_href">
-      <requiredInput href="#undefined"/>
-    </informationRequirement>
+    <informationRequirement id="ir_empty"/>
+    <informationRequirement id="ir_hash"/>
+    <informationRequirement id="ir_blank_href"/>
     <informationRequirement id="ir_plain_href">
       <requiredInput href="#no-hash"/>
     </informationRequirement>
     <informationRequirement id="ir_both">
       <requiredDecision href="#d2"/>
     </informationRequirement>
-    <knowledgeRequirement id="kr_empty">
-      <requiredKnowledge href="#"/>
-    </knowledgeRequirement>
-    <authorityRequirement id="ar_empty">
-      <requiredAuthority href="#"/>
-    </authorityRequirement>
-    <authorityRequirement id="ar_hash">
-      <requiredAuthority href="#"/>
-    </authorityRequirement>
+    <knowledgeRequirement id="kr_empty"/>
+    <authorityRequirement id="ar_empty"/>
+    <authorityRequirement id="ar_hash"/>
     <authorityRequirement id="ar_both">
       <requiredInput href="#in"/>
     </authorityRequirement>

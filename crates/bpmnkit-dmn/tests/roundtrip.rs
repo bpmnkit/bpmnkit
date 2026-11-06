@@ -4,17 +4,11 @@
 use bpmnkit_dmn::{parse_dmn, serialize_dmn};
 use std::path::PathBuf;
 
-/// Cases whose model changes on a second pass. This is a bug in the TS serializer, replicated
-/// on purpose (the Rust twin must write what TS writes): a reference that parsed to nothing is
-/// written as `href="#undefined"` and reads back as the id "undefined"; and whitespace between
-/// the children of kept extension content is text of their parent, which is written back
-/// indented again, so each pass adds a line of whitespace.
-const UNSTABLE: &[&str] = &[
-    "empty-and-missing",
-    "extension-elements",
-    "eval-drd",
-    "reebe-literal-greeting",
-];
+/// Cases whose model changes once on export: empty strings (`aggregation=""`, `href="#"`) are
+/// falsy for the serializer and a reference element after the first one is dropped. Their text
+/// is a fixed point from the first export on, which `serializing_twice_gives_the_same_text`
+/// checks for every case.
+const NORMALISED_ON_EXPORT: &[&str] = &["empty-and-missing"];
 
 fn to_json(m: &bpmnkit_dmn::DmnDefinitions) -> serde_json::Value {
     serde_json::to_value(m).expect("serializes")
@@ -43,8 +37,8 @@ fn serialize_then_parse_is_stable() {
         let twice = parse_dmn(&serialize_dmn(&once)).expect("serialized DMN parses");
         // Through JSON, where NaN (from a bad coordinate) is null and equal to itself.
         let (once, twice) = (to_json(&once), to_json(&twice));
-        if UNSTABLE.contains(&name.as_str()) {
-            assert_ne!(once, twice, "{name} is stable now: remove it from UNSTABLE");
+        if NORMALISED_ON_EXPORT.contains(&name.as_str()) {
+            assert_ne!(once, twice, "{name} is stable now: remove it from the list");
         } else {
             assert_eq!(once, twice, "{name}");
         }
@@ -59,10 +53,7 @@ fn serializing_twice_gives_the_same_text() {
         let Ok(once) = parse_dmn(&xml) else { continue };
         let a = serialize_dmn(&once);
         let b = serialize_dmn(&parse_dmn(&a).expect("parses"));
-        // Past the first pass the text is a fixed point, except where the model itself moves.
-        if !UNSTABLE.contains(&name.as_str()) {
-            assert_eq!(a, b, "{name}");
-        }
+        assert_eq!(a, b, "{name}");
     }
 }
 
@@ -86,18 +77,56 @@ fn unqualified_attribute_wins_over_prefixed() {
 }
 
 #[test]
-fn unknown_children_become_extension_elements_unless_there_is_one() {
+fn literal_expression_is_modelled_and_survives_own_extension_elements() {
     let m = parse(
-        r#"<decision id="a"><literalExpression><text>1</text></literalExpression></decision>
-           <decision id="b"><extensionElements><x/></extensionElements><literalExpression/></decision>"#,
+        r#"<decision id="a"><extensionElements><x/></extensionElements>
+             <literalExpression id="le" typeRef="number"><text>1</text></literalExpression></decision>
+           <decision id="b"><variable id="v"/><literalExpression><text>2</text></literalExpression></decision>"#,
     );
-    let a = m.decisions[0].extension_elements.as_ref().unwrap();
-    assert_eq!(a[0].name, "literalExpression");
-    let b = m.decisions[1].extension_elements.as_ref().unwrap();
-    assert_eq!(b.len(), 1);
-    assert_eq!(b[0].name, "x");
+    let a = &m.decisions[0];
+    let lit = a.literal_expression.as_ref().unwrap();
+    assert_eq!(lit.id.as_deref(), Some("le"));
+    assert_eq!(lit.type_ref.as_deref(), Some("number"));
+    assert_eq!(lit.text.as_deref(), Some("1"));
+    assert_eq!(a.extension_elements.as_ref().unwrap()[0].name, "x");
+    // Other unknown content is still kept in extensionElements.
+    let b = &m.decisions[1];
+    assert_eq!(b.extension_elements.as_ref().unwrap()[0].name, "variable");
     let out = serialize_dmn(&m);
-    assert!(out.contains("<extensionElements>\n      <literalExpression>"));
+    assert!(out.contains(r#"<literalExpression id="le" typeRef="number">"#), "{out}");
+    assert!(out.contains("<x/>"), "{out}");
+}
+
+#[test]
+fn export_is_idempotent_for_kept_content() {
+    let m = parse(
+        r#"<decision id="a"><variable id="v" name="y">
+             <deep><leaf>x</leaf></deep></variable>
+           <literalExpression><text>1</text></literalExpression></decision>"#,
+    );
+    let once = serialize_dmn(&m);
+    let twice = serialize_dmn(&parse_dmn(&once).unwrap());
+    assert_eq!(once, twice);
+}
+
+#[test]
+fn an_empty_extension_elements_is_absent() {
+    let m = parse(r#"<decision id="a"><extensionElements/><variable id="v"/></decision>"#);
+    assert_eq!(
+        m.decisions[0].extension_elements.as_ref().unwrap()[0].name,
+        "variable"
+    );
+}
+
+#[test]
+fn a_reference_that_parsed_to_nothing_is_not_written_as_undefined() {
+    let m = parse(
+        r#"<decision id="a"><informationRequirement id="r"><requiredInput/></informationRequirement>
+             <knowledgeRequirement id="k"/><authorityRequirement id="u"/></decision>"#,
+    );
+    let out = serialize_dmn(&m);
+    assert!(!out.contains("undefined") && !out.contains("href"), "{out}");
+    assert_eq!(to_json(&parse_dmn(&out).unwrap()), to_json(&m));
 }
 
 #[test]

@@ -96,6 +96,9 @@ fn parse_output(el: &XmlElement) -> Res<DmnOutput> {
         label: opt_attr(el, "label"),
         name: opt_attr(el, "name"),
         type_ref: non_empty_attr(el, "typeRef"),
+        output_values: find_child(el, "outputValues")
+            .and_then(|v| find_child(v, "text"))
+            .and_then(|t| t.text.clone()),
     })
 }
 
@@ -165,22 +168,49 @@ fn parse_authority_requirement(el: &XmlElement) -> Res<DmnAuthorityRequirement> 
 
 const KNOWN_DECISION_CHILDREN: &[&str] = &[
     "decisionTable",
+    "literalExpression",
     "extensionElements",
     "informationRequirement",
     "knowledgeRequirement",
     "authorityRequirement",
 ];
 
+fn parse_literal_expression(el: &XmlElement) -> DmnLiteralExpression {
+    DmnLiteralExpression {
+        id: opt_attr(el, "id"),
+        type_ref: opt_attr(el, "typeRef"),
+        expression_language: opt_attr(el, "expressionLanguage"),
+        text: find_child(el, "text").and_then(|t| t.text.clone()),
+    }
+}
+
+/// Whitespace between the children of kept foreign content is formatting. Kept as text of the
+/// parent it was written back indented again, so every export added a blank line.
+fn without_layout_whitespace(el: &XmlElement) -> XmlElement {
+    let keep_text = el
+        .text
+        .as_ref()
+        .is_some_and(|t| el.children.is_empty() || !t.trim().is_empty());
+    XmlElement {
+        name: el.name.clone(),
+        attributes: el.attributes.clone(),
+        children: el.children.iter().map(without_layout_whitespace).collect(),
+        text: if keep_text { el.text.clone() } else { None },
+    }
+}
+
 fn parse_decision(el: &XmlElement) -> Res<DmnDecision> {
     let table = find_child(el, "decisionTable");
-    let extension = find_child(el, "extensionElements");
-    // Content the model has no field for (literalExpression, variable, ...) rides along in
+    // An empty <extensionElements/> carries nothing, and an empty list would not survive an
+    // export (the serializer omits it), so it counts as absent.
+    let extension = find_child(el, "extensionElements").filter(|e| !e.children.is_empty());
+    // Content the model has no field for (variable, question, ...) rides along in
     // extensionElements, but only when the decision has no <extensionElements> of its own.
     let unknown: Vec<XmlElement> = el
         .children
         .iter()
         .filter(|c| !KNOWN_DECISION_CHILDREN.contains(&c.local_name()))
-        .cloned()
+        .map(without_layout_whitespace)
         .collect();
     let id = required_attr(el, "id")?;
     let name = opt_attr(el, "name");
@@ -198,11 +228,12 @@ fn parse_decision(el: &XmlElement) -> Res<DmnDecision> {
         id,
         name,
         decision_table,
+        literal_expression: find_child(el, "literalExpression").map(parse_literal_expression),
         information_requirements,
         knowledge_requirements,
         authority_requirements,
         extension_elements: match extension {
-            Some(e) => Some(e.children.clone()),
+            Some(e) => Some(e.children.iter().map(without_layout_whitespace).collect()),
             None if !unknown.is_empty() => Some(unknown),
             None => None,
         },

@@ -4,7 +4,6 @@ import type {
 	DmnDefinitions,
 	DmnInput,
 	HitPolicy,
-	XmlElement,
 } from "@bpmnkit/core"
 import { evaluate, evaluateUnaryTests, parseExpression, parseUnaryTests } from "@bpmnkit/feel"
 import type { FeelValue } from "@bpmnkit/feel"
@@ -158,7 +157,7 @@ export interface DecisionGraphResult {
  * scope under the required decision's name (its id when it has none), as
  * DMN binds a decision's variable to its name. A decision with a decision
  * table evaluates as {@link evaluateDecision}; one without evaluates its
- * literal expression, which the parser keeps in `extensionElements`.
+ * literal expression.
  *
  * @throws Error when the decision (or a required one) is missing or the
  * requirements form a cycle.
@@ -199,16 +198,9 @@ export function evaluateDecisionGraph(
 	return { result: visit(decisionId), evaluatedDecisions }
 }
 
-function localName(name: string): string {
-	const i = name.indexOf(":")
-	return i >= 0 ? name.slice(i + 1) : name
-}
-
-/** The text of a decision's `<literalExpression>`, kept by the parser in `extensionElements`. */
+/** The text of a decision's `<literalExpression>`. */
 export function literalExpressionText(decision: DmnDecision): string | undefined {
-	const el = decision.extensionElements?.find((c) => localName(c.name) === "literalExpression")
-	const text = el?.children.find((c: XmlElement) => localName(c.name) === "text")
-	return text?.text
+	return decision.literalExpression?.text
 }
 
 function evaluateLiteralExpression(decision: DmnDecision, vars: Record<string, unknown>): unknown {

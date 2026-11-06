@@ -37,6 +37,9 @@ pub struct DmnOutput {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub type_ref: Option<String>,
+    /// Text of `<outputValues><text>`: FEEL literals in decreasing priority.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub output_values: Option<String>,
 }
 
 /// An input entry (unary test) or output entry (literal expression) of a rule.
@@ -99,6 +102,20 @@ pub struct DmnAuthorityRequirement {
     pub required_authority: Option<String>,
 }
 
+/// A decision's `<literalExpression>`. Only these attributes and `<text>` are modelled.
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DmnLiteralExpression {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub type_ref: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub expression_language: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub text: Option<String>,
+}
+
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DmnDecision {
@@ -107,6 +124,8 @@ pub struct DmnDecision {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub decision_table: Option<DmnDecisionTable>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub literal_expression: Option<DmnLiteralExpression>,
     pub information_requirements: Vec<DmnInformationRequirement>,
     pub knowledge_requirements: Vec<DmnKnowledgeRequirement>,
     pub authority_requirements: Vec<DmnAuthorityRequirement>,

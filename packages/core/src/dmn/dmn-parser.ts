@@ -18,6 +18,7 @@ import type {
 	DmnInputEntry,
 	DmnKnowledgeRequirement,
 	DmnKnowledgeSource,
+	DmnLiteralExpression,
 	DmnOutput,
 	DmnOutputEntry,
 	DmnRule,
@@ -80,6 +81,8 @@ function parseHitPolicy(value: string | undefined): HitPolicy | undefined {
 	return value as HitPolicy
 }
 
+const EMPTY: XmlElement = { name: "", attributes: {}, children: [] }
+
 function parseInputExpression(el: XmlElement): DmnInput["inputExpression"] {
 	const textEl = findChild(el, "text")
 	return {
@@ -107,6 +110,7 @@ function parseOutput(el: XmlElement): DmnOutput {
 		label: attr(el, "label"),
 		name: attr(el, "name"),
 		typeRef: parseTypeRef(attr(el, "typeRef")),
+		outputValues: findChild(findChild(el, "outputValues") ?? EMPTY, "text")?.text,
 	}
 }
 
@@ -178,30 +182,63 @@ function parseAuthorityRequirement(el: XmlElement): DmnAuthorityRequirement {
 	}
 }
 
+function parseLiteralExpression(el: XmlElement): DmnLiteralExpression {
+	return {
+		id: attr(el, "id"),
+		typeRef: attr(el, "typeRef"),
+		expressionLanguage: attr(el, "expressionLanguage"),
+		text: findChild(el, "text")?.text,
+	}
+}
+
+/**
+ * Whitespace between the children of kept foreign content is formatting. Kept as
+ * text of the parent it was written back indented again, so every export added a
+ * blank line.
+ */
+function withoutLayoutWhitespace(el: XmlElement): XmlElement {
+	const out: XmlElement = {
+		name: el.name,
+		attributes: el.attributes,
+		children: el.children.map(withoutLayoutWhitespace),
+	}
+	const keep = el.text !== undefined && (el.children.length === 0 || el.text.trim() !== "")
+	if (keep) out.text = el.text
+	return out
+}
+
 function parseDecision(el: XmlElement): DmnDecision {
 	const tableEl = findChild(el, "decisionTable")
-	const extensionEls = findChild(el, "extensionElements")
+	// An empty <extensionElements/> carries nothing, and an empty list would not
+	// survive an export (the serializer omits it), so it counts as absent.
+	const extensionFound = findChild(el, "extensionElements")
+	const extensionEls = extensionFound && extensionFound.children.length > 0 ? extensionFound : undefined
 
 	const knownLocalNames = new Set([
 		"decisionTable",
+		"literalExpression",
 		"extensionElements",
 		"informationRequirement",
 		"knowledgeRequirement",
 		"authorityRequirement",
 	])
-	const unknownChildren = el.children.filter((c) => !knownLocalNames.has(localName(c.name)))
+	const literalEl = findChild(el, "literalExpression")
+	const unknownChildren = el.children
+		.filter((c) => !knownLocalNames.has(localName(c.name)))
+		.map(withoutLayoutWhitespace)
 
 	return {
 		id: requiredAttr(el, "id"),
 		name: attr(el, "name"),
 		decisionTable: tableEl ? parseDecisionTable(tableEl) : undefined,
+		literalExpression: literalEl ? parseLiteralExpression(literalEl) : undefined,
 		informationRequirements: findChildren(el, "informationRequirement").map(
 			parseInformationRequirement,
 		),
 		knowledgeRequirements: findChildren(el, "knowledgeRequirement").map(parseKnowledgeRequirement),
 		authorityRequirements: findChildren(el, "authorityRequirement").map(parseAuthorityRequirement),
 		extensionElements: extensionEls
-			? extensionEls.children
+			? extensionEls.children.map(withoutLayoutWhitespace)
 			: unknownChildren.length > 0
 				? unknownChildren
 				: undefined,

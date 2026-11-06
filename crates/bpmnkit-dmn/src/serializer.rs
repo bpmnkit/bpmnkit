@@ -1,5 +1,5 @@
 //! Port of `dmn-serializer.ts`. Truthiness checks in TS (`if (x.name)`) become "present and not
-//! empty" here, and a missing reference is written as the text JS prints for `undefined`.
+//! empty" here.
 
 use crate::model::*;
 use crate::number::js_number_to_string;
@@ -39,9 +39,12 @@ fn set_if(a: &mut Attrs, key: &str, v: &Option<String>) {
     }
 }
 
-/// `#${v}` with `undefined` printed as JS does.
-fn hash_ref(v: &Option<String>) -> String {
-    format!("#{}", v.as_deref().unwrap_or("undefined"))
+/// A reference element, or nothing when the reference parsed to nothing: `href="#undefined"`
+/// would read back as a reference to an element with that id.
+fn ref_children(name: &str, target: &Option<String>) -> Vec<XmlElement> {
+    truthy(target)
+        .map(|t| vec![href_child(name, format!("#{t}"))])
+        .unwrap_or_default()
 }
 
 fn serialize_input(input: &DmnInput) -> XmlElement {
@@ -65,7 +68,11 @@ fn serialize_output(output: &DmnOutput) -> XmlElement {
     set_if(&mut a, "label", &output.label);
     set_if(&mut a, "name", &output.name);
     set_if(&mut a, "typeRef", &output.type_ref);
-    el("output", a, vec![])
+    let mut children = vec![];
+    if let Some(v) = truthy(&output.output_values) {
+        children.push(el("outputValues", Attrs::new(), vec![text_element(v)]));
+    }
+    el("output", a, children)
 }
 
 fn serialize_entry(name: &str, entry: &DmnEntry) -> XmlElement {
@@ -118,16 +125,12 @@ fn serialize_information_requirements(decision: &DmnDecision) -> Vec<XmlElement>
         .information_requirements
         .iter()
         .map(|req| {
-            let child = if truthy(&req.required_decision).is_some() {
-                href_child("requiredDecision", hash_ref(&req.required_decision))
+            let children = if truthy(&req.required_decision).is_some() {
+                ref_children("requiredDecision", &req.required_decision)
             } else {
-                href_child("requiredInput", hash_ref(&req.required_input))
+                ref_children("requiredInput", &req.required_input)
             };
-            el(
-                "informationRequirement",
-                attrs([("id", &req.id)]),
-                vec![child],
-            )
+            el("informationRequirement", attrs([("id", &req.id)]), children)
         })
         .collect()
 }
@@ -138,10 +141,7 @@ fn serialize_knowledge_requirements(reqs: &[DmnKnowledgeRequirement]) -> Vec<Xml
             el(
                 "knowledgeRequirement",
                 attrs([("id", &req.id)]),
-                vec![href_child(
-                    "requiredKnowledge",
-                    format!("#{}", req.required_knowledge),
-                )],
+                ref_children("requiredKnowledge", &Some(req.required_knowledge.clone())),
             )
         })
         .collect()
@@ -150,23 +150,25 @@ fn serialize_knowledge_requirements(reqs: &[DmnKnowledgeRequirement]) -> Vec<Xml
 fn serialize_authority_requirements(reqs: &[DmnAuthorityRequirement]) -> Vec<XmlElement> {
     reqs.iter()
         .map(|req| {
-            let child = if truthy(&req.required_decision).is_some() {
-                href_child("requiredDecision", hash_ref(&req.required_decision))
+            let children = if truthy(&req.required_decision).is_some() {
+                ref_children("requiredDecision", &req.required_decision)
             } else if truthy(&req.required_input).is_some() {
-                href_child("requiredInput", hash_ref(&req.required_input))
+                ref_children("requiredInput", &req.required_input)
             } else {
-                href_child(
-                    "requiredAuthority",
-                    format!("#{}", req.required_authority.as_deref().unwrap_or("")),
-                )
+                ref_children("requiredAuthority", &req.required_authority)
             };
-            el(
-                "authorityRequirement",
-                attrs([("id", &req.id)]),
-                vec![child],
-            )
+            el("authorityRequirement", attrs([("id", &req.id)]), children)
         })
         .collect()
+}
+
+fn serialize_literal_expression(literal: &DmnLiteralExpression) -> XmlElement {
+    let mut a = Attrs::new();
+    set_if(&mut a, "id", &literal.id);
+    set_if(&mut a, "typeRef", &literal.type_ref);
+    set_if(&mut a, "expressionLanguage", &literal.expression_language);
+    let children = truthy(&literal.text).map(text_element).into_iter().collect();
+    el("literalExpression", a, children)
 }
 
 fn serialize_decision(decision: &DmnDecision) -> XmlElement {
@@ -187,6 +189,9 @@ fn serialize_decision(decision: &DmnDecision) -> XmlElement {
     ));
     if let Some(t) = &decision.decision_table {
         children.push(serialize_decision_table(t));
+    }
+    if let Some(l) = &decision.literal_expression {
+        children.push(serialize_literal_expression(l));
     }
     let mut a = attrs([("id", &decision.id)]);
     set_if(&mut a, "name", &decision.name);

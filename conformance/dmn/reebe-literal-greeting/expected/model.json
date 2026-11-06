@@ -4,23 +4,12 @@
   "decisions": [
     {
       "authorityRequirements": [],
-      "extensionElements": [
-        {
-          "attributes": {},
-          "children": [
-            {
-              "attributes": {},
-              "children": [],
-              "name": "text",
-              "text": "\"Hello \" + name"
-            }
-          ],
-          "name": "literalExpression"
-        }
-      ],
       "id": "greet",
       "informationRequirements": [],
       "knowledgeRequirements": [],
+      "literalExpression": {
+        "text": "\"Hello \" + name"
+      },
       "name": "Greet"
     }
   ],

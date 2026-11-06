@@ -95,7 +95,11 @@
           <text>x</text>
         </inputExpression>
       </input>
-      <output id="o5" name="y"/>
+      <output id="o5" name="y">
+        <outputValues>
+          <text>"high","low"</text>
+        </outputValues>
+      </output>
       <rule id="r7">
         <inputEntry id="e7">
           <text>-</text>

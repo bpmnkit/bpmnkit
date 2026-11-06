@@ -70,23 +70,6 @@
     },
     {
       "authorityRequirements": [],
-      "extensionElements": [
-        {
-          "attributes": {
-            "id": "rate_expr"
-          },
-          "children": [
-            {
-              "attributes": {},
-              "children": [],
-              "name": "text",
-              "text": "if Customer Tier = \"gold\" then 0.15 else 0.05"
-            }
-          ],
-          "name": "literalExpression",
-          "text": "\n      \n    "
-        }
-      ],
       "id": "rate",
       "informationRequirements": [
         {
@@ -95,27 +78,14 @@
         }
       ],
       "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "rate_expr",
+        "text": "if Customer Tier = \"gold\" then 0.15 else 0.05"
+      },
       "name": "Rate"
     },
     {
       "authorityRequirements": [],
-      "extensionElements": [
-        {
-          "attributes": {
-            "id": "discount_expr"
-          },
-          "children": [
-            {
-              "attributes": {},
-              "children": [],
-              "name": "text",
-              "text": "{ amount: spend * Rate, tier: Customer Tier }"
-            }
-          ],
-          "name": "literalExpression",
-          "text": "\n      \n    "
-        }
-      ],
       "id": "discount",
       "informationRequirements": [
         {
@@ -128,26 +98,14 @@
         }
       ],
       "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "discount_expr",
+        "text": "{ amount: spend * Rate, tier: Customer Tier }"
+      },
       "name": "Discount"
     },
     {
       "authorityRequirements": [],
-      "extensionElements": [
-        {
-          "attributes": {
-            "id": "la_expr"
-          },
-          "children": [
-            {
-              "attributes": {},
-              "children": [],
-              "name": "text",
-              "text": "B"
-            }
-          ],
-          "name": "literalExpression"
-        }
-      ],
       "id": "loop_a",
       "informationRequirements": [
         {
@@ -156,26 +114,14 @@
         }
       ],
       "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "la_expr",
+        "text": "B"
+      },
       "name": "A"
     },
     {
       "authorityRequirements": [],
-      "extensionElements": [
-        {
-          "attributes": {
-            "id": "lb_expr"
-          },
-          "children": [
-            {
-              "attributes": {},
-              "children": [],
-              "name": "text",
-              "text": "A"
-            }
-          ],
-          "name": "literalExpression"
-        }
-      ],
       "id": "loop_b",
       "informationRequirements": [
         {
@@ -184,26 +130,14 @@
         }
       ],
       "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "lb_expr",
+        "text": "A"
+      },
       "name": "B"
     },
     {
       "authorityRequirements": [],
-      "extensionElements": [
-        {
-          "attributes": {
-            "id": "m_expr"
-          },
-          "children": [
-            {
-              "attributes": {},
-              "children": [],
-              "name": "text",
-              "text": "1"
-            }
-          ],
-          "name": "literalExpression"
-        }
-      ],
       "id": "missing_req",
       "informationRequirements": [
         {
@@ -212,6 +146,10 @@
         }
       ],
       "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "m_expr",
+        "text": "1"
+      },
       "name": "Missing"
     },
     {
