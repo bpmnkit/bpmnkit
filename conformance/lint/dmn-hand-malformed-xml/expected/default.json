@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "fix": "Fix the XML syntax (unclosed or mismatched tags, unquoted attributes, a stray `&` written instead of `&amp;`).",
+      "message": "The document is not well-formed XML: Mismatched closing tag: expected </decision>, got </definitions>",
+      "rule": "dmn/malformed-xml",
+      "severity": "error"
+    }
+  ]
+}

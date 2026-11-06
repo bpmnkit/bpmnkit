@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "fix": "Fix the JSON syntax (trailing commas, unquoted keys and single quotes are not allowed).",
+      "message": "The form is not valid JSON: Unexpected token '}', ...\"nents\": [ }\n\" is not valid JSON",
+      "rule": "form/invalid-json",
+      "severity": "error"
+    }
+  ]
+}

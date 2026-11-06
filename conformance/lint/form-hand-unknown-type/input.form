@@ -1,0 +1,14 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "a",
+      "type": "sparkline"
+    },
+    {
+      "type": "sparkline2"
+    }
+  ]
+}

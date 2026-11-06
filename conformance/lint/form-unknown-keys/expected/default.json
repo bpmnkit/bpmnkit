@@ -1,0 +1,11 @@
+{
+  "findings": [
+    {
+      "elementId": "f",
+      "fix": "Give each component its own id.",
+      "message": "The id \"f\" is used by the form and by components[5].",
+      "rule": "form/duplicate-id",
+      "severity": "error"
+    }
+  ]
+}

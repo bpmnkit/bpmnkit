@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="defs" name="n" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
+<inputData id="in" name="in"/><businessKnowledgeModel id="bkm" name="b"/><knowledgeSource id="ks" name="k"/>
+<decision id="a" name="A"><informationRequirement><requiredDecision/></informationRequirement><informationRequirement><requiredDecision href="#ghost"/></informationRequirement><informationRequirement><requiredDecision href="#in"/></informationRequirement><informationRequirement><requiredInput href="#a"/></informationRequirement><informationRequirement><requiredInput href="other.dmn#x"/></informationRequirement><knowledgeRequirement><requiredKnowledge href="#ks"/></knowledgeRequirement><authorityRequirement><requiredAuthority href="#bkm"/></authorityRequirement><authorityRequirement><requiredAuthority href="#ks"/></authorityRequirement><literalExpression><text>1</text></literalExpression></decision>
+<knowledgeSource id="ks2"><authorityRequirement><requiredDecision href="#a"/></authorityRequirement></knowledgeSource>
+<businessKnowledgeModel id="bkm2"><knowledgeRequirement><requiredKnowledge href="#nope"/></knowledgeRequirement></businessKnowledgeModel>
+</definitions>

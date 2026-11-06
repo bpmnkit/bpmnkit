@@ -1,0 +1,76 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "a",
+      "type": "textfield",
+      "key": "a",
+      "label": "a",
+      "validate": {
+        "pattern": "["
+      }
+    },
+    {
+      "id": "b",
+      "type": "textfield",
+      "key": "b",
+      "label": "b",
+      "validate": {
+        "pattern": "^\\d+$"
+      }
+    },
+    {
+      "id": "c",
+      "type": "textfield",
+      "key": "c",
+      "label": "c",
+      "validate": {
+        "min": 10,
+        "max": 1
+      }
+    },
+    {
+      "id": "d",
+      "type": "textfield",
+      "key": "d",
+      "label": "d",
+      "validate": {
+        "minLength": 5,
+        "maxLength": 2
+      }
+    },
+    {
+      "id": "e",
+      "type": "textfield",
+      "key": "e",
+      "label": "e",
+      "validate": {
+        "min": 1,
+        "max": 1,
+        "minLength": 0,
+        "maxLength": 0
+      }
+    },
+    {
+      "id": "f",
+      "type": "textfield",
+      "key": "f",
+      "label": "f",
+      "validate": [
+        1
+      ]
+    },
+    {
+      "id": "g",
+      "type": "textfield",
+      "key": "g",
+      "label": "g",
+      "validate": {
+        "min": "10",
+        "max": "1"
+      }
+    }
+  ]
+}

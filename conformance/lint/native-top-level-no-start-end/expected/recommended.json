@@ -1,0 +1,98 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 6,
+    "info": 0,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "bpmnlintRule": "start-event-required",
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-start-event",
+      "message": "Process \"proc\" has no start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a start event to define where the process begins."
+    },
+    {
+      "bpmnlintRule": "end-event-required",
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"proc\" has no end event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"a\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"a\" (task) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"a\" (task) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"a\" (task) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 6
+}

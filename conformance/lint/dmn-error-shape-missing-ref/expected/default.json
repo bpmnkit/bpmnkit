@@ -1,0 +1,11 @@
+{
+  "findings": [
+    {
+      "elementId": "d1",
+      "fix": "Add a decision table or a literal expression; Zeebe cannot evaluate an empty decision.",
+      "message": "Decision \"d1\" has neither a <decisionTable> nor a <literalExpression>.",
+      "rule": "dmn/decision-no-logic",
+      "severity": "error"
+    }
+  ]
+}

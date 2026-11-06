@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "fix": "Fix the JSON syntax (trailing commas, unquoted keys and single quotes are not allowed).",
+      "message": "The form is not valid JSON: Unexpected end of JSON input",
+      "rule": "form/invalid-json",
+      "severity": "error"
+    }
+  ]
+}

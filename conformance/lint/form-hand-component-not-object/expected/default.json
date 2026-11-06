@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "fix": "Write each component as { \"id\": \"…\", \"type\": \"…\", … }.",
+      "message": "components[0] is not an object.",
+      "rule": "form/invalid-schema",
+      "severity": "error"
+    },
+    {
+      "fix": "Write each component as { \"id\": \"…\", \"type\": \"…\", … }.",
+      "message": "components[1] is not an object.",
+      "rule": "form/invalid-schema",
+      "severity": "error"
+    },
+    {
+      "fix": "Write each component as { \"id\": \"…\", \"type\": \"…\", … }.",
+      "message": "components[2] is not an object.",
+      "rule": "form/invalid-schema",
+      "severity": "error"
+    },
+    {
+      "fix": "Write each component as { \"id\": \"…\", \"type\": \"…\", … }.",
+      "message": "components[3] is not an object.",
+      "rule": "form/invalid-schema",
+      "severity": "error"
+    }
+  ]
+}

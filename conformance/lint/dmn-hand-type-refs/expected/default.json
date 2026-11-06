@@ -1,0 +1,32 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Use typeRef=\"string\" (type names are case-sensitive).",
+      "message": "Decision \"A\"'s variable has typeRef \"String\", which is not a DMN/FEEL type; the engine treats the value as untyped.",
+      "rule": "dmn/invalid-type-ref",
+      "severity": "warning"
+    },
+    {
+      "elementId": "a",
+      "fix": "Use one of string, number, boolean, date, time, dateTime, dayTimeDuration, yearMonthDuration, context, list or Any.",
+      "message": "Decision \"A\"'s literal expression has typeRef \"integer\", which is not a DMN/FEEL type; the engine treats the value as untyped.",
+      "rule": "dmn/invalid-type-ref",
+      "severity": "warning"
+    },
+    {
+      "elementId": "i1",
+      "fix": "Use typeRef=\"number\" (type names are case-sensitive).",
+      "message": "Input \"Li1\" of Decision \"B\" has typeRef \"Number\", which is not a DMN/FEEL type; the engine treats the value as untyped.",
+      "rule": "dmn/invalid-type-ref",
+      "severity": "warning"
+    },
+    {
+      "elementId": "o1",
+      "fix": "Use one of string, number, boolean, date, time, dateTime, dayTimeDuration, yearMonthDuration, context, list or Any.",
+      "message": "Output \"r\" has typeRef \"banana\", which is not a DMN/FEEL type; the engine treats the value as untyped.",
+      "rule": "dmn/invalid-type-ref",
+      "severity": "warning"
+    }
+  ]
+}

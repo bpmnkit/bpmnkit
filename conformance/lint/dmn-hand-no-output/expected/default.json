@@ -1,0 +1,11 @@
+{
+  "findings": [
+    {
+      "elementId": "t1",
+      "fix": "Add an <output id=\"…\" name=\"result\" typeRef=\"string\"/> column.",
+      "message": "Decision \"D1\"'s decision table has no <output>.",
+      "rule": "dmn/no-output",
+      "severity": "error"
+    }
+  ]
+}

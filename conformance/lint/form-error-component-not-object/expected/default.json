@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "fix": "Write each component as { \"id\": \"…\", \"type\": \"…\", … }.",
+      "message": "components[1] is not an object.",
+      "rule": "form/invalid-schema",
+      "severity": "error"
+    }
+  ]
+}

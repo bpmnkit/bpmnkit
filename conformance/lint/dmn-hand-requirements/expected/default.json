@@ -1,0 +1,53 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Set href=\"#<id of the decision>\".",
+      "message": "<informationRequirement> on \"a\" has a <requiredDecision> with no href.",
+      "rule": "dmn/unresolved-requirement",
+      "severity": "error"
+    },
+    {
+      "elementId": "a",
+      "fix": "Point it at the id of an existing <decision>, or add a <decision id=\"ghost\">.",
+      "message": "<requiredDecision href=\"#ghost\"> on \"a\" points at \"ghost\", which does not exist.",
+      "rule": "dmn/unresolved-requirement",
+      "severity": "error"
+    },
+    {
+      "elementId": "a",
+      "fix": "Use <requiredInput> for input data.",
+      "message": "<requiredDecision href=\"#in\"> on \"a\" points at a <inputData>, not a <decision>.",
+      "rule": "dmn/unresolved-requirement",
+      "severity": "error"
+    },
+    {
+      "elementId": "a",
+      "fix": "Use <requiredDecision> for a decision.",
+      "message": "<requiredInput href=\"#a\"> on \"a\" points at a <decision>, not a <inputData>.",
+      "rule": "dmn/unresolved-requirement",
+      "severity": "error"
+    },
+    {
+      "elementId": "a",
+      "fix": "Point it at a <businessKnowledgeModel>.",
+      "message": "<requiredKnowledge href=\"#ks\"> on \"a\" points at a <knowledgeSource>, not a <businessKnowledgeModel>.",
+      "rule": "dmn/unresolved-requirement",
+      "severity": "error"
+    },
+    {
+      "elementId": "a",
+      "fix": "Point it at a <knowledgeSource>.",
+      "message": "<requiredAuthority href=\"#bkm\"> on \"a\" points at a <businessKnowledgeModel>, not a <knowledgeSource>.",
+      "rule": "dmn/unresolved-requirement",
+      "severity": "error"
+    },
+    {
+      "elementId": "bkm2",
+      "fix": "Point it at the id of an existing <businessKnowledgeModel>, or add a <businessKnowledgeModel id=\"nope\">.",
+      "message": "<requiredKnowledge href=\"#nope\"> on \"bkm2\" points at \"nope\", which does not exist.",
+      "rule": "dmn/unresolved-requirement",
+      "severity": "error"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Fix the pattern; backslashes must be doubled in JSON (`\\\\d`).",
+      "message": "Component \"a\"'s validate.pattern is not a valid regular expression: Invalid regular expression: /[/: Unterminated character class",
+      "rule": "form/invalid-validation",
+      "severity": "error"
+    },
+    {
+      "elementId": "c",
+      "fix": "Swap them, or lower min below max.",
+      "message": "Component \"c\" has validate.min 10 greater than validate.max 1; no value can pass.",
+      "rule": "form/invalid-validation",
+      "severity": "error"
+    },
+    {
+      "elementId": "d",
+      "fix": "Swap them, or lower minLength below maxLength.",
+      "message": "Component \"d\" has validate.minLength 5 greater than validate.maxLength 2; no value can pass.",
+      "rule": "form/invalid-validation",
+      "severity": "error"
+    }
+  ]
+}

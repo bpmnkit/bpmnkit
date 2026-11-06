@@ -1,0 +1,17 @@
+{
+  "categories": [
+    "naming"
+  ],
+  "counts": {
+    "error": 0,
+    "info": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "platform": {
+    "id": "camunda-platform",
+    "name": "Camunda Platform",
+    "version": "7.20.0"
+  },
+  "total": 0
+}

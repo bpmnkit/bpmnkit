@@ -1,0 +1,24 @@
+{
+  "findings": [
+    {
+      "elementId": "i1",
+      "fix": "Set <inputExpression><text>variableName</text></inputExpression> to the value the column tests.",
+      "message": "Input \"A\" of Decision \"D1\" has no input expression.",
+      "rule": "dmn/empty-input-expression",
+      "severity": "error"
+    },
+    {
+      "elementId": "i2",
+      "fix": "Set <inputExpression><text>variableName</text></inputExpression> to the value the column tests.",
+      "message": "Input \"i2\" of Decision \"D1\" has no input expression.",
+      "rule": "dmn/empty-input-expression",
+      "severity": "error"
+    },
+    {
+      "fix": "Set <inputExpression><text>variableName</text></inputExpression> to the value the column tests.",
+      "message": "Input \"?\" of Decision \"D1\" has no input expression.",
+      "rule": "dmn/empty-input-expression",
+      "severity": "error"
+    }
+  ]
+}

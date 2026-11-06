@@ -1,0 +1,72 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "a",
+      "type": "textfield",
+      "key": "k",
+      "label": "a"
+    },
+    {
+      "id": "b",
+      "type": "textfield",
+      "key": "k",
+      "label": "b"
+    },
+    {
+      "id": "g",
+      "type": "group",
+      "path": "grp",
+      "label": "G",
+      "components": [
+        {
+          "id": "c",
+          "type": "textfield",
+          "key": "k",
+          "label": "c"
+        },
+        {
+          "id": "d",
+          "type": "textfield",
+          "key": "k",
+          "label": "d"
+        }
+      ]
+    },
+    {
+      "id": "h",
+      "type": "dynamiclist",
+      "path": "items",
+      "label": "H",
+      "components": [
+        {
+          "id": "e",
+          "type": "textfield",
+          "key": "k",
+          "label": "e"
+        },
+        {
+          "id": "f",
+          "type": "textfield",
+          "key": "k",
+          "label": "f"
+        }
+      ]
+    },
+    {
+      "id": "i",
+      "type": "group",
+      "label": "no path",
+      "components": [
+        {
+          "id": "j",
+          "type": "textfield",
+          "key": "k",
+          "label": "j"
+        }
+      ]
+    }
+  ]
+}

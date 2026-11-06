@@ -1,0 +1,18 @@
+{
+  "findings": [
+    {
+      "elementId": "i1",
+      "fix": "Fix the FEEL expression; strings need double quotes and DMN entries have no leading `=`.",
+      "message": "Input \"a < b\" of Decision \"Tom & Jerry's AB é &unknown; 100%\"'s expression is not valid FEEL: Unexpected token '&' (at 6) in `a < b && c > \"d\"`.",
+      "rule": "dmn/feel-syntax",
+      "severity": "error"
+    },
+    {
+      "elementId": "e1",
+      "fix": "Write unary tests: a value (`\"gold\"`, `42`), a comparison (`> 10`), a range (`[1..5]`), a list (`\"a\",\"b\"`), `not(...)`, or `-` for any.",
+      "message": "Input entry of rule \"r1\" is not valid FEEL unary tests: Unexpected token '>=' (at 10) in `<= 10 and >= 2`.",
+      "rule": "dmn/feel-syntax",
+      "severity": "error"
+    }
+  ]
+}

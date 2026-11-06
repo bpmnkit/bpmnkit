@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"custom\" is a custom component registered in your Tasklist.",
+      "message": "components[0] has type \"custom\", which form-js does not provide.",
+      "rule": "form/unknown-type",
+      "severity": "warning"
+    },
+    {
+      "fix": "Give every component a unique \"id\", e.g. \"Field_amount\".",
+      "message": "components[0] (custom) has no id.",
+      "rule": "form/missing-id",
+      "severity": "error"
+    }
+  ]
+}

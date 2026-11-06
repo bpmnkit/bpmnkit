@@ -1,0 +1,25 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Give each component its own id.",
+      "message": "The id \"a\" is used by components[0] and by components[1].",
+      "rule": "form/duplicate-id",
+      "severity": "error"
+    },
+    {
+      "elementId": "F",
+      "fix": "Give each component its own id.",
+      "message": "The id \"F\" is used by the form and by components[2].",
+      "rule": "form/duplicate-id",
+      "severity": "error"
+    },
+    {
+      "elementId": "a",
+      "fix": "Give each component its own id.",
+      "message": "The id \"a\" is used by components[0] and by components[3].components[0].",
+      "rule": "form/duplicate-id",
+      "severity": "error"
+    }
+  ]
+}

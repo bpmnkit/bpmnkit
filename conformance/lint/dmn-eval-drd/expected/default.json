@@ -1,0 +1,39 @@
+{
+  "findings": [
+    {
+      "elementId": "missing_req",
+      "fix": "Point it at the id of an existing <decision>, or add a <decision id=\"nowhere\">.",
+      "message": "<requiredDecision href=\"#nowhere\"> on \"missing_req\" points at \"nowhere\", which does not exist.",
+      "rule": "dmn/unresolved-requirement",
+      "severity": "error"
+    },
+    {
+      "elementId": "loop_a",
+      "fix": "Remove one of the <requiredDecision> references so the requirement graph is acyclic.",
+      "message": "Decisions require each other in a cycle: loop_a → loop_b → loop_a.",
+      "rule": "dmn/requirement-cycle",
+      "severity": "error"
+    },
+    {
+      "elementId": "rate",
+      "fix": "Fix the FEEL expression; strings need double quotes and DMN entries have no leading `=`.",
+      "message": "Decision \"Rate\"'s literal expression is not valid FEEL: Expected then (at 12) in `if Customer Tier = \"gold\" then 0.15 else 0.05`.",
+      "rule": "dmn/feel-syntax",
+      "severity": "error"
+    },
+    {
+      "elementId": "discount",
+      "fix": "Fix the FEEL expression; strings need double quotes and DMN entries have no leading `=`.",
+      "message": "Decision \"Discount\"'s literal expression is not valid FEEL: Expected } (at 39) in `{ amount: spend * Rate, tier: Customer Tier }`.",
+      "rule": "dmn/feel-syntax",
+      "severity": "error"
+    },
+    {
+      "elementId": "no_body",
+      "fix": "Add a decision table or a literal expression; Zeebe cannot evaluate an empty decision.",
+      "message": "Decision \"Empty\" has neither a <decisionTable> nor a <literalExpression>.",
+      "rule": "dmn/decision-no-logic",
+      "severity": "error"
+    }
+  ]
+}

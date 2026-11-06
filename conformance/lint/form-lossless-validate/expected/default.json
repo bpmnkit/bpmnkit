@@ -1,0 +1,11 @@
+{
+  "findings": [
+    {
+      "elementId": "t",
+      "fix": "Add \"values\": [{ \"label\": \"…\", \"value\": \"…\" }], or take them from a variable with \"valuesKey\" or \"valuesExpression\".",
+      "message": "Component \"t\" (taglist) has no options.",
+      "rule": "form/missing-options",
+      "severity": "error"
+    }
+  ]
+}

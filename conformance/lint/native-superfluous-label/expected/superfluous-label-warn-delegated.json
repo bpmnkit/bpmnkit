@@ -1,0 +1,96 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 1,
+    "info": 3,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "yes"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"yes\" exits a decision gateway without a condition expression.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"start\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "gw"
+      ],
+      "fixable": false,
+      "id": "naming/split-gateway-no-label",
+      "message": "Gateway \"gw\" (exclusiveGateway, split) has no name.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Label split gateways as a yes/no question, e.g. \"Invoice valid?\", \"Order approved?\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "e1"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"e1\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "e2"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"e2\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"start\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 6
+}

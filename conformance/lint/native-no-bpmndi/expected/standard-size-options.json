@@ -1,0 +1,75 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 2,
+    "info": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "data"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"data\" (dataObject) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "data"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"data\" (dataObject) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Started\" has no documentation describing expected input variables.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "bpmnlintRule": "standard-size",
+      "category": "pattern",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "pattern/non-standard-size",
+      "message": "Element \"a\" is 100x80; the standard size is 120x80.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Resize it to the standard size so diagrams across the project read alike."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 4
+}

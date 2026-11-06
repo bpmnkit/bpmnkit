@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "fix": "Give every component a unique \"id\", e.g. \"Field_amount\".",
+      "message": "components[0] (button) has no id.",
+      "rule": "form/missing-id",
+      "severity": "error"
+    }
+  ]
+}

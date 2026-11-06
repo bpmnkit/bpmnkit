@@ -1,0 +1,11 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Set \"key\" to the process variable the field reads and writes, e.g. \"amount\".",
+      "message": "Component \"a\" (textarea) is not bound to a variable — it has no \"key\".",
+      "rule": "form/missing-key",
+      "severity": "error"
+    }
+  ]
+}

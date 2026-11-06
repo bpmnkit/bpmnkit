@@ -1,0 +1,39 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Use letters, digits, `_` and `$`, not starting with a digit; separate nested names with dots.",
+      "message": "Component \"a\" has key \"1abc\", which is not a variable name or dotted path.",
+      "rule": "form/invalid-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "b",
+      "fix": "Use letters, digits, `_` and `$`, not starting with a digit; separate nested names with dots.",
+      "message": "Component \"b\" has key \"a b\", which is not a variable name or dotted path.",
+      "rule": "form/invalid-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "c",
+      "fix": "Use letters, digits, `_` and `$`, not starting with a digit; separate nested names with dots.",
+      "message": "Component \"c\" has key \"a..b\", which is not a variable name or dotted path.",
+      "rule": "form/invalid-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "f",
+      "fix": "Use letters, digits, `_` and `$`, not starting with a digit; separate nested names with dots.",
+      "message": "Component \"f\" has key \"a-b\", which is not a variable name or dotted path.",
+      "rule": "form/invalid-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "g",
+      "fix": "Use letters, digits, `_` and `$`, not starting with a digit; separate nested names with dots.",
+      "message": "Component \"g\" has key \".x\", which is not a variable name or dotted path.",
+      "rule": "form/invalid-key",
+      "severity": "error"
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="defs" name="n" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
+<decision id="dup" name="a"><literalExpression id="dup"><text>1</text></literalExpression></decision><inputData id="dup" name="b"/>
+</definitions>

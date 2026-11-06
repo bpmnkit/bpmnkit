@@ -1,0 +1,39 @@
+{
+  "findings": [
+    {
+      "elementId": "d1",
+      "fix": "Set \"key\" to the process variable the field reads and writes, e.g. \"amount\".",
+      "message": "Component \"d1\" (datetime) is not bound to a variable — it has no \"key\".",
+      "rule": "form/missing-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "d2",
+      "fix": "Set \"key\" to the process variable the field reads and writes, e.g. \"amount\".",
+      "message": "Component \"d2\" (datetime) is not bound to a variable — it has no \"key\".",
+      "rule": "form/missing-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "d3",
+      "fix": "Set \"key\" to the process variable the field reads and writes, e.g. \"amount\".",
+      "message": "Component \"d3\" (datetime) is not bound to a variable — it has no \"key\".",
+      "rule": "form/missing-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "d4",
+      "fix": "Set \"key\" to the process variable the field reads and writes, e.g. \"amount\".",
+      "message": "Component \"d4\" (datetime) is not bound to a variable — it has no \"key\".",
+      "rule": "form/missing-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "b1",
+      "fix": "Use \"action\": \"submit\" or \"reset\".",
+      "message": "Component \"b1\" has button action \"\".",
+      "rule": "form/invalid-schema",
+      "severity": "error"
+    }
+  ]
+}

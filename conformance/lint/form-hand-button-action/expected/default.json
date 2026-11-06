@@ -1,0 +1,11 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Use \"action\": \"submit\" or \"reset\".",
+      "message": "Component \"a\" has button action \"launch\".",
+      "rule": "form/invalid-schema",
+      "severity": "error"
+    }
+  ]
+}

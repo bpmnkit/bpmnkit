@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="defs" name="n" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
+<decision id="d1" name="D1"><decisionTable id="t1"><input id="i1" label="A"/><input id="i2"><inputExpression id="i2e"><text> </text></inputExpression></input><input><inputExpression><text/></inputExpression></input><output id="o" name="r" typeRef="string"/></decisionTable></decision>
+</definitions>

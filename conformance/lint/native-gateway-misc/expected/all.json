@@ -1,0 +1,306 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 18,
+    "info": 1,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "x"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"x\" has 2 outgoing flows but no default flow set.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "bpmnlintRule": "superfluous-gateway",
+      "category": "flow",
+      "elementIds": [
+        "cx"
+      ],
+      "fixable": true,
+      "id": "flow/redundant-gateway",
+      "message": "Gateway \"cx\" (complexGateway) has only 1 incoming and 1 outgoing flow — it is redundant.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove this gateway and connect its source directly to its target."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "inc"
+      ],
+      "fixable": false,
+      "id": "naming/join-gateway-labeled",
+      "message": "Gateway \"inc\" (join) is named \"Inc?\" — join gateways should not have labels.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Remove the label from join-only gateways; their semantics are implicit."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "x"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"x\" has no default sequence flow.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "x"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "exclusiveGateway element \"x\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"start\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "x"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"x\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"a\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "b"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"b\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "inc"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"inc\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "cx"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"cx\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"end\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "g1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"g1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "g2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"g2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "g3"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"g3\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "g4"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"g4\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "g5"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"g5\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "g6"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"g6\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "g7"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"g7\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-complex-gateway",
+      "category": "pattern",
+      "elementIds": [
+        "cx"
+      ],
+      "fixable": false,
+      "id": "pattern/complex-gateway",
+      "message": "Element \"cx\" is a complex gateway, which this project's lint configuration discourages.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Model the routing with exclusive or parallel gateways instead."
+    },
+    {
+      "bpmnlintRule": "no-inclusive-gateway",
+      "category": "pattern",
+      "elementIds": [
+        "inc"
+      ],
+      "fixable": false,
+      "id": "pattern/inclusive-gateway",
+      "message": "Element \"inc\" is a inclusive gateway, which this project's lint configuration discourages.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Model the routing with exclusive or parallel gateways instead."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 22
+}

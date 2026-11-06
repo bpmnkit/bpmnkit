@@ -1,0 +1,73 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 1,
+    "info": 2,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "category": "naming",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"start\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"end\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"start\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "bpmnlintRule": "superfluous-termination",
+      "category": "flow",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "flow/superfluous-termination",
+      "message": "Terminate end event \"end\" is the only way this scope ends, so terminating is superfluous.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Use a plain end event."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 4
+}

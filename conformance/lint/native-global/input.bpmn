@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+  xmlns:modeler="http://camunda.org/schema/modeler/1.0"
+  xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:error id="err1" name="Failed" errorCode="E1" /><bpmn:error id="err2" name="Failed" errorCode="E2" /><bpmn:message id="msg1" name=" " /><bpmn:message id="msg2" /><bpmn:signal id="sig1" name="Go" />
+  
+  <bpmn:process id="proc" isExecutable="true">
+    
+  <bpmn:startEvent id="start" name="Started" />
+  <bpmn:task id="a" name="Do A" />
+  <bpmn:endEvent id="end" name="Done" />
+  <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="a" />
+  <bpmn:sequenceFlow id="f2" sourceRef="a" targetRef="end" />
+	  <bpmn:boundaryEvent id="b1" attachedToRef="a"><bpmn:errorEventDefinition errorRef="err1" /></bpmn:boundaryEvent>
+	  <bpmn:receiveTask id="r" name="Wait" messageRef="msg1" />
+	  <bpmn:receiveTask id="r2" name="Wait too" messageRef="msg2" />
+	  <bpmn:intermediateThrowEvent id="t"><bpmn:signalEventDefinition signalRef="sig1" /></bpmn:intermediateThrowEvent>
+  </bpmn:process>
+  
+</bpmn:definitions>

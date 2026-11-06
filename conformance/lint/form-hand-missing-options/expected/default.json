@@ -1,0 +1,25 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Add \"values\": [{ \"label\": \"…\", \"value\": \"…\" }], or take them from a variable with \"valuesKey\" or \"valuesExpression\".",
+      "message": "Component \"a\" (select) has no options.",
+      "rule": "form/missing-options",
+      "severity": "error"
+    },
+    {
+      "elementId": "b",
+      "fix": "Add \"values\": [{ \"label\": \"…\", \"value\": \"…\" }], or take them from a variable with \"valuesKey\" or \"valuesExpression\".",
+      "message": "Component \"b\" (radio) has no options.",
+      "rule": "form/missing-options",
+      "severity": "error"
+    },
+    {
+      "elementId": "f",
+      "fix": "Add \"values\": [{ \"label\": \"…\", \"value\": \"…\" }], or take them from a variable with \"valuesKey\" or \"valuesExpression\".",
+      "message": "Component \"f\" (radio) has no options.",
+      "rule": "form/missing-options",
+      "severity": "error"
+    }
+  ]
+}

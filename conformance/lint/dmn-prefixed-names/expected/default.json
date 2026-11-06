@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id.",
+      "message": "A <dmn:decision> has no id.",
+      "rule": "dmn/missing-id",
+      "severity": "error"
+    },
+    {
+      "fix": "Set href=\"#<id of the inputData>\".",
+      "message": "<informationRequirement> on \"?\" has a <requiredInput> with no href.",
+      "rule": "dmn/unresolved-requirement",
+      "severity": "error"
+    }
+  ]
+}

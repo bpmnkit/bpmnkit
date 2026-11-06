@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "fix": "Add \"components\": [ … ] with the form's fields.",
+      "message": "The form has no \"components\" array.",
+      "rule": "form/invalid-schema",
+      "severity": "error"
+    }
+  ]
+}

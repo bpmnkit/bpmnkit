@@ -1,0 +1,97 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 3,
+    "info": 0,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"c1\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"c1\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"c2\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"c2\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Started\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "bpmnlintRule": "conditional-event",
+      "category": "flow",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "flow/conditional-event-no-condition",
+      "message": "Conditional event \"c1\" has no condition.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add the condition that should trigger the event."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 6
+}
