@@ -2,7 +2,9 @@
 
 ## `bpmnkit-layout`: auto-layout in Rust (2026-11-06)
 
-Rust auto-layout for BPMN (both engines: semantic and grid; pools, lanes, boundary events, expanded and collapsed sub-processes, annotations, message flows, keeping the source DI's ids and styles) and DMN, with the same shapes, waypoints, labels and XML as `@bpmnkit/core`'s `applyAutoLayout` and `layoutDmn`: all 213 recorded layout runs match exactly. Takes the builder's layout hints (tool grids, annotation sides).
+Rust auto-layout for BPMN (both engines: semantic and grid; pools, lanes, boundary events, expanded and collapsed sub-processes, annotations, message flows, keeping the source DI's ids and styles) and DMN, with the same shapes, waypoints, labels and XML as `@bpmnkit/core`'s `applyAutoLayout` and `layoutDmn`: all 217 recorded layout runs match exactly. Takes the builder's layout hints (tool grids, annotation sides). About 2.5× faster than TS on the semantic engine and 2.2× on grid.
+
+Auto-layout (TS and Rust) draws the lanes of a process outside any pool on its own plane, and the associations between two text annotations.
 
 ## `bpmnkit-lint` and `bpmnkit-compat`: lint, Camunda compatibility and C7 migration in Rust (2026-11-06)
 
