@@ -1,0 +1,51 @@
+{"id":"logic/1","expr":"true and false","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"logic/2","expr":"true or null","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/3","expr":"false and null","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"logic/4","expr":"null and true","context":{},"expected":{"t":"null"}}
+{"id":"logic/5","expr":"not(true)","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"logic/6","expr":"if 1 > 2 then \"a\" else \"b\"","context":{},"expected":{"t":"string","v":"b"}}
+{"id":"logic/7","expr":"if null then 1 else 2","context":{},"expected":{"t":"number","v":"2"}}
+{"id":"logic/8","expr":"1 = 1","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/9","expr":"\"a\" < \"b\"","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/10","expr":"x between 1 and 5","context":{"x":{"t":"number","v":"3"}},"expected":{"t":"boolean","v":true}}
+{"id":"logic/11","expr":"x in (<5, >10)","context":{"x":{"t":"number","v":"12"}},"expected":{"t":"boolean","v":true}}
+{"id":"logic/12","expr":"null = null","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/13","expr":"1 = \"1\"","context":{},"expected":{"t":"null"}}
+{"id":"logic/14","expr":"x instance of number","context":{"x":{"t":"number","v":"1"}},"expected":{"t":"boolean","v":true}}
+{"id":"logic/15","expr":"1 in [1..5)","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/16","expr":"true","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/17","expr":"false","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"logic/18","expr":"null","context":{},"expected":{"t":"null"}}
+{"id":"logic/19","expr":"null + 1","context":{},"expected":{"t":"null"}}
+{"id":"logic/20","expr":"1 = 2","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"logic/21","expr":"1 < 2","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/22","expr":"null or false","context":{},"expected":{"t":"null"}}
+{"id":"logic/23","expr":"if true then 1 else 2","context":{},"expected":{"t":"number","v":"1"}}
+{"id":"logic/24","expr":"if false then 1 else 2","context":{},"expected":{"t":"number","v":"2"}}
+{"id":"logic/25","expr":"null.foo","context":{},"expected":{"t":"null"}}
+{"id":"logic/26","expr":"5 between 1 and 10","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/27","expr":"0 between 1 and 10","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"logic/28","expr":"3 in [1..5]","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/29","expr":"not(false)","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/30","expr":"42 instance of number","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/31","expr":"1 in <= 10","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/32","expr":"11 in <= 10","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"logic/33","expr":"10 in =10","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/34","expr":"10 in (1, < 5, >= 10)","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/35","expr":"7 in (1, < 5, >= 10)","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"logic/36","expr":"5 in [1..10]","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/37","expr":"5 in [1, 5, 9]","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/38","expr":"null in [1..10]","context":{},"expected":{"t":"null"}}
+{"id":"logic/39","expr":"5 in [null..10]","context":{},"expected":{"t":"null"}}
+{"id":"logic/40","expr":"true and 123","context":{},"expected":{"t":"null"}}
+{"id":"logic/41","expr":"false or \"true\"","context":{},"expected":{"t":"null"}}
+{"id":"logic/42","expr":"false and 123","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"logic/43","expr":"true or 123","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/44","expr":"false = 0","context":{},"expected":{"t":"null"}}
+{"id":"logic/45","expr":"100 = \"100\"","context":{},"expected":{"t":"null"}}
+{"id":"logic/46","expr":"null instance of Any","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"logic/47","expr":"null instance of number","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"logic/48","expr":"true[1]","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/49","expr":"true[0]","context":{},"expected":{"t":"null"}}
+{"id":"logic/50","expr":"12300 = 1.23e4","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"logic/51","expr":"0.000123 = 1.23e-4","context":{},"expected":{"t":"boolean","v":true}}

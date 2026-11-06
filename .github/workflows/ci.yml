@@ -83,3 +83,8 @@ jobs:
       # built declarations against the committed snapshot.
       - name: Check the public API surface
         run: pnpm check:api
+
+      - name: conformance-ts
+        run: |
+          pnpm conformance:record
+          git diff --exit-code conformance/

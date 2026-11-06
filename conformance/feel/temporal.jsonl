@@ -1,0 +1,46 @@
+{"id":"temporal/1","expr":"date(\"2020-03-15\") + duration(\"P1D\")","context":{},"expected":{"t":"date","v":"2020-03-16"}}
+{"id":"temporal/2","expr":"date(\"2020-03-15\") + duration(\"P1M\")","context":{},"expected":{"t":"date","v":"2020-04-15"}}
+{"id":"temporal/3","expr":"date(\"2020-01-31\") + duration(\"P1M\")","context":{},"expected":{"t":"date","v":"2020-02-29"}}
+{"id":"temporal/4","expr":"date(\"2021-01-01\") - date(\"2020-01-01\")","context":{},"expected":{"t":"days-time-duration","v":"P366D"}}
+{"id":"temporal/5","expr":"date and time(\"2020-01-01T10:00:00\") + duration(\"PT36H\")","context":{},"expected":{"t":"date-time","v":"2020-01-02T22:00:00"}}
+{"id":"temporal/6","expr":"time(\"10:30:00\") + duration(\"PT45M\")","context":{},"expected":{"t":"time","v":"11:15:00"}}
+{"id":"temporal/7","expr":"duration(\"P1Y2M\")","context":{},"expected":{"t":"years-months-duration","v":"P1Y2M"}}
+{"id":"temporal/8","expr":"duration(\"P1DT2H3M4S\")","context":{},"expected":{"t":"days-time-duration","v":"P1DT2H3M4S"}}
+{"id":"temporal/9","expr":"duration(\"P1Y\") + duration(\"P2M\")","context":{},"expected":{"t":"years-months-duration","v":"P1Y2M"}}
+{"id":"temporal/10","expr":"duration(\"PT1H\") * 3","context":{},"expected":{"t":"days-time-duration","v":"PT3H"}}
+{"id":"temporal/11","expr":"date(\"2020-02-29\").year","context":{},"expected":{"t":"number","v":"2020"}}
+{"id":"temporal/12","expr":"date(\"2020-02-29\").weekday","context":{},"expected":{"t":"number","v":"6"}}
+{"id":"temporal/13","expr":"@\"2020-05-17\" + @\"P7D\"","context":{},"expected":{"t":"date","v":"2020-05-24"}}
+{"id":"temporal/14","expr":"years and months duration(date(\"2020-01-01\"), date(\"2022-03-01\"))","context":{},"expected":{"t":"years-months-duration","v":"P2Y2M"}}
+{"id":"temporal/15","expr":"d + duration(\"P10D\")","context":{"d":{"t":"date","v":"2024-12-25"}},"expected":{"t":"date","v":"2025-01-04"}}
+{"id":"temporal/16","expr":"date and time(\"2020-01-01T10:00:00Z\") - date and time(\"2020-01-01T08:00:00Z\")","context":{},"expected":{"t":"days-time-duration","v":"PT2H"}}
+{"id":"temporal/17","expr":"time(\"10:00:00+01:00\")","context":{},"expected":{"t":"time","v":"10:00:00+01:00"}}
+{"id":"temporal/18","expr":"date(\"2020-13-01\")","context":{},"expected":{"t":"null"}}
+{"id":"temporal/19","expr":"@\"2020-01-01T00:00:00\" < @\"2020-01-02T00:00:00\"","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"temporal/20","expr":"duration(\"P1D\") < duration(\"PT25H\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"temporal/21","expr":"@\"2021-01-01\"","context":{},"expected":{"t":"date","v":"2021-01-01"}}
+{"id":"temporal/22","expr":"date(\"2021-01-15\")","context":{},"expected":{"t":"date","v":"2021-01-15"}}
+{"id":"temporal/23","expr":"date(\"2021-01-15\") + duration(\"P1Y\")","context":{},"expected":{"t":"date","v":"2022-01-15"}}
+{"id":"temporal/24","expr":"date(\"2021-02-29\")","context":{},"expected":{"t":"null"}}
+{"id":"temporal/25","expr":"date(\"2020-02-30\")","context":{},"expected":{"t":"null"}}
+{"id":"temporal/26","expr":"date(2020, 2, 30)","context":{},"expected":{"t":"null"}}
+{"id":"temporal/27","expr":"date(\"2020-02-29\")","context":{},"expected":{"t":"date","v":"2020-02-29"}}
+{"id":"temporal/28","expr":"time(\"25:00:00\")","context":{},"expected":{"t":"null"}}
+{"id":"temporal/29","expr":"time(\"10:61:00\")","context":{},"expected":{"t":"null"}}
+{"id":"temporal/30","expr":"time(24, 0, 1)","context":{},"expected":{"t":"null"}}
+{"id":"temporal/31","expr":"string(date(\"2020-01-31\") + duration(\"P1M\"))","context":{},"expected":{"t":"string","v":"2020-02-29"}}
+{"id":"temporal/32","expr":"string(date(\"2021-01-31\") + duration(\"P1M\"))","context":{},"expected":{"t":"string","v":"2021-02-28"}}
+{"id":"temporal/33","expr":"string(date(\"2020-03-31\") - duration(\"P1M\"))","context":{},"expected":{"t":"string","v":"2020-02-29"}}
+{"id":"temporal/34","expr":"string(date(\"2020-01-31\") + duration(\"P1Y\"))","context":{},"expected":{"t":"string","v":"2021-01-31"}}
+{"id":"temporal/35","expr":"date and time(\"2020-01-01T10:00:00\").year","context":{},"expected":{"t":"number","v":"2020"}}
+{"id":"temporal/36","expr":"@\"2002-04-02T12:00:00-01:00\" = @\"2002-04-02T17:00:00+04:00\"","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"temporal/37","expr":"date and time(\"2018-12-08\") = date and time(\"2018-12-08T00:00:00\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"temporal/38","expr":"@\"2018-12-08T10:00:00\" = @\"2018-12-08T10:00:00Z\"","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"temporal/39","expr":"@\"2018-12-08T10:30:11\" instance of date and time","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"temporal/40","expr":"@\"P10D\" instance of days and time duration","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"temporal/41","expr":"week of year(date(2005, 1, 1))","context":{},"expected":{"t":"number","v":"53"}}
+{"id":"temporal/42","expr":"string(years and months duration(@\"2016-09-30T23:25:00\", @\"2017-12-30T23:24:00\"))","context":{},"expected":{"t":"string","v":"P1Y2M"}}
+{"id":"temporal/43","expr":"@\"2002-01-02T12:00:00@Australia/Melbourne\" = @\"2002-01-02T12:00:00+11:00\"","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"temporal/44","expr":"@\"2002-07-02T12:00:00@Australia/Melbourne\" = @\"2002-07-02T12:00:00+10:00\"","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"temporal/45","expr":"date and time(\"2017-12-31T13:20:00@xyz/abc\")","context":{},"expected":{"t":"null"}}
+{"id":"temporal/46","expr":"date and time(\"2017-12-31T13:20:00+19:00\")","context":{},"expected":{"t":"null"}}

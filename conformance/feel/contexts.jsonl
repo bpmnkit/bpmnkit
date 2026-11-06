@@ -1,0 +1,22 @@
+{"id":"contexts/1","expr":"{a: 1, b: a + 1}","context":{},"expected":{"t":"context","v":{"a":{"t":"number","v":"1"},"b":{"t":"number","v":"2"}}}}
+{"id":"contexts/2","expr":"{a: 1}.a","context":{},"expected":{"t":"number","v":"1"}}
+{"id":"contexts/3","expr":"{a: {b: 2}}.a.b","context":{},"expected":{"t":"number","v":"2"}}
+{"id":"contexts/4","expr":"{a: 1}.z","context":{},"expected":{"t":"null"}}
+{"id":"contexts/5","expr":"context put({a:1}, \"b\", 2)","context":{},"expected":{"t":"context","v":{"a":{"t":"number","v":"1"},"b":{"t":"number","v":"2"}}}}
+{"id":"contexts/6","expr":"get value({a:1}, \"a\")","context":{},"expected":{"t":"number","v":"1"}}
+{"id":"contexts/7","expr":"get entries({a:1,b:2})","context":{},"expected":{"t":"list","v":[{"t":"context","v":{"key":{"t":"string","v":"a"},"value":{"t":"number","v":"1"}}},{"t":"context","v":{"key":{"t":"string","v":"b"},"value":{"t":"number","v":"2"}}}]}}
+{"id":"contexts/8","expr":"context merge([{a:1},{b:2}])","context":{},"expected":{"t":"context","v":{"a":{"t":"number","v":"1"},"b":{"t":"number","v":"2"}}}}
+{"id":"contexts/9","expr":"person.name","context":{"person":{"t":"context","v":{"name":{"t":"string","v":"Ann"}}}},"expected":{"t":"string","v":"Ann"}}
+{"id":"contexts/10","expr":"{\"a b\": 1}","context":{},"expected":{"t":"context","v":{"a b":{"t":"number","v":"1"}}}}
+{"id":"contexts/11","expr":"{a: 1, b: 2}.b + 1","context":{},"expected":{"t":"number","v":"3"}}
+{"id":"contexts/12","expr":"{a: 1, b: 2}","context":{},"expected":{"t":"context","v":{"a":{"t":"number","v":"1"},"b":{"t":"number","v":"2"}}}}
+{"id":"contexts/13","expr":"{\"a\\nb\": 1}","context":{},"expected":{"t":"context","v":{"a\nb":{"t":"number","v":"1"}}}}
+{"id":"contexts/14","expr":"{a: 1, b: {c: a}}.b.c","context":{},"expected":{"t":"number","v":"1"}}
+{"id":"contexts/15","expr":"{b: a + 1, a: 1}.b","context":{},"expected":{"t":"null"}}
+{"id":"contexts/16","expr":"{f: function(a) a * 2}.f(3)","context":{},"expected":{"t":"number","v":"6"}}
+{"id":"contexts/17","expr":"{f: 1}.f(3)","context":{},"expected":{"t":"null"}}
+{"id":"contexts/18","expr":"{} = []","context":{},"expected":{"t":"null"}}
+{"id":"contexts/19","expr":"{_2021-01-11: \"Monday\"}","context":{},"expected":{"t":"context","v":{"_2021-01-11":{"t":"string","v":"Monday"}}}}
+{"id":"contexts/20","expr":"{foo+bar: \"foo\"}","context":{},"expected":{"t":"context","v":{"foo+bar":{"t":"string","v":"foo"}}}}
+{"id":"contexts/21","expr":"{🐎: \"bar\"}","context":{},"expected":{"t":"context","v":{"🐎":{"t":"string","v":"bar"}}}}
+{"id":"contexts/22","expr":"{foo: \"bar\", foo: \"baz\"}","context":{},"expected":{"t":"null"}}
