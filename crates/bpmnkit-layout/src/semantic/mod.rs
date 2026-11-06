@@ -143,7 +143,7 @@ pub fn semantic_layout(
         let band = band_layout.bands.get(id).copied().unwrap_or(0);
         let mut node = LayoutNode {
             id: base.id.clone(),
-            kind: el.type_name().to_string(),
+            kind: el.type_name().into(),
             bounds: b,
             layer: graph.ranks.get(id).copied().unwrap_or(0),
             position: band,

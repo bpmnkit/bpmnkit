@@ -88,9 +88,17 @@ fn rounded_bounds(b: &Bounds, dx: f64, dy: f64) -> BpmnBounds {
     }
 }
 
+/// `${element}_di`, without the formatting machinery.
+fn di_id(element: &str) -> String {
+    let mut id = String::with_capacity(element.len() + 3);
+    id.push_str(element);
+    id.push_str("_di");
+    id
+}
+
 fn new_shape(element: &str, bounds: BpmnBounds) -> BpmnDiShape {
     BpmnDiShape {
-        id: format!("{element}_di"),
+        id: di_id(element),
         bpmn_element: element.to_string(),
         is_marker_visible: None,
         is_expanded: None,
@@ -103,7 +111,7 @@ fn new_shape(element: &str, bounds: BpmnBounds) -> BpmnDiShape {
 
 fn new_edge(element: &str, waypoints: Vec<BpmnWaypoint>) -> BpmnDiEdge {
     BpmnDiEdge {
-        id: format!("{element}_di"),
+        id: di_id(element),
         bpmn_element: element.to_string(),
         waypoints,
         label: None,

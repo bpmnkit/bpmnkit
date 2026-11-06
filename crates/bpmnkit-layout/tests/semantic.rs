@@ -95,7 +95,7 @@ fn edge(v: &Value) -> LayoutEdge {
 fn node(v: &Value) -> LayoutNode {
     LayoutNode {
         id: str_of(&v["id"]),
-        kind: str_of(&v["type"]),
+        kind: str_of(&v["type"]).into(),
         bounds: bounds(&v["bounds"]),
         layer: v["layer"].as_i64().expect("layer"),
         position: v["position"].as_i64().expect("position"),

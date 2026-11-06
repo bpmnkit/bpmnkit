@@ -1,6 +1,7 @@
 //! Twin of `layout/types.ts`.
 
 use indexmap::IndexMap;
+use std::borrow::Cow;
 
 /// `ELEMENT_SIZES[type]`: fixed `(width, height)` by element type.
 pub fn element_size(kind: &str) -> Option<(f64, f64)> {
@@ -49,7 +50,8 @@ pub struct Waypoint {
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct LayoutNode {
     pub id: String,
-    pub kind: String,
+    /// The model's type name, borrowed; owned only when built from elsewhere.
+    pub kind: Cow<'static, str>,
     pub bounds: Bounds,
     pub layer: i64,
     pub position: i64,

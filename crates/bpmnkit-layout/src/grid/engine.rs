@@ -159,7 +159,7 @@ fn emit_level(level: &LevelLayout, shift: (f64, f64), out: &mut LayoutResult) {
         };
         let mut layout_node = LayoutNode {
             id: id.to_string(),
-            kind: element.type_name().to_string(),
+            kind: element.type_name().into(),
             bounds,
             layer: col as i64,
             position: row as i64,
@@ -182,7 +182,7 @@ fn emit_level(level: &LevelLayout, shift: (f64, f64), out: &mut LayoutResult) {
         routables.insert(
             id,
             RoutableNode {
-                id: id.to_string(),
+                id,
                 bounds,
                 row: row as i64,
                 col: col as i64,
@@ -212,7 +212,7 @@ fn emit_level(level: &LevelLayout, shift: (f64, f64), out: &mut LayoutResult) {
             };
             let mut be_node = LayoutNode {
                 id: be_id.to_string(),
-                kind: be.type_name().to_string(),
+                kind: be.type_name().into(),
                 bounds: be_bounds,
                 layer: col as i64,
                 position: row as i64,
@@ -235,7 +235,7 @@ fn emit_level(level: &LevelLayout, shift: (f64, f64), out: &mut LayoutResult) {
             routables.insert(
                 be_id,
                 RoutableNode {
-                    id: be_id.to_string(),
+                    id: be_id,
                     bounds: be_bounds,
                     row: row as i64,
                     col: col as i64,

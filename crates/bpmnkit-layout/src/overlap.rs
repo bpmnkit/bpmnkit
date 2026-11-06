@@ -117,7 +117,7 @@ mod tests {
     fn node(id: &str, kind: &str, x: f64, y: f64) -> LayoutNode {
         LayoutNode {
             id: id.into(),
-            kind: kind.into(),
+            kind: kind.to_string().into(),
             bounds: Bounds {
                 x,
                 y,

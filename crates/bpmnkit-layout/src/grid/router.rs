@@ -14,8 +14,8 @@ pub struct GridDims {
 
 /// `RoutableNode`: routing endpoint, absolute bounds plus grid position.
 #[derive(Debug, Clone)]
-pub struct RoutableNode {
-    pub id: String,
+pub struct RoutableNode<'a> {
+    pub id: &'a str,
     pub bounds: Bounds,
     pub row: i64,
     pub col: i64,
