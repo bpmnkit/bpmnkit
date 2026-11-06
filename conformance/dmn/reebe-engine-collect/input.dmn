@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             namespace="http://camunda.org/schema/1.0/dmn"
+             name="DRD"
+             id="Definitions_validation">
+  <decision id="start_inputValidation" name="Input Validation">
+    <decisionTable id="dt1" hitPolicy="COLLECT">
+      <input id="i1" label="name">
+        <inputExpression id="ie1">
+          <text>name</text>
+        </inputExpression>
+      </input>
+      <output id="o1" name="error" typeRef="string"/>
+      <rule id="r1">
+        <inputEntry id="ie1r1"><text>null</text></inputEntry>
+        <outputEntry id="oe1r1"><text>"name is required"</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

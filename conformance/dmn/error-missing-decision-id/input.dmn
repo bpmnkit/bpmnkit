@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="D" name="n" namespace="urn:e">
+  <decision name="Decision without an id">
+    <decisionTable id="t1"/>
+  </decision>
+</definitions>

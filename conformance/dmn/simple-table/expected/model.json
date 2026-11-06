@@ -1,0 +1,63 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "DT_1",
+        "inputs": [
+          {
+            "id": "In_1",
+            "inputExpression": {
+              "id": "IE_1",
+              "text": "myVar",
+              "typeRef": "string"
+            },
+            "label": "input"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Out_1",
+            "label": "output",
+            "name": "result",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "description": "test rule",
+            "id": "Rule_1",
+            "inputEntries": [
+              {
+                "id": "UT_1",
+                "text": "\"hello\""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LE_1",
+                "text": "\"world\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "Dec_1",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Test"
+    }
+  ],
+  "id": "Def_1",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "DRD",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

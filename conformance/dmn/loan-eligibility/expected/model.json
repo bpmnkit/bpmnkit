@@ -1,0 +1,129 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "UNIQUE",
+        "id": "DecisionTable_loan",
+        "inputs": [
+          {
+            "id": "Input_income",
+            "inputExpression": {
+              "id": "InputExpression_income",
+              "text": "income",
+              "typeRef": "number"
+            },
+            "label": "Monthly income"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_eligible",
+            "label": "Eligible",
+            "name": "eligible",
+            "typeRef": "boolean"
+          }
+        ],
+        "rules": [
+          {
+            "id": "Rule_low",
+            "inputEntries": [
+              {
+                "id": "Unary_low",
+                "text": "< 2000"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "Literal_low",
+                "text": "false"
+              }
+            ]
+          },
+          {
+            "id": "Rule_high",
+            "inputEntries": [
+              {
+                "id": "Unary_high",
+                "text": ">= 2000"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "Literal_high",
+                "text": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "eligibility",
+      "informationRequirements": [
+        {
+          "id": "InformationRequirement_1",
+          "requiredInput": "InputData_income"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "Eligibility"
+    }
+  ],
+  "diagram": {
+    "edges": [
+      {
+        "dmnElementRef": "InformationRequirement_1",
+        "waypoints": [
+          {
+            "x": 250,
+            "y": 240
+          },
+          {
+            "x": 250,
+            "y": 180
+          }
+        ]
+      }
+    ],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "eligibility"
+      },
+      {
+        "bounds": {
+          "height": 45,
+          "width": 125,
+          "x": 187,
+          "y": 240
+        },
+        "dmnElementRef": "InputData_income"
+      }
+    ]
+  },
+  "exporter": "Camunda Modeler",
+  "exporterVersion": "5.28.0",
+  "id": "Definitions_loan",
+  "inputData": [
+    {
+      "id": "InputData_income",
+      "name": "Income"
+    }
+  ],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Loan eligibility",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/"
+  },
+  "textAnnotations": []
+}

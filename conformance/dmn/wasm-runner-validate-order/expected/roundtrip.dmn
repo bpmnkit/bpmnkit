@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" id="Definitions_dmn" name="dmn" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="validate-order" name="Validate Order">
+    <decisionTable id="DecisionTable_1" hitPolicy="COLLECT">
+      <input id="Input_1" label="amount">
+        <inputExpression id="InputExpression_1" typeRef="number">
+          <text>amount</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" name="error" typeRef="string"/>
+      <rule id="Rule_1">
+        <inputEntry id="InputEntry_1">
+          <text>&lt; 0</text>
+        </inputEntry>
+        <outputEntry id="OutputEntry_1">
+          <text>"Amount must be positive"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
+

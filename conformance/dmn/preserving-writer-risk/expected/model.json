@@ -1,0 +1,78 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "FIRST",
+        "id": "table",
+        "inputs": [
+          {
+            "id": "in1",
+            "inputExpression": {
+              "id": "ie1",
+              "text": "amount",
+              "typeRef": "number"
+            },
+            "label": "Amount"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "out1",
+            "label": "Risk",
+            "name": "risk",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "ue1",
+                "text": "< 100"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe1",
+                "text": "\"low\""
+              }
+            ]
+          },
+          {
+            "id": "r2",
+            "inputEntries": [
+              {
+                "id": "ue2",
+                "text": ">= 100"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe2",
+                "text": "\"high\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "risk",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Risk score"
+    }
+  ],
+  "id": "Definitions_1",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Risk",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

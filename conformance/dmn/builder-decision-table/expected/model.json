@@ -1,0 +1,118 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "COLLECT",
+        "id": "DecisionTable_0000001",
+        "inputs": [
+          {
+            "id": "Input_0000002",
+            "inputExpression": {
+              "id": "InputExpression_0000003",
+              "text": "score",
+              "typeRef": "number"
+            },
+            "label": "Score"
+          },
+          {
+            "id": "Input_0000004",
+            "inputExpression": {
+              "id": "InputExpression_0000005",
+              "text": "country",
+              "typeRef": "string"
+            },
+            "label": "Country"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_0000006",
+            "label": "Flag",
+            "name": "flag",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "description": "low score",
+            "id": "DecisionRule_000000a",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_0000007",
+                "text": "< 500"
+              },
+              {
+                "id": "UnaryTests_0000008",
+                "text": "\"DE\",\"AT\""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_0000009",
+                "text": "\"review\""
+              }
+            ]
+          },
+          {
+            "id": "DecisionRule_000000e",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_000000b",
+                "text": "-"
+              },
+              {
+                "id": "UnaryTests_000000c",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_000000d",
+                "text": "\"ok\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "Decision_credit",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Credit check"
+    }
+  ],
+  "diagram": {
+    "edges": [],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "Decision_credit"
+      }
+    ]
+  },
+  "exporter": "bpmn-sdk",
+  "exporterVersion": "0.0.1",
+  "id": "Definitions_000000f",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "8.5.0"
+  },
+  "name": "DRD",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "modeler": "http://camunda.org/schema/modeler/1.0"
+  },
+  "textAnnotations": []
+}
