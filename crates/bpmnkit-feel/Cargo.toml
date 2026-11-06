@@ -16,3 +16,7 @@ indexmap = "2"
 regex = "1"
 rust_decimal = { version = "1", features = ["maths"] }
 serde_json = { workspace = true }
+
+[[bench]]
+name = "conformance"
+harness = false

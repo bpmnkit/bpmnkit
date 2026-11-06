@@ -74,7 +74,12 @@ function encode(v: FeelValue): Value {
 		const e = encode((v as FeelContext)[k] as FeelValue)
 		if (e.t === "error") return { t: "error" }
 		// defineProperty, so that a "__proto__" key is recorded as an entry, as FEEL has it.
-		Object.defineProperty(out, k, { value: e, enumerable: true, writable: true, configurable: true })
+		Object.defineProperty(out, k, {
+			value: e,
+			enumerable: true,
+			writable: true,
+			configurable: true,
+		})
 	}
 	return { t: "context", v: out }
 }
