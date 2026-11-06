@@ -563,7 +563,7 @@ function serializeProcess(process: BpmnProcess, ns: Record<string, string>): Xml
 	const bp = bpmnPrefix(ns)
 	const attrs: Record<string, string> = { id: process.id, ...process.unknownAttributes }
 	if (process.name !== undefined) attrs.name = process.name
-	if (process.isExecutable) attrs.isExecutable = "true"
+	if (process.isExecutable !== undefined) attrs.isExecutable = String(process.isExecutable)
 
 	const children: XmlElement[] = serializeBaseChildren(
 		{

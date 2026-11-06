@@ -135,3 +135,50 @@ fn model_survives_a_json_round_trip() {
         );
     }
 }
+
+fn process_xml(attrs: &str, body: &str) -> String {
+    format!(
+        r#"<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="d" targetNamespace="t"><bpmn:process id="p"{attrs}>{body}</bpmn:process></bpmn:definitions>"#
+    )
+}
+
+#[test]
+fn is_executable_keeps_absent_true_and_false_apart() {
+    for (attrs, expected) in [
+        ("", None),
+        (r#" isExecutable="true""#, Some(true)),
+        (r#" isExecutable="false""#, Some(false)),
+    ] {
+        let defs = parse_bpmn(&process_xml(attrs, "")).unwrap();
+        assert_eq!(defs.processes[0].is_executable, expected, "{attrs}");
+        let out = serialize_bpmn(&defs);
+        let again = parse_bpmn(&out).unwrap();
+        assert_eq!(again.processes[0].is_executable, expected, "{attrs}");
+        assert_eq!(
+            out.contains("isExecutable=\"false\""),
+            expected == Some(false)
+        );
+    }
+}
+
+#[test]
+fn is_for_compensation_is_kept_on_every_sub_process_kind() {
+    for tag in [
+        "subProcess",
+        "adHocSubProcess",
+        "transaction",
+        "eventSubProcess",
+    ] {
+        let xml = process_xml(
+            "",
+            &format!(r#"<bpmn:{tag} id="s" isForCompensation="true"/>"#),
+        );
+        let defs = parse_bpmn(&xml).unwrap();
+        let el = &defs.processes[0].contents.flow_elements[0];
+        assert_eq!(el.base().is_for_compensation, Some(true), "{tag}");
+        assert!(
+            serialize_bpmn(&defs).contains("isForCompensation=\"true\""),
+            "{tag}"
+        );
+    }
+}

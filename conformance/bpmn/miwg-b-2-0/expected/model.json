@@ -4209,6 +4209,7 @@
       ],
       "groups": [],
       "id": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "isExecutable": false,
       "sequenceFlows": [
         {
           "extensionElements": [],
@@ -4784,6 +4785,7 @@
       ],
       "groups": [],
       "id": "WFP-6-1",
+      "isExecutable": false,
       "sequenceFlows": [
         {
           "extensionElements": [],
@@ -6049,6 +6051,7 @@
       ],
       "groups": [],
       "id": "WFP-6-2",
+      "isExecutable": false,
       "laneSet": {
         "id": "ls_55bb31e8-9e62-48ea-8f0e-1a748c04bbf6",
         "lanes": [
@@ -6547,6 +6550,7 @@
       ],
       "groups": [],
       "id": "WFP-0-",
+      "isExecutable": false,
       "sequenceFlows": [
         {
           "extensionElements": [],

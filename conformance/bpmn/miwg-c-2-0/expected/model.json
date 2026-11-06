@@ -1639,6 +1639,7 @@
       ],
       "groups": [],
       "id": "WFP-Page_1-1",
+      "isExecutable": false,
       "sequenceFlows": [
         {
           "extensionElements": [],
@@ -1727,6 +1728,7 @@
       ],
       "groups": [],
       "id": "WFP-Page_1-2",
+      "isExecutable": false,
       "sequenceFlows": [
         {
           "extensionElements": [],
@@ -2057,6 +2059,7 @@
       ],
       "groups": [],
       "id": "WFP-Page_1-3",
+      "isExecutable": false,
       "sequenceFlows": [
         {
           "extensionElements": [],
@@ -2221,6 +2224,7 @@
       ],
       "groups": [],
       "id": "WFP-Page_1-4",
+      "isExecutable": false,
       "laneSet": {
         "lanes": [
           {

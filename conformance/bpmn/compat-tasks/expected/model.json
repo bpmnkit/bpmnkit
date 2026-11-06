@@ -835,6 +835,7 @@
       ],
       "groups": [],
       "id": "notExecutable",
+      "isExecutable": false,
       "sequenceFlows": [],
       "textAnnotations": [],
       "unknownAttributes": {}

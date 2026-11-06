@@ -50,7 +50,7 @@ pub fn parse_bpmn(xml: &str) -> Result<Vec<BpmnProcess>, BpmnParseError> {
     // resources often leave them out. Supply a missing one and read again.
     for _ in 0..2 {
         match bpmnkit_bpmn::parse_bpmn(&source) {
-            Ok(defs) => return Ok(adapt(&defs, &source)),
+            Ok(defs) => return Ok(adapt(&defs)),
             Err(e) => {
                 let missing = ["id", "targetNamespace"].into_iter().find(|attr| {
                     e.0 == format!(
@@ -65,7 +65,7 @@ pub fn parse_bpmn(xml: &str) -> Result<Vec<BpmnProcess>, BpmnParseError> {
             }
         }
     }
-    Ok(adapt(&bpmnkit_bpmn::parse_bpmn(&source)?, &source))
+    Ok(adapt(&bpmnkit_bpmn::parse_bpmn(&source)?))
 }
 
 /// The byte range of the name in the root element's start tag, if that is `definitions`.

@@ -9,7 +9,6 @@ description = "BPMN 2.0 parser and model for the Reebe workflow engine"
 serde = { workspace = true }
 serde_json = { workspace = true }
 bpmnkit-bpmn = { workspace = true }
-bpmnkit-xml = { workspace = true }
 thiserror = { workspace = true }
 bincode = { version = "1", optional = true }
 

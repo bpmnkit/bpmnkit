@@ -17,7 +17,7 @@
     <semantic:messageFlow id="_78" sourceRef="_18" targetRef="_5" triso:readOnly="false"/>
     <semantic:messageFlow id="_79" sourceRef="_31" targetRef="_5" triso:readOnly="false"/>
   </semantic:collaboration>
-  <semantic:process id="_8" triso:readOnly="false" triso:collectEnds="true" ot:displayName="Travel Planning" ot:alias="process2" isClosed="false" name="Travel Planning">
+  <semantic:process id="_8" triso:readOnly="false" triso:collectEnds="true" ot:displayName="Travel Planning" ot:alias="process2" isClosed="false" name="Travel Planning" isExecutable="false">
     <semantic:extensionElements>
       <ot:startPermission/>
     </semantic:extensionElements>
@@ -258,7 +258,7 @@
       </semantic:outputSet>
     </semantic:ioSpecification>
   </semantic:process>
-  <semantic:process id="Process_ID-73a31a41-43d5-11f1-744d-b02628b36240" triso:readOnly="false" triso:collectEnds="true" isClosed="false" name="Plan Trip">
+  <semantic:process id="Process_ID-73a31a41-43d5-11f1-744d-b02628b36240" triso:readOnly="false" triso:collectEnds="true" isClosed="false" name="Plan Trip" isExecutable="false">
     <semantic:dataObject id="ID-ee745c8c-43de-11f1-744d-b02628b36240" triso:readOnly="false" triso:displayName="Preferred hotel and travel means" name="Preferred hotel and travel means"/>
     <semantic:startEvent id="ID-ee745c80-43de-11f1-744d-b02628b36240" triso:readOnly="false">
       <semantic:outgoing>ID-ee745c84-43de-11f1-744d-b02628b36240</semantic:outgoing>

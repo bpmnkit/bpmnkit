@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bonitaConnector="http://www.bonitasoft.org/studio/connector/definition/6.0" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di_1="http://www.omg.org/spec/DD/20100524/DI" xmlns:java="http://jcp.org/en/jsr/detail?id=270" xmlns:model="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:style="http://www.w4.eu/spec/DataComposer/20120927/Diagram/Style" xmlns:w4="http://www.w4.eu/spec/BPMN/20110701/MODEL" xmlns:w4graph="http://www.w4.eu/spec/BPMN/20110930/GRAPH" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" id="Bpmn_Definitions_--SwsH2BEeWQ6qGdY3x14w" targetNamespace="http://bonitasoft.com/_To9ZoDOCEeSknpIVFCxNIQ" exporter="BonitaSoft" exporterVersion="6.3.3" xsi:schemaLocation="schemaLocation http://www.omg.org/spec/BPMN/20100524/MODEL" w4:version="1.0" expressionLanguage="http://groovy.codehaus.org/" name="A.2.1" typeLanguage="http://www.w3.org/2001/XMLSchema">
-  <model:process id="_To9ZoTOCEeSknpIVFCxNIQ" processType="None" name="A.2.1">
+  <model:process id="_To9ZoTOCEeSknpIVFCxNIQ" processType="None" name="A.2.1" isExecutable="false">
     <model:extensionElements>
       <w4graph:graphStyle>
         <w4graph:basic background="255,255,255" foreground="0,0,0" autoResize="false" borderColor="100,100,100" collapsed="false"/>

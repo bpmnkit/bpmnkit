@@ -14,7 +14,7 @@
     <semantic:messageFlow id="_9428f666-fc8a-41be-8a77-9b280e14e7ae" sourceRef="_2ee553a1-cb03-41e3-b285-345c826fc88d" targetRef="_ec919941-53ec-403d-97e1-6a163a063f21" name="Message&#10;Flow 2" messageRef="Message_1373655174960"/>
     <semantic:group id="_bd04180e-49f6-4cf0-a7d6-da59e2840b4b" categoryValueRef="Value_Cat1373655174961"/>
   </semantic:collaboration>
-  <semantic:process id="Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450">
+  <semantic:process id="Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450" isExecutable="false">
     <semantic:startEvent id="_200f43e7-1385-46e2-a380-3ef16ebe7847" name="Start Event None 1">
       <semantic:outgoing>_60ed96e6-5954-48de-861b-7d1e3c1fb23e</semantic:outgoing>
     </semantic:startEvent>
@@ -28,7 +28,7 @@
     <semantic:sequenceFlow id="_60ed96e6-5954-48de-861b-7d1e3c1fb23e" sourceRef="_200f43e7-1385-46e2-a380-3ef16ebe7847" targetRef="_c57a5344-213f-4834-a6c3-94ce878b413c" name=""/>
     <semantic:sequenceFlow id="_6c6288e8-43f6-4085-87c7-1ff21c38fe17" sourceRef="_c57a5344-213f-4834-a6c3-94ce878b413c" targetRef="_ed405919-9fd6-47d0-bb00-9be7d5467efb" name=""/>
   </semantic:process>
-  <semantic:process id="WFP-6-1">
+  <semantic:process id="WFP-6-1" isExecutable="false">
     <semantic:startEvent id="_e314751e-5c3a-41f2-a1ae-4cb99efa0916" name="Start Event Timer">
       <semantic:outgoing>_3eaa52c9-8d39-43d1-9528-b4047ff7fcdf</semantic:outgoing>
       <semantic:timerEventDefinition>
@@ -55,7 +55,7 @@
     <semantic:sequenceFlow id="_ba610e14-bf4c-4150-a1b1-460fe6a29f83" sourceRef="_f7eade87-bb98-47d3-85c7-66033a62b124" targetRef="_ec919941-53ec-403d-97e1-6a163a063f21" name=""/>
     <semantic:sequenceFlow id="_bbb25218-69a3-4401-823f-22f468cbd80d" sourceRef="_ec919941-53ec-403d-97e1-6a163a063f21" targetRef="_94efa7e0-2322-4fc3-a5bf-6c6296488927" name=""/>
   </semantic:process>
-  <semantic:process id="WFP-6-2">
+  <semantic:process id="WFP-6-2" isExecutable="false">
     <semantic:laneSet id="ls_0623a9bd-fd34-462a-b09d-85cb5004be78">
       <semantic:lane id="_4a6df7ac-26d8-4718-ac05-90af463d5e23" name="Lane 1">
         <semantic:flowNodeRef>_2ee553a1-cb03-41e3-b285-345c826fc88d</semantic:flowNodeRef>
@@ -196,7 +196,7 @@
     </semantic:textAnnotation>
     <semantic:association id="_5362a7ef-ce7e-4a91-9c38-66c07b1b5f49" sourceRef="_1237e756-d53c-4591-a731-dafffbf0b3f9" targetRef="_4815ea6a-ede2-489b-8b37-2cdb2835b02c" associationDirection="None"/>
   </semantic:process>
-  <semantic:process id="WFP-0-">
+  <semantic:process id="WFP-0-" isExecutable="false">
     <semantic:startEvent id="_18770c5c-c117-4570-aaf2-8c7a6910c34d" name="Start Event None 3">
       <semantic:outgoing>_107de09e-8506-4d2b-ad00-3341be723dff</semantic:outgoing>
     </semantic:startEvent>

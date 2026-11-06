@@ -7,7 +7,7 @@
     <semantic:messageFlow id="_b467921a-ef7b-44c5-bf78-fd624c400d17" sourceRef="_ab851300-b5de-4ad3-bbec-215553757fc8" targetRef="_6fed62c8-8241-4a1d-ae67-266fda7dcead" name="Message Flow 1" messageRef="Message_1373649949207"/>
     <semantic:messageFlow id="_c311cc87-677e-47a4-bdb1-8744c4ec3147" sourceRef="_1c347d0d-750b-4c09-980d-6877caae409b" targetRef="_80d1f02b-f39c-45c2-b731-43df75d81779" name="Message Flow 2" messageRef="Message_1373649949208"/>
   </semantic:collaboration>
-  <semantic:process id="WFP-6-1">
+  <semantic:process id="WFP-6-1" isExecutable="false">
     <semantic:task id="_ab851300-b5de-4ad3-bbec-215553757fc8" completionQuantity="1" startQuantity="1" name="Task 1">
       <semantic:incoming>_44b1d373-57a1-4b8e-ba2e-3204c32519e5</semantic:incoming>
       <semantic:outgoing>_6b7f2411-77f7-4152-be39-d8dbeb8bc460</semantic:outgoing>
@@ -26,7 +26,7 @@
     <semantic:sequenceFlow id="_f35e3b07-7b1f-433d-9595-7fdea8996954" sourceRef="_80d1f02b-f39c-45c2-b731-43df75d81779" targetRef="_6e79c19f-749d-48c4-8271-d9ca028354fa" name=""/>
     <semantic:sequenceFlow id="_6b7f2411-77f7-4152-be39-d8dbeb8bc460" sourceRef="_ab851300-b5de-4ad3-bbec-215553757fc8" targetRef="_80d1f02b-f39c-45c2-b731-43df75d81779" name=""/>
   </semantic:process>
-  <semantic:process id="WFP-6-2">
+  <semantic:process id="WFP-6-2" isExecutable="false">
     <semantic:laneSet id="ls_1373649949139">
       <semantic:lane id="_17bebb0f-f31e-475a-b1b1-76fcc2da172b" name="Lane 1">
         <semantic:flowNodeRef>_1c347d0d-750b-4c09-980d-6877caae409b</semantic:flowNodeRef>

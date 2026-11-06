@@ -901,6 +901,7 @@
       ],
       "groups": [],
       "id": "WFP-6-1",
+      "isExecutable": false,
       "sequenceFlows": [
         {
           "extensionElements": [],
@@ -1168,6 +1169,7 @@
       ],
       "groups": [],
       "id": "WFP-6-2",
+      "isExecutable": false,
       "laneSet": {
         "id": "ls_1373649949139",
         "lanes": [

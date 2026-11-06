@@ -14,7 +14,7 @@
     <messageFlow id="sid-96EF2D8F-C322-42B1-8C08-0DA05524C904" sourceRef="sid-485E1184-9951-4B41-9794-A9AFD42A3249" targetRef="sid-1208A5BA-9E1C-49D2-82E3-5DB2C0E9887D" name="Message Flow 2 "/>
     <messageFlow id="sid-D0B859BF-CBFB-4B35-BBC8-BCA308F6455C" sourceRef="sid-3D477D07-D669-4A26-9454-12AD775FDE70" targetRef="sid-34E8C3A5-5C2A-4593-AC67-038B737814D7" name="Message Flow 1 "/>
   </collaboration>
-  <process id="sid-34746A54-1D7D-46CA-B219-0C4CEAE51170" isClosed="false" processType="None" name="Pool 1">
+  <process id="sid-34746A54-1D7D-46CA-B219-0C4CEAE51170" isClosed="false" processType="None" name="Pool 1" isExecutable="false">
     <laneSet id="sid-600cb997-ee14-4230-a60a-fe80e85800b5">
       <lane id="sid-4F568BD0-1CB0-4F1C-8729-9DD775B5B37D" name="Lane 1">
         <extensionElements>
@@ -61,7 +61,7 @@
     <sequenceFlow id="sid-D1E9B201-87A2-47B9-82A0-1BA208440CAE" sourceRef="sid-3D477D07-D669-4A26-9454-12AD775FDE70" targetRef="sid-1208A5BA-9E1C-49D2-82E3-5DB2C0E9887D" isImmediate="true" name=""/>
     <sequenceFlow id="sid-F9B17890-98C4-44FA-B7A8-CA940866741B" sourceRef="sid-1208A5BA-9E1C-49D2-82E3-5DB2C0E9887D" targetRef="sid-5F0F3508-96EF-4F9B-9182-64AD17334E23" isImmediate="true" name=""/>
   </process>
-  <process id="sid-54D696FD-DEDC-45F3-99DB-1404DA433FC4" isClosed="false" processType="None" name="Pool 2">
+  <process id="sid-54D696FD-DEDC-45F3-99DB-1404DA433FC4" isClosed="false" processType="None" name="Pool 2" isExecutable="false">
     <laneSet id="sid-4e31a46d-899c-4b59-86e2-4d54abea99cd">
       <lane id="sid-FBA8B122-2EFC-4DD5-B714-A13CD36AAA6E" name="Lane 2 ">
         <extensionElements>

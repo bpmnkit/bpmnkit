@@ -889,27 +889,37 @@ impl Frame for FlowNodeFrame {
                     BpmnFlowElement::ReceiveTask(t)
                 }
             }
-            "adHocSubProcess" => BpmnFlowElement::AdHocSubProcess(BpmnAdHocSubProcess {
-                base,
-                loop_characteristics,
-                completion_condition: self.completion_condition,
-                cancel_remaining_instances: attr_bool(attrs, "cancelRemainingInstances"),
-                contents,
-            }),
-            "subProcess" => BpmnFlowElement::SubProcess(BpmnSubProcess {
-                base,
-                triggered_by_event: attr_bool(attrs, "triggeredByEvent"),
-                loop_characteristics,
-                contents,
-            }),
+            "adHocSubProcess" => {
+                base.is_for_compensation = compensation;
+                BpmnFlowElement::AdHocSubProcess(BpmnAdHocSubProcess {
+                    base,
+                    loop_characteristics,
+                    completion_condition: self.completion_condition,
+                    cancel_remaining_instances: attr_bool(attrs, "cancelRemainingInstances"),
+                    contents,
+                })
+            }
+            "subProcess" => {
+                base.is_for_compensation = compensation;
+                BpmnFlowElement::SubProcess(BpmnSubProcess {
+                    base,
+                    triggered_by_event: attr_bool(attrs, "triggeredByEvent"),
+                    loop_characteristics,
+                    contents,
+                })
+            }
             "eventSubProcess" => {
+                base.is_for_compensation = compensation;
                 BpmnFlowElement::EventSubProcess(BpmnEventSubProcess { base, contents })
             }
-            "transaction" => BpmnFlowElement::Transaction(BpmnTransaction {
-                base,
-                loop_characteristics,
-                contents,
-            }),
+            "transaction" => {
+                base.is_for_compensation = compensation;
+                BpmnFlowElement::Transaction(BpmnTransaction {
+                    base,
+                    loop_characteristics,
+                    contents,
+                })
+            }
             "exclusiveGateway" | "inclusiveGateway" | "complexGateway" => {
                 let g = BpmnGateway {
                     base: gateway_base(base),
@@ -1679,7 +1689,8 @@ impl Frame for ProcessFrame {
         Ok(Out::Process(Box::new(BpmnProcess {
             id: self.id.clone(),
             name: attr_string(attrs, "name"),
-            is_executable: (attr(attrs, "isExecutable") == Some("true")).then_some(true),
+            // Absent, "true" and "false" stay three states; a file that says "false" says it again.
+            is_executable: attr_bool(attrs, "isExecutable"),
             documentation: self.documentation,
             documentation_attributes: self.documentation_attributes,
             extension_elements: self.extension_elements.unwrap_or_default(),

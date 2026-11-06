@@ -14,7 +14,7 @@
     <semantic:messageFlow id="_09e7cb23-4a1b-4165-b93a-cf635c223ee5" sourceRef="_76ee26df-2c95-495b-9d9a-cb806aea6baf" targetRef="_a38484e2-7bdb-48b1-b62e-139d51d6a147" name="Message Flow 1" messageRef="Message_1373638080955"/>
     <semantic:group id="_48d300c1-487a-409b-a04a-b195e222ef90" categoryValueRef="Value_Cat1373638080956"/>
   </semantic:collaboration>
-  <semantic:process id="Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450">
+  <semantic:process id="Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450" isExecutable="false">
     <semantic:startEvent id="_200f43e7-1385-46e2-a380-3ef16ebe7847" name="Start Event 3">
       <semantic:outgoing>_60ed96e6-5954-48de-861b-7d1e3c1fb23e</semantic:outgoing>
     </semantic:startEvent>
@@ -56,7 +56,7 @@
     <semantic:sequenceFlow id="_c72ddf62-21b8-4895-a7bf-7a765f5981eb" sourceRef="_cba8fbed-2bb6-40a9-8ac5-83e827ce9d9f" targetRef="_c57a5344-213f-4834-a6c3-94ce878b413c" name=""/>
     <semantic:sequenceFlow id="_088b81bd-2a43-43a7-86c9-34c1cdd5f11b" sourceRef="_7f4fe4ea-901f-4c74-bcd4-e933495712fd" targetRef="_3bfec246-ab94-4807-a79a-3df91ac13800" name=""/>
   </semantic:process>
-  <semantic:process id="WFP-6-1">
+  <semantic:process id="WFP-6-1" isExecutable="false">
     <semantic:dataObject id="DF1373638080458" name="Data Object"/>
     <semantic:userTask id="_c9870992-6643-4094-acfd-d76e5e37941b" implementation="##WebService" completionQuantity="1" startQuantity="1" name="User Task 8">
       <semantic:incoming>_e6537f9d-e5ea-4abc-a6e8-add13a11b536</semantic:incoming>
@@ -204,7 +204,7 @@
     </semantic:textAnnotation>
     <semantic:association id="_5362a7ef-ce7e-4a91-9c38-66c07b1b5f49" sourceRef="_303e68ec-dbb3-4d90-8a96-26e0be44f5f3" targetRef="_4815ea6a-ede2-489b-8b37-2cdb2835b02c" associationDirection="None"/>
   </semantic:process>
-  <semantic:process id="WFP-6-2">
+  <semantic:process id="WFP-6-2" isExecutable="false">
     <semantic:laneSet id="ls_55bb31e8-9e62-48ea-8f0e-1a748c04bbf6">
       <semantic:lane id="_4a6df7ac-26d8-4718-ac05-90af463d5e23" name="Lane 1">
         <semantic:flowNodeRef>_7e6ccf38-e740-4537-a439-a8e984d066de</semantic:flowNodeRef>
@@ -569,7 +569,7 @@
     <semantic:sequenceFlow id="_219e1df4-5bfe-4485-a4fd-dcfeeaa7c3d6" sourceRef="_0ab0e0ac-f88b-4402-9986-e95a72dfc8a3" targetRef="_147b1900-7e7d-4b8f-b243-0155265f1c00" name=""/>
     <semantic:sequenceFlow id="_b9a903b5-4525-42d1-ae5b-24f26d774556" sourceRef="_d58753a7-d38b-49cd-914d-14e4cdaa4449" targetRef="_df7727a0-f509-45eb-bb89-85753f439576" name=""/>
   </semantic:process>
-  <semantic:process id="WFP-0-">
+  <semantic:process id="WFP-0-" isExecutable="false">
     <semantic:startEvent id="_820dcc70-45ac-4a1e-88ae-f1b4ff925ef6" name="Start Event 8">
       <semantic:outgoing>_1c5e547a-2391-4133-8199-850cdc024971</semantic:outgoing>
     </semantic:startEvent>

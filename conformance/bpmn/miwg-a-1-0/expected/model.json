@@ -314,6 +314,7 @@
       ],
       "groups": [],
       "id": "WFP-6-",
+      "isExecutable": false,
       "sequenceFlows": [
         {
           "extensionElements": [],

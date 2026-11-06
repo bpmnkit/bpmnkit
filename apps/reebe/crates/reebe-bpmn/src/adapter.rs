@@ -8,8 +8,7 @@
 use crate::model::*;
 use bpmnkit_bpmn as kit;
 use bpmnkit_bpmn::zeebe::get_zeebe_extensions;
-use bpmnkit_bpmn::{Attrs, XmlElement};
-use bpmnkit_xml::{scan_xml, Visit, XmlSink};
+use bpmnkit_bpmn::XmlElement;
 use std::collections::HashMap;
 
 /// Root declarations that event definitions refer to by id.
@@ -127,49 +126,17 @@ fn subscription_key(e: &XmlElement) -> Option<String> {
 }
 
 /// The processes of a parsed document, in Reebe's model.
-pub(crate) fn adapt(defs: &kit::BpmnDefinitions, xml: &str) -> Vec<BpmnProcess> {
+pub(crate) fn adapt(defs: &kit::BpmnDefinitions) -> Vec<BpmnProcess> {
     let refs = Refs::new(defs);
-    // The shared model reads `isExecutable` as `Some(true)` or nothing, so "absent" (which
-    // Reebe treats as executable) and "false" cannot be told apart in it.
-    let mut executable = executable_flags(xml).into_iter();
     defs.processes
         .iter()
         .map(|p| {
             let mut process = adapt_process(p, &refs);
-            process.is_executable = executable.next().unwrap_or(true);
+            // An absent `isExecutable` counts as executable; only an explicit "false" opts out.
+            process.is_executable = p.is_executable != Some(false);
             process
         })
         .collect()
-}
-
-/// Whether each `<process>` of the document is executable, in document order.
-fn executable_flags(xml: &str) -> Vec<bool> {
-    #[derive(Default)]
-    struct Flags {
-        flags: Vec<bool>,
-        root_open: bool,
-    }
-    impl XmlSink for Flags {
-        fn start(&mut self, _name: &str, local: &str, attrs: Attrs, _self_closing: bool) -> Visit {
-            if !self.root_open {
-                self.root_open = true;
-                return Visit::ElementsOnly;
-            }
-            if local == "process" {
-                let flag = attrs
-                    .iter()
-                    .find(|(k, _)| k.rsplit(':').next() == Some("isExecutable"));
-                self.flags.push(flag.is_none_or(|(_, v)| v != "false"));
-            }
-            Visit::Skip
-        }
-        fn text(&mut self, _text: &str) {}
-        fn end(&mut self, _name: &str) {}
-    }
-    let mut sink = Flags::default();
-    // The document already parsed, so a scan error cannot happen; no flags falls back to executable.
-    let _ = scan_xml(xml, &mut sink);
-    sink.flags
 }
 
 fn adapt_process(p: &kit::BpmnProcess, refs: &Refs) -> BpmnProcess {

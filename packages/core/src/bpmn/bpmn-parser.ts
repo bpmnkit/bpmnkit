@@ -773,6 +773,7 @@ class FlowNodeFrame extends Frame implements TextOwner {
 				el = {
 					...base,
 					type: "adHocSubProcess",
+					isForCompensation: attr(attrs, "isForCompensation") === "true" ? true : undefined,
 					loopCharacteristics: this.loopCharacteristics,
 					completionCondition: this.completionCondition,
 					cancelRemainingInstances:
@@ -787,6 +788,7 @@ class FlowNodeFrame extends Frame implements TextOwner {
 				el = {
 					...base,
 					type: "subProcess",
+					isForCompensation: attr(attrs, "isForCompensation") === "true" ? true : undefined,
 					triggeredByEvent:
 						attr(attrs, "triggeredByEvent") !== undefined
 							? attr(attrs, "triggeredByEvent") === "true"
@@ -797,13 +799,19 @@ class FlowNodeFrame extends Frame implements TextOwner {
 				break
 
 			case "eventSubProcess":
-				el = { ...base, type: "eventSubProcess", ...contents }
+				el = {
+					...base,
+					type: "eventSubProcess",
+					isForCompensation: attr(attrs, "isForCompensation") === "true" ? true : undefined,
+					...contents,
+				}
 				break
 
 			case "transaction":
 				el = {
 					...base,
 					type: "transaction",
+					isForCompensation: attr(attrs, "isForCompensation") === "true" ? true : undefined,
 					loopCharacteristics: this.loopCharacteristics,
 					...contents,
 				}
@@ -1462,7 +1470,12 @@ class ProcessFrame extends Frame implements LaneSetOwner, TextOwner {
 		this.target.push({
 			id: this.id,
 			name: attr(attrs, "name"),
-			isExecutable: attr(attrs, "isExecutable") === "true" ? true : undefined,
+			// Absent, "true" and "false" are three states: BPMN reads an absent flag as
+			// false, but a file that says "false" out loud should say it again.
+			isExecutable:
+				attr(attrs, "isExecutable") === undefined
+					? undefined
+					: attr(attrs, "isExecutable") === "true",
 			...(this.documentation !== undefined ? { documentation: this.documentation } : {}),
 			...(this.documentationAttributes
 				? { documentationAttributes: this.documentationAttributes }

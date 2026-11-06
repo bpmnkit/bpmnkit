@@ -81,7 +81,7 @@
       </extensionElements>
     </messageFlow>
   </collaboration>
-  <process id="sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57" isClosed="true" processType="None" name="Team-Assistant">
+  <process id="sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57" isClosed="true" processType="None" name="Team-Assistant" isExecutable="false">
     <extensionElements>
       <w4graph:graphStyle>
         <w4graph:basic background="255,255,255" foreground="0,0,0" autoResize="false" borderColor="100,100,100" collapsed="false"/>

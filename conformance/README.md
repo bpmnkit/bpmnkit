@@ -85,6 +85,10 @@ Provenance of the cases added from existing fixtures and samples (paths from the
 | `sample-order-process` | `bpmn-samples/order-process.bpmn` |
 | `sample-parallel-approval` | `bpmn-samples/parallel-approval.bpmn` |
 
+Hand-written cases: `is-executable-false`, `is-executable-absent` (a process's `isExecutable` is
+absent, `"true"` or `"false"`) and `compensation-subprocess` (`isForCompensation` on every
+sub-process kind).
+
 ## Form: `form/<case>/`
 
 - `input.form`: source form JSON.

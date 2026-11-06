@@ -3362,6 +3362,7 @@
       ],
       "groups": [],
       "id": "_8",
+      "isExecutable": false,
       "laneSet": {
         "lanes": [
           {
@@ -3918,6 +3919,7 @@
       ],
       "groups": [],
       "id": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "isExecutable": false,
       "name": "Plan Trip",
       "sequenceFlows": [
         {

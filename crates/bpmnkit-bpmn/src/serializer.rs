@@ -559,8 +559,8 @@ fn process(pr: &BpmnProcess, p: &Prefixes) -> XmlElement {
     let bp = p.bp.as_str();
     let mut attrs = id_then(&pr.id, &pr.unknown_attributes);
     set(&mut attrs, "name", &pr.name);
-    if pr.is_executable == Some(true) {
-        attrs.insert("isExecutable".into(), "true".into());
+    if let Some(executable) = pr.is_executable {
+        attrs.insert("isExecutable".into(), executable.to_string());
     }
     let mut children = base_children(
         &pr.documentation,

@@ -1285,4 +1285,26 @@ mod tests {
             other => panic!("expected MissingAttribute, got {other:?}"),
         }
     }
+
+    #[test]
+    fn test_is_executable_false_and_absent_in_one_document() {
+        let xml = r#"<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" targetNamespace="t">
+  <bpmn:process id="a" isExecutable="false"/>
+  <bpmn:process id="b"/>
+  <bpmn:process id="c" isExecutable="true"/>
+</bpmn:definitions>"#;
+        let flags: Vec<bool> = parse_bpmn(xml).unwrap().iter().map(|p| p.is_executable).collect();
+        assert_eq!(flags, [false, true, true]);
+    }
+
+    #[test]
+    fn test_sub_process_can_be_a_compensation_handler() {
+        let xml = definitions(
+            r#"<bpmn:subProcess id="undo" isForCompensation="true"><bpmn:startEvent id="s"/></bpmn:subProcess>
+    <bpmn:subProcess id="plain"><bpmn:startEvent id="s2"/></bpmn:subProcess>"#,
+        );
+        let p = &parse_bpmn(&xml).unwrap()[0];
+        assert!(p.elements["undo"].is_for_compensation());
+        assert!(!p.elements["plain"].is_for_compensation());
+    }
 }

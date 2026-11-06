@@ -11971,6 +11971,7 @@
       ],
       "groups": [],
       "id": "VacationRequestProcess",
+      "isExecutable": false,
       "name": "Vacation Request - (i18n)",
       "sequenceFlows": [
         {

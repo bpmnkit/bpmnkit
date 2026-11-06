@@ -183,7 +183,7 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="flowEventGateway" sourceRef="eventGateway" targetRef="afterEventGateway"/>
   </bpmn:process>
-  <bpmn:process id="notExecutable">
+  <bpmn:process id="notExecutable" isExecutable="false">
     <bpmn:complexGateway id="complexInNonExecutable"/>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="Diagram">

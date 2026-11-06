@@ -39,7 +39,7 @@
     <bpmn:sequenceFlow id="Flow_b1" sourceRef="Start_buyer" targetRef="Task_place_order"/>
     <bpmn:sequenceFlow id="Flow_b2" sourceRef="Task_place_order" targetRef="End_buyer"/>
   </bpmn:process>
-  <bpmn:process id="Process_seller" name="Seller">
+  <bpmn:process id="Process_seller" name="Seller" isExecutable="false">
     <bpmn:startEvent id="Start_seller">
       <bpmn:outgoing>Flow_s1</bpmn:outgoing>
     </bpmn:startEvent>

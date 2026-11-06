@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <semantic:definitions xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:semantic="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="_1373649919111" targetNamespace="http://www.trisotech.com/definitions/_1373649919111" name="A.3.0">
-  <semantic:process id="WFP-6-">
+  <semantic:process id="WFP-6-" isExecutable="false">
     <semantic:startEvent id="_1ac4b759-40e3-4dfb-b0e3-ad1d201d6c3d" name="Start Event">
       <semantic:outgoing>_83f6ca65-43f7-496e-a7eb-2a4a2fc28f22</semantic:outgoing>
     </semantic:startEvent>
