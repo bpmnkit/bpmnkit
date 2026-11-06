@@ -7,10 +7,63 @@
 
 use crate::model::{DmnDecision, DmnDefinitions};
 use bpmnkit_feel::{
-    parse_partial, parse_unary_tests_partial, Context, Decimal, ParseOptions, Value, Warning,
+    parse_partial, parse_unary_tests_partial, Context, Decimal, Expression, ParseError,
+    ParseOptions, Partial, UnaryTests, Value, Warning,
 };
 use bpmnkit_xml::local_name;
+use std::cell::RefCell;
 use std::collections::HashMap;
+
+/// Parsed entries are cached as `@bpmnkit/feel`'s parser caches them: up to this many per kind,
+/// cleared when full, keyed by the source and the multi-word names in scope (the only names
+/// that change a parse). Per thread, so no lock.
+const PARSE_CACHE_LIMIT: usize = 2048;
+
+type Parsed<T> = (Option<T>, Vec<ParseError>);
+
+thread_local! {
+    static EXPRESSIONS: RefCell<HashMap<String, Parsed<Expression>>> = RefCell::new(HashMap::new());
+    static UNARY_TESTS: RefCell<HashMap<String, Parsed<UnaryTests>>> = RefCell::new(HashMap::new());
+}
+
+fn cache_key(source: &str, multi_word: &str) -> String {
+    if multi_word.is_empty() {
+        source.to_string()
+    } else {
+        format!("{source}\u{0}{multi_word}")
+    }
+}
+
+fn cached<T: Clone>(
+    cache: &'static std::thread::LocalKey<RefCell<HashMap<String, Parsed<T>>>>,
+    key: String,
+    parse: impl FnOnce() -> Partial<T>,
+) -> Parsed<T> {
+    if let Some(hit) = cache.with(|c| c.borrow().get(&key).cloned()) {
+        return hit;
+    }
+    let p = parse();
+    let entry = (p.parsed, p.errors);
+    cache.with(|c| {
+        let mut c = c.borrow_mut();
+        if c.len() >= PARSE_CACHE_LIMIT {
+            c.clear();
+        }
+        c.insert(key, entry.clone());
+    });
+    entry
+}
+
+/// The names in scope that contain a space, sorted and joined: the cache key's second half.
+fn multi_word_names(context: &Context) -> String {
+    let mut names: Vec<&str> = context
+        .keys()
+        .map(String::as_str)
+        .filter(|n| n.contains(' '))
+        .collect();
+    names.sort_unstable();
+    names.join("\u{1}")
+}
 
 /// Something the evaluation passed over. Never changes the result.
 #[derive(Debug, Clone, PartialEq)]
@@ -70,11 +123,26 @@ pub struct DecisionEvaluation {
 struct Evaluator<'a> {
     decision: &'a str,
     vars: &'a Context,
-    options: ParseOptions,
+    multi_word: String,
     diagnostics: Vec<Diagnostic>,
 }
 
-impl Evaluator<'_> {
+impl<'a> Evaluator<'a> {
+    fn new(decision: &'a str, vars: &'a Context) -> Self {
+        Evaluator {
+            decision,
+            vars,
+            multi_word: multi_word_names(vars),
+            diagnostics: vec![],
+        }
+    }
+
+    fn options(&self) -> ParseOptions {
+        ParseOptions {
+            names: self.vars.keys().cloned().collect(),
+        }
+    }
+
     fn syntax(&mut self, source: &str, errors: &[bpmnkit_feel::ParseError]) {
         if let Some(e) = errors.first() {
             self.diagnostics.push(Diagnostic::Syntax {
@@ -96,9 +164,11 @@ impl Evaluator<'_> {
     /// TS `evalExpression`: parse the trimmed text, run whatever tree came back.
     fn expression(&mut self, text: &str) -> Value {
         let src = text.trim();
-        let p = parse_partial(src, &self.options);
-        self.syntax(src, &p.errors);
-        let Some(expr) = p.parsed else {
+        let (parsed, errors) = cached(&EXPRESSIONS, cache_key(src, &self.multi_word), || {
+            parse_partial(src, &self.options())
+        });
+        self.syntax(src, &errors);
+        let Some(expr) = parsed else {
             return Value::Null;
         };
         let e = expr.evaluate_with_diagnostics(self.vars);
@@ -107,9 +177,11 @@ impl Evaluator<'_> {
     }
 
     fn unary(&mut self, text: &str, input: &Value) -> bool {
-        let p = parse_unary_tests_partial(text, &self.options);
-        self.syntax(text, &p.errors);
-        let Some(tests) = p.parsed else {
+        let (parsed, errors) = cached(&UNARY_TESTS, cache_key(text, &self.multi_word), || {
+            parse_unary_tests_partial(text, &self.options())
+        });
+        self.syntax(text, &errors);
+        let Some(tests) = parsed else {
             return true;
         };
         let (ok, warnings) = tests.test_with_diagnostics(input, self.vars);
@@ -157,14 +229,7 @@ fn aggregate(op: &str, values: &[Decimal]) -> Value {
 /// Evaluates a decision's table by its hit policy, as `evaluateDecision` does: null when the
 /// decision has no table. Variables named in `vars` may contain spaces.
 pub fn evaluate_decision_table(decision: &DmnDecision, vars: &Context) -> DecisionEvaluation {
-    let mut ev = Evaluator {
-        decision: &decision.id,
-        vars,
-        options: ParseOptions {
-            names: vars.keys().cloned().collect(),
-        },
-        diagnostics: vec![],
-    };
+    let mut ev = Evaluator::new(&decision.id, vars);
     let result = table(&mut ev, decision);
     DecisionEvaluation {
         result,
@@ -310,14 +375,7 @@ pub fn evaluate_decision_graph(
             scope.insert(name, value);
         }
         g.visiting.pop();
-        let mut ev = Evaluator {
-            decision: &decision.id,
-            vars: &scope,
-            options: ParseOptions {
-                names: scope.keys().cloned().collect(),
-            },
-            diagnostics: vec![],
-        };
+        let mut ev = Evaluator::new(&decision.id, &scope);
         let result = if decision.decision_table.is_some() {
             table(&mut ev, decision)
         } else {

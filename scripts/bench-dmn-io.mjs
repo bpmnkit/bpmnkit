@@ -2,15 +2,17 @@
 /**
  * bench-dmn-io — times TS DMN parse and serialize over conformance/dmn/<case>/input.dmn (the
  * cases that parse), the same files `cargo bench -p bpmnkit-dmn` reads, so the two numbers
- * compare directly.
+ * compare directly. Then evaluation (`evaluateDecisionGraph`) of every evaluate.json entry whose
+ * context is plain JSON (no temporal values), on parsed models.
  *
- * Usage: pnpm turbo build --filter @bpmnkit/core && node scripts/bench-dmn-io.mjs [iterations]
+ * Usage: build @bpmnkit/core and @bpmnkit/engine, then node scripts/bench-dmn-io.mjs [iterations]
  */
 
 import { readFileSync, readdirSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { Dmn } from "../packages/core/dist/index.js"
+import { evaluateDecisionGraph } from "../packages/engine/dist/index.js"
 
 const root = fileURLToPath(new URL("../conformance/dmn/", import.meta.url))
 const iterations = Number(process.argv[2] ?? 300)
@@ -47,4 +49,53 @@ time("serialize", () => {
 })
 time("parse+serialize", () => {
 	for (const x of inputs) Dmn.export(Dmn.parse(x))
+})
+
+/** A case-file value, or undefined for temporal values (which the Rust bench skips too). */
+function decode(v) {
+	switch (v.t) {
+		case "null":
+			return null
+		case "boolean":
+		case "string":
+			return v.v
+		case "number":
+			return Number(v.v)
+		case "list": {
+			const items = v.v.map(decode)
+			return items.includes(undefined) ? undefined : items
+		}
+		case "context": {
+			const entries = Object.entries(v.v).map(([k, x]) => [k, decode(x)])
+			return entries.some(([, x]) => x === undefined) ? undefined : Object.fromEntries(entries)
+		}
+		default:
+			return undefined
+	}
+}
+
+const evals = []
+for (const d of readdirSync(root, { withFileTypes: true })) {
+	if (!d.isDirectory()) continue
+	let entries
+	try {
+		entries = JSON.parse(readFileSync(join(root, d.name, "evaluate.json"), "utf8"))
+	} catch {
+		continue
+	}
+	const model = Dmn.parse(readFileSync(join(root, d.name, "input.dmn"), "utf8"))
+	for (const e of entries) {
+		const vars = decode({ t: "context", v: e.context })
+		if (vars !== undefined) evals.push([model, e.decision, vars])
+	}
+}
+console.log(`${evals.length} evaluations`)
+time("evaluate", () => {
+	for (const [m, id, vars] of evals) {
+		try {
+			evaluateDecisionGraph(m, id, vars)
+		} catch {
+			// Error cases are part of the workload, as in Rust.
+		}
+	}
 })
