@@ -1,0 +1,19 @@
+[package]
+name = "bpmnkit-compat"
+description = "Camunda 8 version compatibility checks and Camunda 7 to 8 migration (with JUEL to FEEL) for BPMN Kit (Rust twin of @bpmnkit/core's camunda-compat and camunda7)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+bpmnkit-bpmn = { path = "../bpmnkit-bpmn" }
+bpmnkit-feel = { path = "../bpmnkit-feel" }
+bpmnkit-spec = { path = "../bpmnkit-spec" }
+bpmnkit-xml = { path = "../bpmnkit-xml" }
+indexmap = { workspace = true }
+serde = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true, features = ["float_roundtrip"] }

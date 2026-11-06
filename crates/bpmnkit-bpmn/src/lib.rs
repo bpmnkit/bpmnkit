@@ -2,6 +2,7 @@
 //! `bpmn-model.ts`, `bpmn-parser.ts`, `bpmn-serializer.ts` and `zeebe-extensions.ts`.
 //! TS is the oracle: `conformance/bpmn/` pins the model JSON and the round-trip XML.
 
+pub mod ids;
 pub mod model;
 mod number;
 mod parser;

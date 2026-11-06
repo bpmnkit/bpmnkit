@@ -3,9 +3,14 @@
 //! to the same expectations.
 
 mod bpmn;
+pub mod compat;
 mod dmn;
 mod feel;
 mod form;
+pub mod lint;
+pub mod migrate;
+pub mod optimize;
+pub mod tooling;
 mod value;
 
 pub use bpmn::{check_case as check_bpmn_case, run_case as run_bpmn_case};
@@ -162,6 +167,20 @@ pub fn run_all(dir: &Path) -> Result<Vec<(String, bool)>, String> {
             .into_iter()
             .map(|id| (id.clone(), run_dmn_eval_case(dir, &id))),
     );
+    type Ids = fn(&Path) -> Vec<String>;
+    type Check = fn(&Path, &str) -> Result<(), String>;
+    let tooling: [(Ids, Check); 4] = [
+        (lint::case_ids, lint::check_case),
+        (optimize::case_ids, optimize::check_case),
+        (compat::case_ids, compat::check_case),
+        (migrate::case_ids, migrate::check_case),
+    ];
+    for (ids, check) in tooling {
+        for id in ids(dir) {
+            let ok = std::panic::catch_unwind(|| check(dir, &id).is_ok()).unwrap_or(false);
+            out.push((id, ok));
+        }
+    }
     Ok(out)
 }
 

@@ -189,6 +189,35 @@ expression or entry with syntax errors still runs the tree the parser recovered 
 entry with no tree matches anything). `eval-hit-policies` and `eval-drd` are written for this; the
 other cases' inputs reuse their decisions.
 
+## Tooling: `lint/`, `optimize/`, `compat/`, `migrate/`
+
+Recorded by `packages/core/tests/conformance-tooling.test.ts`. Every case is a folder holding an
+input and an optional `case.json`:
+
+- `input.bpmn` (or `input.dmn` / `input.form` under `lint/`), or `case.json` `"input": "<path from
+  conformance/>"` to reuse another case's input (e.g. `"bpmn/miwg-a-2-1/input.bpmn"`).
+- `case.json` `"runs": {"<run>": <options>}`: one expected file per run, `expected/<run>.json`.
+  Without `runs` there is one run, `default`, with `{}`.
+
+All JSON is written with keys sorted, 2-space indent and a trailing newline; Rust compares it
+structurally. A finding is `{id, category, severity, message, suggestion, processId, elementIds,
+fixable}` plus `produces` / `consumes` / `bpmnlintRule` when TS sets them. Ids come from
+`resetIdCounter()` (`bpmnkit_bpmn::ids::reset_id_counter()`), reset before every parse.
+
+| Kind | Options of a run | `expected/<run>.json` |
+|---|---|---|
+| `lint/` (`.bpmn`) | `LintOptions` without functions; `bpmnlintrc` is a raw `.bpmnlintrc` object, passed as `resolveBpmnlintConfig(parseBpmnlintConfig(JSON.stringify(rc)))` | `lintDiagram(parseBpmn(input), options)` |
+| `lint/` (`.dmn` / `.form`) | none | `{"findings": lintDmn(xml)}` / `{"findings": lintForm(json)}` |
+| `optimize/` | `OptimizeOptions` without functions | `{"findings", "summary", "fixes"}`: `optimize(...)`, and for each fixable finding (by index) a fresh parse, `optimize`, then that finding's `applyFix`: `{"index", "id", "description", "xml": serializeBpmn(defs), "generated"?: serializeBpmn(generated)}` |
+| `compat/` | `{"version"?: "8.6"}` (absent: the model's own) | `{"findings": analyzeCamundaCompat(defs, version)}` |
+| `migrate/` | `{"direction": "7to8" \| "8to7", "options"?: Camunda7ConvertOptions}` (default `7to8`) | `{"report", "xml": serializeBpmn(result.definitions)}` from `convertCamunda7` / `convertCamunda8To7` |
+
+`migrate/juel.jsonl`: one `{"id": "juel/<n>", "juel": "...", "options"?: {...}, "expected":
+<translateJuelToFeel result>}` per line; the recorder rewrites `expected`.
+
+Runner case ids: `lint/<case>/<run>`, `optimize/<case>/<run>`, `compat/<case>/<run>`,
+`migrate/<case>/<run>`, `juel/<n>`.
+
 ## `pending.json`
 
 `{"<case id or bpmn/<case>>": "<reason or issue link>"}`: cases a non-TS runner knows it does

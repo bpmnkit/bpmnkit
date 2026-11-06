@@ -68,13 +68,28 @@ dependencies = [
 ]
 
 [[package]]
+name = "bpmnkit-compat"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-bpmn",
+ "bpmnkit-feel",
+ "bpmnkit-spec",
+ "bpmnkit-xml",
+ "indexmap",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "bpmnkit-conformance"
 version = "0.1.0"
 dependencies = [
  "bpmnkit-bpmn",
+ "bpmnkit-compat",
  "bpmnkit-dmn",
  "bpmnkit-feel",
  "bpmnkit-form",
+ "bpmnkit-lint",
  "serde",
  "serde_json",
 ]
@@ -109,6 +124,22 @@ name = "bpmnkit-form"
 version = "0.1.0"
 dependencies = [
  "bpmnkit-spec",
+ "indexmap",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "bpmnkit-lint"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-bpmn",
+ "bpmnkit-compat",
+ "bpmnkit-dmn",
+ "bpmnkit-feel",
+ "bpmnkit-form",
+ "bpmnkit-spec",
+ "bpmnkit-xml",
  "indexmap",
  "serde",
  "serde_json",

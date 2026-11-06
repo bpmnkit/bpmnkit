@@ -1,0 +1,23 @@
+[package]
+name = "bpmnkit-lint"
+description = "BPMN lint and optimize passes, bpmnlint config, DMN and Form lint for BPMN Kit (Rust twin of @bpmnkit/core's lint, optimize and bpmnlint)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+bpmnkit-bpmn = { path = "../bpmnkit-bpmn" }
+bpmnkit-compat = { path = "../bpmnkit-compat" }
+bpmnkit-dmn = { path = "../bpmnkit-dmn" }
+bpmnkit-feel = { path = "../bpmnkit-feel" }
+bpmnkit-form = { path = "../bpmnkit-form" }
+bpmnkit-spec = { path = "../bpmnkit-spec" }
+bpmnkit-xml = { path = "../bpmnkit-xml" }
+indexmap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true, features = ["float_roundtrip"] }
