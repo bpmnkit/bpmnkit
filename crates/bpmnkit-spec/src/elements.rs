@@ -1,8 +1,10 @@
 //! Element and extension definitions (`spec/elements/<family>.json`, schema
 //! `spec/schema/elements.schema.json`). The types are generic over a family's trait enum so
-//! each family's data is a plain `static`. Only the `form` family is generated so far.
+//! each family's data is a plain `static`. The `form`, `bpmn` and `zeebe` families are generated.
 
+pub use crate::generated::bpmn_elements::BPMN_ELEMENTS;
 pub use crate::generated::form_elements::FORM_ELEMENTS;
+pub use crate::generated::zeebe_elements::{ZEEBE_ALLOWED_IN, ZEEBE_ELEMENTS};
 
 /// An XML namespace.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -106,6 +108,48 @@ pub enum FormTrait {
     Scope,
 }
 
+/// BPMN element traits (`traits` in `spec/elements/bpmn.json`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum BpmnTrait {
+    /// Parsed as a flow element of a process or sub-process.
+    FlowElement,
+    /// Event that may carry event definitions.
+    Event,
+    /// Activity whose `multiInstanceLoopCharacteristics` child is read.
+    Loop,
+    /// Holds a flow of its own (sub-process kinds).
+    Container,
+    /// Event definition read under an event.
+    EventDefinition,
+    /// Gateway that models a `default` sequence flow.
+    DefaultFlow,
+}
+
+/// Zeebe extension element traits (`traits` in `spec/elements/zeebe.json`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ZeebeTrait {
+    /// Wrapper whose children are repeated entries of one kind.
+    Collection,
+}
+
+/// The BPMN element called `name` (its XML local name).
+pub fn bpmn_element(name: &str) -> Option<&'static ElementDef<BpmnTrait>> {
+    BPMN_ELEMENTS.element(name)
+}
+
+/// The Zeebe extension element called `name` (its XML local name).
+pub fn zeebe_element(name: &str) -> Option<&'static ElementDef<ZeebeTrait>> {
+    ZEEBE_ELEMENTS.element(name)
+}
+
+/// The parents a Zeebe element may sit in, keyed `zeebe:name`; empty if unconstrained.
+pub fn zeebe_allowed_in(qualified: &str) -> &'static [&'static str] {
+    ZEEBE_ALLOWED_IN
+        .iter()
+        .find(|(k, _)| *k == qualified)
+        .map_or(&[], |(_, v)| v)
+}
+
 /// The form-js component called `name`.
 pub fn form_element(name: &str) -> Option<&'static ElementDef<FormTrait>> {
     FORM_ELEMENTS.element(name)
@@ -148,6 +192,146 @@ mod tests {
             .map(|t| t["name"].as_str().expect("name"))
             .collect();
         assert_eq!(declared, ["keyed", "options", "scope"]);
+    }
+
+    fn names(v: &serde_json::Value) -> Vec<String> {
+        v.as_array()
+            .map(|a| {
+                a.iter()
+                    .map(|t| t.as_str().expect("string").to_owned())
+                    .collect()
+            })
+            .unwrap_or_default()
+    }
+
+    /// `FlowElement` → `flowElement`, the spelling traits have in the JSON.
+    fn camel(t: &impl std::fmt::Debug) -> String {
+        let s = format!("{t:?}");
+        let mut chars = s.chars();
+        chars
+            .next()
+            .map(|c| c.to_ascii_lowercase().to_string() + chars.as_str())
+            .unwrap_or_default()
+    }
+
+    /// Checks one family's generated table against its JSON file, element by element.
+    fn check_family<T: PartialEq + std::fmt::Debug>(file: &str, family: &ElementFamily<T>) {
+        let spec = spec_json(file);
+        assert_eq!(spec["family"], family.family);
+        assert_eq!(spec["source"], family.source);
+        let ns = family.namespace.expect("namespace");
+        assert_eq!(spec["namespace"]["prefix"], ns.prefix);
+        assert_eq!(spec["namespace"]["uri"], ns.uri);
+        let json = spec["elements"].as_array().expect("elements");
+        assert_eq!(json.len(), family.elements.len());
+        for (j, e) in json.iter().zip(family.elements) {
+            assert_eq!(j["name"], e.name);
+            assert_eq!(j["extends"].as_str(), e.extends, "{} extends", e.name);
+            assert_eq!(j["abstract"].as_bool().unwrap_or(false), e.is_abstract);
+            assert_eq!(
+                j["attributes"].as_array().map_or(0, Vec::len),
+                e.attributes.len(),
+                "{} attributes",
+                e.name
+            );
+            assert_eq!(
+                j["children"].as_array().map_or(0, Vec::len),
+                e.children.len(),
+                "{} children",
+                e.name
+            );
+            assert_eq!(names(&j["allowedIn"]), e.allowed_in, "{} allowedIn", e.name);
+            assert_eq!(
+                names(&j["traits"]),
+                e.traits.iter().map(camel).collect::<Vec<_>>(),
+                "{} traits",
+                e.name
+            );
+        }
+    }
+
+    #[test]
+    fn bpmn_elements_match_spec_file() {
+        check_family("elements/bpmn.json", &BPMN_ELEMENTS);
+        let declared: Vec<String> = spec_json("elements/bpmn.json")["traits"]
+            .as_array()
+            .expect("traits")
+            .iter()
+            .map(|t| t["name"].as_str().expect("name").to_owned())
+            .collect();
+        assert_eq!(
+            declared,
+            [
+                "flowElement",
+                "event",
+                "loop",
+                "container",
+                "eventDefinition",
+                "defaultFlow"
+            ]
+        );
+    }
+
+    #[test]
+    fn zeebe_elements_match_spec_file() {
+        check_family("elements/zeebe.json", &ZEEBE_ELEMENTS);
+        let spec = spec_json("elements/zeebe.json");
+        let placed: Vec<(String, Vec<String>)> = spec["elements"]
+            .as_array()
+            .expect("elements")
+            .iter()
+            .filter(|e| e.get("allowedIn").is_some())
+            .map(|e| {
+                (
+                    format!("zeebe:{}", e["name"].as_str().expect("name")),
+                    names(&e["allowedIn"]),
+                )
+            })
+            .collect();
+        assert_eq!(placed.len(), ZEEBE_ALLOWED_IN.len());
+        for ((key, owners), (k, v)) in placed.iter().zip(ZEEBE_ALLOWED_IN) {
+            assert_eq!(key, k);
+            assert_eq!(owners, v);
+        }
+    }
+
+    #[test]
+    fn bpmn_hierarchy_and_traits() {
+        let timer = bpmn_element("timerEventDefinition").expect("timer");
+        assert_eq!(timer.extends, Some("eventDefinition"));
+        assert!(BPMN_ELEMENTS.has_trait("eventSubProcess", BpmnTrait::Container));
+        assert!(BPMN_ELEMENTS.has_trait("eventSubProcess", BpmnTrait::FlowElement));
+        assert!(!BPMN_ELEMENTS.has_trait("eventSubProcess", BpmnTrait::Loop));
+        assert!(!BPMN_ELEMENTS.has_trait("sequenceFlow", BpmnTrait::FlowElement));
+        assert!(BPMN_ELEMENTS.has_trait("complexGateway", BpmnTrait::DefaultFlow));
+        assert!(bpmn_element("flowNode").is_some_and(|e| e.is_abstract));
+        let boundary = bpmn_element("boundaryEvent").expect("boundaryEvent");
+        let cancel = boundary
+            .attributes
+            .iter()
+            .find(|a| a.name == "cancelActivity")
+            .expect("cancelActivity");
+        assert_eq!(cancel.default, Some(DefaultValue::Bool(true)));
+        assert!(bpmn_element("nope").is_none());
+    }
+
+    #[test]
+    fn zeebe_placement_and_children() {
+        assert_eq!(
+            zeebe_allowed_in("zeebe:calledDecision"),
+            ["bpmn:businessRuleTask"]
+        );
+        assert!(zeebe_allowed_in("zeebe:subscription").is_empty());
+        assert!(zeebe_allowed_in("zeebe:nope").is_empty());
+        let io = zeebe_element("ioMapping").expect("ioMapping");
+        let kids: Vec<&str> = io.children.iter().map(|c| c.element).collect();
+        assert_eq!(kids, ["input", "output"]);
+        assert!(ZEEBE_ELEMENTS.has_trait("taskHeaders", ZeebeTrait::Collection));
+        let task = zeebe_element("taskDefinition").expect("taskDefinition");
+        assert!(task
+            .attributes
+            .iter()
+            .any(|a| a.name == "type" && a.required));
     }
 
     #[test]

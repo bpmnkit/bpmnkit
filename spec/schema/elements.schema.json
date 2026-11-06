@@ -66,7 +66,7 @@
 				},
 				"description": { "type": "string" },
 				"extends": {
-					"description": "Name of the element this one extends; it inherits that element's attributes, children, allowedIn and traits. Unqualified (`name`) for the same family or `family:name` for another.",
+					"description": "Name of the element this one extends; it inherits that element's attributes, children and allowedIn. Traits are not inherited: list them on every element they hold for. Unqualified (`name`) for the same family or `family:name` for another.",
 					"type": "string",
 					"minLength": 1
 				},

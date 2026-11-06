@@ -1,4 +1,5 @@
 import { ParseError } from "../errors.js"
+import { BPMN_ELEMENTS_BY_TRAIT } from "../generated/bpmn-elements.js"
 import type { XmlElement } from "../types/xml-element.js"
 import { Visit, type XmlSink, scanXml } from "../xml/xml-parser.js"
 import type {
@@ -566,78 +567,17 @@ function contentsChild(
 // Flow elements
 // ---------------------------------------------------------------------------
 
-const FLOW_ELEMENT_TYPES = new Set<string>([
-	"startEvent",
-	"endEvent",
-	"intermediateCatchEvent",
-	"intermediateThrowEvent",
-	"boundaryEvent",
-	"task",
-	"serviceTask",
-	"scriptTask",
-	"userTask",
-	"sendTask",
-	"receiveTask",
-	"businessRuleTask",
-	"manualTask",
-	"callActivity",
-	"subProcess",
-	"adHocSubProcess",
-	"eventSubProcess",
-	"transaction",
-	"exclusiveGateway",
-	"parallelGateway",
-	"inclusiveGateway",
-	"eventBasedGateway",
-	"complexGateway",
-	"dataObject",
-	"dataObjectReference",
-	"dataStoreReference",
-])
+// The type sets come from the spec (spec/elements/bpmn.json traits), shared with the Rust parser.
+const FLOW_ELEMENT_TYPES = new Set<string>(BPMN_ELEMENTS_BY_TRAIT.flowElement)
 
-const EVENT_TYPES = new Set<string>([
-	"startEvent",
-	"endEvent",
-	"intermediateCatchEvent",
-	"intermediateThrowEvent",
-	"boundaryEvent",
-])
+const EVENT_TYPES = new Set<string>(BPMN_ELEMENTS_BY_TRAIT.event)
 
 /** Types whose <multiInstanceLoopCharacteristics> child is read. */
-const LOOP_TYPES = new Set<string>([
-	"task",
-	"serviceTask",
-	"scriptTask",
-	"userTask",
-	"businessRuleTask",
-	"manualTask",
-	"callActivity",
-	"sendTask",
-	"receiveTask",
-	"adHocSubProcess",
-	"subProcess",
-	"transaction",
-])
+const LOOP_TYPES = new Set<string>(BPMN_ELEMENTS_BY_TRAIT.loop)
 
-const CONTAINER_TYPES = new Set<string>([
-	"adHocSubProcess",
-	"subProcess",
-	"eventSubProcess",
-	"transaction",
-])
+const CONTAINER_TYPES = new Set<string>(BPMN_ELEMENTS_BY_TRAIT.container)
 
-const EVENT_DEFINITION_TYPES = new Set<string>([
-	"timerEventDefinition",
-	"errorEventDefinition",
-	"escalationEventDefinition",
-	"messageEventDefinition",
-	"signalEventDefinition",
-	"conditionalEventDefinition",
-	"linkEventDefinition",
-	"cancelEventDefinition",
-	"terminateEventDefinition",
-	"compensateEventDefinition",
-])
+const EVENT_DEFINITION_TYPES = new Set<string>(BPMN_ELEMENTS_BY_TRAIT.eventDefinition)
 
 class FlowNodeFrame extends Frame implements TextOwner {
 	private readonly id: string

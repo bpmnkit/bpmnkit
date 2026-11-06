@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
-import { header, pascal, rustStr, tsJson } from "./util.mjs"
+import { header, pascal, rustStr, rustStrSlice, tsJson } from "./util.mjs"
 
 // Element families: every spec/elements/<family>.json is validated against the schema
 // (see spec-gen.mjs, which lists each file as one area). Only families in EMITTED generate code.
@@ -14,7 +14,7 @@ export const sources = readdirSync(join(ROOT, "spec/elements"))
 	.map((f) => `spec/elements/${f}`)
 export const source = sources[0]
 
-const EMITTED = new Set(["form"])
+const EMITTED = new Set(["form", "bpmn", "zeebe"])
 
 /** Checks the cross-references the JSON schema cannot express. */
 function check(spec) {
@@ -48,13 +48,34 @@ export function generate(spec) {
 			spec.elements.filter((e) => e.traits?.includes(t)).map((e) => e.name),
 		]),
 	)
+	// Placement table for families that constrain parents (Zeebe): keyed by the qualified
+	// element name, values as written in the spec. Absent for families with no `allowedIn`.
+	const placed = spec.elements.filter((e) => e.allowedIn)
+	const qualified = (e) => (spec.namespace ? `${spec.namespace.prefix}:${e.name}` : e.name)
+	const tsPlacement = placed.length
+		? `
+/**
+ * Where each ${fam} element may be placed: qualified element name → the parents (\`name\` or
+ * \`family:name\`) it may sit directly in. Elements without \`allowedIn\` are absent.
+ */
+export const ${upper}_ALLOWED_IN: Readonly<Record<string, readonly string[]>> = ${tsJson(Object.fromEntries(placed.map((e) => [qualified(e), e.allowedIn])))}
+`
+		: ""
+	const rsPlacement = placed.length
+		? `
+/// Where each ${fam} element may be placed: qualified element name and its allowed parents.
+pub static ${upper}_ALLOWED_IN: &[(&str, &[&str])] = &[
+${placed.map((e) => `    (${rustStr(qualified(e))}, ${rustStrSlice(e.allowedIn)}),`).join("\n")}
+];
+`
+		: ""
 	const ts = `${header(src)}
 /** Every ${fam} element, in the spec's order. */
 export const ${upper}_ELEMENT_NAMES = ${tsJson(spec.elements.map((e) => e.name))} as const
 
 /** The elements carrying each trait, in the spec's order. */
 export const ${upper}_ELEMENTS_BY_TRAIT: Readonly<Record<${traitNames.map((t) => JSON.stringify(t)).join(" | ")}, readonly string[]>> = ${tsJson(byTrait)}
-`
+${tsPlacement}`
 
 	const opt = (v, f) => (v === undefined ? "None" : `Some(${f(v)})`)
 	const slice = (items, f) => (items?.length ? `&[${items.map(f).join(", ")}]` : "&[]")
@@ -90,7 +111,7 @@ ${spec.elements
 	.join("\n")}
     ],
 };
-`
+${rsPlacement}`
 	return {
 		[`packages/core/src/generated/${fam}-elements.ts`]: ts,
 		[`crates/bpmnkit-spec/src/generated/${fam}_elements.rs`]: rs,

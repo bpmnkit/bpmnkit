@@ -10,10 +10,12 @@ pub mod templates;
 
 #[rustfmt::skip]
 mod generated {
+    pub mod bpmn_elements;
     pub mod compat_rules;
     pub mod form_elements;
     pub mod feel_builtins;
     pub mod lint_rules;
+    pub mod zeebe_elements;
 }
 
 #[cfg(test)]
