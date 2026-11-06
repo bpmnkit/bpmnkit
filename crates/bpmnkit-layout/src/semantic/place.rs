@@ -626,16 +626,37 @@ fn separate_same_cell(
     // so two nodes sharing a rank and band across components do not collide.
     // TS keys cells by the string `${component}:${rank}:${band}`; the triple is
     // the same key.
-    let mut cells: IndexMap<(usize, i64, i64), Vec<&str>> = IndexMap::default();
+    // Cells in order of first appearance, each node's cell, and a counting sort
+    // into one list: the per-cell id lists without a list per cell.
+    let mut cells: IndexMap<(usize, i64, i64), usize> = IndexMap::default();
+    let mut cell_of: Vec<usize> = Vec::with_capacity(graph.nodes.len());
     for node in &graph.nodes {
         let id = node.base().id.as_str();
         let rank = graph.ranks.get(id).copied().unwrap_or(0);
         let band = band_layout.bands.get(id).copied().unwrap_or(0);
         let key = (component_of.get(id).copied().unwrap_or(0), rank, band);
-        cells.entry(key).or_default().push(id);
+        let next = cells.len();
+        cell_of.push(*cells.entry(key).or_insert(next));
+    }
+    if cells.len() == graph.nodes.len() {
+        return;
+    }
+    let mut start = vec![0usize; cells.len() + 1];
+    for &c in &cell_of {
+        start[c + 1] += 1;
+    }
+    for c in 0..cells.len() {
+        start[c + 1] += start[c];
+    }
+    let mut fill = start.clone();
+    let mut ordered: Vec<&str> = vec![""; cell_of.len()];
+    for (node, &c) in graph.nodes.iter().zip(&cell_of) {
+        ordered[fill[c]] = node.base().id.as_str();
+        fill[c] += 1;
     }
 
-    for ids in cells.values() {
+    for c in 0..cells.len() {
+        let ids = &ordered[start[c]..start[c + 1]];
         if ids.len() < 2 {
             continue;
         }

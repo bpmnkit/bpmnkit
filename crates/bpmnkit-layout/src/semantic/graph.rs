@@ -143,7 +143,13 @@ fn find_components(graph: &mut SemanticGraph) {
                 }
             }
         }
-        members.sort_by_key(|id| order.get(id).copied().unwrap_or(0));
+        // Keys looked up once rather than per comparison; the sort stays stable.
+        let mut keyed: Vec<(usize, &str)> = members
+            .iter()
+            .map(|&id| (order.get(id).copied().unwrap_or(0), id))
+            .collect();
+        keyed.sort_by_key(|&(key, _)| key);
+        let members: Vec<&str> = keyed.into_iter().map(|(_, id)| id).collect();
         starts.push(pick_start(&members, graph));
         components.push(members);
     }
@@ -266,16 +272,33 @@ fn assign_ranks(graph: &mut SemanticGraph) {
     // neither depends on the ranks, so they are worked out once. A node's rank is
     // read per edge rather than once per node; only a self-loop could tell the
     // two apart, and a self-loop is always a back edge.
-    let mut relax: Vec<(&str, &str, i64)> = Vec::new();
+    // Ranks are addressed by their position in `ranks`: keys are only ever
+    // appended, so a position stays valid once known. A target outside `nodes`
+    // gets its key (and position) the first time an edge raises it.
+    struct Relax<'a> {
+        source: usize,
+        target_id: &'a str,
+        target: Option<usize>,
+        step: i64,
+    }
+    let mut relax: Vec<Relax> = Vec::new();
     for node in &graph.nodes {
         let id = node.base().id.as_str();
         if let Some(flows) = graph.outgoing.get(id) {
+            let Some(source) = ranks.get_index_of(id) else {
+                continue;
+            };
             for flow in flows {
                 if graph.back_edges.contains(flow.id.as_str()) {
                     continue;
                 }
                 let step = if shares_rank(graph, flow) { 0 } else { 1 };
-                relax.push((id, &flow.target_ref, step));
+                relax.push(Relax {
+                    source,
+                    target_id: &flow.target_ref,
+                    target: ranks.get_index_of(flow.target_ref.as_str()),
+                    step,
+                });
             }
         }
     }
@@ -284,11 +307,19 @@ fn assign_ranks(graph: &mut SemanticGraph) {
     // because the remaining graph is acyclic.
     for _pass in 0..graph.nodes.len() + 1 {
         let mut changed = false;
-        for &(id, target_id, step) in &relax {
-            let rank = ranks.get(id).copied().unwrap_or(0);
-            let target = ranks.get(target_id).copied().unwrap_or(0);
-            if target < rank + step {
-                ranks.insert(target_id, rank + step);
+        for edge in &mut relax {
+            let rank = ranks[edge.source];
+            if edge.target.is_none() {
+                edge.target = ranks.get_index_of(edge.target_id);
+            }
+            let target = edge.target.map_or(0, |t| ranks[t]);
+            if target < rank + edge.step {
+                match edge.target {
+                    Some(t) => ranks[t] = rank + edge.step,
+                    None => {
+                        edge.target = Some(ranks.insert_full(edge.target_id, rank + edge.step).0);
+                    }
+                }
                 changed = true;
             }
         }

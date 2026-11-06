@@ -4,6 +4,7 @@ use crate::hash::IndexMap;
 use crate::js;
 use crate::orthogonal::{route_orthogonal, side_ports, OrthogonalRequest, Port, Side, SideCost};
 use crate::types::{Bounds, Waypoint};
+use std::cmp::Ordering::Less;
 
 /// `ConnectionKind`: what a connection is, which decides the sides it may leave and enter by.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -44,8 +45,8 @@ const OWN_END_TOLERANCE: f64 = 2.0;
 /// guarantee behind them, so it only spends a search on the edges that need one.
 pub fn repair_routes<'r>(
     shapes: &[PlaneShape],
-    edges: &mut [PlaneEdge],
-    related: &dyn Fn(&str) -> Vec<&'r str>,
+    edges: &mut [PlaneEdge<'r>],
+    related: &dyn Fn(&str, &mut Vec<&'r str>),
     boundary_side: &dyn Fn(&str) -> Option<Side>,
 ) {
     // `new Map(entries)`: the last duplicate id wins.
@@ -55,6 +56,9 @@ pub fn repair_routes<'r>(
         by_id.insert(s.id, s);
     }
     let obstacles: Vec<&PlaneShape> = shapes.iter().filter(|s| !s.container).collect();
+    let hit_index = HitIndex::new(&obstacles);
+    // A handful of ids per edge: a linear scan beats hashing every obstacle's id.
+    let mut exempt: Vec<&'r str> = Vec::new();
 
     for ei in 0..edges.len() {
         let edge = &edges[ei];
@@ -62,13 +66,13 @@ pub fn repair_routes<'r>(
         let (Some(&source), Some(&target)) = (by_id.get(source_ref), by_id.get(target_ref)) else {
             continue;
         };
-        // A handful of ids: a linear scan beats hashing every obstacle's id.
-        let mut exempt: Vec<&str> = vec![source_ref, target_ref];
-        let related_source = related(source_ref);
-        let related_target = related(target_ref);
-        exempt.extend(related_source.iter().chain(related_target.iter()).copied());
+        exempt.clear();
+        exempt.push(source_ref);
+        exempt.push(target_ref);
+        related(source_ref, &mut exempt);
+        related(target_ref, &mut exempt);
         let blocks = |s: &PlaneShape| !exempt.contains(&s.id);
-        if !route_hits(&edge.waypoints, &obstacles, &blocks)
+        if !hit_index.route_hits(&edge.waypoints, &blocks)
             && !through_own_end(&edge.waypoints, source, target)
         {
             continue;
@@ -218,40 +222,60 @@ fn inside(p: &Waypoint, b: &Bounds) -> bool {
     p.x > b.x && p.x < b.x + b.width && p.y > b.y && p.y < b.y + b.height
 }
 
-/// True when any segment passes through the interior of one of `shapes` that `blocks`.
-fn route_hits(
-    waypoints: &[Waypoint],
-    shapes: &[&PlaneShape],
-    blocks: &dyn Fn(&PlaneShape) -> bool,
-) -> bool {
-    let mut min_x = f64::INFINITY;
-    let mut min_y = f64::INFINITY;
-    let mut max_x = f64::NEG_INFINITY;
-    let mut max_y = f64::NEG_INFINITY;
-    for w in waypoints {
-        min_x = js::min(min_x, w.x);
-        min_y = js::min(min_y, w.y);
-        max_x = js::max(max_x, w.x);
-        max_y = js::max(max_y, w.y);
+/// The obstacles of a plane, ordered by left edge so a route only looks at the
+/// ones starting left of its right end.
+struct HitIndex<'s, 'a> {
+    by_left: Vec<&'s PlaneShape<'a>>,
+    /// A NaN left edge has no place in the order; these are always checked.
+    unordered: Vec<&'s PlaneShape<'a>>,
+}
+
+impl<'s, 'a> HitIndex<'s, 'a> {
+    fn new(obstacles: &[&'s PlaneShape<'a>]) -> Self {
+        let (mut by_left, unordered): (Vec<_>, Vec<_>) = obstacles
+            .iter()
+            .copied()
+            .partition(|s| !s.bounds.x.is_nan());
+        by_left.sort_by(|a, b| js::cmp_num(a.bounds.x, b.bounds.x));
+        HitIndex { by_left, unordered }
     }
-    for s in shapes {
-        // The box `segment_hits` clips against: one wholly to a side of the
-        // route's bounding box clips every segment away (NaN never skips).
-        let b = &s.bounds;
-        if max_x < b.x + TOLERANCE
-            || min_x > b.x + b.width - TOLERANCE
-            || max_y < b.y + TOLERANCE
-            || min_y > b.y + b.height - TOLERANCE
-        {
-            continue;
+
+    /// True when any segment passes through the interior of an obstacle that `blocks`.
+    fn route_hits(&self, waypoints: &[Waypoint], blocks: &dyn Fn(&PlaneShape) -> bool) -> bool {
+        let mut min_x = f64::INFINITY;
+        let mut min_y = f64::INFINITY;
+        let mut max_x = f64::NEG_INFINITY;
+        let mut max_y = f64::NEG_INFINITY;
+        for w in waypoints {
+            min_x = js::min(min_x, w.x);
+            min_y = js::min(min_y, w.y);
+            max_x = js::max(max_x, w.x);
+            max_y = js::max(max_y, w.y);
         }
-        for w in waypoints.windows(2) {
-            if segment_hits(&w[0], &w[1], b, TOLERANCE) && blocks(s) {
-                return true;
+        // `b.x + TOLERANCE` rises with `b.x`, so the obstacles that pass the first
+        // test below are a prefix of `by_left` (all of it when `max_x` is NaN).
+        let reach = self
+            .by_left
+            .partition_point(|s| max_x.partial_cmp(&(s.bounds.x + TOLERANCE)) != Some(Less));
+        for s in self.by_left[..reach].iter().chain(&self.unordered) {
+            // The box `segment_hits` clips against: one wholly to a side of the
+            // route's bounding box clips every segment away (NaN never skips).
+            let b = &s.bounds;
+            if max_x < b.x + TOLERANCE
+                || min_x > b.x + b.width - TOLERANCE
+                || max_y < b.y + TOLERANCE
+                || min_y > b.y + b.height - TOLERANCE
+            {
+                continue;
+            }
+            for w in waypoints.windows(2) {
+                if segment_hits(&w[0], &w[1], b, TOLERANCE) && blocks(s) {
+                    return true;
+                }
             }
         }
+        false
     }
-    false
 }
 
 /// Liang-Barsky clip against the box shrunk by `tolerance`; handles diagonals too.

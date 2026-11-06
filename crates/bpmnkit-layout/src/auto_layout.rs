@@ -1655,29 +1655,31 @@ pub fn keep_di_attributes<'s>(
     // Diagrams match by the element their plane draws; `id` is optional in DI,
     // and matching on an empty one would hand every diagram the first one's
     // attributes and label styles (duplicate XML ids).
+    let shape_count: usize = source.iter().map(|d| d.plane.shapes.len()).sum();
+    let edge_count: usize = source.iter().map(|d| d.plane.edges.len()).sum();
     let mut diagram_by_element: FxIndexMap<&str, &BpmnDiagram> = FxIndexMap::default();
     let mut diagram_by_id: FxIndexMap<&str, &BpmnDiagram> = FxIndexMap::default();
-    let mut shape_by_element: FxIndexMap<&str, &'s BpmnDiShape> = FxIndexMap::default();
-    let mut edge_by_element: FxIndexMap<&str, &'s BpmnDiEdge> = FxIndexMap::default();
-    let mut source_ids: FxIndexSet<&str> = FxIndexSet::default();
+    let mut shape_by_element: FxIndexMap<&str, &'s BpmnDiShape> =
+        FxIndexMap::with_capacity_and_hasher(shape_count, Default::default());
+    let mut edge_by_element: FxIndexMap<&str, &'s BpmnDiEdge> =
+        FxIndexMap::with_capacity_and_hasher(edge_count, Default::default());
+    let mut source_ids: FxIndexSet<&str> =
+        FxIndexSet::with_capacity_and_hasher(shape_count + edge_count, Default::default());
+    // `entry().or_insert`: the first diagram, shape or edge per key wins.
     for diagram in source {
         let element = diagram.plane.bpmn_element.as_str();
-        if !element.is_empty() && !diagram_by_element.contains_key(element) {
-            diagram_by_element.insert(element, diagram);
+        if !element.is_empty() {
+            diagram_by_element.entry(element).or_insert(diagram);
         }
-        if !diagram.id.is_empty() && !diagram_by_id.contains_key(diagram.id.as_str()) {
-            diagram_by_id.insert(&diagram.id, diagram);
+        if !diagram.id.is_empty() {
+            diagram_by_id.entry(&diagram.id).or_insert(diagram);
         }
         for shape in &diagram.plane.shapes {
-            if !shape_by_element.contains_key(shape.bpmn_element.as_str()) {
-                shape_by_element.insert(&shape.bpmn_element, shape);
-            }
+            shape_by_element.entry(&shape.bpmn_element).or_insert(shape);
             source_ids.insert(&shape.id);
         }
         for edge in &diagram.plane.edges {
-            if !edge_by_element.contains_key(edge.bpmn_element.as_str()) {
-                edge_by_element.insert(&edge.bpmn_element, edge);
-            }
+            edge_by_element.entry(&edge.bpmn_element).or_insert(edge);
             source_ids.insert(&edge.id);
         }
     }
@@ -1691,7 +1693,8 @@ pub fn keep_di_attributes<'s>(
     let mut used_source: FxIndexSet<&str> = FxIndexSet::default();
     let mut used_generated: FxIndexSet<String> = FxIndexSet::default();
     // An empty source id means the source omitted it; that is not one to keep.
-    let mut keep_id = |generated: &str, previous: Option<&'s str>| -> String {
+    // Takes the generated id by value: its buffer is reused for whichever id is kept.
+    let mut keep_id = |generated: String, previous: Option<&'s str>| -> String {
         let used = |id: &str, source: &FxIndexSet<&str>, generated: &FxIndexSet<String>| {
             source.contains(id) || generated.contains(id)
         };
@@ -1699,15 +1702,24 @@ pub fn keep_di_attributes<'s>(
             previous.filter(|p| !p.is_empty() && !used(p, &used_source, &used_generated))
         {
             used_source.insert(p);
-            return p.to_string();
+            let mut id = generated;
+            id.clear();
+            id.push_str(p);
+            return id;
         }
         // Checked even when `generated` equals a previous id already taken (two
         // source shapes sharing `X_di`): that id is in use, so it is not free.
-        let mut id = generated.to_string();
-        let mut n = 2;
-        while source_ids.contains(id.as_str()) || used(&id, &used_source, &used_generated) {
-            id = format!("{generated}_{n}");
-            n += 1;
+        let mut id = generated;
+        if source_ids.contains(id.as_str()) || used(&id, &used_source, &used_generated) {
+            let base = id.clone();
+            let mut n = 2;
+            loop {
+                id = format!("{base}_{n}");
+                n += 1;
+                if !(source_ids.contains(id.as_str()) || used(&id, &used_source, &used_generated)) {
+                    break;
+                }
+            }
         }
         used_generated.insert(id.clone());
         id
@@ -1746,10 +1758,10 @@ pub fn keep_di_attributes<'s>(
                 .into_iter()
                 .map(|shape| {
                     let Some(previous) = shape_by_element.get(shape.bpmn_element.as_str()) else {
-                        let id = keep_id(&shape.id, None);
+                        let id = keep_id(shape.id, None);
                         return BpmnDiShape { id, ..shape };
                     };
-                    let id = keep_id(&shape.id, Some(&previous.id));
+                    let id = keep_id(shape.id, Some(&previous.id));
                     let mut kept = BpmnDiShape {
                         id,
                         unknown_attributes: previous.unknown_attributes.clone(),
@@ -1770,10 +1782,10 @@ pub fn keep_di_attributes<'s>(
                 .into_iter()
                 .map(|edge| {
                     let Some(previous) = edge_by_element.get(edge.bpmn_element.as_str()) else {
-                        let id = keep_id(&edge.id, None);
+                        let id = keep_id(edge.id, None);
                         return BpmnDiEdge { id, ..edge };
                     };
-                    let id = keep_id(&edge.id, Some(&previous.id));
+                    let id = keep_id(edge.id, Some(&previous.id));
                     let mut kept = BpmnDiEdge {
                         id,
                         unknown_attributes: previous.unknown_attributes.clone(),
@@ -1950,8 +1962,11 @@ impl<'a> RouteRepair<'a> {
         }
     }
 
-    fn related(&self, id: &str) -> Vec<&'a str> {
-        let mut out: Vec<&'a str> = self.attachers.get(id).cloned().unwrap_or_default();
+    /// Appends the ids related to `id` to `out`.
+    fn related(&self, id: &str, out: &mut Vec<&'a str>) {
+        if let Some(attachers) = self.attachers.get(id) {
+            out.extend_from_slice(attachers);
+        }
         if let Some(&host) = self.attached_to.get(id).filter(|h| !h.is_empty()) {
             out.push(host);
         }
@@ -1960,7 +1975,6 @@ impl<'a> RouteRepair<'a> {
             out.push(cur);
             p = self.parent.get(cur);
         }
-        out
     }
 
     fn apply(&self, shapes: &[BpmnDiShape], edges: &mut [BpmnDiEdge]) {
@@ -2022,7 +2036,7 @@ impl<'a> RouteRepair<'a> {
                 Some(Side::Bottom)
             }
         };
-        let related = |id: &str| self.related(id);
+        let related = |id: &str, out: &mut Vec<&'a str>| self.related(id, out);
         repair_routes(&plane_shapes, &mut plane_edges, &related, &boundary_side);
         for (edge, &i) in plane_edges.iter().zip(&di_index) {
             let di = &mut edges[i];

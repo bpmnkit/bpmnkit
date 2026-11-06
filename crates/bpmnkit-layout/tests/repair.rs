@@ -57,7 +57,7 @@ fn repair_routes_matches_ts() {
                 waypoints: wps(&e["waypoints"]),
             })
             .collect();
-        repair_routes(&shapes, &mut edges, &|_| Vec::new(), &|_| None);
+        repair_routes(&shapes, &mut edges, &|_, _| {}, &|_| None);
         let got: Vec<Vec<Waypoint>> = edges.into_iter().map(|e| e.waypoints).collect();
         let want: Vec<Vec<Waypoint>> = case["expected"]
             .as_array()
