@@ -14,7 +14,9 @@ export const sources = readdirSync(join(ROOT, "spec/elements"))
 	.map((f) => `spec/elements/${f}`)
 export const source = sources[0]
 
-const EMITTED = new Set(["form", "bpmn", "zeebe"])
+const EMITTED = new Set(["form", "bpmn", "zeebe", "dmn"])
+/** Families whose TS code reads enum attribute values; the others get no table. */
+const TS_ENUMS = new Set(["dmn"])
 
 /** Checks the cross-references the JSON schema cannot express. */
 function check(spec) {
@@ -69,13 +71,29 @@ ${placed.map((e) => `    (${rustStr(qualified(e))}, ${rustStrSlice(e.allowedIn)}
 ];
 `
 		: ""
+	// Enum attribute values for TS, keyed `element.attribute` (Rust has them in the element table).
+	const enums = TS_ENUMS.has(fam)
+		? spec.elements.flatMap((e) =>
+				(e.attributes ?? [])
+					.filter((a) => a.type === "enum")
+					.map((a) => [`${e.name}.${a.name}`, a.values]),
+			)
+		: []
+	const tsEnums = enums.length
+		? `
+/** The allowed values of each enum attribute, keyed \`element.attribute\`, in the spec's order. */
+export const ${upper}_ATTRIBUTE_VALUES = {
+${enums.map(([k, v]) => `\t${JSON.stringify(k)}: ${JSON.stringify(v).replace(/,/g, ", ")},`).join("\n")}
+} as const
+`
+		: ""
 	const ts = `${header(src)}
 /** Every ${fam} element, in the spec's order. */
 export const ${upper}_ELEMENT_NAMES = ${tsJson(spec.elements.map((e) => e.name))} as const
 
 /** The elements carrying each trait, in the spec's order. */
 export const ${upper}_ELEMENTS_BY_TRAIT: Readonly<Record<${traitNames.map((t) => JSON.stringify(t)).join(" | ")}, readonly string[]>> = ${tsJson(byTrait)}
-${tsPlacement}`
+${tsPlacement}${tsEnums}`
 
 	const opt = (v, f) => (v === undefined ? "None" : `Some(${f(v)})`)
 	const slice = (items, f) => (items?.length ? `&[${items.map(f).join(", ")}]` : "&[]")

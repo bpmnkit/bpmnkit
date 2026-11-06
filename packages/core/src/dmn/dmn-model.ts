@@ -1,17 +1,11 @@
+import type { DMN_ATTRIBUTE_VALUES } from "../generated/dmn-elements.js"
 import type { XmlElement } from "../types/xml-element.js"
 
-/** DMN hit policy for decision tables. */
-export type HitPolicy =
-	| "UNIQUE"
-	| "FIRST"
-	| "ANY"
-	| "COLLECT"
-	| "RULE ORDER"
-	| "OUTPUT ORDER"
-	| "PRIORITY"
+/** DMN hit policy for decision tables (`spec/elements/dmn.json`). */
+export type HitPolicy = (typeof DMN_ATTRIBUTE_VALUES)["decisionTable.hitPolicy"][number]
 
-/** DMN collect aggregation for COLLECT hit policy. */
-export type DmnAggregation = "SUM" | "MIN" | "MAX" | "COUNT"
+/** DMN collect aggregation for COLLECT hit policy (`spec/elements/dmn.json`). */
+export type DmnAggregation = (typeof DMN_ATTRIBUTE_VALUES)["decisionTable.aggregation"][number]
 
 /** DMN type reference for inputs/outputs. */
 export type DmnTypeRef = "string" | "boolean" | "number" | "date"

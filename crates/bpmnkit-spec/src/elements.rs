@@ -1,8 +1,10 @@
 //! Element and extension definitions (`spec/elements/<family>.json`, schema
 //! `spec/schema/elements.schema.json`). The types are generic over a family's trait enum so
-//! each family's data is a plain `static`. The `form`, `bpmn` and `zeebe` families are generated.
+//! each family's data is a plain `static`. The `form`, `bpmn`, `zeebe` and `dmn` families are
+//! generated.
 
 pub use crate::generated::bpmn_elements::BPMN_ELEMENTS;
+pub use crate::generated::dmn_elements::DMN_ELEMENTS;
 pub use crate::generated::form_elements::FORM_ELEMENTS;
 pub use crate::generated::zeebe_elements::{ZEEBE_ALLOWED_IN, ZEEBE_ELEMENTS};
 
@@ -130,6 +132,29 @@ pub enum BpmnTrait {
 pub enum ZeebeTrait {
     /// Wrapper whose children are repeated entries of one kind.
     Collection,
+}
+
+/// DMN element traits (`traits` in `spec/elements/dmn.json`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DmnTrait {
+    /// Top-level DRG element the parser reads into its own list.
+    DrgElement,
+    /// DRD edge held by its target element.
+    Requirement,
+    /// Top-level annotation of the graph.
+    Artifact,
+}
+
+/// The DMN element called `name` (its XML local name).
+pub fn dmn_element(name: &str) -> Option<&'static ElementDef<DmnTrait>> {
+    DMN_ELEMENTS.element(name)
+}
+
+/// The allowed values of a DMN enum attribute (`element.attribute` in TS), empty if none.
+pub fn dmn_attribute_values(element: &str, attribute: &str) -> &'static [&'static str] {
+    dmn_element(element)
+        .and_then(|e| e.attributes.iter().find(|a| a.name == attribute))
+        .map_or(&[], |a| a.values)
 }
 
 /// The BPMN element called `name` (its XML local name).
@@ -270,6 +295,19 @@ mod tests {
                 "defaultFlow"
             ]
         );
+    }
+
+    #[test]
+    fn dmn_elements_match_spec_file() {
+        check_family("elements/dmn.json", &DMN_ELEMENTS);
+        assert!(DMN_ELEMENTS.has_trait("decision", DmnTrait::DrgElement));
+        assert!(DMN_ELEMENTS.has_trait("association", DmnTrait::Artifact));
+        assert!(!DMN_ELEMENTS.has_trait("decisionTable", DmnTrait::DrgElement));
+        assert_eq!(
+            dmn_attribute_values("decisionTable", "aggregation"),
+            ["SUM", "MIN", "MAX", "COUNT"]
+        );
+        assert!(dmn_attribute_values("decision", "nope").is_empty());
     }
 
     #[test]

@@ -179,3 +179,22 @@ fn warnings_from_nested_scopes_are_collected() {
         vec!["[INVALID_TYPE] Can't divide '10' by '0'".to_string()]
     );
 }
+
+#[test]
+fn partial_parse_keeps_the_recovered_tree() {
+    let p = bpmnkit_feel::parse_partial("x +", &ParseOptions::default());
+    assert!(!p.errors.is_empty());
+    let mut ctx = Context::new();
+    ctx.insert("x", Value::from(3));
+    assert_eq!(p.parsed.unwrap().evaluate(&ctx), Value::from(3));
+    let ok = bpmnkit_feel::parse_unary_tests_partial("< 5", &ParseOptions::default());
+    assert!(ok.errors.is_empty() && ok.parsed.is_some());
+}
+
+#[test]
+fn unary_test_diagnostics() {
+    let t = bpmnkit_feel::parse_unary_tests("< 5", &ParseOptions::default()).unwrap();
+    let (ok, warnings) = t.test_with_diagnostics(&Value::String("a".into()), &Context::new());
+    assert!(!ok);
+    assert_eq!(warnings[0].kind, bpmnkit_feel::WarningKind::NotComparable);
+}

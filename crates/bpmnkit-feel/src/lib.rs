@@ -132,6 +132,36 @@ pub fn parse_unary_tests(source: &str, options: &ParseOptions) -> Result<UnaryTe
     finish(parser::parse_unary_tests(source, options)).map(|ast| UnaryTests { ast })
 }
 
+/// What a lenient parse produced: the tree the parser recovered, if any, and every
+/// problem it found. `@bpmnkit/engine`'s DMN evaluator runs a recovered tree even when
+/// there were errors; [`parse`] refuses it.
+#[derive(Debug, Clone)]
+pub struct Partial<T> {
+    pub parsed: Option<T>,
+    pub errors: Vec<ParseError>,
+}
+
+fn partial<T>(result: parser::ParseResult, wrap: impl FnOnce(Arc<ast::Node>) -> T) -> Partial<T> {
+    Partial {
+        parsed: result.ast.map(|a| wrap(Arc::new(a))),
+        errors: result.errors,
+    }
+}
+
+/// Parses an expression, keeping the recovered tree when there are errors.
+pub fn parse_partial(source: &str, options: &ParseOptions) -> Partial<Expression> {
+    partial(parser::parse_expression(source, options), |ast| {
+        Expression { ast }
+    })
+}
+
+/// Parses unary tests, keeping the recovered tree when there are errors.
+pub fn parse_unary_tests_partial(source: &str, options: &ParseOptions) -> Partial<UnaryTests> {
+    partial(parser::parse_unary_tests(source, options), |ast| {
+        UnaryTests { ast }
+    })
+}
+
 impl Expression {
     pub fn evaluate(&self, context: &Context) -> Value {
         evaluator::evaluate_root(&self.ast, context, None, None)
@@ -151,7 +181,14 @@ impl Expression {
 impl UnaryTests {
     /// Whether `input` satisfies the tests.
     pub fn test(&self, input: &Value, context: &Context) -> bool {
-        evaluator::test_unary(&self.ast, input, context)
+        evaluator::test_unary(&self.ast, input, context, None)
+    }
+
+    /// Like [`UnaryTests::test`], also reporting the failures suppressed while testing.
+    pub fn test_with_diagnostics(&self, input: &Value, context: &Context) -> (bool, Vec<Warning>) {
+        let warnings = RefCell::new(Vec::new());
+        let ok = evaluator::test_unary(&self.ast, input, context, Some(&warnings));
+        (ok, warnings.into_inner())
     }
 }
 

@@ -12,6 +12,7 @@ pub mod templates;
 mod generated {
     pub mod bpmn_elements;
     pub mod compat_rules;
+    pub mod dmn_elements;
     pub mod form_elements;
     pub mod feel_builtins;
     pub mod lint_rules;

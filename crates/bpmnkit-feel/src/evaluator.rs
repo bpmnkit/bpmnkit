@@ -136,12 +136,17 @@ fn warn_failed_call(scope: &Scope<'_>, name: &str, args: &[Value], result: &Valu
 }
 
 /// `evaluateUnaryTests`.
-pub fn test_unary(node: &Node, input: &Value, vars: &Context) -> bool {
+pub fn test_unary(
+    node: &Node,
+    input: &Value,
+    vars: &Context,
+    warnings: Option<&RefCell<Vec<Warning>>>,
+) -> bool {
     let scope = Scope {
         frame: Frame::Ctx(vars),
         parent: None,
         input: Some(input),
-        warnings: None,
+        warnings,
     };
     unary_test_value(node, input, &scope) == Some(true)
 }

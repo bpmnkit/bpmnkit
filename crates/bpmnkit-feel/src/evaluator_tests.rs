@@ -22,7 +22,7 @@ fn ev(src: &str) -> Value {
 fn ut(src: &str, input: Value) -> bool {
     let parsed = parse_unary_tests(src, &ParseOptions::default());
     let ast = parsed.ast.expect("unary tests parse");
-    test_unary(&ast, &input, &Context::new())
+    test_unary(&ast, &input, &Context::new(), None)
 }
 
 /// Each source must evaluate to what the (literal) expectation evaluates to.
