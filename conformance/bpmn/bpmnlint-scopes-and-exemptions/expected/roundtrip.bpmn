@@ -8,9 +8,9 @@
     <bpmn:laneSet id="lanes">
       <bpmn:lane id="lane_unnamed"/>
       <bpmn:lane id="lane_named" name="Clerks">
-        <bpmn:laneSet id="child_lanes">
+        <bpmn:childLaneSet id="child_lanes">
           <bpmn:lane id="lane_child"/>
-        </bpmn:laneSet>
+        </bpmn:childLaneSet>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="start" name="Start">

@@ -7,85 +7,14 @@
 
 use crate::model::*;
 use crate::number::{js_number, js_trim};
+use bpmnkit_spec::elements::{bpmn_element, BpmnTrait};
 use bpmnkit_xml::{local_name, scan_xml, Attrs, Visit, XmlElement, XmlSink};
 use std::fmt;
 
-// ---------------------------------------------------------------------------
-// Element-type sets (to be generated from spec/elements/bpmn.json)
-// ---------------------------------------------------------------------------
-
-const FLOW_ELEMENT_TYPES: &[&str] = &[
-    "startEvent",
-    "endEvent",
-    "intermediateCatchEvent",
-    "intermediateThrowEvent",
-    "boundaryEvent",
-    "task",
-    "serviceTask",
-    "scriptTask",
-    "userTask",
-    "sendTask",
-    "receiveTask",
-    "businessRuleTask",
-    "manualTask",
-    "callActivity",
-    "subProcess",
-    "adHocSubProcess",
-    "eventSubProcess",
-    "transaction",
-    "exclusiveGateway",
-    "parallelGateway",
-    "inclusiveGateway",
-    "eventBasedGateway",
-    "complexGateway",
-    "dataObject",
-    "dataObjectReference",
-    "dataStoreReference",
-];
-
-const EVENT_TYPES: &[&str] = &[
-    "startEvent",
-    "endEvent",
-    "intermediateCatchEvent",
-    "intermediateThrowEvent",
-    "boundaryEvent",
-];
-
-/// Types whose `<multiInstanceLoopCharacteristics>` child is read.
-const LOOP_TYPES: &[&str] = &[
-    "task",
-    "serviceTask",
-    "scriptTask",
-    "userTask",
-    "businessRuleTask",
-    "manualTask",
-    "callActivity",
-    "sendTask",
-    "receiveTask",
-    "adHocSubProcess",
-    "subProcess",
-    "transaction",
-];
-
-const CONTAINER_TYPES: &[&str] = &[
-    "adHocSubProcess",
-    "subProcess",
-    "eventSubProcess",
-    "transaction",
-];
-
-const EVENT_DEFINITION_TYPES: &[&str] = &[
-    "timerEventDefinition",
-    "errorEventDefinition",
-    "escalationEventDefinition",
-    "messageEventDefinition",
-    "signalEventDefinition",
-    "conditionalEventDefinition",
-    "linkEventDefinition",
-    "cancelEventDefinition",
-    "terminateEventDefinition",
-    "compensateEventDefinition",
-];
+// Element kinds come from spec/elements/bpmn.json, the same data TS's parser reads.
+fn has_trait(local: &str, t: BpmnTrait) -> bool {
+    bpmn_element(local).is_some_and(|e| e.traits.contains(&t))
+}
 
 /// The attributes `BpmnDefinitions` models. Checked against its own list rather than
 /// `KNOWN_ATTRS`, which names flow-node attributes: a `name` on `<definitions>` is not
@@ -123,19 +52,21 @@ const KNOWN_ATTRS: &[&str] = &[
 ];
 
 fn is_event_type(t: &str) -> bool {
-    EVENT_TYPES.contains(&t)
+    has_trait(t, BpmnTrait::Event)
 }
 fn is_loop_type(t: &str) -> bool {
-    LOOP_TYPES.contains(&t)
+    has_trait(t, BpmnTrait::Loop)
 }
 fn is_container_type(t: &str) -> bool {
-    CONTAINER_TYPES.contains(&t)
+    has_trait(t, BpmnTrait::Container)
 }
 fn is_event_definition(local: &str) -> bool {
-    EVENT_DEFINITION_TYPES.contains(&local)
+    has_trait(local, BpmnTrait::EventDefinition)
 }
 fn flow_element_type(local: &str) -> Option<&'static str> {
-    FLOW_ELEMENT_TYPES.iter().copied().find(|t| *t == local)
+    bpmn_element(local)
+        .filter(|e| e.traits.contains(&BpmnTrait::FlowElement))
+        .map(|e| e.name)
 }
 
 // ---------------------------------------------------------------------------

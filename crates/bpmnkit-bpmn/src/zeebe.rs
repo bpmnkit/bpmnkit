@@ -730,8 +730,47 @@ pub fn read_zeebe_task_headers(ext: &[XmlElement]) -> Option<ZeebeTaskHeaders> {
     Some(ZeebeTaskHeaders { headers })
 }
 
+/// Whether the Zeebe schema lets `extension` (`zeebe:name`) sit on `owner` (`bpmn:serviceTask`,
+/// or `zeebe:…` for nested extensions). An extension the schema says nothing about is allowed.
+pub fn is_zeebe_placement_allowed(owner: &str, extension: &str) -> bool {
+    let owners = bpmnkit_spec::elements::zeebe_allowed_in(extension);
+    owners.is_empty() || owners.contains(&owner)
+}
+
+/// TS's `assertZeebePlacement`: the error message is `ZeebePlacementError`'s.
+pub fn assert_zeebe_placement(owner: &str, extension: &str) -> Result<(), String> {
+    if is_zeebe_placement_allowed(owner, extension) {
+        return Ok(());
+    }
+    Err(format!(
+        "<{extension}> is not allowed on <{owner}>. The Zeebe schema allows it on: {}.",
+        bpmnkit_spec::elements::zeebe_allowed_in(extension).join(", ")
+    ))
+}
+
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn placement_follows_the_spec() {
+        use super::{assert_zeebe_placement, is_zeebe_placement_allowed};
+        assert!(is_zeebe_placement_allowed(
+            "bpmn:serviceTask",
+            "zeebe:taskDefinition"
+        ));
+        assert!(!is_zeebe_placement_allowed(
+            "bpmn:serviceTask",
+            "zeebe:calledDecision"
+        ));
+        assert!(is_zeebe_placement_allowed(
+            "bpmn:task",
+            "zeebe:somethingNew"
+        ));
+        assert_eq!(
+            assert_zeebe_placement("bpmn:serviceTask", "zeebe:calledDecision").unwrap_err(),
+            "<zeebe:calledDecision> is not allowed on <bpmn:serviceTask>. The Zeebe schema allows it on: bpmn:businessRuleTask."
+        );
+    }
+
     use super::*;
     use bpmnkit_xml::parse_xml;
     use serde_json::json;

@@ -541,17 +541,18 @@ fn lane(l: &BpmnLane, bp: &str) -> XmlElement {
     );
     children.extend(flow_refs(&l.flow_node_refs, "flowNodeRef", bp));
     if let Some(ls) = &l.child_lane_set {
-        children.push(lane_set(ls, bp));
+        children.push(lane_set(ls, bp, "childLaneSet"));
     }
     el(format!("{bp}lane"), attrs, children, None)
 }
 
-fn lane_set(ls: &BpmnLaneSet, bp: &str) -> XmlElement {
+/// `tag` is `childLaneSet` inside a lane: BPMN names the nested set differently.
+fn lane_set(ls: &BpmnLaneSet, bp: &str, tag: &str) -> XmlElement {
     let mut attrs = ls.unknown_attributes.clone().unwrap_or_default();
     set_truthy(&mut attrs, "id", &ls.id);
     set(&mut attrs, "name", &ls.name);
     let children = ls.lanes.iter().map(|l| lane(l, bp)).collect();
-    el(format!("{bp}laneSet"), attrs, children, None)
+    el(format!("{bp}{tag}"), attrs, children, None)
 }
 
 fn process(pr: &BpmnProcess, p: &Prefixes) -> XmlElement {
@@ -568,7 +569,7 @@ fn process(pr: &BpmnProcess, p: &Prefixes) -> XmlElement {
         bp,
     );
     if let Some(ls) = &pr.lane_set {
-        children.push(lane_set(ls, bp));
+        children.push(lane_set(ls, bp, "laneSet"));
     }
     children.extend(process_contents(&pr.contents, p));
     children.extend(pr.unknown_children.iter().cloned());
