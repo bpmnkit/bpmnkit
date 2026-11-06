@@ -21,3 +21,7 @@ serde_json = { workspace = true }
 
 [dev-dependencies]
 serde_json = { workspace = true, features = ["float_roundtrip"] }
+
+[[bench]]
+name = "lint"
+harness = false

@@ -1,5 +1,9 @@
 # Features
 
+## `bpmnkit-lint` and `bpmnkit-compat`: lint, Camunda compatibility and C7 migration in Rust (2026-11-06)
+
+Rust lint (`lint_diagram`, `optimize` with its automatic fixes, `.bpmnlintrc` support with the native bpmnlint rules, DMN and Form lint), the Camunda 8 version compatibility check, and Camunda 7 to 8 migration with JUEL to FEEL (plus C8 to C7 export). Same findings, messages, order and fixed XML as `@bpmnkit/core` on 1717 recorded runs. Rule and compatibility data come from `spec/`, shared with TS. About 2× faster than TS.
+
 ## `bpmnkit-dmn` and `bpmnkit-form`: DMN and forms in Rust (2026-11-06)
 
 Rust parsers and serializers for DMN 1.3 and Camunda forms, with the same model JSON, round-trip output and error messages as `@bpmnkit/core` on all 93 DMN and form conformance cases. `bpmnkit_dmn::evaluate_decision_graph` evaluates decision tables (every hit policy and aggregation), literal expressions and required decisions, with the same results as `@bpmnkit/engine`'s new `evaluateDecisionGraph` on 191 recorded evaluations, and reports syntax errors and FEEL warnings. DMN element data comes from `spec/elements/dmn.json`, shared with TS. Reebe evaluates decisions with it.

@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-11-06 — Rust twin phase 6: lint, optimize, camunda-compat, C7 migration
+
+- New crates `bpmnkit-compat` (shared `Finding` type; `analyze_camunda_compat` and friends from `camunda-compat.ts`; `camunda7/` migrate, JUEL to FEEL and C8 to C7 export) and `bpmnkit-lint` (`optimize` with every pass and `applyFix`, `lint_diagram`, `.bpmnlintrc` parse/resolve/apply with the 28 native bpmnlint rules, camunda-compat config split/apply, DMN and Form lint). Rule metadata and compat tables come from `spec/` through `bpmnkit-spec`. `bpmnkit_bpmn::ids` gives TS's `generateId` / `resetIdCounter` ids. `bpmnkit-feel` exposes its AST (`Expression::ast()`).
+- Conformance: new `lint/` (631 runs), `optimize/` (138, every fix's XML and generated definitions byte for byte), `compat/` (547), `migrate/` (163, both directions) and `migrate/juel.jsonl` (238), recorded by `packages/core/tests/conformance-tooling.test.ts`; format in `conformance/README.md`. Rust passes all 2267 cases; `pending.json` still holds only the FEEL NaN entry.
+- TS bugs fixed in TS and Rust, each with a regression test on both sides: C8 to C7 export threw on a multi-instance loop with an `id`; the compat check read a timer date's month in local time; the reusable-group fix produced a process id with colons; JUEL variables and task-listener events named like `Object.prototype` members matched as known; DMN lint printed `Output "undefined"`. Changeset `tooling-parity-fixes`.
+- Bench: `cargo bench -p bpmnkit-lint` and `scripts/bench-lint.mjs` over the 51 BPMN conformance inputs: Rust is about 2× faster (lint 7.8 vs 16.3 ms, optimize 6.9 vs 12.7 ms, compat 2.7 vs 5.9 ms per pass).
+- Reebe had no copy of this code, so no adapter. CI's `conformance-rs` job covers the new crates (whole workspace).
+
 ## 2026-11-06 — Rust twin: TS bugs from phases 4–5 fixed in TS and Rust
 
 - DMN (`@bpmnkit/core`, `bpmnkit-dmn`): export is idempotent (whitespace-only text in kept content is dropped; an empty `<extensionElements/>` counts as absent); a requirement with nothing to reference is written without the reference child instead of `href="#undefined"`; `<literalExpression>` is modelled as `DmnDecision.literalExpression` (id, typeRef, expressionLanguage, text) and no longer lost next to the decision's own `<extensionElements>`; `DmnOutput.outputValues` is modelled. Other `<literalExpression>` children (e.g. `importedValues`) are not kept.
