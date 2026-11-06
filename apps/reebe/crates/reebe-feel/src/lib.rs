@@ -10,6 +10,16 @@ pub use context::FeelContext;
 pub use from_ai::from_ai_parameters;
 pub use types::{FeelError, FeelValue};
 
+/// The shared FEEL context for `context` (for crates that call `bpmnkit-*` directly).
+pub fn to_shared_context(context: &FeelContext) -> bpmnkit_feel::Context {
+    convert::to_feel_context(context)
+}
+
+/// Reebe's value for a shared FEEL value.
+pub fn from_shared_value(value: bpmnkit_feel::Value) -> FeelValue {
+    convert::from_value(value)
+}
+
 /// Check whether an expression string is a FEEL expression.
 /// FEEL expressions are prefixed with `=`.
 pub fn is_feel_expression(expression: &str) -> bool {
@@ -20,10 +30,7 @@ pub fn is_feel_expression(expression: &str) -> bool {
 ///
 /// If the expression starts with `=`, it is treated as a FEEL expression and
 /// evaluated. Otherwise, it is returned as a string literal.
-pub fn parse_and_evaluate(
-    expression: &str,
-    context: &FeelContext,
-) -> Result<FeelValue, FeelError> {
+pub fn parse_and_evaluate(expression: &str, context: &FeelContext) -> Result<FeelValue, FeelError> {
     if let Some(feel_expr) = expression.strip_prefix('=') {
         evaluate(feel_expr.trim(), context)
     } else {
@@ -46,16 +53,23 @@ impl Evaluated {
         if self.warnings.is_empty() {
             String::new()
         } else {
-            format!(" The evaluation reported the following warnings:\n{}", self.warnings.join("\n"))
+            format!(
+                " The evaluation reported the following warnings:\n{}",
+                self.warnings.join("\n")
+            )
         }
     }
 }
 
 /// [`evaluate`], also reporting the suppressed failures. Zeebe raises no incident for
 /// them on their own: only where the null is not an accepted result.
-pub fn evaluate_with_warnings(expression: &str, context: &FeelContext) -> Result<Evaluated, FeelError> {
-    let ev = bpmnkit_feel::evaluate_with_diagnostics(expression, &convert::to_feel_context(context))
-        .map_err(|e| FeelError::ParseError(e.to_string()))?;
+pub fn evaluate_with_warnings(
+    expression: &str,
+    context: &FeelContext,
+) -> Result<Evaluated, FeelError> {
+    let ev =
+        bpmnkit_feel::evaluate_with_diagnostics(expression, &convert::to_feel_context(context))
+            .map_err(|e| FeelError::ParseError(e.to_string()))?;
     Ok(Evaluated {
         value: convert::from_value(ev.value),
         warnings: ev.warnings.iter().map(ToString::to_string).collect(),
@@ -63,10 +77,16 @@ pub fn evaluate_with_warnings(expression: &str, context: &FeelContext) -> Result
 }
 
 /// [`parse_and_evaluate`], also reporting the suppressed failures.
-pub fn parse_and_evaluate_with_warnings(expression: &str, context: &FeelContext) -> Result<Evaluated, FeelError> {
+pub fn parse_and_evaluate_with_warnings(
+    expression: &str,
+    context: &FeelContext,
+) -> Result<Evaluated, FeelError> {
     match expression.strip_prefix('=') {
         Some(feel_expr) => evaluate_with_warnings(feel_expr.trim(), context),
-        None => Ok(Evaluated { value: FeelValue::String(expression.to_string()), warnings: Vec::new() }),
+        None => Ok(Evaluated {
+            value: FeelValue::String(expression.to_string()),
+            warnings: Vec::new(),
+        }),
     }
 }
 
