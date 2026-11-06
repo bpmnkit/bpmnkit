@@ -1,0 +1,38 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "tools"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"Tools\" needs Camunda 8.7 or newer; this model targets Camunda 8.6.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 1,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 0,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 1,
+      "info": 0,
+      "warning": 0
+    },
+    "total": 1
+  }
+}

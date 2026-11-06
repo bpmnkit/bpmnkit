@@ -10,7 +10,7 @@
   
   
   <bpmn:process id="proc" isExecutable="true">
-    <bpmn:startEvent id="start" name="S" /><bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="sub" /><bpmn:subProcess id="sub" name="Sub"><bpmn:startEvent id="ss" /><bpmn:task id="st" name="Inner" /><bpmn:sequenceFlow id="sf" sourceRef="ss" targetRef="st" /></bpmn:subProcess><bpmn:task id="orphan" name="Orphan" />
+    <bpmn:startEvent id="start" name="S" ><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent><bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="sub" /><bpmn:subProcess id="sub" name="Sub"><bpmn:incoming>f1</bpmn:incoming><bpmn:startEvent id="ss" ><bpmn:outgoing>sf</bpmn:outgoing></bpmn:startEvent><bpmn:task id="st" name="Inner" ><bpmn:incoming>sf</bpmn:incoming></bpmn:task><bpmn:sequenceFlow id="sf" sourceRef="ss" targetRef="st" /></bpmn:subProcess><bpmn:task id="orphan" name="Orphan" />
   </bpmn:process>
   
 </bpmn:definitions>

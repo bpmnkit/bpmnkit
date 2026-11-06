@@ -1,0 +1,183 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 17,
+      "manual": 0,
+      "unsupported": 0
+    },
+    "findings": [
+      {
+        "applied": true,
+        "construct": "camunda:versionTag",
+        "elementId": "invoice-approval",
+        "elementType": "process",
+        "message": "Version tag \"1.4\" moved to zeebe:versionTag.",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:versionTag"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:decisionRef",
+        "elementId": "Task_classify",
+        "elementType": "businessRuleTask",
+        "message": "Decision \"invoice-classification\" → zeebe:calledDecision, result in \"approverGroup\".",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:calledDecision"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:mapDecisionResult",
+        "elementId": "Task_classify",
+        "elementType": "businessRuleTask",
+        "message": "Result mapper \"singleEntry\" matches Camunda 8, which stores a single output value as-is.",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "Nothing to model."
+      },
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "Task_approve",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:assignee",
+        "elementId": "Task_approve",
+        "elementType": "userTask",
+        "message": "assignee became zeebe:assignmentDefinition assignee=\"accounting-lead\".",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:assignmentDefinition"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:candidateGroups",
+        "elementId": "Task_approve",
+        "elementType": "userTask",
+        "message": "candidateGroups became zeebe:assignmentDefinition candidateGroups=\"accounting\".",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:assignmentDefinition"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:formRef",
+        "elementId": "Task_approve",
+        "elementType": "userTask",
+        "message": "Camunda Form \"approve-invoice\" linked with zeebe:formDefinition formId.",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "Deploy the .form file with the process; Camunda 7 and 8 share the form-js schema."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:asyncBefore",
+        "elementId": "Task_archive",
+        "elementType": "serviceTask",
+        "message": "Dropped: Camunda 8 has no asynchronous continuations. The engine commits after every step and every job-based task is already a wait state, so there is no transaction boundary to place and no job executor job to prioritise.",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "Nothing to model. A failure no longer rolls back to the last async boundary: a job failure retries the job, and an expression failure raises an incident on the element."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:type=external",
+        "elementId": "Task_archive",
+        "elementType": "serviceTask",
+        "message": "External task topic \"archive-invoice\" became job type \"archive-invoice\".",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskDefinition type — point the external task worker at the Camunda 8 job API with the same type."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:inputOutput",
+        "elementId": "Task_archive",
+        "elementType": "serviceTask",
+        "message": "3 input/output parameters moved to zeebe:ioMapping, JUEL translated to FEEL.",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:ioMapping"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:failedJobRetryTimeCycle",
+        "elementId": "Task_archive",
+        "elementType": "serviceTask",
+        "message": "Retry count 3 moved to zeebe:taskDefinition retries.",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskDefinition retries"
+      },
+      {
+        "applied": true,
+        "construct": "calledElement",
+        "elementId": "Task_book",
+        "elementType": "callActivity",
+        "message": "Calls \"booking\" through zeebe:calledElement.",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:calledElement"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:in / camunda:out",
+        "elementId": "Task_book",
+        "elementType": "callActivity",
+        "message": "Variable passing kept as in Camunda 7: only mapped parent variables in, only mapped child variables out.",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:calledElement propagateAllParentVariables / propagateAllChildVariables and zeebe:ioMapping"
+      },
+      {
+        "applied": true,
+        "construct": "scriptFormat=\"feel\"",
+        "elementId": "Task_total",
+        "elementType": "scriptTask",
+        "message": "FEEL script became zeebe:script, result in \"total\".",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:script"
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_yes",
+        "elementType": "sequenceFlow",
+        "message": "Condition \"${approved == true}\" became \"=approved = true\".",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "FEEL condition"
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_no",
+        "elementType": "sequenceFlow",
+        "message": "Condition \"${approved == false}\" became \"=approved = false\".",
+        "processId": "invoice-approval",
+        "severity": "convertible",
+        "suggestion": "FEEL condition"
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_07hq2mb",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.8.0 (was Camunda Platform).",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      }
+    ],
+    "total": 17
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_07hq2mb\" targetNamespace=\"http://bpmn.io/schema/bpmn\" exporter=\"Camunda Modeler\" exporterVersion=\"5.28.0\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.8.0\">\n  <bpmn:message id=\"Message_InvoiceReceived\" name=\"InvoiceReceived\"/>\n  <bpmn:process id=\"invoice-approval\" name=\"Invoice approval\" isExecutable=\"true\">\n    <bpmn:extensionElements>\n      <zeebe:versionTag value=\"1.4\"/>\n    </bpmn:extensionElements>\n    <bpmn:startEvent id=\"StartEvent_invoice\" name=\"Invoice received\">\n      <bpmn:outgoing>Flow_toClassify</bpmn:outgoing>\n      <bpmn:messageEventDefinition id=\"MessageEventDefinition_invoice\" messageRef=\"Message_InvoiceReceived\"/>\n    </bpmn:startEvent>\n    <bpmn:businessRuleTask id=\"Task_classify\" name=\"Classify invoice\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"invoice-classification\" resultVariable=\"approverGroup\" bindingType=\"deployment\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toClassify</bpmn:incoming>\n      <bpmn:outgoing>Flow_toApprove</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:userTask id=\"Task_approve\" name=\"Approve invoice\">\n      <bpmn:extensionElements>\n        <zeebe:userTask/>\n        <zeebe:assignmentDefinition assignee=\"accounting-lead\" candidateGroups=\"accounting\"/>\n        <zeebe:formDefinition formId=\"approve-invoice\" bindingType=\"latest\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toApprove</bpmn:incoming>\n      <bpmn:outgoing>Flow_toDecision</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:exclusiveGateway id=\"Gateway_approved\" name=\"Approved?\">\n      <bpmn:incoming>Flow_toDecision</bpmn:incoming>\n      <bpmn:outgoing>Flow_yes</bpmn:outgoing>\n      <bpmn:outgoing>Flow_no</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:intermediateCatchEvent id=\"Timer_clarify\" name=\"Wait one day\">\n      <bpmn:incoming>Flow_no</bpmn:incoming>\n      <bpmn:outgoing>Flow_toRejected</bpmn:outgoing>\n      <bpmn:timerEventDefinition id=\"TimerEventDefinition_clarify\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P1D</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:endEvent id=\"EndEvent_rejected\" name=\"Invoice rejected\">\n      <bpmn:incoming>Flow_toRejected</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"Task_archive\" name=\"Archive invoice\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"archive-invoice\" retries=\"3\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"=invoice.documentId\" target=\"documentId\"/>\n          <zeebe:input source=\"=&quot;P10Y&quot;\" target=\"retention\"/>\n          <zeebe:output source=\"=archiveId\" target=\"archiveId\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_yes</bpmn:incoming>\n      <bpmn:outgoing>Flow_toBook</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:callActivity id=\"Task_book\" calledElement=\"booking\" name=\"Book invoice\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"booking\" bindingType=\"latest\" propagateAllParentVariables=\"false\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"=invoice\" target=\"invoice\"/>\n          <zeebe:input source=\"=archiveId\" target=\"archiveId\"/>\n          <zeebe:output source=\"=bookingId\" target=\"bookingId\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toBook</bpmn:incoming>\n      <bpmn:outgoing>Flow_toTotal</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:scriptTask id=\"Task_total\" name=\"Compute total\">\n      <bpmn:extensionElements>\n        <zeebe:script expression=\"=invoice.net + invoice.tax\" resultVariable=\"total\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toTotal</bpmn:incoming>\n      <bpmn:outgoing>Flow_toDone</bpmn:outgoing>\n    </bpmn:scriptTask>\n    <bpmn:endEvent id=\"EndEvent_done\" name=\"Invoice booked\">\n      <bpmn:incoming>Flow_toDone</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_toClassify\" sourceRef=\"StartEvent_invoice\" targetRef=\"Task_classify\"/>\n    <bpmn:sequenceFlow id=\"Flow_toApprove\" sourceRef=\"Task_classify\" targetRef=\"Task_approve\"/>\n    <bpmn:sequenceFlow id=\"Flow_toDecision\" sourceRef=\"Task_approve\" targetRef=\"Gateway_approved\"/>\n    <bpmn:sequenceFlow id=\"Flow_yes\" sourceRef=\"Gateway_approved\" targetRef=\"Task_archive\" name=\"yes\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=approved = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_no\" sourceRef=\"Gateway_approved\" targetRef=\"Timer_clarify\" name=\"no\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=approved = false</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_toRejected\" sourceRef=\"Timer_clarify\" targetRef=\"EndEvent_rejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_toBook\" sourceRef=\"Task_archive\" targetRef=\"Task_book\"/>\n    <bpmn:sequenceFlow id=\"Flow_toTotal\" sourceRef=\"Task_book\" targetRef=\"Task_total\"/>\n    <bpmn:sequenceFlow id=\"Flow_toDone\" sourceRef=\"Task_total\" targetRef=\"EndEvent_done\"/>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"invoice-approval\">\n      <bpmndi:BPMNShape id=\"StartEvent_invoice_di\" bpmnElement=\"StartEvent_invoice\">\n        <dc:Bounds x=\"152\" y=\"182\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_classify_di\" bpmnElement=\"Task_classify\">\n        <dc:Bounds x=\"240\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_approve_di\" bpmnElement=\"Task_approve\">\n        <dc:Bounds x=\"390\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Gateway_approved_di\" bpmnElement=\"Gateway_approved\" isMarkerVisible=\"true\">\n        <dc:Bounds x=\"545\" y=\"175\" width=\"50\" height=\"50\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Timer_clarify_di\" bpmnElement=\"Timer_clarify\">\n        <dc:Bounds x=\"652\" y=\"292\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_rejected_di\" bpmnElement=\"EndEvent_rejected\">\n        <dc:Bounds x=\"742\" y=\"292\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_archive_di\" bpmnElement=\"Task_archive\">\n        <dc:Bounds x=\"650\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_book_di\" bpmnElement=\"Task_book\">\n        <dc:Bounds x=\"800\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_total_di\" bpmnElement=\"Task_total\">\n        <dc:Bounds x=\"950\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_done_di\" bpmnElement=\"EndEvent_done\">\n        <dc:Bounds x=\"1102\" y=\"182\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"Flow_toClassify_di\" bpmnElement=\"Flow_toClassify\">\n        <di:waypoint x=\"188\" y=\"200\"/>\n        <di:waypoint x=\"240\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toApprove_di\" bpmnElement=\"Flow_toApprove\">\n        <di:waypoint x=\"340\" y=\"200\"/>\n        <di:waypoint x=\"390\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toDecision_di\" bpmnElement=\"Flow_toDecision\">\n        <di:waypoint x=\"490\" y=\"200\"/>\n        <di:waypoint x=\"545\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_yes_di\" bpmnElement=\"Flow_yes\">\n        <di:waypoint x=\"595\" y=\"200\"/>\n        <di:waypoint x=\"650\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_no_di\" bpmnElement=\"Flow_no\">\n        <di:waypoint x=\"570\" y=\"225\"/>\n        <di:waypoint x=\"570\" y=\"310\"/>\n        <di:waypoint x=\"652\" y=\"310\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toRejected_di\" bpmnElement=\"Flow_toRejected\">\n        <di:waypoint x=\"688\" y=\"310\"/>\n        <di:waypoint x=\"742\" y=\"310\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toBook_di\" bpmnElement=\"Flow_toBook\">\n        <di:waypoint x=\"750\" y=\"200\"/>\n        <di:waypoint x=\"800\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toTotal_di\" bpmnElement=\"Flow_toTotal\">\n        <di:waypoint x=\"900\" y=\"200\"/>\n        <di:waypoint x=\"950\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toDone_di\" bpmnElement=\"Flow_toDone\">\n        <di:waypoint x=\"1050\" y=\"200\"/>\n        <di:waypoint x=\"1102\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n\n"
+}

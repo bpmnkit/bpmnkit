@@ -10,7 +10,7 @@
   
   
   <bpmn:process id="proc" isExecutable="true">
-    <bpmn:startEvent id="start" name="S" /><bpmn:exclusiveGateway id="x" /><bpmn:task id="a" name="A" /><bpmn:task id="b" name="B" /><bpmn:inclusiveGateway id="inc" name="Inc?" /><bpmn:complexGateway id="cx" name="Cx" /><bpmn:endEvent id="end" name="E" />
+    <bpmn:startEvent id="start" name="S" ><bpmn:outgoing>g1</bpmn:outgoing></bpmn:startEvent><bpmn:exclusiveGateway id="x" ><bpmn:incoming>g1</bpmn:incoming><bpmn:outgoing>g2</bpmn:outgoing><bpmn:outgoing>g3</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:task id="a" name="A" ><bpmn:incoming>g2</bpmn:incoming><bpmn:outgoing>g4</bpmn:outgoing></bpmn:task><bpmn:task id="b" name="B" ><bpmn:incoming>g3</bpmn:incoming><bpmn:outgoing>g5</bpmn:outgoing></bpmn:task><bpmn:inclusiveGateway id="inc" name="Inc?" ><bpmn:incoming>g4</bpmn:incoming><bpmn:incoming>g5</bpmn:incoming><bpmn:outgoing>g6</bpmn:outgoing></bpmn:inclusiveGateway><bpmn:complexGateway id="cx" name="Cx" ><bpmn:incoming>g6</bpmn:incoming><bpmn:outgoing>g7</bpmn:outgoing></bpmn:complexGateway><bpmn:endEvent id="end" name="E" ><bpmn:incoming>g7</bpmn:incoming></bpmn:endEvent>
 	  <bpmn:sequenceFlow id="g1" sourceRef="start" targetRef="x" /><bpmn:sequenceFlow id="g2" sourceRef="x" targetRef="a" /><bpmn:sequenceFlow id="g3" sourceRef="x" targetRef="b" /><bpmn:sequenceFlow id="g4" sourceRef="a" targetRef="inc" /><bpmn:sequenceFlow id="g5" sourceRef="b" targetRef="inc" /><bpmn:sequenceFlow id="g6" sourceRef="inc" targetRef="cx" /><bpmn:sequenceFlow id="g7" sourceRef="cx" targetRef="end" />
   </bpmn:process>
   

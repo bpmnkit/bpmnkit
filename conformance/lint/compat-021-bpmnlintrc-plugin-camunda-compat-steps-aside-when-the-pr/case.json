@@ -1,0 +1,13 @@
+{
+  "runs": {
+    "opts-1": {
+      "bpmnlintDelegated": true,
+      "bpmnlintrc": {
+        "extends": [
+          "plugin:camunda-compat/camunda-cloud-8-6"
+        ],
+        "rules": {}
+      }
+    }
+  }
+}

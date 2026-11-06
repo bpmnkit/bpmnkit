@@ -1,0 +1,43 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 1,
+      "manual": 2,
+      "unsupported": 0
+    },
+    "findings": [
+      {
+        "applied": true,
+        "construct": "camunda:decisionRef",
+        "elementId": "b",
+        "elementType": "businessRuleTask",
+        "message": "Decision \"risk\" → zeebe:calledDecision. Camunda 7 had no result variable; Camunda 8 requires one, so \"decisionResult\" was set.",
+        "processId": "p",
+        "severity": "manual",
+        "suggestion": "Rename resultVariable to what downstream elements expect."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:mapDecisionResult",
+        "elementId": "b",
+        "elementType": "businessRuleTask",
+        "message": "Camunda 7 result mapper \"resultList\" (the default) shapes the result differently from Camunda 8, which stores the decision's own result: a value for one output, a context for several, a list for collect hit policies.",
+        "processId": "p",
+        "severity": "manual",
+        "suggestion": "Check what downstream elements read, and add an output mapping if they expect the Camunda 7 shape."
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_test",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.8.0 (was Camunda Platform).",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      }
+    ],
+    "total": 3
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_test\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.8.0\">\n  <bpmn:process id=\"p\" isExecutable=\"true\">\n    <bpmn:businessRuleTask id=\"b\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"risk\" resultVariable=\"decisionResult\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

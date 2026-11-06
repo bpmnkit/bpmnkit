@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <uuid> requires Camunda >=8.6",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or do without uuid()."
+    }
+  ]
+}

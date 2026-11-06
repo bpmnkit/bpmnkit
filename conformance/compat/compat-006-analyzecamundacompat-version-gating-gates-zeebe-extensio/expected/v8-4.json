@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "u"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-user-task",
+      "message": "User task \"u\" has a zeebe:userTask, which needs Camunda 8.5 or newer; this model targets Camunda 8.4.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "u"
+      ],
+      "fixable": false,
+      "id": "compat/no-priority-definition",
+      "message": "User task \"u\" has a zeebe:priorityDefinition, which needs Camunda 8.6 or newer; this model targets Camunda 8.4.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

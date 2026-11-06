@@ -10,7 +10,7 @@
   
   
   <bpmn:process id="proc" isExecutable="true">
-    <bpmn:startEvent id="start" /><bpmn:exclusiveGateway id="gw" default="no" /><bpmn:endEvent id="e1" /><bpmn:endEvent id="e2" />
+    <bpmn:startEvent id="start" ><bpmn:outgoing>in</bpmn:outgoing></bpmn:startEvent><bpmn:exclusiveGateway id="gw" default="no" ><bpmn:incoming>in</bpmn:incoming><bpmn:outgoing>no</bpmn:outgoing><bpmn:outgoing>yes</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:endEvent id="e1" ><bpmn:incoming>no</bpmn:incoming></bpmn:endEvent><bpmn:endEvent id="e2" ><bpmn:incoming>yes</bpmn:incoming></bpmn:endEvent>
 	  <bpmn:sequenceFlow id="in" sourceRef="start" targetRef="gw" name="go" /><bpmn:sequenceFlow id="no" sourceRef="gw" targetRef="e1" name="No" /><bpmn:sequenceFlow id="yes" sourceRef="gw" targetRef="e2" name="Yes" />
   </bpmn:process>
   

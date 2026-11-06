@@ -10,7 +10,7 @@
   
   
   <bpmn:process id="proc" isExecutable="true">
-    <bpmn:startEvent id="start" name="S" /><bpmn:parallelGateway id="fork" name="Fork" /><bpmn:task id="a" name="A" /><bpmn:task id="b" name="B" /><bpmn:task id="join" name="Join" /><bpmn:endEvent id="end" name="E" /><bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="fork" /><bpmn:sequenceFlow id="f2" sourceRef="fork" targetRef="a" /><bpmn:sequenceFlow id="f3" sourceRef="fork" targetRef="b" /><bpmn:sequenceFlow id="f4" sourceRef="a" targetRef="join" /><bpmn:sequenceFlow id="f5" sourceRef="b" targetRef="join" /><bpmn:sequenceFlow id="f6" sourceRef="join" targetRef="end" />
+    <bpmn:startEvent id="start" name="S" ><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent><bpmn:parallelGateway id="fork" name="Fork" ><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing><bpmn:outgoing>f3</bpmn:outgoing></bpmn:parallelGateway><bpmn:task id="a" name="A" ><bpmn:incoming>f2</bpmn:incoming><bpmn:outgoing>f4</bpmn:outgoing></bpmn:task><bpmn:task id="b" name="B" ><bpmn:incoming>f3</bpmn:incoming><bpmn:outgoing>f5</bpmn:outgoing></bpmn:task><bpmn:task id="join" name="Join" ><bpmn:incoming>f4</bpmn:incoming><bpmn:incoming>f5</bpmn:incoming><bpmn:outgoing>f6</bpmn:outgoing></bpmn:task><bpmn:endEvent id="end" name="E" ><bpmn:incoming>f6</bpmn:incoming></bpmn:endEvent><bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="fork" /><bpmn:sequenceFlow id="f2" sourceRef="fork" targetRef="a" /><bpmn:sequenceFlow id="f3" sourceRef="fork" targetRef="b" /><bpmn:sequenceFlow id="f4" sourceRef="a" targetRef="join" /><bpmn:sequenceFlow id="f5" sourceRef="b" targetRef="join" /><bpmn:sequenceFlow id="f6" sourceRef="join" targetRef="end" />
   </bpmn:process>
   
 </bpmn:definitions>

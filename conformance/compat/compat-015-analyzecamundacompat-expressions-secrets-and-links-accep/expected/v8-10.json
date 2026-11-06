@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses legacy secret expression format",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Reference the secret as =camunda.secrets.NAME."
+    }
+  ]
+}

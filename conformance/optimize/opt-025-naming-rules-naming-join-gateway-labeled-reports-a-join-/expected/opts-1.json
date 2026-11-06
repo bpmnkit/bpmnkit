@@ -1,0 +1,62 @@
+{
+  "findings": [
+    {
+      "category": "naming",
+      "elementIds": [
+        "s"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"s\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "gw"
+      ],
+      "fixable": false,
+      "id": "naming/join-gateway-labeled",
+      "message": "Gateway \"gw\" (join) is named \"Join here\" — join gateways should not have labels.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Remove the label from join-only gateways; their semantics are implicit."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "e"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"e\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 3,
+      "pattern": 0,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 0,
+      "info": 3,
+      "warning": 0
+    },
+    "total": 3
+  }
+}

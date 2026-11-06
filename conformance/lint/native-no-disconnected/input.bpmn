@@ -11,9 +11,9 @@
   
   <bpmn:process id="proc" isExecutable="true">
     
-  <bpmn:startEvent id="start" name="Started" />
-  <bpmn:task id="a" name="Do A" />
-  <bpmn:endEvent id="end" name="Done" />
+  <bpmn:startEvent id="start" name="Started" ><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+  <bpmn:task id="a" name="Do A" ><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing></bpmn:task>
+  <bpmn:endEvent id="end" name="Done" ><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
   <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="a" />
   <bpmn:sequenceFlow id="f2" sourceRef="a" targetRef="end" />
 	  <bpmn:task id="lonely" /><bpmn:task id="handler" isForCompensation="true" /><bpmn:subProcess id="evt" triggeredByEvent="true" />

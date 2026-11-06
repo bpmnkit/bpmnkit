@@ -1,0 +1,64 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "compat/cancel-execution-listener",
+      "message": "Service task \"T\" has a \"cancel\" execution listener; Camunda only allows those on a process.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Move the listener to the process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "compat/duplicate-execution-listeners",
+      "message": "Service task \"T\" has two \"cancel\" execution listeners of type \"l\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove the duplicate listener."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "compat/cancel-execution-listener",
+      "message": "Service task \"T\" has a \"cancel\" execution listener; Camunda only allows those on a process.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Move the listener to the process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "compat/execution-listener",
+      "message": "Service task \"T\" has an execution listener with no job type.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set the listener's type."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "compat/duplicate-execution-listener-headers",
+      "message": "Properties of type <zeebe:Header> have property <key> with duplicate value of <a>",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove the duplicate header from the execution listener."
+    }
+  ]
+}

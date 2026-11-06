@@ -1,0 +1,33 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 2,
+      "manual": 0,
+      "unsupported": 0
+    },
+    "findings": [
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "f",
+        "elementType": "sequenceFlow",
+        "message": "Condition \"${amount > 1000 && !approved}\" became \"=amount > 1000 and not(approved)\".",
+        "processId": "p",
+        "severity": "convertible",
+        "suggestion": "FEEL condition"
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_test",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.8.0 (was Camunda Platform).",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      }
+    ],
+    "total": 2
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_test\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.8.0\">\n  <bpmn:process id=\"p\" isExecutable=\"true\">\n    <bpmn:exclusiveGateway id=\"g\">\n      <bpmn:outgoing>f</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:task id=\"a\">\n      <bpmn:incoming>f</bpmn:incoming>\n    </bpmn:task>\n    <bpmn:sequenceFlow id=\"f\" sourceRef=\"g\" targetRef=\"a\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=amount &gt; 1000 and not(approved)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

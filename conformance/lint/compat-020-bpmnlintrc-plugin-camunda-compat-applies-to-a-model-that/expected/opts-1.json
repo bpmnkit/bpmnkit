@@ -1,0 +1,94 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 3,
+    "info": 0,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "bpmnlintRule": "start-event-required",
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-start-event",
+      "message": "Process \"p\" has no start event.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a start event to define where the process begins."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"p\" has no end event.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "tools"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"tools\" (adHocSubProcess) is not reachable from any start event.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "tools"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"tools\" (adHocSubProcess) has no outgoing sequence flows.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "tools"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Tools\" has no error boundary event.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "bpmnlintRule": "camunda-compat/element-type",
+      "category": "deploy",
+      "elementIds": [
+        "tools"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"Tools\" needs Camunda 8.7 or newer; this model targets Camunda 8.6.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 6
+}

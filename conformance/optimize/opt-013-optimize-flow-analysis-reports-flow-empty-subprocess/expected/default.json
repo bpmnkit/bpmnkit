@@ -1,0 +1,108 @@
+{
+  "findings": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "sub1"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"sub1\" (subProcess) contains no flow elements.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "s"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"s\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "sub1"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"sub1\" (subProcess) has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "e"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"e\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sub1"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"sub1\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "s"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"s\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"proc\" is not marked executable.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 1,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 1,
+      "naming": 3,
+      "pattern": 2,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 1,
+      "info": 3,
+      "warning": 3
+    },
+    "total": 7
+  }
+}

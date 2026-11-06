@@ -1,0 +1,32 @@
+{
+  "categories": [
+    "deploy",
+    "feel-syntax"
+  ],
+  "counts": {
+    "error": 1,
+    "info": 0,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_payout"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Pay out claim\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "claim-handling",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.8.0"
+  },
+  "total": 1
+}

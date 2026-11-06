@@ -10,7 +10,7 @@
   
   
   <bpmn:process id="proc" isExecutable="true">
-    <bpmn:startEvent id="start" name="S" /><bpmn:exclusiveGateway id="j" name="Merge" /><bpmn:task id="a" name="A" /><bpmn:endEvent id="end" name="E" /><bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="j" /><bpmn:sequenceFlow id="f0" sourceRef="a" targetRef="j" /><bpmn:sequenceFlow id="f2" sourceRef="j" targetRef="end" />
+    <bpmn:startEvent id="start" name="S" ><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent><bpmn:exclusiveGateway id="j" name="Merge" ><bpmn:incoming>f1</bpmn:incoming><bpmn:incoming>f0</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:task id="a" name="A" ><bpmn:outgoing>f0</bpmn:outgoing></bpmn:task><bpmn:endEvent id="end" name="E" ><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent><bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="j" /><bpmn:sequenceFlow id="f0" sourceRef="a" targetRef="j" /><bpmn:sequenceFlow id="f2" sourceRef="j" targetRef="end" />
   </bpmn:process>
   
 </bpmn:definitions>

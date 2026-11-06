@@ -1,0 +1,11 @@
+{
+  "input": "bpmn/collaboration/input.bpmn",
+  "runs": {
+    "default": {},
+    "v8-2": {
+      "options": {
+        "executionPlatformVersion": "8.2.0"
+      }
+    }
+  }
+}

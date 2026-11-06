@@ -1,0 +1,21 @@
+{
+  "input": "bpmn/c7-invoice-approval/input.bpmn",
+  "runs": {
+    "default": {},
+    "v8_5": {
+      "options": {
+        "executionPlatformVersion": "8.5.3"
+      }
+    },
+    "v8_10": {
+      "options": {
+        "executionPlatformVersion": "8.10.0"
+      }
+    },
+    "source": {
+      "options": {
+        "sourceXml": "<ignored/>"
+      }
+    }
+  }
+}

@@ -11,9 +11,9 @@
   
   <bpmn:process id="proc" isExecutable="true">
     
-  <bpmn:startEvent id="start" name="Started" />
-  <bpmn:task id="a" name="Do A" />
-  <bpmn:endEvent id="end" name="Done" />
+  <bpmn:startEvent id="start" name="Started" ><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+  <bpmn:task id="a" name="Do A" ><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing></bpmn:task>
+  <bpmn:endEvent id="end" name="Done" ><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
   <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="a" />
   <bpmn:sequenceFlow id="f2" sourceRef="a" targetRef="end" />
 	  <bpmn:intermediateThrowEvent id="t1"><bpmn:linkEventDefinition id="t1_d" name="A" /></bpmn:intermediateThrowEvent><bpmn:intermediateCatchEvent id="c1"><bpmn:linkEventDefinition id="c1_d" name="A" /></bpmn:intermediateCatchEvent><bpmn:intermediateThrowEvent id="t2"><bpmn:linkEventDefinition id="t2_d" name="B" /></bpmn:intermediateThrowEvent><bpmn:intermediateCatchEvent id="c3"><bpmn:linkEventDefinition id="c3_d" name="C" /></bpmn:intermediateCatchEvent><bpmn:intermediateCatchEvent id="c4"><bpmn:linkEventDefinition id="c4_d" name="C" /></bpmn:intermediateCatchEvent><bpmn:intermediateThrowEvent id="t5"><bpmn:linkEventDefinition id="t5_d" name="D" /></bpmn:intermediateThrowEvent><bpmn:intermediateThrowEvent id="t6"><bpmn:linkEventDefinition id="t6_d" name="D" /></bpmn:intermediateThrowEvent><bpmn:intermediateThrowEvent id="x"><bpmn:linkEventDefinition id="x_d" /></bpmn:intermediateThrowEvent>

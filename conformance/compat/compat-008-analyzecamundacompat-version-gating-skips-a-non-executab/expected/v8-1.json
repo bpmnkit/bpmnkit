@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "g"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Complex gateway \"g\" is not supported by any Camunda 8 version.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    }
+  ]
+}

@@ -10,20 +10,20 @@
   
   
   <bpmn:process id="proc" isExecutable="true">
-    <bpmn:startEvent id="start" name="S" /><bpmn:exclusiveGateway id="single" name="One way?" /><bpmn:task id="a" name="A" />
-<bpmn:parallelGateway id="fork" name="Fork" />
-<bpmn:serviceTask id="w1" name="W1"><bpmn:extensionElements><zeebe:taskDefinition type="w1" /><zeebe:ioMapping><zeebe:output source="=r" target="shared" /><zeebe:output source="=q" target="only1" /></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask>
-<bpmn:serviceTask id="w2" name="W2"><bpmn:extensionElements><zeebe:taskDefinition type="w2" /><zeebe:ioMapping><zeebe:output source="=r" target="shared" /></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask>
-<bpmn:serviceTask id="w3" name="W3"><bpmn:extensionElements><zeebe:taskDefinition type="w3" /><zeebe:ioMapping><zeebe:output source="=r" target="  " /></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask>
-<bpmn:parallelGateway id="join" name="Join" /><bpmn:userTask id="u" name="Review" /><bpmn:task id="t0" name="Waits" />
-<bpmn:boundaryEvent id="b0" attachedToRef="t0"><bpmn:timerEventDefinition id="b0d"><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT0S</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
+    <bpmn:startEvent id="start" name="S" ><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent><bpmn:exclusiveGateway id="single" name="One way?" ><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:task id="a" name="A" />
+<bpmn:parallelGateway id="fork" name="Fork" ><bpmn:incoming>f2</bpmn:incoming><bpmn:outgoing>f3</bpmn:outgoing><bpmn:outgoing>f4</bpmn:outgoing><bpmn:outgoing>f5</bpmn:outgoing></bpmn:parallelGateway>
+<bpmn:serviceTask id="w1" name="W1"><bpmn:incoming>f3</bpmn:incoming><bpmn:outgoing>f6</bpmn:outgoing><bpmn:extensionElements><zeebe:taskDefinition type="w1" /><zeebe:ioMapping><zeebe:output source="=r" target="shared" /><zeebe:output source="=q" target="only1" /></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask>
+<bpmn:serviceTask id="w2" name="W2"><bpmn:incoming>f4</bpmn:incoming><bpmn:outgoing>f7</bpmn:outgoing><bpmn:extensionElements><zeebe:taskDefinition type="w2" /><zeebe:ioMapping><zeebe:output source="=r" target="shared" /></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask>
+<bpmn:serviceTask id="w3" name="W3"><bpmn:incoming>f5</bpmn:incoming><bpmn:outgoing>f8</bpmn:outgoing><bpmn:extensionElements><zeebe:taskDefinition type="w3" /><zeebe:ioMapping><zeebe:output source="=r" target="  " /></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask>
+<bpmn:parallelGateway id="join" name="Join" ><bpmn:incoming>f6</bpmn:incoming><bpmn:incoming>f7</bpmn:incoming><bpmn:incoming>f8</bpmn:incoming><bpmn:outgoing>f9</bpmn:outgoing></bpmn:parallelGateway><bpmn:userTask id="u" name="Review" ><bpmn:incoming>f10</bpmn:incoming><bpmn:outgoing>f11</bpmn:outgoing></bpmn:userTask><bpmn:task id="t0" name="Waits" ><bpmn:incoming>f9</bpmn:incoming><bpmn:outgoing>f10</bpmn:outgoing></bpmn:task>
+<bpmn:boundaryEvent id="b0" attachedToRef="t0"><bpmn:outgoing>h0</bpmn:outgoing><bpmn:timerEventDefinition id="b0d"><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT0S</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
 <bpmn:boundaryEvent id="b1" attachedToRef="t0"><bpmn:timerEventDefinition id="b1d"><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P0D</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
 <bpmn:boundaryEvent id="b2" attachedToRef="t0"><bpmn:timerEventDefinition id="b2d"><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
 <bpmn:boundaryEvent id="b3" attachedToRef="u"><bpmn:timerEventDefinition id="b3d"><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">0</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
 <bpmn:boundaryEvent id="b4" attachedToRef="u"><bpmn:timerEventDefinition id="b4d"><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P0</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
 <bpmn:boundaryEvent id="b5" attachedToRef="u"><bpmn:timerEventDefinition id="b5d"><bpmn:timeDuration xsi:type="bpmn:tFormalExpression"> PT0M </bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
 <bpmn:boundaryEvent id="b6" attachedToRef="u"><bpmn:timerEventDefinition id="b6d"><bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT0H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
-<bpmn:endEvent id="end" name="E" /><bpmn:endEvent id="end2" name="E2" />
+<bpmn:endEvent id="end" name="E" ><bpmn:incoming>f11</bpmn:incoming></bpmn:endEvent><bpmn:endEvent id="end2" name="E2" ><bpmn:incoming>h0</bpmn:incoming></bpmn:endEvent>
 <bpmn:textAnnotation id="ta1"><bpmn:text>   </bpmn:text></bpmn:textAnnotation><bpmn:textAnnotation id="ta2" /><bpmn:textAnnotation id="ta3"><bpmn:text>real note</bpmn:text></bpmn:textAnnotation>
 <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="single" /><bpmn:sequenceFlow id="f2" sourceRef="single" targetRef="fork" /><bpmn:sequenceFlow id="f3" sourceRef="fork" targetRef="w1" /><bpmn:sequenceFlow id="f4" sourceRef="fork" targetRef="w2" /><bpmn:sequenceFlow id="f5" sourceRef="fork" targetRef="w3" /><bpmn:sequenceFlow id="f6" sourceRef="w1" targetRef="join" /><bpmn:sequenceFlow id="f7" sourceRef="w2" targetRef="join" /><bpmn:sequenceFlow id="f8" sourceRef="w3" targetRef="join" /><bpmn:sequenceFlow id="f9" sourceRef="join" targetRef="t0" /><bpmn:sequenceFlow id="f10" sourceRef="t0" targetRef="u" /><bpmn:sequenceFlow id="f11" sourceRef="u" targetRef="end" /><bpmn:sequenceFlow id="h0" sourceRef="b0" targetRef="end2" />
   </bpmn:process>

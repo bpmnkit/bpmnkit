@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="proc">
+    <bpmn:startEvent id="s"><bpmn:outgoing>f0</bpmn:outgoing><bpmn:outgoing>f3</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:exclusiveGateway id="gw1">
+      <bpmn:incoming>f0</bpmn:incoming>
+      <bpmn:outgoing>f1</bpmn:outgoing>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="e1">
+      <bpmn:incoming>f1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="e2">
+      <bpmn:incoming>f2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="gw2">
+      <bpmn:incoming>f3</bpmn:incoming>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+      <bpmn:outgoing>f5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="e3">
+      <bpmn:incoming>f4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="e4">
+      <bpmn:incoming>f5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f0" sourceRef="s" targetRef="gw1"/>
+    <bpmn:sequenceFlow id="f1" sourceRef="gw1" targetRef="e1">
+      <bpmn:conditionExpression>= x &gt; 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f2" sourceRef="gw1" targetRef="e2">
+      <bpmn:conditionExpression>= x &lt;= 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f3" sourceRef="s" targetRef="gw2"/>
+    <bpmn:sequenceFlow id="f4" sourceRef="gw2" targetRef="e3">
+      <bpmn:conditionExpression>= x &gt; 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f5" sourceRef="gw2" targetRef="e4">
+      <bpmn:conditionExpression>= x &lt;= 0</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+</bpmn:definitions>
+

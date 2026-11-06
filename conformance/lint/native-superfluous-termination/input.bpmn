@@ -10,7 +10,7 @@
   
   
   <bpmn:process id="proc" isExecutable="true">
-    <bpmn:startEvent id="start" /><bpmn:endEvent id="end"><bpmn:terminateEventDefinition /></bpmn:endEvent><bpmn:sequenceFlow id="f" sourceRef="start" targetRef="end" />
+    <bpmn:startEvent id="start" ><bpmn:outgoing>f</bpmn:outgoing></bpmn:startEvent><bpmn:endEvent id="end"><bpmn:incoming>f</bpmn:incoming><bpmn:terminateEventDefinition /></bpmn:endEvent><bpmn:sequenceFlow id="f" sourceRef="start" targetRef="end" />
   </bpmn:process>
   
 </bpmn:definitions>

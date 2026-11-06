@@ -1,0 +1,27 @@
+{
+  "report": {
+    "findings": [
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "t",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=a\" (to \"in1\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "p",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "t",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=b\" (to \"out1\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "p",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      }
+    ]
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"d\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"p\" isExecutable=\"true\">\n    <bpmn:serviceTask id=\"t\" camunda:type=\"external\" camunda:topic=\"x\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"in1\">=a</camunda:inputParameter>\n          <camunda:outputParameter name=\"out1\">=b</camunda:outputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}
