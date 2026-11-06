@@ -215,8 +215,90 @@ fixable}` plus `produces` / `consumes` / `bpmnlintRule` when TS sets them. Ids c
 `migrate/juel.jsonl`: one `{"id": "juel/<n>", "juel": "...", "options"?: {...}, "expected":
 <translateJuelToFeel result>}` per line; the recorder rewrites `expected`.
 
+Details the table leaves open, as implemented:
+
+- A run that throws records `{"error": "<message>"}` (the `convertCamunda7` refusal of a Camunda 8
+  model, a bad `.bpmnlintrc`). Rust compares the message.
+- `connectorRequirements` (an option of `lint/` and `optimize/` runs) stands in for
+  `resolveConnectorRequirements`: `{"<templateId>": ["key", ...]}`; the resolver returns the listed
+  keys not among the bound ones, and a template id not in the table requires nothing. Without the
+  option no resolver is passed, so no `connector/*` finding appears.
+- `migrate/` with `"direction": "8to7"`: `convertCamunda8To7` has no counts, so
+  `report` is `{"findings": [...]}`; for `7to8` it is the `Camunda7Report` (`findings`, `counts`,
+  `total`).
+- `lint/` `.dmn` / `.form` findings are `CheckFinding`s (`rule`, `severity`, `message`, `fix`,
+  `elementId?`), not `id`-keyed.
+- `plane`, `platform`, `categories`, `counts`, `total` and `bpmnlintUnsupported` come straight from
+  `LintReport`; `bpmnlintUnsupported` is absent without a `bpmnlintrc`.
+- `fixes` entries are recorded for every fixable finding of the full (unfiltered) report; the
+  expected `xml` is `serializeBpmn` of the fixed fresh parse.
+- Hand-written `.bpmn` inputs spell out `<bpmn:incoming>` / `<bpmn:outgoing>` on every flow node,
+  because `packages/core/tests/node/bpmnlint-parity.test.ts` runs real bpmnlint over every `.bpmn`
+  in the repository and bpmnlint reads those child elements. The TS parser also derives them from
+  the flows.
+- `migrate/juel.jsonl` lines are `{"id", "juel", "options"?, "expected"}`, one JSON object per line
+  (keys inside `expected` sorted).
+- Finding ids that no code path can emit are not covered: `compat/feel`, `compat/executable-process`
+  and `compat/agent-tool-documentation` are plugin rules BPMN Kit answers with its own finding
+  (`feel-syntax/parse-error`, `deploy/process-not-executable`, `agentic/tool-no-description`).
+
 Runner case ids: `lint/<case>/<run>`, `optimize/<case>/<run>`, `compat/<case>/<run>`,
 `migrate/<case>/<run>`, `juel/<n>`.
+
+### Provenance of the tooling cases
+
+Every `conformance/bpmn/<case>` is linted, optimized, compat-checked and (where it makes sense)
+migrated through `"input"` references; nothing is copied.
+
+| Cases | Kind | Source |
+|---|---|---|
+| `bpmn-<case>` | `lint/` | every `conformance/bpmn` case; runs `default` and `forced` (`forceEngineRules`) |
+| `bpmn-<case>` | `optimize/` | the same cases, run `default`; left out where the recorded output would exceed ~100 KB (every fix carries a whole model): the large `miwg-*`, `compat-*`, `layout-quote-to-cash`, `bpmnlint-scopes-and-exemptions` |
+| `bpmn-<case>` | `compat/` | the same cases at `default`, 8.0, 8.2, 8.5, 8.6, 8.8, 8.10; fixture-like cases (`compat-*`, `camunda-compat-*`, `zeebe-extensions`, `events-and-containers`, `root-elements`, `engine-ad-hoc-tools`) at 1.0 and every 8.x, `8.6.2` and `9.0` |
+| `bpmn-c7-*`, `bpmn-camunda7-order-fulfillment` | `migrate/` | `7to8` (`default`, `v8-6`) and the `8to7` round trip |
+| `bpmn-<case>-8to7` | `migrate/` | every other case, `8to7`, except `miwg-c-7-0` (see below) |
+| `bpmn-<case>-7to8` | `migrate/` | a dozen neutral and Camunda 8 cases through `convertCamunda7` (`root-elements` records the refusal) |
+| `dmn-<case>`, `form-<case>` | `lint/` | every `conformance/dmn` / `conformance/form` input |
+| `opt-NNN-*` | `optimize/` | the models `packages/core/tests/optimize.test.ts` builds in code, serialized, one case per distinct model with every option set the test used |
+| `lint-NNN-*`, `compat-NNN-*` | `lint/`, `compat/`, `optimize/` | the models of `lint.test.ts` and `camunda-compat.test.ts`, with the options (`version`, `bpmnlint`, `userTaskForms`...) of each call |
+| `c7mig-NNN-*`, `c7exp-NNN-*` | `migrate/` | the Camunda 7 documents of `camunda7-migrate.test.ts` and the Camunda 8 documents of `camunda7-export.test.ts` |
+| `juel.jsonl` | juel | the `TRANSLATED` / `REFUSED` tables of `camunda7-juel.test.ts`, the multi-instance counters, and edge cases (literals, escapes, operators, reserved words, mixed text, unbalanced input) |
+
+The `opt-` / `compat-` / `lint-` / `c7mig-` / `c7exp-` numbers follow the order of the tests in the
+file they come from when the cases were recorded; the case is frozen, not tied to the test.
+
+Hand-written groups:
+
+- `lint/platform-*`: one service-task model with and without a plane, with no platform, Camunda Cloud
+  (with and without a job type or version), Camunda Platform, an unknown name, an empty name, a
+  non-executable and an `isExecutable`-less process; runs cover `forceEngineRules`, `categories`,
+  `userTaskForms: "off"`, `camundaVersion` and the thresholds.
+- `lint/rc-*`: `.bpmnlintrc` configs (`bpmnlint:recommended` / `all` / `correctness`, numeric and
+  mixed-case severities, `[level, options]`, `off`, plugin and unknown rules, an unresolved
+  `extends`, `plugin:camunda-compat/camunda-cloud-X-Y` at several versions, per-rule
+  `camunda-compat/*` overrides, `bpmnlintDelegated`) on the bpmnlint scopes fixture, a neutral and a
+  Camunda 8 model.
+- `lint/native-*`: one model per native bpmnlint rule (ad-hoc, conditional events, event-based
+  gateways, `global`, link events, `no-bpmndi`, disconnected, duplicate flows, implicit split,
+  overlapping and non-standard sizes, superfluous label / termination ...) with `error`, `off` and
+  delegated runs for the rules it exercises, and the `all` / `recommended` presets.
+- `lint/dmn-hand-*`, `lint/form-hand-*`: one document per `dmn/*` and `form/*` rule, and valid ones.
+- `lint/connector-requirements`, `optimize/connector-requirements`: `connectorRequirements` tables.
+- `optimize/fix-*`: every fixable finding (`feel/missing-default-flow`, `flow/dead-end`,
+  `flow/multi-incoming-task`, `flow/redundant-gateway`, `task/reusable-group`, which also records the
+  generated process) with and without diagram interchange, in nested scopes, on exclusive, inclusive
+  and parallel gateways.
+- `optimize/agentic-*`, `optimize/deploy-*`, `optimize/feel-syntax-everywhere`,
+  `optimize/patterns-timers-annotations-parallel`: the `agentic/*`, `deploy/*`, `feel-syntax/*` and
+  `pattern/*` findings the corpus does not reach.
+- `compat/version-strings` (odd and unknown version strings), `compat/ad-hoc-gating`,
+  `compat/listeners-*` (`beforeAll` / `cancel` execution listeners at every version).
+- `migrate/options-platform-version`: `executionPlatformVersion` and the ignored `sourceXml`.
+
+Known TypeScript defect, case left out: `convertCamunda8To7` throws `Cannot convert undefined or null
+to object` (`stripForeignAttrs`) on a `bpmn:multiInstanceLoopCharacteristics` that has an `id`, as in
+`bpmn/miwg-c-7-0`; the parser gives the loop no `unknownAttributes`. There is no `migrate/` case for
+it until that is fixed.
 
 ## `pending.json`
 
