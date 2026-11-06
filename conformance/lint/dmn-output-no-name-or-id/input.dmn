@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="defs" name="d" namespace="x">
+  <decision id="discount" name="Discount">
+    <decisionTable id="table">
+      <input id="in1" label="Tier"><inputExpression id="ie1" typeRef="string"><text>tier</text></inputExpression></input>
+      <output typeRef="Number"/>
+      <rule id="r1"><inputEntry id="e1"><text>"gold"</text></inputEntry><outputEntry id="o1"><text>10</text></outputEntry></rule>
+    </decisionTable>
+  </decision>
+</definitions>

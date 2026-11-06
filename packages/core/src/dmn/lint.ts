@@ -390,7 +390,12 @@ function checkDecision(decision: XmlElement, findings: CheckFinding[]): void {
 
 	for (const output of outputs) {
 		const outputId = output.attributes.id
-		checkTypeRef(output, outputId, `Output "${output.attributes.name ?? outputId}"`, findings)
+		checkTypeRef(
+			output,
+			outputId,
+			`Output "${output.attributes.name ?? outputId ?? "?"}"`,
+			findings,
+		)
 		if (outputs.length > 1 && (output.attributes.name ?? "") === "") {
 			findings.push({
 				rule: "dmn/missing-output-name",

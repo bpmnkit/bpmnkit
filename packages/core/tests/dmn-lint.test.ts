@@ -137,6 +137,17 @@ describe("lintDmn", () => {
 		expect(f?.fix).toContain('typeRef="number"')
 	})
 
+	// Regression: an output with neither a name nor an id was shown as `Output "undefined"`.
+	it("dmn/invalid-type-ref names an output with no name or id as ?", () => {
+		const xml = TABLE().replace(
+			'<output id="out1" name="discount" typeRef="number"/>',
+			'<output typeRef="Number"/>',
+		)
+		const [f] = lintDmn(xml)
+		expect(f?.rule).toBe("dmn/invalid-type-ref")
+		expect(f?.message).toMatch(/^Output "\?" has typeRef "Number"/)
+	})
+
 	it("dmn/no-output", () => {
 		expect(
 			rules(

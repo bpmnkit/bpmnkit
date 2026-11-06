@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "fix": "Use typeRef=\"number\" (type names are case-sensitive).",
+      "message": "Output \"?\" has typeRef \"Number\", which is not a DMN/FEEL type; the engine treats the value as untyped.",
+      "rule": "dmn/invalid-type-ref",
+      "severity": "warning"
+    }
+  ]
+}
