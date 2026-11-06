@@ -211,6 +211,20 @@ fn build_extracted_defs(
     }
 }
 
+/// Job types often hold ":" (connectors), which a BPMN id (an NCName) cannot: TS's
+/// `replace(/[^\w.-]/g, "_")`, one `_` per UTF-16 unit.
+fn id_safe(s: &str) -> String {
+    s.chars()
+        .flat_map(|c| {
+            let keep = c.is_ascii_alphanumeric() || matches!(c, '_' | '.' | '-');
+            let n = if keep { 0 } else { c.len_utf16() };
+            std::iter::once(c)
+                .filter(move |_| keep)
+                .chain(std::iter::repeat_n('_', n))
+        })
+        .collect()
+}
+
 pub fn analyze_tasks(p: &BpmnProcess, opts: &ResolvedOptions) -> Vec<Finding> {
     let mut findings = vec![];
     let process_id = p.id.as_str();
@@ -261,7 +275,8 @@ pub fn analyze_tasks(p: &BpmnProcess, opts: &ResolvedOptions) -> Vec<Finding> {
                 let Some(proc) = find_process(defs, &pid) else {
                     return fix_result("Process not found");
                 };
-                let new_process_id = format!("Reusable_{ty}_{}", generate_id("proc"));
+                let new_process_id =
+                    format!("Reusable_{}_{}", id_safe(&ty), generate_id("proc"));
                 let generated =
                     build_extracted_defs(rep_name.clone(), rep_ext.clone(), &new_process_id);
 

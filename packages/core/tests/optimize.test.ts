@@ -697,6 +697,32 @@ describe("optimize()", () => {
 			expect(hasTaskDef).toBe(true)
 		})
 
+		it("gives the extracted process a valid BPMN id when the job type has colons", () => {
+			const ext = [taskDefExt("io.camunda:http-json:1")]
+			const proc = makeProcess(
+				"proc",
+				[
+					startEl("s"),
+					taskEl("t1", ["f1"], ["f2"], ext),
+					taskEl("t2", ["f3"], ["f4"], ext),
+					endEl("e"),
+				],
+				[
+					flow("f1", "s", "t1"),
+					flow("f2", "t1", "e"),
+					flow("f3", "s", "t2"),
+					flow("f4", "t2", "e"),
+				],
+			)
+			const defs = makeDefs(proc)
+			const finding = optimize(defs).findings.find((f) => f.id === "task/reusable-group")
+			if (!finding || !finding.applyFix) throw new Error("Missing applyFix")
+
+			const processId = finding.applyFix(defs).generated?.processes[0]?.id
+			expect(processId).toBe("Reusable_io.camunda_http-json_1_proc_0000001")
+			expect(processId).toMatch(/^[A-Za-z_][\w.-]*$/)
+		})
+
 		it("does not report when only 1 task of a type", () => {
 			const t1 = taskEl(
 				"t1",
