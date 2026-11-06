@@ -42,6 +42,7 @@ import {
 	rootDefinitionId,
 	setFlowDiscriminatorSource,
 } from "./stable-ids.js"
+import { assertRetriesOption, assertXsdValues } from "./xsd-guards.js"
 import {
 	type ZeebeExtensions,
 	type ZeebeFormDefinition,
@@ -925,6 +926,7 @@ function buildMappingExtensions(
 }
 
 function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
+	assertRetriesOption(options.retries, options.taskType)
 	const extensions: ZeebeExtensions = {
 		taskDefinition: {
 			type: options.taskType,
@@ -3866,6 +3868,14 @@ export class ProcessBuilder {
 	}
 
 	private validate(): void {
+		// A parsed document keeps whatever ids it came with; only new builds are held to the XSD.
+		if (this._source === undefined) {
+			assertXsdValues({
+				id: this.processId,
+				flowElements: this.flowElements,
+				sequenceFlows: this.sequenceFlows,
+			} as BpmnProcess)
+		}
 		const elementIds = new Set(this.flowElements.map((el) => el.id))
 		for (const flow of this.sequenceFlows) {
 			if (!elementIds.has(flow.targetRef)) {
