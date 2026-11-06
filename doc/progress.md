@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-06 — Rust proposal rewritten: TS + Rust twin
+
+- `doc/rust-rewrite-proposal.md` now proposes a Rust twin of the core (BPMN, DMN, Form, FEEL, lint, layout, compat), kept in sync with TS by a shared conformance suite, `spec/` data with generated code on both sides, CI parity gates and nightly differential fuzzing. Reebe moves onto the shared crates. About 35–47 person-weeks. No code changed.
+
 ## 2026-11-04 — Rust core proposal: phase 0 measured
 
 - `doc/rust-rewrite-proposal.md` §9: the WASM size gate passes (395 KB gzip). Speed is 1.1–2.7× slower than TS for BPMN parse and 1.4–8× slower for FEEL, so browser speed is dropped as a goal. Verdict: conditional go for shared code and native tools. No code changed.

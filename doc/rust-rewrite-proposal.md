@@ -1,146 +1,174 @@
-# Proposal: Rust core for BPMN Kit
+# Proposal: a Rust twin of BPMN Kit's core
 
-Status: analysis only, 2026-11-04. Nothing implemented. Phase 0 measured (§9).
+Status: analysis only, updated 2026-11-06. Nothing implemented. Phase 0 measured (§11).
 
 ## TL;DR
 
-- **Do not rewrite the whole library.** About half the code (canvas, editor, plugins, studio, drop, vscode, operate) is tied to the DOM or the editor. Rust gains nothing there, and WASM calls would add overhead.
-- **Do build one shared Rust core** for the pure, batch-shaped logic: FEEL, BPMN/DMN/Form parse and serialize, lint, migrate, compact/process-text, layout, and the text renderers. Keep the published `@bpmnkit/*` TS API as a thin facade over it.
-- **Node: yes.** Ship one WASM package that runs in browsers, Node, Deno, Bun, edge workers, VS Code and Tauri. Add napi-rs native addons only if a heavy server workload needs them. Rust tools (CLI, Tauri, reebe, Python) link the crates directly, with no WASM.
-- **Gate first.** Before any port, build the existing `reebe-wasm` with a size profile and benchmark FEEL and BPMN parsing against TS. Go only if the module is under about 1.5 MB gzipped and no slower on realistic diagrams.
-- **Cost.** Core is about 40–50 person-weeks. The useful non-core parts are about 30–50 person-weeks. Only the CLI and full proxy parity push toward the high end, and both can wait.
+- **Two implementations, one spec.** TS stays the implementation for JS: browser, Node, editor, studio and plugins. A Rust implementation is built next to it for Rust CLIs, reebe, desktop and proxy-rs. A shared conformance suite keeps the two in sync, and CI checks it on every PR.
+- **Why not one Rust core plus WASM:** phase 0 measured WASM at 1.1–2.7× slower than TS for BPMN parsing and 1.4–8× slower for FEEL, mostly from moving data across the JS boundary. A Rust twin keeps JS at full speed and gives Rust users native speed. Native Rust is ~2× faster than WASM.
+- **Scope of the twin:** BPMN, DMN and Form (model, parse, serialize, build), FEEL (parse, evaluate, generate), lint, layout, Camunda compatibility checks, and C7 migration.
+- **Reebe** replaces `reebe-bpmn`, `reebe-feel` and `reebe-dmn` with the shared crates. It loses its FEEL gaps and can lint and serialize.
+- **Cost:** about 35–47 person-weeks to reach parity. After that, about +30–60% on each feature in these areas, since each is built twice. Shared data and generated code keep the hand-written part small.
 
-## 1. Starting point
+## 1. Why a twin
 
-| Area | TS today | Rust today |
+- **Speed (phase 0).** WASM loses to TS in JS hosts, and native Rust beats both. Each host should run its own language.
+- **Duplication already exists, without checks.** FEEL, BPMN and DMN parsing are each implemented twice today, in TS and in reebe. Nothing compares them. Phase 0 found 3 of 32 FEEL expressions where they disagree. The twin plan keeps two implementations, but adds checks and shared data so the copies cannot drift unnoticed.
+- **Rust users.** Rust CLIs and tools get the full feature set as normal crates, with no JS runtime and no Node.
+
+## 2. Scope
+
+| Area | Rust twin | TS only |
 |---|---|---|
-| core | ~43k LOC logic plus a 96k-line generated template file; 1,697 tests | `reebe-bpmn` is a read-only parser (4.7k LOC, 61 tests). `reebe-dmn` parses and evaluates (0.9k LOC, 8 tests). |
-| feel | 5.0k LOC; 263 tests including the TCK and a Camunda parity suite | `reebe-feel` (3.4k LOC, 91 tests). No TCK run found. |
-| engine | 7k LOC simulator, 204 tests | `reebe-engine` (16k LOC, 219 tests). Reebe is already the source of truth for Zeebe semantics. |
-| bindings | — | `reebe-wasm` uses wasm-bindgen and serde-wasm-bindgen, built with `wasm-pack --target web`. Node loads it through `initSync`. Every return is typed `any`. There is no size profile. |
-| proxy | 9.8k LOC, 149 tests | `proxy-rs`: 2.1k LOC. About 70% of the TS proxy is still missing. |
-| cli | `casen`, 17k LOC, 218 tests, TS plugin hooks | none |
+| BPMN | model, parse, lossless serialize (DI included), fluent builder, stable IDs, semantic hash | editor-time fine-grained model edits stay TS-only |
+| DMN | model, parse, serialize, evaluate, layout | — |
+| Form | model, parse, serialize, validate | rendering |
+| FEEL | lexer, parser, evaluator, builtins, formatter/generator, token stream | highlighter UI |
+| Tooling | lint + optimize, camunda-compat, C7 migrate + JUEL, auto-layout, process-text/compact | — |
+| Data | connector templates, profiles (shared JSON, see §4.3) | — |
+| Everything else | — | canvas, editor, ui, plugins, studio, operate, drop, vscode, landing, learn, cli (`casen`), proxy, worker-client |
 
-**Duplication exists today.** FEEL is implemented twice, and BPMN and DMN parsing are implemented twice. The TS side parses for editing and lossless round-trip. Rust parses for execution. The models differ and nothing in CI runs the same fixtures against both. FEEL drift risk is high (dates and durations, number precision, null propagation, builtins). A shared core removes this problem, which is the strongest argument for the work.
-
-## 2. What moves and what stays
-
-| Class | Packages | Why |
-|---|---|---|
-| **Move to Rust** | core logic (xml, bpmn model/parser/serializer, zeebe/camunda-compat, c7 migrate + JUEL, process-text/compact, lint/optimize, layout, dmn, form, stable-ids/semantic-hash), feel (lexer, parser, evaluator, builtins), patterns, ascii, markdown, flow | Pure and deterministic. Useful in CLI, server, browser and other languages. |
-| **Move as data** | connector templates (96k-line `generated.ts`), connectors catalog, profiles, api (generate from OpenAPI per language) | Data and generated code, not logic. Ship JSON and emit a client per target. |
-| **Wrap (TS facade over Rust)** | `@bpmnkit/core` public API, the fluent builder, engine (re-base on reebe-wasm, then drop `instance.ts`), user-tasks, FEEL formatter/highlighter (TS over a Rust token stream) | Keeps the TS API and typing that users and plugins rely on. |
-| **Stay TS** | canvas, editor, ui, plugins, operate, studio, drop, vscode, landing/learn, connector-gen, cli-sdk, worker-client, docspack, `core/node` (fs) | Bound to DOM, Preact, Astro, npm or I/O. Rust gives no gain. |
-
-**Boundary rule.** Port batch operations (parse, serialize, lint, layout, migrate, evaluate). Keep fine-grained model edits in JS. One editor drag can cause many model mutations, and sending each one through WASM can be slower than the current code.
-
-## 3. Target layout
+## 3. Layout
 
 ```
-crates/                       (new cargo workspace, MIT; reebe consumes it)
-  bpmnkit-xml        span-preserving reader/writer (xml-patch equivalent)
-  bpmnkit-bpmn       model, parser, serializer, ops
-  bpmnkit-zeebe      extensions, camunda-compat rules/data
-  bpmnkit-c7         migrate + JUEL
-  bpmnkit-feel       single FEEL; reebe-feel re-exports it
-  bpmnkit-dmn        model/parser/serializer/eval
+conformance/                 shared cases: inputs + expected outputs (§4.1)
+  bpmn/  dmn/  form/  feel/  lint/  layout/  migrate/  build/
+  pending.json               Rust cases still pending, each with an issue link
+  api.json                   operation list and which side implements it
+spec/                        single-source data (§4.3), both sides generate code from it
+  elements/  feel-builtins.json  lint-rules.json  compat-rules.json  templates/
+crates/                      cargo workspace, MIT OR Apache-2.0
+  bpmnkit-xml      span-preserving reader/writer
+  bpmnkit-bpmn     model, parser, serializer, builder
+  bpmnkit-dmn      model, parser, serializer, evaluator
   bpmnkit-form
-  bpmnkit-lint       bpmnlint rules + optimize
-  bpmnkit-layout
-  bpmnkit-text       process-text, compact, ascii, markdown, flow
-  bpmnkit-templates  connector templates as JSON (include_str!)
-  bpmnkit-wasm       the only wasm crate (wasm-bindgen + tsify); also hosts reebe engine bindings
-  bpmnkit-cli        native binary (clap), later
-packages/core-wasm  = @bpmnkit/core-wasm   generated: .wasm + .d.ts
-packages/core       = @bpmnkit/core        TS facade, same public API, TS fallback during migration
+  bpmnkit-feel     the single Rust FEEL; reebe uses it
+  bpmnkit-lint     rules + optimize
+  bpmnkit-layout   BPMN + DMN layout
+  bpmnkit-compat   camunda-compat, c7 migrate + JUEL
+  bpmnkit-text     process-text, compact
+  bpmnkit          facade crate re-exporting the above behind features
+packages/*                   unchanged TS packages
 ```
 
-- `reebe-bpmn`, `reebe-dmn` and `reebe-feel` become consumers of these crates, with an execution view behind a feature flag. That gives one model for each schema.
-- `apps/reebe-wasm` merges into `bpmnkit-wasm`, so there is one artifact and one init path.
+`apps/reebe` depends on `crates/*` by path. The crates are published to crates.io at the same version as the npm packages.
 
-## 4. Bindings
+## 4. Keeping the two in sync
 
-| Target | Choice | Notes |
-|---|---|---|
-| Browser | WASM, `wasm-pack --target web`, lazy loaded | Release profile `opt-level="z"`, `lto`, `codegen-units=1`, `panic="abort"`, then `wasm-opt -Oz`. Set a size budget in CI. |
-| **Node** | **The same WASM package** | Add an `exports` condition for `node` that loads with `initSync(readFileSync(...))`, as `wasm-init.ts` does now. One tarball with no install scripts. ESM works. Also runs on Deno, Bun and Workers. |
-| Node, heavy | napi-rs (optional, later) | Native speed, about 1.5–3× faster than WASM. Needs per-platform `optionalDependencies`, about 8 targets, and has no Deno or edge support. Add it only on real demand, with WASM as the fallback. |
-| CLI / Tauri / reebe / proxy-rs | Direct crate dependency | No bridge cost. `apps/desktop` and `proxy-rs` already build Rust. |
-| Python | PyO3 + maturin, abi3 wheels | Medium cost. Add on demand. |
-| JVM / Swift / Kotlin / Go | UniFFI or cbindgen | Add on demand. |
+### 4.1 Conformance suite (the core mechanism)
 
-**Types and data.**
-- Generate `.d.ts` from Rust structs with `tsify`. This replaces today's `any` returns and the regex export check in `scripts/build-wasm.mjs`.
-- Send small payloads with serde-wasm-bindgen.
-- For large models, return a JSON string and parse it in JS, or keep a handle on the Rust side and query it lazily.
-- Keep the WASM API sync and pure (bytes in, data out). All I/O (fetch, deploy, fs) stays in TS.
+- A case is a folder with an input (`.bpmn`, `.dmn`, `.form`, or FEEL rows in `.jsonl`) and expected outputs. Outputs are a canonical model JSON (sorted keys, schema in `spec/model.schema.json`), serialized XML, lint findings, layout coordinates, migrate output, and FEEL results.
+- TS is the oracle. `pnpm conformance:record` writes the expected outputs from TS. Vitest checks TS against them, and `cargo test` checks Rust against them.
+- Comparison: XML byte-equal, JSON deep-equal, layout coordinates within ±0.5 px. FEEL numbers are compared as decimal strings.
+- Sources for cases: existing TS test fixtures, the DMN TCK, the Camunda FEEL parity suite, and every bug fix (one regression case each).
 
-## 5. Parity strategy
+### 4.2 CI rules
 
-Use the TS implementation as the oracle until each module matches.
+- **conformance-ts:** if TS output for any case changes and the recorded files were not updated, CI fails.
+- **conformance-rs:** every case must pass in Rust, or be listed in `pending.json` with an issue link.
+- Moving a case into `pending.json` is the explicit "port later" decision, visible in the diff. A weekly job reports the age of pending entries. Entries older than the agreed limit (e.g. 30 days) fail the release.
+- **api-parity:** `api.json` is generated from TS exports and a Rust `#[bpmnkit_api]` attribute. CI prints a table of missing operations and fails if one is missing from both `api.json` and the pending list.
 
-1. Create one shared `fixtures/` corpus (BPMN, DMN, Form, FEEL expression tables as JSON). Both `vitest` and `cargo test` read it.
-2. Round-trip golden tests: parse, then serialize, then compare bytes with the TS output.
-3. Run the official DMN TCK against both FEEL implementations. Port the Camunda parity suite. Run differential proptests while both implementations exist.
-4. Take snapshots of lint findings, migrate output, layout coordinates and compact/text output.
-5. Put each module behind a flag in the facade (TS or WASM). Delete the TS version only when its suite passes in CI.
+### 4.3 One source for data
 
-## 6. Plan (one Rust-capable developer, rough)
+Store data once in `spec/` and generate code from it with a build step on each side:
+- element and extension definitions (BPMN, Zeebe, DMN, Form), which give both models, parsers and serializers
+- FEEL builtin signatures
+- lint rule metadata (id, severity, message)
+- Camunda compatibility tables
+- connector templates (today a 96k-line `generated.ts`)
+
+This removes the largest error-prone part from hand-porting. Only behaviour (evaluation, layout, rule logic) is written twice.
+
+### 4.4 Differential fuzzing
+
+- A nightly job generates random diagrams, DMN tables and FEEL expressions with fast-check and proptest.
+- It runs them through both implementations: TS through Node, Rust through a small CLI test binary.
+- Each disagreement is shrunk and saved as a new conformance case.
+
+### 4.5 Ownership
+
+- Each area has a named Rust owner.
+- A TS PR may land with a pending Rust case. The owner ports it within the agreed limit.
+- Without an owner the pending list grows and the twin loses value. This is the main process risk.
+
+## 5. Reebe
+
+- Replace `reebe-feel` with `bpmnkit-feel`. This fixes `**`, date + duration and datetime + duration, and puts reebe under the TCK.
+- Replace `reebe-bpmn` and `reebe-dmn` with `bpmnkit-bpmn` and `bpmnkit-dmn`, keeping an execution view behind a feature flag.
+- Deploy-time validation through `bpmnkit-lint` and `bpmnkit-compat`, with the same findings as the editor.
+- `reebe-wasm` keeps serving `@bpmnkit/engine`. The size budget (500 KB gzip) stays.
+
+## 6. Consumers
+
+| Consumer | Uses |
+|---|---|
+| Browser, Node, Deno, Bun | TS packages, unchanged |
+| Rust CLIs (yours, a future Rust `casen`) | `bpmnkit` crate from crates.io |
+| reebe, proxy-rs, desktop (Tauri) | crates by path |
+| Python (later) | PyO3 bindings over the crates |
+| Other languages (later) | UniFFI or cbindgen over the crates |
+
+No WASM build of the twin is planned. JS hosts already have TS.
+
+## 7. Plan
 
 | Phase | Work | Person-weeks |
 |---|---|---|
-| 0 Gate | Size profile for reebe-wasm, bench FEEL and parse against TS, decide go/no-go | 1 |
-| 1 Harness | Shared fixtures, cargo workspace, CI (rust-cache, wasm-pack, binaryen), `check:consumable` smoke tests for Node `initSync` and Vite | 3–4 |
-| 2 FEEL | Unify on `bpmnkit-feel`, pass the TCK, give reebe-feel a re-export, add a TS facade | 3–4 |
-| 3 BPMN I/O | xml + model + parser + serializer with DI and lossless writing | 6–8 |
-| 4 Batch tools | camunda-compat, c7 migrate, text/compact, lint/optimize, dmn, form, templates | 13–16 |
-| 5 Layout | auto-layout and dmn-layout, with exact coordinate parity | 5–7 |
-| 6 Engine facade | `@bpmnkit/engine` on reebe-wasm, close the gaps (ad-hoc, clock, coverage, dry-run, AI mocks), drop `instance.ts` | 3–5 |
-| 7 Text packages | patterns, ascii, markdown, flow, profiles | 3–4 |
-| 8 Builder/ops | Rust ops under the TS fluent builder | 4–5 |
-| Later | Rust CLI (needs the core first; plugin bridge open) 12–20 · finish proxy-rs 6–10 · Python/napi on demand | — |
+| 0 Gate | done, §11 | — |
+| 1 Harness | `conformance/` format, record script, cargo workspace, CI jobs (§4.2), relicense reebe as MIT OR Apache-2.0 | 3–4 |
+| 2 Spec data | `spec/` folder and code generation for TS and Rust; switch TS to the generated code with no change in behaviour | 3–4 |
+| 3 FEEL | `bpmnkit-feel` passes the TCK and parity cases; reebe switches to it | 3–4 |
+| 4 BPMN I/O | xml, model, parse, lossless serialize; reebe-bpmn switches | 6–8 |
+| 5 DMN + Form | model, parse, serialize, DMN evaluation; reebe-dmn switches | 4–5 |
+| 6 Tooling | lint + optimize, camunda-compat, C7 migrate | 6–8 |
+| 7 Layout | BPMN + DMN layout, coordinates within tolerance | 5–7 |
+| 8 Builder + text | Rust builder with the same output as TS, process-text and compact | 4–5 |
+| 9 Release | nightly fuzzing, crates.io publishing, docs | 1–2 |
+| Later | Rust `casen` 12–20 (start with a plugin-bridge spike), proxy-rs parity 6–10, Python bindings | — |
 
-The phases from gate through builder/ops are about 41–54 person-weeks. Each phase ships on its own, so you can stop after any of them.
+Phases 1–9 come to about 35–47 person-weeks. Each phase ships on its own:
+- After phase 3, Rust CLIs and reebe get FEEL.
+- After phase 4, they get BPMN.
+- Your Rust CLI can start on the crates after phase 4 and add features phase by phase.
 
-## 7. Risks
+## 8. Ongoing cost
 
-- **License.** Reebe is Apache-2.0, while the rest of the repo and the `@bpmnkit/reebe-wasm` npm package are MIT. Resolved by the dual license (§8).
-- **Contributors.** The repo is mostly TS, Preact and Astro. Rust work narrows the pool of contributors. Reebe gives some base.
-- **Dev loop and release.** A WASM rebuild is slower than `tsc`. Every core consumer gets a build step, so turbo inputs must include the Rust paths.
-- **Plugins.** TS plugins are sync today. Any plugin API that moves behind WASM and becomes async is a breaking change, so keep the plugin surface in TS.
-- **CLI plugins.** A Rust `casen` would need a Node bridge for TS plugins, or would have to drop them. This is the reason the CLI stays in TS for now.
-- **Bundle and cold start.** Not measured yet. That is why phase 0 exists.
+- Each new feature in the twin's scope is built twice, adding about 30–60%. The spec data and the recorded cases keep it at the low end for model and schema changes. Logic changes such as new lint rules or layout tweaks cost the most.
+- Maintenance cost of the harness and CI is about 1 day a month.
 
-## 8. Decisions (2026-11-04)
+## 9. Risks
 
-1. **Goal: both** native tooling and browser speed. Do the full core port (phases 0–8). Phase 0 still gates it.
-2. **License: dual `MIT OR Apache-2.0`** for the shared crates, which is the Rust ecosystem norm. MIT keeps the npm packages as they are. Apache-2.0 adds a patent grant. Reebe has a single author, so it can be relicensed to the dual license with no outside consent. Do this before code moves (phase 1).
-3. **Rust CLI: yes.** It stays in "Later", after the core. Its first step is a plugin-bridge spike. Option A: the Rust binary runs TS plugins in a Node subprocess over JSON-RPC. Option B: plugins are WASM components. Pick one before the port. Keep TS `casen` until the Rust CLI reaches parity.
+- **Drift through pending entries.** Mitigated by the age limit and the release gate (§4.2).
+- **Canonical model JSON.** Both sides must emit the same shape, which can force small changes in the TS model export. Define it in phase 1.
+- **Layout parity.** The float order of operations differs between JS and Rust. The ±0.5 px tolerance handles that; some cases may need algorithm notes in `spec/`.
+- **Contributors.** Fewer people know Rust. Reebe gives some base.
+- **License.** Reebe is Apache-2.0 today and has a single author. Relicense it to MIT OR Apache-2.0 in phase 1.
 
-## 9. Phase 0 results (2026-11-04)
+## 10. Decisions (2026-11-04/06)
+
+1. Goal: both native tooling and JS performance. Met by the twin.
+2. License: crates are dual `MIT OR Apache-2.0`.
+3. Rust CLI: yes, after the core, starting with a plugin-bridge spike (a Node subprocess over JSON-RPC, or WASM components). TS `casen` stays until the Rust CLI matches it.
+4. Strategy: twin with conformance sync (this document), replacing the "Rust core under a TS facade" plan of 2026-11-04.
+
+## 11. Phase 0 results (2026-11-04)
 
 Measured in scratch builds with Node 22. No tracked files changed.
 
-**Size: PASS.** The `reebe-wasm` size profile (`opt-level=z`, lto, `codegen-units=1`, `panic=abort`) plus `wasm-opt -Oz` is 1.04 MB raw, **395 KB gzip** and 304 KB brotli. The current release build is 630 KB gzip. Most of the module is `reebe_engine` (26% of code). FEEL is 6% and BPMN is 4%. Further cuts: strip the names section and `__wasm_bindgen_unstable` (~1 MB raw), split the large engine async closures, use a smaller replacement for `chrono`.
+**Size.** `reebe-wasm` with the size profile (`opt-level=z`, lto, `codegen-units=1`, `panic=abort`) plus `wasm-opt -Oz` is 1.04 MB raw, 395 KB gzip and 304 KB brotli. The current build is 630 KB gzip. `reebe_engine` is 26% of the code. FEEL is 6% and BPMN 4%.
 
-**Speed: FAIL as a reason to port.**
+**Speed:**
 
-| Case | TS | WASM | Ratio (WASM/TS) |
+| Case | TS | WASM | WASM / TS |
 |---|---|---|---|
-| FEEL, 32 expressions, warm, TS cached | 1.05 µs | 8.3 µs | 7.9× |
-| FEEL, warm, uncached | 2.95 µs | 8.3 µs | 2.8× |
-| FEEL, no context marshalling | 2.95 µs | 4.2 µs | 1.4× |
+| FEEL, 32 expressions, warm, TS parse cache on | 1.05 µs | 8.3 µs | 7.9× |
+| FEEL, warm, no cache | 2.95 µs | 8.3 µs | 2.8× |
+| FEEL, without context marshalling | 2.95 µs | 4.2 µs | 1.4× |
 | BPMN 5 KB, model returned to JS | 52 µs | 103 µs | 2.0× |
 | BPMN 65 KB, returned | 503 µs | 560 µs | 1.1× |
 | BPMN 235 KB, returned | 1.48 ms | 1.74 ms | 1.2× |
 
+- Native Rust is ~1.7–2× faster than WASM.
 - WASM init takes 3–8 ms.
-- Native Rust is about 1.7–2× faster than WASM, so a native binary is about as fast as TS on small files and about 2× faster on large ones.
-- Returning the model as a JSON string costs about the same as serde-wasm-bindgen.
-- FEEL disagreed on 3 of 32 expressions. Reebe has no `**` and no date or datetime + duration. This confirms the drift risk in §1.
-
-**Verdict: conditional go.** WASM will not make the browser faster, so drop "browser speed" as a goal. The extra cost is small in absolute terms (under 0.3 ms on the largest diagram), so it is acceptable for one shared implementation and native tools. Conditions:
-
-1. The facade must not round-trip whole models or contexts per call. Use handles or batch calls, and cache parsed FEEL on the Rust side.
-2. Phase 2 (FEEL) starts by closing the TCK gaps and ships behind the TS/WASM flag. Switch the default only when WASM is within 1.5× of TS on the bench.
-3. Keep the bench (FEEL + 4 BPMN sizes) and a 500 KB gzip budget as CI checks from phase 1.
+- FEEL results disagreed on 3 of 32 expressions: reebe has no `**` and no date or datetime + duration.
