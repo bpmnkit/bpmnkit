@@ -18,6 +18,7 @@ Behaviour (evaluation, rule logic) stays hand-written on each side; only data li
 | `lint-rules.json` | `schema/lint-rules.schema.json` | `packages/core/src/generated/lint-rules.ts` | `bpmnkit_spec::lint` |
 | `compat-rules.json` | `schema/compat-rules.schema.json` | `packages/core/src/generated/camunda-compat-data.ts` | `bpmnkit_spec::compat` |
 | `templates/connectors.json` | `schema/connector-templates.schema.json` | `packages/core/src/connectors/templates/generated.ts`, `packages/connectors/src/templates/generated.ts` | `bpmnkit_spec::templates::CONNECTOR_TEMPLATES_JSON` (raw JSON) |
+| `elements/<family>.json` | `schema/elements.schema.json` | `packages/core/src/generated/form-elements.ts` (form only) | `bpmnkit_spec::elements` (form only) |
 
 `lint-rules.json` holds bpmnlint's rule names, the `correctness` / `recommended` presets, and each native
 rule's category and `standard-size` defaults. The check functions and their messages (template literals)
@@ -32,6 +33,27 @@ built-in and inbound-connector support per version, and the plugin's rules), wit
 `pnpm update-connectors` fetches the registry and writes this file (plus `catalog-meta.json`), then runs spec-gen,
 which splits each template into the core file (binding/validation keys) and the connectors file (panel-only keys).
 Edit the JSON, not the two TS files. Rust embeds the JSON text rather than generating literals.
+
+## Element definitions
+
+`elements/<family>.json` describes one family of elements; `schema/elements.schema.json` documents every field.
+Today only `form.json` exists and is generated (`EMITTED` in `scripts/spec-gen/elements.mjs`); the format is built
+for phase 4 (`bpmn.json`, `zeebe.json`, `dmn.json`).
+
+- Header: `family` (lower case), optional `namespace` (`prefix` + `uri`), `source` (attribution and version),
+  `traits` (the family's trait vocabulary, each with a description), `elements`.
+- Element: `name`, `description`, `extends` (same family, or `family:name`), `abstract`, `attributes`, `children`,
+  `allowedIn` (parent element names, `family:name` across families), `traits`.
+- Attribute: `name`, `type` (`string|boolean|integer|number|expression|id|idref|enum`), `values` (enum only),
+  `default`, `required`.
+- Child: `element` and `multiplicity` (`1`, `0..1`, `0..*` default, `1..*`).
+- Traits are free-form flags, declared per family and checked by the generator. Form uses `keyed` (binds a value
+  to `key`), `options` (needs `values`/`valuesKey`/`valuesExpression`) and `scope` (container whose `path` opens a data scope).
+
+Phase 4 extends it without changing the format: Zeebe extension elements become elements with
+`allowedIn: ["bpmn:serviceTask", ...]` (what `ZEEBE_PLACEMENT` holds), `namespace` zeebe, attributes, and `children`
+(e.g. `ioMapping` > `input`). BPMN/DMN add `extends` and `abstract` for the type hierarchy. New per-family
+concepts go in as new optional fields or traits, then a Rust trait enum and `EMITTED` entry per family.
 
 ## Adding an area
 

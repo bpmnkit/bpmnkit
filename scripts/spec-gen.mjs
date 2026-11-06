@@ -15,7 +15,7 @@ import { fileURLToPath } from "node:url"
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..")
 
 /** Area modules, in generation order. */
-const AREAS = ["feel-builtins", "lint-rules", "compat-rules", "connector-templates"]
+const AREAS = ["feel-builtins", "lint-rules", "compat-rules", "connector-templates", "elements"]
 
 const readJson = (path) => JSON.parse(readFileSync(join(ROOT, path), "utf8"))
 
@@ -94,15 +94,18 @@ async function main() {
 	const files = {}
 	for (const name of AREAS) {
 		const area = await import(`./spec-gen/${name}.mjs`)
-		const spec = readJson(area.source)
-		const errors = validate(spec, readJson(area.schema))
-		if (errors.length > 0) {
-			console.error(
-				`${area.source} does not match ${area.schema}:\n  ${errors.slice(0, 20).join("\n  ")}`,
-			)
-			process.exit(1)
+		// An area may span several files (spec/elements/<family>.json), each generated alone.
+		for (const source of area.sources ?? [area.source]) {
+			const spec = readJson(source)
+			const errors = validate(spec, readJson(area.schema))
+			if (errors.length > 0) {
+				console.error(
+					`${source} does not match ${area.schema}:\n  ${errors.slice(0, 20).join("\n  ")}`,
+				)
+				process.exit(1)
+			}
+			Object.assign(files, area.generate(spec))
 		}
-		Object.assign(files, area.generate(spec))
 	}
 	const stale = []
 	for (const [path, content] of Object.entries(files)) {

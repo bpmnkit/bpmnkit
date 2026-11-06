@@ -3,6 +3,7 @@
 //! TypeScript in the packages, so neither side copies a table by hand.
 
 pub mod compat;
+pub mod elements;
 pub mod feel;
 pub mod lint;
 pub mod templates;
@@ -10,6 +11,7 @@ pub mod templates;
 #[rustfmt::skip]
 mod generated {
     pub mod compat_rules;
+    pub mod form_elements;
     pub mod feel_builtins;
     pub mod lint_rules;
 }

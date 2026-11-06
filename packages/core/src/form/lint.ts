@@ -1,52 +1,18 @@
 import { parseExpression } from "@bpmnkit/feel"
 import type { CheckFinding } from "../check-finding.js"
+import { FORM_ELEMENTS_BY_TRAIT, FORM_ELEMENT_NAMES } from "../generated/form-elements.js"
 
-/** form-js component types (form-js 1.x, as Camunda Tasklist renders them). */
-const KNOWN_TYPES = new Set([
-	"text",
-	"textfield",
-	"textarea",
-	"number",
-	"datetime",
-	"select",
-	"radio",
-	"checkbox",
-	"checklist",
-	"taglist",
-	"button",
-	"group",
-	"dynamiclist",
-	"iframe",
-	"image",
-	"table",
-	"html",
-	"separator",
-	"spacer",
-	"expression",
-	"filepicker",
-	"documentPreview",
-])
+// Component types and their traits come from spec/elements/form.json (pnpm spec:gen).
+const KNOWN_TYPES: ReadonlySet<string> = new Set(FORM_ELEMENT_NAMES)
 
 /** Components that bind a value to a process variable, and so need a `key`. */
-const KEYED_TYPES = new Set([
-	"textfield",
-	"textarea",
-	"number",
-	"datetime",
-	"select",
-	"radio",
-	"checkbox",
-	"checklist",
-	"taglist",
-	"expression",
-	"filepicker",
-])
+const KEYED_TYPES: ReadonlySet<string> = new Set(FORM_ELEMENTS_BY_TRAIT.keyed)
 
 /** Components that choose from a list of options. */
-const OPTION_TYPES = new Set(["select", "radio", "checklist", "taglist"])
+const OPTION_TYPES: ReadonlySet<string> = new Set(FORM_ELEMENTS_BY_TRAIT.options)
 
 /** Containers whose `path` opens a nested data scope for the keys inside them. */
-const SCOPED_CONTAINERS = new Set(["group", "dynamiclist"])
+const SCOPED_CONTAINERS: ReadonlySet<string> = new Set(FORM_ELEMENTS_BY_TRAIT.scope)
 
 const KEY_PATTERN = /^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*)*$/
 

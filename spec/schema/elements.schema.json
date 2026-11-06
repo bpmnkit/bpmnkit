@@ -1,0 +1,145 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://bpmnkit.com/spec/elements.schema.json",
+	"title": "Element family definition",
+	"description": "One family of XML or JSON elements (BPMN, Zeebe, DMN, form-js components): its elements, their attributes, children, placement and traits. Used by every file in spec/elements/. Data only; validation and serialisation logic stay in code.",
+	"type": "object",
+	"required": ["family", "source", "elements"],
+	"additionalProperties": false,
+	"properties": {
+		"$schema": { "type": "string" },
+		"family": {
+			"description": "Family name, lower case: `bpmn`, `zeebe`, `dmn`, `form`. Also the file name and the prefix of generated identifiers.",
+			"type": "string",
+			"pattern": "^[a-z][a-z0-9]*$"
+		},
+		"namespace": {
+			"description": "XML namespace of the family's elements. Absent for non-XML families such as form.",
+			"type": "object",
+			"required": ["prefix", "uri"],
+			"additionalProperties": false,
+			"properties": {
+				"prefix": {
+					"description": "Conventional prefix, e.g. `zeebe`.",
+					"type": "string",
+					"minLength": 1
+				},
+				"uri": { "description": "Namespace URI.", "type": "string", "minLength": 1 }
+			}
+		},
+		"source": {
+			"description": "Attribution: the schema, product and version the definitions are taken from.",
+			"type": "string",
+			"minLength": 1
+		},
+		"traits": {
+			"description": "The family's trait vocabulary. An element may only list traits declared here (the generator checks it). A trait is a free-form flag a consumer queries, e.g. `keyed`.",
+			"type": "array",
+			"uniqueItems": true,
+			"items": {
+				"type": "object",
+				"required": ["name", "description"],
+				"additionalProperties": false,
+				"properties": {
+					"name": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9]*$" },
+					"description": { "type": "string", "minLength": 1 }
+				}
+			}
+		},
+		"elements": {
+			"description": "The family's elements, in a stable order consumers may rely on (e.g. for messages).",
+			"type": "array",
+			"minItems": 1,
+			"items": { "$ref": "#/$defs/element" }
+		}
+	},
+	"$defs": {
+		"element": {
+			"type": "object",
+			"required": ["name"],
+			"additionalProperties": false,
+			"properties": {
+				"name": {
+					"description": "Element name: the XML local name (`taskDefinition`) or the form-js `type` (`textfield`). Unique within the family.",
+					"type": "string",
+					"minLength": 1
+				},
+				"description": { "type": "string" },
+				"extends": {
+					"description": "Name of the element this one extends; it inherits that element's attributes, children, allowedIn and traits. Unqualified (`name`) for the same family or `family:name` for another.",
+					"type": "string",
+					"minLength": 1
+				},
+				"abstract": {
+					"description": "True for a base type that is never instantiated, only extended.",
+					"type": "boolean"
+				},
+				"attributes": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/attribute" }
+				},
+				"children": {
+					"type": "array",
+					"items": { "$ref": "#/$defs/child" }
+				},
+				"allowedIn": {
+					"description": "Parent constraint: the element names (`name` or `family:name`) this element may appear directly inside. Absent means unconstrained. Zeebe placement uses it with BPMN parents, e.g. `taskDefinition` in `bpmn:serviceTask`.",
+					"type": "array",
+					"minItems": 1,
+					"uniqueItems": true,
+					"items": { "type": "string", "minLength": 1 }
+				},
+				"traits": {
+					"description": "Traits from the family's `traits` vocabulary that hold for this element.",
+					"type": "array",
+					"uniqueItems": true,
+					"items": { "type": "string", "minLength": 1 }
+				}
+			}
+		},
+		"attribute": {
+			"type": "object",
+			"required": ["name", "type"],
+			"additionalProperties": false,
+			"properties": {
+				"name": { "type": "string", "minLength": 1 },
+				"description": { "type": "string" },
+				"type": {
+					"description": "Value type. `expression` is a FEEL expression, `id` declares an id, `idref` references one, `enum` needs `values`.",
+					"enum": ["string", "boolean", "integer", "number", "expression", "id", "idref", "enum"]
+				},
+				"values": {
+					"description": "The allowed values; required for (and only for) `enum`.",
+					"type": "array",
+					"minItems": 1,
+					"uniqueItems": true,
+					"items": { "type": "string" }
+				},
+				"default": {
+					"description": "Value assumed when the attribute is absent; matches `type`.",
+					"anyOf": [{ "type": "string" }, { "type": "boolean" }, { "type": "number" }]
+				},
+				"required": {
+					"description": "True when the attribute must be present. Default false.",
+					"type": "boolean"
+				}
+			}
+		},
+		"child": {
+			"type": "object",
+			"required": ["element"],
+			"additionalProperties": false,
+			"properties": {
+				"element": {
+					"description": "Child element name (`name` or `family:name`).",
+					"type": "string",
+					"minLength": 1
+				},
+				"multiplicity": {
+					"description": "How often the child occurs: `1` exactly once, `0..1` optional, `0..*` any number, `1..*` at least once. Default `0..*`.",
+					"enum": ["1", "0..1", "0..*", "1..*"]
+				}
+			}
+		}
+	}
+}
