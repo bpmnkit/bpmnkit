@@ -99,6 +99,11 @@ pub(crate) fn timer_schedule(
     let once = |due| Schedule { due, repetitions: 1, cycle: None };
     let text = match reebe_feel::parse_and_evaluate(def.expression.trim(), ctx) {
         Ok(reebe_feel::FeelValue::Duration(ms)) => return once(now + chrono::Duration::milliseconds(ms)),
+        Ok(reebe_feel::FeelValue::YearsMonthsDuration(months)) => {
+            // Calendar arithmetic: a month has no fixed length.
+            let due = u32::try_from(months).ok().and_then(|m| now.checked_add_months(chrono::Months::new(m)));
+            return once(due.unwrap_or(now));
+        }
         Ok(reebe_feel::FeelValue::DateTime(dt)) => return once(dt),
         Ok(reebe_feel::FeelValue::String(s)) => s,
         _ => {

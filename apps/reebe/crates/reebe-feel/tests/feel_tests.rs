@@ -99,10 +99,11 @@ fn test_date_literal() {
 }
 
 #[test]
-fn test_date_invalid_returns_error() {
+fn test_date_invalid_returns_null() {
+    // bpmnkit-feel follows the DMN spec: an invalid conversion is null, not an error.
     let ctx = empty_ctx();
     let result = evaluate(r#"date("not-a-date")"#, &ctx);
-    assert!(result.is_err(), "date(not-a-date) should return an error");
+    assert_eq!(result, Ok(FeelValue::Null));
 }
 
 #[test]

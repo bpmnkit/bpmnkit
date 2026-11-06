@@ -1768,7 +1768,7 @@ fn zeebe_result_type(value: &reebe_feel::FeelValue) -> &'static str {
         FeelValue::List(_) => "ARRAY",
         FeelValue::Context(_) => "OBJECT",
         FeelValue::DateTime(_) => "DATE_TIME",
-        FeelValue::Duration(_) => "DURATION",
+        FeelValue::Duration(_) | FeelValue::YearsMonthsDuration(_) => "DURATION",
         FeelValue::Date(_) | FeelValue::Time(_) | FeelValue::Range { .. } => "UNKNOWN",
     }
 }

@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use indexmap::IndexMap;
 use std::fmt;
 use thiserror::Error;
 
@@ -10,12 +10,15 @@ pub enum FeelValue {
     Float(f64),
     String(String),
     List(Vec<FeelValue>),
-    Context(HashMap<String, FeelValue>),
+    /// Entries keep their insertion order.
+    Context(IndexMap<String, FeelValue>),
     Date(chrono::NaiveDate),
     Time(chrono::NaiveTime),
     DateTime(chrono::DateTime<chrono::Utc>),
     /// Duration in milliseconds (for simplicity)
     Duration(i64),
+    /// Years-and-months duration, in months (no fixed length in milliseconds).
+    YearsMonthsDuration(i64),
     Range {
         start: Box<FeelValue>,
         end: Box<FeelValue>,
@@ -47,7 +50,7 @@ impl FeelValue {
             FeelValue::Date(_) => "date",
             FeelValue::Time(_) => "time",
             FeelValue::DateTime(_) => "date and time",
-            FeelValue::Duration(_) => "duration",
+            FeelValue::Duration(_) | FeelValue::YearsMonthsDuration(_) => "duration",
             FeelValue::Range { .. } => "range",
         }
     }
@@ -134,6 +137,7 @@ impl fmt::Display for FeelValue {
             FeelValue::Time(t) => write!(f, "{}", t),
             FeelValue::DateTime(dt) => write!(f, "{}", dt),
             FeelValue::Duration(ms) => write!(f, "duration({}ms)", ms),
+            FeelValue::YearsMonthsDuration(months) => write!(f, "{}", iso_years_months(*months)),
             FeelValue::Range {
                 start,
                 end,
@@ -150,6 +154,18 @@ impl fmt::Display for FeelValue {
                 )
             }
         }
+    }
+}
+
+/// ISO 8601 spelling of a years-and-months duration (`P1Y2M`, `-P3M`, `P0M`).
+fn iso_years_months(months: i64) -> String {
+    let sign = if months < 0 { "-" } else { "" };
+    let total = months.unsigned_abs();
+    let (years, months) = (total / 12, total % 12);
+    match (years, months) {
+        (0, m) => format!("{sign}P{m}M"),
+        (y, 0) => format!("{sign}P{y}Y"),
+        (y, m) => format!("{sign}P{y}Y{m}M"),
     }
 }
 
@@ -203,6 +219,7 @@ impl From<FeelValue> for serde_json::Value {
             FeelValue::Time(t) => serde_json::Value::String(t.to_string()),
             FeelValue::DateTime(dt) => serde_json::Value::String(dt.to_rfc3339()),
             FeelValue::Duration(ms) => serde_json::Value::Number(ms.into()),
+            FeelValue::YearsMonthsDuration(months) => serde_json::Value::String(iso_years_months(months)),
             FeelValue::Range { .. } => serde_json::Value::Null,
         }
     }

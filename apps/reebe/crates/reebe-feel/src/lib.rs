@@ -1,7 +1,6 @@
 mod ast;
-mod builtins;
 mod context;
-mod evaluator;
+mod convert;
 mod from_ai;
 mod lexer;
 mod parser;
@@ -33,8 +32,11 @@ pub fn parse_and_evaluate(
 }
 
 /// Evaluate a FEEL expression string (without the leading `=`) with the given context.
+///
+/// Evaluation is delegated to `bpmnkit-feel`, which follows the DMN spec: an invalid
+/// operation or a missing variable is `null`, so only a syntax error is `Err`.
 pub fn evaluate(expression: &str, context: &FeelContext) -> Result<FeelValue, FeelError> {
-    let tokens = lexer::tokenize(expression)?;
-    let expr = parser::parse(tokens)?;
-    evaluator::eval(&expr, context)
+    let value = bpmnkit_feel::evaluate(expression, &convert::to_feel_context(context))
+        .map_err(|e| FeelError::ParseError(e.to_string()))?;
+    Ok(convert::from_value(value))
 }

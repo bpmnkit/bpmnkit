@@ -4899,7 +4899,7 @@ mod tests {
     <bpmn:serviceTask id="task">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="work"/>
-        <zeebe:ioMapping><zeebe:input source="=10 / divisor" target="share"/></zeebe:ioMapping>
+        <zeebe:ioMapping><zeebe:input source="=my divisor * 5" target="share"/></zeebe:ioMapping>
       </bpmn:extensionElements>
       <bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -4909,18 +4909,20 @@ mod tests {
 "#);
         let h = Harness::new();
         h.deploy(&bpmn).await;
-        h.start("proc", serde_json::json!({ "divisor": 0 })).await;
+        // bpmnkit-feel makes `10 / 0` null instead of an error, so the mapping fails on a
+        // syntax error instead: a multi-word name only parses once the variable exists.
+        h.start("proc", serde_json::json!({})).await;
         let incident = h.incidents().remove(0);
         assert_eq!(incident.error_type, "IO_MAPPING_ERROR");
         assert_eq!(element_states(&h, "task"), vec!["ACTIVATING"]);
 
-        set_variables(&h, serde_json::json!({ "divisor": 2 })).await;
+        set_variables(&h, serde_json::json!({ "my divisor": 2 })).await;
         resolve_incident(&h, incident.key).await;
         assert_eq!(element_states(&h, "task"), vec!["ACTIVATED"], "no second element instance, none left activating");
         let task_key = h.backend.list_element_instances().into_iter().find(|e| e.element_id == "task").unwrap().key;
         assert_eq!(task_key, incident.element_instance_key);
         let job = h.activatable_job("work").unwrap();
-        assert_eq!(job.variables["share"].as_f64(), Some(5.0));
+        assert_eq!(job.variables["share"].as_f64(), Some(10.0));
         h.complete_job("work", serde_json::json!({})).await;
         assert_eq!(h.process_state("proc").as_deref(), Some("COMPLETED"));
     }
@@ -6294,8 +6296,12 @@ mod tests {
             "Invalid argument: Expected either a decision id or a valid decision key, but none provided",
         );
         // A decision that fails to evaluate is a result with the failure, not a rejection.
-        let failed = evaluate(&h, serde_json::json!({ "decisionId": "greet", "variables": { "name": 1 } })).await.unwrap();
-        assert_eq!(failed["failedDecisionId"], "greet");
+        // bpmnkit-feel yields null for `"Hello " + 1` (DMN semantics) instead of failing, so the
+        // failing decision here has a syntax error.
+        let broken = greeting_dmn("Hello").replace("id=\"greet\"", "id=\"broken\"").replace("id=\"greetings\"", "id=\"broken-defs\"").replace("\"Hello \" + name", "\"Hello \" +");
+        deploy_resources(&h, &[("broken.dmn", &broken)]).await;
+        let failed = evaluate(&h, serde_json::json!({ "decisionId": "broken", "variables": { "name": 1 } })).await.unwrap();
+        assert_eq!(failed["failedDecisionId"], "broken");
         assert_ne!(failed["failureMessage"], "");
         assert!(h.backend.list_records().iter().any(|r| r.value_type == "DECISION_EVALUATION" && r.intent == "FAILED"));
     }

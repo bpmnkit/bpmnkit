@@ -49,6 +49,12 @@ metrics-exporter-prometheus = "0.15"
 # UUID
 uuid = { version = "1", features = ["v4", "serde"] }
 
+# Ordered maps (FEEL contexts keep insertion order)
+indexmap = "2"
+
+# Time zones (FEEL date-times with a zone id)
+chrono-tz = "0.10"
+
 # Regex
 regex = "1"
 
@@ -87,6 +93,7 @@ async-trait = "0.1"
 
 # Workspace crates
 reebe-protocol = { path = "crates/reebe-protocol" }
+bpmnkit-feel = { path = "../../crates/bpmnkit-feel" }
 reebe-feel = { path = "crates/reebe-feel" }
 reebe-bpmn = { path = "crates/reebe-bpmn" }
 reebe-dmn = { path = "crates/reebe-dmn" }
