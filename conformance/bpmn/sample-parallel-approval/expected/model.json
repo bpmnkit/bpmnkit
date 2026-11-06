@@ -1,0 +1,499 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "diagram1",
+      "plane": {
+        "bpmnElement": "parallel-approval",
+        "edges": [
+          {
+            "bpmnElement": "flow1",
+            "id": "flow1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 188,
+                "y": 330
+              },
+              {
+                "x": 240,
+                "y": 330
+              }
+            ]
+          },
+          {
+            "bpmnElement": "flow2",
+            "id": "flow2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 340,
+                "y": 330
+              },
+              {
+                "x": 395,
+                "y": 330
+              }
+            ]
+          },
+          {
+            "bpmnElement": "flow-mgr",
+            "id": "flow-mgr_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 420,
+                "y": 305
+              },
+              {
+                "x": 420,
+                "y": 190
+              },
+              {
+                "x": 500,
+                "y": 190
+              }
+            ]
+          },
+          {
+            "bpmnElement": "flow-legal",
+            "id": "flow-legal_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 445,
+                "y": 330
+              },
+              {
+                "x": 500,
+                "y": 330
+              }
+            ]
+          },
+          {
+            "bpmnElement": "flow-finance",
+            "id": "flow-finance_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 420,
+                "y": 355
+              },
+              {
+                "x": 420,
+                "y": 470
+              },
+              {
+                "x": 500,
+                "y": 470
+              }
+            ]
+          },
+          {
+            "bpmnElement": "flow-mgr-done",
+            "id": "flow-mgr-done_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 600,
+                "y": 190
+              },
+              {
+                "x": 685,
+                "y": 190
+              },
+              {
+                "x": 685,
+                "y": 305
+              }
+            ]
+          },
+          {
+            "bpmnElement": "flow-legal-done",
+            "id": "flow-legal-done_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 600,
+                "y": 330
+              },
+              {
+                "x": 660,
+                "y": 330
+              }
+            ]
+          },
+          {
+            "bpmnElement": "flow-finance-done",
+            "id": "flow-finance-done_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 600,
+                "y": 470
+              },
+              {
+                "x": 685,
+                "y": 470
+              },
+              {
+                "x": 685,
+                "y": 355
+              }
+            ]
+          },
+          {
+            "bpmnElement": "flow3",
+            "id": "flow3_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 710,
+                "y": 330
+              },
+              {
+                "x": 770,
+                "y": 330
+              }
+            ]
+          },
+          {
+            "bpmnElement": "flow4",
+            "id": "flow4_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 870,
+                "y": 330
+              },
+              {
+                "x": 932,
+                "y": 330
+              }
+            ]
+          }
+        ],
+        "id": "plane1",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 152,
+              "y": 312
+            },
+            "bpmnElement": "start",
+            "id": "start_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 240,
+              "y": 290
+            },
+            "bpmnElement": "prepare",
+            "id": "prepare_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 395,
+              "y": 305
+            },
+            "bpmnElement": "split",
+            "id": "split_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 500,
+              "y": 150
+            },
+            "bpmnElement": "mgr-approve",
+            "id": "mgr-approve_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 500,
+              "y": 290
+            },
+            "bpmnElement": "legal-review",
+            "id": "legal-review_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 500,
+              "y": 430
+            },
+            "bpmnElement": "finance-check",
+            "id": "finance-check_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 660,
+              "y": 305
+            },
+            "bpmnElement": "join",
+            "id": "join_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 770,
+              "y": 290
+            },
+            "bpmnElement": "finalize",
+            "id": "finalize_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 932,
+              "y": 312
+            },
+            "bpmnElement": "end",
+            "id": "end_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "name": "Request Submitted",
+          "outgoing": [
+            "flow1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "prepare",
+          "incoming": [
+            "flow1"
+          ],
+          "name": "Prepare Documents",
+          "outgoing": [
+            "flow2"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "split",
+          "incoming": [
+            "flow2"
+          ],
+          "name": "Split",
+          "outgoing": [
+            "flow-mgr",
+            "flow-legal",
+            "flow-finance"
+          ],
+          "type": "parallelGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "mgr-approve",
+          "incoming": [
+            "flow-mgr"
+          ],
+          "name": "Manager Approval",
+          "outgoing": [
+            "flow-mgr-done"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "legal-review",
+          "incoming": [
+            "flow-legal"
+          ],
+          "name": "Legal Review",
+          "outgoing": [
+            "flow-legal-done"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "finance-check",
+          "incoming": [
+            "flow-finance"
+          ],
+          "name": "Finance Check",
+          "outgoing": [
+            "flow-finance-done"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "join",
+          "incoming": [
+            "flow-mgr-done",
+            "flow-legal-done",
+            "flow-finance-done"
+          ],
+          "name": "Join",
+          "outgoing": [
+            "flow3"
+          ],
+          "type": "parallelGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "finalize",
+          "incoming": [
+            "flow3"
+          ],
+          "name": "Finalize Request",
+          "outgoing": [
+            "flow4"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "end",
+          "incoming": [
+            "flow4"
+          ],
+          "name": "Request Approved",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "parallel-approval",
+      "isExecutable": true,
+      "name": "Parallel Approval",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "flow1",
+          "sourceRef": "start",
+          "targetRef": "prepare",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flow2",
+          "sourceRef": "prepare",
+          "targetRef": "split",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flow-mgr",
+          "sourceRef": "split",
+          "targetRef": "mgr-approve",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flow-legal",
+          "sourceRef": "split",
+          "targetRef": "legal-review",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flow-finance",
+          "sourceRef": "split",
+          "targetRef": "finance-check",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flow-mgr-done",
+          "sourceRef": "mgr-approve",
+          "targetRef": "join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flow-legal-done",
+          "sourceRef": "legal-review",
+          "targetRef": "join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flow-finance-done",
+          "sourceRef": "finance-check",
+          "targetRef": "join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flow3",
+          "sourceRef": "join",
+          "targetRef": "finalize",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flow4",
+          "sourceRef": "finalize",
+          "targetRef": "end",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

@@ -1,0 +1,1531 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "Bpmndi_BPMNDiagram_--TXwH2BEeWQ6qGdY3x14w",
+      "plane": {
+        "bpmnElement": "_To9ZoTOCEeSknpIVFCxNIQ",
+        "edges": [
+          {
+            "bpmnElement": "_To9Z5DOCEeSknpIVFCxNIQ",
+            "id": "_To-AuTOCEeSknpIVFCxNIQ",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 228,
+                "y": 316
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 272,
+                "y": 316
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_To9Z5zOCEeSknpIVFCxNIQ",
+            "id": "_To-AvjOCEeSknpIVFCxNIQ",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 372,
+                "y": 317
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 459,
+                "y": 317
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_To9Z6jOCEeSknpIVFCxNIQ",
+            "id": "_To-AwzOCEeSknpIVFCxNIQ",
+            "label": {
+              "bounds": {
+                "height": 15,
+                "width": 51,
+                "x": 485,
+                "y": 236
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_CmaCsH2JEeWQ6qGdY3x14w",
+                "labelStyle": "_cVFcQTOCEeSknpIVFCxNIQ"
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 480,
+                "y": 295
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 480,
+                "y": 231
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 540,
+                "y": 231
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_To9Z7TOCEeSknpIVFCxNIQ",
+            "id": "_To-AyDOCEeSknpIVFCxNIQ",
+            "label": {
+              "bounds": {
+                "height": 15,
+                "width": 63,
+                "x": 645,
+                "y": 238
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_I4N4YH4gEeWe1Mf7vUgLJg",
+                "labelStyle": "_cVFcQTOCEeSknpIVFCxNIQ"
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 640,
+                "y": 228
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 850,
+                "y": 228
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 850,
+                "y": 292
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_To9Z8DOCEeSknpIVFCxNIQ",
+            "id": "_To-AzjOCEeSknpIVFCxNIQ",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 640,
+                "y": 316
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 702,
+                "y": 316
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 702,
+                "y": 350
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_To9Z8zOCEeSknpIVFCxNIQ",
+            "id": "_To-A0zOCEeSknpIVFCxNIQ",
+            "label": {
+              "bounds": {
+                "height": 15,
+                "width": 63,
+                "x": 645,
+                "y": 423
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_HOBncH4gEeWe1Mf7vUgLJg",
+                "labelStyle": "_cVFcQTOCEeSknpIVFCxNIQ"
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 640,
+                "y": 418
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 702,
+                "y": 418
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 702,
+                "y": 393
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_To9Z9jOCEeSknpIVFCxNIQ",
+            "id": "_To-A2TOCEeSknpIVFCxNIQ",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 724,
+                "y": 371
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 850,
+                "y": 371
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 850,
+                "y": 322
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_To9Z-TOCEeSknpIVFCxNIQ",
+            "id": "_To-A3jOCEeSknpIVFCxNIQ",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 502,
+                "y": 317
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 540,
+                "y": 317
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_To9Z_DOCEeSknpIVFCxNIQ",
+            "id": "_To-A4zOCEeSknpIVFCxNIQ",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 480,
+                "y": 338
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 480,
+                "y": 406
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 540,
+                "y": 406
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Bpmn_SequenceFlow_edepQQbbEealeL5I4Yl3Dw",
+            "id": "Bpmndi_BPMNEdge_edepQgbbEealeL5I4Yl3Dw",
+            "label": {
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_edepQwbbEealeL5I4Yl3Dw",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_edhFgAbbEealeL5I4Yl3Dw"
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 590,
+                "y": 257
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 590,
+                "y": 292
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Bpmn_SequenceFlow_f9nmUQbbEealeL5I4Yl3Dw",
+            "id": "Bpmndi_BPMNEdge_f9nmUgbbEealeL5I4Yl3Dw",
+            "label": {
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_f9nmUwbbEealeL5I4Yl3Dw",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_f9qCkAbbEealeL5I4Yl3Dw"
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 590,
+                "y": 387
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "dc:Point"
+                },
+                "x": 590,
+                "y": 342
+              }
+            ]
+          }
+        ],
+        "id": "plane__To9ZoDOCEeSknpIVFCxNIQ",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 30,
+              "width": 30,
+              "x": 198,
+              "y": 302
+            },
+            "bpmnElement": "_To9ZojOCEeSknpIVFCxNIQ",
+            "id": "_To9aGzOCEeSknpIVFCxNIQ",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 63,
+                "x": 182,
+                "y": 332
+              },
+              "unknownAttributes": {
+                "id": "_cVJGoTOCEeSknpIVFCxNIQ",
+                "labelStyle": "_cVJGoDOCEeSknpIVFCxNIQ"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#6db700"
+            }
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 100,
+              "x": 272,
+              "y": 292
+            },
+            "bpmnElement": "_To9ZpzOCEeSknpIVFCxNIQ",
+            "id": "_To9aHzOCEeSknpIVFCxNIQ",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 44,
+                "x": 300,
+                "y": 310
+              },
+              "unknownAttributes": {
+                "id": "_cVJGojOCEeSknpIVFCxNIQ",
+                "labelStyle": "_cVJGoDOCEeSknpIVFCxNIQ"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 30,
+              "x": 836,
+              "y": 292
+            },
+            "bpmnElement": "_To9ZsTOCEeSknpIVFCxNIQ",
+            "id": "_To9aIjOCEeSknpIVFCxNIQ",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 56,
+                "x": 780,
+                "y": 300
+              },
+              "unknownAttributes": {
+                "id": "_cVJGozOCEeSknpIVFCxNIQ",
+                "labelStyle": "_cVJGoDOCEeSknpIVFCxNIQ"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#be0000"
+            }
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 100,
+              "x": 540,
+              "y": 207
+            },
+            "bpmnElement": "_To9ZtjOCEeSknpIVFCxNIQ",
+            "id": "_To9aJjOCEeSknpIVFCxNIQ",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 44,
+                "x": 568,
+                "y": 225
+              },
+              "unknownAttributes": {
+                "id": "_cVJtsDOCEeSknpIVFCxNIQ",
+                "labelStyle": "_cVJGoDOCEeSknpIVFCxNIQ"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 100,
+              "x": 540,
+              "y": 292
+            },
+            "bpmnElement": "_To9ZwDOCEeSknpIVFCxNIQ",
+            "id": "_To9aKTOCEeSknpIVFCxNIQ",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 44,
+                "x": 568,
+                "y": 310
+              },
+              "unknownAttributes": {
+                "id": "_cVJtsTOCEeSknpIVFCxNIQ",
+                "labelStyle": "_cVJGoDOCEeSknpIVFCxNIQ"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          },
+          {
+            "bounds": {
+              "height": 43,
+              "width": 43,
+              "x": 459,
+              "y": 295
+            },
+            "bpmnElement": "_To9ZyjOCEeSknpIVFCxNIQ",
+            "id": "_To9aLDOCEeSknpIVFCxNIQ",
+            "label": {
+              "bounds": {
+                "height": 28,
+                "width": 68,
+                "x": 391,
+                "y": 338
+              },
+              "unknownAttributes": {
+                "id": "_cVJtsjOCEeSknpIVFCxNIQ",
+                "labelStyle": "_cVJGoDOCEeSknpIVFCxNIQ"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#b98b00"
+            }
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 100,
+              "x": 540,
+              "y": 387
+            },
+            "bpmnElement": "_To9ZzzOCEeSknpIVFCxNIQ",
+            "id": "_To9aMDOCEeSknpIVFCxNIQ",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 44,
+                "x": 568,
+                "y": 405
+              },
+              "unknownAttributes": {
+                "id": "_cVJtszOCEeSknpIVFCxNIQ",
+                "labelStyle": "_cVJGoDOCEeSknpIVFCxNIQ"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          },
+          {
+            "bounds": {
+              "height": 43,
+              "width": 43,
+              "x": 681,
+              "y": 350
+            },
+            "bpmnElement": "_To9Z2TOCEeSknpIVFCxNIQ",
+            "id": "_To9aMzOCEeSknpIVFCxNIQ",
+            "label": {
+              "bounds": {
+                "height": 28,
+                "width": 79,
+                "x": 724,
+                "y": 393
+              },
+              "unknownAttributes": {
+                "id": "_cVJttDOCEeSknpIVFCxNIQ",
+                "labelStyle": "_cVJGoDOCEeSknpIVFCxNIQ"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#b98b00"
+            }
+          }
+        ]
+      },
+      "unknownAttributes": {
+        "name": "A.2.1"
+      },
+      "unknownChildren": [
+        {
+          "attributes": {
+            "id": "_cVFcQTOCEeSknpIVFCxNIQ"
+          },
+          "children": [
+            {
+              "attributes": {
+                "name": "Segoe UI",
+                "size": "12.0"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "di:BPMNLabelStyle"
+        },
+        {
+          "attributes": {
+            "id": "_cVJGoDOCEeSknpIVFCxNIQ"
+          },
+          "children": [
+            {
+              "attributes": {
+                "name": "Arial",
+                "size": "11.0"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "di:BPMNLabelStyle"
+        },
+        {
+          "attributes": {
+            "id": "Bpmndi_BPMNLabelStyle_qtSqgAbaEealeL5I4Yl3Dw"
+          },
+          "children": [
+            {
+              "attributes": {
+                "name": "Segoe UI",
+                "size": "12.0"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "di:BPMNLabelStyle"
+        },
+        {
+          "attributes": {
+            "id": "Bpmndi_BPMNLabelStyle_yNGD8AbaEealeL5I4Yl3Dw"
+          },
+          "children": [
+            {
+              "attributes": {
+                "name": "Segoe UI",
+                "size": "12.0"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "di:BPMNLabelStyle"
+        },
+        {
+          "attributes": {
+            "id": "Bpmndi_BPMNLabelStyle_6jUIAAbaEealeL5I4Yl3Dw"
+          },
+          "children": [
+            {
+              "attributes": {
+                "name": "Segoe UI",
+                "size": "12.0"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "di:BPMNLabelStyle"
+        },
+        {
+          "attributes": {
+            "id": "Bpmndi_BPMNLabelStyle_Tu18UAbbEealeL5I4Yl3Dw"
+          },
+          "children": [
+            {
+              "attributes": {
+                "name": "Segoe UI",
+                "size": "12.0"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "di:BPMNLabelStyle"
+        },
+        {
+          "attributes": {
+            "id": "Bpmndi_BPMNLabelStyle_Y8qFAAbbEealeL5I4Yl3Dw"
+          },
+          "children": [
+            {
+              "attributes": {
+                "name": "Segoe UI",
+                "size": "12.0"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "di:BPMNLabelStyle"
+        },
+        {
+          "attributes": {
+            "id": "Bpmndi_BPMNLabelStyle_Rj7j8AbbEealeL5I4Yl3Dw"
+          },
+          "children": [
+            {
+              "attributes": {
+                "name": "Segoe UI",
+                "size": "12.0"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "di:BPMNLabelStyle"
+        },
+        {
+          "attributes": {
+            "id": "Bpmndi_BPMNLabelStyle_edhFgAbbEealeL5I4Yl3Dw"
+          },
+          "children": [
+            {
+              "attributes": {
+                "name": "Segoe UI",
+                "size": "12.0"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "di:BPMNLabelStyle"
+        },
+        {
+          "attributes": {
+            "id": "Bpmndi_BPMNLabelStyle_f9qCkAbbEealeL5I4Yl3Dw"
+          },
+          "children": [
+            {
+              "attributes": {
+                "name": "Segoe UI",
+                "size": "12.0"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "di:BPMNLabelStyle"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "exporter": "BonitaSoft",
+  "exporterVersion": "6.3.3",
+  "id": "Bpmn_Definitions_--SwsH2BEeWQ6qGdY3x14w",
+  "messages": [],
+  "namespaces": {
+    "bonitaConnector": "http://www.bonitasoft.org/studio/connector/definition/6.0",
+    "color": "http://www.omg.org/spec/BPMN/non-normative/color/1.0",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "di_1": "http://www.omg.org/spec/DD/20100524/DI",
+    "java": "http://jcp.org/en/jsr/detail?id=270",
+    "model": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "style": "http://www.w4.eu/spec/DataComposer/20120927/Diagram/Style",
+    "w4": "http://www.w4.eu/spec/BPMN/20110701/MODEL",
+    "w4graph": "http://www.w4.eu/spec/BPMN/20110930/GRAPH",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [
+        {
+          "attributes": {},
+          "children": [
+            {
+              "attributes": {
+                "autoResize": "false",
+                "background": "255,255,255",
+                "borderColor": "100,100,100",
+                "collapsed": "false",
+                "foreground": "0,0,0"
+              },
+              "children": [],
+              "name": "w4graph:basic"
+            },
+            {
+              "attributes": {
+                "gridVisible": "true",
+                "rulerUnit": "Pixels",
+                "rulerVisible": "true",
+                "snapToGrid": "true",
+                "snapToGuide": "true"
+              },
+              "children": [
+                {
+                  "attributes": {
+                    "color": "230,230,230",
+                    "spacing": "15"
+                  },
+                  "children": [],
+                  "name": "Grid"
+                },
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "VerticalRuler"
+                },
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "HorizontalRuler"
+                }
+              ],
+              "name": "w4graph:root"
+            }
+          ],
+          "name": "w4graph:graphStyle"
+        }
+      ],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "109,183,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9ZojOCEeSknpIVFCxNIQ",
+          "incoming": [],
+          "name": "Start Event",
+          "outgoing": [
+            "_To9Z5DOCEeSknpIVFCxNIQ"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {
+            "isInterrupting": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9ZpzOCEeSknpIVFCxNIQ",
+          "incoming": [
+            "_To9Z5DOCEeSknpIVFCxNIQ"
+          ],
+          "name": "Task 1",
+          "outgoing": [
+            "_To9Z5zOCEeSknpIVFCxNIQ"
+          ],
+          "type": "task",
+          "unknownAttributes": {
+            "completionQuantity": "1",
+            "startQuantity": "1"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "190,0,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9ZsTOCEeSknpIVFCxNIQ",
+          "incoming": [
+            "_To9Z7TOCEeSknpIVFCxNIQ",
+            "_To9Z9jOCEeSknpIVFCxNIQ"
+          ],
+          "name": "End Event",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9ZtjOCEeSknpIVFCxNIQ",
+          "incoming": [
+            "_To9Z6jOCEeSknpIVFCxNIQ"
+          ],
+          "name": "Task 2",
+          "outgoing": [
+            "_To9Z7TOCEeSknpIVFCxNIQ",
+            "Bpmn_SequenceFlow_edepQQbbEealeL5I4Yl3Dw"
+          ],
+          "type": "task",
+          "unknownAttributes": {
+            "completionQuantity": "1",
+            "default": "Bpmn_SequenceFlow_edepQQbbEealeL5I4Yl3Dw",
+            "startQuantity": "1"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9ZwDOCEeSknpIVFCxNIQ",
+          "incoming": [
+            "_To9Z-TOCEeSknpIVFCxNIQ",
+            "Bpmn_SequenceFlow_edepQQbbEealeL5I4Yl3Dw",
+            "Bpmn_SequenceFlow_f9nmUQbbEealeL5I4Yl3Dw"
+          ],
+          "name": "Task 3",
+          "outgoing": [
+            "_To9Z8DOCEeSknpIVFCxNIQ"
+          ],
+          "type": "task",
+          "unknownAttributes": {
+            "completionQuantity": "1",
+            "startQuantity": "1"
+          }
+        },
+        {
+          "default": "_To9Z6jOCEeSknpIVFCxNIQ",
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "185,139,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9ZyjOCEeSknpIVFCxNIQ",
+          "incoming": [
+            "_To9Z5zOCEeSknpIVFCxNIQ"
+          ],
+          "name": "Gateway\r\n(Split Flow)",
+          "outgoing": [
+            "_To9Z6jOCEeSknpIVFCxNIQ",
+            "_To9Z-TOCEeSknpIVFCxNIQ",
+            "_To9Z_DOCEeSknpIVFCxNIQ"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {
+            "gatewayDirection": "Unspecified"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9ZzzOCEeSknpIVFCxNIQ",
+          "incoming": [
+            "_To9Z_DOCEeSknpIVFCxNIQ"
+          ],
+          "name": "Task 4",
+          "outgoing": [
+            "_To9Z8zOCEeSknpIVFCxNIQ",
+            "Bpmn_SequenceFlow_f9nmUQbbEealeL5I4Yl3Dw"
+          ],
+          "type": "task",
+          "unknownAttributes": {
+            "completionQuantity": "1",
+            "default": "Bpmn_SequenceFlow_f9nmUQbbEealeL5I4Yl3Dw",
+            "startQuantity": "1"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "185,139,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9Z2TOCEeSknpIVFCxNIQ",
+          "incoming": [
+            "_To9Z8DOCEeSknpIVFCxNIQ",
+            "_To9Z8zOCEeSknpIVFCxNIQ"
+          ],
+          "name": "Gateway\n(Merge Flows)",
+          "outgoing": [
+            "_To9Z9jOCEeSknpIVFCxNIQ"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {
+            "gatewayDirection": "Unspecified"
+          }
+        }
+      ],
+      "groups": [],
+      "id": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "name": "A.2.1",
+      "sequenceFlows": [
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "false",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9Z5DOCEeSknpIVFCxNIQ",
+          "name": "",
+          "sourceRef": "_To9ZojOCEeSknpIVFCxNIQ",
+          "targetRef": "_To9ZpzOCEeSknpIVFCxNIQ",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "false",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9Z5zOCEeSknpIVFCxNIQ",
+          "name": "",
+          "sourceRef": "_To9ZpzOCEeSknpIVFCxNIQ",
+          "targetRef": "_To9ZyjOCEeSknpIVFCxNIQ",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9Z6jOCEeSknpIVFCxNIQ",
+          "name": "Default",
+          "sourceRef": "_To9ZyjOCEeSknpIVFCxNIQ",
+          "targetRef": "_To9ZtjOCEeSknpIVFCxNIQ",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "id": "_cVKUwTOCEeSknpIVFCxNIQ",
+              "language": "http://www.w3.org/1999/XPath",
+              "xsi:type": "model:tFormalExpression"
+            },
+            "text": "true"
+          },
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "false",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9Z7TOCEeSknpIVFCxNIQ",
+          "name": "Condition",
+          "sourceRef": "_To9ZtjOCEeSknpIVFCxNIQ",
+          "targetRef": "_To9ZsTOCEeSknpIVFCxNIQ",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9Z8DOCEeSknpIVFCxNIQ",
+          "sourceRef": "_To9ZwDOCEeSknpIVFCxNIQ",
+          "targetRef": "_To9Z2TOCEeSknpIVFCxNIQ",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "id": "_cVKUwzOCEeSknpIVFCxNIQ",
+              "language": "http://www.w3.org/1999/XPath",
+              "xsi:type": "model:tFormalExpression"
+            },
+            "text": ""
+          },
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "false",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9Z8zOCEeSknpIVFCxNIQ",
+          "name": "condition",
+          "sourceRef": "_To9ZzzOCEeSknpIVFCxNIQ",
+          "targetRef": "_To9Z2TOCEeSknpIVFCxNIQ",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "id": "_cVKUxDOCEeSknpIVFCxNIQ",
+              "language": "http://www.w3.org/1999/XPath",
+              "xsi:type": "model:tFormalExpression"
+            },
+            "text": ""
+          },
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9Z9jOCEeSknpIVFCxNIQ",
+          "name": "",
+          "sourceRef": "_To9Z2TOCEeSknpIVFCxNIQ",
+          "targetRef": "_To9ZsTOCEeSknpIVFCxNIQ",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "id": "_cVKUxTOCEeSknpIVFCxNIQ",
+              "language": "http://www.w3.org/1999/XPath",
+              "xsi:type": "model:tFormalExpression"
+            },
+            "text": ""
+          },
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "false",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9Z-TOCEeSknpIVFCxNIQ",
+          "name": "",
+          "sourceRef": "_To9ZyjOCEeSknpIVFCxNIQ",
+          "targetRef": "_To9ZwDOCEeSknpIVFCxNIQ",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "id": "_cVKUxjOCEeSknpIVFCxNIQ",
+              "language": "http://www.w3.org/1999/XPath",
+              "xsi:type": "model:tFormalExpression"
+            },
+            "text": ""
+          },
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "_To9Z_DOCEeSknpIVFCxNIQ",
+          "name": "",
+          "sourceRef": "_To9ZyjOCEeSknpIVFCxNIQ",
+          "targetRef": "_To9ZzzOCEeSknpIVFCxNIQ",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "Bpmn_SequenceFlow_edepQQbbEealeL5I4Yl3Dw",
+          "sourceRef": "_To9ZtjOCEeSknpIVFCxNIQ",
+          "targetRef": "_To9ZwDOCEeSknpIVFCxNIQ",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "Bpmn_SequenceFlow_f9nmUQbbEealeL5I4Yl3Dw",
+          "sourceRef": "_To9ZzzOCEeSknpIVFCxNIQ",
+          "targetRef": "_To9ZwDOCEeSknpIVFCxNIQ",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {
+        "processType": "None"
+      },
+      "unknownChildren": [
+        {
+          "attributes": {
+            "id": "_cVGqYDOCEeSknpIVFCxNIQ"
+          },
+          "children": [
+            {
+              "attributes": {
+                "id": "_cVHRcDOCEeSknpIVFCxNIQ"
+              },
+              "children": [],
+              "name": "model:inputSet"
+            },
+            {
+              "attributes": {
+                "id": "_cVH4gDOCEeSknpIVFCxNIQ"
+              },
+              "children": [],
+              "name": "model:outputSet"
+            }
+          ],
+          "name": "model:ioSpecification"
+        }
+      ]
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bonitasoft.com/_To9ZoDOCEeSknpIVFCxNIQ",
+  "unknownAttributes": {
+    "expressionLanguage": "http://groovy.codehaus.org/",
+    "name": "A.2.1",
+    "typeLanguage": "http://www.w3.org/2001/XMLSchema",
+    "w4:version": "1.0",
+    "xsi:schemaLocation": "schemaLocation http://www.omg.org/spec/BPMN/20100524/MODEL"
+  }
+}

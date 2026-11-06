@@ -1,0 +1,1335 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "ai-agent-chat-with-tools_di",
+      "plane": {
+        "bpmnElement": "ai-agent-chat-with-tools",
+        "edges": [
+          {
+            "bpmnElement": "Flow_StartEvent_TaskReceived_Gateway_RunAgent",
+            "id": "Flow_StartEvent_TaskReceived_Gateway_RunAgent_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 138,
+                "y": 203
+              },
+              {
+                "x": 222,
+                "y": 203
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_Gateway_RunAgent_AI_Agent",
+            "id": "Flow_Gateway_RunAgent_AI_Agent_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 272,
+                "y": 203
+              },
+              {
+                "x": 372,
+                "y": 203
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_AI_Agent_UserTask_ReviewAgentResponse",
+            "id": "Flow_AI_Agent_UserTask_ReviewAgentResponse_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 712,
+                "y": 203
+              },
+              {
+                "x": 812,
+                "y": 203
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied",
+            "id": "Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 912,
+                "y": 203
+              },
+              {
+                "x": 972,
+                "y": 203
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_Yes",
+            "id": "Flow_Yes_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 40,
+                "x": 1028,
+                "y": 186
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 1022,
+                "y": 203
+              },
+              {
+                "x": 1099,
+                "y": 203
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_No",
+            "id": "Flow_No_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 40,
+                "x": 1003,
+                "y": 234
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 997,
+                "y": 228
+              },
+              {
+                "x": 997,
+                "y": 511
+              },
+              {
+                "x": 247,
+                "y": 511
+              },
+              {
+                "x": 247,
+                "y": 228
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Association_StartEvent_TaskReceived_1",
+            "id": "Association_StartEvent_TaskReceived_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 120,
+                "y": 185
+              },
+              {
+                "x": 120,
+                "y": 135
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Association_AI_Agent_1",
+            "id": "Association_AI_Agent_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 542,
+                "y": 163
+              },
+              {
+                "x": 542,
+                "y": 113
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Association_FetchSafeJoke_1",
+            "id": "Association_FetchSafeJoke_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 662,
+                "y": 321
+              },
+              {
+                "x": 752,
+                "y": 371
+              }
+            ]
+          }
+        ],
+        "id": "ai-agent-chat-with-tools_di_plane",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 102,
+              "y": 185
+            },
+            "bpmnElement": "StartEvent_TaskReceived",
+            "id": "StartEvent_TaskReceived_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 168,
+                "x": 36,
+                "y": 225
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 222,
+              "y": 178
+            },
+            "bpmnElement": "Gateway_RunAgent",
+            "id": "Gateway_RunAgent_di",
+            "isMarkerVisible": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 308,
+              "width": 340,
+              "x": 372,
+              "y": 163
+            },
+            "bpmnElement": "AI_Agent",
+            "id": "AI_Agent_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 812,
+              "y": 163
+            },
+            "bpmnElement": "UserTask_ReviewAgentResponse",
+            "id": "UserTask_ReviewAgentResponse_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 972,
+              "y": 178
+            },
+            "bpmnElement": "Gateway_UserSatisfied",
+            "id": "Gateway_UserSatisfied_di",
+            "isMarkerVisible": true,
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 105,
+                "x": 945,
+                "y": 160
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 1099,
+              "y": 185
+            },
+            "bpmnElement": "EndEvent_UserSatisfied",
+            "id": "EndEvent_UserSatisfied_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 98,
+                "x": 1068,
+                "y": 225
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 422,
+              "y": 241
+            },
+            "bpmnElement": "LookupSampleUsers",
+            "id": "LookupSampleUsers_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 422,
+              "y": 341
+            },
+            "bpmnElement": "SearchRecipes",
+            "id": "SearchRecipes_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 562,
+              "y": 241
+            },
+            "bpmnElement": "FetchSafeJoke",
+            "id": "FetchSafeJoke_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 562,
+              "y": 341
+            },
+            "bpmnElement": "ListSampleTechnologyProducts",
+            "id": "ListSampleTechnologyProducts_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 115,
+              "width": 200,
+              "x": 20,
+              "y": 20
+            },
+            "bpmnElement": "TextAnnotation_StartEvent_TaskReceived_1",
+            "id": "TextAnnotation_StartEvent_TaskReceived_1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 58,
+              "width": 200,
+              "x": 442,
+              "y": 55
+            },
+            "bpmnElement": "TextAnnotation_AI_Agent_1",
+            "id": "TextAnnotation_AI_Agent_1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 101,
+              "width": 200,
+              "x": 752,
+              "y": 371
+            },
+            "bpmnElement": "TextAnnotation_FetchSafeJoke_1",
+            "id": "TextAnnotation_FetchSafeJoke_1_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [
+        {
+          "associationDirection": "None",
+          "id": "Association_StartEvent_TaskReceived_1",
+          "sourceRef": "StartEvent_TaskReceived",
+          "targetRef": "TextAnnotation_StartEvent_TaskReceived_1",
+          "unknownAttributes": {}
+        },
+        {
+          "associationDirection": "None",
+          "id": "Association_AI_Agent_1",
+          "sourceRef": "AI_Agent",
+          "targetRef": "TextAnnotation_AI_Agent_1",
+          "unknownAttributes": {}
+        },
+        {
+          "associationDirection": "None",
+          "id": "Association_FetchSafeJoke_1",
+          "sourceRef": "FetchSafeJoke",
+          "targetRef": "TextAnnotation_FetchSafeJoke_1",
+          "unknownAttributes": {}
+        }
+      ],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "formId": "ai-agent-chat-initial-request"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "StartEvent_TaskReceived",
+          "incoming": [],
+          "name": "Task to perform received",
+          "outgoing": [
+            "Flow_StartEvent_TaskReceived_Gateway_RunAgent"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Gateway_RunAgent",
+          "incoming": [
+            "Flow_StartEvent_TaskReceived_Gateway_RunAgent",
+            "Flow_No"
+          ],
+          "outgoing": [
+            "Flow_Gateway_RunAgent_AI_Agent"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "retries": "3",
+                "type": "io.camunda.agenticai:aiagent:subprocess:2"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "openai",
+                    "target": "provider.type"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "responses",
+                    "target": "provider.openai.api.type"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "custom",
+                    "target": "provider.openai.backend.type"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_ENDPOINT",
+                    "target": "provider.openai.backend.custom.endpoint"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "apiKey",
+                    "target": "provider.openai.backend.custom.authentication.type"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_KEY",
+                    "target": "provider.openai.backend.custom.authentication.apiKey"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_DEFAULT_MODEL",
+                    "target": "provider.openai.model.model"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "modelDefault",
+                    "target": "provider.openai.api.responses.effort"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=\"You are **TaskAgent**, a helpful, generic chat agent that can handle a wide variety of customer requests using your own domain knowledge **and** any tools explicitly provided to you at runtime.\n\nIf tools are provided, you should prefer them instead of guessing an answer. You can call the same tool multiple times by providing different input values. Don't guess any tools which were not explicitly configured. If no tool matches the request, try to generate an answer. If you're not able to find a good answer, return with a message stating why you're not able to.\"",
+                    "target": "data.systemPrompt.prompt"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=if is defined(followUpInput) then followUpInput else inputText",
+                    "target": "data.userPrompt.prompt"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=if is defined(followUpInput) or is defined(followUpDocuments) then followUpDocuments else inputDocuments",
+                    "target": "data.userPrompt.documents"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=agent.context",
+                    "target": "agentContext"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "in-process",
+                    "target": "data.memory.storage.type"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "20",
+                    "target": "data.memory.contextWindowSize"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "10",
+                    "target": "data.limits.maxModelCalls"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "WAIT_FOR_TOOL_CALL_RESULTS",
+                    "target": "data.events.behavior"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "text",
+                    "target": "data.response.format.type"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "false",
+                    "target": "data.response.format.parseJson"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "false",
+                    "target": "data.response.includeAssistantMessage"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "true",
+                    "target": "data.response.includeAgentContext"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=agent",
+                    "target": "agent"
+                  },
+                  "children": [],
+                  "name": "zeebe:output"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "elementTemplateVersion",
+                    "value": "1"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                },
+                {
+                  "attributes": {
+                    "key": "elementTemplateId",
+                    "value": "io.camunda.connectors.agenticai.ai-agent-subprocess.v2"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                },
+                {
+                  "attributes": {
+                    "key": "retryBackoff",
+                    "value": "PT0S"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "name": "io.camunda.agenticai.toolContainer",
+                    "value": "true"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                }
+              ],
+              "name": "zeebe:properties"
+            },
+            {
+              "attributes": {
+                "outputCollection": "toolCallResults",
+                "outputElement": "={\n  id: toolCall._meta.id,\n  name: toolCall._meta.name,\n  content: toolCallResult,\n  completedAt: now()\n}"
+              },
+              "children": [],
+              "name": "zeebe:adHoc"
+            },
+            {
+              "attributes": {
+                "agentType": "aiAgentSubProcess"
+              },
+              "children": [],
+              "name": "zeebe:agentDefinition"
+            }
+          ],
+          "flowElements": [
+            {
+              "documentation": "Lists available users. Use this tool to look up names, usernames, or IDs. Do not use it for details not returned by the service. Input: none. Returns: an array of user objects containing id, name, and username.",
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "retries": "3",
+                    "type": "io.camunda:http-json:1"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "noAuth",
+                        "target": "authentication.type"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "GET",
+                        "target": "method"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "https://jsonplaceholder.typicode.com/users",
+                        "target": "url"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "false",
+                        "target": "followRedirects"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "JSON",
+                        "target": "documentReturnFormat.choice"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "20",
+                        "target": "connectionTimeoutInSeconds"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "20",
+                        "target": "readTimeoutInSeconds"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "key": "elementTemplateVersion",
+                        "value": "18"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "elementTemplateId",
+                        "value": "io.camunda.connectors.HttpJson.v2"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "resultExpression",
+                        "value": "={toolCallResult: for user in response.body return {id: user.id, name: user.name, username: user.username}}"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "retryBackoff",
+                        "value": "PT0S"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    }
+                  ],
+                  "name": "zeebe:taskHeaders"
+                }
+              ],
+              "id": "LookupSampleUsers",
+              "incoming": [],
+              "name": "Find sample users",
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {
+                "zeebe:modelerTemplate": "io.camunda.connectors.HttpJson.v2",
+                "zeebe:modelerTemplateVersion": "18"
+              }
+            },
+            {
+              "documentation": "Searches the recipe catalog. Use this tool when a request asks for a recipe, dish, cuisine, or cooking instructions. Do not use it for unrelated food facts or guaranteed dietary safety. Input: searchQuery describing the desired dish or cuisine. Returns: matching recipe objects, or \"No result found.\"",
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "retries": "3",
+                    "type": "io.camunda:http-json:1"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "noAuth",
+                        "target": "authentication.type"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "GET",
+                        "target": "method"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "https://dummyjson.com/recipes/search",
+                        "target": "url"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "={q: fromAi(toolCall.searchQuery, \"The query describing which recipe to search (e.g. a specific dish or the cuisine).\")}",
+                        "target": "queryParameters"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "false",
+                        "target": "followRedirects"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "JSON",
+                        "target": "documentReturnFormat.choice"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "20",
+                        "target": "connectionTimeoutInSeconds"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "20",
+                        "target": "readTimeoutInSeconds"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "key": "elementTemplateVersion",
+                        "value": "18"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "elementTemplateId",
+                        "value": "io.camunda.connectors.HttpJson.v2"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "resultExpression",
+                        "value": "={toolCallResult: if count(response.body.recipes) > 0 then response.body.recipes else \"No result found.\"}"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "retryBackoff",
+                        "value": "PT0S"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    }
+                  ],
+                  "name": "zeebe:taskHeaders"
+                }
+              ],
+              "id": "SearchRecipes",
+              "incoming": [],
+              "name": "Search recipes",
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {
+                "zeebe:modelerTemplate": "io.camunda.connectors.HttpJson.v2",
+                "zeebe:modelerTemplateVersion": "18"
+              }
+            },
+            {
+              "documentation": "Fetches one random safe-mode joke. Use this tool when the user asks for a joke or humorous response. Do not use it when the request requires a specific factual answer or a particular joke topic. Input: none. Returns: the joke as plain text.",
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "retries": "3",
+                    "type": "io.camunda:http-json:1"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "noAuth",
+                        "target": "authentication.type"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "GET",
+                        "target": "method"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode",
+                        "target": "url"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "false",
+                        "target": "followRedirects"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "JSON",
+                        "target": "documentReturnFormat.choice"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "20",
+                        "target": "connectionTimeoutInSeconds"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "20",
+                        "target": "readTimeoutInSeconds"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "key": "elementTemplateVersion",
+                        "value": "18"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "elementTemplateId",
+                        "value": "io.camunda.connectors.HttpJson.v2"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "resultExpression",
+                        "value": "={toolCallResult: response.body}"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "retryBackoff",
+                        "value": "PT0S"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    }
+                  ],
+                  "name": "zeebe:taskHeaders"
+                }
+              ],
+              "id": "FetchSafeJoke",
+              "incoming": [],
+              "name": "Get a safe joke",
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {
+                "zeebe:modelerTemplate": "io.camunda.connectors.HttpJson.v2",
+                "zeebe:modelerTemplateVersion": "18"
+              }
+            },
+            {
+              "documentation": "Lists technology products. Use this tool when a request asks which devices or technology products are available or needs their attributes. Do not use it for live inventory, pricing, or purchasing. Input: none. Returns: an array of product objects with identifiers, names, and available attribute data.",
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "retries": "3",
+                    "type": "io.camunda:http-json:1"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "noAuth",
+                        "target": "authentication.type"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "GET",
+                        "target": "method"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "https://api.restful-api.dev/objects",
+                        "target": "url"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "false",
+                        "target": "followRedirects"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "JSON",
+                        "target": "documentReturnFormat.choice"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "20",
+                        "target": "connectionTimeoutInSeconds"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "20",
+                        "target": "readTimeoutInSeconds"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "key": "elementTemplateVersion",
+                        "value": "18"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "elementTemplateId",
+                        "value": "io.camunda.connectors.HttpJson.v2"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "resultExpression",
+                        "value": "={toolCallResult: response.body}"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "retryBackoff",
+                        "value": "PT0S"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    }
+                  ],
+                  "name": "zeebe:taskHeaders"
+                }
+              ],
+              "id": "ListSampleTechnologyProducts",
+              "incoming": [],
+              "name": "List sample technology products",
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {
+                "zeebe:modelerTemplate": "io.camunda.connectors.HttpJson.v2",
+                "zeebe:modelerTemplateVersion": "18"
+              }
+            }
+          ],
+          "groups": [],
+          "id": "AI_Agent",
+          "incoming": [
+            "Flow_Gateway_RunAgent_AI_Agent"
+          ],
+          "name": "AI Agent",
+          "outgoing": [
+            "Flow_AI_Agent_UserTask_ReviewAgentResponse"
+          ],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {
+            "zeebe:modelerTemplate": "io.camunda.connectors.agenticai.ai-agent-subprocess.v2",
+            "zeebe:modelerTemplateVersion": "1"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=agent.responseText",
+                    "target": "responseText"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {},
+              "children": [],
+              "name": "zeebe:userTask"
+            },
+            {
+              "attributes": {
+                "formId": "ai-agent-chat-user-feedback"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "UserTask_ReviewAgentResponse",
+          "incoming": [
+            "Flow_AI_Agent_UserTask_ReviewAgentResponse"
+          ],
+          "name": "User Feedback",
+          "outgoing": [
+            "Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Gateway_UserSatisfied",
+          "incoming": [
+            "Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied"
+          ],
+          "name": "User satisfied?",
+          "outgoing": [
+            "Flow_Yes",
+            "Flow_No"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_UserSatisfied",
+          "incoming": [
+            "Flow_Yes"
+          ],
+          "name": "User satisfied",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "ai-agent-chat-with-tools",
+      "isExecutable": true,
+      "name": "AI Agent Chat With Tools",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_StartEvent_TaskReceived_Gateway_RunAgent",
+          "sourceRef": "StartEvent_TaskReceived",
+          "targetRef": "Gateway_RunAgent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_Gateway_RunAgent_AI_Agent",
+          "sourceRef": "Gateway_RunAgent",
+          "targetRef": "AI_Agent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_AI_Agent_UserTask_ReviewAgentResponse",
+          "sourceRef": "AI_Agent",
+          "targetRef": "UserTask_ReviewAgentResponse",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied",
+          "sourceRef": "UserTask_ReviewAgentResponse",
+          "targetRef": "Gateway_UserSatisfied",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=userSatisfied"
+          },
+          "extensionElements": [],
+          "id": "Flow_Yes",
+          "name": "Yes",
+          "sourceRef": "Gateway_UserSatisfied",
+          "targetRef": "EndEvent_UserSatisfied",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=userSatisfied = null or userSatisfied = false"
+          },
+          "extensionElements": [],
+          "id": "Flow_No",
+          "name": "No",
+          "sourceRef": "Gateway_UserSatisfied",
+          "targetRef": "Gateway_RunAgent",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [
+        {
+          "id": "TextAnnotation_StartEvent_TaskReceived_1",
+          "text": "Triggered when a user submits a task for the AI agent to perform. The agent uses available tools to complete the task, and the process ends once the user confirms they are satisfied.",
+          "unknownAttributes": {}
+        },
+        {
+          "id": "TextAnnotation_AI_Agent_1",
+          "text": "This is your agent running certain tasks to reach the goal it was given",
+          "unknownAttributes": {}
+        },
+        {
+          "id": "TextAnnotation_FetchSafeJoke_1",
+          "text": "Each task you add represents a capability your agent will have. You can add new tasks and the agent will know what it's good for based on its documentation.",
+          "unknownAttributes": {}
+        }
+      ],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.10.0"
+  }
+}

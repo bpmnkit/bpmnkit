@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+                  id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="ad-hoc-tools" isExecutable="true">
+    <bpmn:startEvent id="start"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:adHocSubProcess id="Agent">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="agent"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:serviceTask id="T1">
+        <bpmn:extensionElements><zeebe:taskDefinition type="t1"/></bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="T2">
+        <bpmn:extensionElements><zeebe:taskDefinition type="t2"/></bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:endEvent id="end"><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="Agent"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="Agent" targetRef="end"/>
+  </bpmn:process>
+</bpmn:definitions>

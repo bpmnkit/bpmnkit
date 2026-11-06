@@ -1,0 +1,847 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [
+        {
+          "attributes": {
+            "value": "1.0.0"
+          },
+          "children": [],
+          "name": "zeebe:versionTag"
+        }
+      ],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "name": "Customer Onboarding Started",
+          "outgoing": [
+            "Flow_xMEWWQ9P"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "formId": "id-document-upload-form"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "uploadDocument",
+          "incoming": [
+            "Flow_xMEWWQ9P",
+            "Flow_8reekDVI"
+          ],
+          "name": "Upload Identity Document",
+          "outgoing": [
+            "Flow_aFggSXlz"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "retries": "3",
+                "type": "io.camunda:http-json:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "bearer",
+                    "target": "authentication.type"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=secrets.OCR_SERVICE_TOKEN",
+                    "target": "authentication.token"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "POST",
+                    "target": "method"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=ocrServiceUrl + \"/verify\"",
+                    "target": "url"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "={ documentId: documentId, documentType: documentType }",
+                    "target": "body"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "20",
+                    "target": "connectionTimeoutInSeconds"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "20",
+                    "target": "readTimeoutInSeconds"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "resultVariable",
+                    "value": "ocrResponse"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                },
+                {
+                  "attributes": {
+                    "key": "resultExpression",
+                    "value": "={ quality: ocrResponse.body.quality, verified: ocrResponse.body.verified }"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "verifyDocument",
+          "incoming": [
+            "Flow_aFggSXlz"
+          ],
+          "name": "Verify Document (OCR)",
+          "outgoing": [
+            "Flow_nrWGBeCZ"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "zeebe:modelerTemplate": "io.camunda.connectors.HttpJson.v2",
+            "zeebe:modelerTemplateVersion": "12"
+          }
+        },
+        {
+          "default": "Flow_RETXa3Vt",
+          "extensionElements": [],
+          "id": "qualityGateway",
+          "incoming": [
+            "Flow_nrWGBeCZ"
+          ],
+          "name": "Document Verified?",
+          "outgoing": [
+            "Flow_Vp0HOfCz",
+            "Flow_RETXa3Vt"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "expression": "=if is defined(retryCount) then retryCount + 1 else 1",
+                "resultVariable": "retryCount"
+              },
+              "children": [],
+              "name": "zeebe:script"
+            }
+          ],
+          "id": "incrementRetry",
+          "incoming": [
+            "Flow_RETXa3Vt"
+          ],
+          "name": "Increment Retry Count",
+          "outgoing": [
+            "Flow_i4OMbS2y"
+          ],
+          "type": "scriptTask",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "Flow_Y4q86h1Q",
+          "extensionElements": [],
+          "id": "retryGateway",
+          "incoming": [
+            "Flow_i4OMbS2y"
+          ],
+          "name": "Retries Remaining?",
+          "outgoing": [
+            "Flow_8reekDVI",
+            "Flow_Y4q86h1Q"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "email-sender"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "template",
+                    "value": "kyc-rejected-verification"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "sendVerificationRejection",
+          "incoming": [
+            "Flow_Y4q86h1Q"
+          ],
+          "name": "Send Rejection Notice",
+          "outgoing": [
+            "Flow_VNppp5Gg"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "endRejectedVerification",
+          "incoming": [
+            "Flow_VNppp5Gg"
+          ],
+          "name": "Rejected — Verification Failed",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "retries": "3",
+                "type": "io.camunda:http-json:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "bearer",
+                    "target": "authentication.type"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=secrets.SCREENING_SERVICE_TOKEN",
+                    "target": "authentication.token"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "POST",
+                    "target": "method"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=screeningServiceUrl + \"/screen\"",
+                    "target": "url"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "={ fullName: applicant.fullName, dateOfBirth: applicant.dateOfBirth, nationality: applicant.nationality }",
+                    "target": "body"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "20",
+                    "target": "connectionTimeoutInSeconds"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "20",
+                    "target": "readTimeoutInSeconds"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "resultVariable",
+                    "value": "screeningResponse"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                },
+                {
+                  "attributes": {
+                    "key": "resultExpression",
+                    "value": "={ sanctionsHit: screeningResponse.body.sanctionsHit, pep: screeningResponse.body.pep, riskLevel: screeningResponse.body.riskLevel }"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "screening",
+          "incoming": [
+            "Flow_Vp0HOfCz"
+          ],
+          "name": "Sanctions & PEP Screening",
+          "outgoing": [
+            "Flow_8ZqbzajU"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "zeebe:modelerTemplate": "io.camunda.connectors.HttpJson.v2",
+            "zeebe:modelerTemplateVersion": "12"
+          }
+        },
+        {
+          "default": "Flow_LXaUZMEX",
+          "extensionElements": [],
+          "id": "dueDiligenceGateway",
+          "incoming": [
+            "Flow_8ZqbzajU"
+          ],
+          "name": "Due Diligence Level?",
+          "outgoing": [
+            "Flow_hyodCBEu",
+            "Flow_LXaUZMEX"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "due-diligence-service"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "level",
+                    "value": "standard"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "standardDueDiligence",
+          "incoming": [
+            "Flow_hyodCBEu"
+          ],
+          "name": "Standard Due Diligence",
+          "outgoing": [
+            "Flow_Fj3alEoq"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "formId": "enhanced-dd-review-form"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "complianceReview",
+          "incoming": [
+            "Flow_LXaUZMEX"
+          ],
+          "name": "Enhanced Due Diligence Review",
+          "outgoing": [
+            "Flow_1u29yKxb"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "riskClassification",
+          "incoming": [
+            "Flow_WuhSJujP"
+          ],
+          "name": "Final Risk Classification",
+          "outgoing": [
+            "Flow_NFb6OA8f"
+          ],
+          "type": "businessRuleTask",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "Flow_y162Zfc7",
+          "extensionElements": [],
+          "id": "outcomeGateway",
+          "incoming": [
+            "Flow_NFb6OA8f"
+          ],
+          "name": "Classification Outcome?",
+          "outgoing": [
+            "Flow_hHN1OOEM",
+            "Flow_VHWI1YqZ",
+            "Flow_y162Zfc7"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "account-activation-service"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=applicant.id",
+                    "target": "customerId"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "activateAccount",
+          "incoming": [
+            "Flow_hHN1OOEM"
+          ],
+          "name": "Activate Customer Account",
+          "outgoing": [
+            "Flow_1busQeAe"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "endApproved",
+          "incoming": [
+            "Flow_1busQeAe"
+          ],
+          "name": "Customer Approved",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "compliance-escalation-service"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "queue",
+                    "value": "compliance-review"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "escalateToCompliance",
+          "incoming": [
+            "Flow_VHWI1YqZ"
+          ],
+          "name": "Escalate to Compliance",
+          "outgoing": [
+            "Flow_KmLNM32V"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "endEscalated",
+          "incoming": [
+            "Flow_KmLNM32V"
+          ],
+          "name": "Escalated to Compliance",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "email-sender"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "template",
+                    "value": "kyc-rejected-risk"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "sendFinalRejection",
+          "incoming": [
+            "Flow_y162Zfc7"
+          ],
+          "name": "Send Rejection Notice",
+          "outgoing": [
+            "Flow_b0dqg7ck"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "endRejected",
+          "incoming": [
+            "Flow_b0dqg7ck"
+          ],
+          "name": "Customer Rejected",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "dueDiligenceGateway_join",
+          "incoming": [
+            "Flow_Fj3alEoq",
+            "Flow_1u29yKxb"
+          ],
+          "outgoing": [
+            "Flow_WuhSJujP"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "KycOnboarding",
+      "isExecutable": true,
+      "name": "KYC Onboarding Process",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_xMEWWQ9P",
+          "sourceRef": "start",
+          "targetRef": "uploadDocument",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_aFggSXlz",
+          "sourceRef": "uploadDocument",
+          "targetRef": "verifyDocument",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_nrWGBeCZ",
+          "sourceRef": "verifyDocument",
+          "targetRef": "qualityGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=verified = true"
+          },
+          "extensionElements": [],
+          "id": "Flow_Vp0HOfCz",
+          "name": "verification-passed",
+          "sourceRef": "qualityGateway",
+          "targetRef": "screening",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_RETXa3Vt",
+          "name": "verification-failed",
+          "sourceRef": "qualityGateway",
+          "targetRef": "incrementRetry",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_i4OMbS2y",
+          "sourceRef": "incrementRetry",
+          "targetRef": "retryGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=retryCount <= 2"
+          },
+          "extensionElements": [],
+          "id": "Flow_8reekDVI",
+          "name": "retry-upload",
+          "sourceRef": "retryGateway",
+          "targetRef": "uploadDocument",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_Y4q86h1Q",
+          "name": "retries-exhausted",
+          "sourceRef": "retryGateway",
+          "targetRef": "sendVerificationRejection",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_VNppp5Gg",
+          "sourceRef": "sendVerificationRejection",
+          "targetRef": "endRejectedVerification",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_8ZqbzajU",
+          "sourceRef": "screening",
+          "targetRef": "dueDiligenceGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=sanctionsHit = false and pep = false"
+          },
+          "extensionElements": [],
+          "id": "Flow_hyodCBEu",
+          "name": "standard-dd",
+          "sourceRef": "dueDiligenceGateway",
+          "targetRef": "standardDueDiligence",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_Fj3alEoq",
+          "sourceRef": "standardDueDiligence",
+          "targetRef": "dueDiligenceGateway_join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_LXaUZMEX",
+          "name": "enhanced-dd",
+          "sourceRef": "dueDiligenceGateway",
+          "targetRef": "complianceReview",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_1u29yKxb",
+          "sourceRef": "complianceReview",
+          "targetRef": "dueDiligenceGateway_join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_NFb6OA8f",
+          "sourceRef": "riskClassification",
+          "targetRef": "outcomeGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=riskClassification.decision = \"approve\""
+          },
+          "extensionElements": [],
+          "id": "Flow_hHN1OOEM",
+          "name": "approved",
+          "sourceRef": "outcomeGateway",
+          "targetRef": "activateAccount",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_1busQeAe",
+          "sourceRef": "activateAccount",
+          "targetRef": "endApproved",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=riskClassification.decision = \"escalate\""
+          },
+          "extensionElements": [],
+          "id": "Flow_VHWI1YqZ",
+          "name": "escalated",
+          "sourceRef": "outcomeGateway",
+          "targetRef": "escalateToCompliance",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_KmLNM32V",
+          "sourceRef": "escalateToCompliance",
+          "targetRef": "endEscalated",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_y162Zfc7",
+          "name": "rejected",
+          "sourceRef": "outcomeGateway",
+          "targetRef": "sendFinalRejection",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_b0dqg7ck",
+          "sourceRef": "sendFinalRejection",
+          "targetRef": "endRejected",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_WuhSJujP",
+          "sourceRef": "dueDiligenceGateway_join",
+          "targetRef": "riskClassification",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.9.0"
+  }
+}

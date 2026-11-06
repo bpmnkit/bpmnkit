@@ -1,0 +1,1068 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_contents",
+  "messages": [
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "secrets.KEY"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Msg_secret",
+      "name": "secret",
+      "unknownAttributes": {}
+    },
+    {
+      "id": "Msg_webhook",
+      "name": "webhook",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [
+        {
+          "attributes": {},
+          "children": [
+            {
+              "attributes": {
+                "eventType": "start",
+                "type": "audit"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "key": "channel",
+                        "value": "ops"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "channel",
+                        "value": "dev"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    },
+                    {
+                      "attributes": {
+                        "key": "level",
+                        "value": "1"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    }
+                  ],
+                  "name": "zeebe:taskHeaders"
+                }
+              ],
+              "name": "zeebe:executionListener"
+            }
+          ],
+          "name": "zeebe:executionListeners"
+        }
+      ],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "outgoing": [
+            "toLoopA"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "webhookDef",
+              "messageRef": "Msg_webhook",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "name": "inbound.type",
+                    "value": "io.camunda:webhook:1"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                },
+                {
+                  "attributes": {
+                    "name": "messageTtl",
+                    "value": "PT1H"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                },
+                {
+                  "attributes": {
+                    "name": "consumeUnmatchedEvents",
+                    "value": "true"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                },
+                {
+                  "attributes": {
+                    "name": "deduplicationModeManualFlag",
+                    "value": "true"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                }
+              ],
+              "name": "zeebe:properties"
+            }
+          ],
+          "id": "webhookStart",
+          "incoming": [],
+          "outgoing": [],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "pollingDef",
+              "messageRef": "Msg_webhook",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "name": "inbound.type",
+                    "value": "io.camunda:http-polling:1"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                },
+                {
+                  "attributes": {
+                    "name": "deduplicationModeManualFlag",
+                    "value": "true"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                }
+              ],
+              "name": "zeebe:properties"
+            }
+          ],
+          "id": "pollingCatch",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "loopA",
+          "incoming": [
+            "toLoopA",
+            "backToA"
+          ],
+          "outgoing": [
+            "toLoopGateway"
+          ],
+          "type": "manualTask",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "toEnd",
+          "extensionElements": [],
+          "id": "loopGateway",
+          "incoming": [
+            "toLoopGateway"
+          ],
+          "outgoing": [
+            "toLoopB",
+            "toEnd"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "loopB",
+          "incoming": [
+            "toLoopB"
+          ],
+          "outgoing": [
+            "backToA"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "end",
+          "incoming": [
+            "toEnd"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "=\"job-\" + string(random number())"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=uuid()",
+                    "target": "id"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=from json(payload)",
+                    "target": "data"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=trim(name) + to base64(name)",
+                    "target": "label"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=partition(items, 10)",
+                    "target": "pages"
+                  },
+                  "children": [],
+                  "name": "zeebe:output"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "feelNew",
+          "incoming": [],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "={uuid: function() 1, id: uuid()}",
+                    "target": "a"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=for trim in [1] return trim(1)",
+                    "target": "b"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=uuid(",
+                    "target": "c"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "uuid()",
+                    "target": "d"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "k",
+                    "value": "=uuid()"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "feelShadowed",
+          "incoming": [],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "feelTimerDef",
+              "timeDate": "=last day of month(today())",
+              "timeDateAttributes": {
+                "xsi:type": "bpmn:tFormalExpression"
+              },
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "feelTimer",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=1",
+                    "target": "1st"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=2",
+                    "target": "my variable name"
+                  },
+                  "children": [],
+                  "name": "zeebe:output"
+                },
+                {
+                  "attributes": {
+                    "source": "=3",
+                    "target": "a.b_c"
+                  },
+                  "children": [],
+                  "name": "zeebe:output"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "badVars",
+          "incoming": [],
+          "loopCharacteristics": {
+            "extensionElements": [
+              {
+                "attributes": {
+                  "inputCollection": "=items",
+                  "inputElement": "item-x",
+                  "outputCollection": "results",
+                  "outputElement": "=item"
+                },
+                "children": [],
+                "name": "zeebe:loopCharacteristics"
+              }
+            ]
+          },
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "expression": "=1",
+                "resultVariable": "a-b"
+              },
+              "children": [],
+              "name": "zeebe:script"
+            }
+          ],
+          "id": "badResult",
+          "incoming": [],
+          "outgoing": [],
+          "type": "scriptTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "decisionId": "d",
+                "resultVariable": "2x"
+              },
+              "children": [],
+              "name": "zeebe:calledDecision"
+            }
+          ],
+          "id": "badDecisionResult",
+          "incoming": [],
+          "outgoing": [],
+          "type": "businessRuleTask",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "outputCollection": "all results",
+                "outputElement": "=r"
+              },
+              "children": [],
+              "name": "zeebe:adHoc"
+            }
+          ],
+          "flowElements": [
+            {
+              "extensionElements": [],
+              "id": "adHocInner",
+              "incoming": [],
+              "outgoing": [],
+              "type": "task",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "badOutputCollection",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "secrets.API_KEY",
+                    "target": "apiKey"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "{{secrets.TOKEN}}",
+                    "target": "token"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=camunda.secrets.OK",
+                    "target": "ok"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "name": "auth",
+                    "value": "Bearer {{secrets.AUTH}}"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                }
+              ],
+              "name": "zeebe:properties"
+            }
+          ],
+          "id": "secretsTask",
+          "incoming": [],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "secretReceive",
+          "incoming": [],
+          "messageRef": "Msg_secret",
+          "outgoing": [],
+          "type": "receiveTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "camunda.secrets.PLAIN",
+                    "target": "a"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "secretLiteral",
+          "incoming": [],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=\"Bearer camunda.secrets.QUOTED\"",
+                    "target": "a"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "secretQuoted",
+          "incoming": [],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "name": "p",
+                    "value": "camunda.secrets.PROP"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                }
+              ],
+              "name": "zeebe:properties"
+            }
+          ],
+          "id": "secretProperty",
+          "incoming": [],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "={keys: [camunda.secrets.A, camunda.secrets.B]}",
+                    "target": "a"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "secretList",
+          "incoming": [],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=if prod then {key: camunda.secrets.PROD} else null",
+                    "target": "a"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "secretIfContext",
+          "incoming": [],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "={auth: {key: camunda.secrets.A}}",
+                    "target": "a"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=([camunda.secrets.B])",
+                    "target": "b"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=camunda.secrets.C.value",
+                    "target": "c"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=if prod then camunda.secrets.D else null",
+                    "target": "d"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "secretFine",
+          "incoming": [],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "linkNoNameDef",
+              "type": "link"
+            }
+          ],
+          "extensionElements": [],
+          "id": "linkNoName",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "linkCatch1Def",
+              "name": "L",
+              "type": "link"
+            }
+          ],
+          "extensionElements": [],
+          "id": "linkCatch1",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [
+                {
+                  "id": "linkCatch2Def",
+                  "name": "L",
+                  "type": "link"
+                }
+              ],
+              "extensionElements": [],
+              "id": "linkCatch2",
+              "incoming": [],
+              "outgoing": [],
+              "type": "intermediateCatchEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [
+                {
+                  "id": "linkCatchBlankDef",
+                  "name": " ",
+                  "type": "link"
+                }
+              ],
+              "extensionElements": [],
+              "id": "linkCatchBlank",
+              "incoming": [],
+              "outgoing": [],
+              "type": "intermediateCatchEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "linkScope",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "contents",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "toLoopA",
+          "sourceRef": "start",
+          "targetRef": "loopA",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "toLoopGateway",
+          "sourceRef": "loopA",
+          "targetRef": "loopGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=is blank(reason)"
+          },
+          "extensionElements": [],
+          "id": "toLoopB",
+          "sourceRef": "loopGateway",
+          "targetRef": "loopB",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "toEnd",
+          "sourceRef": "loopGateway",
+          "targetRef": "end",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "backToA",
+          "sourceRef": "loopB",
+          "targetRef": "loopA",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "waitsStart",
+          "incoming": [],
+          "outgoing": [
+            "waitsToTask"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "waitsTask",
+          "incoming": [
+            "waitsToTask",
+            "waitsBack"
+          ],
+          "outgoing": [
+            "waitsToService"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "waitsService",
+          "incoming": [
+            "waitsToService"
+          ],
+          "outgoing": [
+            "waitsBack"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "waits",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "waitsToTask",
+          "sourceRef": "waitsStart",
+          "targetRef": "waitsTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "waitsToService",
+          "sourceRef": "waitsTask",
+          "targetRef": "waitsService",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "waitsBack",
+          "sourceRef": "waitsService",
+          "targetRef": "waitsTask",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "recursiveStart",
+          "incoming": [],
+          "outgoing": [
+            "recursiveToSub"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "recursiveSubStart",
+              "incoming": [],
+              "outgoing": [
+                "recursiveToCall"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "processId": "recursive"
+                  },
+                  "children": [],
+                  "name": "zeebe:calledElement"
+                }
+              ],
+              "id": "recursiveCall",
+              "incoming": [
+                "recursiveToCall"
+              ],
+              "outgoing": [],
+              "type": "callActivity",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "recursiveSub",
+          "incoming": [
+            "recursiveToSub"
+          ],
+          "outgoing": [],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "recursiveToCall",
+              "sourceRef": "recursiveSubStart",
+              "targetRef": "recursiveCall",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "recursive",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "recursiveToSub",
+          "sourceRef": "recursiveStart",
+          "targetRef": "recursiveSub",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.10.0"
+  }
+}

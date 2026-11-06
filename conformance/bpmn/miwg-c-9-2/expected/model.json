@@ -1,0 +1,1174 @@
+{
+  "collaborations": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "groups": [],
+      "id": "Collaboration_ManualDecision",
+      "messageFlows": [],
+      "participants": [
+        {
+          "id": "Participant_01",
+          "name": "Manual Check",
+          "processRef": "ManualCheck",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_1",
+      "plane": {
+        "bpmnElement": "Collaboration_ManualDecision",
+        "edges": [
+          {
+            "bpmnElement": "Flow_0irfroh",
+            "id": "Flow_0irfroh_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 256,
+                "y": 330
+              },
+              {
+                "x": 300,
+                "y": 330
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_1wwxns6",
+            "id": "Flow_1wwxns6_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 400,
+                "y": 330
+              },
+              {
+                "x": 452,
+                "y": 330
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_0kaot38",
+            "id": "Flow_0kaot38_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 262,
+                "y": 480
+              },
+              {
+                "x": 300,
+                "y": 480
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_1t18skh",
+            "id": "Flow_1t18skh_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 550,
+                "y": 480
+              },
+              {
+                "x": 596,
+                "y": 480
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_1octlto",
+            "id": "Flow_1octlto_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 400,
+                "y": 480
+              },
+              {
+                "x": 450,
+                "y": 480
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_0nttki4",
+            "id": "BPMNEdge_0km1hw9",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 262,
+                "y": 630
+              },
+              {
+                "x": 306,
+                "y": 630
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SequenceFlow_Yes",
+            "id": "BPMNEdge_10mgh4a",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 18,
+                "x": 477,
+                "y": 683
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 470,
+                "y": 655
+              },
+              {
+                "x": 470,
+                "y": 700
+              },
+              {
+                "x": 542,
+                "y": 700
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_1istmr0",
+            "id": "Flow_1istmr0_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 406,
+                "y": 630
+              },
+              {
+                "x": 445,
+                "y": 630
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SequenceFlow_No",
+            "id": "Flow_02x2nrk_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 15,
+                "x": 502,
+                "y": 612
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 495,
+                "y": 630
+              },
+              {
+                "x": 542,
+                "y": 630
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_08vmski",
+            "id": "Flow_08vmski_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 248,
+                "y": 130
+              },
+              {
+                "x": 296,
+                "y": 130
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_0vjv3ik",
+            "id": "Flow_0vjv3ik_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 396,
+                "y": 130
+              },
+              {
+                "x": 478,
+                "y": 130
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_03n7pdb",
+            "id": "Flow_03n7pdb_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 380,
+                "y": 188
+              },
+              {
+                "x": 380,
+                "y": 220
+              },
+              {
+                "x": 478,
+                "y": 220
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_1",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 720,
+              "width": 610,
+              "x": 150,
+              "y": 60
+            },
+            "bpmnElement": "Participant_01",
+            "id": "Participant_1obg1jw_di",
+            "isHorizontal": true,
+            "label": {},
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 296,
+              "y": 90
+            },
+            "bpmnElement": "UserTask_DecideOnApplication",
+            "id": "UserTask_1b9zsmd_di",
+            "label": {},
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 212,
+              "y": 112
+            },
+            "bpmnElement": "StartEvent_DecideManually",
+            "id": "Event_1gvnk0w_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 82,
+                "x": 194,
+                "y": 155
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 130,
+              "width": 314,
+              "x": 200,
+              "y": 270
+            },
+            "bpmnElement": "Activity_0uvp3cb",
+            "id": "Activity_0omq74z_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 220,
+              "y": 312
+            },
+            "bpmnElement": "StartMessageEvent_DocumentRequested",
+            "id": "Event_08x271y_di",
+            "label": {
+              "bounds": {
+                "height": 27,
+                "width": 52,
+                "x": 213,
+                "y": 355
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 452,
+              "y": 312
+            },
+            "bpmnElement": "EndEvent_DocumentReceived",
+            "id": "Event_072y3gq_di",
+            "label": {
+              "bounds": {
+                "height": 27,
+                "width": 52,
+                "x": 444,
+                "y": 355
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 300,
+              "y": 290
+            },
+            "bpmnElement": "CallActivity_RequestDocument",
+            "id": "Activity_1u7020p_di",
+            "label": {},
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 130,
+              "width": 540,
+              "x": 200,
+              "y": 420
+            },
+            "bpmnElement": "Activity_1esx1s7",
+            "id": "Activity_1q2kuce_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 226,
+              "y": 462
+            },
+            "bpmnElement": "StartTimerEvent_AcceleratedDecision",
+            "id": "Event_0chptl4_di",
+            "label": {
+              "bounds": {
+                "height": 27,
+                "width": 58,
+                "x": 217,
+                "y": 505
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 450,
+              "y": 440
+            },
+            "bpmnElement": "UserTask_AccelerateDecision",
+            "id": "_BPMNShape_UserTask_6",
+            "label": {},
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 596,
+              "y": 462
+            },
+            "bpmnElement": "EndEvent_DecisionAccelerated",
+            "id": "_BPMNShape_EndEvent_28",
+            "label": {
+              "bounds": {
+                "height": 27,
+                "width": 57,
+                "x": 588,
+                "y": 503
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 300,
+              "y": 440
+            },
+            "bpmnElement": "SendTask_NotifyCustomerDelay",
+            "id": "Activity_0uvyfcs_di",
+            "label": {},
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 190,
+              "width": 410,
+              "x": 200,
+              "y": 570
+            },
+            "bpmnElement": "Activity_02a6b2h",
+            "id": "BPMNShape_000cefj",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 306,
+              "y": 590
+            },
+            "bpmnElement": "UserTask_CheckForFraud",
+            "id": "BPMNShape_0bmmhhb",
+            "label": {},
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 226,
+              "y": 612
+            },
+            "bpmnElement": "StartMessageEvent_FraudSuspected",
+            "id": "Event_18lzvkq_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 82,
+                "x": 203,
+                "y": 655
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 542,
+              "y": 682
+            },
+            "bpmnElement": "ErrorEndEvent_FraudDetected",
+            "id": "Event_0kjtrta_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 76,
+                "x": 526,
+                "y": 723
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 445,
+              "y": 605
+            },
+            "bpmnElement": "Gateway_FraudDetected",
+            "id": "Gateway_0076dah_di",
+            "isMarkerVisible": true,
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 81,
+                "x": 431,
+                "y": 583
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 542,
+              "y": 612
+            },
+            "bpmnElement": "EndEvent_FraudNoDetected",
+            "id": "Event_04ww0hd_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 90,
+                "x": 517,
+                "y": 655
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 478,
+              "y": 202
+            },
+            "bpmnElement": "ErrorEndEvent_Timeout",
+            "id": "Event_1excd8o_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 40,
+                "x": 476,
+                "y": 245
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 478,
+              "y": 112
+            },
+            "bpmnElement": "EndEvent_ManuallyDecided",
+            "id": "Event_019s1qx_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 88,
+                "x": 453,
+                "y": 155
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 362,
+              "y": 152
+            },
+            "bpmnElement": "TimerEvent_Timeout",
+            "id": "Event_1o138f6_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 82,
+                "x": 389,
+                "y": 193
+              }
+            },
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "errorCode": "02",
+      "id": "Error_0hvt466",
+      "name": "Error_FraudDetected",
+      "unknownAttributes": {}
+    }
+  ],
+  "escalations": [],
+  "exporter": "Camunda Web Modeler",
+  "exporterVersion": "3cd8340",
+  "id": "_5SVkEIXnEeSmwfgVk-ryvQ",
+  "messages": [
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "= documentReferenceId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_0fvpzfg",
+      "name": "Message_DocumentRequested",
+      "unknownAttributes": {}
+    },
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=fraudSuspectedId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_10rm6h0",
+      "name": "Message_FraudSuspected",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn2": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "camunda": "http://camunda.org/schema/1.0/bpmn",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [
+        {
+          "attributes": {
+            "id": "userTaskForm_2s8lq02"
+          },
+          "children": [],
+          "name": "zeebe:userTaskForm",
+          "text": "{\n  \"components\": [\n    {\n      \"key\": \"applicationNumber\",\n      \"label\": \"Application Number\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_1djmro0\"\n    },\n    {\n      \"text\": \"<img src=\\\"http://localhost:8080/camunda/online/banking/img/core-img/logo.png\\\"><h2>Instructions:</h2><p>Based on internal protocal and the given information below, tick the checkbox for 'Approved' if this application should be approved.</p><p> Otherwise, leave this checkbox blank.</p>\",\n      \"type\": \"text\",\n      \"id\": \"Field_0e9521u\"\n    },\n    {\n      \"key\": \"applicantName\",\n      \"label\": \"Applicant\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_1ex9187\"\n    },\n    {\n      \"key\": \"age\",\n      \"label\": \"Current Age\",\n      \"type\": \"number\",\n      \"id\": \"Field_17vnd80\"\n    },\n    {\n      \"key\": \"employment\",\n      \"label\": \"Employment\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_08mj5fv\"\n    },\n    {\n      \"key\": \"category\",\n      \"label\": \"Category\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_1k7e84u\"\n    },\n    {\n      \"key\": \"priceIndication\",\n      \"label\": \"Price indication\",\n      \"type\": \"textfield\",\n      \"id\": \"Field_1d6bhc2\"\n    },\n    {\n      \"key\": \"approved\",\n      \"label\": \"Approved\",\n      \"type\": \"checkbox\",\n      \"id\": \"Field_0hwfap9\"\n    }\n  ],\n  \"schemaVersion\": 4,\n  \"type\": \"default\",\n  \"id\": \"Form_0840o2b\",\n  \"executionPlatform\": \"Camunda Cloud\",\n  \"executionPlatformVersion\": \"1.1\",\n  \"exporter\": {\n    \"name\": \"Camunda Web Modeler\",\n    \"version\": \"1db7fd4\"\n  }\n}"
+        }
+      ],
+      "flowElements": [
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "= string join(risks, \", \")",
+                    "target": "risksText"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "= applicant.age",
+                    "target": "age"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "= applicant.name",
+                    "target": "applicantName"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {
+                "candidateGroups": "clerks"
+              },
+              "children": [],
+              "name": "zeebe:assignmentDefinition"
+            },
+            {
+              "attributes": {
+                "formKey": "camunda-forms:bpmn:userTaskForm_2s8lq02"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "UserTask_DecideOnApplication",
+          "incoming": [
+            "Flow_08vmski"
+          ],
+          "name": "Decide on application",
+          "outgoing": [
+            "Flow_0vjv3ik"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "StartEvent_DecideManually",
+          "incoming": [],
+          "name": "Decide Manually",
+          "outgoing": [
+            "Flow_08vmski"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "UserTask_DecideOnApplication",
+          "eventDefinitions": [
+            {
+              "id": "TimerEventDefinition_0vna3l8",
+              "timeDuration": "P7D",
+              "timeDurationAttributes": {
+                "xsi:type": "bpmn2:tFormalExpression"
+              },
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "TimerEvent_Timeout",
+          "incoming": [],
+          "name": "Timeout (7 days)",
+          "outgoing": [
+            "Flow_03n7pdb"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [
+                {
+                  "id": "MessageEventDefinition_0cl167n",
+                  "messageRef": "Message_0fvpzfg",
+                  "type": "message"
+                }
+              ],
+              "extensionElements": [],
+              "id": "StartMessageEvent_DocumentRequested",
+              "incoming": [],
+              "isInterrupting": false,
+              "name": "Document requested",
+              "outgoing": [
+                "Flow_0irfroh"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {
+                "isInterrupting": "false"
+              }
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "EndEvent_DocumentReceived",
+              "incoming": [
+                "Flow_1wwxns6"
+              ],
+              "name": "Document Received",
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "processId": "requestDocument_en",
+                    "propagateAllChildVariables": "true"
+                  },
+                  "children": [],
+                  "name": "zeebe:calledElement"
+                }
+              ],
+              "id": "CallActivity_RequestDocument",
+              "incoming": [
+                "Flow_0irfroh"
+              ],
+              "loopCharacteristics": {
+                "extensionElements": [
+                  {
+                    "attributes": {
+                      "inputCollection": "=documents",
+                      "inputElement": "document"
+                    },
+                    "children": [],
+                    "name": "zeebe:loopCharacteristics"
+                  }
+                ]
+              },
+              "name": "Document Request",
+              "outgoing": [
+                "Flow_1wwxns6"
+              ],
+              "type": "callActivity",
+              "unknownAttributes": {
+                "calledElement": "requestDocument_en"
+              }
+            }
+          ],
+          "groups": [],
+          "id": "Activity_0uvp3cb",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "Flow_0irfroh",
+              "sourceRef": "StartMessageEvent_DocumentRequested",
+              "targetRef": "CallActivity_RequestDocument",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_1wwxns6",
+              "sourceRef": "CallActivity_RequestDocument",
+              "targetRef": "EndEvent_DocumentReceived",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "triggeredByEvent": true,
+          "type": "subProcess",
+          "unknownAttributes": {
+            "triggeredByEvent": "true"
+          }
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [
+                {
+                  "id": "TimerEventDefinition_0kdavba",
+                  "timeCycle": "R1/P5D",
+                  "timeCycleAttributes": {
+                    "xsi:type": "bpmn2:tFormalExpression"
+                  },
+                  "type": "timer"
+                }
+              ],
+              "extensionElements": [],
+              "id": "StartTimerEvent_AcceleratedDecision",
+              "incoming": [],
+              "isInterrupting": false,
+              "name": "Accelerated decision",
+              "outgoing": [
+                "Flow_0kaot38"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {
+                "isInterrupting": "false"
+              }
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "candidateGroups": "teamleaders"
+                  },
+                  "children": [],
+                  "name": "zeebe:assignmentDefinition"
+                }
+              ],
+              "id": "UserTask_AccelerateDecision",
+              "incoming": [
+                "Flow_1octlto"
+              ],
+              "name": "Accelerate decision making",
+              "outgoing": [
+                "Flow_1t18skh"
+              ],
+              "type": "userTask",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "EndEvent_DecisionAccelerated",
+              "incoming": [
+                "Flow_1t18skh"
+              ],
+              "name": "Decision accelerated",
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "notifyCustomerDelay"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "SendTask_NotifyCustomerDelay",
+              "incoming": [
+                "Flow_0kaot38"
+              ],
+              "name": "Notify customer about delay",
+              "outgoing": [
+                "Flow_1octlto"
+              ],
+              "type": "sendTask",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "Activity_1esx1s7",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "Flow_0kaot38",
+              "sourceRef": "StartTimerEvent_AcceleratedDecision",
+              "targetRef": "SendTask_NotifyCustomerDelay",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_1t18skh",
+              "sourceRef": "UserTask_AccelerateDecision",
+              "targetRef": "EndEvent_DecisionAccelerated",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_1octlto",
+              "sourceRef": "SendTask_NotifyCustomerDelay",
+              "targetRef": "UserTask_AccelerateDecision",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "triggeredByEvent": true,
+          "type": "subProcess",
+          "unknownAttributes": {
+            "triggeredByEvent": "true"
+          }
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "candidateGroups": "riskteam"
+                  },
+                  "children": [],
+                  "name": "zeebe:assignmentDefinition"
+                }
+              ],
+              "id": "UserTask_CheckForFraud",
+              "incoming": [
+                "Flow_0nttki4"
+              ],
+              "name": "Check for Fraud",
+              "outgoing": [
+                "Flow_1istmr0"
+              ],
+              "type": "userTask",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [
+                {
+                  "id": "MessageEventDefinition_1qmxrb4",
+                  "messageRef": "Message_10rm6h0",
+                  "type": "message"
+                }
+              ],
+              "extensionElements": [],
+              "id": "StartMessageEvent_FraudSuspected",
+              "incoming": [],
+              "isInterrupting": false,
+              "name": "Fraud suspected",
+              "outgoing": [
+                "Flow_0nttki4"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {
+                "isInterrupting": "false"
+              }
+            },
+            {
+              "eventDefinitions": [
+                {
+                  "errorRef": "Error_0hvt466",
+                  "id": "ErrorEventDefinition_06wkgx9",
+                  "type": "error"
+                }
+              ],
+              "extensionElements": [],
+              "id": "ErrorEndEvent_FraudDetected",
+              "incoming": [
+                "SequenceFlow_Yes"
+              ],
+              "name": "Fraud Detected",
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "default": "SequenceFlow_No",
+              "extensionElements": [],
+              "id": "Gateway_FraudDetected",
+              "incoming": [
+                "Flow_1istmr0"
+              ],
+              "name": "Fraud detected?",
+              "outgoing": [
+                "SequenceFlow_No",
+                "SequenceFlow_Yes"
+              ],
+              "type": "exclusiveGateway",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "EndEvent_FraudNoDetected",
+              "incoming": [
+                "SequenceFlow_No"
+              ],
+              "name": "Fraud no detected",
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "Activity_02a6b2h",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "Flow_0nttki4",
+              "sourceRef": "StartMessageEvent_FraudSuspected",
+              "targetRef": "UserTask_CheckForFraud",
+              "unknownAttributes": {}
+            },
+            {
+              "conditionExpression": {
+                "attributes": {
+                  "xsi:type": "bpmn2:tFormalExpression"
+                },
+                "text": "=fraud"
+              },
+              "extensionElements": [],
+              "id": "SequenceFlow_Yes",
+              "name": "Yes",
+              "sourceRef": "Gateway_FraudDetected",
+              "targetRef": "ErrorEndEvent_FraudDetected",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_1istmr0",
+              "sourceRef": "UserTask_CheckForFraud",
+              "targetRef": "Gateway_FraudDetected",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "SequenceFlow_No",
+              "name": "No",
+              "sourceRef": "Gateway_FraudDetected",
+              "targetRef": "EndEvent_FraudNoDetected",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "triggeredByEvent": true,
+          "type": "subProcess",
+          "unknownAttributes": {
+            "triggeredByEvent": "true"
+          }
+        },
+        {
+          "eventDefinitions": [
+            {
+              "errorRef": "Error_0hvt466",
+              "id": "ErrorEventDefinition_0zy5rzo",
+              "type": "error"
+            }
+          ],
+          "extensionElements": [],
+          "id": "ErrorEndEvent_Timeout",
+          "incoming": [
+            "Flow_03n7pdb"
+          ],
+          "name": "Timeout",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_ManuallyDecided",
+          "incoming": [
+            "Flow_0vjv3ik"
+          ],
+          "name": "Manually Decided",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "ManualCheck",
+      "isExecutable": true,
+      "name": "Manual Check",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_08vmski",
+          "sourceRef": "StartEvent_DecideManually",
+          "targetRef": "UserTask_DecideOnApplication",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_0vjv3ik",
+          "sourceRef": "UserTask_DecideOnApplication",
+          "targetRef": "EndEvent_ManuallyDecided",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_03n7pdb",
+          "sourceRef": "TimerEvent_Timeout",
+          "targetRef": "ErrorEndEvent_Timeout",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://camunda.org/schema/1.0/bpmn",
+  "unknownAttributes": {
+    "camunda:diagramRelationId": "8dc12e9b-19d8-4ead-b538-41e8a4a9b4b2",
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.1.0",
+    "xsi:schemaLocation": "http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+  },
+  "unknownChildren": [
+    {
+      "attributes": {
+        "importType": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+        "location": "C.9.1.bpmn",
+        "namespace": "http://bpmn.io/schema/bpmn/Definitions_1"
+      },
+      "children": [],
+      "name": "bpmn2:import"
+    }
+  ]
+}
