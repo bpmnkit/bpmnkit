@@ -730,6 +730,17 @@ mod tests {
     }
 
     #[test]
+    fn multi_instance_loop_with_an_id_converts() {
+        // Regression: TS threw because such a loop has no `unknownAttributes`.
+        let (out, _) = run(&c8(
+            r#"<bpmn:task id="t"><bpmn:multiInstanceLoopCharacteristics id="m" isSequential="false"/></bpmn:task>"#,
+            "",
+        ));
+        assert!(out.contains(r#"id="m""#));
+        no_zeebe(&out);
+    }
+
+    #[test]
     fn the_input_is_not_modified() {
         let defs = parse_bpmn(&c8(
             r#"<bpmn:serviceTask id="t"><bpmn:extensionElements><zeebe:taskDefinition type="x"/></bpmn:extensionElements></bpmn:serviceTask>"#,

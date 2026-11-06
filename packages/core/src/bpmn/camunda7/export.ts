@@ -275,7 +275,11 @@ export function convertCamunda8To7(definitions: BpmnDefinitions): Camunda8To7Con
 		}
 		if (typeof value !== "object" || value === null) return
 		const record = value as Record<string, unknown>
-		if (isOwner(record)) convertOwner(record)
+		if (isOwner(record)) {
+			// A multi-instance loop with an id has extensionElements but no unknownAttributes.
+			record.unknownAttributes ??= {}
+			convertOwner(record)
+		}
 		else if (typeof record.unknownAttributes === "object" && record.unknownAttributes !== null) {
 			stripForeignAttrs(record.unknownAttributes as Record<string, string>)
 		}
