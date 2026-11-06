@@ -117,7 +117,7 @@ async function checkBpmn(
 			severity: f.severity,
 			...(f.elementIds[0] !== undefined ? { elementId: f.elementIds[0] } : {}),
 			message: f.message,
-			fix: f.suggestion !== "" ? f.suggestion : "See the rule's documentation.",
+			fix: `${f.suggestion !== "" ? f.suggestion : "See the rule's documentation."} (agent-cards/bpmn.md#traps)`,
 		}),
 	)
 	return { rows, refs: referencesOf(file, outcome.defs) }

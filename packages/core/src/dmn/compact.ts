@@ -123,7 +123,7 @@ export function expandDmn(compact: CompactDmn): DmnDefinitions {
 			if (!isDecision && !isInput) {
 				const valid = [...compact.decisions, ...compact.inputData].map((d) => d.id).join(", ")
 				throw new ValidationError(
-					`Decision "${cd.id}" requires unknown id "${srcId}". Valid ids: ${valid || "(none)"}. Use ids, not names.`,
+					`Decision "${cd.id}" requires unknown id "${srcId}". Valid ids: ${valid || "(none)"}. Use ids, not names. See agent-cards/dmn.md#traps.`,
 				)
 			}
 			return {

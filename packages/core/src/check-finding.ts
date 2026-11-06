@@ -1,3 +1,11 @@
+/** Appends the pointer to a card's trap list, so a fix loop learns where the rule is explained. */
+export function withCardHint(
+	findings: CheckFinding[],
+	card: "bpmn" | "dmn" | "form",
+): CheckFinding[] {
+	return findings.map((f) => ({ ...f, fix: `${f.fix} (agent-cards/${card}.md#traps)` }))
+}
+
 /** How bad a {@link CheckFinding} is. `error` means the resource will not deploy or run as written. */
 export type CheckSeverity = "error" | "warning" | "info"
 

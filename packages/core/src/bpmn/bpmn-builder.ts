@@ -1306,7 +1306,7 @@ function resolveBoundaryEventArgs(
 
 	if (typeof options?.attachedTo !== "string" || options.attachedTo === "") {
 		throw new ValidationError(
-			`boundaryEvent("${id}") requires the id of the activity it attaches to. Pass it as options.attachedTo, as boundaryEvent("${id}", hostId, options), or use withBoundary() to attach to the preceding activity.`,
+			`boundaryEvent("${id}") requires the id of the activity it attaches to. Pass it as options.attachedTo, as boundaryEvent("${id}", hostId, options), or use withBoundary() to attach to the preceding activity. See agent-cards/bpmn.md#traps.`,
 		)
 	}
 	return options

@@ -27,6 +27,21 @@ export type {
 } from "./compact.js"
 
 /** Entry point for DMN decision table operations. */
+/**
+ * Top-level DMN namespace: build, parse and export decision tables and DRDs.
+ *
+ * @example
+ * ```typescript
+ * const defs = Dmn.createDecisionTable("risk")
+ *   .input({ label: "Score", expression: "score", typeRef: "number" })
+ *   .output({ label: "Level", name: "level", typeRef: "string" })
+ *   .rule({ inputs: ["> 700"], outputs: ['"low"'] })
+ *   .build()
+ * const xml = Dmn.export(defs)
+ * ```
+ *
+ * @see node_modules/@bpmnkit/core/agent-cards/dmn.md — runnable script and traps (~1k tokens)
+ */
 export const Dmn = {
 	/** Create a new DMN decision table using the fluent builder API. */
 	createDecisionTable(decisionId: string): DecisionTableBuilder {
@@ -36,6 +51,18 @@ export const Dmn = {
 	/**
 	 * Create a multi-decision DRD. `decision()` returns a handle; pass it (or a
 	 * `drgId()`) in `requires` of a later decision. Labels are rejected at build time.
+	 *
+	 * @example
+	 * ```typescript
+	 * const drd = Dmn.drd("Loan")
+	 * const risk = drd.decision("risk", (t) => t.input({ expression: "score" }).output({ name: "level" }))
+	 * drd.decision("offer", (t) => t.input({ expression: "level" }).output({ name: "rate" }), {
+	 *   requires: [risk], // the handle, not a name
+	 * })
+	 * const xml = drd.toXml()
+	 * ```
+	 *
+	 * @see node_modules/@bpmnkit/core/agent-cards/dmn.md — the multi-decision DRD script
 	 */
 	drd(name?: string): DrdBuilder {
 		return new DrdBuilder(name)

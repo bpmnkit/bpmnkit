@@ -69,6 +69,8 @@ export const SAMPLE_BPMN_XML = `<?xml version="1.0" encoding="UTF-8"?>
  *
  * const xml2 = Bpmn.export(defs2)
  * ```
+ *
+ * @see node_modules/@bpmnkit/core/agent-cards/bpmn.md — runnable script and traps (~1k tokens)
  */
 export const Bpmn = {
 	/**

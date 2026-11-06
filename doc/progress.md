@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-11-06 — Agent onboarding: cards ship in `@bpmnkit/core`
+
+- Eval agents with only `@bpmnkit/core` read the 20 KB README and the `.d.ts` every session (32–49% of cost). The package now ships `AGENTS.md` (19 lines), `llms.txt` and `agent-cards/{bpmn,dmn,form}.md`; `scripts/sync-agent-cards.mjs` writes them from `apps/cli/agent-cards`, and the existing `--check` test fails on drift.
+- READMEs of core and cli open with an agent pointer (`scripts/generate-readmes.mjs`, `AGENT_BLOCKS`). The generator now also writes the agent-card line in the root README that had been hand-added.
+- `.d.ts`: `@packageDocumentation` and `@see` card paths. Builder `ValidationError`s, `lintDmn`/`lintForm` fixes and `casen check` BPMN fixes end with `agent-cards/<type>.md#traps`.
+- `scripts/eval-agent-onboarding/measure.mjs` packs and installs core and reports what an agent would find (no LLM). Manual before/after run: its README.
+
 ## 2026-11-06 — `casen check --deploy`: user task without a form is an error
 
 - `compat/user-task-definition` is promoted to an error in the deploy profile (it was a warning, so the errors-only gate hid it). `--user-task-forms off` still disables it; elsewhere it stays off or a warning. Merged `claude/eval-layout-aesthetics` into the integration branch.

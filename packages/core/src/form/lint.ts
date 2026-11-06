@@ -1,5 +1,5 @@
 import { parseExpression } from "@bpmnkit/feel"
-import type { CheckFinding } from "../check-finding.js"
+import { type CheckFinding, withCardHint } from "../check-finding.js"
 
 /** form-js component types (form-js 1.x, as Camunda Tasklist renders them). */
 const KNOWN_TYPES = new Set([
@@ -83,6 +83,10 @@ interface Walk {
  * ```
  */
 export function lintForm(json: string): CheckFinding[] {
+	return withCardHint(lintFormFindings(json), "form")
+}
+
+function lintFormFindings(json: string): CheckFinding[] {
 	let root: unknown
 	try {
 		root = JSON.parse(json)
