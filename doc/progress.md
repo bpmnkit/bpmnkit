@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-11-06 — Rust twin phase 1: conformance harness
+
+- `conformance/`: 298 FEEL cases and 16 BPMN cases, with expected outputs recorded from TS (`pnpm conformance:record`). Vitest checks TS against them, and the CI `conformance-ts` step fails on drift.
+- `crates/bpmnkit-conformance` (new root cargo workspace, MIT OR Apache-2.0) runs the cases against Rust. For now FEEL runs against `reebe-feel`: 153 pass and 161 are pending in `conformance/pending.json`. All BPMN cases are pending until `bpmnkit-bpmn` exists. CI job `conformance-rs`.
+- Reebe is relicensed to `MIT OR Apache-2.0`.
+- Found a reebe-feel bug: contexts are stored in a `HashMap`, so `get entries` order is random. Case `contexts/7` is pending until phase 3.
+
 ## 2026-11-06 — Rust proposal rewritten: TS + Rust twin
 
 - `doc/rust-rewrite-proposal.md` now proposes a Rust twin of the core (BPMN, DMN, Form, FEEL, lint, layout, compat), kept in sync with TS by a shared conformance suite, `spec/` data with generated code on both sides, CI parity gates and nightly differential fuzzing. Reebe moves onto the shared crates. About 35–47 person-weeks. No code changed.

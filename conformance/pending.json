@@ -54,6 +54,7 @@
   "contexts/21": "blessed: failing, needs triage",
   "contexts/22": "blessed: failing, needs triage",
   "contexts/5": "blessed: failing, needs triage",
+  "contexts/7": "reebe-feel stores contexts in a HashMap, so entry order is random (FEEL contexts are ordered); fixed by bpmnkit-feel in phase 3",
   "lists/1": "blessed: failing, needs triage",
   "lists/13": "blessed: failing, needs triage",
   "lists/17": "blessed: failing, needs triage",
