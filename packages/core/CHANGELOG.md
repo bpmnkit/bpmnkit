@@ -1,5 +1,20 @@
 # @bpmnkit/core
 
+## 1.8.0
+
+### Minor Changes
+
+- f6cc4ac: An agent with only `@bpmnkit/core` installed now finds the agent cards: the package ships `AGENTS.md`, `llms.txt` and `agent-cards/{bpmn,dmn,form}.md` (new `agents` field in `package.json`). The README opens with a pointer to them, the `.d.ts` has a `@packageDocumentation` and `@see` card links on `Bpmn`, `Dmn`, `Dmn.drd()` and `Form`, and builder errors and `lintDmn`/`lintForm`/`casen check` findings end with `agent-cards/<type>.md#traps`.
+- 1ab40d0: `casen check <file...>` checks `.bpmn`, `.dmn` and `.form` files in one call, plus the form and decision references between them, with a rule id, element id and fix hint per finding (`--json`, `--deploy`, `--sketch`). Core adds `lintDmn(xml)` and `lintForm(json)`, and `OptimizeOptions.userTaskForms` to turn off the "user task needs a form" rule, which `casen lint` and `casen check` now report only under the deploy profile. `casen lint lint --profile sketch` skips all Camunda 8 deployability rules.
+- f6cc4ac: Camunda 8.10 is now the default target: the BPMN builder stamps `executionPlatformVersion` `8.10.0` (was `8.9.0`), the form builder `8.10.0` (was `8.7.0`), the DMN builders `8.10.0` (was `8.5.0`) and the Camunda 7 migration `8.10.0` (was `8.8.0`). `.executionPlatformVersion("8.8.0")` and the migration's `executionPlatformVersion` option still override it. The agent cards no longer warn that 8.10 is not the default.
+- 1ab40d0: Add `Dmn.drd()` builder for multi-decision DRDs: `decision()` returns typed handles, `requires` takes a handle or `drgId()` and throws at build time on unknown ids (listing valid ids, suggesting the id when a label is passed). `expandDmn` now throws on dangling `requires`.
+- 1ab40d0: Auto-layout of new diagrams reads more hand-drawn: ~60 px column gaps (wider only where a flow or event label needs room, 100 px beside expanded containers), 60 px row gaps, branch rows that clear only the shapes they sit under, sub-processes aligned on their inner spine, gateway and event labels moved off the flows leaving them, branch conditions placed at the gateway exit, and routes that avoid running along unrelated flows. A participant-less primary process in a collaboration is now stacked below the pools instead of on top of them. `exportSvg` no longer wraps labels that fit their box and no longer draws the collapsed "+" marker on expanded sub-processes. Layouts that keep existing DI are unchanged.
+
+### Patch Changes
+
+- 1ab40d0: Compact `expand` derives ids for the event definitions it creates.
+- 1ab40d0: Builder assigns deterministic ids to event definitions (Zeebe 8.10 rejects them without), new `deploy/event-definition-no-id` lint rule, and forms keep `conditional` and unknown component props on round trip.
+
 ## 1.7.0
 
 ### Minor Changes

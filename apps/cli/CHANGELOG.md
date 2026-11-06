@@ -1,5 +1,28 @@
 # @bpmnkit/cli
 
+## 1.5.0
+
+### Minor Changes
+
+- 1ab40d0: Agent cards: `casen agent-card bpmn|dmn|form` prints a ~1–1.5k-token cheat sheet per file type (runnable create/export/edit/validate script, top options, traps). The cards are also docs pages, ranked first in `@bpmnkit/docspack`, whose `llms.txt` now opens with a "Start here" entry (new `docspack.startHere` build option). `casen skills install` adds `/dmn` and `/form`.
+- 1ab40d0: `casen check <file...>` checks `.bpmn`, `.dmn` and `.form` files in one call, plus the form and decision references between them, with a rule id, element id and fix hint per finding (`--json`, `--deploy`, `--sketch`). Core adds `lintDmn(xml)` and `lintForm(json)`, and `OptimizeOptions.userTaskForms` to turn off the "user task needs a form" rule, which `casen lint` and `casen check` now report only under the deploy profile. `casen lint lint --profile sketch` skips all Camunda 8 deployability rules.
+
+### Patch Changes
+
+- f6cc4ac: An agent with only `@bpmnkit/core` installed now finds the agent cards: the package ships `AGENTS.md`, `llms.txt` and `agent-cards/{bpmn,dmn,form}.md` (new `agents` field in `package.json`). The README opens with a pointer to them, the `.d.ts` has a `@packageDocumentation` and `@see` card links on `Bpmn`, `Dmn`, `Dmn.drd()` and `Form`, and builder errors and `lintDmn`/`lintForm`/`casen check` findings end with `agent-cards/<type>.md#traps`.
+- f6cc4ac: Camunda 8.10 is now the default target: the BPMN builder stamps `executionPlatformVersion` `8.10.0` (was `8.9.0`), the form builder `8.10.0` (was `8.7.0`), the DMN builders `8.10.0` (was `8.5.0`) and the Camunda 7 migration `8.10.0` (was `8.8.0`). `.executionPlatformVersion("8.8.0")` and the migration's `executionPlatformVersion` option still override it. The agent cards no longer warn that 8.10 is not the default.
+- 1ab40d0: `casen check --deploy` and `casen lint --profile deploy` report a user task without a form as an error.
+- Updated dependencies [f6cc4ac]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [f6cc4ac]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [f6cc4ac]
+  - @bpmnkit/core@1.8.0
+  - @bpmnkit/patterns@0.1.2
+
 ## 1.4.1
 
 ### Patch Changes
