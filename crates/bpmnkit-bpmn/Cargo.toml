@@ -1,0 +1,17 @@
+[package]
+name = "bpmnkit-bpmn"
+description = "BPMN 2.0 + Zeebe model, parser and lossless serializer for BPMN Kit (Rust twin of @bpmnkit/core's BPMN I/O)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+bpmnkit-spec = { path = "../bpmnkit-spec" }
+bpmnkit-xml = { path = "../bpmnkit-xml" }
+indexmap = { workspace = true }
+serde = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }

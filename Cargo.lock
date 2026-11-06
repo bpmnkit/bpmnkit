@@ -57,6 +57,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "bpmnkit-bpmn"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-spec",
+ "bpmnkit-xml",
+ "indexmap",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "bpmnkit-conformance"
 version = "0.1.0"
 dependencies = [
@@ -82,6 +93,16 @@ dependencies = [
 name = "bpmnkit-spec"
 version = "0.1.0"
 dependencies = [
+ "serde_json",
+]
+
+[[package]]
+name = "bpmnkit-xml"
+version = "0.1.0"
+dependencies = [
+ "indexmap",
+ "quick-xml",
+ "serde",
  "serde_json",
 ]
 
@@ -245,6 +266,8 @@ checksum = "cc4e190f5d26ca7051642629da2c52fc03bde85a03197c99408dcd291734c855"
 dependencies = [
  "equivalent",
  "hashbrown",
+ "serde",
+ "serde_core",
 ]
 
 [[package]]
@@ -346,6 +369,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "985e7ec9bb745e6ce6535b544d84d6cd6f7ad8bd711c398938ae983b91a766d9"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "quick-xml"
+version = "0.36.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f7649a7b4df05aed9ea7ec6f628c67c9953a43869b8bc50929569b2999d443fe"
+dependencies = [
+ "memchr",
 ]
 
 [[package]]
