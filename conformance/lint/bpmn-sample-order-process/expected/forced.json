@@ -1,0 +1,156 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 6,
+    "info": 1,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "flow-yes"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"flow-yes\" exits a decision gateway without a condition expression.",
+      "plane": "order-process",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "flow-no"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"flow-no\" exits a decision gateway without a condition expression.",
+      "plane": "order-process",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "gw-check"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"gw-check\" has 2 outgoing flows but no default flow set.",
+      "plane": "order-process",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "gw-merge"
+      ],
+      "fixable": false,
+      "id": "naming/join-gateway-labeled",
+      "message": "Gateway \"gw-merge\" (join) is named \"Merge\" — join gateways should not have labels.",
+      "plane": "order-process",
+      "processId": "order-process",
+      "severity": "info",
+      "suggestion": "Remove the label from join-only gateways; their semantics are implicit."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "gw-check"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Valid?\" has no default sequence flow.",
+      "plane": "order-process",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Order Received\" has no documentation describing expected input variables.",
+      "plane": "order-process",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "validate"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Validate Order\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "order-process",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "process"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Process Order\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "order-process",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "reject"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Reject Order\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "order-process",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "notify"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Send Notification\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "order-process",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 10
+}

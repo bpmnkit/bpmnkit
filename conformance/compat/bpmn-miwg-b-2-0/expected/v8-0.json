@@ -1,0 +1,976 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_cba8fbed-2bb6-40a9-8ac5-83e827ce9d9f"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Conditional start event \"Start Event 4 Conditional\" needs Camunda 8.9 or newer; this model targets Camunda 8.0.",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.9 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c57a5344-213f-4834-a6c3-94ce878b413c"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "User task \"User Task 12 Muti-Inst. Seq.\" is multi-instance without a zeebe:loopCharacteristics.",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "error",
+      "suggestion": "Set the input collection to iterate over."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c57a5344-213f-4834-a6c3-94ce878b413c"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"User Task 12 Muti-Inst. Seq.\" has no zeebe:formDefinition.",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_7f4fe4ea-901f-4c74-bcd4-e933495712fd"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"User Task 13\" has no zeebe:formDefinition.",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_86b052b4-225c-424e-b900-bb94bdd77cec"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message boundary event \"Boundary Intermediate Event Interrupting Message\" references no message.",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_3bfec246-ab94-4807-a79a-3df91ac13800"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Service Task 14\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_778ff738-a5af-4373-a8da-0fbbfae9e00a"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Terminate end event \"End Event 5 Terminate\" needs Camunda 8.1 or newer; this model targets Camunda 8.0.",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c9870992-6643-4094-acfd-d76e5e37941b"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"User Task 8\" has no zeebe:formDefinition.",
+      "processId": "WFP-6-1",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_708d55c8-684a-4e3b-a69d-69c620cd0ac0"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Escalation boundary event \"\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_2a08c361-be51-437e-a86d-c62798c14e83"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 5\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_732c0641-b12f-448b-b9f8-a68b355782e3"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Conditional boundary event \"Boundary Intermediate Event Non-Interrupting Conditional\" needs Camunda 8.9 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.9 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8f41085a-3302-4cfc-9231-23bb4b43c7a1"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 9\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_4e71bf73-1719-401e-a9a2-85dc89fc1150"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer start event \"Start Event 1 Timer\" has an empty timeDate.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Set a timer value."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_5cc02d0f-c090-4e48-8da3-f32cbbca9565"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal end event \"End Event 3 Signal\" needs Camunda 8.3 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_b67ba682-c8d6-465b-b538-c287db18d1be"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Message end event \"End Event 1\nMessage\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_0e87da16-736e-45b2-95e5-8f45940f3adf"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"User Task 3\" has no zeebe:formDefinition.",
+      "processId": "WFP-6-1",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_ac1fde31-c0cd-4a8a-9728-a5fb49602de7"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Service Task 4\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_dec393e7-f182-4d31-b05f-e33ac3a5e35f"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Inclusive gateway \"Inclusive Gateway 1\" needs Camunda 8.1 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c9cb2415-6a2e-49d6-84b9-27babcde4088"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Conditional intermediate catch event \"Intermediate Event Conditional Catch\" needs Camunda 8.9 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.9 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_a01498ae-086c-4adc-9229-ec3135bc2bcf"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 10\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_76ee26df-2c95-495b-9d9a-cb806aea6baf"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Send task \"Send Task 2\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_149a6e1d-0385-4d0f-a90c-c2150a291a67"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "Sub-process \"Collapsed Sub-Process 1 Multi-Instances\" is multi-instance without a zeebe:loopCharacteristics.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Set the input collection to iterate over."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_b9343536-6490-4559-8365-71d5c4cbb7cb"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "User task \"User Task 7 Standard Loop\" is a standard loop; Camunda only runs multi-instance loops.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Make it multi-instance, or model the loop with a gateway."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_b9343536-6490-4559-8365-71d5c4cbb7cb"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"User Task 7 Standard Loop\" has no zeebe:formDefinition.",
+      "processId": "WFP-6-1",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_0326fdf5-7c71-41d9-838c-ab141a1b1ed0"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal intermediate throw event \"Intermediate Event Signal Throw 1\" needs Camunda 8.3 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_a74c1d4d-db90-43ff-8920-139a300b39a5"
+      ],
+      "fixable": false,
+      "id": "compat/called-element",
+      "message": "Call activity \"Call Activity calling a Global User Task\" has no zeebe:calledElement processId.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Set the id of the process to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f3698a93-fe0b-4f49-bfa6-68d055936af3"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 6\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_d84e5824-7bb7-4057-9dba-6c8794f7948c"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Abstract Task 1\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_a9966baf-d9b9-4be1-a4d9-2906ab5add30"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Conditional Sequence Flow\" leaves Inclusive gateway \"Inclusive Gateway 1\" without a condition and is not its default flow.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_149a6e1d-0385-4d0f-a90c-c2150a291a67"
+      ],
+      "fixable": false,
+      "id": "compat/collapsed-subprocess",
+      "message": "Sub-process \"_149a6e1d-0385-4d0f-a90c-c2150a291a67\" is drawn collapsed, which needs Camunda 8.4 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Expand the sub-process, or target Camunda 8.4 or newer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_6936f794-7bbb-4aa1-ae48-3a35bab4e2f4"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Service Task 22\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_6936f794-7bbb-4aa1-ae48-3a35bab4e2f4"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "Service task \"Service Task 22\" is multi-instance without a zeebe:loopCharacteristics.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Set the input collection to iterate over."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_5a6baa94-303a-4750-bde2-e1cd6edace37"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer boundary event \"Boundary Intermediate Event Non-Interrupting Timer\" uses timeDate, which needs Camunda 8.3 or newer on this event; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_3c56e6dc-bc87-4d98-b499-462c5b741c5a"
+      ],
+      "fixable": false,
+      "id": "compat/error-reference",
+      "message": "Error boundary event \"Boundary Intermediate Event Interrupting Error\" references no error; catching every error needs Camunda 8.2 or newer, this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:error with an error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_fa90f891-fc07-463a-97c9-2ee0812351e1"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Service Task 15\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_68ca1f8b-5028-4079-9e35-619b529f4d71"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Conditional boundary event \"Boundary Intermediate Event Interrupting Conditional\" needs Camunda 8.9 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.9 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1237e756-d53c-4591-a731-dafffbf0b3f9"
+      ],
+      "fixable": false,
+      "id": "compat/called-element",
+      "message": "Call activity \"Collapsed Call Activity\" has no zeebe:calledElement processId.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Set the id of the process to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_45ceee21-0f15-4bf8-87a9-b3f808173e61"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Escalation boundary event \"Boundary Intermediate Event Non-Interrupting Escalation\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_73343358-7838-48a1-baf2-2b0266e3a55b"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 23\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e454657a-0173-41a4-a4c7-d16ec224f2e1"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal boundary event \"Boundary Intermediate Event Non-Interrupting Signal\" needs Camunda 8.3 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_137281ee-758e-4c36-8942-74c5d807e1b3"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 21\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_79341f54-50d4-4c60-85f3-fe8839a7554b"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer boundary event \"Boundary Intermediate Event Interrupting Timer\" uses timeDate, which needs Camunda 8.3 or newer on this event; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_15e9a3bf-53de-40d8-8364-7f534b175ff4"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 17\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e369fd30-1a71-4d0e-b4d7-2174dd5ba388"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message boundary event \"Boundary Intermediate Event Non-Interrupting Message\" references no message.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_dbca671f-08b6-4b58-a614-62b98fa36be5"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 18\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f2081fdb-3b8a-480b-9f61-fbf683e2018c"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"Intermediate Event Message Catch\" references no message.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_3a19ce2d-e30d-461c-aeaa-b2acb118f9a4"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Escalation intermediate throw event \"\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_ba16239e-181e-4b9f-bc5b-0bb2ee973450"
+      ],
+      "fixable": false,
+      "id": "compat/called-element",
+      "message": "Call activity \"Expanded Call Activity\" has no zeebe:calledElement processId.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Set the id of the process to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_a38484e2-7bdb-48b1-b62e-139d51d6a147"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message start event \"Start Event 2 Message\" references message \"Message_1373638080955\", which has no name.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Name the message — Camunda correlates on it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c889aa27-e389-48eb-aa18-613ec53614e7"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Message end event \"End Event 6\nMessage\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c889aa27-e389-48eb-aa18-613ec53614e7"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"Message_1373638080954\" used by Message end event \"End Event 6\nMessage\" has no zeebe:subscription.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f27040d5-765c-493c-bbe7-9fb6ad04cbdc"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Link intermediate throw event \"Intermediate Event Link\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_796ccbc5-ad88-465c-849a-87447a0283d3"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Message intermediate throw event \"Intermediate Event Message Throw\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_05c6bc89-5265-435c-8a9e-533c44a6888b"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"Intermediate Event Message Catch 2\" references no message.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_511d95ed-38f9-473e-9466-525285a007f5"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 11\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_187063b6-107e-4ac9-bdb3-e8ce9d83763d"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 19\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f07e4bd2-768d-42c6-a8d5-24d1c3bfa3cb"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Receive task \"Receive Task 16\" references no message.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_663e9963-9cf6-4032-9652-3a20f50dcda3"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 24\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_034907bf-d3d7-4629-818c-14c3e69d5bc6"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"Intermediate Event Timer Catch\" uses timeDate, which needs Camunda 8.3 or newer on this event; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_d58753a7-d38b-49cd-914d-14e4cdaa4449"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 32\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_209105e0-96fc-4278-8451-3b2a1dd18ec9"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal boundary event \"\" needs Camunda 8.3 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_25beeb17-acc3-4cca-9590-f1cd2f353434"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal start event \"Start Event 6 Signal\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_928cd158-ebe1-4c0a-9c3e-42e77d663aa2"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 28\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_0ab0e0ac-f88b-4402-9986-e95a72dfc8a3"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 33\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_242b8e6c-681c-438e-ab34-729255121eff"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 25\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_25a1f26b-d8b8-4b9b-b768-f14b8d104f9c"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 30\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8476a0f7-36b7-4666-a3b2-c18efcc68a94"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal intermediate throw event \"Intermediate Event Signal Throw 2\" needs Camunda 8.3 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_10ecbff1-cd15-4a5c-9aa5-6f2a35479416"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Inclusive gateway \"Inclusive Gateway 6\" needs Camunda 8.1 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_4f5e6e50-d9d0-4f97-959a-d1b8e1e32788"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Link intermediate catch event \"Intermediate Event Link\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_cbebc7f2-9fb5-4fbf-a6dc-13140c784da7"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 26\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e233b5e1-244d-422e-8886-4588b7566122"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal intermediate catch event \"Intermediate Event Signal Catch\" needs Camunda 8.3 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_6d90f706-17c9-4635-87c2-ccab31e9a32d"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 31\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_d60db966-c03d-4f0e-a5bd-945525fa0aaf"
+      ],
+      "fixable": false,
+      "id": "compat/error-reference",
+      "message": "Error end event \"End Event 13 Error\" references no error.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:error with an error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8021571a-7a77-426b-b824-545cc61f7334"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"\" leaves Exclusive gateway \"Exclusive Gateway 7\" without a condition and is not its default flow.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_5d70a293-03ea-4a73-bed0-65ad145796d6"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"\" leaves Exclusive gateway \"Exclusive Gateway 7\" without a condition and is not its default flow.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_dfb273c6-0ad3-4030-9e72-638adf7ca75f"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Escalation end event \"End Event 11 Escalation\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_56ab3884-4b26-4398-be6f-5f0bb5f81be4"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 29\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_0e99d67a-a88a-4631-85cc-aa1f9cd8cc5e"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 27\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8b98cde1-aec2-46e8-8be2-d9aa244fcda6"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"\" leaves Exclusive gateway \"Exclusive Gateway 4\" without a condition and is not its default flow.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_0263ca9e-2ca0-4f4e-b7dd-86e15dcf2447"
+      ],
+      "fixable": false,
+      "id": "compat/collapsed-subprocess",
+      "message": "Sub-process \"_0263ca9e-2ca0-4f4e-b7dd-86e15dcf2447\" is drawn collapsed, which needs Camunda 8.4 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Expand the sub-process, or target Camunda 8.4 or newer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_13fbe8ab-af64-4b54-8efb-4c91dd6c6c18"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 34\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-0-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

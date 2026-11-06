@@ -1,0 +1,182 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 4,
+    "info": 2,
+    "warning": 6
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "_f1478fb7-98c4-4c01-8c15-68bd04c91535"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_f1478fb7-98c4-4c01-8c15-68bd04c91535\" exits a decision gateway without a condition expression.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_a1570a53-28d2-41b1-a3a2-3e50c00d747e"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_a1570a53-28d2-41b1-a3a2-3e50c00d747e\" exits a decision gateway without a condition expression.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b\" exits a decision gateway without a condition expression.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_35fe57a7-1302-44e2-bf58-032f11af7ecb"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" has 3 outgoing flows but no default flow set.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_258f51eb-b764-4a71-b681-3a01cca14143"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_258f51eb-b764-4a71-b681-3a01cca14143\" (endEvent) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_35fe57a7-1302-44e2-bf58-032f11af7ecb"
+      ],
+      "fixable": false,
+      "id": "naming/gateway-not-a-question",
+      "message": "Gateway \"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" is named \"Gateway\n(Split Flow)\" — split gateways should be phrased as questions.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "info",
+      "suggestion": "Rephrase as a question, e.g. \"Gateway\n(Split Flow)?\""
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_35fe57a7-1302-44e2-bf58-032f11af7ecb",
+        "_f1478fb7-98c4-4c01-8c15-68bd04c91535"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"_f1478fb7-98c4-4c01-8c15-68bd04c91535\" from split gateway \"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" has no condition label.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_35fe57a7-1302-44e2-bf58-032f11af7ecb",
+        "_a1570a53-28d2-41b1-a3a2-3e50c00d747e"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"_a1570a53-28d2-41b1-a3a2-3e50c00d747e\" from split gateway \"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" has no condition label.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_35fe57a7-1302-44e2-bf58-032f11af7ecb",
+        "_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b\" from split gateway \"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" has no condition label.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_33c66216-391c-49c2-aa19-d8f0b7f5f91d"
+      ],
+      "fixable": false,
+      "id": "naming/join-gateway-labeled",
+      "message": "Gateway \"_33c66216-391c-49c2-aa19-d8f0b7f5f91d\" (join) is named \"Gateway\n(Merge Flows)\" — join gateways should not have labels.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "info",
+      "suggestion": "Remove the label from join-only gateways; their semantics are implicit."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_35fe57a7-1302-44e2-bf58-032f11af7ecb"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Gateway\n(Split Flow)\" has no default sequence flow.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_6b5db6a9-037a-49ad-9201-09201e2aaa97"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start Event\" has no documentation describing expected input variables.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 12
+}

@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/engine-testing/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

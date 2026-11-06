@@ -1,0 +1,412 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f8973a92-3d84-4672-a1a3-b0df154121e1"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Send \ncandidate Contract\" has no zeebe:formDefinition.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_aa275782-c989-49ba-bf94-c58916ca7bb5"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Get signature on contract and notify responsible department\" has no zeebe:formDefinition.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_987b9b74-333a-4043-a72a-daadf667acc7"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Review terms of contract\" has no zeebe:formDefinition.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_0e71ed63-93f9-44b6-a89d-da9628652926"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Inform employee of company policies\" has no zeebe:formDefinition.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_eba690b9-34ef-49e4-b265-1411809d9302"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Introduce employee to company Mission, Vision and Values\" has no zeebe:formDefinition.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_67944b4c-4950-45a2-a131-1c4679c6b433"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Perform training for time reports sick leave and holidays\" has no zeebe:formDefinition.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Register for medical insurance\" has no zeebe:formDefinition.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_986cf801-0780-49d3-91cd-2cc6d3c1aac3"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Request preparations for a new employee\" has no zeebe:formDefinition.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_855451b0-5298-48b2-a81d-84ecbcca0a85"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal intermediate throw event \"New employee in department X\" needs Camunda 8.3 or newer; this model targets Camunda 8.0.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_72da5cee-0456-4c3c-ba8d-6dd085d6f52d"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Introduce new employee to the team\" has no zeebe:formDefinition.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e3d3ac43-74a3-48ff-9a02-e64b1358cc34"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Perform training for position\" has no zeebe:formDefinition.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_fe77c2f2-278f-4752-9d03-aa0c8a12af1e"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"Input from Payroll ready\" references no message.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_db9147a9-7fbc-4657-a506-15e777f2cfd9"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"Input from Facilities ready\" references no message.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_74e2cc7b-99ca-426b-ad53-ad70a56506aa"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"Input from IT ready\" references no message.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_351b058e-c37c-4fb7-9d32-24075f53ce02"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Compile welcome package\" has no zeebe:formDefinition.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_52401cbb-02b8-4eaf-84f1-1edbc0854a4a"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Give employee welcome package\" has no zeebe:formDefinition.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_237c8380-5449-446e-a323-aad80181176d"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Yes\" leaves Exclusive gateway \"Contract terms accepted ?\" without a condition and is not its default flow.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_7e9d8b8b-faa9-4264-858b-7454702c4ec2"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"No\" leaves Exclusive gateway \"Contract terms accepted ?\" without a condition and is not its default flow.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e9306b3f-3a77-42e1-b53e-2ed8ee45486d"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal start event \"New \nemployee\nhired\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Create domain account\" has no zeebe:formDefinition.",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_912f731a-fb6b-499b-a3f4-4c1632d606bd"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Assign required applications and permissions\" has no zeebe:formDefinition.",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_9db2d136-aa33-4de2-be76-554e7843363d"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Configure workstation\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_ad173aff-cfe3-4098-8c65-02f783ad9e1f"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Prepare IT part of welcome package\" has no zeebe:formDefinition.",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c82dd8eb-ce54-4aa7-b8c4-b8d3e8fd654e"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Message end event \"Workstation and permissions ready\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_3d4130c6-48c9-47fe-8e95-2eeb56060e2b"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal start event \"New \nemployee\nhired\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_ae47ce79-bd91-452b-be68-47a2ea589e75"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Validate provided information\" has no zeebe:formDefinition.",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_788443d9-65f0-43a4-96a8-63e8d6f380a7"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "Manual task \"Clarify missing points\" is a standard loop; Camunda only runs multi-instance loops.",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Make it multi-instance, or model the loop with a gateway."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Update payroll system\" has no zeebe:formDefinition.",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_efbd0983-76cd-4a4c-acf3-6dde71d7c760"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Message end event \"Payroll ready\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_ca6f904d-e30d-4777-a7dd-661650e1e3a2"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"No\" leaves Exclusive gateway \"All necessary data available?\" without a condition and is not its default flow.",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_12e2f256-ec10-4a8d-934c-329143c588d8"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Yes\" leaves Exclusive gateway \"All necessary data available?\" without a condition and is not its default flow.",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_94a62738-dc7a-49f6-81d8-f5642f7ae850"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal start event \"New \nemployee \nhired\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "_3486bf55-0a7f-4ff1-be15-1555669f58ad",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_737503c8-10bc-483f-8871-5461d822b469"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Configure access details\" has no zeebe:formDefinition.",
+      "processId": "_3486bf55-0a7f-4ff1-be15-1555669f58ad",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_5ee09fe4-f38f-454d-b6e4-1c3703a6a239"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Message end event \"Access \ncard \nready\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_3486bf55-0a7f-4ff1-be15-1555669f58ad",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    }
+  ]
+}

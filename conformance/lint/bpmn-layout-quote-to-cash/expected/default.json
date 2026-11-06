@@ -1,0 +1,1143 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 10,
+    "info": 54,
+    "warning": 28
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "signatureCheck"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"signatureCheck\" has 2 outgoing flows but no default flow set.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "approvalDecision"
+      ],
+      "fixable": false,
+      "id": "flow/mixed-gateway",
+      "message": "Gateway \"approvalDecision\" (exclusiveGateway) has 2 incoming and 2 outgoing flows — it acts as both a join and a split simultaneously.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Separate into two gateways: one join (merging incoming flows) followed by one split (branching outgoing flows)."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "endContractRejected"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"endContractRejected\" (endEvent) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "generateContract"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"generateContract\" (serviceTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "endPaymentReceived"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"endPaymentReceived\" (endEvent) has 3 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "sendForSignature",
+        "processPayment"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "2 service tasks share a similar configuration (taskType=\"io.camunda:http-json:1\") and could be reused via a call activity.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sendForSignature"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Send Contract for E-Signature\" calls an HTTP connector but has no error boundary event.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Charge Payment Gateway\" calls an HTTP connector but has no error boundary event.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "signatureCheck"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Contract Signed?\" has no default sequence flow.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "provisionBundle"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Provision Bundled Order\" has no error boundary event.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "dunning"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Dunning & Cash Collection\" has no error boundary event.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "managerApproval"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Manager Discount Approval\" has no timer boundary event.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "vpApproval"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"VP Discount Approval\" has no timer boundary event.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sendForSignature"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Send Contract for E-Signature\" has no output variable mapping.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "provisionStandard"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Provision Standard Order\" has no output variable mapping.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Charge Payment Gateway\" has no output variable mapping.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Opportunity Received\" has no documentation describing expected input variables.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sendForSignature",
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"io.camunda:http-json:1\" is used by 2 service tasks.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "generateQuote"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:opportunity",
+      "message": "Variable \"opportunity\" is referenced but never set in this process.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "\"opportunity\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "generateContract"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:contract",
+      "message": "Variable \"contract\" is referenced but never set in this process.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "\"contract\" is never set. Did you mean \"contractId\"?"
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sendForSignature",
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:bearer",
+      "message": "Variable \"bearer\" is referenced but never set in this process.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "\"bearer\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sendForSignature",
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:secrets",
+      "message": "Variable \"secrets\" is referenced but never set in this process.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "\"secrets\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sendForSignature",
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:POST",
+      "message": "Variable \"POST\" is referenced but never set in this process.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "\"POST\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sendForSignature"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:esignatureUrl",
+      "message": "Variable \"esignatureUrl\" is referenced but never set in this process.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "\"esignatureUrl\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "generateInvoice"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:invoice",
+      "message": "Variable \"invoice\" is referenced but never set in this process.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "\"invoice\" is never set. Did you mean \"invoiceId\"?"
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:paymentGatewayUrl",
+      "message": "Variable \"paymentGatewayUrl\" is referenced but never set in this process.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "\"paymentGatewayUrl\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "collectionsAgency"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:collectionResult",
+      "message": "Variable \"collectionResult\" is referenced but never set in this process.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "\"collectionResult\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "approvalDecision"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:discountApproved",
+      "message": "Variable \"discountApproved\" is referenced but never set in this process.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "\"discountApproved\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "signatureCheck"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:signatureResponse",
+      "message": "Variable \"signatureResponse\" is referenced but never set in this process.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "\"signatureResponse\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "collectionCheck"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:paymentReceived",
+      "message": "Variable \"paymentReceived\" is referenced but never set in this process.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "\"paymentReceived\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "generateQuote"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:lineItems",
+      "message": "Variable \"lineItems\" is set but never read by any downstream element.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"lineItems\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "generateQuote"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:pricingTier",
+      "message": "Variable \"pricingTier\" is set but never read by any downstream element.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"pricingTier\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "generateQuote"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:quoteTotal",
+      "message": "Variable \"quoteTotal\" is set but never read by any downstream element.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"quoteTotal\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "generateContract"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:contractId",
+      "message": "Variable \"contractId\" is set but never read by any downstream element.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"contractId\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sendForSignature",
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:authentication.type",
+      "message": "Variable \"authentication.type\" is set but never read by any downstream element.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"authentication.type\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sendForSignature",
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:authentication.token",
+      "message": "Variable \"authentication.token\" is set but never read by any downstream element.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"authentication.token\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sendForSignature",
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:method",
+      "message": "Variable \"method\" is set but never read by any downstream element.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"method\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sendForSignature",
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:url",
+      "message": "Variable \"url\" is set but never read by any downstream element.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"url\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sendForSignature",
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:connectionTimeoutInSeconds",
+      "message": "Variable \"connectionTimeoutInSeconds\" is set but never read by any downstream element.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"connectionTimeoutInSeconds\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sendForSignature",
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:readTimeoutInSeconds",
+      "message": "Variable \"readTimeoutInSeconds\" is set but never read by any downstream element.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"readTimeoutInSeconds\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "generateInvoice"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:amountDue",
+      "message": "Variable \"amountDue\" is set but never read by any downstream element.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"amountDue\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "generateQuote"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:generateQuote",
+      "message": "Element \"generateQuote\" produces: lineItems, pricingTier, quoteTotal, discountPercent; consumes: opportunity, customer, quote.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "generateContract"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:generateContract",
+      "message": "Element \"generateContract\" produces: quote, customer, contractId; consumes: quote, customer, contract.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "sendForSignature"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:sendForSignature",
+      "message": "Element \"sendForSignature\" produces: authentication.type, authentication.token, method, url, connectionTimeoutInSeconds, readTimeoutInSeconds; consumes: bearer, secrets, POST, esignatureUrl.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "provisionStandard"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:provisionStandard",
+      "message": "Element \"provisionStandard\" produces: order; consumes: order.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "generateInvoice"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:generateInvoice",
+      "message": "Element \"generateInvoice\" produces: order, amountDue, invoiceId; consumes: order, quote, invoice.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:processPayment",
+      "message": "Element \"processPayment\" produces: authentication.type, authentication.token, method, url, connectionTimeoutInSeconds, readTimeoutInSeconds; consumes: bearer, secrets, POST, paymentGatewayUrl.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "collectionsAgency"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:collectionsAgency",
+      "message": "Element \"collectionsAgency\" produces: invoiceId, recovered; consumes: invoiceId, collectionResult.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "discountApproval"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:discountApproval",
+      "message": "Element \"discountApproval\" consumes: discountPercent.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "approvalDecision"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:approvalDecision",
+      "message": "Element \"approvalDecision\" consumes: discountApproved.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "signatureCheck"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:signatureCheck",
+      "message": "Element \"signatureCheck\" consumes: signatureResponse.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "orderType"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:orderType",
+      "message": "Element \"orderType\" consumes: order.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "collectionCheck"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:collectionCheck",
+      "message": "Element \"collectionCheck\" consumes: paymentReceived.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "collectionsResult"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:collectionsResult",
+      "message": "Element \"collectionsResult\" consumes: recovered.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_bchUvOZ2"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_bchUvOZ2",
+      "message": "Variables in scope at flow \"Flow_bchUvOZ2\": discountPercent, lineItems, pricingTier, quoteTotal.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_QZRbwxhU"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_QZRbwxhU",
+      "message": "Variables in scope at flow \"Flow_QZRbwxhU\": discountPercent, lineItems, pricingTier, quoteTotal.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_7TjRkdGd"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_7TjRkdGd",
+      "message": "Variables in scope at flow \"Flow_7TjRkdGd\": discountPercent, lineItems, pricingTier, quoteTotal.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_McQkxpe9"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_McQkxpe9",
+      "message": "Variables in scope at flow \"Flow_McQkxpe9\": discountPercent, lineItems, pricingTier, quoteTotal.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_y9NbTDhR"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_y9NbTDhR",
+      "message": "Variables in scope at flow \"Flow_y9NbTDhR\": discountPercent, lineItems, pricingTier, quoteTotal.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_fpJ7UEWD"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_fpJ7UEWD",
+      "message": "Variables in scope at flow \"Flow_fpJ7UEWD\": discountPercent, lineItems, pricingTier, quoteTotal.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_oExsK6c1"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_oExsK6c1",
+      "message": "Variables in scope at flow \"Flow_oExsK6c1\": discountPercent, lineItems, pricingTier, quoteTotal.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_va69mGZx"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_va69mGZx",
+      "message": "Variables in scope at flow \"Flow_va69mGZx\": discountPercent, lineItems, pricingTier, quoteTotal.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_2s0JeKjV"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_2s0JeKjV",
+      "message": "Variables in scope at flow \"Flow_2s0JeKjV\": contractId, customer, discountPercent, lineItems, pricingTier, quote, quoteTotal.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_GqAZEa9L"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_GqAZEa9L",
+      "message": "Variables in scope at flow \"Flow_GqAZEa9L\": authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, lineItems, method, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_TtJzWXLn"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_TtJzWXLn",
+      "message": "Variables in scope at flow \"Flow_TtJzWXLn\": authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, lineItems, method, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_bm3sKMZA"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_bm3sKMZA",
+      "message": "Variables in scope at flow \"Flow_bm3sKMZA\": authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, lineItems, method, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_K9wwadg1"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_K9wwadg1",
+      "message": "Variables in scope at flow \"Flow_K9wwadg1\": authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, lineItems, method, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_MJRLe9Ud"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_MJRLe9Ud",
+      "message": "Variables in scope at flow \"Flow_MJRLe9Ud\": authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_U58MqVEA"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_U58MqVEA",
+      "message": "Variables in scope at flow \"Flow_U58MqVEA\": authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, lineItems, method, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_ppq2whx1"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_ppq2whx1",
+      "message": "Variables in scope at flow \"Flow_ppq2whx1\": authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, lineItems, method, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_NNMRv3Pv"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_NNMRv3Pv",
+      "message": "Variables in scope at flow \"Flow_NNMRv3Pv\": amountDue, authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, invoiceId, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_rAke0SwX"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_rAke0SwX",
+      "message": "Variables in scope at flow \"Flow_rAke0SwX\": amountDue, authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, invoiceId, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_CGvPR8ea"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_CGvPR8ea",
+      "message": "Variables in scope at flow \"Flow_CGvPR8ea\": amountDue, authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, invoiceId, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_WvP1ZYV3"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_WvP1ZYV3",
+      "message": "Variables in scope at flow \"Flow_WvP1ZYV3\": amountDue, authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, invoiceId, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_EpnDtwOl"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_EpnDtwOl",
+      "message": "Variables in scope at flow \"Flow_EpnDtwOl\": amountDue, authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, invoiceId, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_z74FHoCS"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_z74FHoCS",
+      "message": "Variables in scope at flow \"Flow_z74FHoCS\": amountDue, authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, invoiceId, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_FRNklBg3"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_FRNklBg3",
+      "message": "Variables in scope at flow \"Flow_FRNklBg3\": amountDue, authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, invoiceId, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_tTnmOKZY"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_tTnmOKZY",
+      "message": "Variables in scope at flow \"Flow_tTnmOKZY\": amountDue, authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, invoiceId, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_baF9j4Dg"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_baF9j4Dg",
+      "message": "Variables in scope at flow \"Flow_baF9j4Dg\": amountDue, authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, invoiceId, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_ZTOMVwy0"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_ZTOMVwy0",
+      "message": "Variables in scope at flow \"Flow_ZTOMVwy0\": amountDue, authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, invoiceId, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, recovered, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_V7DE8MG5"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_V7DE8MG5",
+      "message": "Variables in scope at flow \"Flow_V7DE8MG5\": amountDue, authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, invoiceId, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, recovered, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_fyHvSVmV"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_fyHvSVmV",
+      "message": "Variables in scope at flow \"Flow_fyHvSVmV\": amountDue, authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, invoiceId, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, recovered, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_mGa16ca8"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_mGa16ca8",
+      "message": "Variables in scope at flow \"Flow_mGa16ca8\": authentication.token, authentication.type, connectionTimeoutInSeconds, contractId, customer, discountPercent, lineItems, method, order, pricingTier, quote, quoteTotal, readTimeoutInSeconds, url.",
+      "processId": "QuoteToCash",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "managerApproval"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Manager Discount Approval\" is a job-worker user task; Camunda 8.9 deprecates those in favour of Camunda user tasks.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "vpApproval"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"VP Discount Approval\" is a job-worker user task; Camunda 8.9 deprecates those in favour of Camunda user tasks.",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "provisionBundle"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "Sub-process \"Provision Bundled Order\" is multi-instance without a zeebe:loopCharacteristics.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Set the input collection to iterate over."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "paymentConfirmed"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Intermediate catch event \"Payment Confirmed\" is not supported by any Camunda 8 version.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "paymentWindowElapsed"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Intermediate catch event \"Payment Window Elapsed\" is not supported by any Camunda 8 version.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "awaitPayment1"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"payment-confirmed\" used by Receive task \"Await Payment (1)\" has no zeebe:subscription.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "timerReminder1"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Boundary event \"7 Days\" is not supported by any Camunda 8 version.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sendForSignature"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Write the secret as {{secrets.NAME}}."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "processPayment"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "QuoteToCash",
+      "severity": "warning",
+      "suggestion": "Write the secret as {{secrets.NAME}}."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.9.0"
+  },
+  "total": 92
+}

@@ -1,0 +1,8 @@
+{
+  "input": "bpmn/layout-kyc-onboarding/input.bpmn",
+  "runs": {
+    "default": {
+      "direction": "8to7"
+    }
+  }
+}

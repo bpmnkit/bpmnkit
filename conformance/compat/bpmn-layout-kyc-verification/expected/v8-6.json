@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Upload Identity Document\" is a job-worker user task; Camunda 8.6 deprecates those in favour of Camunda user tasks.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "enhancedDueDiligence"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Enhanced Due Diligence Review\" is a job-worker user task; Camunda 8.6 deprecates those in favour of Camunda user tasks.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    }
+  ]
+}

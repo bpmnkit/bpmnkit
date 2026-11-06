@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/camunda7-order-fulfillment/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

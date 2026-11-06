@@ -1,0 +1,57 @@
+{
+  "report": {
+    "findings": [
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "payment",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "order-process",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "f_ship",
+        "elementType": "element",
+        "message": "FEEL condition \"=paid = true\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "order-process",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:userTask",
+        "elementId": "review",
+        "elementType": "userTask",
+        "message": "zeebe:userTask has no Camunda 7 equivalent and was dropped.",
+        "processId": "review-process",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "connector",
+        "elementId": "fetch_weather",
+        "elementType": "serviceTask",
+        "message": "Connector \"io.camunda:http-json:1\" has no Camunda 7 runtime; it becomes a plain external task.",
+        "processId": "connector-process",
+        "severity": "unsupported",
+        "suggestion": "Implement an external task worker for this topic."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "fetch_weather",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "connector-process",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      }
+    ]
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_testing\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:message id=\"Msg_Confirm\" name=\"payment-confirmed\"/>\n  <bpmn:process id=\"order-process\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\">\n      <bpmn:outgoing>f_start</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"payment\" camunda:type=\"external\" camunda:topic=\"payment\" name=\"Charge card\">\n      <bpmn:incoming>f_start</bpmn:incoming>\n      <bpmn:outgoing>f_paid</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"paid_gw\" default=\"f_unpaid\">\n      <bpmn:incoming>f_paid</bpmn:incoming>\n      <bpmn:outgoing>f_ship</bpmn:outgoing>\n      <bpmn:outgoing>f_unpaid</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"ship\" camunda:type=\"external\" camunda:topic=\"ship\" name=\"Ship\">\n      <bpmn:incoming>f_ship</bpmn:incoming>\n      <bpmn:outgoing>f_shipped</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"end_ok\">\n      <bpmn:incoming>f_shipped</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"end_cancel\">\n      <bpmn:incoming>f_unpaid</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"f_start\" sourceRef=\"start\" targetRef=\"payment\"/>\n    <bpmn:sequenceFlow id=\"f_paid\" sourceRef=\"payment\" targetRef=\"paid_gw\"/>\n    <bpmn:sequenceFlow id=\"f_ship\" sourceRef=\"paid_gw\" targetRef=\"ship\">\n      <bpmn:conditionExpression>=paid = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"f_unpaid\" sourceRef=\"paid_gw\" targetRef=\"end_cancel\"/>\n    <bpmn:sequenceFlow id=\"f_shipped\" sourceRef=\"ship\" targetRef=\"end_ok\"/>\n  </bpmn:process>\n  <bpmn:process id=\"timer-process\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"t_start\">\n      <bpmn:outgoing>tf1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:intermediateCatchEvent id=\"wait_hour\">\n      <bpmn:incoming>tf1</bpmn:incoming>\n      <bpmn:outgoing>tf2</bpmn:outgoing>\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:endEvent id=\"t_end\">\n      <bpmn:incoming>tf2</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"tf1\" sourceRef=\"t_start\" targetRef=\"wait_hour\"/>\n    <bpmn:sequenceFlow id=\"tf2\" sourceRef=\"wait_hour\" targetRef=\"t_end\"/>\n  </bpmn:process>\n  <bpmn:process id=\"date-process\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"d_start\">\n      <bpmn:outgoing>df1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:intermediateCatchEvent id=\"wait_new_year\">\n      <bpmn:incoming>df1</bpmn:incoming>\n      <bpmn:outgoing>df2</bpmn:outgoing>\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDate>2027-01-01T00:00:00Z</bpmn:timeDate>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:endEvent id=\"d_end\">\n      <bpmn:incoming>df2</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"df1\" sourceRef=\"d_start\" targetRef=\"wait_new_year\"/>\n    <bpmn:sequenceFlow id=\"df2\" sourceRef=\"wait_new_year\" targetRef=\"d_end\"/>\n  </bpmn:process>\n  <bpmn:process id=\"review-process\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"r_start\">\n      <bpmn:outgoing>rf1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"review\" name=\"Review\">\n      <bpmn:incoming>rf1</bpmn:incoming>\n      <bpmn:outgoing>rf2</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:boundaryEvent id=\"review_timeout\" attachedToRef=\"review\">\n      <bpmn:outgoing>rf3</bpmn:outgoing>\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>P1D</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"r_done\">\n      <bpmn:incoming>rf2</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"escalate\" camunda:type=\"external\" camunda:topic=\"escalate\">\n      <bpmn:incoming>rf3</bpmn:incoming>\n      <bpmn:outgoing>rf4</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"r_escalated\">\n      <bpmn:incoming>rf4</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"rf1\" sourceRef=\"r_start\" targetRef=\"review\"/>\n    <bpmn:sequenceFlow id=\"rf2\" sourceRef=\"review\" targetRef=\"r_done\"/>\n    <bpmn:sequenceFlow id=\"rf3\" sourceRef=\"review_timeout\" targetRef=\"escalate\"/>\n    <bpmn:sequenceFlow id=\"rf4\" sourceRef=\"escalate\" targetRef=\"r_escalated\"/>\n  </bpmn:process>\n  <bpmn:process id=\"message-process\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"m_start\">\n      <bpmn:outgoing>mf1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:intermediateCatchEvent id=\"await_confirmation\">\n      <bpmn:incoming>mf1</bpmn:incoming>\n      <bpmn:outgoing>mf2</bpmn:outgoing>\n      <bpmn:messageEventDefinition messageRef=\"Msg_Confirm\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:endEvent id=\"m_end\">\n      <bpmn:incoming>mf2</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"mf1\" sourceRef=\"m_start\" targetRef=\"await_confirmation\"/>\n    <bpmn:sequenceFlow id=\"mf2\" sourceRef=\"await_confirmation\" targetRef=\"m_end\"/>\n  </bpmn:process>\n  <bpmn:process id=\"connector-process\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"c_start\">\n      <bpmn:outgoing>cf1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"fetch_weather\" camunda:type=\"external\" camunda:topic=\"io.camunda:http-json:1\">\n      <bpmn:incoming>cf1</bpmn:incoming>\n      <bpmn:outgoing>cf2</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"c_end\">\n      <bpmn:incoming>cf2</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"cf1\" sourceRef=\"c_start\" targetRef=\"fetch_weather\"/>\n    <bpmn:sequenceFlow id=\"cf2\" sourceRef=\"fetch_weather\" targetRef=\"c_end\"/>\n  </bpmn:process>\n  <bpmn:process id=\"parallel-process\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"p_start\">\n      <bpmn:outgoing>pf1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:parallelGateway id=\"fork\">\n      <bpmn:incoming>pf1</bpmn:incoming>\n      <bpmn:outgoing>pf2</bpmn:outgoing>\n      <bpmn:outgoing>pf3</bpmn:outgoing>\n    </bpmn:parallelGateway>\n    <bpmn:task id=\"branch_a\">\n      <bpmn:incoming>pf2</bpmn:incoming>\n      <bpmn:outgoing>pf4</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:task id=\"branch_b\">\n      <bpmn:incoming>pf3</bpmn:incoming>\n      <bpmn:outgoing>pf5</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:parallelGateway id=\"join\">\n      <bpmn:incoming>pf4</bpmn:incoming>\n      <bpmn:incoming>pf5</bpmn:incoming>\n      <bpmn:outgoing>pf6</bpmn:outgoing>\n    </bpmn:parallelGateway>\n    <bpmn:endEvent id=\"p_end\">\n      <bpmn:incoming>pf6</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"pf1\" sourceRef=\"p_start\" targetRef=\"fork\"/>\n    <bpmn:sequenceFlow id=\"pf2\" sourceRef=\"fork\" targetRef=\"branch_a\"/>\n    <bpmn:sequenceFlow id=\"pf3\" sourceRef=\"fork\" targetRef=\"branch_b\"/>\n    <bpmn:sequenceFlow id=\"pf4\" sourceRef=\"branch_a\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"pf5\" sourceRef=\"branch_b\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"pf6\" sourceRef=\"join\" targetRef=\"p_end\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

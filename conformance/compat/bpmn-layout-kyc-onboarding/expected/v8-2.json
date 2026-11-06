@@ -1,0 +1,52 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "KycOnboarding"
+      ],
+      "fixable": false,
+      "id": "compat/no-version-tag",
+      "message": "Process \"KYC Onboarding Process\" has a zeebe:versionTag, which needs Camunda 8.6 or newer; this model targets Camunda 8.2.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-form",
+      "message": "User task \"Upload Identity Document\" links a form by formId, which needs Camunda 8.4 or newer; this model targets Camunda 8.2.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.4 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "complianceReview"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-form",
+      "message": "User task \"Enhanced Due Diligence Review\" links a form by formId, which needs Camunda 8.4 or newer; this model targets Camunda 8.2.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.4 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "riskClassification"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Business rule task \"Final Risk Classification\" has no implementation; Camunda needs a zeebe:calledDecision or zeebe:taskDefinition.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    }
+  ]
+}

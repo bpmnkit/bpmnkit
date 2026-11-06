@@ -1,0 +1,88 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_65f5459f-44ae-436d-a089-a91d6d78075b"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 1\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_428dcbf5-8e5e-48e0-9c0c-d93003fa8c82"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message boundary event \"Boundary Intermediate Event Non-Interrupting Message\" references no message.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_178e16eb-4c9e-4ea0-9644-7c5fb2b71825"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Escalation boundary event \"Boundary Intermediate Event Interrupting Escalation\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_9fad8da5-a28c-4b6b-bb71-fbd5c65b9681"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 4\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_72204cd7-709c-4656-9554-3ae29b3844ce"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 3\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_2d2d0d29-896f-49f9-8109-77a7304309c5"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 2\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1ae31d1b-2559-4f78-a3ec-47986a49db48"
+      ],
+      "fixable": false,
+      "id": "compat/collapsed-subprocess",
+      "message": "Sub-process \"_1ae31d1b-2559-4f78-a3ec-47986a49db48\" is drawn collapsed, which needs Camunda 8.4 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Expand the sub-process, or target Camunda 8.4 or newer."
+    }
+  ]
+}

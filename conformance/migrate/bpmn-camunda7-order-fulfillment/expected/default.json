@@ -1,0 +1,303 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 19,
+      "manual": 8,
+      "unsupported": 2
+    },
+    "findings": [
+      {
+        "applied": true,
+        "construct": "camunda:versionTag",
+        "elementId": "order-fulfillment",
+        "elementType": "process",
+        "message": "Version tag \"3.1\" moved to zeebe:versionTag.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:versionTag"
+      },
+      {
+        "applied": false,
+        "construct": "camunda:historyTimeToLive",
+        "elementId": "order-fulfillment",
+        "elementType": "process",
+        "message": "Camunda 8 has no per-process history time to live (was \"180\").",
+        "processId": "order-fulfillment",
+        "severity": "unsupported",
+        "suggestion": "Configure data retention for the cluster (Operate, Tasklist and Optimize archiving)."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:executionListener",
+        "elementId": "order-fulfillment",
+        "elementType": "process",
+        "message": "Execution listener on \"start\" (class \"com.acme.orders.AuditListener\") runs Java or script code in the engine.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Implement it as a job worker and declare it with zeebe:executionListeners (eventType=\"start\", type=\"<job type>\")."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:initiator",
+        "elementId": "StartEvent_order",
+        "elementType": "startEvent",
+        "message": "Camunda 8 does not record the starting user in a variable.",
+        "processId": "order-fulfillment",
+        "severity": "unsupported",
+        "suggestion": "Pass the user as a variable when creating the instance."
+      },
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:assignee",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "assignee became zeebe:assignmentDefinition assignee=\"=starter\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:assignmentDefinition"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:candidateGroups",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "candidateGroups became zeebe:assignmentDefinition candidateGroups=\"sales,management\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:assignmentDefinition"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:dueDate",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "dueDate became zeebe:taskSchedule dueDate=\"=reviewDueDate\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskSchedule — the value must be an ISO 8601 date-time."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:priority",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "Priority 80 became zeebe:priorityDefinition.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:priorityDefinition"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:formRef",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "Camunda Form \"review-order\" linked with zeebe:formDefinition formId.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "Deploy the .form file with the process; Camunda 7 and 8 share the form-js schema."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:taskListener",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "Task listener on \"create\" (class \"com.acme.orders.NotifyReviewer\") runs code in the engine.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Implement it as a job worker and declare it with zeebe:taskListeners (eventType=\"creating\")."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:asyncBefore, camunda:jobPriority",
+        "elementId": "Task_charge",
+        "elementType": "serviceTask",
+        "message": "Dropped: Camunda 8 has no asynchronous continuations. The engine commits after every step and every job-based task is already a wait state, so there is no transaction boundary to place and no job executor job to prioritise.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "Nothing to model. A failure no longer rolls back to the last async boundary: a job failure retries the job, and an expression failure raises an incident on the element."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:type=external",
+        "elementId": "Task_charge",
+        "elementType": "serviceTask",
+        "message": "External task topic \"charge-payment\" became job type \"charge-payment\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskDefinition type — point the external task worker at the Camunda 8 job API with the same type."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:inputOutput",
+        "elementId": "Task_charge",
+        "elementType": "serviceTask",
+        "message": "3 input/output parameters moved to zeebe:ioMapping, JUEL translated to FEEL.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:ioMapping"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:failedJobRetryTimeCycle",
+        "elementId": "Task_charge",
+        "elementType": "serviceTask",
+        "message": "Retry count 5 moved to zeebe:taskDefinition retries.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskDefinition retries"
+      },
+      {
+        "applied": false,
+        "construct": "camunda:failedJobRetryTimeCycle",
+        "elementId": "Task_charge",
+        "elementType": "serviceTask",
+        "message": "The retry interval (PT5M) is not part of the Camunda 8 model.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Pass it as the retry back-off when the worker fails the job (fail-job retryBackOff)."
+      },
+      {
+        "applied": false,
+        "construct": "message correlation",
+        "elementId": "Task_awaitPayment",
+        "elementType": "receiveTask",
+        "message": "Camunda 7 correlates message \"PaymentConfirmed\" by API call (business key, process variables or instance id); the model names no key, and Camunda 8 requires one.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Add <zeebe:subscription correlationKey=\"=…\"/> to message \"Message_PaymentConfirmed\", naming the variable publishers correlate on."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:decisionRef",
+        "elementId": "Task_shippingCost",
+        "elementType": "businessRuleTask",
+        "message": "Decision \"shipping-cost\" → zeebe:calledDecision, result in \"shippingCost\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:calledDecision"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:mapDecisionResult",
+        "elementId": "Task_shippingCost",
+        "elementType": "businessRuleTask",
+        "message": "Result mapper \"singleEntry\" matches Camunda 8, which stores a single output value as-is.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "Nothing to model."
+      },
+      {
+        "applied": true,
+        "construct": "calledElement",
+        "elementId": "Task_invoice",
+        "elementType": "callActivity",
+        "message": "Calls \"invoice-process\" through zeebe:calledElement.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:calledElement"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:in / camunda:out",
+        "elementId": "Task_invoice",
+        "elementType": "callActivity",
+        "message": "Variable passing kept as in Camunda 7: only mapped parent variables in, only mapped child variables out.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:calledElement propagateAllParentVariables / propagateAllChildVariables and zeebe:ioMapping"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:class",
+        "elementId": "Task_ship",
+        "elementType": "serviceTask",
+        "message": "Java delegate class \"com.acme.orders.ShipOrderDelegate\" runs inside the Camunda 7 engine; Camunda 8 runs no user code in the engine.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Implement a job worker for type \"shipOrderDelegate\" (written as zeebe:taskDefinition type; the original is kept as the \"class\" task header, which the Camunda 7 adapter pattern can dispatch on)."
+      },
+      {
+        "applied": true,
+        "construct": "timer timeDuration",
+        "elementId": "Timer_wait",
+        "elementType": "intermediateCatchEvent",
+        "message": "Timer expression \"${deliveryWindow}\" became \"=deliveryWindow\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "FEEL timer expression"
+      },
+      {
+        "applied": false,
+        "construct": "scriptFormat=\"groovy\"",
+        "elementId": "Task_summary",
+        "elementType": "scriptTask",
+        "message": "Script was not converted: groovy scripts do not run in Camunda 8.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Rewrite it as a FEEL expression in zeebe:script (expression, resultVariable), or implement it as a job worker with zeebe:taskDefinition."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:delegateExpression",
+        "elementId": "Task_notify",
+        "elementType": "serviceTask",
+        "message": "Delegate expression \"${notificationService}\" runs inside the Camunda 7 engine; Camunda 8 runs no user code in the engine.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Implement a job worker for type \"notificationService\" (written as zeebe:taskDefinition type; the original is kept as the \"delegateExpression\" task header, which the Camunda 7 adapter pattern can dispatch on)."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:expression",
+        "elementId": "Task_escalate",
+        "elementType": "serviceTask",
+        "message": "Expression \"${escalation.raise(execution)}\" runs inside the Camunda 7 engine; Camunda 8 runs no user code in the engine.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Implement a job worker for type \"Task_escalate\" (written as zeebe:taskDefinition type; the original is kept as the \"expression\" task header, which the Camunda 7 adapter pattern can dispatch on)."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_approved",
+        "elementType": "sequenceFlow",
+        "message": "Condition \"${approved && order.total <= 1000}\" became \"=approved and order.total <= 1000\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "FEEL condition"
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_vip",
+        "elementType": "sequenceFlow",
+        "message": "Condition \"${approved and order.customer.vip eq true}\" became \"=approved and order.customer.vip = true\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "FEEL condition"
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_1k3v0qa",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.8.0 (was Camunda Platform).",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      }
+    ],
+    "total": 29
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_1k3v0qa\" targetNamespace=\"http://bpmn.io/schema/bpmn\" exporter=\"Camunda Modeler\" exporterVersion=\"5.28.0\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.8.0\">\n  <bpmn:message id=\"Message_PaymentConfirmed\" name=\"PaymentConfirmed\"/>\n  <bpmn:process id=\"order-fulfillment\" camunda:historyTimeToLive=\"180\" name=\"Order fulfillment\" isExecutable=\"true\">\n    <bpmn:extensionElements>\n      <camunda:executionListener class=\"com.acme.orders.AuditListener\" event=\"start\"/>\n      <zeebe:versionTag value=\"3.1\"/>\n    </bpmn:extensionElements>\n    <bpmn:startEvent id=\"StartEvent_order\" camunda:initiator=\"starter\" name=\"Order received\">\n      <bpmn:outgoing>Flow_toReview</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"Task_review\" name=\"Review order\">\n      <bpmn:extensionElements>\n        <camunda:taskListener class=\"com.acme.orders.NotifyReviewer\" event=\"create\"/>\n        <zeebe:userTask/>\n        <zeebe:assignmentDefinition assignee=\"=starter\" candidateGroups=\"sales,management\"/>\n        <zeebe:taskSchedule dueDate=\"=reviewDueDate\"/>\n        <zeebe:priorityDefinition priority=\"80\"/>\n        <zeebe:formDefinition formId=\"review-order\" bindingType=\"deployment\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toReview</bpmn:incoming>\n      <bpmn:outgoing>Flow_toApproved</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:exclusiveGateway id=\"Gateway_approved\" name=\"Approved?\" default=\"Flow_rejected\">\n      <bpmn:incoming>Flow_toApproved</bpmn:incoming>\n      <bpmn:outgoing>Flow_approved</bpmn:outgoing>\n      <bpmn:outgoing>Flow_rejected</bpmn:outgoing>\n      <bpmn:outgoing>Flow_vip</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"Task_charge\" name=\"Charge payment\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"charge-payment\" retries=\"5\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"=order.total\" target=\"amount\"/>\n          <zeebe:input source=\"=&quot;EUR&quot;\" target=\"currency\"/>\n          <zeebe:output source=\"=transactionId\" target=\"paymentId\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_approved</bpmn:incoming>\n      <bpmn:incoming>Flow_vip</bpmn:incoming>\n      <bpmn:outgoing>Flow_toConfirm</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:receiveTask id=\"Task_awaitPayment\" name=\"Await payment confirmation\" messageRef=\"Message_PaymentConfirmed\">\n      <bpmn:incoming>Flow_toConfirm</bpmn:incoming>\n      <bpmn:outgoing>Flow_toShippingCost</bpmn:outgoing>\n    </bpmn:receiveTask>\n    <bpmn:businessRuleTask id=\"Task_shippingCost\" name=\"Determine shipping cost\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"shipping-cost\" resultVariable=\"shippingCost\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toShippingCost</bpmn:incoming>\n      <bpmn:outgoing>Flow_toInvoice</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"Task_invoice\" calledElement=\"invoice-process\" name=\"Create invoice\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"invoice-process\" bindingType=\"deployment\" propagateAllParentVariables=\"false\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"=orderId\" target=\"orderId\"/>\n          <zeebe:input source=\"=order.total + shippingCost\" target=\"invoiceTotal\"/>\n          <zeebe:output source=\"=invoiceId\" target=\"invoiceId\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toInvoice</bpmn:incoming>\n      <bpmn:outgoing>Flow_toShip</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:serviceTask id=\"Task_ship\" name=\"Ship order\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"shipOrderDelegate\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"class\" value=\"com.acme.orders.ShipOrderDelegate\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toShip</bpmn:incoming>\n      <bpmn:outgoing>Flow_toWait</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:intermediateCatchEvent id=\"Timer_wait\" name=\"Wait for delivery window\">\n      <bpmn:incoming>Flow_toWait</bpmn:incoming>\n      <bpmn:outgoing>Flow_toSummary</bpmn:outgoing>\n      <bpmn:timerEventDefinition id=\"TimerEventDefinition_wait\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">=deliveryWindow</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:scriptTask id=\"Task_summary\" scriptFormat=\"groovy\" camunda:resultVariable=\"summary\" name=\"Build summary\">\n      <bpmn:incoming>Flow_toSummary</bpmn:incoming>\n      <bpmn:outgoing>Flow_toDone</bpmn:outgoing>\n      <bpmn:script>\"Order ${orderId} shipped at ${new Date()}\"</bpmn:script>\n    </bpmn:scriptTask>\n    <bpmn:endEvent id=\"EndEvent_done\" name=\"Order fulfilled\">\n      <bpmn:incoming>Flow_toDone</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"Task_notify\" name=\"Notify customer\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"notificationService\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"delegateExpression\" value=\"${notificationService}\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_rejected</bpmn:incoming>\n      <bpmn:outgoing>Flow_toRejectedEnd</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"EndEvent_rejected\" name=\"Order rejected\">\n      <bpmn:incoming>Flow_toRejectedEnd</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:boundaryEvent id=\"Timer_reviewOverdue\" name=\"3 days\" attachedToRef=\"Task_review\" cancelActivity=\"false\">\n      <bpmn:outgoing>Flow_toEscalate</bpmn:outgoing>\n      <bpmn:timerEventDefinition id=\"TimerEventDefinition_overdue\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P3D</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:serviceTask id=\"Task_escalate\" name=\"Escalate review\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"Task_escalate\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"expression\" value=\"${escalation.raise(execution)}\"/>\n          <zeebe:header key=\"resultVariable\" value=\"escalationId\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toEscalate</bpmn:incoming>\n      <bpmn:outgoing>Flow_toEscalated</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"EndEvent_escalated\" name=\"Escalated\">\n      <bpmn:incoming>Flow_toEscalated</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_toReview\" sourceRef=\"StartEvent_order\" targetRef=\"Task_review\"/>\n    <bpmn:sequenceFlow id=\"Flow_toApproved\" sourceRef=\"Task_review\" targetRef=\"Gateway_approved\"/>\n    <bpmn:sequenceFlow id=\"Flow_approved\" sourceRef=\"Gateway_approved\" targetRef=\"Task_charge\" name=\"yes\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=approved and order.total &lt;= 1000</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_vip\" sourceRef=\"Gateway_approved\" targetRef=\"Task_charge\" name=\"vip\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=approved and order.customer.vip = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_rejected\" sourceRef=\"Gateway_approved\" targetRef=\"Task_notify\" name=\"no\"/>\n    <bpmn:sequenceFlow id=\"Flow_toConfirm\" sourceRef=\"Task_charge\" targetRef=\"Task_awaitPayment\"/>\n    <bpmn:sequenceFlow id=\"Flow_toShippingCost\" sourceRef=\"Task_awaitPayment\" targetRef=\"Task_shippingCost\"/>\n    <bpmn:sequenceFlow id=\"Flow_toInvoice\" sourceRef=\"Task_shippingCost\" targetRef=\"Task_invoice\"/>\n    <bpmn:sequenceFlow id=\"Flow_toShip\" sourceRef=\"Task_invoice\" targetRef=\"Task_ship\"/>\n    <bpmn:sequenceFlow id=\"Flow_toWait\" sourceRef=\"Task_ship\" targetRef=\"Timer_wait\"/>\n    <bpmn:sequenceFlow id=\"Flow_toSummary\" sourceRef=\"Timer_wait\" targetRef=\"Task_summary\"/>\n    <bpmn:sequenceFlow id=\"Flow_toDone\" sourceRef=\"Task_summary\" targetRef=\"EndEvent_done\"/>\n    <bpmn:sequenceFlow id=\"Flow_toRejectedEnd\" sourceRef=\"Task_notify\" targetRef=\"EndEvent_rejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_toEscalate\" sourceRef=\"Timer_reviewOverdue\" targetRef=\"Task_escalate\"/>\n    <bpmn:sequenceFlow id=\"Flow_toEscalated\" sourceRef=\"Task_escalate\" targetRef=\"EndEvent_escalated\"/>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"order-fulfillment\">\n      <bpmndi:BPMNShape id=\"StartEvent_order_di\" bpmnElement=\"StartEvent_order\">\n        <dc:Bounds x=\"152\" y=\"182\" width=\"36\" height=\"36\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"133\" y=\"225\" width=\"75\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_review_di\" bpmnElement=\"Task_review\">\n        <dc:Bounds x=\"240\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Gateway_approved_di\" bpmnElement=\"Gateway_approved\" isMarkerVisible=\"true\">\n        <dc:Bounds x=\"395\" y=\"175\" width=\"50\" height=\"50\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"394\" y=\"145\" width=\"52\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_charge_di\" bpmnElement=\"Task_charge\">\n        <dc:Bounds x=\"500\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_awaitPayment_di\" bpmnElement=\"Task_awaitPayment\">\n        <dc:Bounds x=\"650\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_shippingCost_di\" bpmnElement=\"Task_shippingCost\">\n        <dc:Bounds x=\"800\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_invoice_di\" bpmnElement=\"Task_invoice\">\n        <dc:Bounds x=\"950\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_ship_di\" bpmnElement=\"Task_ship\">\n        <dc:Bounds x=\"1100\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Timer_wait_di\" bpmnElement=\"Timer_wait\">\n        <dc:Bounds x=\"1252\" y=\"182\" width=\"36\" height=\"36\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"1228\" y=\"225\" width=\"85\" height=\"27\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_summary_di\" bpmnElement=\"Task_summary\">\n        <dc:Bounds x=\"1340\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_done_di\" bpmnElement=\"EndEvent_done\">\n        <dc:Bounds x=\"1492\" y=\"182\" width=\"36\" height=\"36\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"1474\" y=\"225\" width=\"72\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_notify_di\" bpmnElement=\"Task_notify\">\n        <dc:Bounds x=\"500\" y=\"300\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_rejected_di\" bpmnElement=\"EndEvent_rejected\">\n        <dc:Bounds x=\"652\" y=\"322\" width=\"36\" height=\"36\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"634\" y=\"365\" width=\"72\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_escalate_di\" bpmnElement=\"Task_escalate\">\n        <dc:Bounds x=\"330\" y=\"40\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_escalated_di\" bpmnElement=\"EndEvent_escalated\">\n        <dc:Bounds x=\"482\" y=\"62\" width=\"36\" height=\"36\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"475\" y=\"105\" width=\"51\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Timer_reviewOverdue_di\" bpmnElement=\"Timer_reviewOverdue\">\n        <dc:Bounds x=\"272\" y=\"142\" width=\"36\" height=\"36\"/>\n        <bpmndi:BPMNLabel>\n          <dc:Bounds x=\"304\" y=\"123\" width=\"33\" height=\"14\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"Flow_toReview_di\" bpmnElement=\"Flow_toReview\">\n        <di:waypoint x=\"188\" y=\"200\"/>\n        <di:waypoint x=\"240\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toApproved_di\" bpmnElement=\"Flow_toApproved\">\n        <di:waypoint x=\"340\" y=\"200\"/>\n        <di:waypoint x=\"395\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_approved_di\" bpmnElement=\"Flow_approved\">\n        <di:waypoint x=\"445\" y=\"200\"/>\n        <di:waypoint x=\"500\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_vip_di\" bpmnElement=\"Flow_vip\">\n        <di:waypoint x=\"420\" y=\"225\"/>\n        <di:waypoint x=\"420\" y=\"260\"/>\n        <di:waypoint x=\"550\" y=\"260\"/>\n        <di:waypoint x=\"550\" y=\"240\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_rejected_di\" bpmnElement=\"Flow_rejected\">\n        <di:waypoint x=\"420\" y=\"225\"/>\n        <di:waypoint x=\"420\" y=\"340\"/>\n        <di:waypoint x=\"500\" y=\"340\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toConfirm_di\" bpmnElement=\"Flow_toConfirm\">\n        <di:waypoint x=\"600\" y=\"200\"/>\n        <di:waypoint x=\"650\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toShippingCost_di\" bpmnElement=\"Flow_toShippingCost\">\n        <di:waypoint x=\"750\" y=\"200\"/>\n        <di:waypoint x=\"800\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toInvoice_di\" bpmnElement=\"Flow_toInvoice\">\n        <di:waypoint x=\"900\" y=\"200\"/>\n        <di:waypoint x=\"950\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toShip_di\" bpmnElement=\"Flow_toShip\">\n        <di:waypoint x=\"1050\" y=\"200\"/>\n        <di:waypoint x=\"1100\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toWait_di\" bpmnElement=\"Flow_toWait\">\n        <di:waypoint x=\"1200\" y=\"200\"/>\n        <di:waypoint x=\"1252\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toSummary_di\" bpmnElement=\"Flow_toSummary\">\n        <di:waypoint x=\"1288\" y=\"200\"/>\n        <di:waypoint x=\"1340\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toDone_di\" bpmnElement=\"Flow_toDone\">\n        <di:waypoint x=\"1440\" y=\"200\"/>\n        <di:waypoint x=\"1492\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toRejectedEnd_di\" bpmnElement=\"Flow_toRejectedEnd\">\n        <di:waypoint x=\"600\" y=\"340\"/>\n        <di:waypoint x=\"652\" y=\"340\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toEscalate_di\" bpmnElement=\"Flow_toEscalate\">\n        <di:waypoint x=\"290\" y=\"142\"/>\n        <di:waypoint x=\"290\" y=\"80\"/>\n        <di:waypoint x=\"330\" y=\"80\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toEscalated_di\" bpmnElement=\"Flow_toEscalated\">\n        <di:waypoint x=\"430\" y=\"80\"/>\n        <di:waypoint x=\"482\" y=\"80\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n\n"
+}

@@ -1,0 +1,8 @@
+{
+  "input": "bpmn/compensation-subprocess/input.bpmn",
+  "runs": {
+    "default": {
+      "direction": "8to7"
+    }
+  }
+}

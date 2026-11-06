@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/unmodelled-content/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

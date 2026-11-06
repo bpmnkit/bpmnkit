@@ -1,0 +1,74 @@
+{
+  "findings": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "validate_order"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Validate order\" has no output variable mapping.",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "process_payment"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Process payment\" has no output variable mapping.",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ship_order"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Ship order\" has no output variable mapping.",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Order_received"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Order received\" has no documentation describing expected input variables.",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 4,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 0,
+      "info": 0,
+      "warning": 4
+    },
+    "total": 4
+  }
+}

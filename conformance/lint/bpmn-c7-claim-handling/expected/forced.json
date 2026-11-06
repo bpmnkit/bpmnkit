@@ -1,0 +1,80 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 2,
+    "info": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "SubProcess_items"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Review items\" has no error boundary event.",
+      "plane": "claim-handling",
+      "processId": "claim-handling",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Task_assess"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Assess claim\" has no timer boundary event.",
+      "plane": "claim-handling",
+      "processId": "claim-handling",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_fraudCheck"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Check for fraud\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "claim-handling",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_payout"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Pay out claim\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "claim-handling",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    }
+  ],
+  "platform": {
+    "id": "camunda-platform",
+    "name": "Camunda Platform",
+    "version": "7.21.0"
+  },
+  "total": 4
+}

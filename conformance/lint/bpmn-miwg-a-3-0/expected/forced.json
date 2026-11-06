@@ -1,0 +1,127 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 5,
+    "info": 0,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "_1ae31d1b-2559-4f78-a3ec-47986a49db48"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"_1ae31d1b-2559-4f78-a3ec-47986a49db48\" (subProcess) contains no flow elements.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_ce253897-4300-4b24-b71f-4c9535698c70"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_ce253897-4300-4b24-b71f-4c9535698c70\" (endEvent) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_1ae31d1b-2559-4f78-a3ec-47986a49db48"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Collapsed\nSub-Process\" has no error boundary event.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_1ac4b759-40e3-4dfb-b0e3-ad1d201d6c3d"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start Event\" has no documentation describing expected input variables.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"WFP-6-\" is not marked executable.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_428dcbf5-8e5e-48e0-9c0c-d93003fa8c82"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Boundary Intermediate Event Non-Interrupting Message\" has 1 event definition(s) without an id.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_428dcbf5-8e5e-48e0-9c0c-d93003fa8c82"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Boundary Intermediate Event Non-Interrupting Message\" (boundaryEvent) has no zeebe:subscription correlationKey.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_178e16eb-4c9e-4ea0-9644-7c5fb2b71825"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Boundary Intermediate Event Interrupting Escalation\" has 1 event definition(s) without an id.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 8
+}

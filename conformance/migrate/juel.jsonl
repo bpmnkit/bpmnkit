@@ -1,0 +1,234 @@
+{"id":"juel/1","juel":"${approved}","expected":{"feel":"approved","ok":true}}
+{"id":"juel/2","juel":"${order.customer.vip}","expected":{"feel":"order.customer.vip","ok":true}}
+{"id":"juel/3","juel":"#{amount}","expected":{"feel":"amount","ok":true}}
+{"id":"juel/4","juel":"${'EUR'}","expected":{"feel":"\"EUR\"","ok":true}}
+{"id":"juel/5","juel":"${\"say \\\"hi\\\"\"}","expected":{"feel":"\"say \\\"hi\\\"\"","ok":true}}
+{"id":"juel/6","juel":"${42}","expected":{"feel":"42","ok":true}}
+{"id":"juel/7","juel":"${3.25}","expected":{"feel":"3.25","ok":true}}
+{"id":"juel/8","juel":"${true}","expected":{"feel":"true","ok":true}}
+{"id":"juel/9","juel":"${null}","expected":{"feel":"null","ok":true}}
+{"id":"juel/10","juel":"${a == b}","expected":{"feel":"a = b","ok":true}}
+{"id":"juel/11","juel":"${status eq 'open'}","expected":{"feel":"status = \"open\"","ok":true}}
+{"id":"juel/12","juel":"${a != b}","expected":{"feel":"a != b","ok":true}}
+{"id":"juel/13","juel":"${a ne b}","expected":{"feel":"a != b","ok":true}}
+{"id":"juel/14","juel":"${total < 100}","expected":{"feel":"total < 100","ok":true}}
+{"id":"juel/15","juel":"${total lt 100}","expected":{"feel":"total < 100","ok":true}}
+{"id":"juel/16","juel":"${total >= 100}","expected":{"feel":"total >= 100","ok":true}}
+{"id":"juel/17","juel":"${total ge 100}","expected":{"feel":"total >= 100","ok":true}}
+{"id":"juel/18","juel":"${total gt 100}","expected":{"feel":"total > 100","ok":true}}
+{"id":"juel/19","juel":"${total le 100}","expected":{"feel":"total <= 100","ok":true}}
+{"id":"juel/20","juel":"${a && b}","expected":{"feel":"a and b","ok":true}}
+{"id":"juel/21","juel":"${a and b}","expected":{"feel":"a and b","ok":true}}
+{"id":"juel/22","juel":"${a || b}","expected":{"feel":"a or b","ok":true}}
+{"id":"juel/23","juel":"${a or b and c}","expected":{"feel":"a or b and c","ok":true}}
+{"id":"juel/24","juel":"${(a or b) and c}","expected":{"feel":"(a or b) and c","ok":true}}
+{"id":"juel/25","juel":"${!approved}","expected":{"feel":"not(approved)","ok":true}}
+{"id":"juel/26","juel":"${not approved}","expected":{"feel":"not(approved)","ok":true}}
+{"id":"juel/27","juel":"${!(a && b)}","expected":{"feel":"not((a and b))","ok":true}}
+{"id":"juel/28","juel":"${a + b * c}","expected":{"feel":"a + b * c","ok":true}}
+{"id":"juel/29","juel":"${(a + b) * c}","expected":{"feel":"(a + b) * c","ok":true}}
+{"id":"juel/30","juel":"${a - (b - c)}","expected":{"feel":"a - (b - c)","ok":true}}
+{"id":"juel/31","juel":"${a div 2}","expected":{"feel":"a / 2","ok":true}}
+{"id":"juel/32","juel":"${-x}","expected":{"feel":"-x","ok":true}}
+{"id":"juel/33","juel":"${a < b == c}","expected":{"feel":"(a < b) = c","ok":true}}
+{"id":"juel/34","juel":"${approved && order.total <= 1000}","expected":{"feel":"approved and order.total <= 1000","ok":true}}
+{"id":"juel/35","juel":"${ order.total > 100 }","expected":{"feel":"order.total > 100","ok":true}}
+{"id":"juel/36","juel":"${execution.getVariable('x')}","expected":{"ok":false,"reason":"\"execution\" is a Camunda 7 engine object with no Camunda 8 counterpart"}}
+{"id":"juel/37","juel":"${task.assignee}","expected":{"ok":false,"reason":"\"task\" is a Camunda 7 engine object with no Camunda 8 counterpart"}}
+{"id":"juel/38","juel":"${authenticatedUserId}","expected":{"ok":false,"reason":"\"authenticatedUserId\" is a Camunda 7 engine object with no Camunda 8 counterpart"}}
+{"id":"juel/39","juel":"${inventory.reserve(order)}","expected":{"ok":false,"reason":"method or function call \"inventory.reserve(…)\" has no FEEL equivalent"}}
+{"id":"juel/40","juel":"${now()}","expected":{"ok":false,"reason":"method or function call \"now(…)\" has no FEEL equivalent"}}
+{"id":"juel/41","juel":"${empty items}","expected":{"ok":false,"reason":"\"empty\" is true for null, \"\" and empty collections alike"}}
+{"id":"juel/42","juel":"${a ? b : c}","expected":{"ok":false,"reason":"the conditional operator ?: coerces its condition; rewrite as if-then-else"}}
+{"id":"juel/43","juel":"${items[0]}","expected":{"ok":false,"reason":"indexing ([…]) is zero-based in JUEL and one-based in FEEL"}}
+{"id":"juel/44","juel":"${count % 2}","expected":{"ok":false,"reason":"remainder (%) has a different sign rule in FEEL's modulo()"}}
+{"id":"juel/45","juel":"${count mod 2}","expected":{"ok":false,"reason":"remainder (%) has a different sign rule in FEEL's modulo()"}}
+{"id":"juel/46","juel":"Hello ${name}","expected":{"ok":false,"reason":"text mixed with ${…} is string templating, which FEEL does not do implicitly"}}
+{"id":"juel/47","juel":"plain text","expected":{"ok":false,"reason":"not a JUEL expression"}}
+{"id":"juel/48","juel":"${nrOfInstances > 2}","expected":{"ok":false,"reason":"\"nrOfInstances\" exists only in a multi-instance completion condition"}}
+{"id":"juel/49","juel":"${for}","expected":{"ok":false,"reason":"\"for\" is not a valid FEEL name"}}
+{"id":"juel/50","juel":"${a$b}","expected":{"ok":false,"reason":"\"a$b\" is not a valid FEEL name"}}
+{"id":"juel/51","juel":"${1e3}","expected":{"ok":false,"reason":"numeric literal \"1e3\" has no exact FEEL form"}}
+{"id":"juel/52","juel":"${10L}","expected":{"ok":false,"reason":"numeric literal \"10L\" has no exact FEEL form"}}
+{"id":"juel/53","juel":"${(a}","expected":{"ok":false,"reason":"unbalanced parentheses"}}
+{"id":"juel/54","juel":"${'open}","expected":{"ok":false,"reason":"unterminated string literal"}}
+{"id":"juel/55","juel":"${}","expected":{"ok":false,"reason":"empty expression"}}
+{"id":"juel/56","juel":"${a @ b}","expected":{"ok":false,"reason":"unexpected character \"@\""}}
+{"id":"juel/57","juel":"${nrOfCompletedInstances / nrOfInstances >= 0.6}","options":{"multiInstance":true},"expected":{"feel":"numberOfCompletedInstances / numberOfInstances >= 0.6","ok":true}}
+{"id":"juel/58","juel":"${nrOfActiveInstances == 0}","options":{"multiInstance":true},"expected":{"feel":"numberOfActiveInstances = 0","ok":true}}
+{"id":"juel/59","juel":"${nrOfInstances > 2}","options":{"multiInstance":true},"expected":{"feel":"numberOfInstances > 2","ok":true}}
+{"id":"juel/60","juel":"${nrOfInstances}","options":{"multiInstance":false},"expected":{"ok":false,"reason":"\"nrOfInstances\" exists only in a multi-instance completion condition"}}
+{"id":"juel/61","juel":"#{nrOfCompletedInstances == nrOfInstances}","options":{"multiInstance":true},"expected":{"feel":"numberOfCompletedInstances = numberOfInstances","ok":true}}
+{"id":"juel/62","juel":"${loopCounter}","options":{"multiInstance":true},"expected":{"feel":"loopCounter","ok":true}}
+{"id":"juel/63","juel":"  ${a}  ","expected":{"feel":"a","ok":true}}
+{"id":"juel/64","juel":"\n${a\n&&\nb}\n","expected":{"feel":"a and b","ok":true}}
+{"id":"juel/65","juel":"${a}${b}","expected":{"ok":false,"reason":"unsupported syntax at \"}\""}}
+{"id":"juel/66","juel":"${a} and ${b}","expected":{"ok":false,"reason":"unsupported syntax at \"}\""}}
+{"id":"juel/67","juel":"#{a}","expected":{"feel":"a","ok":true}}
+{"id":"juel/68","juel":"#{a == 1}","expected":{"feel":"a = 1","ok":true}}
+{"id":"juel/69","juel":"${ }","expected":{"ok":false,"reason":"empty expression"}}
+{"id":"juel/70","juel":"","expected":{"ok":false,"reason":"not a JUEL expression"}}
+{"id":"juel/71","juel":"$","expected":{"ok":false,"reason":"not a JUEL expression"}}
+{"id":"juel/72","juel":"${","expected":{"ok":false,"reason":"text mixed with ${…} is string templating, which FEEL does not do implicitly"}}
+{"id":"juel/73","juel":"}","expected":{"ok":false,"reason":"not a JUEL expression"}}
+{"id":"juel/74","juel":"${a","expected":{"ok":false,"reason":"text mixed with ${…} is string templating, which FEEL does not do implicitly"}}
+{"id":"juel/75","juel":"${'it''s'}","expected":{"ok":false,"reason":"unsupported syntax at \"s\""}}
+{"id":"juel/76","juel":"${'a\\'b'}","expected":{"feel":"\"a'b\"","ok":true}}
+{"id":"juel/77","juel":"${\"a'b\"}","expected":{"feel":"\"a'b\"","ok":true}}
+{"id":"juel/78","juel":"${'a\"b'}","expected":{"feel":"\"a\\\"b\"","ok":true}}
+{"id":"juel/79","juel":"${'line\\nbreak'}","expected":{"feel":"\"linenbreak\"","ok":true}}
+{"id":"juel/80","juel":"${'tab\\t'}","expected":{"feel":"\"tabt\"","ok":true}}
+{"id":"juel/81","juel":"${'\\\\'}","expected":{"feel":"\"\\\\\"","ok":true}}
+{"id":"juel/82","juel":"${'é'}","expected":{"feel":"\"é\"","ok":true}}
+{"id":"juel/83","juel":"${''}","expected":{"feel":"\"\"","ok":true}}
+{"id":"juel/84","juel":"${0}","expected":{"feel":"0","ok":true}}
+{"id":"juel/85","juel":"${007}","expected":{"feel":"007","ok":true}}
+{"id":"juel/86","juel":"${1.}","expected":{"ok":false,"reason":"numeric literal \"1.\" has no exact FEEL form"}}
+{"id":"juel/87","juel":"${.5}","expected":{"ok":false,"reason":"unsupported syntax at \".\""}}
+{"id":"juel/88","juel":"${1.5.2}","expected":{"ok":false,"reason":"numeric literal \"1.5.2\" has no exact FEEL form"}}
+{"id":"juel/89","juel":"${0x10}","expected":{"ok":false,"reason":"unsupported syntax at \"x10\""}}
+{"id":"juel/90","juel":"${1_000}","expected":{"ok":false,"reason":"unsupported syntax at \"_000\""}}
+{"id":"juel/91","juel":"${12345678901234567890}","expected":{"feel":"12345678901234567890","ok":true}}
+{"id":"juel/92","juel":"${1.5e2}","expected":{"ok":false,"reason":"numeric literal \"1.5e2\" has no exact FEEL form"}}
+{"id":"juel/93","juel":"${1E5}","expected":{"ok":false,"reason":"numeric literal \"1E5\" has no exact FEEL form"}}
+{"id":"juel/94","juel":"${5f}","expected":{"ok":false,"reason":"numeric literal \"5f\" has no exact FEEL form"}}
+{"id":"juel/95","juel":"${2.0}","expected":{"feel":"2.0","ok":true}}
+{"id":"juel/96","juel":"${true && false}","expected":{"feel":"true and false","ok":true}}
+{"id":"juel/97","juel":"${TRUE}","expected":{"feel":"TRUE","ok":true}}
+{"id":"juel/98","juel":"${True}","expected":{"feel":"True","ok":true}}
+{"id":"juel/99","juel":"${null == x}","expected":{"feel":"null = x","ok":true}}
+{"id":"juel/100","juel":"${x == null}","expected":{"feel":"x = null","ok":true}}
+{"id":"juel/101","juel":"${x != null}","expected":{"feel":"x != null","ok":true}}
+{"id":"juel/102","juel":"${a.b.c.d}","expected":{"feel":"a.b.c.d","ok":true}}
+{"id":"juel/103","juel":"${a.b['c']}","expected":{"ok":false,"reason":"indexing ([…]) is zero-based in JUEL and one-based in FEEL"}}
+{"id":"juel/104","juel":"${a['b']}","expected":{"ok":false,"reason":"indexing ([…]) is zero-based in JUEL and one-based in FEEL"}}
+{"id":"juel/105","juel":"${a.}","expected":{"ok":false,"reason":"a property name must follow '.'"}}
+{"id":"juel/106","juel":"${.a}","expected":{"ok":false,"reason":"unsupported syntax at \".\""}}
+{"id":"juel/107","juel":"${a..b}","expected":{"ok":false,"reason":"a property name must follow '.'"}}
+{"id":"juel/108","juel":"${a.class}","expected":{"feel":"a.class","ok":true}}
+{"id":"juel/109","juel":"${a.if}","expected":{"ok":false,"reason":"\"if\" is not a valid FEEL name"}}
+{"id":"juel/110","juel":"${if}","expected":{"ok":false,"reason":"\"if\" is not a valid FEEL name"}}
+{"id":"juel/111","juel":"${function}","expected":{"ok":false,"reason":"\"function\" is not a valid FEEL name"}}
+{"id":"juel/112","juel":"${true.x}","expected":{"ok":false,"reason":"unsupported syntax at \".\""}}
+{"id":"juel/113","juel":"${null.x}","expected":{"ok":false,"reason":"unsupported syntax at \".\""}}
+{"id":"juel/114","juel":"${a.size()}","expected":{"ok":false,"reason":"method or function call \"a.size(…)\" has no FEEL equivalent"}}
+{"id":"juel/115","juel":"${fn:length(x)}","expected":{"ok":false,"reason":"unsupported syntax at \":\""}}
+{"id":"juel/116","juel":"${a:b(c)}","expected":{"ok":false,"reason":"unsupported syntax at \":\""}}
+{"id":"juel/117","juel":"${math:max(a,b)}","expected":{"ok":false,"reason":"unsupported syntax at \":\""}}
+{"id":"juel/118","juel":"${x.y(1)}","expected":{"ok":false,"reason":"method or function call \"x.y(…)\" has no FEEL equivalent"}}
+{"id":"juel/119","juel":"${a > b > c}","expected":{"feel":"(a > b) > c","ok":true}}
+{"id":"juel/120","juel":"${a == b == c}","expected":{"feel":"(a = b) = c","ok":true}}
+{"id":"juel/121","juel":"${a < b < c}","expected":{"feel":"(a < b) < c","ok":true}}
+{"id":"juel/122","juel":"${a && b || c && d}","expected":{"feel":"a and b or c and d","ok":true}}
+{"id":"juel/123","juel":"${a || b && c || d}","expected":{"feel":"a or b and c or d","ok":true}}
+{"id":"juel/124","juel":"${!a && b}","expected":{"feel":"not(a) and b","ok":true}}
+{"id":"juel/125","juel":"${!(a)}","expected":{"feel":"not((a))","ok":true}}
+{"id":"juel/126","juel":"${!!a}","expected":{"feel":"not(not(a))","ok":true}}
+{"id":"juel/127","juel":"${not not a}","expected":{"feel":"not(not(a))","ok":true}}
+{"id":"juel/128","juel":"${- -x}","expected":{"feel":"-(-x)","ok":true}}
+{"id":"juel/129","juel":"${-(-x)}","expected":{"feel":"-(-x)","ok":true}}
+{"id":"juel/130","juel":"${+x}","expected":{"ok":false,"reason":"unsupported syntax at \"+\""}}
+{"id":"juel/131","juel":"${a + b + c}","expected":{"feel":"a + b + c","ok":true}}
+{"id":"juel/132","juel":"${a - b - c}","expected":{"feel":"a - b - c","ok":true}}
+{"id":"juel/133","juel":"${a * b / c}","expected":{"feel":"a * b / c","ok":true}}
+{"id":"juel/134","juel":"${a * (b + c)}","expected":{"feel":"a * (b + c)","ok":true}}
+{"id":"juel/135","juel":"${a / b * c}","expected":{"feel":"a / b * c","ok":true}}
+{"id":"juel/136","juel":"${a div b div c}","expected":{"feel":"a / b / c","ok":true}}
+{"id":"juel/137","juel":"${a / b}","expected":{"feel":"a / b","ok":true}}
+{"id":"juel/138","juel":"${a mod b}","expected":{"ok":false,"reason":"remainder (%) has a different sign rule in FEEL's modulo()"}}
+{"id":"juel/139","juel":"${a % b}","expected":{"ok":false,"reason":"remainder (%) has a different sign rule in FEEL's modulo()"}}
+{"id":"juel/140","juel":"${(a)}","expected":{"feel":"(a)","ok":true}}
+{"id":"juel/141","juel":"${((a))}","expected":{"feel":"((a))","ok":true}}
+{"id":"juel/142","juel":"${(a + b)}","expected":{"feel":"(a + b)","ok":true}}
+{"id":"juel/143","juel":"${(a && b)}","expected":{"feel":"(a and b)","ok":true}}
+{"id":"juel/144","juel":"${a == 1 && b == 2}","expected":{"feel":"a = 1 and b = 2","ok":true}}
+{"id":"juel/145","juel":"${a eq 1 and b ne 2}","expected":{"feel":"a = 1 and b != 2","ok":true}}
+{"id":"juel/146","juel":"${a lt 1 or b gt 2}","expected":{"feel":"a < 1 or b > 2","ok":true}}
+{"id":"juel/147","juel":"${a le 1 || b ge 2}","expected":{"feel":"a <= 1 or b >= 2","ok":true}}
+{"id":"juel/148","juel":"${a = b}","expected":{"ok":false,"reason":"unexpected character \"=\""}}
+{"id":"juel/149","juel":"${a === b}","expected":{"ok":false,"reason":"unexpected character \"=\""}}
+{"id":"juel/150","juel":"${a <> b}","expected":{"ok":false,"reason":"unsupported syntax at \">\""}}
+{"id":"juel/151","juel":"${a => b}","expected":{"ok":false,"reason":"unexpected character \"=\""}}
+{"id":"juel/152","juel":"${a & b}","expected":{"ok":false,"reason":"unexpected character \"&\""}}
+{"id":"juel/153","juel":"${a | b}","expected":{"ok":false,"reason":"unexpected character \"|\""}}
+{"id":"juel/154","juel":"${a ^ b}","expected":{"ok":false,"reason":"unexpected character \"^\""}}
+{"id":"juel/155","juel":"${empty a}","expected":{"ok":false,"reason":"\"empty\" is true for null, \"\" and empty collections alike"}}
+{"id":"juel/156","juel":"${not empty a}","expected":{"ok":false,"reason":"\"empty\" is true for null, \"\" and empty collections alike"}}
+{"id":"juel/157","juel":"${!empty a}","expected":{"ok":false,"reason":"\"empty\" is true for null, \"\" and empty collections alike"}}
+{"id":"juel/158","juel":"${a instanceof b}","expected":{"ok":false,"reason":"unsupported syntax at \"instanceof\""}}
+{"id":"juel/159","juel":"${a ?: b}","expected":{"ok":false,"reason":"the conditional operator ?: coerces its condition; rewrite as if-then-else"}}
+{"id":"juel/160","juel":"${a; b}","expected":{"ok":false,"reason":"unexpected character \";\""}}
+{"id":"juel/161","juel":"${a, b}","expected":{"ok":false,"reason":"unsupported syntax at \",\""}}
+{"id":"juel/162","juel":"${a = 1}","expected":{"ok":false,"reason":"unexpected character \"=\""}}
+{"id":"juel/163","juel":"${a -> b}","expected":{"ok":false,"reason":"unsupported syntax at \">\""}}
+{"id":"juel/164","juel":"${[1,2]}","expected":{"ok":false,"reason":"unsupported syntax at \"[\""}}
+{"id":"juel/165","juel":"${{1,2}}","expected":{"ok":false,"reason":"unsupported syntax at \"{\""}}
+{"id":"juel/166","juel":"${{'a':1}}","expected":{"ok":false,"reason":"unsupported syntax at \"{\""}}
+{"id":"juel/167","juel":"${x == 'a' && y == \"b\"}","expected":{"feel":"x = \"a\" and y = \"b\"","ok":true}}
+{"id":"juel/168","juel":"${status eq \"open\"}","expected":{"feel":"status = \"open\"","ok":true}}
+{"id":"juel/169","juel":"${a gt 1.5}","expected":{"feel":"a > 1.5","ok":true}}
+{"id":"juel/170","juel":"${order.items}","expected":{"feel":"order.items","ok":true}}
+{"id":"juel/171","juel":"${order.total * 1.19}","expected":{"feel":"order.total * 1.19","ok":true}}
+{"id":"juel/172","juel":"${price * qty >= 100}","expected":{"feel":"price * qty >= 100","ok":true}}
+{"id":"juel/173","juel":"${approved == true}","expected":{"feel":"approved = true","ok":true}}
+{"id":"juel/174","juel":"${approved == false}","expected":{"feel":"approved = false","ok":true}}
+{"id":"juel/175","juel":"${!approved == true}","expected":{"feel":"not(approved) = true","ok":true}}
+{"id":"juel/176","juel":"${date}","expected":{"feel":"date","ok":true}}
+{"id":"juel/177","juel":"${now}","expected":{"feel":"now","ok":true}}
+{"id":"juel/178","juel":"${execution}","expected":{"ok":false,"reason":"\"execution\" is a Camunda 7 engine object with no Camunda 8 counterpart"}}
+{"id":"juel/179","juel":"${execution.processBusinessKey}","expected":{"ok":false,"reason":"\"execution\" is a Camunda 7 engine object with no Camunda 8 counterpart"}}
+{"id":"juel/180","juel":"${task}","expected":{"ok":false,"reason":"\"task\" is a Camunda 7 engine object with no Camunda 8 counterpart"}}
+{"id":"juel/181","juel":"${taskId}","expected":{"feel":"taskId","ok":true}}
+{"id":"juel/182","juel":"${processInstanceId}","expected":{"feel":"processInstanceId","ok":true}}
+{"id":"juel/183","juel":"${currentUser}","expected":{"feel":"currentUser","ok":true}}
+{"id":"juel/184","juel":"${loopCounter + 1}","expected":{"feel":"loopCounter + 1","ok":true}}
+{"id":"juel/185","juel":"${S(x)}","expected":{"ok":false,"reason":"method or function call \"S(…)\" has no FEEL equivalent"}}
+{"id":"juel/186","juel":"${JSON(x)}","expected":{"ok":false,"reason":"method or function call \"JSON(…)\" has no FEEL equivalent"}}
+{"id":"juel/187","juel":"${x.prop('a')}","expected":{"ok":false,"reason":"method or function call \"x.prop(…)\" has no FEEL equivalent"}}
+{"id":"juel/188","juel":"${camunda:x}","expected":{"ok":false,"reason":"unsupported syntax at \":\""}}
+{"id":"juel/189","juel":"${var:equals(x, 1)}","expected":{"ok":false,"reason":"unsupported syntax at \":\""}}
+{"id":"juel/190","juel":"${a b}","expected":{"ok":false,"reason":"unsupported syntax at \"b\""}}
+{"id":"juel/191","juel":"${a b c}","expected":{"ok":false,"reason":"unsupported syntax at \"b\""}}
+{"id":"juel/192","juel":"${1 2}","expected":{"ok":false,"reason":"unsupported syntax at \"2\""}}
+{"id":"juel/193","juel":"${a ( b )}","expected":{"ok":false,"reason":"method or function call \"a(…)\" has no FEEL equivalent"}}
+{"id":"juel/194","juel":"${varA}","expected":{"feel":"varA","ok":true}}
+{"id":"juel/195","juel":"${_a}","expected":{"feel":"_a","ok":true}}
+{"id":"juel/196","juel":"${$a}","expected":{"ok":false,"reason":"\"$a\" is not a valid FEEL name"}}
+{"id":"juel/197","juel":"${a1}","expected":{"feel":"a1","ok":true}}
+{"id":"juel/198","juel":"${1a}","expected":{"ok":false,"reason":"unsupported syntax at \"a\""}}
+{"id":"juel/199","juel":"${a-b}","expected":{"feel":"a - b","ok":true}}
+{"id":"juel/200","juel":"${a - b}","expected":{"feel":"a - b","ok":true}}
+{"id":"juel/201","juel":"${a_b}","expected":{"feel":"a_b","ok":true}}
+{"id":"juel/202","juel":"${Ünï}","expected":{"ok":false,"reason":"unexpected character \"Ü\""}}
+{"id":"juel/203","juel":"${a b-c}","expected":{"ok":false,"reason":"unsupported syntax at \"b\""}}
+{"id":"juel/204","juel":"${in}","expected":{"ok":false,"reason":"\"in\" is not a valid FEEL name"}}
+{"id":"juel/205","juel":"${and}","expected":{"ok":false,"reason":"\"and\" is not a valid FEEL name"}}
+{"id":"juel/206","juel":"${or}","expected":{"ok":false,"reason":"\"or\" is not a valid FEEL name"}}
+{"id":"juel/207","juel":"${not}","expected":{"ok":false,"reason":"expression ends early"}}
+{"id":"juel/208","juel":"${eq}","expected":{"feel":"eq","ok":true}}
+{"id":"juel/209","juel":"${div}","expected":{"feel":"div","ok":true}}
+{"id":"juel/210","juel":"${mod}","expected":{"feel":"mod","ok":true}}
+{"id":"juel/211","juel":"${empty}","expected":{"ok":false,"reason":"\"empty\" is true for null, \"\" and empty collections alike"}}
+{"id":"juel/212","juel":"${false}","expected":{"feel":"false","ok":true}}
+{"id":"juel/213","juel":"${satisfies}","expected":{"ok":false,"reason":"\"satisfies\" is not a valid FEEL name"}}
+{"id":"juel/214","juel":"${then}","expected":{"ok":false,"reason":"\"then\" is not a valid FEEL name"}}
+{"id":"juel/215","juel":"${else}","expected":{"ok":false,"reason":"\"else\" is not a valid FEEL name"}}
+{"id":"juel/216","juel":"${some}","expected":{"ok":false,"reason":"\"some\" is not a valid FEEL name"}}
+{"id":"juel/217","juel":"${every}","expected":{"ok":false,"reason":"\"every\" is not a valid FEEL name"}}
+{"id":"juel/218","juel":"${between}","expected":{"ok":false,"reason":"\"between\" is not a valid FEEL name"}}
+{"id":"juel/219","juel":"${instance}","expected":{"ok":false,"reason":"\"instance\" is not a valid FEEL name"}}
+{"id":"juel/220","juel":"${of}","expected":{"ok":false,"reason":"\"of\" is not a valid FEEL name"}}
+{"id":"juel/221","juel":"${a}","options":{"multiInstance":true},"expected":{"feel":"a","ok":true}}
+{"id":"juel/222","juel":"${not (a)}","expected":{"feel":"not((a))","ok":true}}
+{"id":"juel/223","juel":"${not(a)}","expected":{"feel":"not((a))","ok":true}}
+{"id":"juel/224","juel":"${ not a && b }","expected":{"feel":"not(a) and b","ok":true}}
+{"id":"juel/225","juel":"${a&&b}","expected":{"feel":"a and b","ok":true}}
+{"id":"juel/226","juel":"${a||b}","expected":{"feel":"a or b","ok":true}}
+{"id":"juel/227","juel":"${a==b}","expected":{"feel":"a = b","ok":true}}
+{"id":"juel/228","juel":"${a!=b}","expected":{"feel":"a != b","ok":true}}
+{"id":"juel/229","juel":"${a<=b}","expected":{"feel":"a <= b","ok":true}}
+{"id":"juel/230","juel":"${a>=b}","expected":{"feel":"a >= b","ok":true}}
+{"id":"juel/231","juel":"${a<b}","expected":{"feel":"a < b","ok":true}}
+{"id":"juel/232","juel":"${a>b}","expected":{"feel":"a > b","ok":true}}
+{"id":"juel/233","juel":"${!a||!b}","expected":{"feel":"not(a) or not(b)","ok":true}}
+{"id":"juel/234","juel":"${a!=null&&a>0}","expected":{"feel":"a != null and a > 0","ok":true}}

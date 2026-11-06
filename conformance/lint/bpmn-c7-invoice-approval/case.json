@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/c7-invoice-approval/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

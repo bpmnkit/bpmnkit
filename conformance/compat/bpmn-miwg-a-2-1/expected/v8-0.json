@@ -1,0 +1,76 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9ZpzOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 1\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9ZtjOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 2\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9ZwDOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 3\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9ZzzOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 4\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9Z7TOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Condition\" has a condition, but only flows leaving an exclusive or inclusive gateway may.",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Remove the condition, or route the flow through a gateway."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9Z8zOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"condition\" has a condition, but only flows leaving an exclusive or inclusive gateway may.",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Remove the condition, or route the flow through a gateway."
+    }
+  ]
+}

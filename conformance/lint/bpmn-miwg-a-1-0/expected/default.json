@@ -1,0 +1,36 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 0,
+    "info": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_93c466ab-b271-4376-a427-f4c353d55ce8"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start Event\" has no documentation describing expected input variables.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 1
+}

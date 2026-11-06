@@ -1,0 +1,160 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message start event \"Invoice\nreceived\" references no message.",
+      "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Scan Invoice\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Archive\noriginal\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sid-40EC6574-E644-425C-8CE7-EE384F0C3520"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"Approver to \nbe assigned\" references no message.",
+      "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Assign approver\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"Invoice review\n needed\" references no message.",
+      "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Review and document result\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"7 days\" has no timer value; set one of timeDuration.",
+      "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+      "severity": "error",
+      "suggestion": "Set when the timer fires."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "approveInvoice"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Approve Invoice\" has no zeebe:formDefinition.",
+      "processId": "bpmn-miwg-test-case-c.1.0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "assignApprover"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Assign\nApprover\" has no zeebe:formDefinition.",
+      "processId": "bpmn-miwg-test-case-c.1.0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "reviewInvoice"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Rechnung klären\" has no zeebe:formDefinition.",
+      "processId": "bpmn-miwg-test-case-c.1.0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "prepareBankTransfer"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Prepare\r\nBank\r\nTransfer\" has no zeebe:formDefinition.",
+      "processId": "bpmn-miwg-test-case-c.1.0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "archiveInvoice"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Archive\nInvoice\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "bpmn-miwg-test-case-c.1.0",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    }
+  ]
+}

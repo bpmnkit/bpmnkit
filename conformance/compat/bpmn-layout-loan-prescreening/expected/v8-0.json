@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_UnderwriterReview"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-user-task",
+      "message": "User task \"Manual Underwriter Review\" has a zeebe:userTask, which needs Camunda 8.5 or newer; this model targets Camunda 8.0.",
+      "processId": "loan-approval-process",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}
