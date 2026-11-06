@@ -73,6 +73,29 @@ describe("buildPack", () => {
 		expect(toc).toContain(".llms/chunks/")
 	})
 
+	it("leads llms.txt with the startHere pages, before the full table of contents", () => {
+		const out = join(root, "start-pack")
+		mkdirSync(join(out, ".llms"), { recursive: true })
+		const options = {
+			source: join(root, "docs"),
+			packDir: out,
+			name: "@acme/docspack",
+			version: "1.2.3",
+			documents: ["@acme/sdk"],
+		}
+		buildPack({ ...options, startHere: { intro: "Read this first.", docs: ["guides/gateways"] } })
+		const toc = readFileSync(join(out, "llms.txt"), "utf8")
+		const start = toc.indexOf("## Start here")
+		expect(start).toBeGreaterThan(0)
+		expect(start).toBeLessThan(toc.indexOf("Version 1.2.3"))
+		expect(toc.slice(start)).toMatch(
+			/Read this first\.\n\n- \[Gateways[^\]]*\]\(\.llms\/chunks\/guides\.gateways/,
+		)
+		expect(() =>
+			buildPack({ ...options, startHere: { intro: "x", docs: ["guides/missing"] } }),
+		).toThrow(/guides\/missing/)
+	})
+
 	it("removes chunks that no longer exist in the source", () => {
 		const stale = join(packDir, ".llms", "chunks", "stale.md")
 		writeFileSync(stale, "gone")

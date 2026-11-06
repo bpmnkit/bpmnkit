@@ -34,6 +34,7 @@ casen
 │   ├── bpmn        — BPMN diagrams rendered as SVG
 │   ├── dmn         — DMN decision tables
 │   └── form        — Camunda form layouts
+├── check           — check .bpmn, .dmn and .form files in one call (casen check <file...>)
 ├── lint            — static analysis and auto-fix for BPMN files
 │   ├── lint        — run all checks, report findings
 │   └── improve     — AI-assisted improvement suggestions
@@ -276,6 +277,7 @@ casen connector apply order-process.bpmn Call http --values call.json   # --set 
 # Deploy-readiness gate, then deploy
 # (a .bpmnlintrc in the diagram's folder or above is honoured; --no-bpmnlintrc ignores it)
 casen lint lint order-process.bpmn --profile deploy
+casen check order-process.bpmn review.form discount.dmn --deploy   # BPMN, DMN and forms together
 casen deploy deploy order-process.bpmn                   # local Reebe
 casen deploy deploy order-process.bpmn --target camunda8 # active Camunda 8 profile
 ```
@@ -322,13 +324,18 @@ With `--json`, the findings are in the output's `check` field.
 
 See [Building Processes with AI](/docs/guides/ai-implement) and [AI Agents](/docs/guides/ai-agents) for full walkthroughs.
 
+`casen lint lint --profile sketch` skips every Camunda 8 deployability rule, for a process
+that does not target an engine yet. A user task without a form is reported only under
+`--profile deploy` or with `--user-task-forms require`. To check DMN and form files too, use
+[`casen check`](/docs/cli/check).
+
 `casen lint` reads a `.bpmnlintrc` if your project has one. See
 [bpmnlint Compatibility](/docs/guides/bpmnlint) for how the rules map and how to run your
 own `bpmnlint-plugin-*` rules.
 
 ## AIKit Skills
 
-`casen` ships four lightweight, CLI-only Claude Code slash commands (no MCP server, no proxy):
+`casen` ships six lightweight, CLI-only Claude Code slash commands (no MCP server, no proxy):
 
 ```sh
 casen skills install
@@ -340,6 +347,10 @@ casen skills install
 | `/review <path>` | Run the full lint report and report a deploy-ready verdict |
 | `/test <path>` | Run scenario tests and report path/branch coverage |
 | `/deploy <path>` | Deploy-readiness gate, then deploy to local Reebe or Camunda 8 |
+| `/dmn <description>` | Write a DMN decision table from `casen agent-card dmn` |
+| `/form <description>` | Write a Camunda form from `casen agent-card form` |
+
+`casen agent-card bpmn|dmn|form` prints the [agent card](/docs/agent-cards/bpmn) for a file type: a ~1–1.5k-token cheat sheet with a runnable create/export/edit/validate script, the top options and the traps. `--text` on `bpmn` adds the line-format guide `parseProcessText` reads.
 
 For the richer skill set (`/bpmnkit:implement`, `:extend`, `:agent`, `:connect`, plus generated reference docs), install the Claude Code plugin instead: `/plugin marketplace add github:bpmnkit/bpmnkit` then `/plugin install bpmnkit`. See [AIKit Skills](/docs/cli/skills) for full documentation.
 

@@ -147,6 +147,18 @@ Gate on deploy-readiness, then deploy to local Reebe or Camunda 8.
 
 ---
 
+### `/bpmnkit:bpmn-script`, `/bpmnkit:dmn`, `/bpmnkit:form`
+
+Write a process as a TypeScript build script, a DMN decision table or a Camunda form. Each
+skill carries its [agent card](/docs/agent-cards/bpmn): a runnable script, the top options
+and the traps. Outside Claude Code, `casen agent-card bpmn|dmn|form` prints the same card.
+
+```
+/bpmnkit:dmn order risk by amount and country
+```
+
+---
+
 ### `/bpmnkit:instances [process-id] [--active|--failed]`
 
 List running process instances.

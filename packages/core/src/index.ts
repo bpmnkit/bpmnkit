@@ -265,7 +265,7 @@ export type {
 	AiAgentToolParamType,
 	AiAgentBuild,
 } from "./bpmn/agentic.js"
-export { Dmn, layoutDmn, benchmarkDmnLayout, compactifyDmn, expandDmn } from "./dmn/index.js"
+export { Dmn, drgId, layoutDmn, benchmarkDmnLayout, compactifyDmn, expandDmn } from "./dmn/index.js"
 export type {
 	DmnBenchmarkResult,
 	DmnElementPosition,
@@ -276,6 +276,9 @@ export type {
 	CompactDmnRule,
 } from "./dmn/index.js"
 export { Form, compactifyForm, expandForm } from "./form/index.js"
+export { lintForm } from "./form/lint.js"
+export { lintDmn } from "./dmn/lint.js"
+export type { CheckFinding, CheckSeverity } from "./check-finding.js"
 export type { CompactForm, CompactFormField } from "./form/index.js"
 export { FormBuilder, GroupBuilder } from "./form/form-builder.js"
 export type {
@@ -293,6 +296,7 @@ export type {
 	FormDefinition,
 	FormExporter,
 	FormGroupComponent,
+	FormConditional,
 	FormLayout,
 	FormLayoutInput,
 	FormRadioComponent,
@@ -318,6 +322,14 @@ export type {
 	FormFilepickerComponent,
 	FormUnknownComponent,
 } from "./form/form-model.js"
+export type {
+	DecisionHandle,
+	DrdBuilder,
+	DrdDecisionOptions,
+	DrgId,
+	DrgRef,
+	InputDataHandle,
+} from "./dmn/drd-builder.js"
 export type {
 	DecisionTableBuilder,
 	InputOptions,
@@ -372,7 +384,7 @@ export { readDiColor, writeDiColor, BIOC_NS, COLOR_NS } from "./bpmn/di-color.js
 export type { DiColor } from "./bpmn/di-color.js"
 export { collectLabelStyles, labelFontCss, resolveLabelFont } from "./bpmn/label-style.js"
 export type { BpmnLabelFont, LabelFontCss } from "./bpmn/label-style.js"
-export { optimize } from "./bpmn/optimize/index.js"
+export { optimize, USER_TASK_FORM_RULE } from "./bpmn/optimize/index.js"
 export { renderStoryHtml } from "./bpmn/story.js"
 export type { StoryRenderOptions } from "./bpmn/story.js"
 export { analyzeVariableFlow, extractFeelIdentifiers } from "./bpmn/optimize/variable-flow.js"

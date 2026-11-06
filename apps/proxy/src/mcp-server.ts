@@ -900,7 +900,13 @@ function callTool(name: string, args: Record<string, unknown>): string {
 		case "replace_diagram": {
 			const raw = args.diagram as unknown
 			if (state.kind === "dmn") {
-				state = { kind: "dmn", data: expandDmn(raw as CompactDmn) }
+				// expandDmn throws on a dangling `requires`; surface its message alone so the
+				// agent can fix the id, and keep the loaded model as it was.
+				try {
+					state = { kind: "dmn", data: expandDmn(raw as CompactDmn) }
+				} catch (err) {
+					throw new Error(err instanceof Error ? err.message : String(err))
+				}
 			} else if (state.kind === "form") {
 				state = { kind: "form", data: expandForm(raw as CompactForm) }
 			} else {

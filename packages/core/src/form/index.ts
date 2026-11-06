@@ -14,6 +14,7 @@ export type {
 	FormHtmlComponent,
 	FormIframeComponent,
 	FormImageComponent,
+	FormConditional,
 	FormLayout,
 	FormLayoutInput,
 	FormNumberComponent,

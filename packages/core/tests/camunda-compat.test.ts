@@ -6,6 +6,7 @@ import {
 	Bpmn,
 	CAMUNDA_COMPAT_RULES,
 	CAMUNDA_COMPAT_VERSIONS,
+	USER_TASK_FORM_RULE,
 	analyzeCamundaCompat,
 	lintDiagram,
 	normalizeCamundaVersion,
@@ -485,5 +486,21 @@ describe.skipIf(MODULES === undefined)("matches the installed plugin", () => {
 				})
 			}
 		}
+	})
+})
+
+describe("userTaskForms option", () => {
+	const xml = model('    <bpmn:userTask id="review" name="Review" />\n')
+
+	it("reports a user task with no form by default", () => {
+		const ids = optimize(Bpmn.parse(xml)).findings.map((f) => f.id)
+		expect(ids).toContain(USER_TASK_FORM_RULE)
+	})
+
+	it('"off" drops only that finding', () => {
+		const on = optimize(Bpmn.parse(xml)).findings.map((f) => f.id)
+		const off = optimize(Bpmn.parse(xml), { userTaskForms: "off" }).findings.map((f) => f.id)
+		expect(off).not.toContain(USER_TASK_FORM_RULE)
+		expect(off).toEqual(on.filter((id) => id !== USER_TASK_FORM_RULE))
 	})
 })

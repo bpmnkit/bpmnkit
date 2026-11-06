@@ -1,10 +1,57 @@
 # Progress
 
+## 2026-11-06 — `casen check --deploy`: user task without a form is an error
+
+- `compat/user-task-definition` is promoted to an error in the deploy profile (it was a warning, so the errors-only gate hid it). `--user-task-forms off` still disables it; elsewhere it stays off or a warning. Merged `claude/eval-layout-aesthetics` into the integration branch.
+
+## 2026-11-05 — Integration of the Camunda eval branches (fix-ids-conditional, agent-cards, casen-check, dmn-drd)
+
+- Merged the four branches with history. Agent cards now name `casen check` and show a tested `Dmn.drd()` script (`scripts/dmn-drd.ts`).
+- MCP `replace_diagram` on a DMN returns a plain tool error for a dangling `requires` (test: `apps/proxy/tests/mcp-replace-dmn.test.ts`).
+- Fix: compact `expand` and the element `eventType` patch now derive event-definition ids, so applied drop feedback no longer trips `deploy/event-definition-no-id`.
+
+## 2026-11-05 — core: event-definition ids and form `conditional` (Camunda eval fixes)
+
+- Event definitions built with the fluent builder now get deterministic ids (`<ElementId>_<Kind>EventDefinition`, counter for repeats; `eventDefinitionId` in `stable-ids.ts`). Zeebe 8.10 rejects a definition without one. Parsed files are not rewritten: serializing keeps them byte-faithful, and a continued document keeps its untouched part as is.
+- New lint rule `deploy/event-definition-no-id` (deploy profile) flags definitions without an id.
+- Forms: `conditional: { hide }` added to the model, `Form` builder options, parser and exporter; component props the model does not know are kept in `extraProps` and written back, so `Form.export(parse(x))` is lossless. Tests: `tests/event-definition-ids.test.ts`, `tests/form/conditional.test.ts`.
+
+## 2026-11-05 — Agent cards: one ~2k-token cheat sheet per BPMN, DMN and form
+
+Camunda eval (900 runs): agents spent 32–49% of their cost reading bpmnkit docs. Each file type now has one card an agent reads instead.
+
+- Source: `apps/cli/agent-cards/{bpmn,dmn,form}.md`. Each embeds a runnable script from `apps/cli/agent-cards/scripts/` (create, export, edit with the preserving writer, validate), the top options and the traps: Camunda 8.10 is not the builder default (BPMN `8.9.0`, form `8.7.0`), user tasks default to job-worker tasks (`zeebeUserTask: true`), deploy ids (process id, decision id, form id), DMN hit policy and FEEL quoting, keeping layout on edit.
+- CLI: `casen agent-card bpmn|dmn|form` (alias `card`); `bpmn --text` appends `PROCESS_TEXT_GUIDE`. `casen skills install` adds `/dmn` and `/form`.
+- `scripts/sync-agent-cards.mjs` copies the cards to `apps/landing/src/content/docs/agent-cards/` (new "Agent Cards" docs section) and to new plugin skills `bpmn-script`, `dmn`, `form`; `implement` links them.
+- docspack: `docspack.startHere` build option; `@bpmnkit/docspack`'s `llms.txt` now opens with a "Start here" list of the cards. Rebuilt the pack.
+- Tests: `apps/cli/src/commands/agent-card.test.ts` typechecks (`tsc -p agent-cards`), runs every script, checks the card shows it verbatim, the copies are in sync and each card stays under 2k tokens; `recipe-ranking.test.ts` checks each card is the top chunk for its task; `pack.test.ts` covers `startHere`.
+- Sizes (docspack estimate): BPMN 1,236, DMN 1,025, form 885 tokens. DMN/form lint and a DRD builder are in progress elsewhere; the cards only point at `casen --help`.
+
+## 2026-11-05 — `casen check`: one gate for BPMN, DMN and forms
+
+- New `casen check <file...> [--deploy] [--sketch] [--user-task-forms require|off] [--json]` (`apps/cli/src/commands/check.ts`, routed like `dev` so every positional is a file). BPMN: XML well-formedness, then `lintBpmn`. DMN: `lintDmn`. Forms: `lintForm`. Then cross-file `check/unresolved-form` / `check/unresolved-decision` when files of that kind were given (warning; error under `--deploy`). One row shape: `file, kind, rule, severity, elementId, message, fix`; exits non-zero on errors. `recoverFiles` gives back a file the argument parser took as a boolean flag's value (`--json a.bpmn`).
+- Core: `lintDmn(xml)` (`packages/core/src/dmn/lint.ts`) and `lintForm(json)` (`packages/core/src/form/lint.ts`) on raw XML/JSON, so every problem is reported instead of the first parse error; shared `CheckFinding` type. FEEL via `@bpmnkit/feel` (`parseUnaryTests` for input entries). 17 DMN rules, 13 form rules.
+- The "user task needs a form" rule (`compat/user-task-definition`) is now configurable: `OptimizeOptions.userTaskForms: "require" | "off"` (default `require`, library behaviour unchanged; `USER_TASK_FORM_RULE` exported). `casen lint` and `casen check` default it to `off` outside the deploy profile — Zeebe deploys a user task without a form, and agents in the eval disabled the rule in 71/324 runs to stop inventing form refs.
+- `casen lint lint --profile sketch` (and `casen check --sketch`): skip every Camunda 8 deployability category even when the model names a platform.
+- Docs: `apps/landing/src/content/docs/cli/check.md`, `casen.md`. Tests: `packages/core/tests/dmn-lint.test.ts`, `form-lint.test.ts`, `camunda-compat.test.ts` (userTaskForms), `apps/cli/src/commands/check.test.ts`.
+
+## 2026-11-05 — `Dmn.drd()` multi-decision builder (eval D04)
+
+- Eval D04: agents referenced the required decision by name, not id (Haiku 0/18, Sonnet 12/18). New `Dmn.drd()` in `packages/core/src/dmn/drd-builder.ts`: `decision()` returns a handle, `requires` takes a handle or branded `drgId()`; unknown ref throws `ValidationError` listing valid ids, a matching label suggests the id. Emits `informationRequirement` hrefs and DMNDI shapes/edges (auto layout).
+- `expandDmn` (compact.ts) now throws on a dangling `requires` instead of dropping it silently.
+- Tests: `packages/core/tests/dmn-drd.test.ts`. Docs: landing `packages/core.md`.
+## 2026-11-05 — Auto-layout aesthetics for new diagrams
+
+- Benchmark `scripts/layout-aesthetics/` (10 scenarios, deterministic aesthetic metrics, PNG renders); results and before/after in `doc/layout-aesthetics.md`.
+- Semantic layout: 60 px column/row gaps (wider only for labels; 100 beside containers), band lines that clear only what they sit under, sub-processes aligned on their inner spine, gateway/event labels moved off exit flows, branch conditions at the gateway exit, routes avoid running along unrelated flows. Participant-less primary process stacked below pools. `exportSvg`: no label wrap at box width, no "+" on expanded sub-processes.
+- Scenario means: width 1170 → 945 px, aspect 4.77 → 4.05, label collisions 0.8 → 0.2, density 0.16 → 0.21; blind Opus judge 3.4 → 4.2. `bakeoff/expected.bpmn` regenerated (coordinates only). Tests: `tests/layout-aesthetics.test.ts`, svg marker test.
+
 ## 2026-11-05 — Camunda 8 → Camunda 7/Operaton export (issue #259, step 2)
 
 - `convertCamunda8To7(defs)` in `packages/core/src/bpmn/camunda7/export.ts`, exported from `@bpmnkit/core`: non-mutating, returns `{ definitions, findings }` (same finding shape as `convertCamunda7`). Maps job type → `camunda:type="external"` + `camunda:topic`, I/O mapping → `camunda:inputOutput`, assignment, `formKey`, `calledElement` (+ `camunda:in`/`out variables="all"`), version tag. Removes all `zeebe:`/`modeler:` content and namespaces itself (does not use the serializer). FEEL is kept raw with a `manual` finding; message correlation keys, connectors and Zeebe-only features are dropped with findings.
 - CLI: `casen migrate c7 --to camunda7 <files>` writes `<name>.c7.bpmn`. `CAMUNDA7_NS`, `ZEEBE_NS`, `MODELER_NS` are now exported from `migrate.ts`.
 - Tests: `packages/core/tests/camunda7-export.test.ts`, one CLI case in `migrate.test.ts`. Best effort: Camunda 8 stays the focus.
+
 ## 2026-11-05 — core: `stripCamunda8` for vendor-neutral export (#259 step 1)
 
 - New `stripCamunda8(defs)` (`packages/core/src/bpmn/strip-camunda8.ts`, exported from core): non-mutating copy without `zeebe:*` extension elements/attributes, `modeler:*` attributes and their unused `xmlns` declarations; returns `{ definitions, dropped }` with `{ elementId, kind, name }` per item. `camunda:*` is kept. Opt-in; `serializeBpmn` is unchanged.
@@ -89,7 +136,6 @@
 - Tests: `packages/core/tests/builder-reference.test.ts` (drift against the committed file, token budget, every example type-checks against the source, builds, round-trips and has a complete diagram); `apps/demo/server/system-prompt.test.ts`.
 - Rerun after the builder changes: `node scripts/generate-builder-reference.mjs` (`--check` exits 1 when stale). The maintainer should rerun it after merging the parallel session's builder options (form variants, conditional events); the drift test fails until then.
 
-
 ## 2026-10-22 — Same-input comparison page (D1)
 
 - `/compare/same-input`: per scenario, the prompt, a hand-written no-AI reference row and one row per recorded route (raw XML, compact JSON, builder script) with tokens, time, parses, DI, lint errors and closeness to the reference; all runs in a collapsible table; failed runs stay as rows
@@ -97,6 +143,7 @@
 - References are hand-authored from the prompt only (`scripts/compare/references/`)
 - `pnpm test:scripts` (docspack nudge, closeness, compare rows) now runs in CI
 - Closeness is near the floor (15–22) for every route: the scorer matches by id or type+name and the models chose other names. The page says so rather than tuning the reference
+
 ## 2026-10-22 — Multi-instance on every task type; execution and task listeners
 
 - B3: `multiInstance` (`collection`, `elementVariable`, `outputCollection`, `outputElement`, `completionCondition`, `isSequential`) is accepted by `serviceTask`, `userTask`, `scriptTask`, `sendTask`, `receiveTask`, `businessRuleTask` and `callActivity` in all three builders, through one `withMultiInstance` helper. `CompactElement.multiInstance` carries `outputCollection`, `outputElement` and `completionCondition`, so `compactify`/`expand` keep them. Deviations: output options are written only together with `collection` (Zeebe needs `inputCollection`; that was already the rule); the process-text `each=` attribute is unchanged (no new syntax for outputs).
@@ -259,9 +306,11 @@
 ## 2026-10-18 — Phase C: golden prompt 28, AI Agent Chat With Tools
 
 - New golden prompt `28-ai-agent-chat-with-tools` (spec prose, spec-literal `expected.json`, best-effort `fixture.plan.json`). `scripts/eval-generation/assertions.mjs` scores `mustContainElementIds`, `mustContainFormIds`, `mustContainInputTargets`, `mustContainFlowNames`, `mustContainAnnotations` and `mustBeReady` (via drop's `readiness()`); `run-eval.mjs` reports them for the plan fixture (the listed known plan-format gaps — no start form, mapping, annotation or loop back — are reported; an unlisted miss fails the run; a stale gap is flagged) and gains `--only <prefixes>` (no report files written for a subset); drop's bench scores them too and now runs 03 (skips 04 and 09 only). Test: `apps/drop/tests/spec-assertions.test.ts`. Prompt 28 lists its `knownPlanGaps` in expected.json: `run-eval.mjs` prints those, fails on any other assertion miss and flags a stale entry; the bench's `score()` is `scoreGolden` from `assertions.mjs`. The drop bench run for 28 needs Cloudflare credentials and is not run here; command in `doc/agent-bpmn-bakeoff-analysis.md`.
+
 ## 2026-10-18 — Phase C: drop connects the AI Agent and its tools
 
 - Drop's connect pass takes ad-hoc sub-processes (`CONNECTABLE`) and the tasks inside them (`connectTasks` recurses into ad-hoc containers; `ConnectorTask.inside`), and `connected` finds nested elements. `selectConnectors` offers the `ai-agent-subprocess` card first to every ad-hoc sub-process whatever its name, and `http` to its tools. `applyConnectorLines` finds nested elements; `parseProcessText` no longer drops a `with` line for an `inside=` tool. `\n` in a `==` value (only) is a line break, `\\n` a literal backslash-n; `CONNECT_GUIDE` says so in one sentence. Tests in core (`lines`, `select`, `process-text`) and drop (`connect-route`).
+
 ## 2026-10-18 — Phase C: drop says whether a draft is executable
 
 - `readiness()` (`apps/drop/src/lib/readiness.ts`) turns `lintDiagram` into `ready` / `shape-only` / `invalid`; the generator shows it as a badge for every draft, runs the dry run for every draft, shows the streamed process text in a collapsible "Diagram text" panel, and says "Connectors not configured" when the connect pass 404s or fails.
@@ -273,6 +322,7 @@
 ## 2026-10-18 — Phase C: process text takes forms, mappings and a platform version
 
 - The line format gains `form=<form id>` (start, user; a user with a form gets `zeebe:userTask`), `in.<name>=<FEEL>` and `out.<name>=<FEEL>` (value runs to the next ` word=` or the line end; the guide says to write comparisons with spaces, `a = 1`), and `# Name | camunda=8.10` (sets `executionPlatformVersion` `8.10.0`). `CompactElement` gains `outputs` and `nativeUserTask`, `CompactDiagram` gains `executionPlatformVersion`; `expand` writes them. `writeProcessText` writes them back; a change script carries them (`DeltaNode.formId`/`inputs`/`outputs`), and the editor applies them to new and changed nodes (`patchElement` gains `inputs`, `outputs`, `nativeUserTask`). Two guide lines added. Drop's line filter already passes these lines (test added).
+
 ## 2026-10-17 — Lint: two `pattern` rules are warnings
 
 - `pattern/gateway-no-default-flow` and `pattern/subprocess-no-error-boundary` report warnings, not errors. Camunda's own AI Agent blueprint trips both and its lint gate flags neither, so `casen lint lint <file> --profile deploy` now reports 0 errors on a correct model. The recipe guide and the Claude plugin `agent` and `connect` skills and `references/agentic.md` say so.
@@ -2835,7 +2885,6 @@ now top-level nav entries rather than one dropdown down, and an unnumbered "star
 sits directly under the hero pointing at both — Drop was nine numbered sections below the
 fold, and the AI guide was reachable only by knowing it existed. The AI benchmark section's
 link says "Read the AI guide" instead of "How it works".
-
 
 ## 2026-09-18 — The rest of the 1.0 list
 

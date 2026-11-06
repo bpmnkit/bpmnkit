@@ -36,6 +36,15 @@ export function exportForm(form: FormDefinition): string {
 }
 
 function serializeComponent(component: FormComponent): Record<string, unknown> {
+	const out = serializeKnownComponent(component)
+	if (component.conditional !== undefined) out.conditional = { ...component.conditional }
+	for (const [key, value] of Object.entries(component.extraProps ?? {})) {
+		if (!(key in out)) out[key] = value
+	}
+	return out
+}
+
+function serializeKnownComponent(component: FormComponent): Record<string, unknown> {
 	// Use the type discriminant, casting where TypeScript can't narrow through FormUnknownComponent
 	const type = component.type
 	switch (type) {

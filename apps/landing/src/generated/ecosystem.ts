@@ -127,7 +127,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "apps/cli",
 		name: "@bpmnkit/cli",
-		version: "1.4.0",
+		version: "1.4.1",
 		description: "Command-line interface for Camunda 8 — deploy, manage, and monitor processes from the terminal",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/cli",
@@ -167,7 +167,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/core",
 		name: "@bpmnkit/core",
-		version: "1.6.1",
+		version: "1.7.0",
 		description: "TypeScript-first BPMN 2.0 SDK — parse, build, layout, and optimize diagrams",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/core",
@@ -187,7 +187,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/docspack",
 		name: "@bpmnkit/docspack",
-		version: "1.2.1",
+		version: "1.2.2",
 		description: "BPMN Kit documentation as an offline, version-locked docspack package with a built-in search CLI for AI agents",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/docspack",
@@ -197,7 +197,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/editor",
 		name: "@bpmnkit/editor",
-		version: "1.5.1",
+		version: "1.6.0",
 		description: "Full-featured interactive BPMN editor with undo/redo, HUD, and side-dock UI",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/editor",
@@ -267,7 +267,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/plugins",
 		name: "@bpmnkit/plugins",
-		version: "1.2.2",
+		version: "1.3.0",
 		description: "34 composable canvas plugins for BPMN editors and viewers — minimap, AI chat, process simulation, storage, and more",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/plugins",
@@ -287,7 +287,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "apps/proxy",
 		name: "@bpmnkit/proxy",
-		version: "0.5.2",
+		version: "0.6.0",
 		description: "Local proxy server for BPMN Kit — AI bridge (SSE/MCP) and Camunda API proxy using stored CLI profiles",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/proxy",
@@ -352,7 +352,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/vscode",
 		name: "BPMN Kit for VS Code",
-		version: "0.5.8",
+		version: "0.5.9",
 		description: "View, edit, lint, diff and simulate BPMN, DMN and Forms in VS Code",
 		tier: "tools",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/vscode",
@@ -361,7 +361,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/drop",
 		name: "Drop",
-		version: "0.4.5",
+		version: "0.4.6",
 		description: "Share a BPMN, DMN or Form file as a link at bpmnkit.com/drop",
 		tier: "tools",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/drop",
@@ -379,7 +379,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/studio",
 		name: "Studio",
-		version: "0.2.5",
+		version: "0.2.6",
 		description: "Browser workspace for models, a local WASM engine and cluster monitoring",
 		tier: "experimental",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/studio",
@@ -388,7 +388,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/desktop",
 		name: "Desktop app",
-		version: "0.1.51",
+		version: "0.1.52",
 		description: "Tauri build of the editor for Windows, macOS and Linux",
 		tier: "experimental",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/desktop",

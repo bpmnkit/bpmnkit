@@ -100,7 +100,7 @@ describe("link events (linkName)", () => {
 		for (const id of ["bt", "bc"]) {
 			const ev = element(process.flowElements, id)
 			expect("eventDefinitions" in ev ? ev.eventDefinitions : [], id).toEqual([
-				{ type: "link", name: "Branch" },
+				{ type: "link", name: "Branch", id: `${id}_LinkEventDefinition` },
 			])
 		}
 		// The branch's own catch event is not wired to the fork: it has no incoming flow.
@@ -123,7 +123,7 @@ describe("link events (linkName)", () => {
 		for (const id of ["t", "c"]) {
 			const ev = element(process.flowElements, id)
 			expect("eventDefinitions" in ev ? ev.eventDefinitions : []).toEqual([
-				{ type: "link", name: "L" },
+				{ type: "link", name: "L", id: `${id}_LinkEventDefinition` },
 			])
 		}
 		expect(Bpmn.export(reparsed)).toBe(Bpmn.export(defs))

@@ -76,8 +76,11 @@ interface RouteContext {
 	gutterX: Map<number, number>
 	/** Corridors already taken by detours, so parallel runs stack instead of merging. */
 	reserved: Array<{ left: number; right: number; y: number }>
-	/** Segments of the edges routed so far, indexed by x-range, to keep new routes off them. */
-	routed: XIndex<[Waypoint, Waypoint]>
+	/**
+	 * Segments of the edges routed so far, indexed by x-range, to keep new routes
+	 * off them; each carries its flow's source and target ids.
+	 */
+	routed: XIndex<[Waypoint, Waypoint, string, string]>
 }
 
 function centre(b: Bounds): Waypoint {
@@ -107,7 +110,7 @@ export function routeFlows(
 		obstacles,
 		gutterX,
 		reserved: [],
-		routed: new XIndex<[Waypoint, Waypoint]>(),
+		routed: new XIndex<[Waypoint, Waypoint, string, string]>(),
 	}
 	const routed = new Map<string, Waypoint[]>()
 	const pending: Array<{
@@ -148,7 +151,7 @@ export function routeFlows(
 
 		const clear = pick(direct, ctx, flow.sourceRef, flow.targetRef)
 		if (clear && clear.crossings <= CROSSING_TOLERANCE) {
-			commit(ctx, routed, flow.id, clear.waypoints)
+			commit(ctx, routed, flow, clear.waypoints)
 			continue
 		}
 		pending.push({
@@ -179,12 +182,13 @@ export function routeFlows(
 		)
 		// Going around costs bends and length, so it has to save more than one
 		// crossing to be worth taking.
-		const cost = crossingCount(around, ctx) + DETOUR_PENALTY
+		const cost =
+			crossingCount(around, ctx, item.flow.sourceRef, item.flow.targetRef) + DETOUR_PENALTY
 		const chosen = item.direct && item.direct.crossings <= cost ? item.direct.waypoints : around
 		const waypoints = blocked(ctx, chosen, item.flow.sourceRef, item.flow.targetRef)
 			? (searchRoute(ctx, item.flow, item.source, item.target) ?? chosen)
 			: chosen
-		commit(ctx, routed, item.flow.id, waypoints)
+		commit(ctx, routed, item.flow, waypoints)
 	}
 
 	// Emit in declaration order, whichever pass produced the route.
@@ -248,14 +252,21 @@ function searchRoute(
 function commit(
 	ctx: RouteContext,
 	routed: Map<string, Waypoint[]>,
-	id: string,
+	flow: BpmnSequenceFlow,
 	waypoints: Waypoint[],
 ): void {
-	routed.set(id, waypoints)
+	routed.set(flow.id, waypoints)
 	for (let i = 0; i + 1 < waypoints.length; i++) {
 		const a = waypoints[i]
 		const b = waypoints[i + 1]
-		if (a && b) ctx.routed.insert(Math.min(a.x, b.x), Math.max(a.x, b.x), [a, b])
+		if (a && b) {
+			ctx.routed.insert(Math.min(a.x, b.x), Math.max(a.x, b.x), [
+				a,
+				b,
+				flow.sourceRef,
+				flow.targetRef,
+			])
+		}
 	}
 }
 
@@ -278,7 +289,7 @@ function pick(
 		// An expanded container legitimately holds its children's routes, so only
 		// the two endpoints are exempt from the obstacle check.
 		if (blocked(ctx, candidate, sourceId, targetId)) continue
-		const crossings = crossingCount(candidate, ctx)
+		const crossings = crossingCount(candidate, ctx, sourceId, targetId)
 		if (crossings === 0) return { waypoints: candidate, crossings }
 		if (!best || crossings < best.crossings) best = { waypoints: candidate, crossings }
 	}
@@ -292,19 +303,51 @@ function intersects(p: Waypoint, q: Waypoint, r: Waypoint, t: Waypoint): boolean
 	return side(p, q, r) !== side(p, q, t) && side(r, t, p) !== side(r, t, q)
 }
 
-/** How many already-routed edges a candidate would cut across. */
-function crossingCount(waypoints: Waypoint[], ctx: RouteContext): number {
+/**
+ * How many already-routed edges a candidate would cut across, or run along:
+ * a stretch drawn on top of an unrelated flow reads as one line and hides
+ * where either goes. Flows sharing an endpoint may merge, as a join's do.
+ */
+function crossingCount(
+	waypoints: Waypoint[],
+	ctx: RouteContext,
+	sourceId?: string,
+	targetId?: string,
+): number {
 	let count = 0
 	for (let i = 0; i + 1 < waypoints.length; i++) {
 		const a = waypoints[i]
 		const b = waypoints[i + 1]
 		if (!a || !b) continue
-		ctx.routed.query(Math.min(a.x, b.x), Math.max(a.x, b.x), ([c, d]) => {
+		ctx.routed.query(Math.min(a.x, b.x), Math.max(a.x, b.x), ([c, d, from, to]) => {
 			if (intersects(a, b, c, d)) count++
+			else if (
+				sourceId !== undefined &&
+				from !== sourceId &&
+				to !== targetId &&
+				collinearOverlap(a, b, c, d)
+			) {
+				// Worse than a clean crossing: the reader cannot tell the two apart.
+				count += 2
+			}
 			return false
 		})
 	}
 	return count
+}
+
+/** True when two axis-parallel segments lie on one line and share more than a point. */
+function collinearOverlap(a: Waypoint, b: Waypoint, c: Waypoint, d: Waypoint): boolean {
+	const shared = (p: number, q: number, r: number, t: number): boolean =>
+		Math.min(Math.max(p, q), Math.max(r, t)) - Math.max(Math.min(p, q), Math.min(r, t)) >
+		HIT_TOLERANCE
+	if (Math.abs(a.x - b.x) < 1 && Math.abs(c.x - d.x) < 1 && Math.abs(a.x - c.x) < 1) {
+		return shared(a.y, b.y, c.y, d.y)
+	}
+	if (Math.abs(a.y - b.y) < 1 && Math.abs(c.y - d.y) < 1 && Math.abs(a.y - c.y) < 1) {
+		return shared(a.x, b.x, c.x, d.x)
+	}
+	return false
 }
 
 /** True when the segment a→b passes through `o`, grazing allowed up to HIT_TOLERANCE. */
@@ -388,8 +431,9 @@ function forwardCandidates(
 	if (rightOf) {
 		const inTarget = from.y > target.y && from.y < target.y + target.height
 		const inSource = to.y > source.y && to.y < source.y + source.height
-		if (inTarget !== inSource) {
-			const y = inTarget ? from.y : to.y
+		if (inTarget || inSource) {
+			// Both centres inside each other: the smaller shape's line is the row's.
+			const y = inTarget && (!inSource || source.height <= target.height) ? from.y : to.y
 			return [
 				[
 					{ x: source.x + source.width, y },
@@ -489,7 +533,13 @@ function fromBoundaryCandidates(
 			{ x: gutter, y: to.y },
 			{ x: target.x, y: to.y },
 		]
-		if (!ahead) return [around]
+		// The gutter can already carry another flow's vertical run; beside it is clear.
+		const beside = [-1, 1].map((side) =>
+			around.map((wp, i) =>
+				i === 2 || i === 3 ? { x: gutter + (side * CORRIDOR_SPACING) / 2, y: wp.y } : wp,
+			),
+		)
+		if (!ahead) return [around, ...beside]
 		return [
 			[
 				{ x: from.x, y: exitY },
@@ -497,6 +547,7 @@ function fromBoundaryCandidates(
 				{ x: target.x, y: to.y },
 			],
 			around,
+			...beside,
 		]
 	}
 
