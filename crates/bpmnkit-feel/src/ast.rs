@@ -38,7 +38,7 @@ pub enum NodeKind {
     String(String),
     Boolean(bool),
     Null,
-    /// `@"..."`: the raw literal body, without `@` and quotes, unescaped.
+    /// `@"..."`: the literal body between the quotes, not unescaped.
     Temporal(String),
     Name(String),
     List(Vec<Node>),
