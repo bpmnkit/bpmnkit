@@ -1,0 +1,3245 @@
+[
+  {
+    "result": {
+      "t": "string",
+      "v": "low"
+    },
+    "evaluated": [
+      {
+        "decision": "single_unique",
+        "result": {
+          "t": "string",
+          "v": "low"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "low"
+        },
+        "score": {
+          "t": "number",
+          "v": "1"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_unique",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "low"
+            },
+            "score": {
+              "t": "number",
+              "v": "1"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "low"
+    },
+    "evaluated": [
+      {
+        "decision": "single_first",
+        "result": {
+          "t": "string",
+          "v": "low"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "low"
+        },
+        "score": {
+          "t": "number",
+          "v": "1"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_first",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "low"
+            },
+            "score": {
+              "t": "number",
+              "v": "1"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "low"
+    },
+    "evaluated": [
+      {
+        "decision": "single_any",
+        "result": {
+          "t": "string",
+          "v": "low"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "low"
+        },
+        "score": {
+          "t": "number",
+          "v": "1"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_any",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "low"
+            },
+            "score": {
+              "t": "number",
+              "v": "1"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "low"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_rule_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "low"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "low"
+            },
+            "score": {
+              "t": "number",
+              "v": "1"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_rule_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "low"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "1"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "low"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_output_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "low"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "low"
+            },
+            "score": {
+              "t": "number",
+              "v": "1"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_output_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "low"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "1"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "low"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_priority",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "low"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "low"
+            },
+            "score": {
+              "t": "number",
+              "v": "1"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_priority",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "low"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "1"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "low"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_collect",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "low"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "low"
+            },
+            "score": {
+              "t": "number",
+              "v": "1"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_collect",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "low"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "1"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "single_bogus",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "multi_bogus",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "low"
+    },
+    "evaluated": [
+      {
+        "decision": "single_default",
+        "result": {
+          "t": "string",
+          "v": "low"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "low"
+        },
+        "score": {
+          "t": "number",
+          "v": "1"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_default",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "low"
+            },
+            "score": {
+              "t": "number",
+              "v": "1"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "mid"
+    },
+    "evaluated": [
+      {
+        "decision": "single_unique",
+        "result": {
+          "t": "string",
+          "v": "mid"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "24"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_unique",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "24"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "mid"
+    },
+    "evaluated": [
+      {
+        "decision": "single_first",
+        "result": {
+          "t": "string",
+          "v": "mid"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "24"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_first",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "24"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "mid"
+    },
+    "evaluated": [
+      {
+        "decision": "single_any",
+        "result": {
+          "t": "string",
+          "v": "mid"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "24"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_any",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "24"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "mid"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_rule_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "mid"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "24"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_rule_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "five+"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "24"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "mid"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_output_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "mid"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "24"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_output_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "five+"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "24"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "mid"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_priority",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "mid"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "24"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_priority",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "five+"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "24"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "mid"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_collect",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "mid"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "24"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_collect",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "five+"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "24"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "single_bogus",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "multi_bogus",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "mid"
+    },
+    "evaluated": [
+      {
+        "decision": "single_default",
+        "result": {
+          "t": "string",
+          "v": "mid"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "24"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_default",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "24"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "mid"
+    },
+    "evaluated": [
+      {
+        "decision": "single_unique",
+        "result": {
+          "t": "string",
+          "v": "mid"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "34"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_unique",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "34"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "mid"
+    },
+    "evaluated": [
+      {
+        "decision": "single_first",
+        "result": {
+          "t": "string",
+          "v": "mid"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "34"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_first",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "34"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "mid"
+    },
+    "evaluated": [
+      {
+        "decision": "single_any",
+        "result": {
+          "t": "string",
+          "v": "mid"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "34"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_any",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "34"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "mid"
+        },
+        {
+          "t": "string",
+          "v": "high"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_rule_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "mid"
+            },
+            {
+              "t": "string",
+              "v": "high"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "34"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_rule_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "five+"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "34"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "mid"
+        },
+        {
+          "t": "string",
+          "v": "high"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_output_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "mid"
+            },
+            {
+              "t": "string",
+              "v": "high"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "34"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_output_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "five+"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "34"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "mid"
+        },
+        {
+          "t": "string",
+          "v": "high"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_priority",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "mid"
+            },
+            {
+              "t": "string",
+              "v": "high"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "34"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_priority",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "five+"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "34"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "mid"
+        },
+        {
+          "t": "string",
+          "v": "high"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_collect",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "mid"
+            },
+            {
+              "t": "string",
+              "v": "high"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "34"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_collect",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "five+"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "34"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "single_bogus",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "multi_bogus",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "mid"
+    },
+    "evaluated": [
+      {
+        "decision": "single_default",
+        "result": {
+          "t": "string",
+          "v": "mid"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "34"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_default",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "34"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "high"
+    },
+    "evaluated": [
+      {
+        "decision": "single_unique",
+        "result": {
+          "t": "string",
+          "v": "high"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "60"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_unique",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "60"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "high"
+    },
+    "evaluated": [
+      {
+        "decision": "single_first",
+        "result": {
+          "t": "string",
+          "v": "high"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "60"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_first",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "60"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "high"
+    },
+    "evaluated": [
+      {
+        "decision": "single_any",
+        "result": {
+          "t": "string",
+          "v": "high"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "60"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_any",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "60"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "high"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_rule_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "high"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "60"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_rule_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "five+"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "60"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "high"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_output_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "high"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "60"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_output_order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "five+"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "60"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "high"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_priority",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "high"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "60"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_priority",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "five+"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "60"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "high"
+        },
+        {
+          "t": "string",
+          "v": "any"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "single_collect",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "high"
+            },
+            {
+              "t": "string",
+              "v": "any"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "60"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "any"
+            },
+            "score": {
+              "t": "null"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multi_collect",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "five+"
+                },
+                "score": {
+                  "t": "number",
+                  "v": "60"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "label": {
+                  "t": "string",
+                  "v": "any"
+                },
+                "score": {
+                  "t": "null"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "single_bogus",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "multi_bogus",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "high"
+    },
+    "evaluated": [
+      {
+        "decision": "single_default",
+        "result": {
+          "t": "string",
+          "v": "high"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "60"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_default",
+        "result": {
+          "t": "context",
+          "v": {
+            "label": {
+              "t": "string",
+              "v": "five+"
+            },
+            "score": {
+              "t": "number",
+              "v": "60"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_sum",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_min",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_max",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_count",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_avg",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "3"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_sum",
+        "result": {
+          "t": "number",
+          "v": "3"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "3"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_min",
+        "result": {
+          "t": "number",
+          "v": "3"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "3"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_max",
+        "result": {
+          "t": "number",
+          "v": "3"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "1"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_count",
+        "result": {
+          "t": "number",
+          "v": "1"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_avg",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "16"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_sum",
+        "result": {
+          "t": "number",
+          "v": "16"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "6"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_min",
+        "result": {
+          "t": "number",
+          "v": "6"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "10"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_max",
+        "result": {
+          "t": "number",
+          "v": "10"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "2"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_count",
+        "result": {
+          "t": "number",
+          "v": "2"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_avg",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "15.5"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_sum",
+        "result": {
+          "t": "number",
+          "v": "15.5"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "-3.5"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_min",
+        "result": {
+          "t": "number",
+          "v": "-3.5"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "10"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_max",
+        "result": {
+          "t": "number",
+          "v": "10"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "3"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_count",
+        "result": {
+          "t": "number",
+          "v": "3"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_avg",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "3"
+    },
+    "evaluated": [
+      {
+        "decision": "collect_sum_multi",
+        "result": {
+          "t": "number",
+          "v": "3"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "Labelled": {
+          "t": "number",
+          "v": "2"
+        },
+        "keys_o2": {
+          "t": "number",
+          "v": "3"
+        },
+        "named": {
+          "t": "number",
+          "v": "1"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "keys",
+        "result": {
+          "t": "context",
+          "v": {
+            "Labelled": {
+              "t": "number",
+              "v": "2"
+            },
+            "keys_o2": {
+              "t": "number",
+              "v": "3"
+            },
+            "named": {
+              "t": "number",
+              "v": "1"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "str-list"
+        },
+        {
+          "t": "string",
+          "v": "outside"
+        },
+        {
+          "t": "string",
+          "v": "flag"
+        },
+        {
+          "t": "string",
+          "v": "new-year"
+        },
+        {
+          "t": "string",
+          "v": "has-x"
+        },
+        {
+          "t": "string",
+          "v": "many"
+        },
+        {
+          "t": "string",
+          "v": "bad-entry-matches"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "entries",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "str-list"
+            },
+            {
+              "t": "string",
+              "v": "outside"
+            },
+            {
+              "t": "string",
+              "v": "flag"
+            },
+            {
+              "t": "string",
+              "v": "new-year"
+            },
+            {
+              "t": "string",
+              "v": "has-x"
+            },
+            {
+              "t": "string",
+              "v": "many"
+            },
+            {
+              "t": "string",
+              "v": "bad-entry-matches"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "str-list"
+        },
+        {
+          "t": "string",
+          "v": "not-a"
+        },
+        {
+          "t": "string",
+          "v": "outside"
+        },
+        {
+          "t": "string",
+          "v": "over-limit"
+        },
+        {
+          "t": "string",
+          "v": "h2"
+        },
+        {
+          "t": "string",
+          "v": "bad-entry-matches"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "entries",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "str-list"
+            },
+            {
+              "t": "string",
+              "v": "not-a"
+            },
+            {
+              "t": "string",
+              "v": "outside"
+            },
+            {
+              "t": "string",
+              "v": "over-limit"
+            },
+            {
+              "t": "string",
+              "v": "h2"
+            },
+            {
+              "t": "string",
+              "v": "bad-entry-matches"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "not-a"
+        },
+        {
+          "t": "string",
+          "v": "flag"
+        },
+        {
+          "t": "string",
+          "v": "small"
+        },
+        {
+          "t": "string",
+          "v": "half-open"
+        },
+        {
+          "t": "string",
+          "v": "bad-entry-matches"
+        },
+        {
+          "t": "number",
+          "v": "3"
+        },
+        {
+          "t": "string",
+          "v": "z!3"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "entries",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "not-a"
+            },
+            {
+              "t": "string",
+              "v": "flag"
+            },
+            {
+              "t": "string",
+              "v": "small"
+            },
+            {
+              "t": "string",
+              "v": "half-open"
+            },
+            {
+              "t": "string",
+              "v": "bad-entry-matches"
+            },
+            {
+              "t": "number",
+              "v": "3"
+            },
+            {
+              "t": "string",
+              "v": "z!3"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "not-a"
+        },
+        {
+          "t": "string",
+          "v": "outside"
+        },
+        {
+          "t": "string",
+          "v": "flag"
+        },
+        {
+          "t": "string",
+          "v": "null-x"
+        },
+        {
+          "t": "string",
+          "v": "bad-entry-matches"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "entries",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "not-a"
+            },
+            {
+              "t": "string",
+              "v": "outside"
+            },
+            {
+              "t": "string",
+              "v": "flag"
+            },
+            {
+              "t": "string",
+              "v": "null-x"
+            },
+            {
+              "t": "string",
+              "v": "bad-entry-matches"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "not-a"
+        },
+        {
+          "t": "string",
+          "v": "outside"
+        },
+        {
+          "t": "string",
+          "v": "flag"
+        },
+        {
+          "t": "string",
+          "v": "null-x"
+        },
+        {
+          "t": "string",
+          "v": "bad-entry-matches"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "entries",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "not-a"
+            },
+            {
+              "t": "string",
+              "v": "outside"
+            },
+            {
+              "t": "string",
+              "v": "flag"
+            },
+            {
+              "t": "string",
+              "v": "null-x"
+            },
+            {
+              "t": "string",
+              "v": "bad-entry-matches"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "big bob"
+    },
+    "evaluated": [
+      {
+        "decision": "computed_input",
+        "result": {
+          "t": "string",
+          "v": "big bob"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "big"
+    },
+    "evaluated": [
+      {
+        "decision": "computed_input",
+        "result": {
+          "t": "string",
+          "v": "big"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "6"
+    },
+    "evaluated": [
+      {
+        "decision": "computed_input",
+        "result": {
+          "t": "number",
+          "v": "6"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "computed_input",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "empty_table",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "error": "Decision 'does_not_exist' not found"
+  }
+]

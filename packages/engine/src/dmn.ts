@@ -1,4 +1,11 @@
-import type { DmnAggregation, DmnDecision, DmnInput, HitPolicy } from "@bpmnkit/core"
+import type {
+	DmnAggregation,
+	DmnDecision,
+	DmnDefinitions,
+	DmnInput,
+	HitPolicy,
+	XmlElement,
+} from "@bpmnkit/core"
 import { evaluate, evaluateUnaryTests, parseExpression, parseUnaryTests } from "@bpmnkit/feel"
 import type { FeelValue } from "@bpmnkit/feel"
 
@@ -51,7 +58,7 @@ function ruleMatches(
 		if (col === undefined || entry === undefined) continue
 		if (entry.text.trim() === "") continue // empty = "any"
 		const inputValue = inputValues[i] ?? null
-		const parsed = parseUnaryTests(entry.text)
+		const parsed = parseUnaryTests(entry.text, { names: Object.keys(vars) })
 		if (parsed.ast === null) continue
 		if (!evaluateUnaryTests(parsed.ast, inputValue, { vars: feelVars })) return false
 	}
@@ -59,7 +66,8 @@ function ruleMatches(
 }
 
 function evalExpression(expr: string, vars: Record<string, unknown>): unknown {
-	const parsed = parseExpression(expr.trim())
+	// Names in scope let FEEL read multi-word variables, such as a required decision's name.
+	const parsed = parseExpression(expr.trim(), { names: Object.keys(vars) })
 	if (parsed.ast === null) return undefined
 	return evaluate(parsed.ast, { vars: vars as Record<string, FeelValue> })
 }
@@ -126,4 +134,85 @@ function aggregate(op: DmnAggregation, values: number[]): number | null {
 		default:
 			return null
 	}
+}
+
+/** One decision evaluated while evaluating a decision graph, in evaluation order. */
+export interface EvaluatedDecision {
+	decisionId: string
+	result: unknown
+}
+
+/** Result of {@link evaluateDecisionGraph}. */
+export interface DecisionGraphResult {
+	/** The requested decision's result. */
+	result: unknown
+	/** Every decision evaluated, required decisions first, the requested one last. */
+	evaluatedDecisions: EvaluatedDecision[]
+}
+
+/**
+ * Evaluates a decision together with the decisions it requires (its DRD).
+ *
+ * Each required decision (`informationRequirement/requiredDecision`) is
+ * evaluated once, before the decisions that read it, and its result is in
+ * scope under the required decision's name (its id when it has none), as
+ * DMN binds a decision's variable to its name. A decision with a decision
+ * table evaluates as {@link evaluateDecision}; one without evaluates its
+ * literal expression, which the parser keeps in `extensionElements`.
+ *
+ * @throws Error when the decision (or a required one) is missing or the
+ * requirements form a cycle.
+ */
+export function evaluateDecisionGraph(
+	definitions: DmnDefinitions,
+	decisionId: string,
+	vars: Record<string, unknown>,
+): DecisionGraphResult {
+	const byId = new Map(definitions.decisions.map((d) => [d.id, d]))
+	const done = new Map<string, unknown>()
+	const visiting = new Set<string>()
+	const evaluatedDecisions: EvaluatedDecision[] = []
+
+	const visit = (id: string): unknown => {
+		if (done.has(id)) return done.get(id)
+		const decision = byId.get(id)
+		if (decision === undefined) throw new Error(`Decision '${id}' not found`)
+		if (visiting.has(id)) throw new Error(`Decision '${id}' requires itself`)
+		visiting.add(id)
+		const scope: Record<string, unknown> = { ...vars }
+		for (const req of decision.informationRequirements) {
+			if (req.requiredDecision === undefined) continue
+			const value = visit(req.requiredDecision)
+			const required = byId.get(req.requiredDecision)
+			scope[required?.name ?? req.requiredDecision] = value
+		}
+		visiting.delete(id)
+		const result =
+			decision.decisionTable !== undefined
+				? evaluateDecision(decision, scope)
+				: evaluateLiteralExpression(decision, scope)
+		done.set(id, result)
+		evaluatedDecisions.push({ decisionId: id, result })
+		return result
+	}
+
+	return { result: visit(decisionId), evaluatedDecisions }
+}
+
+function localName(name: string): string {
+	const i = name.indexOf(":")
+	return i >= 0 ? name.slice(i + 1) : name
+}
+
+/** The text of a decision's `<literalExpression>`, kept by the parser in `extensionElements`. */
+export function literalExpressionText(decision: DmnDecision): string | undefined {
+	const el = decision.extensionElements?.find((c) => localName(c.name) === "literalExpression")
+	const text = el?.children.find((c: XmlElement) => localName(c.name) === "text")
+	return text?.text
+}
+
+function evaluateLiteralExpression(decision: DmnDecision, vars: Record<string, unknown>): unknown {
+	const text = literalExpressionText(decision)
+	if (text === undefined || text.trim() === "") return null
+	return evalExpression(text, vars)
 }

@@ -1,0 +1,67 @@
+[
+  {
+    "decision": "discount",
+    "context": {
+      "spend": {
+        "t": "number",
+        "v": "2000"
+      }
+    }
+  },
+  {
+    "decision": "discount",
+    "context": {
+      "spend": {
+        "t": "number",
+        "v": "10"
+      }
+    }
+  },
+  {
+    "decision": "discount",
+    "context": {}
+  },
+  {
+    "decision": "rate",
+    "context": {
+      "spend": {
+        "t": "number",
+        "v": "1000"
+      }
+    }
+  },
+  {
+    "decision": "tier",
+    "context": {
+      "spend": {
+        "t": "string",
+        "v": "lots"
+      }
+    }
+  },
+  {
+    "decision": "loop_a",
+    "context": {}
+  },
+  {
+    "decision": "missing_req",
+    "context": {}
+  },
+  {
+    "decision": "no_body",
+    "context": {}
+  },
+  {
+    "decision": "rate",
+    "context": {
+      "Customer Tier": {
+        "t": "string",
+        "v": "ignored"
+      },
+      "spend": {
+        "t": "number",
+        "v": "5000"
+      }
+    }
+  }
+]

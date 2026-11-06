@@ -1,6 +1,10 @@
+import fs from "node:fs"
+import path from "node:path"
+import { fileURLToPath } from "node:url"
+import { Dmn } from "@bpmnkit/core"
 import type { DmnDecision } from "@bpmnkit/core"
 import { describe, expect, it } from "vitest"
-import { evaluateDecision } from "../src/dmn.js"
+import { evaluateDecision, evaluateDecisionGraph, literalExpressionText } from "../src/dmn.js"
 
 function makeDecision(
 	hitPolicy: import("@bpmnkit/core").HitPolicy,
@@ -116,6 +120,16 @@ describe("evaluateDecision", () => {
 		expect(evaluateDecision(d, { x: 20 })).toEqual(["pos", "big"])
 	})
 
+	it("reads multi-word variable names in input and output expressions", () => {
+		const d = makeDecision(
+			"UNIQUE",
+			[{ label: "total", expression: "order total" }],
+			[{ name: "out" }],
+			[{ inputEntries: ["> order limit"], outputEntries: ["order total - order limit"] }],
+		)
+		expect(evaluateDecision(d, { "order total": 12, "order limit": 10 })).toBe(2)
+	})
+
 	it("empty input entry matches any value", () => {
 		const d = makeDecision(
 			"UNIQUE",
@@ -134,5 +148,49 @@ describe("evaluateDecision", () => {
 			authorityRequirements: [],
 		}
 		expect(evaluateDecision(d, {})).toBeNull()
+	})
+})
+
+describe("evaluateDecisionGraph", () => {
+	const xml = fs.readFileSync(
+		path.join(
+			path.dirname(fileURLToPath(import.meta.url)),
+			"../../../conformance/dmn/eval-drd/input.dmn",
+		),
+		"utf8",
+	)
+	const defs = Dmn.parse(xml)
+
+	it("evaluates required decisions first and binds them by name", () => {
+		const r = evaluateDecisionGraph(defs, "discount", { spend: 2000 })
+		expect(r.result).toEqual({ amount: 300, tier: "gold" })
+		expect(r.evaluatedDecisions.map((d) => d.decisionId)).toEqual(["tier", "rate", "discount"])
+	})
+
+	it("evaluates a shared requirement once", () => {
+		const r = evaluateDecisionGraph(defs, "discount", { spend: 10 })
+		expect(r.evaluatedDecisions.filter((d) => d.decisionId === "tier")).toHaveLength(1)
+		expect(r.result).toEqual({ amount: 0.5, tier: "basic" })
+	})
+
+	it("reads the literal expression the parser keeps in extensionElements", () => {
+		const rate = defs.decisions.find((d) => d.id === "rate")
+		expect(rate && literalExpressionText(rate)).toBe(
+			'if Customer Tier = "gold" then 0.15 else 0.05',
+		)
+	})
+
+	it("returns null for a decision without a body", () => {
+		expect(evaluateDecisionGraph(defs, "no_body", {}).result).toBeNull()
+	})
+
+	it("throws on a missing decision and on a cycle", () => {
+		expect(() => evaluateDecisionGraph(defs, "nope", {})).toThrow("Decision 'nope' not found")
+		expect(() => evaluateDecisionGraph(defs, "missing_req", {})).toThrow(
+			"Decision 'nowhere' not found",
+		)
+		expect(() => evaluateDecisionGraph(defs, "loop_a", {})).toThrow(
+			"Decision 'loop_a' requires itself",
+		)
 	})
 })

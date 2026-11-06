@@ -1,0 +1,1029 @@
+[
+  {
+    "decision": "single_unique",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "multi_unique",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "single_first",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "multi_first",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "single_any",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "multi_any",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "single_rule_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "multi_rule_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "single_output_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "multi_output_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "single_priority",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "multi_priority",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "single_collect",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "multi_collect",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "single_bogus",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "multi_bogus",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "single_default",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "multi_default",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "single_unique",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "multi_unique",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "single_first",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "multi_first",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "single_any",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "multi_any",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "single_rule_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "multi_rule_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "single_output_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "multi_output_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "single_priority",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "multi_priority",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "single_collect",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "multi_collect",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "single_bogus",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "multi_bogus",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "single_default",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "multi_default",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "single_unique",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "multi_unique",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "single_first",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "multi_first",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "single_any",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "multi_any",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "single_rule_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "multi_rule_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "single_output_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "multi_output_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "single_priority",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "multi_priority",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "single_collect",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "multi_collect",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "single_bogus",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "multi_bogus",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "single_default",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "multi_default",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "17"
+      }
+    }
+  },
+  {
+    "decision": "single_unique",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "multi_unique",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "single_first",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "multi_first",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "single_any",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "multi_any",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "single_rule_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "multi_rule_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "single_output_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "multi_output_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "single_priority",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "multi_priority",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "single_collect",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "multi_collect",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "single_bogus",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "multi_bogus",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "single_default",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "multi_default",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  },
+  {
+    "decision": "collect_sum",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "-1"
+      }
+    }
+  },
+  {
+    "decision": "collect_min",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "-1"
+      }
+    }
+  },
+  {
+    "decision": "collect_max",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "-1"
+      }
+    }
+  },
+  {
+    "decision": "collect_count",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "-1"
+      }
+    }
+  },
+  {
+    "decision": "collect_avg",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "-1"
+      }
+    }
+  },
+  {
+    "decision": "collect_sum",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "collect_min",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "collect_max",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "collect_count",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "collect_avg",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "collect_sum",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "6"
+      }
+    }
+  },
+  {
+    "decision": "collect_min",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "6"
+      }
+    }
+  },
+  {
+    "decision": "collect_max",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "6"
+      }
+    }
+  },
+  {
+    "decision": "collect_count",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "6"
+      }
+    }
+  },
+  {
+    "decision": "collect_avg",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "6"
+      }
+    }
+  },
+  {
+    "decision": "collect_sum",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "9"
+      }
+    }
+  },
+  {
+    "decision": "collect_min",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "9"
+      }
+    }
+  },
+  {
+    "decision": "collect_max",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "9"
+      }
+    }
+  },
+  {
+    "decision": "collect_count",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "9"
+      }
+    }
+  },
+  {
+    "decision": "collect_avg",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "9"
+      }
+    }
+  },
+  {
+    "decision": "collect_sum_multi",
+    "context": {}
+  },
+  {
+    "decision": "keys",
+    "context": {}
+  },
+  {
+    "decision": "entries",
+    "context": {
+      "s": {
+        "t": "string",
+        "v": "a"
+      },
+      "x": {
+        "t": "number",
+        "v": "0"
+      },
+      "flag": {
+        "t": "boolean",
+        "v": true
+      },
+      "d": {
+        "t": "date",
+        "v": "2024-01-01"
+      },
+      "items": {
+        "t": "list",
+        "v": [
+          {
+            "t": "string",
+            "v": "x"
+          },
+          {
+            "t": "string",
+            "v": "y"
+          },
+          {
+            "t": "string",
+            "v": "z"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "decision": "entries",
+    "context": {
+      "s": {
+        "t": "string",
+        "v": "b"
+      },
+      "x": {
+        "t": "number",
+        "v": "7"
+      },
+      "limit": {
+        "t": "number",
+        "v": "5"
+      },
+      "flag": {
+        "t": "boolean",
+        "v": false
+      },
+      "d": {
+        "t": "date",
+        "v": "2024-07-01"
+      },
+      "items": {
+        "t": "list",
+        "v": []
+      }
+    }
+  },
+  {
+    "decision": "entries",
+    "context": {
+      "s": {
+        "t": "string",
+        "v": "z"
+      },
+      "x": {
+        "t": "number",
+        "v": "3"
+      },
+      "limit": {
+        "t": "number",
+        "v": "10"
+      },
+      "flag": {
+        "t": "null"
+      },
+      "d": {
+        "t": "null"
+      },
+      "items": {
+        "t": "list",
+        "v": [
+          {
+            "t": "string",
+            "v": "q"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "decision": "entries",
+    "context": {
+      "s": {
+        "t": "null"
+      },
+      "x": {
+        "t": "null"
+      }
+    }
+  },
+  {
+    "decision": "entries",
+    "context": {}
+  },
+  {
+    "decision": "computed_input",
+    "context": {
+      "a": {
+        "t": "number",
+        "v": "6"
+      },
+      "b": {
+        "t": "number",
+        "v": "7"
+      },
+      "name": {
+        "t": "string",
+        "v": "bob"
+      }
+    }
+  },
+  {
+    "decision": "computed_input",
+    "context": {
+      "a": {
+        "t": "number",
+        "v": "6"
+      },
+      "b": {
+        "t": "number",
+        "v": "7"
+      },
+      "name": {
+        "t": "string",
+        "v": "al"
+      }
+    }
+  },
+  {
+    "decision": "computed_input",
+    "context": {
+      "a": {
+        "t": "number",
+        "v": "2"
+      },
+      "b": {
+        "t": "number",
+        "v": "3"
+      },
+      "name": {
+        "t": "string",
+        "v": "bob"
+      }
+    }
+  },
+  {
+    "decision": "computed_input",
+    "context": {
+      "a": {
+        "t": "number",
+        "v": "2"
+      },
+      "b": {
+        "t": "string",
+        "v": "3"
+      }
+    }
+  },
+  {
+    "decision": "empty_table",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "does_not_exist",
+    "context": {}
+  }
+]
