@@ -13,6 +13,10 @@
       "label": "B",
       "type": "textfield",
       "validate": {
+        "extraProps": {
+          "minLength": "3",
+          "required": "yes"
+        },
         "maxLength": 9
       }
     },
@@ -22,6 +26,8 @@
       "label": "C",
       "type": "number",
       "validate": {
+        "max": 10,
+        "min": 0,
         "required": true
       }
     },
@@ -31,7 +37,8 @@
       "label": "D",
       "type": "textarea",
       "validate": {
-        "minLength": 1.5
+        "minLength": 1.5,
+        "pattern": "^a"
       }
     },
     {
@@ -44,25 +51,21 @@
       "type": "select"
     },
     {
-      "extraProps": {
-        "validate": {
-          "required": true
-        }
-      },
       "id": "f",
       "key": "f",
-      "type": "datetime"
+      "type": "datetime",
+      "validate": {
+        "required": true
+      }
     },
     {
-      "extraProps": {
-        "validate": {
-          "required": true
-        }
-      },
       "id": "g",
       "key": "g",
       "label": "G",
-      "type": "taglist"
+      "type": "taglist",
+      "validate": {
+        "required": true
+      }
     }
   ],
   "id": "f",

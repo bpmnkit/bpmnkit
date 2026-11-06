@@ -18,7 +18,8 @@
       },
       "layout": {
         "row": "r1",
-        "columns": 6
+        "columns": 6,
+        "flex": 1
       }
     },
     {

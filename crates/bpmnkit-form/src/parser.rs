@@ -351,7 +351,7 @@ fn parse_kind(type_: &str, p: &mut Props, path: &str) -> Res<ComponentKind> {
                 subtype: p.str("subtype"),
                 date_label: p.str("dateLabel"),
                 time_label: p.str("timeLabel"),
-                validate: None,
+                validate: p.validate(path)?,
             })
         }
         "button" => {
@@ -369,7 +369,7 @@ fn parse_kind(type_: &str, p: &mut Props, path: &str) -> Res<ComponentKind> {
                 key,
                 values: p.values(path)?,
                 values_key: p.str("valuesKey"),
-                validate: None,
+                validate: p.validate(path)?,
             })
         }
         "table" => {
@@ -379,7 +379,12 @@ fn parse_kind(type_: &str, p: &mut Props, path: &str) -> Res<ComponentKind> {
             let columns = match p.obj.get("columns") {
                 Some(Json::Arr(cols)) => {
                     p.mark("columns");
-                    Some(cols.iter().map(parse_column).collect::<Res<Vec<_>>>()?)
+                    Some(
+                        cols.iter()
+                            .enumerate()
+                            .map(|(i, c)| parse_column(c, path, i))
+                            .collect::<Res<Vec<_>>>()?,
+                    )
                 }
                 _ => None,
             };
@@ -457,17 +462,40 @@ fn parse_kind(type_: &str, p: &mut Props, path: &str) -> Res<ComponentKind> {
     })
 }
 
+/// The entries of `o` the model did not take. A key whose value had the wrong type for its
+/// modelled field is left out of `used`, so it stays here instead of vanishing.
+fn leftover(o: &Obj, used: &[&str]) -> Option<Obj> {
+    let rest: Obj = o
+        .iter()
+        .filter(|(k, _)| !used.contains(&k.as_str()))
+        .map(|(k, v)| (k.clone(), v.clone()))
+        .collect();
+    (!rest.is_empty()).then_some(rest)
+}
+
 fn parse_layout(raw: Option<&Json>, path: &str) -> Res<Option<FormLayout>> {
     match raw {
         None | Some(Json::Null) => Ok(None),
-        Some(Json::Obj(o)) => Ok(Some(FormLayout {
-            row: str_of(o.get("row")),
-            columns: match o.get("columns") {
+        Some(Json::Obj(o)) => {
+            let mut used = vec![];
+            let row = str_of(o.get("row"));
+            if row.is_some() {
+                used.push("row");
+            }
+            let columns = match o.get("columns") {
                 Some(Json::Null) => Some(None),
                 Some(Json::Num(n)) => Some(Some(JsNumber(*n))),
                 _ => None,
-            },
-        })),
+            };
+            if columns.is_some() {
+                used.push("columns");
+            }
+            Ok(Some(FormLayout {
+                row,
+                columns,
+                extra_props: leftover(o, &used),
+            }))
+        }
         Some(_) => err(format!("{path}.layout: must be an object")),
     }
 }
@@ -475,11 +503,38 @@ fn parse_layout(raw: Option<&Json>, path: &str) -> Res<Option<FormLayout>> {
 fn parse_validation(raw: Option<&Json>, path: &str) -> Res<Option<FormValidation>> {
     match raw {
         None | Some(Json::Null) => Ok(None),
-        Some(Json::Obj(o)) => Ok(Some(FormValidation {
-            required: bool_of(o.get("required")),
-            min_length: num_of(o.get("minLength")),
-            max_length: num_of(o.get("maxLength")),
-        })),
+        Some(Json::Obj(o)) => {
+            let mut used = vec![];
+            let mut take = |key: &'static str, ok: bool| {
+                if ok {
+                    used.push(key);
+                }
+            };
+            let required = bool_of(o.get("required"));
+            take("required", required.is_some());
+            let min_length = num_of(o.get("minLength"));
+            take("minLength", min_length.is_some());
+            let max_length = num_of(o.get("maxLength"));
+            take("maxLength", max_length.is_some());
+            let min = num_of(o.get("min"));
+            take("min", min.is_some());
+            let max = num_of(o.get("max"));
+            take("max", max.is_some());
+            let pattern = str_of(o.get("pattern"));
+            take("pattern", pattern.is_some());
+            let validation_type = str_of(o.get("validationType"));
+            take("validationType", validation_type.is_some());
+            Ok(Some(FormValidation {
+                required,
+                min_length,
+                max_length,
+                min,
+                max,
+                pattern,
+                validation_type,
+                extra_props: leftover(o, &used),
+            }))
+        }
         Some(_) => err(format!("{path}.validate: must be an object")),
     }
 }
@@ -491,21 +546,23 @@ fn parse_values(raw: &[Json], path: &str) -> Res<Vec<FormValueOption>> {
             Json::Obj(o) => Ok(FormValueOption {
                 label: string_or_empty(o.get("label")),
                 value: string_or_empty(o.get("value")),
+                extra_props: leftover(o, &["label", "value"]),
             }),
             // typeof [] === "object": an array passes, with empty label and value.
             Json::Arr(_) => Ok(FormValueOption {
                 label: String::new(),
                 value: String::new(),
+                extra_props: None,
             }),
             _ => err(format!("{path}.values[{i}]: must be an object")),
         })
         .collect()
 }
 
-fn parse_column(col: &Json) -> Res<FormTableColumn> {
+fn parse_column(col: &Json, path: &str, i: usize) -> Res<FormTableColumn> {
     match col {
-        // TS reads `.label` off the value unchecked; null is a TypeError there.
-        Json::Null => err("Cannot read properties of null (reading 'label')".into()),
+        // Reading `.label` off null would surface as a TypeError instead of bad input.
+        Json::Null => err(format!("{path}.columns[{i}]: must be an object")),
         Json::Obj(o) => Ok(FormTableColumn {
             label: string_or_empty(o.get("label")),
             key: string_or_empty(o.get("key")),

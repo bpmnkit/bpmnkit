@@ -37,6 +37,7 @@
       },
       "type": "number",
       "validate": {
+        "min": 0,
         "required": true
       }
     }

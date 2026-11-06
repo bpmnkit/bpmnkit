@@ -44,7 +44,9 @@
       "label": "E",
       "type": "textfield",
       "layout": {
-        "columns": null
+        "columns": "wide",
+        "row": 7,
+        "extra": true
       },
       "id": "e",
       "key": "e"

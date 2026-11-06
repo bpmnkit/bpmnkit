@@ -15,7 +15,9 @@
       "id": "b",
       "key": "b",
       "validate": {
-        "maxLength": 9
+        "maxLength": 9,
+        "required": "yes",
+        "minLength": "3"
       }
     },
     {
@@ -24,7 +26,9 @@
       "id": "c",
       "key": "c",
       "validate": {
-        "required": true
+        "required": true,
+        "min": 0,
+        "max": 10
       }
     },
     {
@@ -33,7 +37,8 @@
       "id": "d",
       "key": "d",
       "validate": {
-        "minLength": 1.5
+        "minLength": 1.5,
+        "pattern": "^a"
       }
     },
     {

@@ -114,8 +114,6 @@ fn export_is_stable_over_the_conformance_inputs() {
         };
         let text = export_form(&first);
         let second = parse_form(&text).unwrap_or_else(|e| panic!("{}: {e}", case.display()));
-        // What export drops (datetime/taglist `validate`, radio `valuesExpression`) is gone
-        // after one pass, so compare the second and third generations.
         assert_eq!(export_form(&second), text, "{}", case.display());
         checked += 1;
     }

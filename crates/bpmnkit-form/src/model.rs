@@ -16,10 +16,13 @@ pub struct FormLayout {
     pub row: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub columns: Option<Option<JsNumber>>,
+    /// Keys the model does not know (or whose value had an unexpected type), kept verbatim.
+    #[serde(rename = "extraProps", skip_serializing_if = "Option::is_none")]
+    pub extra_props: Option<IndexMap<String, Json>>,
 }
 
-/// Validation constraints. Other form-js constraints (`pattern`, `min`, ...) are not modelled
-/// and are dropped on parse, as in TS.
+/// Validation constraints. Keys the model does not know, or whose value has an unexpected type,
+/// are kept in `extra_props`.
 #[derive(Debug, Clone, PartialEq, Default, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct FormValidation {
@@ -29,6 +32,16 @@ pub struct FormValidation {
     pub min_length: Option<JsNumber>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_length: Option<JsNumber>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub min: Option<JsNumber>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max: Option<JsNumber>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub pattern: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub validation_type: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub extra_props: Option<IndexMap<String, Json>>,
 }
 
 /// A label/value option of select, radio, checklist and taglist.
@@ -36,6 +49,9 @@ pub struct FormValidation {
 pub struct FormValueOption {
     pub label: String,
     pub value: String,
+    /// Keys the model does not know, kept verbatim.
+    #[serde(rename = "extraProps", skip_serializing_if = "Option::is_none")]
+    pub extra_props: Option<IndexMap<String, Json>>,
 }
 
 /// form-js `conditional` block: the component is hidden while the FEEL expression is true.
@@ -251,7 +267,6 @@ pub struct NumberProps {
     pub default_value: Option<JsNumber>,
 }
 
-/// The parser never reads `validate` of a datetime (TS quirk); it lands in `extra_props`.
 #[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DatetimeProps {
@@ -273,7 +288,6 @@ pub struct ButtonProps {
     pub action: Option<String>,
 }
 
-/// The parser never reads `validate` of a taglist (TS quirk); it lands in `extra_props`.
 #[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TaglistProps {

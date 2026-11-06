@@ -103,26 +103,26 @@
     },
     {
       "extraProps": {
-        "validate": {
-          "required": true
-        },
         "valuesExpression": "=x"
       },
       "id": "j",
       "key": "j",
       "label": "J",
-      "type": "taglist"
+      "type": "taglist",
+      "validate": {
+        "required": true
+      }
     },
     {
       "extraProps": {
-        "disallowPassedDates": true,
-        "validate": {
-          "required": true
-        }
+        "disallowPassedDates": true
       },
       "id": "k",
       "key": "k",
-      "type": "datetime"
+      "type": "datetime",
+      "validate": {
+        "required": true
+      }
     }
   ],
   "id": "f",

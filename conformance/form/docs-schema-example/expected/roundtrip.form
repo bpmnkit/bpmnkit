@@ -38,7 +38,8 @@
       "id": "Field_12yshuy",
       "key": "monthlyNetIncome",
       "validate": {
-        "required": true
+        "required": true,
+        "min": 0
       },
       "description": "Monthly net income",
       "appearance": {

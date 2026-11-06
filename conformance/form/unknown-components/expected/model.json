@@ -5,6 +5,9 @@
       "label": "Custom",
       "layout": {
         "columns": 6,
+        "extraProps": {
+          "flex": 1
+        },
         "row": "r1"
       },
       "options": {

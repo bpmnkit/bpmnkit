@@ -14,7 +14,8 @@
       "values": [
         {
           "label": "x",
-          "value": "y"
+          "value": "y",
+          "extra": 1
         }
       ],
       "valuesKey": "src",
@@ -58,12 +59,14 @@
           "value": "0"
         }
       ],
+      "valuesExpression": "=expr",
       "type": "radio",
       "id": "d",
       "key": "d"
     },
     {
       "label": "E",
+      "valuesExpression": "=list",
       "type": "checklist",
       "id": "e",
       "key": "e"

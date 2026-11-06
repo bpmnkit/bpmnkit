@@ -14,6 +14,9 @@
       "type": "select",
       "values": [
         {
+          "extraProps": {
+            "extra": 1
+          },
           "label": "x",
           "value": "y"
         }

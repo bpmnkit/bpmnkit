@@ -1,0 +1,111 @@
+{
+  "components": [
+    {
+      "id": "s",
+      "key": "s",
+      "label": "S",
+      "layout": {
+        "columns": 4,
+        "extraProps": {
+          "__proto__": 1,
+          "hint": "x"
+        },
+        "row": "r1"
+      },
+      "type": "select",
+      "values": [
+        {
+          "extraProps": {
+            "disabled": true
+          },
+          "label": "A",
+          "value": "a"
+        },
+        {
+          "extraProps": {
+            "meta": {
+              "k": [
+                1
+              ]
+            },
+            "toString": "x"
+          },
+          "label": "B",
+          "value": "b"
+        },
+        {
+          "label": "",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "r",
+      "key": "r",
+      "label": "R",
+      "layout": {
+        "extraProps": {
+          "columns": "wide",
+          "row": 5
+        }
+      },
+      "type": "radio",
+      "values": [
+        {
+          "extraProps": {
+            "description": "d"
+          },
+          "label": "A",
+          "value": "a"
+        }
+      ]
+    },
+    {
+      "id": "t",
+      "key": "t",
+      "label": "T",
+      "layout": {
+        "extraProps": {
+          "hint": "no row, no columns"
+        }
+      },
+      "type": "taglist",
+      "values": [
+        {
+          "extraProps": {
+            "x": null
+          },
+          "label": "A",
+          "value": "a"
+        }
+      ]
+    },
+    {
+      "components": [
+        {
+          "id": "b",
+          "label": "B",
+          "layout": {
+            "extraProps": {
+              "gap": 2
+            },
+            "row": "r2"
+          },
+          "type": "button"
+        }
+      ],
+      "id": "g",
+      "label": "G",
+      "layout": {
+        "columns": null,
+        "extraProps": {
+          "extra": true
+        }
+      },
+      "type": "group"
+    }
+  ],
+  "id": "f",
+  "schemaVersion": 16,
+  "type": "default"
+}

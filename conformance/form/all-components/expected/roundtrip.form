@@ -88,6 +88,7 @@
           "value": "y"
         }
       ],
+      "valuesExpression": "=opts",
       "type": "radio",
       "id": "c_rad",
       "key": "choice",
@@ -114,6 +115,7 @@
           "value": "1"
         }
       ],
+      "valuesExpression": "=list",
       "type": "checklist",
       "id": "c_cl",
       "key": "many",

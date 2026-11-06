@@ -39,7 +39,13 @@
       "id": "e",
       "key": "e",
       "label": "E",
-      "layout": {},
+      "layout": {
+        "extraProps": {
+          "columns": "wide",
+          "extra": true,
+          "row": 7
+        }
+      },
       "type": "textfield"
     },
     {

@@ -61,6 +61,16 @@ fn opt_n(v: Option<crate::JsNumber>) -> Option<Json> {
     v.map(|n| Json::Num(n.0))
 }
 
+/// Adds `extra` to `o` unless the key is taken.
+fn add_extras(mut o: Obj, extra: &Option<Obj>) -> Json {
+    for (k, v) in extra.iter().flatten() {
+        if !o.contains_key(k) {
+            o.insert(k.clone(), v.clone());
+        }
+    }
+    Json::Obj(o)
+}
+
 fn layout(l: &FormLayout) -> Json {
     let mut o = Obj::new();
     if let Some(row) = &l.row {
@@ -70,11 +80,17 @@ fn layout(l: &FormLayout) -> Json {
         "columns".into(),
         match l.columns {
             Some(Some(n)) => Json::Num(n.0),
+            // An unmodelled `columns` (wrong type) is kept rather than replaced by the default.
+            None => l
+                .extra_props
+                .as_ref()
+                .and_then(|e| e.get("columns").cloned())
+                .unwrap_or(Json::Null),
             // An absent `columns` is written as null, the Camunda default.
-            _ => Json::Null,
+            Some(None) => Json::Null,
         },
     );
-    Json::Obj(o)
+    add_extras(o, &l.extra_props)
 }
 
 fn validate(v: &Option<FormValidation>) -> Option<Json> {
@@ -89,7 +105,19 @@ fn validate(v: &Option<FormValidation>) -> Option<Json> {
         if let Some(n) = v.max_length {
             o.insert("maxLength".into(), Json::Num(n.0));
         }
-        Json::Obj(o)
+        if let Some(n) = v.min {
+            o.insert("min".into(), Json::Num(n.0));
+        }
+        if let Some(n) = v.max {
+            o.insert("max".into(), Json::Num(n.0));
+        }
+        if let Some(p) = &v.pattern {
+            o.insert("pattern".into(), s(p));
+        }
+        if let Some(t) = &v.validation_type {
+            o.insert("validationType".into(), s(t));
+        }
+        add_extras(o, &v.extra_props)
     })
 }
 
@@ -97,7 +125,12 @@ fn values(v: &Option<Vec<FormValueOption>>) -> Option<Json> {
     v.as_ref().map(|v| {
         Json::Arr(
             v.iter()
-                .map(|o| obj([("label", s(&o.label)), ("value", s(&o.value))]))
+                .map(|o| {
+                    let mut e = Obj::new();
+                    e.insert("label".into(), s(&o.label));
+                    e.insert("value".into(), s(&o.value));
+                    add_extras(e, &o.extra_props)
+                })
                 .collect(),
         )
     })
@@ -108,7 +141,7 @@ fn components(c: &[FormComponent]) -> Json {
 }
 
 /// The fields a kind carries, and the order TS writes them in. A field missing from the order
-/// is not written (TS drops `valuesExpression` of radio and checklist that way).
+/// is not written.
 type Slots = Vec<(&'static str, Option<Json>)>;
 
 fn kind_fields(c: &FormComponent) -> (Slots, &'static [&'static str]) {
@@ -165,11 +198,13 @@ fn kind_fields(c: &FormComponent) -> (Slots, &'static [&'static str]) {
             f.push(("label", Some(s(&p.label))));
             f.push(("key", Some(s(&p.key))));
             f.push(("values", values(&p.values)));
+            f.push(("valuesExpression", opt_s(&p.values_expression)));
             f.push(("validate", validate(&p.validate)));
             f.push(("defaultValue", opt_s(&p.default_value)));
             &[
                 "label",
                 "values",
+                "valuesExpression",
                 "type",
                 "layout",
                 "id",
@@ -197,8 +232,18 @@ fn kind_fields(c: &FormComponent) -> (Slots, &'static [&'static str]) {
             f.push(("label", Some(s(&p.label))));
             f.push(("key", Some(s(&p.key))));
             f.push(("values", values(&p.values)));
+            f.push(("valuesExpression", opt_s(&p.values_expression)));
             f.push(("validate", validate(&p.validate)));
-            &["label", "values", "type", "layout", "id", "key", "validate"]
+            &[
+                "label",
+                "values",
+                "valuesExpression",
+                "type",
+                "layout",
+                "id",
+                "key",
+                "validate",
+            ]
         }
         ComponentKind::Group(p) => {
             f.push(("label", Some(s(&p.label))));

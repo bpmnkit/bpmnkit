@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 16,
+  "id": "f",
+  "components": [
+    {
+      "label": "A",
+      "type": "textfield",
+      "id": "a",
+      "key": "a",
+      "validate": {
+        "required": true,
+        "pattern": "^[a-z]+$",
+        "validationType": "custom",
+        "custom": {
+          "x": [
+            1,
+            2
+          ]
+        },
+        "__proto__": 7
+      }
+    },
+    {
+      "label": "N",
+      "type": "number",
+      "id": "n",
+      "key": "n",
+      "validate": {
+        "required": false,
+        "min": 0,
+        "max": 10
+      }
+    },
+    {
+      "label": "M",
+      "type": "number",
+      "id": "m",
+      "key": "m",
+      "validate": {
+        "min": "0",
+        "max": null,
+        "pattern": 3
+      }
+    },
+    {
+      "subtype": "date",
+      "type": "datetime",
+      "id": "d",
+      "key": "d",
+      "validate": {
+        "required": true,
+        "extra": "x"
+      }
+    },
+    {
+      "label": "T",
+      "type": "taglist",
+      "id": "t",
+      "key": "t",
+      "validate": {
+        "required": true,
+        "minLength": 1
+      }
+    },
+    {
+      "label": "R",
+      "valuesExpression": "=options",
+      "type": "radio",
+      "id": "r",
+      "key": "r"
+    },
+    {
+      "label": "C",
+      "valuesExpression": "=options",
+      "type": "checklist",
+      "id": "c",
+      "key": "c",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "type": "default"
+}
