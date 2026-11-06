@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="drd" name="Discount DRD" namespace="http://bpmnkit.com/conformance">
+  <decision id="tier" name="Customer Tier">
+    <informationRequirement id="ir_tier">
+      <requiredInput href="#customer"/>
+    </informationRequirement>
+    <decisionTable id="tier_table" hitPolicy="FIRST">
+      <input id="tier_in" label="Spend">
+        <inputExpression id="tier_in_expr" typeRef="number">
+          <text>spend</text>
+        </inputExpression>
+      </input>
+      <output id="tier_out" name="tier" typeRef="string"/>
+      <rule id="tier_r1">
+        <inputEntry id="tier_r1_i">
+          <text>&gt;= 1000</text>
+        </inputEntry>
+        <outputEntry id="tier_r1_o">
+          <text>"gold"</text>
+        </outputEntry>
+      </rule>
+      <rule id="tier_r2">
+        <inputEntry id="tier_r2_i">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="tier_r2_o">
+          <text>"basic"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="rate" name="Rate">
+    <informationRequirement id="ir_rate">
+      <requiredDecision href="#tier"/>
+    </informationRequirement>
+    <literalExpression id="rate_expr">
+      <text>if Customer Tier = "gold" then 0.15 else 0.05</text>
+    </literalExpression>
+  </decision>
+  <decision id="discount" name="Discount">
+    <informationRequirement id="ir_d1">
+      <requiredDecision href="#rate"/>
+    </informationRequirement>
+    <informationRequirement id="ir_d2">
+      <requiredDecision href="#tier"/>
+    </informationRequirement>
+    <literalExpression id="discount_expr">
+      <text>{ amount: spend * Rate, tier: Customer Tier }</text>
+    </literalExpression>
+  </decision>
+  <decision id="loop_a" name="A">
+    <informationRequirement id="ir_la">
+      <requiredDecision href="#loop_b"/>
+    </informationRequirement>
+    <literalExpression id="la_expr">
+      <text>B</text>
+    </literalExpression>
+  </decision>
+  <decision id="loop_b" name="B">
+    <informationRequirement id="ir_lb">
+      <requiredDecision href="#loop_a"/>
+    </informationRequirement>
+    <literalExpression id="lb_expr">
+      <text>A</text>
+    </literalExpression>
+  </decision>
+  <decision id="missing_req" name="Missing">
+    <informationRequirement id="ir_m">
+      <requiredDecision href="#nowhere"/>
+    </informationRequirement>
+    <literalExpression id="m_expr">
+      <text>1</text>
+    </literalExpression>
+  </decision>
+  <decision id="no_body" name="Empty"/>
+  <inputData id="customer" name="customer"/>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="loop_a">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="loop_b">
+        <dc:Bounds height="80" width="180" x="160" y="220"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="missing_req">
+        <dc:Bounds height="80" width="180" x="160" y="340"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="no_body">
+        <dc:Bounds height="80" width="180" x="160" y="460"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="customer">
+        <dc:Bounds height="45" width="125" x="160" y="580"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="tier">
+        <dc:Bounds height="80" width="180" x="400" y="322.5"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="rate">
+        <dc:Bounds height="80" width="180" x="640" y="322.5"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="discount">
+        <dc:Bounds height="80" width="180" x="880" y="322.5"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="ir_tier">
+        <di:waypoint x="285" y="602.5"/>
+        <di:waypoint x="400" y="362.5"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="ir_rate">
+        <di:waypoint x="580" y="362.5"/>
+        <di:waypoint x="640" y="362.5"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="ir_d1">
+        <di:waypoint x="820" y="362.5"/>
+        <di:waypoint x="880" y="362.5"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="ir_d2">
+        <di:waypoint x="580" y="362.5"/>
+        <di:waypoint x="880" y="362.5"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="ir_la">
+        <di:waypoint x="340" y="260"/>
+        <di:waypoint x="160" y="140"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="ir_lb">
+        <di:waypoint x="340" y="140"/>
+        <di:waypoint x="160" y="260"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+
