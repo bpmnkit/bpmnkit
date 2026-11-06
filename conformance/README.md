@@ -350,13 +350,18 @@ Provenance:
 | `edge-annotations`, `edge-data-objects` | annotations with associations to nodes, a flow, several sources, no text and none at all (runs `semantic`, `grid`, `sides`); data objects, references and a data store |
 | `edge-multi-process`, `edge-empty-process`, `edge-empty-collaboration-process`, `edge-annotations-only-process`, `edge-disconnected` | processes without a collaboration; empty process / pool; a process with only an annotation; separate components and lone nodes |
 | `edge-unicode-labels`, `edge-long-labels` | non-ASCII, emoji and astral characters (UTF-16 length); very long and empty labels |
-| `edge-existing-di-labels`, `edge-existing-di-collab`, `edge-existing-di-duplicate-id` | existing DI with `BPMNLabelStyle`, label bounds, a colour attribute and `isMarkerVisible` (`keepDiAttributes`); source DI where two shapes (and two edges) share the id `X_di` of one of their elements |
+| `edge-existing-di-labels`, `edge-existing-di-collab`, `edge-existing-di-duplicate-id`, `edge-existing-di-diagram-order` | existing DI with `BPMNLabelStyle`, label bounds, a colour attribute and `isMarkerVisible` (`keepDiAttributes`); source DI where two shapes (and two edges) share the id `X_di` of one of their elements; two root processes whose source diagrams are listed second process first (each keeps its own diagram and plane ids) |
 | `edge-no-di-minimal`, `edge-no-di-no-ids` | a bare default-namespace model without DI; a model with no ids, which TS refuses to parse (`error.txt` runs) |
 | `edge-event-types`, `edge-wide-fan` | one of each event / task kind in a row; an eight-way parallel fan |
 | `edge-dmn-drd`, `-chain`, `-annotations`, `-existing-di`, `-empty` | DRD with decisions, input data, BKMs, a knowledge source and every requirement kind; a deep decision chain with shortcuts; annotations and associations; an existing `DMNDI`; a definitions element with no content |
 
 The `edge-` inputs are hand-written XML (mostly without DI; the `existing-di-*`, `subprocess-collapsed`
-and `no-di-*` ones are the exceptions), not copied from anywhere.
+and `no-di-*` ones are the exceptions), not copied from anywhere. They were then put through
+`parseBpmn`/`serializeBpmn` with every flow node's `<incoming>`/`<outgoing>` filled in, as modelers
+write them: `packages/core/tests/node/bpmnlint-parity.test.ts` lints every `.bpmn` file in the
+repository with bpmnlint, which reads those children rather than the sequence flows. The two
+malformed-on-purpose inputs (`edge-no-di-no-ids`, `edge-existing-di-duplicate-id`) are left out of
+that walk.
 
 Known TypeScript defects the recorded output pins down as it is (to fix later; fixing one means
 re-recording and reviewing the diff):

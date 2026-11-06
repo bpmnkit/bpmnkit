@@ -1,10 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
-<bpmn:process id="P" isExecutable="true">
-<bpmn:startEvent id="S" name="Start" />
-<bpmn:adHocSubProcess id="Ad" name="Pick tools"><bpmn:userTask id="T1" name="Tool T1" /><bpmn:userTask id="T2" name="Tool T2" /><bpmn:userTask id="T3" name="Tool T3" /><bpmn:userTask id="T4" name="Tool T4" /><bpmn:userTask id="T5" name="Tool T5" /><bpmn:userTask id="T6" name="Tool T6" /><bpmn:userTask id="T7" name="Tool T7" /><bpmn:serviceTask id="Linked1" name="Linked a" /><bpmn:serviceTask id="Linked2" name="Linked b" /><bpmn:sequenceFlow id="lf" sourceRef="Linked1" targetRef="Linked2" /><bpmn:textAnnotation id="AdNote"><bpmn:text>Tools run in any order</bpmn:text></bpmn:textAnnotation><bpmn:association id="as1" sourceRef="T1" targetRef="AdNote" /></bpmn:adHocSubProcess>
-<bpmn:endEvent id="E" name="End" /><bpmn:textAnnotation id="OuterNote"><bpmn:text>Outer note</bpmn:text></bpmn:textAnnotation><bpmn:association id="as2" sourceRef="Ad" targetRef="OuterNote" />
-<bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="Ad" />
-<bpmn:sequenceFlow id="f2" sourceRef="Ad" targetRef="E" />
-</bpmn:process>
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:adHocSubProcess id="Ad" name="Pick tools">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:userTask id="T1" name="Tool T1"/>
+      <bpmn:userTask id="T2" name="Tool T2"/>
+      <bpmn:userTask id="T3" name="Tool T3"/>
+      <bpmn:userTask id="T4" name="Tool T4"/>
+      <bpmn:userTask id="T5" name="Tool T5"/>
+      <bpmn:userTask id="T6" name="Tool T6"/>
+      <bpmn:userTask id="T7" name="Tool T7"/>
+      <bpmn:serviceTask id="Linked1" name="Linked a">
+        <bpmn:outgoing>lf</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Linked2" name="Linked b">
+        <bpmn:incoming>lf</bpmn:incoming>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="lf" sourceRef="Linked1" targetRef="Linked2"/>
+      <bpmn:textAnnotation id="AdNote">
+        <bpmn:text>Tools run in any order</bpmn:text>
+      </bpmn:textAnnotation>
+      <bpmn:association id="as1" sourceRef="T1" targetRef="AdNote"/>
+    </bpmn:adHocSubProcess>
+    <bpmn:endEvent id="E" name="End">
+      <bpmn:incoming>f2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="Ad"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="Ad" targetRef="E"/>
+    <bpmn:textAnnotation id="OuterNote">
+      <bpmn:text>Outer note</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="as2" sourceRef="Ad" targetRef="OuterNote"/>
+  </bpmn:process>
 </bpmn:definitions>
+

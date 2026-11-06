@@ -10,10 +10,20 @@
     <bpmn:messageFlow id="m4" sourceRef="Pr_e" targetRef="BB2"/>
   </bpmn:collaboration>
   <bpmn:process id="Pr" isExecutable="true">
-    <bpmn:startEvent id="Pr_s" name="Start"/>
-    <bpmn:sendTask id="Pr_call" name="Call partner"/>
-    <bpmn:receiveTask id="Pr_wait" name="Wait for reply"/>
-    <bpmn:endEvent id="Pr_e" name="End"/>
+    <bpmn:startEvent id="Pr_s" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sendTask id="Pr_call" name="Call partner">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:receiveTask id="Pr_wait" name="Wait for reply">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:endEvent id="Pr_e" name="End">
+      <bpmn:incoming>f3</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:sequenceFlow id="f1" sourceRef="Pr_s" targetRef="Pr_call"/>
     <bpmn:sequenceFlow id="f2" sourceRef="Pr_call" targetRef="Pr_wait"/>
     <bpmn:sequenceFlow id="f3" sourceRef="Pr_wait" targetRef="Pr_e"/>

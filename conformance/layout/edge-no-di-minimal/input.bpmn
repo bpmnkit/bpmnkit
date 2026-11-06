@@ -1,10 +1,18 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" id="d" targetNamespace="urn:x">
-<process id="P">
-<startEvent id="S"/>
-<task id="A" name="Do it"/>
-<endEvent id="E"/>
-<sequenceFlow id="f1" sourceRef="S" targetRef="A"/>
-<sequenceFlow id="f2" sourceRef="A" targetRef="E"/>
-</process>
+  <process id="P">
+    <startEvent id="S">
+      <outgoing>f1</outgoing>
+    </startEvent>
+    <task id="A" name="Do it">
+      <incoming>f1</incoming>
+      <outgoing>f2</outgoing>
+    </task>
+    <endEvent id="E">
+      <incoming>f2</incoming>
+    </endEvent>
+    <sequenceFlow id="f1" sourceRef="S" targetRef="A"/>
+    <sequenceFlow id="f2" sourceRef="A" targetRef="E"/>
+  </process>
 </definitions>
+

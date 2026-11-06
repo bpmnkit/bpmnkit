@@ -13,9 +13,16 @@
     </bpmn:textAnnotation>
   </bpmn:process>
   <bpmn:process id="Pw" isExecutable="true">
-    <bpmn:startEvent id="Pw_s" name="Start"/>
-    <bpmn:task id="Pw_Do" name="Do"/>
-    <bpmn:endEvent id="Pw_e" name="End"/>
+    <bpmn:startEvent id="Pw_s" name="Start">
+      <bpmn:outgoing>Pw_f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Pw_Do" name="Do">
+      <bpmn:incoming>Pw_f1</bpmn:incoming>
+      <bpmn:outgoing>Pw_f2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="Pw_e" name="End">
+      <bpmn:incoming>Pw_f2</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:sequenceFlow id="Pw_f1" sourceRef="Pw_s" targetRef="Pw_Do"/>
     <bpmn:sequenceFlow id="Pw_f2" sourceRef="Pw_Do" targetRef="Pw_e"/>
   </bpmn:process>

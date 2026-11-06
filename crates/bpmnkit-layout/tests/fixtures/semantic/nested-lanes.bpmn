@@ -20,13 +20,34 @@
         </childLaneSet>
       </lane>
     </laneSet>
-    <startEvent id="Start_1"/>
-    <userTask id="Task_1" name="Quote"/>
-    <parallelGateway id="Gw_1"/>
-    <serviceTask id="Task_2" name="Invoice"/>
-    <serviceTask id="Task_3" name="Ship"/>
-    <task id="Orphan_1"/>
-    <endEvent id="End_1"/>
+    <startEvent id="Start_1">
+      <outgoing>F1</outgoing>
+    </startEvent>
+    <userTask id="Task_1" name="Quote">
+      <incoming>F1</incoming>
+      <outgoing>F2</outgoing>
+    </userTask>
+    <parallelGateway id="Gw_1">
+      <incoming>F2</incoming>
+      <outgoing>F3</outgoing>
+      <outgoing>F4</outgoing>
+    </parallelGateway>
+    <serviceTask id="Task_2" name="Invoice">
+      <incoming>F3</incoming>
+      <outgoing>F5</outgoing>
+    </serviceTask>
+    <serviceTask id="Task_3" name="Ship">
+      <incoming>F4</incoming>
+      <incoming>F7</incoming>
+      <outgoing>F6</outgoing>
+    </serviceTask>
+    <task id="Orphan_1">
+      <outgoing>F7</outgoing>
+    </task>
+    <endEvent id="End_1">
+      <incoming>F5</incoming>
+      <incoming>F6</incoming>
+    </endEvent>
     <sequenceFlow id="F1" sourceRef="Start_1" targetRef="Task_1"/>
     <sequenceFlow id="F2" sourceRef="Task_1" targetRef="Gw_1"/>
     <sequenceFlow id="F3" sourceRef="Gw_1" targetRef="Task_2"/>
@@ -36,3 +57,4 @@
     <sequenceFlow id="F7" sourceRef="Orphan_1" targetRef="Task_3"/>
   </process>
 </definitions>
+

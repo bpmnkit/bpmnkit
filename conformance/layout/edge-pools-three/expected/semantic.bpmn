@@ -9,26 +9,53 @@
     <bpmn:messageFlow id="m3" sourceRef="PrC_Deliver" targetRef="PrA_e" name="delivered"/>
   </bpmn:collaboration>
   <bpmn:process id="PrA" isExecutable="true">
-    <bpmn:startEvent id="PrA_s" name="Start"/>
-    <bpmn:task id="PrA_Order" name="Order"/>
-    <bpmn:endEvent id="PrA_e" name="End"/>
+    <bpmn:startEvent id="PrA_s" name="Start">
+      <bpmn:outgoing>PrA_f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="PrA_Order" name="Order">
+      <bpmn:incoming>PrA_f1</bpmn:incoming>
+      <bpmn:outgoing>PrA_f2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="PrA_e" name="End">
+      <bpmn:incoming>PrA_f2</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:sequenceFlow id="PrA_f1" sourceRef="PrA_s" targetRef="PrA_Order"/>
     <bpmn:sequenceFlow id="PrA_f2" sourceRef="PrA_Order" targetRef="PrA_e"/>
   </bpmn:process>
   <bpmn:process id="PrB" isExecutable="true">
-    <bpmn:startEvent id="PrB_s" name="Start"/>
-    <bpmn:task id="PrB_Receive" name="Receive"/>
-    <bpmn:task id="PrB_Ship" name="Ship"/>
-    <bpmn:endEvent id="PrB_e" name="End"/>
+    <bpmn:startEvent id="PrB_s" name="Start">
+      <bpmn:outgoing>PrB_f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="PrB_Receive" name="Receive">
+      <bpmn:incoming>PrB_f1</bpmn:incoming>
+      <bpmn:outgoing>PrB_f2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="PrB_Ship" name="Ship">
+      <bpmn:incoming>PrB_f2</bpmn:incoming>
+      <bpmn:outgoing>PrB_f3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="PrB_e" name="End">
+      <bpmn:incoming>PrB_f3</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:sequenceFlow id="PrB_f1" sourceRef="PrB_s" targetRef="PrB_Receive"/>
     <bpmn:sequenceFlow id="PrB_f2" sourceRef="PrB_Receive" targetRef="PrB_Ship"/>
     <bpmn:sequenceFlow id="PrB_f3" sourceRef="PrB_Ship" targetRef="PrB_e"/>
   </bpmn:process>
   <bpmn:process id="PrC" isExecutable="true">
-    <bpmn:startEvent id="PrC_s" name="Start"/>
-    <bpmn:task id="PrC_Pickup" name="Pickup"/>
-    <bpmn:task id="PrC_Deliver" name="Deliver"/>
-    <bpmn:endEvent id="PrC_e" name="End"/>
+    <bpmn:startEvent id="PrC_s" name="Start">
+      <bpmn:outgoing>PrC_f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="PrC_Pickup" name="Pickup">
+      <bpmn:incoming>PrC_f1</bpmn:incoming>
+      <bpmn:outgoing>PrC_f2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="PrC_Deliver" name="Deliver">
+      <bpmn:incoming>PrC_f2</bpmn:incoming>
+      <bpmn:outgoing>PrC_f3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="PrC_e" name="End">
+      <bpmn:incoming>PrC_f3</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:sequenceFlow id="PrC_f1" sourceRef="PrC_s" targetRef="PrC_Pickup"/>
     <bpmn:sequenceFlow id="PrC_f2" sourceRef="PrC_Pickup" targetRef="PrC_Deliver"/>
     <bpmn:sequenceFlow id="PrC_f3" sourceRef="PrC_Deliver" targetRef="PrC_e"/>

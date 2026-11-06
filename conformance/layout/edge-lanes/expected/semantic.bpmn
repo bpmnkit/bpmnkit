@@ -13,13 +13,34 @@
       </bpmn:lane>
       <bpmn:lane id="L3" name="Empty lane"/>
     </bpmn:laneSet>
-    <bpmn:startEvent id="S" name="Start"/>
-    <bpmn:userTask id="A" name="Prepare offer"/>
-    <bpmn:exclusiveGateway id="G" name="Approved?"/>
-    <bpmn:serviceTask id="B" name="Book revenue"/>
-    <bpmn:userTask id="C" name="Send invoice"/>
-    <bpmn:task id="Orphan" name="In no lane"/>
-    <bpmn:endEvent id="E" name="Done"/>
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="A" name="Prepare offer">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="G" name="Approved?">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="B" name="Book revenue">
+      <bpmn:incoming>f3</bpmn:incoming>
+      <bpmn:outgoing>f5</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="C" name="Send invoice">
+      <bpmn:incoming>f5</bpmn:incoming>
+      <bpmn:outgoing>f6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:task id="Orphan" name="In no lane">
+      <bpmn:incoming>f4</bpmn:incoming>
+      <bpmn:outgoing>f7</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="E" name="Done">
+      <bpmn:incoming>f6</bpmn:incoming>
+      <bpmn:incoming>f7</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="A"/>
     <bpmn:sequenceFlow id="f2" sourceRef="A" targetRef="G"/>
     <bpmn:sequenceFlow id="f3" sourceRef="G" targetRef="B" name="yes">

@@ -6,9 +6,15 @@
     <bpmn:messageFlow id="m1" sourceRef="A" targetRef="Q"/>
   </bpmn:collaboration>
   <bpmn:process id="P" isExecutable="true">
-    <bpmn:startEvent id="S" name="Start"/>
-    <bpmn:task id="A" name="Task"/>
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="A" name="Task">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:task>
     <bpmn:subProcess id="Sub" name="Folded">
+      <bpmn:incoming>f2</bpmn:incoming>
       <bpmn:task id="In" name="Inner"/>
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="A"/>

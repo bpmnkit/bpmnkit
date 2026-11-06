@@ -1,27 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:process id="P" isExecutable="true">
-    <bpmn:startEvent id="S" name="Start"/>
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
     <bpmn:subProcess id="Sub" name="A sub-process with a rather long title that wraps">
-      <bpmn:startEvent id="SS" name="Begin"/>
-      <bpmn:userTask id="ST" name="Review request"/>
-      <bpmn:userTask id="ST2" name="Approve"/>
-      <bpmn:endEvent id="SE" name="Finish"/>
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:startEvent id="SS" name="Begin">
+        <bpmn:outgoing>sf1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:userTask id="ST" name="Review request">
+        <bpmn:incoming>sf1</bpmn:incoming>
+        <bpmn:outgoing>sf2</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:userTask id="ST2" name="Approve">
+        <bpmn:incoming>sf2</bpmn:incoming>
+        <bpmn:outgoing>sf3</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:endEvent id="SE" name="Finish">
+        <bpmn:incoming>sf3</bpmn:incoming>
+      </bpmn:endEvent>
       <bpmn:sequenceFlow id="sf1" sourceRef="SS" targetRef="ST"/>
       <bpmn:sequenceFlow id="sf2" sourceRef="ST" targetRef="ST2"/>
       <bpmn:sequenceFlow id="sf3" sourceRef="ST2" targetRef="SE"/>
     </bpmn:subProcess>
     <bpmn:boundaryEvent id="B1" name="Timeout" attachedToRef="Sub">
+      <bpmn:outgoing>b1</bpmn:outgoing>
       <bpmn:timerEventDefinition id="ed1">
         <bpmn:timeDuration>PT1H</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="B2" name="Info" attachedToRef="Sub" cancelActivity="false">
+      <bpmn:outgoing>b2</bpmn:outgoing>
       <bpmn:messageEventDefinition id="ed2"/>
     </bpmn:boundaryEvent>
-    <bpmn:endEvent id="E" name="End"/>
-    <bpmn:endEvent id="E2" name="Timed out"/>
-    <bpmn:task id="Notify" name="Notify"/>
+    <bpmn:endEvent id="E" name="End">
+      <bpmn:incoming>f2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="E2" name="Timed out">
+      <bpmn:incoming>b1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Notify" name="Notify">
+      <bpmn:incoming>b2</bpmn:incoming>
+    </bpmn:task>
     <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="Sub"/>
     <bpmn:sequenceFlow id="f2" sourceRef="Sub" targetRef="E"/>
     <bpmn:sequenceFlow id="b1" sourceRef="B1" targetRef="E2"/>

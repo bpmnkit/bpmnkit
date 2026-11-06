@@ -1,22 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:process id="P" isExecutable="true">
-    <bpmn:startEvent id="S" name="Start"/>
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
     <bpmn:transaction id="Tx" name="Book trip">
-      <bpmn:startEvent id="tS" name="Begin"/>
-      <bpmn:task id="tA" name="Book flight"/>
-      <bpmn:task id="tB" name="Book hotel"/>
-      <bpmn:endEvent id="tE" name="Booked"/>
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:startEvent id="tS" name="Begin">
+        <bpmn:outgoing>tf1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:task id="tA" name="Book flight">
+        <bpmn:incoming>tf1</bpmn:incoming>
+        <bpmn:outgoing>tf2</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:task id="tB" name="Book hotel">
+        <bpmn:incoming>tf2</bpmn:incoming>
+        <bpmn:outgoing>tf3</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:endEvent id="tE" name="Booked">
+        <bpmn:incoming>tf3</bpmn:incoming>
+      </bpmn:endEvent>
       <bpmn:sequenceFlow id="tf1" sourceRef="tS" targetRef="tA"/>
       <bpmn:sequenceFlow id="tf2" sourceRef="tA" targetRef="tB"/>
       <bpmn:sequenceFlow id="tf3" sourceRef="tB" targetRef="tE"/>
     </bpmn:transaction>
     <bpmn:boundaryEvent id="BC" name="Cancel" attachedToRef="Tx">
+      <bpmn:outgoing>b1</bpmn:outgoing>
       <bpmn:cancelEventDefinition id="ed1"/>
     </bpmn:boundaryEvent>
-    <bpmn:task id="Refund" name="Refund"/>
-    <bpmn:endEvent id="E" name="End"/>
-    <bpmn:endEvent id="E2" name="Cancelled"/>
+    <bpmn:task id="Refund" name="Refund">
+      <bpmn:incoming>b1</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="E" name="End">
+      <bpmn:incoming>f2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="E2" name="Cancelled">
+      <bpmn:incoming>f3</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="Tx"/>
     <bpmn:sequenceFlow id="f2" sourceRef="Tx" targetRef="E"/>
     <bpmn:sequenceFlow id="b1" sourceRef="BC" targetRef="Refund"/>

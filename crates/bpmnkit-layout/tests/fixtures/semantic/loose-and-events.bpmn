@@ -1,15 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
   <process id="Process_1" isExecutable="true">
-    <startEvent id="Start_1" name="Order received"/>
-    <userTask id="Task_1" name="Review"/>
-    <exclusiveGateway id="Gw_1" name="Valid order?" default="Flow_4"/>
-    <serviceTask id="Task_2" name="Ship"/>
-    <endEvent id="End_1" name="Done"/>
-    <boundaryEvent id="Esc_1" name="Escalated" attachedToRef="Task_1"><escalationEventDefinition id="Esc_Def_1"/></boundaryEvent>
-    <boundaryEvent id="Err_1" attachedToRef="Task_1"><errorEventDefinition id="Err_Def_1"/></boundaryEvent>
-    <endEvent id="End_2"/>
-    <endEvent id="End_3"/>
+    <startEvent id="Start_1" name="Order received">
+      <outgoing>Flow_1</outgoing>
+    </startEvent>
+    <userTask id="Task_1" name="Review">
+      <incoming>Flow_1</incoming>
+      <incoming>Flow_8</incoming>
+      <outgoing>Flow_2</outgoing>
+    </userTask>
+    <exclusiveGateway id="Gw_1" name="Valid order?" default="Flow_4">
+      <incoming>Flow_2</incoming>
+      <outgoing>Flow_3</outgoing>
+      <outgoing>Flow_4</outgoing>
+    </exclusiveGateway>
+    <serviceTask id="Task_2" name="Ship">
+      <incoming>Flow_3</incoming>
+      <incoming>Flow_7</incoming>
+      <outgoing>Flow_5</outgoing>
+      <outgoing>Flow_8</outgoing>
+    </serviceTask>
+    <endEvent id="End_1" name="Done">
+      <incoming>Flow_5</incoming>
+    </endEvent>
+    <boundaryEvent id="Esc_1" name="Escalated" attachedToRef="Task_1">
+      <outgoing>Flow_6</outgoing>
+      <escalationEventDefinition id="Esc_Def_1"/>
+    </boundaryEvent>
+    <boundaryEvent id="Err_1" attachedToRef="Task_1">
+      <outgoing>Flow_7</outgoing>
+      <errorEventDefinition id="Err_Def_1"/>
+    </boundaryEvent>
+    <endEvent id="End_2">
+      <incoming>Flow_4</incoming>
+    </endEvent>
+    <endEvent id="End_3">
+      <incoming>Flow_6</incoming>
+    </endEvent>
     <task id="Loose_1"/>
     <task id="Loose_2"/>
     <task id="Loose_3"/>
@@ -18,7 +45,7 @@
     <task id="Loose_6"/>
     <sequenceFlow id="Flow_1" sourceRef="Start_1" targetRef="Task_1"/>
     <sequenceFlow id="Flow_2" sourceRef="Task_1" targetRef="Gw_1"/>
-    <sequenceFlow id="Flow_3" name="yes, proceed" sourceRef="Gw_1" targetRef="Task_2"/>
+    <sequenceFlow id="Flow_3" sourceRef="Gw_1" targetRef="Task_2" name="yes, proceed"/>
     <sequenceFlow id="Flow_4" sourceRef="Gw_1" targetRef="End_2"/>
     <sequenceFlow id="Flow_5" sourceRef="Task_2" targetRef="End_1"/>
     <sequenceFlow id="Flow_6" sourceRef="Esc_1" targetRef="End_3"/>
@@ -26,3 +53,4 @@
     <sequenceFlow id="Flow_8" sourceRef="Task_2" targetRef="Task_1"/>
   </process>
 </definitions>
+

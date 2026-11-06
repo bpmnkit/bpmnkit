@@ -28,8 +28,17 @@ function bpmnFiles(dir: string): string[] {
 	})
 }
 
+// Layout conformance inputs that are malformed on purpose, so neither side has an
+// answer to compare: one has no ids (BPMN Kit's parser refuses it), the other gives
+// two elements one DI id (bpmnlint resolves DI by id, so it sees only one of them).
+const MALFORMED = new Set([
+	"conformance/layout/edge-no-di-no-ids/input.bpmn",
+	"conformance/layout/edge-existing-di-duplicate-id/input.bpmn",
+])
+
 const FILES = bpmnFiles(ROOT)
 	.map((file) => relative(ROOT, file))
+	.filter((file) => !MALFORMED.has(file))
 	.sort()
 const ALL = resolveBpmnlintConfig({ extends: "bpmnlint:all" })
 const EXACT = Object.entries(BPMNLINT_RULE_MAP)

@@ -18,11 +18,24 @@
         <bpmn:flowNodeRef>E</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:startEvent id="S" name="Start"/>
-    <bpmn:task id="A" name="Collect"/>
-    <bpmn:task id="B" name="Review"/>
-    <bpmn:task id="C" name="Sign off"/>
-    <bpmn:endEvent id="E" name="End"/>
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="A" name="Collect">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="B" name="Review">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="C" name="Sign off">
+      <bpmn:incoming>f3</bpmn:incoming>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="E" name="End">
+      <bpmn:incoming>f4</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="A"/>
     <bpmn:sequenceFlow id="f2" sourceRef="A" targetRef="B"/>
     <bpmn:sequenceFlow id="f3" sourceRef="B" targetRef="C"/>

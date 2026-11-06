@@ -1,23 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:process id="P" isExecutable="true">
-    <bpmn:startEvent id="S" name="Start"/>
-    <bpmn:task id="A" name="Work"/>
-    <bpmn:endEvent id="E" name="End"/>
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="A" name="Work">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="E" name="End">
+      <bpmn:incoming>f2</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:subProcess id="Ev" triggeredByEvent="true" name="Handle error">
       <bpmn:startEvent id="evS" isInterrupting="false" name="Error">
+        <bpmn:outgoing>evf1</bpmn:outgoing>
         <bpmn:errorEventDefinition id="ed1"/>
       </bpmn:startEvent>
-      <bpmn:task id="evA" name="Compensate"/>
-      <bpmn:endEvent id="evE" name="Handled"/>
+      <bpmn:task id="evA" name="Compensate">
+        <bpmn:incoming>evf1</bpmn:incoming>
+        <bpmn:outgoing>evf2</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:endEvent id="evE" name="Handled">
+        <bpmn:incoming>evf2</bpmn:incoming>
+      </bpmn:endEvent>
       <bpmn:sequenceFlow id="evf1" sourceRef="evS" targetRef="evA"/>
       <bpmn:sequenceFlow id="evf2" sourceRef="evA" targetRef="evE"/>
     </bpmn:subProcess>
     <bpmn:subProcess id="Ev2" triggeredByEvent="true" name="Handle message">
       <bpmn:startEvent id="ev2S" name="Message">
+        <bpmn:outgoing>ev2f1</bpmn:outgoing>
         <bpmn:messageEventDefinition id="ed2"/>
       </bpmn:startEvent>
-      <bpmn:endEvent id="ev2E" name="Done"/>
+      <bpmn:endEvent id="ev2E" name="Done">
+        <bpmn:incoming>ev2f1</bpmn:incoming>
+      </bpmn:endEvent>
       <bpmn:sequenceFlow id="ev2f1" sourceRef="ev2S" targetRef="ev2E"/>
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="A"/>
