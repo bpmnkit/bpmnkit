@@ -1,0 +1,270 @@
+[
+  {
+    "result": {
+      "t": "string",
+      "v": "bronze"
+    },
+    "evaluated": [
+      {
+        "decision": "priority_single",
+        "result": {
+          "t": "string",
+          "v": "bronze"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "silver"
+    },
+    "evaluated": [
+      {
+        "decision": "priority_single",
+        "result": {
+          "t": "string",
+          "v": "silver"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "gold"
+    },
+    "evaluated": [
+      {
+        "decision": "priority_single",
+        "result": {
+          "t": "string",
+          "v": "gold"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "priority_single",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "bronze"
+        },
+        {
+          "t": "string",
+          "v": "unlisted"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "order_single",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "bronze"
+            },
+            {
+              "t": "string",
+              "v": "unlisted"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "gold"
+        },
+        {
+          "t": "string",
+          "v": "silver"
+        },
+        {
+          "t": "string",
+          "v": "bronze"
+        },
+        {
+          "t": "string",
+          "v": "unlisted"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "order_single",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "gold"
+            },
+            {
+              "t": "string",
+              "v": "silver"
+            },
+            {
+              "t": "string",
+              "v": "bronze"
+            },
+            {
+              "t": "string",
+              "v": "unlisted"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "code": {
+              "t": "number",
+              "v": "2"
+            },
+            "level": {
+              "t": "string",
+              "v": "high"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "code": {
+              "t": "number",
+              "v": "1"
+            },
+            "level": {
+              "t": "string",
+              "v": "high"
+            }
+          }
+        },
+        {
+          "t": "context",
+          "v": {
+            "code": {
+              "t": "number",
+              "v": "2"
+            },
+            "level": {
+              "t": "string",
+              "v": "low"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "order_multi",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "code": {
+                  "t": "number",
+                  "v": "2"
+                },
+                "level": {
+                  "t": "string",
+                  "v": "high"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "code": {
+                  "t": "number",
+                  "v": "1"
+                },
+                "level": {
+                  "t": "string",
+                  "v": "high"
+                }
+              }
+            },
+            {
+              "t": "context",
+              "v": {
+                "code": {
+                  "t": "number",
+                  "v": "2"
+                },
+                "level": {
+                  "t": "string",
+                  "v": "low"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "b"
+        },
+        {
+          "t": "string",
+          "v": "a"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "no_values",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "b"
+            },
+            {
+              "t": "string",
+              "v": "a"
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

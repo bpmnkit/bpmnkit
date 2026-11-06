@@ -5,7 +5,7 @@
 //! silently is reported here as [`Diagnostic`]s, so a caller such as reebe can fail where
 //! Zeebe fails.
 
-use crate::model::{DmnDecision, DmnDefinitions};
+use crate::model::{DmnDecision, DmnDefinitions, DmnOutput};
 use bpmnkit_feel::{
     parse_partial, parse_unary_tests_partial, Context, Decimal, Expression, ParseError,
     ParseOptions, Partial, UnaryTests, Value, Warning,
@@ -82,6 +82,9 @@ pub enum Diagnostic {
 pub enum EvalError {
     NotFound(String),
     Cycle(String),
+    /// The decision's table cannot produce a result: UNIQUE matched several rules, or a value
+    /// does not conform to its `typeRef`. Holds the whole message.
+    Invalid(String),
 }
 
 impl std::fmt::Display for EvalError {
@@ -90,6 +93,7 @@ impl std::fmt::Display for EvalError {
         match self {
             EvalError::NotFound(id) => write!(f, "Decision '{id}' not found"),
             EvalError::Cycle(id) => write!(f, "Decision '{id}' requires itself"),
+            EvalError::Invalid(message) => f.write_str(message),
         }
     }
 }
@@ -227,35 +231,169 @@ fn aggregate(op: &str, values: &[Decimal]) -> Value {
 
 /// Evaluates a decision's table by its hit policy, as `evaluateDecision` does: null when the
 /// decision has no table. Variables named in `vars` may contain spaces.
-pub fn evaluate_decision_table(decision: &DmnDecision, vars: &Context) -> DecisionEvaluation {
+///
+/// # Errors
+/// [`EvalError::Invalid`] when UNIQUE matches several rules or a value does not conform to its
+/// `typeRef`.
+pub fn evaluate_decision_table(
+    decision: &DmnDecision,
+    vars: &Context,
+) -> Result<DecisionEvaluation, EvalError> {
     let mut ev = Evaluator::new(&decision.id, vars);
-    let result = table(&mut ev, decision);
-    DecisionEvaluation {
+    let result = table(&mut ev, decision)?;
+    Ok(DecisionEvaluation {
         result,
         diagnostics: ev.diagnostics,
+    })
+}
+
+fn output_name(col: &DmnOutput) -> &str {
+    col.name.as_ref().or(col.label.as_ref()).unwrap_or(&col.id)
+}
+
+/// The DMN type name of a value, as the TS evaluator names it.
+fn type_name(v: &Value) -> &'static str {
+    match v {
+        Value::Null => "null",
+        Value::Boolean(_) => "boolean",
+        Value::Number(_) => "number",
+        Value::String(_) => "string",
+        Value::Date(_) => "date",
+        Value::Time(_) => "time",
+        Value::DateTime(_) => "dateTime",
+        Value::DaysTimeDuration(_) => "dayTimeDuration",
+        Value::YearsMonthsDuration(_) => "yearMonthDuration",
+        Value::Range(_) => "range",
+        Value::List(_) => "list",
+        Value::Context(_) => "context",
+        Value::Function(_) => "function",
     }
 }
 
-fn table(ev: &mut Evaluator, decision: &DmnDecision) -> Value {
-    let Some(table) = &decision.decision_table else {
-        return Value::Null;
+/// FEEL that converts a string `v` to a temporal `typeRef`.
+fn temporal_conversion(type_ref: &str) -> Option<&'static str> {
+    Some(match type_ref {
+        "date" => "date(v)",
+        "time" => "time(v)",
+        "dateTime" => "date and time(v)",
+        "dayTimeDuration" | "yearMonthDuration" => "duration(v)",
+        _ => return None,
+    })
+}
+
+/// Applies a `typeRef` as Zeebe documents it (TS `conformToType`): the value must convert to the
+/// declared type, else the decision fails. Nothing is coerced except a string to a temporal type
+/// FEEL can parse. `null`, `Any`, Camunda 7's `integer`/`long`/`double` as numbers, and a
+/// `typeRef` outside the documented data types are not checked.
+fn conform_to_type(
+    decision: &str,
+    what: &str,
+    value: Value,
+    type_ref: Option<&str>,
+) -> Result<Value, EvalError> {
+    let Some(type_ref) = type_ref else {
+        return Ok(value);
     };
-    let hit_policy = table.hit_policy.as_deref().unwrap_or("UNIQUE");
-    // Input expressions do not depend on the rule: evaluate each column once.
-    let inputs: Vec<Value> = table
-        .inputs
+    if value == Value::Null {
+        return Ok(value);
+    }
+    let actual = type_name(&value);
+    let is_number = matches!(type_ref, "number" | "integer" | "long" | "double");
+    let temporal = temporal_conversion(type_ref);
+    if !is_number && temporal.is_none() && !matches!(type_ref, "string" | "boolean") {
+        return Ok(value);
+    }
+    if (is_number && actual == "number") || actual == type_ref {
+        return Ok(value);
+    }
+    if let (Some(src), "string") = (temporal, actual) {
+        let mut scope = Context::new();
+        scope.insert("v", value);
+        let converted = Evaluator::new(decision, &scope).expression(src);
+        if converted != Value::Null && type_name(&converted) == type_ref {
+            return Ok(converted);
+        }
+    }
+    Err(EvalError::Invalid(format!(
+        "Decision '{decision}': {what} is of type '{actual}' but its typeRef is '{type_ref}'"
+    )))
+}
+
+/// Sorts rows by the output clauses' allowed values, highest priority first (TS
+/// `orderByOutputValues`): the first output column decides, later ones break ties; a value
+/// missing from the list ranks last; a column without a list does not take part. Stable.
+fn order_by_output_values(
+    decision: &str,
+    outputs: &[DmnOutput],
+    rows: Vec<Context>,
+) -> Vec<Context> {
+    let none = Context::new();
+    let columns: Vec<(&str, Vec<Value>)> = outputs
         .iter()
-        .map(|col| {
-            let text = col.input_expression.text.as_deref().unwrap_or("");
-            if text.trim().is_empty() {
-                Value::Null
-            } else {
-                ev.expression(text)
+        .filter_map(|col| {
+            let text = col.output_values.as_deref().filter(|t| !t.is_empty())?;
+            match Evaluator::new(decision, &none).expression(&format!("[{text}]")) {
+                Value::List(allowed) => Some((output_name(col), allowed)),
+                _ => None,
             }
         })
         .collect();
+    if columns.is_empty() {
+        return rows;
+    }
+    let rank = |allowed: &[Value], value: Option<&Value>| -> usize {
+        let mut scope = Context::new();
+        scope.insert("allowed", Value::List(allowed.to_vec()));
+        scope.insert("value", value.cloned().unwrap_or(Value::Null));
+        if let Value::List(at) =
+            Evaluator::new(decision, &scope).expression("index of(allowed, value)")
+        {
+            if let Some(Value::Number(n)) = at.first() {
+                if let Some(k) = (1..=allowed.len()).find(|k| Decimal::from(*k) == *n) {
+                    return k - 1;
+                }
+            }
+        }
+        allowed.len()
+    };
+    let mut keyed: Vec<(Vec<usize>, Context)> = rows
+        .into_iter()
+        .map(|row| {
+            let key = columns
+                .iter()
+                .map(|(name, allowed)| rank(allowed, row.get(name)))
+                .collect();
+            (key, row)
+        })
+        .collect();
+    keyed.sort_by(|a, b| a.0.cmp(&b.0));
+    keyed.into_iter().map(|(_, row)| row).collect()
+}
+
+fn table(ev: &mut Evaluator, decision: &DmnDecision) -> Result<Value, EvalError> {
+    let Some(table) = &decision.decision_table else {
+        return Ok(Value::Null);
+    };
+    let hit_policy = table.hit_policy.as_deref().unwrap_or("UNIQUE");
+    // Input expressions do not depend on the rule: evaluate each column once.
+    let mut inputs: Vec<Value> = Vec::with_capacity(table.inputs.len());
+    for col in &table.inputs {
+        let text = col.input_expression.text.as_deref().unwrap_or("");
+        inputs.push(if text.trim().is_empty() {
+            Value::Null
+        } else {
+            let value = ev.expression(text);
+            conform_to_type(
+                &decision.id,
+                &format!("input '{}'", text.trim()),
+                value,
+                col.input_expression.type_ref.as_deref(),
+            )?
+        });
+    }
 
     let mut rows: Vec<Context> = vec![];
+    let mut rule_ids: Vec<&str> = vec![];
     for rule in &table.rules {
         let matches = (0..table.inputs.len()).all(|i| match rule.input_entries.get(i) {
             Some(entry) if !entry.text.trim().is_empty() => ev.unary(&entry.text, &inputs[i]),
@@ -266,22 +404,41 @@ fn table(ev: &mut Evaluator, decision: &DmnDecision) -> Value {
         }
         let mut row = Context::new();
         for (col, entry) in table.outputs.iter().zip(&rule.output_entries) {
-            let key = col.name.as_ref().or(col.label.as_ref()).unwrap_or(&col.id);
+            let key = output_name(col);
             let value = if entry.text.trim().is_empty() {
                 Value::Null
             } else {
                 ev.expression(&entry.text)
             };
-            row.insert(key.clone(), value);
+            let value = conform_to_type(
+                &decision.id,
+                &format!("output '{key}' of rule '{}'", rule.id),
+                value,
+                col.type_ref.as_deref(),
+            )?;
+            row.insert(key, value);
         }
         rows.push(row);
+        rule_ids.push(&rule.id);
         if hit_policy == "FIRST" {
             break;
         }
     }
 
+    // DMN 1.3: UNIQUE is violated by a second matching rule, whatever it outputs.
+    if hit_policy == "UNIQUE" && rows.len() > 1 {
+        return Err(EvalError::Invalid(format!(
+            "Hit policy UNIQUE violated in decision '{}': {} rules match ({})",
+            decision.id,
+            rows.len(),
+            rule_ids.join(", ")
+        )));
+    }
+    if hit_policy == "PRIORITY" || hit_policy == "OUTPUT ORDER" {
+        rows = order_by_output_values(&decision.id, &table.outputs, rows);
+    }
     if rows.is_empty() {
-        return Value::Null;
+        return Ok(Value::Null);
     }
     let single = table.outputs.len() == 1;
     let list = |rows: Vec<Context>| {
@@ -291,8 +448,8 @@ fn table(ev: &mut Evaluator, decision: &DmnDecision) -> Value {
             rows.into_iter().map(Value::Context).collect()
         })
     };
-    match hit_policy {
-        "UNIQUE" | "FIRST" | "ANY" => {
+    Ok(match hit_policy {
+        "UNIQUE" | "FIRST" | "ANY" | "PRIORITY" => {
             let row = rows.swap_remove(0);
             if single {
                 first_value(&row)
@@ -300,7 +457,7 @@ fn table(ev: &mut Evaluator, decision: &DmnDecision) -> Value {
                 Value::Context(row)
             }
         }
-        "RULE ORDER" | "OUTPUT ORDER" | "PRIORITY" => list(rows),
+        "RULE ORDER" | "OUTPUT ORDER" => list(rows),
         "COLLECT" => match &table.aggregation {
             None => list(rows),
             Some(op) => {
@@ -315,7 +472,7 @@ fn table(ev: &mut Evaluator, decision: &DmnDecision) -> Value {
             }
         },
         _ => Value::Null,
-    }
+    })
 }
 
 /// The text of a decision's `<literalExpression>` (TS `literalExpressionText`).
@@ -366,7 +523,7 @@ pub fn evaluate_decision_graph(
         g.visiting.pop();
         let mut ev = Evaluator::new(&decision.id, &scope);
         let result = if decision.decision_table.is_some() {
-            table(&mut ev, decision)
+            table(&mut ev, decision)?
         } else {
             match literal_expression_text(decision) {
                 Some(text) if !text.trim().is_empty() => ev.expression(text),
@@ -449,7 +606,7 @@ mod tests {
             .replace("x * 2", "x +")
             .replace("&gt; 1", "&gt; \"a\"");
         let defs = parse_dmn(&xml).unwrap();
-        let ev = evaluate_decision_table(&defs.decisions[0], &ctx(5));
+        let ev = evaluate_decision_table(&defs.decisions[0], &ctx(5)).unwrap();
         assert_eq!(ev.result, Value::Null);
         assert!(ev
             .diagnostics
@@ -457,7 +614,7 @@ mod tests {
             .any(|d| matches!(d, Diagnostic::Feel { warning, .. } if warning.kind == bpmnkit_feel::WarningKind::NotComparable)));
         let xml = table("UNIQUE", "").replace("x * 2", "x +");
         let defs = parse_dmn(&xml).unwrap();
-        let ev = evaluate_decision_table(&defs.decisions[0], &ctx(5));
+        let ev = evaluate_decision_table(&defs.decisions[0], &ctx(5)).unwrap();
         // TS runs the recovered tree (`x`); the syntax error is still reported.
         assert_eq!(ev.result, Value::from(5));
         assert!(

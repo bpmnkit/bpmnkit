@@ -302,6 +302,28 @@ mod tests {
     }
 
     #[test]
+    fn test_unique_with_several_matching_rules_fails_the_decision() {
+        let overlapping = INVOICE_CLASSIFICATION_DMN.replace("[250..1000]", "&gt; 50");
+        let drg = parse_dmn(&overlapping).expect("should parse");
+        let err = evaluate_decision(&drg, "invoice-classification", &json!({"amount": 100}))
+            .expect_err("fails");
+        assert!(matches!(err, DmnError::EvaluationError(_)));
+        assert!(
+            err.to_string().contains("Hit policy UNIQUE violated"),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn test_value_of_another_type_than_its_type_ref_fails_the_decision() {
+        let drg = parse_dmn(INVOICE_CLASSIFICATION_DMN).expect("should parse");
+        // The input is declared `double`, a legacy numeric type, so a string is rejected.
+        let err = evaluate_decision(&drg, "invoice-classification", &json!({"amount": "12"}))
+            .expect_err("fails");
+        assert!(err.to_string().contains("typeRef is 'double'"), "{err}");
+    }
+
+    #[test]
     fn test_collect_without_match_is_an_empty_list_as_in_zeebe() {
         let drg = parse_dmn(COLLECT_DMN).expect("should parse");
         let result = evaluate_decision(&drg, "product-features", &json!({})).expect("evaluates");

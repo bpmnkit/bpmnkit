@@ -1238,7 +1238,7 @@ mod tests {
         <outputEntry id="oe2r1"><text>90</text></outputEntry>
       </rule>
       <rule id="r2">
-        <inputEntry id="ie1r2"><text>&gt;= 1000</text></inputEntry>
+        <inputEntry id="ie1r2"><text>[1000..10000)</text></inputEntry>
         <outputEntry id="oe1r2"><text>"MEDIUM"</text></outputEntry>
         <outputEntry id="oe2r2"><text>50</text></outputEntry>
       </rule>

@@ -1,15 +1,5 @@
 [
   {
-    "result": {
-      "t": "null"
-    },
-    "evaluated": [
-      {
-        "decision": "d1",
-        "result": {
-          "t": "null"
-        }
-      }
-    ]
+    "error": "Decision 'd1': input 'a < b && c > \"d\"' is of type 'boolean' but its typeRef is 'string'"
   }
 ]

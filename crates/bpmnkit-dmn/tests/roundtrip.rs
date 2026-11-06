@@ -93,7 +93,10 @@ fn literal_expression_is_modelled_and_survives_own_extension_elements() {
     let b = &m.decisions[1];
     assert_eq!(b.extension_elements.as_ref().unwrap()[0].name, "variable");
     let out = serialize_dmn(&m);
-    assert!(out.contains(r#"<literalExpression id="le" typeRef="number">"#), "{out}");
+    assert!(
+        out.contains(r#"<literalExpression id="le" typeRef="number">"#),
+        "{out}"
+    );
     assert!(out.contains("<x/>"), "{out}");
 }
 

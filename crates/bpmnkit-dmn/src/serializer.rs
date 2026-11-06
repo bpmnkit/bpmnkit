@@ -167,7 +167,10 @@ fn serialize_literal_expression(literal: &DmnLiteralExpression) -> XmlElement {
     set_if(&mut a, "id", &literal.id);
     set_if(&mut a, "typeRef", &literal.type_ref);
     set_if(&mut a, "expressionLanguage", &literal.expression_language);
-    let children = truthy(&literal.text).map(text_element).into_iter().collect();
+    let children = truthy(&literal.text)
+        .map(text_element)
+        .into_iter()
+        .collect();
     el("literalExpression", a, children)
 }
 

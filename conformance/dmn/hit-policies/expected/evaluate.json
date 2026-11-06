@@ -189,50 +189,30 @@
   },
   {
     "result": {
-      "t": "list",
-      "v": [
-        {
-          "t": "string",
-          "v": "low"
-        }
-      ]
+      "t": "string",
+      "v": "low"
     },
     "evaluated": [
       {
         "decision": "d_priority",
         "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "string",
-              "v": "low"
-            }
-          ]
+          "t": "string",
+          "v": "low"
         }
       }
     ]
   },
   {
     "result": {
-      "t": "list",
-      "v": [
-        {
-          "t": "string",
-          "v": "low"
-        }
-      ]
+      "t": "string",
+      "v": "low"
     },
     "evaluated": [
       {
         "decision": "d_priority",
         "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "string",
-              "v": "low"
-            }
-          ]
+          "t": "string",
+          "v": "low"
         }
       }
     ]

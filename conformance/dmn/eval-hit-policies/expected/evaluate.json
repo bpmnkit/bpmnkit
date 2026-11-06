@@ -1,51 +1,9 @@
 [
   {
-    "result": {
-      "t": "string",
-      "v": "low"
-    },
-    "evaluated": [
-      {
-        "decision": "single_unique",
-        "result": {
-          "t": "string",
-          "v": "low"
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'single_unique': 2 rules match (single_unique_r0, single_unique_r3)"
   },
   {
-    "result": {
-      "t": "context",
-      "v": {
-        "label": {
-          "t": "string",
-          "v": "low"
-        },
-        "score": {
-          "t": "number",
-          "v": "1"
-        }
-      }
-    },
-    "evaluated": [
-      {
-        "decision": "multi_unique",
-        "result": {
-          "t": "context",
-          "v": {
-            "label": {
-              "t": "string",
-              "v": "low"
-            },
-            "score": {
-              "t": "number",
-              "v": "1"
-            }
-          }
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'multi_unique': 2 rules match (multi_unique_r0, multi_unique_r2)"
   },
   {
     "result": {
@@ -345,42 +303,37 @@
   },
   {
     "result": {
-      "t": "list",
-      "v": [
-        {
-          "t": "string",
-          "v": "low"
-        },
-        {
-          "t": "string",
-          "v": "any"
-        }
-      ]
+      "t": "string",
+      "v": "low"
     },
     "evaluated": [
       {
         "decision": "single_priority",
         "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "string",
-              "v": "low"
-            },
-            {
-              "t": "string",
-              "v": "any"
-            }
-          ]
+          "t": "string",
+          "v": "low"
         }
       }
     ]
   },
   {
     "result": {
-      "t": "list",
-      "v": [
-        {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "low"
+        },
+        "score": {
+          "t": "number",
+          "v": "1"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_priority",
+        "result": {
           "t": "context",
           "v": {
             "label": {
@@ -392,53 +345,6 @@
               "v": "1"
             }
           }
-        },
-        {
-          "t": "context",
-          "v": {
-            "label": {
-              "t": "string",
-              "v": "any"
-            },
-            "score": {
-              "t": "null"
-            }
-          }
-        }
-      ]
-    },
-    "evaluated": [
-      {
-        "decision": "multi_priority",
-        "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "context",
-              "v": {
-                "label": {
-                  "t": "string",
-                  "v": "low"
-                },
-                "score": {
-                  "t": "number",
-                  "v": "1"
-                }
-              }
-            },
-            {
-              "t": "context",
-              "v": {
-                "label": {
-                  "t": "string",
-                  "v": "any"
-                },
-                "score": {
-                  "t": "null"
-                }
-              }
-            }
-          ]
         }
       }
     ]
@@ -570,100 +476,16 @@
     ]
   },
   {
-    "result": {
-      "t": "string",
-      "v": "low"
-    },
-    "evaluated": [
-      {
-        "decision": "single_default",
-        "result": {
-          "t": "string",
-          "v": "low"
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'single_default': 2 rules match (single_default_r0, single_default_r3)"
   },
   {
-    "result": {
-      "t": "context",
-      "v": {
-        "label": {
-          "t": "string",
-          "v": "low"
-        },
-        "score": {
-          "t": "number",
-          "v": "1"
-        }
-      }
-    },
-    "evaluated": [
-      {
-        "decision": "multi_default",
-        "result": {
-          "t": "context",
-          "v": {
-            "label": {
-              "t": "string",
-              "v": "low"
-            },
-            "score": {
-              "t": "number",
-              "v": "1"
-            }
-          }
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'multi_default': 2 rules match (multi_default_r0, multi_default_r2)"
   },
   {
-    "result": {
-      "t": "string",
-      "v": "mid"
-    },
-    "evaluated": [
-      {
-        "decision": "single_unique",
-        "result": {
-          "t": "string",
-          "v": "mid"
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'single_unique': 2 rules match (single_unique_r1, single_unique_r3)"
   },
   {
-    "result": {
-      "t": "context",
-      "v": {
-        "label": {
-          "t": "string",
-          "v": "five+"
-        },
-        "score": {
-          "t": "number",
-          "v": "24"
-        }
-      }
-    },
-    "evaluated": [
-      {
-        "decision": "multi_unique",
-        "result": {
-          "t": "context",
-          "v": {
-            "label": {
-              "t": "string",
-              "v": "five+"
-            },
-            "score": {
-              "t": "number",
-              "v": "24"
-            }
-          }
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'multi_unique': 2 rules match (multi_unique_r1, multi_unique_r2)"
   },
   {
     "result": {
@@ -963,42 +785,37 @@
   },
   {
     "result": {
-      "t": "list",
-      "v": [
-        {
-          "t": "string",
-          "v": "mid"
-        },
-        {
-          "t": "string",
-          "v": "any"
-        }
-      ]
+      "t": "string",
+      "v": "mid"
     },
     "evaluated": [
       {
         "decision": "single_priority",
         "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "string",
-              "v": "mid"
-            },
-            {
-              "t": "string",
-              "v": "any"
-            }
-          ]
+          "t": "string",
+          "v": "mid"
         }
       }
     ]
   },
   {
     "result": {
-      "t": "list",
-      "v": [
-        {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "24"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_priority",
+        "result": {
           "t": "context",
           "v": {
             "label": {
@@ -1010,53 +827,6 @@
               "v": "24"
             }
           }
-        },
-        {
-          "t": "context",
-          "v": {
-            "label": {
-              "t": "string",
-              "v": "any"
-            },
-            "score": {
-              "t": "null"
-            }
-          }
-        }
-      ]
-    },
-    "evaluated": [
-      {
-        "decision": "multi_priority",
-        "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "context",
-              "v": {
-                "label": {
-                  "t": "string",
-                  "v": "five+"
-                },
-                "score": {
-                  "t": "number",
-                  "v": "24"
-                }
-              }
-            },
-            {
-              "t": "context",
-              "v": {
-                "label": {
-                  "t": "string",
-                  "v": "any"
-                },
-                "score": {
-                  "t": "null"
-                }
-              }
-            }
-          ]
         }
       }
     ]
@@ -1188,100 +958,16 @@
     ]
   },
   {
-    "result": {
-      "t": "string",
-      "v": "mid"
-    },
-    "evaluated": [
-      {
-        "decision": "single_default",
-        "result": {
-          "t": "string",
-          "v": "mid"
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'single_default': 2 rules match (single_default_r1, single_default_r3)"
   },
   {
-    "result": {
-      "t": "context",
-      "v": {
-        "label": {
-          "t": "string",
-          "v": "five+"
-        },
-        "score": {
-          "t": "number",
-          "v": "24"
-        }
-      }
-    },
-    "evaluated": [
-      {
-        "decision": "multi_default",
-        "result": {
-          "t": "context",
-          "v": {
-            "label": {
-              "t": "string",
-              "v": "five+"
-            },
-            "score": {
-              "t": "number",
-              "v": "24"
-            }
-          }
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'multi_default': 2 rules match (multi_default_r1, multi_default_r2)"
   },
   {
-    "result": {
-      "t": "string",
-      "v": "mid"
-    },
-    "evaluated": [
-      {
-        "decision": "single_unique",
-        "result": {
-          "t": "string",
-          "v": "mid"
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'single_unique': 3 rules match (single_unique_r1, single_unique_r2, single_unique_r3)"
   },
   {
-    "result": {
-      "t": "context",
-      "v": {
-        "label": {
-          "t": "string",
-          "v": "five+"
-        },
-        "score": {
-          "t": "number",
-          "v": "34"
-        }
-      }
-    },
-    "evaluated": [
-      {
-        "decision": "multi_unique",
-        "result": {
-          "t": "context",
-          "v": {
-            "label": {
-              "t": "string",
-              "v": "five+"
-            },
-            "score": {
-              "t": "number",
-              "v": "34"
-            }
-          }
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'multi_unique': 2 rules match (multi_unique_r1, multi_unique_r2)"
   },
   {
     "result": {
@@ -1597,50 +1283,37 @@
   },
   {
     "result": {
-      "t": "list",
-      "v": [
-        {
-          "t": "string",
-          "v": "mid"
-        },
-        {
-          "t": "string",
-          "v": "high"
-        },
-        {
-          "t": "string",
-          "v": "any"
-        }
-      ]
+      "t": "string",
+      "v": "mid"
     },
     "evaluated": [
       {
         "decision": "single_priority",
         "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "string",
-              "v": "mid"
-            },
-            {
-              "t": "string",
-              "v": "high"
-            },
-            {
-              "t": "string",
-              "v": "any"
-            }
-          ]
+          "t": "string",
+          "v": "mid"
         }
       }
     ]
   },
   {
     "result": {
-      "t": "list",
-      "v": [
-        {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "34"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_priority",
+        "result": {
           "t": "context",
           "v": {
             "label": {
@@ -1652,53 +1325,6 @@
               "v": "34"
             }
           }
-        },
-        {
-          "t": "context",
-          "v": {
-            "label": {
-              "t": "string",
-              "v": "any"
-            },
-            "score": {
-              "t": "null"
-            }
-          }
-        }
-      ]
-    },
-    "evaluated": [
-      {
-        "decision": "multi_priority",
-        "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "context",
-              "v": {
-                "label": {
-                  "t": "string",
-                  "v": "five+"
-                },
-                "score": {
-                  "t": "number",
-                  "v": "34"
-                }
-              }
-            },
-            {
-              "t": "context",
-              "v": {
-                "label": {
-                  "t": "string",
-                  "v": "any"
-                },
-                "score": {
-                  "t": "null"
-                }
-              }
-            }
-          ]
         }
       }
     ]
@@ -1838,100 +1464,16 @@
     ]
   },
   {
-    "result": {
-      "t": "string",
-      "v": "mid"
-    },
-    "evaluated": [
-      {
-        "decision": "single_default",
-        "result": {
-          "t": "string",
-          "v": "mid"
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'single_default': 3 rules match (single_default_r1, single_default_r2, single_default_r3)"
   },
   {
-    "result": {
-      "t": "context",
-      "v": {
-        "label": {
-          "t": "string",
-          "v": "five+"
-        },
-        "score": {
-          "t": "number",
-          "v": "34"
-        }
-      }
-    },
-    "evaluated": [
-      {
-        "decision": "multi_default",
-        "result": {
-          "t": "context",
-          "v": {
-            "label": {
-              "t": "string",
-              "v": "five+"
-            },
-            "score": {
-              "t": "number",
-              "v": "34"
-            }
-          }
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'multi_default': 2 rules match (multi_default_r1, multi_default_r2)"
   },
   {
-    "result": {
-      "t": "string",
-      "v": "high"
-    },
-    "evaluated": [
-      {
-        "decision": "single_unique",
-        "result": {
-          "t": "string",
-          "v": "high"
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'single_unique': 2 rules match (single_unique_r2, single_unique_r3)"
   },
   {
-    "result": {
-      "t": "context",
-      "v": {
-        "label": {
-          "t": "string",
-          "v": "five+"
-        },
-        "score": {
-          "t": "number",
-          "v": "60"
-        }
-      }
-    },
-    "evaluated": [
-      {
-        "decision": "multi_unique",
-        "result": {
-          "t": "context",
-          "v": {
-            "label": {
-              "t": "string",
-              "v": "five+"
-            },
-            "score": {
-              "t": "number",
-              "v": "60"
-            }
-          }
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'multi_unique': 2 rules match (multi_unique_r1, multi_unique_r2)"
   },
   {
     "result": {
@@ -2231,42 +1773,37 @@
   },
   {
     "result": {
-      "t": "list",
-      "v": [
-        {
-          "t": "string",
-          "v": "high"
-        },
-        {
-          "t": "string",
-          "v": "any"
-        }
-      ]
+      "t": "string",
+      "v": "high"
     },
     "evaluated": [
       {
         "decision": "single_priority",
         "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "string",
-              "v": "high"
-            },
-            {
-              "t": "string",
-              "v": "any"
-            }
-          ]
+          "t": "string",
+          "v": "high"
         }
       }
     ]
   },
   {
     "result": {
-      "t": "list",
-      "v": [
-        {
+      "t": "context",
+      "v": {
+        "label": {
+          "t": "string",
+          "v": "five+"
+        },
+        "score": {
+          "t": "number",
+          "v": "60"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "multi_priority",
+        "result": {
           "t": "context",
           "v": {
             "label": {
@@ -2278,53 +1815,6 @@
               "v": "60"
             }
           }
-        },
-        {
-          "t": "context",
-          "v": {
-            "label": {
-              "t": "string",
-              "v": "any"
-            },
-            "score": {
-              "t": "null"
-            }
-          }
-        }
-      ]
-    },
-    "evaluated": [
-      {
-        "decision": "multi_priority",
-        "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "context",
-              "v": {
-                "label": {
-                  "t": "string",
-                  "v": "five+"
-                },
-                "score": {
-                  "t": "number",
-                  "v": "60"
-                }
-              }
-            },
-            {
-              "t": "context",
-              "v": {
-                "label": {
-                  "t": "string",
-                  "v": "any"
-                },
-                "score": {
-                  "t": "null"
-                }
-              }
-            }
-          ]
         }
       }
     ]
@@ -2456,52 +1946,10 @@
     ]
   },
   {
-    "result": {
-      "t": "string",
-      "v": "high"
-    },
-    "evaluated": [
-      {
-        "decision": "single_default",
-        "result": {
-          "t": "string",
-          "v": "high"
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'single_default': 2 rules match (single_default_r2, single_default_r3)"
   },
   {
-    "result": {
-      "t": "context",
-      "v": {
-        "label": {
-          "t": "string",
-          "v": "five+"
-        },
-        "score": {
-          "t": "number",
-          "v": "60"
-        }
-      }
-    },
-    "evaluated": [
-      {
-        "decision": "multi_default",
-        "result": {
-          "t": "context",
-          "v": {
-            "label": {
-              "t": "string",
-              "v": "five+"
-            },
-            "score": {
-              "t": "number",
-              "v": "60"
-            }
-          }
-        }
-      }
-    ]
+    "error": "Hit policy UNIQUE violated in decision 'multi_default': 2 rules match (multi_default_r1, multi_default_r2)"
   },
   {
     "result": {
@@ -2844,215 +2292,13 @@
     ]
   },
   {
-    "result": {
-      "t": "list",
-      "v": [
-        {
-          "t": "string",
-          "v": "str-list"
-        },
-        {
-          "t": "string",
-          "v": "outside"
-        },
-        {
-          "t": "string",
-          "v": "flag"
-        },
-        {
-          "t": "string",
-          "v": "new-year"
-        },
-        {
-          "t": "string",
-          "v": "has-x"
-        },
-        {
-          "t": "string",
-          "v": "many"
-        },
-        {
-          "t": "string",
-          "v": "bad-entry-matches"
-        }
-      ]
-    },
-    "evaluated": [
-      {
-        "decision": "entries",
-        "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "string",
-              "v": "str-list"
-            },
-            {
-              "t": "string",
-              "v": "outside"
-            },
-            {
-              "t": "string",
-              "v": "flag"
-            },
-            {
-              "t": "string",
-              "v": "new-year"
-            },
-            {
-              "t": "string",
-              "v": "has-x"
-            },
-            {
-              "t": "string",
-              "v": "many"
-            },
-            {
-              "t": "string",
-              "v": "bad-entry-matches"
-            }
-          ]
-        }
-      }
-    ]
+    "error": "Decision 'entries': input 's' is of type 'string' but its typeRef is 'number'"
   },
   {
-    "result": {
-      "t": "list",
-      "v": [
-        {
-          "t": "string",
-          "v": "str-list"
-        },
-        {
-          "t": "string",
-          "v": "not-a"
-        },
-        {
-          "t": "string",
-          "v": "outside"
-        },
-        {
-          "t": "string",
-          "v": "over-limit"
-        },
-        {
-          "t": "string",
-          "v": "h2"
-        },
-        {
-          "t": "string",
-          "v": "bad-entry-matches"
-        }
-      ]
-    },
-    "evaluated": [
-      {
-        "decision": "entries",
-        "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "string",
-              "v": "str-list"
-            },
-            {
-              "t": "string",
-              "v": "not-a"
-            },
-            {
-              "t": "string",
-              "v": "outside"
-            },
-            {
-              "t": "string",
-              "v": "over-limit"
-            },
-            {
-              "t": "string",
-              "v": "h2"
-            },
-            {
-              "t": "string",
-              "v": "bad-entry-matches"
-            }
-          ]
-        }
-      }
-    ]
+    "error": "Decision 'entries': input 's' is of type 'string' but its typeRef is 'number'"
   },
   {
-    "result": {
-      "t": "list",
-      "v": [
-        {
-          "t": "string",
-          "v": "not-a"
-        },
-        {
-          "t": "string",
-          "v": "flag"
-        },
-        {
-          "t": "string",
-          "v": "small"
-        },
-        {
-          "t": "string",
-          "v": "half-open"
-        },
-        {
-          "t": "string",
-          "v": "bad-entry-matches"
-        },
-        {
-          "t": "number",
-          "v": "3"
-        },
-        {
-          "t": "string",
-          "v": "z!3"
-        }
-      ]
-    },
-    "evaluated": [
-      {
-        "decision": "entries",
-        "result": {
-          "t": "list",
-          "v": [
-            {
-              "t": "string",
-              "v": "not-a"
-            },
-            {
-              "t": "string",
-              "v": "flag"
-            },
-            {
-              "t": "string",
-              "v": "small"
-            },
-            {
-              "t": "string",
-              "v": "half-open"
-            },
-            {
-              "t": "string",
-              "v": "bad-entry-matches"
-            },
-            {
-              "t": "number",
-              "v": "3"
-            },
-            {
-              "t": "string",
-              "v": "z!3"
-            }
-          ]
-        }
-      }
-    ]
+    "error": "Decision 'entries': input 's' is of type 'string' but its typeRef is 'number'"
   },
   {
     "result": {
@@ -3169,49 +2415,13 @@
     ]
   },
   {
-    "result": {
-      "t": "string",
-      "v": "big bob"
-    },
-    "evaluated": [
-      {
-        "decision": "computed_input",
-        "result": {
-          "t": "string",
-          "v": "big bob"
-        }
-      }
-    ]
+    "error": "Decision 'computed_input': input 'upper case(name)' is of type 'string' but its typeRef is 'number'"
   },
   {
-    "result": {
-      "t": "string",
-      "v": "big"
-    },
-    "evaluated": [
-      {
-        "decision": "computed_input",
-        "result": {
-          "t": "string",
-          "v": "big"
-        }
-      }
-    ]
+    "error": "Decision 'computed_input': input 'upper case(name)' is of type 'string' but its typeRef is 'number'"
   },
   {
-    "result": {
-      "t": "number",
-      "v": "6"
-    },
-    "evaluated": [
-      {
-        "decision": "computed_input",
-        "result": {
-          "t": "number",
-          "v": "6"
-        }
-      }
-    ]
+    "error": "Decision 'computed_input': input 'upper case(name)' is of type 'string' but its typeRef is 'number'"
   },
   {
     "result": {

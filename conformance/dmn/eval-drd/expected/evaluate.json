@@ -161,19 +161,7 @@
     ]
   },
   {
-    "result": {
-      "t": "string",
-      "v": "basic"
-    },
-    "evaluated": [
-      {
-        "decision": "tier",
-        "result": {
-          "t": "string",
-          "v": "basic"
-        }
-      }
-    ]
+    "error": "Decision 'tier': input 'spend' is of type 'string' but its typeRef is 'number'"
   },
   {
     "error": "Decision 'loop_a' requires itself"

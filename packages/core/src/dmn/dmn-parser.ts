@@ -212,7 +212,8 @@ function parseDecision(el: XmlElement): DmnDecision {
 	// An empty <extensionElements/> carries nothing, and an empty list would not
 	// survive an export (the serializer omits it), so it counts as absent.
 	const extensionFound = findChild(el, "extensionElements")
-	const extensionEls = extensionFound && extensionFound.children.length > 0 ? extensionFound : undefined
+	const extensionEls =
+		extensionFound && extensionFound.children.length > 0 ? extensionFound : undefined
 
 	const knownLocalNames = new Set([
 		"decisionTable",
