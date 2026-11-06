@@ -1,0 +1,43 @@
+[
+  {
+    "result": {
+      "t": "string",
+      "v": "Hello Ada"
+    },
+    "evaluated": [
+      {
+        "decision": "greet",
+        "result": {
+          "t": "string",
+          "v": "Hello Ada"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "greet",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "greet",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  }
+]

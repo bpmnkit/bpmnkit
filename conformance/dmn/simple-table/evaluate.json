@@ -1,0 +1,20 @@
+[
+  {
+    "decision": "Dec_1",
+    "context": {
+      "myVar": {
+        "t": "string",
+        "v": "hello"
+      }
+    }
+  },
+  {
+    "decision": "Dec_1",
+    "context": {
+      "myVar": {
+        "t": "string",
+        "v": "bye"
+      }
+    }
+  }
+]

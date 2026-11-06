@@ -1,0 +1,56 @@
+[
+  {
+    "result": {
+      "t": "number",
+      "v": "5"
+    },
+    "evaluated": [
+      {
+        "decision": "literal",
+        "result": {
+          "t": "number",
+          "v": "5"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "with_extension",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "empty_extension",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "plain",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  }
+]

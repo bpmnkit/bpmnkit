@@ -1,0 +1,47 @@
+[
+  {
+    "result": {
+      "t": "string",
+      "v": "low"
+    },
+    "evaluated": [
+      {
+        "decision": "risk_score",
+        "result": {
+          "t": "string",
+          "v": "low"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "high"
+    },
+    "evaluated": [
+      {
+        "decision": "risk_score",
+        "result": {
+          "t": "string",
+          "v": "high"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "high"
+    },
+    "evaluated": [
+      {
+        "decision": "risk_score",
+        "result": {
+          "t": "string",
+          "v": "high"
+        }
+      }
+    ]
+  }
+]

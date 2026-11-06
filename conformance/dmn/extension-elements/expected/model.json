@@ -1,0 +1,164 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "t1",
+        "inputs": [
+          {
+            "id": "i1",
+            "inputExpression": {
+              "id": "ie1",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o1",
+            "name": "y"
+          }
+        ],
+        "rules": []
+      },
+      "extensionElements": [
+        {
+          "attributes": {
+            "level": "2",
+            "team": "risk"
+          },
+          "children": [],
+          "name": "custom:owner",
+          "text": "Alice & Bob"
+        },
+        {
+          "attributes": {},
+          "children": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "custom:tag",
+              "text": "a"
+            },
+            {
+              "attributes": {},
+              "children": [],
+              "name": "custom:tag",
+              "text": "b"
+            }
+          ],
+          "name": "custom:tags",
+          "text": "\n        \n        \n      "
+        }
+      ],
+      "id": "with_extension",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Own extensionElements"
+    },
+    {
+      "authorityRequirements": [],
+      "extensionElements": [
+        {
+          "attributes": {},
+          "children": [],
+          "name": "description",
+          "text": "Adds one"
+        },
+        {
+          "attributes": {},
+          "children": [],
+          "name": "question",
+          "text": "What is x + 1?"
+        },
+        {
+          "attributes": {
+            "id": "var1",
+            "name": "plusOne",
+            "typeRef": "number"
+          },
+          "children": [],
+          "name": "variable"
+        },
+        {
+          "attributes": {
+            "id": "le1",
+            "typeRef": "number"
+          },
+          "children": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "text",
+              "text": "x + 1"
+            }
+          ],
+          "name": "literalExpression",
+          "text": "\n      \n    "
+        }
+      ],
+      "id": "literal",
+      "informationRequirements": [
+        {
+          "id": "ir1",
+          "requiredInput": "x"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "Literal expression"
+    },
+    {
+      "authorityRequirements": [],
+      "extensionElements": [],
+      "id": "empty_extension",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Empty extensionElements"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "t2",
+        "inputs": [
+          {
+            "id": "i2",
+            "inputExpression": {
+              "id": "ie2",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o2",
+            "name": "y"
+          }
+        ],
+        "rules": []
+      },
+      "id": "plain",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Nothing unknown"
+    }
+  ],
+  "id": "Definitions_ext",
+  "inputData": [
+    {
+      "id": "x",
+      "name": "x"
+    }
+  ],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Extensions",
+  "namespace": "urn:ext",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "camunda": "http://camunda.org/schema/1.0/dmn",
+    "custom": "urn:custom"
+  },
+  "textAnnotations": []
+}

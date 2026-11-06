@@ -1,0 +1,101 @@
+[
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "riskLevel": {
+          "t": "string",
+          "v": "LOW"
+        },
+        "scoreValue": {
+          "t": "number",
+          "v": "10"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "riskScore",
+        "result": {
+          "t": "context",
+          "v": {
+            "riskLevel": {
+              "t": "string",
+              "v": "LOW"
+            },
+            "scoreValue": {
+              "t": "number",
+              "v": "10"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "riskLevel": {
+          "t": "string",
+          "v": "MEDIUM"
+        },
+        "scoreValue": {
+          "t": "number",
+          "v": "50"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "riskScore",
+        "result": {
+          "t": "context",
+          "v": {
+            "riskLevel": {
+              "t": "string",
+              "v": "MEDIUM"
+            },
+            "scoreValue": {
+              "t": "number",
+              "v": "50"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "riskLevel": {
+          "t": "string",
+          "v": "HIGH"
+        },
+        "scoreValue": {
+          "t": "number",
+          "v": "90"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "riskScore",
+        "result": {
+          "t": "context",
+          "v": {
+            "riskLevel": {
+              "t": "string",
+              "v": "HIGH"
+            },
+            "scoreValue": {
+              "t": "number",
+              "v": "90"
+            }
+          }
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "decision": "Decision_credit",
+    "context": {
+      "score": {
+        "t": "number",
+        "v": "450"
+      },
+      "country": {
+        "t": "string",
+        "v": "DE"
+      }
+    }
+  },
+  {
+    "decision": "Decision_credit",
+    "context": {
+      "score": {
+        "t": "number",
+        "v": "700"
+      },
+      "country": {
+        "t": "string",
+        "v": "US"
+      }
+    }
+  }
+]

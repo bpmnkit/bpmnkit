@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="drd" name="Discount DRD" namespace="http://bpmnkit.com/conformance">
+  <decision id="tier" name="Customer Tier">
+    <informationRequirement id="ir_tier">
+      <requiredInput href="#customer"/>
+    </informationRequirement>
+    <decisionTable id="tier_table" hitPolicy="FIRST">
+      <input id="tier_in" label="Spend">
+        <inputExpression id="tier_in_expr" typeRef="number">
+          <text>spend</text>
+        </inputExpression>
+      </input>
+      <output id="tier_out" name="tier" typeRef="string"/>
+      <rule id="tier_r1">
+        <inputEntry id="tier_r1_i">
+          <text>&gt;= 1000</text>
+        </inputEntry>
+        <outputEntry id="tier_r1_o">
+          <text>"gold"</text>
+        </outputEntry>
+      </rule>
+      <rule id="tier_r2">
+        <inputEntry id="tier_r2_i">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="tier_r2_o">
+          <text>"basic"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="rate" name="Rate">
+    <extensionElements>
+      <literalExpression id="rate_expr">
+      
+    
+        <text>if Customer Tier = "gold" then 0.15 else 0.05</text>
+      </literalExpression>
+    </extensionElements>
+    <informationRequirement id="ir_rate">
+      <requiredDecision href="#tier"/>
+    </informationRequirement>
+  </decision>
+  <decision id="discount" name="Discount">
+    <extensionElements>
+      <literalExpression id="discount_expr">
+      
+    
+        <text>{ amount: spend * Rate, tier: Customer Tier }</text>
+      </literalExpression>
+    </extensionElements>
+    <informationRequirement id="ir_d1">
+      <requiredDecision href="#rate"/>
+    </informationRequirement>
+    <informationRequirement id="ir_d2">
+      <requiredDecision href="#tier"/>
+    </informationRequirement>
+  </decision>
+  <decision id="loop_a" name="A">
+    <extensionElements>
+      <literalExpression id="la_expr">
+        <text>B</text>
+      </literalExpression>
+    </extensionElements>
+    <informationRequirement id="ir_la">
+      <requiredDecision href="#loop_b"/>
+    </informationRequirement>
+  </decision>
+  <decision id="loop_b" name="B">
+    <extensionElements>
+      <literalExpression id="lb_expr">
+        <text>A</text>
+      </literalExpression>
+    </extensionElements>
+    <informationRequirement id="ir_lb">
+      <requiredDecision href="#loop_a"/>
+    </informationRequirement>
+  </decision>
+  <decision id="missing_req" name="Missing">
+    <extensionElements>
+      <literalExpression id="m_expr">
+        <text>1</text>
+      </literalExpression>
+    </extensionElements>
+    <informationRequirement id="ir_m">
+      <requiredDecision href="#nowhere"/>
+    </informationRequirement>
+  </decision>
+  <decision id="no_body" name="Empty"/>
+  <inputData id="customer" name="customer"/>
+</definitions>
+

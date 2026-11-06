@@ -1,0 +1,53 @@
+[
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "intermediate",
+        "result": {
+          "t": "null"
+        }
+      },
+      {
+        "decision": "final",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "intermediate",
+        "result": {
+          "t": "null"
+        }
+      },
+      {
+        "decision": "final",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "intermediate",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  }
+]

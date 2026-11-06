@@ -1,0 +1,24 @@
+[
+  {
+    "decision": "multiValidation",
+    "context": {}
+  },
+  {
+    "decision": "ageValidation",
+    "context": {
+      "age": {
+        "t": "number",
+        "v": "-1"
+      }
+    }
+  },
+  {
+    "decision": "ageValidation",
+    "context": {
+      "age": {
+        "t": "number",
+        "v": "5"
+      }
+    }
+  }
+]

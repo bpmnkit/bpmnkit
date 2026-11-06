@@ -1,0 +1,20 @@
+[
+  {
+    "decision": "risk",
+    "context": {
+      "amount": {
+        "t": "number",
+        "v": "50"
+      }
+    }
+  },
+  {
+    "decision": "risk",
+    "context": {
+      "amount": {
+        "t": "number",
+        "v": "500"
+      }
+    }
+  }
+]

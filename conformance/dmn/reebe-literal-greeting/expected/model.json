@@ -1,0 +1,37 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "extensionElements": [
+        {
+          "attributes": {},
+          "children": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "text",
+              "text": "\"Hello \" + name"
+            }
+          ],
+          "name": "literalExpression"
+        }
+      ],
+      "id": "greet",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Greet"
+    }
+  ],
+  "id": "d",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "d",
+  "namespace": "t",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

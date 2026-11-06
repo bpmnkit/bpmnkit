@@ -1,0 +1,38 @@
+[
+  {
+    "decision": "tierDecision",
+    "context": {
+      "score": {
+        "t": "number",
+        "v": "100"
+      }
+    }
+  },
+  {
+    "decision": "tierDecision",
+    "context": {
+      "score": {
+        "t": "number",
+        "v": "450"
+      }
+    }
+  },
+  {
+    "decision": "tierDecision",
+    "context": {
+      "score": {
+        "t": "number",
+        "v": "650"
+      }
+    }
+  },
+  {
+    "decision": "tierDecision",
+    "context": {
+      "score": {
+        "t": "number",
+        "v": "900"
+      }
+    }
+  }
+]

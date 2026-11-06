@@ -1,0 +1,40 @@
+[
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "Amount must be positive"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "validate-order",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "Amount must be positive"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "validate-order",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  }
+]

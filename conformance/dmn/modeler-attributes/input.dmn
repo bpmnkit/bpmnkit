@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" name="Camunda 8 table" id="Definitions_c8" exporter="Camunda Modeler" exporterVersion="5.22.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0" camunda:other="not modeler" foo="bar">
+  <decision id="d1" name="Decision 1" camunda:historyTimeToLive="P7D">
+    <decisionTable id="t1" hitPolicy="UNIQUE">
+      <input id="i1" label="Customer" camunda:inputVariable="c">
+        <inputExpression id="ie1" typeRef="string"><text>customer</text></inputExpression>
+      </input>
+      <output id="o1" label="Discount" name="discount" typeRef="number"/>
+      <rule id="r1">
+        <inputEntry id="e1"><text>"gold"</text></inputEntry>
+        <outputEntry id="p1"><text>0.2</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

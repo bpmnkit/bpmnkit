@@ -1,0 +1,24 @@
+[
+  {
+    "decision": "greet",
+    "context": {
+      "name": {
+        "t": "string",
+        "v": "Ada"
+      }
+    }
+  },
+  {
+    "decision": "greet",
+    "context": {
+      "name": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "greet",
+    "context": {}
+  }
+]

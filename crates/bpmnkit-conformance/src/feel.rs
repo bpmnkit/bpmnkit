@@ -20,7 +20,7 @@ pub fn evaluate(expr: &str, context: &BTreeMap<String, Value>) -> Value {
     }
 }
 
-fn to_feel(v: &Value) -> Option<feel::Value> {
+pub fn to_feel(v: &Value) -> Option<feel::Value> {
     Some(match v {
         Value::Null => feel::Value::Null,
         Value::Boolean(b) => feel::Value::Boolean(*b),

@@ -1,0 +1,175 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "RULE ORDER",
+        "id": "dt",
+        "inputs": [
+          {
+            "id": "in_weight",
+            "inputExpression": {
+              "id": "ie_weight",
+              "text": "order.weight",
+              "typeRef": "number"
+            },
+            "label": "Weight (kg)"
+          },
+          {
+            "id": "in_country",
+            "inputExpression": {
+              "id": "ie_country",
+              "text": "order.country",
+              "typeRef": "string"
+            },
+            "label": "Country"
+          },
+          {
+            "id": "in_express",
+            "inputExpression": {
+              "id": "ie_express",
+              "text": "express",
+              "typeRef": "boolean"
+            },
+            "label": "Express"
+          },
+          {
+            "id": "in_date",
+            "inputExpression": {
+              "id": "ie_date",
+              "text": "date(shipDate)",
+              "typeRef": "date"
+            },
+            "label": "Ship date"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "out_carrier",
+            "label": "Carrier",
+            "name": "carrier",
+            "typeRef": "string"
+          },
+          {
+            "id": "out_price",
+            "label": "Price",
+            "name": "price",
+            "typeRef": "number"
+          }
+        ],
+        "rules": [
+          {
+            "description": "Light parcels inside the EU",
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "r1_1",
+                "text": "[0..5]"
+              },
+              {
+                "id": "r1_2",
+                "text": "\"DE\",\"AT\",\"FR\""
+              },
+              {
+                "id": "r1_3",
+                "text": "false"
+              },
+              {
+                "id": "r1_4",
+                "text": ""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "r1_o1",
+                "text": "\"Post\""
+              },
+              {
+                "id": "r1_o2",
+                "text": "4.9"
+              }
+            ]
+          },
+          {
+            "id": "r2",
+            "inputEntries": [
+              {
+                "id": "r2_1",
+                "text": "> 5"
+              },
+              {
+                "id": "r2_2",
+                "text": "not(\"US\")"
+              },
+              {
+                "id": "r2_3",
+                "text": "-"
+              },
+              {
+                "id": "r2_4",
+                "text": "< date(\"2030-01-01\")"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "r2_o1",
+                "text": "\"Freight\""
+              },
+              {
+                "id": "r2_o2",
+                "text": "weight * 1.5"
+              }
+            ]
+          },
+          {
+            "id": "r3",
+            "inputEntries": [
+              {
+                "id": "r3_1",
+                "text": "-"
+              },
+              {
+                "id": "r3_2",
+                "text": "-"
+              },
+              {
+                "id": "r3_3",
+                "text": "true"
+              },
+              {
+                "id": "r3_4",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "r3_o1",
+                "text": "\"Express\""
+              },
+              {
+                "id": "r3_o2",
+                "text": "19.9"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "shipping",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Shipping"
+    }
+  ],
+  "id": "Definitions_multi",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Multiple inputs and outputs",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

@@ -1,0 +1,218 @@
+[
+  {
+    "decision": "d_unique",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "d_unique",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "d_first",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "d_first",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "d_any",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "d_any",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "d_rule_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "d_rule_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "d_output_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "d_output_order",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "d_priority",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "d_priority",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "d_collect",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "d_collect",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "d_sum",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "d_sum",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "d_min",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "d_min",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "d_max",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "d_max",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "d_count",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "d_count",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  },
+  {
+    "decision": "d_default",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "d_default",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "12"
+      }
+    }
+  }
+]

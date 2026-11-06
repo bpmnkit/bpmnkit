@@ -1,0 +1,141 @@
+{
+  "associations": [
+    {
+      "id": "as1",
+      "sourceRef": "",
+      "targetRef": ""
+    },
+    {
+      "id": "as2",
+      "sourceRef": "",
+      "targetRef": ""
+    }
+  ],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [
+        {
+          "id": "ar_empty"
+        },
+        {
+          "id": "ar_hash",
+          "requiredDecision": ""
+        },
+        {
+          "id": "ar_both",
+          "requiredAuthority": "ks",
+          "requiredInput": "in"
+        }
+      ],
+      "decisionTable": {
+        "aggregation": "",
+        "id": "t1",
+        "inputs": [
+          {
+            "id": "i1",
+            "inputExpression": {
+              "id": "ie1"
+            },
+            "label": ""
+          },
+          {
+            "id": "i2",
+            "inputExpression": {
+              "id": "ie2"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o1",
+            "label": "",
+            "name": ""
+          }
+        ],
+        "rules": [
+          {
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "e1",
+                "text": ""
+              },
+              {
+                "id": "e2",
+                "text": ""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p1",
+                "text": ""
+              }
+            ]
+          },
+          {
+            "id": "r2",
+            "inputEntries": [],
+            "outputEntries": []
+          }
+        ]
+      },
+      "id": "d1",
+      "informationRequirements": [
+        {
+          "id": "ir_empty"
+        },
+        {
+          "id": "ir_hash",
+          "requiredDecision": ""
+        },
+        {
+          "id": "ir_blank_href"
+        },
+        {
+          "id": "ir_plain_href",
+          "requiredInput": "no-hash"
+        },
+        {
+          "id": "ir_both",
+          "requiredDecision": "d2",
+          "requiredInput": "in"
+        }
+      ],
+      "knowledgeRequirements": [
+        {
+          "id": "kr_empty",
+          "requiredKnowledge": ""
+        }
+      ],
+      "name": ""
+    },
+    {
+      "authorityRequirements": [],
+      "id": "d2",
+      "informationRequirements": [],
+      "knowledgeRequirements": []
+    }
+  ],
+  "diagram": {
+    "edges": [],
+    "shapes": []
+  },
+  "id": "Definitions_quirks",
+  "inputData": [
+    {
+      "id": "in",
+      "name": ""
+    }
+  ],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Quirks",
+  "namespace": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+  "namespaces": {},
+  "textAnnotations": [
+    {
+      "id": "ta"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+[package]
+name = "bpmnkit-dmn"
+description = "DMN 1.3 model, parser, lossless serializer and evaluator for BPMN Kit (Rust twin of @bpmnkit/core's DMN I/O and @bpmnkit/engine's DMN evaluation)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+bpmnkit-feel = { path = "../bpmnkit-feel", default-features = false }
+bpmnkit-xml = { path = "../bpmnkit-xml" }
+indexmap = { workspace = true }
+serde = { workspace = true }
+
+[features]
+# Forwarded to bpmnkit-feel, so a size-bound build (reebe-wasm) can turn them off.
+default = ["tz", "full-regex"]
+tz = ["bpmnkit-feel/tz"]
+full-regex = ["bpmnkit-feel/full-regex"]
+
+[dev-dependencies]
+bpmnkit-spec = { path = "../bpmnkit-spec" }
+serde_json = { workspace = true, features = ["float_roundtrip"] }
+
+[[bench]]
+name = "io"
+harness = false

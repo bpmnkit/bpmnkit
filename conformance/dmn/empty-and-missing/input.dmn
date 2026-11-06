@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definitions_quirks" name="Quirks">
+  <decision id="d1" name="">
+    <informationRequirement id="ir_empty"/>
+    <informationRequirement id="ir_hash">
+      <requiredDecision href="#"/>
+    </informationRequirement>
+    <informationRequirement id="ir_blank_href">
+      <requiredInput href=""/>
+    </informationRequirement>
+    <informationRequirement id="ir_plain_href">
+      <requiredInput href="no-hash"/>
+    </informationRequirement>
+    <informationRequirement id="ir_both">
+      <requiredInput href="#in"/>
+      <requiredDecision href="#d2"/>
+    </informationRequirement>
+    <knowledgeRequirement id="kr_empty"/>
+    <authorityRequirement id="ar_empty"/>
+    <authorityRequirement id="ar_hash">
+      <requiredDecision href="#"/>
+    </authorityRequirement>
+    <authorityRequirement id="ar_both">
+      <requiredInput href="#in"/>
+      <requiredAuthority href="#ks"/>
+    </authorityRequirement>
+    <decisionTable id="t1" hitPolicy="" aggregation="">
+      <input id="i1" label=""><inputExpression id="ie1" typeRef=""><text></text></inputExpression></input>
+      <input id="i2"><inputExpression id="ie2"/></input>
+      <output id="o1" label="" name="" typeRef=""/>
+      <rule id="r1">
+        <description></description>
+        <inputEntry id="e1"/>
+        <inputEntry id="e2"><text/></inputEntry>
+        <outputEntry id="p1"><text></text></outputEntry>
+      </rule>
+      <rule id="r2"/>
+    </decisionTable>
+  </decision>
+  <decision id="d2"/>
+  <inputData id="in" name=""/>
+  <textAnnotation id="ta"><text></text></textAnnotation>
+  <association id="as1"/>
+  <association id="as2" sourceRef="#" targetRef=""/>
+  <dmndi:DMNDI xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"/>
+</definitions>

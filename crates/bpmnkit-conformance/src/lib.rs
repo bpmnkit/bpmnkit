@@ -3,11 +3,16 @@
 //! to the same expectations.
 
 mod bpmn;
+mod dmn;
 mod feel;
 mod form;
 mod value;
 
 pub use bpmn::{check_case as check_bpmn_case, run_case as run_bpmn_case};
+pub use dmn::{
+    check_case as check_dmn_case, check_eval_case as check_dmn_eval_case, eval_case_ids,
+    run_case as run_dmn_case, run_eval_case as run_dmn_eval_case,
+};
 pub use feel::evaluate as evaluate_feel;
 pub use form::{check_case as check_form_case, run_case as run_form_case};
 pub use value::{decimal_eq, Value};
@@ -57,32 +62,33 @@ pub fn load_feel_cases(dir: &Path) -> Result<Vec<FeelCase>, String> {
     Ok(cases)
 }
 
-/// Ids of BPMN cases (`bpmn/<case>`), one per directory.
-pub fn load_bpmn_case_ids(dir: &Path) -> Vec<String> {
-    let Ok(rd) = std::fs::read_dir(dir.join("bpmn")) else {
+/// Ids of the cases of one kind (`<kind>/<case>`), one per directory.
+fn load_case_ids(dir: &Path, kind: &str) -> Vec<String> {
+    let Ok(rd) = std::fs::read_dir(dir.join(kind)) else {
         return vec![];
     };
     let mut ids: Vec<_> = rd
         .filter_map(|e| e.ok())
         .filter(|e| e.path().is_dir())
-        .map(|e| format!("bpmn/{}", e.file_name().to_string_lossy()))
+        .map(|e| format!("{kind}/{}", e.file_name().to_string_lossy()))
         .collect();
     ids.sort();
     ids
 }
 
-/// Ids of form cases (`form/<case>`), one per directory.
+/// Ids of BPMN cases (`bpmn/<case>`).
+pub fn load_bpmn_case_ids(dir: &Path) -> Vec<String> {
+    load_case_ids(dir, "bpmn")
+}
+
+/// Ids of form cases (`form/<case>`).
 pub fn load_form_case_ids(dir: &Path) -> Vec<String> {
-    let Ok(rd) = std::fs::read_dir(dir.join("form")) else {
-        return vec![];
-    };
-    let mut ids: Vec<_> = rd
-        .filter_map(|e| e.ok())
-        .filter(|e| e.path().is_dir())
-        .map(|e| format!("form/{}", e.file_name().to_string_lossy()))
-        .collect();
-    ids.sort();
-    ids
+    load_case_ids(dir, "form")
+}
+
+/// Ids of DMN cases (`dmn/<case>`).
+pub fn load_dmn_case_ids(dir: &Path) -> Vec<String> {
+    load_case_ids(dir, "dmn")
 }
 
 pub type Pending = BTreeMap<String, String>;
@@ -146,6 +152,16 @@ pub fn run_all(dir: &Path) -> Result<Vec<(String, bool)>, String> {
             .into_iter()
             .map(|id| (id.clone(), run_form_case(dir, &id))),
     );
+    out.extend(
+        load_dmn_case_ids(dir)
+            .into_iter()
+            .map(|id| (id.clone(), run_dmn_case(dir, &id))),
+    );
+    out.extend(
+        eval_case_ids(dir)
+            .into_iter()
+            .map(|id| (id.clone(), run_dmn_eval_case(dir, &id))),
+    );
     Ok(out)
 }
 
@@ -178,6 +194,7 @@ mod tests {
         assert!(load_feel_cases(d).unwrap().is_empty());
         assert!(load_bpmn_case_ids(d).is_empty());
         assert!(load_form_case_ids(d).is_empty());
+        assert!(load_dmn_case_ids(d).is_empty());
         assert!(load_pending(d).unwrap().is_empty());
     }
 }
