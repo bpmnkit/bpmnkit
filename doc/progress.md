@@ -3,6 +3,7 @@
 ## 2026-11-06 — Camunda 8.10 is the default target
 
 - Builders stamp `executionPlatformVersion` `8.10.0`: BPMN (was 8.9.0), form (8.7.0), DMN/DRD (8.5.0), Camunda 7 migration (8.8.0). Overrides still work (`.executionPlatformVersion(...)`, `executionPlatformVersion` option). Lint/compat profiles read the model's version, so they follow; no CLI default existed.
+- `@bpmnkit/patterns` AI templates reference the key as `=camunda.secrets.ANTHROPIC_API_KEY`: at 8.10 `compat/secrets` reports `{{secrets.X}}` as legacy, which failed the template lint test in CI.
 - Agent cards (`apps/cli/agent-cards`, synced) drop the "8.10 is not the default" trap and keep a one-line override. Not changed: form `schemaVersion` (16), as no 8.10 form-js schema mapping is documented.
 
 ## 2026-11-06 — Agent onboarding: cards ship in `@bpmnkit/core`

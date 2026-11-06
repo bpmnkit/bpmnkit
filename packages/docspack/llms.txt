@@ -273,7 +273,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Process Templates — What is in the gallery](.llms/chunks/guides.templates.what-is-in-the-gallery.md) — 261 tokens
 - [Process Templates — Use a template](.llms/chunks/guides.templates.use-a-template.md) — 213 tokens
 - [Process Templates — Run the scenarios](.llms/chunks/guides.templates.run-the-scenarios.md) — 619 tokens
-- [Process Templates — AI templates: model and secrets](.llms/chunks/guides.templates.ai-templates-model-and-secrets.md) — 143 tokens
+- [Process Templates — AI templates: model and secrets](.llms/chunks/guides.templates.ai-templates-model-and-secrets.md) — 160 tokens
 - [Process Templates — From code](.llms/chunks/guides.templates.from-code.md) — 137 tokens
 - [Process Templates — Add a template](.llms/chunks/guides.templates.add-a-template.md) — 103 tokens
 - [Testing AI Agents](.llms/chunks/guides.testing-ai-agents.md) — 145 tokens

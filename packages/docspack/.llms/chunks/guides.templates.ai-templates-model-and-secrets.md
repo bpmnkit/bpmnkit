@@ -1,6 +1,7 @@
 # Process Templates — AI templates: model and secrets
 
-Every AI step sends its API key as `{{secrets.ANTHROPIC_API_KEY}}`. Add that connector secret
+Every AI step sends its API key as `=camunda.secrets.ANTHROPIC_API_KEY` (the Camunda 8.10 form;
+`{{secrets.ANTHROPIC_API_KEY}}` still works but is legacy there). Add that connector secret
 to your cluster before you deploy. The model is set in one place in the package
 (`TEMPLATE_MODEL`). In a template you copied, change the `provider.anthropic.model.model`
 input.

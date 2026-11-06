@@ -6,8 +6,8 @@ export const AI_AGENT_TASK_TYPE = "io.camunda.agenticai:aiagent:1"
 /** Model used by every AI step in the templates. Change it in one place in your copy. */
 export const TEMPLATE_MODEL = "claude-sonnet-4-5"
 
-/** API key reference — resolved from the cluster's connector secrets, never stored in the model. */
-export const TEMPLATE_API_KEY = "{{secrets.ANTHROPIC_API_KEY}}"
+/** API key reference — resolved from the cluster's connector secrets, never stored in the model. 8.10 form; `{{secrets.X}}` is legacy there. */
+export const TEMPLATE_API_KEY = "=camunda.secrets.ANTHROPIC_API_KEY"
 
 interface AiTaskOptions {
 	name: string
