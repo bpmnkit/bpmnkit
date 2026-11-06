@@ -1,5 +1,8 @@
 # Features
 
+## `bpmnkit-feel`: FEEL in Rust (2026-11-06)
+
+A Rust FEEL lexer, parser and evaluator with every built-in, held to `@bpmnkit/feel` by the shared conformance cases (373 of 374 pass) and passing 95.0% of the DMN TCK. Exact decimals, ordered contexts, zoned date-times, durations. Reebe evaluates FEEL with it.
 ## Agent cards (2026-11-05)
 
 `casen agent-card bpmn|dmn|form` prints a ~1–1.5k-token cheat sheet for an AI agent: a runnable create/export/edit/validate script, the top builder options and the known traps. The same cards are docs pages under "Agent Cards", ranked first by `@bpmnkit/docspack` (whose `llms.txt` opens with them), and Claude plugin skills (`/bpmnkit:bpmn-script`, `:dmn`, `:form`). Every script is typechecked and run in CI.

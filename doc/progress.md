@@ -1,5 +1,17 @@
 # Progress
 
+## 2026-11-06 — Rust twin phase 3: bpmnkit-feel
+
+- New crate `crates/bpmnkit-feel` (MIT OR Apache-2.0, `publish = false` until phase 9): FEEL lexer, parser, evaluator and all 101 built-ins, ported from `@bpmnkit/feel`. API: `parse`, `parse_unary_tests`, `Expression::evaluate`, `UnaryTests::test`, `evaluate(src, &Context) -> Result<Value, FeelError>`; evaluation never fails (errors are null), only parsing does. No features; builds for `wasm32-unknown-unknown`. Built-in arity and named-argument order come from `bpmnkit-spec`.
+- Numbers are exact `rust_decimal` decimals (28 significant digits; Copy, fast, wasm-safe, has `sqrt`/`exp`/`ln`/`powd`). `bigdecimal` was the alternative: unbounded but heap-allocated and without `ln`. Values above ~7.9e28 overflow to null where TS (float64) keeps a float.
+- Contexts keep insertion order (`get entries`, `string()`, `to json`), which fixes `contexts/7`. Dates, times with offsets or IANA zones (`chrono-tz`), both duration kinds, `**`, and date / date-time ± duration follow TS.
+- Conformance: the runner now uses bpmnkit-feel (reebe adapter removed). Numbers match when equal or equal at 15 significant digits (float64's precision; `conformance/README.md`). 76 new cases (374 FEEL in all): 50 from the TS tests (`ported.jsonl`) plus zone, duration, decimal and context-order cases. FEEL pending went from 145 to 1: `arithmetic/25`, where TS yields NaN and decimals have none.
+- TS recorder fix: a `__proto__` context key is recorded as an entry (it set the prototype, so `ported/33` recorded `{}`).
+- DMN TCK (2,053 FEEL cases, `crates/bpmnkit-conformance/tests/tck.rs`, run with `--ignored` after extracting): Rust 1,950 (95.0%), TS 1,941 (94.5%). Only Rust-specific failure: a regex backreference (`regex` crate has none).
+- Reebe: `reebe-feel` is now a thin adapter over bpmnkit-feel (its evaluator and built-ins are deleted; lexer/parser stay only for `fromAi` extraction). `FeelValue` gains `YearsMonthsDuration`, and `Context` is an `IndexMap`. Old unit tests moved to `reebe-feel/tests/feel_unit_tests.rs`. Three expectations changed: `date("not-a-date")` is null, not an error; division by zero and `"a" + 1` are null, so the incident and decision-failure tests now use syntax errors. All 480 reebe tests pass.
+- Speed (362 context-free conformance expressions, release): bpmnkit-feel 1.39 µs parse+eval (0.31 µs pre-parsed) vs reebe-feel 2.61 µs, about 1.9× faster. `cargo bench -p bpmnkit-feel`.
+- Open: reebe-wasm release (`wasm-pack` default, no size profile) grows from 798 KB to 1,390 KB gzip; `chrono-tz` is ~240 KB of that. Regex backreferences/lookaround return null. Runtime errors no longer raise reebe incidents (check against Zeebe).
+
 ## 2026-11-06 — Rust twin phase 2: spec data
 
 - `spec/` is now the single source for shared data. `pnpm spec:gen` (`scripts/spec-gen.mjs`, no new dependencies) checks each file against its JSON Schema in `spec/schema/`. It then writes committed TS into `src/generated/` folders and Rust into the new crate `crates/bpmnkit-spec` (MIT OR Apache-2.0, no `build.rs`). CI regenerates and fails on `git diff` in `spec/`, `crates/bpmnkit-spec` and `packages/`. The Rust job now runs `cargo fmt --check`, clippy with `-D warnings` and `cargo test --workspace`.
