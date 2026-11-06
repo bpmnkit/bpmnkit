@@ -72,7 +72,18 @@ name = "bpmnkit-conformance"
 version = "0.1.0"
 dependencies = [
  "bpmnkit-bpmn",
+ "bpmnkit-dmn",
  "bpmnkit-feel",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "bpmnkit-dmn"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-xml",
+ "indexmap",
  "serde",
  "serde_json",
 ]

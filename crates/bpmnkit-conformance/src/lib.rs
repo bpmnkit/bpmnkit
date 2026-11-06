@@ -3,10 +3,12 @@
 //! to the same expectations.
 
 mod bpmn;
+mod dmn;
 mod feel;
 mod value;
 
 pub use bpmn::{check_case as check_bpmn_case, run_case as run_bpmn_case};
+pub use dmn::{check_case as check_dmn_case, run_case as run_dmn_case};
 pub use feel::evaluate as evaluate_feel;
 pub use value::{decimal_eq, Value};
 
@@ -69,6 +71,20 @@ pub fn load_bpmn_case_ids(dir: &Path) -> Vec<String> {
     ids
 }
 
+/// Ids of DMN cases (`dmn/<case>`), one per directory.
+pub fn load_dmn_case_ids(dir: &Path) -> Vec<String> {
+    let Ok(rd) = std::fs::read_dir(dir.join("dmn")) else {
+        return vec![];
+    };
+    let mut ids: Vec<_> = rd
+        .filter_map(|e| e.ok())
+        .filter(|e| e.path().is_dir())
+        .map(|e| format!("dmn/{}", e.file_name().to_string_lossy()))
+        .collect();
+    ids.sort();
+    ids
+}
+
 pub type Pending = BTreeMap<String, String>;
 
 pub fn load_pending(dir: &Path) -> Result<Pending, String> {
@@ -125,6 +141,11 @@ pub fn run_all(dir: &Path) -> Result<Vec<(String, bool)>, String> {
             .into_iter()
             .map(|id| (id.clone(), run_bpmn_case(dir, &id))),
     );
+    out.extend(
+        load_dmn_case_ids(dir)
+            .into_iter()
+            .map(|id| (id.clone(), run_dmn_case(dir, &id))),
+    );
     Ok(out)
 }
 
@@ -156,6 +177,7 @@ mod tests {
         let d = Path::new("/nonexistent-conformance");
         assert!(load_feel_cases(d).unwrap().is_empty());
         assert!(load_bpmn_case_ids(d).is_empty());
+        assert!(load_dmn_case_ids(d).is_empty());
         assert!(load_pending(d).unwrap().is_empty());
     }
 }

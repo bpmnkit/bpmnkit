@@ -7,7 +7,7 @@ use std::path::Path;
 
 /// Compares numbers by value (TS writes `100`, serde writes `100.0`) and objects without regard
 /// to key order. On a difference, returns the JSON path of the first one found.
-fn json_diff(path: &str, a: &Json, b: &Json) -> Option<String> {
+pub(crate) fn json_diff(path: &str, a: &Json, b: &Json) -> Option<String> {
     match (a, b) {
         (Json::Number(x), Json::Number(y)) => {
             (x.as_f64() != y.as_f64()).then(|| format!("{path}: {x} != {y}"))
@@ -40,7 +40,7 @@ fn json_diff(path: &str, a: &Json, b: &Json) -> Option<String> {
     }
 }
 
-fn first_diff_line(actual: &str, expected: &str) -> String {
+pub(crate) fn first_diff_line(actual: &str, expected: &str) -> String {
     let n = actual
         .lines()
         .zip(expected.lines())
