@@ -14,7 +14,6 @@ import { Form, exportFormPreserving } from "@bpmnkit/core"
 
 // 1. Create. "review-order" is the form id a userTask or startEvent references as formId.
 const form = Form.create("review-order")
-	.executionPlatformVersion("8.10.0")
 	.text("## Review order")
 	.textfield("Customer", "customer", { validate: { required: true } })
 	.select("Decision", "decision", {

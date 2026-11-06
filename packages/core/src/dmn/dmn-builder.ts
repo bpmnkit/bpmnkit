@@ -192,7 +192,7 @@ export class DecisionTableBuilder {
 			},
 			modelerAttributes: {
 				executionPlatform: "Camunda Cloud",
-				executionPlatformVersion: "8.5.0",
+				executionPlatformVersion: "8.10.0",
 			},
 			decisions: [decision],
 			inputData: [],

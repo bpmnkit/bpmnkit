@@ -53,7 +53,7 @@ export interface Camunda7Report {
 }
 
 export interface Camunda7ConvertOptions {
-	/** Written as `modeler:executionPlatformVersion`. Default `"8.8.0"`. */
+	/** Written as `modeler:executionPlatformVersion`. Default `"8.10.0"`. */
 	executionPlatformVersion?: string
 	/**
 	 * Ignored. Kept for compatibility: earlier versions read `camunda:` attributes
@@ -71,7 +71,7 @@ export interface Camunda7Conversion {
 export const CAMUNDA7_NS = "http://camunda.org/schema/1.0/bpmn"
 export const ZEEBE_NS = "http://camunda.org/schema/zeebe/1.0"
 export const MODELER_NS = "http://camunda.org/schema/modeler/1.0"
-const DEFAULT_PLATFORM_VERSION = "8.8.0"
+const DEFAULT_PLATFORM_VERSION = "8.10.0"
 
 /** Something that can carry Camunda 7 attributes and extension elements. */
 interface Owner {

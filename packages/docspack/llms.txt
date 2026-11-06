@@ -6,9 +6,9 @@
 
 Writing a BPMN process, DMN decision or form? Read its agent card first: a runnable script, the top options and the traps (`casen agent-card bpmn|dmn|form` prints the same card).
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 4 chunks, 1264 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 4 chunks, 1253 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 5 chunks, 1331 tokens
-- [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 879 tokens
+- [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 876 tokens
 
 Version 1.2.2. 428 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
@@ -19,17 +19,17 @@ npx bpmnkit-docs ask "how do I deploy a process"
 
 ## agent-cards
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 464 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 461 tokens
 - [BPMN agent card — Top builder options](.llms/chunks/agent-cards.bpmn.top-builder-options.md) — 299 tokens
-- [BPMN agent card — Traps](.llms/chunks/agent-cards.bpmn.traps.md) — 318 tokens
+- [BPMN agent card — Traps](.llms/chunks/agent-cards.bpmn.traps.md) — 310 tokens
 - [BPMN agent card — Lint before you deploy or test](.llms/chunks/agent-cards.bpmn.lint-before-you-deploy-or-test.md) — 183 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 433 tokens
 - [DMN agent card — Several decisions in one file: `Dmn.drd()`](.llms/chunks/agent-cards.dmn.several-decisions-in-one-file-dmn.drd.md) — 299 tokens
 - [DMN agent card — Top builder options](.llms/chunks/agent-cards.dmn.top-builder-options.md) — 188 tokens
 - [DMN agent card — Traps](.llms/chunks/agent-cards.dmn.traps.md) — 295 tokens
 - [DMN agent card — Validate](.llms/chunks/agent-cards.dmn.validate.md) — 116 tokens
-- [Form agent card](.llms/chunks/agent-cards.form.md) — 400 tokens
-- [Form agent card — Top builder options](.llms/chunks/agent-cards.form.top-builder-options.md) — 145 tokens
+- [Form agent card](.llms/chunks/agent-cards.form.md) — 396 tokens
+- [Form agent card — Top builder options](.llms/chunks/agent-cards.form.top-builder-options.md) — 146 tokens
 - [Form agent card — Traps](.llms/chunks/agent-cards.form.traps.md) — 227 tokens
 - [Form agent card — Validate](.llms/chunks/agent-cards.form.validate.md) — 107 tokens
 

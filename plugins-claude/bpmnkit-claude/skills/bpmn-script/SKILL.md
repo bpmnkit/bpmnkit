@@ -24,7 +24,6 @@ import { Bpmn, exportPreserving, lintDiagram } from "@bpmnkit/core"
 // 1. Create. The process id is the deploy key: same id = new version of that process.
 const definitions = Bpmn.createProcess("order")
 	.name("Order")
-	.executionPlatformVersion("8.10.0")
 	.withAutoLayout()
 	.startEvent("received", { name: "Order received" })
 	.businessRuleTask("score", { name: "Score risk", decisionId: "risk", resultVariable: "risk" })
@@ -75,7 +74,7 @@ if (report.counts.error > 0) process.exit(1)
 
 ## Traps
 
-- **Camunda 8.10 is not the default.** The builder stamps `executionPlatformVersion` `8.9.0`; call `.executionPlatformVersion("8.10.0")` to target 8.10, so lint checks the right version.
+- **Camunda 8.10 is the default target.** To target an older cluster, call `.executionPlatformVersion("8.8.0")` so lint checks that version.
 - **User tasks default to job-worker tasks**, which 8.10 deprecates. Pass `zeebeUserTask: true` for a Camunda user task.
 - **Deploy ids.** The engine keys a process by its process id (`createProcess("order")`), a decision by its `<decision id>`, a form by its JSON `id`. File names and display names do not count. `formId` and `decisionId` must equal those ids exactly; by default they bind to the latest deployed version, so deploy the `.dmn` and `.form` before an instance reaches the task. Redeploying the same id makes a new version.
 - **Reference a DMN decision by its decision id**, not the DMN `definitions` id, the file name or the decision name.

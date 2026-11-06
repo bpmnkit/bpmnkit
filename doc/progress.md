@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-06 — Camunda 8.10 is the default target
+
+- Builders stamp `executionPlatformVersion` `8.10.0`: BPMN (was 8.9.0), form (8.7.0), DMN/DRD (8.5.0), Camunda 7 migration (8.8.0). Overrides still work (`.executionPlatformVersion(...)`, `executionPlatformVersion` option). Lint/compat profiles read the model's version, so they follow; no CLI default existed.
+- Agent cards (`apps/cli/agent-cards`, synced) drop the "8.10 is not the default" trap and keep a one-line override. Not changed: form `schemaVersion` (16), as no 8.10 form-js schema mapping is documented.
+
 ## 2026-11-06 — Agent onboarding: cards ship in `@bpmnkit/core`
 
 - Eval agents with only `@bpmnkit/core` read the 20 KB README and the `.d.ts` every session (32–49% of cost). The package now ships `AGENTS.md` (19 lines), `llms.txt` and `agent-cards/{bpmn,dmn,form}.md`; `scripts/sync-agent-cards.mjs` writes them from `apps/cli/agent-cards`, and the existing `--check` test fails on drift.
