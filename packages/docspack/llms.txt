@@ -51,7 +51,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [casen CLI — MCP Server Mode](.llms/chunks/cli.casen.mcp-server-mode.md) — 204 tokens
 - [casen check](.llms/chunks/cli.check.md) — 224 tokens
 - [casen check — Options](.llms/chunks/cli.check.options.md) — 241 tokens
-- [casen check — Profiles](.llms/chunks/cli.check.profiles.md) — 280 tokens
+- [casen check — Profiles](.llms/chunks/cli.check.profiles.md) — 301 tokens
 - [casen check — What is checked](.llms/chunks/cli.check.what-is-checked.md) — 891 tokens
 - [casen check — What is checked (2)](.llms/chunks/cli.check.what-is-checked-2.md) — 36 tokens
 - [casen connector](.llms/chunks/cli.connector.md) — 245 tokens

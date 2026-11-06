@@ -473,7 +473,7 @@
 		{
 			"id": "cli.check.profiles",
 			"file": "chunks/cli.check.profiles.md",
-			"tokens": 280,
+			"tokens": 301,
 			"tags": [
 				"cli",
 				"check",

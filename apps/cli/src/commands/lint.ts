@@ -7,6 +7,7 @@ import {
 import { discoverElementTemplates } from "@bpmnkit/connectors/node"
 import {
 	Bpmn,
+	USER_TASK_FORM_RULE,
 	applyBpmnlintConfig,
 	applyCamundaCompatConfig,
 	compactify,
@@ -224,7 +225,17 @@ export async function lintBpmn(
 		...(applied?.findings ?? report.findings),
 		...(setup?.reports.map(reportRow) ?? []),
 	]
-	const findings = deployProfile ? governed.filter((f) => f.severity === "error") : governed
+	// The rule is a warning by nature (Zeebe deploys a form-less user task), so the
+	// errors-only deploy gate would never show it; asking for the gate asks for it.
+	const findings = deployProfile
+		? governed
+				.map((f) =>
+					f.id === USER_TASK_FORM_RULE && userTaskForms === "require"
+						? { ...f, severity: "error" as const }
+						: f,
+				)
+				.filter((f) => f.severity === "error")
+		: governed
 
 	const notices: string[] = []
 	if (setup !== undefined) {

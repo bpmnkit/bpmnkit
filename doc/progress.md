@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-06 — `casen check --deploy`: user task without a form is an error
+
+- `compat/user-task-definition` is promoted to an error in the deploy profile (it was a warning, so the errors-only gate hid it). `--user-task-forms off` still disables it; elsewhere it stays off or a warning. Merged `claude/eval-layout-aesthetics` into the integration branch.
+
 ## 2026-11-05 — Integration of the Camunda eval branches (fix-ids-conditional, agent-cards, casen-check, dmn-drd)
 
 - Merged the four branches with history. Agent cards now name `casen check` and show a tested `Dmn.drd()` script (`scripts/dmn-drd.ts`).

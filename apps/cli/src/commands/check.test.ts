@@ -82,6 +82,20 @@ describe("checkFiles", () => {
 		expect(required.map((r) => r.rule)).toContain("compat/user-task-definition")
 	})
 
+	it("reports a user task without a form as an error under --deploy only", async () => {
+		const deploy = await checkFiles([path("no-form.bpmn")], { ...opts, deploy: true })
+		const row = deploy.find((r) => r.rule === "compat/user-task-definition")
+		expect(row?.severity).toBe("error")
+		const off = await checkFiles([path("no-form.bpmn")], {
+			...opts,
+			deploy: true,
+			userTaskForms: "off",
+		})
+		expect(off.map((r) => r.rule)).not.toContain("compat/user-task-definition")
+		const warn = await checkFiles([path("no-form.bpmn")], { ...opts, userTaskForms: "require" })
+		expect(warn.find((r) => r.rule === "compat/user-task-definition")?.severity).toBe("warning")
+	})
+
 	it("resolves a user task's formId against the checked forms", async () => {
 		const ok = await checkFiles([path("linked.bpmn"), path("review.form")], opts)
 		expect(ok.map((r) => r.rule)).not.toContain("check/unresolved-form")
