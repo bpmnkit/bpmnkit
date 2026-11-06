@@ -188,9 +188,11 @@ impl From<serde_json::Value> for FeelValue {
             serde_json::Value::Array(arr) => {
                 FeelValue::List(arr.into_iter().map(FeelValue::from).collect())
             }
-            serde_json::Value::Object(obj) => {
-                FeelValue::Context(obj.into_iter().map(|(k, v)| (k, FeelValue::from(v))).collect())
-            }
+            serde_json::Value::Object(obj) => FeelValue::Context(
+                obj.into_iter()
+                    .map(|(k, v)| (k, FeelValue::from(v)))
+                    .collect(),
+            ),
         }
     }
 }
@@ -201,11 +203,9 @@ impl From<FeelValue> for serde_json::Value {
             FeelValue::Null => serde_json::Value::Null,
             FeelValue::Bool(b) => serde_json::Value::Bool(b),
             FeelValue::Integer(i) => serde_json::Value::Number(i.into()),
-            FeelValue::Float(f) => {
-                serde_json::Number::from_f64(f)
-                    .map(serde_json::Value::Number)
-                    .unwrap_or(serde_json::Value::Null)
-            }
+            FeelValue::Float(f) => serde_json::Number::from_f64(f)
+                .map(serde_json::Value::Number)
+                .unwrap_or(serde_json::Value::Null),
             FeelValue::String(s) => serde_json::Value::String(s),
             FeelValue::List(items) => {
                 serde_json::Value::Array(items.into_iter().map(serde_json::Value::from).collect())
@@ -219,7 +219,9 @@ impl From<FeelValue> for serde_json::Value {
             FeelValue::Time(t) => serde_json::Value::String(t.to_string()),
             FeelValue::DateTime(dt) => serde_json::Value::String(dt.to_rfc3339()),
             FeelValue::Duration(ms) => serde_json::Value::Number(ms.into()),
-            FeelValue::YearsMonthsDuration(months) => serde_json::Value::String(iso_years_months(months)),
+            FeelValue::YearsMonthsDuration(months) => {
+                serde_json::Value::String(iso_years_months(months))
+            }
             FeelValue::Range { .. } => serde_json::Value::Null,
         }
     }
@@ -237,10 +239,7 @@ pub enum FeelError {
     EvaluationError(String),
 
     #[error("Type error: expected {expected}, got {actual}")]
-    TypeError {
-        expected: String,
-        actual: String,
-    },
+    TypeError { expected: String, actual: String },
 
     #[error("Undefined variable: {0}")]
     UndefinedVariable(String),

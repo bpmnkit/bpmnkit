@@ -6,10 +6,10 @@
 //!
 //! Authenticated user is injected into request extensions as [`AuthenticatedUser`].
 
-mod error;
-mod oidc;
 pub mod basic;
+mod error;
 mod middleware;
+mod oidc;
 
 pub use error::AuthError;
 pub use middleware::{auth_middleware, AuthState};

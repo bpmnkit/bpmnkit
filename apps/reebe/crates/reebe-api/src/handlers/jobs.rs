@@ -1,17 +1,16 @@
-use std::time::Duration;
+use crate::app::ApiState;
+use crate::dto::jobs::{
+    ActivateJobsRequest, ActivateJobsResponse, ActivatedJob, CompleteJobRequest, FailJobRequest,
+    JobDto, SearchJobsRequest, ThrowErrorRequest,
+};
+use crate::error::{ApiError, ApiResult};
+use crate::pagination::PageResponse;
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
 use reebe_db::state::jobs::JobRepository;
-use crate::app::ApiState;
-use crate::dto::jobs::{
-    ActivateJobsRequest, ActivateJobsResponse, ActivatedJob,
-    CompleteJobRequest, FailJobRequest, ThrowErrorRequest,
-    SearchJobsRequest, JobDto,
-};
-use crate::error::{ApiError, ApiResult};
-use crate::pagination::PageResponse;
+use std::time::Duration;
 
 pub async fn activate_jobs(
     State(state): State<ApiState>,
@@ -65,16 +64,19 @@ pub async fn get_job(
     State(state): State<ApiState>,
     Path(key): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
-    let key_i64: i64 = key.parse().map_err(|_| {
-        ApiError::InvalidRequest(format!("Invalid key: {key}"))
-    })?;
+    let key_i64: i64 = key
+        .parse()
+        .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let pool = state.replica_pool.as_ref().unwrap_or(&state.pool);
     let repo = JobRepository::new(pool);
-    let job = repo.get_by_key(key_i64).await.map_err(|_| ApiError::NotFound {
-        resource: "job".to_string(),
-        key: key.clone(),
-    })?;
+    let job = repo
+        .get_by_key(key_i64)
+        .await
+        .map_err(|_| ApiError::NotFound {
+            resource: "job".to_string(),
+            key: key.clone(),
+        })?;
 
     Ok(Json(JobDto::from(job)))
 }

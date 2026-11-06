@@ -1,10 +1,10 @@
+use crate::app::ApiState;
+use crate::error::{ApiError, ApiResult};
 use axum::extract::{Path, State};
 use axum::response::IntoResponse;
 use axum::Json;
-use serde_json::json;
 use reebe_db::state::batch_operations::BatchOperationRepository;
-use crate::app::ApiState;
-use crate::error::{ApiError, ApiResult};
+use serde_json::json;
 
 pub async fn search_batch_operations(
     State(state): State<ApiState>,
@@ -20,7 +20,10 @@ pub async fn search_batch_operations(
         .and_then(|p| p.get("searchAfter"))
         .and_then(|v| v.as_array())
         .and_then(|arr| arr.first())
-        .and_then(|v| v.as_i64().or_else(|| v.as_str().and_then(|s| s.parse().ok())));
+        .and_then(|v| {
+            v.as_i64()
+                .or_else(|| v.as_str().and_then(|s| s.parse().ok()))
+        });
 
     let repo = BatchOperationRepository::new(&state.pool);
     let ops = repo
@@ -61,10 +64,13 @@ pub async fn get_batch_operation(
         .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let repo = BatchOperationRepository::new(&state.pool);
-    let op = repo.get_by_key(key_i64).await.map_err(|_| ApiError::NotFound {
-        resource: "batch operation".to_string(),
-        key: key.clone(),
-    })?;
+    let op = repo
+        .get_by_key(key_i64)
+        .await
+        .map_err(|_| ApiError::NotFound {
+            resource: "batch operation".to_string(),
+            key: key.clone(),
+        })?;
 
     Ok(Json(json!({
         "batchOperationKey": op.key.to_string(),

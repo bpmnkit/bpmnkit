@@ -15,16 +15,16 @@
 //! Zeebe has no `loopCardinality`; `inputCollection = for i in 1..n return i`
 //! does the same.
 
-use std::sync::Arc;
-use reebe_bpmn::{BpmnProcess, MultiInstanceLoopCharacteristics};
-use reebe_db::state::element_instances::ElementInstance;
-use crate::engine::EngineState;
-use crate::error::EngineResult;
-use crate::key_gen::KeyGenerator;
 use super::catch_event::arm_boundary_events;
 use super::scope;
 use super::throw_event::terminate_subtree;
 use super::{CommandToWrite, EventToWrite, Writers};
+use crate::engine::EngineState;
+use crate::error::EngineResult;
+use crate::key_gen::KeyGenerator;
+use reebe_bpmn::{BpmnProcess, MultiInstanceLoopCharacteristics};
+use reebe_db::state::element_instances::ElementInstance;
+use std::sync::Arc;
 
 pub(crate) const BODY: &str = "MULTI_INSTANCE_BODY";
 
@@ -70,9 +70,14 @@ pub(crate) async fn activate_body(
                 incident_key: None,
                 tenant_id: at.tenant_id.to_string(),
             };
-            let body = ElementInstance { scope_key: Some(body.key), ..body };
+            let body = ElementInstance {
+                scope_key: Some(body.key),
+                ..body
+            };
             state.backend.insert_element_instance(&body).await?;
-            writers.events.push(element_event(&body, "ELEMENT_ACTIVATING"));
+            writers
+                .events
+                .push(element_event(&body, "ELEMENT_ACTIVATING"));
             body
         }
     };
@@ -109,15 +114,39 @@ pub(crate) async fn activate_body(
         }
     };
 
-    state.backend.update_element_instance_state(body.key, "ACTIVATED").await?;
-    writers.events.push(element_event(&body, "ELEMENT_ACTIVATED"));
-    let body = ElementInstance { state: "ACTIVATED".to_string(), ..body };
+    state
+        .backend
+        .update_element_instance_state(body.key, "ACTIVATED")
+        .await?;
+    writers
+        .events
+        .push(element_event(&body, "ELEMENT_ACTIVATED"));
+    let body = ElementInstance {
+        state: "ACTIVATED".to_string(),
+        ..body
+    };
 
     let n = items.len();
-    scope::set_local(state, at.process_instance_key, body.key, ITEMS, serde_json::Value::Array(items), at.tenant_id).await?;
+    scope::set_local(
+        state,
+        at.process_instance_key,
+        body.key,
+        ITEMS,
+        serde_json::Value::Array(items),
+        at.tenant_id,
+    )
+    .await?;
     if let Some(name) = &mi.output_collection {
         let empty = serde_json::Value::Array(vec![serde_json::Value::Null; n]);
-        scope::set_local(state, at.process_instance_key, body.key, name, empty, at.tenant_id).await?;
+        scope::set_local(
+            state,
+            at.process_instance_key,
+            body.key,
+            name,
+            empty,
+            at.tenant_id,
+        )
+        .await?;
     }
     arm_boundary_events(state, writers, process, &body).await?;
 
@@ -178,14 +207,27 @@ pub(crate) async fn init_inner(
 ) -> EngineResult<()> {
     let pi = inner.process_instance_key;
     let tenant = inner.tenant_id.as_str();
-    scope::set_local(state, pi, inner.key, "loopCounter", serde_json::json!(loop_counter), tenant).await?;
+    scope::set_local(
+        state,
+        pi,
+        inner.key,
+        "loopCounter",
+        serde_json::json!(loop_counter),
+        tenant,
+    )
+    .await?;
     if let Some(name) = &mi.input_element {
-        let item = state.backend
+        let item = state
+            .backend
             .get_variables_by_scope(body_key)
             .await?
             .into_iter()
             .find(|v| v.name == ITEMS)
-            .and_then(|v| v.value.as_array().and_then(|a| a.get((loop_counter - 1) as usize).cloned()))
+            .and_then(|v| {
+                v.value
+                    .as_array()
+                    .and_then(|a| a.get((loop_counter - 1) as usize).cloned())
+            })
             .unwrap_or(serde_json::Value::Null);
         scope::set_local(state, pi, inner.key, name, item, tenant).await?;
     }
@@ -241,26 +283,51 @@ pub(crate) async fn inner_completing(
             outputs.resize(index + 1, serde_json::Value::Null);
         }
         outputs[index] = value;
-        scope::set_local(state, pi, body.key, collection, serde_json::Value::Array(outputs), &body.tenant_id).await?;
+        scope::set_local(
+            state,
+            pi,
+            body.key,
+            collection,
+            serde_json::Value::Array(outputs),
+            &body.tenant_id,
+        )
+        .await?;
     }
 
-    let Some(expr) = mi.completion_condition.as_deref().filter(|e| !e.trim().is_empty()) else {
+    let Some(expr) = mi
+        .completion_condition
+        .as_deref()
+        .filter(|e| !e.trim().is_empty())
+    else {
         return Ok(Ok(false));
     };
     let items = item_count(state, body).await?;
     let siblings = siblings(state, body).await?;
-    let completed = siblings.iter().filter(|e| e.state == "COMPLETED" || e.key == inner.key).count();
+    let completed = siblings
+        .iter()
+        .filter(|e| e.state == "COMPLETED" || e.key == inner.key)
+        .count();
     let terminated = siblings.iter().filter(|e| e.state == "TERMINATED").count();
     let active = siblings
         .iter()
         .filter(|e| e.key != inner.key && !matches!(e.state.as_str(), "COMPLETED" | "TERMINATED"))
         .count();
     let mut vars = scope::visible_variables(state, pi, inner.key).await;
-    let created = if mi.is_sequential { loop_counter } else { items };
+    let created = if mi.is_sequential {
+        loop_counter
+    } else {
+        items
+    };
     vars.insert("numberOfInstances".into(), serde_json::json!(created));
     vars.insert("numberOfActiveInstances".into(), serde_json::json!(active));
-    vars.insert("numberOfCompletedInstances".into(), serde_json::json!(completed));
-    vars.insert("numberOfTerminatedInstances".into(), serde_json::json!(terminated));
+    vars.insert(
+        "numberOfCompletedInstances".into(),
+        serde_json::json!(completed),
+    );
+    vars.insert(
+        "numberOfTerminatedInstances".into(),
+        serde_json::json!(terminated),
+    );
     let ctx = reebe_feel::FeelContext::from_json(serde_json::Value::Object(vars));
     Ok(super::bpmn_element::eval_boolean(expr, &ctx))
 }
@@ -297,7 +364,8 @@ pub(crate) async fn inner_completed(
 }
 
 async fn loop_counter(state: &EngineState, inner: &ElementInstance) -> i64 {
-    state.backend
+    state
+        .backend
         .get_variables_by_scope(inner.key)
         .await
         .unwrap_or_default()
@@ -308,7 +376,8 @@ async fn loop_counter(state: &EngineState, inner: &ElementInstance) -> i64 {
 }
 
 async fn item_count(state: &EngineState, body: &ElementInstance) -> EngineResult<i64> {
-    Ok(state.backend
+    Ok(state
+        .backend
         .get_variables_by_scope(body.key)
         .await?
         .into_iter()
@@ -318,8 +387,12 @@ async fn item_count(state: &EngineState, body: &ElementInstance) -> EngineResult
 }
 
 /// The inner instances of the body.
-async fn siblings(state: &EngineState, body: &ElementInstance) -> EngineResult<Vec<ElementInstance>> {
-    Ok(state.backend
+async fn siblings(
+    state: &EngineState,
+    body: &ElementInstance,
+) -> EngineResult<Vec<ElementInstance>> {
+    Ok(state
+        .backend
         .get_element_instances_by_process_instance(body.process_instance_key)
         .await?
         .into_iter()
@@ -333,8 +406,11 @@ pub(crate) async fn body_completed(
     mi: &MultiInstanceLoopCharacteristics,
     body: &ElementInstance,
 ) -> EngineResult<()> {
-    let Some(collection) = &mi.output_collection else { return Ok(()) };
-    let Some(value) = state.backend
+    let Some(collection) = &mi.output_collection else {
+        return Ok(());
+    };
+    let Some(value) = state
+        .backend
         .get_variables_by_scope(body.key)
         .await?
         .into_iter()
@@ -346,7 +422,14 @@ pub(crate) async fn body_completed(
     let mut vars = serde_json::Map::new();
     vars.insert(collection.clone(), value);
     let parent = body.flow_scope_key.unwrap_or(body.process_instance_key);
-    scope::propagate(state, body.process_instance_key, parent, &vars, &body.tenant_id).await
+    scope::propagate(
+        state,
+        body.process_instance_key,
+        parent,
+        &vars,
+        &body.tenant_id,
+    )
+    .await
 }
 
 fn element_event(ei: &ElementInstance, intent: &str) -> EventToWrite {

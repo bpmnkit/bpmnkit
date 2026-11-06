@@ -55,7 +55,12 @@ impl FeelContext {
 
     /// Convert this context to a FeelValue::Context map (shallow - only this scope's bindings).
     pub fn to_feel_value(&self) -> FeelValue {
-        FeelValue::Context(self.bindings.iter().map(|(k, v)| (k.clone(), v.clone())).collect::<IndexMap<_, _>>())
+        FeelValue::Context(
+            self.bindings
+                .iter()
+                .map(|(k, v)| (k.clone(), v.clone()))
+                .collect::<IndexMap<_, _>>(),
+        )
     }
 
     /// The parent scope, if any.

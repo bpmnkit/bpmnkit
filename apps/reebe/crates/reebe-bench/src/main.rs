@@ -1,7 +1,7 @@
-use std::sync::Arc;
-use std::time::{Duration, Instant};
 use clap::Parser;
 use reqwest::Client;
+use std::sync::Arc;
+use std::time::{Duration, Instant};
 
 const SIMPLE_BPMN: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -41,11 +41,7 @@ struct Cli {
 async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
-    let client = Arc::new(
-        Client::builder()
-            .timeout(Duration::from_secs(30))
-            .build()?,
-    );
+    let client = Arc::new(Client::builder().timeout(Duration::from_secs(30)).build()?);
 
     // ── Deploy the process ──────────────────────────────────────────────────
     println!("Deploying bench-simple process to {}...", cli.url);
@@ -67,7 +63,10 @@ async fn main() -> anyhow::Result<()> {
         // If it already exists that's fine — just proceed
         let status = resp.status();
         let body = resp.text().await?;
-        if status.as_u16() == 409 || body.contains("duplicate key") || body.contains("already exists") {
+        if status.as_u16() == 409
+            || body.contains("duplicate key")
+            || body.contains("already exists")
+        {
             println!("Process already deployed, reusing.");
         } else {
             anyhow::bail!("Deployment failed ({status}): {body}");
@@ -107,7 +106,10 @@ async fn main() -> anyhow::Result<()> {
     println!("  Errors         : {err}");
     println!("  Elapsed        : {:.3}s", elapsed.as_secs_f64());
     println!("  Throughput     : {pi_per_sec:.1} PI/s");
-    println!("  Avg latency    : {:.2}ms/PI", elapsed.as_millis() as f64 / ok as f64);
+    println!(
+        "  Avg latency    : {:.2}ms/PI",
+        elapsed.as_millis() as f64 / ok as f64
+    );
     println!("═══════════════════════════════════════");
 
     Ok(())
@@ -122,8 +124,8 @@ async fn run_batch(
     total: usize,
     concurrency: usize,
 ) -> anyhow::Result<(usize, usize)> {
-    use tokio::sync::Semaphore;
     use std::sync::atomic::{AtomicUsize, Ordering};
+    use tokio::sync::Semaphore;
 
     let sem = Arc::new(Semaphore::new(concurrency));
     let ok_count = Arc::new(AtomicUsize::new(0));
@@ -142,8 +144,12 @@ async fn run_batch(
         handles.push(tokio::spawn(async move {
             let _permit = permit;
             match client.post(url.as_str()).json(body.as_ref()).send().await {
-                Ok(r) if r.status().is_success() => { ok.fetch_add(1, Ordering::Relaxed); }
-                _ => { err.fetch_add(1, Ordering::Relaxed); }
+                Ok(r) if r.status().is_success() => {
+                    ok.fetch_add(1, Ordering::Relaxed);
+                }
+                _ => {
+                    err.fetch_add(1, Ordering::Relaxed);
+                }
             }
         }));
     }
@@ -152,5 +158,8 @@ async fn run_batch(
         let _ = h.await;
     }
 
-    Ok((ok_count.load(Ordering::Relaxed), err_count.load(Ordering::Relaxed)))
+    Ok((
+        ok_count.load(Ordering::Relaxed),
+        err_count.load(Ordering::Relaxed),
+    ))
 }

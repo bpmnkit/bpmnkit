@@ -20,11 +20,15 @@ const PARAMETERS: [&str; 5] = ["value", "description", "type", "schema", "option
 /// not parse, has no parameters.
 pub fn from_ai_parameters(source: &str) -> Result<Vec<serde_json::Value>, String> {
     let source = source.trim();
-    let Some(expression) = source.strip_prefix('=') else { return Ok(Vec::new()) };
+    let Some(expression) = source.strip_prefix('=') else {
+        return Ok(Vec::new());
+    };
     if !expression.contains("fromAi") {
         return Ok(Vec::new());
     }
-    let Ok(ast) = lexer::tokenize(expression).and_then(parser::parse) else { return Ok(Vec::new()) };
+    let Ok(ast) = lexer::tokenize(expression).and_then(parser::parse) else {
+        return Ok(Vec::new());
+    };
     let mut found = Vec::new();
     let mut error = None;
     walk(&ast, &mut |node| {
@@ -35,9 +39,10 @@ pub fn from_ai_parameters(source: &str) -> Result<Vec<serde_json::Value>, String
             Expr::FunctionCall(name, args) if name == "fromAi" => {
                 PARAMETERS.iter().copied().zip(args.iter()).collect()
             }
-            Expr::NamedFunctionCall(name, args) if name == "fromAi" => {
-                args.iter().map(|(arg, value)| (arg.as_str(), value)).collect()
-            }
+            Expr::NamedFunctionCall(name, args) if name == "fromAi" => args
+                .iter()
+                .map(|(arg, value)| (arg.as_str(), value))
+                .collect(),
             _ => return false,
         };
         match parameter(&args) {
@@ -54,7 +59,11 @@ pub fn from_ai_parameters(source: &str) -> Result<Vec<serde_json::Value>, String
 
 /// The parameter of one `fromAi()` call, or the message Zeebe's extractor throws for it.
 fn parameter(args: &[(&str, &Expr)]) -> Result<serde_json::Value, String> {
-    let arg = |name: &str| args.iter().find(|(arg, _)| *arg == name).map(|(_, value)| *value);
+    let arg = |name: &str| {
+        args.iter()
+            .find(|(arg, _)| *arg == name)
+            .map(|(_, value)| *value)
+    };
     let mut parameter = serde_json::Map::new();
     parameter.insert("name".into(), parameter_name(arg("value"))?.into());
     for field in ["description", "type"] {
@@ -84,9 +93,9 @@ fn parameter(args: &[(&str, &Expr)]) -> Result<serde_json::Value, String> {
             }
             Some(other) => {
                 return Err(format!(
-                    "Expected fromAi() parameter '{field}' to be a context (map), but received '{}'.",
-                    mismatch_value(other),
-                ))
+                "Expected fromAi() parameter '{field}' to be a context (map), but received '{}'.",
+                mismatch_value(other),
+            ))
             }
         }
     }
@@ -97,7 +106,9 @@ fn parameter(args: &[(&str, &Expr)]) -> Result<serde_json::Value, String> {
 fn parameter_name(value: Option<&Expr>) -> Result<String, String> {
     // Zeebe's extractor switches on the missing value, which throws a
     // NullPointerException without a message.
-    let Some(value) = value else { return Err("null".to_string()) };
+    let Some(value) = value else {
+        return Err("null".to_string());
+    };
     reference(value).ok_or_else(|| {
         let received = match value {
             Expr::Str(text) => format!("string '{text}'"),
@@ -142,20 +153,31 @@ fn context_value(entries: &[(String, Expr)]) -> Result<serde_json::Value, String
 /// The value of a literal: a string, a number, a boolean, or a list or context of literals.
 fn constant(expr: &Expr) -> Result<serde_json::Value, String> {
     let unsupported = |expr: &Expr| {
-        format!("Unsupported expression value in fromAi() function invocation: {}", scala_class(expr))
+        format!(
+            "Unsupported expression value in fromAi() function invocation: {}",
+            scala_class(expr)
+        )
     };
     Ok(match expr {
         Expr::Str(text) => text.clone().into(),
         Expr::Integer(n) => (*n).into(),
-        Expr::Float(n) => serde_json::Number::from_f64(*n).ok_or_else(|| unsupported(expr))?.into(),
+        Expr::Float(n) => serde_json::Number::from_f64(*n)
+            .ok_or_else(|| unsupported(expr))?
+            .into(),
         // FEEL reads a negative number literal as one number.
         Expr::Neg(inner) => match inner.as_ref() {
             Expr::Integer(n) => (-*n).into(),
-            Expr::Float(n) => serde_json::Number::from_f64(-*n).ok_or_else(|| unsupported(expr))?.into(),
+            Expr::Float(n) => serde_json::Number::from_f64(-*n)
+                .ok_or_else(|| unsupported(expr))?
+                .into(),
             _ => return Err(unsupported(expr)),
         },
         Expr::Bool(b) => (*b).into(),
-        Expr::List(items) => items.iter().map(constant).collect::<Result<Vec<_>, _>>()?.into(),
+        Expr::List(items) => items
+            .iter()
+            .map(constant)
+            .collect::<Result<Vec<_>, _>>()?
+            .into(),
         Expr::Context(entries) => context_value(entries)?,
         _ => return Err(unsupported(expr)),
     })
@@ -174,9 +196,12 @@ fn scala_class(expr: &Expr) -> String {
 /// `expr` as the FEEL engine's (feel-scala's) expression tree prints itself (a Scala
 /// case class's `toString`), which Zeebe's messages show for a value of the wrong kind.
 fn scala_tree(expr: &Expr) -> String {
-    let two = |name: &str, a: &Expr, b: &Expr| format!("{name}({},{})", scala_tree(a), scala_tree(b));
+    let two =
+        |name: &str, a: &Expr, b: &Expr| format!("{name}({},{})", scala_tree(a), scala_tree(b));
     let list = |items: Vec<String>| format!("List({})", items.join(", "));
-    let bound = |name: &str, a: &Expr, b: &Expr| format!("List(({name},{})),{}", scala_tree(a), scala_tree(b));
+    let bound = |name: &str, a: &Expr, b: &Expr| {
+        format!("List(({name},{})),{}", scala_tree(a), scala_tree(b))
+    };
     match expr {
         Expr::Null => "ConstNull".to_string(),
         Expr::Bool(b) => format!("ConstBool({b})"),
@@ -185,7 +210,10 @@ fn scala_tree(expr: &Expr) -> String {
         Expr::Str(text) => format!("ConstString({text})"),
         Expr::Name(_) | Expr::Path(..) if reference(expr).is_some() => {
             let names = reference(expr).unwrap_or_default();
-            format!("Ref({})", list(names.split('.').map(str::to_string).collect()))
+            format!(
+                "Ref({})",
+                list(names.split('.').map(str::to_string).collect())
+            )
         }
         Expr::Name(name) => format!("Ref(List({name}))"),
         Expr::Path(base, key) => format!("PathExpression({},{key})", scala_tree(base)),
@@ -209,13 +237,24 @@ fn scala_tree(expr: &Expr) -> String {
         ),
         Expr::NamedFunctionCall(name, args) => format!(
             "FunctionInvocation({name},NamedFunctionParameters(Map({})))",
-            args.iter().map(|(k, v)| format!("{k} -> {}", scala_tree(v))).collect::<Vec<_>>().join(", "),
+            args.iter()
+                .map(|(k, v)| format!("{k} -> {}", scala_tree(v)))
+                .collect::<Vec<_>>()
+                .join(", "),
         ),
         Expr::If(c, t, e) => format!("If({},{},{})", scala_tree(c), scala_tree(t), scala_tree(e)),
-        Expr::List(items) => format!("ConstList({})", list(items.iter().map(scala_tree).collect())),
+        Expr::List(items) => format!(
+            "ConstList({})",
+            list(items.iter().map(scala_tree).collect())
+        ),
         Expr::Context(entries) => format!(
             "ConstContext({})",
-            list(entries.iter().map(|(k, v)| format!("({k},{})", scala_tree(v))).collect()),
+            list(
+                entries
+                    .iter()
+                    .map(|(k, v)| format!("({k},{})", scala_tree(v)))
+                    .collect()
+            ),
         ),
         Expr::Range { start, end, .. } => two("ConstRange", start, end),
         Expr::For(name, a, b) => format!("For({})", bound(name, a, b)),
@@ -234,16 +273,34 @@ fn walk(expr: &Expr, visit: &mut dyn FnMut(&Expr) -> bool) {
         return;
     }
     match expr {
-        Expr::Null | Expr::Bool(_) | Expr::Integer(_) | Expr::Float(_) | Expr::Str(_) | Expr::Name(_) => {}
-        Expr::Add(a, b) | Expr::Sub(a, b) | Expr::Mul(a, b) | Expr::Div(a, b)
-        | Expr::Eq(a, b) | Expr::Ne(a, b) | Expr::Lt(a, b) | Expr::Le(a, b) | Expr::Gt(a, b) | Expr::Ge(a, b)
-        | Expr::And(a, b) | Expr::Or(a, b) | Expr::Filter(a, b) | Expr::In(a, b) => {
+        Expr::Null
+        | Expr::Bool(_)
+        | Expr::Integer(_)
+        | Expr::Float(_)
+        | Expr::Str(_)
+        | Expr::Name(_) => {}
+        Expr::Add(a, b)
+        | Expr::Sub(a, b)
+        | Expr::Mul(a, b)
+        | Expr::Div(a, b)
+        | Expr::Eq(a, b)
+        | Expr::Ne(a, b)
+        | Expr::Lt(a, b)
+        | Expr::Le(a, b)
+        | Expr::Gt(a, b)
+        | Expr::Ge(a, b)
+        | Expr::And(a, b)
+        | Expr::Or(a, b)
+        | Expr::Filter(a, b)
+        | Expr::In(a, b) => {
             walk(a, visit);
             walk(b, visit);
         }
         Expr::Neg(a) | Expr::Not(a) | Expr::Path(a, _) | Expr::InstanceOf(a, _) => walk(a, visit),
         Expr::FunctionCall(_, args) | Expr::List(args) => args.iter().for_each(|a| walk(a, visit)),
-        Expr::NamedFunctionCall(_, args) | Expr::Context(args) => args.iter().for_each(|(_, a)| walk(a, visit)),
+        Expr::NamedFunctionCall(_, args) | Expr::Context(args) => {
+            args.iter().for_each(|(_, a)| walk(a, visit))
+        }
         Expr::If(a, b, c) => {
             walk(a, visit);
             walk(b, visit);
@@ -281,7 +338,10 @@ mod tests {
             from_ai_parameters(r#"=string(fromAi(toolCall.c, "Input C", "number"))"#).unwrap(),
             vec![json!({ "name": "toolCall.c", "description": "Input C", "type": "number" })],
         );
-        assert_eq!(from_ai_parameters("=fromAi(toolCall.a.b)").unwrap(), vec![json!({ "name": "toolCall.a.b" })]);
+        assert_eq!(
+            from_ai_parameters("=fromAi(toolCall.a.b)").unwrap(),
+            vec![json!({ "name": "toolCall.a.b" })]
+        );
         assert!(from_ai_parameters("=123456").unwrap().is_empty());
     }
 
@@ -348,7 +408,10 @@ mod tests {
 
     #[test]
     fn leaves_out_null_and_empty_fields() {
-        assert!(from_ai_parameters("fromAi(toolCall.x)").unwrap().is_empty(), "not an expression");
+        assert!(
+            from_ai_parameters("fromAi(toolCall.x)").unwrap().is_empty(),
+            "not an expression"
+        );
         // Null and empty fields are left out of Zeebe's variable (`@JsonInclude(NON_EMPTY)`).
         assert_eq!(
             from_ai_parameters(r#"=fromAi(toolCall.id, "", "", {})"#).unwrap(),
@@ -364,10 +427,17 @@ mod tests {
     #[test]
     fn rejects_a_value_that_is_not_a_reference() {
         let prefix = "Expected fromAi() parameter 'value' to be a reference (e.g. 'toolCall.customParameter'), but received ";
-        assert_eq!(rejection(r#"=fromAi("toolCall.myVariable")"#), format!("{prefix}string 'toolCall.myVariable'."));
+        assert_eq!(
+            rejection(r#"=fromAi("toolCall.myVariable")"#),
+            format!("{prefix}string 'toolCall.myVariable'.")
+        );
         assert_eq!(rejection("=fromAi(10)"), format!("{prefix}10."));
-        assert_eq!(rejection("=fromAi([])"), format!("{prefix}ConstList(List())."));
-        assert!(rejection("=fromAi(fromAi(toolCall.myVariable))").starts_with(&format!("{prefix}FunctionInvocation(fromAi")));
+        assert_eq!(
+            rejection("=fromAi([])"),
+            format!("{prefix}ConstList(List()).")
+        );
+        assert!(rejection("=fromAi(fromAi(toolCall.myVariable))")
+            .starts_with(&format!("{prefix}FunctionInvocation(fromAi")));
         assert_eq!(rejection("=fromAi(null)"), format!("{prefix}ConstNull."));
         // Zeebe's extractor fails on a missing value with a NullPointerException.
         assert_eq!(rejection(r#"=fromAi(description: "no value")"#), "null");
@@ -388,8 +458,11 @@ mod tests {
             rejection("=fromAi(value: toolCall.myVariable, type: 10)"),
             "Expected fromAi() parameter 'type' to be a string, but received '10'.",
         );
-        assert!(rejection(r#"=fromAi(value: toolCall.myVariable, type: "str" + "ing")"#)
-            .starts_with("Expected fromAi() parameter 'type' to be a string, but received 'Addition"));
+        assert!(
+            rejection(r#"=fromAi(value: toolCall.myVariable, type: "str" + "ing")"#).starts_with(
+                "Expected fromAi() parameter 'type' to be a string, but received 'Addition"
+            )
+        );
         assert_eq!(
             rejection(r#"=fromAi(value: toolCall.myVariable, schema: "dummy")"#),
             "Expected fromAi() parameter 'schema' to be a context (map), but received 'dummy'.",
@@ -443,10 +516,17 @@ mod tests {
     #[test]
     fn from_ai_returns_its_value() {
         let mut ctx = crate::FeelContext::new();
-        ctx.set("toolCall", crate::FeelValue::from(json!({ "q": "weather" })));
+        ctx.set(
+            "toolCall",
+            crate::FeelValue::from(json!({ "q": "weather" })),
+        );
         let value = crate::evaluate(r#"fromAi(toolCall.q, "The query")"#, &ctx).unwrap();
         assert_eq!(value, crate::FeelValue::String("weather".into()));
-        let named = crate::evaluate(r#"fromAi(description: "The query", value: toolCall.q)"#, &ctx).unwrap();
+        let named = crate::evaluate(
+            r#"fromAi(description: "The query", value: toolCall.q)"#,
+            &ctx,
+        )
+        .unwrap();
         assert_eq!(named, crate::FeelValue::String("weather".into()));
     }
 }

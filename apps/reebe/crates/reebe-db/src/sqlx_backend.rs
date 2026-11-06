@@ -1,27 +1,27 @@
-use std::sync::Arc;
+use crate::backend::StateBackend;
+use crate::records::{DbRecord, RecordRepository};
+use crate::state::compensation::{CompensationSubscription, CompensationSubscriptionRepository};
+use crate::state::decisions::{DecisionDefinition, DecisionRepository, DecisionRequirements};
+use crate::state::deployments::{Deployment, DeploymentRepository, ProcessDefinition};
+use crate::state::element_instances::{ElementInstance, ElementInstanceRepository};
+use crate::state::gateway_tokens::{JoinToken, JoinTokenRepository};
+use crate::state::identity::{Tenant, TenantRepository, User, UserRepository};
+use crate::state::incidents::{Incident, IncidentRepository};
+use crate::state::jobs::{Job, JobRepository};
+use crate::state::messages::{
+    Message, MessageRepository, MessageStartCorrelation, MessageStartEventSubscription,
+    MessageSubscription, MessageSubscriptionRepository,
+};
+use crate::state::process_instances::{ProcessInstance, ProcessInstanceRepository};
+use crate::state::signal_subscriptions::{SignalSubscription, SignalSubscriptionRepository};
+use crate::state::timers::{Timer, TimerRepository};
+use crate::state::user_tasks::{UserTask, UserTaskRepository};
+use crate::state::variables::{Variable, VariableRepository};
+use crate::{DbPool, Result};
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use serde_json::Value;
-use crate::{DbPool, Result};
-use crate::records::{DbRecord, RecordRepository};
-use crate::state::process_instances::{ProcessInstance, ProcessInstanceRepository};
-use crate::state::element_instances::{ElementInstance, ElementInstanceRepository};
-use crate::state::variables::{Variable, VariableRepository};
-use crate::state::jobs::{Job, JobRepository};
-use crate::state::incidents::{Incident, IncidentRepository};
-use crate::state::timers::{Timer, TimerRepository};
-use crate::state::messages::{
-    Message, MessageStartCorrelation, MessageStartEventSubscription, MessageSubscription,
-    MessageRepository, MessageSubscriptionRepository,
-};
-use crate::state::signal_subscriptions::{SignalSubscription, SignalSubscriptionRepository};
-use crate::state::gateway_tokens::{JoinToken, JoinTokenRepository};
-use crate::state::compensation::{CompensationSubscription, CompensationSubscriptionRepository};
-use crate::state::deployments::{Deployment, ProcessDefinition, DeploymentRepository};
-use crate::state::decisions::{DecisionDefinition, DecisionRepository, DecisionRequirements};
-use crate::state::user_tasks::{UserTask, UserTaskRepository};
-use crate::state::identity::{Tenant, User, TenantRepository, UserRepository};
-use crate::backend::StateBackend;
+use std::sync::Arc;
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct SqlxBackend {
@@ -31,7 +31,9 @@ pub struct SqlxBackend {
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl SqlxBackend {
     pub fn new(pool: DbPool) -> Self {
-        Self { pool: Arc::new(pool) }
+        Self {
+            pool: Arc::new(pool),
+        }
     }
 
     pub fn pool(&self) -> &DbPool {
@@ -47,15 +49,21 @@ impl StateBackend for SqlxBackend {
     }
 
     async fn next_position(&self, partition_id: i16) -> Result<i64> {
-        RecordRepository::new(&self.pool).next_position(partition_id).await
+        RecordRepository::new(&self.pool)
+            .next_position(partition_id)
+            .await
     }
 
     async fn next_position_batch(&self, partition_id: i16, count: usize) -> Result<i64> {
-        RecordRepository::new(&self.pool).next_position_batch(partition_id, count).await
+        RecordRepository::new(&self.pool)
+            .next_position_batch(partition_id, count)
+            .await
     }
 
     async fn next_position_and_key(&self, partition_id: i16) -> Result<(i64, i64)> {
-        RecordRepository::new(&self.pool).next_position_and_key(partition_id).await
+        RecordRepository::new(&self.pool)
+            .next_position_and_key(partition_id)
+            .await
     }
 
     async fn try_acquire_partition_lock(&self, partition_id: i16) -> bool {
@@ -68,7 +76,11 @@ impl StateBackend for SqlxBackend {
             {
                 Ok(acquired) => acquired,
                 Err(e) => {
-                    tracing::warn!("Advisory lock attempt failed for partition {}: {}", partition_id, e);
+                    tracing::warn!(
+                        "Advisory lock attempt failed for partition {}: {}",
+                        partition_id,
+                        e
+                    );
                     false
                 }
             }
@@ -84,7 +96,11 @@ impl StateBackend for SqlxBackend {
         RecordRepository::new(&self.pool).insert(record).await
     }
 
-    async fn append_command(&self, record: DbRecord, on_position: Box<dyn FnOnce(i64) + Send>) -> Result<i64> {
+    async fn append_command(
+        &self,
+        record: DbRecord,
+        on_position: Box<dyn FnOnce(i64) + Send>,
+    ) -> Result<i64> {
         use sqlx::Row;
         // The row lock on partition_key_state, held until commit, keeps every other
         // position reservation of the partition waiting until the command is written.
@@ -102,7 +118,11 @@ impl StateBackend for SqlxBackend {
         .fetch_one(&mut *tx)
         .await?;
         let position: i64 = row.get("pos");
-        let key = if record.record_key == 0 { row.get("key") } else { record.record_key };
+        let key = if record.record_key == 0 {
+            row.get("key")
+        } else {
+            record.record_key
+        };
         on_position(position);
         sqlx::query(
             r#"INSERT INTO partition_records
@@ -126,14 +146,29 @@ impl StateBackend for SqlxBackend {
     }
 
     async fn insert_records_batch(&self, records: &[DbRecord]) -> Result<()> {
-        RecordRepository::new(&self.pool).insert_batch(records).await
+        RecordRepository::new(&self.pool)
+            .insert_batch(records)
+            .await
     }
 
-    async fn fetch_commands_from(&self, partition_id: i16, from_position: i64, limit: i32) -> Result<Vec<DbRecord>> {
-        RecordRepository::new(&self.pool).fetch_commands_from(partition_id, from_position, limit).await
+    async fn fetch_commands_from(
+        &self,
+        partition_id: i16,
+        from_position: i64,
+        limit: i32,
+    ) -> Result<Vec<DbRecord>> {
+        RecordRepository::new(&self.pool)
+            .fetch_commands_from(partition_id, from_position, limit)
+            .await
     }
 
-    async fn has_pending_activation(&self, partition_id: i16, after_position: i64, field: &str, value: &str) -> Result<bool> {
+    async fn has_pending_activation(
+        &self,
+        partition_id: i16,
+        after_position: i64,
+        field: &str,
+        value: &str,
+    ) -> Result<bool> {
         #[cfg(feature = "postgres")]
         const FIELD: &str = "payload ->> $3";
         #[cfg(not(feature = "postgres"))]
@@ -154,7 +189,12 @@ impl StateBackend for SqlxBackend {
         Ok(count > 0)
     }
 
-    async fn get_pending_activations(&self, partition_id: i16, after_position: i64, flow_scope_key: &str) -> Result<Vec<Value>> {
+    async fn get_pending_activations(
+        &self,
+        partition_id: i16,
+        after_position: i64,
+        flow_scope_key: &str,
+    ) -> Result<Vec<Value>> {
         #[cfg(feature = "postgres")]
         const FIELD: &str = "payload ->> 'flowScopeKey'";
         #[cfg(not(feature = "postgres"))]
@@ -177,12 +217,11 @@ impl StateBackend for SqlxBackend {
     }
 
     async fn get_processed_position(&self, partition_id: i16) -> Result<i64> {
-        let position: Option<i64> = sqlx::query_scalar(
-            "SELECT position FROM processed_positions WHERE partition_id = $1",
-        )
-        .bind(partition_id)
-        .fetch_optional(&*self.pool)
-        .await?;
+        let position: Option<i64> =
+            sqlx::query_scalar("SELECT position FROM processed_positions WHERE partition_id = $1")
+                .bind(partition_id)
+                .fetch_optional(&*self.pool)
+                .await?;
         Ok(position.unwrap_or(0))
     }
 
@@ -202,16 +241,27 @@ impl StateBackend for SqlxBackend {
         ProcessInstanceRepository::new(&self.pool).insert(pi).await
     }
 
-    async fn update_process_instance_state(&self, key: i64, state: &str, end_date: Option<DateTime<Utc>>) -> Result<()> {
-        ProcessInstanceRepository::new(&self.pool).update_state(key, state, end_date).await
+    async fn update_process_instance_state(
+        &self,
+        key: i64,
+        state: &str,
+        end_date: Option<DateTime<Utc>>,
+    ) -> Result<()> {
+        ProcessInstanceRepository::new(&self.pool)
+            .update_state(key, state, end_date)
+            .await
     }
 
     async fn get_process_instance_by_key(&self, key: i64) -> Result<ProcessInstance> {
-        ProcessInstanceRepository::new(&self.pool).get_by_key(key).await
+        ProcessInstanceRepository::new(&self.pool)
+            .get_by_key(key)
+            .await
     }
 
     async fn count_active_process_instances(&self) -> Result<i64> {
-        ProcessInstanceRepository::new(&self.pool).count_active().await
+        ProcessInstanceRepository::new(&self.pool)
+            .count_active()
+            .await
     }
 
     async fn insert_element_instance(&self, ei: &ElementInstance) -> Result<()> {
@@ -219,23 +269,36 @@ impl StateBackend for SqlxBackend {
     }
 
     async fn update_element_instance_state(&self, key: i64, state: &str) -> Result<()> {
-        ElementInstanceRepository::new(&self.pool).update_state(key, state).await
+        ElementInstanceRepository::new(&self.pool)
+            .update_state(key, state)
+            .await
     }
 
     async fn get_element_instance_by_key(&self, key: i64) -> Result<ElementInstance> {
-        ElementInstanceRepository::new(&self.pool).get_by_key(key).await
+        ElementInstanceRepository::new(&self.pool)
+            .get_by_key(key)
+            .await
     }
 
-    async fn get_element_instances_by_process_instance(&self, process_instance_key: i64) -> Result<Vec<ElementInstance>> {
-        ElementInstanceRepository::new(&self.pool).get_by_process_instance(process_instance_key).await
+    async fn get_element_instances_by_process_instance(
+        &self,
+        process_instance_key: i64,
+    ) -> Result<Vec<ElementInstance>> {
+        ElementInstanceRepository::new(&self.pool)
+            .get_by_process_instance(process_instance_key)
+            .await
     }
 
     async fn get_active_element_instance_count(&self, process_instance_key: i64) -> Result<i64> {
-        ElementInstanceRepository::new(&self.pool).get_active_count(process_instance_key).await
+        ElementInstanceRepository::new(&self.pool)
+            .get_active_count(process_instance_key)
+            .await
     }
 
     async fn complete_process_element(&self, process_instance_key: i64) -> Result<()> {
-        ElementInstanceRepository::new(&self.pool).complete_process_element(process_instance_key).await
+        ElementInstanceRepository::new(&self.pool)
+            .complete_process_element(process_instance_key)
+            .await
     }
 
     async fn upsert_variable(&self, variable: &Variable) -> Result<()> {
@@ -243,7 +306,9 @@ impl StateBackend for SqlxBackend {
     }
 
     async fn get_variables_by_scope(&self, scope_key: i64) -> Result<Vec<Variable>> {
-        VariableRepository::new(&self.pool).get_by_scope(scope_key).await
+        VariableRepository::new(&self.pool)
+            .get_by_scope(scope_key)
+            .await
     }
 
     async fn insert_job(&self, job: &Job) -> Result<()> {
@@ -255,19 +320,34 @@ impl StateBackend for SqlxBackend {
     }
 
     async fn complete_job(&self, key: i64, variables: Option<Value>) -> Result<()> {
-        JobRepository::new(&self.pool).complete(key, variables).await
+        JobRepository::new(&self.pool)
+            .complete(key, variables)
+            .await
     }
 
-    async fn fail_job(&self, key: i64, retries: i32, error_message: Option<&str>, error_code: Option<&str>, retry_back_off_ms: Option<i64>) -> Result<()> {
-        JobRepository::new(&self.pool).fail(key, retries, error_message, error_code, retry_back_off_ms).await
+    async fn fail_job(
+        &self,
+        key: i64,
+        retries: i32,
+        error_message: Option<&str>,
+        error_code: Option<&str>,
+        retry_back_off_ms: Option<i64>,
+    ) -> Result<()> {
+        JobRepository::new(&self.pool)
+            .fail(key, retries, error_message, error_code, retry_back_off_ms)
+            .await
     }
 
     async fn update_job_retries(&self, key: i64, retries: i32) -> Result<()> {
-        JobRepository::new(&self.pool).update_retries(key, retries).await
+        JobRepository::new(&self.pool)
+            .update_retries(key, retries)
+            .await
     }
 
     async fn update_job_deadline(&self, key: i64, deadline: DateTime<Utc>) -> Result<()> {
-        JobRepository::new(&self.pool).update_deadline(key, deadline).await
+        JobRepository::new(&self.pool)
+            .update_deadline(key, deadline)
+            .await
     }
 
     async fn cancel_jobs_by_process_instance(&self, process_instance_key: i64) -> Result<u64> {
@@ -301,7 +381,12 @@ impl StateBackend for SqlxBackend {
         Ok(())
     }
 
-    async fn cancel_catch_waits(&self, element_instance_key: i64, element_ids: &[String], message_names: &[String]) -> Result<()> {
+    async fn cancel_catch_waits(
+        &self,
+        element_instance_key: i64,
+        element_ids: &[String],
+        message_names: &[String],
+    ) -> Result<()> {
         let pool: &DbPool = &self.pool;
         for element_id in element_ids {
             sqlx::query(
@@ -330,7 +415,10 @@ impl StateBackend for SqlxBackend {
         Ok(())
     }
 
-    async fn get_child_process_instance_keys(&self, parent_element_instance_key: i64) -> Result<Vec<i64>> {
+    async fn get_child_process_instance_keys(
+        &self,
+        parent_element_instance_key: i64,
+    ) -> Result<Vec<i64>> {
         let keys = sqlx::query_scalar::<_, i64>(
             "SELECT key FROM process_instances WHERE parent_element_instance_key = $1 AND state = 'ACTIVE'",
         )
@@ -360,8 +448,13 @@ impl StateBackend for SqlxBackend {
         IncidentRepository::new(&self.pool).resolve(key).await
     }
 
-    async fn get_incidents_by_process_instance(&self, process_instance_key: i64) -> Result<Vec<Incident>> {
-        IncidentRepository::new(&self.pool).get_by_process_instance(process_instance_key).await
+    async fn get_incidents_by_process_instance(
+        &self,
+        process_instance_key: i64,
+    ) -> Result<Vec<Incident>> {
+        IncidentRepository::new(&self.pool)
+            .get_by_process_instance(process_instance_key)
+            .await
     }
 
     async fn count_active_incidents(&self) -> Result<i64> {
@@ -377,7 +470,9 @@ impl StateBackend for SqlxBackend {
     }
 
     async fn update_timer_state(&self, key: i64, state: &str) -> Result<()> {
-        TimerRepository::new(&self.pool).update_state(key, state).await
+        TimerRepository::new(&self.pool)
+            .update_state(key, state)
+            .await
     }
 
     async fn get_due_timers(&self, now: DateTime<Utc>, limit: i64) -> Result<Vec<Timer>> {
@@ -399,8 +494,15 @@ impl StateBackend for SqlxBackend {
         MessageRepository::new(&self.pool).insert(msg).await
     }
 
-    async fn get_messages_by_correlation(&self, name: &str, correlation_key: &str, tenant_id: &str) -> Result<Vec<Message>> {
-        MessageRepository::new(&self.pool).get_by_correlation(name, correlation_key, tenant_id).await
+    async fn get_messages_by_correlation(
+        &self,
+        name: &str,
+        correlation_key: &str,
+        tenant_id: &str,
+    ) -> Result<Vec<Message>> {
+        MessageRepository::new(&self.pool)
+            .get_by_correlation(name, correlation_key, tenant_id)
+            .await
     }
 
     async fn expire_old_messages(&self) -> Result<u64> {
@@ -408,18 +510,34 @@ impl StateBackend for SqlxBackend {
     }
 
     async fn insert_message_subscription(&self, sub: &MessageSubscription) -> Result<()> {
-        MessageSubscriptionRepository::new(&self.pool).insert(sub).await
+        MessageSubscriptionRepository::new(&self.pool)
+            .insert(sub)
+            .await
     }
 
-    async fn get_message_subscriptions_by_correlation(&self, message_name: &str, correlation_key: &str, tenant_id: &str) -> Result<Vec<MessageSubscription>> {
-        MessageSubscriptionRepository::new(&self.pool).get_by_correlation(message_name, correlation_key, tenant_id).await
+    async fn get_message_subscriptions_by_correlation(
+        &self,
+        message_name: &str,
+        correlation_key: &str,
+        tenant_id: &str,
+    ) -> Result<Vec<MessageSubscription>> {
+        MessageSubscriptionRepository::new(&self.pool)
+            .get_by_correlation(message_name, correlation_key, tenant_id)
+            .await
     }
 
     async fn update_message_subscription_state(&self, key: i64, state: &str) -> Result<()> {
-        MessageSubscriptionRepository::new(&self.pool).update_state(key, state).await
+        MessageSubscriptionRepository::new(&self.pool)
+            .update_state(key, state)
+            .await
     }
 
-    async fn replace_message_start_subscriptions(&self, bpmn_process_id: &str, tenant_id: &str, subs: &[MessageStartEventSubscription]) -> Result<()> {
+    async fn replace_message_start_subscriptions(
+        &self,
+        bpmn_process_id: &str,
+        tenant_id: &str,
+        subs: &[MessageStartEventSubscription],
+    ) -> Result<()> {
         let mut tx = self.pool.begin().await?;
         sqlx::query("DELETE FROM message_start_event_subscriptions WHERE bpmn_process_id = $1 AND tenant_id = $2")
             .bind(bpmn_process_id)
@@ -445,7 +563,11 @@ impl StateBackend for SqlxBackend {
         Ok(())
     }
 
-    async fn get_message_start_subscriptions_by_name(&self, message_name: &str, tenant_id: &str) -> Result<Vec<MessageStartEventSubscription>> {
+    async fn get_message_start_subscriptions_by_name(
+        &self,
+        message_name: &str,
+        tenant_id: &str,
+    ) -> Result<Vec<MessageStartEventSubscription>> {
         let rows = sqlx::query(
             "SELECT key, message_name, bpmn_process_id, start_event_id, process_definition_key, tenant_id
              FROM message_start_event_subscriptions WHERE message_name = $1 AND tenant_id = $2 ORDER BY key",
@@ -457,7 +579,11 @@ impl StateBackend for SqlxBackend {
         Ok(rows.into_iter().map(row_to_start_sub).collect())
     }
 
-    async fn get_message_start_subscriptions_by_process(&self, bpmn_process_id: &str, tenant_id: &str) -> Result<Vec<MessageStartEventSubscription>> {
+    async fn get_message_start_subscriptions_by_process(
+        &self,
+        bpmn_process_id: &str,
+        tenant_id: &str,
+    ) -> Result<Vec<MessageStartEventSubscription>> {
         let rows = sqlx::query(
             "SELECT key, message_name, bpmn_process_id, start_event_id, process_definition_key, tenant_id
              FROM message_start_event_subscriptions WHERE bpmn_process_id = $1 AND tenant_id = $2 ORDER BY key",
@@ -485,7 +611,12 @@ impl StateBackend for SqlxBackend {
         Ok(())
     }
 
-    async fn get_message_start_correlations(&self, bpmn_process_id: &str, correlation_key: &str, tenant_id: &str) -> Result<Vec<MessageStartCorrelation>> {
+    async fn get_message_start_correlations(
+        &self,
+        bpmn_process_id: &str,
+        correlation_key: &str,
+        tenant_id: &str,
+    ) -> Result<Vec<MessageStartCorrelation>> {
         let rows = sqlx::query(
             "SELECT process_instance_key, message_key, bpmn_process_id, correlation_key, tenant_id
              FROM message_start_correlations
@@ -499,7 +630,10 @@ impl StateBackend for SqlxBackend {
         Ok(rows.into_iter().map(row_to_start_correlation).collect())
     }
 
-    async fn get_message_start_correlation_by_instance(&self, process_instance_key: i64) -> Result<Option<MessageStartCorrelation>> {
+    async fn get_message_start_correlation_by_instance(
+        &self,
+        process_instance_key: i64,
+    ) -> Result<Option<MessageStartCorrelation>> {
         let row = sqlx::query(
             "SELECT process_instance_key, message_key, bpmn_process_id, correlation_key, tenant_id
              FROM message_start_correlations WHERE process_instance_key = $1",
@@ -511,63 +645,125 @@ impl StateBackend for SqlxBackend {
     }
 
     async fn insert_signal_subscription(&self, sub: &SignalSubscription) -> Result<()> {
-        SignalSubscriptionRepository::new(&self.pool).insert(sub).await
+        SignalSubscriptionRepository::new(&self.pool)
+            .insert(sub)
+            .await
     }
 
-    async fn get_signal_subscriptions_by_name(&self, signal_name: &str, tenant_id: &str) -> Result<Vec<SignalSubscription>> {
-        SignalSubscriptionRepository::new(&self.pool).get_by_signal_name(signal_name, tenant_id).await
+    async fn get_signal_subscriptions_by_name(
+        &self,
+        signal_name: &str,
+        tenant_id: &str,
+    ) -> Result<Vec<SignalSubscription>> {
+        SignalSubscriptionRepository::new(&self.pool)
+            .get_by_signal_name(signal_name, tenant_id)
+            .await
     }
 
     async fn delete_signal_subscription(&self, key: i64) -> Result<()> {
-        SignalSubscriptionRepository::new(&self.pool).delete(key).await
+        SignalSubscriptionRepository::new(&self.pool)
+            .delete(key)
+            .await
     }
 
-    async fn add_join_token(&self, process_instance_key: i64, flow_scope_key: i64, gateway_id: &str, sequence_flow_id: &str) -> Result<()> {
-        JoinTokenRepository::new(&self.pool).add(process_instance_key, flow_scope_key, gateway_id, sequence_flow_id).await
+    async fn add_join_token(
+        &self,
+        process_instance_key: i64,
+        flow_scope_key: i64,
+        gateway_id: &str,
+        sequence_flow_id: &str,
+    ) -> Result<()> {
+        JoinTokenRepository::new(&self.pool)
+            .add(
+                process_instance_key,
+                flow_scope_key,
+                gateway_id,
+                sequence_flow_id,
+            )
+            .await
     }
 
-    async fn take_join_token(&self, flow_scope_key: i64, gateway_id: &str, sequence_flow_id: &str) -> Result<()> {
-        JoinTokenRepository::new(&self.pool).take(flow_scope_key, gateway_id, sequence_flow_id).await
+    async fn take_join_token(
+        &self,
+        flow_scope_key: i64,
+        gateway_id: &str,
+        sequence_flow_id: &str,
+    ) -> Result<()> {
+        JoinTokenRepository::new(&self.pool)
+            .take(flow_scope_key, gateway_id, sequence_flow_id)
+            .await
     }
 
     async fn get_join_tokens(&self, process_instance_key: i64) -> Result<Vec<JoinToken>> {
-        JoinTokenRepository::new(&self.pool).get_by_process_instance(process_instance_key).await
+        JoinTokenRepository::new(&self.pool)
+            .get_by_process_instance(process_instance_key)
+            .await
     }
 
     async fn delete_join_tokens(&self, flow_scope_key: i64) -> Result<()> {
-        JoinTokenRepository::new(&self.pool).delete_by_flow_scope(flow_scope_key).await
+        JoinTokenRepository::new(&self.pool)
+            .delete_by_flow_scope(flow_scope_key)
+            .await
     }
 
     async fn upsert_compensation_subscription(&self, sub: &CompensationSubscription) -> Result<()> {
-        CompensationSubscriptionRepository::new(&self.pool).upsert(sub).await
+        CompensationSubscriptionRepository::new(&self.pool)
+            .upsert(sub)
+            .await
     }
 
-    async fn get_compensation_subscriptions(&self, process_instance_key: i64) -> Result<Vec<CompensationSubscription>> {
-        CompensationSubscriptionRepository::new(&self.pool).get_by_process_instance(process_instance_key).await
+    async fn get_compensation_subscriptions(
+        &self,
+        process_instance_key: i64,
+    ) -> Result<Vec<CompensationSubscription>> {
+        CompensationSubscriptionRepository::new(&self.pool)
+            .get_by_process_instance(process_instance_key)
+            .await
     }
 
     async fn delete_compensation_subscription(&self, key: i64) -> Result<()> {
-        CompensationSubscriptionRepository::new(&self.pool).delete(key).await
+        CompensationSubscriptionRepository::new(&self.pool)
+            .delete(key)
+            .await
     }
 
     async fn insert_deployment(&self, deployment: &Deployment) -> Result<()> {
-        DeploymentRepository::new(&self.pool).insert_deployment(deployment).await
+        DeploymentRepository::new(&self.pool)
+            .insert_deployment(deployment)
+            .await
     }
 
     async fn insert_process_definition(&self, pd: &ProcessDefinition) -> Result<()> {
-        DeploymentRepository::new(&self.pool).insert_process_definition(pd).await
+        DeploymentRepository::new(&self.pool)
+            .insert_process_definition(pd)
+            .await
     }
 
     async fn get_process_definition_by_key(&self, key: i64) -> Result<ProcessDefinition> {
-        DeploymentRepository::new(&self.pool).get_process_definition_by_key(key).await
+        DeploymentRepository::new(&self.pool)
+            .get_process_definition_by_key(key)
+            .await
     }
 
-    async fn get_latest_process_definition(&self, bpmn_process_id: &str, tenant_id: &str) -> Result<ProcessDefinition> {
-        DeploymentRepository::new(&self.pool).get_latest_process_definition(bpmn_process_id, tenant_id).await
+    async fn get_latest_process_definition(
+        &self,
+        bpmn_process_id: &str,
+        tenant_id: &str,
+    ) -> Result<ProcessDefinition> {
+        DeploymentRepository::new(&self.pool)
+            .get_latest_process_definition(bpmn_process_id, tenant_id)
+            .await
     }
 
-    async fn get_process_definition_by_id_and_version(&self, bpmn_process_id: &str, version: i32, tenant_id: &str) -> Result<ProcessDefinition> {
-        DeploymentRepository::new(&self.pool).get_by_id_and_version(bpmn_process_id, version, tenant_id).await
+    async fn get_process_definition_by_id_and_version(
+        &self,
+        bpmn_process_id: &str,
+        version: i32,
+        tenant_id: &str,
+    ) -> Result<ProcessDefinition> {
+        DeploymentRepository::new(&self.pool)
+            .get_by_id_and_version(bpmn_process_id, version, tenant_id)
+            .await
     }
 
     async fn insert_user_task(&self, task: &UserTask) -> Result<()> {
@@ -579,11 +775,15 @@ impl StateBackend for SqlxBackend {
     }
 
     async fn complete_user_task(&self, key: i64, variables: Option<Value>) -> Result<()> {
-        UserTaskRepository::new(&self.pool).complete(key, variables).await
+        UserTaskRepository::new(&self.pool)
+            .complete(key, variables)
+            .await
     }
 
     async fn assign_user_task(&self, key: i64, assignee: Option<&str>) -> Result<()> {
-        UserTaskRepository::new(&self.pool).assign(key, assignee).await
+        UserTaskRepository::new(&self.pool)
+            .assign(key, assignee)
+            .await
     }
 
     async fn insert_tenant(&self, tenant: &Tenant) -> Result<()> {
@@ -599,23 +799,41 @@ impl StateBackend for SqlxBackend {
     }
 
     async fn insert_decision_requirements(&self, drg: &DecisionRequirements) -> Result<()> {
-        DecisionRepository::new(&self.pool).insert_requirements(drg).await
+        DecisionRepository::new(&self.pool)
+            .insert_requirements(drg)
+            .await
     }
 
-    async fn get_latest_decision_requirements(&self, drg_id: &str, tenant_id: &str) -> Result<Option<DecisionRequirements>> {
-        DecisionRepository::new(&self.pool).latest_requirements(drg_id, tenant_id).await
+    async fn get_latest_decision_requirements(
+        &self,
+        drg_id: &str,
+        tenant_id: &str,
+    ) -> Result<Option<DecisionRequirements>> {
+        DecisionRepository::new(&self.pool)
+            .latest_requirements(drg_id, tenant_id)
+            .await
     }
 
     async fn insert_decision_definition(&self, decision: &DecisionDefinition) -> Result<()> {
-        DecisionRepository::new(&self.pool).insert_decision(decision).await
+        DecisionRepository::new(&self.pool)
+            .insert_decision(decision)
+            .await
     }
 
-    async fn get_latest_decision_definition(&self, decision_id: &str, tenant_id: &str) -> Result<Option<DecisionDefinition>> {
-        DecisionRepository::new(&self.pool).latest_decision(decision_id, tenant_id).await
+    async fn get_latest_decision_definition(
+        &self,
+        decision_id: &str,
+        tenant_id: &str,
+    ) -> Result<Option<DecisionDefinition>> {
+        DecisionRepository::new(&self.pool)
+            .latest_decision(decision_id, tenant_id)
+            .await
     }
 
     async fn get_decision_definition_by_key(&self, key: i64) -> Result<Option<DecisionDefinition>> {
-        DecisionRepository::new(&self.pool).decision_by_key(key).await
+        DecisionRepository::new(&self.pool)
+            .decision_by_key(key)
+            .await
     }
 }
 

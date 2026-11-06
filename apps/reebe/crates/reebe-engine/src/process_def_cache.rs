@@ -4,9 +4,9 @@
 //! BPMN processes in memory. Keyed by (bpmn_process_id, version, tenant_id)
 //! and process_definition_key.
 
-use std::sync::Arc;
 use dashmap::DashMap;
 use reebe_bpmn::BpmnProcess;
+use std::sync::Arc;
 
 /// Key for a process definition in the cache.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -77,9 +77,7 @@ impl ProcessDefCache {
     pub fn get_latest(&self, id: &str, tenant_id: &str) -> Option<Arc<CachedProcessDef>> {
         self.by_id_version
             .iter()
-            .filter(|entry| {
-                entry.key().bpmn_process_id == id && entry.key().tenant_id == tenant_id
-            })
+            .filter(|entry| entry.key().bpmn_process_id == id && entry.key().tenant_id == tenant_id)
             .max_by_key(|entry| entry.key().version)
             .map(|entry| entry.value().clone())
     }

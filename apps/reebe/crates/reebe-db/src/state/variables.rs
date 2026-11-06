@@ -1,8 +1,8 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
+use crate::Result;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use crate::Result;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Variable {

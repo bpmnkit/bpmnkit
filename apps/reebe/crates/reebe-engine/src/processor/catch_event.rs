@@ -16,25 +16,31 @@
 //! events of one boundary set, gateway or flow scope. When the owner completes or
 //! is terminated, its waits are cancelled.
 
-use std::sync::Arc;
-use std::collections::HashMap;
-use reebe_bpmn::{BpmnProcess, EventDefinition, FlowElement, StartEvent, SubProcess, TimerEventDefinition, TimerType};
-use reebe_db::state::element_instances::ElementInstance;
-use reebe_db::state::messages::MessageSubscription;
-use reebe_db::state::signal_subscriptions::SignalSubscription;
-use reebe_db::state::timers::Timer;
-use crate::engine::EngineState;
-use crate::error::{EngineError, EngineResult};
-use crate::key_gen::KeyGenerator;
 use super::cron::Cron;
 use super::scope;
 use super::throw_event::{terminate_children, terminate_subtree};
 use super::{CommandToWrite, EventToWrite, Writers};
+use crate::engine::EngineState;
+use crate::error::{EngineError, EngineResult};
+use crate::key_gen::KeyGenerator;
+use reebe_bpmn::{
+    BpmnProcess, EventDefinition, FlowElement, StartEvent, SubProcess, TimerEventDefinition,
+    TimerType,
+};
+use reebe_db::state::element_instances::ElementInstance;
+use reebe_db::state::messages::MessageSubscription;
+use reebe_db::state::signal_subscriptions::SignalSubscription;
+use reebe_db::state::timers::Timer;
+use std::collections::HashMap;
+use std::sync::Arc;
 
 /// What an element waits for.
 pub(crate) enum Wait<'a> {
     Timer(&'a TimerEventDefinition),
-    Message { name: &'a str, correlation_key: Option<&'a str> },
+    Message {
+        name: &'a str,
+        correlation_key: Option<&'a str>,
+    },
     Signal(&'a str),
 }
 
@@ -46,8 +52,15 @@ pub(crate) fn wait_of(element: &FlowElement) -> Option<Wait<'_>> {
         FlowElement::StartEvent(e) => e.event_definition.as_ref(),
         FlowElement::BoundaryEvent(e) => e.event_definition.as_ref(),
         FlowElement::ReceiveTask(rt) => {
-            let name = rt.message_name.as_deref().or(rt.message_ref.as_deref()).unwrap_or("");
-            return Some(Wait::Message { name, correlation_key: rt.correlation_key.as_deref() });
+            let name = rt
+                .message_name
+                .as_deref()
+                .or(rt.message_ref.as_deref())
+                .unwrap_or("");
+            return Some(Wait::Message {
+                name,
+                correlation_key: rt.correlation_key.as_deref(),
+            });
         }
         _ => None,
     };
@@ -79,7 +92,10 @@ pub(crate) enum Cycle {
 
 impl Cycle {
     /// The firing after one at `from`.
-    pub(crate) fn next_after(&self, from: chrono::DateTime<chrono::Utc>) -> Option<chrono::DateTime<chrono::Utc>> {
+    pub(crate) fn next_after(
+        &self,
+        from: chrono::DateTime<chrono::Utc>,
+    ) -> Option<chrono::DateTime<chrono::Utc>> {
         match self {
             Cycle::Interval(interval) => Some(from + *interval),
             Cycle::Cron(cron) => cron.next_after(from),
@@ -96,12 +112,20 @@ pub(crate) fn timer_schedule(
     ctx: &reebe_feel::FeelContext,
     now: chrono::DateTime<chrono::Utc>,
 ) -> Schedule {
-    let once = |due| Schedule { due, repetitions: 1, cycle: None };
+    let once = |due| Schedule {
+        due,
+        repetitions: 1,
+        cycle: None,
+    };
     let text = match reebe_feel::parse_and_evaluate(def.expression.trim(), ctx) {
-        Ok(reebe_feel::FeelValue::Duration(ms)) => return once(now + chrono::Duration::milliseconds(ms)),
+        Ok(reebe_feel::FeelValue::Duration(ms)) => {
+            return once(now + chrono::Duration::milliseconds(ms))
+        }
         Ok(reebe_feel::FeelValue::YearsMonthsDuration(months)) => {
             // Calendar arithmetic: a month has no fixed length.
-            let due = u32::try_from(months).ok().and_then(|m| now.checked_add_months(chrono::Months::new(m)));
+            let due = u32::try_from(months)
+                .ok()
+                .and_then(|m| now.checked_add_months(chrono::Months::new(m)));
             return once(due.unwrap_or(now));
         }
         Ok(reebe_feel::FeelValue::DateTime(dt)) => return once(dt),
@@ -116,7 +140,11 @@ pub(crate) fn timer_schedule(
     if def.timer_type == TimerType::Cycle && !text.starts_with('R') {
         if let Some(cron) = Cron::parse(text) {
             return match cron.next_after(now) {
-                Some(due) => Schedule { due, repetitions: -1, cycle: Some(Cycle::Cron(cron)) },
+                Some(due) => Schedule {
+                    due,
+                    repetitions: -1,
+                    cycle: Some(Cycle::Cron(cron)),
+                },
                 None => {
                     tracing::warn!(expression = %text, "Cron expression never matches; firing now");
                     once(now)
@@ -128,7 +156,11 @@ pub(crate) fn timer_schedule(
     if def.timer_type == TimerType::Cycle || text.starts_with('R') {
         let mut parts = text.split('/');
         let count = parts.next().unwrap_or("R").trim_start_matches('R');
-        let repetitions = if count.is_empty() { -1 } else { count.parse().unwrap_or(1) };
+        let repetitions = if count.is_empty() {
+            -1
+        } else {
+            count.parse().unwrap_or(1)
+        };
         let rest: Vec<&str> = parts.collect();
         let (start, period) = match rest.as_slice() {
             [period] => (None, *period),
@@ -161,7 +193,9 @@ pub(crate) fn timer_schedule(
 }
 
 fn parse_date_time(text: &str) -> Option<chrono::DateTime<chrono::Utc>> {
-    chrono::DateTime::parse_from_rfc3339(text.trim()).ok().map(|d| d.with_timezone(&chrono::Utc))
+    chrono::DateTime::parse_from_rfc3339(text.trim())
+        .ok()
+        .map(|d| d.with_timezone(&chrono::Utc))
 }
 
 fn parse_duration(text: &str, ctx: &reebe_feel::FeelContext) -> Option<chrono::Duration> {
@@ -174,7 +208,9 @@ fn parse_duration(text: &str, ctx: &reebe_feel::FeelContext) -> Option<chrono::D
 /// Resolve a subscription's correlation key. A `=` expression is evaluated with
 /// FEEL; Zeebe accepts a string or a number.
 pub(crate) fn correlation_key(expression: Option<&str>, ctx: &reebe_feel::FeelContext) -> String {
-    let Some(expression) = expression else { return String::new() };
+    let Some(expression) = expression else {
+        return String::new();
+    };
     if !reebe_feel::is_feel_expression(expression) {
         return expression.to_string();
     }
@@ -203,20 +239,27 @@ pub(crate) async fn open_wait(
             let schedule = timer_schedule(def, &ctx, state.clock.now());
             insert_timer(state, owner, catch_id, schedule.due, schedule.repetitions).await?;
         }
-        Wait::Message { name, correlation_key: key_expr } => {
+        Wait::Message {
+            name,
+            correlation_key: key_expr,
+        } => {
             let key = correlation_key(key_expr, &ctx);
             let sub_key = key_gen.next_key().await?;
-            state.backend.insert_message_subscription(&MessageSubscription {
-                key: sub_key,
-                message_name: name.to_string(),
-                correlation_key: key.clone(),
-                process_instance_key: owner.process_instance_key,
-                element_instance_key: owner.key,
-                state: "OPENED".to_string(),
-                tenant_id: owner.tenant_id.clone(),
-            }).await?;
+            state
+                .backend
+                .insert_message_subscription(&MessageSubscription {
+                    key: sub_key,
+                    message_name: name.to_string(),
+                    correlation_key: key.clone(),
+                    process_instance_key: owner.process_instance_key,
+                    element_instance_key: owner.key,
+                    state: "OPENED".to_string(),
+                    tenant_id: owner.tenant_id.clone(),
+                })
+                .await?;
             // A message published before the subscription opened correlates now.
-            let buffered = state.backend
+            let buffered = state
+                .backend
                 .get_messages_by_correlation(name, &key, &owner.tenant_id)
                 .await
                 .unwrap_or_default();
@@ -239,17 +282,20 @@ pub(crate) async fn open_wait(
             }
         }
         Wait::Signal(name) => {
-            state.backend.insert_signal_subscription(&SignalSubscription {
-                key: key_gen.next_key().await?,
-                signal_name: name.to_string(),
-                process_instance_key: owner.process_instance_key,
-                element_instance_key: owner.key,
-                element_id: catch_id.to_string(),
-                bpmn_process_id: owner.bpmn_process_id.clone(),
-                process_definition_key: owner.process_definition_key,
-                flow_scope_key: owner.flow_scope_key.unwrap_or(owner.process_instance_key),
-                tenant_id: owner.tenant_id.clone(),
-            }).await?;
+            state
+                .backend
+                .insert_signal_subscription(&SignalSubscription {
+                    key: key_gen.next_key().await?,
+                    signal_name: name.to_string(),
+                    process_instance_key: owner.process_instance_key,
+                    element_instance_key: owner.key,
+                    element_id: catch_id.to_string(),
+                    bpmn_process_id: owner.bpmn_process_id.clone(),
+                    process_definition_key: owner.process_definition_key,
+                    flow_scope_key: owner.flow_scope_key.unwrap_or(owner.process_instance_key),
+                    tenant_id: owner.tenant_id.clone(),
+                })
+                .await?;
         }
     }
     Ok(())
@@ -263,17 +309,20 @@ pub(crate) async fn insert_timer(
     repetitions: i32,
 ) -> EngineResult<()> {
     let key_gen = KeyGenerator::new(Arc::clone(&state.backend), state.partition_id);
-    state.backend.insert_timer(&Timer {
-        key: key_gen.next_key().await?,
-        process_instance_key: Some(owner.process_instance_key),
-        process_definition_key: Some(owner.process_definition_key),
-        element_instance_key: Some(owner.key),
-        element_id: catch_id.to_string(),
-        due_date: due,
-        repetitions,
-        state: "ACTIVE".to_string(),
-        tenant_id: owner.tenant_id.clone(),
-    }).await?;
+    state
+        .backend
+        .insert_timer(&Timer {
+            key: key_gen.next_key().await?,
+            process_instance_key: Some(owner.process_instance_key),
+            process_definition_key: Some(owner.process_definition_key),
+            element_instance_key: Some(owner.key),
+            element_id: catch_id.to_string(),
+            due_date: due,
+            repetitions,
+            state: "ACTIVE".to_string(),
+            tenant_id: owner.tenant_id.clone(),
+        })
+        .await?;
     Ok(())
 }
 
@@ -348,16 +397,19 @@ fn event_subprocesses<'a>(
     process: &'a BpmnProcess,
     scope: &ElementInstance,
 ) -> Vec<(&'a SubProcess, &'a StartEvent)> {
-    let Some(elements) = scope_elements(process, scope) else { return Vec::new() };
+    let Some(elements) = scope_elements(process, scope) else {
+        return Vec::new();
+    };
     elements
         .values()
         .filter_map(|el| match el {
-            FlowElement::SubProcess(sp) if sp.triggered_by_event => sp.start_events.iter().find_map(|id| {
-                match sp.elements.get(id) {
+            FlowElement::SubProcess(sp) if sp.triggered_by_event => sp
+                .start_events
+                .iter()
+                .find_map(|id| match sp.elements.get(id) {
                     Some(FlowElement::StartEvent(se)) => Some((sp, se)),
                     _ => None,
-                }
-            }),
+                }),
             _ => None,
         })
         .collect()
@@ -399,23 +451,33 @@ pub(crate) async fn scope_interrupted(
     if interrupting.is_empty() {
         return Ok(false);
     }
-    let started = state.backend
+    let started = state
+        .backend
         .get_element_instances_by_process_instance(scope.process_instance_key)
         .await?
         .iter()
-        .any(|ei| ei.flow_scope_key == Some(scope.key) && interrupting.contains(&ei.element_id.as_str()));
+        .any(|ei| {
+            ei.flow_scope_key == Some(scope.key) && interrupting.contains(&ei.element_id.as_str())
+        });
     if started {
         return Ok(true);
     }
     let scope_text = scope.key.to_string();
     let is_interrupting = |payload: &serde_json::Value| {
         payload["flowScopeKey"].as_str() == Some(scope_text.as_str())
-            && payload["elementId"].as_str().is_some_and(|id| interrupting.contains(&id))
+            && payload["elementId"]
+                .as_str()
+                .is_some_and(|id| interrupting.contains(&id))
     };
-    if writers.commands.iter().any(|c| c.intent == "ACTIVATE_ELEMENT" && is_interrupting(&c.payload)) {
+    if writers
+        .commands
+        .iter()
+        .any(|c| c.intent == "ACTIVATE_ELEMENT" && is_interrupting(&c.payload))
+    {
         return Ok(true);
     }
-    Ok(state.backend
+    Ok(state
+        .backend
         .get_pending_activations(state.partition_id, position, &scope_text)
         .await?
         .iter()
@@ -423,9 +485,18 @@ pub(crate) async fn scope_interrupted(
 }
 
 /// Cancel the jobs, timers, user tasks and subscriptions of an element instance.
-pub(crate) async fn close_waits(state: &EngineState, element_instance_key: i64) -> EngineResult<()> {
-    state.backend.cancel_jobs_by_element_instance(element_instance_key).await?;
-    state.backend.cancel_element_instance_waits(element_instance_key).await?;
+pub(crate) async fn close_waits(
+    state: &EngineState,
+    element_instance_key: i64,
+) -> EngineResult<()> {
+    state
+        .backend
+        .cancel_jobs_by_element_instance(element_instance_key)
+        .await?;
+    state
+        .backend
+        .cancel_element_instance_waits(element_instance_key)
+        .await?;
     Ok(())
 }
 
@@ -464,7 +535,10 @@ pub(crate) async fn trigger(
     if owner.state != "ACTIVATED" {
         return Ok(Triggered::Ignored);
     }
-    let pd = state.backend.get_process_definition_by_key(owner.process_definition_key).await?;
+    let pd = state
+        .backend
+        .get_process_definition_by_key(owner.process_definition_key)
+        .await?;
     let process = reebe_bpmn::parse_bpmn(&pd.bpmn_xml)
         .map_err(|e| EngineError::BpmnParse(e.to_string()))?
         .into_iter()
@@ -505,7 +579,10 @@ pub(crate) async fn trigger(
     // An event-based gateway: the first event wins, the others are cancelled.
     if owner.element_type == "EVENT_BASED_GATEWAY" {
         close_waits(state, owner.key).await?;
-        state.backend.update_element_instance_state(owner.key, "COMPLETED").await?;
+        state
+            .backend
+            .update_element_instance_state(owner.key, "COMPLETED")
+            .await?;
         for intent in ["ELEMENT_COMPLETING", "ELEMENT_COMPLETED"] {
             writers.events.push(element_event(&owner, intent));
         }
@@ -541,7 +618,16 @@ pub(crate) async fn trigger(
         .into_iter()
         .find(|(_, start)| start.id == catch_id)
     {
-        return trigger_event_subprocess(state, writers, &process, &owner, (esp, start), variables, position).await;
+        return trigger_event_subprocess(
+            state,
+            writers,
+            &process,
+            &owner,
+            (esp, start),
+            variables,
+            position,
+        )
+        .await;
     }
 
     // A boundary event of the owner activity.
@@ -556,7 +642,11 @@ pub(crate) async fn trigger(
         terminate_subtree(state, writers, &owner).await?;
     }
     activate_triggered(writers, &owner, &catch_id, flow_scope_key, variables);
-    Ok(if interrupting { Triggered::Done } else { Triggered::KeepWaiting })
+    Ok(if interrupting {
+        Triggered::Done
+    } else {
+        Triggered::KeepWaiting
+    })
 }
 
 /// Run the event sub-process `esp` of the flow scope `scope`, whose start event
@@ -579,11 +669,16 @@ async fn trigger_event_subprocess(
         let (mut element_ids, mut message_names) = (Vec::new(), Vec::new());
         for (_, other) in event_subprocesses(process, scope) {
             element_ids.push(other.id.clone());
-            if let Some(Wait::Message { name, .. }) = wait_of(&FlowElement::StartEvent(other.clone())) {
+            if let Some(Wait::Message { name, .. }) =
+                wait_of(&FlowElement::StartEvent(other.clone()))
+            {
                 message_names.push(name.to_string());
             }
         }
-        state.backend.cancel_catch_waits(scope.key, &element_ids, &message_names).await?;
+        state
+            .backend
+            .cancel_catch_waits(scope.key, &element_ids, &message_names)
+            .await?;
         terminate_children(state, writers, scope).await?;
     }
     // The start event completes with the event's variables, which propagate as
@@ -602,12 +697,21 @@ async fn trigger_event_subprocess(
             "tenantId": scope.tenant_id,
         }),
     });
-    Ok(if start.interrupting { Triggered::Done } else { Triggered::KeepWaiting })
+    Ok(if start.interrupting {
+        Triggered::Done
+    } else {
+        Triggered::KeepWaiting
+    })
 }
 
 /// The catch element a message for `owner` is meant for.
-fn message_catch_element(process: &BpmnProcess, owner: &ElementInstance, name: &str) -> Option<String> {
-    let matches = |el: &FlowElement| matches!(wait_of(el), Some(Wait::Message { name: n, .. }) if n == name);
+fn message_catch_element(
+    process: &BpmnProcess,
+    owner: &ElementInstance,
+    name: &str,
+) -> Option<String> {
+    let matches =
+        |el: &FlowElement| matches!(wait_of(el), Some(Wait::Message { name: n, .. }) if n == name);
     if owner.element_type == "EVENT_BASED_GATEWAY" {
         return process
             .outgoing_flows_recursive(&owner.element_id)
@@ -680,23 +784,27 @@ fn element_event(ei: &ElementInstance, intent: &str) -> EventToWrite {
 
 /// After a non-interrupting cycle timer on a boundary event or event sub-process
 /// start event fires, schedule its next firing.
-pub(crate) async fn reschedule_cycle(
-    state: &EngineState,
-    timer: &Timer,
-) -> EngineResult<()> {
+pub(crate) async fn reschedule_cycle(state: &EngineState, timer: &Timer) -> EngineResult<()> {
     if timer.repetitions == 1 {
         return Ok(());
     }
-    let Some(owner_key) = timer.element_instance_key else { return Ok(()) };
-    let Ok(owner) = state.backend.get_element_instance_by_key(owner_key).await else { return Ok(()) };
+    let Some(owner_key) = timer.element_instance_key else {
+        return Ok(());
+    };
+    let Ok(owner) = state.backend.get_element_instance_by_key(owner_key).await else {
+        return Ok(());
+    };
     if owner.state != "ACTIVATED" {
         return Ok(());
     }
-    let pd = state.backend.get_process_definition_by_key(owner.process_definition_key).await?;
-    let Some(process) = reebe_bpmn::parse_bpmn(&pd.bpmn_xml)
-        .ok()
-        .and_then(|ps| ps.into_iter().find(|p| p.id == owner.bpmn_process_id || p.id == pd.bpmn_process_id))
-    else {
+    let pd = state
+        .backend
+        .get_process_definition_by_key(owner.process_definition_key)
+        .await?;
+    let Some(process) = reebe_bpmn::parse_bpmn(&pd.bpmn_xml).ok().and_then(|ps| {
+        ps.into_iter()
+            .find(|p| p.id == owner.bpmn_process_id || p.id == pd.bpmn_process_id)
+    }) else {
         return Ok(());
     };
     let definition = match process.get_element_recursive(&timer.element_id) {
@@ -704,10 +812,20 @@ pub(crate) async fn reschedule_cycle(
         Some(FlowElement::StartEvent(se)) => se.event_definition.as_ref(),
         _ => None,
     };
-    let Some(EventDefinition::Timer(def)) = definition else { return Ok(()) };
+    let Some(EventDefinition::Timer(def)) = definition else {
+        return Ok(());
+    };
     let ctx = scope::feel_context(state, owner.process_instance_key, owner.key).await;
-    let Some(cycle) = timer_schedule(def, &ctx, state.clock.now()).cycle else { return Ok(()) };
-    let Some(next) = cycle.next_after(timer.due_date) else { return Ok(()) };
-    let remaining = if timer.repetitions < 0 { -1 } else { timer.repetitions - 1 };
+    let Some(cycle) = timer_schedule(def, &ctx, state.clock.now()).cycle else {
+        return Ok(());
+    };
+    let Some(next) = cycle.next_after(timer.due_date) else {
+        return Ok(());
+    };
+    let remaining = if timer.repetitions < 0 {
+        -1
+    } else {
+        timer.repetitions - 1
+    };
     insert_timer(state, &owner, &timer.element_id, next, remaining).await
 }

@@ -1,3 +1,10 @@
+use crate::app::ApiState;
+use crate::dto::identity::{
+    CreateTenantRequest, CreateUserRequest, SearchTenantsRequest, SearchUsersRequest, TenantDto,
+    UserDto,
+};
+use crate::error::{ApiError, ApiResult};
+use crate::pagination::{PageRequest, PageResponse};
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
@@ -6,17 +13,9 @@ use reebe_db::state::identity::{
     AuthorizationRepository, Group, GroupRepository, Role, RoleRepository, TenantRepository,
     UserRepository,
 };
-use sqlx::Row;
-use crate::app::ApiState;
-use crate::dto::identity::{
-    CreateTenantRequest, CreateUserRequest,
-    SearchTenantsRequest, SearchUsersRequest,
-    TenantDto, UserDto,
-};
-use crate::error::{ApiError, ApiResult};
-use crate::pagination::{PageRequest, PageResponse};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
+use sqlx::Row;
 
 // ---- User handlers ----
 
@@ -28,12 +27,10 @@ pub async fn create_user(
     let password_hash = match req.password {
         Some(ref pw) => {
             let pw = pw.clone();
-            let hash = tokio::task::spawn_blocking(move || {
-                crate::auth::basic::hash_password(&pw)
-            })
-            .await
-            .map_err(|e| ApiError::InternalError(e.to_string()))?
-            .map_err(|e| ApiError::InternalError(e.to_string()))?;
+            let hash = tokio::task::spawn_blocking(move || crate::auth::basic::hash_password(&pw))
+                .await
+                .map_err(|e| ApiError::InternalError(e.to_string()))?
+                .map_err(|e| ApiError::InternalError(e.to_string()))?;
             Some(hash)
         }
         None => None,
@@ -65,10 +62,13 @@ pub async fn get_user(
     Path(username): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
     let repo = UserRepository::new(&state.pool);
-    let user = repo.get_by_username(&username).await.map_err(|_| ApiError::NotFound {
-        resource: "user".to_string(),
-        key: username.clone(),
-    })?;
+    let user = repo
+        .get_by_username(&username)
+        .await
+        .map_err(|_| ApiError::NotFound {
+            resource: "user".to_string(),
+            key: username.clone(),
+        })?;
 
     Ok(Json(UserDto::from(user)))
 }
@@ -101,7 +101,9 @@ pub async fn search_users(
 ) -> ApiResult<impl IntoResponse> {
     let page = req.page.unwrap_or_default();
     let page_size = page.page_size_or_default();
-    let after_username = page.search_after.as_ref()
+    let after_username = page
+        .search_after
+        .as_ref()
         .and_then(|v| v.first())
         .and_then(|v| v.as_str())
         .map(|s| s.to_string());
@@ -146,10 +148,13 @@ pub async fn get_tenant(
     Path(tenant_id): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
     let repo = TenantRepository::new(&state.pool);
-    let tenant = repo.get_by_id(&tenant_id).await.map_err(|_| ApiError::NotFound {
-        resource: "tenant".to_string(),
-        key: tenant_id.clone(),
-    })?;
+    let tenant = repo
+        .get_by_id(&tenant_id)
+        .await
+        .map_err(|_| ApiError::NotFound {
+            resource: "tenant".to_string(),
+            key: tenant_id.clone(),
+        })?;
 
     Ok(Json(TenantDto::from(tenant)))
 }
@@ -286,10 +291,13 @@ pub async fn get_role(
     Path(role_id): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
     let repo = RoleRepository::new(&state.pool);
-    let role = repo.get_by_id(&role_id).await.map_err(|_| ApiError::NotFound {
-        resource: "role".to_string(),
-        key: role_id.clone(),
-    })?;
+    let role = repo
+        .get_by_id(&role_id)
+        .await
+        .map_err(|_| ApiError::NotFound {
+            resource: "role".to_string(),
+            key: role_id.clone(),
+        })?;
 
     Ok(Json(RoleDto::from(role)))
 }
@@ -322,7 +330,9 @@ pub async fn search_roles(
 ) -> ApiResult<impl IntoResponse> {
     let page = req.page.unwrap_or_default();
     let page_size = page.page_size_or_default();
-    let after_id = page.search_after.as_ref()
+    let after_id = page
+        .search_after
+        .as_ref()
         .and_then(|v| v.first())
         .and_then(|v| v.as_str())
         .map(|s| s.to_string());
@@ -398,10 +408,13 @@ pub async fn get_group(
     Path(group_id): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
     let repo = GroupRepository::new(&state.pool);
-    let group = repo.get_by_id(&group_id).await.map_err(|_| ApiError::NotFound {
-        resource: "group".to_string(),
-        key: group_id.clone(),
-    })?;
+    let group = repo
+        .get_by_id(&group_id)
+        .await
+        .map_err(|_| ApiError::NotFound {
+            resource: "group".to_string(),
+            key: group_id.clone(),
+        })?;
 
     Ok(Json(GroupDto::from(group)))
 }
@@ -434,7 +447,9 @@ pub async fn search_groups(
 ) -> ApiResult<impl IntoResponse> {
     let page = req.page.unwrap_or_default();
     let page_size = page.page_size_or_default();
-    let after_id = page.search_after.as_ref()
+    let after_id = page
+        .search_after
+        .as_ref()
         .and_then(|v| v.first())
         .and_then(|v| v.as_str())
         .map(|s| s.to_string());
@@ -524,7 +539,9 @@ pub async fn search_tenant_members(
         })
         .collect();
     let total = items.len();
-    Ok(Json(json!({ "items": items, "page": { "totalItems": total } })))
+    Ok(Json(
+        json!({ "items": items, "page": { "totalItems": total } }),
+    ))
 }
 
 // Convenience wrappers for user/group/role-specific routes
@@ -632,15 +649,12 @@ pub async fn create_authorization(
     Json(req): Json<serde_json::Value>,
 ) -> ApiResult<impl IntoResponse> {
     let repo = AuthorizationRepository::new(&state.pool);
-    let key = req
-        .get("key")
-        .and_then(|v| v.as_i64())
-        .unwrap_or_else(|| {
-            std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .unwrap_or_default()
-                .as_millis() as i64
-        });
+    let key = req.get("key").and_then(|v| v.as_i64()).unwrap_or_else(|| {
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap_or_default()
+            .as_millis() as i64
+    });
     let owner_key = req
         .get("ownerKey")
         .and_then(|v| v.as_str())
@@ -705,9 +719,7 @@ pub async fn search_authorizations(
 ) -> ApiResult<impl IntoResponse> {
     let repo = AuthorizationRepository::new(&state.pool);
 
-    let owner_key = req
-        .get("ownerKey")
-        .and_then(|v| v.as_str());
+    let owner_key = req.get("ownerKey").and_then(|v| v.as_str());
     let owner_type = req
         .get("ownerType")
         .and_then(|v| v.as_str())
@@ -741,4 +753,3 @@ pub async fn search_authorizations(
         "page": { "totalItems": total }
     })))
 }
-

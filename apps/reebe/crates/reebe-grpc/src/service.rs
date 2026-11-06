@@ -8,8 +8,8 @@ use tokio_stream::wrappers::ReceiverStream;
 use tokio_stream::Stream;
 use tonic::{Request, Response, Status};
 
-use reebe_engine::EngineHandle;
 use reebe_db::DbPool;
+use reebe_engine::EngineHandle;
 
 pub mod proto {
     pub mod gateway_protocol {
@@ -40,7 +40,11 @@ impl GatewayService {
     /// Deploy resources as one deployment, as the REST API does (the engine's
     /// `DEPLOYMENT` `CREATE` takes each resource's name and base64 content), and
     /// describe what was deployed: its processes, decisions and decision requirements.
-    async fn deploy(&self, resources: Vec<(String, Vec<u8>)>, tenant_id: &str) -> Result<(i64, Vec<Deployment>), Status> {
+    async fn deploy(
+        &self,
+        resources: Vec<(String, Vec<u8>)>,
+        tenant_id: &str,
+    ) -> Result<(i64, Vec<Deployment>), Status> {
         use base64::Engine as _;
         let payload = serde_json::json!({
             "resources": resources.iter().map(|(name, content)| serde_json::json!({
@@ -48,11 +52,20 @@ impl GatewayService {
                 "content": base64::engine::general_purpose::STANDARD.encode(content),
             })).collect::<Vec<_>>(),
         });
-        let result = self.state.engine
-            .send_command("DEPLOYMENT".to_string(), "CREATE".to_string(), payload, tenant_id.to_string())
+        let result = self
+            .state
+            .engine
+            .send_command(
+                "DEPLOYMENT".to_string(),
+                "CREATE".to_string(),
+                payload,
+                tenant_id.to_string(),
+            )
             .await
             .map_err(engine_err)?;
-        let text = |value: &serde_json::Value, name: &str| value[name].as_str().unwrap_or_default().to_string();
+        let text = |value: &serde_json::Value, name: &str| {
+            value[name].as_str().unwrap_or_default().to_string()
+        };
         let version = |value: &serde_json::Value| value["version"].as_i64().unwrap_or(0) as i32;
         let key = |value: &serde_json::Value, name: &str| key_of(&value[name]).unwrap_or(0);
         let list = |name: &str| result[name].as_array().cloned().unwrap_or_default();
@@ -83,14 +96,16 @@ impl GatewayService {
         }
         for r in list("decisionRequirements") {
             deployments.push(Deployment {
-                metadata: Some(deployment::Metadata::DecisionRequirements(DecisionRequirementsMetadata {
-                    dmn_decision_requirements_id: text(&r, "decisionRequirementsId"),
-                    dmn_decision_requirements_name: text(&r, "decisionRequirementsName"),
-                    version: version(&r),
-                    decision_requirements_key: key(&r, "decisionRequirementsKey"),
-                    resource_name: text(&r, "resourceName"),
-                    tenant_id: text(&r, "tenantId"),
-                })),
+                metadata: Some(deployment::Metadata::DecisionRequirements(
+                    DecisionRequirementsMetadata {
+                        dmn_decision_requirements_id: text(&r, "decisionRequirementsId"),
+                        dmn_decision_requirements_name: text(&r, "decisionRequirementsName"),
+                        version: version(&r),
+                        decision_requirements_key: key(&r, "decisionRequirementsKey"),
+                        resource_name: text(&r, "resourceName"),
+                        tenant_id: text(&r, "tenantId"),
+                    },
+                )),
             });
         }
         Ok((key(&result, "deploymentKey"), deployments))
@@ -104,7 +119,9 @@ fn engine_err(e: reebe_engine::error::EngineError) -> Status {
     use reebe_engine::error::EngineError;
     match e {
         EngineError::NotFound(message) => Status::not_found(message),
-        EngineError::InvalidArgument(message) | EngineError::BpmnParse(message) => Status::invalid_argument(message),
+        EngineError::InvalidArgument(message) | EngineError::BpmnParse(message) => {
+            Status::invalid_argument(message)
+        }
         EngineError::InvalidState(message) => Status::failed_precondition(message),
         other => Status::internal(other.to_string()),
     }
@@ -112,10 +129,7 @@ fn engine_err(e: reebe_engine::error::EngineError) -> Status {
 
 // Helper: convert a DB Job to proto ActivatedJob
 fn job_to_proto(job: reebe_db::state::jobs::Job) -> ActivatedJob {
-    let deadline_ms = job
-        .deadline
-        .map(|d| d.timestamp_millis())
-        .unwrap_or(0);
+    let deadline_ms = job.deadline.map(|d| d.timestamp_millis()).unwrap_or(0);
     ActivatedJob {
         key: job.key,
         r#type: job.job_type,
@@ -163,12 +177,17 @@ fn variables_document(json: &str) -> Result<serde_json::Value, Status> {
 
 /// A key in an engine response, which gives keys as strings.
 fn key_of(value: &serde_json::Value) -> Option<i64> {
-    value.as_i64().or_else(|| value.as_str().and_then(|s| s.parse().ok()))
+    value
+        .as_i64()
+        .or_else(|| value.as_str().and_then(|s| s.parse().ok()))
 }
 
 /// The engine's `PROCESS_INSTANCE_CREATION` `CREATE` command, as the REST API sends it:
 /// a definition key of 0 and an empty process id mean "not given".
-fn create_process_instance_payload(req: &CreateProcessInstanceRequest, tenant_id: &str) -> Result<serde_json::Value, Status> {
+fn create_process_instance_payload(
+    req: &CreateProcessInstanceRequest,
+    tenant_id: &str,
+) -> Result<serde_json::Value, Status> {
     let mut payload = serde_json::json!({
         "version": req.version,
         "variables": variables_document(&req.variables)?,
@@ -188,7 +207,9 @@ fn create_process_instance_payload(req: &CreateProcessInstanceRequest, tenant_id
 /// The engine command for `ModifyProcessInstance`, as Zeebe's gateway maps it
 /// (`BrokerModifyProcessInstanceRequest`): the instructions' fields as they are, and
 /// each variable instruction's document checked as every `variables` document is.
-fn modify_process_instance_payload(req: &ModifyProcessInstanceRequest) -> Result<serde_json::Value, Status> {
+fn modify_process_instance_payload(
+    req: &ModifyProcessInstanceRequest,
+) -> Result<serde_json::Value, Status> {
     let variable_instructions = |instructions: &[VariableInstruction]| {
         instructions
             .iter()
@@ -237,13 +258,20 @@ fn complete_job_payload(req: CompleteJobRequest) -> Result<serde_json::Value, St
         }
         if let Some(c) = result.corrections {
             let mut corrections = serde_json::Map::new();
-            let strings = [("assignee", c.assignee), ("dueDate", c.due_date), ("followUpDate", c.follow_up_date)];
+            let strings = [
+                ("assignee", c.assignee),
+                ("dueDate", c.due_date),
+                ("followUpDate", c.follow_up_date),
+            ];
             for (name, value) in strings {
                 if let Some(value) = value {
                     corrections.insert(name.into(), value.into());
                 }
             }
-            for (name, list) in [("candidateUsers", c.candidate_users), ("candidateGroups", c.candidate_groups)] {
+            for (name, list) in [
+                ("candidateUsers", c.candidate_users),
+                ("candidateGroups", c.candidate_groups),
+            ] {
                 if let Some(list) = list {
                     corrections.insert(name.into(), list.values.into());
                 }
@@ -324,7 +352,11 @@ impl Gateway for GatewayService {
         request: Request<DeployProcessRequest>,
     ) -> Result<Response<DeployProcessResponse>, Status> {
         let req = request.into_inner();
-        let resources = req.processes.into_iter().map(|p| (p.name, p.definition)).collect();
+        let resources = req
+            .processes
+            .into_iter()
+            .map(|p| (p.name, p.definition))
+            .collect();
         let (key, deployments) = self.deploy(resources, "<default>").await?;
         let processes = deployments
             .into_iter()
@@ -341,10 +373,22 @@ impl Gateway for GatewayService {
         request: Request<DeployResourceRequest>,
     ) -> Result<Response<DeployResourceResponse>, Status> {
         let req = request.into_inner();
-        let tenant_id = if req.tenant_id.is_empty() { "<default>".to_string() } else { req.tenant_id.clone() };
-        let resources = req.resources.into_iter().map(|r| (r.name, r.content)).collect();
+        let tenant_id = if req.tenant_id.is_empty() {
+            "<default>".to_string()
+        } else {
+            req.tenant_id.clone()
+        };
+        let resources = req
+            .resources
+            .into_iter()
+            .map(|r| (r.name, r.content))
+            .collect();
         let (key, deployments) = self.deploy(resources, &tenant_id).await?;
-        Ok(Response::new(DeployResourceResponse { key, deployments, tenant_id }))
+        Ok(Response::new(DeployResourceResponse {
+            key,
+            deployments,
+            tenant_id,
+        }))
     }
 
     // ── Process Instances ─────────────────────────────────────────────────────
@@ -354,17 +398,32 @@ impl Gateway for GatewayService {
         request: Request<CreateProcessInstanceRequest>,
     ) -> Result<Response<CreateProcessInstanceResponse>, Status> {
         let req = request.into_inner();
-        let tenant_id = if req.tenant_id.is_empty() { "<default>".to_string() } else { req.tenant_id.clone() };
+        let tenant_id = if req.tenant_id.is_empty() {
+            "<default>".to_string()
+        } else {
+            req.tenant_id.clone()
+        };
         let payload = create_process_instance_payload(&req, &tenant_id)?;
 
-        let result = self.state.engine
-            .send_command("PROCESS_INSTANCE_CREATION".to_string(), "CREATE".to_string(), payload, tenant_id.clone())
+        let result = self
+            .state
+            .engine
+            .send_command(
+                "PROCESS_INSTANCE_CREATION".to_string(),
+                "CREATE".to_string(),
+                payload,
+                tenant_id.clone(),
+            )
             .await
             .map_err(engine_err)?;
 
         Ok(Response::new(CreateProcessInstanceResponse {
-            process_definition_key: key_of(&result["processDefinitionKey"]).unwrap_or(req.process_definition_key),
-            bpmn_process_id: result["bpmnProcessId"].as_str().unwrap_or(&req.bpmn_process_id).to_string(),
+            process_definition_key: key_of(&result["processDefinitionKey"])
+                .unwrap_or(req.process_definition_key),
+            bpmn_process_id: result["bpmnProcessId"]
+                .as_str()
+                .unwrap_or(&req.bpmn_process_id)
+                .to_string(),
             version: result["version"].as_i64().unwrap_or(req.version as i64) as i32,
             process_instance_key: key_of(&result["processInstanceKey"]).unwrap_or(0),
             tenant_id,
@@ -376,20 +435,41 @@ impl Gateway for GatewayService {
         request: Request<CreateProcessInstanceWithResultRequest>,
     ) -> Result<Response<CreateProcessInstanceWithResultResponse>, Status> {
         let req = request.into_inner();
-        let timeout_ms = if req.request_timeout > 0 { req.request_timeout as u64 } else { 30_000 };
-        let inner = req.request.ok_or_else(|| Status::invalid_argument("Missing request field"))?;
-        let tenant_id = if inner.tenant_id.is_empty() { "<default>".to_string() } else { inner.tenant_id.clone() };
+        let timeout_ms = if req.request_timeout > 0 {
+            req.request_timeout as u64
+        } else {
+            30_000
+        };
+        let inner = req
+            .request
+            .ok_or_else(|| Status::invalid_argument("Missing request field"))?;
+        let tenant_id = if inner.tenant_id.is_empty() {
+            "<default>".to_string()
+        } else {
+            inner.tenant_id.clone()
+        };
 
         let payload = create_process_instance_payload(&inner, &tenant_id)?;
 
-        let result = self.state.engine
-            .send_command("PROCESS_INSTANCE_CREATION".to_string(), "CREATE".to_string(), payload, tenant_id.clone())
+        let result = self
+            .state
+            .engine
+            .send_command(
+                "PROCESS_INSTANCE_CREATION".to_string(),
+                "CREATE".to_string(),
+                payload,
+                tenant_id.clone(),
+            )
             .await
             .map_err(engine_err)?;
 
         let instance_key = key_of(&result["processInstanceKey"]).unwrap_or(0);
-        let pd_key = key_of(&result["processDefinitionKey"]).unwrap_or(inner.process_definition_key);
-        let bpmn_process_id = result["bpmnProcessId"].as_str().unwrap_or(&inner.bpmn_process_id).to_string();
+        let pd_key =
+            key_of(&result["processDefinitionKey"]).unwrap_or(inner.process_definition_key);
+        let bpmn_process_id = result["bpmnProcessId"]
+            .as_str()
+            .unwrap_or(&inner.bpmn_process_id)
+            .to_string();
         let version = result["version"].as_i64().unwrap_or(inner.version as i64) as i32;
 
         // Poll until instance completes or timeout
@@ -417,9 +497,16 @@ impl Gateway for GatewayService {
         request: Request<CancelProcessInstanceRequest>,
     ) -> Result<Response<CancelProcessInstanceResponse>, Status> {
         let req = request.into_inner();
-        let payload = serde_json::json!({ "processInstanceKey": req.process_instance_key.to_string() });
-        self.state.engine
-            .send_command("PROCESS_INSTANCE".to_string(), "CANCEL".to_string(), payload, "<default>".to_string())
+        let payload =
+            serde_json::json!({ "processInstanceKey": req.process_instance_key.to_string() });
+        self.state
+            .engine
+            .send_command(
+                "PROCESS_INSTANCE".to_string(),
+                "CANCEL".to_string(),
+                payload,
+                "<default>".to_string(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(CancelProcessInstanceResponse {}))
@@ -431,8 +518,14 @@ impl Gateway for GatewayService {
     ) -> Result<Response<ModifyProcessInstanceResponse>, Status> {
         let req = request.into_inner();
         let payload = modify_process_instance_payload(&req)?;
-        self.state.engine
-            .send_command("PROCESS_INSTANCE_MODIFICATION".to_string(), "MODIFY".to_string(), payload, "<default>".to_string())
+        self.state
+            .engine
+            .send_command(
+                "PROCESS_INSTANCE_MODIFICATION".to_string(),
+                "MODIFY".to_string(),
+                payload,
+                "<default>".to_string(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(ModifyProcessInstanceResponse {}))
@@ -454,8 +547,14 @@ impl Gateway for GatewayService {
                 })).collect::<Vec<_>>(),
             },
         });
-        self.state.engine
-            .send_command("PROCESS_INSTANCE_MIGRATION".to_string(), "MIGRATE".to_string(), payload, "<default>".to_string())
+        self.state
+            .engine
+            .send_command(
+                "PROCESS_INSTANCE_MIGRATION".to_string(),
+                "MIGRATE".to_string(),
+                payload,
+                "<default>".to_string(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(MigrateProcessInstanceResponse {}))
@@ -463,7 +562,8 @@ impl Gateway for GatewayService {
 
     // ── Jobs ──────────────────────────────────────────────────────────────────
 
-    type ActivateJobsStream = Pin<Box<dyn Stream<Item = Result<ActivateJobsResponse, Status>> + Send>>;
+    type ActivateJobsStream =
+        Pin<Box<dyn Stream<Item = Result<ActivateJobsResponse, Status>> + Send>>;
 
     async fn activate_jobs(
         &self,
@@ -482,11 +582,17 @@ impl Gateway for GatewayService {
 
         tokio::spawn(async move {
             // Try immediate activation
-            match reebe_db::state::jobs::activate_jobs(&pool, &job_type, &worker, max_jobs, timeout_ms).await {
+            match reebe_db::state::jobs::activate_jobs(
+                &pool, &job_type, &worker, max_jobs, timeout_ms,
+            )
+            .await
+            {
                 Ok(jobs) if !jobs.is_empty() => {
-                    let _ = tx.send(Ok(ActivateJobsResponse {
-                        jobs: jobs.into_iter().map(job_to_proto).collect(),
-                    })).await;
+                    let _ = tx
+                        .send(Ok(ActivateJobsResponse {
+                            jobs: jobs.into_iter().map(job_to_proto).collect(),
+                        }))
+                        .await;
                     return;
                 }
                 Err(e) => {
@@ -505,14 +611,21 @@ impl Gateway for GatewayService {
             let _ = tokio::time::timeout(
                 Duration::from_millis(request_timeout_ms.unsigned_abs()),
                 notifier.notified(),
-            ).await;
+            )
+            .await;
 
             // Try again
-            match reebe_db::state::jobs::activate_jobs(&pool, &job_type, &worker, max_jobs, timeout_ms).await {
+            match reebe_db::state::jobs::activate_jobs(
+                &pool, &job_type, &worker, max_jobs, timeout_ms,
+            )
+            .await
+            {
                 Ok(jobs) if !jobs.is_empty() => {
-                    let _ = tx.send(Ok(ActivateJobsResponse {
-                        jobs: jobs.into_iter().map(job_to_proto).collect(),
-                    })).await;
+                    let _ = tx
+                        .send(Ok(ActivateJobsResponse {
+                            jobs: jobs.into_iter().map(job_to_proto).collect(),
+                        }))
+                        .await;
                 }
                 _ => {} // empty or error — close stream
             }
@@ -521,7 +634,8 @@ impl Gateway for GatewayService {
         Ok(Response::new(Box::pin(ReceiverStream::new(rx))))
     }
 
-    type StreamActivatedJobsStream = Pin<Box<dyn Stream<Item = Result<ActivatedJob, Status>> + Send>>;
+    type StreamActivatedJobsStream =
+        Pin<Box<dyn Stream<Item = Result<ActivatedJob, Status>> + Send>>;
 
     async fn stream_activated_jobs(
         &self,
@@ -539,7 +653,11 @@ impl Gateway for GatewayService {
         tokio::spawn(async move {
             loop {
                 // Try to activate a batch
-                match reebe_db::state::jobs::activate_jobs(&pool, &job_type, &worker, 32, timeout_ms).await {
+                match reebe_db::state::jobs::activate_jobs(
+                    &pool, &job_type, &worker, 32, timeout_ms,
+                )
+                .await
+                {
                     Ok(jobs) => {
                         for job in jobs {
                             if tx.send(Ok(job_to_proto(job))).await.is_err() {
@@ -565,8 +683,14 @@ impl Gateway for GatewayService {
         request: Request<CompleteJobRequest>,
     ) -> Result<Response<CompleteJobResponse>, Status> {
         let payload = complete_job_payload(request.into_inner())?;
-        self.state.engine
-            .send_command("JOB".to_string(), "COMPLETE".to_string(), payload, "<default>".to_string())
+        self.state
+            .engine
+            .send_command(
+                "JOB".to_string(),
+                "COMPLETE".to_string(),
+                payload,
+                "<default>".to_string(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(CompleteJobResponse {}))
@@ -584,8 +708,14 @@ impl Gateway for GatewayService {
             "retryBackOff": req.retry_back_off,
             "variables": variables_document(&req.variables)?,
         });
-        self.state.engine
-            .send_command("JOB".to_string(), "FAIL".to_string(), payload, "<default>".to_string())
+        self.state
+            .engine
+            .send_command(
+                "JOB".to_string(),
+                "FAIL".to_string(),
+                payload,
+                "<default>".to_string(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(FailJobResponse {}))
@@ -602,8 +732,14 @@ impl Gateway for GatewayService {
             "errorMessage": req.error_message,
             "variables": variables_document(&req.variables)?,
         });
-        self.state.engine
-            .send_command("JOB".to_string(), "THROW_ERROR".to_string(), payload, "<default>".to_string())
+        self.state
+            .engine
+            .send_command(
+                "JOB".to_string(),
+                "THROW_ERROR".to_string(),
+                payload,
+                "<default>".to_string(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(ThrowErrorResponse {}))
@@ -618,8 +754,14 @@ impl Gateway for GatewayService {
             "jobKey": req.job_key.to_string(),
             "retries": req.retries,
         });
-        self.state.engine
-            .send_command("JOB".to_string(), "UPDATE_RETRIES".to_string(), payload, "<default>".to_string())
+        self.state
+            .engine
+            .send_command(
+                "JOB".to_string(),
+                "UPDATE_RETRIES".to_string(),
+                payload,
+                "<default>".to_string(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(UpdateJobRetriesResponse {}))
@@ -634,8 +776,14 @@ impl Gateway for GatewayService {
             "jobKey": req.job_key.to_string(),
             "timeout": req.timeout,
         });
-        self.state.engine
-            .send_command("JOB".to_string(), "UPDATE_TIMEOUT".to_string(), payload, "<default>".to_string())
+        self.state
+            .engine
+            .send_command(
+                "JOB".to_string(),
+                "UPDATE_TIMEOUT".to_string(),
+                payload,
+                "<default>".to_string(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(UpdateJobTimeoutResponse {}))
@@ -653,8 +801,15 @@ impl Gateway for GatewayService {
             "variables": variables_document(&req.variables)?,
             "local": req.local,
         });
-        let result = self.state.engine
-            .send_command("VARIABLE_DOCUMENT".to_string(), "UPDATE".to_string(), payload, "<default>".to_string())
+        let result = self
+            .state
+            .engine
+            .send_command(
+                "VARIABLE_DOCUMENT".to_string(),
+                "UPDATE".to_string(),
+                payload,
+                "<default>".to_string(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(SetVariablesResponse {
@@ -669,7 +824,11 @@ impl Gateway for GatewayService {
         request: Request<PublishMessageRequest>,
     ) -> Result<Response<PublishMessageResponse>, Status> {
         let req = request.into_inner();
-        let tenant_id = if req.tenant_id.is_empty() { "<default>".to_string() } else { req.tenant_id.clone() };
+        let tenant_id = if req.tenant_id.is_empty() {
+            "<default>".to_string()
+        } else {
+            req.tenant_id.clone()
+        };
         let payload = serde_json::json!({
             "messageName": req.name,
             "correlationKey": req.correlation_key,
@@ -678,8 +837,15 @@ impl Gateway for GatewayService {
             "variables": variables_document(&req.variables)?,
             "tenantId": tenant_id,
         });
-        let result = self.state.engine
-            .send_command("MESSAGE".to_string(), "PUBLISH".to_string(), payload, tenant_id.clone())
+        let result = self
+            .state
+            .engine
+            .send_command(
+                "MESSAGE".to_string(),
+                "PUBLISH".to_string(),
+                payload,
+                tenant_id.clone(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(PublishMessageResponse {
@@ -696,8 +862,14 @@ impl Gateway for GatewayService {
     ) -> Result<Response<ResolveIncidentResponse>, Status> {
         let req = request.into_inner();
         let payload = serde_json::json!({ "incidentKey": req.incident_key.to_string() });
-        self.state.engine
-            .send_command("INCIDENT".to_string(), "RESOLVE".to_string(), payload, "<default>".to_string())
+        self.state
+            .engine
+            .send_command(
+                "INCIDENT".to_string(),
+                "RESOLVE".to_string(),
+                payload,
+                "<default>".to_string(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(ResolveIncidentResponse {}))
@@ -710,14 +882,25 @@ impl Gateway for GatewayService {
         request: Request<BroadcastSignalRequest>,
     ) -> Result<Response<BroadcastSignalResponse>, Status> {
         let req = request.into_inner();
-        let tenant_id = if req.tenant_id.is_empty() { "<default>".to_string() } else { req.tenant_id.clone() };
+        let tenant_id = if req.tenant_id.is_empty() {
+            "<default>".to_string()
+        } else {
+            req.tenant_id.clone()
+        };
         let payload = serde_json::json!({
             "signalName": req.signal_name,
             "variables": variables_document(&req.variables)?,
             "tenantId": tenant_id,
         });
-        let result = self.state.engine
-            .send_command("SIGNAL".to_string(), "BROADCAST".to_string(), payload, tenant_id.clone())
+        let result = self
+            .state
+            .engine
+            .send_command(
+                "SIGNAL".to_string(),
+                "BROADCAST".to_string(),
+                payload,
+                tenant_id.clone(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(BroadcastSignalResponse {
@@ -733,7 +916,11 @@ impl Gateway for GatewayService {
         request: Request<EvaluateDecisionRequest>,
     ) -> Result<Response<EvaluateDecisionResponse>, Status> {
         let req = request.into_inner();
-        let tenant_id = if req.tenant_id.is_empty() { "<default>".to_string() } else { req.tenant_id.clone() };
+        let tenant_id = if req.tenant_id.is_empty() {
+            "<default>".to_string()
+        } else {
+            req.tenant_id.clone()
+        };
         let variables = variables_document(&req.variables)?;
         // As Zeebe's gateway sends it: an id, else the key (0 when not given).
         let payload = serde_json::json!({
@@ -742,8 +929,15 @@ impl Gateway for GatewayService {
             "variables": variables,
             "tenantId": tenant_id,
         });
-        let result = self.state.engine
-            .send_command("DECISION_EVALUATION".to_string(), "EVALUATE".to_string(), payload, tenant_id)
+        let result = self
+            .state
+            .engine
+            .send_command(
+                "DECISION_EVALUATION".to_string(),
+                "EVALUATE".to_string(),
+                payload,
+                tenant_id,
+            )
             .await
             .map_err(engine_err)?;
         let text = |name: &str| result[name].as_str().unwrap_or_default().to_string();
@@ -773,8 +967,14 @@ impl Gateway for GatewayService {
     ) -> Result<Response<DeleteResourceResponse>, Status> {
         let req = request.into_inner();
         let payload = serde_json::json!({ "resourceKey": req.resource_key.to_string() });
-        self.state.engine
-            .send_command("RESOURCE".to_string(), "DELETE".to_string(), payload, "<default>".to_string())
+        self.state
+            .engine
+            .send_command(
+                "RESOURCE".to_string(),
+                "DELETE".to_string(),
+                payload,
+                "<default>".to_string(),
+            )
             .await
             .map_err(engine_err)?;
         Ok(Response::new(DeleteResourceResponse {}))
@@ -816,30 +1016,56 @@ mod tests {
         //   result = 3: JobResult { type = 4, activateElements = 5 { elementId = 1, variables = 2 },
         //   isCompletionConditionFulfilled = 6: false, isCancelRemainingInstances = 7: true } }
         let element = [field(1, b"tool"), field(2, br#"{"toolCall":{"q":"x"}}"#)].concat();
-        let result = [field(4, b"adHocSubProcess"), field(5, &element), vec![6 << 3, 0], vec![7 << 3, 1]].concat();
-        let bytes = [vec![1 << 3, 42], field(2, br#"{"agent":1}"#), field(3, &result)].concat();
+        let result = [
+            field(4, b"adHocSubProcess"),
+            field(5, &element),
+            vec![6 << 3, 0],
+            vec![7 << 3, 1],
+        ]
+        .concat();
+        let bytes = [
+            vec![1 << 3, 42],
+            field(2, br#"{"agent":1}"#),
+            field(3, &result),
+        ]
+        .concat();
         let req = CompleteJobRequest::decode(bytes.as_slice()).unwrap();
 
-        assert_eq!(complete_job_payload(req).unwrap(), serde_json::json!({
-            "jobKey": "42",
-            "variables": { "agent": 1 },
-            "result": {
-                "type": "adHocSubProcess",
-                "activateElements": [{ "elementId": "tool", "variables": { "toolCall": { "q": "x" } } }],
-                "isCompletionConditionFulfilled": false,
-                "isCancelRemainingInstances": true,
-            },
-        }));
+        assert_eq!(
+            complete_job_payload(req).unwrap(),
+            serde_json::json!({
+                "jobKey": "42",
+                "variables": { "agent": 1 },
+                "result": {
+                    "type": "adHocSubProcess",
+                    "activateElements": [{ "elementId": "tool", "variables": { "toolCall": { "q": "x" } } }],
+                    "isCompletionConditionFulfilled": false,
+                    "isCancelRemainingInstances": true,
+                },
+            })
+        );
     }
 
     #[test]
     fn a_variables_document_must_be_a_json_object_as_in_zeebe_s_gateway() {
         assert_eq!(variables_document("").unwrap(), serde_json::json!({}));
         assert_eq!(variables_document("null").unwrap(), serde_json::json!({}));
-        assert_eq!(variables_document(r#"{"a":1}"#).unwrap(), serde_json::json!({ "a": 1 }));
+        assert_eq!(
+            variables_document(r#"{"a":1}"#).unwrap(),
+            serde_json::json!({ "a": 1 })
+        );
         let invalid = variables_document("{a").unwrap_err();
-        assert_eq!((invalid.code(), invalid.message()), (tonic::Code::InvalidArgument, "Invalid JSON value: {a"));
-        for (json, kind) in [("[]", "ARRAY"), (r#""x""#, "STRING"), ("true", "BOOLEAN"), ("1", "INTEGER"), ("1.5", "FLOAT")] {
+        assert_eq!(
+            (invalid.code(), invalid.message()),
+            (tonic::Code::InvalidArgument, "Invalid JSON value: {a")
+        );
+        for (json, kind) in [
+            ("[]", "ARRAY"),
+            (r#""x""#, "STRING"),
+            ("true", "BOOLEAN"),
+            ("1", "INTEGER"),
+            ("1.5", "FLOAT"),
+        ] {
             let status = variables_document(json).unwrap_err();
             assert_eq!(status.code(), tonic::Code::InvalidArgument);
             assert_eq!(
@@ -851,12 +1077,20 @@ mod tests {
 
     #[test]
     fn create_process_instance_names_the_definition_by_what_is_given() {
-        let by_id = CreateProcessInstanceRequest { bpmn_process_id: "p".into(), version: -1, ..Default::default() };
+        let by_id = CreateProcessInstanceRequest {
+            bpmn_process_id: "p".into(),
+            version: -1,
+            ..Default::default()
+        };
         assert_eq!(
             create_process_instance_payload(&by_id, "<default>").unwrap(),
             serde_json::json!({ "bpmnProcessId": "p", "version": -1, "variables": {}, "tenantId": "<default>" }),
         );
-        let by_key = CreateProcessInstanceRequest { process_definition_key: 42, variables: r#"{"x":1}"#.into(), ..Default::default() };
+        let by_key = CreateProcessInstanceRequest {
+            process_definition_key: 42,
+            variables: r#"{"x":1}"#.into(),
+            ..Default::default()
+        };
         assert_eq!(
             create_process_instance_payload(&by_key, "t").unwrap(),
             serde_json::json!({ "processDefinitionKey": "42", "version": 0, "variables": { "x": 1 }, "tenantId": "t" }),
@@ -873,23 +1107,42 @@ mod tests {
                 denied_reason: Some("no".into()),
                 corrections: Some(JobResultCorrections {
                     assignee: Some("ann".into()),
-                    candidate_groups: Some(StringList { values: vec!["ops".into()] }),
+                    candidate_groups: Some(StringList {
+                        values: vec!["ops".into()],
+                    }),
                     priority: Some(80),
                     ..Default::default()
                 }),
                 ..Default::default()
             }),
         };
-        assert_eq!(complete_job_payload(req).unwrap()["result"], serde_json::json!({
-            "denied": true,
-            "deniedReason": "no",
-            "corrections": { "assignee": "ann", "candidateGroups": ["ops"], "priority": 80 },
-        }));
+        assert_eq!(
+            complete_job_payload(req).unwrap()["result"],
+            serde_json::json!({
+                "denied": true,
+                "deniedReason": "no",
+                "corrections": { "assignee": "ann", "candidateGroups": ["ops"], "priority": 80 },
+            })
+        );
 
-        let req = CompleteJobRequest { job_key: 7, variables: "{}".into(), result: None };
-        assert_eq!(complete_job_payload(req).unwrap(), serde_json::json!({ "jobKey": "7", "variables": {}, "result": null }));
+        let req = CompleteJobRequest {
+            job_key: 7,
+            variables: "{}".into(),
+            result: None,
+        };
+        assert_eq!(
+            complete_job_payload(req).unwrap(),
+            serde_json::json!({ "jobKey": "7", "variables": {}, "result": null })
+        );
 
-        let req = CompleteJobRequest { job_key: 7, variables: "[1]".into(), result: None };
-        assert_eq!(complete_job_payload(req).unwrap_err().code(), tonic::Code::InvalidArgument);
+        let req = CompleteJobRequest {
+            job_key: 7,
+            variables: "[1]".into(),
+            result: None,
+        };
+        assert_eq!(
+            complete_job_payload(req).unwrap_err().code(),
+            tonic::Code::InvalidArgument
+        );
     }
 }

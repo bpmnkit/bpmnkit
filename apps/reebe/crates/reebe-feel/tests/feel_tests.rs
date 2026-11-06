@@ -1,6 +1,5 @@
-/// Integration-style unit tests for the FEEL evaluator.
-/// All tests are pure — no database or external services required.
-
+//! Integration-style unit tests for the FEEL evaluator.
+//! All tests are pure — no database or external services required.
 use chrono::Datelike;
 use reebe_feel::{evaluate, FeelContext, FeelValue};
 
@@ -64,7 +63,11 @@ fn test_duration_arithmetic_addition() {
         .expect("duration addition should succeed");
     match result {
         FeelValue::Duration(ms) => {
-            assert_eq!(ms, 3 * 3_600_000, "PT2H + PT1H should equal 3 hours (10,800,000 ms)");
+            assert_eq!(
+                ms,
+                3 * 3_600_000,
+                "PT2H + PT1H should equal 3 hours (10,800,000 ms)"
+            );
         }
         other => panic!("Expected Duration sum, got: {:?}", other),
     }
@@ -107,7 +110,9 @@ fn test_date_invalid_returns_null_with_a_warning() {
     assert_eq!(evaluated.value, FeelValue::Null);
     assert_eq!(
         evaluated.warnings,
-        vec![r#"[FUNCTION_INVOCATION_FAILURE] Failed to invoke function 'date' with arguments ("not-a-date")"#]
+        vec![
+            r#"[FUNCTION_INVOCATION_FAILURE] Failed to invoke function 'date' with arguments ("not-a-date")"#
+        ]
     );
     assert_eq!(
         evaluated.warnings_suffix(),
@@ -144,7 +149,8 @@ fn test_now_returns_datetime() {
     let result = evaluate("now()", &ctx).expect("now() should succeed");
     assert!(
         matches!(result, FeelValue::DateTime(_)),
-        "now() should return a DateTime, got: {:?}", result
+        "now() should return a DateTime, got: {:?}",
+        result
     );
 }
 
@@ -154,7 +160,8 @@ fn test_today_returns_date() {
     let result = evaluate("today()", &ctx).expect("today() should succeed");
     assert!(
         matches!(result, FeelValue::Date(_)),
-        "today() should return a Date, got: {:?}", result
+        "today() should return a Date, got: {:?}",
+        result
     );
 }
 
@@ -190,7 +197,11 @@ fn test_path_expression_two_levels() {
     // evaluate("order.amount", {"order": {"amount": 100}}) => 100
     let ctx = ctx_from_json(serde_json::json!({"order": {"amount": 100}}));
     let result = evaluate("order.amount", &ctx).expect("path expression should succeed");
-    assert_eq!(result, FeelValue::Integer(100), "order.amount should equal 100");
+    assert_eq!(
+        result,
+        FeelValue::Integer(100),
+        "order.amount should equal 100"
+    );
 }
 
 #[test]
@@ -205,10 +216,16 @@ fn test_path_expression_three_levels() {
 fn test_missing_variable_is_null() {
     // Zeebe's FEEL engine evaluates a variable that does not exist to null.
     let ctx = empty_ctx();
-    assert_eq!(evaluate("missing_var", &ctx).expect("should evaluate"), FeelValue::Null);
     assert_eq!(
-        evaluate(r#"if missing_var = null then "none" else missing_var"#, &ctx)
-            .expect("should evaluate"),
+        evaluate("missing_var", &ctx).expect("should evaluate"),
+        FeelValue::Null
+    );
+    assert_eq!(
+        evaluate(
+            r#"if missing_var = null then "none" else missing_var"#,
+            &ctx
+        )
+        .expect("should evaluate"),
         FeelValue::String("none".to_string()),
     );
 }
@@ -219,12 +236,11 @@ fn test_missing_variable_in_comparison_is_null() {
     let ctx = empty_ctx();
     let result = evaluate("missing_var > 5", &ctx);
     // What matters is no panic and no successful true result.
-    match &result {
-        Ok(FeelValue::Bool(true)) => {
-            panic!("missing_var > 5 should not evaluate to true");
-        }
-        _ => {} // Null, false, or error are all acceptable
-    }
+    // Null, false, or error are all acceptable.
+    assert!(
+        !matches!(result, Ok(FeelValue::Bool(true))),
+        "missing_var > 5 should not evaluate to true"
+    );
 }
 
 #[test]
@@ -239,11 +255,19 @@ fn test_scope_chain_child_overrides_parent() {
 
     // x from child scope
     let result_x = evaluate("x", &child).expect("x should resolve in child");
-    assert_eq!(result_x, FeelValue::Integer(99), "x should come from child scope");
+    assert_eq!(
+        result_x,
+        FeelValue::Integer(99),
+        "x should come from child scope"
+    );
 
     // y inherited from parent scope
     let result_y = evaluate("y", &child).expect("y should resolve from parent");
-    assert_eq!(result_y, FeelValue::Integer(10), "y should be inherited from parent");
+    assert_eq!(
+        result_y,
+        FeelValue::Integer(10),
+        "y should be inherited from parent"
+    );
 }
 
 #[test]
@@ -260,7 +284,11 @@ fn test_scope_parent_not_affected_by_child() {
     assert_eq!(result, FeelValue::Integer(5));
 
     let missing = evaluate("w", &parent).expect("a missing variable is null");
-    assert_eq!(missing, FeelValue::Null, "Parent should not see child's 'w' variable");
+    assert_eq!(
+        missing,
+        FeelValue::Null,
+        "Parent should not see child's 'w' variable"
+    );
 }
 
 // ============================================================
@@ -330,7 +358,10 @@ fn test_context_literal() {
     let result = evaluate(r#"{name: "Alice", age: 30}"#, &ctx).unwrap();
     match result {
         FeelValue::Context(map) => {
-            assert_eq!(map.get("name"), Some(&FeelValue::String("Alice".to_string())));
+            assert_eq!(
+                map.get("name"),
+                Some(&FeelValue::String("Alice".to_string()))
+            );
             assert_eq!(map.get("age"), Some(&FeelValue::Integer(30)));
         }
         other => panic!("Expected Context, got: {:?}", other),
@@ -384,7 +415,11 @@ fn test_path_expression_missing_field_returns_null() {
     let ctx = ctx_from_json(serde_json::json!({"order": {"id": 1}}));
     // Accessing a field that doesn't exist on the context returns Null (not an error)
     let result = evaluate("order.amount", &ctx).unwrap();
-    assert_eq!(result, FeelValue::Null, "Missing field on a context should return null");
+    assert_eq!(
+        result,
+        FeelValue::Null,
+        "Missing field on a context should return null"
+    );
 }
 
 #[test]
@@ -402,5 +437,9 @@ fn test_count_empty_list_equality() {
     assert_eq!(result, FeelValue::Bool(true), "count([]) = 0 must be true");
 
     let result2 = evaluate("count([]) = 0", &ctx).unwrap();
-    assert_eq!(result2, FeelValue::Bool(true), "count([]) = 0 literal must be true");
+    assert_eq!(
+        result2,
+        FeelValue::Bool(true),
+        "count([]) = 0 literal must be true"
+    );
 }

@@ -1,7 +1,7 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
+use crate::{DbError, Result};
 use serde::{Deserialize, Serialize};
-use crate::{Result, DbError};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ElementInstance {
@@ -129,12 +129,10 @@ impl<'a> ElementInstanceRepository<'a> {
     }
 
     pub async fn delete_by_process_instance(&self, process_instance_key: i64) -> Result<()> {
-        sqlx::query(
-            "DELETE FROM element_instances WHERE process_instance_key = $1",
-        )
-        .bind(process_instance_key)
-        .execute(self.pool)
-        .await?;
+        sqlx::query("DELETE FROM element_instances WHERE process_instance_key = $1")
+            .bind(process_instance_key)
+            .execute(self.pool)
+            .await?;
         Ok(())
     }
 

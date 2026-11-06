@@ -10,21 +10,27 @@
 //! An uncaught error raises an `UNHANDLED_ERROR_EVENT` incident on the thrower.
 //! An uncaught escalation is not a failure: the thrower simply carries on.
 
-use std::collections::HashMap;
-use std::sync::Arc;
-use reebe_bpmn::{BpmnProcess, EventDefinition, FlowElement};
-use reebe_db::state::element_instances::ElementInstance;
-use reebe_db::state::incidents::Incident;
+use super::{CommandToWrite, EventToWrite, Writers};
 use crate::engine::EngineState;
 use crate::error::{EngineError, EngineResult};
 use crate::key_gen::KeyGenerator;
-use super::{CommandToWrite, EventToWrite, Writers};
+use reebe_bpmn::{BpmnProcess, EventDefinition, FlowElement};
+use reebe_db::state::element_instances::ElementInstance;
+use reebe_db::state::incidents::Incident;
+use std::collections::HashMap;
+use std::sync::Arc;
 
 /// What was thrown.
 pub(crate) enum Thrown {
     /// `variables` are those a job worker threw the error with; they go to the catch event.
-    Error { code: String, message: Option<String>, variables: Option<serde_json::Value> },
-    Escalation { code: String },
+    Error {
+        code: String,
+        message: Option<String>,
+        variables: Option<serde_json::Value>,
+    },
+    Escalation {
+        code: String,
+    },
 }
 
 impl Thrown {
@@ -59,7 +65,7 @@ impl Thrown {
             }
             _ => return false,
         };
-        catch_code.map_or(true, |c| c.is_empty() || c == self.code())
+        catch_code.is_none_or(|c| c.is_empty() || c == self.code())
     }
 
     /// The variables the catch event receives: those the error was thrown with, as in
@@ -97,7 +103,12 @@ pub(crate) async fn throw_event(
     let mut current = thrower.clone();
 
     loop {
-        let process = load_process(state, current.process_definition_key, &current.bpmn_process_id).await?;
+        let process = load_process(
+            state,
+            current.process_definition_key,
+            &current.bpmn_process_id,
+        )
+        .await?;
 
         if current.element_type != "PROCESS" {
             // 1. A boundary event attached to the current element.
@@ -109,13 +120,19 @@ pub(crate) async fn throw_event(
                     }
                     terminate_subtree(state, writers, &current).await?;
                 }
-                let scope_key = current.flow_scope_key.unwrap_or(current.process_instance_key);
+                let scope_key = current
+                    .flow_scope_key
+                    .unwrap_or(current.process_instance_key);
                 activate(writers, &current, &be.0, scope_key, thrown, false);
-                return Ok(ThrowOutcome::Caught { interrupted: interrupting });
+                return Ok(ThrowOutcome::Caught {
+                    interrupted: interrupting,
+                });
             }
 
             // 2. Move to the flow scope and look for an event sub-process in it.
-            let scope_key = current.flow_scope_key.unwrap_or(current.process_instance_key);
+            let scope_key = current
+                .flow_scope_key
+                .unwrap_or(current.process_instance_key);
             let scope = state.backend.get_element_instance_by_key(scope_key).await?;
             let scope_elements = if scope.element_type == "PROCESS" {
                 Some(&process.elements)
@@ -135,18 +152,26 @@ pub(crate) async fn throw_event(
                     terminate_children(state, writers, &scope).await?;
                 }
                 activate(writers, &scope, &esp_id, scope.key, thrown, true);
-                return Ok(ThrowOutcome::Caught { interrupted: interrupting });
+                return Ok(ThrowOutcome::Caught {
+                    interrupted: interrupting,
+                });
             }
             current = scope;
             continue;
         }
 
         // 3. The process scope: continue in the calling process, if any.
-        let pi = state.backend.get_process_instance_by_key(current.process_instance_key).await?;
+        let pi = state
+            .backend
+            .get_process_instance_by_key(current.process_instance_key)
+            .await?;
         match pi.parent_element_instance_key {
             Some(call_ei_key) => {
                 left_instances.push(pi.key);
-                current = state.backend.get_element_instance_by_key(call_ei_key).await?;
+                current = state
+                    .backend
+                    .get_element_instance_by_key(call_ei_key)
+                    .await?;
             }
             None => break,
         }
@@ -164,7 +189,10 @@ pub(crate) async fn load_process(
     process_definition_key: i64,
     bpmn_process_id: &str,
 ) -> EngineResult<BpmnProcess> {
-    let pd = state.backend.get_process_definition_by_key(process_definition_key).await?;
+    let pd = state
+        .backend
+        .get_process_definition_by_key(process_definition_key)
+        .await?;
     reebe_bpmn::parse_bpmn(&pd.bpmn_xml)
         .map_err(|e| EngineError::BpmnParse(e.to_string()))?
         .into_iter()
@@ -182,7 +210,8 @@ fn find_boundary(
     for el in elements.values() {
         match el {
             FlowElement::BoundaryEvent(be)
-                if be.attached_to_ref == attached_to && thrown.caught_by(be.event_definition.as_ref()) =>
+                if be.attached_to_ref == attached_to
+                    && thrown.caught_by(be.event_definition.as_ref()) =>
             {
                 return Some((be.id.clone(), be.cancel_activity));
             }
@@ -205,12 +234,16 @@ fn find_event_subprocess(
 ) -> Option<(String, bool)> {
     elements.values().find_map(|el| match el {
         FlowElement::SubProcess(sp) if sp.triggered_by_event => {
-            sp.start_events.iter().find_map(|id| match sp.elements.get(id) {
-                Some(FlowElement::StartEvent(se)) if thrown.caught_by(se.event_definition.as_ref()) => {
-                    Some((sp.id.clone(), se.interrupting))
-                }
-                _ => None,
-            })
+            sp.start_events
+                .iter()
+                .find_map(|id| match sp.elements.get(id) {
+                    Some(FlowElement::StartEvent(se))
+                        if thrown.caught_by(se.event_definition.as_ref()) =>
+                    {
+                        Some((sp.id.clone(), se.interrupting))
+                    }
+                    _ => None,
+                })
         }
         _ => None,
     })
@@ -253,13 +286,17 @@ fn activate(
 }
 
 /// Whether the element instance a JOB or USER_TASK command names has been terminated.
-pub(crate) async fn element_was_terminated(state: &EngineState, payload: &serde_json::Value) -> bool {
+pub(crate) async fn element_was_terminated(
+    state: &EngineState,
+    payload: &serde_json::Value,
+) -> bool {
     let key = payload["elementInstanceKey"]
         .as_str()
         .and_then(|s| s.parse::<i64>().ok())
         .or_else(|| payload["elementInstanceKey"].as_i64());
     match key {
-        Some(key) => state.backend
+        Some(key) => state
+            .backend
             .get_element_instance_by_key(key)
             .await
             .is_ok_and(|ei| ei.state == "TERMINATED"),
@@ -287,15 +324,17 @@ pub(crate) async fn terminate_children(
     writers: &mut Writers,
     scope: &ElementInstance,
 ) -> EngineResult<()> {
-    let all = state.backend
+    let all = state
+        .backend
         .get_element_instances_by_process_instance(scope.process_instance_key)
         .await?;
     let mut stack = vec![scope.key];
     let mut doomed = Vec::new();
     while let Some(scope_key) = stack.pop() {
-        for child in all.iter().filter(|c| {
-            c.key != scope_key && c.flow_scope_key == Some(scope_key) && is_active(c)
-        }) {
+        for child in all
+            .iter()
+            .filter(|c| c.key != scope_key && c.flow_scope_key == Some(scope_key) && is_active(c))
+        {
             stack.push(child.key);
             doomed.push(child);
         }
@@ -314,12 +353,19 @@ async fn terminate_one(
     writers: &mut Writers,
     ei: &ElementInstance,
 ) -> EngineResult<()> {
-    state.backend.update_element_instance_state(ei.key, "TERMINATED").await?;
+    state
+        .backend
+        .update_element_instance_state(ei.key, "TERMINATED")
+        .await?;
     super::catch_event::close_waits(state, ei.key).await?;
     state.backend.delete_join_tokens(ei.key).await?;
     // A terminated call activity takes the process instance it called with it.
     if ei.element_type == "CALL_ACTIVITY" {
-        for child in state.backend.get_child_process_instance_keys(ei.key).await? {
+        for child in state
+            .backend
+            .get_child_process_instance_keys(ei.key)
+            .await?
+        {
             Box::pin(terminate_process_instance(state, writers, child)).await?;
         }
     }
@@ -345,14 +391,20 @@ async fn terminate_process_instance(
     writers: &mut Writers,
     process_instance_key: i64,
 ) -> EngineResult<()> {
-    let root = state.backend
+    let root = state
+        .backend
         .get_element_instances_by_process_instance(process_instance_key)
         .await?
         .into_iter()
         .find(|ei| ei.element_type == "PROCESS")
-        .ok_or_else(|| EngineError::NotFound(format!("Process element of instance {process_instance_key}")))?;
+        .ok_or_else(|| {
+            EngineError::NotFound(format!(
+                "Process element of instance {process_instance_key}"
+            ))
+        })?;
     terminate_subtree(state, writers, &root).await?;
-    state.backend
+    state
+        .backend
         .update_process_instance_state(process_instance_key, "TERMINATED", Some(state.clock.now()))
         .await?;
     super::start_event::instance_ended(state, writers, process_instance_key).await
@@ -371,23 +423,28 @@ async fn raise_unhandled_error_incident(
     let error_message = format!(
         "Expected to throw an error event with the code '{code}'{}, but it was not caught. \
          No error events are available in the scope.",
-        message.map(|m| format!(" with message '{m}'")).unwrap_or_default(),
+        message
+            .map(|m| format!(" with message '{m}'"))
+            .unwrap_or_default(),
     );
-    state.backend.insert_incident(&Incident {
-        key: incident_key,
-        partition_id: state.partition_id,
-        process_instance_key: thrower.process_instance_key,
-        process_definition_key: thrower.process_definition_key,
-        element_instance_key: thrower.key,
-        element_id: thrower.element_id.clone(),
-        error_type: "UNHANDLED_ERROR_EVENT".to_string(),
-        error_message: Some(error_message.clone()),
-        state: "ACTIVE".to_string(),
-        job_key,
-        created_at: state.clock.now(),
-        resolved_at: None,
-        tenant_id: thrower.tenant_id.clone(),
-    }).await?;
+    state
+        .backend
+        .insert_incident(&Incident {
+            key: incident_key,
+            partition_id: state.partition_id,
+            process_instance_key: thrower.process_instance_key,
+            process_definition_key: thrower.process_definition_key,
+            element_instance_key: thrower.key,
+            element_id: thrower.element_id.clone(),
+            error_type: "UNHANDLED_ERROR_EVENT".to_string(),
+            error_message: Some(error_message.clone()),
+            state: "ACTIVE".to_string(),
+            job_key,
+            created_at: state.clock.now(),
+            resolved_at: None,
+            tenant_id: thrower.tenant_id.clone(),
+        })
+        .await?;
     writers.events.push(EventToWrite {
         value_type: "INCIDENT".to_string(),
         intent: "CREATED".to_string(),

@@ -1,28 +1,29 @@
-use axum::extract::{Path, State};
-use axum::response::IntoResponse;
-use axum::Json;
-use reebe_db::state::deployments::DeploymentRepository;
 use crate::app::ApiState;
 use crate::dto::process_definitions::{ProcessDefinitionDto, SearchProcessDefinitionsRequest};
 use crate::error::{ApiError, ApiResult};
 use crate::pagination::PageResponse;
+use axum::extract::{Path, State};
+use axum::response::IntoResponse;
+use axum::Json;
+use reebe_db::state::deployments::DeploymentRepository;
 
 pub async fn get(
     State(state): State<ApiState>,
     Path(key): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
-    let key_i64: i64 = key.parse().map_err(|_| {
-        ApiError::InvalidRequest(format!("Invalid key: {key}"))
-    })?;
+    let key_i64: i64 = key
+        .parse()
+        .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let pool = state.replica_pool.as_ref().unwrap_or(&state.pool);
     let repo = DeploymentRepository::new(pool);
-    let pd = repo.get_process_definition_by_key(key_i64).await.map_err(|_| {
-        ApiError::NotFound {
+    let pd = repo
+        .get_process_definition_by_key(key_i64)
+        .await
+        .map_err(|_| ApiError::NotFound {
             resource: "process definition".to_string(),
             key: key.clone(),
-        }
-    })?;
+        })?;
 
     Ok(Json(ProcessDefinitionDto::from(pd)))
 }
@@ -31,18 +32,19 @@ pub async fn get_xml(
     State(state): State<ApiState>,
     Path(key): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
-    let key_i64: i64 = key.parse().map_err(|_| {
-        ApiError::InvalidRequest(format!("Invalid key: {key}"))
-    })?;
+    let key_i64: i64 = key
+        .parse()
+        .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let pool = state.replica_pool.as_ref().unwrap_or(&state.pool);
     let repo = DeploymentRepository::new(pool);
-    let xml = repo.get_process_definition_xml(key_i64).await.map_err(|_| {
-        ApiError::NotFound {
+    let xml = repo
+        .get_process_definition_xml(key_i64)
+        .await
+        .map_err(|_| ApiError::NotFound {
             resource: "process definition".to_string(),
             key: key.clone(),
-        }
-    })?;
+        })?;
 
     Ok(axum::response::Response::builder()
         .status(200)

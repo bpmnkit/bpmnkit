@@ -1,7 +1,7 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
-use serde::{Deserialize, Serialize};
 use crate::Result;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SignalSubscription {
@@ -66,17 +66,20 @@ impl<'a> SignalSubscriptionRepository<'a> {
         .await?;
 
         use sqlx::Row;
-        Ok(rows.into_iter().map(|r| SignalSubscription {
-            key: r.get("key"),
-            signal_name: r.get("signal_name"),
-            process_instance_key: r.get("process_instance_key"),
-            element_instance_key: r.get("element_instance_key"),
-            element_id: r.get("element_id"),
-            bpmn_process_id: r.get("bpmn_process_id"),
-            process_definition_key: r.get("process_definition_key"),
-            flow_scope_key: r.get("flow_scope_key"),
-            tenant_id: r.get("tenant_id"),
-        }).collect())
+        Ok(rows
+            .into_iter()
+            .map(|r| SignalSubscription {
+                key: r.get("key"),
+                signal_name: r.get("signal_name"),
+                process_instance_key: r.get("process_instance_key"),
+                element_instance_key: r.get("element_instance_key"),
+                element_id: r.get("element_id"),
+                bpmn_process_id: r.get("bpmn_process_id"),
+                process_definition_key: r.get("process_definition_key"),
+                flow_scope_key: r.get("flow_scope_key"),
+                tenant_id: r.get("tenant_id"),
+            })
+            .collect())
     }
 
     pub async fn delete(&self, key: i64) -> Result<()> {

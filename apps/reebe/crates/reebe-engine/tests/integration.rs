@@ -221,7 +221,10 @@ async fn wait_for_process_state(
 ) -> String {
     use reebe_db::state::process_instances::ProcessInstanceRepository;
     for _ in 0..max_attempts {
-        if let Ok(pi) = ProcessInstanceRepository::new(pool).get_by_key(instance_key).await {
+        if let Ok(pi) = ProcessInstanceRepository::new(pool)
+            .get_by_key(instance_key)
+            .await
+        {
             if pi.state == target_state {
                 return pi.state;
             }
@@ -297,16 +300,20 @@ async fn test_job_lifecycle_create_activate_complete() {
 
     // Wait for the job to become ACTIVATABLE
     let jobs = wait_for_jobs(&pool, "do-work", 60).await;
-    assert!(!jobs.is_empty(), "Expected at least one ACTIVATABLE job of type 'do-work'");
+    assert!(
+        !jobs.is_empty(),
+        "Expected at least one ACTIVATABLE job of type 'do-work'"
+    );
 
     let job = &jobs[0];
     assert_eq!(job.job_type, "do-work");
     assert_eq!(job.process_instance_key, instance_key);
 
     // Activate job via DB helper (simulates a worker activation call)
-    let activated = reebe_db::state::jobs::activate_jobs(&pool, "do-work", "test-worker", 1, 30_000)
-        .await
-        .expect("activate_jobs should succeed");
+    let activated =
+        reebe_db::state::jobs::activate_jobs(&pool, "do-work", "test-worker", 1, 30_000)
+            .await
+            .expect("activate_jobs should succeed");
     assert_eq!(activated.len(), 1);
     let activated_job = &activated[0];
 
@@ -374,9 +381,12 @@ async fn test_exclusive_gateway_feel_condition() {
     deploy(&handle, EXCLUSIVE_GW_BPMN, "exclusive-gw.bpmn").await;
 
     // Create instance with amount=150 — should take the "task-a" path (amount > 100)
-    let instance_key =
-        create_instance(&handle, "exclusive-gw-process", serde_json::json!({ "amount": 150 }))
-            .await;
+    let instance_key = create_instance(
+        &handle,
+        "exclusive-gw-process",
+        serde_json::json!({ "amount": 150 }),
+    )
+    .await;
 
     // Wait for a task-a job (the high-value path)
     let jobs = wait_for_jobs(&pool, "task-a", 60).await;
@@ -482,9 +492,10 @@ async fn test_incident_on_job_failure_and_resolve() {
     let jobs = wait_for_jobs(&pool, "do-work", 60).await;
     assert!(!jobs.is_empty(), "Expected ACTIVATABLE job");
 
-    let activated = reebe_db::state::jobs::activate_jobs(&pool, "do-work", "test-worker", 1, 30_000)
-        .await
-        .expect("activate_jobs should succeed");
+    let activated =
+        reebe_db::state::jobs::activate_jobs(&pool, "do-work", "test-worker", 1, 30_000)
+            .await
+            .expect("activate_jobs should succeed");
     assert_eq!(activated.len(), 1);
     let job_key = activated[0].key;
 
@@ -505,7 +516,10 @@ async fn test_incident_on_job_failure_and_resolve() {
 
     // Wait for incident to appear
     let incidents = wait_for_incidents(&pool, instance_key, 60).await;
-    assert!(!incidents.is_empty(), "Expected an incident after job failure with retries=0");
+    assert!(
+        !incidents.is_empty(),
+        "Expected an incident after job failure with retries=0"
+    );
 
     let incident = &incidents[0];
     assert_eq!(incident.state, "ACTIVE");
@@ -547,7 +561,10 @@ async fn test_incident_on_job_failure_and_resolve() {
         reebe_db::state::jobs::activate_jobs(&pool, "do-work", "test-worker", 1, 30_000)
             .await
             .expect("re-activate should succeed");
-    assert!(!re_activated.is_empty(), "Job should be re-activatable after incident resolution");
+    assert!(
+        !re_activated.is_empty(),
+        "Job should be re-activatable after incident resolution"
+    );
 
     handle
         .send_command(
@@ -610,7 +627,10 @@ async fn test_user_task_lifecycle() {
 
     // Process should reach COMPLETED
     let state = wait_for_process_state(&pool, instance_key, "COMPLETED", 80).await;
-    assert_eq!(state, "COMPLETED", "Process should be COMPLETED after user task completion");
+    assert_eq!(
+        state, "COMPLETED",
+        "Process should be COMPLETED after user task completion"
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -673,7 +693,12 @@ async fn test_call_activity_parent_child() {
 
     // Deploy child first, then parent
     deploy(&handle, CALL_ACTIVITY_CHILD_BPMN, "call-child-process.bpmn").await;
-    deploy(&handle, CALL_ACTIVITY_PARENT_BPMN, "call-parent-process.bpmn").await;
+    deploy(
+        &handle,
+        CALL_ACTIVITY_PARENT_BPMN,
+        "call-parent-process.bpmn",
+    )
+    .await;
 
     // Create parent process instance
     let parent_key = create_instance(&handle, "call-parent-process", serde_json::json!({})).await;
@@ -687,8 +712,10 @@ async fn test_call_activity_parent_child() {
 
     // Verify child instance exists and is linked to parent
     let child_pi = &jobs[0];
-    assert_ne!(child_pi.process_instance_key, parent_key,
-        "Child job should belong to child process instance, not parent");
+    assert_ne!(
+        child_pi.process_instance_key, parent_key,
+        "Child job should belong to child process instance, not parent"
+    );
 
     // Activate and complete the child job
     let activated =
@@ -913,11 +940,15 @@ async fn test_timer_boundary_event() {
     deploy(&handle, TIMER_BOUNDARY_BPMN, "timer-boundary-process.bpmn").await;
 
     // Create instance — the slow-work job will be created and a timer boundary registered
-    let instance_key = create_instance(&handle, "timer-boundary-process", serde_json::json!({})).await;
+    let _instance_key =
+        create_instance(&handle, "timer-boundary-process", serde_json::json!({})).await;
 
     // Wait for the slow-work job to appear (task1 activated)
     let jobs = wait_for_jobs(&pool, "slow-work", 80).await;
-    assert!(!jobs.is_empty(), "Expected 'slow-work' job after process start");
+    assert!(
+        !jobs.is_empty(),
+        "Expected 'slow-work' job after process start"
+    );
 
     // Wait 200ms for the 100ms timer boundary to fire
     tokio::time::sleep(Duration::from_millis(400)).await;
@@ -930,11 +961,10 @@ async fn test_timer_boundary_event() {
     );
 
     // Complete the escalation job
-    let activated = reebe_db::state::jobs::activate_jobs(
-        &pool, "escalation-work", "test-worker", 1, 30_000,
-    )
-    .await
-    .expect("activate escalation-work");
+    let activated =
+        reebe_db::state::jobs::activate_jobs(&pool, "escalation-work", "test-worker", 1, 30_000)
+            .await
+            .expect("activate escalation-work");
     assert!(!activated.is_empty());
 
     handle
@@ -981,18 +1011,29 @@ async fn test_restart_does_not_replay_processed_commands() {
     };
 
     // First run: deploy and start an instance that waits at its service task.
-    let first = common::start_engine_with_clock(pool.clone(), std::sync::Arc::new(reebe_engine::RealClock));
-    deploy(&first.handle, SIMPLE_SERVICE_TASK_BPMN, "simple-service.bpmn").await;
-    let first_instance = create_instance(&first.handle, "simple-service", serde_json::json!({})).await;
+    let first =
+        common::start_engine_with_clock(pool.clone(), std::sync::Arc::new(reebe_engine::RealClock));
+    deploy(
+        &first.handle,
+        SIMPLE_SERVICE_TASK_BPMN,
+        "simple-service.bpmn",
+    )
+    .await;
+    let first_instance =
+        create_instance(&first.handle, "simple-service", serde_json::json!({})).await;
     assert_eq!(wait_for_jobs(&pool, "do-work", 60).await.len(), 1);
     // The job row appears while the engine is still processing the command that wrote
     // it; stopping then would leave that command unrecorded and the next engine would
     // rightly process it again. Stop once every command in the log is recorded.
     for _ in 0..100 {
-        let unprocessed = count(&pool, "SELECT COUNT(*) FROM partition_records r
+        let unprocessed = count(
+            &pool,
+            "SELECT COUNT(*) FROM partition_records r
             WHERE r.record_type = 'COMMAND' AND r.position >
                 COALESCE((SELECT p.position FROM processed_positions p
-                          WHERE p.partition_id = r.partition_id), 0)").await;
+                          WHERE p.partition_id = r.partition_id), 0)",
+        )
+        .await;
         if unprocessed == 0 {
             break;
         }
@@ -1022,7 +1063,10 @@ async fn test_restart_does_not_replay_processed_commands() {
         .expect("append command");
 
     // Second run on the same database.
-    let second = common::start_engine_with_clock(restarted_pool.clone(), std::sync::Arc::new(reebe_engine::RealClock));
+    let second = common::start_engine_with_clock(
+        restarted_pool.clone(),
+        std::sync::Arc::new(reebe_engine::RealClock),
+    );
     let mut jobs = Vec::new();
     for _ in 0..100 {
         jobs = wait_for_jobs(&restarted_pool, "do-work", 1).await;
@@ -1034,11 +1078,21 @@ async fn test_restart_does_not_replay_processed_commands() {
     // Give a replay, if there were one, time to show.
     tokio::time::sleep(Duration::from_millis(500)).await;
 
-    assert_eq!(count(&restarted_pool, "SELECT COUNT(*) FROM process_definitions").await, 1,
-        "the deployment is not processed again");
-    assert_eq!(count(&restarted_pool, "SELECT COUNT(*) FROM process_instances").await, 2,
-        "the first instance is not created again; the appended command creates one");
-    assert_eq!(count(&restarted_pool, "SELECT COUNT(*) FROM jobs").await, 2, "one job per instance");
+    assert_eq!(
+        count(&restarted_pool, "SELECT COUNT(*) FROM process_definitions").await,
+        1,
+        "the deployment is not processed again"
+    );
+    assert_eq!(
+        count(&restarted_pool, "SELECT COUNT(*) FROM process_instances").await,
+        2,
+        "the first instance is not created again; the appended command creates one"
+    );
+    assert_eq!(
+        count(&restarted_pool, "SELECT COUNT(*) FROM jobs").await,
+        2,
+        "one job per instance"
+    );
     assert_eq!(jobs.len(), 2);
 
     // Both instances still run to completion on the restarted engine.
@@ -1046,10 +1100,18 @@ async fn test_restart_does_not_replay_processed_commands() {
         complete_job(&second.handle, job.key).await;
     }
     for instance in jobs.iter().map(|j| j.process_instance_key) {
-        assert_eq!(wait_for_process_state(&restarted_pool, instance, "COMPLETED", 100).await, "COMPLETED");
+        assert_eq!(
+            wait_for_process_state(&restarted_pool, instance, "COMPLETED", 100).await,
+            "COMPLETED"
+        );
     }
-    assert!(jobs.iter().any(|j| j.process_instance_key == first_instance));
-    assert_eq!(count(&restarted_pool, "SELECT COUNT(*) FROM process_instances").await, 2);
+    assert!(jobs
+        .iter()
+        .any(|j| j.process_instance_key == first_instance));
+    assert_eq!(
+        count(&restarted_pool, "SELECT COUNT(*) FROM process_instances").await,
+        2
+    );
     second.stop();
 }
 

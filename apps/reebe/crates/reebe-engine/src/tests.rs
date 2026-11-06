@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
-    use crate::job_notifier::JobNotifier;
     use crate::error::EngineError;
-    use crate::processor::{Writers, EventToWrite, CommandToWrite};
+    use crate::job_notifier::JobNotifier;
+    use crate::processor::{CommandToWrite, EventToWrite, Writers};
     use std::sync::Arc;
 
     // ---- JobNotifier tests ----
@@ -40,10 +40,7 @@ mod tests {
         notifier.notify("my-job-type");
 
         // Task should complete quickly
-        let result = tokio::time::timeout(
-            std::time::Duration::from_millis(200),
-            task,
-        ).await;
+        let result = tokio::time::timeout(std::time::Duration::from_millis(200), task).await;
         assert!(result.is_ok(), "Task should have been woken up by notify");
     }
 
@@ -193,7 +190,10 @@ mod tests {
         let vars = serde_json::json!({});
         // No `=` prefix → treated as string literal
         let result = crate::evaluate_feel("payment-service", &vars).unwrap();
-        assert_eq!(result, serde_json::Value::String("payment-service".to_string()));
+        assert_eq!(
+            result,
+            serde_json::Value::String("payment-service".to_string())
+        );
     }
 
     #[test]
@@ -206,7 +206,8 @@ mod tests {
     #[test]
     fn test_evaluate_feel_complex_condition() {
         let vars = serde_json::json!({ "status": "approved", "amount": 500 });
-        let result = crate::evaluate_feel("=status = \"approved\" and amount > 100", &vars).unwrap();
+        let result =
+            crate::evaluate_feel("=status = \"approved\" and amount > 100", &vars).unwrap();
         assert_eq!(result, serde_json::Value::Bool(true));
     }
 
@@ -260,16 +261,15 @@ mod tests {
     #[cfg(feature = "memory")]
     #[tokio::test]
     async fn test_brt_dmn_companion_stores_result_variable() {
-        use std::sync::Arc;
-        use base64::Engine as Base64Engine;
-        use reebe_db::{InMemoryBackend, StateBackend};
-        use crate::{EngineState, VirtualClock, JobNotifier};
         use crate::processor::{
-            RecordProcessor, Writers,
-            DeploymentProcessor, ProcessInstanceCreationProcessor,
-            BpmnElementProcessor, JobProcessor,
+            BpmnElementProcessor, DeploymentProcessor, JobProcessor,
+            ProcessInstanceCreationProcessor, RecordProcessor, Writers,
         };
+        use crate::{EngineState, JobNotifier, VirtualClock};
+        use base64::Engine as Base64Engine;
         use reebe_db::records::DbRecord;
+        use reebe_db::{InMemoryBackend, StateBackend};
+        use std::sync::Arc;
 
         const BPMN: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -363,8 +363,13 @@ mod tests {
                     let mut response: Option<serde_json::Value> = None;
 
                     loop {
-                        let cmds = backend.fetch_commands_from(0, last_pos + 1, 100).await.unwrap();
-                        if cmds.is_empty() { break; }
+                        let cmds = backend
+                            .fetch_commands_from(0, last_pos + 1, 100)
+                            .await
+                            .unwrap();
+                        if cmds.is_empty() {
+                            break;
+                        }
                         for rec in &cmds {
                             last_pos = rec.position;
                             for proc in &processors {
@@ -376,7 +381,8 @@ mod tests {
                                     }
                                     let total = writers.events.len() + writers.commands.len();
                                     if total > 0 {
-                                        let first = backend.next_position_batch(0, total).await.unwrap();
+                                        let first =
+                                            backend.next_position_batch(0, total).await.unwrap();
                                         let mut recs = Vec::new();
                                         for (i, ev) in writers.events.iter().enumerate() {
                                             recs.push(DbRecord {
@@ -395,7 +401,9 @@ mod tests {
                                         for (i, cmd) in writers.commands.iter().enumerate() {
                                             recs.push(DbRecord {
                                                 partition_id: 0,
-                                                position: first + writers.events.len() as i64 + i as i64,
+                                                position: first
+                                                    + writers.events.len() as i64
+                                                    + i as i64,
                                                 record_type: "COMMAND".to_string(),
                                                 value_type: cmd.value_type.clone(),
                                                 intent: cmd.intent.clone(),
@@ -420,27 +428,46 @@ mod tests {
 
         // Deploy DMN companion
         let dmn_encoded = base64::engine::general_purpose::STANDARD.encode(DMN.as_bytes());
-        submit_and_drain("DEPLOYMENT", "CREATE", serde_json::json!({
-            "resources": [{ "name": "validation.dmn", "content": dmn_encoded }]
-        })).await;
+        submit_and_drain(
+            "DEPLOYMENT",
+            "CREATE",
+            serde_json::json!({
+                "resources": [{ "name": "validation.dmn", "content": dmn_encoded }]
+            }),
+        )
+        .await;
 
         // Deploy BPMN
         let bpmn_encoded = base64::engine::general_purpose::STANDARD.encode(BPMN.as_bytes());
-        let deploy_resp = submit_and_drain("DEPLOYMENT", "CREATE", serde_json::json!({
-            "resources": [{ "name": "process.bpmn", "content": bpmn_encoded }]
-        })).await.expect("deploy should return response");
+        let deploy_resp = submit_and_drain(
+            "DEPLOYMENT",
+            "CREATE",
+            serde_json::json!({
+                "resources": [{ "name": "process.bpmn", "content": bpmn_encoded }]
+            }),
+        )
+        .await
+        .expect("deploy should return response");
 
         assert!(
-            deploy_resp["deployments"].as_array().map(|a| !a.is_empty()).unwrap_or(false),
+            deploy_resp["deployments"]
+                .as_array()
+                .map(|a| !a.is_empty())
+                .unwrap_or(false),
             "BPMN deploy should return non-empty deployments: {deploy_resp}"
         );
 
         // Create process instance with a missing 'name' variable (triggers required rule)
-        submit_and_drain("PROCESS_INSTANCE_CREATION", "CREATE", serde_json::json!({
-            "bpmnProcessId": "validation-proc",
-            "version": -1,
-            "variables": {},
-        })).await;
+        submit_and_drain(
+            "PROCESS_INSTANCE_CREATION",
+            "CREATE",
+            serde_json::json!({
+                "bpmnProcessId": "validation-proc",
+                "version": -1,
+                "variables": {},
+            }),
+        )
+        .await;
 
         // Check variables
         let vars = backend.list_variables();
@@ -453,7 +480,10 @@ mod tests {
 
         let val = &validation_errors.unwrap().value;
         let arr = val.as_array().expect("validationErrors should be an array");
-        assert!(!arr.is_empty(), "validationErrors should have at least one error for missing name");
+        assert!(
+            !arr.is_empty(),
+            "validationErrors should have at least one error for missing name"
+        );
     }
 
     /// When all inputs are valid, the COLLECT decision returns [] and the XOR
@@ -461,16 +491,15 @@ mod tests {
     #[tokio::test]
     #[cfg(feature = "memory")]
     async fn test_brt_dmn_valid_inputs_gateway_takes_valid_path() {
-        use std::sync::Arc;
-        use base64::Engine as Base64Engine;
-        use reebe_db::{InMemoryBackend, StateBackend};
-        use crate::{EngineState, VirtualClock, JobNotifier};
         use crate::processor::{
-            RecordProcessor, Writers,
-            DeploymentProcessor, ProcessInstanceCreationProcessor,
-            BpmnElementProcessor, JobProcessor,
+            BpmnElementProcessor, DeploymentProcessor, JobProcessor,
+            ProcessInstanceCreationProcessor, RecordProcessor, Writers,
         };
+        use crate::{EngineState, JobNotifier, VirtualClock};
+        use base64::Engine as Base64Engine;
         use reebe_db::records::DbRecord;
+        use reebe_db::{InMemoryBackend, StateBackend};
+        use std::sync::Arc;
 
         // BRT → XOR gateway (condition: count(validationErrors) = 0) → end
         //                                                               ↘ error-end (default)
@@ -560,7 +589,8 @@ mod tests {
                 async move {
                     let (position, key) = backend.next_position_and_key(0).await.unwrap();
                     let record = DbRecord {
-                        partition_id: 0, position,
+                        partition_id: 0,
+                        position,
                         record_type: "COMMAND".to_string(),
                         value_type: value_type.clone(),
                         intent: intent.clone(),
@@ -573,8 +603,13 @@ mod tests {
                     backend.insert_record(&record).await.unwrap();
                     let mut last_pos = position - 1;
                     loop {
-                        let cmds = backend.fetch_commands_from(0, last_pos + 1, 100).await.unwrap();
-                        if cmds.is_empty() { break; }
+                        let cmds = backend
+                            .fetch_commands_from(0, last_pos + 1, 100)
+                            .await
+                            .unwrap();
+                        if cmds.is_empty() {
+                            break;
+                        }
                         for rec in &cmds {
                             last_pos = rec.position;
                             for proc in &processors {
@@ -583,11 +618,13 @@ mod tests {
                                     proc.process(rec, &state, &mut writers).await.unwrap();
                                     let total = writers.events.len() + writers.commands.len();
                                     if total > 0 {
-                                        let first = backend.next_position_batch(0, total).await.unwrap();
+                                        let first =
+                                            backend.next_position_batch(0, total).await.unwrap();
                                         let mut recs = Vec::new();
                                         for (i, ev) in writers.events.iter().enumerate() {
                                             recs.push(DbRecord {
-                                                partition_id: 0, position: first + i as i64,
+                                                partition_id: 0,
+                                                position: first + i as i64,
                                                 record_type: "EVENT".to_string(),
                                                 value_type: ev.value_type.clone(),
                                                 intent: ev.intent.clone(),
@@ -601,7 +638,9 @@ mod tests {
                                         for (i, cmd) in writers.commands.iter().enumerate() {
                                             recs.push(DbRecord {
                                                 partition_id: 0,
-                                                position: first + writers.events.len() as i64 + i as i64,
+                                                position: first
+                                                    + writers.events.len() as i64
+                                                    + i as i64,
                                                 record_type: "COMMAND".to_string(),
                                                 value_type: cmd.value_type.clone(),
                                                 intent: cmd.intent.clone(),
@@ -625,37 +664,72 @@ mod tests {
 
         // Deploy DMN then BPMN
         let dmn_encoded = base64::engine::general_purpose::STANDARD.encode(DMN.as_bytes());
-        submit_and_drain("DEPLOYMENT", "CREATE", serde_json::json!({
-            "resources": [{ "name": "validation.dmn", "content": dmn_encoded }]
-        })).await;
+        submit_and_drain(
+            "DEPLOYMENT",
+            "CREATE",
+            serde_json::json!({
+                "resources": [{ "name": "validation.dmn", "content": dmn_encoded }]
+            }),
+        )
+        .await;
 
         let bpmn_encoded = base64::engine::general_purpose::STANDARD.encode(BPMN.as_bytes());
-        submit_and_drain("DEPLOYMENT", "CREATE", serde_json::json!({
-            "resources": [{ "name": "process.bpmn", "content": bpmn_encoded }]
-        })).await;
+        submit_and_drain(
+            "DEPLOYMENT",
+            "CREATE",
+            serde_json::json!({
+                "resources": [{ "name": "process.bpmn", "content": bpmn_encoded }]
+            }),
+        )
+        .await;
 
         // Create instance WITH a valid 'name' variable — no validation errors expected
-        submit_and_drain("PROCESS_INSTANCE_CREATION", "CREATE", serde_json::json!({
-            "bpmnProcessId": "valid-proc",
-            "version": -1,
-            "variables": { "name": "John" },
-        })).await;
+        submit_and_drain(
+            "PROCESS_INSTANCE_CREATION",
+            "CREATE",
+            serde_json::json!({
+                "bpmnProcessId": "valid-proc",
+                "version": -1,
+                "variables": { "name": "John" },
+            }),
+        )
+        .await;
 
         // validationErrors should be an empty array (no rules fired)
         let vars = backend.list_variables();
         let ve = vars.iter().find(|v| v.name == "validationErrors");
-        assert!(ve.is_some(), "validationErrors variable must be set; got: {:?}",
-            vars.iter().map(|v| &v.name).collect::<Vec<_>>());
-        let arr = ve.unwrap().value.as_array().expect("validationErrors must be array");
-        assert!(arr.is_empty(), "validationErrors should be empty when inputs are valid; got: {arr:?}");
+        assert!(
+            ve.is_some(),
+            "validationErrors variable must be set; got: {:?}",
+            vars.iter().map(|v| &v.name).collect::<Vec<_>>()
+        );
+        let arr = ve
+            .unwrap()
+            .value
+            .as_array()
+            .expect("validationErrors must be array");
+        assert!(
+            arr.is_empty(),
+            "validationErrors should be empty when inputs are valid; got: {arr:?}"
+        );
 
         let element_instances = backend.list_element_instances();
 
         // The process should have reached 'end-ok' (COMPLETED), not 'end-err'
-        let end_ok = element_instances.iter().find(|ei| ei.element_id == "end-ok");
-        let end_err = element_instances.iter().find(|ei| ei.element_id == "end-err");
-        assert!(end_ok.is_some(), "end-ok element instance should exist (valid path taken)");
-        assert!(end_err.is_none(), "end-err must NOT be reached when inputs are valid");
+        let end_ok = element_instances
+            .iter()
+            .find(|ei| ei.element_id == "end-ok");
+        let end_err = element_instances
+            .iter()
+            .find(|ei| ei.element_id == "end-err");
+        assert!(
+            end_ok.is_some(),
+            "end-ok element instance should exist (valid path taken)"
+        );
+        assert!(
+            end_err.is_none(),
+            "end-err must NOT be reached when inputs are valid"
+        );
     }
 
     // ---- BPMN + FEEL integration ----
@@ -686,7 +760,11 @@ mod tests {
         });
 
         // Get condition from "high" flow
-        let high_flow = process.sequence_flows.iter().find(|f| f.id == "high").unwrap();
+        let high_flow = process
+            .sequence_flows
+            .iter()
+            .find(|f| f.id == "high")
+            .unwrap();
         let condition = high_flow.condition_expression.as_ref().unwrap();
 
         let mut ctx = FeelContext::new();
@@ -706,16 +784,15 @@ mod tests {
     #[tokio::test]
     #[cfg(feature = "memory")]
     async fn test_xor_gateway_conditioned_flow_wins_over_unconditioned_default() {
-        use std::sync::Arc;
-        use base64::Engine as Base64Engine;
-        use reebe_db::{InMemoryBackend, StateBackend};
-        use crate::{EngineState, VirtualClock, JobNotifier};
         use crate::processor::{
-            RecordProcessor, Writers,
-            DeploymentProcessor, ProcessInstanceCreationProcessor,
-            BpmnElementProcessor, JobProcessor,
+            BpmnElementProcessor, DeploymentProcessor, JobProcessor,
+            ProcessInstanceCreationProcessor, RecordProcessor, Writers,
         };
+        use crate::{EngineState, JobNotifier, VirtualClock};
+        use base64::Engine as Base64Engine;
         use reebe_db::records::DbRecord;
+        use reebe_db::{InMemoryBackend, StateBackend};
+        use std::sync::Arc;
 
         // f4 (no condition, intended as default) comes BEFORE f3 (conditioned) in the XML.
         // Without the fix the engine would pick f4 (wrong path) because None => true.
@@ -775,7 +852,8 @@ mod tests {
                 async move {
                     let (position, key) = backend.next_position_and_key(0).await.unwrap();
                     let record = DbRecord {
-                        partition_id: 0, position,
+                        partition_id: 0,
+                        position,
                         record_type: "COMMAND".to_string(),
                         value_type: value_type.clone(),
                         intent: intent.clone(),
@@ -788,8 +866,13 @@ mod tests {
                     backend.insert_record(&record).await.unwrap();
                     let mut last_pos = position - 1;
                     loop {
-                        let cmds = backend.fetch_commands_from(0, last_pos + 1, 100).await.unwrap();
-                        if cmds.is_empty() { break; }
+                        let cmds = backend
+                            .fetch_commands_from(0, last_pos + 1, 100)
+                            .await
+                            .unwrap();
+                        if cmds.is_empty() {
+                            break;
+                        }
                         for rec in &cmds {
                             last_pos = rec.position;
                             for proc in &processors {
@@ -798,11 +881,13 @@ mod tests {
                                     proc.process(rec, &state, &mut writers).await.unwrap();
                                     let total = writers.events.len() + writers.commands.len();
                                     if total > 0 {
-                                        let first = backend.next_position_batch(0, total).await.unwrap();
+                                        let first =
+                                            backend.next_position_batch(0, total).await.unwrap();
                                         let mut recs = Vec::new();
                                         for (i, ev) in writers.events.iter().enumerate() {
                                             recs.push(DbRecord {
-                                                partition_id: 0, position: first + i as i64,
+                                                partition_id: 0,
+                                                position: first + i as i64,
                                                 record_type: "EVENT".to_string(),
                                                 value_type: ev.value_type.clone(),
                                                 intent: ev.intent.clone(),
@@ -816,7 +901,9 @@ mod tests {
                                         for (i, cmd) in writers.commands.iter().enumerate() {
                                             recs.push(DbRecord {
                                                 partition_id: 0,
-                                                position: first + writers.events.len() as i64 + i as i64,
+                                                position: first
+                                                    + writers.events.len() as i64
+                                                    + i as i64,
                                                 record_type: "COMMAND".to_string(),
                                                 value_type: cmd.value_type.clone(),
                                                 intent: cmd.intent.clone(),
@@ -839,22 +926,39 @@ mod tests {
         };
 
         let bpmn_encoded = base64::engine::general_purpose::STANDARD.encode(BPMN.as_bytes());
-        submit_and_drain("DEPLOYMENT", "CREATE", serde_json::json!({
-            "resources": [{ "name": "process.bpmn", "content": bpmn_encoded }]
-        })).await;
+        submit_and_drain(
+            "DEPLOYMENT",
+            "CREATE",
+            serde_json::json!({
+                "resources": [{ "name": "process.bpmn", "content": bpmn_encoded }]
+            }),
+        )
+        .await;
 
         // ok=true → conditioned flow f3 should win even though f4 (unconditioned) comes first
-        submit_and_drain("PROCESS_INSTANCE_CREATION", "CREATE", serde_json::json!({
-            "bpmnProcessId": "gw-order-proc",
-            "version": -1,
-            "variables": { "ok": true },
-        })).await;
+        submit_and_drain(
+            "PROCESS_INSTANCE_CREATION",
+            "CREATE",
+            serde_json::json!({
+                "bpmnProcessId": "gw-order-proc",
+                "version": -1,
+                "variables": { "ok": true },
+            }),
+        )
+        .await;
 
         let element_instances = backend.list_element_instances();
-        let end_ok = element_instances.iter().find(|ei| ei.element_id == "end-ok");
-        let end_err = element_instances.iter().find(|ei| ei.element_id == "end-err");
+        let end_ok = element_instances
+            .iter()
+            .find(|ei| ei.element_id == "end-ok");
+        let end_err = element_instances
+            .iter()
+            .find(|ei| ei.element_id == "end-err");
         assert!(end_ok.is_some(), "end-ok must be reached when ok=true");
-        assert!(end_err.is_none(), "end-err must NOT be reached when ok=true");
+        assert!(
+            end_err.is_none(),
+            "end-err must NOT be reached when ok=true"
+        );
     }
 
     #[test]
@@ -870,7 +974,10 @@ mod tests {
         assert_eq!(result, FeelValue::Bool(true));
 
         // With errors — should evaluate to false
-        ctx.set("validationErrors", FeelValue::List(vec![FeelValue::String("name is required".to_string())]));
+        ctx.set(
+            "validationErrors",
+            FeelValue::List(vec![FeelValue::String("name is required".to_string())]),
+        );
         let result = evaluate("count(validationErrors) = 0", &ctx).unwrap();
         assert_eq!(result, FeelValue::Bool(false));
     }

@@ -1,6 +1,6 @@
 //! OpenAPI specification and Swagger UI endpoints.
 
-use axum::http::{StatusCode, header};
+use axum::http::{header, StatusCode};
 use axum::response::{Html, IntoResponse, Response};
 
 /// Minimal OpenAPI 3.1 spec for Reebe — covers the core endpoints.
@@ -18,7 +18,7 @@ pub async fn openapi_spec() -> Response {
 
 /// Serve Swagger UI pointing at the OpenAPI spec.
 pub async fn swagger_ui() -> Html<String> {
-    Html(format!(
+    Html(
         r#"<!DOCTYPE html>
 <html>
 <head>
@@ -31,17 +31,18 @@ pub async fn swagger_ui() -> Html<String> {
 <div id="swagger-ui"></div>
 <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
 <script>
-window.onload = function() {{
-  SwaggerUIBundle({{
+window.onload = function() {
+  SwaggerUIBundle({
     url: "/v2/api-docs",
     dom_id: '#swagger-ui',
     presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
     layout: "StandaloneLayout",
     validatorUrl: null
-  }})
-}}
+  })
+}
 </script>
 </body>
 </html>"#
-    ))
+            .to_string(),
+    )
 }
