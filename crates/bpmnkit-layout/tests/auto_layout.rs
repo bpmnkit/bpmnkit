@@ -146,3 +146,132 @@ fn root_processes_keep_their_own_source_diagram_ids() {
         ]
     );
 }
+
+const NS: &str =
+    r#"xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="D" targetNamespace="t""#;
+
+const LANES: &str = r#"<bpmn:process id="P"><bpmn:laneSet id="LS">
+<bpmn:lane id="L1"><bpmn:flowNodeRef>s</bpmn:flowNodeRef><bpmn:flowNodeRef>a</bpmn:flowNodeRef></bpmn:lane>
+<bpmn:lane id="L2"><bpmn:flowNodeRef>b</bpmn:flowNodeRef><bpmn:flowNodeRef>e</bpmn:flowNodeRef></bpmn:lane>
+</bpmn:laneSet>
+<bpmn:startEvent id="s" /><bpmn:task id="a" /><bpmn:task id="b" /><bpmn:endEvent id="e" />
+<bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="a" /><bpmn:sequenceFlow id="f2" sourceRef="a" targetRef="b" /><bpmn:sequenceFlow id="f3" sourceRef="b" targetRef="e" />
+</bpmn:process>"#;
+
+fn definitions(body: &str) -> String {
+    format!("<bpmn:definitions {NS}>{body}</bpmn:definitions>")
+}
+
+fn inside(x: f64, y: f64, w: f64, h: f64, outer: &BpmnBounds) -> bool {
+    x >= outer.x
+        && y >= outer.y
+        && x + w <= outer.x + outer.width
+        && y + h <= outer.y + outer.height
+}
+
+/// `layout-lanes-annotations.test.ts`: "draws the semantic engine's lane bands
+/// around their nodes, header clear". The engine placed nodes in lane bands, but
+/// no lane shapes were written, so the bands were invisible.
+#[test]
+fn process_lanes_outside_a_pool_are_drawn_around_their_nodes() {
+    let shapes = shapes(&laid_out(&definitions(LANES)));
+    let (l1, l2) = (&shapes["L1"], &shapes["L2"]);
+    assert_eq!(l1.x, 0.0);
+    assert_eq!(l2.y, l1.y + l1.height);
+    for (id, lane) in [("s", l1), ("a", l1), ("b", l2), ("e", l2)] {
+        let n = &shapes[id];
+        assert!(
+            inside(n.x, n.y, n.width, n.height, lane),
+            "{id} outside its lane"
+        );
+        assert!(n.x >= lane.x + 30.0, "{id} under the lane header");
+    }
+}
+
+/// `layout-lanes-annotations.test.ts`: "tiles lanes over the content with the grid engine".
+#[test]
+fn process_lanes_outside_a_pool_are_tiled_by_the_grid_engine() {
+    let defs = parse_bpmn(&definitions(LANES)).expect("parse");
+    let shapes = shapes(&apply_auto_layout(&defs, LayoutEngine::Grid, None));
+    let (l1, l2) = (&shapes["L1"], &shapes["L2"]);
+    let top = l1.y.min(l2.y);
+    let bottom = (l1.y + l1.height).max(l2.y + l2.height);
+    for id in ["s", "a", "b", "e"] {
+        let n = &shapes[id];
+        assert!(
+            n.y >= top && n.y + n.height <= bottom,
+            "{id} outside the lanes"
+        );
+        assert!(n.x >= 30.0, "{id} under the lane header");
+    }
+}
+
+/// `layout-lanes-annotations.test.ts`: "draws the lanes of a second root process
+/// on that process's own plane".
+#[test]
+fn second_root_process_draws_its_lanes_on_its_own_plane() {
+    let body = format!(r#"<bpmn:process id="Q"><bpmn:startEvent id="q" /></bpmn:process>{LANES}"#);
+    let laid = laid_out(&definitions(&body));
+    assert!(!shapes(&laid).contains_key("L1"));
+    let plane = &laid
+        .diagrams
+        .iter()
+        .find(|d| d.plane.bpmn_element == "P")
+        .expect("plane for P")
+        .plane;
+    for id in ["L1", "L2"] {
+        assert!(
+            plane.shapes.iter().any(|s| s.bpmn_element == id),
+            "{id} missing"
+        );
+    }
+}
+
+fn edge_points(defs: &BpmnDefinitions, id: &str) -> Vec<(f64, f64)> {
+    defs.diagrams[0]
+        .plane
+        .edges
+        .iter()
+        .find(|e| e.bpmn_element == id)
+        .unwrap_or_else(|| panic!("{id} has no edge"))
+        .waypoints
+        .iter()
+        .map(|w| (w.x, w.y))
+        .collect()
+}
+
+/// `layout-lanes-annotations.test.ts`: "draws them and packs the linked
+/// annotation beside its partner". Only an annotation linked to a flow node got
+/// its association drawn.
+#[test]
+fn association_between_two_annotations_is_drawn() {
+    let laid = laid_out(&definitions(
+        r#"<bpmn:process id="P"><bpmn:startEvent id="s" /><bpmn:task id="t" /><bpmn:sequenceFlow id="f" sourceRef="s" targetRef="t" />
+<bpmn:textAnnotation id="N1"><bpmn:text>On t</bpmn:text></bpmn:textAnnotation>
+<bpmn:textAnnotation id="N2"><bpmn:text>On N1</bpmn:text></bpmn:textAnnotation>
+<bpmn:association id="a1" sourceRef="t" targetRef="N1" /><bpmn:association id="a2" sourceRef="N2" targetRef="N1" />
+</bpmn:process>"#,
+    ));
+    let shapes = shapes(&laid);
+    let (n1, n2) = (&shapes["N1"], &shapes["N2"]);
+    let points = edge_points(&laid, "a2");
+    assert_eq!(points.len(), 2);
+    assert!(inside(points[0].0, points[0].1, 0.0, 0.0, n2));
+    assert!(inside(points[1].0, points[1].1, 0.0, 0.0, n1));
+    assert!((n2.x - n1.x).abs() <= n1.width);
+    assert!((n2.y - n1.y).abs() <= n1.height + 40.0);
+}
+
+/// `layout-lanes-annotations.test.ts`: "draws them inside a pool that holds only annotations".
+#[test]
+fn association_between_two_annotations_is_drawn_in_an_annotation_only_pool() {
+    let laid = laid_out(&definitions(
+        r#"<bpmn:collaboration id="C"><bpmn:participant id="PA" processRef="Pn" /><bpmn:participant id="PB" processRef="Pw" /></bpmn:collaboration>
+<bpmn:process id="Pn"><bpmn:textAnnotation id="A1"><bpmn:text>Note</bpmn:text></bpmn:textAnnotation><bpmn:textAnnotation id="A2"><bpmn:text>Another</bpmn:text></bpmn:textAnnotation><bpmn:association id="a" sourceRef="A1" targetRef="A2" /></bpmn:process>
+<bpmn:process id="Pw"><bpmn:startEvent id="s" /><bpmn:endEvent id="e" /><bpmn:sequenceFlow id="f" sourceRef="s" targetRef="e" /></bpmn:process>"#,
+    ));
+    let pool = &shapes(&laid)["PA"];
+    for (x, y) in edge_points(&laid, "a") {
+        assert!(inside(x, y, 0.0, 0.0, pool), "({x}, {y}) outside the pool");
+    }
+}

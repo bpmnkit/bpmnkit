@@ -147,6 +147,40 @@ fn edge_to_shape(edge: &LayoutEdge, dx: f64, dy: f64) -> BpmnDiEdge {
     di
 }
 
+/// `laneShapesFor(...)`: the engine's bands when it placed nodes by lane,
+/// otherwise the top-level lanes tiled proportionally over the content height.
+#[allow(clippy::too_many_arguments)]
+fn lane_shapes_for(
+    lanes: &[BpmnLane],
+    lane_bands: Option<&Vec<LaneBand>>,
+    nodes: &[LayoutNode],
+    dy: f64,
+    top: f64,
+    x: f64,
+    width: f64,
+    height: f64,
+) -> Vec<BpmnDiShape> {
+    let Some(bands) = lane_bands else {
+        return build_lane_shapes(lanes, nodes, dy, top, x, width, height);
+    };
+    bands
+        .iter()
+        .map(|lane| {
+            let mut s = new_shape(
+                &lane.id,
+                BpmnBounds {
+                    x: js::round(x),
+                    y: js::round(lane.bounds.y + dy),
+                    width: js::round(width),
+                    height: js::round(lane.bounds.height),
+                },
+            );
+            s.is_horizontal = Some(true);
+            s
+        })
+        .collect()
+}
+
 /// `buildLaneShapes(...)`: proportional lane tiling when the engine reported no bands.
 #[allow(clippy::too_many_arguments)]
 fn build_lane_shapes(
@@ -309,6 +343,22 @@ pub fn add_annotation_shapes(
     }
 
     for assoc in &process.contents.associations {
+        // Two annotations: both boxes are packed, so dock edge to edge between them.
+        if let (Some(source_ann), Some(target_ann)) = (
+            ann_local_bounds.get(&assoc.source_ref),
+            ann_local_bounds.get(&assoc.target_ref),
+        ) {
+            let (p_elem, p_ann) = association_waypoints(source_ann, target_ann);
+            all_edges.push(new_edge(
+                &assoc.id,
+                vec![
+                    wp(js::round(p_elem.x + dx), js::round(p_elem.y + dy)),
+                    wp(js::round(p_ann.x + dx), js::round(p_ann.y + dy)),
+                ],
+            ));
+            continue;
+        }
+
         let ann_id: Option<&str> = if ann_local_bounds.contains_key(&assoc.source_ref) {
             Some(&assoc.source_ref)
         } else if ann_local_bounds.contains_key(&assoc.target_ref) {
@@ -1179,11 +1229,7 @@ pub fn apply_auto_layout(
         // Engine lane bands already stack the content vertically, so the pool
         // aligns to the band space rather than to the content bounding box —
         // otherwise the shapes drift out of the lanes drawn around them.
-        let lane_bands = if participant_id.is_some() && has_lanes {
-            engine_lanes
-        } else {
-            None
-        };
+        let lane_bands = if has_lanes { engine_lanes } else { None };
         // Bands arrive outermost first and nested lanes overlap their parent, so the
         // pool spans their extent rather than the first band or the sum of heights.
         let band_top = lane_bands
@@ -1197,6 +1243,12 @@ pub fn apply_auto_layout(
             })
             .unwrap_or(0.0);
 
+        // Below any pools already stacked; poolY is 0 without a collaboration.
+        let process_top = if process.map(|p| p.id.as_str()) == primary_process_id {
+            pool_y
+        } else {
+            0.0
+        };
         let dx: f64;
         let dy: f64;
         if participant_id.is_some() {
@@ -1208,11 +1260,36 @@ pub fn apply_auto_layout(
                 pool_y + PADDING - bbox.min_y
             };
         } else {
-            dx = PADDING - bbox.min_x;
-            // Below any pools already stacked; poolY is 0 without a collaboration.
-            let is_primary = process.map(|p| p.id.as_str()) == primary_process_id;
-            dy = (if is_primary { pool_y } else { 0.0 }) + PADDING - bbox.min_y;
+            // A process outside any pool draws its lanes on the plane itself (bpmn-js
+            // imports lane DI under a process root), header at x 0, so the content
+            // clears the lane header the way it does in a pool.
+            // A layout pass must not invent a participant to hold them.
+            dx = (if has_lanes { LANE_HEADER } else { 0.0 }) + PADDING - bbox.min_x;
+            dy = if lane_bands.is_some() {
+                process_top - band_top
+            } else {
+                process_top + PADDING - bbox.min_y
+            };
         }
+        // Lanes of a process outside any pool, drawn straight on its plane.
+        let bare_lanes: Vec<BpmnDiShape> = if participant_id.is_none() && has_lanes {
+            lane_shapes_for(
+                lanes,
+                lane_bands,
+                &result.nodes,
+                dy,
+                process_top,
+                0.0,
+                LANE_HEADER + content_w + 2.0 * PADDING,
+                if lane_bands.is_some() {
+                    band_height
+                } else {
+                    content_h + 2.0 * PADDING
+                },
+            )
+        } else {
+            Vec::new()
+        };
 
         // Only the primary process shares the root plane; any other root process
         // owns one, instead of being stacked on top of the first at the origin.
@@ -1236,6 +1313,7 @@ pub fn apply_auto_layout(
                     dx,
                     dy,
                 );
+                shapes.extend(bare_lanes);
                 root_planes.push(RootPlane {
                     element_id: process.id.clone(),
                     shapes,
@@ -1263,6 +1341,7 @@ pub fn apply_auto_layout(
                 dy,
             );
         }
+        all_shapes.extend(bare_lanes);
 
         if let Some(participant_id) = participant_id {
             let inner_w =
@@ -1288,34 +1367,16 @@ pub fn apply_auto_layout(
             all_shapes.push(pool_shape);
 
             if has_lanes {
-                let lane_shapes: Vec<BpmnDiShape> = match lane_bands {
-                    Some(bands) => bands
-                        .iter()
-                        .map(|lane| {
-                            let mut s = new_shape(
-                                &lane.id,
-                                BpmnBounds {
-                                    x: js::round(POOL_HEADER),
-                                    y: js::round(lane.bounds.y + dy),
-                                    width: js::round(inner_w),
-                                    height: js::round(lane.bounds.height),
-                                },
-                            );
-                            s.is_horizontal = Some(true);
-                            s
-                        })
-                        .collect(),
-                    None => build_lane_shapes(
-                        lanes,
-                        &result.nodes,
-                        dy,
-                        pool_y,
-                        POOL_HEADER,
-                        inner_w,
-                        inner_h,
-                    ),
-                };
-                all_shapes.extend(lane_shapes);
+                all_shapes.extend(lane_shapes_for(
+                    lanes,
+                    lane_bands,
+                    &result.nodes,
+                    dy,
+                    pool_y,
+                    POOL_HEADER,
+                    inner_w,
+                    inner_h,
+                ));
             }
 
             pool_y += inner_h + POOL_GAP;

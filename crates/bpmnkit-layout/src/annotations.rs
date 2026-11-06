@@ -284,11 +284,37 @@ pub fn pack_annotations(
 
     let annotation_ids: IndexSet<&str> = annotations.iter().map(|a| a.id.as_str()).collect();
     let mut element_for_annotation: IndexMap<&str, &str> = IndexMap::new();
+    let mut annotation_pairs: Vec<(&str, &str)> = Vec::new();
     for assoc in &process.contents.associations {
-        if annotation_ids.contains(assoc.target_ref.as_str()) {
+        if annotation_ids.contains(assoc.target_ref.as_str())
+            && annotation_ids.contains(assoc.source_ref.as_str())
+        {
+            annotation_pairs.push((assoc.source_ref.as_str(), assoc.target_ref.as_str()));
+        } else if annotation_ids.contains(assoc.target_ref.as_str()) {
             element_for_annotation.insert(assoc.target_ref.as_str(), assoc.source_ref.as_str());
         } else if annotation_ids.contains(assoc.source_ref.as_str()) {
             element_for_annotation.insert(assoc.source_ref.as_str(), assoc.target_ref.as_str());
+        }
+    }
+    // An annotation linked only to another annotation packs beside that one's
+    // element, so the association between the two stays short.
+    let mut changed = true;
+    while changed {
+        changed = false;
+        for &(a, b) in &annotation_pairs {
+            let for_a = element_for_annotation.get(a).copied();
+            let for_b = element_for_annotation.get(b).copied();
+            match (for_a, for_b) {
+                (None, Some(e)) => {
+                    element_for_annotation.insert(a, e);
+                    changed = true;
+                }
+                (Some(e), None) => {
+                    element_for_annotation.insert(b, e);
+                    changed = true;
+                }
+                _ => {}
+            }
         }
     }
 

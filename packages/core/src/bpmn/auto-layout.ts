@@ -113,6 +113,36 @@ function edgeToShape(edge: LayoutEdge, dx: number, dy: number): BpmnDiEdge {
 	return diEdge
 }
 
+/**
+ * Lane shapes for one process: the engine's bands when it placed nodes by lane,
+ * otherwise the top-level lanes tiled proportionally over the content height.
+ */
+function laneShapesFor(
+	lanes: BpmnLane[],
+	laneBands: Array<{ id: string; bounds: Bounds }> | undefined,
+	nodes: LayoutNode[],
+	dx: number,
+	dy: number,
+	top: number,
+	x: number,
+	width: number,
+	height: number,
+): BpmnDiShape[] {
+	if (!laneBands) return buildLaneShapes(lanes, nodes, dx, dy, top, x, width, height)
+	return laneBands.map((lane) => ({
+		id: `${lane.id}_di`,
+		bpmnElement: lane.id,
+		isHorizontal: true,
+		bounds: {
+			x: Math.round(x),
+			y: Math.round(lane.bounds.y + dy),
+			width: Math.round(width),
+			height: Math.round(lane.bounds.height),
+		},
+		unknownAttributes: {},
+	}))
+}
+
 function buildLaneShapes(
 	lanes: BpmnLane[],
 	nodes: LayoutNode[],
@@ -250,6 +280,23 @@ export function addAnnotationShapes(
 	}
 
 	for (const assoc of process.associations) {
+		// Two annotations: both boxes are packed, so dock edge to edge between them.
+		const sourceAnn = annLocalBounds.get(assoc.sourceRef)
+		const targetAnn = annLocalBounds.get(assoc.targetRef)
+		if (sourceAnn && targetAnn) {
+			const { pElem, pAnn } = associationWaypoints(sourceAnn, targetAnn)
+			allEdges.push({
+				id: `${assoc.id}_di`,
+				bpmnElement: assoc.id,
+				waypoints: [
+					{ x: Math.round(pElem.x + dx), y: Math.round(pElem.y + dy) },
+					{ x: Math.round(pAnn.x + dx), y: Math.round(pAnn.y + dy) },
+				],
+				unknownAttributes: {},
+			})
+			continue
+		}
+
 		const annId = annLocalBounds.has(assoc.sourceRef)
 			? assoc.sourceRef
 			: annLocalBounds.has(assoc.targetRef)
@@ -901,7 +948,7 @@ export function applyAutoLayout(
 		// Engine lane bands already stack the content vertically, so the pool
 		// aligns to the band space rather than to the content bounding box —
 		// otherwise the shapes drift out of the lanes drawn around them.
-		const laneBands = participantId && hasLanes ? engineLanes : undefined
+		const laneBands = hasLanes ? engineLanes : undefined
 		// Bands arrive outermost first and nested lanes overlap their parent, so the
 		// pool spans their extent rather than the first band or the sum of heights.
 		const bandTop = laneBands ? Math.min(...laneBands.map((lane) => lane.bounds.y)) : 0
@@ -909,6 +956,8 @@ export function applyAutoLayout(
 			? Math.max(...laneBands.map((lane) => lane.bounds.y + lane.bounds.height)) - bandTop
 			: 0
 
+		// Below any pools already stacked; poolY is 0 without a collaboration.
+		const processTop = process?.id === primaryProcessId ? poolY : 0
 		let dx: number
 		let dy: number
 		if (participantId) {
@@ -916,10 +965,28 @@ export function applyAutoLayout(
 			dx = elemX - minX + alignDx
 			dy = laneBands ? poolY - bandTop : poolY + PADDING - minY
 		} else {
-			dx = PADDING - minX
-			// Below any pools already stacked; poolY is 0 without a collaboration.
-			dy = (process?.id === primaryProcessId ? poolY : 0) + PADDING - minY
+			// A process outside any pool draws its lanes on the plane itself (bpmn-js
+			// imports lane DI under a process root), header at x 0, so the content
+			// clears the lane header the way it does in a pool.
+			// A layout pass must not invent a participant to hold them.
+			dx = (hasLanes ? LANE_HEADER : 0) + PADDING - minX
+			dy = laneBands ? processTop - bandTop : processTop + PADDING - minY
 		}
+		/** Lanes of a process outside any pool, drawn straight on its plane. */
+		const bareLanes =
+			!participantId && hasLanes
+				? laneShapesFor(
+						lanes,
+						laneBands,
+						result.nodes,
+						dx,
+						dy,
+						processTop,
+						0,
+						LANE_HEADER + contentW + 2 * PADDING,
+						laneBands ? bandHeight : contentH + 2 * PADDING,
+					)
+				: []
 
 		// Only the primary process shares the root plane; any other root process
 		// owns one, instead of being stacked on top of the first at the origin.
@@ -929,6 +996,7 @@ export function applyAutoLayout(
 			for (const node of result.nodes) shapes.push(nodeToShape(node, dx, dy))
 			for (const edge of result.edges) edges.push(edgeToShape(edge, dx, dy))
 			addAnnotationShapes(annProcess ?? process, result.nodes, annBounds, shapes, edges, dx, dy)
+			shapes.push(...bareLanes)
 			rootPlanes.push({ elementId: process.id, shapes, edges })
 			continue
 		}
@@ -946,6 +1014,7 @@ export function applyAutoLayout(
 				dy,
 			)
 		}
+		allShapes.push(...bareLanes)
 
 		if (participantId) {
 			const innerW = (hasLanes ? LANE_HEADER : 0) + contentW + 2 * PADDING + alignDx
@@ -962,21 +1031,19 @@ export function applyAutoLayout(
 			})
 
 			if (hasLanes) {
-				const laneShapes = laneBands
-					? laneBands.map((lane) => ({
-							id: `${lane.id}_di`,
-							bpmnElement: lane.id,
-							isHorizontal: true,
-							bounds: {
-								x: Math.round(POOL_HEADER),
-								y: Math.round(lane.bounds.y + dy),
-								width: Math.round(innerW),
-								height: Math.round(lane.bounds.height),
-							},
-							unknownAttributes: {},
-						}))
-					: buildLaneShapes(lanes, result.nodes, dx, dy, poolY, POOL_HEADER, innerW, innerH)
-				allShapes.push(...laneShapes)
+				allShapes.push(
+					...laneShapesFor(
+						lanes,
+						laneBands,
+						result.nodes,
+						dx,
+						dy,
+						poolY,
+						POOL_HEADER,
+						innerW,
+						innerH,
+					),
+				)
 			}
 
 			poolY += innerH + POOL_GAP
