@@ -147,3 +147,28 @@ fn side_ports_matches_ts() {
         assert_eq!(side_ports(&bounds(&case["b"]), &cost), expected);
     }
 }
+
+/// Regression: the end stub was matched exactly against grid points rounded to
+/// half units, so a target port at a fractional coordinate made a found route
+/// come back as `None`.
+#[test]
+fn fractional_target_ports_still_route() {
+    let b = |x, y, width, height| Bounds {
+        x,
+        y,
+        width,
+        height,
+    };
+    let target = b(333.33, 211.1, 50.0, 50.0);
+    let to = side_ports(&target, &SideCost::default());
+    let request = OrthogonalRequest {
+        from: side_ports(&b(0.3, 0.7, 100.2, 80.1), &SideCost::default()),
+        to: to.clone(),
+        obstacles: vec![b(150.25, 40.4, 60.6, 120.2)],
+        crossings: None,
+        margin: None,
+    };
+    let route = route_orthogonal(&request).expect("a route");
+    let last = route.last().expect("points");
+    assert!(to.iter().any(|p| p.point == *last));
+}

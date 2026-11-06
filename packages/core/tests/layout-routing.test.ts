@@ -83,6 +83,24 @@ describe("routeOrthogonal", () => {
 		expect(route.every((p) => p.y <= 30 || p.y >= 50 || p.x < 250 || p.x > 250)).toBe(true)
 	})
 
+	it("finds a route to a target whose ports sit at fractional coordinates", () => {
+		// Regression: grid lines are rounded to half units, so the target stub at
+		// (358.33, 199.1) was never matched exactly and a found route came back null.
+		const target: Bounds = { x: 333.33, y: 211.1, width: 50, height: 50 }
+		const obstacle: Bounds = { x: 150.25, y: 40.4, width: 60.6, height: 120.2 }
+		const route = routeOrthogonal({
+			from: sidePorts({ x: 0.3, y: 0.7, width: 100.2, height: 80.1 }),
+			to: sidePorts(target),
+			obstacles: [obstacle],
+		})
+		expect(route).not.toBeNull()
+		const last = (route as Waypoint[])[(route as Waypoint[]).length - 1]
+		expect(sidePorts(target).some((p) => p.point.x === last?.x && p.point.y === last?.y)).toBe(
+			true,
+		)
+		expect(crosses(route as Waypoint[], obstacle)).toBe(false)
+	})
+
 	it("returns null when the target is walled in", () => {
 		const walls: Bounds[] = [
 			{ x: 360, y: -40, width: 180, height: 20 },

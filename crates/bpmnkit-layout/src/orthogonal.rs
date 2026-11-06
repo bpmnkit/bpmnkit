@@ -131,6 +131,7 @@ fn stub_of(port: &Port) -> Waypoint {
     }
 }
 
+/// Grid lines sit on half units, so coordinates are compared after this rounding.
 fn half(v: f64) -> f64 {
     js::round(v * 2.0) / 2.0
 }
@@ -420,9 +421,11 @@ fn search(request: &OrthogonalRequest, obstacles: &[Bounds], margin: f64) -> Opt
     points.reverse();
     let start_port = start_port?;
     let last = *points.last()?;
+    // The path ends on a grid point, which is the stub rounded like the axes; an
+    // exact comparison would miss every stub at a fractional coordinate.
     let end_port = ends
         .iter()
-        .find(|e| e.stub.x == last.x && e.stub.y == last.y)?;
+        .find(|e| half(e.stub.x) == last.x && half(e.stub.y) == last.y)?;
     let mut all = Vec::with_capacity(points.len() + 2);
     all.push(start_port.point);
     all.extend(points);
