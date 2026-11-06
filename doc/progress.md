@@ -15,6 +15,195 @@
 ## 2026-11-04 — Proposal: Rust core for BPMN Kit (analysis only)
 
 - New `doc/rust-rewrite-proposal.md`: what moves to Rust, what stays TS, crate layout, WASM-for-browser-and-Node bindings, parity strategy, phased plan with estimates, risks and open decisions. No code changed.
+## 2026-11-06 — `casen check --deploy`: user task without a form is an error
+
+- `compat/user-task-definition` is promoted to an error in the deploy profile (it was a warning, so the errors-only gate hid it). `--user-task-forms off` still disables it; elsewhere it stays off or a warning. Merged `claude/eval-layout-aesthetics` into the integration branch.
+
+## 2026-11-05 — Integration of the Camunda eval branches (fix-ids-conditional, agent-cards, casen-check, dmn-drd)
+
+- Merged the four branches with history. Agent cards now name `casen check` and show a tested `Dmn.drd()` script (`scripts/dmn-drd.ts`).
+- MCP `replace_diagram` on a DMN returns a plain tool error for a dangling `requires` (test: `apps/proxy/tests/mcp-replace-dmn.test.ts`).
+- Fix: compact `expand` and the element `eventType` patch now derive event-definition ids, so applied drop feedback no longer trips `deploy/event-definition-no-id`.
+
+## 2026-11-05 — core: event-definition ids and form `conditional` (Camunda eval fixes)
+
+- Event definitions built with the fluent builder now get deterministic ids (`<ElementId>_<Kind>EventDefinition`, counter for repeats; `eventDefinitionId` in `stable-ids.ts`). Zeebe 8.10 rejects a definition without one. Parsed files are not rewritten: serializing keeps them byte-faithful, and a continued document keeps its untouched part as is.
+- New lint rule `deploy/event-definition-no-id` (deploy profile) flags definitions without an id.
+- Forms: `conditional: { hide }` added to the model, `Form` builder options, parser and exporter; component props the model does not know are kept in `extraProps` and written back, so `Form.export(parse(x))` is lossless. Tests: `tests/event-definition-ids.test.ts`, `tests/form/conditional.test.ts`.
+
+## 2026-11-05 — Agent cards: one ~2k-token cheat sheet per BPMN, DMN and form
+
+Camunda eval (900 runs): agents spent 32–49% of their cost reading bpmnkit docs. Each file type now has one card an agent reads instead.
+
+- Source: `apps/cli/agent-cards/{bpmn,dmn,form}.md`. Each embeds a runnable script from `apps/cli/agent-cards/scripts/` (create, export, edit with the preserving writer, validate), the top options and the traps: Camunda 8.10 is not the builder default (BPMN `8.9.0`, form `8.7.0`), user tasks default to job-worker tasks (`zeebeUserTask: true`), deploy ids (process id, decision id, form id), DMN hit policy and FEEL quoting, keeping layout on edit.
+- CLI: `casen agent-card bpmn|dmn|form` (alias `card`); `bpmn --text` appends `PROCESS_TEXT_GUIDE`. `casen skills install` adds `/dmn` and `/form`.
+- `scripts/sync-agent-cards.mjs` copies the cards to `apps/landing/src/content/docs/agent-cards/` (new "Agent Cards" docs section) and to new plugin skills `bpmn-script`, `dmn`, `form`; `implement` links them.
+- docspack: `docspack.startHere` build option; `@bpmnkit/docspack`'s `llms.txt` now opens with a "Start here" list of the cards. Rebuilt the pack.
+- Tests: `apps/cli/src/commands/agent-card.test.ts` typechecks (`tsc -p agent-cards`), runs every script, checks the card shows it verbatim, the copies are in sync and each card stays under 2k tokens; `recipe-ranking.test.ts` checks each card is the top chunk for its task; `pack.test.ts` covers `startHere`.
+- Sizes (docspack estimate): BPMN 1,236, DMN 1,025, form 885 tokens. DMN/form lint and a DRD builder are in progress elsewhere; the cards only point at `casen --help`.
+
+## 2026-11-05 — `casen check`: one gate for BPMN, DMN and forms
+
+- New `casen check <file...> [--deploy] [--sketch] [--user-task-forms require|off] [--json]` (`apps/cli/src/commands/check.ts`, routed like `dev` so every positional is a file). BPMN: XML well-formedness, then `lintBpmn`. DMN: `lintDmn`. Forms: `lintForm`. Then cross-file `check/unresolved-form` / `check/unresolved-decision` when files of that kind were given (warning; error under `--deploy`). One row shape: `file, kind, rule, severity, elementId, message, fix`; exits non-zero on errors. `recoverFiles` gives back a file the argument parser took as a boolean flag's value (`--json a.bpmn`).
+- Core: `lintDmn(xml)` (`packages/core/src/dmn/lint.ts`) and `lintForm(json)` (`packages/core/src/form/lint.ts`) on raw XML/JSON, so every problem is reported instead of the first parse error; shared `CheckFinding` type. FEEL via `@bpmnkit/feel` (`parseUnaryTests` for input entries). 17 DMN rules, 13 form rules.
+- The "user task needs a form" rule (`compat/user-task-definition`) is now configurable: `OptimizeOptions.userTaskForms: "require" | "off"` (default `require`, library behaviour unchanged; `USER_TASK_FORM_RULE` exported). `casen lint` and `casen check` default it to `off` outside the deploy profile — Zeebe deploys a user task without a form, and agents in the eval disabled the rule in 71/324 runs to stop inventing form refs.
+- `casen lint lint --profile sketch` (and `casen check --sketch`): skip every Camunda 8 deployability category even when the model names a platform.
+- Docs: `apps/landing/src/content/docs/cli/check.md`, `casen.md`. Tests: `packages/core/tests/dmn-lint.test.ts`, `form-lint.test.ts`, `camunda-compat.test.ts` (userTaskForms), `apps/cli/src/commands/check.test.ts`.
+
+## 2026-11-05 — `Dmn.drd()` multi-decision builder (eval D04)
+
+- Eval D04: agents referenced the required decision by name, not id (Haiku 0/18, Sonnet 12/18). New `Dmn.drd()` in `packages/core/src/dmn/drd-builder.ts`: `decision()` returns a handle, `requires` takes a handle or branded `drgId()`; unknown ref throws `ValidationError` listing valid ids, a matching label suggests the id. Emits `informationRequirement` hrefs and DMNDI shapes/edges (auto layout).
+- `expandDmn` (compact.ts) now throws on a dangling `requires` instead of dropping it silently.
+- Tests: `packages/core/tests/dmn-drd.test.ts`. Docs: landing `packages/core.md`.
+## 2026-11-05 — Auto-layout aesthetics for new diagrams
+
+- Benchmark `scripts/layout-aesthetics/` (10 scenarios, deterministic aesthetic metrics, PNG renders); results and before/after in `doc/layout-aesthetics.md`.
+- Semantic layout: 60 px column/row gaps (wider only for labels; 100 beside containers), band lines that clear only what they sit under, sub-processes aligned on their inner spine, gateway/event labels moved off exit flows, branch conditions at the gateway exit, routes avoid running along unrelated flows. Participant-less primary process stacked below pools. `exportSvg`: no label wrap at box width, no "+" on expanded sub-processes.
+- Scenario means: width 1170 → 945 px, aspect 4.77 → 4.05, label collisions 0.8 → 0.2, density 0.16 → 0.21; blind Opus judge 3.4 → 4.2. `bakeoff/expected.bpmn` regenerated (coordinates only). Tests: `tests/layout-aesthetics.test.ts`, svg marker test.
+
+## 2026-11-05 — Camunda 8 → Camunda 7/Operaton export (issue #259, step 2)
+
+- `convertCamunda8To7(defs)` in `packages/core/src/bpmn/camunda7/export.ts`, exported from `@bpmnkit/core`: non-mutating, returns `{ definitions, findings }` (same finding shape as `convertCamunda7`). Maps job type → `camunda:type="external"` + `camunda:topic`, I/O mapping → `camunda:inputOutput`, assignment, `formKey`, `calledElement` (+ `camunda:in`/`out variables="all"`), version tag. Removes all `zeebe:`/`modeler:` content and namespaces itself (does not use the serializer). FEEL is kept raw with a `manual` finding; message correlation keys, connectors and Zeebe-only features are dropped with findings.
+- CLI: `casen migrate c7 --to camunda7 <files>` writes `<name>.c7.bpmn`. `CAMUNDA7_NS`, `ZEEBE_NS`, `MODELER_NS` are now exported from `migrate.ts`.
+- Tests: `packages/core/tests/camunda7-export.test.ts`, one CLI case in `migrate.test.ts`. Best effort: Camunda 8 stays the focus.
+
+## 2026-11-05 — core: `stripCamunda8` for vendor-neutral export (#259 step 1)
+
+- New `stripCamunda8(defs)` (`packages/core/src/bpmn/strip-camunda8.ts`, exported from core): non-mutating copy without `zeebe:*` extension elements/attributes, `modeler:*` attributes and their unused `xmlns` declarations; returns `{ definitions, dropped }` with `{ elementId, kind, name }` per item. `camunda:*` is kept. Opt-in; `serializeBpmn` is unchanged.
+- The namespace helper in `bpmn-serializer.ts` already declares only prefixes in use, so no change was needed. Regression test added: a Camunda 7 file round-trips with `camunda:*` kept and no zeebe/modeler namespace (`tests/strip-camunda8.test.ts`).
+
+## 2026-11-05 — CI: install wasm-pack without jetli/wasm-pack-action
+
+- The deploy job failed in "Install wasm-pack": the action renames the binary from `/tmp` to `~/.cargo/bin`, and the runner now has them on different filesystems (`EXDEV: cross-device link not permitted`). All seven workflows that used it now download the pinned v0.15.0 release into `$RUNNER_TEMP` and `install` it into `~/.cargo/bin`.
+
+## 2026-11-05 — Examples typecheck clean; root tsconfig drops missing plugin references
+
+- `apps/examples`: `businessRuleTask` takes `decisionId`, not `decisionRef`, in `01-employee-onboarding.ts` and `03-loan-approval.ts` (TS2353). The package now has a `typecheck` script (`tsc --noEmit`), and the folder typechecks clean.
+- Root `tsconfig.json`: the seven `canvas-plugins/*` references pointed at a directory that does not exist. Vite's tsconfig lookup for a `.ts` file that falls back to the root config failed with `TSConfckParseError … ENOENT`. Only the `packages/core`, `canvas` and `editor` references remain. Verified with a scratch Vitest import from `packages/ascii`, removed afterwards.
+
+## 2026-11-05 — Builder: linked resources and data elements (B10, B11)
+
+- `ServiceTaskOptions.linkedResources` writes `zeebe:linkedResources` > `zeebe:linkedResource` through the typed writer (`ZeebeExtensions.linkedResources`, new `ZeebeLinkedResource` type); `getZeebeExtensions` reads it back and the round-trip table covers it. `connectors/apply-element.ts` is unchanged (its writer is inline, not a reusable helper).
+- `dataObject`, `dataObjectReference`, `dataStoreReference` and `dataAssociation(activityId, dataRefId, "input" | "output")` on all three flow builders. They add no sequence flow and leave the chain cursor alone; auto-layout packs them as unconnected shapes. Association edges are not drawn (needs `layout/**`). `builder-coverage.ts` no longer exempts the three types.
+- Tests: `tests/builder-data-elements.test.ts`, `tests/builder-zeebe-options.test.ts`, `tests/zeebe-extensions-roundtrip.test.ts`.
+
+## 2026-11-05 — B6: edit patches for event definitions and multi-instance
+
+- `applyBpmnOperations` `update` patches now write event definitions (`messageName`, `errorCode`, `escalationCode`, `signalName` on the referenced root element — created if missing, reported when several elements share it; `timerDuration`/`timerDate`/`timerCycle`; `condition`) and multi-instance (`multiInstance`, one field at a time; empty string clears, empty `collection` removes the loop). `timerDuration`, `condition` and `multiInstance` were already in the patch type but silently ignored.
+- MCP `update_element` accepts these plus `executionListeners` / `taskListeners` (already supported by core, never exposed).
+- Tests: `packages/core/tests/full-operations-events.test.ts`, `apps/proxy/tests/mcp-update-element.test.ts`.
+
+## 2026-11-05 — B9: task-level template bindings; C10: `ignoreNullValues` on GET pinned
+
+- B9: `zeebe:calledElement`, `calledDecision`, `userTask` (flag), `formDefinition`, `assignmentDefinition`, `taskSchedule`, `priorityDefinition` and `script` are valid template bindings (properties checked against the Camunda element-template docs; `formKey` is not a schema property and stays a validation error). `applyTemplateToElement` writes them with the typed writers in `zeebe-extensions.ts`; `zeebe:script` has no writer there (and `bpmn/**` is out of scope), so its element is built in `apply-element.ts`. `calledDecision`'s `bindingType`/`versionTag` are merged onto the writer's element for the same reason.
+- Ownership: a template owns the bindings it declares; re-applying a template whose id the element already carries (a new version) owns all eight, so a binding v2 dropped is removed. An extension missing a required attribute (`processId`, `decisionId`+`resultVariable`, `expression`, `priority`, `formId`/`externalReference`) is not written and is reported; an invalid `bindingType` is reported. `applyElementTemplate` (builder options) reports these bindings as not expressible.
+- C10: already correct (a hidden, condition-gated property is never resolved); no code change. `tests/connectors/apply.test.ts` now pins GET without and with an explicit value, and POST with it. The closeness gap against the blueprint is accepted, per the plan decision.
+- Tests: `tests/connectors/bindings-b9.test.ts` (26), one in `apply.test.ts`.
+
+## 2026-11-05 — Comparison page: recording support, cost column, test column
+
+- **D2 (support only; no recordings made, no API key here).** `Recording` panels gain `compact-json` (a `CompactDiagram` JSON, expanded by `expand()`) and `plan` (a `ProcessPlan`, compiled by `compilePlan()` as `casen synth` does) plus a per-panel `model`; the `with-sdk` / `without-sdk` panels became optional so a recording can hold any subset of routes. The demo server has `/stream/compact-json` and `/stream/plan`, reports the model id from the CLI's init line, and `GET /prompts` lists the two new prompts. `scripts/record-compare.mjs --scenario --routes --runs [--dry-run]` records the matrix through the server; the dry run validates and prints the plan without a server or key. The maintainer's command for quote-to-cash × 4 routes × 3 runs is in the D2 section of `doc/plan-agent-gaps-performance-compare.md`. The July line notation is now route `compact-dsl`, so `compact-json` means the new JSON route.
+- **C9.** `scripts/lib/model-prices.mjs`: dated list prices (source: the `claude-api` skill's table, cached 2026-10-06; docspack had no pricing indexed). Haiku 5.5 and Mythos left out (tiered / access-programme). The data script computes cost only for a run with a recorded model in the table and an in/out token split; none of the 12 July recordings has a model, so every cost shows "—" until new runs are recorded. Cached input is priced as plain input, which the page says.
+- **D3 (test column).** `scripts/compare/references/{kyc,loan-approval,quote-to-cash}.test.json` (Camunda process-test format, happy path from the prompt); `scripts/lib/cpt-run.mjs` runs them on reebe-wasm; the page shows pass/fail per run, "not run" where the engine is unavailable, never a guess. Reebe-wasm built in this sandbox (wasm-pack from npm, `wasm32-unknown-unknown`); the references pass their own tests. Model outputs fail at the first instruction (their process/element ids differ), which the page states.
+- Page: freshness warning after 90 days, per-run model, cost and tests columns, up to five routes.
+- Tests: `scripts/lib/{record-compare,model-prices,cpt-run}.test.mjs` (added to `test:scripts`), `compare-rows.test.mjs`, and `apps/demo/server/{route-executors,stream-parsers,system-prompt}.test.*`.
+
+## 2026-11-05 — C7: annotation sides left/right; C8: layout closeness diagnosis
+
+- C7: `AnnotateOptions.side` also takes `"left" | "right"`. `packAnnotations` places the box beside the element and pushes it sideways out of shapes, routes and every annotation already placed (any side), with the same cost model as above/below. The default side is unchanged. Tests: `packages/core/tests/annotation-side.test.ts` (left of the start event, right of the end event). `builder-reference.md` regenerated.
+- C8: diagnosis in `doc/layout-closeness-diagnosis.md`. Two of its three general rules shipped. R3: a loose-node grid (ad-hoc tools) uses 40/20 px gaps, plus label room. R1: a container taller than its row hangs from the task line, and `route.ts` docks the flow straight at the other end's centre. Corpus (roundtrip, 29 files): avg 330.7 → 330.1 px, P90 555.1 → 553.4 px, 0 order violations. Bake-off layout: 7.7 → 10.5/15 (193.6 → 120.9 px). `expected.bpmn` was regenerated (36 `dc:Bounds` and 40 `di:waypoint` lines, nothing else); `expected.txt` is unchanged.
+- `scripts/lib/closeness.mjs`: the layout part aligns both diagrams on their shared top-left corner, as `closeness.py` does, so a uniform shift scores full points. The old "move every shape" test now moves one shape. `apps/landing/src/generated/compare/` is not regenerated (out of this change's scope).
+- Deviation: R2 (main-column gap 100 → 50) is not shipped. It breaks the spec check in `bakeoff-ai-agent-chat.test.ts` that the tool note sits right of the agent and below the user task: with the tighter gap, `"below"` lands under the agent and `"right"` lands above the user task's bottom. R2 would give corpus avg 326.7 px, P90 534.6 px and bake-off 11.4 px.
+
+## 2026-11-04 — CI on Node 26: DOM storage in tests, tsx deprecation warning, API snapshot
+
+- CI installs `lts/*`, which now resolves to Node 26. Node 25+ defines its own `localStorage`/`sessionStorage` globals, undefined unless started with `--localstorage-file`, and Vitest's DOM environment does not replace them, so the storage tests in `@bpmnkit/ui` and `apps/drop` failed. `scripts/vitest-dom-storage.mjs` (a `setupFiles` entry in both configs) gives DOM tests happy-dom `Storage` objects when Node's globals are undefined. Both suites pass on Node 22 and 26.
+- `create-casen-plugin`'s scaffold tests assert an empty stderr; on Node 26 the tsx loader's `module.register()` call prints DEP0205. The tests now start the child with `--disable-warning=DEP0205`, so they still assert on the scaffolder's own output.
+- `api-surface.json` refreshed for the three type exports this PR adds (`ConditionVariableEvent`, `ZeebeCalledElement`, `ApplyOptions` in `@bpmnkit/core/connectors`): additions only, a minor.
+
+## 2026-11-04 — Fix the plugins build after the form-definition union
+
+- `ZeebeFormDefinition` became a union (form id, form key or external reference) with the week-3 form variants, and the BPMN config panel's user-task adapter still read `.formId` directly, so `@bpmnkit/plugins` failed to build in CI. The adapter now narrows the type; a task linked by form key or external reference shows an empty form id, since the panel edits only linked forms.
+- Tests: `packages/plugins/tests/config-panel-bpmn/index.test.ts` (linked form id, form key).
+
+## 2026-10-22 — D1b: structure-matching closeness scorer; comparison page may ship
+
+- `scoreCloseness(..., { match: "structure" })` pairs elements by graph structure (kind = type + event definition, normalised longest-path depth, in/out degree; greedy by cost, ties by id; names only add 0.2 × dissimilarity). Configuration compares the kind of Zeebe setting, layout compares positions in the unit square. Default stays `"id"`; existing tests unchanged. Header comment of `scripts/lib/closeness.mjs` is the definition.
+- `scripts/build-compare-data.mjs` uses structure mode and the committed `generated/compare/` data is regenerated. Median closeness (structure mode) raw-xml / compact-json / builder-script: kyc 53 / 44.5 / 48.1, loan-approval 65.9 / 39.6 / 38.8, quote-to-cash 61.2 / 61.2 / 53.1; the reference is 100 by construction (it is the comparand), so it "wins" on everything by definition.
+- `/compare/same-input`: scorer text updated, a note on failed July builder runs that now compile (numbers from `ai-benchmark-replay.ts`), and routes with fewer than 3 runs are marked indicative.
+- Deviation from the plan: a pure rewiring costs ~10 points, not 15, because structure is 25 of 100 points and the elements still match; the weights are unchanged.
+
+## 2026-10-22 — Week-3 merge: builder reference regenerated; comparison page held back
+
+- Regenerated `packages/core/builder-reference.md` after merging the form-variant and conditional-event options. Its budget rose from 3,000 to 3,200 tokens (still about a third of the ~10k-token README it replaced). `formKey` (legacy), `formBindingType`, `formVersionTag` and `conditionVariableEvents` joined the generator's skip list.
+- `/compare/same-input` is merged but must not ship yet: the closeness scorer matches by id and name, so every free-form AI run scores ~15/100. See D1b in `doc/plan-agent-gaps-performance-compare.md`.
+
+## 2026-10-22 — User task forms and conditional events in the builder (B7, B8)
+
+- B7: `ZeebeFormDefinition` is now `{ formId; bindingType?; versionTag? } | { formKey } | { externalReference }`, read and written symmetrically (round-trip table extended). `UserTaskOptions` gains `formKey`, `externalReference`, `formBindingType`, `formVersionTag` and `embeddedForm: { id, schema }`; more than one of formId / formKey / externalReference / embeddedForm throws. An embedded form writes `formKey="camunda-forms:bpmn:<id>"` and a process-level `zeebe:userTaskForm` (also from sub-processes and when continuing a parsed process; same id twice is written once, two schemas for one id throw). Existing compat gates cover it (`formId` 8.4, `bindingType` 8.6, `zeebe:userTask` 8.5).
+- B8: `BpmnConditionalEventDefinition.extensionElements` (parser, serializer, round-trip test). Start, intermediate-catch and boundary options take `condition` and `conditionVariableEvents`; `CompactElement.condition` is used by `expand` and `compactify`, so `eventType: "conditional"` no longer yields an empty definition. Conditional events were already gated at 8.9 in `ELEMENT_SUPPORT`.
+- Deviation: no `conditionVariableNames`. The Camunda docs pack lists only `variableEvents` on `zeebe:conditionalFilter` (the engine derives variables from the FEEL). Compact keeps `condition` only; the filter is dropped on a compact round-trip. `camunda7/migrate.ts` still hints "variableNames"; left alone.
+
+## 2026-10-22 — Generated builder reference for the demo "with-sdk" prompt (C4)
+
+- `scripts/generate-builder-reference.mjs` writes `packages/core/builder-reference.md` (about 3,000 tokens, chars/4 under 3,000) from `bpmn-builder.ts` with the TypeScript compiler API: public (non-private, non-`@internal`) `ProcessBuilder` methods grouped by family, the `BranchBuilder`/`SubProcessContentBuilder` extras and what is top-level only, and every option interface the signatures reach (fields, types, first JSDoc sentence; shared `ElementOptions` printed once). Hand-written in the script: the skip lists (`SKIP_FIELDS`, `SKIP_METHODS`), the family patterns (unknown methods land in "Other"), the rules and six runnable examples (`EXAMPLES`).
+- `buildSdkSystemPrompt` embeds it under "## Builder Reference" instead of the 20 KB `packages/core/README.md`; `builder-reference.md` is in core's `files`.
+- Tests: `packages/core/tests/builder-reference.test.ts` (drift against the committed file, token budget, every example type-checks against the source, builds, round-trips and has a complete diagram); `apps/demo/server/system-prompt.test.ts`.
+- Rerun after the builder changes: `node scripts/generate-builder-reference.mjs` (`--check` exits 1 when stale). The maintainer should rerun it after merging the parallel session's builder options (form variants, conditional events); the drift test fails until then.
+
+## 2026-10-22 — Same-input comparison page (D1)
+
+- `/compare/same-input`: per scenario, the prompt, a hand-written no-AI reference row and one row per recorded route (raw XML, compact JSON, builder script) with tokens, time, parses, DI, lint errors and closeness to the reference; all runs in a collapsible table; failed runs stay as rows
+- `scripts/build-compare-data.mjs` scores the 12 recordings with `scripts/lib/closeness.mjs` and writes `apps/landing/src/generated/compare/` (committed; no recordings copied). Row extraction is `scripts/lib/compare-rows.mjs`, with a fixture test
+- References are hand-authored from the prompt only (`scripts/compare/references/`)
+- `pnpm test:scripts` (docspack nudge, closeness, compare rows) now runs in CI
+- Closeness is near the floor (15–22) for every route: the scorer matches by id or type+name and the models chose other names. The page says so rather than tuning the reference
+
+## 2026-10-22 — Multi-instance on every task type; execution and task listeners
+
+- B3: `multiInstance` (`collection`, `elementVariable`, `outputCollection`, `outputElement`, `completionCondition`, `isSequential`) is accepted by `serviceTask`, `userTask`, `scriptTask`, `sendTask`, `receiveTask`, `businessRuleTask` and `callActivity` in all three builders, through one `withMultiInstance` helper. `CompactElement.multiInstance` carries `outputCollection`, `outputElement` and `completionCondition`, so `compactify`/`expand` keep them. Deviations: output options are written only together with `collection` (Zeebe needs `inputCollection`; that was already the rule); the process-text `each=` attribute is unchanged (no new syntax for outputs).
+- B5: `executionListeners` on every activity, event, gateway and sub-process option type and `taskListeners` on `userTask` (`ZeebeListener { eventType; type; retries? }`). `getZeebeExtensions` reads and `zeebeExtensionsToXmlElements` writes both; `applyBpmnOperations` `update` patches replace them wholesale (`[]` removes). Placement is checked: `taskListeners` on a service task throws `ZeebePlacementError` (builder) or is reported (patch). Listener `zeebe:taskHeaders` are carried in a `headers` field on read/write so a read-modify-write does not drop them; the builder does not offer headers. Tests `builder-multi-instance.test.ts`, `builder-listeners.test.ts`.
+
+## 2026-10-22 — `omitDefaults` option for template application (C3)
+
+- `applyTemplates(..., { omitDefaults: true })`, `applyTemplateToElement` and `applyElementTemplate` skip a property whose value is only the template default (key not given, not Hidden, no `constraints.notEmpty`, no `generatedValue`). Defaults still feed `condition` evaluation, so gating is unchanged; hidden bindings and the `zeebe:modelerTemplate` stamp are always written. Default stays `false`.
+- Re-apply leaves no stale default: extensions are already replaced wholesale per declared binding kind. Tests use the real HttpJson v2 (`followRedirects`, `documentReturnFormat.choice`) and agent (`responses.effort`) templates.
+
+## 2026-10-22 — C5: `bpmnkit-docs` works in a fresh checkout; task-shaped recipe pages
+
+- Root cause: the `bpmnkit-docs` bin pointed at `packages/docspack/dist/cli.js`, which is gitignored and never built by `pnpm install --ignore-scripts`, so `npx bpmnkit-docs` died before reading any pack. Fix: the bin is now the committed shim `bin/bpmnkit-docs.mjs`, which builds `dist/` with `tsc` on first use and then loads the CLI. Regression test `tests/bin.test.ts` (bin target exists and is not git-ignored; failed before).
+- New guides `recipes-element-templates`, `recipes-forms-and-user-tasks`, `recipes-message-correlation`: apply an element template and find its property ids, set a start-event form, configure a user task when building and when editing (`applyBpmnOperations`, MCP `update_element`, empty string clears), set a message correlation key. Every sample was run against the current API.
+- `recipe-ranking.test.ts`: `ask("apply an element template")` and `ask("set the assignee of a user task")` return the recipe first with both packs installed; the start-event-form and element-template cases of the build-script guide now resolve to the dedicated recipe pages. Pack rebuilt.
+
+## 2026-10-22 — Closeness scorer (D1, part 1)
+
+- `scripts/lib/closeness.mjs`: `scoreCloseness(candidateXml, referenceXml, { layout })` scores a BPMN file against a reference as structure 25 + configuration 45 + annotations 15 + layout 15 (total 0–100), modelled on the external bake-off scorer. The header comment is the published definition. Layout maps mean shape-centre offset linearly to points (400 px = 0; 194 px = 7.7, matching the rerun). Annotation max 15 is a choice (docs only give 25/45/10/layout-of-15). Tests in `scripts/lib/closeness.test.mjs` (`node --test`). The data script, reference scripts and page follow in week 3.
+
+## 2026-10-22 — Zeebe reader symmetry, call-activity options, builder argument guard, sub-process annotation shapes
+
+- B1: `getZeebeExtensions` is now the inverse of `zeebeExtensionsToXmlElements`: it also reads `adHoc`, `userTask`, `assignmentDefinition`, `taskSchedule`, `priorityDefinition`, `subscription`, a new typed `calledElement` (`ZeebeCalledElement`) and any unrecognised elements as `unknownElements`. A table-driven round-trip test (`zeebe-extensions-roundtrip.test.ts`) fails when a field is added to the writer without a reader.
+- B2: `callActivity` takes `ioMapping`, `zeebeProperties`, `propagateAllParentVariables`, `bindingType` and `versionTag` (plus the existing `propagateAllChildVariables`), written through the typed writer. Deviation from the plan: no `taskHeaders` option, because the Zeebe schema does not allow `zeebe:taskHeaders` on `bpmn:callActivity` (`zeebe-placement.ts`); an untyped caller's headers are dropped. Compat rules fire at 8.1 (`compat/no-propagate-all-parent-variables`, needs 8.2) and 8.5 (`compat/no-binding-type`, needs 8.6), not at 8.7, so the tests assert them there.
+- C6: dropped. The builder already accepts `subProcess`/`transaction`/`eventSubProcess`/`adHocSubProcess` with the callback and options swapped (the July recording failure predates that), so a throwing guard would only have broken working callers. The "tolerates reversed order" tests stay; the corrected `eventSubProcess` example in `building-processes.md` stays.
+- C2: annotations (and their associations) inside sub-processes get a `BPMNShape` and association edge: `layoutProcess` merges nested annotations through `withNestedAnnotations` before packing. They are packed in diagram space, so one may sit outside the sub-process box. Regression test `subprocess-annotation-di.test.ts`.
+
+## 2026-10-22 — Edits through MCP `update_element`; clearing values in `update` patches
+
+- `applyBpmnOperations` `update` patches: an empty string for `assignee`, `candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate` or `priority` removes the attribute; an extension left empty is removed; `properties: {}` removes `zeebe:properties`. Previously `""` was written as a value.
+- Proxy MCP `update_element` forwards any patch field to `applyBpmnOperations` (strict): unknown keys and misplaced fields (`assignee` on a service task, naming `zeebe:assignmentDefinition`) come back as tool errors. The description says `correlationKey` changes every element sharing the message. `ELEMENT_SCHEMA` and `sdk-spec.ts` list the user-task fields and `properties`; stale "ELK layout" wording fixed.
+- Tests: `full-operations.test.ts` (shared message key, clearing, extension removal, partial clear) and `apps/proxy/tests/mcp-update-element.test.ts` (assignee, correlation key, clear, misplaced, unknown key).
+
+## 2026-10-22 — AI benchmark replay refreshed against current core (plan item C1)
+
+- Re-ran the 12 frozen `with-sdk` recordings with `scripts/bench-ai-replay.mjs` against `@bpmnkit/core` 1.6.1 (was 0.4.0 in the generated file). Result unchanged: 9/12 → 12/12 usable, quote-to-cash 2/5 → 5/5, 3 recovered, 0 regressed. All three failures now compile (two `subProcess is not a function` on a branch, one swapped `subProcess` arguments).
+- Homepage section 09 now names the two failure kinds and states that the figure is a replay against the current library, not a new recording. No model calls were made; re-recording remains the only way to measure fresh-generation time and tokens.
+
+## 2026-10-22 — Multi-instance completion condition; user-task and subscription edit fields; gap plan
+
+- Fix: the builder's `multiInstance.completionCondition` was accepted and silently dropped (`buildMultiInstance` wrote only the collection and element). It is now written as `bpmn:completionCondition` (`tFormalExpression`). Regression test in `builder-zeebe-options.test.ts`.
+- `applyBpmnOperations` `update` patches set `assignee`, `candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate`, `priority` and `properties`, one attribute at a time and placement-checked (assignment on a service task is refused). `correlationKey` writes the `zeebe:subscription` on the referenced `bpmn:message` (or on the element if it still carries its own); an element without a message is a problem. New `ElementPatch` type in `operations.ts`.
+- The compact format carries the same user-task fields and `properties` both ways (`compactify`/`expand`), so the compact `applyOperations` path keeps them too. `correlationKey` is patch-only there: compact elements have no messages.
+- Docs: `packages/core.md` lists what `update` can patch. Analysis and phased plan for the remaining Zeebe gaps, agent performance and a same-input comparison page: `doc/plan-agent-gaps-performance-compare.md`.
+- Tests: `full-operations.test.ts` (user-task, properties, placement refusal, correlation key on message and receive task, missing message, compact round trip).
 
 ## 2026-10-21 — On-device diagram generation in the web editor (Chrome Prompt API)
 
@@ -132,9 +321,11 @@
 ## 2026-10-18 — Phase C: golden prompt 28, AI Agent Chat With Tools
 
 - New golden prompt `28-ai-agent-chat-with-tools` (spec prose, spec-literal `expected.json`, best-effort `fixture.plan.json`). `scripts/eval-generation/assertions.mjs` scores `mustContainElementIds`, `mustContainFormIds`, `mustContainInputTargets`, `mustContainFlowNames`, `mustContainAnnotations` and `mustBeReady` (via drop's `readiness()`); `run-eval.mjs` reports them for the plan fixture (the listed known plan-format gaps — no start form, mapping, annotation or loop back — are reported; an unlisted miss fails the run; a stale gap is flagged) and gains `--only <prefixes>` (no report files written for a subset); drop's bench scores them too and now runs 03 (skips 04 and 09 only). Test: `apps/drop/tests/spec-assertions.test.ts`. Prompt 28 lists its `knownPlanGaps` in expected.json: `run-eval.mjs` prints those, fails on any other assertion miss and flags a stale entry; the bench's `score()` is `scoreGolden` from `assertions.mjs`. The drop bench run for 28 needs Cloudflare credentials and is not run here; command in `doc/agent-bpmn-bakeoff-analysis.md`.
+
 ## 2026-10-18 — Phase C: drop connects the AI Agent and its tools
 
 - Drop's connect pass takes ad-hoc sub-processes (`CONNECTABLE`) and the tasks inside them (`connectTasks` recurses into ad-hoc containers; `ConnectorTask.inside`), and `connected` finds nested elements. `selectConnectors` offers the `ai-agent-subprocess` card first to every ad-hoc sub-process whatever its name, and `http` to its tools. `applyConnectorLines` finds nested elements; `parseProcessText` no longer drops a `with` line for an `inside=` tool. `\n` in a `==` value (only) is a line break, `\\n` a literal backslash-n; `CONNECT_GUIDE` says so in one sentence. Tests in core (`lines`, `select`, `process-text`) and drop (`connect-route`).
+
 ## 2026-10-18 — Phase C: drop says whether a draft is executable
 
 - `readiness()` (`apps/drop/src/lib/readiness.ts`) turns `lintDiagram` into `ready` / `shape-only` / `invalid`; the generator shows it as a badge for every draft, runs the dry run for every draft, shows the streamed process text in a collapsible "Diagram text" panel, and says "Connectors not configured" when the connect pass 404s or fails.
@@ -146,6 +337,7 @@
 ## 2026-10-18 — Phase C: process text takes forms, mappings and a platform version
 
 - The line format gains `form=<form id>` (start, user; a user with a form gets `zeebe:userTask`), `in.<name>=<FEEL>` and `out.<name>=<FEEL>` (value runs to the next ` word=` or the line end; the guide says to write comparisons with spaces, `a = 1`), and `# Name | camunda=8.10` (sets `executionPlatformVersion` `8.10.0`). `CompactElement` gains `outputs` and `nativeUserTask`, `CompactDiagram` gains `executionPlatformVersion`; `expand` writes them. `writeProcessText` writes them back; a change script carries them (`DeltaNode.formId`/`inputs`/`outputs`), and the editor applies them to new and changed nodes (`patchElement` gains `inputs`, `outputs`, `nativeUserTask`). Two guide lines added. Drop's line filter already passes these lines (test added).
+
 ## 2026-10-17 — Lint: two `pattern` rules are warnings
 
 - `pattern/gateway-no-default-flow` and `pattern/subprocess-no-error-boundary` report warnings, not errors. Camunda's own AI Agent blueprint trips both and its lint gate flags neither, so `casen lint lint <file> --profile deploy` now reports 0 errors on a correct model. The recipe guide and the Claude plugin `agent` and `connect` skills and `references/agentic.md` say so.
@@ -2708,7 +2900,6 @@ now top-level nav entries rather than one dropdown down, and an unnumbered "star
 sits directly under the hero pointing at both — Drop was nine numbered sections below the
 fold, and the AI guide was reachable only by knowing it existed. The AI benchmark section's
 link says "Read the AI guide" instead of "How it works".
-
 
 ## 2026-09-18 — The rest of the 1.0 list
 

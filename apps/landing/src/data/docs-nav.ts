@@ -12,6 +12,7 @@ import { getCollection } from "astro:content"
 /** Known sections, in the order a reader should meet them. */
 const SECTIONS: Record<string, { label: string; order: number }> = {
 	"getting-started": { label: "Getting Started", order: 1 },
+	"agent-cards": { label: "Agent Cards", order: 1.5 },
 	guides: { label: "Guides", order: 2 },
 	packages: { label: "Packages", order: 3 },
 	cli: { label: "CLI", order: 4 },

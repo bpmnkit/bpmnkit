@@ -75,4 +75,54 @@ describe("annotate side hint", () => {
 		const plain = agent((p) => p.annotate("FetchSafeJoke", TEXT))
 		expect(hinted.processes).toEqual(plain.processes)
 	})
+
+	// The flow's own routes fill the space beside inner elements, so the free
+	// ends are where a sideways annotation can sit level with its element.
+	for (const [side, target] of [
+		["left", "s"],
+		["right", "e"],
+	] as const) {
+		it(`puts the annotation ${side} of "${target}", level with it and clear of other shapes`, () => {
+			const defs = agent((p) => p.annotate(target, TEXT, { side }))
+			const ann = bounds(defs, `TextAnnotation_${target}_1`)
+			const u = bounds(defs, target)
+			if (side === "left") expect(ann.x + ann.width).toBeLessThanOrEqual(u.x)
+			else expect(ann.x).toBeGreaterThanOrEqual(u.x + u.width)
+			// Vertically overlaps the element's row.
+			expect(ann.y).toBeLessThan(u.y + u.height)
+			expect(ann.y + ann.height).toBeGreaterThan(u.y)
+			const shapes = defs.diagrams[0]?.plane.shapes ?? []
+			for (const s of shapes) {
+				if (s.bpmnElement === `TextAnnotation_${target}_1`) continue
+				const b = s.bounds
+				const apart =
+					ann.x + ann.width <= b.x ||
+					b.x + b.width <= ann.x ||
+					ann.y + ann.height <= b.y ||
+					b.y + b.height <= ann.y
+				expect(apart, s.bpmnElement).toBe(true)
+			}
+		})
+	}
+
+	it("keeps annotations on different sides of one element apart", () => {
+		const sides = ["above", "below", "left", "right"] as const
+		const defs = agent((p) => {
+			for (const side of sides) p.annotate("e", TEXT, { side })
+		})
+		const anns = (defs.diagrams[0]?.plane.shapes ?? []).filter((s) =>
+			s.bpmnElement?.startsWith("TextAnnotation_"),
+		)
+		expect(anns).toHaveLength(4)
+		for (const [i, a] of anns.entries()) {
+			for (const b of anns.slice(i + 1)) {
+				const apart =
+					a.bounds.x + a.bounds.width + 20 <= b.bounds.x ||
+					b.bounds.x + b.bounds.width + 20 <= a.bounds.x ||
+					a.bounds.y + a.bounds.height + 20 <= b.bounds.y ||
+					b.bounds.y + b.bounds.height + 20 <= a.bounds.y
+				expect(apart, `${a.bpmnElement} vs ${b.bpmnElement}`).toBe(true)
+			}
+		}
+	})
 })

@@ -1,5 +1,32 @@
 # @bpmnkit/ai-server
 
+## 0.6.0
+
+### Minor Changes
+
+- 1ecde83: `update` patches edit event definitions (message name, error and escalation code, signal name, timer duration, date and cycle, condition) and multi-instance; `update_element` exposes them and the listener lists.
+- 1ecde83: Zeebe coverage and agent edits.
+  - `@bpmnkit/core`:
+    - The builder now covers call-activity I/O mappings and variable propagation, multi-instance on every task type, execution and task listeners, user-task form keys, external references and embedded forms, and conditional events.
+    - `applyBpmnOperations` update patches set user-task assignment, schedule, priority, properties and message correlation keys; an empty string clears a value.
+    - `getZeebeExtensions` now reads everything the writer emits.
+    - `applyTemplates` takes `omitDefaults`.
+    - Annotations inside sub-processes get diagram shapes.
+    - Multi-instance `completionCondition` is no longer dropped.
+  - `@bpmnkit/proxy`: the MCP `update_element` tool applies these patches and reports unknown or misplaced keys.
+  - `@bpmnkit/docspack`: `bpmnkit-docs` works in a fresh source checkout, and recipe pages are added.
+  - `@bpmnkit/plugins`: the BPMN config panel handles user tasks that use a form key or an external reference.
+
+### Patch Changes
+
+- Updated dependencies [1ecde83]
+- Updated dependencies [1ecde83]
+- Updated dependencies [9ba0c65]
+- Updated dependencies [1ecde83]
+- Updated dependencies [1ecde83]
+- Updated dependencies [1ecde83]
+  - @bpmnkit/core@1.7.0
+
 ## 0.5.2
 
 ### Patch Changes

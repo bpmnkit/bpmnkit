@@ -148,7 +148,7 @@ function serializeEventDefinitions(defs: BpmnEventDefinition[], bp: string): Xml
 			case "conditional": {
 				const attrs: Record<string, string> = {}
 				if (d.id) attrs.id = d.id
-				const condChildren: XmlElement[] = []
+				const condChildren: XmlElement[] = serializeExtensionElements(d.extensionElements ?? [], bp)
 				if (d.condition !== undefined) {
 					condChildren.push(el(`${bp}condition`, d.conditionAttributes ?? {}, [], d.condition))
 				}

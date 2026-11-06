@@ -32,6 +32,7 @@ casen
 │   ├── bpmn        — BPMN diagrams rendered as SVG
 │   ├── dmn         — DMN decision tables
 │   └── form        — Camunda form layouts
+├── check           — check .bpmn, .dmn and .form files in one call (casen check <file...>)
 ├── lint            — static analysis and auto-fix for BPMN files
 │   ├── lint        — run all checks, report findings
 │   └── improve     — AI-assisted improvement suggestions

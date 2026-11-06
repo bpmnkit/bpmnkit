@@ -256,4 +256,68 @@ describe("applyTemplates", () => {
 		])
 		expect(lint(definitions).length).toBeGreaterThan(0)
 	})
+	describe("omitDefaults", () => {
+		const OPENAI = { "provider.type": "openai", "provider.openai.api.type": "responses" }
+		const EFFORT = 'target="provider.openai.api.responses.effort"'
+		const applyHttp = (omitDefaults: boolean | undefined, base = fixture()) =>
+			Bpmn.export(
+				applyTemplates(
+					base,
+					[{ elementId: "LookupSampleUsers", template: HTTP, values: { url: "https://x.test" } }],
+					omitDefaults === undefined ? undefined : { omitDefaults },
+				).definitions,
+			)
+		const applyAgent = (extra: Record<string, string>, omitDefaults: boolean) =>
+			Bpmn.export(
+				applyTemplates(
+					fixture(),
+					[{ elementId: "AI_Agent", template: AGENT, values: { ...OPENAI, ...extra } }],
+					{ omitDefaults },
+				).definitions,
+			)
+
+		it("writes template defaults unless asked not to", () => {
+			const xml = applyHttp(undefined)
+			expect(xml).toContain('target="followRedirects"')
+			expect(xml).toContain('target="documentReturnFormat.choice"')
+		})
+
+		it("leaves out defaults the caller did not supply", () => {
+			const xml = applyHttp(true)
+			expect(xml).not.toContain('target="followRedirects"')
+			expect(xml).not.toContain('target="documentReturnFormat.choice"')
+			expect(xml).toContain('target="url"')
+		})
+
+		it("keeps hidden bindings and the template stamp", () => {
+			const xml = applyHttp(true)
+			expect(xml).toContain('zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2"')
+			expect(xml).toContain('<zeebe:taskDefinition type="io.camunda:http-json:1"')
+		})
+
+		it("still writes a value the caller gave, even when it equals the default", () => {
+			const { definitions } = applyTemplates(
+				fixture(),
+				[{ elementId: "LookupSampleUsers", template: HTTP, values: { followRedirects: false } }],
+				{ omitDefaults: true },
+			)
+			expect(Bpmn.export(definitions)).toContain('target="followRedirects"')
+		})
+
+		it("leaves out the OpenAI effort default but not what the caller set", () => {
+			expect(applyAgent({}, false)).toContain(EFFORT)
+			expect(applyAgent({}, true)).not.toContain(EFFORT)
+			expect(applyAgent({ "provider.openai.api.responses.effort": "minimal" }, true)).toContain(
+				EFFORT,
+			)
+		})
+
+		it("leaves no stale default when re-applied with omitDefaults", () => {
+			const first = applyTemplates(fixture(), [
+				{ elementId: "LookupSampleUsers", template: HTTP, values: { url: "https://x.test" } },
+			]).definitions
+			expect(Bpmn.export(first)).toContain('target="followRedirects"')
+			expect(applyHttp(true, first)).not.toContain('target="followRedirects"')
+		})
+	})
 })

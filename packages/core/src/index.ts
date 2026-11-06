@@ -47,6 +47,8 @@ export {
 	getZeebeExtensions,
 } from "./bpmn/utils.js"
 export { Bpmn, SAMPLE_BPMN_XML } from "./bpmn/index.js"
+export { stripCamunda8 } from "./bpmn/strip-camunda8.js"
+export type { DroppedCamunda8Item, StripCamunda8Result } from "./bpmn/strip-camunda8.js"
 export { applyAutoLayout } from "./bpmn/auto-layout.js"
 export { diffSemantics, projectSemantics, semanticHash } from "./bpmn/semantic-hash.js"
 export type { JsonValue, SemanticDiff, SemanticProjection } from "./bpmn/semantic-hash.js"
@@ -147,6 +149,7 @@ export type {
 	IntermediateThrowEventOptions,
 	EndEventOptions,
 	BoundaryEventOptions,
+	ConditionVariableEvent,
 	AdHocSubProcessOptions,
 	AnnotateOptions,
 } from "./bpmn/bpmn-builder.js"
@@ -232,6 +235,8 @@ export type {
 	ZeebePropertyEntry,
 	ZeebeFormDefinition,
 	ZeebeCalledDecision,
+	ZeebeLinkedResource,
+	ZeebeCalledElement,
 	ZeebeAssignmentDefinition,
 	ZeebeTaskSchedule,
 	ZeebePriorityDefinition,
@@ -260,7 +265,7 @@ export type {
 	AiAgentToolParamType,
 	AiAgentBuild,
 } from "./bpmn/agentic.js"
-export { Dmn, layoutDmn, benchmarkDmnLayout, compactifyDmn, expandDmn } from "./dmn/index.js"
+export { Dmn, drgId, layoutDmn, benchmarkDmnLayout, compactifyDmn, expandDmn } from "./dmn/index.js"
 export type {
 	DmnBenchmarkResult,
 	DmnElementPosition,
@@ -271,6 +276,9 @@ export type {
 	CompactDmnRule,
 } from "./dmn/index.js"
 export { Form, compactifyForm, expandForm } from "./form/index.js"
+export { lintForm } from "./form/lint.js"
+export { lintDmn } from "./dmn/lint.js"
+export type { CheckFinding, CheckSeverity } from "./check-finding.js"
 export type { CompactForm, CompactFormField } from "./form/index.js"
 export { FormBuilder, GroupBuilder } from "./form/form-builder.js"
 export type {
@@ -288,6 +296,7 @@ export type {
 	FormDefinition,
 	FormExporter,
 	FormGroupComponent,
+	FormConditional,
 	FormLayout,
 	FormLayoutInput,
 	FormRadioComponent,
@@ -313,6 +322,14 @@ export type {
 	FormFilepickerComponent,
 	FormUnknownComponent,
 } from "./form/form-model.js"
+export type {
+	DecisionHandle,
+	DrdBuilder,
+	DrdDecisionOptions,
+	DrgId,
+	DrgRef,
+	InputDataHandle,
+} from "./dmn/drd-builder.js"
 export type {
 	DecisionTableBuilder,
 	InputOptions,
@@ -367,7 +384,7 @@ export { readDiColor, writeDiColor, BIOC_NS, COLOR_NS } from "./bpmn/di-color.js
 export type { DiColor } from "./bpmn/di-color.js"
 export { collectLabelStyles, labelFontCss, resolveLabelFont } from "./bpmn/label-style.js"
 export type { BpmnLabelFont, LabelFontCss } from "./bpmn/label-style.js"
-export { optimize } from "./bpmn/optimize/index.js"
+export { optimize, USER_TASK_FORM_RULE } from "./bpmn/optimize/index.js"
 export { renderStoryHtml } from "./bpmn/story.js"
 export type { StoryRenderOptions } from "./bpmn/story.js"
 export { analyzeVariableFlow, extractFeelIdentifiers } from "./bpmn/optimize/variable-flow.js"
@@ -462,6 +479,8 @@ export type {
 	ValidationVariableType,
 } from "./bpmn/input-validation.js"
 export { analyzeCamunda7, convertCamunda7 } from "./bpmn/camunda7/migrate.js"
+export { convertCamunda8To7 } from "./bpmn/camunda7/export.js"
+export type { Camunda8ExportFinding, Camunda8To7Conversion } from "./bpmn/camunda7/export.js"
 export type {
 	Camunda7Conversion,
 	Camunda7ConvertOptions,

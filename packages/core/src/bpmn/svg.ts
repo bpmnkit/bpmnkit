@@ -175,7 +175,7 @@ export function exportSvg(defs: BpmnDefinitions, options?: SvgExportOptions): st
 		if (flow?.name && edge.label?.bounds) {
 			const { x, y, width, height } = edge.label.bounds
 			edgeParts.push(
-				labelSvg(flow.name, x + width / 2, y + height / 2, width - 4, t, false, fontOf(edge.label)),
+				labelSvg(flow.name, x + width / 2, y + height / 2, width, t, false, fontOf(edge.label)),
 			)
 		}
 	}
@@ -248,7 +248,7 @@ export function exportSvg(defs: BpmnDefinitions, options?: SvgExportOptions): st
 				height: 20,
 			}
 			labelParts.push(
-				labelSvg(el.name, lb.x + lb.width / 2, lb.y + lb.height / 2, lb.width - 4, t, true, font),
+				labelSvg(el.name, lb.x + lb.width / 2, lb.y + lb.height / 2, lb.width, t, true, font),
 			)
 		}
 	}
@@ -624,12 +624,9 @@ function renderTask(
 		}
 	}
 
-	if (
-		type === "subProcess" ||
-		type === "adHocSubProcess" ||
-		type === "eventSubProcess" ||
-		type === "transaction"
-	) {
+	// The "+" marker means "contents elsewhere"; an expanded body shows them.
+	const container = type === "subProcess" || type === "eventSubProcess" || type === "transaction"
+	if ((container && !options?.expanded) || type === "adHocSubProcess") {
 		out += iconGroup(subProcessMarker(type), width / 2, height - 10, t)
 	}
 

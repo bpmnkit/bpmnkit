@@ -404,6 +404,27 @@ The keys for these properties, where the template gives no `id`, are `message.na
 `message.correlationKey` and `linkedResource.<linkName>.<property>` — for example
 `linkedResource.RPAScript.resourceId`. `listConnectors` reports them like any other input.
 
+### Task-level bindings
+
+Besides `zeebe:input`, `zeebe:output` and friends, a template may bind a task's own Zeebe
+extensions. `applyTemplateToElement` writes them; `applyElementTemplate` (builder options) reports
+them as not expressible.
+
+| Binding | `property` values |
+| --- | --- |
+| `zeebe:calledElement` | `processId`, `bindingType`, `versionTag`, `propagateAllParentVariables`, `propagateAllChildVariables` |
+| `zeebe:calledDecision` | `decisionId`, `resultVariable`, `bindingType`, `versionTag` |
+| `zeebe:userTask` | none — a flag: an active property marks a Camunda user task |
+| `zeebe:formDefinition` | `formId`, `externalReference`, `bindingType`, `versionTag` |
+| `zeebe:assignmentDefinition` | `assignee`, `candidateGroups`, `candidateUsers` |
+| `zeebe:taskSchedule` | `dueDate`, `followUpDate` |
+| `zeebe:priorityDefinition` | `priority` |
+| `zeebe:script` | `expression`, `resultVariable` |
+
+`bindingType` is `latest`, `deployment` or `versionTag`. An extension missing a required attribute
+is not written and comes back as a problem. Re-applying a template to an element that already
+carries its id owns all of these, so a binding a newer version dropped is removed.
+
 ## Applying several templates by name — `applyTemplates`
 
 `applyTemplates` is a batch wrapper over `applyTemplateToElement` for values written by hand,
@@ -433,6 +454,14 @@ const { definitions, problems } = applyTemplates(Bpmn.parse(xml), [
 // { elementId: "SearchRecipes", key: "retries", suggestion: "retryCount", message: "…" }
 ```
 
+- **`{ omitDefaults: true }`** (third argument, default `false`) leaves out any property whose value
+  would only be the template's default: a key the entry does not give, on a property that is not
+  Hidden and not required (`constraints.notEmpty`). The REST connector then carries no
+  `followRedirects` or `documentReturnFormat.choice`, and an OpenAI agent no
+  `provider.openai.api.responses.effort`. Hidden bindings (the task type) and the
+  `zeebe:modelerTemplate` stamp are always written, and a value you pass is written even when it
+  equals the default. Re-applying replaces the element's extensions, so an earlier apply's default
+  does not survive. `applyTemplateToElement` and `applyElementTemplate` take the same option.
 - **`template`** is a template id, `id@version`, an alias from `CONNECTOR_ALIASES` (`http`), or a
   template object. The catalog holds one version of each id, so a different `@version` is a
   problem naming the version available, and that element is left unchanged.
@@ -544,7 +573,7 @@ for CI and takes `--format json`.
 | `applyConnectorTemplate(id, values)` | Catalog template → builder options + problems |
 | `applyElementTemplate(template, values)` | Template object → builder options + problems |
 | `applyTemplateToElement(definitions, elementId, template, values)` | Template written onto an element of a parsed model → `{ definitions, problems }` |
-| `applyTemplates(definitions, entries)` | Several templates by id, `id@version` or alias, with key suggestions → `{ definitions, problems }` |
+| `applyTemplates(definitions, entries, { omitDefaults? })` | Several templates by id, `id@version` or alias, with key suggestions → `{ definitions, problems }` |
 | `validateElementTemplate(template)` | `{ valid, problems, warnings }` |
 | `readTemplateDocument(text)` | Parse a file holding one template or many |
 | `registerElementTemplates(templates)` | Merge templates into the catalog |

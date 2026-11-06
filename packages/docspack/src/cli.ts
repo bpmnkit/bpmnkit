@@ -141,6 +141,7 @@ function runBuild(cwd: string): number {
 		siteUrl: config.siteUrl,
 		maxTokens: config.maxTokens,
 		minTokens: config.minTokens,
+		startHere: config.startHere,
 	})
 	process.stdout.write(
 		`Built ${result.chunks} chunks from ${result.documents} documents (${format(result.tokens)} tokens).\n`,

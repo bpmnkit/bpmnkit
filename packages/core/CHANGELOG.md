@@ -1,5 +1,27 @@
 # @bpmnkit/core
 
+## 1.7.0
+
+### Minor Changes
+
+- 1ecde83: `annotate(id, text, { side })` also takes `"left"` and `"right"`: auto layout puts the annotation beside the element.
+  Auto layout packs loose nodes (such as ad-hoc tools) in a tighter grid. A tall sub-process hangs from the task line, so its flows stay straight.
+- 1ecde83: Builder: `serviceTask({ linkedResources })` and the data-element methods `dataObject`, `dataObjectReference`, `dataStoreReference` and `dataAssociation`; new `ZeebeLinkedResource` type.
+- 9ba0c65: `stripCamunda8(defs)` removes Zeebe/modeler extensions for vendor-neutral BPMN. `convertCamunda8To7(defs)` exports a Camunda 8 process to Camunda 7/Operaton on a best-effort basis and reports what it could not convert.
+- 1ecde83: `update` patches edit event definitions (message name, error and escalation code, signal name, timer duration, date and cycle, condition) and multi-instance; `update_element` exposes them and the listener lists.
+- 1ecde83: Element templates can bind `zeebe:calledElement`, `zeebe:calledDecision`, `zeebe:userTask`, `zeebe:formDefinition`, `zeebe:assignmentDefinition`, `zeebe:taskSchedule`, `zeebe:priorityDefinition` and `zeebe:script`; they were hard validation errors before. `applyTemplateToElement` writes them, and re-applying the same template removes any the new version no longer binds.
+- 1ecde83: Zeebe coverage and agent edits.
+  - `@bpmnkit/core`:
+    - The builder now covers call-activity I/O mappings and variable propagation, multi-instance on every task type, execution and task listeners, user-task form keys, external references and embedded forms, and conditional events.
+    - `applyBpmnOperations` update patches set user-task assignment, schedule, priority, properties and message correlation keys; an empty string clears a value.
+    - `getZeebeExtensions` now reads everything the writer emits.
+    - `applyTemplates` takes `omitDefaults`.
+    - Annotations inside sub-processes get diagram shapes.
+    - Multi-instance `completionCondition` is no longer dropped.
+  - `@bpmnkit/proxy`: the MCP `update_element` tool applies these patches and reports unknown or misplaced keys.
+  - `@bpmnkit/docspack`: `bpmnkit-docs` works in a fresh source checkout, and recipe pages are added.
+  - `@bpmnkit/plugins`: the BPMN config panel handles user tasks that use a form key or an external reference.
+
 ## 1.6.1
 
 ### Patch Changes

@@ -649,3 +649,55 @@ describe("BPMN Kit connector templates", () => {
 		expect(adapter.resolve?.(defs, "task1")).toBeNull()
 	})
 })
+
+describe("user task adapter form reference", () => {
+	function readUserTask(formAttributes: Record<string, string>): Record<string, unknown> {
+		const adapters = new Map<
+			string,
+			(defs: BpmnDefinitions, id: string) => Record<string, unknown>
+		>()
+		const plugin = createConfigPanelBpmnPlugin({
+			name: "config-panel",
+			install: vi.fn(),
+			uninstall: vi.fn(),
+			registerSchema: vi.fn(
+				(
+					type: string,
+					_schema: unknown,
+					adapter: { read: (defs: BpmnDefinitions, id: string) => Record<string, unknown> },
+				) => adapters.set(type, adapter.read),
+			),
+		})
+		plugin.install({
+			container: document.createElement("div"),
+			svg: document.createElementNS("http://www.w3.org/2000/svg", "svg") as SVGSVGElement,
+			viewportEl: document.createElementNS("http://www.w3.org/2000/svg", "g") as SVGGElement,
+			getViewport: () => ({ tx: 0, ty: 0, scale: 1 }),
+			setViewport: vi.fn(),
+			getShapes: () => [],
+			getEdges: () => [],
+			getTheme: () => "dark" as const,
+			setTheme: vi.fn(),
+			on: (_e: unknown, _h: unknown) => () => {},
+			emit: vi.fn(),
+		})
+		const defs = makeMinimalDefs({
+			extensionElements: [
+				{ name: "zeebe:formDefinition", attributes: formAttributes, children: [] },
+			],
+		})
+		const task = defs.processes[0]?.flowElements[0]
+		if (task) (task as { type: string }).type = "userTask"
+		const read = adapters.get("userTask")
+		if (!read) throw new Error("userTask adapter not registered")
+		return read(defs, "task1")
+	}
+
+	it("shows a linked form id", () => {
+		expect(readUserTask({ formId: "review-form" }).formId).toBe("review-form")
+	})
+
+	it("shows an empty form id for a task linked by form key", () => {
+		expect(readUserTask({ formKey: "camunda-forms:bpmn:embedded" }).formId).toBe("")
+	})
+})

@@ -111,6 +111,37 @@ export type TemplateBinding =
 			type: "zeebe:adHoc"
 			property: "outputCollection" | "outputElement" | "activeElementsCollection"
 	  }
+	/**
+	 * Task-level Zeebe extensions. `zeebe:userTask` is a flag (a Hidden property whose
+	 * mere presence marks a Camunda user task); the rest name one attribute each.
+	 * Camunda requires `zeebe:userTask` beside the user-task-only ones
+	 * (`assignmentDefinition`, `taskSchedule`, `priorityDefinition`).
+	 */
+	| { type: "zeebe:userTask" }
+	| {
+			type: "zeebe:calledElement"
+			property:
+				| "processId"
+				| "bindingType"
+				| "versionTag"
+				| "propagateAllParentVariables"
+				| "propagateAllChildVariables"
+	  }
+	| {
+			type: "zeebe:calledDecision"
+			property: "decisionId" | "resultVariable" | "bindingType" | "versionTag"
+	  }
+	| {
+			type: "zeebe:formDefinition"
+			property: "formId" | "externalReference" | "bindingType" | "versionTag"
+	  }
+	| {
+			type: "zeebe:assignmentDefinition"
+			property: "assignee" | "candidateGroups" | "candidateUsers"
+	  }
+	| { type: "zeebe:taskSchedule"; property: "dueDate" | "followUpDate" }
+	| { type: "zeebe:priorityDefinition"; property: "priority" }
+	| { type: "zeebe:script"; property: "expression" | "resultVariable" }
 	/** `zeebe:agentDefinition` (Camunda 8.10+), used by the AI Agent v2 templates. */
 	| { type: "zeebe:agentDefinition"; property: "agentType" }
 	/**
