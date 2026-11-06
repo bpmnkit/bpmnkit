@@ -1,5 +1,9 @@
 # Features
 
+## `bpmnkit-dmn` and `bpmnkit-form`: DMN and forms in Rust (2026-11-06)
+
+Rust parsers and serializers for DMN 1.3 and Camunda forms, with the same model JSON, round-trip output and error messages as `@bpmnkit/core` on all 93 DMN and form conformance cases. `bpmnkit_dmn::evaluate_decision_graph` evaluates decision tables (every hit policy and aggregation), literal expressions and required decisions, with the same results as `@bpmnkit/engine`'s new `evaluateDecisionGraph` on 191 recorded evaluations, and reports syntax errors and FEEL warnings. DMN element data comes from `spec/elements/dmn.json`, shared with TS. Reebe evaluates decisions with it.
+
 ## `bpmnkit-bpmn`: BPMN I/O in Rust (2026-11-06)
 
 Rust parser and lossless serializer for BPMN 2.0 + Zeebe, with the same model JSON and byte-identical round-trip XML as `@bpmnkit/core` on all 48 BPMN conformance cases. `bpmnkit-xml` keeps prefixes, attribute order and unknown content; `bpmnkit_bpmn::zeebe` reads and writes the typed Zeebe extensions. Element kinds and Zeebe placement come from `spec/elements/{bpmn,zeebe}.json`, shared with TS. Builds for wasm32. Reebe parses deployments with it.

@@ -1,5 +1,38 @@
 # Progress
 
+## 2026-11-06 — Rust twin phase 5: DMN + Form
+
+- New crates (MIT OR Apache-2.0, `publish = false` until phase 9), both build for wasm32:
+  - `bpmnkit-dmn`: model, parser and serializer ported from `dmn-model.ts`, `dmn-parser.ts` and `dmn-serializer.ts` on `bpmnkit-xml` (same model JSON, byte-identical round trip, same error messages). The `eval` module is the twin of `@bpmnkit/engine`'s evaluation: `evaluate_decision_table` and `evaluate_decision_graph`. TS quirks are kept: a syntax error still runs the recovered tree, an entry with no tree matches anything, and an unknown hit policy is null. What TS drops is reported as `Diagnostic`s: `Syntax`, plus FEEL warnings (`NOT_COMPARABLE`, …). Parsed entries are cached per thread, as `@bpmnkit/feel` caches them. Features `tz` and `full-regex` are forwarded to bpmnkit-feel.
+  - `bpmnkit-form`: model, `parse_form` and `export_form` ported from `form-model.ts`, `form-parser.ts` and `form-serializer.ts`. It uses its own ordered JSON value and a `JSON.stringify(…, null, 2)` clone, so the workspace needs no `preserve_order`. Component types come from `spec/elements/form.json`.
+- TS (`@bpmnkit/engine`): new `evaluateDecisionGraph(definitions, id, vars)`, needed so TS is the oracle for literal expressions and DRDs. Required decisions run once, before their readers, and are bound by name; a missing or cyclic requirement throws. A literal expression is read from `extensionElements`, where the parser keeps it (`literalExpressionText`). Fix: the engine passed no names to the FEEL parser, so multi-word variables (`order total`, a required decision named `Customer Tier`) were null; now the names in scope are passed. Regression test in `dmn.test.ts`. `evaluateDecision` is otherwise unchanged.
+- Spec: `spec/elements/dmn.json` covers DMN 1.3 as the parser models it, with traits `drgElement`, `requirement` and `artifact` and enum attribute values. Generated: TS `DMN_ATTRIBUTE_VALUES` (new; emitted only for families whose TS reads it), Rust `DMN_ELEMENTS` and `dmn_attribute_values`. DMN lint's hit-policy and aggregation lists and the `HitPolicy`/`DmnAggregation` types now come from it, with the same values and order. The Rust evaluator has a test that every hit policy and aggregation in the spec is handled.
+- bpmnkit-feel: `parse_partial` / `parse_unary_tests_partial` (the recovered tree plus errors, as TS evaluates it) and `UnaryTests::test_with_diagnostics`.
+- Conformance:
+  - `conformance/dmn/`: 33 cases (24 that parse, 9 `error-*` checked against `expected/error.txt`) from core fixtures, the preserving writer, the wasm runner, reebe tests and the DMN builders, plus hand-written ones.
+  - 24 of them have `evaluate.json`, 191 evaluations recorded from `evaluateDecisionGraph` by `packages/engine/tests/conformance.test.ts` (now part of `pnpm conformance:record`).
+  - `conformance/form/`: 60 cases (22 round trips, 38 error messages).
+  - Rust runs all of them, 0 pending. Totals: 537 pass, 1 pending (`arithmetic/25`, unchanged), so pending went from 1 before to 1 after.
+  - The core DMN recorder now deletes only its own expected files.
+- DMN TCK: the TS runner (`packages/feel/tests/tck.test.ts`) only runs the TCK's FEEL expressions, which Rust already runs (phase 3). It has no decision-table or DRD part to run against Rust, so there is no new pass rate.
+- Reebe: `reebe-dmn` is now an adapter over `bpmnkit-dmn` (949 → 310 lines incl. tests). Its quick-xml parser and string-matching unary tests are gone. The adapter keeps Zeebe's behaviour where TS differs: a syntax error fails the decision, and a list hit policy (`COLLECT` without aggregation, `RULE ORDER`, `OUTPUT ORDER`) with no match is `[]`, where TS gives null. New: required decisions are evaluated and in scope by name. 488 reebe tests pass (485 before, 3 new). The engine's wasm-runner tests pass on a reebe-wasm built from it.
+- Speed (release, µs per pass, `cargo bench -p bpmnkit-dmn`, `node scripts/bench-dmn-io.mjs`; 24 files, 80 KB, and 189 plain-JSON evaluations):
+
+  | | TS | Rust |
+  |---|---|---|
+  | parse | 1,100 | 1,400–1,500 |
+  | serialize | 440–470 | 570–670 |
+  | evaluate | 516 | 382 |
+
+  Without the parse cache, Rust evaluation took 696 µs. Old reebe-dmn: parse 33 files in 505–515 µs (a lossy streaming parse that accepts the error cases) and evaluate in 169–193 µs (it string-matches simple entries and skips FEEL; it got literal expressions, DRDs and several entry forms wrong).
+- reebe-wasm (release `.wasm` with the size flags, `wasm-opt -Oz` from binaryen 123, gzip -9): 689,362 → 697,338 B (+8 KB).
+- Open:
+  - Rust DMN parse is slower than TS. It builds the generic XML tree first; a streaming parse like bpmn's would fix that.
+  - TS bugs replicated in Rust, not fixed: a requirement that parsed to nothing is written as `href="#undefined"`; kept unknown content (any literal-expression decision) gains a whitespace line on every export; `exportForm` drops `valuesExpression` on radio and checklist; validation, layout and values entries drop unmodelled keys. The stability tests list the affected cases, so they will flag when TS is fixed.
+  - The TS parser puts a decision's `literalExpression` into `extensionElements` and drops it when the decision has its own `<extensionElements>`.
+  - Zeebe semantics TS does not have: `UNIQUE` with several matches fails in Zeebe (TS takes the first); `PRIORITY`/`OUTPUT ORDER` don't sort by output values; there is no `typeRef` coercion.
+  - Pre-existing: `cargo clippy -D warnings` fails in `reebe-feel`'s own parser (reebe CI does not run it).
+
 ## 2026-11-06 — Rust twin phase 4: BPMN I/O
 
 - New crates (MIT OR Apache-2.0, `publish = false` until phase 9), both build for `wasm32-unknown-unknown`:
