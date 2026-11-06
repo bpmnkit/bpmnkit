@@ -300,7 +300,6 @@ fn route_flows_matches_ts() {
 }
 
 #[test]
-#[ignore = "needs graph/bands/place/edge_labels"]
 fn semantic_layout_process_matches_ts() {
     for case in fixture() {
         let name = str_of(&case["name"]);

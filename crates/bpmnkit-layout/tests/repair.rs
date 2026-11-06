@@ -21,7 +21,6 @@ fn wps(v: &Value) -> Vec<Waypoint> {
 
 // `route_orthogonal` is a stub in the worktree this was written in; enable once ported.
 #[test]
-#[ignore = "needs orthogonal"]
 fn repair_routes_matches_ts() {
     let raw = include_str!("fixtures/repair/repair.json");
     let cases: Vec<Value> = serde_json::from_str(raw).unwrap();

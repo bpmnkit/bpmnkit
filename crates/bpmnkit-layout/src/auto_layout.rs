@@ -2074,25 +2074,21 @@ mod tests {
     }
 
     #[test]
-    #[ignore = "needs layout modules"]
     fn end_to_end_collaboration() {
         end_to_end(CASES[0]);
     }
 
     #[test]
-    #[ignore = "needs layout modules"]
     fn end_to_end_kyc_onboarding() {
         end_to_end(CASES[1]);
     }
 
     #[test]
-    #[ignore = "needs layout modules"]
     fn end_to_end_compensation_subprocess() {
         end_to_end(CASES[2]);
     }
 
     #[test]
-    #[ignore = "needs layout modules"]
     fn end_to_end_artifacts() {
         end_to_end(CASES[3]);
     }
