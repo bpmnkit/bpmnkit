@@ -341,16 +341,16 @@ Provenance:
 | `bpmn-<case>` | every `conformance/bpmn/<case>` input (`"input"` reference), default runs |
 | `dmn-<case>` | every `conformance/dmn/<case>` input except the `error-*` ones, default run |
 | `edge-lanes`, `edge-lanes-nested` | one lane set with an empty lane and an element in no lane; nested `childLaneSet`. No collaboration, so TS draws no lane shapes (see known defects) |
-| `edge-pools-three`, `edge-pools-nine`, `edge-pools-black-box`, `edge-pools-annotations-only`, `edge-existing-di-collab` | 3 pools with message flows (pool ordering), 9 pools (the ordering heuristic), black-box participants, a pool holding only annotations, a collaboration with DI and a collapsed sub-process |
+| `edge-pools-three`, `edge-pools-nine`, `edge-pools-black-box`, `edge-pools-annotations-only`, `edge-pools-annotations-black-box`, `edge-existing-di-collab` | 3 pools with message flows (pool ordering), 9 pools (the ordering heuristic), black-box participants, a pool holding only annotations, that pool next to a black box with message flows to it (black-box widening), a collaboration with DI and a collapsed sub-process |
 | `edge-boundary-events`, `edge-boundary-subprocess-titled` | error / timer / escalation boundaries, interrupting and not, several on one task, on sub-processes (one with a long title) |
-| `edge-subprocess-expanded`, `-collapsed`, `-nested`, `-event`, `edge-transaction` | expanded; collapsed through source DI `isExpanded="false"`; three levels; event sub-processes (interrupting and not); a transaction with a cancel boundary |
+| `edge-subprocess-expanded`, `-collapsed`, `-nested`, `-event`, `-associations`, `edge-transaction` | expanded; collapsed through source DI `isExpanded="false"`; three levels; event sub-processes (interrupting and not); a sub-process annotation whose association would cut through a task (route repair); a transaction with a cancel boundary |
 | `edge-adhoc-tools` | ad-hoc sub-process with unconnected tools, two linked ones and an annotation; runs `semantic`, `grid`, `grid-hint`, `grid-hint-column`, `annotation-sides`, `annotation-sides-above` |
 | `edge-loops` | back edges, a self loop and nested retry gateways |
 | `edge-gateway-exclusive`, `-parallel`, `-mixed` | default flow with labelled conditions; split / join with a fan; inclusive, event-based and complex gateways |
 | `edge-annotations`, `edge-data-objects` | annotations with associations to nodes, a flow, several sources, no text and none at all (runs `semantic`, `grid`, `sides`); data objects, references and a data store |
 | `edge-multi-process`, `edge-empty-process`, `edge-empty-collaboration-process`, `edge-annotations-only-process`, `edge-disconnected` | processes without a collaboration; empty process / pool; a process with only an annotation; separate components and lone nodes |
 | `edge-unicode-labels`, `edge-long-labels` | non-ASCII, emoji and astral characters (UTF-16 length); very long and empty labels |
-| `edge-existing-di-labels`, `edge-existing-di-collab` | existing DI with `BPMNLabelStyle`, label bounds, a colour attribute and `isMarkerVisible` (`keepDiAttributes`) |
+| `edge-existing-di-labels`, `edge-existing-di-collab`, `edge-existing-di-duplicate-id` | existing DI with `BPMNLabelStyle`, label bounds, a colour attribute and `isMarkerVisible` (`keepDiAttributes`); source DI where two shapes (and two edges) share the id `X_di` of one of their elements |
 | `edge-no-di-minimal`, `edge-no-di-no-ids` | a bare default-namespace model without DI; a model with no ids, which TS refuses to parse (`error.txt` runs) |
 | `edge-event-types`, `edge-wide-fan` | one of each event / task kind in a row; an eight-way parallel fan |
 | `edge-dmn-drd`, `-chain`, `-annotations`, `-existing-di`, `-empty` | DRD with decisions, input data, BKMs, a knowledge source and every requirement kind; a deep decision chain with shortcuts; annotations and associations; an existing `DMNDI`; a definitions element with no content |
@@ -361,8 +361,6 @@ and `no-di-*` ones are the exceptions), not copied from anywhere.
 Known TypeScript defects the recorded output pins down as it is (to fix later; fixing one means
 re-recording and reviewing the diff):
 
-- `edge-pools-annotations-only`: the text annotations of a participant whose process has nothing else
-  get no shape, and the pool is 60 px high (the annotations are lost from the diagram).
 - `edge-lanes`, `edge-lanes-nested`: a lane set in a process that is not a participant of a collaboration
   gets no lane shapes.
 

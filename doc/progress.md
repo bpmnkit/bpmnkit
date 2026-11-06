@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-11-06 — Layout: TS bugs from phase 7 fixed in TS and Rust
+
+- `@bpmnkit/core` and `bpmnkit-layout`, kept identical, each with a regression test on both sides:
+  - A participant whose process holds only text annotations is laid out as a content pool: the annotations get shapes inside it (after the header, with the usual padding) instead of being dropped from a 60 px black box. Black boxes still take the widest pool's width. TS `collaboration-layout.test.ts`, Rust `tests/auto_layout.rs`.
+  - `routeOrthogonal` matches the end stub against the half-unit grid the axes use, so a target port at a fractional coordinate no longer makes a found route come back `null`. TS `layout-routing.test.ts`, Rust `tests/orthogonal.rs` (the fixture's `fractional` case now records the route).
+  - `keepDiAttributes` no longer emits a duplicate DI id when an element's generated `X_di` is a source id another element already took. TS `auto-layout-keeps-di.test.ts`, Rust `tests/auto_layout.rs`.
+  - Route repair registers the associations of nested sub-processes, so one that cuts through a shape is re-routed like a top-level one. TS `layout-routing.test.ts`, Rust `tests/auto_layout.rs`.
+- Conformance: new `edge-pools-annotations-black-box`, `edge-existing-di-duplicate-id`, `edge-subprocess-associations`; re-recorded `edge-pools-annotations-only` (no longer a known defect) and the sub-process associations of `bpmn-bpmnlint-scopes-and-exemptions` and `bpmn-miwg-c-6-0`. Rust 211/211 exact. Changeset `layout-parity-fixes`.
+
 ## 2026-11-06 — Rust twin phase 6: lint, optimize, camunda-compat, C7 migration
 
 - New crates `bpmnkit-compat` (shared `Finding` type; `analyze_camunda_compat` and friends from `camunda-compat.ts`; `camunda7/` migrate, JUEL to FEEL and C8 to C7 export) and `bpmnkit-lint` (`optimize` with every pass and `applyFix`, `lint_diagram`, `.bpmnlintrc` parse/resolve/apply with the 28 native bpmnlint rules, camunda-compat config split/apply, DMN and Form lint). Rule metadata and compat tables come from `spec/` through `bpmnkit-spec`. `bpmnkit_bpmn::ids` gives TS's `generateId` / `resetIdCounter` ids. `bpmnkit-feel` exposes its AST (`Expression::ast()`).

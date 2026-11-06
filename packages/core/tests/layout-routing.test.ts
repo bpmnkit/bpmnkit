@@ -95,9 +95,7 @@ describe("routeOrthogonal", () => {
 		})
 		expect(route).not.toBeNull()
 		const last = (route as Waypoint[])[(route as Waypoint[]).length - 1]
-		expect(sidePorts(target).some((p) => p.point.x === last?.x && p.point.y === last?.y)).toBe(
-			true,
-		)
+		expect(sidePorts(target).some((p) => p.point.x === last?.x && p.point.y === last?.y)).toBe(true)
 		expect(crosses(route as Waypoint[], obstacle)).toBe(false)
 	})
 
@@ -149,6 +147,31 @@ describe("repairRoutes", () => {
 		)
 		expect(crosses(through.waypoints, shapes[1]?.bounds as Bounds)).toBe(false)
 		expect(clear.waypoints).toBe(original)
+	})
+})
+
+describe("route repair inside sub-processes", () => {
+	it("re-routes an association of a nested sub-process that runs through a shape", () => {
+		// Regression: only the process's own associations were registered for
+		// repair, so the straight line from `se` to `N` cut through task C.
+		const laid = applyAutoLayout(
+			Bpmn.parse(`<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="D" targetNamespace="t">
+<bpmn:process id="P"><bpmn:startEvent id="s"/><bpmn:subProcess id="Sub">
+<bpmn:startEvent id="ss"/><bpmn:task id="A" name="A"/><bpmn:task id="B" name="B"/><bpmn:task id="C" name="C"/><bpmn:endEvent id="se"/>
+<bpmn:sequenceFlow id="f1" sourceRef="ss" targetRef="A"/><bpmn:sequenceFlow id="f2" sourceRef="A" targetRef="B"/><bpmn:sequenceFlow id="f3" sourceRef="B" targetRef="C"/><bpmn:sequenceFlow id="f4" sourceRef="C" targetRef="se"/>
+<bpmn:textAnnotation id="N"><bpmn:text>Shared note</bpmn:text></bpmn:textAnnotation>
+<bpmn:association id="As1" sourceRef="A" targetRef="N"/><bpmn:association id="As2" sourceRef="C" targetRef="N"/><bpmn:association id="As3" sourceRef="se" targetRef="N"/><bpmn:association id="As4" sourceRef="ss" targetRef="N"/>
+</bpmn:subProcess><bpmn:endEvent id="e"/>
+<bpmn:sequenceFlow id="g1" sourceRef="s" targetRef="Sub"/><bpmn:sequenceFlow id="g2" sourceRef="Sub" targetRef="e"/>
+</bpmn:process></bpmn:definitions>`),
+		)
+		const plane = laid.diagrams[0]?.plane
+		const c = plane?.shapes.find((s) => s.bpmnElement === "C")?.bounds
+		const edge = plane?.edges.find((e) => e.bpmnElement === "As3")
+		if (!c || !edge) throw new Error("C or As3 was not drawn")
+		const inner: Bounds = { x: c.x + 1, y: c.y + 1, width: c.width - 2, height: c.height - 2 }
+		expect(orthogonal(edge.waypoints)).toBe(true)
+		expect(crosses(edge.waypoints, inner)).toBe(false)
 	})
 })
 

@@ -523,8 +523,11 @@
         <di:waypoint x="130" y="800"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sub_assoc_di" bpmnElement="sub_assoc">
-        <di:waypoint x="1087" y="188"/>
-        <di:waypoint x="855" y="510"/>
+        <di:waypoint x="1105" y="188"/>
+        <di:waypoint x="1105" y="214"/>
+        <di:waypoint x="914" y="214"/>
+        <di:waypoint x="914" y="550"/>
+        <di:waypoint x="855" y="550"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

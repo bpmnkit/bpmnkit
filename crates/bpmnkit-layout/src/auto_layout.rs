@@ -1117,8 +1117,12 @@ pub fn apply_auto_layout(
 
         // A participant with no process, or one whose process has no flow nodes,
         // is a black box: it still needs a pool of its own to dock message flows
-        // onto, and to stay visible at all.
-        if result.nodes.is_empty() {
+        // onto, and to stay visible at all. One whose process holds annotations
+        // is not: it takes the content path below, so the pool is sized around them
+        // and they get shapes instead of being dropped.
+        let annotations_only_pool = participant_id.is_some()
+            && process.is_some_and(|p| !p.contents.text_annotations.is_empty());
+        if result.nodes.is_empty() && !annotations_only_pool {
             // A process can be nothing but annotations; they still belong on the plane.
             if let (None, Some(process)) = (participant_id, process) {
                 if !process.contents.text_annotations.is_empty() {
@@ -1570,16 +1574,17 @@ pub fn keep_di_attributes(source: &[BpmnDiagram], laid_out: Vec<BpmnDiagram>) ->
     let mut used: IndexSet<String> = IndexSet::new();
     // An empty source id means the source omitted it; that is not one to keep.
     let mut keep_id = |generated: &str, previous: Option<&str>| -> String {
-        let mut id = match previous {
-            Some(p) if !p.is_empty() && !used.contains(p) => p.to_string(),
-            _ => generated.to_string(),
-        };
-        if Some(id.as_str()) != previous {
-            let mut n = 2;
-            while source_ids.contains(id.as_str()) || used.contains(&id) {
-                id = format!("{generated}_{n}");
-                n += 1;
-            }
+        if let Some(p) = previous.filter(|p| !p.is_empty() && !used.contains(*p)) {
+            used.insert(p.to_string());
+            return p.to_string();
+        }
+        // Checked even when `generated` equals a previous id already taken (two
+        // source shapes sharing `X_di`): that id is in use, so it is not free.
+        let mut id = generated.to_string();
+        let mut n = 2;
+        while source_ids.contains(id.as_str()) || used.contains(&id) {
+            id = format!("{generated}_{n}");
+            n += 1;
         }
         used.insert(id.clone());
         id
@@ -1806,6 +1811,16 @@ impl RouteRepair {
                         ConnectionKind::Sequence,
                         &flow.source_ref,
                         &flow.target_ref,
+                    );
+                }
+                // A sub-process's associations are drawn on the same plane as the
+                // process's own (with_nested_annotations), so they need the same repair.
+                for a in &c.associations {
+                    self.connect(
+                        &a.id,
+                        ConnectionKind::Association,
+                        &a.source_ref,
+                        &a.target_ref,
                     );
                 }
                 self.walk(&c.flow_elements, Some(id));

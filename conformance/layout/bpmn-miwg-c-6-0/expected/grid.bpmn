@@ -599,13 +599,17 @@
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_f1aecfc3-a3da-4bde-bece-87786e25273d_1"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_87b05c12-ee5c-48d8-8b4d-1483c061de42" bpmnElement="_651344ad-d784-4ef2-9655-4bc6393ac323" color:border-color="#000000">
-        <di:waypoint x="1952" y="468"/>
-        <di:waypoint x="970" y="790"/>
+        <di:waypoint x="1970" y="468"/>
+        <di:waypoint x="1970" y="830"/>
+        <di:waypoint x="970" y="830"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_f1aecfc3-a3da-4bde-bece-87786e25273d_1"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_533970c6-a264-4f9b-8ce6-11074871b457" bpmnElement="_98b2bd26-e113-4d19-b6a8-bcda781a823b" color:border-color="#000000">
-        <di:waypoint x="1952" y="328"/>
-        <di:waypoint x="970" y="930"/>
+        <di:waypoint x="1970" y="328"/>
+        <di:waypoint x="1970" y="354"/>
+        <di:waypoint x="858" y="354"/>
+        <di:waypoint x="858" y="970"/>
+        <di:waypoint x="870" y="970"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_f1aecfc3-a3da-4bde-bece-87786e25273d_1"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

@@ -847,8 +847,12 @@ export function applyAutoLayout(
 
 		// A participant with no process, or one whose process has no flow nodes,
 		// is a black box: it still needs a pool of its own to dock message flows
-		// onto, and to stay visible at all.
-		if (result.nodes.length === 0) {
+		// onto, and to stay visible at all. One whose process holds annotations
+		// is not: it takes the content path below, so the pool is sized around them
+		// and they get shapes instead of being dropped.
+		const annotationsOnlyPool =
+			participantId !== undefined && process !== undefined && process.textAnnotations.length > 0
+		if (result.nodes.length === 0 && !annotationsOnlyPool) {
 			// A process can be nothing but annotations; they still belong on the plane.
 			if (!participantId && process && process.textAnnotations.length > 0) {
 				const annOnly = packAnnotations(process, [])
@@ -1164,10 +1168,14 @@ function keepDiAttributes(source: BpmnDiagram[], laidOut: BpmnDiagram[]): BpmnDi
 	const used = new Set<string>()
 	// An empty source id means the source omitted it; that is not one to keep.
 	const keepId = (generated: string, previous: string | undefined): string => {
-		let id = previous && !used.has(previous) ? previous : generated
-		if (id !== previous) {
-			for (let n = 2; sourceIds.has(id) || used.has(id); n++) id = `${generated}_${n}`
+		if (previous && !used.has(previous)) {
+			used.add(previous)
+			return previous
 		}
+		// Checked even when `generated` equals a previous id already taken (two
+		// source shapes sharing `X_di`): that id is in use, so it is not free.
+		let id = generated
+		for (let n = 2; sourceIds.has(id) || used.has(id); n++) id = `${generated}_${n}`
 		used.add(id)
 		return id
 	}
@@ -1260,6 +1268,7 @@ function routeRepair(defs: BpmnDefinitions): (shapes: BpmnDiShape[], edges: Bpmn
 			const scope = element as unknown as {
 				flowElements?: BpmnFlowElement[]
 				sequenceFlows?: Array<{ id: string; sourceRef: string; targetRef: string }>
+				associations?: BpmnProcess["associations"]
 			}
 			for (const flow of scope.sequenceFlows ?? []) {
 				connections.set(flow.id, {
@@ -1267,6 +1276,11 @@ function routeRepair(defs: BpmnDefinitions): (shapes: BpmnDiShape[], edges: Bpmn
 					source: flow.sourceRef,
 					target: flow.targetRef,
 				})
+			}
+			// A sub-process's associations are drawn on the same plane as the
+			// process's own (withNestedAnnotations), so they need the same repair.
+			for (const a of scope.associations ?? []) {
+				connections.set(a.id, { kind: "association", source: a.sourceRef, target: a.targetRef })
 			}
 			if (scope.flowElements) walk(scope.flowElements, element.id)
 		}
