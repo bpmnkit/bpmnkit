@@ -1484,7 +1484,25 @@ pub fn apply_auto_layout(
         .map(|c| c.id.clone())
         .or_else(|| defs.processes.first().map(|p| p.id.clone()))
         .unwrap_or_else(|| "plane".to_string());
-    let existing_diagram = defs.diagrams.first();
+    // The primary plane keeps the ids of the source diagram that drew the same
+    // element. The first diagram is the fallback only while no other plane
+    // reuses it: a root or sub-process plane keeps its own source diagram, and
+    // two diagrams with one id lose a plane to any reader that resolves by id.
+    let claimed: IndexSet<&str> = root_planes
+        .iter()
+        .map(|plane| plane.element_id.as_str())
+        .chain(child_planes.iter().map(|plane| plane.element_id.as_str()))
+        .chain(collapsed.iter().map(String::as_str))
+        .collect();
+    let existing_diagram = defs
+        .diagrams
+        .iter()
+        .find(|d| d.plane.bpmn_element == plane_bpmn_element)
+        .or_else(|| {
+            defs.diagrams
+                .first()
+                .filter(|d| !claimed.contains(d.plane.bpmn_element.as_str()))
+        });
 
     let mut laid_out = vec![BpmnDiagram {
         id: existing_diagram

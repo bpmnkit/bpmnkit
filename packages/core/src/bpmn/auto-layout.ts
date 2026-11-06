@@ -1100,7 +1100,19 @@ export function applyAutoLayout(
 	for (const plane of rootPlanes) repair(plane.shapes, plane.edges)
 
 	const planeBpmnElement = collab?.id ?? defs.processes[0]?.id ?? "plane"
-	const existingDiagram = defs.diagrams[0]
+	// The primary plane keeps the ids of the source diagram that drew the same
+	// element. The first diagram is the fallback only while no other plane
+	// reuses it: a root or sub-process plane keeps its own source diagram, and
+	// two diagrams with one id lose a plane to any reader that resolves by id.
+	const claimed = new Set<string>([
+		...rootPlanes.map((plane) => plane.elementId),
+		...childPlanes.map((plane) => plane.elementId),
+		...collapsed,
+	])
+	const firstDiagram = defs.diagrams[0]
+	const existingDiagram =
+		defs.diagrams.find((d) => d.plane.bpmnElement === planeBpmnElement) ??
+		(firstDiagram && !claimed.has(firstDiagram.plane.bpmnElement) ? firstDiagram : undefined)
 
 	return {
 		...defs,

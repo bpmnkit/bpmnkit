@@ -115,3 +115,34 @@ fn nested_sub_process_associations_are_repaired() {
         .all(|w| w[0].x == w[1].x || w[0].y == w[1].y));
     assert!(!crosses(&edge.waypoints, c), "As3 runs through C");
 }
+
+/// `auto-layout-keeps-di.test.ts`: "keeps each root process on its own source diagram
+/// when the first one draws another process". The primary plane used to take the first
+/// source diagram's ids, which the second process's plane kept too: two diagrams, one id.
+#[test]
+fn root_processes_keep_their_own_source_diagram_ids() {
+    let xml = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../conformance/layout/edge-existing-di-diagram-order/input.bpmn"
+    ))
+    .expect("input");
+    let laid = laid_out(&xml);
+    let ids: Vec<_> = laid
+        .diagrams
+        .iter()
+        .map(|d| {
+            (
+                d.id.as_str(),
+                d.plane.id.as_str(),
+                d.plane.bpmn_element.as_str(),
+            )
+        })
+        .collect();
+    assert_eq!(
+        ids,
+        [
+            ("DiagramA", "PlaneA", "ProcessA"),
+            ("DiagramB", "PlaneB", "ProcessB")
+        ]
+    );
+}
