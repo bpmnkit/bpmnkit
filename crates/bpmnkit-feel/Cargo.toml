@@ -1,0 +1,18 @@
+[package]
+name = "bpmnkit-feel"
+description = "FEEL (DMN 1.5 + Camunda extensions) lexer, parser and evaluator with exact decimals; the Rust twin of @bpmnkit/feel"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+keywords = ["feel", "dmn", "bpmn", "camunda", "expression"]
+publish = false
+
+[dependencies]
+bpmnkit-spec = { path = "../bpmnkit-spec" }
+chrono = "0.4"
+chrono-tz = "0.10"
+indexmap = "2"
+regex = "1"
+rust_decimal = { version = "1", features = ["maths"] }
+serde_json = { workspace = true }
