@@ -15,6 +15,7 @@
 ## 2026-11-04 — Proposal: Rust core for BPMN Kit (analysis only)
 
 - New `doc/rust-rewrite-proposal.md`: what moves to Rust, what stays TS, crate layout, WASM-for-browser-and-Node bindings, parity strategy, phased plan with estimates, risks and open decisions. No code changed.
+
 ## 2026-11-06 — `casen check --deploy`: user task without a form is an error
 
 - `compat/user-task-definition` is promoted to an error in the deploy profile (it was a warning, so the errors-only gate hid it). `--user-task-forms off` still disables it; elsewhere it stays off or a warning. Merged `claude/eval-layout-aesthetics` into the integration branch.
