@@ -70,7 +70,10 @@ fn tck() {
     files.sort();
     let (mut passed, mut total) = (0usize, 0usize);
     let mut failed = vec![];
-    for f in files.iter().filter(|p| p.extension().is_some_and(|x| x == "json")) {
+    for f in files
+        .iter()
+        .filter(|p| p.extension().is_some_and(|x| x == "json"))
+    {
         let suite: Suite = serde_json::from_str(&std::fs::read_to_string(f).unwrap()).unwrap();
         for case in &suite.cases {
             total += 1;

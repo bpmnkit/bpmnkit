@@ -323,7 +323,7 @@ fn input_is_visible_to_expressions() {
 }
 
 #[test]
-#[ignore = "needs builtins"]
+
 fn builtin_calls() {
     check(&[
         ("string length(\"hello\")", "5"),

@@ -30,7 +30,7 @@
 {"id":"ported/30","expr":"to json(function(x) x)","context":{},"expected":{"t":"null"}}
 {"id":"ported/31","expr":"from json(\"\\\"2023-06-14\\\"\")","context":{},"expected":{"t":"string","v":"2023-06-14"}}
 {"id":"ported/32","expr":"from json(\"{oops\")","context":{},"expected":{"t":"null"}}
-{"id":"ported/33","expr":"from json(\"{\\\"__proto__\\\": {\\\"polluted\\\": true}}\")","context":{},"expected":{"t":"context","v":{}}}
+{"id":"ported/33","expr":"from json(\"{\\\"__proto__\\\": {\\\"polluted\\\": true}}\")","context":{},"expected":{"t":"context","v":{"__proto__":{"t":"context","v":{"polluted":{"t":"boolean","v":true}}}}}}
 {"id":"ported/34","expr":"last day of month(\"2022-10-01\")","context":{},"expected":{"t":"null"}}
 {"id":"ported/35","expr":"time(\"08:00:00\") + duration(\"P1M\")","context":{},"expected":{"t":"null"}}
 {"id":"ported/36","expr":"time(\"08:00:00\") - time(\"06:00:00Z\")","context":{},"expected":{"t":"null"}}

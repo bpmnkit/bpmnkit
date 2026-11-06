@@ -4,7 +4,6 @@
 //! arithmetic of evaluator.ts (`evalBinary`, `addDuration`, `subtractValues`)
 //! and `getProperty` from types.ts.
 // Some helpers are only consumed by the built-ins port.
-#![allow(dead_code)]
 
 use crate::temporal::{
     date_time_to_epoch_seconds, date_time_to_seconds, date_to_epoch_days, epoch_days_to_date,

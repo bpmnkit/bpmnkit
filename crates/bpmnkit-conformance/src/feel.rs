@@ -3,7 +3,6 @@
 use crate::Value;
 use bpmnkit_feel::{self as feel, Context, Decimal, ParseOptions};
 use std::collections::BTreeMap;
-use std::str::FromStr;
 
 /// Evaluates `expr` as the TS recorder does: parsed without the context's
 /// names (so multi-word names are not special), then evaluated with them bound.
@@ -100,10 +99,7 @@ mod tests {
 
     #[test]
     fn temporal_round_trip() {
-        let ctx = BTreeMap::from([(
-            "d".to_string(),
-            Value::Date("2024-02-29".into()),
-        )]);
+        let ctx = BTreeMap::from([("d".to_string(), Value::Date("2024-02-29".into()))]);
         assert_eq!(evaluate("d", &ctx), Value::Date("2024-02-29".into()));
     }
 }

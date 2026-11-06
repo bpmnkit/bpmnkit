@@ -3,7 +3,6 @@
 //! and the epoch/shift helpers of evaluator.ts.
 // The helpers below are consumed by the built-ins port; until then they are
 // only reachable from tests.
-#![allow(dead_code)]
 
 use crate::ops::number_to_string;
 use crate::value::{Date, DateTime, DaysTimeDuration, Time, Value, YearsMonthsDuration};
