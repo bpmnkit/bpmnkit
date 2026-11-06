@@ -1,5 +1,12 @@
 # @bpmnkit/landing
 
+## 0.0.57
+
+### Patch Changes
+
+- Updated dependencies [671f55d]
+  - @bpmnkit/core@1.9.0
+
 ## 0.0.56
 
 ### Patch Changes
