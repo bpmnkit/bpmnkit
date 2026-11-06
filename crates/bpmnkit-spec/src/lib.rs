@@ -2,11 +2,13 @@
 //! JSON; `pnpm spec:gen` writes the `generated` modules here and the matching
 //! TypeScript in the packages, so neither side copies a table by hand.
 
+pub mod compat;
 pub mod feel;
 pub mod lint;
 
 #[rustfmt::skip]
 mod generated {
+    pub mod compat_rules;
     pub mod feel_builtins;
     pub mod lint_rules;
 }

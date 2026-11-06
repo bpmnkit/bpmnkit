@@ -16,10 +16,16 @@ Behaviour (evaluation, rule logic) stays hand-written on each side; only data li
 |---|---|---|---|
 | `feel-builtins.json` | `schema/feel-builtins.schema.json` | `packages/feel/src/generated/builtin-signatures.ts` | `bpmnkit_spec::feel` |
 | `lint-rules.json` | `schema/lint-rules.schema.json` | `packages/core/src/generated/lint-rules.ts` | `bpmnkit_spec::lint` |
+| `compat-rules.json` | `schema/compat-rules.schema.json` | `packages/core/src/generated/camunda-compat-data.ts` | `bpmnkit_spec::compat` |
 
 `lint-rules.json` holds bpmnlint's rule names, the `correctness` / `recommended` presets, and each native
 rule's category and `standard-size` defaults. The check functions and their messages (template literals)
 stay in `bpmnlint-rules.ts`: messages are behaviour, not data. `all` is derived (every rule at `error`).
+
+`compat-rules.json` holds the Camunda 8 compatibility tables (element, implementation, timer, feature, FEEL
+built-in and inbound-connector support per version, and the plugin's rules), with the plugin/feel-builtins
+`source` attribution. Timer support is a 2x2 table per property (interrupting x in an event sub-process);
+`camunda-compat-data.ts` stays a facade that rebuilds the `TIMER_SUPPORT` functions from it.
 
 ## Adding an area
 
