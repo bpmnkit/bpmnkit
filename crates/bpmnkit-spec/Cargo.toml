@@ -1,0 +1,13 @@
+[package]
+name = "bpmnkit-spec"
+description = "BPMN Kit's single-source data (FEEL built-ins, lint rules, Camunda compatibility, connector templates, element definitions), generated from spec/"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+# Generated from ../../spec, which lies outside the crate; publishing (phase 9)
+# needs the data vendored into the package first.
+publish = false
+
+[dev-dependencies]
+serde_json = { workspace = true }

@@ -1,0 +1,46 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://bpmnkit.com/spec/feel-builtins.schema.json",
+	"title": "FEEL built-in function signatures",
+	"description": "Every FEEL built-in BPMN Kit implements, with its parameter names per signature. Implementations stay in code; this is the name, arity and named-argument table both sides share.",
+	"type": "object",
+	"required": ["builtins"],
+	"additionalProperties": false,
+	"properties": {
+		"$schema": { "type": "string" },
+		"builtins": {
+			"type": "array",
+			"minItems": 1,
+			"items": {
+				"type": "object",
+				"required": ["name", "group", "signatures"],
+				"additionalProperties": false,
+				"properties": {
+					"name": { "type": "string", "minLength": 1 },
+					"group": {
+						"enum": [
+							"conversion",
+							"boolean",
+							"string",
+							"list",
+							"numeric",
+							"context",
+							"temporal",
+							"range"
+						]
+					},
+					"signatures": {
+						"description": "Parameter names in declaration order, one list per accepted signature.",
+						"type": "array",
+						"minItems": 1,
+						"items": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+					},
+					"variadic": {
+						"description": "DMN also defines it over a bare argument list (max(1,2,3) means max([1,2,3])); its arity is not checked.",
+						"type": "boolean"
+					}
+				}
+			}
+		}
+	}
+}
