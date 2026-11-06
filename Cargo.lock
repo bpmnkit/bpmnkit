@@ -130,6 +130,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "bpmnkit-layout"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-bpmn",
+ "bpmnkit-dmn",
+ "indexmap",
+ "serde_json",
+]
+
+[[package]]
 name = "bpmnkit-lint"
 version = "0.1.0"
 dependencies = [

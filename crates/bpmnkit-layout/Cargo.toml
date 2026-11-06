@@ -1,0 +1,16 @@
+[package]
+name = "bpmnkit-layout"
+description = "BPMN and DMN auto-layout for BPMN Kit (Rust twin of @bpmnkit/core's applyAutoLayout and layoutDmn)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+bpmnkit-bpmn = { path = "../bpmnkit-bpmn" }
+bpmnkit-dmn = { path = "../bpmnkit-dmn" }
+indexmap = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true, features = ["float_roundtrip"] }
