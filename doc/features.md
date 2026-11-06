@@ -1,5 +1,9 @@
 # Features
 
+## `bpmnkit-layout`: auto-layout in Rust (2026-11-06)
+
+Rust auto-layout for BPMN (both engines: semantic and grid; pools, lanes, boundary events, expanded and collapsed sub-processes, annotations, message flows, keeping the source DI's ids and styles) and DMN, with the same shapes, waypoints, labels and XML as `@bpmnkit/core`'s `applyAutoLayout` and `layoutDmn`: all 213 recorded layout runs match exactly. Takes the builder's layout hints (tool grids, annotation sides).
+
 ## `bpmnkit-lint` and `bpmnkit-compat`: lint, Camunda compatibility and C7 migration in Rust (2026-11-06)
 
 Rust lint (`lint_diagram`, `optimize` with its automatic fixes, `.bpmnlintrc` support with the native bpmnlint rules, DMN and Form lint), the Camunda 8 version compatibility check, and Camunda 7 to 8 migration with JUEL to FEEL (plus C8 to C7 export). Same findings, messages, order and fixed XML as `@bpmnkit/core` on 1717 recorded runs. Rule and compatibility data come from `spec/`, shared with TS. About 2× faster than TS.
