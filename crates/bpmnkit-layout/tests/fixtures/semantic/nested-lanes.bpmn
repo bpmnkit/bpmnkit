@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <process id="Process_1" isExecutable="true">
+    <laneSet id="LaneSet_1">
+      <lane id="Lane_A" name="Sales">
+        <flowNodeRef>Start_1</flowNodeRef>
+        <flowNodeRef>Task_1</flowNodeRef>
+      </lane>
+      <lane id="Lane_B" name="Back office">
+        <childLaneSet id="LaneSet_2">
+          <lane id="Lane_B1" name="Finance">
+            <flowNodeRef>Gw_1</flowNodeRef>
+            <flowNodeRef>Task_2</flowNodeRef>
+          </lane>
+          <lane id="Lane_B2" name="Empty"/>
+          <lane id="Lane_B3" name="Ops">
+            <flowNodeRef>Task_3</flowNodeRef>
+            <flowNodeRef>End_1</flowNodeRef>
+          </lane>
+        </childLaneSet>
+      </lane>
+    </laneSet>
+    <startEvent id="Start_1"/>
+    <userTask id="Task_1" name="Quote"/>
+    <parallelGateway id="Gw_1"/>
+    <serviceTask id="Task_2" name="Invoice"/>
+    <serviceTask id="Task_3" name="Ship"/>
+    <task id="Orphan_1"/>
+    <endEvent id="End_1"/>
+    <sequenceFlow id="F1" sourceRef="Start_1" targetRef="Task_1"/>
+    <sequenceFlow id="F2" sourceRef="Task_1" targetRef="Gw_1"/>
+    <sequenceFlow id="F3" sourceRef="Gw_1" targetRef="Task_2"/>
+    <sequenceFlow id="F4" sourceRef="Gw_1" targetRef="Task_3"/>
+    <sequenceFlow id="F5" sourceRef="Task_2" targetRef="End_1"/>
+    <sequenceFlow id="F6" sourceRef="Task_3" targetRef="End_1"/>
+    <sequenceFlow id="F7" sourceRef="Orphan_1" targetRef="Task_3"/>
+  </process>
+</definitions>
