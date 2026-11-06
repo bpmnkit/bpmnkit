@@ -1,0 +1,321 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "Camunda Modeler",
+  "exporterVersion": "5.0.0",
+  "id": "Definitions_LoanApproval",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "StartEvent_LoanRequest",
+          "incoming": [],
+          "name": "Loan Application Received",
+          "outgoing": [
+            "Flow_ToCreditCheck"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "io.camunda:http-json:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=\"GET\"",
+                    "target": "method"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=\"https://api.creditbureau.example.com/v1/score/\" + applicantId",
+                    "target": "url"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "noAuth",
+                    "target": "authentication.type"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=response.body.creditScore",
+                    "target": "creditScore"
+                  },
+                  "children": [],
+                  "name": "zeebe:output"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "resultVariable",
+                    "value": "creditResponse"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "Task_CreditScoreCheck",
+          "incoming": [
+            "Flow_ToCreditCheck"
+          ],
+          "name": "Credit Score Check",
+          "outgoing": [
+            "Flow_ToPreScreen"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Gateway_PreScreen",
+          "incoming": [
+            "Flow_ToPreScreen"
+          ],
+          "name": "Pre-Screening",
+          "outgoing": [
+            "Flow_RejectLowScore",
+            "Flow_PassPreScreen"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "decisionId": "risk-scoring",
+                "resultVariable": "riskResult"
+              },
+              "children": [],
+              "name": "zeebe:calledDecision"
+            }
+          ],
+          "id": "Task_RiskScoring",
+          "incoming": [
+            "Flow_PassPreScreen"
+          ],
+          "name": "Risk Scoring",
+          "outgoing": [
+            "Flow_ToUnderwriter"
+          ],
+          "type": "businessRuleTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "zeebe:userTask"
+            },
+            {
+              "attributes": {
+                "candidateGroups": "underwriters"
+              },
+              "children": [],
+              "name": "zeebe:assignmentDefinition"
+            },
+            {
+              "attributes": {
+                "formId": "underwriter-review-form"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "Task_UnderwriterReview",
+          "incoming": [
+            "Flow_ToUnderwriter"
+          ],
+          "name": "Manual Underwriter Review",
+          "outgoing": [
+            "Flow_ToDecisionGateway"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Gateway_FinalDecision",
+          "incoming": [
+            "Flow_ToDecisionGateway"
+          ],
+          "name": "Underwriter Decision",
+          "outgoing": [
+            "Flow_Approved",
+            "Flow_Rejected"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_Approved",
+          "incoming": [
+            "Flow_Approved"
+          ],
+          "name": "Loan Approved",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_Rejected",
+          "incoming": [
+            "Flow_RejectLowScore",
+            "Flow_Rejected"
+          ],
+          "name": "Loan Rejected",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "loan-approval-process",
+      "isExecutable": true,
+      "name": "Loan Approval Process",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_ToCreditCheck",
+          "sourceRef": "StartEvent_LoanRequest",
+          "targetRef": "Task_CreditScoreCheck",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_ToPreScreen",
+          "sourceRef": "Task_CreditScoreCheck",
+          "targetRef": "Gateway_PreScreen",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=creditScore < 580"
+          },
+          "extensionElements": [],
+          "id": "Flow_RejectLowScore",
+          "name": "Score < 580",
+          "sourceRef": "Gateway_PreScreen",
+          "targetRef": "EndEvent_Rejected",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=creditScore >= 580"
+          },
+          "extensionElements": [],
+          "id": "Flow_PassPreScreen",
+          "name": "Score >= 580",
+          "sourceRef": "Gateway_PreScreen",
+          "targetRef": "Task_RiskScoring",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_ToUnderwriter",
+          "sourceRef": "Task_RiskScoring",
+          "targetRef": "Task_UnderwriterReview",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_ToDecisionGateway",
+          "sourceRef": "Task_UnderwriterReview",
+          "targetRef": "Gateway_FinalDecision",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=approved = true"
+          },
+          "extensionElements": [],
+          "id": "Flow_Approved",
+          "name": "Approved",
+          "sourceRef": "Gateway_FinalDecision",
+          "targetRef": "EndEvent_Approved",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=approved = false"
+          },
+          "extensionElements": [],
+          "id": "Flow_Rejected",
+          "name": "Rejected",
+          "sourceRef": "Gateway_FinalDecision",
+          "targetRef": "EndEvent_Rejected",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.5.0"
+  }
+}

@@ -1,0 +1,739 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_1",
+      "plane": {
+        "bpmnElement": "claim-handling",
+        "edges": [
+          {
+            "bpmnElement": "Flow_toAssess",
+            "id": "Flow_toAssess_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 188,
+                "y": 200
+              },
+              {
+                "x": 240,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toFraudCheck",
+            "id": "Flow_toFraudCheck_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 340,
+                "y": 200
+              },
+              {
+                "x": 390,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toReviewItems",
+            "id": "Flow_toReviewItems_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 490,
+                "y": 200
+              },
+              {
+                "x": 540,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toPrice",
+            "id": "Flow_toPrice_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 608,
+                "y": 200
+              },
+              {
+                "x": 660,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toItemEnd",
+            "id": "Flow_toItemEnd_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 760,
+                "y": 200
+              },
+              {
+                "x": 812,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toPayout",
+            "id": "Flow_toPayout_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 890,
+                "y": 200
+              },
+              {
+                "x": 940,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toNotify",
+            "id": "Flow_toNotify_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 1040,
+                "y": 200
+              },
+              {
+                "x": 1092,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toFraudEnd",
+            "id": "Flow_toFraudEnd_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 290,
+                "y": 258
+              },
+              {
+                "x": 290,
+                "y": 340
+              },
+              {
+                "x": 352,
+                "y": 340
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_1",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 152,
+              "y": 182
+            },
+            "bpmnElement": "StartEvent_claim",
+            "id": "StartEvent_claim_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 240,
+              "y": 160
+            },
+            "bpmnElement": "Task_assess",
+            "id": "Task_assess_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 390,
+              "y": 160
+            },
+            "bpmnElement": "Task_fraudCheck",
+            "id": "Task_fraudCheck_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 200,
+              "width": 350,
+              "x": 540,
+              "y": 100
+            },
+            "bpmnElement": "SubProcess_items",
+            "id": "SubProcess_items_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 572,
+              "y": 182
+            },
+            "bpmnElement": "StartEvent_item",
+            "id": "StartEvent_item_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 660,
+              "y": 160
+            },
+            "bpmnElement": "Task_price",
+            "id": "Task_price_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 812,
+              "y": 182
+            },
+            "bpmnElement": "EndEvent_item",
+            "id": "EndEvent_item_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 940,
+              "y": 160
+            },
+            "bpmnElement": "Task_payout",
+            "id": "Task_payout_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 1092,
+              "y": 182
+            },
+            "bpmnElement": "EndEvent_paid",
+            "id": "EndEvent_paid_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 352,
+              "y": 322
+            },
+            "bpmnElement": "EndEvent_fraud",
+            "id": "EndEvent_fraud_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 272,
+              "y": 222
+            },
+            "bpmnElement": "Signal_fraud",
+            "id": "Signal_fraud_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "exporter": "Camunda Modeler",
+  "exporterVersion": "5.28.0",
+  "id": "Definitions_0d9c2xk",
+  "messages": [
+    {
+      "id": "Message_ClaimSubmitted",
+      "name": "ClaimSubmitted",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "camunda": "http://camunda.org/schema/1.0/bpmn",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [
+            {
+              "id": "MessageEventDefinition_start",
+              "messageRef": "Message_ClaimSubmitted",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "StartEvent_claim",
+          "incoming": [],
+          "name": "Claim submitted",
+          "outgoing": [
+            "Flow_toAssess"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "name": "sla",
+                    "value": "PT4H"
+                  },
+                  "children": [],
+                  "name": "camunda:property"
+                }
+              ],
+              "name": "camunda:properties"
+            }
+          ],
+          "id": "Task_assess",
+          "incoming": [
+            "Flow_toAssess"
+          ],
+          "name": "Assess claim",
+          "outgoing": [
+            "Flow_toFraudCheck"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "camunda:candidateUsers": "${assessors}",
+            "camunda:formKey": "embedded:app:forms/assess-claim.html"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "name": "threshold"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "camunda:string",
+                  "text": "0.8"
+                }
+              ],
+              "name": "camunda:field"
+            },
+            {
+              "attributes": {
+                "expression": "${claim.region}",
+                "name": "region"
+              },
+              "children": [],
+              "name": "camunda:field"
+            }
+          ],
+          "id": "Task_fraudCheck",
+          "incoming": [
+            "Flow_toFraudCheck"
+          ],
+          "name": "Check for fraud",
+          "outgoing": [
+            "Flow_toReviewItems"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "camunda:class": "com.acme.claims.FraudCheckDelegate"
+          }
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "StartEvent_item",
+              "incoming": [],
+              "outgoing": [
+                "Flow_toPrice"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Task_price",
+              "incoming": [
+                "Flow_toPrice"
+              ],
+              "name": "Price item",
+              "outgoing": [
+                "Flow_toItemEnd"
+              ],
+              "type": "scriptTask",
+              "unknownAttributes": {
+                "camunda:resultVariable": "itemPrice",
+                "scriptFormat": "feel"
+              },
+              "unknownChildren": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "bpmn:script",
+                  "text": "item.quantity * item.unitPrice"
+                }
+              ]
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "EndEvent_item",
+              "incoming": [
+                "Flow_toItemEnd"
+              ],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "SubProcess_items",
+          "incoming": [
+            "Flow_toReviewItems"
+          ],
+          "loopCharacteristics": {
+            "completionCondition": {
+              "attributes": {
+                "xsi:type": "bpmn:tFormalExpression"
+              },
+              "text": "${nrOfCompletedInstances / nrOfInstances >= 0.6}"
+            },
+            "extensionElements": [],
+            "unknownAttributes": {
+              "camunda:collection": "${claim.items}",
+              "camunda:elementVariable": "item"
+            }
+          },
+          "name": "Review items",
+          "outgoing": [
+            "Flow_toPayout"
+          ],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "Flow_toPrice",
+              "sourceRef": "StartEvent_item",
+              "targetRef": "Task_price",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_toItemEnd",
+              "sourceRef": "Task_price",
+              "targetRef": "EndEvent_item",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "name": "url"
+                      },
+                      "children": [],
+                      "name": "camunda:inputParameter",
+                      "text": "https://payments.example.invalid/payouts"
+                    },
+                    {
+                      "attributes": {
+                        "name": "method"
+                      },
+                      "children": [],
+                      "name": "camunda:inputParameter",
+                      "text": "POST"
+                    }
+                  ],
+                  "name": "camunda:inputOutput"
+                },
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "camunda:connectorId",
+                  "text": "http-connector"
+                }
+              ],
+              "name": "camunda:connector"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "name": "payout"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [
+                        {
+                          "attributes": {
+                            "key": "claimId"
+                          },
+                          "children": [],
+                          "name": "camunda:entry",
+                          "text": "${claim.id}"
+                        },
+                        {
+                          "attributes": {
+                            "key": "currency"
+                          },
+                          "children": [],
+                          "name": "camunda:entry",
+                          "text": "EUR"
+                        }
+                      ],
+                      "name": "camunda:map"
+                    }
+                  ],
+                  "name": "camunda:inputParameter"
+                },
+                {
+                  "attributes": {
+                    "name": "channels"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [
+                        {
+                          "attributes": {},
+                          "children": [],
+                          "name": "camunda:value",
+                          "text": "email"
+                        },
+                        {
+                          "attributes": {},
+                          "children": [],
+                          "name": "camunda:value",
+                          "text": "${claim.preferredChannel}"
+                        }
+                      ],
+                      "name": "camunda:list"
+                    }
+                  ],
+                  "name": "camunda:inputParameter"
+                },
+                {
+                  "attributes": {
+                    "name": "note"
+                  },
+                  "children": [],
+                  "name": "camunda:inputParameter",
+                  "text": "Paid for ${claim.id}"
+                },
+                {
+                  "attributes": {
+                    "name": "audit"
+                  },
+                  "children": [
+                    {
+                      "attributes": {
+                        "scriptFormat": "groovy"
+                      },
+                      "children": [],
+                      "name": "camunda:script",
+                      "text": "claim.audit.collect { it.id }"
+                    }
+                  ],
+                  "name": "camunda:inputParameter"
+                }
+              ],
+              "name": "camunda:inputOutput"
+            }
+          ],
+          "id": "Task_payout",
+          "incoming": [
+            "Flow_toPayout"
+          ],
+          "name": "Pay out claim",
+          "outgoing": [
+            "Flow_toNotify"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "MessageEventDefinition_paid",
+              "type": "message",
+              "unknownAttributes": {
+                "camunda:topic": "notify-claimant",
+                "camunda:type": "external"
+              }
+            }
+          ],
+          "extensionElements": [],
+          "id": "EndEvent_paid",
+          "incoming": [
+            "Flow_toNotify"
+          ],
+          "name": "Claim paid",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "Task_assess",
+          "eventDefinitions": [
+            {
+              "id": "SignalEventDefinition_fraud",
+              "signalRef": "Signal_FraudAlert",
+              "type": "signal"
+            }
+          ],
+          "extensionElements": [],
+          "id": "Signal_fraud",
+          "incoming": [],
+          "name": "Fraud alert",
+          "outgoing": [
+            "Flow_toFraudEnd"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "event": "end"
+              },
+              "children": [
+                {
+                  "attributes": {
+                    "scriptFormat": "javascript"
+                  },
+                  "children": [],
+                  "name": "camunda:script",
+                  "text": "execution.setVariable(\"blocked\", true)"
+                }
+              ],
+              "name": "camunda:executionListener"
+            }
+          ],
+          "id": "EndEvent_fraud",
+          "incoming": [
+            "Flow_toFraudEnd"
+          ],
+          "name": "Claim blocked",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "claim-handling",
+      "isExecutable": true,
+      "name": "Claim handling",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_toAssess",
+          "sourceRef": "StartEvent_claim",
+          "targetRef": "Task_assess",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toFraudCheck",
+          "sourceRef": "Task_assess",
+          "targetRef": "Task_fraudCheck",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toReviewItems",
+          "sourceRef": "Task_fraudCheck",
+          "targetRef": "SubProcess_items",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toPayout",
+          "sourceRef": "SubProcess_items",
+          "targetRef": "Task_payout",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toNotify",
+          "sourceRef": "Task_payout",
+          "targetRef": "EndEvent_paid",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toFraudEnd",
+          "sourceRef": "Signal_fraud",
+          "targetRef": "EndEvent_fraud",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {
+        "camunda:candidateStarterGroups": "claims",
+        "camunda:historyTimeToLive": "P30D"
+      }
+    }
+  ],
+  "signals": [
+    {
+      "id": "Signal_FraudAlert",
+      "name": "FraudAlert",
+      "unknownAttributes": {}
+    }
+  ],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Platform",
+    "modeler:executionPlatformVersion": "7.21.0"
+  }
+}

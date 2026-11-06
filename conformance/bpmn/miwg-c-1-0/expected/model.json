@@ -1,0 +1,5010 @@
+{
+  "collaborations": [
+    {
+      "associations": [],
+      "extensionElements": [
+        {
+          "attributes": {},
+          "children": [
+            {
+              "attributes": {
+                "autoResize": "false",
+                "background": "0,0,0",
+                "borderColor": "255,255,255",
+                "collapsed": "false",
+                "foreground": "0,0,0"
+              },
+              "children": [],
+              "name": "w4graph:basic"
+            },
+            {
+              "attributes": {
+                "gridVisible": "true",
+                "rulerUnit": "Pixels",
+                "rulerVisible": "true",
+                "snapToGrid": "true",
+                "snapToGuide": "true"
+              },
+              "children": [
+                {
+                  "attributes": {
+                    "color": "230,230,230",
+                    "spacing": "15"
+                  },
+                  "children": [],
+                  "name": "Grid"
+                },
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "VerticalRuler"
+                },
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "HorizontalRuler"
+                }
+              ],
+              "name": "w4graph:root"
+            }
+          ],
+          "name": "w4graph:graphStyle"
+        }
+      ],
+      "groups": [],
+      "id": "sid-e5defbed-c12d-4c0a-9b5e-0f187e35ffd3",
+      "messageFlows": [
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "153,153,153",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-915AC9A0-CD35-4DF2-93F7-4535397622F8",
+          "sourceRef": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+          "targetRef": "reviewInvoice",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "153,153,153",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-AB6EB7C8-DF5E-42C2-88D0-FA166583AF15",
+          "sourceRef": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+          "targetRef": "assignApprover",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "153,153,153",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-7A070DED-8B83-48E1-88A1-5543C481E7BC",
+          "sourceRef": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+          "targetRef": "StartEvent_1",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "153,153,153",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-90902E27-C1CD-4F90-A8F2-486DA4F42117",
+          "sourceRef": "assignApprover",
+          "targetRef": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "153,153,153",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-0518A412-1ED3-4CFD-A75C-69FF37EFFC16",
+          "sourceRef": "reviewInvoice",
+          "targetRef": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+          "unknownAttributes": {}
+        }
+      ],
+      "participants": [
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "rolle",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "192,192,192",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-46891B57-A9D3-4A8B-AEBF-D4BA5F3961AD",
+          "name": "Team-Assistant",
+          "processRef": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "rolle",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "192,192,192",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "Process_Engine_1",
+          "name": "Process Engine - Invoice Receipt",
+          "processRef": "bpmn-miwg-test-case-c.1.0",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "diagrams": [
+    {
+      "id": "sid-78cf0368-c97e-4dea-885f-0e535c20d6c7",
+      "plane": {
+        "bpmnElement": "sid-e5defbed-c12d-4c0a-9b5e-0f187e35ffd3",
+        "edges": [
+          {
+            "bpmnElement": "sid-71EF9530-A32A-49BC-A783-9B98A5801362",
+            "id": "sid-71EF9530-A32A-49BC-A783-9B98A5801362_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 672,
+                "y": 113
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 672,
+                "y": 77
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 731,
+                "y": 77
+              }
+            ]
+          },
+          {
+            "bpmnElement": "invoiceApproved",
+            "id": "invoiceApproved_gui",
+            "label": {
+              "bounds": {
+                "height": 17,
+                "width": 27,
+                "x": 548,
+                "y": 540
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_4qOIQLbIEeS1kPPByrr18w",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 543,
+                "y": 535
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 602,
+                "y": 535
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 602,
+                "y": 695
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 653,
+                "y": 695
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-C0540F47-C3C0-4FA8-B000-6D87640A6178",
+            "id": "sid-C0540F47-C3C0-4FA8-B000-6D87640A6178_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 415,
+                "y": 133
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 455,
+                "y": 133
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-4AD2006C-9290-42B0-A904-DD8076B791C4",
+            "id": "sid-4AD2006C-9290-42B0-A904-DD8076B791C4_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 485,
+                "y": 133
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 527,
+                "y": 133
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-3E8B2FCF-E408-4A5D-9455-8FDE7BB3EF96",
+            "id": "sid-3E8B2FCF-E408-4A5D-9455-8FDE7BB3EF96_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 267,
+                "y": 133
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 315,
+                "y": 133
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-4686AFBC-E33A-4657-95A0-B2E27E704152",
+            "id": "sid-4686AFBC-E33A-4657-95A0-B2E27E704152_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 672,
+                "y": 153
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 672,
+                "y": 174
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 731,
+                "y": 174
+              }
+            ]
+          },
+          {
+            "bpmnElement": "invoiceNotApproved",
+            "id": "invoiceNotApproved_gui",
+            "label": {
+              "bounds": {
+                "height": 17,
+                "width": 23,
+                "x": 528,
+                "y": 494
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_4qOvULbIEeS1kPPByrr18w",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 523,
+                "y": 515
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 523,
+                "y": 362
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 563,
+                "y": 362
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-915AC9A0-CD35-4DF2-93F7-4535397622F8",
+            "id": "sid-915AC9A0-CD35-4DF2-93F7-4535397622F8_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 846,
+                "y": 214
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 846,
+                "y": 254
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 629,
+                "y": 254
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 629,
+                "y": 322
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-AB6EB7C8-DF5E-42C2-88D0-FA166583AF15",
+            "id": "sid-AB6EB7C8-DF5E-42C2-88D0-FA166583AF15_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 576,
+                "y": 173
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 576,
+                "y": 254
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 261,
+                "y": 254
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 261,
+                "y": 322
+              }
+            ]
+          },
+          {
+            "bpmnElement": "reviewSuccessful",
+            "id": "reviewSuccessful_gui",
+            "label": {
+              "bounds": {
+                "height": 17,
+                "width": 27,
+                "x": 733,
+                "y": 321
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_4qOvUbbIEeS1kPPByrr18w",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 728,
+                "y": 342
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 728,
+                "y": 305
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 418,
+                "y": 305
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 418,
+                "y": 495
+              }
+            ]
+          },
+          {
+            "bpmnElement": "reviewNotSuccessful",
+            "id": "reviewNotSuccessful_gui",
+            "label": {
+              "bounds": {
+                "height": 17,
+                "width": 23,
+                "x": 753,
+                "y": 367
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_4qOvUrbIEeS1kPPByrr18w",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 748,
+                "y": 362
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 941,
+                "y": 362
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sequenceFlow_180",
+            "id": "sequenceFlow_180_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 468,
+                "y": 535
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 503,
+                "y": 535
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-6CB8539C-E02A-4496-94E7-17FAECB0D4B1",
+            "id": "sid-6CB8539C-E02A-4496-94E7-17FAECB0D4B1_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 897,
+                "y": 174
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 941,
+                "y": 174
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sequenceFlow_183",
+            "id": "sequenceFlow_183_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 663,
+                "y": 362
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 708,
+                "y": 362
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-7A070DED-8B83-48E1-88A1-5543C481E7BC",
+            "id": "sid-7A070DED-8B83-48E1-88A1-5543C481E7BC_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 216,
+                "y": 173
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 216,
+                "y": 253
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 125,
+                "y": 253
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 125,
+                "y": 347
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-D03CC374-8575-4F38-98B4-4DFF014C43CB",
+            "id": "sid-D03CC374-8575-4F38-98B4-4DFF014C43CB_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 761,
+                "y": 174
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 797,
+                "y": 174
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sequenceFlow_178",
+            "id": "sequenceFlow_178_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 295,
+                "y": 362
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 325,
+                "y": 362
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 325,
+                "y": 535
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 368,
+                "y": 535
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-90902E27-C1CD-4F90-A8F2-486DA4F42117",
+            "id": "sid-90902E27-C1CD-4F90-A8F2-486DA4F42117_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 228,
+                "y": 322
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 228,
+                "y": 235
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 470,
+                "y": 235
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 470,
+                "y": 148
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-0518A412-1ED3-4CFD-A75C-69FF37EFFC16",
+            "id": "sid-0518A412-1ED3-4CFD-A75C-69FF37EFFC16_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 596,
+                "y": 322
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 596,
+                "y": 237
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 746,
+                "y": 237
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 746,
+                "y": 189
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SequenceFlow_2",
+            "id": "SequenceFlow_2_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 753,
+                "y": 695
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 795,
+                "y": 695
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SequenceFlow_3",
+            "id": "SequenceFlow_3_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 895,
+                "y": 695
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 941,
+                "y": 695
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SequenceFlow_1",
+            "id": "SequenceFlow_1_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 140,
+                "y": 362
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 195,
+                "y": 362
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-3019478F-48D5-4B85-95B1-E192B9BE4183",
+            "id": "sid-3019478F-48D5-4B85-95B1-E192B9BE4183_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 761,
+                "y": 77
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 941,
+                "y": 77
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-26030150-7369-4B7F-8264-B3ABC62BA735",
+            "id": "sid-26030150-7369-4B7F-8264-B3ABC62BA735_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 627,
+                "y": 133
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 652,
+                "y": 133
+              }
+            ]
+          },
+          {
+            "bpmnElement": "sid-7971C38C-2EF5-41F2-A24E-3FFCA069EDBF",
+            "id": "sid-7971C38C-2EF5-41F2-A24E-3FFCA069EDBF_gui",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 129,
+                "y": 133
+              },
+              {
+                "unknownAttributes": {
+                  "xsi:type": "omgdc:Point"
+                },
+                "x": 167,
+                "y": 133
+              }
+            ]
+          }
+        ],
+        "id": "sid-39085760-f7ff-4491-a241-483b340d6533",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 205,
+              "width": 1007,
+              "x": 17,
+              "y": 15
+            },
+            "bpmnElement": "sid-46891B57-A9D3-4A8B-AEBF-D4BA5F3961AD",
+            "id": "sid-46891B57-A9D3-4A8B-AEBF-D4BA5F3961AD_gui",
+            "isHorizontal": true,
+            "label": {
+              "bounds": {
+                "height": 99,
+                "width": 17,
+                "x": 19,
+                "y": 68
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel__lsVELdWEeSAMrpVrpCJkg",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 488,
+              "width": 1009,
+              "x": 15,
+              "y": 270
+            },
+            "bpmnElement": "Process_Engine_1",
+            "id": "Process_Engine_1_gui",
+            "isHorizontal": true,
+            "label": {
+              "bounds": {
+                "height": 195,
+                "width": 17,
+                "x": 17,
+                "y": 417
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_HHGRALdXEeSAMrpVrpCJkg",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 205,
+              "width": 977,
+              "x": 47,
+              "y": 15
+            },
+            "bpmnElement": "sid-744AEFB3-C93D-46A3-8976-EFA91784A51F",
+            "id": "sid-744AEFB3-C93D-46A3-8976-EFA91784A51F_gui",
+            "isHorizontal": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 30,
+              "x": 99,
+              "y": 118
+            },
+            "bpmnElement": "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B",
+            "id": "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 57,
+                "x": 86,
+                "y": 148
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_kPOiQJ2DEeSTzqyH1_lhMw",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#6db700"
+            }
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 167,
+              "y": 93
+            },
+            "bpmnElement": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+            "id": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF_gui",
+            "label": {
+              "bounds": {
+                "height": 17,
+                "width": 85,
+                "x": 175,
+                "y": 125
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_qN11wJ2DEeSTzqyH1_lhMw",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 315,
+              "y": 93
+            },
+            "bpmnElement": "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44",
+            "id": "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 63,
+                "x": 334,
+                "y": 116
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_rynbMJ2DEeSTzqyH1_lhMw",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          },
+          {
+            "bounds": {
+              "height": 28,
+              "width": 28,
+              "x": 941,
+              "y": 63
+            },
+            "bpmnElement": "sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D",
+            "id": "sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D_gui",
+            "unknownAttributes": {
+              "color:background-color": "#be0000"
+            }
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 30,
+              "x": 455.75,
+              "y": 118
+            },
+            "bpmnElement": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+            "id": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 73,
+                "x": 434,
+                "y": 84
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_4qM6ILbIEeS1kPPByrr18w",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#2953e7"
+            }
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 527.5,
+              "y": 93
+            },
+            "bpmnElement": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+            "id": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD_gui",
+            "label": {
+              "bounds": {
+                "height": 17,
+                "width": 102,
+                "x": 526,
+                "y": 125
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_kQuFIJ2FEeSjQLtFitQlLQ",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          },
+          {
+            "bounds": {
+              "height": 40,
+              "width": 40,
+              "x": 652.5,
+              "y": 113
+            },
+            "bpmnElement": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+            "id": "sid-F0D29912-929D-491C-8D23-73BD80CF980A_gui",
+            "unknownAttributes": {
+              "color:background-color": "#b98b00"
+            }
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 30,
+              "x": 731.75,
+              "y": 159
+            },
+            "bpmnElement": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+            "id": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 90,
+                "x": 701,
+                "y": 125
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_4qNhMLbIEeS1kPPByrr18w",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#2953e7"
+            }
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 797.5,
+              "y": 134
+            },
+            "bpmnElement": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+            "id": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D_gui",
+            "label": {
+              "bounds": {
+                "height": 51,
+                "width": 75,
+                "x": 810,
+                "y": 149
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_nPj00J2FEeSjQLtFitQlLQ",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 30,
+              "x": 731.75,
+              "y": 62
+            },
+            "bpmnElement": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+            "id": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2_gui",
+            "label": {
+              "bounds": {
+                "height": 17,
+                "width": 42,
+                "x": 725,
+                "y": 45
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_4qNhMbbIEeS1kPPByrr18w",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#2953e7"
+            }
+          },
+          {
+            "bounds": {
+              "height": 28,
+              "width": 28,
+              "x": 941,
+              "y": 160
+            },
+            "bpmnElement": "sid-282524E6-660F-431D-8F19-1C3E9E9DE817",
+            "id": "sid-282524E6-660F-431D-8F19-1C3E9E9DE817_gui",
+            "unknownAttributes": {
+              "color:background-color": "#be0000"
+            }
+          },
+          {
+            "bounds": {
+              "height": 161,
+              "width": 979,
+              "x": 45,
+              "y": 453
+            },
+            "bpmnElement": "Approver",
+            "id": "Approver_gui",
+            "isHorizontal": true,
+            "label": {
+              "bounds": {
+                "height": 64,
+                "width": 17,
+                "x": 47,
+                "y": 501
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_GpRFgLdXEeSAMrpVrpCJkg",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 183,
+              "width": 979,
+              "x": 45,
+              "y": 270
+            },
+            "bpmnElement": "teamAssistant",
+            "id": "teamAssistant_gui",
+            "isHorizontal": true,
+            "label": {
+              "bounds": {
+                "height": 102,
+                "width": 17,
+                "x": 47,
+                "y": 310
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_GKT4oLdXEeSAMrpVrpCJkg",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 144,
+              "width": 979,
+              "x": 45,
+              "y": 614
+            },
+            "bpmnElement": "Accountant",
+            "id": "Accountant_gui",
+            "isHorizontal": true,
+            "label": {
+              "bounds": {
+                "height": 77,
+                "width": 17,
+                "x": 47,
+                "y": 648
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_Hq0CELdXEeSAMrpVrpCJkg",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 368,
+              "y": 495
+            },
+            "bpmnElement": "approveInvoice",
+            "id": "approveInvoice_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 60,
+                "x": 388,
+                "y": 518
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel__UDvoJ2FEeSjQLtFitQlLQ",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          },
+          {
+            "bounds": {
+              "height": 40,
+              "width": 40,
+              "x": 503,
+              "y": 515
+            },
+            "bpmnElement": "invoice_approved",
+            "id": "invoice_approved_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 64,
+                "x": 491,
+                "y": 555
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_A3dcEJ2GEeSjQLtFitQlLQ",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#b98b00"
+            }
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 195,
+              "y": 322
+            },
+            "bpmnElement": "assignApprover",
+            "id": "assignApprover_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 64,
+                "x": 213,
+                "y": 345
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_ogaYsJ2FEeSjQLtFitQlLQ",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 563,
+              "y": 322
+            },
+            "bpmnElement": "reviewInvoice",
+            "id": "reviewInvoice_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 69,
+                "x": 579,
+                "y": 345
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_o6ZmAJ2FEeSjQLtFitQlLQ",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          },
+          {
+            "bounds": {
+              "height": 40,
+              "width": 40,
+              "x": 708,
+              "y": 342
+            },
+            "bpmnElement": "reviewSuccessful_gw",
+            "id": "reviewSuccessful_gw_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 75,
+                "x": 691,
+                "y": 382
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_N4NI8LbJEeS1kPPByrr18w",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#b98b00"
+            }
+          },
+          {
+            "bounds": {
+              "height": 28,
+              "width": 28,
+              "x": 941,
+              "y": 348
+            },
+            "bpmnElement": "invoiceNotProcessed",
+            "id": "invoiceNotProcessed_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 72,
+                "x": 919,
+                "y": 376
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_-pfvsJ2FEeSjQLtFitQlLQ",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#be0000"
+            }
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 30,
+              "x": 110,
+              "y": 347
+            },
+            "bpmnElement": "StartEvent_1",
+            "id": "StartEvent_1_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 57,
+                "x": 97,
+                "y": 377
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_dBgFYJ2FEeSjQLtFitQlLQ",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#6db700"
+            }
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 653,
+              "y": 655
+            },
+            "bpmnElement": "prepareBankTransfer",
+            "id": "prepareBankTransfer_gui",
+            "label": {
+              "bounds": {
+                "height": 51,
+                "width": 63,
+                "x": 672,
+                "y": 670
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_BPsV4J2GEeSjQLtFitQlLQ",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          },
+          {
+            "bounds": {
+              "height": 28,
+              "width": 28,
+              "x": 941,
+              "y": 681
+            },
+            "bpmnElement": "invoiceProcessed",
+            "id": "invoiceProcessed_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 63,
+                "x": 924,
+                "y": 709
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_CAxNgJ2GEeSjQLtFitQlLQ",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#be0000"
+            }
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 795,
+              "y": 655
+            },
+            "bpmnElement": "archiveInvoice",
+            "id": "archiveInvoice_gui",
+            "label": {
+              "bounds": {
+                "height": 34,
+                "width": 57,
+                "x": 817,
+                "y": 678
+              },
+              "unknownAttributes": {
+                "id": "Bpmndi_BPMNLabel_BpMbAJ2GEeSjQLtFitQlLQ",
+                "labelStyle": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#c2d7eb"
+            }
+          }
+        ]
+      },
+      "unknownAttributes": {
+        "name": "Collaboration C.1.0"
+      },
+      "unknownChildren": [
+        {
+          "attributes": {
+            "id": "Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"
+          },
+          "children": [
+            {
+              "attributes": {
+                "name": "Segoe UI",
+                "size": "11.00"
+              },
+              "children": [],
+              "name": "omgdc:Font"
+            }
+          ],
+          "name": "bpmndi:BPMNLabelStyle"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "exporter": "Signavio Process Editor, http://www.signavio.com",
+  "exporterVersion": "7.0.0",
+  "id": "sid-bdb880ac-c464-4e5c-aa56-569d709436e0",
+  "messages": [
+    {
+      "id": "sid-328811a0-7f72-468f-92de-6ab19e353312",
+      "name": "invoice-received-C.1.0",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "camunda": "http://activiti.org/bpmn",
+    "color": "http://www.omg.org/spec/BPMN/non-normative/color/1.0",
+    "omgdc": "http://www.omg.org/spec/DD/20100524/DC",
+    "omgdi": "http://www.omg.org/spec/DD/20100524/DI",
+    "signavio": "http://www.signavio.com",
+    "style": "http://www.w4.eu/spec/DataComposer/20120927/Diagram/Style",
+    "w4": "http://www.w4.eu/spec/BPMN/20110701/MODEL",
+    "w4graph": "http://www.w4.eu/spec/BPMN/20110930/GRAPH",
+    "xsd": "http://www.w3.org/2001/XMLSchema",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [
+        {
+          "attributes": {},
+          "children": [
+            {
+              "attributes": {
+                "autoResize": "false",
+                "background": "255,255,255",
+                "borderColor": "100,100,100",
+                "collapsed": "false",
+                "foreground": "0,0,0"
+              },
+              "children": [],
+              "name": "w4graph:basic"
+            }
+          ],
+          "name": "w4graph:graphStyle"
+        }
+      ],
+      "flowElements": [
+        {
+          "eventDefinitions": [
+            {
+              "id": "sid-7f89416b-58ec-4e26-b9bc-390f9e8f2ae0",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "109,183,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B",
+          "incoming": [],
+          "name": "Invoice\nreceived",
+          "outgoing": [
+            "sid-7971C38C-2EF5-41F2-A24E-3FFCA069EDBF"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {
+            "isInterrupting": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffcc"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptereventtype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "documentationlink",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "test",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptertype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterconfiguration",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterclassname",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "servicereferenz",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "risiko",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "erteiltfreigabe",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "riskandcontrols",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+          "incoming": [
+            "sid-7971C38C-2EF5-41F2-A24E-3FFCA069EDBF"
+          ],
+          "name": "Scan Invoice",
+          "outgoing": [
+            "sid-3E8B2FCF-E408-4A5D-9455-8FDE7BB3EF96"
+          ],
+          "type": "task",
+          "unknownAttributes": {
+            "completionQuantity": "1",
+            "startQuantity": "1"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffcc"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptereventtype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "documentationlink",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "test",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptertype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterconfiguration",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterclassname",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "servicereferenz",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "risiko",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "erteiltfreigabe",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "riskandcontrols",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44",
+          "incoming": [
+            "sid-3E8B2FCF-E408-4A5D-9455-8FDE7BB3EF96"
+          ],
+          "name": "Archive\noriginal",
+          "outgoing": [
+            "sid-C0540F47-C3C0-4FA8-B000-6D87640A6178"
+          ],
+          "type": "task",
+          "unknownAttributes": {
+            "completionQuantity": "1",
+            "startQuantity": "1"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "190,0,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D",
+          "incoming": [
+            "sid-3019478F-48D5-4B85-95B1-E192B9BE4183"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "sid-29fbb68c-e460-48c1-bba9-a1b16906afec",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {
+                "ref": "text_name",
+                "valign": "bottom",
+                "x": "16.0",
+                "y": "-8.0"
+              },
+              "children": [],
+              "name": "signavio:signavioLabel"
+            },
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "41,83,231",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+          "incoming": [
+            "sid-C0540F47-C3C0-4FA8-B000-6D87640A6178"
+          ],
+          "name": "Approver to \nbe assigned",
+          "outgoing": [
+            "sid-4AD2006C-9290-42B0-A904-DD8076B791C4"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffcc"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptereventtype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "documentationlink",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "test",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptertype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterconfiguration",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterclassname",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "servicereferenz",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "risiko",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "erteiltfreigabe",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "riskandcontrols",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+          "incoming": [
+            "sid-4AD2006C-9290-42B0-A904-DD8076B791C4"
+          ],
+          "name": "Assign approver",
+          "outgoing": [
+            "sid-26030150-7369-4B7F-8264-B3ABC62BA735"
+          ],
+          "type": "task",
+          "unknownAttributes": {
+            "completionQuantity": "1",
+            "startQuantity": "1"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "185,139,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+          "incoming": [
+            "sid-26030150-7369-4B7F-8264-B3ABC62BA735"
+          ],
+          "outgoing": [
+            "sid-71EF9530-A32A-49BC-A783-9B98A5801362",
+            "sid-4686AFBC-E33A-4657-95A0-B2E27E704152"
+          ],
+          "type": "eventBasedGateway",
+          "unknownAttributes": {
+            "eventGatewayType": "Exclusive",
+            "gatewayDirection": "Diverging",
+            "instantiate": "false"
+          }
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "sid-b9aae81c-0006-46ad-9445-89307e8eeed8",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {
+                "ref": "text_name",
+                "valign": "bottom",
+                "x": "16.0",
+                "y": "-8.0"
+              },
+              "children": [],
+              "name": "signavio:signavioLabel"
+            },
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "41,83,231",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+          "incoming": [
+            "sid-4686AFBC-E33A-4657-95A0-B2E27E704152"
+          ],
+          "name": "Invoice review\n needed",
+          "outgoing": [
+            "sid-D03CC374-8575-4F38-98B4-4DFF014C43CB"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffcc"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptereventtype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "documentationlink",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "test",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptertype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterconfiguration",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterclassname",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "servicereferenz",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "risiko",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "erteiltfreigabe",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "riskandcontrols",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+          "incoming": [
+            "sid-D03CC374-8575-4F38-98B4-4DFF014C43CB"
+          ],
+          "name": "Review and document result",
+          "outgoing": [
+            "sid-6CB8539C-E02A-4496-94E7-17FAECB0D4B1"
+          ],
+          "type": "task",
+          "unknownAttributes": {
+            "completionQuantity": "1",
+            "startQuantity": "1"
+          }
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "sid-6517379a-613c-497d-81cc-b710878d9ebb",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {
+                "ref": "text_name",
+                "valign": "bottom",
+                "x": "16.0",
+                "y": "-8.0"
+              },
+              "children": [],
+              "name": "signavio:signavioLabel"
+            },
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "41,83,231",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+          "incoming": [
+            "sid-71EF9530-A32A-49BC-A783-9B98A5801362"
+          ],
+          "name": "7 days",
+          "outgoing": [
+            "sid-3019478F-48D5-4B85-95B1-E192B9BE4183"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "190,0,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-282524E6-660F-431D-8F19-1C3E9E9DE817",
+          "incoming": [
+            "sid-6CB8539C-E02A-4496-94E7-17FAECB0D4B1"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+      "laneSet": {
+        "id": "sid-c6eca5e8-8b8f-4e42-b8d8-6b7e858672df",
+        "lanes": [
+          {
+            "extensionElements": [
+              {
+                "attributes": {
+                  "metaKey": "bgcolor",
+                  "metaValue": ""
+                },
+                "children": [],
+                "name": "signavio:signavioMetaData"
+              },
+              {
+                "attributes": {
+                  "metaKey": "userstory",
+                  "metaValue": "[]"
+                },
+                "children": [],
+                "name": "signavio:signavioMetaData"
+              },
+              {
+                "attributes": {},
+                "children": [
+                  {
+                    "attributes": {
+                      "autoResize": "false",
+                      "background": "255,255,255",
+                      "borderColor": "100,100,100",
+                      "collapsed": "false",
+                      "foreground": "0,0,0"
+                    },
+                    "children": [],
+                    "name": "w4graph:basic"
+                  }
+                ],
+                "name": "w4graph:graphStyle"
+              }
+            ],
+            "flowNodeRefs": [
+              "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B",
+              "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+              "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44",
+              "sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D",
+              "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+              "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+              "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+              "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+              "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+              "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+              "sid-282524E6-660F-431D-8F19-1C3E9E9DE817"
+            ],
+            "id": "sid-744AEFB3-C93D-46A3-8976-EFA91784A51F",
+            "unknownAttributes": {}
+          }
+        ],
+        "unknownAttributes": {}
+      },
+      "name": "Team-Assistant",
+      "sequenceFlows": [
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-71EF9530-A32A-49BC-A783-9B98A5801362",
+          "sourceRef": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+          "targetRef": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-C0540F47-C3C0-4FA8-B000-6D87640A6178",
+          "sourceRef": "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44",
+          "targetRef": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-4AD2006C-9290-42B0-A904-DD8076B791C4",
+          "sourceRef": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+          "targetRef": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-3E8B2FCF-E408-4A5D-9455-8FDE7BB3EF96",
+          "sourceRef": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+          "targetRef": "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-4686AFBC-E33A-4657-95A0-B2E27E704152",
+          "sourceRef": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+          "targetRef": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-6CB8539C-E02A-4496-94E7-17FAECB0D4B1",
+          "sourceRef": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+          "targetRef": "sid-282524E6-660F-431D-8F19-1C3E9E9DE817",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-D03CC374-8575-4F38-98B4-4DFF014C43CB",
+          "sourceRef": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+          "targetRef": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-3019478F-48D5-4B85-95B1-E192B9BE4183",
+          "sourceRef": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+          "targetRef": "sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-26030150-7369-4B7F-8264-B3ABC62BA735",
+          "sourceRef": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+          "targetRef": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sid-7971C38C-2EF5-41F2-A24E-3FFCA069EDBF",
+          "sourceRef": "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B",
+          "targetRef": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {
+        "isClosed": "true",
+        "processType": "None"
+      }
+    },
+    {
+      "associations": [],
+      "extensionElements": [
+        {
+          "attributes": {},
+          "children": [
+            {
+              "attributes": {
+                "autoResize": "false",
+                "background": "255,255,255",
+                "borderColor": "100,100,100",
+                "collapsed": "false",
+                "foreground": "0,0,0"
+              },
+              "children": [],
+              "name": "w4graph:basic"
+            }
+          ],
+          "name": "w4graph:graphStyle"
+        }
+      ],
+      "flowElements": [
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffcc"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptereventtype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "documentationlink",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "test",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptertype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterconfiguration",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterclassname",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "servicereferenz",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "risiko",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "erteiltfreigabe",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "riskandcontrols",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "approveInvoice",
+          "incoming": [
+            "reviewSuccessful",
+            "sequenceFlow_178"
+          ],
+          "name": "Approve Invoice",
+          "outgoing": [
+            "sequenceFlow_180"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "camunda:assignee": "${approver}",
+            "camunda:formKey": "app:approveInvoice.jsf",
+            "completionQuantity": "1",
+            "implementation": "webService",
+            "startQuantity": "1"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {
+                "id": "Bpmn_ResourceRole_m_HMwJ1_EeS1-pEyeWEPig",
+                "name": "Approve Invoice Potential Owner"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "resourceRef",
+                  "text": "Bpmn_Resource_U0nLMJ1_EeS1-pEyeWEPig"
+                }
+              ],
+              "name": "potentialOwner"
+            }
+          ]
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptertype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterconfiguration",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterclassname",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "185,139,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "invoice_approved",
+          "incoming": [
+            "sequenceFlow_180"
+          ],
+          "name": "Invoice\napproved?",
+          "outgoing": [
+            "invoiceApproved",
+            "invoiceNotApproved"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {
+            "gatewayDirection": "Diverging"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffcc"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptereventtype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "documentationlink",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "test",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptertype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterconfiguration",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterclassname",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "servicereferenz",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "risiko",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "erteiltfreigabe",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "riskandcontrols",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "assignApprover",
+          "incoming": [
+            "SequenceFlow_1"
+          ],
+          "name": "Assign\nApprover",
+          "outgoing": [
+            "sequenceFlow_178"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "camunda:assignee": "demo",
+            "camunda:formKey": "app:assignApprover.jsf",
+            "completionQuantity": "1",
+            "implementation": "webService",
+            "startQuantity": "1"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {
+                "id": "Bpmn_ResourceRole_cyfnwJ1_EeS1-pEyeWEPig",
+                "name": "Assign Approver Potential Owner"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "resourceRef",
+                  "text": "Bpmn_Resource_SVLUUJ1_EeS1-pEyeWEPig"
+                }
+              ],
+              "name": "potentialOwner"
+            }
+          ]
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffcc"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptereventtype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "documentationlink",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "test",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptertype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterconfiguration",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterclassname",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "servicereferenz",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "risiko",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "erteiltfreigabe",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "riskandcontrols",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "reviewInvoice",
+          "incoming": [
+            "invoiceNotApproved"
+          ],
+          "name": "Rechnung klären",
+          "outgoing": [
+            "sequenceFlow_183"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "camunda:assignee": "demo",
+            "camunda:formKey": "app:reviewInvoice.jsf",
+            "completionQuantity": "1",
+            "implementation": "webService",
+            "startQuantity": "1"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {
+                "id": "Bpmn_ResourceRole_kGy70J1_EeS1-pEyeWEPig",
+                "name": "Rechnung Klären Potential Owner"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "resourceRef",
+                  "text": "Bpmn_Resource_SVLUUJ1_EeS1-pEyeWEPig"
+                }
+              ],
+              "name": "potentialOwner"
+            }
+          ]
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptertype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterconfiguration",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterclassname",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "185,139,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "reviewSuccessful_gw",
+          "incoming": [
+            "sequenceFlow_183"
+          ],
+          "name": "Review\nsuccessful?",
+          "outgoing": [
+            "reviewSuccessful",
+            "reviewNotSuccessful"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {
+            "gatewayDirection": "Diverging"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "190,0,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "invoiceNotProcessed",
+          "incoming": [
+            "reviewNotSuccessful"
+          ],
+          "name": "Invoice not\nprocessed",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "sid-14929637-5f1e-4d27-811c-ef5e4ddaa4c7",
+              "messageRef": "sid-328811a0-7f72-468f-92de-6ab19e353312",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "109,183,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "StartEvent_1",
+          "incoming": [],
+          "name": "Invoice\nreceived",
+          "outgoing": [
+            "SequenceFlow_1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {
+            "camunda:formKey": "app:startProcess.jsf",
+            "isInterrupting": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffcc"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptereventtype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "documentationlink",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "test",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptertype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterconfiguration",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterclassname",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "servicereferenz",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "risiko",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "erteiltfreigabe",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "riskandcontrols",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "prepareBankTransfer",
+          "incoming": [
+            "invoiceApproved"
+          ],
+          "name": "Prepare\r\nBank\r\nTransfer",
+          "outgoing": [
+            "SequenceFlow_2"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "camunda:candidateGroups": "accounting",
+            "camunda:formKey": "app:prepareBankTransfer.jsf",
+            "completionQuantity": "1",
+            "implementation": "webService",
+            "startQuantity": "1"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {
+                "id": "Bpmn_ResourceRole_qEZisJ1_EeS1-pEyeWEPig",
+                "name": "Prepare Bank Transfer Potential Owner"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "resourceRef",
+                  "text": "Bpmn_Resource_XNpfIJ1_EeS1-pEyeWEPig"
+                }
+              ],
+              "name": "potentialOwner"
+            }
+          ]
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffff"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "190,0,0",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "invoiceProcessed",
+          "incoming": [
+            "SequenceFlow_3"
+          ],
+          "name": "Invoice\nprocessed",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "name": "text0",
+                "stringValue": "Hello World"
+              },
+              "children": [],
+              "name": "camunda:field"
+            },
+            {
+              "attributes": {
+                "name": "text1"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "camunda:expression",
+                  "text": "${genderBean.getGenderString(gender)}"
+                }
+              ],
+              "name": "camunda:field"
+            },
+            {
+              "attributes": {
+                "name": "text2"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "camunda:expression",
+                  "text": "Hello ${gender == 'male' ? 'Mr.' : 'Mrs.'} ${name}"
+                }
+              ],
+              "name": "camunda:field"
+            },
+            {
+              "attributes": {
+                "name": "text3"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "camunda:string",
+                  "text": "\n\t          Hello World\n\t      "
+                }
+              ],
+              "name": "camunda:field"
+            },
+            {
+              "attributes": {
+                "name": "text4"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "camunda:string",
+                  "text": "\n\t          <p>Hello World</p><br>\n\t      "
+                }
+              ],
+              "name": "camunda:field"
+            },
+            {
+              "attributes": {
+                "metaKey": "bgcolor",
+                "metaValue": "#ffffcc"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptereventtype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "documentationlink",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "test",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adaptertype",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterconfiguration",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "adapterclassname",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "servicereferenz",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "risiko",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "erteiltfreigabe",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {
+                "metaKey": "riskandcontrols",
+                "metaValue": ""
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "194,215,235",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "archiveInvoice",
+          "incoming": [
+            "SequenceFlow_2"
+          ],
+          "name": "Archive\nInvoice",
+          "outgoing": [
+            "SequenceFlow_3"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "camunda:delegateExpression": "#{archiveService}",
+            "completionQuantity": "1",
+            "implementation": "webService",
+            "startQuantity": "1"
+          }
+        }
+      ],
+      "groups": [],
+      "id": "bpmn-miwg-test-case-c.1.0",
+      "isExecutable": true,
+      "laneSet": {
+        "id": "sid-499dfba4-1449-4914-9e85-55b252800bad",
+        "lanes": [
+          {
+            "extensionElements": [
+              {
+                "attributes": {
+                  "metaKey": "bgcolor",
+                  "metaValue": ""
+                },
+                "children": [],
+                "name": "signavio:signavioMetaData"
+              },
+              {
+                "attributes": {
+                  "metaKey": "userstory",
+                  "metaValue": "[]"
+                },
+                "children": [],
+                "name": "signavio:signavioMetaData"
+              },
+              {
+                "attributes": {},
+                "children": [
+                  {
+                    "attributes": {
+                      "autoResize": "false",
+                      "background": "255,255,255",
+                      "borderColor": "100,100,100",
+                      "collapsed": "false",
+                      "foreground": "0,0,0"
+                    },
+                    "children": [],
+                    "name": "w4graph:basic"
+                  }
+                ],
+                "name": "w4graph:graphStyle"
+              }
+            ],
+            "flowNodeRefs": [
+              "approveInvoice",
+              "invoice_approved"
+            ],
+            "id": "Approver",
+            "name": "Approver",
+            "unknownAttributes": {}
+          },
+          {
+            "extensionElements": [
+              {
+                "attributes": {
+                  "metaKey": "bgcolor",
+                  "metaValue": ""
+                },
+                "children": [],
+                "name": "signavio:signavioMetaData"
+              },
+              {
+                "attributes": {
+                  "metaKey": "userstory",
+                  "metaValue": "[]"
+                },
+                "children": [],
+                "name": "signavio:signavioMetaData"
+              },
+              {
+                "attributes": {},
+                "children": [
+                  {
+                    "attributes": {
+                      "autoResize": "false",
+                      "background": "255,255,255",
+                      "borderColor": "100,100,100",
+                      "collapsed": "false",
+                      "foreground": "0,0,0"
+                    },
+                    "children": [],
+                    "name": "w4graph:basic"
+                  }
+                ],
+                "name": "w4graph:graphStyle"
+              }
+            ],
+            "flowNodeRefs": [
+              "assignApprover",
+              "reviewInvoice",
+              "reviewSuccessful_gw",
+              "invoiceNotProcessed",
+              "StartEvent_1"
+            ],
+            "id": "teamAssistant",
+            "name": "Team Assistant",
+            "unknownAttributes": {}
+          },
+          {
+            "extensionElements": [
+              {
+                "attributes": {
+                  "metaKey": "bgcolor",
+                  "metaValue": ""
+                },
+                "children": [],
+                "name": "signavio:signavioMetaData"
+              },
+              {
+                "attributes": {
+                  "metaKey": "userstory",
+                  "metaValue": "[]"
+                },
+                "children": [],
+                "name": "signavio:signavioMetaData"
+              },
+              {
+                "attributes": {},
+                "children": [
+                  {
+                    "attributes": {
+                      "autoResize": "false",
+                      "background": "255,255,255",
+                      "borderColor": "100,100,100",
+                      "collapsed": "false",
+                      "foreground": "0,0,0"
+                    },
+                    "children": [],
+                    "name": "w4graph:basic"
+                  }
+                ],
+                "name": "w4graph:graphStyle"
+              }
+            ],
+            "flowNodeRefs": [
+              "prepareBankTransfer",
+              "invoiceProcessed",
+              "archiveInvoice"
+            ],
+            "id": "Accountant",
+            "name": "Accountant",
+            "unknownAttributes": {}
+          }
+        ],
+        "unknownAttributes": {}
+      },
+      "name": "BPMN MIWG Test Case C.1.0",
+      "sequenceFlows": [
+        {
+          "conditionExpression": {
+            "attributes": {
+              "id": "sid-0ed8a0cb-f28a-4689-bbd8-77dafd0ccfa0",
+              "xsi:type": "tFormalExpression"
+            },
+            "text": "${approved}"
+          },
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "invoiceApproved",
+          "name": "yes",
+          "sourceRef": "invoice_approved",
+          "targetRef": "prepareBankTransfer",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "id": "sid-d4f3f0f7-79c3-4b1c-817e-13d9bdd96666",
+              "xsi:type": "tFormalExpression"
+            },
+            "text": "${!approved}"
+          },
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "invoiceNotApproved",
+          "name": "no",
+          "sourceRef": "invoice_approved",
+          "targetRef": "reviewInvoice",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "id": "sid-e669aead-8bad-4dbb-b282-e9f811e02f77",
+              "xsi:type": "tFormalExpression"
+            },
+            "text": "${clarified == 'yes'}"
+          },
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "reviewSuccessful",
+          "name": "yes",
+          "sourceRef": "reviewSuccessful_gw",
+          "targetRef": "approveInvoice",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "id": "sid-628a2fdc-7654-4273-930d-8e3127b9e8b2",
+              "xsi:type": "tFormalExpression"
+            },
+            "text": "${clarified == 'no'}"
+          },
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "reviewNotSuccessful",
+          "name": "no",
+          "sourceRef": "reviewSuccessful_gw",
+          "targetRef": "invoiceNotProcessed",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sequenceFlow_180",
+          "sourceRef": "approveInvoice",
+          "targetRef": "invoice_approved",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sequenceFlow_183",
+          "sourceRef": "reviewInvoice",
+          "targetRef": "reviewSuccessful_gw",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "sequenceFlow_178",
+          "sourceRef": "assignApprover",
+          "targetRef": "approveInvoice",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "SequenceFlow_2",
+          "sourceRef": "prepareBankTransfer",
+          "targetRef": "archiveInvoice",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "SequenceFlow_3",
+          "sourceRef": "archiveInvoice",
+          "targetRef": "invoiceProcessed",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "metaKey": "userstory",
+                "metaValue": "[]"
+              },
+              "children": [],
+              "name": "signavio:signavioMetaData"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "autoResize": "false",
+                    "background": "255,255,255",
+                    "borderColor": "100,100,100",
+                    "collapsed": "false",
+                    "foreground": "0,0,0"
+                  },
+                  "children": [],
+                  "name": "w4graph:basic"
+                },
+                {
+                  "attributes": {
+                    "automaticRoute": "true",
+                    "avoidObstacleRoute": "false",
+                    "closestRoute": "false",
+                    "routerType": "Rectilinear"
+                  },
+                  "children": [],
+                  "name": "w4graph:line"
+                }
+              ],
+              "name": "w4graph:graphStyle"
+            }
+          ],
+          "id": "SequenceFlow_1",
+          "sourceRef": "StartEvent_1",
+          "targetRef": "assignApprover",
+          "unknownAttributes": {
+            "isImmediate": "true"
+          }
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {
+        "isClosed": "true",
+        "processType": "None"
+      }
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://www.signavio.com/bpmn20",
+  "unknownAttributes": {
+    "expressionLanguage": "http://www.w3.org/1999/XPath",
+    "name": "C.1.0",
+    "typeLanguage": "http://www.w3.org/2001/XMLSchema",
+    "w4:version": "1.0",
+    "xsi:schemaLocation": "http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+  },
+  "unknownChildren": [
+    {
+      "attributes": {
+        "id": "Bpmn_Resource_SVLUUJ1_EeS1-pEyeWEPig",
+        "name": "Team Assistant",
+        "w4:type": "User"
+      },
+      "children": [],
+      "name": "resource"
+    },
+    {
+      "attributes": {
+        "id": "Bpmn_Resource_U0nLMJ1_EeS1-pEyeWEPig",
+        "name": "Approver",
+        "w4:type": "User"
+      },
+      "children": [],
+      "name": "resource"
+    },
+    {
+      "attributes": {
+        "id": "Bpmn_Resource_XNpfIJ1_EeS1-pEyeWEPig",
+        "name": "Accountant",
+        "w4:type": "User"
+      },
+      "children": [],
+      "name": "resource"
+    }
+  ]
+}
