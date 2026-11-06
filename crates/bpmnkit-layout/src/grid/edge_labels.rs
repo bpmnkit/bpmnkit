@@ -1,6 +1,6 @@
 //! Twin of `layout/grid/edge-labels.ts`. Shared by both engines.
 
-use crate::hash::{IndexMap, IndexSet};
+use crate::hash::IndexMap;
 use crate::js;
 use crate::types::{
     Bounds, LayoutEdge, LayoutNode, Waypoint, LABEL_CHAR_WIDTH, LABEL_HEIGHT, LABEL_MIN_WIDTH,
@@ -28,13 +28,13 @@ fn bounds_overlap(a: &Bounds, b: &Bounds) -> bool {
 /// segment and picks the first one that doesn't overlap nodes or already-placed
 /// labels.
 ///
-/// `near_source` holds edges whose label belongs next to their source (a gateway's
-/// branch conditions). These try the first segment, just past the exit, before the
+/// `near_source[i]` marks edges whose label belongs next to their source (a gateway's
+/// branch conditions); edges past its end are not marked. These try the first segment, just past the exit, before the
 /// usual spots, and only where no other flow runs through the label.
 pub fn place_edge_labels(
     edges: &mut [LayoutEdge],
-    node_map: &IndexMap<String, &LayoutNode>,
-    near_source: &IndexSet<String>,
+    node_map: &IndexMap<&str, &LayoutNode>,
+    near_source: &[bool],
 ) {
     let mut occupied: Vec<Bounds> = Vec::new();
     // (edge index, a, b); the edge index stands in for TS's edge identity.
@@ -62,7 +62,7 @@ pub fn place_edge_labels(
         let label_width = js::max(js::len(label) as f64 * LABEL_CHAR_WIDTH, LABEL_MIN_WIDTH);
         let label_height = LABEL_HEIGHT;
 
-        if near_source.contains(&edge.id) {
+        if near_source.get(ei).copied().unwrap_or(false) {
             let spot = source_candidates(&edge.waypoints, label_width, label_height)
                 .into_iter()
                 .find(|c| {
@@ -273,7 +273,7 @@ mod tests {
     #[test]
     fn horizontal_edge_label_goes_above_midpoint() {
         let mut edges = vec![edge("e", Some("yes"), &[(0.0, 100.0), (200.0, 100.0)])];
-        place_edge_labels(&mut edges, &IndexMap::default(), &IndexSet::default());
+        place_edge_labels(&mut edges, &IndexMap::default(), &[]);
         assert_eq!(
             edges[0].label_bounds,
             Some(Bounds {
@@ -299,8 +299,8 @@ mod tests {
             ..Default::default()
         };
         let mut map = IndexMap::default();
-        map.insert("n".to_string(), &node);
-        place_edge_labels(&mut edges, &map, &IndexSet::default());
+        map.insert("n", &node);
+        place_edge_labels(&mut edges, &map, &[]);
         assert_eq!(
             edges[0].label_bounds.map(|b| (b.x, b.y)),
             Some((80.0, 110.0))
@@ -314,8 +314,7 @@ mod tests {
             Some("ok"),
             &[(0.0, 50.0), (150.0, 50.0), (150.0, 400.0)],
         )];
-        let ns: IndexSet<String> = ["e".to_string()].into_iter().collect();
-        place_edge_labels(&mut edges, &IndexMap::default(), &ns);
+        place_edge_labels(&mut edges, &IndexMap::default(), &[true]);
         assert_eq!(
             edges[0].label_bounds,
             Some(Bounds {
@@ -337,8 +336,7 @@ mod tests {
             ),
             edge("other", None, &[(20.0, 0.0), (20.0, 100.0)]),
         ];
-        let ns: IndexSet<String> = ["e".to_string()].into_iter().collect();
-        place_edge_labels(&mut edges, &IndexMap::default(), &ns);
+        place_edge_labels(&mut edges, &IndexMap::default(), &[true, false]);
         // falls back to the longest segment (the vertical one)
         let b = edges[0].label_bounds.expect("placed");
         assert!(b.x > 100.0);
@@ -347,7 +345,7 @@ mod tests {
     #[test]
     fn unlabelled_edges_untouched() {
         let mut edges = vec![edge("e", Some(""), &[(0.0, 0.0), (100.0, 0.0)])];
-        place_edge_labels(&mut edges, &IndexMap::default(), &IndexSet::default());
+        place_edge_labels(&mut edges, &IndexMap::default(), &[]);
         assert!(edges[0].label_bounds.is_none());
     }
 }

@@ -55,11 +55,11 @@ fn semantic_graph_bands_and_place_match_ts() {
         let g = &case["graph"];
         let ids: Vec<String> = graph.nodes.iter().map(|n| n.base().id.clone()).collect();
         assert_eq!(ids, strings(&g["nodes"]), "{name}: nodes");
-        let by_id: Vec<String> = graph.by_id.keys().cloned().collect();
+        let by_id: Vec<String> = graph.by_id.keys().map(|k| k.to_string()).collect();
         assert_eq!(by_id, strings(&g["byId"]), "{name}: byId");
-        let flows = |m: &IndexMap<String, Vec<&bpmnkit_bpmn::model::BpmnSequenceFlow>>| {
+        let flows = |m: &IndexMap<&str, Vec<&bpmnkit_bpmn::model::BpmnSequenceFlow>>| {
             m.iter()
-                .map(|(k, v)| (k.clone(), v.iter().map(|f| f.id.clone()).collect()))
+                .map(|(k, v)| (k.to_string(), v.iter().map(|f| f.id.clone()).collect()))
                 .collect::<Vec<(String, Vec<String>)>>()
         };
         assert_eq!(
@@ -75,10 +75,10 @@ fn semantic_graph_bands_and_place_match_ts() {
         let attachers: Vec<(String, Vec<String>)> = graph
             .attachers
             .iter()
-            .map(|(k, v)| (k.clone(), v.iter().map(|e| e.base.id.clone()).collect()))
+            .map(|(k, v)| (k.to_string(), v.iter().map(|e| e.base.id.clone()).collect()))
             .collect();
         assert_eq!(attachers, flow_lists(&g["attachers"]), "{name}: attachers");
-        let back: Vec<String> = graph.back_edges.iter().cloned().collect();
+        let back: Vec<String> = graph.back_edges.iter().map(|k| k.to_string()).collect();
         assert_eq!(back, strings(&g["backEdges"]), "{name}: backEdges");
         let components: Vec<Vec<String>> = g["components"]
             .as_array()
@@ -88,7 +88,11 @@ fn semantic_graph_bands_and_place_match_ts() {
             .collect();
         assert_eq!(graph.components, components, "{name}: components");
         assert_eq!(graph.starts, strings(&g["starts"]), "{name}: starts");
-        let ranks: Vec<(String, i64)> = graph.ranks.iter().map(|(k, v)| (k.clone(), *v)).collect();
+        let ranks: Vec<(String, i64)> = graph
+            .ranks
+            .iter()
+            .map(|(k, v)| (k.to_string(), *v))
+            .collect();
         let want_ranks: Vec<(String, i64)> = g["ranks"]
             .as_array()
             .unwrap()
@@ -98,10 +102,15 @@ fn semantic_graph_bands_and_place_match_ts() {
         assert_eq!(ranks, want_ranks, "{name}: ranks");
 
         // Bands.
-        let titled: IndexSet<String> = strings(&case["titled"]).into_iter().collect();
+        let titled_ids = strings(&case["titled"]);
+        let titled: IndexSet<&str> = titled_ids.iter().map(String::as_str).collect();
         let layout = assign_bands(&graph, &titled);
         let b = &case["bands"];
-        let bands: Vec<(String, i64)> = layout.bands.iter().map(|(k, v)| (k.clone(), *v)).collect();
+        let bands: Vec<(String, i64)> = layout
+            .bands
+            .iter()
+            .map(|(k, v)| (k.to_string(), *v))
+            .collect();
         let want_bands: Vec<(String, i64)> = b["bands"]
             .as_array()
             .unwrap()
@@ -109,9 +118,13 @@ fn semantic_graph_bands_and_place_match_ts() {
             .map(|e| (e[0].as_str().unwrap().to_string(), e[1].as_i64().unwrap()))
             .collect();
         assert_eq!(bands, want_bands, "{name}: bands");
-        let spine: Vec<String> = layout.spine.iter().cloned().collect();
+        let spine: Vec<String> = layout.spine.iter().map(|k| k.to_string()).collect();
         assert_eq!(spine, strings(&b["spine"]), "{name}: spine");
-        let straight: Vec<String> = layout.straight_flows.iter().cloned().collect();
+        let straight: Vec<String> = layout
+            .straight_flows
+            .iter()
+            .map(|k| k.to_string())
+            .collect();
         assert_eq!(
             straight,
             strings(&b["straightFlows"]),
@@ -119,9 +132,9 @@ fn semantic_graph_bands_and_place_match_ts() {
         );
 
         // Place.
-        let sizes: IndexMap<String, (f64, f64)> = flow_elements
+        let sizes: IndexMap<&str, (f64, f64)> = flow_elements
             .iter()
-            .map(|el| (el.base().id.clone(), size_of(el, None)))
+            .map(|el| (el.base().id.as_str(), size_of(el, None)))
             .collect();
         let grid = case["grid"].as_object().map(|o| GridHint {
             columns: o.get("columns").and_then(|c| c.as_i64()),
@@ -144,7 +157,7 @@ fn semantic_graph_bands_and_place_match_ts() {
         let bounds: Vec<(String, [f64; 4])> = placement
             .bounds
             .iter()
-            .map(|(k, b)| (k.clone(), [b.x, b.y, b.width, b.height]))
+            .map(|(k, b)| (k.to_string(), [b.x, b.y, b.width, b.height]))
             .collect();
         let want_bounds: Vec<(String, [f64; 4])> = p["bounds"]
             .as_array()

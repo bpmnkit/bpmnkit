@@ -77,44 +77,47 @@ pub fn semantic_layout(
 
     // Children first: an expanded sub-process is sized by what it contains, while
     // a collapsed one stays activity-sized and its contents move to their own plane.
-    let mut child_results: IndexMap<String, LayoutResult> = IndexMap::default();
+    let mut child_results: IndexMap<&str, LayoutResult> = IndexMap::default();
     let mut planes: Vec<Plane> = Vec::new();
-    let mut sizes: IndexMap<String, (f64, f64)> = IndexMap::default();
-    let mut axes: IndexMap<String, f64> = IndexMap::default();
+    let mut sizes: IndexMap<&str, (f64, f64)> =
+        IndexMap::with_capacity_and_hasher(graph.nodes.len(), Default::default());
+    let mut axes: IndexMap<&str, f64> = IndexMap::default();
     for el in &graph.nodes {
-        let id = &el.base().id;
-        let Some(child) = child_layout_of(el, collapsed, grids) else {
-            sizes.insert(id.clone(), size_of(el, None));
+        let id = el.base().id.as_str();
+        let Some(mut child) = child_layout_of(el, collapsed, grids) else {
+            sizes.insert(id, size_of(el, None));
             continue;
         };
         if collapsed.contains(id) {
             let nested = child.result.planes.clone().unwrap_or_default();
             planes.push(Plane {
-                element_id: id.clone(),
+                element_id: id.to_string(),
                 result: child.result,
             });
             planes.extend(nested);
-            sizes.insert(id.clone(), size_of(el, None));
+            sizes.insert(id, size_of(el, None));
         } else {
-            planes.extend(child.result.planes.clone().unwrap_or_default());
-            child_results.insert(id.clone(), child.result);
-            sizes.insert(id.clone(), child.size);
+            // Only an expanded child's nodes and edges are read from here on, so
+            // its planes move out rather than being copied.
+            planes.extend(child.result.planes.take().unwrap_or_default());
+            child_results.insert(id, child.result);
+            sizes.insert(id, child.size);
             if let Some(axis) = child.axis {
-                axes.insert(id.clone(), axis);
+                axes.insert(id, axis);
             }
         }
     }
 
     // A named expanded sub-process draws its title along its top border.
-    let titled: IndexSet<String> = child_results
+    let titled: IndexSet<&str> = child_results
         .keys()
+        .copied()
         .filter(|id| {
             graph
                 .by_id
-                .get(id.as_str())
+                .get(id)
                 .is_some_and(|el| el.base().name.is_some())
         })
-        .cloned()
         .collect();
     let band_layout = assign_bands(&graph, &titled);
     let placement = place(
@@ -130,18 +133,19 @@ pub fn semantic_layout(
     let bounds = &placement.bounds;
     let beside_stem = boundary_labels(&graph, bounds);
 
-    let mut nodes: Vec<LayoutNode> = Vec::new();
+    let mut nodes: Vec<LayoutNode> = Vec::with_capacity(flow_elements.len());
     for el in flow_elements {
         let base = el.base();
-        let Some(b) = bounds.get(&base.id).copied() else {
+        let id = base.id.as_str();
+        let Some(b) = bounds.get(id).copied() else {
             continue;
         };
-        let band = band_layout.bands.get(&base.id).copied().unwrap_or(0);
+        let band = band_layout.bands.get(id).copied().unwrap_or(0);
         let mut node = LayoutNode {
             id: base.id.clone(),
             kind: el.type_name().to_string(),
             bounds: b,
-            layer: graph.ranks.get(&base.id).copied().unwrap_or(0),
+            layer: graph.ranks.get(id).copied().unwrap_or(0),
             position: band,
             grid_row: Some(band),
             label: None,
@@ -151,13 +155,13 @@ pub fn semantic_layout(
         if let Some(name) = base.name.as_deref().filter(|n| !n.is_empty()) {
             node.label = Some(name.to_string());
             node.label_bounds = beside_stem
-                .get(&base.id)
+                .get(id)
                 .copied()
                 .or_else(|| external_label(el.type_name(), name, &b));
         }
-        if child_results.contains_key(&base.id) {
+        if child_results.contains_key(id) {
             node.is_expanded = Some(true);
-        } else if collapsed.contains(&base.id) {
+        } else if collapsed.contains(id) {
             node.is_expanded = Some(false);
         }
         nodes.push(node);
@@ -173,7 +177,7 @@ pub fn semantic_layout(
 
     // Drop the children in, translated into their parent's interior.
     for (parent_id, child) in child_results {
-        let Some(parent) = bounds.get(&parent_id) else {
+        let Some(parent) = bounds.get(parent_id) else {
             continue;
         };
         let Some(extent) = extent_of(&child) else {
@@ -181,7 +185,7 @@ pub fn semantic_layout(
         };
         let named = graph
             .by_id
-            .get(parent_id.as_str())
+            .get(parent_id)
             .is_some_and(|el| el.base().name.is_some());
         let dx = parent.x + SUB_PADDING - extent.x;
         let dy = parent.y + SUB_PADDING + if named { TITLE_BAND } else { 0.0 } - extent.y;
@@ -216,14 +220,18 @@ pub fn semantic_layout(
         .filter(|n| n.kind.ends_with("Gateway"))
         .map(|n| n.id.as_str())
         .collect();
-    let near_source: IndexSet<String> = edges
-        .iter()
-        .filter(|e| gateways.contains(e.source_ref.as_str()))
-        .map(|e| e.id.clone())
-        .collect();
-    let mut node_map: IndexMap<String, &LayoutNode> = IndexMap::default();
+    let near_source: Vec<bool> = {
+        let ids: IndexSet<&str> = edges
+            .iter()
+            .filter(|e| gateways.contains(e.source_ref.as_str()))
+            .map(|e| e.id.as_str())
+            .collect();
+        edges.iter().map(|e| ids.contains(e.id.as_str())).collect()
+    };
+    let mut node_map: IndexMap<&str, &LayoutNode> =
+        IndexMap::with_capacity_and_hasher(nodes.len(), Default::default());
     for n in &nodes {
-        node_map.insert(n.id.clone(), n);
+        node_map.insert(&n.id, n);
     }
     place_edge_labels(&mut edges, &node_map, &near_source);
 
@@ -339,8 +347,8 @@ fn shift(b: &Bounds, dx: f64, dy: f64) -> Bounds {
 }
 
 /// Labels that fit no gap, placed past the outer labels once those are known.
-struct Spill {
-    event_id: String,
+struct Spill<'a> {
+    event_id: &'a str,
     b: Bounds,
     full: f64,
 }
@@ -358,18 +366,18 @@ struct Spill {
 /// there. Every label stays on one line in the one row next to the host:
 /// routing does not see labels, and anything farther out would reach the turn
 /// a route takes just past a stem.
-fn boundary_labels(
-    graph: &graph::SemanticGraph,
-    bounds: &IndexMap<String, Bounds>,
-) -> IndexMap<String, Bounds> {
-    let mut labels: IndexMap<String, Bounds> = IndexMap::default();
-    for (host_id, events) in &graph.attachers {
+fn boundary_labels<'a>(
+    graph: &graph::SemanticGraph<'a>,
+    bounds: &IndexMap<&str, Bounds>,
+) -> IndexMap<&'a str, Bounds> {
+    let mut labels: IndexMap<&'a str, Bounds> = IndexMap::default();
+    for (&host_id, events) in &graph.attachers {
         let Some(host) = bounds.get(host_id) else {
             continue;
         };
         let docked: Vec<_> = events
             .iter()
-            .filter_map(|event| bounds.get(&event.base.id).map(|b| (*event, *b)))
+            .filter_map(|event| bounds.get(event.base.id.as_str()).map(|b| (*event, *b)))
             .collect();
         for on_top in [true, false] {
             // Same side test the router uses to pick the exit direction.
@@ -421,23 +429,20 @@ fn boundary_labels(
                     if i == 0 {
                         outer_left = x - LABEL_OFFSET;
                     }
-                    labels.insert(event.base.id.clone(), place_at(b, x, full));
+                    labels.insert(&event.base.id, place_at(b, x, full));
                     continue;
                 }
                 if right_room >= full {
                     if i == side.len() - 1 {
                         outer_right = stem + 2.0 * LABEL_OFFSET + full;
                     }
-                    labels.insert(
-                        event.base.id.clone(),
-                        place_at(b, stem + LABEL_OFFSET, full),
-                    );
+                    labels.insert(&event.base.id, place_at(b, stem + LABEL_OFFSET, full));
                     left_gap_taken = true;
                     continue;
                 }
                 // Neither gap holds it: beyond the outermost stem no stem crosses it.
                 let spill = Spill {
-                    event_id: event.base.id.clone(),
+                    event_id: &event.base.id,
                     b: *b,
                     full,
                 };
@@ -450,11 +455,11 @@ fn boundary_labels(
             // Nearest stems first, so the order outward matches the order of the events.
             for s in spill_left.iter().rev() {
                 outer_left -= s.full;
-                labels.insert(s.event_id.clone(), place_at(&s.b, outer_left, s.full));
+                labels.insert(s.event_id, place_at(&s.b, outer_left, s.full));
                 outer_left -= LABEL_OFFSET;
             }
             for s in &spill_right {
-                labels.insert(s.event_id.clone(), place_at(&s.b, outer_right, s.full));
+                labels.insert(s.event_id, place_at(&s.b, outer_right, s.full));
                 outer_right += s.full + LABEL_OFFSET;
             }
         }

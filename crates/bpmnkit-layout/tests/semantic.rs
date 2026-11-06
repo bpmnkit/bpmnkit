@@ -45,6 +45,14 @@ fn strs(v: &Value) -> Vec<String> {
     v.as_array().expect("array").iter().map(str_of).collect()
 }
 
+fn str_ref(v: &Value) -> &str {
+    v.as_str().expect("string")
+}
+
+fn str_refs(v: &Value) -> Vec<&str> {
+    v.as_array().expect("array").iter().map(str_ref).collect()
+}
+
 fn num(v: &Value) -> f64 {
     v.as_f64().expect("number")
 }
@@ -161,12 +169,12 @@ fn flow_map<'a>(scopes: &[&'a BpmnProcessContents]) -> IndexMap<String, &'a Bpmn
 }
 
 fn graph_of<'a>(
-    v: &Value,
+    v: &'a Value,
     elements: &IndexMap<String, &'a BpmnFlowElement>,
     flows: &IndexMap<String, &'a BpmnSequenceFlow>,
 ) -> SemanticGraph<'a> {
     let el = |id: &Value| -> &'a BpmnFlowElement { elements[id.as_str().expect("id")] };
-    let flow_lists = |v: &Value| -> IndexMap<String, Vec<&'a BpmnSequenceFlow>> {
+    let flow_lists = |v: &'a Value| -> IndexMap<&'a str, Vec<&'a BpmnSequenceFlow>> {
         v.as_array()
             .expect("map")
             .iter()
@@ -177,7 +185,7 @@ fn graph_of<'a>(
                     .iter()
                     .map(|f| flows[f.as_str().expect("flow id")])
                     .collect();
-                (str_of(&e[0]), list)
+                (str_ref(&e[0]), list)
             })
             .collect()
     };
@@ -195,7 +203,7 @@ fn graph_of<'a>(
                     other => panic!("not a boundary event: {}", other.base().id),
                 })
                 .collect();
-            (str_of(&e[0]), list)
+            (str_ref(&e[0]), list)
         })
         .collect();
     SemanticGraph {
@@ -209,24 +217,24 @@ fn graph_of<'a>(
             .as_array()
             .expect("byId")
             .iter()
-            .map(|id| (str_of(id), el(id)))
+            .map(|id| (str_ref(id), el(id)))
             .collect(),
         outgoing: flow_lists(&v["outgoing"]),
         incoming: flow_lists(&v["incoming"]),
         attachers,
-        back_edges: strs(&v["backEdges"]).into_iter().collect(),
+        back_edges: str_refs(&v["backEdges"]).into_iter().collect(),
         components: v["components"]
             .as_array()
             .expect("components")
             .iter()
-            .map(strs)
+            .map(str_refs)
             .collect(),
-        starts: strs(&v["starts"]),
+        starts: str_refs(&v["starts"]),
         ranks: v["ranks"]
             .as_array()
             .expect("ranks")
             .iter()
-            .map(|e| (str_of(&e[0]), e[1].as_i64().expect("rank")))
+            .map(|e| (str_ref(&e[0]), e[1].as_i64().expect("rank")))
             .collect(),
         end_reach: RefCell::new(None),
     }
@@ -262,11 +270,11 @@ fn route_flows_matches_ts() {
                 .find(|fs| fs.iter().map(|f| &f.id).eq(flow_ids.iter()))
                 .expect("scope with these flows");
             let graph = graph_of(&route["graph"], &elements, &flows);
-            let bounds: IndexMap<String, Bounds> = route["bounds"]
+            let bounds: IndexMap<&str, Bounds> = route["bounds"]
                 .as_array()
                 .expect("bounds")
                 .iter()
-                .map(|e| (str_of(&e[0]), bounds(&e[1])))
+                .map(|e| (str_ref(&e[0]), bounds(&e[1])))
                 .collect();
             let bl = &route["bandLayout"];
             let band_layout = BandLayout {
@@ -274,10 +282,10 @@ fn route_flows_matches_ts() {
                     .as_array()
                     .expect("bands")
                     .iter()
-                    .map(|e| (str_of(&e[0]), e[1].as_i64().expect("band")))
+                    .map(|e| (str_ref(&e[0]), e[1].as_i64().expect("band")))
                     .collect(),
-                spine: strs(&bl["spine"]).into_iter().collect::<IndexSet<_>>(),
-                straight_flows: strs(&bl["straightFlows"]).into_iter().collect(),
+                spine: str_refs(&bl["spine"]).into_iter().collect::<IndexSet<_>>(),
+                straight_flows: str_refs(&bl["straightFlows"]).into_iter().collect(),
             };
             let gutter_x: IndexMap<i64, f64> = route["gutterX"]
                 .as_array()

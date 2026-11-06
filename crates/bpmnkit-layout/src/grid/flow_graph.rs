@@ -12,11 +12,11 @@ pub struct FlowGraph<'a> {
     pub nodes: &'a [BpmnFlowElement],
     /// Grid-placeable elements: boundary events are excluded (they ride on their host).
     pub elements: Vec<usize>,
-    pub by_id: IndexMap<String, usize>,
-    pub outgoing: IndexMap<String, Vec<&'a BpmnSequenceFlow>>,
-    pub incoming: IndexMap<String, Vec<&'a BpmnSequenceFlow>>,
+    pub by_id: IndexMap<&'a str, usize>,
+    pub outgoing: IndexMap<&'a str, Vec<&'a BpmnSequenceFlow>>,
+    pub incoming: IndexMap<&'a str, Vec<&'a BpmnSequenceFlow>>,
     /// hostId -> boundary events attached to it, in document order.
-    pub attachers: IndexMap<String, Vec<usize>>,
+    pub attachers: IndexMap<&'a str, Vec<usize>>,
 }
 
 impl<'a> FlowGraph<'a> {
@@ -24,7 +24,7 @@ impl<'a> FlowGraph<'a> {
         &self.nodes[idx]
     }
 
-    pub fn id(&self, idx: usize) -> &str {
+    pub fn id(&self, idx: usize) -> &'a str {
         &self.nodes[idx].base().id
     }
 
@@ -38,7 +38,7 @@ impl<'a> FlowGraph<'a> {
             .get(id)
             .map(|fs| {
                 fs.iter()
-                    .filter_map(|f| self.by_id.get(&f.target_ref).copied())
+                    .filter_map(|f| self.by_id.get(f.target_ref.as_str()).copied())
                     .collect()
             })
             .unwrap_or_default()
@@ -66,24 +66,27 @@ pub fn build_flow_graph<'a>(
     flow_nodes: &'a [BpmnFlowElement],
     sequence_flows: &'a [BpmnSequenceFlow],
 ) -> FlowGraph<'a> {
-    let mut by_id: IndexMap<String, usize> = IndexMap::default();
+    let mut by_id: IndexMap<&'a str, usize> =
+        IndexMap::with_capacity_and_hasher(flow_nodes.len(), Default::default());
     for (i, n) in flow_nodes.iter().enumerate() {
-        by_id.insert(n.base().id.clone(), i);
+        by_id.insert(&n.base().id, i);
     }
 
-    let mut outgoing: IndexMap<String, Vec<&BpmnSequenceFlow>> = IndexMap::default();
-    let mut incoming: IndexMap<String, Vec<&BpmnSequenceFlow>> = IndexMap::default();
+    let mut outgoing: IndexMap<&'a str, Vec<&BpmnSequenceFlow>> =
+        IndexMap::with_capacity_and_hasher(flow_nodes.len(), Default::default());
+    let mut incoming: IndexMap<&'a str, Vec<&BpmnSequenceFlow>> =
+        IndexMap::with_capacity_and_hasher(flow_nodes.len(), Default::default());
     for f in sequence_flows {
-        outgoing.entry(f.source_ref.clone()).or_default().push(f);
-        incoming.entry(f.target_ref.clone()).or_default().push(f);
+        outgoing.entry(f.source_ref.as_str()).or_default().push(f);
+        incoming.entry(f.target_ref.as_str()).or_default().push(f);
     }
 
-    let mut attachers: IndexMap<String, Vec<usize>> = IndexMap::default();
-    let mut elements = Vec::new();
+    let mut attachers: IndexMap<&'a str, Vec<usize>> = IndexMap::default();
+    let mut elements = Vec::with_capacity(flow_nodes.len());
     for (i, n) in flow_nodes.iter().enumerate() {
         if let BpmnFlowElement::BoundaryEvent(be) = n {
             attachers
-                .entry(be.attached_to_ref.clone())
+                .entry(be.attached_to_ref.as_str())
                 .or_default()
                 .push(i);
         } else {
@@ -117,7 +120,10 @@ pub fn has_other_incoming(el: usize, graph: &FlowGraph) -> bool {
         if f.source_ref == el_id {
             continue;
         }
-        let source = graph.by_id.get(&f.source_ref).map(|&i| graph.node(i));
+        let source = graph
+            .by_id
+            .get(f.source_ref.as_str())
+            .map(|&i| graph.node(i));
         if !matches!(source, Some(BpmnFlowElement::BoundaryEvent(_))) {
             return true;
         }
@@ -130,19 +136,21 @@ pub fn has_other_incoming(el: usize, graph: &FlowGraph) -> bool {
 
 /// `isFutureIncoming`: true iff el is a join (>1 incoming) with at least one
 /// not-yet-visited feeder.
-pub fn is_future_incoming(el: usize, visited: &IndexSet<String>, graph: &FlowGraph) -> bool {
+pub fn is_future_incoming(el: usize, visited: &IndexSet<&str>, graph: &FlowGraph) -> bool {
     let Some(flows) = graph.incoming.get(graph.id(el)) else {
         return false;
     };
     if flows.len() <= 1 {
         return false;
     }
-    flows.iter().any(|f| !visited.contains(&f.source_ref))
+    flows
+        .iter()
+        .any(|f| !visited.contains(f.source_ref.as_str()))
 }
 
 /// `formsLoop`: true iff some unvisited feeder of el is reachable downstream FROM el
 /// (a cycle).
-pub fn forms_loop(el: usize, visited: &IndexSet<String>, graph: &FlowGraph) -> bool {
+pub fn forms_loop(el: usize, visited: &IndexSet<&str>, graph: &FlowGraph) -> bool {
     let el_id = graph.id(el);
     let feeders: Vec<&str> = graph
         .incoming
@@ -163,10 +171,9 @@ fn is_reachable(from_id: &str, target_id: &str, graph: &FlowGraph) -> bool {
     let mut seen: IndexSet<&str> = IndexSet::default();
     let mut stack: Vec<&str> = vec![from_id];
     while let Some(id) = stack.pop() {
-        if seen.contains(id) {
+        if !seen.insert(id) {
             continue;
         }
-        seen.insert(id);
         if let Some(fs) = graph.outgoing.get(id) {
             for f in fs {
                 if f.target_ref == target_id {

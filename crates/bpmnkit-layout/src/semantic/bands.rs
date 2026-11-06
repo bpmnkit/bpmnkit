@@ -11,19 +11,19 @@ use bpmnkit_bpmn::model::{
 /// Band 0 is the spine, the primary path from the start event to an end event.
 /// Positive bands sit below it, negative bands above.
 #[derive(Debug, Clone, Default)]
-pub struct BandLayout {
+pub struct BandLayout<'a> {
     /// node id -> band. 0 is the spine, > 0 below it, < 0 above it.
-    pub bands: IndexMap<String, i64>,
+    pub bands: IndexMap<&'a str, i64>,
     /// Ids of the nodes on the primary path.
-    pub spine: IndexSet<String>,
+    pub spine: IndexSet<&'a str>,
     /// Flow ids that continue the spine and should be routed as one segment.
-    pub straight_flows: IndexSet<String>,
+    pub straight_flows: IndexSet<&'a str>,
 }
 
 /// A contiguous run of nodes that leaves the spine and rejoins (or ends).
 #[derive(Debug, Clone)]
-struct Branch {
-    nodes: Vec<String>,
+struct Branch<'a> {
+    nodes: Vec<&'a str>,
     side: i64,
     /// How far this branch already is from the spine, in branch hops.
     depth: i64,
@@ -31,10 +31,10 @@ struct Branch {
     max_rank: i64,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy)]
 /// TS also records the branch side here but never reads it.
-struct Source {
-    id: String,
+struct Source<'a> {
+    id: &'a str,
     depth: i64,
 }
 
@@ -73,44 +73,42 @@ pub fn boundary_side(event: &BpmnBoundaryEvent, host_titled: bool) -> i64 {
 
 /// `assignBands(graph, titled)`. `titled` are hosts whose title is drawn along
 /// their top border; see [`boundary_side`].
-pub fn assign_bands(graph: &SemanticGraph, titled: &IndexSet<String>) -> BandLayout {
-    let mut bands: IndexMap<String, i64> = IndexMap::default();
-    let mut spine: IndexSet<String> = IndexSet::default();
-    let mut straight_flows: IndexSet<String> = IndexSet::default();
-    let mut branches: Vec<Branch> = Vec::new();
+pub fn assign_bands<'a>(graph: &SemanticGraph<'a>, titled: &IndexSet<&str>) -> BandLayout<'a> {
+    let mut bands: IndexMap<&'a str, i64> =
+        IndexMap::with_capacity_and_hasher(graph.nodes.len(), Default::default());
+    let mut spine: IndexSet<&'a str> = IndexSet::default();
+    let mut straight_flows: IndexSet<&'a str> = IndexSet::default();
+    let mut branches: Vec<Branch<'a>> = Vec::new();
 
-    for start in &graph.starts {
+    for &start in &graph.starts {
         if start.is_empty() {
             continue;
         }
         trace_spine(graph, start, &mut spine, &mut straight_flows);
     }
-    for id in &spine {
-        bands.insert(id.clone(), 0);
+    for &id in &spine {
+        bands.insert(id, 0);
     }
 
     // Branch off the spine first, then off already-placed branches, so a nested
     // alternative always fans farther from the spine than its parent.
-    let mut sources: Vec<Source> = Vec::new();
+    let mut sources: Vec<Source<'a>> = Vec::new();
     for node in &graph.nodes {
-        let id = &node.base().id;
+        let id = node.base().id.as_str();
         if spine.contains(id) {
-            sources.push(Source {
-                id: id.clone(),
-                depth: 0,
-            });
+            sources.push(Source { id, depth: 0 });
         }
     }
 
-    let mut assigned: IndexSet<String> = spine.clone();
+    let mut assigned: IndexSet<&'a str> = spine.clone();
     let mut i = 0;
     while i < sources.len() {
-        let source = sources[i].clone();
+        let source = sources[i];
         for branch in branches_from(graph, &source, &assigned, titled) {
-            for id in &branch.nodes {
-                assigned.insert(id.clone());
+            for &id in &branch.nodes {
+                assigned.insert(id);
                 sources.push(Source {
-                    id: id.clone(),
+                    id,
                     depth: branch.depth,
                 });
             }
@@ -131,31 +129,57 @@ pub fn assign_bands(graph: &SemanticGraph, titled: &IndexSet<String>) -> BandLay
     }
 }
 
+/// The forward edges [`inversions`] weighs, with their ranks: neither changes
+/// while bands are traded.
+struct RankedEdge<'a> {
+    x1: i64,
+    host: &'a str,
+    x2: i64,
+    target: &'a str,
+}
+
+fn ranked_edges<'a>(graph: &SemanticGraph<'a>) -> Vec<RankedEdge<'a>> {
+    let mut edges = Vec::new();
+    for (&host, flows) in &graph.outgoing {
+        for flow in flows {
+            if graph.back_edges.contains(flow.id.as_str()) {
+                continue;
+            }
+            // A boundary event has no rank of its own; it travels with its host.
+            edges.push(RankedEdge {
+                x1: graph.ranks.get(host).copied().unwrap_or(0),
+                host,
+                x2: graph
+                    .ranks
+                    .get(flow.target_ref.as_str())
+                    .copied()
+                    .unwrap_or(0),
+                target: &flow.target_ref,
+            });
+        }
+    }
+    edges
+}
+
 /// `inversions`: two edges cross when their rank spans overlap and their
 /// endpoints swap order vertically on the way across. Counting those inversions
 /// estimates the crossings a band assignment will produce, without routing anything.
-fn inversions(graph: &SemanticGraph, bands: &IndexMap<String, i64>) -> i64 {
+fn inversions(ranked: &[RankedEdge], bands: &IndexMap<&str, i64>) -> i64 {
     struct E {
         x1: i64,
         y1: i64,
         x2: i64,
         y2: i64,
     }
-    let mut edges: Vec<E> = Vec::new();
-    for (host, flows) in &graph.outgoing {
-        for flow in flows {
-            if graph.back_edges.contains(&flow.id) {
-                continue;
-            }
-            // A boundary event has no rank of its own; it travels with its host.
-            edges.push(E {
-                x1: graph.ranks.get(host).copied().unwrap_or(0),
-                y1: bands.get(host).copied().unwrap_or(0),
-                x2: graph.ranks.get(&flow.target_ref).copied().unwrap_or(0),
-                y2: bands.get(&flow.target_ref).copied().unwrap_or(0),
-            });
-        }
-    }
+    let edges: Vec<E> = ranked
+        .iter()
+        .map(|e| E {
+            x1: e.x1,
+            y1: bands.get(e.host).copied().unwrap_or(0),
+            x2: e.x2,
+            y2: bands.get(e.target).copied().unwrap_or(0),
+        })
+        .collect();
 
     let mut count = 0;
     for i in 0..edges.len() {
@@ -186,7 +210,7 @@ fn inversions(graph: &SemanticGraph, bands: &IndexMap<String, i64>) -> i64 {
 /// that leave in one order and rejoin in the other end up crossing. Trading two
 /// neighbouring bands keeps each on its own side of the spine, so the narrative
 /// survives while the crossings drop.
-fn reduce_crossings(graph: &SemanticGraph, bands: &mut IndexMap<String, i64>) {
+fn reduce_crossings<'a>(graph: &SemanticGraph<'a>, bands: &mut IndexMap<&'a str, i64>) {
     let distinct: IndexSet<i64> = bands.values().copied().collect();
     let mut levels: Vec<i64> = distinct.into_iter().filter(|b| *b != 0).collect();
     levels.sort();
@@ -194,7 +218,8 @@ fn reduce_crossings(graph: &SemanticGraph, bands: &mut IndexMap<String, i64>) {
         return;
     }
 
-    let mut best = inversions(graph, bands);
+    let ranked = ranked_edges(graph);
+    let mut best = inversions(&ranked, bands);
     for _sweep in 0..levels.len() {
         let mut improved = false;
         let mut i = 0;
@@ -207,25 +232,25 @@ fn reduce_crossings(graph: &SemanticGraph, bands: &mut IndexMap<String, i64>) {
                 continue;
             }
 
-            let mut moved: IndexMap<String, i64> = IndexMap::default();
-            for (id, band) in bands.iter() {
+            let mut moved: IndexMap<&'a str, i64> = IndexMap::default();
+            for (&id, band) in bands.iter() {
                 if *band == lower {
-                    moved.insert(id.clone(), upper);
+                    moved.insert(id, upper);
                 } else if *band == upper {
-                    moved.insert(id.clone(), lower);
+                    moved.insert(id, lower);
                 }
             }
             if moved.is_empty() {
                 continue;
             }
 
-            let mut previous: IndexMap<String, i64> = IndexMap::default();
-            for (id, band) in &moved {
-                previous.insert(id.clone(), bands.get(id).copied().unwrap_or(0));
-                bands.insert(id.clone(), *band);
+            let mut previous: IndexMap<&'a str, i64> = IndexMap::default();
+            for (&id, band) in &moved {
+                previous.insert(id, bands.get(id).copied().unwrap_or(0));
+                bands.insert(id, *band);
             }
 
-            let candidate = inversions(graph, bands);
+            let candidate = inversions(&ranked, bands);
             if candidate < best {
                 best = candidate;
                 improved = true;
@@ -244,26 +269,26 @@ fn reduce_crossings(graph: &SemanticGraph, bands: &mut IndexMap<String, i64>) {
 /// `placeUnassigned`: give the nodes no traversal reached (a scope entered only
 /// through a loop, say) a band of their own rather than dropping them on the
 /// spine, where they would land on top of whatever already occupies their rank.
-fn place_unassigned(
-    graph: &SemanticGraph,
-    bands: &mut IndexMap<String, i64>,
-    assigned: &IndexSet<String>,
+fn place_unassigned<'a>(
+    graph: &SemanticGraph<'a>,
+    bands: &mut IndexMap<&'a str, i64>,
+    assigned: &IndexSet<&'a str>,
 ) {
-    let mut taken: IndexSet<String> = IndexSet::default();
+    // TS keys cells by the string `${rank}:${band}`; the pair is the same key.
+    let mut taken: IndexSet<(i64, i64)> = IndexSet::default();
     for node in &graph.nodes {
-        let id = &node.base().id;
+        let id = node.base().id.as_str();
         if !assigned.contains(id) {
             continue;
         }
-        taken.insert(format!(
-            "{}:{}",
+        taken.insert((
             graph.ranks.get(id).copied().unwrap_or(0),
-            bands.get(id).copied().unwrap_or(0)
+            bands.get(id).copied().unwrap_or(0),
         ));
     }
 
     for node in &graph.nodes {
-        let id = &node.base().id;
+        let id = node.base().id.as_str();
         if assigned.contains(id) {
             continue;
         }
@@ -276,14 +301,14 @@ fn place_unassigned(
             .get(id)
             .into_iter()
             .flatten()
-            .map(|f| &f.target_ref)
+            .map(|f| f.target_ref.as_str())
             .chain(
                 graph
                     .incoming
                     .get(id)
                     .into_iter()
                     .flatten()
-                    .map(|f| &f.source_ref),
+                    .map(|f| f.source_ref.as_str()),
             );
         for neighbour in neighbours {
             if !assigned.contains(neighbour) {
@@ -301,12 +326,12 @@ fn place_unassigned(
                 } else {
                     -(step + 1) / 2
                 };
-            if !taken.contains(&format!("{rank}:{band}")) {
+            if !taken.contains(&(rank, band)) {
                 break;
             }
         }
-        bands.insert(id.clone(), band);
-        taken.insert(format!("{rank}:{band}"));
+        bands.insert(id, band);
+        taken.insert((rank, band));
     }
 }
 
@@ -314,28 +339,29 @@ fn place_unassigned(
 /// still reach an end event, then the gateway's default flow, then declaration
 /// order. That stops a dead-end alternative from becoming the main narrative just
 /// because it was declared first.
-fn trace_spine(
-    graph: &SemanticGraph,
-    start: &str,
-    spine: &mut IndexSet<String>,
-    straight_flows: &mut IndexSet<String>,
+fn trace_spine<'a>(
+    graph: &SemanticGraph<'a>,
+    start: &'a str,
+    spine: &mut IndexSet<&'a str>,
+    straight_flows: &mut IndexSet<&'a str>,
 ) {
-    let mut current: String = start.to_string();
-    while !spine.contains(&current) {
-        spine.insert(current.clone());
-        let candidates: Vec<&BpmnSequenceFlow> = graph
+    let mut current: &'a str = start;
+    while spine.insert(current) {
+        let candidates: Vec<&'a BpmnSequenceFlow> = graph
             .outgoing
-            .get(&current)
+            .get(current)
             .into_iter()
             .flatten()
             .copied()
-            .filter(|f| !graph.back_edges.contains(&f.id) && !spine.contains(&f.target_ref))
+            .filter(|f| {
+                !graph.back_edges.contains(f.id.as_str()) && !spine.contains(f.target_ref.as_str())
+            })
             .collect();
         if candidates.is_empty() {
             return;
         }
 
-        let source = graph.by_id.get(&current).copied();
+        let source = graph.by_id.get(current).copied();
         struct Scored<'f> {
             flow: &'f BpmnSequenceFlow,
             index: usize,
@@ -371,29 +397,31 @@ fn trace_spine(
         let Some(next) = scored.first() else {
             return;
         };
-        straight_flows.insert(next.flow.id.clone());
-        current = next.flow.target_ref.clone();
+        straight_flows.insert(&next.flow.id);
+        current = &next.flow.target_ref;
     }
 }
 
 /// `branchesFrom`: collect the alternatives leaving one node, its non-spine
 /// sequence flows plus the handler paths of any boundary event attached to it.
-fn branches_from(
-    graph: &SemanticGraph,
-    source: &Source,
-    assigned: &IndexSet<String>,
-    titled: &IndexSet<String>,
-) -> Vec<Branch> {
-    let mut out: Vec<Branch> = Vec::new();
-    let node = graph.by_id.get(&source.id).copied();
+fn branches_from<'a>(
+    graph: &SemanticGraph<'a>,
+    source: &Source<'a>,
+    assigned: &IndexSet<&'a str>,
+    titled: &IndexSet<&str>,
+) -> Vec<Branch<'a>> {
+    let mut out: Vec<Branch<'a>> = Vec::new();
+    let node = graph.by_id.get(source.id).copied();
 
-    let alternatives: Vec<&BpmnSequenceFlow> = graph
+    let alternatives: Vec<&'a BpmnSequenceFlow> = graph
         .outgoing
-        .get(&source.id)
+        .get(source.id)
         .into_iter()
         .flatten()
         .copied()
-        .filter(|f| !graph.back_edges.contains(&f.id) && !assigned.contains(&f.target_ref))
+        .filter(|f| {
+            !graph.back_edges.contains(f.id.as_str()) && !assigned.contains(f.target_ref.as_str())
+        })
         .collect();
 
     // A gateway with a default flow keeps its alternatives on one side; without
@@ -402,7 +430,7 @@ fn branches_from(
     let mut below = 0;
     let mut above = 0;
     for (i, flow) in alternatives.iter().enumerate() {
-        let handler = handler_side_of(graph, &source.id, flow, titled);
+        let handler = handler_side_of(graph, source.id, flow, titled);
         let side = if let Some(h) = handler {
             h
         } else if has_default || i % 2 == 0 {
@@ -429,7 +457,7 @@ fn handler_side_of(
     graph: &SemanticGraph,
     host_id: &str,
     flow: &BpmnSequenceFlow,
-    titled: &IndexSet<String>,
+    titled: &IndexSet<&str>,
 ) -> Option<i64> {
     if flow.source_ref == host_id {
         return None;
@@ -449,49 +477,49 @@ fn handler_side_of(
 /// the ranks its own nodes occupy, because the edge back to the join still has
 /// to travel along that band. Reserving only the nodes lets a second branch share
 /// the band and be crossed by the first one's last edge.
-fn follow(
-    graph: &SemanticGraph,
-    entry: &str,
+fn follow<'a>(
+    graph: &SemanticGraph<'a>,
+    entry: &'a str,
     side: i64,
     depth: i64,
-    assigned: &IndexSet<String>,
-) -> Option<Branch> {
-    let mut nodes: Vec<String> = Vec::new();
-    let mut local: IndexSet<String> = IndexSet::default();
-    let mut current: Option<String> = Some(entry.to_string());
+    assigned: &IndexSet<&'a str>,
+) -> Option<Branch<'a>> {
+    let mut nodes: Vec<&'a str> = Vec::new();
+    let mut local: IndexSet<&'a str> = IndexSet::default();
+    let mut current: Option<&'a str> = Some(entry);
     let mut min_rank = i64::MAX;
     let mut max_rank = i64::MIN;
 
     while let Some(cur) = current.take() {
-        if assigned.contains(&cur) || local.contains(&cur) {
+        if assigned.contains(cur) || local.contains(cur) {
             break;
         }
-        nodes.push(cur.clone());
-        local.insert(cur.clone());
-        let rank = graph.ranks.get(&cur).copied().unwrap_or(0);
+        nodes.push(cur);
+        local.insert(cur);
+        let rank = graph.ranks.get(cur).copied().unwrap_or(0);
         min_rank = min_rank.min(rank);
         max_rank = max_rank.max(rank);
-        let next = graph.outgoing.get(&cur).into_iter().flatten().find(|f| {
-            !graph.back_edges.contains(&f.id)
-                && !assigned.contains(&f.target_ref)
-                && !local.contains(&f.target_ref)
+        let next = graph.outgoing.get(cur).into_iter().flatten().find(|f| {
+            !graph.back_edges.contains(f.id.as_str())
+                && !assigned.contains(f.target_ref.as_str())
+                && !local.contains(f.target_ref.as_str())
         });
-        current = next.map(|f| f.target_ref.clone());
+        current = next.map(|f| f.target_ref.as_str());
     }
 
-    let last = nodes.last()?;
+    let last = *nodes.last()?;
 
     // The walk stops before the node the branch rejoins at, because that node is
     // already placed. Reserve out to it anyway: the edge back into it still
     // travels along this band.
     for flow in graph.outgoing.get(last).into_iter().flatten() {
-        if graph.back_edges.contains(&flow.id) {
+        if graph.back_edges.contains(flow.id.as_str()) {
             continue;
         }
         max_rank = max_rank.max(
             graph
                 .ranks
-                .get(&flow.target_ref)
+                .get(flow.target_ref.as_str())
                 .copied()
                 .unwrap_or(max_rank),
         );
@@ -509,8 +537,8 @@ fn follow(
 /// `compact`: pack branches into physical bands. A band reservation covers the
 /// ranks the branch spans, so two branches that never overlap horizontally can
 /// share one band; overlapping narratives cannot.
-fn compact(branches: &[Branch]) -> IndexMap<String, i64> {
-    let mut bands: IndexMap<String, i64> = IndexMap::default();
+fn compact<'a>(branches: &[Branch<'a>]) -> IndexMap<&'a str, i64> {
+    let mut bands: IndexMap<&'a str, i64> = IndexMap::default();
 
     for side in [1i64, -1] {
         let mut mine: Vec<&Branch> = branches.iter().filter(|b| b.side == side).collect();
@@ -539,8 +567,8 @@ fn compact(branches: &[Branch]) -> IndexMap<String, i64> {
                 }
                 level += 1;
             }
-            for id in &branch.nodes {
-                bands.insert(id.clone(), side * (level as i64 + 1));
+            for &id in &branch.nodes {
+                bands.insert(id, side * (level as i64 + 1));
             }
         }
     }

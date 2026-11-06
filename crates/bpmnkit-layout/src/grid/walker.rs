@@ -21,7 +21,8 @@ pub fn create_grid_layout(graph: &FlowGraph, compact: bool) -> Grid<usize> {
         return grid;
     }
 
-    let mut visited: IndexSet<String> = IndexSet::default();
+    let mut visited: IndexSet<&str> =
+        IndexSet::with_capacity_and_hasher(graph.elements.len(), Default::default());
 
     while visited.len() < graph.elements.len() {
         let mut starts: Vec<usize> = graph
@@ -45,7 +46,7 @@ pub fn create_grid_layout(graph: &FlowGraph, compact: bool) -> Grid<usize> {
         let mut stack: Vec<usize> = Vec::new();
         for s in starts {
             grid.add(s, None);
-            visited.insert(graph.id(s).to_string());
+            visited.insert(graph.id(s));
             stack.push(s);
         }
         walk(&mut grid, graph, &mut visited, &mut stack);
@@ -54,10 +55,10 @@ pub fn create_grid_layout(graph: &FlowGraph, compact: bool) -> Grid<usize> {
     grid
 }
 
-fn walk(
+fn walk<'a>(
     grid: &mut Grid<usize>,
-    graph: &FlowGraph,
-    visited: &mut IndexSet<String>,
+    graph: &FlowGraph<'a>,
+    visited: &mut IndexSet<&'a str>,
     stack: &mut Vec<usize>,
 ) {
     while let Some(current) = stack.pop() {
@@ -77,7 +78,7 @@ fn incoming_step(el: usize, grid: &mut Grid<usize>, graph: &FlowGraph) {
         .get(graph.id(el))
         .map(|fs| {
             fs.iter()
-                .filter_map(|f| graph.by_id.get(&f.source_ref).copied())
+                .filter_map(|f| graph.by_id.get(f.source_ref.as_str()).copied())
                 .collect()
         })
         .unwrap_or_default();
@@ -88,11 +89,11 @@ fn incoming_step(el: usize, grid: &mut Grid<usize>, graph: &FlowGraph) {
 }
 
 /// Place successors: first one to the right (happy path), the rest stacked below.
-fn outgoing_step(
+fn outgoing_step<'a>(
     el: usize,
     grid: &mut Grid<usize>,
-    graph: &FlowGraph,
-    visited: &mut IndexSet<String>,
+    graph: &FlowGraph<'a>,
+    visited: &mut IndexSet<&'a str>,
     stack: &[usize],
 ) -> Vec<usize> {
     let targets = graph.outgoing_targets(graph.id(el));
@@ -137,7 +138,7 @@ fn outgoing_step(
             previous = Some(target);
         }
         placed.insert(0, target);
-        visited.insert(graph.id(target).to_string());
+        visited.insert(graph.id(target));
     }
 
     // exclusive gateways first, so they are popped from the LIFO stack last
@@ -156,11 +157,11 @@ fn outgoing_step(
 }
 
 /// Place the successors of this host's boundary events one row down, one col right.
-fn attacher_step(
+fn attacher_step<'a>(
     host: usize,
     grid: &mut Grid<usize>,
-    graph: &FlowGraph,
-    visited: &mut IndexSet<String>,
+    graph: &FlowGraph<'a>,
+    visited: &mut IndexSet<&'a str>,
 ) -> Vec<usize> {
     let mut out = Vec::new();
     let Some(attachers) = graph.attachers.get(graph.id(host)) else {
@@ -180,7 +181,7 @@ fn attacher_step(
                 grid.create_row(Some(r));
             }
             grid.add(target, Some((r + 1, c + 1)));
-            visited.insert(graph.id(target).to_string());
+            visited.insert(graph.id(target));
             out.push(target);
         }
     }

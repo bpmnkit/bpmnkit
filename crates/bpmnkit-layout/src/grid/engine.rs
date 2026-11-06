@@ -7,7 +7,7 @@ use super::router::{
     collapse_collinear, connect_elements, ensure_exit_bottom, GridDims, RoutableNode,
 };
 use super::walker::create_grid_layout;
-use crate::hash::{IndexMap, IndexSet};
+use crate::hash::IndexMap;
 use crate::js;
 use crate::types::{
     element_size, Bounds, LayoutEdge, LayoutNode, LayoutResult, GRID_CELL_HEIGHT, GRID_CELL_WIDTH,
@@ -21,7 +21,7 @@ const CHILD_SHIFT_Y: f64 = 40.0; // upstream: CELL_H - baseH - baseH/4
 struct LevelLayout<'a> {
     graph: FlowGraph<'a>,
     grid: Grid<usize>,
-    children: IndexMap<String, LevelLayout<'a>>,
+    children: IndexMap<&'a str, LevelLayout<'a>>,
 }
 
 fn is_sub_type(kind: &str) -> bool {
@@ -42,9 +42,9 @@ pub fn grid_layout_flow_nodes(
     let root = build_level(flow_nodes, sequence_flows, false);
     let mut out = LayoutResult::default();
     emit_level(&root, (0.0, 0.0), &mut out);
-    let node_map: IndexMap<String, &LayoutNode> =
-        out.nodes.iter().map(|n| (n.id.clone(), n)).collect();
-    place_edge_labels(&mut out.edges, &node_map, &IndexSet::default());
+    let node_map: IndexMap<&str, &LayoutNode> =
+        out.nodes.iter().map(|n| (n.id.as_str(), n)).collect();
+    place_edge_labels(&mut out.edges, &node_map, &[]);
     out
 }
 
@@ -54,7 +54,7 @@ fn build_level<'a>(
     compact: bool,
 ) -> LevelLayout<'a> {
     let graph = build_flow_graph(flow_nodes, sequence_flows);
-    let mut children: IndexMap<String, LevelLayout<'a>> = IndexMap::default();
+    let mut children: IndexMap<&'a str, LevelLayout<'a>> = IndexMap::default();
     for &idx in &graph.elements {
         let el = graph.node(idx);
         if !is_sub_type(el.type_name()) {
@@ -69,7 +69,7 @@ fn build_level<'a>(
         let child_flows = &contents.sequence_flows;
         let child_compact = el.type_name() == "adHocSubProcess" && child_flows.is_empty();
         children.insert(
-            el.base().id.clone(),
+            el.base().id.as_str(),
             build_level(&contents.flow_elements, child_flows, child_compact),
         );
     }
@@ -86,7 +86,7 @@ fn build_level<'a>(
 fn expand_for_children(
     grid: &mut Grid<usize>,
     graph: &FlowGraph,
-    children: &IndexMap<String, LevelLayout>,
+    children: &IndexMap<&str, LevelLayout>,
 ) {
     if children.is_empty() {
         return;
@@ -134,9 +134,10 @@ fn label_width_for(name: &str) -> f64 {
 
 fn emit_level(level: &LevelLayout, shift: (f64, f64), out: &mut LayoutResult) {
     let graph = &level.graph;
-    let mut routables: IndexMap<String, RoutableNode> = IndexMap::default();
+    let mut routables: IndexMap<&str, RoutableNode> =
+        IndexMap::with_capacity_and_hasher(graph.nodes.len(), Default::default());
     let mut expanded_rows_by_row: IndexMap<i64, usize> = IndexMap::default();
-    let mut boundary_bounds: IndexMap<String, Bounds> = IndexMap::default();
+    let mut boundary_bounds: IndexMap<&str, Bounds> = IndexMap::default();
 
     // Pass 1: shapes (+ boundary events + recursion into children)
     for (idx, row, col) in level.grid.elements_by_position() {
@@ -179,7 +180,7 @@ fn emit_level(level: &LevelLayout, shift: (f64, f64), out: &mut LayoutResult) {
             cols: c.grid.col_count(),
         });
         routables.insert(
-            id.to_string(),
+            id,
             RoutableNode {
                 id: id.to_string(),
                 bounds,
@@ -230,9 +231,9 @@ fn emit_level(level: &LevelLayout, shift: (f64, f64), out: &mut LayoutResult) {
             }
             out.nodes.push(be_node);
 
-            boundary_bounds.insert(be_id.to_string(), be_bounds);
+            boundary_bounds.insert(be_id, be_bounds);
             routables.insert(
-                be_id.to_string(),
+                be_id,
                 RoutableNode {
                     id: be_id.to_string(),
                     bounds: be_bounds,
@@ -253,14 +254,14 @@ fn emit_level(level: &LevelLayout, shift: (f64, f64), out: &mut LayoutResult) {
     for flows in graph.outgoing.values() {
         for flow in flows {
             let (Some(source), Some(target)) = (
-                routables.get(&flow.source_ref),
-                routables.get(&flow.target_ref),
+                routables.get(flow.source_ref.as_str()),
+                routables.get(flow.target_ref.as_str()),
             ) else {
                 continue;
             };
             let mut waypoints =
                 connect_elements(source, target, &level.grid, shift, &expanded_rows_by_row);
-            if let Some(be_b) = boundary_bounds.get(&flow.source_ref) {
+            if let Some(be_b) = boundary_bounds.get(flow.source_ref.as_str()) {
                 waypoints = ensure_exit_bottom(be_b, &waypoints);
             }
             let mut edge = LayoutEdge {

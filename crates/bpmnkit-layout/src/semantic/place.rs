@@ -48,9 +48,9 @@ fn is_external_label_type(kind: &str) -> bool {
 
 /// `Placement`.
 #[derive(Debug, Clone, Default)]
-pub struct Placement {
+pub struct Placement<'a> {
     /// Absolute bounds per flow node, boundary events included.
-    pub bounds: IndexMap<String, Bounds>,
+    pub bounds: IndexMap<&'a str, Bounds>,
     /// Lane bands in top-to-bottom order, empty when the scope has no lanes.
     pub lanes: Vec<LaneBand>,
     /// Mid-x of the empty gutter in front of each rank, keyed by rank. Vertical
@@ -81,7 +81,7 @@ fn name_of(el: &BpmnFlowElement) -> Option<&str> {
     el.base().name.as_deref().filter(|n| !n.is_empty())
 }
 
-fn size_in(sizes: &IndexMap<String, (f64, f64)>, id: &str) -> (f64, f64) {
+fn size_in(sizes: &IndexMap<&str, (f64, f64)>, id: &str) -> (f64, f64) {
     sizes.get(id).copied().unwrap_or(DEFAULT_SIZE)
 }
 
@@ -106,22 +106,23 @@ struct XSpan {
 /// shape of the `pack_loose` grid. `axes`: for expanded containers with a flow
 /// inside, the distance from the container's top to its inner spine.
 #[allow(clippy::too_many_arguments)]
-pub fn place(
-    graph: &SemanticGraph,
+pub fn place<'a>(
+    graph: &SemanticGraph<'a>,
     band_layout: &BandLayout,
-    sizes: &IndexMap<String, (f64, f64)>,
-    lane_set: Option<&BpmnLaneSet>,
+    sizes: &IndexMap<&str, (f64, f64)>,
+    lane_set: Option<&'a BpmnLaneSet>,
     pack_loose: bool,
-    titled: &IndexSet<String>,
+    titled: &IndexSet<&str>,
     grid: Option<&GridHint>,
-    axes: &IndexMap<String, f64>,
-) -> Placement {
-    let mut bounds: IndexMap<String, Bounds> = IndexMap::default();
+    axes: &IndexMap<&str, f64>,
+) -> Placement<'a> {
+    let mut bounds: IndexMap<&'a str, Bounds> =
+        IndexMap::with_capacity_and_hasher(graph.by_id.len(), Default::default());
 
     // Columns: one per rank, shared across components so flow stays aligned.
     let mut col_width: IndexMap<i64, f64> = IndexMap::default();
     for node in &graph.nodes {
-        let id = &node.base().id;
+        let id = node.base().id.as_str();
         let rank = graph.ranks.get(id).copied().unwrap_or(0);
         let size = size_in(sizes, id);
         let w = col_width.get(&rank).copied().unwrap_or(0.0).max(size.0);
@@ -160,18 +161,18 @@ pub fn place(
     } else {
         Vec::new()
     };
-    let loose_set: IndexSet<&String> = loose.iter().collect();
+    let loose_set: IndexSet<&str> = loose.iter().copied().collect();
     let mut cursor_y = 0.0;
     for members_all in &graph.components {
-        let members: Vec<String> = members_all
+        let members: Vec<&'a str> = members_all
             .iter()
-            .filter(|id| graph.by_id.contains_key(id.as_str()))
-            .cloned()
+            .copied()
+            .filter(|id| graph.by_id.contains_key(id))
             .collect();
         if members.is_empty() {
             continue;
         }
-        if members.len() == 1 && loose_set.contains(&members[0]) {
+        if members.len() == 1 && loose_set.contains(members[0]) {
             // The whole grid takes the place of the first loose node; the rest are in it.
             if Some(&members[0]) == loose.first() {
                 cursor_y = place_grid(graph, &loose, sizes, cursor_y, &mut bounds, grid);
@@ -182,7 +183,7 @@ pub fn place(
         let lines = band_lines(graph, band_layout, &members, sizes, &x_of, axes, titled);
         let mut top = f64::INFINITY;
         let mut bottom = f64::NEG_INFINITY;
-        for id in &members {
+        for &id in &members {
             let line = lines
                 .line
                 .get(&band_layout.bands.get(id).copied().unwrap_or(0))
@@ -195,7 +196,7 @@ pub fn place(
             bottom = bottom.max(line + extent.below);
         }
         let dy = cursor_y - top;
-        for id in &members {
+        for &id in &members {
             let size = size_in(sizes, id);
             let line = lines
                 .line
@@ -204,7 +205,7 @@ pub fn place(
                 .unwrap_or(0.0);
             let left = x_of(id).left;
             bounds.insert(
-                id.clone(),
+                id,
                 Bounds {
                     x: left,
                     y: line + dy - centre_offset(id, size, axes),
@@ -235,7 +236,7 @@ pub fn place(
 /// gateways' labels, centred below shapes narrower than themselves, would meet.
 fn column_gaps(
     graph: &SemanticGraph,
-    sizes: &IndexMap<String, (f64, f64)>,
+    sizes: &IndexMap<&str, (f64, f64)>,
     col_width: &IndexMap<i64, f64>,
     ranks: &[i64],
 ) -> IndexMap<i64, f64> {
@@ -249,7 +250,7 @@ fn column_gaps(
     let position: IndexMap<i64, usize> = ranks.iter().enumerate().map(|(i, r)| (*r, i)).collect();
     let mut tall: IndexSet<i64> = IndexSet::default();
     for node in &graph.nodes {
-        let id = &node.base().id;
+        let id = node.base().id.as_str();
         if size_in(sizes, id).1 > DEFAULT_SIZE.1 {
             tall.insert(graph.ranks.get(id).copied().unwrap_or(0));
         }
@@ -260,7 +261,7 @@ fn column_gaps(
         let Some(width) = external_label_width(node.type_name(), name) else {
             continue;
         };
-        let id = &node.base().id;
+        let id = node.base().id.as_str();
         let rank = graph.ranks.get(id).copied().unwrap_or(0);
         let cw = col_width
             .get(&rank)
@@ -297,7 +298,7 @@ fn column_gaps(
                 Some(n) if !n.is_empty() => n,
                 _ => continue,
             };
-            if graph.back_edges.contains(&flow.id) {
+            if graph.back_edges.contains(flow.id.as_str()) {
                 continue;
             }
             let target = rank_of(&flow.target_ref);
@@ -321,7 +322,7 @@ fn column_gaps(
 }
 
 /// `centreOffset`: how far a node's centre line sits below its top.
-fn centre_offset(id: &str, size: (f64, f64), axes: &IndexMap<String, f64>) -> f64 {
+fn centre_offset(id: &str, size: (f64, f64), axes: &IndexMap<&str, f64>) -> f64 {
     if size.1 <= DEFAULT_SIZE.1 {
         return size.1 / 2.0;
     }
@@ -343,8 +344,8 @@ fn extent_of(
     graph: &SemanticGraph,
     id: &str,
     size: (f64, f64),
-    axes: &IndexMap<String, f64>,
-    titled: &IndexSet<String>,
+    axes: &IndexMap<&str, f64>,
+    titled: &IndexSet<&str>,
 ) -> Extent {
     let offset = centre_offset(id, size, axes);
     let mut above = offset;
@@ -373,9 +374,9 @@ fn extent_of(
     Extent { above, below }
 }
 
-struct BandLines {
+struct BandLines<'a> {
     line: IndexMap<i64, f64>,
-    extent: IndexMap<String, Extent>,
+    extent: IndexMap<&'a str, Extent>,
 }
 
 struct Placed {
@@ -395,24 +396,22 @@ fn x_overlap(a: (f64, f64), b: (f64, f64)) -> bool {
 /// or over: the shapes above it in its own columns, and those its connecting
 /// flows run past. A tall sub-process therefore pushes down only the branches
 /// beneath it, not every branch in the diagram.
-fn band_lines(
+fn band_lines<'a>(
     graph: &SemanticGraph,
     band_layout: &BandLayout,
-    members: &[String],
-    sizes: &IndexMap<String, (f64, f64)>,
+    members: &[&'a str],
+    sizes: &IndexMap<&str, (f64, f64)>,
     x_of: &dyn Fn(&str) -> XSpan,
-    axes: &IndexMap<String, f64>,
-    titled: &IndexSet<String>,
-) -> BandLines {
-    let mut extent: IndexMap<String, Extent> = IndexMap::default();
-    let mut by_band: IndexMap<i64, Vec<String>> = IndexMap::default();
-    for id in members {
-        extent.insert(
-            id.clone(),
-            extent_of(graph, id, size_in(sizes, id), axes, titled),
-        );
+    axes: &IndexMap<&str, f64>,
+    titled: &IndexSet<&str>,
+) -> BandLines<'a> {
+    let mut extent: IndexMap<&'a str, Extent> =
+        IndexMap::with_capacity_and_hasher(members.len(), Default::default());
+    let mut by_band: IndexMap<i64, Vec<&'a str>> = IndexMap::default();
+    for &id in members {
+        extent.insert(id, extent_of(graph, id, size_in(sizes, id), axes, titled));
         let band = band_layout.bands.get(id).copied().unwrap_or(0);
-        by_band.entry(band).or_default().push(id.clone());
+        by_band.entry(band).or_default().push(id);
     }
     let mut line: IndexMap<i64, f64> = IndexMap::default();
     // Placed boxes: x-range and how far they reach above / below their line.
@@ -420,7 +419,7 @@ fn band_lines(
     let place_band =
         |band: i64, y: f64, line: &mut IndexMap<i64, f64>, placed: &mut Vec<Placed>| {
             line.insert(band, y);
-            for id in by_band.get(&band).into_iter().flatten() {
+            for &id in by_band.get(&band).into_iter().flatten() {
                 let XSpan { left, right, .. } = x_of(id);
                 let e = extent.get(id).copied().unwrap_or(Extent {
                     above: 0.0,
@@ -438,12 +437,8 @@ fn band_lines(
     let span = |band: i64| -> (f64, f64) {
         let mut left = f64::INFINITY;
         let mut right = f64::NEG_INFINITY;
-        let member_set: IndexSet<&str> = by_band
-            .get(&band)
-            .into_iter()
-            .flatten()
-            .map(|s| s.as_str())
-            .collect();
+        let member_set: IndexSet<&str> =
+            by_band.get(&band).into_iter().flatten().copied().collect();
         let mut take = |id: &str| {
             let host: &str = match graph.by_id.get(id).copied() {
                 Some(BpmnFlowElement::BoundaryEvent(be)) => be.attached_to_ref.as_str(),
@@ -461,12 +456,12 @@ fn band_lines(
         for id in &member_set {
             take(id);
             for f in graph.outgoing.get(*id).into_iter().flatten() {
-                if !graph.back_edges.contains(&f.id) {
+                if !graph.back_edges.contains(f.id.as_str()) {
                     take(&f.target_ref);
                 }
             }
             for f in graph.incoming.get(*id).into_iter().flatten() {
-                if !graph.back_edges.contains(&f.id) {
+                if !graph.back_edges.contains(f.id.as_str()) {
                     take(&f.source_ref);
                 }
             }
@@ -495,7 +490,7 @@ fn band_lines(
                         y.min(bx.top - V_GAP)
                     };
                 }
-                for id in by_band.get(&band).into_iter().flatten() {
+                for &id in by_band.get(&band).into_iter().flatten() {
                     let b = x_of(id);
                     let e = extent.get(id).copied().unwrap_or(Extent {
                         above: 0.0,
@@ -521,17 +516,17 @@ fn band_lines(
 
 /// `looseNodes`: nodes with no incoming or outgoing flow, in declaration order,
 /// only when there are at least two of them, since one has nothing to be packed with.
-fn loose_nodes(graph: &SemanticGraph) -> Vec<String> {
-    let loose: Vec<String> = graph
+fn loose_nodes<'a>(graph: &SemanticGraph<'a>) -> Vec<&'a str> {
+    let loose: Vec<&'a str> = graph
         .components
         .iter()
         .filter(|members| members.len() == 1)
-        .map(|members| members[0].clone())
+        .map(|members| members[0])
         // A one-node component can still loop on itself; that node has flow.
         .filter(|id| {
-            graph.by_id.contains_key(id.as_str())
-                && graph.outgoing.get(id.as_str()).is_none_or(|v| v.is_empty())
-                && graph.incoming.get(id.as_str()).is_none_or(|v| v.is_empty())
+            graph.by_id.contains_key(id)
+                && graph.outgoing.get(id).is_none_or(|v| v.is_empty())
+                && graph.incoming.get(id).is_none_or(|v| v.is_empty())
         })
         .collect();
     if loose.len() >= 2 {
@@ -545,12 +540,12 @@ fn loose_nodes(graph: &SemanticGraph) -> Vec<String> {
 /// starting at `top`, so the set grows roughly square. A hint can fix the column
 /// count and fill column by column instead. Returns the cursor for whatever is
 /// stacked below.
-fn place_grid(
+fn place_grid<'a>(
     graph: &SemanticGraph,
-    ids: &[String],
-    sizes: &IndexMap<String, (f64, f64)>,
+    ids: &[&'a str],
+    sizes: &IndexMap<&str, (f64, f64)>,
     top: f64,
-    bounds: &mut IndexMap<String, Bounds>,
+    bounds: &mut IndexMap<&'a str, Bounds>,
     hint: Option<&GridHint>,
 ) -> f64 {
     let n = ids.len() as f64;
@@ -563,12 +558,12 @@ fn place_grid(
     let mut cell_width: f64 = 0.0;
     let mut cell_height: f64 = 0.0;
     let mut labelled = false;
-    for id in ids {
+    for &id in ids {
         let size = size_in(sizes, id);
         // An event's or gateway's label is centred below it and can be wider than the
         // shape; the cell holds it so neighbouring columns' labels never meet.
         let label =
-            graph.by_id.get(id.as_str()).copied().and_then(|el| {
+            graph.by_id.get(id).copied().and_then(|el| {
                 name_of(el).and_then(|name| external_label_width(el.type_name(), name))
             });
         if label.is_some() {
@@ -586,7 +581,7 @@ fn place_grid(
         } else {
             0.0
         };
-    for (i, id) in ids.iter().enumerate() {
+    for (i, &id) in ids.iter().enumerate() {
         let i = i as f64;
         let size = size_in(sizes, id);
         let column = if by_column {
@@ -600,7 +595,7 @@ fn place_grid(
             (i / columns).floor()
         };
         bounds.insert(
-            id.clone(),
+            id,
             Bounds {
                 x: column * (cell_width + gap_x) + (cell_width - size.0) / 2.0,
                 y: top + row * (cell_height + gap_y) + (cell_height - size.1) / 2.0,
@@ -618,28 +613,25 @@ fn place_grid(
 fn separate_same_cell(
     graph: &SemanticGraph,
     band_layout: &BandLayout,
-    bounds: &mut IndexMap<String, Bounds>,
+    bounds: &mut IndexMap<&str, Bounds>,
 ) {
     let mut component_of: IndexMap<&str, usize> = IndexMap::default();
     for (i, comp) in graph.components.iter().enumerate() {
-        for id in comp {
-            component_of.insert(id.as_str(), i);
+        for &id in comp {
+            component_of.insert(id, i);
         }
     }
 
     // Scoped per component: components occupy their own vertical space already,
     // so two nodes sharing a rank and band across components do not collide.
-    let mut cells: IndexMap<String, Vec<&str>> = IndexMap::default();
+    // TS keys cells by the string `${component}:${rank}:${band}`; the triple is
+    // the same key.
+    let mut cells: IndexMap<(usize, i64, i64), Vec<&str>> = IndexMap::default();
     for node in &graph.nodes {
         let id = node.base().id.as_str();
         let rank = graph.ranks.get(id).copied().unwrap_or(0);
         let band = band_layout.bands.get(id).copied().unwrap_or(0);
-        let key = format!(
-            "{}:{}:{}",
-            component_of.get(id).copied().unwrap_or(0),
-            rank,
-            band
-        );
+        let key = (component_of.get(id).copied().unwrap_or(0), rank, band);
         cells.entry(key).or_default().push(id);
     }
 
@@ -690,9 +682,9 @@ fn collect_leaves<'a, 'b>(nodes: &'b [LaneNode<'a>], leaves: &mut Vec<&'b LaneNo
     }
 }
 
-fn emit_lanes(
-    nodes: &[LaneNode],
-    span: &mut IndexMap<String, (f64, f64)>,
+fn emit_lanes<'a>(
+    nodes: &[LaneNode<'a>],
+    span: &mut IndexMap<&'a str, (f64, f64)>,
     slots: &mut Vec<LaneBand>,
     left: f64,
     width: f64,
@@ -706,7 +698,7 @@ fn emit_lanes(
         };
         let Some(own) = own else { continue };
         if !node.children.is_empty() {
-            span.insert(node.id.to_string(), own);
+            span.insert(node.id, own);
         }
         slots.push(LaneBand {
             id: node.id.to_string(),
@@ -734,7 +726,7 @@ fn emit_lanes(
 fn apply_lanes(
     graph: &SemanticGraph,
     lane_set: &BpmnLaneSet,
-    bounds: &mut IndexMap<String, Bounds>,
+    bounds: &mut IndexMap<&str, Bounds>,
 ) -> Vec<LaneBand> {
     let tree = lane_tree(lane_set);
     if tree.is_empty() {
@@ -777,7 +769,7 @@ fn apply_lanes(
 
     let width = max_x - min_x + 2.0 * LANE_PADDING;
     let left = min_x - LANE_PADDING;
-    let mut span: IndexMap<String, (f64, f64)> = IndexMap::default();
+    let mut span: IndexMap<&str, (f64, f64)> = IndexMap::default();
     let mut top = 0.0;
 
     for leaf in &leaves {
@@ -810,7 +802,7 @@ fn apply_lanes(
                 }
             }
         }
-        span.insert(leaf.id.to_string(), (top, top + height));
+        span.insert(leaf.id, (top, top + height));
         top += height;
     }
 
@@ -852,12 +844,12 @@ fn apply_lanes(
 /// how far it runs, farthest first, so outer slots serve outer paths and the
 /// routes nest. The side comes from [`boundary_side`], the rule that also placed
 /// the handler's band, so a handler is never routed around its own host.
-fn dock_boundary_events(
-    graph: &SemanticGraph,
-    bounds: &mut IndexMap<String, Bounds>,
-    titled: &IndexSet<String>,
+fn dock_boundary_events<'a>(
+    graph: &SemanticGraph<'a>,
+    bounds: &mut IndexMap<&'a str, Bounds>,
+    titled: &IndexSet<&str>,
 ) {
-    for (host_id, events) in &graph.attachers {
+    for (&host_id, events) in &graph.attachers {
         let Some(host) = bounds.get(host_id).copied() else {
             continue;
         };
@@ -883,7 +875,7 @@ fn dock_boundary_events(
             let n = ordered.len();
             for (i, event) in ordered.iter().enumerate() {
                 bounds.insert(
-                    event.base.id.clone(),
+                    &event.base.id,
                     Bounds {
                         x: host.x + ((i + 1) as f64 * host.width) / (n + 1) as f64
                             - BOUNDARY_SIZE / 2.0,
@@ -906,7 +898,7 @@ fn dock_boundary_events(
 /// turn cuts across the stems of the events docked inside it.
 fn handler_depth(
     graph: &SemanticGraph,
-    bounds: &IndexMap<String, Bounds>,
+    bounds: &IndexMap<&str, Bounds>,
     host_id: &str,
     host: &Bounds,
     top: bool,
@@ -918,7 +910,7 @@ fn handler_depth(
         if flow.source_ref != event_id {
             continue;
         }
-        let Some(target) = bounds.get(&flow.target_ref) else {
+        let Some(target) = bounds.get(flow.target_ref.as_str()) else {
             continue;
         };
         let centre = target.y + target.height / 2.0;
@@ -943,7 +935,13 @@ fn handler_reach(graph: &SemanticGraph, event_id: &str) -> i64 {
             if flow.source_ref != event_id {
                 continue;
             }
-            reach = reach.max(graph.ranks.get(&flow.target_ref).copied().unwrap_or(0));
+            reach = reach.max(
+                graph
+                    .ranks
+                    .get(flow.target_ref.as_str())
+                    .copied()
+                    .unwrap_or(0),
+            );
         }
     }
     reach

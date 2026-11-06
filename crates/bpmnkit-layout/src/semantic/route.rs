@@ -113,7 +113,7 @@ type RoutedSegment<'r> = (Waypoint, Waypoint, &'r str, &'r str);
 
 struct RouteContext<'r, 'a> {
     graph: &'r SemanticGraph<'a>,
-    bounds: &'r IndexMap<String, Bounds>,
+    bounds: &'r IndexMap<&'r str, Bounds>,
     /// Every shape, indexed by x-range.
     obstacles: XIndex<Obstacle<'r>>,
     /// Mid-x of the clear gutter in front of each rank.
@@ -171,23 +171,15 @@ fn is_boundary(graph: &SemanticGraph, id: &str) -> bool {
 pub fn route_flows(
     graph: &SemanticGraph,
     flows: &[BpmnSequenceFlow],
-    bounds: &IndexMap<String, Bounds>,
+    bounds: &IndexMap<&str, Bounds>,
     band_layout: &BandLayout,
     gutter_x: &IndexMap<i64, f64>,
 ) -> Vec<LayoutEdge> {
     // TS takes the band layout too but never reads it.
     let _ = band_layout;
     let mut obstacles = XIndex::new();
-    for (idx, (id, b)) in bounds.iter().enumerate() {
-        obstacles.insert(
-            b.x,
-            b.x + b.width,
-            Obstacle {
-                idx,
-                id: id.as_str(),
-                b: *b,
-            },
-        );
+    for (idx, (&id, b)) in bounds.iter().enumerate() {
+        obstacles.insert(b.x, b.x + b.width, Obstacle { idx, id, b: *b });
     }
     let mut ctx = RouteContext {
         graph,
@@ -202,8 +194,8 @@ pub fn route_flows(
 
     for flow in flows {
         let (Some(source), Some(target)) = (
-            bounds.get(&flow.source_ref).copied(),
-            bounds.get(&flow.target_ref).copied(),
+            bounds.get(flow.source_ref.as_str()).copied(),
+            bounds.get(flow.target_ref.as_str()).copied(),
         ) else {
             continue;
         };
@@ -217,8 +209,8 @@ pub fn route_flows(
                 flow.source_ref.as_str()
             })
             .copied();
-        let target_rank = graph.ranks.get(&flow.target_ref).copied();
-        let is_back_edge = graph.back_edges.contains(&flow.id);
+        let target_rank = graph.ranks.get(flow.target_ref.as_str()).copied();
+        let is_back_edge = graph.back_edges.contains(flow.id.as_str());
 
         let direct = if is_back_edge {
             Vec::new()
@@ -348,7 +340,7 @@ fn search_route(
     );
     let mut obstacles = Vec::new();
     for (id, b) in ctx.bounds {
-        if *id != flow.source_ref && *id != flow.target_ref {
+        if *id != flow.source_ref.as_str() && *id != flow.target_ref.as_str() {
             obstacles.push(*b);
         }
     }

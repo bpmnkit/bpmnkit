@@ -223,9 +223,29 @@ fn route_hits(
     shapes: &[&PlaneShape],
     blocks: &dyn Fn(&PlaneShape) -> bool,
 ) -> bool {
-    for w in waypoints.windows(2) {
-        for s in shapes {
-            if segment_hits(&w[0], &w[1], &s.bounds, TOLERANCE) && blocks(s) {
+    let mut min_x = f64::INFINITY;
+    let mut min_y = f64::INFINITY;
+    let mut max_x = f64::NEG_INFINITY;
+    let mut max_y = f64::NEG_INFINITY;
+    for w in waypoints {
+        min_x = js::min(min_x, w.x);
+        min_y = js::min(min_y, w.y);
+        max_x = js::max(max_x, w.x);
+        max_y = js::max(max_y, w.y);
+    }
+    for s in shapes {
+        // The box `segment_hits` clips against: one wholly to a side of the
+        // route's bounding box clips every segment away (NaN never skips).
+        let b = &s.bounds;
+        if max_x < b.x + TOLERANCE
+            || min_x > b.x + b.width - TOLERANCE
+            || max_y < b.y + TOLERANCE
+            || min_y > b.y + b.height - TOLERANCE
+        {
+            continue;
+        }
+        for w in waypoints.windows(2) {
+            if segment_hits(&w[0], &w[1], b, TOLERANCE) && blocks(s) {
                 return true;
             }
         }
@@ -277,19 +297,38 @@ fn segment_hits(a: &Waypoint, b: &Waypoint, bx: &Bounds, tolerance: f64) -> bool
     t1 - t0 > 1e-9
 }
 
-/// Width of one bucket of the segment index.
-const CELL: f64 = 128.0;
+/// One indexed segment, endpoints in route order.
+#[derive(Clone, Copy)]
+struct Segment {
+    a: Waypoint,
+    b: Waypoint,
+}
 
-/// Every segment of a set of routes, flattened and bucketed by x so the search's
-/// many crossing queries each touch only the segments nearby.
+impl Segment {
+    /// The bounding-box test that keeps only segments a properly crossing one
+    /// could be, against the query's box.
+    fn near(&self, min_x: f64, max_x: f64, min_y: f64, max_y: f64) -> bool {
+        let (x1, y1, x2, y2) = (self.a.x, self.a.y, self.b.x, self.b.y);
+        !(js::max(x1, x2) < min_x
+            || js::min(x1, x2) > max_x
+            || js::max(y1, y2) < min_y
+            || js::min(y1, y2) > max_y)
+    }
+}
+
+/// Every segment of a set of routes, so the search's many crossing queries each
+/// look only at the segments that could cross them. The search asks about axis-
+/// parallel steps, and two parallel segments never properly cross, so a
+/// horizontal step only needs the vertical segments (sorted by x, found by binary
+/// search on the step's x-range) and a vertical step the horizontal ones (sorted
+/// by y). Everything else — diagonals, and anything with coordinates too large
+/// for the parallel argument — is checked against every segment.
 struct SegmentIndex {
-    coords: Vec<f64>,
-    /// First cell of each segment, by segment index / 4.
-    first_cell: Vec<i64>,
-    /// Buckets per [`Direction`]: a horizontal query skips the horizontal
-    /// segments and a vertical one the vertical, since two parallel segments
-    /// never properly cross.
-    cells: [IndexMap<i64, Vec<usize>>; 3],
+    /// Horizontal segments, by y.
+    horizontal: Vec<Segment>,
+    /// Vertical segments, by x.
+    vertical: Vec<Segment>,
+    other: Vec<Segment>,
 }
 
 /// Coordinates this small keep every product in `properly_cross` finite, which
@@ -300,12 +339,11 @@ fn safe(p: &Waypoint) -> bool {
     p.x.abs() < SAFE && p.y.abs() < SAFE
 }
 
-/// Which bucket set a segment goes in.
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum Direction {
-    Horizontal = 0,
-    Vertical = 1,
-    Other = 2,
+    Horizontal,
+    Vertical,
+    Other,
 }
 
 fn direction(a: &Waypoint, b: &Waypoint) -> Direction {
@@ -320,27 +358,33 @@ fn direction(a: &Waypoint, b: &Waypoint) -> Direction {
     }
 }
 
+/// The run of `sorted` whose `key` lies in `[lo, hi]`.
+fn key_range(sorted: &[Segment], key: impl Fn(&Segment) -> f64, lo: f64, hi: f64) -> &[Segment] {
+    let start = sorted.partition_point(|s| key(s) < lo);
+    let end = sorted.partition_point(|s| key(s) <= hi);
+    &sorted[start..end.max(start)]
+}
+
 impl SegmentIndex {
     fn new<'a>(routes: impl Iterator<Item = &'a [Waypoint]>) -> Self {
         let mut idx = SegmentIndex {
-            coords: Vec::new(),
-            first_cell: Vec::new(),
-            cells: Default::default(),
+            horizontal: Vec::new(),
+            vertical: Vec::new(),
+            other: Vec::new(),
         };
         for wps in routes {
             for w in wps.windows(2) {
-                let (a, b) = (&w[0], &w[1]);
-                let index = idx.coords.len();
-                idx.coords.extend([a.x, a.y, b.x, b.y]);
-                let lo = (js::min(a.x, b.x) / CELL).floor() as i64;
-                let hi = (js::max(a.x, b.x) / CELL).floor() as i64;
-                idx.first_cell.push(lo);
-                let cells = &mut idx.cells[direction(a, b) as usize];
-                for c in lo..=hi {
-                    cells.entry(c).or_default().push(index);
+                let segment = Segment { a: w[0], b: w[1] };
+                match direction(&w[0], &w[1]) {
+                    Direction::Horizontal => idx.horizontal.push(segment),
+                    Direction::Vertical => idx.vertical.push(segment),
+                    Direction::Other => idx.other.push(segment),
                 }
             }
         }
+        // Safe coordinates are finite, so these orders are total.
+        idx.horizontal.sort_by(|p, q| js::cmp_num(p.a.y, q.a.y));
+        idx.vertical.sort_by(|p, q| js::cmp_num(p.a.x, q.a.x));
         idx
     }
 
@@ -350,44 +394,27 @@ impl SegmentIndex {
         let max_x = js::max(a.x, b.x);
         let min_y = js::min(a.y, b.y);
         let max_y = js::max(a.y, b.y);
-        let lo = (min_x / CELL).floor() as i64;
-        let hi = (max_x / CELL).floor() as i64;
-        let c = &self.coords;
         let mut count = 0;
-        let parallel = match direction(a, b) {
-            Direction::Horizontal => Some(Direction::Horizontal),
-            Direction::Vertical => Some(Direction::Vertical),
-            Direction::Other => None,
-        };
-        for (d, cells) in self.cells.iter().enumerate() {
-            if parallel.is_some_and(|p| p as usize == d) {
-                continue;
-            }
-            for cell in lo..=hi {
-                let Some(list) = cells.get(&cell) else {
-                    continue;
-                };
-                for &i in list {
-                    // A segment spans consecutive cells, so it was already counted
-                    // in the previous cell exactly when it starts before this one
-                    // and this is not the first cell visited.
-                    if cell > lo && self.first_cell[i / 4] < cell {
-                        continue;
-                    }
-                    let (x1, y1, x2, y2) = (c[i], c[i + 1], c[i + 2], c[i + 3]);
-                    if js::max(x1, x2) < min_x || js::min(x1, x2) > max_x {
-                        continue;
-                    }
-                    if js::max(y1, y2) < min_y || js::min(y1, y2) > max_y {
-                        continue;
-                    }
-                    if properly_cross(a, b, &Waypoint { x: x1, y: y1 }, &Waypoint { x: x2, y: y2 })
-                    {
-                        count += 1;
-                    }
+        let mut scan = |segments: &[Segment]| {
+            for s in segments {
+                if s.near(min_x, max_x, min_y, max_y) && properly_cross(a, b, &s.a, &s.b) {
+                    count += 1;
                 }
             }
+        };
+        match direction(a, b) {
+            Direction::Horizontal => {
+                scan(key_range(&self.vertical, |s| s.a.x, min_x, max_x));
+            }
+            Direction::Vertical => {
+                scan(key_range(&self.horizontal, |s| s.a.y, min_y, max_y));
+            }
+            Direction::Other => {
+                scan(&self.horizontal);
+                scan(&self.vertical);
+            }
         }
+        scan(&self.other);
         count as f64
     }
 }
