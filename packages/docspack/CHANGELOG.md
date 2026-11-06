@@ -1,5 +1,15 @@
 # @bpmnkit/docspack
 
+## 1.3.0
+
+### Minor Changes
+
+- 1ab40d0: Agent cards: `casen agent-card bpmn|dmn|form` prints a ~1–1.5k-token cheat sheet per file type (runnable create/export/edit/validate script, top options, traps). The cards are also docs pages, ranked first in `@bpmnkit/docspack`, whose `llms.txt` now opens with a "Start here" entry (new `docspack.startHere` build option). `casen skills install` adds `/dmn` and `/form`.
+
+### Patch Changes
+
+- f6cc4ac: Camunda 8.10 is now the default target: the BPMN builder stamps `executionPlatformVersion` `8.10.0` (was `8.9.0`), the form builder `8.10.0` (was `8.7.0`), the DMN builders `8.10.0` (was `8.5.0`) and the Camunda 7 migration `8.10.0` (was `8.8.0`). `.executionPlatformVersion("8.8.0")` and the migration's `executionPlatformVersion` option still override it. The agent cards no longer warn that 8.10 is not the default.
+
 ## 1.2.2
 
 ### Patch Changes
