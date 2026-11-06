@@ -913,7 +913,8 @@ export function applyAutoLayout(
 			dy = laneBands ? poolY - bandTop : poolY + PADDING - minY
 		} else {
 			dx = PADDING - minX
-			dy = PADDING - minY
+			// Below any pools already stacked; poolY is 0 without a collaboration.
+			dy = (process?.id === primaryProcessId ? poolY : 0) + PADDING - minY
 		}
 
 		// Only the primary process shares the root plane; any other root process

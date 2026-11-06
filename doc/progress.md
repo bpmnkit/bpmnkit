@@ -36,6 +36,11 @@ Camunda eval (900 runs): agents spent 32–49% of their cost reading bpmnkit doc
 - Eval D04: agents referenced the required decision by name, not id (Haiku 0/18, Sonnet 12/18). New `Dmn.drd()` in `packages/core/src/dmn/drd-builder.ts`: `decision()` returns a handle, `requires` takes a handle or branded `drgId()`; unknown ref throws `ValidationError` listing valid ids, a matching label suggests the id. Emits `informationRequirement` hrefs and DMNDI shapes/edges (auto layout).
 - `expandDmn` (compact.ts) now throws on a dangling `requires` instead of dropping it silently.
 - Tests: `packages/core/tests/dmn-drd.test.ts`. Docs: landing `packages/core.md`.
+## 2026-11-05 — Auto-layout aesthetics for new diagrams
+
+- Benchmark `scripts/layout-aesthetics/` (10 scenarios, deterministic aesthetic metrics, PNG renders); results and before/after in `doc/layout-aesthetics.md`.
+- Semantic layout: 60 px column/row gaps (wider only for labels; 100 beside containers), band lines that clear only what they sit under, sub-processes aligned on their inner spine, gateway/event labels moved off exit flows, branch conditions at the gateway exit, routes avoid running along unrelated flows. Participant-less primary process stacked below pools. `exportSvg`: no label wrap at box width, no "+" on expanded sub-processes.
+- Scenario means: width 1170 → 945 px, aspect 4.77 → 4.05, label collisions 0.8 → 0.2, density 0.16 → 0.21; blind Opus judge 3.4 → 4.2. `bakeoff/expected.bpmn` regenerated (coordinates only). Tests: `tests/layout-aesthetics.test.ts`, svg marker test.
 
 ## 2026-11-05 — Camunda 8 → Camunda 7/Operaton export (issue #259, step 2)
 
