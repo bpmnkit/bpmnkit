@@ -20,3 +20,7 @@
 {"id":"contexts/20","expr":"{foo+bar: \"foo\"}","context":{},"expected":{"t":"context","v":{"foo+bar":{"t":"string","v":"foo"}}}}
 {"id":"contexts/21","expr":"{🐎: \"bar\"}","context":{},"expected":{"t":"context","v":{"🐎":{"t":"string","v":"bar"}}}}
 {"id":"contexts/22","expr":"{foo: \"bar\", foo: \"baz\"}","context":{},"expected":{"t":"null"}}
+{"id":"contexts/23","expr":"get entries({z: 1, a: 2, m: 3})","context":{},"expected":{"t":"list","v":[{"t":"context","v":{"key":{"t":"string","v":"z"},"value":{"t":"number","v":"1"}}},{"t":"context","v":{"key":{"t":"string","v":"a"},"value":{"t":"number","v":"2"}}},{"t":"context","v":{"key":{"t":"string","v":"m"},"value":{"t":"number","v":"3"}}}]}}
+{"id":"contexts/24","expr":"string({b: 1, a: [2, \"x\"]})","context":{},"expected":{"t":"string","v":"{b: 1, a: [2, \"x\"]}"}}
+{"id":"contexts/25","expr":"context put({b: 1, a: 2}, \"c\", 3)","context":{},"expected":{"t":"context","v":{"a":{"t":"number","v":"2"},"b":{"t":"number","v":"1"},"c":{"t":"number","v":"3"}}}}
+{"id":"contexts/26","expr":"get entries(context merge({b: 1}, {a: 2, b: 3}))","context":{},"expected":{"t":"list","v":[{"t":"context","v":{"key":{"t":"string","v":"b"},"value":{"t":"number","v":"3"}}},{"t":"context","v":{"key":{"t":"string","v":"a"},"value":{"t":"number","v":"2"}}}]}}

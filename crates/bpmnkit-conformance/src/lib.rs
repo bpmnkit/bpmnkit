@@ -2,10 +2,10 @@
 //! compares results canonically, so the TS and Rust implementations are held
 //! to the same expectations.
 
-mod reebe;
+mod feel;
 mod value;
 
-pub use reebe::evaluate_with_reebe;
+pub use feel::evaluate as evaluate_feel;
 pub use value::{decimal_eq, Value};
 
 use serde::Deserialize;
@@ -113,7 +113,7 @@ pub fn run_all(dir: &Path) -> Result<Vec<(String, bool)>, String> {
     let mut out = vec![];
     for c in load_feel_cases(dir)? {
         let ok = std::panic::catch_unwind(|| {
-            let actual = evaluate_with_reebe(&c.expr, &c.context);
+            let actual = evaluate_feel(&c.expr, &c.context);
             actual.canonical_eq(&c.expected)
         })
         .unwrap_or(false);

@@ -33,6 +33,11 @@ One case per line:
 | `{"t":"context","v":{"k":Value}}` | context (keys sorted) |
 | `{"t":"error"}` | parse or evaluation error, a non-finite number, or an unsupported type (range, function) |
 
+Numbers: TS computes in float64, Rust (`bpmnkit-feel`) in exact decimals. The Rust runner
+counts two numbers as equal when they are equal, or equal after rounding both to 15 significant
+digits (what float64 always keeps), so `0.1 + 0.2` recorded as `0.30000000000000004` matches
+Rust's `0.3`.
+
 Seeded from the `@bpmnkit/feel` tests (evaluator, spec, Camunda extensions) plus hand-written
 cases for dates and durations, `**`, contexts and filters. The DMN TCK is not on disk in this
 repository, so none of its cases are included yet. Expressions that read the clock are excluded.

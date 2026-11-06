@@ -10,6 +10,4 @@ publish = false
 [dependencies]
 serde = { workspace = true }
 serde_json = { workspace = true }
-# Temporary: replaced by bpmnkit-feel once it exists.
-reebe-feel = { path = "../../apps/reebe/crates/reebe-feel" }
-chrono = "0.4"
+bpmnkit-feel = { path = "../bpmnkit-feel" }

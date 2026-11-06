@@ -44,3 +44,17 @@
 {"id":"temporal/44","expr":"@\"2002-07-02T12:00:00@Australia/Melbourne\" = @\"2002-07-02T12:00:00+10:00\"","context":{},"expected":{"t":"boolean","v":true}}
 {"id":"temporal/45","expr":"date and time(\"2017-12-31T13:20:00@xyz/abc\")","context":{},"expected":{"t":"null"}}
 {"id":"temporal/46","expr":"date and time(\"2017-12-31T13:20:00+19:00\")","context":{},"expected":{"t":"null"}}
+{"id":"temporal/47","expr":"date and time(\"2024-03-31T01:30:00@Europe/Berlin\") + duration(\"PT1H\")","context":{},"expected":{"t":"date-time","v":"2024-03-31T02:30:00@Europe/Berlin"}}
+{"id":"temporal/48","expr":"date and time(\"2024-10-27T12:00:00@Europe/Berlin\") - date and time(\"2024-10-26T12:00:00@Europe/Berlin\")","context":{},"expected":{"t":"days-time-duration","v":"P1D"}}
+{"id":"temporal/49","expr":"string(date and time(\"2024-01-15T10:00:00Z\") + duration(\"P1M\"))","context":{},"expected":{"t":"string","v":"2024-02-15T10:00:00Z"}}
+{"id":"temporal/50","expr":"date(\"2024-01-31\") + duration(\"P1M\")","context":{},"expected":{"t":"date","v":"2024-02-29"}}
+{"id":"temporal/51","expr":"date(\"2024-02-29\") - duration(\"P1Y\")","context":{},"expected":{"t":"date","v":"2023-02-28"}}
+{"id":"temporal/52","expr":"date and time(\"2024-01-01T00:00:00\") + duration(\"P1DT1.5S\")","context":{},"expected":{"t":"date-time","v":"2024-01-02T00:00:01.5"}}
+{"id":"temporal/53","expr":"duration(\"PT1H\") * 2.5","context":{},"expected":{"t":"days-time-duration","v":"PT2H30M"}}
+{"id":"temporal/54","expr":"duration(\"P1Y2M\") / 2","context":{},"expected":{"t":"years-months-duration","v":"P7M"}}
+{"id":"temporal/55","expr":"duration(\"P2D\") / duration(\"PT12H\")","context":{},"expected":{"t":"number","v":"4"}}
+{"id":"temporal/56","expr":"time(\"23:30:00\") + duration(\"PT45M\")","context":{},"expected":{"t":"time","v":"00:15:00"}}
+{"id":"temporal/57","expr":"date and time(date(\"2024-05-01\"), time(\"10:15:00+02:00\")).time offset","context":{},"expected":{"t":"days-time-duration","v":"PT2H"}}
+{"id":"temporal/58","expr":"(date and time(\"2024-06-01T10:00:00@Australia/Melbourne\")).time offset","context":{},"expected":{"t":"null"}}
+{"id":"temporal/59","expr":"years and months duration(date(\"2020-02-29\"), date(\"2024-02-28\"))","context":{},"expected":{"t":"years-months-duration","v":"P3Y11M"}}
+{"id":"temporal/60","expr":"date(\"2024-03-01\") - date(\"2024-02-01\")","context":{},"expected":{"t":"days-time-duration","v":"P29D"}}

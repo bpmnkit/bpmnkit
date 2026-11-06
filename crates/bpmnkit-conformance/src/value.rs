@@ -68,10 +68,47 @@ fn normalize(s: &str) -> Option<(bool, String, i64)> {
     Some((neg, body.to_string(), exp))
 }
 
-/// Decimal equality on string representations; unparsable input falls back to string equality.
+/// Significant digits float64 always round-trips. TS (the recorder) computes in
+/// float64 and Rust in exact decimals, so `0.1 + 0.2` is recorded as
+/// `0.30000000000000004` and computed as `0.3`; agreeing to this many digits is
+/// agreement. Exactly-representable results still compare exactly.
+const FLOAT64_DIGITS: usize = 15;
+
+/// Rounds `(neg, digits, exp)` half-up to [`FLOAT64_DIGITS`] significant digits.
+fn round_float64((neg, digits, exp): (bool, String, i64)) -> (bool, String, i64) {
+    if digits.len() <= FLOAT64_DIGITS {
+        return (neg, digits, exp);
+    }
+    let cut = digits.len() - FLOAT64_DIGITS;
+    let mut kept: Vec<u8> = digits.as_bytes()[..FLOAT64_DIGITS].to_vec();
+    let mut exp = exp + cut as i64;
+    if digits.as_bytes()[FLOAT64_DIGITS] >= b'5' {
+        let mut i = kept.len();
+        loop {
+            if i == 0 {
+                kept.insert(0, b'1');
+                break;
+            }
+            i -= 1;
+            if kept[i] == b'9' {
+                kept[i] = b'0';
+            } else {
+                kept[i] += 1;
+                break;
+            }
+        }
+    }
+    let s = String::from_utf8(kept).unwrap_or_default();
+    let body = s.trim_end_matches('0');
+    exp += (s.len() - body.len()) as i64;
+    (neg, body.to_string(), exp)
+}
+
+/// Decimal equality on string representations, to float64's precision (see
+/// [`FLOAT64_DIGITS`]); unparsable input falls back to string equality.
 pub fn decimal_eq(a: &str, b: &str) -> bool {
     match (normalize(a), normalize(b)) {
-        (Some(x), Some(y)) => x == y,
+        (Some(x), Some(y)) => x == y || round_float64(x) == round_float64(y),
         _ => a == b,
     }
 }
@@ -89,6 +126,10 @@ mod tests {
         assert!(!decimal_eq("1.01", "1.1"));
         assert!(!decimal_eq("-1", "1"));
         assert!(!decimal_eq("10", "1"));
+        assert!(decimal_eq("0.30000000000000004", "0.3"));
+        assert!(decimal_eq("0.3333333333333333", "0.3333333333333333333333333333"));
+        assert!(decimal_eq("0.9999999999999999", "1"));
+        assert!(!decimal_eq("0.30000000000004", "0.3"));
     }
 
     #[test]
