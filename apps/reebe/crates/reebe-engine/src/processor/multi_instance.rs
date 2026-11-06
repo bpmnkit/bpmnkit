@@ -78,13 +78,17 @@ pub(crate) async fn activate_body(
     };
 
     let ctx = scope::feel_context(state, at.process_instance_key, body.key).await;
-    let items = match reebe_feel::parse_and_evaluate(&mi.input_collection, &ctx).map(serde_json::Value::from) {
-        Ok(serde_json::Value::Array(items)) => items,
-        other => {
-            let found = match other {
-                Ok(v) => format!("'{v}'"),
-                Err(e) => format!("an error ({e})"),
-            };
+    let items = match reebe_feel::parse_and_evaluate_with_warnings(&mi.input_collection, &ctx) {
+        Ok(ev) => match serde_json::Value::from(ev.value.clone()) {
+            serde_json::Value::Array(items) => Ok(items),
+            v if ev.warnings.is_empty() => Err(format!("'{v}'")),
+            v => Err(format!("'{v}'.{}", ev.warnings_suffix())),
+        },
+        Err(e) => Err(format!("an error ({e})")),
+    };
+    let items = match items {
+        Ok(items) => items,
+        Err(found) => {
             writers.commands.push(CommandToWrite {
                 value_type: "INCIDENT".to_string(),
                 intent: "CREATE".to_string(),

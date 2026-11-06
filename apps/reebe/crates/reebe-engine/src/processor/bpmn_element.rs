@@ -1747,11 +1747,12 @@ fn eval_flow_condition(condition: &Option<String>, ctx: &reebe_feel::FeelContext
 pub(crate) fn eval_boolean(condition: &str, ctx: &reebe_feel::FeelContext) -> Result<bool, String> {
     let cond = condition.trim();
     let expr = cond.strip_prefix('=').unwrap_or(cond).trim();
-    match reebe_feel::evaluate(expr, ctx) {
-        Ok(reebe_feel::FeelValue::Bool(holds)) => Ok(holds),
+    match reebe_feel::evaluate_with_warnings(expr, ctx) {
+        Ok(reebe_feel::Evaluated { value: reebe_feel::FeelValue::Bool(holds), .. }) => Ok(holds),
         Ok(other) => Err(format!(
-            "Expected result of the expression '{expr}' to be 'BOOLEAN', but was '{}'.",
-            zeebe_result_type(&other),
+            "Expected result of the expression '{expr}' to be 'BOOLEAN', but was '{}'.{}",
+            zeebe_result_type(&other.value),
+            other.warnings_suffix(),
         )),
         Err(e) => Err(format!("Expected result of the expression '{expr}' to be 'BOOLEAN', but it failed to evaluate: {e}")),
     }

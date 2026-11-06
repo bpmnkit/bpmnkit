@@ -3065,7 +3065,7 @@ mod tests {
         assert_eq!(incidents[0].error_type, "EXTRACT_VALUE_ERROR");
         assert_eq!(
             incidents[0].error_message.as_deref(),
-            Some("Expected result of the expression 'done' to be 'BOOLEAN', but was 'NULL'."),
+            Some("Expected result of the expression 'done' to be 'BOOLEAN', but was 'NULL'. The evaluation reported the following warnings:\n[NO_VARIABLE_FOUND] No variable found with name 'done'"),
         );
         let inner = h.backend.list_element_instances().into_iter()
             .find(|e| e.key == incidents[0].element_instance_key).unwrap();
@@ -4909,8 +4909,9 @@ mod tests {
 "#);
         let h = Harness::new();
         h.deploy(&bpmn).await;
-        // bpmnkit-feel makes `10 / 0` null instead of an error, so the mapping fails on a
-        // syntax error instead: a multi-word name only parses once the variable exists.
+        // A runtime failure such as `10 / 0` is null in Zeebe, not an incident (see the next
+        // test). Reebe checks no expression at deployment, so a syntax error fails the mapping
+        // here: a multi-word name only parses once the variable exists.
         h.start("proc", serde_json::json!({})).await;
         let incident = h.incidents().remove(0);
         assert_eq!(incident.error_type, "IO_MAPPING_ERROR");
@@ -4925,6 +4926,31 @@ mod tests {
         assert_eq!(job.variables["share"].as_f64(), Some(10.0));
         h.complete_job("work", serde_json::json!({})).await;
         assert_eq!(h.process_state("proc").as_deref(), Some("COMPLETED"));
+    }
+
+    #[tokio::test]
+    async fn test_io_mapping_that_fails_at_runtime_maps_null_without_an_incident() {
+        // FEEL-Scala suppresses the failure into null with a warning; Zeebe only raises an
+        // incident where a typed result is required, which a mapping is not.
+        let bpmn = wrap_process("proc", r#"
+    <bpmn:startEvent id="start"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:serviceTask id="task">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="work"/>
+        <zeebe:ioMapping><zeebe:input source="=10 / divisor" target="share"/></zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end"><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="task"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="task" targetRef="end"/>
+"#);
+        let h = Harness::new();
+        h.deploy(&bpmn).await;
+        h.start("proc", serde_json::json!({ "divisor": 0 })).await;
+        assert!(h.incidents().is_empty());
+        let job = h.activatable_job("work").unwrap();
+        assert_eq!(job.variables["share"], serde_json::Value::Null);
     }
 
     #[tokio::test]
@@ -5171,7 +5197,7 @@ mod tests {
         assert_eq!(incidents[0].error_type, "EXTRACT_VALUE_ERROR");
         assert_eq!(
             incidents[0].error_message.as_deref(),
-            Some("Failed to evaluate completion condition. Expected result of the expression 'finished' to be 'BOOLEAN', but was 'NULL'."),
+            Some("Failed to evaluate completion condition. Expected result of the expression 'finished' to be 'BOOLEAN', but was 'NULL'. The evaluation reported the following warnings:\n[NO_VARIABLE_FOUND] No variable found with name 'finished'"),
         );
         let inner = h.backend.list_element_instances().into_iter()
             .find(|e| e.key == incidents[0].element_instance_key).unwrap();
@@ -5241,7 +5267,7 @@ mod tests {
         assert_eq!(incidents[0].error_type, "EXTRACT_VALUE_ERROR");
         assert_eq!(
             incidents[0].error_message.as_deref(),
-            Some("Failed to evaluate completion condition. Expected result of the expression 'finished' to be 'BOOLEAN', but was 'NULL'."),
+            Some("Failed to evaluate completion condition. Expected result of the expression 'finished' to be 'BOOLEAN', but was 'NULL'. The evaluation reported the following warnings:\n[NO_VARIABLE_FOUND] No variable found with name 'finished'"),
         );
         assert_eq!(incidents[0].element_id, "esp");
         assert_eq!(element_states(&h, "esp"), vec!["COMPLETING"]);
@@ -5407,7 +5433,7 @@ mod tests {
             assert_eq!(incidents[0].error_type, "EXTRACT_VALUE_ERROR");
             assert_eq!(
                 incidents[0].error_message.as_deref(),
-                Some("Expected result of the expression 'x > 5' to be 'BOOLEAN', but was 'NULL'."),
+                Some("Expected result of the expression 'x > 5' to be 'BOOLEAN', but was 'NULL'. The evaluation reported the following warnings:\n[NO_VARIABLE_FOUND] No variable found with name 'x'"),
             );
             assert_eq!(element_states(&h, "gw"), vec!["ACTIVATING"], "the default flow is not taken");
             assert!(!h.visited("end-no"));
@@ -5420,6 +5446,16 @@ mod tests {
             assert!(!h.visited("end-no"));
             assert_eq!(h.process_state("proc").as_deref(), Some("COMPLETED"));
         }
+
+        // A failure FEEL suppressed into null is quoted, as in the incident Camunda's
+        // Operate guide shows for a string compared with a number.
+        let h = Harness::new();
+        h.deploy(&gateway_with_condition(false, "=orderValue &gt;= 100")).await;
+        h.start("proc", serde_json::json!({ "orderValue": "99" })).await;
+        assert_eq!(
+            h.incidents()[0].error_message.as_deref(),
+            Some("Expected result of the expression 'orderValue >= 100' to be 'BOOLEAN', but was 'NULL'. The evaluation reported the following warnings:\n[NOT_COMPARABLE] Can't compare '\"99\"' with '100'"),
+        );
 
         // A value of another type, and an expression that fails, raise it too.
         for (condition, message) in [
@@ -6295,9 +6331,12 @@ mod tests {
             evaluate(&h, serde_json::json!({})).await.unwrap_err(),
             "Invalid argument: Expected either a decision id or a valid decision key, but none provided",
         );
+        // FEEL makes `"Hello " + 1` null with a warning, so the decision evaluates to null
+        // instead of failing.
+        let evaluated = evaluate(&h, serde_json::json!({ "decisionId": "greet", "variables": { "name": 1 } })).await.unwrap();
+        assert_eq!(evaluated["failedDecisionId"], "");
+        assert_eq!(evaluated["decisionOutput"], "null");
         // A decision that fails to evaluate is a result with the failure, not a rejection.
-        // bpmnkit-feel yields null for `"Hello " + 1` (DMN semantics) instead of failing, so the
-        // failing decision here has a syntax error.
         let broken = greeting_dmn("Hello").replace("id=\"greet\"", "id=\"broken\"").replace("id=\"greetings\"", "id=\"broken-defs\"").replace("\"Hello \" + name", "\"Hello \" +");
         deploy_resources(&h, &[("broken.dmn", &broken)]).await;
         let failed = evaluate(&h, serde_json::json!({ "decisionId": "broken", "variables": { "name": 1 } })).await.unwrap();

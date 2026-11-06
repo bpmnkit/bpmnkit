@@ -10,7 +10,8 @@
 //!
 //! Numbers are exact decimals (28 significant digits), contexts keep insertion
 //! order, and evaluation never fails: like FEEL, an invalid operation yields
-//! `null`. Only parsing reports errors.
+//! `null`. Only parsing reports errors. [`evaluate_with_diagnostics`] also
+//! says why a result became null, as FEEL-Scala's suppressed failures do.
 
 mod ast;
 mod builtins;
@@ -21,6 +22,7 @@ mod parser;
 mod temporal;
 mod value;
 
+use std::cell::RefCell;
 use std::fmt;
 use std::sync::Arc;
 
@@ -50,6 +52,53 @@ impl fmt::Display for FeelError {
 }
 
 impl std::error::Error for FeelError {}
+
+/// Why part of an evaluation became null. Names follow FEEL-Scala's
+/// `EvaluationFailureType`, which Zeebe prints in incident messages.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum WarningKind {
+    NoVariableFound,
+    NoContextEntryFound,
+    NoFunctionFound,
+    FunctionInvocationFailure,
+    NotComparable,
+    InvalidType,
+}
+
+impl WarningKind {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            WarningKind::NoVariableFound => "NO_VARIABLE_FOUND",
+            WarningKind::NoContextEntryFound => "NO_CONTEXT_ENTRY_FOUND",
+            WarningKind::NoFunctionFound => "NO_FUNCTION_FOUND",
+            WarningKind::FunctionInvocationFailure => "FUNCTION_INVOCATION_FAILURE",
+            WarningKind::NotComparable => "NOT_COMPARABLE",
+            WarningKind::InvalidType => "INVALID_TYPE",
+        }
+    }
+}
+
+/// A failure the evaluation suppressed into `null`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Warning {
+    pub kind: WarningKind,
+    pub message: String,
+}
+
+impl fmt::Display for Warning {
+    /// `[NOT_COMPARABLE] Can't compare '"99"' with '100'`, as in a Zeebe incident.
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "[{}] {}", self.kind.as_str(), self.message)
+    }
+}
+
+/// A value with the failures that were suppressed while computing it. The
+/// value is exactly what [`Expression::evaluate`] returns.
+#[derive(Debug, Clone, PartialEq)]
+pub struct Evaluation {
+    pub value: Value,
+    pub warnings: Vec<Warning>,
+}
 
 /// A parsed FEEL expression, cheap to clone and to evaluate many times.
 #[derive(Debug, Clone)]
@@ -85,7 +134,17 @@ pub fn parse_unary_tests(source: &str, options: &ParseOptions) -> Result<UnaryTe
 
 impl Expression {
     pub fn evaluate(&self, context: &Context) -> Value {
-        evaluator::evaluate_root(&self.ast, context, None)
+        evaluator::evaluate_root(&self.ast, context, None, None)
+    }
+
+    /// Like [`Expression::evaluate`], also reporting the suppressed failures.
+    pub fn evaluate_with_diagnostics(&self, context: &Context) -> Evaluation {
+        let warnings = RefCell::new(Vec::new());
+        let value = evaluator::evaluate_root(&self.ast, context, None, Some(&warnings));
+        Evaluation {
+            value,
+            warnings: warnings.into_inner(),
+        }
     }
 }
 
@@ -103,6 +162,14 @@ pub fn evaluate(source: &str, context: &Context) -> Result<Value, FeelError> {
         names: context.keys().cloned().collect(),
     };
     Ok(parse(source, &options)?.evaluate(context))
+}
+
+/// [`evaluate`], also reporting why parts of the result became null.
+pub fn evaluate_with_diagnostics(source: &str, context: &Context) -> Result<Evaluation, FeelError> {
+    let options = ParseOptions {
+        names: context.keys().cloned().collect(),
+    };
+    Ok(parse(source, &options)?.evaluate_with_diagnostics(context))
 }
 
 /// Names of all built-in functions.

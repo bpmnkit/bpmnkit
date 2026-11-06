@@ -5,6 +5,7 @@
 //! scope, to outlive the evaluation that created it.
 
 use std::borrow::Cow;
+use std::cell::RefCell;
 use std::cmp::Ordering;
 use std::slice;
 use std::sync::Arc;
@@ -14,7 +15,7 @@ use rust_decimal::Decimal;
 
 use crate::ast::{BinaryOp, Binding, Node, NodeKind};
 use crate::value::{Context, Function, Range, Value};
-use crate::{builtins, ops, temporal};
+use crate::{builtins, ops, temporal, Warning, WarningKind};
 
 static NULL: Value = Value::Null;
 
@@ -37,6 +38,8 @@ struct Scope<'a> {
     frame: Frame<'a>,
     parent: Option<&'a Scope<'a>>,
     input: Option<&'a Value>,
+    /// Where suppressed failures go; `None` when nobody asked for them.
+    warnings: Option<&'a RefCell<Vec<Warning>>>,
 }
 
 impl<'a> Scope<'a> {
@@ -45,6 +48,17 @@ impl<'a> Scope<'a> {
             frame,
             parent: Some(self),
             input: self.input,
+            warnings: self.warnings,
+        }
+    }
+
+    /// Records why a result became null. The message is only built when collected.
+    fn warn(&self, kind: WarningKind, message: impl FnOnce() -> String) {
+        if let Some(sink) = self.warnings {
+            sink.borrow_mut().push(Warning {
+                kind,
+                message: message(),
+            });
         }
     }
 
@@ -76,14 +90,49 @@ impl<'a> Scope<'a> {
     }
 }
 
-/// Evaluates `node` with `vars` in scope and `input` bound to `?`.
-pub fn evaluate_root(node: &Node, vars: &Context, input: Option<&Value>) -> Value {
+/// Evaluates `node` with `vars` in scope and `input` bound to `?`, collecting
+/// the failures that became null into `warnings` when given.
+pub fn evaluate_root(
+    node: &Node,
+    vars: &Context,
+    input: Option<&Value>,
+    warnings: Option<&RefCell<Vec<Warning>>>,
+) -> Value {
     let scope = Scope {
         frame: Frame::Ctx(vars),
         parent: None,
         input,
+        warnings,
     };
     eval(node, &scope)
+}
+
+/// A value as FEEL-Scala quotes it in a warning: strings in double quotes.
+fn show(v: &Value) -> String {
+    match v {
+        Value::String(s) => format!("\"{s}\""),
+        other => other.to_string(),
+    }
+}
+
+fn show_args(args: &[Value]) -> String {
+    args.iter().map(show).collect::<Vec<_>>().join(", ")
+}
+
+/// A built-in whose null result is an answer, not a failure.
+fn null_is_an_answer(name: &str) -> bool {
+    matches!(name, "get value" | "get or else")
+}
+
+fn warn_failed_call(scope: &Scope<'_>, name: &str, args: &[Value], result: &Value) {
+    if result.is_null() && !null_is_an_answer(name) && !args.iter().any(Value::is_null) {
+        scope.warn(WarningKind::FunctionInvocationFailure, || {
+            format!(
+                "Failed to invoke function '{name}' with arguments ({})",
+                show_args(args)
+            )
+        });
+    }
 }
 
 /// `evaluateUnaryTests`.
@@ -92,6 +141,7 @@ pub fn test_unary(node: &Node, input: &Value, vars: &Context) -> bool {
         frame: Frame::Ctx(vars),
         parent: None,
         input: Some(input),
+        warnings: None,
     };
     unary_test_value(node, input, &scope) == Some(true)
 }
@@ -133,11 +183,27 @@ fn eval<'a>(node: &Node, scope: &'a Scope<'a>) -> Value {
             if let Some(v) = scope.lookup(name) {
                 return v.clone();
             }
-            bpmnkit_spec::feel::feel_builtin(name)
-                .and_then(|b| builtins::as_function(b.name))
-                .map_or(Value::Null, Value::Function)
+            match bpmnkit_spec::feel::feel_builtin(name).and_then(|b| builtins::as_function(b.name))
+            {
+                Some(f) => Value::Function(f),
+                None => {
+                    scope.warn(WarningKind::NoVariableFound, || {
+                        format!("No variable found with name '{name}'")
+                    });
+                    Value::Null
+                }
+            }
         }
-        NodeKind::UnaryMinus(operand) => ops::neg(&eval(operand, scope)),
+        NodeKind::UnaryMinus(operand) => {
+            let v = eval(operand, scope);
+            let result = ops::neg(&v);
+            if result.is_null() && !v.is_null() {
+                scope.warn(WarningKind::InvalidType, || {
+                    format!("Can't negate '{}'", show(&v))
+                });
+            }
+            result
+        }
         NodeKind::Binary { op, left, right } => eval_binary(*op, left, right, scope),
         NodeKind::List(items) => Value::List(eval_all(items, scope)),
         NodeKind::Context(entries) => {
@@ -174,17 +240,32 @@ fn eval<'a>(node: &Node, scope: &'a Scope<'a>) -> Value {
             Value::List(items) => {
                 Value::List(items.iter().map(|i| ops::get_property(i, key)).collect())
             }
+            Value::Context(c) if !c.contains_key(key) => {
+                scope.warn(WarningKind::NoContextEntryFound, || {
+                    format!("No context entry found with key '{key}'")
+                });
+                Value::Null
+            }
             other => ops::get_property(other, key),
         },
         NodeKind::Filter { base, condition } => eval_filter(base, condition, scope),
         NodeKind::Call { callee, args } => {
             let args = eval_all(args, scope);
             if let Some(v) = builtins::call(callee, &args) {
+                warn_failed_call(scope, callee, &args, &v);
                 return v;
             }
             match scope.lookup(callee) {
                 Some(Value::Function(f)) => f.call(&args),
-                _ => Value::Null,
+                _ => {
+                    scope.warn(WarningKind::NoFunctionFound, || {
+                        format!(
+                            "No function found with name '{callee}' and {} parameters",
+                            args.len()
+                        )
+                    });
+                    Value::Null
+                }
             }
         }
         NodeKind::CallExpr { target, args } => match eval(target, scope) {
@@ -202,11 +283,21 @@ fn eval<'a>(node: &Node, scope: &'a Scope<'a>) -> Value {
                     .into_iter()
                     .map(|i| values.get(i).cloned().unwrap_or(Value::Null))
                     .collect();
-                return builtins::call(callee, &ordered).unwrap_or(Value::Null);
+                let v = builtins::call(callee, &ordered).unwrap_or(Value::Null);
+                warn_failed_call(scope, callee, &ordered, &v);
+                return v;
             }
             match scope.lookup(callee) {
                 Some(Value::Function(f)) => f.call(&order_args(f.params(), &names, values)),
-                _ => Value::Null,
+                _ => {
+                    scope.warn(WarningKind::NoFunctionFound, || {
+                        format!(
+                            "No function found with name '{callee}' and parameters {}",
+                            names.join(", ")
+                        )
+                    });
+                    Value::Null
+                }
             }
         }
         NodeKind::If {
@@ -249,7 +340,11 @@ fn eval<'a>(node: &Node, scope: &'a Scope<'a>) -> Value {
             let hi = eval(high, scope);
             match (ops::compare(&v, &lo), ops::compare(&v, &hi)) {
                 (Some(a), Some(b)) => Value::Boolean(a != Ordering::Less && b != Ordering::Greater),
-                _ => Value::Null,
+                (a, _) => {
+                    let other = if a.is_none() { &lo } else { &hi };
+                    warn_not_comparable(scope, &v, other);
+                    Value::Null
+                }
             }
         }
         // The right-hand side is a unary test with the left-hand value as its
@@ -315,16 +410,36 @@ fn eval_binary<'a>(op: BinaryOp, left: &Node, right: &Node, scope: &'a Scope<'a>
     let l = eval_ref(left, scope);
     let r = eval_ref(right, scope);
     let (l, r) = (&*l, &*r);
+    let arithmetic = |result: Value, verb: fn(&str, &str) -> String| {
+        if result.is_null() && !l.is_null() && !r.is_null() {
+            scope.warn(WarningKind::InvalidType, || verb(&show(l), &show(r)));
+        }
+        result
+    };
     match op {
-        BinaryOp::Eq => boolean(ops::feel_equals(l, r)),
-        BinaryOp::Ne => boolean(ops::feel_equals(l, r).map(|b| !b)),
-        BinaryOp::Add => ops::add(l, r),
-        BinaryOp::Sub => ops::sub(l, r),
-        BinaryOp::Mul => ops::mul(l, r),
-        BinaryOp::Div => ops::div(l, r),
-        BinaryOp::Pow => ops::pow(l, r),
+        BinaryOp::Eq | BinaryOp::Ne => {
+            let Some(eq) = ops::feel_equals(l, r) else {
+                warn_not_comparable(scope, l, r);
+                return Value::Null;
+            };
+            Value::Boolean(eq == (op == BinaryOp::Eq))
+        }
+        BinaryOp::Add => arithmetic(ops::add(l, r), |a, b| format!("Can't add '{b}' to '{a}'")),
+        BinaryOp::Sub => arithmetic(ops::sub(l, r), |a, b| {
+            format!("Can't subtract '{b}' from '{a}'")
+        }),
+        BinaryOp::Mul => arithmetic(ops::mul(l, r), |a, b| {
+            format!("Can't multiply '{a}' by '{b}'")
+        }),
+        BinaryOp::Div => arithmetic(ops::div(l, r), |a, b| {
+            format!("Can't divide '{a}' by '{b}'")
+        }),
+        BinaryOp::Pow => arithmetic(ops::pow(l, r), |a, b| {
+            format!("Can't raise '{a}' to the power of '{b}'")
+        }),
         BinaryOp::Lt | BinaryOp::Le | BinaryOp::Gt | BinaryOp::Ge => {
             let Some(ord) = ops::compare(l, r) else {
+                warn_not_comparable(scope, l, r);
                 return Value::Null;
             };
             Value::Boolean(match op {
@@ -335,6 +450,15 @@ fn eval_binary<'a>(op: BinaryOp, left: &Node, right: &Node, scope: &'a Scope<'a>
             })
         }
         BinaryOp::And | BinaryOp::Or => Value::Null,
+    }
+}
+
+/// Null on either side is FEEL's unknown, not a failure: only two values are reported.
+fn warn_not_comparable(scope: &Scope<'_>, a: &Value, b: &Value) {
+    if !a.is_null() && !b.is_null() {
+        scope.warn(WarningKind::NotComparable, || {
+            format!("Can't compare '{}' with '{}'", show(a), show(b))
+        });
     }
 }
 
@@ -558,6 +682,7 @@ fn make_function(params: &[String], body: &Arc<Node>, scope: &Scope<'_>) -> Valu
             frame: Frame::Ctx(&cap.vars),
             parent: None,
             input: cap.input.as_ref(),
+            warnings: None,
         };
         let bound = cap
             .params
@@ -666,6 +791,7 @@ fn unary_test_value<'a>(node: &Node, input: &Value, scope: &'a Scope<'a>) -> Opt
         frame: Frame::Empty,
         parent: Some(scope),
         input: Some(input),
+        warnings: scope.warnings,
     };
     let result = eval(node, &with_input);
     match &result {

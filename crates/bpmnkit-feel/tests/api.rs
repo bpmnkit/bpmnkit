@@ -1,6 +1,8 @@
 //! The public API only.
 
-use bpmnkit_feel::{evaluate, parse, parse_unary_tests, Context, ParseOptions, Value};
+use bpmnkit_feel::{
+    evaluate, evaluate_with_diagnostics, parse, parse_unary_tests, Context, ParseOptions, Value,
+};
 
 #[test]
 fn doctest_example() {
@@ -111,4 +113,69 @@ fn unary_tests_see_the_context() {
     ctx.insert("limit", Value::from(10));
     assert!(tests.test(&Value::from(11), &ctx));
     assert!(!tests.test(&Value::from(9), &ctx));
+}
+
+/// The warnings as Zeebe prints them, checking the value matches `evaluate`.
+fn diagnose(source: &str, ctx: &Context) -> (Value, Vec<String>) {
+    let ev = evaluate_with_diagnostics(source, ctx).unwrap();
+    assert_eq!(ev.value, evaluate(source, ctx).unwrap(), "{source}");
+    (
+        ev.value,
+        ev.warnings.iter().map(|w| w.to_string()).collect(),
+    )
+}
+
+#[test]
+fn suppressed_failures_are_reported_with_the_null() {
+    let mut ctx = Context::new();
+    ctx.insert("orderValue", Value::from("99"));
+    // The incident text in Camunda's Operate guide.
+    assert_eq!(
+        diagnose("orderValue >= 100", &ctx),
+        (
+            Value::Null,
+            vec!["[NOT_COMPARABLE] Can't compare '\"99\"' with '100'".to_string()]
+        )
+    );
+    let ctx = Context::new();
+    for (source, warning) in [
+        ("10 / 0", "[INVALID_TYPE] Can't divide '10' by '0'"),
+        ("\"a\" + 1", "[INVALID_TYPE] Can't add '1' to '\"a\"'"),
+        (
+            "date(\"not-a-date\")",
+            "[FUNCTION_INVOCATION_FAILURE] Failed to invoke function 'date' with arguments (\"not-a-date\")",
+        ),
+        ("x > 5", "[NO_VARIABLE_FOUND] No variable found with name 'x'"),
+        ("{a: 1}.b", "[NO_CONTEXT_ENTRY_FOUND] No context entry found with key 'b'"),
+        ("nope(1)", "[NO_FUNCTION_FOUND] No function found with name 'nope' and 1 parameters"),
+        ("1 = \"1\"", "[NOT_COMPARABLE] Can't compare '1' with '\"1\"'"),
+        ("-\"a\"", "[INVALID_TYPE] Can't negate '\"a\"'"),
+    ] {
+        assert_eq!(diagnose(source, &ctx), (Value::Null, vec![warning.to_string()]), "{source}");
+    }
+}
+
+#[test]
+fn answers_that_are_null_carry_no_warning() {
+    let mut ctx = Context::new();
+    ctx.insert("x", Value::Null);
+    for source in [
+        "1 + 2",
+        "x = null",
+        "x > 5",
+        "get value({}, \"a\")",
+        "null + 1",
+    ] {
+        assert!(diagnose(source, &ctx).1.is_empty(), "{source}");
+    }
+}
+
+#[test]
+fn warnings_from_nested_scopes_are_collected() {
+    let (value, warnings) = diagnose("for i in [1, 0] return 10 / i", &Context::new());
+    assert_eq!(value, Value::from(vec![Value::from(10), Value::Null]));
+    assert_eq!(
+        warnings,
+        vec!["[INVALID_TYPE] Can't divide '10' by '0'".to_string()]
+    );
 }

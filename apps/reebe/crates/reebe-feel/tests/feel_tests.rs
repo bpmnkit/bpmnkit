@@ -99,11 +99,28 @@ fn test_date_literal() {
 }
 
 #[test]
-fn test_date_invalid_returns_null() {
-    // bpmnkit-feel follows the DMN spec: an invalid conversion is null, not an error.
+fn test_date_invalid_returns_null_with_a_warning() {
+    // As in FEEL-Scala (Zeebe): an invalid conversion is null, and the failure is a warning.
     let ctx = empty_ctx();
-    let result = evaluate(r#"date("not-a-date")"#, &ctx);
-    assert_eq!(result, Ok(FeelValue::Null));
+    assert_eq!(evaluate(r#"date("not-a-date")"#, &ctx), Ok(FeelValue::Null));
+    let evaluated = reebe_feel::evaluate_with_warnings(r#"date("not-a-date")"#, &ctx).unwrap();
+    assert_eq!(evaluated.value, FeelValue::Null);
+    assert_eq!(
+        evaluated.warnings,
+        vec![r#"[FUNCTION_INVOCATION_FAILURE] Failed to invoke function 'date' with arguments ("not-a-date")"#]
+    );
+    assert_eq!(
+        evaluated.warnings_suffix(),
+        " The evaluation reported the following warnings:\n[FUNCTION_INVOCATION_FAILURE] Failed to invoke function 'date' with arguments (\"not-a-date\")"
+    );
+}
+
+#[test]
+fn test_parse_and_evaluate_with_warnings_keeps_plain_text() {
+    let evaluated = reebe_feel::parse_and_evaluate_with_warnings("plain", &empty_ctx()).unwrap();
+    assert_eq!(evaluated.value, FeelValue::String("plain".into()));
+    assert!(evaluated.warnings.is_empty());
+    assert_eq!(evaluated.warnings_suffix(), "");
 }
 
 #[test]

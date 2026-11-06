@@ -31,6 +31,45 @@ pub fn parse_and_evaluate(
     }
 }
 
+/// A value with the failures FEEL suppressed into `null` while computing it,
+/// each formatted as Zeebe prints them (`[NO_VARIABLE_FOUND] No variable found with name 'x'`).
+#[derive(Debug, Clone, PartialEq)]
+pub struct Evaluated {
+    pub value: FeelValue,
+    pub warnings: Vec<String>,
+}
+
+impl Evaluated {
+    /// The suffix Zeebe appends to an incident when a result has the wrong type;
+    /// empty when nothing was suppressed.
+    pub fn warnings_suffix(&self) -> String {
+        if self.warnings.is_empty() {
+            String::new()
+        } else {
+            format!(" The evaluation reported the following warnings:\n{}", self.warnings.join("\n"))
+        }
+    }
+}
+
+/// [`evaluate`], also reporting the suppressed failures. Zeebe raises no incident for
+/// them on their own: only where the null is not an accepted result.
+pub fn evaluate_with_warnings(expression: &str, context: &FeelContext) -> Result<Evaluated, FeelError> {
+    let ev = bpmnkit_feel::evaluate_with_diagnostics(expression, &convert::to_feel_context(context))
+        .map_err(|e| FeelError::ParseError(e.to_string()))?;
+    Ok(Evaluated {
+        value: convert::from_value(ev.value),
+        warnings: ev.warnings.iter().map(ToString::to_string).collect(),
+    })
+}
+
+/// [`parse_and_evaluate`], also reporting the suppressed failures.
+pub fn parse_and_evaluate_with_warnings(expression: &str, context: &FeelContext) -> Result<Evaluated, FeelError> {
+    match expression.strip_prefix('=') {
+        Some(feel_expr) => evaluate_with_warnings(feel_expr.trim(), context),
+        None => Ok(Evaluated { value: FeelValue::String(expression.to_string()), warnings: Vec::new() }),
+    }
+}
+
 /// Evaluate a FEEL expression string (without the leading `=`) with the given context.
 ///
 /// Evaluation is delegated to `bpmnkit-feel`, which follows the DMN spec: an invalid

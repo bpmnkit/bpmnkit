@@ -10,7 +10,7 @@ fn ev_with(src: &str, vars: &Context) -> Value {
     };
     let parsed = parse_expression(src, &options);
     match parsed.ast {
-        Some(ast) if parsed.errors.is_empty() => evaluate_root(&ast, vars, None),
+        Some(ast) if parsed.errors.is_empty() => evaluate_root(&ast, vars, None, None),
         _ => panic!("parse failed: {src}"),
     }
 }
@@ -316,10 +316,13 @@ fn input_is_visible_to_expressions() {
         .unwrap();
     let input = Value::from(4);
     assert_eq!(
-        evaluate_root(&ast, &Context::new(), Some(&input)),
+        evaluate_root(&ast, &Context::new(), Some(&input), None),
         Value::from(5)
     );
-    assert_eq!(evaluate_root(&ast, &Context::new(), None), Value::Null);
+    assert_eq!(
+        evaluate_root(&ast, &Context::new(), None, None),
+        Value::Null
+    );
 }
 
 #[test]
