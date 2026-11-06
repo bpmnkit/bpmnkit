@@ -1,8 +1,16 @@
 # Progress
 
-## 2026-11-06 — Rust twin phase 2: bpmnlint rule metadata in spec/
+## 2026-11-06 — Rust twin phase 2: spec data
 
-- `spec/lint-rules.json` holds bpmnlint's rule names, rule categories, `standard-size` defaults and the `correctness` / `recommended` presets. `packages/core/src/generated/lint-rules.ts` and `bpmnkit_spec::lint` are generated from it. Rule checks and messages stay in code. No behaviour change.
+- `spec/` is now the single source for shared data. `pnpm spec:gen` (`scripts/spec-gen.mjs`, no new dependencies) checks each file against its JSON Schema in `spec/schema/`. It then writes committed TS into `src/generated/` folders and Rust into the new crate `crates/bpmnkit-spec` (MIT OR Apache-2.0, no `build.rs`). CI regenerates and fails on `git diff` in `spec/`, `crates/bpmnkit-spec` and `packages/`. The Rust job now runs `cargo fmt --check`, clippy with `-D warnings` and `cargo test --workspace`.
+- Moved, with no behaviour change (all TS tests pass and `pnpm conformance:record` leaves no diff):
+  - FEEL built-in signatures, arity and the variadic set: `spec/feel-builtins.json`.
+  - bpmnlint rule names, categories, check order, `standard-size` defaults and presets: `spec/lint-rules.json`.
+  - Camunda compatibility tables (versions, element, implementation and timer support, features, FEEL since, inbound properties, plugin rules): `spec/compat-rules.json`. `TIMER_SUPPORT`'s functions are now a 2×2 table. `camunda-compat-data.ts` keeps the same exports.
+  - Connector templates: `spec/templates/connectors.json`. `pnpm update-connectors` now writes it, and spec-gen splits it into the two `generated.ts` files, whose bodies are byte-identical to before. Rust reads it with `include_str!` instead of 3 MB of generated literals.
+  - Element definitions: the general format is in `spec/schema/elements.schema.json`, and form-js component types (`spec/elements/form.json`) are the pilot. BPMN, Zeebe and DMN follow in phase 4.
+- Stays in code: rule check functions and finding messages (template literals with logic), builtin implementations, and the compat analysis logic.
+- `bpmnkit-spec` is `publish = false` until phase 9, because the templates JSON lives outside the crate.
 
 ## 2026-11-06 — Rust twin phase 1: conformance harness
 
