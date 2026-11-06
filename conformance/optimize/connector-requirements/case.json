@@ -1,0 +1,56 @@
+{
+  "runs": {
+    "default": {},
+    "with-requirements": {
+      "connectorRequirements": {
+        "tpl.http": [
+          "url",
+          "method",
+          "result",
+          "authentication.token"
+        ],
+        "tpl.other": [
+          "prop",
+          "x"
+        ]
+      }
+    },
+    "connector-only": {
+      "connectorRequirements": {
+        "tpl.http": [
+          "url",
+          "method",
+          "result",
+          "authentication.token"
+        ],
+        "tpl.other": [
+          "prop",
+          "x"
+        ]
+      },
+      "categories": [
+        "connector"
+      ]
+    },
+    "deploy-only": {
+      "connectorRequirements": {
+        "tpl.http": [
+          "url",
+          "method",
+          "result",
+          "authentication.token"
+        ],
+        "tpl.other": [
+          "prop",
+          "x"
+        ]
+      },
+      "categories": [
+        "deploy"
+      ]
+    },
+    "empty-table": {
+      "connectorRequirements": {}
+    }
+  }
+}

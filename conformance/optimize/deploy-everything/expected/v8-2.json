@@ -1,0 +1,849 @@
+{
+  "findings": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "s1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"s1\" (startEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "s2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"s2\" (startEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "s3"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"s3\" (startEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"svc\" (serviceTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"svc\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "snd"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"snd\" (sendTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "snd"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"snd\" (sendTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "br"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"br\" (businessRuleTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "br"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"br\" (businessRuleTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "br2"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"br2\" (businessRuleTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "br2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"br2\" (businessRuleTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "br3"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"br3\" (businessRuleTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "br3"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"br3\" (businessRuleTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ca"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ca\" (callActivity) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ca"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ca\" (callActivity) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ca2"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ca2\" (callActivity) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ca2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ca2\" (callActivity) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic1"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ic1\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ic1\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic2"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ic2\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ic2\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic3"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ic3\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic3"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ic3\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic4"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ic4\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic4"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ic4\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "rt1"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"rt1\" (receiveTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "rt1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"rt1\" (receiveTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "rt2"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"rt2\" (receiveTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "rt2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"rt2\" (receiveTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "rt3"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"rt3\" (receiveTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "rt3"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"rt3\" (receiveTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "host"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"host\" (task) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "host"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"host\" (task) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "bm"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"bm\" (boundaryEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "bm"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"bm\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "bmk"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"bmk\" (boundaryEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "bmk"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"bmk\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"end\" (endEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ca"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"Call none\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ca2"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"Call ok\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "bm"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"host\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "bmk"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"host\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "br2"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:r",
+      "message": "Variable \"r\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "r"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"r\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "br2"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:br2",
+      "message": "Element \"br2\" produces: r.",
+      "processId": "proc",
+      "produces": [
+        "r"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "s1"
+      ],
+      "fixable": false,
+      "id": "deploy/message-start-no-name",
+      "message": "Message start event \"Msg start\" has no message name.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a message name — Camunda 8 refuses to deploy an unnamed message reference."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "s3"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Timer start\" has 1 event definition(s) without an id.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"No type\" (serviceTask) has no zeebe:taskDefinition type.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "snd"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Send no type\" (sendTask) has no zeebe:taskDefinition type.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "br"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Rule none\" (businessRuleTask) has neither a zeebe:taskDefinition type nor a zeebe:calledDecision.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a decisionId or a job type."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ca"
+      ],
+      "fixable": false,
+      "id": "deploy/call-activity-no-process",
+      "message": "Call activity \"Call none\" has no zeebe:calledElement processId.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set the process id to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ic1"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Catch no corr\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ic4"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Catch no id\" has 1 event definition(s) without an id.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "rt1"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Receive no corr\" (receiveTask) has no zeebe:subscription correlationKey.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "bm"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"bm\" (boundaryEvent) has no zeebe:subscription correlationKey.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "s3"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer start event \"Timer start\" has no timer value; set one of timeCycle, timeDate.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set when the timer fires."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ic2"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message intermediate catch event \"Catch ext corr\" carries its zeebe:subscription itself; Camunda Modeler expects it on message \"M1\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Move the zeebe:subscription onto the bpmn:message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "rt3"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Receive task \"Receive no msg\" references no message.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "bmk"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message boundary event \"bmk\" carries its zeebe:subscription itself; Camunda Modeler expects it on message \"M3\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Move the zeebe:subscription onto the bpmn:message."
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"s1\"",
+      "id": "flow/dead-end",
+      "index": 0,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"s1\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"s2\"",
+      "id": "flow/dead-end",
+      "index": 1,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"s2\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"s3\"",
+      "id": "flow/dead-end",
+      "index": 2,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"s3\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"svc\"",
+      "id": "flow/dead-end",
+      "index": 4,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"svc\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"snd\"",
+      "id": "flow/dead-end",
+      "index": 6,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:sendTask>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"snd\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"br\"",
+      "id": "flow/dead-end",
+      "index": 8,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"br\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"br2\"",
+      "id": "flow/dead-end",
+      "index": 10,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"br2\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"br3\"",
+      "id": "flow/dead-end",
+      "index": 12,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"br3\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"ca\"",
+      "id": "flow/dead-end",
+      "index": 14,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"ca\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"ca2\"",
+      "id": "flow/dead-end",
+      "index": 16,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"ca2\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"ic1\"",
+      "id": "flow/dead-end",
+      "index": 18,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"ic1\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"ic2\"",
+      "id": "flow/dead-end",
+      "index": 20,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"ic2\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"ic3\"",
+      "id": "flow/dead-end",
+      "index": 22,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"ic3\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"ic4\"",
+      "id": "flow/dead-end",
+      "index": 24,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"ic4\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"rt1\"",
+      "id": "flow/dead-end",
+      "index": 26,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:receiveTask>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"rt1\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"rt2\"",
+      "id": "flow/dead-end",
+      "index": 28,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:receiveTask>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"rt2\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"rt3\"",
+      "id": "flow/dead-end",
+      "index": 30,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:receiveTask>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"rt3\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"host\"",
+      "id": "flow/dead-end",
+      "index": 32,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"host\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"bm\"",
+      "id": "flow/dead-end",
+      "index": 34,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"bm\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"bmk\"",
+      "id": "flow/dead-end",
+      "index": 36,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:message id=\"m1\" name=\"M1\"/>\n  <bpmn:message id=\"m2\" name=\"M2\">\n    <bpmn:extensionElements>\n      <zeebe:subscription correlationKey=\"=orderId\"/>\n    </bpmn:extensionElements>\n  </bpmn:message>\n  <bpmn:message id=\"m3\" name=\"M3\"/>\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"s1\" name=\"Msg start\">\n      <bpmn:messageEventDefinition id=\"s1d\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s2\" name=\"Msg start named\">\n      <bpmn:messageEventDefinition id=\"s2d\" messageRef=\"m1\"/>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"s3\" name=\"Timer start\">\n      <bpmn:timerEventDefinition/>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"svc\" name=\"No type\"/>\n    <bpmn:sendTask id=\"snd\" name=\"Send no type\"/>\n    <bpmn:businessRuleTask id=\"br\" name=\"Rule none\"/>\n    <bpmn:businessRuleTask id=\"br2\" name=\"Rule decision\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"d\" resultVariable=\"r\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:businessRuleTask id=\"br3\" name=\"Rule job\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"t\"/>\n      </bpmn:extensionElements>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"ca\" name=\"Call none\"/>\n    <bpmn:callActivity id=\"ca2\" name=\"Call ok\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"other\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:intermediateCatchEvent id=\"ic1\" name=\"Catch no corr\">\n      <bpmn:messageEventDefinition id=\"ic1d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic2\" name=\"Catch ext corr\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:messageEventDefinition id=\"ic2d\" messageRef=\"m1\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic3\" name=\"Catch msg corr\">\n      <bpmn:messageEventDefinition id=\"ic3d\" messageRef=\"m2\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"ic4\" name=\"Catch no id\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration>PT1S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:receiveTask id=\"rt1\" name=\"Receive no corr\" messageRef=\"m1\"/>\n    <bpmn:receiveTask id=\"rt2\" name=\"Receive msg corr\" messageRef=\"m2\"/>\n    <bpmn:receiveTask id=\"rt3\" name=\"Receive no msg\"/>\n    <bpmn:task id=\"host\" name=\"Host\"/>\n    <bpmn:boundaryEvent id=\"bm\" attachedToRef=\"host\">\n      <bpmn:messageEventDefinition id=\"bmd\" messageRef=\"m1\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"bmk\" attachedToRef=\"host\">\n      <bpmn:extensionElements>\n        <zeebe:subscription correlationKey=\"=k\"/>\n      </bpmn:extensionElements>\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:messageEventDefinition id=\"bmkd\" messageRef=\"m3\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"bmk\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 2,
+      "deploy": 14,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 38,
+      "naming": 0,
+      "pattern": 4,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 36,
+      "info": 2,
+      "warning": 20
+    },
+    "total": 58
+  }
+}

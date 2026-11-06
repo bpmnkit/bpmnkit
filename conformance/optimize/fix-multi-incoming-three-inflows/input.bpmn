@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+  xmlns:modeler="http://camunda.org/schema/modeler/1.0"
+  xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  
+  
+  <bpmn:process id="proc" isExecutable="true">
+    <bpmn:startEvent id="start" /><bpmn:exclusiveGateway id="x" default="f3" name="X?" /><bpmn:task id="a" name="A" /><bpmn:task id="b" name="B" /><bpmn:endEvent id="end" name="E" /><bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="x" /><bpmn:sequenceFlow id="f2" sourceRef="x" targetRef="a"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= ok</bpmn:conditionExpression></bpmn:sequenceFlow><bpmn:sequenceFlow id="f3" sourceRef="x" targetRef="b" /><bpmn:sequenceFlow id="f4" sourceRef="a" targetRef="end" /><bpmn:sequenceFlow id="f5" sourceRef="b" targetRef="end" /><bpmn:sequenceFlow id="f6" sourceRef="start" targetRef="end" />
+  </bpmn:process>
+  
+</bpmn:definitions>

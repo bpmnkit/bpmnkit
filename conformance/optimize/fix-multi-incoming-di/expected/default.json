@@ -1,0 +1,57 @@
+{
+  "findings": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "join"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"join\" (task) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Inserted exclusive gateway \"Gateway_0000001\" before \"join\" to join 2 incoming flows",
+      "id": "flow/multi-incoming-task",
+      "index": 0,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"S\"/>\n    <bpmn:parallelGateway id=\"fork\" name=\"Fork\"/>\n    <bpmn:task id=\"a\" name=\"A\"/>\n    <bpmn:task id=\"b\" name=\"B\"/>\n    <bpmn:task id=\"join\" name=\"Join\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:task>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:exclusiveGateway id=\"Gateway_0000001\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:sequenceFlow id=\"f1\" sourceRef=\"start\" targetRef=\"fork\"/>\n    <bpmn:sequenceFlow id=\"f2\" sourceRef=\"fork\" targetRef=\"a\"/>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"fork\" targetRef=\"b\"/>\n    <bpmn:sequenceFlow id=\"f4\" sourceRef=\"a\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f5\" sourceRef=\"b\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f6\" sourceRef=\"join\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"Gateway_0000001\" targetRef=\"join\"/>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"d\">\n    <bpmndi:BPMNPlane id=\"p\" bpmnElement=\"proc\">\n      <bpmndi:BPMNShape id=\"start_di\" bpmnElement=\"start\">\n        <dc:Bounds x=\"0\" y=\"100\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"fork_di\" bpmnElement=\"fork\">\n        <dc:Bounds x=\"100\" y=\"93\" width=\"50\" height=\"50\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"a_di\" bpmnElement=\"a\">\n        <dc:Bounds x=\"250\" y=\"0\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"b_di\" bpmnElement=\"b\">\n        <dc:Bounds x=\"250\" y=\"200\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"join_di\" bpmnElement=\"join\">\n        <dc:Bounds x=\"450\" y=\"100\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"end_di\" bpmnElement=\"end\">\n        <dc:Bounds x=\"650\" y=\"118\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Gateway_0000001_di\" bpmnElement=\"Gateway_0000001\" isMarkerVisible=\"true\">\n        <dc:Bounds x=\"350\" y=\"115\" width=\"50\" height=\"50\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"f1_di\" bpmnElement=\"f1\">\n        <di:waypoint x=\"36\" y=\"118\"/>\n        <di:waypoint x=\"100\" y=\"118\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"f2_di\" bpmnElement=\"f2\">\n        <di:waypoint x=\"125\" y=\"93\"/>\n        <di:waypoint x=\"125\" y=\"40\"/>\n        <di:waypoint x=\"250\" y=\"40\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"f3_di\" bpmnElement=\"f3\">\n        <di:waypoint x=\"125\" y=\"143\"/>\n        <di:waypoint x=\"125\" y=\"240\"/>\n        <di:waypoint x=\"250\" y=\"240\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"f4_di\" bpmnElement=\"f4\">\n        <di:waypoint x=\"350\" y=\"40\"/>\n        <di:waypoint x=\"500\" y=\"40\"/>\n        <di:waypoint x=\"500\" y=\"100\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"f5_di\" bpmnElement=\"f5\">\n        <di:waypoint x=\"350\" y=\"240\"/>\n        <di:waypoint x=\"500\" y=\"240\"/>\n        <di:waypoint x=\"500\" y=\"180\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"f6_di\" bpmnElement=\"f6\">\n        <di:waypoint x=\"550\" y=\"140\"/>\n        <di:waypoint x=\"650\" y=\"136\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0000002_di\" bpmnElement=\"Flow_0000002\">\n        <di:waypoint x=\"400\" y=\"140\"/>\n        <di:waypoint x=\"450\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 1,
+      "naming": 0,
+      "pattern": 1,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 1,
+      "info": 0,
+      "warning": 1
+    },
+    "total": 2
+  }
+}

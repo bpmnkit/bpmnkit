@@ -1,0 +1,40 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_79523269-7444-4b01-90e9-e23957a9d020"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Manually Approve Vacation\" is a job-worker user task; Camunda 8.10 deprecates those in favour of Camunda user tasks.",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_2b960d84-feb1-46a9-a1a1-c300dd996b99"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <Current Va...> not allowed",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "The output target \"Current Vacation Status\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <Vacation A...> not allowed",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "The output target \"Vacation Approval\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    }
+  ]
+}

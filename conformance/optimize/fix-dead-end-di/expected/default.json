@@ -1,0 +1,67 @@
+{
+  "findings": [
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"proc\" has no end event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "c"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"c\" (task) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"c\"",
+      "id": "flow/dead-end",
+      "index": 1,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"S\"/>\n    <bpmn:task id=\"a\" name=\"A\"/>\n    <bpmn:task id=\"b\" name=\"B\"/>\n    <bpmn:task id=\"c\" name=\"C\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"f1\" sourceRef=\"start\" targetRef=\"a\"/>\n    <bpmn:sequenceFlow id=\"f2\" sourceRef=\"a\" targetRef=\"b\"/>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"b\" targetRef=\"c\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"c\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"d\">\n    <bpmndi:BPMNPlane id=\"p\" bpmnElement=\"proc\">\n      <bpmndi:BPMNShape id=\"start_di\" bpmnElement=\"start\">\n        <dc:Bounds x=\"100\" y=\"100\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"a_di\" bpmnElement=\"a\">\n        <dc:Bounds x=\"250\" y=\"100\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"b_di\" bpmnElement=\"b\">\n        <dc:Bounds x=\"400\" y=\"100\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"c_di\" bpmnElement=\"c\">\n        <dc:Bounds x=\"550\" y=\"100\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_0000001_di\" bpmnElement=\"EndEvent_0000001\">\n        <dc:Bounds x=\"800\" y=\"122\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"f1_di\" bpmnElement=\"f1\">\n        <di:waypoint x=\"136\" y=\"118\"/>\n        <di:waypoint x=\"250\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"f2_di\" bpmnElement=\"f2\">\n        <di:waypoint x=\"350\" y=\"140\"/>\n        <di:waypoint x=\"400\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"f3_di\" bpmnElement=\"f3\">\n        <di:waypoint x=\"500\" y=\"140\"/>\n        <di:waypoint x=\"550\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0000002_di\" bpmnElement=\"Flow_0000002\">\n        <di:waypoint x=\"650\" y=\"140\"/>\n        <di:waypoint x=\"800\" y=\"140\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 2,
+      "naming": 0,
+      "pattern": 1,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 0,
+      "info": 0,
+      "warning": 3
+    },
+    "total": 3
+  }
+}

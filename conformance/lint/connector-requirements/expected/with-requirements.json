@@ -1,0 +1,335 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 5,
+    "info": 11,
+    "warning": 9
+  },
+  "diagnostics": [
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "c1",
+        "c3",
+        "c4"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "3 service tasks share a similar configuration (taskType=\"io.camunda:x:1\") and could be reused via a call activity.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"c2\" has no output variable mapping.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "c3"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"c3\" has no output variable mapping.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "c4"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"c4\" has no output variable mapping.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "plain"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Plain\" has no output variable mapping.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"io.camunda:x:1\" is used by 4 service tasks.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "c1",
+        "c2"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:a",
+      "message": "Variable \"a\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"a\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:r",
+      "message": "Variable \"r\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"r\" is never set. Did you mean \"url\"?"
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:m",
+      "message": "Variable \"m\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"m\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "c1",
+        "c2"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:url",
+      "message": "Variable \"url\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"url\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:result",
+      "message": "Variable \"result\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"result\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:method",
+      "message": "Variable \"method\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"method\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:c1",
+      "message": "Element \"c1\" produces: url, result; consumes: a, r.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:c2",
+      "message": "Element \"c2\" produces: url, method; consumes: a, m.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f2"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f2",
+      "message": "Variables in scope at flow \"f2\": result, url.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f3"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f3",
+      "message": "Variables in scope at flow \"f3\": method, result, url.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f4"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f4",
+      "message": "Variables in scope at flow \"f4\": method, result, url.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f5"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f5",
+      "message": "Variables in scope at flow \"f5\": method, result, url.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f6"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f6",
+      "message": "Variables in scope at flow \"f6\": method, result, url.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "connector",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "connector/missing-required",
+      "message": "\"c1\" is missing required connector value \"method\" for template \"tpl.http\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a value for \"method\"."
+    },
+    {
+      "category": "connector",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "connector/missing-required",
+      "message": "\"c1\" is missing required connector value \"authentication.token\" for template \"tpl.http\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a value for \"authentication.token\"."
+    },
+    {
+      "category": "connector",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "connector/missing-required",
+      "message": "\"c2\" is missing required connector value \"result\" for template \"tpl.http\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a value for \"result\"."
+    },
+    {
+      "category": "connector",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "connector/missing-required",
+      "message": "\"c2\" is missing required connector value \"authentication.token\" for template \"tpl.http\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a value for \"authentication.token\"."
+    },
+    {
+      "category": "connector",
+      "elementIds": [
+        "c3"
+      ],
+      "fixable": false,
+      "id": "connector/missing-required",
+      "message": "\"c3\" is missing required connector value \"x\" for template \"tpl.other\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a value for \"x\"."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.6.0"
+  },
+  "total": 25
+}

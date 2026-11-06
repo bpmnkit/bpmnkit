@@ -1,0 +1,19 @@
+{
+  "runs": {
+    "default": {},
+    "deploy-only": {
+      "categories": [
+        "deploy"
+      ]
+    },
+    "v8-2": {
+      "camundaVersion": "8.2"
+    },
+    "v8-0": {
+      "camundaVersion": "8.0",
+      "categories": [
+        "deploy"
+      ]
+    }
+  }
+}

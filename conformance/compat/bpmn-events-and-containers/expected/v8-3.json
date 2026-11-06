@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Sub_work"
+      ],
+      "fixable": false,
+      "id": "compat/collapsed-subprocess",
+      "message": "Sub-process \"Sub_work\" is drawn collapsed, which needs Camunda 8.4 or newer; this model targets Camunda 8.3.",
+      "processId": "Process_events",
+      "severity": "error",
+      "suggestion": "Expand the sub-process, or target Camunda 8.4 or newer."
+    }
+  ]
+}

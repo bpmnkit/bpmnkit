@@ -1,0 +1,125 @@
+{
+  "findings": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"end\" (endEvent) has 3 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"start\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "x",
+        "f2"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"f2\" from split gateway \"x\" has no condition label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "x",
+        "f3"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"f3\" from split gateway \"x\" has no condition label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"start\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "ok"
+      ],
+      "elementIds": [
+        "x"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:ok",
+      "message": "Variable \"ok\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"ok\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "ok"
+      ],
+      "elementIds": [
+        "x"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:x",
+      "message": "Element \"x\" consumes: ok.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Inserted exclusive gateway \"Gateway_0000001\" before \"end\" to join 3 incoming flows",
+      "id": "flow/multi-incoming-task",
+      "index": 0,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\"/>\n    <bpmn:exclusiveGateway id=\"x\" name=\"X?\" default=\"f3\"/>\n    <bpmn:task id=\"a\" name=\"A\"/>\n    <bpmn:task id=\"b\" name=\"B\"/>\n    <bpmn:endEvent id=\"end\" name=\"E\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:exclusiveGateway id=\"Gateway_0000001\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:sequenceFlow id=\"f1\" sourceRef=\"start\" targetRef=\"x\"/>\n    <bpmn:sequenceFlow id=\"f2\" sourceRef=\"x\" targetRef=\"a\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">= ok</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"x\" targetRef=\"b\"/>\n    <bpmn:sequenceFlow id=\"f4\" sourceRef=\"a\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"f5\" sourceRef=\"b\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"f6\" sourceRef=\"start\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"Gateway_0000001\" targetRef=\"end\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 2,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 1,
+      "naming": 3,
+      "pattern": 1,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 1,
+      "info": 2,
+      "warning": 4
+    },
+    "total": 7
+  }
+}

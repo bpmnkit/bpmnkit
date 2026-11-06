@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+  xmlns:modeler="http://camunda.org/schema/modeler/1.0"
+  xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  
+  
+  <bpmn:process id="proc" isExecutable="true">
+    <bpmn:startEvent id="start" name="S" /><bpmn:serviceTask id="t1" name="t1"><bpmn:extensionElements><zeebe:taskDefinition type="email" /><zeebe:taskHeaders><zeebe:header key="h" value="v" /></zeebe:taskHeaders><zeebe:ioMapping><zeebe:input source="=a" target="to" /><zeebe:output source="=r" target="res" /></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask><bpmn:serviceTask id="t2" name="t2"><bpmn:extensionElements><zeebe:taskDefinition type="email" /><zeebe:taskHeaders><zeebe:header key="h" value="v" /></zeebe:taskHeaders><zeebe:ioMapping><zeebe:input source="=b" target="to" /><zeebe:output source="=r" target="res" /></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask><bpmn:serviceTask id="t3" name="t3"><bpmn:extensionElements><zeebe:taskDefinition type="email" /><zeebe:ioMapping><zeebe:input source="=c" target="to" /><zeebe:output source="=r" target="other" /></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask><bpmn:serviceTask id="p1" name="p1"><bpmn:extensionElements><zeebe:taskDefinition type="pay" /><zeebe:ioMapping><zeebe:input source="=a" target="x" /></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask><bpmn:endEvent id="end" name="E" /><bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="t1" /><bpmn:sequenceFlow id="f2" sourceRef="t1" targetRef="t2" /><bpmn:sequenceFlow id="f3" sourceRef="t2" targetRef="t3" /><bpmn:sequenceFlow id="f4" sourceRef="t3" targetRef="p1" /><bpmn:sequenceFlow id="f5" sourceRef="p1" targetRef="end" />
+  </bpmn:process>
+  
+</bpmn:definitions>

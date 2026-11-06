@@ -1,0 +1,642 @@
+{
+  "findings": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "single"
+      ],
+      "fixable": true,
+      "id": "flow/redundant-gateway",
+      "message": "Gateway \"single\" (exclusiveGateway) has only 1 incoming and 1 outgoing flow — it is redundant.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Remove this gateway and connect its source directly to its target."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"a\" (task) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"a\" (task) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "b1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"b1\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "b2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"b2\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "b3"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"b3\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "b4"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"b4\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "b5"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"b5\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "b6"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"b6\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "fork"
+      ],
+      "fixable": false,
+      "id": "pattern/parallel-variable-conflict",
+      "message": "Parallel branches from gateway \"Fork\" both write to: shared.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Last writer wins — result is non-deterministic. Use distinct variable names per branch."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "single"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-single-outgoing",
+      "message": "Exclusive gateway \"One way?\" has only one outgoing flow and is a pass-through.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Remove this gateway and connect its source directly to its target."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b0"
+      ],
+      "fixable": false,
+      "id": "pattern/timer-duration-zero",
+      "message": "Timer boundary on \"t0\" has a duration of zero — it will fire immediately.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a meaningful duration (e.g. PT1H for 1 hour) to avoid instant firing."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b1"
+      ],
+      "fixable": false,
+      "id": "pattern/timer-duration-zero",
+      "message": "Timer boundary on \"t0\" has a duration of zero — it will fire immediately.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a meaningful duration (e.g. PT1H for 1 hour) to avoid instant firing."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b3"
+      ],
+      "fixable": false,
+      "id": "pattern/timer-duration-zero",
+      "message": "Timer boundary on \"u\" has a duration of zero — it will fire immediately.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a meaningful duration (e.g. PT1H for 1 hour) to avoid instant firing."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b4"
+      ],
+      "fixable": false,
+      "id": "pattern/timer-duration-zero",
+      "message": "Timer boundary on \"u\" has a duration of zero — it will fire immediately.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a meaningful duration (e.g. PT1H for 1 hour) to avoid instant firing."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b5"
+      ],
+      "fixable": false,
+      "id": "pattern/timer-duration-zero",
+      "message": "Timer boundary on \"u\" has a duration of zero — it will fire immediately.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a meaningful duration (e.g. PT1H for 1 hour) to avoid instant firing."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b6"
+      ],
+      "fixable": false,
+      "id": "pattern/timer-duration-zero",
+      "message": "Timer boundary on \"u\" has a duration of zero — it will fire immediately.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a meaningful duration (e.g. PT1H for 1 hour) to avoid instant firing."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b1"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"t0\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b2"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"t0\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b3"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"u\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b4"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"u\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b5"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"u\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b6"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"u\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ta1"
+      ],
+      "fixable": false,
+      "id": "pattern/empty-annotation",
+      "message": "Text annotation \"ta1\" is empty.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Fill in the annotation or remove it to keep the diagram clean."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ta2"
+      ],
+      "fixable": false,
+      "id": "pattern/empty-annotation",
+      "message": "Text annotation \"ta2\" is empty.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Fill in the annotation or remove it to keep the diagram clean."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "r"
+      ],
+      "elementIds": [
+        "w1",
+        "w2",
+        "w3"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:r",
+      "message": "Variable \"r\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"r\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "q"
+      ],
+      "elementIds": [
+        "w1"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:q",
+      "message": "Variable \"q\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"q\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "w1",
+        "w2"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:shared",
+      "message": "Variable \"shared\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"shared\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "w1"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:only1",
+      "message": "Variable \"only1\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "only1"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"only1\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "r",
+        "q"
+      ],
+      "elementIds": [
+        "w1"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:w1",
+      "message": "Element \"w1\" produces: shared, only1; consumes: r, q.",
+      "processId": "proc",
+      "produces": [
+        "shared",
+        "only1"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "r"
+      ],
+      "elementIds": [
+        "w2"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:w2",
+      "message": "Element \"w2\" produces: shared; consumes: r.",
+      "processId": "proc",
+      "produces": [
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "r"
+      ],
+      "elementIds": [
+        "w3"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:w3",
+      "message": "Element \"w3\" consumes: r.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f6"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f6",
+      "message": "Variables in scope at flow \"f6\": only1, shared.",
+      "processId": "proc",
+      "produces": [
+        "only1",
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f7"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f7",
+      "message": "Variables in scope at flow \"f7\": shared.",
+      "processId": "proc",
+      "produces": [
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f9"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f9",
+      "message": "Variables in scope at flow \"f9\": only1, shared.",
+      "processId": "proc",
+      "produces": [
+        "only1",
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f10"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f10",
+      "message": "Variables in scope at flow \"f10\": only1, shared.",
+      "processId": "proc",
+      "produces": [
+        "only1",
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f11"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f11",
+      "message": "Variables in scope at flow \"f11\": only1, shared.",
+      "processId": "proc",
+      "produces": [
+        "only1",
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "u"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Review\" is a job-worker user task; Camunda 8.6 deprecates those in favour of Camunda user tasks.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "u"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Review\" has no zeebe:formDefinition.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "b3"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer boundary event \"b3\" has timeDuration \"0\", which is not an ISO 8601 duration (PT15M).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Write an ISO 8601 duration (PT15M), or a FEEL expression starting with \"=\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "b4"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer boundary event \"b4\" has timeDuration \"P0\", which is not an ISO 8601 duration (PT15M).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Write an ISO 8601 duration (PT15M), or a FEEL expression starting with \"=\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "w3"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <  > not allowed",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "The output target \"  \" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Removed redundant gateway \"single\" and connected \"start\" → \"fork\"",
+      "id": "flow/redundant-gateway",
+      "index": 0,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"S\">\n      <bpmn:outgoing>Flow_0000001</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:task id=\"a\" name=\"A\"/>\n    <bpmn:parallelGateway id=\"fork\" name=\"Fork\">\n      <bpmn:incoming>Flow_0000001</bpmn:incoming>\n    </bpmn:parallelGateway>\n    <bpmn:serviceTask id=\"w1\" name=\"W1\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w1\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n          <zeebe:output source=\"=q\" target=\"only1\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w2\" name=\"W2\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w2\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w3\" name=\"W3\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w3\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"  \"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:parallelGateway id=\"join\" name=\"Join\"/>\n    <bpmn:userTask id=\"u\" name=\"Review\"/>\n    <bpmn:task id=\"t0\" name=\"Waits\"/>\n    <bpmn:boundaryEvent id=\"b0\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b0d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b1\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b1d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0D</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b2\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b2d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT1H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b3\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b3d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b4\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b4d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b5\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b5d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0M</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b6\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b6d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"end2\" name=\"E2\"/>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"fork\" targetRef=\"w1\"/>\n    <bpmn:sequenceFlow id=\"f4\" sourceRef=\"fork\" targetRef=\"w2\"/>\n    <bpmn:sequenceFlow id=\"f5\" sourceRef=\"fork\" targetRef=\"w3\"/>\n    <bpmn:sequenceFlow id=\"f6\" sourceRef=\"w1\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f7\" sourceRef=\"w2\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f8\" sourceRef=\"w3\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f9\" sourceRef=\"join\" targetRef=\"t0\"/>\n    <bpmn:sequenceFlow id=\"f10\" sourceRef=\"t0\" targetRef=\"u\"/>\n    <bpmn:sequenceFlow id=\"f11\" sourceRef=\"u\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"h0\" sourceRef=\"b0\" targetRef=\"end2\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000001\" sourceRef=\"start\" targetRef=\"fork\"/>\n    <bpmn:textAnnotation id=\"ta1\">\n      <bpmn:text>   </bpmn:text>\n    </bpmn:textAnnotation>\n    <bpmn:textAnnotation id=\"ta2\"/>\n    <bpmn:textAnnotation id=\"ta3\">\n      <bpmn:text>real note</bpmn:text>\n    </bpmn:textAnnotation>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"a\"",
+      "id": "flow/dead-end",
+      "index": 2,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"S\"/>\n    <bpmn:exclusiveGateway id=\"single\" name=\"One way?\"/>\n    <bpmn:task id=\"a\" name=\"A\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:parallelGateway id=\"fork\" name=\"Fork\"/>\n    <bpmn:serviceTask id=\"w1\" name=\"W1\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w1\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n          <zeebe:output source=\"=q\" target=\"only1\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w2\" name=\"W2\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w2\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w3\" name=\"W3\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w3\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"  \"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:parallelGateway id=\"join\" name=\"Join\"/>\n    <bpmn:userTask id=\"u\" name=\"Review\"/>\n    <bpmn:task id=\"t0\" name=\"Waits\"/>\n    <bpmn:boundaryEvent id=\"b0\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b0d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b1\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b1d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0D</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b2\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b2d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT1H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b3\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b3d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b4\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b4d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b5\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b5d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0M</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b6\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b6d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"end2\" name=\"E2\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"f1\" sourceRef=\"start\" targetRef=\"single\"/>\n    <bpmn:sequenceFlow id=\"f2\" sourceRef=\"single\" targetRef=\"fork\"/>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"fork\" targetRef=\"w1\"/>\n    <bpmn:sequenceFlow id=\"f4\" sourceRef=\"fork\" targetRef=\"w2\"/>\n    <bpmn:sequenceFlow id=\"f5\" sourceRef=\"fork\" targetRef=\"w3\"/>\n    <bpmn:sequenceFlow id=\"f6\" sourceRef=\"w1\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f7\" sourceRef=\"w2\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f8\" sourceRef=\"w3\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f9\" sourceRef=\"join\" targetRef=\"t0\"/>\n    <bpmn:sequenceFlow id=\"f10\" sourceRef=\"t0\" targetRef=\"u\"/>\n    <bpmn:sequenceFlow id=\"f11\" sourceRef=\"u\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"h0\" sourceRef=\"b0\" targetRef=\"end2\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"a\" targetRef=\"EndEvent_0000001\"/>\n    <bpmn:textAnnotation id=\"ta1\">\n      <bpmn:text>   </bpmn:text>\n    </bpmn:textAnnotation>\n    <bpmn:textAnnotation id=\"ta2\"/>\n    <bpmn:textAnnotation id=\"ta3\">\n      <bpmn:text>real note</bpmn:text>\n    </bpmn:textAnnotation>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"b1\"",
+      "id": "flow/dead-end",
+      "index": 3,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"S\"/>\n    <bpmn:exclusiveGateway id=\"single\" name=\"One way?\"/>\n    <bpmn:task id=\"a\" name=\"A\"/>\n    <bpmn:parallelGateway id=\"fork\" name=\"Fork\"/>\n    <bpmn:serviceTask id=\"w1\" name=\"W1\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w1\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n          <zeebe:output source=\"=q\" target=\"only1\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w2\" name=\"W2\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w2\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w3\" name=\"W3\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w3\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"  \"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:parallelGateway id=\"join\" name=\"Join\"/>\n    <bpmn:userTask id=\"u\" name=\"Review\"/>\n    <bpmn:task id=\"t0\" name=\"Waits\"/>\n    <bpmn:boundaryEvent id=\"b0\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b0d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b1\" attachedToRef=\"t0\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:timerEventDefinition id=\"b1d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0D</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b2\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b2d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT1H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b3\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b3d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b4\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b4d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b5\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b5d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0M</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b6\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b6d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"end2\" name=\"E2\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"f1\" sourceRef=\"start\" targetRef=\"single\"/>\n    <bpmn:sequenceFlow id=\"f2\" sourceRef=\"single\" targetRef=\"fork\"/>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"fork\" targetRef=\"w1\"/>\n    <bpmn:sequenceFlow id=\"f4\" sourceRef=\"fork\" targetRef=\"w2\"/>\n    <bpmn:sequenceFlow id=\"f5\" sourceRef=\"fork\" targetRef=\"w3\"/>\n    <bpmn:sequenceFlow id=\"f6\" sourceRef=\"w1\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f7\" sourceRef=\"w2\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f8\" sourceRef=\"w3\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f9\" sourceRef=\"join\" targetRef=\"t0\"/>\n    <bpmn:sequenceFlow id=\"f10\" sourceRef=\"t0\" targetRef=\"u\"/>\n    <bpmn:sequenceFlow id=\"f11\" sourceRef=\"u\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"h0\" sourceRef=\"b0\" targetRef=\"end2\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"b1\" targetRef=\"EndEvent_0000001\"/>\n    <bpmn:textAnnotation id=\"ta1\">\n      <bpmn:text>   </bpmn:text>\n    </bpmn:textAnnotation>\n    <bpmn:textAnnotation id=\"ta2\"/>\n    <bpmn:textAnnotation id=\"ta3\">\n      <bpmn:text>real note</bpmn:text>\n    </bpmn:textAnnotation>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"b2\"",
+      "id": "flow/dead-end",
+      "index": 4,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"S\"/>\n    <bpmn:exclusiveGateway id=\"single\" name=\"One way?\"/>\n    <bpmn:task id=\"a\" name=\"A\"/>\n    <bpmn:parallelGateway id=\"fork\" name=\"Fork\"/>\n    <bpmn:serviceTask id=\"w1\" name=\"W1\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w1\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n          <zeebe:output source=\"=q\" target=\"only1\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w2\" name=\"W2\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w2\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w3\" name=\"W3\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w3\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"  \"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:parallelGateway id=\"join\" name=\"Join\"/>\n    <bpmn:userTask id=\"u\" name=\"Review\"/>\n    <bpmn:task id=\"t0\" name=\"Waits\"/>\n    <bpmn:boundaryEvent id=\"b0\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b0d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b1\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b1d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0D</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b2\" attachedToRef=\"t0\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:timerEventDefinition id=\"b2d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT1H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b3\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b3d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b4\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b4d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b5\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b5d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0M</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b6\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b6d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"end2\" name=\"E2\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"f1\" sourceRef=\"start\" targetRef=\"single\"/>\n    <bpmn:sequenceFlow id=\"f2\" sourceRef=\"single\" targetRef=\"fork\"/>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"fork\" targetRef=\"w1\"/>\n    <bpmn:sequenceFlow id=\"f4\" sourceRef=\"fork\" targetRef=\"w2\"/>\n    <bpmn:sequenceFlow id=\"f5\" sourceRef=\"fork\" targetRef=\"w3\"/>\n    <bpmn:sequenceFlow id=\"f6\" sourceRef=\"w1\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f7\" sourceRef=\"w2\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f8\" sourceRef=\"w3\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f9\" sourceRef=\"join\" targetRef=\"t0\"/>\n    <bpmn:sequenceFlow id=\"f10\" sourceRef=\"t0\" targetRef=\"u\"/>\n    <bpmn:sequenceFlow id=\"f11\" sourceRef=\"u\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"h0\" sourceRef=\"b0\" targetRef=\"end2\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"b2\" targetRef=\"EndEvent_0000001\"/>\n    <bpmn:textAnnotation id=\"ta1\">\n      <bpmn:text>   </bpmn:text>\n    </bpmn:textAnnotation>\n    <bpmn:textAnnotation id=\"ta2\"/>\n    <bpmn:textAnnotation id=\"ta3\">\n      <bpmn:text>real note</bpmn:text>\n    </bpmn:textAnnotation>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"b3\"",
+      "id": "flow/dead-end",
+      "index": 5,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"S\"/>\n    <bpmn:exclusiveGateway id=\"single\" name=\"One way?\"/>\n    <bpmn:task id=\"a\" name=\"A\"/>\n    <bpmn:parallelGateway id=\"fork\" name=\"Fork\"/>\n    <bpmn:serviceTask id=\"w1\" name=\"W1\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w1\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n          <zeebe:output source=\"=q\" target=\"only1\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w2\" name=\"W2\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w2\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w3\" name=\"W3\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w3\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"  \"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:parallelGateway id=\"join\" name=\"Join\"/>\n    <bpmn:userTask id=\"u\" name=\"Review\"/>\n    <bpmn:task id=\"t0\" name=\"Waits\"/>\n    <bpmn:boundaryEvent id=\"b0\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b0d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b1\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b1d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0D</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b2\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b2d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT1H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b3\" attachedToRef=\"u\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:timerEventDefinition id=\"b3d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b4\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b4d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b5\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b5d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0M</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b6\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b6d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"end2\" name=\"E2\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"f1\" sourceRef=\"start\" targetRef=\"single\"/>\n    <bpmn:sequenceFlow id=\"f2\" sourceRef=\"single\" targetRef=\"fork\"/>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"fork\" targetRef=\"w1\"/>\n    <bpmn:sequenceFlow id=\"f4\" sourceRef=\"fork\" targetRef=\"w2\"/>\n    <bpmn:sequenceFlow id=\"f5\" sourceRef=\"fork\" targetRef=\"w3\"/>\n    <bpmn:sequenceFlow id=\"f6\" sourceRef=\"w1\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f7\" sourceRef=\"w2\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f8\" sourceRef=\"w3\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f9\" sourceRef=\"join\" targetRef=\"t0\"/>\n    <bpmn:sequenceFlow id=\"f10\" sourceRef=\"t0\" targetRef=\"u\"/>\n    <bpmn:sequenceFlow id=\"f11\" sourceRef=\"u\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"h0\" sourceRef=\"b0\" targetRef=\"end2\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"b3\" targetRef=\"EndEvent_0000001\"/>\n    <bpmn:textAnnotation id=\"ta1\">\n      <bpmn:text>   </bpmn:text>\n    </bpmn:textAnnotation>\n    <bpmn:textAnnotation id=\"ta2\"/>\n    <bpmn:textAnnotation id=\"ta3\">\n      <bpmn:text>real note</bpmn:text>\n    </bpmn:textAnnotation>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"b4\"",
+      "id": "flow/dead-end",
+      "index": 6,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"S\"/>\n    <bpmn:exclusiveGateway id=\"single\" name=\"One way?\"/>\n    <bpmn:task id=\"a\" name=\"A\"/>\n    <bpmn:parallelGateway id=\"fork\" name=\"Fork\"/>\n    <bpmn:serviceTask id=\"w1\" name=\"W1\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w1\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n          <zeebe:output source=\"=q\" target=\"only1\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w2\" name=\"W2\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w2\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w3\" name=\"W3\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w3\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"  \"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:parallelGateway id=\"join\" name=\"Join\"/>\n    <bpmn:userTask id=\"u\" name=\"Review\"/>\n    <bpmn:task id=\"t0\" name=\"Waits\"/>\n    <bpmn:boundaryEvent id=\"b0\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b0d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b1\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b1d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0D</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b2\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b2d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT1H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b3\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b3d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b4\" attachedToRef=\"u\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:timerEventDefinition id=\"b4d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b5\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b5d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0M</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b6\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b6d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"end2\" name=\"E2\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"f1\" sourceRef=\"start\" targetRef=\"single\"/>\n    <bpmn:sequenceFlow id=\"f2\" sourceRef=\"single\" targetRef=\"fork\"/>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"fork\" targetRef=\"w1\"/>\n    <bpmn:sequenceFlow id=\"f4\" sourceRef=\"fork\" targetRef=\"w2\"/>\n    <bpmn:sequenceFlow id=\"f5\" sourceRef=\"fork\" targetRef=\"w3\"/>\n    <bpmn:sequenceFlow id=\"f6\" sourceRef=\"w1\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f7\" sourceRef=\"w2\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f8\" sourceRef=\"w3\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f9\" sourceRef=\"join\" targetRef=\"t0\"/>\n    <bpmn:sequenceFlow id=\"f10\" sourceRef=\"t0\" targetRef=\"u\"/>\n    <bpmn:sequenceFlow id=\"f11\" sourceRef=\"u\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"h0\" sourceRef=\"b0\" targetRef=\"end2\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"b4\" targetRef=\"EndEvent_0000001\"/>\n    <bpmn:textAnnotation id=\"ta1\">\n      <bpmn:text>   </bpmn:text>\n    </bpmn:textAnnotation>\n    <bpmn:textAnnotation id=\"ta2\"/>\n    <bpmn:textAnnotation id=\"ta3\">\n      <bpmn:text>real note</bpmn:text>\n    </bpmn:textAnnotation>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"b5\"",
+      "id": "flow/dead-end",
+      "index": 7,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"S\"/>\n    <bpmn:exclusiveGateway id=\"single\" name=\"One way?\"/>\n    <bpmn:task id=\"a\" name=\"A\"/>\n    <bpmn:parallelGateway id=\"fork\" name=\"Fork\"/>\n    <bpmn:serviceTask id=\"w1\" name=\"W1\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w1\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n          <zeebe:output source=\"=q\" target=\"only1\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w2\" name=\"W2\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w2\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w3\" name=\"W3\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w3\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"  \"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:parallelGateway id=\"join\" name=\"Join\"/>\n    <bpmn:userTask id=\"u\" name=\"Review\"/>\n    <bpmn:task id=\"t0\" name=\"Waits\"/>\n    <bpmn:boundaryEvent id=\"b0\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b0d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b1\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b1d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0D</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b2\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b2d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT1H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b3\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b3d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b4\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b4d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b5\" attachedToRef=\"u\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:timerEventDefinition id=\"b5d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0M</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b6\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b6d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"end2\" name=\"E2\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"f1\" sourceRef=\"start\" targetRef=\"single\"/>\n    <bpmn:sequenceFlow id=\"f2\" sourceRef=\"single\" targetRef=\"fork\"/>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"fork\" targetRef=\"w1\"/>\n    <bpmn:sequenceFlow id=\"f4\" sourceRef=\"fork\" targetRef=\"w2\"/>\n    <bpmn:sequenceFlow id=\"f5\" sourceRef=\"fork\" targetRef=\"w3\"/>\n    <bpmn:sequenceFlow id=\"f6\" sourceRef=\"w1\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f7\" sourceRef=\"w2\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f8\" sourceRef=\"w3\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f9\" sourceRef=\"join\" targetRef=\"t0\"/>\n    <bpmn:sequenceFlow id=\"f10\" sourceRef=\"t0\" targetRef=\"u\"/>\n    <bpmn:sequenceFlow id=\"f11\" sourceRef=\"u\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"h0\" sourceRef=\"b0\" targetRef=\"end2\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"b5\" targetRef=\"EndEvent_0000001\"/>\n    <bpmn:textAnnotation id=\"ta1\">\n      <bpmn:text>   </bpmn:text>\n    </bpmn:textAnnotation>\n    <bpmn:textAnnotation id=\"ta2\"/>\n    <bpmn:textAnnotation id=\"ta3\">\n      <bpmn:text>real note</bpmn:text>\n    </bpmn:textAnnotation>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"b6\"",
+      "id": "flow/dead-end",
+      "index": 8,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"S\"/>\n    <bpmn:exclusiveGateway id=\"single\" name=\"One way?\"/>\n    <bpmn:task id=\"a\" name=\"A\"/>\n    <bpmn:parallelGateway id=\"fork\" name=\"Fork\"/>\n    <bpmn:serviceTask id=\"w1\" name=\"W1\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w1\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n          <zeebe:output source=\"=q\" target=\"only1\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w2\" name=\"W2\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w2\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"shared\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"w3\" name=\"W3\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"w3\"/>\n        <zeebe:ioMapping>\n          <zeebe:output source=\"=r\" target=\"  \"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:parallelGateway id=\"join\" name=\"Join\"/>\n    <bpmn:userTask id=\"u\" name=\"Review\"/>\n    <bpmn:task id=\"t0\" name=\"Waits\"/>\n    <bpmn:boundaryEvent id=\"b0\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b0d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0S</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b1\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b1d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0D</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b2\" attachedToRef=\"t0\">\n      <bpmn:timerEventDefinition id=\"b2d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT1H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b3\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b3d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b4\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b4d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">P0</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b5\" attachedToRef=\"u\">\n      <bpmn:timerEventDefinition id=\"b5d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0M</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:boundaryEvent id=\"b6\" attachedToRef=\"u\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:timerEventDefinition id=\"b6d\">\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">PT0H</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"end\" name=\"E\"/>\n    <bpmn:endEvent id=\"end2\" name=\"E2\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"f1\" sourceRef=\"start\" targetRef=\"single\"/>\n    <bpmn:sequenceFlow id=\"f2\" sourceRef=\"single\" targetRef=\"fork\"/>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"fork\" targetRef=\"w1\"/>\n    <bpmn:sequenceFlow id=\"f4\" sourceRef=\"fork\" targetRef=\"w2\"/>\n    <bpmn:sequenceFlow id=\"f5\" sourceRef=\"fork\" targetRef=\"w3\"/>\n    <bpmn:sequenceFlow id=\"f6\" sourceRef=\"w1\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f7\" sourceRef=\"w2\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f8\" sourceRef=\"w3\" targetRef=\"join\"/>\n    <bpmn:sequenceFlow id=\"f9\" sourceRef=\"join\" targetRef=\"t0\"/>\n    <bpmn:sequenceFlow id=\"f10\" sourceRef=\"t0\" targetRef=\"u\"/>\n    <bpmn:sequenceFlow id=\"f11\" sourceRef=\"u\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"h0\" sourceRef=\"b0\" targetRef=\"end2\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"b6\" targetRef=\"EndEvent_0000001\"/>\n    <bpmn:textAnnotation id=\"ta1\">\n      <bpmn:text>   </bpmn:text>\n    </bpmn:textAnnotation>\n    <bpmn:textAnnotation id=\"ta2\"/>\n    <bpmn:textAnnotation id=\"ta3\">\n      <bpmn:text>real note</bpmn:text>\n    </bpmn:textAnnotation>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 12,
+      "deploy": 5,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 9,
+      "naming": 0,
+      "pattern": 17,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 17,
+      "info": 13,
+      "warning": 13
+    },
+    "total": 43
+  }
+}

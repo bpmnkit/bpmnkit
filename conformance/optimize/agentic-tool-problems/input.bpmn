@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+  xmlns:modeler="http://camunda.org/schema/modeler/1.0"
+  xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  
+  
+  <bpmn:process id="proc" isExecutable="true">
+    <bpmn:startEvent id="start" name="S" /><bpmn:adHocSubProcess id="agent" name="Agent"><bpmn:extensionElements><zeebe:taskDefinition type="io.camunda.agenticai:aiagent-job-worker:1" /><zeebe:adHoc outputCollection="" /></bpmn:extensionElements><bpmn:serviceTask id="t1" name="t1"><bpmn:extensionElements><zeebe:taskDefinition type="t" /><zeebe:ioMapping><zeebe:input source="=fromAi(someVar.q)" target="q" /><zeebe:input source="=fromAi(toolCall.ok)" target="ok" /><zeebe:input source="=fromAi( other , &quot;d&quot;)" target="o" /><zeebe:input source="=fromAi(toolCall.a) + fromAi(bad.b)" target="ab" /></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask><bpmn:serviceTask id="t2" name="t2"><bpmn:documentation>  </bpmn:documentation><bpmn:extensionElements><zeebe:taskDefinition type="t" /></bpmn:extensionElements></bpmn:serviceTask><bpmn:serviceTask id="t3" name="t3"><bpmn:incoming>tf1</bpmn:incoming><bpmn:documentation>documented</bpmn:documentation><bpmn:extensionElements><zeebe:taskDefinition type="t" /><zeebe:ioMapping><zeebe:input source="=fromAi(value: toolCall.v)" target="v" /></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask><bpmn:task id="t4" name="Plain task"><bpmn:documentation>doc</bpmn:documentation><bpmn:incoming>tf2</bpmn:incoming></bpmn:task><bpmn:sequenceFlow id="tf1" sourceRef="t2" targetRef="t3" /><bpmn:sequenceFlow id="tf2" sourceRef="t3" targetRef="t4" /></bpmn:adHocSubProcess><bpmn:endEvent id="end" name="E" /><bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="agent" /><bpmn:sequenceFlow id="f2" sourceRef="agent" targetRef="end" />
+  </bpmn:process>
+  
+</bpmn:definitions>

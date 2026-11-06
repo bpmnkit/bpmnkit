@@ -1,0 +1,230 @@
+{
+  "findings": [
+    {
+      "category": "agentic",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "agentic/no-output-collection",
+      "message": "AI Agent \"Agent\" has no outputCollection — tool call results won't be aggregated.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Set zeebe:adHoc outputCollection (e.g. \"toolCallResults\")."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "agentic/limits-missing",
+      "message": "AI Agent \"Agent\" has no data.limits.maxModelCalls binding.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Set a model-call limit as a safety net against infinite tool loops."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "agentic/tool-no-description",
+      "message": "Tool \"t1\" has no documentation — the LLM sees no description for this tool.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Set <bpmn:documentation> describing what this tool does."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "agentic/fromai-bad-ref",
+      "message": "fromAi() on \"t1\" input \"q\" references \"someVar.q\", not a toolCall.* field.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "fromAi()'s first argument must reference \"toolCall.<param>\"."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "agentic/fromai-bad-ref",
+      "message": "fromAi() on \"t1\" input \"o\" references \"other\", not a toolCall.* field.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "fromAi()'s first argument must reference \"toolCall.<param>\"."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "agentic/fromai-bad-ref",
+      "message": "fromAi() on \"t1\" input \"ab\" references \"bad.b\", not a toolCall.* field.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "fromAi()'s first argument must reference \"toolCall.<param>\"."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "t2"
+      ],
+      "fixable": false,
+      "id": "agentic/tool-no-description",
+      "message": "Tool \"t2\" has no documentation — the LLM sees no description for this tool.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Set <bpmn:documentation> describing what this tool does."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "t3"
+      ],
+      "fixable": false,
+      "id": "agentic/tool-not-root",
+      "message": "\"t3\" inside AI Agent \"Agent\" has an incoming sequence flow — the connector only discovers tools with no incoming flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove the incoming sequence flow; tools must be root nodes."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "t3"
+      ],
+      "fixable": false,
+      "id": "agentic/fromai-bad-ref",
+      "message": "fromAi() on \"t3\" input \"v\" references \"value: toolCall.v\", not a toolCall.* field.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "fromAi()'s first argument must reference \"toolCall.<param>\"."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "t4"
+      ],
+      "fixable": false,
+      "id": "agentic/tool-not-root",
+      "message": "\"Plain task\" inside AI Agent \"Agent\" has an incoming sequence flow — the connector only discovers tools with no incoming flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove the incoming sequence flow; tools must be root nodes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"Agent\" needs Camunda 8.7 or newer; this model targets Camunda 8.6.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <> not allowed",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "The output collection \"\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t3"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 10,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 7,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 0,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 13,
+      "info": 1,
+      "warning": 3
+    },
+    "total": 17
+  }
+}
