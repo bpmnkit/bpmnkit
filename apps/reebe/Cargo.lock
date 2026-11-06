@@ -368,6 +368,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "bpmnkit-dmn"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-feel",
+ "bpmnkit-xml",
+ "indexmap 2.13.0",
+ "serde",
+]
+
+[[package]]
 name = "bpmnkit-feel"
 version = "0.1.0"
 dependencies = [
@@ -2422,7 +2432,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7649a7b4df05aed9ea7ec6f628c67c9953a43869b8bc50929569b2999d443fe"
 dependencies = [
  "memchr",
- "serde",
 ]
 
 [[package]]
@@ -2697,7 +2706,7 @@ dependencies = [
 name = "reebe-dmn"
 version = "0.1.0"
 dependencies = [
- "quick-xml",
+ "bpmnkit-dmn",
  "reebe-feel",
  "serde",
  "serde_json",
