@@ -4,7 +4,7 @@
 - Fields take `(label, key, options)`: `textfield`, `textarea`, `select` (`values` or `valuesKey`), `checkbox`; `radio(label, key, values)`.
 - `text(markdown)` is static text; `group(label, (g) => g.textfield(...))` nests fields.
 - `options.validate`: `{ required, minLength, maxLength }`; `defaultValue`; `id` for a fixed component id.
-- `.executionPlatformVersion("8.10.0")`: the builder stamps `8.7.0` otherwise.
+- The builder stamps `8.10.0`; override with `.executionPlatformVersion("8.8.0")`.
 - Read or change an existing file: `Form.parse(json)` → `form.components`.
 
 ---

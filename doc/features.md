@@ -3,6 +3,8 @@
 ## Agent cards (2026-11-05)
 
 `casen agent-card bpmn|dmn|form` prints a ~1–1.5k-token cheat sheet for an AI agent: a runnable create/export/edit/validate script, the top builder options and the known traps. The same cards are docs pages under "Agent Cards", ranked first by `@bpmnkit/docspack` (whose `llms.txt` opens with them), and Claude plugin skills (`/bpmnkit:bpmn-script`, `:dmn`, `:form`). Every script is typechecked and run in CI.
+
+`@bpmnkit/core` ships the cards too (`AGENTS.md`, `llms.txt`, `agent-cards/`, `"agents"` field), so an agent with only that package installed finds them; its README opens with the pointer and builder errors end with `agent-cards/<type>.md#traps`.
 ## `casen check`: BPMN, DMN and forms in one gate (2026-11-05)
 
 `casen check <file...>` checks any mix of `.bpmn`, `.dmn` and `.form` files and the references between them (a user task's `formId`, a business rule task's `decisionId`). Every finding has a rule id, element id, message and a concrete fix; `--json` for agent loops; non-zero exit on errors. DMN: duplicate ids, requirement hrefs, cycles, FEEL syntax, hit policy, aggregation, types, rule shape. Forms: form-js schema, unique ids and keys, FEEL in conditions and expressions, validation. Profiles: default, `--sketch` (no Camunda 8 rules), `--deploy` (errors only, forms required). The "user task needs a form" rule is off outside the deploy profile. Library: `lintDmn`, `lintForm` in `@bpmnkit/core`.

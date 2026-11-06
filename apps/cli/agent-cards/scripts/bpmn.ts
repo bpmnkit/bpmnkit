@@ -4,7 +4,6 @@ import { Bpmn, exportPreserving, lintDiagram } from "@bpmnkit/core"
 // 1. Create. The process id is the deploy key: same id = new version of that process.
 const definitions = Bpmn.createProcess("order")
 	.name("Order")
-	.executionPlatformVersion("8.10.0")
 	.withAutoLayout()
 	.startEvent("received", { name: "Order received" })
 	.businessRuleTask("score", { name: "Score risk", decisionId: "risk", resultVariable: "risk" })

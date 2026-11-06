@@ -21,7 +21,7 @@
 		{
 			"id": "agent-cards.bpmn",
 			"file": "chunks/agent-cards.bpmn.md",
-			"tokens": 464,
+			"tokens": 461,
 			"tags": [
 				"agent-card",
 				"cheat-sheet",
@@ -65,14 +65,13 @@
 		{
 			"id": "agent-cards.bpmn.traps",
 			"file": "chunks/agent-cards.bpmn.traps.md",
-			"tokens": 318,
+			"tokens": 310,
 			"tags": [
 				"agent-cards",
 				"bpmn",
 				"traps"
 			],
 			"entities": [
-				"executionPlatformVersion",
 				"formId",
 				"decisionId",
 				"Bpmn.parse",
@@ -186,7 +185,7 @@
 		{
 			"id": "agent-cards.form",
 			"file": "chunks/agent-cards.form.md",
-			"tokens": 400,
+			"tokens": 396,
 			"tags": [
 				"agent-card",
 				"cheat-sheet",
@@ -209,7 +208,7 @@
 		{
 			"id": "agent-cards.form.top-builder-options",
 			"file": "chunks/agent-cards.form.top-builder-options.md",
-			"tokens": 145,
+			"tokens": 146,
 			"tags": [
 				"agent-cards",
 				"form",
@@ -3767,7 +3766,7 @@
 		{
 			"id": "guides.templates.ai-templates-model-and-secrets",
 			"file": "chunks/guides.templates.ai-templates-model-and-secrets.md",
-			"tokens": 143,
+			"tokens": 160,
 			"tags": [
 				"guides",
 				"templates",

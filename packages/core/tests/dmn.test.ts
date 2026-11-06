@@ -7,6 +7,11 @@ describe("Dmn", () => {
 	})
 
 	describe("createDecisionTable builder", () => {
+		it("targets Camunda 8.10 by default", () => {
+			const model = Dmn.createDecisionTable("Decision_v").build()
+			expect(model.modelerAttributes?.executionPlatformVersion).toBe("8.10.0")
+		})
+
 		it("creates a single-input single-output decision table", () => {
 			const model = Dmn.createDecisionTable("Decision_1")
 				.name("My Decision")

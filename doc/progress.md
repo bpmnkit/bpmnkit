@@ -1,5 +1,18 @@
 # Progress
 
+## 2026-11-06 — Camunda 8.10 is the default target
+
+- Builders stamp `executionPlatformVersion` `8.10.0`: BPMN (was 8.9.0), form (8.7.0), DMN/DRD (8.5.0), Camunda 7 migration (8.8.0). Overrides still work (`.executionPlatformVersion(...)`, `executionPlatformVersion` option). Lint/compat profiles read the model's version, so they follow; no CLI default existed.
+- `@bpmnkit/patterns` AI templates reference the key as `=camunda.secrets.ANTHROPIC_API_KEY`: at 8.10 `compat/secrets` reports `{{secrets.X}}` as legacy, which failed the template lint test in CI.
+- Agent cards (`apps/cli/agent-cards`, synced) drop the "8.10 is not the default" trap and keep a one-line override. Not changed: form `schemaVersion` (16), as no 8.10 form-js schema mapping is documented.
+
+## 2026-11-06 — Agent onboarding: cards ship in `@bpmnkit/core`
+
+- Eval agents with only `@bpmnkit/core` read the 20 KB README and the `.d.ts` every session (32–49% of cost). The package now ships `AGENTS.md` (19 lines), `llms.txt` and `agent-cards/{bpmn,dmn,form}.md`; `scripts/sync-agent-cards.mjs` writes them from `apps/cli/agent-cards`, and the existing `--check` test fails on drift.
+- READMEs of core and cli open with an agent pointer (`scripts/generate-readmes.mjs`, `AGENT_BLOCKS`). The generator now also writes the agent-card line in the root README that had been hand-added.
+- `.d.ts`: `@packageDocumentation` and `@see` card paths. Builder `ValidationError`s, `lintDmn`/`lintForm` fixes and `casen check` BPMN fixes end with `agent-cards/<type>.md#traps`.
+- `scripts/eval-agent-onboarding/measure.mjs` packs and installs core and reports what an agent would find (no LLM). Manual before/after run: its README.
+
 ## 2026-11-06 — `casen check --deploy`: user task without a form is an error
 
 - `compat/user-task-definition` is promoted to an error in the deploy profile (it was a warning, so the errors-only gate hid it). `--user-task-forms off` still disables it; elsewhere it stays off or a warning. Merged `claude/eval-layout-aesthetics` into the integration branch.

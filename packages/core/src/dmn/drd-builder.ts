@@ -87,7 +87,7 @@ export class DrdBuilder {
 			? ` "${id}" is a name/label, not an id. Use the id "${byName}" (pass the handle returned by decision()).`
 			: ""
 		throw new ValidationError(
-			`Decision "${owner}" requires unknown id "${id}". Valid ids: ${known.join(", ") || "(none)"}.${hint}`,
+			`Decision "${owner}" requires unknown id "${id}". Valid ids: ${known.join(", ") || "(none)"}.${hint} See agent-cards/dmn.md#traps.`,
 		)
 	}
 
@@ -123,7 +123,7 @@ export class DrdBuilder {
 			},
 			modelerAttributes: {
 				executionPlatform: "Camunda Cloud",
-				executionPlatformVersion: "8.5.0",
+				executionPlatformVersion: "8.10.0",
 			},
 			decisions,
 			inputData: this.inputs,

@@ -93,7 +93,7 @@ export class FormBuilder {
 	private _id: string
 	private _type = "default"
 	private _executionPlatform = "Camunda Cloud"
-	private _executionPlatformVersion = "8.7.0"
+	private _executionPlatformVersion = "8.10.0"
 	private _exporter?: FormExporter
 	private _schemaVersion?: number
 	private _generated?: boolean

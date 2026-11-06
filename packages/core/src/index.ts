@@ -1,3 +1,9 @@
+/**
+ * @packageDocumentation
+ * BPMN 2.0, DMN and Camunda Form SDK. **Agents: read
+ * `node_modules/@bpmnkit/core/AGENTS.md`, then the one card for your type
+ * (`agent-cards/bpmn.md`, `dmn.md` or `form.md`, ~1k tokens each) instead of the README.**
+ */
 export {
 	BpmnSdkError,
 	ParseError,

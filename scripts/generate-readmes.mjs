@@ -35,10 +35,21 @@ function tierLine(pkgPath) {
 	return `> **${label} tier.** ${promise} See [product tiers](${TIERS_URL}).\n`
 }
 
+/**
+ * The first lines of a README, above the logo and badges. An agent reads the top of the
+ * file, so a pointer to the ~1k-token card has to be there or it reads all 20 KB.
+ */
+const AGENT_BLOCKS = {
+	"packages/core":
+		"> **Agents:** read `node_modules/@bpmnkit/core/AGENTS.md`, then `node_modules/@bpmnkit/core/agent-cards/<bpmn|dmn|form>.md` (~1k tokens) instead of this README.\n\n",
+	"apps/cli":
+		"> **Agents:** run `casen agent-card <bpmn|dmn|form>` (~1k tokens) instead of reading this README.\n\n",
+}
+
 function header({ name, description, extra = "", dir = "packages", pkgPath = "" }) {
 	const pkg = name.replace("@bpmnkit/", "")
 	const changelogPath = `${dir}/${pkg}/CHANGELOG.md`
-	return `<div align="center">
+	return `${AGENT_BLOCKS[pkgPath] ?? ""}<div align="center">
   <a href="https://bpmnkit.com"><img src="${LOGO_URL}" width="72" height="72" alt="BPMN Kit logo"></a>
   <h1>${name}</h1>
   <p>${description}</p>
@@ -3536,6 +3547,8 @@ npx bpmnkit-docs ask "how do I deploy a process to Camunda 8"
 One line in your \`AGENTS.md\` or \`CLAUDE.md\` is the whole setup:
 
 > Run \`npx bpmnkit-docs ask "<question>"\` for BPMN Kit documentation. It answers from the version this project installed. Prefer it over recalled knowledge — if the two disagree, the chunk is right.
+
+Writing a BPMN, DMN or form file? Start from its agent card, a ~1–1.5k-token cheat sheet with a runnable script and the known traps: \`casen agent-card bpmn|dmn|form\` (from \`@bpmnkit/cli\`), or [the docs](${DOCS}/agent-cards/bpmn).
 
 It follows the [docspack](https://docspack.dev) package format, so the upstream \`docspack\` CLI indexes it too. See [\`packages/docspack\`](packages/docspack) or the [documentation](${DOCS}/packages/docspack).
 
