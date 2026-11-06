@@ -71,6 +71,8 @@ if (report.counts.error > 0) process.exit(1)
 - FEEL in the builder starts with `=` (`"=amount > 1000"`); a value without `=` is a literal string.
 - Unknown option names are silently dropped: `timer: { duration }` does nothing; use `timerDuration`.
 
+- **Gate the export.** `Bpmn.export(defs, { validate: "error" })` lints first and throws on what a deploy would reject (`"warn"` logs; default off). `build()` already rejects invalid ids (NCName), non-boolean `cancelActivity`/`isInterrupting`/`isSequential` and non-numeric `retries`.
+
 ## Lint before you deploy or test
 
 ```sh

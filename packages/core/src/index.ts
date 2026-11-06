@@ -53,6 +53,7 @@ export {
 	getZeebeExtensions,
 } from "./bpmn/utils.js"
 export { Bpmn, SAMPLE_BPMN_XML } from "./bpmn/index.js"
+export type { ExportOptions } from "./bpmn/index.js"
 export { stripCamunda8 } from "./bpmn/strip-camunda8.js"
 export type { DroppedCamunda8Item, StripCamunda8Result } from "./bpmn/strip-camunda8.js"
 export { applyAutoLayout } from "./bpmn/auto-layout.js"

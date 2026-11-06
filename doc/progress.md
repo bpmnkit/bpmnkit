@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-06 — Export validation and XSD build checks
+
+- `Bpmn.export(defs, { validate: "warn" | "error" | false })` lints and reports deploy errors; default `false` (no change for callers).
+- `ProcessBuilder.build()` throws `ValidationError` for ids that are not XML NCNames, non-boolean `cancelActivity`/`isInterrupting`/`isSequential`, and non-numeric/non-FEEL `retries` (new builds only, not parsed continues).
+
 ## 2026-11-06 — Camunda 8.10 is the default target
 
 - Builders stamp `executionPlatformVersion` `8.10.0`: BPMN (was 8.9.0), form (8.7.0), DMN/DRD (8.5.0), Camunda 7 migration (8.8.0). Overrides still work (`.executionPlatformVersion(...)`, `executionPlatformVersion` option). Lint/compat profiles read the model's version, so they follow; no CLI default existed.
