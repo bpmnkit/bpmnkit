@@ -1,0 +1,4 @@
+# Size flags for the browser build only; native builds keep the release profile.
+# lto is left out: `-C lto` as a rustflag conflicts with embed-bitcode.
+[target.wasm32-unknown-unknown]
+rustflags = ["-C", "opt-level=z", "-C", "codegen-units=1", "-C", "panic=abort"]

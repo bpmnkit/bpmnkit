@@ -6,11 +6,14 @@
 
 use crate::ops::number_to_string;
 use crate::value::{Date, DateTime, DaysTimeDuration, Time, Value, YearsMonthsDuration};
+#[cfg(feature = "tz")]
 use chrono::{Offset, TimeZone};
+#[cfg(feature = "tz")]
 use chrono_tz::Tz;
 use regex::Regex;
 use rust_decimal::prelude::ToPrimitive;
 use rust_decimal::Decimal;
+#[cfg(feature = "tz")]
 use std::collections::HashMap;
 use std::str::FromStr;
 use std::sync::LazyLock;
@@ -171,10 +174,12 @@ fn split_time_of_day(total: Decimal, offset: Option<i32>, timezone: Option<Strin
 // ---------------------------------------------------------------------------
 
 enum Zone {
+    #[cfg(feature = "tz")]
     Iana(Tz),
     Fixed(i32),
 }
 
+#[cfg(feature = "tz")]
 static LOWERCASE_ZONES: LazyLock<HashMap<String, Tz>> = LazyLock::new(|| {
     chrono_tz::TZ_VARIANTS
         .iter()
@@ -188,11 +193,14 @@ static FIXED_ZONE: LazyLock<Regex> =
 // Mirrors what `Intl.DateTimeFormat` accepts as a timeZone: IANA names in any
 // letter case and fixed offsets such as `+01:00`.
 fn resolve_zone(name: &str) -> Option<Zone> {
-    if let Ok(tz) = Tz::from_str(name) {
-        return Some(Zone::Iana(tz));
-    }
-    if let Some(tz) = LOWERCASE_ZONES.get(&name.to_ascii_lowercase()) {
-        return Some(Zone::Iana(*tz));
+    #[cfg(feature = "tz")]
+    {
+        if let Ok(tz) = Tz::from_str(name) {
+            return Some(Zone::Iana(tz));
+        }
+        if let Some(tz) = LOWERCASE_ZONES.get(&name.to_ascii_lowercase()) {
+            return Some(Zone::Iana(*tz));
+        }
     }
     let m = FIXED_ZONE.captures(name)?;
     let hours: i32 = m[2].parse().ok()?;
@@ -212,9 +220,11 @@ pub(crate) fn is_known_timezone(name: &str) -> bool {
 /// The UTC offset in seconds `timezone` is on at the instant `epoch_seconds`
 /// (UTC), daylight saving included, to the minute as `Intl` reports it. An
 /// unknown zone is UTC.
+#[cfg_attr(not(feature = "tz"), allow(unused_variables))]
 pub(crate) fn zone_offset_at_instant(timezone: &str, epoch_seconds: i64) -> i32 {
     match resolve_zone(timezone) {
         Some(Zone::Fixed(offset)) => offset,
+        #[cfg(feature = "tz")]
         Some(Zone::Iana(tz)) => chrono::DateTime::from_timestamp(epoch_seconds, 0)
             .map(|utc| {
                 let off = tz.offset_from_utc_datetime(&utc.naive_utc()).fix();
@@ -662,6 +672,7 @@ mod tests {
         assert_eq!(shift_months(&date("2020-03-15"), i64::MAX), None);
     }
 
+    #[cfg(feature = "tz")]
     #[test]
     fn parses_times() {
         let t = parse_time("10:30:15.5").unwrap();
@@ -696,6 +707,7 @@ mod tests {
         assert!(parse_time("10:00:00@UTC").is_some());
     }
 
+    #[cfg(feature = "tz")]
     #[test]
     fn formats_times() {
         for s in [
@@ -724,6 +736,7 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "tz")]
     #[test]
     fn parses_date_times() {
         let dt = parse_date_time("2020-01-01T10:00:00Z").unwrap();
@@ -793,6 +806,22 @@ mod tests {
     }
 
     #[test]
+    fn fixed_offsets_resolve_without_iana() {
+        let day = date_to_epoch_days(&date("2020-07-01"));
+        assert_eq!(zone_offset_seconds("+05:30", day), 5 * 3600 + 1800);
+        assert_eq!(zone_offset_seconds("-0800", day), -8 * 3600);
+        assert!(is_known_timezone("+01:00"));
+    }
+
+    #[cfg(not(feature = "tz"))]
+    #[test]
+    fn iana_names_are_unknown_without_tz() {
+        assert!(!is_known_timezone("Europe/Berlin"));
+        assert_eq!(zone_offset_seconds("Europe/Berlin", 0), 0);
+    }
+
+    #[cfg(feature = "tz")]
+    #[test]
     fn zone_offsets_follow_daylight_saving() {
         let day = |s: &str| date_to_epoch_days(&date(s));
         // Melbourne: +11:00 in April (summer time just ended), +10:00 in October... and back.
@@ -831,6 +860,7 @@ mod tests {
         assert!(!is_known_timezone(""));
     }
 
+    #[cfg(feature = "tz")]
     #[test]
     fn date_times_convert_to_instants() {
         let dt = |s: &str| parse_date_time(s).unwrap();
@@ -874,6 +904,7 @@ mod tests {
         assert!(shift_time(&t, Decimal::MAX).is_none());
     }
 
+    #[cfg(feature = "tz")]
     #[test]
     fn moves_an_instant_to_another_zone() {
         let dt = parse_date_time("2020-07-01T10:00:00Z").unwrap();

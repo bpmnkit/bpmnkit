@@ -10,9 +10,15 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
 chrono = { workspace = true }
-chrono-tz = { workspace = true }
+chrono-tz = { workspace = true, optional = true }
 indexmap = { workspace = true }
 bpmnkit-feel = { workspace = true }
 
 [dev-dependencies]
 chrono = { workspace = true }
+
+[features]
+# IANA time zones and regex's full feature set; reebe-wasm turns it off to stay
+# small, so there only fixed offsets resolve.
+default = ["full-feel"]
+full-feel = ["bpmnkit-feel/tz", "bpmnkit-feel/full-regex", "dep:chrono-tz"]

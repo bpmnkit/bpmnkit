@@ -1011,6 +1011,7 @@ mod tests {
             st("\"2024-01-02\"")
         );
         assert_eq!(call("to json", &[parse_temporal("PT1H")]), st("\"PT1H\""));
+        #[cfg(feature = "tz")]
         assert_eq!(
             call(
                 "to json",

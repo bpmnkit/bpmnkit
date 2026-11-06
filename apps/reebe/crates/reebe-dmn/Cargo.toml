@@ -11,3 +11,7 @@ serde_json = { workspace = true }
 thiserror = { workspace = true }
 quick-xml = { version = "0.36", features = ["serialize"] }
 reebe-feel = { workspace = true }
+
+[features]
+default = ["full-feel"]
+full-feel = ["reebe-feel/full-feel"]

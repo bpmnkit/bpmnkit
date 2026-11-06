@@ -4,6 +4,7 @@ use crate::{FeelContext, FeelValue};
 use bpmnkit_feel as bk;
 use chrono::{Datelike, NaiveDate, NaiveTime, TimeZone, Timelike, Utc};
 use indexmap::IndexMap;
+#[cfg(feature = "full-feel")]
 use std::str::FromStr;
 
 /// The bindings of `ctx` and its parents as one ordered context; a child overrides its parent.
@@ -132,6 +133,7 @@ fn naive_time(t: &bk::Time) -> Option<NaiveTime> {
 fn date_time(dt: &bk::DateTime) -> Option<chrono::DateTime<Utc>> {
     let d = NaiveDate::from_ymd_opt(dt.date.year, dt.date.month.into(), dt.date.day.into())?;
     let local = d.and_time(naive_time(&dt.time)?);
+    #[cfg(feature = "full-feel")]
     if let Some(zone) = dt
         .time
         .timezone

@@ -93,10 +93,10 @@ async-trait = "0.1"
 
 # Workspace crates
 reebe-protocol = { path = "crates/reebe-protocol" }
-bpmnkit-feel = { path = "../../crates/bpmnkit-feel" }
-reebe-feel = { path = "crates/reebe-feel" }
+bpmnkit-feel = { path = "../../crates/bpmnkit-feel", default-features = false }
+reebe-feel = { path = "crates/reebe-feel", default-features = false }
 reebe-bpmn = { path = "crates/reebe-bpmn" }
-reebe-dmn = { path = "crates/reebe-dmn" }
+reebe-dmn = { path = "crates/reebe-dmn", default-features = false }
 reebe-db = { path = "crates/reebe-db", default-features = false }
 reebe-engine = { path = "crates/reebe-engine", default-features = false }
 reebe-api = { path = "crates/reebe-api", default-features = false }

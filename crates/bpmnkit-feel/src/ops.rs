@@ -570,6 +570,7 @@ mod tests {
         assert_eq!(add(&last, &t("P1D")), Value::Null);
     }
 
+    #[cfg(feature = "tz")] // uses IANA zone names
     #[test]
     fn date_time_arithmetic() {
         assert_eq!(
@@ -637,6 +638,7 @@ mod tests {
         assert_eq!(div(&n("1"), &t("P1D")), Value::Null);
     }
 
+    #[cfg(feature = "tz")] // uses IANA zone names
     #[test]
     fn comparison() {
         use Ordering::*;
@@ -684,6 +686,7 @@ mod tests {
         assert_eq!(compare(&Value::Null, &Value::Null), None);
     }
 
+    #[cfg(feature = "tz")] // uses IANA zone names
     #[test]
     fn melbourne_zone_follows_daylight_saving() {
         // Melbourne is +11:00 in January and +10:00 in July.
@@ -707,6 +710,7 @@ mod tests {
         );
     }
 
+    #[cfg(feature = "tz")] // uses IANA zone names
     #[test]
     fn feel_equality() {
         assert_eq!(feel_equals(&n("1"), &n("1.0")), Some(true));
@@ -833,6 +837,7 @@ mod tests {
         assert_eq!(format!("{}", n("2.50")), "2.5");
     }
 
+    #[cfg(feature = "tz")] // uses IANA zone names
     #[test]
     fn properties() {
         let p = |v: &str, k: &str| get_property(&t(v), k);

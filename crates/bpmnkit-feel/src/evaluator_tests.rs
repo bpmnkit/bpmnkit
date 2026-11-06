@@ -65,6 +65,7 @@ fn literals_and_arithmetic() {
     assert_eq!(ev("@\"2021-01-01\"").type_name(), "date");
 }
 
+#[cfg(feature = "tz")] // uses IANA zone names
 #[test]
 fn comparison_and_logic() {
     check(&[
