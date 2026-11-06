@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:process id="P" name="Lanes" isExecutable="true">
+<bpmn:laneSet id="LS">
+<bpmn:lane id="L1" name="Sales"><bpmn:flowNodeRef>S</bpmn:flowNodeRef><bpmn:flowNodeRef>A</bpmn:flowNodeRef><bpmn:flowNodeRef>G</bpmn:flowNodeRef></bpmn:lane>
+<bpmn:lane id="L2" name="Finance"><bpmn:flowNodeRef>B</bpmn:flowNodeRef><bpmn:flowNodeRef>C</bpmn:flowNodeRef></bpmn:lane>
+<bpmn:lane id="L3" name="Empty lane" />
+</bpmn:laneSet>
+<bpmn:startEvent id="S" name="Start" />
+<bpmn:userTask id="A" name="Prepare offer" />
+<bpmn:exclusiveGateway id="G" name="Approved?" />
+<bpmn:serviceTask id="B" name="Book revenue" />
+<bpmn:userTask id="C" name="Send invoice" />
+<bpmn:task id="Orphan" name="In no lane" />
+<bpmn:endEvent id="E" name="Done" />
+<bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="A" /><bpmn:sequenceFlow id="f2" sourceRef="A" targetRef="G" /><bpmn:sequenceFlow id="f3" sourceRef="G" targetRef="B" name="yes"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">=ok</bpmn:conditionExpression></bpmn:sequenceFlow><bpmn:sequenceFlow id="f4" sourceRef="G" targetRef="Orphan" name="no" /><bpmn:sequenceFlow id="f5" sourceRef="B" targetRef="C" /><bpmn:sequenceFlow id="f6" sourceRef="C" targetRef="E" /><bpmn:sequenceFlow id="f7" sourceRef="Orphan" targetRef="E" />
+</bpmn:process>
+</bpmn:definitions>

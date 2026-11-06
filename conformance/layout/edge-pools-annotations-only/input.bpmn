@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:collaboration id="C">
+<bpmn:participant id="PA" name="Notes" processRef="Pn" /><bpmn:participant id="PB" name="Work" processRef="Pw" />
+</bpmn:collaboration>
+<bpmn:process id="Pn" isExecutable="true">
+<bpmn:textAnnotation id="Ann1"><bpmn:text>Just a note</bpmn:text></bpmn:textAnnotation><bpmn:textAnnotation id="Ann2"><bpmn:text>Another note</bpmn:text></bpmn:textAnnotation>
+</bpmn:process>
+<bpmn:process id="Pw" isExecutable="true">
+<bpmn:startEvent id="Pw_s" name="Start" /><bpmn:task id="Pw_Do" name="Do" /><bpmn:endEvent id="Pw_e" name="End" />
+<bpmn:sequenceFlow id="Pw_f1" sourceRef="Pw_s" targetRef="Pw_Do" />
+<bpmn:sequenceFlow id="Pw_f2" sourceRef="Pw_Do" targetRef="Pw_e" />
+</bpmn:process>
+</bpmn:definitions>

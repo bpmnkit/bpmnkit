@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:collaboration id="C">
+<bpmn:participant id="PA" name="Customer" processRef="PrA" /><bpmn:participant id="PB" name="Shop" processRef="PrB" /><bpmn:participant id="PC" name="Courier" processRef="PrC" />
+<bpmn:messageFlow id="m1" name="order" sourceRef="PrA_Order" targetRef="PrB_Receive" />
+<bpmn:messageFlow id="m2" sourceRef="PrB_Ship" targetRef="PrC_Pickup" />
+<bpmn:messageFlow id="m3" name="delivered" sourceRef="PrC_Deliver" targetRef="PrA_e" />
+</bpmn:collaboration>
+<bpmn:process id="PrA" isExecutable="true">
+<bpmn:startEvent id="PrA_s" name="Start" /><bpmn:task id="PrA_Order" name="Order" /><bpmn:endEvent id="PrA_e" name="End" />
+<bpmn:sequenceFlow id="PrA_f1" sourceRef="PrA_s" targetRef="PrA_Order" />
+<bpmn:sequenceFlow id="PrA_f2" sourceRef="PrA_Order" targetRef="PrA_e" />
+</bpmn:process><bpmn:process id="PrB" isExecutable="true">
+<bpmn:startEvent id="PrB_s" name="Start" /><bpmn:task id="PrB_Receive" name="Receive" /><bpmn:task id="PrB_Ship" name="Ship" /><bpmn:endEvent id="PrB_e" name="End" />
+<bpmn:sequenceFlow id="PrB_f1" sourceRef="PrB_s" targetRef="PrB_Receive" />
+<bpmn:sequenceFlow id="PrB_f2" sourceRef="PrB_Receive" targetRef="PrB_Ship" />
+<bpmn:sequenceFlow id="PrB_f3" sourceRef="PrB_Ship" targetRef="PrB_e" />
+</bpmn:process><bpmn:process id="PrC" isExecutable="true">
+<bpmn:startEvent id="PrC_s" name="Start" /><bpmn:task id="PrC_Pickup" name="Pickup" /><bpmn:task id="PrC_Deliver" name="Deliver" /><bpmn:endEvent id="PrC_e" name="End" />
+<bpmn:sequenceFlow id="PrC_f1" sourceRef="PrC_s" targetRef="PrC_Pickup" />
+<bpmn:sequenceFlow id="PrC_f2" sourceRef="PrC_Pickup" targetRef="PrC_Deliver" />
+<bpmn:sequenceFlow id="PrC_f3" sourceRef="PrC_Deliver" targetRef="PrC_e" />
+</bpmn:process>
+</bpmn:definitions>

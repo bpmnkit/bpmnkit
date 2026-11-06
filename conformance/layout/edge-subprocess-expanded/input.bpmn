@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:process id="P" isExecutable="true">
+<bpmn:startEvent id="S" name="Start" /><bpmn:subProcess id="Sub" name="Handle"><bpmn:startEvent id="xS" name="Begin" /><bpmn:task id="xA" name="Step A" /><bpmn:task id="xB" name="Step B" /><bpmn:endEvent id="xE" name="Finish" /><bpmn:sequenceFlow id="xf1" sourceRef="xS" targetRef="xA" />
+<bpmn:sequenceFlow id="xf2" sourceRef="xA" targetRef="xB" />
+<bpmn:sequenceFlow id="xf3" sourceRef="xB" targetRef="xE" /></bpmn:subProcess><bpmn:endEvent id="E" name="End" /><bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="Sub" />
+<bpmn:sequenceFlow id="f2" sourceRef="Sub" targetRef="E" />
+</bpmn:process>
+</bpmn:definitions>

@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<semantic:definitions xmlns:semantic="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:sdmn="https://www.omg.org/spec/SDMN/" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:dmn="https://www.omg.org/spec/DMN/20240513/MODEL/" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color/1.0" xmlns:trisobpmn="http://www.trisotech.com/2014/triso/bpmn" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:openapi="https://openapis.org/omg/extension/1.0" xmlns:boxedext="https://www.trisotech.com/spec/DMN/20191111/EXT/" xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" xmlns:rss="http://purl.org/rss/2.0/" xmlns:bpsim="http://www.bpsim.org/schemas/1.0" xmlns:trisofeed="http://trisotech.com/feed" xmlns:ot="http://www.omninet.de/ot/bpmn/v1" xmlns:aris="http://www.softwareag.com/aris/attributes" xmlns:arisebpmn="http://www.softwareag.com/aris/ebpmn" xmlns:deco="http://www.omg.org/spec/BPMN/non-normative/extensions/envelope-decorator-bounds/1.0" xmlns:i18n="http://www.omg.org/spec/BPMN/non-normative/extensions/i18n/1.0" xmlns:feel="https://www.omg.org/spec/DMN/20240513/FEEL/" xmlns:drools="http://www.jboss.org/drools" xmlns:asyncapi="https://asyncapi.org/omg/extension/1.0" xmlns="http://www.softwareag.com/aris/bpmn2" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:scedi="https://www.omg.org/spec/SCE/DI/" xmlns:scedc="https://www.omg.org/spec/SCE/DC/" xmlns:activiti="http://activiti.org/bpmn" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:flowable="http://flowable.org/bpmn" xmlns:kp="http://knowprocess.com/bpmn" xmlns:travelPlanning="http://www.trisotech.com/definitions/_1a8e6ac5-c038-4a51-a69c-fcfa48532d33" id="Definitions__3" targetNamespace="http://www.softwareag.com/aris/bpmn2" exporter="KnowProcess Modeler" exporterVersion="4.1.0" name="C.10.0" xml:lang="en" triso:translationLanguages="" trisobpmn:logoChoice="Default" kp:extra-namespaces="{}">
+  <semantic:import location="Travel Planning.sdmn" namespace="http://www.trisotech.com/definitions/_1a8e6ac5-c038-4a51-a69c-fcfa48532d33" importType="https://www.omg.org/spec/SDMN/"/>
+  <semantic:itemDefinition id="itemDefinition_qpgidbr63" structureRef="tHotelReservation"/>
+  <semantic:itemDefinition id="itemDefinition_vlo3517az" structureRef="tTravelTicket"/>
+  <semantic:itemDefinition triso:basicType="true" structureRef="feel:string" triso:definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType" triso:name="triso_string" id="_triso-default-bpmnItemDefinition-string_id"/>
+  <semantic:itemDefinition triso:basicType="true" structureRef="feel:Any" triso:definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType" triso:name="triso_Any" id="_triso-default-bpmnItemDefinition-Any_id"/>
+  <semantic:itemDefinition triso:readOnly="false" isCollection="false" triso:basicType="false" structureRef="feel:list" triso:definitionType="http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType" triso:name="Item Definition ⦀ Text" triso:parameterType="feel:string" id="_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4"/>
+  <semantic:dataStore id="_2" name="HR system" triso:readOnly="false" ot:displayName="HR system" ot:alias="HrSystem" triso:displayName="HR system"/>
+  <semantic:dataStore id="_1" name="Calendar" triso:readOnly="false" ot:alias="dataStore1" triso:displayName="Calendar"/>
+  <semantic:collaboration id="_4" arisebpmn:type="MT_ENTERPRISE_BPMN_COLLABORATION" ot:outerProcess="_9" name="04 Travel Planning - ADONIS">
+    <semantic:participant id="_5" triso:readOnly="false" name="Client"/>
+    <semantic:participant id="_7" triso:readOnly="false" name="Travel Planning" processRef="_8"/>
+    <semantic:messageFlow id="_76" sourceRef="_5" targetRef="_33" triso:readOnly="false"/>
+    <semantic:messageFlow id="_80" sourceRef="_5" targetRef="_38" triso:readOnly="false"/>
+    <semantic:messageFlow id="_77" sourceRef="_45" targetRef="_5" triso:readOnly="false"/>
+    <semantic:messageFlow id="_78" sourceRef="_18" targetRef="_5" triso:readOnly="false"/>
+    <semantic:messageFlow id="_79" sourceRef="_31" targetRef="_5" triso:readOnly="false"/>
+  </semantic:collaboration>
+  <semantic:process id="_8" triso:readOnly="false" triso:collectEnds="true" ot:displayName="Travel Planning" ot:alias="process2" isClosed="false" name="Travel Planning" isExecutable="false">
+    <semantic:extensionElements>
+      <ot:startPermission/>
+    </semantic:extensionElements>
+    <semantic:laneSet>
+      <semantic:lane id="_15" triso:readOnly="false" ot:displayName="Employee" ot:alias="lane1" name="Employee">
+        <semantic:flowNodeRef>_39</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_41</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_22</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_29</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_21</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_38</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_45</semantic:flowNodeRef>
+      </semantic:lane>
+      <semantic:lane id="_16" triso:readOnly="false" ot:displayName="Project Office" ot:alias="lane2" name="Project Office">
+        <semantic:flowNodeRef>_19</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_36</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_31</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_18</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_34</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_33</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_24</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_27</semantic:flowNodeRef>
+        <semantic:flowNodeRef>_25</semantic:flowNodeRef>
+      </semantic:lane>
+    </semantic:laneSet>
+    <semantic:userTask id="_39" triso:readOnly="false" ot:displayName="Record meeting details" ot:alias="task6" implementation="##unspecified" name="Record meeting details">
+      <semantic:extensionElements>
+        <ot:userTaskDefinition displayApplyButton="false" displayOkButton="false" displayShowProcessButton="false" formType="ruleBased"/>
+      </semantic:extensionElements>
+      <semantic:incoming>_37</semantic:incoming>
+      <semantic:outgoing>_40</semantic:outgoing>
+      <semantic:dataInputAssociation id="_50">
+        <semantic:sourceRef>Reference__2</semantic:sourceRef>
+        <semantic:targetRef>DataInput__39</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:ioSpecification>
+        <semantic:dataInput triso:readOnly="false" id="DataInput__39"/>
+        <semantic:inputSet id="_f7372180-e3ad-4081-a6d4-d2963a93de14">
+          <semantic:dataInputRefs>DataInput__39</semantic:dataInputRefs>
+        </semantic:inputSet>
+        <semantic:outputSet/>
+      </semantic:ioSpecification>
+    </semantic:userTask>
+    <semantic:endEvent id="_41" triso:readOnly="false" ot:displayName="Trip planned" ot:alias="event7" name="Trip planned">
+      <semantic:incoming>_40</semantic:incoming>
+    </semantic:endEvent>
+    <semantic:userTask id="_22" triso:readOnly="false" ot:displayName="Prepare confirmation email" ot:alias="task3" implementation="##unspecified" name="Prepare confirmation email">
+      <semantic:extensionElements>
+        <ot:userTaskDefinition displayApplyButton="false" displayOkButton="false" displayShowProcessButton="false" formType="ruleBased" reassignMode="explicit"/>
+      </semantic:extensionElements>
+      <semantic:incoming>_20</semantic:incoming>
+      <semantic:outgoing>_44</semantic:outgoing>
+      <semantic:dataInputAssociation id="_54">
+        <semantic:sourceRef>Reference__13</semantic:sourceRef>
+        <semantic:targetRef>DataInput__22</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataInputAssociation id="_56">
+        <semantic:sourceRef>Reference__11</semantic:sourceRef>
+        <semantic:targetRef>DataInput__22_1</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:ioSpecification>
+        <semantic:dataInput triso:readOnly="false" id="DataInput__22"/>
+        <semantic:dataInput triso:readOnly="false" id="DataInput__22_1"/>
+        <semantic:inputSet id="_04d67518-59c0-4c5b-9cf4-63616c7ba66b">
+          <semantic:dataInputRefs>DataInput__22</semantic:dataInputRefs>
+          <semantic:dataInputRefs>DataInput__22_1</semantic:dataInputRefs>
+        </semantic:inputSet>
+        <semantic:outputSet/>
+      </semantic:ioSpecification>
+    </semantic:userTask>
+    <semantic:callActivity id="_29" triso:readOnly="false" ot:displayName="Plan trip" ot:alias="activity1" calledElement="Process_ID-73a31a41-43d5-11f1-744d-b02628b36240" name="Plan trip">
+      <semantic:incoming>_42</semantic:incoming>
+      <semantic:outgoing>_28</semantic:outgoing>
+      <semantic:dataInputAssociation id="_63">
+        <semantic:sourceRef>_48</semantic:sourceRef>
+        <semantic:targetRef>DataInput__29</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_58">
+        <semantic:sourceRef>_801b8c70-b793-499d-b462-4fd8d541f32b_29</semantic:sourceRef>
+        <semantic:targetRef>_49</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+      <semantic:dataOutputAssociation id="_60">
+        <semantic:sourceRef>_801b8c70-b793-499d-b462-4fd8d541f32b_29</semantic:sourceRef>
+        <semantic:targetRef>_59</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+      <semantic:ioSpecification>
+        <semantic:dataInput triso:readOnly="false" id="DataInput__29"/>
+        <semantic:dataOutput triso:readOnly="false" itemSubjectRef="_triso-default-bpmnItemDefinition-string_id" isCollection="false" id="_801b8c70-b793-499d-b462-4fd8d541f32b_29"/>
+        <semantic:dataOutput name="Tickets" triso:readOnly="false" itemSubjectRef="_triso-default-bpmnItemDefinition-string_id" isCollection="false" ot:alias="output1" id="_8a969b23-b4b1-453c-8925-1cec72ddbaef_29"/>
+        <semantic:inputSet id="_31ddf9e8-f0f8-4fcf-85f3-fce0feb3199c">
+          <semantic:dataInputRefs>DataInput__29</semantic:dataInputRefs>
+        </semantic:inputSet>
+        <semantic:outputSet id="_757bad0a-f311-43f9-8b69-da383c4172a9">
+          <semantic:dataOutputRefs>_801b8c70-b793-499d-b462-4fd8d541f32b_29</semantic:dataOutputRefs>
+          <semantic:dataOutputRefs>_8a969b23-b4b1-453c-8925-1cec72ddbaef_29</semantic:dataOutputRefs>
+        </semantic:outputSet>
+      </semantic:ioSpecification>
+    </semantic:callActivity>
+    <semantic:serviceTask id="_21" triso:readOnly="false" ot:displayName="Update employee's calendar" ot:connectorGuid="{00000000-0000-0000-0000-000000000000}" ot:alias="task1" implementation="##WebService" name="Update employee's calendar">
+      <semantic:incoming>_28</semantic:incoming>
+      <semantic:outgoing>_20</semantic:outgoing>
+      <semantic:dataOutputAssociation id="_74">
+        <semantic:sourceRef>DataOutput__21</semantic:sourceRef>
+        <semantic:targetRef>Reference__1</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+      <semantic:ioSpecification>
+        <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput__21"/>
+        <semantic:inputSet/>
+        <semantic:outputSet id="_2aa79919-4bfb-4f24-98a5-965484a5db91">
+          <semantic:dataOutputRefs>DataOutput__21</semantic:dataOutputRefs>
+        </semantic:outputSet>
+      </semantic:ioSpecification>
+    </semantic:serviceTask>
+    <semantic:intermediateCatchEvent id="_38" triso:readOnly="false" ot:displayName="Recieve meeting details" ot:alias="event4" name="Recieve meeting details">
+      <semantic:incoming>_46</semantic:incoming>
+      <semantic:outgoing>_37</semantic:outgoing>
+      <semantic:messageEventDefinition id="Definition__38"/>
+    </semantic:intermediateCatchEvent>
+    <semantic:sendTask id="_45" triso:readOnly="false" ot:displayName="Send confirmation email" ot:alias="task5" implementation="##WebService" name="Send confirmation email">
+      <semantic:incoming>_44</semantic:incoming>
+      <semantic:outgoing>_46</semantic:outgoing>
+    </semantic:sendTask>
+    <semantic:dataStoreReference id="Reference__2" triso:readOnly="false" ot:displayName="HR system" ot:alias="HrSystem" name="HR system" dataStoreRef="_2"/>
+    <semantic:dataObjectReference id="Reference__11" triso:readOnly="false" ot:alias="dataObj3" name="Hotel reservation" dataObjectRef="_11"/>
+    <semantic:dataObjectReference id="Reference__13" triso:readOnly="false" ot:alias="dataObj4" name="Tickets" dataObjectRef="_13"/>
+    <semantic:endEvent id="_19" triso:readOnly="false" ot:displayName="Client answered" ot:alias="event5" name="Client answered">
+      <semantic:incoming>_17</semantic:incoming>
+    </semantic:endEvent>
+    <semantic:endEvent id="_36" triso:readOnly="false" ot:displayName="No personnel available" ot:alias="event6" name="No personnel available">
+      <semantic:incoming>_35</semantic:incoming>
+    </semantic:endEvent>
+    <semantic:intermediateThrowEvent id="_31" triso:readOnly="false" ot:displayName="Notify client personel not available" ot:alias="event1" name="Notify client personel not available">
+      <semantic:incoming>_30</semantic:incoming>
+      <semantic:outgoing>_35</semantic:outgoing>
+      <semantic:messageEventDefinition id="Definition__31"/>
+    </semantic:intermediateThrowEvent>
+    <semantic:intermediateThrowEvent id="_18" triso:readOnly="false" ot:displayName="Answer client directly" ot:alias="event3" name="Answer client directly">
+      <semantic:incoming>_43</semantic:incoming>
+      <semantic:outgoing>_17</semantic:outgoing>
+      <semantic:messageEventDefinition id="Definition__18"/>
+    </semantic:intermediateThrowEvent>
+    <semantic:userTask id="_34" triso:readOnly="false" ot:displayName="Check client request" ot:alias="task4" implementation="##unspecified" name="Check client request">
+      <semantic:extensionElements>
+        <ot:userTaskDefinition displayApplyButton="false" displayOkButton="false" displayShowProcessButton="false" formType="ruleBased" reassignMode="explicit"/>
+      </semantic:extensionElements>
+      <semantic:incoming>_32</semantic:incoming>
+      <semantic:outgoing>_47</semantic:outgoing>
+      <semantic:dataInputAssociation id="_68">
+        <semantic:sourceRef>_48</semantic:sourceRef>
+        <semantic:targetRef>DataInput__34</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_66">
+        <semantic:sourceRef>DataOutput__34</semantic:sourceRef>
+        <semantic:targetRef>Reference__12</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+      <semantic:ioSpecification>
+        <semantic:dataInput triso:readOnly="false" id="DataInput__34"/>
+        <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput__34"/>
+        <semantic:inputSet id="_01b80f50-4698-47b8-9ce4-2e91bb270b83">
+          <semantic:dataInputRefs>DataInput__34</semantic:dataInputRefs>
+        </semantic:inputSet>
+        <semantic:outputSet id="_cea41f46-ea44-4563-8fa3-243cba4bf462">
+          <semantic:dataOutputRefs>DataOutput__34</semantic:dataOutputRefs>
+        </semantic:outputSet>
+      </semantic:ioSpecification>
+    </semantic:userTask>
+    <semantic:startEvent id="_33" triso:readOnly="false" ot:displayName="E-mail received" ot:alias="event2" name="E-mail received">
+      <semantic:outgoing>_32</semantic:outgoing>
+      <semantic:messageEventDefinition id="Definition__33"/>
+    </semantic:startEvent>
+    <semantic:userTask id="_24" triso:readOnly="false" ot:displayName="Check employee's availability" ot:alias="task2" implementation="##unspecified" name="Check employee's availability">
+      <semantic:extensionElements>
+        <ot:userTaskDefinition displayApplyButton="false" displayOkButton="false" displayShowProcessButton="false" formType="ruleBased" reassignMode="explicit"/>
+      </semantic:extensionElements>
+      <semantic:incoming>_26</semantic:incoming>
+      <semantic:outgoing>_23</semantic:outgoing>
+      <semantic:dataInputAssociation id="_71">
+        <semantic:sourceRef>Reference__1</semantic:sourceRef>
+        <semantic:targetRef>DataInput__24</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_70">
+        <semantic:sourceRef>DataOutput__24</semantic:sourceRef>
+        <semantic:targetRef>Reference__10</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+      <semantic:ioSpecification>
+        <semantic:dataInput triso:readOnly="false" id="DataInput__24"/>
+        <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput__24"/>
+        <semantic:inputSet id="_1642b32b-405d-4e17-be45-c8e8113c7c99">
+          <semantic:dataInputRefs>DataInput__24</semantic:dataInputRefs>
+        </semantic:inputSet>
+        <semantic:outputSet id="_90dfafb3-8f88-457f-a8b5-104e4513b807">
+          <semantic:dataOutputRefs>DataOutput__24</semantic:dataOutputRefs>
+        </semantic:outputSet>
+      </semantic:ioSpecification>
+    </semantic:userTask>
+    <semantic:exclusiveGateway id="_27" triso:readOnly="false" ot:displayName="On-site Meeting?" ot:alias="gateway2" gatewayDirection="Diverging" name="On-site Meeting?">
+      <semantic:incoming>_47</semantic:incoming>
+      <semantic:outgoing>_26</semantic:outgoing>
+      <semantic:outgoing>_43</semantic:outgoing>
+    </semantic:exclusiveGateway>
+    <semantic:exclusiveGateway id="_25" triso:readOnly="false" ot:displayName="Employee &#10;available?" ot:alias="gateway1" gatewayDirection="Diverging" name="Employee &#10;available?">
+      <semantic:incoming>_23</semantic:incoming>
+      <semantic:outgoing>_30</semantic:outgoing>
+      <semantic:outgoing>_42</semantic:outgoing>
+    </semantic:exclusiveGateway>
+    <semantic:dataStoreReference id="Reference__1" triso:readOnly="false" ot:alias="dataStore1" name="Calendar" dataStoreRef="_1"/>
+    <semantic:dataObjectReference id="Reference__12" triso:readOnly="false" ot:alias="dataObj1" name="On-site meeting" dataObjectRef="_12"/>
+    <semantic:dataObjectReference id="Reference__10" triso:readOnly="false" ot:alias="dataObj2" name="Identified&#10;employee" dataObjectRef="_10"/>
+    <semantic:dataObject id="_10" triso:readOnly="false" ot:alias="dataObj2" triso:displayName="Identified&#10;employee" name="Identified&#10;employee"/>
+    <semantic:dataObject id="_13" triso:readOnly="false" ot:alias="dataObj4" itemSubjectRef="itemDefinition_vlo3517az" triso:displayName="Tickets" name="Tickets" isCollection="true"/>
+    <semantic:dataObject id="_12" triso:readOnly="false" ot:alias="dataObj1" triso:displayName="On-site meeting" name="On-site meeting"/>
+    <semantic:dataObject id="_11" triso:readOnly="false" ot:alias="dataObj3" triso:displayName="Hotel reservation" itemSubjectRef="itemDefinition_qpgidbr63" name="Hotel reservation"/>
+    <semantic:sequenceFlow id="_17" sourceRef="_18" targetRef="_19" triso:readOnly="false" ot:alias="flow17" isImmediate="false"/>
+    <semantic:sequenceFlow id="_20" sourceRef="_21" targetRef="_22" triso:readOnly="false" ot:alias="flow5" isImmediate="false"/>
+    <semantic:sequenceFlow id="_23" sourceRef="_24" targetRef="_25" triso:readOnly="false" ot:alias="flow4" isImmediate="false"/>
+    <semantic:sequenceFlow id="_26" sourceRef="_27" targetRef="_24" triso:readOnly="false" ot:displayName="Yes" ot:alias="flow3" isImmediate="false" name="Yes"/>
+    <semantic:sequenceFlow id="_28" sourceRef="_29" targetRef="_21" triso:readOnly="false" ot:alias="flow2" isImmediate="false"/>
+    <semantic:sequenceFlow id="_30" sourceRef="_25" targetRef="_31" triso:readOnly="false" ot:displayName="No" ot:alias="flow7" isImmediate="false" name="No"/>
+    <semantic:sequenceFlow id="_32" sourceRef="_33" targetRef="_34" triso:readOnly="false" ot:alias="flow8" isImmediate="false"/>
+    <semantic:sequenceFlow id="_35" sourceRef="_31" targetRef="_36" triso:readOnly="false" ot:alias="flow18" isImmediate="false"/>
+    <semantic:sequenceFlow id="_37" sourceRef="_38" targetRef="_39" triso:readOnly="false" ot:alias="flow19" isImmediate="false"/>
+    <semantic:sequenceFlow id="_40" sourceRef="_39" targetRef="_41" triso:readOnly="false" ot:alias="flow20" isImmediate="false"/>
+    <semantic:sequenceFlow id="_42" sourceRef="_25" targetRef="_29" triso:readOnly="false" ot:displayName="Yes" ot:alias="flow1" isImmediate="false" name="Yes"/>
+    <semantic:sequenceFlow id="_43" sourceRef="_27" targetRef="_18" triso:readOnly="false" ot:displayName="No" ot:alias="flow10" isImmediate="false" name="No"/>
+    <semantic:sequenceFlow id="_44" sourceRef="_22" targetRef="_45" triso:readOnly="false" ot:alias="flow6" isImmediate="false"/>
+    <semantic:sequenceFlow id="_46" sourceRef="_45" targetRef="_38" triso:readOnly="false" ot:alias="flow11" isImmediate="false"/>
+    <semantic:sequenceFlow id="_47" sourceRef="_34" targetRef="_27" triso:readOnly="false" ot:alias="flow9" isImmediate="false"/>
+    <semantic:ioSpecification>
+      <semantic:dataInput name="Client request" triso:readOnly="false" isCollection="false" ot:alias="input1" id="_48"/>
+      <semantic:dataOutput name="Hotel reservation" triso:readOnly="false" itemSubjectRef="_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4" ot:alias="output2" id="_49"/>
+      <semantic:dataOutput name="Tickets" triso:readOnly="false" itemSubjectRef="_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4" isCollection="true" ot:alias="output1" id="_59"/>
+      <semantic:inputSet id="_a2f30cba-7097-46b1-a0e0-cb8ad10b85b1">
+        <semantic:dataInputRefs>_48</semantic:dataInputRefs>
+      </semantic:inputSet>
+      <semantic:outputSet id="_a3ee2ca7-0791-485b-8538-1d2244fb554b">
+        <semantic:dataOutputRefs>_49</semantic:dataOutputRefs>
+        <semantic:dataOutputRefs>_59</semantic:dataOutputRefs>
+      </semantic:outputSet>
+    </semantic:ioSpecification>
+  </semantic:process>
+  <semantic:process id="Process_ID-73a31a41-43d5-11f1-744d-b02628b36240" triso:readOnly="false" triso:collectEnds="true" isClosed="false" name="Plan Trip" isExecutable="false">
+    <semantic:dataObject id="ID-ee745c8c-43de-11f1-744d-b02628b36240" triso:readOnly="false" triso:displayName="Preferred hotel and travel means" name="Preferred hotel and travel means"/>
+    <semantic:startEvent id="ID-ee745c80-43de-11f1-744d-b02628b36240" triso:readOnly="false">
+      <semantic:outgoing>ID-ee745c84-43de-11f1-744d-b02628b36240</semantic:outgoing>
+    </semantic:startEvent>
+    <semantic:userTask id="ID-ee745c82-43de-11f1-744d-b02628b36240" triso:readOnly="false" implementation="##unspecified" name="Request employee preferences">
+      <semantic:incoming>ID-ee745c84-43de-11f1-744d-b02628b36240</semantic:incoming>
+      <semantic:outgoing>_1b18998a-581e-4a9f-a591-b4f360261866</semantic:outgoing>
+      <semantic:dataInputAssociation id="ID-ee745c88-43de-11f1-744d-b02628b36240">
+        <semantic:sourceRef>ID-ee745c85-43de-11f1-744d-b02628b36240</semantic:sourceRef>
+        <semantic:targetRef>DataInput_ID-ee745c82-43de-11f1-744d-b02628b36240</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="ID-ee745c8e-43de-11f1-744d-b02628b36240">
+        <semantic:sourceRef>DataOutput_ID-ee745c82-43de-11f1-744d-b02628b36240</semantic:sourceRef>
+        <semantic:targetRef>Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+      <semantic:ioSpecification>
+        <semantic:dataInput triso:readOnly="false" id="DataInput_ID-ee745c82-43de-11f1-744d-b02628b36240"/>
+        <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput_ID-ee745c82-43de-11f1-744d-b02628b36240"/>
+        <semantic:inputSet id="_e4d5030a-85d2-4313-b1dd-bffe5f54565c">
+          <semantic:dataInputRefs>DataInput_ID-ee745c82-43de-11f1-744d-b02628b36240</semantic:dataInputRefs>
+        </semantic:inputSet>
+        <semantic:outputSet id="_08f45118-5481-4ef5-8dfc-a5308a836242">
+          <semantic:dataOutputRefs>DataOutput_ID-ee745c82-43de-11f1-744d-b02628b36240</semantic:dataOutputRefs>
+        </semantic:outputSet>
+      </semantic:ioSpecification>
+    </semantic:userTask>
+    <semantic:userTask id="_5e0cd331-db4a-4561-9f7f-141eecba6967" triso:readOnly="false" implementation="##unspecified" name="Book trip">
+      <semantic:extensionElements>
+        <triso:notification id="_a9ffc4b8-99f5-4ce7-be34-3842028b3346" type="email" mode="others"/>
+      </semantic:extensionElements>
+      <semantic:incoming>_1b18998a-581e-4a9f-a591-b4f360261866</semantic:incoming>
+      <semantic:outgoing>_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa</semantic:outgoing>
+      <semantic:dataInputAssociation id="dataAssoc_Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240_to__5e0cd331-db4a-4561-9f7f-141eecba6967">
+        <semantic:sourceRef>Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240</semantic:sourceRef>
+        <semantic:targetRef>dataInput_ump2i215t</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_8ad15c31-1a47-4349-a146-0fbea8774532">
+        <semantic:sourceRef>_393bfc2e-32d1-4b49-8dd2-22c654541596</semantic:sourceRef>
+        <semantic:targetRef>_801b8c70-b793-499d-b462-4fd8d541f32b</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+      <semantic:dataOutputAssociation id="_5c59161c-f8b2-4e94-aac8-895517dcc1d4">
+        <semantic:sourceRef>_393bfc2e-32d1-4b49-8dd2-22c654541596</semantic:sourceRef>
+        <semantic:targetRef>_8a969b23-b4b1-453c-8925-1cec72ddbaef</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+      <semantic:ioSpecification>
+        <semantic:dataInput id="dataInput_ump2i215t"/>
+        <semantic:dataOutput triso:readOnly="false" itemSubjectRef="_triso-default-bpmnItemDefinition-string_id" isCollection="false" triso:hidden="false" id="_393bfc2e-32d1-4b49-8dd2-22c654541596"/>
+        <semantic:inputSet>
+          <semantic:dataInputRefs>dataInput_ump2i215t</semantic:dataInputRefs>
+        </semantic:inputSet>
+        <semantic:outputSet id="_e9d2d1da-2259-4da4-a2a3-9146db175b2b">
+          <semantic:dataOutputRefs>_393bfc2e-32d1-4b49-8dd2-22c654541596</semantic:dataOutputRefs>
+        </semantic:outputSet>
+      </semantic:ioSpecification>
+    </semantic:userTask>
+    <semantic:endEvent id="_2a76b8fa-b11b-4f0a-9835-2a144fada546" triso:readOnly="false">
+      <semantic:incoming>_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa</semantic:incoming>
+    </semantic:endEvent>
+    <semantic:dataObjectReference id="Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240" triso:readOnly="false" name="Preferred hotel and travel means" dataObjectRef="ID-ee745c8c-43de-11f1-744d-b02628b36240"/>
+    <semantic:sequenceFlow id="ID-ee745c84-43de-11f1-744d-b02628b36240" sourceRef="ID-ee745c80-43de-11f1-744d-b02628b36240" targetRef="ID-ee745c82-43de-11f1-744d-b02628b36240" triso:readOnly="false" isImmediate="false"/>
+    <semantic:sequenceFlow id="_1b18998a-581e-4a9f-a591-b4f360261866" sourceRef="ID-ee745c82-43de-11f1-744d-b02628b36240" targetRef="_5e0cd331-db4a-4561-9f7f-141eecba6967" triso:readOnly="false"/>
+    <semantic:sequenceFlow id="_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa" sourceRef="_5e0cd331-db4a-4561-9f7f-141eecba6967" targetRef="_2a76b8fa-b11b-4f0a-9835-2a144fada546" triso:readOnly="false"/>
+    <semantic:ioSpecification>
+      <semantic:dataInput name="Client request" triso:readOnly="false" isCollection="false" id="ID-ee745c85-43de-11f1-744d-b02628b36240"/>
+      <semantic:dataOutput name="Hotel reservation" triso:readOnly="false" itemSubjectRef="_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4" isCollection="true" ot:alias="output2" id="_801b8c70-b793-499d-b462-4fd8d541f32b" triso:displayName="Hotel reservation"/>
+      <semantic:dataOutput name="Tickets" triso:readOnly="false" itemSubjectRef="_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4" isCollection="true" ot:alias="output1" id="_8a969b23-b4b1-453c-8925-1cec72ddbaef"/>
+      <semantic:inputSet id="_06308928-4676-4288-94e1-cd562d59c0da">
+        <semantic:dataInputRefs>ID-ee745c85-43de-11f1-744d-b02628b36240</semantic:dataInputRefs>
+      </semantic:inputSet>
+      <semantic:outputSet id="_5213ec74-e4c5-40fa-b751-86a0a0092708">
+        <semantic:dataOutputRefs>_801b8c70-b793-499d-b462-4fd8d541f32b</semantic:dataOutputRefs>
+        <semantic:dataOutputRefs>_8a969b23-b4b1-453c-8925-1cec72ddbaef</semantic:dataOutputRefs>
+      </semantic:outputSet>
+    </semantic:ioSpecification>
+  </semantic:process>
+  <bpmndi:BPMNDiagram id="ID-73a31a41-43d5-11f1-744d-b02628b36240" name="C.10.0.1">
+    <bpmndi:BPMNPlane id="Plane_ID-73a31a41-43d5-11f1-744d-b02628b36240" bpmnElement="_4" trisobpmn:diagramWidth="2154.52" trisobpmn:diagramHeight="1095.21">
+      <bpmndi:BPMNShape id="Shape__5" bpmnElement="_5" color:background-color="#ffffff" color:border-color="#5e5e5e" isHorizontal="true">
+        <dc:Bounds x="0" y="0" width="1994.5" height="60"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Reference__2" bpmnElement="Reference__2" color:background-color="#ffffff" color:border-color="#5e5e5e">
+        <dc:Bounds x="108" y="110" width="50" height="50"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Reference__11" bpmnElement="Reference__11" color:background-color="#ffffff" color:border-color="#5e5e5e">
+        <dc:Bounds x="115" y="250" width="36" height="50"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Reference__13" bpmnElement="Reference__13" color:background-color="#ffffff" color:border-color="#5e5e5e">
+        <dc:Bounds x="115" y="390" width="36" height="50"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__33" bpmnElement="_33" color:background-color="#ffffff" color:border-color="#72ab16">
+        <dc:Bounds x="115" y="537" width="36" height="36"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0">
+          <dc:Bounds x="80" y="577" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__34" bpmnElement="_34" color:background-color="#ffffff" color:border-color="#00a2ce">
+        <dc:Bounds x="233" y="515" width="100" height="80"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__27" bpmnElement="_27" color:background-color="#ffffff" color:border-color="#5e5e5e" isMarkerVisible="true">
+        <dc:Bounds x="408" y="530" width="50" height="50"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0">
+          <dc:Bounds x="377" y="584" width="112" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__24" bpmnElement="_24" color:background-color="#ffffff" color:border-color="#00a2ce">
+        <dc:Bounds x="533" y="515" width="100" height="80"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__25" bpmnElement="_25" color:background-color="#ffffff" color:border-color="#5e5e5e" isMarkerVisible="true">
+        <dc:Bounds x="708" y="530" width="50" height="50"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0">
+          <dc:Bounds x="663" y="584" width="140" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__31" bpmnElement="_31" color:background-color="#ffffff" color:border-color="#da7400">
+        <dc:Bounds x="865" y="537" width="36" height="36"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0">
+          <dc:Bounds x="808" y="577" width="150" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__36" bpmnElement="_36" color:background-color="#ffffff" color:border-color="#fd6767">
+        <dc:Bounds x="1015" y="537" width="36" height="36"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0">
+          <dc:Bounds x="958" y="577" width="150" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Reference__1" bpmnElement="Reference__1" color:background-color="#ffffff" color:border-color="#5e5e5e">
+        <dc:Bounds x="108" y="670" width="50" height="50"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__18" bpmnElement="_18" color:background-color="#ffffff" color:border-color="#da7400">
+        <dc:Bounds x="565" y="677" width="36" height="36"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0">
+          <dc:Bounds x="508" y="717" width="150" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__19" bpmnElement="_19" color:background-color="#ffffff" color:border-color="#fd6767">
+        <dc:Bounds x="715" y="677" width="36" height="36"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0">
+          <dc:Bounds x="680" y="717" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__29" bpmnElement="_29" triso:targetpage="ID-73a31a41-43d5-11f1-744d-b02628b36240" color:background-color="#ffffff" color:border-color="#00a2ce">
+        <dc:Bounds x="983" y="655" width="100" height="80"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__21" bpmnElement="_21" color:background-color="#ffffff" color:border-color="#00a2ce">
+        <dc:Bounds x="1133" y="655" width="100" height="80"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__22" bpmnElement="_22" color:background-color="#ffffff" color:border-color="#00a2ce">
+        <dc:Bounds x="1283" y="655" width="100" height="80"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__45" bpmnElement="_45" color:background-color="#ffffff" color:border-color="#00a2ce">
+        <dc:Bounds x="1433" y="655" width="100" height="80"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__38" bpmnElement="_38" color:background-color="#ffffff" color:border-color="#da7400">
+        <dc:Bounds x="1615" y="677" width="36" height="36"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0">
+          <dc:Bounds x="1558" y="717" width="150" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__39" bpmnElement="_39" color:background-color="#ffffff" color:border-color="#00a2ce">
+        <dc:Bounds x="1733" y="655" width="100" height="80"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__41" bpmnElement="_41" color:background-color="#ffffff" color:border-color="#fd6767">
+        <dc:Bounds x="1915" y="677" width="36" height="36"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0">
+          <dc:Bounds x="1891" y="717" width="84" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Reference__12" bpmnElement="Reference__12" color:background-color="#ffffff" color:border-color="#5e5e5e">
+        <dc:Bounds x="115" y="810" width="36" height="50"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Reference__10" bpmnElement="Reference__10" color:background-color="#ffffff" color:border-color="#5e5e5e">
+        <dc:Bounds x="115" y="950" width="36" height="50"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_10_di" bpmnElement="_10">
+        <dc:Bounds x="115" y="1090" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_13_di" bpmnElement="_13">
+        <dc:Bounds x="115" y="1230" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_12_di" bpmnElement="_12">
+        <dc:Bounds x="115" y="1370" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_11_di" bpmnElement="_11">
+        <dc:Bounds x="115" y="1510" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__7" bpmnElement="_7" color:background-color="#ffffff" color:border-color="#5e5e5e" isHorizontal="true">
+        <dc:Bounds x="0" y="90" width="1994.5" height="1490"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__16" bpmnElement="_16" color:background-color="#ffffff" color:border-color="#5e5e5e" isHorizontal="true">
+        <dc:Bounds x="30" y="90" width="1965" height="838"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape__15" bpmnElement="_15" color:background-color="#ffffff" color:border-color="#5e5e5e" isHorizontal="true">
+        <dc:Bounds x="30" y="928" width="1965" height="652"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LS_3_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge__17" bpmnElement="_17" color:border-color="#666666">
+        <di:waypoint x="601" y="695"/>
+        <di:waypoint x="715" y="695"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_3_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__20" bpmnElement="_20" color:border-color="#666666">
+        <di:waypoint x="1233" y="695"/>
+        <di:waypoint x="1283" y="695"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_3_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__23" bpmnElement="_23" color:border-color="#666666">
+        <di:waypoint x="633" y="555"/>
+        <di:waypoint x="708" y="555"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_3_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__26" bpmnElement="_26" color:border-color="#666666">
+        <di:waypoint x="458" y="555"/>
+        <di:waypoint x="533" y="555"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:labelPosition="custom" labelStyle="LS_3_0">
+          <dc:Bounds x="475" y="531" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__43" bpmnElement="_43" color:border-color="#666666">
+        <di:waypoint x="433" y="580"/>
+        <di:waypoint x="433" y="695"/>
+        <di:waypoint x="565" y="695"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:labelPosition="custom" labelStyle="LS_3_0">
+          <dc:Bounds x="479" y="671" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__28" bpmnElement="_28" color:border-color="#666666">
+        <di:waypoint x="1083" y="695"/>
+        <di:waypoint x="1133" y="695"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_3_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__30" bpmnElement="_30" color:border-color="#666666">
+        <di:waypoint x="758" y="555"/>
+        <di:waypoint x="865" y="555"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:labelPosition="custom" labelStyle="LS_3_0">
+          <dc:Bounds x="791" y="531" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__42" bpmnElement="_42" color:border-color="#666666">
+        <di:waypoint x="758" y="555"/>
+        <di:waypoint x="808" y="555"/>
+        <di:waypoint x="808" y="625"/>
+        <di:waypoint x="958" y="625"/>
+        <di:waypoint x="958" y="695"/>
+        <di:waypoint x="983" y="695"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:labelPosition="custom" labelStyle="LS_3_0">
+          <dc:Bounds x="863" y="601" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__32" bpmnElement="_32" color:border-color="#666666">
+        <di:waypoint x="151" y="555"/>
+        <di:waypoint x="233" y="555"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_3_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__35" bpmnElement="_35" color:border-color="#666666">
+        <di:waypoint x="901" y="555"/>
+        <di:waypoint x="1015" y="555"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_3_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__37" bpmnElement="_37" color:border-color="#666666">
+        <di:waypoint x="1651" y="695"/>
+        <di:waypoint x="1733" y="695"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_3_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__40" bpmnElement="_40" color:border-color="#666666">
+        <di:waypoint x="1833" y="695"/>
+        <di:waypoint x="1915" y="695"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_3_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__44" bpmnElement="_44" color:border-color="#666666">
+        <di:waypoint x="1383" y="695"/>
+        <di:waypoint x="1433" y="695"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_3_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__46" bpmnElement="_46" color:border-color="#666666">
+        <di:waypoint x="1533" y="695"/>
+        <di:waypoint x="1615" y="695"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_3_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__47" bpmnElement="_47" color:border-color="#666666">
+        <di:waypoint x="333" y="555"/>
+        <di:waypoint x="408" y="555"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_3_1"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__76" bpmnElement="_76" color:border-color="#666666">
+        <di:waypoint x="173" y="60"/>
+        <di:waypoint x="173" y="517"/>
+        <di:waypoint x="133" y="517"/>
+        <di:waypoint x="133" y="537"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__80" bpmnElement="_80" color:border-color="#666666">
+        <di:waypoint x="1633" y="60"/>
+        <di:waypoint x="1633" y="677"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__77" bpmnElement="_77" color:border-color="#666666">
+        <di:waypoint x="1483" y="655"/>
+        <di:waypoint x="1483" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__78" bpmnElement="_78" color:border-color="#666666">
+        <di:waypoint x="583" y="677"/>
+        <di:waypoint x="583" y="633"/>
+        <di:waypoint x="643" y="633"/>
+        <di:waypoint x="643" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge__79" bpmnElement="_79" color:border-color="#666666">
+        <di:waypoint x="883" y="537"/>
+        <di:waypoint x="883" y="60"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+    <bpmndi:BPMNLabelStyle id="LS_3_0">
+      <dc:Font name="Arial" size="11" isBold="false" isItalic="false" isStrikeThrough="false" isUnderline="false"/>
+    </bpmndi:BPMNLabelStyle>
+    <bpmndi:BPMNLabelStyle id="LS_3_1">
+      <dc:Font name="arial,helvetica,sans-serif" size="11" isBold="false" isItalic="false" isStrikeThrough="false" isUnderline="false"/>
+    </bpmndi:BPMNLabelStyle>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="ID-73a31a41-43d5-11f1-744d-b02628b36240" name="C.10.0.2">
+    <bpmndi:BPMNPlane id="Plane_ID-73a31a41-43d5-11f1-744d-b02628b36240" bpmnElement="Process_ID-73a31a41-43d5-11f1-744d-b02628b36240" trisobpmn:diagramWidth="1485" trisobpmn:diagramHeight="1050">
+      <bpmndi:BPMNShape id="ID-ee745c8c-43de-11f1-744d-b02628b36240_di" bpmnElement="ID-ee745c8c-43de-11f1-744d-b02628b36240">
+        <dc:Bounds x="20" y="20" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_ID-ee745c80-43de-11f1-744d-b02628b36240" bpmnElement="ID-ee745c80-43de-11f1-744d-b02628b36240" color:background-color="#ffffff" color:border-color="#72ab16">
+        <dc:Bounds x="20" y="167" width="36" height="36"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" labelStyle="LSID-73a31a41-43d5-11f1-744d-b02628b36240_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_ID-ee745c82-43de-11f1-744d-b02628b36240" bpmnElement="ID-ee745c82-43de-11f1-744d-b02628b36240" color:background-color="#ffffff" color:border-color="#00a2ce">
+        <dc:Bounds x="138" y="145" width="100" height="80"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LSID-73a31a41-43d5-11f1-744d-b02628b36240_1"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_cf8cebcd-18e4-4d14-b6bd-35af312c6b42" bpmnElement="_5e0cd331-db4a-4561-9f7f-141eecba6967" color:background-color="#ffffff" color:border-color="#000000">
+        <dc:Bounds x="288" y="145" width="100" height="80"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" labelStyle="LSID-73a31a41-43d5-11f1-744d-b02628b36240_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_0667afb8-f6b2-4b25-aebe-e61131dd9e68" bpmnElement="_2a76b8fa-b11b-4f0a-9835-2a144fada546" color:background-color="#ffffff" color:border-color="#000000">
+        <dc:Bounds x="470" y="167" width="36" height="36"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" labelStyle="LSID-73a31a41-43d5-11f1-744d-b02628b36240_0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240" bpmnElement="Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240" color:background-color="#ffffff" color:border-color="#5e5e5e">
+        <dc:Bounds x="20" y="300" width="36" height="50"/>
+        <bpmndi:BPMNLabel color:color="#000000" labelStyle="LSID-73a31a41-43d5-11f1-744d-b02628b36240_1"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_ID-ee745c84-43de-11f1-744d-b02628b36240" bpmnElement="ID-ee745c84-43de-11f1-744d-b02628b36240" color:border-color="#666666">
+        <di:waypoint x="56" y="185"/>
+        <di:waypoint x="138" y="185"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LSID-73a31a41-43d5-11f1-744d-b02628b36240_0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_7d5d1a83-f961-455e-bba5-0178a902d9b5" bpmnElement="_1b18998a-581e-4a9f-a591-b4f360261866" color:border-color="#000000">
+        <di:waypoint x="238" y="185"/>
+        <di:waypoint x="288" y="185"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LSID-73a31a41-43d5-11f1-744d-b02628b36240_0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_401f0937-9a1a-419e-bbd1-c373a3bcda70" bpmnElement="_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa" color:border-color="#000000">
+        <di:waypoint x="388" y="185"/>
+        <di:waypoint x="470" y="185"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LSID-73a31a41-43d5-11f1-744d-b02628b36240_0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+    <bpmndi:BPMNLabelStyle id="LSID-73a31a41-43d5-11f1-744d-b02628b36240_0">
+      <dc:Font name="arial,helvetica,sans-serif" size="11" isBold="false" isItalic="false" isStrikeThrough="false" isUnderline="false"/>
+    </bpmndi:BPMNLabelStyle>
+    <bpmndi:BPMNLabelStyle id="LSID-73a31a41-43d5-11f1-744d-b02628b36240_1">
+      <dc:Font name="Arial" size="11" isBold="false" isItalic="false" isStrikeThrough="false" isUnderline="false"/>
+    </bpmndi:BPMNLabelStyle>
+  </bpmndi:BPMNDiagram>
+</semantic:definitions>
+

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:process id="P" isExecutable="true">
+<bpmn:startEvent id="S" name="Start" /><bpmn:task id="A" name="Read"><bpmn:dataInputAssociation id="dia1"><bpmn:sourceRef>DOR1</bpmn:sourceRef><bpmn:targetRef>Inp</bpmn:targetRef></bpmn:dataInputAssociation><bpmn:dataOutputAssociation id="doa1"><bpmn:targetRef>DOR2</bpmn:targetRef></bpmn:dataOutputAssociation></bpmn:task><bpmn:task id="B" name="Store"><bpmn:dataOutputAssociation id="doa2"><bpmn:targetRef>DS1</bpmn:targetRef></bpmn:dataOutputAssociation></bpmn:task><bpmn:endEvent id="E" name="End" />
+<bpmn:dataObject id="DO1" name="Order" /><bpmn:dataObjectReference id="DOR1" name="Order in" dataObjectRef="DO1" /><bpmn:dataObjectReference id="DOR2" name="Order out" dataObjectRef="DO1" />
+<bpmn:dataStoreReference id="DS1" name="Database" />
+<bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="A" />
+<bpmn:sequenceFlow id="f2" sourceRef="A" targetRef="B" />
+<bpmn:sequenceFlow id="f3" sourceRef="B" targetRef="E" />
+</bpmn:process>
+</bpmn:definitions>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="S" name="Start"/>
+    <bpmn:task id="A" name="Task A"/>
+    <bpmn:task id="B" name="Task B"/>
+    <bpmn:endEvent id="E" name="End"/>
+    <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="A"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="A" targetRef="B"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="B" targetRef="E"/>
+    <bpmn:textAnnotation id="N1">
+      <bpmn:text>Explains task A</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="N2">
+      <bpmn:text>Applies to both the start event and the end event with a rather long description</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="N3">
+      <bpmn:text>On a flow</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="N4"/>
+    <bpmn:textAnnotation id="N5">
+      <bpmn:text>Floating</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="as1" sourceRef="A" targetRef="N1"/>
+    <bpmn:association id="as2" sourceRef="S" targetRef="N2"/>
+    <bpmn:association id="as3" sourceRef="E" targetRef="N2"/>
+    <bpmn:association id="as4" sourceRef="f2" targetRef="N3"/>
+    <bpmn:association id="as5" sourceRef="B" targetRef="N4" associationDirection="One"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="P">
+      <bpmndi:BPMNShape id="S_di" bpmnElement="S">
+        <dc:Bounds x="77" y="172" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="75" y="212" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="A_di" bpmnElement="A">
+        <dc:Bounds x="195" y="150" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B_di" bpmnElement="B">
+        <dc:Bounds x="345" y="150" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_di" bpmnElement="E">
+        <dc:Bounds x="527" y="172" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="525" y="212" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="N1_di" bpmnElement="N1">
+        <dc:Bounds x="145" y="70" width="200" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="N2_di" bpmnElement="N2">
+        <dc:Bounds x="565" y="64" width="200" height="58"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="N3_di" bpmnElement="N3">
+        <dc:Bounds x="20" y="270" width="200" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="N4_di" bpmnElement="N4">
+        <dc:Bounds x="295" y="20" width="200" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="N5_di" bpmnElement="N5">
+        <dc:Bounds x="20" y="320" width="200" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="113" y="190"/>
+        <di:waypoint x="195" y="190"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="295" y="190"/>
+        <di:waypoint x="345" y="190"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
+        <di:waypoint x="445" y="190"/>
+        <di:waypoint x="527" y="190"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="as1_di" bpmnElement="as1">
+        <di:waypoint x="245" y="150"/>
+        <di:waypoint x="245" y="100"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="as2_di" bpmnElement="as2">
+        <di:waypoint x="95" y="208"/>
+        <di:waypoint x="95" y="246"/>
+        <di:waypoint x="511" y="246"/>
+        <di:waypoint x="511" y="93"/>
+        <di:waypoint x="565" y="93"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="as3_di" bpmnElement="as3">
+        <di:waypoint x="563" y="172"/>
+        <di:waypoint x="565" y="122"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="as5_di" bpmnElement="as5">
+        <di:waypoint x="395" y="150"/>
+        <di:waypoint x="395" y="50"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

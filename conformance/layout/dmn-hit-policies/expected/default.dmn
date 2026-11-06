@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="Definitions_hp" name="Hit policies" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="d_unique" name="Unique">
+    <decisionTable id="t_unique" hitPolicy="UNIQUE">
+      <input id="i1" label="x">
+        <inputExpression id="ie1" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o1" name="y" typeRef="string"/>
+      <rule id="r1">
+        <inputEntry id="e1">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="p1">
+          <text>"small"</text>
+        </outputEntry>
+      </rule>
+      <rule id="r2">
+        <inputEntry id="e2">
+          <text>&gt;= 10</text>
+        </inputEntry>
+        <outputEntry id="p2">
+          <text>"large"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d_first" name="First">
+    <decisionTable id="t_first" hitPolicy="FIRST">
+      <input id="i2">
+        <inputExpression id="ie2">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o2" name="y"/>
+      <rule id="r3">
+        <inputEntry id="e3">
+          <text>1</text>
+        </inputEntry>
+        <outputEntry id="p3">
+          <text>"a"</text>
+        </outputEntry>
+      </rule>
+      <rule id="r4">
+        <inputEntry id="e4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="p4">
+          <text>"b"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d_any" name="Any">
+    <decisionTable id="t_any" hitPolicy="ANY">
+      <input id="i3">
+        <inputExpression id="ie3">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o3" name="y"/>
+      <rule id="r5">
+        <inputEntry id="e5">
+          <text>1</text>
+        </inputEntry>
+        <outputEntry id="p5">
+          <text>"a"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d_rule_order" name="Rule order">
+    <decisionTable id="t_rule_order" hitPolicy="RULE ORDER">
+      <input id="i4">
+        <inputExpression id="ie4">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o4" name="y"/>
+      <rule id="r6">
+        <inputEntry id="e6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="p6">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d_output_order" name="Output order">
+    <decisionTable id="t_output_order" hitPolicy="OUTPUT ORDER">
+      <input id="i5">
+        <inputExpression id="ie5">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o5" name="y">
+        <outputValues>
+          <text>"high","low"</text>
+        </outputValues>
+      </output>
+      <rule id="r7">
+        <inputEntry id="e7">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="p7">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d_priority" name="Priority">
+    <decisionTable id="t_priority" hitPolicy="PRIORITY">
+      <input id="i6">
+        <inputExpression id="ie6">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o6" name="y"/>
+      <rule id="r8">
+        <inputEntry id="e8">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="p8">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d_collect" name="Collect">
+    <decisionTable id="t_collect" hitPolicy="COLLECT">
+      <input id="i7">
+        <inputExpression id="ie7">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o7" name="y"/>
+      <rule id="r9">
+        <inputEntry id="e9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="p9">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d_sum" name="Collect sum">
+    <decisionTable id="t_sum" hitPolicy="COLLECT" aggregation="SUM">
+      <input id="i8">
+        <inputExpression id="ie8">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o8" name="y" typeRef="number"/>
+      <rule id="r10">
+        <inputEntry id="e10">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="p10">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d_min" name="Collect min">
+    <decisionTable id="t_min" hitPolicy="COLLECT" aggregation="MIN">
+      <input id="i9">
+        <inputExpression id="ie9">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o9" name="y" typeRef="number"/>
+      <rule id="r11">
+        <inputEntry id="e11">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="p11">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d_max" name="Collect max">
+    <decisionTable id="t_max" hitPolicy="COLLECT" aggregation="MAX">
+      <input id="i10">
+        <inputExpression id="ie10">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o10" name="y" typeRef="number"/>
+      <rule id="r12">
+        <inputEntry id="e12">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="p12">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d_count" name="Collect count">
+    <decisionTable id="t_count" hitPolicy="COLLECT" aggregation="COUNT">
+      <input id="i11">
+        <inputExpression id="ie11">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o11" name="y" typeRef="number"/>
+      <rule id="r13">
+        <inputEntry id="e13">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="p13">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d_default" name="No hit policy">
+    <decisionTable id="t_default">
+      <input id="i12">
+        <inputExpression id="ie12">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o12" name="y"/>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="d_unique">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d_first">
+        <dc:Bounds height="80" width="180" x="160" y="220"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d_any">
+        <dc:Bounds height="80" width="180" x="160" y="340"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d_rule_order">
+        <dc:Bounds height="80" width="180" x="160" y="460"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d_output_order">
+        <dc:Bounds height="80" width="180" x="160" y="580"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d_priority">
+        <dc:Bounds height="80" width="180" x="160" y="700"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d_collect">
+        <dc:Bounds height="80" width="180" x="160" y="820"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d_sum">
+        <dc:Bounds height="80" width="180" x="160" y="940"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d_min">
+        <dc:Bounds height="80" width="180" x="160" y="1060"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d_max">
+        <dc:Bounds height="80" width="180" x="160" y="1180"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d_count">
+        <dc:Bounds height="80" width="180" x="160" y="1300"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d_default">
+        <dc:Bounds height="80" width="180" x="160" y="1420"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

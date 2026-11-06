@@ -89,7 +89,9 @@ dependencies = [
  "bpmnkit-dmn",
  "bpmnkit-feel",
  "bpmnkit-form",
+ "bpmnkit-layout",
  "bpmnkit-lint",
+ "indexmap",
  "serde",
  "serde_json",
 ]

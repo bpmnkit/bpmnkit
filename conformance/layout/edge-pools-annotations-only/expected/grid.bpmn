@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:collaboration id="C">
+    <bpmn:participant id="PA" name="Notes" processRef="Pn"/>
+    <bpmn:participant id="PB" name="Work" processRef="Pw"/>
+  </bpmn:collaboration>
+  <bpmn:process id="Pn" isExecutable="true">
+    <bpmn:textAnnotation id="Ann1">
+      <bpmn:text>Just a note</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="Ann2">
+      <bpmn:text>Another note</bpmn:text>
+    </bpmn:textAnnotation>
+  </bpmn:process>
+  <bpmn:process id="Pw" isExecutable="true">
+    <bpmn:startEvent id="Pw_s" name="Start"/>
+    <bpmn:task id="Pw_Do" name="Do"/>
+    <bpmn:endEvent id="Pw_e" name="End"/>
+    <bpmn:sequenceFlow id="Pw_f1" sourceRef="Pw_s" targetRef="Pw_Do"/>
+    <bpmn:sequenceFlow id="Pw_f2" sourceRef="Pw_Do" targetRef="Pw_e"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="C">
+      <bpmndi:BPMNShape id="PA_di" bpmnElement="PA" isHorizontal="true">
+        <dc:Bounds x="0" y="0" width="410" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Pw_s_di" bpmnElement="Pw_s">
+        <dc:Bounds x="52" y="132" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="50" y="172" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Pw_Do_di" bpmnElement="Pw_Do">
+        <dc:Bounds x="170" y="110" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Pw_e_di" bpmnElement="Pw_e">
+        <dc:Bounds x="352" y="132" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="350" y="172" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PB_di" bpmnElement="PB" isHorizontal="true">
+        <dc:Bounds x="0" y="90" width="410" height="120"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Pw_f1_di" bpmnElement="Pw_f1">
+        <di:waypoint x="88" y="150"/>
+        <di:waypoint x="170" y="150"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Pw_f2_di" bpmnElement="Pw_f2">
+        <di:waypoint x="270" y="150"/>
+        <di:waypoint x="352" y="150"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:process id="P" isExecutable="true">
+<bpmn:startEvent id="S" name="Start" /><bpmn:parallelGateway id="Split" /><bpmn:task id="A" name="Branch A" /><bpmn:task id="B" name="Branch B" /><bpmn:task id="C" name="Branch C" /><bpmn:task id="D" name="After B" /><bpmn:parallelGateway id="Join" /><bpmn:endEvent id="E" name="End" />
+<bpmn:sequenceFlow id="f0" sourceRef="S" targetRef="Split" /><bpmn:sequenceFlow id="a" sourceRef="Split" targetRef="A" /><bpmn:sequenceFlow id="b" sourceRef="Split" targetRef="B" /><bpmn:sequenceFlow id="c" sourceRef="Split" targetRef="C" /><bpmn:sequenceFlow id="bd" sourceRef="B" targetRef="D" /><bpmn:sequenceFlow id="ja" sourceRef="A" targetRef="Join" /><bpmn:sequenceFlow id="jd" sourceRef="D" targetRef="Join" /><bpmn:sequenceFlow id="jc" sourceRef="C" targetRef="Join" /><bpmn:sequenceFlow id="fe" sourceRef="Join" targetRef="E" />
+</bpmn:process>
+</bpmn:definitions>

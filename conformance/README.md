@@ -300,6 +300,72 @@ to object` (`stripForeignAttrs`) on a `bpmn:multiInstanceLoopCharacteristics` th
 `bpmn/miwg-c-7-0`; the parser gives the loop no `unknownAttributes`. There is no `migrate/` case for
 it until that is fixed.
 
+## Layout: `layout/`
+
+Recorded by `packages/core/tests/conformance-layout.test.ts`; the Rust runner is
+`crates/bpmnkit-conformance/src/layout.rs`. Every case is a folder holding an input and an optional
+`case.json`:
+
+- `input.bpmn` / `input.dmn`, or `case.json` `"input": "<path from conformance/>"` to reuse another
+  case's input (as the tooling cases do).
+- `case.json` `"runs": {"<run>": <options>}`: one expected file per run, `expected/<run>.bpmn` (or
+  `.dmn`). Without `runs`, a BPMN case has `{"semantic": {}, "grid": {"engine": "grid"}}` and a DMN case
+  has `{"default": {}}`.
+
+Run options (all optional):
+
+| Option | Meaning |
+|---|---|
+| `engine` | `"semantic"` (default) or `"grid"`: the `LayoutEngine` passed to `applyAutoLayout`. |
+| `hints.grids` | `{"<adHocSubProcessId>": {"columns"?: n, "fill"?: "row" \| "column"}}`: `LayoutHints.grids` (a `Map` in TS). |
+| `hints.annotationSides` | `{"<textAnnotationId>": "above" \| "below" \| "left" \| "right"}`: `LayoutHints.annotationSides`. |
+
+Expected files: `serializeBpmn(applyAutoLayout(parseBpmn(input), engine, hints))`, or for `.dmn`
+`serializeDmn(layoutDmn(parseDmn(input)))`, with `resetIdCounter()` called before the parse. A run that
+throws records `expected/<run>.error.txt` (the message plus a newline) instead; Rust must fail with
+the same message (a parse error counts, a panic does not). Runner case ids: `layout/<case>/<run>`.
+
+Comparison: the serialized XML must match exactly, or be identical after aligning the values of the `x`,
+`y`, `width` and `height` attributes, every pair of which differs by at most `LAYOUT_TOLERANCE`
+(1.0 px, a `pub const` in `layout.rs`). Only those numbers may differ: ids, names, order and structure
+are exact. The reason is that TS rounds every coordinate with `Math.round`, so a sub-pixel float
+difference between the two implementations can flip a rounding by one pixel. The runner reports how many
+runs match exactly and how many only within the tolerance (`layout: N exact, M within 1 px, K failed`);
+a growing second number is worth a look even though it passes. `tests/layout.rs` names what differs for
+each failing run.
+
+Provenance:
+
+| Cases | Source |
+|---|---|
+| `bpmn-<case>` | every `conformance/bpmn/<case>` input (`"input"` reference), default runs |
+| `dmn-<case>` | every `conformance/dmn/<case>` input except the `error-*` ones, default run |
+| `edge-lanes`, `edge-lanes-nested` | one lane set with an empty lane and an element in no lane; nested `childLaneSet`. No collaboration, so TS draws no lane shapes (see known defects) |
+| `edge-pools-three`, `edge-pools-nine`, `edge-pools-black-box`, `edge-pools-annotations-only`, `edge-existing-di-collab` | 3 pools with message flows (pool ordering), 9 pools (the ordering heuristic), black-box participants, a pool holding only annotations, a collaboration with DI and a collapsed sub-process |
+| `edge-boundary-events`, `edge-boundary-subprocess-titled` | error / timer / escalation boundaries, interrupting and not, several on one task, on sub-processes (one with a long title) |
+| `edge-subprocess-expanded`, `-collapsed`, `-nested`, `-event`, `edge-transaction` | expanded; collapsed through source DI `isExpanded="false"`; three levels; event sub-processes (interrupting and not); a transaction with a cancel boundary |
+| `edge-adhoc-tools` | ad-hoc sub-process with unconnected tools, two linked ones and an annotation; runs `semantic`, `grid`, `grid-hint`, `grid-hint-column`, `annotation-sides`, `annotation-sides-above` |
+| `edge-loops` | back edges, a self loop and nested retry gateways |
+| `edge-gateway-exclusive`, `-parallel`, `-mixed` | default flow with labelled conditions; split / join with a fan; inclusive, event-based and complex gateways |
+| `edge-annotations`, `edge-data-objects` | annotations with associations to nodes, a flow, several sources, no text and none at all (runs `semantic`, `grid`, `sides`); data objects, references and a data store |
+| `edge-multi-process`, `edge-empty-process`, `edge-empty-collaboration-process`, `edge-annotations-only-process`, `edge-disconnected` | processes without a collaboration; empty process / pool; a process with only an annotation; separate components and lone nodes |
+| `edge-unicode-labels`, `edge-long-labels` | non-ASCII, emoji and astral characters (UTF-16 length); very long and empty labels |
+| `edge-existing-di-labels`, `edge-existing-di-collab` | existing DI with `BPMNLabelStyle`, label bounds, a colour attribute and `isMarkerVisible` (`keepDiAttributes`) |
+| `edge-no-di-minimal`, `edge-no-di-no-ids` | a bare default-namespace model without DI; a model with no ids, which TS refuses to parse (`error.txt` runs) |
+| `edge-event-types`, `edge-wide-fan` | one of each event / task kind in a row; an eight-way parallel fan |
+| `edge-dmn-drd`, `-chain`, `-annotations`, `-existing-di`, `-empty` | DRD with decisions, input data, BKMs, a knowledge source and every requirement kind; a deep decision chain with shortcuts; annotations and associations; an existing `DMNDI`; a definitions element with no content |
+
+The `edge-` inputs are hand-written XML (mostly without DI; the `existing-di-*`, `subprocess-collapsed`
+and `no-di-*` ones are the exceptions), not copied from anywhere.
+
+Known TypeScript defects the recorded output pins down as it is (to fix later; fixing one means
+re-recording and reviewing the diff):
+
+- `edge-pools-annotations-only`: the text annotations of a participant whose process has nothing else
+  get no shape, and the pool is 60 px high (the annotations are lost from the diagram).
+- `edge-lanes`, `edge-lanes-nested`: a lane set in a process that is not a participant of a collaboration
+  gets no lane shapes.
+
 ## `pending.json`
 
 `{"<case id or bpmn/<case>>": "<reason or issue link>"}`: cases a non-TS runner knows it does

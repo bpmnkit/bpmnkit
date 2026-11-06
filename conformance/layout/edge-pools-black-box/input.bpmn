@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:collaboration id="C">
+<bpmn:participant id="PA" name="Our process" processRef="Pr" /><bpmn:participant id="BB1" name="Partner API" /><bpmn:participant id="BB2" name="Customer" />
+<bpmn:messageFlow id="m1" name="request" sourceRef="Pr_call" targetRef="BB1" /><bpmn:messageFlow id="m2" name="response" sourceRef="BB1" targetRef="Pr_wait" />
+<bpmn:messageFlow id="m3" sourceRef="BB2" targetRef="Pr_s" /><bpmn:messageFlow id="m4" sourceRef="Pr_e" targetRef="BB2" />
+</bpmn:collaboration>
+<bpmn:process id="Pr" isExecutable="true">
+<bpmn:startEvent id="Pr_s" name="Start" /><bpmn:sendTask id="Pr_call" name="Call partner" /><bpmn:receiveTask id="Pr_wait" name="Wait for reply" /><bpmn:endEvent id="Pr_e" name="End" />
+<bpmn:sequenceFlow id="f1" sourceRef="Pr_s" targetRef="Pr_call" />
+<bpmn:sequenceFlow id="f2" sourceRef="Pr_call" targetRef="Pr_wait" />
+<bpmn:sequenceFlow id="f3" sourceRef="Pr_wait" targetRef="Pr_e" />
+</bpmn:process>
+</bpmn:definitions>

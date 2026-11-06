@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:process id="P" isExecutable="true">
+<bpmn:startEvent id="S" name="Start" /><bpmn:task id="A" name="Work" /><bpmn:endEvent id="E" name="End" /><bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="A" />
+<bpmn:sequenceFlow id="f2" sourceRef="A" targetRef="E" />
+<bpmn:subProcess id="Ev" name="Handle error" triggeredByEvent="true"><bpmn:startEvent isInterrupting="false" id="evS" name="Error"><bpmn:errorEventDefinition id="ed1" /></bpmn:startEvent><bpmn:task id="evA" name="Compensate" /><bpmn:endEvent id="evE" name="Handled" /><bpmn:sequenceFlow id="evf1" sourceRef="evS" targetRef="evA" />
+<bpmn:sequenceFlow id="evf2" sourceRef="evA" targetRef="evE" /></bpmn:subProcess>
+<bpmn:subProcess id="Ev2" name="Handle message" triggeredByEvent="true"><bpmn:startEvent id="ev2S" name="Message"><bpmn:messageEventDefinition id="ed2" /></bpmn:startEvent><bpmn:endEvent id="ev2E" name="Done" /><bpmn:sequenceFlow id="ev2f1" sourceRef="ev2S" targetRef="ev2E" /></bpmn:subProcess>
+</bpmn:process>
+</bpmn:definitions>

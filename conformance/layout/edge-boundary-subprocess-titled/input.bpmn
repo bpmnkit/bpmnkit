@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:process id="P" isExecutable="true">
+<bpmn:startEvent id="S" name="Start" />
+<bpmn:subProcess id="Sub" name="A sub-process with a rather long title that wraps"><bpmn:startEvent id="SS" name="Begin" /><bpmn:userTask id="ST" name="Review request" /><bpmn:userTask id="ST2" name="Approve" /><bpmn:endEvent id="SE" name="Finish" /><bpmn:sequenceFlow id="sf1" sourceRef="SS" targetRef="ST" />
+<bpmn:sequenceFlow id="sf2" sourceRef="ST" targetRef="ST2" />
+<bpmn:sequenceFlow id="sf3" sourceRef="ST2" targetRef="SE" /></bpmn:subProcess>
+<bpmn:boundaryEvent id="B1" name="Timeout" attachedToRef="Sub"><bpmn:timerEventDefinition id="ed1"><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
+<bpmn:boundaryEvent id="B2" name="Info" attachedToRef="Sub" cancelActivity="false"><bpmn:messageEventDefinition id="ed2" /></bpmn:boundaryEvent>
+<bpmn:endEvent id="E" name="End" /><bpmn:endEvent id="E2" name="Timed out" /><bpmn:task id="Notify" name="Notify" />
+<bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="Sub" /><bpmn:sequenceFlow id="f2" sourceRef="Sub" targetRef="E" /><bpmn:sequenceFlow id="b1" sourceRef="B1" targetRef="E2" /><bpmn:sequenceFlow id="b2" sourceRef="B2" targetRef="Notify" />
+</bpmn:process>
+</bpmn:definitions>

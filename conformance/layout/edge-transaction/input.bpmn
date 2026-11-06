@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:process id="P" isExecutable="true">
+<bpmn:startEvent id="S" name="Start" /><bpmn:transaction id="Tx" name="Book trip"><bpmn:startEvent id="tS" name="Begin" /><bpmn:task id="tA" name="Book flight" /><bpmn:task id="tB" name="Book hotel" /><bpmn:endEvent id="tE" name="Booked" /><bpmn:sequenceFlow id="tf1" sourceRef="tS" targetRef="tA" />
+<bpmn:sequenceFlow id="tf2" sourceRef="tA" targetRef="tB" />
+<bpmn:sequenceFlow id="tf3" sourceRef="tB" targetRef="tE" /></bpmn:transaction>
+<bpmn:boundaryEvent id="BC" name="Cancel" attachedToRef="Tx"><bpmn:cancelEventDefinition id="ed1" /></bpmn:boundaryEvent><bpmn:task id="Refund" name="Refund" /><bpmn:endEvent id="E" name="End" /><bpmn:endEvent id="E2" name="Cancelled" />
+<bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="Tx" /><bpmn:sequenceFlow id="f2" sourceRef="Tx" targetRef="E" /><bpmn:sequenceFlow id="b1" sourceRef="BC" targetRef="Refund" /><bpmn:sequenceFlow id="f3" sourceRef="Refund" targetRef="E2" />
+</bpmn:process>
+</bpmn:definitions>

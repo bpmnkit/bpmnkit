@@ -1,6 +1,6 @@
 [package]
 name = "bpmnkit-conformance"
-description = "Shared conformance cases (FEEL, BPMN, DMN, forms, lint, optimize, compat, migrate) and runner for the BPMN Kit Rust crates"
+description = "Shared conformance cases (FEEL, BPMN, DMN, forms, lint, optimize, compat, migrate, layout) and runner for the BPMN Kit Rust crates"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -16,3 +16,5 @@ bpmnkit-form = { path = "../bpmnkit-form" }
 bpmnkit-dmn = { path = "../bpmnkit-dmn" }
 bpmnkit-compat = { path = "../bpmnkit-compat" }
 bpmnkit-lint = { path = "../bpmnkit-lint" }
+bpmnkit-layout = { path = "../bpmnkit-layout" }
+indexmap = { workspace = true }

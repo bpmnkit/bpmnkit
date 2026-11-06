@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Defs_chain" name="Chain" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="d0" name="Root"><literalExpression id="le0"><text>0</text></literalExpression></decision>
+  <decision id="d1" name="Decision 1">
+    <informationRequirement id="ir1"><requiredDecision href="#d0"/></informationRequirement>
+    <literalExpression id="le1"><text>1</text></literalExpression>
+  </decision>
+  <decision id="d2" name="Decision 2">
+    <informationRequirement id="ir2"><requiredDecision href="#d1"/></informationRequirement>
+    <literalExpression id="le2"><text>2</text></literalExpression>
+  </decision>
+  <decision id="d3" name="Decision 3">
+    <informationRequirement id="ir3"><requiredDecision href="#d2"/></informationRequirement>
+    <literalExpression id="le3"><text>3</text></literalExpression>
+  </decision>
+  <decision id="d4" name="Decision 4">
+    <informationRequirement id="ir4"><requiredDecision href="#d3"/></informationRequirement>
+    <informationRequirement id="irx4"><requiredDecision href="#d1"/></informationRequirement>
+    <literalExpression id="le4"><text>4</text></literalExpression>
+  </decision>
+  <decision id="d5" name="Decision 5">
+    <informationRequirement id="ir5"><requiredDecision href="#d4"/></informationRequirement>
+    <informationRequirement id="irx5"><requiredDecision href="#d1"/></informationRequirement>
+    <literalExpression id="le5"><text>5</text></literalExpression>
+  </decision>
+  <decision id="d6" name="Decision 6">
+    <informationRequirement id="ir6"><requiredDecision href="#d5"/></informationRequirement>
+    <informationRequirement id="irx6"><requiredDecision href="#d1"/></informationRequirement>
+    <literalExpression id="le6"><text>6</text></literalExpression>
+  </decision>
+</definitions>

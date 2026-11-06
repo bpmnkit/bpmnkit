@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:process id="P" isExecutable="true">
+<bpmn:startEvent id="S" name="A start event with an extremely long label that goes on and on" /><bpmn:task id="A" name="This is a task with a very long name that needs to wrap over many lines in the box" /><bpmn:exclusiveGateway id="G" name="Is this gateway question long enough to need wrapping around?" /><bpmn:task id="B" name="Short" /><bpmn:task id="C" name="" /><bpmn:endEvent id="E" name="Thisisonereallylongwordwithoutanyspacesatallthatcannotwrap" />
+<bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="A" name="a long label on a sequence flow that is longer than the gap" /><bpmn:sequenceFlow id="f2" sourceRef="A" targetRef="G" /><bpmn:sequenceFlow id="f3" sourceRef="G" targetRef="B" name="yes it is quite long indeed"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">=x</bpmn:conditionExpression></bpmn:sequenceFlow><bpmn:sequenceFlow id="f4" sourceRef="G" targetRef="C" name="no" /><bpmn:sequenceFlow id="f5" sourceRef="B" targetRef="E" /><bpmn:sequenceFlow id="f6" sourceRef="C" targetRef="E" />
+</bpmn:process>
+</bpmn:definitions>

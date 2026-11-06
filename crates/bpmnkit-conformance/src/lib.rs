@@ -7,6 +7,7 @@ pub mod compat;
 mod dmn;
 mod feel;
 mod form;
+pub mod layout;
 pub mod lint;
 pub mod migrate;
 pub mod optimize;
@@ -181,6 +182,20 @@ pub fn run_all(dir: &Path) -> Result<Vec<(String, bool)>, String> {
             out.push((id, ok));
         }
     }
+    let (mut exact, mut tolerant, mut layout_failed) = (0, 0, 0);
+    for id in layout::case_ids(dir) {
+        let result = std::panic::catch_unwind(|| layout::check_run(dir, &id)).ok();
+        match result {
+            Some(Ok(layout::Match::Exact)) => exact += 1,
+            Some(Ok(layout::Match::WithinTolerance)) => tolerant += 1,
+            _ => layout_failed += 1,
+        }
+        out.push((id, matches!(result, Some(Ok(_)))));
+    }
+    println!(
+        "layout: {exact} exact, {tolerant} within {} px, {layout_failed} failed",
+        layout::LAYOUT_TOLERANCE
+    );
     Ok(out)
 }
 

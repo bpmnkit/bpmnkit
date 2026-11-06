@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:collaboration id="C">
+    <bpmn:participant id="PA" name="Customer" processRef="PrA"/>
+    <bpmn:participant id="PB" name="Shop" processRef="PrB"/>
+    <bpmn:participant id="PC" name="Courier" processRef="PrC"/>
+    <bpmn:messageFlow id="m1" sourceRef="PrA_Order" targetRef="PrB_Receive" name="order"/>
+    <bpmn:messageFlow id="m2" sourceRef="PrB_Ship" targetRef="PrC_Pickup"/>
+    <bpmn:messageFlow id="m3" sourceRef="PrC_Deliver" targetRef="PrA_e" name="delivered"/>
+  </bpmn:collaboration>
+  <bpmn:process id="PrA" isExecutable="true">
+    <bpmn:startEvent id="PrA_s" name="Start"/>
+    <bpmn:task id="PrA_Order" name="Order"/>
+    <bpmn:endEvent id="PrA_e" name="End"/>
+    <bpmn:sequenceFlow id="PrA_f1" sourceRef="PrA_s" targetRef="PrA_Order"/>
+    <bpmn:sequenceFlow id="PrA_f2" sourceRef="PrA_Order" targetRef="PrA_e"/>
+  </bpmn:process>
+  <bpmn:process id="PrB" isExecutable="true">
+    <bpmn:startEvent id="PrB_s" name="Start"/>
+    <bpmn:task id="PrB_Receive" name="Receive"/>
+    <bpmn:task id="PrB_Ship" name="Ship"/>
+    <bpmn:endEvent id="PrB_e" name="End"/>
+    <bpmn:sequenceFlow id="PrB_f1" sourceRef="PrB_s" targetRef="PrB_Receive"/>
+    <bpmn:sequenceFlow id="PrB_f2" sourceRef="PrB_Receive" targetRef="PrB_Ship"/>
+    <bpmn:sequenceFlow id="PrB_f3" sourceRef="PrB_Ship" targetRef="PrB_e"/>
+  </bpmn:process>
+  <bpmn:process id="PrC" isExecutable="true">
+    <bpmn:startEvent id="PrC_s" name="Start"/>
+    <bpmn:task id="PrC_Pickup" name="Pickup"/>
+    <bpmn:task id="PrC_Deliver" name="Deliver"/>
+    <bpmn:endEvent id="PrC_e" name="End"/>
+    <bpmn:sequenceFlow id="PrC_f1" sourceRef="PrC_s" targetRef="PrC_Pickup"/>
+    <bpmn:sequenceFlow id="PrC_f2" sourceRef="PrC_Pickup" targetRef="PrC_Deliver"/>
+    <bpmn:sequenceFlow id="PrC_f3" sourceRef="PrC_Deliver" targetRef="PrC_e"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="C">
+      <bpmndi:BPMNShape id="PrA_s_di" bpmnElement="PrA_s">
+        <dc:Bounds x="52" y="42" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="50" y="82" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PrA_Order_di" bpmnElement="PrA_Order">
+        <dc:Bounds x="148" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PrA_e_di" bpmnElement="PrA_e">
+        <dc:Bounds x="308" y="42" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="306" y="82" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PA_di" bpmnElement="PA" isHorizontal="true">
+        <dc:Bounds x="0" y="0" width="366" height="120"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PrB_s_di" bpmnElement="PrB_s">
+        <dc:Bounds x="52" y="192" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="50" y="232" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PrB_Receive_di" bpmnElement="PrB_Receive">
+        <dc:Bounds x="148" y="170" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PrB_Ship_di" bpmnElement="PrB_Ship">
+        <dc:Bounds x="308" y="170" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PrB_e_di" bpmnElement="PrB_e">
+        <dc:Bounds x="468" y="192" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="466" y="232" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PB_di" bpmnElement="PB" isHorizontal="true">
+        <dc:Bounds x="0" y="150" width="526" height="120"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PrC_s_di" bpmnElement="PrC_s">
+        <dc:Bounds x="212" y="342" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="210" y="382" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PrC_Pickup_di" bpmnElement="PrC_Pickup">
+        <dc:Bounds x="308" y="320" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PrC_Deliver_di" bpmnElement="PrC_Deliver">
+        <dc:Bounds x="468" y="320" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PrC_e_di" bpmnElement="PrC_e">
+        <dc:Bounds x="628" y="342" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="626" y="382" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PC_di" bpmnElement="PC" isHorizontal="true">
+        <dc:Bounds x="0" y="300" width="686" height="120"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="PrA_f1_di" bpmnElement="PrA_f1">
+        <di:waypoint x="88" y="60"/>
+        <di:waypoint x="148" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="PrA_f2_di" bpmnElement="PrA_f2">
+        <di:waypoint x="248" y="60"/>
+        <di:waypoint x="308" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="PrB_f1_di" bpmnElement="PrB_f1">
+        <di:waypoint x="88" y="210"/>
+        <di:waypoint x="148" y="210"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="PrB_f2_di" bpmnElement="PrB_f2">
+        <di:waypoint x="248" y="210"/>
+        <di:waypoint x="308" y="210"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="PrB_f3_di" bpmnElement="PrB_f3">
+        <di:waypoint x="408" y="210"/>
+        <di:waypoint x="468" y="210"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="PrC_f1_di" bpmnElement="PrC_f1">
+        <di:waypoint x="248" y="360"/>
+        <di:waypoint x="308" y="360"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="PrC_f2_di" bpmnElement="PrC_f2">
+        <di:waypoint x="408" y="360"/>
+        <di:waypoint x="468" y="360"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="PrC_f3_di" bpmnElement="PrC_f3">
+        <di:waypoint x="568" y="360"/>
+        <di:waypoint x="628" y="360"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="m1_di" bpmnElement="m1">
+        <di:waypoint x="198" y="100"/>
+        <di:waypoint x="198" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="m2_di" bpmnElement="m2">
+        <di:waypoint x="358" y="250"/>
+        <di:waypoint x="358" y="320"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="m3_di" bpmnElement="m3">
+        <di:waypoint x="518" y="320"/>
+        <di:waypoint x="518" y="140"/>
+        <di:waypoint x="326" y="140"/>
+        <di:waypoint x="326" y="78"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+
