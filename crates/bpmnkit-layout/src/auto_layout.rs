@@ -428,8 +428,8 @@ pub fn add_annotation_shapes(
 /// Either marker counts: an explicit `isExpanded="false"` on the shape, or the
 /// presence of a separate plane for that sub-process.
 fn collapsed_sub_processes(defs: &BpmnDefinitions) -> IndexSet<String> {
-    let mut containers: IndexSet<&str> = IndexSet::new();
-    fn walk<'a>(elements: &'a [BpmnFlowElement], containers: &mut IndexSet<&'a str>) {
+    let mut containers: FxIndexSet<&str> = FxIndexSet::default();
+    fn walk<'a>(elements: &'a [BpmnFlowElement], containers: &mut FxIndexSet<&'a str>) {
         for el in elements {
             if let Some(c) = el.contents() {
                 containers.insert(&el.base().id);
@@ -442,6 +442,9 @@ fn collapsed_sub_processes(defs: &BpmnDefinitions) -> IndexSet<String> {
     }
 
     let mut collapsed = IndexSet::new();
+    if containers.is_empty() {
+        return collapsed;
+    }
     for diagram in &defs.diagrams {
         if containers.contains(diagram.plane.bpmn_element.as_str()) {
             collapsed.insert(diagram.plane.bpmn_element.clone());
@@ -800,13 +803,20 @@ fn message_flow_route(
 
 /// `poolOwners(defs, collab)`: every element id in a collaboration mapped to the
 /// index of the pool holding it.
-fn pool_owners(defs: &BpmnDefinitions, collab: &BpmnCollaboration) -> IndexMap<String, usize> {
-    let mut owners: IndexMap<String, usize> = IndexMap::new();
+fn pool_owners<'a>(
+    defs: &'a BpmnDefinitions,
+    collab: &'a BpmnCollaboration,
+) -> FxIndexMap<&'a str, usize> {
+    let mut owners: FxIndexMap<&'a str, usize> = FxIndexMap::default();
     let process_by_id = process_index(defs);
 
-    fn walk(elements: &[BpmnFlowElement], index: usize, owners: &mut IndexMap<String, usize>) {
+    fn walk<'a>(
+        elements: &'a [BpmnFlowElement],
+        index: usize,
+        owners: &mut FxIndexMap<&'a str, usize>,
+    ) {
         for element in elements {
-            owners.insert(element.base().id.clone(), index);
+            owners.insert(&element.base().id, index);
             if let Some(c) = element.contents() {
                 if !c.flow_elements.is_empty() {
                     walk(&c.flow_elements, index, owners);
@@ -816,7 +826,7 @@ fn pool_owners(defs: &BpmnDefinitions, collab: &BpmnCollaboration) -> IndexMap<S
     }
 
     for (index, participant) in collab.participants.iter().enumerate() {
-        owners.insert(participant.id.clone(), index);
+        owners.insert(&participant.id, index);
         let process = participant
             .process_ref
             .as_deref()
@@ -848,7 +858,7 @@ fn process_index(defs: &BpmnDefinitions) -> IndexMap<&str, usize> {
 /// one per flow, each carrying how deep inside its pool the message leaves and arrives.
 fn pool_links(
     collab: &BpmnCollaboration,
-    owners: &IndexMap<String, usize>,
+    owners: &FxIndexMap<&str, usize>,
     depth: impl Fn(&str) -> Option<f64>,
 ) -> Vec<PoolLink> {
     let mut links = Vec::new();
@@ -875,8 +885,8 @@ fn pool_links(
 
 /// `depthIndex(layouts)`: each laid-out element's vertical position within its own
 /// process, 0 top to 1 bottom.
-fn depth_index<'a>(layouts: impl Iterator<Item = &'a LayoutResult>) -> IndexMap<String, f64> {
-    let mut depths = IndexMap::new();
+fn depth_index<'a>(layouts: impl Iterator<Item = &'a LayoutResult>) -> FxIndexMap<&'a str, f64> {
+    let mut depths = FxIndexMap::default();
     for layout in layouts {
         if layout.nodes.is_empty() {
             continue;
@@ -888,7 +898,7 @@ fn depth_index<'a>(layouts: impl Iterator<Item = &'a LayoutResult>) -> IndexMap<
         }
         for node in &layout.nodes {
             depths.insert(
-                node.id.clone(),
+                node.id.as_str(),
                 (node.bounds.y + node.bounds.height / 2.0 - b.min_y) / height,
             );
         }
@@ -926,7 +936,7 @@ fn message_links(
         return Vec::new();
     };
 
-    let mut centres: IndexMap<&str, (usize, f64)> = IndexMap::new();
+    let mut centres: FxIndexMap<&str, (usize, f64)> = FxIndexMap::default();
     for (index, pool) in pools.iter().enumerate() {
         let Some(layout) = layouts.get(index) else {
             continue;
@@ -976,14 +986,21 @@ fn message_links(
 /// element that would contain it on a plane: its sub-process, or the participant of
 /// its process. Following the chain finds the nearest ancestor a collapsed scope
 /// leaves visible.
-fn ancestor_index(defs: &BpmnDefinitions, collab: &BpmnCollaboration) -> IndexMap<String, String> {
-    let mut parents: IndexMap<String, String> = IndexMap::new();
+fn ancestor_index<'a>(
+    defs: &'a BpmnDefinitions,
+    collab: &'a BpmnCollaboration,
+) -> FxIndexMap<&'a str, &'a str> {
+    let mut parents: FxIndexMap<&'a str, &'a str> = FxIndexMap::default();
     let process_by_id = process_index(defs);
 
-    fn walk(elements: &[BpmnFlowElement], parent: &str, parents: &mut IndexMap<String, String>) {
+    fn walk<'a>(
+        elements: &'a [BpmnFlowElement],
+        parent: &'a str,
+        parents: &mut FxIndexMap<&'a str, &'a str>,
+    ) {
         for element in elements {
-            let id = &element.base().id;
-            parents.insert(id.clone(), parent.to_string());
+            let id = element.base().id.as_str();
+            parents.insert(id, parent);
             if let Some(c) = element.contents() {
                 if !c.flow_elements.is_empty() {
                     walk(&c.flow_elements, id, parents);
@@ -1426,7 +1443,8 @@ pub fn apply_auto_layout(
     }
 
     if let Some(collab) = collab.filter(|c| !c.message_flows.is_empty()) {
-        let mut shape_by_element: IndexMap<&str, &BpmnBounds> = IndexMap::new();
+        let mut shape_by_element: FxIndexMap<&str, &BpmnBounds> =
+            FxIndexMap::with_capacity_and_hasher(all_shapes.len(), Default::default());
         for s in &all_shapes {
             shape_by_element.insert(&s.bpmn_element, &s.bounds);
         }
@@ -1439,7 +1457,7 @@ pub fn apply_auto_layout(
                 if shape_by_element.contains_key(c) {
                     break;
                 }
-                current = visible_ancestors.get(c).map(|s| s.as_str());
+                current = visible_ancestors.get(c).copied();
             }
             current.unwrap_or(id).to_string()
         };
@@ -1472,11 +1490,11 @@ pub fn apply_auto_layout(
         let containers_of = |id: &str| -> Vec<&BpmnBounds> {
             let mut out = Vec::new();
             let mut parent = visible_ancestors.get(id);
-            while let Some(p) = parent {
-                if let Some(bounds) = shape_by_element.get(p.as_str()) {
+            while let Some(&p) = parent {
+                if let Some(bounds) = shape_by_element.get(p) {
                     out.push(*bounds);
                 }
-                parent = visible_ancestors.get(p.as_str());
+                parent = visible_ancestors.get(p);
             }
             out
         };
