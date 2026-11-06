@@ -279,8 +279,7 @@ export function convertCamunda8To7(definitions: BpmnDefinitions): Camunda8To7Con
 			// A multi-instance loop with an id has extensionElements but no unknownAttributes.
 			record.unknownAttributes ??= {}
 			convertOwner(record)
-		}
-		else if (typeof record.unknownAttributes === "object" && record.unknownAttributes !== null) {
+		} else if (typeof record.unknownAttributes === "object" && record.unknownAttributes !== null) {
 			stripForeignAttrs(record.unknownAttributes as Record<string, string>)
 		}
 		const condition = record.conditionExpression as { text?: string } | undefined

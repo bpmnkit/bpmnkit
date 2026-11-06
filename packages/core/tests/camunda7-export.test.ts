@@ -95,7 +95,9 @@ describe("convertCamunda8To7", () => {
 
 	it("converts a multi-instance loop that has an id", () => {
 		const { out } = run(
-			c8('<bpmn:task id="t"><bpmn:multiInstanceLoopCharacteristics id="m" isSequential="false"/></bpmn:task>'),
+			c8(
+				'<bpmn:task id="t"><bpmn:multiInstanceLoopCharacteristics id="m" isSequential="false"/></bpmn:task>',
+			),
 		)
 		expect(out).toContain('id="m"')
 		expect(out).not.toMatch(/zeebe|modeler/)
