@@ -1,5 +1,9 @@
 # Features
 
+## `bpmnkit-bpmn`: BPMN I/O in Rust (2026-11-06)
+
+Rust parser and lossless serializer for BPMN 2.0 + Zeebe, with the same model JSON and byte-identical round-trip XML as `@bpmnkit/core` on all 48 BPMN conformance cases. `bpmnkit-xml` keeps prefixes, attribute order and unknown content; `bpmnkit_bpmn::zeebe` reads and writes the typed Zeebe extensions. Element kinds and Zeebe placement come from `spec/elements/{bpmn,zeebe}.json`, shared with TS. Builds for wasm32. Reebe parses deployments with it.
+
 ## `bpmnkit-feel`: FEEL in Rust (2026-11-06)
 
 A Rust FEEL lexer, parser and evaluator with every built-in, held to `@bpmnkit/feel` by the shared conformance cases (373 of 374 pass) and passing 95.0% of the DMN TCK. Exact decimals, ordered contexts, zoned date-times, durations. Reebe evaluates FEEL with it.
