@@ -129,6 +129,27 @@ describe("analyzeCamundaCompat — required properties", () => {
 		)
 	})
 
+	it("accepts an ISO date-time in a time zone west of UTC", () => {
+		// Regression: the calendar check read the month in local time, so in New York
+		// 2026-01-01T09:00:00Z became December and was reported as invalid.
+		const tz = process.env.TZ
+		process.env.TZ = "America/New_York"
+		try {
+			const at = (date: string) =>
+				compat(
+					model(
+						`    <bpmn:intermediateCatchEvent id="a"><bpmn:timerEventDefinition id="t"><bpmn:timeDate>${date}</bpmn:timeDate></bpmn:timerEventDefinition></bpmn:intermediateCatchEvent>`,
+					),
+				)
+			expect(at("2026-01-01T09:00:00Z")).toEqual([])
+			expect(at("2026-03-01T00:00:00Z")).toEqual([])
+			expect(rules(at("2026-02-29T09:00:00Z"))).toEqual(["compat/timer a"])
+		} finally {
+			if (tz === undefined) Reflect.deleteProperty(process.env, "TZ")
+			else process.env.TZ = tz
+		}
+	})
+
 	it("reports missing error codes, message names and signal names", () => {
 		const head = `  <bpmn:error id="err" name="Failed" />
   <bpmn:message id="msg" />
