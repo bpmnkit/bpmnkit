@@ -1185,7 +1185,10 @@ class Converter {
 		for (const listener of this.exts(owner, "taskListener")) {
 			this.keepExt(listener)
 			const event = listener.attributes.event ?? "create"
-			const c8Event = TASK_LISTENER_EVENTS[event]
+			// Own keys only: an event named `constructor` is not a listener event.
+			const c8Event = Object.hasOwn(TASK_LISTENER_EVENTS, event)
+				? TASK_LISTENER_EVENTS[event]
+				: undefined
 			if (c8Event === undefined) {
 				this.add(
 					owner,

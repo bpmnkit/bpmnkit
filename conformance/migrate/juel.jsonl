@@ -232,3 +232,7 @@
 {"id":"juel/232","juel":"${a>b}","expected":{"feel":"a > b","ok":true}}
 {"id":"juel/233","juel":"${!a||!b}","expected":{"feel":"not(a) or not(b)","ok":true}}
 {"id":"juel/234","juel":"${a!=null&&a>0}","expected":{"feel":"a != null and a > 0","ok":true}}
+{"id":"juel/235","juel":"${constructor == 1}","expected":{"feel":"constructor = 1","ok":true}}
+{"id":"juel/236","juel":"${toString == 1}","expected":{"feel":"toString = 1","ok":true}}
+{"id":"juel/237","juel":"${hasOwnProperty != null}","expected":{"feel":"hasOwnProperty != null","ok":true}}
+{"id":"juel/238","juel":"${constructor > 1}","options":{"multiInstance":true},"expected":{"feel":"constructor > 1","ok":true}}

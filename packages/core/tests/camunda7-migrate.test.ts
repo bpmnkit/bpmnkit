@@ -449,6 +449,18 @@ describe("user tasks", () => {
 		expect(listeners.map((f) => f.severity)).toEqual(["manual", "unsupported"])
 		expect(listeners[0]?.suggestion).toMatch(/eventType="creating"/)
 	})
+
+	it("treats a listener event named like an Object member as unknown", () => {
+		const c = task(
+			"",
+			`<bpmn:extensionElements>
+			  <camunda:taskListener class="com.acme.Notify" event="constructor"/>
+			</bpmn:extensionElements>`,
+		)
+		const [listener] = c.of("u").filter((f) => f.construct === "camunda:taskListener")
+		expect(listener).toMatchObject({ severity: "unsupported" })
+		expect(listener?.message).toMatch(/no task listener event like "constructor"/)
+	})
 })
 
 describe("start events", () => {
