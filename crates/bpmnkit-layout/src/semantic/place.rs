@@ -143,7 +143,7 @@ pub fn place<'a>(
         gutter_x.insert(*rank, x - gap / 2.0);
         x += col_width.get(rank).copied().unwrap_or(0.0);
     }
-    let x_of = |id: &str| -> XSpan {
+    let span_of = |id: &str| -> XSpan {
         let size = size_in(sizes, id);
         let rank = graph.ranks.get(id).copied().unwrap_or(0);
         let cw = col_width.get(&rank).copied().unwrap_or(size.0);
@@ -154,6 +154,9 @@ pub fn place<'a>(
             width: size.0,
         }
     };
+    // Asked for many times per node while bands are stacked: one lookup instead of four.
+    let spans: IndexMap<&str, XSpan> = graph.by_id.keys().map(|&id| (id, span_of(id))).collect();
+    let x_of = |id: &str| -> XSpan { spans.get(id).copied().unwrap_or_else(|| span_of(id)) };
 
     // Rows: one line per band, laid out per component then stacked.
     let loose = if pack_loose {

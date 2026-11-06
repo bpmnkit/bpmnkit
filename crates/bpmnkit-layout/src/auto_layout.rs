@@ -1671,8 +1671,6 @@ pub fn keep_di_attributes<'s>(
         FxIndexMap::with_capacity_and_hasher(shape_count, Default::default());
     let mut edge_by_element: FxIndexMap<&str, &'s BpmnDiEdge> =
         FxIndexMap::with_capacity_and_hasher(edge_count, Default::default());
-    let mut source_ids: FxIndexSet<&str> =
-        FxIndexSet::with_capacity_and_hasher(shape_count + edge_count, Default::default());
     // `entry().or_insert`: the first diagram, shape or edge per key wins.
     for diagram in source {
         let element = diagram.plane.bpmn_element.as_str();
@@ -1684,20 +1682,30 @@ pub fn keep_di_attributes<'s>(
         }
         for shape in &diagram.plane.shapes {
             shape_by_element.entry(&shape.bpmn_element).or_insert(shape);
-            source_ids.insert(&shape.id);
         }
         for edge in &diagram.plane.edges {
             edge_by_element.entry(&edge.bpmn_element).or_insert(edge);
-            source_ids.insert(&edge.id);
         }
     }
+    // Only a generated id is checked against every source id, so the set is
+    // built the first time one is.
+    let mut source_ids: Option<FxIndexSet<&str>> = None;
+    let all_source_ids = || -> FxIndexSet<&str> {
+        let mut ids =
+            FxIndexSet::with_capacity_and_hasher(shape_count + edge_count, Default::default());
+        for diagram in source {
+            ids.extend(diagram.plane.shapes.iter().map(|s| s.id.as_str()));
+            ids.extend(diagram.plane.edges.iter().map(|e| e.id.as_str()));
+        }
+        ids
+    };
 
     // A source id is reused only once, so a malformed source with two shapes
     // for one element cannot produce duplicate ids. A generated `X_di` may
     // already be the source id of another element (one renamed from `X`), so
-    // generated ids steer clear of every source id.
-    // The ids in use, split by where they came from so a reused source id is
-    // borrowed rather than copied; an id is used when either set holds it.
+    // generated ids steer clear of every source id. The ids in use are split by
+    // where they came from, so a reused source id is borrowed rather than
+    // copied; an id is used when either set holds it.
     let mut used_source: FxIndexSet<&str> = FxIndexSet::default();
     let mut used_generated: FxIndexSet<String> = FxIndexSet::default();
     // An empty source id means the source omitted it; that is not one to keep.
@@ -1718,6 +1726,7 @@ pub fn keep_di_attributes<'s>(
         // Checked even when `generated` equals a previous id already taken (two
         // source shapes sharing `X_di`): that id is in use, so it is not free.
         let mut id = generated;
+        let source_ids = source_ids.get_or_insert_with(all_source_ids);
         if source_ids.contains(id.as_str()) || used(&id, &used_source, &used_generated) {
             let base = id.clone();
             let mut n = 2;

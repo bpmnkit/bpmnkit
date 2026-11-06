@@ -218,7 +218,29 @@ struct Scratch {
     dist: Vec<f64>,
     prev: Vec<i64>,
     step_crossings: Vec<f64>,
+    estimate: Vec<f64>,
     heap: MinHeap,
+}
+
+/// Marks an estimate not yet worked out: a signalling NaN, which arithmetic
+/// never produces, so no computed estimate shares its bits.
+const UNSET: f64 = f64::from_bits(0x7ff4_0000_0000_0001);
+
+/// Manhattan distance to the nearest goal point; NaN when any distance is NaN,
+/// as a `js::min` fold gives. Distances are sums of absolute values, never -0,
+/// so the smaller of two is unambiguous.
+fn manhattan_to(goals: &[Waypoint], x: f64, y: f64) -> f64 {
+    let mut best = f64::INFINITY;
+    for p in goals {
+        let d = (p.x - x).abs() + (p.y - y).abs();
+        if d.is_nan() {
+            return f64::NAN;
+        }
+        if d < best {
+            best = d;
+        }
+    }
+    best
 }
 
 thread_local! {
@@ -246,6 +268,7 @@ fn search_in(
         dist,
         prev,
         step_crossings,
+        estimate,
         heap,
     } = scratch;
     let clear_ends = |ports: &[Port]| -> Vec<End> {
@@ -341,12 +364,18 @@ fn search_in(
     }
 
     let goal_points: Vec<Waypoint> = ends.iter().map(|e| e.stub).collect();
-    let heuristic = |x: f64, y: f64| -> f64 {
-        let mut best = f64::INFINITY;
-        for p in &goal_points {
-            best = js::min(best, (p.x - x).abs() + (p.y - y).abs());
+    let heuristic = |x: f64, y: f64| manhattan_to(&goal_points, x, y);
+    // A grid point's estimate, worked out once: every state of a cell and every
+    // push into it asks for the same value.
+    refill(estimate, nx * ny, UNSET);
+    let mut estimate_at = |cell: usize, x: f64, y: f64| -> f64 {
+        let known = estimate[cell];
+        if known.to_bits() != UNSET.to_bits() {
+            return known;
         }
-        best
+        let h = heuristic(x, y);
+        estimate[cell] = h;
+        h
     };
 
     let states = nx * ny * 4;
@@ -390,7 +419,7 @@ fn search_in(
         let j = (cell - i) / nx;
         let x = xs[i];
         let y = ys[j];
-        if d + heuristic(x, y) < priority - 1e-6 {
+        if d + estimate_at(cell, x, y) < priority - 1e-6 {
             continue;
         }
 
@@ -441,11 +470,12 @@ fn search_in(
                 }
                 cost += CROSSING_COST * *slot;
             }
-            let next = (nj * nx + ni) * 4 + nd;
+            let next_cell = nj * nx + ni;
+            let next = next_cell * 4 + nd;
             if cost < dist[next] {
                 dist[next] = cost;
                 prev[next] = state as i64;
-                heap.push(next, cost + heuristic(nxv, nyv));
+                heap.push(next, cost + estimate_at(next_cell, nxv, nyv));
             }
         }
     }
