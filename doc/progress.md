@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-06 — Rust twin phase 2: bpmnlint rule metadata in spec/
+
+- `spec/lint-rules.json` holds bpmnlint's rule names, rule categories, `standard-size` defaults and the `correctness` / `recommended` presets. `packages/core/src/generated/lint-rules.ts` and `bpmnkit_spec::lint` are generated from it. Rule checks and messages stay in code. No behaviour change.
+
 ## 2026-11-06 — Rust twin phase 1: conformance harness
 
 - `conformance/`: 298 FEEL cases and 16 BPMN cases, with expected outputs recorded from TS (`pnpm conformance:record`). Vitest checks TS against them, and the CI `conformance-ts` step fails on drift.

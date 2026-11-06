@@ -17,6 +17,7 @@
  * @packageDocumentation
  */
 
+import { CORRECTNESS_PRESET, RECOMMENDED_PRESET, RULE_NAMES_ALL } from "../generated/lint-rules.js"
 import type { BpmnDefinitions } from "./bpmn-model.js"
 import { NATIVE_BPMNLINT_RULES, analyzeBpmnlintRules } from "./optimize/bpmnlint-rules.js"
 import type {
@@ -68,78 +69,11 @@ export interface ResolvedBpmnlintConfig {
 	unresolvedExtends: string[]
 }
 
-/** bpmnlint's built-in presets, as of bpmnlint 11.14. */
-const RULE_NAMES_ALL = [
-	"ad-hoc-sub-process",
-	"conditional-event",
-	"conditional-flows",
-	"end-event-required",
-	"event-based-gateway",
-	"event-sub-process-typed-start-event",
-	"fake-join",
-	"global",
-	"label-required",
-	"link-event",
-	"no-bpmndi",
-	"no-complex-gateway",
-	"no-disconnected",
-	"no-duplicate-sequence-flows",
-	"no-gateway-join-fork",
-	"no-implicit-end",
-	"no-implicit-split",
-	"no-implicit-start",
-	"no-inclusive-gateway",
-	"no-overlapping-elements",
-	"single-blank-start-event",
-	"single-event-definition",
-	"standard-size",
-	"start-event-required",
-	"sub-process-blank-start-event",
-	"superfluous-gateway",
-	"superfluous-label",
-	"superfluous-termination",
-] as const
-
+/** bpmnlint's built-in presets (see `BPMNLINT_VERSION`); the data lives in `spec/lint-rules.json`. */
 const PRESETS: Record<string, Record<string, BpmnlintSeverity>> = {
 	all: Object.fromEntries(RULE_NAMES_ALL.map((name) => [name, "error"])),
-	correctness: {
-		"ad-hoc-sub-process": "error",
-		"conditional-event": "error",
-		"event-based-gateway": "error",
-		"event-sub-process-typed-start-event": "error",
-		"link-event": "error",
-		"no-duplicate-sequence-flows": "warn",
-		"sub-process-blank-start-event": "error",
-		"single-blank-start-event": "error",
-	},
-	recommended: {
-		"ad-hoc-sub-process": "error",
-		"conditional-flows": "error",
-		"end-event-required": "error",
-		"event-based-gateway": "error",
-		"event-sub-process-typed-start-event": "error",
-		"fake-join": "warn",
-		global: "warn",
-		"label-required": "error",
-		"link-event": "error",
-		"no-bpmndi": "error",
-		"no-complex-gateway": "error",
-		"no-disconnected": "error",
-		"no-duplicate-sequence-flows": "error",
-		"no-gateway-join-fork": "error",
-		"no-implicit-split": "error",
-		"no-implicit-end": "error",
-		"no-implicit-start": "error",
-		"no-inclusive-gateway": "warn",
-		"no-overlapping-elements": "warn",
-		"single-blank-start-event": "error",
-		"single-event-definition": "error",
-		"start-event-required": "error",
-		"sub-process-blank-start-event": "error",
-		"superfluous-gateway": "warn",
-		"superfluous-label": "warn",
-		"superfluous-termination": "warn",
-	},
+	correctness: CORRECTNESS_PRESET,
+	recommended: RECOMMENDED_PRESET,
 }
 
 const NUMERIC_SEVERITY: readonly BpmnlintSeverity[] = ["off", "warn", "error", "info"]

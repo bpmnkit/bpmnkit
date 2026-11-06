@@ -1,0 +1,224 @@
+{
+	"$schema": "./schema/lint-rules.schema.json",
+	"bpmnlintVersion": "11.14",
+	"rules": [
+		{
+			"name": "ad-hoc-sub-process",
+			"category": "flow"
+		},
+		{
+			"name": "conditional-event",
+			"category": "flow"
+		},
+		{
+			"name": "conditional-flows",
+			"category": "feel"
+		},
+		{
+			"name": "end-event-required",
+			"category": "flow"
+		},
+		{
+			"name": "event-based-gateway",
+			"category": "flow"
+		},
+		{
+			"name": "event-sub-process-typed-start-event",
+			"category": "flow"
+		},
+		{
+			"name": "fake-join",
+			"category": "flow"
+		},
+		{
+			"name": "global",
+			"category": "pattern"
+		},
+		{
+			"name": "label-required",
+			"category": "naming"
+		},
+		{
+			"name": "link-event",
+			"category": "flow"
+		},
+		{
+			"name": "no-bpmndi",
+			"category": "pattern"
+		},
+		{
+			"name": "no-complex-gateway",
+			"category": "pattern"
+		},
+		{
+			"name": "no-disconnected",
+			"category": "flow"
+		},
+		{
+			"name": "no-duplicate-sequence-flows",
+			"category": "flow"
+		},
+		{
+			"name": "no-gateway-join-fork",
+			"category": "flow"
+		},
+		{
+			"name": "no-implicit-end",
+			"category": "flow"
+		},
+		{
+			"name": "no-implicit-split",
+			"category": "flow"
+		},
+		{
+			"name": "no-implicit-start",
+			"category": "flow"
+		},
+		{
+			"name": "no-inclusive-gateway",
+			"category": "pattern"
+		},
+		{
+			"name": "no-overlapping-elements",
+			"category": "pattern"
+		},
+		{
+			"name": "single-blank-start-event",
+			"category": "flow"
+		},
+		{
+			"name": "single-event-definition",
+			"category": "flow"
+		},
+		{
+			"name": "standard-size",
+			"category": "pattern"
+		},
+		{
+			"name": "start-event-required",
+			"category": "flow"
+		},
+		{
+			"name": "sub-process-blank-start-event",
+			"category": "flow"
+		},
+		{
+			"name": "superfluous-gateway",
+			"category": "flow"
+		},
+		{
+			"name": "superfluous-label",
+			"category": "naming"
+		},
+		{
+			"name": "superfluous-termination",
+			"category": "flow"
+		}
+	],
+	"nativeOrder": [
+		"ad-hoc-sub-process",
+		"conditional-event",
+		"conditional-flows",
+		"end-event-required",
+		"event-based-gateway",
+		"event-sub-process-typed-start-event",
+		"fake-join",
+		"global",
+		"label-required",
+		"link-event",
+		"no-bpmndi",
+		"no-complex-gateway",
+		"no-disconnected",
+		"no-duplicate-sequence-flows",
+		"no-gateway-join-fork",
+		"no-implicit-end",
+		"no-implicit-start",
+		"no-implicit-split",
+		"no-inclusive-gateway",
+		"no-overlapping-elements",
+		"single-blank-start-event",
+		"single-event-definition",
+		"standard-size",
+		"start-event-required",
+		"sub-process-blank-start-event",
+		"superfluous-gateway",
+		"superfluous-label",
+		"superfluous-termination"
+	],
+	"standardSize": {
+		"defaults": {
+			"bpmn:Task": {
+				"width": 100,
+				"height": 80
+			},
+			"bpmn:CallActivity": {
+				"width": 100,
+				"height": 80
+			},
+			"bpmn:SubProcess": {
+				"width": 100,
+				"height": 80
+			},
+			"bpmn:Gateway": {
+				"width": 50,
+				"height": 50
+			},
+			"bpmn:Event": {
+				"width": 36,
+				"height": 36
+			},
+			"bpmn:DataObjectReference": {
+				"width": 36,
+				"height": 50
+			},
+			"bpmn:DataStoreReference": {
+				"width": 50,
+				"height": 50
+			},
+			"bpmn:Participant": {
+				"width": 60,
+				"height": 60
+			}
+		}
+	},
+	"presets": {
+		"correctness": {
+			"ad-hoc-sub-process": "error",
+			"conditional-event": "error",
+			"event-based-gateway": "error",
+			"event-sub-process-typed-start-event": "error",
+			"link-event": "error",
+			"no-duplicate-sequence-flows": "warn",
+			"sub-process-blank-start-event": "error",
+			"single-blank-start-event": "error"
+		},
+		"recommended": {
+			"ad-hoc-sub-process": "error",
+			"conditional-flows": "error",
+			"end-event-required": "error",
+			"event-based-gateway": "error",
+			"event-sub-process-typed-start-event": "error",
+			"fake-join": "warn",
+			"global": "warn",
+			"label-required": "error",
+			"link-event": "error",
+			"no-bpmndi": "error",
+			"no-complex-gateway": "error",
+			"no-disconnected": "error",
+			"no-duplicate-sequence-flows": "error",
+			"no-gateway-join-fork": "error",
+			"no-implicit-split": "error",
+			"no-implicit-end": "error",
+			"no-implicit-start": "error",
+			"no-inclusive-gateway": "warn",
+			"no-overlapping-elements": "warn",
+			"single-blank-start-event": "error",
+			"single-event-definition": "error",
+			"start-event-required": "error",
+			"sub-process-blank-start-event": "error",
+			"superfluous-gateway": "warn",
+			"superfluous-label": "warn",
+			"superfluous-termination": "warn"
+		}
+	}
+}

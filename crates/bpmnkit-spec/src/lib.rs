@@ -3,10 +3,12 @@
 //! TypeScript in the packages, so neither side copies a table by hand.
 
 pub mod feel;
+pub mod lint;
 
 #[rustfmt::skip]
 mod generated {
     pub mod feel_builtins;
+    pub mod lint_rules;
 }
 
 #[cfg(test)]

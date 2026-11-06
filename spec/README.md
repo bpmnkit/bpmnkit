@@ -15,6 +15,11 @@ Behaviour (evaluation, rule logic) stays hand-written on each side; only data li
 | File | Schema | TS output | Rust output |
 |---|---|---|---|
 | `feel-builtins.json` | `schema/feel-builtins.schema.json` | `packages/feel/src/generated/builtin-signatures.ts` | `bpmnkit_spec::feel` |
+| `lint-rules.json` | `schema/lint-rules.schema.json` | `packages/core/src/generated/lint-rules.ts` | `bpmnkit_spec::lint` |
+
+`lint-rules.json` holds bpmnlint's rule names, the `correctness` / `recommended` presets, and each native
+rule's category and `standard-size` defaults. The check functions and their messages (template literals)
+stay in `bpmnlint-rules.ts`: messages are behaviour, not data. `all` is derived (every rule at `error`).
 
 ## Adding an area
 
