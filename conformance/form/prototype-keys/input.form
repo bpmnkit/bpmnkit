@@ -1,0 +1,23 @@
+{
+  "id": "f",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "type": "textfield",
+      "id": "a",
+      "label": "A",
+      "key": "a",
+      "constructor": "x",
+      "toString": "y",
+      "valueOf": 1,
+      "kept": 2
+    },
+    {
+      "type": "future",
+      "id": "b",
+      "constructor": "x",
+      "toString": "y"
+    }
+  ]
+}

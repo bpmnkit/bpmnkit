@@ -1,0 +1,1 @@
+components[0]: select must have a 'label' string

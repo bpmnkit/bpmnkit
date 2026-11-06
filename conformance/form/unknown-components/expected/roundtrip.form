@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 16,
+  "id": "f",
+  "components": [
+    {
+      "type": "future-widget",
+      "id": "u1",
+      "label": "Custom",
+      "options": {
+        "a": [
+          1,
+          2,
+          {
+            "b": null
+          }
+        ],
+        "z": "last"
+      },
+      "layout": {
+        "row": "r1",
+        "columns": 6
+      }
+    },
+    {
+      "id": "u2",
+      "zeta": 1,
+      "type": "plugin/rating",
+      "alpha": [
+        true,
+        false
+      ],
+      "conditional": {
+        "hide": "=hidden"
+      }
+    },
+    {
+      "type": "ui:map",
+      "id": "u3",
+      "conditional": {
+        "hide": "=h",
+        "extra": 1
+      },
+      "components": [
+        {
+          "type": "textfield",
+          "id": "nested_raw"
+        }
+      ]
+    },
+    {
+      "type": "Textfield",
+      "id": "u4",
+      "label": "Case matters",
+      "key": "k"
+    },
+    {
+      "type": "spacer-x",
+      "id": "u5",
+      "layout": {
+        "columns": null
+      },
+      "height": 1.5
+    }
+  ],
+  "type": "default"
+}

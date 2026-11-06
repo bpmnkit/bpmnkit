@@ -1,0 +1,53 @@
+{
+  "components": [
+    {
+      "id": "Field_05l2s7c",
+      "key": "firstName",
+      "label": "First name",
+      "layout": {
+        "columns": null,
+        "row": "Row_0hqc9xn"
+      },
+      "type": "textfield"
+    },
+    {
+      "id": "Field_0nw7e1c",
+      "key": "lastName",
+      "label": "Last name",
+      "layout": {
+        "columns": null,
+        "row": "Row_0hqc9xn"
+      },
+      "type": "textfield"
+    },
+    {
+      "extraProps": {
+        "appearance": {
+          "prefixAdorner": "USD"
+        },
+        "description": "Monthly net income",
+        "increment": "100"
+      },
+      "id": "Field_12yshuy",
+      "key": "monthlyNetIncome",
+      "label": "Income",
+      "layout": {
+        "columns": 8,
+        "row": "Row_1ggwq2d"
+      },
+      "type": "number",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.4.0",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.18.0"
+  },
+  "id": "ExampleForm",
+  "schemaVersion": 12,
+  "type": "default"
+}

@@ -1,0 +1,53 @@
+{
+  "components": [
+    {
+      "id": "Field_1",
+      "key": "name",
+      "label": "Name",
+      "layout": {
+        "columns": null,
+        "row": "Row_1"
+      },
+      "type": "textfield",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "id": "Field_2",
+      "key": "status",
+      "label": "Status",
+      "layout": {
+        "columns": null,
+        "row": "Row_2"
+      },
+      "type": "select",
+      "values": [
+        {
+          "label": "Active",
+          "value": "active"
+        }
+      ]
+    },
+    {
+      "action": "submit",
+      "id": "Field_3",
+      "label": "Submit",
+      "layout": {
+        "columns": null,
+        "row": "Row_3"
+      },
+      "type": "button"
+    }
+  ],
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.6.0",
+  "exporter": {
+    "name": "bpmnkit",
+    "version": "0.1.0"
+  },
+  "generated": true,
+  "id": "Form_1",
+  "schemaVersion": 16,
+  "type": "default"
+}

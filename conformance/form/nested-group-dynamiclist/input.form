@@ -1,0 +1,77 @@
+{
+  "id": "f",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "type": "group",
+      "id": "g1",
+      "label": "Outer",
+      "layout": {
+        "row": "Row_g1",
+        "columns": null
+      },
+      "components": [
+        {
+          "type": "group",
+          "id": "g2",
+          "label": "Inner",
+          "showOutline": true,
+          "components": [
+            {
+              "type": "dynamiclist",
+              "id": "dl",
+              "label": "Items",
+              "path": "items",
+              "isRepeating": true,
+              "components": [
+                {
+                  "type": "textfield",
+                  "id": "dl_name",
+                  "label": "Item",
+                  "key": "item",
+                  "layout": {
+                    "row": "R1",
+                    "columns": 8
+                  }
+                },
+                {
+                  "type": "number",
+                  "id": "dl_qty",
+                  "label": "Qty",
+                  "key": "qty",
+                  "layout": {
+                    "row": "R1",
+                    "columns": 8
+                  }
+                },
+                {
+                  "type": "group",
+                  "id": "dl_g",
+                  "label": "Deep",
+                  "components": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "g1_t",
+          "text": "after inner"
+        }
+      ]
+    },
+    {
+      "type": "dynamiclist",
+      "id": "dl_empty",
+      "components": []
+    },
+    {
+      "type": "dynamiclist",
+      "id": "dl_notarray",
+      "components": "oops",
+      "path": "x"
+    }
+  ]
+}

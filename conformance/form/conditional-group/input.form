@@ -1,0 +1,31 @@
+{
+	"id": "f",
+	"type": "default",
+	"components": [
+		{
+			"type": "group",
+			"id": "g",
+			"label": "G",
+			"layout": {
+				"row": "r1",
+				"columns": null
+			},
+			"components": [
+				{
+					"type": "textfield",
+					"id": "t",
+					"label": "T",
+					"key": "t",
+					"description": "help",
+					"conditional": {
+						"hide": "=x = 1"
+					},
+					"layout": {
+						"row": "r2",
+						"columns": null
+					}
+				}
+			]
+		}
+	]
+}

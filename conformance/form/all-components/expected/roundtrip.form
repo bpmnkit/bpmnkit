@@ -1,0 +1,242 @@
+{
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.7.0",
+  "exporter": {
+    "name": "bpmnkit",
+    "version": "1.0.0"
+  },
+  "schemaVersion": 18,
+  "id": "AllComponents",
+  "components": [
+    {
+      "text": "# Heading\nBody",
+      "label": "Intro",
+      "type": "text",
+      "layout": {
+        "row": "r1",
+        "columns": 16
+      },
+      "id": "c_text"
+    },
+    {
+      "label": "Name",
+      "type": "textfield",
+      "id": "c_tf",
+      "key": "name",
+      "validate": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 40
+      },
+      "defaultValue": "Ada"
+    },
+    {
+      "label": "Notes",
+      "type": "textarea",
+      "id": "c_ta",
+      "key": "notes",
+      "validate": {
+        "maxLength": 500
+      },
+      "defaultValue": "none"
+    },
+    {
+      "label": "Age",
+      "type": "number",
+      "id": "c_num",
+      "key": "age",
+      "validate": {
+        "required": true
+      },
+      "defaultValue": 42
+    },
+    {
+      "subtype": "datetime",
+      "dateLabel": "Date",
+      "timeLabel": "Time",
+      "type": "datetime",
+      "id": "c_dt",
+      "key": "when"
+    },
+    {
+      "label": "Pick",
+      "values": [
+        {
+          "label": "A",
+          "value": "a"
+        },
+        {
+          "label": "B",
+          "value": "b"
+        }
+      ],
+      "valuesKey": "dyn",
+      "type": "select",
+      "id": "c_sel",
+      "key": "pick",
+      "validate": {
+        "required": true
+      },
+      "searchable": true,
+      "defaultValue": "a"
+    },
+    {
+      "label": "Choice",
+      "values": [
+        {
+          "label": "Yes",
+          "value": "y"
+        }
+      ],
+      "type": "radio",
+      "id": "c_rad",
+      "key": "choice",
+      "validate": {
+        "required": false
+      },
+      "defaultValue": "y"
+    },
+    {
+      "label": "Agree",
+      "type": "checkbox",
+      "id": "c_chk",
+      "defaultValue": true,
+      "validate": {
+        "required": true
+      },
+      "key": "agree"
+    },
+    {
+      "label": "Many",
+      "values": [
+        {
+          "label": "One",
+          "value": "1"
+        }
+      ],
+      "type": "checklist",
+      "id": "c_cl",
+      "key": "many",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "label": "Tags",
+      "values": [
+        {
+          "label": "T",
+          "value": "t"
+        }
+      ],
+      "valuesKey": "tagSrc",
+      "type": "taglist",
+      "id": "c_tag",
+      "key": "tags"
+    },
+    {
+      "label": "Send",
+      "action": "submit",
+      "type": "button",
+      "id": "c_btn"
+    },
+    {
+      "label": "Group",
+      "components": [
+        {
+          "type": "separator",
+          "id": "c_sep"
+        }
+      ],
+      "showOutline": false,
+      "type": "group",
+      "id": "c_grp"
+    },
+    {
+      "type": "dynamiclist",
+      "id": "c_dl",
+      "label": "Rows",
+      "components": [
+        {
+          "label": "Cell",
+          "type": "textfield",
+          "id": "c_dl_t",
+          "key": "cell"
+        }
+      ],
+      "path": "rows",
+      "isRepeating": true,
+      "allowAddRemove": true,
+      "defaultRepetitions": 2,
+      "showOutline": true
+    },
+    {
+      "type": "iframe",
+      "id": "c_if",
+      "label": "Frame",
+      "url": "https://example.com",
+      "height": 300,
+      "security": {
+        "allowScripts": true
+      }
+    },
+    {
+      "source": "https://example.com/a.png",
+      "alt": "A",
+      "type": "image",
+      "id": "c_img"
+    },
+    {
+      "type": "table",
+      "id": "c_tbl",
+      "label": "Table",
+      "dataSource": "=rows",
+      "rowCount": 10,
+      "columns": [
+        {
+          "label": "Name",
+          "key": "n"
+        },
+        {
+          "label": "Qty",
+          "key": "q"
+        }
+      ]
+    },
+    {
+      "content": "<b>bold</b>",
+      "type": "html",
+      "id": "c_html"
+    },
+    {
+      "height": 24,
+      "type": "spacer",
+      "id": "c_sp"
+    },
+    {
+      "type": "separator",
+      "id": "c_sep2"
+    },
+    {
+      "computeOn": "change",
+      "type": "expression",
+      "id": "c_ex",
+      "key": "total",
+      "expression": "=a + b"
+    },
+    {
+      "label": "Upload",
+      "type": "filepicker",
+      "id": "c_fp",
+      "key": "files",
+      "multiple": true
+    },
+    {
+      "label": "Preview",
+      "type": "documentPreview",
+      "id": "c_dp"
+    }
+  ],
+  "generated": true,
+  "type": "default"
+}
