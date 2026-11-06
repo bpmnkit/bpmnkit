@@ -13,7 +13,7 @@
 //! `null`. Only parsing reports errors. [`evaluate_with_diagnostics`] also
 //! says why a result became null, as FEEL-Scala's suppressed failures do.
 
-mod ast;
+pub mod ast;
 mod builtins;
 mod evaluator;
 mod lexer;
@@ -163,6 +163,11 @@ pub fn parse_unary_tests_partial(source: &str, options: &ParseOptions) -> Partia
 }
 
 impl Expression {
+    /// The syntax tree, for static analysis (e.g. which variables an expression reads).
+    pub fn ast(&self) -> &ast::Node {
+        &self.ast
+    }
+
     pub fn evaluate(&self, context: &Context) -> Value {
         evaluator::evaluate_root(&self.ast, context, None, None)
     }
