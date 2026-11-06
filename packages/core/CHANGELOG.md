@@ -1,5 +1,11 @@
 # @bpmnkit/core
 
+## 1.9.0
+
+### Minor Changes
+
+- 671f55d: Add `Bpmn.export(defs, { validate })` and build-time checks for XSD-typed values (ids, booleans, retries).
+
 ## 1.8.0
 
 ### Minor Changes
