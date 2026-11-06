@@ -71,6 +71,7 @@ dependencies = [
 name = "bpmnkit-conformance"
 version = "0.1.0"
 dependencies = [
+ "bpmnkit-bpmn",
  "bpmnkit-feel",
  "serde",
  "serde_json",

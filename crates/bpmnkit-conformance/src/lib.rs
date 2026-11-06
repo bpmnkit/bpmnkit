@@ -2,9 +2,11 @@
 //! compares results canonically, so the TS and Rust implementations are held
 //! to the same expectations.
 
+mod bpmn;
 mod feel;
 mod value;
 
+pub use bpmn::{check_case as check_bpmn_case, run_case as run_bpmn_case};
 pub use feel::evaluate as evaluate_feel;
 pub use value::{decimal_eq, Value};
 
@@ -107,8 +109,7 @@ pub fn classify(outcomes: &[(String, bool)], pending: &Pending) -> Report {
     r
 }
 
-/// Runs all cases in `dir`. BPMN cases have no runner yet, so they always
-/// count as failing (and must be pending).
+/// Runs all cases in `dir`.
 pub fn run_all(dir: &Path) -> Result<Vec<(String, bool)>, String> {
     let mut out = vec![];
     for c in load_feel_cases(dir)? {
@@ -119,7 +120,11 @@ pub fn run_all(dir: &Path) -> Result<Vec<(String, bool)>, String> {
         .unwrap_or(false);
         out.push((c.id, ok));
     }
-    out.extend(load_bpmn_case_ids(dir).into_iter().map(|id| (id, false)));
+    out.extend(
+        load_bpmn_case_ids(dir)
+            .into_iter()
+            .map(|id| (id.clone(), run_bpmn_case(dir, &id))),
+    );
     Ok(out)
 }
 
