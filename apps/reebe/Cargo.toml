@@ -94,6 +94,8 @@ async-trait = "0.1"
 # Workspace crates
 reebe-protocol = { path = "crates/reebe-protocol" }
 bpmnkit-feel = { path = "../../crates/bpmnkit-feel", default-features = false }
+bpmnkit-bpmn = { path = "../../crates/bpmnkit-bpmn" }
+bpmnkit-xml = { path = "../../crates/bpmnkit-xml" }
 reebe-feel = { path = "crates/reebe-feel", default-features = false }
 reebe-bpmn = { path = "crates/reebe-bpmn" }
 reebe-dmn = { path = "crates/reebe-dmn", default-features = false }

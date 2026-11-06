@@ -1237,4 +1237,52 @@ mod tests {
         assert!(sp.incoming.is_empty() && sp.outgoing.is_empty(), "{:?} {:?}", sp.incoming, sp.outgoing);
         assert!(sp.input_mappings.is_empty() && sp.output_mappings.is_empty());
     }
+
+    #[test]
+    fn test_definitions_without_id_or_target_namespace_parse() {
+        let xml = r#"<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"><bpmn:process id="p"/></bpmn:definitions>"#;
+        let processes = parse_bpmn(xml).unwrap();
+        assert_eq!(processes.len(), 1);
+        assert!(processes[0].is_executable, "an absent isExecutable counts as executable");
+    }
+
+    #[test]
+    fn test_declarations_inside_the_process_resolve_event_refs() {
+        let xml = r#"<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0">
+  <bpmn:process id="p">
+    <bpmn:message id="M" name="paid"><bpmn:extensionElements><zeebe:subscription correlationKey="=k"/></bpmn:extensionElements></bpmn:message>
+    <bpmn:error id="E" errorCode="BOOM"/>
+    <bpmn:intermediateCatchEvent id="c"><bpmn:messageEventDefinition messageRef="M"/></bpmn:intermediateCatchEvent>
+    <bpmn:boundaryEvent id="b" attachedToRef="c"><bpmn:errorEventDefinition errorRef="E"/></bpmn:boundaryEvent>
+  </bpmn:process>
+</bpmn:definitions>"#;
+        let p = &parse_bpmn(xml).unwrap()[0];
+        match p.elements.get("c") {
+            Some(FlowElement::IntermediateCatchEvent(c)) => match &c.event_definition {
+                Some(EventDefinition::Message(m)) => {
+                    assert_eq!(m.message_name, "paid");
+                    assert_eq!(m.correlation_key.as_deref(), Some("=k"));
+                }
+                other => panic!("expected a message definition, got {other:?}"),
+            },
+            other => panic!("expected a catch event, got {other:?}"),
+        }
+        match p.elements.get("b") {
+            Some(FlowElement::BoundaryEvent(b)) => {
+                assert!(matches!(&b.event_definition, Some(EventDefinition::Error(e)) if e.error_code.as_deref() == Some("BOOM")));
+            }
+            other => panic!("expected a boundary event, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn test_a_missing_required_attribute_is_reported_by_local_name() {
+        let xml = r#"<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"><bpmn:process id="p"><bpmn:serviceTask/></bpmn:process></bpmn:definitions>"#;
+        match parse_bpmn(xml) {
+            Err(crate::BpmnParseError::MissingAttribute { element, attr }) => {
+                assert_eq!((element.as_str(), attr.as_str()), ("serviceTask", "id"));
+            }
+            other => panic!("expected MissingAttribute, got {other:?}"),
+        }
+    }
 }

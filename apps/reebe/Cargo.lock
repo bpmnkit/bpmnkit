@@ -358,6 +358,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "bpmnkit-bpmn"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-spec",
+ "bpmnkit-xml",
+ "indexmap 2.13.0",
+ "serde",
+]
+
+[[package]]
 name = "bpmnkit-feel"
 version = "0.1.0"
 dependencies = [
@@ -373,6 +383,15 @@ dependencies = [
 [[package]]
 name = "bpmnkit-spec"
 version = "0.1.0"
+
+[[package]]
+name = "bpmnkit-xml"
+version = "0.1.0"
+dependencies = [
+ "indexmap 2.13.0",
+ "quick-xml",
+ "serde",
+]
 
 [[package]]
 name = "bumpalo"
@@ -2651,7 +2670,8 @@ name = "reebe-bpmn"
 version = "0.1.0"
 dependencies = [
  "bincode",
- "quick-xml",
+ "bpmnkit-bpmn",
+ "bpmnkit-xml",
  "serde",
  "serde_json",
  "thiserror 1.0.69",
