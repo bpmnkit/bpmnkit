@@ -1,0 +1,15 @@
+[workspace]
+resolver = "2"
+members = ["crates/*"]
+# apps/reebe is its own workspace; it is consumed by path only.
+exclude = ["apps"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/bpmnkit/bpmnkit"
+
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

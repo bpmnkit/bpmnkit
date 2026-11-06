@@ -88,3 +88,17 @@ jobs:
         run: |
           pnpm conformance:record
           git diff --exit-code conformance/
+
+  # Shared FEEL/BPMN conformance cases against the Rust implementations.
+  conformance-rs:
+    name: Conformance (Rust)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+
+      - name: Conformance
+        run: cargo test -p bpmnkit-conformance
