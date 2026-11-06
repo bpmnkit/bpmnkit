@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_fork</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:parallelGateway id="fork" name="Fork">
+      <bpmn:incoming>Flow_s_fork</bpmn:incoming>
+      <bpmn:outgoing>Flow_fork_ta</bpmn:outgoing>
+      <bpmn:outgoing>Flow_fork_tb</bpmn:outgoing>
+      <bpmn:outgoing>Flow_fork_tc</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:serviceTask id="ta" name="ta">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="ta"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_fork_ta</bpmn:incoming>
+      <bpmn:outgoing>Flow_ta_join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="tb" name="tb">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="tb"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_fork_tb</bpmn:incoming>
+      <bpmn:outgoing>Flow_tb_join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="tc" name="tc">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="tc"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_fork_tc</bpmn:incoming>
+      <bpmn:outgoing>Flow_tc_join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:parallelGateway id="join">
+      <bpmn:incoming>Flow_ta_join</bpmn:incoming>
+      <bpmn:incoming>Flow_tb_join</bpmn:incoming>
+      <bpmn:incoming>Flow_tc_join</bpmn:incoming>
+      <bpmn:outgoing>Flow_join_e</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_join_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_fork" sourceRef="s" targetRef="fork"/>
+    <bpmn:sequenceFlow id="Flow_fork_ta" sourceRef="fork" targetRef="ta" name="a"/>
+    <bpmn:sequenceFlow id="Flow_fork_tb" sourceRef="fork" targetRef="tb" name="b"/>
+    <bpmn:sequenceFlow id="Flow_fork_tc" sourceRef="fork" targetRef="tc" name="c"/>
+    <bpmn:sequenceFlow id="Flow_ta_join" sourceRef="ta" targetRef="join"/>
+    <bpmn:sequenceFlow id="Flow_tb_join" sourceRef="tb" targetRef="join"/>
+    <bpmn:sequenceFlow id="Flow_tc_join" sourceRef="tc" targetRef="join"/>
+    <bpmn:sequenceFlow id="Flow_join_e" sourceRef="join" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

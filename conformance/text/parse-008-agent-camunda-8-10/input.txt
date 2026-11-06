@@ -1,0 +1,9 @@
+# Agent | camunda=8.10
+start[start Go] > run[xor Run agent] > agent[adhoc AI Agent] > done[xor Satisfied?]
+done >(Yes: ok) fin[end Done]
+done >(No: default) run
+users[service Find sample users | inside=agent]
+joke[service Get a safe joke | inside=agent]
+note start: Triggered by a user
+note agent: The agent picks a tool
+note joke: Each tool is a capability

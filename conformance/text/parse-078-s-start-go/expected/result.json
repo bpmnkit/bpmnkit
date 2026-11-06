@@ -1,0 +1,83 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "t",
+            "name": "Wait",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "u",
+            "name": "U",
+            "type": "task"
+          },
+          {
+            "id": "v",
+            "name": "V",
+            "type": "userTask"
+          },
+          {
+            "id": "w",
+            "name": "W",
+            "type": "task"
+          },
+          {
+            "id": "w_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "t",
+            "id": "Flow_1",
+            "to": "u"
+          },
+          {
+            "from": "v",
+            "id": "Flow_2",
+            "to": "w"
+          },
+          {
+            "from": "s",
+            "id": "Flow_3",
+            "to": "t"
+          },
+          {
+            "from": "u",
+            "id": "Flow_4",
+            "to": "v"
+          },
+          {
+            "from": "w",
+            "id": "Flow_5",
+            "to": "w_end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "connected start event \"s\" to \"t\"",
+    "connected \"u\" to \"v\", which nothing led to",
+    "added end event \"w_end\" after \"w\""
+  ],
+  "problems": [
+    {
+      "line": 3,
+      "message": "\"w\" is never declared; added as a task"
+    }
+  ],
+  "questions": []
+}

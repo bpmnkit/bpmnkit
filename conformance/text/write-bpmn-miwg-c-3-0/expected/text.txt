@@ -1,0 +1,16 @@
+# Fridge Repair Process
+receive_customer_request[start:message Receive customer request] > analyse_customer_request[user Analyse customer request] > service_type[xor Service type]
+service_type >(Warranty) replace_fridge[user Replace fridge] > fridge_replaced[end Fridge replaced]
+service_type >(Emergency service) perform_emergency_repair[sub Perform emergency repair] > successful[xor Successful?]
+service_type >(Regular repair service) service_level[xor Service level]
+successful >(yes) emergency_repair_completed[end Emergency repair completed]
+successful >(no) replace_fridge
+service_level >(Standard) perform_repair_standard_level[user Perform repair (standard level)] > repair_completed[end Repair completed]
+service_level >(Premium: Service Level == 'Premium') perform_repair_premium_level[user Perform repair (premium level)] > repair_completed
+boundary_2_hours[boundary:timer 2 hours | on=perform_repair_premium_level] > perform_emergency_repair
+boundary[boundary:message | on=perform_repair_standard_level] > perform_repair_premium_level
+doc analyse_customer_request: First contact with customer
+doc replace_fridge: Fridge replaced if still under warranty.
+doc perform_repair_standard_level: Standard service level is common for most customer support. This level guarantees the fridge will be repaired in a reasonable amount of time. Customers may decide to raise the service level to Premium while waiting for the standard service to solve the issue.
+doc perform_repair_premium_level: These customers get special service in case of damage. This service level guarantees less than two days to solve the issue.
+doc perform_emergency_repair: This is a special case for handling emergencies for clients such as Hospitals or Commercial fridges.

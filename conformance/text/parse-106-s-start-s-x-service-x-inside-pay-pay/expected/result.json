@@ -1,0 +1,59 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "x",
+            "jobType": "x",
+            "name": "X",
+            "type": "serviceTask"
+          },
+          {
+            "id": "pay",
+            "name": "Pay",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "x"
+          },
+          {
+            "from": "x",
+            "id": "Flow_2",
+            "to": "pay"
+          },
+          {
+            "from": "pay",
+            "id": "Flow_3",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "inside=pay on \"x\": \"pay\" is not an ad-hoc sub-process; \"x\" stays at the top level"
+    }
+  ],
+  "questions": []
+}

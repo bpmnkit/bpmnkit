@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_risk" name="DRD" namespace="http://bpmn.io/schema/dmn">
+  <decision id="riskScore" name="Risk Score">
+    <decisionTable id="decisionTable_000000b" hitPolicy="UNIQUE">
+      <input id="i1" label="amount">
+        <inputExpression id="inputExpression_0000001">
+          <text>amount</text>
+        </inputExpression>
+      </input>
+      <output id="o1" name="riskLevel" typeRef="string"/>
+      <output id="o2" name="scoreValue" typeRef="integer"/>
+      <rule id="r1">
+        <inputEntry id="inputEntry_0_0000002">
+          <text>&gt;= 10000</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000003">
+          <text>"HIGH"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_0000004">
+          <text>90</text>
+        </outputEntry>
+      </rule>
+      <rule id="r2">
+        <inputEntry id="inputEntry_0_0000005">
+          <text>&gt;= 1000</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000006">
+          <text>"MEDIUM"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_0000007">
+          <text>50</text>
+        </outputEntry>
+      </rule>
+      <rule id="r3">
+        <inputEntry id="inputEntry_0_0000008">
+          <text>&lt; 1000</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000009">
+          <text>"LOW"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000000a">
+          <text>10</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="riskScore">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

@@ -1,0 +1,3 @@
+s[start Go]
+t[catch:timer Wait] > u[task U]
+v[user V] > w

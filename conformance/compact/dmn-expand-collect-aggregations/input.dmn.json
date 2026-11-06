@@ -1,0 +1,159 @@
+{
+  "id": "defs",
+  "name": "Defs",
+  "decisions": [
+    {
+      "inputs": [
+        {
+          "id": "i0",
+          "expression": "x"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "o0",
+          "name": "y",
+          "typeRef": "number"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r0",
+          "inputs": [
+            "1"
+          ],
+          "outputs": [
+            "1"
+          ]
+        },
+        {
+          "id": "q0",
+          "inputs": [
+            "2"
+          ],
+          "outputs": [
+            "2"
+          ]
+        }
+      ],
+      "id": "d0",
+      "hitPolicy": "COLLECT",
+      "aggregation": "SUM"
+    },
+    {
+      "inputs": [
+        {
+          "id": "i1",
+          "expression": "x"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "o1",
+          "name": "y",
+          "typeRef": "number"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r1",
+          "inputs": [
+            "1"
+          ],
+          "outputs": [
+            "1"
+          ]
+        },
+        {
+          "id": "q1",
+          "inputs": [
+            "2"
+          ],
+          "outputs": [
+            "2"
+          ]
+        }
+      ],
+      "id": "d1",
+      "hitPolicy": "COLLECT",
+      "aggregation": "MIN"
+    },
+    {
+      "inputs": [
+        {
+          "id": "i2",
+          "expression": "x"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "o2",
+          "name": "y",
+          "typeRef": "number"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r2",
+          "inputs": [
+            "1"
+          ],
+          "outputs": [
+            "1"
+          ]
+        },
+        {
+          "id": "q2",
+          "inputs": [
+            "2"
+          ],
+          "outputs": [
+            "2"
+          ]
+        }
+      ],
+      "id": "d2",
+      "hitPolicy": "COLLECT",
+      "aggregation": "MAX"
+    },
+    {
+      "inputs": [
+        {
+          "id": "i3",
+          "expression": "x"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "o3",
+          "name": "y",
+          "typeRef": "number"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r3",
+          "inputs": [
+            "1"
+          ],
+          "outputs": [
+            "1"
+          ]
+        },
+        {
+          "id": "q3",
+          "inputs": [
+            "2"
+          ],
+          "outputs": [
+            "2"
+          ]
+        }
+      ],
+      "id": "d3",
+      "hitPolicy": "COLLECT",
+      "aggregation": "COUNT"
+    }
+  ],
+  "inputData": []
+}

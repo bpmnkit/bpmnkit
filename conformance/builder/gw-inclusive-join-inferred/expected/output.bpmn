@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_g</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:inclusiveGateway id="g" default="Flow_g_tb">
+      <bpmn:incoming>Flow_s_g</bpmn:incoming>
+      <bpmn:outgoing>Flow_g_ta</bpmn:outgoing>
+      <bpmn:outgoing>Flow_g_tb</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:serviceTask id="ta" name="ta">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="ta"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_g_ta</bpmn:incoming>
+      <bpmn:outgoing>Flow_ta_g_join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="tb" name="tb">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="tb"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_g_tb</bpmn:incoming>
+      <bpmn:outgoing>Flow_tb_g_join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_g_join_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:inclusiveGateway id="g_join">
+      <bpmn:incoming>Flow_ta_g_join</bpmn:incoming>
+      <bpmn:incoming>Flow_tb_g_join</bpmn:incoming>
+      <bpmn:outgoing>Flow_g_join_e</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_s_g" sourceRef="s" targetRef="g"/>
+    <bpmn:sequenceFlow id="Flow_g_ta" sourceRef="g" targetRef="ta" name="a">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=a</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_g_tb" sourceRef="g" targetRef="tb" name="b"/>
+    <bpmn:sequenceFlow id="Flow_ta_g_join" sourceRef="ta" targetRef="g_join"/>
+    <bpmn:sequenceFlow id="Flow_tb_g_join" sourceRef="tb" targetRef="g_join"/>
+    <bpmn:sequenceFlow id="Flow_g_join_e" sourceRef="g_join" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

@@ -1,0 +1,214 @@
+{
+  "id": "_5SVkEIXnEeSmwfgVk-ryvQ",
+  "processes": [
+    {
+      "elements": [
+        {
+          "candidateGroups": "clerks",
+          "id": "UserTask_DecideOnApplication",
+          "inputs": {
+            "age": "= applicant.age",
+            "applicantName": "= applicant.name",
+            "risksText": "= string join(risks, \", \")"
+          },
+          "name": "Decide on application",
+          "type": "userTask"
+        },
+        {
+          "id": "StartEvent_DecideManually",
+          "name": "Decide Manually",
+          "type": "startEvent"
+        },
+        {
+          "attachedTo": "UserTask_DecideOnApplication",
+          "eventType": "timer",
+          "id": "TimerEvent_Timeout",
+          "name": "Timeout (7 days)",
+          "timerDuration": "P7D",
+          "type": "boundaryEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "eventType": "message",
+                "id": "StartMessageEvent_DocumentRequested",
+                "name": "Document requested",
+                "type": "startEvent"
+              },
+              {
+                "id": "EndEvent_DocumentReceived",
+                "name": "Document Received",
+                "type": "endEvent"
+              },
+              {
+                "calledProcess": "requestDocument_en",
+                "id": "CallActivity_RequestDocument",
+                "multiInstance": {
+                  "collection": "=documents",
+                  "element": "document"
+                },
+                "name": "Document Request",
+                "type": "callActivity"
+              }
+            ],
+            "flows": [
+              {
+                "from": "StartMessageEvent_DocumentRequested",
+                "id": "Flow_0irfroh",
+                "to": "CallActivity_RequestDocument"
+              },
+              {
+                "from": "CallActivity_RequestDocument",
+                "id": "Flow_1wwxns6",
+                "to": "EndEvent_DocumentReceived"
+              }
+            ]
+          },
+          "id": "Activity_0uvp3cb",
+          "type": "subProcess"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "eventType": "timer",
+                "id": "StartTimerEvent_AcceleratedDecision",
+                "name": "Accelerated decision",
+                "type": "startEvent"
+              },
+              {
+                "candidateGroups": "teamleaders",
+                "id": "UserTask_AccelerateDecision",
+                "name": "Accelerate decision making",
+                "type": "userTask"
+              },
+              {
+                "id": "EndEvent_DecisionAccelerated",
+                "name": "Decision accelerated",
+                "type": "endEvent"
+              },
+              {
+                "id": "SendTask_NotifyCustomerDelay",
+                "jobType": "notifyCustomerDelay",
+                "name": "Notify customer about delay",
+                "type": "sendTask"
+              }
+            ],
+            "flows": [
+              {
+                "from": "StartTimerEvent_AcceleratedDecision",
+                "id": "Flow_0kaot38",
+                "to": "SendTask_NotifyCustomerDelay"
+              },
+              {
+                "from": "UserTask_AccelerateDecision",
+                "id": "Flow_1t18skh",
+                "to": "EndEvent_DecisionAccelerated"
+              },
+              {
+                "from": "SendTask_NotifyCustomerDelay",
+                "id": "Flow_1octlto",
+                "to": "UserTask_AccelerateDecision"
+              }
+            ]
+          },
+          "id": "Activity_1esx1s7",
+          "type": "subProcess"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "candidateGroups": "riskteam",
+                "id": "UserTask_CheckForFraud",
+                "name": "Check for Fraud",
+                "type": "userTask"
+              },
+              {
+                "eventType": "message",
+                "id": "StartMessageEvent_FraudSuspected",
+                "name": "Fraud suspected",
+                "type": "startEvent"
+              },
+              {
+                "eventType": "error",
+                "id": "ErrorEndEvent_FraudDetected",
+                "name": "Fraud Detected",
+                "type": "endEvent"
+              },
+              {
+                "id": "Gateway_FraudDetected",
+                "name": "Fraud detected?",
+                "type": "exclusiveGateway"
+              },
+              {
+                "id": "EndEvent_FraudNoDetected",
+                "name": "Fraud no detected",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "from": "StartMessageEvent_FraudSuspected",
+                "id": "Flow_0nttki4",
+                "to": "UserTask_CheckForFraud"
+              },
+              {
+                "condition": "=fraud",
+                "from": "Gateway_FraudDetected",
+                "id": "SequenceFlow_Yes",
+                "name": "Yes",
+                "to": "ErrorEndEvent_FraudDetected"
+              },
+              {
+                "from": "UserTask_CheckForFraud",
+                "id": "Flow_1istmr0",
+                "to": "Gateway_FraudDetected"
+              },
+              {
+                "from": "Gateway_FraudDetected",
+                "id": "SequenceFlow_No",
+                "isDefault": true,
+                "name": "No",
+                "to": "EndEvent_FraudNoDetected"
+              }
+            ]
+          },
+          "id": "Activity_02a6b2h",
+          "type": "subProcess"
+        },
+        {
+          "eventType": "error",
+          "id": "ErrorEndEvent_Timeout",
+          "name": "Timeout",
+          "type": "endEvent"
+        },
+        {
+          "id": "EndEvent_ManuallyDecided",
+          "name": "Manually Decided",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "StartEvent_DecideManually",
+          "id": "Flow_08vmski",
+          "to": "UserTask_DecideOnApplication"
+        },
+        {
+          "from": "UserTask_DecideOnApplication",
+          "id": "Flow_0vjv3ik",
+          "to": "EndEvent_ManuallyDecided"
+        },
+        {
+          "from": "TimerEvent_Timeout",
+          "id": "Flow_03n7pdb",
+          "to": "ErrorEndEvent_Timeout"
+        }
+      ],
+      "id": "ManualCheck",
+      "name": "Manual Check"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+	"chunks": [
+		"# Expense approval\nstart[start",
+		" Expense submitted] > check[xo",
+		"r Amount over 1000?]\ncheck >(Y",
+		"es: amount > 1000) review[user",
+		" Review expense] > pay[service",
+		" Pay expense] > done[end Expen",
+		"se paid]\ncheck >(No: default) ",
+		"auto[service Approve automatic",
+		"ally] > pay\nfailed[boundary:er",
+		"ror Payment failed | on=pay] >",
+		" notify[send Notify submitter]",
+		" > notice[end Payment failed]"
+	]
+}

@@ -1,0 +1,268 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "DecisionTable_0000001",
+        "inputs": [
+          {
+            "id": "Input_0000002",
+            "inputExpression": {
+              "id": "InputExpression_0000003",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_0000004",
+            "name": "aOut"
+          }
+        ],
+        "rules": [
+          {
+            "id": "DecisionRule_0000007",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_0000005",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_0000006",
+                "text": "\"v\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "a",
+      "informationRequirements": [
+        {
+          "id": "InformationRequirement_000000p",
+          "requiredInput": "in1"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "A"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "DecisionTable_0000009",
+        "inputs": [
+          {
+            "id": "Input_000000a",
+            "inputExpression": {
+              "id": "InputExpression_000000b",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_000000c",
+            "name": "bOut"
+          }
+        ],
+        "rules": [
+          {
+            "id": "DecisionRule_000000f",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_000000d",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_000000e",
+                "text": "\"v\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "b",
+      "informationRequirements": [
+        {
+          "id": "InformationRequirement_000000q",
+          "requiredDecision": "a"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "B"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "DecisionTable_000000h",
+        "inputs": [
+          {
+            "id": "Input_000000i",
+            "inputExpression": {
+              "id": "InputExpression_000000j",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_000000k",
+            "name": "cOut"
+          }
+        ],
+        "rules": [
+          {
+            "id": "DecisionRule_000000n",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_000000l",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_000000m",
+                "text": "\"v\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "c",
+      "informationRequirements": [
+        {
+          "id": "InformationRequirement_000000r",
+          "requiredDecision": "b"
+        },
+        {
+          "id": "InformationRequirement_000000s",
+          "requiredDecision": "a"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "C"
+    }
+  ],
+  "diagram": {
+    "edges": [
+      {
+        "dmnElementRef": "InformationRequirement_000000p",
+        "waypoints": [
+          {
+            "x": 285,
+            "y": 140
+          },
+          {
+            "x": 345,
+            "y": 140
+          }
+        ]
+      },
+      {
+        "dmnElementRef": "InformationRequirement_000000q",
+        "waypoints": [
+          {
+            "x": 525,
+            "y": 140
+          },
+          {
+            "x": 585,
+            "y": 140
+          }
+        ]
+      },
+      {
+        "dmnElementRef": "InformationRequirement_000000r",
+        "waypoints": [
+          {
+            "x": 765,
+            "y": 140
+          },
+          {
+            "x": 825,
+            "y": 140
+          }
+        ]
+      },
+      {
+        "dmnElementRef": "InformationRequirement_000000s",
+        "waypoints": [
+          {
+            "x": 525,
+            "y": 140
+          },
+          {
+            "x": 825,
+            "y": 140
+          }
+        ]
+      }
+    ],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 45,
+          "width": 125,
+          "x": 160,
+          "y": 117.5
+        },
+        "dmnElementRef": "in1"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 345,
+          "y": 100
+        },
+        "dmnElementRef": "a"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 585,
+          "y": 100
+        },
+        "dmnElementRef": "b"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 825,
+          "y": 100
+        },
+        "dmnElementRef": "c"
+      }
+    ]
+  },
+  "exporter": "bpmn-sdk",
+  "exporterVersion": "0.0.1",
+  "id": "Definitions_000000t",
+  "inputData": [
+    {
+      "id": "in1",
+      "name": "Input"
+    }
+  ],
+  "knowledgeSources": [],
+  "modelerAttributes": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "8.5.0"
+  },
+  "name": "Chain",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "modeler": "http://camunda.org/schema/modeler/1.0"
+  },
+  "textAnnotations": []
+}

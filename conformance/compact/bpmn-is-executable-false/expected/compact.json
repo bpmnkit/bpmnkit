@@ -1,0 +1,25 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "Start",
+          "type": "startEvent"
+        }
+      ],
+      "flows": [],
+      "id": "Process_1"
+    },
+    {
+      "elements": [
+        {
+          "id": "Start2",
+          "type": "startEvent"
+        }
+      ],
+      "flows": [],
+      "id": "Process_2"
+    }
+  ]
+}

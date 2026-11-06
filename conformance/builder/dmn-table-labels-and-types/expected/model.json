@@ -1,0 +1,165 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "DecisionTable_0000001",
+        "inputs": [
+          {
+            "id": "Input_0000002",
+            "inputExpression": {
+              "id": "InputExpression_0000003",
+              "text": "applicant.age",
+              "typeRef": "integer"
+            },
+            "label": "Applicant age"
+          },
+          {
+            "id": "Input_0000004",
+            "inputExpression": {
+              "id": "InputExpression_0000005",
+              "text": "income",
+              "typeRef": "double"
+            },
+            "label": "Income"
+          },
+          {
+            "id": "Input_0000006",
+            "inputExpression": {
+              "id": "InputExpression_0000007",
+              "text": "married",
+              "typeRef": "boolean"
+            },
+            "label": "Married"
+          },
+          {
+            "id": "Input_0000008",
+            "inputExpression": {
+              "id": "InputExpression_0000009",
+              "text": "day",
+              "typeRef": "date"
+            },
+            "label": "Day"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_000000a",
+            "label": "Decision",
+            "name": "decision",
+            "typeRef": "string"
+          },
+          {
+            "id": "Output_000000b",
+            "label": "Limit",
+            "name": "limit",
+            "typeRef": "long"
+          }
+        ],
+        "rules": [
+          {
+            "description": "adult with income",
+            "id": "DecisionRule_000000i",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_000000c",
+                "text": "> 18"
+              },
+              {
+                "id": "UnaryTests_000000d",
+                "text": "> 1000"
+              },
+              {
+                "id": "UnaryTests_000000e",
+                "text": "true"
+              },
+              {
+                "id": "UnaryTests_000000f",
+                "text": "date(\"2020-01-01\")"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_000000g",
+                "text": "\"yes\""
+              },
+              {
+                "id": "LiteralExpression_000000h",
+                "text": "5000"
+              }
+            ]
+          },
+          {
+            "id": "DecisionRule_000000p",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_000000j",
+                "text": "-"
+              },
+              {
+                "id": "UnaryTests_000000k",
+                "text": "-"
+              },
+              {
+                "id": "UnaryTests_000000l",
+                "text": "-"
+              },
+              {
+                "id": "UnaryTests_000000m",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_000000n",
+                "text": "\"no\""
+              },
+              {
+                "id": "LiteralExpression_000000o",
+                "text": "0"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Loan"
+    }
+  ],
+  "diagram": {
+    "edges": [],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "d"
+      }
+    ]
+  },
+  "exporter": "bpmn-sdk",
+  "exporterVersion": "0.0.1",
+  "id": "Definitions_000000q",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "8.5.0"
+  },
+  "name": "DRD",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "modeler": "http://camunda.org/schema/modeler/1.0"
+  },
+  "textAnnotations": []
+}

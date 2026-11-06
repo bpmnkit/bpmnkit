@@ -1,0 +1,49 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Refund requested",
+            "type": "startEvent"
+          },
+          {
+            "id": "call_back",
+            "jobType": "call_back",
+            "name": "Stripe refund",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "Refunded",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "call_back"
+          },
+          {
+            "from": "call_back",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"call back\" is not an id; read as \"call_back\""
+    }
+  ],
+  "questions": []
+}

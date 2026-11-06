@@ -371,6 +371,140 @@ the process plane (the semantic engine already placed nodes in lane bands, so th
 before; bpmn-js imports lane DI under a process root, and MIWG A.4.0 draws such lanes); an
 association between two text annotations is now drawn.
 
+## Builder: `builder/<case>/`
+
+Recorded by `packages/core/tests/conformance-builder.test.ts`. A case drives the fluent builders
+(`Bpmn.createProcess(...)`, `Bpmn.createDiagram(...)`, `Dmn.createDecisionTable(...)`, `Dmn.drd(...)`)
+with a script of method calls, so the same file can be replayed by any implementation of the
+builders. Files:
+
+- `case.json`: `{"kind": "bpmn" | "dmn", "input"?: "<path>", "script": [op, ...]}`.
+- `input.bpmn` or `input`: only for a script that starts with `["from", processId]` (below). `input`
+  is a path relative to the case folder, or else to `conformance/` (several cases share
+  `builder/from-noop/input.bpmn`).
+- `expected/model.json` + `expected/output.bpmn` (`kind: "bpmn"`) or `expected/output.dmn`
+  (`kind: "dmn"`): the definitions the script ends with, and `serializeBpmn` / `serializeDmn` of them.
+  `model.json` is the usual encoding (keys sorted, 2-space indent, trailing newline), compared
+  structurally.
+- `expected/error.txt` instead of the three above, when a call throws: the message plus a newline.
+  Exactly one of the two sets exists. TS throws at the call, so the ops after the failing one do not
+  run; a Rust builder that records the first error and no-ops afterwards must report the same message.
+
+`resetIdCounter()` (`bpmnkit_bpmn::ids::reset_id_counter()`) runs once, before the script. Auto ids
+(`Flow_0000001`, `Decision Table` ids, ...) therefore depend on the order of the calls.
+
+### Script language
+
+An op is a JSON array `[method, ...args]`: call `method` with `args` on the current receiver; the
+return value becomes the receiver, which is what chaining means. The initial receiver is the `Bpmn`
+facade (`kind: "bpmn"`: `createProcess(id)`, `createDiagram(id?)`) or the `Dmn` facade
+(`kind: "dmn"`: `createDecisionTable(id)`, `drd(name?)`). Method names and argument order are the
+TypeScript ones (`serviceTask`, `withBoundary`, `restConnector`, `participant`, `messageFlow`,
+`rule`, `decision`, ...); option bags are the TS option objects with their camelCase keys, passed as
+the JSON value. `undefined` is never written: leave the key out.
+
+| Form | Meaning |
+|---|---|
+| `{"$ops": [op, ...]}` as an argument | a callback `(b) => replay(b, ops)`: the ops run on the builder the method hands to its callback (`branch`, `subProcess`, `withBoundary`, `process`, a DRD `decision` table, ...) and the callback returns the last receiver. Callbacks nest. |
+| `["$let", name, method, ...args]` | call `method` like any op, store the result under `name`, and **keep** the receiver. Needed where a method returns something that is not the builder: a DRD `decision(...)` / `inputData(...)` return a handle (`{kind, id, name}`). The ops of the DRD cases that create decisions and inputs are all `$let`. |
+| `{"$ref": name}` as an argument | the value stored by `$let` (the handle). May sit inside arrays and option bags (`{"requires": [{"$ref": "risk"}]}`). |
+| `{"$drgId": id}` as an argument | `drgId(id)`, the branded id. A plain string in `requires` is accepted too and behaves the same. |
+| `["from", processId]` as the first op | `ProcessBuilder.from(parseBpmn(<input>), processId)`: continue a parsed document; the receiver is that builder, the rest of the script chains on it. `Bpmn.continueProcess` is the same call. |
+
+The last op's result must be a definitions object (`["build", options?]`; for a DRD `build`, for a
+decision table `build`). `build` takes the `BuildOptions` bag (`{"explicitJoins": true}`).
+
+What the corpus pins (case-name prefixes): `task-*` (every task kind and option: headers, io mapping,
+retries, listeners, forms incl. embedded, assignment, schedule, templates, multi-instance, message
+tasks), `event-*` (every start / end / intermediate throw / catch event, link events), `root-*`
+(message / error / signal / escalation roots, reuse and conflicts), `boundary-*`, `gw-*` (all gateway
+kinds, branches, conditions, labels, default flows, flow ids, nested branches, join inference,
+`explicitJoins`, `connectTo`, `element`), `sub-process-*` (sub-process, transaction, ad-hoc incl. agent
+options and `toolGrid`, event sub-process), `data-*`, `annotation-*` (incl. `side`), `rest-connector-*`,
+`meta-*` (`name`, `executable`, `versionTag`, `executionPlatformVersion`, `defaults`, id counter,
+`withAutoLayout`), `from-*` (`at`, `insertAfter` on a parsed input), `diagram-*` (`DiagramBuilder`:
+processes, participants, message flows, `Invalid collaboration:` errors), `dmn-table-*`, `drd-*`.
+`withAutoLayout` runs the semantic layout engine; there is no engine option on the builder.
+
+Hand-written `.bpmn` input (`builder/from-noop/input.bpmn`) spells out `<incoming>` / `<outgoing>`
+(`bpmnlint-parity` lints every `.bpmn`, including the recorded outputs: that is why builder cases keep
+ids unique across scopes and avoid ids that are not valid XML names).
+
+## Process text: `text/<case>/`
+
+Recorded by `packages/core/tests/conformance-text.test.ts`. Three kinds of case, told apart by their
+files. In all of them the id counter is reset with `resetIdCounter()` before the parse and again
+before every `expand`.
+
+**Parse**: `input.txt` (read byte for byte: CRLF, an empty file, no final newline all occur).
+
+- `expected/result.json`: `parseProcessText(text)` as JSON, keys sorted: `{diagram, problems, fixes,
+  questions, connectors}`. `diagram` is the `CompactDiagram` the parser produced (TS has no
+  `definitions` field in the result; the model is derived from `diagram`). `problems` are
+  `{line, message}`, `questions` carry `elementId`, `text`, `options` (`{label, change}`) and `draft`,
+  `connectors` are the `with` lines (`{id, alias, args, values, line, elementId}`).
+- `expected/output.bpmn`: `serializeBpmn(expand(result.diagram))`, or `expected/error.txt` (message
+  plus newline) when `expand` throws (the parser promises it never does; no case records one).
+
+**Stream**: `case.json` `{"chunks": ["...", ...]}`. Replay with `createProcessTextStream()`: `push`
+every chunk in order, then `end()`. The id counter is reset **once** before the stream is created
+and not between chunks (every non-null frame runs `expand` and consumes ids).
+
+- `expected/frames.json`: an array with one entry per chunk: `null` when `push` returned `null`, or
+  `"frame-<i>.bpmn"` (`i` = 0-based chunk index) when it returned definitions.
+- `expected/frame-<i>.bpmn`: `serializeBpmn` of that frame.
+- `expected/result.json` and `expected/output.bpmn`: the result of `end()`, encoded as for a parse
+  case (the counter is reset before this `expand`).
+
+**Write**: `input.bpmn`, or `case.json` `{"input": "<path>"}` relative to `conformance/` (e.g.
+`bpmn/<case>/input.bpmn` or `text/<parse case>/expected/output.bpmn`, which the recorder produces
+first). Replays `writeProcessText(parseBpmn(input))` with no options (`connectorLine` is not passed,
+so no `with` lines are written).
+
+- `expected/text.txt`: `text`, exactly as returned (no trailing newline added).
+- `expected/written.json`: `{"aliases": {...}}`, alias to element id.
+- `expected/error.txt` when the call throws (e.g. a document the writer rejects).
+
+Case names: `parse-NNN-<slug>` are every distinct text the repository's own tests hand to
+`parseProcessText` (`packages/core/tests/process-text*.test.ts`, `compact*.test.ts`, the Drop and
+ai-local prompt examples they quote), numbered in the order the tests first call it; the other
+`parse-*` cases are hand-written (every kind, trigger, gateway, attribute, `with` / `note` / `doc`
+line, unicode, CRLF, loops, problems and questions). `stream-*` cases split the guide example and
+other texts in lines, fixed sizes, single characters and mid-token. `write-bpmn-*` write every
+`conformance/bpmn` input (lanes, pools, boundary events, sub-processes, data, all event kinds);
+`write-parse-*` / `write-parsed-*` write what the parser built.
+
+## Compact: `compact/<case>/`
+
+Recorded by `packages/core/tests/conformance-compact.test.ts`. The kind of a case is told by its
+input file; any `input.*` may instead be named by `case.json` `{"input": "<path>"}` (relative to the
+case folder, else to `conformance/`, e.g. `bpmn/miwg-a-2-1/input.bpmn`). All JSON is encoded as in
+the other corpora (keys sorted, 2-space indent, trailing newline). The id counter is reset before
+the parse / `compactify` and again before the `expand`.
+
+| Input | Replay | Expected |
+|---|---|---|
+| `input.bpmn` | `compact = compactify(parseBpmn(input))`, then `expand(compact)` | `compact.json`: `compact`; `expanded.bpmn`: `serializeBpmn(expand(compact))` (or `expanded.error.txt` if `expand` throws) |
+| `input.json` (a `CompactDiagram`) | `expand(input)` | `model.json`: the definitions; `output.bpmn`: `serializeBpmn(defs)`; or `error.txt` (message plus newline) |
+| `input.dmn` | `compact = compactifyDmn(parseDmn(input))`, then `expandDmn(compact)` | `compact.json`; `expanded.dmn`: `serializeDmn(expandDmn(compact))` (or `expanded.error.txt`) |
+| `input.dmn.json` (a `CompactDmn`) | `expandDmn(input)` | `model.json`, `output.dmn`, or `error.txt` |
+| `case.json` `{"chunks": [...], "base"?: <CompactDiagram or null>}` | `createCompactStream({base})` (no options when `base` is absent), `push` each chunk | `frames.json` and `frame-<i>.bpmn`, encoded exactly like a text stream (`null` or `"frame-<i>.bpmn"` per chunk) |
+
+`compactify` / `parseBpmn` / `parseDmn` failing records `error.txt` instead (none of the inputs does).
+`expand` and `expandDmn` expand with auto-layout, so `output.bpmn` / `expanded.*` also pin the layout
+of compact diagrams. `expandDmn` runs `layoutDmn`; a missing `requires` target throws a
+`ValidationError`, whose message is the recorded text.
+
+Case names: `bpmn-*` / `dmn-*` run every `conformance/bpmn` and non-error `conformance/dmn` input plus
+a few hand-written `bpmn-hand-*` ones (default flows, multi-instance and boundary events, user task
+assignment, link events, two processes); `expand-test-NNN` are the `CompactDiagram`s the repository's
+tests pass to `expand` (numbered in order of first call; several are the error cases of
+`compact-expand-validation.test.ts` and `compact-default-flow.test.ts`); `expand-*` /
+`expand-error-*` are hand-written (every element and event type, notes, children, default-flow
+errors, validation messages in one list); `dmn-expand-*`; `stream-*` replay the recorded model
+stream (`tests/recordings/streamed-replace-diagram.json`) and hand-written fragments in chunks, with
+and without `base`.
+
 ## `pending.json`
 
 `{"<case id or bpmn/<case>>": "<reason or issue link>"}`: cases a non-TS runner knows it does

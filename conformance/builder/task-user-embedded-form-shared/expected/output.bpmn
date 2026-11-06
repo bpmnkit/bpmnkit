@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:extensionElements>
+      <zeebe:userTaskForm id="f">{"a":1}</zeebe:userTaskForm>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_u1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="u1">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:f"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_s_u1</bpmn:incoming>
+      <bpmn:outgoing>Flow_u1_u2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="u2">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formKey="camunda-forms:bpmn:f"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_u1_u2</bpmn:incoming>
+      <bpmn:outgoing>Flow_u2_e</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_u2_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_u1" sourceRef="s" targetRef="u1"/>
+    <bpmn:sequenceFlow id="Flow_u1_u2" sourceRef="u1" targetRef="u2"/>
+    <bpmn:sequenceFlow id="Flow_u2_e" sourceRef="u2" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

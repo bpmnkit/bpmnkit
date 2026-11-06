@@ -1,0 +1,117 @@
+{
+  "id": "Bpmn_Definitions_--SwsH2BEeWQ6qGdY3x14w",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "_To9ZojOCEeSknpIVFCxNIQ",
+          "name": "Start Event",
+          "type": "startEvent"
+        },
+        {
+          "id": "_To9ZpzOCEeSknpIVFCxNIQ",
+          "name": "Task 1",
+          "type": "task"
+        },
+        {
+          "id": "_To9ZsTOCEeSknpIVFCxNIQ",
+          "name": "End Event",
+          "type": "endEvent"
+        },
+        {
+          "id": "_To9ZtjOCEeSknpIVFCxNIQ",
+          "name": "Task 2",
+          "type": "task"
+        },
+        {
+          "id": "_To9ZwDOCEeSknpIVFCxNIQ",
+          "name": "Task 3",
+          "type": "task"
+        },
+        {
+          "id": "_To9ZyjOCEeSknpIVFCxNIQ",
+          "name": "Gateway\r\n(Split Flow)",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "_To9ZzzOCEeSknpIVFCxNIQ",
+          "name": "Task 4",
+          "type": "task"
+        },
+        {
+          "id": "_To9Z2TOCEeSknpIVFCxNIQ",
+          "name": "Gateway\n(Merge Flows)",
+          "type": "exclusiveGateway"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_To9ZojOCEeSknpIVFCxNIQ",
+          "id": "_To9Z5DOCEeSknpIVFCxNIQ",
+          "to": "_To9ZpzOCEeSknpIVFCxNIQ"
+        },
+        {
+          "from": "_To9ZpzOCEeSknpIVFCxNIQ",
+          "id": "_To9Z5zOCEeSknpIVFCxNIQ",
+          "to": "_To9ZyjOCEeSknpIVFCxNIQ"
+        },
+        {
+          "from": "_To9ZyjOCEeSknpIVFCxNIQ",
+          "id": "_To9Z6jOCEeSknpIVFCxNIQ",
+          "isDefault": true,
+          "name": "Default",
+          "to": "_To9ZtjOCEeSknpIVFCxNIQ"
+        },
+        {
+          "condition": "true",
+          "from": "_To9ZtjOCEeSknpIVFCxNIQ",
+          "id": "_To9Z7TOCEeSknpIVFCxNIQ",
+          "name": "Condition",
+          "to": "_To9ZsTOCEeSknpIVFCxNIQ"
+        },
+        {
+          "from": "_To9ZwDOCEeSknpIVFCxNIQ",
+          "id": "_To9Z8DOCEeSknpIVFCxNIQ",
+          "to": "_To9Z2TOCEeSknpIVFCxNIQ"
+        },
+        {
+          "condition": "",
+          "from": "_To9ZzzOCEeSknpIVFCxNIQ",
+          "id": "_To9Z8zOCEeSknpIVFCxNIQ",
+          "name": "condition",
+          "to": "_To9Z2TOCEeSknpIVFCxNIQ"
+        },
+        {
+          "condition": "",
+          "from": "_To9Z2TOCEeSknpIVFCxNIQ",
+          "id": "_To9Z9jOCEeSknpIVFCxNIQ",
+          "to": "_To9ZsTOCEeSknpIVFCxNIQ"
+        },
+        {
+          "condition": "",
+          "from": "_To9ZyjOCEeSknpIVFCxNIQ",
+          "id": "_To9Z-TOCEeSknpIVFCxNIQ",
+          "to": "_To9ZwDOCEeSknpIVFCxNIQ"
+        },
+        {
+          "condition": "",
+          "from": "_To9ZyjOCEeSknpIVFCxNIQ",
+          "id": "_To9Z_DOCEeSknpIVFCxNIQ",
+          "to": "_To9ZzzOCEeSknpIVFCxNIQ"
+        },
+        {
+          "from": "_To9ZtjOCEeSknpIVFCxNIQ",
+          "id": "Bpmn_SequenceFlow_edepQQbbEealeL5I4Yl3Dw",
+          "to": "_To9ZwDOCEeSknpIVFCxNIQ"
+        },
+        {
+          "from": "_To9ZzzOCEeSknpIVFCxNIQ",
+          "id": "Bpmn_SequenceFlow_f9nmUQbbEealeL5I4Yl3Dw",
+          "to": "_To9ZwDOCEeSknpIVFCxNIQ"
+        }
+      ],
+      "id": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "name": "A.2.1"
+    }
+  ]
+}

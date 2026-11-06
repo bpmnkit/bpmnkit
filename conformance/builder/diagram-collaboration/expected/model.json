@@ -1,0 +1,284 @@
+{
+  "collaborations": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "groups": [],
+      "id": "Collab_1",
+      "messageFlows": [
+        {
+          "id": "MF1",
+          "messageRef": "Msg_Order",
+          "name": "Order",
+          "sourceRef": "order",
+          "targetRef": "ss",
+          "unknownAttributes": {}
+        },
+        {
+          "id": "MF2",
+          "messageRef": "Msg_Invoice",
+          "sourceRef": "bill",
+          "targetRef": "invoice",
+          "unknownAttributes": {}
+        }
+      ],
+      "participants": [
+        {
+          "id": "Buyer",
+          "name": "Buyer",
+          "processRef": "buyer",
+          "unknownAttributes": {}
+        },
+        {
+          "id": "Seller",
+          "name": "Seller",
+          "processRef": "seller",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Collab",
+  "messages": [
+    {
+      "id": "Message_order",
+      "name": "order",
+      "unknownAttributes": {}
+    },
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=id"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_invoice",
+      "name": "invoice",
+      "unknownAttributes": {}
+    },
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=orderId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Msg_Order",
+      "name": "order",
+      "unknownAttributes": {}
+    },
+    {
+      "id": "Msg_Invoice",
+      "name": "invoice",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "bs",
+          "incoming": [],
+          "outgoing": [
+            "Flow_bs_order"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "order",
+          "incoming": [
+            "Flow_bs_order"
+          ],
+          "messageRef": "Message_order",
+          "outgoing": [
+            "Flow_order_invoice"
+          ],
+          "type": "sendTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "invoice",
+          "incoming": [
+            "Flow_order_invoice"
+          ],
+          "messageRef": "Message_invoice",
+          "outgoing": [
+            "Flow_invoice_be"
+          ],
+          "type": "receiveTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "be",
+          "incoming": [
+            "Flow_invoice_be"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "buyer",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_bs_order",
+          "sourceRef": "bs",
+          "targetRef": "order",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_order_invoice",
+          "sourceRef": "order",
+          "targetRef": "invoice",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_invoice_be",
+          "sourceRef": "invoice",
+          "targetRef": "be",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [
+            {
+              "id": "ss_MessageEventDefinition",
+              "messageRef": "Message_order",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "ss",
+          "incoming": [],
+          "outgoing": [
+            "Flow_ss_ship"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "ship"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "ship",
+          "incoming": [
+            "Flow_ss_ship"
+          ],
+          "name": "ship",
+          "outgoing": [
+            "Flow_ship_bill"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "bill",
+          "incoming": [
+            "Flow_ship_bill"
+          ],
+          "messageRef": "Message_invoice",
+          "outgoing": [
+            "Flow_bill_se"
+          ],
+          "type": "sendTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "se",
+          "incoming": [
+            "Flow_bill_se"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "seller",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_ss_ship",
+          "sourceRef": "ss",
+          "targetRef": "ship",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_ship_bill",
+          "sourceRef": "ship",
+          "targetRef": "bill",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_bill_se",
+          "sourceRef": "bill",
+          "targetRef": "se",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.9.0"
+  }
+}

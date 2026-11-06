@@ -1,0 +1,5 @@
+s[start] > g1[xor One?]
+g1 >(Yes: a) g2[xor Two?]
+g1 >(No: default) n1[task N1] > e[end]
+g2 >(Yes: b) y[task Y] > e
+g2 >(No: default) n2[task N2] > e

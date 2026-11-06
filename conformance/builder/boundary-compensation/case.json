@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","host",{"name":"host","taskType":"host"}],
+		["boundaryEvent","b",{"attachedTo":"host","compensation":true}],
+		["serviceTask","undo",{"name":"undo","taskType":"undo","isForCompensation":true}],
+		["build"]
+	]
+}

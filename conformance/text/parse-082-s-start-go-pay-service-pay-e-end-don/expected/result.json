@@ -1,0 +1,62 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "pay",
+            "jobType": "pay",
+            "name": "Pay",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "pay",
+            "eventType": "timer",
+            "id": "t",
+            "interrupting": false,
+            "name": "Late",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "l",
+            "name": "Late",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "pay"
+          },
+          {
+            "from": "pay",
+            "id": "Flow_2",
+            "to": "e"
+          },
+          {
+            "from": "t",
+            "id": "Flow_3",
+            "to": "l"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

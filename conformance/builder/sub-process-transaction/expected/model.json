@@ -1,0 +1,197 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "Flow_s_tx"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "ts",
+              "incoming": [],
+              "outgoing": [
+                "Flow_ts_book"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "book"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "book",
+              "incoming": [
+                "Flow_ts_book"
+              ],
+              "name": "book",
+              "outgoing": [
+                "Flow_book_te"
+              ],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "attachedToRef": "book",
+              "eventDefinitions": [
+                {
+                  "id": "cancel_CompensateEventDefinition",
+                  "type": "compensate"
+                }
+              ],
+              "extensionElements": [],
+              "id": "cancel",
+              "incoming": [],
+              "outgoing": [
+                "Flow_cancel_unbook"
+              ],
+              "type": "boundaryEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "unbook"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "unbook",
+              "incoming": [
+                "Flow_cancel_unbook"
+              ],
+              "isForCompensation": true,
+              "name": "unbook",
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "te",
+              "incoming": [
+                "Flow_book_te"
+              ],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "tx",
+          "incoming": [
+            "Flow_s_tx"
+          ],
+          "name": "Booking",
+          "outgoing": [
+            "Flow_tx_e"
+          ],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "Flow_ts_book",
+              "sourceRef": "ts",
+              "targetRef": "book",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_cancel_unbook",
+              "sourceRef": "cancel",
+              "targetRef": "unbook",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_book_te",
+              "sourceRef": "book",
+              "targetRef": "te",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "transaction",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e",
+          "incoming": [
+            "Flow_tx_e"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "p",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_s_tx",
+          "sourceRef": "s",
+          "targetRef": "tx",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_tx_e",
+          "sourceRef": "tx",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.9.0"
+  }
+}

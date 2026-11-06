@@ -1,0 +1,14 @@
+{
+  "aliases": {
+    "approve_invoice": "approveInvoice",
+    "archive_invoice": "archiveInvoice",
+    "assign_approver": "assignApprover",
+    "invoice_approved": "invoice_approved",
+    "invoice_not_processed": "invoiceNotProcessed",
+    "invoice_processed": "invoiceProcessed",
+    "invoice_received": "StartEvent_1",
+    "prepare_bank_transfer": "prepareBankTransfer",
+    "rechnung_kl_ren": "reviewInvoice",
+    "review_successful": "reviewSuccessful_gw"
+  }
+}

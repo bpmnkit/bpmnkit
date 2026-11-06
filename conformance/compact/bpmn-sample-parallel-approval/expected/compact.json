@@ -1,0 +1,108 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "start",
+          "name": "Request Submitted",
+          "type": "startEvent"
+        },
+        {
+          "id": "prepare",
+          "name": "Prepare Documents",
+          "type": "userTask"
+        },
+        {
+          "id": "split",
+          "name": "Split",
+          "type": "parallelGateway"
+        },
+        {
+          "id": "mgr-approve",
+          "name": "Manager Approval",
+          "type": "userTask"
+        },
+        {
+          "id": "legal-review",
+          "name": "Legal Review",
+          "type": "userTask"
+        },
+        {
+          "id": "finance-check",
+          "name": "Finance Check",
+          "type": "userTask"
+        },
+        {
+          "id": "join",
+          "name": "Join",
+          "type": "parallelGateway"
+        },
+        {
+          "id": "finalize",
+          "name": "Finalize Request",
+          "type": "serviceTask"
+        },
+        {
+          "id": "end",
+          "name": "Request Approved",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "start",
+          "id": "flow1",
+          "to": "prepare"
+        },
+        {
+          "from": "prepare",
+          "id": "flow2",
+          "to": "split"
+        },
+        {
+          "from": "split",
+          "id": "flow-mgr",
+          "to": "mgr-approve"
+        },
+        {
+          "from": "split",
+          "id": "flow-legal",
+          "to": "legal-review"
+        },
+        {
+          "from": "split",
+          "id": "flow-finance",
+          "to": "finance-check"
+        },
+        {
+          "from": "mgr-approve",
+          "id": "flow-mgr-done",
+          "to": "join"
+        },
+        {
+          "from": "legal-review",
+          "id": "flow-legal-done",
+          "to": "join"
+        },
+        {
+          "from": "finance-check",
+          "id": "flow-finance-done",
+          "to": "join"
+        },
+        {
+          "from": "join",
+          "id": "flow3",
+          "to": "finalize"
+        },
+        {
+          "from": "finalize",
+          "id": "flow4",
+          "to": "end"
+        }
+      ],
+      "id": "parallel-approval",
+      "name": "Parallel Approval"
+    }
+  ]
+}

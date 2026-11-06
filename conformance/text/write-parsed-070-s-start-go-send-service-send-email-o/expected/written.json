@@ -1,0 +1,11 @@
+{
+  "aliases": {
+    "done": "done",
+    "done_join": "done_join",
+    "ok": "ok",
+    "s": "s",
+    "send": "send",
+    "send_split": "send_split",
+    "wait": "wait"
+  }
+}

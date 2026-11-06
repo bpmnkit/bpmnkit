@@ -1,0 +1,1 @@
+expand: invalid CompactDiagram — boundary event "b" has no attachedTo

@@ -1,0 +1,51 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "a",
+            "name": "A",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "inputs": {
+              "x": "=)("
+            },
+            "name": "T",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "a",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "in.x= on \"t\" is not FEEL; kept for the reader to correct"
+    }
+  ],
+  "questions": []
+}

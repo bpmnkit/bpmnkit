@@ -1,0 +1,8 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createDiagram","D"],
+		["participant","P",{"processId":"ghost"}],
+		["build"]
+	]
+}

@@ -1,0 +1,2 @@
+s[start Go] > send[service Send email] > ok[end Sent]
+send > wait[boundary:timer Wait 60s] > done[end Dropped]

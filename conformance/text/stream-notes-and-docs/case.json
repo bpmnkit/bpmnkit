@@ -1,0 +1,7 @@
+{
+	"chunks": [
+		"s[start S] > e[end E]\nnote s: hi\n",
+		"doc e: done\n",
+		"note ghost: nobody\n"
+	]
+}

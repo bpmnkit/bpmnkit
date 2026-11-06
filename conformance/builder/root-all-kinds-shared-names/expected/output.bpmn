@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:error id="Error_m" name="m" errorCode="m"/>
+  <bpmn:message id="Message_m" name="m">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=k"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:signal id="Signal_m" name="m"/>
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_c</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="s_MessageEventDefinition" messageRef="Message_m"/>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="c">
+      <bpmn:incoming>Flow_s_c</bpmn:incoming>
+      <bpmn:outgoing>Flow_c_t</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="c_MessageEventDefinition" messageRef="Message_m"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="t">
+      <bpmn:incoming>Flow_c_t</bpmn:incoming>
+      <bpmn:outgoing>Flow_t_e</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="t_SignalEventDefinition" signalRef="Signal_m"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_t_e</bpmn:incoming>
+      <bpmn:errorEventDefinition id="e_ErrorEventDefinition" errorRef="Error_m"/>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_c" sourceRef="s" targetRef="c"/>
+    <bpmn:sequenceFlow id="Flow_c_t" sourceRef="c" targetRef="t"/>
+    <bpmn:sequenceFlow id="Flow_t_e" sourceRef="t" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

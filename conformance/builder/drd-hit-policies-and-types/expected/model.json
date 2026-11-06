@@ -1,0 +1,172 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "COLLECT",
+        "id": "DecisionTable_0000001",
+        "inputs": [
+          {
+            "id": "Input_0000002",
+            "inputExpression": {
+              "id": "InputExpression_0000003",
+              "text": "x",
+              "typeRef": "number"
+            },
+            "label": "L"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_0000004",
+            "label": "O",
+            "name": "y",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "id": "DecisionRule_0000007",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_0000005",
+                "text": "> 1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_0000006",
+                "text": "\"big\""
+              }
+            ]
+          },
+          {
+            "id": "DecisionRule_000000a",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_0000008",
+                "text": "<= 1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_0000009",
+                "text": "\"small\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "a",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "A"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "FIRST",
+        "id": "DecisionTable_000000c",
+        "inputs": [
+          {
+            "id": "Input_000000d",
+            "inputExpression": {
+              "id": "InputExpression_000000e",
+              "text": "y"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_000000f",
+            "name": "z",
+            "typeRef": "boolean"
+          }
+        ],
+        "rules": [
+          {
+            "id": "DecisionRule_000000i",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_000000g",
+                "text": "\"big\""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_000000h",
+                "text": "true"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "b",
+      "informationRequirements": [
+        {
+          "id": "InformationRequirement_000000k",
+          "requiredDecision": "a"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "b"
+    }
+  ],
+  "diagram": {
+    "edges": [
+      {
+        "dmnElementRef": "InformationRequirement_000000k",
+        "waypoints": [
+          {
+            "x": 340,
+            "y": 140
+          },
+          {
+            "x": 400,
+            "y": 140
+          }
+        ]
+      }
+    ],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "a"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 400,
+          "y": 100
+        },
+        "dmnElementRef": "b"
+      }
+    ]
+  },
+  "exporter": "bpmn-sdk",
+  "exporterVersion": "0.0.1",
+  "id": "Definitions_000000l",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "8.5.0"
+  },
+  "name": "Types",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "modeler": "http://camunda.org/schema/modeler/1.0"
+  },
+  "textAnnotations": []
+}

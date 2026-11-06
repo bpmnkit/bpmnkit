@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_0y9k2xh" name="DRD" namespace="http://bpmn.io/schema/dmn">
+  <decision id="risk_score" name="Risk score">
+    <decisionTable id="decisionTable_0000009" hitPolicy="FIRST">
+      <input id="Input_1" label="Amount">
+        <inputExpression id="inputExpression_0000001" typeRef="number">
+          <text>amount</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_1jt5c6d" label="Country">
+        <inputExpression id="inputExpression_0000002" typeRef="string">
+          <text>country</text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Risk" name="risk" typeRef="string"/>
+      <rule id="DecisionRule_0lqw1jd">
+        <inputEntry id="inputEntry_0_0000003">
+          <text>&lt; 1000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_0000004">
+          <text>"DE", "AT"</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000005">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1n5vqz8">
+        <inputEntry id="inputEntry_0_0000006">
+          <text>&gt;= 1000</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_0000007">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000008">
+          <text>"high"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="risk_score">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

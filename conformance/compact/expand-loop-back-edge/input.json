@@ -1,0 +1,50 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "t",
+          "type": "task"
+        },
+        {
+          "id": "g",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "s",
+          "to": "t"
+        },
+        {
+          "id": "f2",
+          "from": "t",
+          "to": "g"
+        },
+        {
+          "id": "f3",
+          "from": "g",
+          "to": "t",
+          "condition": "= retry"
+        },
+        {
+          "id": "f4",
+          "from": "g",
+          "to": "e",
+          "isDefault": true
+        }
+      ]
+    }
+  ]
+}

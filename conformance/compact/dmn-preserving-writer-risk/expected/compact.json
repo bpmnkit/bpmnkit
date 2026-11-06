@@ -1,0 +1,48 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "FIRST",
+      "id": "risk",
+      "inputs": [
+        {
+          "expression": "amount",
+          "id": "in1",
+          "label": "Amount",
+          "typeRef": "number"
+        }
+      ],
+      "name": "Risk score",
+      "outputs": [
+        {
+          "id": "out1",
+          "label": "Risk",
+          "name": "risk",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r1",
+          "inputs": [
+            "< 100"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        },
+        {
+          "id": "r2",
+          "inputs": [
+            ">= 100"
+          ],
+          "outputs": [
+            "\"high\""
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_1",
+  "inputData": [],
+  "name": "Risk"
+}

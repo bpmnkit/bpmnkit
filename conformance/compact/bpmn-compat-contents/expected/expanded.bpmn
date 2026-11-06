@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_contents" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="contents" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>toLoopA</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:startEvent id="webhookStart">
+      <bpmn:extensionElements>
+        <zeebe:properties>
+          <zeebe:property name="inbound.type" value="io.camunda:webhook:1"/>
+          <zeebe:property name="messageTtl" value="PT1H"/>
+          <zeebe:property name="consumeUnmatchedEvents" value="true"/>
+          <zeebe:property name="deduplicationModeManualFlag" value="true"/>
+        </zeebe:properties>
+      </bpmn:extensionElements>
+      <bpmn:messageEventDefinition id="webhookStart_MessageEventDefinition"/>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="pollingCatch">
+      <bpmn:extensionElements>
+        <zeebe:properties>
+          <zeebe:property name="inbound.type" value="io.camunda:http-polling:1"/>
+          <zeebe:property name="deduplicationModeManualFlag" value="true"/>
+        </zeebe:properties>
+      </bpmn:extensionElements>
+      <bpmn:messageEventDefinition id="pollingCatch_MessageEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:manualTask id="loopA">
+      <bpmn:incoming>toLoopA</bpmn:incoming>
+      <bpmn:incoming>backToA</bpmn:incoming>
+      <bpmn:outgoing>toLoopGateway</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="loopGateway" default="toEnd">
+      <bpmn:incoming>toLoopGateway</bpmn:incoming>
+      <bpmn:outgoing>toLoopB</bpmn:outgoing>
+      <bpmn:outgoing>toEnd</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="loopB">
+      <bpmn:incoming>toLoopB</bpmn:incoming>
+      <bpmn:outgoing>backToA</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="end">
+      <bpmn:incoming>toEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="feelNew">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="=&quot;job-&quot; + string(random number())"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=uuid()" target="id"/>
+          <zeebe:input source="=from json(payload)" target="data"/>
+          <zeebe:input source="=trim(name) + to base64(name)" target="label"/>
+          <zeebe:output source="=partition(items, 10)" target="pages"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="feelShadowed">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="k" value="=uuid()"/>
+        </zeebe:taskHeaders>
+        <zeebe:ioMapping>
+          <zeebe:input source="={uuid: function() 1, id: uuid()}" target="a"/>
+          <zeebe:input source="=for trim in [1] return trim(1)" target="b"/>
+          <zeebe:input source="=uuid(" target="c"/>
+          <zeebe:input source="uuid()" target="d"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="feelTimer">
+      <bpmn:timerEventDefinition id="feelTimer_TimerEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="badVars">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=1" target="1st"/>
+          <zeebe:output source="=2" target="my variable name"/>
+          <zeebe:output source="=3" target="a.b_c"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:multiInstanceLoopCharacteristics>
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics inputCollection="=items" inputElement="item-x" outputCollection="results" outputElement="=item"/>
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="badResult">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=1" resultVariable="a-b"/>
+      </bpmn:extensionElements>
+    </bpmn:scriptTask>
+    <bpmn:businessRuleTask id="badDecisionResult">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="d" resultVariable="2x"/>
+      </bpmn:extensionElements>
+    </bpmn:businessRuleTask>
+    <bpmn:adHocSubProcess id="badOutputCollection">
+      <bpmn:task id="adHocInner"/>
+    </bpmn:adHocSubProcess>
+    <bpmn:serviceTask id="secretsTask">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+        <zeebe:properties>
+          <zeebe:property name="auth" value="Bearer {{secrets.AUTH}}"/>
+        </zeebe:properties>
+        <zeebe:ioMapping>
+          <zeebe:input source="secrets.API_KEY" target="apiKey"/>
+          <zeebe:input source="{{secrets.TOKEN}}" target="token"/>
+          <zeebe:input source="=camunda.secrets.OK" target="ok"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:receiveTask id="secretReceive"/>
+    <bpmn:serviceTask id="secretLiteral">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="camunda.secrets.PLAIN" target="a"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="secretQuoted">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=&quot;Bearer camunda.secrets.QUOTED&quot;" target="a"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="secretProperty">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+        <zeebe:properties>
+          <zeebe:property name="p" value="camunda.secrets.PROP"/>
+        </zeebe:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="secretList">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="={keys: [camunda.secrets.A, camunda.secrets.B]}" target="a"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="secretIfContext">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=if prod then {key: camunda.secrets.PROD} else null" target="a"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="secretFine">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="={auth: {key: camunda.secrets.A}}" target="a"/>
+          <zeebe:input source="=([camunda.secrets.B])" target="b"/>
+          <zeebe:input source="=camunda.secrets.C.value" target="c"/>
+          <zeebe:input source="=if prod then camunda.secrets.D else null" target="d"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:intermediateThrowEvent id="linkNoName">
+      <bpmn:linkEventDefinition id="linkNoName_LinkEventDefinition"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateCatchEvent id="linkCatch1">
+      <bpmn:linkEventDefinition id="linkCatch1_LinkEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:subProcess id="linkScope">
+      <bpmn:intermediateCatchEvent id="linkCatch2">
+        <bpmn:linkEventDefinition id="linkCatch2_LinkEventDefinition"/>
+      </bpmn:intermediateCatchEvent>
+      <bpmn:intermediateCatchEvent id="linkCatchBlank">
+        <bpmn:linkEventDefinition id="linkCatchBlank_LinkEventDefinition"/>
+      </bpmn:intermediateCatchEvent>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="toLoopA" sourceRef="start" targetRef="loopA"/>
+    <bpmn:sequenceFlow id="toLoopGateway" sourceRef="loopA" targetRef="loopGateway"/>
+    <bpmn:sequenceFlow id="toLoopB" sourceRef="loopGateway" targetRef="loopB">
+      <bpmn:conditionExpression>=is blank(reason)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="toEnd" sourceRef="loopGateway" targetRef="end"/>
+    <bpmn:sequenceFlow id="backToA" sourceRef="loopB" targetRef="loopA"/>
+  </bpmn:process>
+  <bpmn:process id="waits" isExecutable="true">
+    <bpmn:startEvent id="waitsStart">
+      <bpmn:outgoing>waitsToTask</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="waitsTask">
+      <bpmn:incoming>waitsToTask</bpmn:incoming>
+      <bpmn:incoming>waitsBack</bpmn:incoming>
+      <bpmn:outgoing>waitsToService</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:serviceTask id="waitsService">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>waitsToService</bpmn:incoming>
+      <bpmn:outgoing>waitsBack</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="waitsToTask" sourceRef="waitsStart" targetRef="waitsTask"/>
+    <bpmn:sequenceFlow id="waitsToService" sourceRef="waitsTask" targetRef="waitsService"/>
+    <bpmn:sequenceFlow id="waitsBack" sourceRef="waitsService" targetRef="waitsTask"/>
+  </bpmn:process>
+  <bpmn:process id="recursive" isExecutable="true">
+    <bpmn:startEvent id="recursiveStart">
+      <bpmn:outgoing>recursiveToSub</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="recursiveSub">
+      <bpmn:incoming>recursiveToSub</bpmn:incoming>
+      <bpmn:startEvent id="recursiveSubStart">
+        <bpmn:outgoing>recursiveToCall</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:callActivity id="recursiveCall">
+        <bpmn:extensionElements>
+          <zeebe:calledElement processId="recursive"/>
+        </bpmn:extensionElements>
+        <bpmn:incoming>recursiveToCall</bpmn:incoming>
+      </bpmn:callActivity>
+      <bpmn:sequenceFlow id="recursiveToCall" sourceRef="recursiveSubStart" targetRef="recursiveCall"/>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="recursiveToSub" sourceRef="recursiveStart" targetRef="recursiveSub"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_contents">
+    <bpmndi:BPMNPlane id="BPMNPlane_contents" bpmnElement="contents">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="88" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="webhookStart_di" bpmnElement="webhookStart">
+        <dc:Bounds x="88" y="278" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="pollingCatch_di" bpmnElement="pollingCatch">
+        <dc:Bounds x="88" y="394" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="loopA_di" bpmnElement="loopA">
+        <dc:Bounds x="312" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="loopGateway_di" bpmnElement="loopGateway" isMarkerVisible="true">
+        <dc:Bounds x="472" y="15" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="loopB_di" bpmnElement="loopB">
+        <dc:Bounds x="582" y="118" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_di" bpmnElement="end">
+        <dc:Bounds x="614" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="feelNew_di" bpmnElement="feelNew">
+        <dc:Bounds x="56" y="510" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="feelShadowed_di" bpmnElement="feelShadowed">
+        <dc:Bounds x="56" y="670" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="feelTimer_di" bpmnElement="feelTimer">
+        <dc:Bounds x="88" y="830" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="badVars_di" bpmnElement="badVars">
+        <dc:Bounds x="56" y="946" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="badResult_di" bpmnElement="badResult">
+        <dc:Bounds x="56" y="1106" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="badDecisionResult_di" bpmnElement="badDecisionResult">
+        <dc:Bounds x="56" y="1266" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="badOutputCollection_di" bpmnElement="badOutputCollection" isExpanded="true">
+        <dc:Bounds x="6" y="1426" width="200" height="180"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="secretsTask_di" bpmnElement="secretsTask">
+        <dc:Bounds x="56" y="1686" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="secretReceive_di" bpmnElement="secretReceive">
+        <dc:Bounds x="56" y="1846" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="secretLiteral_di" bpmnElement="secretLiteral">
+        <dc:Bounds x="56" y="2006" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="secretQuoted_di" bpmnElement="secretQuoted">
+        <dc:Bounds x="56" y="2166" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="secretProperty_di" bpmnElement="secretProperty">
+        <dc:Bounds x="56" y="2326" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="secretList_di" bpmnElement="secretList">
+        <dc:Bounds x="56" y="2486" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="secretIfContext_di" bpmnElement="secretIfContext">
+        <dc:Bounds x="56" y="2646" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="secretFine_di" bpmnElement="secretFine">
+        <dc:Bounds x="56" y="2806" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="linkNoName_di" bpmnElement="linkNoName">
+        <dc:Bounds x="88" y="2966" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="linkCatch1_di" bpmnElement="linkCatch1">
+        <dc:Bounds x="88" y="3082" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="linkScope_di" bpmnElement="linkScope" isExpanded="true">
+        <dc:Bounds x="0" y="3198" width="212" height="136"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="adHocInner_di" bpmnElement="adHocInner">
+        <dc:Bounds x="56" y="1476" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="linkCatch2_di" bpmnElement="linkCatch2">
+        <dc:Bounds x="50" y="3248" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="linkCatchBlank_di" bpmnElement="linkCatchBlank">
+        <dc:Bounds x="126" y="3248" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="toLoopA_di" bpmnElement="toLoopA">
+        <di:waypoint x="124" y="40"/>
+        <di:waypoint x="312" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="toLoopGateway_di" bpmnElement="toLoopGateway">
+        <di:waypoint x="412" y="40"/>
+        <di:waypoint x="472" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="toLoopB_di" bpmnElement="toLoopB">
+        <di:waypoint x="497" y="65"/>
+        <di:waypoint x="497" y="158"/>
+        <di:waypoint x="582" y="158"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="toEnd_di" bpmnElement="toEnd">
+        <di:waypoint x="522" y="40"/>
+        <di:waypoint x="614" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="backToA_di" bpmnElement="backToA">
+        <di:waypoint x="632" y="198"/>
+        <di:waypoint x="632" y="238"/>
+        <di:waypoint x="362" y="238"/>
+        <di:waypoint x="362" y="80"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_waits">
+    <bpmndi:BPMNPlane id="BPMNPlane_waits" bpmnElement="waits">
+      <bpmndi:BPMNShape id="waitsStart_di" bpmnElement="waitsStart">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="waitsTask_di" bpmnElement="waitsTask">
+        <dc:Bounds x="96" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="waitsService_di" bpmnElement="waitsService">
+        <dc:Bounds x="256" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="waitsToTask_di" bpmnElement="waitsToTask">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="96" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="waitsToService_di" bpmnElement="waitsToService">
+        <di:waypoint x="196" y="40"/>
+        <di:waypoint x="256" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="waitsBack_di" bpmnElement="waitsBack">
+        <di:waypoint x="306" y="80"/>
+        <di:waypoint x="306" y="120"/>
+        <di:waypoint x="146" y="120"/>
+        <di:waypoint x="146" y="80"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_recursive">
+    <bpmndi:BPMNPlane id="BPMNPlane_recursive" bpmnElement="recursive">
+      <bpmndi:BPMNShape id="recursiveStart_di" bpmnElement="recursiveStart">
+        <dc:Bounds x="0" y="72" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="recursiveSub_di" bpmnElement="recursiveSub" isExpanded="true">
+        <dc:Bounds x="136" y="0" width="296" height="180"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="recursiveSubStart_di" bpmnElement="recursiveSubStart">
+        <dc:Bounds x="186" y="72" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="recursiveCall_di" bpmnElement="recursiveCall">
+        <dc:Bounds x="282" y="50" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="recursiveToSub_di" bpmnElement="recursiveToSub">
+        <di:waypoint x="36" y="90"/>
+        <di:waypoint x="136" y="90"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="recursiveToCall_di" bpmnElement="recursiveToCall">
+        <di:waypoint x="222" y="90"/>
+        <di:waypoint x="282" y="90"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["exclusiveGateway","g"],
+		["branch","a",{"$ops":[["condition","=x"],["endEvent","e1",{"errorCode":"BOOM"}]]}],
+		["branch","b",{"$ops":[["defaultFlow"],["endEvent","e2",{"errorCode":"BOOM"}]]}],
+		["build"]
+	]
+}

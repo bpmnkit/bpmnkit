@@ -1,0 +1,116 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Order received",
+            "type": "startEvent"
+          },
+          {
+            "id": "check",
+            "name": "Order valid?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "ship",
+            "jobType": "ship",
+            "name": "Ship order",
+            "type": "serviceTask"
+          },
+          {
+            "id": "done",
+            "name": "Order shipped",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "ship",
+            "eventType": "error",
+            "id": "fail",
+            "name": "Validation failed",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "notify",
+            "jobType": "notify",
+            "name": "Notify #ops on Slack",
+            "type": "sendTask"
+          },
+          {
+            "id": "sent",
+            "name": "Notification sent",
+            "type": "endEvent"
+          },
+          {
+            "id": "notify_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "check"
+          },
+          {
+            "from": "check",
+            "id": "Flow_2",
+            "isDefault": true,
+            "name": "Yes",
+            "to": "ship"
+          },
+          {
+            "from": "ship",
+            "id": "Flow_3",
+            "to": "done"
+          },
+          {
+            "condition": "= orderValid = false",
+            "from": "check",
+            "id": "Flow_4",
+            "name": "No: order invalid",
+            "to": "notify_join"
+          },
+          {
+            "from": "fail",
+            "id": "Flow_5",
+            "to": "notify_join"
+          },
+          {
+            "from": "notify",
+            "id": "Flow_6",
+            "to": "sent"
+          },
+          {
+            "from": "notify_join",
+            "id": "Flow_7",
+            "to": "notify"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "led check > fail to what the boundary leads to, since nothing flows into a boundary event",
+    "joined 2 flows into \"notify\" with xor gateway \"notify_join\"",
+    "gave check > notify_join the condition \"= orderValid = false\""
+  ],
+  "problems": [
+    {
+      "line": 3,
+      "message": "condition \"order invalid\" is not FEEL; kept as the branch label"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "At \"Order valid?\", decide on ",
+      "elementId": "check",
+      "options": [],
+      "text": "\"Order valid?\" decides on \"orderValid\", a variable the diagram made up. What data decides it?"
+    }
+  ]
+}

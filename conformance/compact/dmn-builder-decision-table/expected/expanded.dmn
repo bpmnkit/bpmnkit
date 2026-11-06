@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_000000f" name="DRD" namespace="http://bpmn.io/schema/dmn">
+  <decision id="Decision_credit" name="Credit check">
+    <decisionTable id="decisionTable_0000009" hitPolicy="COLLECT">
+      <input id="Input_0000002" label="Score">
+        <inputExpression id="inputExpression_0000001" typeRef="number">
+          <text>score</text>
+        </inputExpression>
+      </input>
+      <input id="Input_0000004" label="Country">
+        <inputExpression id="inputExpression_0000002" typeRef="string">
+          <text>country</text>
+        </inputExpression>
+      </input>
+      <output id="Output_0000006" label="Flag" name="flag" typeRef="string"/>
+      <rule id="DecisionRule_000000a">
+        <description>low score</description>
+        <inputEntry id="inputEntry_0_0000003">
+          <text>&lt; 500</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_0000004">
+          <text>"DE","AT"</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000005">
+          <text>"review"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_000000e">
+        <inputEntry id="inputEntry_0_0000006">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_0000007">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000008">
+          <text>"ok"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Decision_credit">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

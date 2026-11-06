@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","agent",{"name":"Agent","taskType":"agent-job","agentDefinition":{"agentType":"langchain"},"linkedResources":[{"resourceType":"RPA","resourceId":"script-1","linkName":"rpa"}]}],
+		["endEvent","e"],
+		["build"]
+	]
+}

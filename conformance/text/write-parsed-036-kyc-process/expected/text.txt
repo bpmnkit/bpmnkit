@@ -1,0 +1,2 @@
+# KYC process
+start[start Start KYC] > collect[user Collect data] > verify[rule Verify data] > enrich[service Enrich customer profile | job=enrich] > done[end Done]

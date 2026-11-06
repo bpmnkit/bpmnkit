@@ -1,0 +1,11 @@
+{
+  "aliases": {
+    "agent": "agent",
+    "done": "done",
+    "fin": "fin",
+    "joke": "joke",
+    "run": "run",
+    "start": "start",
+    "users": "users"
+  }
+}

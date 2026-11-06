@@ -1,0 +1,59 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Order",
+            "type": "startEvent"
+          },
+          {
+            "id": "got",
+            "name": "Address received",
+            "type": "intermediateThrowEvent"
+          },
+          {
+            "id": "ship",
+            "jobType": "ship",
+            "name": "Ship order",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "Shipped",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "got"
+          },
+          {
+            "from": "got",
+            "id": "Flow_2",
+            "to": "ship"
+          },
+          {
+            "from": "ship",
+            "id": "Flow_3",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"got\" cannot be a link event here; made it a plain event"
+    }
+  ],
+  "questions": []
+}

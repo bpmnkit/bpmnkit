@@ -1,0 +1,1 @@
+Rule has 2 inputs but table has 1 input columns

@@ -1,0 +1,48 @@
+{
+  "id": "d",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "S",
+          "type": "startEvent"
+        },
+        {
+          "id": "G",
+          "type": "exclusiveGateway",
+          "name": "Over 10,000?"
+        },
+        {
+          "id": "Approve",
+          "type": "userTask",
+          "name": "Approve"
+        },
+        {
+          "id": "E",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "F1",
+          "from": "S",
+          "to": "G",
+          "isDefault": true
+        },
+        {
+          "id": "F2",
+          "from": "G",
+          "to": "Approve",
+          "condition": "= total > 10000"
+        },
+        {
+          "id": "F3",
+          "from": "G",
+          "to": "E",
+          "isDefault": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "S",
+          "type": "startEvent"
+        },
+        {
+          "id": "Task_Y",
+          "type": "userTask",
+          "name": "Y",
+          "documentation": "Approve if the amount exceeds 500."
+        },
+        {
+          "id": "E",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "Flow_S_Task_Y",
+          "from": "S",
+          "to": "Task_Y"
+        },
+        {
+          "id": "Flow_Task_Y_E",
+          "from": "Task_Y",
+          "to": "E"
+        }
+      ]
+    }
+  ]
+}

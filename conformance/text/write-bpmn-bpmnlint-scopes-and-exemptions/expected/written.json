@@ -1,0 +1,28 @@
+{
+  "aliases": {
+    "adhoc": "adhoc",
+    "adhoc_tool": "adhoc_tool",
+    "adhoc_unnamed": "adhoc_unnamed",
+    "boundary_comp": "boundary_comp",
+    "boundary_timer": "boundary_timer",
+    "end": "end",
+    "end_link": "end_link",
+    "end_other": "end_other",
+    "end_restart": "end_restart",
+    "evt_sub": "evt_sub",
+    "gw_split": "gw_split",
+    "gw_xor": "gw_xor",
+    "handler_top": "handler_top",
+    "link_catch": "link_catch",
+    "link_throw": "link_throw",
+    "start": "start",
+    "start_joined": "start_joined",
+    "sub": "sub",
+    "task_blank": "task_blank",
+    "task_r1": "task_r1",
+    "task_r2": "task_r2",
+    "task_x1": "task_x1",
+    "task_x2": "task_x2",
+    "tx": "tx"
+  }
+}

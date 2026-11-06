@@ -1,0 +1,11 @@
+{
+	"kind": "dmn",
+	"script": [
+		["createDecisionTable","d"],
+		["name","Entscheidung ✓"],
+		["input",{"label":"Größe","expression":"größe"}],
+		["output",{"name":"ergebnis"}],
+		["rule",{"inputs":["\"ä\""],"outputs":["\"ö\""]}],
+		["build"]
+	]
+}

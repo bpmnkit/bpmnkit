@@ -1,0 +1,48 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "A",
+            "type": "startEvent"
+          },
+          {
+            "formId": "f",
+            "id": "u",
+            "name": "B",
+            "nativeUserTask": true,
+            "outputs": {
+              "approved": "=decision.ok"
+            },
+            "type": "userTask"
+          },
+          {
+            "id": "e",
+            "name": "C",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "u"
+          },
+          {
+            "from": "u",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

@@ -1,0 +1,285 @@
+{
+  "id": "Definitions__3",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "_39",
+          "name": "Record meeting details",
+          "type": "userTask"
+        },
+        {
+          "id": "_41",
+          "name": "Trip planned",
+          "type": "endEvent"
+        },
+        {
+          "id": "_22",
+          "name": "Prepare confirmation email",
+          "type": "userTask"
+        },
+        {
+          "id": "_29",
+          "name": "Plan trip",
+          "type": "callActivity"
+        },
+        {
+          "id": "_21",
+          "name": "Update employee's calendar",
+          "type": "serviceTask"
+        },
+        {
+          "eventType": "message",
+          "id": "_38",
+          "name": "Recieve meeting details",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "_45",
+          "name": "Send confirmation email",
+          "type": "sendTask"
+        },
+        {
+          "dataStoreRef": "_2",
+          "id": "Reference__2",
+          "name": "HR system",
+          "type": "dataStoreReference"
+        },
+        {
+          "dataObjectRef": "_11",
+          "id": "Reference__11",
+          "name": "Hotel reservation",
+          "type": "dataObjectReference"
+        },
+        {
+          "dataObjectRef": "_13",
+          "id": "Reference__13",
+          "name": "Tickets",
+          "type": "dataObjectReference"
+        },
+        {
+          "id": "_19",
+          "name": "Client answered",
+          "type": "endEvent"
+        },
+        {
+          "id": "_36",
+          "name": "No personnel available",
+          "type": "endEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "_31",
+          "name": "Notify client personel not available",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "_18",
+          "name": "Answer client directly",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "id": "_34",
+          "name": "Check client request",
+          "type": "userTask"
+        },
+        {
+          "eventType": "message",
+          "id": "_33",
+          "name": "E-mail received",
+          "type": "startEvent"
+        },
+        {
+          "id": "_24",
+          "name": "Check employee's availability",
+          "type": "userTask"
+        },
+        {
+          "id": "_27",
+          "name": "On-site Meeting?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "_25",
+          "name": "Employee \navailable?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "dataStoreRef": "_1",
+          "id": "Reference__1",
+          "name": "Calendar",
+          "type": "dataStoreReference"
+        },
+        {
+          "dataObjectRef": "_12",
+          "id": "Reference__12",
+          "name": "On-site meeting",
+          "type": "dataObjectReference"
+        },
+        {
+          "dataObjectRef": "_10",
+          "id": "Reference__10",
+          "name": "Identified\nemployee",
+          "type": "dataObjectReference"
+        },
+        {
+          "id": "_10",
+          "name": "Identified\nemployee",
+          "type": "dataObject"
+        },
+        {
+          "id": "_13",
+          "isCollection": true,
+          "name": "Tickets",
+          "type": "dataObject"
+        },
+        {
+          "id": "_12",
+          "name": "On-site meeting",
+          "type": "dataObject"
+        },
+        {
+          "id": "_11",
+          "name": "Hotel reservation",
+          "type": "dataObject"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_18",
+          "id": "_17",
+          "to": "_19"
+        },
+        {
+          "from": "_21",
+          "id": "_20",
+          "to": "_22"
+        },
+        {
+          "from": "_24",
+          "id": "_23",
+          "to": "_25"
+        },
+        {
+          "from": "_27",
+          "id": "_26",
+          "name": "Yes",
+          "to": "_24"
+        },
+        {
+          "from": "_29",
+          "id": "_28",
+          "to": "_21"
+        },
+        {
+          "from": "_25",
+          "id": "_30",
+          "name": "No",
+          "to": "_31"
+        },
+        {
+          "from": "_33",
+          "id": "_32",
+          "to": "_34"
+        },
+        {
+          "from": "_31",
+          "id": "_35",
+          "to": "_36"
+        },
+        {
+          "from": "_38",
+          "id": "_37",
+          "to": "_39"
+        },
+        {
+          "from": "_39",
+          "id": "_40",
+          "to": "_41"
+        },
+        {
+          "from": "_25",
+          "id": "_42",
+          "name": "Yes",
+          "to": "_29"
+        },
+        {
+          "from": "_27",
+          "id": "_43",
+          "name": "No",
+          "to": "_18"
+        },
+        {
+          "from": "_22",
+          "id": "_44",
+          "to": "_45"
+        },
+        {
+          "from": "_45",
+          "id": "_46",
+          "to": "_38"
+        },
+        {
+          "from": "_34",
+          "id": "_47",
+          "to": "_27"
+        }
+      ],
+      "id": "_8",
+      "name": "Travel Planning"
+    },
+    {
+      "elements": [
+        {
+          "id": "ID-ee745c8c-43de-11f1-744d-b02628b36240",
+          "name": "Preferred hotel and travel means",
+          "type": "dataObject"
+        },
+        {
+          "id": "ID-ee745c80-43de-11f1-744d-b02628b36240",
+          "type": "startEvent"
+        },
+        {
+          "id": "ID-ee745c82-43de-11f1-744d-b02628b36240",
+          "name": "Request employee preferences",
+          "type": "userTask"
+        },
+        {
+          "id": "_5e0cd331-db4a-4561-9f7f-141eecba6967",
+          "name": "Book trip",
+          "type": "userTask"
+        },
+        {
+          "id": "_2a76b8fa-b11b-4f0a-9835-2a144fada546",
+          "type": "endEvent"
+        },
+        {
+          "dataObjectRef": "ID-ee745c8c-43de-11f1-744d-b02628b36240",
+          "id": "Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240",
+          "name": "Preferred hotel and travel means",
+          "type": "dataObjectReference"
+        }
+      ],
+      "flows": [
+        {
+          "from": "ID-ee745c80-43de-11f1-744d-b02628b36240",
+          "id": "ID-ee745c84-43de-11f1-744d-b02628b36240",
+          "to": "ID-ee745c82-43de-11f1-744d-b02628b36240"
+        },
+        {
+          "from": "ID-ee745c82-43de-11f1-744d-b02628b36240",
+          "id": "_1b18998a-581e-4a9f-a591-b4f360261866",
+          "to": "_5e0cd331-db4a-4561-9f7f-141eecba6967"
+        },
+        {
+          "from": "_5e0cd331-db4a-4561-9f7f-141eecba6967",
+          "id": "_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa",
+          "to": "_2a76b8fa-b11b-4f0a-9835-2a144fada546"
+        }
+      ],
+      "id": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "name": "Plan Trip"
+    }
+  ]
+}

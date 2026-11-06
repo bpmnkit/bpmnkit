@@ -1,0 +1,89 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "Try",
+            "type": "task"
+          },
+          {
+            "id": "r",
+            "name": "Retry?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "r_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          },
+          {
+            "id": "a_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a_join"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "r"
+          },
+          {
+            "condition": "= retry = true",
+            "from": "r",
+            "id": "Flow_3",
+            "name": "Yes",
+            "to": "a_join"
+          },
+          {
+            "from": "r",
+            "id": "Flow_4",
+            "isDefault": true,
+            "name": "Otherwise",
+            "to": "r_end"
+          },
+          {
+            "from": "a_join",
+            "id": "Flow_5",
+            "to": "a"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added an exit from the loop at \"r\" to end event \"r_end\"",
+    "joined 2 flows into \"a\" with xor gateway \"a_join\"",
+    "made r > r_end the default branch of \"r\"",
+    "gave r > a_join the condition \"= retry = true\""
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "Leave the loop at \"Retry?\" when ",
+      "elementId": "r",
+      "options": [],
+      "text": "The loop at \"Retry?\" had no way out, so one was added. When does it end?"
+    },
+    {
+      "draft": "At \"Retry?\", decide on ",
+      "elementId": "r",
+      "options": [],
+      "text": "\"Retry?\" decides on \"retry\", a variable the diagram made up. What data decides it?"
+    }
+  ]
+}

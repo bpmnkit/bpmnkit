@@ -1,0 +1,12 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","host",{"name":"host","taskType":"host"}],
+		["withBoundary","tb",{"timerDuration":"PT1H","name":"Timeout"},{"$ops":[["serviceTask","escalate",{"name":"escalate","taskType":"escalate"}],["endEvent","e1"]]}],
+		["withBoundary","eb",{"errorCode":"FAIL","cancelActivity":true},{"$ops":[["endEvent","e2"]]}],
+		["endEvent","e3"],
+		["build"]
+	]
+}

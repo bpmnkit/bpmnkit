@@ -1,0 +1,10 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","WithInput"],
+		["$let","age","inputData","age","Age"],
+		["$let","inc","inputData","income"],
+		["$let","h3","decision","d1",{"$ops":[["name","D1"],["input",{"expression":"x"}],["output",{"name":"d1Out"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":[{"$ref":"age"},{"$ref":"inc"}]}],
+		["build"]
+	]
+}

@@ -1,0 +1,110 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "G?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "endEvent"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "s2",
+            "name": "S2",
+            "type": "startEvent"
+          },
+          {
+            "id": "p",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "c",
+            "name": "C",
+            "type": "endEvent"
+          },
+          {
+            "id": "d",
+            "name": "D",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g"
+          },
+          {
+            "from": "g",
+            "id": "Flow_2",
+            "isDefault": true,
+            "to": "a"
+          },
+          {
+            "condition": "= g = \"b\"",
+            "from": "g",
+            "id": "Flow_3",
+            "name": "g = \"b\"",
+            "to": "b"
+          },
+          {
+            "from": "s2",
+            "id": "Flow_4",
+            "to": "p"
+          },
+          {
+            "from": "p",
+            "id": "Flow_5",
+            "to": "c"
+          },
+          {
+            "from": "p",
+            "id": "Flow_6",
+            "to": "d"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "gave g > b the condition \"= g = \"b\"\"",
+    "named 7 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 3,
+      "message": "\"g\" already has a default branch; this one is not the default"
+    },
+    {
+      "line": 5,
+      "message": "only an xor or or gateway has a default branch; p > c is not"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "At \"G?\", decide on ",
+      "elementId": "g",
+      "options": [],
+      "text": "\"G?\" decides on \"g\", a variable the diagram made up. What data decides it?"
+    }
+  ]
+}

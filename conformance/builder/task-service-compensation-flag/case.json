@@ -1,0 +1,12 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","charge",{"name":"charge","taskType":"charge"}],
+		["boundaryEvent","undo",{"attachedTo":"charge","compensation":true}],
+		["serviceTask","refund",{"name":"refund","taskType":"refund","isForCompensation":true}],
+		["endEvent","e"],
+		["build"]
+	]
+}

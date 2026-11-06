@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" name="Proc" isExecutable="true">
+    <bpmn:documentation>Handles one support request.</bpmn:documentation>
+    <bpmn:startEvent id="S">
+      <bpmn:documentation>Expects: userId, amount.</bpmn:documentation>
+      <bpmn:outgoing>F1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_X" name="X">
+      <bpmn:documentation>Call this to look up a user by ID.</bpmn:documentation>
+      <bpmn:incoming>F1</bpmn:incoming>
+      <bpmn:outgoing>F2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="G">
+      <bpmn:documentation>Branches on the amount.</bpmn:documentation>
+      <bpmn:incoming>F2</bpmn:incoming>
+    </bpmn:exclusiveGateway>
+    <bpmn:adHocSubProcess id="Agent">
+      <bpmn:documentation>Resolves the request autonomously.</bpmn:documentation>
+      <bpmn:serviceTask id="Tool_ListUsers" name="List users">
+        <bpmn:documentation>Call this to retrieve all users.</bpmn:documentation>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:sequenceFlow id="F1" sourceRef="S" targetRef="Task_X"/>
+    <bpmn:sequenceFlow id="F2" sourceRef="Task_X" targetRef="G"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_P">
+    <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
+      <bpmndi:BPMNShape id="S_di" bpmnElement="S">
+        <dc:Bounds x="82" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_X_di" bpmnElement="Task_X">
+        <dc:Bounds x="300" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_di" bpmnElement="G" isMarkerVisible="true">
+        <dc:Bounds x="460" y="15" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Agent_di" bpmnElement="Agent" isExpanded="true">
+        <dc:Bounds x="0" y="160" width="200" height="180"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Tool_ListUsers_di" bpmnElement="Tool_ListUsers">
+        <dc:Bounds x="50" y="210" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="F1_di" bpmnElement="F1">
+        <di:waypoint x="118" y="40"/>
+        <di:waypoint x="300" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F2_di" bpmnElement="F2">
+        <di:waypoint x="400" y="40"/>
+        <di:waypoint x="460" y="40"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

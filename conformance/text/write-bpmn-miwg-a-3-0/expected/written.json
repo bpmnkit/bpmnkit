@@ -1,0 +1,14 @@
+{
+  "aliases": {
+    "boundary_intermediate_event_interrupting": "_178e16eb-4c9e-4ea0-9644-7c5fb2b71825",
+    "boundary_intermediate_event_non": "_428dcbf5-8e5e-48e0-9c0c-d93003fa8c82",
+    "collapsed_sub_process": "_1ae31d1b-2559-4f78-a3ec-47986a49db48",
+    "end_event_1": "_ce253897-4300-4b24-b71f-4c9535698c70",
+    "end_event_2": "_10ce0b26-1b3e-46a2-85a5-62538ed2da13",
+    "start_event": "_1ac4b759-40e3-4dfb-b0e3-ad1d201d6c3d",
+    "task_1": "_65f5459f-44ae-436d-a089-a91d6d78075b",
+    "task_2": "_2d2d0d29-896f-49f9-8109-77a7304309c5",
+    "task_3": "_72204cd7-709c-4656-9554-3ae29b3844ce",
+    "task_4": "_9fad8da5-a28c-4b6b-bb71-fbd5c65b9681"
+  }
+}

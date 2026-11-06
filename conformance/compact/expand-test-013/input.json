@@ -1,0 +1,56 @@
+{
+  "id": "d",
+  "processes": [
+    {
+      "id": "P",
+      "name": "Proc",
+      "documentation": "Handles one support request.",
+      "elements": [
+        {
+          "id": "S",
+          "type": "startEvent",
+          "documentation": "Expects: userId, amount."
+        },
+        {
+          "id": "Task_X",
+          "type": "userTask",
+          "name": "X",
+          "documentation": "Call this to look up a user by ID."
+        },
+        {
+          "id": "G",
+          "type": "exclusiveGateway",
+          "documentation": "Branches on the amount."
+        },
+        {
+          "id": "Agent",
+          "type": "adHocSubProcess",
+          "documentation": "Resolves the request autonomously.",
+          "children": {
+            "elements": [
+              {
+                "id": "Tool_ListUsers",
+                "type": "serviceTask",
+                "name": "List users",
+                "documentation": "Call this to retrieve all users."
+              }
+            ],
+            "flows": []
+          }
+        }
+      ],
+      "flows": [
+        {
+          "id": "F1",
+          "from": "S",
+          "to": "Task_X"
+        },
+        {
+          "id": "F2",
+          "from": "Task_X",
+          "to": "G"
+        }
+      ]
+    }
+  ]
+}

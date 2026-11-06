@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_mi</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="mi" name="MI">
+      <bpmn:incoming>Flow_s_mi</bpmn:incoming>
+      <bpmn:outgoing>Flow_mi_ms</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true">
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics inputCollection="=people" inputElement="p"/>
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:userTask>
+    <bpmn:scriptTask id="ms">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=1" resultVariable="r"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_mi_ms</bpmn:incoming>
+      <bpmn:outgoing>Flow_ms_mc</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics>
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics inputCollection="=xs"/>
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:scriptTask>
+    <bpmn:callActivity id="mc">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="c"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_ms_mc</bpmn:incoming>
+      <bpmn:outgoing>Flow_mc_msend</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics>
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics inputCollection="=ys"/>
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:callActivity>
+    <bpmn:sendTask id="msend">
+      <bpmn:incoming>Flow_mc_msend</bpmn:incoming>
+      <bpmn:outgoing>Flow_msend_mb</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics>
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics inputCollection="=zs"/>
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:sendTask>
+    <bpmn:businessRuleTask id="mb">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="d" resultVariable="result"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_msend_mb</bpmn:incoming>
+      <bpmn:outgoing>Flow_mb_e</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics>
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics inputCollection="=ws"/>
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:businessRuleTask>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_mb_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_mi" sourceRef="s" targetRef="mi"/>
+    <bpmn:sequenceFlow id="Flow_mi_ms" sourceRef="mi" targetRef="ms"/>
+    <bpmn:sequenceFlow id="Flow_ms_mc" sourceRef="ms" targetRef="mc"/>
+    <bpmn:sequenceFlow id="Flow_mc_msend" sourceRef="mc" targetRef="msend"/>
+    <bpmn:sequenceFlow id="Flow_msend_mb" sourceRef="msend" targetRef="mb"/>
+    <bpmn:sequenceFlow id="Flow_mb_e" sourceRef="mb" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

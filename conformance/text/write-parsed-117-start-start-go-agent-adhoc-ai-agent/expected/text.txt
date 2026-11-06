@@ -1,0 +1,2 @@
+start[start Go] > agent[adhoc AI Agent] > done[end Done]
+joke[service Get a safe joke | inside=agent job=joke]

@@ -1,0 +1,127 @@
+{
+  "connectors": [],
+  "diagram": {
+    "executionPlatformVersion": "8.10.0",
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Task to perform received",
+            "type": "startEvent"
+          },
+          {
+            "id": "run",
+            "name": "Run agent",
+            "type": "exclusiveGateway"
+          },
+          {
+            "children": {
+              "elements": [
+                {
+                  "id": "users",
+                  "jobType": "users",
+                  "name": "Find sample users",
+                  "type": "serviceTask"
+                },
+                {
+                  "id": "recipes",
+                  "jobType": "recipes",
+                  "name": "Search recipes",
+                  "type": "serviceTask"
+                },
+                {
+                  "id": "joke",
+                  "jobType": "joke",
+                  "name": "Get a safe joke",
+                  "type": "serviceTask"
+                },
+                {
+                  "id": "products",
+                  "jobType": "products",
+                  "name": "List sample technology products",
+                  "type": "serviceTask"
+                }
+              ],
+              "flows": []
+            },
+            "id": "agent",
+            "name": "AI Agent",
+            "type": "adHocSubProcess"
+          },
+          {
+            "id": "fb",
+            "name": "User Feedback",
+            "type": "userTask"
+          },
+          {
+            "id": "done",
+            "name": "User satisfied?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "fin",
+            "name": "User satisfied",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "run"
+          },
+          {
+            "from": "run",
+            "id": "Flow_2",
+            "to": "agent"
+          },
+          {
+            "from": "agent",
+            "id": "Flow_3",
+            "to": "fb"
+          },
+          {
+            "from": "fb",
+            "id": "Flow_4",
+            "to": "done"
+          },
+          {
+            "condition": "= userSatisfied",
+            "from": "done",
+            "id": "Flow_5",
+            "name": "Yes",
+            "to": "fin"
+          },
+          {
+            "from": "done",
+            "id": "Flow_6",
+            "isDefault": true,
+            "name": "No",
+            "to": "run"
+          }
+        ],
+        "id": "AI_Agent_Chat_With_Tools",
+        "name": "AI Agent Chat With Tools",
+        "notes": [
+          {
+            "elementId": "start",
+            "text": "Triggered when a user submits a task for the AI agent."
+          },
+          {
+            "elementId": "agent",
+            "text": "This is your agent running certain tasks to reach the goal it was given"
+          },
+          {
+            "elementId": "joke",
+            "text": "Each task you add represents a capability your agent will have."
+          }
+        ]
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

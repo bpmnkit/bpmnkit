@@ -1,0 +1,74 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "name": "Try",
+            "type": "task"
+          },
+          {
+            "id": "g",
+            "name": "Again?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "id": "t_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t_join"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "g"
+          },
+          {
+            "condition": "= retry",
+            "from": "g",
+            "id": "Flow_3",
+            "name": "Yes",
+            "to": "t_join"
+          },
+          {
+            "from": "g",
+            "id": "Flow_4",
+            "isDefault": true,
+            "name": "No",
+            "to": "e"
+          },
+          {
+            "from": "t_join",
+            "id": "Flow_5",
+            "to": "t"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"t\" with xor gateway \"t_join\"",
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

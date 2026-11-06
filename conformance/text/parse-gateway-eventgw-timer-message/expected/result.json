@@ -1,0 +1,88 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "eg",
+            "name": "Wait",
+            "type": "eventBasedGateway"
+          },
+          {
+            "eventType": "message",
+            "id": "m",
+            "name": "Reply",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "h",
+            "name": "Handle",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "t",
+            "name": "Too late",
+            "timerDuration": "PT1H",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "e2",
+            "name": "Timeout",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "eg"
+          },
+          {
+            "from": "eg",
+            "id": "Flow_2",
+            "to": "m"
+          },
+          {
+            "from": "m",
+            "id": "Flow_3",
+            "to": "h"
+          },
+          {
+            "from": "h",
+            "id": "Flow_4",
+            "to": "e"
+          },
+          {
+            "from": "eg",
+            "id": "Flow_5",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_6",
+            "to": "e2"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

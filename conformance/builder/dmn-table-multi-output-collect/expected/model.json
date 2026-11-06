@@ -1,0 +1,128 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "COLLECT",
+        "id": "DecisionTable_0000001",
+        "inputs": [
+          {
+            "id": "Input_0000002",
+            "inputExpression": {
+              "id": "InputExpression_0000003",
+              "text": "tier"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_0000004",
+            "name": "discount",
+            "typeRef": "number"
+          },
+          {
+            "id": "Output_0000005",
+            "name": "reason"
+          }
+        ],
+        "rules": [
+          {
+            "id": "DecisionRule_0000009",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_0000006",
+                "text": "\"gold\""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_0000007",
+                "text": "20"
+              },
+              {
+                "id": "LiteralExpression_0000008",
+                "text": "\"loyal\""
+              }
+            ]
+          },
+          {
+            "id": "DecisionRule_000000d",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_000000a",
+                "text": "\"silver\""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_000000b",
+                "text": "10"
+              },
+              {
+                "id": "LiteralExpression_000000c",
+                "text": "\"ok\""
+              }
+            ]
+          },
+          {
+            "id": "DecisionRule_000000h",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_000000e",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_000000f",
+                "text": "0"
+              },
+              {
+                "id": "LiteralExpression_000000g",
+                "text": "\"none\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Discount"
+    }
+  ],
+  "diagram": {
+    "edges": [],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "d"
+      }
+    ]
+  },
+  "exporter": "bpmn-sdk",
+  "exporterVersion": "0.0.1",
+  "id": "Definitions_000000i",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "8.5.0"
+  },
+  "name": "DRD",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "modeler": "http://camunda.org/schema/modeler/1.0"
+  },
+  "textAnnotations": []
+}

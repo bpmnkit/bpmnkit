@@ -1,0 +1,4 @@
+start_event[start Start Event] > task_1[task Task 1] > gateway_split_flow[xor Gateway (Split Flow)]
+gateway_split_flow > task_2[task Task 2] > end_event[end End Event]
+gateway_split_flow > task_3[task Task 3] > gateway_merge_flows[xor Gateway (Merge Flows)] > end_event
+gateway_split_flow > task_4[task Task 4] > gateway_merge_flows

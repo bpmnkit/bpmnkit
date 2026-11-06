@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_ah</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:adHocSubProcess id="ah" name="ordered">
+      <bpmn:incoming>Flow_s_ah</bpmn:incoming>
+      <bpmn:outgoing>Flow_ah_e</bpmn:outgoing>
+      <bpmn:serviceTask id="first" name="first">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="first"/>
+        </bpmn:extensionElements>
+        <bpmn:outgoing>Flow_first_second</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="second" name="second">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="second"/>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_first_second</bpmn:incoming>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="third" name="third">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="third"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_first_second" sourceRef="first" targetRef="second"/>
+    </bpmn:adHocSubProcess>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_ah_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_ah" sourceRef="s" targetRef="ah"/>
+    <bpmn:sequenceFlow id="Flow_ah_e" sourceRef="ah" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

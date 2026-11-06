@@ -1,0 +1,59 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Order placed",
+            "type": "startEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "wait",
+            "name": "Payment confirmed",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "ship",
+            "name": "Ship order",
+            "type": "task"
+          },
+          {
+            "id": "end",
+            "name": "Order shipped",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "wait"
+          },
+          {
+            "from": "wait",
+            "id": "Flow_2",
+            "to": "ship"
+          },
+          {
+            "from": "ship",
+            "id": "Flow_3",
+            "to": "end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"wait\" waits for only one event; made it a message catch event"
+    }
+  ],
+  "questions": []
+}

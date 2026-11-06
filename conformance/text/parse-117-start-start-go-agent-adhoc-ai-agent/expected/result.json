@@ -1,0 +1,71 @@
+{
+  "connectors": [
+    {
+      "alias": "http",
+      "args": [
+        "GET",
+        "https://v2.jokeapi.dev/joke/Any"
+      ],
+      "elementId": "joke",
+      "id": "joke",
+      "line": 3,
+      "values": {}
+    }
+  ],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "children": {
+              "elements": [
+                {
+                  "id": "joke",
+                  "jobType": "joke",
+                  "name": "Get a safe joke",
+                  "type": "serviceTask"
+                }
+              ],
+              "flows": []
+            },
+            "id": "agent",
+            "name": "AI Agent",
+            "type": "adHocSubProcess"
+          },
+          {
+            "id": "done",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "agent"
+          },
+          {
+            "from": "agent",
+            "id": "Flow_2",
+            "to": "done"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 4,
+      "message": "\"with ghost:\" names no node of the diagram; ignored"
+    }
+  ],
+  "questions": []
+}

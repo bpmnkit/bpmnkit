@@ -1,0 +1,71 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "FIRST",
+      "id": "final",
+      "inputs": [
+        {
+          "expression": "level",
+          "id": "i_final",
+          "typeRef": "string"
+        }
+      ],
+      "name": "Final decision",
+      "outputs": [
+        {
+          "id": "o_final",
+          "name": "approved",
+          "typeRef": "boolean"
+        }
+      ],
+      "requires": [
+        "intermediate",
+        "applicant"
+      ],
+      "rules": [
+        {
+          "id": "r_final",
+          "inputs": [
+            "\"high\""
+          ],
+          "outputs": [
+            "false"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "intermediate",
+      "inputs": [
+        {
+          "expression": "applicant.age",
+          "id": "i_int",
+          "typeRef": "number"
+        }
+      ],
+      "name": "Intermediate",
+      "outputs": [
+        {
+          "id": "o_int",
+          "name": "level",
+          "typeRef": "string"
+        }
+      ],
+      "requires": [
+        "applicant"
+      ],
+      "rules": []
+    }
+  ],
+  "id": "Definitions_drd",
+  "inputData": [
+    {
+      "id": "applicant",
+      "name": "Applicant"
+    },
+    {
+      "id": "unnamed"
+    }
+  ],
+  "name": "Full DRD"
+}

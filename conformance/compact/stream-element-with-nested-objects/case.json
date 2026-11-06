@@ -1,0 +1,10 @@
+{
+	"chunks": [
+		"{\"elements\":[{\"id\":\"call\",\"typ",
+		"e\":\"serviceTask\",\"name\":\"Fetch",
+		" Order\",\"jobType\":\"io.camunda:",
+		"http-json:1\",\"taskHeaders\":{\"u",
+		"rl\":\"https://example.com\",\"met",
+		"hod\":\"GET\"}}]}"
+	]
+}

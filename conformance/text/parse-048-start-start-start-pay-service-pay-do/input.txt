@@ -1,0 +1,3 @@
+start[start Start] > pay[service Pay] > done[end Done]
+err[boundary:error Payment failed | on=pay] > notify[send Notify customer] > a[end Notified]
+err > log[task Log the failure] > b[end Logged]

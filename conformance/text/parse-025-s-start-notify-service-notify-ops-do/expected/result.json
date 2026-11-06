@@ -1,0 +1,46 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "notify",
+            "jobType": "notify",
+            "name": "Notify ops",
+            "type": "serviceTask"
+          },
+          {
+            "id": "done-end",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "notify"
+          },
+          {
+            "from": "notify",
+            "id": "Flow_2",
+            "to": "done-end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

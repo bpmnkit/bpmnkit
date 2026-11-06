@@ -1,0 +1,2 @@
+start[start Start] > read[service Read github issues] > err[boundary:error API error | on=read] > handle[task Handle failure] > fail[end API error]
+err > calc[task Calculate count of open issues] > post[service Post the number to slack] > done[end Done]

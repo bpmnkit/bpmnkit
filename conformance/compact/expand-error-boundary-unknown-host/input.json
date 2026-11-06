@@ -1,0 +1,17 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "b",
+          "type": "boundaryEvent",
+          "attachedTo": "nope",
+          "eventType": "timer"
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

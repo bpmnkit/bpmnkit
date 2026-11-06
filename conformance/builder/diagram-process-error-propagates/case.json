@@ -1,0 +1,8 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createDiagram","D"],
+		["process","p",{"$ops":[["startEvent","s"],["connectTo","ghost"]]}],
+		["build"]
+	]
+}

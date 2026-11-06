@@ -1,0 +1,103 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "Review",
+            "type": "userTask"
+          },
+          {
+            "decisionId": "b",
+            "id": "b",
+            "name": "Check",
+            "type": "businessRuleTask"
+          },
+          {
+            "decisionId": "c",
+            "id": "c",
+            "name": "Check more",
+            "type": "businessRuleTask"
+          },
+          {
+            "eventType": "message",
+            "id": "d",
+            "name": "Wait",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_4",
+            "to": "d"
+          },
+          {
+            "from": "d",
+            "id": "Flow_5",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"d\" waits for nothing in particular; made it a message event"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "\"Wait\" waits for ",
+      "elementId": "d",
+      "options": [
+        {
+          "change": "\"Wait\" waits for a timer, not a message.",
+          "label": "A timer"
+        },
+        {
+          "change": "\"Wait\" waits for a signal, not a message.",
+          "label": "A signal"
+        },
+        {
+          "change": "\"Wait\" waits for nothing: make it a plain event, or the end.",
+          "label": "Nothing"
+        }
+      ],
+      "text": "\"Wait\" was written without a trigger, so it waits for a message. Is it something else?"
+    }
+  ]
+}

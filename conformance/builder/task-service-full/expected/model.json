@@ -1,0 +1,200 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "Flow_s_t"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "documentation": "Does <everything> & more",
+          "extensionElements": [
+            {
+              "attributes": {
+                "retries": "5",
+                "type": "full-worker"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=a",
+                    "target": "x"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=b",
+                    "target": "y"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=r",
+                    "target": "result"
+                  },
+                  "children": [],
+                  "name": "zeebe:output"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "region",
+                    "value": "eu"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                },
+                {
+                  "attributes": {
+                    "key": "retry-backoff",
+                    "value": "PT5S"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "name": "k1",
+                    "value": "v1"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                },
+                {
+                  "attributes": {
+                    "name": "k2",
+                    "value": "v2"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                }
+              ],
+              "name": "zeebe:properties"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "eventType": "start",
+                    "retries": "2",
+                    "type": "listener-start"
+                  },
+                  "children": [],
+                  "name": "zeebe:executionListener"
+                },
+                {
+                  "attributes": {
+                    "eventType": "end",
+                    "type": "listener-end"
+                  },
+                  "children": [],
+                  "name": "zeebe:executionListener"
+                }
+              ],
+              "name": "zeebe:executionListeners"
+            }
+          ],
+          "id": "t",
+          "incoming": [
+            "Flow_s_t"
+          ],
+          "name": "Full",
+          "outgoing": [
+            "Flow_t_e"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "zeebe:modelerTemplate": "io.camunda.example",
+            "zeebe:modelerTemplateIcon": "data:image/svg+xml;base64,AAAA",
+            "zeebe:modelerTemplateVersion": "3"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e",
+          "incoming": [
+            "Flow_t_e"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "p",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_s_t",
+          "sourceRef": "s",
+          "targetRef": "t",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_t_e",
+          "sourceRef": "t",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.9.0"
+  }
+}

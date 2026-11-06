@@ -1,0 +1,2 @@
+s[start Order placed] > wait[catch Payment confirmed] > ship[task Ship order] > e[end Shipped]
+cancel[boundary Order cancelled | on=ship] > c[end Cancelled]

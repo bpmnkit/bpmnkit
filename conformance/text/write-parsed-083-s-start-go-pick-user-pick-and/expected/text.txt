@@ -1,0 +1,3 @@
+s[start Go] > pick[user Pick] > and[and]
+and > pack[user Pack] > dispatch_join[and] > dispatch[user Dispatch] > e[end Done]
+and > label[service Label | job=label] > dispatch_join

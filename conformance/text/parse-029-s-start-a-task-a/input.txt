@@ -1,0 +1,2 @@
+s[start] > a[task A]
+a[task A] > e[end]

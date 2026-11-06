@@ -1,0 +1,8 @@
+s[start S] > t[service Work | job=work] > e[end E]
+b1[boundary:message Cancel | on=t] > x1[end X1]
+b2[boundary:signal Stop | on=t] > x2[end X2]
+b3[boundary:escalation Esc | on=t] > x3[end X3]
+b4[boundary:compensate Undo | on=t] > x4[task Undo it] > x4_end[end Process completed]
+b5[boundary:conditional Cond | on=t] > x5[end X5]
+b6[boundary:timer Late | on=t] > x6[end X6]
+b7[boundary:error Fail | on=t] > x7[end X7]

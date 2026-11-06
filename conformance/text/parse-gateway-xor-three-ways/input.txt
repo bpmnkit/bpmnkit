@@ -1,0 +1,5 @@
+s[start] > g[xor Size?]
+g >(Small: size < 10) a[task A] > j[xor]
+g >(Medium: size < 100) b[task B] > j
+g >(Large: default) c[task C] > j
+j > e[end]

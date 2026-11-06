@@ -1,0 +1,28 @@
+{
+  "aliases": {
+    "adhoc": "legacyAgent",
+    "adhoc_2": "forkedAgent",
+    "adhoc_3": "definedAgent",
+    "branch": "branch",
+    "fetch": "chainA",
+    "plain": "plainAdHoc",
+    "script": "chainC",
+    "service": "outsideTool",
+    "service_10": "branchA",
+    "service_11": "branchB",
+    "service_12": "toolBoundary",
+    "service_13": "legacyTool",
+    "service_14": "forkedTool",
+    "service_15": "definedTool",
+    "service_2": "plainTool",
+    "service_3": "toolGood",
+    "service_4": "toolNoResult",
+    "service_5": "toolUnmapped",
+    "service_6": "toolCasing",
+    "service_7": "toolDuplicateKey",
+    "service_8": "toolOutputFromAi",
+    "service_9": "chainB",
+    "sub": "toolSub",
+    "tools": "tools"
+  }
+}

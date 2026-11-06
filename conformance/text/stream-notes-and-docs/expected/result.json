@@ -1,0 +1,45 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "documentation": "done",
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1",
+        "notes": [
+          {
+            "elementId": "s",
+            "text": "hi"
+          }
+        ]
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 4,
+      "message": "note ghost: names no node of the diagram; ignored"
+    }
+  ],
+  "questions": []
+}

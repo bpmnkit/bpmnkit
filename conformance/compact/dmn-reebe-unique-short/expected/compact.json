@@ -1,0 +1,46 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "UNIQUE",
+      "id": "eligibility",
+      "inputs": [
+        {
+          "expression": "age",
+          "id": "i1",
+          "label": "age"
+        }
+      ],
+      "name": "Eligibility",
+      "outputs": [
+        {
+          "id": "o1",
+          "name": "eligible",
+          "typeRef": "boolean"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r1",
+          "inputs": [
+            ">= 18"
+          ],
+          "outputs": [
+            "true"
+          ]
+        },
+        {
+          "id": "r2",
+          "inputs": [
+            "< 18"
+          ],
+          "outputs": [
+            "false"
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_eligible",
+  "inputData": [],
+  "name": "DRD"
+}

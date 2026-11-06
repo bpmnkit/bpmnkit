@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:message id="Message_reply" name="reply">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=id"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_eg</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:eventBasedGateway id="eg" name="Wait for">
+      <bpmn:incoming>Flow_s_eg</bpmn:incoming>
+      <bpmn:outgoing>Flow_eg_m</bpmn:outgoing>
+      <bpmn:outgoing>Flow_eg_t</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="m">
+      <bpmn:incoming>Flow_eg_m</bpmn:incoming>
+      <bpmn:outgoing>Flow_m_handle</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="m_MessageEventDefinition" messageRef="Message_reply"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="handle" name="handle">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="handle"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_m_handle</bpmn:incoming>
+      <bpmn:outgoing>Flow_handle_e1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="e1">
+      <bpmn:incoming>Flow_handle_e1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="t">
+      <bpmn:incoming>Flow_eg_t</bpmn:incoming>
+      <bpmn:outgoing>Flow_t_e2</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="t_TimerEventDefinition">
+        <bpmn:timeDuration>PT1H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="e2">
+      <bpmn:incoming>Flow_t_e2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_eg" sourceRef="s" targetRef="eg"/>
+    <bpmn:sequenceFlow id="Flow_eg_m" sourceRef="eg" targetRef="m" name="msg"/>
+    <bpmn:sequenceFlow id="Flow_m_handle" sourceRef="m" targetRef="handle"/>
+    <bpmn:sequenceFlow id="Flow_handle_e1" sourceRef="handle" targetRef="e1"/>
+    <bpmn:sequenceFlow id="Flow_eg_t" sourceRef="eg" targetRef="t" name="timeout"/>
+    <bpmn:sequenceFlow id="Flow_t_e2" sourceRef="t" targetRef="e2"/>
+  </bpmn:process>
+</bpmn:definitions>
+

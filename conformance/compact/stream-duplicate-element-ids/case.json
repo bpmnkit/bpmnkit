@@ -1,0 +1,7 @@
+{
+	"chunks": [
+		"{\"id\":\"a\",\"type\":\"task\",\"name\":\"One\"}",
+		"{\"id\":\"a\",\"type\":\"task\",\"name\":\"Two\"}",
+		"{\"id\":\"b\",\"type\":\"task\"}"
+	]
+}

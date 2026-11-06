@@ -1,0 +1,6 @@
+# Order fulfillment
+order_received[start Order received] > review_order[user Review order] > approved[xor Approved?]
+approved >(yes: ${approved && order.total <= 1000}) charge_payment[service Charge payment] > await_payment_confirmation[receive Await payment confirmation] > determine_shipping_cost[rule Determine shipping cost] > create_invoice[call Create invoice] > ship_order[service Ship order] > wait_for_delivery_window[catch:timer Wait for delivery window] > build_summary[script Build summary] > order_fulfilled[end Order fulfilled]
+approved >(vip: ${approved and order.customer.vip eq true}) charge_payment
+approved >(no: default) notify_customer[service Notify customer] > order_rejected[end Order rejected]
+boundary_3_days[boundary:timer 3 days | on=review_order nonint] > escalate_review[service Escalate review] > escalated[end Escalated]

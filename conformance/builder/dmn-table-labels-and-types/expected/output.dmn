@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_000000q" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="bpmn-sdk" exporterVersion="0.0.1" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.5.0">
+  <decision id="d" name="Loan">
+    <decisionTable id="DecisionTable_0000001">
+      <input id="Input_0000002" label="Applicant age">
+        <inputExpression id="InputExpression_0000003" typeRef="integer">
+          <text>applicant.age</text>
+        </inputExpression>
+      </input>
+      <input id="Input_0000004" label="Income">
+        <inputExpression id="InputExpression_0000005" typeRef="double">
+          <text>income</text>
+        </inputExpression>
+      </input>
+      <input id="Input_0000006" label="Married">
+        <inputExpression id="InputExpression_0000007" typeRef="boolean">
+          <text>married</text>
+        </inputExpression>
+      </input>
+      <input id="Input_0000008" label="Day">
+        <inputExpression id="InputExpression_0000009" typeRef="date">
+          <text>day</text>
+        </inputExpression>
+      </input>
+      <output id="Output_000000a" label="Decision" name="decision" typeRef="string"/>
+      <output id="Output_000000b" label="Limit" name="limit" typeRef="long"/>
+      <rule id="DecisionRule_000000i">
+        <description>adult with income</description>
+        <inputEntry id="UnaryTests_000000c">
+          <text>&gt; 18</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_000000d">
+          <text>&gt; 1000</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_000000e">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_000000f">
+          <text>date("2020-01-01")</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_000000g">
+          <text>"yes"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_000000h">
+          <text>5000</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_000000p">
+        <inputEntry id="UnaryTests_000000j">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_000000k">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_000000l">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_000000m">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_000000n">
+          <text>"no"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_000000o">
+          <text>0</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="d">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

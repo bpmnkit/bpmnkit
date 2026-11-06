@@ -1,0 +1,9 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Strings"],
+		["$let","h4","decision","a",{"$ops":[["name","A"],["input",{"expression":"x"}],["output",{"name":"aOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]}],
+		["$let","h5","decision","b",{"$ops":[["name","B"],["input",{"expression":"x"}],["output",{"name":"bOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":["a"]}],
+		["build"]
+	]
+}

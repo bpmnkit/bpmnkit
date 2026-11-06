@@ -1,0 +1,57 @@
+{
+  "id": "_1373649849716",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "_93c466ab-b271-4376-a427-f4c353d55ce8",
+          "name": "Start Event",
+          "type": "startEvent"
+        },
+        {
+          "id": "_ec59e164-68b4-4f94-98de-ffb1c58a84af",
+          "name": "Task 1",
+          "type": "task"
+        },
+        {
+          "id": "_820c21c0-45f3-473b-813f-06381cc637cd",
+          "name": "Task 2",
+          "type": "task"
+        },
+        {
+          "id": "_e70a6fcb-913c-4a7b-a65d-e83adc73d69c",
+          "name": "Task 3",
+          "type": "task"
+        },
+        {
+          "id": "_a47df184-085b-49f7-bb82-031c84625821",
+          "name": "End Event",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_93c466ab-b271-4376-a427-f4c353d55ce8",
+          "id": "_e16564d7-0c4c-413e-95f6-f668a3f851fb",
+          "to": "_ec59e164-68b4-4f94-98de-ffb1c58a84af"
+        },
+        {
+          "from": "_ec59e164-68b4-4f94-98de-ffb1c58a84af",
+          "id": "_d77dd5ec-e4e7-420e-bbe7-8ac9cd1df599",
+          "to": "_820c21c0-45f3-473b-813f-06381cc637cd"
+        },
+        {
+          "from": "_820c21c0-45f3-473b-813f-06381cc637cd",
+          "id": "_2aa47410-1b0e-4f8b-ad54-d6f798080cb4",
+          "to": "_e70a6fcb-913c-4a7b-a65d-e83adc73d69c"
+        },
+        {
+          "from": "_e70a6fcb-913c-4a7b-a65d-e83adc73d69c",
+          "id": "_8e8fe679-eb3b-4c43-a4d6-891e7087ff80",
+          "to": "_a47df184-085b-49f7-bb82-031c84625821"
+        }
+      ],
+      "id": "WFP-6-"
+    }
+  ]
+}

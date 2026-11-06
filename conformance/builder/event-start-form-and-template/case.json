@@ -1,0 +1,9 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s",{"formId":"start-form","zeebeProperties":[{"name":"hook","value":"/x"}],"modelerTemplate":"io.camunda.connectors.webhook","modelerTemplateVersion":"11","modelerTemplateIcon":"data:image/png;base64,AA==","documentation":"start doc"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

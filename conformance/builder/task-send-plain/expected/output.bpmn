@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_send</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sendTask id="send">
+      <bpmn:incoming>Flow_s_send</bpmn:incoming>
+      <bpmn:outgoing>Flow_send_recv</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:receiveTask id="recv">
+      <bpmn:incoming>Flow_send_recv</bpmn:incoming>
+      <bpmn:outgoing>Flow_recv_e</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_recv_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_send" sourceRef="s" targetRef="send"/>
+    <bpmn:sequenceFlow id="Flow_send_recv" sourceRef="send" targetRef="recv"/>
+    <bpmn:sequenceFlow id="Flow_recv_e" sourceRef="recv" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

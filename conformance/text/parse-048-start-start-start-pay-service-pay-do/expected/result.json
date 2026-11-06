@@ -1,0 +1,119 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Start",
+            "type": "startEvent"
+          },
+          {
+            "id": "pay",
+            "jobType": "pay",
+            "name": "Pay",
+            "type": "serviceTask"
+          },
+          {
+            "id": "done",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "pay",
+            "eventType": "error",
+            "id": "err",
+            "name": "Payment failed",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "notify",
+            "jobType": "notify",
+            "name": "Notify customer",
+            "type": "sendTask"
+          },
+          {
+            "id": "a",
+            "name": "Notified",
+            "type": "endEvent"
+          },
+          {
+            "id": "log",
+            "name": "Log the failure",
+            "type": "task"
+          },
+          {
+            "id": "b",
+            "name": "Logged",
+            "type": "endEvent"
+          },
+          {
+            "id": "err_split",
+            "type": "parallelGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "pay"
+          },
+          {
+            "from": "pay",
+            "id": "Flow_2",
+            "to": "done"
+          },
+          {
+            "from": "err_split",
+            "id": "Flow_3",
+            "to": "notify"
+          },
+          {
+            "from": "notify",
+            "id": "Flow_4",
+            "to": "a"
+          },
+          {
+            "from": "err_split",
+            "id": "Flow_5",
+            "to": "log"
+          },
+          {
+            "from": "log",
+            "id": "Flow_6",
+            "to": "b"
+          },
+          {
+            "from": "err",
+            "id": "Flow_7",
+            "to": "err_split"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "split the flows out of \"err\" with and gateway \"err_split\""
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "After \"Payment failed\", ",
+      "elementId": "err_split",
+      "options": [
+        {
+          "change": "After \"Payment failed\", only one of \"Notify customer\" and \"Log the failure\" happens: decide which with an xor gateway.",
+          "label": "Only one of them"
+        },
+        {
+          "change": "After \"Payment failed\", do \"Notify customer\" and \"Log the failure\" one after the other, not at the same time.",
+          "label": "One after the other"
+        }
+      ],
+      "text": "After \"Payment failed\", \"Notify customer\" and \"Log the failure\" run at the same time. Is that right?"
+    }
+  ]
+}

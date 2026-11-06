@@ -1,0 +1,59 @@
+{
+  "id": "Definitions_1",
+  "executionPlatformVersion": "8.10.0",
+  "processes": [
+    {
+      "id": "AI_Agent_Chat_With_Tools",
+      "name": "AI Agent Chat With Tools",
+      "elements": [
+        {
+          "id": "start",
+          "type": "startEvent",
+          "name": "Task to perform received"
+        },
+        {
+          "id": "run",
+          "type": "exclusiveGateway",
+          "name": "Run agent"
+        },
+        {
+          "id": "agent",
+          "type": "adHocSubProcess",
+          "name": "AI Agent"
+        },
+        {
+          "id": "fb",
+          "type": "userTask",
+          "name": "User Feedback"
+        },
+        {
+          "id": "done",
+          "type": "exclusiveGateway",
+          "name": "User satisfied?"
+        }
+      ],
+      "flows": [
+        {
+          "id": "Flow_1",
+          "from": "start",
+          "to": "run"
+        },
+        {
+          "id": "Flow_2",
+          "from": "run",
+          "to": "agent"
+        },
+        {
+          "id": "Flow_3",
+          "from": "agent",
+          "to": "fb"
+        },
+        {
+          "id": "Flow_4",
+          "from": "fb",
+          "to": "done"
+        }
+      ]
+    }
+  ]
+}

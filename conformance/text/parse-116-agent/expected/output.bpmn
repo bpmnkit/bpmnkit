@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Agent" name="Agent" isExecutable="true">
+    <bpmn:startEvent id="ask" name="Question asked">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:adHocSubProcess id="agent" name="Answer with tools">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+      <bpmn:serviceTask id="users" name="Look up users">
+        <bpmn:documentation>Returns the list of sample users</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="users"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:userTask id="review" name="Review answer">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="done" name="Answered">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="ask" targetRef="agent"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="agent" targetRef="review"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="review" targetRef="done"/>
+    <bpmn:textAnnotation id="TextAnnotation_agent_1">
+      <bpmn:text>Picks a tool by its description</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_agent_1" sourceRef="agent" targetRef="TextAnnotation_agent_1" associationDirection="None"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Agent">
+    <bpmndi:BPMNPlane id="BPMNPlane_Agent" bpmnElement="Agent">
+      <bpmndi:BPMNShape id="ask_di" bpmnElement="ask">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-31" y="62" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="agent_di" bpmnElement="agent" isExpanded="true">
+        <dc:Bounds x="136" y="0" width="200" height="208"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="review_di" bpmnElement="review">
+        <dc:Bounds x="436" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="done_di" bpmnElement="done">
+        <dc:Bounds x="596" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="586" y="62" width="56" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="users_di" bpmnElement="users">
+        <dc:Bounds x="186" y="78" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_agent_1_di" bpmnElement="TextAnnotation_agent_1">
+        <dc:Bounds x="136" y="258" width="200" height="43"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="136" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="336" y="40"/>
+        <di:waypoint x="436" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="536" y="40"/>
+        <di:waypoint x="596" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_agent_1_di" bpmnElement="Association_agent_1">
+        <di:waypoint x="236" y="208"/>
+        <di:waypoint x="236" y="258"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

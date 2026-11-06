@@ -1,0 +1,143 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "DecisionTable_0000001",
+        "inputs": [
+          {
+            "id": "Input_0000002",
+            "inputExpression": {
+              "id": "InputExpression_0000003",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_0000004",
+            "name": "d1Out"
+          }
+        ],
+        "rules": [
+          {
+            "id": "DecisionRule_0000007",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_0000005",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_0000006",
+                "text": "\"v\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d1",
+      "informationRequirements": [
+        {
+          "id": "InformationRequirement_0000009",
+          "requiredInput": "age"
+        },
+        {
+          "id": "InformationRequirement_000000a",
+          "requiredInput": "income"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "D1"
+    }
+  ],
+  "diagram": {
+    "edges": [
+      {
+        "dmnElementRef": "InformationRequirement_0000009",
+        "waypoints": [
+          {
+            "x": 285,
+            "y": 122.5
+          },
+          {
+            "x": 345,
+            "y": 165
+          }
+        ]
+      },
+      {
+        "dmnElementRef": "InformationRequirement_000000a",
+        "waypoints": [
+          {
+            "x": 285,
+            "y": 207.5
+          },
+          {
+            "x": 345,
+            "y": 165
+          }
+        ]
+      }
+    ],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 45,
+          "width": 125,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "age"
+      },
+      {
+        "bounds": {
+          "height": 45,
+          "width": 125,
+          "x": 160,
+          "y": 185
+        },
+        "dmnElementRef": "income"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 345,
+          "y": 125
+        },
+        "dmnElementRef": "d1"
+      }
+    ]
+  },
+  "exporter": "bpmn-sdk",
+  "exporterVersion": "0.0.1",
+  "id": "Definitions_000000b",
+  "inputData": [
+    {
+      "id": "age",
+      "name": "Age"
+    },
+    {
+      "id": "income",
+      "name": "income"
+    }
+  ],
+  "knowledgeSources": [],
+  "modelerAttributes": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "8.5.0"
+  },
+  "name": "WithInput",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "modeler": "http://camunda.org/schema/modeler/1.0"
+  },
+  "textAnnotations": []
+}

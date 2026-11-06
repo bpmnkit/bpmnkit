@@ -1,0 +1,3 @@
+start[start Application received] > check[task Check] > done[end Done]
+id[start start]
+id[check rule]

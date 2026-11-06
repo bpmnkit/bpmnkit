@@ -1,0 +1,1 @@
+s[start New ticket] > send[task Summarise ticket] > send[post Slack message to #support] > e[end Done]

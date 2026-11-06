@@ -1,0 +1,157 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "Flow_s_g"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "Flow_g_eb",
+          "extensionElements": [],
+          "id": "g",
+          "incoming": [
+            "Flow_s_g"
+          ],
+          "outgoing": [
+            "Flow_g_t1",
+            "Flow_g_eb"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "t1_LinkEventDefinition",
+              "name": "X",
+              "type": "link"
+            }
+          ],
+          "extensionElements": [],
+          "id": "t1",
+          "incoming": [
+            "Flow_g_t1"
+          ],
+          "outgoing": [],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "eb",
+          "incoming": [
+            "Flow_g_eb"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "c1_LinkEventDefinition",
+              "name": "X",
+              "type": "link"
+            }
+          ],
+          "extensionElements": [],
+          "id": "c1",
+          "incoming": [],
+          "outgoing": [
+            "Flow_c1_e2"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e2",
+          "incoming": [
+            "Flow_c1_e2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "p",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_s_g",
+          "sourceRef": "s",
+          "targetRef": "g",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=x"
+          },
+          "extensionElements": [],
+          "id": "Flow_g_t1",
+          "name": "a",
+          "sourceRef": "g",
+          "targetRef": "t1",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_g_eb",
+          "name": "b",
+          "sourceRef": "g",
+          "targetRef": "eb",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_c1_e2",
+          "sourceRef": "c1",
+          "targetRef": "e2",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.9.0"
+  }
+}

@@ -1,0 +1,5 @@
+# Parallel Approval
+start[start Request Submitted] > prepare[user Prepare Documents] > split[and Split]
+split > manager_approval[user Manager Approval] > join[and Join] > finalize[service Finalize Request] > end[end Request Approved]
+split > legal_review[user Legal Review] > join
+split > finance_check[user Finance Check] > join

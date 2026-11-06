@@ -1,0 +1,9 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Approval"],
+		["$let","risk","decision","riskScore",{"$ops":[["name","RISKSCORE"],["input",{"expression":"age"}],["output",{"name":"riskScoreOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]}],
+		["$let","h2","decision","approval",{"$ops":[["name","APPROVAL"],["input",{"expression":"risk"}],["output",{"name":"approvalOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":[{"$ref":"risk"}]}],
+		["build"]
+	]
+}

@@ -1,0 +1,1 @@
+Inferred join gateways: g_join. Declare them with .connectTo(joinId), or drop { explicitJoins: true } to keep the inference.

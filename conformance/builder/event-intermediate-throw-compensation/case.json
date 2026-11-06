@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","a",{"name":"a","taskType":"a"}],
+		["intermediateThrowEvent","i",{"compensation":true,"activityRef":"a"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

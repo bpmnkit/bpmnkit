@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["receiveTask","recv",{"name":"Receive","messageName":"payment","correlationKey":"=orderId"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

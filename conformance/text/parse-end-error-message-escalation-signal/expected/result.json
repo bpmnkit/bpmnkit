@@ -1,0 +1,78 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "type": "parallelGateway"
+          },
+          {
+            "eventType": "error",
+            "id": "a",
+            "name": "Failed",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "b",
+            "name": "Notified",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "escalation",
+            "id": "c",
+            "name": "Escalated",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "signal",
+            "id": "d",
+            "name": "Broadcast",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g"
+          },
+          {
+            "from": "g",
+            "id": "Flow_2",
+            "to": "a"
+          },
+          {
+            "from": "g",
+            "id": "Flow_3",
+            "to": "b"
+          },
+          {
+            "from": "g",
+            "id": "Flow_4",
+            "to": "c"
+          },
+          {
+            "from": "g",
+            "id": "Flow_5",
+            "to": "d"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

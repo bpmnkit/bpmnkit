@@ -1,0 +1,3 @@
+start[start] > payment[service Charge card | job=payment] > paid_gw[xor]
+paid_gw >(: paid = true) ship[service Ship | job=ship] > end_ok[end]
+paid_gw >(default) end_cancel[end]

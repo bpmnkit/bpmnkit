@@ -1,0 +1,124 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s1",
+          "type": "startEvent",
+          "eventType": "timer",
+          "timerDuration": "PT5M"
+        },
+        {
+          "id": "s2",
+          "type": "startEvent",
+          "eventType": "message"
+        },
+        {
+          "id": "s3",
+          "type": "startEvent",
+          "eventType": "signal"
+        },
+        {
+          "id": "s4",
+          "type": "startEvent",
+          "eventType": "conditional",
+          "condition": "= x > 1"
+        },
+        {
+          "id": "s5",
+          "type": "startEvent",
+          "eventType": "timer"
+        },
+        {
+          "id": "c1",
+          "type": "intermediateCatchEvent",
+          "eventType": "timer",
+          "timerDuration": "PT1M"
+        },
+        {
+          "id": "c2",
+          "type": "intermediateCatchEvent",
+          "eventType": "message"
+        },
+        {
+          "id": "c3",
+          "type": "intermediateCatchEvent",
+          "eventType": "signal"
+        },
+        {
+          "id": "c4",
+          "type": "intermediateCatchEvent",
+          "eventType": "conditional",
+          "condition": "= ok"
+        },
+        {
+          "id": "c5",
+          "type": "intermediateCatchEvent",
+          "eventType": "link"
+        },
+        {
+          "id": "t1",
+          "type": "intermediateThrowEvent",
+          "eventType": "message"
+        },
+        {
+          "id": "t2",
+          "type": "intermediateThrowEvent",
+          "eventType": "signal"
+        },
+        {
+          "id": "t3",
+          "type": "intermediateThrowEvent",
+          "eventType": "escalation"
+        },
+        {
+          "id": "t4",
+          "type": "intermediateThrowEvent",
+          "eventType": "compensate"
+        },
+        {
+          "id": "t5",
+          "type": "intermediateThrowEvent",
+          "eventType": "link"
+        },
+        {
+          "id": "t6",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "id": "e1",
+          "type": "endEvent",
+          "eventType": "error"
+        },
+        {
+          "id": "e2",
+          "type": "endEvent",
+          "eventType": "message"
+        },
+        {
+          "id": "e3",
+          "type": "endEvent",
+          "eventType": "signal"
+        },
+        {
+          "id": "e4",
+          "type": "endEvent",
+          "eventType": "escalation"
+        },
+        {
+          "id": "e5",
+          "type": "endEvent",
+          "eventType": "terminate"
+        },
+        {
+          "id": "e6",
+          "type": "endEvent",
+          "eventType": "compensate"
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

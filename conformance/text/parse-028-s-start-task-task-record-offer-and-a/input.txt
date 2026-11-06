@@ -1,0 +1,6 @@
+s[start] > task[task Record offer] > and[and] > task[task Order laptop] > j[and]
+and > task[task Grant access] > j
+j > check[xor Ok?]
+check >(Yes: ok) done[end Approved]
+check >(No: default) done[end Rejected]
+check >(Yes: ok) done[end Approved]

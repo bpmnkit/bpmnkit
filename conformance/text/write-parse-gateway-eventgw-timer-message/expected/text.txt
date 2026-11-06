@@ -1,0 +1,3 @@
+s[start S] > eg[eventgw Wait]
+eg > m[catch:message Reply] > h[task Handle] > e[end E]
+eg > t[catch:timer Too late] > e2[end Timeout]

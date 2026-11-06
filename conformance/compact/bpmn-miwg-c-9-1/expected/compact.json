@@ -1,0 +1,106 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "SendTask_RequestDocument",
+          "jobType": "email",
+          "name": "Request document",
+          "type": "sendTask"
+        },
+        {
+          "id": "EndEvent_TalkedToCustomer",
+          "name": "Answer received",
+          "type": "endEvent"
+        },
+        {
+          "id": "SendTask_SendReminderEmail",
+          "jobType": "email",
+          "name": "Send reminder email",
+          "type": "sendTask"
+        },
+        {
+          "id": "UserTask_CallCustomer",
+          "name": "Call customer",
+          "type": "userTask"
+        },
+        {
+          "id": "ReceiveTask_WaitForDocument",
+          "name": "Wait for answer",
+          "type": "receiveTask"
+        },
+        {
+          "id": "EndEvent_GotDocument",
+          "name": "Document received",
+          "type": "endEvent"
+        },
+        {
+          "id": "StartEvent_DocumentRequested",
+          "name": "Document requested",
+          "type": "startEvent"
+        },
+        {
+          "attachedTo": "ReceiveTask_WaitForDocument",
+          "eventType": "timer",
+          "id": "BoundaryEvent_1",
+          "interrupting": false,
+          "name": "daily",
+          "type": "boundaryEvent"
+        },
+        {
+          "attachedTo": "ReceiveTask_WaitForDocument",
+          "eventType": "timer",
+          "id": "BoundaryEvent_2",
+          "name": "1 week",
+          "timerDuration": "P7D",
+          "type": "boundaryEvent"
+        },
+        {
+          "id": "EndEvent_ReminderSent",
+          "name": "Email sent",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "ReceiveTask_WaitForDocument",
+          "id": "SequenceFlow_6",
+          "to": "EndEvent_GotDocument"
+        },
+        {
+          "from": "BoundaryEvent_2",
+          "id": "SequenceFlow_0i97ejj",
+          "to": "UserTask_CallCustomer"
+        },
+        {
+          "from": "BoundaryEvent_1",
+          "id": "SequenceFlow_1bqpxlf",
+          "to": "SendTask_SendReminderEmail"
+        },
+        {
+          "from": "SendTask_SendReminderEmail",
+          "id": "SequenceFlow_2",
+          "to": "EndEvent_ReminderSent"
+        },
+        {
+          "from": "UserTask_CallCustomer",
+          "id": "SequenceFlow_3",
+          "to": "EndEvent_TalkedToCustomer"
+        },
+        {
+          "from": "SendTask_RequestDocument",
+          "id": "SequenceFlow_18a0pzl",
+          "to": "ReceiveTask_WaitForDocument"
+        },
+        {
+          "from": "StartEvent_DocumentRequested",
+          "id": "SequenceFlow_0d7dzn0",
+          "to": "SendTask_RequestDocument"
+        }
+      ],
+      "id": "requestDocument_en",
+      "name": "Document Request"
+    }
+  ]
+}

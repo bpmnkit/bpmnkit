@@ -1,0 +1,6 @@
+# Travel Planning
+e_mail_received[start:message E-mail received] > check_client_request[user Check client request] > on_site_meeting[xor On-site Meeting?]
+on_site_meeting >(Yes) check_employee_s_availability[user Check employee's availability] > employee_available[xor Employee available?]
+on_site_meeting >(No) answer_client_directly[throw:message Answer client directly] > client_answered[end Client answered]
+employee_available >(No) notify_client_personel_not[throw:message Notify client personel not available] > no_personnel_available[end No personnel available]
+employee_available >(Yes) plan_trip[call Plan trip] > update_employee_s_calendar[service Update employee's calendar] > prepare_confirmation_email[user Prepare confirmation email] > send_confirmation_email[send Send confirmation email] > recieve_meeting_details[catch:message Recieve meeting details] > record_meeting_details[user Record meeting details] > trip_planned[end Trip planned]

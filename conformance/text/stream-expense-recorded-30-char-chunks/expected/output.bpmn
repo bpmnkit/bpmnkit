@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Expense_approval" name="Expense approval" isExecutable="true">
+    <bpmn:startEvent id="start" name="Expense submitted">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="check" name="Amount over 1000?" default="Flow_5">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="review" name="Review expense">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="pay" name="Pay expense">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="pay"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="done" name="Expense paid">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="auto" name="Approve automatically">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="auto"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="failed" name="Payment failed" attachedToRef="pay" cancelActivity="true">
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="failed_ErrorEventDefinition"/>
+    </bpmn:boundaryEvent>
+    <bpmn:sendTask id="notify" name="Notify submitter">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="notify"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="notice" name="Payment failed">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="pay_join">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="start" targetRef="check"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="check" targetRef="review" name="Yes">
+      <bpmn:conditionExpression>= amount &gt; 1000</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="review" targetRef="pay_join"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="pay" targetRef="done"/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="check" targetRef="auto" name="No"/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="auto" targetRef="pay_join"/>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="failed" targetRef="notify"/>
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="notify" targetRef="notice"/>
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="pay_join" targetRef="pay"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Expense_approval">
+    <bpmndi:BPMNPlane id="BPMNPlane_Expense_approval" bpmnElement="Expense_approval">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-41.5" y="62" width="119" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="check_di" bpmnElement="check" isMarkerVisible="true">
+        <dc:Bounds x="130" y="15" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="95.5" y="-3" width="119" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="review_di" bpmnElement="review">
+        <dc:Bounds x="240" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="pay_di" bpmnElement="pay">
+        <dc:Bounds x="510" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="done_di" bpmnElement="done">
+        <dc:Bounds x="702" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="678" y="62" width="84" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="auto_di" bpmnElement="auto">
+        <dc:Bounds x="240" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="failed_di" bpmnElement="failed">
+        <dc:Bounds x="542" y="62" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="458" y="102" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="notify_di" bpmnElement="notify">
+        <dc:Bounds x="670" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="notice_di" bpmnElement="notice">
+        <dc:Bounds x="830" y="162" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="799" y="202" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="pay_join_di" bpmnElement="pay_join" isMarkerVisible="true">
+        <dc:Bounds x="400" y="15" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="130" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="155" y="65"/>
+        <di:waypoint x="155" y="180"/>
+        <di:waypoint x="240" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="340" y="180"/>
+        <di:waypoint x="370" y="180"/>
+        <di:waypoint x="370" y="40"/>
+        <di:waypoint x="400" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="610" y="40"/>
+        <di:waypoint x="702" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="180" y="40"/>
+        <di:waypoint x="240" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="340" y="40"/>
+        <di:waypoint x="400" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="560" y="98"/>
+        <di:waypoint x="560" y="180"/>
+        <di:waypoint x="670" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="770" y="180"/>
+        <di:waypoint x="830" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="450" y="40"/>
+        <di:waypoint x="510" y="40"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

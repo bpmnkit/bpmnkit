@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="AI_Agent_Chat_With_Tools" name="AI Agent Chat With Tools" isExecutable="true">
+    <bpmn:startEvent id="start" name="Task to perform received">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="run" name="Run agent">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:adHocSubProcess id="agent" name="AI Agent">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+      <bpmn:serviceTask id="users" name="Find sample users">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="users"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="recipes" name="Search recipes">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="recipes"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="joke" name="Get a safe joke">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="joke"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:userTask id="fb" name="User Feedback">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="done" name="User satisfied?" default="Flow_6">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="fin" name="User satisfied">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="start" targetRef="run"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="run" targetRef="agent"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="agent" targetRef="fb"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="fb" targetRef="done"/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="done" targetRef="fin" name="Yes">
+      <bpmn:conditionExpression>= userSatisfied</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="done" targetRef="run" name="No"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_AI_Agent_Chat_With_Tools">
+    <bpmndi:BPMNPlane id="BPMNPlane_AI_Agent_Chat_With_Tools" bpmnElement="AI_Agent_Chat_With_Tools">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-66" y="62" width="168" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="run_di" bpmnElement="run" isMarkerVisible="true">
+        <dc:Bounds x="126.5" y="15" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="120" y="-3" width="63" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="agent_di" bpmnElement="agent" isExpanded="true">
+        <dc:Bounds x="276.5" y="0" width="340" height="308"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="fb_di" bpmnElement="fb">
+        <dc:Bounds x="716.5" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="done_di" bpmnElement="done" isMarkerVisible="true">
+        <dc:Bounds x="876.5" y="15" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="849" y="-3" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="fin_di" bpmnElement="fin">
+        <dc:Bounds x="1003" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="972" y="62" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="users_di" bpmnElement="users">
+        <dc:Bounds x="326.5" y="78" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="recipes_di" bpmnElement="recipes">
+        <dc:Bounds x="466.5" y="78" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="joke_di" bpmnElement="joke">
+        <dc:Bounds x="326.5" y="178" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="126.5" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="176.5" y="40"/>
+        <di:waypoint x="276.5" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="616.5" y="40"/>
+        <di:waypoint x="716.5" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="816.5" y="40"/>
+        <di:waypoint x="876.5" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="926.5" y="40"/>
+        <di:waypoint x="1003" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="901.5" y="65"/>
+        <di:waypoint x="901.5" y="348"/>
+        <di:waypoint x="151.5" y="348"/>
+        <di:waypoint x="151.5" y="65"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

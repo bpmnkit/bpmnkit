@@ -1,0 +1,60 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "inputs": {
+              "a": "=)("
+            },
+            "name": "T",
+            "outputs": {
+              "b": "=1 +"
+            },
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "in.a= on \"t\" is not FEEL; kept for the reader to correct"
+    },
+    {
+      "line": 1,
+      "message": "out.b= on \"t\" is not FEEL; kept for the reader to correct"
+    }
+  ],
+  "questions": []
+}

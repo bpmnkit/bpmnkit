@@ -1,0 +1,48 @@
+{
+  "decisions": [
+    {
+      "aggregation": "SUM",
+      "hitPolicy": "COLLECT",
+      "id": "d1",
+      "inputs": [
+        {
+          "expression": "amount",
+          "id": "i1",
+          "label": "Amount",
+          "typeRef": "number"
+        }
+      ],
+      "name": "Prefixed decision",
+      "outputs": [
+        {
+          "id": "o1",
+          "name": "fee",
+          "typeRef": "number"
+        }
+      ],
+      "requires": [
+        "in1"
+      ],
+      "rules": [
+        {
+          "description": "fee for any amount",
+          "id": "r1",
+          "inputs": [
+            "> 0"
+          ],
+          "outputs": [
+            "2.5"
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_prefixed",
+  "inputData": [
+    {
+      "id": "in1",
+      "name": "Amount"
+    }
+  ],
+  "name": "Prefixed"
+}

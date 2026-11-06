@@ -1,0 +1,8 @@
+{
+	"kind": "bpmn",
+	"input": "builder/from-noop/input.bpmn",
+	"script": [
+		["from","ghost"],
+		["build"]
+	]
+}

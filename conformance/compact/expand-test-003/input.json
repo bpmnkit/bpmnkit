@@ -1,0 +1,36 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "id": "Process_1",
+      "elements": [
+        {
+          "id": "start",
+          "type": "startEvent"
+        },
+        {
+          "id": "work",
+          "type": "serviceTask",
+          "jobType": "charge-card",
+          "resultVariable": "payment"
+        },
+        {
+          "id": "end",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "start",
+          "to": "work"
+        },
+        {
+          "id": "f2",
+          "from": "work",
+          "to": "end"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "t",
+          "type": "serviceTask",
+          "name": "T",
+          "documentation": "Tool doc",
+          "jobType": "w",
+          "taskHeaders": {
+            "a": "1",
+            "b": "2"
+          },
+          "inputs": {
+            "x": "= y",
+            "z": "literal"
+          },
+          "outputs": {
+            "r": "= response"
+          },
+          "properties": {
+            "p": "q"
+          },
+          "modelerTemplate": {
+            "id": "io.camunda.x",
+            "version": 3
+          },
+          "resultVariable": "res"
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

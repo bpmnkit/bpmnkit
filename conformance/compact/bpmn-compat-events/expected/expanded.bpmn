@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_events" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="events" isExecutable="true">
+    <bpmn:startEvent id="start"/>
+    <bpmn:startEvent id="start2"/>
+    <bpmn:startEvent id="startTimerDuration">
+      <bpmn:timerEventDefinition id="startTimerDuration_TimerEventDefinition">
+        <bpmn:timeDuration>PT5M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:startEvent id="startCron">
+      <bpmn:timerEventDefinition id="startCron_TimerEventDefinition"/>
+    </bpmn:startEvent>
+    <bpmn:startEvent id="startSignal">
+      <bpmn:signalEventDefinition id="startSignal_SignalEventDefinition"/>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="catchNoTimer">
+      <bpmn:timerEventDefinition id="catchNoTimer_TimerEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="catchBadDuration">
+      <bpmn:timerEventDefinition id="catchBadDuration_TimerEventDefinition">
+        <bpmn:timeDuration>5 minutes</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="catchDate">
+      <bpmn:timerEventDefinition id="catchDate_TimerEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="catchCycle">
+      <bpmn:timerEventDefinition id="catchCycle_TimerEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="catchMsgNoRef">
+      <bpmn:messageEventDefinition id="catchMsgNoRef_MessageEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="catchMsgNoName">
+      <bpmn:messageEventDefinition id="catchMsgNoName_MessageEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="catchMsgNoKey">
+      <bpmn:messageEventDefinition id="catchMsgNoKey_MessageEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="catchMsgOk">
+      <bpmn:messageEventDefinition id="catchMsgOk_MessageEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="catchLink">
+      <bpmn:linkEventDefinition id="catchLink_LinkEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="catchSignalNoName">
+      <bpmn:signalEventDefinition id="catchSignalNoName_SignalEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="catchConditional">
+      <bpmn:conditionalEventDefinition id="catchConditional_ConditionalEventDefinition">
+        <bpmn:condition xsi:type="bpmn:tFormalExpression">=x &gt; 1</bpmn:condition>
+      </bpmn:conditionalEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="work" name="Work">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="work"/>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="boundaryCycle" attachedToRef="work" cancelActivity="true">
+      <bpmn:timerEventDefinition id="boundaryCycle_TimerEventDefinition"/>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="boundaryErrorNoRef" attachedToRef="work" cancelActivity="true">
+      <bpmn:errorEventDefinition id="boundaryErrorNoRef_ErrorEventDefinition"/>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="boundaryErrorExpr" attachedToRef="work" cancelActivity="true">
+      <bpmn:errorEventDefinition id="boundaryErrorExpr_ErrorEventDefinition"/>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="boundaryEscalation" attachedToRef="work" cancelActivity="false">
+      <bpmn:escalationEventDefinition id="boundaryEscalation_EscalationEventDefinition"/>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="boundaryCompensation" attachedToRef="work" cancelActivity="true">
+      <bpmn:compensateEventDefinition id="boundaryCompensation_CompensateEventDefinition"/>
+    </bpmn:boundaryEvent>
+    <bpmn:intermediateThrowEvent id="throwNone"/>
+    <bpmn:intermediateThrowEvent id="throwEscalationNoRef">
+      <bpmn:escalationEventDefinition id="throwEscalationNoRef_EscalationEventDefinition"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="throwEscalationNoCode">
+      <bpmn:escalationEventDefinition id="throwEscalationNoCode_EscalationEventDefinition"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="throwMessage">
+      <bpmn:messageEventDefinition id="throwMessage_MessageEventDefinition"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="throwMessageTyped">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send"/>
+      </bpmn:extensionElements>
+      <bpmn:messageEventDefinition id="throwMessageTyped_MessageEventDefinition"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="throwCompensation">
+      <bpmn:compensateEventDefinition id="throwCompensation_CompensateEventDefinition"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="endErrorNoRef">
+      <bpmn:errorEventDefinition id="endErrorNoRef_ErrorEventDefinition"/>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="endErrorNoCode">
+      <bpmn:errorEventDefinition id="endErrorNoCode_ErrorEventDefinition"/>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="endErrorExpr">
+      <bpmn:errorEventDefinition id="endErrorExpr_ErrorEventDefinition"/>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="endTerminate">
+      <bpmn:terminateEventDefinition id="endTerminate_TerminateEventDefinition"/>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="endSignalNoRef">
+      <bpmn:signalEventDefinition id="endSignalNoRef_SignalEventDefinition"/>
+    </bpmn:endEvent>
+    <bpmn:subProcess id="eventSub">
+      <bpmn:startEvent id="subTimerCycle">
+        <bpmn:timerEventDefinition id="subTimerCycle_TimerEventDefinition"/>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="subEnd"/>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="signalSub">
+      <bpmn:startEvent id="subSignal">
+        <bpmn:signalEventDefinition id="subSignal_SignalEventDefinition"/>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="subEnd2"/>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="messageSub">
+      <bpmn:startEvent id="subMessage">
+        <bpmn:messageEventDefinition id="subMessage_MessageEventDefinition"/>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="subEnd3"/>
+    </bpmn:subProcess>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_events">
+    <bpmndi:BPMNPlane id="BPMNPlane_events" bpmnElement="events">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="88" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="start2_di" bpmnElement="start2">
+        <dc:Bounds x="88" y="116" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="startTimerDuration_di" bpmnElement="startTimerDuration">
+        <dc:Bounds x="88" y="232" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="startCron_di" bpmnElement="startCron">
+        <dc:Bounds x="88" y="348" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="startSignal_di" bpmnElement="startSignal">
+        <dc:Bounds x="88" y="464" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="catchNoTimer_di" bpmnElement="catchNoTimer">
+        <dc:Bounds x="88" y="580" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="catchBadDuration_di" bpmnElement="catchBadDuration">
+        <dc:Bounds x="88" y="696" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="catchDate_di" bpmnElement="catchDate">
+        <dc:Bounds x="88" y="812" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="catchCycle_di" bpmnElement="catchCycle">
+        <dc:Bounds x="88" y="928" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="catchMsgNoRef_di" bpmnElement="catchMsgNoRef">
+        <dc:Bounds x="88" y="1044" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="catchMsgNoName_di" bpmnElement="catchMsgNoName">
+        <dc:Bounds x="88" y="1160" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="catchMsgNoKey_di" bpmnElement="catchMsgNoKey">
+        <dc:Bounds x="88" y="1276" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="catchMsgOk_di" bpmnElement="catchMsgOk">
+        <dc:Bounds x="88" y="1392" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="catchLink_di" bpmnElement="catchLink">
+        <dc:Bounds x="88" y="1508" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="catchSignalNoName_di" bpmnElement="catchSignalNoName">
+        <dc:Bounds x="88" y="1624" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="catchConditional_di" bpmnElement="catchConditional">
+        <dc:Bounds x="88" y="1740" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="work_di" bpmnElement="work">
+        <dc:Bounds x="56" y="1874" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="boundaryCycle_di" bpmnElement="boundaryCycle">
+        <dc:Bounds x="58" y="1936" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="boundaryErrorNoRef_di" bpmnElement="boundaryErrorNoRef">
+        <dc:Bounds x="78" y="1936" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="boundaryErrorExpr_di" bpmnElement="boundaryErrorExpr">
+        <dc:Bounds x="98" y="1936" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="boundaryEscalation_di" bpmnElement="boundaryEscalation">
+        <dc:Bounds x="88" y="1856" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="boundaryCompensation_di" bpmnElement="boundaryCompensation">
+        <dc:Bounds x="118" y="1936" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="throwNone_di" bpmnElement="throwNone">
+        <dc:Bounds x="88" y="2052" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="throwEscalationNoRef_di" bpmnElement="throwEscalationNoRef">
+        <dc:Bounds x="88" y="2168" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="throwEscalationNoCode_di" bpmnElement="throwEscalationNoCode">
+        <dc:Bounds x="88" y="2284" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="throwMessage_di" bpmnElement="throwMessage">
+        <dc:Bounds x="88" y="2400" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="throwMessageTyped_di" bpmnElement="throwMessageTyped">
+        <dc:Bounds x="88" y="2516" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="throwCompensation_di" bpmnElement="throwCompensation">
+        <dc:Bounds x="88" y="2632" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endErrorNoRef_di" bpmnElement="endErrorNoRef">
+        <dc:Bounds x="88" y="2748" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endErrorNoCode_di" bpmnElement="endErrorNoCode">
+        <dc:Bounds x="88" y="2864" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endErrorExpr_di" bpmnElement="endErrorExpr">
+        <dc:Bounds x="88" y="2980" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endTerminate_di" bpmnElement="endTerminate">
+        <dc:Bounds x="88" y="3096" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endSignalNoRef_di" bpmnElement="endSignalNoRef">
+        <dc:Bounds x="88" y="3212" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="eventSub_di" bpmnElement="eventSub" isExpanded="true">
+        <dc:Bounds x="0" y="3328" width="212" height="136"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="signalSub_di" bpmnElement="signalSub" isExpanded="true">
+        <dc:Bounds x="0" y="3544" width="212" height="136"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="messageSub_di" bpmnElement="messageSub" isExpanded="true">
+        <dc:Bounds x="0" y="3760" width="212" height="136"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="subTimerCycle_di" bpmnElement="subTimerCycle">
+        <dc:Bounds x="50" y="3378" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="subEnd_di" bpmnElement="subEnd">
+        <dc:Bounds x="126" y="3378" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="subSignal_di" bpmnElement="subSignal">
+        <dc:Bounds x="50" y="3594" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="subEnd2_di" bpmnElement="subEnd2">
+        <dc:Bounds x="126" y="3594" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="subMessage_di" bpmnElement="subMessage">
+        <dc:Bounds x="50" y="3810" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="subEnd3_di" bpmnElement="subEnd3">
+        <dc:Bounds x="126" y="3810" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

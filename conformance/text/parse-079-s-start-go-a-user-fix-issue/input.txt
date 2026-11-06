@@ -1,0 +1,6 @@
+s[start Go] > a[user Fix issue] >
+
+r[xor Reproducible?]
+r >(Yes: default) e[end Done]
+r >(No: reproduced = false)
+a

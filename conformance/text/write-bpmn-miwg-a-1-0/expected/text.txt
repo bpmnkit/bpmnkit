@@ -1,0 +1,1 @@
+start_event[start Start Event] > task_1[task Task 1] > task_2[task Task 2] > task_3[task Task 3] > end_event[end End Event]

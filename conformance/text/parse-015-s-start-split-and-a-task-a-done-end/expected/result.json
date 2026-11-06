@@ -1,0 +1,144 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "split",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "done",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "task"
+          },
+          {
+            "eventType": "message",
+            "id": "s2",
+            "name": "S2",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "Ok?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "c",
+            "name": "C",
+            "type": "task"
+          },
+          {
+            "id": "done2",
+            "name": "Done2",
+            "type": "endEvent"
+          },
+          {
+            "id": "d",
+            "name": "D",
+            "type": "task"
+          },
+          {
+            "id": "done_join",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "done2_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "split"
+          },
+          {
+            "from": "split",
+            "id": "Flow_2",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_3",
+            "to": "done_join"
+          },
+          {
+            "from": "split",
+            "id": "Flow_4",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_5",
+            "to": "done_join"
+          },
+          {
+            "from": "s2",
+            "id": "Flow_6",
+            "to": "g"
+          },
+          {
+            "condition": "= ok",
+            "from": "g",
+            "id": "Flow_7",
+            "name": "Yes",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_8",
+            "to": "done2_join"
+          },
+          {
+            "from": "g",
+            "id": "Flow_9",
+            "isDefault": true,
+            "name": "No",
+            "to": "d"
+          },
+          {
+            "from": "d",
+            "id": "Flow_10",
+            "to": "done2_join"
+          },
+          {
+            "from": "done_join",
+            "id": "Flow_11",
+            "to": "done"
+          },
+          {
+            "from": "done2_join",
+            "id": "Flow_12",
+            "to": "done2"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"done\" with and gateway \"done_join\"",
+    "joined 2 flows into \"done2\" with xor gateway \"done2_join\"",
+    "named 4 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

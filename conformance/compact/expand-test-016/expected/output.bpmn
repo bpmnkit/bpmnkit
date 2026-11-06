@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="S">
+      <bpmn:outgoing>Flow_S_Task_Y</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_Y" name="Y">
+      <bpmn:documentation>Approve if the amount exceeds 500.</bpmn:documentation>
+      <bpmn:incoming>Flow_S_Task_Y</bpmn:incoming>
+      <bpmn:outgoing>Flow_Task_Y_E</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="E">
+      <bpmn:incoming>Flow_Task_Y_E</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_S_Task_Y" sourceRef="S" targetRef="Task_Y"/>
+    <bpmn:sequenceFlow id="Flow_Task_Y_E" sourceRef="Task_Y" targetRef="E"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_P">
+    <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
+      <bpmndi:BPMNShape id="S_di" bpmnElement="S">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Y_di" bpmnElement="Task_Y">
+        <dc:Bounds x="96" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_di" bpmnElement="E">
+        <dc:Bounds x="256" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_S_Task_Y_di" bpmnElement="Flow_S_Task_Y">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="96" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Task_Y_E_di" bpmnElement="Flow_Task_Y_E">
+        <di:waypoint x="196" y="40"/>
+        <di:waypoint x="256" y="40"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

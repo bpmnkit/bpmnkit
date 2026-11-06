@@ -1,0 +1,3 @@
+s[start S] > a[adhoc A] > e[end E]
+b[adhoc B | inside=a]
+t[task T | inside=b]

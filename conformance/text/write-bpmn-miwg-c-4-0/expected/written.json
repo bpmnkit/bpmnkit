@@ -1,0 +1,27 @@
+{
+  "aliases": {
+    "candidate_accepted_offer": "_a4220c17-364f-4a08-ae9c-757a6468b295",
+    "compile_welcome_package": "_351b058e-c37c-4fb7-9d32-24075f53ce02",
+    "contract_terms_accepted": "_f9e3cd76-809a-48b5-be1c-e84fc4324268",
+    "end_event": "_36baf139-fb74-43ef-8936-d490238c2825",
+    "get_signature_on_contract": "_aa275782-c989-49ba-bf94-c58916ca7bb5",
+    "give_employee_welcome_package": "_52401cbb-02b8-4eaf-84f1-1edbc0854a4a",
+    "inform_employee_of_company": "_0e71ed63-93f9-44b6-a89d-da9628652926",
+    "input_from_facilities_ready": "_db9147a9-7fbc-4657-a506-15e777f2cfd9",
+    "input_from_it_ready": "_74e2cc7b-99ca-426b-ad53-ad70a56506aa",
+    "input_from_payroll_ready": "_fe77c2f2-278f-4752-9d03-aa0c8a12af1e",
+    "introduce_employee_to_company": "_eba690b9-34ef-49e4-b265-1411809d9302",
+    "introduce_new_employee_to": "_72da5cee-0456-4c3c-ba8d-6dd085d6f52d",
+    "new_employee_in_department": "_855451b0-5298-48b2-a81d-84ecbcca0a85",
+    "non_exclusive_gateway": "_305ddf53-49a8-4105-ad06-70272a2332aa",
+    "non_exclusive_gateway_2": "_82da02ca-ee9a-4403-9f3b-aad030e089b9",
+    "non_exclusive_gateway_3": "_80f70d22-fb42-403f-8bdb-6805e9467bb7",
+    "non_exclusive_gateway_4": "_19808f32-dfb5-462d-aaa6-e662f9932dba",
+    "perform_training_for_position": "_e3d3ac43-74a3-48ff-9a02-e64b1358cc34",
+    "perform_training_for_time": "_67944b4c-4950-45a2-a131-1c4679c6b433",
+    "register_for_medical_insurance": "_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5",
+    "request_preparations_for_a": "_986cf801-0780-49d3-91cd-2cc6d3c1aac3",
+    "review_terms_of_contract": "_987b9b74-333a-4043-a72a-daadf667acc7",
+    "send_candidate_contract": "_f8973a92-3d84-4672-a1a3-b0df154121e1"
+  }
+}

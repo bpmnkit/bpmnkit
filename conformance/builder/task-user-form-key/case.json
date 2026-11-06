@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["userTask","u",{"name":"U","formKey":"camunda-forms:bpmn:abc"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

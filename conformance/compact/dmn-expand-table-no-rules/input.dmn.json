@@ -1,0 +1,23 @@
+{
+  "id": "defs",
+  "name": "Defs",
+  "decisions": [
+    {
+      "inputs": [
+        {
+          "id": "i",
+          "expression": "x"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "o",
+          "name": "y"
+        }
+      ],
+      "rules": [],
+      "id": "t"
+    }
+  ],
+  "inputData": []
+}

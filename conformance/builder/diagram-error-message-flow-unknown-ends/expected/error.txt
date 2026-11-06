@@ -1,0 +1,3 @@
+Invalid collaboration:
+  Message flow "MF" names source "nope", which is not a participant or a flow node in one
+  Message flow "MF" names target "nada", which is not a participant or a flow node in one

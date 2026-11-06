@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_g</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="g" default="Flow_g_eb">
+      <bpmn:incoming>Flow_s_g</bpmn:incoming>
+      <bpmn:outgoing>Flow_g_t1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_g_eb</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateThrowEvent id="t1">
+      <bpmn:incoming>Flow_g_t1</bpmn:incoming>
+      <bpmn:linkEventDefinition id="t1_LinkEventDefinition" name="X"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="eb">
+      <bpmn:incoming>Flow_g_eb</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="c1">
+      <bpmn:outgoing>Flow_c1_e2</bpmn:outgoing>
+      <bpmn:linkEventDefinition id="c1_LinkEventDefinition" name="X"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="e2">
+      <bpmn:incoming>Flow_c1_e2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_g" sourceRef="s" targetRef="g"/>
+    <bpmn:sequenceFlow id="Flow_g_t1" sourceRef="g" targetRef="t1" name="a">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=x</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_g_eb" sourceRef="g" targetRef="eb" name="b"/>
+    <bpmn:sequenceFlow id="Flow_c1_e2" sourceRef="c1" targetRef="e2"/>
+  </bpmn:process>
+</bpmn:definitions>
+
