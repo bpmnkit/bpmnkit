@@ -15,8 +15,8 @@ pub enum ConnectionKind {
 
 /// `PlaneShape`.
 #[derive(Debug, Clone, PartialEq)]
-pub struct PlaneShape {
-    pub id: String,
+pub struct PlaneShape<'a> {
+    pub id: &'a str,
     pub bounds: Bounds,
     /// Pools, lanes and groups: drawn around other shapes, so never in the way.
     pub container: bool,
@@ -24,10 +24,10 @@ pub struct PlaneShape {
 
 /// `PlaneEdge`.
 #[derive(Debug, Clone, PartialEq)]
-pub struct PlaneEdge {
+pub struct PlaneEdge<'a> {
     pub kind: ConnectionKind,
-    pub source_ref: String,
-    pub target_ref: String,
+    pub source_ref: &'a str,
+    pub target_ref: &'a str,
     pub waypoints: Vec<Waypoint>,
 }
 
@@ -49,15 +49,16 @@ pub fn repair_routes<'r>(
     boundary_side: &dyn Fn(&str) -> Option<Side>,
 ) {
     // `new Map(entries)`: the last duplicate id wins.
-    let mut by_id: IndexMap<&str, &PlaneShape> = IndexMap::default();
+    let mut by_id: IndexMap<&str, &PlaneShape> =
+        IndexMap::with_capacity_and_hasher(shapes.len(), Default::default());
     for s in shapes {
-        by_id.insert(s.id.as_str(), s);
+        by_id.insert(s.id, s);
     }
     let obstacles: Vec<&PlaneShape> = shapes.iter().filter(|s| !s.container).collect();
 
     for ei in 0..edges.len() {
         let edge = &edges[ei];
-        let (source_ref, target_ref) = (edge.source_ref.as_str(), edge.target_ref.as_str());
+        let (source_ref, target_ref) = (edge.source_ref, edge.target_ref);
         let (Some(&source), Some(&target)) = (by_id.get(source_ref), by_id.get(target_ref)) else {
             continue;
         };
@@ -66,7 +67,7 @@ pub fn repair_routes<'r>(
         let related_source = related(source_ref);
         let related_target = related(target_ref);
         exempt.extend(related_source.iter().chain(related_target.iter()).copied());
-        let blocks = |s: &PlaneShape| !exempt.contains(&s.id.as_str());
+        let blocks = |s: &PlaneShape| !exempt.contains(&s.id);
         if !route_hits(&edge.waypoints, &obstacles, &blocks)
             && !through_own_end(&edge.waypoints, source, target)
         {

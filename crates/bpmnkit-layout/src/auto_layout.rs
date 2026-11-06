@@ -1129,14 +1129,29 @@ pub fn apply_auto_layout(
     }
 
     // Lay every pool out first: alignment needs to see all of them before any
-    // geometry is committed.
+    // geometry is committed. An early layout is copied for all but the last pool
+    // that shows its process, which takes it.
+    let mut uses_left: FxIndexMap<usize, usize> = FxIndexMap::default();
+    for p in pools.iter().filter_map(|pool| pool.process) {
+        *uses_left.entry(p).or_default() += 1;
+    }
     let layouts: Vec<LayoutResult> = pools
         .iter()
         .map(|pool| match pool.process {
-            Some(p) => match layout_of.get(&p) {
-                Some(l) => l.clone(),
-                None => layout_process(&defs.processes[p], engine, &collapsed, grids),
-            },
+            Some(p) => {
+                let left = uses_left.get_mut(&p).map_or(0, |n| {
+                    *n -= 1;
+                    *n
+                });
+                let early = if left == 0 {
+                    layout_of.swap_remove(&p)
+                } else {
+                    layout_of.get(&p).cloned()
+                };
+                early.unwrap_or_else(|| {
+                    layout_process(&defs.processes[p], engine, &collapsed, grids)
+                })
+            }
             None => LayoutResult::default(),
         })
         .collect();
@@ -1633,14 +1648,17 @@ pub fn apply_auto_layout(
 /// them. Everything else the source diagram said carries over by `bpmnElement` (DI
 /// ids, gateway markers, colours and other vendor attributes, diagram names and label
 /// styles), as a plain parse and export would keep it.
-pub fn keep_di_attributes(source: &[BpmnDiagram], laid_out: Vec<BpmnDiagram>) -> Vec<BpmnDiagram> {
+pub fn keep_di_attributes<'s>(
+    source: &'s [BpmnDiagram],
+    laid_out: Vec<BpmnDiagram>,
+) -> Vec<BpmnDiagram> {
     // Diagrams match by the element their plane draws; `id` is optional in DI,
     // and matching on an empty one would hand every diagram the first one's
     // attributes and label styles (duplicate XML ids).
     let mut diagram_by_element: FxIndexMap<&str, &BpmnDiagram> = FxIndexMap::default();
     let mut diagram_by_id: FxIndexMap<&str, &BpmnDiagram> = FxIndexMap::default();
-    let mut shape_by_element: FxIndexMap<&str, &BpmnDiShape> = FxIndexMap::default();
-    let mut edge_by_element: FxIndexMap<&str, &BpmnDiEdge> = FxIndexMap::default();
+    let mut shape_by_element: FxIndexMap<&str, &'s BpmnDiShape> = FxIndexMap::default();
+    let mut edge_by_element: FxIndexMap<&str, &'s BpmnDiEdge> = FxIndexMap::default();
     let mut source_ids: FxIndexSet<&str> = FxIndexSet::default();
     for diagram in source {
         let element = diagram.plane.bpmn_element.as_str();
@@ -1668,22 +1686,30 @@ pub fn keep_di_attributes(source: &[BpmnDiagram], laid_out: Vec<BpmnDiagram>) ->
     // for one element cannot produce duplicate ids. A generated `X_di` may
     // already be the source id of another element (one renamed from `X`), so
     // generated ids steer clear of every source id.
-    let mut used: FxIndexSet<String> = FxIndexSet::default();
+    // The ids in use, split by where they came from so a reused source id is
+    // borrowed rather than copied; an id is used when either set holds it.
+    let mut used_source: FxIndexSet<&str> = FxIndexSet::default();
+    let mut used_generated: FxIndexSet<String> = FxIndexSet::default();
     // An empty source id means the source omitted it; that is not one to keep.
-    let mut keep_id = |generated: &str, previous: Option<&str>| -> String {
-        if let Some(p) = previous.filter(|p| !p.is_empty() && !used.contains(*p)) {
-            used.insert(p.to_string());
+    let mut keep_id = |generated: &str, previous: Option<&'s str>| -> String {
+        let used = |id: &str, source: &FxIndexSet<&str>, generated: &FxIndexSet<String>| {
+            source.contains(id) || generated.contains(id)
+        };
+        if let Some(p) =
+            previous.filter(|p| !p.is_empty() && !used(p, &used_source, &used_generated))
+        {
+            used_source.insert(p);
             return p.to_string();
         }
         // Checked even when `generated` equals a previous id already taken (two
         // source shapes sharing `X_di`): that id is in use, so it is not free.
         let mut id = generated.to_string();
         let mut n = 2;
-        while source_ids.contains(id.as_str()) || used.contains(&id) {
+        while source_ids.contains(id.as_str()) || used(&id, &used_source, &used_generated) {
             id = format!("{generated}_{n}");
             n += 1;
         }
-        used.insert(id.clone());
+        used_generated.insert(id.clone());
         id
     };
     let keep_label =
@@ -1941,31 +1967,32 @@ impl<'a> RouteRepair<'a> {
         if edges.is_empty() {
             return;
         }
-        let mut on_plane: FxIndexMap<&str, &BpmnBounds> = FxIndexMap::default();
+        let mut on_plane: FxIndexMap<&str, &BpmnBounds> =
+            FxIndexMap::with_capacity_and_hasher(shapes.len(), Default::default());
         for s in shapes {
             on_plane.insert(&s.bpmn_element, &s.bounds);
         }
-        let visible = |id: &str| -> String {
-            let mut current: Option<&str> = Some(id);
+        let visible = |id: &'a str| -> &'a str {
+            let mut current: Option<&'a str> = Some(id);
             while let Some(c) = current {
                 if on_plane.contains_key(c) {
                     break;
                 }
                 current = self.parent.get(c).copied();
             }
-            current.unwrap_or(id).to_string()
+            current.unwrap_or(id)
         };
         let plane_shapes: Vec<PlaneShape> = shapes
             .iter()
             .map(|s| PlaneShape {
-                id: s.bpmn_element.clone(),
+                id: &s.bpmn_element,
                 bounds: to_layout_bounds(&s.bounds),
                 container: self.containers.contains(s.bpmn_element.as_str()),
             })
             .collect();
-        let mut plane_edges: Vec<PlaneEdge> = Vec::new();
+        let mut plane_edges: Vec<PlaneEdge> = Vec::with_capacity(edges.len());
         // Index of each plane edge's DI edge.
-        let mut di_index: Vec<usize> = Vec::new();
+        let mut di_index: Vec<usize> = Vec::with_capacity(edges.len());
         for (i, di) in edges.iter().enumerate() {
             let Some(connection) = self.connections.get(di.bpmn_element.as_str()) else {
                 continue;

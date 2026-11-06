@@ -1,6 +1,6 @@
 //! Twin of `dmn/dmn-layout.ts` (`layoutDmn` and its helpers; the benchmark is not ported).
 
-use crate::hash::IndexMap;
+use crate::hash::{IndexMap, IndexSet};
 use bpmnkit_dmn::model::{
     DmnBounds, DmnDefinitions, DmnDiagram, DmnDiagramEdge, DmnDiagramShape, DmnWaypoint,
 };
@@ -32,8 +32,8 @@ const V_GAP: f64 = 40.0; // vertical gap within a layer
 const MARGIN_X: f64 = 160.0;
 const MARGIN_Y: f64 = 100.0;
 
-struct DrgNode {
-    id: String,
+struct DrgNode<'a> {
+    id: &'a str,
     kind: NodeKind,
 }
 
@@ -44,40 +44,45 @@ struct PositionedNode {
     height: f64,
 }
 
-struct RequirementEdge {
+struct RequirementEdge<'a> {
     /// The required (upstream) element
-    source_id: String,
+    source_id: &'a str,
     /// The element that declares the requirement
-    target_id: String,
+    target_id: &'a str,
     /// The requirement element ID (used as dmnElementRef for the edge)
-    req_id: String,
+    req_id: &'a str,
 }
 
 // ── Graph collection ──────────────────────────────────────────────────────────
 
-fn collect_nodes(defs: &DmnDefinitions) -> Vec<DrgNode> {
-    let mut nodes = Vec::new();
+fn collect_nodes(defs: &DmnDefinitions) -> Vec<DrgNode<'_>> {
+    let mut nodes = Vec::with_capacity(
+        defs.decisions.len()
+            + defs.input_data.len()
+            + defs.knowledge_sources.len()
+            + defs.business_knowledge_models.len(),
+    );
     for d in &defs.decisions {
         nodes.push(DrgNode {
-            id: d.id.clone(),
+            id: &d.id,
             kind: NodeKind::Decision,
         });
     }
     for d in &defs.input_data {
         nodes.push(DrgNode {
-            id: d.id.clone(),
+            id: &d.id,
             kind: NodeKind::InputData,
         });
     }
     for ks in &defs.knowledge_sources {
         nodes.push(DrgNode {
-            id: ks.id.clone(),
+            id: &ks.id,
             kind: NodeKind::KnowledgeSource,
         });
     }
     for bkm in &defs.business_knowledge_models {
         nodes.push(DrgNode {
-            id: bkm.id.clone(),
+            id: &bkm.id,
             kind: NodeKind::BusinessKnowledgeModel,
         });
     }
@@ -85,20 +90,20 @@ fn collect_nodes(defs: &DmnDefinitions) -> Vec<DrgNode> {
 }
 
 /// `a ?? b ?? c ?? ""`: `??` only skips absent values, so an empty string stops the chain.
-fn first_present(candidates: [&Option<String>; 3]) -> String {
+fn first_present(candidates: [&Option<String>; 3]) -> &str {
     candidates
         .into_iter()
-        .find_map(|c| c.clone())
+        .find_map(|c| c.as_deref())
         .unwrap_or_default()
 }
 
-fn collect_edges(defs: &DmnDefinitions) -> Vec<RequirementEdge> {
+fn collect_edges(defs: &DmnDefinitions) -> Vec<RequirementEdge<'_>> {
     let mut edges = Vec::new();
-    let mut push = |source: String, target: &str, req: &str| {
+    let mut push = |source_id, target_id, req_id| {
         edges.push(RequirementEdge {
-            source_id: source,
-            target_id: target.to_string(),
-            req_id: req.to_string(),
+            source_id,
+            target_id,
+            req_id,
         });
     };
 
@@ -110,7 +115,7 @@ fn collect_edges(defs: &DmnDefinitions) -> Vec<RequirementEdge> {
             }
         }
         for req in &d.knowledge_requirements {
-            push(req.required_knowledge.clone(), &d.id, &req.id);
+            push(&req.required_knowledge, &d.id, &req.id);
         }
         for req in &d.authority_requirements {
             let src = first_present([
@@ -126,7 +131,7 @@ fn collect_edges(defs: &DmnDefinitions) -> Vec<RequirementEdge> {
 
     for bkm in &defs.business_knowledge_models {
         for req in &bkm.knowledge_requirements {
-            push(req.required_knowledge.clone(), &bkm.id, &req.id);
+            push(&req.required_knowledge, &bkm.id, &req.id);
         }
         for req in &bkm.authority_requirements {
             let src = first_present([
@@ -158,58 +163,53 @@ fn collect_edges(defs: &DmnDefinitions) -> Vec<RequirementEdge> {
 
 // ── Layer assignment (longest-path / BFS) ────────────────────────────────────
 
-fn assign_layers(nodes: &[DrgNode], edges: &[RequirementEdge]) -> IndexMap<String, i64> {
-    let mut outgoing: IndexMap<String, Vec<String>> = IndexMap::default();
-    let mut in_degree: IndexMap<String, i64> = IndexMap::default();
-
-    for n in nodes {
-        outgoing.insert(n.id.clone(), Vec::new());
-        in_degree.insert(n.id.clone(), 0);
-    }
+/// Layer per distinct node id, indexed like `ids`. Every edge target is a node,
+/// so the TS maps keyed by id only ever hold node ids; layers are only looked
+/// up, never iterated, so their order does not matter.
+fn assign_layers(ids: &IndexSet<&str>, nodes: &[DrgNode], edges: &[RequirementEdge]) -> Vec<i64> {
+    let n_ids = ids.len();
+    let mut outgoing: Vec<Vec<usize>> = vec![Vec::new(); n_ids];
+    let mut in_degree: Vec<i64> = vec![0; n_ids];
 
     for e in edges {
-        if let Some(list) = outgoing.get_mut(&e.source_id) {
-            list.push(e.target_id.clone());
+        let Some(target) = ids.get_index_of(e.target_id) else {
+            continue;
+        };
+        if let Some(source) = ids.get_index_of(e.source_id) {
+            outgoing[source].push(target);
         }
-        let d = in_degree.get(&e.target_id).copied().unwrap_or(0) + 1;
-        in_degree.insert(e.target_id.clone(), d);
+        in_degree[target] += 1;
     }
 
-    let mut layers: IndexMap<String, i64> = IndexMap::default();
-    let mut queue: Vec<String> = Vec::new();
+    let mut layers: Vec<Option<i64>> = vec![None; n_ids];
+    let mut queue: Vec<usize> = Vec::new();
 
     for n in nodes {
-        if in_degree.get(&n.id).copied().unwrap_or(0) == 0 {
-            layers.insert(n.id.clone(), 0);
-            queue.push(n.id.clone());
+        let Some(k) = ids.get_index_of(n.id) else {
+            continue;
+        };
+        if in_degree[k] == 0 {
+            layers[k] = Some(0);
+            queue.push(k);
         }
     }
 
     let mut i = 0;
     while i < queue.len() {
-        let id = queue[i].clone();
+        let id = queue[i];
         i += 1;
-        let layer = layers.get(&id).copied().unwrap_or(0);
-        let succs = outgoing.get(&id).cloned().unwrap_or_default();
-        for succ in succs {
-            let new_layer = layers.get(&succ).copied().unwrap_or(0).max(layer + 1);
-            layers.insert(succ.clone(), new_layer);
-            let deg = in_degree.get(&succ).copied().unwrap_or(1) - 1;
-            in_degree.insert(succ.clone(), deg);
-            if deg == 0 {
+        let layer = layers[id].unwrap_or(0);
+        for &succ in &outgoing[id] {
+            layers[succ] = Some(layers[succ].unwrap_or(0).max(layer + 1));
+            in_degree[succ] -= 1;
+            if in_degree[succ] == 0 {
                 queue.push(succ);
             }
         }
     }
 
     // Disconnected nodes default to layer 0
-    for n in nodes {
-        if !layers.contains_key(&n.id) {
-            layers.insert(n.id.clone(), 0);
-        }
-    }
-
-    layers
+    layers.into_iter().map(|l| l.unwrap_or(0)).collect()
 }
 
 // ── Layout ────────────────────────────────────────────────────────────────────
@@ -225,12 +225,13 @@ pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
     }
 
     let edges = collect_edges(defs);
-    let layer_map = assign_layers(&nodes, &edges);
+    let ids: IndexSet<&str> = nodes.iter().map(|n| n.id).collect();
+    let layer_map = assign_layers(&ids, &nodes, &edges);
 
     // Group nodes by layer
     let mut by_layer: IndexMap<i64, Vec<&DrgNode>> = IndexMap::default();
     for n in &nodes {
-        let layer = layer_map.get(&n.id).copied().unwrap_or(0);
+        let layer = ids.get_index_of(n.id).map_or(0, |k| layer_map[k]);
         by_layer.entry(layer).or_default().push(n);
     }
 
@@ -265,7 +266,8 @@ pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
     let max_height = height_by_layer.values().copied().fold(0.0, f64::max);
 
     // Position nodes
-    let mut positioned: IndexMap<String, PositionedNode> = IndexMap::default();
+    let mut positioned: IndexMap<&str, PositionedNode> =
+        IndexMap::with_capacity_and_hasher(nodes.len(), Default::default());
     for &layer_idx in &sorted_layers {
         let layer_nodes = &by_layer[&layer_idx];
         let layer_x = x_by_layer.get(&layer_idx).copied().unwrap_or(MARGIN_X);
@@ -276,7 +278,7 @@ pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
         for n in layer_nodes {
             let (width, height) = n.kind.size();
             positioned.insert(
-                n.id.clone(),
+                n.id,
                 PositionedNode {
                     x: layer_x,
                     y,
@@ -292,7 +294,7 @@ pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
     let shapes: Vec<DmnDiagramShape> = positioned
         .iter()
         .map(|(id, node)| DmnDiagramShape {
-            dmn_element_ref: id.clone(),
+            dmn_element_ref: id.to_string(),
             bounds: DmnBounds {
                 x: node.x,
                 y: node.y,
@@ -303,11 +305,11 @@ pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
         .collect();
 
     // Build edges: connect right edge of source to left edge of target
-    let mut diagram_edges: Vec<DmnDiagramEdge> = Vec::new();
+    let mut diagram_edges: Vec<DmnDiagramEdge> = Vec::with_capacity(edges.len());
     for edge in &edges {
         let (Some(src), Some(tgt)) = (
-            positioned.get(&edge.source_id),
-            positioned.get(&edge.target_id),
+            positioned.get(edge.source_id),
+            positioned.get(edge.target_id),
         ) else {
             continue;
         };
@@ -318,7 +320,7 @@ pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
         let tgt_y = tgt.y + tgt.height / 2.0;
 
         diagram_edges.push(DmnDiagramEdge {
-            dmn_element_ref: edge.req_id.clone(),
+            dmn_element_ref: edge.req_id.to_string(),
             waypoints: vec![
                 DmnWaypoint { x: src_x, y: src_y },
                 DmnWaypoint { x: tgt_x, y: tgt_y },
@@ -326,10 +328,25 @@ pub fn layout_dmn(defs: &DmnDefinitions) -> DmnDefinitions {
         });
     }
 
-    let mut out = defs.clone();
-    out.diagram = Some(DmnDiagram {
-        shapes,
-        edges: diagram_edges,
-    });
-    out
+    // Field by field so the source diagram, replaced wholesale, is never cloned.
+    DmnDefinitions {
+        id: defs.id.clone(),
+        name: defs.name.clone(),
+        namespace: defs.namespace.clone(),
+        exporter: defs.exporter.clone(),
+        exporter_version: defs.exporter_version.clone(),
+        namespaces: defs.namespaces.clone(),
+        modeler_attributes: defs.modeler_attributes.clone(),
+        decisions: defs.decisions.clone(),
+        input_data: defs.input_data.clone(),
+        knowledge_sources: defs.knowledge_sources.clone(),
+        business_knowledge_models: defs.business_knowledge_models.clone(),
+        text_annotations: defs.text_annotations.clone(),
+        associations: defs.associations.clone(),
+        diagram: Some(DmnDiagram {
+            shapes,
+            edges: diagram_edges,
+        }),
+        extension_elements: defs.extension_elements.clone(),
+    }
 }

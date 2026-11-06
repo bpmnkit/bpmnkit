@@ -24,18 +24,30 @@ impl FxHasher {
 
 impl Hasher for FxHasher {
     #[inline]
-    fn write(&mut self, mut bytes: &[u8]) {
-        while let Some((chunk, rest)) = bytes.split_first_chunk::<8>() {
-            self.add(u64::from_le_bytes(*chunk));
-            bytes = rest;
+    fn write(&mut self, bytes: &[u8]) {
+        // Ids are mostly 8 to 16 bytes: two overlapping words cover one whole, so
+        // a string costs one wide multiply instead of a round per word.
+        let len = bytes.len();
+        let mut acc = self.hash ^ len as u64;
+        let mut rest = bytes;
+        while rest.len() > 16 {
+            let (a, b) = (word(&rest[..8]), word(&rest[8..16]));
+            acc = fold(acc ^ a, b ^ SEED);
+            rest = &rest[16..];
         }
-        if let Some((chunk, rest)) = bytes.split_first_chunk::<4>() {
-            self.add(u64::from(u32::from_le_bytes(*chunk)));
-            bytes = rest;
-        }
-        for &b in bytes {
-            self.add(u64::from(b));
-        }
+        let (a, b) = match rest.len() {
+            8..=16 => (word(&rest[..8]), word(&rest[rest.len() - 8..])),
+            4..=7 => (
+                u64::from(half(&rest[..4])),
+                u64::from(half(&rest[rest.len() - 4..])),
+            ),
+            1..=3 => (
+                u64::from(rest[0]) | u64::from(rest[rest.len() / 2]) << 8,
+                u64::from(rest[rest.len() - 1]),
+            ),
+            _ => (0, 0),
+        };
+        self.hash = fold(acc ^ a, b ^ SEED);
     }
 
     #[inline]
@@ -67,6 +79,25 @@ impl Hasher for FxHasher {
     fn finish(&self) -> u64 {
         self.hash
     }
+}
+
+fn word(bytes: &[u8]) -> u64 {
+    let mut w = [0u8; 8];
+    w.copy_from_slice(&bytes[..8]);
+    u64::from_le_bytes(w)
+}
+
+fn half(bytes: &[u8]) -> u32 {
+    let mut w = [0u8; 4];
+    w.copy_from_slice(&bytes[..4]);
+    u32::from_le_bytes(w)
+}
+
+/// The high and low halves of the full product, xored: every input bit reaches
+/// every output bit.
+fn fold(a: u64, b: u64) -> u64 {
+    let full = u128::from(a) * u128::from(b);
+    (full as u64) ^ ((full >> 64) as u64)
 }
 
 pub type FxBuildHasher = BuildHasherDefault<FxHasher>;

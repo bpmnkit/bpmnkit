@@ -32,7 +32,7 @@ fn repair_routes_matches_ts() {
             .unwrap()
             .iter()
             .map(|s| PlaneShape {
-                id: s["id"].as_str().unwrap().to_string(),
+                id: s["id"].as_str().unwrap(),
                 bounds: Bounds {
                     x: f(&s["bounds"]["x"]),
                     y: f(&s["bounds"]["y"]),
@@ -52,8 +52,8 @@ fn repair_routes_matches_ts() {
                     "association" => ConnectionKind::Association,
                     _ => ConnectionKind::Sequence,
                 },
-                source_ref: e["sourceRef"].as_str().unwrap().to_string(),
-                target_ref: e["targetRef"].as_str().unwrap().to_string(),
+                source_ref: e["sourceRef"].as_str().unwrap(),
+                target_ref: e["targetRef"].as_str().unwrap(),
                 waypoints: wps(&e["waypoints"]),
             })
             .collect();
