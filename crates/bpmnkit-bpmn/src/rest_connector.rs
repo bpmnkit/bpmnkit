@@ -34,14 +34,54 @@ impl HttpMethod {
     }
 }
 
-/// TS's `RestAuthentication`.
+/// TS's `RestAuthentication`. TS types only `noAuth` and `bearer`, but writes any other
+/// `type` through at runtime (connector templates also know `apiKey`, `basic`, ...).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(tag = "type")]
+#[serde(try_from = "RawAuthentication", into = "RawAuthentication")]
 pub enum RestAuthentication {
-    #[serde(rename = "noAuth")]
     NoAuth,
-    #[serde(rename = "bearer")]
-    Bearer { token: String },
+    Bearer {
+        token: String,
+    },
+    /// Any other type: only `authentication.type` is written.
+    Other(String),
+}
+
+#[derive(Serialize, Deserialize)]
+struct RawAuthentication {
+    #[serde(rename = "type")]
+    kind: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    token: Option<String>,
+}
+
+impl TryFrom<RawAuthentication> for RestAuthentication {
+    type Error = String;
+    fn try_from(raw: RawAuthentication) -> Result<Self, String> {
+        Ok(match raw.kind.as_str() {
+            "noAuth" => Self::NoAuth,
+            "bearer" => Self::Bearer {
+                token: raw.token.ok_or("bearer authentication needs a token")?,
+            },
+            _ => Self::Other(raw.kind),
+        })
+    }
+}
+
+impl From<RestAuthentication> for RawAuthentication {
+    fn from(auth: RestAuthentication) -> Self {
+        match auth {
+            RestAuthentication::NoAuth => Self {
+                kind: "noAuth".into(),
+                token: None,
+            },
+            RestAuthentication::Bearer { token } => Self {
+                kind: "bearer".into(),
+                token: Some(token),
+            },
+            RestAuthentication::Other(kind) => Self { kind, token: None },
+        }
+    }
 }
 
 /// `Record<string, string> | string`: key-value pairs, or a FEEL expression as written.
@@ -109,6 +149,9 @@ pub fn rest_connector_to_io_mapping_inputs(
         Some(RestAuthentication::Bearer { token }) => {
             inputs.push(entry("bearer", "authentication.type"));
             inputs.push(entry(token.clone(), "authentication.token"));
+        }
+        Some(RestAuthentication::Other(kind)) => {
+            inputs.push(entry(kind.clone(), "authentication.type"));
         }
     }
     inputs.push(entry(config.method.as_str(), "method"));

@@ -414,17 +414,9 @@ fn corpus() -> PathBuf {
 }
 
 /// Cases this file does not replay: `diagram-*` drive `DiagramBuilder` (tested with it);
-/// a missing content callback is a type error in Rust; the two REST cases pass an
-/// `authentication.type` outside TS's `RestAuthentication` union, which TS writes through
-/// untyped and `bpmnkit_bpmn::rest_connector::RestAuthentication` cannot hold.
+/// a missing content callback is a type error in Rust.
 fn replayed(name: &str) -> bool {
-    !name.starts_with("diagram-")
-        && ![
-            "sub-process-no-callback-error",
-            "rest-connector-api-key",
-            "rest-connector-basic-auth",
-        ]
-        .contains(&name)
+    !name.starts_with("diagram-") && name != "sub-process-no-callback-error"
 }
 
 fn check_case(name: &str) -> Result<(), String> {
