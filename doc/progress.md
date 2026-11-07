@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-07 — Rust twin phase 8: builder, text and compact corpora in the Rust conformance runner
+
+- `bpmnkit-conformance` runs `conformance/builder`, `text` and `compact` (new modules `builder.rs`, `text.rs`, `compact.rs`, in `run_all`; per-corpus tests `tests/{builder,text,compact}.rs` name the first difference and honour `BPMNKIT_CONFORMANCE_DIR`). The builder replayer (process, branch, sub-process, diagram, decision table, DRD) moved here from `bpmnkit-builder/tests/{process,dmn}.rs`; diagram cases are now replayed too.
+- `bpmnkit-text`: `compact::assert_compact_diagram` and `compact::expand_json`, the twin of TS's `assertCompactDiagram` guard in `expand`, so the `expand-error-*` cases fed non-diagram JSON get TS's messages.
+- Result: builder 250 of 251 (`sub-process-no-callback-error` pending: a missing callback cannot be written in Rust), text 320 of 320, compact 200 of 200.
+
 ## 2026-11-06 — Rust twin phase 7 follow-up: lanes outside pools, annotation links, layout speed
 
 - Lanes of a process no participant references (`@bpmnkit/core` and `bpmnkit-layout`, kept identical): now drawn on the process plane, header at x 0 and content shifted clear of it; engine bands for semantic, proportional tiling for grid; on the primary plane or a second root process's own. It was a defect, not a choice: the semantic engine already placed nodes in invisible lane bands, bpmn-js imports lane DI under a process root (`LaneUtil` counts `bpmn:Process` as a lane parent; modelling creates lanes only in participants), and MIWG A.4.0 draws such lanes. Wrapping the process in a participant was rejected: layout must not add semantic elements.

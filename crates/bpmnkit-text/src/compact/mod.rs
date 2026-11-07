@@ -3,6 +3,7 @@
 
 mod compactify;
 mod expand;
+mod guard;
 mod stream;
 mod types;
 
@@ -11,5 +12,6 @@ pub use expand::{
     build_flow_element, default_flows, expand, is_connector_job_type, make_event_def,
     make_extensions,
 };
+pub use guard::{assert_compact_diagram, expand_json};
 pub use stream::{CompactStream, CompactStreamOptions};
 pub use types::*;

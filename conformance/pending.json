@@ -1,3 +1,4 @@
 {
-  "arithmetic/25": "Representation: TS (float64) yields NaN for a negative base to a fractional power, recorded as error; Rust decimals have no NaN, so the result is null. They differ only where NaN is observable as a number (e.g. `is defined`)."
+  "arithmetic/25": "Representation: TS (float64) yields NaN for a negative base to a fractional power, recorded as error; Rust decimals have no NaN, so the result is null. They differ only where NaN is observable as a number (e.g. `is defined`).",
+  "builder/sub-process-no-callback-error": "Unrepresentable: TS throws when subProcess() gets no content callback; in Rust the callback is a required closure, so the script cannot be written."
 }

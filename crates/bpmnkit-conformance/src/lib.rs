@@ -3,6 +3,8 @@
 //! to the same expectations.
 
 mod bpmn;
+pub mod builder;
+pub mod compact;
 pub mod compat;
 mod dmn;
 mod feel;
@@ -11,6 +13,7 @@ pub mod layout;
 pub mod lint;
 pub mod migrate;
 pub mod optimize;
+pub mod text;
 pub mod tooling;
 mod value;
 
@@ -123,6 +126,15 @@ pub struct Report {
     pub removable: Vec<String>,
 }
 
+/// The message of a caught panic payload (`String` or `&str`), else empty.
+pub fn panic_message(payload: &(dyn std::any::Any + Send)) -> String {
+    payload
+        .downcast_ref::<String>()
+        .cloned()
+        .or_else(|| payload.downcast_ref::<&str>().map(|s| (*s).to_owned()))
+        .unwrap_or_default()
+}
+
 /// `outcomes` maps case id to "passed". Applies the pending rule.
 pub fn classify(outcomes: &[(String, bool)], pending: &Pending) -> Report {
     let mut r = Report::default();
@@ -170,11 +182,14 @@ pub fn run_all(dir: &Path) -> Result<Vec<(String, bool)>, String> {
     );
     type Ids = fn(&Path) -> Vec<String>;
     type Check = fn(&Path, &str) -> Result<(), String>;
-    let tooling: [(Ids, Check); 4] = [
+    let tooling: [(Ids, Check); 7] = [
         (lint::case_ids, lint::check_case),
         (optimize::case_ids, optimize::check_case),
         (compat::case_ids, compat::check_case),
         (migrate::case_ids, migrate::check_case),
+        (builder::case_ids, builder::check_case),
+        (text::case_ids, text::check_case),
+        (compact::case_ids, compact::check_case),
     ];
     for (ids, check) in tooling {
         for id in ids(dir) {
@@ -229,6 +244,9 @@ mod tests {
         assert!(load_bpmn_case_ids(d).is_empty());
         assert!(load_form_case_ids(d).is_empty());
         assert!(load_dmn_case_ids(d).is_empty());
+        assert!(builder::case_ids(d).is_empty());
+        assert!(text::case_ids(d).is_empty());
+        assert!(compact::case_ids(d).is_empty());
         assert!(load_pending(d).unwrap().is_empty());
     }
 }

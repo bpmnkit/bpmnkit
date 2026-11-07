@@ -98,12 +98,14 @@ name = "bpmnkit-conformance"
 version = "0.1.0"
 dependencies = [
  "bpmnkit-bpmn",
+ "bpmnkit-builder",
  "bpmnkit-compat",
  "bpmnkit-dmn",
  "bpmnkit-feel",
  "bpmnkit-form",
  "bpmnkit-layout",
  "bpmnkit-lint",
+ "bpmnkit-text",
  "indexmap",
  "serde",
  "serde_json",
