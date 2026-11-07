@@ -42,6 +42,9 @@ Seeded from the `@bpmnkit/feel` tests (evaluator, spec, Camunda extensions) plus
 cases for dates and durations, `**`, contexts and filters. The DMN TCK is not on disk in this
 repository, so none of its cases are included yet. Expressions that read the clock are excluded.
 
+`fuzz.jsonl` holds the disagreements differential fuzzing found (see the end of this file),
+one case per fix.
+
 ## BPMN: `bpmn/<case>/`
 
 - `input.bpmn`: source, copied from `packages/core/tests/fixtures` (provenance there).
@@ -516,3 +519,30 @@ and without `base`.
 
 `{"<case id or bpmn/<case>>": "<reason or issue link>"}`: cases a non-TS runner knows it does
 not pass yet. TypeScript never reads it.
+
+## Differential fuzzing
+
+`crates/bpmnkit-fuzz` generates inputs for seven targets (`feel`, `bpmn`, `dmn`, `dmn-eval`,
+`form`, `text`, `compact`), answers each with the Rust crates and with the TS packages
+(`scripts/fuzz/oracle.mjs`, one JSON request and answer per line), and compares them the way
+this suite does. Proptest shrinks a disagreement to a minimal input and writes it, with both
+answers, to `target/fuzz-mismatches/<target>-<seed>.json`.
+
+```sh
+pnpm --filter @bpmnkit/feel --filter @bpmnkit/core --filter @bpmnkit/engine build
+pnpm fuzz --target all --seconds 60
+pnpm fuzz --replay target/fuzz-mismatches/feel-42.json   # both answers, after a fix
+```
+
+It is looser than this suite in three documented places, all the number model rather than
+defects: FEEL numbers (and the seconds of a duration, and digits printed by `string()`) agree
+within float64 noise (relative 1e-12) instead of after 15-digit rounding; a number past
+`rust_decimal`'s range (about 7.9e28) may be `null` in Rust, and one built from a very small
+intermediate keeps fewer digits there (28 fraction digits, not 28 significant ones); and the text after
+`Failed to parse form JSON: ` is each platform's JSON parser's own wording. `uuid()`, `now()`,
+`today()` and `random number()` are not generated.
+
+A real disagreement becomes a case here (FEEL: `feel/fuzz.jsonl`) and a fix on the wrong side,
+with a regression test. The nightly workflow (`.github/workflows/fuzz-nightly.yml`) runs each
+target for 10 minutes and uploads the mismatch files as artifacts.
+

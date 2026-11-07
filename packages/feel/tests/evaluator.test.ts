@@ -421,6 +421,15 @@ describe("fuzz regressions", () => {
 		expect(eval_("for i in 1..3 return (function() partial)()")).toEqual([[], [[]], [[], [[]]]])
 	})
 
+	it("one list argument is not unwrapped twice", () => {
+		expect(eval_("min([[0]])")).toEqual([0])
+		expect(eval_("count([[1, 2]])")).toBe(1)
+		expect(eval_("sum([[1, 2]])")).toBeNull()
+		expect(eval_("mean([[1, 2]])")).toBeNull()
+		expect(eval_("sum([1, 2])")).toBe(3)
+		expect(eval_("sum(1, 2)")).toBe(3)
+	})
+
 	it("a list never equals a context", () => {
 		expect(eval_("[] in [{}]")).toBe(false)
 		expect(eval_('[1] in [{"0": 1}]')).toBe(false)

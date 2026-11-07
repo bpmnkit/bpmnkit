@@ -1,5 +1,9 @@
 # Features
 
+## Rust twin release: differential fuzzing and crates.io packaging (2026-11-07)
+
+`crates/bpmnkit-fuzz` generates FEEL expressions, BPMN diagrams, DMN tables (parsed and evaluated), Camunda forms and process text, runs each through the Rust crates and the TS packages, and reports every disagreement shrunk to a minimal input (`pnpm fuzz --target <name> --seconds N`, `--replay <file>`). A nightly GitHub workflow runs every target and uploads mismatches. The 11 library crates carry full crates.io metadata, dual license files, READMEs and rustdoc examples, and publish in lockstep from a manual, approval-gated workflow. Docs page: `packages/rust-crates`.
+
 ## Rust twin: export validation and build-time XSD checks (2026-11-07)
 
 `bpmnkit_lint::export_bpmn` lints before writing (`ExportValidate::Warn` / `Error`), and `bpmnkit-builder` refuses ids that are not XML names and `retries` that are neither a number nor FEEL, matching `Bpmn.export(defs, { validate })` and TS's XSD guards. Builders default to Camunda 8.10.

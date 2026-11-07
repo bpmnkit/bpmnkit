@@ -319,11 +319,6 @@ function at(arr: FeelValue[], i: number): FeelValue {
 }
 
 // Unwrap single-list argument or return the flat array
-function unwrapList(flat: FeelValue[]): FeelValue[] {
-	const first = flat[0]
-	return flat.length === 1 && first !== undefined && isFeelList(first) ? first : flat
-}
-
 function inRange(v: FeelValue, r: import("./types.js").FeelRange): boolean {
 	const cmpStart = compareValues(v, r.start)
 	const cmpEnd = compareValues(v, r.end)
@@ -909,10 +904,8 @@ reg("random number", () => Math.random())
 reg("count", (...args) => {
 	// count() takes a list; a null argument is a type error, not a one-item list.
 	if (args.length === 1 && args[0] === null) return null
-	const list = flattenToList(args)
-	const first = list[0]
-	if (list.length === 1 && first !== undefined && isFeelList(first)) return first.length
-	return list.length
+	// One list argument is the list; its items are not unwrapped again (count([[1, 2]]) is 1).
+	return flattenToList(args).length
 })
 
 reg("list contains", (list, item) => {
@@ -921,10 +914,7 @@ reg("list contains", (list, item) => {
 })
 
 reg("min", (...args) => {
-	const list = flattenToList(args)
-	const listFirst = list[0]
-	const flat =
-		listFirst !== undefined && isFeelList(listFirst) && list.length === 1 ? listFirst : list
+	const flat = flattenToList(args)
 	if (flat.length === 0) return null
 	let m: FeelValue = flat[0] ?? null
 	for (let i = 1; i < flat.length; i++) {
@@ -936,10 +926,7 @@ reg("min", (...args) => {
 })
 
 reg("max", (...args) => {
-	const list = flattenToList(args)
-	const listFirst = list[0]
-	const flat =
-		listFirst !== undefined && isFeelList(listFirst) && list.length === 1 ? listFirst : list
+	const flat = flattenToList(args)
 	if (flat.length === 0) return null
 	let m: FeelValue = flat[0] ?? null
 	for (let i = 1; i < flat.length; i++) {
@@ -951,7 +938,7 @@ reg("max", (...args) => {
 })
 
 reg("sum", (...args) => {
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	let s = 0
 	for (const v of list) {
 		const n = toNum(v)
@@ -963,7 +950,7 @@ reg("sum", (...args) => {
 
 reg("product", (...args) => {
 	if (args.length === 0) return null
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	if (list.length === 0) return null
 	let p = 1
 	for (const v of list) {
@@ -975,7 +962,7 @@ reg("product", (...args) => {
 })
 
 reg("mean", (...args) => {
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	if (list.length === 0) return null
 	let s = 0
 	for (const v of list) {
@@ -987,7 +974,7 @@ reg("mean", (...args) => {
 })
 
 reg("median", (...args) => {
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	const nums: number[] = []
 	for (const v of list) {
 		const n = toNum(v)
@@ -1001,7 +988,7 @@ reg("median", (...args) => {
 })
 
 reg("stddev", (...args) => {
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	const nums: number[] = []
 	for (const v of list) {
 		const n = toNum(v)
@@ -1016,7 +1003,7 @@ reg("stddev", (...args) => {
 
 reg("mode", (...args) => {
 	if (args.length === 0) return null
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	const counts = new Map<number, number>()
 	for (const v of list) {
 		const n = toNum(v)
@@ -1034,7 +1021,7 @@ reg("mode", (...args) => {
 
 reg("all", (...args) => {
 	if (args.length === 0) return null
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	let hasNull = false
 	for (const v of list) {
 		if (v === false) return false
@@ -1046,7 +1033,7 @@ reg("all", (...args) => {
 
 reg("any", (...args) => {
 	if (args.length === 0) return null
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	let hasNull = false
 	for (const v of list) {
 		if (v === true) return true

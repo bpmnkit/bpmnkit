@@ -34,7 +34,13 @@ function stringify(v) {
 	return typeof out === "string" ? out : ""
 }
 
-const TEMPORAL = new Set(["date", "time", "date-time", "days-time-duration", "years-months-duration"])
+const TEMPORAL = new Set([
+	"date",
+	"time",
+	"date-time",
+	"days-time-duration",
+	"years-months-duration",
+])
 
 function encode(v) {
 	if (v === null || v === undefined) return { t: "null" }
@@ -54,7 +60,12 @@ function encode(v) {
 	for (const k of Object.keys(v).sort()) {
 		const e = encode(v[k])
 		if (e.t === "error") return { t: "error" }
-		Object.defineProperty(out, k, { value: e, enumerable: true, writable: true, configurable: true })
+		Object.defineProperty(out, k, {
+			value: e,
+			enumerable: true,
+			writable: true,
+			configurable: true,
+		})
 	}
 	return { t: "context", v: out }
 }

@@ -18,3 +18,6 @@
 {"id":"fuzz/18","expr":"distinct values([[1], [1], {a: 1}, {a: 1}])","context":{},"expected":{"t":"list","v":[{"t":"list","v":[{"t":"number","v":"1"}]},{"t":"context","v":{"a":{"t":"number","v":"1"}}}]}}
 {"id":"fuzz/19","expr":"count(for x in [67..100000) return for x in [x] return x)","context":{},"expected":{"t":"number","v":"99934"}}
 {"id":"fuzz/20","expr":"[-0 ** 0.5, (-0) ** 1.5]","context":{},"expected":{"t":"list","v":[{"t":"number","v":"0"},{"t":"number","v":"0"}]}}
+{"id":"fuzz/21","expr":"(sqrt(-0))[true]","context":{},"expected":{"t":"list","v":[{"t":"number","v":"0"}]}}
+{"id":"fuzz/22","expr":"0 + min(b)","context":{"b":{"t":"list","v":[{"t":"list","v":[{"t":"number","v":"0"}]}]}},"expected":{"t":"null"}}
+{"id":"fuzz/23","expr":"[min([[0]]), count([[1, 2]]), sum([[1, 2]]), mean([[1, 2]]), product([[2, 3]]), all([[true]])]","context":{},"expected":{"t":"list","v":[{"t":"list","v":[{"t":"number","v":"0"}]},{"t":"number","v":"1"},{"t":"null"},{"t":"null"},{"t":"null"},{"t":"null"}]}}

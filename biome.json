@@ -45,6 +45,7 @@
 			"packages/feel/tests/tck/**",
 			"conformance/**",
 			"spec/templates/**",
+			"crates/bpmnkit-spec/data/**",
 			"descriptors/**"
 		]
 	}

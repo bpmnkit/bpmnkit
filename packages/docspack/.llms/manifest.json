@@ -6723,6 +6723,87 @@
 			]
 		},
 		{
+			"id": "packages.rust-crates.overview",
+			"file": "chunks/packages.rust-crates.overview.md",
+			"tokens": 176,
+			"tags": [
+				"packages",
+				"rust-crates",
+				"overview"
+			],
+			"entities": [
+				"conformance/"
+			]
+		},
+		{
+			"id": "packages.rust-crates.crates",
+			"file": "chunks/packages.rust-crates.crates.md",
+			"tokens": 348,
+			"tags": [
+				"packages",
+				"rust-crates",
+				"crates"
+			],
+			"entities": [
+				"@bpmnkit/feel",
+				"@bpmnkit/core",
+				"@bpmnkit/engine",
+				"Bpmn.createProcess",
+				"spec/"
+			]
+		},
+		{
+			"id": "packages.rust-crates.installation",
+			"file": "chunks/packages.rust-crates.installation.md",
+			"tokens": 206,
+			"tags": [
+				"packages",
+				"rust-crates",
+				"installation",
+				"quick",
+				"start"
+			],
+			"entities": [
+				"Bpmn.createProcess"
+			]
+		},
+		{
+			"id": "packages.rust-crates.how-the-rust-api-maps-to-typescript",
+			"file": "chunks/packages.rust-crates.how-the-rust-api-maps-to-typescript.md",
+			"tokens": 201,
+			"tags": [
+				"packages",
+				"rust-crates",
+				"rust",
+				"api",
+				"maps",
+				"typescript",
+				"numbers"
+			],
+			"entities": [
+				"parseBpmn",
+				"applyAutoLayout",
+				"build()"
+			]
+		},
+		{
+			"id": "packages.rust-crates.differential-fuzzing",
+			"file": "chunks/packages.rust-crates.differential-fuzzing.md",
+			"tokens": 174,
+			"tags": [
+				"packages",
+				"rust-crates",
+				"differential",
+				"fuzzing",
+				"versioning"
+			],
+			"entities": [
+				"crates/bpmnkit-fuzz",
+				"@bpmnkit/core",
+				"@bpmnkit/feel"
+			]
+		},
+		{
 			"id": "packages.worker-client",
 			"file": "chunks/packages.worker-client.md",
 			"tokens": 141,

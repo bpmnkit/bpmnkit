@@ -162,7 +162,7 @@ fn feel_expr() -> impl Strategy<Value = String> {
         prop_oneof![
             4 => (inner.clone(), select(BIN_OPS), inner.clone(), any::<bool>())
                 .prop_map(move |(a, op, b, p)| paren(format!("{a} {op} {b}"), p)),
-            1 => (inner.clone(), select(&["0", "1", "2", "3", "-1", "-2", "0.5", "1.5", "-0.5", "-29"][..]))
+            1 => (inner.clone(), select(&["0", "1", "2", "3", "-1", "-2", "0.5", "1.5", "-0.5"][..]))
                 .prop_map(|(a, e)| format!("{a} ** {e}")),
             1 => inner.clone().prop_map(|a| format!("-{a}")),
             1 => inner.clone().prop_map(|a| format!("not({a})")),

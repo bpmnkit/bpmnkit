@@ -1,6 +1,6 @@
 # Proposal: a Rust twin of BPMN Kit's core
 
-Status: analysis only, updated 2026-11-06. Nothing implemented. Phase 0 measured (§11).
+Status: phases 0–9 implemented (2026-11-07; see `doc/progress.md`). The crates are ready for crates.io but not yet published. Phase 0 measured (§11).
 
 ## TL;DR
 
@@ -51,7 +51,7 @@ crates/                      cargo workspace, MIT OR Apache-2.0
 packages/*                   unchanged TS packages
 ```
 
-`apps/reebe` depends on `crates/*` by path. The crates are published to crates.io at the same version as the npm packages.
+`apps/reebe` depends on `crates/*` by path. The crates are published to crates.io in lockstep with each other, independently of the npm versions (decided in phase 9, `doc/rust-crates-release.md`). The `bpmnkit` facade crate is not built yet.
 
 ## 4. Keeping the two in sync
 
@@ -85,6 +85,7 @@ This removes the largest error-prone part from hand-porting. Only behaviour (eva
 - A nightly job generates random diagrams, DMN tables and FEEL expressions with fast-check and proptest.
 - It runs them through both implementations: TS through Node, Rust through a small CLI test binary.
 - Each disagreement is shrunk and saved as a new conformance case.
+- Implemented (phase 9) as `crates/bpmnkit-fuzz`: proptest generates on the Rust side for all targets, and a long-lived Node oracle (`scripts/fuzz/oracle.mjs`) answers over JSONL, so proptest's shrinking works across both implementations. fast-check was not needed. Nightly: `.github/workflows/fuzz-nightly.yml`.
 
 ### 4.5 Ownership
 
@@ -124,7 +125,7 @@ No WASM build of the twin is planned. JS hosts already have TS.
 | 6 Tooling | lint + optimize, camunda-compat, C7 migrate | 6–8 |
 | 7 Layout | BPMN + DMN layout, coordinates within tolerance | 5–7 |
 | 8 Builder + text | Rust builder with the same output as TS, process-text and compact | 4–5 |
-| 9 Release | nightly fuzzing, crates.io publishing, docs | 1–2 |
+| 9 Release | nightly fuzzing, crates.io publishing, docs (done 2026-11-07) | 1–2 |
 | Later | Rust `casen` 12–20 (start with a plugin-bridge spike), proxy-rs parity 6–10, Python bindings | — |
 
 Phases 1–9 come to about 35–47 person-weeks. Each phase ships on its own:

@@ -83,11 +83,8 @@ fn count(args: &[Value]) -> Value {
     if matches!(args, [Value::Null]) {
         return Value::Null;
     }
-    // count([[1, 2]]) is 2 in the TS: its flatten and unwrap apply twice.
-    match list_of(args) {
-        [Value::List(inner)] => inner.len().into(),
-        list => list.len().into(),
-    }
+    // One list argument is the list; its items are not unwrapped again (count([[1, 2]]) is 1).
+    list_of(args).len().into()
 }
 
 fn extreme(args: &[Value], want: Ordering) -> Value {
@@ -483,6 +480,8 @@ mod tests {
         assert_eq!(call("list contains", &[nested, l(&[1])]), true.into());
         assert_eq!(call("count", &[l(&[1, 2, 3])]), n(3));
         assert_eq!(call("count", &[]), n(0));
+        // Fuzz regression: a one-item list of lists is not unwrapped twice.
+        assert_eq!(call("count", &[Value::List(vec![l(&[1, 2])])]), n(1));
         assert_eq!(call("count", &[Value::Null]), Value::Null);
         assert_eq!(call("is empty", &[l(&[])]), true.into());
         assert_eq!(call("is empty", &[n(1)]), Value::Null);

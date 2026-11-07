@@ -19,7 +19,16 @@ pub fn lookup(name: &str) -> Option<BuiltinFn> {
         "round half down" => |a| round_fn(a, Mode::HalfDown, false),
         "abs" => abs,
         "modulo" => modulo,
-        "sqrt" => |a| unary(a, |n| n.sqrt()),
+        // rust_decimal has no root of `-0`; it is 0.
+        "sqrt" => |a| {
+            unary(a, |n| {
+                if n.is_zero() {
+                    Some(Decimal::ZERO)
+                } else {
+                    n.sqrt()
+                }
+            })
+        },
         "log" => |a| unary(a, |n| n.checked_ln()),
         // exp of a large negative number is below 28 fraction digits: 0, as TS rounds it.
         "exp" => |a| {
@@ -257,6 +266,7 @@ mod tests {
         assert_eq!(call("exp", &[n("100000")]), Value::Null);
         // Fuzz regression: underflow is 0, as TS's double rounds it.
         assert_eq!(call("exp", &[n("-67")]), n("0"));
+        assert_eq!(call("sqrt", &[n("-0")]), n("0"));
         assert_eq!(call("exp", &[n("-665.4")]), n("0"));
     }
 
