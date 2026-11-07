@@ -282,8 +282,8 @@
 							"unknownAttributes": {}
 						},
 						{
-							"id": "TextAnnotation_undefined_1",
-							"text": "after throw",
+							"id": "TextAnnotation_lc_1",
+							"text": "after catch",
 							"unknownAttributes": {}
 						}
 					],
@@ -296,8 +296,9 @@
 							"unknownAttributes": {}
 						},
 						{
-							"id": "Association_undefined_1",
-							"targetRef": "TextAnnotation_undefined_1",
+							"id": "Association_lc_1",
+							"sourceRef": "lc",
+							"targetRef": "TextAnnotation_lc_1",
 							"associationDirection": "None",
 							"unknownAttributes": {}
 						}

@@ -25,7 +25,7 @@ import type {
 	BpmnSignal,
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
-import { createFlowElement } from "./element-shape.js"
+import { createFlowElement, isLoopCapableType } from "./element-shape.js"
 import type { RestConnectorConfig } from "./rest-connector.js"
 import {
 	REST_CONNECTOR_TEMPLATE_VERSION,
@@ -38,6 +38,7 @@ import {
 	assertExplicitFlowIdsUnique,
 	assignEventDefinitionIds,
 	assignStableFlowIds,
+	copyFlowTags,
 	markExplicitFlowId,
 	rootDefinitionId,
 	setFlowDiscriminatorSource,
@@ -883,6 +884,67 @@ function isGatewayType(type: BpmnElementType): boolean {
 	return GATEWAY_ELEMENT_TYPES.has(type)
 }
 
+/**
+ * Why `withBoundary()` may not attach to `host`, or undefined when it may.
+ * BPMN attaches boundary events to activities only, which are exactly the
+ * loop-capable types. An unknown host (a cursor that `connectTo()` moved
+ * outside this scope) is left alone.
+ */
+function boundaryHostProblem(host: BpmnFlowElement | undefined): string | undefined {
+	if (host === undefined || isLoopCapableType(host.type)) return undefined
+	if (host.type === "boundaryEvent") {
+		return "withBoundary() cannot attach to a boundary event. It must follow a task or activity element."
+	}
+	return `withBoundary() cannot attach to ${host.type} "${host.id}". It must follow a task or activity element.`
+}
+
+/**
+ * Throws on an id used twice anywhere in the process. Each builder scope only
+ * checks its own ids, but BPMN ids are unique per document.
+ */
+function assertElementIdsUnique(elements: BpmnFlowElement[], processId: string): void {
+	const seen = new Set<string>()
+	const walk = (scope: BpmnFlowElement[]) => {
+		for (const element of scope) {
+			if (seen.has(element.id)) {
+				throw new Error(`Duplicate element ID "${element.id}" in process "${processId}"`)
+			}
+			seen.add(element.id)
+			if ("flowElements" in element) walk(element.flowElements)
+		}
+	}
+	walk(elements)
+}
+
+/**
+ * Deep-copies a scope for `build()`, carrying the builder's side tables (keyed
+ * by object) over to the copies, so building leaves the builder untouched.
+ */
+function cloneScope(
+	elements: BpmnFlowElement[],
+	flows: BpmnSequenceFlow[],
+): { elements: BpmnFlowElement[]; flows: BpmnSequenceFlow[] } {
+	const [elementsCopy, flowsCopy] = structuredClone([elements, flows])
+	const carry = (
+		from: BpmnFlowElement[],
+		fromFlows: BpmnSequenceFlow[],
+		to: BpmnFlowElement[],
+		toFlows: BpmnSequenceFlow[],
+	) => {
+		from.forEach((element, i) => {
+			const copy = to[i] as BpmnFlowElement
+			const form = embeddedForms.get(element)
+			if (form !== undefined) embeddedForms.set(copy, form)
+			if ("flowElements" in element && "flowElements" in copy) {
+				carry(element.flowElements, element.sequenceFlows, copy.flowElements, copy.sequenceFlows)
+			}
+		})
+		fromFlows.forEach((flow, i) => copyFlowTags(flow, toFlows[i] as BpmnSequenceFlow))
+	}
+	carry(elements, flows, elementsCopy, flowsCopy)
+	return { elements: elementsCopy, flows: flowsCopy }
+}
+
 function recomputeIncomingOutgoing(elements: BpmnFlowElement[], flows: BpmnSequenceFlow[]): void {
 	for (const el of elements) {
 		el.incoming = []
@@ -1648,13 +1710,28 @@ export class BranchBuilder {
 	 * Supports forward references (element created later) and backward references (loops).
 	 */
 	connectTo(targetId: string): this {
+		// After a nested branch() the position is that branch's open ends, not one node.
+		if (this.lastNodeId === undefined) {
+			for (const branchEnd of this.openBranchEnds) {
+				this._flows.push({
+					id: generateId("Flow"),
+					sourceRef: branchEnd,
+					targetRef: targetId,
+					extensionElements: [],
+					unknownAttributes: {},
+				})
+			}
+			this.openBranchEnds = []
+			this.lastNodeId = targetId
+			this._connected = true
+			return this
+		}
 		const flowId = this.isFirstElement
 			? (this.pendingFlowId ?? generateId("Flow"))
 			: generateId("Flow")
 		const flow: BpmnSequenceFlow = {
 			id: flowId,
-			// biome-ignore lint/style/noNonNullAssertion: lastNodeId starts as gatewayId and is always defined in pre-branch context
-			sourceRef: this.lastNodeId!,
+			sourceRef: this.lastNodeId,
 			targetRef: targetId,
 			name: this.isFirstElement ? (this.pendingLabel ?? this.branchName) : undefined,
 			conditionExpression:
@@ -1729,8 +1806,10 @@ export class BranchBuilder {
 
 	/** Attach a text annotation to the element at the current cursor position. */
 	textAnnotation(text: string): this {
-		// biome-ignore lint/style/noNonNullAssertion: lastNodeId starts as gatewayId and is always defined in pre-branch context
-		return this.annotate(this.lastNodeId!, text)
+		if (!this.lastNodeId) {
+			throw new Error("textAnnotation() must follow a flow element")
+		}
+		return this.annotate(this.lastNodeId, text)
 	}
 
 	/** Attach a text annotation to an element by explicit ID. */
@@ -1813,6 +1892,7 @@ export class BranchBuilder {
 				this.rootSignals,
 				this.rootEscalations,
 			)
+			if (options.isInterrupting === false) el.isInterrupting = false
 		}
 		return this.addElement(el)
 	}
@@ -1952,12 +2032,8 @@ export class BranchBuilder {
 			)
 		}
 
-		const attachedEl = this._elements.find((n) => n.id === attachedTo)
-		if (attachedEl?.type === "boundaryEvent") {
-			throw new Error(
-				"withBoundary() cannot attach to a boundary event. It must follow a task or activity element.",
-			)
-		}
+		const hostProblem = boundaryHostProblem(this._elements.find((n) => n.id === attachedTo))
+		if (hostProblem !== undefined) throw new Error(hostProblem)
 
 		const savedLast = this.lastNodeId
 		const savedGateway = this.currentGatewayId
@@ -2597,12 +2673,8 @@ export class SubProcessContentBuilder {
 			)
 		}
 
-		const attachedEl = this._elements.find((n) => n.id === attachedTo)
-		if (attachedEl?.type === "boundaryEvent") {
-			throw new Error(
-				"withBoundary() cannot attach to a boundary event. It must follow a task or activity element.",
-			)
-		}
+		const hostProblem = boundaryHostProblem(this._elements.find((n) => n.id === attachedTo))
+		if (hostProblem !== undefined) throw new Error(hostProblem)
 
 		const savedLast = this.lastNodeId
 		const savedGateway = this.currentGatewayId
@@ -2755,7 +2827,7 @@ export class ProcessBuilder {
 	/** Set by {@link ProcessBuilder.from}; makes `build()` update rather than generate. */
 	private _source?: { definitions: BpmnDefinitions; process: BpmnProcess }
 	/** Pre-existing flow endpoints, so `build()` can prove it did not rewire them. */
-	private _sourceFlowTargets = new Map<string, string>()
+	private _sourceFlowTargets = new Map<string, { sourceRef: string; targetRef: string }>()
 	/** An `insertAfter` flow waiting to be reattached to what gets built next. */
 	private _pendingSpliceFlowId: string | undefined
 	/** Flows the caller deliberately spliced, exempt from the rewiring guard. */
@@ -2824,7 +2896,10 @@ export class ProcessBuilder {
 		builder.rootSignals.push(...copy.signals)
 		builder.rootEscalations.push(...copy.escalations)
 		builder._sourceFlowTargets = new Map(
-			process.sequenceFlows.map((flow) => [flow.id, `${flow.sourceRef}→${flow.targetRef}`]),
+			process.sequenceFlows.map((flow) => [
+				flow.id,
+				{ sourceRef: flow.sourceRef, targetRef: flow.targetRef },
+			]),
 		)
 		return builder
 	}
@@ -2856,6 +2931,7 @@ export class ProcessBuilder {
 			)
 		}
 
+		this.resolvePendingSplice()
 		this.moveCursor(node)
 		return this
 	}
@@ -3044,7 +3120,11 @@ export class ProcessBuilder {
 
 	// ---- Events ----
 
-	/** Add a start event. Start events never auto-connect from the previous element. */
+	/**
+	 * Add a start event. Like every element it chains from the current position;
+	 * at the beginning of a process there is none. Use `addStartEvent()` for a
+	 * start event that begins a new, disconnected path.
+	 */
 	startEvent(id?: string, options?: StartEventOptions): this {
 		const element = makeStartEventEl(id ?? generateId("StartEvent"), options)
 		if (element.type === "startEvent" && options) {
@@ -3197,6 +3277,8 @@ export class ProcessBuilder {
 				"withBoundary() must follow a task element. Current builder position has no active element.",
 			)
 		}
+		const hostProblem = boundaryHostProblem(this.flowElements.find((n) => n.id === attachedTo))
+		if (hostProblem !== undefined) throw new Error(hostProblem)
 
 		const savedLast = this.lastNodeId
 		const savedGateway = this.currentGatewayId
@@ -3459,6 +3541,7 @@ export class ProcessBuilder {
 		if (!found) {
 			throw new Error(`Element "${elementId}" not found in process "${this.processId}"`)
 		}
+		this.resolvePendingSplice()
 		this.lastNodeId = elementId
 		this.currentGatewayId = undefined
 		return this
@@ -3666,17 +3749,20 @@ export class ProcessBuilder {
 	 */
 	build(options?: BuildOptions): BpmnDefinitions {
 		this.resolvePendingSplice()
-		const beforeCount = this.flowElements.length
+		// Built from a copy: the result shares nothing with the builder, and a
+		// second build() (or one after a throwing build) starts from the same state.
+		const { elements, flows } = cloneScope(this.flowElements, this.sequenceFlows)
+		const beforeCount = elements.length
 		// Continuing a document never infers joins. `insertJoinGateways` reads the
 		// whole topology, so on a parsed model it retargets edges the caller never
 		// touched — the corpus has a document where a no-op continue would have
 		// invented a join gateway and rerouted two flows into it. Building a branch
 		// that needs a join here means saying so with `.connectTo(joinId)`.
-		if (this._source === undefined) insertJoinGateways(this.flowElements, this.sequenceFlows)
+		if (this._source === undefined) insertJoinGateways(elements, flows)
 
 		const explicitJoins = options?.explicitJoins ?? false
-		if (explicitJoins && this.flowElements.length > beforeCount) {
-			const inserted = this.flowElements
+		if (explicitJoins && elements.length > beforeCount) {
+			const inserted = elements
 				.slice(beforeCount)
 				.map((e) => e.id)
 				.join(", ")
@@ -3685,27 +3771,28 @@ export class ProcessBuilder {
 			)
 		}
 
-		this.validate()
-		this.assertSourceTopologyIntact()
+		assertElementIdsUnique(elements, this.processId)
+		this.validate(elements, flows)
+		this.assertSourceTopologyIntact(flows)
 		// Flows the document already had keep their ids: continuing a model must
 		// not renumber the part the caller did not touch.
 		assignStableFlowIds(
-			this.flowElements,
-			this.sequenceFlows,
+			elements,
+			flows,
 			this._source === undefined ? undefined : new Set(this._sourceFlowTargets.keys()),
 		)
-		assertExplicitFlowIdsUnique(this.flowElements, this.sequenceFlows)
+		assertExplicitFlowIdsUnique(elements, flows)
 		// A continued document keeps its untouched part byte-for-byte, ids included.
 		if (this._source === undefined) {
-			for (const el of this.flowElements) {
+			for (const el of elements) {
 				if ("eventDefinitions" in el) assignEventDefinitionIds(el.id, el.eventDefinitions)
 			}
 		}
-		recomputeIncomingOutgoing(this.flowElements, this.sequenceFlows)
+		recomputeIncomingOutgoing(elements, flows)
 
-		if (this._source !== undefined) return this.buildOntoSource(this._source)
+		if (this._source !== undefined) return this.buildOntoSource(this._source, elements, flows)
 
-		const extensionElements: XmlElement[] = embeddedFormElements(this.flowElements)
+		const extensionElements: XmlElement[] = embeddedFormElements(elements)
 		if (this._versionTag) {
 			extensionElements.push({
 				name: "zeebe:versionTag",
@@ -3719,10 +3806,10 @@ export class ProcessBuilder {
 			name: this.processName,
 			isExecutable: this._isExecutable,
 			extensionElements,
-			flowElements: this.flowElements,
-			sequenceFlows: this.sequenceFlows,
-			textAnnotations: this._textAnnotations,
-			associations: this._associations,
+			flowElements: elements,
+			sequenceFlows: flows,
+			textAnnotations: structuredClone(this._textAnnotations),
+			associations: structuredClone(this._associations),
 			groups: [],
 			unknownAttributes: {},
 		}
@@ -3745,10 +3832,10 @@ export class ProcessBuilder {
 				"modeler:executionPlatform": "Camunda Cloud",
 				"modeler:executionPlatformVersion": this._executionPlatformVersion,
 			},
-			errors: this.rootErrors,
-			escalations: this.rootEscalations,
-			messages: this.rootMessages,
-			signals: this.rootSignals,
+			errors: structuredClone(this.rootErrors),
+			escalations: structuredClone(this.rootEscalations),
+			messages: structuredClone(this.rootMessages),
+			signals: structuredClone(this.rootSignals),
 			collaborations: [],
 			processes: [process],
 			// Seed diagram stub so applyAutoLayout preserves process-specific IDs.
@@ -3784,16 +3871,20 @@ export class ProcessBuilder {
 	 * positions, and elements added here have none until `withAutoLayout()` or a
 	 * later `applyAutoLayout()` gives them one.
 	 */
-	private buildOntoSource(source: {
-		definitions: BpmnDefinitions
-		process: BpmnProcess
-	}): BpmnDefinitions {
-		const { definitions, process } = source
+	private buildOntoSource(
+		source: { definitions: BpmnDefinitions; process: BpmnProcess },
+		elements: BpmnFlowElement[],
+		flows: BpmnSequenceFlow[],
+	): BpmnDefinitions {
+		const definitions = structuredClone(source.definitions)
+		const process = definitions.processes[
+			source.definitions.processes.indexOf(source.process)
+		] as BpmnProcess
 
-		process.flowElements = this.flowElements
-		process.sequenceFlows = this.sequenceFlows
-		process.textAnnotations = this._textAnnotations
-		process.associations = this._associations
+		process.flowElements = elements
+		process.sequenceFlows = flows
+		process.textAnnotations = structuredClone(this._textAnnotations)
+		process.associations = structuredClone(this._associations)
 		if (this.processName !== undefined) process.name = this.processName
 		// Only when asked. BPMN reads an absent `isExecutable` as false, so writing
 		// the builder's `true` default onto a process that never carried it makes a
@@ -3808,7 +3899,7 @@ export class ProcessBuilder {
 			).attributes.value = this._versionTag
 		}
 
-		for (const form of embeddedFormElements(this.flowElements)) {
+		for (const form of embeddedFormElements(elements)) {
 			const at = process.extensionElements.findIndex(
 				(e) => e.name === form.name && e.attributes.id === form.attributes.id,
 			)
@@ -3816,10 +3907,10 @@ export class ProcessBuilder {
 			else process.extensionElements.push(form)
 		}
 
-		definitions.errors = this.rootErrors
-		definitions.messages = this.rootMessages
-		definitions.signals = this.rootSignals
-		definitions.escalations = this.rootEscalations
+		definitions.errors = structuredClone(this.rootErrors)
+		definitions.messages = structuredClone(this.rootMessages)
+		definitions.signals = structuredClone(this.rootSignals)
+		definitions.escalations = structuredClone(this.rootEscalations)
 
 		return hoistMessageSubscriptions(
 			this._autoLayout
@@ -3836,11 +3927,11 @@ export class ProcessBuilder {
 	 * document would come back with edges the caller never touched pointing
 	 * somewhere else. Continuing a model has to leave the model alone.
 	 */
-	private assertSourceTopologyIntact(): void {
+	private assertSourceTopologyIntact(flows: BpmnSequenceFlow[]): void {
 		if (this._source === undefined) return
 		const rewired: string[] = []
-		const byId = new Map(this.sequenceFlows.map((flow) => [flow.id, flow]))
-		for (const [id, endpoints] of this._sourceFlowTargets) {
+		const byId = new Map(flows.map((flow) => [flow.id, flow]))
+		for (const [id, { sourceRef, targetRef: target }] of this._sourceFlowTargets) {
 			const flow = byId.get(id)
 			if (flow === undefined) {
 				rewired.push(`${id} (removed)`)
@@ -3848,15 +3939,15 @@ export class ProcessBuilder {
 			}
 			// A spliced flow was moved on purpose, but only its source may move:
 			// `insertAfter` inserts into a path, it does not redirect one.
-			const [, target] = endpoints.split("→")
 			if (this._splicedFlowIds.has(id)) {
 				if (flow.targetRef !== target) {
 					rewired.push(`${id} (spliced flow now targets ${flow.targetRef}, not ${target})`)
 				}
 				continue
 			}
-			const now = `${flow.sourceRef}→${flow.targetRef}`
-			if (now !== endpoints) rewired.push(`${id} (${endpoints} became ${now})`)
+			if (flow.sourceRef !== sourceRef || flow.targetRef !== target) {
+				rewired.push(`${id} (${sourceRef}→${target} became ${flow.sourceRef}→${flow.targetRef})`)
+			}
 		}
 		if (rewired.length > 0) {
 			throw new Error(
@@ -3865,9 +3956,9 @@ export class ProcessBuilder {
 		}
 	}
 
-	private validate(): void {
-		const elementIds = new Set(this.flowElements.map((el) => el.id))
-		for (const flow of this.sequenceFlows) {
+	private validate(elements: BpmnFlowElement[], flows: BpmnSequenceFlow[]): void {
+		const elementIds = new Set(elements.map((el) => el.id))
+		for (const flow of flows) {
 			if (!elementIds.has(flow.targetRef)) {
 				throw new Error(
 					`Sequence flow "${flow.id}" in process "${this.processId}" references unknown ` +

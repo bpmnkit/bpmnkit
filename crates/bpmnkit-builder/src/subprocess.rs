@@ -28,9 +28,9 @@ use bpmnkit_bpmn::ids::generate_id;
 use bpmnkit_bpmn::{BpmnElementType, BpmnFlowElement, BpmnSequenceFlow};
 
 use crate::elements::{
-    build_ad_hoc_sub_process_extensions, build_event_definitions, build_multi_instance,
-    finalize_ad_hoc_sub_process_el, finalize_scope, is_link_event, make_flow_element,
-    record_tool_grid, FlowElementOptions, ScopeContents,
+    boundary_host_problem, build_ad_hoc_sub_process_extensions, build_event_definitions,
+    build_multi_instance, finalize_ad_hoc_sub_process_el, finalize_scope, is_link_event,
+    make_flow_element, record_tool_grid, FlowElementOptions, ScopeContents,
 };
 use crate::options::*;
 use crate::shared::{check, fail, is_failed, Failed, Scope, SharedRef};
@@ -752,14 +752,8 @@ impl SubProcessContentBuilder {
             );
             return self;
         };
-        if matches!(
-            self.scope.find(&attached_to),
-            Some(BpmnFlowElement::BoundaryEvent(_))
-        ) {
-            fail(
-                &self.shared,
-                "withBoundary() cannot attach to a boundary event. It must follow a task or activity element.",
-            );
+        if let Some(problem) = boundary_host_problem(self.scope.find(&attached_to)) {
+            fail(&self.shared, problem);
             return self;
         }
 

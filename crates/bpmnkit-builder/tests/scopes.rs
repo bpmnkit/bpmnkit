@@ -91,7 +91,6 @@ fn branches() {
         .branch("no", |b| {
             b.default_flow()
                 .intermediate_throw_event(Some("lt"), link("L"))
-                .text_annotation("after throw")
                 .intermediate_catch_event(
                     Some("lc"),
                     Some(IntermediateCatchEventOptions {
@@ -99,6 +98,7 @@ fn branches() {
                         ..IntermediateCatchEventOptions::default()
                     }),
                 )
+                .text_annotation("after catch")
                 .data_object(
                     "d1",
                     Some(DataElementOptions {

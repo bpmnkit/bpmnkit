@@ -14,22 +14,24 @@
 //! - `boundary_event` clears the cursor before adding (no flow into a boundary) and, for
 //!   `compensation`, saves the previous cursor in `saved_main_flow_id` AFTER adding.
 //! - `with_boundary` fails with `withBoundary() must follow a task element. Current builder
-//!   position has no active element.`; it does NOT refuse a boundary host here.
+//!   position has no active element.`, then refuses a host that is not an activity
+//!   (`boundary_host_problem`, shared by all three builders).
 //! - `event_sub_process` leaves `open_branch_ends` alone and clears `saved_main_flow_id`.
 //! - `from()`: `structuredClone` the definitions, seed elements/flows/annotations/
 //!   associations and the four root lists from the document; a missing process is the
 //!   error `Process "<id>" is not in this document. It contains: "a", "b"` (or
-//!   `no processes`). `source_flow_targets` maps flow id → `"<source>→<target>"` (U+2192).
-//! - `build()`: resolve the pending splice; infer joins only for a new process; the
-//!   `explicitJoins` check; `validate`; `assert_source_topology_intact`;
+//!   `no processes`). `source_flow_targets` maps flow id → `(source, target)`.
+//! - `at()` / `element()` resolve a pending `insertAfter` splice before moving the cursor.
+//! - `build()`: resolve the pending splice; copy the scope and flow tags (the result shares
+//!   nothing with the builder, and a second `build()` starts from the same state); infer
+//!   joins only for a new process; the `explicitJoins` check; ids unique across scopes
+//!   (`assert_element_ids_unique`); `validate`; `assert_source_topology_intact`;
 //!   `assign_stable_flow_ids` (preserving source flow ids); `assert_explicit_flow_ids_unique`;
 //!   event-definition ids only for a new process; incoming/outgoing; then either
 //!   `build_onto_source` or a fresh `BpmnDefinitions` (namespaces and attributes exactly as
 //!   TS's literal, `Definitions_1`, a `<id>_di` diagram stub only with auto-layout).
 //!   Auto-layout is `bpmnkit_layout::apply_auto_layout(&defs, LayoutEngine::Semantic,
 //!   Some(&shared.layout_hints()))`; then `hoist_message_subscriptions`.
-//!   `build` takes `&mut self` and mutates the builder as TS does (joins, renamed flows);
-//!   the returned model owns clones.
 //! - TS `this.processName` is `undefined` until `name()`; `from()` copies the source's.
 
 use bpmnkit_bpmn::ids::generate_id;
@@ -54,10 +56,10 @@ use indexmap::{IndexMap, IndexSet};
 
 use crate::branch::BranchBuilder;
 use crate::elements::{
-    build_event_definitions, can_declare_root, embedded_form_elements, hoist_message_subscriptions,
-    insert_join_gateways, is_gateway_type, is_link_event, make_boundary_event_el,
-    make_business_rule_task_el, make_call_activity_el, make_data_element,
-    make_defaultable_gateway_el, make_end_event_el, make_flow_element,
+    assert_element_ids_unique, boundary_host_problem, build_event_definitions, can_declare_root,
+    embedded_form_elements, hoist_message_subscriptions, insert_join_gateways, is_gateway_type,
+    is_link_event, make_boundary_event_el, make_business_rule_task_el, make_call_activity_el,
+    make_data_element, make_defaultable_gateway_el, make_end_event_el, make_flow_element,
     make_intermediate_catch_event_el, make_intermediate_throw_event_el, make_plain_task_el,
     make_receive_task_el, make_script_task_el, make_send_task_el, make_service_task_el,
     make_start_event_el, make_user_task_el, recompute_incoming_outgoing, FlowElementOptions,
@@ -95,7 +97,7 @@ pub struct ProcessBuilder {
     pub(crate) service_task_defaults: ServiceTaskDefaults,
     pub(crate) saved_main_flow_id: Option<String>,
     pub(crate) source: Option<SourceDocument>,
-    pub(crate) source_flow_targets: IndexMap<String, String>,
+    pub(crate) source_flow_targets: IndexMap<String, (String, String)>,
     pub(crate) pending_splice_flow_id: Option<String>,
     pub(crate) spliced_flow_ids: IndexSet<String>,
 }
@@ -222,7 +224,7 @@ impl ProcessBuilder {
             .map(|flow| {
                 (
                     flow.id.clone(),
-                    format!("{}→{}", flow.source_ref, flow.target_ref),
+                    (flow.source_ref.clone(), flow.target_ref.clone()),
                 )
             })
             .collect();
@@ -270,6 +272,7 @@ impl ProcessBuilder {
             );
             return self;
         }
+        self.resolve_pending_splice();
         self.move_cursor(node_id);
         self
     }
@@ -646,6 +649,7 @@ impl ProcessBuilder {
             );
             return self;
         }
+        self.resolve_pending_splice();
         self.scope.last_node_id = Some(element_id.to_owned());
         self.scope.current_gateway_id = None;
         self
@@ -671,16 +675,21 @@ impl ProcessBuilder {
     /// The body of TS's `build()`, with `throw` as `Err`.
     fn build_model(&mut self, options: Option<BuildOptions>) -> Result<BpmnDefinitions, String> {
         self.resolve_pending_splice();
-        let before_count = self.scope.elements.len();
+        // Built from a copy: the result shares nothing with the builder, and a second
+        // build() (or one after a refused build) starts from the same state.
+        let mut elements = self.scope.elements.clone();
+        let mut flows = self.scope.flows.clone();
+        let mut flow_tags = self.shared.borrow().flow_tags.clone();
+        let before_count = elements.len();
         // A continued document never infers joins: inference reads the whole topology and
         // would retarget edges the caller never touched.
         if self.source.is_none() {
-            insert_join_gateways(&mut self.scope.elements, &mut self.scope.flows);
+            insert_join_gateways(&mut elements, &mut flows);
         }
 
         let explicit_joins = options.and_then(|o| o.explicit_joins).unwrap_or(false);
-        if explicit_joins && self.scope.elements.len() > before_count {
-            let inserted: Vec<&str> = self.scope.elements[before_count..]
+        if explicit_joins && elements.len() > before_count {
+            let inserted: Vec<&str> = elements[before_count..]
                 .iter()
                 .map(|e| e.base().id.as_str())
                 .collect();
@@ -690,44 +699,34 @@ impl ProcessBuilder {
             ));
         }
 
-        self.validate()?;
-        self.assert_source_topology_intact()?;
+        assert_element_ids_unique(&elements, &self.process_id)?;
+        self.validate(&elements, &flows)?;
+        self.assert_source_topology_intact(&flows)?;
         {
             // A continued document's flows keep their ids.
             let preserve: Option<IndexSet<String>> = self
                 .source
                 .as_ref()
                 .map(|_| self.source_flow_targets.keys().cloned().collect());
-            let mut shared = self.shared.borrow_mut();
-            assign_stable_flow_ids(
-                &mut self.scope.elements,
-                &mut self.scope.flows,
-                &mut shared.flow_tags,
-                preserve.as_ref(),
-            )?;
-            assert_explicit_flow_ids_unique(
-                &self.scope.elements,
-                &self.scope.flows,
-                &shared.flow_tags,
-            )?;
+            assign_stable_flow_ids(&mut elements, &mut flows, &mut flow_tags, preserve.as_ref())?;
+            assert_explicit_flow_ids_unique(&elements, &flows, &flow_tags)?;
         }
         // A continued document keeps its untouched part byte-for-byte, ids included.
         if self.source.is_none() {
-            for el in &mut self.scope.elements {
+            for el in &mut elements {
                 let id = el.base().id.clone();
                 if let Some(defs) = el.event_definitions_mut() {
                     assign_event_definition_ids(&id, defs);
                 }
             }
         }
-        recompute_incoming_outgoing(&mut self.scope.elements, &self.scope.flows);
+        recompute_incoming_outgoing(&mut elements, &flows);
 
         if self.source.is_some() {
-            return self.build_onto_source();
+            return self.build_onto_source(elements, flows);
         }
 
-        let mut extension_elements =
-            embedded_form_elements(&self.scope.elements, &self.shared.borrow())?;
+        let mut extension_elements = embedded_form_elements(&elements, &self.shared.borrow())?;
         if let Some(tag) = truthy(&self.version_tag) {
             let mut attributes = Attrs::new();
             attributes.insert("value".to_owned(), tag.to_owned());
@@ -745,8 +744,8 @@ impl ProcessBuilder {
             is_executable: Some(self.is_executable),
             extension_elements,
             contents: BpmnProcessContents {
-                flow_elements: self.scope.elements.clone(),
-                sequence_flows: self.scope.flows.clone(),
+                flow_elements: elements,
+                sequence_flows: flows,
                 text_annotations: self.scope.text_annotations.clone(),
                 associations: self.scope.associations.clone(),
                 groups: Vec::new(),
@@ -833,16 +832,20 @@ impl ProcessBuilder {
 
     /// TS's private `buildOntoSource`: everything the builder has no opinion about (other
     /// processes, collaboration, DI, lanes, extensions) stays as the document had it.
-    fn build_onto_source(&mut self) -> Result<BpmnDefinitions, String> {
+    fn build_onto_source(
+        &self,
+        elements: Vec<BpmnFlowElement>,
+        flows: Vec<BpmnSequenceFlow>,
+    ) -> Result<BpmnDefinitions, String> {
         let Some(source) = self.source.as_ref() else {
             unreachable!("build_onto_source without a source document");
         };
         let mut definitions = source.definitions.clone();
-        let forms = embedded_form_elements(&self.scope.elements, &self.shared.borrow())?;
+        let forms = embedded_form_elements(&elements, &self.shared.borrow())?;
         {
             let process = &mut definitions.processes[source.process_index];
-            process.contents.flow_elements = self.scope.elements.clone();
-            process.contents.sequence_flows = self.scope.flows.clone();
+            process.contents.flow_elements = elements;
+            process.contents.sequence_flows = flows;
             process.contents.text_annotations = self.scope.text_annotations.clone();
             process.contents.associations = self.scope.associations.clone();
             if let Some(name) = &self.process_name {
@@ -893,36 +896,36 @@ impl ProcessBuilder {
 
     /// TS's private `assertSourceTopologyIntact`: continuing a model must leave the flows
     /// it already had where they were.
-    fn assert_source_topology_intact(&self) -> Result<(), String> {
+    fn assert_source_topology_intact(&self, flows: &[BpmnSequenceFlow]) -> Result<(), String> {
         if self.source.is_none() {
             return Ok(());
         }
         let mut rewired: Vec<String> = Vec::new();
         // `new Map(...)`: with duplicate ids the last flow wins.
         let mut by_id: IndexMap<&str, &BpmnSequenceFlow> = IndexMap::new();
-        for flow in &self.scope.flows {
+        for flow in flows {
             by_id.insert(flow.id.as_str(), flow);
         }
-        for (id, endpoints) in &self.source_flow_targets {
+        for (id, (source, target)) in &self.source_flow_targets {
             let Some(flow) = by_id.get(id.as_str()) else {
                 rewired.push(format!("{id} (removed)"));
                 continue;
             };
             // A spliced flow may only move its source: `insertAfter` inserts into a path.
-            let target = endpoints.split('→').nth(1);
             if self.spliced_flow_ids.contains(id) {
-                if Some(flow.target_ref.as_str()) != target {
+                if &flow.target_ref != target {
                     rewired.push(format!(
-                        "{id} (spliced flow now targets {}, not {})",
-                        flow.target_ref,
-                        target.unwrap_or("undefined")
+                        "{id} (spliced flow now targets {}, not {target})",
+                        flow.target_ref
                     ));
                 }
                 continue;
             }
-            let now = format!("{}→{}", flow.source_ref, flow.target_ref);
-            if &now != endpoints {
-                rewired.push(format!("{id} ({endpoints} became {now})"));
+            if &flow.source_ref != source || &flow.target_ref != target {
+                rewired.push(format!(
+                    "{id} ({source}→{target} became {}→{})",
+                    flow.source_ref, flow.target_ref
+                ));
             }
         }
         if !rewired.is_empty() {
@@ -935,14 +938,13 @@ impl ProcessBuilder {
     }
 
     /// TS's private `validate`.
-    fn validate(&self) -> Result<(), String> {
-        let element_ids: IndexSet<&str> = self
-            .scope
-            .elements
-            .iter()
-            .map(|el| el.base().id.as_str())
-            .collect();
-        for flow in &self.scope.flows {
+    fn validate(
+        &self,
+        elements: &[BpmnFlowElement],
+        flows: &[BpmnSequenceFlow],
+    ) -> Result<(), String> {
+        let element_ids: IndexSet<&str> = elements.iter().map(|el| el.base().id.as_str()).collect();
+        for flow in flows {
             if !element_ids.contains(flow.target_ref.as_str()) {
                 return Err(format!(
                     "Sequence flow \"{}\" in process \"{}\" references unknown element \"{}\". Check connectTo() calls — target must exist.",
@@ -1223,7 +1225,8 @@ impl ProcessBuilder {
 
     // ── Events ──
 
-    /// TS's `startEvent()`; `None` id is `generate_id("StartEvent")`.
+    /// TS's `startEvent()`; `None` id is `generate_id("StartEvent")`. Chains from the cursor
+    /// like any element; `add_start_event` starts a disconnected path.
     pub fn start_event(
         &mut self,
         id: Option<&str>,
@@ -1402,6 +1405,10 @@ impl ProcessBuilder {
             );
             return self;
         };
+        if let Some(problem) = boundary_host_problem(self.scope.find(&attached_to)) {
+            fail(&self.shared, problem);
+            return self;
+        }
 
         let saved_last = self.scope.last_node_id.clone();
         let saved_gateway = self.scope.current_gateway_id.clone();

@@ -1,0 +1,15 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["parallelGateway","g"],
+		["branch","a",{"$ops":[["task","a"]]}],
+		["branch","b",{"$ops":[["task","b"]]}],
+		["endEvent","e"],
+		["$let","first","build"],
+		["at","g"],
+		["branch","c",{"$ops":[["task","c"],["connectTo","e"]]}],
+		["build"]
+	]
+}

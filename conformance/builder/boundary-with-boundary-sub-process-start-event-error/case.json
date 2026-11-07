@@ -1,0 +1,12 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["subProcess","sp",{"$ops":[
+			["startEvent","ss"],
+			["withBoundary","b",{"timerDuration":"PT1H"},{"$ops":[["endEvent","x"]]}]
+		]}],
+		["build"]
+	]
+}

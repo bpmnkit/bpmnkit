@@ -29,8 +29,8 @@ const scenarios = {
 				b
 					.defaultFlow()
 					.intermediateThrowEvent("lt", { linkName: "L" })
-					.textAnnotation("after throw")
 					.intermediateCatchEvent("lc", { linkName: "L" })
+					.textAnnotation("after catch")
 					.dataObject("d1", { name: "D" })
 					.dataObjectReference("dr", "d1")
 					.dataAssociation("lc", "dr", "input"),

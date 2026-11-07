@@ -10,21 +10,22 @@
 //!   `shared.flow_tags.set_flow_discriminator_source(flow_id, branch_name)` and, when a
 //!   `flow_id()` was given, `mark_explicit_flow_id`. Later flows get `generate_id("Flow")`.
 //!   `generate_id` is called exactly where TS calls it (ids are a global counter).
-//! - `start_event` does NOT apply `isInterrupting` here (Process and SubProcess do).
-//! - `text_annotation` never fails: TS uses `this.lastNodeId!`, which can be `undefined`
-//!   after a link throw event, giving the id `TextAnnotation_undefined_1`. Keep that.
+//! - `text_annotation` with no cursor (after a nested `branch()` or a link throw) fails
+//!   like `ProcessBuilder`'s.
 //! - `boundary_event` pushes without a flow, sets the cursor to the boundary and clears
-//!   `is_first_element`; `with_boundary` refuses a cursor at the gateway itself.
+//!   `is_first_element`; `with_boundary` refuses a cursor at the gateway itself and a host
+//!   that is not an activity.
 //! - `with_boundary` also saves/restores `connected`.
 //! - Sub-process construction is shared: `crate::subprocess::make_*_el`.
-//! - `connect_to` with no cursor (after a nested `branch()`) gives TS a flow with
-//!   `sourceRef: undefined`; the model has a `String`, so it is `""` here.
+//! - `connect_to` with no cursor (after a nested `branch()`) wires the nested branches'
+//!   open ends to the target instead of a flow from the cursor.
 
 use bpmnkit_bpmn::ids::generate_id;
 use bpmnkit_bpmn::{BpmnElementType, BpmnFlowElement, BpmnSequenceFlow};
 
 use crate::elements::{
-    build_event_definitions, is_link_event, make_condition_expression, make_start_event_el,
+    boundary_host_problem, build_event_definitions, is_link_event, make_condition_expression,
+    make_start_event_el,
 };
 use crate::options::*;
 use crate::shared::{check, fail, is_failed, BranchOutcome, Scope, SharedRef};
@@ -210,8 +211,20 @@ impl BranchBuilder {
         if self.failed() {
             return self;
         }
-        // TS reads `lastNodeId!` unchecked (see the module notes).
-        let source = self.scope.last_node_id.clone().unwrap_or_default();
+        // After a nested branch() the position is that branch's open ends, not one node.
+        let Some(source) = self.scope.last_node_id.clone() else {
+            for end in std::mem::take(&mut self.scope.open_branch_ends) {
+                self.scope.flows.push(BpmnSequenceFlow {
+                    id: generate_id("Flow"),
+                    source_ref: end,
+                    target_ref: target_id.to_owned(),
+                    ..BpmnSequenceFlow::default()
+                });
+            }
+            self.scope.last_node_id = Some(target_id.to_owned());
+            self.connected = true;
+            return self;
+        };
         let flow = self.first_or_next_flow(&source, target_id);
         let flow_id = flow.id.clone();
         self.scope.flows.push(flow);
@@ -232,19 +245,16 @@ impl BranchBuilder {
         if self.failed() {
             return self;
         }
-        // `lastNodeId!` may be undefined in TS; its template string then reads "undefined".
-        let target = self
-            .scope
-            .last_node_id
-            .clone()
-            .unwrap_or_else(|| "undefined".to_owned());
+        let Some(target) = self.cursor() else {
+            fail(&self.shared, "textAnnotation() must follow a flow element");
+            return self;
+        };
         self.annotate(&target, text, None)
     }
 
     // ── Events ──
 
-    /// TS's `startEvent()`; `None` id is `generate_id("StartEvent")`. `is_interrupting` is
-    /// not applied (TS's `BranchBuilder` never reads it).
+    /// TS's `startEvent()`; `None` id is `generate_id("StartEvent")`.
     pub fn start_event(
         &mut self,
         id: Option<&str>,
@@ -258,6 +268,9 @@ impl BranchBuilder {
             let mut el = make_start_event_el(&id, options.as_ref())?;
             if let (BpmnFlowElement::StartEvent(ev), Some(o)) = (&mut el, options.as_ref()) {
                 ev.event_definitions = build_event_definitions(&o.into(), s);
+                if o.is_interrupting == Some(false) {
+                    ev.is_interrupting = Some(false);
+                }
             }
             Ok(el)
         })
@@ -303,14 +316,8 @@ impl BranchBuilder {
             );
             return self;
         };
-        if matches!(
-            self.scope.find(&attached_to),
-            Some(BpmnFlowElement::BoundaryEvent(_))
-        ) {
-            fail(
-                &self.shared,
-                "withBoundary() cannot attach to a boundary event. It must follow a task or activity element.",
-            );
+        if let Some(problem) = boundary_host_problem(self.scope.find(&attached_to)) {
+            fail(&self.shared, problem);
             return self;
         }
 

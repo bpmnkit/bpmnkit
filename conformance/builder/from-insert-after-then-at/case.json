@@ -1,0 +1,13 @@
+{
+	"kind": "bpmn",
+	"input": "builder/from-noop/input.bpmn",
+	"script": [
+		["from","proc"],
+		["insertAfter","validate"],
+		["serviceTask","n",{"name":"n","taskType":"n"}],
+		["at","gw"],
+		["serviceTask","m",{"name":"m","taskType":"m"}],
+		["endEvent","e2"],
+		["build"]
+	]
+}

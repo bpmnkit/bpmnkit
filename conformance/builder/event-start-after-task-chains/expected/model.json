@@ -22,75 +22,34 @@
       "extensionElements": [],
       "flowElements": [
         {
+          "extensionElements": [],
+          "id": "t",
+          "incoming": [],
+          "outgoing": [
+            "Flow_t_s"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
           "eventDefinitions": [],
           "extensionElements": [],
           "id": "s",
-          "incoming": [],
+          "incoming": [
+            "Flow_t_s"
+          ],
           "outgoing": [
-            "Flow_s_host"
+            "Flow_s_e"
           ],
           "type": "startEvent",
           "unknownAttributes": {}
         },
         {
-          "extensionElements": [
-            {
-              "attributes": {
-                "type": "host"
-              },
-              "children": [],
-              "name": "zeebe:taskDefinition"
-            }
-          ],
-          "id": "host",
-          "incoming": [
-            "Flow_s_host"
-          ],
-          "name": "host",
-          "outgoing": [],
-          "type": "serviceTask",
-          "unknownAttributes": {}
-        },
-        {
-          "attachedToRef": "host",
-          "eventDefinitions": [
-            {
-              "id": "b1_TimerEventDefinition",
-              "timeDuration": "PT1H",
-              "type": "timer"
-            }
-          ],
-          "extensionElements": [],
-          "id": "b1",
-          "incoming": [],
-          "outgoing": [],
-          "type": "boundaryEvent",
-          "unknownAttributes": {}
-        },
-        {
-          "attachedToRef": "b1",
-          "eventDefinitions": [
-            {
-              "id": "b2_TimerEventDefinition",
-              "timeDuration": "PT2H",
-              "type": "timer"
-            }
-          ],
-          "extensionElements": [],
-          "id": "b2",
-          "incoming": [],
-          "outgoing": [
-            "Flow_b2_x"
-          ],
-          "type": "boundaryEvent",
-          "unknownAttributes": {}
-        },
-        {
           "eventDefinitions": [],
           "extensionElements": [],
-          "id": "x",
+          "id": "e",
           "incoming": [
-            "Flow_b2_x"
+            "Flow_s_e"
           ],
           "outgoing": [],
           "type": "endEvent",
@@ -103,16 +62,16 @@
       "sequenceFlows": [
         {
           "extensionElements": [],
-          "id": "Flow_s_host",
-          "sourceRef": "s",
-          "targetRef": "host",
+          "id": "Flow_t_s",
+          "sourceRef": "t",
+          "targetRef": "s",
           "unknownAttributes": {}
         },
         {
           "extensionElements": [],
-          "id": "Flow_b2_x",
-          "sourceRef": "b2",
-          "targetRef": "x",
+          "id": "Flow_s_e",
+          "sourceRef": "s",
+          "targetRef": "e",
           "unknownAttributes": {}
         }
       ],

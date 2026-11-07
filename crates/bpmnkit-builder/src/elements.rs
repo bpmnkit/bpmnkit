@@ -560,6 +560,54 @@ pub(crate) fn is_gateway_type(ty: BpmnElementType) -> bool {
     ty.is_gateway()
 }
 
+/// TS's `boundaryHostProblem`: why `withBoundary()` may not attach to `host`. Boundary
+/// events attach to activities only, which are exactly the loop-capable types; an unknown
+/// host (a cursor `connectTo()` moved outside the scope) is left alone.
+pub(crate) fn boundary_host_problem(host: Option<&BpmnFlowElement>) -> Option<String> {
+    let host = host?;
+    if host.element_type().is_loop_capable() {
+        return None;
+    }
+    if matches!(host, BpmnFlowElement::BoundaryEvent(_)) {
+        return Some(
+            "withBoundary() cannot attach to a boundary event. It must follow a task or activity element."
+                .to_owned(),
+        );
+    }
+    Some(format!(
+        "withBoundary() cannot attach to {} \"{}\". It must follow a task or activity element.",
+        host.type_name(),
+        host.base().id
+    ))
+}
+
+/// TS's `assertElementIdsUnique`: each builder scope checks only its own ids, but BPMN
+/// ids are unique per document.
+pub(crate) fn assert_element_ids_unique(
+    elements: &[BpmnFlowElement],
+    process_id: &str,
+) -> Result<(), String> {
+    fn walk<'a>(
+        scope: &'a [BpmnFlowElement],
+        seen: &mut IndexSet<&'a str>,
+        process_id: &str,
+    ) -> Result<(), String> {
+        for element in scope {
+            let id = element.base().id.as_str();
+            if !seen.insert(id) {
+                return Err(format!(
+                    "Duplicate element ID \"{id}\" in process \"{process_id}\""
+                ));
+            }
+            if let Some(contents) = element.contents() {
+                walk(&contents.flow_elements, seen, process_id)?;
+            }
+        }
+        Ok(())
+    }
+    walk(elements, &mut IndexSet::new(), process_id)
+}
+
 /// TS's `recomputeIncomingOutgoing`. A flow whose endpoint is missing is skipped; with
 /// duplicate element ids the LAST one wins (`new Map(elements.map(...))`).
 pub(crate) fn recompute_incoming_outgoing(

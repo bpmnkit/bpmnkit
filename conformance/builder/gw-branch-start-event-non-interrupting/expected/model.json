@@ -27,35 +27,44 @@
           "id": "s",
           "incoming": [],
           "outgoing": [
-            "Flow_s_e"
+            "Flow_s_g"
           ],
           "type": "startEvent",
           "unknownAttributes": {}
         },
         {
-          "attachedToRef": "s",
-          "eventDefinitions": [
-            {
-              "id": "b_TimerEventDefinition",
-              "timeDuration": "PT1H",
-              "type": "timer"
-            }
-          ],
           "extensionElements": [],
-          "id": "b",
-          "incoming": [],
-          "outgoing": [
-            "Flow_b_x"
+          "id": "g",
+          "incoming": [
+            "Flow_s_g"
           ],
-          "type": "boundaryEvent",
+          "outgoing": [
+            "Flow_g_s2",
+            "Flow_g_e3"
+          ],
+          "type": "exclusiveGateway",
           "unknownAttributes": {}
         },
         {
           "eventDefinitions": [],
           "extensionElements": [],
-          "id": "x",
+          "id": "s2",
           "incoming": [
-            "Flow_b_x"
+            "Flow_g_s2"
+          ],
+          "isInterrupting": false,
+          "outgoing": [
+            "Flow_s2_e2"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e2",
+          "incoming": [
+            "Flow_s2_e2"
           ],
           "outgoing": [],
           "type": "endEvent",
@@ -64,9 +73,9 @@
         {
           "eventDefinitions": [],
           "extensionElements": [],
-          "id": "e",
+          "id": "e3",
           "incoming": [
-            "Flow_s_e"
+            "Flow_g_e3"
           ],
           "outgoing": [],
           "type": "endEvent",
@@ -79,16 +88,32 @@
       "sequenceFlows": [
         {
           "extensionElements": [],
-          "id": "Flow_b_x",
-          "sourceRef": "b",
-          "targetRef": "x",
+          "id": "Flow_s_g",
+          "sourceRef": "s",
+          "targetRef": "g",
           "unknownAttributes": {}
         },
         {
           "extensionElements": [],
-          "id": "Flow_s_e",
-          "sourceRef": "s",
-          "targetRef": "e",
+          "id": "Flow_g_s2",
+          "name": "a",
+          "sourceRef": "g",
+          "targetRef": "s2",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_s2_e2",
+          "sourceRef": "s2",
+          "targetRef": "e2",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_g_e3",
+          "name": "b",
+          "sourceRef": "g",
+          "targetRef": "e3",
           "unknownAttributes": {}
         }
       ],
